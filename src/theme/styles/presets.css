@@ -1,0 +1,994 @@
+/* =================================================================
+   HUHU interface themes.
+
+   Palettes referenced from the themes of dbx (https://github.com/t8y2/dbx), as opaque hex
+   under HUHU's --nt-* names; "Eye care" is HUHU's own; muted text, accent text and the
+   destructive colour are tuned to keep WCAG AA contrast (src/theme/presets.test.ts).
+
+   How it works
+   - A palette is a class "huhu-theme--<id>" plus the mode class Obsidian keeps on <body>
+     (theme-light / theme-dark). It only declares --nt-* tokens, so a swatch element
+     carrying both classes can preview the palette without touching the app.
+   - The single mapping rule below ("huhu-themed") turns --nt-* into Obsidian's variables
+     (--background-*, --text-*, --interactive-*, ...); HUHU panels read the same --nt-* tokens
+     through src/ui/styles/tokens.css. The "Default" theme adds no class and changes nothing.
+   - The "Custom" theme sets the same --nt-* tokens inline (src/theme/custom.ts).
+   ================================================================= */
+
+/* SuliWorld palette adapted from sulistef/obsidian-suliworld, MIT, © 2026 Stéphane Sulikowski.
+ * Source: bb73ca60dbc1169eb8d4c81fefb0c721ff7faf42/src/theme.css.
+ * Structural rules and the mixed-surface Forest variant live in suliworld-ui.css. */
+.huhu-theme--suliworld.theme-light {
+	--nt-background: #fbf7f0;
+	--nt-foreground: #1b1a17;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #1f3b2d;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #f4eee3;
+	--nt-muted-foreground: #5b574f;
+	--nt-accent: #efe6d6;
+	--nt-accent-foreground: #1b1a17;
+	--nt-destructive: #aa331f;
+	--nt-border: #e2d8c6;
+	--nt-input: #d4c8b5;
+	--nt-ring: #b8431c;
+	--nt-sidebar: #ffffff;
+	--nt-sidebar-accent: #f4eee3;
+	--nt-chrome: #fbf7f0;
+	--nt-chrome-muted: #f4eee3;
+	--nt-chart-1: #b8431c;
+	--nt-chart-2: #1f3b2d;
+	--nt-chart-3: #8a6909;
+	--nt-chart-4: #6959a6;
+	--nt-chart-5: #3375a8;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #827865;
+	--nt-link: #a13816;
+	--nt-highlight: #fff1a8;
+}
+.huhu-theme--suliworld.theme-dark {
+	--nt-background: #151412;
+	--nt-foreground: #f4efe6;
+	--nt-card: #211f1b;
+	--nt-popover: #28251f;
+	--nt-primary: #ff8a63;
+	--nt-primary-foreground: #151412;
+	--nt-secondary: #2e2a24;
+	--nt-muted-foreground: #ada595;
+	--nt-accent: #3a352d;
+	--nt-accent-foreground: #f4efe6;
+	--nt-destructive: #ff9e8d;
+	--nt-border: #3a352d;
+	--nt-input: #514a3e;
+	--nt-ring: #ff8a63;
+	--nt-sidebar: #211f1b;
+	--nt-sidebar-accent: #3a352d;
+	--nt-chrome: #151412;
+	--nt-chrome-muted: #1b1a17;
+	--nt-chart-1: #ff8a63;
+	--nt-chart-2: #8fcfaa;
+	--nt-chart-3: #e8d986;
+	--nt-chart-4: #b7a8ff;
+	--nt-chart-5: #99c5f6;
+	--nt-destructive-foreground: #151412;
+	--nt-faint: #8e8676;
+	--nt-link: #ff8a63;
+	--nt-highlight: #8b6e25;
+}
+
+/* ----- Pearl (dbx base palette, neutral; replaces the former Orca palette) ----- */
+.huhu-theme--pearl.theme-light {
+	--nt-background: #ffffff;
+	--nt-foreground: #0a0a0a;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #171717;
+	--nt-primary-foreground: #fafafa;
+	--nt-secondary: #f5f5f5;
+	--nt-muted-foreground: #6e6e6e;
+	--nt-accent: #f5f5f5;
+	--nt-accent-foreground: #171717;
+	--nt-destructive: #e7000b;
+	--nt-border: #e5e5e5;
+	--nt-input: #e5e5e5;
+	--nt-ring: #a1a1a1;
+	--nt-sidebar: #fafafa;
+	--nt-sidebar-accent: #f5f5f5;
+	--nt-chrome: #f5f5f5;
+	--nt-chrome-muted: #f0f0f0;
+	--nt-chart-1: #d4d4d4;
+	--nt-chart-2: #737373;
+	--nt-chart-3: #525252;
+	--nt-chart-4: #404040;
+	--nt-chart-5: #262626;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #8c8c8c;
+	--nt-link: #171717;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--pearl.theme-dark {
+	--nt-background: #131416;
+	--nt-foreground: #d7d7db;
+	--nt-card: #1b1b1e;
+	--nt-popover: #1e1e20;
+	--nt-primary: #d0d0d6;
+	--nt-primary-foreground: #131416;
+	--nt-secondary: #2a2a2d;
+	--nt-muted-foreground: #97989d;
+	--nt-accent: #2e2f33;
+	--nt-accent-foreground: #dddde2;
+	--nt-destructive: #f3625f;
+	--nt-border: #2c2d30;
+	--nt-input: #323335;
+	--nt-ring: #85868b;
+	--nt-sidebar: #19191c;
+	--nt-sidebar-accent: #2c2c30;
+	--nt-chrome: #1b1b1e;
+	--nt-chrome-muted: #202024;
+	--nt-chart-1: #d4d4d4;
+	--nt-chart-2: #737373;
+	--nt-chart-3: #525252;
+	--nt-chart-4: #404040;
+	--nt-chart-5: #262626;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #6f7075;
+	--nt-link: #d0d0d6;
+	--nt-highlight: #b8860b;
+}
+/* ----- Soft ----- */
+.huhu-theme--soft.theme-light {
+	--nt-background: #fafbfd;
+	--nt-foreground: #282c34;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #2e5fa6;
+	--nt-primary-foreground: #f7faff;
+	--nt-secondary: #edf1f6;
+	--nt-muted-foreground: #656e7a;
+	--nt-accent: #e2e9f2;
+	--nt-accent-foreground: #242c39;
+	--nt-destructive: #bd4138;
+	--nt-border: #d0d7e0;
+	--nt-input: #c6cfda;
+	--nt-ring: #6e809a;
+	--nt-sidebar: #eff2f6;
+	--nt-sidebar-accent: #e0e7f1;
+	--nt-chrome: #ecf0f5;
+	--nt-chrome-muted: #e7ecf3;
+	--nt-chart-1: #547dbf;
+	--nt-chart-2: #509689;
+	--nt-chart-3: #b8803a;
+	--nt-chart-4: #8873c2;
+	--nt-chart-5: #bf5e59;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #808792;
+	--nt-link: #2e5fa6;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--soft.theme-dark {
+	--nt-background: #1f2125;
+	--nt-foreground: #caced6;
+	--nt-card: #26292e;
+	--nt-popover: #2a2d33;
+	--nt-primary: #9db1cd;
+	--nt-primary-foreground: #1b1e22;
+	--nt-secondary: #2f333a;
+	--nt-muted-foreground: #9299a4;
+	--nt-accent: #373c45;
+	--nt-accent-foreground: #d0d4db;
+	--nt-destructive: #e2716a;
+	--nt-border: #383c43;
+	--nt-input: #3e424b;
+	--nt-ring: #8a94a4;
+	--nt-sidebar: #22252a;
+	--nt-sidebar-accent: #2d323a;
+	--nt-chrome: #272b31;
+	--nt-chrome-muted: #2b2f36;
+	--nt-chart-1: #839dc7;
+	--nt-chart-2: #6fa899;
+	--nt-chart-3: #c7975b;
+	--nt-chart-4: #a091cf;
+	--nt-chart-5: #d1746f;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #70757e;
+	--nt-link: #9db1cd;
+	--nt-highlight: #b8860b;
+}
+/* ----- Graphite ----- */
+.huhu-theme--graphite.theme-light {
+	--nt-background: #f9fafc;
+	--nt-foreground: #2a2d33;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #48505d;
+	--nt-primary-foreground: #f8fafc;
+	--nt-secondary: #eef0f4;
+	--nt-muted-foreground: #646974;
+	--nt-accent: #e2e6ec;
+	--nt-accent-foreground: #272c35;
+	--nt-destructive: #b64239;
+	--nt-border: #d2d7e0;
+	--nt-input: #c6ccd6;
+	--nt-ring: #747d8b;
+	--nt-sidebar: #ebeef3;
+	--nt-sidebar-accent: #dee3eb;
+	--nt-chrome: #e8ecf2;
+	--nt-chrome-muted: #e2e7ee;
+	--nt-chart-1: #5c6b7f;
+	--nt-chart-2: #508f84;
+	--nt-chart-3: #b2844a;
+	--nt-chart-4: #7971ad;
+	--nt-chart-5: #b85e5b;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #838891;
+	--nt-link: #48505d;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--graphite.theme-dark {
+	--nt-background: #1e2024;
+	--nt-foreground: #c6c9cf;
+	--nt-card: #26282d;
+	--nt-popover: #2a2c32;
+	--nt-primary: #aeb5c0;
+	--nt-primary-foreground: #1b1d21;
+	--nt-secondary: #2f3239;
+	--nt-muted-foreground: #9096a0;
+	--nt-accent: #373a42;
+	--nt-accent-foreground: #cfd2d8;
+	--nt-destructive: #e27169;
+	--nt-border: #373b41;
+	--nt-input: #3d4148;
+	--nt-ring: #8a919e;
+	--nt-sidebar: #212328;
+	--nt-sidebar-accent: #2d3037;
+	--nt-chrome: #26292f;
+	--nt-chrome-muted: #2b2e35;
+	--nt-chart-1: #929eb0;
+	--nt-chart-2: #6ea597;
+	--nt-chart-3: #c6965c;
+	--nt-chart-4: #978ec7;
+	--nt-chart-5: #ce716d;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #6e737b;
+	--nt-link: #aeb5c0;
+	--nt-highlight: #b8860b;
+}
+/* ----- Cobalt ----- */
+.huhu-theme--cobalt.theme-light {
+	--nt-background: #f7fafd;
+	--nt-foreground: #202b3a;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #2b63b7;
+	--nt-primary-foreground: #f7faff;
+	--nt-secondary: #e8f0fa;
+	--nt-muted-foreground: #5d6c7e;
+	--nt-accent: #d8e5f6;
+	--nt-accent-foreground: #1f3048;
+	--nt-destructive: #b64138;
+	--nt-border: #c8d4e5;
+	--nt-input: #bbcce0;
+	--nt-ring: #5577a5;
+	--nt-sidebar: #e8eff8;
+	--nt-sidebar-accent: #d6e4f6;
+	--nt-chrome: #e4ecf7;
+	--nt-chrome-muted: #dde7f5;
+	--nt-chart-1: #3c6fbf;
+	--nt-chart-2: #4b919f;
+	--nt-chart-3: #b48240;
+	--nt-chart-4: #8471be;
+	--nt-chart-5: #be5b5f;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #798595;
+	--nt-link: #2b63b7;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--cobalt.theme-dark {
+	--nt-background: #191f2a;
+	--nt-foreground: #c6cfdb;
+	--nt-card: #1f2633;
+	--nt-popover: #232b3a;
+	--nt-primary: #89addf;
+	--nt-primary-foreground: #141c27;
+	--nt-secondary: #2b3546;
+	--nt-muted-foreground: #8f9bab;
+	--nt-accent: #313e52;
+	--nt-accent-foreground: #d1dae5;
+	--nt-destructive: #e16b64;
+	--nt-border: #333d4d;
+	--nt-input: #374354;
+	--nt-ring: #859ab8;
+	--nt-sidebar: #1c2330;
+	--nt-sidebar-accent: #2a3648;
+	--nt-chrome: #202836;
+	--nt-chrome-muted: #252f3f;
+	--nt-chart-1: #85ade5;
+	--nt-chart-2: #6bacb8;
+	--nt-chart-3: #c7975a;
+	--nt-chart-4: #9e8fcf;
+	--nt-chart-5: #d17274;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #6c7684;
+	--nt-link: #89addf;
+	--nt-highlight: #b8860b;
+}
+/* ----- Sage ----- */
+.huhu-theme--sage.theme-light {
+	--nt-background: #f8faf8;
+	--nt-foreground: #24302b;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #3a7b6a;
+	--nt-primary-foreground: #f6fcf9;
+	--nt-secondary: #e9f1ed;
+	--nt-muted-foreground: #5e6e67;
+	--nt-accent: #dbeae3;
+	--nt-accent-foreground: #1f372f;
+	--nt-destructive: #b54238;
+	--nt-border: #cbd9d3;
+	--nt-input: #bed0c8;
+	--nt-ring: #588777;
+	--nt-sidebar: #ebf2ee;
+	--nt-sidebar-accent: #daeae3;
+	--nt-chrome: #e7efeb;
+	--nt-chrome-muted: #e1ebe6;
+	--nt-chart-1: #3f8470;
+	--nt-chart-2: #4a89a8;
+	--nt-chart-3: #b48444;
+	--nt-chart-4: #8473b9;
+	--nt-chart-5: #bc5f5a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #7e8b85;
+	--nt-link: #397766;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--sage.theme-dark {
+	--nt-background: #1b2321;
+	--nt-foreground: #c6d0cc;
+	--nt-card: #222b28;
+	--nt-popover: #26302d;
+	--nt-primary: #8ab8a9;
+	--nt-primary-foreground: #16201d;
+	--nt-secondary: #2c3935;
+	--nt-muted-foreground: #8f9d97;
+	--nt-accent: #32413c;
+	--nt-accent-foreground: #d0dad6;
+	--nt-destructive: #e2726b;
+	--nt-border: #34413c;
+	--nt-input: #384641;
+	--nt-ring: #849f95;
+	--nt-sidebar: #1e2724;
+	--nt-sidebar-accent: #2b3a35;
+	--nt-chrome: #222d29;
+	--nt-chrome-muted: #27332f;
+	--nt-chart-1: #86bcaa;
+	--nt-chart-2: #6faabe;
+	--nt-chart-3: #c7975b;
+	--nt-chart-4: #9a8fcb;
+	--nt-chart-5: #cf726c;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #6c7874;
+	--nt-link: #8ab8a9;
+	--nt-highlight: #b8860b;
+}
+/* ----- Amber ----- */
+.huhu-theme--amber.theme-light {
+	--nt-background: #fffcf2;
+	--nt-foreground: #383020;
+	--nt-card: #fffffa;
+	--nt-popover: #fffffa;
+	--nt-primary: #955f1c;
+	--nt-primary-foreground: #fffaec;
+	--nt-secondary: #f7eed5;
+	--nt-muted-foreground: #7b6946;
+	--nt-accent: #efdbae;
+	--nt-accent-foreground: #413018;
+	--nt-destructive: #b74537;
+	--nt-border: #e0cfa8;
+	--nt-input: #d3bf94;
+	--nt-ring: #a6772f;
+	--nt-sidebar: #f7eed5;
+	--nt-sidebar-accent: #efddb5;
+	--nt-chrome: #f4e9cb;
+	--nt-chrome-muted: #efe2bf;
+	--nt-chart-1: #ab6f22;
+	--nt-chart-2: #5d8970;
+	--nt-chart-3: #457ca2;
+	--nt-chart-4: #866fb2;
+	--nt-chart-5: #b85a57;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #938365;
+	--nt-link: #955f1c;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--amber.theme-dark {
+	--nt-background: #25221b;
+	--nt-foreground: #d9d0bc;
+	--nt-card: #2d2920;
+	--nt-popover: #322e24;
+	--nt-primary: #d5a94b;
+	--nt-primary-foreground: #221d15;
+	--nt-secondary: #3b3528;
+	--nt-muted-foreground: #a3967b;
+	--nt-accent: #473d2b;
+	--nt-accent-foreground: #e4dbc7;
+	--nt-destructive: #e26e63;
+	--nt-border: #463e2d;
+	--nt-input: #4d4330;
+	--nt-ring: #b99754;
+	--nt-sidebar: #29251d;
+	--nt-sidebar-accent: #393224;
+	--nt-chrome: #302b21;
+	--nt-chrome-muted: #363024;
+	--nt-chart-1: #d6aa4e;
+	--nt-chart-2: #79ab8b;
+	--nt-chart-3: #67a1c6;
+	--nt-chart-4: #a08fcd;
+	--nt-chart-5: #d2736f;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #7d735e;
+	--nt-link: #d5a94b;
+	--nt-highlight: #b8860b;
+}
+/* ----- Blush ----- */
+.huhu-theme--blush.theme-light {
+	--nt-background: #fff8fb;
+	--nt-foreground: #3d3038;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #b15376;
+	--nt-primary-foreground: #fff8fb;
+	--nt-secondary: #f6e8ef;
+	--nt-muted-foreground: #7e6273;
+	--nt-accent: #efd5e2;
+	--nt-accent-foreground: #533244;
+	--nt-destructive: #b6403b;
+	--nt-border: #e2cad6;
+	--nt-input: #d6bbc9;
+	--nt-ring: #bc6f8d;
+	--nt-sidebar: #f8eaf1;
+	--nt-sidebar-accent: #efd6e2;
+	--nt-chrome: #f6e6ee;
+	--nt-chrome-muted: #f0dce6;
+	--nt-chart-1: #be587e;
+	--nt-chart-2: #758dbe;
+	--nt-chart-3: #749d84;
+	--nt-chart-4: #b4844a;
+	--nt-chart-5: #896cb7;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #957d8b;
+	--nt-link: #a35070;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--blush.theme-dark {
+	--nt-background: #2a2328;
+	--nt-foreground: #ddcdd6;
+	--nt-card: #342a31;
+	--nt-popover: #3a2f37;
+	--nt-primary: #e2a0b8;
+	--nt-primary-foreground: #271d23;
+	--nt-secondary: #43343e;
+	--nt-muted-foreground: #a98f9d;
+	--nt-accent: #523b48;
+	--nt-accent-foreground: #e7d8e0;
+	--nt-destructive: #e57872;
+	--nt-border: #4c3d45;
+	--nt-input: #53424c;
+	--nt-ring: #ca8fa4;
+	--nt-sidebar: #2f262d;
+	--nt-sidebar-accent: #42333d;
+	--nt-chrome: #372c34;
+	--nt-chrome-muted: #3e313a;
+	--nt-chart-1: #e1a0b8;
+	--nt-chart-2: #869fd3;
+	--nt-chart-3: #7eb297;
+	--nt-chart-4: #ca985d;
+	--nt-chart-5: #aa91cf;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #836f7a;
+	--nt-link: #e2a0b8;
+	--nt-highlight: #b8860b;
+}
+/* ----- VS Code ----- */
+.huhu-theme--vscode.theme-light {
+	--nt-background: #ffffff;
+	--nt-foreground: #333333;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #0075c4;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #f3f3f3;
+	--nt-muted-foreground: #6a6a6a;
+	--nt-accent: #e5f1fb;
+	--nt-accent-foreground: #004a7a;
+	--nt-destructive: #bc453c;
+	--nt-border: #e0e0e0;
+	--nt-input: #cecece;
+	--nt-ring: #007acc;
+	--nt-sidebar: #f3f3f3;
+	--nt-sidebar-accent: #e6e6e6;
+	--nt-chrome: #dddddd;
+	--nt-chrome-muted: #e8e8e8;
+	--nt-chart-1: #007acc;
+	--nt-chart-2: #408f72;
+	--nt-chart-3: #ba853e;
+	--nt-chart-4: #7e70be;
+	--nt-chart-5: #be5a5a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #898989;
+	--nt-link: #0672ba;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--vscode.theme-dark {
+	--nt-background: #1e1e1e;
+	--nt-foreground: #cccccc;
+	--nt-card: #252526;
+	--nt-popover: #2d2d30;
+	--nt-primary: #0075c4;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #2d2d30;
+	--nt-muted-foreground: #8f8f8f;
+	--nt-accent: #264f78;
+	--nt-accent-foreground: #ebf4ff;
+	--nt-destructive: #f17069;
+	--nt-border: #3c3c3c;
+	--nt-input: #464646;
+	--nt-ring: #007acc;
+	--nt-sidebar: #252526;
+	--nt-sidebar-accent: #2d2d30;
+	--nt-chrome: #333333;
+	--nt-chrome-muted: #2d2d30;
+	--nt-chart-1: #3794ff;
+	--nt-chart-2: #4ec9b0;
+	--nt-chart-3: #dcb478;
+	--nt-chart-4: #c586c0;
+	--nt-chart-5: #f48771;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #717171;
+	--nt-link: #3f93cc;
+	--nt-highlight: #b8860b;
+}
+/* ----- IntelliJ IDEA ----- */
+.huhu-theme--idea.theme-light {
+	--nt-background: #fafafa;
+	--nt-foreground: #2b2b2b;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #4b6eaf;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #eff0f2;
+	--nt-muted-foreground: #676a6e;
+	--nt-accent: #dae7f9;
+	--nt-accent-foreground: #22447c;
+	--nt-destructive: #b54239;
+	--nt-border: #d5d7db;
+	--nt-input: #c8cbd1;
+	--nt-ring: #4b6eaf;
+	--nt-sidebar: #ebecf0;
+	--nt-sidebar-accent: #dee2e9;
+	--nt-chrome: #e6e7eb;
+	--nt-chrome-muted: #e0e2e7;
+	--nt-chart-1: #4b6eaf;
+	--nt-chart-2: #4e8b77;
+	--nt-chart-3: #b5803e;
+	--nt-chart-4: #8470b8;
+	--nt-chart-5: #bc5b57;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #818487;
+	--nt-link: #4766a0;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--idea.theme-dark {
+	--nt-background: #2b2b2b;
+	--nt-foreground: #bbbbbb;
+	--nt-card: #3c3f41;
+	--nt-popover: #434648;
+	--nt-primary: #6a87c5;
+	--nt-primary-foreground: #1e2022;
+	--nt-secondary: #3c3f41;
+	--nt-muted-foreground: #aaabab;
+	--nt-accent: #484e56;
+	--nt-accent-foreground: #d2daea;
+	--nt-destructive: #eb9691;
+	--nt-border: #555657;
+	--nt-input: #606162;
+	--nt-ring: #6a87c5;
+	--nt-sidebar: #313335;
+	--nt-sidebar-accent: #3e4246;
+	--nt-chrome: #3c3f41;
+	--nt-chrome-muted: #373a3c;
+	--nt-chart-1: #6a87c5;
+	--nt-chart-2: #62aa8e;
+	--nt-chart-3: #cc9858;
+	--nt-chart-4: #a691cd;
+	--nt-chart-5: #d3736c;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #848485;
+	--nt-link: #8a9bc1;
+	--nt-highlight: #b8860b;
+}
+/* ----- Xcode ----- */
+.huhu-theme--xcode.theme-light {
+	--nt-background: #fafcff;
+	--nt-foreground: #1f2937;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #0870d9;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #ebeff5;
+	--nt-muted-foreground: #626e7e;
+	--nt-accent: #dbecff;
+	--nt-accent-foreground: #004b99;
+	--nt-destructive: #c0443c;
+	--nt-border: #cfd8e4;
+	--nt-input: #c2cedd;
+	--nt-ring: #0a84ff;
+	--nt-sidebar: #f2f5fa;
+	--nt-sidebar-accent: #e0ebfa;
+	--nt-chrome: #e9edf3;
+	--nt-chrome-muted: #e2e8f0;
+	--nt-chart-1: #0a84ff;
+	--nt-chart-2: #4e91a3;
+	--nt-chart-3: #b88443;
+	--nt-chart-4: #8271be;
+	--nt-chart-5: #be5c5a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #828c99;
+	--nt-link: #106cca;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--xcode.theme-dark {
+	--nt-background: #1f2329;
+	--nt-foreground: #d7dde7;
+	--nt-card: #252932;
+	--nt-popover: #2d333b;
+	--nt-primary: #0870d9;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #2d333b;
+	--nt-muted-foreground: #959ead;
+	--nt-accent: #1d4575;
+	--nt-accent-foreground: #deeeff;
+	--nt-destructive: #e66f66;
+	--nt-border: #39414c;
+	--nt-input: #3f4854;
+	--nt-ring: #56a0ff;
+	--nt-sidebar: #252932;
+	--nt-sidebar-accent: #2d3644;
+	--nt-chrome: #2d333b;
+	--nt-chrome-muted: #272d35;
+	--nt-chart-1: #56a0ff;
+	--nt-chart-2: #6faebe;
+	--nt-chart-3: #cb995a;
+	--nt-chart-4: #a090cf;
+	--nt-chart-5: #d3746f;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #727985;
+	--nt-link: #2d93fb;
+	--nt-highlight: #b8860b;
+}
+/* ----- JetBrains ----- */
+.huhu-theme--jetbrains.theme-light {
+	--nt-background: #f8f9fb;
+	--nt-foreground: #1f2328;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #6c5dd3;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #ebedf1;
+	--nt-muted-foreground: #646c77;
+	--nt-accent: #e5e1fb;
+	--nt-accent-foreground: #423499;
+	--nt-destructive: #be453c;
+	--nt-border: #d3d8e0;
+	--nt-input: #c6ccd6;
+	--nt-ring: #6c5dd3;
+	--nt-sidebar: #f2f3f5;
+	--nt-sidebar-accent: #e5e7ec;
+	--nt-chrome: #ebedf1;
+	--nt-chrome-muted: #e4e7ec;
+	--nt-chart-1: #6c5dd3;
+	--nt-chart-2: #3997a7;
+	--nt-chart-3: #b88443;
+	--nt-chart-4: #487dc5;
+	--nt-chart-5: #be5b5a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #838a93;
+	--nt-link: #6c5dd3;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--jetbrains.theme-dark {
+	--nt-background: #1e1f22;
+	--nt-foreground: #dfe1e5;
+	--nt-card: #2b2d30;
+	--nt-popover: #313338;
+	--nt-primary: #7159eb;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #2b2d30;
+	--nt-muted-foreground: #a1a4ab;
+	--nt-accent: #3d3a59;
+	--nt-accent-foreground: #e9e7ff;
+	--nt-destructive: #e7756c;
+	--nt-border: #4d5056;
+	--nt-input: #595c63;
+	--nt-ring: #7b61ff;
+	--nt-sidebar: #2b2d30;
+	--nt-sidebar-accent: #36383d;
+	--nt-chrome: #2b2d30;
+	--nt-chrome-muted: #25272a;
+	--nt-chart-1: #7b61ff;
+	--nt-chart-2: #4bbeca;
+	--nt-chart-3: #cf9b5b;
+	--nt-chart-4: #69a2e6;
+	--nt-chart-5: #d6746f;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #7a7c82;
+	--nt-link: #9a89f7;
+	--nt-highlight: #b8860b;
+}
+/* ----- Cursor ----- */
+.huhu-theme--cursor.theme-light {
+	--nt-background: #fbfcfe;
+	--nt-foreground: #1f242d;
+	--nt-card: #ffffff;
+	--nt-popover: #ffffff;
+	--nt-primary: #326ed1;
+	--nt-primary-foreground: #ffffff;
+	--nt-secondary: #eff1f5;
+	--nt-muted-foreground: #656f7e;
+	--nt-accent: #deebff;
+	--nt-accent-foreground: #1f4f9a;
+	--nt-destructive: #be453c;
+	--nt-border: #d5dae2;
+	--nt-input: #c7ced9;
+	--nt-ring: #3b82f6;
+	--nt-sidebar: #f4f5f7;
+	--nt-sidebar-accent: #e6eaf1;
+	--nt-chrome: #f2f3f5;
+	--nt-chrome-muted: #eaedf2;
+	--nt-chart-1: #3b82f6;
+	--nt-chart-2: #4e97a6;
+	--nt-chart-3: #b88443;
+	--nt-chart-4: #8470be;
+	--nt-chart-5: #be5b5a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #858d99;
+	--nt-link: #356dca;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--cursor.theme-dark {
+	--nt-background: #0f111a;
+	--nt-foreground: #d5d7de;
+	--nt-card: #151821;
+	--nt-popover: #1b1e27;
+	--nt-primary: #6ba4ff;
+	--nt-primary-foreground: #080c14;
+	--nt-secondary: #1b1e27;
+	--nt-muted-foreground: #8e95a4;
+	--nt-accent: #1f3352;
+	--nt-accent-foreground: #deecff;
+	--nt-destructive: #e46860;
+	--nt-border: #2b303e;
+	--nt-input: #313747;
+	--nt-ring: #6ba4ff;
+	--nt-sidebar: #151821;
+	--nt-sidebar-accent: #1c222e;
+	--nt-chrome: #1b1e27;
+	--nt-chrome-muted: #181b24;
+	--nt-chart-1: #6ba4ff;
+	--nt-chart-2: #5bbbc7;
+	--nt-chart-3: #cc9a5b;
+	--nt-chart-4: #a28fcf;
+	--nt-chart-5: #d5746f;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #686d7b;
+	--nt-link: #6ba4ff;
+	--nt-highlight: #b8860b;
+}
+/* ----- Claude Code (dbx theme-claude) ----- */
+.huhu-theme--claude-code.theme-light {
+	--nt-background: #fbf7ef;
+	--nt-foreground: #332b23;
+	--nt-card: #fffdf8;
+	--nt-popover: #fffdf8;
+	--nt-primary: #a35f35;
+	--nt-primary-foreground: #fffaf3;
+	--nt-secondary: #f2e7db;
+	--nt-muted-foreground: #756251;
+	--nt-accent: #ead8c6;
+	--nt-accent-foreground: #63361f;
+	--nt-destructive: #ad4136;
+	--nt-border: #ddcdbb;
+	--nt-input: #d1bea9;
+	--nt-ring: #b86b3c;
+	--nt-sidebar: #efe7dc;
+	--nt-sidebar-accent: #e7d8c8;
+	--nt-chrome: #f1e7db;
+	--nt-chrome-muted: #eaded1;
+	--nt-chart-1: #b86b3c;
+	--nt-chart-2: #548b77;
+	--nt-chart-3: #4b7ca0;
+	--nt-chart-4: #8770b2;
+	--nt-chart-5: #bc5c57;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #8d7d6d;
+	--nt-link: #8f5734;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--claude-code.theme-dark {
+	--nt-background: #211f1c;
+	--nt-foreground: #d8d0c4;
+	--nt-card: #2a2723;
+	--nt-popover: #312d28;
+	--nt-primary: #d28a5f;
+	--nt-primary-foreground: #231b15;
+	--nt-secondary: #37312b;
+	--nt-muted-foreground: #a39686;
+	--nt-accent: #44382f;
+	--nt-accent-foreground: #e8ded2;
+	--nt-destructive: #e36d65;
+	--nt-border: #453c34;
+	--nt-input: #4b4138;
+	--nt-ring: #d28a5f;
+	--nt-sidebar: #2a2723;
+	--nt-sidebar-accent: #38322c;
+	--nt-chrome: #312d28;
+	--nt-chrome-muted: #37312b;
+	--nt-chart-1: #d28a5f;
+	--nt-chart-2: #74b195;
+	--nt-chart-3: #65a1c6;
+	--nt-chart-4: #a08fcd;
+	--nt-chart-5: #d3736d;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #7c7266;
+	--nt-link: #d28a5f;
+	--nt-highlight: #b8860b;
+}
+/* ----- Eye care (HUHU original: low-saturation bean green) ----- */
+.huhu-theme--eye-care.theme-light {
+	--nt-background: #e3ebdc;
+	--nt-foreground: #22322a;
+	--nt-card: #ecf2e6;
+	--nt-popover: #f1f6ec;
+	--nt-primary: #3f7050;
+	--nt-primary-foreground: #f4f8f1;
+	--nt-secondary: #d6e2cd;
+	--nt-muted-foreground: #4a5f52;
+	--nt-accent: #c9d9c0;
+	--nt-accent-foreground: #1f3326;
+	--nt-destructive: #a63f36;
+	--nt-border: #b9cab0;
+	--nt-input: #aabda0;
+	--nt-ring: #4f7f5d;
+	--nt-sidebar: #d9e4d1;
+	--nt-sidebar-accent: #cddcc4;
+	--nt-chrome: #d5e1cc;
+	--nt-chrome-muted: #cddbc4;
+	--nt-chart-1: #4f7f5d;
+	--nt-chart-2: #5f8794;
+	--nt-chart-3: #9c7a2f;
+	--nt-chart-4: #7d6e9e;
+	--nt-chart-5: #b0605a;
+	--nt-destructive-foreground: #ffffff;
+	--nt-faint: #6f8173;
+	--nt-link: #3d6c4e;
+	--nt-highlight: #facc15;
+}
+.huhu-theme--eye-care.theme-dark {
+	--nt-background: #1b221e;
+	--nt-foreground: #d3ded4;
+	--nt-card: #212a25;
+	--nt-popover: #27312b;
+	--nt-primary: #8fbf9f;
+	--nt-primary-foreground: #14221a;
+	--nt-secondary: #2a352e;
+	--nt-muted-foreground: #9fb1a3;
+	--nt-accent: #334039;
+	--nt-accent-foreground: #e0eadf;
+	--nt-destructive: #e0786e;
+	--nt-border: #3a4a40;
+	--nt-input: #46594d;
+	--nt-ring: #8fbf9f;
+	--nt-sidebar: #171d1a;
+	--nt-sidebar-accent: #2a352e;
+	--nt-chrome: #232c27;
+	--nt-chrome-muted: #29332d;
+	--nt-chart-1: #8fbf9f;
+	--nt-chart-2: #8db4c0;
+	--nt-chart-3: #d3b36e;
+	--nt-chart-4: #b3a3cf;
+	--nt-chart-5: #d98f86;
+	--nt-destructive-foreground: #0a0a0a;
+	--nt-faint: #77867b;
+	--nt-link: #8fbf9f;
+	--nt-highlight: #b8860b;
+}
+
+/* ----- Obsidian's stock look: only the settings preview of the "Default" theme uses it, never the app ----- */
+.huhu-theme--obsidian.theme-light {
+	--nt-background: #ffffff;
+	--nt-foreground: #222222;
+	--nt-muted-foreground: #5c5c5c;
+	--nt-faint: #999999;
+	--nt-sidebar: #f6f6f6;
+	--nt-border: #e4e4e4;
+	--nt-primary: #8a5cf5;
+}
+.huhu-theme--obsidian.theme-dark {
+	--nt-background: #1e1e1e;
+	--nt-foreground: #dadada;
+	--nt-muted-foreground: #b3b3b3;
+	--nt-faint: #666666;
+	--nt-sidebar: #262626;
+	--nt-border: #363636;
+	--nt-primary: #8a5cf5;
+}
+
+/* ----- Mapping: --nt-* -> Obsidian variables (every non-default theme) ----- */
+body.huhu-themed.theme-light,
+body.huhu-themed.theme-dark {
+	--background-primary: var(--nt-background);
+	--background-primary-alt: var(--nt-card);
+	--background-secondary: var(--nt-sidebar);
+	--background-secondary-alt: var(--nt-chrome-muted);
+	--background-modifier-border: var(--nt-border);
+	--background-modifier-border-hover: var(--nt-input);
+	--background-modifier-border-focus: var(--nt-ring);
+	--background-modifier-hover: color-mix(in srgb, var(--nt-foreground) 7%, transparent);
+	--background-modifier-active-hover: color-mix(in srgb, var(--nt-primary) 16%, transparent);
+	--background-modifier-form-field: var(--nt-card);
+	--background-modifier-error: var(--nt-destructive);
+	--background-modifier-error-hover: color-mix(in srgb, var(--nt-destructive) 88%, var(--nt-foreground));
+	--text-normal: var(--nt-foreground);
+	--text-muted: var(--nt-muted-foreground);
+	--text-faint: var(--nt-faint);
+	--text-accent: var(--nt-link);
+	--text-accent-hover: color-mix(in srgb, var(--nt-link) 82%, var(--nt-foreground));
+	--text-on-accent: var(--nt-primary-foreground);
+	--text-error: var(--nt-destructive);
+	--text-selection: color-mix(in srgb, var(--nt-primary) 26%, transparent);
+	--interactive-normal: var(--nt-secondary);
+	--interactive-hover: var(--nt-accent);
+	--interactive-accent: var(--nt-primary);
+	--interactive-accent-hover: color-mix(in srgb, var(--nt-primary) 88%, var(--nt-foreground));
+	--color-accent: var(--nt-primary);
+	--color-accent-1: var(--nt-primary);
+	--color-accent-2: color-mix(in srgb, var(--nt-primary) 88%, var(--nt-foreground));
+	--divider-color: var(--nt-border);
+	--titlebar-background: var(--nt-chrome);
+	--titlebar-background-focused: var(--nt-chrome-muted);
+}
+
+/* ----- Editor colours that follow the interface theme (no editor scheme chosen) ----- */
+/* .huhu-ne-follow lets the settings preview show these colours while a scheme is active. */
+body.huhu-themed:not(.huhu-editor-themed).theme-light,
+body.huhu-themed:not(.huhu-editor-themed).theme-dark,
+.huhu-ne-follow {
+	--ne-h1: var(--nt-link);
+	--ne-h2: color-mix(in srgb, var(--nt-link) 68%, var(--nt-foreground));
+	--ne-h3: var(--nt-foreground);
+	--ne-h4: var(--nt-foreground);
+	--ne-h5: var(--nt-muted-foreground);
+	--ne-h6: var(--nt-muted-foreground);
+	--ne-bold: var(--nt-foreground);
+	--ne-italic: var(--nt-foreground);
+	--ne-highlight: color-mix(in srgb, var(--nt-highlight) 30%, transparent);
+	--ne-code: color-mix(in srgb, var(--nt-link) 70%, var(--nt-foreground));
+	--ne-code-bg: color-mix(in srgb, var(--nt-foreground) 8%, transparent);
+	--ne-link: var(--nt-link);
+	--ne-quote: var(--nt-primary);
+	--ne-quote-text: var(--nt-muted-foreground);
+	--ne-marker: var(--nt-primary);
+	--ne-tag: var(--nt-link);
+	--ne-hr: var(--nt-border);
+	--ne-check: var(--nt-primary);
+	--ne-c-comment: var(--nt-muted-foreground);
+	--ne-c-function: color-mix(in srgb, var(--nt-link) 70%, var(--nt-foreground));
+	--ne-c-keyword: var(--nt-link);
+	--ne-c-string: color-mix(in srgb, var(--nt-chart-2) 60%, var(--nt-foreground));
+	--ne-c-property: var(--nt-foreground);
+	--ne-c-value: color-mix(in srgb, var(--nt-chart-3) 60%, var(--nt-foreground));
+	--ne-c-tag: var(--nt-link);
+	--ne-c-punct: var(--nt-muted-foreground);
+	--ne-c-important: var(--nt-destructive);
+}

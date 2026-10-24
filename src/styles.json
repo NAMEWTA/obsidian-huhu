@@ -1,0 +1,27 @@
+{
+	"sources": [
+		"src/ui/styles/fonts.generated.css",
+		"src/ui/styles/tokens.css",
+		"src/ui/styles/base.css",
+		"src/ui/styles/neutralize.css",
+		"build/tailwind.scoped.css",
+		"src/theme/styles/presets.css",
+		"src/theme/styles/editor-schemes.css",
+		"src/theme/styles/markdown.css",
+		"src/theme/styles/suliworld-ui.css",
+		"src/theme/styles/suliworld-editor.css",
+		"src/theme/styles/github-editor.css",
+		"src/theme/styles/preview.css",
+		"src/theme/styles/fonts.css",
+		"src/modules/home/ui/theme/tokens.css",
+		"src/modules/home/ui/theme/dashboard.css",
+		"src/modules/home/ui/theme/grid.css",
+		"src/modules/comments/styles/comments.css",
+		"node_modules/@xterm/xterm/css/xterm.css",
+		"src/modules/agent/styles/agent.css",
+		"src/modules/icons/styles/host-icons.css",
+		"src/modules/sync/styles/host-conflicts.css",
+		"src/modules/browser/styles/browser.css",
+		"src/shell/styles/host.css"
+	]
+}

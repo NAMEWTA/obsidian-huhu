@@ -1,0 +1,158 @@
+import { contentFiles, type ContentFile, isManagedFile } from '../../../../host/obsidian/storage/content-files';
+import { App, Platform } from 'obsidian';
+import { resolveCoverAsObjectUrl } from '../../platform/reading/book-service';
+import { getRenderContext } from '../renderer/render-context';
+import { str } from '../../services/library-query';
+import { contentLinkDestinations } from '../../../../host/obsidian/storage/content-link-text';
+
+export function openFile(app: App, file: ContentFile, owner: HTMLElement): void {
+	if (isManagedFile(file)) { void contentFiles(app).open(file.path, owner.win); return; }
+	const opener = getRenderContext(owner).noteOpener;
+	if (!Platform.isMobile && opener) {
+		opener(file);
+	} else {
+		void app.workspace.getLeaf(false).openFile(file);
+	}
+}
+
+export interface CoverCandidate {
+	/** The frontmatter key the reference came from (to drop it from badges). */
+	key: string;
+	/** Normalized reference string ready for {@link resolveLibraryCover}. */
+	value: string;
+}
+
+export const IMAGE_REF_RE = /\.(png|jpe?g|webp|gif|avif|bmp|svg)(?:[?#]|$)/i;
+
+export function isImageRef(value: string): boolean {
+	return value.startsWith('data:image/') || IMAGE_REF_RE.test(value);
+}
+
+export function normalizeCoverValue(value: unknown): string | null {
+	if (value == null || value instanceof Date) return null;
+	if (Array.isArray(value)) {
+		for (const item of value) {
+			const normalized = normalizeCoverValue(item);
+			if (normalized && isImageRef(normalized)) return normalized;
+		}
+		return null;
+	}
+	if (typeof value === 'object') return null;
+	let s = str(value).trim();
+	if (!s) return null;
+	s = s.replace(/^["']+|["']+$/g, '').trim();
+	const wikilink = /^!?\[\[([^[\]]+)\]\]$/.exec(s);
+	if (wikilink) {
+		s = wikilink[1]!.split('|')[0]!.trim();
+	} else {
+		if (s.startsWith('![') || /^<img\b/i.test(s)) {
+			const destination = contentLinkDestinations(s)[0];
+			if (destination) {
+				s = destination.link;
+				if (!/^[a-z][a-z\d+.-]*:/i.test(s)) try { s = decodeURIComponent(s); } catch { /* Literal percent names remain valid. */ }
+			}
+		}
+	}
+	return s.length > 0 ? s : null;
+}
+
+export function extractCoverValue(frontmatter: Record<string, unknown>): CoverCandidate | null {
+	for (const [key, value] of Object.entries(frontmatter)) {
+		if (key !== '封面' && key.toLowerCase() !== 'cover') continue;
+		const normalized = normalizeCoverValue(value);
+		if (normalized) return { key, value: normalized };
+	}
+	for (const [key, value] of Object.entries(frontmatter)) {
+		if (key === 'tags' || key === 'position') continue;
+		const normalized = normalizeCoverValue(value);
+		if (normalized && isImageRef(normalized)) return { key, value: normalized };
+	}
+	return null;
+}
+
+export async function resolveLibraryCover(raw: string, file: ContentFile, app: App): Promise<string> {
+	if (/^(https?:|data:|file:)/i.test(raw) || /^[a-zA-Z]:[\\/]/.test(raw)) {
+		return resolveCoverAsObjectUrl(raw, app);
+	}
+	const dest = contentFiles(app).resolveLink(raw, file.path);
+	if (dest) return resolveCoverAsObjectUrl(dest.path, app);
+	return resolveCoverAsObjectUrl(raw, app);
+}
+
+export function selectBadgeKeys(
+	frontmatter: Record<string, unknown>,
+	visibleProperties: readonly string[] | undefined,
+	autoLimit: number,
+): string[] {
+	const showable = (key: string, value: unknown): boolean =>
+		key !== 'tags' && key !== 'position' && formatBadgeValue(value) !== null;
+
+	const picks = visibleProperties ?? [];
+	const hits = picks.filter((key) => key in frontmatter && showable(key, frontmatter[key]));
+	if (hits.length > 0) return hits;
+
+	const auto: string[] = [];
+	for (const [key, value] of Object.entries(frontmatter)) {
+		if (auto.length >= autoLimit) break;
+		if (showable(key, value)) auto.push(key);
+	}
+	return auto;
+}
+
+export function formatBadgeValue(value: unknown): string | null {
+	if (value == null) return null;
+	if (value instanceof Date) {
+		return value.toISOString().slice(0, 10);
+	}
+	if (Array.isArray(value)) {
+		const items = value
+			.map((v) => (v == null ? '' : v instanceof Date ? v.toISOString().slice(0, 10) : String(v)))
+			.filter((v) => v.length > 0);
+		return items.length > 0 ? items.join(', ') : null;
+	}
+	if (typeof value === 'object') {
+		try {
+			const s = JSON.stringify(value).replace(/"/g, '').trim();
+			return s.length > 0 && s.length <= 60 ? s : null;
+		} catch {
+			return null;
+		}
+	}
+	const s = str(value).trim();
+	return s.length > 0 ? s : null;
+}
+
+export function parentOf(filePath: string): string {
+	const normalized = filePath.replace(/\\/g, '/');
+	return normalized.includes('/') ? normalized.slice(0, normalized.lastIndexOf('/')) : '';
+}
+
+export function scanRootMatch(filePath: string, scanFolders: string[]): { root: string; rel: string } | null {
+	const parent = parentOf(filePath);
+	for (const root of scanFolders) {
+		const r = root.trim().replace(/\\/g, '/').replace(/\/+$/, '');
+		if (!r) continue;
+		// Case-insensitive prefix match, same rule the scanner uses.
+		const rel = parent.toLowerCase().startsWith(r.toLowerCase() + '/')
+			? parent.slice(r.length + 1)
+			: parent.toLowerCase() === r.toLowerCase()
+				? ''
+				: null;
+		if (rel !== null) return { root: r, rel };
+	}
+	return null;
+}
+
+export function folderGroupKey(filePath: string, scanFolders: string[]): string | undefined {
+	const m = scanRootMatch(filePath, scanFolders);
+	if (m) {
+		if (m.rel === '') {
+			// Directly inside the scan folder: the folder itself is the group.
+			return m.root.split('/').filter(Boolean).pop() ?? m.root;
+		}
+		return m.rel.split('/')[0] ?? '';
+	}
+	const parent = parentOf(filePath);
+	if (parent === '') return undefined;
+	return parent.split('/')[0] ?? undefined;
+}

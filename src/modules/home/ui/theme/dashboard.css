@@ -1,0 +1,15 @@
+/* Adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: styles.css (layout effects). */
+.huhu-dashboard-root {
+	font-family: var(--db-font);
+	position: relative;
+	isolation: isolate;
+	contain: paint;
+}
+.huhu-dashboard-root .huhu-widget-card {
+	backdrop-filter: var(--db-backdrop-blur);
+}
+.huhu-dashboard-root[data-dashboard-layout='mobile'],
+.huhu-dashboard-root[data-dashboard-layout='mobile'] * {
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+}

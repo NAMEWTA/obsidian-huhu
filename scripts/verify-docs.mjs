@@ -1,0 +1,268 @@
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { documentationKind as classify, referenceLinkBody } from './documentation-policy.mjs';
+
+const root = process.cwd();
+const failures = [];
+const files = [];
+
+// Inventory keys stay forward-slash even when Windows reports backslash paths.
+function posix(rel) {
+	return rel.split(path.sep).join('/');
+}
+
+function walk(directory) {
+	for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+		if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist' || entry.name === 'target') continue;
+		const file = path.join(directory, entry.name);
+		const rel = posix(path.relative(root, file));
+		if (rel === 'scripts/tmp' || rel.startsWith('scripts/tmp/')) continue;
+		if (entry.isDirectory()) {
+			// Ownership and document contracts determine validity; a directory name
+			// alone cannot distinguish obsolete guides from fixtures or history.
+			walk(file);
+		} else if (entry.name.endsWith('.md')) files.push(rel);
+	}
+}
+walk(root);
+
+// Local scratch files (for example `temp/`) are git-ignored and never part of the documentation inventory.
+// Keep stdin asynchronous: Node 24's synchronous child-process pipe can wait
+// indefinitely for git to observe EOF on this null-delimited inventory.
+const ignored = await new Promise((resolve, reject) => {
+	const child = spawn('git', ['check-ignore', '-z', '--stdin'], { cwd: root });
+	let stdout = '';
+	let stderr = '';
+	child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
+	child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
+	child.on('error', reject);
+	child.on('close', (status) => {
+		if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
+		else resolve({ status, stdout });
+	});
+	child.stdin.on('error', reject);
+	child.stdin.end(files.join('\0') + '\0');
+});
+if (ignored.status === 0) {
+	const skip = new Set(ignored.stdout.split('\0').filter(Boolean).map(posix));
+	files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
+}
+
+const counts = new Map();
+for (const file of files) {
+	const kind = classify(file);
+	if (!kind) failures.push(`unclassified markdown ${file}`);
+	else counts.set(kind, (counts.get(kind) ?? 0) + 1);
+}
+
+for (const required of [
+	'docs/workbench.md',
+	'docs/privacy.md',
+	'SECURITY.md',
+	'LICENSE',
+	'NOTICE',
+	'src/modules/icons/core/res/NOTICE.txt',
+]) {
+	if (!fs.existsSync(path.join(root, required))) failures.push(`missing required documentation asset ${required}`);
+}
+
+// Speculo tooling contains owner-specific Path tags and templates; validate it
+// with the owning package checker, not the project-guide link rules below.
+const strict = new Set(['user-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
+let links = 0;
+let external = 0;
+const headings = new Map();
+const bodies = new Map();
+
+function fenceBody(text) {
+	let fence = '';
+	const kept = [];
+	for (const line of text.split(/\r?\n/)) {
+		const marker = line.match(/^\s*(`{3,}|~{3,})/);
+		if (marker) {
+			if (!fence) fence = marker[1][0];
+			else if (marker[1][0] === fence) fence = '';
+			continue;
+		}
+		if (!fence) kept.push(line);
+	}
+	return { unclosed: Boolean(fence), body: kept.join('\n') };
+}
+
+function githubSlug(text) {
+	const plain = text
+		.replace(/`([^`]*)`/g, '$1')
+		.replace(/!\[[^\]]*\]\([^)\n]*\)/g, '')
+		.replace(/\[([^\]]*)\]\([^)\n]*\)/g, '$1')
+		.replace(/<[^>\n]+>/g, '');
+	return plain
+		.toLowerCase()
+		.replace(/[\u0000-\u001f]/g, '')
+		.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+		.replace(/\s/g, '-');
+}
+
+function rememberHeading(file, slug, seen) {
+	if (!slug) return;
+	const count = seen.get(slug) ?? 0;
+	const actual = count === 0 ? slug : `${slug}-${count}`;
+	seen.set(slug, count + 1);
+	headings.get(file).add(actual);
+}
+
+function labelKey(value) {
+	return value.trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+for (const file of files) {
+	if (!strict.has(classify(file))) continue;
+	const text = fs.readFileSync(path.join(root, file), 'utf8');
+	const { unclosed, body } = fenceBody(text);
+	if (unclosed) failures.push(`${file}: unclosed code fence`);
+	bodies.set(file, body);
+	const slugs = new Set();
+	const seen = new Map();
+	headings.set(file, slugs);
+	for (const line of body.split('\n')) {
+		const heading = line.match(/^#{1,6}\s+(.+?)\s*#*\s*$/);
+		if (heading) rememberHeading(file, githubSlug(heading[1]), seen);
+	}
+	for (const match of body.matchAll(/ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-(?:proj-)?[A-Za-z0-9]{20,}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}/g)) {
+		failures.push(`${file}: secret-like token ${match[0].slice(0, 6)}…`);
+	}
+}
+
+function checkTarget(fromFile, raw) {
+	let target = raw.trim().replace(/^<|>$/g, '');
+	const title = target.match(/\s+(?:"[^"]*"|'[^']*'|\([^)]*\))\s*$/);
+	if (title) target = target.slice(0, title.index).trim();
+	if (!target) return;
+	if (/^[a-z][a-z\d+.-]*:/i.test(target) || target.startsWith('//')) {
+		external += 1;
+		return;
+	}
+	const hash = target.indexOf('#');
+	const destination = hash === -1 ? target : target.slice(0, hash);
+	let fragment = '';
+	if (hash !== -1) {
+		try { fragment = decodeURIComponent(target.slice(hash + 1)); }
+		catch { failures.push(`${fromFile}: bad link fragment ${target}`); return; }
+	}
+	const resolved = destination
+		? path.resolve(root, path.dirname(fromFile), destination)
+		: path.resolve(root, fromFile);
+	const relative = posix(path.relative(root, resolved));
+	if (destination) {
+		links += 1;
+		const missing = relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(resolved);
+		// Format guides show archive-relative examples such as ../李四/基本信息.md.
+		// Those paths exist in a user vault, not in this repository.
+		const vaultExample = fromFile.startsWith('src/modules/archives/core/persist/format-guide');
+		if (missing && !vaultExample) {
+			failures.push(`${fromFile}: missing local link ${target}`);
+			return;
+		}
+		if (missing) return;
+	}
+	if (fragment && !headings.get(relative)?.has(fragment)) failures.push(`${fromFile}: missing heading anchor ${target}`);
+}
+
+for (const [file, body] of bodies) {
+	const definitions = new Map();
+	for (const line of body.split('\n')) {
+		const defined = line.match(/^ {0,3}\[([^\]\n]+)\]:[ \t]+(\S+)(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^)\n]*\)))?\s*$/);
+		if (!defined) continue;
+		definitions.set(labelKey(defined[1]), defined[2].replace(/^<|>$/g, ''));
+	}
+	for (const destination of definitions.values()) checkTarget(file, destination);
+	for (const match of body.matchAll(/!?\[[^\]\n]*\]\(([^)\n]+)\)/g)) checkTarget(file, match[1]);
+	for (const match of referenceLinkBody(file, body).matchAll(/!?\[([^\]\n]*)\]\[([^\]\n]*)\]/g)) {
+		const key = labelKey(match[2] || match[1]);
+		const destination = definitions.get(key);
+		if (!destination) failures.push(`${file}: unresolved reference link [${match[1]}][${match[2]}]`);
+		else checkTarget(file, destination);
+	}
+}
+
+function readSource(directory, into) {
+	for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+		const file = path.join(directory, entry.name);
+		if (entry.isDirectory()) readSource(file, into);
+		else if (/\.(ts|tsx)$/.test(entry.name) && !entry.name.endsWith('.test.ts')) into.push(fs.readFileSync(file, 'utf8'));
+	}
+}
+const sources = [];
+readSource(path.join(root, 'src'), sources);
+const sourceText = sources.join('\n');
+const constructedPaths = new Set();
+for (const match of sourceText.matchAll(/\b(huhuPath|contentPath)\(\s*((?:'[^'\n]*'|"[^"\n]*")(?:\s*,\s*(?:'[^'\n]*'|"[^"\n]*"))*)\s*\)/g)) {
+	const parts = [...match[2].matchAll(/['"]([^'"]*)['"]/g)].map(value => value[1]);
+	constructedPaths.add(['.huhu', ...parts].join('/'));
+}
+// The default board setting is extensionless; ContentFiles resolves its Markdown document.
+for (const match of sourceText.matchAll(/\b(?:dashboardFile:|DEFAULT_DASHBOARD_FILE =)\s*['"]([^'"]+)['"]/g)) constructedPaths.add(match[1].endsWith('.md') ? match[1] : match[1] + '.md');
+
+const viewTypes = new Set();
+for (const match of sourceText.matchAll(/export const [A-Z0-9_]*VIEW_TYPE = '([^']+)'/g)) viewTypes.add(match[1]);
+const workbench = bodies.get('docs/workbench.md') ?? '';
+const documentedViews = new Set([...workbench.matchAll(/`(huhu-[a-z0-9-]+-view|terminal-view)`/g)].map((match) => match[1]));
+for (const viewType of viewTypes) if (!documentedViews.has(viewType)) failures.push(`docs/workbench.md: missing view type ${viewType}`);
+for (const viewType of documentedViews) if (!viewTypes.has(viewType)) failures.push(`docs/workbench.md: unknown view type ${viewType}`);
+
+const features = new Set([...sourceText.matchAll(/feature: '([a-z0-9-]+)'/g)].map((match) => match[1]));
+const documentedFeatures = new Set([...workbench.matchAll(/\| `([a-z0-9-]+)` \|/g)].map((match) => match[1]));
+for (const feature of documentedFeatures) {
+	if (viewTypes.has(feature)) continue;
+	if (!features.has(feature)) failures.push(`docs/workbench.md: unknown feature ${feature}`);
+}
+if (!workbench.includes('open-workbench') || !sourceText.includes("id: 'open-workbench'")) failures.push('open-workbench command is not documented against source');
+if (workbench.includes('`records`')) failures.push('docs/workbench.md: removed records feature must not be listed');
+const minAppVersion = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8')).minAppVersion;
+for (const file of ['docs/settings.md'])
+	if (!fs.readFileSync(path.join(root, file), 'utf8').includes(`Obsidian ${minAppVersion}`)) failures.push(`${file}: minimum Obsidian version must match manifest.json (${minAppVersion})`);
+
+for (const file of ['docs/data.md', 'docs/privacy.md', 'docs/dashboard.md', 'docs/agent-workbench.md']) {
+	const body = bodies.get(file) ?? '';
+	for (const match of body.matchAll(/\.huhu\/[A-Za-z0-9_./<>\-]+/g)) {
+		const prefix = match[0].split('<')[0].replace(/\/+$/g, '');
+		if (prefix === '.huhu' || sourceText.includes(prefix) || constructedPaths.has(prefix)) continue;
+		failures.push(`${file}: data path ${match[0]} is not in source`);
+	}
+}
+// Project guides have one Chinese source. A owns permanent knowledge; captured/archived artifacts stay immutable.
+const bilingual = new Set(['README.md', 'README.ZH.md']);
+const english = '[English](';
+const chinese = '[简体中文](';
+for (const file of files) {
+	if (!bilingual.has(file)) continue;
+	const zh = file.endsWith('.ZH.md');
+	const partner = zh ? file.replace(/\.ZH\.md$/, '.md') : file.replace(/\.md$/, '.ZH.md');
+	if (!fs.existsSync(path.join(root, partner))) failures.push(`${file}: missing ${zh ? 'English' : 'Chinese'} version ${partner}`);
+	const first = (bodies.get(file) ?? fs.readFileSync(path.join(root, file), 'utf8')).replace(/^---\n[\s\S]*?\n---\n/, '').split('\n').find((line) => line.trim()) ?? '';
+	if (!first.includes(zh ? english : chinese)) failures.push(`${file}: first line must link the ${zh ? 'English' : 'Chinese'} version`);
+}
+
+if ((bodies.get('docs/privacy.md') ?? '').includes('connection.json') && !sourceText.includes('connection.json')) {
+	failures.push('docs/privacy.md: connection.json is not in source');
+}
+
+for (const file of ['README.md', 'README.ZH.md']) {
+	const readme = fs.readFileSync(path.join(root, file), 'utf8');
+	if (!readme.includes('docs/workbench.md') || !readme.includes('docs/privacy.md')) failures.push(`${file}: missing workbench or privacy link`);
+}
+const guideIndex = fs.readFileSync(path.join(root, 'docs/README.md'), 'utf8');
+if (!guideIndex.includes('workbench.md') || !guideIndex.includes('privacy.md')) failures.push('docs/README.md: missing workbench or privacy link');
+for (const file of files) {
+	if (!['user-doc', 'root-entry'].includes(classify(file)) || bilingual.has(file)) continue;
+	if (file.endsWith('.ZH.md') && !fs.lstatSync(path.join(root, file)).isSymbolicLink()) failures.push(`${file}: duplicate maintained guide; use one Chinese source`);
+	const body = bodies.get(file) ?? fs.readFileSync(path.join(root, file), 'utf8');
+	if (!/[\u3400-\u9fff]/.test(body)) failures.push(`${file}: current guide must contain its Chinese content`);
+}
+// SpecDev owns lifecycle/schema validation. Its optional knowledge stores and
+// current changes/archive layout do not require the retired global status index.
+// Existing workflow documents still receive the link checks above.
+assert.deepEqual(failures, [], 'Documentation links, anchors, contracts, and inventory');
+const summary = [...counts.entries()].map(([kind, count]) => `${kind}=${count}`).join(', ');
+console.log(`Documentation: ${files.length} Markdown files (${summary}), ${links} local links, ${external} external links (fetch not requested).`);

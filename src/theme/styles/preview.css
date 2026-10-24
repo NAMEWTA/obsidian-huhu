@@ -1,0 +1,86 @@
+/* Layout of the scriptless Appearance preview only. Theme/Markdown styling is the real CSS. */
+body.huhu-appearance-preview {
+	margin: 0;
+	padding: 0;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-family: var(--font-interface);
+}
+.huhu-appearance-preview :is(.app-container, .workspace) {
+	display: flex;
+	width: 100%;
+	height: 100dvh;
+	min-height: 0;
+}
+.huhu-appearance-preview .workspace-split.mod-sidedock {
+	flex: 0 0 138px;
+	flex-direction: column;
+	gap: 6px;
+	padding: 16px 8px;
+}
+.huhu-appearance-preview .workspace-split.mod-root {
+	flex: 1;
+	min-width: 0;
+}
+.huhu-appearance-preview .workspace-tabs {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+}
+.huhu-appearance-preview .workspace-tab-header-container {
+	flex-shrink: 0;
+}
+.huhu-appearance-preview .workspace-tab-header {
+	display: flex;
+	align-items: center;
+	padding-inline: 12px;
+}
+.huhu-appearance-preview .workspace-tab-container {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+}
+.huhu-appearance-preview :is(.workspace-leaf, .workspace-leaf-content, .view-content, .markdown-reading-view) {
+	position: relative;
+	width: 100%;
+	height: auto;
+	min-height: 100%;
+}
+.huhu-appearance-preview .markdown-preview-view {
+	height: auto;
+	padding: 22px;
+}
+.huhu-appearance-preview .markdown-preview-sizer {
+	width: 100%;
+	min-height: 0;
+	margin: 0 auto;
+	padding: 0;
+}
+.huhu-appearance-preview .metadata-container {
+	margin-bottom: 20px;
+}
+.huhu-appearance-preview .multi-select-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+}
+.huhu-appearance-preview .multi-select-pill {
+	padding: 2px 8px;
+	font-size: 0.8em;
+}
+.huhu-appearance-preview-status {
+	color: var(--text-muted);
+}
+.huhu-appearance-preview .huhu-appearance-preview-sample {
+	font-family: var(--font-text);
+}
+@media (max-width: 450px) {
+	.huhu-appearance-preview .workspace-split.mod-sidedock {
+		display: none;
+	}
+	.huhu-appearance-preview .markdown-preview-view {
+		padding: 16px;
+	}
+}

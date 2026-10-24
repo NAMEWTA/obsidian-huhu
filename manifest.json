@@ -1,0 +1,9 @@
+{
+	"id": "huhu",
+	"name": "HUHU",
+	"minAppVersion": "1.13.0",
+	"version": "0.0.1",
+	"description": "HUHU — dashboards, comments, coding agents, icons, contacts, automations and notifications.",
+	"author": "NAMEWTA",
+	"isDesktopOnly": false
+}

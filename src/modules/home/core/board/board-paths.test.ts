@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { describe, test } from 'vitest';
+import { anniversaryDateThisYear } from '../anniversaries/calendar';
+
+describe('board actions use the shipped experience', () => {
+	test('a lunar anniversary uses the injected calendar', () => {
+		const mapped = anniversaryDateThisYear(new Date(2024, 2, 1), new Date(2026, 9, 9), 'lunar', {
+			toLunar: () => ({ year: 2024, month: 2, leap: false, day: 1 }),
+			monthDays: () => 30,
+			toSolar: () => '2026-03-19',
+		});
+		assert.equal(mapped.getFullYear(), 2026);
+		assert.equal(mapped.getMonth(), 2);
+		assert.equal(mapped.getDate(), 19);
+	});
+});

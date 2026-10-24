@@ -1,0 +1,88 @@
+name: 交互与性能优化
+description: 改进已有功能的布局、操作效率、可访问性或性能。
+title: "[优化] "
+labels:
+  - improvement
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈 HUHU。请先搜索已有 Issue；允许使用中文或英文。不要上传真实库、令牌、Cookie、密码或未脱敏的终端记录。安全问题请参阅
+        [安全策略](https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md)。
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      options:
+        - 看板 / 日历 / 待办
+        - 时钟天气 / 记录统计
+        - 智能体 / 终端 / 用量
+        - 内置浏览器
+        - 笔记导航器
+        - 批注
+        - 档案
+        - 自动化 / 通知
+        - Git 同步
+        - 保险箱
+        - 图标 / 外观
+        - 设置 / 工作台
+        - 其他 / 尚不确定
+      multiple: false
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 优化方向
+      options:
+        - 布局与视觉一致性
+        - 操作流程与易用性
+        - 键盘与可访问性
+        - 性能 / 内存 / 启动
+        - 数据组织与结果展示
+        - 其他
+      multiple: false
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: 当前行为及问题
+      description: 说明当前操作、具体不便或性能表现。
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: 建议变化
+      description: 描述优化后的行为及与现状的区别。
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: 预期收益与验收标准
+      description: 例如减少操作步骤、避免溢出，或提供数据规模与测量目标。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 相关版本、环境与数据规模
+      description: 性能问题请说明 HUHU/Obsidian 版本、系统及可复现的数据规模。
+    validations:
+      required: false
+  - type: textarea
+    id: comparison
+    attributes:
+      label: 对比示例
+      description: 可添加现状截图、建议草图或脱敏测量结果。
+    validations:
+      required: false
+  - type: checkboxes
+    id: before-submit
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索已有 Issue，并确认本次内容不含凭据或其他敏感资料。
+          required: true

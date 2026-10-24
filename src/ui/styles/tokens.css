@@ -1,0 +1,49 @@
+/* Tokens derive from Obsidian's variables. A themed body (theme/styles/presets.css) sets both those and the
+ * --nt-* tokens used where dbx-style palettes carry a distinct surface (card, popover, accent, charts). */
+.huhu-ui {
+	--background: var(--background-primary);
+	--foreground: var(--text-normal);
+	--card: var(--nt-card, var(--background-primary-alt));
+	--popover: var(--nt-popover, var(--background-secondary));
+	--primary: var(--interactive-accent);
+	--primary-foreground: var(--text-on-accent);
+	--secondary: var(--nt-secondary, var(--interactive-normal));
+	--muted: var(--nt-surface-muted, var(--background-secondary));
+	--muted-foreground: var(--text-muted);
+	--accent: var(--nt-accent, var(--background-modifier-hover));
+	--destructive: var(--text-error);
+	--destructive-foreground: var(--nt-destructive-foreground, var(--text-on-accent));
+	--border: var(--background-modifier-border);
+	--input: var(--nt-input, var(--background-modifier-border));
+	--ring: var(--nt-ring, var(--interactive-accent));
+	--sidebar: var(--nt-sidebar, var(--background-secondary));
+	--sidebar-accent: var(--nt-sidebar-accent, var(--background-modifier-hover));
+	--sidebar-border: var(--nt-sidebar-border, var(--background-modifier-border));
+	--status-success: var(--color-green);
+	--status-warning: var(--color-orange);
+	--status-error: var(--color-red);
+	--status-info: var(--color-blue);
+	--status-working: var(--color-yellow);
+	--agent-question: var(--color-orange);
+	--card-foreground: var(--text-normal);
+	--popover-foreground: var(--text-normal);
+	--secondary-foreground: var(--text-normal);
+	--accent-foreground: var(--nt-accent-foreground, var(--text-normal));
+	--sidebar-foreground: var(--nt-sidebar-foreground, var(--text-normal));
+	--sidebar-muted-foreground: var(--nt-sidebar-muted-foreground, var(--text-muted));
+	--sidebar-accent-foreground: var(--nt-sidebar-accent-foreground, var(--nt-accent-foreground, var(--text-normal)));
+	--chart-1: var(--nt-chart-1, var(--color-blue));
+	--chart-2: var(--nt-chart-2, var(--color-cyan));
+	--chart-3: var(--nt-chart-3, var(--color-green));
+	--chart-4: var(--nt-chart-4, var(--color-yellow));
+	--chart-5: var(--nt-chart-5, var(--color-purple));
+	/* Text and scrims that sit on user photos stay light/dark in every theme. */
+	--on-image: oklch(1 0 0);
+	--scrim: oklch(0 0 0);
+	--radius: var(--nt-radius, 0.625rem);
+	/* Keep the host override as the first font in a complete list. Obsidian's
+	 * default override is an unavailable family, so treating it as the whole
+	 * value would discard HUHU's chosen font and every CJK/system fallback. */
+	--nd-font-sans: var(--font-interface-override, var(--huhu-font-sans-user, "Geist")), var(--huhu-font-sans-user, "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", sans-serif), var(--font-interface, sans-serif);
+	--nd-font-mono: var(--font-monospace-override, var(--huhu-font-mono-user, "Geist Mono")), var(--huhu-font-mono-user, "Geist Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Cascadia Code", "Noto Sans Mono CJK SC", monospace), var(--font-monospace, monospace);
+}

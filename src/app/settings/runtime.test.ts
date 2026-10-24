@@ -1,0 +1,87 @@
+import type { App } from 'obsidian';
+import { afterEach, expect, test, vi } from 'vitest';
+import { loadSettingsRuntime } from './runtime';
+import { defineSettings, f as field } from '../../shared/settings/schema';
+import type { SettingsFile } from '../../shared/settings/store';
+import { initializeDevice } from '../../host/obsidian/storage/device-id';
+
+const vaultFile = '.huhu/config/settings.json';
+const deviceFile = '.huhu/config/devices/00000000-0000-0000-0000-000000000000.json';
+const schema = defineSettings({ a: field.number({ default: 1 }), b: field.number({ default: 1 }), device: field.number({ default: 1, scope: 'device' }) });
+afterEach(() => vi.unstubAllGlobals());
+
+async function fixture() {
+	vi.stubGlobal('window', { setTimeout, clearTimeout });
+	const files = new Map<string, string>([[vaultFile, JSON.stringify({ version: 1, namespaces: { sample: { a: 1, b: 1 }, future: { obsolete: true, kept: 1 } } })]]);
+	const adapter = {
+		exists: async (path: string) => files.has(path),
+		read: async (path: string) => { const value = files.get(path); if (value === undefined) throw new Error('missing'); return value; },
+		write: async (path: string, text: string) => { files.set(path, text); },
+		mkdir: async () => {},
+	};
+	const app = { vault: { adapter }, loadLocalStorage: (key: string) => key === 'huhu.device-id' ? '00000000-0000-0000-0000-000000000000' : null, saveLocalStorage: () => {} } as unknown as App;
+	await initializeDevice(app, { machineIdentity: async () => 'test-machine', label: 'Test', chooseDevice: async () => ({ label: 'Manual' }) });
+	const runtime = await loadSettingsRuntime(app);
+	return { files, adapter, runtime, handle: runtime.store.bind('sample', schema), disk: () => JSON.parse(files.get(vaultFile)!) as SettingsFile };
+}
+
+test('real settings runtime adopts external updates and deletions across successive saves', async () => {
+	const f = await fixture();
+	const external = f.disk(); external.namespaces.sample!.b = 2;
+	external.namespaces.future = { kept: 2, added: true };
+	f.files.set(vaultFile, JSON.stringify(external));
+	for (const a of [2, 3, 4]) await f.handle.update(value => { value.a = a; }, { persist: 'immediate' });
+	expect(f.handle.get().b).toBe(2);
+	expect(f.disk().namespaces.sample).toEqual({ a: 4, b: 2 });
+	expect(f.disk().namespaces.future).toEqual({ kept: 2, added: true });
+	await f.runtime.store.dispose();
+});
+
+test('edits queued during a save survive its callback and retain merged external fields', async () => {
+	const f = await fixture();
+	const external = f.disk(); external.namespaces.sample!.b = 2; f.files.set(vaultFile, JSON.stringify(external));
+	let release!: () => void, entered!: () => void;
+	const blocked = new Promise<void>(resolve => { entered = resolve; }), gate = new Promise<void>(resolve => { release = resolve; });
+	const write = f.adapter.write;
+	let block = true;
+	f.adapter.write = async (path, text) => { if (path === vaultFile && block) { block = false; entered(); await gate; } await write(path, text); };
+	const first = f.handle.update(value => { value.a = 2; }, { persist: 'immediate' });
+	await blocked;
+	const second = f.handle.update(value => { value.a = 3; value.device = 5; }, { persist: 'immediate' });
+	release(); await Promise.all([first, second]);
+	expect(f.handle.get()).toEqual({ a: 3, b: 2, device: 5 });
+	expect(f.disk().namespaces.sample).toEqual({ a: 3, b: 2 });
+	expect(JSON.parse(f.files.get(deviceFile)!).namespaces.sample).toEqual({ device: 5 });
+	await f.runtime.store.dispose();
+});
+
+test('a device write failure retains edits and does not undo a successful vault merge on retry', async () => {
+	const f = await fixture();
+	const external = f.disk(); external.namespaces.sample!.b = 2; f.files.set(vaultFile, JSON.stringify(external));
+	const write = f.adapter.write;
+	let fail = true;
+	f.adapter.write = async (path, text) => { if (path === deviceFile && fail) { fail = false; throw new Error('disk full'); } await write(path, text); };
+	await expect(f.handle.update(value => { value.a = 2; value.device = 4; }, { persist: 'immediate' })).rejects.toThrow('disk full');
+	expect(f.handle.get()).toEqual({ a: 2, b: 2, device: 4 });
+	await f.runtime.store.flush();
+	expect(f.disk().namespaces.sample).toEqual({ a: 2, b: 2 });
+	expect(JSON.parse(f.files.get(deviceFile)!).namespaces.sample).toEqual({ device: 4 });
+	await f.runtime.store.dispose();
+});
+
+test('a merged namespace notification cannot overwrite another namespace edited by its subscriber', async () => {
+	const secondSchema = defineSettings({ c: field.number({ default: 1 }) });
+	const f = await fixture();
+	const second = f.runtime.store.bind('second', secondSchema);
+	const external = f.disk(); external.namespaces.sample!.b = 2; f.files.set(vaultFile, JSON.stringify(external));
+	let queued: Promise<void> | undefined;
+	const off = f.handle.subscribe(() => {
+		if (f.handle.get().b === 2 && !queued) queued = second.update(value => { value.c = 5; }, { persist: 'immediate' });
+	});
+	await f.handle.update(value => { value.a = 2; }, { persist: 'immediate' });
+	await queued;
+	expect(second.get().c).toBe(5);
+	expect(f.disk().namespaces.second).toEqual({ c: 5 });
+	off(); await f.runtime.store.dispose();
+});
+

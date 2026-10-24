@@ -1,0 +1,7 @@
+{
+	"src/modules/icons/styles/host-icons.css": [
+		"declaration-no-important",
+		"function-disallowed-list",
+		"selector-pseudo-class-disallowed-list"
+	]
+}

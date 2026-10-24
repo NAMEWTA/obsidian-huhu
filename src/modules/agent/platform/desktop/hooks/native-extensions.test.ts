@@ -1,0 +1,97 @@
+import { test } from 'vitest';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { PI_EXTENSION, OPENCODE_EXTENSION } from './native-extensions';
+
+async function spool(run: (directory: string) => Promise<void>) {
+	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hooks-test-'));
+	const saved = {
+		dir: process.env.HUHU_HOOK_DIR,
+		token: process.env.HUHU_HOOK_TOKEN,
+		owner: process.env.HUHU_NATIVE_OWNER,
+		account: process.env.HUHU_ACCOUNT_ROOT,
+	};
+	process.env.HUHU_HOOK_DIR = directory;
+	process.env.HUHU_ACCOUNT_ROOT = directory;
+	process.env.HUHU_HOOK_TOKEN = 'test';
+	delete process.env.HUHU_NATIVE_OWNER;
+	try {
+		await run(directory);
+	} finally {
+		for (const [key, value] of Object.entries({
+			HUHU_HOOK_DIR: saved.dir,
+			HUHU_HOOK_TOKEN: saved.token,
+			HUHU_NATIVE_OWNER: saved.owner,
+			HUHU_ACCOUNT_ROOT: saved.account,
+		}))
+			if (value === undefined) delete process.env[key];
+			else process.env[key] = value;
+		await fs.rm(directory, { recursive: true, force: true });
+	}
+}
+async function events(directory: string): Promise<string[]> {
+	return Promise.all(
+		(await fs.readdir(directory))
+			.filter((file) => file.endsWith('.json'))
+			.map(async (file) => JSON.parse(await fs.readFile(path.join(directory, file), 'utf8')).event as string),
+	);
+}
+
+test('Pi reports the full answer only at native final settlement, and suppresses repeated settlement', async () =>
+	spool(async (directory) => {
+		const handlers = new Map<string, (event: Record<string, unknown>, ctx: unknown) => void>();
+		const module = await import(`data:text/javascript,${encodeURIComponent(PI_EXTENSION)}#${Date.now()}`);
+		module.default({
+			on: (key: string, fn: (event: Record<string, unknown>, ctx: unknown) => void) => handlers.set(key, fn),
+		});
+		const ctx = {
+			cwd: directory,
+			isIdle: () => true,
+			sessionManager: { getSessionId: () => 'root', getSessionFile: () => 'root.jsonl' },
+		};
+		const answer = '完整原生答案'.repeat(3000);
+		handlers.get('agent_start')!({}, ctx);
+		handlers.get('agent_end')!({ messages: [{ role: 'assistant', content: [{ type: 'thinking', text: 'omit' }, { type: 'text', text: answer }] }] }, ctx);
+		await new Promise((r) => setTimeout(r, 25));
+		assert.equal((await events(directory)).filter((e) => e === 'Stop').length, 0);
+		handlers.get('agent_settled')!({}, ctx);
+		handlers.get('agent_settled')!({}, ctx);
+		assert.equal((await events(directory)).filter((e) => e === 'Stop').length, 1);
+		for (const file of (await fs.readdir(directory)).filter(file => file.endsWith('.json'))) {
+			const event = JSON.parse(await fs.readFile(path.join(directory, file), 'utf8'));
+			if (event.event === 'Stop') assert.equal(event.data.last_assistant_message, answer);
+		}
+		handlers.get('session_shutdown')!({}, ctx);
+	}));
+
+test('OpenCode ignores child idle and recoverable errors but accepts root busy/idle', async () =>
+	spool(async (directory) => {
+		const module = await import(`data:text/javascript,${encodeURIComponent(OPENCODE_EXTENSION)}#${Date.now()}`);
+		const plugin = await module.HuhuStatus({
+			client: {
+				session: {
+					get: async ({ path: { id } }: { path: { id: string } }) => ({
+						data: { directory, parentID: id === 'child' ? 'root' : undefined },
+					}),
+					messages: async () => ({ data: [
+						{ info: { id: 'user', role: 'user' }, parts: [] },
+						{ info: { role: 'assistant', parentID: 'user', time: { completed: 1 } }, parts: [{ type: 'text', text: 'final' }, { type: 'reasoning', text: 'omit' }] },
+					] }),
+				},
+			},
+		});
+		await plugin.event({
+			event: { type: 'session.status', properties: { sessionID: 'root', status: { type: 'busy' } } },
+		});
+		await plugin.event({ event: { type: 'session.error', properties: { sessionID: 'root' } } });
+		await plugin.event({
+			event: { type: 'session.status', properties: { sessionID: 'child', status: { type: 'idle' } } },
+		});
+		assert.deepEqual(await events(directory), ['UserPromptSubmit']);
+		await plugin.event({
+			event: { type: 'session.status', properties: { sessionID: 'root', status: { type: 'idle' } } },
+		});
+		assert.equal((await events(directory)).filter((e) => e === 'Stop').length, 1);
+	}));

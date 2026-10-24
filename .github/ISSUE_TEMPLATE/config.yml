@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使用指南 / Documentation
+    url: https://github.com/NAMEWTA/obsidian-huhu/blob/main/docs/README.md
+    about: 先查看当前功能、安装及数据说明。
+  - name: 安全问题 / Security
+    url: https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md
+    about: 报告安全问题前先阅读资料脱敏与报告要求。

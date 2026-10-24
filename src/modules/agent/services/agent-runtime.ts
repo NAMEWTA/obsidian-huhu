@@ -1,0 +1,563 @@
+import { deviceId as getDeviceId } from '../../../host/obsidian/storage/device-id';
+import { privateVaultStorage } from '../../../host/obsidian/storage/private-storage';
+import { AGENT_CATALOG, getAgent } from '../core/launch/catalog';
+import { launchArgs, needsYoloConfirmation } from '../core/launch/flags';
+import type { AgentId, AgentSettings } from '../core/launch/types';
+import { AutomationHooks, type NativeHookEvent } from '../platform/desktop/hooks/automation-hooks';
+import { accountEnv, restoredAccountReference } from '../platform/desktop/agents/accounts';
+import { resolveCli } from '../platform/desktop/agents/resolver';
+import { runtimeProcess } from '../platform/desktop/agents/runtime-process';
+import { canonicalVaultCwd } from '../platform/desktop/history/canonical-cwd';
+import { checkAccountTranscript } from '../platform/desktop/agents/transcript';
+import { accountArgs } from '../platform/desktop/agents/account-args';
+import { isCwdInsideVault } from '../platform/desktop/history/scope';
+import { AutomationError } from '../../../shared/automation/errors';
+import { validatedExtraArgs } from '../../../shared/automation/extra-args';
+import type {
+	AgentRunHandle,
+	AgentRuntimePort,
+	AgentSessionRef,
+	AutomationAction,
+	AutomationRun,
+} from '../../../shared/automation/types';
+import { JsonStore } from '../../../shared/json-store';
+import { threeWayMerge } from '../../../shared/storage/three-way-merge';
+import { storageWriteQueue, type WriteQueue } from '../../../shared/storage/write-queue';
+import type { App } from 'obsidian';
+import type { NativeHistory } from '../platform/history/service';
+import type { ShellCommand } from '../platform/desktop/pty/shells';
+import type { TerminalSession } from './terminal/session';
+import type { CreateSession } from './terminal/sessions';
+
+/** Shared execution metadata; consumers never construct an AutomationRun. */
+export interface AgentExecution {
+	id: string;
+	title: string;
+	kind: 'automation' | 'prompt';
+	reveal?: boolean;
+	signal?: AbortSignal;
+	resolveContext?: (cwd: string) => Promise<Readonly<Record<string, string>>>;
+	onTerminal?: (terminalId: string) => void;
+	onPrepared?: (identity: { agentId: AgentId; accountIdentity: string }) => void;
+	onState?: (status: 'running' | 'needs-attention', terminalId: string) => void;
+}
+
+/** What the automation runtime needs from the agent module. */
+export interface AutomationRuntimeHost {
+	app: App;
+	/** Plugin folder as given in the manifest (vault-relative or absolute). */
+	pluginDir: string;
+	agentSettings(): AgentSettings;
+	history(): NativeHistory;
+	create(request: CreateSession): Promise<TerminalSession>;
+	remove(id: string): void;
+	open(id: string): Promise<void>;
+	shell(kind: 'bash' | 'powershell'): ShellCommand;
+}
+
+// Orca's native resume capability set, pinned to 27b823f (MIT, Lovecast Inc.).
+export const RESUME_FLAGS: Readonly<Record<AgentId, readonly string[]>> = {
+	'claude-code': ['--resume'],
+	codex: ['resume'],
+	gemini: ['--resume'],
+	opencode: ['--session'],
+	pi: ['--session'],
+	grok: ['--resume'],
+};
+export function automationArgs(
+	agentId: AgentId,
+	prompt: string,
+	base: string[],
+	session?: AgentSessionRef,
+): string[] {
+	const agent = getAgent(agentId);
+	const args = [...base];
+	if (session) {
+		// Pi resumes from its transcript file; every other CLI from the session id.
+		const locator = agentId === 'pi' ? session.transcriptPath : session.sessionId;
+		if (!locator) throw new AutomationError('sessionMissing');
+		args.push(...RESUME_FLAGS[agentId], locator);
+	}
+	if (agent.promptFlag) args.push(agent.promptFlag, prompt);
+	else {
+		if (agent.promptSeparator) args.push('--');
+		args.push(prompt);
+	}
+	return args;
+}
+type AgentAction = Extract<AutomationAction, { kind: 'agent' }>;
+type RunResult = Awaited<AgentRunHandle['completion']>;
+interface LiveSession {
+	execution?: AgentExecution;
+	listeners?: Set<() => void>;
+	terminal?: TerminalSession;
+	action: AgentAction;
+	accountKey: string;
+	busy: boolean;
+	started: boolean;
+	since: number;
+	output: string;
+	session?: AgentSessionRef;
+	finish?: (result: RunResult) => void;
+	hookClose?: () => void;
+}
+function accountIdentity(key: string): string {
+	const value = JSON.parse(key) as Record<string, string>;
+	return JSON.stringify(
+		Object.keys(value)
+			.sort()
+			.map((name) => [name, value[name]]),
+	);
+}
+const vaultPath = (app: App): string => (app.vault.adapter as unknown as { getBasePath(): string }).getBasePath();
+
+export class TerminalAutomationRuntime implements AgentRuntimePort {
+	private readonly reservations = new Set<string>();
+	private disposed = false;
+
+	private live = new Map<string, LiveSession>();
+	private hooks: AutomationHooks;
+	private registry: AgentSessionRef[] = [];
+	private readonly registryQueue: WriteQueue;
+	private readonly registryQueueKey: string;
+	private readonly pendingRegistry = new Map<string, AgentSessionRef>();
+	private store: JsonStore<AgentSessionRef[]>;
+	private loaded: Promise<void>;
+	constructor(private host: AutomationRuntimeHost) {
+		this.hooks = new AutomationHooks(host.app.workspace.containerEl.win, () => ({ vault: vaultPath(host.app), device: getDeviceId(host.app) }), { strict: true });
+		const device = getDeviceId(host.app);
+		const storage = privateVaultStorage(host.app);
+		const path = `.huhu/terminal-agent/${device}/automation-sessions.json`;
+		this.registryQueue = storageWriteQueue(storage);
+		this.registryQueueKey = 'automation-registry:' + path;
+		this.store = new JsonStore(
+			storage,
+			path,
+			(v): v is AgentSessionRef[] =>
+				Array.isArray(v) &&
+				v.every(
+					(item: unknown) =>
+						!!item && typeof item === 'object' && typeof (item as AgentSessionRef).sessionId === 'string',
+				),
+			(base, local, remote) => {
+				const keyed = (rows: AgentSessionRef[]) => Object.fromEntries(rows.map(row => [this.registryKey(row), row]));
+				return Object.values(threeWayMerge(keyed(base), keyed(local), keyed(remote)));
+			},
+		);
+		this.loaded = this.registryQueue.run(this.registryQueueKey, () => this.store.load([]).then((rows) => {
+			this.registry = rows;
+		}));
+	}
+	listAgents() {
+		const settings = this.host.agentSettings();
+		return AGENT_CATALOG.map((a) => ({
+			id: a.id,
+			title: a.title,
+			enabled: settings.agents[a.id]?.enabled ?? false,
+			installed: !!resolveCli(a.detectCommand, settings.agents[a.id]?.cliPath ?? '', ''),
+		}));
+	}
+	async listSessions(cwd: string): Promise<AgentSessionRef[]> {
+		await this.loaded;
+		const canonical = await canonicalVaultCwd(vaultPath(this.host.app), cwd);
+		const history = this.host.history();
+		await history.scan();
+		const result: AgentSessionRef[] = [];
+		for (let offset = 0; ; offset += 100) {
+			const page = await history.query('', offset);
+			result.push(...page.rows.filter((s) => isCwdInsideVault(canonical, s.cwd, runtimeProcess().platform)));
+			if (offset + 100 >= page.total) break;
+		}
+		return result;
+	}
+
+	private receive(slot: LiveSession, event: NativeHookEvent): void {
+		if (this.disposed) return;
+		if (event.at < slot.since || event.data.agent_id || event.data.subagent_id || event.data.parent_session_id)
+			return;
+		if (event.event === 'HookError') {
+			slot.finish?.({ status: 'failed', message: '', errorCode: typeof event.data.huhu_answer_error === 'string' ? event.data.huhu_answer_error : 'hookInputInvalid' });
+			slot.finish = undefined;
+			return;
+		}
+		const id = event.data.session_id ?? event.data.sessionId;
+		if (typeof id === 'string' && id) {
+			slot.session = {
+				agentId: slot.action.agentId,
+				sessionId: id,
+				cwd: slot.action.cwd,
+				title: slot.action.prompt.slice(0, 100),
+				modifiedAtMs: event.at,
+				accountKey: slot.accountKey,
+				transcriptPath: typeof event.data.transcript_path === 'string' ? event.data.transcript_path : undefined,
+			};
+			if (slot.execution?.kind !== 'prompt') {
+				const session = slot.session;
+				this.pendingRegistry.set(this.registryKey(session), session);
+				void this.persistRegistry().catch(console.error);
+			}
+		}
+		if (event.event === 'PermissionRequest' || event.event === 'Notification') {
+			slot.terminal?.setActivity('waiting');
+			if (slot.terminal) slot.execution?.onState?.('needs-attention', slot.terminal.id);
+		}
+		if ((event.event === 'PreToolUse' || event.event === 'BeforeTool') && slot.terminal) {
+			slot.terminal.setActivity('running');
+			slot.execution?.onState?.('running', slot.terminal.id);
+		}
+		if (event.event === 'UserPromptSubmit' || event.event === 'BeforeAgent') {
+			slot.busy = true;
+			slot.terminal?.setActivity('running');
+			slot.started = true;
+			if (slot.terminal) slot.execution?.onState?.('running', slot.terminal.id);
+			for (const listener of slot.listeners ?? []) listener();
+		}
+		if (slot.started && ['Stop', 'AfterAgent', 'StopFailure', 'StopCancelled', 'Interrupt'].includes(event.event)) {
+			slot.busy = false;
+			slot.terminal?.setActivity('idle');
+			slot.started = false;
+			const message =
+				typeof event.data.last_assistant_message === 'string'
+					? event.data.last_assistant_message
+					: '';
+			const answerError = typeof event.data.huhu_answer_error === 'string' && event.data.huhu_answer_error
+				? event.data.huhu_answer_error
+				: slot.execution?.kind === 'prompt' && ['Stop', 'AfterAgent'].includes(event.event) && !message.trim() ? 'nativeAnswerMissing' : undefined;
+			slot.finish?.({
+				status:
+					event.event === 'StopFailure' || answerError
+						? 'failed'
+						: event.event === 'StopCancelled' || event.event === 'Interrupt'
+							? 'cancelled'
+							: 'succeeded',
+				message,
+				errorCode: answerError,
+				output: slot.output,
+				session: slot.session,
+			});
+			slot.finish = undefined;
+		}
+	}
+	private async sessionUsage(session: AgentSessionRef) {
+		const abort = new AbortController();
+		const timeout = this.host.app.workspace.containerEl.win.setTimeout(() => abort.abort(), 10_000);
+		try {
+			const history = this.host.history();
+			await history.scan(abort.signal);
+			for (let offset = 0; ; offset += 100) {
+				const page = await history.query('', offset, abort.signal);
+				const row = page.rows.find(
+					(s) =>
+						s.agentId === session.agentId &&
+						s.sessionId === session.sessionId &&
+						s.accountKey === session.accountKey,
+				);
+				if (row) return row.usage;
+				if (offset + 100 >= page.total) return undefined;
+			}
+		} finally {
+			this.host.app.workspace.containerEl.win.clearTimeout(timeout);
+		}
+	}
+	async start(action: AgentAction, run: AutomationRun, previous?: AutomationRun): Promise<AgentRunHandle> {
+		return this.execute(action, { id: run.id, title: run.title, kind: 'automation', reveal: run.trigger === 'manual' }, previous?.terminalId);
+	}
+	async execute(action: AgentAction, execution: AgentExecution, previousTerminal?: string): Promise<AgentRunHandle> {
+		await this.loaded;
+		execution.signal?.throwIfAborted();
+		const id = action.agentId as AgentId;
+		const settings = this.host.agentSettings();
+		const entry = settings.agents[id];
+		if (!entry?.enabled || !AGENT_CATALOG.some((agent) => agent.id === id))
+			throw new AutomationError('agentDisabled');
+		const agent = getAgent(id);
+		const command = resolveCli(agent.detectCommand, entry.cliPath, '');
+		if (!command) throw new AutomationError('cliMissing');
+		try {
+			action = { ...action, cwd: await canonicalVaultCwd(vaultPath(this.host.app), action.cwd) };
+		} catch {
+			throw new AutomationError('cwdInvalid');
+		}
+		if (needsYoloConfirmation(settings, id))
+			throw new AutomationError('permissionRequired');
+		if (
+			action.sessionMode === 'specific' &&
+			(!action.session ||
+				action.session.agentId !== id ||
+				action.session.cwd !== action.cwd ||
+				!action.session.sessionId)
+		)
+			throw new AutomationError('sessionMissing');
+		let sessionEnv: Record<string, string> | undefined;
+		if (action.sessionMode === 'specific' && action.session?.accountKey) {
+			try {
+				sessionEnv = JSON.parse(action.session.accountKey) as Record<string, string>;
+			} catch {
+				throw new AutomationError('sessionMissing');
+			}
+			if (
+				!sessionEnv ||
+				typeof sessionEnv !== 'object' ||
+				Array.isArray(sessionEnv) ||
+				Object.values(sessionEnv).some((value) => typeof value !== 'string')
+			)
+				throw new AutomationError('sessionMissing');
+		}
+		const restored = sessionEnv ? await restoredAccountReference(agent, sessionEnv, vaultPath(this.host.app), getDeviceId(this.host.app), action.session?.transcriptPath) : undefined;
+		const env = restored?.env ?? await accountEnv(agent, entry.accountId, vaultPath(this.host.app), getDeviceId(this.host.app));
+		const accountKey = JSON.stringify(env);
+		if (action.sessionMode === 'specific') {
+			await checkAccountTranscript(vaultPath(this.host.app), env, restored?.transcriptPath ?? action.session?.transcriptPath);
+			if (action.session && restored) action = { ...action, session: { ...action.session, accountKey, transcriptPath: restored.transcriptPath } };
+		}
+		if (execution.onPrepared) {
+			const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(accountIdentity(accountKey)));
+			execution.onPrepared({ agentId: id, accountIdentity: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') });
+		}
+		if (action.sessionMode === 'specific') {
+			const sessions = await this.listSessions(action.cwd);
+			if (
+				!sessions.some(
+					(session) =>
+						session.agentId === id &&
+						session.sessionId === action.session?.sessionId &&
+						accountIdentity(session.accountKey) === accountIdentity(accountKey) &&
+						session.cwd === action.cwd,
+				)
+			)
+				throw new AutomationError('sessionMissing');
+		}
+		if (
+			action.sessionMode === 'specific' &&
+			[...this.live.values()].some(
+				(v) =>
+					v.busy &&
+					(v.session || v.action.session)?.sessionId === action.session?.sessionId &&
+					v.action.agentId === id &&
+					accountIdentity(v.accountKey) === accountIdentity(accountKey),
+			)
+		)
+			throw new AutomationError('busy');
+		const reservation =
+			action.sessionMode === 'specific'
+				? JSON.stringify([id, accountIdentity(accountKey), action.session!.sessionId])
+				: null;
+		if (this.disposed) throw new AutomationError('busy');
+		if (reservation && this.reservations.has(reservation)) throw new AutomationError('busy');
+		if (reservation) this.reservations.add(reservation);
+		try {
+			const prior =
+				action.sessionMode === 'reuse' && previousTerminal ? this.live.get(previousTerminal) : undefined;
+			const reuse =
+				prior &&
+				!prior.busy &&
+				prior.terminal?.running &&
+				prior.action.agentId === id &&
+				prior.action.cwd === action.cwd &&
+				prior.accountKey === accountKey
+					? prior
+					: undefined;
+			if (execution.kind === 'prompt' && previousTerminal && !reuse) throw new AutomationError('sessionMissing');
+			const slot: LiveSession = reuse ?? {
+				action,
+				accountKey,
+				busy: true,
+				started: false,
+				since: Date.now(),
+				output: '',
+			};
+			slot.action = action;
+			slot.execution = execution;
+			slot.busy = true;
+			slot.started = false;
+			slot.since = Date.now();
+			slot.output = '';
+			const completion = new Promise<RunResult>((resolve) => {
+				slot.finish = resolve;
+			});
+			const priorSession = action.sessionMode === 'specific' ? action.session : reuse?.session;
+			const baseline = priorSession ? await this.sessionUsage(priorSession).catch(() => undefined) : undefined;
+			const measuredCompletion = completion.then(async (result) => {
+				if (!result.session) return result;
+				try {
+					const usage = await this.sessionUsage(result.session);
+					if (usage?.known && (!priorSession || baseline?.known))
+						result.usage = {
+							input: Math.max(0, usage.input - (baseline?.input ?? 0)),
+							output: Math.max(0, usage.output - (baseline?.output ?? 0)),
+							cacheRead: Math.max(0, usage.cacheRead - (baseline?.cacheRead ?? 0)),
+							cacheWrite: Math.max(0, usage.cacheWrite - (baseline?.cacheWrite ?? 0)),
+							cost:
+								usage.cost === null || (baseline && baseline.cost === null)
+									? null
+									: Math.max(0, usage.cost - (baseline?.cost ?? 0)),
+							known: true,
+						};
+				} catch {
+					/* Unavailable native usage must never change the run result. */
+				}
+				return result;
+			});
+			let terminal = slot.terminal;
+			if (reuse && terminal) {
+				execution.signal?.throwIfAborted();
+				execution.onTerminal?.(terminal.id);
+				terminal.paste(action.prompt);
+				terminal.input('\r');
+			} else {
+				const args = automationArgs(
+					id,
+					action.prompt,
+					[...accountArgs(id, launchArgs(settings, id), env), ...(action.sessionMode === 'reuse' ? [] : validatedExtraArgs(action.agentId, action.extraArgs ?? ''))],
+					action.sessionMode === 'specific' ? action.session : undefined,
+				);
+				const argv = [command, ...args];
+				const argvSize = runtimeProcess().platform === 'win32'
+					? argv.reduce((size, arg) => size + arg.length + (arg.match(/[\\"]/g)?.length ?? 0) + 3, 0)
+					: new TextEncoder().encode(argv.join('\0')).length;
+				if (argvSize > (runtimeProcess().platform === 'win32' ? 30_000 : 100_000)) throw new AutomationError('promptTooLarge');
+				const hook = await this.hooks.prepare(id, env, (event) => this.receive(slot, event));
+				slot.hookClose = () => hook.close();
+				try {
+					if (this.disposed) throw new AutomationError('busy');
+					execution.signal?.throwIfAborted();
+					// Resolve after the canonical cwd and run id exist. Keep grants out of
+					// account identity, hook installation and every persisted session.
+					const contextEnv = await execution.resolveContext?.(action.cwd);
+					execution.signal?.throwIfAborted();
+					terminal = await this.host.create({
+						kind: execution.kind === 'automation' ? 'automation' : 'agent',
+						title: execution.title,
+						file: command,
+						args,
+						cwd: action.cwd,
+						env: { ...entry.env, ...contextEnv, ...env, ...hook.env, ...(execution.kind === 'automation' ? { HUHU_AUTOMATION_RUN_ID: execution.id } : {}) },
+						signal: execution.signal,
+						agentId: id,
+						automated: true,
+						prepare: (session) => {
+							slot.terminal = session;
+							this.live.set(session.id, slot);
+							execution.onTerminal?.(session.id);
+							session.observe((event) => {
+								if (event.kind === 'data') {
+									slot.output = (slot.output + event.text).slice(-8000);
+									return;
+								}
+								slot.busy = false;
+								slot.finish?.({
+									status:
+										event.kind === 'exit'
+											? event.code === 0 && execution.kind !== 'prompt'
+												? 'succeeded'
+												: event.code < 0
+													? 'interrupted'
+													: 'failed'
+											: 'interrupted',
+									message: event.kind === 'exit' ? String(event.code) : '',
+									errorCode: event.kind === 'exit' ? 'processExit' : 'agentUnavailable',
+									errorParams: event.kind === 'exit' ? { code: event.code } : undefined,
+									output: slot.output,
+									session: slot.session,
+								});
+								slot.finish = undefined;
+								hook.close();
+								this.live.delete(session.id);
+							});
+						},
+					});
+					if (terminal.connection === 'failed') throw new AutomationError('cliMissing');
+				} catch (error) {
+					hook.close();
+					if (slot.terminal) await this.stop(slot.terminal.id);
+					throw error;
+				}
+			}
+			execution.signal?.throwIfAborted();
+			if (execution.reveal) void this.open(terminal.id).catch(console.error);
+			return {
+				terminalId: terminal.id,
+				session: slot.session ?? action.session,
+				completion: measuredCompletion,
+				onRunning: (listener) => {
+					slot.listeners ??= new Set();
+					slot.listeners.add(listener);
+					if (slot.started) listener();
+					return () => slot.listeners?.delete(listener);
+				},
+			};
+		} finally {
+			if (reservation) this.reservations.delete(reservation);
+		}
+	}
+	async stop(id: string): Promise<void> {
+		const slot = this.live.get(id);
+		slot?.finish?.({ status: 'cancelled', message: '' });
+		if (slot) slot.finish = undefined;
+		// A dedicated prompt must terminate its process, even when the CLI ignores SIGHUP.
+		if (slot?.execution?.kind === 'prompt') slot.terminal?.end(true);
+		this.host.remove(id);
+		this.live.get(id)?.hookClose?.();
+		this.live.delete(id);
+		return Promise.resolve();
+	}
+	async startScript(action: Extract<AutomationAction, { kind: 'script' }>, run: AutomationRun): Promise<AgentRunHandle> {
+		if (this.disposed) throw new AutomationError('agentUnavailable');
+		let finish!: (result: RunResult) => void;
+		const completion = new Promise<RunResult>((resolve) => { finish = resolve; });
+		let output = '';
+		const shell = this.host.shell(action.shell);
+		const terminal = await this.host.create({
+			kind: 'script',
+			title: run.title,
+			file: shell.file,
+			args: action.shell === 'powershell' ? ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', action.script] : ['-lc', action.script],
+			cwd: action.cwd,
+			env: { HUHU_AUTOMATION_RUN_ID: run.id },
+			automated: true,
+			prepare: (session) => {
+				const unsubscribe = session.observe((event) => {
+					if (event.kind === 'data') { output = (output + event.text).slice(-8000); return; }
+					unsubscribe();
+					finish({ status: event.kind === 'exit' ? (event.code === 0 ? 'succeeded' : 'failed') : 'interrupted', message: event.kind === 'exit' ? `Exit ${event.code}` : '', output });
+				});
+			},
+		});
+		if (terminal.connection === 'failed') {
+			this.host.remove(terminal.id);
+			throw new AutomationError('agentUnavailable');
+		}
+		if (this.disposed) { this.host.remove(terminal.id); throw new AutomationError('agentUnavailable'); }
+		if (run.trigger === 'manual') {
+			try { await this.open(terminal.id); }
+			catch (error) { this.host.remove(terminal.id); throw error; }
+		}
+		return { terminalId: terminal.id, completion, onRunning: (listener) => { listener(); return () => undefined; } };
+	}
+	async open(id: string): Promise<void> {
+		await this.host.open(id);
+	}
+	private registryKey(session: AgentSessionRef): string {
+		return JSON.stringify([session.agentId, session.sessionId, session.accountKey]);
+	}
+	private persistRegistry(): Promise<void> {
+		// Admit work immediately on the adapter's shared queue, so reopening cannot load between hook writes.
+		return this.registryQueue.run(this.registryQueueKey, async () => {
+			await this.loaded;
+			if (!this.pendingRegistry.size) return;
+			const pending = new Map(this.pendingRegistry);
+			const next = [...this.registry.filter(session => !pending.has(this.registryKey(session))), ...pending.values()];
+			this.registry = await this.store.commit({ base: this.registry, value: next });
+			for (const [key, session] of pending) if (this.pendingRegistry.get(key) === session) this.pendingRegistry.delete(key);
+		});
+	}
+	dispose(): void {
+		this.disposed = true;
+		for (const slot of this.live.values()) {
+			slot.finish?.({ status: 'interrupted', message: '', errorCode: 'agentUnavailable' });
+			slot.finish = undefined;
+		}
+		this.hooks.dispose();
+		void this.persistRegistry().catch(console.error);
+	}
+}

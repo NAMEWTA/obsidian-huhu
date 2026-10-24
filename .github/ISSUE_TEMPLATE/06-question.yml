@@ -1,0 +1,60 @@
+name: 使用咨询与其他反馈
+description: 咨询现有功能的使用方法，或提交其他明确反馈。
+title: "[咨询] "
+labels:
+  - question
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈 HUHU。请先搜索已有 Issue；允许使用中文或英文。不要上传真实库、令牌、Cookie、密码或未脱敏的终端记录。安全问题请参阅
+        [安全策略](https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md)。
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      options:
+        - 看板 / 日历 / 待办
+        - 时钟天气 / 记录统计
+        - 智能体 / 终端 / 用量
+        - 内置浏览器
+        - 笔记导航器
+        - 批注
+        - 档案
+        - 自动化 / 通知
+        - Git 同步
+        - 保险箱
+        - 图标 / 外观
+        - 设置 / 工作台
+        - 其他 / 尚不确定
+      multiple: false
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: 你希望完成什么
+      description: 描述目标和已有上下文。
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: 已尝试的方法与困难
+      description: 说明查阅的文档、尝试的操作以及具体疑问。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 相关环境与示例
+      description: 必要时补充 HUHU/Obsidian 版本、系统、截图和示例数据。
+    validations:
+      required: false
+  - type: checkboxes
+    id: before-submit
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索已有 Issue，并确认本次内容不含凭据或其他敏感资料。
+          required: true

@@ -1,0 +1,102 @@
+/* =================================================================
+   HUHU font choices (Settings -> Appearance -> Fonts and typography).
+
+   Interface font: Obsidian's --font-interface-theme and HUHU panels (--huhu-font-sans-user, read
+   by src/ui/styles/tokens.css). Reading font: --font-text-theme. Monospace: --font-monospace-theme
+   and HUHU's --huhu-font-mono-user. "Default" adds no class and leaves Obsidian's fonts alone;
+   a font the user picked in Obsidian's own Appearance settings (--font-*-override) still wins.
+   Every stack ends with CJK fallbacks so Chinese text never falls back to a bitmap font.
+   Explicit font choices are system fonts; SuliWorld's default pairings and Geist are bundled
+   offline under the SIL OFL. Aliased family names avoid colliding with a community theme.
+   ================================================================= */
+
+/* ----- Interface ----- */
+body.huhu-font-interface--suliworld.theme-light {
+	--huhu-font-sans-user: "HUHU Suliworld Outfit", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+body.huhu-font-interface--suliworld.theme-dark {
+	--huhu-font-sans-user: "HUHU Suliworld Manrope", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+body.huhu-font-interface--host {
+	--huhu-font-sans-user: var(--font-interface);
+}
+body.huhu-font-interface--geist {
+	--huhu-font-sans-user: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+body.huhu-font-interface--inter {
+	--huhu-font-sans-user: "Inter", "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+body.huhu-font-interface--system {
+	--huhu-font-sans-user: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+body.huhu-font-interface--custom {
+	--huhu-font-sans-user: var(--huhu-user-font-interface), -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+	--font-interface-theme: var(--huhu-font-sans-user);
+}
+
+/* ----- Reading and editing text ----- */
+body.huhu-font-text--suliworld.theme-light {
+	--font-text-theme: "HUHU Suliworld Outfit", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+	--nsw-font-display: "HUHU Suliworld Newsreader", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", Georgia, serif;
+}
+body.huhu-font-text--suliworld.theme-dark {
+	--font-text-theme: "HUHU Suliworld Manrope", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+	--nsw-font-display: "HUHU Suliworld Instrument Serif", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", Georgia, serif;
+}
+body.huhu-font-text--sans {
+	--font-text-theme: "Inter", "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+}
+body.huhu-font-text--serif {
+	--font-text-theme: "Source Serif 4", "Source Serif Pro", Charter, "Iowan Old Style", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", SimSun, Georgia, "Times New Roman", serif;
+}
+body.huhu-font-text--kai {
+	--font-text-theme: "LXGW WenKai", "LXGW WenKai Screen", "Kaiti SC", "STKaiti", KaiTi, "Noto Serif CJK SC", "Source Han Serif SC", serif;
+}
+body.huhu-font-text--custom {
+	--font-text-theme: var(--huhu-user-font-text), -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* ----- Monospace ----- */
+body.huhu-font-mono--suliworld {
+	--huhu-font-mono-user: "HUHU Suliworld iA Writer Duo", "Sarasa Mono SC", "Noto Sans Mono CJK SC", "SF Mono", Menlo, Consolas, monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+body.huhu-font-mono--jetbrains {
+	--huhu-font-mono-user: "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+body.huhu-font-mono--fira {
+	--huhu-font-mono-user: "Fira Code", "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+body.huhu-font-mono--cascadia {
+	--huhu-font-mono-user: "Cascadia Code", "Cascadia Mono", "JetBrains Mono", "SF Mono", Menlo, Consolas, "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+body.huhu-font-mono--sfmono {
+	--huhu-font-mono-user: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Sarasa Mono SC", "Noto Sans Mono CJK SC", monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+body.huhu-font-mono--custom {
+	--huhu-font-mono-user: var(--huhu-user-font-mono), ui-monospace, Menlo, Consolas, monospace;
+	--font-monospace-theme: var(--huhu-font-mono-user);
+}
+
+/* ----- Size and line height ----- */
+/* Only notes follow the size: Obsidian derives its own interface sizes from --font-text-size on <body>.
+ * Minimal reads the note size through --font-adaptive-normal, which it resolves on <body>, so it is set here too. */
+body.huhu-theme-font-size .markdown-source-view,
+body.huhu-theme-font-size .markdown-reading-view,
+body.huhu-theme-font-size .markdown-preview-view,
+body.huhu-theme-font-size .markdown-rendered {
+	--font-text-size: var(--huhu-user-font-size);
+	--font-adaptive-normal: var(--huhu-user-font-size);
+}
+body.huhu-theme-line-height {
+	--line-height-normal: var(--huhu-user-line-height);
+}

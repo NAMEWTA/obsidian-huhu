@@ -1,0 +1,42 @@
+[
+  {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "报告异常、错误结果、崩溃或数据操作故障。"
+  },
+  {
+    "name": "feature",
+    "color": "a2eeef",
+    "description": "提出当前尚未提供的能力和实际使用需求。"
+  },
+  {
+    "name": "improvement",
+    "color": "84b6eb",
+    "description": "改进已有功能的布局、操作效率、可访问性或性能。"
+  },
+  {
+    "name": "compatibility",
+    "color": "d4c5f9",
+    "description": "反馈安装、启用、平台支持、升级或原生辅助程序问题。"
+  },
+  {
+    "name": "documentation",
+    "color": "0075ca",
+    "description": "报告错误说明、缺失步骤、失效链接或翻译问题。"
+  },
+  {
+    "name": "question",
+    "color": "d876e3",
+    "description": "咨询现有功能的使用方法，或提交其他明确反馈。"
+  },
+  {
+    "name": "commercial-license",
+    "color": "fbca04",
+    "description": "申请企业内部使用、收费工作、销售集成或商业服务的书面授权。"
+  },
+  {
+    "name": "triage",
+    "color": "ededed",
+    "description": "等待维护者分类与确认"
+  }
+]

@@ -1,0 +1,335 @@
+/* SuliWorld interface, adapted for HUHU's removable theme scopes.
+ * © 2026 Stéphane Sulikowski, MIT. Source: sulistef/obsidian-suliworld
+ * bb73ca60dbc1169eb8d4c81fefb0c721ff7faf42/src/theme.css.
+ * See docs/third-party/suliworld.md. No editor semantics or task rewriting. */
+.huhu-theme--suliworld {
+	--nt-radius: 0.75rem;
+	--nt-sidebar-foreground: var(--nt-foreground);
+	--nt-sidebar-muted-foreground: var(--nt-muted-foreground);
+	--nt-sidebar-accent-foreground: var(--nt-accent-foreground);
+	--nt-sidebar-border: var(--nt-border);
+}
+.huhu-theme--suliworld.theme-light {
+	--nt-surface-muted: #f4eee3;
+	--nsw-orange: #ff6a3d;
+	--nsw-tab: #1f3b2d;
+	--nsw-tab-text: #ffffff;
+}
+.huhu-theme--suliworld.theme-dark {
+	--nt-surface-muted: #2e2a24;
+	--nsw-orange: #ff8a63;
+	--nsw-tab: #1f3b2d;
+	--nsw-tab-text: #fbf7f0;
+}
+body.huhu-theme--suliworld {
+	--radius-s: 6px;
+	--radius-m: 10px;
+	--radius-l: 16px;
+	--radius-xl: 20px;
+	--input-radius: 10px;
+	--button-radius: 999px;
+	--modal-radius: 20px;
+	--background-secondary: var(--nt-surface-muted);
+	--background-secondary-alt: var(--nt-card);
+	--background-modifier-border-focus: var(--nt-ring);
+	--background-modifier-form-field: var(--nt-card);
+	--ribbon-background: var(--nt-sidebar);
+	--ribbon-background-collapsed: var(--nt-sidebar);
+	--tab-container-background: var(--nt-card);
+	--tab-height: 30px;
+	--tab-radius: 999px;
+	--tab-radius-active: 999px;
+	--tab-curve: 0;
+	--tab-divider-color: transparent;
+	--tab-outline-color: transparent;
+	--tab-background-active: var(--nsw-tab);
+	--tab-text-color-active: var(--nsw-tab-text);
+	--tab-text-color-focused-active: var(--nsw-tab-text);
+	--tab-text-color-focused-active-current: var(--nsw-tab-text);
+	--nav-item-radius: 999px;
+	--nav-item-weight-active: 600;
+	--nav-item-background-active: var(--nt-primary);
+	--nav-item-color-active: var(--nt-primary-foreground);
+	--status-bar-background: var(--nt-card);
+	--text-selection: color-mix(in srgb, var(--nsw-orange) 25%, transparent);
+}
+body.huhu-theme--suliworld :is(.workspace-split.mod-sidedock, .workspace-ribbon, .workspace-drawer, [data-navigator-root]) {
+	--background-primary: var(--nt-sidebar);
+	--background-primary-alt: var(--nt-sidebar);
+	--background-secondary: var(--nt-sidebar);
+	--background-secondary-alt: var(--nt-sidebar);
+	--text-normal: var(--nt-sidebar-foreground);
+	--text-muted: var(--nt-sidebar-muted-foreground);
+	background-color: var(--nt-sidebar);
+	color: var(--nt-sidebar-foreground);
+}
+body.huhu-theme--suliworld :is(.huhu-panel[data-shell-region="panel"], .huhu-rail[data-shell-region="rail"], [data-navigator-root]) {
+	--foreground: var(--nt-sidebar-foreground);
+	--muted-foreground: var(--nt-sidebar-muted-foreground);
+	--card-foreground: var(--nt-sidebar-foreground);
+	--secondary-foreground: var(--nt-sidebar-foreground);
+	--accent-foreground: var(--nt-sidebar-accent-foreground);
+	--card: var(--nt-sidebar);
+	--secondary: var(--nt-sidebar-accent);
+	--muted: var(--nt-sidebar-accent);
+	--accent: var(--nt-sidebar-accent);
+	--border: var(--nt-sidebar-border);
+	color: var(--nt-sidebar-foreground);
+}
+/* Navigator owns a sidebar surface even in a center leaf or another window. Its mount's
+ * .huhu-ui may be outside that surface, so rebind semantic tokens here instead of relying
+ * on foreground inheritance. Body-level portals retain their own popover colour pair. */
+body.huhu-theme--suliworld [data-navigator-root] {
+	--background: var(--nt-sidebar);
+	--input: var(--nt-input, var(--background-modifier-border));
+	--ring: var(--nt-ring, var(--interactive-accent));
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header-container {
+	border-bottom: 1px solid var(--nt-border);
+	background: var(--background-primary);
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header-container-inner {
+	align-items: center;
+	gap: 4px;
+	margin: 0;
+	padding: 6px 10px;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header {
+	box-sizing: border-box;
+	height: 30px;
+	min-height: 30px;
+	max-height: 30px;
+	padding: 0 10px;
+	border-radius: 999px;
+	background: transparent;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header-inner {
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	height: 100%;
+	min-height: 0;
+	padding: 0;
+	line-height: 1.2;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header-inner-title {
+	min-width: 0;
+	padding: 0;
+	font-size: var(--font-ui-small);
+	line-height: 1.2;
+}
+body.huhu-theme--suliworld .workspace .mod-root :is(.workspace-tab-header-inner-icon, .workspace-tab-header-status-icon, .workspace-tab-header-inner-close-button) {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	padding: 2px;
+	color: inherit;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header :is(.workspace-tab-header-inner-icon, .workspace-tab-header-status-icon, .workspace-tab-header-inner-close-button) svg {
+	width: 16px;
+	height: 16px;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header.is-active {
+	background: var(--nsw-tab);
+	box-shadow: none;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header:not(.is-active):hover {
+	background: var(--nt-accent);
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header::before,
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header::after,
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header-inner::after {
+	display: none;
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header.is-active :is(.workspace-tab-header-inner-title, .workspace-tab-header-inner-icon, .workspace-tab-header-inner-close-button, .workspace-tab-header-status-icon) {
+	color: var(--nsw-tab-text);
+}
+body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header.is-active .workspace-tab-header-inner-close-button:hover {
+	background: color-mix(in srgb, var(--nsw-tab-text) 14%, transparent);
+}
+body.huhu-theme--suliworld :is(.tree-item-self.is-active, .nav-file-title.is-active, .nav-folder-title.is-active) {
+	border-radius: 999px;
+}
+body.huhu-theme--suliworld .nav-folder.mod-root > .nav-folder-title {
+	color: var(--text-muted);
+	font-size: 0.8em;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+}
+body.huhu-theme--suliworld :is(.tree-item-self.is-active .tree-item-icon, .nav-file-title.is-active .nav-file-tag) {
+	color: var(--nav-item-color-active);
+}
+body.huhu-theme--suliworld .workspace-leaf-content[data-type="outline"] .tree-item-self {
+	border-inline-start: 2px solid var(--background-modifier-border);
+	border-radius: 0;
+}
+body.huhu-theme--suliworld .workspace-leaf-content[data-type="outline"] .tree-item-self.is-active {
+	border-inline-start-color: var(--nsw-orange);
+}
+body.huhu-theme--suliworld .search-result-file-matches {
+	border-radius: 10px;
+}
+body.huhu-theme--suliworld :is(.menu, .suggestion-container) {
+	border-radius: 16px;
+}
+body.huhu-theme--suliworld :is(.menu-item, .suggestion-item) {
+	border-radius: 10px;
+}
+body.huhu-theme--suliworld :is(.prompt, .modal) {
+	border-radius: 20px;
+}
+body.huhu-theme--suliworld :is(.workspace-tab-header, .nav-file-title, .nav-folder-title, .tree-item-self):focus-visible {
+	outline: 2px solid var(--nt-ring);
+	outline-offset: -2px;
+}
+/* Forest keeps the warm page and form surfaces; only the named sidebar regions turn green. */
+.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light {
+	--nt-sidebar: #1f3b2d;
+	--nt-sidebar-foreground: #fbf7f0;
+	--nt-sidebar-muted-foreground: #c9d8ce;
+	--nt-sidebar-accent: #2a4a3a;
+	--nt-sidebar-accent-foreground: #fbf7f0;
+	--nt-sidebar-border: #507560;
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light :is(.workspace-split.mod-sidedock, .workspace-ribbon, .workspace-drawer, .huhu-panel[data-shell-region="panel"], .huhu-rail[data-shell-region="rail"], [data-navigator-root]) {
+	--nt-card: #1f3b2d;
+	--nt-secondary: #2a4a3a;
+	--nt-surface-muted: #2a4a3a;
+	--nt-accent: #2a4a3a;
+	--nt-accent-foreground: #fbf7f0;
+	--nt-input: #507560;
+	--nt-ring: #ff8a63;
+	--nt-primary: #ff8a63;
+	--nt-primary-foreground: #151412;
+	--text-normal: #fbf7f0;
+	--text-muted: #c9d8ce;
+	--text-faint: #a2bfad;
+	--text-error: #ffad9b;
+	--text-accent: #ffad8d;
+	--text-on-accent: #151412;
+	--background-modifier-border: #507560;
+	--background-modifier-hover: #2a4a3a;
+	--background-modifier-form-field: #17301f;
+	--interactive-normal: #2a4a3a;
+	--interactive-hover: #355a47;
+	--interactive-accent: #ff8a63;
+	--interactive-accent-hover: #ffad8d;
+	--primary: #ff8a63;
+	--primary-foreground: #151412;
+	--ring: #ff8a63;
+	--input: #507560;
+	--destructive: #ffad9b;
+	--destructive-foreground: #151412;
+	--nav-item-color: #c9d8ce;
+	--nav-item-color-hover: #fbf7f0;
+	--nav-item-color-active: #151412;
+	--nav-item-background-active: #ff8a63;
+	--nav-item-background-hover: #2a4a3a;
+	--nav-collapse-icon-color: #c9d8ce;
+	--nav-collapse-icon-color-collapsed: #c9d8ce;
+	--icon-color: #c9d8ce;
+	--icon-color-hover: #fbf7f0;
+	--icon-color-focused: #fbf7f0;
+	--icon-color-active: #ff8a63;
+	--tab-container-background: #1f3b2d;
+	--tab-background-active: #2a4a3a;
+	--tab-text-color: #c9d8ce;
+	--tab-text-color-active: #fbf7f0;
+	--tab-text-color-focused: #fbf7f0;
+	--tab-text-color-focused-active: #fbf7f0;
+	--tab-text-color-focused-active-current: #fbf7f0;
+	--link-color: #ffad8d;
+	--link-external-color: #ffad8d;
+	--h1-color: #fbf7f0;
+	--h2-color: #fbf7f0;
+	--h3-color: #cdebd9;
+	--h4-color: #ffe0c7;
+	--h5-color: #ffad8d;
+	--h6-color: #c9d8ce;
+	--bold-color: #fbf7f0;
+	--italic-color: #c9d8ce;
+	--code-normal: #fbf7f0;
+	--code-background: #17301f;
+	--ngh-code-bg: #17301f;
+	--ne-code: #fbf7f0;
+	--ne-code-bg: rgba(251, 247, 240, 0.08);
+	--ne-link: #ffad8d;
+	--ne-quote-text: #c9d8ce;
+	--ne-hr: #507560;
+	--code-comment: #c9d8ce;
+	--code-function: #ffe0c7;
+	--code-keyword: #ffad8d;
+	--code-string: #cdebd9;
+	--code-property: #d6e6ff;
+	--code-punctuation: #c9d8ce;
+	--code-value: #e3daff;
+	--code-tag: #ffad8d;
+	--code-important: #fff1a8;
+	--blockquote-color: #c9d8ce;
+	--tag-color: #cdebd9;
+	--tag-background: #2a4a3a;
+	--color-green: #addcbd;
+	--color-orange: #ffad8d;
+	--color-red: #ffad9b;
+	--color-blue: #b4d3ff;
+	--color-yellow: #fff1a8;
+	--status-success: #addcbd;
+	--status-warning: #ffad8d;
+	--status-error: #ffad9b;
+	--status-info: #b4d3ff;
+	--status-working: #fff1a8;
+	--agent-question: #ffad8d;
+	--checkbox-color: #ff8a63;
+	--checkbox-marker-color: #151412;
+	--scrollbar-thumb-bg: rgba(251, 247, 240, 0.25);
+	--scrollbar-active-thumb-bg: rgba(251, 247, 240, 0.4);
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light .workspace .mod-root .workspace-tab-header-container {
+	background: var(--nt-surface-muted);
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light .workspace .mod-root .workspace-tab-header-container-inner {
+	align-items: stretch;
+	gap: 2px;
+	padding: 6px 8px 0;
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light .workspace .mod-root .workspace-tab-header {
+	border-radius: 10px 10px 0 0;
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light .workspace .mod-root .workspace-tab-header.is-active {
+	background: var(--nt-background);
+	box-shadow: inset 0 3px 0 var(--nsw-orange);
+}
+body.huhu-theme--suliworld.huhu-theme-variant--forest.theme-light .workspace .mod-root .workspace-tab-header.is-active :is(.workspace-tab-header-inner-title, .workspace-tab-header-inner-icon, .workspace-tab-header-inner-close-button, .workspace-tab-header-status-icon) {
+	color: var(--nt-foreground);
+}
+/* Retain Obsidian's split/drag handles, stacking and scrolling. Cards are desktop only. */
+body.huhu-theme--suliworld.huhu-theme-cards:not(.is-mobile) :is(.app-container, .horizontal-main-container, .workspace, .workspace-split:not(.mod-sidedock)) {
+	background-color: var(--nt-background);
+}
+body.huhu-theme--suliworld.huhu-theme-cards:not(.is-mobile) .workspace-tabs:not(.mod-stacked) {
+	--background-primary: var(--nt-card);
+	--background-primary-alt: var(--nt-card);
+	--background-secondary: var(--nt-card);
+	margin: 6px;
+	border: 1px solid var(--nt-border);
+	border-radius: 20px;
+	background: var(--nt-card);
+}
+body.huhu-theme--suliworld.huhu-theme-cards:not(.is-mobile) .workspace-tabs:not(.mod-stacked) > .workspace-tab-container {
+	border-radius: 0 0 20px 20px;
+}
+body.huhu-theme--suliworld.huhu-theme-cards:not(.is-mobile) .status-bar {
+	border-radius: 999px;
+}
+
+@media (pointer: coarse) {
+	body.huhu-theme--suliworld .workspace .mod-root .workspace-tab-header {
+		height: 44px;
+		min-height: 44px;
+		max-height: 44px;
+	}
+}

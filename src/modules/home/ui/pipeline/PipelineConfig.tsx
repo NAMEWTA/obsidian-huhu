@@ -1,0 +1,207 @@
+// Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/pipeline-section.ts
+import { useState } from 'react';
+import type { App } from 'obsidian';
+import type { PipelineConfig as Config, PipelineStage } from '../../core/pipeline/model';
+import { pipelineConfigError } from '../../core/pipeline/rules';
+import { t } from '../../../../shared/i18n';
+import { Button } from '../../../../ui/components/button';
+import { Label } from '../../../../ui/components/label';
+import { FolderField, FolderListField, TextField } from '../sections/P1Controls';
+import { SkillList } from '../quickbar/SkillList';
+
+const lines = (value: string) => [
+	...new Set(
+		value
+			.split('\n')
+			.map((line) => line.trim())
+			.filter(Boolean),
+	),
+];
+
+/** Workflow configuration lives in its section; cancellation never writes the board. */
+export function PipelineConfig({
+	app,
+	initial,
+	save,
+	close,
+}: {
+	app: App;
+	initial: Config;
+	save: (config: Config) => Promise<void>;
+	close: () => void;
+}) {
+	const [draft, setDraft] = useState(() => structuredClone(initial)),
+		[pending, setPending] = useState(false),
+		[error, setError] = useState('');
+	const patch = (change: Partial<Config>) => setDraft((value) => ({ ...value, ...change }));
+	const stage = (id: string, change: Partial<PipelineStage>) =>
+		patch({ stages: draft.stages.map((stage) => (stage.id === id ? { ...stage, ...change } : stage)) });
+	const submit = async () => {
+		const invalid = pipelineConfigError(draft);
+		if (invalid) {
+			setError(t(`home.pipeline.configError.${invalid}`));
+			return;
+		}
+		setPending(true);
+		setError('');
+		try {
+			await save(draft);
+			close();
+		} catch (error) {
+			setError(error instanceof Error ? error.message : String(error));
+		} finally {
+			setPending(false);
+		}
+	};
+	return (
+		<section className="huhu-pipeline-config flex min-w-0 flex-col gap-[var(--size-4-2)]">
+			<h4>{t('home.pipeline.configure')}</h4>
+			<FolderField
+				app={app}
+				label={t('home.pipeline.root')}
+				value={draft.rootFolder}
+				onChange={(rootFolder) => patch({ rootFolder })}
+			/>
+			<TextField
+				label={t('home.pipeline.field')}
+				value={draft.statusField}
+				onInput={(statusField) => patch({ statusField })}
+			/>
+			{draft.stages.map((item) => (
+				<fieldset key={item.id} className="flex min-w-0 flex-col gap-[var(--size-4-2)]">
+					<legend>{item.label || t('home.pipeline.stage')}</legend>
+					<TextField
+						label={t('home.pipeline.stageLabel')}
+						value={item.label}
+						onInput={(label) => stage(item.id, { label })}
+					/>
+					<TextField
+						label={t('home.pipeline.stageValue')}
+						value={item.value}
+						onInput={(value) => stage(item.id, { value })}
+					/>
+					{/* A stage folder is below the workflow root: the field shows the whole path and keeps the part after the root. */}
+					<FolderField
+						app={app}
+						create={false}
+						label={t('home.pipeline.stageFolder')}
+						value={item.folder ? `${draft.rootFolder.replace(/\/+$/, '')}/${item.folder}` : ''}
+						onChange={(path) => {
+							const root = draft.rootFolder.replace(/\/+$/, '');
+							if (!path || path === root) stage(item.id, { folder: undefined });
+							else if (root && path.startsWith(`${root}/`)) stage(item.id, { folder: path.slice(root.length + 1) });
+							else setError(t('home.pipeline.stageFolderOutside'));
+						}}
+					/>
+					<Button onClick={() => patch({ stages: draft.stages.filter((stage) => stage.id !== item.id) })}>
+						{t('home.pipeline.removeStage')}
+					</Button>
+				</fieldset>
+			))}
+			<Button
+				onClick={() => patch({ stages: [...draft.stages, { id: crypto.randomUUID(), label: '', value: '' }] })}
+			>
+				{t('home.pipeline.addStage')}
+			</Button>
+			<Label className="grid gap-2">
+				{t('home.pipeline.excludes')}
+				<FolderListField
+					app={app}
+					label={t('home.pipeline.excludes')}
+					folders={draft.excludeFolders}
+					onChange={(excludeFolders) => patch({ excludeFolders })}
+				/>
+			</Label>
+			<FolderField
+				app={app}
+				label={t('home.pipeline.archiveFolder')}
+				value={draft.archiveFolder ?? ''}
+				onChange={(archiveFolder) => patch({ archiveFolder: archiveFolder || undefined })}
+			/>
+			<Label className="grid gap-2">
+				{t('home.pipeline.templates')}
+				<FolderListField
+					app={app}
+					kind="file"
+					label={t('home.pipeline.templates')}
+					folders={draft.templatePaths}
+					onChange={(templatePaths) => patch({ templatePaths })}
+				/>
+			</Label>
+			<TextField
+				label={t('home.pipeline.filterFields')}
+				hint={t('home.pipeline.linesHint')}
+				multiline
+				value={draft.filterFields.join('\n')}
+				onInput={(value) => patch({ filterFields: lines(value) })}
+			/>
+			<p>{t('home.pipeline.skillsDraftHint')}</p>
+			<SkillList
+				skills={draft.skills}
+				onChange={(next) =>
+					patch({
+						skills: next.map((skill) => ({
+							...skill,
+							scope: draft.skills.find((item) => item.id === skill.id)?.scope ?? 'card',
+							stages: draft.skills.find((item) => item.id === skill.id)?.stages ?? [],
+						})),
+					})
+				}
+			/>
+			{draft.skills.map((skill) => (
+				<fieldset key={skill.id} className="flex min-w-0 flex-col gap-[var(--size-4-2)]">
+					<legend>{skill.label}</legend>
+					<label className="flex min-w-0 flex-col gap-[var(--size-4-1)]">
+						<span>{t('home.pipeline.skillScope')}</span>
+						<select
+							value={skill.scope}
+							onChange={(event) =>
+								patch({
+									skills: draft.skills.map((item) =>
+										item.id === skill.id
+											? {
+													...item,
+													scope: event.currentTarget.value === 'stage' ? 'stage' : 'card',
+												}
+											: item,
+									),
+								})
+							}
+						>
+							<option value="card">{t('home.pipeline.cardScope')}</option>
+							<option value="stage">{t('home.pipeline.stageScope')}</option>
+						</select>
+					</label>
+					<TextField
+						label={t('home.pipeline.skillStages')}
+						hint={t('home.pipeline.skillStagesHint')}
+						multiline
+						value={skill.stages.join('\n')}
+						onInput={(value) =>
+							patch({
+								skills: draft.skills.map((item) =>
+									item.id === skill.id ? { ...item, stages: lines(value) } : item,
+								),
+							})
+						}
+					/>
+				</fieldset>
+			))}
+			{error && <p role="alert">{error}</p>}
+			<div className="flex min-w-0 flex-wrap items-center gap-[var(--size-4-2)]">
+				<Button disabled={pending} onClick={close}>
+					{t('common.cancel')}
+				</Button>
+				<Button
+					variant="default"
+					disabled={pending}
+					onClick={() => {
+						void submit();
+					}}
+				>
+					{t('common.save')}
+				</Button>
+			</div>
+		</section>
+	);
+}

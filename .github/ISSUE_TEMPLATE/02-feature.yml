@@ -1,0 +1,74 @@
+name: 新功能与需求
+description: 提出当前尚未提供的能力和实际使用需求。
+title: "[功能] "
+labels:
+  - feature
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈 HUHU。请先搜索已有 Issue；允许使用中文或英文。不要上传真实库、令牌、Cookie、密码或未脱敏的终端记录。安全问题请参阅
+        [安全策略](https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md)。
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      options:
+        - 看板 / 日历 / 待办
+        - 时钟天气 / 记录统计
+        - 智能体 / 终端 / 用量
+        - 内置浏览器
+        - 笔记导航器
+        - 批注
+        - 档案
+        - 自动化 / 通知
+        - Git 同步
+        - 保险箱
+        - 图标 / 外观
+        - 设置 / 工作台
+        - 其他 / 尚不确定
+      multiple: false
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 使用场景与问题
+      description: 谁在什么情况下需要完成什么任务？目前哪里受阻？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的功能与流程
+      description: 描述入口、操作步骤及期望结果，不必先提出具体代码实现。
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准
+      description: 列出可以观察或验证的完成条件。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 已尝试的替代方案
+      description: 现有功能、其他工具或手动操作有什么局限？
+    validations:
+      required: false
+  - type: textarea
+    id: examples
+    attributes:
+      label: 示例或参考
+      description: 可提供公开项目链接、草图、截图；注明希望参考的行为。
+    validations:
+      required: false
+  - type: checkboxes
+    id: before-submit
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索已有 Issue，并确认本次内容不含凭据或其他敏感资料。
+          required: true

@@ -1,0 +1,9 @@
+[
+	{ "family": "HUHU Suliworld Outfit", "file": "outfit-normal-100-900-latin.woff2", "weight": "100 900", "style": "normal" },
+	{ "family": "HUHU Suliworld Newsreader", "file": "newsreader-italic-300-700-latin.woff2", "weight": "300 700", "style": "italic" },
+	{ "family": "HUHU Suliworld Manrope", "file": "manrope-normal-200-800-latin.woff2", "weight": "200 800", "style": "normal" },
+	{ "family": "HUHU Suliworld Instrument Serif", "file": "instrument-serif-italic-400-latin.woff2", "weight": "400", "style": "italic" },
+	{ "family": "HUHU Suliworld iA Writer Duo", "file": "iAWriterDuoS-Regular.woff2", "weight": "400", "style": "normal" },
+	{ "family": "HUHU Suliworld iA Writer Duo", "file": "iAWriterDuoS-Italic.woff2", "weight": "400", "style": "italic" },
+	{ "family": "HUHU Suliworld iA Writer Duo", "file": "iAWriterDuoS-Bold.woff2", "weight": "700", "style": "normal" }
+]

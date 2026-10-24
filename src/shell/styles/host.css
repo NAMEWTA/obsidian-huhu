@@ -1,0 +1,41 @@
+/* Native workbench leaf boundary; internal layout is owned by React. */
+.workspace-leaf-content[data-type="huhu-workbench-view"] > .view-content { padding: 0; overflow: hidden; }
+body:not(.is-mobile) .workspace-leaf-content[data-type="huhu-workbench-view"] > .view-header { display: none; }
+.huhu-workbench-page[hidden] { display: none; }
+
+/* HUHU entries in Obsidian's status bar (main window only). They borrow the host's status bar metrics. */
+.status-bar .huhu-status-button {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--size-2-2);
+	padding: 0 var(--size-2-2);
+	height: auto;
+	background: transparent;
+	box-shadow: none;
+	border: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+.status-bar .huhu-status-button:hover { background-color: var(--background-modifier-hover); }
+.status-bar .huhu-status-button.is-static { cursor: default; }
+.status-bar .huhu-status-button.is-static:hover { background-color: transparent; }
+.status-bar .huhu-status-text {
+	max-width: 24ch;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+.status-bar .huhu-status-item[data-tone="error"] .huhu-status-button { color: var(--text-error); }
+.status-bar .huhu-status-item[data-tone="attention"] .huhu-status-button { color: var(--color-orange); }
+.status-bar .huhu-status-item[data-tone="running"] .huhu-status-icon .svg-icon { animation: huhu-status-spin 1.2s linear infinite; }
+@keyframes huhu-status-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+	.status-bar .huhu-status-item[data-tone="running"] .huhu-status-icon .svg-icon { animation: none; }
+}
+/* The usage entry hosts a React root inside .huhu-ui; keep the host's font and colour instead of HUHU's. */
+.status-bar .huhu-status-usage { padding-block: 0; }
+.status-bar .huhu-status-usage .huhu-status-usage-root { display: flex; align-items: center; font-family: inherit; letter-spacing: inherit; color: inherit; }
+/* Hidden entries stay in the status bar as pooled, reusable items. */
+.status-bar .huhu-status-item[hidden], .status-bar .huhu-status-usage[hidden] { display: none; }

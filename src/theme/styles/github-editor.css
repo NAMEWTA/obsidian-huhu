@@ -1,0 +1,155 @@
+/* GitHub document structure adapted from krios2146/obsidian-theme-github,
+ * 0ec83a88de1161ed0311f76b2e962b6a233121da/theme.css.
+ * © 2023 Vladimir Kidyaev, MIT; see docs/third-party/github-theme.md.
+ * This is a note style, independent of the interface palette. */
+body.huhu-md-style--github :is(.markdown-rendered, .markdown-source-view) {
+	--line-height-normal: var(--huhu-user-line-height, 1.6);
+	--bold-weight: 600;
+	--code-size: 0.85em;
+	--code-radius: 6px;
+	--blockquote-border-thickness: 4px;
+	--blockquote-border-color: var(--ne-quote);
+	--blockquote-color: var(--ne-quote-text);
+	--link-decoration: none;
+	--link-decoration-hover: underline;
+	--link-external-decoration: none;
+	--table-border-width: 1px;
+	--table-header-border-width: 1px;
+	--table-border-color: var(--ne-hr);
+	--table-header-border-color: var(--ne-hr);
+	--table-header-weight: 600;
+	--table-row-alt-background: var(--ne-code-bg);
+	--table-header-background: transparent;
+	--table-column-max-width: none;
+	--table-white-space: normal;
+	--checkbox-radius: 3px;
+}
+body.huhu-md-style--github.theme-light {
+	--ngh-code-bg: #f6f8fa;
+}
+body.huhu-md-style--github.theme-dark {
+	--ngh-code-bg: #161b22;
+}
+body.huhu-md-headings--github {
+	--h1-size: 2em;
+	--h2-size: 1.5em;
+	--h3-size: 1.25em;
+	--h4-size: 1em;
+	--h5-size: 0.875em;
+	--h6-size: 0.85em;
+	--h1-weight: 600;
+	--h2-weight: 600;
+	--h3-weight: 600;
+	--h4-weight: 600;
+	--h5-weight: 600;
+	--h6-weight: 600;
+	--h1-line-height: 1.25;
+	--h2-line-height: 1.25;
+}
+body.huhu-md-headings--github .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+	margin-top: 1.5em;
+	margin-bottom: 1em;
+}
+body.huhu-md-headings--github .markdown-rendered :is(h1, h2),
+body.huhu-md-headings--github .markdown-source-view.is-live-preview :is(.HyperMD-header-1, .HyperMD-header-2) {
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid var(--ne-hr);
+}
+body.huhu-md-style--github .markdown-rendered :is(p, blockquote, ul, ol, table, pre) {
+	margin-block: 0 1em;
+}
+body.huhu-md-style--github .markdown-rendered :is(ul, ol) {
+	padding-inline-start: 2em;
+}
+body.huhu-md-style--github .markdown-rendered li + li {
+	margin-top: 0.25em;
+}
+body.huhu-md-style--github .markdown-rendered li > :is(ul, ol) {
+	margin-bottom: 0;
+}
+body.huhu-md-style--github .markdown-rendered blockquote {
+	padding-inline: 1em;
+	border-inline-start: 4px solid var(--ne-quote);
+	border-radius: 0;
+	background: transparent;
+	color: var(--ne-quote-text);
+}
+body.huhu-md-style--github .markdown-rendered blockquote > :last-child {
+	margin-bottom: 0;
+}
+body.huhu-md-style--github :is(.markdown-rendered :not(pre) > code, .markdown-source-view .cm-inline-code) {
+	padding: 0.15em 0.35em;
+	border-radius: 6px;
+	background: var(--ne-code-bg);
+	font-size: 0.85em;
+}
+body.huhu-md-style--github .markdown-rendered pre {
+	--code-background: var(--ngh-code-bg);
+	padding: 16px;
+	border-radius: 6px;
+	background: var(--ngh-code-bg);
+	line-height: 1.45;
+	overflow-x: auto;
+}
+body.huhu-md-style--github .markdown-rendered pre code {
+	padding: 0;
+	background: transparent;
+	font-size: 0.85em;
+	white-space: pre;
+	word-break: normal;
+	overflow-wrap: normal;
+}
+body.huhu-md-style--github .markdown-source-view .HyperMD-codeblock {
+	--code-background: var(--ngh-code-bg);
+	background: var(--ngh-code-bg);
+}
+body.huhu-md-style--github .markdown-rendered pre .copy-code-button {
+	color: var(--ne-code);
+	background: var(--ngh-code-bg);
+	border: 1px solid var(--ne-hr);
+	border-radius: 6px;
+}
+body.huhu-md-style--github .markdown-rendered pre .copy-code-button:hover {
+	background: color-mix(in srgb, var(--ne-code) 10%, var(--ngh-code-bg));
+}
+body.huhu-md-style--github :is(.markdown-rendered, .markdown-source-view) .callout {
+	border-inline-start: 4px solid rgb(var(--callout-color));
+	border-radius: 0;
+	background: transparent;
+	mix-blend-mode: normal;
+}
+body.huhu-md-style--github .markdown-rendered table {
+	display: block;
+	max-width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	overflow-x: auto;
+}
+body.huhu-md-style--github .markdown-rendered :is(th, td) {
+	padding: 6px 13px;
+	border: 1px solid var(--ne-hr);
+}
+body.huhu-md-style--github .markdown-rendered th {
+	font-weight: 600;
+}
+body.huhu-md-style--github .markdown-rendered tr:nth-child(2n) {
+	background: var(--ne-code-bg);
+}
+body.huhu-md-style--github .markdown-rendered .table-wrapper {
+	max-width: 100%;
+	overflow-x: auto;
+}
+body.huhu-md-style--github .markdown-rendered hr {
+	height: 0.25em;
+	margin-block: 1.5em;
+	padding: 0;
+	border: 0;
+	background: var(--ne-hr);
+}
+body.huhu-md-style--github .markdown-rendered img {
+	max-width: 100%;
+}
+body.huhu-md-style--github :is(.markdown-rendered a, .markdown-rendered .copy-code-button, .task-list-item-checkbox):focus-visible {
+	outline: 2px solid var(--ne-link);
+	outline-offset: 2px;
+}

@@ -1,0 +1,57 @@
+{
+  "appearancePresets": [
+    {
+      "id": "evening",
+      "name": "Evening",
+      "theme": {
+        "preset": "eye-care",
+        "custom": {
+          "light": {
+            "background": "#ffffff",
+            "foreground": "#0a0a0a",
+            "primary": "#171717",
+            "border": "#e5e5e5",
+            "sidebar": "#fafafa"
+          },
+          "dark": {
+            "background": "#131416",
+            "foreground": "#d7d7db",
+            "primary": "#d0d0d6",
+            "border": "#3a3a3e",
+            "sidebar": "#19191c"
+          }
+        },
+        "editor": "claude-code",
+        "headings": "accented",
+        "emphasis": "highlight",
+        "suliworldVariant": "cream",
+        "suliworldCards": "dark",
+        "suliworldPlainQuotes": false,
+        "suliworldPlainEmbeds": false,
+        "fontInterface": "default",
+        "fontInterfaceCustom": "",
+        "fontText": "serif",
+        "fontTextCustom": "",
+        "fontMono": "default",
+        "fontMonoCustom": "",
+        "fontSize": 18,
+        "lineHeight": 1.9
+      },
+      "home": {
+        "bgImage": "Images/bg.svg",
+        "bgDim": 33,
+        "bgBlur": 3,
+        "bgSize": "contain",
+        "bgFocal": {
+          "x": 22,
+          "y": 77
+        },
+        "surfaceOpacity": 75,
+        "glassBlur": 6,
+        "radiusScale": 19,
+        "fontScale": "large"
+      }
+    }
+  ],
+  "activeAppearancePresetId": "evening"
+}
