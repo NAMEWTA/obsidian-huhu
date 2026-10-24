@@ -9,3 +9,4 @@
 ## OPS
 
 OPS 交接引用原 Controller/Host/Project、task/Run/Release、immutable plan/approval/journal/目标 receipt 和 progress；不写凭据值或复制私密配置。started-only、终态失败、docs_pending 分别回到原恢复协议，不能包装成新 task 再试。只向接收方传递已授权范围内必要的 locator 与脱敏证据。
+

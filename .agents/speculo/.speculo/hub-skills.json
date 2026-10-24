@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "package_version": "2.1.5",
+  "package_version": "2.1.8",
   "targets": [
     "agents"
   ],

@@ -5,7 +5,7 @@
  * 将源码目录打包为 ZIP，并通过正则规则排除依赖、构建产物、秘密文件和非代码文件。
  *
  * 首选运行方式：
- *   node zip_source_code.js /path/to/project
+ *   node zip_source_code.cjs /path/to/project
  *
  * 本脚本只使用 Node.js 内置模块，不需要 npm install，也不依赖系统 zip 命令。
  * 建议使用 Node.js 14 或更高版本。
@@ -1223,7 +1223,7 @@ function parseArguments(argv) {
 async function run(argv) {
   assertSupportedNode();
   const args = parseArguments(argv);
-  const programName = path.basename(process.argv[1] || 'zip_source_code.js');
+  const programName = path.basename(process.argv[1] || 'zip_source_code.cjs');
 
   if (args.showHelp) {
     printHelp(programName);
