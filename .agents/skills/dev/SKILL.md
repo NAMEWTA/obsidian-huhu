@@ -4,7 +4,7 @@ description: >-
   修改或审查本仓库插件实现、设置、持久化、测试、依赖、构建和发布配置时使用。
   负责模块边界、懒加载、i18n、数据归属与质量验证；界面渲染同时参照 ui。
   普通产品问答、只读资料查询和未涉及工程规则的文档修订不触发开发流程。
-license: MIT
+license: LicenseRef-HUHU-1.0
 metadata:
   short-description: 插件开发规则
   adapted-from: https://github.com/gapmiss/obsidian-plugin-skill (MIT, skill version 1.11.0, eslint-plugin-obsidianmd v0.4.x)

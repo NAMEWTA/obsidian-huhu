@@ -4,7 +4,7 @@ description: >-
   添加、修改或审查本仓库工作台页面、面板、对话框、组件、主题或 CSS 时使用。
   负责布局、设计系统、动效与无障碍；模块装配和构建参照 dev。
   普通产品问答、界面使用说明和仅提到页面或主题的讨论不触发实现与验收流程。
-license: MIT
+license: LicenseRef-HUHU-1.0
 metadata:
   short-description: 工作台界面、设计系统与主题
 ---
