@@ -1,0 +1,45 @@
+import { Component, type App, type Menu, type ViewStateResult, type WorkspaceLeaf } from 'obsidian';
+
+/** A real native host supplies capabilities. This is not an ItemView or a fake leaf. */
+export interface NativeSurfaceContext {
+	app: App;
+	leaf: WorkspaceLeaf;
+	contentEl: HTMLElement;
+	containerEl: HTMLElement;
+	embedded?: boolean;
+	/** Same-window object navigation, owned and hidden by the workbench. */
+	navigationEl?: HTMLElement;
+	openNavigation?: () => void;
+	togglePanel?: () => void;
+	openPageMenu?: (event: MouseEvent) => void;
+	changed?: () => void;
+	close: () => void | Promise<void>;
+	activate?: () => Promise<void>;
+}
+
+/** Native rendering lifetime shared by standalone leaves and workbench pages. */
+export abstract class NativeSurface extends Component {
+	constructor(readonly context: NativeSurfaceContext) { super(); }
+	get app(): App { return this.context.app; }
+	get leaf(): WorkspaceLeaf { return this.context.leaf; }
+	get contentEl(): HTMLElement { return this.context.contentEl; }
+	get containerEl(): HTMLElement { return this.context.containerEl; }
+	activate(): Promise<void> { return this.context.activate?.() ?? this.app.workspace.revealLeaf(this.leaf); }
+	get embedded(): boolean { return this.context.embedded === true; }
+	abstract getViewType(): string;
+	abstract getDisplayText(): string;
+	abstract getIcon(): string;
+	onOpen(): Promise<void> { return Promise.resolve(); }
+	onClose(): Promise<void> { return Promise.resolve(); }
+	setVisible(visible: boolean): void {
+		if (visible) {
+			this.onResize();
+		}
+	}
+	onResize(): void { /* A presentation can opt in to native resize notification. */ }
+	onPaneMenu(menu: Menu, source = ''): void { void menu; void source; }
+	getState(): Record<string, unknown> { return {}; }
+	setState(state: Record<string, unknown>, result: ViewStateResult): Promise<void> {
+		void state; void result; return Promise.resolve();
+	}
+}

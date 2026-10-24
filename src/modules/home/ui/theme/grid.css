@@ -1,0 +1,104 @@
+/*
+ * Adapted from react-grid-layout 2.2.4 (css/styles.css, MIT, Copyright (c) 2016 Samuel Reed) and react-resizable
+ * 3.2.0 (css/styles.css, MIT, Copyright (c) 2014 Samuel Reed, Richard Liaw): the item, placeholder and resize-handle
+ * rules of the board grid, restated with HUHU's design tokens and without the width/height transitions.
+ */
+.huhu-dashboard-root .react-grid-layout {
+	position: relative;
+}
+.huhu-dashboard-root .react-grid-item {
+	box-sizing: border-box;
+	transition: none;
+}
+/* A tile settles into its cell with a short move; width and height never animate. */
+.huhu-dashboard-root .react-grid-item.cssTransforms {
+	transition: transform 150ms ease;
+}
+.huhu-dashboard-root .react-grid-item.resizing {
+	transition: none;
+	z-index: 1;
+	will-change: width, height;
+}
+.huhu-dashboard-root .react-grid-item.react-draggable-dragging {
+	transition: none;
+	z-index: 1;
+	will-change: transform;
+	cursor: grabbing;
+	user-select: none;
+}
+/* The card, not its square grid cell, carries the lifted look: a ring and a deeper shadow. */
+.huhu-dashboard-root .react-grid-item.react-draggable-dragging > [data-slot='card'] {
+	box-shadow:
+		0 0 0 2px var(--ring),
+		var(--db-shadow-card-hover);
+}
+.huhu-dashboard-root .react-grid-item.dropping {
+	visibility: hidden;
+}
+/* The cell the dragged or resized tile will land in. */
+.huhu-dashboard-root .react-grid-item.react-grid-placeholder {
+	border: 1px dashed color-mix(in srgb, var(--primary) 70%, transparent);
+	border-radius: var(--db-radius-lg);
+	background: color-mix(in srgb, var(--primary) 14%, transparent);
+	transition: transform 100ms ease;
+	user-select: none;
+}
+.huhu-dashboard-root .react-grid-item.react-grid-placeholder.placeholder-resizing {
+	transition: none;
+}
+.huhu-dashboard-root .react-grid-item img {
+	pointer-events: none;
+	user-select: none;
+}
+/* Resize handle: bottom right corner, shown on hover or keyboard focus (always on touch screens). */
+.huhu-dashboard-root .react-grid-item > .react-resizable-handle {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 20px;
+	height: 20px;
+	cursor: se-resize;
+	opacity: 0;
+	transition: opacity 120ms ease;
+	touch-action: none;
+}
+.huhu-dashboard-root .react-grid-item:hover > .react-resizable-handle,
+.huhu-dashboard-root .react-grid-item:focus-within > .react-resizable-handle,
+.huhu-dashboard-root .react-grid-item.resizing > .react-resizable-handle {
+	opacity: 1;
+}
+@media (pointer: coarse) {
+	.huhu-dashboard-root .react-grid-item > .react-resizable-handle {
+		opacity: 1;
+		width: 28px;
+		height: 28px;
+	}
+}
+.huhu-dashboard-root .react-grid-item > .react-resizable-handle::after {
+	content: '';
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	width: 7px;
+	height: 7px;
+	border-right: 2px solid color-mix(in srgb, var(--db-text-muted) 80%, transparent);
+	border-bottom: 2px solid color-mix(in srgb, var(--db-text-muted) 80%, transparent);
+	border-bottom-right-radius: 2px;
+}
+.huhu-dashboard-root .react-grid-item > .react-resizable-handle:hover::after {
+	border-color: var(--primary);
+}
+.huhu-dashboard-root .react-resizable-hide > .react-resizable-handle {
+	display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.huhu-dashboard-root .react-grid-item.cssTransforms,
+	.huhu-dashboard-root .react-grid-item.react-grid-placeholder {
+		transition: none;
+	}
+}
+/* A tile's body is the one thing that scrolls when its content is taller than the cell. */
+.huhu-dashboard-root .huhu-widget-body {
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--db-text-muted) 35%, transparent) transparent;
+}

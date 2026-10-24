@@ -1,0 +1,40 @@
+/* Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: styles.css (editor and reading marks). */
+.huhu-comments-editor { --nd-comment-color: var(--interactive-accent); }
+.huhu-comment-hl {
+	background: color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 22%, transparent);
+	border-bottom: 1px solid color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 60%, transparent);
+	cursor: pointer;
+}
+.huhu-comments-editor .huhu-comment-line { background: color-mix(in srgb, var(--nd-comment-color) 8%, transparent); }
+.huhu-comments-editor .huhu-comment-gutter { width: 18px; }
+.huhu-comments-editor .huhu-comment-marker {
+	position: relative;
+	display: inline-flex;
+	width: 18px;
+	height: 18px;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+	cursor: pointer;
+}
+.huhu-comments-editor .huhu-comment-marker::before { content: ''; position: absolute; inset: -7px; }
+.huhu-comments-editor .huhu-comment-marker.is-open { color: var(--interactive-accent); }
+.huhu-comments-editor .huhu-comment-marker:hover { color: var(--text-normal); }
+.huhu-comments-editor .huhu-comment-marker-icon { position: relative; display: inline-flex; }
+.huhu-comments-editor .huhu-comment-marker svg { width: 14px; height: 14px; }
+.huhu-comments-editor .huhu-comment-marker-count {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	font-size: var(--font-smallest);
+	line-height: 1;
+	color: var(--text-on-accent);
+	background: var(--interactive-accent);
+	border-radius: var(--radius-s);
+}
+.huhu-comment-reading-marker { color: var(--interactive-accent); min-width: 32px; min-height: 32px; }
+.huhu-comment-reading-marker svg { width: 14px; height: 14px; }
+@media (pointer: coarse) {
+	.huhu-comments-editor .huhu-comment-marker::before { inset: -13px; }
+	.huhu-comment-reading-marker { min-width: 44px; min-height: 44px; }
+}

@@ -1,0 +1,131 @@
+name: BUG 与故障修复
+description: 报告异常、错误结果、崩溃或数据操作故障。
+title: "[BUG] "
+labels:
+  - bug
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈 HUHU。请先搜索已有 Issue；允许使用中文或英文。不要上传真实库、令牌、Cookie、密码或未脱敏的终端记录。安全问题请参阅
+        [安全策略](https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md)。
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      options:
+        - 看板 / 日历 / 待办
+        - 时钟天气 / 记录统计
+        - 智能体 / 终端 / 用量
+        - 内置浏览器
+        - 笔记导航器
+        - 批注
+        - 档案
+        - 自动化 / 通知
+        - Git 同步
+        - 保险箱
+        - 图标 / 外观
+        - 设置 / 工作台
+        - 其他 / 尚不确定
+      multiple: false
+    validations:
+      required: true
+  - type: input
+    id: huhu-version
+    attributes:
+      label: HUHU 版本
+      description: 填写完整版本号，例如 0.0.1；开发版本请附提交号。
+    validations:
+      required: true
+  - type: input
+    id: obsidian-version
+    attributes:
+      label: Obsidian 版本
+      description: 在 Obsidian「关于」中查看完整版本号。
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS / iPadOS
+      multiple: false
+    validations:
+      required: true
+  - type: input
+    id: system-details
+    attributes:
+      label: 系统版本和 CPU 架构
+      description: 例如 Windows 11 x64、macOS arm64；可注明主题及有关插件。
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题描述
+      description: 简述实际发生的问题，以及对使用的影响。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 按顺序列出操作，使用临时库和示例数据；无法稳定复现时说明触发条件。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 原本希望出现什么结果？
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际出现什么结果？错误文字请保留原文。
+    validations:
+      required: true
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: 发生频率
+      options:
+        - 每次都出现
+        - 间歇出现
+        - 仅发生一次
+        - 尚不确定
+      multiple: false
+    validations:
+      required: true
+  - type: dropdown
+    id: fresh-vault
+    attributes:
+      label: 全新库是否复现
+      options:
+        - 可以复现
+        - 没有复现
+        - 尚未尝试
+      multiple: false
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 截图、录屏或脱敏日志
+      description: 可附最小复现文件、截图或错误堆栈；不要上传整个库。
+    validations:
+      required: false
+  - type: checkboxes
+    id: before-submit
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索已有 Issue，并确认本次内容不含凭据或其他敏感资料。
+          required: true

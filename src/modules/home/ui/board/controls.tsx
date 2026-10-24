@@ -1,0 +1,54 @@
+// Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts
+import type { ComponentProps } from 'react';
+import { Button } from '../../../../ui/components/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../../../ui/components/select';
+import { useDashboardLayout } from '../theme/ThemeBridge';
+export function IconButton({ label, ...props }: ComponentProps<typeof Button> & { label: string }) {
+	return (
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<Button variant="ghost" size="icon-xs" aria-label={label} {...props} />
+			</TooltipTrigger>
+			<TooltipContent>{label}</TooltipContent>
+		</Tooltip>
+	);
+}
+export function Choice({
+	value,
+	onChange,
+	label,
+	options,
+	className,
+	compact = false,
+}: {
+	className?: string;
+	compact?: boolean;
+	value: string;
+	onChange(this: void, value: string): void;
+	label: string;
+	options: readonly { value: string; label: string }[];
+}) {
+	const layout = useDashboardLayout();
+	return (
+		<Select value={value} onValueChange={onChange}>
+			<SelectTrigger
+				data-hit-control={compact || undefined}
+				size="sm"
+				aria-label={label}
+				className={
+					compact ? `data-[size=sm]:h-[30px] ${className ?? ''}` : (className ?? 'min-w-0 text-sm data-[size=sm]:h-9')
+				}
+			>
+				<SelectValue />
+			</SelectTrigger>
+			<SelectContent className="huhu-dashboard-root" data-dashboard-layout={layout}>
+				{options.map((option) => (
+					<SelectItem key={option.value} value={option.value}>
+						{option.label}
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
+	);
+}

@@ -1,0 +1,76 @@
+.huhu-ui {
+	--nd-hit-size: 32px;
+	font-family: var(--nd-font-sans);
+	letter-spacing: .01em;
+	color: var(--foreground);
+	-webkit-font-smoothing: antialiased;
+}
+.huhu-ui *, .huhu-ui ::before, .huhu-ui ::after { box-sizing: border-box; }
+.huhu-portal-root { display: contents; }
+.huhu-ui .scrollbar-sleek { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.huhu-ui .scrollbar-sleek-parent { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.huhu-ui .scrollbar-sleek-parent:hover { scrollbar-color: var(--border) transparent; }
+.huhu-ui .scrollbar-none { scrollbar-width: none; }
+.huhu-ui .scrollbar-none::-webkit-scrollbar { display: none; }
+.huhu-ui [data-sonner-toaster] { z-index: var(--layer-notice); }
+
+/* Hit boxes never participate in layout. Page spacing decides whether adjacent
+ * compact targets overlap; preserve the upstream geometry and shared borders. */
+/* Author display utilities must not undo the control's native hidden attribute. */
+.huhu-ui [data-hit-control][hidden]:not(#\#) { display: none; }
+:where(.huhu-ui [data-hit-control]) { position: relative; }
+.huhu-ui [data-hit-control]::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: max(100%, var(--nd-hit-size));
+	height: max(100%, var(--nd-hit-size));
+	transform: translate(-50%, -50%);
+}
+/* Joined items keep their own inline partition. Only the group's outside block
+ * edges expand; a single item can use the entire minimum target. */
+.huhu-ui [data-hit-group] > [data-hit-control]:not(:only-child)::before { width: 100%; }
+
+.huhu-ui :is(button, input:not([type="hidden"], [type="checkbox"], [type="radio"]), textarea, select, [role="button"], [role="combobox"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [data-slot="slider"], [data-slot="select-scroll-up-button"], [data-slot="select-scroll-down-button"]):not([data-hit-control]) {
+	min-height: var(--nd-hit-size);
+}
+/* The minimum width is the target size of a square control. A text button keeps only its height: its width is
+ * its label. */
+.huhu-ui :is(button:where(:not([data-slot="button"])), :where([data-slot="button"][data-size^="icon"]), input:not([type="hidden"], [type="checkbox"], [type="radio"]), textarea, select, [role="button"], [role="combobox"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [data-slot="slider"], [data-slot="select-scroll-up-button"], [data-slot="select-scroll-down-button"]):not([data-hit-control]) {
+	min-width: var(--nd-hit-size);
+}
+.huhu-ui [data-slot="scroll-area-thumb"][data-orientation="vertical"] { min-height: var(--nd-hit-size); }
+.huhu-ui [data-slot="scroll-area-thumb"][data-orientation="horizontal"] { min-width: var(--nd-hit-size); }
+.huhu-ui [data-slot="tabs-trigger"] { min-width: var(--nd-hit-size); }
+.huhu-ui [data-slot="tabs-list"] { min-height: calc(var(--nd-hit-size) + 6px); }
+@media (pointer: coarse) {
+	.huhu-ui { --nd-hit-size: 44px; }
+}
+/* All utility/presence animations follow the host, including default durations. */
+.huhu-ui, .huhu-ui * {
+	--default-transition-duration: var(--anim-duration-fast);
+	--tw-duration: var(--anim-duration-fast);
+	--tw-animation-duration: var(--tw-duration, var(--anim-duration-fast));
+}
+.huhu-ui :is([data-sonner-toaster], [data-sonner-toast], [data-sonner-toast] *):not(#\#):not(#\#) {
+	transition-property: transform, opacity;
+	transition-duration: var(--anim-duration-moderate);
+	animation-duration: var(--anim-duration-moderate);
+}
+@media (prefers-reduced-motion: reduce) {
+	/* Beat the scoped utility/state selectors without !important; never affect host content. */
+	:is(.huhu-ui, .huhu-ui *):not(#\#):not(#\#),
+	.huhu-ui:not(#\#):not(#\#) ::before,
+	.huhu-ui:not(#\#):not(#\#) ::after { animation: none; transition: none; scroll-behavior: auto; }
+}
+
+/* Obsidian pins the calendar indicator of date and datetime-local inputs to the left edge (position: absolute) and
+ * leaves room for it with its own padding. The Input component sets its own padding, so the indicator would sit on
+ * the first field. Put it back in the flow, at the end of the field, whatever theme is active. */
+.huhu-ui input:is([type="date"], [type="datetime-local"], [type="month"], [type="week"], [type="time"]):not([disabled="true"])::-webkit-calendar-picker-indicator {
+	position: static;
+	margin-inline: auto 0;
+	left: auto;
+	right: auto;
+}

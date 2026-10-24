@@ -1,0 +1,953 @@
+import { DEFAULT_TASK_ARCHIVE_PATH, DEFAULT_HIGHLIGHT_IMPORT_PATH, DEFAULT_MEMO_ROOT } from '../default-paths';
+import { DEFAULT_DASHBOARD_FILE } from '../../../../../shared/storage/vault-layout';
+import type { TaskAutomationMeta } from '../../../../../shared/automation/metadata';
+import type { AutomationDefinition } from '../../../../../shared/automation/types';
+import type { CalendarTaskFilter } from '../../calendar/task-filter';
+import type { AppearancePreset } from '../appearance-preset';
+import type { BoardGrid } from '../grid';
+import type { ShortcutButton } from '../shortcut-buttons';
+
+/** Fixed destination override for calendar-added tasks. */
+export interface CalendarTaskTarget {
+	kind: 'file' | 'folder' | 'task';
+	path: string;
+	template?: string;
+}
+
+export interface DashboardSettings {
+	/** Canonical persisted workspace registry (apex-style indices). */
+	workspaces: { files: string[]; names: string[]; active: number };
+	useThemeFont: boolean;
+	/** Widgets the pre-canvas sidebar showed, captured once from the old enable flags; used to convert old boards. */
+	legacyWidgetMembers?: BoardWidgetMember[];
+	collapsedSections: string[];
+	/** Global theme + Home decor snapshots, independent of board content. */
+	appearancePresets: AppearancePreset[];
+	activeAppearancePresetId?: string;
+	/** Path of the ACTIVE workspace file (no .md extension). */
+	dashboardFile: string;
+	/** All workspace board files in switcher order (button i+1). Paths follow
+	    the dashboardFile convention (no leading '/', no .md extension). */
+	workspaceFiles: string[];
+	/** Optional display names, parallel to workspaceFiles ('' = number only). */
+	workspaceNames?: string[];
+	rssReadRetentionDays: number;
+	backupEnabled: boolean;
+	backupPeriod: 'hourly' | 'daily' | 'weekly' | 'monthly';
+	backupMaxCount: number;
+	backupLastRun?: number;
+	recentDocCount: number;
+	widgetWeatherCity: string;
+	widgetWeatherLat: number;
+	widgetWeatherLon: number;
+	pomodoroWorkMinutes: number;
+	pomodoroShortBreakMinutes: number;
+	pomodoroLongBreakMinutes: number;
+	pomodoroLongBreakInterval: number;
+	/** Daily pomodoro completion goal (count), shown as "1/8" in KPIs/gauge. */
+	pomodoroDailyGoal: number;
+	pomodoroMode: 'countdown' | 'stopwatch';
+	pomodoroRemindInterval: number;
+	pomodoroAutoStartBreak: boolean;
+	pomodoroSoundEnabled: boolean;
+	/** Floating body-level mini countdown panel shown while a pomodoro runs. */
+	pomodoroMiniPanelEnabled: boolean;
+	skillWidgetButtons: SkillShortcut[];
+	/** Buttons of the Shortcuts widget. */
+	shortcutButtons: ShortcutButton[];
+	/** Folders whose tasks are excluded from the calendar widget/section. */
+	calendarExcludeFolders: string[];
+	/** Active task filter in the full-screen calendar modal ('all' default).
+	    Persisted memory only — the sidebar widget stays unfiltered. */
+	calendarTaskFilter: CalendarTaskFilter;
+	/** Where calendar-added tasks land in the day's daily note: right below
+	    frontmatter ('start') or at the bottom ('end'). */
+	calendarTaskInsertPosition: 'start' | 'end';
+	/** Optional fixed destination for calendar-added tasks: a specific file
+	    (task inserted per calendarTaskInsertPosition) or a folder (one note
+	    per day, named YYYY-MM-DD, created on first task). Unset = the clicked
+	    day's own daily note (created in the core Daily Notes folder when missing). */
+	calendarTaskTarget?: CalendarTaskTarget;
+	/** Currency symbol shown before amounts in the expense widget/stats (e.g. ¥, $). */
+	expenseCurrency: string;
+	/** Vault folder whose images the album rotates through ('' = unset). */
+	widgetAlbumFolder: string;
+	/** Seconds each photo stays on screen before auto-advancing. */
+	widgetAlbumIntervalSec: number;
+	/** Include images from subfolders of the album folder. */
+	widgetAlbumRecursive: boolean;
+	/** Panel aspect ratio of the album frame ('1:1' square, '3:4' portrait). */
+	widgetAlbumRatio: '1:1' | '3:4';
+	/** Photo transition animation between slides ('fade' default). */
+	widgetAlbumTransition: 'fade' | 'slide-left' | 'slide-right' | 'zoom';
+	/** Album widgets (multiple): one slideshow card per entry. */
+	albums: AlbumConfig[];
+	/** Anniversary entries: elapsed time since a historical date each. */
+	anniversaries: AnniversaryConfig[];
+	/** Singleton widget card backgrounds (undefined = none). */
+	quickActionsBackground?: WidgetBackground;
+	pomodoroBackground?: WidgetBackground;
+	habitBackground?: WidgetBackground;
+	musicBackground?: WidgetBackground;
+	yearProgressBackground?: WidgetBackground;
+	/** Player volume 0-1. */
+	musicVolume: number;
+	/** Repeat mode of the music player. */
+	musicRepeatMode: MusicRepeatMode;
+	/** Persisted playlist; cover URLs are lazily backfilled and then saved. */
+	musicPlaylist: MusicTrack[];
+	/** Highlighted track index restored on restart; playback never auto-resumes. */
+	musicCurrentIndex: number;
+	/** Optional custom background color for the quick-buttons widget (user
+	 *  picked via the palette button; undefined = theme default). */
+	quickButtonsBgColor?: string;
+	/** Optional custom button color for the quick-buttons widget (palette
+	 *  picker; undefined = theme default). */
+	quickButtonsBtnColor?: string;
+	/** Weread (WeChat Read) official API key (wrk-...), shared account-wide. */
+	/** Inert legacy integration settings, retained for compatibility; no service reads them. */
+	wereadApiKey: string;
+	ticktickRegion: 'dida365' | 'ticktick';
+	ticktickCookie: string;
+	ticktickCsrf: string;
+	ticktickDeviceVersion: string;
+	ticktickTimezone: string;
+	/** Folder where weread highlights are imported as notes. */
+	wereadImportPath: string;
+	/** Global dashboard background image (vault path or URL). Empty = none. */
+	bgImage: string;
+	/** Background dimming overlay 0-100 (keeps text readable over busy images). */
+	bgDim: number;
+	/** Background blur in px 0-30 (depth-of-field over the image). */
+	bgBlur: number;
+	/** Background fill mode. */
+	bgSize: BgSize;
+	/** Focal point of the board background, written only after the user clicks the preview. */
+	bgFocal?: { x: number; y: number };
+	/** Surface (card/section/sidebar) opacity 0-100. null = theme default. */
+	surfaceOpacity: number | null;
+	/** Frosted-glass blur in px 0-20. null = theme default. */
+	glassBlur: number | null;
+	/** Corner-radius base in px 0-22 (drives sm/md/lg). null = theme default. */
+	radiusScale: number | null;
+	/** Global dashboard text size. 'medium' (default) keeps the inherited
+	    base size; 'small'/'large' scale it (em-based sizes cascade from the
+	    root, so titles/body/widgets grow or shrink together). */
+	fontScale: 'small' | 'medium' | 'large';
+	/**
+	 * Retired as a display switch: Quick notes is a widget the board places like any other. Read once when an old
+	 * board converts to the grid (true adds the widget).
+	 */
+	quickNotesEnabled: boolean;
+	/** Quick-create presets (template + folder + filename). Global (Layer 1). */
+	quickNotePresets: QuickNotePreset[];
+	/** Note path to append captures to. Empty = the day's capture file in the inbox folder (`YYYY-MM-DD-闪念.md`). */
+	quickCaptureTarget: string;
+	/** Template path applied to the day's capture file when it is created. Empty = the default properties. */
+	quickCaptureTemplate: string;
+	/** Where captured lines land in the note: after frontmatter ('start') or at the bottom ('end'). */
+	quickCapturePosition: 'start' | 'end';
+	/** Pinned-note shortcuts rendered as one-click open buttons. */
+	pinnedNotes: PinnedNote[];
+	/** Quick-command shortcuts rendered as one-click execute buttons. */
+	quickCommands: QuickCommand[];
+	/** Show a "Today" button that creates/opens the core Daily Notes note. */
+	quickDailyEnabled: boolean;
+	/** Multiple countdowns managed in settings; rendered in the sidebar. */
+	countdowns: CountdownConfig[];
+	/** User-defined tags for media files (images/videos sections), keyed by
+	 *  vault path. Managed by MediaTagService; optional so settings without it stay valid. */
+	mediaTags?: Record<string, string[]>;
+	readingSoundEnabled: boolean;
+	taskTemplates: TaskTemplate[];
+	memoSavePath: string;
+	/** Template note applied when a memo card is saved as a note ('' = built-in
+	    default: 创建时间 + type: memo frontmatter). */
+	memoTemplatePath: string;
+	/** Where one-click archive writes completed tasks: a fixed file
+	    (taskArchivePath, the default) or today's daily note
+	    (created from the daily-notes template when missing). */
+	taskArchiveTarget: 'file' | 'daily';
+	taskArchivePath: string;
+	/** Library sections: folder where the toolbar "new note" button creates notes
+	 *  (frontmatter pre-filled to match the section's filters). '' = vault root. */
+	libraryNewNotePath: string;
+}
+
+/** How a dashboard background image fills the background layer. */
+export type BgSize = 'cover' | 'contain';
+
+/** One "quick-create" button in the Quick Notes region: creates a note from a
+ *  template file into a folder, with `{{date}}`/`{{time}}`/`{{title}}` resolved. */
+export interface QuickNotePreset {
+	id: string;
+	/** Button label. */
+	label: string;
+	/** Lucide icon name (e.g. 'calendar-days'). */
+	icon: string;
+	/** Vault path to a template file. Empty = create a blank note. */
+	templatePath: string;
+	/** Destination folder (vault root if empty). Created if missing. */
+	folder: string;
+	/** Filename pattern, supports {{date}}, {{date:F}}, {{time}}, {{title}}. */
+	filename: string;
+}
+
+/** A pinned note shortcut in the Quick Notes region: one-click open. */
+export interface PinnedNote {
+	id: string;
+	label: string;
+	/** Lucide icon name. */
+	icon: string;
+	/** Vault path to the note. */
+	path: string;
+}
+
+/** A quick-command shortcut in the Common Actions bar: one-click execute. */
+export interface QuickCommand {
+	id: string;
+	/** Button label. */
+	label: string;
+	/** Lucide icon name. */
+	icon: string;
+	/** Obsidian command id (e.g. 'editor:toggle-pin'). */
+	commandId: string;
+}
+
+export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings = {
+	workspaces: { files: [DEFAULT_DASHBOARD_FILE], names: [''], active: 0 },
+	rssReadRetentionDays: 180,
+	backupEnabled: false,
+	backupPeriod: 'daily',
+	backupMaxCount: 10,
+	useThemeFont: false,
+	collapsedSections: [],
+	appearancePresets: [],
+	dashboardFile: DEFAULT_DASHBOARD_FILE,
+	workspaceFiles: [DEFAULT_DASHBOARD_FILE],
+	workspaceNames: [''],
+	recentDocCount: 5,
+	// Defaults match the CSS spans/sizes until the user drags or picks a tier.
+	widgetWeatherCity: 'Shanghai',
+	widgetWeatherLat: 31.23,
+	widgetWeatherLon: 121.47,
+	pomodoroWorkMinutes: 25,
+	pomodoroShortBreakMinutes: 5,
+	pomodoroLongBreakMinutes: 15,
+	pomodoroLongBreakInterval: 4,
+	pomodoroDailyGoal: 8,
+	pomodoroMode: 'countdown',
+	pomodoroRemindInterval: 25,
+	pomodoroAutoStartBreak: true,
+	pomodoroSoundEnabled: true,
+	pomodoroMiniPanelEnabled: true,
+	skillWidgetButtons: [],
+	shortcutButtons: [],
+	calendarExcludeFolders: [],
+	calendarTaskFilter: 'all',
+	calendarTaskInsertPosition: 'start',
+	expenseCurrency: '¥',
+	widgetAlbumFolder: '',
+	widgetAlbumIntervalSec: 8,
+	widgetAlbumRecursive: true,
+	widgetAlbumRatio: '1:1',
+	widgetAlbumTransition: 'fade',
+	albums: [],
+	anniversaries: [],
+	// No default picture: a fresh vault must not fetch a remote image on first open.
+	musicBackground: { image: '', opacity: 100, dim: 45, blur: 0 },
+	musicVolume: 0.8,
+	musicRepeatMode: 'list',
+	musicPlaylist: [] as MusicTrack[],
+	musicCurrentIndex: -1,
+	wereadApiKey: '',
+	ticktickRegion: 'dida365',
+	ticktickCookie: '',
+	ticktickCsrf: '',
+	ticktickDeviceVersion: '',
+	ticktickTimezone: 'Asia/Shanghai',
+	wereadImportPath: DEFAULT_HIGHLIGHT_IMPORT_PATH,
+	bgImage: '',
+	bgDim: 40,
+	bgBlur: 0,
+	bgSize: 'cover',
+	surfaceOpacity: null,
+	glassBlur: null,
+	radiusScale: null,
+	fontScale: 'medium',
+	quickNotesEnabled: false,
+	quickNotePresets: [] as QuickNotePreset[],
+	quickCaptureTarget: '',
+	quickCaptureTemplate: '',
+	quickCapturePosition: 'start',
+	pinnedNotes: [] as PinnedNote[],
+	quickCommands: [] as QuickCommand[],
+	quickDailyEnabled: false,
+	countdowns: [] as CountdownConfig[],
+	mediaTags: {},
+	readingSoundEnabled: true,
+	taskTemplates: [],
+	memoSavePath: DEFAULT_MEMO_ROOT,
+	memoTemplatePath: '',
+	taskArchiveTarget: 'file',
+	taskArchivePath: DEFAULT_TASK_ARCHIVE_PATH,
+	libraryNewNotePath: '',
+};
+
+export interface QuickAction {
+	name: string;
+	icon: string;
+	type: 'file' | 'command' | 'action' | 'url' | 'quick' | 'agent' | 'note';
+	id?: string;
+	openIn?: 'tab' | 'system';
+	agentId?: string;
+	prompt?: string;
+	preset?: QuickNotePreset;
+	target: string;
+}
+
+export const PRESET_ACTIONS: QuickAction[] = [
+	{ name: 'New Journal', icon: 'calendar-plus', type: 'command', target: 'daily-notes' },
+	{ name: 'New Note', icon: 'plus-circle', type: 'command', target: 'file-explorer:new-file' },
+];
+
+export type CardType = 'task' | 'note' | 'link' | 'web' | 'project' | 'habit' | 'generic' | 'weather' | 'tracker';
+
+export interface WeatherConfig {
+	latitude: number;
+	longitude: number;
+	cityName: string;
+	country?: string;
+	admin1?: string;
+	admin2?: string;
+	timezone?: string;
+}
+
+export interface WeatherData {
+	timezone?: string;
+	source?: 'Open-Meteo' | 'Met.no';
+	dailyPrecipitation?: number[];
+	hourly?: { time: string; temperature: number | null; weatherCode: number | null; precipitation: number | null }[];
+	temperature: number;
+	weatherCode: number;
+	windSpeed: number | null;
+	humidity: number | null;
+	feelsLike: number | null;
+	dailyMax: number[];
+	dailyMin: number[];
+	dailyCodes: number[];
+	dailyDates: string[];
+	fetchedAt: number;
+}
+
+export type TrackerStyle = 'line' | 'heatmap' | 'bar';
+
+export interface TrackerConfig {
+	key: string;
+	days: number;
+	style: TrackerStyle;
+}
+
+export interface TrackerDataPoint {
+	date: string;
+	value: number | null;
+}
+
+export interface TaskItem extends TaskAutomationMeta {
+	text: string;
+	checked: boolean;
+	reminder?: string;
+	children?: TaskItem[];
+	collapsed?: boolean;
+}
+
+export interface DocNode {
+	path: string;
+	children?: DocNode[];
+	collapsed?: boolean;
+}
+
+export interface TaskTemplate {
+	id: string;
+	name: string;
+	tasks: string[];
+}
+
+export type CardSize = 'S' | 'M' | 'L';
+
+export interface DashboardCard {
+	/** Only web shortcut cards use this. */
+	openIn?: 'tab' | 'system';
+	/** Original note appearance when a note is moved into a mixed sticky section. */
+	noteStyle?: 'cover' | 'plain';
+	/** Project cards: the vault folder this card is the project of. */
+	folder?: string;
+	id: string;
+	title: string;
+	type: CardType;
+	column: string;
+	body: string;
+	tasks: TaskItem[];
+	docs: DocNode[];
+	url: string;
+	wikiLink: string;
+	progress: number;
+	streak: number;
+	dueDate: string;
+	blockquote: string;
+	color: string;
+	coverImage: string;
+	/** Raw "x,y" metadata; absent means centered. */
+	coverPos?: string;
+	width: number;
+	size: CardSize;
+	gridCols: number;
+	gridRows: number;
+	gridCol: number;
+	gridRow: number;
+	chartConfig?: never;
+	weatherConfig?: WeatherConfig;
+	trackerConfig?: TrackerConfig;
+}
+
+export type LibraryViewMode = 'grid' | 'gallery' | 'list' | 'table' | 'kanban';
+
+export interface PropertyFilter {
+	property: string;
+	values: string[];
+	/** How checked values compare against a file's property value.
+	 *  equals (default): exact match, OR across values.
+	 *  contains: substring match (case-insensitive), values may be free text.
+	 *  notEquals: exclude files whose value exactly equals any checked value. */
+	operator?: PropertyFilterOperator;
+	dateRange?: { start: string; end: string };
+}
+
+export type PropertyFilterOperator = 'equals' | 'contains' | 'notEquals';
+
+export interface LibraryConfig {
+	filters: PropertyFilter[];
+	viewMode: LibraryViewMode;
+	sortBy: string;
+	sortDesc: boolean;
+	kanbanGroupBy?: string;
+	/** Kanban grouping mode: by frontmatter property (default, keyed by
+	 *  kanbanGroupBy) or by the file's top-level subfolder under the configured
+	 *  scan folders (folder sections). */
+	groupMode?: 'property' | 'folder';
+	/** Toolbar grouping for grid/gallery/list/table: off (default), by the
+	    top-level folder under the scan folders ('folder'), or by a frontmatter
+	    property key (viewGroupBy). Kanban uses kanbanGroupBy/groupMode instead. */
+	viewGroupMode?: 'none' | 'folder' | 'property';
+	/** Property key when viewGroupMode === 'property'. */
+	viewGroupBy?: string;
+	/** Kanban view: show each card's cover image (same extraction as the
+	    gallery view — 封面/cover keys first, any image-shaped value fallback).
+	    Defaults to false. */
+	kanbanShowCovers?: boolean;
+	pageSize?: number;
+	/** Grid card view: show note frontmatter properties as key:value badges. Defaults to true. */
+	showProperties?: boolean;
+	/** Grid card view: max number of property badges per card. Defaults to 6.
+	    Applies to cards that hit none of `visibleProperties` (fallback mode). */
+	propertyLimit?: number;
+	/** Grid/gallery card size. Defaults to 'medium'. Only affects the card
+	    views — list/table/kanban ignore it. */
+	cardSize?: 'small' | 'medium' | 'large';
+	/** Grid card view: hand-picked properties to show (order preserved). A card
+	    matching at least one shows exactly those matches; a card matching none
+	    falls back to the automatic first-`propertyLimit` display. Empty/undefined
+	    = automatic mode for every card. */
+	visibleProperties?: string[];
+	/** Table columns use file.name/file.modified or property:<frontmatter key> identities.
+	 * Missing fields retain their preferences; these are independent of card badges. */
+	tableOrder?: string[];
+	tableHidden?: string[];
+	/** Quick date filter. When `days` is set it is a rolling "last N days"
+	    window evaluated relative to today (start/end ignored); otherwise the
+	    fixed start/end date range applies. */
+	quickDateFilter?: { property: 'created' | 'modified'; start: string; end: string; days?: number };
+	/** Folder section: scan scope. A file shows if it lives under any of these folders (recursive). */
+	folders?: string[];
+	/** Library/folder funnel: persistent folder-prefix filter (OR across entries). */
+	folderFilter?: string[];
+	/** Folders excluded from this section's data (all-tasks aggregation, library
+	 *  scans, images/videos scans). Matched by path prefix, case-insensitive;
+	 *  files inside them never reach the section. */
+	excludeFolders?: string[];
+	/** Media sections (images/videos): when non-empty, ONLY files under these
+	 *  folders reach the section (excludes still subtract within the scope).
+	 *  Empty = whole vault. */
+	includeFolders?: string[];
+	/** New notes created from this section's toolbar button start from this
+	 *  template note's content ({{title}} / {{date:...}} substituted). Empty = bare note. */
+	templatePath?: string;
+	/** Ordered choices. Missing projects templatePath; an explicit empty list creates a blank note. */
+	templatePaths?: string[];
+	/** All-tasks section: dimension used to group tasks into list sections / kanban columns. */
+	taskGroupBy?: 'date' | 'priority' | 'none';
+}
+
+/** One countdown entry. Multiple countdowns are managed in settings (countdowns[]). */
+export interface CountdownConfig {
+	automation?: AutomationDefinition;
+	id: string;
+	label: string;
+	/** Follow the localized example name until the user edits it. */
+	defaultLabel?: boolean;
+	targetDate: string;
+	displayMode: 'days' | 'hours' | 'minutes';
+	reminderDays: number;
+	/** Optional decorative card background. */
+	background?: WidgetBackground;
+}
+
+/** Stacked-layout card height ratios: exact fractions of the calendar unit
+ *  (the 6-row widget grid: 6 / 4 / 3 / 2 rows). */
+export type WidgetHeightRatio = 'full' | 'twoThirds' | 'half' | 'third';
+
+/** Optional decorative background for a widget card: image + readability
+ *  controls (image opacity, black dimming overlay, blur). */
+export interface WidgetBackground {
+	/** Vault path or http(s) URL of the image ('' = none). */
+	image: string;
+	/** Image opacity 0-100 (100 = solid). */
+	opacity: number;
+	/** Black dimming overlay 0-100 (keeps the card text readable). */
+	dim: number;
+	/** Background blur 0-20 px. */
+	blur: number;
+	/** Text/icon color scheme over the image: 'light' | 'dark' | custom
+	 *  '#rrggbb' | undefined (follow the theme). */
+	foreground?: string;
+}
+
+/** Factory with sane defaults (solid image, mild dim, no blur). */
+export const DEFAULT_WIDGET_BACKGROUND = (): WidgetBackground => ({ image: '', opacity: 100, dim: 30, blur: 0 });
+
+/** One photo-album widget entry. Multiple albums are managed in settings
+ *  (albums[]); each renders its own slideshow card in the sidebar. */
+export interface AlbumConfig {
+	id: number;
+	/** Vault folder the slideshow rotates through. */
+	folder: string;
+	/** Seconds each photo stays on screen. */
+	intervalSec: number;
+	/** Include images from subfolders. */
+	recursive: boolean;
+	/** Frame aspect ratio ('1:1' square, '3:4' portrait). */
+	ratio: '1:1' | '3:4';
+	/** Transition animation between slides. */
+	transition: 'fade' | 'slide-left' | 'slide-right' | 'zoom';
+	/** Stacked-layout card height ratio (side layout ignores it). */
+	heightRatio: WidgetHeightRatio;
+	/** Focal point of the current slide, written only after the user clicks the photo. */
+	focal?: { x: number; y: number };
+}
+
+/** One anniversary ("纪念日") entry: elapsed time since a historical date,
+ *  with an optional same-day-every-year reminder. */
+export interface AnniversaryConfig {
+	automation?: AutomationDefinition;
+	id: string;
+	label: string;
+	/** Follow the localized example name until the user edits it. */
+	defaultLabel?: boolean;
+	/** Historical date the elapsed time is measured from (YYYY-MM-DD or
+	 *  YYYY-MM-DDTHH:mm). */
+	startDate: string;
+	/** Elapsed display granularity: calendar years/months/days, total days,
+	 *  or days + hours. */
+	precision: 'ymd' | 'days' | 'hours';
+	/** Fire a reminder once a year on the anniversary's month/day. */
+	annualReminder: boolean;
+	/** Solar repeats the month and day. Lunar repeats the lunar month and day. */
+	calendar?: 'solar' | 'lunar';
+	/** Optional decorative card background. */
+	background?: WidgetBackground;
+}
+
+/** One playable NetEase track. Shared by search results, playlist imports and
+    the persisted sidebar playlist. `fee` drives playability: 0/8 are free,
+    1/2/4 need an account the widget deliberately does not have. */
+export interface MusicTrack {
+	/** NetEase song id. */
+	id: number;
+	/** Song title. */
+	name: string;
+	/** artists[].name joined with ' / '. */
+	artist: string;
+	/** Album name. */
+	album: string;
+	/** Song duration in milliseconds (API original). */
+	durationMs: number;
+	/** NetEase fee flag: 0|8 free, 1 VIP, 2|4 album purchase. */
+	fee: number;
+	/** Cover URL, lazily backfilled from /api/song/detail then persisted. */
+	picUrl?: string;
+}
+
+/** Repeat mode of the music player widget. */
+export type MusicRepeatMode = 'list' | 'one' | 'shuffle';
+
+// Read/write compatibility for retired sections. These types never enable an integration.
+type WereadReadingState = 'notStarted' | 'reading' | 'finished';
+type WereadContentType = 'book' | 'audio' | 'article';
+type WereadRecency = 'recent7' | 'recent30' | 'older' | 'never';
+type WereadNoteState = 'highlights' | 'ideas' | 'none';
+type WereadGroupBy = 'none' | 'readingState' | 'contentType' | 'recency' | 'notes';
+
+/** Preserved widget configuration inside an old WeRead section. */
+export interface WereadWidget {
+	id: string;
+	view: 'shelf' | 'stats' | 'notes';
+	/** Stats widget: ordered list of visible blocks (order = display order).
+	 *  Absent = all blocks in the default order. Hidden blocks are simply
+	 *  missing from the list. */
+	statsItems?: WereadStatItem[];
+	/** Shelf progress filter (multi-select): 'notStarted' | 'reading' | 'finished'. Empty = all. */
+	progressFilters?: WereadReadingState[];
+	/** Stable shelf item classes: electronic book, audio, or article collection. */
+	contentTypeFilters?: WereadContentType[];
+	/** Disjoint activity buckets based on the latest reading timestamp. */
+	recencyFilters?: WereadRecency[];
+	/** Note/highlight state from the notebooks endpoint. */
+	noteFilters?: WereadNoteState[];
+	/** Optional visual shelf grouping. Defaults to readingState for new widgets. */
+	groupBy?: WereadGroupBy;
+	/** Genre (category) filter. */
+	categoryFilters?: string[];
+	title?: string;
+}
+
+/** Blocks of the weread stats widget. */
+export type WereadStatItem = 'kpi' | 'trend' | 'topRead' | 'preferCategory';
+
+/** Retired WeRead section config, preserved when unrelated board content is edited. */
+export interface WereadConfig {
+	/** Ordered widgets rendered top-to-bottom. */
+	widgets: WereadWidget[];
+}
+
+/** Dataview (DQL) section config. The raw DQL query string is the sole required
+ *  field; `title` optionally overrides the column name in the section header.
+ *  The display fields (pageSize/density/striped/rowNumbers) are view-layer
+ *  preferences — the query result itself is unaffected by them. */
+export interface DataviewConfig {
+	/** Raw DQL query, e.g. `TABLE file.name FROM "Books" WHERE rating >= 4 SORT file.name`. */
+	query: string;
+	/** Optional display title override (defaults to column name). */
+	title?: string;
+	/** Rows per page for TABLE/LIST/TASK results (default 50). */
+	pageSize?: number;
+	/** Presentation mode: 'auto' renders each query type in its native Dataview
+	 *  shape (TABLE -> compact table, LIST -> bullet list with bold group
+	 *  headers, TASK -> checkbox list); 'table'/'list' force one layout across
+	 *  all query shapes. Only affects rendering, never the query. Default 'auto'. */
+	viewMode?: 'table' | 'list' | 'auto';
+	/** Show the source-note columns/summary (title, path, created date).
+	 *  Default on. */
+	showSource?: boolean;
+	/** Row density: 'normal' (comfortable) or 'compact' (halved paddings). */
+	density?: 'normal' | 'compact';
+	/** Zebra-striping on table rows / list items (default off). */
+	striped?: boolean;
+	/** Prepend a row-number column to TABLE results (default off). */
+	rowNumbers?: boolean;
+	/** Preferred column order. Missing fields stay visible at the end. */
+	columnOrder?: string[];
+	/** Columns kept in the preference but omitted from the table. */
+	hiddenColumns?: string[];
+	/** Vault folders excluded from the query's page set (matched by path prefix,
+	 *  case-insensitive). Pages under them are dropped before the query runs, so
+	 *  FROM / WHERE / GROUP BY never see them. */
+	excludeFolders?: string[];
+}
+
+/** Web embed section config (sectionType 'web'). The URL is the sole required
+ *  field; the section embeds that page as an iframe (or, on desktop, an
+ *  Electron webview for sites that refuse framing — see web-precheck). */
+export interface WebEmbedConfig {
+	/** Page to embed. Must be a valid http(s) URL once normalized
+	 *  (normalizeWebUrl in web-precheck adds the https:// scheme when missing). */
+	url: string;
+	/** Display zoom, 0.5–2 (default 1). Shrinks dense web apps (Keep-style)
+	 *  so they fit a half-width section. iframe -> css zoom, webview ->
+	 *  setZoomFactor after dom-ready. */
+	zoom?: number;
+}
+
+export interface PipelineStage {
+	color?: string;
+	id: string;
+	value: string;
+	label: string;
+	/** Relative to rootFolder. Absent means leave the note in its current folder. */
+	folder?: string;
+	width?: number;
+}
+export interface PipelineSkill extends SkillShortcut {
+	scope: 'stage' | 'card';
+	/** Empty means all configured stage values. */
+	stages: string[];
+}
+export interface PipelineConfig {
+	boardStyle?: 'theme' | 'trello' | 'solid' | 'blush';
+	cardProperties?: string[];
+	rootFolder: string;
+	statusField: string;
+	stages: PipelineStage[];
+	excludeFolders: string[];
+	/** Explicit vault-relative destination, which may be outside rootFolder. */
+	archiveFolder?: string;
+	templatePaths: string[];
+	sortBy: 'title' | 'modified' | 'created' | 'due';
+	sortDesc: boolean;
+	filterFields: string[];
+	filters: Record<string, string>;
+	search: string;
+	skills: PipelineSkill[];
+}
+
+export interface PmStage {
+	label: string;
+	/** Accent color (hex). */
+	color?: string;
+}
+
+/** A skill button on a PM project card/board (e.g. project retrospective).
+ *  Dispatch vars: {skill} {path} {title} {folder} {input}. */
+export interface PmSkill {
+	id: string;
+	label: string;
+	/** Lucide icon name. */
+	icon: string;
+	/** Agent adapter that receives the prompt. */
+	agent: string;
+	/** Agent-side skill name. Empty = free-form prompt. */
+	skillName: string;
+	/** Prompt template. Empty uses the target agent's skill invocation plus
+	 *  input. */
+	promptTemplate: string;
+	/** Skip the preview modal and send this button's prompt immediately. */
+	directSend?: boolean;
+}
+
+/** PM section config (sectionType 'pm'): a project-management board. Each
+ *  project is a vault note (frontmatter `type: project`) under rootFolder —
+ *  metadata on the card, the full editable "project board" in a modal. Work
+ *  notes live in a per-project subfolder `<root>/<project name>/`. */
+export interface PmConfig {
+	/** Root folder scanned for project notes. Required: an unset root renders
+	 *  the unconfigured state instead of scanning the vault. */
+	rootFolder: string;
+	/** Manual card order (note PATHS, drag-reordered). Non-empty overrides
+	 *  the stage→keyDate sort entirely; unknown/new projects append after
+	 *  it in that sort's order. */
+	order?: string[];
+	/** Sort mode beyond the default stage order: name / milestone progress /
+	 *  key date. Undefined = stage order (drag order rides on top). */
+	sortMode?: 'name' | 'milestone' | 'keyDate';
+	/** Grouped view: 'blocks' = stacked (vertical), 'kanban' = one column
+	 *  per group (horizontal scroll). Absent = flat. */
+	groupView?: 'blocks' | 'kanban';
+	/** INTERNAL ONLY — compact rendering is forced by the kanban view, never
+	 *  persisted (dropped at parse; the old user toggle was removed). */
+	cardSize?: 'compact';
+	/** Pinned project note paths — always render before everything else. */
+	pinned?: string[];
+	/** Selectable stages for the `stage` frontmatter field. */
+	stages: PmStage[];
+	/** Template note seeded by the "+ work note" button (vault path; empty =
+	 *  bare note). */
+	workNoteTemplate?: string;
+	/** Folder the archive button moves project notes into (archive also
+	 *  stamps `archived: true`, which removes the note from the board). */
+	archiveFolder?: string;
+	/** Skill buttons rendered on every project card/board. */
+	skills?: PmSkill[];
+	/** Folders whose notes never appear in the section. */
+	excludeFolders?: string[];
+}
+
+/** One user-defined skill group. `keywords` (CSV, matched case-insensitively
+ *  as substrings of the skill NAME) auto-assigns unclaimed skills — manual
+ *  assignments always win over keyword matches. */
+export interface SkillSectionGroup {
+	id: string;
+	name: string;
+	/** Comma-separated match keywords ('' = manual assignment only). */
+	keywords?: string;
+}
+
+/** Config for the section header's "new skill" button: one-time setup that
+ *  points at a skill-creator-style skill; afterwards a click goes straight
+ *  to the confirm dialog (directSend opts out). */
+export interface SkillCreateConfig {
+	agent: string;
+	/** The creator skill to invoke (default 'skill-creator'). */
+	skillName: string;
+	/** Optional template over {skill}/{input}; '' = default invocation. */
+	promptTemplate: string;
+	directSend?: boolean;
+}
+
+/** Skills section config (sectionType 'skills'): which skill directories
+ *  the library shows and how. Scanned skill metadata lives in the plugin's
+ *  skills.json cache (see skill-store), not here — this is view state only. */
+export interface SkillsSectionConfig {
+	/** Home store ids to show ('claude' | 'codex' | 'workbuddy'). Undefined
+	 *  or empty = all three. Custom skillSourceFolders always show. */
+	stores?: string[];
+	/** Card order: 'name' (default) or 'recent' (SKILL.md mtime). Pinned
+	 *  skills stay ahead of either. */
+	sortMode?: 'name' | 'recent';
+	/** Sort direction: asc/desc. Defaults depend on the mode — name asc,
+	 *  recent desc (newest first) — so only the non-default persists. */
+	sortDir?: 'asc' | 'desc';
+	/** Pinned skill names, pinned order first on the board. */
+	pinned?: string[];
+	/** Grid page size (library-section idiom; one of 10/20/50/100, default
+	 *  50 — ~440 aggregated cards need pagination, not one wall). */
+	pageSize?: number;
+	/** Store ids checked in the last import (memory for the next one). */
+	importTargets?: string[];
+	/** User-defined groups (ordered; editable + drag-sortable in the config
+	 *  modal). Undefined = the built-in presets; [] = deliberately empty. */
+	groups?: SkillSectionGroup[];
+	/** skillName → groupId. Manual assignments; keyword matches fill the
+	 *  gaps at render time. */
+	assignments?: Record<string, string>;
+	/** Group view mode: undefined = flat grid, 'groups' = grouped list with
+	 *  collapsible headers, 'kanban' = one column per group. */
+	groupView?: 'groups' | 'kanban';
+	/** The header "new skill" button's one-time dispatch config. */
+	createSkill?: SkillCreateConfig;
+}
+
+export interface DashboardColumn {
+	pmConfig?: PmConfig;
+	skillsConfig?: SkillsSectionConfig;
+	showCover?: boolean;
+	/** Stable layout identity; assigned on the first explicit layout edit. */
+	id?: string;
+	name: string;
+	color: string;
+	sectionType?: string;
+	cards: DashboardCard[];
+	libraryConfig?: LibraryConfig;
+	pipelineConfig?: PipelineConfig;
+	/** Weread section config (sectionType 'weread'). */
+	wereadConfig?: WereadConfig;
+	rssConfig?: RssConfig;
+	ticktickConfig?: TickTickConfig;
+	/** Dataview section config (sectionType 'dataview'). */
+	dataviewConfig?: DataviewConfig;
+	/** Web embed section config (sectionType 'web'). */
+	webConfig?: WebEmbedConfig;
+	/** User-set max height in px (drag-resize, desktop only). */
+	height?: number;
+	/** Side-by-side pairing: two adjacent `half` columns render as one row
+	 *  (drag a section beside another, desktop only). Maintained by
+	 *  src/column-pairs.ts; adjacency is the pairing identity. */
+	half?: boolean;
+	/** Width split of a paired row: the LEFT member's share in percent
+	 *  (20–80, default 50), set by dragging the pair's divider. Only read on
+	 *  a left half member; cleared together with `half` by the pair
+	 *  transforms. Desktop only. */
+	width?: number;
+}
+
+/** Board membership is separate from the provider's shared instance configuration. */
+export interface BoardWidgetMember {
+	memberId: string;
+	provider: string;
+	kind: string;
+	instanceId: string;
+	label?: string;
+	icon?: string;
+	/** Weather locations belong to the board. Absent means legacy global location; null needs a new selection. */
+	weather?: WeatherConfig | null;
+}
+
+/**
+ * Old `immersive` geometry (x, y in fine rows of 10px, `cap` in the same unit). Read only so that an old board can
+ * be converted to a `grid` once; it is never written.
+ */
+export interface LegacyTile {
+	id: string;
+	w: number;
+	cap: number;
+	fixed?: boolean;
+	x?: number;
+	y?: number;
+}
+
+/** One declaration shared by widget and contextual skill buttons. */
+export interface SkillShortcut {
+	id: string;
+	label: string;
+	icon?: string;
+	agentId: string;
+	skillName: string;
+	promptTemplate: string;
+	inputPlaceholder?: string;
+	directSend: boolean;
+	destination: { kind: 'fresh'; cwd: string } | { kind: 'existing'; sessionId: string };
+}
+
+export interface DashboardData {
+	widgetMigration?: number;
+	/** Original text and its owned projection; retained through immutable UI updates. */
+	document?: { source: string; baseline: string };
+	widgets?: BoardWidgetMember[];
+	/** Tile geometry of the board grid (see `core/board/grid.ts`). Absent only on a board that has not been converted yet. */
+	grid?: BoardGrid;
+	skills?: SkillShortcut[];
+	/** Read only: the geometry an old board declared (`immersive`), consumed by the one-time conversion. Never serialized. */
+	legacyTiles?: LegacyTile[];
+	/** Read only: an old board whose standalone cards carried `gcol`/`grow` coordinates. Never serialized. */
+	gridPacked?: boolean;
+	quickActions: QuickAction[];
+	quickActionOrder?: string[];
+	hiddenPresets?: string[];
+	columns: DashboardColumn[];
+}
+
+export interface TickTickConfig {
+	view: 'today' | 'lists';
+	/** Project IDs hidden in 'lists' view. */
+	hiddenProjects?: string[];
+	/** Per-project card width in 'lists' view (px), persisted on resize. */
+	projectWidths?: Record<string, number>;
+}
+
+export interface RssFeedSource {
+	/** Optional display label; defaults to the feed's own title once fetched. */
+	name?: string;
+	/** Feed URL (RSS 2.0 / Atom). Normalized + validated via web-precheck. */
+	url: string;
+	/** Optional group label — feeds sharing one form a filter bucket in the
+	 *  section toolbar (all / unread / per-group), separate from read state. */
+	group?: string;
+}
+
+/** RSS section config (sectionType 'rss'): subscription list + where article
+ *  downloads land. Fetched feed content and read/saved state live in the
+ *  plugin's rss.json cache (see rss-store), not here. */
+export interface RssConfig {
+	feeds: RssFeedSource[];
+	/** Folder article downloads are saved into ('' = vault root). */
+	downloadFolder: string;
+	/** Managed group list (config-modal order = filter-menu order). Feeds may
+	 *  reference groups not in this list (hand-edited files) — the effective
+	 *  set is the union, see rssGroupNames. */
+	groups?: string[];
+	/** What the section toolbar's filter buckets group by: 'group' (managed
+	 *  groups, the default when unset), 'feed' (one bucket per source), or
+	 *  'none' (all/unread only). */
+	groupBy?: 'none' | 'group' | 'feed';
+	/** List page size (library-section idiom; one of 10/20/50/100, default 20).
+	 *  Persisted so a long board survives re-renders at the user's density. */
+	pageSize?: number;
+}

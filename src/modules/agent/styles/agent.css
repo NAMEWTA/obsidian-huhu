@@ -1,0 +1,20 @@
+.huhu-terminal-view {
+	position: absolute;
+	inset: 0;
+	padding: var(--size-4-1) 0 0 var(--size-4-2);
+	overflow: hidden;
+	background: var(--huhu-terminal-background, var(--background-primary));
+}
+/* xterm paints its own rows; the leftover viewport and the IME preview follow the terminal colors. */
+.huhu-terminal-view .xterm .xterm-viewport { background-color: transparent; }
+.huhu-terminal-view .xterm .composition-view {
+	background: var(--huhu-terminal-background, var(--background-primary));
+	color: var(--text-normal);
+}
+.huhu-terminal-view.is-hidden { display: none; }
+.huhu-terminal-view .xterm { height: 100%; }
+
+/* Group/pane separators retain Orca's 1px seam with a larger pointer target. */
+.huhu-ui .huhu-agent-resize { position: relative; }
+.huhu-ui .huhu-agent-resize::after { content: ''; position: absolute; inset: -4px; }
+.huhu-ui .huhu-agent-resize:focus-visible { outline: 2px solid var(--ring); }

@@ -1,0 +1,43 @@
+/** Settings products (one per module plus Home) and their order in the workbench settings list. */
+import type { ModuleId } from '../contracts/module';
+
+export type SettingsProduct = 'home' | 'dashboard' | 'browser' | 'editor' | 'navigator' | 'terminal' | 'iconic' | 'contacts' | 'automation' | 'sync' | 'safe';
+
+const ORDER: readonly SettingsProduct[] = ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'sync', 'safe'];
+
+export interface ModuleGates {
+	browser: boolean;
+	dashboard: boolean;
+	editor: boolean;
+	navigator: boolean;
+	terminal: boolean;
+	contacts: boolean;
+	iconic: boolean;
+	automation: boolean;
+	sync: boolean;
+	safe: boolean;
+}
+
+/** Products shown in settings: Home always, the others while their module is on. */
+export function visibleProducts(modules: ModuleGates): SettingsProduct[] {
+	return ORDER.filter((product) => product === 'home' || modules[product]);
+}
+
+/** The module behind each product (the product ids are the settings page names). */
+export const PRODUCT_MODULES = {
+	browser: 'browser',
+	dashboard: 'home',
+	editor: 'comments',
+	navigator: 'navigator',
+	terminal: 'agent',
+	contacts: 'archives',
+	iconic: 'icons',
+	automation: 'automations',
+	sync: 'sync',
+	safe: 'safe',
+} as const satisfies Record<keyof ModuleGates, ModuleId>;
+
+/** Product gates from the module switches. */
+export function productGates(enabled: (id: ModuleId) => boolean): ModuleGates {
+	return Object.fromEntries(Object.entries(PRODUCT_MODULES).map(([product, id]) => [product, enabled(id)])) as unknown as ModuleGates;
+}

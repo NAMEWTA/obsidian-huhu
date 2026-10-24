@@ -1,0 +1,46 @@
+name: 文档纠错与补充
+description: 报告错误说明、缺失步骤、失效链接或翻译问题。
+title: "[文档] "
+labels:
+  - documentation
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: 感谢反馈 HUHU。请先搜索已有 Issue；允许使用中文或英文。不要上传真实库、令牌、Cookie、密码或未脱敏的终端记录。安全问题请参阅
+        [安全策略](https://github.com/NAMEWTA/obsidian-huhu/blob/main/SECURITY.md)。
+  - type: input
+    id: location
+    attributes:
+      label: 文档位置
+      description: 提供文档链接、章节名，或界面文案所在位置。
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 错误或缺失内容
+      description: 说明哪部分不正确、不清楚或已经过时。
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议修订
+      description: 给出建议内容、正确链接或希望补充的操作步骤。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 核对依据
+      description: 可提供对应版本、界面截图或公开资料。
+    validations:
+      required: false
+  - type: checkboxes
+    id: before-submit
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索已有 Issue，并确认本次内容不含凭据或其他敏感资料。
+          required: true

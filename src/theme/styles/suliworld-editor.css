@@ -1,0 +1,451 @@
+/* SuliWorld document styling, adapted from sulistef/obsidian-suliworld
+ * bb73ca60dbc1169eb8d4c81fefb0c721ff7faf42/src/theme.css.
+ * © 2026 Stéphane Sulikowski, MIT; see docs/third-party/suliworld.md.
+ * Structural decoration is limited to Reading / Live Preview. Source keeps raw syntax,
+ * native line measurement, cursor/selection and every task marker. No BuJo semantics. */
+body.huhu-md-style--suliworld {
+	--nsw-green: #1f3b2d;
+	--nsw-green-raised: #2a4a3a;
+	--nsw-on-green: #fbf7f0;
+	--nsw-on-green-muted: #c9d8ce;
+	--nsw-orange: #ff6a3d;
+	--nsw-pre-bg: #1b1a17;
+	--nsw-code-normal: #fbf7f0;
+	--nsw-code-comment: #ada595;
+	--nsw-code-function: #ffe0c7;
+	--nsw-code-keyword: #ff8a63;
+	--nsw-code-string: #cdebd9;
+	--nsw-code-property: #d6e6ff;
+	--nsw-code-value: #e3daff;
+	--nsw-code-punctuation: #ada595;
+	--nsw-code-important: #fff1a8;
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) {
+	--file-line-width: 720px;
+	--line-height-normal: var(--huhu-user-line-height, 1.7);
+	--bold-weight: 600;
+	--tag-radius: 999px;
+	--tag-padding-x: 10px;
+	--tag-padding-y: 2px;
+	--tag-weight: 600;
+	--tag-size: 0.85em;
+	--tag-border-width: 0;
+	--callout-radius: 16px;
+	--callout-border-width: 0;
+	--callout-padding: 14px 18px;
+	--callout-title-weight: 600;
+	--code-radius: 14px;
+	--checkbox-radius: 6px;
+	--link-decoration: underline;
+	--link-decoration-hover: underline;
+	--link-external-decoration: underline;
+	--link-unresolved-opacity: 1;
+}
+body.huhu-md-style--suliworld.theme-light {
+	--nsw-text: #1b1a17;
+	--nsw-muted: #5b574f;
+	--nsw-border: #d4c8b5;
+	--nsw-accent: #a13816;
+	--nsw-tint-mint: #cdebd9;
+	--nsw-tint-lavender: #e3daff;
+	--nsw-tint-peach: #ffe0c7;
+	--nsw-tint-blue: #d6e6ff;
+	--nsw-tint-yellow: #fff1a8;
+	--nsw-ink-mint: #1f3b2d;
+	--nsw-ink-lavender: #3c3489;
+	--nsw-ink-peach: #712b13;
+	--nsw-ink-blue: #0c447c;
+	--nsw-ink-yellow: #5c4a05;
+}
+body.huhu-md-style--suliworld.theme-dark {
+	--nsw-text: #f4efe6;
+	--nsw-muted: #bdb5a6;
+	--nsw-border: #514a3e;
+	--nsw-accent: #ffad8d;
+	--nsw-orange: #ff8a63;
+	--nsw-tint-mint: #1e3a2b;
+	--nsw-tint-lavender: #2c2745;
+	--nsw-tint-peach: #43291a;
+	--nsw-tint-blue: #1c2c45;
+	--nsw-tint-yellow: #3b3418;
+	--nsw-ink-mint: #cdebd9;
+	--nsw-ink-lavender: #e3daff;
+	--nsw-ink-peach: #ffe0c7;
+	--nsw-ink-blue: #d6e6ff;
+	--nsw-ink-yellow: #fff1a8;
+}
+/* A tinted surface can be nested inside a dark embed (or another callout). Bind
+ * every native Markdown foreground locally so inherited light text cannot land
+ * on its light background. The surrounding embedded note keeps its own palette. */
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout,
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-rendered blockquote,
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-source-view.is-live-preview .HyperMD-quote,
+body.huhu-md-headings--suliworld .markdown-rendered h4,
+body.huhu-md-headings--suliworld .markdown-source-view.is-live-preview .HyperMD-header-4 .cm-header-4:not(.cm-formatting) {
+	--text-normal: var(--nsw-surface-ink);
+	--text-muted: var(--nsw-surface-ink);
+	--text-faint: var(--nsw-surface-ink);
+	--bold-color: var(--nsw-surface-ink);
+	--italic-color: var(--nsw-surface-ink);
+	--h1-color: var(--nsw-surface-ink);
+	--h2-color: var(--nsw-surface-ink);
+	--h3-color: var(--nsw-surface-ink);
+	--h4-color: var(--nsw-surface-ink);
+	--h5-color: var(--nsw-surface-ink);
+	--h6-color: var(--nsw-surface-ink);
+	--link-color: var(--nsw-surface-ink);
+	--link-color-hover: var(--nsw-surface-ink);
+	--link-external-color: var(--nsw-surface-ink);
+	--link-external-color-hover: var(--nsw-surface-ink);
+	--code-normal: var(--nsw-surface-ink);
+	--code-background: var(--ne-code-bg);
+	--blockquote-color: var(--nsw-surface-ink);
+	--blockquote-border-color: var(--nsw-surface-ink);
+	--list-marker-color: var(--nsw-surface-ink);
+	--list-marker-color-hover: var(--nsw-surface-ink);
+	--list-marker-color-collapsed: var(--nsw-surface-ink);
+	--checkbox-color: var(--nsw-surface-ink);
+	--checkbox-color-hover: var(--nsw-surface-ink);
+	--checkbox-marker-color: var(--nsw-surface-background);
+	--nsw-accent: var(--nsw-surface-ink);
+}
+/* Heading defaults are opt-out independently from the rest of the editor style. */
+body.huhu-md-headings--suliworld {
+	--inline-title-size: 2.5em;
+	--inline-title-weight: 300;
+	--inline-title-line-height: 1.1;
+	--h1-size: 2.25em;
+	--h1-weight: 300;
+	--h1-line-height: 1.1;
+	--h2-size: 1.6em;
+	--h2-weight: 600;
+	--h2-line-height: 1.2;
+	--h3-size: 1.3em;
+	--h3-weight: 600;
+	--h4-size: 1.12em;
+	--h4-weight: 600;
+	--h5-size: 1em;
+	--h5-weight: 600;
+	--h6-size: 0.85em;
+	--h6-weight: 700;
+}
+body.huhu-md-headings--suliworld :is(.inline-title, .markdown-rendered h1, .markdown-source-view.is-live-preview .HyperMD-header-1) {
+	letter-spacing: -0.035em;
+	text-wrap: balance;
+}
+body.huhu-md-headings--suliworld :is(.markdown-rendered h1, .markdown-source-view.is-live-preview .HyperMD-header-1) {
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid var(--nsw-border);
+}
+body.huhu-md-headings--suliworld :is(.markdown-rendered h2, .markdown-source-view.is-live-preview .HyperMD-header-2) {
+	letter-spacing: -0.025em;
+}
+body.huhu-md-headings--suliworld .markdown-rendered h2::before,
+body.huhu-md-headings--suliworld .markdown-source-view.is-live-preview .HyperMD-header-2::before {
+	content: "";
+	display: inline-block;
+	width: 0.62em;
+	height: 0.62em;
+	margin-inline-end: 0.42em;
+	border-radius: 0.2em;
+	background: var(--nsw-orange);
+	vertical-align: 0.06em;
+}
+body.huhu-md-headings--suliworld .markdown-rendered h4,
+body.huhu-md-headings--suliworld .markdown-source-view.is-live-preview .HyperMD-header-4 .cm-header-4:not(.cm-formatting) {
+	--nsw-surface-ink: var(--nsw-ink-peach);
+	--nsw-surface-background: var(--nsw-tint-peach);
+	box-decoration-break: clone;
+	padding: 0.1em 0.55em;
+	border-radius: 999px;
+	background: var(--nsw-tint-peach);
+	color: var(--nsw-ink-peach);
+}
+body.huhu-md-headings--suliworld .markdown-rendered h4 {
+	display: table;
+	max-width: 100%;
+}
+body.huhu-md-headings--suliworld .markdown-rendered h5::before,
+body.huhu-md-headings--suliworld .markdown-source-view.is-live-preview .HyperMD-header-5::before {
+	content: "";
+	display: inline-block;
+	width: 0.9em;
+	height: 2px;
+	margin-inline-end: 0.45em;
+	border-radius: 2px;
+	background: currentColor;
+	vertical-align: 0.3em;
+}
+body.huhu-md-headings--suliworld :is(.markdown-rendered h6, .markdown-source-view.is-live-preview .HyperMD-header-6) {
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+body.huhu-md-headings--suliworld .markdown-rendered :is(h1, h2, h3) :is(em, i),
+body.huhu-md-headings--suliworld .markdown-source-view.is-live-preview .cm-header.cm-em:not(.cm-formatting) {
+	font-family: var(--font-text-override, var(--nsw-font-display, var(--font-text)));
+	font-style: italic;
+	font-weight: 400;
+	letter-spacing: -0.01em;
+	color: var(--nsw-accent);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) a {
+	text-underline-offset: 0.16em;
+	text-decoration-thickness: 0.065em;
+}
+body.huhu-md-style--suliworld .markdown-rendered .external-link {
+	padding-inline-end: 0;
+	background-image: none;
+}
+body.huhu-md-style--suliworld .markdown-rendered .external-link::after {
+	content: "↗";
+	margin-inline-start: 0.2em;
+	font-size: 0.85em;
+}
+body.huhu-md-style--suliworld .markdown-rendered .is-unresolved {
+	text-decoration-style: dashed;
+}
+/* No line margins, hidden markers or hanging-indent overrides in CodeMirror. */
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-rendered blockquote {
+	--nsw-surface-ink: var(--nsw-ink-peach);
+	--nsw-surface-background: var(--nsw-tint-peach);
+	margin: 1.6em 0;
+	padding: 20px 26px;
+	border: 0;
+	border-radius: 20px;
+	background: var(--nsw-tint-peach);
+	color: var(--nsw-ink-peach);
+	font-family: var(--font-text-override, var(--nsw-font-display, var(--font-text)));
+	font-style: italic;
+	font-size: 1.2em;
+	line-height: 1.45;
+}
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-rendered blockquote > :first-child {
+	margin-top: 0;
+}
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-rendered blockquote > :last-child {
+	margin-bottom: 0;
+}
+body.huhu-md-style--suliworld:not(.huhu-md-quotes--plain) .markdown-source-view.is-live-preview .HyperMD-quote {
+	--nsw-surface-ink: var(--nsw-ink-peach);
+	--nsw-surface-background: var(--nsw-tint-peach);
+	background: var(--nsw-tint-peach);
+	color: var(--nsw-ink-peach);
+	border-radius: 6px;
+	font-family: var(--font-text-override, var(--nsw-font-display, var(--font-text)));
+	font-style: italic;
+	font-size: 1.1em;
+	line-height: 1.45;
+}
+body.huhu-md-style--suliworld.huhu-md-quotes--plain {
+	--blockquote-border-thickness: 2px;
+	--blockquote-border-color: var(--nsw-accent);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout {
+	--nsw-callout-bg: var(--nsw-tint-blue);
+	--nsw-callout-fg: var(--nsw-ink-blue);
+	--nsw-surface-ink: var(--nsw-callout-fg);
+	--nsw-surface-background: var(--nsw-callout-bg);
+	border: 0;
+	border-radius: 16px;
+	background: var(--nsw-callout-bg);
+	color: var(--nsw-callout-fg);
+	mix-blend-mode: normal;
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout:is([data-callout="tip"], [data-callout="hint"], [data-callout="important"], [data-callout="success"], [data-callout="check"], [data-callout="done"]) {
+	--nsw-callout-bg: var(--nsw-tint-mint);
+	--nsw-callout-fg: var(--nsw-ink-mint);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout:is([data-callout="warning"], [data-callout="caution"], [data-callout="attention"], [data-callout="danger"], [data-callout="error"], [data-callout="bug"], [data-callout="failure"], [data-callout="fail"], [data-callout="missing"]) {
+	--nsw-callout-bg: var(--nsw-tint-peach);
+	--nsw-callout-fg: var(--nsw-ink-peach);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout:is([data-callout="question"], [data-callout="help"], [data-callout="faq"], [data-callout="abstract"], [data-callout="summary"], [data-callout="tldr"]) {
+	--nsw-callout-bg: var(--nsw-tint-lavender);
+	--nsw-callout-fg: var(--nsw-ink-lavender);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) .callout:is([data-callout="quote"], [data-callout="cite"], [data-callout="example"]) {
+	--nsw-callout-bg: var(--nsw-tint-yellow);
+	--nsw-callout-fg: var(--nsw-ink-yellow);
+}
+body.huhu-md-style--suliworld .callout :is(.callout-title, .callout-icon, .callout-icon .svg-icon, .callout-content) {
+	color: var(--nsw-callout-fg);
+}
+/* The same local syntax palette is used in Reading, Live Preview and raw fenced code. */
+body.huhu-md-style--suliworld :is(.markdown-rendered pre, .markdown-source-view .HyperMD-codeblock, .markdown-source-view .cm-embed-block pre) {
+	--code-background: var(--nsw-pre-bg);
+	--code-normal: var(--nsw-code-normal);
+	--code-comment: var(--nsw-code-comment);
+	--code-function: var(--nsw-code-function);
+	--code-keyword: var(--nsw-code-keyword);
+	--code-string: var(--nsw-code-string);
+	--code-property: var(--nsw-code-property);
+	--code-value: var(--nsw-code-value);
+	--code-tag: var(--nsw-code-keyword);
+	--code-punctuation: var(--nsw-code-punctuation);
+	--code-operator: var(--nsw-code-punctuation);
+	--code-important: var(--nsw-code-important);
+	--text-normal: var(--nsw-code-normal);
+	--text-muted: var(--nsw-code-comment);
+	--text-faint: var(--nsw-code-comment);
+	--text-selection: rgba(255, 138, 99, 0.3);
+	background: var(--nsw-pre-bg);
+	color: var(--nsw-code-normal);
+}
+body.huhu-md-style--suliworld .markdown-rendered pre {
+	padding: 18px 22px;
+	border-radius: 14px;
+	overflow-x: auto;
+}
+body.huhu-md-style--suliworld .markdown-rendered pre code {
+	background: transparent;
+	color: var(--code-normal);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered :not(pre) > code, .markdown-source-view .cm-inline-code) {
+	border-radius: 6px;
+	font-size: 0.9em;
+}
+body.huhu-md-style--suliworld .markdown-rendered pre .copy-code-button {
+	color: var(--nsw-code-normal);
+	background: var(--nsw-pre-bg);
+}
+body.huhu-md-style--suliworld .markdown-rendered pre .copy-code-button:hover {
+	background: color-mix(in srgb, var(--nsw-code-normal) 12%, var(--nsw-pre-bg));
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered pre .copy-code-button, .markdown-rendered a, .task-list-item-checkbox):focus-visible {
+	outline: 2px solid var(--nsw-accent);
+	outline-offset: 2px;
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered, .markdown-source-view) :is(li, .HyperMD-task-line):is([data-task=""], [data-task=" "], [data-task="x"], [data-task="X"]) .task-list-item-checkbox {
+	border-radius: 6px;
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered a.tag, .markdown-source-view .cm-hashtag) {
+	background: var(--nsw-tint-mint);
+	color: var(--nsw-ink-mint);
+	border-radius: 999px;
+	letter-spacing: 0;
+}
+body.huhu-md-style--suliworld :is(.markdown-preview-view, .markdown-source-view) .metadata-container .multi-select-pill {
+	--nsw-pill-bg: var(--nsw-tint-mint);
+	--nsw-pill-fg: var(--nsw-ink-mint);
+	border-radius: 999px;
+	background: var(--nsw-pill-bg);
+	color: var(--nsw-pill-fg);
+	font-weight: 600;
+}
+body.huhu-md-style--suliworld .metadata-container .multi-select-pill :is(.multi-select-pill-content, .multi-select-pill-remove-button) {
+	color: var(--nsw-pill-fg);
+}
+body.huhu-md-style--suliworld .metadata-container .multi-select-pill:nth-child(5n + 2) {
+	--nsw-pill-bg: var(--nsw-tint-lavender);
+	--nsw-pill-fg: var(--nsw-ink-lavender);
+}
+body.huhu-md-style--suliworld .metadata-container .multi-select-pill:nth-child(5n + 3) {
+	--nsw-pill-bg: var(--nsw-tint-peach);
+	--nsw-pill-fg: var(--nsw-ink-peach);
+}
+body.huhu-md-style--suliworld .metadata-container .multi-select-pill:nth-child(5n + 4) {
+	--nsw-pill-bg: var(--nsw-tint-blue);
+	--nsw-pill-fg: var(--nsw-ink-blue);
+}
+body.huhu-md-style--suliworld .metadata-container .multi-select-pill:nth-child(5n + 5) {
+	--nsw-pill-bg: var(--nsw-tint-yellow);
+	--nsw-pill-fg: var(--nsw-ink-yellow);
+}
+body.huhu-md-style--suliworld:not(.huhu-md-embeds--plain) .internal-embed.markdown-embed {
+	--background-primary: var(--nsw-green);
+	--text-normal: var(--nsw-on-green);
+	--text-muted: var(--nsw-on-green-muted);
+	--text-faint: var(--nsw-on-green-muted);
+	--nsw-accent: #ffad8d;
+	--nsw-border: #507560;
+	--link-color: #ffad8d;
+	--link-color-hover: #fbf7f0;
+	--link-external-color: #ffad8d;
+	--link-external-color-hover: #fbf7f0;
+	--icon-color: #c9d8ce;
+	--icon-color-hover: #fbf7f0;
+	--icon-color-focused: #ffad8d;
+	--h1-color: var(--nsw-on-green);
+	--h2-color: var(--nsw-on-green);
+	--h3-color: var(--nsw-on-green);
+	--h4-color: var(--nsw-on-green);
+	--h5-color: #ffad8d;
+	--h6-color: var(--nsw-on-green-muted);
+	--bold-color: var(--nsw-on-green);
+	--italic-color: var(--nsw-on-green-muted);
+	--code-background: var(--nsw-green-raised);
+	--code-normal: var(--nsw-on-green);
+	--blockquote-color: var(--nsw-on-green-muted);
+	--blockquote-border-color: #ffad8d;
+	--list-marker-color: #ffad8d;
+	--list-marker-color-hover: #fbf7f0;
+	--list-marker-color-collapsed: #ffad8d;
+	--checkbox-color: #ff8a63;
+	--checkbox-color-hover: #ffad8d;
+	--checkbox-marker-color: #151412;
+	--background-modifier-border: #507560;
+	--background-modifier-hover: var(--nsw-green-raised);
+	margin: 1em 0;
+	padding: 18px 22px;
+	border: 0;
+	border-radius: 24px;
+	background: var(--nsw-green);
+	color: var(--nsw-on-green);
+}
+body.huhu-md-style--suliworld:not(.huhu-md-embeds--plain) .internal-embed.markdown-embed .markdown-embed-title {
+	color: var(--nsw-on-green);
+	font-weight: 300;
+	letter-spacing: -0.025em;
+}
+body.huhu-md-style--suliworld.huhu-md-embeds--plain .internal-embed.markdown-embed {
+	padding: 4px 18px;
+	border: 1px solid var(--nsw-border);
+	border-radius: 16px;
+}
+body.huhu-md-style--suliworld .markdown-rendered table {
+	display: block;
+	max-width: 100%;
+	border-collapse: collapse;
+	overflow-x: auto;
+}
+body.huhu-md-style--suliworld .markdown-rendered :is(th, td) {
+	border-inline: 0;
+	border-top: 0;
+	border-bottom: 1px solid var(--nsw-border);
+	padding: 0.65em 0.85em;
+}
+body.huhu-md-style--suliworld .markdown-rendered th {
+	font-weight: 600;
+	color: var(--text-normal);
+}
+body.huhu-md-style--suliworld .markdown-rendered .table-wrapper {
+	max-width: 100%;
+	overflow-x: auto;
+}
+body.huhu-md-style--suliworld .markdown-rendered hr {
+	margin-block: 2em;
+	border-color: var(--nsw-border);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered mark, .markdown-source-view .cm-highlight) {
+	border-radius: 4px;
+	background: var(--nsw-tint-yellow);
+	color: var(--nsw-ink-yellow);
+}
+body.huhu-md-style--suliworld :is(.markdown-rendered img, .markdown-source-view .image-embed img) {
+	max-width: 100%;
+	border-radius: 20px;
+}
+body.huhu-md-headings--suliworld.is-phone {
+	--inline-title-size: 2em;
+	--h1-size: 1.85em;
+	--h2-size: 1.45em;
+	--h3-size: 1.22em;
+}
+body.huhu-md-style--suliworld.is-phone:not(.huhu-md-quotes--plain) .markdown-rendered blockquote {
+	padding: 16px 18px;
+	font-size: 1.1em;
+}
+body.huhu-md-style--suliworld.is-phone:not(.huhu-md-embeds--plain) .internal-embed.markdown-embed {
+	padding: 14px 16px;
+	border-radius: 20px;
+}

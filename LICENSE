@@ -1,0 +1,90 @@
+HUHU Source Available License 1.0
+
+Copyright (c) 2026 NAMEWTA
+
+1. Definitions and scope
+
+"Licensor" means NAMEWTA. "Covered Work" means the Licensor's code,
+documentation, and original assets in obsidian-huhu, including modifications
+and derivative works of those materials. "You" includes the person or entity
+exercising the permissions below. "Corresponding Source" means the preferred
+form for making modifications, including all covered source, modifications,
+interface definitions, dependency manifests and lockfiles, and scripts and
+instructions needed to build, install, and run the distributed or served work.
+It excludes credentials, user data, and independently available system tools.
+
+Separate third-party works identified in NOTICE, THIRD-PARTY-NOTICES.md, source
+headers, or their own license files retain their original licenses. This
+license does not restrict rights those licenses independently grant. Obsidian,
+user notes and records, and independent programs merely used with HUHU are not
+Covered Work. This license does not revoke permissions previously granted for
+earlier releases under another license.
+
+2. Noncommercial permission
+
+Subject to this license, You may use, copy, study, modify, and redistribute the
+Covered Work for noncommercial purposes without charge. You must retain this
+license, copyright notices, attribution, and applicable third-party notices,
+and clearly identify substantive changes You make. No trademark endorsement
+or permission to represent a modified version as an official release is granted.
+
+3. Commercial use requires prior written permission
+
+The permissions in section 2 do not include Commercial Use. "Commercial Use"
+includes use by or for a for-profit business in its internal operations; use
+to perform paid work or supply paid services; selling, licensing, bundling,
+integrating, or distributing the Covered Work for commercial advantage; and
+using it to provide a commercial hosted or network service, whether the
+particular service is free or paid. Personal, educational, research, or
+nonprofit activity is noncommercial only when it is not undertaken for such
+commercial advantage, business operations, or paid work.
+
+All Commercial Use requires the Licensor's express prior written permission.
+Request permission through the Commercial Authorization issue form at:
+https://github.com/NAMEWTA/obsidian-huhu/issues/new?template=07-commercial.yml
+Submitting an issue, receiving an acknowledgement, or having an issue closed
+does not grant permission. A separate written authorization may specify other
+terms and overrides this license only to the extent expressly stated in it.
+
+4. Distribution and derivatives
+
+When You distribute the Covered Work or a derivative of it, in source or
+executable form, You must make the complete Corresponding Source of that exact
+version available to every recipient without additional charge, in a readily
+modifiable form. You must license the entire covered derivative under this
+same license, retain its notices, include a copy of this license, and provide
+clear instructions for obtaining its Corresponding Source. You may not add
+restrictions that prevent recipients from exercising this license's rights.
+Separately licensed third-party works retain the exceptions in section 1.
+
+5. Network services
+
+If You let others interact with the Covered Work or a derivative through a
+network service, You must prominently offer every interacting user access,
+without additional charge, to the complete Corresponding Source of the exact
+version providing the service, under this same license. This applies whether
+or not You modified it. Private use without distribution or service to others
+does not itself require publishing private modifications. Commercial network
+services still require prior written permission under section 3.
+
+6. Termination
+
+Permissions granted by this license terminate automatically when You violate
+its conditions. Stop the unauthorized activity and contact the Licensor to
+request reinstatement. Termination does not remove rights independently
+granted under third-party licenses or separately issued written permissions.
+
+7. No warranty; limitation of liability
+
+THE COVERED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, TITLE, AND NONINFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+THE LICENSOR AND CONTRIBUTORS SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY, WHETHER IN CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF,
+OR IN CONNECTION WITH THE COVERED WORK OR ITS USE OR OTHER DEALINGS.
+
+8. License identity
+
+This is a source-available license with noncommercial and reciprocal-source
+conditions. It is not the MIT License, the GNU AGPL, or an OSI-approved open
+source license. Third-party license texts are not modified by this document.

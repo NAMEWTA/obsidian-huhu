@@ -1,0 +1,56 @@
+/* =================================================================
+   Markdown structure: optional decoration on top of the editor colours (editor-schemes.css).
+   Applies to Reading view (.markdown-rendered), Live Preview and Source mode
+   (.HyperMD-header-N / .cm-header-N, .cm-strong). Rules are tied to the heading colours
+   (--h1-color, --h2-color) so they match any editor scheme.
+   ================================================================= */
+
+/* ----- Accented headings: H1 rule, H2 bar, tighter sizes ----- */
+body.huhu-md-headings--accented {
+	--h1-size: 1.75em;
+	--h1-weight: 700;
+	--h1-line-height: 1.25;
+	--h2-size: 1.45em;
+	--h2-weight: 650;
+	--h3-size: 1.22em;
+	--h3-weight: 650;
+	--h4-size: 1.08em;
+	--h4-weight: 650;
+	--h5-size: 1em;
+	--h5-weight: 650;
+	--h6-size: 0.94em;
+	--h6-weight: 650;
+}
+body.huhu-md-headings--accented .markdown-rendered h1,
+body.huhu-md-headings--accented .markdown-source-view .HyperMD-header-1 {
+	padding-bottom: 0.3em;
+	border-bottom: 2px solid color-mix(in srgb, var(--h1-color) 45%, transparent);
+}
+body.huhu-md-headings--accented .markdown-rendered h2,
+body.huhu-md-headings--accented .markdown-source-view .HyperMD-header-2 {
+	padding-inline-start: 0.6em;
+	border-inline-start: 4px solid var(--h2-color);
+}
+body.huhu-md-headings--accented .markdown-rendered h3,
+body.huhu-md-headings--accented .markdown-source-view .cm-header-3 {
+	letter-spacing: 0.01em;
+}
+body.huhu-md-headings--accented .markdown-rendered h6,
+body.huhu-md-headings--accented .markdown-source-view .cm-header-6 {
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+body.huhu-md-headings--accented .markdown-rendered blockquote {
+	background: color-mix(in srgb, var(--blockquote-border-color) 7%, transparent);
+	border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+
+/* ----- Bold text marked with a highlighter underlay ----- */
+body.huhu-md-emphasis--highlight {
+	--bold-weight: 700;
+}
+body.huhu-md-emphasis--highlight .markdown-rendered strong,
+body.huhu-md-emphasis--highlight .markdown-source-view .cm-strong {
+	background: linear-gradient(transparent 58%, var(--text-highlight-bg) 58%);
+	border-radius: 2px;
+}

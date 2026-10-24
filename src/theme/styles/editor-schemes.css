@@ -1,0 +1,631 @@
+/* =================================================================
+   HUHU editor colour schemes: Markdown element colours, independent of the interface theme.
+
+   A scheme is a class "huhu-editor--<id>" plus the mode class on <body>; it declares --ne-*
+   tokens only (headings H1-H6, bold, italic, highlight, inline code, links, quotes, list
+   markers, tags, rules, checkboxes and code-block syntax). The mapping rule at the end turns
+   them into Obsidian's variables, which Reading view, Live Preview and Source mode share.
+   With "Follow theme" the --ne-* tokens come from the interface theme (presets.css); with the
+   "Default" interface theme and "Follow theme" nothing is overridden.
+
+   Colour values follow the published palettes named below; accents were deepened or brightened
+   where a published value fails WCAG AA on common backgrounds (src/theme/presets.test.ts checks
+   every scheme on every interface theme). The preview-* tokens are only used by the settings
+   swatches. Palette references: GitHub Primer (MIT), Atom One (MIT), Solarized (MIT), Nord
+   (MIT), Dracula (MIT), Gruvbox (MIT); the colour names are not copied from any theme file.
+   ================================================================= */
+
+/* SuliWorld: adapted palette (MIT, © 2026 Stéphane Sulikowski), source commit
+ * bb73ca60dbc1169eb8d4c81fefb0c721ff7faf42/src/theme.css. Fenced code has a separate
+ * dark surface in suliworld-editor.css; these colours also remain readable in Source mode. */
+.huhu-editor--suliworld.theme-light {
+	--ne-h1: #1b1a17;
+	--ne-h2: #1b1a17;
+	--ne-h3: #1f3b2d;
+	--ne-h4: #712b13;
+	--ne-h5: #9b3518;
+	--ne-h6: #4a463e;
+	--ne-bold: #1b1a17;
+	--ne-italic: #4a463e;
+	--ne-highlight: rgba(235, 205, 92, 0.30);
+	--ne-code: #712b13;
+	--ne-code-bg: rgba(27, 26, 23, 0.06);
+	--ne-link: #a13816;
+	--ne-quote: #b8431c;
+	--ne-quote-text: #4a463e;
+	--ne-marker: #b8431c;
+	--ne-tag: #1f3b2d;
+	--ne-hr: #d4c8b5;
+	--ne-check: #1f3b2d;
+	--ne-c-comment: #5b574f;
+	--ne-c-function: #712b13;
+	--ne-c-keyword: #9b3518;
+	--ne-c-string: #1f5938;
+	--ne-c-property: #0c447c;
+	--ne-c-value: #3c3489;
+	--ne-c-tag: #9b3518;
+	--ne-c-punct: #4a463e;
+	--ne-c-important: #6b5405;
+	--ne-preview-bg: #fbf7f0;
+	--ne-preview-fg: #1b1a17;
+}
+.huhu-editor--suliworld.theme-dark {
+	--ne-h1: #f4efe6;
+	--ne-h2: #f4efe6;
+	--ne-h3: #addcbd;
+	--ne-h4: #ffe0c7;
+	--ne-h5: #ffad8d;
+	--ne-h6: #bdb5a6;
+	--ne-bold: #f4efe6;
+	--ne-italic: #e4ded2;
+	--ne-highlight: rgba(235, 205, 92, 0.22);
+	--ne-code: #ffe0c7;
+	--ne-code-bg: rgba(244, 239, 230, 0.08);
+	--ne-link: #ffad8d;
+	--ne-quote: #ff8a63;
+	--ne-quote-text: #bdb5a6;
+	--ne-marker: #ff8a63;
+	--ne-tag: #cdebd9;
+	--ne-hr: #514a3e;
+	--ne-check: #ff8a63;
+	--ne-c-comment: #ada595;
+	--ne-c-function: #ffe0c7;
+	--ne-c-keyword: #ff8a63;
+	--ne-c-string: #cdebd9;
+	--ne-c-property: #d6e6ff;
+	--ne-c-value: #e3daff;
+	--ne-c-tag: #ff8a63;
+	--ne-c-punct: #bdb5a6;
+	--ne-c-important: #fff1a8;
+	--ne-preview-bg: #151412;
+	--ne-preview-fg: #f4efe6;
+}
+
+/* ----- GitHub (Primer markup and syntax colours) ----- */
+.huhu-editor--github.theme-light {
+	--ne-h1: #0550ae;
+	--ne-h2: #0550ae;
+	--ne-h3: #1f2328;
+	--ne-h4: #1f2328;
+	--ne-h5: #57606a;
+	--ne-h6: #57606a;
+	--ne-bold: #1f2328;
+	--ne-italic: #424a53;
+	--ne-highlight: rgba(212, 167, 44, 0.35);
+	--ne-code: #0a3069;
+	--ne-code-bg: rgba(129, 139, 152, 0.16);
+	--ne-link: #0863cd;
+	--ne-quote: #d0d7de;
+	--ne-quote-text: #57606a;
+	--ne-marker: #953800;
+	--ne-tag: #0863cd;
+	--ne-hr: #d0d7de;
+	--ne-check: #1a7f37;
+	--ne-c-comment: #5e666f;
+	--ne-c-function: #7749cc;
+	--ne-c-keyword: #c9212d;
+	--ne-c-string: #0a3069;
+	--ne-c-property: #0550ae;
+	--ne-c-value: #0550ae;
+	--ne-c-tag: #116329;
+	--ne-c-punct: #1f2328;
+	--ne-c-important: #c9212d;
+	--ne-preview-bg: #ffffff;
+	--ne-preview-fg: #1f2328;
+}
+.huhu-editor--github.theme-dark {
+	--ne-h1: #79c0ff;
+	--ne-h2: #79c0ff;
+	--ne-h3: #e6edf3;
+	--ne-h4: #e6edf3;
+	--ne-h5: #9198a1;
+	--ne-h6: #9198a1;
+	--ne-bold: #f0f6fc;
+	--ne-italic: #c9d1d9;
+	--ne-highlight: rgba(187, 128, 9, 0.40);
+	--ne-code: #a5d6ff;
+	--ne-code-bg: rgba(110, 118, 129, 0.30);
+	--ne-link: #58a6ff;
+	--ne-quote: #3d444d;
+	--ne-quote-text: #9198a1;
+	--ne-marker: #ffa657;
+	--ne-tag: #58a6ff;
+	--ne-hr: #3d444d;
+	--ne-check: #3fb950;
+	--ne-c-comment: #8b949e;
+	--ne-c-function: #d2a8ff;
+	--ne-c-keyword: #ff7b72;
+	--ne-c-string: #a5d6ff;
+	--ne-c-property: #79c0ff;
+	--ne-c-value: #79c0ff;
+	--ne-c-tag: #7ee787;
+	--ne-c-punct: #e6edf3;
+	--ne-c-important: #ff7b72;
+	--ne-preview-bg: #0d1117;
+	--ne-preview-fg: #e6edf3;
+}
+/* ----- One (Atom One Light / One Dark) ----- */
+.huhu-editor--one.theme-light {
+	--ne-h1: #bd372b;
+	--ne-h2: #955a00;
+	--ne-h3: #7e6200;
+	--ne-h4: #387237;
+	--ne-h5: #036c99;
+	--ne-h6: #355ecc;
+	--ne-bold: #955a00;
+	--ne-italic: #a626a4;
+	--ne-highlight: rgba(193, 132, 1, 0.28);
+	--ne-code: #346c33;
+	--ne-code-bg: rgba(56, 58, 66, 0.07);
+	--ne-link: #355ecc;
+	--ne-quote: #a0a1a7;
+	--ne-quote-text: #636670;
+	--ne-marker: #d63e31;
+	--ne-tag: #355ecc;
+	--ne-hr: #d3d4d8;
+	--ne-check: #3d7d3c;
+	--ne-c-comment: #63666f;
+	--ne-c-function: #355ecc;
+	--ne-c-keyword: #a626a4;
+	--ne-c-string: #387237;
+	--ne-c-property: #bd372b;
+	--ne-c-value: #955a00;
+	--ne-c-tag: #bd372b;
+	--ne-c-punct: #383a42;
+	--ne-c-important: #bd372b;
+	--ne-preview-bg: #fafafa;
+	--ne-preview-fg: #383a42;
+}
+.huhu-editor--one.theme-dark {
+	--ne-h1: #e17079;
+	--ne-h2: #d19a66;
+	--ne-h3: #e5c07b;
+	--ne-h4: #98c379;
+	--ne-h5: #56b6c2;
+	--ne-h6: #61afef;
+	--ne-bold: #d19a66;
+	--ne-italic: #c678dd;
+	--ne-highlight: rgba(229, 192, 123, 0.28);
+	--ne-code: #98c379;
+	--ne-code-bg: rgba(171, 178, 191, 0.12);
+	--ne-link: #61afef;
+	--ne-quote: #4b5263;
+	--ne-quote-text: #9aa1ae;
+	--ne-marker: #e06c75;
+	--ne-tag: #61afef;
+	--ne-hr: #3e4451;
+	--ne-check: #98c379;
+	--ne-c-comment: #91959e;
+	--ne-c-function: #61afef;
+	--ne-c-keyword: #c678dd;
+	--ne-c-string: #98c379;
+	--ne-c-property: #e17079;
+	--ne-c-value: #d19a66;
+	--ne-c-tag: #e17079;
+	--ne-c-punct: #abb2bf;
+	--ne-c-important: #e17079;
+	--ne-preview-bg: #282c34;
+	--ne-preview-fg: #abb2bf;
+}
+/* ----- Solarized (Ethan Schoonover, MIT; light accents deepened for contrast) ----- */
+.huhu-editor--solarized.theme-light {
+	--ne-h1: #ad440e;
+	--ne-h2: #836300;
+	--ne-h3: #606d00;
+	--ne-h4: #1c746e;
+	--ne-h5: #1f6aa8;
+	--ne-h6: #5b60b0;
+	--ne-bold: #8f3a0d;
+	--ne-italic: #556b71;
+	--ne-highlight: rgba(181, 137, 0, 0.28);
+	--ne-code: #186862;
+	--ne-code-bg: rgba(7, 54, 66, 0.07);
+	--ne-link: #1f6aa8;
+	--ne-quote: #93a1a1;
+	--ne-quote-text: #556b71;
+	--ne-marker: #b8480f;
+	--ne-tag: #1f6aa8;
+	--ne-hr: #d6cfb8;
+	--ne-check: #667400;
+	--ne-c-comment: #5b6b70;
+	--ne-c-function: #1f6aa8;
+	--ne-c-keyword: #606d00;
+	--ne-c-string: #1c746e;
+	--ne-c-property: #1f6aa8;
+	--ne-c-value: #ad440e;
+	--ne-c-tag: #1f6aa8;
+	--ne-c-punct: #556b71;
+	--ne-c-important: #b52e70;
+	--ne-preview-bg: #fdf6e3;
+	--ne-preview-fg: #586e75;
+}
+.huhu-editor--solarized.theme-dark {
+	--ne-h1: #e0763f;
+	--ne-h2: #cb9c1d;
+	--ne-h3: #a3b52a;
+	--ne-h4: #3fb3a8;
+	--ne-h5: #4a9fe0;
+	--ne-h6: #8a8fe0;
+	--ne-bold: #e0763f;
+	--ne-italic: #93a1a1;
+	--ne-highlight: rgba(181, 137, 0, 0.35);
+	--ne-code: #4bb7ae;
+	--ne-code-bg: rgba(147, 161, 161, 0.14);
+	--ne-link: #4a9fe0;
+	--ne-quote: #586e75;
+	--ne-quote-text: #93a1a1;
+	--ne-marker: #e0763f;
+	--ne-tag: #4a9fe0;
+	--ne-hr: #0f4a5a;
+	--ne-check: #a3b52a;
+	--ne-c-comment: #83979d;
+	--ne-c-function: #4a9fe0;
+	--ne-c-keyword: #a3b52a;
+	--ne-c-string: #3fb3a8;
+	--ne-c-property: #4a9fe0;
+	--ne-c-value: #e0763f;
+	--ne-c-tag: #4a9fe0;
+	--ne-c-punct: #93a1a1;
+	--ne-c-important: #e368a3;
+	--ne-preview-bg: #002b36;
+	--ne-preview-fg: #93a1a1;
+}
+/* ----- Nord (Arctic Ice Studio, MIT; light variant derived from Snow Storm) ----- */
+.huhu-editor--nord.theme-light {
+	--ne-h1: #31567f;
+	--ne-h2: #3d6a8e;
+	--ne-h3: #406f76;
+	--ne-h4: #4c6a35;
+	--ne-h5: #826411;
+	--ne-h6: #7c5577;
+	--ne-bold: #2e3440;
+	--ne-italic: #4c566a;
+	--ne-highlight: rgba(235, 203, 139, 0.55);
+	--ne-code: #4a6733;
+	--ne-code-bg: rgba(76, 86, 106, 0.09);
+	--ne-link: #31567f;
+	--ne-quote: #a6b0c3;
+	--ne-quote-text: #4c566a;
+	--ne-marker: #bf616a;
+	--ne-tag: #31567f;
+	--ne-hr: #d8dee9;
+	--ne-check: #4c6a35;
+	--ne-c-comment: #5f6778;
+	--ne-c-function: #31567f;
+	--ne-c-keyword: #566586;
+	--ne-c-string: #4c6a35;
+	--ne-c-property: #406f76;
+	--ne-c-value: #7c5577;
+	--ne-c-tag: #31567f;
+	--ne-c-punct: #4c566a;
+	--ne-c-important: #a8404a;
+	--ne-preview-bg: #eceff4;
+	--ne-preview-fg: #2e3440;
+}
+.huhu-editor--nord.theme-dark {
+	--ne-h1: #88c0d0;
+	--ne-h2: #81a1c1;
+	--ne-h3: #8fbcbb;
+	--ne-h4: #a3be8c;
+	--ne-h5: #ebcb8b;
+	--ne-h6: #b48ead;
+	--ne-bold: #ebcb8b;
+	--ne-italic: #b48ead;
+	--ne-highlight: rgba(235, 203, 139, 0.28);
+	--ne-code: #a3be8c;
+	--ne-code-bg: rgba(216, 222, 233, 0.10);
+	--ne-link: #88c0d0;
+	--ne-quote: #4c566a;
+	--ne-quote-text: #a3adc0;
+	--ne-marker: #d08770;
+	--ne-tag: #88c0d0;
+	--ne-hr: #434c5e;
+	--ne-check: #a3be8c;
+	--ne-c-comment: #8c96a9;
+	--ne-c-function: #88c0d0;
+	--ne-c-keyword: #81a1c1;
+	--ne-c-string: #a3be8c;
+	--ne-c-property: #8fbcbb;
+	--ne-c-value: #b48ead;
+	--ne-c-tag: #81a1c1;
+	--ne-c-punct: #d8dee9;
+	--ne-c-important: #cb7f87;
+	--ne-preview-bg: #2e3440;
+	--ne-preview-fg: #d8dee9;
+}
+/* ----- Dracula (Zeno Rocha, MIT; light variant after Alucard) ----- */
+.huhu-editor--dracula.theme-light {
+	--ne-h1: #644ac9;
+	--ne-h2: #a3144d;
+	--ne-h3: #036a96;
+	--ne-h4: #14710a;
+	--ne-h5: #a34d14;
+	--ne-h6: #786413;
+	--ne-bold: #a34d14;
+	--ne-italic: #786413;
+	--ne-highlight: rgba(132, 110, 21, 0.25);
+	--ne-code: #136e0a;
+	--ne-code-bg: rgba(100, 74, 201, 0.08);
+	--ne-link: #036a96;
+	--ne-quote: #b8b5d6;
+	--ne-quote-text: #6c664b;
+	--ne-marker: #a3144d;
+	--ne-tag: #036a96;
+	--ne-hr: #d6d4e8;
+	--ne-check: #14710a;
+	--ne-c-comment: #6c664b;
+	--ne-c-function: #14710a;
+	--ne-c-keyword: #a3144d;
+	--ne-c-string: #786413;
+	--ne-c-property: #036a96;
+	--ne-c-value: #644ac9;
+	--ne-c-tag: #a3144d;
+	--ne-c-punct: #1f1f1f;
+	--ne-c-important: #b93526;
+	--ne-preview-bg: #fffbeb;
+	--ne-preview-fg: #1f1f1f;
+}
+.huhu-editor--dracula.theme-dark {
+	--ne-h1: #bd93f9;
+	--ne-h2: #ff79c6;
+	--ne-h3: #8be9fd;
+	--ne-h4: #50fa7b;
+	--ne-h5: #ffb86c;
+	--ne-h6: #f1fa8c;
+	--ne-bold: #ffb86c;
+	--ne-italic: #f1fa8c;
+	--ne-highlight: rgba(241, 250, 140, 0.25);
+	--ne-code: #50fa7b;
+	--ne-code-bg: rgba(98, 114, 164, 0.28);
+	--ne-link: #8be9fd;
+	--ne-quote: #6272a4;
+	--ne-quote-text: #a9b2d6;
+	--ne-marker: #ff79c6;
+	--ne-tag: #8be9fd;
+	--ne-hr: #44475a;
+	--ne-check: #50fa7b;
+	--ne-c-comment: #8592c3;
+	--ne-c-function: #50fa7b;
+	--ne-c-keyword: #ff79c6;
+	--ne-c-string: #f1fa8c;
+	--ne-c-property: #8be9fd;
+	--ne-c-value: #bd93f9;
+	--ne-c-tag: #ff79c6;
+	--ne-c-punct: #f8f8f2;
+	--ne-c-important: #ff5a5a;
+	--ne-preview-bg: #282a36;
+	--ne-preview-fg: #f8f8f2;
+}
+/* ----- Gruvbox (Pavel Pertsev, MIT) ----- */
+.huhu-editor--gruvbox.theme-light {
+	--ne-h1: #9d0006;
+	--ne-h2: #8f5a0d;
+	--ne-h3: #6e6a0d;
+	--ne-h4: #3b7350;
+	--ne-h5: #076678;
+	--ne-h6: #8f3f71;
+	--ne-bold: #af3a03;
+	--ne-italic: #71655b;
+	--ne-highlight: rgba(215, 153, 33, 0.35);
+	--ne-code: #65610d;
+	--ne-code-bg: rgba(60, 56, 54, 0.08);
+	--ne-link: #076678;
+	--ne-quote: #bdae93;
+	--ne-quote-text: #665c54;
+	--ne-marker: #af3a03;
+	--ne-tag: #076678;
+	--ne-hr: #d5c4a1;
+	--ne-check: #79740e;
+	--ne-c-comment: #71655b;
+	--ne-c-function: #6e6a0d;
+	--ne-c-keyword: #9d0006;
+	--ne-c-string: #6e6a0d;
+	--ne-c-property: #076678;
+	--ne-c-value: #8f3f71;
+	--ne-c-tag: #3b7350;
+	--ne-c-punct: #3c3836;
+	--ne-c-important: #af3a03;
+	--ne-preview-bg: #fbf1c7;
+	--ne-preview-fg: #3c3836;
+}
+.huhu-editor--gruvbox.theme-dark {
+	--ne-h1: #fb5e4b;
+	--ne-h2: #fabd2f;
+	--ne-h3: #b8bb26;
+	--ne-h4: #8ec07c;
+	--ne-h5: #83a598;
+	--ne-h6: #d3869b;
+	--ne-bold: #fe8019;
+	--ne-italic: #d3869b;
+	--ne-highlight: rgba(250, 189, 47, 0.28);
+	--ne-code: #b8bb26;
+	--ne-code-bg: rgba(235, 219, 178, 0.10);
+	--ne-link: #83a598;
+	--ne-quote: #665c54;
+	--ne-quote-text: #a89984;
+	--ne-marker: #fe8019;
+	--ne-tag: #83a598;
+	--ne-hr: #504945;
+	--ne-check: #b8bb26;
+	--ne-c-comment: #9f9184;
+	--ne-c-function: #b8bb26;
+	--ne-c-keyword: #fb5e4b;
+	--ne-c-string: #b8bb26;
+	--ne-c-property: #83a598;
+	--ne-c-value: #d3869b;
+	--ne-c-tag: #8ec07c;
+	--ne-c-punct: #ebdbb2;
+	--ne-c-important: #fe8019;
+	--ne-preview-bg: #282828;
+	--ne-preview-fg: #ebdbb2;
+}
+/* ----- Claude Code (HUHU original: terracotta on warm paper and warm charcoal) ----- */
+.huhu-editor--claude-code.theme-light {
+	--ne-h1: #a64b2a;
+	--ne-h2: #964628;
+	--ne-h3: #6b5a43;
+	--ne-h4: #6b5a43;
+	--ne-h5: #6b6559;
+	--ne-h6: #6b6559;
+	--ne-bold: #3d2a1f;
+	--ne-italic: #6b5a43;
+	--ne-highlight: rgba(217, 119, 87, 0.26);
+	--ne-code: #8a4524;
+	--ne-code-bg: rgba(193, 95, 60, 0.10);
+	--ne-link: #a84a28;
+	--ne-quote: #d97757;
+	--ne-quote-text: #665f52;
+	--ne-marker: #c15f3c;
+	--ne-tag: #964628;
+	--ne-hr: #e3dccd;
+	--ne-check: #c15f3c;
+	--ne-c-comment: #6b665a;
+	--ne-c-function: #8a5a1f;
+	--ne-c-keyword: #a64b2a;
+	--ne-c-string: #566f3f;
+	--ne-c-property: #41667f;
+	--ne-c-value: #95571c;
+	--ne-c-tag: #964628;
+	--ne-c-punct: #665f52;
+	--ne-c-important: #a64b2a;
+	--ne-preview-bg: #faf6ee;
+	--ne-preview-fg: #3d3929;
+}
+.huhu-editor--claude-code.theme-dark {
+	--ne-h1: #eb9674;
+	--ne-h2: #df8a68;
+	--ne-h3: #cfab92;
+	--ne-h4: #cfab92;
+	--ne-h5: #a8a196;
+	--ne-h6: #a8a196;
+	--ne-bold: #f6dccd;
+	--ne-italic: #d9c4b5;
+	--ne-highlight: rgba(217, 119, 87, 0.32);
+	--ne-code: #eebc9f;
+	--ne-code-bg: rgba(217, 119, 87, 0.14);
+	--ne-link: #eb9674;
+	--ne-quote: #d97757;
+	--ne-quote-text: #b8b1a4;
+	--ne-marker: #d97757;
+	--ne-tag: #eb9674;
+	--ne-hr: #46423b;
+	--ne-check: #d97757;
+	--ne-c-comment: #9a9589;
+	--ne-c-function: #e8bd80;
+	--ne-c-keyword: #eb9674;
+	--ne-c-string: #a9c487;
+	--ne-c-property: #94b9ce;
+	--ne-c-value: #e8bd80;
+	--ne-c-tag: #eb9674;
+	--ne-c-punct: #b8b1a4;
+	--ne-c-important: #f08a7e;
+	--ne-preview-bg: #262420;
+	--ne-preview-fg: #e6e0d4;
+}
+/* ----- Eye care (HUHU original: muted greens, low glare) ----- */
+.huhu-editor--eye-care.theme-light {
+	--ne-h1: #2b5b3c;
+	--ne-h2: #34664a;
+	--ne-h3: #4a6232;
+	--ne-h4: #4a6232;
+	--ne-h5: #566a5b;
+	--ne-h6: #566a5b;
+	--ne-bold: #1c2e23;
+	--ne-italic: #44594b;
+	--ne-highlight: rgba(214, 168, 60, 0.40);
+	--ne-code: #7d4426;
+	--ne-code-bg: rgba(35, 70, 45, 0.09);
+	--ne-link: #256682;
+	--ne-quote: #7fa18a;
+	--ne-quote-text: #44594b;
+	--ne-marker: #3f7050;
+	--ne-tag: #256682;
+	--ne-hr: #b9cab0;
+	--ne-check: #3f7050;
+	--ne-c-comment: #576a5d;
+	--ne-c-function: #256682;
+	--ne-c-keyword: #7d4426;
+	--ne-c-string: #3d6b2f;
+	--ne-c-property: #34664a;
+	--ne-c-value: #85561b;
+	--ne-c-tag: #256682;
+	--ne-c-punct: #44594b;
+	--ne-c-important: #a63e36;
+	--ne-preview-bg: #e3ebdc;
+	--ne-preview-fg: #22322a;
+}
+.huhu-editor--eye-care.theme-dark {
+	--ne-h1: #a2d3ae;
+	--ne-h2: #92c5a1;
+	--ne-h3: #bccb8d;
+	--ne-h4: #bccb8d;
+	--ne-h5: #9fb1a3;
+	--ne-h6: #9fb1a3;
+	--ne-bold: #e8f2e6;
+	--ne-italic: #c5d6c8;
+	--ne-highlight: rgba(211, 179, 110, 0.30);
+	--ne-code: #e2bb8c;
+	--ne-code-bg: rgba(143, 191, 159, 0.12);
+	--ne-link: #8ec5da;
+	--ne-quote: #5a7766;
+	--ne-quote-text: #a3b5a7;
+	--ne-marker: #8fbf9f;
+	--ne-tag: #8ec5da;
+	--ne-hr: #344238;
+	--ne-check: #8fbf9f;
+	--ne-c-comment: #8aa08f;
+	--ne-c-function: #8ec5da;
+	--ne-c-keyword: #e2bb8c;
+	--ne-c-string: #a9cf94;
+	--ne-c-property: #92c5a1;
+	--ne-c-value: #d9b36a;
+	--ne-c-tag: #8ec5da;
+	--ne-c-punct: #b6c7b9;
+	--ne-c-important: #e48a80;
+	--ne-preview-bg: #1b221e;
+	--ne-preview-fg: #d3ded4;
+}
+
+/* ----- Mapping: --ne-* -> Obsidian's Markdown variables ----- */
+body.huhu-editor-themed.theme-light,
+body.huhu-editor-themed.theme-dark,
+body.huhu-themed.theme-light,
+body.huhu-themed.theme-dark {
+	--h1-color: var(--ne-h1);
+	--h2-color: var(--ne-h2);
+	--h3-color: var(--ne-h3);
+	--h4-color: var(--ne-h4);
+	--h5-color: var(--ne-h5);
+	--h6-color: var(--ne-h6);
+	--bold-color: var(--ne-bold);
+	--italic-color: var(--ne-italic);
+	--text-highlight-bg: var(--ne-highlight);
+	--code-normal: var(--ne-code);
+	--code-background: var(--ne-code-bg);
+	--code-comment: var(--ne-c-comment);
+	--code-function: var(--ne-c-function);
+	--code-important: var(--ne-c-important);
+	--code-keyword: var(--ne-c-keyword);
+	--code-property: var(--ne-c-property);
+	--code-punctuation: var(--ne-c-punct);
+	--code-string: var(--ne-c-string);
+	--code-tag: var(--ne-c-tag);
+	--code-value: var(--ne-c-value);
+	--link-color: var(--ne-link);
+	--link-color-hover: color-mix(in srgb, var(--ne-link) 80%, var(--text-normal));
+	--link-external-color: var(--ne-link);
+	--link-external-color-hover: color-mix(in srgb, var(--ne-link) 80%, var(--text-normal));
+	--blockquote-border-color: var(--ne-quote);
+	--blockquote-color: var(--ne-quote-text);
+	--list-marker-color: var(--ne-marker);
+	--list-marker-color-hover: var(--ne-marker);
+	--list-marker-color-collapsed: var(--ne-marker);
+	--tag-color: var(--ne-tag);
+	--tag-color-hover: var(--ne-tag);
+	--tag-background: color-mix(in srgb, var(--ne-tag) 14%, transparent);
+	--tag-background-hover: color-mix(in srgb, var(--ne-tag) 22%, transparent);
+	--tag-border-color: transparent;
+	--hr-color: var(--ne-hr);
+	--checkbox-color: var(--ne-check);
+	--checkbox-color-hover: var(--ne-check);
+}

@@ -1,0 +1,22 @@
+/* Retained browser guests stay in one parent across workspace layout changes. */
+.huhu-browser-retained-root {
+	display: contents;
+}
+.huhu-browser-retained-host {
+	position: fixed;
+	top: 0;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	pointer-events: none;
+}
+.huhu-browser-retained-host .huhu-browser-webview {
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+.huhu-browser-retained-host.is-visible {
+	left: var(--browser-left);
+	pointer-events: auto;
+}

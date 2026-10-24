@@ -1,0 +1,69 @@
+import { Notice } from 'obsidian';
+import type { CommandAccess } from '../../../app/contracts/module';
+import { t } from '../../../shared/i18n/index';
+import type { HomeHost } from './home-host';
+
+/** Board commands (removed with the module); ids stay stable because Obsidian stores hotkeys by command id. */
+export function registerHomeCommands(
+	host: HomeHost,
+	commands: CommandAccess,
+	open: () => Promise<void>,
+	studio?: () => Promise<void>,
+): void {
+	const report = (error: unknown): void => {
+		console.error('[HUHU dashboard]', error);
+		new Notice(t('storage.unsaved'));
+	};
+	const onBoard = (action: 'addSection') => () => {
+		const surface = host.activeDashboard();
+		if (!surface) {
+			new Notice(t('main.openDashboard'));
+			return;
+		}
+		void surface[action]().catch(report);
+	};
+	const cycle = (delta: 1 | -1) => () => {
+		const surface = host.activeDashboard();
+		const next = host.boards?.adjacent(
+			surface?.plugin.settings.dashboardFile ?? host.settings.dashboardFile,
+			delta,
+		);
+		if (!next) return;
+		void (surface?.plugin.switchWorkspace(next) ?? host.switchWorkspace(next)).catch(report);
+	};
+	if (studio)
+		commands.add({
+			id: 'open-theme-studio',
+			nameKey: 'themeStudio.modalTitle',
+			name: t('themeStudio.modalTitle'),
+			callback: () => {
+				void studio().catch(report);
+			},
+		});
+	commands.add({
+		id: 'open-dashboard',
+		nameKey: 'main.openDashboard',
+		name: t('main.openDashboard'),
+		callback: () => {
+			void open().catch(report);
+		},
+	});
+	commands.add({
+		id: 'next-workspace',
+		nameKey: 'main.nextWorkspace',
+		name: t('main.nextWorkspace'),
+		callback: cycle(1),
+	});
+	commands.add({
+		id: 'previous-workspace',
+		nameKey: 'main.prevWorkspace',
+		name: t('main.prevWorkspace'),
+		callback: cycle(-1),
+	});
+	commands.add({
+		id: 'add-section',
+		nameKey: 'main.addSection',
+		name: t('main.addSection'),
+		callback: onBoard('addSection'),
+	});
+}

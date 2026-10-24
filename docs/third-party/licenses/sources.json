@@ -1,0 +1,41 @@
+{
+  "@headless-tree/core@1.7.0": {
+    "license": "MIT",
+    "file": "headless-tree-MIT.txt",
+    "source": "https://github.com/lukasbach/headless-tree/blob/11b0bb0859c4a0e6bc7c41f74aa3a5096c1a69df/LICENSE",
+    "sha256": "cac45d63b6a0bf68f7aba2219c0d74470135ead032a0872e533476492abb2559"
+  },
+  "@headless-tree/react@1.7.0": {
+    "license": "MIT",
+    "file": "headless-tree-MIT.txt",
+    "source": "https://github.com/lukasbach/headless-tree/blob/11b0bb0859c4a0e6bc7c41f74aa3a5096c1a69df/LICENSE",
+    "sha256": "cac45d63b6a0bf68f7aba2219c0d74470135ead032a0872e533476492abb2559"
+  },
+  "react-resizable-panels@3.0.6": {
+    "license": "MIT",
+    "file": "react-resizable-panels-MIT.txt",
+    "source": "https://github.com/bvaughn/react-resizable-panels/blob/43a071df6bb96d54e8b81a6be0e2d453af45cc4b/LICENSE",
+    "sha256": "8b21167f99f3c016b39473b2984ceb03b54bf796dd9a7c74fcb80cfd513fe8a8"
+  },
+  "react-remove-scroll-bar@2.3.8": {
+    "license": "MIT",
+    "file": "react-remove-scroll-bar-MIT.txt",
+    "source": "https://github.com/theKashey/react-remove-scroll-bar/blob/7301c160fda44cb8cf2b9fdfde61efad35736196/LICENSE",
+    "sha256": "a79aae0c0f21990d9d963bb3c5a79cdcea9a46f8523ba55c58d7fe776b6ebc84",
+    "note": "The npm 2.3.8 release declares MIT but omits its license file; its published gitHead no longer resolves upstream. This is the upstream MIT license added in the pinned commit, not a claim that commit is the 2.3.8 source."
+  },
+  "winapi-i686-pc-windows-gnu@0.4.0": {
+    "license": "MIT",
+    "file": "winapi-gnu-MIT.txt",
+    "source": "https://github.com/retep998/winapi-rs/blob/796a8e6c2971dc2ff1bcff166e6671284f9b5b6b/i686/LICENSE-MIT",
+    "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b",
+    "note": "The pinned winapi 0.3.9 repository contains the two GNU import-library packages at version 0.4.0."
+  },
+  "winapi-x86_64-pc-windows-gnu@0.4.0": {
+    "license": "MIT",
+    "file": "winapi-gnu-MIT.txt",
+    "source": "https://github.com/retep998/winapi-rs/blob/796a8e6c2971dc2ff1bcff166e6671284f9b5b6b/i686/LICENSE-MIT",
+    "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b",
+    "note": "The pinned winapi 0.3.9 repository contains the two GNU import-library packages at version 0.4.0."
+  }
+}

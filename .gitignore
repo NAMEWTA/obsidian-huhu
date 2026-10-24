@@ -1,0 +1,64 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Obsidian plugin data
+data.json
+
+# macOS
+.DS_Store
+
+# Local registry auth
+.npmrc
+
+# Build artifacts
+*.map
+
+# IDE
+.vscode
+.idea
+*.iml
+
+# AI / Dev helpers
+300句经典句子.md
+# DQL test fixtures (local only)
+dataview-test/
+speculo/.speculo/back/
+.speculo-init.lock/
+.speculo-init-stage-*/
+.speculo-file-*.tmp
+specdev-worktree/
+scripts/tmp/
+
+# Rust intermediate build outputs
+temp/
+native/pty-server/target/
+
+
+build/
+.agents/speculo/.speculo/back/
+.agents/.speculo-install.lock/
+.agents/.speculo-transactions/
+
+# Gradle caches from tool examples
+.gradle/
+.orca/
+
+# Local runtime, release staging and diagnostics
+/.huhu/
+/huhu/
+*.log
+Thumbs.db
+Desktop.ini
+.AppleDouble/
+._*
+.env
+.env.*
+!.env.example
+dist/
+release-assets/
+terminal-artifacts/
+/evidence/
+/coverage/
+.agents/speculo/.speculo/specdev/changes/
+.agents/speculo/.speculo/specdev/archive/

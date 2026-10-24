@@ -1,0 +1,51 @@
+{
+  "note": "HUHU encrypted payload-schema-1 test vector, using the HUHU authenticated-data identity. Test data only; the master password is not a secret.",
+  "master": "fixture master password v1",
+  "raw": "{\"format\":\"huhu-safe\",\"version\":1,\"safeId\":\"f84ff712-005c-4589-b4fb-b0e3c13c66dc\",\"kdf\":{\"name\":\"PBKDF2-SHA-256\",\"iterations\":600000,\"salt\":\"hW4+lnOJnmX8paRuO8MLpA==\"},\"key\":{\"iv\":\"/fAHaxfHBIUtmqlF\",\"ciphertext\":\"gxHBcuCczDk5SOW5mVahjdsRa5TsX4BvscyZi+3buF+upmNYEKfQlZtLhXG2OsAt\"},\"payload\":{\"iv\":\"BZ35pAUrI0vAjamF\",\"ciphertext\":\"L0F3HubcI7YAEDs9GRIUXInpakKXDnRoI0ro+0jSGGColfUw9XpgmWELll/XC9B1Wr+B5xAiwIwRaqXvEN0TlX6RmGRGsigW7BdpmTowpdcoxMDyWXMbxB1IzzHUVVbvXnZMf22Lu9+Z17pegY48MWCYx1gRIukhVNSb2f9q0GEtBWQn5MWDmlRTOdLd87rvWxJkFloCrDrbJLiXQgyHICWTWixo/y8YG6LGGciwkSGrhfA0RPkpQctQV5iGQSMrUe9o6kW8iFfah9fley/tohcpejWVsIkAKQYr2SIQvxH9nSbawrbsYqRgOLKIYFmfR7bEIEYFg4Ma1oPT22w6G/WraCIPRQjtUINMLxTfcoWpzVxBvXHbQ73tNMOph9Kwxy1o0Sdg94cPCVM9BDjYVlsjBPsa2Pxk0S+JrvN25XhqNhtkJTBiw0H2ktDlU+DOIkJ7eP1LpJ44ORZc35mm2Pb020B/Pw+ieWNSUPVTZ6p5ma4dFHsN2+PBCjL8MkC/AquYrKQr1p5Jv/wjuUNYg+/XuoJsNOWg8qJNRjEhUm/a6LCwSO1mbMswsHOW+xgCnvh9nz8mQHFag5Aykvl7qG7SPH7BdKMkTdOBTctuXaqCXNQr55WiCq0KkOKGVPgvVZzxR6qULSM0Z/HP4zNvW0Yo9ZKvE4UL4+UL+mhDtl/JMpvWwy1b9r0KCsyzJgsHtYc0D5559/M7pg7gXA+3HI/E0PEluaw4Y4HIUsI2NkGRaVkljXJ7dEmpVDfal47qAqF8ebc8I+MZI4CT8WH7lsLx9O7snvmcvLFtQ4tSBzEN9QgbqEQe0o4qolQHChL6Jmb24vajp9kzCkM+fclWvx7nYm4C+Zkj7G1RYe5ZVwR4Ym5IH9Y2fsKXz1dgPMvzJDlQn9TIytAh6291gIFjC7LIeo/ZAylF6HfhMzPMH7TMhhfkvCwLvTiBfooPX/AcFoZXAOqDpCwVUlM6lptPZiYZ1G6RR7SFsEl7xLadMUOptJH3RegK/JbIdz6kKaFOn6JOkIN6nXPQpbowg6LDJv1xwo2offM3yDK7dKj6HR0p3sMuqcZ8cWoiVVr0FuFmW0vR//iUly8U64wl4EJS6RWpzdVJ/dIjyF/uGqY7mfAh0JlZb8aZlrxGwuLn2hOqwd7nKeZ4mZ/QpaVG5SevtOlD8gWhULj3hWdQYwDX8GwvoEHZweRCh64AW4+ddGdx9x0ko8edWGs3zq3mWAFCHhpIKb0na/2G33ivCJ5TK00c1a1Xkr86YS2JonkHMW94LJao+4tX2eiykzzjgbqdg+m+HoGA52hPCCXGU2tLlYlezbQ1cDASEhIaVf2riRlmVaZut1wTclcbIJXzhhGshoKmjEI4RptUKGwkFN7ABBOPjJKWG4+JFT86WGAgq1eA7bblHy5002CTuAwieFM=\"}}",
+  "entries": [
+    {
+      "title": "苹果账号",
+      "url": "https://appleid.apple.com",
+      "username": "first@icloud.example.test",
+      "password": " apple-pass-1 🔑 ",
+      "notes": "主 Apple ID，\n两行备注",
+      "id": "11111111-1111-4111-8111-111111111111",
+      "createdAt": "2026-10-15T08:00:00.000Z",
+      "updatedAt": "2026-10-15T08:00:00.000Z",
+      "deletedAt": null
+    },
+    {
+      "title": "github",
+      "url": "github.com",
+      "username": "octo",
+      "password": "ṕw-octo",
+      "notes": "",
+      "id": "22222222-2222-4222-8222-222222222222",
+      "createdAt": "2026-10-15T08:01:00.000Z",
+      "updatedAt": "2026-10-15T08:01:00.000Z",
+      "deletedAt": null
+    },
+    {
+      "title": "",
+      "url": "",
+      "username": "no-title-user",
+      "password": "x",
+      "notes": "untitled note",
+      "id": "33333333-3333-4333-8333-333333333333",
+      "createdAt": "2026-10-15T08:02:00.000Z",
+      "updatedAt": "2026-10-15T08:02:00.000Z",
+      "deletedAt": null
+    },
+    {
+      "title": "old forum",
+      "url": "https://forum.example.test",
+      "username": "ghost",
+      "password": "gone-1",
+      "notes": "trashed",
+      "id": "44444444-4444-4444-8444-444444444444",
+      "createdAt": "2026-10-15T08:03:00.000Z",
+      "updatedAt": "2026-10-15T08:04:00.000Z",
+      "deletedAt": "2026-10-15T08:04:00.000Z"
+    }
+  ]
+}

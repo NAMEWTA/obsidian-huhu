@@ -1,0 +1,519 @@
+import { App } from 'obsidian';
+import { contentFiles, type ContentFile } from '../../../../host/obsidian/storage/content-files';
+import { isContentPath } from '../../../../shared/storage/content-paths';
+import { CalendarTaskFilter } from '../../core/calendar/task-filter';
+import type { CalendarTask } from '../../core/calendar/types';
+import {
+	CALENDAR_REGEX,
+	COLLAPSED_REGEX,
+	COMPLETION_EMOJI_REGEX,
+	COMPLETION_FIELD_REGEX,
+	DUE_FIELD_REGEX,
+	END_EMOJI_REGEX,
+	END_FIELD_REGEX,
+	REMINDER_REGEX,
+	SCHEDULED_EMOJI_REGEX,
+	SCHEDULED_FIELD_REGEX,
+	START_EMOJI_REGEX,
+	START_FIELD_REGEX,
+} from '../../core/calendar/syntax';
+import { readTaskMeta, TASK_META_REGEX } from '../../../../shared/automation/metadata';
+import { isUnderExcludedFolder, normalizeExcludeFolders } from '../../../../shared/exclude-folders';
+
+/** Recognized task priority levels (parsed from `[priority:: ...]`). */
+export type Priority = 'high' | 'medium' | 'low';
+
+/**
+ * One checkbox task located somewhere in the vault. Carries enough context to
+ * display it, bucket it, and write the toggle back to its exact source line.
+ */
+export interface VaultTask extends CalendarTask {
+	file: ContentFile;
+}
+
+interface CacheEntry {
+	mtime: number;
+	tasks: VaultTask[];
+}
+
+const taskCaches = new WeakMap<App, Map<string, CacheEntry>>();
+function taskCache(app: App): Map<string, CacheEntry> {
+	let cache = taskCaches.get(app);
+	if (!cache) {
+		cache = new Map();
+		taskCaches.set(app, cache);
+	}
+	return cache;
+}
+
+/** Dataview-style priority inline field, anywhere in the text. */
+const PRIORITY_FIELD_REGEX = /\s*\[priority::\s*([^\]]+?)\s*\]/i;
+/** Any checkbox line, allowing leading indentation so subtasks are aggregated too. */
+const TASK_LINE_REGEX = /^(\s*)- \[([ xX])\]\s*(.+)$/;
+
+/** Normalize a raw `[priority:: ...]` value to a known level. */
+function normalizePriority(raw: string): Priority | undefined {
+	const v = raw.trim().toLowerCase();
+	if (['high', 'hi', 'h', 'urgent', 'u', '1', '!!!', 'p1'].includes(v)) return 'high';
+	if (['medium', 'mid', 'm', 'normal', 'n', '2', '!!', 'p2'].includes(v)) return 'medium';
+	if (['low', 'l', 'low-priority', '3', '!', 'p3'].includes(v)) return 'low';
+	return undefined;
+}
+
+/** `HH:MM` from a `YYYY-MM-DD HH:MM`-shaped value (undefined if no time part). */
+function hhmm(s: string | undefined): string | undefined {
+	return s && s.length >= 16 ? s.slice(11, 16) : undefined;
+}
+
+/**
+ * Scan one markdown file's content for checkbox tasks. Returns an empty array
+ * (never throws) so one bad file can't break the whole section.
+ */
+export function scanFileTasks(file: ContentFile, content: string): VaultTask[] {
+	const lines = content.split('\n');
+	const out: VaultTask[] = [];
+	for (let i = 0; i < lines.length; i++) {
+		const raw = lines[i]!;
+		const m = raw.replace(/\r$/, '').match(TASK_LINE_REGEX);
+		if (!m) continue;
+		const [, , mark, rest] = m;
+		const meta = readTaskMeta(raw);
+		let text = (rest ?? '').replace(TASK_META_REGEX, '');
+		text = text.replace(COLLAPSED_REGEX, '');
+
+		let reminder: string | undefined;
+		const rm = text.match(REMINDER_REGEX);
+		if (rm) {
+			// Time part optional: date-only ⏰ anchors the day without a time label.
+			reminder = rm[2] ? `${rm[1]} ${rm[2]}` : rm[1];
+			text = text.replace(REMINDER_REGEX, '');
+		}
+
+		if (!reminder && meta.automation?.schedule.kind === 'once') {
+			const date = new Date(meta.automation.schedule.at);
+			reminder = `${toIsoDate(date)} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+		}
+
+		let due: string | undefined;
+		const df = text.match(DUE_FIELD_REGEX);
+		if (df) {
+			due = (df[1] ?? '').slice(0, 10);
+			text = text.replace(DUE_FIELD_REGEX, '');
+		}
+		if (!due) {
+			const cal = text.match(CALENDAR_REGEX);
+			if (cal) {
+				due = cal[1];
+				text = text.replace(CALENDAR_REGEX, '');
+			}
+		}
+		// A reminder-only legacy task still anchors its day; an explicit due date keeps its own identity.
+		if (reminder && !due) due = reminder.slice(0, 10);
+
+		let priority: Priority | undefined;
+		const pf = text.match(PRIORITY_FIELD_REGEX);
+		if (pf) {
+			priority = normalizePriority(pf[1] ?? '');
+			text = text.replace(PRIORITY_FIELD_REGEX, '');
+		}
+
+		// Multi-day event window ([start::] / [end::] or 🛫 / 🛬).
+		let start: string | undefined;
+		const sf = text.match(START_FIELD_REGEX) ?? text.match(START_EMOJI_REGEX);
+		if (sf) {
+			start = (sf[1] ?? '').slice(0, 10);
+			text = text.replace(START_FIELD_REGEX, '').replace(START_EMOJI_REGEX, '');
+		}
+		let end: string | undefined;
+		const ef = text.match(END_FIELD_REGEX) ?? text.match(END_EMOJI_REGEX);
+		if (ef) {
+			end = (ef[1] ?? '').slice(0, 10);
+			text = text.replace(END_FIELD_REGEX, '').replace(END_EMOJI_REGEX, '');
+		}
+
+		// Scheduled date (⏳ / `[scheduled::]`): the day the task is planned for.
+		// A distinct calendar fact from the due date, so both anchor their own day.
+		let scheduled: string | undefined;
+		let scheduledTime: string | undefined;
+		const schf = text.match(SCHEDULED_FIELD_REGEX) ?? text.match(SCHEDULED_EMOJI_REGEX);
+		if (schf) {
+			scheduled = (schf[1] ?? '').slice(0, 10);
+			scheduledTime = hhmm(schf[1]);
+			text = text.replace(SCHEDULED_FIELD_REGEX, '').replace(SCHEDULED_EMOJI_REGEX, '');
+		}
+
+		// Completion date (✅ / `[completion::]`): the day the task was done.
+		let completion: string | undefined;
+		let completionTime: string | undefined;
+		const cmpf = text.match(COMPLETION_FIELD_REGEX) ?? text.match(COMPLETION_EMOJI_REGEX);
+		if (cmpf) {
+			completion = (cmpf[1] ?? '').slice(0, 10);
+			completionTime = hhmm(cmpf[1]);
+			text = text.replace(COMPLETION_FIELD_REGEX, '').replace(COMPLETION_EMOJI_REGEX, '');
+		}
+
+		// Time-of-day (for the calendar week time-grid): start time from ⏰ / due
+		// / start (whichever carries HH:MM), end time from [end::].
+		const time =
+			hhmm(df?.[1]) ??
+			hhmm(sf?.[1]) ??
+			(!df && !sf && reminder?.slice(0, 10) === due ? hhmm(reminder) : undefined);
+		const endTime = hhmm(ef?.[1]);
+
+		out.push({
+			...meta,
+			file,
+			path: file.path,
+			line: i,
+			originalLine: raw,
+			checked: (mark ?? ' ') !== ' ',
+			text: text.trim(),
+			reminder,
+			due,
+			start,
+			end,
+			scheduled,
+			scheduledTime,
+			completion,
+			completionTime,
+			time,
+			endTime,
+			priority,
+			mtime: file.stat.mtime,
+			ctime: file.stat.ctime,
+		});
+	}
+	return out;
+}
+
+/**
+ * Collect every checkbox task across the vault, skipping excluded folders,
+ * using an mtime-keyed cache so unchanged files are not re-parsed each render.
+ *
+ * `alwaysIncludePath` (with or without `.md`) is exempt from the exclusion
+ * check: pass the dashboard file, whose checkbox tasks are the user's live
+ * todo list and the destination the calendar's day-agenda writes into. Without
+ * the exemption, excluding the dashboard's parent folder (e.g. 'assets') hides
+ * the dashboard's tasks from the calendar AND makes every calendar-added task
+ * vanish on the next re-scan.
+ */
+export async function collectVaultTasks(
+	app: App,
+	excludeFolders: string[] = [],
+	alwaysIncludePath?: string,
+	strict = false,
+): Promise<VaultTask[]> {
+	const moduleCache = taskCache(app);
+	const normalized = normalizeExcludeFolders(excludeFolders);
+	const rawAlways = (alwaysIncludePath ?? '').trim().toLowerCase();
+	const alwaysFile = rawAlways ? (rawAlways.endsWith('.md') ? rawAlways : `${rawAlways}.md`) : '';
+	const content = contentFiles(app);
+	await content.refresh();
+	const files = content.getMarkdownFiles();
+	const stale = new Set(moduleCache.keys());
+	const all: VaultTask[] = [];
+
+	for (let i = 0; i < files.length; i++) {
+		const file = files[i]!;
+		// Yield to the UI thread periodically so scanning a large vault doesn't
+		// freeze the app (especially on mobile) — this is what made the section
+		// feel stuck/unresponsive and the phone overheat while it churned through
+		// every file.
+		if (i > 0 && i % 50 === 0) {
+			const win = app.workspace.containerEl.win;
+			if (win.setTimeout) await new Promise<void>((resolve) => win.setTimeout(resolve, 0));
+		}
+
+		if (file.path.startsWith('.') && !isContentPath(file.path)) {
+			stale.delete(file.path);
+			continue;
+		}
+		const exempt = alwaysFile !== '' && [alwaysFile].includes(file.path.toLowerCase());
+		if (!exempt && isUnderExcludedFolder(file.path, normalized)) {
+			stale.delete(file.path);
+			continue;
+		}
+		stale.delete(file.path);
+
+		const cached = moduleCache.get(file.path);
+		if (cached && cached.mtime === file.stat.mtime) {
+			all.push(...cached.tasks);
+			continue;
+		}
+
+		let content: string;
+		try {
+			content = await contentFiles(app).read(file);
+		} catch (error) {
+			if (strict) throw error;
+			continue;
+		}
+		const tasks = scanFileTasks(file, content);
+		moduleCache.set(file.path, { mtime: file.stat.mtime, tasks });
+		all.push(...tasks);
+	}
+	for (const path of stale) moduleCache.delete(path);
+	return all;
+}
+
+/** Drop cache entries for a path (e.g. after a failed toggle) so the next scan re-reads. */
+export function invalidatePath(app: App, path: string): void {
+	taskCache(app).delete(path);
+}
+
+/** Commit receipts can be queried immediately, before Obsidian's metadata worker catches up. */
+export function primeTaskCache(app: App, file: ContentFile, raw: string): VaultTask[] {
+	const tasks = scanFileTasks(file, raw);
+	taskCache(app).set(file.path, { mtime: file.stat.mtime, tasks });
+	return tasks;
+}
+
+/**
+ * Atomically flip a task's checkbox in its source file. Matches the exact
+ * original line at its recorded position, then (if the file shifted) by a
+ * unique full-line match; refuses to write if the line can't be located
+ * unambiguously.
+ */
+export async function toggleTaskInFile<T extends CalendarTask>(
+	app: App,
+	task: T,
+	nextChecked: boolean,
+	transform?: (line: string) => string,
+): Promise<boolean> {
+	let wrote = false;
+	try {
+		await contentFiles(app).process(task.path, (data) => {
+			if (data === null) throw new Error('huhu-content.missing');
+			const lines = data.split('\n');
+			const target = task.originalLine;
+			const wantOpen = target.indexOf('- [ ]');
+			const wantDone = target.search(/- \[x\]/i);
+			let replacement: string;
+			if (nextChecked) {
+				replacement =
+					wantOpen === -1 ? target : target.slice(0, wantOpen) + '- [x]' + target.slice(wantOpen + 5);
+			} else {
+				replacement =
+					wantDone === -1 ? target : target.slice(0, wantDone) + '- [ ]' + target.slice(wantDone + 5);
+			}
+			if (replacement === target) {
+				wrote = false;
+				return data;
+			}
+			let idx = lines[task.line] === target ? task.line : -1;
+			if (idx === -1) {
+				const hits: number[] = [];
+				for (let i = 0; i < lines.length; i++) {
+					if (lines[i] === target) hits.push(i);
+				}
+				if (hits.length === 1) idx = hits[0]!;
+			}
+			if (idx === -1) {
+				wrote = false;
+				return data;
+			}
+			replacement = transform?.(replacement) ?? replacement;
+			lines[idx] = replacement;
+			wrote = true;
+			// The task now stands in the file as written, so toggling it again or removing it finds its line.
+			task.originalLine = replacement;
+			return lines.join('\n');
+		});
+	} catch (err) {
+		console.error('[Dashboard] alltasks toggle failed:', err);
+		throw err;
+	}
+	return wrote;
+}
+
+/**
+ * Remove a task's line from its source file. Same guard as `toggleTaskInFile`: the exact original line at its
+ * recorded position, else a unique full-line match; the file is left alone when the line cannot be located.
+ */
+export async function removeTaskFromFile(app: App, task: CalendarTask): Promise<boolean> {
+	let wrote = false;
+	await contentFiles(app).process(task.path, (data) => {
+		if (data === null) throw new Error('huhu-content.missing');
+		const lines = data.split('\n');
+		const target = task.originalLine;
+		let idx = lines[task.line] === target ? task.line : -1;
+		if (idx === -1) {
+			const hits = lines.flatMap((line, i) => (line === target ? [i] : []));
+			if (hits.length === 1) idx = hits[0]!;
+		}
+		if (idx === -1) return data;
+		lines.splice(idx, 1);
+		wrote = true;
+		return lines.join('\n');
+	});
+	return wrote;
+}
+
+/* ----------------------------- bucketing ----------------------------- */
+
+export type DateBucket = 'overdue' | 'today' | 'week' | 'later' | 'nodue';
+
+function parseDueDate(s: string): Date | null {
+	const m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+	if (!m) return null;
+	return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? '0'), Number(m[5] ?? '0'));
+}
+
+function startOfDay(d: Date): Date {
+	const x = new Date(d);
+	x.setHours(0, 0, 0, 0);
+	return x;
+}
+
+/** Classify a task's due date into a bucket relative to `now` (local time). */
+export function dateBucketOf(due: string | undefined, now: Date = new Date()): DateBucket {
+	if (!due) return 'nodue';
+	const d = parseDueDate(due);
+	if (!d) return 'nodue';
+	const today = startOfDay(now).getTime();
+	const dueDay = startOfDay(d).getTime();
+	if (dueDay < today) return 'overdue';
+	if (dueDay === today) return 'today';
+	const daysSinceMonday = (now.getDay() + 6) % 7;
+	const monday = today - daysSinceMonday * 86400000;
+	const nextMonday = monday + 7 * 86400000;
+	if (dueDay >= monday && dueDay < nextMonday) return 'week';
+	return 'later';
+}
+
+/* --------------------------- calendar support --------------------------- */
+
+/** Max number of days a multi-day span may cover (guards against pathological ranges). */
+const MAX_SPAN_DAYS = 366;
+
+/**
+ * A task is calendar-relevant if it carries any recognized calendar date.
+ * Completion alone does NOT capture: a done checkbox whose only date marker
+ * is ✅ / `[completion::]` is history, not a schedule. Tasks that also carry
+ * a due/start/end/scheduled date keep every anchor, including their
+ * completion-day one (see indexTasksByDay).
+ */
+export function isCalendarRelevant(task: CalendarTask): boolean {
+	return Boolean(task.due || task.start || task.end || task.scheduled);
+}
+
+export { taskDayKind, type CalendarDayKind } from '../../core/calendar/agenda';
+
+/**
+ * Inclusive [start, end] day range (YYYY-MM-DD) a task occupies on a calendar.
+ * Falls back to the due date as a single day when no start/end window exists.
+ * Returns null for tasks with no date at all.
+ */
+export function calendarSpan(task: CalendarTask): { start: string; end: string } | null {
+	if (task.start && task.end) {
+		return task.start <= task.end ? { start: task.start, end: task.end } : { start: task.end, end: task.start };
+	}
+	if (task.start) return { start: task.start, end: task.start };
+	if (task.end) return { start: task.end, end: task.end };
+	if (task.due) return { start: task.due, end: task.due };
+	return null;
+}
+
+function addDaysIso(iso: string, days: number): string {
+	const [y, m, d] = iso.split('-').map(Number);
+	const dt = new Date(y!, (m ?? 1) - 1, d ?? 1);
+	dt.setDate(dt.getDate() + days);
+	const yy = dt.getFullYear();
+	const mm = String(dt.getMonth() + 1).padStart(2, '0');
+	const dd = String(dt.getDate()).padStart(2, '0');
+	return `${yy}-${mm}-${dd}`;
+}
+
+/**
+ * Index calendar-relevant tasks by every day they occupy. A task's days are the
+ * union of: its start/end span (capped at MAX_SPAN_DAYS), its scheduled day,
+ * its due day, and its completion day — a task with both a scheduled and a due
+ * date shows on both days; same-day overlaps dedup via the Set. Tasks with no
+ * date are skipped.
+ */
+export function indexTasksByDay<T extends CalendarTask>(tasks: readonly T[]): Map<string, T[]> {
+	const byDay = new Map<string, T[]>();
+	for (const task of tasks) {
+		const days = new Set<string>();
+		const span = calendarSpan(task);
+		if (span) {
+			let cursor = span.start;
+			let guard = 0;
+			while (guard <= MAX_SPAN_DAYS) {
+				days.add(cursor);
+				if (cursor >= span.end) break;
+				cursor = addDaysIso(cursor, 1);
+				guard++;
+			}
+		}
+		if (task.scheduled) days.add(task.scheduled);
+		if (task.due) days.add(task.due);
+		if (!task.due && !task.scheduled && task.reminder) days.add(task.reminder.slice(0, 10));
+		if (task.completion) days.add(task.completion);
+		for (const iso of days) {
+			const list = byDay.get(iso);
+			if (list) list.push(task);
+			else byDay.set(iso, [task]);
+		}
+	}
+	return byDay;
+}
+
+/** "YYYY-MM-DD" for a given local Date. */
+export function toIsoDate(d: Date): string {
+	const y = d.getFullYear();
+	const m = String(d.getMonth() + 1).padStart(2, '0');
+	const day = String(d.getDate()).padStart(2, '0');
+	return `${y}-${m}-${day}`;
+}
+/** Display order of the filter options. */
+export const CALENDAR_TASK_FILTERS: readonly CalendarTaskFilter[] = ['all', 'due', 'start', 'active', 'open'];
+
+/**
+ * Task-level filter predicate. `todayIso` (YYYY-MM-DD) is injected so the
+ * 'active' boundary is testable and recomputed on every render.
+ *  - all: everything
+ *  - due: has a due date (⏰ / 📅 / `[due::]` — the scanner folds ⏰ into due)
+ *  - start: has a start date (🛫 / `[start::]`)
+ *  - active: unchecked, started, and today ∈ [start, end] (no end = ongoing
+ *    until checked off)
+ *  - open: unchecked
+ */
+export function matchesCalendarFilter(task: CalendarTask, filter: CalendarTaskFilter, todayIso: string): boolean {
+	switch (filter) {
+		case 'all':
+			return true;
+		case 'due':
+			return Boolean(task.due);
+		case 'start':
+			return Boolean(task.start);
+		case 'active': {
+			if (task.checked) return false;
+			const start = task.start;
+			if (!start) return false;
+			const end = task.end;
+			return start <= todayIso && (!end || end >= todayIso);
+		}
+		case 'open':
+			return !task.checked;
+	}
+}
+
+/**
+ * Task-level view over a day-indexed map: keeps every day entry of tasks that
+ * pass the filter and drops now-empty days. 'all' returns the same map
+ * (zero-copy). Filtering selects tasks, not anchors — a kept task shows all
+ * its day anchors and span bars.
+ */
+export function filterTasksByDay<T extends CalendarTask>(
+	byDay: ReadonlyMap<string, readonly T[]>,
+	filter: CalendarTaskFilter,
+	todayIso: string,
+): Map<string, T[]> {
+	const out = new Map<string, T[]>();
+	for (const [iso, tasks] of byDay) {
+		const kept = tasks.filter((task) => matchesCalendarFilter(task, filter, todayIso));
+		if (kept.length > 0) out.set(iso, kept);
+	}
+	return out;
+}
