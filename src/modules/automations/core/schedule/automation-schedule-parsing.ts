@@ -1,3 +1,4 @@
+// Adapted from stablyai/orca 27b823f934f739bc85914dd717b776835f60bcf7 (MIT), Copyright (c) 2026 Lovecast Inc.: src/shared/automation-schedule-parsing.ts
 
 import {
 	DAY_NAMES,

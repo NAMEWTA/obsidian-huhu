@@ -33,6 +33,8 @@ const shell = async marker => {
 };
 try {
 	runtime = await launchFreshVault({ root, pluginSource, port: 9463, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','browser','archives','automations','notifications','icons','comments','sync'].map(id=>[id,false])) } } } }); c = runtime.connection;
+	// Configure only the disposable profile when the validation host uses a proxy.
+	if (process.env.HTTPS_PROXY) await c.evaluate("require('@electron/remote').session.defaultSession.setProxy({proxyRules:process.env.HTTPS_PROXY})");
 	for (const file of ['main.js','manifest.json','styles.css']) check('installed-real-asset-' + file, sha(await fs.readFile(path.join(runtime.vault,'.obsidian/plugins/huhu',file))) === sha(await fs.readFile(path.join(pluginSource,file))));
 	if (oldHelper) {
 		const legacy = path.join(runtime.vault,'.obsidian/plugins/huhu/binaries',asset); await fs.mkdir(path.dirname(legacy),{recursive:true}); await fs.copyFile(oldHelper,legacy);
@@ -43,8 +45,10 @@ try {
 	await page();
 	const helperPid = await c.evaluate(`ac.sessions.ensureHelper().then(helper=>helper.pid)`);
 	if (process.platform === 'linux') {
+		// History is lazy: request its scan explicitly rather than waiting for an unopened pane.
+		await c.evaluate('ac.refreshHistory()');
 		await until("ac.historyState==='ready'||ac.historyState==='error'");
-		check('native-history-initial-scan-ready', await c.evaluate("ac.historyState==='ready'"), await c.evaluate('ac.historyError'));
+		check('native-history-explicit-scan-ready', await c.evaluate("ac.historyState==='ready'"), await c.evaluate('ac.historyError'));
 		const descriptors = (await fs.readdir(`/proc/${helperPid}/fd`)).sort();
 		const links = await Promise.all(descriptors.map(async fd => ({fd, target:await fs.readlink(`/proc/${helperPid}/fd/${fd}`).catch(error=>error.code)})));
 		check('helper-closes-inherited-host-descriptors', JSON.stringify(descriptors) === JSON.stringify(['0','1','2']), links);
