@@ -171,8 +171,9 @@
       --tw-skew-x: initial;
       --tw-skew-y: initial;
       --tw-space-y-reverse: 0;
-      --tw-divide-y-reverse: 0;
+      --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
+      --tw-divide-y-reverse: 0;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
       --tw-gradient-via: #0000;
@@ -749,10 +750,6 @@
     grid-column: var(--bar-cs, 1) / span var(--bar-len, 1);
   }
 
-.col-span-1:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    grid-column: span 1 / span 1;
-  }
-
 .col-span-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
     grid-column: span 2 / span 2;
   }
@@ -801,6 +798,10 @@
 
 .m-0:is(.huhu-ui, .huhu-ui *):not(#\#) {
     margin: calc(var(--spacing) * 0);
+  }
+
+.m-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    margin: calc(var(--spacing) * 2);
   }
 
 .m-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -1903,10 +1904,6 @@
     min-height: calc(var(--spacing) * 12);
   }
 
-.min-h-14:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    min-height: calc(var(--spacing) * 14);
-  }
-
 .min-h-16:is(.huhu-ui, .huhu-ui *):not(#\#) {
     min-height: calc(var(--spacing) * 16);
   }
@@ -2637,6 +2634,10 @@
 
 .max-w-full:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-width: 100%;
+  }
+
+.max-w-lg:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    max-width: var(--container-lg);
   }
 
 .max-w-md:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -3431,14 +3432,6 @@
     grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   }
 
-.grid-cols-\[var\(--graph-width\)_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    grid-template-columns: var(--graph-width) minmax(0, 1fr);
-  }
-
-.grid-cols-\[var\(--graph-width\)_minmax\(0\,1fr\)_4\.5rem\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    grid-template-columns: var(--graph-width) minmax(0, 1fr) 4.5rem;
-  }
-
 .\[grid-template-rows\:auto_auto\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     grid-template-rows: auto auto;
   }
@@ -3467,8 +3460,16 @@
     grid-template-rows: auto minmax(0, 1fr);
   }
 
+.grid-rows-\[minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
 .grid-rows-\[minmax\(0\,1fr\)_auto\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+.grid-rows-\[minmax\(0\,1fr\)_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   }
 
 .\[flex-direction\:column\]:is(.huhu-ui, .huhu-ui *):not(#\#), .flex-col:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -3839,6 +3840,13 @@
 
 .gap-y-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
     row-gap: calc(var(--spacing) * 4);
+  }
+
+:where(.divide-x > :not(:last-child)):is(.huhu-ui, .huhu-ui *):not(#\#) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
   }
 
 :where(.divide-y > :not(:last-child)):is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -5632,10 +5640,6 @@
     padding-inline: calc(var(--spacing) * 6);
   }
 
-.px-7:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    padding-inline: calc(var(--spacing) * 7);
-  }
-
 .px-8:is(.huhu-ui, .huhu-ui *):not(#\#) {
     padding-inline: calc(var(--spacing) * 8);
   }
@@ -6988,10 +6992,6 @@
 
 .\[font-style\:italic\]:is(.huhu-ui, .huhu-ui *):not(#\#), .italic:is(.huhu-ui, .huhu-ui *):not(#\#) {
     font-style: italic;
-  }
-
-.not-italic:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    font-style: normal;
   }
 
 .tabular-nums:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -8871,16 +8871,6 @@
     }
   }
 
-.placeholder\:text-muted-foreground\/70:is(.huhu-ui, .huhu-ui *):not(#\#)::placeholder {
-    color: var(--muted-foreground);
-  }
-
-@supports (color: color-mix(in lab, red, red)) {
-    .placeholder\:text-muted-foreground\/70:is(.huhu-ui, .huhu-ui *):not(#\#)::placeholder {
-      color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
-    }
-  }
-
 .before\:absolute:is(.huhu-ui, .huhu-ui *):not(#\#):before {
     content: var(--tw-content);
     position: absolute;
@@ -9102,17 +9092,7 @@
     border-color: var(--ring);
   }
 
-.focus-within\:bg-accent:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#), .focus-within\:bg-accent\/40:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    background-color: var(--accent);
-  }
-
-@supports (color: color-mix(in lab, red, red)) {
-    .focus-within\:bg-accent\/40:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      background-color: color-mix(in oklab, var(--accent) 40%, transparent);
-    }
-  }
-
-.focus-within\:bg-accent\/50:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
+.focus-within\:bg-accent:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#), .focus-within\:bg-accent\/50:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
     background-color: var(--accent);
   }
 
@@ -9447,16 +9427,6 @@
     }
   }
 
-.focus-visible\:bg-accent\/40:focus-visible:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    background-color: var(--accent);
-  }
-
-@supports (color: color-mix(in lab, red, red)) {
-    .focus-visible\:bg-accent\/40:focus-visible:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      background-color: color-mix(in oklab, var(--accent) 40%, transparent);
-    }
-  }
-
 .focus-visible\:opacity-100:focus-visible:is(.huhu-ui, .huhu-ui *):not(#\#) {
     opacity: 1;
   }
@@ -9559,20 +9529,8 @@
     pointer-events: none;
   }
 
-.disabled\:cursor-default:disabled:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    cursor: default;
-  }
-
 .disabled\:cursor-not-allowed:disabled:is(.huhu-ui, .huhu-ui *):not(#\#) {
     cursor: not-allowed;
-  }
-
-.disabled\:text-muted-foreground:disabled:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    color: var(--muted-foreground);
-  }
-
-.disabled\:no-underline:disabled:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    text-decoration-line: none;
   }
 
 .disabled\:opacity-50:disabled:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -10866,6 +10824,40 @@
     }
   }
 
+@container (min-width: 736px) {
+    .\@min-\[736px\]\:flex:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      display: flex;
+    }
+
+    .\@min-\[736px\]\:grid-cols-\[280px_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+  }
+
+@container (min-width: 1024px) {
+    .\@min-\[1024px\]\:grid-cols-\[280px_240px\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 280px 240px;
+    }
+
+    .\@min-\[1024px\]\:grid-cols-\[520px_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 520px minmax(0, 1fr);
+    }
+
+    .\@min-\[1024px\]\:grid-rows-\[minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .\@min-\[1024px\]\:border-t-0:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-top-style: var(--tw-border-style);
+      border-top-width: 0;
+    }
+
+    .\@min-\[1024px\]\:border-l:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-left-style: var(--tw-border-style);
+      border-left-width: 1px;
+    }
+  }
+
 @container (min-width: 9rem) {
     .\@min-\[9rem\]\:block:is(.huhu-ui, .huhu-ui *):not(#\#) {
       display: block;
@@ -10953,14 +10945,6 @@
   }
 
 @container (min-width: 36rem) {
-    .\@xl\:col-span-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      grid-column: span 3 / span 3;
-    }
-
-    .\@xl\:block:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      display: block;
-    }
-
     .\@xl\:flex:is(.huhu-ui, .huhu-ui *):not(#\#) {
       display: flex;
     }
@@ -10971,10 +10955,6 @@
 
     .\@xl\:grid-cols-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .\@xl\:grid-cols-\[var\(--graph-width\)_minmax\(0\,1fr\)_8\.5rem_6\.5rem_4\.5rem\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      grid-template-columns: var(--graph-width) minmax(0, 1fr) 8.5rem 6.5rem 4.5rem;
     }
 
     .\@xl\:p-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -11285,6 +11265,10 @@
 
     .pointer-coarse\:hidden:is(.huhu-ui, .huhu-ui *):not(#\#) {
       display: none;
+    }
+
+    .pointer-coarse\:min-h-11:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      min-height: calc(var(--spacing) * 11);
     }
 
     .pointer-coarse\:opacity-50:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -17761,7 +17745,7 @@ html[dir="rtl"]:is(.huhu-ui, .huhu-ui *):not(#\#), [data-sonner-toaster][dir="rt
   initial-value: 0;
 }
 
-@property --tw-divide-y-reverse {
+@property --tw-divide-x-reverse {
   syntax: "*";
   inherits: false;
   initial-value: 0;
@@ -17771,6 +17755,12 @@ html[dir="rtl"]:is(.huhu-ui, .huhu-ui *):not(#\#), [data-sonner-toaster][dir="rt
   syntax: "*";
   inherits: false;
   initial-value: solid;
+}
+
+@property --tw-divide-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
 }
 
 @property --tw-gradient-position {
@@ -22179,6 +22169,181 @@ body:where(.huhu-iconic-enabled)[data-huhu-iconic-theme="Ukiyo"] .workspace-leaf
 	padding: 0 var(--size-4-2);
 	font-family: var(--font-interface);
 	font-size: var(--font-ui-smaller);
+}
+/* CodeMirror's owned DOM needs scoped CSS; all surrounding product layout uses Tailwind. */
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--nd-font-mono);
+	font-size: 14px;
+	overflow: hidden;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors[data-layout='stacked'] {
+	display: grid;
+	grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.huhu-ui .huhu-versioning-stacked-pane {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.huhu-ui .huhu-versioning-stacked-pane + .huhu-versioning-stacked-pane {
+	border-top: 1px solid var(--border);
+}
+
+.huhu-ui .huhu-versioning-pane-title {
+	flex: 0 0 auto;
+	min-height: 32px;
+	padding: 6px 12px;
+	border-bottom: 1px solid var(--border);
+	background: var(--muted);
+	color: var(--muted-foreground);
+	font-family: var(--nd-font-sans);
+	font-size: 12px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-editor {
+	height: 100%;
+	min-height: 0;
+	min-width: 0;
+	flex: 1 1 0%;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: inherit;
+	font-size: inherit;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-scroller {
+	overflow: auto;
+	font-family: inherit;
+	line-height: 1.65;
+	scrollbar-width: thin;
+	scrollbar-color: var(--border) transparent;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-content {
+	padding-block: 8px;
+	caret-color: var(--foreground);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-line {
+	padding-inline: 10px;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-gutters {
+	background: var(--background);
+	color: var(--muted-foreground);
+	border-right: 1px solid var(--border);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-activeLineGutter {
+	background: var(--muted);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeView {
+	height: 100%;
+	min-height: 0;
+	overflow: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--border) transparent;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeViewEditor {
+	min-width: 0;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-mergeViewEditor + .cm-mergeViewEditor {
+	border-left: 1px solid var(--border);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedLine,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedChunk,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-removed-line {
+	background: color-mix(in oklab, var(--destructive) 9%, transparent);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedLine,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-inlineChangedLine,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-added-line {
+	background: color-mix(in oklab, var(--status-success) 9%, transparent);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedText,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedText,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-removed-text {
+	background: color-mix(in oklab, var(--destructive) 20%, transparent);
+	text-decoration: underline;
+	text-decoration-color: var(--destructive);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedText,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-added-text {
+	background: color-mix(in oklab, var(--status-success) 20%, transparent);
+	text-decoration: underline;
+	text-decoration-color: var(--status-success);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-a .cm-changedLineGutter,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-deletedLineGutter {
+	background: var(--destructive);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-merge-b .cm-changedLineGutter {
+	background: var(--status-success);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-change-gutter {
+	min-width: 14px;
+	text-align: center;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold {
+	background: var(--muted);
+	color: var(--muted-foreground);
+	font-family: var(--nd-font-sans);
+	font-size: 12px;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button {
+	display: block;
+	width: 100%;
+	min-height: var(--nd-hit-size, 32px);
+	padding: 4px 12px;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button:hover {
+	background: var(--accent);
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button:focus-visible,
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-content:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: -2px;
+}
+
+.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .cm-selectionBackground {
+	background: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+@media (pointer: coarse) {
+	.huhu-ui .huhu-versioning-diff .huhu-versioning-editors .huhu-versioning-fold button {
+		min-height: 44px;
+	}
 }
 /* Retained browser guests stay in one parent across workspace layout changes. */
 .huhu-browser-retained-root {

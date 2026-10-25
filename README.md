@@ -28,7 +28,7 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 | [Automations and notifications](docs/automation.md) | Manual/scheduled actions, prechecks, device ownership, run history and notifications |
 | [Comments](docs/comments.md) | Line/selection comments, anchors, hover threads and sidebar |
 | [Icons and appearance](docs/appearance.md) | File/interface icons, themes, Markdown palettes and local fonts |
-| [Git sync](docs/sync.md) | Current-vault repository initialization, commit, pull, push, exclusions and conflicts |
+| [Versioning](docs/sync.md) | Compact Git workspace, note history, three diff layouts, checkpointed restore/undo, commit, pull and push |
 | [Encrypted safe](docs/safe.md) | Independent master password, encrypted records, locking, backup and authenticated recovery |
 
 Modules have independent switches. Git remotes, authentication and automatic schedules need separate configuration; CLI logins, weather and other external services have their own requirements. Maintained guides are in Chinese: [guide index](docs/README.md), [workbench](docs/workbench.md) and [settings](docs/settings.md).

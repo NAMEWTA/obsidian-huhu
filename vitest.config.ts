@@ -25,7 +25,7 @@ const iconicStubTests = ['src/app/settings/setting-definitions.test.ts', 'src/mo
 
 // Real Git repositories and Chrome contend for subprocess startup and disk IO on Windows runners.
 // Run these suites one at a time after the parallel in-process tests, preserving their existing deadlines.
-const nativeIntegrationTests = ['test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/host/computed-surface.test.ts'];
+const nativeIntegrationTests = ['test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
 
 export default defineConfig({
 	test: {

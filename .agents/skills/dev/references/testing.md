@@ -51,7 +51,7 @@
 | 档案 | `src/modules/archives/archives.test.ts`；索引、批量处理或性能变化加 `pnpm run accept:contacts-scale` |
 | 保险箱 | `src/modules/safe/` 下的模型、真实 WebCrypto、密文仓库、文件、会话与 DOM 测试；原生文件选择器、剪贴板、多窗口迁移、隐藏锁定和重启恢复补真实桌面宿主验收 |
 | 图标 | `src/modules/icons/iconic-port.test.ts` 中相关 Iconic 对照 |
-| Git 同步 | `src/modules/sync` 对应测试；Git 流程变化加 `test/sync/git-flow.test.ts`（临时远端） |
+| 版本管理 | `src/modules/versioning` 对应测试；Git 流程、历史和恢复暂停用 `test/sync/` 的真实临时仓库；笔记恢复补原生编辑器与多叶宿主验证 |
 | 终端模型、键盘、呈现 | `src/modules/agent/**` 中对应测试；原生辅助程序变化加 `pnpm run check:native` 和 `node scripts/verify-pty-helper.mjs <二进制>` |
 | 升版本、发版文件 | `test/release/release-artifacts.test.ts` 和 `node scripts/verify-release-artifacts.mjs <version>`；实际发布遵守完整发行门禁 |
 | 文档或技能 | `pnpm test:docs` 及变更事实/链接核对；触发、权限或流程语义变化验证对应正常、近邻不触发和失败分支 |
@@ -74,6 +74,8 @@
 ## 真实 Obsidian 探针
 
 `scripts/obsidian-acceptance/` 里每个脚本都用 `fresh-vault.mjs` 创建一次性的库、配置目录和临时 HOME，用远程调试启动 Obsidian 并安装当前构建的插件；证据（JSON 和截图）写入 `<root>/evidence/`。每次运行都用新的根目录，它必须尚不存在。
+
+`versioning-history.mjs` 验证笔记历史在真实编辑器中的浏览、恢复、撤销、批注、多叶、Worker、重启与弹出窗口；只初始化一次性本地 Git 仓库，没有远端。传入尚不存在的绝对目录，沿用 `HUHU_OBSIDIAN_EXECUTABLE`、`HUHU_PLUGIN_SOURCE` 与 `HUHU_ACCEPTANCE_PORT`。
 
 `workbench-probe.mjs` 是工作台的整体探针：三种宽度下的布局和溢出、图标轨上的每个页面、点击当前图标折叠侧栏、全部设置分类、模块开关增删图标轨条目、重启后回到上次的页面，以及没有未处理的原生错误。其余脚本各验证一个功能的宿主集成（看板网格与日历、评论、浏览器会话与访客页、同步克隆与自动暂存、导航器日志、智能体账号与标签、笔记移动与引用更新、溢出审计、主题矩阵等）；纯逻辑和组件交互由 Vitest 覆盖，不要为它们再写探针。DOM 改版后先跑受影响的脚本，选择器随界面一起更新，找不到元素时修脚本或删脚本，不留失效的验收。
 

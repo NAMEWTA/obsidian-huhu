@@ -1,5 +1,5 @@
-import { gitEnvironment } from '../../src/modules/sync/platform/desktop/git-environment';
-import { syncStatePath } from '../../src/modules/sync/platform/desktop/device-state';
+import { gitEnvironment } from '../../src/modules/versioning/platform/desktop/git-environment';
+import { syncStatePath } from '../../src/modules/versioning/platform/desktop/device-state';
 /**
  * Git sync against real git: a temporary bare remote and independent working copies. Checks file contents, git
  * status and the commit graph, not only that commands returned.
@@ -11,13 +11,13 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { afterAll, beforeAll, describe, test, vi } from 'vitest';
-import { commitAndSync, commitStep, pullStep, pushStep, squashUnpushed, succeeded, type StepResult, type SyncOptions } from '../../src/modules/sync/core/flow';
-import { GitRepo } from '../../src/modules/sync/core/repo';
-import { createGitRunner } from '../../src/modules/sync/platform/desktop/git-runner';
-import { desktopGitHost } from '../../src/modules/sync/platform/desktop/host';
-import { SyncService } from '../../src/modules/sync/services/sync-service';
-import { describeReport } from '../../src/modules/sync/services/report';
-import { syncSettings, type SyncSettings } from '../../src/modules/sync/settings';
+import { commitAndSync, commitStep, pullStep, pushStep, squashUnpushed, succeeded, type StepResult, type SyncOptions } from '../../src/modules/versioning/core/flow';
+import { GitRepo } from '../../src/modules/versioning/core/repo';
+import { createGitRunner } from '../../src/modules/versioning/platform/desktop/git-runner';
+import { desktopGitHost } from '../../src/modules/versioning/platform/desktop/host';
+import { SyncService } from '../../src/modules/versioning/services/sync-service';
+import { describeReport } from '../../src/modules/versioning/services/report';
+import { syncSettings, type SyncSettings } from '../../src/modules/versioning/settings';
 import type { SettingsHandle } from '../../src/shared/settings/store';
 
 // Each scenario starts many real git processes; Windows runners can exceed the unit-test default.

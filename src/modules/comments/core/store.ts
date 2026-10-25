@@ -1,5 +1,8 @@
 import { locateAnchor, createAnchor } from './anchor';
 import type { CommentFileDoc, CommentIndex, CommentMessage, CommentThread, NewCommentInput } from './model';
+import { DocumentMutationError, type AnnotationUndo, type DocumentChange } from '../../../shared/storage/document-mutation';
+import { textEdits } from '../../../shared/storage/text-edits';
+import { anchorCheckpoint, applyRestoredAnchors, type AnchorCheckpoint } from './restore-anchors';
 
 const ROOT = '.huhu/editor/comments';
 const INDEX_PATH = `${ROOT}/index.json`;
@@ -150,6 +153,8 @@ export class CommentStore {
 	private readonly legacyPaths = new Set<string>();
 	private readonly damagedPaths = new Set<string>();
 	private closing: Promise<void> | null = null;
+	private readonly documentChanges = new Map<string, { change: DocumentChange; before: AnchorCheckpoint; observed: string; revisions: Map<string, string>; undo?: AnnotationUndo }>();
+	private readonly restoredDocuments = new Map<string, { before: string; after: string; beforeAnchors: AnchorCheckpoint; afterAnchors: AnchorCheckpoint }>();
 
 	constructor(
 		private readonly fs: CommentFs,
@@ -208,6 +213,7 @@ export class CommentStore {
 	add(path: string, input: NewCommentInput): Promise<CommentThread> {
 		return this.enqueue(async () => {
 			const threads = await this.readThreads(path);
+			if (this.documentChanges.get(path)?.change.kind === 'remove') throw new DocumentMutationError('changed', path);
 			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
 			const now = nowIso();
 			const thread: CommentThread = {
@@ -220,6 +226,8 @@ export class CommentStore {
 				updatedAt: now,
 			};
 			threads.push(thread);
+			const pending = this.documentChanges.get(path);
+			pending?.revisions.set(thread.id, pending.observed);
 			this.reconciled.add(path);
 			this.markDirty(path);
 			this.emit();
@@ -267,6 +275,8 @@ export class CommentStore {
 			found.thread.kind = anchor.kind;
 			found.thread.status = 'open';
 			found.thread.updatedAt = nowIso();
+			const pending = this.documentChanges.get(found.path);
+			pending?.revisions.set(id, pending.observed);
 			this.markDirty(found.path);
 			this.emit();
 		});
@@ -319,6 +329,12 @@ export class CommentStore {
 	 */
 	applyChanges(path: string | null, mapper: PosMapper, doc: string, before: string): void {
 		if (this.closed || !path || !this.reconciled.has(path)) return;
+		const pending = this.documentChanges.get(path);
+		if (pending) {
+			// Preserve the same monotonic broadcast rule while the ordinary mapper is suspended.
+			if (pending.observed === before) pending.observed = doc;
+			return;
+		}
 		const current = this.documents.get(path);
 		// Obsidian broadcasts one revision to every view of a file. A second view
 		// must not map shared offsets again; an older broadcast must not rewind them.
@@ -326,6 +342,12 @@ export class CommentStore {
 		this.documents.set(path, doc);
 		const threads = this.cache.get(path);
 		if (!threads || threads.length === 0) return;
+		const restored = this.restoredDocuments.get(path);
+		if (restored && ((before === restored.after && doc === restored.before) || (before === restored.before && doc === restored.after))) {
+			const inverse = doc === restored.before;
+			if (applyRestoredAnchors(path, threads, doc, textEdits(before, doc), { before: inverse ? restored.beforeAnchors : restored.afterAnchors, expected: inverse ? restored.afterAnchors : restored.beforeAnchors })) { this.markDirty(path); this.emit(); }
+			return;
+		}
 		let changed = false;
 		for (const thread of threads) {
 			if (thread.status === 'orphaned') continue;
@@ -362,8 +384,10 @@ export class CommentStore {
 
 	/** Relocate open threads against `doc`. Failures become `orphaned` and are not guessed. */
 	reconcile(path: string, doc: string): void {
+		if (this.documentChanges.has(path)) return;
 		const revision = this.documents.get(path);
 		void this.enqueue(async () => {
+			if (this.documentChanges.has(path)) return;
 			const threads = await this.readThreads(path);
 			if (this.documents.get(path) !== revision || revision === doc) return;
 			let changed = false;
@@ -390,10 +414,70 @@ export class CommentStore {
 		});
 	}
 
+	/** Suspend the ordinary editor mapper before the restore transaction can be dispatched. */
+	prepareDocumentChange(change: DocumentChange, undo?: AnnotationUndo): Promise<AnchorCheckpoint> {
+		return this.enqueue(async () => {
+			if (this.closed) throw new Error('Comment store is closed');
+			if (this.documentChanges.has(change.path)) throw new Error('Comment document change is already pending');
+			const threads = await this.readThreads(change.path);
+			if (this.closed) throw new Error('Comment store is closed');
+			if (change.kind === 'remove' && threads.length) throw new DocumentMutationError('changed', change.path);
+			if (this.documents.get(change.path) !== change.before) {
+				if (applyRestoredAnchors(change.path, threads, change.before, [])) this.markDirty(change.path);
+				this.documents.set(change.path, change.before); this.reconciled.add(change.path);
+			}
+			const before = anchorCheckpoint(change.path, threads);
+			this.documentChanges.set(change.path, { change, before, observed: change.before, revisions: new Map(), undo });
+			return structuredClone(before);
+		});
+	}
+
+	private finishDocumentChange(path: string, actual: string, remember: boolean): AnchorCheckpoint {
+		const pending = this.documentChanges.get(path);
+		if (!pending) return anchorCheckpoint(path, this.cache.get(path) ?? []);
+		const threads = this.cache.get(path) ?? [];
+		const edits = textEdits(pending.change.before, actual);
+		let changed = false;
+		for (const thread of threads) {
+			const revision = pending.revisions.get(thread.id);
+			if (applyRestoredAnchors(path, [thread], actual, revision === undefined ? edits : textEdits(revision, actual), revision === undefined && remember ? pending.undo : undefined)) changed = true;
+		}
+		this.documentChanges.delete(path); this.documents.set(path, actual); this.reconciled.add(path);
+		// A user reanchor made during the operation must never become eligible for its inverse snapshot.
+		const after = anchorCheckpoint(path, threads.filter(thread => !pending.revisions.has(thread.id)));
+		if (remember) {
+			this.restoredDocuments.set(path, { before: pending.change.before, after: actual, beforeAnchors: pending.before, afterAnchors: after });
+			if (this.restoredDocuments.size > 8) this.restoredDocuments.delete(this.restoredDocuments.keys().next().value!);
+		}
+		if (changed) this.markDirty(path);
+		this.emit(); return after;
+	}
+
+	commitDocumentChange(operationId: string, actualText: string): Promise<AnchorCheckpoint> {
+		return this.enqueue(async () => {
+			const entry = [...this.documentChanges].find(([, pending]) => pending.change.operationId === operationId);
+			if (!entry) throw new Error('Comment document change is no longer active');
+			if (actualText !== entry[1].change.after) throw new Error('Comment document changed before restore commit');
+			const result = this.finishDocumentChange(entry[0], actualText, true);
+			await this.writeDirty(); return result;
+		});
+	}
+
+	abortDocumentChange(operationId: string, actualText?: string): Promise<void> {
+		return this.enqueue(async () => {
+			const entry = [...this.documentChanges].find(([, pending]) => pending.change.operationId === operationId);
+			if (entry) this.finishDocumentChange(entry[0], actualText ?? entry[1].observed, false);
+			await this.writeDirty();
+		}, true);
+	}
+
 	renamePath(oldPath: string, newPath: string): Promise<void> {
 		return this.enqueue(async () => {
 			if (oldPath === newPath) return;
 			const threads = await this.readThreads(oldPath);
+			const pending = this.documentChanges.get(oldPath);
+			if (pending) this.finishDocumentChange(oldPath, pending.observed, false);
+			this.restoredDocuments.delete(oldPath);
 			this.cache.delete(oldPath);
 			this.cache.set(newPath, threads);
 			if (this.reconciled.delete(oldPath)) this.reconciled.add(newPath);
@@ -420,6 +504,8 @@ export class CommentStore {
 			const index = await this.readIndex();
 			const prev = index.files[path];
 			delete index.files[path];
+			if (this.documentChanges.get(path)?.change.kind !== 'remove') this.documentChanges.delete(path);
+			this.restoredDocuments.delete(path);
 			this.cache.delete(path);
 			this.reconciled.delete(path);
 			this.documents.delete(path);
@@ -441,6 +527,7 @@ export class CommentStore {
 
 	/** Seal synchronously, then drain accepted work. A failed drain remains retryable. */
 	close(): Promise<void> {
+		for (const [path, pending] of this.documentChanges) this.finishDocumentChange(path, pending.observed, pending.observed === pending.change.after);
 		this.closed = true;
 		this.dispose();
 		if (this.closing) return this.closing;

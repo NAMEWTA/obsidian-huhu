@@ -29,6 +29,7 @@ import { registerCopyCommands } from './copy-commands';
 import { BROWSER_OPEN, type BrowserOpenRequest } from '../modules/browser/api';
 import { desktopMachineIdentity, initializeDevice, vaultIdentity } from '../host/obsidian/storage/device-id';
 import type { ContentFiles } from '../host/obsidian/storage/content-files';
+import { EditorContextService } from './editor-panel/context';
 
 /**
  * Composition root. Module code is created by the module registry from `MANIFESTS`; this class keeps the
@@ -36,6 +37,7 @@ import type { ContentFiles } from '../host/obsidian/storage/content-files';
  */
 export default class DashboardPlugin extends Plugin {
 	managedContent!: ContentFiles;
+	documents!: EditorContextService;
 	override addCommand(command: LocalizedCommand): Command {
 		return registerLocalizedCommand(this, command, (native) => super.addCommand(native));
 	}
@@ -50,6 +52,8 @@ export default class DashboardPlugin extends Plugin {
 	private readonly postProcessors = new Set<MarkdownPostProcessor>();
 
 	async onload(): Promise<void> {
+		this.documents = new EditorContextService(this.app, (path, text) => this.managedContent.checkEditor(path, text));
+		this.register(() => this.documents.dispose());
 		useStorageTimers(window);
 		setLanguage(defaultLanguage());
 		await initializeDevice(this.app, {
@@ -110,7 +114,7 @@ export default class DashboardPlugin extends Plugin {
 						lifetime.register(() => this.postProcessors.delete(processor));
 					},
 				};
-				return { id: manifest.id, app: this.app, manifest: this.manifest, env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone }, lifetime, settings: this.runtime.store, services, contributions, shell, commands, editor };
+				return { id: manifest.id, app: this.app, manifest: this.manifest, env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone }, lifetime, settings: this.runtime.store, services, contributions, shell, commands, editor, documents: this.documents };
 			},
 			releaseContext: (context) => this.removeChild(context.lifetime),
 			report: (id, phase, error) => {
@@ -275,7 +279,7 @@ export default class DashboardPlugin extends Plugin {
 	}
 
 	async openEditorView(): Promise<void> {
-		if (!this.moduleEnabled('comments')) {
+		if (!this.moduleEnabled('comments') && !this.moduleEnabled('versioning')) {
 			new Notice(t('modules.disabledNotice'));
 			this.openSettings();
 			return;

@@ -1,5 +1,6 @@
 // Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: src/ui/comment-panel.ts, src/ui/vault-sections.ts
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import type { EditorContextAccess } from '../../../../app/contracts/editor-context';
 import { useStore } from 'zustand';
 import { MessageSquareText, MoreHorizontal, RefreshCw } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
@@ -27,19 +28,20 @@ function VaultSection({ env, path, open, total, filter, sort }: { env: CommentsE
 	const [expanded, setExpanded] = useState(false);
 	return <Collapsible open={expanded} onOpenChange={setExpanded}><CollapsibleTrigger asChild><Button variant="ghost" className="h-auto w-full justify-between whitespace-normal text-left text-xs"><span>{path}</span><span className="ml-2 text-muted-foreground">{open}/{total}</span></Button></CollapsibleTrigger><CollapsibleContent>{expanded && <NoteThreads env={env} path={path} filter={filter} sort={sort} />}</CollapsibleContent></Collapsible>;
 }
-export function CommentsPanel({ env }: { env: CommentsEnv }) {
+export function CommentsPanel({ env, documents, container }: { env: CommentsEnv; documents?: EditorContextAccess; container?: HTMLElement }) {
 	const state = useStore(env.service.state);
+	const path = useSyncExternalStore(listener => documents?.subscribe(listener) ?? (() => undefined), () => documents && container?.ownerDocument.defaultView ? documents.current(container.ownerDocument.defaultView)?.path ?? null : state.path);
 	const [scope, setScope] = useState('current');
 	const [filter, setFilter] = useState<ThreadFilter>('all');
 	const [sort, setSort] = useState<SortOrder>(env.service.settings().sort);
 	const t = useT();
 	const store = env.service.store;
-	const counts = scope === 'current' ? countThreads(state.path ? store.threadsFor(state.path) : []) : state.notes.reduce((total, note) => ({ all: total.all + note.total, open: total.open + note.open, resolved: total.resolved + note.total - note.open }), { all: 0, open: 0, resolved: 0 });
+	const counts = scope === 'current' ? countThreads(path ? store.threadsFor(path) : []) : state.notes.reduce((total, note) => ({ all: total.all + note.total, open: total.open + note.open, resolved: total.resolved + note.total - note.open }), { all: 0, open: 0, resolved: 0 });
 	const notes = state.notes.filter(note => filter === 'all' || (filter === 'open' ? note.open > 0 : note.total > note.open)).sort((a, b) => a.path.localeCompare(b.path));
 	const existing = notes.filter(note => env.app.vault.getFileByPath(note.path));
 	const missing = notes.filter(note => !env.app.vault.getFileByPath(note.path));
 	return <div className="huhu-comments-panel flex h-full min-h-0 flex-col bg-background text-foreground">
-		<div className="space-y-2 border-b border-border p-3"><div className="flex h-9 items-center justify-between"><h2 className="text-sm font-medium">{t('editor.comments.title')}</h2><div className="flex gap-2"><Action label={t('editor.comments.refresh')} onClick={() => { void env.service.refresh(); }}><RefreshCw /></Action><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon-xs" variant="ghost" aria-label={t('editor.comments.more')}><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuLabel>{t('editor.comments.sort')}</DropdownMenuLabel><DropdownMenuRadioGroup value={sort} onValueChange={value => setSort(value as SortOrder)}>{(['position', 'created', 'activity'] as const).map(value => <DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup><DropdownMenuSeparator />{scope === 'current' && state.path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path: state.path!, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div>
+		<div className="space-y-2 border-b border-border p-3"><div className="flex h-9 items-center justify-between"><h2 className="text-sm font-medium">{t('editor.comments.title')}</h2><div className="flex gap-2"><Action label={t('editor.comments.refresh')} onClick={() => { void env.service.refresh(); }}><RefreshCw /></Action><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon-xs" variant="ghost" aria-label={t('editor.comments.more')}><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuLabel>{t('editor.comments.sort')}</DropdownMenuLabel><DropdownMenuRadioGroup value={sort} onValueChange={value => setSort(value as SortOrder)}>{(['position', 'created', 'activity'] as const).map(value => <DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup><DropdownMenuSeparator />{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div>
 		<SegmentedControl value={scope} onChange={setScope} size="sm" options={[{ value: 'current', label: t('editor.comments.current') }, { value: 'vault', label: t('editor.comments.vault') }]} />
 		<ToggleGroup type="single" value={filter} onValueChange={value => { if (value) setFilter(value as ThreadFilter); }} className="w-full flex-wrap">{(['all', 'open', 'resolved'] as const).map(value => <ToggleGroupItem key={value} value={value} className="flex-auto text-xs">{t(`editor.comments.${value}`)} {counts[value]}</ToggleGroupItem>)}</ToggleGroup>
 		</div>
@@ -47,7 +49,7 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 		{store.legacyData && <p role="status" className="text-xs text-status-warning">{t('editor.comments.legacy')}</p>}
 		{store.damagedFiles.length > 0 && <p role="alert" className="text-xs text-destructive">{t('editor.comments.damaged')}</p>}
 		{state.error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
-		{scope === 'current' ? state.path ? <NoteThreads key={state.path} env={env} path={state.path} filter={filter} sort={sort} /> : <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p> : <>{existing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} />)}{missing.length > 0 && <h3 className="text-xs text-status-warning">{t('editor.comments.missingNotes')}</h3>}{missing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} />)}{!notes.length && <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.emptyHint')}</p>}</>}
+		{scope === 'current' ? path ? <NoteThreads key={path} env={env} path={path} filter={filter} sort={sort} /> : <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p> : <>{existing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} />)}{missing.length > 0 && <h3 className="text-xs text-status-warning">{t('editor.comments.missingNotes')}</h3>}{missing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} />)}{!notes.length && <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.emptyHint')}</p>}</>}
 		</div>
 	</div>;
 }

@@ -11,7 +11,7 @@
 | 网页与资料 | [浏览器](browser.md)、[档案](contacts.md) |
 | 定时操作 | [自动化与通知](automation.md) |
 | 图标与配色 | [图标](icons.md)、[外观](appearance.md) |
-| 同步与凭据 | [Git 同步](sync.md)、[保险箱](safe.md) |
+| 版本与凭据 | [版本管理与笔记历史](sync.md)、[保险箱](safe.md) |
 | 保存、恢复与外部访问 | [数据与恢复](data.md)、[隐私](privacy.md) |
 | 工程与发布 | [架构](architecture.md)、[设计系统](design-system.md)、[开发发布](development.md) |
 | 来源与许可 | [参考映射](references.md)、[LICENSE](../LICENSE)、[NOTICE](../NOTICE)、[第三方通知](../THIRD-PARTY-NOTICES.md) |

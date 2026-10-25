@@ -13,7 +13,7 @@ src/theme/          主题样式、Markdown 样式、把它们应用到每个窗
 src/host/           多个模块共用的 Obsidian 与桌面适配器
 src/shared/         工具函数、设置 DSL 与存储、存储辅助、i18n 运行时与启动词典
 src/types/          环境类型声明
-src/modules/<id>/   home | agent | browser | archives | automations | notifications | icons | comments | navigator | sync | safe
+src/modules/<id>/   home | agent | browser | archives | automations | notifications | icons | comments | navigator | versioning | safe
   manifest.ts       纯数据描述，启动时加载
   api.ts            其他模块可导入的类型和 serviceKey()/contributionPoint() 常量
   module.ts         懒加载入口：创建 ModuleInstance
@@ -90,7 +90,7 @@ esbuild 构建一个不拆分代码的 CommonJS `main.js`。只能通过 `import
 
 ## 工作台
 
-只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`sync`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 保留为引擎模块，通过 `BROWSER_HOST` 给智能体标签提供能力；批注使用右侧栏视图，记录使用看板弹窗，不再贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
+只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`versioning`、`revision-review`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 保留为引擎模块，通过 `BROWSER_HOST` 给智能体标签提供能力；批注使用右侧栏视图，记录使用看板弹窗，不再贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
 
 另外有两种侧栏视图，都在 `main.ts` 启动时注册，使保存的叶子能恢复；对应模块关闭时显示「开启模块」的提示，模块启动后切换为模块的 React 面板：
 
@@ -162,8 +162,8 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 笔记导航器设置 | 设置命名空间 `navigator`；显示与行为随库，布局、尺寸、展开状态和选中项在设备文件 | navigator |
 | 周期笔记（日志档案） | 库内可见目录，固定结构 `<日志文件夹>/日记/YYYY/MM/YYYY-MM-DD.md`、`周记/gggg/gggg-Www.md`、`月记/YYYY/YYYY-MM.md`、`季记/YYYY/YYYY-Qq.md`、`年记/YYYY.md`；日志文件夹默认 `huhu/日志`（设置 `navigator.periodicRoot`），路径由 `src/shared/periodic-paths.ts` 的纯函数生成，导航器和看板日历共用 | navigator（看板经 `NAVIGATOR_PERIODIC` 读取） |
 | 通知 | `.huhu/notifications/<device-id>/inbox.json` | notifications |
-| Git 同步设备状态 | `.huhu/sync/<device-id>/<repository-hash>.json` | sync |
-| Git 同步的排除规则 | 仓库 `.gitignore` 与 `.git/info/exclude` 里带起止标记的 HUHU 托管区块（浏览器、智能体账号与运行目录、辅助程序、各设备的自动化运行、缓存、恢复、迁移、锁与临时文件；`huhu/`、`.huhu/dashboards/`、`.huhu/automation/definitions/` 不排除）；清单在 `src/modules/sync/core/excludes.ts` | sync |
+| Git 同步设备状态 | `.huhu/sync/<device-id>/<repository-hash>.json` | versioning |
+| Git 同步的排除规则 | 仓库 `.gitignore` 与 `.git/info/exclude` 里带起止标记的 HUHU 托管区块（浏览器、智能体账号与运行目录、辅助程序、各设备的自动化运行、缓存、恢复、迁移、锁与临时文件；`huhu/`、`.huhu/dashboards/`、`.huhu/automation/definitions/` 不排除）；清单在 `src/modules/versioning/core/excludes.ts` | versioning |
 | 恢复草稿与看板冲突 | `.huhu/recovery/drafts/`、`.huhu/recovery/dashboard/conflicts/` | 共享存储、home |
 | 受管内容移动与回收 | `.huhu/content-moves/manifest.json`；恢复材料在 `.huhu/recovery/content-creates/`、`renames/`、`trash/` | host、shared |
 | 缓存 | `.huhu/cache/`（微信读书进度） | home |

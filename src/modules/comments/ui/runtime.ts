@@ -14,7 +14,8 @@ import { registerCommentCommands } from './commands';
 import type { CommentsEnv } from './env';
 import { CommentsOverlays } from './popover/overlay-host';
 import { commentsReadingProcessor, refreshReadingViews } from './reading';
-export interface CommentsRuntime { readonly env: CommentsEnv; readonly panel: CommentsPanel; readonly index: CommentsIndex; dispose(): void }
+import type { DocumentChangeParticipant } from '../../../shared/storage/document-mutation';
+export interface CommentsRuntime { readonly env: CommentsEnv; readonly panel: CommentsPanel; readonly index: CommentsIndex; readonly documentChanges: DocumentChangeParticipant; dispose(): void }
 export async function createCommentsRuntime(context: ModuleContext, settings: SettingsHandle<CommentsSettings>): Promise<CommentsRuntime> {
 	const { app, lifetime } = context;
 	const activation = beginCommentStoreActivation(app);
@@ -46,15 +47,20 @@ export async function createCommentsRuntime(context: ModuleContext, settings: Se
 	lifetime.register(settings.subscribe(() => { store.notify(); refreshReadingViews(env); }));
 	lifetime.register(store.subscribe(() => refreshReadingViews(env)));
 	void service.refresh();
-	const panel: CommentsPanel = { mount(container) {
+	const panel: CommentsPanel = { mount(container, documents) {
 		let unmount: (() => void) | undefined;
 		let mounted = true;
-		void import('./panel/mount').then(({ mountCommentsPanel }) => { if (mounted && alive) unmount = mountCommentsPanel(container, env); });
+		void import('./panel/mount').then(({ mountCommentsPanel }) => { if (mounted && alive) unmount = mountCommentsPanel(container, env, documents); });
 		const cleanup = () => { if (!mounted) return; mounted = false; unmount?.(); panels.delete(cleanup); };
 		panels.add(cleanup); return cleanup;
 	} };
 	const index: CommentsIndex = { notes: () => service.state.getState().notes, subscribe: listener => service.state.subscribe(listener) };
-	return { env, panel, index, dispose() {
+	const documentChanges: DocumentChangeParticipant = {
+		prepare: (change, undo) => store.prepareDocumentChange(change, undo),
+		commit: (operationId, text) => store.commitDocumentChange(operationId, text),
+		abort: (operationId, text) => store.abortDocumentChange(operationId, text),
+	};
+	return { env, panel, index, documentChanges, dispose() {
 		alive = false; overlays.dispose(); for (const cleanup of panels) cleanup(); for (const cleanup of readingCleanups) cleanup();
 		service.dispose(); activation.retire(store); refreshReadingViews(env);
 	} };

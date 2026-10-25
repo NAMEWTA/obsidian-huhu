@@ -11,7 +11,7 @@ HUHU 是 Obsidian 插件，入口为 `src/app/main.ts`，esbuild 生成单个 Co
 | `ui` / `theme` | React 组件、所属窗口 Portal、令牌、主题及 Markdown 外观 |
 | `host` | 共用 Obsidian 和桌面适配 |
 | `shared` | 纯工具、设置、路径、存储和国际化契约 |
-| `modules` | home、agent、browser、archives、automations、notifications、icons、comments、navigator、sync、safe |
+| `modules` | home、agent、browser、archives、automations、notifications、icons、comments、navigator、versioning、safe |
 
 模块通过彼此的 `api.ts` 访问服务和贡献点，不能导入别的模块内部实现。core 不依赖宿主；Node/Electron 仅存在于 desktop 边界。模块、页面与设置页按需加载，React/Radix 不进入启动闭包；架构和包体检查强制这些约束。
 
@@ -37,7 +37,8 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 - agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 经公开宿主服务提供网页能力。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
-- sync 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。
+- versioning 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。HistoryQueryService 负责纯读取；NoteReviewService 固定来源 buffer 与比较会话；RestoreService 通过共享写入队列、检查点与正文适配器恢复，SyncService 保留同步调度。
+- app/editor-panel 提供同窗口 EditorContextAccess 和批注/历史宿主；revision-review 复用工作台贡献，不新增 Obsidian 原生视图类型。comments 的写入参与者只映射锚点，不回滚评论消息。
 
 ## 验证与产物
 

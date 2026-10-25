@@ -30,6 +30,16 @@
 
 实时编辑由 CodeMirror `ChangeSet.mapPos` 移动位置，保存时刷新原文、上下文与行号；锚定文字全部删除即脱离。初次 `reconcile()` 完成前不应用过期偏移。选区入口仍排除 YAML 前置数据和围栏代码块；阅读高亮跳过 `pre/code/script/style` 和已处理节点。重叠范围保留覆盖它的全部线程 id，供浮窗展示。
 
+### 版本恢复协调
+
+- 跨模块只经 `COMMENTS_DOCUMENT_CHANGES`（`comments/api.ts`）使用 `DocumentChangeParticipant`。`shared/storage/document-mutation.ts` 定义宿主无关的 `operationId/path/before/after/edits/kind?`；versioning 在任何正文事务之前调用 `prepare`，成功读回后调用 `commit`，失败调用 `abort`。只读历史 diff 不安装批注扩展。
+- `CommentStore.prepareDocumentChange` 设置按路径隔离的 guard；`applyChanges` 在普通 `mapPos` 之前检查 guard，`reconcile` 也跳过。guard 内只跟随与上一已观察正文衔接的广播，多叶重复或迟到广播不得倒退状态。
+- `core/restore-anchors.ts` 使用有界文本 delta 保留未改范围，或采用唯一精确原文。恢复不做模糊匹配；歧义或删除保留线程并标为 orphaned。检查点只保存线程 id、状态、锚点，不保存或回滚消息、回复、作者。
+- 显式恢复撤销只在当前锚点与该次恢复记录的预期一致时采用逆向快照；用户手动 reanchor 不得被旧快照覆盖。当前会话至多保留最近 8 个路径的 before/after 对，用于原生编辑器撤销和重做；不能承诺重启后的原生撤销。
+- guard 期间创建或重新挂接的锚点记录当时观察到的正文，用该修订映射到最终正文，并从逆向快照候选中排除。rename 先结算已观察偏移再移动旁路；关闭时同步释放已安装 guard，异步 prepare 在 await 前后检查 closed，不得在关闭后重新安装。
+- `kind: 'remove'` 专用于撤销恢复副本。prepare 发现任何现存批注即拒绝删除；guard 存续时拒绝新增线程。对应原生 delete 事件保留 remove guard 到 commit，其他笔记删除仍遵守 `deleteWithNote`。
+- 恢复正文由 `host/obsidian/document-mutation.ts` 使用公开 `Editor.transaction`、`MarkdownView.save` 或 `Vault.process` 处理；批注模块不能直接替换编辑器，也不宣称与 Obsidian 自动保存或外部程序构成全局原子事务。
+
 ## 存储与生命周期
 
 - `pending.json` 保存完整下一份索引、旁路文件与过时路径；启动时先恢复已接受的写入意图，文件、索引和清理都成功后才删除日志。日志重放不是旧格式迁移。
@@ -40,8 +50,8 @@
 
 ## 界面
 
-- 沿用 `huhu-comments-view`。布局就绪后按 `comments.panelAutoPlaced` 用 `workspace.ensureSideLeaf()` 首次放入右侧栏，图标 `message-square-text`；设置可改左侧栏。不贡献工作台图标轨或工作台批注页面。
-- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，并提供排序。通过 `COMMENTS_PANEL` 挂到 `app/workbench/comments-leaf.ts`；其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
+- 沿用 `huhu-comments-view`，由 `app/editor-panel/panel-host.tsx` 提供「批注/历史」标签。布局就绪后按 `comments.panelAutoPlaced` 用 `workspace.ensureSideLeaf()` 首次放入右侧栏，图标 `message-square-text`；设置可改左侧栏。不贡献工作台图标轨或工作台批注页面。
+- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，并提供排序。`COMMENTS_PANEL.mount(container, documents)` 接收 `EditorContextAccess`，按 `container.ownerDocument.defaultView` 读取源 Markdown leaf 上下文；批注全局 service.path 不得覆盖窗口上下文。历史预览、侧栏焦点或其他窗口切换不清空当前源笔记。其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
 - gutter 行首悬停显示添加按钮，有批注的行显示图标与数量；支持行级与选区批注。阅读模式只显示高亮、行级图标与查看入口。
 - 悬停高亮或 gutter 350ms 打开，离开目标和浮窗 300ms 关闭，移入浮窗保留；点击或命令立即打开并固定。未保存编辑/回复不因鼠标离开关闭；Esc 先取消编辑，再关闭。
 - 可编辑浮窗使用受控 Radix `Popover` 和虚拟矩形锚点，线程卡片在面板与浮窗共用。正文用 `MarkdownRenderer`，外层加 `huhu-native`；支持查看、编辑、回复、解决/重新打开、删除、跳转与重新挂接。手机用底部 `Sheet`。
@@ -55,4 +65,5 @@
 - 纯逻辑：行级/选区、重复原文、上下文与模糊匹配边界、失效不自动重挂、笔记正文不变。
 - 存储：v2 索引和线程文件、v1 留存、损坏隔离、日志重放、部分提交、并发编辑、重命名、删除策略、关闭失败重试和跨 App 隔离。
 - `dom` 项目：悬停开关计时、固定与编辑草稿、IME、键盘、焦点、右侧栏筛选及错误重试。
+- 恢复：`core/restore-anchors.test.ts` 覆盖 guard 先于 mapper、重复/迟到广播、精确定位与歧义脱离、显式/原生撤销、消息不回滚、恢复中新增/reanchor、rename/close 与 remove guard；`ui/comments.dom.test.tsx` 验证显式窗口上下文不被全局 path/null 覆盖。
 - 真实 Obsidian：CodeMirror/阅读集成、多窗口 Portal、滚动定位、停用再启用与侧栏放置。Node/DOM 测试不能代替宿主验收；选择方法见 [testing.md](testing.md)。

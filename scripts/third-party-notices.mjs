@@ -8,6 +8,7 @@ import path from 'node:path';
 import * as esbuild from 'esbuild';
 import { pluginBuildOptions } from './esbuild-options.mjs';
 import { packageNotice } from './license-texts.mjs';
+import { buildVersioningWorker } from './versioning-worker.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const out = path.join(root, 'THIRD-PARTY-NOTICES.md');
@@ -21,8 +22,9 @@ const overrides = JSON.parse(fs.readFileSync(path.join(sourcesDirectory, 'source
 async function npmPackages() {
 	const result = await esbuild.build({ ...pluginBuildOptions({ production: true }), write: false, metafile: true, logLevel: 'silent' });
 	const output = Object.entries(result.metafile.outputs).find(([file]) => file.endsWith('main.js'))?.[1];
+	const worker = await buildVersioningWorker();
 	const packages = new Map();
-	for (const input of Object.keys(output.inputs)) {
+	for (const input of new Set([...Object.keys(output.inputs), ...Object.keys(worker.metafile.inputs)])) {
 		const at = input.lastIndexOf('node_modules/');
 		if (at < 0) continue;
 		// The package root is the folder right after the last node_modules/ (two segments for @scopes).

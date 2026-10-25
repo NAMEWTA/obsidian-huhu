@@ -1,6 +1,6 @@
 # 编写模块
 
-模块是有自己生命周期的懒加载功能。契约是 `src/app/contracts/module.ts`；`src/modules/notifications/` 是最小的完整示例，`src/modules/comments/` 展示编辑器集成，`src/modules/sync/` 是默认关闭的桌面专属模块，`src/modules/home/` 是大型模块。
+模块是有自己生命周期的懒加载功能。契约是 `src/app/contracts/module.ts`；`src/modules/notifications/` 是最小的完整示例，`src/modules/comments/` 展示编辑器集成，`src/modules/versioning/` 是默认关闭的桌面专属模块，`src/modules/home/` 是大型模块。
 
 ## 文件
 
@@ -48,7 +48,7 @@
 3. `panel?: (context: PanelContext) => PanelModel | undefined` 是可选的；既不提供 `panel`、也不声明自定义 `navigationContext` 时，没有 shell 侧栏。首页和自动化不提供侧栏；智能体页面用 `createPortal` 渲染到 `context.navigationEl`。
 4. `ui/` 的页面加载器返回 `PageCreate`：接收表面上下文、目标、已保存状态、中止信号，返回 `{ surface, navigate, getTarget?, getState?, restore? }`。`surface` 使用 `src/ui/react/surface.tsx` 的 `ReactSurface`，继承 `NativeSurface`；每页一个 React 根，隐藏保留、关闭卸载，`HuhuProviders` 处理所属文档、Portal、语言和错误边界。
 5. `'none'` 页面自备标题或身份、`context.openPageMenu(event)` 菜单，以及需要时的 `context.togglePanel()` 导航开关；专注模式仍提供返回完整工作台的入口。详细 UI 合同见 [shell 参考](../../ui/references/shell.md)。
-6. 面板、标题、状态从 `api.ts` 服务取只读快照（如 `HOME_WORKBENCH`、`AGENT_WORKBENCH`、`SYNC_WORKBENCH`），compose-workbench 通过 `watch` 更新；可选能力用 `peek`，不因显示状态启动模块。
+6. 面板、标题、状态从 `api.ts` 服务取只读快照（如 `HOME_WORKBENCH`、`AGENT_WORKBENCH`、`VERSIONING_WORKBENCH`），compose-workbench 通过 `watch` 更新；可选能力用 `peek`，不因显示状态启动模块。
 7. 贡献可提供 `statusSegments?: () => readonly StatusSegment[]`。段包含 `id/icon/label/order`，可选 `tone: 'neutral' | 'running' | 'attention' | 'error'`、`count`、`target`；`label` 是翻译后的文案。这些段显示在 Obsidian 底部状态栏，不依赖工作台叶子；用量不是普通段，状态栏控制器从 `AGENT_USAGE` 单独读取。
 
 浏览器引擎在 `browser/api.ts` 暴露 `BROWSER_HOST`，由智能体工作区创建、挂载浏览器标签；页面宿主、Profile、Cookie 导入、下载、查找和权限仍归 browser。Design Mode 的元素与截图材料通过进程内服务附加到智能体输入框。

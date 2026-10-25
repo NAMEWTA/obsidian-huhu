@@ -31,7 +31,7 @@
 
 ## esbuild
 
-`esbuild.config.mjs` 使用 `scripts/esbuild-options.mjs`（与 `check:bundle` 和 `notices` 共用）：单一入口（`src/app/main.ts`）、CommonJS、ES2021、生产构建压缩、`.md`/`.svg` 作为文本、`jsxImportSource: react`，不设置兼容运行时别名。外部依赖：`obsidian`、`electron`、`@codemirror/*`、`@lezer/*`、Node 内置模块。横幅内嵌 `LICENSE`、`NOTICE`、图标资源声明、Orca 许可证和打包依赖的许可证。构建期对少数第三方库做按文件哈希固定的适配（Radix 的焦点与弹层、sonner 的样式、react-draggable 的跨窗口节点判断，见 `scripts/radix-owner-document.mjs`、`scripts/draggable-owner-realm.mjs`、`scripts/ui-adapter-inputs.json`）；升级这些库时 `pnpm test:ui-adapters` 会失败，需要重新审阅锚点和哈希。不要增加第二个入口，也不要打包 CodeMirror。保持浏览器平台的 `process.env.NODE_ENV` 构建替换，不改为 `platform: node`；React 界面约定见 [ui 技能](../../ui/SKILL.md)。
+`esbuild.config.mjs` 使用 `scripts/esbuild-options.mjs`（与 `check:bundle` 和 `notices` 共用）：单一入口（`src/app/main.ts`）、CommonJS、ES2021、生产构建压缩、`.md`/`.svg` 作为文本、`jsxImportSource: react`，不设置兼容运行时别名。外部依赖：`obsidian`、`electron`、`@codemirror/*`、`@lezer/*`、Node 内置模块。横幅内嵌 `LICENSE`、`NOTICE`、图标资源声明、Orca 许可证和打包依赖的许可证。构建期对少数第三方库做按文件哈希固定的适配（Radix 的焦点与弹层、sonner 的样式、react-draggable 的跨窗口节点判断，见 `scripts/radix-owner-document.mjs`、`scripts/draggable-owner-realm.mjs`、`scripts/ui-adapter-inputs.json`）；升级这些库时 `pnpm test:ui-adapters` 会失败，需要重新审阅锚点和哈希。插件仍只有一个入口，原生编辑器使用的 CodeMirror state/view/language 保持 external。版本比较独立 Worker 由 `scripts/versioning-worker.mjs` 自包含编译并作为惰性页面资源内嵌，只计算可序列化的 diff model；其私有依赖不与宿主编辑器共享状态或扩展实例，许可扫描包含 Worker metafile。`@codemirror/merge` 固定版本并打包比较实现。保持浏览器平台的 `process.env.NODE_ENV` 构建替换，不改为 `platform: node`；React 界面约定见 [ui 技能](../../ui/SKILL.md)。
 
 ## 预算
 
