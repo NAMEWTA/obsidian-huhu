@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HUHU · 终端工作台 · B · 会话总览</title><link rel="stylesheet" href="styles.css"></head>
+<body class="huhu-ui variant-b" data-variant="b">
+<a class="skip" href="#workspace">跳到终端工作台</a>
+<div class="prototype-bar"><strong>交互原型</strong><span>B · 会话总览 · 示例数据，本页不会启动真实进程</span><div class="spacer"></div><button data-action="theme" aria-label="切换明暗主题">◐ <span class="wide-label">主题</span></button><button data-action="scenarios">状态演示</button><button data-action="reset" aria-label="重置演示">重置</button></div>
+<div class="host-tabs"><span class="obsidian-mark" aria-hidden="true">◇</span><span class="host-title">个人知识库</span><span class="host-tab">HUHU <span aria-hidden="true">×</span></span><span class="muted">＋</span></div>
+<div class="shell">
+<nav class="rail" aria-label="HUHU 模块"><span class="brand" aria-label="HUHU">H</span><button data-action="home" aria-label="首页" data-icon="home"></button><button class="rail-active" data-action="agent" aria-label="智能体工作台" data-icon="terminal"></button><button data-action="web" aria-label="浏览器" data-icon="globe"></button><button data-action="history" aria-label="当前 Vault 历史" data-icon="history"></button><div class="spacer"></div><button data-action="settings" aria-label="终端设置与数据说明" data-icon="settings"></button></nav>
+<aside class="sidebar" id="sidebar" aria-label="空间与会话"></aside>
+<main id="workspace" class="workspace" tabindex="-1">
+<header class="workspace-toolbar"><button data-action="spaces" data-icon="panel" aria-label="打开空间列表"></button><div class="workspace-title"><h1>终端工作台</h1><span id="current-space" class="muted"></span></div><div class="spacer"></div><button data-action="new-terminal" class="new-terminal">＋ <span>新建终端</span></button><button data-action="split" data-icon="split" aria-label="切换单面板与分屏"></button><button data-action="direction" data-icon="layout" aria-label="切换分屏方向"></button><button data-action="palette" data-icon="command" aria-label="打开命令面板"></button><button data-action="control" data-icon="sliders" aria-label="打开终端控制"></button><button data-action="history" data-icon="history" aria-label="打开历史抽屉"></button></header>
+<section class="control-deck" aria-label="会话运行总览"><header><h2>会话总览</h2><span>先选对象，再进入终端</span></header><div id="deck"></div></section>
+<nav class="tabbar" aria-label="工作区标签" id="tabs"></nav>
+<div class="surface"><section class="stage" id="stage" aria-label="终端面板"></section><dialog id="inspector" class="inspector" aria-label="终端工具"><div id="inspector-content"></div></dialog></div>
+</main></div>
+<div class="host-status"><span>Obsidian · 个人知识库</span><span>示例环境 · 本地终端工作台</span></div>
+<dialog id="sheet" class="sheet" aria-label="空间列表"><div class="dialog-heading"><h2>空间</h2><button data-action="close-dialog" data-dialog="sheet" aria-label="关闭空间列表">×</button></div><div id="sheet-content"></div></dialog>
+<dialog id="modal" class="modal" aria-labelledby="modal-title"></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="app.js"></script></body></html>

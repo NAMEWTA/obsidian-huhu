@@ -1,0 +1,100 @@
+[
+  {
+    "theme": "dark",
+    "foreground": "text-normal",
+    "background": "background-primary",
+    "ratio": 13.36,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "text-muted",
+    "background": "background-secondary",
+    "ratio": 7.01,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "text-faint",
+    "background": "terminal-background",
+    "ratio": 5.12,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "text-on-accent",
+    "background": "interactive-accent",
+    "ratio": 6.97,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "color-green",
+    "background": "background-primary-alt",
+    "ratio": 8.33,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "color-orange",
+    "background": "background-primary-alt",
+    "ratio": 9.11,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "dark",
+    "foreground": "color-red",
+    "background": "background-primary-alt",
+    "ratio": 7.84,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "text-normal",
+    "background": "background-primary",
+    "ratio": 15.22,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "text-muted",
+    "background": "background-secondary",
+    "ratio": 6.13,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "text-faint",
+    "background": "terminal-background",
+    "ratio": 4.93,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "text-on-accent",
+    "background": "interactive-accent",
+    "ratio": 6.04,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "color-green",
+    "background": "background-primary-alt",
+    "ratio": 5.11,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "color-orange",
+    "background": "background-primary-alt",
+    "ratio": 5.31,
+    "at_least_4_5": true
+  },
+  {
+    "theme": "light",
+    "foreground": "color-red",
+    "background": "background-primary-alt",
+    "ratio": 5.43,
+    "at_least_4_5": true
+  }
+]

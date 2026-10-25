@@ -1,0 +1,22 @@
+{
+  "owner": "specdev/archive-and-consolidate",
+  "mode": "bootstrap",
+  "applied": true,
+  "checkpoints": [
+    "validated",
+    "revision-written",
+    "current-published",
+    "index-written"
+  ],
+  "paths": {
+    "current": ".agents/speculo/.speculo/specdev/design/DESIGN.md",
+    "revision": ".agents/speculo/.speculo/specdev/design/revisions/DESIGN-0001.md",
+    "index": ".agents/speculo/.speculo/specdev/design/INDEX.md"
+  },
+  "recovery": null,
+  "revision": "DESIGN-0001",
+  "candidate_sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+  "design_digest": "ebaca5f2f15fe081bf393c892f8b6583d4f2c6ad12cd92cb55068005fe83a331",
+  "operation": "db2237fc90d9a54103f69523e774f453b4a62d34a3e7487f44e97792ddcb0c3f",
+  "already_published": false
+}

@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-25-agent-workbench-refactor",
+  "status": "consensus",
+  "round": 3,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "Space 的工作目录范围",
+      "question": "Space 是否可以绑定 Vault 外的本机目录？当前交互式终端允许库外目录，原文 §8.1 的“已验证相对 cwd”没有明确是否收窄。",
+      "depends_on": [],
+      "recommendation": "保留库外目录能力，但必须由用户显式选取并授权；历史归属依据 Vault/Space 绑定，不能只依赖 cwd。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：保留显式授权的库外目录（推荐）。处理：保留库外 cwd 能力；由用户显式选择和授权，以 Vault/Space 绑定确定历史归属。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-002",
+      "title": "本机私有目录中的凭证范围",
+      "question": "原文 §11.2 的“凭证”仅指新增 HUHU API capability，还是也要迁出已有托管 Provider 账号的登录环境？",
+      "depends_on": [],
+      "recommendation": "本轮仅将新增 HUHU API 凭证随运行设施放本机私有目录；系统账号及已有托管账号位置保持现状，引用继续保全。",
+      "status": "rejected",
+      "round": 1,
+      "answer": "用户原答复：我只是对于终端的一个优化，你可以全面、认真地去参考复现，或者说参考 herdr。你以他的一些代码功能实现作为基底，我只是说增强我的终端的能力。。处理：用户没有选择凭证搬迁方案，而是纠正整体范围：以 Herdr 代码/功能为主要参照增强终端。因此撤回“凭证必然搬迁”的提问前提，不记录为已批准搬迁。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-003",
+      "title": "首轮备份与恢复的内容边界",
+      "question": "新业务 DB 放到 Vault 外后，首轮版本化导出/导入需要包含什么？是否还必须打包 Provider 原生完整 transcript？",
+      "depends_on": [],
+      "recommendation": "首轮提供可操作的导出/导入，完整保全 HUHU 自有 Space/Session/Message/Run/结果/标注与来源引用；原生完整 transcript 和登录凭证仍单独备份，界面明确列出未包含项。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：HUHU 完整业务数据和来源引用（推荐）。处理：备份完整 HUHU 自有数据及来源引用；原生全文和登录凭证另行备份并明确缺项。此回答不构成 DB 位置变更的单独确认。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-004",
+      "title": "Agent 默认可以控制哪些会话",
+      "question": "在同一 Space 内，Agent 默认是否可自行创建协作者，以及停止/归档其他会话？能力动作集在原文 §13.5 尚未落成默认规则。",
+      "depends_on": [],
+      "recommendation": "允许同 Space 通信、提交任务及自行创建协作者；默认只管理自身创建的协作者，控制用户或同级的会话需显式授权；Provider 审批不由其他 Agent 代批。",
+      "status": "rejected",
+      "round": 1,
+      "answer": "用户原答复：你参考一下“喝着”里面是怎么实现的嘛。我相当于只是复刻它的一些功能和内容。核心功能和内容你不要想那么多，我感觉应该是可以的，因为它通过 CI 进行管理的话，理论上可以管理终端里的所有内容。。处理：将“喝着”按上下文定位为 Herdr；研究其 CLI / Socket 真实控制能力。撤回默认只能控制自建协作者的建议，不把用户这段说明解释成已经批准任意跨 Vault 或系统操作。具体产品边界由源码证据与现有范围形成候选。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-005",
+      "title": "后台 Agent 的人工审批体验",
+      "question": "后台 Agent 触发 Provider 权限审批时，首轮是否必须在 HUHU 内批准/拒绝并继续同一个 Run？",
+      "depends_on": [],
+      "recommendation": "首轮为支持原生审批的 adapter 提供统一待处理入口，批准/拒绝后继续原 Run；不支持时给出准确失败/能力限制，不自动放行或切到另一后端重放。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：首轮提供 HUHU 内审批（推荐）。处理：首轮提供 HUHU 内的人工审批入口，继续原会话/原任务，不自动放行或换后端重放。具体是原终端交互还是结构化审批视图，需要与 Herdr 终端主轴统一。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-006",
+      "title": "浏览器页面的最终承载位置",
+      "question": "原文 §15.2 要求网页承载脱离 Agent 开关，但未规定网页在新工作台中的位置；应保留共享标签体验，还是迁到独立浏览器页面/强制归属 Space？",
+      "depends_on": [],
+      "recommendation": "保留现有打开入口和标签体验，提取独立于 Agent 的共享视图容器；网页不是 Agent Session，不要求先创建 Space，停用 Agent 不关闭网页。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：保留标签体验，独立共享承载（推荐）。处理：保留现有入口和标签体验，抽取独立共享视图容器；网页不是 Agent Session，不要求先建 Space，停用 Agent 不关闭网页。",
+      "log_ref": "LOG-009"
+    },
+    {
+      "id": "D-007",
+      "title": "通知消息如何进入模型上下文",
+      "question": "message.send 不触发新 Run 已明确；未读通知是仅由 Agent 主动调用 inbox 读取，还是默认在下一次受控输入时自动加入上下文？",
+      "depends_on": [],
+      "recommendation": "首轮仅通过 inbox.list/read/ack 主动读取，并在 UI 显示未读；自动注入上下文后置，避免隐式改变输入与消费成本。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：Agent 主动读取邮箱（推荐）。处理：被动消息由 Agent 主动 inbox.list/read/ack，UI 显示未读，不默认自动加入模型上下文或启动新 Run。",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-008",
+      "title": "首个正式版的平台验收范围",
+      "question": "当前发行矩阵有 Windows x64、macOS x64/arm64、Linux x64/arm64；重构首个正式版继续覆盖五种，还是分平台交付？",
+      "depends_on": [],
+      "recommendation": "保留现有五种组合作为首个正式版门槛，按技术切片分步验证；没有实机端到端证据的组合不标已支持。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户原答复：首个正式版覆盖五种（推荐）。处理：首个正式版覆盖 Windows x64、macOS x64/arm64、Linux x64/arm64；分步验证，但未完成端到端验证的组合不能宣称完成。",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-009",
+      "title": "首轮采用终端级控制，还是持久任务级保证",
+      "question": "Herdr 的 prompt/wait/read 能控制托管终端，但 wait 只观察 Agent 状态，不保证对应刚发出的那条任务。首轮是否接受这种终端级协作，并用输出/结果文件核对，从而不把持久 Run/Outbox、新任务数据库和结构化 Provider 平台作为前置？",
+      "depends_on": [],
+      "recommendation": "采用 Herdr 式终端级控制；明确状态与任务成功的区别，保留 HUHU 的历史、主动邮箱、审批、备份和五平台需求。只有确有需求时再增加逐任务可靠结果关联。",
+      "status": "answered",
+      "round": 2,
+      "answer": "用户原答复：采用。处理：采纳 Herdr 式终端协作，通过 CLI 输入、等待状态、读取输出或检查产物；不承诺逐任务最终结果关联，不把持久 Run/Outbox、新任务数据库或结构化 Provider 平台作为首轮前置。此前已确认的 HUHU 功能与平台范围保留。",
+      "log_ref": "LOG-015"
+    },
+    {
+      "id": "D-010",
+      "title": "同 Vault 内跨 Space 控制范围",
+      "question": "Herdr 允许同一服务下跨工作区控制，原始方案仅同 Space；首轮是否允许明确寻址当前 Vault 的其他 Space 终端？",
+      "depends_on": [
+        "D-009"
+      ],
+      "recommendation": "默认查当前 Space，明确指定稳定目标后允许同 Vault 跨 Space 控制，跨 Vault 仍不支持。",
+      "status": "answered",
+      "round": 3,
+      "answer": "用户原答复：允许同 Vault 跨 Space 明确寻址（推荐）。处理：采纳推荐；控制不迁移归属，同名歧义必须消歧；跨 Vault 不支持。",
+      "log_ref": "LOG-017"
+    }
+  ]
+}

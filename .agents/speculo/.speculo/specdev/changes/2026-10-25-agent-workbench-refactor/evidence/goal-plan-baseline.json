@@ -1,0 +1,125 @@
+{
+  "cwd": "/home/wta/projects/obsidian-huhu",
+  "head": "66083cdb9f7f31a4bcbd3e380c6c7f64f2e74e93",
+  "branch": "main",
+  "status": " M .gitignore\n M AGENTS.md\n?? .agents/speculo/.speculo/specdev/\n",
+  "preserve": {
+    "AGENTS.md": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+    ".gitignore": "522f9ebd3fac5cc5ce1d05bf5c96045461b6d8732736c51a9b5cb796dcc6d48b"
+  },
+  "coordination_project_present": false,
+  "scope": "plan 阶段只读基线观察；不是 README Execution Context，也不是实施派遣回执。",
+  "goal_revision": "GP-001",
+  "model_selection": {
+    "implementation": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh"
+    },
+    "review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "high"
+    },
+    "source": "用户本次明确给出的默认组合",
+    "dispatched": false
+  },
+  "ticket_inputs": [
+    {
+      "id": "T-01",
+      "path": "ticket/01-native-owner.md",
+      "sha256": "0e5e98d439b9f0452ac66adc1da4658ec1f938f49a508e3fc709cb488f544702"
+    },
+    {
+      "id": "T-02",
+      "path": "ticket/02-space-identities.md",
+      "sha256": "160d1d7fafadc1736786a4779c20eca057f3dfc7061001d227f76d23d66df8f5"
+    },
+    {
+      "id": "T-03",
+      "path": "ticket/03-managed-runtimes.md",
+      "sha256": "c51381d642efb39cf8e76164e2e5c66d12117de524fb6f27b6d46bf4d36e418c"
+    },
+    {
+      "id": "T-04",
+      "path": "ticket/04-stop-and-recovery.md",
+      "sha256": "c81146ca4a7e52a5516ecedf91aa01b08d5475c1c80b6f4a02c703c7e47309c7"
+    },
+    {
+      "id": "T-05",
+      "path": "ticket/05-screen-stream.md",
+      "sha256": "19ad8c8bb7212b6f8e69c009f6458d639edb71e58f1ef75fc0011f68f87878d0"
+    },
+    {
+      "id": "T-06",
+      "path": "ticket/06-activity-and-approval.md",
+      "sha256": "5b6c23add8404bb5cc027e812005816ecc2c2fb81f363bdbb90a1bddc752cd2c"
+    },
+    {
+      "id": "T-07",
+      "path": "ticket/07-local-cli.md",
+      "sha256": "4b660e7af652df0b047101ea48cd548f59454158689ad388939b4010461ddc44"
+    },
+    {
+      "id": "T-08",
+      "path": "ticket/08-terminal-coordination.md",
+      "sha256": "029f33632c7c52f8e624b379aa623892a4eb3d33e5278ad1faf691ee0bf32442"
+    },
+    {
+      "id": "T-09",
+      "path": "ticket/09-workbench-panels.md",
+      "sha256": "3e9130239a26e60e4933eb8a6be8aa5551ff3384f137b9a87a9ff67b14f22c9d"
+    },
+    {
+      "id": "T-10",
+      "path": "ticket/10-passive-inbox.md",
+      "sha256": "7d8b087f6894a536696670c8bbc54ac44729fc4fd90634310fc3c7659b3b55d0"
+    },
+    {
+      "id": "T-11",
+      "path": "ticket/11-vault-history.md",
+      "sha256": "24239616835939be8b98352c1f21c7f17d934560987284debdf6c37a49f50c89"
+    },
+    {
+      "id": "T-12",
+      "path": "ticket/12-native-resume.md",
+      "sha256": "9e571d58c95f3364a6095b107540f096b717c8252ab3612e3bc64031e9814599"
+    },
+    {
+      "id": "T-13",
+      "path": "ticket/13-independent-browser.md",
+      "sha256": "ff1ee34b07c4b6169a7ba86964963f1ebea0acbb740a975fb15ccce060e94355"
+    },
+    {
+      "id": "T-14",
+      "path": "ticket/14-consumer-compatibility.md",
+      "sha256": "8f8d663e4673b31588b7e25e6981fd1c92c7089d02846e23f1f01db0e86706f5"
+    },
+    {
+      "id": "T-15",
+      "path": "ticket/15-data-migration.md",
+      "sha256": "f53029dd4203ec4292aa941530c54c61f0f560897741ec445cc4f07aad8fab70"
+    },
+    {
+      "id": "T-16",
+      "path": "ticket/16-backup-restore.md",
+      "sha256": "48adc5c2fe6d99fbbb20d05b6c59bcd87091219bae572355cb95df2644ffba4d"
+    },
+    {
+      "id": "T-17",
+      "path": "ticket/17-cli-delivery.md",
+      "sha256": "b1b6227142a5546bf5316b6b6cff3eff6d92c3f240fc27e8e98155371eb735fb"
+    },
+    {
+      "id": "T-18",
+      "path": "ticket/18-platform-acceptance.md",
+      "sha256": "f74df87fecd1ac6b394990bd69c8eb92b6c836521c914e60f81177f50b59736c"
+    }
+  ],
+  "source_inputs": {
+    "ADR.md": "2a9102daf6454c1b7f295c333317e96ef221b756ce2d64cfe99cdeaff9d48bde",
+    "CONTEXT.md": "46e0f215812aecb38eb7f8ec9f65644f7993eb8839be58048963a701dc64762e",
+    "DESIGN.md": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+    "implementation-contracts.md": "873ca93dbe45b1e515044fb8eac055380bde343d4cff1e6437d14cc9943f9e69",
+    "reference-notes.md": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+    "prototypes/UI-001/approval.md": "5c84504ba7fb6911c8a5789953125d867c2d69db342d83e174585ec4d939bde3"
+  }
+}

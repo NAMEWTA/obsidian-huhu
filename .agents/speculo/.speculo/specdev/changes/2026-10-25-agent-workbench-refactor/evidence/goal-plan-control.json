@@ -1,0 +1,215 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-agent-workbench-refactor",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "serial",
+  "max_parallel_tickets": 1,
+  "input_digest": "1e3fafb101b9d8f05f5985ebdaa1973274d823613e6f1333bfa2b62b5739d68d",
+  "goal_contract_digest": "54b8cdc63f3f42fe6dd97831236c8bf23f007fe9fbeebda5843db1db14543819",
+  "contract_digests": {
+    "T-01": "796f7aab113875b21f39dc9c36a1f16d93a5d20618003c87a085c00aa0f73e92",
+    "T-02": "86932891281db5d5ede0625a1f73790eaa11650f4d7ecf1b2306f5ac91beb319",
+    "T-03": "c9390d9ab3e07f286513da445859727aeefb7d060a68b3ae4789a9af4c3f0fc5",
+    "T-04": "3c930c72c15e97dddc42c4bd19ac7e2b869f5b38e5022f043c7498a94eec12e0",
+    "T-05": "686a2a7a39fe56bb9d85e9b57a73d6c693c4fd6610b6fb5fb6519090a20732f3",
+    "T-06": "365618bb4f4fe555e76af21c5983ef4ce308d7422923be75828be988197f9ccb",
+    "T-07": "c243153154cd09b0e467dd4237693b0bf0767e0d682e7b2b86b3564aac185800",
+    "T-08": "883697ff309a1e0ed47b85814db14fb766c87856521dcc5c1e8646712b5073ad",
+    "T-09": "512a357d584831a382ceada6d3913971f64844e3fc041e8a6c747e198dcb8f88",
+    "T-10": "56335aab05a3b281315e9cce009a4350df6d29df2fc9888e23067a656e8309b0",
+    "T-11": "9949924fd6d6afb8985ffa1f1f24d82c0b91aa468478e8abdd95f4153d2e32d2",
+    "T-12": "8247da23fcbd66a8dfbb5f6c44d39e4d366274863aa36f6de9745ef14c6426d0",
+    "T-13": "bd3d354adb16da54de7b0861fa69f3ca037c78af4e944a11c5fa819491fa03e5",
+    "T-14": "01697cc0e74c1258623e008df1a45c5a9af8c83353c3639de49e75faded4b011",
+    "T-15": "35cd342ad8e61d683e344fe8ab370c96dd5b99cb53d31e78d2b371eb09b6b8fd",
+    "T-16": "80f03d0a16327ef507b8ed24ad72f1de7f75206b3a95c1d8e61784b326759755",
+    "T-17": "b5cad66004dea1033497879bb046906a2d3e6b2c1a0c1d7e627ff7f6ff400554",
+    "T-18": "c762120c7031a554e74c2941bc6fb3ec6db2ba1b89e3be071bdd376bad0ba8ca"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "blocked dependency closure: T-03"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "blocked dependency closure: T-04"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "blocked dependency closure: T-07"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-11",
+        "blocked dependency closure: T-11"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-10",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-10"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-16",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-17"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [],
+  "validation_errors": [],
+  "errors": [],
+  "warnings": [
+    "concurrent Ready Tickets T-10/T-11 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-10/T-12 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-10/T-13 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-11/T-13 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-12/T-13 share owned paths; an explicit owner or serialization is required"
+  ],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

@@ -1,0 +1,590 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-25",
+  "scope": "当前 change 的 T 规划；非产品实施验收",
+  "ticket_count": 18,
+  "primary_coverage_count": 64,
+  "spec_ac_count": 64,
+  "ui_ticket_count": 14,
+  "dependency_roots": [
+    "T-01"
+  ],
+  "dag_acyclic": true,
+  "tickets": [
+    {
+      "ticket": "T-01",
+      "title": "共享原生宿主与按需能力租约",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/01-native-owner.md",
+      "sha256": "0e5e98d439b9f0452ac66adc1da4658ec1f938f49a508e3fc709cb488f544702",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-057",
+        "AC-059"
+      ],
+      "design_ref": null,
+      "skill_bindings_verified": 2,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-02",
+      "title": "可持久化的 Space、目录授权与单写入者",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/02-space-identities.md",
+      "sha256": "160d1d7fafadc1736786a4779c20eca057f3dfc7061001d227f76d23d66df8f5",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-001",
+        "AC-002",
+        "AC-003",
+        "AC-004",
+        "AC-046",
+        "AC-053"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001"
+        ],
+        "acceptance": [
+          "AC-001",
+          "AC-002",
+          "AC-003",
+          "AC-004",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 2
+    },
+    {
+      "ticket": "T-03",
+      "title": "真实终端启动、后台运行与重新附加",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "c51381d642efb39cf8e76164e2e5c66d12117de524fb6f27b6d46bf4d36e418c",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-005",
+        "AC-006",
+        "AC-008",
+        "AC-026"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001"
+        ],
+        "acceptance": [
+          "AC-005",
+          "AC-006",
+          "AC-026",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-04",
+      "title": "明确停止、归档与宿主恢复",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "c81146ca4a7e52a5516ecedf91aa01b08d5475c1c80b6f4a02c703c7e47309c7",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-027",
+        "AC-028",
+        "AC-029",
+        "AC-056",
+        "AC-058",
+        "AC-060"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-003",
+          "PAGE-004"
+        ],
+        "acceptance": [
+          "AC-027",
+          "AC-029",
+          "AC-060",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-05",
+      "title": "权威屏幕、重同步与有界流控",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "19ad8c8bb7212b6f8e69c009f6458d639edb71e58f1ef75fc0011f68f87878d0",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-031",
+        "AC-032",
+        "AC-054"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001"
+        ],
+        "acceptance": [
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-06",
+      "title": "Agent 状态与 HUHU 内原生人工审批",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "sha256": "5b6c23add8404bb5cc027e812005816ecc2c2fb81f363bdbb90a1bddc752cd2c",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-007",
+        "AC-020",
+        "AC-021",
+        "AC-022"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-003"
+        ],
+        "acceptance": [
+          "AC-007",
+          "AC-020",
+          "AC-021",
+          "AC-022",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-07",
+      "title": "本机 CLI、精确寻址与机器协议",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/07-local-cli.md",
+      "sha256": "4b660e7af652df0b047101ea48cd548f59454158689ad388939b4010461ddc44",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-010",
+        "AC-011",
+        "AC-012",
+        "AC-052",
+        "AC-055"
+      ],
+      "design_ref": null,
+      "skill_bindings_verified": 2,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-08",
+      "title": "输入仲裁、状态等待与有界读屏闭环",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "029f33632c7c52f8e624b379aa623892a4eb3d33e5278ad1faf691ee0bf32442",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-013",
+        "AC-014",
+        "AC-015",
+        "AC-016",
+        "AC-017",
+        "AC-018",
+        "AC-030"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-003"
+        ],
+        "acceptance": [
+          "AC-013",
+          "AC-014",
+          "AC-015",
+          "AC-016",
+          "AC-017",
+          "AC-018",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-09",
+      "title": "A 方案工作台与双向面板控制",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/09-workbench-panels.md",
+      "sha256": "3e9130239a26e60e4933eb8a6be8aa5551ff3384f137b9a87a9ff67b14f22c9d",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-009"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-003"
+        ],
+        "acceptance": [
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-10",
+      "title": "被动通知邮箱与主动读取确认",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/10-passive-inbox.md",
+      "sha256": "7d8b087f6894a536696670c8bbc54ac44729fc4fd90634310fc3c7659b3b55d0",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-023",
+        "AC-024",
+        "AC-025"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-003"
+        ],
+        "acceptance": [
+          "AC-023",
+          "AC-024",
+          "AC-025",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 1
+    },
+    {
+      "ticket": "T-11",
+      "title": "本 Vault 历史摄入、检索与只读预览",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/11-vault-history.md",
+      "sha256": "24239616835939be8b98352c1f21c7f17d934560987284debdf6c37a49f50c89",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-033",
+        "AC-034",
+        "AC-035",
+        "AC-036"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-002"
+        ],
+        "acceptance": [
+          "AC-033",
+          "AC-034",
+          "AC-035",
+          "AC-036",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-12",
+      "title": "精确继续、来源导入与原生占用保护",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/12-native-resume.md",
+      "sha256": "9e571d58c95f3364a6095b107540f096b717c8252ab3612e3bc64031e9814599",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-037",
+        "AC-038",
+        "AC-039",
+        "AC-040"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-002"
+        ],
+        "acceptance": [
+          "AC-037",
+          "AC-038",
+          "AC-039",
+          "AC-040",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-13",
+      "title": "共享标签承载与浏览器独立运行",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/13-independent-browser.md",
+      "sha256": "ff1ee34b07c4b6169a7ba86964963f1ebea0acbb740a975fb15ccce060e94355",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-041"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-004"
+        ],
+        "acceptance": [
+          "AC-041",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-14",
+      "title": "既有消费者兼容与旧控制接线收缩",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/14-consumer-compatibility.md",
+      "sha256": "8f8d663e4673b31588b7e25e6981fd1c92c7089d02846e23f1f01db0e86706f5",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-042",
+        "AC-043",
+        "AC-044",
+        "AC-045"
+      ],
+      "design_ref": null,
+      "skill_bindings_verified": 2,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-15",
+      "title": "旧工作台数据迁移、恢复与 writer 收缩",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/15-data-migration.md",
+      "sha256": "f53029dd4203ec4292aa941530c54c61f0f560897741ec445cc4f07aad8fab70",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-047",
+        "AC-048",
+        "AC-049"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-004"
+        ],
+        "acceptance": [
+          "AC-047",
+          "AC-048",
+          "AC-049",
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-16",
+      "title": "HUHU 业务备份、导入预检与恢复",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/16-backup-restore.md",
+      "sha256": "48adc5c2fe6d99fbbb20d05b6c59bcd87091219bae572355cb95df2644ffba4d",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-050",
+        "AC-051"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-004"
+        ],
+        "acceptance": [
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 1
+    },
+    {
+      "ticket": "T-17",
+      "title": "CLI 资产、配套 Skill 与交付一致性",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/17-cli-delivery.md",
+      "sha256": "b1b6227142a5546bf5316b6b6cff3eff6d92c3f240fc27e8e98155371eb735fb",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-019",
+        "AC-062",
+        "AC-064"
+      ],
+      "design_ref": null,
+      "skill_bindings_verified": 2,
+      "existing_expected_paths_verified": 3
+    },
+    {
+      "ticket": "T-18",
+      "title": "五平台真实主链与全页面验收",
+      "file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/18-platform-acceptance.md",
+      "sha256": "f74df87fecd1ac6b394990bd69c8eb92b6c836521c914e60f81177f50b59736c",
+      "status_at_review": "ready",
+      "ready_at_review": true,
+      "owner_at_review": "unassigned",
+      "primary_ac": [
+        "AC-061",
+        "AC-063"
+      ],
+      "design_ref": {
+        "revision": 1,
+        "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+        "pages": [
+          "PAGE-001",
+          "PAGE-002",
+          "PAGE-003",
+          "PAGE-004"
+        ],
+        "acceptance": [
+          "AC-061"
+        ]
+      },
+      "skill_bindings_verified": 4,
+      "existing_expected_paths_verified": 3
+    }
+  ],
+  "existing_changed_paths": [
+    "ADR.md",
+    "CONTEXT.md",
+    "LOG.md",
+    "README.md",
+    "inputs/README.md",
+    "prototypes/UI-001/design-system.md",
+    "spec.md"
+  ],
+  "preserved_existing_files": [
+    "DESIGN.md",
+    "design-tree.json",
+    "inputs/HUHU-智能体终端-完整架构与重构方案.md",
+    "prototypes/UI-001/approval-ui.md",
+    "prototypes/UI-001/approval.md",
+    "prototypes/UI-001/baseline-draft.md",
+    "prototypes/UI-001/comparison/compare.css",
+    "prototypes/UI-001/comparison/index.html",
+    "prototypes/UI-001/comparison/variants/Geist-Variable.woff2",
+    "prototypes/UI-001/comparison/variants/GeistMono-Variable.woff2",
+    "prototypes/UI-001/comparison/variants/LICENSE.txt",
+    "prototypes/UI-001/comparison/variants/app.js",
+    "prototypes/UI-001/comparison/variants/candidate-a.html",
+    "prototypes/UI-001/comparison/variants/candidate-b.html",
+    "prototypes/UI-001/comparison/variants/candidate-c.html",
+    "prototypes/UI-001/comparison/variants/styles.css",
+    "prototypes/UI-001/evidence/browser.json",
+    "prototypes/UI-001/evidence/candidate-a-1440.png",
+    "prototypes/UI-001/evidence/candidate-a-390.png",
+    "prototypes/UI-001/evidence/candidate-b-1440.png",
+    "prototypes/UI-001/evidence/candidate-b-390.png",
+    "prototypes/UI-001/evidence/candidate-c-1440.png",
+    "prototypes/UI-001/evidence/candidate-c-390.png",
+    "prototypes/UI-001/evidence/check-browser.mjs",
+    "prototypes/UI-001/evidence/comparison-1440.png",
+    "prototypes/UI-001/evidence/comparison-390.png",
+    "prototypes/UI-001/evidence/contrast.json",
+    "prototypes/UI-001/evidence/design-review.md",
+    "prototypes/UI-001/evidence/final-1440.png",
+    "prototypes/UI-001/evidence/final-390.png",
+    "prototypes/UI-001/evidence/final-approval.png",
+    "prototypes/UI-001/evidence/final-checks.json",
+    "prototypes/UI-001/evidence/final-control-390.png",
+    "prototypes/UI-001/evidence/final-history-partial.png",
+    "prototypes/UI-001/evidence/observations.json",
+    "prototypes/UI-001/evidence/preview-binding.json",
+    "prototypes/UI-001/evidence/publication-approval.json",
+    "prototypes/UI-001/evidence/publication-receipt.json",
+    "prototypes/UI-001/evidence/readiness-checks.json",
+    "prototypes/UI-001/evidence/session.md",
+    "prototypes/UI-001/evidence/technical-review.md",
+    "prototypes/UI-001/evidence/validation.md",
+    "prototypes/UI-001/final/Geist-Variable.woff2",
+    "prototypes/UI-001/final/GeistMono-Variable.woff2",
+    "prototypes/UI-001/final/LICENSE.txt",
+    "prototypes/UI-001/final/app.js",
+    "prototypes/UI-001/final/index.html",
+    "prototypes/UI-001/final/styles.css"
+  ],
+  "historical_log_prefix_preserved": true,
+  "source_original": {
+    "sha256": "c71b8637aef44c57f78cd5fd51da08e74ab37b004056c4012d7e6ad03bbb7aee",
+    "bytes": 101143,
+    "lines": 1278
+  },
+  "outside_preservation": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "unchanged": true
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "522f9ebd3fac5cc5ce1d05bf5c96045461b6d8732736c51a9b5cb796dcc6d48b",
+      "unchanged": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/design/DESIGN.md",
+      "sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+      "matches_published": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/design/revisions/DESIGN-0001.md",
+      "sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+      "matches_published": true
+    }
+  ],
+  "problems": []
+}
