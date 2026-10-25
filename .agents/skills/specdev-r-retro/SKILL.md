@@ -1,6 +1,6 @@
 ---
 name: specdev-r-retro
-description: "复盘开发会话并积累有原文来源的独立 RETRO；明确要求时汇总未归档报告，先提出项目 Skill 升级方案，确认后更新或新增 Skill 并归档已处置报告。"
+description: "整体复盘开发会话的目标、决定、实现、验证、协作与经验，保存可回读会话来源的 RETRO；明确要求时汇总并经各 owner 沉淀 ADR、项目知识、Skill 或检查任务。"
 metadata:
   speculo-kind: work-skill
   speculo-id: specdev/retro

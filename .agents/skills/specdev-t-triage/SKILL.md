@@ -1,6 +1,6 @@
 ---
 name: specdev-t-triage
-description: "摄入与核验外部请求、投影本地完成事实、交付 PR，或按明确目标处理 CI、安全告警、npm/GitHub Release 预检、发布和恢复；清晰的本地需求直接进入对应 Work。"
+description: "核验外部 Issue、PR 或请求，创建 change 保存分析、复现和实施简报，并按授权打标；通过评估后交现有 Spec、Tickets、Goal Plan，交付操作使用 Delivery。"
 metadata:
   speculo-kind: work-skill
   speculo-id: specdev/triage

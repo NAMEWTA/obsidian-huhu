@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "package_version": "2.1.8",
+  "package_version": "2.1.9",
   "targets": [
     "agents"
   ],
@@ -64,7 +64,7 @@
     {
       "path": ".agents/skills/specdev-r-retro/SKILL.md",
       "asset_id": "specdev/retro",
-      "sha256": "c1ff7942a51765b269fcb8329dff49c745338a88879c691c967abd7e89bc2ab9",
+      "sha256": "43afa231be46a82cc2cadecf7fb5d8e2567c708d89b42e40a4b4af2398883ede",
       "mode": 420
     },
     {
@@ -82,7 +82,7 @@
     {
       "path": ".agents/skills/specdev-t-triage/SKILL.md",
       "asset_id": "specdev/triage",
-      "sha256": "b43194abc5f493664758a09e37569bf3dbb6ad21bd2e35ecb11e2dad98c1be76",
+      "sha256": "7f260cde44e18b996f77f781085aea68d4c5df99d0a37139f0807233763fb259",
       "mode": 420
     },
     {

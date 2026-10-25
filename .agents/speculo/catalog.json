@@ -2,35 +2,11 @@
   "schema_version": 2,
   "assets": [
     {
-      "id": "command/archive-and-consolidate",
-      "kind": "command",
-      "name": "speculo-archive-and-consolidate",
-      "entry": "commands/archive-and-consolidate/COMMAND.md",
-      "description": "将用户选择的归档或知识整理请求交给 owning workflow Work，并返回其计划与执行回执。",
-      "stages": []
-    },
-    {
       "id": "command/coordination-init",
       "kind": "command",
       "name": "speculo-coordination-init",
       "entry": "commands/coordination-init/COMMAND.md",
       "description": "Explicitly initialize or update the project's default agent coordination method for every workflow.",
-      "stages": []
-    },
-    {
-      "id": "command/docs-sync",
-      "kind": "command",
-      "name": "speculo-docs-sync",
-      "entry": "commands/docs-sync/COMMAND.md",
-      "description": "用户手动触发的一次全局文档盘点、整理与管理；按授权审计、更新或提交本次目标。",
-      "stages": []
-    },
-    {
-      "id": "command/engineering-standards-builder",
-      "kind": "command",
-      "name": "speculo-engineering-standards-builder",
-      "entry": "commands/engineering-standards-builder/COMMAND.md",
-      "description": "Generate or refresh project-specific engineering skills after the user explicitly invokes the builder.",
       "stages": []
     },
     {
@@ -58,11 +34,11 @@
       "stages": []
     },
     {
-      "id": "command/retro",
+      "id": "command/project-maintenance",
       "kind": "command",
-      "name": "speculo-retro",
-      "entry": "commands/retro/COMMAND.md",
-      "description": "Analyze confirmed Speculo usage friction and propose or create GitHub issues through the T-triage remote operation protocol.",
+      "name": "speculo-project-maintenance",
+      "entry": "commands/project-maintenance/COMMAND.md",
+      "description": "用户手动触发的项目文档维护、知识沉淀与归档入口；按 docs、knowledge、archive 或明确组合任务形成一份计划，由原 owner 执行并返回回执。",
       "stages": []
     },
     {
@@ -74,6 +50,14 @@
       "stages": []
     },
     {
+      "id": "command/speculo-feedback",
+      "kind": "command",
+      "name": "speculo-speculo-feedback",
+      "entry": "commands/speculo-feedback/COMMAND.md",
+      "description": "Analyze confirmed Speculo usage friction and propose or create GitHub issues through the shared SpecDev GitHub operation protocol.",
+      "stages": []
+    },
+    {
       "id": "command/status",
       "kind": "command",
       "name": "speculo-status",
@@ -82,10 +66,10 @@
       "stages": []
     },
     {
-      "id": "command/upstream-fork-sync",
+      "id": "command/upstream-assess",
       "kind": "command",
-      "name": "speculo-upstream-fork-sync",
-      "entry": "commands/upstream-fork-sync/COMMAND.md",
+      "name": "speculo-upstream-assess",
+      "entry": "commands/upstream-assess/COMMAND.md",
       "description": "Assess a requested fork/upstream checkpoint and produce reproducible diff, conflict, and customization-risk evidence.",
       "stages": []
     },
@@ -117,6 +101,15 @@
       "stages": [
         "review"
       ]
+    },
+    {
+      "id": "specdev/delivery",
+      "kind": "work-skill",
+      "name": "specdev-d-delivery",
+      "domain": "specdev",
+      "entry": "workflows/specdev/specdev-d-delivery/SKILL.md",
+      "description": "交付已完成开发结果：来源 Issue 完成回写、Ticket 投影、PR、CI/安全处理、发布预检、版本发布与恢复；保留逐目标回执，不代替 Triage 分析或本地实现完成判定。",
+      "stages": []
     },
     {
       "id": "specdev/diagnose-bugs",
@@ -198,7 +191,7 @@
       "name": "specdev-r-retro",
       "domain": "specdev",
       "entry": "workflows/specdev/specdev-r-retro/SKILL.md",
-      "description": "复盘开发会话并积累有原文来源的独立 RETRO；明确要求时汇总未归档报告，先提出项目 Skill 升级方案，确认后更新或新增 Skill 并归档已处置报告。",
+      "description": "整体复盘开发会话的目标、决定、实现、验证、协作与经验，保存可回读会话来源的 RETRO；明确要求时汇总并经各 owner 沉淀 ADR、项目知识、Skill 或检查任务。",
       "stages": []
     },
     {
@@ -234,7 +227,7 @@
       "name": "specdev-t-triage",
       "domain": "specdev",
       "entry": "workflows/specdev/specdev-t-triage/SKILL.md",
-      "description": "摄入与核验外部请求、投影本地完成事实、交付 PR，或按明确目标处理 CI、安全告警、npm/GitHub Release 预检、发布和恢复；清晰的本地需求直接进入对应 Work。",
+      "description": "核验外部 Issue、PR 或请求，创建 change 保存分析、复现和实施简报，并按授权打标；通过评估后交现有 Spec、Tickets、Goal Plan，交付操作使用 Delivery。",
       "stages": []
     },
     {
