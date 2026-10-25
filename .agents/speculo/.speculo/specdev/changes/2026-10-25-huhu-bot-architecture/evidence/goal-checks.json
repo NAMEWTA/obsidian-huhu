@@ -1,0 +1,86 @@
+{
+  "checked_on": "2026-10-25",
+  "goal_revision": 1,
+  "map_revision": 2,
+  "scope": "planning-only",
+  "checks": [
+    {
+      "check": "goal-plan-stage",
+      "command": [
+        "node",
+        ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+        "--stage",
+        "goal-plan",
+        "--repo",
+        "/home/wta/projects/obsidian-huhu",
+        "--method-root",
+        ".agents/speculo",
+        "--state-root",
+        ".agents/speculo/.speculo",
+        "/home/wta/projects/obsidian-huhu/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture"
+      ],
+      "exit_code": 126,
+      "stdout": "Summary: 2 error(s), 0 warning(s)\n",
+      "stderr": "ERROR: prototypes/UI-001: bound UI prototype must be ready before downstream consumption\nERROR: prototypes/UI-001: ready prototype requires browser evidence\n"
+    },
+    {
+      "check": "ticket-control",
+      "command": [
+        "node",
+        ".agents/speculo/workflows/specdev/common/tools/ticket-control.mjs",
+        "--map",
+        "/home/wta/projects/obsidian-huhu/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+        "--repo",
+        "/home/wta/projects/obsidian-huhu",
+        "--method-root",
+        ".agents/speculo",
+        "--state-root",
+        ".agents/speculo/.speculo"
+      ],
+      "exit_code": 126,
+      "stderr": "",
+      "summary": {
+        "frontier": [],
+        "global_errors": [],
+        "validation_unique": [
+          "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+          "prototypes/UI-001: ready prototype requires browser evidence"
+        ],
+        "blocked_count": 28
+      },
+      "raw_result": "evidence/goal-ticket-control.json"
+    },
+    {
+      "check": "documentation",
+      "command": [
+        "pnpm",
+        "test:docs"
+      ],
+      "exit_code": 126,
+      "stdout": "[ELIFECYCLE] Command failed with exit code 1.\n",
+      "stderr": "$ node scripts/verify-docs.mjs\nnode:internal/modules/run_main:111\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Documentation links, anchors, contracts, and inventory\n+ actual - expected\n\n+ [\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #9-工具审批与效果日志',\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #12-数据路径与迁移',\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #14-记忆知识与可扩展能力',\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #15-权限凭证与运行治理',\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #17-验证性能与发布门禁',\n+   '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #19-决议未决验证与完成定义'\n+ ]\n- []\n\n    at file:///home/wta/projects/obsidian-huhu/scripts/verify-docs.mjs:266:8\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #9-工具审批与效果日志',\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #12-数据路径与迁移',\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #14-记忆知识与可扩展能力',\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #15-权限凭证与运行治理',\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #17-验证性能与发布门禁',\n    '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #19-决议未决验证与完成定义'\n  ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v26.11.1\n",
+      "summary": {
+        "unique_document_errors": [
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #12-数据路径与迁移",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #14-记忆知识与可扩展能力",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #15-权限凭证与运行治理",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #17-验证性能与发布门禁",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #19-决议未决验证与完成定义",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #9-工具审批与效果日志"
+        ]
+      },
+      "scope": "final documentation including Goal validation report and LOG-046"
+    },
+    {
+      "check": "tracked-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

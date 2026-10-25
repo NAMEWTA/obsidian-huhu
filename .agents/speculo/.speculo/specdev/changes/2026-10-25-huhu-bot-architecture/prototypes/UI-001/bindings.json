@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "artifact": "design-review-bindings",
+  "change": "2026-10-25-huhu-bot-architecture",
+  "design_id": "UI-001",
+  "status": "design-approved-browser-pending",
+  "selected_candidate": "candidate-a",
+  "canonical_entry": "final/index.html",
+  "change_design": {
+    "path": "DESIGN.md",
+    "revision": 2,
+    "digest": "aa62a53b30d0ca32f03a5580be8ce5b4921b9c3c1767793b9173eadfde92dc6e",
+    "status": "approved"
+  },
+  "baseline": {
+    "base": "project",
+    "path": ".agents/speculo/.speculo/specdev/design/revisions/DESIGN-0001.md",
+    "revision": "DESIGN-0001",
+    "digest": "ebaca5f2f15fe081bf393c892f8b6583d4f2c6ad12cd92cb55068005fe83a331",
+    "sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+    "published": true,
+    "reused_existing": true
+  },
+  "prototype": {
+    "path": "prototypes/UI-001/design-system.md",
+    "digest": "3c93a0c085cf3458148befdeb29ff445fe444601861c3bacb8dc9e421706444b",
+    "final_directory_digest": "3e9bd4c227d74c226fbc9ee0ef1f8757685358c6e5ca7e64d9a7beaa806b8e49",
+    "final_html_sha256": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+    "source_files": {
+      "app.js": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+      "assets/Geist-Variable.woff2": "a369fcf5628ea2aa4e1b9e2ec6a5b3624e365bda588e1f0f2f12b564f728fbb8",
+      "assets/GeistMono-Variable.woff2": "fba8f577f38a2bbcbe818efa6348dd58f36303a10b8737c42fefad275be563ab",
+      "assets/LICENSE.txt": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
+      "index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+      "styles.css": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9"
+    }
+  },
+  "confirmation": {
+    "by": "user",
+    "at": "2026-10-25T03:27:53.383Z",
+    "record": "prototypes/UI-001/confirmation-final.md",
+    "digest": "aa62a53b30d0ca32f03a5580be8ce5b4921b9c3c1767793b9173eadfde92dc6e",
+    "record_digest": "29a16e6190948b8e1444028afa4673c835c944b359a8092cab2809af5a1cb46c"
+  },
+  "browser_evidence": null
+}

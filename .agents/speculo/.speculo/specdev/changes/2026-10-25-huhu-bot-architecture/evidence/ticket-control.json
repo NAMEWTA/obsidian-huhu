@@ -1,0 +1,735 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-huhu-bot-architecture",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "auto",
+  "max_parallel_tickets": null,
+  "input_digest": "61b7080b05f27c71c45100130b9c9a295e1865666ec3df98eb4af3a520896d36",
+  "goal_contract_digest": "70beb501a59290d4e9ed33f26bd8628af5ff18c62f0dc340a7197259623b095a",
+  "contract_digests": {
+    "T-01": "1f3eb17a934e1e849a55485a7554d1229fece917ba10f77b857c78a95029c318",
+    "T-02": "ff658ff57f057c5f7ace8c92453b8512db96838ae62c59e42d515f153c5ebb0b",
+    "T-03": "3562f9b284b7e1b7e50c92fbb60bd005a2ca5c940f2a37817bc68110fc499cc7",
+    "T-04": "f5b46c4ed297e0b81dfab51bc52d609d58ad7352da2336f25dae39c146e8034e",
+    "T-05": "30dee76cb53b8d5bc2ac07600b15544a932debd2d38d5d6c3c60f5bc7ba94f55",
+    "T-06": "c82f371bcaeff97b14e07245387e4c08b6a90e24700f39b9a43b417940123fd8",
+    "T-07": "6d299900f1503632e9419a58d1d0f89add5a3185fca671b2bcf7c62da8a78d6a",
+    "T-08": "eef654b5b63610db58538b2839f99dd858d8b2d28380031e91f7f9745308ced3",
+    "T-09": "77db2cbaa4ca77fa09ca505705e1e47c1803a227cf74e07fb7741dc24185d430",
+    "T-10": "1fa8b3942167b44446b531b59f6703f6505cda6d8b3521096faf96c9dadc772e",
+    "T-11": "c8d48cd7c11c0a86f0c4ff6ffea95d116eb7b94747e678b33c65274af7ee0b88",
+    "T-12": "0a2d7e2b97aa3fde53aeca804257cf016139e0c5f1cceaab3b612f4f057e87dd",
+    "T-13": "21c79788ae0814c15d2157e0ae02ae4f49a15028fdf70b999f3faadc659e07c6",
+    "T-14": "42c8c0a482f4e3138ae65d94026f84950ee247e3e9e9147e89390b7f1eb6c519",
+    "T-15": "ca5ad14b0318c8b48a9e5b89cc910fccc4b54b4c59f9c4b0d208dfcbec322b32",
+    "T-16": "d14278c581d9f6f3089424c760d11d3a00dc4c9e87c39351c3d3fae28c2c5ffa",
+    "T-17": "4dd63a77ac0d04b18a8b69244cc2529fdb9678f1fd14767b7e882d95721a32b6",
+    "T-18": "a478bd44dccd53756566058f0af581a9c3107650f44069c214cc1be5f702f438",
+    "T-19": "1fbed3949fa1328827c398b60185aaae96621556b2efd15492b166169f088c6e",
+    "T-20": "11e8e99ded37a9d771340f29abd9f6035930ba764db79a02b2b4ee84bdef4cd4",
+    "T-21": "3431d04f0544b3e752785812a017fc2fd8f37655a30e2af406a1906386ab0a8d",
+    "T-22": "ed573a7a242d71e88d761991bc62596b8d81a5d45f4de4d6903880a7a9de07c6",
+    "T-23": "53ba8d1a82335c9de68966fe480d9d176d6aa02b00f6552a1ab7eee5edc0621d",
+    "T-24": "d378b09c443669cd2e03e512b11b9336ef993b45f73aa9f94d555024fc139e46",
+    "T-25": "7bfd261516dcc4f3aede88bc1b9a07ab154bcaaa37deb87a21f5f88a7b6646cc",
+    "T-26": "6d151488e11db309e869116ae0d1c8a26d965be644e9aca9586682e3b77ebf25",
+    "T-27": "415d413845bbfc5adb1c34b521952e2fcf4247a262b6928073d901e5cfc0468d",
+    "T-28": "308cf1e58f8855a58863c4a8598e64d04b884d36b91bc161af6afacbc7df80aa"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "dependency not successfully satisfied: T-02",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "blocked dependency closure: T-03"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "dependency not successfully satisfied: T-02",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-11",
+        "blocked dependency closure: T-11"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-11",
+        "dependency not successfully satisfied: T-12",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-11",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-11",
+        "dependency not successfully satisfied: T-12",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-11",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-13",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-13"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-14",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-16",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-14",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-17"
+      ]
+    },
+    {
+      "id": "T-19",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "dependency not successfully satisfied: T-18",
+        "blocked dependency closure: T-17",
+        "blocked dependency closure: T-18"
+      ]
+    },
+    {
+      "id": "T-20",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-19",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-19"
+      ]
+    },
+    {
+      "id": "T-21",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-09",
+        "dependency not successfully satisfied: T-10",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-20",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-09",
+        "blocked dependency closure: T-10",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-22",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-20",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-20",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-23",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-24",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-14",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-25",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "dependency not successfully satisfied: T-18",
+        "dependency not successfully satisfied: T-19",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-17",
+        "blocked dependency closure: T-18",
+        "blocked dependency closure: T-19",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-26",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-19",
+        "dependency not successfully satisfied: T-20",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-19",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-27",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-28",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: ready prototype requires browser evidence",
+        "not Ready: blocked",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-09",
+        "dependency not successfully satisfied: T-10",
+        "dependency not successfully satisfied: T-21",
+        "dependency not successfully satisfied: T-22",
+        "dependency not successfully satisfied: T-23",
+        "dependency not successfully satisfied: T-24",
+        "dependency not successfully satisfied: T-25",
+        "dependency not successfully satisfied: T-26",
+        "dependency not successfully satisfied: T-27",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-09",
+        "blocked dependency closure: T-10",
+        "blocked dependency closure: T-21",
+        "blocked dependency closure: T-22",
+        "blocked dependency closure: T-23",
+        "blocked dependency closure: T-24",
+        "blocked dependency closure: T-25",
+        "blocked dependency closure: T-26",
+        "blocked dependency closure: T-27"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    }
+  ],
+  "validation_errors": [
+    {
+      "id": "T-01",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-01",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-02",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-02",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-03",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-03",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-04",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-04",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-05",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-05",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-06",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-06",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-07",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-07",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-08",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-08",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-09",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-09",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-10",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-10",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-11",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-12",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-12",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-13",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-13",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-14",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-14",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-15",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-15",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-16",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-16",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-17",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-17",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-18",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-18",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-19",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-19",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-20",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-20",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-21",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-21",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-22",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-22",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-23",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-23",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-24",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-24",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-25",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-25",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-26",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-26",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-27",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-27",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    },
+    {
+      "id": "T-28",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-28",
+      "message": "prototypes/UI-001: ready prototype requires browser evidence"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

@@ -1,0 +1,324 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-25-huhu-bot-architecture",
+  "status": "active",
+  "round": 4,
+  "nodes": [
+    {
+      "id": "D-101",
+      "title": "模块化单体与业务所有权",
+      "question": "模块化单体与业务所有权采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "Go Runner 持有 Bot 业务状态；Obsidian 的 huhubot 模块只负责客户端投影、交互和宿主能力。保持一个仓库、一个 Go module、一个业务数据库；Bot 基础聊天独立于现有 agent/PTY。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-102",
+      "title": "向内依赖与引擎边界",
+      "question": "向内依赖与引擎边界采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "Domain 保存业务不变量；Application 编排用例、事务与消费者 Port；Adapter 负责外部协议与实现；Bootstrap 只装配。Eino/EinoExt 限于 outbound/eino 子树，Domain/Application 不依赖 SDK 或 HAP DTO。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-103",
+      "title": "SQLite 权威与设备本地 Profile",
+      "question": "SQLite 权威与设备本地 Profile采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "每个 Profile 的 SQLite 是业务事务权威，放在 OS 本地非同步数据根；Vault 正文仍归宿主。Markdown、UI store 和索引都是导入导出或投影，不能成为第二份消息/事件权威。",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-104",
+      "title": "按实际数据库身份保持单写者",
+      "question": "按实际数据库身份保持单写者采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "写锁绑定规范化实际数据根与数据库身份，不能按 Workspace 分片；别名、软链接和不同 Workspace 不能得到同库第二写者。数据库约束与 CAS 处理进程内竞争。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-105",
+      "title": "统一 HAP 语义与可替换传输",
+      "question": "统一 HAP 语义与可替换传输采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "HAP 使用版本化 JSON-RPC 语义，schema/fixtures 是共同权威；P1 framed stdio，多视图共用连接，第二独立进程返回 INSTANCE_CONFLICT。后续 IPC/HTTP 作为相同应用用例的入站适配。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-106",
+      "title": "原子受理和终结",
+      "question": "原子受理和终结采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "StartRun 在同一短事务保存幂等回执、用户消息、Run、Session 占用与首事件；终结事务同时保存最终消息、终态、事件并释放占用。每 Session 至多一个活动前台 Run，冲突返回 SESSION_BUSY。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-107",
+      "title": "效果账本主导恢复",
+      "question": "效果账本主导恢复采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "外部效果以稳定 effectId 记录意图、派发和证据。无法证明结果时保留 unknown_outcome；重连、超时和 Checkpoint 都不自动授权重放。reconciled 只证明目标状态，committed 需要可信回执。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-108",
+      "title": "审批、暂停门与派发竞争",
+      "question": "审批、暂停门与派发竞争采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "Checkpoint Blob 先就绪，再事务公布 Approval、Effect、Run 与事件；批准和实际派发各自校验并 CAS。P1 同 Run 副作用串行，出现审批意图立即关闭后续效果准入门。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-109",
+      "title": "先持久化再发布事件",
+      "question": "先持久化再发布事件采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "公开可续读事件先进入 run_events 再发布；内存发布只作唤醒。每 Run 使用单调 seq，客户端去重，断线从 cursor 有界补读，snapshotSeq 与快照来自一致短读。",
+      "log_ref": "LOG-009"
+    },
+    {
+      "id": "D-110",
+      "title": "执行生命周期归 Runner",
+      "question": "执行生命周期归 Runner采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "Run 使用 Runner 执行管理器拥有的 context；页面、连接和请求只拥有自身资源。P1 停用 Bot 或退出 Obsidian 时有界关闭受管 Runner，所有非终态可取消。",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-111",
+      "title": "宿主资源按发起上下文绑定",
+      "question": "宿主资源按发起上下文绑定采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "SourceRef 在发送时绑定 Workspace、发起视图、Host 租约及内容修订。Vault 操作只经 Host Bridge；改写先预览和批准，实际写前重验版本与未保存输入。",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-112",
+      "title": "人格、记忆与迁移采用显式修订",
+      "question": "人格、记忆与迁移采用显式修订采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "历史决定（LOG-012）：P1 仅人工固定记忆，已被 D-011 / LOG-034 / ADR-024 替代。当前为自动维护 Bot 私有长期记忆，全局写入需确认；修订、来源、遗忘和 portable 安全约束继续有效。",
+      "log_ref": "LOG-012"
+    },
+    {
+      "id": "D-113",
+      "title": "统一能力授权与分类扩展",
+      "question": "统一能力授权与分类扩展采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "工具操作经同一 Broker，权限取用户、Agent、Session/Workspace、撤销、Provider 流向和预算的交集。Tool、Skill、MCP 和模板分别建模；安装或文本本身不授予执行权限。",
+      "log_ref": "LOG-013"
+    },
+    {
+      "id": "D-114",
+      "title": "凭证通过受保护提供方取得",
+      "question": "凭证通过受保护提供方取得采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "业务层只保存 credentialRef；Provider adapter 按需解析秘密。可靠 OS 保护不可用时使用会话内存，不静默明文落盘，也不默认导入 CLI 账号或全局 AI 环境。",
+      "log_ref": "LOG-014"
+    },
+    {
+      "id": "D-115",
+      "title": "分阶段扩展与现有模块归属",
+      "question": "分阶段扩展与现有模块归属采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "历史决定（LOG-015）：首版单助手，已被 D-010 / LOG-033 / ADR-023 替代。当前 P1 包含多 Bot、群聊、工具协作和受控再委派；自动化/通知仍是后续独立集成，原模块 owner 不变。",
+      "log_ref": "LOG-015"
+    },
+    {
+      "id": "D-116",
+      "title": "发行能力由实际证据声明",
+      "question": "发行能力由实际证据声明采用何种合同？",
+      "depends_on": [],
+      "recommendation": "沿用用户提交设计中的明确主张。",
+      "status": "answered",
+      "round": 1,
+      "answer": "工具链与依赖精确锁版；候选组合必须经构建、运行和安全合同验证后进入支持矩阵。五平台分别验收，已有 Rust helper 的证据不代表 Go Runner 通过。",
+      "log_ref": "LOG-016"
+    },
+    {
+      "id": "D-001",
+      "title": "独立重构规范",
+      "question": "v1.1 未展开的 v1.0 需求/验收是否继续继承？",
+      "depends_on": [],
+      "recommendation": "以当前文档形成独立合同，不推定缺失旧条款。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户要求把文档当成全新文档，可全面优化、重改、重构，全面清理不清晰内容；原文件仍按初始请求原样保留。",
+      "log_ref": "LOG-017"
+    },
+    {
+      "id": "D-002",
+      "title": "首版模型服务覆盖",
+      "question": "P0/P1 首先兼容哪些 Provider？",
+      "depends_on": [],
+      "recommendation": "优先复用实际可用适配器，按真实协议分别验收。",
+      "status": "answered",
+      "round": 1,
+      "answer": "首版同时兼容 OpenAI 和 Anthropic；优先利用现有模型适配层及 EinoExt，具体 OpenAI API 范围另由 D-006 澄清。",
+      "log_ref": "LOG-018"
+    },
+    {
+      "id": "D-003",
+      "title": "默认资料授权",
+      "question": "首版默认允许模型读取和外发哪些资料？",
+      "depends_on": [],
+      "recommendation": "仅明确附加资料；文件夹/全库另行授权。",
+      "status": "answered",
+      "round": 1,
+      "answer": "默认只使用明确附加的资料；可另授文件夹或全库权限。",
+      "log_ref": "LOG-019"
+    },
+    {
+      "id": "D-004",
+      "title": "崩溃后恢复策略",
+      "question": "原 running Run 崩溃后，安全核查通过是否自动继续模型调用？",
+      "depends_on": [],
+      "recommendation": "等待用户点击恢复。",
+      "status": "answered",
+      "round": 1,
+      "answer": "核查通过后等待用户点击恢复；已约定的 accepted 扫描领取与 waiting_approval 流程保持各自语义。",
+      "log_ref": "LOG-020"
+    },
+    {
+      "id": "D-005",
+      "title": "P1 永久清除",
+      "question": "P1 是否提供本机数据永久清除？",
+      "depends_on": [],
+      "recommendation": "提供单会话和整 Profile 清除，并澄清未决效果约束。",
+      "status": "answered",
+      "round": 1,
+      "answer": "P1 提供永久清除；涉及未决效果时继续细化删除约束。默认长期保留，停用/卸载保留数据。",
+      "log_ref": "LOG-021"
+    },
+    {
+      "id": "D-008",
+      "title": "按当前项目解耦并统一对外入口",
+      "question": "架构优化的方向和未来客户端兼容边界是什么？",
+      "depends_on": [],
+      "recommendation": "统一应用用例出口；协议、传输和 Host 能力分离。",
+      "status": "answered",
+      "round": 1,
+      "answer": "用户要求根据实际代码调整、优化和升级，只要满足核心需求；领域层、应用层、适配层和统一对外出口清晰，高内聚低耦合；预留 Obsidian 打开时 Web 访问。",
+      "log_ref": "LOG-022"
+    },
+    {
+      "id": "D-006",
+      "title": "OpenAI 首版协议范围",
+      "question": "OpenAI 首版是否必须同时支持 Responses 与 Chat Completions，还是先验收 Chat Completions，后续增加 Responses？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "先把现成 ToolCallingChatModel 路径的 Chat Completions 与 Anthropic Messages 列为首版必验；Responses 若是核心服务需求，则明确升级为独立必验接缝，不以 SDK 存在宣称可靠性通过。",
+      "status": "answered",
+      "round": 2,
+      "answer": "首版同时支持 Chat Completions、Responses 和 Anthropic Messages。",
+      "log_ref": "LOG-023"
+    },
+    {
+      "id": "D-007",
+      "title": "未决效果与永久删除",
+      "question": "仍有 unknown_outcome 的会话和 Profile 应允许怎样的删除？",
+      "depends_on": [
+        "D-005"
+      ],
+      "recommendation": "允许删除会话正文并保留最小核查/防重放记录；清楚标识不是完全抹除，整 Profile 永久清除等待未决效果核查完成。",
+      "status": "answered",
+      "round": 2,
+      "answer": "可删正文，保留最小安全记录；核查完成后可完整清除。",
+      "log_ref": "LOG-024"
+    },
+    {
+      "id": "D-009",
+      "title": "将 HanaAgent 源码学习纳入本 change",
+      "question": "是否研究相近开源项目以完善当前架构？",
+      "depends_on": [],
+      "recommendation": "固定源码版本，区分可借鉴模式与项目特定取舍，不把参考特性自动纳入 P1。",
+      "status": "answered",
+      "round": 2,
+      "answer": "用户要求整体学习 OpenHanako 或 HanaAgent 的实现思路；作为本轮架构调整的来源，保存在当前 change 的 learning。",
+      "log_ref": "LOG-025"
+    },
+    {
+      "id": "D-010",
+      "title": "多 Agent 与 Leader 首版范围",
+      "question": "最新多 Agent、Leader 规划与派遣是否纳入首版实际交付？",
+      "depends_on": [],
+      "recommendation": "首版支持多 Agent 与基础 Leader 派遣，维持统一引擎与原有权限/效果合同。",
+      "status": "answered",
+      "round": 3,
+      "answer": "首版完整支持多 Bot、单聊、群聊、工具驱动的已有 Agent 发现/通信/派遣和临时 sub-agent；持久 Bot 新建需用户明确意图。所有 Agent 共用引擎，Leader 为角色。",
+      "log_ref": "LOG-033"
+    },
+    {
+      "id": "D-011",
+      "title": "独立与全局长期记忆写入",
+      "question": "长期记忆由用户维护、候选确认还是 Agent 自动维护？",
+      "depends_on": [],
+      "recommendation": "Agent 提出候选，用户确认后写入；转为全局也需确认。",
+      "status": "answered",
+      "round": 3,
+      "answer": "Agent 自动维护自己的长期记忆，全局写入需确认；短期与私有长期记忆隔离，协作按明确上下文传递。",
+      "log_ref": "LOG-034"
+    },
+    {
+      "id": "D-012",
+      "title": "唯一 UI 方案与文档固化",
+      "question": "当前 UI-001 应保留哪一套界面作为实现设计？",
+      "depends_on": [
+        "D-010",
+        "D-011"
+      ],
+      "recommendation": "保留对话优先的 final，统一当前设计与规范。",
+      "status": "answered",
+      "round": 4,
+      "answer": "用户明确确认 UI-001/final，只保留这一套元素并完善相关文档；删除其他候选专用内容，固定 DESIGN revision 2 与正式基线引用。设计选择已完成，浏览器技术观察另行记录。",
+      "log_ref": "LOG-040"
+    }
+  ]
+}

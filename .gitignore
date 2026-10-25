@@ -60,5 +60,3 @@ release-assets/
 terminal-artifacts/
 /evidence/
 /coverage/
-.agents/speculo/.speculo/specdev/changes/
-.agents/speculo/.speculo/specdev/archive/

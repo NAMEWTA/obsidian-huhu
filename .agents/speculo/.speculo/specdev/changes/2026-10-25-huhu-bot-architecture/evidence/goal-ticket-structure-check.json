@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-25",
+  "scope": "goal-plan-revision-1-map-revision-2",
+  "tickets": 28,
+  "contracts": 55,
+  "dag_cycle": null,
+  "final_convergence": 27,
+  "skill_bindings": 36,
+  "shared_surfaces": 34,
+  "writable_overlaps": [],
+  "contract_ready": 20,
+  "ui_blocked": 8,
+  "design": {
+    "status": "approved",
+    "revision": 2,
+    "digest": "aa62a53b30d0ca32f03a5580be8ce5b4921b9c3c1767793b9173eadfde92dc6e",
+    "prototype_digest": "3c93a0c085cf3458148befdeb29ff445fe444601861c3bacb8dc9e421706444b"
+  },
+  "protected_files": [
+    {
+      "file": "source.md",
+      "sha256": "cb1fb22863b3136fdd8c4185535289c2e1283a23c2d9be8b7dd4279ecc6bc63c",
+      "unchanged": true
+    },
+    {
+      "file": "inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md",
+      "sha256": "a85a57648a00942a44c3df89c52804d13d129e7e31262a73feb91ccc7f1516cc",
+      "unchanged": true
+    },
+    {
+      "file": "inputs/source-capture-initial.md",
+      "sha256": "f7d689fe594ef01796533f7e4fc35cfd362d20271144389a77a22f1b02f78b12",
+      "unchanged": true
+    },
+    {
+      "file": "DESIGN.md",
+      "sha256": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+      "unchanged": true
+    },
+    {
+      "file": "design-tree.json",
+      "sha256": "c8904903c253c7049dc91eb57ea1dd40a89559494843e5972c5cc002a10229e1",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/design-system.md",
+      "sha256": "7a530e67c70b013152149326fa83de82aee565209373e0cb6521b41fda87fa10",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/confirmation-final.md",
+      "sha256": "29a16e6190948b8e1444028afa4673c835c944b359a8092cab2809af5a1cb46c",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/bindings.json",
+      "sha256": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/comparison/index.html",
+      "sha256": "2af46008959367925fdadcf62a6ce25b45ed1d5b17cfaf12aa372d9a055e8b71",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/comparison/variants/candidate-a.html",
+      "sha256": "0ac77e31d5d07d0609f15d50ce49117e449fd8b56fa9e17f5a2117b8465ef4ad",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/evidence/static-validation.md",
+      "sha256": "2698ca7340a99141574ff6e7208f9fcd939333dea078924cbd297a7f76cf4ad8",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/evidence/finalization-validation.md",
+      "sha256": "bd12c81780b42c33c12fb131bf6a2cf0a2facbcc10b5939d8872a791366818a3",
+      "unchanged": true
+    },
+    {
+      "file": "learning/01_HanaAgent整体架构与HUHU取舍.md",
+      "sha256": "46db44dd6b4217000ac99abcadcf138c26b2d245e73232c28f2d6233e5b3b2cd",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/app.js",
+      "sha256": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/index.html",
+      "sha256": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/styles.css",
+      "sha256": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/assets/Geist-Variable.woff2",
+      "sha256": "a369fcf5628ea2aa4e1b9e2ec6a5b3624e365bda588e1f0f2f12b564f728fbb8",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/assets/GeistMono-Variable.woff2",
+      "sha256": "fba8f577f38a2bbcbe818efa6348dd58f36303a10b8737c42fefad275be563ab",
+      "unchanged": true
+    },
+    {
+      "file": "prototypes/UI-001/final/assets/LICENSE.txt",
+      "sha256": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
+      "unchanged": true
+    }
+  ],
+  "errors": []
+}

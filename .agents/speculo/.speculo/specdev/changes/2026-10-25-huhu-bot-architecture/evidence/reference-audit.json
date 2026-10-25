@@ -1,0 +1,287 @@
+{
+  "checked_on": "2026-10-25",
+  "method": "GitHub REST metadata and pinned raw files; REF-07–09 shallow clone after REST rate limit. No upstream installed or tested.",
+  "repositories": [
+    {
+      "id": "REF-01",
+      "repo": "cloudwego/eino",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/cloudwego/eino",
+      "default_branch": "main",
+      "pushed_at": "2026-10-21T09:11:46Z",
+      "updated_at": "2026-10-25T02:58:50Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "0a5ca53b9d3bf7b661dccc863465ec568a421eea",
+      "head_commit_date": "2026-10-19T10:03:00Z",
+      "head_url": "https://github.com/cloudwego/eino/commit/0a5ca53b9d3bf7b661dccc863465ec568a421eea",
+      "reference_sha": "0a5ca53b9d3bf7b661dccc863465ec568a421eea",
+      "license_path": "LICENSE-APACHE",
+      "license_url": "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/LICENSE-APACHE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/go.mod",
+          "sha256": "a6e1e96e23bf59487449afcfd5df57cb8cdbc9674c702a7c149c86339268d6e4"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-02",
+      "repo": "cloudwego/eino-ext",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/cloudwego/eino-ext",
+      "default_branch": "main",
+      "pushed_at": "2026-10-23T11:44:16Z",
+      "updated_at": "2026-10-24T10:25:39Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "eee37f63ff9548c5eaec48fc157863339f8eda07",
+      "head_commit_date": "2026-10-19T12:16:19Z",
+      "head_url": "https://github.com/cloudwego/eino-ext/commit/eee37f63ff9548c5eaec48fc157863339f8eda07",
+      "reference_sha": "eee37f63ff9548c5eaec48fc157863339f8eda07",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+      "manifests": [
+        {
+          "path": "components/model/openai/go.mod",
+          "url": "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/components/model/openai/go.mod",
+          "sha256": "9d2f2551809e48add2b54e286a85dce8e0a138bcf6690ab0f1bf511aa6cdfaad"
+        },
+        {
+          "path": "components/model/claude/go.mod",
+          "url": "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/components/model/claude/go.mod",
+          "sha256": "52a90b615a2f406afed73e7311d73d24a56a2306aa0afdd07b6e1affc59423e3"
+        },
+        {
+          "path": "components/model/agenticopenai/go.mod",
+          "url": "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/components/model/agenticopenai/go.mod",
+          "sha256": "3625e1bc99f4d2d7666768697b98ba9264a6db2d3837a81e3d6ff4e5c37f0e6d"
+        },
+        {
+          "path": "components/model/agenticclaude/go.mod",
+          "url": "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/components/model/agenticclaude/go.mod",
+          "sha256": "22318d807875477904a0deeb18dc58ed1befa7a0267a15f6e162fbfa4fe81f49"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-03",
+      "repo": "liliMozi/openhanako",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/liliMozi/openhanako",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T14:43:45Z",
+      "updated_at": "2026-10-25T01:24:35Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "head_commit_date": "2026-10-11T04:34:51Z",
+      "head_url": "https://github.com/liliMozi/openhanako/commit/9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "reference_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/package.json",
+          "sha256": "ab11fe41746d438b21f09b27ee8c0d26f6e58f449e2aa68f0bc8d795d74a711b"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-04",
+      "repo": "CopilotKit/OpenBot",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/CopilotKit/OpenBot",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T00:07:42Z",
+      "updated_at": "2026-10-25T03:33:17Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "head_commit_date": "2026-10-24T00:07:00Z",
+      "head_url": "https://github.com/CopilotKit/OpenBot/commit/46642d6c91daa663bccff673595f4e12a419a496",
+      "reference_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "6d35a6bb107ae508da34636387f6208e75a6938e797bc0d5bfa9489d2ca95bad",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/package.json",
+          "sha256": "9095e43a5a4157c9c3df950e01749a4adb672f6b5bd077c655521afa43158aef"
+        },
+        {
+          "path": "server/package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/server/package.json",
+          "sha256": "bd8be65505095a3267629254626fb77ff1e1d6243c6a9ced5c72d86d69e13ba1"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-05",
+      "repo": "Fei2411/DeepSeek-Bot",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/Fei2411/DeepSeek-Bot",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T14:18:22Z",
+      "updated_at": "2026-10-25T03:36:09Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "head_commit_date": "2026-10-23T15:22:41Z",
+      "head_url": "https://github.com/Fei2411/DeepSeek-Bot/commit/1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "reference_sha": "1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/Fei2411/DeepSeek-Bot/blob/1bebe826f74e9a72cabafd3b80602b05af867b38/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "manifests": [
+        {
+          "path": "ds-bot/package.json",
+          "url": "https://github.com/Fei2411/DeepSeek-Bot/blob/1bebe826f74e9a72cabafd3b80602b05af867b38/ds-bot/package.json",
+          "sha256": "ebb2b71983619415656af6415fa0d5cbdd4786a6cd5f495a00034b312e5eb2eb"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-06",
+      "repo": "openclaw/openclaw",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/openclaw/openclaw",
+      "default_branch": "main",
+      "pushed_at": "2026-10-25T03:35:30Z",
+      "updated_at": "2026-10-25T03:35:40Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "1cb75e90b29b73dbfc4c1d099a25b25e2e62702f",
+      "head_commit_date": "2026-10-25T03:35:28Z",
+      "head_url": "https://github.com/openclaw/openclaw/commit/1cb75e90b29b73dbfc4c1d099a25b25e2e62702f",
+      "reference_sha": "090e6213e25e6b09f03590a41da2fddeaf9f611e",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/openclaw/openclaw/blob/090e6213e25e6b09f03590a41da2fddeaf9f611e/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "9efd316ecf1c4c60f6fd5d26433142fff2b6794d7d328e9bc6179b29bf9c82a4",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/openclaw/openclaw/blob/090e6213e25e6b09f03590a41da2fddeaf9f611e/package.json",
+          "sha256": "784dd501b017775b51e25a4dcb678fb67076ea0ce78aac54ad974c388f07e069"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-07",
+      "repo": "mattn/go-sqlite3",
+      "checked_on": "2026-10-25",
+      "head_sha": "dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "reference_sha": "dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "head_commit_date": "2026-09-28T00:37:57Z",
+      "head_url": "https://github.com/mattn/go-sqlite3/commit/dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "errors": [],
+      "discovery": "git shallow clone after GitHub REST rate limit",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "afa48e5e64dc610298d80b010ae7a3450f61a79500a9f1d1697ff6dcbbfa1f72",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/go.mod",
+          "sha256": "4c08597e14c92d9ed25f1bd14a2242198f0e3011964e798018abceb2ccbe82bf"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/README.md",
+          "sha256": "873f802ba23f13ca483711708737a9d4912cc3e6a04f8b75b42c4168f9196324"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-08",
+      "repo": "ncruces/go-sqlite3",
+      "checked_on": "2026-10-25",
+      "head_sha": "da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "reference_sha": "da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "head_commit_date": "2026-10-24T09:56:48+01:00",
+      "head_url": "https://github.com/ncruces/go-sqlite3/commit/da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "errors": [],
+      "discovery": "git shallow clone after GitHub REST rate limit",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "8929c89a593807bf0c042272adc7301376a661050876bd702ebdd36cd7c55d2b",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/go.mod",
+          "sha256": "a46cef90f9ea3996cbcb0eb1345a8a6e6bcb0afd57526ea1edeb96f671c69230"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/README.md",
+          "sha256": "c59ec7a5125a3c2499031f0b53bd8dff01805996d34da7e4778dbe693737831c"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-09",
+      "repo": "zalando/go-keyring",
+      "checked_on": "2026-10-25",
+      "head_sha": "66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a",
+      "reference_sha": "66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a",
+      "head_commit_date": "2026-07-24T23:27:36+02:00",
+      "head_url": "https://github.com/zalando/go-keyring/commit/66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a",
+      "errors": [],
+      "discovery": "git shallow clone after GitHub REST rate limit",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/zalando/go-keyring/blob/66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "14bc00f1a298eb6af250216b9e60027a4386c8a84fa2c7ddc2b5c10908e06d0d",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/zalando/go-keyring/blob/66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a/go.mod",
+          "sha256": "582f27ac41f2bd0c05436116ff91436aa36d4687c1dad243d4d74e780f3feb87"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/zalando/go-keyring/blob/66b55cc0c51cd3d8dabc0ac70da30f058b2fe54a/README.md",
+          "sha256": "3784792d99e55f712999bff1449c766eb65a583c7e5608a04c89d60fc50d6f9c"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    }
+  ]
+}
