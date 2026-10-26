@@ -1,5 +1,5 @@
 import { promises as fs, constants } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createDecipheriv, createHash, randomUUID } from 'node:crypto';
 import { setTimeout as schedule, clearTimeout as cancel } from 'node:timers';
@@ -58,11 +58,13 @@ export class DesktopIdentitySourceReader {
 		const parent = await privateDirectory(this.options.temporaryDirectory), temporary = join(parent, randomUUID());
 		await fs.mkdir(temporary, { mode: 0o700 }); let key: EncryptionKeyResult | null = null;
 		try {
+			if (await fs.realpath(dirname(profile.cookiesPath)) !== resolve(dirname(profile.cookiesPath))) throw new IdentityError('source_unavailable');
 			for (const suffix of ['', '-wal', '-shm']) {
-				try { const stat = await fs.lstat(profile.cookiesPath + suffix); if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 256 * 1024 * 1024) throw new IdentityError('source_unavailable'); }
+				try { const stat = await fs.lstat(profile.cookiesPath + suffix); if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > 256 * 1024 * 1024) throw new IdentityError('source_unavailable'); }
 				catch (error) { if (suffix && (error as NodeJS.ErrnoException).code === 'ENOENT') continue; throw error; }
 			}
 			await copyStableDatabase(profile.cookiesPath, join(temporary, 'Cookies')); check();
+			if (await fs.realpath(dirname(profile.cookiesPath)) !== resolve(dirname(profile.cookiesPath))) throw new IdentityError('source_changed');
 			if (browser.kind === 'chromium') {
 				if (process.platform === 'win32') { const state = await fixedText(join(browser.root, 'Local State'), 16 * 1024 * 1024); check(); await fs.writeFile(join(temporary, 'Local State'), state, { mode: 0o600, flag: 'wx' }); }
 				key = await getEncryptionKey({ ...browser, root: process.platform === 'win32' ? temporary : browser.root }); check();
@@ -80,7 +82,7 @@ export class DesktopIdentitySourceReader {
 }
 async function fixedText(file: string, maximum: number): Promise<string> {
 	const stat = await fs.lstat(file);
-	if (!stat.isFile() || stat.isSymbolicLink() || stat.size > maximum) throw new IdentityError(stat.size > maximum ? 'too_large' : 'source_unavailable');
+	if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > maximum) throw new IdentityError(stat.size > maximum ? 'too_large' : 'source_unavailable');
 	const handle = await fs.open(file, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0));
 	try {
 		const before = await handle.stat({ bigint: true });
@@ -97,7 +99,9 @@ async function fixedText(file: string, maximum: number): Promise<string> {
 function readNative(executable: string, file: string, kind: 'chromium' | 'firefox', signal: AbortSignal): Promise<unknown> {
 	if (signal.aborted) return Promise.reject(new IdentityError('cancelled'));
 	return new Promise((resolve, reject) => {
-		const child = spawn(executable, ['--read-cookies'], { windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
+		const env: NodeJS.ProcessEnv = {};
+		for (const name of ['PATH', 'SystemRoot', 'WINDIR', 'TMP', 'TEMP', 'TMPDIR']) if (process.env[name] !== undefined) env[name] = process.env[name];
+		const child = spawn(executable, ['--read-cookies'], { windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'], env });
 		const chunks: Buffer[] = []; let bytes = 0, failed = false;
 		const fail = () => { failed = true; child.kill('SIGKILL'); }; const timer = schedule(fail, 30000);
 		signal.addEventListener('abort', fail, { once: true });
@@ -144,10 +148,10 @@ export function sourceRows(raw: unknown, kind: 'chromium' | 'firefox', key: Encr
 		if (!Number.isFinite(expiry) || Math.abs(expiry) > Number.MAX_SAFE_INTEGER) throw new IdentityError('source_unavailable');
 		const session = kind === 'chromium' ? row.has_expires === 0 || String(row.expires_utc) === '0' : String(row.expiry) === '0';
 		const sameSite = row.samesite === -1 ? undefined : row.samesite === 0 ? 'None' : row.samesite === 1 ? 'Lax' : row.samesite === 2 ? 'Strict' : null;
-		if (sameSite === null || ![0, 1].includes(Number(row.is_secure)) || ![0, 1].includes(Number(row.is_httponly))) throw new IdentityError('unsupported_cookie');
+		if (sameSite === null || row.is_secure !== 0 && row.is_secure !== 1 || row.is_httponly !== 0 && row.is_httponly !== 1) throw new IdentityError('unsupported_cookie');
 		let partitionKey: { topLevelSite: string; hasCrossSiteAncestor: boolean } | undefined;
 		if (row.top_frame_site_key !== null && row.top_frame_site_key !== undefined && row.top_frame_site_key !== '') {
-			if (typeof row.top_frame_site_key !== 'string' || ![0, 1].includes(Number(row.has_cross_site_ancestor)) || row.has_cross_site_ancestor === null) throw new IdentityError('unsupported_cookie');
+			if (typeof row.top_frame_site_key !== 'string' || row.has_cross_site_ancestor !== 0 && row.has_cross_site_ancestor !== 1) throw new IdentityError('unsupported_cookie');
 			partitionKey = { topLevelSite: row.top_frame_site_key, hasCrossSiteAncestor: row.has_cross_site_ancestor === 1 };
 		}
 		return { name: row.name, value, domain: row.host_key, hostOnly: !row.host_key.startsWith('.'), path: row.path, secure: row.is_secure === 1, httpOnly: row.is_httponly === 1, session, ...(session ? {} : { expires: expiry }), ...(sameSite ? { sameSite } : {}),

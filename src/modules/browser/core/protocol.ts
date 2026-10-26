@@ -8,7 +8,9 @@ export const commandSchema=z.union([
  z.object({kind:z.literal('navigate'),url:z.string().max(8192)}).strict(),
  z.object({kind:z.enum(['back','forward','reload','stop','snapshot','text','screenshot'])}).strict(),
  z.object({kind:z.literal('click'),observationId:id,ref}).strict(),
- z.object({kind:z.literal('fill'),observationId:id,ref,text}).strict(),
+ z.object({kind:z.enum(['fill','type']),observationId:id,ref,text}).strict(),
+ z.object({kind:z.literal('select'),observationId:id,ref,values:z.array(z.string().max(4096)).min(1).max(64)}).strict(),
+ z.object({kind:z.literal('wait'),condition:z.union([z.object({kind:z.literal('url'),url:z.string().max(8192)}).strict(),z.object({kind:z.literal('text'),text:z.string().min(1).max(4096)}).strict(),z.object({kind:z.literal('load')}).strict()]),timeoutMs:z.number().int().min(1).max(15000)}).strict(),
  z.object({kind:z.literal('press'),key:z.string().min(1).max(80),modifiers:z.number().int().min(0).max(15).optional()}).strict(),
  z.object({kind:z.literal('scroll'),x:finite,y:finite,deltaX:finite,deltaY:finite}).strict(),
  z.object({kind:z.literal('upload'),observationId:id,ref,fileIds:z.array(id).min(1).max(8)}).strict(),
@@ -37,7 +39,7 @@ const schemas={
 export type BrowserMethod=keyof typeof schemas;
 export type MethodParams<M extends BrowserMethod>=z.infer<(typeof schemas)[M]>;
 export const methodNames=Object.keys(schemas) as BrowserMethod[];
-export const envelopeSchema=z.object({protocolVersion:z.literal(PROTOCOL_VERSION),requestId:id,method:z.enum(methodNames as [BrowserMethod,...BrowserMethod[]]),params:z.unknown(),deadlineAtMs:z.number().finite()}).strict();
+export const envelopeSchema=z.object({protocolVersion:z.literal(PROTOCOL_VERSION),requestId:id,bootId:id,method:z.enum(methodNames as [BrowserMethod,...BrowserMethod[]]),params:z.unknown(),deadlineAtMs:z.number().finite()}).strict();
 export function parseMethod<M extends BrowserMethod>(method:M,params:unknown):MethodParams<M>{
  const result=schemas[method].safeParse(params);if(!result.success)throw new AgentBrowserError('invalid_request');return result.data as MethodParams<M>;
 }

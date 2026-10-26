@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react';
 import { FileInput, ClipboardPaste } from 'lucide-react';
-import type { BrowserWorkspaceApi, IdentityImportPreview } from '../api';
+import type { BrowserWorkspace, IdentityImportPreview } from '../api';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Textarea } from '../../../ui/components/textarea';
@@ -29,12 +29,12 @@ export function IdentityImportActions({
 	report,
 	ref,
 }: {
-	api: BrowserWorkspaceApi;
+	api: BrowserWorkspace;
 	label: string;
 	persist: boolean;
 	disabled?: boolean;
-	onImported(): void;
-	report(reason: unknown): void;
+	onImported: () => void;
+	report: (reason: unknown) => void;
 	ref?: Ref<IdentityImportActionsHandle>;
 }) {
 	const t = useT();
@@ -48,14 +48,14 @@ export function IdentityImportActions({
 		mounted = useRef(false),
 		generation = useRef(0);
 	const discard = (id: string) => {
-		void api.discardIdentityImport(id).catch(() => undefined);
+		api.discardIdentityImport(id);
 	};
 	useEffect(() => {
 		mounted.current = true;
 		generation.current++;
 		return () => {
 			mounted.current = false;
-			if (plan.current) void api.discardIdentityImport(plan.current).catch(() => undefined);
+			if (plan.current) api.discardIdentityImport(plan.current);
 			plan.current = undefined;
 		};
 	}, [api]);

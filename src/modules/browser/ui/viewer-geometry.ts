@@ -5,6 +5,7 @@ export function framePoint(
 	x: number,
 	y: number,
 ): { x: number; y: number } | undefined {
+	if (!Number.isFinite(x) || !Number.isFinite(y)) return;
 	if (
 		![rect.width, rect.height, frame.cssWidth, frame.cssHeight].every(
 			(value) => Number.isFinite(value) && value > 0,

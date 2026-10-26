@@ -54,7 +54,9 @@ export type BrowserCommand =
 	| { kind: 'back' | 'forward' | 'reload' | 'stop' | 'snapshot' | 'text' | 'selection' | 'screenshot' }
 	| { kind: 'find'; text: string; forward?: boolean }
 	| { kind: 'click'; observationId: string; ref: string }
-	| { kind: 'fill'; observationId: string; ref: string; text: string }
+	| { kind: 'fill' | 'type'; observationId: string; ref: string; text: string }
+	| { kind: 'select'; observationId: string; ref: string; values: string[] }
+	| { kind: 'wait'; condition: { kind: 'url'; url: string } | { kind: 'text'; text: string } | { kind: 'load' }; timeoutMs: number }
 	| { kind: 'press'; key: string; modifiers?: number }
 	| { kind: 'scroll'; x: number; y: number; deltaX: number; deltaY: number }
 	| { kind: 'zoom'; factor: number }

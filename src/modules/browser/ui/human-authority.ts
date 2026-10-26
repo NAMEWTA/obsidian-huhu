@@ -1,6 +1,6 @@
-import type { BrowserWorkspaceApi, HumanPageRequest } from '../api';
+import type { BrowserWorkspace, HumanPageRequest } from '../api';
 
-export function captureHumanPage(api: BrowserWorkspaceApi, scope: HumanPageRequest) {
+export function captureHumanPage(api: BrowserWorkspace, scope: HumanPageRequest) {
 	const space = api.getState().spaces.find((item) => item.id === scope.spaceId);
 	const page = space?.pages.find((item) => item.id === scope.pageId);
 	const lease = space?.control.lease;
@@ -18,7 +18,7 @@ export function captureHumanPage(api: BrowserWorkspaceApi, scope: HumanPageReque
 }
 
 export function sameHumanPage(
-	api: BrowserWorkspaceApi,
+	api: BrowserWorkspace,
 	before: HumanPageRequest,
 	after: HumanPageRequest | undefined,
 	page: { runtimeId: string; documentId: string },

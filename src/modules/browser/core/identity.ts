@@ -29,7 +29,8 @@ export interface IdentityImportPlan {
 export interface IdentityImportPreview { planId: string; counts: IdentityImportPlan['counts']; originCount: number; issues: IdentityImportPlan['issues']; domains: Array<{ domain: string; count: number }> }
 export const MAX_IDENTITY_BYTES = 32 * 1024 * 1024;
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
-const controls = (value: string) => /[\u0000-\u001f\u007f]/.test(value);
+export const hasIdentityControls = (value: string): boolean => [...value].some((char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127);
+const controls = hasIdentityControls;
 export const identityIdValid = (value: string): boolean => /^[a-zA-Z0-9_-]{1,96}$/.test(value);
 const bool = (raw: unknown, fallback = false): boolean => { if (raw === undefined) return fallback; if (typeof raw !== 'boolean') throw new IdentityError('invalid_cookie'); return raw; };
 function origin(raw: unknown): string {
@@ -38,7 +39,7 @@ function origin(raw: unknown): string {
 	catch { throw new IdentityError('unsupported_storage'); }
 }
 function host(raw: string): string {
-	if (!raw || raw.length > 254 || /[\s\/:@\\?#]/.test(raw) || controls(raw)) throw new IdentityError('invalid_cookie');
+	if (!raw || raw.length > 254 || /[\s/:@\\?#]/.test(raw) || controls(raw)) throw new IdentityError('invalid_cookie');
 	const normalized = raw.replace(/^\./, '').toLowerCase();
 	try { if (!normalized || normalized.startsWith('.') || normalized.endsWith('.') || normalized.includes('..') || new URL(`https://${normalized}`).hostname !== normalized) throw new Error(); }
 	catch { throw new IdentityError('invalid_cookie'); }
@@ -47,7 +48,7 @@ function host(raw: string): string {
 export function normalizeIdentityCookie(value: unknown, now: number): IdentityCookie | 'expired' {
 	if (!object(value) || typeof value.domain !== 'string' || typeof value.name !== 'string' || typeof value.value !== 'string' || typeof value.path !== 'string') throw new IdentityError('invalid_cookie');
 	if (value.partitionKeyOpaque === true || value.sameParty === true || (value.originAttributes !== undefined && value.originAttributes !== '') ||
-		(value.firstPartyDomain !== undefined && value.firstPartyDomain !== '') || (value.storeId !== undefined && !['0', 'firefox-default'].includes(String(value.storeId)))) throw new IdentityError('unsupported_cookie');
+		(value.firstPartyDomain !== undefined && value.firstPartyDomain !== '') || (value.storeId !== undefined && value.storeId !== '0' && value.storeId !== 'firefox-default')) throw new IdentityError('unsupported_cookie');
 	const domain = host(value.domain), hostOnly = bool(value.hostOnly, !value.domain.startsWith('.'));
 	if (hostOnly && value.domain.startsWith('.') || !hostOnly && (!domain.includes('.') || /^[0-9.]+$/.test(domain))) throw new IdentityError('invalid_cookie');
 	if (!value.path.startsWith('/') || value.path.length > 4096 || controls(value.path) || value.name.length > 4096 || /[\s;=]/.test(value.name) || controls(value.name) || controls(value.value) || value.value.length > 65536) throw new IdentityError('invalid_cookie');
@@ -56,14 +57,14 @@ export function normalizeIdentityCookie(value: unknown, now: number): IdentityCo
 	if (rawExpires !== undefined && (typeof rawExpires !== 'number' || !Number.isFinite(rawExpires) || rawExpires > Number.MAX_SAFE_INTEGER || rawExpires < -1)) throw new IdentityError('invalid_cookie');
 	const session = bool(value.session, rawExpires === undefined || rawExpires === -1 || rawExpires === 0);
 	if (session && typeof rawExpires === 'number' && rawExpires > 0 || !session && (typeof rawExpires !== 'number' || rawExpires <= 0)) throw new IdentityError('invalid_cookie');
-	const sameSite = value.sameSite === 'no_restriction' ? 'None' : value.sameSite === 'unspecified' ? undefined : value.sameSite;
-	if (sameSite !== undefined && !['Strict', 'Lax', 'None'].includes(String(sameSite))) throw new IdentityError('invalid_cookie');
+	const sameSite = value.sameSite === 'no_restriction' ? 'None' : value.sameSite === 'unspecified' ? undefined : value.sameSite === 'lax' ? 'Lax' : value.sameSite === 'strict' ? 'Strict' : value.sameSite;
+	if (sameSite !== undefined && sameSite !== 'Strict' && sameSite !== 'Lax' && sameSite !== 'None') throw new IdentityError('invalid_cookie');
 	if (sameSite === 'None' && !secure || value.name.startsWith('__Secure-') && !secure || value.name.startsWith('__Host-') && (!secure || !hostOnly || value.path !== '/') ||
 		(value.name.startsWith('__Http-') || value.name.startsWith('__Host-Http-')) && (!secure || !httpOnly)) throw new IdentityError('invalid_cookie');
 	const cookie: IdentityCookie = { name: value.name, value: value.value, domain: hostOnly ? domain : `.${domain}`, hostOnly, path: value.path, secure, httpOnly, session,
-		...(sameSite ? { sameSite: sameSite as IdentityCookie['sameSite'] } : {}), ...(!session ? { expires: rawExpires as number } : {}) };
-	if (value.priority !== undefined) { if (!['Low', 'Medium', 'High'].includes(String(value.priority))) throw new IdentityError('unsupported_cookie'); cookie.priority = value.priority as IdentityCookie['priority']; }
-	if (value.sourceScheme !== undefined) { if (!['Unset', 'NonSecure', 'Secure'].includes(String(value.sourceScheme))) throw new IdentityError('unsupported_cookie'); cookie.sourceScheme = value.sourceScheme as IdentityCookie['sourceScheme']; }
+		...(sameSite ? { sameSite } : {}), ...(!session ? { expires: rawExpires } : {}) };
+	if (value.priority !== undefined) { if (value.priority !== 'Low' && value.priority !== 'Medium' && value.priority !== 'High') throw new IdentityError('unsupported_cookie'); cookie.priority = value.priority; }
+	if (value.sourceScheme !== undefined) { if (value.sourceScheme !== 'Unset' && value.sourceScheme !== 'NonSecure' && value.sourceScheme !== 'Secure') throw new IdentityError('unsupported_cookie'); cookie.sourceScheme = value.sourceScheme; }
 	if (value.sourcePort !== undefined) { if (typeof value.sourcePort !== 'number' || !Number.isInteger(value.sourcePort) || value.sourcePort < -1 || value.sourcePort > 65535) throw new IdentityError('invalid_cookie'); cookie.sourcePort = value.sourcePort; }
 	if (value.partitionKey !== undefined && value.partitionKey !== null) {
 		if (!secure || !object(value.partitionKey) || typeof value.partitionKey.hasCrossSiteAncestor !== 'boolean' || Object.keys(value.partitionKey).some((key) => !['topLevelSite', 'hasCrossSiteAncestor'].includes(key))) throw new IdentityError('unsupported_cookie');
@@ -99,7 +100,7 @@ function origins(raw: unknown): IdentityOrigin[] {
 export function planIdentityImport(text: string, now: number): IdentityImportPlan {
 	if (new TextEncoder().encode(text).length > MAX_IDENTITY_BYTES) throw new IdentityError('too_large');
 	let raw: unknown;
-	try { raw = /^[\s]*[\[{]/.test(text) ? JSON.parse(text) : netscape(text); } catch { throw new IdentityError('invalid_format'); }
+	try { raw = text.trimStart().startsWith('[') || text.trimStart().startsWith('{') ? JSON.parse(text) : netscape(text); } catch { throw new IdentityError('invalid_format'); }
 	const records = Array.isArray(raw) ? raw : object(raw) ? raw.cookies : undefined;
 	if (!Array.isArray(records) || records.length > 50000 || object(raw) && raw.format !== undefined && (raw.format !== 'huhu-browser-identity' || raw.version !== 1)) throw new IdentityError('invalid_format');
 	const plan: IdentityImportPlan = { seed: { format: 'huhu-browser-identity', version: 1, cookies: [], origins: [] }, counts: { accepted: 0, expired: 0, duplicate: 0, invalid: 0, unsupported: 0 }, issues: [] };

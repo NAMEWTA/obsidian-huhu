@@ -7,7 +7,8 @@ export async function provisionIdentity(options: {
 	publish(result: IdentityProvisionResult): Promise<void>; cleanupStaging(): Promise<void>; quarantineTarget(): Promise<void>;
 	recordCleanupFailure(resource: 'staging' | 'target'): Promise<void>;
 }): Promise<IdentityProvisionResult> {
-	const source = cloneIdentitySeed(options.seed); let published = false, cleaned = false;
+	const source = cloneIdentitySeed(options.seed); let published = false, cleaned = false, cleanupFailed = false;
+	let failure: unknown, outcome: IdentityProvisionResult | undefined;
 	const check = () => { if (options.isCancelled?.()) throw new IdentityError('cancelled'); };
 	const write = async (target: FreshIdentityTarget) => {
 		check(); await target.assertProvisioning(); check(); const context = { ...target.context };
@@ -26,12 +27,17 @@ export async function provisionIdentity(options: {
 	try {
 		if (sameContext(options.staging.context, options.target.context)) throw new IdentityError('context_mismatch');
 		await write(options.staging); check(); const result = await write(options.target); check();
-		try { await options.cleanupStaging(); cleaned = true; } catch { await options.recordCleanupFailure('staging'); throw new IdentityError('cleanup_pending'); }
-		check(); const outcome: IdentityProvisionResult = { importedCount: result.verified, naturallyExpired: result.naturallyExpired, originCount: source.origins.length, loginStatus: 'not-verified' };
-		await options.publish(outcome); published = true; return outcome;
-	} finally {
-		if (!published) try { await options.quarantineTarget(); } catch { await options.recordCleanupFailure('target'); }
-		if (!cleaned) try { await options.cleanupStaging(); } catch { await options.recordCleanupFailure('staging'); }
-		clearIdentitySeed(source);
+		try { await options.cleanupStaging(); cleaned = true; } catch { try { await options.recordCleanupFailure('staging'); } catch { /* Final cleanup still runs if the journal itself failed. */ } throw new IdentityError('cleanup_pending'); }
+		check(); outcome = { importedCount: result.verified, naturallyExpired: result.naturallyExpired, originCount: source.origins.length, loginStatus: 'not-verified' };
+		await options.publish(outcome); published = true;
+	} catch (error) { failure = error; }
+	finally {
+		try {
+			if (!published) try { await options.quarantineTarget(); } catch { cleanupFailed = true; try { await options.recordCleanupFailure('target'); } catch { /* Retain the cleanup_pending failure. */ } }
+			if (!cleaned) try { await options.cleanupStaging(); } catch { cleanupFailed = true; try { await options.recordCleanupFailure('staging'); } catch { /* Still clear all in-memory source copies. */ } }
+		} finally { clearIdentitySeed(source); }
 	}
+	if (cleanupFailed) throw new IdentityError('cleanup_pending');
+	if (!published || !outcome) throw failure instanceof Error ? failure : new IdentityError('verification_failed');
+	return outcome;
 }

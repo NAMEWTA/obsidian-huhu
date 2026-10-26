@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { BrowserWorkspaceApi, HumanPageRequest, PendingHumanRequest } from '../api';
+import type { BrowserWorkspace, HumanPageRequest, PendingHumanRequest } from '../api';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { useT } from '../../../ui/react/hooks';
@@ -11,10 +11,10 @@ export function PendingRequestCard({
 	authority,
 	report,
 }: {
-	api: BrowserWorkspaceApi;
+	api: BrowserWorkspace;
 	request: PendingHumanRequest;
-	authority(): HumanPageRequest | undefined;
-	report(reason: unknown): void;
+	authority: () => HumanPageRequest | undefined;
+	report: (reason: unknown) => void;
 }) {
 	const t = useT();
 	const [reply, setReply] = useState('');
@@ -34,8 +34,10 @@ export function PendingRequestCard({
 		if (!canAnswer || !captured || !page || captured.epoch !== request.epoch) return;
 		setPending(true);
 		try {
-			const files =
-				request.kind === 'file-chooser' && accept ? await api.chooseUpload(captured.spaceId, 'human') : [];
+			const file =
+				request.kind === 'file-chooser' && accept
+					? await api.chooseUpload(captured.spaceId, 'human')
+					: undefined;
 			const latest = api.getState().requests.find((item) => item.id === request.id);
 			if (
 				!sameHumanPage(api, captured, authority(), page) ||
@@ -59,7 +61,7 @@ export function PendingRequestCard({
 								kind: 'chooser',
 								requestId: request.id,
 								revision: request.revision,
-								fileIds: files.map((file) => file.id),
+								fileIds: file ? [file.id] : [],
 							},
 			});
 		} catch (reason) {

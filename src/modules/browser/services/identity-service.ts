@@ -1,4 +1,4 @@
-import { IdentityError, identityIdValid, planIdentityImport, requireStrictIdentityPlan, cloneIdentitySeed, clearIdentitySeed, type CredentialStorePort, type IdentityImportPlan, type IdentityImportPreview, type IdentitySeedV1, type IdentitySourceKind, type IdentityVersion, type IdentityVersionSummary } from '../core/identity';
+import { IdentityError, hasIdentityControls, identityIdValid, planIdentityImport, requireStrictIdentityPlan, cloneIdentitySeed, clearIdentitySeed, type CredentialStorePort, type IdentityImportPlan, type IdentityImportPreview, type IdentitySeedV1, type IdentitySourceKind, type IdentityVersion, type IdentityVersionSummary } from '../core/identity';
 
 export interface SecretUsePermit { id: string; versionId: string; spaceId: string; expiresAt: number }
 export type PreparedIdentitySummary = IdentityImportPreview;
@@ -15,7 +15,7 @@ export class IdentityService {
 	private active(generation = this.generation): void { if (this.locked || this.generation !== generation) throw new IdentityError('identity_locked'); }
 	prepareText(label: string, text: string, source: IdentitySourceKind = 'cookie-file'): IdentityImportPreview {
 		this.active(); this.sweep();
-		if (!label.trim() || label.length > 256 || /[\u0000-\u001f\u007f]/.test(label)) throw new IdentityError('invalid_format');
+		if (!label.trim() || label.length > 256 || hasIdentityControls(label)) throw new IdentityError('invalid_format');
 		if (this.prepared.size >= 8) throw new IdentityError('too_large');
 		const planId = this.id(), plan = planIdentityImport(text, this.clock()), domains = new Map<string, number>();
 		for (const cookie of plan.seed.cookies) domains.set(cookie.domain, (domains.get(cookie.domain) ?? 0) + 1);
@@ -33,6 +33,10 @@ export class IdentityService {
 			selected = new Set(domains);
 		}
 		const seed = cloneIdentitySeed({ ...validated, cookies: selected ? validated.cookies.filter((cookie) => selected.has(cookie.domain)) : validated.cookies });
+		if (storage === 'ephemeral') {
+			const bytes = (value: IdentitySeedV1) => new TextEncoder().encode(JSON.stringify(value)).length;
+			if (this.ephemeral.size >= 64 || [...this.ephemeral.values()].reduce((total, version) => total + bytes(version.seed), bytes(seed)) > 64 * 1024 * 1024) { clearIdentitySeed(seed); throw new IdentityError('too_large'); }
+		}
 		const version: IdentityVersion = { id: this.id(), identityId: this.id(), label: item.label, createdAt: this.clock(), source: item.source, seed };
 		const generation = this.generation; this.prepared.delete(planId);
 		try { if (storage === 'persistent') await this.credentials.create(version); }

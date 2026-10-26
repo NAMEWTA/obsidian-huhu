@@ -1,6 +1,6 @@
-import type { BrowserWorkspaceApi } from '../api';
+import type { BrowserWorkspace } from '../api';
 import { SpaceViewer } from './SpaceViewer';
 
-export function renderBrowserViewer(api: BrowserWorkspaceApi, target: { spaceId: string; pageId: string }) {
+export function renderBrowserViewer(api: BrowserWorkspace, target: { spaceId: string; pageId: string }) {
 	return <SpaceViewer api={api} spaceId={target.spaceId} pageId={target.pageId} />;
 }

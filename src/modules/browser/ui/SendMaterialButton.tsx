@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
-import type { BrowserWorkspaceApi, HumanPageRequest } from '../api';
+import type { BrowserWorkspace, HumanPageRequest } from '../api';
 import { Button } from '../../../ui/components/button';
 import {
 	Dialog,
@@ -20,10 +20,10 @@ export function SendMaterialButton({
 	disabled,
 	report,
 }: {
-	api: BrowserWorkspaceApi;
-	authority(): HumanPageRequest | undefined;
+	api: BrowserWorkspace;
+	authority: () => HumanPageRequest | undefined;
 	disabled: boolean;
-	report(reason: unknown): void;
+	report: (reason: unknown) => void;
 }) {
 	const t = useT();
 	const [open, setOpen] = useState(false);
@@ -31,11 +31,13 @@ export function SendMaterialButton({
 	const [targets, setTargets] = useState<Array<{ id: string; label: string }>>([]);
 	const [target, setTarget] = useState('');
 	const [sent, setSent] = useState(false);
-	const generation = useRef(0);
+	const generation = useRef(0),
+		mounted = useRef(false);
 	useEffect(() => {
+		mounted.current = true;
 		generation.current++;
 		return () => {
-			generation.current++;
+			mounted.current = false;
 		};
 	}, [authority]);
 	const choose = async () => {
@@ -44,14 +46,14 @@ export function SendMaterialButton({
 		setSent(false);
 		try {
 			const items = await api.listMaterialTargets();
-			if (current !== generation.current) return;
+			if (!mounted.current || current !== generation.current) return;
 			setTargets(items);
 			setTarget('');
 			setOpen(true);
 		} catch (reason) {
-			if (current === generation.current) report(reason);
+			if (mounted.current && current === generation.current) report(reason);
 		} finally {
-			if (current === generation.current) setPending(false);
+			if (mounted.current && current === generation.current) setPending(false);
 		}
 	};
 	const send = async () => {
@@ -63,14 +65,14 @@ export function SendMaterialButton({
 		try {
 			if (!sameHumanPage(api, scope, authority(), page)) throw new Error('control_revoked');
 			await api.sendMaterial({ ...scope, targetId: target });
-			if (current === generation.current) {
+			if (mounted.current && current === generation.current) {
 				setOpen(false);
 				setSent(true);
 			}
 		} catch (reason) {
-			if (current === generation.current) report(reason);
+			if (mounted.current && current === generation.current) report(reason);
 		} finally {
-			if (current === generation.current) setPending(false);
+			if (mounted.current && current === generation.current) setPending(false);
 		}
 	};
 	return (

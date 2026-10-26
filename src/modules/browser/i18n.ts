@@ -1,5 +1,27 @@
 export const messages = {
 	en: {
+		'browser.v2.failure.human_lease_expired': 'Human control expired. Take control again before sending input.',
+		'browser.v2.failure.frame_stale': 'The displayed frame is out of date. Wait for a fresh frame, then retry.',
+		'browser.v2.failure.input_sequence_stale':
+			'This input was already superseded. Wait for the latest frame before retrying.',
+		'browser.v2.failure.request_expired': 'This webpage request expired. Trigger it again from the page.',
+		'browser.v2.failure.control_superseded':
+			'Another control change took priority. Check the current control mode and retry.',
+		'browser.v2.failure.run_revoked': 'This Agent Run was revoked. Resume the Agent and copy a new connection.',
+		'browser.v2.failure.user_run_grant_required': 'Resume the Agent explicitly before copying its connection.',
+		'browser.v2.failure.runtime_unavailable':
+			'The managed browser runtime is unavailable. Install or refresh it in Browser settings.',
+		'browser.v2.failure.space_create_failed':
+			'The Space could not be created. Check its status and retry cleanup before creating another.',
+		'browser.v2.failure.workspace_owned_elsewhere':
+			'Another HUHU instance owns this browser workspace. Close that instance before modifying it here.',
+		'browser.v2.failure.cleanup_pending':
+			'Browser cleanup is incomplete. Retry cleanup before starting or deleting this Space.',
+		'browser.v2.failure.catalog_unavailable':
+			'Browser metadata could not be loaded safely. Restore the catalog or use a new workspace.',
+
+		'browser.v2.allowTaskCreation': 'Allow this connection to create one task Space',
+		'browser.v2.fileReady': 'Ready',
 		'browser.v2.human': 'Human control',
 		'browser.v2.provisioning': 'Provisioning',
 		'browser.v2.closing': 'Closing',
@@ -346,6 +368,21 @@ export const messages = {
 			'Browser profile data could not be read. Repair the profile file before enabling the module.',
 	},
 	zh: {
+		'browser.v2.failure.human_lease_expired': '人工控制已过期，请重新接管后再操作。',
+		'browser.v2.failure.frame_stale': '当前画面已过期，请等待新画面后重试。',
+		'browser.v2.failure.input_sequence_stale': '此输入序号已过期，请等待最新画面再操作。',
+		'browser.v2.failure.request_expired': '网页请求已过期，请在页面中重新触发。',
+		'browser.v2.failure.control_superseded': '控制权已发生新的变化，请确认当前模式后重试。',
+		'browser.v2.failure.run_revoked': '此 Agent Run 已撤销，请恢复 Agent 并复制新的连接。',
+		'browser.v2.failure.user_run_grant_required': '请先明确点击恢复 Agent，再复制连接。',
+		'browser.v2.failure.runtime_unavailable': '受管浏览器运行时不可用，请在浏览器设置中安装或刷新。',
+		'browser.v2.failure.space_create_failed': 'Space 创建失败，请检查状态并完成清理后再创建。',
+		'browser.v2.failure.workspace_owned_elsewhere': '此浏览器工作区由另一个 HUHU 实例持有，请关闭该实例后再修改。',
+		'browser.v2.failure.cleanup_pending': '浏览器清理尚未完成，请先重试清理，再启动或删除 Space。',
+		'browser.v2.failure.catalog_unavailable': '浏览器元数据无法安全读取，请恢复目录数据或使用新的工作区。',
+
+		'browser.v2.allowTaskCreation': '允许此连接新建一个任务 Space',
+		'browser.v2.fileReady': '就绪',
 		'browser.v2.human': '人工控制中',
 		'browser.v2.provisioning': '创建中',
 		'browser.v2.closing': '关闭中',

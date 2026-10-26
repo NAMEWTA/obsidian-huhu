@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Download, Folder, Globe, KeyRound, MoreHorizontal, Plus, RefreshCw, Trash2, Upload, X } from 'lucide-react';
-import type { BrowserWorkspaceApi, BrowserSpace, BrowserFileItem, IdentityItem, HumanPageRequest } from '../api';
+import type {
+	BrowserWorkspace as BrowserWorkspaceApi,
+	BrowserSpace,
+	BrowserFile,
+	IdentitySummary,
+	HumanPageRequest,
+} from '../api';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Label } from '../../../ui/components/label';
@@ -51,7 +57,7 @@ export function BrowserWorkspace({
 }: {
 	api: BrowserWorkspaceApi;
 	selection: BrowserWorkspaceSelection;
-	onSelect(selection: BrowserWorkspaceSelection): void;
+	onSelect: (selection: BrowserWorkspaceSelection) => void;
 	navigationRevision?: number;
 }) {
 	const t = useT();
@@ -74,17 +80,19 @@ export function BrowserWorkspace({
 	const [rename, setRename] = useState<BrowserSpace>(),
 		[renameLabel, setRenameLabel] = useState('');
 	const [remove, setRemove] = useState<BrowserSpace>();
-	const [identities, setIdentities] = useState<IdentityItem[]>([]),
+	const [identities, setIdentities] = useState<IdentitySummary[]>([]),
 		[identityName, setIdentityName] = useState('');
 	const [persist, setPersist] = useState(state.persistence === 'secure'),
 		[revision, setRevision] = useState(0);
 	const [saveFrom, setSaveFrom] = useState<HumanPageRequest>();
 	const [sourceOpen, setSourceOpen] = useState(false),
 		[sourceId, setSourceId] = useState(''),
-		[profileId, setProfileId] = useState(''),
-		[sourceDomains, setSourceDomains] = useState('');
+		[profileId, setProfileId] = useState('');
 	const [sources, setSources] = useState<Awaited<ReturnType<BrowserWorkspaceApi['listIdentitySources']>>>([]);
-	const [files, setFiles] = useState<{ spaceId: string; items: BrowserFileItem[] }>();
+	const [files, setFiles] = useState<{
+		spaceId: string;
+		items: Array<Pick<BrowserFile, 'id' | 'name' | 'size' | 'kind' | 'state'> & { downloadId?: string }>;
+	}>();
 	const importing = useRef<IdentityImportActionsHandle>(null),
 		busy = useRef(false);
 	const report = useCallback((reason: unknown) => setError(actionError(reason)), []);
@@ -109,14 +117,16 @@ export function BrowserWorkspace({
 	useEffect(() => {
 		if (section !== 'identities' && !creating) return;
 		let live = true;
-		void api.listIdentities().then(
-			(items) => {
-				if (live) setIdentities(items);
-			},
-			(reason) => {
-				if (live) report(reason);
-			},
-		);
+		void Promise.resolve()
+			.then(() => api.listIdentities())
+			.then(
+				(items) => {
+					if (live) setIdentities(items);
+				},
+				(reason) => {
+					if (live) report(reason);
+				},
+			);
 		return () => {
 			live = false;
 		};
@@ -125,14 +135,34 @@ export function BrowserWorkspace({
 		if (section !== 'files' || !selection.spaceId) return;
 		let live = true;
 		const id = selection.spaceId;
-		void api.listFiles(id).then(
-			(items) => {
-				if (live) setFiles({ spaceId: id, items });
-			},
-			(reason) => {
-				if (live) report(reason);
-			},
-		);
+		void Promise.resolve()
+			.then(() => api.listFiles(id))
+			.then(
+				(items) => {
+					if (live)
+						setFiles({
+							spaceId: id,
+							items: [
+								...items,
+								...api
+									.listDownloads(id)
+									.filter((item) => item.state !== 'completed' && item.state !== 'canceled')
+									.map((item) => ({
+										id: item.id,
+										downloadId: item.id,
+										name: item.name,
+										size: item.receivedBytes,
+										kind: 'download' as const,
+										state:
+											item.state === 'in-progress' ? ('pending' as const) : ('failed' as const),
+									})),
+							],
+						});
+				},
+				(reason) => {
+					if (live) report(reason);
+				},
+			);
 		return () => {
 			live = false;
 		};
@@ -144,6 +174,7 @@ export function BrowserWorkspace({
 		});
 	const refreshed = () => setRevision((value) => value + 1);
 	const create = async () => {
+		if (state.persistence === 'unavailable' && temporary) await api.consentEphemeral();
 		const created = await api.createSpace({
 			kind,
 			label: label.trim(),
@@ -159,7 +190,6 @@ export function BrowserWorkspace({
 		setSources(items);
 		setSourceId('');
 		setProfileId('');
-		setSourceDomains('');
 		setSourceOpen(true);
 	};
 	const prepareSource = async () => {
@@ -167,16 +197,10 @@ export function BrowserWorkspace({
 			sourceId,
 			profileId,
 			label: identityName.trim(),
-			domains: sourceDomains.trim()
-				? sourceDomains
-						.split(/[,\s]+/)
-						.map((value) => value.trim())
-						.filter(Boolean)
-				: undefined,
 		});
 		setSourceOpen(false);
 		if (importing.current) importing.current.review(preview, persist && state.persistence === 'secure');
-		else await api.discardIdentityImport(preview.planId);
+		else api.discardIdentityImport(preview.planId);
 	};
 	const spaceActions = (current: BrowserSpace) => (
 		<>
@@ -497,7 +521,11 @@ export function BrowserWorkspace({
 															</p>
 															<p className="text-xs text-muted-foreground">
 																{new Intl.NumberFormat().format(file.size)} B ·{' '}
-																{t(`browser.v2.${file.state}`)}
+																{t(
+																	file.state === 'ready'
+																		? 'browser.v2.fileReady'
+																		: `browser.v2.${file.state}`,
+																)}
 															</p>
 														</div>
 														{file.kind === 'download' && file.state === 'pending' ? (
@@ -507,7 +535,9 @@ export function BrowserWorkspace({
 																disabled={pending}
 																onClick={() =>
 																	void run(async () => {
-																		await api.cancelDownload(file.id);
+																		await api.cancelDownload(
+																			file.downloadId ?? file.id,
+																		);
 																		refreshed();
 																	})
 																}
@@ -528,7 +558,7 @@ export function BrowserWorkspace({
 															size="icon-sm"
 															variant="ghost"
 															aria-label={t('browser.v2.removeFile')}
-															disabled={pending}
+															disabled={pending || !!file.downloadId}
 															onClick={() =>
 																void run(async () => {
 																	await api.removeFile(file.id);
@@ -815,15 +845,6 @@ export function BrowserWorkspace({
 								))}
 						</SelectContent>
 					</Select>
-					<Label>
-						{t('browser.v2.sourceDomains')}
-						<Input
-							value={sourceDomains}
-							maxLength={12800}
-							onChange={(event) => setSourceDomains(event.target.value)}
-						/>
-					</Label>
-					<p className="text-xs text-muted-foreground">{t('browser.v2.sourceDomainHelp')}</p>
 					<DialogFooter>
 						<Button variant="outline" disabled={pending} onClick={() => setSourceOpen(false)}>
 							{t('browser.v2.cancel')}

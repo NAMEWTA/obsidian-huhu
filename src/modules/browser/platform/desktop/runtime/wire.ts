@@ -1,5 +1,5 @@
 import type{BrowserCommand,BrowserObservation,ControlLease,JsonValue,RuntimeEvent,RuntimeIdentityState,RuntimePage}from'../../../core/contracts';
-export interface WorkerInit{type:'init';spaceId:string;runtimeId:string;port:number;token:string;downloadPath:string;provisioning:ControlLease;}
+export interface WorkerInit{type:'init';spaceId:string;runtimeId:string;port:number;token:string;downloadPath:string;fresh:boolean;provisioning:ControlLease;}
 export type WorkerRequest={id:number}&(
  {type:'control';epoch:number;lease?:ControlLease}|
  {type:'create';pageId:string;url:string;authority:ControlLease}|

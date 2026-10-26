@@ -68,6 +68,7 @@ impl Gate {
 fn maintenance_allowed(method:&str,p:&Value)->bool {
     match method {
         "Browser.grantPermissions" => p["permissions"].as_array().is_some_and(|v|v.is_empty()) && p.as_object().is_some_and(|v|v.len()==1),
+        "Browser.setDownloadBehavior" => p["behavior"]=="deny" && p.as_object().is_some_and(|v|v.keys().all(|k|k=="behavior"||k=="eventsEnabled")),
         "Fetch.continueWithAuth" => p["authChallengeResponse"]["response"]=="CancelAuth" && p["authChallengeResponse"].as_object().is_some_and(|v|v.len()==1),
         "Fetch.continueRequest" => p.as_object().is_some_and(|v|v.len()==1&&v.contains_key("requestId")),
         "Page.handleJavaScriptDialog" => p["accept"]==false && p.as_object().is_some_and(|v|v.len()==1),

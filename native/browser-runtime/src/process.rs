@@ -7,9 +7,9 @@ use std::path::{Path,PathBuf};
 use std::process::{Child,Command,Stdio};
 use std::sync::Mutex;
 use std::time::{Duration,Instant};
-use serde_json::{json,Value};
+use serde_json::json;
 
-pub struct Browser { pub pid:u32, pub birth:String, pub profile:PathBuf, pub runtime:String, child:Mutex<Child>, stop:Mutex<()> }
+pub struct Browser { pub pid:u32, pub birth:String, pub profile:PathBuf, pub runtime:String, key:String, child:Mutex<Child>, stop:Mutex<()> }
 fn pair()->io::Result<(File,File)> {
     let mut fds=[-1;2];
     if unsafe{libc::pipe2(fds.as_mut_ptr(),libc::O_CLOEXEC)}<0{return Err(io::Error::last_os_error());}
@@ -48,11 +48,12 @@ fn reclaim_group(pid:u32,expected:&str)->io::Result<bool>{
     Ok(!live_group(pid)?)
 }
 fn receipt(profile:&Path)->PathBuf{profile.join(".huhu-runtime-owner.json")}
-pub fn reclaim(profile:&Path,expected_runtime:Option<&str>)->io::Result<bool>{
+pub fn reclaim(profile:&Path,expected_runtime:Option<&str>,key:&str)->io::Result<bool>{
+    if !profile.is_absolute()||fs::canonicalize(profile)?!=profile{return Err(io::Error::other("owner_path_invalid"));}
     let file=receipt(profile);
     let metadata=match fs::symlink_metadata(&file){Ok(v)=>v,Err(e) if e.kind()==io::ErrorKind::NotFound=>return Ok(true),Err(e)=>return Err(e)};
     if !metadata.is_file()||metadata.len()>8192{return Err(io::Error::other("owner_invalid"));}
-    let data=fs::read(&file)?;let owner:Value=serde_json::from_slice(&data)?;
+    let data=fs::read(&file)?;let owner=crate::receipt::open(&data,key)?;
     let runtime=owner["runtimeId"].as_str().ok_or_else(||io::Error::other("owner_invalid"))?;
     if expected_runtime.is_some_and(|v|v!=runtime){return Err(io::Error::other("owner_mismatch"));}
     let pid=owner["pid"].as_u64().filter(|v|*v>1&&*v<=i32::MAX as u64).ok_or_else(||io::Error::other("owner_invalid"))? as u32;
@@ -62,7 +63,7 @@ pub fn reclaim(profile:&Path,expected_runtime:Option<&str>)->io::Result<bool>{
     fs::remove_file(file)?;Ok(true)
 }
 impl Browser {
-    pub fn spawn(executable:&Path,profile:&Path,runtime:&str)->io::Result<(Self,File,File)> {
+    pub fn spawn(executable:&Path,profile:&Path,runtime:&str,space:&str,ephemeral:bool,key:&str)->io::Result<(Self,File,File)> {
         if !profile.is_absolute()||!executable.is_absolute()||fs::symlink_metadata(profile)?.file_type().is_symlink()||receipt(profile).exists(){return Err(io::Error::other("owned_profile_required"));}
         fs::set_permissions(profile,fs::Permissions::from_mode(0o700))?;
         let (input,writer)=pair()?;let(reader,output)=pair()?;
@@ -81,9 +82,9 @@ impl Browser {
             Ok(())
         });}
         let mut child=command.spawn()?;let pid=child.id();
-        let born=match birth(pid)?{Some(v)=>v,None=>{let _=child.wait();return Err(io::Error::other("browser_exited"));}};
-        let browser=Self{pid,birth:born,profile:profile.into(),runtime:runtime.into(),child:Mutex::new(child),stop:Mutex::new(())};
-        let record=json!({"version":1,"runtimeId":runtime,"pid":pid,"birth":browser.birth});
+        let born=match birth(pid){Ok(Some(v))=>v,Ok(None)=>{let _=child.wait();return Err(io::Error::other("browser_exited"));},Err(error)=>{let _=signal_group(pid,libc::SIGKILL);let _=child.wait();return Err(error);}};
+        let browser=Self{pid,birth:born,profile:profile.into(),runtime:runtime.into(),key:key.into(),child:Mutex::new(child),stop:Mutex::new(())};
+        let record=crate::receipt::seal(json!({"version":2,"spaceId":space,"ephemeral":ephemeral,"runtimeId":runtime,"pid":pid,"birth":browser.birth}),key)?;
         let saved=(||->io::Result<()>{let mut file=OpenOptions::new().write(true).create_new(true).mode(0o600).open(receipt(profile))?;file.write_all(&serde_json::to_vec(&record)?)?;file.sync_all()?;File::open(profile)?.sync_all()})();
         if let Err(e)=saved{let _=signal_group(pid,libc::SIGKILL);let _=browser.child.lock().unwrap().wait();return Err(e);}
         let flags=unsafe{libc::fcntl(writer.as_raw_fd(),libc::F_GETFL)};
@@ -96,7 +97,7 @@ impl Browser {
         let _=self.child.lock().unwrap().try_wait();
         unsafe{while libc::waitpid(-(self.pid as i32),std::ptr::null_mut(),libc::WNOHANG)>0{}}
         if reclaimed && receipt(&self.profile).exists(){
-            let data=fs::read(receipt(&self.profile))?;let v:Value=serde_json::from_slice(&data)?;
+            let data=fs::read(receipt(&self.profile))?;let v=crate::receipt::open(&data,&self.key)?;
             if v["runtimeId"]!=self.runtime||v["pid"].as_u64()!=Some(self.pid as u64)||v["birth"]!=self.birth{return Err(io::Error::other("owner_changed"));}
             fs::remove_file(receipt(&self.profile))?;
         }

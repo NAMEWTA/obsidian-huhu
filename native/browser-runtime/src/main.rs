@@ -1,6 +1,7 @@
 mod cookies;
 mod framing;
 mod gate;
+mod receipt;
 #[cfg(target_os="linux")] mod process;
 use serde_json::{json,Value};
 use std::io::{self,Read};
@@ -15,7 +16,7 @@ fn main(){
     }
     #[cfg(target_os="linux")]
     if args.iter().any(|v|v=="--reclaim") {
-        let mut input=String::new();let result=(||->io::Result<bool>{io::stdin().take(8193).read_to_string(&mut input)?;if input.len()>8192{return Err(io::Error::other("limit"));}let v:Value=serde_json::from_str(&input)?;let p=v["profile"].as_str().ok_or_else(||io::Error::other("profile"))?;process::reclaim(std::path::Path::new(p),v["runtimeId"].as_str())})();
+        let mut input=String::new();let result=(||->io::Result<bool>{io::stdin().take(8193).read_to_string(&mut input)?;if input.len()>8192{return Err(io::Error::other("limit"));}let v:Value=serde_json::from_str(&input)?;let p=v["profile"].as_str().ok_or_else(||io::Error::other("profile"))?;let key=v["key"].as_str().ok_or_else(||io::Error::other("key"))?;process::reclaim(std::path::Path::new(p),v["runtimeId"].as_str(),key)})();
         println!("{}",json!({"reclaimed":result.unwrap_or(false)}));return;
     }
     #[cfg(target_os="linux")]
@@ -42,7 +43,9 @@ fn run()->io::Result<()> {
     let listener=TcpListener::bind(("127.0.0.1",0))?;
     listener.set_nonblocking(true)?;
     let port=listener.local_addr()?.port();
-    let (browser,mut reader,pipe)=match process::Browser::spawn(std::path::Path::new(&text("executable")?),std::path::Path::new(&text("profile")?),&text("runtimeId")?){
+    let key=text("ownerKey")?;if key.len()!=64||!key.bytes().all(|v|v.is_ascii_hexdigit()){return Err(io::Error::other("owner_key_invalid"));}
+    let ephemeral=start["ephemeral"].as_bool().ok_or_else(||io::Error::other("retention_invalid"))?;
+    let (browser,mut reader,pipe)=match process::Browser::spawn(std::path::Path::new(&text("executable")?),std::path::Path::new(&text("profile")?),&text("runtimeId")?,&text("spaceId")?,ephemeral,&key){
         Ok(v)=>v,Err(_)=>{framing::write(&mut *stdout.lock().unwrap(),&json!({"id":id,"error":"browser_start_failed"}))?;return Err(io::Error::other("start_failed"));}
     };
     let browser=Arc::new(browser);

@@ -52,7 +52,7 @@ export function createActionHost(context: ModuleContext): ActionHost {
 		openFile: (path) => openNote(app, path),
 		openUrl: async (url) => {
 			const browser = await context.services.acquire(BROWSER_OPEN);
-			if (browser) await browser.value.open({ url, target: 'tab' });
+			if (browser) await browser.value.open({ url });
 			else app.workspace.containerEl.win.open(url, '_blank');
 		},
 		runCommand: (id) => {

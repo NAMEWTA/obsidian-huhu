@@ -37,13 +37,14 @@ export interface BrowserWorkspace {
  stopSpace(spaceId: string): Promise<void>;
  removeSpace(spaceId: string): Promise<void>;
  retryPendingCleanup(): Promise<void>;
+ retryCleanup(spaceId: string): Promise<void>;
  openPage(request: { spaceId: string; url?: string }): Promise<BrowserPage>;
  closePage(request: { spaceId: string; pageId: string }): Promise<void>;
  takeover(request: { spaceId: string; viewerId: string; windowId: string }): Promise<ControlLease>;
  releaseViewer(spaceId: string, viewerId: string): Promise<void>;
  pause(spaceId: string): Promise<void>;
  resumeAgent(spaceId: string): Promise<RunGrant>;
- copyAgentConnection(spaceId: string): Promise<string>;
+ copyAgentConnection(spaceId: string, options?: { allowTaskCreation?: boolean }): Promise<string>;
  pageAction(request: HumanPageRequest & { command: BrowserCommand }): Promise<JsonValue>;
  humanInput(request: HumanPageRequest & { frameId: string; inputSequence: number; input: HumanInput }): Promise<void>;
  navigate(request: HumanPageRequest & { url: string }): Promise<void>;

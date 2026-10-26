@@ -1,15 +1,15 @@
 import { useCallback, useState, useSyncExternalStore } from 'react';
-import type { BrowserWorkspaceApi } from '../../api';
+import type { BrowserWorkspace } from '../../api';
 import { Button } from '../../../../ui/components/button';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
 import { useT } from '../../../../ui/react/hooks';
 import { BrowserActionError, actionError } from '../BrowserActionError';
-export function browserSettingsPage(api: BrowserWorkspaceApi, openWorkspace: () => Promise<void>) {
+export function browserSettingsPage(api: BrowserWorkspace, openWorkspace: () => Promise<void>) {
 	return function Page() {
 		return <BrowserSettings api={api} openWorkspace={openWorkspace} />;
 	};
 }
-function BrowserSettings({ api, openWorkspace }: { api: BrowserWorkspaceApi; openWorkspace(): Promise<void> }) {
+function BrowserSettings({ api, openWorkspace }: { api: BrowserWorkspace; openWorkspace: () => Promise<void> }) {
 	const t = useT();
 	const state = useSyncExternalStore(
 		useCallback((listener) => api.subscribe(listener), [api]),

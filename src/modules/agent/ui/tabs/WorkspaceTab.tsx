@@ -214,7 +214,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 							void doc.defaultView?.navigator.clipboard
 								.writeText(
 									tab.kind === 'browser'
-										? tab.url
+										? (controller.browserPage(tab)?.url ?? '')
 										: tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId,
 								)
 								.catch((error) => workspace.report(error));

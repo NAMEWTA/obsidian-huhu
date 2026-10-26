@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Copy } from 'lucide-react';
-import type { BrowserWorkspaceApi, HumanPageRequest } from '../api';
+import type { BrowserWorkspace, HumanPageRequest } from '../api';
 import { Button } from '../../../ui/components/button';
 import { useT } from '../../../ui/react/hooks';
 import { captureHumanPage, sameHumanPage } from './human-authority';
@@ -11,19 +11,21 @@ export function CopySelectionButton({
 	disabled,
 	report,
 }: {
-	api: BrowserWorkspaceApi;
-	authority(): HumanPageRequest | undefined;
+	api: BrowserWorkspace;
+	authority: () => HumanPageRequest | undefined;
 	disabled: boolean;
-	report(reason: unknown): void;
+	report: (reason: unknown) => void;
 }) {
 	const t = useT();
 	const [pending, setPending] = useState(false);
 	const [notice, setNotice] = useState<'empty' | 'copied' | 'truncated'>();
-	const generation = useRef(0);
+	const generation = useRef(0),
+		mounted = useRef(false);
 	useEffect(() => {
+		mounted.current = true;
 		generation.current++;
 		return () => {
-			generation.current++;
+			mounted.current = false;
 		};
 	}, [authority]);
 	return (
@@ -43,7 +45,11 @@ export function CopySelectionButton({
 					void (async () => {
 						try {
 							const selected = await api.readSelection(scope);
-							if (generation.current !== current || !sameHumanPage(api, scope, authority(), page))
+							if (
+								!mounted.current ||
+								generation.current !== current ||
+								!sameHumanPage(api, scope, authority(), page)
+							)
 								throw new Error('control_revoked');
 							if (!selected.text) {
 								setNotice('empty');
@@ -51,11 +57,12 @@ export function CopySelectionButton({
 							}
 							if (!win.navigator.clipboard?.writeText) throw new Error('clipboard_unavailable');
 							await win.navigator.clipboard.writeText(selected.text);
-							if (generation.current === current) setNotice(selected.truncated ? 'truncated' : 'copied');
+							if (mounted.current && generation.current === current)
+								setNotice(selected.truncated ? 'truncated' : 'copied');
 						} catch (reason) {
-							if (generation.current === current) report(reason);
+							if (mounted.current && generation.current === current) report(reason);
 						} finally {
-							if (generation.current === current) setPending(false);
+							if (mounted.current && generation.current === current) setPending(false);
 						}
 					})();
 				}}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { ArrowLeft, ArrowRight, Copy, Eye, Hand, Pause, Play, RefreshCw, Search, Square } from 'lucide-react';
 import type {
-	BrowserWorkspaceApi,
+	BrowserWorkspace,
 	BrowserFrame,
 	BrowserCommand,
 	FrameSubscription,
@@ -11,6 +11,7 @@ import type {
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
 import { Textarea } from '../../../ui/components/textarea';
+import { Checkbox } from '../../../ui/components/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/components/select';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
 import { useOwnerDocument, useVisible } from '../../../ui/react/contexts';
@@ -58,12 +59,12 @@ async function paintFrame(canvas: HTMLCanvasElement, frame: BrowserFrame, signal
 }
 
 /** A presentation only. Unmount releases its lease; the independent Space/Page remain browser-owned. */
-export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspaceApi; spaceId: string; pageId: string }) {
+export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; spaceId: string; pageId: string }) {
 	const t = useT(),
 		ownerDocument = useOwnerDocument(),
 		visible = useVisible();
 	const viewer = useMemo(
-		() => ({ id: crypto.randomUUID(), windowId: windowIdentity(ownerDocument) }),
+		() => ({ id: crypto.randomUUID(), windowId: windowIdentity(ownerDocument), spaceId, pageId }),
 		[ownerDocument, spaceId, pageId],
 	);
 	const state = useSyncExternalStore(
@@ -93,6 +94,12 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspaceApi
 		[composing, setComposing] = useState(false);
 	const [showFind, setShowFind] = useState(false),
 		[findText, setFindText] = useState('');
+	const [creationGrant, setCreationGrant] = useState<{ runtimeId: string; epoch: number; allowed: boolean }>();
+	const allowTaskCreation =
+		!!space?.runtimeId &&
+		creationGrant?.runtimeId === space.runtimeId &&
+		creationGrant.epoch === space.control.epoch &&
+		creationGrant.allowed;
 	const helpId = useId();
 	const report = useCallback((reason: unknown) => setError(actionError(reason)), []);
 	const run = useCallback(
@@ -368,11 +375,47 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspaceApi
 						</Button>
 					)}
 					{space.kind === 'task' && space.control.mode === 'agent' && (
+						<label className="flex items-center gap-2 text-xs">
+							<Checkbox
+								checked={!!allowTaskCreation}
+								disabled={pending}
+								onCheckedChange={(checked) => {
+									if (space.runtimeId)
+										setCreationGrant({
+											runtimeId: space.runtimeId,
+											epoch: space.control.epoch,
+											allowed: checked === true,
+										});
+								}}
+							/>
+							{t('browser.v2.allowTaskCreation')}
+						</label>
+					)}
+					{space.kind === 'task' && space.control.mode === 'agent' && (
 						<Button
 							size="sm"
 							variant="outline"
 							disabled={pending}
-							onClick={() => void run(() => api.copyAgentConnection(spaceId))}
+							onClick={(event) => {
+								const win = event.currentTarget.ownerDocument.defaultView;
+								const before = api.getState().spaces.find((item) => item.id === spaceId);
+								void run(async () => {
+									if (!win?.navigator.clipboard?.writeText) throw new Error('clipboard_unavailable');
+									const connection = await api.copyAgentConnection(spaceId, {
+										allowTaskCreation: !!allowTaskCreation,
+									});
+									const after = api.getState().spaces.find((item) => item.id === spaceId);
+									if (
+										!before ||
+										!after ||
+										after.runtimeId !== before.runtimeId ||
+										after.control.epoch !== before.control.epoch ||
+										after.control.mode !== 'agent'
+									)
+										throw new Error('control_revoked');
+									await win.navigator.clipboard.writeText(connection);
+								});
+							}}
 						>
 							<Copy />
 							{t('browser.v2.copyConnection')}

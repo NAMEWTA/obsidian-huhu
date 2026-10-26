@@ -1,6 +1,6 @@
 import type { PageCreate } from '../../../app/contracts/workbench-host';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
-import type { BrowserWorkspaceApi } from '../api';
+import type { BrowserWorkspace as BrowserWorkspaceApi } from '../api';
 import { ReactSurface } from '../../../ui/react/surface';
 import { t } from '../../../shared/i18n';
 import { BrowserWorkspace, type BrowserWorkspaceSelection } from './BrowserWorkspace';

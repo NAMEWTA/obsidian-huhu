@@ -133,6 +133,8 @@ export interface SettingsPageHost {
 }
 
 export interface ModuleInstance {
+	/** Resource owners may retain cleanup authority after an unconfirmed shutdown. */
+	readonly retainOnDisposeFailure?: boolean;
 	activate?(signal: AbortSignal): Promise<void> | void;
 	dispose(reason: 'disabled' | 'unload'): Promise<void> | void;
 	readonly services?: ReadonlyArray<readonly [ServiceKey<unknown>, unknown]>;

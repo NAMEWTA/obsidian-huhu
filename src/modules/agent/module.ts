@@ -1,10 +1,9 @@
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { registerMessages } from '../../shared/i18n/index';
 import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_INVOCATIONS } from '../automations/api';
+import { BROWSER_MATERIAL_CONSUMERS, type BrowserMaterialConsumer } from '../browser/api';
 import {
 	AGENT_DIRECTORY,
-	NATIVE_HELPER_SQLITE,
-	AGENT_BROWSER_TABS,
 	AGENT_DISPATCH,
 	AGENT_PROMPT_RUNNER,
 	AGENT_SESSIONS,
@@ -22,11 +21,12 @@ import { createAgentDispatch } from './services/prompt-port';
 import { quickCommandsPort } from './services/quick-commands-port';
 import { sessionMaterialPort } from './services/session-material';
 import { agentWorkbench } from './services/workbench';
-import { cookieClient } from './platform/desktop/server/cookie-client';
 import { agentSettings } from './settings';
 import { AgentSkillDirectory } from './services/skills';
 import { createSkillCatalog } from './services/skill-catalog';
 import type { SkillManager } from './services/skill-manager';
+import { browserMaterialConsumer } from './services/browser-material-consumer';
+import type { BrowserMaterialFiles } from './platform/desktop/browser-material';
 
 registerMessages(automationStrings);
 registerMessages(commonStrings);
@@ -45,23 +45,31 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 	let skillManager: SkillManager | undefined;
 	let skillManagerLoading: Promise<SkillManager> | undefined;
 	let closed = false;
+	let materialFiles: BrowserMaterialFiles | undefined;
+	let materialConsumer: BrowserMaterialConsumer | undefined;
 	/** The skills manager is created on first use (the settings page or a skill listing); nothing scans until `refresh` is called. */
 	const ensureSkillManager = async (): Promise<SkillManager | undefined> => {
 		if (!context.env.desktop || closed) return undefined;
 		skillManagerLoading ??= import('./services/skill-manager').then(({ SkillManager: Manager }) => {
 			skillManager ??= new Manager({
 				extraDirectories: () => settings.get().skillDirectories,
-				load: async () => (await import('./platform/desktop/skills/host-ops')).createHostSkillOps(context.app, settings),
+				load: async () =>
+					(await import('./platform/desktop/skills/host-ops')).createHostSkillOps(context.app, settings),
 			});
 			return skillManager;
 		});
 		const created = await skillManagerLoading;
 		return closed ? undefined : created;
 	};
-	const skillCatalog = createSkillCatalog(ensureSkillManager, async (dir) => (await import('./platform/desktop/skills/skill-fs')).readSkillDoc(dir));
+	const skillCatalog = createSkillCatalog(ensureSkillManager, async (dir) =>
+		(await import('./platform/desktop/skills/skill-fs')).readSkillDoc(dir),
+	);
 	const migrationLifetime = new AbortController();
 	let releaseMigration: (() => void) | undefined;
 	return {
+		get contributions() {
+			return materialConsumer ? [[BROWSER_MATERIAL_CONSUMERS, materialConsumer] as const] : [];
+		},
 		/** Read after `activate()`. */
 		get services() {
 			const current = controller;
@@ -73,20 +81,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 							? [
 									[AUTOMATION_AGENT_RUNTIME, current.runtime] as const,
 									[AGENT_SESSIONS, sessionMaterialPort(current)] as const,
- [AGENT_BROWSER_TABS, {
-  sessionOrder: (pageId:string) => {const state=current.workspace.store.getState();const tab=Object.values(state.tabs).find(t=>t.kind==='browser'&&t.pageId===pageId);const group=tab?current.workspace.group(tab.id):undefined;return (group?.tabIds??[]).flatMap(id=>{const t=state.tabs[id];return t?.kind==='terminal'?t.sessionIds:[];});},
-  open: async (url?:string,profileId?:string,reuse?:boolean) => {
-   await current.workspace.persistence.ready;
-   const found=reuse?Object.values(current.workspace.store.getState().tabs).find(tab=>tab.kind==='browser'&&tab.url===url&&(!profileId||tab.profileId===profileId)):undefined;
-   if(found)current.workspace.activate(found.id);else current.workspace.newBrowser(url,{profileId});
-   await context.shell.open({feature:'terminal'});
-   const tab=current.workspace.active;return tab?.kind==='browser'?tab.pageId:'';
-  },
-  close: async (id:string) => {const tab=Object.values(current.workspace.store.getState().tabs).find(tab=>tab.kind==='browser'&&tab.pageId===id);if(tab)await current.workspace.close(tab.id,async()=>true);},
-  list: () => Object.values(current.workspace.store.getState().tabs).flatMap(tab=>tab.kind==='browser'?[{id:tab.pageId,title:tab.title,url:tab.url,profileId:tab.profileId}]:[]),
-  activate: (id:string) => {const tab=Object.values(current.workspace.store.getState().tabs).find(tab=>tab.kind==='browser'&&tab.pageId===id);if(tab)current.workspace.activate(tab.id);},
- }] as const,
-                                    [NATIVE_HELPER_SQLITE, cookieClient(() => current.sessions.ensureHelper())] as const,
+
 									[AGENT_WORKBENCH, agentWorkbench(current)] as const,
 									[AGENT_USAGE, current.workspaceUsage] as const,
 									[AGENT_PROMPT_RUNNER, current.prompts] as const,
@@ -103,7 +98,12 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 		},
 		settingsPage: async () => {
 			await ensureSkillManager();
-			return (await import('./ui/settings-page')).agentSettingsPage(() => controller, settings, context.env.desktop, () => skillManager);
+			return (await import('./ui/settings-page')).agentSettingsPage(
+				() => controller,
+				settings,
+				context.env.desktop,
+				() => skillManager,
+			);
 		},
 		async activate() {
 			closed = false;
@@ -131,6 +131,11 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 			await controller.workspace.persistence.ready;
 			controller.registerCommands();
 			const current = controller;
+			if (current.vaultPath()) {
+				const { BrowserMaterialFiles: Files } = await import('./platform/desktop/browser-material');
+				materialFiles = new Files(current.vaultPath()!);
+				materialConsumer = browserMaterialConsumer(current, materialFiles, migrationLifetime.signal);
+			}
 			dispatch = createAgentDispatch({
 				agents: () => current.runtime.listAgents(),
 				invocations: () => context.services.peek(AUTOMATION_INVOCATIONS),
@@ -140,6 +145,7 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 		},
 		async dispose() {
 			migrationLifetime.abort();
+			materialConsumer = undefined;
 			releaseMigration?.();
 			releaseMigration = undefined;
 			skills?.dispose();
@@ -153,6 +159,8 @@ export default function createAgentModule(context: ModuleContext): ModuleInstanc
 			const current = controller;
 			controller = undefined;
 			await current?.dispose();
+			await materialFiles?.dispose();
+			materialFiles = undefined;
 		},
 	};
 }

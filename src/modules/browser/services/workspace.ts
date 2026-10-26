@@ -17,7 +17,7 @@ import { RunEvents } from './run-events';
 
 const clone=<T>(v:T):T=>structuredClone(v);
 const uuid=/^[a-zA-Z0-9_-]{8,128}$/;
-const agentCommands=new Set(['navigate','back','forward','reload','stop','snapshot','text','screenshot','click','fill','press','scroll','upload']);
+const agentCommands=new Set(['navigate','back','forward','reload','stop','snapshot','text','screenshot','click','fill','type','select','wait','press','scroll','upload']);
 interface RunEntry { run:BrowserRun; capability:string; }
 export interface BrowserWorkspaceExtensions {
  seed?(versionId:string,space:BrowserSpace,runtime:BrowserRuntime):Promise<void>;
@@ -41,8 +41,9 @@ export interface BrowserWorkspaceExtensions {
   download(event:Extract<RuntimeEvent,{kind:'download'}>,scope:BrowserFileScope):Promise<void>;
  };
  renderViewer(scope:{spaceId:string;pageId:string}):Promise<unknown>;
- connection(spaceId:string,grant:RunGrant):Promise<string>;
+ connection(spaceId:string,grant:RunGrant,allowTaskCreation:boolean):Promise<string>;
  materials():Promise<readonly BrowserMaterialConsumer[]>;
+ cleanupPending?():number; retryCleanup?():Promise<void>;
 }
 
 /** Browser owns process lifetime. Views only subscribe; Agent sessions never own or launch Chromium. */
@@ -56,6 +57,9 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  private readonly controls=new Map<string,Promise<unknown>>();
  private readonly actions=new Map<string,Promise<unknown>>();
  private readonly intents=new Map<string,number>();
+ private readonly pendingHumans=new Map<string,{viewerId:string;intent:number}>();
+ private queuedActions=0;
+ private readonly renewals=new Set<string>();
  private readonly starts=new Map<string,Promise<void>>();
  private readonly inputSequences=new Map<string,number>();
  private readonly downloadOwners=new Map<string,BrowserFileScope>();
@@ -70,7 +74,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  }
  getState=():BrowserWorkspaceState=>this.store.getState();
  subscribe=(listener:()=>void):(()=>void)=>this.store.subscribe(listener);
- private notify(){this.store.setState({spaces:[...this.spaces.values()].map(clone),cleanupPending:[...this.spaces.values()].filter(s=>s.status==='cleanup_pending'||s.status==='quarantined').length});}
+ private notify(){this.store.setState({spaces:[...this.spaces.values()].map(clone),cleanupPending:[...this.spaces.values()].filter(s=>s.status==='cleanup_pending'||s.status==='quarantined').length+(this.extra.cleanupPending?.()??0)});}
  private async persist(){
   const snapshot=[...this.spaces.values()].map(s=>({...clone(s),control:{mode:'paused' as const,epoch:s.control.epoch}}));
   const task=this.catalogWrite.then(()=>this.persistence.write('catalog',snapshot));
@@ -79,6 +83,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  async initialize():Promise<void>{
   await this.persistence.initialize();
   this.store.setState({readOnly:this.persistence.readOnly,persistence:await this.persistence.security(),availability:await this.factory.availability()});
+  if(this.persistence.readOnly){this.store.setState({ready:true,error:'workspace_owned_elsewhere'});return;}
   await this.ledger.initialize();
   const saved=await this.persistence.read<BrowserSpace[]>('catalog');
   if(saved && (!Array.isArray(saved)||saved.length>200||saved.some(s=>!s||!uuid.test(s.id)||!['personal','task'].includes(s.kind)||!Array.isArray(s.pages)||s.pages.length>8||s.pages.some(p=>!uuid.test(p.id)||typeof p.url!=='string'))))throw new AgentBrowserError('catalog_corrupt');
@@ -93,15 +98,17 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   }
   if(!this.persistence.readOnly)await this.persist();
   this.notify();this.store.setState({ready:true});
-  this.timer=setInterval(()=>{for(const {run} of this.runs.values())if(run.state==='active'&&run.expiresAt<=this.now())void this.pause(run.spaceId).catch(()=>undefined);},1000);
+  this.timer=setInterval(()=>{for(const {run} of this.runs.values())if(run.state==='active'&&run.expiresAt<=this.now())void this.pause(run.spaceId).catch(()=>undefined);for(const s of this.spaces.values()){const lease=s.control.lease;if(s.control.mode!=='human'||!lease)continue;if(lease.expiresAt<=this.now()){void this.pause(s.id).catch(()=>undefined);continue;}if(lease.expiresAt-this.now()<60000&&lease.viewerId&&this.frames.has(lease.viewerId,s.id)&&!this.renewals.has(s.id)){this.renewals.add(s.id);const renewed={...lease,expiresAt:this.now()+120000};void this.runtime(s).setControl(renewed,lease.epoch).then(()=>{if(s.control.lease?.leaseId===lease.leaseId)s.control.lease=renewed;}).catch(()=>{if(s.control.lease?.leaseId===lease.leaseId)void this.pause(s.id).catch(()=>undefined);}).finally(()=>this.renewals.delete(s.id));}}},1000);
  }
  private assertWritable(){if(this.closing)throw new AgentBrowserError('workspace_closing');if(this.persistence.readOnly||this.getState().readOnly)throw new AgentBrowserError('workspace_owned_elsewhere');}
  private space(id:string){const s=this.spaces.get(id);if(!s)throw new AgentBrowserError('space_not_found');return s;}
  private runtime(space:BrowserSpace){const r=this.runtimes.get(space.id);if(!r||space.runtimeId!==r.id||space.status!=='ready')throw new AgentBrowserError('runtime_not_ready');return r;}
  private page(space:BrowserSpace,id:string){const p=space.pages.find(p=>p.id===id);if(!p)throw new AgentBrowserError('page_not_found');return p;}
  private queue<T>(map:Map<string,Promise<unknown>>,id:string,work:()=>Promise<T>):Promise<T>{
-  const previous=map.get(id)??Promise.resolve(),task=previous.then(work,work);map.set(id,task);
-  void task.finally(()=>{if(map.get(id)===task)map.delete(id);}).catch(()=>undefined);return task;
+  const isAction=map===this.actions;if(isAction&&this.queuedActions>=256)return Promise.reject(new AgentBrowserError('action_queue_full'));
+  const key=isAction?`${id}:${this.space(id).control.epoch}`:id;if(isAction)this.queuedActions++;
+  const previous=map.get(key)??Promise.resolve(),task=previous.then(work,work);map.set(key,task);
+  void task.finally(()=>{if(map.get(key)===task)map.delete(key);if(isAction)this.queuedActions--;}).catch(()=>undefined);return task;
  }
  resolveInput(input:string):string|null{const url=normalizeBrowserNavigationUrl(input,'google');if(!url)return null;try{return validatePageUrl(url);}catch{return null;}}
  async consentEphemeral(){this.assertWritable();this.store.setState({ephemeralConsent:true});}
@@ -129,15 +136,15 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   if(this.starts.has(space.id))return this.starts.get(space.id)!;
   const intent=(this.intents.get(space.id)??0)+1;this.intents.set(space.id,intent);
   const task=(async()=>{
-   this.assertWritable();if(this.runtimes.size+this.starts.size>=3)throw new AgentBrowserError('runtime_quota');
+   this.assertWritable();if(new Set([...this.runtimes.keys(),...this.starts.keys()].filter(id=>id!==space.id)).size>=3)throw new AgentBrowserError('runtime_quota');
    if(!fresh&&space.status!=='stopped'&&space.status!=='faulted')throw new AgentBrowserError('space_not_stopped');
    if(this.getState().persistence!=='secure'&&!this.getState().ephemeralConsent)throw new AgentBrowserError('ephemeral_consent_required');
    space.status=fresh?'provisioning':'starting';space.runtimeId=this.persistence.id();await this.persist();this.notify();
    await this.factory.reclaim(space.id);
    const runtime=await this.factory.start({spaceId:space.id,runtimeId:space.runtimeId,ephemeral:space.retention==='ephemeral'});
-   if(this.closing||this.intents.get(space.id)!==intent){await runtime.stop();throw new AgentBrowserError('start_cancelled');}
    this.runtimes.set(space.id,runtime);this.unlisten.set(space.id,runtime.onEvent(event=>this.onRuntime(space.id,event)));
    try{
+    if(this.closing||this.intents.get(space.id)!==intent)throw new AgentBrowserError('start_cancelled');
     if(fresh&&space.identityVersionId){if(!this.extra.seed)throw new AgentBrowserError('identity_unavailable');await this.extra.seed(space.identityVersionId,clone(space),runtime);}
     space.status='hydrating';this.notify();
     for(const page of space.pages){
@@ -147,7 +154,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
     }
     if(space.pages.length&&!space.pages.some(p=>p.status==='open'))throw new AgentBrowserError('page_restore_failed');
     space.status='ready';space.control={mode:'paused',epoch:space.control.epoch+1};await runtime.setControl(undefined,space.control.epoch);
-    await this.persist();this.notify();
+    await this.persist();this.notify();await this.frames.restart(space.id);
    }catch(error){
     try{await runtime.stop();this.runtimes.delete(space.id);this.unlisten.get(space.id)?.();this.unlisten.delete(space.id);space.status='faulted';}
     catch{space.status='quarantined';}
@@ -158,10 +165,11 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   try{await task;}finally{if(this.starts.get(space.id)===task)this.starts.delete(space.id);}
  }
  async startSpace(id:string){this.assertWritable();await this.startOwned(this.space(id));}
- private revokeRuns(spaceId:string){for(const entry of this.runs.values())if(entry.run.spaceId===spaceId&&entry.run.state==='active'){entry.run.state='revoked';this.eventsStore.close(entry.run.id);}this.frames.invalidate(spaceId);}
+ private revokeRuns(spaceId:string){for(const entry of this.runs.values())if(entry.run.spaceId===spaceId&&entry.run.state==='active'){entry.run.state='revoked';this.eventsStore.close(entry.run.id);}this.frames.reset(spaceId);}
  private newIntent(id:string){const intent=(this.intents.get(id)??0)+1;this.intents.set(id,intent);this.revokeRuns(id);return intent;}
  private async changeControl(id:string,mode:'paused'|'agent'|'human'|'workspace',controllerId:string,viewer?:{viewerId:string;windowId:string}):Promise<ControlLease|undefined>{
   this.assertWritable();const s=this.space(id),runtime=this.runtime(s),intent=this.newIntent(id);
+  this.pendingHumans.delete(id);if(mode==='human'&&viewer)this.pendingHumans.set(id,{viewerId:viewer.viewerId,intent});
   s.control={mode:'quiescing',epoch:s.control.epoch};this.notify();
   return this.queue(this.controls,id,async()=>{
    if(this.intents.get(id)!==intent)throw new AgentBrowserError('control_superseded');
@@ -170,23 +178,24 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
     const ack=await runtime.setControl(undefined,epoch);
     if(ack.runtimeId!==runtime.id||ack.epoch!==epoch||ack.transportState!=='open')throw new AgentBrowserError('revocation_unconfirmed');
     if(this.intents.get(id)!==intent||this.closing||this.runtimes.get(id)!==runtime)throw new AgentBrowserError('control_superseded');
+    if(mode==='human'&&(!viewer||!this.frames.has(viewer.viewerId,id)))throw new AgentBrowserError('viewer_not_registered');
     if(mode==='paused'){s.control={mode:'paused',epoch};await this.persist();this.notify();return undefined;}
     const lease:ControlLease={spaceId:id,runtimeId:runtime.id,epoch:epoch+1,leaseId:this.persistence.id(),controllerId,mode,expiresAt:this.now()+120_000,...viewer};
     await runtime.setControl(lease,lease.epoch);
-    if(this.intents.get(id)!==intent||this.closing||this.runtimes.get(id)!==runtime){await runtime.setControl(undefined,lease.epoch+1);s.control={mode:'paused',epoch:lease.epoch+1};throw new AgentBrowserError('control_superseded');}
+    if(this.intents.get(id)!==intent||this.closing||this.runtimes.get(id)!==runtime||mode==='human'&&(!viewer||!this.frames.has(viewer.viewerId,id))){await runtime.setControl(undefined,lease.epoch+1);s.control={mode:'paused',epoch:lease.epoch+1};throw new AgentBrowserError('control_superseded');}
     s.control={mode:mode==='workspace'?'quiescing':mode,epoch:lease.epoch,lease};
     await this.persist();this.notify();return clone(lease);
    }catch(error){
     if(this.intents.get(id)===intent){s.control={mode:'blocked',epoch:s.control.epoch+1};try{await runtime.setControl(undefined,s.control.epoch);}catch{try{await runtime.stop();s.status='stopped';this.runtimes.delete(id);}catch{s.status='quarantined';}}this.notify();}
     throw error;
-   }
+   }finally{if(this.pendingHumans.get(id)?.intent===intent)this.pendingHumans.delete(id);}
   });
  }
  async takeover({spaceId,viewerId,windowId}:{spaceId:string;viewerId:string;windowId:string}){
   if(!this.frames.has(viewerId,spaceId))throw new AgentBrowserError('viewer_not_registered');
   const lease=await this.changeControl(spaceId,'human',viewerId,{viewerId,windowId});if(!lease)throw new AgentBrowserError('control_missing');return lease;
  }
- async releaseViewer(spaceId:string,viewerId:string){const space=this.spaces.get(spaceId);if(space?.control.lease?.viewerId===viewerId)await this.pause(spaceId);}
+ async releaseViewer(spaceId:string,viewerId:string){const space=this.spaces.get(spaceId);if(space?.control.lease?.viewerId===viewerId||this.pendingHumans.get(spaceId)?.viewerId===viewerId)await this.pause(spaceId);}
  async pause(id:string){await this.changeControl(id,'paused','workspace');}
  async resumeAgent(id:string):Promise<RunGrant>{
   const s=this.space(id);if(s.kind!=='task')throw new AgentBrowserError('personal_space_forbidden');
@@ -195,7 +204,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   const capability=this.persistence.id()+this.persistence.id();this.runs.set(runId,{run,capability});this.eventsStore.open(runId);this.notify();return{run:clone(run),capability};
  }
  async startRun(spaceId:string,issuerId:string):Promise<RunGrant>{const entry=[...this.runs.values()].find(e=>e.run.spaceId===spaceId&&e.run.state==='active'&&e.run.issuerId===issuerId);if(!entry)throw new AgentBrowserError('user_run_grant_required');this.authorize(entry.run.id,entry.capability);return clone(entry);}
- async copyAgentConnection(spaceId:string){const entry=[...this.runs.values()].find(e=>e.run.spaceId===spaceId&&e.run.state==='active');if(!entry)throw new AgentBrowserError('user_run_grant_required');return this.extra.connection(spaceId,clone(entry));}
+ async copyAgentConnection(spaceId:string,options?:{allowTaskCreation?:boolean}){const entry=[...this.runs.values()].find(e=>e.run.spaceId===spaceId&&e.run.state==='active');if(!entry)throw new AgentBrowserError('user_run_grant_required');return this.extra.connection(spaceId,clone(entry),options?.allowTaskCreation===true);}
  private authorize(runId:string,capability:string){
   this.assertWritable();const entry=this.runs.get(runId);if(!entry||entry.capability!==capability)throw new AgentBrowserError('capability_invalid');
   const {run}=entry,s=this.space(run.spaceId),lease=s.control.lease;
@@ -205,7 +214,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  async stopRun(runId:string,capability:string){const{run}=this.authorize(runId,capability);await this.pause(run.spaceId);}
  async heartbeat(runId:string,capability:string){const {run,lease,runtime,s}=this.authorize(runId,capability);const expiresAt=this.now()+120_000;await runtime.setControl({...lease,expiresAt},lease.epoch);this.authorize(runId,capability);run.expiresAt=expiresAt;s.control.lease={...lease,expiresAt};return expiresAt;}
  private human(request:HumanPageRequest){const s=this.space(request.spaceId),runtime=this.runtime(s),lease=s.control.lease;this.page(s,request.pageId);
-  if(s.control.mode!=='human'||!lease||lease.leaseId!==request.leaseId||lease.viewerId!==request.viewerId||lease.epoch!==request.epoch||lease.runtimeId!==runtime.id||!this.frames.has(request.viewerId,s.id))throw new AgentBrowserError('human_lease_expired');return{s,runtime,lease};}
+  if(s.control.mode!=='human'||!lease||lease.expiresAt<=this.now()||lease.leaseId!==request.leaseId||lease.viewerId!==request.viewerId||lease.epoch!==request.epoch||lease.runtimeId!==runtime.id||!this.frames.has(request.viewerId,s.id))throw new AgentBrowserError('human_lease_expired');return{s,runtime,lease};}
  subscribeFrames(scope:{spaceId:string;pageId:string;viewerId:string},receive:(frame:BrowserFrame)=>void):FrameSubscription{this.page(this.space(scope.spaceId),scope.pageId);return this.frames.subscribe(scope,receive);}
  renderViewer(scope:{spaceId:string;pageId:string}){return this.extra.renderViewer(scope);}
  private humanScope(request:HumanPageRequest):BrowserFileScope{return{spaceId:request.spaceId,execution:{kind:'human',viewerId:request.viewerId,epoch:request.epoch}};}
@@ -242,7 +251,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  async readSelection(request:HumanPageRequest){const {runtime,lease,s}=this.human(request),documentId=this.page(s,request.pageId).documentId;const result=await runtime.execute(request.pageId,{kind:'selection'},lease);this.human(request);if(this.page(s,request.pageId).documentId!==documentId)throw new AgentBrowserError('observation_stale');if(!result||typeof result!=='object'||Array.isArray(result)||typeof result.text!=='string'||result.text.length>65_536)throw new AgentBrowserError('invalid_selection');return{text:result.text,truncated:result.truncated===true};}
  async humanInput(request:HumanPageRequest&{frameId:string;inputSequence:number;input:HumanInput}){
   this.assertWritable();const {s,runtime,lease}=this.human(request),page=this.page(s,request.pageId),frame=this.frames.frame(request.viewerId,request.frameId);
-  if(!frame||frame.pageId!==page.id||frame.runtimeId!==runtime.id||frame.documentId!==page.documentId||frame.epoch!==lease.epoch||frame.viewportVersion!==page.viewportVersion||this.now()-frame.capturedAt>3000)throw new AgentBrowserError('frame_stale');
+  if(!frame||frame.pageId!==page.id||frame.runtimeId!==runtime.id||frame.documentId!==page.documentId||frame.epoch!==lease.epoch||frame.viewportVersion!==page.viewportVersion||frame.inputSequence<(this.inputSequences.get(lease.leaseId)??0)||this.now()-frame.capturedAt>3000)throw new AgentBrowserError('frame_stale');
   if(!Number.isSafeInteger(request.inputSequence)||request.inputSequence<=(this.inputSequences.get(lease.leaseId)??0))throw new AgentBrowserError('input_sequence_stale');
   this.inputSequences.set(lease.leaseId,request.inputSequence);
   await this.queue(this.actions,s.id,async()=>{const current=this.human(request);if(this.page(s,request.pageId).documentId!==frame.documentId||!this.frames.frame(request.viewerId,request.frameId))throw new AgentBrowserError('frame_stale');await runtime.execute(page.id,{kind:'input',input:request.input,inputSequence:request.inputSequence},current.lease);});
@@ -289,12 +298,13 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   try{await this.persist();}catch(error){failure=error;}
   try{await this.runtimes.get(id)?.stop();await this.starts.get(id)?.catch(()=>undefined);await this.runtimes.get(id)?.stop();await this.factory.reclaim(id,s.runtimeId);this.runtimes.delete(id);this.unlisten.get(id)?.();this.unlisten.delete(id);s.status='stopped';delete s.runtimeId;s.control={mode:'paused',epoch:s.control.epoch};s.pages=s.pages.map(p=>({...p,status:'pending',documentId:''}));}
   catch(error){s.status='quarantined';s.control={mode:'blocked',epoch:s.control.epoch};s.error=operationErrorCode(error);failure=error;}
-  this.frames.invalidate(id);this.store.setState({requests:this.getState().requests.filter(r=>r.spaceId!==id)});
+  this.frames.reset(id);this.store.setState({requests:this.getState().requests.filter(r=>r.spaceId!==id)});
   try{await this.persist();}catch(error){failure??=error;}this.notify();if(failure)throw failure;
  }
  private async cleanupSpace(s:BrowserSpace){await this.runtimes.get(s.id)?.stop();await this.factory.reclaim(s.id,s.runtimeId);this.runtimes.delete(s.id);this.unlisten.get(s.id)?.();this.unlisten.delete(s.id);await this.extra.files.removeSpace(s.id);await this.factory.removeProfile(s.id);this.spaces.delete(s.id);await this.persist();this.notify();}
  async removeSpace(id:string){this.assertWritable();const s=this.space(id);await this.stopSpace(id);s.status='cleanup_pending';await this.persist();this.notify();await this.cleanupSpace(s);}
- async retryPendingCleanup(){this.assertWritable();for(const s of [...this.spaces.values()]){if(s.status==='cleanup_pending')await this.cleanupSpace(s);else if(s.status==='quarantined')await this.stopSpace(s.id);}}
+ async retryCleanup(id:string){this.assertWritable();const s=this.space(id);if(s.status==='cleanup_pending')await this.cleanupSpace(s);else if(s.status==='quarantined')await this.stopSpace(id);}
+ async retryPendingCleanup(){this.assertWritable();try{await this.extra.retryCleanup?.();for(const s of [...this.spaces.values()]){if(s.status==='cleanup_pending')await this.cleanupSpace(s);else if(s.status==='quarantined')await this.stopSpace(s.id);}}finally{this.notify();}}
  private onRuntime(spaceId:string,event:RuntimeEvent){
   const s=this.spaces.get(spaceId);if(!s)return;
   const eventRuntime=event.kind==='frame'?event.frame.runtimeId:event.kind==='request'?event.request.runtimeId:event.runtimeId;
@@ -341,7 +351,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   else if(principal==='agent'&&s.control.mode==='agent'&&lease){const entry=this.runs.get(lease.controllerId);if(!entry)throw new AgentBrowserError('run_revoked');this.authorize(entry.run.id,entry.capability);scope=this.runScope(entry.run);}
   else throw new AgentBrowserError('file_authority_required');
   const result=await this.extra.files.chooseUpload(scope);
-  if(s.control.lease?.leaseId!==lease?.leaseId){if(result)await this.extra.files.removeFile(result.id);throw new AgentBrowserError('file_scope_expired');}
+  if(s.control.lease?.leaseId!==lease?.leaseId||!lease||lease.expiresAt<=this.now()){if(result)await this.extra.files.removeFile(result.id);throw new AgentBrowserError('file_scope_expired');}
   this.notify();return result;
  }
  async exportFile(fileId:string){this.assertWritable();for(const s of this.spaces.values())if(this.extra.files.listSpaceFiles(s.id).some(f=>f.id===fileId)){await this.extra.files.exportFile(s.id,fileId);return;}throw new AgentBrowserError('file_not_found');}

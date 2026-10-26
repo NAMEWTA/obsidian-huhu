@@ -36,11 +36,9 @@ export interface TerminalTabData extends TabBase {
 }
 export interface BrowserTabData extends TabBase {
 	kind: 'browser';
+	/** A presentation reference; the browser module owns the Space and Page lifecycle. */
+	spaceId: string;
 	pageId: string;
-	url: string;
-	faviconUrl?: string;
-	profileId: string;
-	zoom: number;
 }
 /** The pages the workspace can hold as stable tabs next to sessions and browser tabs. */
 export const PAGE_KINDS = ['board', 'usage'] as const;
