@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { BrowserWorkspaceService, type BrowserWorkspaceExtensions } from './workspace';
-import { AgentBrowserError, type BrowserPersistence, type BrowserRuntime, type BrowserRuntimeFactory, type ControlLease, type BrowserCommand, type RuntimeEvent, type RuntimePage, type BrowserObservation, type JsonValue, type RuntimeIdentityState, type BrowserSpace } from '../core/contracts';
+import { AgentBrowserError, type BrowserPersistence, type BrowserRuntime, type BrowserRuntimeFactory, type ControlLease, type BrowserCommand, type RuntimeEvent, type RuntimePage, type BrowserObservation, type JsonValue, type RuntimeIdentityState, type BrowserSpace, type BrowserFrame, type HumanInput } from '../core/contracts';
 import { BrowserFileError, sameFileScope, type BrowserFile, type BrowserFileScope } from '../core/files';
 
 class MemoryPersistence implements BrowserPersistence {
@@ -63,6 +63,13 @@ async function setup(storage = new MemoryPersistence()) {
 }
 async function task() { const context = await setup(), space = await context.workspace.createSpace({ kind: 'task', label: 'Task A' }); return { ...context, space, pageId: space.pages[0]!.id, native: context.latest() }; }
 function viewer(workspace: BrowserWorkspaceService, space: BrowserSpace, viewerId = 'viewer-A') { return workspace.subscribeFrames({ spaceId: space.id, pageId: space.pages[0]!.id, viewerId }, () => undefined); }
+async function humanFrame(context: Awaited<ReturnType<typeof task>>) {
+	const { workspace, space, native, pageId, state } = context, subscription = viewer(workspace, space);
+	const lease = await workspace.takeover({ spaceId: space.id, viewerId: 'viewer-A', windowId: 'window-A' }), page = state(space.id).pages.find((item) => item.id === pageId)!;
+	const frame: BrowserFrame = { spaceId: space.id, pageId, runtimeId: native.id, documentId: page.documentId, epoch: lease.epoch, viewportVersion: page.viewportVersion, frameId: 'frame-before-typing', width: 640, height: 480, cssWidth: 640, cssHeight: 480, mime: 'image/png', data: new Uint8Array(1), capturedAt: 1000, inputSequence: 0 };
+	native.emit({ kind: 'frame', frame }); subscription.ack(frame.frameId);
+	return { frame, request: { spaceId: space.id, pageId, viewerId: 'viewer-A', leaseId: lease.leaseId, epoch: lease.epoch, frameId: frame.frameId } };
+}
 
 describe('Browser workspace authority and lifecycle', () => {
 	it('Personal Space cannot receive an Agent Run, and watching a Task never takes control', async () => {
@@ -121,6 +128,89 @@ describe('Browser workspace authority and lifecycle', () => {
 		const { workspace, space, pageId, extra, advance } = await task(); viewer(workspace, space); const lease = await workspace.takeover({ spaceId: space.id, viewerId: 'viewer-A', windowId: 'window-A' }); advance(120001);
 		const request = { spaceId: space.id, pageId, viewerId: 'viewer-A', leaseId: lease.leaseId, epoch: lease.epoch };
 		await expect(workspace.saveIdentity({ ...request, label: 'Old grant', persist: true })).rejects.toMatchObject({ code: 'human_lease_expired' }); await expect(workspace.pageAction({ ...request, command: { kind: 'text' } })).rejects.toMatchObject({ code: 'human_lease_expired' }); expect(extra.identities.save).not.toHaveBeenCalled();
+	});
+	it.each(['dialog', 'chooser'] as const)('a %s response bypasses the click waiting for that response while still rejecting an old revision', async (kind) => {
+		const context = await task(), { workspace, native, pageId, space } = context, { request } = await humanFrame(context), entered = gate(), replied = gate(), order: string[] = [];
+		native.execute.mockImplementation(async (_pageId, command) => {
+			order.push(command.kind);
+			if (command.kind === 'click') {
+				native.emit({ kind: 'request', request: { id: 'request-blocking-click', spaceId: space.id, pageId, runtimeId: native.id, documentId: native.pages.get(pageId)!.documentId, epoch: request.epoch, revision: 2, kind: kind === 'dialog' ? 'dialog' : 'file-chooser', message: 'Explicit response needed', expiresAt: 10000, status: 'pending' } });
+				entered.resolve(); await replied.promise; order.push('click-finished');
+			} else if (command.kind === kind) replied.resolve();
+			return { ok: true };
+		});
+		const click = workspace.pageAction({ ...request, command: { kind: 'click', observationId: 'observation', ref: 'open-request' } }); await entered.promise;
+		const response: BrowserCommand = kind === 'dialog' ? { kind, requestId: 'request-blocking-click', revision: 2, accept: true, text: 'confirmed' } : { kind, requestId: 'request-blocking-click', revision: 2, fileIds: [] };
+		await expect(workspace.pageAction({ ...request, command: { ...response, revision: 1 } })).rejects.toMatchObject({ code: 'request_expired' });
+		expect(native.execute).toHaveBeenCalledTimes(1);
+		await expect(workspace.pageAction({ ...request, command: response })).resolves.toEqual({ ok: true });
+		await expect(click).resolves.toEqual({ ok: true });
+		expect(order).toEqual(['click', kind, 'click-finished']);
+	});
+	it('human stop bypasses a long page wait without allowing a stale human lease', async () => {
+		const context = await task(), { workspace, native } = context, { request } = await humanFrame(context), entered = gate(), stopped = gate(), order: string[] = [];
+		native.execute.mockImplementation(async (_pageId, command) => { order.push(command.kind); if (command.kind === 'wait') { entered.resolve(); await stopped.promise; } else if (command.kind === 'stop') stopped.resolve(); return { ok: true }; });
+		const waiting = workspace.pageAction({ ...request, command: { kind: 'wait', condition: { kind: 'text', text: 'ready' }, timeoutMs: 15000 } }); await entered.promise;
+		await expect(workspace.pageAction({ ...request, leaseId: 'old-lease', command: { kind: 'stop' } })).rejects.toMatchObject({ code: 'human_lease_expired' });
+		expect(native.execute).toHaveBeenCalledTimes(1);
+		await expect(workspace.pageAction({ ...request, command: { kind: 'stop' } })).resolves.toEqual({ ok: true });
+		await expect(waiting).resolves.toEqual({ ok: true }); expect(order).toEqual(['wait', 'stop']);
+	});
+	it('an Agent prepared stop bypasses its long wait and retains capability and operation scope checks', async () => {
+		const { workspace, native, space, pageId } = await task(), run = await workspace.resumeAgent(space.id), entered = gate(), stopped = gate(), order: string[] = [];
+		const waitCommand: BrowserCommand = { kind: 'wait', condition: { kind: 'load' }, timeoutMs: 15000 }, stopCommand: BrowserCommand = { kind: 'stop' };
+		const waitTicket = await workspace.prepare(run.run.id, run.capability, pageId, 'wait-before-stop', waitCommand), stopTicket = await workspace.prepare(run.run.id, run.capability, pageId, 'stop-long-wait', stopCommand);
+		const otherSpace = await workspace.createSpace({ kind: 'task', label: 'Other task' }), otherRun = await workspace.resumeAgent(otherSpace.id);
+		native.execute.mockImplementation(async (_pageId, command) => { order.push(command.kind); if (command.kind === 'wait') { entered.resolve(); await stopped.promise; } else if (command.kind === 'stop') stopped.resolve(); return { ok: true }; });
+		const waiting = workspace.execute(run.run.id, run.capability, waitTicket.id, waitCommand); await entered.promise;
+		await expect(workspace.execute(run.run.id, 'wrong-capability', stopTicket.id, stopCommand)).rejects.toMatchObject({ code: 'capability_invalid' });
+		await expect(workspace.execute(otherRun.run.id, otherRun.capability, stopTicket.id, stopCommand)).rejects.toMatchObject({ code: 'operation_not_found' });
+		expect(native.execute).toHaveBeenCalledTimes(1);
+		expect(await workspace.execute(run.run.id, run.capability, stopTicket.id, stopCommand)).toMatchObject({ id: stopTicket.id, state: 'completed' });
+		expect(await waiting).toMatchObject({ id: waitTicket.id, state: 'completed' }); expect(order).toEqual(['wait', 'stop']);
+	});
+	it('health provides a current Run cursor for projection recovery and page events reject another runtime', async () => {
+		const { workspace, native, space, pageId } = await task(), run = await workspace.resumeAgent(space.id);
+		const before = workspace.health(run.run.id, run.capability); expect(before).toMatchObject({ runtimeId: native.id, eventCursor: 0 });
+		const page = { ...native.pages.get(pageId)!, title: 'Current title' };
+		native.emit({ kind: 'page', runtimeId: 'stale-runtime', page: { ...page, title: 'Old title' } });
+		expect(workspace.health(run.run.id, run.capability).eventCursor).toBe(0);
+		native.emit({ kind: 'page', runtimeId: native.id, page });
+		expect(workspace.pageList(run.run.id, run.capability)[0]?.title).toBe('Current title');
+		const events = workspace.events(run.run.id, run.capability, before.eventCursor);
+		expect(events).toHaveLength(1); expect(events[0]).toMatchObject({ sequence: 1, runtimeId: native.id, kind: 'page', pageId });
+		expect(events[0]).not.toHaveProperty('title'); expect(events[0]).not.toHaveProperty('url');
+		native.emit({ kind: 'page-closed', runtimeId: native.id, pageId });
+		expect(workspace.events(run.run.id, run.capability, 1)).toMatchObject([{ sequence: 2, runtimeId: native.id, kind: 'page-closed', pageId }]);
+		expect(workspace.health(run.run.id, run.capability).eventCursor).toBe(2);
+		await workspace.pause(space.id); expect(() => workspace.health(run.run.id, run.capability)).toThrowError('run_revoked'); expect(() => workspace.events(run.run.id, run.capability, 2)).toThrowError('run_revoked');
+	});
+	it.each([
+		{ kind: 'keyboard', inputs: [{ kind: 'key', key: 'a' }, { kind: 'key', key: 'b' }] },
+		{ kind: 'committed text', inputs: [{ kind: 'text', text: '中' }, { kind: 'text', text: '文' }] },
+	] satisfies Array<{ kind: string; inputs: [HumanInput, HumanInput] }>)('serializes consecutive $kind inputs from one valid frame without dropping the second input', async ({ inputs }) => {
+		const context = await task(), { workspace, native, advance } = context, { request } = await humanFrame(context), entered = gate(), blocked = gate();
+		native.execute.mockImplementationOnce(async () => { entered.resolve(); await blocked.promise; return { ok: true }; });
+		const first = workspace.humanInput({ ...request, inputSequence: 1, input: inputs[0] }); await entered.promise;
+		const second = workspace.humanInput({ ...request, inputSequence: 2, input: inputs[1] }), settled = Promise.allSettled([first, second]);
+		await Promise.resolve(); expect(native.execute).toHaveBeenCalledTimes(1); blocked.resolve();
+		expect(await settled).toEqual([{ status: 'fulfilled', value: undefined }, { status: 'fulfilled', value: undefined }]);
+		expect(native.execute.mock.calls.map(([, command]) => command)).toEqual([{ kind: 'input', input: inputs[0], inputSequence: 1 }, { kind: 'input', input: inputs[1], inputSequence: 2 }]);
+		await expect(workspace.humanInput({ ...request, inputSequence: 2, input: inputs[1] })).rejects.toMatchObject({ code: 'input_sequence_stale' });
+		await expect(workspace.humanInput({ ...request, inputSequence: 3, input: { kind: 'click', x: 20, y: 30 } })).rejects.toMatchObject({ code: 'frame_stale' });
+		advance(3001); await expect(workspace.humanInput({ ...request, inputSequence: 3, input: inputs[1] })).rejects.toMatchObject({ code: 'frame_stale' });
+		expect(native.execute).toHaveBeenCalledTimes(2);
+	});
+	it('a keyboard input queued from a valid frame is rejected when its document changes before dispatch', async () => {
+		const context = await task(), { workspace, native, pageId } = context, { request } = await humanFrame(context), entered = gate(), blocked = gate();
+		native.execute.mockImplementationOnce(async () => { entered.resolve(); await blocked.promise; return { ok: true }; });
+		const first = workspace.humanInput({ ...request, inputSequence: 1, input: { kind: 'key', key: 'a' } }); await entered.promise;
+		let secondFinished = false;
+		const second = workspace.humanInput({ ...request, inputSequence: 2, input: { kind: 'key', key: 'b' } }).finally(() => { secondFinished = true; }), settled = Promise.allSettled([first, second]);
+		await Promise.resolve(); await Promise.resolve(); expect(secondFinished).toBe(false); expect(native.execute).toHaveBeenCalledTimes(1);
+		native.emit({ kind: 'page', runtimeId: native.id, page: { ...native.pages.get(pageId)!, documentId: 'replacement-document', url: 'https://example.com/next' } });
+		blocked.resolve(); const results = await settled; expect(results[1]).toMatchObject({ status: 'rejected', reason: { code: 'frame_stale' } });
+		expect(native.execute).toHaveBeenCalledTimes(1);
 	});
 	it('native page-closed events during stop preserve desired Page IDs for a new runtime and restart', async () => {
 		const { workspace, space, pageId, state, storage } = await task(); const second = await workspace.openPage({ spaceId: space.id, url: 'https://example.com' });

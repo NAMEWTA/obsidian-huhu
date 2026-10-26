@@ -195,14 +195,21 @@ it('copies a scoped Agent connection only after explicit click, with task creati
 	expect(document.body.textContent).not.toContain('private-connection');
 });
 
-it('resolves address input and leaves revocation usable while page navigation is pending', async () => {
+it('resolves address input and keeps stop and revocation usable while page navigation is pending', async () => {
 	const f = workspaceFixture();
 	let finish!: () => void;
+	let finishStop!: () => void;
 	vi.spyOn(f.api, 'resolveInput').mockReturnValue('https://example.org/');
 	vi.mocked(f.api.navigate).mockImplementation(
 		() =>
 			new Promise<void>((resolve) => {
 				finish = resolve;
+			}),
+	);
+	vi.mocked(f.api.pageAction).mockImplementation(
+		() =>
+			new Promise((resolve) => {
+				finishStop = () => resolve(null);
 			}),
 	);
 	render(
@@ -216,9 +223,22 @@ it('resolves address input and leaves revocation usable while page navigation is
 	fireEvent.submit(address.closest('form')!);
 	expect(f.api.resolveInput).toHaveBeenCalledWith('example.org');
 	expect(f.api.navigate).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://example.org/' }));
+	const lease = f.api.getState().spaces[0]!.control.lease;
+	const stop = screen.getByRole('button', { name: t('browser.v2.stopLoading') }) as HTMLButtonElement;
+	expect(stop.disabled).toBe(false);
+	fireEvent.click(stop);
+	await waitFor(() =>
+		expect(f.api.pageAction).toHaveBeenCalledWith(expect.objectContaining({ command: { kind: 'stop' } })),
+	);
+	expect(f.api.pause).not.toHaveBeenCalled();
+	expect(f.api.releaseViewer).not.toHaveBeenCalled();
+	expect(f.api.getState().spaces[0]!.control.lease).toEqual(lease);
 	const release = screen.getByRole('button', { name: t('browser.v2.release') }) as HTMLButtonElement;
-	expect(release.disabled).toBe(false);
+	await waitFor(() => expect(release.disabled).toBe(false));
 	fireEvent.click(release);
 	await waitFor(() => expect(f.api.releaseViewer).toHaveBeenCalledWith('space', expect.any(String)));
-	await act(async () => finish());
+	await act(async () => {
+		finishStop();
+		finish();
+	});
 });

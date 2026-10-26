@@ -425,16 +425,8 @@
     inset-inline: calc(var(--spacing) * 0);
   }
 
-.inset-x-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    inset-inline: calc(var(--spacing) * 3);
-  }
-
 .inset-y-0:is(.huhu-ui, .huhu-ui *):not(#\#) {
     inset-block: calc(var(--spacing) * 0);
-  }
-
-.-top-1:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    top: calc(var(--spacing) * -1);
   }
 
 .\[top\:0\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -707,10 +699,6 @@
 
 .z-10:is(.huhu-ui, .huhu-ui *):not(#\#) {
     z-index: 10;
-  }
-
-.z-20:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    z-index: 20;
   }
 
 .z-\[var\(--layer-content\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -1391,10 +1379,6 @@
     height: 100%;
   }
 
-.h-0\.5:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    height: calc(var(--spacing) * .5);
-  }
-
 .h-1:is(.huhu-ui, .huhu-ui *):not(#\#) {
     height: calc(var(--spacing) * 1);
   }
@@ -1595,10 +1579,6 @@
     height: 88vh;
   }
 
-.h-\[95vh\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    height: 95vh;
-  }
-
 .h-\[100\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     height: 100%;
   }
@@ -1707,8 +1687,8 @@
     max-height: calc(var(--spacing) * 24);
   }
 
-.max-h-32:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    max-height: calc(var(--spacing) * 32);
+.max-h-28:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    max-height: calc(var(--spacing) * 28);
   }
 
 .max-h-36:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -1767,10 +1747,6 @@
     max-height: 60%;
   }
 
-.max-h-\[60vh\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    max-height: 60vh;
-  }
-
 .max-h-\[70vh\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-height: 70vh;
   }
@@ -1781,10 +1757,6 @@
 
 .max-h-\[75\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-height: 75%;
-  }
-
-.max-h-\[75vh\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    max-height: 75vh;
   }
 
 .max-h-\[78vh\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -2119,10 +2091,6 @@
     width: calc(var(--spacing) * 80);
   }
 
-.w-96:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    width: calc(var(--spacing) * 96);
-  }
-
 .w-\[1\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     width: 1%;
   }
@@ -2279,10 +2247,6 @@
     width: 94%;
   }
 
-.w-\[98vw\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    width: 98vw;
-  }
-
 .w-\[100\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     width: 100%;
   }
@@ -2435,10 +2399,6 @@
     max-width: calc(var(--spacing) * 60);
   }
 
-.max-w-64:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    max-width: calc(var(--spacing) * 64);
-  }
-
 .max-w-72:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-width: calc(var(--spacing) * 72);
   }
@@ -2489,10 +2449,6 @@
 
 .max-w-\[90vw\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-width: 90vw;
-  }
-
-.max-w-\[98vw\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    max-width: 98vw;
   }
 
 .max-w-\[100\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -2673,10 +2629,6 @@
 
 .min-w-6:is(.huhu-ui, .huhu-ui *):not(#\#) {
     min-width: calc(var(--spacing) * 6);
-  }
-
-.min-w-7:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    min-width: calc(var(--spacing) * 7);
   }
 
 .min-w-8:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -4321,7 +4273,7 @@
     }
   }
 
-.border-ring:is(.huhu-ui, .huhu-ui *):not(#\#), .border-ring\/30:is(.huhu-ui, .huhu-ui *):not(#\#) {
+.border-ring\/30:is(.huhu-ui, .huhu-ui *):not(#\#) {
     border-color: var(--ring);
   }
 
@@ -4533,16 +4485,6 @@
     }
   }
 
-.bg-background\/95:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    background-color: var(--background);
-  }
-
-@supports (color: color-mix(in lab, red, red)) {
-    .bg-background\/95:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      background-color: color-mix(in oklab, var(--background) 95%, transparent);
-    }
-  }
-
 .bg-black\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
     background-color: #00000080;
   }
@@ -4600,16 +4542,6 @@
 @supports (color: color-mix(in lab, red, red)) {
     .bg-card\/60:is(.huhu-ui, .huhu-ui *):not(#\#) {
       background-color: color-mix(in oklab, var(--card) 60%, transparent);
-    }
-  }
-
-.bg-card\/95:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    background-color: var(--card);
-  }
-
-@supports (color: color-mix(in lab, red, red)) {
-    .bg-card\/95:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      background-color: color-mix(in oklab, var(--card) 95%, transparent);
     }
   }
 
@@ -6962,10 +6894,6 @@
     color: var(--status-warning);
   }
 
-.text-transparent:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    color: #0000;
-  }
-
 .\[text-transform\:none\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     text-transform: none;
   }
@@ -7176,11 +7104,6 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
-.shadow-md:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-
 .shadow-none:is(.huhu-ui, .huhu-ui *):not(#\#) {
     --tw-shadow: 0 0 #0000;
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -7350,14 +7273,12 @@
     filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
   }
 
-.filter:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
+.\!filter:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, ) !important;
   }
 
-.backdrop-blur:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    --tw-backdrop-blur: blur(8px);
-    -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
-    backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+.filter:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
   }
 
 .backdrop-blur-\[7px\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -9122,10 +9043,6 @@
     }
   }
 
-.focus-within\:bg-background:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
-    background-color: var(--background);
-  }
-
 .focus-within\:opacity-100:focus-within:is(.huhu-ui, .huhu-ui *):not(#\#) {
     opacity: 1;
   }
@@ -10563,10 +10480,6 @@
 
     .sm\:max-w-\[62rem\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
       max-width: 62rem;
-    }
-
-    .sm\:max-w-\[98vw\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
-      max-width: 98vw;
     }
 
     .sm\:max-w-\[280px\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -22180,27 +22093,30 @@ body:where(.huhu-iconic-enabled)[data-huhu-iconic-theme="Ukiyo"] .workspace-leaf
 	font-family: var(--font-interface);
 	font-size: var(--font-ui-smaller);
 }
-/* Retained browser guests stay in one parent across workspace layout changes. */
-.huhu-browser-retained-root {
-	display: contents;
+.huhu-ui .huhu-browser-workspace {
+	container-type: inline-size;
 }
-.huhu-browser-retained-host {
-	position: fixed;
-	top: 0;
-	left: -10000px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	pointer-events: none;
+.huhu-ui .huhu-browser-viewer canvas {
+	display: block;
+	touch-action: none;
 }
-.huhu-browser-retained-host .huhu-browser-webview {
-	display: flex;
-	width: 100%;
-	height: 100%;
-}
-.huhu-browser-retained-host.is-visible {
-	left: var(--browser-left);
-	pointer-events: auto;
+@container (width < 600px) {
+	.huhu-ui .huhu-browser-workspace-body {
+		flex-direction: column;
+	}
+	.huhu-ui .huhu-browser-space-list {
+		display: flex;
+		width: 100%;
+		max-height: 100px;
+		gap: 4px;
+		border-right: 0;
+		border-bottom: 1px solid var(--border);
+	}
+	.huhu-ui .huhu-browser-space-list > button {
+		min-width: 160px;
+		max-width: 200px;
+		flex-shrink: 0;
+	}
 }
 /* Native workbench leaf boundary; internal layout is owned by React. */
 .workspace-leaf-content[data-type="huhu-workbench-view"] > .view-content { padding: 0; overflow: hidden; }

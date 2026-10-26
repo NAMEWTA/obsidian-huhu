@@ -4,7 +4,12 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
-	pluginAssets, terminalAssets, verifyPluginAssets, verifyTerminalAssets, verifyVersions, writeChecksums,
+	pluginAssets,
+	terminalAssets,
+	verifyPluginAssets,
+	verifyTerminalAssets,
+	verifyVersions,
+	writeChecksums,
 } from '../../scripts/verify-release-artifacts.mjs';
 
 const root = process.cwd();
@@ -17,7 +22,9 @@ const scratch = () => {
 	dirs.push(dir);
 	return dir;
 };
-afterEach(() => { for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
+afterEach(() => {
+	for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true });
+});
 
 /**
  * A copy of the version files and plugin files as they are at a release commit. A leftover unreleased section of the
@@ -26,8 +33,12 @@ afterEach(() => { for (const dir of dirs.splice(0)) rmSync(dir, { recursive: tru
  */
 function fakeRoot(changelog?: string) {
 	const dir = scratch();
-	for (const name of ['manifest.json', 'package.json', 'versions.json', 'LICENSE', 'NOTICE', ...pluginAssets]) copyFileSync(path.join(root, name), path.join(dir, name));
-	const current = readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8').replace(/^## (未发布|Unreleased)\s*$[\s\S]*?(?=^## )/m, '');
+	for (const name of ['manifest.json', 'package.json', 'versions.json', 'LICENSE', 'NOTICE', ...pluginAssets])
+		copyFileSync(path.join(root, name), path.join(dir, name));
+	const current = readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8').replace(
+		/^## (未发布|Unreleased)\s*$[\s\S]*?(?=^## )/m,
+		'',
+	);
 	writeFileSync(path.join(dir, 'CHANGELOG.md'), changelog ?? current);
 	return dir;
 }
@@ -44,7 +55,9 @@ describe('release versions', () => {
 
 	it('requires a changelog section for the tag and no unreleased section', () => {
 		expect(() => verifyVersions(fakeRoot('# Changes\n\n## 9.9.9\n'), version)).toThrow(/needs a "## /);
-		expect(() => verifyVersions(fakeRoot(`# Changes\n\n## 未发布\n\n## ${version}\n`), version)).toThrow(/unreleased/);
+		expect(() => verifyVersions(fakeRoot(`# Changes\n\n## 未发布\n\n## ${version}\n`), version)).toThrow(
+			/unreleased/,
+		);
 	});
 });
 
@@ -54,12 +67,16 @@ describe('release assets', () => {
 		const dir = scratch();
 		for (const name of pluginAssets) copyFileSync(path.join(root, name), path.join(dir, name));
 		expect(() => verifyPluginAssets(release, version, dir)).not.toThrow();
-		writeFileSync(path.join(dir, 'main.js'), readFileSync(path.join(root, 'main.js'), 'utf8') + '\nconsole.log(1);\n');
+		writeFileSync(
+			path.join(dir, 'main.js'),
+			readFileSync(path.join(root, 'main.js'), 'utf8') + '\nconsole.log(1);\n',
+		);
 		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/committed bundle/);
 	});
 
 	it('rejects omitted attribution even if another MIT or project-license mention remains', () => {
-		const release = fakeRoot(), dir = scratch();
+		const release = fakeRoot(),
+			dir = scratch();
 		for (const name of pluginAssets) copyFileSync(path.join(root, name), path.join(dir, name));
 		const main = readFileSync(path.join(dir, 'main.js'), 'utf8');
 		const notice = readFileSync(path.join(root, 'NOTICE'), 'utf8').replace(/\r\n/g, '\n').replaceAll('*/', '* /');
@@ -68,7 +85,8 @@ describe('release assets', () => {
 	});
 
 	it('requires the dedicated browser entry points and verifies their checksums', () => {
-		const release = fakeRoot(), dir = scratch();
+		const release = fakeRoot(),
+			dir = scratch();
 		for (const name of pluginAssets) copyFileSync(path.join(root, name), path.join(dir, name));
 		writeFileSync(path.join(dir, 'browser-worker.cjs'), 'tampered worker');
 		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/browser-worker.cjs checksum mismatch/);
@@ -92,6 +110,8 @@ describe('release assets', () => {
 		mkdirSync(path.join(dir, 'nested'));
 		expect(writeChecksums(dir)).toEqual(['a.txt', 'b.txt']);
 		expect(writeChecksums(dir)).toEqual(['a.txt', 'b.txt']);
-		expect(readFileSync(path.join(dir, 'SHA256SUMS.txt'), 'utf8')).toBe(`${sha256('a')}  a.txt\n${sha256('b')}  b.txt\n`);
+		expect(readFileSync(path.join(dir, 'SHA256SUMS.txt'), 'utf8')).toBe(
+			`${sha256('a')}  a.txt\n${sha256('b')}  b.txt\n`,
+		);
 	});
 });

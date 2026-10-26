@@ -90,6 +90,8 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		[error, setError] = useState('');
 	const [controlPending, setControlPending] = useState(false);
 	const controlBusy = useRef(false);
+	const [stopping, setStopping] = useState(false);
+	const stopBusy = useRef(false);
 	const [address, setAddress] = useState(page?.url ?? ''),
 		[addressEdited, setAddressEdited] = useState(false);
 	const [text, setText] = useState(''),
@@ -121,7 +123,7 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		},
 		[report],
 	);
-	// Revocation must remain available while a page action is waiting on a website.
+	// Control changes and stopping a load stay available while a page action is waiting on a website.
 	const changeControl = async (work: () => Promise<unknown>) => {
 		if (controlBusy.current) return;
 		controlBusy.current = true;
@@ -308,6 +310,20 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 	const pageAction = (command: BrowserCommand) => {
 		const scope = authority();
 		if (!scope) return;
+		if (command.kind === 'stop') {
+			if (stopBusy.current) return;
+			stopBusy.current = true;
+			setStopping(true);
+			setError('');
+			void api
+				.pageAction({ ...scope, command })
+				.catch(report)
+				.finally(() => {
+					stopBusy.current = false;
+					setStopping(false);
+				});
+			return;
+		}
 		if (command.kind === 'zoom' || command.kind === 'viewport') invalidateFrame.current?.();
 		void run(() => api.pageAction({ ...scope, command }));
 	};
@@ -333,13 +349,9 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 			request.runtimeId === space.runtimeId &&
 			request.documentId === page.documentId,
 	);
-	const disabled =
-		pending ||
-		controlPending ||
-		state.readOnly ||
-		!ownsControl ||
-		space.status !== 'ready' ||
-		page.status !== 'open';
+	const controlDisabled =
+		controlPending || state.readOnly || !ownsControl || space.status !== 'ready' || page.status !== 'open';
+	const disabled = pending || controlDisabled;
 	const actionKey = `${viewer.id}:${lease?.leaseId ?? ''}:${visible}`;
 	return (
 		<div className="huhu-browser-viewer flex h-full min-h-0 min-w-0 flex-col" data-page-id={pageId}>
@@ -519,7 +531,7 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 						variant="ghost"
 						title={t(`browser.v2.${label}`)}
 						aria-label={t(`browser.v2.${label}`)}
-						disabled={disabled}
+						disabled={kind === 'stop' ? controlDisabled || stopping : disabled}
 						onClick={() => pageAction({ kind })}
 					>
 						<Icon />

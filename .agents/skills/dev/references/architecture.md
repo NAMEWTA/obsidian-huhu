@@ -148,7 +148,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 终端辅助程序 | `.huhu/helpers/<device-id>/<platform-arch>/<version>/`，官方摘要与本机受保护回执 | agent |
 | 浏览器目录、操作记录与身份 | `.huhu/browser/<device-id>/v2/records/*.sealed`、`digest-key.sealed` 和 `identities/<版本 ID>.sealed` | browser |
 | 浏览器运行资料与下载暂存 | 同一 `v2/` 下的 `profiles/<Space ID>/`、`downloads/<Space ID>/`，各 Space 独立 | browser |
-| 浏览器受管文件 | 同一 `v2/` 下的 `files/data/<文件 ID>` 与 `files/metadata.sealed`；内容私有，元数据认证加密 | browser |
+| 浏览器受管文件 | 同一 `v2/` 下的 `files/data/<文件 ID>/<安全文件名>` 与 `files/metadata.sealed`；内容私有，元数据认证加密，上传保留文件名与扩展名 | browser |
 | Cookie 导入与清理任务 | 同一 `v2/` 下的 `import-staging/<UUID>/` 与 `cleanup/import-staging.json`；回收失败保留任务 | browser |
 | 浏览器运行包与本地连接 | 同一 `v2/` 下的 `runtime/`、`connections/<UUID>.json`；凭据不进入 Agent 标签状态 | browser |
 | 交付给智能体的网页截图 | `.huhu/browser-materials/activation-<UUID>/`，正常停用接收模块时清理 | agent |

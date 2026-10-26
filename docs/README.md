@@ -26,3 +26,4 @@ BUG、需求、优化、兼容、文档、咨询及商业授权通过[分类 Iss
 
 - [运行时、安装与平台门槛](browser-runtime.md)
 - [v2 协议、模块契约与恢复语义](browser-protocol.md)
+- [本轮实施、验收结果与剩余门槛](browser-verification.md)

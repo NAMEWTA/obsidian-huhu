@@ -99,10 +99,23 @@ node browser-cli.cjs schema
 | `batch` | Run scope、pageId、requestId、commands | 最多 32 步；逐步校验，失败返回已分配 ticket 和 failedIndex |
 | `file.list` | Run scope | 当前执行身份可见的 fileId 元数据，无任意路径 |
 | `download.list` | Run scope | 当前执行身份的下载状态 |
-| `events.poll` | Run scope、可选 afterSequence | 每 Run 最多 256 个脱敏事件；游标越界明确失败 |
-| `health` | Run scope | 当前 Run 的版本/epoch、页面、观察者、帧队列及请求数量 |
+| `events.poll` | Run scope、可选 afterSequence | 每 Run 最多 256 个脱敏事件；淘汰游标返回 resync_required，超前游标返回 invalid_event_cursor |
+| `health` | Run scope | 当前 Run 的 runtimeId/epoch、eventCursor、页面、观察者、帧队列及请求数量 |
 
 Run scope 是 `runId + capability`，CLI 默认从连接文件补充。操作 requestId 允许 1–96 个字母、数字、下划线、点、冒号和连字符；普通内部 ID 的协议边界为 160 字符。对象拒绝未知字段，不接受附加 raw CDP、任意 JavaScript、文件系统路径或 UI 控制方法。
+
+## 事件游标与投影恢复
+
+事件序号在当前 Run 内单调增加，`health.eventCursor` 是同步读取的最新序号；尚无事件时为 `0`。每个事件包含 `runtimeId`，当前发布的种类只有 `page` 和 `page-closed`，并且只进入与该运行时匹配的有效 Run。事件不含页面标题、URL、正文或凭证。文件、下载、请求和操作结果仍通过各自查询刷新，不应把当前事件流当作这些状态的完整变更日志。
+
+首次建立本地视图或收到 `resync_required` 时，按以下顺序恢复：
+
+1. 用当前 Run scope 调用 `health`，保存 `runtimeId` 和 `eventCursor`。
+2. 用同一 Run scope 读取 `page.list`、`file.list` 和 `download.list` 等所需投影。
+3. 从刚才保存的 `eventCursor` 调用 `events.poll`，按序处理返回事件。投影读取期间产生的页面事件会再次出现，客户端应幂等处理这些重复更新；不能改用投影读取完成后的新游标而跳过中间事件。
+4. 每次只把游标推进到已处理的最后一个事件序号；空响应保留原游标。若读取投影期间又超过 256 个事件，服务器会再次要求恢复，而不会静默丢失更新。
+
+`afterSequence` 必须是非负安全整数，且不得大于当前最新序号，否则返回 `invalid_event_cursor`。游标已落后于保留窗口时返回 `resync_required`；客户端重新执行上述读取流程。`run_revoked` 表示这一 Run 已失效，不能沿用旧游标或连接自行取得新授权，必须等待用户明确授权新 Run。这个顺序保证当前已发布的页面事件可被重放；其他投影仍需要显式查询更新。
 
 ## 观察与动作
 

@@ -1,11 +1,27 @@
 import assert from 'node:assert/strict';
 import { test } from 'vitest';
-import { serviceKey, type ModuleContext, type ModuleId, type ModuleInstance, type ModuleManifest } from '../contracts/module';
+import {
+	serviceKey,
+	type ModuleContext,
+	type ModuleId,
+	type ModuleInstance,
+	type ModuleManifest,
+} from '../contracts/module';
 import { ModuleRegistry, type RegistryHost } from './registry';
 
-type Behavior = { fail?: 'load' | 'activate' | 'dispose'; activation?: ModuleManifest['activation']; mobile?: boolean; service?: string; retain?: boolean };
+type Behavior = {
+	fail?: 'load' | 'activate' | 'dispose';
+	activation?: ModuleManifest['activation'];
+	mobile?: boolean;
+	service?: string;
+	retain?: boolean;
+};
 
-function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Record<ModuleId, boolean>> = {}, env = { desktop: true, mobile: false, phone: false }) {
+function setup(
+	behaviors: Partial<Record<ModuleId, Behavior>>,
+	flags: Partial<Record<ModuleId, boolean>> = {},
+	env = { desktop: true, mobile: false, phone: false },
+) {
 	const log: string[] = [];
 	const reports: string[] = [];
 	const created: Partial<Record<ModuleId, number>> = {};
@@ -49,7 +65,9 @@ function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Re
 		env,
 		enabled: (id) => state[id] ?? true,
 		createContext: (manifest) => ({ id: manifest.id }) as unknown as ModuleContext,
-		releaseContext: (context) => { released.push(context.id); },
+		releaseContext: (context) => {
+			released.push(context.id);
+		},
 		report: (id, phase, error) => reports.push(`${id}:${phase}:${(error as Error).message}`),
 	};
 	const registry = new ModuleRegistry(manifests, host);
@@ -57,7 +75,12 @@ function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Re
 }
 
 test('a module that throws is marked failed while every other module still activates', async () => {
-	const { registry, log, reports } = setup({ home: {}, agent: { fail: 'activate' }, icons: {}, browser: { fail: 'load' } });
+	const { registry, log, reports } = setup({
+		home: {},
+		agent: { fail: 'activate' },
+		icons: {},
+		browser: { fail: 'load' },
+	});
 	await registry.apply();
 	// The half-activated agent instance is disposed so it cannot leak resources.
 	assert.deepEqual(log, ['+home', '-agent:disabled', '+icons']);
@@ -82,7 +105,11 @@ test('modules enable in order and disable in reverse order; re-enabling creates 
 });
 
 test('modules unsupported on this platform never load', async () => {
-	const { registry, log } = setup({ home: {}, agent: { mobile: false } }, {}, { desktop: false, mobile: true, phone: true });
+	const { registry, log } = setup(
+		{ home: {}, agent: { mobile: false } },
+		{},
+		{ desktop: false, mobile: true, phone: true },
+	);
 	await registry.apply();
 	assert.deepEqual(log, ['+home']);
 	assert.equal(registry.state('agent'), 'unsupported');
@@ -141,7 +168,8 @@ test('retained cleanup failure withdraws capabilities and prevents a second owne
 	const { registry, created, released, flags } = setup(behaviors);
 	await registry.apply();
 	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));
-	behaviors.browser!.fail = 'dispose'; flags.browser = false;
+	behaviors.browser!.fail = 'dispose';
+	flags.browser = false;
 	await registry.apply();
 	assert.equal(registry.state('browser'), 'failed');
 	assert.equal(lease?.revoked.aborted, true);
@@ -158,7 +186,9 @@ test('retained cleanup failure withdraws capabilities and prevents a second owne
 });
 
 test('unload revokes a retained service immediately and retries the same cleanup owner', async () => {
-	const behaviors: Partial<Record<ModuleId, Behavior>> = { browser: { retain: true, service: 'workspace', fail: 'dispose' } };
+	const behaviors: Partial<Record<ModuleId, Behavior>> = {
+		browser: { retain: true, service: 'workspace', fail: 'dispose' },
+	};
 	const { registry, created, released } = setup(behaviors);
 	await registry.apply();
 	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));

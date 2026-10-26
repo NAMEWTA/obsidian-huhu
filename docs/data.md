@@ -51,10 +51,10 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 浏览器 Space 目录与操作记录 | `.huhu/browser/<device-id>/v2/records/*.sealed`，认证加密；摘要密钥在同根的 `digest-key.sealed` |
 | 浏览器身份种子 | `.huhu/browser/<device-id>/v2/identities/<版本 ID>.sealed`，不可变的认证密文；只在明确保存后持久化 |
 | Cookie 与网站运行数据 | `.huhu/browser/<device-id>/v2/profiles/<Space ID>/`，每个 Space 独立的 Chromium 用户目录；不等同于种子密文 |
-| 浏览器文件与下载 | 同一 `v2/` 下的 `files/data/<文件 ID>`、加密的 `files/metadata.sealed` 和 `downloads/<Space ID>/`；文件内容按敏感明文管理 |
+| 浏览器文件与下载 | 同一 `v2/` 下的 `files/data/<文件 ID>/<安全文件名>`、加密的 `files/metadata.sealed` 和 `downloads/<Space ID>/`；保留上传文件名及扩展名，文件内容按敏感明文管理 |
 | Cookie 导入与运行资料暂存 | `.huhu/browser/<device-id>/v2/import-staging/<UUID>/`；失败清理任务记录在 `cleanup/import-staging.json`，回收失败保留重试 |
 | 浏览器运行包与连接描述符 | 同一 `v2/` 下的 `runtime/` 和 `connections/<UUID>.json`；连接文件含短期访问凭据，仅向明确授权的本地客户端交付路径 |
-| 交给智能体的网页截图副本 | `.huhu/browser-materials/activation-<UUID>/<UUID>.png` 或 `.jpg`，由智能体模块管理，正常停用时清理 |
+| 交给智能体的网页截图副本 | `.huhu/browser-materials/` 下的 `activation-<UUID>/<UUID>.png` 或 `.jpg`，由智能体模块管理，正常停用时清理 |
 | 自动化预检环境 | `.huhu/automation/<device-id>/precheck-home/` |
 | 恢复草稿与看板冲突副本 | `.huhu/recovery/` |
 | 内容移动与引用更新账本 | `.huhu/content-moves/manifest.json` |

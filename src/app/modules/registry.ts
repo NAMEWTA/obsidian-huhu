@@ -75,7 +75,9 @@ export class ModuleRegistry {
 	readonly contributionAccess: ContributionAccess = {
 		collect: async <T>(point: ContributionPoint<T>, options?: { activate?: boolean }) => {
 			if (options?.activate) {
-				const owners = [...this.entries.values()].filter((entry) => entry.manifest.contributes?.some((item) => key(item) === key(point)));
+				const owners = [...this.entries.values()].filter((entry) =>
+					entry.manifest.contributes?.some((item) => key(item) === key(point)),
+				);
 				await Promise.all(owners.map((entry) => this.activate(entry.manifest.id)));
 			}
 			const values = this.contributions.get(key(point)) ?? new Map<ModuleId, unknown>();
@@ -164,10 +166,18 @@ export class ModuleRegistry {
 			if (entry.state === 'active') return true;
 			if (!this.host.enabled(id) || !this.supported(id) || this.disposed) return false;
 			if (entry.instance) {
-				try { await entry.instance.dispose('disabled'); }
-				catch (error) { entry.error = error; this.setState(entry, 'failed'); this.host.report(id, 'dispose', error); return false; }
+				try {
+					await entry.instance.dispose('disabled');
+				} catch (error) {
+					entry.error = error;
+					this.setState(entry, 'failed');
+					this.host.report(id, 'dispose', error);
+					return false;
+				}
 				if (entry.context) this.host.releaseContext(entry.context);
-				entry.instance = undefined; entry.context = undefined; entry.controller = undefined;
+				entry.instance = undefined;
+				entry.context = undefined;
+				entry.controller = undefined;
 			}
 			this.setState(entry, 'loading');
 			const controller = new AbortController();
@@ -182,7 +192,12 @@ export class ModuleRegistry {
 				try {
 					await instance?.dispose('disabled');
 				} catch {
-					if (instance?.retainOnDisposeFailure) { entry.instance = instance; entry.context = context; entry.controller = controller; controller.abort(); }
+					if (instance?.retainOnDisposeFailure) {
+						entry.instance = instance;
+						entry.context = context;
+						entry.controller = controller;
+						controller.abort();
+					}
 				}
 				if (!entry.instance) this.host.releaseContext(context);
 				this.setState(entry, 'failed');
@@ -222,7 +237,12 @@ export class ModuleRegistry {
 		for (const entry of [...this.entries.values()].reverse()) {
 			const id = entry.manifest.id;
 			if ((entry.state !== 'active' && entry.state !== 'failed') || !entry.instance) continue;
-			if (entry.instance.retainOnDisposeFailure) { entry.controller?.abort(); this.withdraw(id); void this.deactivate(id, 'unload'); continue; }
+			if (entry.instance.retainOnDisposeFailure) {
+				entry.controller?.abort();
+				this.withdraw(id);
+				void this.deactivate(id, 'unload');
+				continue;
+			}
 			entry.controller?.abort();
 			this.withdraw(id);
 			try {
@@ -244,7 +264,10 @@ export class ModuleRegistry {
 		const entry = this.entries.get(id);
 		if (!entry) return Promise.resolve();
 		return this.transition(entry, async () => {
-			if (entry.state === 'failed' && !entry.instance) { entry.error = undefined; return; }
+			if (entry.state === 'failed' && !entry.instance) {
+				entry.error = undefined;
+				return;
+			}
 			if (!entry.instance || (entry.state !== 'active' && entry.state !== 'failed')) return;
 			const { instance, context, controller } = entry;
 			this.setState(entry, 'disposing');
@@ -254,7 +277,11 @@ export class ModuleRegistry {
 				await instance.dispose(reason);
 			} catch (error) {
 				this.host.report(id, 'dispose', error);
-				if (instance.retainOnDisposeFailure) { entry.error = error; this.setState(entry, 'failed'); return; }
+				if (instance.retainOnDisposeFailure) {
+					entry.error = error;
+					this.setState(entry, 'failed');
+					return;
+				}
 			}
 			if (context) this.host.releaseContext(context);
 			entry.instance = undefined;
@@ -266,7 +293,10 @@ export class ModuleRegistry {
 
 	private transition<T>(entry: Entry, step: () => Promise<T>): Promise<T> {
 		const run = entry.tail.then(step);
-		entry.tail = run.then(() => undefined, () => undefined);
+		entry.tail = run.then(
+			() => undefined,
+			() => undefined,
+		);
 		return run;
 	}
 

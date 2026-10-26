@@ -9,5 +9,11 @@ export interface DetectedBrowser {
 }
 /** Snapshot errors are internal; public import responses map them to stable identity error codes. */
 export class CookieImportError extends Error {
- constructor(readonly code:'locked'|'unknown',message:string){super(message);this.name='CookieImportError';}
+	constructor(
+		readonly code: 'locked' | 'unknown',
+		message: string,
+	) {
+		super(message);
+		this.name = 'CookieImportError';
+	}
 }

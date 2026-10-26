@@ -6,8 +6,31 @@ import type { PageCreate } from './workbench-host';
 import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from './workbench';
 
 /** Feature modules shipped in HUHU. */
-export type ModuleId = 'home' | 'agent' | 'browser' | 'archives' | 'automations' | 'notifications' | 'icons' | 'comments' | 'navigator' | 'sync' | 'safe';
-export const MODULE_IDS: readonly ModuleId[] = ['home', 'agent', 'browser', 'archives', 'automations', 'notifications', 'icons', 'comments', 'navigator', 'sync', 'safe'];
+export type ModuleId =
+	| 'home'
+	| 'agent'
+	| 'browser'
+	| 'archives'
+	| 'automations'
+	| 'notifications'
+	| 'icons'
+	| 'comments'
+	| 'navigator'
+	| 'sync'
+	| 'safe';
+export const MODULE_IDS: readonly ModuleId[] = [
+	'home',
+	'agent',
+	'browser',
+	'archives',
+	'automations',
+	'notifications',
+	'icons',
+	'comments',
+	'navigator',
+	'sync',
+	'safe',
+];
 
 /**
  * When a module is created:
@@ -67,7 +90,10 @@ export interface ServiceAccess {
 }
 
 export interface ContributionAccess {
-	collect<T>(point: ContributionPoint<T>, options?: { activate?: boolean }): Promise<ReadonlyArray<{ module: ModuleId; value: T }>>;
+	collect<T>(
+		point: ContributionPoint<T>,
+		options?: { activate?: boolean },
+	): Promise<ReadonlyArray<{ module: ModuleId; value: T }>>;
 	watch(point: ContributionPoint<unknown>, listener: () => void): () => void;
 }
 

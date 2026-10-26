@@ -30,7 +30,8 @@ export function normalizeBrowserNavigationUrl(raw: string, search?: SearchEngine
 	const input = raw.trim();
 	if (!input || input === 'about:blank') return 'about:blank';
 	try {
-		if (WINDOWS_UNC_PATH_PATTERN.test(input) || input.startsWith('/') || WINDOWS_ABSOLUTE_PATH_PATTERN.test(input)) return null;
+		if (WINDOWS_UNC_PATH_PATTERN.test(input) || input.startsWith('/') || WINDOWS_ABSOLUTE_PATH_PATTERN.test(input))
+			return null;
 		let candidate = input;
 		if (LOCAL_ADDRESS_PATTERN.test(input)) candidate = `http://${input}`;
 		else if (/^[^\s/\\:@?#]+:\d+(?:[/?#].*)?$/.test(input)) candidate = `https://${input}`;
@@ -39,9 +40,7 @@ export function normalizeBrowserNavigationUrl(raw: string, search?: SearchEngine
 			candidate = `https://${input}`;
 		}
 		const url = new URL(candidate);
-		return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password
-			? url.toString()
-			: null;
+		return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password ? url.toString() : null;
 	} catch {
 		return null;
 	}

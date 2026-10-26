@@ -131,8 +131,9 @@ const operate = async (connection, pageId, command, requestId = randomUUID()) =>
 	return result.result ?? { state: 'transport-rejected', error: result.error?.code };
 };
 const click = async (selector, label, connection = host.connection) => {
+	await connection.send('Page.bringToFront');
 	const box = await connection.evaluate(
-		`(()=>{const node=${selector};if(!node)throw Error(${JSON.stringify(`Missing UI: ${label}`)});const b=node.getBoundingClientRect();return{x:b.x+b.width/2,y:b.y+b.height/2}})()`,
+		`(async()=>{const node=${selector};if(!node)throw Error(${JSON.stringify(`Missing UI: ${label}`)});node.scrollIntoView({block:'center',inline:'center'});await new Promise(resolve=>requestAnimationFrame(resolve));const b=node.getBoundingClientRect(),x=b.x+b.width/2,y=b.y+b.height/2;if(!node.contains(document.elementFromPoint(x,y)))throw Error(${JSON.stringify(`UI is obscured: ${label}`)});return{x,y}})()`,
 	);
 	for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased'])
 		await connection.send('Input.dispatchMouseEvent', {
@@ -440,7 +441,10 @@ try {
 	);
 	await run(`${p}.workbench.open({feature:'browser',resourceId:taskA.id,focusId:taskA.pages[0].id})`);
 	await until(`!!document.querySelector('.huhu-browser-viewer canvas')`, 'standalone viewer');
-	await until(`document.querySelector('.huhu-browser-viewer canvas').width>0`, 'canvas frame');
+	await until(
+		`(()=>{const canvas=document.querySelector('.huhu-browser-viewer canvas');return canvas?.getContext('2d').getImageData(0,0,1,1).data[3]===255})()`,
+		'decoded native canvas frame',
+	);
 	check(
 		'opening-viewer-does-not-take-agent-control',
 		await run(`api.getState().spaces.find(s=>s.id===taskA.id).control.mode==='agent'`),
@@ -496,6 +500,29 @@ try {
 	await delay(200);
 	snapshot = await humanSnapshot();
 	check('native-frame-click-and-chinese-text-reach-the-page', JSON.stringify(snapshot).includes('中文输入验收'));
+	await run(`document.querySelector('.huhu-browser-viewer canvas').focus();true`);
+	await Promise.all(
+		['x', 'y', 'z'].flatMap((key) => [
+			host.connection.send('Input.dispatchKeyEvent', {
+				type: 'keyDown',
+				key,
+				code: `Key${key.toUpperCase()}`,
+				windowsVirtualKeyCode: key.toUpperCase().charCodeAt(0),
+				text: key,
+			}),
+			host.connection.send('Input.dispatchKeyEvent', {
+				type: 'keyUp',
+				key,
+				code: `Key${key.toUpperCase()}`,
+				windowsVirtualKeyCode: key.toUpperCase().charCodeAt(0),
+			}),
+		]),
+	);
+	snapshot = await humanSnapshot();
+	check(
+		'rapid-canvas-keyboard-input-keeps-every-character',
+		snapshot.nodes.some((node) => node.name === 'Search text' && node.value === '中文输入验收xyz'),
+	);
 	await host.shot('browser-workspace-zh');
 	// A prompt is triggered through a fresh semantic ref. Capture the settled operation result on timeout.
 	snapshot = await humanSnapshot();
@@ -631,6 +658,12 @@ try {
 	check(
 		'popout-gets-its-own-viewer-and-window-lease',
 		popupLease.viewerId !== previousWindowLease.viewerId && popupLease.windowId !== previousWindowLease.windowId,
+	);
+	await until(
+		`(()=>{const canvas=document.querySelector('.huhu-browser-viewer canvas');return canvas?.getContext('2d').getImageData(0,0,1,1).data[3]===255})()`,
+		'decoded popout canvas frame',
+		30000,
+		popout,
 	);
 	const popupScreenshot = await popout.send('Page.captureScreenshot', { format: 'png' });
 	await fs.writeFile(path.join(host.evidence, 'browser-popout-zh.png'), Buffer.from(popupScreenshot.data, 'base64'));
