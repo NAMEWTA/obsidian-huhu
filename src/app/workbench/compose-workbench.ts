@@ -1,7 +1,14 @@
 import { Notice, Platform } from 'obsidian';
 import type { ModuleId } from '../contracts/module';
 import type { PageCreate } from '../contracts/workbench-host';
-import { FEATURE_MODULES, iconSettingsTarget, type PanelModel, type WorkbenchFeature, type StatusSegment, type WorkbenchTarget } from '../contracts/workbench';
+import {
+	FEATURE_MODULES,
+	iconSettingsTarget,
+	type PanelModel,
+	type WorkbenchFeature,
+	type StatusSegment,
+	type WorkbenchTarget,
+} from '../contracts/workbench';
 import { registerObsidianStatus } from './surfaces/obsidian-status';
 import { collectStatusSegments } from './status-segments';
 import { registerWorkbenchRibbon } from './surfaces/ribbon';
@@ -14,6 +21,7 @@ import { dashboardSaveStatuses } from './status-policy';
 import { focusLeafState } from './focus-state';
 import { NOTIFICATION_INBOX } from '../../modules/notifications/api';
 import { AGENT_WORKBENCH, AGENT_USAGE } from '../../modules/agent/api';
+import { BROWSER_WORKSPACE } from '../../modules/browser/api';
 import { HOME_WORKBENCH } from '../../modules/home/api';
 import { AUTOMATIONS } from '../../modules/automations/api';
 import { VERSIONING_WORKBENCH } from '../../modules/versioning/api';
@@ -28,11 +36,13 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	};
 	const ready = () => ({ enabled: true, supported: true, ready: true });
 	/** A page provided by a module; opening it activates the module if it is still idle or loading. */
-	const modulePage = (module: ModuleId, page: string): PageCreate => async (context, target, state, signal) => {
-		const load = (await plugin.activateModule(module))?.pages?.[page];
-		if (!load) throw new Error(t('workbench.notReady'));
-		return (await load())(context, target, state, signal);
-	};
+	const modulePage =
+		(module: ModuleId, page: string): PageCreate =>
+		async (context, target, state, signal) => {
+			const load = (await plugin.activateModule(module))?.pages?.[page];
+			if (!load) throw new Error(t('workbench.notReady'));
+			return (await load())(context, target, state, signal);
+		};
 	const home = () => plugin.services.peek(HOME_WORKBENCH);
 	// The HUHU files tree (and the default-icon table it uses) loads when the panel is first shown, not at startup.
 	let contentTree: typeof import('../content/content-tree') | undefined;
@@ -40,18 +50,37 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	const contentSidePanel = (selected?: string): PanelModel => {
 		if (contentTree) {
 			const { files, directories } = contentTree.huhuVaultSnapshot(plugin.app.vault);
-			const openFile = (path: string) => { void import('../content/new-note').then((loaded) => loaded.openInNativeTab(plugin.app, path)).catch(report); };
-			return { ...contentTree.contentPanel(files, directories, selected, plugin.managedContent, openFile), primary: { label: t('content.newNote'), icon: 'file-plus', run: () => {
-				void (async () => {
-					const loaded = await import('../content/new-note');
-					const created = await loaded.createHuhuNote(plugin.app, selected);
-					await loaded.openInNativeTab(plugin.app, created.path);
-				})().catch(report);
-			} } };
+			const openFile = (path: string) => {
+				void import('../content/new-note')
+					.then((loaded) => loaded.openInNativeTab(plugin.app, path))
+					.catch(report);
+			};
+			return {
+				...contentTree.contentPanel(files, directories, selected, plugin.managedContent, openFile),
+				primary: {
+					label: t('content.newNote'),
+					icon: 'file-plus',
+					run: () => {
+						void (async () => {
+							const loaded = await import('../content/new-note');
+							const created = await loaded.createHuhuNote(plugin.app, selected);
+							await loaded.openInNativeTab(plugin.app, created.path);
+						})().catch(report);
+					},
+				},
+			};
 		}
 		if (!contentTreeLoading) {
 			contentTreeLoading = true;
-			void import('../content/content-tree').then((loaded) => { contentTree = loaded; refresh(); }).catch((error: unknown) => { contentTreeLoading = false; report(error); });
+			void import('../content/content-tree')
+				.then((loaded) => {
+					contentTree = loaded;
+					refresh();
+				})
+				.catch((error: unknown) => {
+					contentTreeLoading = false;
+					report(error);
+				});
 		}
 		return { searchable: true, sections: [] };
 	};
@@ -60,7 +89,15 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		{
 			id: 'dashboard',
 			chrome: 'none',
-			statusSegments: () => dashboardSaveStatuses(home()?.saveStatuses() ?? []).map(row => ({ id: `dashboard-save:${row.id}`, icon: 'save-off', label: row.label, target: row.target, tone: 'error', order: 60 })),
+			statusSegments: () =>
+				dashboardSaveStatuses(home()?.saveStatuses() ?? []).map((row) => ({
+					id: `dashboard-save:${row.id}`,
+					icon: 'save-off',
+					label: row.label,
+					target: row.target,
+					tone: 'error',
+					order: 60,
+				})),
 			rail: { slot: 'top' },
 			navigation: { id: 'dashboard', labelKey: 'workbench.home', icon: 'home', target: { feature: 'dashboard' } },
 
@@ -74,26 +111,91 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			navigationContext: true,
 			statusSegments: agentSegments,
 			rail: { slot: 'top' },
-			navigation: { id: 'terminal', labelKey: 'workbench.agent', icon: 'bot', target: { feature: 'terminal' }, children: [
-				{ id: 'terminal-running', labelKey: 'workbench.running', icon: 'terminal-square', target: { feature: 'terminal', section: 'running' } },
-				{ id: 'terminal-history', labelKey: 'workbench.history', icon: 'history', target: { feature: 'terminal', section: 'history' } },
-				{ id: 'terminal-usage', labelKey: 'workbench.usage', icon: 'chart-no-axes-column', target: { feature: 'terminal', section: 'usage' } },
-			] },
+			navigation: {
+				id: 'terminal',
+				labelKey: 'workbench.agent',
+				icon: 'bot',
+				target: { feature: 'terminal' },
+				children: [
+					{
+						id: 'terminal-running',
+						labelKey: 'workbench.running',
+						icon: 'terminal-square',
+						target: { feature: 'terminal', section: 'running' },
+					},
+					{
+						id: 'terminal-history',
+						labelKey: 'workbench.history',
+						icon: 'history',
+						target: { feature: 'terminal', section: 'history' },
+					},
+					{
+						id: 'terminal-usage',
+						labelKey: 'workbench.usage',
+						icon: 'chart-no-axes-column',
+						target: { feature: 'terminal', section: 'usage' },
+					},
+				],
+			},
 			title: (target) => plugin.services.peek(AGENT_WORKBENCH)?.title(target),
-			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('agent'), supported: Platform.isDesktopApp, ready: !!plugin.services.peek(AGENT_WORKBENCH) }),
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('agent'),
+				supported: Platform.isDesktopApp,
+				ready: !!plugin.services.peek(AGENT_WORKBENCH),
+			}),
 			stateKeys: ['agentHistory', 'agentHistoryWidth'],
 			create: modulePage('agent', 'terminal'),
+		},
+		{
+			id: 'browser',
+			chrome: 'standard',
+			rail: { slot: 'top' },
+			navigation: { id: 'browser', labelKey: 'workbench.browser', icon: 'globe', target: { feature: 'browser' } },
+			title: (target) =>
+				plugin.services
+					.peek(BROWSER_WORKSPACE)
+					?.getState()
+					.spaces.find((space) => space.id === target.resourceId)?.label,
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('browser'),
+				supported: Platform.isDesktopApp,
+				ready: !!plugin.services.peek(BROWSER_WORKSPACE),
+			}),
+			stateKeys: ['spaceId', 'pageId'],
+			create: modulePage('browser', 'browser'),
 		},
 		{
 			id: 'automations',
 			chrome: 'none',
 			statusSegments: automationSegments,
 			rail: { slot: 'top' },
-			navigation: { id: 'automations', labelKey: 'workbench.automations', icon: 'workflow', target: { feature: 'automations' }, children: [
-				{ id: 'automations-tasks', labelKey: 'workbench.tasks', icon: 'list-checks', target: { feature: 'automations', section: 'tasks' } },
-				{ id: 'automations-runs', labelKey: 'workbench.runs', icon: 'history', target: { feature: 'automations', section: 'runs' } },
-			] },
-			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('automations'), ready: !!plugin.services.peek(AUTOMATIONS) }),
+			navigation: {
+				id: 'automations',
+				labelKey: 'workbench.automations',
+				icon: 'workflow',
+				target: { feature: 'automations' },
+				children: [
+					{
+						id: 'automations-tasks',
+						labelKey: 'workbench.tasks',
+						icon: 'list-checks',
+						target: { feature: 'automations', section: 'tasks' },
+					},
+					{
+						id: 'automations-runs',
+						labelKey: 'workbench.runs',
+						icon: 'history',
+						target: { feature: 'automations', section: 'runs' },
+					},
+				],
+			},
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('automations'),
+				ready: !!plugin.services.peek(AUTOMATIONS),
+			}),
 			stateKeys: ['selected', 'search', 'filter', 'sort'],
 			create: modulePage('automations', 'automations'),
 		},
@@ -102,11 +204,31 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			panel: ({ target }) => plugin.services.peek(ARCHIVES_WORKBENCH)?.panel(target),
 			title: (target) => plugin.services.peek(ARCHIVES_WORKBENCH)?.title(target),
 			rail: { slot: 'top' },
-			navigation: { id: 'contacts', labelKey: 'workbench.contacts', icon: 'contact-round', target: { feature: 'contacts' }, children: [
-				{ id: 'contacts-person', labelKey: 'workbench.people', icon: 'user', target: { feature: 'contacts', section: 'person' } },
-				{ id: 'contacts-company', labelKey: 'workbench.companies', icon: 'building-2', target: { feature: 'contacts', section: 'company' } },
-			] },
-			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('archives'), ready: plugin.moduleState('archives') === 'active' }),
+			navigation: {
+				id: 'contacts',
+				labelKey: 'workbench.contacts',
+				icon: 'contact-round',
+				target: { feature: 'contacts' },
+				children: [
+					{
+						id: 'contacts-person',
+						labelKey: 'workbench.people',
+						icon: 'user',
+						target: { feature: 'contacts', section: 'person' },
+					},
+					{
+						id: 'contacts-company',
+						labelKey: 'workbench.companies',
+						icon: 'building-2',
+						target: { feature: 'contacts', section: 'company' },
+					},
+				],
+			},
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('archives'),
+				ready: plugin.moduleState('archives') === 'active',
+			}),
 			stateKeys: ['query', 'page', 'selectedPath', 'selectedId', 'scroll', 'layout', 'anchors'],
 			create: modulePage('archives', 'archives'),
 		},
@@ -114,7 +236,11 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			id: 'safe',
 			rail: { slot: 'top' },
 			navigation: { id: 'safe', labelKey: 'workbench.safe', icon: 'vault', target: { feature: 'safe' } },
-			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('safe'), supported: Platform.isDesktopApp }),
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('safe'),
+				supported: Platform.isDesktopApp,
+			}),
 			stateKeys: [],
 			create: modulePage('safe', 'safe'),
 		},
@@ -144,37 +270,105 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			redirect: iconSettingsTarget,
 			availability: ready,
 			stateKeys: [],
-			create: async (context, target, state, signal) => (await import('./settings-page')).createSettingsPage(plugin)(context, iconSettingsTarget(target), state, signal),
+			create: async (context, target, state, signal) =>
+				(await import('./settings-page')).createSettingsPage(plugin)(
+					context,
+					iconSettingsTarget(target),
+					state,
+					signal,
+				),
 		},
 		{
 			id: 'notifications',
-			statusSegments: () => { const count = plugin.services.peek(NOTIFICATION_INBOX)?.unread ?? 0; return count ? [{ id: 'notifications', icon: 'bell', count, label: t('workbench.unreadCount', { count }), target: { feature: 'notifications' }, order: 90 }] : []; },
+			statusSegments: () => {
+				const count = plugin.services.peek(NOTIFICATION_INBOX)?.unread ?? 0;
+				return count
+					? [
+							{
+								id: 'notifications',
+								icon: 'bell',
+								count,
+								label: t('workbench.unreadCount', { count }),
+								target: { feature: 'notifications' },
+								order: 90,
+							},
+						]
+					: [];
+			},
 			rail: { slot: 'bottom', badge: () => plugin.services.peek(NOTIFICATION_INBOX)?.unread ?? 0 },
-			navigation: { id: 'notifications', labelKey: 'workbench.notifications', icon: 'bell', target: { feature: 'notifications' }, children: [
-				{ id: 'notifications-unread', labelKey: 'workbench.unread', icon: 'mail', target: { feature: 'notifications', section: 'unread' } },
-				{ id: 'notifications-all', labelKey: 'workbench.allNotifications', icon: 'inbox', target: { feature: 'notifications', section: 'all' } },
-			] },
-			panel: ({ target }) => ({ sections: [{ id: 'inbox', items: [
-				{ id: 'unread', label: t('workbench.unread'), icon: 'mail', badge: plugin.services.peek(NOTIFICATION_INBOX)?.unread, target: { feature: 'notifications', section: 'unread' }, active: target.section === 'unread' },
-				{ id: 'all', label: t('workbench.allNotifications'), icon: 'inbox', target: { feature: 'notifications', section: 'all' }, active: target.section !== 'unread' },
-			] }] }),
-			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('notifications'), ready: !!plugin.services.peek(NOTIFICATION_INBOX) }),
+			navigation: {
+				id: 'notifications',
+				labelKey: 'workbench.notifications',
+				icon: 'bell',
+				target: { feature: 'notifications' },
+				children: [
+					{
+						id: 'notifications-unread',
+						labelKey: 'workbench.unread',
+						icon: 'mail',
+						target: { feature: 'notifications', section: 'unread' },
+					},
+					{
+						id: 'notifications-all',
+						labelKey: 'workbench.allNotifications',
+						icon: 'inbox',
+						target: { feature: 'notifications', section: 'all' },
+					},
+				],
+			},
+			panel: ({ target }) => ({
+				sections: [
+					{
+						id: 'inbox',
+						items: [
+							{
+								id: 'unread',
+								label: t('workbench.unread'),
+								icon: 'mail',
+								badge: plugin.services.peek(NOTIFICATION_INBOX)?.unread,
+								target: { feature: 'notifications', section: 'unread' },
+								active: target.section === 'unread',
+							},
+							{
+								id: 'all',
+								label: t('workbench.allNotifications'),
+								icon: 'inbox',
+								target: { feature: 'notifications', section: 'all' },
+								active: target.section !== 'unread',
+							},
+						],
+					},
+				],
+			}),
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('notifications'),
+				ready: !!plugin.services.peek(NOTIFICATION_INBOX),
+			}),
 			stateKeys: [],
 			releaseWhenHidden: true,
 			create: modulePage('notifications', 'inbox'),
 		},
 		{
-			id: 'content', railParent: 'settings',
+			id: 'content',
+			railParent: 'settings',
 			navigation: { id: 'content', labelKey: 'content.title', icon: 'files', target: { feature: 'content' } },
 			panel: ({ target }) => contentSidePanel(target.resourceId),
-			title: target => target.resourceId?.split('/').at(-1) ?? t('content.title'),
-			availability: ready, stateKeys: [],
-			create: async (context, target, state, signal) => (await import('../content/page')).createContentPage(context, target, state, signal),
+			title: (target) => target.resourceId?.split('/').at(-1) ?? t('content.title'),
+			availability: ready,
+			stateKeys: [],
+			create: async (context, target, state, signal) =>
+				(await import('../content/page')).createContentPage(context, target, state, signal),
 		},
 		{
 			id: 'settings',
 			rail: { slot: 'bottom' },
-			navigation: { id: 'settings', labelKey: 'workbench.settings', icon: 'settings', target: { feature: 'settings' } },
+			navigation: {
+				id: 'settings',
+				labelKey: 'workbench.settings',
+				icon: 'settings',
+				target: { feature: 'settings' },
+			},
 			panel: ({ target }) => settingsPanel(plugin, target.section),
 			title: (target) => {
 				const category = settingsCategories(plugin).find((item) => item.id === (target.section ?? 'general'));
@@ -182,22 +376,54 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			},
 			availability: ready,
 			stateKeys: [],
-			create: async (context, target, state, signal) => (await import('./settings-page')).createSettingsPage(plugin)(context, target, state, signal),
+			create: async (context, target, state, signal) =>
+				(await import('./settings-page')).createSettingsPage(plugin)(context, target, state, signal),
 		},
 	];
 
 	function agentSegments(): StatusSegment[] {
 		const sessions = plugin.services.peek(AGENT_WORKBENCH)?.status() ?? [];
-		return (['waiting', 'running'] as const).flatMap(kind => {
-			const items = sessions.filter(session => session.status === kind);
-			return items.length ? [{ id: `agents-${kind}`, icon: kind === 'waiting' ? 'circle-help' : 'loader-circle', tone: kind === 'waiting' ? 'attention' as const : 'running' as const, count: items.length, label: t(kind === 'waiting' ? 'workbench.statusWaiting' : 'workbench.statusSessions', { count: items.length }), target: { feature: 'terminal' as const, section: 'running', resourceId: items[0]?.id }, order: kind === 'waiting' ? 10 : 20 }] : [];
+		return (['waiting', 'running'] as const).flatMap((kind) => {
+			const items = sessions.filter((session) => session.status === kind);
+			return items.length
+				? [
+						{
+							id: `agents-${kind}`,
+							icon: kind === 'waiting' ? 'circle-help' : 'loader-circle',
+							tone: kind === 'waiting' ? ('attention' as const) : ('running' as const),
+							count: items.length,
+							label: t(kind === 'waiting' ? 'workbench.statusWaiting' : 'workbench.statusSessions', {
+								count: items.length,
+							}),
+							target: { feature: 'terminal' as const, section: 'running', resourceId: items[0]?.id },
+							order: kind === 'waiting' ? 10 : 20,
+						},
+					]
+				: [];
 		});
 	}
 	function automationSegments(): StatusSegment[] {
-		const service = plugin.services.peek(AUTOMATIONS), runs = service?.activeRuns() ?? [];
+		const service = plugin.services.peek(AUTOMATIONS),
+			runs = service?.activeRuns() ?? [];
 		const rows: StatusSegment[] = [];
-		if (runs.length) rows.push({ id: 'automations', icon: 'timer', count: runs.length, label: t('workbench.statusRunning', { count: runs.length }), target: { feature: 'automations', section: 'runs' }, order: 30 });
-		if (service?.loadError) rows.push({ id: 'automation-load', icon: 'triangle-alert', tone: 'error', label: t('automation.failedLoad'), target: { feature: 'automations' }, order: 40 });
+		if (runs.length)
+			rows.push({
+				id: 'automations',
+				icon: 'timer',
+				count: runs.length,
+				label: t('workbench.statusRunning', { count: runs.length }),
+				target: { feature: 'automations', section: 'runs' },
+				order: 30,
+			});
+		if (service?.loadError)
+			rows.push({
+				id: 'automation-load',
+				icon: 'triangle-alert',
+				tone: 'error',
+				label: t('automation.failedLoad'),
+				target: { feature: 'automations' },
+				order: 40,
+			});
 		return rows;
 	}
 
@@ -207,9 +433,10 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		if (!win) return;
 		const workspace = plugin.app.workspace;
 		let anchor = workspace.getMostRecentLeaf(workspace.rootSplit);
-		if (anchor?.view.containerEl.win !== win) workspace.iterateAllLeaves((leaf) => {
-			if (leaf.view.containerEl.win === win) anchor = workspace.getMostRecentLeaf(leaf.getContainer());
-		});
+		if (anchor?.view.containerEl.win !== win)
+			workspace.iterateAllLeaves((leaf) => {
+				if (leaf.view.containerEl.win === win) anchor = workspace.getMostRecentLeaf(leaf.getContainer());
+			});
 		if (anchor?.view.containerEl.win === win) workspace.setActiveLeaf(anchor, { focus: false });
 	};
 
@@ -218,8 +445,19 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		const workspace = plugin.app.workspace;
 		const win = ownerWindow ?? workspace.getMostRecentLeaf()?.view.containerEl.win ?? workspace.containerEl.win;
 		const active = workspace.getMostRecentLeaf();
-		const candidates = workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE).filter((leaf) => leaf.view.containerEl.win === win && !(leaf.view instanceof WorkbenchView && leaf.view.focusMode));
-		const existing = candidates.includes(active!) ? active : candidates.sort((left, right) => (right.view instanceof WorkbenchView ? right.view.lastActivatedAt : 0) - (left.view instanceof WorkbenchView ? left.view.lastActivatedAt : 0))[0];
+		const candidates = workspace
+			.getLeavesOfType(WORKBENCH_VIEW_TYPE)
+			.filter(
+				(leaf) =>
+					leaf.view.containerEl.win === win && !(leaf.view instanceof WorkbenchView && leaf.view.focusMode),
+			);
+		const existing = candidates.includes(active!)
+			? active
+			: candidates.sort(
+					(left, right) =>
+						(right.view instanceof WorkbenchView ? right.view.lastActivatedAt : 0) -
+						(left.view instanceof WorkbenchView ? left.view.lastActivatedAt : 0),
+				)[0];
 		if (existing) await existing.loadIfDeferred();
 		if (existing?.view instanceof WorkbenchView) return existing.view;
 		let opening = pending.get(win);
@@ -240,7 +478,11 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		}
 	};
 
-	const open = async (target?: WorkbenchTarget, ownerWindow?: Window, initial?: Record<string, unknown>): Promise<void> => {
+	const open = async (
+		target?: WorkbenchTarget,
+		ownerWindow?: Window,
+		initial?: Record<string, unknown>,
+	): Promise<void> => {
 		const view = await mainLeafView(ownerWindow);
 		await plugin.app.workspace.revealLeaf(view.leaf);
 		if (target) await view.navigate(target, initial);
@@ -251,10 +493,25 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		contributions,
 		subscribe: (listener) => {
 			listeners.add(listener);
-			return () => { listeners.delete(listener); };
+			return () => {
+				listeners.delete(listener);
+			};
 		},
 		openSettings: (feature) => {
-			const product = { dashboard: 'dashboard', terminal: 'terminal', contacts: 'contacts', automations: 'automation', notifications: 'general', icons: 'iconic', versioning: 'versioning', 'revision-review': 'versioning', safe: 'general', content: 'general', settings: 'general' } as const;
+			const product = {
+				dashboard: 'dashboard',
+				terminal: 'terminal',
+				browser: 'browser',
+				contacts: 'contacts',
+				automations: 'automation',
+				notifications: 'general',
+				icons: 'iconic',
+				versioning: 'versioning',
+				'revision-review': 'versioning',
+				safe: 'general',
+				content: 'general',
+				settings: 'general',
+			} as const;
 			void plugin.openWorkbenchSettings(feature ? product[feature] : 'general').catch(report);
 		},
 		openFocus: async (target, state, placement, ownerWindow) => {
@@ -288,14 +545,22 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		}
 		activateWindowLeaf(ownerWindow);
 		const leaf = plugin.app.workspace.getLeaf('tab');
-		await leaf.setViewState({ type: WORKBENCH_VIEW_TYPE, active: true, state: { target, focus: true, pages: [{ target, state }] } });
+		await leaf.setViewState({
+			type: WORKBENCH_VIEW_TYPE,
+			active: true,
+			state: { target, focus: true, pages: [{ target, state }] },
+		});
 		await plugin.app.workspace.revealLeaf(leaf);
 	};
-	const savedPages = (feature: WorkbenchFeature) => plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE).flatMap((leaf) => (leaf.view instanceof WorkbenchView ? leaf.view.getSavedPages(feature) : []));
+	const savedPages = (feature: WorkbenchFeature) =>
+		plugin.app.workspace
+			.getLeavesOfType(WORKBENCH_VIEW_TYPE)
+			.flatMap((leaf) => (leaf.view instanceof WorkbenchView ? leaf.view.getSavedPages(feature) : []));
 	const activateResource = async (feature: WorkbenchFeature, resourceId: string): Promise<boolean> => {
 		for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) {
 			await leaf.loadIfDeferred();
-			if (leaf.view instanceof WorkbenchView && await leaf.view.activateResource(feature, resourceId)) return true;
+			if (leaf.view instanceof WorkbenchView && (await leaf.view.activateResource(feature, resourceId)))
+				return true;
 		}
 		return false;
 	};
@@ -311,7 +576,11 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	const status = registerObsidianStatus(plugin, {
 		segments: () => collectStatusSegments(contributions),
 		preferences: () => plugin.appSettings.get().statusBar,
-		setPreferences: async (preferences) => { await plugin.appSettings.update((draft) => { draft.statusBar = preferences; }); },
+		setPreferences: async (preferences) => {
+			await plugin.appSettings.update((draft) => {
+				draft.statusBar = preferences;
+			});
+		},
 		usage: () => plugin.services.peek(AGENT_USAGE),
 		open: (target, ownerWindow) => open(target, ownerWindow),
 		report,
@@ -327,7 +596,10 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offAutomations = automations?.subscribe(() => refresh());
 		refresh();
 	});
-	plugin.register(() => { offAutomations?.(); offAutomationsWatch(); });
+	plugin.register(() => {
+		offAutomations?.();
+		offAutomationsWatch();
+	});
 	// Unread count and attention status follow the inbox while the notifications module is active.
 	let offInbox = plugin.services.peek(NOTIFICATION_INBOX)?.subscribe(() => refresh());
 	const offInboxWatch = plugin.services.watch(NOTIFICATION_INBOX, (inbox) => {
@@ -335,7 +607,10 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offInbox = inbox?.subscribe(() => refresh());
 		refresh();
 	});
-	plugin.register(() => { offInbox?.(); offInboxWatch(); });
+	plugin.register(() => {
+		offInbox?.();
+		offInboxWatch();
+	});
 	// Board saves refresh the home status while that module is active.
 	let offHome = plugin.services.peek(HOME_WORKBENCH)?.subscribe(() => refresh());
 	const offHomeWatch = plugin.services.watch(HOME_WORKBENCH, (service) => {
@@ -343,7 +618,10 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offHome = service?.subscribe(() => refresh());
 		refresh();
 	});
-	plugin.register(() => { offHome?.(); offHomeWatch(); });
+	plugin.register(() => {
+		offHome?.();
+		offHomeWatch();
+	});
 	// The archives tree follows the index while that module is active.
 	let offArchives = plugin.services.peek(ARCHIVES_WORKBENCH)?.subscribe(() => refresh());
 	const offArchivesWatch = plugin.services.watch(ARCHIVES_WORKBENCH, (archives) => {
@@ -351,7 +629,10 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offArchives = archives?.subscribe(() => refresh());
 		refresh();
 	});
-	plugin.register(() => { offArchives?.(); offArchivesWatch(); });
+	plugin.register(() => {
+		offArchives?.();
+		offArchivesWatch();
+	});
 	// The HUHU files tree changes when files appear, move or disappear (saving a file changes nothing in it).
 	let contentTimer: number | undefined;
 	const offContent = plugin.managedContent?.subscribe((event) => {
@@ -359,7 +640,11 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		window.clearTimeout(contentTimer);
 		contentTimer = window.setTimeout(() => refresh(), 150);
 	});
-	if (offContent) plugin.register(() => { offContent(); window.clearTimeout(contentTimer); });
+	if (offContent)
+		plugin.register(() => {
+			offContent();
+			window.clearTimeout(contentTimer);
+		});
 	// Git status and runs refresh the sync panel and statuses while that module is active.
 	let offSync = plugin.services.peek(VERSIONING_WORKBENCH)?.subscribe(() => refresh());
 	const offSyncWatch = plugin.services.watch(VERSIONING_WORKBENCH, (sync) => {
@@ -367,7 +652,20 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offSync = sync?.subscribe(() => refresh());
 		refresh();
 	});
-	plugin.register(() => { offSync?.(); offSyncWatch(); });
+	plugin.register(() => {
+		offSync?.();
+		offSyncWatch();
+	});
+	let offBrowser = plugin.services.peek(BROWSER_WORKSPACE)?.subscribe(() => refresh());
+	const offBrowserWatch = plugin.services.watch(BROWSER_WORKSPACE, (browser) => {
+		offBrowser?.();
+		offBrowser = browser?.subscribe(() => refresh());
+		refresh();
+	});
+	plugin.register(() => {
+		offBrowser?.();
+		offBrowserWatch();
+	});
 	// Agent sessions, history and usage refresh the agent panel and statuses while that module is active.
 	let offAgent = plugin.services.peek(AGENT_WORKBENCH)?.subscribe(() => refresh());
 	const offAgentWatch = plugin.services.watch(AGENT_WORKBENCH, (agent) => {
@@ -381,13 +679,18 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	};
 	plugin.register(plugin.onModuleChanged(refresh));
 	plugin.register(plugin.appSettings.subscribe(refresh));
-	plugin.register(() => { offAgent?.(); offAgentWatch(); status.dispose(); });
+	plugin.register(() => {
+		offAgent?.();
+		offAgentWatch();
+		status.dispose();
+	});
 	registerWorkbenchRibbon(plugin, (ownerWindow) => open(undefined, ownerWindow), report);
 	refresh();
 
 	const prepareModuleChanges = async (flags: Readonly<Record<ModuleId, boolean>>): Promise<void> => {
 		const disabled = new Set<WorkbenchFeature>();
-		for (const [feature, module] of Object.entries(FEATURE_MODULES) as Array<[WorkbenchFeature, ModuleId | 'app']>) if (module !== 'app' && !flags[module]) disabled.add(feature);
+		for (const [feature, module] of Object.entries(FEATURE_MODULES) as Array<[WorkbenchFeature, ModuleId | 'app']>)
+			if (module !== 'app' && !flags[module]) disabled.add(feature);
 		for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) {
 			if (leaf.view instanceof WorkbenchView) await leaf.view.prepareModuleChanges(disabled);
 		}
@@ -402,7 +705,8 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		closeResource,
 		prepareModuleChanges,
 		dispose: () => {
-			for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) if (leaf.view instanceof WorkbenchView) void leaf.view.disposeSurface().catch(report);
+			for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE))
+				if (leaf.view instanceof WorkbenchView) void leaf.view.disposeSurface().catch(report);
 			listeners.clear();
 		},
 	};

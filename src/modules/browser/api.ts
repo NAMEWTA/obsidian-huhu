@@ -1,95 +1,127 @@
-import { serviceKey } from '../../app/contracts/module';
-import type { BrowserPageState, BrowserOpenRequest, BrowserSettings } from './core/model';
-import type { BrowserProfile, ProfilePage } from './core/profiles';
+import { contributionPoint, serviceKey } from '../../app/contracts/module';
+import type {
+	BrowserWorkspaceState,
+	BrowserSpace,
+	BrowserPage,
+	ControlLease,
+	BrowserFrame,
+	BrowserCommand,
+	HumanInput,
+	HumanPageRequest,
+	CreateSpaceRequest,
+	FrameSubscription,
+	RunGrant,
+	OperationRecord,
+	JsonValue,
+	BrowserObservation,
+	BrowserRunHealth,
+	BrowserRunEvent,
+} from './core/contracts';
+import type { IdentitySummary, IdentityImportPreview, IdentitySource } from './core/identity';
+import type { BrowserFile, BrowserDownload } from './core/files';
+export type * from './core/contracts';
+export type { IdentitySummary, IdentityImportPreview, IdentitySource } from './core/identity';
+export type { BrowserFile, BrowserDownload } from './core/files';
+export type { BrowserSettings } from './core/model';
 
-export type { BrowserOpenRequest, BrowserSettings };
-export type { BrowserProfile, ProfilePage };
-
-export interface BrowserProfiles {
-	list(): BrowserProfile[];
-	create(label: string): Promise<BrowserProfile>;
-	rename(id: string, label: string): Promise<void>;
-	/** Review these pages before deletion; a changed set requires a fresh confirmation. */
-	affectedPages(id: string): ProfilePage[];
-	remove(id: string, confirmedPageIds: readonly string[]): Promise<void>;
-	subscribe(listener: () => void): () => void;
+export interface BrowserOpenRequest {
+	url?: string;
+	spaceId?: string;
+	reuse?: boolean;
+	title?: string;
 }
-
-/** Open a web page in HUHU's browser (service `browser.open`). */
 export interface BrowserOpener {
-	/** Resolves with the page id; rejects with a localized message when the page cannot open. */
 	open(request: BrowserOpenRequest): Promise<string>;
-	/** For commands and buttons: like `open`, but reports failures as a notice. */
 	show(request: BrowserOpenRequest): Promise<void>;
 }
-
-export const BROWSER_OPEN = serviceKey<BrowserOpener>('browser', 'open');
-export const BROWSER_PROFILES = serviceKey<BrowserProfiles>('browser', 'profiles');
-
-export interface BrowserViewState extends BrowserPageState {
-	downloads: import('./core/model').BrowserDownload[];
-	find: { matches: number; activeMatchOrdinal: number };
-	permissionDenied: string;
-	annotations: Array<{ grab: import('./core/model').BrowserGrab; note: string }>;
-	viewport?: { width: number; height: number };
+export interface BrowserMaterial {
+	title: string;
+	text: string;
+	image?: { mime: 'image/png' | 'image/jpeg'; data: Uint8Array };
 }
-export interface BrowserReadableStore<T> {
-	getState(this: void): T;
-	getInitialState(this: void): T;
-	subscribe(this: void, listener: (state: T, previous: T) => void): () => void;
+export interface BrowserMaterialConsumer {
+	id: string;
+	targets(): Promise<Array<{ id: string; label: string }>>;
+	/** Adds material to the selected input; never submits the conversation. */
+	deliver(targetId: string, material: BrowserMaterial): Promise<void>;
 }
-export interface BrowserPageHandle {
-	readonly id: string;
-	readonly url: string;
-	readonly title: string;
-	readonly profileId: string;
-	readonly store: BrowserReadableStore<BrowserViewState>;
-	mount(placeholder: HTMLElement): void;
-	/** A new owner Document retires the old guest even while this tab is inactive. */
-	unmount(ownerDocument?: Document): void;
-	viewportWidth(): number;
-	viewportBounds(): { left: number; top: number; width: number; height: number };
-	setViewport(size?: { width: number; height: number }): Promise<void>;
-	setAnnotations(items: BrowserViewState['annotations']): void;
-	navigate(input: string): Promise<void>;
-	back(): Promise<void>;
-	forward(): Promise<void>;
-	reload(hard?: boolean): Promise<void>;
-	stop(): void;
-	setZoom(level: number): void;
-	find(query: string, options?: { forward?: boolean; next?: boolean; matchCase?: boolean }): void;
-	stopFind(): void;
-	focus(): void;
-	openDevTools(): void;
-	openExternal(): void;
-	setProfile(profileId: string): Promise<void>;
-	startGrab(intent: 'copy' | 'annotate', selected: (grab: import('./core/model').BrowserGrab) => void): Promise<void>;
-	stopGrab(): Promise<void>;
-	captureScreenshot(full?: boolean): Promise<string>;
-	downloadAction(id: string, action: 'cancel' | 'open' | 'show' | 'dismiss' | 'retry'): void;
-	setShortcutHandler(handler: ((key: string) => void) | undefined): void;
-	dispose(): void;
-}
-export interface BrowserHost {
-	createPage(init: { url?: string; profileId?: string; zoom?: number; restoreId?: string }): BrowserPageHandle;
-	getPage(id: string): BrowserPageHandle | undefined;
-	disposePage(id: string): void;
+/** Trusted in-process UI API. CLI/MCP expose only the separately validated Agent protocol. */
+export interface BrowserWorkspace {
+	getState(): BrowserWorkspaceState;
+	subscribe(listener: () => void): () => void;
 	resolveInput(input: string): string | null;
-	renderChrome(page: BrowserPageHandle): Promise<unknown>;
-	readonly profiles: BrowserReadableStore<{ profiles: BrowserProfile[]; defaultProfileId: string }>;
-	createProfile(name: string): Promise<BrowserProfile>;
-	renameProfile(id: string, name: string): Promise<void>;
-	deleteProfile(id: string, confirmedPageIds: readonly string[]): Promise<void>;
-	affectedPages(id: string): ProfilePage[];
-	clearCookies(profileId: string, origin?: string): Promise<void>;
-	cookieCount(profileId: string): Promise<number>;
-	detectBrowsers(): Promise<import('./core/cookies').DetectedBrowser[]>;
-	importCookiesFromBrowser(
-		source: { family: string; profileDir?: string },
-		target: string,
-	): Promise<import('./core/cookies').CookieImportResult>;
-	importCookiesFromFile(path: string, target: string): Promise<import('./core/cookies').CookieImportResult>;
-	chooseCookieFile(): Promise<string | undefined>;
-	routeLink(url: string, event: MouseEvent, source?: 'terminal' | 'note'): void;
+	consentEphemeral(): Promise<void>;
+	installRuntimeBundle(): Promise<void>;
+	refreshRuntime(): Promise<void>;
+	createSpace(request: CreateSpaceRequest, requestId?: string): Promise<BrowserSpace>;
+	renameSpace(spaceId: string, label: string): Promise<void>;
+	startSpace(spaceId: string): Promise<void>;
+	stopSpace(spaceId: string): Promise<void>;
+	removeSpace(spaceId: string): Promise<void>;
+	retryPendingCleanup(): Promise<void>;
+	retryCleanup(spaceId: string): Promise<void>;
+	openPage(request: { spaceId: string; url?: string }): Promise<BrowserPage>;
+	closePage(request: { spaceId: string; pageId: string }): Promise<void>;
+	takeover(request: { spaceId: string; viewerId: string; windowId: string }): Promise<ControlLease>;
+	releaseViewer(spaceId: string, viewerId: string): Promise<void>;
+	pause(spaceId: string): Promise<void>;
+	resumeAgent(spaceId: string): Promise<RunGrant>;
+	copyAgentConnection(spaceId: string, options?: { allowTaskCreation?: boolean }): Promise<string>;
+	pageAction(request: HumanPageRequest & { command: BrowserCommand }): Promise<JsonValue>;
+	humanInput(
+		request: HumanPageRequest & { frameId: string; inputSequence: number; input: HumanInput },
+	): Promise<void>;
+	navigate(request: HumanPageRequest & { url: string }): Promise<void>;
+	readSelection(request: HumanPageRequest): Promise<{ text: string; truncated: boolean }>;
+	subscribeFrames(
+		scope: { spaceId: string; pageId: string; viewerId: string },
+		receive: (frame: BrowserFrame) => void,
+	): FrameSubscription;
+	renderViewer(scope: { spaceId: string; pageId: string }): Promise<unknown>;
+	listIdentities(): IdentitySummary[];
+	prepareIdentityImport(request: { label: string; text: string }): Promise<IdentityImportPreview>;
+	prepareIdentityFile(request: { label: string }): Promise<IdentityImportPreview | undefined>;
+	prepareBrowserIdentityImport(request: {
+		sourceId: string;
+		profileId?: string;
+		label: string;
+	}): Promise<IdentityImportPreview>;
+	commitIdentityImport(request: { planId: string; persist: boolean; domains?: string[] }): Promise<IdentitySummary>;
+	discardIdentityImport(planId: string): void;
+	listIdentitySources(): Promise<IdentitySource[]>;
+	saveIdentity(request: HumanPageRequest & { label: string; persist: boolean }): Promise<IdentitySummary>;
+	removeIdentity(id: string): Promise<void>;
+	listFiles(spaceId: string): BrowserFile[];
+	listDownloads(spaceId: string): BrowserDownload[];
+	chooseUpload(spaceId: string, principal: 'human' | 'agent'): Promise<BrowserFile | undefined>;
+	exportFile(fileId: string): Promise<void>;
+	removeFile(fileId: string): Promise<void>;
+	cancelDownload(fileId: string): Promise<void>;
+	listMaterialTargets(): Promise<Array<{ id: string; label: string }>>;
+	sendMaterial(request: HumanPageRequest & { targetId: string }): Promise<void>;
 }
-export const BROWSER_HOST = serviceKey<BrowserHost>('browser', 'host');
+export interface BrowserAgentAccess {
+	startRun(spaceId: string, issuerId: string): Promise<RunGrant>;
+	stopRun(runId: string, capability: string): Promise<void>;
+	heartbeat(runId: string, capability: string): Promise<number>;
+	observe(runId: string, capability: string, pageId: string): Promise<BrowserObservation>;
+	prepare(
+		runId: string,
+		capability: string,
+		pageId: string,
+		requestId: string,
+		command: BrowserCommand,
+	): Promise<OperationRecord>;
+	execute(runId: string, capability: string, operationId: string, command: BrowserCommand): Promise<OperationRecord>;
+	operation(runId: string, capability: string, operationId: string): Promise<OperationRecord | undefined>;
+	pageOpen(runId: string, capability: string, requestId: string, url?: string): Promise<OperationRecord>;
+	pageClose(runId: string, capability: string, requestId: string, pageId: string): Promise<OperationRecord>;
+	pageList(runId: string, capability: string): BrowserPage[];
+	fileList(runId: string, capability: string): BrowserFile[];
+	downloadList(runId: string, capability: string): BrowserDownload[];
+	health(runId: string, capability: string): BrowserRunHealth;
+	events(runId: string, capability: string, afterSequence?: number): BrowserRunEvent[];
+}
+export const BROWSER_WORKSPACE = serviceKey<BrowserWorkspace>('browser', 'workspace');
+export const BROWSER_OPEN = serviceKey<BrowserOpener>('browser', 'open');
+export const BROWSER_MATERIAL_CONSUMERS = contributionPoint<BrowserMaterialConsumer>('browser', 'material-consumers');

@@ -16,7 +16,9 @@ import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
- ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
 	ContextMenuTrigger,
 } from '../../../../ui/components/context-menu';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
@@ -74,7 +76,11 @@ export function TerminalHost({
 			retention,
 			vaultPath: () => controller.vaultPath(),
 			focused: () => workspace.focusSession(sessionId),
- openLink:(url,event)=>openTerminalUrl(url,event,controller.browserHost(),()=>{ref.current?.win.open(url);}),
+			openLink: (url, event) => {
+				void openTerminalUrl(url, event, controller.browserOpener(), () => {
+					ref.current?.win.open(url);
+				}).catch((error) => controller.workspace.report(error));
+			},
 		});
 		view.current = current;
 		const host = ref.current,
@@ -200,8 +206,24 @@ export function TerminalHost({
 								{t('agent.selectLine')}
 							</ContextMenuItem>
 							<ContextMenuItem onSelect={showSearch}>{t('agent.search')}</ContextMenuItem>
-							<ContextMenuSub><ContextMenuSubTrigger disabled={!settings.quickCommands.length}>{t('agent.quick.insert')}</ContextMenuSubTrigger><ContextMenuSubContent>{settings.quickCommands.map(command=><ContextMenuItem key={command.id} onSelect={()=>{session.paste(command.content);}}>{command.name}</ContextMenuItem>)}</ContextMenuSubContent></ContextMenuSub>
-        <ContextMenuSeparator />
+							<ContextMenuSub>
+								<ContextMenuSubTrigger disabled={!settings.quickCommands.length}>
+									{t('agent.quick.insert')}
+								</ContextMenuSubTrigger>
+								<ContextMenuSubContent>
+									{settings.quickCommands.map((command) => (
+										<ContextMenuItem
+											key={command.id}
+											onSelect={() => {
+												session.paste(command.content);
+											}}
+										>
+											{command.name}
+										</ContextMenuItem>
+									))}
+								</ContextMenuSubContent>
+							</ContextMenuSub>
+							<ContextMenuSeparator />
 							<ContextMenuItem onSelect={() => view.current?.clear()}>{t('agent.clear')}</ContextMenuItem>
 							<ContextMenuItem onSelect={() => view.current?.clearScrollback()}>
 								{t('agent.clearScrollback')}

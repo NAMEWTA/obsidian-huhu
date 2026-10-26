@@ -128,11 +128,7 @@ export function AgentWorkspace({
 			const agent = controller.agents.list()[0];
 			if (agent) void workspace.newAgent(agent.id).catch((error) => workspace.report(error));
 		} else if (action === 'newBrowser') {
-			try {
-				workspace.newBrowser();
-			} catch (error) {
-				workspace.report(error);
-			}
+			void workspace.newBrowser().catch((error) => workspace.report(error));
 		} else if (action === 'close' && tab && !tab.pinned) close(tab.id);
 		else if (action === 'reopen') workspace.reopen();
 		else if (action === 'next' || action === 'previous') workspace.next(action === 'next' ? 1 : -1);

@@ -1,7 +1,7 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-bar/TabBarCreateEntry.tsx, TabBarCreateEntryRow.tsx, tab-bar-surface.tsx
 import { Command } from 'cmdk';
 import { ArrowLeft, Bot, ChevronRight, Globe, Loader2, Search, Settings, TerminalSquare } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback, useState, useSyncExternalStore } from 'react';
 import { Platform } from 'obsidian';
 import { useStore } from 'zustand';
 import type { AgentController } from '../../services/controller';
@@ -22,6 +22,8 @@ interface Option {
 		| InputAction
 		| { kind: 'tab'; tabId: string }
 		| { kind: 'settings' }
+		| { kind: 'browserWorkspace' }
+		| { kind: 'browserPage'; spaceId: string; pageId: string }
 		| { kind: 'quick'; commandId: string }
 		| { kind: 'shells' | 'back' }
 		| { kind: 'shell'; shell: ShellChoice };
@@ -38,6 +40,11 @@ export function Omnibox({
 }) {
 	const t = useT(),
 		workspace = controller.workspace;
+	const browser = controller.browserWorkspace();
+	const browserState = useSyncExternalStore(
+		useCallback((listener) => browser?.subscribe(listener) ?? (() => undefined), [browser]),
+		useCallback(() => browser?.getState(), [browser]),
+	);
 	const state = useStore(workspace.store),
 		[query, setQuery] = useState(''),
 		[pending, setPending] = useState<string>(),
@@ -47,12 +54,10 @@ export function Omnibox({
 	const settings = useAgentSettings(controller.settings);
 	const detection = useStore(controller.agents.store);
 	const detected = controller.runtime.listAgents();
-	const agents = controller.agents
-		.list()
-		.map((a) => ({
-			...a,
-			command: settings.overrides[a.id]?.command || detection.detected[a.id] || a.detectCommand,
-		}));
+	const agents = controller.agents.list().map((a) => ({
+		...a,
+		command: settings.overrides[a.id]?.command || detection.detected[a.id] || a.detectCommand,
+	}));
 
 	const actionOption = (action: InputAction): Option => ({
 		id: JSON.stringify(action),
@@ -88,7 +93,7 @@ export function Omnibox({
 				if (
 					`${tabTitle(tab, t)} ${
 						tab.kind === 'browser'
-							? tab.url
+							? (controller.browserPage(tab)?.url ?? '')
 							: tab.kind === 'terminal'
 								? Object.values(tab.panes)
 										.map((p) => p.cwd)
@@ -103,7 +108,12 @@ export function Omnibox({
 						action: { kind: 'tab', tabId: id },
 						label: t('agent.workspace.switchTab'),
 						detail: tabTitle(tab, t),
-						icon: tab.kind === 'page' ? PAGE_ICONS[tab.page] : tab.kind === 'browser' ? Globe : TerminalSquare,
+						icon:
+							tab.kind === 'page'
+								? PAGE_ICONS[tab.page]
+								: tab.kind === 'browser'
+									? Globe
+									: TerminalSquare,
 					});
 			}
 		}
@@ -120,7 +130,6 @@ export function Omnibox({
 					icon: TerminalSquare,
 					action: { kind: 'quick', commandId: command.id },
 				});
-
 	} else {
 		options.push({ ...actionOption({ kind: 'terminal' }), shortcut: `${mod} T` });
 		if (Platform.isWin || shellMenu)
@@ -151,6 +160,30 @@ export function Omnibox({
 			icon: Settings,
 		});
 	}
+	if (browser) {
+		options.push({
+			id: 'browser-workspace',
+			action: { kind: 'browserWorkspace' },
+			label: t('agent.workspace.openBrowser'),
+			icon: Globe,
+		});
+		const filter = query.trim().toLocaleLowerCase();
+		for (const { space, page } of (browserState?.spaces ?? [])
+			.flatMap((space) => space.pages.filter((page) => page.status !== 'closed').map((page) => ({ space, page })))
+			.filter(
+				({ space, page }) =>
+					!filter || `${space.label} ${page.title} ${page.url}`.toLocaleLowerCase().includes(filter),
+			)
+			.slice(0, 50)) {
+			options.push({
+				id: `browser-page:${space.id}:${page.id}`,
+				action: { kind: 'browserPage', spaceId: space.id, pageId: page.id },
+				label: t('agent.workspace.attachBrowser'),
+				detail: `${space.label} · ${page.title || t('browser.newTab')}`,
+				icon: Globe,
+			});
+		}
+	}
 	if (shellMenu && !query.trim()) {
 		const choices = options.filter((o) => o.action.kind === 'shell');
 		options.splice(
@@ -171,6 +204,9 @@ export function Omnibox({
 		try {
 			const action = option.action;
 			if (action.kind === 'tab') workspace.activate(action.tabId);
+			else if (action.kind === 'browserWorkspace') await controller.openBrowserWorkspace();
+			else if (action.kind === 'browserPage')
+				await workspace.newBrowser(undefined, { groupId, spaceId: action.spaceId, pageId: action.pageId });
 			else if (action.kind === 'terminal' || action.kind === 'shell')
 				await workspace.newTerminal({ groupId, shell: action.kind === 'shell' ? action.shell : undefined });
 			else if (action.kind === 'agent') await workspace.newAgent(action.agentId, { groupId });
@@ -179,7 +215,7 @@ export function Omnibox({
 				if (command) await controller.runQuickCommand(command, groupId);
 			} else if (action.kind === 'settings') await controller.open({ feature: 'settings', section: 'terminal' });
 			else
-				workspace.newBrowser(
+				await workspace.newBrowser(
 					action.kind === 'url' ? action.url : action.kind === 'search' ? `?${action.query}` : undefined,
 					{ groupId },
 				);

@@ -48,10 +48,13 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 智能体标签布局与统计 | `.huhu/terminal-agent/<device-id>/workspace.json`、`workspace-stats.json` |
 | 原生历史索引、标注、自动化会话 | 同目录 `index.sqlite`、`history.json`、`automation-sessions.json` |
 | 快捷命令 | 本设备设置 `agent.quickCommands`；不读取旧 presets |
-| 浏览历史、个人资料与站点权限 | `.huhu/browser/<device-id>/state.json` 与 `profiles.json` |
-| Cookie、网站缓存及下载 | `.huhu/browser/<device-id>/profiles/<id>/session/`、`downloads/` |
-| Cookie 导入快照 | `.huhu/browser/<device-id>/tmp/<随机 ID>/`，读取完成或失败后清理 |
-| 浏览器抓取、截图与标注附件 | `.huhu/browser/<device-id>/artifacts/` |
+| 浏览器 Space 目录与操作记录 | `.huhu/browser/<device-id>/v2/records/*.sealed`，认证加密；摘要密钥在同根的 `digest-key.sealed` |
+| 浏览器身份种子 | `.huhu/browser/<device-id>/v2/identities/<版本 ID>.sealed`，不可变的认证密文；只在明确保存后持久化 |
+| Cookie 与网站运行数据 | `.huhu/browser/<device-id>/v2/profiles/<Space ID>/`，每个 Space 独立的 Chromium 用户目录；不等同于种子密文 |
+| 浏览器文件与下载 | 同一 `v2/` 下的 `files/data/<文件 ID>/<安全文件名>`、加密的 `files/metadata.sealed` 和 `downloads/<Space ID>/`；保留上传文件名及扩展名，文件内容按敏感明文管理 |
+| Cookie 导入与运行资料暂存 | `.huhu/browser/<device-id>/v2/import-staging/<UUID>/`；失败清理任务记录在 `cleanup/import-staging.json`，回收失败保留重试 |
+| 浏览器运行包与连接描述符 | 同一 `v2/` 下的 `runtime/` 和 `connections/<UUID>.json`；连接文件含短期访问凭据，仅向明确授权的本地客户端交付路径 |
+| 交给智能体的网页截图副本 | `.huhu/browser-materials/` 下的 `activation-<UUID>/<UUID>.png` 或 `.jpg`，由智能体模块管理，正常停用时清理 |
 | 自动化预检环境 | `.huhu/automation/<device-id>/precheck-home/` |
 | 恢复草稿与看板冲突副本 | `.huhu/recovery/` |
 | 内容移动与引用更新账本 | `.huhu/content-moves/manifest.json` |
@@ -66,19 +69,31 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 
 `日志`、`收件箱`、`待办`、`档案`、`个人档案`、`企业档案`、`记账`、`习惯`、`番茄钟`、`阅读` 这些 `huhu/` 下的文件夹名在所有界面语言下都是中文，`基本信息.md`、`操作.md` 等文件名也一样。没有设置文件的库从默认值开始。
 
+## 浏览器运行资料与身份
+
+浏览器 v2 自己拥有 Space、页面、身份、文件和运行进程；智能体标签只保存 Space/Page 引用。个人 Space 不接受 Agent Run，任务 Space 的执行凭据绑定当次运行与控制代次。关闭查看界面不等于删除 Space；停止后保留持久 Space 的页面标识，重新启动创建新的运行实例，不恢复旧执行凭据。
+
+持久化身份、目录、操作结果和文件元数据使用认证加密，随机数据密钥由本机操作系统安全存储保护。安全存储不可用或只提供弱保护时，不写明文替代；只有用户明确同意，才允许创建临时身份与临时 Space。临时模式仍可能为 Chromium 和文件复制创建磁盘数据，正常结束时清理，崩溃残留按所有权验证后重试回收，不能把它理解为完全不落盘。
+
+Chromium 的活动用户目录、下载内容和交付给智能体的截图没有整体加密。种子保存成功不表示整个浏览器目录已加密，也不保证网站登录有效。导入只写入全新的未发布运行资料，经暂存和最终目标各自完整读回校验后才发布；不覆盖已运行的 Space。未知或损坏的密文、缺失的既有元数据和无法确认的进程所有权会阻止写入或删除，不按空数据重建。
+
+每个用户目录旁保存 Chromium 最后写入版本标记；新空目录可以初始化，非空但缺少标记、标记损坏或尝试降级时拒绝启动。运行包的回退不会自动回退用户目录。完整操作与限制见[浏览器](browser.md)和[浏览器运行时](browser-runtime.md)。
+
 ## 私有文件权限
 
 桌面 POSIX 路径以 `0700` 创建目录、`0600` 创建普通文件，helper 使用 `0700`。账号及 helper 私有目录在 Windows 通过 DACL 限定为当前用户与 SYSTEM；权限失败阻止交付进程。交付前检查当前子树并拒绝链接，迁移保留恢复来源。访问控制不等于加密，也不会阻止你同步文件。普通笔记保持原权限；移动端和非文件系统适配器的具体权限行为据实说明，不冒称已实测。
 
 ## 版本恢复检查点
 
-版本管理将恢复前的编辑器内容、磁盘原文、目标内容与阶段记录保存在 `.huhu/recovery/versioning/<device-id>/`，自动同步暂停保存在设备同步状态中。检查点按内容散列校验，不进入 Git；准备预览或取消不产生恢复写入。中断后保留记录，重启只核对现状，不自动回放正文。当前不自动清理检查点，详见[恢复与撤销](sync.md#恢复、检查点与撤销)。
+版本管理将恢复前的编辑器内容、磁盘原文、目标内容与阶段记录保存在 `.huhu/recovery/versioning/<device-id>/`，自动同步暂停保存在设备同步状态中。检查点按内容散列校验，不进入 Git；准备预览或取消不产生恢复写入。中断后保留记录，重启只核对现状，不自动回放正文。当前不自动清理检查点，详见[恢复与撤销](sync.md#恢复检查点与撤销)。
 
 ## 库之外的数据
 
 默认的“系统账号”不重定向 HOME、提供方数据根或 XDG/Windows 数据目录，CLI 沿用本机已有登录。HUHU 的运行事件保存在库内；开启状态 Hook 或自动化运行所需 Hook 时，会在 `~/.huhu/agent-hooks/` 保存共用脚本与备份，并修改真实提供方配置中的约定条目或扩展文件。它们不会随关库自动移除，具体范围和移除操作见[智能体工作台](agent-workbench.md#状态-hook)。
 
-“托管账号”使用库内的 HOME、提供方配置目录、XDG/Windows 数据目录和临时目录，状态 Hook 与事件文件同属账号。浏览器 Cookie、站点数据、缓存、下载与抓取附件也进入库内设备/profile 或 artifacts 目录。库外 CLI homes 不自动搬迁；托管账号不回退到系统账号，也不复制系统登录。
+“托管账号”使用库内的 HOME、提供方配置目录、XDG/Windows 数据目录和临时目录，状态 Hook 与事件文件同属账号。浏览器运行资料与文件进入库内的设备 `v2/` 根，交给智能体的截图副本进入 `.huhu/browser-materials/`。库外 CLI homes 不自动搬迁；托管账号不回退到系统账号，也不复制系统登录。
+
+浏览器使用宿主 Electron 的系统安全存储保护数据密钥。原生进程回收另有一把本机认证密钥，位于 Obsidian 的 `userData` 目录下 `huhu/browser-runtime-ownership/<运行根规范路径的 SHA-256>.key`，用于核验进程所有权回执；它不在 vault 内，也不用于把整个 Chromium 用户目录加密。用户明确导出的浏览器文件可写到库外选择的位置。
 
 导航器的可重建预览缓存使用宿主 IndexedDB，不在库目录内；保险箱加密导出写入你通过原生选择器指定的路径，可以位于库外。普通笔记虽保留原位，导航器的模板、周期笔记、合并与标签操作仍会按你的操作创建或修改它们。“保留原位”不表示这些笔记只读。
 
@@ -88,7 +103,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 
 `.huhu/` 以点开头，**Obsidian Sync 不同步这类隐藏目录**；宿主配置目录是官方列出的例外，`.huhu/` 不属于它（见 [Obsidian 官方说明](https://obsidian.md/help/sync/settings) 的 Hidden files and folders）。所以 `.huhu/dashboards/` 中的看板和 `.huhu/automation/definitions/` 中的自动化操作，以及 `.huhu/` 下的其他 HUHU 专用数据（含加密的保险箱）不会经 Obsidian Sync 到达另一台设备；库内可见的 `huhu/` 下的日志、闪念、收件箱、档案、记账等记录和其他笔记不受这一排除规则影响。需要同步 HUHU 专用数据时，请使用并核对能同步隐藏目录的工具：Git、iCloud、Syncthing 等。桌面端可以使用 HUHU 的 [Git 同步](sync.md)，其私有数据排除范围见下文。
 
-- `.huhu/config/settings.json` 由库的所有设备共用；`.huhu/config/devices/<device-id>.json` 和各模块的 `<device-id>` 目录只属于一台设备，按设备隔离。用 HUHU 的 Git 同步时，这些设备配置、身份映射、同步计时和通知状态不跟踪；浏览器会话、智能体账号与运行目录、缓存、恢复副本和锁文件等设备私有数据默认不提交（见[Git 同步](sync.md#默认不提交的-huhu-私有数据)）。
+- `.huhu/config/settings.json` 由库的所有设备共用；`.huhu/config/devices/<device-id>.json` 和各模块的 `<device-id>` 目录只属于一台设备，按设备隔离。用 HUHU 的 Git 同步时，这些设备配置、身份映射、同步计时和通知状态不跟踪；`.huhu/browser/`、`.huhu/browser-materials/`、智能体账号与运行目录、缓存、恢复副本和锁文件等私有数据默认不提交（见[Git 同步](sync.md#默认不提交的-huhu-私有数据)）。
 - 自动化只在它所属的设备上运行，见[自动化与通知](automation.md#设备归属)。
 - 使用共享 `JsonStore` 的设置和 JSON 数据在写入前做三方合并，并保留上一份有效内容为 `.backup`。保险箱是独立密文协议，不执行自动合并；图标、批注、内容移动和看板也有各自的恢复规则。同步工具产生的冲突副本仍需手动处理。
 
@@ -99,7 +114,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 3. 恢复前，先关闭相关模块，保留当前出问题的文件副本，再恢复确认有效的内容和设置。
 4. 重新开启模块后检查内容和设备设置。不要为了让功能恢复运行而重放被中断的外部操作。
 
-缓存和索引可以重建。实体正文、业务记录、评论和通知回执不能当作缓存清理。浏览器会话与托管 CLI 账号在 `.huhu/` 中，应按敏感数据备份；系统账号沿用库外位置。登录状态跨设备不保证可用，可能需要重新认证。
+缓存和索引可以重建。实体正文、业务记录、评论和通知回执不能当作缓存清理。浏览器用户目录、身份密文和文件元数据，以及托管 CLI 账号都应按敏感数据备份；不要只恢复文件内容而丢弃相应元数据。浏览器密钥受本机系统保护，复制 vault 不保证能在另一设备解密或继续登录。系统账号沿用库外位置，网站也可能要求重新认证。
 
 ## 保存失败与冲突
 

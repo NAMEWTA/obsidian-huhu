@@ -1,7 +1,7 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 6259712,
-  "stylesBytes": 1426432,
+  "outputBytes": 6407168,
+  "stylesBytes": 1423360,
   "eagerBytes": 128000,
   "forbiddenEagerAreas": [
     "npm:lunar-typescript",
@@ -14,19 +14,19 @@
   ],
   "moduleActivationBytes": {
     "home": 492544,
-    "agent": 991232,
+    "agent": 992256,
     "icons": 158720,
-    "browser": 103424,
+    "browser": 252928,
     "archives": 176128,
     "automations": 217088,
     "notifications": 20480,
     "comments": 118784,
-    "navigator": 202752,
+    "navigator": 203776,
     "versioning": 157696,
     "safe": 60416
   },
-  "outputBudgetReason": "Issue #2：紧凑Git工作区、统一CodeMirror merge比较器、惰性内嵌Diff Worker、笔记历史和检查点恢复闭环；新依赖仅固定MIT的@codemirror/merge，完整许可包含Worker独立依赖。按本次实际产物KiB收紧；没有旧展开式UI双轨。",
-  "eagerBudgetReason": "Issue #2：启动期增加每窗口EditorContextService、EditorPanel贡献契约和revision-review元数据；React/Radix及Diff Worker仍按需加载。按实际启动闭包KiB取整。",
-  "stylesBudgetReason": "Issue #2：新增仅限版本比较容器的CodeMirror差异样式及紧凑导航/恢复确认的Tailwind类；保留既有主题令牌。按实际styles.css的KiB取整。",
-  "moduleActivationBudgetReason": "保留其他模块原预算。Issue #2：versioning接入纯Git历史查询、恢复日志、原生正文适配器与同步hold；comments增加prepare/commit/abort锚点参与者。两个受影响模块按实际闭包KiB取整，页面和Worker继续惰性加载；预算中的模块缺失现在直接失败。"
+  "outputBudgetReason": "Issue #1/#2 联合整合：独立浏览器与版本管理、Diff Worker 同时存在，完整许可横幅覆盖三种 JS 构建与两个 Rust helper。main.js 实测 6406487 字节，按 KiB 取整；不保留旧执行体系。",
+  "eagerBudgetReason": "联合整合：每窗口 EditorContext/EditorPanel、revision-review 与 browser 注册同时保留，启动闭包实测 127265 字节，按 KiB 取整；禁止 eager 区域保持不变。",
+  "stylesBudgetReason": "联合整合：统一 Browser Viewer 与三种版本比较布局共用现有设计系统；styles.css 实测 1423188 字节，按 KiB 取整。",
+  "moduleActivationBudgetReason": "联合整合：保留两 PR 各模块预算的较大值，以 versioning 替代 sync；browser、agent、navigator 接入独立浏览器，versioning、comments 接入历史恢复。所有模块实测均在原对应预算内，页面与 Worker 继续按需加载。"
 }

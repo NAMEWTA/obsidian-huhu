@@ -7,7 +7,7 @@
 	"scripts": {
 		"test:build-text": "node scripts/verify-build-text.mjs",
 		"dev": "node scripts/dev.mjs",
-		"build": "tsc -noEmit -skipLibCheck && tsc -skipLibCheck -p tsconfig.test.json && node scripts/build-tailwind.mjs && node scripts/build-styles.mjs --check && node esbuild.config.mjs production",
+		"build": "tsc -noEmit -skipLibCheck && tsc -skipLibCheck -p tsconfig.test.json && tsc -p tsconfig.browser-worker.json && node scripts/build-browser-runtime.mjs && node scripts/build-browser-client.mjs && node scripts/build-tailwind.mjs && node scripts/build-styles.mjs --check && node esbuild.config.mjs production",
 		"test": "vitest run",
 		"test:weather-mapping": "esbuild scripts/verify-weather-mapping.ts --bundle --platform=node --format=cjs --outfile=node_modules/.tmp/verify-weather-mapping.cjs --alias:obsidian=./scripts/obsidian-stub.ts --log-level=warning && node node_modules/.tmp/verify-weather-mapping.cjs",
 		"test:folder-tag-search": "esbuild scripts/verify-folder-tag-search.ts --bundle --platform=node --format=cjs --outfile=node_modules/.tmp/verify-folder-tag-search.cjs --alias:obsidian=./scripts/obsidian-stub.ts --log-level=warning && node node_modules/.tmp/verify-folder-tag-search.cjs",
@@ -65,7 +65,10 @@
 		"test:ui-styles": "node scripts/verify-ui-styles.mjs",
 		"test:ui-adapters": "node scripts/verify-ui-adapters.mjs",
 		"test:ui-runtime": "node scripts/verify-ui-runtime.mjs",
-		"test:license-texts": "node --test scripts/license-texts.test.mjs"
+		"test:license-texts": "node --test scripts/license-texts.test.mjs",
+		"build:browser": "tsc -p tsconfig.browser-worker.json && node scripts/build-browser-runtime.mjs && node scripts/build-browser-client.mjs",
+		"check:browser-native": "cargo test --locked --manifest-path native/browser-runtime/Cargo.toml",
+		"accept:browser-native": "node scripts/verify-browser-runtime-native.mjs"
 	},
 	"keywords": [],
 	"license": "SEE LICENSE IN LICENSE",
@@ -132,6 +135,7 @@
 		"sonner": "2.0.7",
 		"tailwind-merge": "3.7.0",
 		"yaml": "^2.9.0",
+		"zod": "4.6.7",
 		"zustand": "5.0.15"
 	},
 	"repository": {

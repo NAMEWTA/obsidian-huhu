@@ -7,8 +7,31 @@ import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from './workbench';
 import type { EditorContextAccess } from './editor-context';
 
 /** Feature modules shipped in HUHU. */
-export type ModuleId = 'home' | 'agent' | 'browser' | 'archives' | 'automations' | 'notifications' | 'icons' | 'comments' | 'navigator' | 'versioning' | 'safe';
-export const MODULE_IDS: readonly ModuleId[] = ['home', 'agent', 'browser', 'archives', 'automations', 'notifications', 'icons', 'comments', 'navigator', 'versioning', 'safe'];
+export type ModuleId =
+	| 'home'
+	| 'agent'
+	| 'browser'
+	| 'archives'
+	| 'automations'
+	| 'notifications'
+	| 'icons'
+	| 'comments'
+	| 'navigator'
+	| 'versioning'
+	| 'safe';
+export const MODULE_IDS: readonly ModuleId[] = [
+	'home',
+	'agent',
+	'browser',
+	'archives',
+	'automations',
+	'notifications',
+	'icons',
+	'comments',
+	'navigator',
+	'versioning',
+	'safe',
+];
 
 /**
  * When a module is created:
@@ -68,7 +91,10 @@ export interface ServiceAccess {
 }
 
 export interface ContributionAccess {
-	collect<T>(point: ContributionPoint<T>, options?: { activate?: boolean }): Promise<ReadonlyArray<{ module: ModuleId; value: T }>>;
+	collect<T>(
+		point: ContributionPoint<T>,
+		options?: { activate?: boolean },
+	): Promise<ReadonlyArray<{ module: ModuleId; value: T }>>;
 	watch(point: ContributionPoint<unknown>, listener: () => void): () => void;
 }
 
@@ -136,6 +162,8 @@ export interface SettingsPageHost {
 }
 
 export interface ModuleInstance {
+	/** Resource owners may retain cleanup authority after an unconfirmed shutdown. */
+	readonly retainOnDisposeFailure?: boolean;
 	activate?(signal: AbortSignal): Promise<void> | void;
 	dispose(reason: 'disabled' | 'unload'): Promise<void> | void;
 	readonly services?: ReadonlyArray<readonly [ServiceKey<unknown>, unknown]>;

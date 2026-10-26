@@ -14,7 +14,7 @@ export const terminalAssets = [
 	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
 ].map((target) => `huhu-pty-${target}`);
 
-export const pluginAssets = ['main.js', 'manifest.json', 'styles.css'];
+export const pluginAssets = ['main.js', 'manifest.json', 'styles.css', 'browser-worker.cjs', 'browser-worker.cjs.sha256', 'browser-cli.cjs', 'browser-cli.cjs.sha256'];
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
@@ -59,6 +59,11 @@ export function verifyPluginAssets(root, tag, dir) {
 	assert.ok(!/sourceMappingURL=data:/.test(main), 'main.js must be a production build without an inline source map');
 	assert.equal(sha256(readFileSync(path.join(dir, 'main.js'))), sha256(readFileSync(path.join(root, 'main.js'))), 'main.js must be the committed bundle');
 	assert.equal(sha256(readFileSync(path.join(dir, 'styles.css'))), sha256(readFileSync(path.join(root, 'styles.css'))), 'styles.css must be the committed stylesheet');
+	for (const name of ['browser-worker.cjs', 'browser-cli.cjs']) {
+		const bytes = readFileSync(path.join(dir, name));
+		assert.equal(readFileSync(path.join(dir, `${name}.sha256`), 'utf8').trim(), `${sha256(bytes)}  ${name}`, `${name} checksum mismatch`);
+		assert.equal(sha256(bytes), sha256(readFileSync(path.join(root, name))), `${name} must be the committed entry point`);
+	}
 	const zip = `${manifest.id}-${tag}.zip`;
 	if (readdirSync(dir).includes(zip)) assert.ok(statSync(path.join(dir, zip)).size > 0, `${zip} must not be empty`);
 }

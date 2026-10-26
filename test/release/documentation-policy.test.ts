@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import { documentationKind, referenceLinkBody } from '../../scripts/documentation-policy.mjs';
+import { documentationKind, githubSlug, referenceLinkBody } from '../../scripts/documentation-policy.mjs';
 
 test('current project guides have one Chinese source, with only the root README bilingual', () => {
 	const copies: string[] = [];
@@ -29,6 +29,33 @@ test('change artifacts retain source language while permanent knowledge and thir
 	expect(documentationKind('CLAUDE.md')).toBe('agent-handbook');
 	expect(documentationKind('docs/third-party/orca-terminal-workbench.md')).toBe('user-doc');
 	expect(documentationKind('THIRD-PARTY-NOTICES.md')).toBe('license');
+});
+
+test('native package READMEs have project documentation ownership without classifying arbitrary native Markdown', () => {
+	expect(documentationKind('native/browser-runtime/README.md')).toBe('native-doc');
+	expect(documentationKind('native/pty-server/README.md')).toBe('native-doc');
+	expect(documentationKind('docs/browser-runtime.md')).toBe('user-doc');
+	expect(documentationKind('native/browser-runtime/src/README.md')).toBe('');
+});
+
+// GitHub section links remove punctuation, including the ideographic comma U+3001.
+// https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#section-links
+test.each([
+	['9. 工具、审批与效果日志', '9-工具审批与效果日志'],
+	['12. 数据、路径与迁移', '12-数据路径与迁移'],
+	['14. 记忆、知识与可扩展能力', '14-记忆知识与可扩展能力'],
+	['15. 权限、凭证与运行治理', '15-权限凭证与运行治理'],
+	['17. 验证、性能与发布门禁', '17-验证性能与发布门禁'],
+	['19. 决议、未决验证与完成定义', '19-决议未决验证与完成定义'],
+])('GitHub heading anchors remove Chinese punctuation: %s', (heading, anchor) => {
+	expect(githubSlug(heading)).toBe(anchor);
+});
+
+test('heading normalization preserves Chinese text, literal underscores and hyphens, and inline content', () => {
+	expect(githubSlug('API_v2、CLI-Mode')).toBe('api_v2cli-mode');
+	expect(githubSlug('Use `Space_Id`、 [Run](https://example.com/)')).toBe('use-space_id-run');
+	expect(githubSlug('9. 工具审批与效果日志')).toBe('9-工具审批与效果日志');
+	expect(githubSlug('9. 工具审批与效果日志附录')).not.toBe('9-工具审批与效果日志');
 });
 
 test('only captured GitHub issue title labels are literal; body references and ordinary document headings stay checked', () => {

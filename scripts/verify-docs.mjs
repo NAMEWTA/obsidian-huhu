@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { documentationKind as classify, referenceLinkBody } from './documentation-policy.mjs';
+import { documentationKind as classify, githubSlug, referenceLinkBody } from './documentation-policy.mjs';
 
 const root = process.cwd();
 const failures = [];
@@ -70,7 +70,7 @@ for (const required of [
 
 // Speculo tooling contains owner-specific Path tags and templates; validate it
 // with the owning package checker, not the project-guide link rules below.
-const strict = new Set(['user-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
+const strict = new Set(['user-doc', 'native-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
 let links = 0;
 let external = 0;
 const headings = new Map();
@@ -89,19 +89,6 @@ function fenceBody(text) {
 		if (!fence) kept.push(line);
 	}
 	return { unclosed: Boolean(fence), body: kept.join('\n') };
-}
-
-function githubSlug(text) {
-	const plain = text
-		.replace(/`([^`]*)`/g, '$1')
-		.replace(/!\[[^\]]*\]\([^)\n]*\)/g, '')
-		.replace(/\[([^\]]*)\]\([^)\n]*\)/g, '$1')
-		.replace(/<[^>\n]+>/g, '');
-	return plain
-		.toLowerCase()
-		.replace(/[\u0000-\u001f]/g, '')
-		.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
-		.replace(/\s/g, '-');
 }
 
 function rememberHeading(file, slug, seen) {
