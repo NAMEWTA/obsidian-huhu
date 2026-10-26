@@ -11,7 +11,8 @@ const roots: string[] = [], services: DesktopBrowserFileService[] = [];
 afterEach(async () => { await Promise.all(services.splice(0).map((service) => service.dispose().catch(() => undefined))); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 const scope = (runId = 'run-A', spaceId = 'space-A'): BrowserFileScope => ({ spaceId, execution: { kind: 'agent', runId } });
 async function setup(provider: TestBrowserProtector['provider'] = 'available', ephemeral = false) {
-	const root = await fs.mkdtemp(path.join(tmpdir(), 'huhu-files-')); roots.push(root); const protector = new TestBrowserProtector(); protector.provider = provider;
+	// Compare paths within the physical root, including Windows 8.3 temporary-directory aliases.
+	const root = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'huhu-files-'))); roots.push(root); const protector = new TestBrowserProtector(); protector.provider = provider;
 	const cancelDownload = vi.fn(async () => undefined), options = { directory: path.join(root, 'managed'), metadataProtector: protector, metadataScope: 'test-vault-device', allowEphemeralFiles: () => ephemeral, downloadDirectory: (spaceId: string) => path.join(root, 'downloads', spaceId), cancelDownload };
 	const service = new DesktopBrowserFileService(options); services.push(service); await service.ready; const source = path.join(root, 'private-original.txt'); await fs.writeFile(source, 'private file content');
 	return { root, source, protector, options, service, cancelDownload };

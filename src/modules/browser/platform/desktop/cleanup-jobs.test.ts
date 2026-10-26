@@ -7,7 +7,8 @@ import { DesktopImportCleanupJobs } from './cleanup-jobs';
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
-async function root() { const directory = await fs.mkdtemp(path.join(tmpdir(), 'huhu-cleanup-')); roots.push(directory); return directory; }
+// Windows tmpdir() can use an 8.3 alias; services bind and return the canonical physical root.
+async function root() { const directory = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'huhu-cleanup-'))); roots.push(directory); return directory; }
 describe('durable staging cleanup ownership', () => {
 	it('records only IDs, retains a failed native reclaim and succeeds idempotently after restart', async () => {
 		const directory = await root(), id = randomUUID(), stage = path.join(directory, 'import-staging', id), reclaim = vi.fn(async () => { throw new Error('native owner unknown'); });

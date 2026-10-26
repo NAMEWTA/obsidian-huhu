@@ -1,6 +1,6 @@
 import path from 'node:path';
 import os from 'node:os';
-import { mkdtemp, mkdir, readFile, readdir, rm, stat, symlink } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, realpath, rm, stat, symlink } from 'node:fs/promises';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { App } from 'obsidian';
 import { BrowserMaterialFiles } from '../platform/desktop/browser-material';
@@ -16,7 +16,7 @@ afterEach(async () => {
 	for (const cleanup of cleanups.splice(0)) await cleanup();
 });
 async function fixture() {
-	const vault = await mkdtemp(path.join(os.tmpdir(), 'huhu-browser-material-'));
+	const vault = await realpath(await mkdtemp(path.join(os.tmpdir(), 'huhu-browser-material-')));
 	const files = new BrowserMaterialFiles(vault);
 	const abort = new AbortController();
 	const session = {
