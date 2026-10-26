@@ -15,3 +15,9 @@ it('geometry barrier rejects old input and retains a fresh frame arriving before
  broker.publish(frame('new',2));expect(receive).toHaveBeenCalledTimes(1);broker.barrier('s','p',false,2);expect(receive.mock.calls[1]?.[0].frameId).toBe('new');sub.ack('new');expect(broker.frame('v','new')?.viewportVersion).toBe(2);
 });
 it('invalidates frame eligibility on controller/document changes',()=>{const broker=new FrameBroker(async()=>{}),sub=broker.subscribe({spaceId:'s',pageId:'p',viewerId:'v'},()=>{});broker.publish(frame('a'));sub.ack('a');broker.invalidate('s');expect(broker.frame('v','a')).toBeUndefined();});
+it('a new authority clears a failed geometry barrier and Space counters remain scoped',async()=>{
+ const watch=vi.fn(async()=>{}),broker=new FrameBroker(watch),receive=vi.fn(),sub=broker.subscribe({spaceId:'s',pageId:'p',viewerId:'v'},receive);
+ broker.barrier('s','p',true);broker.publish(frame('stale'));broker.reset('s');broker.publish(frame('fresh',2));sub.ack('fresh');
+ expect(broker.frame('v','fresh')?.viewportVersion).toBe(2);expect(broker.stats('unrelated').framesReceived).toBe(0);
+ await broker.restart('s');expect(watch).toHaveBeenCalledTimes(2);expect(watch).toHaveBeenLastCalledWith('s','p',true);
+});

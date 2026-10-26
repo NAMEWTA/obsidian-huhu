@@ -38,7 +38,7 @@ export default function createBrowserModule(context:ModuleContext):ModuleInstanc
   async activate(signal){
    if(!context.env.desktop)return;signal.throwIfAborted();
    const ports=await(await import('./platform/desktop/composition')).createDesktopBrowserPorts({app:context.app,allowEphemeralFiles:scope=>application?.workspace.getState().spaces.some(s=>s.id===scope.spaceId&&s.retention==='ephemeral')===true,cancelDownload:async(_spaceId,id)=>{await application?.workspace.cancelDownload(id);}});
-   application=composeBrowserWorkspace(ports,{renderViewer:async(api,scope)=>(await import('./ui/viewer-loader')).renderBrowserViewer(api,scope),materials:async()=>(await context.contributions.collect(BROWSER_MATERIAL_CONSUMERS,{activate:false})).map(item=>item.value)});
+   application=composeBrowserWorkspace(ports,{renderViewer:async(api,scope)=>(await import('./ui/workbench-page')).renderBrowserViewer(api,scope),materials:async()=>(await context.contributions.collect(BROWSER_MATERIAL_CONSUMERS,{activate:false})).map(item=>item.value)});
    await application.initialize();signal.throwIfAborted();
    context.lifetime.register(observeNoteLinks(context.app.workspace,()=>settings.get().interceptNoteLinks,url=>{void open.show({url});}));
   },

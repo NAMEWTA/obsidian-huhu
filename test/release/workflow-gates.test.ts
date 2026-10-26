@@ -15,13 +15,15 @@ interface Job {
 const workflow = (name: string) => parse(readFileSync(`.github/workflows/${name}.yml`, 'utf8')) as { on: Record<string, unknown>; jobs: Record<string, Job> };
 
 test('tag releases require successful checks and all helpers from the calling commit', () => {
-	const release = workflow('release'), checks = workflow('lint'), terminal = workflow('terminal-build');
+	const release = workflow('release'), checks = workflow('lint'), terminal = workflow('terminal-build'), browser = workflow('browser-runtime-build');
 	expect(checks.on).toHaveProperty('workflow_call');
 	expect(release.jobs.checks?.uses).toBe('./.github/workflows/lint.yml');
 	expect(release.jobs.terminal?.uses).toBe('./.github/workflows/terminal-build.yml');
-	expect(release.jobs.release?.needs).toEqual(['checks', 'terminal']);
-	expect(release.jobs.release?.if).toBe("${{ needs.checks.result == 'success' && needs.terminal.result == 'success' }}");
-	for (const file of [release, checks, terminal]) for (const job of Object.values(file.jobs)) {
+	expect(release.jobs.release?.needs).toEqual(['checks', 'terminal', 'browser']);
+	expect(release.jobs.release?.if).toBe("${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' }}");
+	expect(release.jobs.browser?.uses).toBe('./.github/workflows/browser-runtime-build.yml');
+	expect(browser.on).toHaveProperty('workflow_call');
+	for (const file of [release, checks, terminal, browser]) for (const job of Object.values(file.jobs)) {
 		expect(job['continue-on-error']).not.toBe(true);
 		for (const step of job.steps ?? []) {
 			expect(step['continue-on-error']).not.toBe(true);
@@ -43,7 +45,7 @@ test('the reusable quality matrix runs the full checks on Linux 22/24 and Window
 	]);
 	expect(build.strategy?.['fail-fast']).toBe(false);
 	const commands = (build.steps ?? []).flatMap(step => step.run ? [step.run] : []);
-	for (const required of ['pnpm install --frozen-lockfile', 'pnpm run build', 'pnpm run check:bundle', 'git diff --exit-code -- main.js styles.css', 'pnpm run lint', 'pnpm run lint:css', 'pnpm run test:all', 'pnpm run check:notices', 'pnpm run check:native']) {
+	for (const required of ['pnpm install --frozen-lockfile', 'pnpm run build', 'pnpm run check:bundle', 'git diff --exit-code -- main.js styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 src/modules/browser/platform/desktop/runtime/main-source.generated.json src/modules/browser/platform/desktop/runtime/worker-digest.generated.json', 'pnpm run lint', 'pnpm run lint:css', 'pnpm run test:all', 'pnpm run check:notices', 'pnpm run check:native']) {
 		expect(commands).toContain(required);
 		expect(build.steps?.find(step => step.run === required)?.if).toBeUndefined();
 	}

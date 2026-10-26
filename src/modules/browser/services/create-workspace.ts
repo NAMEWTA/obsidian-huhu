@@ -11,7 +11,8 @@ import { BrowserProtocolService, type ConnectionGrant } from './protocol-service
 export function composeBrowserWorkspace(ports:DesktopBrowserPorts,options:{renderViewer:(api:BrowserWorkspace,scope:{spaceId:string;pageId:string})=>Promise<unknown>;materials:()=>Promise<readonly BrowserMaterialConsumer[]>}){
  const identity=new IdentityService(ports.credentials,()=>Date.now(),()=>ports.persistence.id());let identities:IdentitySummary[]=[];
  const connections=new Map<string,ConnectionGrant>();let workspace:BrowserWorkspaceService;
- const rpc=ports.rpc((method,params,id)=>{const grant=connections.get(id);if(!grant)throw new AgentBrowserError('connection_invalid');return protocol.call(method,params,grant);},(id,scope)=>{connections.set(id,{spaceId:scope.spaceId,runId:scope.grant.run.id,capability:scope.grant.capability,allowTaskCreation:scope.allowTaskCreation,created:false,runs:new Map()});});
+ const connection=(id:string)=>{const grant=connections.get(id);if(!grant)throw new AgentBrowserError('connection_invalid');return grant;};
+ const rpc=ports.rpc((method,params,id)=>protocol.call(method,params,connection(id)),(id,scope)=>{workspace.health(scope.grant.run.id,scope.grant.capability);connections.set(id,{spaceId:scope.spaceId,runId:scope.grant.run.id,capability:scope.grant.capability,allowTaskCreation:scope.allowTaskCreation,created:false,runs:new Map()});},(method,params,id,result)=>protocol.finalize(method,params,connection(id),result));
  const refresh=async()=>{identities=await identity.list();};
  const extensions:BrowserWorkspaceExtensions={
   async seed(versionId,space,runtime){
@@ -42,7 +43,7 @@ export function composeBrowserWorkspace(ports:DesktopBrowserPorts,options:{rende
   },
   renderViewer:scope=>options.renderViewer(workspace,scope),materials:options.materials,
   connection:(spaceId,grant,allowTaskCreation)=>rpc.create({spaceId,grant,allowTaskCreation}),
-  cleanupPending:ports.cleanupPending,retryCleanup:()=>ports.retryCleanup(),
+  cleanupPending:ports.cleanupPending,retryCleanup:()=>ports.retryCleanup(),scheduleInterval:(callback,ms)=>ports.scheduleInterval(callback,ms),
  };
  workspace=new BrowserWorkspaceService(ports.persistence,ports.runtimeFactory,extensions);const protocol=new BrowserProtocolService(workspace);
  return{workspace,async initialize(){if(!ports.persistence.readOnly)await refresh();await workspace.initialize();},async dispose(){await rpc.dispose();connections.clear();await workspace.dispose();}};

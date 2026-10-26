@@ -3,12 +3,13 @@ import { test } from 'vitest';
 import { serviceKey, type ModuleContext, type ModuleId, type ModuleInstance, type ModuleManifest } from '../contracts/module';
 import { ModuleRegistry, type RegistryHost } from './registry';
 
-type Behavior = { fail?: 'load' | 'activate' | 'dispose'; activation?: ModuleManifest['activation']; mobile?: boolean; service?: string };
+type Behavior = { fail?: 'load' | 'activate' | 'dispose'; activation?: ModuleManifest['activation']; mobile?: boolean; service?: string; retain?: boolean };
 
 function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Record<ModuleId, boolean>> = {}, env = { desktop: true, mobile: false, phone: false }) {
 	const log: string[] = [];
 	const reports: string[] = [];
 	const created: Partial<Record<ModuleId, number>> = {};
+	const released: ModuleId[] = [];
 	const manifests: ModuleManifest[] = (Object.keys(behaviors) as ModuleId[]).map((id, index) => {
 		const behavior = behaviors[id]!;
 		return {
@@ -27,6 +28,7 @@ function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Re
 					default: (): ModuleInstance => {
 						created[id] = (created[id] ?? 0) + 1;
 						return {
+							retainOnDisposeFailure: behavior.retain,
 							activate: () => {
 								if (behavior.fail === 'activate') throw new Error(`${id} activate`);
 								log.push(`+${id}`);
@@ -47,11 +49,11 @@ function setup(behaviors: Partial<Record<ModuleId, Behavior>>, flags: Partial<Re
 		env,
 		enabled: (id) => state[id] ?? true,
 		createContext: (manifest) => ({ id: manifest.id }) as unknown as ModuleContext,
-		releaseContext: () => undefined,
+		releaseContext: (context) => { released.push(context.id); },
 		report: (id, phase, error) => reports.push(`${id}:${phase}:${(error as Error).message}`),
 	};
 	const registry = new ModuleRegistry(manifests, host);
-	return { registry, log, reports, created, flags: state };
+	return { registry, log, reports, created, released, flags: state };
 }
 
 test('a module that throws is marked failed while every other module still activates', async () => {
@@ -132,4 +134,43 @@ test('layout-ready modules wait for their phase', async () => {
 	assert.equal(registry.state('icons'), 'idle');
 	await registry.apply(['startup', 'layout-ready']);
 	assert.deepEqual(log, ['+home', '+icons']);
+});
+
+test('retained cleanup failure withdraws capabilities and prevents a second owner until retry succeeds', async () => {
+	const behaviors: Partial<Record<ModuleId, Behavior>> = { browser: { retain: true, service: 'workspace' } };
+	const { registry, created, released, flags } = setup(behaviors);
+	await registry.apply();
+	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));
+	behaviors.browser!.fail = 'dispose'; flags.browser = false;
+	await registry.apply();
+	assert.equal(registry.state('browser'), 'failed');
+	assert.equal(lease?.revoked.aborted, true);
+	assert.equal(registry.services.peek(serviceKey('browser', 'workspace')), undefined);
+	assert.deepEqual(released, []);
+	flags.browser = true;
+	assert.equal(await registry.activate('browser'), false);
+	assert.equal(created.browser, 1);
+	delete behaviors.browser!.fail;
+	assert.equal(await registry.activate('browser'), true);
+	assert.equal(created.browser, 2);
+	assert.deepEqual(released, ['browser']);
+	await registry.dispose();
+});
+
+test('unload revokes a retained service immediately and retries the same cleanup owner', async () => {
+	const behaviors: Partial<Record<ModuleId, Behavior>> = { browser: { retain: true, service: 'workspace', fail: 'dispose' } };
+	const { registry, created, released } = setup(behaviors);
+	await registry.apply();
+	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));
+	registry.disposeNow();
+	assert.equal(lease?.revoked.aborted, true);
+	assert.equal(registry.services.peek(serviceKey('browser', 'workspace')), undefined);
+	await registry.dispose();
+	assert.equal(registry.state('browser'), 'failed');
+	assert.deepEqual(released, []);
+	delete behaviors.browser!.fail;
+	await registry.dispose();
+	assert.deepEqual(released, ['browser']);
+	assert.equal(created.browser, 1);
+	assert.equal(await registry.activate('browser'), false);
 });

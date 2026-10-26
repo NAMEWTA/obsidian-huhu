@@ -81,7 +81,7 @@ export class OperationLedger {
   catch { record.state='cancelled_before_dispatch'; record.error='journal_unavailable'; return record; }
   try {
    const result = await dispatch(copy(record.scope));
-   if (JSON.stringify(result).length > 8 * 1024 * 1024) throw new AgentBrowserError('result_too_large');
+   if (new TextEncoder().encode(JSON.stringify(result)).byteLength > 8 * 1024 * 1024) throw new AgentBrowserError('result_too_large');
    record.result = result; record.state='completed';
    await this.save(record);
   } catch(error) {

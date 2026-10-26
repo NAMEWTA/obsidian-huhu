@@ -42,16 +42,18 @@
 
 ## 工作台页面
 
-1. 在 `src/app/contracts/workbench.ts` 的 `WORKBENCH_FEATURES` / `FEATURE_MODULES` 注册功能与所属模块；分区加入 `src/shell/navigation-state.ts` 的允许列表。功能列表见 [架构参考](architecture.md)，浏览器标签、批注和看板记录不注册为独立工作台功能。
+1. 在 `src/app/contracts/workbench.ts` 的 `WORKBENCH_FEATURES` / `FEATURE_MODULES` 注册功能与所属模块；分区加入 `src/shell/navigation-state.ts` 的允许列表。功能列表见 [架构参考](architecture.md)，`browser` 是独立工作台功能；智能体中的浏览器查看标签不另注册功能，批注和看板记录也不注册为独立工作台功能。
 2. 在 `src/app/workbench/compose-workbench.ts` 声明贡献：图标轨位置、导航、`availability`、`stateKeys` 和 `create: modulePage('<module>', '<page>')`。`chrome?: PageChrome` 默认为 `'standard'`，首页、智能体工作区、自动化用 `'none'`。贡献可选 `redirect?: (target) => WorkbenchTarget | undefined`，在创建页面之前把本功能的链接改投到另一功能（用于页面已搬进别的功能的深链；返回 `undefined` 保留原目标）。
    图标轨条目可声明 `rail.action`：点击时执行它而不是导航，用于打开工作台之外的东西（笔记导航器用它展开左侧栏视图）；这类条目仍需要 `create`，供右键“在标签页中打开”使用。
 3. `panel?: (context: PanelContext) => PanelModel | undefined` 是可选的；既不提供 `panel`、也不声明自定义 `navigationContext` 时，没有 shell 侧栏。首页和自动化不提供侧栏；智能体页面用 `createPortal` 渲染到 `context.navigationEl`。
 4. `ui/` 的页面加载器返回 `PageCreate`：接收表面上下文、目标、已保存状态、中止信号，返回 `{ surface, navigate, getTarget?, getState?, restore? }`。`surface` 使用 `src/ui/react/surface.tsx` 的 `ReactSurface`，继承 `NativeSurface`；每页一个 React 根，隐藏保留、关闭卸载，`HuhuProviders` 处理所属文档、Portal、语言和错误边界。
 5. `'none'` 页面自备标题或身份、`context.openPageMenu(event)` 菜单，以及需要时的 `context.togglePanel()` 导航开关；专注模式仍提供返回完整工作台的入口。详细 UI 合同见 [shell 参考](../../ui/references/shell.md)。
-6. 面板、标题、状态从 `api.ts` 服务取只读快照（如 `HOME_WORKBENCH`、`AGENT_WORKBENCH`、`SYNC_WORKBENCH`），compose-workbench 通过 `watch` 更新；可选能力用 `peek`，不因显示状态启动模块。
+6. 面板、标题、状态从 `api.ts` 服务取只读快照（如 `HOME_WORKBENCH`、`AGENT_WORKBENCH`、`BROWSER_WORKSPACE`、`SYNC_WORKBENCH`），compose-workbench 通过 `watch` 更新；可选能力用 `peek`，不因显示状态启动模块。
 7. 贡献可提供 `statusSegments?: () => readonly StatusSegment[]`。段包含 `id/icon/label/order`，可选 `tone: 'neutral' | 'running' | 'attention' | 'error'`、`count`、`target`；`label` 是翻译后的文案。这些段显示在 Obsidian 底部状态栏，不依赖工作台叶子；用量不是普通段，状态栏控制器从 `AGENT_USAGE` 单独读取。
 
-浏览器引擎在 `browser/api.ts` 暴露 `BROWSER_HOST`，由智能体工作区创建、挂载浏览器标签；页面宿主、Profile、Cookie 导入、下载、查找和权限仍归 browser。Design Mode 的元素与截图材料通过进程内服务附加到智能体输入框。
+浏览器在 `browser/api.ts` 暴露 `BROWSER_WORKSPACE` 与 `BROWSER_OPEN`，独立拥有 Space、Page、身份种子、文件、权限和原生进程。智能体工作区只保存公开的 Space/Page 引用、挂载查看界面，不创建或接管底层 Chromium。观察与输入授权分开，跨窗口挂载必须释放旧查看者及租约，不重建浏览器用户目录。
+
+网页材料通过 `BROWSER_MATERIAL_CONSUMERS` 可选贡献点交付。使用 `{ activate: false }` 列出已经启用的接收方，在用户明确选择后重新验证目标；不要为了发现目标启动 Agent，也不要从 browser 导入 Agent 内部代码。接收方负责有界的私有图片副本、失效取消和停用清理，只附加到交互会话输入框，不自动提交。
 
 ## 设置页
 

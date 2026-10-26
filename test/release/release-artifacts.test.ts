@@ -67,6 +67,13 @@ describe('release assets', () => {
 		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/complete NOTICE/);
 	});
 
+	it('requires the dedicated browser entry points and verifies their checksums', () => {
+		const release = fakeRoot(), dir = scratch();
+		for (const name of pluginAssets) copyFileSync(path.join(root, name), path.join(dir, name));
+		writeFileSync(path.join(dir, 'browser-worker.cjs'), 'tampered worker');
+		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/browser-worker.cjs checksum mismatch/);
+	});
+
 	it('checks each helper binary against its checksum file', () => {
 		const dir = scratch();
 		for (const name of terminalAssets) {

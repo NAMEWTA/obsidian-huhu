@@ -1,6 +1,6 @@
 {
- "extends": "./tsconfig.json",
- "compilerOptions": { "noEmit": true, "skipLibCheck": true, "lib": ["ESNext", "DOM"], "types": ["node"] },
- "include": ["src/modules/browser/platform/desktop/runtime/worker.ts"],
- "exclude": []
+	"extends": "./tsconfig.json",
+	"compilerOptions": { "noEmit": true, "skipLibCheck": true, "lib": ["ESNext"], "types": ["node"] },
+	"include": ["src/modules/browser/platform/desktop/runtime/worker.ts"],
+	"exclude": []
 }

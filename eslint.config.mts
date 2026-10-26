@@ -66,6 +66,8 @@ export default tseslint.config(
 		"version-bump.mjs",
 		"versions.json",
 		"main.js",
+		"browser-worker.cjs",
+		"browser-cli.cjs",
 		"scripts/**",
 		"**/*.test.ts",
 		"**/*.test.tsx",

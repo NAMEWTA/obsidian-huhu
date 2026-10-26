@@ -1,6 +1,6 @@
 # HUHU 架构
 
-HUHU 是 Obsidian 插件，入口为 `src/app/main.ts`，esbuild 生成单个 CommonJS `main.js`。样式由有序清单生成单个 `styles.css`；原生终端 helper 在 `native/pty-server`，通过 stdio 帧通信。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev/SKILL.md)进入。
+HUHU 是 Obsidian 插件，界面入口为 `src/app/main.ts`，esbuild 生成 CommonJS `main.js`；样式由有序清单生成单个 `styles.css`。浏览器另有独立构建的 `browser-worker.cjs` 和 `browser-cli.cjs`，分别运行在 utilityProcess 和本地 Node 客户端中。原生终端 helper 在 `native/pty-server`，原生浏览器监督进程在 `native/browser-runtime`，各用自己的受限协议。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev/SKILL.md)进入。
 
 ## 分区与模块
 
@@ -19,7 +19,7 @@ HUHU 是 Obsidian 插件，入口为 `src/app/main.ts`，esbuild 生成单个 Co
 
 插件先注册清单、设置与叶子，再按开关激活模块。模块状态区分关闭、不支持、待加载、加载中、运行、释放和失败；单模块失败不阻止其他模块。模块订阅、任务、监听器和进程在 dispose 时释放。服务的 acquire 返回租约，peek 不激活模块，watch 跟踪可用性。
 
-注册工作台、批注和导航器三种叶子。产品页面通过模块贡献挂入工作台；智能体内部的终端、网页、看板和统计使用自己的标签，不另造宿主叶子类型。详见[工作台](workbench.md)。
+注册工作台、批注和导航器三种叶子。产品页面通过模块贡献挂入工作台；浏览器有独立工作台入口，智能体内也可持有浏览器查看标签，二者不新增宿主叶子类型。智能体的终端、看板和统计仍由自己的标签布局管理。详见[工作台](workbench.md)。
 
 ## 状态与数据
 
@@ -34,10 +34,25 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 ## 模块边界
 
 - home 管理看板、小组件、任务聚合与记录；周期笔记经 navigator API 访问。
-- agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 经公开宿主服务提供网页能力。
+- agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 独立管理网页运行状态，通过 `BROWSER_WORKSPACE` 和 `BROWSER_OPEN` 提供工作区与打开能力。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
 - sync 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。
+
+## 独立浏览器
+
+浏览器模块拥有 Space、Page、身份种子、文件、操作账本与进程生命周期。UI 和智能体标签都是查看者：订阅帧只获得观察能力，人工输入必须先取得带控制代次的租约；接管使旧 Agent Run 失效，恢复 Agent 会生成新的执行凭据。个人 Space 不对 Agent 开放，任务 Space 各用独立 Chromium 进程与用户目录。
+
+| 边界 | 职责 |
+|---|---|
+| `browser/core` 与 `browser/services` | 纯契约、权限状态机、幂等操作、预检与恢复；不导入 Electron |
+| `browser/platform/desktop` | 系统密钥、私有文件、显式来源授权、本地 RPC 与运行包安装 |
+| 固定主进程桥与 utilityProcess Worker | 启动受管进程、传输帧与结构化命令；网页内容不能提供宿主执行代码 |
+| `native/browser-runtime` 与固定 Chromium | 监督进程树、验证原生输入权限、通过私有管道控制页面；不复用 Obsidian 的 webview 或 Agent 的 PTY helper |
+
+跨模块只经 `browser/api.ts`：可选的 `BROWSER_MATERIAL_CONSUMERS` 让已经启用的智能体接收用户确认的网页材料。浏览器不导入智能体实现，也不因枚举接收目标启动它；接收方只附加到输入框，不提交。
+
+设备数据位于 `.huhu/browser/<device-id>/v2/`。身份与元数据采用系统密钥保护的认证加密，临时模式必须明确同意；活动 Chromium 用户目录和文件内容不是整体密文。当前生产平台为 Linux x64，其他平台返回不支持。详细协议、运行包和数据边界见[浏览器](browser.md)、[浏览器运行时](browser-runtime.md)与[数据与恢复](data.md)。
 
 ## 验证与产物
 

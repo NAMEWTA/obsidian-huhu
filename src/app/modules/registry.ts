@@ -222,7 +222,7 @@ export class ModuleRegistry {
 		for (const entry of [...this.entries.values()].reverse()) {
 			const id = entry.manifest.id;
 			if ((entry.state !== 'active' && entry.state !== 'failed') || !entry.instance) continue;
-			if (entry.instance.retainOnDisposeFailure) { void this.deactivate(id, 'unload'); continue; }
+			if (entry.instance.retainOnDisposeFailure) { entry.controller?.abort(); this.withdraw(id); void this.deactivate(id, 'unload'); continue; }
 			entry.controller?.abort();
 			this.withdraw(id);
 			try {

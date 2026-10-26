@@ -23,7 +23,7 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 | [Dashboard and records](docs/dashboard.md) | Resizable widget grids, calendar, tasks, inbox, clock/weather, habits, expenses, reading, pomodoro and analytics |
 | [Notes navigator](docs/navigator.md) | Folder/tag browsing, search, previews, calendar, templates and keyboard operations |
 | [Agents and terminals](docs/agent-workbench.md) | CLI sessions, tab groups, resume, quick commands, skills and current-workspace usage |
-| [Built-in browser](docs/browser.md) | Web tabs, profiles, Cookie import, downloads and material capture |
+| [Independent Agent Browser](docs/browser.md) | Isolated personal/task spaces, observer and takeover views, verified identity import, scoped files and CLI/MCP; managed runtime currently Linux x64 |
 | [Archives](docs/contacts.md) | People/company archives, relationships, material and linked notes |
 | [Automations and notifications](docs/automation.md) | Manual/scheduled actions, prechecks, device ownership, run history and notifications |
 | [Comments](docs/comments.md) | Line/selection comments, anchors, hover threads and sidebar |

@@ -1,6 +1,7 @@
 import { useT } from '../../../ui/react/hooks';
 
 const explained = new Set([
+	'unsupported_url',
 	'human_lease_expired',
 	'frame_stale',
 	'input_sequence_stale',

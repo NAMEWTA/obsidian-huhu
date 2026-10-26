@@ -5,7 +5,7 @@ import {
  type BrowserSpace, type BrowserPage, type BrowserWorkspaceState, type ControlLease,
  type BrowserRun, type RunGrant, type BrowserCommand, type BrowserObservation, type HumanPageRequest,
  type HumanInput, type BrowserFrame, type FrameSubscription, type CreateSpaceRequest, type RuntimeEvent,
- type JsonValue, type OperationScope, type OperationRecord, type BrowserRunHealth, type BrowserRunEvent,
+ type JsonValue, type OperationRecord, type BrowserRunHealth, type BrowserRunEvent,
 } from '../core/contracts';
 import type { IdentitySummary, IdentityImportPreview, IdentitySource } from '../core/identity';
 import type { BrowserFile, BrowserDownload, BrowserFileScope } from '../core/files';
@@ -44,6 +44,7 @@ export interface BrowserWorkspaceExtensions {
  connection(spaceId:string,grant:RunGrant,allowTaskCreation:boolean):Promise<string>;
  materials():Promise<readonly BrowserMaterialConsumer[]>;
  cleanupPending?():number; retryCleanup?():Promise<void>;
+ scheduleInterval?(callback:()=>void, milliseconds:number):()=>void;
 }
 
 /** Browser owns process lifetime. Views only subscribe; Agent sessions never own or launch Chromium. */
@@ -66,7 +67,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
  private readonly ledger:OperationLedger;
  private readonly frames:FrameBroker;
  private catalogWrite:Promise<unknown>=Promise.resolve();
- private timer:ReturnType<typeof setInterval>|undefined;
+ private stopTimer:(()=>void)|undefined;
  private closing=false;
  constructor(private readonly persistence:BrowserPersistence,private readonly factory:BrowserRuntimeFactory,private readonly extra:BrowserWorkspaceExtensions,private readonly now=()=>Date.now()){
   this.ledger=new OperationLedger(persistence,now);
@@ -84,7 +85,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   await this.persistence.initialize();
   this.store.setState({readOnly:this.persistence.readOnly,persistence:await this.persistence.security(),availability:await this.factory.availability()});
   if(this.persistence.readOnly){this.store.setState({ready:true,error:'workspace_owned_elsewhere'});return;}
-  await this.ledger.initialize();
+  await this.ledger.initialize();await this.ledger.prune();
   const saved=await this.persistence.read<BrowserSpace[]>('catalog');
   if(saved && (!Array.isArray(saved)||saved.length>200||saved.some(s=>!s||!uuid.test(s.id)||!['personal','task'].includes(s.kind)||!Array.isArray(s.pages)||s.pages.length>8||s.pages.some(p=>!uuid.test(p.id)||typeof p.url!=='string'))))throw new AgentBrowserError('catalog_corrupt');
   for(const savedSpace of saved??[]){
@@ -98,7 +99,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   }
   if(!this.persistence.readOnly)await this.persist();
   this.notify();this.store.setState({ready:true});
-  this.timer=setInterval(()=>{for(const {run} of this.runs.values())if(run.state==='active'&&run.expiresAt<=this.now())void this.pause(run.spaceId).catch(()=>undefined);for(const s of this.spaces.values()){const lease=s.control.lease;if(s.control.mode!=='human'||!lease)continue;if(lease.expiresAt<=this.now()){void this.pause(s.id).catch(()=>undefined);continue;}if(lease.expiresAt-this.now()<60000&&lease.viewerId&&this.frames.has(lease.viewerId,s.id)&&!this.renewals.has(s.id)){this.renewals.add(s.id);const renewed={...lease,expiresAt:this.now()+120000};void this.runtime(s).setControl(renewed,lease.epoch).then(()=>{if(s.control.lease?.leaseId===lease.leaseId)s.control.lease=renewed;}).catch(()=>{if(s.control.lease?.leaseId===lease.leaseId)void this.pause(s.id).catch(()=>undefined);}).finally(()=>this.renewals.delete(s.id));}}},1000);
+  this.stopTimer=this.extra.scheduleInterval?.(()=>{for(const {run} of this.runs.values())if(run.state==='active'&&run.expiresAt<=this.now())void this.pause(run.spaceId).catch(()=>undefined);for(const s of this.spaces.values()){const lease=s.control.lease;if(s.control.mode!=='human'||!lease)continue;if(lease.expiresAt<=this.now()){void this.pause(s.id).catch(()=>undefined);continue;}if(lease.expiresAt-this.now()<60000&&lease.viewerId&&this.frames.has(lease.viewerId,s.id)&&!this.renewals.has(s.id)){this.renewals.add(s.id);const renewed={...lease,expiresAt:this.now()+120000};void this.runtime(s).setControl(renewed,lease.epoch).then(()=>{if(s.control.lease?.leaseId===lease.leaseId)s.control.lease=renewed;}).catch(()=>{if(s.control.lease?.leaseId===lease.leaseId)void this.pause(s.id).catch(()=>undefined);}).finally(()=>this.renewals.delete(s.id));}}},1000);
  }
  private assertWritable(){if(this.closing)throw new AgentBrowserError('workspace_closing');if(this.persistence.readOnly||this.getState().readOnly)throw new AgentBrowserError('workspace_owned_elsewhere');}
  private space(id:string){const s=this.spaces.get(id);if(!s)throw new AgentBrowserError('space_not_found');return s;}
@@ -299,7 +300,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   try{await this.runtimes.get(id)?.stop();await this.starts.get(id)?.catch(()=>undefined);await this.runtimes.get(id)?.stop();await this.factory.reclaim(id,s.runtimeId);this.runtimes.delete(id);this.unlisten.get(id)?.();this.unlisten.delete(id);s.status='stopped';delete s.runtimeId;s.control={mode:'paused',epoch:s.control.epoch};s.pages=s.pages.map(p=>({...p,status:'pending',documentId:''}));}
   catch(error){s.status='quarantined';s.control={mode:'blocked',epoch:s.control.epoch};s.error=operationErrorCode(error);failure=error;}
   this.frames.reset(id);this.store.setState({requests:this.getState().requests.filter(r=>r.spaceId!==id)});
-  try{await this.persist();}catch(error){failure??=error;}this.notify();if(failure)throw failure;
+  try{await this.persist();}catch(error){failure??=error;}this.notify();if(failure)throw failure instanceof Error?failure:new AgentBrowserError('cleanup_pending');
  }
  private async cleanupSpace(s:BrowserSpace){await this.runtimes.get(s.id)?.stop();await this.factory.reclaim(s.id,s.runtimeId);this.runtimes.delete(s.id);this.unlisten.get(s.id)?.();this.unlisten.delete(s.id);await this.extra.files.removeSpace(s.id);await this.factory.removeProfile(s.id);this.spaces.delete(s.id);await this.persist();this.notify();}
  async removeSpace(id:string){this.assertWritable();const s=this.space(id);await this.stopSpace(id);s.status='cleanup_pending';await this.persist();this.notify();await this.cleanupSpace(s);}
@@ -370,7 +371,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
   this.human(request);await consumer.deliver(targetId,material);
  }
  async dispose():Promise<void>{
-  this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.eventsStore.clear();
+  this.closing=true;this.stopTimer?.();this.stopTimer=undefined;this.eventsStore.clear();
   const results=await Promise.allSettled([...this.spaces.values()].filter(s=>this.runtimes.has(s.id)||this.starts.has(s.id)||s.status==='quarantined').map(s=>this.stopSpace(s.id)));
   this.frames.dispose();
   if(results.some(r=>r.status==='rejected')||this.runtimes.size||this.starts.size)throw new AgentBrowserError('cleanup_pending');

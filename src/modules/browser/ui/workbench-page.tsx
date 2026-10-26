@@ -4,6 +4,7 @@ import type { BrowserWorkspace as BrowserWorkspaceApi } from '../api';
 import { ReactSurface } from '../../../ui/react/surface';
 import { t } from '../../../shared/i18n';
 import { BrowserWorkspace, type BrowserWorkspaceSelection } from './BrowserWorkspace';
+export { renderBrowserViewer } from './viewer-loader';
 
 export const createBrowserPage =
 	(api: BrowserWorkspaceApi): PageCreate =>

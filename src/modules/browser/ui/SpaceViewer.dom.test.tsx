@@ -143,24 +143,39 @@ it('hidden presentation releases its human lease and cannot emit input', async (
 
 it('clears old geometry before zoom and keeps a fresh static frame delivered before command completion', async () => {
 	const f = workspaceFixture();
-	render(<TestProviders><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>);
+	render(
+		<TestProviders>
+			<SpaceViewer api={f.api} spaceId="space" pageId="page" />
+		</TestProviders>,
+	);
 	await human(f);
 	let freshId = '';
-	vi.mocked(f.api.pageAction).mockImplementation(async request => {
-		expect(request.command).toEqual({kind:'zoom',factor:1.25});
-		const state=f.api.getState(),space=state.spaces[0]!;
-		f.set({...state,spaces:[{...space,pages:[{...space.pages[0]!,zoom:1.25,viewportVersion:2}]}]});
-		const fresh=f.frame({cssWidth:1024,cssHeight:640});freshId=fresh.frameId;f.emit(fresh);
-		await Promise.resolve();await Promise.resolve();
-		return {viewportVersion:2};
+	vi.mocked(f.api.pageAction).mockImplementation(async (request) => {
+		expect(request.command).toEqual({ kind: 'zoom', factor: 1.25 });
+		const state = f.api.getState(),
+			space = state.spaces[0]!;
+		f.set({ ...state, spaces: [{ ...space, pages: [{ ...space.pages[0]!, zoom: 1.25, viewportVersion: 2 }] }] });
+		const fresh = f.frame({ cssWidth: 1024, cssHeight: 640 });
+		freshId = fresh.frameId;
+		f.emit(fresh);
+		await Promise.resolve();
+		await Promise.resolve();
+		return { viewportVersion: 2 };
 	});
-	fireEvent.pointerDown(screen.getByRole('combobox',{name:t('browser.v2.zoom')}),{button:0,ctrlKey:false});
-	fireEvent.click(await screen.findByRole('option',{name:'125%'}));
-	await waitFor(()=>expect(f.api.pageAction).toHaveBeenCalledOnce());
-	await waitFor(()=>expect(f.ack).toHaveBeenCalledWith(freshId));
+	fireEvent.keyDown(screen.getByRole('combobox', { name: t('browser.v2.zoom') }), { key: 'ArrowDown' });
+	fireEvent.keyDown(await screen.findByRole('option', { name: '125%' }), { key: 'Enter' });
+	await waitFor(() => expect(f.api.pageAction).toHaveBeenCalledOnce());
+	await waitFor(() => expect(f.ack).toHaveBeenCalledWith(freshId));
 	expect(screen.queryByText(t('browser.v2.waitingFrame'))).toBeNull();
-	fireEvent.click(screen.getByLabelText(t('browser.v2.canvas')),{clientX:400,clientY:250});
-	await waitFor(()=>expect(f.api.humanInput).toHaveBeenCalledWith(expect.objectContaining({frameId:freshId,input:{kind:'click',x:512,y:320,button:'left',clickCount:1}})));
+	fireEvent.click(screen.getByLabelText(t('browser.v2.canvas')), { clientX: 400, clientY: 250 });
+	await waitFor(() =>
+		expect(f.api.humanInput).toHaveBeenCalledWith(
+			expect.objectContaining({
+				frameId: freshId,
+				input: { kind: 'click', x: 512, y: 320, button: 'left', clickCount: 1 },
+			}),
+		),
+	);
 });
 
 it('copies a scoped Agent connection only after explicit click, with task creation disabled by default', async () => {
@@ -178,4 +193,32 @@ it('copies a scoped Agent connection only after explicit click, with task creati
 	await waitFor(() => expect(clipboard).toHaveBeenCalledWith('private-connection'));
 	expect(f.api.copyAgentConnection).toHaveBeenCalledWith('space', { allowTaskCreation: false });
 	expect(document.body.textContent).not.toContain('private-connection');
+});
+
+it('resolves address input and leaves revocation usable while page navigation is pending', async () => {
+	const f = workspaceFixture();
+	let finish!: () => void;
+	vi.spyOn(f.api, 'resolveInput').mockReturnValue('https://example.org/');
+	vi.mocked(f.api.navigate).mockImplementation(
+		() =>
+			new Promise<void>((resolve) => {
+				finish = resolve;
+			}),
+	);
+	render(
+		<TestProviders>
+			<SpaceViewer api={f.api} spaceId="space" pageId="page" />
+		</TestProviders>,
+	);
+	await human(f);
+	const address = screen.getByLabelText(t('browser.v2.address'));
+	fireEvent.change(address, { target: { value: 'example.org' } });
+	fireEvent.submit(address.closest('form')!);
+	expect(f.api.resolveInput).toHaveBeenCalledWith('example.org');
+	expect(f.api.navigate).toHaveBeenCalledWith(expect.objectContaining({ url: 'https://example.org/' }));
+	const release = screen.getByRole('button', { name: t('browser.v2.release') }) as HTMLButtonElement;
+	expect(release.disabled).toBe(false);
+	fireEvent.click(release);
+	await waitFor(() => expect(f.api.releaseViewer).toHaveBeenCalledWith('space', expect.any(String)));
+	await act(async () => finish());
 });

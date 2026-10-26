@@ -13,7 +13,7 @@ async function rpc(connection:BrowserRpcConnection,method:BrowserMethod,input:un
  const original=input&&typeof input==='object'&&!Array.isArray(input)?input as Record<string,unknown>:{};
  const scoped=['status','space.create','run.start'].includes(method)?original:{runId:connection.runId,capability:connection.capability,...original};
  const params=parseMethod(method,scoped),deadlineAtMs=Date.now()+30_000;
- const response=await fetch(connection.endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${connection.token}`},body:JSON.stringify({protocolVersion:2,bootId:connection.bootId,requestId:randomUUID(),method,params,deadlineAtMs}),signal:AbortSignal.timeout(31_000)});
+ const response=await window.fetch(connection.endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${connection.token}`},body:JSON.stringify({protocolVersion:2,bootId:connection.bootId,requestId:randomUUID(),method,params,deadlineAtMs}),signal:AbortSignal.timeout(31_000)});
  const text=await response.text();if(text.length>12*1024*1024)throw new Error('response_too_large');const body=JSON.parse(text) as {result?:unknown;error?:{code?:string}};
  if(!response.ok||body.error)throw new Error(body.error?.code??'request_failed');return body.result;
 }
@@ -24,7 +24,7 @@ async function mcp(connection:BrowserRpcConnection){
  for await(const line of lines){
   if(line.length>512*1024){send({jsonrpc:'2.0',id:null,error:{code:-32600,message:'request_too_large'}});continue;}
   let message:{id?:string|number;method?:string;params?:{name?:string;arguments?:unknown}};
-  try{message=JSON.parse(line);}catch{send({jsonrpc:'2.0',id:null,error:{code:-32700,message:'invalid_json'}});continue;}
+  try{const parsed:unknown=JSON.parse(line);if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid_json');message=parsed;}catch{send({jsonrpc:'2.0',id:null,error:{code:-32700,message:'invalid_json'}});continue;}
   if(message.id===undefined)continue;
   if(message.method==='initialize'){send({jsonrpc:'2.0',id:message.id,result:{protocolVersion:'2024-11-05',capabilities:{tools:{}},serverInfo:{name:'huhu-browser',version:'2'}}});continue;}
   if(message.method==='tools/list'){send({jsonrpc:'2.0',id:message.id,result:{tools:tools.map(t=>({name:t.name,description:`HUHU ${t.method}`,inputSchema:{...t.inputSchema,properties:Object.fromEntries(Object.entries(t.inputSchema.properties??{}).filter(([key])=>key!=='capability')),required:(t.inputSchema.required??[]).filter(key=>key!=='capability'&&key!=='runId')}}))}});continue;}

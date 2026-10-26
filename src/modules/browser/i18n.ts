@@ -1,5 +1,7 @@
 export const messages = {
 	en: {
+		'browser.v2.failure.unsupported_url':
+			'Enter a web address or a search query. Only HTTP and HTTPS pages are supported.',
 		'browser.v2.failure.human_lease_expired': 'Human control expired. Take control again before sending input.',
 		'browser.v2.failure.frame_stale': 'The displayed frame is out of date. Wait for a fresh frame, then retry.',
 		'browser.v2.failure.input_sequence_stale':
@@ -77,7 +79,7 @@ export const messages = {
 		'browser.v2.release': 'Release control',
 		'browser.v2.resume': 'Hand to Agent',
 		'browser.v2.pause': 'Pause',
-		'browser.v2.copyConnection': 'Copy Agent connection',
+		'browser.v2.copyConnection': 'Copy connection file path',
 		'browser.v2.observerHelp': 'Viewing does not change the Agent’s control. Take over to interact.',
 		'browser.v2.inputHelp': 'Click an input on the webpage, then compose and insert complete text here.',
 		'browser.v2.textInput': 'Text to insert into the current webpage input',
@@ -368,6 +370,7 @@ export const messages = {
 			'Browser profile data could not be read. Repair the profile file before enabling the module.',
 	},
 	zh: {
+		'browser.v2.failure.unsupported_url': '请输入网址或搜索词，仅支持 HTTP 和 HTTPS 网页。',
 		'browser.v2.failure.human_lease_expired': '人工控制已过期，请重新接管后再操作。',
 		'browser.v2.failure.frame_stale': '当前画面已过期，请等待新画面后重试。',
 		'browser.v2.failure.input_sequence_stale': '此输入序号已过期，请等待最新画面再操作。',
@@ -434,7 +437,7 @@ export const messages = {
 		'browser.v2.release': '释放控制权',
 		'browser.v2.resume': '交回 Agent',
 		'browser.v2.pause': '暂停',
-		'browser.v2.copyConnection': '复制 Agent 连接信息',
+		'browser.v2.copyConnection': '复制连接文件路径',
 		'browser.v2.observerHelp': '查看不会改变 Agent 的控制权。接管后可操作。',
 		'browser.v2.inputHelp': '先点击网页中的输入框，再在此处组词并插入完整文本。',
 		'browser.v2.textInput': '要插入网页当前输入框的文本',

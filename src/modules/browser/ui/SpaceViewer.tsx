@@ -88,6 +88,8 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 	const [hasFrame, setHasFrame] = useState(false),
 		[pending, setPending] = useState(false),
 		[error, setError] = useState('');
+	const [controlPending, setControlPending] = useState(false);
+	const controlBusy = useRef(false);
 	const [address, setAddress] = useState(page?.url ?? ''),
 		[addressEdited, setAddressEdited] = useState(false);
 	const [text, setText] = useState(''),
@@ -119,6 +121,21 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		},
 		[report],
 	);
+	// Revocation must remain available while a page action is waiting on a website.
+	const changeControl = async (work: () => Promise<unknown>) => {
+		if (controlBusy.current) return;
+		controlBusy.current = true;
+		setControlPending(true);
+		setError('');
+		try {
+			await work();
+		} catch (reason) {
+			report(reason);
+		} finally {
+			controlBusy.current = false;
+			setControlPending(false);
+		}
+	};
 	const authority = useCallback((): HumanPageRequest | undefined => {
 		const current = api.getState().spaces.find((item) => item.id === spaceId),
 			currentLease = current?.control.lease;
@@ -297,8 +314,13 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 	const navigate = () => {
 		const scope = authority();
 		if (!scope) return;
+		const url = api.resolveInput(address);
+		if (!url) {
+			report(new Error('unsupported_url'));
+			return;
+		}
 		void run(async () => {
-			await api.navigate({ ...scope, url: address });
+			await api.navigate({ ...scope, url });
 			setAddressEdited(false);
 		});
 	};
@@ -311,7 +333,13 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 			request.runtimeId === space.runtimeId &&
 			request.documentId === page.documentId,
 	);
-	const disabled = pending || state.readOnly || !ownsControl || space.status !== 'ready' || page.status !== 'open';
+	const disabled =
+		pending ||
+		controlPending ||
+		state.readOnly ||
+		!ownsControl ||
+		space.status !== 'ready' ||
+		page.status !== 'open';
 	const actionKey = `${viewer.id}:${lease?.leaseId ?? ''}:${visible}`;
 	return (
 		<div className="huhu-browser-viewer flex h-full min-h-0 min-w-0 flex-col" data-page-id={pageId}>
@@ -344,17 +372,17 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 						<Button
 							size="sm"
 							variant="outline"
-							disabled={pending}
-							onClick={() => void run(() => api.releaseViewer(spaceId, viewer.id))}
+							disabled={controlPending || state.readOnly}
+							onClick={() => void changeControl(() => api.releaseViewer(spaceId, viewer.id))}
 						>
 							{t('browser.v2.release')}
 						</Button>
 					) : (
 						<Button
 							size="sm"
-							disabled={pending || state.readOnly || space.status !== 'ready'}
+							disabled={controlPending || state.readOnly || space.status !== 'ready'}
 							onClick={() =>
-								void run(() =>
+								void changeControl(() =>
 									api.takeover({ spaceId, viewerId: viewer.id, windowId: viewer.windowId }),
 								)
 							}
@@ -363,12 +391,23 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 							{t('browser.v2.takeover')}
 						</Button>
 					)}
+					{space.control.mode === 'agent' && (
+						<Button
+							size="sm"
+							variant="outline"
+							disabled={controlPending || state.readOnly}
+							onClick={() => void changeControl(() => api.pause(spaceId))}
+						>
+							<Pause />
+							{t('browser.v2.pause')}
+						</Button>
+					)}
 					{space.kind === 'task' && space.control.mode !== 'agent' && (
 						<Button
 							size="sm"
 							variant="outline"
-							disabled={pending || state.readOnly || space.status !== 'ready'}
-							onClick={() => void run(() => api.resumeAgent(spaceId))}
+							disabled={controlPending || state.readOnly || space.status !== 'ready'}
+							onClick={() => void changeControl(() => api.resumeAgent(spaceId))}
 						>
 							<Play />
 							{t('browser.v2.resume')}

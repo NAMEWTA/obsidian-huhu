@@ -23,7 +23,7 @@ Obsidian 里的个人工作台：把笔记、可组合看板、编程智能体�
 | [看板与记录](docs/dashboard.md) | 可拖动和缩放的小组件、日历、待办、收件箱、时钟天气、习惯、记账、阅读、番茄钟和统计 |
 | [笔记导航](docs/navigator.md) | 文件夹与标签浏览、搜索、预览、日历、模板及键盘操作 |
 | [智能体与终端](docs/agent-workbench.md) | CLI 会话、标签分组、恢复、快捷命令、技能和当前工作空间用量 |
-| [内置浏览器](docs/browser.md) | 网页标签、个人资料、Cookie 导入、下载和材料采集 |
+| [独立 Agent Browser](docs/browser.md) | 隔离的个人/任务空间、观察与接管、身份导入、文件授权及 CLI/MCP；受管运行时当前支持 Linux x64 |
 | [档案](docs/contacts.md) | 人物与企业档案、关系、资料和关联笔记 |
 | [自动化与通知](docs/automation.md) | 手动及定时操作、执行预检、设备归属、运行记录和通知 |
 | [批注](docs/comments.md) | 行与选区批注、锚点、悬停讨论和侧栏 |
