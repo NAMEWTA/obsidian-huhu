@@ -60,3 +60,5 @@ release-assets/
 terminal-artifacts/
 /evidence/
 /coverage/
+# Native browser build outputs
+native/browser-runtime/target/
