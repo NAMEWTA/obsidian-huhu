@@ -11,29 +11,30 @@ permissions:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.sha }}
-          path: huhu
           persist-credentials: false
-      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
         with:
-          repository: PandoraReads/HiLighter
-          path: hilighter
-          persist-credentials: false
-      - name: Archive source without credentials or Git configuration
+          node-version: 22.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Archive locked dependencies without credentials
         shell: bash
         run: |
-          git -C huhu archive --format=tar.gz --output="$RUNNER_TEMP/huhu-source.tar.gz" HEAD
-          git -C hilighter archive --format=tar.gz --output="$RUNNER_TEMP/hilighter-source.tar.gz" HEAD
-          printf 'HUHU %s\nHiLighter %s\n' "$(git -C huhu rev-parse HEAD)" "$(git -C hilighter rev-parse HEAD)" > "$RUNNER_TEMP/source-refs.txt"
+          tar -czf "$RUNNER_TEMP/huhu-dependencies.tar.gz" node_modules
+          cp -a "$(dirname "$(dirname "$(readlink -f "$(command -v pnpm)")")")" "$RUNNER_TEMP/pnpm-package"
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/pnpm-package.tar.gz" pnpm-package
+          sha256sum pnpm-lock.yaml > "$RUNNER_TEMP/dependency-lock.sha256"
       - uses: actions/upload-artifact@v4
         with:
-          name: highlights-source-snapshot
+          name: highlights-dependencies-snapshot
           path: |
-            ${{ runner.temp }}/huhu-source.tar.gz
-            ${{ runner.temp }}/hilighter-source.tar.gz
-            ${{ runner.temp }}/source-refs.txt
+            ${{ runner.temp }}/huhu-dependencies.tar.gz
+            ${{ runner.temp }}/pnpm-package.tar.gz
+            ${{ runner.temp }}/dependency-lock.sha256
           retention-days: 1
