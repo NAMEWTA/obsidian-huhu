@@ -23,7 +23,7 @@ export async function createCommentsRuntime(context: ModuleContext, settings: Se
 	let alive = true;
 	const store = new CommentStore(vaultCommentFs(app), { timers: { set: (callback, ms) => win.setTimeout(callback, ms), clear: handle => win.clearTimeout(handle as number) }, fuzzyThreshold: () => settings.get().fuzzyThreshold, onError: () => { if (alive) new Notice(t('editor.comments.storageFailed')); } });
 	const service = createCommentsService(store, () => settings.get());
-	const env: CommentsEnv = { app, service, editors: new Set(), alive: () => alive, overlay: doc => overlays.get(doc), open: request => overlays.get(request.ownerDocument).open(request), openSettings: () => { void context.shell.open({ feature: 'settings', section: 'editor' }); } };
+	const env: CommentsEnv = { app, service, editors: new Set(), alive: () => alive, overlay: doc => overlays.get(doc), open: request => overlays.get(request.ownerDocument).open(request), openSettings: () => { void context.shell.open({ feature: 'settings', section: 'editor' }); }, exportHighlights: async rows => { const { exportHighlightCards } = await import('../services/export'); return exportHighlightCards(app, settings.get().exportFolder, rows); } };
 	const overlays = new CommentsOverlays(env);
 	const readingCleanups = new Set<() => void>();
 	const panels = new Set<() => void>();
