@@ -1,0 +1,41 @@
+{
+  "observer": "native:/root",
+  "baselineResult": "evidence/T-14-logs/lead-memory-default-core-r1.json",
+  "inputSha256": "b6399970ff7ef964902063561598ca5b5c29dc96340500ae2a5396633b4a3faf",
+  "inputFiles": 404,
+  "snapshot": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob",
+  "command": {
+    "argv": [
+      "go",
+      "test",
+      "-mod=readonly",
+      "-p=1",
+      "./tests/contract/foundation",
+      "./tests/contract/chat",
+      "./tests/contract/collaboration-policy",
+      "./tests/contract/groups",
+      "./tests/contract/engine/chat",
+      "-run",
+      "^Test(DefaultMemoryRuntimeSealsActualContextAndComposesAgentUsage|OrdinaryMemoryCandidatesFailWithoutPublishingOrCreatingJobs|StdioMemoryAndContextProofsDoNotCollapseIntoRunOrMessage|MemorySealAndOriginalMarkRunningRollbackInOneTransaction|DirectHistoryMemoryFilterPrecedesSourceFreeFastPathAndFinalProofs|LegacyModelHistoryCommitsOnlyFinallyRetainedMemoryClosure|RealMemoryForgetFiltersDerivedHistoryButKeepsIndependentIntentAndRunMetadata|ActualRecalledMemoryForgetFencesSourceFreeRunAndDispatch|ActualMaintenanceAttemptsKeepSummaryRetryInTrustedFamily|PublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritance|SealedContextAndRecallReachRealSDKOnceInOrder)$",
+      "-count=1",
+      "-timeout=90s",
+      "-v"
+    ],
+    "cwd": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "CGO_ENABLED": "0"
+    },
+    "actualExit": 1,
+    "waited": true,
+    "seconds": 9.931673237999348,
+    "log": "evidence/T-14-logs/lead-memory-runtime-contracts-r1.log"
+  },
+  "sourceDrift": [],
+  "snapshotDrift": [],
+  "boundary": "11 authored new public/runtime/component targets compiled with real Core; partial integration checks; not full T14 or live Provider/Obsidian/OS"
+}

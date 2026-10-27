@@ -1,0 +1,38 @@
+{
+  "task": "075-groups-client",
+  "recordedAt": "2026-10-25T18:25:29.071685+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_client",
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledgementReceived": true,
+  "taskSha256": "07bfbe9585433bc5b8ead5bb81143d20e1a40b1bb6937f50837f8e964ab8c05d",
+  "dispatchExit": 0,
+  "dispatchErrors": [],
+  "dispatchWarnings": [],
+  "mapRevision": 17,
+  "goalRevision": 16,
+  "priorAcceptedReviewReportSha256": "24a786ff8175137c39d87d8db6d288fb0221a3ac175aca62bf608f6c7d155718",
+  "priorAcceptedCodeGate": "evidence/T-07-logs/code-gate-notes-r3.json",
+  "sharedContractFreeze": "pending actual owner agreement",
+  "heavyTestWindow": "not assigned; no parallel heavy matrix",
+  "boundary": "full code implementation, real model/Obsidian/target OS remains user-owned/not-run",
+  "nativeAcknowledgementRecordedAt": "2026-10-25T18:35:42.833804+00:00",
+  "acknowledgementEvidence": "Actual native MESSAGE received by Root: current contract/precise path request (073,074) or client projection/token slice status (075)",
+  "supplement": {
+    "mapRevision": 18,
+    "goalRevision": 17,
+    "path": "evidence/T-13-logs/map18-window-supplement.md",
+    "sha256": "72c1b348b2882ff239109d91208e1ec64b2c78e11d71c10bf519582350a5b705",
+    "nativeNoticeSent": true,
+    "nativeNoticeTool": "collaboration.send_message",
+    "nativeNoticeRecordedAt": "2026-10-25T18:36:28.383469+00:00"
+  },
+  "managedStartupSupplement": {
+    "mapRevision": 18,
+    "goalRevision": 17,
+    "path": "evidence/T-13-logs/managed-startup-supplement.md",
+    "sha256": "2bede0b8fc27eb9bc7194b25bca35512c6919f9d99bc7dd892c8882396f32d2f",
+    "nativeNoticeSent": true,
+    "nativeNoticeTool": "collaboration.send_message"
+  }
+}

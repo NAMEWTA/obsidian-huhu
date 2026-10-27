@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-26T17:06:42.309570+00:00",
+  "status": "author candidate returned; T12/T14/Goal pending Root integration",
+  "session": "20261025T043239Z",
+  "task": "150-resume-inbox-consumers",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "sourceCount": 4,
+  "sourceTreeSHA256": "8e522638071616ccb4573cb088d6f3bc0220ffea80da43842a0226143a06d3b4",
+  "sourceTreeEncoding": "sorted sha256 + two spaces + path + LF, UTF8 SHA256",
+  "sourceFiles": {
+    "native/huhubot/tests/contract/delegation/reply_sources_test.go": {
+      "sha256": "d946bd7ef06b87d36709033b5b072a822302f82426918215640f060fa8cc9a49",
+      "mode": 384
+    },
+    "native/huhubot/tests/contract/delegation/short_term_assert_test.go": {
+      "sha256": "84ead3db0ee68b52c854a8cc3cfac11e323ab50c118f6892425b60067ba4b248",
+      "mode": 436
+    },
+    "native/huhubot/tests/contract/groups/reply_test.go": {
+      "sha256": "132d2cc8618ba6abdbe9435f8f09ec1fb2ce127bd6f6672a644186979fd7203b",
+      "mode": 384
+    },
+    "native/huhubot/tests/contract/groups/short_term_assert_test.go": {
+      "sha256": "462f717f85b30bbb3ffb188632423a5f45b0008e7e784ed9a0b7105b5839b6ff",
+      "mode": 436
+    }
+  },
+  "artifacts": {
+    "REPORT.md": "86ed6864c81064b2af221a7b23c609f8118eccf50664765496c67dddb39f9932",
+    "TASK.md": "ec8b5f9969cff2776b6e8400f82e22c5e34bdaa763195b03609ed4597b006658",
+    "logs/01-source-before.json": "bcb4a852c3785c12aeedf29a64d07f15fd62c760a89a68ba685d76b081e85e1b",
+    "logs/02-source-after.json": "fdb384f9a9cc967818e95927652d1aead324b0955cce0d14924387d745fc1a8e",
+    "logs/03-input-before.json": "39e9003609633dc9381224b54e55293498c9409626f23728b7eb4dabe1f19809",
+    "logs/04-go-version.json": "8a9e0e4e94c6ff4373930c5dde160affa16786c2dbae74a3756bcc1228a1f50a",
+    "logs/05-targeted-go.jsonl": "ce04821718cbf2445778b538d35e8ba959328242a3966fcd37eb715ab9a9ad01",
+    "logs/06-targeted-go-meta.json": "02e8ac83934d3b43db8229ff817ddaf18751838b3f063deb92f6ca9a69687e3f",
+    "logs/07-input-after.json": "fdc04226a071d7e9eb477305c9019ec491f07034a488517fbd858f45b169caed"
+  },
+  "checks": {
+    "goVersion": "go version go1.26.10 linux/amd64",
+    "exactTopLevelTargets": 2,
+    "delegationSubcasesGreen": 3,
+    "groupsTopLevelGreen": 1,
+    "exitCode": 0,
+    "waitSeconds": 3.346339146999526,
+    "inputCount": 394,
+    "inputDrift": []
+  },
+  "goWindowReturned": true,
+  "productionChangedIn150": false
+}

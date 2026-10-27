@@ -1,0 +1,106 @@
+{
+  "source": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/reference-audit.json",
+    "readAt": "2026-10-25T12:02:22.989546+00:00",
+    "sha256": "09ee51b9f0913dccfff25a682154576008356ba4fd2586d486c001057470cd7e",
+    "bytes": 13282,
+    "lineCount": 287,
+    "selection": "REF-03 REF-04 REF-05; reuse accepted fixed source/2026-10-25 activity and license audit, no new network request"
+  },
+  "reused": true,
+  "notRequeried": true,
+  "repositories": [
+    {
+      "id": "REF-03",
+      "repo": "liliMozi/openhanako",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/liliMozi/openhanako",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T14:43:45Z",
+      "updated_at": "2026-10-25T01:24:35Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "head_commit_date": "2026-10-11T04:34:51Z",
+      "head_url": "https://github.com/liliMozi/openhanako/commit/9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "reference_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/package.json",
+          "sha256": "ab11fe41746d438b21f09b27ee8c0d26f6e58f449e2aa68f0bc8d795d74a711b"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-04",
+      "repo": "CopilotKit/OpenBot",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/CopilotKit/OpenBot",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T00:07:42Z",
+      "updated_at": "2026-10-25T03:33:17Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "head_commit_date": "2026-10-24T00:07:00Z",
+      "head_url": "https://github.com/CopilotKit/OpenBot/commit/46642d6c91daa663bccff673595f4e12a419a496",
+      "reference_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "6d35a6bb107ae508da34636387f6208e75a6938e797bc0d5bfa9489d2ca95bad",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/package.json",
+          "sha256": "9095e43a5a4157c9c3df950e01749a4adb672f6b5bd077c655521afa43158aef"
+        },
+        {
+          "path": "server/package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/server/package.json",
+          "sha256": "bd8be65505095a3267629254626fb77ff1e1d6243c6a9ced5c72d86d69e13ba1"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-05",
+      "repo": "Fei2411/DeepSeek-Bot",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/Fei2411/DeepSeek-Bot",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T14:18:22Z",
+      "updated_at": "2026-10-25T03:36:09Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "head_commit_date": "2026-10-23T15:22:41Z",
+      "head_url": "https://github.com/Fei2411/DeepSeek-Bot/commit/1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "reference_sha": "1bebe826f74e9a72cabafd3b80602b05af867b38",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/Fei2411/DeepSeek-Bot/blob/1bebe826f74e9a72cabafd3b80602b05af867b38/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "manifests": [
+        {
+          "path": "ds-bot/package.json",
+          "url": "https://github.com/Fei2411/DeepSeek-Bot/blob/1bebe826f74e9a72cabafd3b80602b05af867b38/ds-bot/package.json",
+          "sha256": "ebb2b71983619415656af6415fa0d5cbdd4786a6cd5f495a00034b312e5eb2eb"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    }
+  ]
+}

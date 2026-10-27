@@ -1,0 +1,53 @@
+{
+  "command": "Python stdlib exact four byte-target replacements, path resolution, inverse SHA, protected SHA/HEAD/index checks",
+  "exit": 0,
+  "originalSha256": "29d2702ce0ec7074b7a29cd9f20b86c46ba1e87c4cdc75bbc2f9f3c68ed2fa60",
+  "newSha256": "06293fa2a04d0ffd0fc05923ef3900cab626f07bdec9dab80b096de07883b96c",
+  "inverseSha256": "29d2702ce0ec7074b7a29cd9f20b86c46ba1e87c4cdc75bbc2f9f3c68ed2fa60",
+  "originalBytes": 13948,
+  "newBytes": 13928,
+  "removedBytes": 20,
+  "exactlyFourUrlTargetsChanged": true,
+  "labelsTextPlaceholdersPreserved": true,
+  "sourceModePreserved": true,
+  "fourLinks": [
+    {
+      "label": "logs/owned-source.json",
+      "beforeUrl": "logs/owned-source.json",
+      "afterUrl": "owned-source.json",
+      "resolved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/owned-source.json",
+      "exists": true,
+      "targetSha256": "2ddc8ecfe4366a8753e30177742efdd5239fb8b618f1b7c138a7123a8d937256"
+    },
+    {
+      "label": "logs/changes-from-t03-r2.json",
+      "beforeUrl": "logs/changes-from-t03-r2.json",
+      "afterUrl": "changes-from-t03-r2.json",
+      "resolved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/changes-from-t03-r2.json",
+      "exists": true,
+      "targetSha256": "b46a8fa0d77883ef1e213a2b4c54899efb9b93d42691ffddefb8210f35f69938"
+    },
+    {
+      "label": "logs/joint-source-final.json",
+      "beforeUrl": "logs/joint-source-final.json",
+      "afterUrl": "joint-source-final.json",
+      "resolved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/joint-source-final.json",
+      "exists": true,
+      "targetSha256": "b724fda4361d78f55055cbf0bc2c0edb7186c4360b8c785e8299bf58d111db33"
+    },
+    {
+      "label": "logs/protected-inputs.json",
+      "beforeUrl": "logs/protected-inputs.json",
+      "afterUrl": "protected-inputs.json",
+      "resolved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/protected-inputs.json",
+      "exists": true,
+      "targetSha256": "086330ed9b947f85688fdadecdc1a5924408e63d4ff0deaa2257a9fc82d83d92"
+    }
+  ],
+  "protectedUniqueFiles": 332,
+  "protectedDrift": [],
+  "review257Products65SourcesUnchanged": true,
+  "final042ReportSha256": "a118582e2853583ee70ccc9bb1b15892a906f36d0ef014c1e23d8285b5a6649a",
+  "headAndIndexUnchanged": true,
+  "noBuildTestsProductOrAllDocsCommandsRun": true
+}

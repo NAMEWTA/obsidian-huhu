@@ -1,0 +1,52 @@
+{
+  "observer": "native:/root",
+  "task": "159-memory-final-review",
+  "acceptedAt": "2026-10-26T18:47:03.034691+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "reportSha256": "a7d7058bdc23436f9ff7fba7ae92091c6164dd90a11d996a875e411e3a14e40f",
+  "manifestSha256": "1331eef8952251005ca93a15fa17a024f57be7007e57ffc8db0ef02870fd6509",
+  "artifactCount": 10,
+  "inputSha256": "d52ab1fa4039b0dbaed7540b871ca479d69012804fa1cf62e413372badb15219",
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "sourceCheck": {
+    "observer": "native:/root",
+    "inputSha256": "d52ab1fa4039b0dbaed7540b871ca479d69012804fa1cf62e413372badb15219",
+    "files": 2141,
+    "sources": 59,
+    "sourceDrift": [],
+    "byteDrift": [],
+    "modeDrift": []
+  },
+  "inputCheckExit": 0,
+  "inputCheckWait": 0.13174821899883682,
+  "originalCredentialCause": "unconfirmed; prior r3 exit 1 preserved",
+  "returnCommand": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "159-memory-final-review",
+    "--stage",
+    "return"
+  ],
+  "returnExit": 0,
+  "returnWaited": true,
+  "returnWaitSeconds": 0.05719482200220227,
+  "returnOutput": {
+    "errors": [],
+    "warnings": [],
+    "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+  },
+  "returnStderr": ""
+}

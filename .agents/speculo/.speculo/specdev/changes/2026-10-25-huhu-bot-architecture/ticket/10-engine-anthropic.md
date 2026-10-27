@@ -2,7 +2,7 @@
 schema_version: 3
 plan_contract_version: 1
 skill_scan: "2026-10-25: scanned .agents/skills/*/SKILL.md and AGENTS.md; evidence/skill-scan.json; dev applies, ui by actual interface scope; no dedicated Go skill"
-skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6","phase":"implement","operation":"Anthropic Messages 对等工具、取消与恢复：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/10-engine-anthropic.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-10.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3","when":"实施本票对应职责或验证触发时"}]}]
+skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293","phase":"implement","operation":"Anthropic Messages 对等工具、取消与恢复：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/10-engine-anthropic.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-10.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14","when":"实施本票对应职责或验证触发时"}]}]
 resource_claims: ["huhu-bot:engine-anthropic","huhu-bot:live-provider-quota","huhu-bot:engine-contract"]
 artifact: "ticket"
 ui_change: false
@@ -10,7 +10,7 @@ design_ref: null
 change: "2026-10-25-huhu-bot-architecture"
 id: "T-10"
 title: "Anthropic Messages 对等工具、取消与恢复"
-status: "ready"
+status: "done"
 kind: "feature"
 planning_depth: "deep"
 planning_depth_reason: "跨进程、持久化、权限或并发不变量需要故障窗口及恢复证据"
@@ -18,12 +18,12 @@ ready: true
 risk: "high"
 blocked_by: ["T-08"]
 contract_ids: ["AC-023","AC-036"]
-owner: "unassigned"
+owner: "/root"
 expected_changes: ["<Path>native/huhubot/internal/adapters/outbound/eino/anthropic/**</Path>","<Path>native/huhubot/tests/contract/engine/anthropic/**</Path>","<Path>native/huhubot/testdata/providers/anthropic/**</Path>"]
 writable_paths: ["<Path>native/huhubot/internal/adapters/outbound/eino/anthropic/**</Path>","<Path>native/huhubot/tests/contract/engine/anthropic/**</Path>","<Path>native/huhubot/testdata/providers/anthropic/**</Path>"]
-read_only_paths: ["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path>","<Path>AGENTS.md</Path>","<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>"]
-shared_paths: ["<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>"]
-shared_path_owners: ["<Path>contracts/hap/v0.1/**</Path> => T-01","<Path>native/huhubot/internal/application/api/**</Path> => T-01","<Path>native/huhubot/internal/protocol/hap/**</Path> => T-01","<Path>native/huhubot/go.mod</Path> => T-01","<Path>native/huhubot/go.sum</Path> => T-01","<Path>src/modules/huhubot/api.ts</Path> => T-01"]
+read_only_paths: ["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path>","<Path>AGENTS.md</Path>","<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>","<Path>native/huhubot/internal/adapters/outbound/eino/common/**</Path>","<Path>native/huhubot/internal/adapters/outbound/eino/httpcall/**</Path>","<Path>native/huhubot/internal/bootstrap/core.go</Path>"]
+shared_paths: ["<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>","<Path>native/huhubot/internal/adapters/outbound/eino/common/**</Path>","<Path>native/huhubot/internal/adapters/outbound/eino/httpcall/**</Path>","<Path>native/huhubot/internal/adapters/outbound/eino/anthropic/**</Path>","<Path>native/huhubot/internal/bootstrap/core.go</Path>"]
+shared_path_owners: ["<Path>contracts/hap/v0.1/**</Path> => T-01","<Path>native/huhubot/internal/application/api/**</Path> => T-01","<Path>native/huhubot/internal/protocol/hap/**</Path> => T-01","<Path>native/huhubot/go.mod</Path> => T-01","<Path>native/huhubot/go.sum</Path> => T-01","<Path>src/modules/huhubot/api.ts</Path> => T-01","<Path>native/huhubot/internal/adapters/outbound/eino/common/**</Path> => T-08","<Path>native/huhubot/internal/adapters/outbound/eino/httpcall/**</Path> => T-08","<Path>native/huhubot/internal/adapters/outbound/eino/anthropic/**</Path> => T-10","<Path>native/huhubot/internal/bootstrap/core.go</Path> => T-01"]
 ---
 
 # Ticket T-10：Anthropic Messages 对等工具、取消与恢复
@@ -41,6 +41,8 @@ Anthropic Messages 通过同一授权/Broker/恢复合同，支持跨 Bot 不同
 
 **开源参考：** [REF-01 cloudwego/eino](https://github.com/cloudwego/eino/tree/0a5ca53b9d3bf7b661dccc863465ec568a421eea)；[REF-02 cloudwego/eino-ext](https://github.com/cloudwego/eino-ext/tree/eee37f63ff9548c5eaec48fc157863339f8eda07)。具体文件、许可、依赖与已知限制见 <Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path> 对应 REF。遇到本票未覆盖的陌生点，实施前先按该文件的检索流程补比较，在本票 Evidence 记录采用/拒绝理由，再写代码；不从未经核验的示例直接复制。
 
+<a id="behavior-scope"></a>
+
 ## 行为与范围
 
 IN：claude/agenticclaude 选择、content blocks/tool_use/tool_result/usage/error 映射。REUSE：统一 Engine 与合同夹具。OUT：自动启用 Bedrock/Vertex/环境认证、协议 failover。
@@ -51,6 +53,8 @@ IN：claude/agenticclaude 选择、content blocks/tool_use/tool_result/usage/err
 2. 处理流块、工具结果、拒绝、partial 与 usage，模型实际工具 schema 仍由 HUHU 导出。
 3. 恢复时固定配置/权限/CP/效果身份；取消和错误分类统一到应用结果。
 4. 使用 Messages 独立真实 endpoint/model 与 fixture 完成 AC-023 矩阵；同时验证跨 Provider 资料授权拒绝。
+
+<a id="acceptance"></a>
 
 ## 验收标准
 
@@ -93,3 +97,17 @@ SDK 云依赖较大；没有实际使用不主动启用，许可证/包体/环�
 ### 未决问题
 
 无。
+
+## 当前交付验收口径（LOG-051）
+
+用户最新 Goal 要求本轮全面实现并在代码层面总验收，真实操作自行进行。此票的行为、权限、数据与故障合同保持；代码实现、适用自动化验证和独立代码审查是本轮完成/下游开工条件。真实 Provider、Obsidian 交互和用户目标 OS 操作另列 user-owned / not-run，不冒充原 AC 的现场验收通过，也不阻塞独立代码工作。
+
+
+## Map29当前代码窗口
+
+本票仅开放anthropic实现、engine/anthropic合同测试及providers/anthropic夹具；其余历史写集只读。原owner和调度见<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-10-logs/anthropic-window-map29.md</Path>。前置Responses已验收基线保留，新维护共同代码门未运行。
+
+
+## Map38 既有协议消费者的记忆输入迁移
+
+原G2协议代码门保持历史接纳。当前仅恢复本票tests/contract/engine目录中已由完整Go回归证实的旧消息位置/数量断言，验证新的sealed ShortTerm输入仍保留原意图、opaque状态、原tool ID/decision、usage和producer合同。生产driver、锁、wire只读；按原T01协调接缝，精确写窗与检查见evidence/T-14-logs/regression-window-map38.md。新共同输入未通过前不重签完成。

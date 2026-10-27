@@ -1,0 +1,98 @@
+{
+  "observer": "native:/root",
+  "status": "partial-positive-with-unresolved-HAP-result-error",
+  "complete": false,
+  "protocol": "openai-chat-completions",
+  "actualHTTP": 5,
+  "naturalCLIExits": [
+    {
+      "code": 0,
+      "signal": null
+    }
+  ],
+  "boundary": "Original r2 Node command failed; this independent post-exit readback does not relabel it pass. Answer/supplement uniqueness and prefix checks passed inside the actual local HTTP consumer before subsequent HAP result rejection.",
+  "runs": [
+    {
+      "run_id": "run:51fce55f07aa6da0dccba1a2bedd1671",
+      "status": "succeeded",
+      "revision": 11,
+      "reason": "",
+      "child_slot": 0
+    },
+    {
+      "run_id": "run:f7c2788fbd977157cd3020794956f62f",
+      "status": "succeeded",
+      "revision": 9,
+      "reason": "",
+      "child_slot": 0
+    },
+    {
+      "run_id": "run:5b97b3821c468bea7ae75ceb6d655165",
+      "status": "succeeded",
+      "revision": 4,
+      "reason": "",
+      "child_slot": 0
+    }
+  ],
+  "attempts": [
+    {
+      "run_id": "run:51fce55f07aa6da0dccba1a2bedd1671",
+      "state": "settled",
+      "producer_ended": 1,
+      "knowledge": "known",
+      "input_tokens": "11",
+      "output_tokens": "5"
+    },
+    {
+      "run_id": "run:f7c2788fbd977157cd3020794956f62f",
+      "state": "settled",
+      "producer_ended": 1,
+      "knowledge": "known",
+      "input_tokens": "11",
+      "output_tokens": "5"
+    },
+    {
+      "run_id": "run:5b97b3821c468bea7ae75ceb6d655165",
+      "state": "settled",
+      "producer_ended": 1,
+      "knowledge": "known",
+      "input_tokens": "11",
+      "output_tokens": "5"
+    },
+    {
+      "run_id": "run:51fce55f07aa6da0dccba1a2bedd1671",
+      "state": "settled",
+      "producer_ended": 1,
+      "knowledge": "known",
+      "input_tokens": "11",
+      "output_tokens": "5"
+    },
+    {
+      "run_id": "run:f7c2788fbd977157cd3020794956f62f",
+      "state": "settled",
+      "producer_ended": 1,
+      "knowledge": "known",
+      "input_tokens": "11",
+      "output_tokens": "5"
+    }
+  ],
+  "budgetAccounts": [
+    {
+      "account_id": "root:run:51fce55f07aa6da0dccba1a2bedd1671",
+      "purpose": "main",
+      "charged_tokens": 80,
+      "reserved_tokens": 0
+    },
+    {
+      "account_id": "profile:profile:c5109f95c5cd78dce47d3cc892e86639",
+      "purpose": "profile",
+      "charged_tokens": 80,
+      "reserved_tokens": 0
+    }
+  ],
+  "pins": 0,
+  "activeSessionRuns": 0,
+  "integrity": "ok",
+  "foreignKeys": [],
+  "contexts": 3
+}

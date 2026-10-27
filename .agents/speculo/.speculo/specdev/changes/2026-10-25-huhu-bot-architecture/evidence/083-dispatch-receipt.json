@@ -1,0 +1,23 @@
+{
+  "task": "083-recovery-review",
+  "nativeAgent": "/root/recovery_review",
+  "dispatchedAt": "2026-10-25T22:50:53.141602+00:00",
+  "mode": "native",
+  "requestedModel": "gpt-6-astra",
+  "requestedReasoning": "high",
+  "actualUnderlyingModel": "not independently exposed",
+  "taskSha256": "3c7add3072de844a7bf6320fa0a54d904825ec66580fedbffc474eeae8dd0716",
+  "inputSha256": "5283c6f2df32207a609142551375684c980b972471ff1026290bfd0c7b07ab2b",
+  "sourceFiles": 337,
+  "sources": 107,
+  "dispatchStructureExit": 0,
+  "inputVerifyExit": 0,
+  "actualNativeSpawnReturned": "/root/recovery_review",
+  "scope": "Independent two-axis T16 review; only own logs/REPORT and external probes",
+  "exclusiveProductCheckOwner": "/root/recovery_review",
+  "rootProductChecksCompleteAndWaited": true,
+  "rootBuildWarning": "Node DEP0205 from Tailwind module.register deprecation; build exit0 and lint --max-warnings0 exit0; unrelated source not changed",
+  "productionWritersStopped": true,
+  "nativeAckReceived": true,
+  "ackInputSha256": "5283c6f2df32207a609142551375684c980b972471ff1026290bfd0c7b07ab2b"
+}

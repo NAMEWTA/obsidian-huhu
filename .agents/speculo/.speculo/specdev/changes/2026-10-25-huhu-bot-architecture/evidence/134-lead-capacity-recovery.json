@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "known": "134sourcecheckpoint22filesstillmatch; originalterminalcapacity; originalidentitysubsequent135capacityandinterruptconfirmederror",
+  "sourceCheckpoint": "sessions/20261025T043239Z/134-memory-runtime-consumers/logs/01-source-checkpoint.json",
+  "sourceCheckpointSHA256": "f163b691d31c20e7d5767a7b0d10358ad4650d5ef624cceda0deedd3e345e783",
+  "sourceCount": 22,
+  "sourceDrift": [],
+  "successor": "140-memory-runtime-recovery",
+  "delegate": "native:/root/foundation_api_repair",
+  "actualModel": "gpt-6-sol/xhigh",
+  "scope": "same129/134runtime; initiallysource-onlytests",
+  "formalOwnerStill": "/root",
+  "businessAttemptReset": false
+}

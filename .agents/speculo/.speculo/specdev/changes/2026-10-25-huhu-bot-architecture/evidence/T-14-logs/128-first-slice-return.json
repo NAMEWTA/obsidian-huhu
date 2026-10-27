@@ -1,0 +1,27 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T10:59:22.043229+00:00",
+  "task": "128-memory-access-budget",
+  "disposition": "first interface/component slice accepted for126 consumption; full task pending",
+  "verifiedPaths": 7,
+  "authorTreeSHA256": "f3bc199d1a232ed666916a6fcaf57a45fa642d6c4f824dfdbc312a0a677f78a2",
+  "authorTreeEncodingMatched": [],
+  "rootSortedCompactTreeSHA256": "99b45ad8b66cca31a09f4512044275cb14b794220b8975b31a1fa82d25c5223e",
+  "drift": [],
+  "redReadback": "02 actual1/Wait3.154s, broken namespace relationship classified incorrectly",
+  "greenReadback": "03 same5 top tests actual0/Wait2.647560376s,345 native-only inputs, no drift",
+  "rootReadback": [
+    "476568 freeze",
+    "061448 both new production methods and final result",
+    "817c45 raw red/green logs",
+    "f9836a stage report and129 exact composition plan"
+  ],
+  "rootReadError": "404e25 incorrectly assumed aggregate JSON encoding; all7 per-file SHA already matched; no product command involved",
+  "nativeWindowReturnedAndRoundEnded": true,
+  "boundaries": [
+    "fake MemoryFacts and boundary DDL are component evidence only",
+    "CheckInTx auto deps, BindAttempts family, real126/129 maintenance positive, propagation and delivery not implemented by this slice",
+    "direct private namespace vs authorized published/derived message semantics must be resolved against actual Facts integration"
+  ],
+  "nextGoWindow": "126 first real defaultCore HAP behavior red then own source implementation; existing127 Node window remains independent, no Go/Node mixed harness permitted"
+}

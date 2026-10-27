@@ -19,6 +19,7 @@ export const PANEL_DEFAULT = 280;
 
 const sections: Partial<Record<WorkbenchFeature, readonly string[]>> = {
 	terminal: ['running', 'history', 'usage', 'board', 'jump'],
+	huhubot: ['chat', 'agents', 'groups', 'tasks', 'memory', 'access', 'approvals', 'data'],
 	contacts: ['person', 'company'],
 	automations: ['tasks', 'runs'],
 	notifications: ['unread', 'all'],

@@ -14,7 +14,9 @@
 | `check:bundle` | 从 esbuild 元数据得到启动集合和各模块的激活闭包，与 `scripts/bundle-budget.json` 比较；超预算失败（`--files` 列出启动输入） |
 | `check:styles` | 报告体积、`!important`、字面量颜色、z-index 和重复选择器 |
 | `check:native` | 对 `native/pty-server` 运行 `cargo test --locked` |
-| `check:notices` | `THIRD-PARTY-NOTICES.md` 与打包内容和 crate 依赖图一致（`pnpm run notices` 会重写它） |
+| `check:huhu-bot`、`build:huhu-bot` | 固定 Go 工具链测试 Bot Runner，构建本机或指定目标的二进制/校验和/兼容清单，输出忽略目录 `native/huhubot/dist/` |
+| `test:huhu-bot-tooling`、`test:huhu-bot-architecture` | 构建与许可正反例；Go Domain/Application 与入站依赖边界 |
+| `check:notices` | `THIRD-PARTY-NOTICES.md` 与打包内容、crate 依赖图和 Go 非测试编译闭包一致（`pnpm run notices` 会重写它） |
 | `check:similarity` | 对照参考项目计算源码树的 k-gram 相似度（见 `licensing.md`） |
 | `format`、`format:check` | 用 prettier 处理 `src/**/*.{ts,tsx}` 和 `scripts/**/*.ts`；不属于 CI |
 | `test`、`test:*`、`test:all` | 见 `testing.md` |
@@ -44,7 +46,7 @@
 
 ## CI
 
-`.github/workflows/lint.yml` 可被 workflow_call 复用；Linux Node22/24 与 Windows Node24 使用同一完整检查集合：安装、构建、main.js/styles.css 差异、包体、lint/CSS、test:all、许可和Rust。Release 同时依赖同一 SHA 的完整 checks 与五平台 helper，只有两者 success 才发布；失败、取消、跳过均阻止发布。helper继续由CI构建，各平台执行真实 stdio 验证。
+`.github/workflows/lint.yml` 可被 workflow_call 复用；Linux Node22/24 与 Windows Node24 使用同一完整检查集合：安装、构建、main.js/styles.css 差异、包体、lint/CSS、test:all、许可、Rust 与 Go 测试/编译/本机 stdio。Release 同时依赖同一 SHA 的完整 checks、五目标 PTY 与五目标 Bot Runner，三者全部 success 才发布；失败、取消、跳过均阻止发布。两类原生资产独立构建与校验，PTY 合同保持原义。Bot 工具链、目标清单和运行方法见[开发流程](../../../../docs/development.md)。
 
 pnpm 版本固定在 `package.json`；CI 使用 `pnpm install --frozen-lockfile`。
 
@@ -68,10 +70,11 @@ pnpm 版本固定在 `package.json`；CI 使用 `pnpm install --frozen-lockfile`
 
 推送 `main`，再推送标签（`git tag <version> && git push origin <version>`）。`.github/workflows/release.yml` 是唯一创建 Release 的地方：
 
-1. 先通过同一 SHA 的完整质量检查，再为五个目标构建辅助程序（`terminal-build.yml`）。
+1. 先通过同一 SHA 的完整质量检查，再为五个目标分别构建 PTY（`terminal-build.yml`）与 Bot Runner（`huhu-bot.yml`），各目标执行本机 stdio 冒烟。
 2. 把标签与 `manifest.json`、`package.json`、`versions.json`、`CHANGELOG.md` 核对，构建，并在构建出的 `main.js` 或 `styles.css` 与提交的不同时失败。
 3. 收集 `main.js`、`manifest.json`、`styles.css` 和 `huhu-<version>.zip`，用 `scripts/verify-release-artifacts.mjs --plugin` 检查，并为 zip、`main.js` 和 `styles.css` 生成来源证明。
 4. 用各自的 `.sha256` 文件核对五个 `huhu-pty-<平台>-<架构>[.exe]` 二进制，并用 `scripts/verify-pty-helper.mjs` 运行 Linux 版本。
-5. 为所有附件写入 `SHA256SUMS.txt`，并创建带插件文件、zip、辅助程序、校验和、`LICENSE`、`NOTICE` 和 `THIRD-PARTY-NOTICES.md` 的 GitHub Release。
+5. 严格核对五个 `huhu-bot-<平台>-<架构>[.exe]` 的 `.sha256`、`.json`、源码输入与兼容字段，在 Linux 再运行 SQLite/EOF/shutdown 冒烟。
+6. 为所有附件写入 `SHA256SUMS.txt`，并创建带插件文件、zip、两类原生程序、校验和与兼容清单、`LICENSE`、`NOTICE` 和 `THIRD-PARTY-NOTICES.md` 的 GitHub Release。
 
 Obsidian 从 Release 安装 `main.js`、`manifest.json` 和 `styles.css`。第一次使用终端时，插件从自己版本的 Release 下载当前平台的辅助程序，校验正式 SHA-256 并保存在当前 vault 的 `.huhu/helpers/<device-id>/<platform-arch>/<version>/`（开发 override 只复制到库内执行）。永远不要提交辅助程序的二进制文件。

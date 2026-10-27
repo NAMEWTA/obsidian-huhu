@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-25T06:33:46.420023+00:00",
+  "files": {
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    ".agents/skills/dev/references/architecture.md": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+    ".agents/skills/dev/references/build-and-release.md": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871",
+    ".agents/skills/dev/references/licensing.md": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+    ".agents/skills/dev/references/module-authoring.md": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b",
+    ".agents/skills/dev/references/testing.md": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/credential-interface-research.md": "10aa709385651ac0adb1e03a8aedd3457e0215d694f57ed34f5112767244522a",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/010-assistant-preflight/REPORT.md": "e669d10633ed9dd1d55ebc1778b7e1a603b6d4155d1abdfa067c37e9f242c8f9",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/021-assistant-client/TASK.md": "a587c5bc3170d051634133f6a3012e550a68483e65eb657b02e56daf4bb8c53d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/02-bot-model-credentials.md": "807947e3385b51606ffcf6325a3dfc5bc5cf4a6631a87b744cf0f4dcc99d9aa7",
+    "contracts/hap/v0.1/fixtures/golden.json": "65a0682aa6cb286376593c27051321d4a06ee230186f6764f96178bf380fdf70",
+    "contracts/hap/v0.1/fixtures/methods.json": "acf2cf6ec5f2c9b419a5d3b538d1ab02af1438123ba3de56759048b17f8538bb",
+    "contracts/hap/v0.1/methods.json": "68122afcc113b2407c6037101ff8a677dac099a44f75cac9290b50a9c3dc77d5",
+    "contracts/hap/v0.1/schema.json": "ba9c50e3f602db52e66319c0e114c2dc57e373bdddeee418437ff4904252591c",
+    "src/modules/huhubot/api.ts": "2b5b39827d03cfa273d349502b6f7db863e1f3300199df55b107b89a4b58d83f",
+    "src/modules/huhubot/core/protocol/codec.ts": "3a4fbe15b8acf58b5ac7bd5c19e06a6d2940d2d0b6a8a282d25ed4e061aa3491",
+    "src/modules/huhubot/core/protocol/connection.ts": "ff8ab812089b686756ca63673cf3b7f0b3ca74d42deabf29baaa6b92f3a15c79",
+    "src/modules/huhubot/core/protocol/method-validation.ts": "994ff43abcd13cabc4afdae08a0a2c88dd2f68e89f9d23e5d4d9cdda254f9ef6"
+  }
+}

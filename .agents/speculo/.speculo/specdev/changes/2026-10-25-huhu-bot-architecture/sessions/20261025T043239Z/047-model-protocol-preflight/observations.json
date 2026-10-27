@@ -1,0 +1,868 @@
+{
+  "task": "047-model-protocol-preflight",
+  "scope": "read-only source/docs; own REPORT/observations/log/cache only",
+  "notRun": [
+    "product processes",
+    "go build/test",
+    "pnpm build/lint/test",
+    "Provider requests",
+    "user credentials/keyring",
+    "Obsidian/Vault"
+  ],
+  "observations": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/12-messages-limits-budget.md",
+      "readAt": "2026-10-25T11:14:20.424736+00:00",
+      "sha256": "39388147bff72713216071c25e84bf70a658fcb4d5d1224c473a72bf013247f8",
+      "bytes": 13350,
+      "lineCount": 102,
+      "ranges": [
+        [
+          1,
+          102
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "readAt": "2026-10-25T11:14:20.424863+00:00",
+      "sha256": "268c302d0de0c91a5821062faef4724a5342f8a963729e282a7ce73eeb148633",
+      "bytes": 5329,
+      "lineCount": 135,
+      "ranges": [
+        [
+          70,
+          150
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "readAt": "2026-10-25T11:14:20.424922+00:00",
+      "sha256": "c5ecc059a4916ee5928d9b682d4c63494a7af4873e3f6a9a0e8f9529121b1969",
+      "bytes": 2577,
+      "lineCount": 83,
+      "ranges": [
+        [
+          1,
+          83
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/anthropics/anthropic-sdk-go@v1.56.0/internal/requestconfig/requestconfig.go",
+      "readAt": "2026-10-25T11:14:44.107731+00:00",
+      "sha256": "f5f59be326927f8db734ca1f9120f1275360c34134d86663b24f167dd99e382f",
+      "bytes": 17723,
+      "lineCount": 646,
+      "ranges": [
+        [
+          151,
+          176
+        ],
+        [
+          248,
+          274
+        ],
+        [
+          411,
+          490
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_model.go",
+      "readAt": "2026-10-25T11:14:44.107938+00:00",
+      "sha256": "1c55ad5f0023f5e0917463560496828925b16adebbe3938c8a39870c5e421bdd",
+      "bytes": 24814,
+      "lineCount": 888,
+      "ranges": [
+        [
+          33,
+          71
+        ],
+        [
+          177,
+          222
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "readAt": "2026-10-25T11:14:44.108035+00:00",
+      "sha256": "268c302d0de0c91a5821062faef4724a5342f8a963729e282a7ce73eeb148633",
+      "bytes": 5329,
+      "lineCount": 135,
+      "ranges": [
+        [
+          38,
+          70
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/08-engine-chat-completions.md",
+      "readAt": "2026-10-25T11:15:22.401387+00:00",
+      "sha256": "f988cb84428882d6cde3619f09f25b3ec41a4734fc93e9962ac26fb68358d11d",
+      "bytes": 12198,
+      "lineCount": 100,
+      "ranges": [
+        [
+          1,
+          100
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/09-engine-responses.md",
+      "readAt": "2026-10-25T11:15:22.401609+00:00",
+      "sha256": "9f9bc7f00769f7f4befa8c3cfd4c9f658dd2a1db201bca711dc0e89cf4c3cbd9",
+      "bytes": 11807,
+      "lineCount": 99,
+      "ranges": [
+        [
+          1,
+          99
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/10-engine-anthropic.md",
+      "readAt": "2026-10-25T11:15:27.814988+00:00",
+      "sha256": "459e55626725b03f6720e7028ce08b6ad8ace7b7e69755409a7c20489c660f5a",
+      "bytes": 11717,
+      "lineCount": 99,
+      "ranges": [
+        [
+          1,
+          99
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "readAt": "2026-10-25T11:15:40.639253+00:00",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375,
+      "lineCount": 338,
+      "ranges": [
+        [
+          119,
+          141
+        ],
+        [
+          175,
+          184
+        ],
+        [
+          276,
+          290
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "readAt": "2026-10-25T11:15:40.639701+00:00",
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "bytes": 51066,
+      "lineCount": 515,
+      "ranges": [
+        [
+          213,
+          247
+        ],
+        [
+          293,
+          322
+        ],
+        [
+          444,
+          454
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "readAt": "2026-10-25T11:15:40.639952+00:00",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "bytes": 24422,
+      "lineCount": 483,
+      "ranges": [
+        [
+          242,
+          258
+        ],
+        [
+          299,
+          347
+        ],
+        [
+          371,
+          387
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "readAt": "2026-10-25T11:15:40.640071+00:00",
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+      "bytes": 499,
+      "lineCount": 20,
+      "ranges": [
+        [
+          1,
+          20
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/libs/acl/openai@v0.1.18-0.20260924031408-10df7cac3f6d/chat_model.go",
+      "readAt": "2026-10-25T11:15:56.421953+00:00",
+      "sha256": "403786db3b985926b5c9c6dc17c4abd6fda15b928887632e976856dfeffe2f52",
+      "bytes": 42810,
+      "lineCount": 1457,
+      "ranges": [
+        [
+          867,
+          987
+        ],
+        [
+          1234,
+          1282
+        ],
+        [
+          1338,
+          1361
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/client.go",
+      "readAt": "2026-10-25T11:15:56.422164+00:00",
+      "sha256": "4d6ef78694b6154a0d916ab886d0c91ea4b8ca3eb10ff92e650d68af2578dca9",
+      "bytes": 8620,
+      "lineCount": 349,
+      "ranges": [
+        [
+          182,
+          223
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/stream_reader.go",
+      "readAt": "2026-10-25T11:15:56.422394+00:00",
+      "sha256": "96f819acac91e0c96d4f1a4a194d7da53ff8ad9eca02a06624696f5a3aa26ba9",
+      "bytes": 2387,
+      "lineCount": 119,
+      "ranges": [
+        [
+          1,
+          121
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_event_convertor.go",
+      "readAt": "2026-10-25T11:16:30.200058+00:00",
+      "sha256": "1ba18600c6b48f48ec21c67a20d0b5f35ebabc6a371e7a4e230c9d7dcc7c3421",
+      "bytes": 37712,
+      "lineCount": 1200,
+      "ranges": [
+        [
+          1,
+          220
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_model.go",
+      "readAt": "2026-10-25T11:16:30.200409+00:00",
+      "sha256": "1c55ad5f0023f5e0917463560496828925b16adebbe3938c8a39870c5e421bdd",
+      "bytes": 24814,
+      "lineCount": 888,
+      "ranges": [
+        [
+          250,
+          366
+        ],
+        [
+          620,
+          677
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_event_convertor.go",
+      "readAt": "2026-10-25T11:16:37.834100+00:00",
+      "sha256": "1ba18600c6b48f48ec21c67a20d0b5f35ebabc6a371e7a4e230c9d7dcc7c3421",
+      "bytes": 37712,
+      "lineCount": 1200,
+      "ranges": [
+        [
+          220,
+          302
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/claude@v0.1.26/claude.go",
+      "readAt": "2026-10-25T11:16:37.834410+00:00",
+      "sha256": "9e44f69b7febd6f54254c9be8df33ba49335907896eeff529f78b2986a921a97",
+      "bytes": 54278,
+      "lineCount": 1679,
+      "ranges": [
+        [
+          65,
+          165
+        ],
+        [
+          398,
+          536
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "readAt": "2026-10-25T11:16:37.834772+00:00",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375,
+      "lineCount": 338,
+      "ranges": [
+        [
+          69,
+          101
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/claude@v0.1.26/claude.go",
+      "readAt": "2026-10-25T11:17:24.536832+00:00",
+      "sha256": "9e44f69b7febd6f54254c9be8df33ba49335907896eeff529f78b2986a921a97",
+      "bytes": 54278,
+      "lineCount": 1679,
+      "ranges": [
+        [
+          349,
+          368
+        ],
+        [
+          1057,
+          1119
+        ],
+        [
+          1389,
+          1448
+        ],
+        [
+          1453,
+          1586
+        ],
+        [
+          1617,
+          1646
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_convertor.go",
+      "readAt": "2026-10-25T11:17:24.537236+00:00",
+      "sha256": "e038cc8c84de23f9b5203a78d0dedbfcbb4b0a2a0b158e8c7239c01a251867cc",
+      "bytes": 69259,
+      "lineCount": 2338,
+      "ranges": [
+        [
+          694,
+          711
+        ],
+        [
+          867,
+          941
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "readAt": "2026-10-25T11:21:51.820998+00:00",
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+      "bytes": 1392,
+      "lineCount": 34,
+      "ranges": [
+        [
+          1,
+          34
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "readAt": "2026-10-25T11:21:51.821086+00:00",
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+      "bytes": 11233,
+      "lineCount": 337,
+      "ranges": [
+        [
+          1,
+          225
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/openai/openai-go/v3@v3.44.0/responses/response.go",
+      "readAt": "2026-10-25T11:21:51.825748+00:00",
+      "sha256": "58444ed352ff7e535170a1200621df5b1d85cb28865f3092778c88a2bd866b4c",
+      "bytes": 1056509,
+      "lineCount": 26598,
+      "ranges": [
+        [
+          20,
+          65
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/openai/openai-go/v3@v3.44.0/internal/requestconfig/requestconfig.go",
+      "readAt": "2026-10-25T11:21:51.827290+00:00",
+      "sha256": "ba1b9ce713aa18118779fcb0b08a4b6e4a6cc093adbfaf48cf599845999df28d",
+      "bytes": 21712,
+      "lineCount": 795,
+      "ranges": [
+        [
+          183,
+          203
+        ],
+        [
+          275,
+          314
+        ],
+        [
+          451,
+          525
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/retry_chatmodel.go",
+      "readAt": "2026-10-25T11:22:18.839165+00:00",
+      "sha256": "c5abd7cb544b9e469a753d61448723b2450bd610fc049cbe196a71fe04c91b4d",
+      "bytes": 24934,
+      "lineCount": 759,
+      "ranges": [
+        [
+          1,
+          180
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/schema/stream.go",
+      "readAt": "2026-10-25T11:22:18.839543+00:00",
+      "sha256": "b7b154c587960d9db504dfc83bf95929dfc7aa4bf8ebd2a4ba3203b0c77a15a4",
+      "bytes": 24609,
+      "lineCount": 1024,
+      "ranges": [
+        [
+          212,
+          246
+        ],
+        [
+          400,
+          442
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/direct-licenses.json",
+      "readAt": "2026-10-25T11:22:18.839695+00:00",
+      "sha256": "fd193283dc05f667ee56d7f65f1182983e355e438af27bb7813e4ae5fc335f9b",
+      "bytes": 6333,
+      "lineCount": 145,
+      "ranges": [
+        [
+          1,
+          145
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticclaude@v0.1.7/model.go",
+      "readAt": "2026-10-25T11:23:06.544478+00:00",
+      "sha256": "adf262066aadb298e7207cf45b66f78bdb6b93b27e8aec677e5f05b8c224775f",
+      "bytes": 26817,
+      "lineCount": 891,
+      "ranges": [
+        [
+          45,
+          100
+        ],
+        [
+          283,
+          309
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticclaude@v0.1.7/convertor.go",
+      "readAt": "2026-10-25T11:23:06.544709+00:00",
+      "sha256": "dbec5225fc92a34431d47932f6acec316dde794bab113f9c43d63fbb0392e775",
+      "bytes": 53774,
+      "lineCount": 1543,
+      "ranges": [
+        [
+          270,
+          290
+        ],
+        [
+          613,
+          647
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticclaude@v0.1.7/event_convertor.go",
+      "readAt": "2026-10-25T11:23:06.544822+00:00",
+      "sha256": "b0b5a50e3c06b7df21835da6789841196748f77de97aa0239846ce9245336fc1",
+      "bytes": 13360,
+      "lineCount": 333,
+      "ranges": [
+        [
+          40,
+          70
+        ],
+        [
+          82,
+          109
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/chatmodel.go",
+      "readAt": "2026-10-25T11:23:06.545014+00:00",
+      "sha256": "674dc19ca9a41406d5fc68848355eb9199c39be8f3b4a2a01527e1dc41ce61a5",
+      "bytes": 60351,
+      "lineCount": 1746,
+      "ranges": [
+        [
+          398,
+          411
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "readAt": "2026-10-25T11:23:06.545163+00:00",
+      "sha256": "9cd88d733bfed8a3681d42d22557f40dbb3988c95e5441df24fd497026edec57",
+      "bytes": 8076,
+      "lineCount": 272,
+      "ranges": [
+        [
+          125,
+          241
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/combined-runtime-license-inventory.json",
+      "readAt": "2026-10-25T11:23:06.545277+00:00",
+      "sha256": "4a4114ba966bfcc0864a95e9d541026d72b5c3c73ea190071d443580e5de5529",
+      "bytes": 24523,
+      "lineCount": 1009,
+      "ranges": [
+        [
+          58,
+          68
+        ],
+        [
+          548,
+          558
+        ],
+        [
+          625,
+          635
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "readAt": "2026-10-25T11:23:28.320238+00:00",
+      "sha256": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74",
+      "bytes": 5736,
+      "lineCount": 155,
+      "ranges": [
+        [
+          1,
+          25
+        ],
+        [
+          130,
+          146
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "readAt": "2026-10-25T11:23:28.320361+00:00",
+      "sha256": "2befa00d2b808bf887e878ad864793d9fce680d5d18cea359f2534fe666864eb",
+      "bytes": 694,
+      "lineCount": 23,
+      "ranges": [
+        [
+          1,
+          23
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "readAt": "2026-10-25T11:23:28.320414+00:00",
+      "sha256": "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d",
+      "bytes": 6302,
+      "lineCount": 161,
+      "ranges": [
+        [
+          1,
+          135
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "readAt": "2026-10-25T11:23:45.508819+00:00",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375,
+      "lineCount": 338,
+      "ranges": [
+        [
+          69,
+          101
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "readAt": "2026-10-25T11:23:45.509104+00:00",
+      "sha256": "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d",
+      "bytes": 6302,
+      "lineCount": 161,
+      "ranges": [
+        [
+          135,
+          197
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/delivery.go",
+      "readAt": "2026-10-25T11:23:45.509190+00:00",
+      "sha256": "b421f14b2efce4bac227b8acba058c859bef1e374c6361a97d29601efa37a56d",
+      "bytes": 4763,
+      "lineCount": 154,
+      "ranges": [
+        [
+          1,
+          46
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "readAt": "2026-10-25T11:23:45.509340+00:00",
+      "sha256": "078ca90db0e4c627851b61d33e6f8d1bafec33c85eb37c81822ef701d30f7de7",
+      "bytes": 6354,
+      "lineCount": 177,
+      "ranges": [
+        [
+          1,
+          70
+        ],
+        [
+          127,
+          165
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "readAt": "2026-10-25T11:23:45.509459+00:00",
+      "sha256": "e66398955b30c443767318328880fee3ef648cd18ef06ba66e97147788e5f913",
+      "bytes": 12241,
+      "lineCount": 340,
+      "ranges": [
+        [
+          277,
+          309
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4/responses_convertor.go",
+      "readAt": "2026-10-25T11:24:21.209638+00:00",
+      "sha256": "e038cc8c84de23f9b5203a78d0dedbfcbb4b0a2a0b158e8c7239c01a251867cc",
+      "bytes": 69259,
+      "lineCount": 2338,
+      "ranges": [
+        [
+          2128,
+          2166
+        ],
+        [
+          2250,
+          2320
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/schema/message.go",
+      "readAt": "2026-10-25T11:24:21.210010+00:00",
+      "sha256": "094b6e9a799fd0021611c8b05bf046e626bb66bc869a7b5ca535bba815a0c92e",
+      "bytes": 61658,
+      "lineCount": 1953,
+      "ranges": [
+        [
+          1737,
+          1779
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/openai/openai-go/v3@v3.44.0/packages/ssestream/ssestream.go",
+      "readAt": "2026-10-25T11:24:21.210145+00:00",
+      "sha256": "68698c41e01af5827a926352945bc392074d5ba0f2366794ba985df8cf8dc0bb",
+      "bytes": 4964,
+      "lineCount": 248,
+      "ranges": [
+        [
+          26,
+          39
+        ],
+        [
+          72,
+          139
+        ],
+        [
+          175,
+          196
+        ],
+        [
+          222,
+          247
+        ]
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/anthropics/anthropic-sdk-go@v1.56.0/packages/ssestream/ssestream.go",
+      "readAt": "2026-10-25T11:24:21.210235+00:00",
+      "sha256": "b0e494eaea416e2cbeae26363a3c4564efd9022d72572981abde40321ab7a3a6",
+      "bytes": 6074,
+      "lineCount": 240,
+      "ranges": [
+        [
+          30,
+          39
+        ],
+        [
+          95,
+          108
+        ],
+        [
+          184,
+          238
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readAt": "2026-10-25T11:24:45.429349+00:00",
+      "sha256": "490d6a85356cd471645d73a3589ddeba727404fae44681e6ca684fdb22f273b9",
+      "bytes": 11397,
+      "lineCount": 323,
+      "ranges": [
+        [
+          18,
+          44
+        ],
+        [
+          64,
+          95
+        ],
+        [
+          109,
+          141
+        ],
+        [
+          175,
+          228
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/ports.go",
+      "readAt": "2026-10-25T11:24:45.429484+00:00",
+      "sha256": "cd31c4e15cea77ee27db2636387d0f76e604f4ee4f8d9c1ecb618638468ba3aa",
+      "bytes": 1388,
+      "lineCount": 31,
+      "ranges": [
+        [
+          1,
+          31
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "readAt": "2026-10-25T11:24:45.429551+00:00",
+      "sha256": "87b98a74915baef527ff1308e9bf09ea5050c1b52cf01a4f604674e223dd6bc7",
+      "bytes": 10057,
+      "lineCount": 272,
+      "ranges": [
+        [
+          160,
+          190
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readAt": "2026-10-25T11:25:44.747115+00:00",
+      "sha256": "490d6a85356cd471645d73a3589ddeba727404fae44681e6ca684fdb22f273b9",
+      "bytes": 11397,
+      "lineCount": 323,
+      "ranges": [
+        [
+          267,
+          279
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/blob/store/store.go",
+      "readAt": "2026-10-25T11:25:44.747217+00:00",
+      "sha256": "82a8a5355b2b05b7083886d16e6c3253b493b698abc86bfefd94d440823f7681",
+      "bytes": 7093,
+      "lineCount": 260,
+      "ranges": [
+        [
+          20,
+          25
+        ],
+        [
+          65,
+          94
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/REPORT.md",
+      "readAt": "2026-10-25T11:25:44.747335+00:00",
+      "sha256": "40c8b71e009a35b055c53541754ce41fea70e290d667c567d80ee2a3df995be1",
+      "bytes": 15802,
+      "lineCount": 117,
+      "ranges": [
+        [
+          1,
+          22
+        ]
+      ]
+    }
+  ]
+}

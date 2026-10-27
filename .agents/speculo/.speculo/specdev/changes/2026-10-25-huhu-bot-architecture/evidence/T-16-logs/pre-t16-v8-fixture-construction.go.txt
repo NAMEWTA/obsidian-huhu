@@ -1,0 +1,71 @@
+package lead_groups_migration_test
+
+import (
+	"context"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// Fixture construction only, on the accepted pre-T16 code copy. The old v7
+// input and previously accepted E2E snapshots are never written.
+func TestLeadFreezeSchema8InputForRecovery(t *testing.T) {
+	out := os.Getenv("LEAD_RECOVERY_V8_FIXTURE_OUTPUT")
+	if out == "" {
+		t.Fatal("explicit new fixture output required")
+	}
+	if _, err := os.Stat(out); !os.IsNotExist(err) {
+		t.Fatal("fixture destination must not already exist", err)
+	}
+	root, locator, old := clone(t)
+	before := oldState(t, locator)
+	ctx := context.Background()
+	core, err := bootstrap.OpenWithOptions(ctx, root, locator, bootstrap.Options{ExecutorPaused: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	status, statusErr := core.API.Service.Status(ctx, api.NewConnectionIdentity("lead-fixture-v8", "lead-owner", false))
+	closeErr := core.Close()
+	if statusErr != nil || closeErr != nil {
+		t.Fatal(statusErr, closeErr)
+	}
+	db := openDB(t, filepath.Join(locator, "profile.sqlite3"), true)
+	if number(t, db, "PRAGMA user_version") != 8 || number(t, db, "SELECT count(*) FROM pragma_foreign_key_check") != 0 {
+		_ = db.Close()
+		t.Fatal("expected genuine accepted schema8")
+	}
+	assertState(t, db, before)
+	if err = db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	files := map[string]string{}
+	for name, priorHash := range old.Files {
+		body := read(t, filepath.Join(locator, name))
+		if name != "profile.sqlite3" && sha(body) != priorHash {
+			t.Fatal("original CP changed", name)
+		}
+		destination := filepath.Join(out, "one", name)
+		if err = os.MkdirAll(filepath.Dir(destination), 0700); err != nil {
+			t.Fatal(err)
+		}
+		if err = os.WriteFile(destination, body, 0600); err != nil {
+			t.Fatal(err)
+		}
+		files[name] = sha(body)
+	}
+	manifest := map[string]any{"schemaVersion": 8, "profileId": status.Profile.ProfileID,
+		"origin":            "immutable real v7 DB+5CP, upgraded by accepted pre-T16 bootstrap with ExecutorPaused; all prior table rows verified unchanged",
+		"oldManifestSha256": oldManifestHash, "oldTables": len(before), "files": files}
+	encoded, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(filepath.Join(out, "manifest.json"), append(encoded, '\n'), 0600); err != nil {
+		t.Fatal(err)
+	}
+	t.Log("real schema8 fixture frozen with all old rows and five unchanged complete CP envelopes; no Engine or Host invoked")
+}

@@ -1,0 +1,16 @@
+{
+  "task": "088-recovery-claim-repair",
+  "checkedAt": "2026-10-25T23:07:35.757761+00:00",
+  "tool": "native followup_task",
+  "target": "/root/foundation_go",
+  "taskSha256": "811ac66b2e23bd5cf09bc217b56cc9e88d4ee1d275d349705907ab3fe4daceff",
+  "dispatchValidationExit": 0,
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledged": true,
+  "ack": "Actual owner ACK: use public ProfileChildren5 to hold first5 real children; sixth32 accepted premise independent of scan bug, demonstrate old-code red. Proposes bounded128 keyset cursor across Claims, commit-success publication; adjacent Ready/parent audit pending.",
+  "sourceInput": "5283c6f2df32207a609142551375684c980b972471ff1026290bfd0c7b07ab2b",
+  "acceptedReviewReportSha256": "7b11ef852cb906956d354fcfc6d8def4afb3670c1a4683c6a43cdaa17e1bead6",
+  "exclusiveProductCheckWindow": "088 original owner; Root only readonly/preparation until actual handoff/Wait",
+  "otherWritersStopped": true,
+  "implementationComplete": false
+}

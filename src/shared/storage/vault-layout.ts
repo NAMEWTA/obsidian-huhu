@@ -40,6 +40,8 @@ export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/导出`;
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
+/** Host-local minimal receipts; the Bot business database remains in its OS Profile root. */
+export const HUHUBOT_RUNTIME_ROOT = '.huhu/huhubot';
 export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';
 export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];
 /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */

@@ -1,0 +1,26 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T06:08:23.905961+00:00",
+  "task": "115-memory-interface-contract",
+  "nativeTarget": "/root/foundation_go",
+  "nativeTool": "collaboration.followup_task",
+  "nativeFollowupIssued": true,
+  "taskSha256": "7422cdc27e93ff516d11381ccd812d3ff91267bd0d4c1e22a219b63c131a302a",
+  "dispatchExit": 0,
+  "dispatchToolEvidence": "d7e1bb",
+  "kind": "read-only next-frontier interface preparation",
+  "authority": "Existing user full28-ticket implementation/Agent Team authorization; Goal permits independent read-only preparation.",
+  "ticketActivated": false,
+  "goWindowGranted": false,
+  "productsWritable": false,
+  "currentGoWindowOwner": "native:/root/recovery_review",
+  "currentReviewInputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "writeScope": "115 own REPORT/contract/source/manifest/return only",
+  "purpose": "Concretize accepted099 shared signatures using current API/Engine/Executor; no duplicate broad research or implementation",
+  "nativeACKReceived": true,
+  "nativeACK": {
+    "identity": "native:/root/foundation_go",
+    "scope": "115 materials only; product, Go, Node product checks, database and dependency writes forbidden",
+    "defaults": "distinguish approved prototype autoEnabled=true and unconfigured maintenance budget zero HTTP from 099 off recommendation"
+  }
+}

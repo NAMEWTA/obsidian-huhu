@@ -1,0 +1,32 @@
+{
+  "original": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "sha256": "22c50058a7556a013e83cd466f586703b6d9d5cba024061abce777dfb5994e06"
+    },
+    {
+      "path": "native/huhubot/tests/contract/events/ts_test.go",
+      "sha256": "b0e05a54592767f00531e082cbb8556ef300c9e830b20abe1939e76f556988f0"
+    },
+    {
+      "path": "native/huhubot/tests/contract/events/history_test.go",
+      "sha256": "5e61949b538bb78088b2ddb199d2d619ed47027d98b158c359e2600185098cd6"
+    }
+  ],
+  "replacement": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/086-recovery-fixture-repair/probes/cost-base.go.txt",
+      "sha256": "80a140e460b56f1f6d12a10016ea22992e6a97855af4c6df239ff5e3f0b56590"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/086-recovery-fixture-repair/probes/cost-engine.go.txt",
+      "sha256": "d977bac5ef2f018d9ab3c21f86260772a381430d7849ea8cb5ed5636d9bb2b78"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/086-recovery-fixture-repair/probes/cost-history.go.txt",
+      "sha256": "9d1cac140bb0f107bb8423f63c2cbdabbf72d5f0e28c3dfa450a31b34a356130"
+    }
+  ],
+  "budget": "10s external diagnosis only for compact; original test 3s remains unchanged on disk. Cost success is not original test green.",
+  "variables": "same overlay, normal vs -race; same -race original5ms polling vs wait actual270 emits then initial GetRun. No joined guard or authorization/transaction change."
+}

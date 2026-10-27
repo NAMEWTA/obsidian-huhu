@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-10-25T11:33:41.767638+00:00",
+  "dateObserved": "2026-10-25",
+  "authority": "Official vendor documentation and fixed local module cache; no Provider API requests.",
+  "skill": {
+    "path": "/home/wta/.codex/skills/.system/openai-docs/SKILL.md",
+    "read": "full earlier this task; official search/open before factual conclusions",
+    "dedicatedDocsTool": "tool discovery found no callable dedicated OpenAI docs search; web official-domain fallback"
+  },
+  "webSources": [
+    {
+      "url": "https://developers.openai.com/api/docs/guides/function-calling",
+      "readSections": [
+        "Streaming delta aggregation",
+        "Strict mode",
+        "Parallel calls"
+      ],
+      "supports": "tool index aggregation, initial-only id/name, strict JSON schema constraints"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/streaming-responses",
+      "readSections": [
+        "Streaming typed events",
+        "Common events"
+      ],
+      "supports": "typed event processing and explicit completion/error"
+    },
+    {
+      "url": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events",
+      "readSections": [
+        "stream_options.include_usage"
+      ],
+      "supports": "final usage may be missing if interrupted or canceled"
+    },
+    {
+      "url": "https://developers.openai.com/api/reference/resources/responses/streaming-events",
+      "readSections": [
+        "response.completed/failed/incomplete",
+        "response.output_item.added/done"
+      ],
+      "supports": "terminal states and use final reasoning item, not incomplete added item"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/reasoning",
+      "readSections": [
+        "Preserve reasoning without stored responses"
+      ],
+      "supports": "store=false stateless encrypted content now default; legacy include compatible; replay complete output"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+      "readSections": [
+        "Event types",
+        "Input JSON delta",
+        "Thinking delta",
+        "Full HTTP stream response"
+      ],
+      "supports": "block-index aggregation, cumulative usage, signature and message_stop"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+      "readSections": [
+        "Preserving thinking blocks",
+        "Thinking encryption",
+        "Redacted thinking blocks"
+      ],
+      "supports": "preserve complete ordered opaque thinking and redacted blocks for tool continuation"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls",
+      "readSections": [
+        "Empty tool result",
+        "Handling errors with is_error"
+      ],
+      "supports": "tool_use_id correlation and explicit errors/empty result"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons",
+      "readSections": [
+        "max_tokens",
+        "Incomplete tool use blocks",
+        "refusal"
+      ],
+      "supports": "stop reason distinctions; retries in examples are not authorization"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+      "readSections": [
+        "Overview",
+        "Budget rules"
+      ],
+      "supports": "current document redirects to legacy mode guide; no model migration or selection adopted"
+    }
+  ],
+  "readFailures": [
+    {
+      "url": "https://developers.openai.com/api/reference/resources/responses/methods/create",
+      "result": "open/find did not yield usable target section; conclusions use successfully read events/reasoning instead"
+    },
+    {
+      "url": "https://developers.openai.com/api/reference/resources/responses/methods/create.md",
+      "result": "web tool unsupported content-type text/markdown; no factual reliance"
+    }
+  ],
+  "copyright": "Only references and short paraphrases retained; no full web source copied or assumed open-source license.",
+  "history": [
+    {
+      "path": "../002-foundation-research/REPORT.md",
+      "read": "full earlier this task, ending subset reread; no probe rerun"
+    },
+    {
+      "path": "../034-events-approval-preflight/REPORT.md",
+      "read": "reused prior accepted research and targeted matches; no probe rerun"
+    },
+    {
+      "path": "../036-note-effect-preflight/REPORT.md",
+      "read": "prior accepted context only; no new inspection of Obsidian"
+    },
+    {
+      "path": "../041-delegation-preflight/REPORT.md",
+      "read": "prior accepted context; future ports only"
+    },
+    {
+      "path": "../045-group-recovery-preflight/REPORT.md",
+      "read": "prior accepted context plus owner request lines; T02 pin owner correction retained"
+    }
+  ],
+  "commands": {
+    "successful": "rg --files/rg -n/cat/read-only Python/hash/JSON/git HEAD exited synchronously; no async sessions",
+    "failures": [
+      {
+        "kind": "Python read",
+        "path": "SPEC.md",
+        "exit": 1,
+        "fix": "rg --files located spec.md; successful read exit 0"
+      },
+      {
+        "kind": "rg --files pipeline",
+        "paths": [
+          "sqlite/tooling",
+          "outbound/checkpoint"
+        ],
+        "rg": "ENOENT, rg error status; trailing sort made pipeline exit 0",
+        "fix": "actual whole outbound file inventory located sqlite/effects and blob/store"
+      },
+      {
+        "kind": "rg --files pipeline",
+        "path": "application/bootstrap",
+        "rg": "ENOENT, rg error status; trailing sort made pipeline exit 0",
+        "fix": "whole internal inventory located bootstrap/core.go; report corrected"
+      },
+      {
+        "kind": "coordination return attempt 1",
+        "exit": 126,
+        "reason": "expected one 聚焦交接 section",
+        "fix": "own REPORT h2 corrected from 交接 to 聚焦交接; initial logs preserved"
+      }
+    ],
+    "truncatedOutput": "Some broad searches/web outputs truncated; facts use later visible targeted source reads; all four required tickets and initial 002 report fully read.",
+    "notRun": [
+      "build",
+      "tests",
+      "product processes",
+      "local HTTP/SSE probes",
+      "Provider APIs",
+      "real keyring/D-Bus",
+      "Vault/Obsidian",
+      "credential files",
+      "model selection",
+      "installation",
+      "delegation"
+    ]
+  }
+}

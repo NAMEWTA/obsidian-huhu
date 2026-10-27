@@ -1,0 +1,82 @@
+package lead_note_e2e_test
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/stdio"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// Controlled model only. The real application, SQLite, executor, Broker, HAP,
+// HostWriteService and Obsidian adapter remain the production consumers.
+type leadNoteEngine struct{}
+
+func (leadNoteEngine) Run(ctx context.Context, in api.EngineInput, emit func(api.EngineEvent) error) (api.EngineResult, error) {
+	if in.Intent == "health-model" {
+		return api.EngineResult{Status: "finished", Text: "sibling-alive"}, nil
+	}
+	var intent struct {
+		Target  api.EffectTarget `json:"target"`
+		Content string           `json:"content"`
+	}
+	if err := json.Unmarshal([]byte(in.Intent), &intent); err != nil {
+		return api.EngineResult{}, err
+	}
+	result, err := in.Tools.Invoke(ctx, api.ToolCall{ID: "lead:write", Name: "note.write", Target: intent.Target, Content: intent.Content})
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	if result.Status != "approval_required" {
+		return api.EngineResult{}, fmt.Errorf("unexpected tool status: %s", result.Status)
+	}
+	checkpoint, err := in.Checkpoints.Publish(ctx, bytes.NewBufferString("lead-note-checkpoint-v1"))
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	return api.EngineResult{Status: "suspended", Suspension: &api.EngineSuspension{Token: result.SuspensionToken, Checkpoint: checkpoint}}, nil
+}
+
+func (leadNoteEngine) Resume(ctx context.Context, in api.EngineResumeInput, emit func(api.EngineEvent) error) (api.EngineResult, error) {
+	r, err := in.Input.Checkpoints.Open(ctx, in.Checkpoint)
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	b, readErr := io.ReadAll(r)
+	closeErr := r.Close()
+	if readErr != nil || closeErr != nil || string(b) != "lead-note-checkpoint-v1" {
+		return api.EngineResult{}, fmt.Errorf("checkpoint did not survive: %v %v", readErr, closeErr)
+	}
+	return api.EngineResult{Status: "finished", Text: "decision:" + in.Decision.Status}, nil
+}
+
+func TestLeadNoteRunner(t *testing.T) {
+	root := os.Getenv("LEAD_NOTE_PROFILES")
+	if root == "" {
+		t.Fatal("LEAD_NOTE_PROFILES is required")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	core, err := bootstrap.OpenWithOptions(ctx, root, filepath.Join(root, "one"), bootstrap.Options{Engine: leadNoteEngine{}, ApprovalLifetime: time.Minute})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	server := stdio.New(os.Stdin, os.Stdout, core.API, api.NewConnectionIdentity("lead-note-stdio", "lead-owner", true))
+	err = server.Run(ctx)
+	server.Close()
+	closeErr := core.Close()
+	if err != nil || closeErr != nil {
+		fmt.Fprintln(os.Stderr, err, closeErr)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}

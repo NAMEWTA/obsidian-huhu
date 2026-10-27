@@ -1,6 +1,6 @@
 # 数据与恢复
 
-HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你的内容和资料：日志、闪念、收件箱、待办归档、项目管理、档案、记账/习惯/番茄钟/阅读记录、RSS、默认新笔记和导出；它们是普通的库内文件，Obsidian 会索引、搜索，同步工具也照常同步。**`.huhu/`（隐藏）**放 HUHU 自己的配置和运行数据：设置、看板布局（`.huhu/dashboards/`）、自动化定义（`.huhu/automation/definitions/`）、智能体、浏览器、通知、同步、图标、批注、保险箱、缓存和恢复。HUHU 自动生成的文件夹和文件名不含空格，用 `-` 连接（例如 `2026-10-21-1654-新备忘.md`）。普通笔记、宿主自己的数据与 Git 自有元数据保留原位置。系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存和用户指定导出另有明确边界，见[库之外的数据](#库之外的数据)。插件安装目录只保留代码、清单、样式及发行许可声明，不存放用户数据。
+HUHU 的库内数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你的内容和资料：日志、闪念、收件箱、待办归档、项目管理、档案、记账/习惯/番茄钟/阅读记录、RSS、默认新笔记和导出；它们是普通的库内文件，Obsidian 会索引、搜索，同步工具也照常同步。**`.huhu/`（隐藏）**放 HUHU 自己的配置和运行数据：设置、看板布局（`.huhu/dashboards/`）、自动化定义（`.huhu/automation/definitions/`）、智能体、浏览器、通知、同步、图标、批注、保险箱、缓存和恢复。HUHU 自动生成的文件夹和文件名不含空格，用 `-` 连接（例如 `2026-10-21-1654-新备忘.md`）。普通笔记、宿主自己的数据与 Git 自有元数据保留原位置。Bot 的本机 Profile、系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存和用户指定导出另有明确边界，见[库之外的数据](#库之外的数据)。插件安装目录只保留代码、清单、样式及发行许可声明，不存放用户数据。
 
 ## 库内路径规则
 
@@ -43,6 +43,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 笔记导航器预览缓存 | 浏览器的 IndexedDB 库 `huhu-navigator-<库 id>`，保存每篇笔记的预览文字和缩略图路径。它不在库目录里，可随时用“重建缓存”丢弃，不影响笔记 |
 | 批注与锚点（v2） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；损坏副本在 `set-aside/` |
 | 自动化运行、通知回执 | `.huhu/automation/<device-id>/`、`.huhu/notifications/<device-id>/` |
+| Bot 宿主最小回执 | `.huhu/huhubot/` 下按设备和 Profile 隔离的回执及索引；认证键另由宿主本机存储持有，见[回执与本机认证键](#bot-宿主回执与本机认证键) |
 | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
 | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |
 | 智能体标签布局与统计 | `.huhu/terminal-agent/<device-id>/workspace.json`、`workspace-stats.json` |
@@ -70,7 +71,19 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 
 桌面 POSIX 路径以 `0700` 创建目录、`0600` 创建普通文件，helper 使用 `0700`。账号及 helper 私有目录在 Windows 通过 DACL 限定为当前用户与 SYSTEM；权限失败阻止交付进程。交付前检查当前子树并拒绝链接，迁移保留恢复来源。访问控制不等于加密，也不会阻止你同步文件。普通笔记保持原权限；移动端和非文件系统适配器的具体权限行为据实说明，不冒称已实测。
 
+## Bot 宿主回执与本机认证键
+
+宿主回执和索引位于 `.huhu/huhubot/<device SHA256>/host-receipts/<profile SHA256>/`。每个 effect 使用其 SHA-256 摘要作为 JSON 文件名，`index.json` 保存有界索引；原始身份不直接拼入路径。回执保存 effect/command 身份与调用指纹、必要目标定位、版本/hash、状态及核查证据，不保存完整笔记或对话正文、Checkpoint（CP）、Provider 凭证，也不复制 Approval、Run 或事件业务账本。Profile SQLite 仍是 Bot 业务权威。
+
+回执和索引使用 HMAC-SHA256 认证，32 字节随机键由 Obsidian App 的 `loadLocalStorage` / `saveLocalStorage` 保存，键名为 `huhu.huhubot.receipt-key.v1.<device SHA256>.<profile SHA256>`。这份按库、本机设备和 Profile 隔离的认证键不写入 Vault 回执文件，不经 HAP、日志、CP 或 portable 数据传输；它不是 Provider 的登录秘密。普通 Vault JSON 与宿主本机键分开保存，用于识别回执篡改，不提供对控制本机或其他恶意宿主插件的防护。
+
+只有认证有效、身份及调用指纹等绑定一致的 `completed` 回执才可确认原调用已提交（`committed`）。缺键、损坏、篡改或只有接收记录不能据此确认写入；核查只在可信目标的实际后置 hash 匹配时返回 `reconciled`，无法核查时保留 `unknown_outcome`，不会自动重放笔记写入。查询不创建或轮换认证键，也不写回执；坏的已有键不会被静默替换。单独复制 Vault 回执不能恢复另一台设备的认证资格或有效批准。
+
+未知效果的最小记录仍可能包含敏感元数据，不能当缓存任意删除。回执与认证键的清除、备份和恢复需遵从对应效果生命周期及数据能力；这里不提供尚未交付的统一清除、键导出或跨设备恢复操作。
+
 ## 库之外的数据
+
+Bot Runner 底座的 Profile 位于本机受管根，每份目录包含 `profile.sqlite3` 及 SQLite WAL/SHM。Linux 使用绝对 `$XDG_STATE_HOME/huhu/huhubot/profiles/`，缺省为 `~/.local/state/huhu/huhubot/profiles/`；macOS 为 `~/Library/Application Support/HUHU/huhubot/profiles/`，Windows 为 `%LOCALAPPDATA%/HUHU/huhubot/profiles/`。CLI 的 `--profile` 必须是受管根内的绝对目录，不接受库内任意数据库路径。Profile 根由 Runner 独立构造，数据库按文件身份互斥，关闭后才能重开；当前底座持久化身份、command epoch、修订与创建时间。不把数据库放进 vault 或由插件 JSON store 改写；这不是移动端或多设备同步的承诺。
 
 默认的“系统账号”不重定向 HOME、提供方数据根或 XDG/Windows 数据目录，CLI 沿用本机已有登录。HUHU 的运行事件保存在库内；开启状态 Hook 或自动化运行所需 Hook 时，会在 `~/.huhu/agent-hooks/` 保存共用脚本与备份，并修改真实提供方配置中的约定条目或扩展文件。它们不会随关库自动移除，具体范围和移除操作见[智能体工作台](agent-workbench.md#状态-hook)。
 
@@ -85,6 +98,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 `.huhu/` 以点开头，**Obsidian Sync 不同步这类隐藏目录**；宿主配置目录是官方列出的例外，`.huhu/` 不属于它（见 [Obsidian 官方说明](https://obsidian.md/help/sync/settings) 的 Hidden files and folders）。所以 `.huhu/dashboards/` 中的看板和 `.huhu/automation/definitions/` 中的自动化操作，以及 `.huhu/` 下的其他 HUHU 专用数据（含加密的保险箱）不会经 Obsidian Sync 到达另一台设备；库内可见的 `huhu/` 下的日志、闪念、收件箱、档案、记账等记录和其他笔记不受这一排除规则影响。需要同步 HUHU 专用数据时，请使用并核对能同步隐藏目录的工具：Git、iCloud、Syncthing 等。桌面端可以使用 HUHU 的 [Git 同步](sync.md)，其私有数据排除范围见下文。
 
 - `.huhu/config/settings.json` 由库的所有设备共用；`.huhu/config/devices/<device-id>.json` 和各模块的 `<device-id>` 目录只属于一台设备，按设备隔离。用 HUHU 的 Git 同步时，这些设备配置、身份映射、同步计时和通知状态不跟踪；浏览器会话、智能体账号与运行目录、缓存、恢复副本和锁文件等设备私有数据默认不提交（见[Git 同步](sync.md#默认不提交的-huhu-私有数据)）。
+- HUHU 的 Git 同步规则排除整个 `.huhu/huhubot/` 运行根，包括嵌套库中的同类路径；自动化定义与普通笔记仍按原规则处理。这项 Git 排除不配置或控制外部 Obsidian Sync、iCloud、Syncthing 或其他同步工具，使用者仍需核对各工具自己的同步范围。
 - 自动化只在它所属的设备上运行，见[自动化与通知](automation.md#设备归属)。
 - 使用共享 `JsonStore` 的设置和 JSON 数据在写入前做三方合并，并保留上一份有效内容为 `.backup`。保险箱是独立密文协议，不执行自动合并；图标、批注、内容移动和看板也有各自的恢复规则。同步工具产生的冲突副本仍需手动处理。
 

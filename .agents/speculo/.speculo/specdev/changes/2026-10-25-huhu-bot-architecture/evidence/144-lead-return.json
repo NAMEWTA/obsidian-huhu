@@ -1,0 +1,31 @@
+{
+  "observer": "native:/root",
+  "task": "144-memory-context-consumers",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "aa585c9919952722261d814ec916a2500237e64a13415c19e9c15d5a1871f873",
+  "manifestSHA256": "8bdd5d5ce00efbb4223bbd98b58c5747dc1940a8af2601b03b23ff785be7c2c0",
+  "sourceFiles": 16,
+  "artifactFiles": 19,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "144-memory-context-consumers",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05452877200150397,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "scope": "Targeted author candidate accepted; full T14 regression, required checks and independent review remain pending."
+}

@@ -27,7 +27,7 @@
   ];
   const state = {page:'chat',selection:'weekly',group:true,scenario:'normal',run:'approval',drafts:{},messages:{},scope:'private',memoryOwner:'coordinator',auto:{},deletedSessions:new Set(),attachments:['项目周记.md','会议记录.md'],mentions:[],groups:[{id:'weekly',name:'周报协作',members:['coordinator','researcher','writer'],leader:'coordinator'},{id:'reading',name:'阅读小组',members:['coordinator','researcher'],leader:'coordinator'}],globalConfirmed:false,proposalDismissed:false,profileCleared:false,localRuns:{},runEpochs:{},forgotten:new Set(),corrected:{},childCanceled:false,retained:false,purged:false,epoch:0};
   const leaf = $('#leaf'), modal = $('#modal'), workspace = $('#workspace');
-  let lastFocus = null, toastTimer, navLastFocus = null;
+  let lastFocus = null, toastTimer, navLastFocus = null, dialogBaseline = null;
   const currentBot = () => bots.find(b => b.id === state.selection) || bots.find(b => b.id === state.memoryOwner) || bots[0] || {id:'none',name:'新的 Bot',initial:'新',description:'开始新的对话',model:'尚未配置模型',enabled:true};
   const currentGroup = () => state.groups.find(g => g.id === state.selection) || state.groups[0];
   const autoEnabled = id => state.auto[id] !== false;
@@ -105,9 +105,19 @@
     if(hadFocus){const replacement=[...$('#page-body').querySelectorAll('[data-action]')].find(el=>el.dataset.action===focusAction);if(replacement)replacement.focus();else{$('#page-title').tabIndex=-1;$('#page-title').focus();}}
   }
   function go(page) { rememberDraft();state.page=page;closeNav();render();$('#page-title').tabIndex=-1;$('#page-title').focus(); }
-  function showDialog(title,body,actions) { rememberDraft(); if(modal.open) modal.close();lastFocus=document.activeElement;$('#modal-title').textContent=title;$('#modal-body').innerHTML=body;$('#modal-actions').innerHTML=actions||btn('close-modal','关闭');decorate(modal);modal.showModal(); }
-  function closeDialog() { if(modal.open)modal.close(); if(lastFocus?.isConnected)lastFocus.focus(); }
-  modal.addEventListener('cancel',()=>{if(lastFocus?.isConnected)lastFocus.focus();});
+  function dialogValues() { return JSON.stringify([...$('#modal-body').querySelectorAll('input,textarea,select')].map(e=>[e.id,e.type==='checkbox'?e.checked:e.value])); }
+  function showDialog(title,body,actions) { rememberDraft(); if(modal.open) modal.close();lastFocus=document.activeElement;$('#modal-title').textContent=title;$('#modal-body').innerHTML=body;$('#modal-actions').innerHTML=actions||btn('close-modal','关闭');decorate(modal);dialogBaseline=dialogValues();modal.showModal();$('#modal-body input:not([type="hidden"]),#modal-body textarea,#modal-body select')?.focus(); }
+  function closeDialog() { dialogBaseline=null;if(modal.open)modal.close(); if(lastFocus?.isConnected)lastFocus.focus(); }
+  function requestCloseDialog() {
+    if(dialogBaseline===null||dialogValues()===dialogBaseline){closeDialog();return;}
+    if(!$('#unsaved-warning')){
+      const warning=document.createElement('div');warning.id='unsaved-warning';warning.className='notice';warning.setAttribute('role','alert');
+      warning.innerHTML='<strong>有尚未保存的修改</strong><p>继续编辑可以保留当前输入；放弃后这些修改不会保存。</p><div class="inline-actions">'+btn('continue-editing','继续编辑','primary')+btn('discard-editing','放弃修改','danger')+'</div>';
+      $('#modal-body').append(warning);
+    }
+    $('[data-action="continue-editing"]',modal).focus();
+  }
+  modal.addEventListener('cancel',e=>{e.preventDefault();requestCloseDialog();});
   $('#modal-form').addEventListener('submit',e=>e.preventDefault());
   function closeNav() {leaf.classList.remove('nav-open');$('#scrim').hidden=true;$('#menu-toggle').setAttribute('aria-expanded','false');workspace.inert=false;$('#nav-zone').removeAttribute('role');$('#nav-zone').removeAttribute('aria-modal');applyLayout();}
   function openNav() {if(leaf.dataset.size==='wide')return;navLastFocus=document.activeElement;leaf.classList.add('nav-open');$('#scrim').hidden=false;$('#menu-toggle').setAttribute('aria-expanded','true');workspace.inert=true;$('#sidebar').inert=false;$('.rail').inert=false;$('#nav-zone').setAttribute('role','dialog');$('#nav-zone').setAttribute('aria-modal','true');$('#nav-zone').setAttribute('aria-label','Bot 导航');$('#search').focus();}
@@ -137,14 +147,16 @@
       case 'theme':document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';break;
       case 'toggle-nav':leaf.classList.contains('nav-open')?closeNav():openNav();break;
       case 'close-nav':closeNav();navLastFocus?.focus();break;
-      case 'close-modal':closeDialog();break;
+      case 'close-modal':requestCloseDialog();break;
+      case 'continue-editing':$('#unsaved-warning')?.remove();$('#modal-body input,#modal-body textarea,#modal-body select')?.focus();break;
+      case 'discard-editing':closeDialog();break;
       case 'home':toast('此原型只包含 Bot 工作台，HUHU 其他模块沿用现有页面。');break;
       case 'chat':case 'tasks':case 'memory':case 'access':case 'data':go(action);break;
       case 'settings':go('agent');break;
       case 'select':rememberDraft();state.selection=el.dataset.id;state.memoryOwner=el.dataset.id;state.group=false;state.mentions=[];state.scenario='normal';go('chat');break;
       case 'select-group':rememberDraft();state.selection=el.dataset.id;state.group=true;state.mentions=[];state.scenario='normal';go('chat');break;
       case 'details':state.group?showDialog('群聊详情',`<p class="section-note">${esc(currentGroup().name)} · 协调者负责默认回应，成员也可以派遣任务。</p><dl class="key-value"><dt>协调者</dt><dd>${esc(bots.find(b=>b.id===currentGroup().leader)?.name)}</dd><dt>成员</dt><dd>${currentGroup().members.map(id=>esc(bots.find(b=>b.id===id)?.name||id)).join('、')}</dd><dt>消息路由</dt><dd>未 @ 时由协调者回应；@ 时仅选中成员回应。</dd></dl><p class="section-note">更换协调者前，请先结束当前活动任务。</p>`,btn('close-modal','关闭')+btn('new-group','创建另一个群聊','primary')):go('agent');break;
-      case 'new-bot':case 'edit-bot':{const b=action==='edit-bot'?currentBot():null;showDialog(b?'编辑 Bot':'创建 Bot',`<p class="section-note">持久 Bot 会显示在左侧，并拥有独立记忆。临时 sub-agent 不需要在这里创建。</p><label class="field">名称<input id="bot-name" required maxlength="80" value="${esc(b?.name||'')}" placeholder="例如：阅读助手"></label><label class="field">职责描述<textarea id="bot-description" maxlength="600" placeholder="擅长什么，什么时候可以请它协作">${esc(b?.description||'')}</textarea></label><label class="field">模型协议<select id="bot-model"><option>OpenAI · Responses</option><option>OpenAI · Chat Completions</option><option>Anthropic · Messages</option></select></label><p id="form-error" class="form-error" role="alert"></p>`,btn('close-modal','取消')+btn('save-bot',b?'保存修订':'创建 Bot','primary',`data-edit="${b?esc(b.id):''}"`));if(b)$('#bot-model').value=b.model;break;}
+      case 'new-bot':case 'edit-bot':{const b=action==='edit-bot'?currentBot():null;showDialog(b?'编辑 Bot':'创建 Bot',`<p class="section-note">持久 Bot 会显示在左侧，并拥有独立记忆。临时 sub-agent 不需要在这里创建。</p><label class="field">名称<input id="bot-name" required maxlength="80" value="${esc(b?.name||'')}" placeholder="例如：阅读助手"></label><label class="field">职责描述<textarea id="bot-description" maxlength="600" placeholder="擅长什么，什么时候可以请它协作">${esc(b?.description||'')}</textarea></label><label class="field">模型协议<select id="bot-model"><option>OpenAI · Responses</option><option>OpenAI · Chat Completions</option><option>Anthropic · Messages</option></select></label><p id="form-error" class="form-error" role="alert"></p>`,btn('close-modal','取消')+btn('save-bot',b?'保存修订':'创建 Bot','primary',`data-edit="${b?esc(b.id):''}"`));if(b)$('#bot-model').value=b.model;dialogBaseline=dialogValues();break;}
       case 'save-bot':{const name=$('#bot-name').value.trim(),description=$('#bot-description').value.trim();if(!name||!description){$('#form-error').textContent='请填写名称和职责描述。';return;}const b=bots.find(b=>b.id===el.dataset.edit);if(b){b.name=name;b.description=description;b.model=$('#bot-model').value;b.revision=(b.revision||1)+1;}else{const id=`bot-${bots.length+1}`;bots.push({id,name,initial:name.slice(0,1),description,model:$('#bot-model').value,enabled:true});state.selection=id;state.memoryOwner=id;state.group=false;}closeDialog();go('agent');toast('Bot 配置已在本次演示中保存。');break;}
       case 'new-group':showDialog('创建协作群聊',`<label class="field">群聊名称<input id="group-name" maxlength="80" value="新的协作"></label><p class="section-note">选择已有 Bot。群聊使用独立工作线程，成员不会取得彼此私聊。</p>${bots.filter(b=>b.enabled).map(b=>`<label class="check-row"><input type="checkbox" name="member" value="${esc(b.id)}" ${b.id==='coordinator'||b.id==='writer'?'checked':''}>${esc(b.name)} <span class="muted small">${esc(b.description)}</span></label>`).join('')}<label class="field">协调者<select id="group-leader">${bots.filter(b=>b.enabled).map(b=>`<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('')}</select></label><p id="form-error" class="form-error" role="alert"></p>`,btn('close-modal','取消')+btn('save-group','创建群聊','primary'));break;
       case 'save-group':{const members=[...modal.querySelectorAll('input[name=member]:checked')].map(n=>n.value),leader=$('#group-leader').value,name=$('#group-name').value.trim();if(!name||members.length<2||!members.includes(leader)){$('#form-error').textContent='请填写名称，选择至少两位成员，并把协调者包含在内。';return;}const id=`group-${state.groups.length+1}`;state.groups.push({id,name,members,leader});state.selection=id;state.group=true;state.scenario='empty';closeDialog();go('chat');break;}

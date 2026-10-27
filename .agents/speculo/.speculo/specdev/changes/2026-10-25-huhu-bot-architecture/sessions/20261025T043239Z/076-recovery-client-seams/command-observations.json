@@ -1,0 +1,19 @@
+{
+  "scope": "read-only preparation; production/tests unchanged",
+  "commands": [
+    "cat TASK.md / workspace.json / dev SKILL.md /066 REPORT.md and interfaces-and-owners.md /075 REPORT.md",
+    "rg --files ... and rg -n recovery/close/lifecycle names",
+    "nl -ba <current TS/Go path> | sed -n <ranges>",
+    "Python standard-library read/hash/schema extraction and own documents",
+    "git rev-parse HEAD",
+    "git branch --show-current"
+  ],
+  "lookupMisses": [
+    "plural tickets directory (actual ticket)",
+    "old internal/application/service* glob (actual application/api/service.go)",
+    "huhubot module.ts/manifest.ts/runtime paths absent as observed"
+  ],
+  "productsTestsBuildLintNetworkRun": false,
+  "childrenSpawned": false,
+  "ownToolProcessesWaited": true
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "/tmp/huhu-validate-memory-closure.mjs",
+    "2"
+  ],
+  "exitCode": 0,
+  "waited": true,
+  "waitSeconds": 27.76418554099655,
+  "stdout": "{\"result\":\"passed\",\"errors\":[],\"tickets\":28,\"executions\":14,\"acceptance\":14}\n",
+  "stderr": ""
+}

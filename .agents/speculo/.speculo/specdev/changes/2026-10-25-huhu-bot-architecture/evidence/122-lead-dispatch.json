@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "task": "122-hap-default-expectation",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/credential_provider",
+  "taskSha256": "0062b3c1da211342f89d8dd345b906577e91fdf1fb0514b41c6f96ae0941c422",
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "2e064c",
+  "nativeAckReceived": true,
+  "uniqueGoWindow": "122 exclusively until actualWait return;all117–120 product writers stopped",
+  "scope": "hap_test.go old default reason only;one assistant package check"
+}

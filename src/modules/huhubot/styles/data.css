@@ -1,0 +1,8 @@
+.huhu-bot-data select,
+.huhu-bot-data input[type='checkbox'] {
+	min-height: 2rem;
+}
+
+.huhu-bot-data input[type='checkbox'] {
+	accent-color: var(--interactive-accent);
+}

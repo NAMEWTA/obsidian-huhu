@@ -1,0 +1,11 @@
+# 群私有贡献者资格与真实消费者（Map18 / Goal17）
+
+073/074/075在实际实现中共同发现：成员B消费成员C的私有/未公开结果或AgentMessage后，B的后续外发也依赖C原成员代；只保调用祖先链或只在有SourceRefs时授权会漏掉空来源正文。现按原owner写集闭合，不新增Ticket/DAG或产品权限。
+
+- 每份实际私有贡献正文均核查来源成员当前资格，完整(agentId,incarnation,historyRevision)去重并入实际消费模型Run的持久effective GroupBinding，后续派生、真实Dispatch、Finalize与物理投递都消费它。旧代不可覆盖成新代，不截断 proof。Claim同Tx扩事实后刷新真实Work输入。
+- Run.group为服务端持久有效资格集合；任何实际变更在同Tx提升Run.revision。Snapshot/GetRun返回当前事实，同revision不同proof冲突，旧revision不得覆盖新事实。初始受理binding与后续effective binding不能被TS误当永远不变。
+- GroupBinding.Members上界100对应既有群成员容量，承接合法fanout贡献集合；调用深度3、累计children32、树/Profile并发4/8、wakes8以及来源100/800/250ms预算保持。纯编排根不消费模型正文，仍Members=[]且无A配置/授权，不因union整群取消。
+- 实际GroupBinding的同群公开message ID可以按成员none/range范围用于受控再委派，派生namespace固定该Session，来源subset和每个真实接收方Grant仍核验。普通私有workThread、他Bot私聊/私有记忆不开放。已合法公开Transcript不要求其作者继续是当前成员，也不因此把作者proof加入阅读模型Run。
+- 成员fingerprint改变时，客户端尚未公开的群Run缓存和未决页先失效/abort，再从服务端当前Snapshot锚定；不能只检查本地已经知道的成员proof，因为新增依赖可能还未传播到客户端。此为缓存重读，不取消其它有效任务；公开Transcript仍独立受历史范围/来源授权控制。
+
+已由Root实际原生通知三作者，073重生成唯一schema/API并交075；旧首版263样本摘要保留为历史，相关测试待最新共同输入重新验证。此文件记录实现约束与必要反例，不表示代码或验收已完成。

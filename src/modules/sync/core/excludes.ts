@@ -1,3 +1,5 @@
+import { HUHUBOT_RUNTIME_ROOT } from '../../../shared/storage/vault-layout';
+
 /** Managed ignore rules protect device state and credentials while retaining user content and shared definitions.
  * Both .gitignore and the local info/exclude get an idempotent block; existing user rules stay intact.
  * Already tracked matches are removed only from the index after backing up staged blobs and the original index.
@@ -14,6 +16,7 @@ export const HUHU_EXCLUDE_PATTERNS: readonly string[] = [
 	'**/.huhu/config/identity.json',
 	'**/.huhu/sync/',
 	'**/.huhu/notifications/',
+	`**/${HUHUBOT_RUNTIME_ROOT}/`,
 	'**/.huhu/browser/',
 	'**/.huhu/terminal-agent/',
 	'**/.huhu/agents/',

@@ -1,0 +1,21 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:05:45.641802+00:00",
+  "task": "126-private-memory",
+  "disposition": "accepted initial defaultCore/HAP behavior red, no feature green claimed",
+  "input": "sessions/20261025T043239Z/126-private-memory/logs/initial-red-input.json",
+  "inputSHA256": "56f4fb0b7c169d21d118ae2a972920a21e963297d53476b8a2a8a5b6d0cfb2be",
+  "archiveSHA256": "6aae2cb96da010c3f7f4540f87e3f5832b700a3a029eb3827299e34b823e127f",
+  "verifiedFrozenArchiveFiles": 346,
+  "archiveDrift": [],
+  "actualExit": 1,
+  "actualWaitSeconds": 1.265920111000014,
+  "observedFailure": "CAPABILITY_DENIED/METHOD_NOT_AVAILABLE at actual memory.get; compiled and default Core used, no test registration or fake MemoryAPI",
+  "rootReadback": [
+    "16bda5 complete first consumer and result",
+    "bdf0ec complete stdout/stderr and archive metadata"
+  ],
+  "nativeCleanupAndGoWindowReturned": true,
+  "nextWindow": "126 and129 only nonconflicting Go source writes; all Go checks withheld until Root coordinated freeze;127 independent Node candidate already frozen pending formal return",
+  "note": "specific default ineligible reason ordering may follow actual finite contract; enabled=true/eligible=false/revision1/no read materialization and durable management remain required"
+}

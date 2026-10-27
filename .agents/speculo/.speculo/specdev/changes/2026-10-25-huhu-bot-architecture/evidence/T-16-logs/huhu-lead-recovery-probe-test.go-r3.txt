@@ -1,0 +1,540 @@
+package groups_test
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/fs"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// Root's independent, external probe. It is copied into a frozen source
+// snapshot only after the original authors return; it is not a product change.
+type leadRecoveryEngine struct {
+	run     func(context.Context, api.EngineInput) (api.EngineResult, error)
+	resume  func(context.Context, api.EngineResumeInput) (api.EngineResult, error)
+	inspect func(context.Context, api.CheckpointInspection) error
+}
+
+func (e leadRecoveryEngine) Run(c context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	if e.run == nil {
+		return api.EngineResult{}, fmt.Errorf("unexpected fresh model Run")
+	}
+	return e.run(c, in)
+}
+func (e leadRecoveryEngine) Resume(c context.Context, in api.EngineResumeInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	if e.resume == nil {
+		return api.EngineResult{}, fmt.Errorf("unexpected model Resume")
+	}
+	return e.resume(c, in)
+}
+func (e leadRecoveryEngine) InspectCheckpoint(c context.Context, in api.CheckpointInspection) error {
+	if e.inspect == nil {
+		return fmt.Errorf("unexpected checkpoint inspection")
+	}
+	return e.inspect(c, in)
+}
+
+type leadOldResume struct {
+	RootRunID  string                 `json:"rootRunId"`
+	ModelRunID string                 `json:"modelRunId"`
+	SessionID  string                 `json:"sessionId"`
+	AgentIDs   []string               `json:"agentIds"`
+	Checkpoint api.CheckpointArtifact `json:"checkpoint"`
+	Decision   api.ToolResult         `json:"resumeDecision"`
+	Config     api.TaskConfigSnapshot `json:"config"`
+	Group      api.GroupBinding       `json:"group"`
+}
+
+func leadCopyOldCrash(t *testing.T) (string, string, leadOldResume) {
+	t.Helper()
+	source := os.Getenv("LEAD_RECOVERY_V8_FIXTURE")
+	if source == "" {
+		t.Fatal("Root must provide the verified immutable v8 crash fixture")
+	}
+	raw, err := os.ReadFile(filepath.Join(source, "manifest.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest struct {
+		ActualResume leadOldResume `json:"actualResume"`
+	}
+	if err = json.Unmarshal(raw, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if manifest.ActualResume.RootRunID == "" || manifest.ActualResume.ModelRunID == "" {
+		t.Fatal("missing actual old Resume identity")
+	}
+	root := filepath.Join(t.TempDir(), "profiles")
+	if err = os.Mkdir(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	loc := filepath.Join(root, "one")
+	err = fs.WalkDir(os.DirFS(filepath.Join(source, "normalized", "one")), ".", func(name string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		dst := filepath.Join(loc, name)
+		if entry.IsDir() {
+			return os.MkdirAll(dst, 0700)
+		}
+		if !entry.Type().IsRegular() {
+			return fmt.Errorf("nonregular fixture path %q", name)
+		}
+		body, err := os.ReadFile(filepath.Join(source, "normalized", "one", name))
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(dst, body, 0600)
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return root, loc, manifest.ActualResume
+}
+func leadCloseCore(t *testing.T, c *bootstrap.Core) {
+	t.Helper()
+	_ = c.Close()
+	deadline, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := c.WaitClosed(deadline); err != nil {
+		t.Errorf("actual Core cleanup: %v", err)
+	}
+}
+
+func TestLeadRecoveryLegacyCrashPreservesIdentityAndAccounting(t *testing.T) {
+	root, loc, old := leadCopyOldCrash(t)
+	db := database(t, loc)
+	if count(t, db, "PRAGMA user_version") != 8 || count(t, db, "SELECT count(*) FROM execution_runs") != 3 || count(t, db, "SELECT count(*) FROM collaboration_result_deliveries") != 1 {
+		t.Fatal("old crash input changed")
+	}
+	var oldClaim string
+	if err := db.QueryRow("SELECT claim_token FROM execution_runs WHERE run_id=?", old.ModelRunID).Scan(&oldClaim); err != nil || oldClaim == "" {
+		t.Fatalf("old actual execution claim: %q %v", oldClaim, err)
+	}
+	var starts, resumes, inspections, physical atomic.Int32
+	entered := make(chan api.EngineResumeInput, 1)
+	release := make(chan struct{})
+	var releaseOnce sync.Once
+	free := func() { releaseOnce.Do(func() { close(release) }) }
+	defer free()
+	engine := leadRecoveryEngine{
+		run: func(c context.Context, in api.EngineInput) (api.EngineResult, error) {
+			starts.Add(1)
+			if in.Intent != "lead-unrelated-fresh" {
+				return api.EngineResult{}, fmt.Errorf("replayed old Run instead of Resume")
+			}
+			return api.EngineResult{Status: "finished", Text: "fresh tree works"}, nil
+		},
+		inspect: func(c context.Context, in api.CheckpointInspection) error {
+			inspections.Add(1)
+			payload, err := io.ReadAll(in.Reader)
+			if err != nil {
+				return err
+			}
+			if string(payload) != `{"fixture":"lead-v8-complete-cp","phase":"children","version":1}` || in.Run.ID != old.ModelRunID || in.Checkpoint != old.Checkpoint {
+				return fmt.Errorf("inspection did not open original complete CP")
+			}
+			return nil
+		},
+		resume: func(c context.Context, in api.EngineResumeInput) (api.EngineResult, error) {
+			resumes.Add(1)
+			if in.Input.RunID != old.ModelRunID || in.Checkpoint != old.Checkpoint || !reflect.DeepEqual(in.Input.Config, old.Config) || !reflect.DeepEqual(in.Input.Lineage.Group, &old.Group) || !reflect.DeepEqual(in.Decision, old.Decision) {
+				return api.EngineResult{}, fmt.Errorf("original identity/config/private closure/decision changed")
+			}
+			reader, err := in.Input.Checkpoints.Open(c, in.Checkpoint)
+			if err != nil {
+				return api.EngineResult{}, err
+			}
+			payload, err := io.ReadAll(reader)
+			ce := reader.Close()
+			if err != nil {
+				return api.EngineResult{}, err
+			}
+			if ce != nil {
+				return api.EngineResult{}, ce
+			}
+			if len(payload) != 64 {
+				return api.EngineResult{}, fmt.Errorf("execution did not read complete original CP")
+			}
+			attempt, err := in.Input.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "lead-after-explicit-resume", InputEstimate: "3", OutputBound: "4"})
+			if err != nil {
+				return api.EngineResult{}, err
+			}
+			if err = in.Input.Attempts.Dispatch(c, attempt, func(context.Context) error { physical.Add(1); return nil }); err != nil {
+				return api.EngineResult{}, err
+			}
+			if _, err = in.Input.Attempts.Settle(c, attempt, api.AttemptObservation{Knowledge: "known", InputTokens: "1", OutputTokens: "1", ProducerEnded: true}); err != nil {
+				return api.EngineResult{}, err
+			}
+			select {
+			case entered <- in:
+			case <-c.Done():
+				return api.EngineResult{}, c.Err()
+			}
+			select {
+			case <-release:
+			case <-c.Done():
+				return api.EngineResult{}, c.Err()
+			}
+			return api.EngineResult{Status: "finished", Text: "LEAD_RECOVERED_ORIGINAL_RUN"}, nil
+		},
+	}
+	c, err := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{Engine: engine})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { free(); leadCloseCore(t, c) }()
+	if count(t, db, "SELECT count(*) FROM model_attempts WHERE knowledge='unknown' AND charged_tokens=7 AND producer_ended=1") != 1 {
+		t.Fatal("actual old dispatched attempt was erased or charged as zero")
+	}
+	q := api.IDQuery{ProfileID: meta(t, c, "profile", "").ProfileID, ID: old.RootRunID}
+	policy, err := c.API.Collaboration.Budget(ctx, owner, api.BudgetQuery{ProfileID: q.ProfileID})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = c.API.Collaboration.ConfigureBudget(ctx, owner, api.BudgetConfigure{CommandMeta: meta(t, c, "lead-current-budget", policy.Revision), Policy: api.BudgetPolicy{RootTokenLimit: "100", ProfileTokenLimit: "1000", MaintenanceTokenLimit: "0"}}); err != nil {
+		t.Fatal(err)
+	}
+	status, err := c.API.Recovery.Get(ctx, owner, q)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status.State != "ready" || status.RunID != old.RootRunID || status.RootRunID != old.RootRunID || len(status.AffectedRunIDs) != 2 || !strings.HasPrefix(status.TreeRevision, "sha256:") {
+		t.Fatalf("scope/qualification: %#v", status)
+	}
+	second, err := c.API.Recovery.Get(ctx, owner, q)
+	if err != nil || second.Generation != status.Generation || second.TreeRevision != status.TreeRevision {
+		t.Fatalf("stable query changed generation: %#v %v", second, err)
+	}
+	// A positive liveness barrier proves the shared scanner runs while the
+	// interrupted tree remains behind its manual-resume gate.
+	freshAgent := agent(t, c, "lead-recovery-fresh", true)
+	freshSession, err := c.API.Conversation.CreateSession(ctx, owner, api.SessionCreate{CommandMeta: meta(t, c, "lead-fresh-session", ""), Kind: "direct", MemberIDs: []string{freshAgent.ID}, Title: "independent"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	fresh := send(t, c, freshSession, "lead-unrelated-fresh")
+	if r := wait(t, c, fresh.RunID); r.Status != "succeeded" {
+		t.Fatalf("fresh tree: %#v", r)
+	}
+	if starts.Load() != 1 || resumes.Load() != 0 || physical.Load() != 0 {
+		t.Fatal("ready automatically resumed the interrupted tree")
+	}
+	status, err = c.API.Recovery.Get(ctx, owner, q)
+	if err != nil || status.State != "ready" {
+		t.Fatalf("fresh independent tree invalidated target: %#v %v", status, err)
+	}
+	command := api.RunResume{CommandMeta: meta(t, c, "lead-user-resume", status.Revision), ID: old.RootRunID, RecoveryGeneration: status.Generation}
+	badCAS := command
+	badCAS.CommandMeta = meta(t, c, "lead-stale-cas", "999999")
+	if _, err = c.API.Recovery.Resume(ctx, owner, badCAS); !reason(err, "REVISION_CONFLICT") {
+		t.Fatalf("stale CAS: %v", err)
+	}
+	badGeneration := command
+	badGeneration.CommandMeta = meta(t, c, "lead-stale-generation", status.Revision)
+	badGeneration.RecoveryGeneration = "999999"
+	if _, err = c.API.Recovery.Resume(ctx, owner, badGeneration); !reason(err, "RECOVERY_GENERATION_CONFLICT") {
+		t.Fatalf("stale generation: %v", err)
+	}
+	receipt, err := c.API.Recovery.Resume(ctx, owner, command)
+	if err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-entered:
+	case <-time.After(5 * time.Second):
+		t.Fatal("same Run never entered Resume")
+	}
+	replay, err := c.API.Recovery.Resume(ctx, owner, command)
+	if err != nil || !reflect.DeepEqual(replay, receipt) {
+		t.Fatalf("same command lost original receipt: %#v %v", replay, err)
+	}
+	conflict := command
+	conflict.RecoveryGeneration = "999999"
+	_, err = c.API.Recovery.Resume(ctx, owner, conflict)
+	var conflictFault *api.Fault
+	if !errors.As(err, &conflictFault) || conflictFault.Kind != "IDEMPOTENCY_CONFLICT" || conflictFault.Reason != "IDEMPOTENCY_INPUT_MISMATCH" {
+		t.Fatalf("mutated replay: %v", err)
+	}
+	var newClaim string
+	if err = db.QueryRow("SELECT claim_token FROM execution_runs WHERE run_id=?", old.ModelRunID).Scan(&newClaim); err != nil {
+		t.Fatal(err)
+	}
+	if newClaim == "" || newClaim == oldClaim {
+		t.Fatal("resume reused old execution claim")
+	}
+	if count(t, db, "SELECT count(*) FROM collaboration_result_deliveries WHERE parent_run_id=?", old.ModelRunID) != 1 || count(t, db, "SELECT count(*) FROM collaboration_parent_results WHERE run_id=? AND state='claimed'", old.ModelRunID) != 1 {
+		t.Fatal("completed result was requeued or duplicated")
+	}
+	free()
+	if r := wait(t, c, old.RootRunID); r.Status != "succeeded" {
+		t.Fatalf("resumed root: %#v", r)
+	}
+	if resumes.Load() != 1 || physical.Load() != 1 || starts.Load() != 1 || inspections.Load() < 3 {
+		t.Fatalf("unexpected actual calls: run=%d resume=%d physical=%d inspect=%d", starts.Load(), resumes.Load(), physical.Load(), inspections.Load())
+	}
+	if count(t, db, "SELECT count(*) FROM execution_runs WHERE root_run_id=? OR run_id=?", old.RootRunID, old.RootRunID) != 3 || count(t, db, "SELECT count(*) FROM model_attempts WHERE run_id=?", old.ModelRunID) != 2 || count(t, db, "SELECT count(*) FROM model_attempts WHERE run_id=? AND knowledge='unknown' AND charged_tokens=7", old.ModelRunID) != 1 {
+		t.Fatal("resume cloned the tree or reset accounting")
+	}
+	if count(t, db, "SELECT count(*) FROM config_snapshot_pins") != 0 || count(t, db, "SELECT count(*) FROM task_config_pins") != 0 || count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 {
+		t.Fatal("terminal resources were not released")
+	}
+	t.Logf("old schema8 crash migrated; sameRun=%s newClaim=%s CP=%s original child delivery=1 old unknown charge=7 new physical calls=1", old.ModelRunID, newClaim, old.Checkpoint.Ref)
+}
+
+func TestLeadRecoveryDamagedCheckpointStaysBlocked(t *testing.T) {
+	root, loc, old := leadCopyOldCrash(t)
+	var calls atomic.Int32
+	engine := leadRecoveryEngine{run: func(context.Context, api.EngineInput) (api.EngineResult, error) {
+		calls.Add(1)
+		return api.EngineResult{}, fmt.Errorf("unexpected Run")
+	}, resume: func(context.Context, api.EngineResumeInput) (api.EngineResult, error) {
+		calls.Add(1)
+		return api.EngineResult{}, fmt.Errorf("unexpected Resume")
+	}, inspect: func(_ context.Context, in api.CheckpointInspection) error {
+		_, e := io.Copy(io.Discard, in.Reader)
+		return e
+	}}
+	c, err := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{Engine: engine})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer leadCloseCore(t, c)
+	q := api.IDQuery{ProfileID: meta(t, c, "damaged", "").ProfileID, ID: old.RootRunID}
+	ready, err := c.API.Recovery.Get(ctx, owner, q)
+	if err != nil || ready.State != "ready" {
+		t.Fatalf("control CP should be valid: %#v %v", ready, err)
+	}
+	path := filepath.Join(loc, "checkpoints", strings.TrimPrefix(old.Checkpoint.Ref, "cp:")+".cp")
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw[len(raw)-1] ^= 1
+	if err = os.WriteFile(path, raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	command := api.RunResume{CommandMeta: meta(t, c, "damaged-cp-click", ready.Revision), ID: old.RootRunID, RecoveryGeneration: ready.Generation}
+	if _, err = c.API.Recovery.Resume(ctx, owner, command); !reason(err, "CHECKPOINT_INVALID") {
+		t.Fatalf("click trusted stale CP readiness: %v", err)
+	}
+	blocked, err := c.API.Recovery.Get(ctx, owner, q)
+	if err != nil || blocked.State != "blocked" || blocked.Reason != "CHECKPOINT_INVALID" || blocked.Generation == ready.Generation {
+		t.Fatalf("damaged CP qualification: %#v %v", blocked, err)
+	}
+	if calls.Load() != 0 {
+		t.Fatal("damaged CP entered model")
+	}
+	t.Logf("valid CP ready generation=%s, tampered payload blocked generation=%s; actual model entries=0", ready.Generation, blocked.Generation)
+}
+
+func TestLeadRecoveryCloseRetainsLockUntilDetachedProducerEnds(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "profiles")
+	if err := os.Mkdir(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	loc := filepath.Join(root, "one")
+	entered := make(chan struct{})
+	release := make(chan struct{})
+	settled := make(chan error, 1)
+	var releaseOnce sync.Once
+	free := func() { releaseOnce.Do(func() { close(release) }) }
+	defer free()
+	var physical atomic.Int32
+	engine := leadRecoveryEngine{run: func(c context.Context, in api.EngineInput) (api.EngineResult, error) {
+		r, err := in.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "lead-detached-producer", InputEstimate: "3", OutputBound: "4"})
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		err = in.Attempts.Dispatch(c, r, func(context.Context) error { physical.Add(1); return nil })
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		go func() {
+			<-release
+			_, e := in.Attempts.Settle(context.Background(), r, api.AttemptObservation{Knowledge: "known", InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+			settled <- e
+		}()
+		close(entered)
+		<-c.Done()
+		return api.EngineResult{}, c.Err()
+	}}
+	c, err := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{Engine: engine, Budget: api.BudgetPolicy{RootTokenLimit: "100", ProfileTokenLimit: "1000", MaintenanceTokenLimit: "0"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { free(); leadCloseCore(t, c) }()
+	a := agent(t, c, "lead-drain", true)
+	s, err := c.API.Conversation.CreateSession(ctx, owner, api.SessionCreate{CommandMeta: meta(t, c, "lead-drain-session", ""), Kind: "direct", MemberIDs: []string{a.ID}, Title: "drain"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	runReceipt := send(t, c, s, "lead-drain")
+	select {
+	case <-entered:
+	case <-time.After(5 * time.Second):
+		t.Fatal("producer never dispatched")
+	}
+	err = c.Close()
+	if !reason(err, "EXECUTOR_STOP_TIMEOUT") {
+		t.Fatalf("close before producer ended: %v", err)
+	}
+	select {
+	case <-c.Done():
+		t.Fatal("Done closed with real producer alive")
+	default:
+	}
+	other, openErr := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{ExecutorPaused: true})
+	if openErr == nil {
+		leadCloseCore(t, other)
+		t.Fatal("Profile lock released while producer was alive")
+	}
+	db := database(t, loc)
+	if count(t, db, "SELECT count(*) FROM model_attempts WHERE producer_ended=0") != 1 || count(t, db, "SELECT count(*) FROM config_snapshot_pins") != 1 || physical.Load() != 1 {
+		t.Fatal("close erased pending producer/pin identity")
+	}
+	free()
+	select {
+	case e := <-settled:
+		if e != nil {
+			t.Fatal(e)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("actual detached producer did not settle")
+	}
+	deadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	if err = c.WaitClosed(deadline); err != nil {
+		t.Fatal(err)
+	}
+	other, err = bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{ExecutorPaused: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer leadCloseCore(t, other)
+	// Shutdown durably interrupts this Run; its original configuration must
+	// survive for later recovery. The producer slot and reservation can end.
+	if count(t, db, "SELECT count(*) FROM model_attempts WHERE producer_ended=1 AND knowledge='known' AND charged_tokens=5") != 1 || count(t, db, "SELECT count(*) FROM config_snapshot_pins") != 1 || count(t, db, "SELECT count(*) FROM execution_runs WHERE run_id=? AND status='interrupted'", runReceipt.RunID) != 1 || count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 || count(t, db, "SELECT count(*) FROM model_budget_accounts WHERE reserved_tokens<>0") != 0 {
+		t.Fatal("post-join settlement or interrupted configuration retention lost")
+	}
+	interrupted, err := other.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: meta(t, other, "profile", "").ProfileID, ID: runReceipt.RunID})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = other.API.Approvals.Cancel(ctx, owner, api.RunCancel{CommandMeta: meta(t, other, "lead-cancel-interrupted", interrupted.Revision), ID: interrupted.ID}); err != nil {
+		t.Fatal(err)
+	}
+	if count(t, db, "SELECT count(*) FROM execution_runs WHERE run_id=? AND status='canceled'", interrupted.ID) != 1 || count(t, db, "SELECT count(*) FROM config_snapshot_pins") != 0 || count(t, db, "SELECT count(*) FROM task_config_pins") != 0 || count(t, db, "SELECT count(*) FROM model_attempts WHERE producer_ended=1 AND knowledge='known' AND charged_tokens=5") != 1 {
+		t.Fatal("explicit terminal cancel failed to release retained pins or changed settled usage")
+	}
+	t.Log("Close timeout retained DB/Profile lock/pin; real detached producer settled before Done; reopened interrupted Run retained configuration until explicit public cancel released pins")
+}
+
+func TestLeadRecoveryFailedStopCommitCannotReopenPhysicalAdmission(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "profiles")
+	if err := os.Mkdir(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	loc := filepath.Join(root, "one")
+	type lateAttempt struct {
+		port        api.ModelAttempts
+		reservation api.AttemptReservation
+	}
+	entered := make(chan lateAttempt, 1)
+	release := make(chan struct{})
+	var once sync.Once
+	free := func() { once.Do(func() { close(release) }) }
+	defer free()
+	var callbacks atomic.Int32
+	engine := leadRecoveryEngine{run: func(c context.Context, in api.EngineInput) (api.EngineResult, error) {
+		r, err := in.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "lead-late-after-stop", InputEstimate: "3", OutputBound: "4"})
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		entered <- lateAttempt{in.Attempts, r}
+		// Intentionally uncooperative, so cancellation alone cannot prove that
+		// its Background physical attempt is fenced.
+		<-release
+		if callbacks.Load() > 0 {
+			_, err = in.Attempts.Settle(context.Background(), r, api.AttemptObservation{Knowledge: "known", InputTokens: "1", OutputTokens: "1", ProducerEnded: true})
+		} else {
+			err = in.Attempts.AbortUnsent(context.Background(), r)
+		}
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		return api.EngineResult{}, c.Err()
+	}}
+	c, err := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{Engine: engine, Budget: api.BudgetPolicy{RootTokenLimit: "100", ProfileTokenLimit: "1000", MaintenanceTokenLimit: "0"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	db := database(t, loc)
+	defer func() { _, _ = db.Exec("DROP TRIGGER IF EXISTS lead_fail_stop_commit"); free(); leadCloseCore(t, c) }()
+	a := agent(t, c, "lead-stop-failure", true)
+	createSession := func(key string) api.Session {
+		s, e := c.API.Conversation.CreateSession(ctx, owner, api.SessionCreate{CommandMeta: meta(t, c, key, ""), Kind: "direct", MemberIDs: []string{a.ID}, Title: key})
+		if e != nil {
+			t.Fatal(e)
+		}
+		return s
+	}
+	s := createSession("lead-old-session")
+	fresh := createSession("lead-after-stop-session")
+	newCommand := api.RunStart{CommandMeta: meta(t, c, "lead-new-intent-after-stop", fresh.Revision), SessionID: fresh.ID, Intent: "lead-new-intent-after-stop", SourceRefs: []api.SourceSnapshot{}}
+	send(t, c, s, "lead-held-worker")
+	var late lateAttempt
+	select {
+	case late = <-entered:
+	case <-time.After(5 * time.Second):
+		t.Fatal("worker did not reserve")
+	}
+	if _, err = db.Exec("CREATE TRIGGER lead_fail_stop_commit BEFORE UPDATE OF state ON execution_recovery_runtime WHEN NEW.state='stopping' BEGIN SELECT RAISE(ABORT,'lead controlled Stop write failure'); END"); err != nil {
+		t.Fatal(err)
+	}
+	if err = c.Close(); !reason(err, "EXECUTOR_STOP_TIMEOUT") {
+		t.Fatalf("failed durable Stop cleanup: %v", err)
+	}
+	if e := late.port.Dispatch(context.Background(), late.reservation, func(context.Context) error { callbacks.Add(1); return nil }); e == nil {
+		t.Error("failed Stop allowed late physical Dispatch")
+	}
+	if _, e := c.API.Conversation.StartRun(ctx, owner, newCommand); e == nil {
+		t.Error("failed Stop admitted a new root")
+	}
+	if callbacks.Load() != 0 || count(t, db, "SELECT count(*) FROM execution_runs WHERE intent='lead-new-intent-after-stop'") != 0 {
+		t.Error("in-memory stop latch did not close all admission")
+	}
+	select {
+	case <-c.Done():
+		t.Error("cleanup ended despite failed Stop and live worker")
+	default:
+	}
+	other, e := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{ExecutorPaused: true})
+	if e == nil {
+		leadCloseCore(t, other)
+		t.Error("failed Stop unlocked Profile")
+	}
+	if _, err = db.Exec("DROP TRIGGER lead_fail_stop_commit"); err != nil {
+		t.Fatal(err)
+	}
+	free()
+	deadline, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	if err = c.WaitClosed(deadline); err != nil {
+		t.Fatal(err)
+	}
+	t.Log("real SQLite Stop write failure retained lock; Background Dispatch and new root refused; retry committed and actual worker joined before Done")
+}

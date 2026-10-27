@@ -1,0 +1,156 @@
+{
+  "observer": "native:/root",
+  "task": "112-responses-review",
+  "observedAt": "2026-10-26T06:15:53.514Z",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullIndependentProbeRead": true,
+  "rawNormalRaceVetArchitectureRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolEvidence": "9a648c",
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "inputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "reportSha256": "a965452dbd9dbb6e4c3a78c6ffb61fdd0579075ef2339fe3b5950cb001770e14",
+  "artifactManifestSha256": "293c93f72aec64a48abd412dab767230857ad9e51a75cedabab8dfc435e47dbe",
+  "verifiedArtifactCount": 22,
+  "verifiedFileCount": 2048,
+  "verifiedSourceCount": 32,
+  "verifiedExternalCopyCount": 332,
+  "sourceHashesAndModesVerified": true,
+  "sourceSectionsVerified": true,
+  "actualProbeSha256": "af62a7dec2995eb33188220e71ecc9fed4eb534919290638b3bf64c0acf7ce76",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "indexSha256": "d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494",
+  "commands": {
+    "02-gzip-normal": {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-timeout=90s",
+        "-run",
+        "^TestReview112",
+        "-v",
+        "./tests/contract/engine/responses"
+      ],
+      "cwd": "/tmp/huhu-review112-6a9053en/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 2.5645743310001308,
+      "logSHA256": "7dd32db98b7a5acf69d5b67a5d22f4ab5fe623a27b04f8c12e31c150707cf9e5"
+    },
+    "03-gzip-race": {
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-timeout=90s",
+        "-run",
+        "^TestReview112",
+        "-v",
+        "./tests/contract/engine/responses"
+      ],
+      "cwd": "/tmp/huhu-review112-6a9053en/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "1"
+      },
+      "actualExit": 0,
+      "waitSeconds": 7.492119739999907,
+      "logSHA256": "3980814b84d4303a73c6619a84702594dcd58c813bfd72f160f58bc5f11a088d"
+    },
+    "04-vet": {
+      "command": [
+        "go",
+        "vet",
+        "./internal/adapters/outbound/eino/...",
+        "./internal/bootstrap",
+        "./internal/application/tooling/broker",
+        "./internal/application/assistant",
+        "./tests/contract/engine/responses"
+      ],
+      "cwd": "/tmp/huhu-review112-6a9053en/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 1.378543334999904,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "05-architecture": {
+      "command": [
+        "pnpm",
+        "test:huhu-bot-architecture"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 0.38662892899992585,
+      "logSHA256": "51fe1f5e24fb1976977c0876a3ad18606c452ec427cd3f86b424eaed66fa098f"
+    }
+  },
+  "findings": [],
+  "rootReadEvidence": [
+    "7f8e74 full report and both axes",
+    "fd752f complete independent probe",
+    "2c91a2 full normal/race/vet/architecture logs",
+    "a07e77 actual commands and source crosscheck",
+    "83f7d2 first report-format return126 and final return0"
+  ],
+  "boundaries": [
+    "Independent four-control probe injects real Driver/Registry/Engine with explicit controlled credential resolver and transport observer; default assembly is covered by 108/Root E2E, not claimed as this probe.",
+    "Complete raw item prefix reaches SDK before terminal release; measured zero approval/CP/Host, exact SQL accounting and actual Close/Core drain.",
+    "111 old production sources differ in three own Responses files; module/license graph reuse by imports/build/embed/lock and exact actual five-target graph, not old source SHA equivalence.",
+    "Unrun real Provider/Obsidian/target OS and explicit protocol permutations/wall-clock limits remain declared.",
+    "First return126 was only missing report headings; original report/output preserved, no product or frozen input mutation."
+  ],
+  "artifacts": {
+    "REPORT.md": "a965452dbd9dbb6e4c3a78c6ffb61fdd0579075ef2339fe3b5950cb001770e14",
+    "TASK.md": "402090061c0f46f8873c4c9ee8b4f29d011b40bb2b3dc134927c829aae262c79",
+    "logs/00-input.json": "d8c12d65a8efb5779f0c467cedf57a6875d81b63cc3722285e215586d4bdb2ca",
+    "logs/01-review112_test.go.txt": "af62a7dec2995eb33188220e71ecc9fed4eb534919290638b3bf64c0acf7ce76",
+    "logs/02-gzip-normal.json": "6c69c8dead4508c9fb13fac3878690d8d8a447553486544036b1fe883043a28c",
+    "logs/02-gzip-normal.log": "7dd32db98b7a5acf69d5b67a5d22f4ab5fe623a27b04f8c12e31c150707cf9e5",
+    "logs/03-gzip-race.json": "6f83155dc3be96dad52cb53bf124cd51b2ff20a37028634a24a4319869413fe7",
+    "logs/03-gzip-race.log": "3980814b84d4303a73c6619a84702594dcd58c813bfd72f160f58bc5f11a088d",
+    "logs/04-vet.json": "b4266d00e11ac79f8be5102a3475c2db0d7d48d40527ff515d9e9dffcd374b7a",
+    "logs/04-vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/05-architecture.json": "69ce81557b28cad775791ce7ec13ce35161cd934bd8de88d3543ae9bc8907b7e",
+    "logs/05-architecture.log": "51fe1f5e24fb1976977c0876a3ad18606c452ec427cd3f86b424eaed66fa098f",
+    "logs/06-evidence-crosscheck.json": "facb8696fce0786146359cbff51b0e74d730d0ad33993d76e67d868c76ab5902",
+    "logs/07-final-freeze.json": "0ae9ab4f42c4c697dc5cb6c0f1841204bd72e55c7c8067e048b114892fa26385",
+    "logs/08-report-before-headings.md.txt": "7ee79f3e5eaf1502f9bd256e828b98c4b0c38253aa638273bbd93edf3765b057",
+    "logs/08-return-first.json": "44d3ad53a0526111d2f4d662a00be37f80f9fcc5756e60e4e5b149637f858db2",
+    "logs/08-return-first.log": "a20562f61215ef8f98dc060d7482f1e235ed42a2123d77b3725f60f8bf72f9fa",
+    "logs/08-return.json": "8d464d3d93750fa1d38a69da031f7e0ee630cf84cc476f03ae287729dc88a382",
+    "logs/08-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/review112-evidence.py.txt": "3d1c2eef46d373475fb665db32b75032b73c4c2f82e078076c0e60203bb8a874",
+    "logs/review112-freeze.mjs.txt": "8f8bd5b0c10c64cff1f3637ef7710cfe52f2034a20db1acaddbb22070a1dd83c",
+    "logs/run-review112.py.txt": "096cb698ed3ebc2093d9d20673fc94932b1ce71dab8a6cba5a4a65c440e71a2d"
+  }
+}

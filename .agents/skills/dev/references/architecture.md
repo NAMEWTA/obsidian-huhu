@@ -26,6 +26,8 @@ src/modules/<id>/   home | agent | browser | archives | automations | notificati
   ui/               页面、面板、设置页、对话框
   styles/           模块的 CSS（列在 src/styles.json）
 native/pty-server/  Rust 终端辅助程序（stdio 帧）
+native/huhubot/     独立 Go Runner 底座（Application API、SQLite、stdio HAP）
+contracts/hap/v0.1/ 版本化 wire schema、方法目录与双端样本
 test/               共用样本与跨模块测试（用户格式黄金样本）
 ```
 
@@ -63,6 +65,8 @@ UI 包允许列表见 [设计系统参考](../../ui/references/design-system.md)
 - 运行时导入循环（包括经过懒加载导入形成的循环）会失败。
 
 ESLint 另外规定：`desktop/` 文件夹之外不得使用 `process`、`Buffer`、`__dirname`、`__filename`、`global`。
+
+Go Runner 的 `internal/domain` 与 `internal/application` 只依赖内层与标准库，不导入 SQL、Provider SDK、HAP DTO、Obsidian、runtime 或 adapter。入站 adapter 经 Application API 访问业务，不导入 outbound/SQLite。`pnpm test:huhu-bot-architecture` 对实际 Go 生产文件执行这组边界；Go wire DTO 与 Application 类型分开转换。
 
 ## 启动与懒加载
 
@@ -128,6 +132,8 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 
 下表用于定位工程 owner，完整保存、例外和恢复行为由[数据与恢复](../../../../docs/data.md)说明。系统 CLI 账号、宿主 IndexedDB 与显式导出（含保险箱的加密备份）不能误归为库内数据。不可读文件不能被当作空数据覆盖。
 
+Bot Runner 的 Profile 是另一个明确库外边界：`internal/runtime/profile` 从 OS 本机数据根构造受管根，`internal/adapters/outbound/sqlite` 拥有 `profile.sqlite3`。TS/HAP 只传序列化命令与结果，不能通过 JSON store 直接维护这份数据库；根目录、权限和身份锁见[数据文档](../../../../docs/data.md#库之外的数据)。
+
 | 数据 | 位置 | 负责方 |
 |---|---|---|
 | 保险箱 | `.huhu/safe/vault.enc`、`.backup` 与随机冲突/恢复前密文副本；固定 `huhu-safe` version 1 | safe |
@@ -135,6 +141,8 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 设置（本机） | `.huhu/config/devices/<device-id>.json` | app |
 | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
 | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
+| Bot 宿主回执与索引 | `.huhu/huhubot/`，设备/Profile 隔离；不是业务数据库 | huhubot 的 HostReceiptStore，复用 privateVaultStorage |
+| Bot 回执认证键 | Obsidian App 本机存储，独立于 Vault JSON；完整路径、键归属及失败边界见[数据正文](../../../../docs/data.md#bot-宿主回执与本机认证键) | huhubot 的 ReceiptAuthority；宿主持有持久化 |
 | 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
 | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
 | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |

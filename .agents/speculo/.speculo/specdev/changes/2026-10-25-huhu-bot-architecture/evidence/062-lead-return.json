@@ -1,0 +1,40 @@
+{
+  "task": "062-native-fixture-lint",
+  "checkedAt": "2026-10-25T16:34:17.876539+00:00",
+  "reportSha256": "988ceaac84155d6e9d720dc8d89cc699873672cb97ed7ba9cc38313881077d77",
+  "manifestSha256": "c921e2a0900ad95421b83d496c8cc08aa9387624484e0a8ef15c701638b8d32c",
+  "checkedFiles": {
+    "eslint.config.mts": "8919409df0b5c8b8f385873bc5deba54d556c200366207b15e3583c2597eb5c3",
+    "tsconfig.json": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb",
+    "tsconfig.test.json": "e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b",
+    "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs": "794501db18be666efd9fb74c2f1167da8120f3ddcc27a56feda12ce29dbe7d88",
+    "native/huhubot/tests/contract/effect-reconcile/obsidian-fixture.mjs": "5fd6f58fd51db280491733575df9dff01454f1becc91aa5ddcf67d12c82af9e2",
+    "src/modules/huhubot/core/protocol/connection.ts": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+    "src/modules/huhubot/services/host-write/obsidian-host.ts": "dc7c3283e57c3c6636690b7fb46e579ed5038618a5049b8715e03ae81039bbad",
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934"
+  },
+  "observedArtifacts": {
+    "REPORT.md": "988ceaac84155d6e9d720dc8d89cc699873672cb97ed7ba9cc38313881077d77",
+    "TASK.md": "133e8a97ba484e6b520f7f758e81013e08dda30a9d9ba5b290aad9a7ad1da8b4",
+    "after-effective-scope.json": "4009f93ebca0a1b265a0612ed1a2c22c0d6274983b66e98ef0c263a9cb9bca5e",
+    "before-effective-scope.json": "eb336db8feb743ad8b666b19bb41bf8a3b1e1ee1df0ac20e4a8853fdacc35ff8",
+    "before-inputs.json": "365832b14fa569fbd61751bb94ba8b799f8f01cfc62e288be4dfdba6c6835c88",
+    "change.patch": "eaa8bbbcb56f59b8c0bdc4763a8286cebad9f6b797b227e95cb4196452285d8d",
+    "eslint.before.mts.txt": "910f79dcf2359611786732378565f115f02e4c2c11524571674351c08ab80e31",
+    "final-freeze-check.log": "60eb53a398f09b12021d9c2a989e29ee52debd8b420634924e11ece6da7c2611",
+    "final-inputs.json": "c921e2a0900ad95421b83d496c8cc08aa9387624484e0a8ef15c701638b8d32c",
+    "return-check.log": "50b3204d6458c8115c17bce0713e469858b63970c8356fd2b4e7d817c8196835",
+    "scope-validation.json": "e4870442ab30eed4dee86c3de8118af654a1b388a1ceb460f10a331481968254"
+  },
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "productionEffectiveConfigUnchanged": true,
+  "onlyTwoExactPathsAdded": true,
+  "disposition": "precise test fixture lint scope accepted; Root whole lint pending; T27 full delivery pending"
+}

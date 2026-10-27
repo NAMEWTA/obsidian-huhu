@@ -1,0 +1,47 @@
+{
+  "overlaps": [
+    [
+      "T-01",
+      "T-02",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-03",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-05",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-06",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/006-approval-effect.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-11",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-12",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql</Path>"
+    ]
+  ],
+  "resolution": "保守路径比较把migrations/*.go与SQL正文视为同目录交集；真实注册Go仅052，011/012正文仅053，旧001/002/003/005/006冻结。T03/T06的run-admission-contract由同一052串行维护。T11/T12由同一053，公开API/装配/helper只由052维护。T02配置/pin由052、credentials.go最小删除引用guard仅053，测试分别assistant_test与delegation，raw provider和OS只读。T01 TS协议限定054六文件，api.ts/schema仅052；T05 Go仅053、Obsidian sources仅054。T27五个共享根路径只有051，完成后才开放054消费。当前未实际派遣生产，按TASK工具回执分批启动，重测试与最终构建Root协调。",
+  "tasks": {
+    "051": "T27精确五共享路径",
+    "052": "T07 Go及T01/T02配置/T03/T06含迁移恢复集",
+    "053": "T11/T12及T05 Go/T02 credentials.go最小guard",
+    "054": "T07 TS及T01六协议文件/T05 Host来源"
+  }
+}

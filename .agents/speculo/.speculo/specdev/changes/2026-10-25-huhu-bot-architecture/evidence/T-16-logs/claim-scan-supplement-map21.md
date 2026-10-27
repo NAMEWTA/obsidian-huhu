@@ -1,0 +1,9 @@
+# Map21领取修复的精确内部合同补充
+
+083已确认F-083-01，088由原foundation_go实际实施。保持Map21/Goal20、原T03/T06职责、28票55AC和产品合同。
+
+088的T03 store.go精确维护包括既有adapter内部Control接口的ReadyInTx分页签名，不只限私有游标字段。T06 continuations.go仍为唯一生产实现，T03 Claim是唯一消费者；不保留无人使用的并行Ready选择器。不修改Application/HAP合同、迁移、依赖或其他owner文件。
+
+新内部分页只返回有界候选，不提前消费continuation或占slot；T03必须在同一领取事务逐项执行现有恢复、取消、资格与slot门。游标只在提交成功后发布，取消可中断领取串行等待；回滚不能让未处理行被永久跳过。具体实现及有效公开红绿以088实际交回为准，本补充不认证其已通过。
+
+usage/waits.go属于T12，当前只读。089将由原credential_provider准备独立公开可达性诊断；唯一重检查窗口仍归088，Root明确交接后089才可运行。未实测的相邻LIMIT机制不列为确认finding，不直接扩写生产。

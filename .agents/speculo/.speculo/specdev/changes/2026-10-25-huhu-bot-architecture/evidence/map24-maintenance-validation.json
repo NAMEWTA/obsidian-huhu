@@ -1,0 +1,137 @@
+{
+  "mapRevision": 24,
+  "map": [],
+  "tickets": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/01-runner-profile-contract.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/02-bot-model-credentials.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/03-durable-chat.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/04-durable-events.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/05-sources-grants-host.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/06-approval-broker.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/07-note-write-reconcile.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/08-engine-chat-completions.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/09-engine-responses.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/10-engine-anthropic.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/11-delegation-directory.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/12-messages-limits-budget.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/13-groups-routing.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/16-cancel-recovery.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/17-permanent-purge.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/18-portable-import-export.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/19-profile-upgrade-backup.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/20-module-runtime.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/21-chat-ui.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/22-agent-group-ui.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/23-tasks-access-ui.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/24-memory-ui.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/25-data-ui.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/26-diagnostics-performance.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/27-build-platform-notices.md",
+      "errors": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/28-product-integration.md",
+      "errors": []
+    }
+  ],
+  "cycle": null,
+  "execution": [
+    {
+      "id": "T-01",
+      "errors": []
+    },
+    {
+      "id": "T-03",
+      "errors": []
+    },
+    {
+      "id": "T-06",
+      "errors": []
+    },
+    {
+      "id": "T-08",
+      "errors": []
+    }
+  ]
+}

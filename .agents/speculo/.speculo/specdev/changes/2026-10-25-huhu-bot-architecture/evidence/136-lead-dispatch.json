@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "owner": "native:/root/foundation_client",
+  "task": "136-memory-ts-review-repair",
+  "taskSHA256": "b7ccfecd81709913253cb41f9f217b522d5f2a412e639b7ba8a542cdbac91ea9",
+  "mapRevision": 37,
+  "goalRevision": 36,
+  "actualDispatch": "collaboration.followup_task delivered in current root turn",
+  "validator": {
+    "stage": "dispatch",
+    "actualExit": 0,
+    "toolChunk": "537745"
+  },
+  "resourceWindow": "135 sole pureAPI/HAP Go; 136 independent twoTS/Node; schema/locks frozen",
+  "previous128Window": "both groups actual exit0/Wait5.920040300003166; native MESSAGE+FINAL confirmed released; root receipt128-history-expectation-repair-return.json",
+  "authority": "active full28/55 code goal; latest user real models and actual operations deferred to user"
+}

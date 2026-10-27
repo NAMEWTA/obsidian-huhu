@@ -60,3 +60,5 @@ release-assets/
 terminal-artifacts/
 /evidence/
 /coverage/
+# Speculo session logs are local process evidence, not repository artifacts
+.agents/speculo/.speculo/specdev/changes/**/sessions/**/logs/

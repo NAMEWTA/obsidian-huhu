@@ -1,0 +1,42 @@
+{
+  "observer": "native:/root",
+  "task": "158-global-memory-contract",
+  "acceptedAt": "2026-10-26T18:47:02.965698+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "reportSha256": "af5601ff6fee668a06fb0dc93903808f2c6fff8b635d2d08053e6e6557349573",
+  "manifestSha256": "3018340572cdaf0039e48b0774ef8c75280aad01712d4dd6dc44ed6f4d4a6ca2",
+  "artifactCount": 5,
+  "sourceCount": 49,
+  "sourceDrift": [],
+  "scope": "Read-only T15 preparation, no functionality acceptance",
+  "dispositions": [
+    "Keep existing unknown AllowedTools configuration compatibility; add only the known proposal tool and actual Broker/pinned/schema/Checkpoint admission chain. Global enum tightening is outside this ticket unless an actual required contract establishes it.",
+    "Trusted local stdio owner authority is independent of --managed. Plain and managed local-owner connections use the owner API; model Broker receives only the proposer capability. JSON user/role or managed credential setup cannot grant Resolve authority."
+  ],
+  "returnCommand": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "158-global-memory-contract",
+    "--stage",
+    "return"
+  ],
+  "returnExit": 0,
+  "returnWaited": true,
+  "returnWaitSeconds": 0.06686466300016036,
+  "returnOutput": {
+    "errors": [],
+    "warnings": [],
+    "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+  },
+  "returnStderr": ""
+}

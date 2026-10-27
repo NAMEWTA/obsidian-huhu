@@ -1,0 +1,50 @@
+from pathlib import Path
+import datetime, hashlib, json, os, shutil, sqlite3, subprocess, tempfile, time
+
+# Prepared only. Use a separately allocated light Go window after the actual
+# groups code gate; it builds on the immutable accepted pre-T16 source copy.
+repo=Path.cwd();c=repo/'.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture'
+gate=json.loads((c/'evidence/T-13-logs/code-gate-groups-r2.json').read_text())
+assert all(not values for item in gate.values() for values in item.values())
+prior=json.loads((c/'evidence/T-13-logs/lead-groups-e2e-candidate2.json').read_text())
+legacy=json.loads((c/'evidence/T-13-logs/lead-groups-e2e-r3.json').read_text())
+assert legacy['complete'] and not legacy['sourceDrift']
+assert prior['complete'] and not prior['sourceDrift']
+sha=lambda b:hashlib.sha256(b).hexdigest()
+source=Path(prior['snapshot']);snapshot=Path(tempfile.mkdtemp(prefix='huhu-v8-fixture-source-'));out=Path(tempfile.mkdtemp(prefix='huhu-lead-v8-fixture-'))
+pointer=Path('/tmp/huhu-lead-v8-fixture-location.json');assert not pointer.exists()
+native={p:d for p,d in prior['inputHashes'].items() if p.startswith('native/huhubot/')}
+for name,digest in native.items():
+    assert sha((source/name).read_bytes())==digest,name
+    dest=snapshot/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source/name,dest)
+package=snapshot/'native/huhubot/tests/contract/lead-groups-migration';package.mkdir(parents=True)
+base_probe=Path(legacy['snapshot'])/'native/huhubot/tests/contract/lead-groups-migration/lead_test.go'
+assert sha(base_probe.read_bytes())==legacy['probeHashes']['native/huhubot/tests/contract/lead-groups-migration/lead_test.go']
+shutil.copy2(base_probe,package/'lead_test.go');shutil.copy2('/tmp/huhu-freeze-v8-fixture-test.go',package/'freeze_fixture_test.go')
+env=os.environ.copy();env['GOTOOLCHAIN']='go1.26.10';env['LEAD_GROUPS_V7_FIXTURE']=legacy['fixture']['root'];env['LEAD_RECOVERY_V8_FIXTURE_OUTPUT']=str(out/'legacy_cp')
+command=['go','test','-mod=readonly','-v','./tests/contract/lead-groups-migration','-run','^TestLeadFreezeSchema8InputForRecovery$','-count=1','-timeout=45s']
+start=time.monotonic()
+with (out/'construction.log').open('w') as log:
+    result=subprocess.run(command,cwd=snapshot/'native/huhubot',env=env,stdout=log,stderr=subprocess.STDOUT)
+receipt={'recordedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'sourceSnapshot':str(snapshot),'acceptedSource':str(source),'acceptedCodeInputSha256':prior['inputSha256'],'nativeSourceFiles':native,'command':command,'exit':result.returncode,'waited':True,'seconds':round(time.monotonic()-start,3),'complete':False}
+(out/'construction.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n')
+assert result.returncode==0, str(out/'construction.log')
+group_source=Path(legacy['snapshot'])/'profiles/one/profile.sqlite3';group_dest=out/'groups/one/profile.sqlite3';group_dest.parent.mkdir(parents=True);shutil.copy2(group_source,group_dest)
+summaries={}
+for name in ['legacy_cp','groups']:
+    root=out/name/'one';db_path=root/'profile.sqlite3'
+    with sqlite3.connect('file:'+str(db_path)+'?mode=ro&immutable=1',uri=True) as db:
+        version=db.execute('PRAGMA user_version').fetchone()[0];integrity=db.execute('PRAGMA integrity_check').fetchone()[0];foreign=db.execute('PRAGMA foreign_key_check').fetchall()
+        assert version==8 and integrity=='ok' and foreign==[]
+        summaries[name]={'schemaVersion':version,'integrity':integrity,'foreignKeys':foreign,'runs':db.execute('SELECT count(*) FROM execution_runs').fetchone()[0],'checkpoints':db.execute('SELECT count(*) FROM execution_checkpoints').fetchone()[0],'messages':db.execute('SELECT count(*) FROM conversation_messages').fetchone()[0],'groups':db.execute("SELECT count(*) FROM conversation_sessions WHERE kind='group'").fetchone()[0]}
+    assert not list(root.glob('*-wal'))
+manifest={'schemaVersion':8,'sourceCodeInputSha256':prior['inputSha256'],'groupSource':'accepted Root production TS/HAP/Go/Host code E2E r3, two Runner processes both exited/Wait; original database copied byte-for-byte','groupSourceSha256':sha(group_source.read_bytes()),'profiles':summaries,'files':{str(p.relative_to(out)):sha(p.read_bytes()) for name in ['legacy_cp','groups'] for p in sorted((out/name/'one').rglob('*')) if p.is_file()}}
+assert summaries['legacy_cp']['checkpoints']==5 and summaries['groups']['groups']==1
+(out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+old_root=Path(legacy['fixture']['root']);old_manifest=json.loads((old_root/'manifest.json').read_text())
+old_unchanged=sha((old_root/'manifest.json').read_bytes())==legacy['fixture']['manifestSha256'] and all(sha((old_root/'one'/name).read_bytes())==digest for name,digest in old_manifest['files'].items())
+receipt['complete']=True;receipt['manifestSha256']=sha((out/'manifest.json').read_bytes());receipt['allProductAndFixtureOriginalsUnchanged']=old_unchanged and all(sha((source/name).read_bytes())==digest for name,digest in native.items()) and sha(group_source.read_bytes())==manifest['groupSourceSha256']
+assert receipt['allProductAndFixtureOriginalsUnchanged']
+(out/'construction.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n')
+pointer.write_text(json.dumps({'root':str(out),'manifestSha256':receipt['manifestSha256'],'schemaVersion':8},indent=2)+'\n')
+print(json.dumps({'fixture':str(out),'schemaVersion':8,'manifestSha256':receipt['manifestSha256'],'profiles':summaries,'actualExit':result.returncode,'waited':True,'sourceUnchanged':True}))

@@ -1,0 +1,35 @@
+{
+  "session": "20261025T043239Z",
+  "task": "057-notes-collaboration-contract-prep",
+  "scope": "read-only contract preparation; only task-owned report/draft/evidence written",
+  "author": "native:/root/foundation_go",
+  "modelEvidence": "Dispatch preference gpt-6.1-sol/xhigh; not runtime model attestation",
+  "allProcessesWaited": true,
+  "notRun": [
+    "product generation",
+    "build",
+    "tests",
+    "database",
+    "real models",
+    "OS keyring",
+    "Host/Obsidian operations"
+  ],
+  "files": {
+    "REPORT.md": {
+      "sha256": "0f11f8a1c51dc06add1ded405c28206a56f03de038804a8b81050a3bf09d86a9",
+      "bytes": 7093
+    },
+    "contract-draft.md": {
+      "sha256": "e62dc8fa4545eba613a8c61d1f592b093c762e33f69073ad99dfdda1f57a9d6b",
+      "bytes": 4516
+    },
+    "sources.json": {
+      "sha256": "d06b57d57429e6f4dd378791f11a651717e6169d17b9c55dc84f3bcd8a5247d0",
+      "bytes": 9391
+    },
+    "return.json": {
+      "sha256": "ddf67bba1abb47db4db2aff3c30b1a8848da5d197fc6835b916747db899cb46f",
+      "bytes": 515
+    }
+  }
+}

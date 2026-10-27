@@ -1,0 +1,122 @@
+import assert from 'node:assert/strict';
+import type { ChildProcess } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { DesktopHapTransport } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/platform/desktop/transport/managed';
+import { HapConnection } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/core/protocol/connection';
+import type { BotClient, CommandMeta, MemoryNamespace } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/api';
+
+// Root-owned code integration probe. It must run on a frozen final memory
+// candidate. It covers management only; model/context/accounting are separate.
+const [binary, root] = process.argv.slice(2);
+assert(binary && root);
+const home = join(root, 'home'), state = join(root, 'state');
+const profileDir = join(state, 'huhu/huhubot/profiles/one');
+const exits: Array<{ code: number | null; signal: string | null }> = [];
+const timers = new Set<ReturnType<typeof setTimeout>>();
+const timerPort = { after(ms: number, fn: () => void) {
+  const timer = setTimeout(() => { timers.delete(timer); fn(); }, ms);
+  timers.add(timer); return () => { clearTimeout(timer); timers.delete(timer); };
+} };
+let current: { transport: DesktopHapTransport; bot: BotClient; childEnd: Promise<void> } | undefined;
+let sequence = 0;
+const report: Record<string, unknown> = { complete: false, profileDir,
+  boundary: 'default CLI + production TypeScript HAP + actual SQLite, management only; no real model/Obsidian/target OS acceptance', exits };
+async function bounded<T>(work: Promise<T>, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try { return await Promise.race([work, new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(label)), 15_000);
+  })]); } finally { clearTimeout(timer); }
+}
+async function open() {
+  const transport = await DesktopHapTransport.launch({ binary, profileDir, cwd: root,
+    shutdownGraceMs: 5000, environment: { HOME: home, USERPROFILE: home, XDG_STATE_HOME: state, LANG: 'C.UTF-8' } });
+  const child = (transport as unknown as { child: ChildProcess }).child;
+  const childEnd = new Promise<void>(resolve => child.once('close', (code, signal) => {
+    exits.push({ code, signal }); resolve();
+  }));
+  try {
+    const bot = await new HapConnection(transport, timerPort).connect({ name: 'root-memory-management', version: '1' });
+    current = { transport, bot, childEnd }; return bot;
+  } catch (error) {
+    transport.close(); await bounded(Promise.all([transport.exited, childEnd]), 'failed open did not drain'); throw error;
+  }
+}
+async function close() {
+  if (!current) return;
+  const active = current; current = undefined;
+  active.bot.close();
+  await bounded(Promise.all([active.transport.exited, active.childEnd]), 'CLI failed to drain');
+  assert.deepEqual(exits.at(-1), { code: 0, signal: null });
+  assert.equal(active.transport.diagnostics.stderrBytes, 0);
+}
+function meta(): CommandMeta;
+function meta(expectedRevision: string): CommandMeta & { expectedRevision: string };
+function meta(expectedRevision?: string) {
+  assert(current); const key = `root-memory-management-${++sequence}`;
+  return { profileId: current.bot.hello.profile.profileId, commandEpoch: current.bot.hello.profile.commandEpoch,
+    commandId: key, idempotencyKey: key, ...(expectedRevision ? { expectedRevision } : {}) };
+}
+const hash = (text: string) => 'sha256:' + createHash('sha256').update(text, 'utf8').digest('hex');
+async function main() {
+  await mkdir(home, { recursive: true, mode: 0o700 });
+  let bot = await open(); const profileId = bot.hello.profile.profileId;
+  const a = await bot.agents.create({ ...meta(), draft: { name: 'Root memory A', description: '', persona: '' } });
+  const b = await bot.agents.create({ ...meta(), draft: { name: 'Root memory B', description: '', persona: '' } });
+  const na: MemoryNamespace = { kind: 'agent', id: a.id }, nb: MemoryNamespace = { kind: 'agent', id: b.id };
+  const settings = await bot.memory.get({ profileId, namespace: na, kind: 'settings' });
+  assert.equal(settings.kind, 'settings'); if (settings.kind !== 'settings') throw new Error('settings discriminator');
+  assert.equal(settings.settings.revision, '1'); assert(settings.settings.enabled);
+  assert.equal(settings.settings.eligible, false); assert(settings.settings.reason);
+  const empty = await bot.memory.list({ profileId, namespace: na, kind: 'item' });
+  assert.deepEqual(empty.items, []); assert.equal(empty.namespaceRevision, '1');
+  const textA = '用户明确记录 ROOT_PRIVATE_A 中文😀 <tag>& literal';
+  const add = { ...meta(empty.namespaceRevision), namespace: na, action: 'add' as const,
+    scope: { kind: 'profile' as const }, text: textA };
+  const item = await bot.memory.correct(add);
+  assert.equal(item.state, 'active'); if (item.state !== 'active') throw new Error('active discriminator');
+  assert.equal(item.body.text, textA); assert.equal(item.body.hash, hash(textA));
+  assert.equal(item.body.creatorKind, 'user'); assert.equal(item.body.provenance, 'user');
+  assert.deepEqual(item.body.sourceRefs, []); assert.deepEqual(item.body.sourceScopes, []); assert.deepEqual(item.body.derived, []);
+  assert.deepEqual(await bot.memory.correct(add), item, 'same receipt must not create another revision');
+  const bEmpty = await bot.memory.list({ profileId, namespace: nb, kind: 'item' });
+  assert.deepEqual(bEmpty.items, []);
+  await assert.rejects(bot.memory.get({ profileId, namespace: nb, kind: 'item', id: item.id }), /NOT_FOUND|MEMORY_NAMESPACE_DENIED|MEMORY_SCOPE_MISMATCH/);
+  const pinned = await bot.memory.pin({ ...meta(item.revision), namespace: na, id: item.id, pinned: true });
+  assert(pinned.pinned); assert.equal(pinned.state, 'active');
+  if (pinned.state !== 'active') throw new Error('pinned discriminator');
+  assert.equal(pinned.revisionId, item.revisionId, 'pin must not create a new text revision');
+  const replacement = '用户纠正 ROOT_CORRECTED_A 组合 é 与 👩‍💻';
+  const corrected = await bot.memory.correct({ ...meta(pinned.revision), namespace: na, action: 'correct', id: item.id, text: replacement });
+  assert.equal(corrected.state, 'active'); if (corrected.state !== 'active') throw new Error('corrected discriminator');
+  assert.equal(corrected.body.text, replacement); assert.equal(corrected.body.hash, hash(replacement));
+  assert.notEqual(corrected.revisionId, item.revisionId);
+  await assert.rejects(bot.memory.correct({ ...meta(pinned.revision), namespace: na, action: 'correct', id: item.id, text: 'stale must not win' }), /REVISION_CONFLICT/);
+  const keep = await bot.memory.correct({ ...meta(bEmpty.namespaceRevision), namespace: nb, action: 'add', scope: { kind: 'profile' }, text: 'ROOT_PRIVATE_B_SURVIVES' });
+  assert.equal(keep.state, 'active');
+  const forgotten = await bot.memory.forget({ ...meta(corrected.revision), namespace: na, id: item.id });
+  assert.equal(forgotten.state, 'forgotten'); assert(!('body' in forgotten)); assert(!('revisionId' in forgotten));
+  const disabled = await bot.memory.setAutoMaintenance({ ...meta(settings.settings.revision), namespace: na, enabled: false });
+  assert.equal(disabled.enabled, false); assert.equal(disabled.eligible, false);
+  await close(); bot = await open(); assert.equal(bot.hello.profile.profileId, profileId);
+  const restoredA = await bot.memory.get({ profileId, namespace: na, kind: 'item', id: item.id });
+  const restoredB = await bot.memory.get({ profileId, namespace: nb, kind: 'item', id: keep.id });
+  assert.deepEqual(restoredA, { kind: 'item', item: forgotten });
+  assert.deepEqual(restoredB, { kind: 'item', item: keep });
+  const persistedSettings = await bot.memory.get({ profileId, namespace: na, kind: 'settings' });
+  assert.equal(persistedSettings.kind, 'settings');
+  if (persistedSettings.kind !== 'settings') throw new Error('settings discriminator');
+  assert.equal(persistedSettings.settings.enabled, false); assert.equal(persistedSettings.settings.revision, disabled.revision);
+  await close(); assert.equal(timers.size, 0);
+  Object.assign(report, { complete: true, profileId, agentIds: [a.id, b.id], itemIds: [item.id, keep.id],
+    originalRevisionId: item.revisionId, correctedRevisionId: corrected.revisionId,
+    cases: ['virtual default settings', 'real typed management through production TS/HAP', 'namespace separation',
+      'idempotent receipt', 'pin preserves text revision', 'correct immutable revision and stale CAS refusal',
+      'forgotten response body absent', 'persistent auto pause', 'natural exit and reopen preserves both namespaces'] });
+}
+try { await main(); }
+finally {
+  try { await close(); } finally { await writeFile(join(root, 'result.json'), JSON.stringify(report, null, 2) + '\n', { mode: 0o600 }); }
+}
+console.log(JSON.stringify({ complete: report.complete, cases: report.cases, exits }));

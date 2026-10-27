@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-readonly-preparation",
+  "reportSHA256": "c801a878976862f2d569c5038f25477f51ce2430232d2e223f4b67b9629c7f04",
+  "return": {
+    "exitCode": 0,
+    "seconds": 0.06350873200426577,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "disposition": "T15 remains dependency-pending; source-backed minimal namespace/proposal/recall/delivery seams guide later implementation. Trusted-owner authority recommendation will be resolved against actual existing HAP/Broker patterns; no new user approval question or product scope."
+}

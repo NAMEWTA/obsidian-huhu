@@ -1,0 +1,29 @@
+{
+  "observer": "native:/root",
+  "receipt": "sessions/20261025T043239Z/126-private-memory/logs/15-consumer-batch1-actual-return.json",
+  "receiptSHA256": "a1633e6d80825bcdb2b71a531466d856e1b10bb719ca90dd10b951181223fc9c",
+  "verified": {
+    "twoArchiveFilesEach": [
+      388,
+      388
+    ],
+    "allCurrentInputDrift": [],
+    "artifacts": 10,
+    "rawJSONLEvents": "Root tool52fd9a 7top11sub allpass nofail; version go1.26.10",
+    "source25": "tool08bf6a no drift"
+  },
+  "results": [
+    {
+      "stage": "batch1-controls-initial",
+      "actualExit": 0,
+      "actualWaitSeconds": 2.65017590899879
+    },
+    {
+      "stage": "batch1-maintenance-initial",
+      "actualExit": 0,
+      "actualWaitSeconds": 2.8851524310011882
+    }
+  ],
+  "disposition": "accepted executed first7consumers; no production changes;126fullmatrix stillinprogress",
+  "goWindowReturned": true
+}

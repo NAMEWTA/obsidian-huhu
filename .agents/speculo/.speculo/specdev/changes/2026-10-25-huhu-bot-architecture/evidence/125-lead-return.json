@@ -1,0 +1,38 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T10:42:12.090714+00:00",
+  "task": "125-memory-foundation-contract",
+  "reportSHA256": "e2f7e40bbb9d7c6fdff604da283373552aac601eff6764141745544232bf1638",
+  "manifestSHA256": "b30d1cccfa5ca8149b84c5f991ebfeee3e9a981a10a3832dd4e606500c6b2fa6",
+  "interfaceSHA256": "5ad52ee409236337457f0b6ae215f1369b1af821ec671b83791d3f38d2f072d1",
+  "verifiedArtifacts": 119,
+  "artifactTreeSHA256": "122959147b96fe5e0629055e715734b4531be30dc7458eee4c54f260dbc7b3d6",
+  "verifiedControlledSources": 22,
+  "sourceTreeSHA256": "20a576b41d77411a8e51a35642bfc2e98ce2bf5ccb52ca6e5797dd04993b1131",
+  "artifactDrift": [],
+  "sourceDrift": [],
+  "rootReturnValidation": {
+    "exitCode": 0,
+    "toolChunk": "870e31"
+  },
+  "nativeMessageAndFinalReceived": true,
+  "disposition": "accepted-contract-slice; pure API/HAP/schema/TS types and adapter hooks only",
+  "notAcceptedAs": [
+    "T14 storage or runtime",
+    "physical memory delivery",
+    "model context or maintenance",
+    "T01 complete ticket or full code gate"
+  ],
+  "evidenceReadback": [
+    "01 valid behavior red preserved in T14 typed-contract-initial-red.json",
+    "05/06/07/09/10 read in prior/current Root turns",
+    "12/13/14/15/16/17/18 Root raw read chunk ee9d7c",
+    "19 green source+raw Root chunk e53caf",
+    "20 vet+R3 Root chunk33a883",
+    "REPORT Root chunk840e37",
+    "interface-contract Root chunk6b4d1c",
+    "22 scope readback chunkf97cd4"
+  ],
+  "nonSemanticSchemaChange": "effects.get/reconcile status enum reorder with identical sets; old260 non-memory fixtures/protected golden unchanged",
+  "handoff": "128 minimal interface window active;127/126/129/130 pending implementation; T27 final lint/build still required"
+}

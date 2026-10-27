@@ -1,0 +1,15 @@
+{
+  "task": "057-notes-collaboration-contract-prep",
+  "checkedAt": "2026-10-25T12:54:32.483768+00:00",
+  "manifestSha256": "c54b0f23453db1b29d8880a0d263208849c262fc1c46025ebcfd433bd7fa8acb",
+  "reportSha256": "0f11f8a1c51dc06add1ded405c28206a56f03de038804a8b81050a3bf09d86a9",
+  "checkedFiles": [
+    "REPORT.md",
+    "contract-draft.md",
+    "sources.json",
+    "return.json"
+  ],
+  "returnExit": 0,
+  "returnOutput": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": ""
+}

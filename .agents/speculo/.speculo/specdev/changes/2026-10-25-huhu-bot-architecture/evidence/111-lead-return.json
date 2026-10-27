@@ -1,0 +1,75 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:01:25.888926+00:00",
+  "task": "111-responses-notices",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "e21dc8",
+  "rootReturnErrors": [],
+  "rootReturnWarnings": [],
+  "reportSha256": "7e9167c94abcb8c13cfb97ee1466eb618aefc17c3742a1d6f0572a5bcc87a765",
+  "manifestSha256": "6465df012c7297dadf89d3b9d2ccf212abdcf87250dc1f0eab894e6ef5e0718b",
+  "artifactsVerified": 58,
+  "sourceFilesVerified": 6,
+  "ownFiles": {
+    "THIRD-PARTY-NOTICES.md": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+    "docs/references.md": "df0cbf3995778b84dadb6233991ca635c12ead3963007c9136c9cc9c313147fa",
+    "docs/third-party/huhu-bot.md": "e25d6e6cdeca67af218ced2731632e7b22361cf691ba538602d6885cd26e759d",
+    "docs/third-party/licenses/go/go-1.24rc1-BSD-3-Clause.txt": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "scripts/huhu-bot-notices.mjs": "868e8dcf406c96e49704585c113db8baca4cd3ed766897fb76a097643f7f0685",
+    "scripts/huhu-bot-notices.test.mjs": "b75e0dd098cf75e319d16f1c70d269d642c6adfc8bce275e4590360693db95e8"
+  },
+  "currentHashDrift": [],
+  "oldLegalInputsVerified": 18,
+  "readOnlyFilesVerified": 8,
+  "productionInputsVerified": 167,
+  "actualRawGoListParsed": true,
+  "targetClosure": [
+    {
+      "target": "linux-x64",
+      "packages": 443,
+      "modules": 43
+    },
+    {
+      "target": "linux-arm64",
+      "packages": 409,
+      "modules": 39
+    },
+    {
+      "target": "darwin-x64",
+      "packages": 441,
+      "modules": 42
+    },
+    {
+      "target": "darwin-arm64",
+      "packages": 407,
+      "modules": 38
+    },
+    {
+      "target": "win32-x64",
+      "packages": 445,
+      "modules": 44
+    }
+  ],
+  "selectedPackageRowsVerified": 1078,
+  "uniqueSelectedFilesVerified": 1516,
+  "moduleRootTextsVerified": 46,
+  "unionThirdPartyModules": 45,
+  "withGoRuntime": 46,
+  "rawNoticesAndToolLogsRead": true,
+  "toolChecksPassed": 27,
+  "noticesSha256": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+  "NOTICEUnchanged": true,
+  "docsFailure": {
+    "outerExit": 126,
+    "innerExit": 1,
+    "actualFindings": 4,
+    "rootT06AnchorsCorrected": true,
+    "twoCheckerSemanticsDispatched": "113-docs-link-semantics"
+  },
+  "goWindow": "Root实际授予后完成所有Go/notices命令并归还，111停写；不把最初dispatch前noGo状态冒称最终。",
+  "disposition": "接收111许可候选；docs接缝继续113，T27/G5与全Goal不完成，109未来真实编译依赖变动再使受影响闭包证据失效。"
+}

@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-10-26T00:39:34.821715+00:00",
+  "originalCheck": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-plugin-checks-recovery-r1.json",
+  "originalCheckSHA256": "391d248411faaa73f22afc546d0eba7deae259fef03398813eadd31f4a97ee84",
+  "inputManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-plugin-input-recovery-r1.json",
+  "inputManifestSHA256": "5a223e382feb12372d172c8833c831170da461b2c59cff746752a5def66020cb",
+  "inputFiles": 1875,
+  "outputs": {
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+  },
+  "drift": [],
+  "reusedCommands": [
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-build-recovery-r1.log",
+      "exit": 0,
+      "seconds": 36.094,
+      "waited": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-lint-recovery-r1.log",
+      "exit": 0,
+      "seconds": 64.11,
+      "waited": true
+    }
+  ],
+  "rerun": false,
+  "reason": "本轮仅Go生产修复和测试/不可变Profile夹具变动；原build/lint全部输入及产物逐SHA未变，无native输入。"
+}

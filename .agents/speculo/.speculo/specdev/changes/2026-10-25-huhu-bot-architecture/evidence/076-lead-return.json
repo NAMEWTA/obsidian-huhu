@@ -1,0 +1,29 @@
+{
+  "task": "076-recovery-client-seams",
+  "checkedAt": "2026-10-25T19:21:13.816001+00:00",
+  "taskSha256": "ae677a14a51d5d3d5db2264afe11d762ecb2a3e0def055b61f2d32e875401110",
+  "reportSha256": "b4a1ce32abd61b678f5e3f8e066feccc8805bdb4809b9f57022f905fbd7e0a00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "staticSourcesChecked": 43,
+  "sourceDriftAtRootReadback": [],
+  "prior075OwnFilesChecked": 9,
+  "prior075OwnDrift": [],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "productTestBuildNetworkRun": false,
+  "readback": "Root fully read final REPORT and complete interfaces/owners attachment plus final recheck; recomputed all 43 source hashes and nine frozen TS source hashes. Actual native MESSAGE/FINAL received; Root return structural validator exit0. Source timing observations are not runtime validation.",
+  "disposition": "Accepted static preparation for T16 after current T13 code gate; no T16 production activation or product acceptance. Go observations must be rechecked against final group candidate.",
+  "observedArtifacts": {
+    "REPORT.md": "b4a1ce32abd61b678f5e3f8e066feccc8805bdb4809b9f57022f905fbd7e0a00",
+    "TASK.md": "ae677a14a51d5d3d5db2264afe11d762ecb2a3e0def055b61f2d32e875401110",
+    "command-observations.json": "907fd8a2723f10cae7e7abf23cf69c81f266548f52c076fce81633e26d48343e",
+    "final-recheck.json": "96038af7e63439393b1b24aa2e5b0621b83f1c1ee1abed75173865c47be30aed",
+    "interfaces-and-owners.md": "bca27c87c5faefc896de071c7a51c2d8cca3f78ca0035d022ec61c7a21283d43",
+    "observations.json": "435d11a282f580ce1b0e7c002e912b6d5fffc238ce7663f3ad923ca13b4c3c88",
+    "return-validation.json": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463"
+  }
+}

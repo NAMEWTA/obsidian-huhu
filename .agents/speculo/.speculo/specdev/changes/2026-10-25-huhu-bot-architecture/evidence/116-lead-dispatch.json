@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T06:21:09.500009+00:00",
+  "task": "116-responses-review-anchors",
+  "nativeTarget": "/root/recovery_review",
+  "nativeTool": "collaboration.followup_task",
+  "nativeFollowupIssued": true,
+  "nativeACKReceived": true,
+  "taskSha256": "a322559bb2d51b2ca921ce092361484be367bed0800c2b0c778987b5f9f02127",
+  "dispatchExit": 0,
+  "dispatchToolEvidence": "005498",
+  "sourceInputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "purpose": "Immutable112 report presentation successor with explicit HTML axis anchors; no product or review-semantic change",
+  "goWindowGranted": false,
+  "productWritesAllowed": false,
+  "originatingFailure": {
+    "receipt": "evidence/responses-code-closure-validation.json",
+    "outerExit": 126,
+    "toolChunk": "f86592",
+    "classification": "five formal references cannot extract heading-only axis sections; not a product failure or new review attempt"
+  },
+  "nativeACK": "Original112 immutable; exact original fields and Input preserved; actual readArtifactSectionSync extraction; no Go/product checks"
+}

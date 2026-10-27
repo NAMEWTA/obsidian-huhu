@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-25T18:23:32.802710+00:00",
+  "command": "node .agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs --repo . --stage goal-plan .agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+  "toolExit": 126,
+  "reportedErrors": 73,
+  "reportedWarnings": 0,
+  "recordType": "Summary of actual initial tool output, not a replacement raw transcript",
+  "categories": [
+    "Known global UI readiness/old approval digest and future readiness questions; LOG049/051 keep global draft and authorize independent code branches.",
+    "Validator cannot represent joint maintenance after accepted dependency checkpoints; active prerequisite and semantic-resource diagnostics retained.",
+    "Prefix-only writable overlap flags migrations/*.go versus exact SQL; actual Node path.matchesGlob audit separately confirms disjoint ownership.",
+    "T06/T07 lacked eight required Evidence navigation headings and explicit change-workspace label; Root now adds factual links to already accepted evidence, without changing conclusions."
+  ],
+  "currentBranchAudit": "/tmp/huhu-bot-window-audit-map17.json",
+  "currentBranchAuditErrors": [],
+  "action": "Preserve actual global failure; fix missing Evidence structure; retain authorized backend joint window and rerun only changed metadata validation."
+}

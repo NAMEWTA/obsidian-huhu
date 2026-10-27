@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:18:45.563454+00:00",
+  "task": "130-memory-common-engine",
+  "taskSha256": "7c90a342a8f665ed793127edb8d46c539b1598e6e063f00a2b2dd6a9ce92ceb0",
+  "sourceWriteGrant": "Followup delivered to native:/root/engine_adapter; native ACK received",
+  "scope": "Existing TASK common/** and necessary engine/chat tests only",
+  "firstStep": "Archive baseline and write first actual consumer red test; production remains old until meaningful behavior red",
+  "otherGoWriters": [
+    "126-memory/private",
+    "129-runtime/Core"
+  ],
+  "checks": "No Go/Node/mixed product check granted; Root must freeze actual Go input writers before first red",
+  "basis": "127 native FINAL and all TS processes stopped;125 R3 frozen;Map33/34"
+}

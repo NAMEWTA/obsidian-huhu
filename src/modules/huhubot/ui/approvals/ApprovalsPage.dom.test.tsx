@@ -1,0 +1,20 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, expect, test, vi } from 'vitest';
+import { TestProviders } from '../../../../ui/react/test-providers';
+import { registerMessages, setLanguage } from '../../../../shared/i18n';
+import type { Approval, BotClient } from '../../api';
+import { taskMessages } from '../../i18n/tasks';
+import { ApprovalsPage, type BotApprovalHost } from './ApprovalsPage';
+const approval: Approval = { id: 'approval-a', revision: '7', runId: 'run-a', effectId: 'effect-a', expiresAt: '2026-10-27T01:00:00Z', status: 'pending', preview: { target: { workspaceId: 'ws', resourceId: 'note.md', operation: 'update', baseRevision: '4' }, tool: { name: 'note.write', capability: 'write', capabilityVersion: '1', implementationVersion: '1', policyVersion: '1' }, parametersHash: 'sha256:p', previewHash: 'sha256:preview', diff: '+new', content: 'new', sourceRefs: [] } };
+beforeEach(() => { registerMessages(taskMessages); setLanguage('en'); });
+test('approval action binds the exact effect revision and preview hash', async () => {
+  const resolve = vi.fn(async () => ({ ...approval, status: 'approved' as const, revision: '8' }));
+  const client = { hello: { profile: { profileId: 'profile-a', commandEpoch: '1' } }, approvals: { list: vi.fn(async () => ({ items: [approval] })), resolve } } as unknown as BotClient;
+  const host: BotApprovalHost = { client: () => client };
+  render(<TestProviders><ApprovalsPage host={host} /></TestProviders>);
+  await waitFor(() => expect(screen.getByText('+new')).toBeTruthy());
+  screen.getByRole('button', { name: 'Approve' }).click();
+  await waitFor(() => expect(resolve).toHaveBeenCalledOnce());
+  expect(resolve).toHaveBeenCalledWith(expect.objectContaining({ id: 'approval-a', effectId: 'effect-a', expectedRevision: '7', decision: 'approve', previewHash: 'sha256:preview' }));
+  await waitFor(() => expect(screen.getAllByText('approved').length).toBeGreaterThan(0));
+});

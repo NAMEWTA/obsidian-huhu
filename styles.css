@@ -803,6 +803,14 @@
     margin: calc(var(--spacing) * 0);
   }
 
+.m-1:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    margin: calc(var(--spacing) * 1);
+  }
+
+.m-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    margin: calc(var(--spacing) * 2);
+  }
+
 .m-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
     margin: calc(var(--spacing) * 3);
   }
@@ -993,6 +1001,10 @@
 
 .mt-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
     margin-top: calc(var(--spacing) * 4);
+  }
+
+.mt-5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    margin-top: calc(var(--spacing) * 5);
   }
 
 .mt-auto:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -2339,6 +2351,10 @@
     width: min(62rem, 100vw - 2rem);
   }
 
+.w-\[min\(100\%\,36rem\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    width: min(100%, 36rem);
+  }
+
 .w-\[min\(100cqh\,40cqw\,11rem\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     width: min(100cqh, 40cqw, 11rem);
   }
@@ -2477,6 +2493,10 @@
 
 .max-w-\[80px\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-width: 80px;
+  }
+
+.max-w-\[88\%\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    max-width: 88%;
   }
 
 .max-w-\[88px\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -3351,6 +3371,10 @@
     grid-template-columns: 6rem minmax(0, 1fr);
   }
 
+.grid-cols-\[auto\,1fr\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    grid-template-columns: auto, 1fr;
+  }
+
 .grid-cols-\[auto_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -3483,12 +3507,20 @@
     flex-direction: row;
   }
 
+.flex-row-reverse:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    flex-direction: row-reverse;
+  }
+
 .\[flex-wrap\:nowrap\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     flex-wrap: nowrap;
   }
 
 .\[flex-wrap\:wrap\]:is(.huhu-ui, .huhu-ui *):not(#\#), .flex-wrap:is(.huhu-ui, .huhu-ui *):not(#\#) {
     flex-wrap: wrap;
+  }
+
+.place-items-center:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    place-items: center;
   }
 
 .\[align-content\:space-between\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -3799,6 +3831,10 @@
 
 .gap-x-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
     column-gap: calc(var(--spacing) * 4);
+  }
+
+.gap-x-5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    column-gap: calc(var(--spacing) * 5);
   }
 
 .gap-x-6:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -4277,6 +4313,16 @@
     }
   }
 
+.border-destructive\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    border-color: var(--destructive);
+  }
+
+@supports (color: color-mix(in lab, red, red)) {
+    .border-destructive\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+    }
+  }
+
 .border-foreground:is(.huhu-ui, .huhu-ui *):not(#\#), .border-foreground\/20:is(.huhu-ui, .huhu-ui *):not(#\#) {
     border-color: var(--foreground);
   }
@@ -4388,6 +4434,16 @@
 @supports (color: color-mix(in lab, red, red)) {
     .border-status-warning\/40:is(.huhu-ui, .huhu-ui *):not(#\#) {
       border-color: color-mix(in oklab, var(--status-warning) 40%, transparent);
+    }
+  }
+
+.border-status-warning\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    border-color: var(--status-warning);
+  }
+
+@supports (color: color-mix(in lab, red, red)) {
+    .border-status-warning\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-color: color-mix(in oklab, var(--status-warning) 50%, transparent);
     }
   }
 
@@ -4929,7 +4985,17 @@
     }
   }
 
-.bg-status-warning:is(.huhu-ui, .huhu-ui *):not(#\#), .bg-status-warning\/15:is(.huhu-ui, .huhu-ui *):not(#\#) {
+.bg-status-warning:is(.huhu-ui, .huhu-ui *):not(#\#), .bg-status-warning\/5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    background-color: var(--status-warning);
+  }
+
+@supports (color: color-mix(in lab, red, red)) {
+    .bg-status-warning\/5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      background-color: color-mix(in oklab, var(--status-warning) 5%, transparent);
+    }
+  }
+
+.bg-status-warning\/15:is(.huhu-ui, .huhu-ui *):not(#\#) {
     background-color: var(--status-warning);
   }
 
@@ -6948,6 +7014,10 @@
     .text-sidebar-foreground\/60:is(.huhu-ui, .huhu-ui *):not(#\#) {
       color: color-mix(in oklab, var(--sidebar-foreground) 60%, transparent);
     }
+  }
+
+.text-status-error:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    color: var(--status-error);
   }
 
 .text-status-info:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -9642,6 +9712,10 @@
     color: var(--foreground);
   }
 
+.aria-\[current\=true\]\:bg-sidebar-accent[aria-current="true"]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    background-color: var(--sidebar-accent);
+  }
+
 .data-\[active\]\:bg-\[var\(--nav-indentation-guide-color-active\,var\(--muted-foreground\)\)\][data-active]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     background-color: var(--nav-indentation-guide-color-active, var(--muted-foreground));
   }
@@ -10637,6 +10711,26 @@
       justify-content: flex-end;
     }
 
+    .sm\:p-5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      padding: calc(var(--spacing) * 5);
+    }
+
+    .sm\:p-6:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      padding: calc(var(--spacing) * 6);
+    }
+
+    .sm\:px-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      padding-inline: calc(var(--spacing) * 4);
+    }
+
+    .sm\:px-5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      padding-inline: calc(var(--spacing) * 5);
+    }
+
+    .sm\:px-8:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      padding-inline: calc(var(--spacing) * 8);
+    }
+
     .sm\:text-left:is(.huhu-ui, .huhu-ui *):not(#\#) {
       text-align: left;
     }
@@ -10983,6 +11077,10 @@
   }
 
 @container (min-width: 42rem) {
+    .\@min-\[42rem\]\:col-span-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-column: span 2 / span 2;
+    }
+
     .\@min-\[42rem\]\:grid-cols-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -11011,6 +11109,10 @@
       grid-column: span 1 / span 1;
     }
 
+    .\@3xl\:col-span-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-column: span 2 / span 2;
+    }
+
     .\@3xl\:block:is(.huhu-ui, .huhu-ui *):not(#\#) {
       display: block;
     }
@@ -11031,12 +11133,28 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .\@3xl\:grid-cols-3:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .\@3xl\:grid-cols-4:is(.huhu-ui, .huhu-ui *):not(#\#) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .\@3xl\:grid-cols-\[11rem_minmax\(0\,1fr\)_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
       grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .\@3xl\:grid-cols-\[15rem\,minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 15rem, minmax(0, 1fr);
+    }
+
+    .\@3xl\:grid-cols-\[16rem\,minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 16rem, minmax(0, 1fr);
+    }
+
+    .\@3xl\:grid-cols-\[17rem\,minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      grid-template-columns: 17rem, minmax(0, 1fr);
     }
 
     .\@3xl\:grid-cols-\[minmax\(0\,1\.1fr\)_minmax\(0\,1\.4fr\)_minmax\(0\,0\.9fr\)_minmax\(0\,1\.3fr\)_minmax\(0\,1fr\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -11065,6 +11183,16 @@
 
     .\@min-\[48rem\]\:self-center:is(.huhu-ui, .huhu-ui *):not(#\#) {
       align-self: center;
+    }
+
+    .\@3xl\:border-r:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-right-style: var(--tw-border-style);
+      border-right-width: 1px;
+    }
+
+    .\@3xl\:border-b-0:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-bottom-style: var(--tw-border-style);
+      border-bottom-width: 0;
     }
   }
 
@@ -21776,6 +21904,22 @@ body.huhu-theme-line-height {
 .huhu-ui .huhu-agent-resize { position: relative; }
 .huhu-ui .huhu-agent-resize::after { content: ''; position: absolute; inset: -4px; }
 .huhu-ui .huhu-agent-resize:focus-visible { outline: 2px solid var(--ring); }
+/* The Bot forms use semantic Tailwind tokens; these container rules keep the two-column editor readable in narrow leaves. */
+.huhu-bot-agent-editor { container-type: inline-size; }
+@container (max-width: 38rem) {
+	.huhu-bot-agent-grid { grid-template-columns: minmax(0, 1fr); }
+	.huhu-bot-agent-actions { align-items: stretch; flex-direction: column; }
+}
+.huhu-bot-tasks pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.huhu-bot-tasks [data-action-state='pending'] { cursor: progress; }
+.huhu-bot-data select,
+.huhu-bot-data input[type='checkbox'] {
+	min-height: 2rem;
+}
+
+.huhu-bot-data input[type='checkbox'] {
+	accent-color: var(--interactive-accent);
+}
 /* Iconic 1.1.10 (268e133c), MIT-0. Native host decorations; module-scoped selectors. */
 body:where(.huhu-iconic-enabled) {
 	--ltr-icons: .lucide-check, .lucide-help-circle, .sidebar-left, .sidebar-right;

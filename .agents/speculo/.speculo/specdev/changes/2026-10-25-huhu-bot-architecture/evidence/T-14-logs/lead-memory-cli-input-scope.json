@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "preparedNotRun": true,
+  "scripts": {
+    "huhu-lead-memory-management.py": "1d8b05e6570b895ade3e57dfacfa29e533ab116afb0b1f188157f8df36029b6b",
+    "huhu-lead-memory-model.py": "cb7d2028822980a91211cbd74ef2af174feaeffcd1915f0bbdb5370a445d18af"
+  },
+  "scope": "CLI production build input snapshot excludes native/huhubot *_test.go and native/huhubot/tests subtree; all production Go/SQL/embedded schema/locks/TS/contracts retain full hashes+modes",
+  "reason": "126/140 may add unrelated Go test source whileRoot compiles production CLI and runs own controlledprobe. No Go test packages are invoked in these scripts; production //go:embed onlySQLmigration andschema_generated.json verified. Go tests keep their independent actualinput evidence.",
+  "writerRule": "Allproduction/generation/TS/checkers muststillstop beforeRoot CLI; author test-source-only writes outside chosenactualinput maycontinue",
+  "syntax": "BothPython AST parsed; no productcheckrun"
+}

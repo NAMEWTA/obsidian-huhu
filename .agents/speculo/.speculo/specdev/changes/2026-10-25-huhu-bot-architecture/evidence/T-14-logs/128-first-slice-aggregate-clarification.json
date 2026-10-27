@@ -1,0 +1,11 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:02:25.476846+00:00",
+  "historicalFreeze": "sessions/20261025T043239Z/128-memory-access-budget/logs/04-first-slice-freeze.json",
+  "algorithm": "SHA256(UTF8 of sorted-by-path lines: sha256 + two spaces + path + newline, including final newline)",
+  "count": 7,
+  "computedSHA256": "f3bc199d1a232ed666916a6fcaf57a45fa642d6c4f824dfdbc312a0a677f78a2",
+  "matched": true,
+  "currentProductRecheck": false,
+  "note": "128 has resumed actual source writes; this verifies historical frozen manifest encoding, not current code against first-slice state."
+}

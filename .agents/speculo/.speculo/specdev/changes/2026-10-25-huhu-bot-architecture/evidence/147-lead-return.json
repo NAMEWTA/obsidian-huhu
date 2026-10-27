@@ -1,0 +1,32 @@
+{
+  "observer": "native:/root",
+  "task": "147-resume-inbox-engine",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "481e1269675fe45223a6ca8a4eaaf47854c96864f569f40b719711e62fc36a6b",
+  "manifestSHA256": "67632353555ba66c49c4d5d6bb316afc027a9ded9e3d70228f168d3fc4d259dd",
+  "sourceFiles": 6,
+  "artifactFiles": 36,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "147-resume-inbox-engine",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.059868791002372745,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "scope": "Targeted author candidate accepted after complete report, original results and fixed source/artifact readback. Root current full regression, physical CLI composition and independent 151 review remain separate."
+}

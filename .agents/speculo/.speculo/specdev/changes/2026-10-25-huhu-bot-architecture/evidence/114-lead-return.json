@@ -1,0 +1,95 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:17:11.721298+00:00",
+  "task": "114-metadata-probe-expectation",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "d35333",
+  "rootReturnErrors": [],
+  "rootReturnWarnings": [],
+  "reportSha256": "4d8c8a5c16ffd1c66347371a53f4c4e50a526dd1c7057a5ff47d8d5ebd326e6e",
+  "manifestSha256": "72b52e8f21d7d20c32df403a237b0e8a6cea3968623a26a6c2a794be0145835b",
+  "artifactsVerified": 18,
+  "sourceFilesVerified": 1,
+  "readOnlySourcesVerified": 4,
+  "acceptedChatBeforeFilesVerified": 1,
+  "currentHashDrift": [],
+  "ownFiles": {
+    "native/huhubot/tests/contract/assistant/probe_http_test.go": "a9b5795f6a555ea84e90faa5ebe02a7cf2443974d2c73592c1bc413137463426"
+  },
+  "rawRedGreenLogsAndExactDiffRead": true,
+  "chatAndSetupBytesIndependentlyCompared": true,
+  "redGreenInputsOnlyChange": [
+    "native/huhubot/tests/contract/assistant/probe_http_test.go"
+  ],
+  "actualChecks": {
+    "red": {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/assistant",
+        "-run",
+        "^TestDefaultMetadataProbeUsesOnlyExplicitGETAndDoesNotInferCapabilities$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "mode": "red",
+      "exitCode": 1,
+      "waited": true,
+      "seconds": 1.3832164219929837,
+      "pid": 2944935,
+      "sourceCount": 318,
+      "sourceManifest": "01-red-source-before.json",
+      "sourceTreeSHA256": "ed7fef6331d69873bb4785574cc509ea212365b12562bbb5274b0c04806792c8",
+      "sourceDrift": [],
+      "ownerSHA256": "9cdfb0c1204d013097350a9532e5953efc8c0654b4479385875a9575c3c22c3f"
+    },
+    "green": {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/assistant",
+        "-run",
+        "^Test(DefaultMetadataProbeUsesOnlyExplicitGETAndDoesNotInferCapabilities|ModelListingRequiresDeclaredProtocolAndDoesNotRunProbe|UndeclaredProbePreservesExplicitTestingButDoesNotAdvertiseProtocols)$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "mode": "green",
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.1972891490149777,
+      "pid": 2947223,
+      "sourceCount": 318,
+      "sourceManifest": "04-green-source-before.json",
+      "sourceTreeSHA256": "86f56a444a46b05b7f4bc92517866f31903bcc96d79e0fff70dd8b86aa4d2621",
+      "sourceDrift": [],
+      "ownerSHA256": "a9b5795f6a555ea84e90faa5ebe02a7cf2443974d2c73592c1bc413137463426"
+    }
+  },
+  "disposition": "接收原T02默认装配预期维护；产品不改，三目标绿并入112共同审查，T02/T09未完成。"
+}

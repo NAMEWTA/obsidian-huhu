@@ -1,0 +1,33 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:32:19.734963+00:00",
+  "task": "131-memory-ts-catalog-revision",
+  "reportSha256": "e6d85a0f2562ca9c609d9a44647efc51724d12e5bb2512a80a84f4ec13743239",
+  "sourceManifestSha256": "4c34d370dbc5f1d8d2cceca16c51d4c93b0ef96cf0876c9b195b5a7ba6ce614c",
+  "artifactManifestSha256": "58e5411a091d3784facb3cccf2fa392a422f60e19c45e4ab4a39dfa9e9a1270a",
+  "nativeReturn": "MESSAGE + FINAL; two TS files and all processes stopped",
+  "rootReadback": {
+    "artifactFiles": 18,
+    "sources": 1647,
+    "drift": [],
+    "toolChunk": "5c297a",
+    "reportReadChunk": "693cf3",
+    "realRedReadChunk": "de276b"
+  },
+  "checks": {
+    "tests": "4 files / 75 tests, actual0/Wait,3.367814064025879s",
+    "testTypes": "actual0/Wait,20.667551517486572s",
+    "returnValidation": {
+      "actualExit": 0,
+      "toolChunk": "6fa176"
+    },
+    "sameRootRedProbeNowGreen": "evidence/T-14-logs/131-namespace-revision-green.json"
+  },
+  "findingDisposition": "memory-page-namespace-revision resolved;1/MaxInt64 accepted,0/MaxInt64+1/20digits rejected through actual MethodValidation; public framed invalid result rejection verified by author tests.",
+  "acceptedScope": "127 +131 pure TS memory validation candidate only; no T01/T14 whole gate, no Core/Go/SDK/SQLite/host acceptance",
+  "unverified": [
+    "full plugin lint/build",
+    "combined default Core/TS/CLI integration",
+    "real Provider/Obsidian/target OS"
+  ]
+}

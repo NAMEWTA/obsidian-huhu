@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-25T19:57:31.800853+00:00",
+  "actualNodeExit": 126,
+  "allChildrenWaited": true,
+  "productFailure": false,
+  "reason": "Root external TS fixture omitted AgentDraft.description required by the existing schema. Production HapConnection rejected before agents.create crossed the wire; only three fixture drafts gain description. Public Go cases and effect owner after-reopen probe passed and source is unchanged.",
+  "beforeProbeSha256": "1a4a7bfd5673fa466f110ece4f9d216cdea90d941c41ddf27d3fba486e083218",
+  "afterProbeSha256": "fd1cae9f39178e424a5b6ec1b71a593019bf880f9abeb111ccb885e010c550fa",
+  "sourceDrift": []
+}

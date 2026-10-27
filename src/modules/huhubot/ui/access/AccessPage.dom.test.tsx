@@ -1,0 +1,21 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, expect, test, vi } from 'vitest';
+import { TestProviders } from '../../../../ui/react/test-providers';
+import { registerMessages, setLanguage } from '../../../../shared/i18n';
+import type { Agent, BotClient, Grant } from '../../api';
+import { accessMessages } from '../../i18n/access';
+import { AccessPage, type BotAccessHost } from './AccessPage';
+const agent: Agent = { id: 'agent-a', name: 'Aster', description: '', persona: '', isDefault: true, revision: '2', personaRevision: '1', modelBindingRevision: '3', enabled: true, model: { modelId: 'm', providerId: 'p', endpoint: 'https://example.invalid', capabilities: [], protocol: 'openai-chat-completions', revision: '3', credentialStatus: { mode: 'none', state: 'unknown' } } };
+const grant: Grant = { id: 'grant-a', revision: '2', workspaceId: 'ws', scope: 'source', resourceId: 'note.md', recipientIds: ['agent-a'], recipients: [], operations: ['read'], state: 'active' };
+beforeEach(() => { registerMessages(accessMessages); setLanguage('en'); });
+test('revokes a grant with its durable revision', async () => {
+  const revoke = vi.fn(async () => ({ commandId: 'c', receiptId: 'r', revision: '3' }));
+  const client = { hello: { profile: { profileId: 'profile-a', commandEpoch: '1' } }, grants: { list: vi.fn(async () => ({ items: [grant] })), revoke }, agents: { list: vi.fn(async () => ({ items: [agent] })) } } as unknown as BotClient;
+  const host: BotAccessHost = { client: () => client };
+  render(<TestProviders><AccessPage host={host} /></TestProviders>);
+  await waitFor(() => expect(screen.getByText('note.md')).toBeTruthy());
+  screen.getByRole('button', { name: 'Revoke access' }).click();
+  await waitFor(() => expect(revoke).toHaveBeenCalledOnce());
+  expect(revoke).toHaveBeenCalledWith(expect.objectContaining({ id: 'grant-a', expectedRevision: '2' }));
+  await waitFor(() => expect(screen.getByText('Revoked')).toBeTruthy());
+});

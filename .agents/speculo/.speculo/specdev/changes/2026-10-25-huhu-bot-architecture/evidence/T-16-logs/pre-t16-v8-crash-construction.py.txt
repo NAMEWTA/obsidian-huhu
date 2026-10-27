@@ -1,0 +1,61 @@
+from pathlib import Path
+import datetime,hashlib,json,os,shutil,sqlite3,subprocess,tempfile,time,base64
+repo=Path.cwd();c=repo/'.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture';logs=c/'evidence/T-16-logs'
+accepted=json.loads((c/'evidence/T-13-logs/lead-groups-e2e-candidate2.json').read_text());gate=json.loads((c/'evidence/T-13-logs/code-gate-groups-r2.json').read_text());assert all(not e for v in gate.values() for e in v.values())
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();source=Path(accepted['snapshot']);snapshot=Path(tempfile.mkdtemp(prefix='huhu-v8-crash-source-'));out=Path(tempfile.mkdtemp(prefix='huhu-lead-v8-crash-fixture-'));pointer=Path('/tmp/huhu-lead-v8-crash-fixture-location.json');assert not pointer.exists()
+inputs={p:d for p,d in accepted['inputHashes'].items() if p.startswith(('native/huhubot/','contracts/hap/'))}
+for name,digest in inputs.items():
+ assert sha(source/name)==digest,name
+ target=snapshot/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source/name,target)
+probe=Path('/tmp/huhu-lead-v8-crash-fixture-test.go');shutil.copy2(probe,snapshot/'native/huhubot/tests/contract/groups/lead_crash_fixture_test.go')
+receipt={'recordedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'sourceSnapshot':str(snapshot),'acceptedSource':str(source),'acceptedCodeInputSha256':accepted['inputSha256'],'inputs':inputs,'probeSha256':sha(probe),'commands':[],'complete':False}
+def save():
+ (out/'construction.json').write_text(json.dumps(receipt,indent=2)+'\n')
+ (logs/'pre-t16-v8-crash-construction-pointer.json').write_text(json.dumps({'root':str(out),'complete':receipt['complete']},indent=2)+'\n')
+env=os.environ.copy();env['GOTOOLCHAIN']='go1.26.10';env['CGO_ENABLED']='0';binary=out/'old-v8-groups.test';command=['go','test','-mod=readonly','-c','-o',str(binary),'./tests/contract/groups'];start=time.monotonic()
+with (out/'build.log').open('w') as log:r=subprocess.run(command,cwd=snapshot/'native/huhubot',env=env,stdout=log,stderr=subprocess.STDOUT)
+receipt['commands'].append({'command':command,'exit':r.returncode,'waited':True,'seconds':round(time.monotonic()-start,3)});save();assert r.returncode==0,str(out/'build.log')
+profile_root=out/'crashed';marker=out/'resume-entered.json';env['LEAD_V8_CRASH_PROFILE_ROOT']=str(profile_root);env['LEAD_V8_CRASH_MARKER']=str(marker)
+command=[str(binary),'-test.run=^TestLeadFreezeRunningV8Continuation$','-test.v','-test.timeout=60s'];start=time.monotonic()
+with (out/'child.log').open('w') as log:
+ child=subprocess.Popen(command,cwd=snapshot/'native/huhubot',env=env,stdout=log,stderr=subprocess.STDOUT)
+ try:
+  deadline=time.monotonic()+35
+  while not marker.exists() and child.poll() is None and time.monotonic()<deadline:time.sleep(.025)
+  assert marker.exists() and child.poll() is None, str(out/'child.log')
+  observed=json.loads(marker.read_text());child.kill();exitcode=child.wait(timeout=5)
+ finally:
+  if child.poll() is None:child.kill()
+  child.wait(timeout=5)
+ receipt['commands'].append({'command':command,'exit':child.returncode,'waited':True,'expectedSignal':'SIGKILL only after actual Resume and durable Dispatch marker','actualMarker':marker.exists(),'seconds':round(time.monotonic()-start,3)});save()
+assert exitcode==-9
+raw_files={str(p.relative_to(profile_root)):sha(p) for p in sorted(profile_root.rglob('*')) if p.is_file()};assert any(n.endswith('-wal') for n in raw_files)
+normalized=out/'normalized';shutil.copytree(profile_root,normalized)
+def scalar(x):return {'bytes':base64.b64encode(x).decode()} if isinstance(x,bytes) else x
+def table_hashes(db):
+ result={}
+ for (table,) in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"):
+  rows=db.execute('SELECT * FROM "'+table.replace('"','""')+'"').fetchall()
+  encoded=sorted(json.dumps([scalar(x) for x in row],separators=(',',':'),sort_keys=True) for row in rows)
+  result[table]={'rows':len(rows),'sha256':hashlib.sha256(json.dumps(encoded,separators=(',',':')).encode()).hexdigest()}
+ return result
+with sqlite3.connect(normalized/'one/profile.sqlite3') as db:
+ before=table_hashes(db);version=db.execute('PRAGMA user_version').fetchone()[0];assert version==8
+ states=db.execute('SELECT status,count(*) FROM execution_runs GROUP BY status').fetchall();assert dict(states)=={'running':1,'succeeded':1,'waiting_children':1},states
+ assert db.execute("SELECT count(*) FROM model_attempts WHERE state='dispatched' AND producer_ended=0").fetchone()[0]==1
+ assert db.execute('SELECT count(*) FROM execution_checkpoints').fetchone()[0]==1
+ assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok';assert db.execute('PRAGMA foreign_key_check').fetchall()==[]
+ checkpoint=db.execute('PRAGMA wal_checkpoint(TRUNCATE)').fetchone();assert checkpoint[0]==0
+ after=table_hashes(db);assert before==after
+assert all(sha(profile_root/name)==digest for name,digest in raw_files.items())
+# A read-only final open confirms a standalone copy has all committed rows.
+with sqlite3.connect('file:'+str(normalized/'one/profile.sqlite3')+'?mode=ro&immutable=1',uri=True) as db:assert table_hashes(db)==before
+files={str(p.relative_to(normalized)):sha(p) for p in sorted(normalized.rglob('*')) if p.is_file() and not p.name.endswith(('-shm','-wal'))}
+for p in (normalized/'one').glob('*-wal'):assert p.stat().st_size==0
+manifest={'schemaVersion':8,'origin':'Accepted pre-T16 production Facade/Executor, real children CP Resume then actual process SIGKILL/Wait; no SQL state edits or bootstrap recovery','rawRoot':str(profile_root),'rawFiles':raw_files,'root':str(normalized),'files':files,'tableHashes':before,'runStates':states,'actualResume':observed,'normalization':'SQLite WAL checkpoint only in independent copy; all logical tables unchanged; original crash files unchanged','sourceCodeInputSha256':accepted['inputSha256']}
+(out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+receipt['complete']=True;receipt['manifestSha256']=sha(out/'manifest.json');receipt['allSourcesAndRawUnchanged']=all(sha(source/name)==d for name,d in inputs.items()) and all(sha(profile_root/name)==d for name,d in raw_files.items());assert receipt['allSourcesAndRawUnchanged'];save()
+pointer.write_text(json.dumps({'root':str(out),'profileRoot':str(normalized),'manifestSha256':receipt['manifestSha256'],'schemaVersion':8},indent=2)+'\n')
+for src,dst in [('manifest.json','pre-t16-v8-crash-manifest.json'),('construction.json','pre-t16-v8-crash-construction.json'),('build.log','pre-t16-v8-crash-build.log'),('child.log','pre-t16-v8-crash-child.log')]:shutil.copy2(out/src,logs/dst)
+shutil.copy2(pointer,logs/'pre-t16-v8-crash-location.json');shutil.copy2(probe,logs/'pre-t16-v8-crash-construction.go.txt');shutil.copy2(__file__,logs/'pre-t16-v8-crash-construction.py.txt')
+print(json.dumps({'fixture':str(out),'profileRoot':str(normalized),'manifestSha256':receipt['manifestSha256'],'sourceFiles':len(inputs),'tableCount':len(before),'runStates':states,'checkpointCount':1,'expectedProcessExit':exitcode,'waited':True,'complete':True,'sourcesAndRawUnchanged':True}))

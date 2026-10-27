@@ -1,0 +1,61 @@
+{
+  "observer": "native:/root",
+  "recordSHA256": "52eb75c7ef7bd4ca7cebcad83809f3f91775630e974155c0e610ba70fc802b6d",
+  "sourceDrift": [],
+  "snapshotDrift": [],
+  "commandLogs": {
+    "evidence/T-14-logs/lead-memory-model-go-version-r3.log": "8bf749c1c543de275d5bf17433608f075c08c4c27141011c30c007cdd9310b94",
+    "evidence/T-14-logs/lead-memory-model-build-r3.log": "56a09ef7ed0ac8be98fdca6f0f2281d3f22a44284efb9c81517a7731c05be690",
+    "evidence/T-14-logs/lead-memory-model-ts-build-r3.log": "0b76c93246a359b907e4b17b34a3f94b3c50065244c8f452a31b5614c72db667",
+    "evidence/T-14-logs/lead-memory-model-openai-chat-completions-r3.log": "2f6a33d3fbe6c7c85fde701d7a153c8ad5b3bfbe88d6b9ea0a9976d8d63ea489",
+    "evidence/T-14-logs/lead-memory-model-openai-responses-r3.log": "7e609acab30c0e3d72e4d720386ba441aa1a7cd3fb44fe7fec71fa9bf89743df",
+    "evidence/T-14-logs/lead-memory-model-anthropic-messages-r3.log": "e4b2152dec703613c31237a86d46afca03142f33a984edf9d707c6aa508e8b63"
+  },
+  "protocols": {
+    "openai-chat-completions": {
+      "knownSettledAttempts": 6,
+      "jobCommit": "committed",
+      "automaticRecallDependency": 1,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ]
+    },
+    "openai-responses": {
+      "knownSettledAttempts": 6,
+      "jobCommit": "committed",
+      "automaticRecallDependency": 1,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ]
+    },
+    "anthropic-messages": {
+      "knownSettledAttempts": 6,
+      "jobCommit": "committed",
+      "automaticRecallDependency": 1,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ]
+    }
+  }
+}

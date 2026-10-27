@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T10:43:14.522830+00:00",
+  "task": "129-memory-runtime-integration",
+  "target": "native:/root/foundation_go",
+  "taskSha256": "5dc247c890dc96261c4a9bd22246642f9d9361067134e076c59739514a4e18e5",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "93c02b"
+  },
+  "mapValidation": {
+    "actualExit": 0,
+    "toolChunk": "f514ee",
+    "path": "evidence/map33-maintenance-validation.json"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received: exact finite read-only preparation; no product/test edits or Go/Node/Python product checks",
+  "productWindow": "not granted; finite read-only concrete integration preparation;128 owns product/check window"
+}

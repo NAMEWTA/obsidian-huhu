@@ -1,0 +1,98 @@
+{
+  "observer": "native:/root",
+  "acceptedAt": "2026-10-26T18:52:37.416627+00:00",
+  "result": "passed",
+  "gate": "T14 code-level and original-owner maintenance; G3 remains partial",
+  "tickets": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-04",
+    "T-05",
+    "T-06",
+    "T-08",
+    "T-09",
+    "T-10",
+    "T-11",
+    "T-12",
+    "T-13",
+    "T-14",
+    "T-16"
+  ],
+  "input": "evidence/T-14.md#review-input-memory-full-r3",
+  "inputSha256": "d52ab1fa4039b0dbaed7540b871ca479d69012804fa1cf62e413372badb15219",
+  "reviewer": "native:/root/memory_integration_review",
+  "reviewReport": "sessions/20261025T043239Z/159-memory-final-review/REPORT.md",
+  "reviewReportSha256": "a7d7058bdc23436f9ff7fba7ae92091c6164dd90a11d996a875e411e3a14e40f",
+  "rootReceipts": [
+    {
+      "path": "evidence/153-lead-return.json",
+      "sha256": "7ee81c255c1d1f8122701249b36f29707079718c2b9365723f9eb2caee420cfa"
+    },
+    {
+      "path": "evidence/154-lead-return.json",
+      "sha256": "21309b75d86672b2a881434438f9b6e6bf18f6c3de003969502c61ed796328c3"
+    },
+    {
+      "path": "evidence/155-lead-return.json",
+      "sha256": "bd2b174ecc7b4c2443efd6ee7d54a53be7c7402348dddc766eeee27dabf6279e"
+    },
+    {
+      "path": "evidence/156-lead-return.json",
+      "sha256": "8853bf319da8663fe5a01d20cce76f8af13d4ee2acb59724a0ba52daba5d0d83"
+    },
+    {
+      "path": "evidence/157-lead-return.json",
+      "sha256": "979627cdddfc1ecd696348635858fae47eddeb533396f596174e83a204f60aca"
+    },
+    {
+      "path": "evidence/158-lead-return.json",
+      "sha256": "233a02f8211fc3c42836720c840a6881fa413e9ff295ac02a0cc73d6ad88a7c2"
+    },
+    {
+      "path": "evidence/159-lead-return.json",
+      "sha256": "9728e6ef7c2f57b5714c97025295b7bcac8a321d9bd787dbb86532c5eb335401"
+    }
+  ],
+  "checks": [
+    {
+      "path": "evidence/T-14-logs/lead-memory-normal-combined-r1.json",
+      "sha256": "8f18907b020809f131660e7f4eeec78f23d5d252f38aa54c81567ea791190b4a"
+    },
+    {
+      "path": "evidence/T-14-logs/lead-memory-quality-r1.json",
+      "sha256": "5de2574fd73718907a000574207cbc22d0e53e47fef826e5220960161c8a501f"
+    },
+    {
+      "path": "evidence/T-14-logs/lead-memory-ts-build-r3.json",
+      "sha256": "b682ab17f666b1a37a404a17e1bdb71762c77c4183dd141670e197d6b8920b9b"
+    },
+    {
+      "path": "evidence/T-14-logs/lead-memory-inbox-combined-r1.json",
+      "sha256": "04a2cd84bb7d372d14a3a65c0f6c0d4b3e3eba9b422025b1f863693629d5f4cf"
+    },
+    {
+      "path": "evidence/T-14-logs/lead-memory-model-r3.json",
+      "sha256": "52eb75c7ef7bd4ca7cebcad83809f3f91775630e974155c0e610ba70fc802b6d"
+    },
+    {
+      "path": "evidence/T-14-logs/lead-memory-model-r3-audit.json",
+      "sha256": "d1692c284bbdc2a88ec3cabfb7a34d05277d526eafed9dfbd65462ae4dbdbcd2"
+    }
+  ],
+  "validation": {
+    "path": "evidence/T-14-logs/closure-validation-r2.json",
+    "sha256": "421bc629af9251c607a694045a576ada8b4eda5bc2b9bf15edbf5309ec45fbb4",
+    "actualExit": 0,
+    "waited": true,
+    "waitSeconds": 27.76418554099655,
+    "plans": 28,
+    "jointRecords": 14,
+    "acceptanceRecords": 14,
+    "toolChunk": "c06b74"
+  },
+  "reviewAttempts": 3,
+  "priorFailuresPreserved": true,
+  "originalCredentialCause": "unconfirmed; current barrier maintenance + combined coverage is accepted, original r3 exit 1 retained",
+  "boundary": "Code-only. T15–28 and full28/55AC Goal continue; T27 partial; real Provider/Obsidian/target OS user-owned/not-run."
+}

@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "task": "111-responses-notices",
+  "taskSHA256": "5c1b28579517dd0009aa2b8de673538132d42b2e2e4cdcfb9f6f59fd79be982f",
+  "dispatchValidation": {
+    "exitCode": 0,
+    "errors": [],
+    "warnings": [],
+    "actualWait": true,
+    "toolChunk": "9b4759"
+  },
+  "nativeFollowupTask": true,
+  "nativeTarget": "/root/build_integration",
+  "nativeAckReceived": true,
+  "scope": "仅111冻结TASK许可/文档路径；当前无Go准备，真实五目标和完整notices等待Root唯一窗",
+  "goWindowGranted": false
+}

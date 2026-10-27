@@ -1,0 +1,160 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-code-e2e",
+  "result": "evidence/T-14-logs/lead-memory-model-r1.json",
+  "resultSHA256": "cbf4a00068f54fa6867f1888e7cdc890dcfb8cc5ae9a143158386778e9638ac0",
+  "inputFiles": 1890,
+  "inputSHA256": "0b26295394823fcb132a7d695cdb1b10a8f77ee936a361efe7daf7b65d657235",
+  "sourceDrift": [],
+  "commands": [
+    {
+      "command": [
+        "/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go",
+        "version"
+      ],
+      "cwd": "/tmp/huhu-lead-memory-model-r1-qof67lhi/native/huhubot",
+      "log": "evidence/T-14-logs/lead-memory-model-go-version-r1.log",
+      "exitCode": 0,
+      "seconds": 0.0036119459982728586,
+      "waited": true
+    },
+    {
+      "command": [
+        "/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go",
+        "build",
+        "-o",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-bot",
+        "./cmd/huhubot"
+      ],
+      "cwd": "/tmp/huhu-lead-memory-model-r1-qof67lhi/native/huhubot",
+      "log": "evidence/T-14-logs/lead-memory-model-build-r1.log",
+      "exitCode": 0,
+      "seconds": 3.092382627997722,
+      "waited": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "esbuild",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-lead-memory-model.ts",
+        "--bundle",
+        "--platform=node",
+        "--format=esm",
+        "--alias:obsidian=/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-lead-obsidian-stub.ts",
+        "--outfile=/tmp/huhu-lead-memory-model-r1-qof67lhi/lead-memory-model.mjs"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "log": "evidence/T-14-logs/lead-memory-model-ts-build-r1.log",
+      "exitCode": 0,
+      "seconds": 0.531154823001998,
+      "waited": true
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/lead-memory-model.mjs",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-bot",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/openai-chat-completions",
+        "openai-chat-completions"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "log": "evidence/T-14-logs/lead-memory-model-openai-chat-completions-r1.log",
+      "exitCode": 0,
+      "seconds": 1.451306796996505,
+      "waited": true
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/lead-memory-model.mjs",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-bot",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/openai-responses",
+        "openai-responses"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "log": "evidence/T-14-logs/lead-memory-model-openai-responses-r1.log",
+      "exitCode": 0,
+      "seconds": 1.175960690001375,
+      "waited": true
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/lead-memory-model.mjs",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/huhu-bot",
+        "/tmp/huhu-lead-memory-model-r1-qof67lhi/anthropic-messages",
+        "anthropic-messages"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "log": "evidence/T-14-logs/lead-memory-model-anthropic-messages-r1.log",
+      "exitCode": 0,
+      "seconds": 1.139968809999118,
+      "waited": true
+    }
+  ],
+  "protocols": {
+    "openai-chat-completions": {
+      "http": 5,
+      "maintenance": 1,
+      "naturalExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "settledAttempts": 5,
+      "automaticRecallDependency": null,
+      "contextCount": 4,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "rawLogSHA256": "ad656ff7a15fd3b8c2dcf441c764fe2ab2cfced9f67236663d2c4242de3abce7"
+    },
+    "openai-responses": {
+      "http": 5,
+      "maintenance": 1,
+      "naturalExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "settledAttempts": 5,
+      "automaticRecallDependency": null,
+      "contextCount": 4,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "rawLogSHA256": "091c561246b086ee504fe9d2bb5cba2f070504dbf7aef4d11fbf17aad815bf1d"
+    },
+    "anthropic-messages": {
+      "http": 5,
+      "maintenance": 1,
+      "naturalExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "settledAttempts": 5,
+      "automaticRecallDependency": null,
+      "contextCount": 4,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "rawLogSHA256": "4c5b6a85aa705f62a78b5e75b86c92e45c687484ad91147d7b738ba6e44e65d6"
+    }
+  },
+  "boundary": "production TS/default CLI/real SDKs/local HTTP/actual SQLite; no real Provider/Obsidian/target OS acceptance",
+  "waitBoundary": "Each subprocess.run waits; TS waits natural CLI close twice; SQLite only read after CLI exits; one frozen build for all3 isolated Profiles"
+}

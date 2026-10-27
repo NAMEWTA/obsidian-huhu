@@ -1,0 +1,35 @@
+{
+  "observer": "native:/root",
+  "task": "148-question-parent-resume",
+  "status": "accepted-diagnostic-and-test-migration-candidate",
+  "reportSHA256": "b74ca33bde9e22fbf192bde59a79a143e92e9f5d740765f1f77faec4135688d4",
+  "manifestSHA256": "c73f92754237f5077adcc44e2019128a82a2f0c6572aadd554bdb3d7958b4c3c",
+  "currentOwnedSources": 0,
+  "artifactFiles": 13,
+  "ownedSourceArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "148-question-parent-resume",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.06304633299441775,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "unresolvedBehavior": [
+    "ordinary late inbox omitted on Resume: 146/147",
+    "question waiting middle task Claim refuses MEMORY_INPUT_STATE_INVALID: 149"
+  ],
+  "scope": "Original failures retained. This acceptance does not mark T14 or underlying behavior green."
+}

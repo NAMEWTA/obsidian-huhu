@@ -1,0 +1,320 @@
+{
+  "grantedAt": "2026-10-25T21:37:22.242772+00:00",
+  "owner": "native:/root/foundation_go",
+  "nativeGrantSent": true,
+  "relatedWritersStopped": true,
+  "allAuthorProcessesWaitedBeforeGrant": true,
+  "rootProductChecksRunning": false,
+  "steps": [
+    "go test all module -p1",
+    "risk race 11 packages -p1",
+    "go vet all module",
+    "unique schema generation consistency and architecture"
+  ],
+  "failurePolicy": "Stop dependent checks at actual failure, preserve evidence and return to original owner",
+  "files": {
+    "contracts/hap/v0.1/fixtures/golden.json": {
+      "owner": "080-recovery-core",
+      "sha256": "458a7a49654f29a29f95fffac4044b10496aa9f84e46bce758c67305811bf0f0"
+    },
+    "contracts/hap/v0.1/fixtures/methods.json": {
+      "owner": "080-recovery-core",
+      "sha256": "befae0dd58481587fbb02c0d35141115b9bf154b44a08f759f71dc8226cd503e"
+    },
+    "contracts/hap/v0.1/generate.mjs": {
+      "owner": "080-recovery-core",
+      "sha256": "7499c603ed15eb2b899913a9e745ba9929e75906d244f7af46b21addc264cfe4"
+    },
+    "contracts/hap/v0.1/methods.json": {
+      "owner": "080-recovery-core",
+      "sha256": "d110ecaca8f535c69c81d9ec39f2815ae82eb8c6f97dabe57074ba5246f2465b"
+    },
+    "contracts/hap/v0.1/schema.json": {
+      "owner": "080-recovery-core",
+      "sha256": "a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534"
+    },
+    "native/huhubot/cmd/huhubot/main.go": {
+      "owner": "080-recovery-core",
+      "sha256": "965c5467d0f66312d8387b45a3db0fe761e21994f84a38351bc8cb911f260e8c"
+    },
+    "native/huhubot/internal/adapters/inbound/hap/assistant.go": {
+      "owner": "080-recovery-core",
+      "sha256": "243a1539a5c8f05cd832d1e346748beb5dc7015f8b892449802b4036e1562ec2"
+    },
+    "native/huhubot/internal/adapters/inbound/hap/conversation.go": {
+      "owner": "080-recovery-core",
+      "sha256": "929dc5a317fd4f37b8979561fdec01e31617e47f54e3a6bddaef8c4745df92f0"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/continuations.go": {
+      "owner": "080-recovery-core",
+      "sha256": "5c3cc7c05fe023eb8736d58be3da3ab339a44aa00d8c1d43934cfb87d486fc6f"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/recovery.go": {
+      "owner": "080-recovery-core",
+      "sha256": "a25ac4916b1e175f161c3b1916556f2a2fcbcb0fc95ec88ad3ff303dcc1c8191"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go": {
+      "owner": "080-recovery-core",
+      "sha256": "64eeb3d50a564371798e51113e1f4f62baf071e043b60159f6f742b480966951"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go": {
+      "owner": "080-recovery-core",
+      "sha256": "ab4284e09e60c3bf0f3577e4da52747acdca3140a856c4015cc760afdf6aabb6"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go": {
+      "owner": "080-recovery-core",
+      "sha256": "e27d13089880686b86361965a903c952437a561f22aed3b9846fa3d34a347aed"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/groups.go": {
+      "owner": "080-recovery-core",
+      "sha256": "752164959714c352d4d34f0361ab671ce0ad0b63d5e5cf2fd175e5d8e6d1e409"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go": {
+      "owner": "080-recovery-core",
+      "sha256": "19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go": {
+      "owner": "080-recovery-core",
+      "sha256": "ff34f63a7dd6ffc4cf7afc126f67faa5a1950401d843dd01238867c2b9022c78"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go": {
+      "owner": "080-recovery-core",
+      "sha256": "3897535ff94f2450c166c3e2a34bfc9dad6d0ce9cc494e64462d490c832f2699"
+    },
+    "native/huhubot/internal/application/api/conversation.go": {
+      "owner": "080-recovery-core",
+      "sha256": "e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a"
+    },
+    "native/huhubot/internal/application/api/recovery.go": {
+      "owner": "080-recovery-core",
+      "sha256": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5"
+    },
+    "native/huhubot/internal/application/api/service.go": {
+      "owner": "080-recovery-core",
+      "sha256": "b298869e7b1c0d67fff6d01a9f3b9dfd9d62f6bb9a7087dc9dc688a24de417b4"
+    },
+    "native/huhubot/internal/application/api/types.go": {
+      "owner": "080-recovery-core",
+      "sha256": "3a8019d4638b666e8e81506781a8bc0f6795287ed5363811c36d72b9ca4ceaf9"
+    },
+    "native/huhubot/internal/application/execution/executor/executor.go": {
+      "owner": "080-recovery-core",
+      "sha256": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef"
+    },
+    "native/huhubot/internal/application/execution/executor/ports.go": {
+      "owner": "080-recovery-core",
+      "sha256": "8cf2e56c9269742fa83c18722a1229c9f55ae3c85a6e78a713cab0bc199beb4d"
+    },
+    "native/huhubot/internal/application/tooling/broker/recovery.go": {
+      "owner": "080-recovery-core",
+      "sha256": "e26c4401ceaed66bd1c3e86b5f872389fb98e97f840781ba223b8179d5cbaea3"
+    },
+    "native/huhubot/internal/application/tooling/broker/service.go": {
+      "owner": "080-recovery-core",
+      "sha256": "ef31c9b2428794b0079c0811235df443a8c76d531f45847e1d70b5e72780b4d1"
+    },
+    "native/huhubot/internal/bootstrap/core.go": {
+      "owner": "080-recovery-core",
+      "sha256": "a114c9297befbe0c61aee5dd86d6d5a36e8bff481d8aa6acbe6341f907820a67"
+    },
+    "native/huhubot/internal/protocol/hap/methods_generated.go": {
+      "owner": "080-recovery-core",
+      "sha256": "3c16c7311f730d69cf00f59b6d6b5c1d1d54758cc7b1085c475e5be538f81a59"
+    },
+    "native/huhubot/internal/protocol/hap/schema_generated.json": {
+      "owner": "080-recovery-core",
+      "sha256": "a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534"
+    },
+    "native/huhubot/tests/contract/approval/checkpoint_inspection_test.go": {
+      "owner": "080-recovery-core",
+      "sha256": "6644fa8df06730daff43a6273e849c011f94f8530cd1d8e94eeb70e6fbe79b1f"
+    },
+    "native/huhubot/tests/contract/foundation/recovery_lifecycle_test.go": {
+      "owner": "080-recovery-core",
+      "sha256": "a17f45dec91fc3289094383b0f9225f50892803b75c3801c391c4c823ed9ae83"
+    },
+    "src/modules/huhubot/api.ts": {
+      "owner": "080-recovery-core",
+      "sha256": "ff921139bdd82f2c6e2b83892fc499489ccef93183e7f827fe6709ec4697a401"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/reply_access.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "f90bd2b8d9b5ce3e81c6d6c5f2a96c0cecda41ff359a9e38c7d0f1847db9d3eb"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "99ec6d1c48d2f8422be954f2c7f8ed8f7f70cacc22bda56db2af27e2be0730e1"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/migrations/016-recovery.sql": {
+      "owner": "081-recovery-domain",
+      "sha256": "64ae1a357bf26ec1d28e3c23aa30fa233010459a6ade27173c75f647cf0a08b3"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/recovery/commands.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "95af93402451b1150732c89c8c8df655d95c198552d84c63cd1fe148c54a3adb"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/recovery/guard.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "d54ada3b07c5402e4a11610232c3b5e6d2b14f2fc3e0bc9ee0be333602803dbf"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/recovery/snapshot.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "4343bf672ddfa00d26a9910b9ce2ed598be1d370e6560b33314c12503aac58c6"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/recovery/store.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "4f34b4567da6231a35bf0549f82e297383a8e492c972e883a3bb430008c98080"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/groups.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "a86cccf29fa1d6b5d7f9fb5c71bcc6dbe5e76f76245bb3ccfdfbe8e234d532c3"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/recover.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "c066d133cca7c84eff50316b9531f2fdd1626464e96d4c09bdfecae0cff8add8"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/recovery_position.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "a964222d54faa05e20a24044f0f198380f69859d25d0b14ddf4c4bd91f2bc910"
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "6600cf9abfae1cd463dccb8acbd86cb4e186bf0dacfcc06faf288a43d1e2d3a6"
+    },
+    "native/huhubot/internal/application/execution/recovery/service.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "1d5e402402d4f13c88a364ef3915b9a12325fd039a41126a32dd5338fd257028"
+    },
+    "native/huhubot/internal/domain/execution/recovery/state.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "31c30ecb96bdbb2ea918b0ae24c750cb19786f8c497b2b46ed194c9c636e3813"
+    },
+    "native/huhubot/tests/contract/delegation/review_requirements_resume_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "3d9387259da8441eaeb2658e1485418cfd4adbf28a0536870ae56559cfd51e3f"
+    },
+    "native/huhubot/tests/contract/recovery/migration_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "29f7bea3f6862654ed07c0e02f4d5eb936de8e4e36681a17eb2f9e6edc00566d"
+    },
+    "native/huhubot/tests/contract/recovery/producer_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "0fcc26805fa56096b13b4e9bb3725c2c439ce76f4144f5e8575bef20590fe1ab"
+    },
+    "native/huhubot/tests/contract/recovery/qualification_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "a23e5432037663fba4a7480d564e8499e0236dba4a0ad647bfb47d5f54ae907a"
+    },
+    "native/huhubot/tests/contract/recovery/recovery_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "2677005d5d74b4db667bd57bc6add9514ebc8f7fdeda8f1729f9a0258c1b0289"
+    },
+    "native/huhubot/tests/contract/recovery/source_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "8a351b2c686ffddff7a19433746e2b2c5ccd435c225e90514fb92112564d60e9"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/groups/one/profile.sqlite3": {
+      "owner": "081-recovery-domain",
+      "sha256": "4bf63d5f4a35943af452253be49db059def187ff2ad7239ca48a7aaa4b2f0dd5"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/inflight-resume-entered.json": {
+      "owner": "081-recovery-domain",
+      "sha256": "82555b4dea8064e7ee3ccfdbca3a4680c33b743c3edcdd5c07ee974b6ff61e29"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/inflight/one/checkpoints/9c2ef5e4e297b0e997372334d3364e7b.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "540a97247c20030b40440bde321648436f07aa9bc0ad307ca8a0d1328d08ee5b"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/inflight/one/profile.sqlite3": {
+      "owner": "081-recovery-domain",
+      "sha256": "d9d37ec06d672646f52c390f5766fb9ede41a515ffa0f6e472fd33a57e839388"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/checkpoints/177ceb2402c609246cf8b8e40f07bd02.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "01a5fb5520ddfe79e6d2cce37cd8d2a9ca6fabd0422d36edd7795612a4d275d9"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/checkpoints/1aeef47e7c17340dd4be0eb3a5d69aad.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "8dc07aba00242025372b2e1bbcc46e11fe843878a17b5d1c6b2980261b196a33"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/checkpoints/387bdb4e3badc53c4ec0a6837bbeefe3.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "250a9d407125728159c7a8687d8b883404104e6f89a954ba41cc5f3337cf4bf1"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/checkpoints/649059b13e0818a3c8145bd201f2db42.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "e9eb2e2253bbc9db2d5b9ea59405553c9735291c8cbd2b5d833f3c940b3521e7"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/checkpoints/6a82fd333831bbfe16008f3025c572f2.cp": {
+      "owner": "081-recovery-domain",
+      "sha256": "71a7a83a06d2cc15a46813249a9dfd2c9028146240143d1bb54c90373f47dc28"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/legacy_cp/one/profile.sqlite3": {
+      "owner": "081-recovery-domain",
+      "sha256": "fd070d1ffb5aeb9d70efc6df6e1b8431032aa274140a4151f407bf4fe10d0dcc"
+    },
+    "native/huhubot/tests/contract/recovery/testdata/schema8/manifest.json": {
+      "owner": "081-recovery-domain",
+      "sha256": "34e2934620612f6f252272f5d3f7ab00578589d9dab78e101c4c9a561fef3a3b"
+    },
+    "native/huhubot/tests/contract/recovery/tree_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "8f6d132e2a5fd143ccd5d0758d84cf6ca3d571ba0cdfb6c095c9b591931c7870"
+    },
+    "native/huhubot/tests/contract/recovery/ts_test.go": {
+      "owner": "081-recovery-domain",
+      "sha256": "bcb62de7332581023273a76b504a4c0801ee5ad220cff2f98f107f7b10dc9bba"
+    },
+    "src/modules/huhubot/services/recovery/recovery-client.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "2db067395ef098ce7171ce80961736455daa265726746f0d9718aaff70f00367"
+    },
+    "src/modules/huhubot/services/recovery/recovery-client.test.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "546796e35b49272cfd9e13d682ecae0e2479cc3bc0ce249e0a4fb3c87c62995d"
+    },
+    "src/modules/huhubot/services/events/event-client.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "31ac66ee70cc75b381e3f0289aa52ad57a88b92e318fed78c1caff611684dca8"
+    },
+    "src/modules/huhubot/services/events/event-client.test.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "816b4535ae6cc96e3dbf4e27c394cb0c084cc5e5fdc1456462f9e088b63ffdcd"
+    },
+    "src/modules/huhubot/core/protocol/connection.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "5fb8fe71047273993f19f8a8633d32475760184eb8b1723770dda346a4822d25"
+    },
+    "src/modules/huhubot/core/protocol/connection.test.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "e66addb00bdd63c3ba48abafd58b5a0f8e89907802249b28ef1fdba94a32e300"
+    },
+    "src/modules/huhubot/core/protocol/method-validation.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "ee8092c8d7fefdaeb44e2c7a6f0a5632aa37092a4e7dacd62a39c154f04ab389"
+    },
+    "src/modules/huhubot/core/protocol/method-validation.test.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "dec7c04ddf1f1c22a2cc702aaa36c48bad85d758557031ccc6ce67409f360e8e"
+    },
+    "src/modules/huhubot/platform/desktop/transport/managed.test.ts": {
+      "owner": "082-recovery-client",
+      "sha256": "13117a224044b2d16e549cfdb244d2145784c0f8066e08bfe4089a878c3e7e6a"
+    }
+  },
+  "manifests": {
+    "080-recovery-core": {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/080-recovery-core/logs/11-own-source-freeze.json",
+      "sha256": "bcb407c22524d8a48f2a3e4e4a8aeb1ff8ee8b83bd8cb3318cbb24f500dde388"
+    },
+    "081-recovery-domain": {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/081-recovery-domain/logs/10-own-source-freeze.json",
+      "sha256": "7c9009705877f7bba2058e99b887e604dc7a16fb7caf9e69f2073de5b443cb8b"
+    },
+    "082-recovery-client": {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/082-recovery-client/source-manifest.json",
+      "sha256": "f2881884e84a8e7c02a96e90dae97878464ae93bef0da273ba2137865daafc81"
+    }
+  },
+  "candidateAccepted": false
+}

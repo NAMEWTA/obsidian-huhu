@@ -1,0 +1,79 @@
+# T06 审批、不可变检查点与正常恢复候选
+
+Session: 20261025T043239Z
+Task: 042-approval-implementation
+Status: completed
+
+## 聚焦交接
+
+已实现 T06 的受控 note.write Broker、不可变私有 CP、审批 CAS、持久取消屏障与同一 Executor 的正常 Resume。等待审批保留原配置 pin/Session，不占执行槽；批准、拒绝及过期的持久 continuation 经实际 Engine.Resume 消费，终结一次释放 pin/占用。原 T01/T03 维护同时接入严格 HAP DTO、typed cursor recovery、事件/历史出队权限门与可取消的物理输出；T04/T05 正文和 TS 实现由043/044各自持有，不冒领其作者身份。
+
+生产不注入 fake：默认 Engine 仍明确未装配，NoteWriter 缺失时明确拒绝；所有 fake Engine/Host 只出现在 contract tests 或测试进程构造。当前仅候选交回，未写正式 Ticket/Map/Goal/Evidence 状态；Root 之后进行稳定输入 Lead E2E 及未参与实现者双轴审查。所有产品 writer 已停止，子进程实际 Wait，未提交、推送或发布。
+
+## 产物与验证
+
+### 精确写集与身份
+
+作者为 native:/root/foundation_go。派遣偏好记录为 gpt-6.1-sol/xhigh；这是 Root 的 dispatch requested model，不冒称工具提供实际底层模型 attestation。复用已读 dev/I、风险/并发/持久化与测试规则，本轮实际执行架构边界、生命周期、CAS/权限、故障与恢复验证；dev SHA 为5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293，三个适用参考摘要与票绑定一致。复用034固定 Eino/eino-ext 研究，不添加 SDK 或第三方依赖；仅采用其暂停不等于 CP 已持久、全 Run 工具闸门与完整成功保存后才发布的设计结论。
+
+[logs/owned-source.json](logs/owned-source.json) 列本作者相对 T03 r2 已接受输入的精确源码 SHA；[logs/changes-from-t03-r2.json](logs/changes-from-t03-r2.json) 是联合增量，含043所持 events/grants/context及其测试，不能全归本片。自有产品路径为 domain/access/approval、domain/execution/effect、application/tooling/broker、application/access/approvals、sqlite/effects、blob/store、006正文；精确原owner共享为 api、HAP/frame/schema/路由、stdio/output_*、bootstrap、migrations registry、原 execution adapter/executor 与 direct History delivery metadata、public TS api.ts、唯一generator及其六输出、approval tests。没有修改 TS 实现、原 T02、依赖/锁、历史001/002/003/005 SQL、正式状态或他人报告。
+
+最终联合快照为 {{TREE}}，{{COUNT}}文件，HEAD/base仍33c21e098ef3188cbab5a09f3e0a01fadb787715。完整清单见 [logs/joint-source-final.json](logs/joint-source-final.json)。历史SQL和锁与已接受 r2 摘要逐项相同，见 [logs/protected-inputs.json](logs/protected-inputs.json)。唯一schema及Go嵌入SHA均5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863，TS api.ts为3a0404c4aa9c0ecc1fed687cf73330ad82da50767a79c19474688fae8f40a40c；Root插件build/lint之后未变。
+
+### 运行时闭环与共享接缝
+
+Broker绑定服务器确定的身份、Run/claim、固定 Bot 配置与有效来源，Engine只能提出 ToolCall。可信 NoteWritePort 产生实际目标/基线/diff/精确内容hash/能力实现与策略版本；Broker逐字段绑定当前 Host lease/workspace。首个准备效果在短事务关闭整个 Run 后续效果准入；同 Run/调用意图与参数重放返回原 effect/token/receipt，参数变化冲突，新用户意图使用新 effect。批准前0Host调用，拒绝/过期不派发。派发前另一次短事务重查当前来源read/send、取消及确切审批/expiry；可信目标Check与Host操作都在SQL外，Host必须在真正 mutation 前最后重检实际对象（T07接入）。
+
+CP限制1MiB，Profile/checkpoints私有根、随机opaque ref、完整envelope绑定Run/attempt/Engine/format/definition与摘要；临时文件写入并fsync后，以no-replace硬链接发布。Unix另外sync目录；Windows文件sync和编译已覆盖，真实目标OS/掉电持久性未冒充验证。恢复打开再次验证格式/摘要/所有权/兼容性。Publisher/reader in-flight holds和GC实时DB引用检查保护在途及已发布CP，未知引用状态不删除；孤儿发布文件和上次进程临时文件可回收。bare checkpointRef不能冒充保存成功。
+
+006仅注册实际连续Version5。CP引用/Approval/Effect/Run waiting_approval及事件在同一短事务发布。Resolve绑定Principal、epoch、CAS、effect与PreviewHash，以同意图不同attempt复用receipt；决定创建持久continuation。Executor领取后验证CP、恢复相同Run/effect，实际调用 Engine.Resume；取消不Resume。损坏/不兼容CP进入blocked并保留pin/Session；原running进程中断仍interrupted、不自动再次收费。迟到已提交Host回执可以补录事实，不能覆盖canceled或重新占用Session；unknown_outcome明确保留且阻止伪造成功与Bot删除。完整资源核查/调用树恢复由T07/T16继续，不自动换key重放。
+
+Run状态事件使用裸状态名，例如waiting_approval/canceled；approval.*、effect.*只表示账本事实，不能冒作Run状态。Engine流不能伪造这两类权威事实；已接受text/delta/token/text.delta/chunk以及旧text-delta规范化都经真实tail/active snapshot验证。63方法/126参数结果形状，runs.subscribe有界tail、当前读权限及typed CURSOR_EXPIRED详情；snapshot.events保留早先压缩后迟到的非正文事实。快照正文及水位由同事务产生，最终出队再授权。
+
+出队门使用Go内部 DeliverySubject{run|message,id}，wire不增加可伪造授权标记。History只标服务器过滤后可见的message IDs，门从DB重读该消息source_json和真实关联Run/Session及精确scope；普通用户消息不受后来继承来源撤权误拒。8批×100条固定800 subjects，整组250ms且取实际需要Grant的最早到期；撤权提交与物理投递串行，SQL在等待pipe前已关闭。批读helper复用原Run scanner，逐消息来源与逐input当前Grant/parent/expiry不省略。
+
+stdio使用有界单writer/排队字节。Linux/Darwin为继承OS pipe复制owned nonblocking pollable descriptor，deadline返回前实际Write已停止；Windows专用锁定线程执行同步WriteFile，以CancelSynchronousIo取消并等完成，controller ack后才能回线程池，Write/Close生命周期串行。OS拒绝停止时进程有限时fail-stop，不释放覆盖活写的permit或无限阻塞撤权；Windows此路径仅编译/代码核对，未声称实跑。实现依据微软官方[取消I/O](https://learn.microsoft.com/en-us/windows/win32/fileio/canceling-pending-i-o-operations)、[CancelSynchronousIo](https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelsynchronousio)、[CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle)、[WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile)，没有复制第三方实现。
+
+### 真实红绿、故障与结果
+
+| 证据/入口 | 实际结果 |
+| --- | --- |
+| 同一Engine.Resume再次Invoke原工具调用 | 修复前目标revision已变化而重放失败；Find已有效果前置后返回原effect receipt，仅1Host调用。02/03日志保留有效红绿。 |
+| 公共Approval List、真实4个来源Run、撤销排序前3个Grant后limit1分页 | 原先合法最后审批不可达；按有界物理扫描cursor推进后可达，04/05日志红绿。不能用不足limit判断所有资格扫描结束。 |
+| 不一致可信Preview：Target另workspace、lease仍当前Host | 36日志实际错误发布审批；只加目标workspace相等检查后37日志绿，0Approval/Effect/CP/Host。 |
+| CP/Approval/Effect/Run/最后waiting事件逐一SQL RAISE故障 | 五点均原子回滚，无半张pending，终结释放pin，孤儿CP经Close GC删除。06日志最初列名错误是夹具错误，07之后纠正，不当产品red。 |
+| CP路径真实非目录、空/超限/中断Reader、坏digest/metadata/ownership、bare ref | 不发布审批或CP引用；已提交CP损坏后拒绝Resume进入blocked并保留pin。 |
+| 真正子进程在CP bytes未完整、不可变文件后但DB前、waiting提交后os.Exit70/71/72 | 三个child均实际Wait；重开前两者interrupted且无CP/Approval，后者仍waiting且完整引用/Blob；pin均保留，模型调用0。与同进程Close/reopen continuation测试分列。 |
+| 并行/顺序两个写工具、CAS批准vs拒绝、Principal/Preview/版本负例 | 仅1准备效果；相反决定仅1胜者/1continuation；未授权或变更摘要不赋权。 |
+| 批准后可信目标Check期间变更target、capability、expiry、Grant或取消 | 最终dispatch重新检查，0Host调用；取消无Resume。 |
+| cancel发生于Host已dispatch期间，之后返回可信committed receipt | 状态仍canceled，迟到回执有持久事实，未重开Run/Session、无assistant消息、pin释放；unknown仍明确保留。 |
+| 等待重开、决定提交但执行器paused后再重开 | 不重新Run；持久rejected continuation实际Resume一次并最终释放。 |
+| 三协议模型绑定共享Broker fixture | openai-chat-completions/openai-responses/anthropic-messages经同一纯Port与受控Engine；同参数新意图新effect，原调用参数篡改冲突。这不是T08–T10真实adapter或真实Provider通过。 |
+| batchhelper单读/批读真实DB事务对照 | valid、外人、缺Run、错Profile、Run/Session owner、Session无member、recipient/source/scope/grant/usage坏JSON等13例同语义；空/重复/空ID/801有界拒绝。31日志。 |
+
+043作者的真正生产TS EventClient/HapConnection→Go bootstrap/stdio/SQLite、受控Engine/NoteWriter进程链先观察Go waiting而TS running，修正裸状态后11项观察全true（含approve实际Resume及cancel），见043/logs/13-actual-ts-go-approval-first.log、14-actual-ts-go-approval-green.log。该链不使用人工事件伪装审批；large-seq/late-ledger部分明确是SQL夹具。043另有真实排队后撤权page/expired-cursor snapshot/History、无mutation纯到期及真实os.Pipe慢读：物理writer已停、撤权后仅可排空先前缓冲、之后无新bytes，进程/worker Wait。此处仅引用其作者证据，最终联合events回归由本片再运行。
+
+### 检查与证据演进
+
+环境实际为Go1.27.1 linux/amd64；module声明go1.26.0/toolchain go1.26.10，未擅改。命令都在日志对应cwd执行；独立generator不改产品树，临时Profile/二进制/Node bundle由测试清理。
+
+| 命令/输入 | 实际结果与日志 |
+| --- | --- |
+| go test -mod=readonly ./... -count=1，r2 | exit0，全部packages；21-all-go-r2.log。首轮19日志唯一旧BigInt fixture把head跳高却留seq1造成真实gap；043仅将夹具平移连续水位，产品gap防护保留。 |
+| go vet -mod=readonly ./...，r2 | exit0，23-vet-r2.log。 |
+| 关键approval/chat/foundation/access race，r2 | 四包exit0，无data-race；22日志events另有下列超预算失败，不能称整个该命令通过。 |
+| 800subject门normal/race控制 | 首个normal70.749ms；并行race250.960ms失败，独立race251.149ms仍失败。仅Run缓存r3 normal36.086ms但race251.115ms仍失败；r4批message/Run后race250.720ms，均保留22/26/28/33原始日志。没有抬250ms预算、降低800阈值或删除原断言。最终{{PERFORMANCE}}。 |
+| 最终受影响普通/race/vet | {{FINAL_CHECKS}} |
+| Python标准2020-12 validator，固定venv | exit0，126 shapes/234 shared samples/25 decimal negatives/4framegoldens，15-python-schema.log。首次系统Python缺jsonschema是setup错误，使用现有固定venv后通过。 |
+| 隔离唯一generator、逐字节比六输出 | exit0，16-generator-reproducible.log；现有schema/TS API冻结字节未变。 |
+| Go/TS architecture | exit0，38 Go production files及1206 TS modules；24/25日志。git diff --check0。 |
+| CGO_ENABLED=0，go build -mod=readonly -trimpath，linux amd64/arm64、darwin amd64/arm64、windows amd64 | 五目标exit0，18-five-target-cli.json含实际argv/时间/SHA；是T06 output_*等输入的编译证据，非目标OS实跑/最终发行资产。后续纯共享批读与workspace相等修改沿Root要求复用不受影响平台证据，最终发行树由T27重建。 |
+| Root完整插件build/lint | Root-owned实际exit0、1814输入前后一致，evidence/T-04-logs/lead-{build,lint}-r1.log与lead-ts-build-result-r1.json；api/schema/TS未再改，不重复。044自有TS检查见其REPORT。 |
+
+所有早期失败日志保留。r1/r2/r3/r4各自manifest与逐轮差异可回读，最终输入前后无漂移见final-readback；未用后来的绿灯覆盖先前失败。return结构校验见最后日志。
+
+## 问题与下一步
+
+没有已知未闭合的本片实现问题；候选不等于正式done。Root固定联合输入并执行Lead-owned E2E/独立双轴审查，之后维护正式状态。当前无真实模型、Eino SDK/三协议adapter、用户Obsidian Vault、OS keyring或非Linux目标OS运行，均按LOG051 user-owned/not-run或后续对应票；不索取凭证，不把未跑检查写pass，不重跑历史默认D-Bus探针。
+
+T07消费NoteWritePort时须从当前可信Host解析opaque目标、派生实际基线/未保存编辑状态及完整对象身份，在mutation前重检，而不能把模型target字段当权威。T08–T10消费同一纯Engine Run/Resume、ToolInvoker和CheckpointAccess，将SDK状态完整保存后才返回EngineSuspension；不能仅返回bare ref，不能绕Broker注工具。T12接入实际成本账本，当前终结usage保留缺测未知，未另造暂停花费事实。T16消费持久continuation/claim/cancel/unknown状态做调用树恢复与效果核查，不在本票假装完成自动恢复或真实写入核查。

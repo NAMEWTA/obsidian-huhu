@@ -1,0 +1,203 @@
+package recovery_test
+
+import (
+	"context"
+	"fmt"
+	"strconv"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// External Root probe; preserves the public construction of F-083-01 while
+// using five occupied child slots to fix the sixth tree's pre-restart state.
+func TestLeadRecoveryQueueFairness(t *testing.T) {
+	for _, trees := range []int{4, 6} {
+		t.Run(fmt.Sprintf("%d_trees", trees), func(t *testing.T) {
+			var target string
+			permits := make([]chan struct{}, trees)
+			built := make([]chan struct{}, trees)
+			for n := range permits {
+				permits[n] = make(chan struct{})
+				built[n] = make(chan struct{})
+			}
+			held := make(chan struct{}, 8)
+			setup := engine{run: func(c context.Context, i api.EngineInput) (api.EngineResult, error) {
+				if strings.HasPrefix(i.Intent, "root-") {
+					n, err := strconv.Atoi(strings.TrimPrefix(i.Intent, "root-"))
+					if err != nil {
+						return api.EngineResult{}, err
+					}
+					select {
+					case <-permits[n]:
+					case <-c.Done():
+						return api.EngineResult{}, c.Err()
+					}
+					for j := 0; j < 32; j++ {
+						_, err = i.Tools.Invoke(c, api.ToolCall{ID: fmt.Sprintf("delegate-%d", j), Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: fmt.Sprintf("child-%d", j), Constraints: []string{}}})
+						if err != nil {
+							return api.EngineResult{}, err
+						}
+					}
+					close(built[n])
+					return api.EngineResult{Status: "finished", Text: "original-parent-result"}, nil
+				}
+				select {
+				case held <- struct{}{}:
+				case <-c.Done():
+					return api.EngineResult{}, c.Err()
+				}
+				<-c.Done()
+				return api.EngineResult{}, c.Err()
+			}}
+			limits := api.ExecutionLimits{MaxDepth: 3, MaxChildren: 32, RootChildren: 1, ProfileChildren: 5, MaxWakes: 8}
+			initial, root, loc := fresh(t, bootstrap.Options{ExecutorPaused: true, ExecutionLimits: limits})
+			childAgent := agent(t, initial, "worker", nil)
+			target = childAgent.ID
+			parentAgent := agent(t, initial, "parent", []string{target})
+			roots := make([]string, 0, trees)
+			for n := 0; n < trees; n++ {
+				roots = append(roots, start(t, initial, session(t, initial, parentAgent), fmt.Sprintf("root-%d", n)).RunID)
+			}
+			if err := initial.Close(); err != nil {
+				t.Fatal(err)
+			}
+			<-initial.Done()
+			active := open(t, root, loc, bootstrap.Options{Engine: setup, ExecutionLimits: limits})
+			for n, runID := range roots {
+				close(permits[n])
+				select {
+				case <-built[n]:
+				case <-time.After(30 * time.Second):
+					t.Fatal("public32-delegation construction did not complete")
+				}
+				wait(t, active, runID, "waiting_children")
+				if n < 5 {
+					select {
+					case <-held:
+					case <-time.After(6 * time.Second):
+						t.Fatal("required actual held child never entered")
+					}
+				}
+			}
+			if err := active.Close(); err != nil {
+				t.Fatal(err)
+			}
+			<-active.Done()
+			d := db(t, loc)
+			wantAccepted := 31 * trees
+			if trees == 6 {
+				wantAccepted++
+			}
+			if n := count(t, d, "SELECT count(*) FROM execution_runs WHERE status='accepted'"); n != wantAccepted {
+				t.Fatalf("public setup has %d accepted, want %d", n, wantAccepted)
+			}
+			selected := roots[len(roots)-1]
+			paused := open(t, root, loc, bootstrap.Options{ExecutorPaused: true, ExecutionLimits: limits})
+			if count(t, d, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 {
+				t.Fatal("actual restart did not release old child slots")
+			}
+			wantCalls := 32
+			if trees == 4 {
+				wantCalls = 31
+				var leaf string
+				if err := d.QueryRow("SELECT run_id FROM execution_runs WHERE root_run_id=? AND status='interrupted'", selected).Scan(&leaf); err != nil {
+					t.Fatal(err)
+				}
+				oldLeaf := get(t, paused, leaf)
+				if _, err := paused.API.Approvals.Cancel(ctx, owner, api.RunCancel{CommandMeta: meta(t, paused, "cancel-last-leaf", oldLeaf.Revision), ID: leaf}); err != nil {
+					t.Fatal(err)
+				}
+				ready := inspect(t, paused, selected)
+				if ready.State != "ready" {
+					t.Fatalf("selected control tree not ready: %#v", ready)
+				}
+				if _, err := paused.API.Recovery.Resume(ctx, owner, api.RunResume{CommandMeta: meta(t, paused, "resume-last-tree", ready.Revision), ID: selected, RecoveryGeneration: ready.Generation}); err != nil {
+					t.Fatal(err)
+				}
+			} else if q := inspect(t, paused, selected); q.State != "none" {
+				t.Fatalf("never-claimed independent tree unexpectedly gated: %#v", q)
+			}
+			rows, err := d.Query("SELECT run_id FROM execution_runs WHERE root_run_id=? AND status='accepted' ORDER BY run_id", selected)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer rows.Close()
+			expected := make(map[string]int)
+			for rows.Next() {
+				var id string
+				if err = rows.Scan(&id); err != nil {
+					t.Fatal(err)
+				}
+				expected[id] = 0
+			}
+			err = rows.Err()
+			closeErr := rows.Close()
+			if err != nil || closeErr != nil || len(expected) != wantCalls {
+				t.Fatalf("original accepted identities: %d / %v / %v", len(expected), err, closeErr)
+			}
+			if err = paused.Close(); err != nil {
+				t.Fatal(err)
+			}
+			<-paused.Done()
+			var mu sync.Mutex
+			var otherCalls atomic.Int32
+			next := engine{run: func(_ context.Context, i api.EngineInput) (api.EngineResult, error) {
+				if i.Lineage.RootRunID != selected {
+					otherCalls.Add(1)
+					return api.EngineResult{}, fmt.Errorf("closed tree model entered: %s", i.RunID)
+				}
+				mu.Lock()
+				expected[i.RunID]++
+				mu.Unlock()
+				return api.EngineResult{Status: "finished", Text: "original-child-completed"}, nil
+			}}
+			final := open(t, root, loc, bootstrap.Options{Engine: next, ExecutionLimits: limits})
+			deadline := time.Now().Add(6 * time.Second)
+			for get(t, final, selected).Status != "succeeded" && time.Now().Before(deadline) {
+				time.Sleep(10 * time.Millisecond)
+			}
+			state := get(t, final, selected).Status
+			starved := state != "succeeded"
+			if starved {
+				t.Errorf("already admitted independent tree starved behind %d closed candidates: %s", 31*(trees-1), state)
+			}
+			if otherCalls.Load() != 0 || count(t, d, "SELECT count(*) FROM execution_recovery_trees WHERE state='blocked'") != trees-1 || count(t, d, "SELECT count(*) FROM execution_runs WHERE root_run_id<>? AND status='accepted'", selected) != 31*(trees-1) {
+				t.Fatal("unrelated closed trees changed or dispatched")
+			}
+			t.Logf("before any control cancel: selected=%s, blocked=%d, closedAccepted=%d, otherModelCalls=%d", state, trees-1, 31*(trees-1), otherCalls.Load())
+			if starved && trees == 6 {
+				first := get(t, final, roots[0])
+				if _, err = final.API.Approvals.Cancel(ctx, owner, api.RunCancel{CommandMeta: meta(t, final, "cancel-front-control", first.Revision), ID: first.ID}); err != nil {
+					t.Fatal(err)
+				}
+				wait(t, final, selected, "succeeded")
+				t.Log("negative control alone: canceled one unrelated front root; original target completed without resume")
+			}
+			if err = final.Close(); err != nil {
+				t.Fatal(err)
+			}
+			<-final.Done()
+			mu.Lock()
+			defer mu.Unlock()
+			if len(expected) != wantCalls {
+				t.Fatalf("Run identities changed: %d, want %d", len(expected), wantCalls)
+			}
+			for id, calls := range expected {
+				var persisted string
+				if err := d.QueryRow("SELECT status FROM execution_runs WHERE run_id=?", id).Scan(&persisted); err != nil {
+					t.Fatal(err)
+				}
+				if calls != 1 || persisted != "succeeded" {
+					t.Errorf("original child %s: calls=%d", id, calls)
+				}
+			}
+			t.Logf("original children=%d, exactly one call each; actual Core.Done observed", len(expected))
+		})
+	}
+}

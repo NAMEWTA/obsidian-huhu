@@ -1,0 +1,727 @@
+{
+  "date": "2026-10-25",
+  "basis": "T-27 已落地 Go Runner/库外 Profile/工程验证与许可证事实；Lead 回读差异后重绑，保留初始 skill-scan.json。",
+  "invalidated": "此前绑定旧工程规则的验证不作为新规则执行证据；T-01/T-27 按当前规则完成适用检查；UI技能及原型技术证据未变化。",
+  "tickets": [
+    {
+      "ticket": "01-runner-profile-contract",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        },
+        {
+          "path": ".agents/skills/dev/references/build-and-release.md",
+          "before": "44a6c8f5697effc90ed3b944de0bbb279dd07e0d294bbf34deb70bfd7bf5c114",
+          "after": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871"
+        }
+      ]
+    },
+    {
+      "ticket": "02-bot-model-credentials",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "03-durable-chat",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "04-durable-events",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "05-sources-grants-host",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "06-approval-broker",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "07-note-write-reconcile",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "08-engine-chat-completions",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "09-engine-responses",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "10-engine-anthropic",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "11-delegation-directory",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "12-messages-limits-budget",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "13-groups-routing",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "14-private-memory",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "15-global-memory",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "16-cancel-recovery",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "17-permanent-purge",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "18-portable-import-export",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "19-profile-upgrade-backup",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "20-module-runtime",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        },
+        {
+          "path": ".agents/skills/dev/references/build-and-release.md",
+          "before": "44a6c8f5697effc90ed3b944de0bbb279dd07e0d294bbf34deb70bfd7bf5c114",
+          "after": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871"
+        }
+      ]
+    },
+    {
+      "ticket": "21-chat-ui",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "22-agent-group-ui",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "23-tasks-access-ui",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "24-memory-ui",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "25-data-ui",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "26-diagnostics-performance",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        }
+      ]
+    },
+    {
+      "ticket": "27-build-platform-notices",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        },
+        {
+          "path": ".agents/skills/dev/references/build-and-release.md",
+          "before": "44a6c8f5697effc90ed3b944de0bbb279dd07e0d294bbf34deb70bfd7bf5c114",
+          "after": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871"
+        }
+      ]
+    },
+    {
+      "ticket": "28-product-integration",
+      "changes": [
+        {
+          "path": ".agents/skills/dev/SKILL.md",
+          "before": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+          "after": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+        },
+        {
+          "path": ".agents/skills/dev/references/architecture.md",
+          "before": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd",
+          "after": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0"
+        },
+        {
+          "path": ".agents/skills/dev/references/testing.md",
+          "before": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+          "after": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+        },
+        {
+          "path": ".agents/skills/dev/references/licensing.md",
+          "before": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+          "after": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+        },
+        {
+          "path": ".agents/skills/dev/references/build-and-release.md",
+          "before": "44a6c8f5697effc90ed3b944de0bbb279dd07e0d294bbf34deb70bfd7bf5c114",
+          "after": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871"
+        }
+      ]
+    }
+  ]
+}

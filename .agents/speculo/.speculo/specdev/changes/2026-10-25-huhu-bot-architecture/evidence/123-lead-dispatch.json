@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "task": "123-short-term-context-contract",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_go",
+  "nativeAckReceived": true,
+  "taskSha256": "0d5a31b887bee74418acbc682dde1cc5bbc11f8932395a32fce0100f56d53fbb",
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "ac803f",
+  "scope": "read-only preparation;own report only;no product commands or product writes;no ticket activation",
+  "actualGoWindow": "121 reviewer only"
+}

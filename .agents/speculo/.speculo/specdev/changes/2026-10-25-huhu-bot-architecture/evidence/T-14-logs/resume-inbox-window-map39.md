@@ -1,0 +1,15 @@
+# Map39 / Goal38：等待期间的补充消息
+
+原红来自Root完整回归及145定向回归的delegation/reply_sources、groups/reply两个真实消费者。`usage/messages.go`读取当前Run全部inbox并做PrivateMessage/ConsumePrivate/父scope/read/send检查；`execution/executor.go`同Tx回读effective和lineage；`execution/context.go`为continuation回读旧sealed输入后无条件清空Messages。一般补充并不在`Decision.Children`，所以旧CP和恢复决策都没有正文。question实际答案已经由Children承载，应按真实消息身份排重。
+
+146（foundation_api_repair）保持原T01/T03责任：唯一内部DTO、Work、实际Claim/Prepare/SaveResume与Executor，必要usage/messages读取；147（engine_adapter）保持原T08共同Engine责任：将可信恢复包放在当前pending工具结果固定位置，保留初始ShortTerm和旧CP兼容；T09/T10仅允许checkpoint现有结果字段验证同步。145负责原协作测试，146/147不同时改这些测试。正式状态和总体验收归Root。
+
+优先复用持久ExecutionPosition.Decision与完整CP，不增加数据库schema或第二个恢复writer。设计必须比较持久Decision/已有CP去重与新增投递账本，选择能证明多次挂起、进程中断后严格重放和消息身份冲突拒绝的最小方案。不能用lineage、时间或正文相同作为已投递证明；不能扫描最新inbox覆盖已保存恢复决策；也不能仅把Input.Messages恢复为非空来绕过extractive合同。当前recipient、Grant、Group、来源、父scope、稳定origin及调用预算保持有效。
+
+145当前仍独占Go。146/147开始只读，Root确认145归窗后先146冻结纯DTO与算法合同，147确认消费者后才能各自source-only写入；所有共享输入冻结后Root逐项授予唯一Go窗。禁止在别人固定输入检查中改生产，禁止调整等待时限或删原行为断言。最终必须有实际SQLite/Executor与三协议本地SDK消费者证据、同一CP补充正文恰好一次、连续两次等待不重注、question答案不双注、保存Decision后重启不吸入后来新消息、当前撤权拒绝、旧CP和既有费用/资源释放不退化。
+
+旧143/144/145报告及历史通过只证明其原输入。T14共同完整回归、必要race/vet、TS lint/build、Root本地E2E与独立双轴仍由Root收口；其后按原DAG继续T15–28。全28票55AC、用户真实操作后验和不提交推送发布归档的边界不变。
+
+145最终12个顶层目标9绿3红，第三红是question答案已正确投递后，叶子成功而中层B不恢复。148由原授权/协作owner独立诊断实际Claim/ReadyParent拒绝，保持原8秒/2次Resume断言。其usage/store、waits、finalize与grants/groups、memory属于原本域窗口；先只读，实际根因与Root确认前不改生产，Memory本域/Executor归原owner。148与146/147共享编译输入，任何Go实验先要求其他作者停写冻结；不把这一红先归因于恢复补充包。
+
+148实际证明ReadyParent正常选中B，Claim回滚为CONFLICT MEMORY_INPUT_STATE_INVALID；未修改本域生产，已清除临时诊断并恢复145原测试hash。149由原T14 owner在Memory本域继续精确定位/最小修复，与146/147源码按路径分离，Go共享输入仍统一冻结串行。旧143通过证据保留，受影响行为按实际修复复验。

@@ -1,0 +1,94 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T13:16:30.563838+00:00",
+  "inputSha256": "b6399970ff7ef964902063561598ca5b5c29dc96340500ae2a5396633b4a3faf",
+  "inputFiles": 404,
+  "snapshot": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob",
+  "defaultManagement": {
+    "result": "passed",
+    "command": {
+      "argv": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/private-memory",
+        "-run",
+        "^TestDefaultMemorySettingsAreVirtualAndPrivateManagementIsDurable$",
+        "-count=1",
+        "-timeout=90s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "GOPROXY": "off",
+        "CGO_ENABLED": "0"
+      },
+      "cwd": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob/native/huhubot",
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 7.245179180998093,
+      "log": "evidence/T-14-logs/lead-memory-default-core-r1.log"
+    },
+    "rawReadback": "e144b8",
+    "verifiedBehavior": [
+      "actual defaultCore full compilation",
+      "virtual enabledtrue/ineligible maintenancequota0 settings",
+      "read does not materialize namespace",
+      "first user revision persisted once",
+      "real Close/Done and reopen exact item equality"
+    ]
+  },
+  "newConsumerContracts": {
+    "result": "10 targets passed;1 failed",
+    "command": {
+      "argv": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/foundation",
+        "./tests/contract/chat",
+        "./tests/contract/collaboration-policy",
+        "./tests/contract/groups",
+        "./tests/contract/engine/chat",
+        "-run",
+        "^Test(DefaultMemoryRuntimeSealsActualContextAndComposesAgentUsage|OrdinaryMemoryCandidatesFailWithoutPublishingOrCreatingJobs|StdioMemoryAndContextProofsDoNotCollapseIntoRunOrMessage|MemorySealAndOriginalMarkRunningRollbackInOneTransaction|DirectHistoryMemoryFilterPrecedesSourceFreeFastPathAndFinalProofs|LegacyModelHistoryCommitsOnlyFinallyRetainedMemoryClosure|RealMemoryForgetFiltersDerivedHistoryButKeepsIndependentIntentAndRunMetadata|ActualRecalledMemoryForgetFencesSourceFreeRunAndDispatch|ActualMaintenanceAttemptsKeepSummaryRetryInTrustedFamily|PublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritance|SealedContextAndRecallReachRealSDKOnceInOrder)$",
+        "-count=1",
+        "-timeout=90s",
+        "-v"
+      ],
+      "cwd": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "GOPROXY": "off",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 1,
+      "waited": true,
+      "seconds": 9.931673237999348,
+      "log": "evidence/T-14-logs/lead-memory-runtime-contracts-r1.log"
+    },
+    "sourceDrift": [],
+    "snapshotDrift": [],
+    "rawReadback": [
+      "ebe13f",
+      "5336be"
+    ],
+    "failedTarget": "TestPublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritance",
+    "actual": "root orchestration succeeded / CHILD_PARTIAL_FAILURE; newtest expected failed",
+    "initialDiagnosis": "new fixture expectation conflicts with preexisting status-only group projection; original128 owner checking exact root/child and body-free assertions, production not yet blamed",
+    "notReached": [
+      "post-root assertion callbacks count",
+      "final independent user-only History checks"
+    ]
+  },
+  "window": "Root all Go commands waited; sole Go window transferred to128 for this narrow test and needed existing control, only test write, no product mutation",
+  "boundary": "partial code evidence only;T14,all source/privacy/sourcegroup/race/fault/recovery/CLI gates remain open"
+}

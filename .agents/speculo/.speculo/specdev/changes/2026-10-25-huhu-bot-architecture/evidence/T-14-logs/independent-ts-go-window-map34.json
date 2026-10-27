@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T10:51:22.839323+00:00",
+  "basis": "evidence/T-14-logs/independent-ts-go-window-map34.md",
+  "validation": {
+    "exitCode": 0,
+    "toolChunk": "c1693d",
+    "path": "evidence/map34-maintenance-validation.json"
+  },
+  "goOwner": "native:/root/credential_provider",
+  "tsOwner": "native:/root/foundation_client",
+  "nativeGoIdleAndReadScopeConfirmed": true,
+  "nativeMessagesGranted": true,
+  "goScope": "128 targeted access and collaboration-policy Go/SQLite tests, no Node/TS/crash harness; native Go/SQL/JSON+locks input",
+  "nodeScope": "127 two original TS files and scoped Node/Vitest/type checks, no Go/stdio subprocess harness/generation/full build; actual TS/Node+frozen contract inputs",
+  "sharedInputs": "125 R3 API/schema/fixtures/generator/api.ts remain read-only",
+  "otherGoWriters": "126/129/130 not granted",
+  "completion": "No new test result claimed"
+}

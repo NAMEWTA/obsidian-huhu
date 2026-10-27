@@ -67,6 +67,12 @@ export default tseslint.config(
 		"versions.json",
 		"main.js",
 		"scripts/**",
+		// HAP generation is a Node build tool, like scripts/**, outside the plugin TypeScript project.
+		"contracts/hap/v0.1/generate.mjs",
+		// Go contract tests bundle these Node/Obsidian boundary fixtures with test-only __REPO__ substitution.
+		// Like scripts/** and test/**, they are outside the plugin TS project; their production src imports stay linted.
+		"native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs",
+		"native/huhubot/tests/contract/effect-reconcile/obsidian-fixture.mjs",
 		"**/*.test.ts",
 		"**/*.test.tsx",
 		"test/**",

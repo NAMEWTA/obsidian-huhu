@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import { documentationKind, referenceLinkBody } from '../../scripts/documentation-policy.mjs';
+import { documentationKind, referenceLinkBody, withoutCodeSpans } from '../../scripts/documentation-policy.mjs';
 
 test('current project guides have one Chinese source, with only the root README bilingual', () => {
 	const copies: string[] = [];
@@ -43,4 +43,37 @@ test('only captured GitHub issue title labels are literal; body references and o
 	expect(referenceLinkBody(file, body.replace('github-issue', 'local-file'))).toBe(body.replace('github-issue', 'local-file'));
 	expect(referenceLinkBody(file, body.replace('artifact: "source"', 'artifact: "spec"'))).toContain(title);
 	expect(referenceLinkBody(file, body.replace(title, '# Requirements [News][Feature]'))).toContain('# Requirements [News][Feature]');
+});
+
+test('native Bot contract testdata follows fixture ownership while other native documents require classification', () => {
+	expect(documentationKind('native/huhubot/tests/contract/chat/testdata/claim-fairness/README.md')).toBe('test-fixture');
+	expect(documentationKind('native/huhubot/tests/contract/engine/testdata/example/README.md')).toBe('test-fixture');
+	for (const file of [
+		'native/huhubot/README.md',
+		'native/huhubot/internal/docs/README.md',
+		'native/huhubot/tests/contract/chat/README.md',
+		'native/other/tests/contract/chat/testdata/README.md',
+	]) expect(documentationKind(file), file).toBe('');
+});
+
+test('code spans hide link lookalikes while retaining adjacent links and reference definitions', () => {
+	const body = 'Go `[][2]string` ``[hidden](missing.md) and `nested` ``[real][2]\n[2]: target.md\n';
+	const checked = withoutCodeSpans(body);
+	expect(checked).not.toContain('[][2]');
+	expect(checked).not.toContain('[hidden]');
+	expect(checked).toContain('[real][2]\n[2]: target.md');
+	expect(withoutCodeSpans('`first\n[][2] last` [real](target.md)')).not.toContain('[][2]');
+	expect(withoutCodeSpans('`first\n[][2] last` [real](target.md)')).toContain('[real](target.md)');
+});
+
+test('unclosed, escaped and mismatched code delimiters do not hide real links', () => {
+	for (const body of [
+		'`unclosed [real](missing.md)',
+		'``mismatch [real](missing.md)`',
+		'\\`[real](missing.md)\\`',
+		'`unclosed\n\n[real](missing.md)`',
+	]) expect(withoutCodeSpans(body), body).toContain('[real](missing.md)');
+	expect(withoutCodeSpans('``unclosed `[hidden](missing.md)` [real](target.md)')).toContain('[real](target.md)');
+	expect(withoutCodeSpans('``unclosed `[hidden](missing.md)` [real](target.md)')).not.toContain('[hidden]');
+	expect(withoutCodeSpans('\\\\`[hidden](missing.md)`')).not.toContain('[hidden]');
 });

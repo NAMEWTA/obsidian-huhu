@@ -1,0 +1,84 @@
+from pathlib import Path
+import hashlib, json, os, shutil, sqlite3, subprocess, sys, tempfile, time
+
+# Not an all-T14 gate: this independent Root probe covers actual management,
+# stdio and durable reopen. Context, model, accounting and fault gates are separate.
+repo = Path.cwd()
+change = repo / '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture'
+logs = change / 'evidence/T-14-logs'
+attempt = sys.argv[1]
+assert attempt.isdigit()
+result_path = logs / f'lead-memory-management-r{attempt}.json'
+assert not result_path.exists(), 'Never overwrite an executed attempt'
+sha = lambda data: hashlib.sha256(data).hexdigest()
+roots = ['native/huhubot', 'src', 'contracts/hap/v0.1', 'scripts/obsidian-stub.ts',
+         'package.json', 'pnpm-lock.yaml', 'tsconfig.json', 'tsconfig.test.json']
+def inventory():
+    names = subprocess.check_output(['git', 'ls-files', '-c', '-o', '--exclude-standard', '-z', '--', *roots], text=True).split('\0')
+    return {p: {'sha256': sha((repo / p).read_bytes()), 'mode': (repo / p).stat().st_mode & 0o777}
+            for p in sorted(set(names)) if p and (repo / p).is_file()
+            and not (p.startswith('native/huhubot/') and (p.endswith('_test.go') or p.startswith('native/huhubot/tests/')))}
+before = inventory()
+snapshot = Path(tempfile.mkdtemp(prefix=f'huhu-lead-memory-management-r{attempt}-'))
+for name in before:
+    target = snapshot / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(repo / name, target)
+os.symlink(repo / 'node_modules', snapshot / 'node_modules', target_is_directory=True)
+probes = {}
+for name in ['huhu-lead-memory-management.ts', 'huhu-lead-obsidian-stub.ts']:
+    source = Path('/tmp') / name
+    copied = source.read_text().replace(str(repo) + '/', str(snapshot) + '/')
+    (snapshot / name).write_text(copied)
+    (logs / f'{name}-r{attempt}.txt').write_bytes(source.read_bytes())
+    probes[name] = {'source': sha(source.read_bytes()), 'snapshot': sha(copied.encode())}
+(logs / f'huhu-lead-memory-management.py-r{attempt}.txt').write_bytes(Path(__file__).read_bytes())
+result = {'observer': 'native:/root', 'snapshot': str(snapshot), 'inputFiles': len(before), 'input': before,
+          'inputSha256': sha(json.dumps(before, sort_keys=True, separators=(',', ':')).encode()), 'probes': probes,
+          'commands': [], 'complete': False, 'sourceDrift': None,
+          'boundary': 'default production CLI + production TypeScript/HAP + actual SQLite; management only; no real Provider/Obsidian/target OS'}
+def save():
+    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+def run(args, cwd, label):
+    env = os.environ.copy()
+    env.update(GOTOOLCHAIN='local', CGO_ENABLED='0', GOFLAGS='-mod=readonly', GOWORK='off', GOEXPERIMENT='', GOPROXY='off')
+    logfile = logs / f'lead-memory-management-{label}-r{attempt}.log'
+    start = time.monotonic()
+    with logfile.open('w') as out:
+        out.write('Command: ' + json.dumps(args) + '\nCwd: ' + str(cwd) + '\n')
+        out.flush()
+        process = subprocess.run(args, cwd=cwd, env=env, stdout=out, stderr=subprocess.STDOUT)
+    command = {'command': args, 'cwd': str(cwd), 'log': str(logfile.relative_to(change)),
+               'exitCode': process.returncode, 'seconds': time.monotonic() - start, 'waited': True}
+    result['commands'].append(command); save(); print(json.dumps(command), flush=True)
+    assert process.returncode == 0, f'Actual failure preserved in {logfile}'
+try:
+    save()
+    binary = snapshot / 'huhu-bot'; bundle = snapshot / 'lead-memory-management.mjs'
+    run(['/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go', 'version'], snapshot / 'native/huhubot', 'go-version')
+    run(['/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go', 'build', '-o', str(binary), './cmd/huhubot'], snapshot / 'native/huhubot', 'build')
+    run(['pnpm', 'exec', 'esbuild', str(snapshot / 'huhu-lead-memory-management.ts'), '--bundle', '--platform=node', '--format=esm',
+         '--alias:obsidian=' + str(snapshot / 'huhu-lead-obsidian-stub.ts'), '--outfile=' + str(bundle)], repo, 'ts-build')
+    output = snapshot / 'probe'; output.mkdir(mode=0o700)
+    run(['node', str(bundle), str(binary), str(output)], repo, 'cli')
+    wire = json.loads((output / 'result.json').read_text()); result['wire'] = wire; save()
+    assert wire['complete'] and wire['exits'] == [{'code': 0, 'signal': None}] * 2
+    database = Path(wire['profileDir']) / 'profile.sqlite3'
+    with sqlite3.connect('file:' + str(database) + '?mode=ro&immutable=1', uri=True) as db:
+        facts = {'integrity': db.execute('PRAGMA integrity_check').fetchone()[0],
+                 'foreignKeys': db.execute('PRAGMA foreign_key_check').fetchall(),
+                 'schemaVersion': db.execute('PRAGMA user_version').fetchone()[0],
+                 'modelAttempts': db.execute('SELECT count(*) FROM model_attempts').fetchone()[0],
+                 'configPins': db.execute('SELECT (SELECT count(*) FROM config_snapshot_pins)+(SELECT count(*) FROM task_config_pins)').fetchone()[0]}
+    result['persistentReadback'] = facts; save()
+    assert facts['integrity'] == 'ok' and facts['foreignKeys'] == []
+    assert facts['schemaVersion'] >= 10
+    assert facts['modelAttempts'] == facts['configPins'] == 0
+    result['complete'] = True
+finally:
+    after = inventory()
+    result['sourceDrift'] = [name for name in sorted(before.keys() | after.keys()) if before.get(name) != after.get(name)]
+    result['waitBoundary'] = 'subprocess.run waits every command; TS waits natural child close and checks timers; SQLite readback only after both actual CLI exits'
+    save()
+print(json.dumps({'result': str(result_path), 'complete': result['complete'], 'sourceDrift': result['sourceDrift']}), flush=True)
+assert not result['sourceDrift'], 'Input drift invalidates this integration result'

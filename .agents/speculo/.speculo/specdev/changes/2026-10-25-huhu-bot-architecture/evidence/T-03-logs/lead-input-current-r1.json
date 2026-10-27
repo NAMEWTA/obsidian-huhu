@@ -1,0 +1,7 @@
+{
+  "input": "2a43d12b56b6e68c676ef89348295bbacc5ad3e496d5599e0fece0846968401d",
+  "files": 131,
+  "sources": 36,
+  "errors": [],
+  "note": "Explicit scope verified with scope_paths. Prior requested_files comparison was a root invocation error; no product drift."
+}

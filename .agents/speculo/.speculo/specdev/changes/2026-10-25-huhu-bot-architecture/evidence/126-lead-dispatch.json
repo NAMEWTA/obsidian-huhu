@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T09:33:22.650896+00:00",
+  "task": "126-private-memory",
+  "target": "native:/root/foundation_research",
+  "taskSha256": "2028b296561120407ad1f20b1eb6435f6fc6cbcd4001e957f55dcfd9f2db674f",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "d83165"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received; read-only until 125 source/check window handoff",
+  "productWindow": "not yet granted; own task directory only"
+}

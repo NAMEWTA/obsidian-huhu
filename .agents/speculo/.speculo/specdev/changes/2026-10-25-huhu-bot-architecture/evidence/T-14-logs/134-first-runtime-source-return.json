@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T13:05:17.684142+00:00",
+  "source": "sessions/20261025T043239Z/134-memory-runtime-consumers/logs/01-source-checkpoint.json",
+  "sha256": "f163b691d31c20e7d5767a7b0d10358ad4650d5ef624cceda0deedd3e345e783",
+  "files": 22,
+  "sourceTreeSHA256": "66972db042119ce5e37597140fea104e26721da398c153fc61b847db3725fe24",
+  "drift": [],
+  "acceptedScope": "source checkpoint only;134 unfinished;21 writable plus inherited pure test onlyread",
+  "nativeMessage": "all134 source/processes stopped, noGo/Node/generation",
+  "next": "Root first actual defaultCore test after126 hydrate helper freeze;133 has returned allGo window and onlystatic/Node remain"
+}

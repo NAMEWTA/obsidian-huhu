@@ -1,0 +1,131 @@
+{
+  "observer": "native:/root/memory_integration_review",
+  "session": "20261025T043239Z",
+  "task": "151-memory-integration-review",
+  "inputSha256": "f0db44427b4ba9d0290571b922254780c0f098a1d833300a9ab2b710c5322e37",
+  "reportStatus": "completed",
+  "standards": "request-changes",
+  "specification": "request-changes",
+  "files": {
+    "REPORT.md": {
+      "sha256": "1f0523b76f567e927982460e26a41b86eeaece492b113bb73667cdfc9bf9d4c1",
+      "mode": 436,
+      "bytes": 18735
+    },
+    "logs/actual-go-list-closure.json": {
+      "sha256": "b4cdcd6c2da0f6df935229b503cc9d21be5c7129ec7223cdb030af3228151731",
+      "mode": 436,
+      "bytes": 303260
+    },
+    "logs/alias-go-list.log": {
+      "sha256": "5c22d047cc478bb4bfc45e825d7b2b402bc5c87004a9b8b2bd4db18936962011",
+      "mode": 436,
+      "bytes": 1611358
+    },
+    "logs/alias-probe_test.go": {
+      "sha256": "09e8ae9ff75b68d12561819a2c9476d27140fa7933d93b048f11491293897251",
+      "mode": 436,
+      "bytes": 1090
+    },
+    "logs/alias-results.json": {
+      "sha256": "39f42b733cd26d46a95ecb8b057c70fe96a0ef44048794d2b670c9a7c6dbbb29",
+      "mode": 436,
+      "bytes": 1477
+    },
+    "logs/alias-wire.log": {
+      "sha256": "16a8376c5169d621e40af9adf37ba0264c5e56e4f175e613e057d1326493d102",
+      "mode": 436,
+      "bytes": 389
+    },
+    "logs/final-input-check.json": {
+      "sha256": "d10b09020d9310704a25457cd1f8fda797d1345ab628b2e7c3f6569f47d64843",
+      "mode": 436,
+      "bytes": 198
+    },
+    "logs/go-list.log": {
+      "sha256": "701f1128e39d3b9e3b76056a76db0ab204085f570eab9aa102ae11f844592052",
+      "mode": 436,
+      "bytes": 1666783
+    },
+    "logs/go-version.log": {
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b",
+      "mode": 436,
+      "bytes": 33
+    },
+    "logs/probe-results.json": {
+      "sha256": "e7c0fe479455bdbe877f7d0a201dfc77ebd36a436500b93539586194c5405598",
+      "mode": 436,
+      "bytes": 2603
+    },
+    "logs/provenance-probe_test.go": {
+      "sha256": "fc070994d94f344f4a07e66ef56eb346adde7a9a831f01634145c37b9dfb3e2c",
+      "mode": 436,
+      "bytes": 1476
+    },
+    "logs/provenance.log": {
+      "sha256": "1872285544b84838a2bf0585a8d7489116e2582abfb8b912954458df3c9de3e5",
+      "mode": 436,
+      "bytes": 5888
+    },
+    "logs/report-before-structure-validation.md": {
+      "sha256": "d5da2559957189b570571fdafc0f1edf33a2eb5c00c8041c2e62b98106df74e7",
+      "mode": 436,
+      "bytes": 18765
+    },
+    "logs/return-validation-first.json": {
+      "sha256": "19f591a2af19d12be9e7b755152f497fd1611b7a621bc66c1feb01f2c7c2a683",
+      "mode": 436,
+      "bytes": 556
+    },
+    "logs/return-validation-first.log": {
+      "sha256": "f45d140aeec1626ec6aee93d6b88cffce218b956b001f3a0bc09b06327a5e647",
+      "mode": 436,
+      "bytes": 246
+    },
+    "logs/return-validation.json": {
+      "sha256": "c638100526da8e845928ecf6a7d57640161ba62fa7aab1213bbe84ce6d3d4791",
+      "mode": 436,
+      "bytes": 663
+    },
+    "logs/return-validation.log": {
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": 436,
+      "bytes": 200
+    },
+    "logs/run-alias.py": {
+      "sha256": "57b84a7f1495a755ba96c090433a203802fd3f489aef2e6725075afb5522dddc",
+      "mode": 436,
+      "bytes": 1801
+    },
+    "logs/run.py": {
+      "sha256": "4e302f753505a1cb4b907b7b2e7fab7ebcef99992dc7678b34470e2305d2f288",
+      "mode": 436,
+      "bytes": 2014
+    },
+    "logs/snapshot.json": {
+      "sha256": "6c266468cd6582673bf55c932e0153c4dc7b32e532dd955861c3de00812a0873",
+      "mode": 436,
+      "bytes": 91572
+    },
+    "logs/source-check.json": {
+      "sha256": "e2a272eff96d0718e1abc3b699f972b37dcbc9606ade04f1fcd62e09fcfbb74b",
+      "mode": 436,
+      "bytes": 129
+    },
+    "logs/source-discovery.json": {
+      "sha256": "cea681e6fbf25b7fefe6f7879e8d2d03ad0d84c4ceea35262eaf1054e733c5d2",
+      "mode": 436,
+      "bytes": 14510
+    },
+    "logs/temporary-probe_test.go": {
+      "sha256": "3b264c5cc58d59725b9b44b82bd4b5e2c92a7258353a7a778d189292e2d19e53",
+      "mode": 436,
+      "bytes": 2239
+    },
+    "logs/temporary.log": {
+      "sha256": "886a70f02e6615d8b9f64c4a11b29cf789425db53bf78883362e02ecf4c94886",
+      "mode": 436,
+      "bytes": 537
+    }
+  }
+}

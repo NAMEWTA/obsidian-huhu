@@ -1,0 +1,51 @@
+{
+  "observer": "native:/root",
+  "reportSHA256": "94b9207c5ce7995748fed0f3a8e633ead48f707fdaa2c19fc00a03f413cf9b62",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "rawFinalNormalRaceIdentityLogsRead": true,
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/chat/body.go": "8e8a4e4479310ff3282b14a0357562f74c8caf0515d0fc8002be2511a93c9d9a",
+    "native/huhubot/internal/adapters/outbound/eino/chat/driver.go": "6874c6274e344b1802f11aade758ad3b3f5e35f90056778bafe56e5af6b6f320",
+    "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go": "696db729f33be0e69bfc243bbf15e86c1bf9a65c675061f4b8ee71c5c509ab62",
+    "native/huhubot/internal/adapters/outbound/eino/common/engine.go": "40bc23f7c0a719a9d51d2b71a3bd97df9ba62b3bf2e7ec949fc5033e3b398d7f",
+    "native/huhubot/internal/adapters/outbound/eino/common/tools.go": "bdcd172963f55be18630709eed9de82592e9b28e309ea2e9dfa20b59401ab351",
+    "native/huhubot/tests/contract/engine/chat/bounds_cancel_test.go": "e87dce1acb31949de63402bdc1941f0d3eed79be3ca9bceb003cf159e76753c2",
+    "native/huhubot/tests/contract/engine/chat/checkpoint_test.go": "212823c0f797139bed32d2e48118887c8fe3e809ed5c73a0990ffe994956d844",
+    "native/huhubot/tests/contract/engine/chat/collaboration_test.go": "ae047e71d582f05866fba4cbd95dc266d0cabdec9e071bc3be018ea7fd55662f",
+    "native/huhubot/tests/contract/engine/chat/current_gate_test.go": "ce64f42a75663698f8b1c9625ba77dd1cc1907476b534ea74f5a09a10a7fa6cc",
+    "native/huhubot/tests/contract/engine/chat/decisions_test.go": "dd55edd3c9087bacdbc0a405419fd4f493d15eea1790453dcc2e0c7ebcf37bf5",
+    "native/huhubot/tests/contract/engine/chat/engine_test.go": "cc12cdc56f05c8ac63a7e49ee4e4c06a21e990f30e8144f15b5bdf2df858bd7c",
+    "native/huhubot/tests/contract/engine/chat/lifecycle_test.go": "318bf65f6740d7900bfa10795ec94c4c6d265ee252301a52137d586b7cacb5c5",
+    "native/huhubot/tests/contract/engine/chat/protocol_test.go": "994be4cf675d000e8458269596aefe08f97c819197a0d7519bfebd467bdd6805",
+    "native/huhubot/tests/contract/engine/chat/question_test.go": "74116ed29519512a9b7b98c261f94fe443b475b27a459cba485356aead8e0d8f",
+    "native/huhubot/tests/contract/engine/chat/settlement_test.go": "78cab27aad33489f424aa3cda002c06597fe7ef0e98bae93e3c301a962bc7075",
+    "native/huhubot/tests/contract/engine/chat/tool_identity_test.go": "3af1ada35ab79d2ecd562069ac4a64e65357f0afaf6b790e9ba7217da020c13d",
+    "native/huhubot/tests/contract/engine/chat/tools_test.go": "d5061e63054a89197bed4a1ede29bfac05760953d1187f23a58076f848ea0ec9"
+  },
+  "sourceDrift": [],
+  "missingLinks": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "092-engine-chat",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "T08 implementation candidate received; Root local CLI/SDK/Host E2E r3 passed, independent two-axis review pending; not whole Ticket completion",
+  "artifactsChecked": 70,
+  "artifactDrift": []
+}

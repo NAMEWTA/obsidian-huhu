@@ -1,0 +1,39 @@
+{
+  "observer": "native:/root",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportAndInterfaceMatrixRead": true,
+  "reportSHA256": "625e300b7cc5a56af0800b692c20d706187b73fe056808065dd26fbcf1e73638",
+  "manifestSHA256": "347f70db858809068128116485917bf4296359fe5aca389c0178474cdc6c1c23",
+  "artifactsChecked": 13,
+  "artifactDrift": [],
+  "sourcesChecked": 52,
+  "sourceDriftAtRootReceipt": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "then": "231339b20e3105af3492e6a09293fa7c20731bd49659d3ffcea4f9558bc578b2",
+      "now": "3b46fab88cf56130876346f8f333566d23264a45344ea41e653abc31910abe4c"
+    }
+  ],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "097-responses-preparation",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.1424501640140079,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "Accepted read-only preparation and owner recommendations; all 14 behavior scenarios not-run; T09 not activated. Map24 administrative changes and upcoming repairs are expected new input, not retroactive invalidation of recorded source facts."
+}

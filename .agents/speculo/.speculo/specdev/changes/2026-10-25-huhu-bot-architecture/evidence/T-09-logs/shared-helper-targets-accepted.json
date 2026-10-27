@@ -1,0 +1,32 @@
+{
+  "observer": "native:/root",
+  "acceptedScope": "107共享helper两个真实反例修复与新合同、旧Chat兼容及受影响精确回归；后续ack顺序和race仍待完成",
+  "rawResultAndLogsRead": true,
+  "checks": [
+    {
+      "result": "sessions/20261025T043239Z/107-protocol-common/logs/08-helper-green-result.json",
+      "exitCode": 0,
+      "actualWaitSeconds": 1.452327848994173,
+      "inputSHA256": "296c6ace8a61e1456b039f0ca8571c951a8d3a72e1bed77c568999dcb1743b43"
+    },
+    {
+      "result": "sessions/20261025T043239Z/107-protocol-common/logs/09-new-contracts-result.json",
+      "exitCode": 0,
+      "actualWaitSeconds": 0.7973296440031845,
+      "inputSHA256": "296c6ace8a61e1456b039f0ca8571c951a8d3a72e1bed77c568999dcb1743b43"
+    },
+    {
+      "result": "sessions/20261025T043239Z/107-protocol-common/logs/10-chat-affected-result.json",
+      "exitCode": 0,
+      "actualWaitSeconds": 5.387606445001438,
+      "inputSHA256": "296c6ace8a61e1456b039f0ca8571c951a8d3a72e1bed77c568999dcb1743b43"
+    }
+  ],
+  "historicalInputsVerifiedAgainst109ImmutableZip": 194,
+  "historicalInputMismatches": [],
+  "remaining": [
+    "cleanup最终ack顺序修正及补充控制",
+    "针对性race",
+    "最终共同候选独立审查"
+  ]
+}

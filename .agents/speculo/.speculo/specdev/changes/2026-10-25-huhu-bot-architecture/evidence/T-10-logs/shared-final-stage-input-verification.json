@@ -1,0 +1,103 @@
+{
+  "observer": "native:/root",
+  "scope": "119 second-stage immutable tested input verification only; complete author return pending",
+  "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+  "fileCount": 339,
+  "archive": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-10-logs/shared-final-stage-input.zip",
+  "archiveSHA256": "f41ec230a788ac410508f0be875ab4d6d1695b304d0aafd1096b83b977bbb86a",
+  "currentChangedPathsRecoveredFromPreviouslyAccepted117Slice2Archive": [],
+  "actualResults": [
+    {
+      "capturedAt": "2026-10-26T07:34:33.520180+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/foundation",
+        "-run",
+        "^(TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen|TestDefaultAnthropicCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen|TestDefaultAnthropicProbeStopJoinsActualCallBeforeProfileCleanup)$",
+        "-count=1",
+        "-timeout=90s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.9756142300002466,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "shared Responses regression + default Anthropic CP/Registry pure qualification metadata simulation + actual default Probe lifecycle"
+    },
+    {
+      "capturedAt": "2026-10-26T07:34:51.412944+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "-overlay=/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/119-anthropic-foundation/logs/10-third_factory-overlay.json",
+        "./internal/bootstrap",
+        "-run",
+        "^TestDefaultAnthropicConstructionFailureDrainsCreatedDrivers$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.368676661999416,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "fresh-core isolated overlay: third_factory; observe actual driver Stop/Done/Close and same-Profile reopen; idle construction error only"
+    },
+    {
+      "capturedAt": "2026-10-26T07:35:00.569636+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "-overlay=/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/119-anthropic-foundation/logs/10-registry-overlay.json",
+        "./internal/bootstrap",
+        "-run",
+        "^TestDefaultAnthropicConstructionFailureDrainsCreatedDrivers$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.3229367869998896,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "fresh-core isolated overlay: registry; observe actual driver Stop/Done/Close and same-Profile reopen; idle construction error only"
+    }
+  ]
+}

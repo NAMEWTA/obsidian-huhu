@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "task": "161-global-memory-facts",
+  "status": "accepted-code-candidate",
+  "reportSHA256": "7b4d683ebd78397dbb7916269c0c9f3ca31db080a26c765eae71cc2d4f8a4239",
+  "manifestSHA256": "41f4aafefac40e0325ca93b2cc3a032d793b93b02dad0cfe928e890b152a5216",
+  "sourceCheckpointSHA256": "685c0cd2bb46daf14f11f0aa661e9e4881561738b2f8ce2628d507519529635e",
+  "rootValidation": "evidence/T-15-logs/root-code-validation-20261027.json",
+  "scope": "Memory global facts, qualification, and private/global recall source candidate accepted after current production-package and race validation; real Provider/Obsidian/target OS acceptance is user-owned and not-run.",
+  "returnValidation": {
+    "exitCode": 1,
+    "waited": true,
+    "errors": ["REPORT identity mismatch: the historical REPORT Task heading includes a descriptive suffix; source/report bytes were left immutable."]
+  }
+}

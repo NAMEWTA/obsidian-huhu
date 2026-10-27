@@ -1,0 +1,43 @@
+{
+  "task": "158-global-memory-contract",
+  "status": "completed",
+  "scope": "read-only T15 contract preparation; no product check",
+  "sourceCount": 49,
+  "sourceDrift": [],
+  "sources": "sources.json",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "treeSHA256": "f19a519e35305ab45e62225ab2301cf08a780edfbb9afe19fc49de7f59fd07c8",
+  "artifactFiles": [
+    {
+      "path": "TASK.md",
+      "sha256": "a1334563a99e9f3352a238924312f9db00352d833722d52b0cac51536dc8ece6",
+      "bytes": 4111,
+      "mode": "0o664"
+    },
+    {
+      "path": "global-memory-contract.md",
+      "sha256": "4562d81a36bfc30adaed866add990e9dc2f9ce93a55fb32f315bbb706ea7a47e",
+      "bytes": 19954,
+      "mode": "0o664"
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "af5601ff6fee668a06fb0dc93903808f2c6fff8b635d2d08053e6e6557349573",
+      "bytes": 3565,
+      "mode": "0o664"
+    },
+    {
+      "path": "sources.json",
+      "sha256": "3a46bcd6754f88c27077d0bb72f5d7c28803b39836cdd3e41b94cae0e7d783c0",
+      "bytes": 9782,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/return.json",
+      "sha256": "e1016a8d5feae92698899832359e419d4c2fde9afd93f9218b10ee8419779ac0",
+      "bytes": 657,
+      "mode": "0o664"
+    }
+  ],
+  "returnValidation": "logs/return.json"
+}

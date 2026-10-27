@@ -1,0 +1,95 @@
+[
+  {
+    "file": "contact-sheets/sheet-01.png",
+    "cases": [
+      "candidate-1440",
+      "candidate-390",
+      "chat-desktop",
+      "chat-empty",
+      "chat-loading",
+      "chat-error",
+      "chat-offline",
+      "chat-permission",
+      "chat-recovery"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-02.png",
+    "cases": [
+      "chat-long",
+      "tasks-approval",
+      "tasks-temporary",
+      "approval-diff",
+      "tasks-canceled",
+      "tasks-running",
+      "tasks-completed",
+      "tasks-unknown",
+      "agent-normal"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-03.png",
+    "cases": [
+      "agent-editing",
+      "agent-disabled",
+      "agent-creating",
+      "group-create",
+      "memory-private",
+      "memory-forget-confirm",
+      "memory-forgotten",
+      "memory-global-pending",
+      "memory-global-confirm"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-04.png",
+    "cases": [
+      "memory-short",
+      "access-attached",
+      "access-grant",
+      "access-denied",
+      "data-preflight",
+      "data-retained",
+      "data-purged",
+      "unsaved-form-before",
+      "unsaved-form-after"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-05.png",
+    "cases": [
+      "chat-800",
+      "navigation-800",
+      "tasks-800",
+      "memory-800",
+      "agent-800",
+      "access-800",
+      "data-800",
+      "long-800",
+      "dark-800"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-06.png",
+    "cases": [
+      "chat-390",
+      "navigation-390",
+      "tasks-390",
+      "memory-390",
+      "agent-390",
+      "access-390",
+      "data-390",
+      "long-390",
+      "dark-390"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-07.png",
+    "cases": [
+      "long-message-1440",
+      "long-message-390",
+      "touch-emulated",
+      "native-200pct"
+    ]
+  }
+]

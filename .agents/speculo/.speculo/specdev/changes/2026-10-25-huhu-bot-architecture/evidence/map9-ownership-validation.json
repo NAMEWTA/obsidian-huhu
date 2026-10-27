@@ -1,0 +1,30 @@
+{
+  "errors": [],
+  "conservative_findings": [
+    [
+      "T-01",
+      "T-02",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-03",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-05",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql</Path>"
+    ]
+  ],
+  "resolution": "pathsOverlap conservatively compares wildcard directory prefixes, so *.go is reported against .sql. The three pairs are extension-disjoint; T01 migration Go registration is026, SQL003 is026, SQL005 is027; SQL002 is frozen. No other overlap exists. The matcher and original nonzero result are unchanged and retained.",
+  "actual_task_resources": {
+    "026": "T03 Go + original T01 API/schema/Go registry + original T02 pin/Usage, fixture-db026",
+    "027": "T05 Go + migration005.sql, fixture-db027",
+    "028": "T05 TS sources/host-read + original T01 four TS protocol/test files"
+  },
+  "observed": "Root read actual TASKs and precise extensions. Shared maintenance ownership remains with original Ticket owners; no competing writers or shared runtime DB."
+}

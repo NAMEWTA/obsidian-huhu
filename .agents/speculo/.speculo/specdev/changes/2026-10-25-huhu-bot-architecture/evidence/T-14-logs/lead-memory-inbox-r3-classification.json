@@ -1,0 +1,68 @@
+{
+  "observer": "native:/root",
+  "originalAttempt": "lead-memory-inbox-r3.json",
+  "originalOutcome": "Chat and Responses complete including physical CLI/SDK/SQLite/reopen; Anthropic partial with five HTTP and alias read, failed expected charge80 vs observed20430 before reopen",
+  "classification": "Root Anthropic tool-turn fixture omitted cache_creation_input_tokens/cache_read_input_tokens. Existing production usage observer conservatively marks such incomplete usage unknown; no product change. Text-turn fixture already had explicit zeros. Correct only the unique Anthropic tool-turn message_start usage fields.",
+  "oldFixtureFragment": "usage: {input_tokens: 11, output_tokens: 0}",
+  "newFixtureFragment": "usage: {input_tokens: 11, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0}",
+  "actualReadback": {
+    "runs": [
+      {
+        "status": "succeeded",
+        "child_slot": 0
+      },
+      {
+        "status": "succeeded",
+        "child_slot": 0
+      },
+      {
+        "status": "succeeded",
+        "child_slot": 0
+      }
+    ],
+    "attempts": [
+      {
+        "purpose": "main",
+        "state": "settled",
+        "producer_ended": 1,
+        "knowledge": "unknown",
+        "input_tokens": "",
+        "output_tokens": ""
+      },
+      {
+        "purpose": "question",
+        "state": "settled",
+        "producer_ended": 1,
+        "knowledge": "unknown",
+        "input_tokens": "",
+        "output_tokens": ""
+      },
+      {
+        "purpose": "child",
+        "state": "settled",
+        "producer_ended": 1,
+        "knowledge": "known",
+        "input_tokens": "11",
+        "output_tokens": "5"
+      },
+      {
+        "purpose": "main",
+        "state": "settled",
+        "producer_ended": 1,
+        "knowledge": "known",
+        "input_tokens": "11",
+        "output_tokens": "5"
+      },
+      {
+        "purpose": "question",
+        "state": "settled",
+        "producer_ended": 1,
+        "knowledge": "known",
+        "input_tokens": "11",
+        "output_tokens": "5"
+      }
+    ],
+    "pins": 0
+  },
+  "next": "New r4 only Anthropic, preserve and reuse complete Chat/Responses r3 with identical product inputs; do not claim r3 overall pass."
+}

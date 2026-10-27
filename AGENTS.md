@@ -20,7 +20,7 @@
 
 ## 项目
 
-HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React，用 esbuild 打成提交在仓库里的 `main.js`。原生终端辅助程序是 `native/pty-server` 里的 Rust。HUHU 数据分两块根：可见的 `huhu/` 放用户内容与资料（日志、闪念、收件箱、档案、记账等记录），由 vault API 读写；隐藏的 `.huhu/` 放设置、看板（`.huhu/dashboards/`）、自动化定义和各类运行数据（含加密保险箱 `.huhu/safe/`）。普通笔记、宿主自身数据和 Git 元数据保留原位。系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存及用户指定导出的边界见[数据与恢复](docs/data.md#库之外的数据)。
+HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React，用 esbuild 打成提交在仓库里的 `main.js`。原生终端辅助程序是 `native/pty-server` 里的 Rust，Bot Runner 底座是 `native/huhubot` 里的独立 Go module。HUHU 库内数据分两块根：可见的 `huhu/` 放用户内容与资料（日志、闪念、收件箱、档案、记账等记录），由 vault API 读写；隐藏的 `.huhu/` 放设置、看板（`.huhu/dashboards/`）、自动化定义和各类运行数据（含加密保险箱 `.huhu/safe/`）。普通笔记、宿主自身数据和 Git 元数据保留原位。Bot 的本机 Profile、系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存及用户指定导出的边界见[数据与恢复](docs/data.md#库之外的数据)。
 
 本文件只记稳定事实。任务交接、会话笔记和会过期的状态不要写进来。
 
@@ -50,6 +50,7 @@ HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React
 - `src/shell/`：三栏工作台的布局和导航
 - `src/ui/`：设计系统
 - `native/pty-server`：终端辅助程序，发行二进制由 CI 构建，本地可构建和测试
+- `native/huhubot`：Bot Runner 底座、Application API、SQLite 与 stdio HAP；`contracts/hap/v0.1` 是版本化 wire 合同
 
 分区、懒加载和持久化名称见开发规则里的架构参考。
 

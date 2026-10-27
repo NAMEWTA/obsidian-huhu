@@ -1,0 +1,59 @@
+import assert from 'node:assert/strict';
+import { MarkdownView, TFile, TFolder } from 'obsidian';
+import { registerObsidianNoteHost } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/services/host-write/obsidian-host';
+import { initializeDevice } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/host/obsidian/storage/device-id';
+import type { BotClient } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/api';
+import type { ProtocolTimers } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/core/protocol/connection';
+const bytes = (s: string) => new TextEncoder().encode(s).length;
+// Controlled Vault API boundary; production source/host/write/receipt adapters run unchanged.
+export async function createNoteHost(bot: BotClient, timers: ProtocolTimers) {
+const raw = new Map<string, string>(), directories = new Set<string>(), local = new Map<string, unknown>();
+const files = new Map<string, any>(), bodies = new Map<any, string>(), editorBodies = new Map<any, string>();
+const root = Object.assign(new TFolder(), { path: '/', children: [] as any[] });
+const folder = Object.assign(new TFolder(), { path: 'notes', children: [] as any[] }); files.set('notes', folder);
+let mutations = 0, processCalls = 0, createCalls = 0, dropCompletion = false;
+let afterMutation: (() => Promise<void>) | undefined;
+const newFile = (path: string, text: string) => {
+	const file = Object.assign(new TFile(), { path, name: path.split('/').at(-1), basename: path.split('/').at(-1)!.slice(0, -3), extension: 'md', stat: { ctime: 1, mtime: 1, size: bytes(text) } });
+	files.set(path, file); bodies.set(file, text); (path.startsWith('notes/') ? folder : root).children.push(file); return file;
+};
+const note = newFile('notes/original.md', '中文😀\noriginal input'), other = newFile('other.md', 'UNRELATED');
+const eventRefs = new Set<any>(), leaves: any[] = [];
+const app: any = {
+	loadLocalStorage: (key: string) => local.get(key),
+	saveLocalStorage: (key: string, value: unknown) => { if (value == null) local.delete(key); else local.set(key, structuredClone(value)); },
+	vault: {
+		configDir: '.obsidian', getRoot: () => root, getAbstractFileByPath: (path: string) => files.get(path),
+		read: async (file: any) => { assert(bodies.has(file)); return bodies.get(file)!; },
+		process: async (file: any, update: (value: string) => string) => {
+			processCalls++; const next = update(bodies.get(file)!); assert.equal(typeof next, 'string', 'Vault.process callback is synchronous');
+			bodies.set(file, next); file.stat.mtime++; file.stat.size = bytes(next); mutations++; await afterMutation?.(); return next;
+		},
+		create: async (path: string, text: string) => {
+			createCalls++; assert(!files.has(path), 'no overwrite'); const file = newFile(path, text); mutations++; await afterMutation?.(); return file;
+		},
+		on: (name: string, callback: unknown) => { const ref = { name, callback }; eventRefs.add(ref); return ref; },
+		offref: (ref: unknown) => eventRefs.delete(ref),
+		adapter: {
+			exists: async (path: string) => raw.has(path) || directories.has(path),
+			read: async (path: string) => { assert(raw.has(path), `missing private storage: ${path}`); return raw.get(path)!; },
+			write: async (path: string, value: string) => { if (dropCompletion && value.includes('"phase":"completed"')) throw new Error('controlled dropped completion'); raw.set(path, value); },
+			mkdir: async (path: string) => { directories.add(path); },
+			stat: async (path: string) => raw.has(path) ? { size: bytes(raw.get(path)!), type: 'file' } : directories.has(path) ? { size: 0, type: 'folder' } : null,
+		},
+	},
+	workspace: { iterateAllLeaves: (visit: (leaf: any) => void) => leaves.forEach(visit), getActiveViewOfType: () => { throw new Error('implicit active target forbidden'); } },
+};
+const addLeaf = (file: any) => {
+	const leaf: any = {}; const view = Object.assign(new MarkdownView(), { app, leaf, file, editor: { getValue: () => editorBodies.get(view) ?? bodies.get(file), listSelections: () => [], posToOffset: () => 0 } });
+	Object.assign(leaf, { view, isDeferred: false, getViewState: () => ({ type: 'markdown', state: { file: file.path } }) }); leaves.push(leaf); return leaf;
+};
+const leaf = addLeaf(note), secondLeaf = addLeaf(note);
+
+const otherLeaf = addLeaf(other);
+await initializeDevice(app, { machineIdentity: async () => 'synthetic-root-anthropic-device', label: 'Root fixture', chooseDevice: async () => ({ label: 'Root fixture' }) });
+const host = await registerObsidianNoteHost(app, bot, { workspaceId: 'workspace:root-anthropic', originClientId: 'client:root-anthropic', timers, lifetime: { registerEvent() {} } });
+await bot.host.attach({ workspaceId: 'workspace:root-anthropic', capabilities: ['note.read', 'note.search', 'note.write'] });
+return { host, note, other, leaf, otherLeaf, bodies, raw, mutations: () => mutations, processCalls: () => processCalls,
+  async close() { host.dispose(); await host.writes.drained(); assert.equal(eventRefs.size, 0, 'production Host left Vault listeners'); } };
+}

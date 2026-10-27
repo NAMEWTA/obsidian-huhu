@@ -23,6 +23,7 @@
 | 门禁脚本 | 架构、i18n、文档、样式、Promise 回调、工作台入口、构建文本 | `pnpm test:architecture`、`test:i18n`、`test:docs`、`test:styles` 等 |
 | 以上全部 | 除自身外的每个 `test:*` 脚本 | `pnpm run test:all` |
 | Rust 辅助程序 | `native/pty-server/tests`、单元测试 | `pnpm run check:native`（`cargo test --locked`） |
+| Go Bot Runner | `native/huhubot/tests/contract`、包内测试 | `pnpm check:huhu-bot`；`pnpm build:huhu-bot` 后对本机二进制运行 `node scripts/verify-huhu-bot.mjs <binary>` |
 | 真实 Obsidian | `scripts/obsidian-acceptance/`（针对一次性库的 CDP） | 见下文 |
 
 ## Vitest
@@ -53,6 +54,7 @@
 | 图标 | `src/modules/icons/iconic-port.test.ts` 中相关 Iconic 对照 |
 | Git 同步 | `src/modules/sync` 对应测试；Git 流程变化加 `test/sync/git-flow.test.ts`（临时远端） |
 | 终端模型、键盘、呈现 | `src/modules/agent/**` 中对应测试；原生辅助程序变化加 `pnpm run check:native` 和 `node scripts/verify-pty-helper.mjs <二进制>` |
+| Go Runner、HAP 或其工程脚本 | `pnpm check:huhu-bot`、`pnpm test:huhu-bot-architecture`、`pnpm test:huhu-bot-tooling`；构建后运行本机 stdio 冒烟；依赖变化重算完整 notices。TS 协议/客户端另跑对应 Vitest；Rust 检查不能代替 Go |
 | 升版本、发版文件 | `test/release/release-artifacts.test.ts` 和 `node scripts/verify-release-artifacts.mjs <version>`；实际发布遵守完整发行门禁 |
 | 文档或技能 | `pnpm test:docs` 及变更事实/链接核对；触发、权限或流程语义变化验证对应正常、近邻不触发和失败分支 |
 | SpecDev 合同 | `node .agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs --self-check`；状态工件变化再验证相关 change，不创建无关工件 |

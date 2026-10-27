@@ -1,0 +1,132 @@
+{
+  "task": "069-collaboration-review-repair",
+  "checkedAt": "2026-10-25T17:39:20.958519+00:00",
+  "reportSha256": "eab4d29acc11fe22017009069f2f00690898ae10f9d420ec773f5aa222bcca62",
+  "taskSha256": "03562b52b0521606067570c9d91c58856e21e53f6a57cde22ec7c160da95ef7e",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "ownManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/069-collaboration-review-repair/logs/08-own-freeze-before-joint.json",
+  "ownManifestSha256": "378d81747f849fafb841f37aeb738d3144b9fe735111b1e5b488981008d27227",
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go": "8c3bcbd09b3bb2423c75bcb033c338bcf98574bca863e1d5e02794d955d99531",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/delegation.go": "d740d8d29a8e82880356d526b7ce37d1660f067ff9796afbf801b65b4b81d567",
+    "native/huhubot/tests/contract/delegation/review_gateway_test.go": "8b349c3cea598efc307b384833d100f8ed55ef6b1d5eddb052a560858511f5dc",
+    "native/huhubot/tests/contract/delegation/review_queue_test.go": "22b656b2e9175a02a02c415f350b3230a2f7370caf84e6b33e442f846fceb60f",
+    "native/huhubot/tests/contract/delegation/review_requirements_resume_test.go": "4d3d4c21b6c4ffff45e4b12c54fc7f3cfe46482294b704a9d68c22f10d1ace1e",
+    "native/huhubot/tests/contract/delegation/review_requirements_test.go": "f681f3459c131d1d4e7a654beeecf63525e4bd331ade80abcc2a60829cae6554",
+    "native/huhubot/tests/contract/delegation/review_tools_test.go": "a80e56ab0b981ad9929cf7bb94e09c72f19086373c382a013f233d34efae95de"
+  },
+  "jointManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/069-collaboration-review-repair/logs/09-joint-source-before-checks.json",
+  "jointManifestSha256": "c5137b3d2bb94852bad16a11278fa77c8d4e2a61cd3e4029ce551533f1d82346",
+  "jointFilesVerified": 307,
+  "jointTreeSha256": "ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0",
+  "jointDrift": [],
+  "changedPrior201Paths": [
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+    "native/huhubot/internal/application/api/conversation.go",
+    "native/huhubot/internal/application/tooling/broker/service.go"
+  ],
+  "jointChecks": [
+    {
+      "label": "11-eight-normal",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-timeout=6m",
+        "-p=1",
+        "-count=1",
+        "-v",
+        "./tests/contract/effect-reconcile",
+        "./tests/contract/delegation",
+        "./tests/contract/collaboration-policy",
+        "./tests/contract/approval",
+        "./tests/contract/access",
+        "./tests/contract/chat",
+        "./tests/contract/events",
+        "./tests/contract/foundation"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "0"
+      },
+      "exit": 0,
+      "wallSeconds": 37.33174895000411,
+      "actualWait": true,
+      "sourceTreeSha256": "ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0"
+    },
+    {
+      "label": "12-five-race",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-race",
+        "-timeout=8m",
+        "-p=1",
+        "-count=1",
+        "-v",
+        "./tests/contract/delegation",
+        "./tests/contract/collaboration-policy",
+        "./tests/contract/chat",
+        "./tests/contract/approval",
+        "./tests/contract/effect-reconcile"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "1"
+      },
+      "exit": 0,
+      "wallSeconds": 109.67090065099183,
+      "actualWait": true,
+      "sourceTreeSha256": "ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0"
+    },
+    {
+      "label": "13-vet",
+      "command": [
+        "go",
+        "vet",
+        "-mod=readonly",
+        "./..."
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "1"
+      },
+      "exit": 0,
+      "wallSeconds": 0.5983219720073976,
+      "actualWait": true,
+      "sourceTreeSha256": "ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0"
+    }
+  ],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "readback": "Root fully read final REPORT; original red/green and precise fixture correction, 11 fault log and test, current joint commands/results and final readback checked. Prior059 failed review is unchanged.",
+  "disposition": "Repair slice accepted for Root current E2E and independent candidate2 review; neither current ticket gate nor full change is complete.",
+  "observedArtifacts": {
+    "REPORT.md": "eab4d29acc11fe22017009069f2f00690898ae10f9d420ec773f5aa222bcca62",
+    "TASK.md": "03562b52b0521606067570c9d91c58856e21e53f6a57cde22ec7c160da95ef7e",
+    "logs/01-old-production-manifest.json": "be8ae2075b43bce215f9cc06441b51332b0df77eecd6427ea60367de486e5987",
+    "logs/02-three-old-input-red.log": "cf3e86f5db1a778db5f5609063c854cb18464f481524d0d0dfa737866142be58",
+    "logs/03-old-red-completion.json": "c85f6efa03324e7b8121655e2560dea1adbd4967ddfafcd6d26680bf25076253",
+    "logs/04-three-findings-and-adjacent-green.log": "63bf19cf4591e99778f29a8c23044de567a2e9abc31855354a37280178cfb6ed",
+    "logs/05-claim-token-fixture-before.go.txt": "fbf3e0bdb9a9a784256589eb5690065c54862a169ef4f378fa9e9409bfc2f260",
+    "logs/05-claim-token-fixture-correction.diff": "967ec086d6a96a0a18f68405075d081761d660b9e77f4de5dc786ef67dc07609",
+    "logs/06-three-findings-and-adjacent-green.log": "5e3872b27ad18bc960db360af58d00d1eddfecea055db8a96cc99b3d8a55bb73",
+    "logs/07-queue-parent-outcome-green.log": "bfb974ffd16c9c17ed639f73b906d00f3ac736b5d2897e893a4334de46083f26",
+    "logs/08-own-freeze-before-joint.json": "378d81747f849fafb841f37aeb738d3144b9fe735111b1e5b488981008d27227",
+    "logs/09-joint-source-before-checks.json": "c5137b3d2bb94852bad16a11278fa77c8d4e2a61cd3e4029ce551533f1d82346",
+    "logs/10-run-joint-checks.py": "0220a7aaa67fdc2bc53406f16b56e2fda40baee4e5920a2f63dd265d1174cb39",
+    "logs/11-eight-normal.log": "bdb8457bb73e0b5124c4cfa9df6cec64852aeb5581201919b235bd82ba776f93",
+    "logs/12-five-race.log": "960919d8083823c35c43b947436d5750077dac8df9175531cfd796a64d992fc3",
+    "logs/13-vet.log": "7078d709f886e2af97fed08ee88aa1e943f5e09554d7a3e7e0a7a0c42969c2ff",
+    "logs/14-joint-check-results.json": "d88062f5cea065d940c73add28187f5f6149512cc860ac230df3249d27d150a3",
+    "logs/15-final-source-readback.json": "c7d2c1014356804228277ce31209ed71a5968d4240826d40fb2a58f174619ca1",
+    "logs/16-return-validation.json": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/17-final-handoff.json": "15bf2e16a33c31045ebd44f68b30a6eee76493dc224825dbaa4c9847df9870c4"
+  }
+}

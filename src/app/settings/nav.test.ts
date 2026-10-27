@@ -17,11 +17,12 @@ const ALL_ON = {
 	contacts: true,
 	sync: true,
 	safe: true,
+	huhubot: true,
 };
-const ALL_OFF = { browser: false, automation: false, iconic: false, contacts: false, dashboard: false, editor: false, navigator: false, terminal: false, sync: false, safe: false };
+const ALL_OFF = { browser: false, automation: false, iconic: false, contacts: false, dashboard: false, editor: false, navigator: false, terminal: false, sync: false, safe: false, huhubot: false };
 
 test('settings list home first, then every module that is on', () => {
-	assert.deepEqual(visibleProducts(ALL_ON), ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'sync', 'safe']);
+	assert.deepEqual(visibleProducts(ALL_ON), ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'huhubot', 'iconic', 'contacts', 'automation', 'sync', 'safe']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, editor: true, terminal: true }), ['home', 'editor', 'terminal']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, dashboard: true, terminal: true }), ['home', 'dashboard', 'terminal']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, automation: true }), ['home', 'automation']);

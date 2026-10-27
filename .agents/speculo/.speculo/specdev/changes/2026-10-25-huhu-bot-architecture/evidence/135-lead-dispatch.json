@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "owner": "native:/root/foundation_go",
+  "task": "135-memory-result-validation",
+  "taskSHA256": "1eae7cf0f69b569b8f3046f468ae93da29901d44e9910022d1d88d2ccd954be0",
+  "mapRevision": 37,
+  "goalRevision": 36,
+  "actualDispatch": "collaboration.followup_task delivered in current root turn",
+  "validator": {
+    "stage": "dispatch",
+    "actualExit": 0,
+    "toolChunk": "c169d5"
+  },
+  "resourceWindow": "135 sole pureAPI/HAP Go; 136 independent twoTS/Node; schema/locks frozen",
+  "previous128Window": "both groups actual exit0/Wait5.920040300003166; native MESSAGE+FINAL confirmed released; root receipt128-history-expectation-repair-return.json",
+  "authority": "active full28/55 code goal; latest user real models and actual operations deferred to user"
+}

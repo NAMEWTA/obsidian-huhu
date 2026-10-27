@@ -65,7 +65,12 @@
 		"test:ui-styles": "node scripts/verify-ui-styles.mjs",
 		"test:ui-adapters": "node scripts/verify-ui-adapters.mjs",
 		"test:ui-runtime": "node scripts/verify-ui-runtime.mjs",
-		"test:license-texts": "node --test scripts/license-texts.test.mjs"
+		"test:license-texts": "node --test scripts/license-texts.test.mjs",
+		"build:huhu-bot": "node scripts/build-huhu-bot.mjs",
+		"check:huhu-bot": "node scripts/build-huhu-bot.mjs --test",
+		"test:huhu-bot-tooling": "node --test scripts/huhu-bot-build.test.mjs scripts/huhu-bot-notices.test.mjs",
+		"test:huhu-bot-architecture": "node scripts/verify-huhu-bot-architecture.mjs",
+		"bench:huhu-bot": "node scripts/bench-huhu-bot.mjs"
 	},
 	"keywords": [],
 	"license": "SEE LICENSE IN LICENSE",
@@ -114,6 +119,8 @@
 		"@xterm/addon-webgl": "^0.19.0",
 		"@xterm/headless": "6.0.0",
 		"@xterm/xterm": "^6.0.0",
+		"ajv": "8.20.0",
+		"ajv-formats": "3.0.1",
 		"chart.js": "^4.5.1",
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",

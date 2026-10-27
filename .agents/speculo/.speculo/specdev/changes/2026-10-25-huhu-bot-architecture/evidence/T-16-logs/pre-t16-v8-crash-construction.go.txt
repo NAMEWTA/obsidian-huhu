@@ -1,0 +1,116 @@
+package groups_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// This external fixture constructor intentionally stays inside a real Resume.
+// Its parent kills and Waits this test process, preserving the durable v8 facts.
+func TestLeadFreezeRunningV8Continuation(t *testing.T) {
+	root := os.Getenv("LEAD_V8_CRASH_PROFILE_ROOT")
+	marker := os.Getenv("LEAD_V8_CRASH_MARKER")
+	if root == "" || marker == "" {
+		t.Skip("isolated fixture construction only")
+	}
+	if err := os.MkdirAll(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	var target string
+	entered := make(chan api.EngineResumeInput, 1)
+	errors := make(chan error, 4)
+	eng := resumeEngine{run: func(c context.Context, i api.EngineInput) (api.EngineResult, error) {
+		if i.Intent == "lead-v8-completed-child" {
+			return api.EngineResult{Status: "finished", Text: "LEAD_V8_DURABLE_CHILD_RESULT"}, nil
+		}
+		if i.Intent != "lead-v8-continuation-parent" {
+			return api.EngineResult{}, fmt.Errorf("unexpected fixture intent")
+		}
+		d, e := i.Tools.Invoke(c, api.ToolCall{ID: "lead-old-child", Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: "lead-v8-completed-child", Constraints: []string{}}})
+		if e != nil {
+			errors <- e
+			return api.EngineResult{}, e
+		}
+		cp, e := i.Checkpoints.Publish(c, strings.NewReader(`{"fixture":"lead-v8-complete-cp","phase":"children","version":1}`))
+		if e != nil {
+			errors <- e
+			return api.EngineResult{}, e
+		}
+		return api.EngineResult{Status: "suspended", Suspension: &api.EngineSuspension{Kind: "children", WaitForIDs: []string{d.Delegation.ChildRunID}, Checkpoint: cp}}, nil
+	}, resume: func(c context.Context, i api.EngineResumeInput) (api.EngineResult, error) {
+		fail := func(e error) (api.EngineResult, error) { errors <- e; return api.EngineResult{}, e }
+		reader, e := i.Input.Checkpoints.Open(c, i.Checkpoint)
+		if e != nil {
+			return fail(e)
+		}
+		payload, e := io.ReadAll(reader)
+		ce := reader.Close()
+		if e != nil {
+			return fail(e)
+		}
+		if ce != nil {
+			return fail(ce)
+		}
+		if string(payload) != `{"fixture":"lead-v8-complete-cp","phase":"children","version":1}` || len(i.Decision.Children) != 1 || i.Decision.Children[0].Text != "LEAD_V8_DURABLE_CHILD_RESULT" || i.Input.Lineage.Group == nil || len(i.Input.Lineage.Group.Members) != 2 {
+			return fail(fmt.Errorf("actual CP/child/private tuple mismatch"))
+		}
+		attempt, e := i.Input.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "lead-v8-interrupted-resume", InputEstimate: "3", OutputBound: "4"})
+		if e != nil {
+			return fail(e)
+		}
+		e = i.Input.Attempts.Dispatch(c, attempt, func(context.Context) error { return nil })
+		if e != nil {
+			return fail(e)
+		}
+		entered <- i
+		<-c.Done()
+		return api.EngineResult{}, c.Err()
+	}}
+	loc := filepath.Join(root, "one")
+	core, e := bootstrap.OpenWithOptions(ctx, root, loc, bootstrap.Options{Engine: eng, Budget: api.BudgetPolicy{RootTokenLimit: "100", ProfileTokenLimit: "1000", MaintenanceTokenLimit: "0"}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer core.Close()
+	a := agent(t, core, "lead-old-A-no-model", false)
+	b := agent(t, core, "lead-old-B", true)
+	child := agent(t, core, "lead-old-C", true)
+	target = child.ID
+	b = allow(t, core, b, []string{"agents.delegate"}, []string{child.ID})
+	session := group(t, core, a, b, child)
+	receipt := send(t, core, session, "lead-v8-continuation-parent", b.ID)
+	var input api.EngineResumeInput
+	select {
+	case input = <-entered:
+	case e := <-errors:
+		t.Fatal(e)
+	case <-time.After(8 * time.Second):
+		t.Fatal("real Resume not entered")
+	}
+	db := database(t, loc)
+	if count(t, db, "PRAGMA user_version") != 8 || count(t, db, "SELECT count(*) FROM execution_runs WHERE status='running'") != 1 || count(t, db, "SELECT count(*) FROM execution_runs WHERE status='waiting_children'") != 1 || count(t, db, "SELECT count(*) FROM execution_runs WHERE status='succeeded'") != 1 || count(t, db, "SELECT count(*) FROM model_attempts WHERE state='dispatched' AND producer_ended=0") != 1 {
+		t.Fatal("unexpected pre-crash durable facts")
+	}
+	out := map[string]any{"profileRoot": root, "locator": loc, "rootRunId": receipt.RunID, "modelRunId": input.Input.RunID, "sessionId": session.ID, "agentIds": []string{a.ID, b.ID, child.ID}, "checkpoint": input.Checkpoint, "resumeDecision": input.Decision, "config": input.Input.Config, "group": input.Input.Lineage.Group, "producer": "controlled Engine actually inside Resume after real Attempt.Dispatch, blocked until process kill; no network request"}
+	body, e := json.MarshalIndent(out, "", "  ")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = os.WriteFile(marker, append(body, '\n'), 0600); e != nil {
+		t.Fatal(e)
+	}
+	t.Log("LEAD_V8_CRASH_READY: real Resume with completed child and dispatched attempt")
+	// The external coordinator must SIGKILL and Wait. A test timeout would not be
+	// an accepted fixture, and no deferred Close is allowed to normalize the Run.
+	select {}
+}

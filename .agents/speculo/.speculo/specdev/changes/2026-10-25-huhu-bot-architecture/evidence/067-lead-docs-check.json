@@ -1,0 +1,19 @@
+{
+  "time": "2026-10-25T17:10:27.108733+00:00",
+  "command": "pnpm test:docs",
+  "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+  "actualToolExit": 126,
+  "underlyingLifecycleExit": 1,
+  "waited": true,
+  "wallTimeSeconds": 0.567706251,
+  "remainingErrors": [
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #9-工具审批与效果日志",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #12-数据路径与迁移",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #14-记忆知识与可扩展能力",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #15-权限凭证与运行治理",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #17-验证性能与发布门禁",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md: missing heading anchor #19-决议未决验证与完成定义"
+  ],
+  "sourceInputSha256": "a85a57648a00942a44c3df89c52804d13d129e7e31262a73feb91ccc7f1516cc",
+  "disposition": "All four task-owned relative link errors fixed by accepted067 are absent. Six existing original supplied input heading-anchor findings remain unchanged; global docs check did not pass. No source input edit or automatic waiver. Actual stdout/stderr resides in Root tool completion; this JSON is the factual receipt, not a reconstructed raw log."
+}

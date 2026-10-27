@@ -1,0 +1,25 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:17:08.931848+00:00",
+  "basis": "Map34 disjoint TS/Node window; Go writers run no Go checks",
+  "sourceHashes": {
+    "src/modules/huhubot/core/protocol/method-validation.ts": "3cde7ada5998348cfe388bd99effa4819b250a2ece632473e2c3e4dcd4226b5e",
+    "contracts/hap/v0.1/schema.json": "2fd592f7a503004b5b315f0becf1fc1ad9e8266aff46bfc12e2473fe73e3a615",
+    "native/huhubot/internal/application/api/memory.go": "7cd35c57182251403d1314d8ae7d56f342613b7c63955d6311ab1a24e381f8ec",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934"
+  },
+  "sourceDrift": [],
+  "command": [
+    "node",
+    "--input-type=module"
+  ],
+  "scriptPath": "/tmp/huhu-memory-namespace-revision-proof.mjs",
+  "scriptSha256": "7037ac760b20e40eb0831c8fd72bdba56121faf2e0fff42dda09ffdf2ce4c8a8",
+  "actualExit": 126,
+  "waited": true,
+  "seconds": 0.47294357899954775,
+  "logPath": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14-logs/127-namespace-revision-red.log",
+  "logSha256": "2d813401bd73dc5a7c39d22be39df39735a9f7dfaa43ddb50be69bf855195221",
+  "scope": "Production MethodValidation called through bundled Node import; no mock validator, no Go process, no HAP server; equivalent Go bound established by source read."
+}

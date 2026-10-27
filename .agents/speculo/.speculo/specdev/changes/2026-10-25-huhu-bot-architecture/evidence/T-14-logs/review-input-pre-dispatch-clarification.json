@@ -1,0 +1,7 @@
+{
+  "observer": "native:/root",
+  "stage": "before first dispatch",
+  "previousInputSha256": "08a0264e0a804886211651774a71472de94454f75024cd886112874b6b8bd0b9",
+  "inputSha256": "6619727eaa9258e3fd26820b22c9dc82fed23b9cc59d4748f2979022276b0c2d",
+  "reason": "Explain missing G2 snapshot coverage for4 unchanged review dependencies; no product/source byte changed; no review started"
+}

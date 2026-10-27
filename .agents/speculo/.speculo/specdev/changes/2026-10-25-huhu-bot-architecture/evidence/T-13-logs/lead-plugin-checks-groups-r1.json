@@ -1,0 +1,41 @@
+{
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "reports": {
+    "073-groups-core": "2000a25e0d82113bc02c0f8dce960e29720d7482d523993730ecfb92b48acb66",
+    "074-groups-domain": "9b2d3f5011654a0adc3ac5239957dce7e55855b54a0af510f81e52c61c26b166",
+    "075-groups-client": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e"
+  },
+  "inputManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-plugin-input-groups-r1.json",
+  "filesChecked": 1873,
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-build-groups-r1.log",
+      "exit": 0,
+      "seconds": 36.881,
+      "waited": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-lint-groups-r1.log",
+      "exit": 0,
+      "seconds": 65.605,
+      "waited": true
+    }
+  ],
+  "complete": true,
+  "drift": [],
+  "outputs": {
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+  },
+  "processes": "Every subprocess.run child exited and was waited; no product/Provider/Obsidian process started"
+}

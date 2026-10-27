@@ -1,0 +1,77 @@
+{
+  "task": "086-recovery-fixture-repair",
+  "checkedAt": "2026-10-25T22:34:22.984364+00:00",
+  "reportSha256": "35f7719cc56d462171faa43273fca63c4b4b2b8a32891924450e70e446419d55",
+  "taskSha256": "ba8a6706b9e50cb094f07c5e6c7f004938fa7610278c68f6f8063498d2d76b96",
+  "manifestSha256": "0e8570c025802d71415b5e1ec23203415c310da781a06fa61bc4adda071c6ead",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullPermanentDiffRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "ownFiles": {
+    "native/huhubot/tests/contract/events/events_test.go": "8624bde2276eaaa714a7a1a6d22bd0d8a8304e4c51f6e68597679cc5245f2b00",
+    "native/huhubot/tests/contract/events/history_test.go": "a4630d640d8630fde6a8c5e0ef055a317ddbbf2f9637b05d700edbcd20083c9a",
+    "native/huhubot/tests/contract/groups/sources_test.go": "3b0e70a5144f2bcac5fca6de4e7f9d64919b85c964880db2c670fe24e7a81bee"
+  },
+  "ownFilesVerified": 3,
+  "sourceFilesVerified": 377,
+  "sourceDeltaExactlyOwnTests": [
+    "native/huhubot/tests/contract/events/events_test.go",
+    "native/huhubot/tests/contract/events/history_test.go",
+    "native/huhubot/tests/contract/groups/sources_test.go"
+  ],
+  "sourceDrift": [],
+  "productionDrift": [],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "twoPackageChecks": {
+    "jointTree": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+    "results": [
+      {
+        "label": "12-two-package-normal",
+        "command": [
+          "go",
+          "-C",
+          "native/huhubot",
+          "test",
+          "-p",
+          "1",
+          "-mod=readonly",
+          "./tests/contract/groups",
+          "./tests/contract/events",
+          "-count=1",
+          "-v"
+        ],
+        "exit": 0,
+        "seconds": 22.00789767099195,
+        "waited": true,
+        "sourceDrift": []
+      },
+      {
+        "label": "13-two-package-race",
+        "command": [
+          "go",
+          "-C",
+          "native/huhubot",
+          "test",
+          "-p",
+          "1",
+          "-mod=readonly",
+          "-race",
+          "./tests/contract/groups",
+          "./tests/contract/events",
+          "-count=1",
+          "-v"
+        ],
+        "exit": 0,
+        "seconds": 261.7583334329829,
+        "waited": true,
+        "sourceDrift": []
+      }
+    ]
+  },
+  "rawReadback": "Full group patch, events patch, targeted2/3 and cost5/6/7 raw logs read byRoot; both package completed logs/results and original threshold cases verified. Prior085 full diagnosis accepted separately.",
+  "disposition": "Accept three precise original-owner test repairs. 086 supersedes081 events_test.go hash only; other author files remain unchanged. Helper6s applies only270-source correctness case; no production/gate optimization. FormalT16/T13 code gate pendingRootE2E/build/independentreview."
+}

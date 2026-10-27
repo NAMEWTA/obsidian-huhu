@@ -1,0 +1,9 @@
+{
+  "observer": "native:/root",
+  "task": "107-protocol-common",
+  "taskSha256": "90cf2443af31459083145db607d3b9c42b53d1749a225fb41627a0bfda5cb100",
+  "dispatchExit": 0,
+  "nativeTarget": "/root/engine_adapter",
+  "nativeFollowupDispatched": true,
+  "initialStage": "read-only; after109 red Wait, sole old Chat CP capture before shared production edits"
+}

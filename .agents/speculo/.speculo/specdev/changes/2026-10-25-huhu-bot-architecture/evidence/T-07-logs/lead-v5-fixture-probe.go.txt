@@ -1,0 +1,49 @@
+package approval_test
+import (
+ "context"
+ "crypto/sha256"
+ "encoding/hex"
+ "encoding/json"
+ "fmt"
+ "os"
+ "path/filepath"
+ "testing"
+ "time"
+ "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+ "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
+)
+// Root fixture generator runs only against the accepted schema-5 snapshot.
+// It saves actual public-workflow outputs; the next candidate must migrate them.
+func TestLeadProduceRealSchemaFiveCheckpoints(t *testing.T) {
+ if migrations.CurrentVersion != 5 { t.Fatal("fixture producer is not schema five") }
+ output := os.Getenv("HUHU_LEAD_V5_FIXTURE_DIR")
+ if output == "" { t.Fatal("fixture output missing") }
+ for _, mode := range []string{"waiting", "terminal"} { t.Run(mode, func(t *testing.T) {
+  e := engine{run:func(c context.Context, in api.EngineInput, _ func(api.EngineEvent)error)(api.EngineResult,error){return suspend(c,in)}, resume:func(context.Context,api.EngineResumeInput,func(api.EngineEvent)error)(api.EngineResult,error){return api.EngineResult{Status:"finished",Text:"synthetic declined migration fixture"},nil}}
+  f:=open(t,e,24*time.Hour)
+  r,err:=f.core.API.Conversation.StartRun(ctx,owner,f.command); if err!=nil {t.Fatal(err)}
+  a:=waitApproval(t,f);waitRun(t,f,r.RunID,"waiting_approval")
+  want:="waiting_approval"
+  if mode=="terminal" {
+   _,err=f.core.API.Approvals.Resolve(ctx,owner,api.ApprovalResolve{CommandMeta:meta(t,f.core,"fixture-reject",a.Revision),ID:a.ID,EffectID:a.EffectID,Decision:"reject",PreviewHash:a.Preview.PreviewHash});if err!=nil {t.Fatal(err)}
+   want="succeeded";waitRun(t,f,r.RunID,want)
+  }
+  d:=db(t,f);var version int; if err=d.QueryRow("PRAGMA user_version").Scan(&version);err!=nil||version!=5{t.Fatalf("schema %d %v",version,err)}
+  var artifact string;if err=d.QueryRow("SELECT artifact_json FROM execution_checkpoints WHERE run_id=?",r.RunID).Scan(&artifact);err!=nil{t.Fatal(err)}
+  if f.writer.count()!=0{t.Fatal("fixture mutated Host")}
+  if err=d.Close();err!=nil{t.Fatal(err)}
+  if err=f.core.Close();err!=nil{t.Fatal(err)}
+  dest:=filepath.Join(output,mode,"one");if err=os.MkdirAll(dest,0700);err!=nil{t.Fatal(err)}
+  files:=map[string]string{}
+  err=filepath.WalkDir(f.locator,func(path string,entry os.DirEntry,walkErr error)error{
+   if walkErr!=nil{return walkErr};rel,err:=filepath.Rel(f.locator,path);if err!=nil{return err}
+   if entry.IsDir(){return os.MkdirAll(filepath.Join(dest,rel),0700)}
+   info,err:=entry.Info();if err!=nil{return err};if !info.Mode().IsRegular(){return fmt.Errorf("nonregular fixture entry %s",rel)}
+   b,err:=os.ReadFile(path);if err!=nil{return err};sum:=sha256.Sum256(b);files[rel]=hex.EncodeToString(sum[:]);return os.WriteFile(filepath.Join(dest,rel),b,0600)
+  });if err!=nil{t.Fatal(err)}
+  manifest:=map[string]any{"mode":mode,"schema":version,"profileId":f.command.ProfileID,"runId":r.RunID,"sessionId":f.session.ID,"runStatusBeforeClose":want,"effectId":a.EffectID,"approvalId":a.ID,"artifact":json.RawMessage(artifact),"hostMutationCalls":f.writer.count(),"files":files}
+  b,err:=json.MarshalIndent(manifest,"","  ");if err!=nil{t.Fatal(err)}
+  if err=os.WriteFile(filepath.Join(output,mode,"fixture.json"),append(b,'\n'),0600);err!=nil{t.Fatal(err)}
+  t.Logf("old schema=%d mode=%s actual public workflow run=%s checkpoint registry=1 Host mutations=0 files=%d; Core/DB closed before copy",version,mode,want,len(files))
+ }) }
+}

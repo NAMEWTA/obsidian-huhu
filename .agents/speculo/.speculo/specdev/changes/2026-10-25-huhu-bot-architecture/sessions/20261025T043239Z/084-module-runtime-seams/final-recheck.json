@@ -1,0 +1,20 @@
+{
+  "capturedAt": "2026-10-25T21:53:38.879184+00:00",
+  "outputs": {
+    "TASK.md": "1aa88247aae813ac10438212b5aa8b58af0e4f98583698c5e6f44628ac8ba849",
+    "REPORT.md": "e53d8622245a2f4e21d464bf09c748a5bef6f8bc784bc56bc700e03bab673677",
+    "interfaces-and-owners.md": "f615d44758dd5f61dec1c9f127e7497df1c6b437b6c0e75b64e9d438e4cc9b19",
+    "source-manifest.json": "5c280ec8d9b9448415e86c36cf43979be61a24a725f4b770e103feee69fa6e32",
+    "observations.json": "dbc31b60c34d8b68cdc814093684f24c4526cb20f659fb6acf0a13be750842b8"
+  },
+  "sourceFilesChecked": 65,
+  "sourceDrift": [],
+  "old082OwnFilesChecked": 9,
+  "old082OwnDrift": [],
+  "readOnlyScope": true,
+  "productsTestsBuildsNetworkRun": false,
+  "allOwnedCommandsFinished": true,
+  "activeOwnedProductsOrChecks": 0,
+  "productionTestsOldReportsOrFormalStateWrites": false,
+  "writerStopped": true
+}

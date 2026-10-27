@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "task": "118-anthropic-registry",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/engine_adapter",
+  "actualDispatch": true,
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "092782",
+  "taskSha256": "bbe039f9128c4fb47a1b297057bda7766581c9d2b4d3d6b6e339a29f0d6083a2",
+  "mapRevision": 29,
+  "goalRevision": 28,
+  "initialGoWindow": "117 only; 118 read-only until Root accepts real behavioral red",
+  "nativeAckReceived": true,
+  "authorization": "Original full28tickets55AC/AgentTeam; user-owned liveProvider/Obsidian/targetOS; no commit/push/release/archive",
+  "interruption": {
+    "type": "model-capacity-error",
+    "phase": "read-only preparation after ACK",
+    "productOrGoActions": false,
+    "nativeStatusVerified": "collaboration.list_agents reported errored",
+    "recovery": "same original agent/model/task followup; secondACK received, no replacement owner"
+  },
+  "nextWindow": "Root accepted117 red, then118 literal identity test red→minimal2source edit→green;117 confirmed source/test freeze"
+}

@@ -1,0 +1,25 @@
+{
+  "mapRevision": 13,
+  "goalRevision": 12,
+  "productBaseline": "a129b2b03c62625b541392a92321f9cf16d74383d2de85dbd3c3b44f92339371",
+  "owners": {
+    "native:/root/credential_provider": [
+      "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "native/huhubot/internal/adapters/outbound/sqlite/grants/delivery.go",
+      "native/huhubot/internal/adapters/outbound/sqlite/grants/store.go",
+      "native/huhubot/internal/adapters/outbound/sqlite/events/store.go",
+      "native/huhubot/tests/contract/access/delivery_test.go",
+      "native/huhubot/tests/contract/events/history_test.go",
+      "native/huhubot/tests/contract/events/events_test.go",
+      "native/huhubot/tests/contract/events/ts_test.go"
+    ],
+    "native:/root/foundation_client": [
+      "src/modules/huhubot/services/events/event-client.ts",
+      "src/modules/huhubot/services/events/event-client.test.ts",
+      "src/modules/huhubot/services/events/runner.test.ts"
+    ]
+  },
+  "pathErrors": [],
+  "overlap": [],
+  "state": "Root actual followup_task dispatched 048 and 049 after full final 046 receipt/readback/return0; dispatch validators0"
+}

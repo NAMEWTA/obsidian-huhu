@@ -2,7 +2,7 @@
 import type { ModuleId } from './module';
 import type { TreeNode } from '../../ui/components/tree';
 
-export const WORKBENCH_FEATURES = ['dashboard', 'terminal', 'contacts', 'automations', 'notifications', 'icons', 'sync', 'safe', 'content', 'settings',
+export const WORKBENCH_FEATURES = ['dashboard', 'terminal', 'huhubot', 'contacts', 'automations', 'notifications', 'icons', 'sync', 'safe', 'content', 'settings',
 ] as const;
 export type WorkbenchFeature = (typeof WORKBENCH_FEATURES)[number];
 
@@ -10,6 +10,7 @@ export type WorkbenchFeature = (typeof WORKBENCH_FEATURES)[number];
 export const FEATURE_MODULES: Readonly<Record<WorkbenchFeature, ModuleId | 'app'>> = {
 	dashboard: 'home',
 	terminal: 'agent',
+	huhubot: 'huhubot',
 	contacts: 'archives',
 	automations: 'automations',
 	notifications: 'notifications',

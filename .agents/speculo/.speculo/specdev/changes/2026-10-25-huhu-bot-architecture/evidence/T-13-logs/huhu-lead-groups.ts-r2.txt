@@ -1,0 +1,193 @@
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { GroupClient } from './src/modules/huhubot/services/groups/group-client';
+import { selectMention, type MentionDraft } from './src/modules/huhubot/core/mentions/mentions';
+import { MarkdownView, TFile, TFolder } from 'obsidian';
+import { HapConnection, BotRpcError } from './src/modules/huhubot/core/protocol/connection';
+import { registerObsidianNoteHost } from './src/modules/huhubot/services/host-write/obsidian-host';
+import { initializeDevice } from './src/host/obsidian/storage/device-id';
+
+const bytes = (s: string) => new TextEncoder().encode(s).length;
+const timers = { after(ms: number, callback: () => void) { const id = setTimeout(callback, ms); return () => clearTimeout(id); } };
+const outcomes: unknown[] = [];
+const pause = (ms = 5) => new Promise(resolve => setTimeout(resolve, ms));
+async function until<T>(read: () => Promise<T>, accepts: (value: T) => boolean, label: string): Promise<T> {
+	const deadline = Date.now() + 7000;
+	let last: T;
+	do { last = await read(); if (accepts(last)) return last; await pause(); } while (Date.now() < deadline);
+	throw new Error(`${label}: ${JSON.stringify(last!)}`);
+}
+
+const raw = new Map<string, string>(), directories = new Set<string>(), local = new Map<string, unknown>();
+const files = new Map<string, any>(), bodies = new Map<any, string>(), editorBodies = new Map<any, string>();
+const root = Object.assign(new TFolder(), { path: '/', children: [] as any[] });
+const folder = Object.assign(new TFolder(), { path: 'notes', children: [] as any[] }); files.set('notes', folder);
+let mutations = 0, processCalls = 0, createCalls = 0, dropCompletion = false;
+let afterMutation: (() => Promise<void>) | undefined;
+const newFile = (path: string, text: string) => {
+	const file = Object.assign(new TFile(), { path, name: path.split('/').at(-1), basename: path.split('/').at(-1)!.slice(0, -3), extension: 'md', stat: { ctime: 1, mtime: 1, size: bytes(text) } });
+	files.set(path, file); bodies.set(file, text); (path.startsWith('notes/') ? folder : root).children.push(file); return file;
+};
+const note = newFile('notes/original.md', '中文😀\noriginal input'), other = newFile('other.md', 'UNRELATED');
+const eventRefs = new Set<any>(), leaves: any[] = [];
+const app: any = {
+	loadLocalStorage: (key: string) => local.get(key),
+	saveLocalStorage: (key: string, value: unknown) => { if (value == null) local.delete(key); else local.set(key, structuredClone(value)); },
+	vault: {
+		configDir: '.obsidian', getRoot: () => root, getAbstractFileByPath: (path: string) => files.get(path),
+		read: async (file: any) => { assert(bodies.has(file)); return bodies.get(file)!; },
+		process: async (file: any, update: (value: string) => string) => {
+			processCalls++; const next = update(bodies.get(file)!); assert.equal(typeof next, 'string', 'Vault.process callback is synchronous');
+			bodies.set(file, next); file.stat.mtime++; file.stat.size = bytes(next); mutations++; await afterMutation?.(); return next;
+		},
+		create: async (path: string, text: string) => {
+			createCalls++; assert(!files.has(path), 'no overwrite'); const file = newFile(path, text); mutations++; await afterMutation?.(); return file;
+		},
+		on: (name: string, callback: unknown) => { const ref = { name, callback }; eventRefs.add(ref); return ref; },
+		offref: (ref: unknown) => eventRefs.delete(ref),
+		adapter: {
+			exists: async (path: string) => raw.has(path) || directories.has(path),
+			read: async (path: string) => { assert(raw.has(path), `missing private storage: ${path}`); return raw.get(path)!; },
+			write: async (path: string, value: string) => { if (dropCompletion && value.includes('"phase":"completed"')) throw new Error('controlled dropped completion'); raw.set(path, value); },
+			mkdir: async (path: string) => { directories.add(path); },
+			stat: async (path: string) => raw.has(path) ? { size: bytes(raw.get(path)!), type: 'file' } : directories.has(path) ? { size: 0, type: 'folder' } : null,
+		},
+	},
+	workspace: { iterateAllLeaves: (visit: (leaf: any) => void) => leaves.forEach(visit), getActiveViewOfType: () => { throw new Error('implicit active target forbidden'); } },
+};
+const addLeaf = (file: any) => {
+	const leaf: any = {}; const view = Object.assign(new MarkdownView(), { app, leaf, file, editor: { getValue: () => editorBodies.get(view) ?? bodies.get(file), listSelections: () => [], posToOffset: () => 0 } });
+	Object.assign(leaf, { view, isDeferred: false, getViewState: () => ({ type: 'markdown', state: { file: file.path } }) }); leaves.push(leaf); return leaf;
+};
+const leaf = addLeaf(note), secondLeaf = addLeaf(note);
+let serial = 0, connection: any, bot: any, host: any, child: any, ended: Promise<any>, stderr = '', droppedResponse = false;
+const meta = (revision?: string) => {
+	const key = `lead-${++serial}`;
+	return { commandId: key, idempotencyKey: key, profileId: bot.hello.profile.profileId, commandEpoch: bot.hello.profile.commandEpoch, ...(revision ? { expectedRevision: revision } : {}) };
+};
+const profile = () => ({ profileId: bot.hello.profile.profileId });
+async function connect() {
+	stderr = '';
+	child = spawn(process.argv[2], ['-test.run=^TestLeadGroupsStdioRunner$'], { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, LEAD_GROUPS_PROFILES: process.argv[3], LEAD_GROUPS_CONTROL: process.argv[4] } });
+	const current = child; current.stderr.on('data', (chunk: Buffer) => { stderr += chunk; });
+	ended = new Promise(resolve => current.once('exit', (code: number, signal: string) => resolve({ code, signal })));
+	connection = new HapConnection({
+		send: (data: Uint8Array) => new Promise<void>((resolve, reject) => current.stdin.write(data, (error: Error) => error ? reject(error) : resolve())),
+		onData: (consume: (data: Uint8Array) => void) => { current.stdout.on('data', consume); return () => current.stdout.off('data', consume); },
+		onClose: (consume: (error: Error) => void) => { const close = () => consume(new Error('closed')); current.on('exit', close); return () => current.off('exit', close); },
+		close: () => current.stdin.end(),
+	}, timers);
+	bot = await connection.connect({ name: 'lead-groups-e2e', version: '1' });
+	host = await registerObsidianNoteHost(app, bot, { workspaceId: 'workspace:lead', originClientId: 'client:lead', timers, lifetime: { registerEvent() {} } });
+	const implementation = host.host;
+	bot.setHost({ ...implementation, invoke: async (request: unknown, signal: AbortSignal) => {
+		const response = await implementation.invoke(request, signal);
+		if (droppedResponse) { droppedResponse = false; throw new BotRpcError(-32000, { kind: 'HOST_UNAVAILABLE', reason: 'HOST_OFFLINE', retryable: false, correlationId: 'lead-loss' }); }
+		return response;
+	} });
+	await bot.host.attach({ workspaceId: 'workspace:lead', capabilities: ['note.read', 'note.search', 'note.write'] });
+}
+async function disconnect() {
+	if (!child) return;
+	host?.dispose(); await host?.writes.drained(); bot?.close(); child.stdin.end();
+	let forced = false; const timeout = setTimeout(() => { forced = true; child.kill('SIGKILL'); }, 4000);
+	const exit = await ended; clearTimeout(timeout); child = undefined;
+	assert.equal(forced, false, 'Runner required a forced kill'); assert.equal(exit.code, 0, JSON.stringify(exit)); assert.equal(stderr, '', 'Runner stderr');
+	assert.equal(eventRefs.size, 0, 'Host left Vault listeners');
+}
+const clients: GroupClient[] = [];
+const observations = async (): Promise<any[]> => {
+	try { return (await readFile(process.argv[4] + '/observations.jsonl', 'utf8')).trim().split('\n').filter(Boolean).map(line => JSON.parse(line)); }
+	catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []; throw error; }
+};
+const terminal = (id: string) => until(() => bot.runs.get({ ...profile(), id }), (value: any) => ['succeeded', 'failed', 'canceled'].includes(value.status), 'group terminal');
+function mentioned(text: string, selected: any[]): MentionDraft {
+	let draft: MentionDraft = { text, mentions: [] };
+	for (const agent of selected) {
+		const start = draft.text.length + 1;
+		draft = { ...draft, text: draft.text + ' @pick' };
+		draft = selectMention(draft, start, draft.text.length, agent);
+	}
+	return draft;
+}
+const transcript = (client: GroupClient) => client.getSnapshot().history.transcript.messages;
+const model = { providerId: 'fixture', protocol: 'openai-chat-completions', endpoint: 'https://fixture.invalid/v1', modelId: 'fixture', capabilities: [] };
+const report: any = { realProviderCalls: 0, cases: [] };
+(async () => {
+	try {
+		await mkdir(process.argv[3], { recursive: true }); await mkdir(process.argv[4], { recursive: true });
+		await initializeDevice(app, { machineIdentity: async () => 'synthetic-lead-device', label: 'Lead group fixture', chooseDevice: async () => ({ label: 'Lead group fixture' }) });
+		await connect();
+		const a = await bot.agents.create({ ...meta(), draft: { name: 'A-unconfigured', persona: 'fixture', allowedTools: [], allowedCollaborationTargets: [] } });
+		const b = await bot.agents.create({ ...meta(), draft: { name: 'B', persona: 'fixture', model, allowedTools: [], allowedCollaborationTargets: [] } });
+		const c = await bot.agents.create({ ...meta(), draft: { name: 'C', persona: 'fixture', model, allowedTools: [], allowedCollaborationTargets: [] } });
+		const group = await bot.sessions.create({ ...meta(), kind: 'group', title: 'Lead source group', memberIds: [a.id, b.id, c.id], coordinatorId: a.id, workspaceId: 'workspace:lead' });
+		const source = await host.sources.captureNote(note, leaf);
+		const grant = (agent: any) => bot.grants.create({ ...meta(), workspaceId: 'workspace:lead', scope: 'source', resourceId: source.resourceId,
+			recipients: [{ agentId: agent.id, modelBindingRevision: agent.modelBindingRevision, providerId: model.providerId, modelId: model.modelId, protocol: model.protocol, endpoint: model.endpoint }],
+			operations: ['read', 'send', 'deliver'], sessionId: group.id });
+		const grantB = await grant(b), grantC = await grant(c);
+		const groups = new GroupClient(bot, group, [a, b, c], timers, { poll: false }); clients.push(groups);
+		const firstDraft = mentioned('held-source-batch', [b, c]); groups.setDraft(firstDraft);
+		const first = await groups.send(meta(), { sourceRefs: [source], grantIds: [grantB.id, grantC.id] });
+		assert.equal(first.targetRunIds?.length, 2); assert.equal(groups.getSnapshot().draft.text, '');
+		const firstReplay = await groups.retrySend(); assert.deepEqual(firstReplay, first);
+		await until(async () => { await groups.refreshHistory(); return transcript(groups); }, page => page.some(item => item.text === 'reply:C'), 'C public while B held');
+		assert(!transcript(groups).some(item => item.text === 'reply:B'));
+		const user = transcript(groups).find(item => item.role === 'user')!;
+		assert.equal(user.text, firstDraft.text); assert.deepEqual(user.sourceRefs, []);
+		assert.equal(user.attachments?.sourceRefs[0]?.resourceId, source.resourceId);
+		assert.equal(user.attachments?.sourceRefs[0]?.revision, source.revision);
+		assert.equal(user.attachments?.sourceRefs[0]?.originViewId, source.originViewId);
+		await groups.refreshSession(); const busyDraft = mentioned('post-busy-only-B', [b]); groups.setDraft(busyDraft);
+		await assert.rejects(() => groups.send(meta(), { sourceRefs: [] }), (e: unknown) => e instanceof BotRpcError && e.data.reason === 'SESSION_BUSY');
+		assert.deepEqual(groups.getSnapshot().draft, busyDraft);
+		await writeFile(process.argv[4] + '/release-b', 'release', { mode: 0o600 });
+		assert.equal((await terminal(first.runId)).status, 'succeeded'); await groups.refreshHistory();
+		let page = transcript(groups); assert.deepEqual(page.map(item => item.seq), ['1', '2', '3']);
+		assert.deepEqual(page.filter(item => item.role === 'assistant').map(item => item.agentId), [c.id, b.id]);
+		const budget = await bot.collaboration.budget({ ...profile(), runId: first.runId }); assert.equal(budget.chargedTokens, '10'); assert.equal(budget.reservedTokens, '0');
+		const initialObservations = await observations(); assert.deepEqual(initialObservations.filter(item => item.phase === 'physical').map(item => item.name).sort(), ['B', 'C']);
+		for (const input of initialObservations.filter(item => item.phase === 'engine')) {
+			assert(input.delegation?.Task.includes('held-source-batch')); assert.equal(input.lineage.RootRunID, first.runId);
+			assert.equal(input.context.Sources.length, 1);
+			assert.equal(input.context.Sources[0].Text, '中文😀\noriginal input');
+			assert(!(input.history ?? []).some((item: any) => item.attachments), 'display attachments must not confer model context');
+		}
+		await assert.rejects(() => groups.retrySend(), (e: unknown) => e instanceof BotRpcError && e.data.reason === 'REVISION_CONFLICT');
+		assert.deepEqual(groups.getSnapshot().draft, busyDraft); await groups.refreshSession();
+		const retried = await groups.send(meta(), { sourceRefs: [] }); assert.equal((await terminal(retried.runId)).status, 'succeeded'); assert.equal(retried.targetRunIds?.length, 1);
+		report.cases.push({ case: 'real-ts-group-client-stable-mentions-idempotent-replay-and-busy-draft', firstRoot: first.runId, retriedRoot: retried.runId, sourceRevision: source.revision, actualFirstRootTokens: budget.chargedTokens });
+		await bot.grants.revoke({ ...meta(grantC.revision), id: grantC.id }); groups.permissionsChanged(); await groups.refreshSession();
+		const rejectedDraft = mentioned('atomic-missing-C-grant', [b, c]); groups.setDraft(rejectedDraft); const before = (await observations()).length;
+		await assert.rejects(() => groups.send(meta(), { sourceRefs: [source], grantIds: [grantB.id, grantC.id] }), (e: unknown) => e instanceof BotRpcError && e.data.kind === 'CAPABILITY_DENIED');
+		assert.deepEqual(groups.getSnapshot().draft, rejectedDraft); assert.equal((await observations()).length, before);
+		await groups.refreshHistory(); assert(!transcript(groups).some(item => item.text === rejectedDraft.text));
+		assert(!transcript(groups).some(item => item.text === 'reply:C'));
+		assert(transcript(groups).find(item => item.text === firstDraft.text)?.attachments?.sourceRefs.length);
+		await bot.grants.revoke({ ...meta(grantB.revision), id: grantB.id }); groups.permissionsChanged(); await groups.refreshHistory();
+		const retained = transcript(groups).find(item => item.text === firstDraft.text)!;
+		assert(retained); assert.equal(retained.attachments?.sourceRefs.length ?? 0, 0); assert.equal(retained.attachments?.sourceScopes.length ?? 0, 0);
+		report.cases.push({ case: 'atomic-grant-failure-and-source-revocation', rejectedIntent: rejectedDraft.text, userIntentRetained: true, revokedLabelsFiltered: true });
+		const sessionId = group.id, profileId = profile().profileId;
+		for (const client of clients.splice(0)) { client.dispose(); await client.drained(); }
+		await disconnect(); await connect();
+		const restored = await bot.sessions.get({ ...profile(), id: sessionId }); assert.equal(profile().profileId, profileId);
+		const fresh = new GroupClient(bot, restored, [a, b, c], timers, { poll: false }); clients.push(fresh); await fresh.refreshHistory();
+		assert(transcript(fresh).some(item => item.text === firstDraft.text)); assert(!transcript(fresh).some(item => item.text === 'reply:C'));
+		const none = await fresh.updateMembers({ ...meta(), memberIds: [a.id, c.id], historyScope: { kind: 'none' } }); assert(!none.memberIds.includes(b.id));
+		const rejoined = await fresh.updateMembers({ ...meta(), memberIds: [a.id, b.id, c.id], historyScope: { kind: 'none' } });
+		assert.notEqual(rejoined.groupMembers?.find(item => item.agentId === b.id)?.incarnation, group.groupMembers.find((item: any) => item.agentId === b.id).incarnation);
+		const changed = await fresh.setCoordinator({ ...meta(), coordinatorId: c.id }); assert.equal(changed.coordinatorId, c.id);
+		report.cases.push({ case: 'durable-history-and-client-membership-CAS-reopen', sessionId, coordinator: c.id });
+		report.groupSessionId = sessionId; report.coordinatorAgentId = a.id; report.rejectedIntent = rejectedDraft.text;
+		report.observations = await observations(); assert(!report.observations.some((item: any) => item.agentId === a.id)); assert.equal(mutations, 0);
+		await writeFile(process.argv[4] + '/result.json', JSON.stringify(report, null, 2) + '\n', { mode: 0o600 });
+		console.log(JSON.stringify({ ...report, observations: report.observations.map((item: any) => ({ phase: item.phase, runId: item.runId, agentId: item.agentId, name: item.name })) }));
+	} finally {
+		await writeFile(process.argv[4] + '/release-b', 'cleanup-release', { mode: 0o600 });
+		for (const client of clients.splice(0)) { client.dispose(); await client.drained(); }
+		await disconnect();
+	}
+})().catch(error => { console.error(error.stack ?? String(error)); process.exitCode = 1; });

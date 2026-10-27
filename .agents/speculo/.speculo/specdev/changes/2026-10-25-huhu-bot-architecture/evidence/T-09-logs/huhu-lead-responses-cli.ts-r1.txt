@@ -1,0 +1,298 @@
+import assert from 'node:assert/strict';
+import type { ChildProcess } from 'node:child_process';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createServer, type ServerResponse } from 'node:http';
+import { join } from 'node:path';
+import { DesktopHapTransport } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/platform/desktop/transport/managed';
+import { HapConnection } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/core/protocol/connection';
+import { AssistantClient } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/services/assistant-client';
+import type { BotClient, ModelBindingDraft, Run } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/api';
+import { createNoteHost } from './huhu-lead-responses-host';
+
+// Independent Root probe, external to the repository. Every model request uses
+// the ordinary production CLI and real SDK; the only Provider is loopback HTTP.
+const [binary, root] = process.argv.slice(2);
+assert(binary && root, 'binary and dedicated output directory required');
+const secret = 'root-responses-local-only-key-7a9f';
+const persona = 'Keep exactly {"literal":{"sample":1}} and do not expand {variables}.';
+type Mode = 'normal' | 'truncated' | 'rate-limit' | 'hang' | 'tools';
+const requests: Array<{ method: string; path: string; authorized: boolean; body: unknown; mode?: Mode }> = [];
+const outcomes: Array<{ label: string; sessionId: string; run: Run }> = [];
+const exits: Array<{ code: number | null; signal: string | null }> = [];
+const timerIDs = new Set<ReturnType<typeof setTimeout>>();
+const timers = { after(ms: number, fn: () => void) {
+  const id = setTimeout(() => { timerIDs.delete(id); fn(); }, ms); timerIDs.add(id);
+  return () => { clearTimeout(id); timerIDs.delete(id); };
+} };
+let mode: Mode = 'normal', sequence = 0, active: { transport: DesktopHapTransport; bot: BotClient; childEnd: Promise<void> } | undefined;
+let hanging: ServerResponse | undefined;
+let noteHost: Awaited<ReturnType<typeof createNoteHost>> | undefined;
+let proposedTools: unknown[] = [], toolRequests = 0;
+let markHang: (() => void) | undefined, markHangClosed: (() => void) | undefined;
+let hangReady: Promise<void>, hangClosed: Promise<void>;
+let report: Record<string, unknown> = { complete: false, boundary: 'production TS + default CLI + real SDK + loopback HTTP; no real Provider, Obsidian, keyring or target OS acceptance' };
+const sockets = new Set<import('node:net').Socket>();
+function streamWriter(res: ServerResponse) {
+  let sequenceNumber = 0;
+  const responseID = `resp_root_${requests.length}`;
+  const send = (type: string, payload: Record<string, unknown>) => {
+    const data = { type, sequence_number: sequenceNumber++, ...payload };
+    res.write(`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`);
+  };
+  const envelope = (status: string, output: unknown[], usage?: unknown) => ({
+    id: responseID, object: 'response', created_at: 1, model: 'root-model', status,
+    output, error: null, incomplete_details: null, ...(usage ? { usage } : {})
+  });
+  send('response.created', { response: envelope('in_progress', []) });
+  send('response.in_progress', { response: envelope('in_progress', []) });
+  const text = (index: number, id: string, value: string, hang = false) => {
+    const item = { id, type: 'message', role: 'assistant', status: 'completed', phase: index === 2 ? 'commentary' : 'final_answer', content: [{ type: 'output_text', text: value, annotations: [], logprobs: [] }] };
+    send('response.output_item.added', { output_index: index, item: { ...item, status: 'in_progress', content: [] } });
+    send('response.content_part.added', { item_id: id, output_index: index, content_index: 0, part: { type: 'output_text', text: '', annotations: [], logprobs: [] } });
+    send('response.output_text.delta', { item_id: id, output_index: index, content_index: 0, delta: value, logprobs: [] });
+    if (!hang) {
+      send('response.output_text.done', { item_id: id, output_index: index, content_index: 0, text: value, logprobs: [] });
+      send('response.content_part.done', { item_id: id, output_index: index, content_index: 0, part: item.content[0] });
+      send('response.output_item.done', { output_index: index, item });
+    }
+    return item;
+  };
+  const call = (index: number, item: any) => {
+    send('response.output_item.added', { output_index: index, item: { ...item, status: 'in_progress', arguments: '' } });
+    send('response.function_call_arguments.delta', { item_id: item.id, output_index: index, delta: item.arguments });
+    send('response.function_call_arguments.done', { item_id: item.id, output_index: index, name: item.name, arguments: item.arguments });
+    send('response.output_item.done', { output_index: index, item });
+    return item;
+  };
+  const reasoning = (index: number) => {
+    const item = { id: 'rs_root_opaque', type: 'reasoning', summary: [], encrypted_content: 'opaque-root-保留-==', status: 'completed' };
+    send('response.output_item.added', { output_index: index, item: { id: item.id, type: item.type, summary: [], status: 'in_progress' } });
+    send('response.output_item.done', { output_index: index, item });
+    return item;
+  };
+  const finish = (items: unknown[], input: number, output: number) => {
+    send('response.completed', { response: envelope('completed', items, { input_tokens: input, output_tokens: output, total_tokens: input + output,
+      input_tokens_details: { cached_tokens: 0 }, output_tokens_details: { reasoning_tokens: 0 } }) });
+    res.end();
+  };
+  return { send, text, call, reasoning, finish };
+}
+let firstToolItems: unknown[] = [];
+const server = createServer(async (req, res) => {
+  try {
+    const chunks: Buffer[] = [];
+    for await (const chunk of req) chunks.push(Buffer.from(chunk));
+    const raw = Buffer.concat(chunks).toString('utf8');
+    const body = raw ? JSON.parse(raw) : null;
+    const entry = { method: req.method!, path: req.url!, authorized: req.headers.authorization === `Bearer ${secret}`, body, mode: undefined as Mode | undefined };
+    requests.push(entry);
+    assert(entry.authorized, 'request must use the privately registered synthetic key');
+    if (req.method === 'GET' && req.url === '/v1/models/root-model') {
+      assert.equal(raw, ''); res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ id: 'root-model', object: 'model', created: 1, owned_by: 'local' })); return;
+    }
+    assert.equal(req.method, 'POST'); assert.equal(req.url, '/v1/responses');
+    entry.mode = mode;
+    assert.equal(body.model, 'root-model'); assert.equal(body.stream, true);
+    assert.equal(body.max_output_tokens, 4096); assert.equal(body.store, false); assert.equal(body.background, false);
+    assert(body.include?.includes('reasoning.encrypted_content'), 'stateless reasoning must request replayable opaque content');
+    assert.equal(body.previous_response_id, undefined); assert.equal(body.conversation, undefined);
+    assert.equal(body.truncation, 'disabled', 'explicitly disable automatic history truncation');
+    const system = body.input?.find((item: any) => item.role === 'system' || item.role === 'developer');
+    const sentPersona = body.instructions ?? (typeof system?.content === 'string' ? system.content : system?.content?.map((x: any) => x.text).join(''));
+    assert.equal(sentPersona, persona);
+    if (mode === 'rate-limit') {
+      res.statusCode = 429; res.setHeader('Retry-After', '0');
+      res.end(JSON.stringify({ error: { message: 'synthetic-private-provider-error', type: 'rate_limit_error' } })); return;
+    }
+    res.setHeader('Content-Type', 'text/event-stream'); res.flushHeaders();
+    const stream = streamWriter(res);
+    if (mode === 'tools') {
+      toolRequests++;
+      assert.deepEqual(body.tools.map((x: any) => x.name), ['note_write']);
+      if (toolRequests === 1) {
+        firstToolItems = [stream.reasoning(0), stream.call(1, proposedTools[0]), stream.text(2, 'msg_root_between', 'queued changes'), stream.call(3, proposedTools[1])];
+        stream.finish(firstToolItems, 10, 3);
+      } else {
+        assert.equal(toolRequests, 2, 'no extra generation during approval continuation');
+        const results = body.input.filter((x: any) => x.type === 'function_call_output');
+        assert.deepEqual(results.map((x: any) => x.call_id), ['root-call-approved', 'root-call-rejected']);
+        assert(results[0].output.includes('committed'));
+        assert(results[1].output.includes('APPROVAL_REJECTED'));
+        const replayed = body.input.filter((x: any) => ['rs_root_opaque', 'fc_root_approved', 'msg_root_between', 'fc_root_rejected'].includes(x.id));
+        assert.deepEqual(replayed, firstToolItems, 'complete ordered original provider items must roundtrip');
+        const item = stream.text(0, 'msg_root_tools_final', 'one committed and one rejected');
+        stream.finish([item], 10, 3);
+      }
+      return;
+    }
+    const item = stream.text(0, 'msg_root_text', mode === 'hang' ? 'before cancel' : 'root durable answer', mode === 'hang');
+    if (mode === 'hang') {
+      hanging = res; res.once('close', () => markHangClosed?.()); markHang?.(); return;
+    }
+    if (mode === 'normal') stream.finish([item], 11, 5);
+    else res.end();
+  } catch (error) {
+    report.serverError = String(error); res.destroy(error as Error);
+  }
+});
+server.on('connection', socket => { sockets.add(socket); socket.once('close', () => sockets.delete(socket)); });
+const home = join(root, 'home'), state = join(root, 'state');
+const profileDir = join(state, 'huhu/huhubot/profiles/one');
+const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+async function until<T>(read: () => Promise<T>, predicate: (x: T) => boolean, label: string): Promise<T> {
+  const deadline = Date.now() + 10_000; let last: T;
+  do { last = await read(); if (predicate(last)) return last; await pause(10); } while (Date.now() < deadline);
+  throw new Error(`${label}: ${JSON.stringify(last!)}`);
+}
+async function bounded<T>(work: Promise<T>, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  try { return await Promise.race([work, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(label)), 10_000); })]); }
+  finally { clearTimeout(timer!); }
+}
+async function open() {
+  const transport = await DesktopHapTransport.launch({ binary, profileDir, cwd: root, credentialChannel: true, shutdownGraceMs: 5000,
+    environment: { HOME: home, USERPROFILE: home, XDG_STATE_HOME: state, LANG: 'C.UTF-8', OPENAI_API_KEY: 'forbidden-environment-key', OPENAI_BASE_URL: 'http://127.0.0.1:1' } });
+  // Read-only observation of the actual child, solely to distinguish natural
+  // exit from the production transport's timeout termination during teardown.
+  const child = (transport as unknown as { child: ChildProcess }).child;
+  const childEnd = new Promise<void>(resolve => child.once('close', (code, signal) => { exits.push({ code, signal }); resolve(); }));
+  try {
+    const bot = await new HapConnection(transport, timers).connect({ name: 'root-responses-code-e2e', version: '1' });
+    active = { transport, bot, childEnd };
+    return { ...active, credentials: await transport.openCredentials(bot.hello.profile.profileId) };
+  } catch (error) {
+    transport.close(); await bounded(Promise.all([transport.exited, childEnd]), 'failed startup did not actually exit'); throw error;
+  }
+}
+async function close() {
+  if (!active) return;
+  if (noteHost) { const currentHost = noteHost; noteHost = undefined; await currentHost.close(); }
+  const current = active; active = undefined; current.bot.close();
+  await bounded(Promise.all([current.transport.exited, current.childEnd]), 'actual CLI did not exit');
+  assert.deepEqual(exits.at(-1), { code: 0, signal: null }, 'CLI must close naturally without termination');
+  assert.equal(current.transport.diagnostics.stderrBytes, 0);
+}
+function meta(expectedRevision?: string) {
+  assert(active); const key = `root-responses-${++sequence}`;
+  return { profileId: active.bot.hello.profile.profileId, commandEpoch: active.bot.hello.profile.commandEpoch, commandId: key, idempotencyKey: key, ...(expectedRevision ? { expectedRevision } : {}) };
+}
+async function start(agentId: string, label: string) {
+  assert(active); const bot = active.bot;
+  const session = await bot.sessions.create({ ...meta(), kind: 'direct', title: label, memberIds: [agentId] });
+  const receipt = await bot.runs.start({ ...meta(session.revision), expectedRevision: session.revision, sessionId: session.id, intent: `intent ${label}`, sourceRefs: [] });
+  return { session, receipt };
+}
+async function terminal(id: string) {
+  assert(active); const bot = active.bot, profileId = bot.hello.profile.profileId;
+  return until(() => bot.runs.get({ profileId, id }), run => ['succeeded', 'failed', 'canceled'].includes(run.status), 'Run terminal');
+}
+async function main() {
+  await mkdir(home, { recursive: true, mode: 0o700 });
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address === 'object');
+  const first = await open(), bot = first.bot, profileId = bot.hello.profile.profileId;
+  const assistant = new AssistantClient(bot), credential = await first.credentials.register(Buffer.from(secret), 'session-memory');
+  assert.equal(credential.state, 'available');
+  const model: ModelBindingDraft = { providerId: 'root-local', protocol: 'openai-responses', endpoint: `http://127.0.0.1:${address.port}/v1`, modelId: 'root-model', credentialRef: credential.credentialRef, capabilities: [] };
+  const before = await bot.collaboration.budget({ profileId });
+  await bot.collaboration.configureBudget({ ...meta(before.revision), expectedRevision: before.revision, policy: { rootTokenLimit: '1000000', profileTokenLimit: '10000000', maintenanceTokenLimit: '0', paused: false } });
+  const agent = await assistant.createAgent({ ...meta(), draft: { name: 'Root local CLI', description: '', persona, model, allowedTools: [] } });
+  const unsupported = await assistant.createAgent({ ...meta(), draft: { name: 'Not implemented protocol', description: '', persona: '', model: { ...model, protocol: 'anthropic-messages' } } });
+  const listed = await assistant.listModels();
+  assert(listed.items.some(item => item.protocol === 'openai-responses' && item.available));
+  assert(listed.items.filter(item => item.protocol === 'anthropic-messages').every(item => item.available === false));
+  const test = await assistant.testModel(model); assert.equal(test.available, true); assert.deepEqual(test.capabilities, []);
+  assert.equal(requests.length, 1); assert.equal(requests[0].method, 'GET');
+  await assert.rejects(assistant.testModel({ ...model, protocol: 'anthropic-messages' }), /ADAPTER_NOT_ASSEMBLED/); assert.equal(requests.length, 1);
+
+  for (const next of ['normal', 'truncated', 'rate-limit'] as const) {
+    mode = next; const count = requests.length;
+    const { session, receipt } = await start(agent.id, next), run = await terminal(receipt.runId);
+    assert.equal(requests.length, count + 1, `${next} must have exactly one physical generation HTTP`);
+    assert.equal(run.status, next === 'normal' ? 'succeeded' : 'failed');
+    assert(run.usage, `${next} must have a persisted usage observation`);
+    if (next === 'normal') {
+      assert.equal(run.usage.knowledge, 'known'); assert.equal(run.usage.inputTokens, '11'); assert.equal(run.usage.outputTokens, '5');
+      const history = await bot.sessions.history({ profileId, sessionId: session.id });
+      assert.equal(history.items.filter(item => item.role === 'user').length, 1);
+      assert.equal(history.items.at(-1)?.text, 'root durable answer');
+    } else {
+      assert.equal(run.usage.knowledge, 'unknown');
+      assert(!JSON.stringify(run).includes('synthetic-private-provider-error'));
+      const budget = await bot.collaboration.budget({ profileId, runId: run.id });
+      assert(BigInt(budget.chargedTokens!) > 0n, 'unknown charge must not become free');
+    }
+    outcomes.push({ label: next, sessionId: session.id, run });
+  }
+
+  mode = 'hang'; hangReady = new Promise(resolve => { markHang = resolve; }); hangClosed = new Promise(resolve => { markHangClosed = resolve; });
+  const canceled = await start(agent.id, 'cancel'); await bounded(hangReady, 'stream did not reach cancellation barrier');
+  const current = await bot.runs.get({ profileId, id: canceled.receipt.runId });
+  await bot.runs.cancel({ ...meta(current.revision), expectedRevision: current.revision, id: current.id });
+  hanging?.write('event: response.output_text.delta\ndata: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_root_text","output_index":0,"content_index":0,"delta":"forbidden late text","logprobs":[]}\n\n');
+  await bounded(hangClosed, 'HTTP producer connection did not close after cancel');
+  const canceledRun = await terminal(current.id); assert.equal(canceledRun.status, 'canceled');
+  const canceledHistory = await bot.sessions.history({ profileId, sessionId: canceled.session.id });
+  assert(!JSON.stringify(canceledHistory).includes('forbidden late text'));
+  outcomes.push({ label: 'cancel', sessionId: canceled.session.id, run: canceledRun });
+
+  mode = 'normal'; const subsequent = await start(agent.id, 'after cancel'), subsequentRun = await terminal(subsequent.receipt.runId);
+  assert.equal(subsequentRun.status, 'succeeded'); outcomes.push({ label: 'after cancel', sessionId: subsequent.session.id, run: subsequentRun });
+
+  // Real SDK tool batch crosses the ordinary CLI/HAP reverse channel into the
+  // production TS Host and note-effect/receipt adapters; Vault is controlled.
+  noteHost = await createNoteHost(bot, timers);
+  const writer = await assistant.createAgent({ ...meta(), draft: { name: 'Root exact writer', description: '', persona, model, allowedTools: ['note.write'] } });
+  const sources = [await noteHost.host.sources.captureNote(noteHost.note, noteHost.leaf), await noteHost.host.sources.captureNote(noteHost.other, noteHost.otherLeaf)];
+  const toolSession = await bot.sessions.create({ ...meta(), kind: 'direct', title: 'real model approval batch', workspaceId: 'workspace:root-responses', memberIds: [writer.id] });
+  const grants = [];
+  for (const source of sources) grants.push(await bot.grants.create({ ...meta(), workspaceId: 'workspace:root-responses', scope: 'source', resourceId: source.resourceId,
+    recipients: [{ agentId: writer.id, modelBindingRevision: writer.modelBindingRevision, providerId: model.providerId, modelId: model.modelId, protocol: model.protocol, endpoint: model.endpoint }],
+    operations: ['read', 'send', 'deliver'], sessionId: toolSession.id }));
+  proposedTools = sources.map((source, index) => ({ id: index ? 'fc_root_rejected' : 'fc_root_approved', call_id: index ? 'root-call-rejected' : 'root-call-approved', type: 'function_call', status: 'completed', name: 'note_write', caller: index ? null : { type: 'direct' },
+    arguments: JSON.stringify({ target: { workspaceId: 'workspace:root-responses', resourceId: source.resourceId, operation: 'update', baseRevision: source.revision }, content: index ? 'must not change second note' : 'approved exactly 中文😀' }) }));
+  mode = 'tools';
+  const toolsRun = await bot.runs.start({ ...meta(toolSession.revision), expectedRevision: toolSession.revision, sessionId: toolSession.id,
+    intent: 'Apply only the first proposed edit after my approval; I will reject the second.', sourceRefs: sources, grantIds: grants.map(x => x.id) });
+  const pending = () => until(() => bot.approvals.list({ profileId }), page => page.items.some(x => x.runId === toolsRun.runId && x.status === 'pending'), 'tool approval');
+  const firstApproval = (await pending()).items.find(x => x.runId === toolsRun.runId && x.status === 'pending')!;
+  assert.equal(noteHost.mutations(), 0); assert.equal(toolRequests, 1);
+  await bot.approvals.resolve({ ...meta(firstApproval.revision), expectedRevision: firstApproval.revision, id: firstApproval.id, effectId: firstApproval.effectId, previewHash: firstApproval.preview.previewHash, decision: 'approve' });
+  const secondApproval = (await pending()).items.find(x => x.runId === toolsRun.runId && x.status === 'pending')!;
+  assert.notEqual(secondApproval.id, firstApproval.id); assert.notEqual(secondApproval.effectId, firstApproval.effectId);
+  assert.equal(noteHost.mutations(), 1); assert.equal(toolRequests, 1);
+  assert.equal(noteHost.bodies.get(noteHost.note), 'approved exactly 中文😀');
+  await bot.approvals.resolve({ ...meta(secondApproval.revision), expectedRevision: secondApproval.revision, id: secondApproval.id, effectId: secondApproval.effectId, previewHash: secondApproval.preview.previewHash, decision: 'reject' });
+  const toolsResult = await terminal(toolsRun.runId);
+  assert.equal(toolsResult.status, 'succeeded'); assert.equal(noteHost.mutations(), 1); assert.equal(noteHost.processCalls(), 1); assert.equal(toolRequests, 2);
+  assert.equal(noteHost.bodies.get(noteHost.other), 'UNRELATED');
+  assert.equal((await bot.effects.get({ profileId, id: firstApproval.effectId })).status, 'committed');
+  assert.equal((await bot.effects.get({ profileId, id: secondApproval.effectId })).status, 'rejected');
+  assert([...noteHost.raw.keys()].some(x => x.includes('/host-receipts/')));
+  outcomes.push({ label: 'actual SDK tool batch and production TS Host approve/reject', sessionId: toolSession.id, run: toolsResult });
+  const snapshots = JSON.stringify([bot.hello, agent, listed, test, outcomes]); assert(!snapshots.includes(secret));
+  await close();
+  const restarted = await open();
+  assert.equal(restarted.bot.hello.profile.profileId, profileId);
+  const persisted = await restarted.bot.sessions.history({ profileId, sessionId: subsequent.session.id });
+  assert.equal(persisted.items.at(-1)?.text, 'root durable answer');
+  const count = requests.length;
+  await assert.rejects(new AssistantClient(restarted.bot).testModel(model), /CREDENTIAL_MISSING/); assert.equal(requests.length, count);
+  await close();
+  assert.equal(timerIDs.size, 0, 'HAP timers leaked'); assert.equal(report.serverError, undefined);
+  const database = await readFile(join(profileDir, 'profile.sqlite3')); assert(!database.includes(Buffer.from(secret)), 'private credential persisted in SQLite');
+  report = { ...report, complete: true, cases: ['actual private pipes', 'metadata GET only and unknown capabilities empty', 'unsupported protocol rejected before HTTP', 'default CLI known usage and durable text', 'missing completed conservatively fails', '429 no hidden retry and unknown nonzero charge', 'cancel closes producer and rejects late output', 'independent Run works after cancel', 'actual model tool batch to production TS Host: approve/reject, one physical Vault mutation', 'reopen preserves history and loses session key'], profileDir, requests, outcomes, exits, actualGenerationRequests: requests.filter(x => x.method === 'POST').length, actualMetadataRequests: requests.filter(x => x.method === 'GET').length };
+}
+try { await main(); }
+finally {
+  try { if (active) await close(); }
+  finally {
+    hanging?.destroy(); server.closeAllConnections();
+    await new Promise<void>(resolve => server.close(() => resolve()));
+    await until(async () => sockets.size, size => size === 0, 'loopback connections remained after server close');
+    report = { ...report, requests, outcomes, exits };
+    await writeFile(join(root, 'result.json'), JSON.stringify(report, null, 2) + '\n', { mode: 0o600 });
+  }
+}
+console.log(JSON.stringify({ complete: report.complete, cases: report.cases, actualGenerationRequests: report.actualGenerationRequests, actualMetadataRequests: report.actualMetadataRequests, exits }));

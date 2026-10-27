@@ -1,0 +1,114 @@
+import assert from 'node:assert/strict';
+import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { HapConnection } from './src/modules/huhubot/core/protocol/connection';
+import { HapDecoder, encodeHapFrame, type HapMessage } from './src/modules/huhubot/core/protocol/codec';
+import { EventClient } from './src/modules/huhubot/services/events/event-client';
+import { RecoveryClient } from './src/modules/huhubot/services/recovery/recovery-client';
+
+// Root's external code-only E2E: production RecoveryClient/EventClient/HAP and
+// the real Go Facade/Executor/SQLite, with a controlled Engine and old crash DB.
+const [binary, profiles, control, manifestPath] = process.argv.slice(2);
+const old = JSON.parse(await readFile(manifestPath, 'utf8')).actualResume;
+const activeTimers = new Set<ReturnType<typeof setTimeout>>();
+const timers = { after(ms: number, callback: () => void) { const id = setTimeout(() => { activeTimers.delete(id); callback(); }, ms); activeTimers.add(id); return () => { clearTimeout(id); activeTimers.delete(id); }; } };
+const pause = (ms = 5) => new Promise(resolve => setTimeout(resolve, ms));
+async function until<T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string): Promise<T> {
+	const deadline = Date.now() + 7000; let last: T;
+	do { last = await read(); if (accept(last)) return last; await pause(); } while (Date.now() < deadline);
+	throw new Error(`${label}: ${JSON.stringify(last!)}`);
+}
+const observations = async (): Promise<any[]> => {
+	try { return (await readFile(`${control}/observations.jsonl`, 'utf8')).trim().split('\n').filter(Boolean).map(value => JSON.parse(value)); }
+	catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []; throw error; }
+};
+let child: ChildProcessWithoutNullStreams | undefined;
+let exit: Promise<{ code: number | null; signal: string | null }> | undefined;
+let bot: any, events: EventClient | undefined, recovery: RecoveryClient | undefined;
+let stderr = '', droppedReceipt: unknown;
+const requests: HapMessage[] = [], methods = new Map<string, string>();
+let dropResume = true;
+const report: any = { complete: false, boundary: 'Code-only: production TS/HAP/stdio/Go/SQLite, controlled Engine; no real Provider or Obsidian', cases: [] };
+
+async function main() {
+	await mkdir(control, { recursive: true });
+	const incoming = new HapDecoder(), outgoing = new HapDecoder();
+	child = spawn(binary, ['-test.run=^TestLeadRecoveryStdioRunner$'], { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, LEAD_RECOVERY_PROFILES: profiles, LEAD_RECOVERY_CONTROL: control } });
+	const current = child;
+	current.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
+	exit = new Promise(resolve => current.once('close', (code, signal) => resolve({ code, signal })));
+	const connection = new HapConnection({
+		send: (data: Uint8Array) => new Promise<void>((resolve, reject) => {
+			for (const decoded of outgoing.push(data)) for (const value of Array.isArray(decoded) ? decoded : [decoded]) {
+				requests.push(value); if ('method' in value && value.id) methods.set(value.id, value.method);
+			}
+			current.stdin.write(data, error => error ? reject(error) : resolve());
+		}),
+		onData: consume => {
+			const read = (data: Uint8Array) => {
+				for (const decoded of incoming.push(data)) for (const value of Array.isArray(decoded) ? decoded : [decoded]) {
+					if (dropResume && 'result' in value && value.id && methods.get(value.id) === 'runs.resume') { dropResume = false; droppedReceipt = value.result; continue; }
+					consume(encodeHapFrame(value));
+				}
+			};
+			current.stdout.on('data', read); return () => current.stdout.off('data', read);
+		},
+		onClose: consume => { const ended = () => consume(new Error('Runner exited')); current.on('exit', ended); return () => current.off('exit', ended); },
+		close: () => current.stdin.end(),
+	}, timers);
+	bot = await connection.connect({ name: 'lead-recovery-code-e2e', version: '1' });
+	assert(bot.hello.capabilities.includes('runs.recovery')); assert(bot.hello.capabilities.includes('runs.resume'));
+	const profileId = bot.hello.profile.profileId;
+	const currentBudget = await bot.collaboration.budget({ profileId });
+	await bot.collaboration.configureBudget({ profileId, commandEpoch: bot.hello.profile.commandEpoch, commandId: "lead-current-budget", idempotencyKey: "lead-current-budget", expectedRevision: currentBudget.revision, policy: { rootTokenLimit: "100", profileTokenLimit: "1000", maintenanceTokenLimit: "0", paused: false } });
+	events = new EventClient(bot, timers, { poll: false });
+	const root = events.attach(old.rootRunId), childID = old.resumeDecision.Children[0].runId, other = events.attach(childID);
+	await root.refresh(); await other.refresh();
+	const siblingBefore = other.getSnapshot();
+	recovery = new RecoveryClient(bot, old.rootRunId, events);
+	const qualification = await recovery.inspect();
+	assert.equal(qualification.state, 'ready'); assert.equal(qualification.rootRunId, old.rootRunId);
+	assert.deepEqual([...qualification.affectedRunIds].sort(), [old.rootRunId, old.modelRunId].sort());
+	assert((await observations()).every(value => value.phase === 'inspect'), 'qualification must not enter Run/Resume');
+	const command = { profileId, commandEpoch: bot.hello.profile.commandEpoch, commandId: 'lead-explicit-resume', idempotencyKey: 'lead-explicit-resume', expectedRevision: qualification.revision, recoveryGeneration: qualification.generation, id: old.rootRunId };
+	const first = recovery.resume(command, { timeoutMs: 150 }), second = recovery.resume({ ...command });
+	assert.equal(first, second, 'double-click must share the original promise');
+	await assert.rejects(first, /REQUEST_TIMEOUT/);
+	assert(droppedReceipt, 'a real successful server receipt must actually be lost');
+	assert.equal(recovery.getSnapshot().command.state, 'uncertain'); assert.deepEqual(recovery.getSnapshot().command.params, command);
+	await until(observations, values => values.some(value => value.phase === 'physical'), 'actual physical dispatch after click');
+	const refreshed = await recovery.inspect(); assert.equal(refreshed.state, 'resuming');
+	await assert.rejects(recovery.resume({ ...command, commandId: 'forbidden-new-key', idempotencyKey: 'forbidden-new-key' }), /RECOVERY_OUTCOME_UNKNOWN/);
+	const replay = await recovery.retry(); assert.deepEqual(replay, droppedReceipt);
+	assert.equal(recovery.getSnapshot().command.state, 'accepted');
+	assert.equal(other.getSnapshot(), siblingBefore, 'target reanchor must preserve unrelated projection identity');
+	const resumeRequests = requests.filter(value => 'method' in value && value.method === 'runs.resume');
+	assert.equal(resumeRequests.length, 2, 'one original dispatch plus one same-command reconciliation');
+	assert(resumeRequests.every(value => 'params' in value && JSON.stringify(value.params) === JSON.stringify(command)));
+	assert(requests.some(value => 'method' in value && value.method === 'runs.get' && (value.params as any).id === old.rootRunId), 'accepted recovery must reanchor the actual target Run');
+	const actual = await observations(), resumed = actual.filter(value => value.phase === 'resume');
+	assert.equal(resumed.length, 1); assert.equal(actual.filter(value => value.phase === 'physical').length, 1); assert(!actual.some(value => value.phase === 'unexpectedRun'));
+	assert.equal(resumed[0].runId, old.modelRunId); assert.deepEqual(resumed[0].checkpoint, old.checkpoint); assert.deepEqual(resumed[0].decision, old.resumeDecision); assert.deepEqual(resumed[0].config, old.config); assert.deepEqual(resumed[0].group, old.group);
+	await writeFile(`${control}/release`, 'release', { mode: 0o600 });
+	const terminal = await until(() => bot.runs.get({ profileId, id: old.rootRunId }), (run: any) => ['succeeded', 'failed', 'canceled'].includes(run.status), 'root terminal');
+	assert.equal((terminal as any).status, 'succeeded');
+	const budget = await bot.collaboration.budget({ profileId, runId: old.rootRunId });
+	assert.equal(budget.chargedTokens, '9'); assert.equal(budget.reservedTokens, '0');
+	root.dispose(); other.dispose();
+	report.cases = ['old real v8 crash upgraded', 'inspection only before explicit action', 'whole-tree affected scope returned', 'double-click coalesced', 'real receipt dropped and uncertain retained', 'replacement key refused', 'original CAS/generation/command replayed', 'only target projection reanchored', 'same original Run/config/CP/child decision/private proof', 'old unknown charge7 plus new charge2 retained'];
+	report.qualification = qualification; report.receipt = replay; report.budget = budget; report.resumeWireRequests = resumeRequests.length; report.actualModelEntries = resumed.length; report.realProviderCalls = 0; report.complete = true;
+}
+try { await main(); }
+finally {
+	try { await writeFile(`${control}/release`, 'cleanup', { mode: 0o600 }); } catch { /* original failure remains primary */ }
+	recovery?.dispose(); events?.dispose(); bot?.close();
+	if (child && exit) {
+		child.stdin.end(); let forced = false; const deadline = setTimeout(() => { forced = true; child?.kill('SIGKILL'); }, 5000);
+		const ended = await exit; clearTimeout(deadline); await recovery?.drained();
+		report.exit = ended; report.forced = forced; report.stderr = stderr;
+		assert.equal(forced, false, 'Runner required forced termination'); assert.equal(ended.code, 0); assert.equal(stderr, '');
+	}
+	assert.equal(activeTimers.size, 0, 'production HAP timers leaked');
+	await writeFile(`${control}/result.json`, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 });
+}
+console.log(JSON.stringify({ complete: report.complete, cases: report.cases, exit: report.exit }));

@@ -1,0 +1,42 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:31:52.198076+00:00",
+  "scope": "126/128/129 adapter-only shared integration under unchanged115/123; no wire DTO change",
+  "decisions": [
+    {
+      "port": "grants.Store.DeriveMaintenanceInTx(ctx,tx,id,in)(api.RunAccessInput,error)",
+      "ordering": "real Memory.BindRun establishes job/run/config relation first; derive current source/effective GrantIDs;129 is only execution_runs writer and persists returned input in same outer Tx/savepoint before final complete Check",
+      "prohibitions": [
+        "do not clear task scope",
+        "do not fake ParentScope/namespace",
+        "BindRun must not fail solely on old recipient GrantIDs before derive",
+        "126/128 must not update execution_runs"
+      ]
+    },
+    {
+      "port": "MemoryFacts.Dependencies []MemoryDependency{Subject MemorySubject;Derived []api.DerivedInput}",
+      "requirements": [
+        "one exact entry per requested subject",
+        "fresh same Tx complete canonical closure",
+        "same-key conflicting refs fail",
+        "128 limit, no silent truncation",
+        "persist ancestry only on actual body return/publication; metadata/independent intent invent no Derived"
+      ]
+    },
+    {
+      "port": "memory.Store.ContextUsageInTx(ctx,tx,id,profileID,runID)(*api.ContextUsage,error)",
+      "requirements": [
+        "129 GetRun reads safe metadata usage without blocking status on invalid old body",
+        "Engine and Recovery strict body readers remain unchanged"
+      ]
+    },
+    {
+      "issue": "maintenance fixedTargets old work_thread",
+      "resolution": "132 original API owner adds body-free canonical helper;128 still proves bound job/current namespace/config/source-completion scope/target current head plus current Grants before body; ordinary direct scope rule unchanged"
+    },
+    {
+      "issue": "automatic-correct candidate competition",
+      "resolution": "candidate only if consumed revision/ancestry remains current; correct/forget/job generation/source invalidation refuses body-free; old explicit target head audit only, full constrained ancestors retained and indirect cycle rejected"
+    }
+  ]
+}

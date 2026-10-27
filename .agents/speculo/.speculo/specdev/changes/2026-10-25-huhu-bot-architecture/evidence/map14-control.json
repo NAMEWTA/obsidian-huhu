@@ -1,0 +1,5315 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-huhu-bot-architecture",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "auto",
+  "max_parallel_tickets": null,
+  "input_digest": "3ec35c4ae27ba86c304b555d53543bb9517693731a51e42bc9347dcdf75db4f4",
+  "goal_contract_digest": "82d5f2c27554e7ee5da5295e453bfae6be92e784de8b116fc6ac69661824e848",
+  "contract_digests": {
+    "T-01": "d0e2b7dbd67baed201359df9f86987a61ee9c78f7b8c71b548dd11a3e03e1279",
+    "T-02": "9356ba71999875abb1635932db804b0e6f99248a94e1604be86854f11a64ba7c",
+    "T-03": "9b3a41f00bc51d0fd1545c14432975beb3d32a70bf55d36ecfc71c1b278d1ac6",
+    "T-04": "9bc3c8cf543fdab9a8003f9087979321a9f1dd07e03dfc31e387c69f05d9bd89",
+    "T-05": "560ea62f3fbc3b0cd1e25f081e7bf148366b7f1877df057c1b2f999fefbedcce",
+    "T-06": "01b8a230bb54ea200db4f130b022758df059bfed0ddde9c4b202d8abc1362f85",
+    "T-07": "686031433f2378589ca45e349997e2eb142c971210056292a5cc2d783ece0b22",
+    "T-08": "521ec3354047b9c3bd0406be634651142861dfb43ace659d384d9336a006066b",
+    "T-09": "30ec091395446d40b4f6cfc9249b0eea50d514c9bffdf8437f3546cc27c9581f",
+    "T-10": "4617a069412bcbbf073fce3842042b5fb995ddf67fa4f7ee9c91aa91ccdc1957",
+    "T-11": "a1ffab1db174d09486138993c9fa3219786a449ac6022de1a385531cc4cbb689",
+    "T-12": "f91e9f24b21aea4557549b9a728f272dfd9197d8d1cbcfc1ad03be749d43f4e9",
+    "T-13": "cd35beb4348286cc69e17fce08ec5f4778b4570932b8b20777702a6dcd36f756",
+    "T-14": "87025fe70f961dd405e6ec4e51603ea3fae723f53ebb2481a1e8b36582803519",
+    "T-15": "440fa3a454add2ea708e454e15da4357b666c40a6633a11cd056650f5ec4d103",
+    "T-16": "883ae3f71dd8c10ccf6485222738cec80568b37cb3321d6ba7fcdc8974b1ed5f",
+    "T-17": "8c055c4939ca4ce42afec7f18ac4f4ee97efa51932dfde1ccb43b571559fbfe9",
+    "T-18": "29b2448613a24beb9d8bbff6653e035720f2c08e486834fee2909ffbb6d45ff1",
+    "T-19": "20c16edfe421dbb412e33bc5b0b1f3c86a7aa6625efc9c4ed1beee780fe3610c",
+    "T-20": "f67b132c5ba4988e0f1cdd16af5323108546fc6492c4b1fb6e77eb0dc6b22644",
+    "T-21": "27621f380cd12e79f63e7d53ae3e8605c02f2b989061e85588305d91928bf38f",
+    "T-22": "1bf05866c766a4bacce9e422a8c428fef0978f3e4780cb8cf433218d0cd66fbb",
+    "T-23": "845403aaf3478f70d4bed7d3b055f0e6e6ca8a370b15d36e7a9e0b9e57cb096a",
+    "T-24": "c6bd119b98d221de2a798d72a5878dcd84bbff15fc64bae7d4d4e417e1ef23a8",
+    "T-25": "34124a9b494a782df0b87d1db5328d3fff3030b2ea8f9ab4a92b97d2d4ae47f9",
+    "T-26": "7f086e366512afb8229abd2c8e1e0e223421d2bbf34807d9c6763851fb5bee2b",
+    "T-27": "4f77d21ac7b3d679652ec4fcd4c33b04b075d0b6ee90706319273edf40f519d8",
+    "T-28": "f476fed12ce6c76deca50e3445fd824794dc39dda62a91adf65c3ae19d75b0a4"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [
+    {
+      "id": "T-01",
+      "owner": "/root"
+    },
+    {
+      "id": "T-02",
+      "owner": "/root"
+    },
+    {
+      "id": "T-03",
+      "owner": "/root"
+    },
+    {
+      "id": "T-05",
+      "owner": "/root"
+    },
+    {
+      "id": "T-06",
+      "owner": "/root"
+    },
+    {
+      "id": "T-07",
+      "owner": "/root"
+    },
+    {
+      "id": "T-11",
+      "owner": "/root"
+    },
+    {
+      "id": "T-12",
+      "owner": "/root"
+    },
+    {
+      "id": "T-27",
+      "owner": "/root"
+    }
+  ],
+  "done": [
+    "T-04"
+  ],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-02: active Ticket prerequisite is not done: T-01",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-03: active Ticket prerequisite is not done: T-01",
+        "T-03: active Ticket prerequisite is not done: T-02",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "evidence/T-04.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-04.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-04.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-04.md: missing '## 5. Workspace Verification'",
+        "evidence/T-04.md: missing '## 6. 双轴审查'",
+        "evidence/T-04.md: missing '## 7. Integration Verification'",
+        "evidence/T-04.md: missing '## 8. 偏差与决策'",
+        "evidence/T-04.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-04.md: Workspace Verification must name change-workspace",
+        "contract drift: replan this node and affected downstream before dispatch"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-05: active Ticket prerequisite is not done: T-01",
+        "T-05: active Ticket prerequisite is not done: T-02",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-06: active Ticket prerequisite is not done: T-03",
+        "T-06: active Ticket prerequisite is not done: T-05",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-07: active Ticket prerequisite is not done: T-05",
+        "T-07: active Ticket prerequisite is not done: T-06",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-11: active Ticket prerequisite is not done: T-02",
+        "T-11: active Ticket prerequisite is not done: T-03",
+        "T-11: active Ticket prerequisite is not done: T-05",
+        "T-11: active Ticket prerequisite is not done: T-06",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "T-12: active Ticket prerequisite is not done: T-02",
+        "T-12: active Ticket prerequisite is not done: T-03",
+        "T-12: active Ticket prerequisite is not done: T-05",
+        "T-12: active Ticket prerequisite is not done: T-06",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-11",
+        "dependency not successfully satisfied: T-12",
+        "in-flight owner /root (T-01): writable overlap: <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/013-groups.sql</Path> / <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "in-flight owner /root (T-05): semantic resource: huhu-bot:provenance-and-revocation / huhu-bot:provenance-and-revocation",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-11",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-11",
+        "dependency not successfully satisfied: T-12",
+        "in-flight owner /root (T-01): writable overlap: <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/014-memory.sql</Path> / <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "in-flight owner /root (T-05): semantic resource: huhu-bot:provenance-and-revocation / huhu-bot:provenance-and-revocation",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-11",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "in-flight owner /root (T-01): writable overlap: <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/015-global-memory.sql</Path> / <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "in-flight owner /root (T-05): semantic resource: huhu-bot:provenance-and-revocation / huhu-bot:provenance-and-revocation",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-13",
+        "in-flight owner /root (T-01): writable overlap: <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/016-recovery.sql</Path> / <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "in-flight owner /root (T-03): semantic resource: huhu-bot:run-admission-contract / huhu-bot:run-admission-contract",
+        "in-flight owner /root (T-06): semantic resource: huhu-bot:run-admission-contract / huhu-bot:run-admission-contract",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-13"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-14",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-16",
+        "in-flight owner /root (T-01): writable overlap: <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/017-command-epoch.sql</Path> / <Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "in-flight owner /root (T-03): semantic resource: huhu-bot:run-admission-contract / huhu-bot:run-admission-contract",
+        "in-flight owner /root (T-05): semantic resource: huhu-bot:provenance-and-revocation / huhu-bot:provenance-and-revocation",
+        "in-flight owner /root (T-06): semantic resource: huhu-bot:run-admission-contract / huhu-bot:run-admission-contract",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-14",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-17"
+      ]
+    },
+    {
+      "id": "T-19",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "dependency not successfully satisfied: T-18",
+        "blocked dependency closure: T-17",
+        "blocked dependency closure: T-18"
+      ]
+    },
+    {
+      "id": "T-20",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "20-module-runtime.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-03",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-19",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-01",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-03",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-19"
+      ]
+    },
+    {
+      "id": "T-21",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "21-chat-ui.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-09",
+        "dependency not successfully satisfied: T-10",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-20",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-09",
+        "blocked dependency closure: T-10",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-22",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "22-agent-group-ui.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-20",
+        "dependency not successfully satisfied: T-21",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-02",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-20",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-23",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "23-tasks-access-ui.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "dependency not successfully satisfied: T-06",
+        "dependency not successfully satisfied: T-07",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-21",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-05",
+        "blocked dependency closure: T-06",
+        "blocked dependency closure: T-07",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-24",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "24-memory-ui.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-21",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-14",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-25",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "25-data-ui.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "dependency not successfully satisfied: T-18",
+        "dependency not successfully satisfied: T-19",
+        "dependency not successfully satisfied: T-21",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-17",
+        "blocked dependency closure: T-18",
+        "blocked dependency closure: T-19",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-26",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-19",
+        "dependency not successfully satisfied: T-20",
+        "blocked dependency closure: T-04",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-19",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-27",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "27-build-platform-notices.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch"
+      ]
+    },
+    {
+      "id": "T-28",
+      "reasons": [
+        "source Spec is not Ready",
+        "prototypes/UI-001: bound UI prototype must be ready before downstream consumption",
+        "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest",
+        "28-product-integration.md: Ready Ticket has unresolved questions",
+        "active Tickets T-01/T-02 have conflicting writable paths",
+        "active Ticket dependency is not completed",
+        "active Tickets T-01/T-03 have conflicting writable paths",
+        "active Tickets T-01/T-05 have conflicting writable paths",
+        "active Tickets T-01/T-06 have conflicting writable paths",
+        "active Tickets T-01/T-11 have conflicting writable paths",
+        "active Tickets T-01/T-12 have conflicting writable paths",
+        "active Tickets T-03/T-06 have conflicting semantic resources",
+        "active Tickets T-11/T-12 have conflicting semantic resources",
+        "Goal planning gate is not ready for execution",
+        "contract drift: replan this node and affected downstream before dispatch",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "dependency not successfully satisfied: T-09",
+        "dependency not successfully satisfied: T-10",
+        "dependency not successfully satisfied: T-21",
+        "dependency not successfully satisfied: T-22",
+        "dependency not successfully satisfied: T-23",
+        "dependency not successfully satisfied: T-24",
+        "dependency not successfully satisfied: T-25",
+        "dependency not successfully satisfied: T-26",
+        "dependency not successfully satisfied: T-27",
+        "in-flight owner /root (T-27): semantic resource: huhu-bot:obsidian-acceptance-profile / huhu-bot:obsidian-acceptance-profile",
+        "blocked dependency closure: T-08",
+        "blocked dependency closure: T-09",
+        "blocked dependency closure: T-10",
+        "blocked dependency closure: T-21",
+        "blocked dependency closure: T-22",
+        "blocked dependency closure: T-23",
+        "blocked dependency closure: T-24",
+        "blocked dependency closure: T-25",
+        "blocked dependency closure: T-26",
+        "blocked dependency closure: T-27"
+      ]
+    }
+  ],
+  "invalidated": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-04",
+    "T-05",
+    "T-06",
+    "T-07",
+    "T-08",
+    "T-09",
+    "T-10",
+    "T-11",
+    "T-12",
+    "T-13",
+    "T-14",
+    "T-15",
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-19",
+    "T-20",
+    "T-21",
+    "T-22",
+    "T-23",
+    "T-24",
+    "T-25",
+    "T-26",
+    "T-27",
+    "T-28"
+  ],
+  "eligible_for_final_verification": false,
+  "diagnostics": [
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-02",
+      "artifact": "ticket/02-bot-model-credentials.md",
+      "message": "T-02: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-03",
+      "artifact": "ticket/03-durable-chat.md",
+      "message": "T-03: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-03",
+      "artifact": "ticket/03-durable-chat.md",
+      "message": "T-03: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-04",
+      "artifact": "evidence/T-04.md",
+      "message": "evidence/T-04.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-05",
+      "artifact": "ticket/05-sources-grants-host.md",
+      "message": "T-05: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-05",
+      "artifact": "ticket/05-sources-grants-host.md",
+      "message": "T-05: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-06",
+      "artifact": "ticket/06-approval-broker.md",
+      "message": "T-06: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-06",
+      "artifact": "ticket/06-approval-broker.md",
+      "message": "T-06: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-07",
+      "artifact": "ticket/07-note-write-reconcile.md",
+      "message": "T-07: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-07",
+      "artifact": "ticket/07-note-write-reconcile.md",
+      "message": "T-07: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-11",
+      "artifact": "ticket/11-delegation-directory.md",
+      "message": "T-11: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-11",
+      "artifact": "ticket/11-delegation-directory.md",
+      "message": "T-11: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-11",
+      "artifact": "ticket/11-delegation-directory.md",
+      "message": "T-11: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-11",
+      "artifact": "ticket/11-delegation-directory.md",
+      "message": "T-11: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-12",
+      "artifact": "ticket/12-messages-limits-budget.md",
+      "message": "T-12: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-12",
+      "artifact": "ticket/12-messages-limits-budget.md",
+      "message": "T-12: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-12",
+      "artifact": "ticket/12-messages-limits-budget.md",
+      "message": "T-12: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "code": "ticket-dependency-incomplete",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-12",
+      "artifact": "ticket/12-messages-limits-budget.md",
+      "message": "T-12: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-20",
+      "artifact": "ticket/20-module-runtime.md",
+      "message": "20-module-runtime.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-21",
+      "artifact": "ticket/21-chat-ui.md",
+      "message": "21-chat-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-22",
+      "artifact": "ticket/22-agent-group-ui.md",
+      "message": "22-agent-group-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-23",
+      "artifact": "ticket/23-tasks-access-ui.md",
+      "message": "23-tasks-access-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-24",
+      "artifact": "ticket/24-memory-ui.md",
+      "message": "24-memory-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-25",
+      "artifact": "ticket/25-data-ui.md",
+      "message": "25-data-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-27",
+      "artifact": "ticket/27-build-platform-notices.md",
+      "message": "27-build-platform-notices.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-huhu-bot-architecture",
+      "ticket": "T-28",
+      "artifact": "ticket/28-product-integration.md",
+      "message": "28-product-integration.md: Ready Ticket has unresolved questions"
+    }
+  ],
+  "validation_errors": [
+    {
+      "id": "T-01",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-01",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-01",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-02",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-02",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-02",
+      "message": "T-02: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-02",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-03",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-03",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-03",
+      "message": "T-03: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "id": "T-03",
+      "message": "T-03: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-03",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-04",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-04",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-04",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-04",
+      "message": "evidence/T-04.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-05",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-05",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-05",
+      "message": "T-05: active Ticket prerequisite is not done: T-01"
+    },
+    {
+      "id": "T-05",
+      "message": "T-05: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-05",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-06",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-06",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-06",
+      "message": "T-06: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "id": "T-06",
+      "message": "T-06: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-06",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-07",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-07",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-07",
+      "message": "T-07: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "id": "T-07",
+      "message": "T-07: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-07",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-08",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-08",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-08",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-09",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-09",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-09",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-10",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-10",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-10",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-11",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-11",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-11",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-12",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-12",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-12",
+      "message": "T-12: active Ticket prerequisite is not done: T-02"
+    },
+    {
+      "id": "T-12",
+      "message": "T-12: active Ticket prerequisite is not done: T-03"
+    },
+    {
+      "id": "T-12",
+      "message": "T-12: active Ticket prerequisite is not done: T-05"
+    },
+    {
+      "id": "T-12",
+      "message": "T-12: active Ticket prerequisite is not done: T-06"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-12",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-13",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-13",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-13",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-14",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-14",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-14",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-15",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-15",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-15",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-16",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-16",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-16",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-17",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-17",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-17",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-18",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-18",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-18",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-19",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-19",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-19",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-20",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-20",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-20",
+      "message": "20-module-runtime.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-20",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-21",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-21",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-21",
+      "message": "21-chat-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-21",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-22",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-22",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-22",
+      "message": "22-agent-group-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-22",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-23",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-23",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-23",
+      "message": "23-tasks-access-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-23",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-24",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-24",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-24",
+      "message": "24-memory-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-24",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-25",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-25",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-25",
+      "message": "25-data-ui.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-25",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-26",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-26",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-26",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-27",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-27",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-27",
+      "message": "27-build-platform-notices.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-27",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    },
+    {
+      "id": "T-28",
+      "message": "prototypes/UI-001: bound UI prototype must be ready before downstream consumption"
+    },
+    {
+      "id": "T-28",
+      "message": "prototypes/UI-001: change DESIGN does not approve this prototype/selection digest"
+    },
+    {
+      "id": "T-28",
+      "message": "28-product-integration.md: Ready Ticket has unresolved questions"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-02 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-03 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-05 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-06 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-11 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-01/T-12 have conflicting writable paths"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-03/T-06 have conflicting semantic resources"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Ticket dependency is not completed"
+    },
+    {
+      "id": "T-28",
+      "message": "active Tickets T-11/T-12 have conflicting semantic resources"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

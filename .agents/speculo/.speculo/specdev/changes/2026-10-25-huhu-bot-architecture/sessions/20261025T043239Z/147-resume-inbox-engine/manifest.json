@@ -1,0 +1,532 @@
+{
+  "task": "147-resume-inbox-engine",
+  "status": "completed",
+  "at": "2026-10-26T17:07:12.634996+00:00",
+  "sourceFiles": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go",
+      "sha256": "6dfb3057cf2fbe9ad9d4980817cb9a66e71e7cb838f7874cc2c9a738e096034f",
+      "bytes": 16327,
+      "mode": "0o600",
+      "beforeSHA256": "aa51a570c2c4a3a32a788b969331d078404efa2a3089c7d4034b8413cfa75767",
+      "beforeMode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/tools.go",
+      "sha256": "961dd7b22a3e0c0331da0dcea396bbe6ecbe6358d7149eab56421ca36fd3815f",
+      "bytes": 10871,
+      "mode": "0o600",
+      "beforeSHA256": "172e86eacdac9dd9882127780fb0745d7865335a2eaaac9973bd071a446680f5",
+      "beforeMode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/resume_inbox.go",
+      "sha256": "dfc2bb3e7bbf361f63a6e944d9dc97d41290961993c9962576bad2706ddcf5ff",
+      "bytes": 4618,
+      "mode": "0o664",
+      "beforeSHA256": null,
+      "beforeMode": null
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/resume_inbox_test.go",
+      "sha256": "5c2df00dcf0c524b88d8a10904afa8309853fd3edc8aa72fded8f58563d01c83",
+      "bytes": 25139,
+      "mode": "0o664",
+      "beforeSHA256": null,
+      "beforeMode": null
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/responses/checkpoint.go",
+      "sha256": "ea5ed45990a03faf25a8e2aadfb0647377ff708b663603e03970c15f874f65a8",
+      "bytes": 4921,
+      "mode": "0o600",
+      "beforeSHA256": "0502cb4c290c8237bbf000a0c794fa5dfe843fcd7c22e0a3c8eb7871ffdbc870",
+      "beforeMode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/anthropic/checkpoint.go",
+      "sha256": "3052491a3855a41c45b2249ff83c65aed8be027b95cc67681ab307824f1cf11e",
+      "bytes": 4953,
+      "mode": "0o664",
+      "beforeSHA256": "984e6e25a1a0ed44a12e6f7b4644fc805965be7d9298467d9c57f94ba7ff1ce2",
+      "beforeMode": "0o664"
+    }
+  ],
+  "sourceTreeSHA256": "8fb8540dc3e558cef66df8211ec2fc7a3fcb3836c31135eb6bf48ed1be305c89",
+  "readonlySources": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/146-resume-inbox-runtime/REPORT.md",
+      "sha256": "b0d08c3251f48d0cc37c4062ad3b0f2e463434b5e26661eb2739eda7598e0f56",
+      "mode": "0o664",
+      "bytes": 5355
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/146-resume-inbox-runtime/manifest.json",
+      "sha256": "97bdf25f3428606f8056717117d2504629d079d2583681415a3273998e7e585a",
+      "mode": "0o664",
+      "bytes": 8792
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/146-resume-inbox-runtime/resume-inbox-contract.md",
+      "sha256": "f667fe9208e3914bdf84849c68f0d7c24a2bcbc478c2a6a9c6c23c1d6ebd7968",
+      "mode": "0o664",
+      "bytes": 4664
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/147-resume-inbox-engine/TASK.md",
+      "sha256": "7fc4721922dcf29ebee4e65c595df7cba64cc95f7971e98bdfb982af1741ae20",
+      "mode": "0o664",
+      "bytes": 3742
+    },
+    {
+      "path": "native/huhubot/internal/application/api/resume_inbox.go",
+      "sha256": "964aea3ab27ae98d838468126c41eb3793fc10ca0cf6daa2fddd96f336df56c5",
+      "mode": "0o664",
+      "bytes": 3201
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "sha256": "a43cd597be685c916ce0f3a7acce09ee6cb06ec81de9dea454c4f477a5e9752c",
+      "mode": "0o600",
+      "bytes": 4411
+    },
+    {
+      "path": "native/huhubot/internal/application/api/collaboration.go",
+      "sha256": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e",
+      "mode": "0o600",
+      "bytes": 7224
+    },
+    {
+      "path": "native/huhubot/internal/application/api/context.go",
+      "sha256": "21eed6585dec02d9a72c1477ab6ad950fa8827cc30bbd4f004b53a15463be70f",
+      "mode": "0o664",
+      "bytes": 13040
+    },
+    {
+      "path": "native/huhubot/internal/application/api/memory.go",
+      "sha256": "167db3a63a7a8abd92e0ced36ea179f68211dee37808883587be9874f4ac125a",
+      "mode": "0o664",
+      "bytes": 24176
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/engine.go",
+      "sha256": "27cd6be34fa644c1f71678f1fb42e0353ee6d1418831b0fb64758e262bfffe04",
+      "mode": "0o600",
+      "bytes": 14542
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/context.go",
+      "sha256": "988307e04bf82ebd926aaa0453bfd51484cbfcb23862040da370afeb5c6bc0d2",
+      "mode": "0o664",
+      "bytes": 5386
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/context_consumer_test.go",
+      "sha256": "f364fe36e064f67b92af5e75306952e1882f0e457fc81bffaac376dc57b8c986",
+      "mode": "0o664",
+      "bytes": 8755
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "sha256": "a801c788026db587545a9338c98e4b34faeb32494df01b5b1064f0d22462ce38",
+      "mode": "0o600",
+      "bytes": 13375
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go",
+      "sha256": "703de5157c7bbd2d7b1ad8363c107fa0da83a0f9492906d487c67d120109096e",
+      "mode": "0o600",
+      "bytes": 17595
+    }
+  ],
+  "commandReceipts": [
+    {
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "./internal/adapters/outbound/eino/common"
+      ],
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 0.13012714499927824,
+      "timedOut": false,
+      "treeSha256": "08f1e1247911f4a72e0faf7f1af8542ef3d3a09d1c2417c91c4e868489747f9b",
+      "sourceDrift": [],
+      "stdoutSha256": "cb7194effb278728b322598e3296a0be94f4d86b7f52369da9b2372ded1187f9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/02-sdk-closure-result.json"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/adapters/outbound/eino/common",
+        "-run",
+        "^TestResumeInboxReachesAllSDKsOnceAcrossTwoWaits$",
+        "-count=1",
+        "-v",
+        "-timeout",
+        "45s"
+      ],
+      "actualExit": 1,
+      "waited": true,
+      "seconds": 1.6945725840050727,
+      "timedOut": false,
+      "treeSha256": "08f1e1247911f4a72e0faf7f1af8542ef3d3a09d1c2417c91c4e868489747f9b",
+      "sourceDrift": [],
+      "stdoutSha256": "2db75380d9a203564a3082c35c02353f3150edf6709ea5895b9388928a56f7ff",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/03-sdk-red-result.json"
+    },
+    {
+      "command": [
+        "go",
+        "list",
+        "-deps",
+        "-test",
+        "-json",
+        "./internal/adapters/outbound/eino/common"
+      ],
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 0.11953581200214103,
+      "timedOut": false,
+      "treeSha256": "b7d48ef95fb5fd641e4a042ece6012ae88b476746d62ef4076c2f549f3bbacdc",
+      "sourceDrift": [],
+      "stdoutSha256": "8cb1a69934a1140f51866f4ca196712137faa54d05fdf1eb3f32661a7ca586ee",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/04-green-closure-result.json"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/adapters/outbound/eino/common",
+        "-run",
+        "^TestResumeInboxReachesAllSDKsOnceAcrossTwoWaits$",
+        "-count=1",
+        "-v",
+        "-timeout",
+        "45s"
+      ],
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 1.6536783510018722,
+      "timedOut": false,
+      "treeSha256": "b7d48ef95fb5fd641e4a042ece6012ae88b476746d62ef4076c2f549f3bbacdc",
+      "sourceDrift": [],
+      "stdoutSha256": "0a30f51a359201eb7334be3202d767aff158e26763f721b6862a7ef35f79912a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/05-sdk-green-result.json"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/adapters/outbound/eino/common",
+        "-run",
+        "^TestResumeInbox(ReachesAllSDKsOnceAcrossTwoWaits|QuestionReceiptsDoNotSuppressSameTextAncestors|InvalidPacketPrecedesHTTP|MarkerRejectsJSONAliasesNullsAndMalformedUnicode)$",
+        "-count=1",
+        "-v",
+        "-timeout",
+        "45s"
+      ],
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 1.0823164240064216,
+      "timedOut": false,
+      "treeSha256": "218301ffcc8f206431887428af0b229ce7e173f721da7fd7a0943def70620dff",
+      "sourceDrift": [],
+      "stdoutSha256": "53cd08e0b2c23faed932613f7ce868c2aeff9a12c51bc206658624c2fd338bfb",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/06-resume-controls-result.json"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./internal/adapters/outbound/eino/common",
+        "-run",
+        "^Test(NilContextKeepsFrozenChatBytesInspectionAndResume|SealedContextCheckpointBindsTrustedInputBeforeResumeIO)$",
+        "-count=1",
+        "-v",
+        "-timeout",
+        "45s"
+      ],
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 0.9321323199983453,
+      "timedOut": false,
+      "treeSha256": "218301ffcc8f206431887428af0b229ce7e173f721da7fd7a0943def70620dff",
+      "sourceDrift": [],
+      "stdoutSha256": "853bf6e0c9ee41dc55fbec204db2ab00223f26d9b54dc25c47dd508b68cfa667",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "logs/07-legacy-sealed-cp-result.json"
+    }
+  ],
+  "finalInput": "logs/07-legacy-sealed-cp-result.json",
+  "finalInputFiles": 58,
+  "finalInputDrift": [],
+  "oldChatFixtures": [
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/checkpoint.json",
+      "sha256": "7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-initial.json",
+      "sha256": "42ccf0a340b4bce499cb077b4677ae5d57b3e1a817cfe10a23fe59ce41579a6c"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-resumed.json",
+      "sha256": "e2d79e9fc4a57045f25e2031760794b856487023f2da28dbd385b4e1eac0b843"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/trusted-inputs.json",
+      "sha256": "8b2d0b5bc5ac85d7a2b684afe58929aa6075b6a218427cd4976d6786b75e6859"
+    }
+  ],
+  "unmodifiedEngineSHA256": "27cd6be34fa644c1f71678f1fb42e0353ee6d1418831b0fb64758e262bfffe04",
+  "scopeLimit": "No Core/SQL composition/race/vet run by147; Root owns combined checks/E2E/independent review.",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "481e1269675fe45223a6ca8a4eaaf47854c96864f569f40b719711e62fc36a6b",
+      "mode": "0o664",
+      "bytes": 5658
+    },
+    {
+      "path": "logs/00-before-owned-seams.zip",
+      "sha256": "cd2f303a698a71a80c960727e9caa277879db889e543263e5ef2fbb2b97fb2fa",
+      "mode": "0o664",
+      "bytes": 18598
+    },
+    {
+      "path": "logs/00-readonly-preparation.json",
+      "sha256": "8e019e6af89f1f3663a1a64fb28473a6107afe17d55cb46ffe7016ce28a604b8",
+      "mode": "0o664",
+      "bytes": 2219
+    },
+    {
+      "path": "logs/01-sdk-red-ready-input.zip",
+      "sha256": "762e7efe9ac8b290ebf2c8e9fdc49764fc56df20596f145a08ed647816868100",
+      "mode": "0o664",
+      "bytes": 128207
+    },
+    {
+      "path": "logs/01-sdk-red-ready.json",
+      "sha256": "d4541c30e9b8537028e11ea84ea282be7d293d0e5bd38688269e96fe82b07a1e",
+      "mode": "0o664",
+      "bytes": 8938
+    },
+    {
+      "path": "logs/02-sdk-closure-input.zip",
+      "sha256": "762e7efe9ac8b290ebf2c8e9fdc49764fc56df20596f145a08ed647816868100",
+      "mode": "0o664",
+      "bytes": 128207
+    },
+    {
+      "path": "logs/02-sdk-closure-result.json",
+      "sha256": "e103dbe076f24b2a5e6b36d5aeee705bbdcc1de8d7f464217f928eb62894f2ca",
+      "mode": "0o664",
+      "bytes": 10988
+    },
+    {
+      "path": "logs/02-sdk-closure-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/02-sdk-closure-stdout.log",
+      "sha256": "cb7194effb278728b322598e3296a0be94f4d86b7f52369da9b2372ded1187f9",
+      "mode": "0o664",
+      "bytes": 1372861
+    },
+    {
+      "path": "logs/03-sdk-red-input.zip",
+      "sha256": "762e7efe9ac8b290ebf2c8e9fdc49764fc56df20596f145a08ed647816868100",
+      "mode": "0o664",
+      "bytes": 128207
+    },
+    {
+      "path": "logs/03-sdk-red-result.json",
+      "sha256": "fd7d80c7861ffe838f2fb18564c3a7635d1e8ffa543cde8875945904960570c7",
+      "mode": "0o664",
+      "bytes": 8662
+    },
+    {
+      "path": "logs/03-sdk-red-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/03-sdk-red-stdout.log",
+      "sha256": "2db75380d9a203564a3082c35c02353f3150edf6709ea5895b9388928a56f7ff",
+      "mode": "0o664",
+      "bytes": 1229
+    },
+    {
+      "path": "logs/04-green-closure-input.zip",
+      "sha256": "ff18d41f6c1265d4e8942006e65cee84fbb97d13877254d8d1a3266a85905d2f",
+      "mode": "0o664",
+      "bytes": 130309
+    },
+    {
+      "path": "logs/04-green-closure-result.json",
+      "sha256": "b764ea09b8aed060fe22a4ad7db350d68d24b288bc30f834605b4ed9ebc6fab7",
+      "mode": "0o664",
+      "bytes": 11133
+    },
+    {
+      "path": "logs/04-green-closure-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/04-green-closure-stdout.log",
+      "sha256": "8cb1a69934a1140f51866f4ca196712137faa54d05fdf1eb3f32661a7ca586ee",
+      "mode": "0o664",
+      "bytes": 1372700
+    },
+    {
+      "path": "logs/05-sdk-green-input.zip",
+      "sha256": "ff18d41f6c1265d4e8942006e65cee84fbb97d13877254d8d1a3266a85905d2f",
+      "mode": "0o664",
+      "bytes": 130309
+    },
+    {
+      "path": "logs/05-sdk-green-result.json",
+      "sha256": "4cb876e00b9c595ed6f60e4763eb6f6e43d5b53e3d920b10402a8a3e7369bd2a",
+      "mode": "0o664",
+      "bytes": 8807
+    },
+    {
+      "path": "logs/05-sdk-green-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/05-sdk-green-stdout.log",
+      "sha256": "0a30f51a359201eb7334be3202d767aff158e26763f721b6862a7ef35f79912a",
+      "mode": "0o664",
+      "bytes": 732
+    },
+    {
+      "path": "logs/06-resume-controls-input.zip",
+      "sha256": "28c03d7ec067f5757608299efb475bb44de9310f6224f7cd1a0cf17d9686b129",
+      "mode": "0o664",
+      "bytes": 132040
+    },
+    {
+      "path": "logs/06-resume-controls-result.json",
+      "sha256": "f86c85da21d0798a056261a0fd57c5db0de01ec5c6b32dbe664faeb95869cf24",
+      "mode": "0o664",
+      "bytes": 8931
+    },
+    {
+      "path": "logs/06-resume-controls-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/06-resume-controls-stdout.log",
+      "sha256": "53cd08e0b2c23faed932613f7ce868c2aeff9a12c51bc206658624c2fd338bfb",
+      "mode": "0o664",
+      "bytes": 6082
+    },
+    {
+      "path": "logs/07-legacy-sealed-cp-input.zip",
+      "sha256": "28c03d7ec067f5757608299efb475bb44de9310f6224f7cd1a0cf17d9686b129",
+      "mode": "0o664",
+      "bytes": 132040
+    },
+    {
+      "path": "logs/07-legacy-sealed-cp-result.json",
+      "sha256": "cd0e7e1eea20229102fd062b648896df794280805047ad40605cca559a5e8532",
+      "mode": "0o664",
+      "bytes": 8870
+    },
+    {
+      "path": "logs/07-legacy-sealed-cp-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/07-legacy-sealed-cp-stdout.log",
+      "sha256": "853bf6e0c9ee41dc55fbec204db2ab00223f26d9b54dc25c47dd508b68cfa667",
+      "mode": "0o664",
+      "bytes": 3116
+    },
+    {
+      "path": "logs/08-green-owned-source.zip",
+      "sha256": "a9299c51d90b73b6e56e958d7d0e7c0f1643d50a27ecab49750c5f32049f08b2",
+      "mode": "0o664",
+      "bytes": 20483
+    },
+    {
+      "path": "logs/08-green-source-checkpoint.json",
+      "sha256": "5417cf10ac7901c4a34e854a329421f702adc1e4938062f7046924df5c19a892",
+      "mode": "0o664",
+      "bytes": 1759
+    },
+    {
+      "path": "logs/09-owned.patch",
+      "sha256": "47aa7d7a8fe3612c16b59ae9ede7b3181e5a8e79306833b174e6523c4790b9f4",
+      "mode": "0o664",
+      "bytes": 34334
+    },
+    {
+      "path": "logs/10-return-receipt.json",
+      "sha256": "7b3efc813392a5528ffa2a1837440463467df72a530a55ad2ba94e7d3e5cb2e3",
+      "mode": "0o664",
+      "bytes": 636
+    },
+    {
+      "path": "logs/10-return-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/10-return-stdout.log",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664",
+      "bytes": 200
+    },
+    {
+      "path": "logs/run-go.py",
+      "sha256": "5342c6177d1984d8e910dc28455ab93a42050d580f80b3a664012df0401821a9",
+      "mode": "0o664",
+      "bytes": 3322
+    }
+  ],
+  "returnValidation": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "147-resume-inbox-engine",
+      "--stage",
+      "return"
+    ],
+    "actualExit": 0,
+    "waited": true,
+    "seconds": 0.056082852999679744,
+    "stdoutSha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

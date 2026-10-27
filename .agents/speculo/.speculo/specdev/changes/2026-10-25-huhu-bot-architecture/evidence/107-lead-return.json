@@ -1,0 +1,58 @@
+{
+  "observer": "native:/root",
+  "task": "107-protocol-common",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "dd7a57",
+  "rootReturnErrors": [],
+  "rootReturnWarnings": [],
+  "reportSha256": "2e73c4ad54bcc86e7c035ef32ab64bc643c67e7063b331133b90a88309445ef6",
+  "manifestSha256": "c580cebea88dbe516b4a288abfe298d30bfb1b6e3d040a1bdcaa07c97536f940",
+  "artifactsVerified": 47,
+  "sourceFilesVerified": 20,
+  "readOnlySourcesVerified": 13,
+  "currentHashDrift": [],
+  "acceptedChatBeforeFilesVerified": 8,
+  "acceptedChatBeforeDrift": [],
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/common/engine.go": "b906da361ba1e543c1b1abdfc1fec567d1af1116ab01506ef8070a3bc23d4773",
+    "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go": "291168afac790301af8186be202fb13990b41acfe57e207986d2d0411d387c0a",
+    "native/huhubot/internal/adapters/outbound/eino/common/tools.go": "172e86eacdac9dd9882127780fb0745d7865335a2eaaac9973bd071a446680f5",
+    "native/huhubot/internal/adapters/outbound/eino/common/protocol.go": "257bab584db2e2051a168326016db55ec0f3731c4be23db3ed34b3fbc96ef270",
+    "native/huhubot/internal/adapters/outbound/eino/common/registry.go": "431f7c7803be2364891a12f3bd559c7dbf0c92d855ff3cfbf02c6fe5f4b810b9",
+    "native/huhubot/internal/adapters/outbound/eino/chat/driver.go": "e23a84e382f10292ca3bb7680c012eb1e63a4ab6573c7a33e9b7b206271cc4a6",
+    "native/huhubot/internal/adapters/outbound/eino/httpcall/runtime.go": "5e288818ecf425a4d27a538bfd31e2ec4312d8f34ac7c144be6c5ce1c2287956",
+    "native/huhubot/internal/adapters/outbound/eino/httpcall/attempt.go": "6d75a0b574773d7034298010972fc495602dc529a96d958ecd329ca580959ad3",
+    "native/huhubot/internal/adapters/outbound/eino/httpcall/body.go": "8331bfc48a3a1f185bc3c34d302150fc166698ba718b75e7181bad1c58760734",
+    "native/huhubot/tests/contract/engine/chat/checkpoint_test.go": "e9bff6955b1c96b8338fb876cdf205361fbbbbee5bec726d6eb9d39c4b10c707",
+    "native/huhubot/tests/contract/engine/chat/lifecycle_test.go": "984810d3a2b3c1b2b48d788d4c58f830c430412452084e10b9a9ee3a1247e377",
+    "native/huhubot/tests/contract/engine/chat/bounds_cancel_test.go": "119b1fc5019d6a441e6050d21407ca77c19b61c6514f31d210d6bbacf6342fdb",
+    "native/huhubot/tests/contract/engine/chat/review_utf8_test.go": "d41e51c797425dd9a85ddee7bebdaa20dd615e8153eed3c98035ce6d48d8c555",
+    "native/huhubot/tests/contract/engine/chat/legacy_compatibility_test.go": "456301ae50da77ffff7cb7a86876760a9402d9df0cdafaef584b2195d04669e9",
+    "native/huhubot/tests/contract/engine/chat/protocol_common_test.go": "aa157c324de8c6edd4f16cbba82c1a2dd9ee5f5097774efb9420ea38f3f0a3d3",
+    "native/huhubot/tests/contract/engine/chat/httpcall_test.go": "127f1a677d8b70b31deda89407f993638552516ee37fff59322ec56cb8b27369",
+    "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/checkpoint.json": "7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631",
+    "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/trusted-inputs.json": "8b2d0b5bc5ac85d7a2b684afe58929aa6075b6a218427cd4976d6786b75e6859",
+    "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-initial.json": "42ccf0a340b4bce499cb077b4677ae5d57b3e1a817cfe10a23fe59ce41579a6c",
+    "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-resumed.json": "e2d79e9fc4a57045f25e2031760794b856487023f2da28dbd385b4e1eac0b843"
+  },
+  "actualFinalChecks": {
+    "normal": {
+      "exit": 0,
+      "actual_wait_seconds": 1.6446897310088389,
+      "top_tests": 13
+    },
+    "race": {
+      "exit": 0,
+      "actual_wait_seconds": 34.22167372397962,
+      "top_tests": 8
+    },
+    "shared_input_sha256": "681fe8fd2dae1cdb0792185592b009425886c5030a5e2bec6e0c64dac158edbf"
+  },
+  "rawNormalRaceLogsRead": true,
+  "productionDiffAndHelperRead": true,
+  "disposition": "107维护候选接收；T08/T09共同代码门仍待108/109/111、Root最终E2E和独立双轴，不提前done"
+}

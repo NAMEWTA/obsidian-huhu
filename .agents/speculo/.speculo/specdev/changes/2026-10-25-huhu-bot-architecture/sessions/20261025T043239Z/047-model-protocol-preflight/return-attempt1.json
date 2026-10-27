@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-10-25T11:35:21.292484+00:00",
+  "finishedAt": "2026-10-25T11:35:21.377479+00:00",
+  "command": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "047-model-protocol-preflight",
+    "--stage",
+    "return"
+  ],
+  "exitCode": 126,
+  "stdout": "{\n  \"errors\": [\n    \"expected one 聚焦交接 section\"\n  ],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": "",
+  "scope": "read-only coordination return structure validation; no product execution",
+  "process": "waited for this validator; no background child created"
+}

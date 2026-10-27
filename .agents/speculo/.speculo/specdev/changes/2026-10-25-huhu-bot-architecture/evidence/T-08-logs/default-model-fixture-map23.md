@@ -1,0 +1,9 @@
+# Map23 默认装配旧负控维护
+
+Root静态回读后，092实际目标13检查确认空模型与未支持协议的reason被泛化：空模型落ENGINE_INPUT_INVALID、未支持协议落PROTOCOL_NOT_ASSEMBLED，两者均不在现Executor安全错误白名单。T08在自己的common范围改为已有MODEL_DRAFT_INCOMPLETE和ADAPTER_NOT_ASSEMBLED，Resolve/HTTP/attempt之前拒绝。没有新增公开错误、HAP、表或配置。
+
+原T03 `tests/contract/chat/workflow_test.go` 的 `TestFailedPartialResultAndProductionUnavailableRemainHonest` 尾段使用默认seed空模型，仍断言旧未装配占位器原因。原测试SHA f71fde5f5b470d3bf54a20441af4ec22f4e7d2d92d4ce538fe795b280e19951b。现只由原owner native:/root/foundation_go更新这段预期与必要的无attempt事实；原partial子例、其它用例和所有T03生产保持。092不得越界改该测试。
+
+Map23/Goal22只新增这一原owner测试窗口；T16/G1已接纳源基线保持有效，T03临时in_progress只表示本次测试维护未验收。最终与T08当前默认装配共同验证及独立两轴审查，不把旧T03整轮作废或重复大队列race。完整28票55AC、原DAG及用户现场后验边界保持，无需新增许可或凭证决定。
+
+Go重检查仍由Root串行分配。096开始前093原任务先最终停写/返回；不覆盖093冻结TASK或报告。精确新任务只负责此测试与自有报告，当前其余writer继续已授权范围。

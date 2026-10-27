@@ -1,0 +1,1421 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "96374764bb60e419652b926087a06683eea3c263b9ff98df14a2127812fa6310",
+  "generated_at": "2026-10-25T04:51:32.271Z",
+  "provider": "Chrome/153.0.8010.47; Linux Xvfb; Chrome CDP / Node v26.11.1; native browser zoom through XTest",
+  "inspected_files": [
+    "final/index.html",
+    "comparison/variants/candidate-a.html"
+  ],
+  "cases": [
+    {
+      "id": "candidate-1440",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/candidate-1440.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal",
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "candidate-390",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/candidate-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal",
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "chat-desktop",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-desktop.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "chat-empty",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-empty.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:empty"
+      ]
+    },
+    {
+      "id": "chat-loading",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-loading.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:loading"
+      ]
+    },
+    {
+      "id": "chat-error",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-error.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:error"
+      ]
+    },
+    {
+      "id": "chat-offline",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-offline.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:offline"
+      ]
+    },
+    {
+      "id": "chat-permission",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-permission.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:permission"
+      ]
+    },
+    {
+      "id": "chat-recovery",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-recovery.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:recovery"
+      ]
+    },
+    {
+      "id": "chat-long",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-long.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "tasks-approval",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-approval.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "tasks-temporary",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-temporary.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:temporary"
+      ]
+    },
+    {
+      "id": "approval-diff",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/approval-diff.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "tasks-canceled",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-canceled.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:canceled"
+      ]
+    },
+    {
+      "id": "tasks-running",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-running.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:running"
+      ]
+    },
+    {
+      "id": "tasks-completed",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-completed.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:completed"
+      ]
+    },
+    {
+      "id": "tasks-unknown",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-unknown.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:unknown"
+      ]
+    },
+    {
+      "id": "agent-normal",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/agent-normal.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "agent-editing",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/agent-editing.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "agent-disabled",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/agent-disabled.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:disabled"
+      ]
+    },
+    {
+      "id": "agent-creating",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/agent-creating.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "group-create",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/group-create.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:empty"
+      ]
+    },
+    {
+      "id": "memory-private",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-private.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "memory-forget-confirm",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-forget-confirm.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "memory-forgotten",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-forgotten.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:forgotten"
+      ]
+    },
+    {
+      "id": "memory-global-pending",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-global-pending.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:global",
+        "BOT-MEMORY:pending"
+      ]
+    },
+    {
+      "id": "memory-global-confirm",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-global-confirm.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:pending"
+      ]
+    },
+    {
+      "id": "memory-short",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-short.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:short"
+      ]
+    },
+    {
+      "id": "access-attached",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/access-attached.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "access-grant",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/access-grant.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:grant"
+      ]
+    },
+    {
+      "id": "access-denied",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/access-denied.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:denied"
+      ]
+    },
+    {
+      "id": "data-preflight",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/data-preflight.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "data-retained",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/data-retained.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:retained"
+      ]
+    },
+    {
+      "id": "data-purged",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/data-purged.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:purged"
+      ]
+    },
+    {
+      "id": "dirty-new-bot-escape-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-new-bot-escape-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "dirty-new-bot-cancel-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-new-bot-cancel-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "dirty-new-bot-close-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-new-bot-close-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "dirty-edit-bot-escape-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-edit-bot-escape-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "dirty-edit-bot-cancel-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-edit-bot-cancel-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "dirty-edit-bot-close-warning",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dirty-edit-bot-close-warning.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "chat-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/chat-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "navigation-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/navigation-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "tasks-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/tasks-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "memory-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/memory-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "agent-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/agent-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "access-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/access-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "data-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/data-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "long-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/long-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "dark-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/dark-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "chat-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/chat-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "navigation-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/navigation-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "tasks-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/tasks-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "memory-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/memory-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "agent-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/agent-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "access-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/access-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "data-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/data-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "long-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/long-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "dark-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/dark-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "long-message-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/repair-2/screenshots/long-message-1440.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "long-message-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/long-message-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "touch-emulated",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-emulated.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "touch-navigation",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-navigation.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "touch-approval",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-approval.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "touch-tasks",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-tasks.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "touch-memory",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-memory.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "touch-settings",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-settings.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "touch-data",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-data.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "touch-access",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-access.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "touch-form",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/repair-2/screenshots/touch-form.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "native-200pct",
+      "entry": "final/index.html",
+      "width": 720,
+      "height": 448,
+      "screenshot": "evidence/repair-2/screenshots/native-200pct.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/repair-2/design-review.md",
+  "technical_review": "evidence/repair-2/technical-review.md",
+  "rechecked": true
+}

@@ -1,0 +1,154 @@
+{
+  "mapRevision": 20,
+  "tickets": 28,
+  "contracts": 55,
+  "t28DependencyClosure": 27,
+  "cycle": null,
+  "sharedSurfaces": 109,
+  "writableConflicts": [],
+  "conservativeDisjoint": [
+    {
+      "tickets": [
+        "T-01",
+        "T-02"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-03"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-05"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-06"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/006-approval-effect.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-11"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-12"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-13"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/013-groups.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-14"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/014-memory.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-15"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/015-global-memory.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-16"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/016-recovery.sql</Path>"
+      ]
+    },
+    {
+      "tickets": [
+        "T-01",
+        "T-17"
+      ],
+      "paths": [
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+        "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/017-command-epoch.sql</Path>"
+      ]
+    }
+  ],
+  "ownershipNote": "Repository pathsOverlap compares directory prefixes before wildcards; exact file versus glob matches are additionally checked using Node path.matchesGlob. This leaves the repository validator unchanged and preserves all conservative hits. LOG048 separates migration Go registration from exact SQL body ownership.",
+  "states": {
+    "T-01": "in_progress",
+    "T-02": "done",
+    "T-03": "in_progress",
+    "T-04": "in_progress",
+    "T-05": "done",
+    "T-06": "in_progress",
+    "T-07": "done",
+    "T-08": "ready",
+    "T-09": "ready",
+    "T-10": "ready",
+    "T-11": "in_progress",
+    "T-12": "in_progress",
+    "T-13": "done",
+    "T-14": "ready",
+    "T-15": "ready",
+    "T-16": "in_progress",
+    "T-17": "ready",
+    "T-18": "ready",
+    "T-19": "ready",
+    "T-20": "ready",
+    "T-21": "ready",
+    "T-22": "ready",
+    "T-23": "ready",
+    "T-24": "ready",
+    "T-25": "ready",
+    "T-26": "ready",
+    "T-27": "in_progress",
+    "T-28": "ready"
+  },
+  "errors": [],
+  "scope": "Plan structure, current Skill bindings, declared ownership and DAG only; no product acceptance or dispatch authorization"
+}

@@ -1,0 +1,15 @@
+{
+  "task": "090-recovery-parent-repair",
+  "checkedAt": "2026-10-25T23:35:27.458754+00:00",
+  "tool": "native followup_task",
+  "target": "/root/credential_provider",
+  "taskSha256": "47f25b2295e6d00a61c2ebda5c81668db3f8ac8dc2f1abf948c04104b7056eee",
+  "supplementSha256": "73560b69f4ceef07ba598f84bba6afe9a0c09347bd83dfce50a7c736ddbdcdf3",
+  "dispatchValidationExit": 0,
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledged": true,
+  "acceptedDiagnosisReportSha256": "abf2fb2d24d1dd20305b306ca092436abdff5f2cbddd7782272dfbd1065abe29",
+  "sourceWindow": "088 actual07 exit1/Wait28.286s and no processes, then Root granted both original owners disjoint exact source paths. All product checks paused until joint inputs frozen.",
+  "implementationComplete": false,
+  "ack": "Original owner fully read TASK and precise supplement, confirmed unique ParentCursor/ParentReady contract with088. Only usage two files and collaboration-policy edits; all product checks paused; old089/280-source/raw-red frozen."
+}

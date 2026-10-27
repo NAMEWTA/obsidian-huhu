@@ -1,0 +1,22 @@
+{
+  "task": "056-data-maintenance-preflight",
+  "checkedAt": "2026-10-25T12:54:32.545632+00:00",
+  "manifestSha256": "429c77651cdc5ce5079aaed589778031469d6746eed70bb0c60ac3c78c12fbcc",
+  "reportSha256": "f5a02bb40d40169dc858a98138af186efb0ef9d46c796608716620256c89047a",
+  "checkedFiles": [
+    "REPORT.md",
+    "command-observations.json",
+    "fixed-reference-sources.json",
+    "interfaces-and-owners.md",
+    "inventory.json",
+    "observations.json",
+    "official-sources.json",
+    "read-excerpts.log",
+    "return.json",
+    "source-recheck.json",
+    "wire-data-slice.json"
+  ],
+  "returnExit": 0,
+  "returnOutput": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,44 @@
+{
+  "observer": "native:/root",
+  "task": "139-memory-component-rereview",
+  "reviewer": "native:/root/recovery_review",
+  "nativeReturn": "ACK+MESSAGE+FINAL; allprocessesWait; noactiveproductwriter",
+  "reportSHA256": "95bd10c1e822c4c8ffbcb5e16b23d904d0bd47264dc0a80ba89a6a73f0b0e139",
+  "manifestSHA256": "80b744edaffebb060c09febca6d7eb900f35e6228998725368e49548b23bc2d5",
+  "inputSHA256": "e23efa231e65cc212b9f7ebe5e2a5ed1ba3cb8a06530b3dc8c3d1ca1506f7e87",
+  "verified": {
+    "fullReport": "tool2dcfeb",
+    "artifacts": 41,
+    "fileModes": 1722,
+    "sources": 38,
+    "allDrift": [],
+    "hashAndRawChecks": "a3e8f4",
+    "sourceDigest": "0aacc0",
+    "returnValidator": {
+      "actualExit": 0,
+      "tool": "0c6d0a"
+    }
+  },
+  "standards": "pass",
+  "specification": "pass",
+  "resolved": [
+    "F-133-01",
+    "F-133-02"
+  ],
+  "newFindings": [],
+  "scope": "componentreviewonly; defaultCore/SQL/permissions/accounting/finalCLI stilljointgate; noT14done",
+  "actualChecks": {
+    "publicRouter": {
+      "actualExit": 0,
+      "waitSeconds": 0.517686519997369,
+      "unicodeVariants": 253
+    },
+    "realTSClient": {
+      "actualExit": 0,
+      "waitSeconds": 3.1039889079984277,
+      "tests": 7
+    }
+  },
+  "preservedFailure": "06probe invalidrequestKind premise; author137initialGo1.27.1 exploratory; finalversion1.26.10 proven",
+  "next": "140 realgeneration+remainingruntimechecks;126domainfaults;RootCLI/E2E; fullT14independentreview"
+}

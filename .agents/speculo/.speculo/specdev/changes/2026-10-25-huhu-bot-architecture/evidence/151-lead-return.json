@@ -1,0 +1,36 @@
+{
+  "observer": "native:/root",
+  "task": "151-memory-integration-review",
+  "status": "accepted-independent-request-changes",
+  "reviewer": "native:/root/memory_integration_review",
+  "inputSha256": "f0db44427b4ba9d0290571b922254780c0f098a1d833300a9ab2b710c5322e37",
+  "standards": "request-changes",
+  "specification": "request-changes",
+  "reportSHA256": "1f0523b76f567e927982460e26a41b86eeaece492b113bb73667cdfc9bf9d4c1",
+  "manifestSHA256": "321518ceb9174a2e5b4652acf82054f47bb22af7ed111886c96bf639f2d9fb13",
+  "sourceFiles": 2137,
+  "artifactFiles": 24,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "151-memory-integration-review",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.06019326100067701,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "findingDisposition": "F1/F2 to original Memory responsibility153; F3 to T01 schema/client responsibility154. Root full regression single red remains with152. No overall T14 gate passed."
+}

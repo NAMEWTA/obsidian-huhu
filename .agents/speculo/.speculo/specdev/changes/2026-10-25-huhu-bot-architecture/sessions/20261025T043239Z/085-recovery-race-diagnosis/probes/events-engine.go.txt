@@ -1,0 +1,289 @@
+package events_test
+
+import (
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"database/sql"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/stdio"
+	executionstore "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/execution"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	brokerapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/tooling/broker"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+type eventEngine struct {
+	database string
+	release  chan struct{}
+	once     sync.Once
+}
+
+func (e *eventEngine) Run(ctx context.Context, in api.EngineInput, emit func(api.EngineEvent) error) (api.EngineResult, error) {
+	if strings.HasPrefix(in.Intent, "approval") {
+		result, err := in.Tools.Invoke(ctx, api.ToolCall{ID: "call:events", Name: "note.write", Target: api.EffectTarget{WorkspaceID: "workspace:events", ResourceID: "note:" + in.RunID, Operation: "update", BaseRevision: "1"}, Content: "proposed body"})
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		if result.Status != "approval_required" {
+			return api.EngineResult{}, fmt.Errorf("expected actual Broker suspension")
+		}
+		checkpoint, err := in.Checkpoints.Publish(ctx, bytes.NewBufferString("events-private-checkpoint"))
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		return api.EngineResult{Status: "suspended", Suspension: &api.EngineSuspension{Token: result.SuspensionToken, Checkpoint: checkpoint}}, nil
+	}
+	if in.Intent == "hold" {
+		if err := emit(api.EngineEvent{Type: "delta", Text: "not canceled by page disposal"}); err != nil {
+			return api.EngineResult{}, err
+		}
+		select {
+		case <-e.release:
+			return api.EngineResult{Status: "finished", Text: "continued"}, nil
+		case <-ctx.Done():
+			return api.EngineResult{}, ctx.Err()
+		}
+	}
+	if in.Intent == "release" {
+		e.once.Do(func() { close(e.release) })
+		return api.EngineResult{Status: "finished", Text: "released"}, nil
+	}
+	if strings.HasPrefix(in.Intent, "late:") || in.Intent == "big" {
+		db, err := sql.Open("sqlite3", "file:"+filepath.ToSlash(e.database)+"?_pragma=busy_timeout(500)")
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		defer db.Close()
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		defer tx.Rollback()
+		if in.Intent == "big" {
+			if _, err = tx.ExecContext(ctx, "DELETE FROM execution_events WHERE run_id=?", in.RunID); err == nil {
+				_, err = tx.ExecContext(ctx, "UPDATE execution_runs SET event_seq=9007199254740992 WHERE run_id=?", in.RunID)
+			}
+		} else {
+			err = executionstore.AddEventInTx(ctx, tx, strings.TrimPrefix(in.Intent, "late:"), "reconciled", map[string]string{"effectId": "effect:late", "status": "succeeded"})
+		}
+		if err != nil {
+			return api.EngineResult{}, err
+		}
+		if err = tx.Commit(); err != nil {
+			return api.EngineResult{}, err
+		}
+	}
+	if in.Intent == "private" {
+		if len(in.Context.Sources) != 1 || in.Context.Sources[0].Text != "PRIVATE_SOURCE" {
+			return api.EngineResult{}, fmt.Errorf("actual explicit Host source missing")
+		}
+		if err := emit(api.EngineEvent{Type: "delta", Text: "DERIVED_PRIVATE"}); err != nil {
+			return api.EngineResult{}, err
+		}
+		if err := emit(api.EngineEvent{Type: "tool.fixture", Text: "PRIVATE_LEDGER"}); err != nil {
+			return api.EngineResult{}, err
+		}
+		return api.EngineResult{Status: "finished", Text: "DERIVED_PRIVATE"}, nil
+	}
+	if strings.HasPrefix(in.Intent, "large:") {
+		text := strings.Repeat("a", 65536)
+		switch in.Intent {
+		case "large:control":
+			text = strings.Repeat("a", 65000)
+		case "large:escaped":
+			text = strings.Repeat("\x00\"\\", 21845) + "\x00"
+		case "large:source":
+			if len(in.Context.Sources) != 1 || in.Context.Sources[0].Text != "PRIVATE_SOURCE" {
+				return api.EngineResult{}, fmt.Errorf("large event lost actual Host source")
+			}
+		}
+		if err := emit(api.EngineEvent{Type: "text.delta", Text: text}); err != nil {
+			return api.EngineResult{}, err
+		}
+		return api.EngineResult{Status: "finished", Text: text}, nil
+	}
+	count, text := 1, "甲😀\n乙"
+	if in.Intent == "compact" {
+		count, text = 270, "x"
+	}
+	debug085Started:=time.Now()
+	for index:=range count {
+		if err := emit(api.EngineEvent{Type: "delta", Text: text}); err != nil {
+			if in.Intent=="compact" {fmt.Fprintf(os.Stderr,"[DEBUG-085] compact run=%s emit=%d/%d elapsed=%s ctxErr=%v error=%v\n",in.RunID,index+1,count,time.Since(debug085Started),ctx.Err(),err)}
+			return api.EngineResult{}, err
+		}
+		if in.Intent=="compact" && (index==0 || index==69 || index==134 || index==199 || index==269) {fmt.Fprintf(os.Stderr,"[DEBUG-085] compact run=%s emitted=%d/%d elapsed=%s ctxErr=%v\n",in.RunID,index+1,count,time.Since(debug085Started),ctx.Err())}
+	}
+	return api.EngineResult{Status: "finished", Text: strings.Repeat(text, count)}, nil
+}
+func (*eventEngine) Resume(ctx context.Context, in api.EngineResumeInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	reader, err := in.Input.Checkpoints.Open(ctx, in.Checkpoint)
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	data, err := io.ReadAll(reader)
+	closeErr := reader.Close()
+	if err != nil || closeErr != nil || string(data) != "events-private-checkpoint" {
+		return api.EngineResult{}, fmt.Errorf("actual checkpoint failed validation")
+	}
+	return api.EngineResult{Status: "finished", Text: "decision " + in.Decision.Status}, nil
+}
+
+type eventNoteWriter struct{ host api.HostAPI }
+
+func (w *eventNoteWriter) Preview(ctx context.Context, target api.EffectTarget, text string) (api.NoteTargetPreview, error) {
+	lease, err := w.host.CurrentLease(ctx)
+	if err != nil {
+		return api.NoteTargetPreview{}, err
+	}
+	sum := sha256.Sum256([]byte(text))
+	return api.NoteTargetPreview{Target: target, Tool: brokerapp.Descriptor, ContentHash: "sha256:" + hex.EncodeToString(sum[:]), Diff: "fixture target -> proposed body", Lease: lease}, nil
+}
+func (*eventNoteWriter) Check(context.Context, api.ApprovalPreview, api.HostLease) error { return nil }
+func (*eventNoteWriter) Invoke(_ context.Context, dispatch api.EffectDispatch) (api.HostReceipt, error) {
+	return api.HostReceipt{EffectID: dispatch.EffectID, Status: "committed", Revision: "2", ReceiptID: "receipt:fixture"}, nil
+}
+func TestEventsRunnerProcess(t *testing.T) {
+	index := -1
+	for i, arg := range os.Args {
+		if arg == "--events-runner" {
+			index = i
+		}
+	}
+	if index < 0 {
+		return
+	}
+	if index+1 >= len(os.Args) {
+		os.Exit(2)
+	}
+	root := os.Args[index+1]
+	runCtx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	engine := &eventEngine{database: filepath.Join(root, "one", "profile.sqlite3"), release: make(chan struct{})}
+	writer := &eventNoteWriter{}
+	core, e := bootstrap.OpenWithOptions(runCtx, root, filepath.Join(root, "one"), bootstrap.Options{Engine: engine, NoteWriter: writer})
+	if e != nil {
+		fmt.Fprintln(os.Stderr, e)
+		os.Exit(1)
+	}
+	writer.host = core.API.Host
+	server := stdio.New(os.Stdin, os.Stdout, core.API, api.NewConnectionIdentity("stdio", "user", true))
+	e = server.Run(runCtx)
+	server.Close()
+	closeErr := core.Close()
+	if e != nil || closeErr != nil {
+		fmt.Fprintln(os.Stderr, e, closeErr)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+const actualEventFixture = `
+import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {HostReadService} from '__REPO__/src/modules/huhubot/services/host-read/host-read.ts';
+import {HapConnection} from '__REPO__/src/modules/huhubot/core/protocol/connection.ts';
+import {EventClient} from '__REPO__/src/modules/huhubot/services/events/event-client.ts';
+const child=spawn(process.argv[2],['-test.run=^TestEventsRunnerProcess$','--','--events-runner',process.argv[3]],{stdio:['pipe','pipe','pipe']});
+let stderr='',forced=false;child.stderr.on('data',x=>stderr+=x);
+const exited=new Promise(resolve=>child.once('exit',(code,signal)=>resolve({code,signal})));
+const timers={after(ms,fn){const timer=setTimeout(fn,ms);return()=>clearTimeout(timer)}};
+const transport={send(bytes){return new Promise((resolve,reject)=>child.stdin.write(bytes,e=>e?reject(e):resolve()))},onData(fn){child.stdout.on('data',fn);return()=>child.stdout.off('data',fn)},onClose(fn){const close=()=>fn(new Error('closed'));child.on('exit',close);return()=>child.off('exit',close)},close(){child.stdin.end()}};
+const connection=new HapConnection(transport,timers);let bot,events,hostService;
+const check=(ok,message)=>{if(!ok)throw new Error(message)};
+let serial=0;
+(async()=>{try{
+ bot=await connection.connect({name:'actual-events',version:'1'});events=new EventClient(bot,timers,{poll:false});
+ const p=bot.hello.profile;const meta=(key,rev)=>({commandId:key,idempotencyKey:key,profileId:p.profileId,commandEpoch:p.commandEpoch,...(rev?{expectedRevision:rev}:{})});
+ const agents=await bot.agents.list({profileId:p.profileId});
+ const start=async intent=>{const key='session-'+(++serial);const session=await bot.sessions.create({...meta(key),kind:'direct',title:key,memberIds:[agents.items[0].id]});return bot.runs.start({...meta('run-'+serial,session.revision),sessionId:session.id,intent,sourceRefs:[]})};
+ const wait=async(id,states=['succeeded','failed','canceled'])=>{const until=Date.now()+5000;while(Date.now()<until){const run=await bot.runs.get({profileId:p.profileId,id});if(states.includes(run.status))return run;await new Promise(resolve=>setTimeout(resolve,5))}throw new Error('run did not reach '+states)};
+ const first=await start('ordered');await wait(first.runId);const stream=events.attach(first.runId);await stream.refresh();const ordered=stream.getSnapshot();check(ordered.projection.status==='succeeded'&&ordered.projection.pendingText==='甲😀\n乙'&&ordered.projection.seq==='5','actual ordered Unicode tail '+JSON.stringify(ordered));
+ await stream.refresh();check(stream.getSnapshot().projection.seq==='5'&&stream.getSnapshot().projection.pendingText==='甲😀\n乙','duplicate replay');stream.dispose();
+ async function largeEvent(runId,text,label){const stream=events.attach(runId),attempts=[];for(let i=0;i<4;i++){await stream.refresh();const v=stream.getSnapshot();attempts.push({state:v.state,seq:v.projection.seq,status:v.projection.status,bytes:v.projection.pendingText.length,error:v.error})}const view=stream.getSnapshot();check(view.state==='ready'&&view.projection.seq==='5'&&view.projection.status==='succeeded'&&view.projection.pendingText===text,'legal large event did not converge '+JSON.stringify({label,attempts}));await stream.refresh();check(stream.getSnapshot().projection.seq==='5'&&stream.getSnapshot().projection.pendingText===text,'large event duplicated '+label);const page=await bot.runs.subscribe({profileId:p.profileId,runId,afterSeq:'0',limit:64,maxBytes:524288});check(page.headSeq==='5'&&page.events.length===5&&page.events.find(e=>e.type==='text.delta')?.text===text,'large protocol control failed '+label);stream.dispose();}
+ for(const [intent,text] of [['large:control','a'.repeat(65000)],['large:max','a'.repeat(65536)],['large:escaped',String.fromCharCode(0,34,92).repeat(21845)+String.fromCharCode(0)]]){const run=await start(intent);await wait(run.runId);await largeEvent(run.runId,text,intent);}
+ const compact=await start('compact');await wait(compact.runId);const old=events.attach(compact.runId);await old.refresh();let snapshot=old.getSnapshot();check(snapshot.state==='ready'&&snapshot.projection.seq==='274'&&snapshot.projection.messages.length===2&&snapshot.projection.messages[1].text==='x'.repeat(270),'expired cursor actual snapshot '+JSON.stringify(snapshot));old.dispose();
+ const late=await start('late:'+compact.runId);await wait(late.runId);const restored=events.attach(compact.runId);await restored.refresh();snapshot=restored.getSnapshot();check(snapshot.projection.seq==='275'&&snapshot.projection.lastEffectId==='effect:late'&&snapshot.projection.facts.length===1,'late ledger fact crossed snapshot high-water '+JSON.stringify(snapshot));restored.dispose();
+ const big=await start('big');await wait(big.runId);const huge=events.attach(big.runId);await huge.refresh();check(huge.getSnapshot().projection.seq==='9007199254740994','real BigInt reset lost precision '+JSON.stringify(huge.getSnapshot()));
+ const registry=new Map();hostService=new HostReadService({setLease(){},async readSnapshot(source,signal){const found=registry.get(source.resourceId);check(!signal.aborted&&found&&JSON.stringify(found.source)===JSON.stringify(source),'untrusted source');return structuredClone(found)},async searchSnapshots(){throw new Error('unused search')}},timers);
+ bot.setHost({invoke:async()=>{throw new Error('read only')},queryReceipt:async()=>{throw new Error('read only')},read:hostService.read,search:hostService.search,leaseChanged:hostService.setLease});
+ const lease=await bot.host.attach({workspaceId:'workspace:events',capabilities:['note.read','note.search']});
+ const model={providerId:'fixture',modelId:'model',protocol:'openai-responses',endpoint:'https://fixture.invalid/v1',capabilities:['text']};
+ const agent=await bot.agents.create({...meta('private-agent'),draft:{name:'Private events',description:'',persona:'',model}});
+ const recipient={agentId:agent.id,modelBindingRevision:agent.modelBindingRevision,providerId:model.providerId,modelId:model.modelId,protocol:model.protocol,endpoint:model.endpoint};
+ async function privateRun(expiry,intent='private'){
+  const key='private-'+(++serial),text='PRIVATE_SOURCE';const source={resourceId:'source:'+key,kind:'note',workspaceId:lease.workspaceId,originClientId:'client:one',originViewId:'view:one',hostConnectionId:lease.hostConnectionId,hostLeaseId:lease.leaseId,hostLeaseEpoch:lease.leaseEpoch,revision:'1',hash:'sha256:'+createHash('sha256').update(text).digest('hex'),scopeResourceIds:[]};registry.set(source.resourceId,{source,text});
+  const session=await bot.sessions.create({...meta(key+'-session'),kind:'direct',title:key,memberIds:[agent.id],workspaceId:lease.workspaceId});
+  const grant=await bot.grants.create({...meta(key+'-grant'),workspaceId:lease.workspaceId,scope:'source',resourceId:source.resourceId,recipients:[recipient],operations:['read','send'],sessionId:session.id,...(expiry?{expiresAt:new Date(expiry).toISOString()}:{})});
+  const run=await bot.runs.start({...meta(key+'-run',session.revision),sessionId:session.id,intent,sourceRefs:[source],grantIds:[grant.id]});await wait(run.runId);return {run,grant,key};
+ }
+ const sourceLarge=await privateRun(undefined,'large:source');await largeEvent(sourceLarge.run.runId,'a'.repeat(65536),'large:source');
+ function deniedProjection(stream,message){const view=stream.getSnapshot();check(view.projection.access==='denied'&&view.projection.pendingText===''&&view.projection.messages.length===0&&view.projection.facts.length===0&&view.projection.status==='succeeded',message+' '+JSON.stringify(view));}
+ const privateOne=await privateRun();const restricted=events.attach(privateOne.run.runId);await restricted.refresh();check(restricted.getSnapshot().projection.pendingText==='DERIVED_PRIVATE'&&restricted.getSnapshot().projection.facts[0].text==='PRIVATE_LEDGER','real private body not delivered before revoke');
+ await bot.grants.revoke({...meta(privateOne.key+'-revoke',privateOne.grant.revision),id:privateOne.grant.id});await restricted.refresh();deniedProjection(restricted,'actual revocation kept cached body');restricted.dispose();
+ const expiry=Date.now()+1000,privateTwo=await privateRun(expiry);const expiring=events.attach(privateTwo.run.runId);await expiring.refresh();check(expiring.getSnapshot().projection.pendingText==='DERIVED_PRIVATE','private expiry fixture did not capture permitted body');
+ await new Promise(resolve=>setTimeout(resolve,Math.max(0,expiry-Date.now())+20));await expiring.refresh();deniedProjection(expiring,'actual expiry kept cached body');expiring.dispose();
+ const hold=await start('hold');await wait(hold.runId,['running']);const holding=events.attach(hold.runId);await holding.refresh();check(BigInt(holding.getSnapshot().projection.seq)>0n&&BigInt(holding.getSnapshot().projection.seq)<BigInt(huge.getSnapshot().projection.seq)&&huge.getSnapshot().projection.seq==='9007199254740994','big and small Run cursors were mixed');holding.dispose();check((await bot.runs.get({profileId:p.profileId,id:hold.runId})).status==='running','page disposal canceled Run');const release=await start('release');await wait(release.runId);await wait(hold.runId);check(huge.getSnapshot().projection.seq==='9007199254740994','later small Run replaced big cursor');huge.dispose();
+ await bot.host.attach({workspaceId:'workspace:events',capabilities:['note.write']});
+ const writer=await bot.agents.create({...meta('writer-agent'),draft:{name:'Events writer',description:'',persona:'fixture',allowedTools:['note.write']}});
+ async function approvalRun(kind){const key='approval-'+(++serial);const session=await bot.sessions.create({...meta(key),kind:'direct',title:key,memberIds:[writer.id],workspaceId:'workspace:events'});const run=await bot.runs.start({...meta(key+'-run',session.revision),sessionId:session.id,intent:kind,sourceRefs:[]});const pending=await wait(run.runId,['waiting_approval']);const stream=events.attach(run.runId);await stream.refresh();check(stream.getSnapshot().projection.status==='waiting_approval','actual Broker waiting state not projected '+JSON.stringify(stream.getSnapshot()));return {run,pending,stream,key}}
+ const approved=await approvalRun('approval-approve');const approvals=await bot.approvals.list({profileId:p.profileId});const approval=approvals.items.find(a=>a.runId===approved.run.runId);check(approval,'pending approval missing');
+ await bot.approvals.resolve({...meta(approved.key+'-approve',approval.revision),id:approval.id,effectId:approval.effectId,decision:'approve',previewHash:approval.preview.previewHash});await wait(approved.run.runId);await approved.stream.refresh();check(approved.stream.getSnapshot().projection.status==='succeeded','effect ledger overwrote resumed terminal status '+JSON.stringify(approved.stream.getSnapshot()));approved.stream.dispose();
+ const canceled=await approvalRun('approval-cancel');await bot.runs.cancel({...meta(canceled.key+'-cancel',canceled.pending.revision),id:canceled.run.runId});await wait(canceled.run.runId,['canceled']);await canceled.stream.refresh();check(canceled.stream.getSnapshot().projection.status==='canceled','public Cancel not projected '+JSON.stringify(canceled.stream.getSnapshot()));canceled.stream.dispose();
+ console.log(JSON.stringify({unicode:true,duplicate:true,snapshot:true,lateLedger:true,bigint:true,disposeDidNotCancelRun:true,sourceRevokeClearedBody:true,sourceExpiryClearedBody:true,approvalWaiting:true,approvalResumed:true,canceled:true,largeControl:true,largeMaximum:true,largeEscaped:true,largeWithSource:true}));
+}finally{events?.dispose();hostService?.dispose();bot?.close();transport.close();const kill=setTimeout(()=>{forced=true;child.kill('SIGKILL')},3000);const result=await exited;clearTimeout(kill);check(!forced&&result.code===0&&!stderr,'child did not Wait cleanly '+JSON.stringify(result)+' '+stderr)}})().catch(error=>{console.error(error.message);process.exitCode=1});
+`
+
+func TestActualTSClientConsumesDurableGoEventsSnapshotsAndLateFacts(t *testing.T) {
+	repo, e := filepath.Abs(filepath.Join("..", "..", "..", "..", ".."))
+	if e != nil {
+		t.Fatal(e)
+	}
+	root := t.TempDir()
+	profiles := filepath.Join(root, "profiles")
+	if e = os.Mkdir(profiles, 0700); e != nil {
+		t.Fatal(e)
+	}
+	source, bundle := filepath.Join(root, "events.ts"), filepath.Join(root, "events.cjs")
+	if e = os.WriteFile(source, []byte(strings.ReplaceAll(actualEventFixture, "__REPO__", filepath.ToSlash(repo))), 0600); e != nil {
+		t.Fatal(e)
+	}
+	buildCtx, buildCancel := context.WithTimeout(ctx, time.Minute)
+	defer buildCancel()
+	build := exec.CommandContext(buildCtx, "pnpm", "exec", "esbuild", source, "--bundle", "--platform=node", "--format=cjs", "--outfile="+bundle)
+	build.Dir = repo
+	if output, e := build.CombinedOutput(); e != nil {
+		t.Fatalf("actual EventClient bundle: %v %s", e, output)
+	}
+	runCtx, cancel := context.WithTimeout(ctx, 25*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(runCtx, "node", bundle, os.Args[0], profiles)
+	var output, stderr bytes.Buffer
+	cmd.Stdout = &output
+	cmd.Stderr = &stderr
+	if e = cmd.Run(); e != nil {
+		t.Fatalf("actual Go↔TS events: %v\n%s\n%s", e, output.String(), stderr.String())
+	}
+	var observed map[string]bool
+	if stderr.Len() != 0 || cmd.ProcessState == nil || json.Unmarshal(output.Bytes(), &observed) != nil || len(observed) != 15 {
+		t.Fatal("invalid actual observations/cleanup", output.String(), stderr.String())
+	}
+	for k, v := range observed {
+		if !v {
+			t.Fatal(k)
+		}
+	}
+	t.Logf("production EventClient/reducer/HapConnection ↔ Go bootstrap/stdio/SQLite; fake Engine + explicit large-seq/late-ledger SQL fixture only: %s; Node and Runner Wait/exit", strings.TrimSpace(output.String()))
+}

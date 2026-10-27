@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-25T18:26:45.875909+00:00",
+  "command": [
+    "pnpm",
+    "test:docs"
+  ],
+  "exit": 126,
+  "seconds": 0.7432218329922762,
+  "rawLog": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/plan-docs-check.log",
+  "scope": "Root Evidence navigation/Map17/Task metadata changes; no product test or build",
+  "knownBaselineAnchors": [
+    "#12-数据路径与迁移",
+    "#14-记忆知识与可扩展能力",
+    "#15-权限凭证与运行治理",
+    "#17-验证性能与发布门禁",
+    "#19-决议未决验证与完成定义",
+    "#9-工具审批与效果日志"
+  ],
+  "sameOriginalInputSha256": "a85a57648a00942a44c3df89c52804d13d129e7e31262a73feb91ccc7f1516cc",
+  "priorBaseline": "evidence/067-lead-docs-check.json",
+  "newDocumentationIssues": [],
+  "globalDocsPass": false,
+  "lifecycleExit": 1
+}

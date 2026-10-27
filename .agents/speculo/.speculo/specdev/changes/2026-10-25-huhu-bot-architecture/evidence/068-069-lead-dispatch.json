@@ -1,0 +1,51 @@
+{
+  "createdAt": "2026-10-25T17:09:58.843473+00:00",
+  "reviewReportSha256": "78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17",
+  "tasks": [
+    {
+      "task": "068-shared-review-repair",
+      "owner": "/root/foundation_go",
+      "taskSha256": "c6431afc595448288021996b8d5bd0030ac91037d20d6aa7b0880777e007fe29",
+      "dispatchExit": 0,
+      "actualNativeFollowupSent": true,
+      "acknowledgement": "Actual native068 contract/frozen-owner acknowledgement received; original069 red loop released production repair.",
+      "return": "pending"
+    },
+    {
+      "task": "069-collaboration-review-repair",
+      "owner": "/root/credential_provider",
+      "taskSha256": "03562b52b0521606067570c9d91c58856e21e53f6a57cde22ec7c160da95ef7e",
+      "dispatchExit": 0,
+      "actualNativeFollowupSent": true,
+      "acknowledgement": "Actual native069 message received; initial red test complete and waited, root read full raw log.",
+      "return": "pending"
+    }
+  ],
+  "initialDispatchValidation": {
+    "exit": 126,
+    "reason": "Heading Required Repair and Acceptance was not recognized as exact Acceptance; corrected before dispatch, actual revalidation exit0 for both."
+  },
+  "initialTestWindow": "069 narrow red regressions; 068 production held until original-input red completion acknowledgement",
+  "productScope": "existing Map16 owners, no new writable paths/DAG/spec decision",
+  "attempts": 1,
+  "initialRedCompleted": {
+    "receipt": "sessions/20261025T043239Z/069-collaboration-review-repair/logs/03-old-red-completion.json",
+    "tree": "c59606fe9c1cd5f7eaac4354b4eae186bd391d01a89e327e71df80b41ddbceba",
+    "exit": 1,
+    "seconds": 1.914,
+    "allThreeActualFailures": true,
+    "normalControlsPassed": true,
+    "rootFullRawLogRead": true,
+    "productionRepairReleased": true,
+    "rootVerifiedOld201ManifestMatches059": true,
+    "manifestSha256": "be8ae2075b43bce215f9cc06441b51332b0df77eecd6427ea60367de486e5987"
+  },
+  "sharedContract": {
+    "engineInput": "Delegation *DelegationInput{DelegationID,Task,Constraints,ExpectedOutput}; root nil; persisted per Claim and Resume",
+    "toolGate": "single pinned AllowedTools check in Broker before collaboration routing; user Facade remains separate",
+    "claimIsolation": "typed known message-stage business rejection uses existing same-transaction finalization and resource cleanup; infrastructure/corruption remains error and rollback",
+    "compatibility": "preserve raw task/requirements combined128KiB and materialized task separate128KiB; no new combined cap; old nil constraints/null normalize to empty; malformed records remain errors",
+    "writers": "068 API/Broker/execution;069 usage/delegation and primary regressions; no wire/TS/SQL/dependency changes planned",
+    "status": "agreed by both actual native messages; implementation/validation still pending"
+  }
+}

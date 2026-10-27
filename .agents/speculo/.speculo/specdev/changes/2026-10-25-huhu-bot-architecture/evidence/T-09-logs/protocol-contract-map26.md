@@ -1,0 +1,12 @@
+# Map26私有协议合同冻结
+
+Root已全文回读106 REPORT与interface-contract.md、实际return0、全部工件/30来源无漂移，native MESSAGE+FINAL已接收，见evidence/106-lead-return.json。采纳106附件SHA256 63a9f3bff30f9c2fb14f596a82e27f5216aab4c7951ff5240060686b584eaee2的有限Generation/StateView/TurnResult/ProtocolDriver/Registry、Chat旧DTO/seed及Responses独立identity、Broker三处callback、共享httpcall方案A；原106附件是冻结研究来源，不回写为实现通过。
+
+原108/109 TASK保持原字节，其明确待定私有附件现在绑定上述106。107负责实现，108/109消费；所有生产写仍先等109默认Responses有效行为红及真实Wait。其后107先捕获当前合法Chat producer的旧CP/可信检查及恢复输入和legacy digest/encoding样本，保存可回读原字节及实际命令，再放行接口改写；不得把新codec自己往返当旧格式兼容。该控制可保存于107自有logs并作为engine/chat新合同测试固定样本，无需新增公共API/SQL或改其他owner。
+
+106建议的httpcall有限表面需要两个直接消费接缝，107在同一私有辅助内补齐并在生产写前通知108/109：
+
+- Call/ProbeCall提供该调用受超时与取消控制的Context，使SDK同步Do/Next与真实生命周期共用；不让driver另起平行超时体系。
+- RequestSpec提供同步原始SSE event观察回调（有限event类型，含原event标签和完整多data行拼接后的字节；命名可由107定），在UTF8/总量/line/event边界检查后、SDK解码前执行。Responses/Anthropic各自判协议JSON/语义；未知事件不能被SDK静默滤掉。callback错误安全结束整条调用，不能只记录后继续。Probe和非SSE错误body仍受原始字节/大小/真实Close边界，不以它们冒充模型事件。回调数据只在调用期间借用，需要留存由driver复制；生命周期全部join后才能读取最终usage观察。
+
+以上只是现有方案实现必需的adapter私有连接，不新增Application Port、权限、账本或对外字段。其余routine实现细节由各原owner在已冻结范围内决定，签名冲突以原生消息先对齐，不重复开产品决定访谈。主请求上限/工具批/CP及真实producer条件不变。当前无运行通过声明，Root新E2E和独立双轴仍待固定最终组合。

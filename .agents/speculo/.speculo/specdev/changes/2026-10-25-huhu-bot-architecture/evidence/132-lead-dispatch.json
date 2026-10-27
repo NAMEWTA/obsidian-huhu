@@ -1,0 +1,21 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:31:52.197931+00:00",
+  "task": "132-memory-manifest-binding",
+  "taskSha256": "e6bc98f99dfd55bec6c47d4a88da3da81bcdcd47269cd9ac087b24bd885eb4a7",
+  "owner": "native:/root/foundation_go",
+  "nativeTool": "collaboration.followup_task",
+  "mapRevision": 36,
+  "goalRevision": 35,
+  "dispatchValidation": {
+    "actualExit": 0,
+    "chunk": "79bd30"
+  },
+  "planValidation": {
+    "actualExit": 0,
+    "chunk": "6945d0",
+    "tickets": 28,
+    "executions": 12
+  },
+  "priorTaskDisposition": "129 source checkpoint stopped/uncompleted; not resumed by this dispatch"
+}

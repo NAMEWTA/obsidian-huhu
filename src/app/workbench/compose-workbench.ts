@@ -33,6 +33,12 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		if (!load) throw new Error(t('workbench.notReady'));
 		return (await load())(context, target, state, signal);
 	};
+	const huhubotPage: PageCreate = async (context, target, state, signal) => {
+		const page = target.section === 'agents' ? 'agents' : target.section === 'groups' ? 'groups' : target.section === 'memory' ? 'memory' : target.section === 'tasks' ? 'tasks' : target.section === 'access' ? 'access' : target.section === 'approvals' ? 'approvals' : target.section === 'data' ? 'data' : 'chat';
+		const load = (await plugin.activateModule('huhubot'))?.pages?.[page];
+		if (!load) throw new Error(t('workbench.notReady'));
+		return (await load())(context, target, state, signal);
+	};
 	const home = () => plugin.services.peek(HOME_WORKBENCH);
 	// The HUHU files tree (and the default-icon table it uses) loads when the panel is first shown, not at startup.
 	let contentTree: typeof import('../content/content-tree') | undefined;
@@ -83,6 +89,27 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('agent'), supported: Platform.isDesktopApp, ready: !!plugin.services.peek(AGENT_WORKBENCH) }),
 			stateKeys: ['agentHistory', 'agentHistoryWidth'],
 			create: modulePage('agent', 'terminal'),
+		},
+		{
+			id: 'huhubot',
+			navigationContext: true,
+			rail: { slot: 'top' },
+			navigation: { id: 'huhubot', labelKey: 'workbench.huhubot', icon: 'bot', target: { feature: 'huhubot' }, children: [
+				{ id: 'huhubot-chat', labelKey: 'workbench.huhubotChat', icon: 'message-circle', target: { feature: 'huhubot', section: 'chat' } },
+				{ id: 'huhubot-agents', labelKey: 'workbench.huhubotAgents', icon: 'bot', target: { feature: 'huhubot', section: 'agents' } },
+				{ id: 'huhubot-groups', labelKey: 'workbench.huhubotGroups', icon: 'users', target: { feature: 'huhubot', section: 'groups' } },
+				{ id: 'huhubot-memory', labelKey: 'workbench.huhubotMemory', icon: 'brain', target: { feature: 'huhubot', section: 'memory' } },
+				{ id: 'huhubot-tasks', labelKey: 'workbench.huhubotTasks', icon: 'list-checks', target: { feature: 'huhubot', section: 'tasks' } },
+				{ id: 'huhubot-access', labelKey: 'workbench.huhubotAccess', icon: 'shield', target: { feature: 'huhubot', section: 'access' } },
+				{ id: 'huhubot-approvals', labelKey: 'workbench.huhubotApprovals', icon: 'check-check', target: { feature: 'huhubot', section: 'approvals' } },
+				{ id: 'huhubot-data', labelKey: 'workbench.huhubotData', icon: 'database', target: { feature: 'huhubot', section: 'data' } },
+			] },
+			title: () => t('workbench.huhubot'),
+			// HUHU Bot is on-demand: an idle module has no client to peek yet, but
+			// its navigation must remain discoverable so opening the page can activate it.
+			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('huhubot'), supported: Platform.isDesktopApp, ready: plugin.moduleState('huhubot') !== 'failed' }),
+			stateKeys: [],
+			create: huhubotPage,
 		},
 		{
 			id: 'automations',
@@ -245,7 +272,7 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			return () => { listeners.delete(listener); };
 		},
 		openSettings: (feature) => {
-			const product = { dashboard: 'dashboard', terminal: 'terminal', contacts: 'contacts', automations: 'automation', notifications: 'general', icons: 'iconic', sync: 'sync', safe: 'general', content: 'general', settings: 'general' } as const;
+			const product = { dashboard: 'dashboard', terminal: 'terminal', huhubot: 'huhubot', contacts: 'contacts', automations: 'automation', notifications: 'general', icons: 'iconic', sync: 'sync', safe: 'general', content: 'general', settings: 'general' } as const;
 			void plugin.openWorkbenchSettings(feature ? product[feature] : 'general').catch(report);
 		},
 		openFocus: async (target, state, placement, ownerWindow) => {

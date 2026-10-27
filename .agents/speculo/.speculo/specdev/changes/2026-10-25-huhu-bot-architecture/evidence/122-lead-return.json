@@ -1,0 +1,45 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T08:42:31.406757+00:00",
+  "task": "122-hap-default-expectation",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "e85c64",
+  "fullReportReadToolChunk": "961bd0",
+  "sourceDiffAndResultsReadToolChunk": "94a0b8",
+  "allRawLogsReadToolChunk": "7cbcbc",
+  "captureScriptReadToolChunk": "ba6fde",
+  "reportSha256": "72d496e0192bc739adf3f9fa1160fddb1ac3b2da79554479d2d6dbaa60485cf0",
+  "manifestSha256": "466ed6410d557c0f97f408d08776cc6a3e00abf39490ab200115f0f690976044",
+  "verifiedArtifacts": 22,
+  "ownFiles": {
+    "native/huhubot/tests/contract/assistant/hap_test.go": "6816ceb54a0067bf007c0b551e38f8f8f35d2db5e2973ceb2b71608b15af6ca0"
+  },
+  "actualFault": "MODEL_UNAVAILABLE/CREDENTIAL_MISSING/retryable=false",
+  "observation": {
+    "exitCode": 1,
+    "waited": true,
+    "seconds": 3.3058356209985504,
+    "sourceCount": 333,
+    "baseSourceTreeSHA256": "464e4bf346162d6bc2204b478a09a40ff942e00482e70f9adb02cdff35ed7d5f",
+    "effectiveSourceTreeSHA256": "e6e93d638b7126269993c5fb7fc8ad32e268b3dba6a26c5e806a1c4cadb30460",
+    "sourceDrift": [],
+    "overlayDrift": []
+  },
+  "assistantPackage": {
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 28.741469594999216,
+    "sourceCount": 333,
+    "sourceTreeSHA256": "cde12d219676d16651e9e6afae7c24bc74937bc34dc38a33ef9e6c5e2fcc3ca3",
+    "sourceDrift": [],
+    "topLevelPassCount": 18,
+    "skips": 0
+  },
+  "preciseChange": "Single reason literal only;old predicate fields and all strict DTO/secret controls unchanged.",
+  "disposition": "Accepted122 test-only candidate. Anthropic joint input/review still pending. Root E2E reuse handled by separate exact proof; original r1 unchanged.",
+  "boundary": "Synthetic isolated CLI/private D-Bus suite only;no user keyring/Provider/Obsidian/OS field acceptance."
+}

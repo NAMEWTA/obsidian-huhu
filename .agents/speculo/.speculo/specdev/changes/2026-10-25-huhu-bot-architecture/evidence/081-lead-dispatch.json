@@ -1,0 +1,31 @@
+{
+  "task": "081-recovery-domain",
+  "recordedAt": "2026-10-25T20:52:17.995216+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "nativeTarget": "/root/credential_provider",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "taskSha256": "21140cc642ba7aa89cf2a8c7fdbcf8a00837e7a7930c5749b4d2fea80d91ad43",
+  "mapRevision": 20,
+  "goalRevision": 19,
+  "window": "evidence/T-16-logs/recovery-window-map20.md",
+  "windowSha256": "3befb9dca2031f81a4e3a0e02577cc80115955d2ef8ee6fd191faa6bedbdca63",
+  "priorAcceptedInput": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+  "priorAcceptedReport": "d61215836a08969b7d7d8162845bcb7e6126ca2df16326099a436a599691cd1b",
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "errors": [],
+    "warnings": []
+  },
+  "scopeAudit": "evidence/T-16-logs/window-audit-map20.json",
+  "heavyWindowGranted": false,
+  "firstStep": "Read current code and jointly freeze real API/qualification/claim/dispatch/CP/shutdown contracts; clients wait for actual generated input.",
+  "eventsFixtureSupplement": {
+    "path": "evidence/T-16-logs/events-fixture-order-supplement.md",
+    "sha256": "cbfa57a4134c1b23062925dee8b0c0255770a59ca58e5ca2e4db29ac063fa656",
+    "nativeMessageSent": true,
+    "nativeAckAndFrozenReturnReceived": true,
+    "scope": "T04 original Go owner, two test files only; active Executor wait before independent synthetic append; no production/assertion/timeout changes"
+  }
+}

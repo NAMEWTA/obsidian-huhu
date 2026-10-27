@@ -1,0 +1,49 @@
+{
+  "capturedAt": "2026-10-25T21:51:49.757317+00:00",
+  "kind": "read-only preparation; not T20 implementation or independent review",
+  "readCommands": [
+    "cat .agents/speculo/.speculo/workspace.json .agents/speculo/catalog.json",
+    "cat TASK.md / dev architecture+module-authoring / ui+shell / T20 ticket / 076 interfaces / 082 REPORT+Lead-return",
+    "rg --files src/modules/huhubot src/app src/host src/modules/agent (discovery only)",
+    "rg -n symbols and nl -ba|sed ranges for registry/main/managed/HAP/Host/credentials/controller/Go close/profile sources",
+    "rg -n BOT_CLIENT src (only api.ts declaration found)",
+    "python3 read methods.json implemented flags and Path.exists for future module paths",
+    "python3 hashlib.sha256 source-manifest and old082 nine-file comparison"
+  ],
+  "notFoundReadObservations": [
+    "src/modules/huhubot/manifest.ts and module.ts cat returned missing; recorded as current absent future implementation, not a product failure",
+    "src/app/contracts/services.ts not present; actual ServiceAccess is contracts/module.ts",
+    "scripts/huhu-bot-build-contract.mjs not present; actual asset contract functions are build-huhu-bot.mjs",
+    "native/huhubot/internal/application/data not present; planned T17-19 methods remain unimplemented; existing migration backup files read separately"
+  ],
+  "plannedMethods": {
+    "profile.deletePreview": false,
+    "profile.delete": false,
+    "profile.status": true,
+    "portable.export": false,
+    "portable.importPreview": false,
+    "portable.import": false
+  },
+  "old082OwnFilesChecked": 9,
+  "old082OwnDrift": [],
+  "crossOwnerObservation": {
+    "owner": "081",
+    "source": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/081-recovery-domain/logs/06-source-budget-migration-ts.log",
+    "observedCase": "TestActualRecoveryClientUsesOriginalRunCASAndExplicitUncertainRetryAcrossProcesses",
+    "casePass": true,
+    "tenObservationsTrue": true,
+    "wholeCommandPassed": false,
+    "wholeCommandReason": "separate real source fixture failed in same command; 081 still fixing; not T16 joint acceptance",
+    "runBy084": false
+  },
+  "productsRun": false,
+  "testsRun": false,
+  "buildsRun": false,
+  "networkRun": false,
+  "nativeCompileRun": false,
+  "agentsSpawned": false,
+  "productionOrTestWrites": false,
+  "oldReportWrites": false,
+  "formalStateWrites": false,
+  "activeOwnedProductsOrChecks": 0
+}

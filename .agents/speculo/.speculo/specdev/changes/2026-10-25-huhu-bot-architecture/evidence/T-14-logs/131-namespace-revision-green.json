@@ -1,0 +1,22 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:30:48.130281+00:00",
+  "sameRootRedProbe": "evidence/T-14-logs/127-namespace-revision-probe.mjs",
+  "probeSha256": "7037ac760b20e40eb0831c8fd72bdba56121faf2e0fff42dda09ffdf2ce4c8a8",
+  "sourceHashes": {
+    "src/modules/huhubot/core/protocol/method-validation.ts": "ee7b25aa3cba3e6a7a968b84691fe0cb741d2b8a05f696a2db627bc119e952b5",
+    "contracts/hap/v0.1/schema.json": "2fd592f7a503004b5b315f0becf1fc1ad9e8266aff46bfc12e2473fe73e3a615",
+    "native/huhubot/internal/application/api/memory.go": "7cd35c57182251403d1314d8ae7d56f342613b7c63955d6311ab1a24e381f8ec",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934"
+  },
+  "sourceDrift": [],
+  "command": [
+    "node",
+    "--input-type=module"
+  ],
+  "actualExit": 0,
+  "waited": true,
+  "seconds": 0.47098541499872226,
+  "logSha256": "31551644cbf99da1b1b8ed4f377cbc927ff502e5a3bd8dc3265e4280b9f1ffa8"
+}

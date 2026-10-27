@@ -1,0 +1,88 @@
+{
+  "session": "20261025T043239Z",
+  "task": "130-memory-common-engine",
+  "status": "completed",
+  "at": "2026-10-26T12:02:42.840765+00:00",
+  "ownSources": {
+    "state": "production-and-test-frozen",
+    "files": [
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go",
+        "bytes": 15986,
+        "sha256": "aa51a570c2c4a3a32a788b969331d078404efa2a3089c7d4034b8413cfa75767"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/context.go",
+        "bytes": 5386,
+        "sha256": "988307e04bf82ebd926aaa0453bfd51484cbfcb23862040da370afeb5c6bc0d2"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/context_checkpoint_test.go",
+        "bytes": 13791,
+        "sha256": "87359850797618fc2008e4a4bb5bdf452fe4538dc7695461275077a72625664c"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/context_consumer_test.go",
+        "bytes": 8755,
+        "sha256": "f364fe36e064f67b92af5e75306952e1882f0e457fc81bffaac376dc57b8c986"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/context_edges_test.go",
+        "bytes": 7902,
+        "sha256": "39633f94cdc7a4143b10feaee27d5e14a8c5380682f921f7dfaf5a7044d1aa92"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/engine.go",
+        "bytes": 14542,
+        "sha256": "27cd6be34fa644c1f71678f1fb42e0353ee6d1418831b0fb64758e262bfffe04"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/legacy_context_test.go",
+        "bytes": 5528,
+        "sha256": "6d4f308cd7dba06660318e9de24e85d1f3c8193eb4b621bdbaf07d4854b3638a"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/memory_candidates.go",
+        "bytes": 2640,
+        "sha256": "542535ae45f1e779cd602efca9d8052c02a831dd944ada7fc28b52ac6d1062cb"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/memory_consumer_test.go",
+        "bytes": 12956,
+        "sha256": "588bc55c0a7b6cfedfaf72e2564320c32e95f0e99421b4b7e77051a20dce37d2"
+      },
+      {
+        "path": "native/huhubot/internal/adapters/outbound/eino/common/protocolcontext/context_test.go",
+        "bytes": 19757,
+        "sha256": "161f646a4f064c53cb42714e5c3f3ef10ea4644d5a8449e58ff4f08d47707aaa"
+      },
+      {
+        "path": "native/huhubot/tests/contract/engine/chat/memory_context_test.go",
+        "bytes": 5943,
+        "sha256": "bff4bb690e6656035f4f78869406a4d5788d9fc67a616f3664abb68aa038da7f"
+      }
+    ],
+    "treeSha256": "041f670542476319f9cde6b0f221c906f8b8a5be7d88a6c32c59177eb4942dd9",
+    "noActiveGo": true
+  },
+  "readonlySourcesManifest": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/30-readonly-final-sources.json",
+    "sha256": "39c729deea2073a38749b8186555ed2d3283b7ef618c2d5fbeb675c0e099ac2d"
+  },
+  "report": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/REPORT.md",
+    "sha256": "d8c7734f8d1e083e316e472dfbf856f4def251334a296c71ff75d988d021fb5a"
+  },
+  "sourceDrift": [],
+  "scope": "4 production + 7 consumer tests; public StartRun test intentionally not run until Core/SQL joint window",
+  "goProcessesActive": false,
+  "componentChecksComplete": true,
+  "publicCoreConsumerChecked": false,
+  "jointGateComplete": false,
+  "returnResult": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/31-return-result.json",
+    "sha256": "4702816231237654b15dd339cd8494c3517cda005ac7c0a25112798a44e780a6",
+    "actualExit": 0,
+    "waited": true
+  }
+}

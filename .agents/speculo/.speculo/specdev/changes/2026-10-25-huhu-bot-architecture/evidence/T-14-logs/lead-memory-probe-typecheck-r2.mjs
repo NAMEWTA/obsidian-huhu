@@ -1,0 +1,12 @@
+import ts from 'typescript';
+import path from 'node:path';
+const repo=process.cwd();
+const config=ts.readConfigFile(path.join(repo,'tsconfig.test.json'),ts.sys.readFile);
+if(config.error)throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText,'\n'));
+const parsed=ts.parseJsonConfigFileContent(config.config,ts.sys,repo);
+const files=['/tmp/huhu-lead-memory-model.ts'];
+const program=ts.createProgram([...files,...parsed.fileNames.filter(x=>x.endsWith('.d.ts'))],{...parsed.options,noEmit:true,skipLibCheck:true,rootDir:undefined,typeRoots:[path.join(repo,'node_modules/@types')]});
+const diagnostics=ts.getPreEmitDiagnostics(program);
+if(diagnostics.length)process.stdout.write(ts.formatDiagnostics(diagnostics,{getCanonicalFileName:x=>x,getCurrentDirectory:()=>repo,getNewLine:()=> '\n'}));
+process.stdout.write(JSON.stringify({probes:files,diagnostics:diagnostics.length,sourceFiles:program.getSourceFiles().length,scope:'Root integration probe and imported TS dependencies; no CLI/model/Go execution'})+'\n');
+process.exitCode=diagnostics.length?1:0;

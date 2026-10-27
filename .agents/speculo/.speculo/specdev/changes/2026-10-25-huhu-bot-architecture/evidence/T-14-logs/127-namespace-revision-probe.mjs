@@ -1,0 +1,10 @@
+import { build } from 'esbuild';
+import { createRequire } from 'node:module';
+const built = await build({stdin:{contents:"import { MethodValidation } from './src/modules/huhubot/core/protocol/method-validation.ts'; export { MethodValidation };",resolveDir:process.cwd(),loader:'ts'},bundle:true,write:false,platform:'node',format:'cjs'});
+const mod = {exports:{}};
+new Function('module','exports','require',built.outputFiles[0].text)(mod,mod.exports,createRequire(import.meta.url));
+const v = new mod.exports.MethodValidation();
+const values=['1','9223372036854775807','0','9223372036854775808','11111111111111111111'];
+const observed=values.map(namespaceRevision=>({namespaceRevision,actual:v.validate('memory.list','result',{namespaceRevision,items:[]}),expected:namespaceRevision==='1'||namespaceRevision==='9223372036854775807'}));
+console.log(JSON.stringify(observed,null,2));
+process.exitCode=observed.every(x=>x.actual===x.expected)?0:1;

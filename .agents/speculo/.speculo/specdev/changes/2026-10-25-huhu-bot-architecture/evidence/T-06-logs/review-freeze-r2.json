@@ -1,0 +1,12 @@
+{
+  "inputSha256": "b7701a7987833a19f91387607feedb7eb5314864bdd0ac953ea61ceb02d1de33",
+  "files": 169,
+  "sources": 46,
+  "source": "evidence/T-06.md#review-input-r2",
+  "reports": {
+    "048-source-delivery-repair": "faf0b4ff5355e92e344ad63d39307b0624663ca6f2d62747d74ebf34d33ad157",
+    "049-event-page-repair": "d1ce78dd25bc9a497b0da6773030e9c26a157041fd5c2183f3e300c15132a2b2"
+  },
+  "leadProbe": "evidence/T-06-logs/lead-repair-e2e-r2.json",
+  "plugin": "evidence/T-04-logs/lead-ts-build-result-r2.json"
+}

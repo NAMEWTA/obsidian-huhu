@@ -1,0 +1,14 @@
+{
+  "inputSha256": "5283c6f2df32207a609142551375684c980b972471ff1026290bfd0c7b07ab2b",
+  "files": 337,
+  "sources": 107,
+  "source": "evidence/T-16.md#review-input-recovery-r1",
+  "reports": {
+    "080-recovery-core": "4bae16ff612c08b4dd83f1c70718b5d54653d0fc933e5166a519de7e400a70c5",
+    "081-recovery-domain": "30d6a434ae23c9b22debee20bf7466b42bb563abac445a8df17afde64c45caa2",
+    "082-recovery-client": "39be2985e7a68cb83f06477850a7591c4777428b5717170792ac3128aa4b8e6b",
+    "086-recovery-fixture-repair": "35f7719cc56d462171faa43273fca63c4b4b2b8a32891924450e70e446419d55"
+  },
+  "leadProbe": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-recovery-e2e-r2.json",
+  "plugin": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-plugin-checks-recovery-r1.json"
+}

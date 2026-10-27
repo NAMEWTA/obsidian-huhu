@@ -1,0 +1,2 @@
+.huhu-bot-tasks pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.huhu-bot-tasks [data-action-state='pending'] { cursor: progress; }

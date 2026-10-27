@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-26T15:14:13.208350+00:00",
+  "status": "author candidate returned; business T05/T14/Goal pending Lead acceptance",
+  "session": "20261025T043239Z",
+  "task": "138-memory-access-recovery",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "prior128CheckpointSHA256": "e173a1e6c7ce747ed008c40e60ef5d19729396c301120b9830330f9db944a234",
+  "sourceCount": 18,
+  "sourceTreeSHA256": "94e7345f7550d2399e31913583426f21a1f975c754d210dbac4a5c2516cc82a5",
+  "sourceTreeEncoding": "sorted path: sha256 + two spaces + path + LF (including final LF), UTF8 SHA256",
+  "sourceFiles": {
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go": "118bdf4bbe215a56be74656f186007752e012e2ac4953b573bc01092b00df458",
+    "native/huhubot/internal/adapters/outbound/sqlite/events/store.go": "feaeefeb8e4a35960288b73774e71eccb686e46555421ef956d5bf4577d0005c",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go": "d277a6de67b8bc85e8dd8cff6edda4349d6d56351a496c263f2830cfcfab2064",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/delivery.go": "2b6b066859c968691b60d83fa8cabd17b8059e9323d03df77a336f9e344d7d3a",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/groups.go": "c4ca0587c0a686383a48213e7541d645f13b58a6cc6ee4476b4b7cb1a3d10a11",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/lineage.go": "6f2c664e265d5316e3c107fd2d585ce389eb196efc742bd40352db5d978596f0",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/memory.go": "dafd4ad00c0b482b4ae3defd1883f301c91c6bee7b7eb631661b04549fa7758f",
+    "native/huhubot/internal/adapters/outbound/sqlite/grants/store.go": "3e408e620d790cae29bf0d3455844788500b1e3e7ea40c22d05f3ba7123b0721",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/budget.go": "99f17d530ed3c13f6d212d890d9d397a9436a5d8275259c554327b108602fc7b",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go": "703de5157c7bbd2d7b1ad8363c107fa0da83a0f9492906d487c67d120109096e",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/memory.go": "405b23fe52dce7742b58642cde6a50854e8b8e6a2f799cdc81ce24debbd7d22b",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/messages.go": "f59767eac9457ae045140257e671cf92a772e67c690d0147b7e2290a2c531998",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go": "3d286f7e32a4bcfba53fc687a943fcee193f9dff9686064626e80c031a7dbb28",
+    "native/huhubot/internal/application/execution/events/service.go": "fe7fa78487d04c262ba470330f75c1c4fe237f2ff762a2a596ff422099dc01a1",
+    "native/huhubot/tests/contract/access/memory_facts_test.go": "436ce3cd5f718465fc021b8684265d4d4999296564c74553d371293b7244a6e0",
+    "native/huhubot/tests/contract/collaboration-policy/memory_consumption_test.go": "9b31ec1e84bb484203176d8988834b31f35571e667407042b9c2c7895c5c41d9",
+    "native/huhubot/tests/contract/collaboration-policy/memory_interface_test.go": "a4eaf204fb07778590a1db43dec812dcbd845247b003a5687e9223c374fe34ed",
+    "native/huhubot/tests/contract/groups/memory_history_test.go": "5cd5d086215a8a34c9ac6c641f353104b1f2b1c429e8a21d1acbee11d91b328c"
+  },
+  "deltaFromPrior128": [
+    "native/huhubot/tests/contract/access/memory_facts_test.go",
+    "native/huhubot/tests/contract/collaboration-policy/memory_consumption_test.go"
+  ],
+  "unchangedFromPrior128": 16,
+  "artifacts": {
+    "REPORT.md": "873778144bb3e105b76f5e6a9128f582bb63f8dbe1c05a8c4a619fe7ea4cdc91",
+    "TASK.md": "5f8262f2e3ad4db908a8a169e6d3d313e1b328a0daa915b406e4ab6f4e447381",
+    "logs/01-source-only-checkpoint.json": "c0473b7b5bf976e9438e221194ab3a200f829e64437c7ce4c9b467418f037d15",
+    "logs/02-input-before.json": "9791435492ea441a3b79f19483a9dd4a5b056f73ed0b2623e3b7f286440ea366",
+    "logs/03-access-batch.log": "0fb2194a74e1d935a04b66f538ebd572cc050a8f9cdd284cf4964cef5f903b84",
+    "logs/04-maintenance-cross-job.log": "0b47993a33431febb9170a2b59750071da177cb63bd792e63b6d7706edd36e2c",
+    "logs/05-after-check.json": "23943a609dbb3f769dc7437274144ad1fb2b0657bd80cc243987eccff1d7d5ac",
+    "logs/06-two-target-result.json": "9fac83ad94883e25e22473ec32bc4d550e0b7f4288c2d340109e0f39f9b68b9c"
+  },
+  "checks": "two exact targets exit0/Wait; details in logs/06-two-target-result.json",
+  "goWindowReturned": true,
+  "productionChangedIn138": false
+}

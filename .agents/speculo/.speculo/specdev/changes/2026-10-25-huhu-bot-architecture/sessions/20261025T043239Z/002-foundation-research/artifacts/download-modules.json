@@ -1,0 +1,51 @@
+[
+  {
+    "module": "github.com/mattn/go-sqlite3",
+    "version": "v1.14.52",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/mattn/go-sqlite3\",\n\t\"Version\": \"v1.14.52\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/mattn/go-sqlite3/@v/v1.14.52.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/mattn/go-sqlite3/@v/v1.14.52.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/mattn/go-sqlite3/@v/v1.14.52.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/mattn/go-sqlite3@v1.14.52\",\n\t\"Sum\": \"h1:wVbm2Qnf4OXkqhBTSPuCRZDRnxfbVrrmiCEroVdog8U=\",\n\t\"GoModSum\": \"h1:6JTjA44L93a0QCyJef5YvlPoKXntQPjzWv5gtm9sB6w=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/mattn/go-sqlite3\",\n\t\t\"Hash\": \"b0be46fa28d17ee0b65c79774ac0dad84b6db068\",\n\t\t\"Ref\": \"refs/tags/v1.14.52\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/ncruces/go-sqlite3",
+    "version": "v0.35.6",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/ncruces/go-sqlite3\",\n\t\"Version\": \"v0.35.6\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6\",\n\t\"Sum\": \"h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=\",\n\t\"GoModSum\": \"h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/ncruces/go-sqlite3\",\n\t\t\"Hash\": \"091633ebb62b0c78988d3e079149333b36337599\",\n\t\t\"Ref\": \"refs/tags/v0.35.6\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino",
+    "version": "v0.9.22",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino\",\n\t\"Version\": \"v0.9.22\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino/@v/v0.9.22.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino/@v/v0.9.22.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino/@v/v0.9.22.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22\",\n\t\"Sum\": \"h1:qBSgj+H5geYTysjta/bgdE9OVXX+9MVXP74vA6QA4GQ=\",\n\t\"GoModSum\": \"h1:OBD1mrkfkt/pJa4rkg1P0VnaMeOVl7l8IAdEqY//3IQ=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/cloudwego/eino\",\n\t\t\"Hash\": \"0a5ca53b9d3bf7b661dccc863465ec568a421eea\",\n\t\t\"Ref\": \"refs/tags/v0.9.22\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/openai",
+    "version": "v0.1.13",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/openai\",\n\t\"Version\": \"v0.1.13\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/openai/@v/v0.1.13.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/openai/@v/v0.1.13.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/openai/@v/v0.1.13.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/openai@v0.1.13\",\n\t\"Sum\": \"h1:5XHRTiTD5bt9KQrMHcfvuWNklEC3tpm3XHejdozt9vM=\",\n\t\"GoModSum\": \"h1:mgIoqYYOc0eECCqvLbEYpOJrQNTNxkwXzSJzFU+v5sQ=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/cloudwego/eino-ext\",\n\t\t\"Subdir\": \"components/model/openai\",\n\t\t\"Hash\": \"0ebab92e14f26088411dbc440a1ebdc904ccd8a1\",\n\t\t\"Ref\": \"refs/tags/components/model/openai/v0.1.13\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/agenticopenai",
+    "version": "v0.2.4",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/agenticopenai\",\n\t\"Version\": \"v0.2.4\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticopenai/@v/v0.2.4.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticopenai/@v/v0.2.4.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticopenai/@v/v0.2.4.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4\",\n\t\"Sum\": \"h1:M5ODiB1UaYV0I/dL2dmgc/HfZ2WUBV0saM9Tkhk2IDg=\",\n\t\"GoModSum\": \"h1:AfLNKxrTFFkJbCWSvOtqKK1ZXEp0hpe26CBQ8GSf5zo=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/cloudwego/eino-ext\",\n\t\t\"Subdir\": \"components/model/agenticopenai\",\n\t\t\"Hash\": \"3603a39473c3e7b2aa3bfc11216487c94b8c7fd9\",\n\t\t\"Ref\": \"refs/tags/components/model/agenticopenai/v0.2.4\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/claude",
+    "version": "v0.1.26",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/claude\",\n\t\"Version\": \"v0.1.26\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/claude/@v/v0.1.26.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/claude/@v/v0.1.26.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/claude/@v/v0.1.26.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/claude@v0.1.26\",\n\t\"Sum\": \"h1:TTf4TtKnEVEj0CD4Dw/vD/UFVfQW89V7MCVN2nH5k7Q=\",\n\t\"GoModSum\": \"h1:uZAs2dFp/lSqk5kK3g3vNdsjUahVOAmcIOjo4VAYkQ4=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/cloudwego/eino-ext\",\n\t\t\"Subdir\": \"components/model/claude\",\n\t\t\"Hash\": \"3603a39473c3e7b2aa3bfc11216487c94b8c7fd9\",\n\t\t\"Ref\": \"refs/tags/components/model/claude/v0.1.26\"\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/agenticclaude",
+    "version": "v0.1.7",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/agenticclaude\",\n\t\"Version\": \"v0.1.7\",\n\t\"Info\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticclaude/@v/v0.1.7.info\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticclaude/@v/v0.1.7.mod\",\n\t\"Zip\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticclaude/@v/v0.1.7.zip\",\n\t\"Dir\": \"/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticclaude@v0.1.7\",\n\t\"Sum\": \"h1:oxvyuAdZLlKSWYrzXwXS63AokgC3TqSljrzCGNRi4JA=\",\n\t\"GoModSum\": \"h1:LsIyLkRviQtfJsGYP6MX9PwqCX4jMtVxR4zR2A7ZB+g=\",\n\t\"Origin\": {\n\t\t\"VCS\": \"git\",\n\t\t\"URL\": \"https://github.com/cloudwego/eino-ext\",\n\t\t\"Subdir\": \"components/model/agenticclaude\",\n\t\t\"Hash\": \"3603a39473c3e7b2aa3bfc11216487c94b8c7fd9\",\n\t\t\"Ref\": \"refs/tags/components/model/agenticclaude/v0.1.7\"\n\t}\n}\n",
+    "stderr": ""
+  }
+]

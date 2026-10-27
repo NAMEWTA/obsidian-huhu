@@ -2,6 +2,8 @@
 
 HUHU 是 Obsidian 插件，入口为 `src/app/main.ts`，esbuild 生成单个 CommonJS `main.js`。样式由有序清单生成单个 `styles.css`；原生终端 helper 在 `native/pty-server`，通过 stdio 帧通信。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev/SKILL.md)进入。
 
+Bot 底座由 `native/huhubot` 的独立 Go module 与 `src/modules/huhubot` 的 TS 公共 API/协议客户端组成，wire 合同在 `contracts/hap/v0.1`。当前底座提供本机 Profile、SQLite 元数据、hello/status、Host 接缝和有界 stdio 生命周期；模块页面与业务能力以实际装配为准。Go 的 Application 类型、HAP DTO 与 SQLite Row 分开转换，入站不能直接依赖数据库，`pnpm test:huhu-bot-architecture` 检查内层和入站依赖。
+
 ## 分区与模块
 
 | 分区 | 职责 |

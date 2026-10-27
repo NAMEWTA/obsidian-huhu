@@ -1,0 +1,34 @@
+{
+  "observer": "native:/root",
+  "task": "115-memory-interface-contract",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullInterfaceContractRead": true,
+  "readToolChunks": [
+    "42f3a5",
+    "c2f670",
+    "1023de"
+  ],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "b95852",
+  "artifactAndSourcesCheckToolChunk": "dc1594",
+  "reportSha256": "6159120dbdd5659cdf1e5878c0ca0ef8d2676b68a6fd5ed7ca315b803f54532e",
+  "interfaceSha256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+  "manifestSha256": "585f3abe9269f9e8ee4cf8ccaf80927af55bab5ec29609260fe8d15f67163e2d",
+  "verifiedArtifacts": 9,
+  "verifiedCurrentSources": 55,
+  "sourceTreeSha256": "49385af11e952888ac109dfa3462265acd3523b1b11d55dced3031fe46adac1a",
+  "productChecksRun": [],
+  "disposition": "accepted read-only implementation-preparation candidate; exact API/UoW/bank/facts/recovery interfaces available for later T14 adoption after T10 input recheck; no new product implementation or Ticket activation",
+  "importantDecisions": [
+    "approvedprototype enabled=true + explicit default maintenancequota0",
+    "sameExecutor independentmaintenanceRun/currentpin/outbox",
+    "trustedDBjob determines accountfamily even summary/retry",
+    "memory facts before emptySources fastreturn; original physicaldeliveryfence",
+    "nilMemory oldCPbytes unchanged; trustedDBmanifest required for newMemoryCP"
+  ],
+  "continuingScope": "099/T14 full context build/compression/temporary isolation and all AC remain required; this candidate does not waive those implementation obligations. T15/17 remain separate later work.",
+  "boundary": "all signatures/DDL/minimum consumers proposed/not-run; realProvider/Obsidian/OS user-owned; no Go/productNode/DB/network"
+}

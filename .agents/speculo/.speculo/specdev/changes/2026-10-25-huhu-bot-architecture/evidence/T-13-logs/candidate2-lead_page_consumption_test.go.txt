@@ -1,0 +1,324 @@
+package groups_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// This is a Lead-owned external integration probe. It starts at real user
+// admission, then exercises the model's original ToolExecution and Dispatch.
+func TestLeadPageActualContributionBoundary(t *testing.T) {
+	for _, tc := range []struct {
+		name           string
+		limit          int
+		allPages       bool
+		removeReturned bool
+		wantDispatch   int32
+	}{
+		{"byte-omitted", 100, false, false, 1},
+		{"byte-returned", 100, false, true, 0},
+		{"byte-next-page-consumed", 100, true, false, 0},
+		{"count-omitted", 3, false, false, 1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var targets []string
+			made := make(chan []api.Delegation, 1)
+			first := make(chan api.DelegationPage, 1)
+			completedPages := make(chan []api.DelegationPage, 1)
+			start := make(chan struct{})
+			next := make(chan struct{})
+			release := make(chan struct{})
+			var startOnce, nextOnce, releaseOnce sync.Once
+			var dispatches, dispatchEntrances atomic.Int32
+			await := func(c context.Context, ch <-chan struct{}) error {
+				select {
+				case <-ch:
+					return nil
+				case <-c.Done():
+					return c.Err()
+				}
+			}
+			engine := engineFunc(func(c context.Context, i api.EngineInput) (api.EngineResult, error) {
+				if strings.HasPrefix(i.Intent, "lead private ") {
+					return api.EngineResult{Status: "finished", Text: strings.Repeat("p", 131072)}, nil
+				}
+				ds := []api.Delegation{}
+				for n, target := range targets {
+					out, e := i.Tools.Invoke(c, api.ToolCall{ID: fmt.Sprint("delegate-", n), Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: fmt.Sprint("lead private ", n), Constraints: []string{}}})
+					if e != nil {
+						return api.EngineResult{}, e
+					}
+					ds = append(ds, *out.Delegation)
+				}
+				made <- ds
+				if e := await(c, start); e != nil {
+					return api.EngineResult{}, e
+				}
+				out, e := i.Tools.Invoke(c, api.ToolCall{ID: "first-page", Name: "tasks.list", TaskList: &api.DelegationQuery{PageQuery: api.PageQuery{Limit: tc.limit}}})
+				if e != nil {
+					return api.EngineResult{}, e
+				}
+				pages := []api.DelegationPage{*out.Tasks}
+				first <- pages[0]
+				if e = await(c, next); e != nil {
+					return api.EngineResult{}, e
+				}
+				cursor := pages[0].NextCursor
+				for tc.allPages && cursor != "" {
+					if len(pages) > 6 {
+						return api.EngineResult{}, fmt.Errorf("cursor did not progress")
+					}
+					out, e = i.Tools.Invoke(c, api.ToolCall{ID: fmt.Sprint("next-page-", len(pages)), Name: "tasks.list", TaskList: &api.DelegationQuery{PageQuery: api.PageQuery{Limit: tc.limit, Cursor: cursor}}})
+					if e != nil {
+						return api.EngineResult{}, e
+					}
+					pages = append(pages, *out.Tasks)
+					cursor = out.Tasks.NextCursor
+				}
+				attempt, e := i.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "after-real-page", InputEstimate: "1", OutputBound: "2"})
+				if e != nil {
+					return api.EngineResult{}, e
+				}
+				completedPages <- pages
+				// Deliberately outlive cancellation: the actual Dispatch fence must
+				// reject an old producer even when it ignores its canceled context.
+				<-release
+				dispatchEntrances.Add(1)
+				e = i.Attempts.Dispatch(context.Background(), attempt, func(context.Context) error { dispatches.Add(1); return nil })
+				if e != nil {
+					e = i.Attempts.AbortUnsent(context.Background(), attempt)
+				} else {
+					_, e = i.Attempts.Settle(context.Background(), attempt, api.AttemptObservation{Knowledge: "known", InputTokens: "1", OutputTokens: "1", ProducerEnded: true})
+				}
+				return api.EngineResult{Status: "finished", Text: "only actually returned contributions"}, e
+			})
+			core, loc := open(t, bootstrap.Options{Engine: engine, Budget: api.BudgetPolicy{RootTokenLimit: "100", ProfileTokenLimit: "1000", MaintenanceTokenLimit: "0"}})
+			t.Cleanup(func() {
+				startOnce.Do(func() { close(start) })
+				nextOnce.Do(func() { close(next) })
+				releaseOnce.Do(func() { close(release) })
+			})
+			a := agent(t, core, "A", false)
+			b := agent(t, core, "B", true)
+			members := []api.Agent{b}
+			for n := 0; n < 4; n++ {
+				m := agent(t, core, fmt.Sprint("private-", n), true)
+				members = append(members, m)
+				targets = append(targets, m.ID)
+			}
+			b = allow(t, core, b, []string{"agents.delegate", "tasks.list"}, targets)
+			members[0] = b
+			session := group(t, core, a, members...)
+			root := send(t, core, session, "lead paging consumer", b.ID)
+			db := database(t, loc)
+			var admitted []api.Delegation
+			select {
+			case admitted = <-made:
+			case <-time.After(5 * time.Second):
+				t.Fatal("admission timeout")
+			}
+			parent := admitted[0].ParentRunID
+			readProof := func() (api.GroupBinding, []api.DerivedInput, int64) {
+				t.Helper()
+				var raw, derived string
+				var rev int64
+				if e := db.QueryRow("SELECT group_binding_json,derived_json,revision FROM execution_runs WHERE run_id=?", parent).Scan(&raw, &derived, &rev); e != nil {
+					t.Fatal(e)
+				}
+				var p api.GroupBinding
+				var refs []api.DerivedInput
+				if e := json.Unmarshal([]byte(raw), &p); e != nil {
+					t.Fatal(e)
+				}
+				if e := json.Unmarshal([]byte(derived), &refs); e != nil {
+					t.Fatal(e)
+				}
+				return p, refs, rev
+			}
+			for _, child := range admitted {
+				deadline := time.Now().Add(5 * time.Second)
+				for {
+					out, e := core.API.Collaboration.GetTask(ctx, owner, api.IDQuery{ProfileID: meta(t, core, "query", "").ProfileID, ID: child.ID})
+					if e != nil {
+						t.Fatal(e)
+					}
+					if out.Result != nil {
+						if len(out.Result.Text) != 131072 {
+							t.Fatal("child body not full bounded result")
+						}
+						break
+					}
+					if time.Now().After(deadline) {
+						t.Fatal("child result timeout")
+					}
+					time.Sleep(time.Millisecond)
+				}
+			}
+			before, _, beforeRevision := readProof()
+			for _, child := range admitted {
+				if _, err := core.API.Collaboration.GetTask(ctx, owner, api.IDQuery{ProfileID: meta(t, core, "user-query", "").ProfileID, ID: child.ID}); err != nil {
+					t.Fatal(err)
+				}
+			}
+			userProof, _, userRevision := readProof()
+			if len(before.Members) != 1 || len(userProof.Members) != 1 || userRevision != beforeRevision {
+				t.Fatalf("user query changed model qualification: before=%+v after=%+v revision=%d/%d", before, userProof, beforeRevision, userRevision)
+			}
+			startOnce.Do(func() { close(start) })
+			var page api.DelegationPage
+			select {
+			case page = <-first:
+			case <-time.After(5 * time.Second):
+				t.Fatal("first page timeout")
+			}
+			if page.NextCursor == "" {
+				t.Fatal("did not exercise pagination")
+			}
+			seen := map[string]bool{}
+			returnedContributors := map[string]bool{}
+			for _, v := range page.Items {
+				seen[v.ID] = true
+				if v.Result != nil && v.Result.Text != "" {
+					returnedContributors[v.ExecutorAgentID] = true
+				}
+			}
+			if tc.limit == 100 && len(returnedContributors) != 3 {
+				t.Fatalf("byte truncation requires three private results: %v", returnedContributors)
+			}
+			omitted := ""
+			returned := ""
+			for _, v := range admitted {
+				if seen[v.ID] {
+					returned = v.ExecutorAgentID
+				} else {
+					omitted = v.ExecutorAgentID
+				}
+			}
+			if omitted == "" || returned == "" {
+				t.Fatal("both admitted/returned and admitted/omitted required")
+			}
+			checkProof := func(pages []api.DelegationPage) {
+				t.Helper()
+				p, refs, rev := readProof()
+				want := map[string]bool{b.ID: true}
+				wantResults := map[string]bool{}
+				for _, page := range pages {
+					encoded, e := json.Marshal(page)
+					if e != nil {
+						t.Fatal(e)
+					}
+					if len(encoded) > 524288 {
+						t.Fatal("wire byte budget exceeded")
+					}
+					for _, v := range page.Items {
+						if v.Result != nil && v.Result.Text != "" {
+							want[v.ExecutorAgentID] = true
+							wantResults[v.ChildRunID] = true
+						}
+					}
+				}
+				if len(p.Members) != len(want) {
+					t.Fatalf("proof includes unread member or loses returned one: got=%+v want=%v", p, want)
+				}
+				for _, m := range p.Members {
+					if !want[m.AgentID] || m.Incarnation != "1" || m.HistoryRevision != "1" {
+						t.Fatalf("wrong full member tuple: %+v", m)
+					}
+				}
+				resultRefs := map[string]bool{}
+				for _, r := range refs {
+					if r.Kind == "task_result" {
+						resultRefs[r.ID] = true
+					}
+				}
+				if len(resultRefs) != len(wantResults) {
+					t.Fatalf("wrong consumed derived results: got=%v want=%v", resultRefs, wantResults)
+				}
+				for id := range wantResults {
+					if !resultRefs[id] {
+						t.Fatalf("missing actual result provenance %s", id)
+					}
+				}
+				if rev <= userRevision {
+					t.Fatal("actual consumption did not advance revision")
+				}
+				t.Logf("pages=%d returnedContributors=%v completeProof=%+v derivedResults=%v revision=%d", len(pages), want, p, resultRefs, rev)
+			}
+			checkProof([]api.DelegationPage{page})
+			nextOnce.Do(func() { close(next) })
+			var pages []api.DelegationPage
+			select {
+			case pages = <-completedPages:
+			case <-time.After(5 * time.Second):
+				t.Fatal("page traversal timeout")
+			}
+			checkProof(pages)
+			if tc.allPages {
+				ids := map[string]bool{}
+				for _, p := range pages {
+					for _, v := range p.Items {
+						if ids[v.ID] {
+							t.Fatalf("duplicate task across cursor %s", v.ID)
+						}
+						ids[v.ID] = true
+					}
+				}
+				for _, v := range admitted {
+					if !ids[v.ID] {
+						t.Fatalf("missing admitted task after final page %s", v.ID)
+					}
+				}
+				if pages[len(pages)-1].NextCursor != "" {
+					t.Fatal("final cursor is nonempty")
+				}
+			}
+			remove := omitted
+			if tc.removeReturned {
+				remove = returned
+			}
+			ids := []string{a.ID, b.ID}
+			for _, id := range targets {
+				if id != remove {
+					ids = append(ids, id)
+				}
+			}
+			update(t, core, getSession(t, core, session.ID), ids, api.GroupHistoryScope{Kind: "none"})
+			current := getSession(t, core, session.ID)
+			for _, m := range current.GroupMembers {
+				if m.AgentID == remove {
+					t.Fatal("remove action did not take effect")
+				}
+			}
+			releaseOnce.Do(func() { close(release) })
+			terminal := wait(t, core, root.RunID)
+			if e := core.Close(); e != nil {
+				t.Fatal(e)
+			}
+			var status, reason string
+			if e := db.QueryRow("SELECT status,reason FROM execution_runs WHERE run_id=?", parent).Scan(&status, &reason); e != nil {
+				t.Fatal(e)
+			}
+			slots := count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0")
+			pins := count(t, db, "SELECT (SELECT count(*) FROM task_config_pins)+(SELECT count(*) FROM config_snapshot_pins)")
+			t.Logf("actual removed=%s originallyOmitted=%s allPages=%v Dispatch=%d consumer=%s/%s root=%s slots=%d pins=%d", remove, omitted, tc.allPages, dispatches.Load(), status, reason, terminal.Status, slots, pins)
+			if dispatchEntrances.Load() != 1 {
+				t.Fatalf("old producer never reached actual Dispatch: %d", dispatchEntrances.Load())
+			}
+			if dispatches.Load() != tc.wantDispatch {
+				t.Errorf("actual Dispatch=%d want=%d", dispatches.Load(), tc.wantDispatch)
+			}
+			if slots != 0 || pins != 0 {
+				t.Errorf("resources retained slots=%d pins=%d", slots, pins)
+			}
+		})
+	}
+}

@@ -1,0 +1,32 @@
+{
+  "observer": "native:/root",
+  "task": "149-memory-question-restore",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "d600a2b89dfb4433b89262477a5ee5e0ca8eb8da97ea9fd065eb8dff36f1199c",
+  "manifestSHA256": "3a5ea9e42c7a4c1dfbf7440d07a4641a27ccfffaf66bc19b77f9c70872742d9a",
+  "sourceFiles": 31,
+  "artifactFiles": 56,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "149-memory-question-restore",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05947975000162842,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "scope": "Targeted author candidate accepted after direct REPORT/source/artifact review. Full current T14 shared regression, physical CLI three-protocol inbox composition and independent review remain pending. No real provider, Obsidian or target OS acceptance is claimed."
+}
