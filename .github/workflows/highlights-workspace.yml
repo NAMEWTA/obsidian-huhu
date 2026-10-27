@@ -1,0 +1,39 @@
+name: Highlights implementation workspace
+
+on:
+  push:
+    branches: ["NAMEWTA/6"]
+    paths: [".github/workflows/highlights-workspace.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          path: huhu
+          persist-credentials: false
+      - uses: actions/checkout@v5
+        with:
+          repository: PandoraReads/HiLighter
+          path: hilighter
+          persist-credentials: false
+      - name: Archive source without credentials or Git configuration
+        shell: bash
+        run: |
+          git -C huhu archive --format=tar.gz --output="$RUNNER_TEMP/huhu-source.tar.gz" HEAD
+          git -C hilighter archive --format=tar.gz --output="$RUNNER_TEMP/hilighter-source.tar.gz" HEAD
+          printf 'HUHU %s\nHiLighter %s\n' "$(git -C huhu rev-parse HEAD)" "$(git -C hilighter rev-parse HEAD)" > "$RUNNER_TEMP/source-refs.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: highlights-source-snapshot
+          path: |
+            ${{ runner.temp }}/huhu-source.tar.gz
+            ${{ runner.temp }}/hilighter-source.tar.gz
+            ${{ runner.temp }}/source-refs.txt
+          retention-days: 1
