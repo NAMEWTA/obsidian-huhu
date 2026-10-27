@@ -1,10 +1,12 @@
 import { locateAnchor, createAnchor } from './anchor';
-import type { CommentFileDoc, CommentIndex, CommentMessage, CommentThread, NewCommentInput } from './model';
+import type { CommentFileDoc, CommentIndex, CommentMessage, CommentThread, NewCommentInput, NewHighlightInput } from './model';
+import { SAFE_HEX } from './highlight-colors';
 
 const ROOT = '.huhu/editor/comments';
 const INDEX_PATH = `${ROOT}/index.json`;
 const FILES_DIR = `${ROOT}/files`;
 const PENDING_PATH = `${ROOT}/pending.json`;
+const BACKUP_DIR = '.huhu/editor/comments-backups';
 
 interface CommentWrite {
 	index: CommentIndex;
@@ -16,6 +18,7 @@ const DEFAULT_DEBOUNCE_MS = 300;
 
 export interface CommentFs {
 	read(path: string): Promise<string>;
+	list?(path: string): Promise<{ files: string[]; folders: string[] }>;
 	write(path: string, data: string): Promise<void>;
 	remove(path: string): Promise<void>;
 	exists(path: string): Promise<boolean>;
@@ -61,7 +64,7 @@ async function sha16(path: string): Promise<string> {
 }
 
 function emptyIndex(): CommentIndex {
-	return { version: 2, files: {} };
+	return { version: 3, files: {} };
 }
 
 function asRecord(raw: unknown): Record<string, unknown> | null {
@@ -75,7 +78,7 @@ function normalizeMessage(raw: unknown): CommentMessage | null {
 	return { id: rec['id'], text: rec['text'], createdAt: rec['createdAt'], author: rec['author'], ...(typeof rec['editedAt'] === 'string' ? { editedAt: rec['editedAt'] } : {}) };
 }
 
-function normalizeThread(raw: unknown): CommentThread | null {
+function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
 	const rec = asRecord(raw);
 	if (!rec || typeof rec['id'] !== 'string' || (rec['kind'] !== 'line' && rec['kind'] !== 'range')) return null;
 	const status = rec['status'];
@@ -85,16 +88,33 @@ function normalizeThread(raw: unknown): CommentThread | null {
 	for (const key of ['text', 'textHash', 'before', 'after']) if (typeof anchor[key] !== 'string') return null;
 	for (const key of ['start', 'end', 'lineHint']) if (typeof anchor[key] !== 'number' || !Number.isInteger(anchor[key]) || anchor[key] < 0) return null;
 	if ((anchor['end'] as number) < (anchor['start'] as number) || (anchor['lineHint'] as number) < 1) return null;
-	if (!Array.isArray(rec['messages']) || !rec['messages'].length) return null;
+	if (!Array.isArray(rec['messages']) || (version === 2 && !rec['messages'].length)) return null;
+	if (version === 3 && !rec['messages'].length && rec['kind'] === 'range' && typeof rec['color'] !== 'string') return null;
 	const messages = rec['messages'].map(normalizeMessage);
 	if (messages.some(message => message === null) || typeof rec['createdAt'] !== 'string' || typeof rec['updatedAt'] !== 'string') return null;
-	return { id: rec['id'], kind: rec['kind'], status, anchor: anchor as unknown as CommentThread['anchor'], messages: messages as CommentMessage[], createdAt: rec['createdAt'], updatedAt: rec['updatedAt'] };
+	const color = rec['color'];
+	if (color !== undefined && (typeof color !== 'string' || !/^(yellow|pink|blue|green|legacy|custom-[a-z0-9]{6,16})$/i.test(color))) return null;
+	const colorHex = rec['colorHex'];
+	if (colorHex !== undefined && (typeof colorHex !== 'string' || !SAFE_HEX.test(colorHex))) return null;
+	const note = rec['note'];
+	if (note !== undefined && typeof note !== 'string') return null;
+	const tags = rec['tags'];
+	if (tags !== undefined && (!Array.isArray(tags) || tags.some(tag => typeof tag !== 'string'))) return null;
+	for (const key of ['pinnedAt', 'archivedAt'] as const) if (rec[key] !== undefined && typeof rec[key] !== 'string') return null;
+	return { id: rec['id'], kind: rec['kind'], status, anchor: anchor as unknown as CommentThread['anchor'],
+		messages: messages as CommentMessage[], createdAt: rec['createdAt'], updatedAt: rec['updatedAt'],
+		...(typeof color === 'string' ? { color: color as CommentThread['color'] } : {}),
+		...(typeof colorHex === 'string' ? { colorHex } : {}),
+		...(typeof note === 'string' ? { note } : {}),
+		...(Array.isArray(tags) ? { tags: [...new Set(tags.map(tag => (tag as string).trim()).filter(Boolean))] } : {}),
+		...(typeof rec['pinnedAt'] === 'string' ? { pinnedAt: rec['pinnedAt'] } : {}),
+		...(typeof rec['archivedAt'] === 'string' ? { archivedAt: rec['archivedAt'] } : {}) };
 }
 
 function normalizeFile(raw: unknown, path: string): CommentThread[] {
 	const rec = asRecord(raw);
-	if (!rec || rec['version'] !== 2 || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
-	const threads = rec['threads'].map(normalizeThread);
+	if (!rec || (rec['version'] !== 2 && rec['version'] !== 3) || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
+	const threads = rec['threads'].map(item => normalizeThread(item, rec['version'] as 2 | 3));
 	if (threads.some(thread => thread === null)) throw new Error('Invalid comment thread');
 	return threads as CommentThread[];
 }
@@ -103,7 +123,7 @@ function normalizeIndex(raw: unknown): CommentIndex {
 	const out = emptyIndex();
 	const rec = asRecord(raw);
 	const files = rec ? asRecord(rec['files']) : null;
-	if (!files || rec?.['version'] !== 2) throw new Error('Invalid comment index');
+	if (!files || (rec?.['version'] !== 2 && rec?.['version'] !== 3)) throw new Error('Invalid comment index');
 	for (const [path, value] of Object.entries(files)) {
 		const entry = asRecord(value);
 		if (!entry || typeof entry['hash'] !== 'string' || !/^[a-f0-9]{16}$/.test(entry['hash']))
@@ -224,6 +244,59 @@ export class CommentStore {
 			this.markDirty(path);
 			this.emit();
 			return thread;
+		});
+	}
+
+	/** Create immediately without requiring a note or a discussion message. */
+	highlight(path: string, input: NewHighlightInput): Promise<CommentThread> {
+		return this.enqueue(async () => {
+			if (input.anchor.kind !== 'range' || !input.anchor.text) throw new Error('A highlight requires selected text');
+			const threads = await this.readThreads(path);
+			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
+			const existing = threads.find(t => t.kind === 'range' && t.status !== 'orphaned'
+				&& t.anchor.start === input.anchor.start && t.anchor.end === input.anchor.end
+				&& t.anchor.text === input.anchor.text);
+			const now = nowIso();
+			const thread = existing ?? { id: nid('c'), kind: 'range' as const, status: 'open' as const,
+				anchor: structuredClone(input.anchor), messages: [], note: '', createdAt: now, updatedAt: now };
+			thread.color = input.color;
+			if (input.colorHex && SAFE_HEX.test(input.colorHex)) thread.colorHex = input.colorHex;
+			else delete thread.colorHex;
+			thread.updatedAt = now;
+			if (!existing) threads.push(thread);
+			this.markDirty(path); this.emit();
+			return thread;
+		});
+	}
+	setHighlightColor(id: string, color: NewHighlightInput['color'], hex?: string): Promise<void> {
+		return this.enqueue(async () => {
+			const found = await this.locate(id);
+			if (!found || found.thread.kind !== 'range') throw new Error('Highlight not found');
+			found.thread.color = color;
+			if (hex && SAFE_HEX.test(hex)) found.thread.colorHex = hex;
+			else delete found.thread.colorHex;
+			found.thread.updatedAt = nowIso(); this.markDirty(found.path); this.emit();
+		});
+	}
+	setNote(id: string, note: string): Promise<void> {
+		return this.mutateThread(id, thread => { thread.note = note; });
+	}
+	setTags(id: string, tags: readonly string[]): Promise<void> {
+		return this.mutateThread(id, thread => {
+			thread.tags = [...new Set(tags.map(tag => tag.trim()).filter(Boolean))].slice(0, 32);
+		});
+	}
+	setPinned(id: string, pinned: boolean): Promise<void> {
+		return this.mutateThread(id, thread => { if (pinned) thread.pinnedAt = nowIso(); else delete thread.pinnedAt; });
+	}
+	setArchived(id: string, archived: boolean): Promise<void> {
+		return this.mutateThread(id, thread => { if (archived) thread.archivedAt = nowIso(); else delete thread.archivedAt; });
+	}
+	private mutateThread(id: string, fn: (thread: CommentThread) => void): Promise<void> {
+		return this.enqueue(async () => {
+			const found = await this.locate(id);
+			if (!found) throw new Error('Highlight not found');
+			fn(found.thread); found.thread.updatedAt = nowIso(); this.markDirty(found.path); this.emit();
 		});
 	}
 
@@ -525,26 +598,88 @@ export class CommentStore {
 		this.emit();
 	}
 
+	/** Copy every known sidecar byte before the v2 -> v3 conversion. Backups live outside the active root. */
+	private async backupV2(indexRaw: unknown): Promise<void> {
+		const snapshot = asRecord(indexRaw);
+		const indexed = asRecord(snapshot?.['files']);
+		const entries = new Set<string>([INDEX_PATH]);
+		if (await this.fs.exists(PENDING_PATH)) entries.add(PENDING_PATH);
+		if (indexed) for (const meta of Object.values(indexed)) {
+			const hash = asRecord(meta)?.['hash'];
+			if (typeof hash === 'string' && /^[a-f0-9]{16}$/.test(hash)) entries.add(filePath(hash));
+		}
+		if (this.fs.list) {
+			const folders = [ROOT];
+			while (folders.length) {
+				const folder = folders.pop()!;
+				const children = await this.fs.list(folder);
+				for (const path of children.files) if (path.startsWith(ROOT + '/')) entries.add(path);
+				for (const path of children.folders) if (path.startsWith(ROOT + '/') && folders.length < 10000) folders.push(path);
+			}
+		}
+		const stamp = nowIso().replace(/[^0-9]/g, '').slice(0, 14);
+		const destination = `${BACKUP_DIR}/v2-${stamp}-${nid('b')}`;
+		const originals = [...entries].sort();
+		for (const source of originals) {
+			if (!await this.fs.exists(source)) throw new Error('Missing v2 sidecar during backup: ' + source);
+			const raw = await this.fs.read(source);
+			const target = `${destination}/${source.slice(ROOT.length + 1)}`;
+			await this.fs.write(target, raw);
+			if (await this.fs.read(target) !== raw) throw new Error('Backup verification failed: ' + source);
+		}
+		await this.fs.write(`${destination}/backup-manifest.json`, JSON.stringify({
+			from: 2, to: 3, source: ROOT, files: originals.map(path => path.slice(ROOT.length + 1)),
+		}, null, 2));
+	}
+	/** v2 persists a compulsory discussion; v3 makes the discussion optional. */
+	private async migrateV2(index: CommentIndex): Promise<CommentIndex> {
+		const files: Record<string, string> = {};
+		for (const [path, entry] of Object.entries(index.files)) {
+			const stored = filePath(entry.hash);
+			const raw = await this.readDocument(stored);
+			const threads = normalizeFile(raw, path).map(thread => ({
+				...thread, ...(thread.kind === 'range' ? { color: thread.color ?? ('legacy' as const) } : {}),
+			}));
+			files[stored] = JSON.stringify({ version: 3, path, threads } satisfies CommentFileDoc, null, 2);
+		}
+		const next: CommentIndex = { version: 3, files: index.files };
+		const write: CommentWrite = { index: next, files, remove: [] };
+		await this.fs.write(PENDING_PATH, JSON.stringify(write));
+		await this.persist(write);
+		return next;
+	}
 	private async readIndex(): Promise<CommentIndex> {
 		if (this.index) return this.index;
-		if (await this.fs.exists(PENDING_PATH)) {
-			const raw = await this.readDocument(PENDING_PATH) as CommentWrite | null;
-			if (raw && asRecord(raw.index)?.['version'] === 1) {
+		// A backup is durable before any legacy pending intent can replay.
+		const original = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
+		const pendingContent = await this.fs.exists(PENDING_PATH) ? await this.readDocument(PENDING_PATH) as CommentWrite | null : null;
+		const pendingV2 = asRecord(pendingContent)?.['index'];
+		if (asRecord(original)?.['version'] === 2 || asRecord(pendingV2)?.['version'] === 2)
+			await this.backupV2(original ?? pendingV2);
+		if (pendingContent) {
+			if (asRecord(pendingContent.index)?.['version'] === 1) {
 				this.legacyData = true;
 				this.legacyPaths.add(PENDING_PATH);
-			} else if (raw) {
+			} else {
 				try {
-					normalizeIndex(raw.index);
-					if (!raw.files || !Array.isArray(raw.remove) || [...Object.keys(raw.files), ...raw.remove].some(path => !/^\.huhu\/editor\/comments\/files\/[a-f0-9]{16}\.json$/.test(path))) throw new Error('Invalid pending comment write');
-					for (const body of Object.values(raw.files)) normalizeFile(JSON.parse(body), '');
+					normalizeIndex(pendingContent.index);
+					if (!pendingContent.files || !Array.isArray(pendingContent.remove) ||
+						[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !/^\\.huhu\\/editor\\/comments\\/files\\/[a-f0-9]{16}\\.json$/.test(path)))
+						throw new Error('Invalid pending comment write');
+					for (const body of Object.values(pendingContent.files)) normalizeFile(JSON.parse(body), '');
 				} catch (error) { await this.quarantine(PENDING_PATH); throw error; }
-				await this.persist(raw);
+				await this.persist(pendingContent);
 			}
 		}
 		if (this.damagedPaths.has(INDEX_PATH)) throw new Error('Comment index was set aside');
 		const raw = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
-		try { this.index = raw === null ? emptyIndex() : normalizeIndex(raw); }
-		catch (error) { await this.quarantine(INDEX_PATH); throw error; }
+		try {
+			const loaded = raw === null ? emptyIndex() : normalizeIndex(raw);
+			this.index = loaded.version === 2 ? await this.migrateV2(loaded) : loaded;
+		} catch (error) {
+			if (raw && asRecord(raw)?.['version'] !== 2 && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
+			throw error;
+		}
 		return this.index;
 	}
 
@@ -607,7 +742,7 @@ export class CommentStore {
 						total: threads.length,
 						updatedAt: nowIso(),
 					};
-					const body: CommentFileDoc = { version: 2, path, threads };
+					const body: CommentFileDoc = { version: 3, path, threads };
 					files[filePath(hash)] = JSON.stringify(body, null, 2);
 				}
 				const referenced = new Set(Object.values(index.files).map((entry) => filePath(entry.hash)));
