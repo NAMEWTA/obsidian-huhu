@@ -124,6 +124,7 @@ function normalizeIndex(raw: unknown): CommentIndex {
 	const rec = asRecord(raw);
 	const files = rec ? asRecord(rec['files']) : null;
 	if (!files || (rec?.['version'] !== 2 && rec?.['version'] !== 3)) throw new Error('Invalid comment index');
+	if (rec['version'] === 2) (out as { version: 2 | 3 }).version = 2;
 	for (const [path, value] of Object.entries(files)) {
 		const entry = asRecord(value);
 		if (!entry || typeof entry['hash'] !== 'string' || !/^[a-f0-9]{16}$/.test(entry['hash']))

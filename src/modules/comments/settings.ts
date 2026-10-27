@@ -1,5 +1,17 @@
 import { domainSettings } from '../../shared/settings/schema';
-import { normalizeHighlightColors, type CustomHighlightColor } from './core/highlight-colors';
+import type { CustomHighlightColor } from './core/highlight-colors';
+function normalizeHighlightColors(raw: unknown): CustomHighlightColor[] {
+	if (!Array.isArray(raw)) return [];
+	const seen = new Set<string>();
+	return raw.flatMap((entry: unknown) => {
+		if (!entry || typeof entry !== 'object') return [];
+		const rec = entry as Record<string, unknown>;
+		if (typeof rec.id !== 'string' || !/^custom-[a-z0-9]{6,16}$/i.test(rec.id)
+			|| typeof rec.name !== 'string' || typeof rec.hex !== 'string' || !/^#[a-f0-9]{6}$/i.test(rec.hex) || seen.has(rec.id)) return [];
+		seen.add(rec.id);
+		return [{ id: rec.id as CustomHighlightColor['id'], name: rec.name.trim().slice(0, 60), hex: rec.hex.toLowerCase() }];
+	}).slice(0, 32);
+}
 
 export interface CommentsSettings {
 	sidebarWidth?: number;

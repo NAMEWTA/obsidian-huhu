@@ -1,40 +1,30 @@
-name: Highlights implementation workspace
-
+name: Highlights branch verification
 on:
   push:
     branches: ["NAMEWTA/6"]
-    paths: [".github/workflows/highlights-workspace.yml"]
-
+  pull_request:
+    branches: [main]
 permissions:
   contents: read
-
 jobs:
-  snapshot:
+  validate-highlights:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Archive locked dependencies without credentials
-        shell: bash
-        run: |
-          tar -czf "$RUNNER_TEMP/huhu-dependencies.tar.gz" node_modules
-          cp -a "$(dirname "$(dirname "$(readlink -f "$(command -v pnpm)")")")" "$RUNNER_TEMP/pnpm-package"
-          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/pnpm-package.tar.gz" pnpm-package
-          sha256sum pnpm-lock.yaml > "$RUNNER_TEMP/dependency-lock.sha256"
+      - run: pnpm run build
+      - run: pnpm exec vitest run src/modules/comments src/app/workbench/comments-leaf.dom.test.tsx
+      - run: pnpm run lint
       - uses: actions/upload-artifact@v4
         with:
-          name: highlights-dependencies-snapshot
+          name: highlights-built-assets
           path: |
-            ${{ runner.temp }}/huhu-dependencies.tar.gz
-            ${{ runner.temp }}/pnpm-package.tar.gz
-            ${{ runner.temp }}/dependency-lock.sha256
-          retention-days: 1
+            main.js
+            styles.css
+          retention-days: 2
