@@ -1,6 +1,6 @@
-# 编辑器批注
+# 编辑器高亮与批注
 
-当前交互与格式见 [批注指南](../../../../docs/comments.md)。批注存于当前库的旁路文件，从不改写笔记正文；只对 Markdown 运行，没有 PDF 入口。`src/modules/comments/` 的 `core/` 负责模型、锚点与存储，`platform/` 负责文件系统与存储交接，`ui/` 负责编辑器、右侧栏、浮窗和设置。
+当前交互与格式见 [高亮指南](../../../../docs/comments.md)。批注存于当前库的旁路文件，从不改写笔记正文；只对 Markdown 运行，没有 PDF 入口。`src/modules/comments/` 的 `core/` 负责模型、锚点与存储，`platform/` 负责文件系统与存储交接，`ui/` 负责编辑器、右侧栏、浮窗和设置。
 
 ## 磁盘布局与模型
 
@@ -8,12 +8,12 @@
 .huhu/editor/comments/index.json
 .huhu/editor/comments/pending.json
 .huhu/editor/comments/files/<sha256(路径) 的前 16 位十六进制>.json
-.huhu/editor/comments/set-aside/
+.huhu/editor/comments/set-aside/\n.huhu/editor/comments-backups/v2-*/
 ```
 
-- 对路径字符串计算 SHA-256，取前 16 位十六进制。索引为 `{ version: 2, files: { [path]: { hash, open, total, updatedAt } } }`，全库浏览先读索引，展开笔记后才读对应线程文件。
-- 文件为 `{ version: 2, path, threads: CommentThread[] }`。线程有 `kind: 'line' | 'range'`、锚点、状态、消息与创建/更新时间；消息有 `id/author/text/createdAt/editedAt?`。`CommentStatus` 保留 `open/resolved/orphaned`，线程与消息 id 仍用 `c-…` / `m-…`。
-- v1 会被解析并识别为 legacy，保留原文件、提示旧版数据，不作为 v2 线程加载，也不自动迁移；发现旧格式路径时阻止创建和保存 v2 数据，须先将旧数据保存在活动批注目录之外。损坏文件先保存原文到 `set-aside/`，再删除活动路径并记录隔离状态，这不是原子移动；不覆盖成空文件。不能读取或写入的错误向上报告，不能缓存空结果掩盖失败。实现见 `src/modules/comments/core/store.ts`。
+- 对路径字符串计算 SHA-256，取前 16 位十六进制。索引为 `{ version: 3, files: { [path]: { hash, open, total, updatedAt } } }`，全库浏览先读索引，展开笔记后才读对应线程文件。
+- 文件为 `{ version: 3, path, threads: CommentThread[] }`。线程有 `kind: 'line' | 'range'`、锚点、状态、消息与创建/更新时间；消息有 `id/author/text/createdAt/editedAt?`。允许纯高亮的 `messages: []`；另有 `color/colorHex/note/tags/pinnedAt/archivedAt`。`CommentStatus` 保留 `open/resolved/orphaned`，线程与消息 id 仍用 `c-…` / `m-…`。
+- v1 会被解析并识别为 legacy，保留原文件、提示旧版数据，不作为 v3 线程加载，也不自动迁移；发现旧格式路径时阻止创建和保存 v3 数据，须先将旧数据保存在活动批注目录之外。损坏文件先保存原文到 `set-aside/`，再删除活动路径并记录隔离状态，这不是原子移动；不覆盖成空文件。不能读取或写入的错误向上报告，不能缓存空结果掩盖失败。实现见 `src/modules/comments/core/store.ts`。
 - 设置只保存偏好（作者、gutter、颜色、悬停、模糊容差、面板位置等），不保存正文；面板与设置概览见[批注设计](../../../../docs/comments.md)，完整字段、默认值和取值范围由 `src/modules/comments/settings.ts` 负责。
 
 ## 锚点与定位
@@ -40,8 +40,8 @@
 
 ## 界面
 
-- 沿用 `huhu-comments-view`。布局就绪后按 `comments.panelAutoPlaced` 用 `workspace.ensureSideLeaf()` 首次放入右侧栏，图标 `message-square-text`；设置可改左侧栏。不贡献工作台图标轨或工作台批注页面。
-- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，并提供排序。通过 `COMMENTS_PANEL` 挂到 `app/workbench/comments-leaf.ts`；其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
+- 沿用 `huhu-comments-view`。布局就绪后按 `comments.panelAutoPlaced` 用 `workspace.ensureSideLeaf()` 首次放入右侧栏，图标 `highlighter`；设置可改左侧栏。不贡献工作台图标轨或工作台批注页面。
+- 侧栏 React 面板切换当前笔记/全库、全部/未解决/已解决，提供摘录/笔记/标签检索、颜色过滤、文件/颜色/标签分组和排序。通过 `COMMENTS_PANEL` 挂到 `app/workbench/comments-leaf.ts`；其他模块仅经 `api.ts` 读取 `COMMENTS_INDEX` 等服务。
 - gutter 行首悬停显示添加按钮，有批注的行显示图标与数量；支持行级与选区批注。阅读模式只显示高亮、行级图标与查看入口。
 - 悬停高亮或 gutter 350ms 打开，离开目标和浮窗 300ms 关闭，移入浮窗保留；点击或命令立即打开并固定。未保存编辑/回复不因鼠标离开关闭；Esc 先取消编辑，再关闭。
 - 可编辑浮窗使用受控 Radix `Popover` 和虚拟矩形锚点，线程卡片在面板与浮窗共用。正文用 `MarkdownRenderer`，外层加 `huhu-native`；支持查看、编辑、回复、解决/重新打开、删除、跳转与重新挂接。手机用底部 `Sheet`。
@@ -53,6 +53,14 @@
 保留 `src/modules/comments/comments.test.ts`、`scripts/verify-comment-storage.ts` 与 `verify-comment-handoff.ts` 的存储和交接覆盖；模型改动同步更新版本、字段及锚点预期。测试不得指向真实库。
 
 - 纯逻辑：行级/选区、重复原文、上下文与模糊匹配边界、失效不自动重挂、笔记正文不变。
-- 存储：v2 索引和线程文件、v1 留存、损坏隔离、日志重放、部分提交、并发编辑、重命名、删除策略、关闭失败重试和跨 App 隔离。
+- 存储：v3 索引和线程文件、v2 原样备份与迁移、v1 留存、损坏隔离、日志重放、部分提交、并发编辑、重命名、删除策略、关闭失败重试和跨 App 隔离。
 - `dom` 项目：悬停开关计时、固定与编辑草稿、IME、键盘、焦点、右侧栏筛选及错误重试。
 - 真实 Obsidian：CodeMirror/阅读集成、多窗口 Portal、滚动定位、停用再启用与侧栏放置。Node/DOM 测试不能代替宿主验收；选择方法见 [testing.md](testing.md)。
+
+## Highlight-first 增量合同
+
+- `core/catalog.ts` 对 `{path,thread}` 做搜索、分组、排序与 Markdown 投影；UI 没有独立写盘逻辑。`services/export.ts` 只在用户主动导出时在可见 `huhu/` 下新建文档，不改写原文。
+- `core/highlight-colors.ts` 定义四个预设色与自定义颜色快照。HTML/Codemirror 装饰通过 `--huhu-highlight-color` 显示颜色；现有 legacy 评论没有指定颜色时使用主题强调色。
+- v2 索引迁移：先写入 `.huhu/editor/comments-backups/v2-*/` 并验证，恢复旧 pending 后再用 journal 提交 v3 格式；v1 保持阻止自动写入，损坏数据隔离。严禁无备份删除旧数据。
+- 选择工具条提供四色与「添加笔记」，无需提交讨论消息。阅读模式沿用旧后处理器只显示已有高亮；不创建新的阅读模式划词入口。旧的行级批注和讨论命令维持兼容。
+- 相关新测试：`src/modules/comments/highlights.test.ts`、`src/modules/comments/core/catalog.test.ts`、`src/modules/comments/ui/comments.dom.test.tsx`。自动化 CI 的 CodeMirror mock 不是实际宿主验收；实测边界见 [实施计划](../../../../docs/highlights-implementation.md)。

@@ -41,7 +41,7 @@ HUHU 的数据分在当前 vault 的两块根里。**`huhu/`（可见）**放你
 | 图标及其备份 | `.huhu/icons/`；保存图标、规则及轮换备份 |
 | 笔记导航器设置 | 全局设置的 `navigator` 命名空间（显示、排序、置顶、快捷键、快捷方式、隐藏规则、文件夹笔记、按项覆盖的外观，以及日志文件夹、各周期的开关与模板、模板文件夹与引擎、文件夹模板、自定义“创建笔记”命令、库配置档和它们的当前选择）；布局方向、窗格大小、展开状态、选中项、搜索框内容、日历是否展开、最近笔记（含各配置档自己的最近列表）保存在本设备设置。日历创建的周期笔记保存在库内可见的日志目录（默认 `huhu/日志/日记/YYYY/MM/YYYY-MM-DD.md` 等固定结构，见[笔记导航器](navigator.md#固定的日志目录)），模板生成的笔记、合并结果在库里原位置，都不在 `.huhu/`；标签修改的“撤销”内容只在内存里 |
 | 笔记导航器预览缓存 | 浏览器的 IndexedDB 库 `huhu-navigator-<库 id>`，保存每篇笔记的预览文字和缩略图路径。它不在库目录里，可随时用“重建缓存”丢弃，不影响笔记 |
-| 批注与锚点（v2） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；损坏副本在 `set-aside/` |
+| 高亮与批注（v3） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；v2 升级备份在 `.huhu/editor/comments-backups/`，损坏副本在 `set-aside/` |
 | 自动化运行、通知回执 | `.huhu/automation/<device-id>/`、`.huhu/notifications/<device-id>/` |
 | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
 | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |

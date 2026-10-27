@@ -148,7 +148,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | Cookie 导入临时快照 | `.huhu/browser/<device-id>/tmp/`，导入后立即删除 | browser |
 | 自动化定义 | `.huhu/automation/definitions/<名称>-<id>/操作.md` | automations |
 | 自动化运行 | `.huhu/automation/<device-id>/runtime.json` | automations |
-| 批注 | `.huhu/editor/comments/`（`index.json`、`pending.json`、`files/<hash>.json`，version 2） | comments；细则见 [编辑器批注](editor-comments.md) |
+| 批注 | `.huhu/editor/comments/`（`index.json`、`pending.json`、`files/<hash>.json`，version 3） | comments；细则见 [编辑器批注](editor-comments.md) |
 | 看板 | `.huhu/dashboards/<名称>.md`，默认 `.huhu/dashboards/dashboard.md`，采用 apex 格式，可多份 | home |
 | 天气预报缓存 | `.huhu/cache/weather/` | home |
 | 看板记录 | `huhu/习惯/`、`huhu/记账/`、`huhu/番茄钟/`、`huhu/阅读/`（各含 `*.json` 与 Markdown 记录） | home |
