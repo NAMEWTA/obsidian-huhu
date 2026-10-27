@@ -678,7 +678,7 @@ export class CommentStore {
 			const loaded = raw === null ? emptyIndex() : normalizeIndex(raw);
 			this.index = (loaded as { version: 2 | 3 }).version === 2 ? await this.migrateV2(loaded) : loaded;
 		} catch (error) {
-			if (raw && asRecord(raw)?.['version'] !== 2 && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
+			if (raw && (asRecord(raw)?.['version'] !== 2 || !asRecord(asRecord(raw)?.['files'])) && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
 			throw error;
 		}
 		return this.index;

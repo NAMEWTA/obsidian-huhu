@@ -26,7 +26,7 @@ function fixture() {
 	const store = new CommentStore(fs, { timers: { set: cb => window.setTimeout(cb, 1e6), clear: h => window.clearTimeout(h as number) } });
 	const service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
 	const channel = createOverlayChannel();
-	const env = { app: { workspace: { containerEl: document.body }, vault: { getFileByPath: (path: string) => ({ path }) } }, service, editors: new Set(), alive: () => true, overlay: () => channel, open: (request: Parameters<typeof channel.open>[0]) => channel.open(request), openSettings: () => {} } as unknown as CommentsEnv;
+	const env = { app: { workspace: { containerEl: document.body }, vault: { getFileByPath: (path: string) => ({ path }) } }, service, editors: new Set(), alive: () => true, overlay: () => channel, open: (request: Parameters<typeof channel.open>[0]) => channel.open(request), openSettings: () => {}, exportHighlights: async () => 'huhu/导出/高亮/dummy.md' } as unknown as CommentsEnv;
 	return { store, service, channel, env, dispose: async () => { service.dispose(); channel.dispose(); await store.close(); } };
 }
 test('composer: whitespace, IME, Ctrl+Enter, pending duplicate, failed save retains draft and retries', async () => {
@@ -45,17 +45,17 @@ test('overlay open, submit, reply, inline edit, Escape twice, resolve/reopen and
 	const request = { path: 'a.md', ownerDocument: document, rect: () => new DOMRect(30, 30, 80, 20), mode: 'compose' as const, anchor: createAnchor('alpha', 0, 5), pinned: true };
 	f.channel.open(request);
 	const view = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
-	fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'first' } }); fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
+	fireEvent.change(await screen.findByPlaceholderText('Write a comment…'), { target: { value: 'first' } }); fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
 	await waitFor(() => expect(f.channel.state.getState().request).toBeNull());
 	const thread = f.store.threadsFor('a.md')[0]!;
 	act(() => f.channel.open({ ...request, mode: 'threads', threadIds: [thread.id] }));
 	await screen.findByText('first'); fireEvent.click(screen.getByRole('button', { name: 'Reply…' }));
-	fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'reply' } }); fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter', ctrlKey: true });
-	await waitFor(() => expect(thread.messages).toHaveLength(2)); await waitFor(() => expect(screen.queryByRole('textbox')).toBeNull());
-	fireEvent.click(screen.getByRole('button', { name: 'Edit comment' })); fireEvent.change(await screen.findByRole('textbox'), { target: { value: 'edited' } }); fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-	await screen.findByText('edited'); await waitFor(() => expect(screen.queryByRole('textbox')).toBeNull()); expect(thread.messages[0]?.editedAt).toBeTruthy();
-	fireEvent.click(screen.getByRole('button', { name: 'Edit comment' })); await screen.findByRole('textbox');
-	fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Escape' }); await waitFor(() => expect(screen.queryByRole('textbox')).toBeNull()); expect(f.channel.state.getState().request).not.toBeNull();
+	fireEvent.change(await screen.findByPlaceholderText('Write a comment…'), { target: { value: 'reply' } }); fireEvent.keyDown(screen.getByPlaceholderText('Write a comment…'), { key: 'Enter', ctrlKey: true });
+	await waitFor(() => expect(thread.messages).toHaveLength(2)); await waitFor(() => expect(screen.queryByPlaceholderText('Write a comment…')).toBeNull());
+	fireEvent.click(screen.getByRole('button', { name: 'Edit comment' })); fireEvent.change(await screen.findByPlaceholderText('Write a comment…'), { target: { value: 'edited' } }); fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+	await screen.findByText('edited'); await waitFor(() => expect(screen.queryByPlaceholderText('Write a comment…')).toBeNull()); expect(thread.messages[0]?.editedAt).toBeTruthy();
+	fireEvent.click(screen.getByRole('button', { name: 'Edit comment' })); await screen.findByPlaceholderText('Write a comment…');
+	fireEvent.keyDown(screen.getByPlaceholderText('Write a comment…'), { key: 'Escape' }); await waitFor(() => expect(screen.queryByPlaceholderText('Write a comment…')).toBeNull()); expect(f.channel.state.getState().request).not.toBeNull();
 	fireEvent.click(screen.getByRole('button', { name: 'Resolve' })); await screen.findByText('Resolved'); expect(f.channel.state.getState().request).not.toBeNull();
 	fireEvent.click(screen.getByRole('button', { name: 'Reopen' })); await screen.findByText('edited');
 	fireEvent.click(screen.getByRole('button', { name: 'Delete' })); await screen.findByText('Delete this comment and its 1 replies?'); fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
@@ -67,13 +67,19 @@ test('300ms close is cancelled on entry and suppressed while pinned or editing',
 	channel.setDraft(true); channel.scheduleClose(); vi.advanceTimersByTime(500); expect(channel.state.getState().request).not.toBeNull(); channel.setDraft(false); channel.pin(); channel.scheduleClose(); vi.advanceTimersByTime(500); expect(channel.state.getState().request).not.toBeNull();
 	channel.close(false); channel.open(request); channel.scheduleClose(); vi.advanceTimersByTime(300); expect(channel.state.getState().request).toBeNull(); channel.dispose();
 });
-test('panel follows note and vault sections are lazy, filter hides resolved threads', async () => {
+test('panel follows current note and lazily loads vault sections; filtering hides resolved discussions', async () => {
 	const f = fixture(); const a = await f.store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'alpha-comment' });
-	await f.store.add('b.md', { anchor: createAnchor('beta', 0, 4), text: 'beta-comment' }); await f.store.resolve(a.id); await f.store.flush(); await f.service.refresh(); f.service.setPath('a.md');
+	await f.store.add('b.md', { anchor: createAnchor('beta', 0, 4), text: 'beta-comment' });
+	await f.store.resolve(a.id); await f.store.flush(); await f.service.refresh(); f.service.setPath('a.md');
 	const view = render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env} /></HuhuProviders>);
-	await screen.findByRole('button', { name: 'Resolved (1)' }); expect(screen.queryByText('alpha-comment')).toBeNull(); fireEvent.click(screen.getByRole('radio', { name: 'Vault' })); expect(screen.queryByText('beta-comment')).toBeNull();
+	await screen.findByRole('button', { name: 'Resolved' });
+	expect(screen.queryByText('alpha-comment')).toBeNull();
+	fireEvent.click(screen.getByRole('radio', { name: 'Vault' })); expect(screen.queryByText('beta-comment')).toBeNull();
 	fireEvent.click(screen.getByRole('button', { name: /b.md/ })); await screen.findByText('beta-comment');
-	fireEvent.click(screen.getByRole('radio', { name: 'Current note' })); fireEvent.click(screen.getByRole('radio', { name: /Unresolved/ })); await waitFor(() => expect(screen.queryByRole('button', { name: 'Resolved (1)' })).toBeNull()); view.unmount(); await f.dispose();
+	fireEvent.click(screen.getByRole('radio', { name: 'Current note' }));
+	fireEvent.click(screen.getByRole('radio', { name: /Unresolved/ }));
+	await waitFor(() => expect(screen.queryByRole('button', { name: 'Resolved' })).toBeNull());
+	view.unmount(); await f.dispose();
 });
 
 test('panel menu exposes sorting, settings and the resolve-all confirmation request', async () => {
@@ -129,7 +135,7 @@ test('editor reconfiguration retains its scoped class and removes it when disabl
 	expect(f.env.editors.size).toBe(0); view.destroy(); parent.remove(); await f.dispose();
 });
 
-test('selection button keeps the editor focus on mousedown and opens the composer on click', async () => {
+test('one-click palette preserves editor selection during mousedown and creates a color card', async () => {
 	const { EditorView } = await import('@codemirror/view');
 	const { EditorState } = await import('@codemirror/state');
 	const { editorInfoField } = await import('obsidian');
@@ -139,16 +145,13 @@ test('selection button keeps the editor focus on mousedown and opens the compose
 	const view = new EditorView({ state, parent });
 	view.focus(); view.dispatch({ selection: { anchor: 0, head: 5 } });
 	const ui = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
-	const button = await screen.findByRole('button', { name: 'Comment' });
+	const color = await screen.findByRole('button', { name: 'Yellow' });
 	expect(f.channel.state.getState().request?.mode).toBe('selection');
-	expect(fireEvent.mouseDown(button)).toBe(false);
-	// Even if focus does land in the popover, the selection request must survive the editor blur.
-	act(() => { button.focus(); view.dispatch({ selection: { anchor: 1, head: 5 }, userEvent: 'select' }); });
-	await new Promise(resolve => window.setTimeout(resolve, 100));
-	expect(f.channel.state.getState().request?.mode).toBe('selection');
-	fireEvent.click(button);
-	expect(await screen.findByPlaceholderText('Write a comment…')).toBeTruthy();
-	expect(f.channel.state.getState().request).toMatchObject({ mode: 'compose', pinned: true });
+	expect(fireEvent.mouseDown(color)).toBe(false);
+	fireEvent.click(color);
+	await waitFor(() => expect(f.store.threadsFor('a.md')).toHaveLength(1));
+	expect(f.store.threadsFor('a.md')[0]).toMatchObject({ color: 'yellow', messages: [] });
+	await waitFor(() => expect(f.channel.state.getState().request).toBeNull());
 	ui.unmount(); view.destroy(); parent.remove(); await f.dispose();
 });
 
@@ -177,7 +180,7 @@ test('closing the selection button does not restore the old selection', async ()
 	const f = fixture(), focus = vi.fn();
 	f.channel.open({ path: 'a.md', ownerDocument: document, rect: () => new DOMRect(30, 30, 1, 20), mode: 'selection', anchor: createAnchor('alpha', 0, 5), pinned: false, focus });
 	const view = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
-	await screen.findByRole('button', { name: 'Comment' });
+	await screen.findByRole('button', { name: 'Yellow' });
 	act(() => f.channel.close(false));
 	await new Promise(resolve => window.setTimeout(resolve, 50));
 	expect(focus).not.toHaveBeenCalled(); view.unmount(); await f.dispose();

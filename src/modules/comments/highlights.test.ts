@@ -3,7 +3,22 @@ import { createAnchor } from './core/anchor';
 import { CommentStore } from './core/store';
 import { createCommentsService } from './services/comments';
 import { DEFAULT_COMMENTS_SETTINGS } from './settings';
-import { memoryFs, timers } from './comments.test';
+import type { CommentFs } from './core/store';
+
+const timers = {
+	set: (cb: () => void, ms: number) => setTimeout(cb, ms),
+	clear: (handle: unknown) => clearTimeout(handle as ReturnType<typeof setTimeout>),
+};
+function memoryFs(): CommentFs & { files: Map<string, string> } {
+	const files = new Map<string, string>();
+	return {
+		files,
+		read: async path => { const content = files.get(path); if (content === undefined) throw new Error('ENOENT'); return content; },
+		write: async (path, content) => { files.set(path, content); },
+		remove: async path => { files.delete(path); },
+		exists: async path => files.has(path),
+	};
+}
 
 const indexPath = '.huhu/editor/comments/index.json';
 
