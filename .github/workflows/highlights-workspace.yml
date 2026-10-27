@@ -1,46 +1,40 @@
-name: Highlights branch verification
+name: Highlights implementation workspace
+
 on:
   push:
     branches: ["NAMEWTA/6"]
-  pull_request:
-    branches: [main]
+    paths: [".github/workflows/highlights-workspace.yml"]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  validate-highlights:
+  snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
         with:
-          persist-credentials: true
+          ref: ${{ github.sha }}
+          persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run build:css
-      - run: pnpm run build
-      - run: pnpm exec vitest run src/modules/comments src/app/workbench/comments-leaf.dom.test.tsx
-      - run: pnpm run lint
-      - run: pnpm run lint:css
-      - name: Commit generated plugin assets
-        if: github.event_name == 'push' && github.ref == 'refs/heads/NAMEWTA/6'
+      - name: Archive locked dependencies without credentials
+        shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- main.js styles.css
-          if ! git diff --cached --quiet; then
-            git commit -m "build(highlights): refresh main.js and styles.css"
-            git push origin HEAD:refs/heads/NAMEWTA/6
-          fi
+          tar -czf "$RUNNER_TEMP/huhu-dependencies.tar.gz" node_modules
+          cp -a "$(dirname "$(dirname "$(readlink -f "$(command -v pnpm)")")")" "$RUNNER_TEMP/pnpm-package"
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/pnpm-package.tar.gz" pnpm-package
+          sha256sum pnpm-lock.yaml > "$RUNNER_TEMP/dependency-lock.sha256"
       - uses: actions/upload-artifact@v4
         with:
-          name: highlights-built-assets
+          name: highlights-dependencies-snapshot
           path: |
-            main.js
-            styles.css
-          retention-days: 2
+            ${{ runner.temp }}/huhu-dependencies.tar.gz
+            ${{ runner.temp }}/pnpm-package.tar.gz
+            ${{ runner.temp }}/dependency-lock.sha256
+          retention-days: 1
