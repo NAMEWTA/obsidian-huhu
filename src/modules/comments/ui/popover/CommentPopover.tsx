@@ -41,7 +41,7 @@ export function CommentPopover({ env, channel }: { env: CommentsEnv; channel: Ov
 		try {
 			const id = await env.service.highlight(paletteKey.current, request.path, { anchor: request.anchor, color, colorHex });
 			if (editNote) {
-				channel.open({ ...request, mode: 'threads', threadIds: [id], pinned: true });
+				channel.open({ ...request, mode: 'threads', threadIds: [id], pinned: true, autoEditNote: true });
 			} else channel.close(false);
 		} catch { setSaveError(true); new Notice(t('editor.comments.storageFailed')); }
 		finally { setSaving(false); }
@@ -55,7 +55,7 @@ export function CommentPopover({ env, channel }: { env: CommentsEnv; channel: Ov
 		await env.service.add(key, request.path, { anchor: request.anchor!, text }); close();
 	}}><div className="text-2xs text-muted-foreground">{t('editor.comments.author')}: {env.service.settings().author || <Button size="xs" variant="link" onClick={() => env.openSettings()}>{t('editor.comments.setAuthor')}</Button>}</div></Composer> : <>
 		<div className="mb-2 flex items-center justify-between text-xs text-muted-foreground"><span>{t('editor.comments.title')} ({request.threadIds?.length ?? 0})</span><div className="flex gap-2"><Action label={t(request.pinned ? 'editor.comments.pinned' : 'editor.comments.pin')} onClick={() => channel.pin()}><Pin /></Action><Action label={t('editor.comments.close')} onClick={close}><X /></Action></div></div>
-		<div className="space-y-2">{env.service.store.threadsFor(request.path).filter(thread => request.threadIds?.includes(thread.id)).map(thread => <ThreadCard key={thread.id} path={request.path} thread={thread} env={env} onDraft={onDraft} alwaysOpen />)}</div>
+		<div className="space-y-2">{env.service.store.threadsFor(request.path).filter(thread => request.threadIds?.includes(thread.id)).map(thread => <ThreadCard key={thread.id} path={request.path} thread={thread} env={env} onDraft={onDraft} alwaysOpen autoEditNote={request.autoEditNote && request.threadIds?.[0] === thread.id} />)}</div>
 	</>;
 	if (request.mode === 'resolve-all') return <AlertDialog open onOpenChange={open => { if (!open) close(); }}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>{t('editor.comments.resolveAll')}</AlertDialogTitle><AlertDialogDescription>{t('editor.comments.resolveAllConfirm')}</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>{t('editor.comments.cancel')}</AlertDialogCancel><AlertDialogAction onClick={event => { event.preventDefault(); void env.service.resolveAll(request.path).then(close, () => undefined); }}>{t('editor.comments.resolve')}</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>;
 	if (Platform.isPhone && request.mode !== 'selection') return <Sheet open onOpenChange={open => { if (!open) close(); }}><SheetContent ref={content} data-comments-overlay={request.mode} side="bottom" className="max-h-[80vh] overflow-y-auto p-4" onEscapeKeyDown={escape} onCloseAutoFocus={event => { event.preventDefault(); request.focus?.(); }}><SheetHeader><SheetTitle>{t('editor.comments.title')}</SheetTitle><SheetDescription className="sr-only">{request.path}</SheetDescription></SheetHeader>{body}</SheetContent></Sheet>;

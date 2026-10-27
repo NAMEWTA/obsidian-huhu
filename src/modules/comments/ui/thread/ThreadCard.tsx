@@ -1,5 +1,5 @@
 // Card presentation for both standalone highlights and historical discussion threads.
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { ArrowUpRight, Check, Pencil, RotateCcw, Trash2, Pin, Archive, Palette, NotebookPen } from 'lucide-react';
 import { toast } from 'sonner';
 import type { CommentThread } from '../../core/model';
@@ -21,9 +21,10 @@ import { jumpToComment, reanchorFromSelection } from '../navigation';
 export function Action({ label, children, onClick }: { label: string; children: ReactNode; onClick: () => void }) {
 	return <Tooltip><TooltipTrigger asChild><Button type="button" size="icon-xs" variant="ghost" aria-label={label} onClick={onClick}>{children}</Button></TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>;
 }
-export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, selected, onSelect }: {
+export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, selected, onSelect, autoEditNote = false }: {
 	env: CommentsEnv; path: string; thread: CommentThread; onDraft?: (key: string, active: boolean) => void; alwaysOpen?: boolean;
 	selected?: boolean; onSelect?: (id: string, value: boolean) => void;
+	autoEditNote?: boolean;
 }) {
 	const t = useT(), service = env.service, settings = service.settings();
 	const [editing, setEditing] = useState<string | null>(null);
@@ -31,11 +32,12 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 	const [attaching, setAttaching] = useState(false);
 	const [expanded, setExpanded] = useState(false);
 	const [error, setError] = useState(false);
-	const [noteEditing, setNoteEditing] = useState(false);
+	const [noteEditing, setNoteEditing] = useState(autoEditNote);
 	const [noteDraft, setNoteDraft] = useState(thread.note ?? '');
 	const [tagsDraft, setTagsDraft] = useState((thread.tags ?? []).join(', '));
 	const [colorsOpen, setColorsOpen] = useState(false);
 	const draft = useCallback((active: boolean) => onDraft?.(thread.id, active), [onDraft, thread.id]);
+	useEffect(() => { if (!noteEditing) return; draft(true); return () => draft(false); }, [noteEditing, draft]);
 	const run = (action: () => Promise<unknown>) => { setError(false); void action().catch(() => setError(true)); };
 	const jump = () => { for (const view of env.editors) env.overlay(view.dom.ownerDocument).close(false); void jumpToComment(env, path, thread); };
 	const collapsed = thread.messages.length > 0 && thread.status === 'resolved' && !expanded;
@@ -75,7 +77,7 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 			run(async () => { await service.recolor(thread.id, color, colorHex); setColorsOpen(false); });
 		}} />}
 		{noteEditing ? <div className="space-y-2">
-			<Textarea aria-label={t('editor.highlights.note')} value={noteDraft} onChange={event => setNoteDraft(event.target.value)} rows={3}
+			<Textarea autoFocus={autoEditNote} aria-label={t('editor.highlights.note')} value={noteDraft} onChange={event => setNoteDraft(event.target.value)} rows={3}
 				onKeyDown={event => { if (!event.nativeEvent.isComposing && event.key === 'Escape') setNoteEditing(false); }} />
 			<div className="flex justify-end gap-2"><Button size="xs" variant="ghost" onClick={() => setNoteEditing(false)}>{t('editor.comments.cancel')}</Button>
 				<Button size="xs" onClick={() => run(async () => { await service.note(thread.id, noteDraft); setNoteEditing(false); })}>{t('editor.comments.save')}</Button></div>

@@ -159,6 +159,20 @@ test('one-click palette keeps the selection request and creates a pure color hig
 	ui.unmount(); await f.dispose();
 });
 
+
+test('selection add-note action opens the annotation editor without a second click', async () => {
+	const f = fixture();
+	act(() => f.channel.open({ path: 'a.md', ownerDocument: document, rect: () => new DOMRect(20, 20, 80, 16),
+		mode: 'selection', anchor: createAnchor('alpha beta', 0, 5), pinned: false }));
+	const ui = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
+	fireEvent.click(await screen.findByRole('button', { name: 'Add note' }));
+	const editor = await screen.findByRole('textbox', { name: 'Highlight note' });
+	fireEvent.change(editor, { target: { value: 'My note' } });
+	fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+	await waitFor(() => expect(f.store.threadsFor('a.md')[0]?.note).toBe('My note'));
+	ui.unmount(); await f.dispose();
+});
+
 test('a selection request survives hover timers, and hover only replaces it away from the button', async () => {
 	const { HoverTracker } = await import('./editor/hover');
 	const { EditorState } = await import('@codemirror/state');
