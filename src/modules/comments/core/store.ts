@@ -665,7 +665,7 @@ export class CommentStore {
 				try {
 					normalizeIndex(pendingContent.index);
 					if (!pendingContent.files || !Array.isArray(pendingContent.remove) ||
-						[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !/^\\.huhu\\/editor\\/comments\\/files\\/[a-f0-9]{16}\\.json$/.test(path)))
+						[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !path.startsWith(FILES_DIR + '/') || !/^[a-f0-9]{16}\.json$/.test(path.slice(FILES_DIR.length + 1))))
 						throw new Error('Invalid pending comment write');
 					for (const body of Object.values(pendingContent.files)) normalizeFile(JSON.parse(body), '');
 				} catch (error) { await this.quarantine(PENDING_PATH); throw error; }
