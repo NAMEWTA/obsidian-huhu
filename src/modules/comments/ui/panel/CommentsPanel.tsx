@@ -20,7 +20,7 @@ import type { SortOrder } from './sort';
 
 function NoteThreads({ env, path, filter, sort, selectMode, selected, onSelect, showArchived }: {
 	env: CommentsEnv; path: string; filter: ThreadFilter; sort: SortOrder;
-	selectMode: boolean; selected: Set<string>; onSelect(id: string, selected: boolean): void; showArchived: boolean;
+	selectMode: boolean; selected: Set<string>; onSelect: (id: string, selected: boolean) => void; showArchived: boolean;
 }) {
 	useStore(env.service.state, state => state.revision);
 	const [error, setError] = useState(false);
@@ -37,7 +37,7 @@ function NoteThreads({ env, path, filter, sort, selectMode, selected, onSelect, 
 }
 function VaultSection({ env, path, open, total, filter, sort, selectMode, selected, onSelect, showArchived }: {
 	env: CommentsEnv; path: string; open: number; total: number; filter: ThreadFilter; sort: SortOrder;
-	selectMode: boolean; selected: Set<string>; onSelect(id: string, selected: boolean): void; showArchived: boolean;
+	selectMode: boolean; selected: Set<string>; onSelect: (id: string, selected: boolean) => void; showArchived: boolean;
 }) {
 	const [expanded, setExpanded] = useState(false);
 	return <Collapsible open={expanded} onOpenChange={setExpanded}>
@@ -59,22 +59,26 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 	const [selectMode, setSelectMode] = useState(false);
 	const [selected, setSelected] = useState<Set<string>>(new Set());
 	const [tags, setTags] = useState('');
-	const [loading, setLoading] = useState(false);
-	const [loadError, setLoadError] = useState(false);
+	const [loadResult, setLoadResult] = useState<{ signature: string; error: boolean } | null>(null);
 	const [bulkError, setBulkError] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const t = useT(), store = env.service.store, settings = env.service.settings();
 	const sourcePaths = state.notes.map(note => note.path).join('\n');
 	const eager = scope === 'vault' && (!!search.trim() || color !== 'all' || groupBy !== 'file' || selectMode || showArchived);
+	const loading = eager && loadResult?.signature !== sourcePaths;
+	const loadError = eager && loadResult?.signature === sourcePaths && loadResult.error;
 	useEffect(() => {
 		if (!eager) return;
 		let active = true;
 		const paths = sourcePaths ? sourcePaths.split('\n') : [];
-		setLoading(true); setLoadError(false);
-		void Promise.allSettled(paths.map(path => env.service.load(path))).then(results => {
-			if (!active) return;
-			setLoadError(results.some(result => result.status === 'rejected')); setLoading(false);
-		});
+		void (async () => {
+			let hasError = false;
+			for (let offset = 0; offset < paths.length && active; offset += 16) {
+				const results = await Promise.allSettled(paths.slice(offset, offset + 16).map(path => env.service.load(path)));
+				if (results.some(result => result.status === 'rejected')) hasError = true;
+			}
+			if (active) setLoadResult({ signature: sourcePaths, error: hasError });
+		})();
 		return () => { active = false; };
 	}, [env, eager, sourcePaths]);
 	const selectedChanged = (id: string, checked: boolean) => setSelected(old => {

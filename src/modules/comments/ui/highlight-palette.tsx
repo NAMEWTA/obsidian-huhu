@@ -6,7 +6,7 @@ import { useT } from '../../../ui/react/hooks';
 export function HighlightPalette({ settings, selected, onSelect, disabled = false }: {
 	settings: CommentsSettings;
 	selected?: HighlightColorId;
-	onSelect(color: HighlightColorId, hex?: string): void;
+	onSelect: (color: HighlightColorId, hex?: string) => void;
 	disabled?: boolean;
 }) {
 	const t = useT();
