@@ -41,14 +41,21 @@ class MemoryStorage implements TextStorage {
 
 test('replacement JSON store drains pending writes', async () => {
 	const disk = new MemoryStorage();
-	const validate = (value: unknown): value is { a: number; b: number } => !!value && typeof value === 'object' && 'a' in value && 'b' in value;
-	const first = new JsonStore(disk, 'settings.json', validate), second = new JsonStore(disk, 'settings.json', validate);
-	const firstBase = await first.load({ a: 0, b: 0 }), secondBase = await second.load({ a: 0, b: 0 });
-	const [local] = await Promise.all([first.commit({ base: firstBase, value: { a: 1, b: 0 } }), second.commit({ base: secondBase, value: { a: 0, b: 2 } })]);
+	const validate = (value: unknown): value is { a: number; b: number } =>
+		!!value && typeof value === 'object' && 'a' in value && 'b' in value;
+	const first = new JsonStore(disk, 'settings.json', validate),
+		second = new JsonStore(disk, 'settings.json', validate);
+	const firstBase = await first.load({ a: 0, b: 0 }),
+		secondBase = await second.load({ a: 0, b: 0 });
+	const [local] = await Promise.all([
+		first.commit({ base: firstBase, value: { a: 1, b: 0 } }),
+		second.commit({ base: secondBase, value: { a: 0, b: 2 } }),
+	]);
 	assert.deepEqual(JSON.parse(await disk.read('settings.json')), { a: 1, b: 2 });
 	const pending = first.commit({ base: local, value: { ...local, a: 3 } });
 	const replacement = new JsonStore(disk, 'settings.json', validate);
-	assert.deepEqual(await replacement.load({ a: 0, b: 0 }), { a: 3, b: 2 }); await pending;
+	assert.deepEqual(await replacement.load({ a: 0, b: 0 }), { a: 3, b: 2 });
+	await pending;
 });
 
 test('unreadable and corrupt data remain untouched; failed writes report unsaved and can retry', async () => {
@@ -279,7 +286,7 @@ test('all seven action definitions round-trip as Markdown; manual-only actions r
 			sessionMode: 'fresh',
 		},
 		{ kind: 'notify', body: 'Reminder' },
-		{ kind: 'create-task', path: 'Board.md', cardId: 'card', text: 'Do this' },
+		{ kind: 'create-task', timezone: 'UTC', text: 'Do this' },
 		{ kind: 'open-file', path: 'Note.md' },
 		{ kind: 'open-url', url: 'https://example.com' },
 		{ kind: 'obsidian-command', command: 'editor:toggle-bold' },
@@ -295,12 +302,16 @@ test('all seven action definitions round-trip as Markdown; manual-only actions r
 	const roundtrip = JSON.parse(await all.read('definitions')).definitions;
 	for (const action of actions)
 		assert.deepEqual(roundtrip.find((row: { id: string }) => row.id === action.kind).action, action);
-	const replacement = roundtrip.map((row: { id: string }) => row.id === 'script' ? { ...row, action: { kind: 'open-file', path: 'Note.md' } } : row);
+	const replacement = roundtrip.map((row: { id: string }) =>
+		row.id === 'script' ? { ...row, action: { kind: 'open-file', path: 'Note.md' } } : row,
+	);
 	await all.write('definitions', JSON.stringify({ definitions: replacement }));
-	const changed = JSON.parse(await all.read('definitions')).definitions.find((row: { id: string }) => row.id === 'script');
+	const changed = JSON.parse(await all.read('definitions')).definitions.find(
+		(row: { id: string }) => row.id === 'script',
+	);
 	assert.deepEqual(changed.action, { kind: 'open-file', path: 'Note.md' });
 	assert.equal('shell' in changed, false);
-	const rawChanged = [...vault.contents.values()].find(text => text.includes('huhu-id: script'))!;
+	const rawChanged = [...vault.contents.values()].find((text) => text.includes('huhu-id: script'))!;
 	assert.ok(rawChanged);
 	assert.doesNotMatch(rawChanged, /^shell:|^cwd:/m);
 	all.dispose();
@@ -358,53 +369,96 @@ test('habit cold startup rescans when layout settles and file events refresh wit
 	const file = 'huhu/习惯/habits.json';
 	const habit = { id: 'existing', name: 'Read', createdAt: '2026-10-01' };
 	const fixture = memoryVault();
-	const write = (habits: typeof habit[]) => fixture.adapter.write(file, JSON.stringify({ version: 1, habits, records: {} }));
+	const write = (habits: (typeof habit)[]) =>
+		fixture.adapter.write(file, JSON.stringify({ version: 1, habits, records: {} }));
 	let layout!: () => void;
 	const doc = new EventTarget();
-	Object.assign(fixture.app.workspace, { onLayoutReady: (callback: () => void) => { layout = callback; }, containerEl: { ownerDocument: doc } });
+	Object.assign(fixture.app.workspace, {
+		onLayoutReady: (callback: () => void) => {
+			layout = callback;
+		},
+		containerEl: { ownerDocument: doc },
+	});
 	const service = new HabitService({ app: fixture.app } as never);
-	const tick = () => new Promise<void>(resolve => setTimeout(resolve, 0));
+	const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 	try {
 		await service.load();
 		assert.equal(service.getHabits().length, 0);
 		assert.equal(service.isLoading, true, 'The incomplete first scan is not an empty-library state');
 		assert.equal(service.readyForEdits, false);
 		await write([habit]);
-		layout(); await tick(); await service.flush();
+		layout();
+		await tick();
+		await service.flush();
 		assert.equal(service.isLoading, false);
 		assert.equal(service.readyForEdits, true);
 		assert.equal(service.getHabits()[0]?.name, 'Read');
 		await write([{ ...habit, name: 'Read daily' }]);
-		await tick(); await service.flush();
+		await tick();
+		await service.flush();
 		assert.equal(service.getHabits()[0]?.name, 'Read daily');
-		service.addHabit('Another'); await service.flush(); await tick();
+		service.addHabit('Another');
+		await service.flush();
+		await tick();
 		assert.equal(service.getHabits().length, 2);
-		await write(service.getHabits().filter(h => h.id !== habit.id));
-		await tick(); await service.flush();
-		assert.deepEqual(service.getHabits().map(h => h.name), ['Another']);
+		await write(service.getHabits().filter((h) => h.id !== habit.id));
+		await tick();
+		await service.flush();
+		assert.deepEqual(
+			service.getHabits().map((h) => h.name),
+			['Another'],
+		);
 		await fixture.adapter.remove(file);
-		await tick(); await service.flush();
+		await tick();
+		await service.flush();
 		assert.deepEqual(service.getHabits(), []);
-		await write([habit]); await tick(); await service.flush();
+		await write([habit]);
+		await tick();
+		await service.flush();
 		assert.equal(service.getHabits()[0]?.name, 'Read');
-	} finally { service.destroy(); await tick(); }
+	} finally {
+		service.destroy();
+		await tick();
+	}
 });
 
 test('refresh queued during a write preserves edits made before that write completes', async () => {
 	const disk = new MemoryStorage();
 	const app = new HabitApplication(disk, 'data');
-	await app.load(); const first = app.addHabit('First')!; await app.flush();
+	await app.load();
+	const first = app.addHabit('First')!;
+	await app.flush();
 	const write = disk.write.bind(disk);
 	let release!: () => void, entered!: () => void;
-	const blocked = new Promise<void>(r => { release = r; });
-	const started = new Promise<void>(r => { entered = r; });
+	const blocked = new Promise<void>((r) => {
+		release = r;
+	});
+	const started = new Promise<void>((r) => {
+		entered = r;
+	});
 	let once = true;
-	disk.write = async (path, text) => { if (once && path === 'data/habits.json') { once = false; entered(); await blocked; } await write(path, text); };
-	app.renameHabit(first.id, 'Renamed'); await started;
+	disk.write = async (path, text) => {
+		if (once && path === 'data/habits.json') {
+			once = false;
+			entered();
+			await blocked;
+		}
+		await write(path, text);
+	};
+	app.renameHabit(first.id, 'Renamed');
+	await started;
 	const sync = app.syncFromDisk();
 	app.addHabit('During write');
-	release(); await sync; await app.flush();
-	assert.deepEqual(app.getHabits().map(h => h.name), ['Renamed', 'During write']);
-	assert.deepEqual(JSON.parse(disk.files.get('data/habits.json')!).habits.map((h: { name: string }) => h.name), ['Renamed', 'During write']);
+	release();
+	await sync;
+	await app.flush();
+	assert.deepEqual(
+		app.getHabits().map((h) => h.name),
+		['Renamed', 'During write'],
+	);
+	assert.deepEqual(
+		JSON.parse(disk.files.get('data/habits.json')!).habits.map((h: { name: string }) => h.name),
+		['Renamed', 'During write'],
+	);
 	await app.shutdown();
 });

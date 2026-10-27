@@ -8,7 +8,6 @@ import type {
 	ScheduleSpec,
 } from '../../shared/automation/types';
 import type { AutomationPrefill } from './core/api';
-import type { TaskDraft } from '../../shared/automation/task';
 import type { AgentDispatchRequest, AgentDispatchReceipt } from '../../shared/agent-dispatch';
 
 /**
@@ -23,21 +22,9 @@ export interface AutomationSource {
 	/** Write the definition back into its document, or remove it (`remove`). */
 	save(definition: AutomationDefinition, remove?: boolean): Promise<void>;
 	open(source: SourceRef, ownerWindow?: Window): Promise<void>;
-	/** Boards only: the "create task" action. */
-	readonly createTask?: (action: Extract<AutomationAction, { kind: 'create-task' }>, runId: string) => Promise<void>;
-	/** Boards only: cards a "create task" action can target. */
-	readonly taskTargets?: () => Promise<Array<{ path: string; cardId: string; title: string }>>;
-	/** Registered boards, including boards without ordinary to-do cards. Calendar storage is shared. */
-	readonly calendarTargets?: () => Promise<AutomationCalendarTarget[]>;
 	/** Boards only: documents a definition can be pinned to as a quick action. */
 	readonly pinTargets?: () => string[];
 	readonly pin?: (path: string, definition: AutomationDefinition) => Promise<void>;
-}
-
-export interface AutomationCalendarTarget {
-	path: string;
-	title: string;
-	storage: { kind: 'daily' | 'file' | 'folder' | 'task'; path?: string };
 }
 
 /** Automations as other products see them: quick actions and opening the automation board. */
@@ -66,13 +53,6 @@ export const AUTOMATION_AGENT_RUNTIME = serviceKey<AgentRuntimePort>('agent', 'a
  * definition and tells the caller what was saved.
  */
 export interface AutomationComposer {
-	editTask?(request: {
-		owner: HTMLElement;
-		initial: TaskDraft;
-		repeating?: boolean;
-		save(draft: TaskDraft, following: boolean): Promise<boolean>;
-	}): Promise<void>;
-	/** Resolves to the saved definition, or to `undefined` when the dialog is closed without saving. */
 	open(request?: AutomationComposeRequest): Promise<AutomationDefinition | undefined>;
 }
 export interface AutomationComposeRequest {

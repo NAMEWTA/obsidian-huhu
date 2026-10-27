@@ -150,12 +150,20 @@ test('a new board is on the grid from the start: calendar and to-do, a medium cl
 	const data = parse(generateDefaultMarkdown());
 	expect(needsGridConversion(data)).toBe(false);
 	expect(data.widgets?.map(widgetPresentationKey)).toEqual(defaultCanvasMembers().map(widgetPresentationKey));
-	expect(data.widgets?.map((m) => m.kind)).toEqual(['calendar', 'clock', 'pomodoro', 'usage', 'quick-actions']);
+	expect(data.widgets?.map((m) => m.kind)).toEqual([
+		'calendar',
+		'clock',
+		'pomodoro',
+		'usage',
+		'quick-actions',
+		'tasks',
+	]);
 	const lg = data.grid!.lg;
 	expect(lg).toHaveLength(data.widgets!.length + data.columns.length);
 	expect(noOverlap(lg)).toBe(true);
 	const at = (id: string) => lg.find((tile) => tile.i === id)!;
-	const todo = lg.find((tile) => tile.i.startsWith('section:') && tile.w === 6 && tile.h === 4)!;
+	const todo = at('widget:task:tasks:default');
+	expect(data.columns.some((column) => column.sectionType === 'todo')).toBe(false);
 	expect([
 		at('widget:calendar').x,
 		at('widget:calendar').y,

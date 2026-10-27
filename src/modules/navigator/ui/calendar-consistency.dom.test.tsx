@@ -11,7 +11,8 @@ import { CalendarPanel as HomeCalendar } from '../../home/ui/calendar/CalendarPa
 import { CalendarModalPanel } from '../../home/ui/calendar/CalendarModalPanel';
 import { DashboardRenderContext } from '../../home/ui/renderer/render-context';
 import { DEFAULT_DASHBOARD_SETTINGS } from '../../home/core/board/types/model';
-import { createCalendarService } from '../../home/services/calendar-service';
+import { taskDomainFixture } from '../../../../scripts/fixtures/task-domain';
+import { TASK_STORE_PATH } from '../../../shared/storage/vault-layout';
 import { homeServices } from '../../home/services/instances';
 import { calendarIso } from '../../../ui/components/huhu/calendar/CalendarMonth';
 import { t } from '../../../shared/i18n';
@@ -33,7 +34,6 @@ test('navigator, board and full calendar share source updates and filters while 
 	const settings = {
 		...DEFAULT_DASHBOARD_SETTINGS,
 		dashboardFile: '.huhu/dashboards/Board',
-		calendarTaskTarget: { kind: 'file' as const, path: 'Other.md' },
 	};
 	const periodic: NavigatorPeriodic = {
 		root: () => 'Journal',
@@ -55,14 +55,10 @@ test('navigator, board and full calendar share source updates and filters while 
 		subscribe: () => () => {},
 		active: () => undefined,
 	};
-	const calendar = createCalendarService({
-		app: f.app,
-		settings: () => settings,
-		journal: () => periodic,
-		writeFilter: async (filter) => {
-			settings.calendarTaskFilter = filter;
-		},
-	});
+	const domain = await taskDomainFixture(f.app),
+		calendar = domain.calendar;
+	await calendar.createTask({ date: iso, text: 'From another note', time: '14:30' });
+
 	const old = { calendar: homeServices.calendar, periodic: homeServices.periodic, watch: homeServices.watchPeriodic };
 	homeServices.calendar = calendar;
 	homeServices.periodic = () => periodic;
@@ -131,13 +127,13 @@ test('navigator, board and full calendar share source updates and filters while 
 		fireEvent.click(board.querySelector(`[data-date="${iso}"]`)!);
 		expect(openDay).toHaveBeenCalledWith(
 			iso,
-			[expect.objectContaining({ path: 'Other.md', text: 'From another note' })],
+			[expect.objectContaining({ path: TASK_STORE_PATH, text: 'From another note' })],
 			false,
 			expect.any(Function),
 		);
 		expect(full.textContent).toContain('From another note');
 		expect(periodic.open).not.toHaveBeenCalled();
-		expect(f.contents.size).toBe(2);
+		expect(f.contents.size).toBe(3);
 		fireEvent.click(within(dialog).getByRole('checkbox', { name: 'From another note' }));
 		await vi.waitFor(() =>
 			expect(
@@ -157,7 +153,7 @@ test('navigator, board and full calendar share source updates and filters while 
 		expect(nav.querySelector(`[data-date="${iso}"][data-selected]`)).toBeTruthy();
 		view.unmount();
 	} finally {
-		calendar.dispose();
+		await domain.dispose();
 		homeServices.calendar = old.calendar;
 		homeServices.periodic = old.periodic;
 		homeServices.watchPeriodic = old.watch;

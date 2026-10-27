@@ -13,7 +13,7 @@ export type ScheduleSpec =
 	| { kind: 'once'; at: number }
 	| { kind: 'recurring'; expression: string; start: number; timezone?: string };
 export interface SourceRef {
-	kind: 'dashboard' | 'contacts' | 'widget';
+	kind: 'dashboard' | 'contacts' | 'widget' | 'task';
 	path: string;
 	id: string;
 }
@@ -32,15 +32,17 @@ export interface AgentSessionRef {
 	transcriptPath?: string;
 	terminalId?: string;
 }
-export type CreateTaskAction =
-	| { kind: 'create-task'; target?: 'board-card'; path: string; cardId: string; text: string }
-	| {
-			kind: 'create-task'; target: 'calendar'; path: string; cardId?: never; text: string;
-			/** Optional time of the task on its scheduled ownership date. */
-			time?: string;
-			/** Optional reminder time on that date; never inferred from the schedule or task time. */
-			reminderTime?: string;
-	  };
+/** A task-domain command template. Scheduling this action and the task deadline are distinct. */
+export interface CreateTaskAction {
+	kind: 'create-task';
+	text: string;
+	timezone: string;
+	/** Unset uses the admitted run's local date. */
+	date?: string;
+	time?: string;
+	/** Absolute reminder instant, never inferred from the automation trigger. */
+	reminderAt?: number;
+}
 
 export type AutomationAction =
 	| { kind: 'script'; script: string; cwd: string; shell: 'powershell' | 'bash' }
@@ -157,17 +159,21 @@ export interface AutomationSourcePort {
 	save(definition: AutomationDefinition): Promise<void>;
 	remove(definition: AutomationDefinition): Promise<void>;
 	open(source: SourceRef): Promise<void>;
-	createTask(action: CreateTaskAction, runId: string, execution?: AutomationTaskExecution): Promise<AutomationMessage | void>;
+	createTask(
+		action: CreateTaskAction,
+		runId: string,
+		execution?: AutomationTaskExecution,
+	): Promise<AutomationMessage | void>;
 }
 
-/** JSON-safe checkpoint; the calendar owner validates its destination at the write boundary. */
+/** JSON-safe task-domain command checkpoint. No file line or board destination. */
 export interface AutomationTaskDelivery {
 	effectKey: string;
 	date: string;
 	timezone: string;
 	target?: unknown;
-	result?: 'created' | 'already-exists' | 'written-pending-refresh';
-	receipt?: { id: string; path: string; line: number; date: string; effectKey?: string };
+	result?: 'created' | 'already-exists';
+	receipt?: { commandId: string; taskId?: string; taskRevision?: number; seriesId?: string; committedAt: number };
 }
 
 export interface AutomationTaskExecution {

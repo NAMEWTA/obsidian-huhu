@@ -19,4 +19,26 @@ import { messages as commonStrings } from '../src/shared/i18n/lazy/common';
 import { messages as calendarStrings } from '../src/shared/i18n/lazy/calendar';
 import { messages as appearanceStrings } from '../src/shared/i18n/lazy/appearance';
 
-for (const messages of [uiStrings, calendarStrings, automationStrings, browserStrings, commonStrings, appearanceStrings, agent, archives, automations, browser, comments, home, icons, navigator, notifications, sync, safe]) registerMessages(messages);
+for (const messages of [
+	uiStrings,
+	calendarStrings,
+	automationStrings,
+	browserStrings,
+	commonStrings,
+	appearanceStrings,
+	agent,
+	archives,
+	automations,
+	browser,
+	comments,
+	home,
+	icons,
+	navigator,
+	notifications,
+	sync,
+	safe,
+])
+	registerMessages(messages);
+
+import { messages as taskMessages } from '../src/modules/task/i18n';
+registerMessages(taskMessages);

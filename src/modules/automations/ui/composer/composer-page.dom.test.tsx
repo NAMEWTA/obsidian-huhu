@@ -27,11 +27,18 @@ test('the dialog is titled "New automation", opens the reminder prefilled and sa
 	const dialog = await screen.findByRole('dialog');
 	expect(within(dialog).getByText(t('automation.new'))).toBeTruthy();
 	expect((within(dialog).getByRole('textbox', { name: 'Name' }) as HTMLInputElement).value).toBe('Call Ann');
-	expect((within(dialog).getByRole('textbox', { name: t('automation.notifyText') }) as HTMLTextAreaElement).value).toBe('Call Ann');
+	expect(
+		(within(dialog).getByRole('textbox', { name: t('automation.notifyText') }) as HTMLTextAreaElement).value,
+	).toBe('Call Ann');
 	expect((within(dialog).getByLabelText(t('automation.time')) as HTMLInputElement).value).toBe('2030-01-02T09:30');
 	await user.click(within(dialog).getByRole('button', { name: 'Create' }));
 	const saved = await result;
-	expect(saved).toMatchObject({ name: 'Call Ann', action: { kind: 'notify', body: 'Call Ann' }, link: { path: 'Daily/2030-01-02.md', line: 4 }, schedule: { kind: 'once', at } });
+	expect(saved).toMatchObject({
+		name: 'Call Ann',
+		action: { kind: 'notify', body: 'Call Ann' },
+		link: { path: 'Daily/2030-01-02.md', line: 4 },
+		schedule: { kind: 'once', at },
+	});
 	expect(f.service.save).toHaveBeenCalledWith(expect.objectContaining({ name: 'Call Ann' }));
 	await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 	f.view.dispose();
@@ -44,7 +51,8 @@ test('switching the action swaps the form; cancelling saves nothing', async () =
 	expect(within(dialog).queryByRole('combobox', { name: t('automation.board') })).toBeNull();
 	await user.click(within(dialog).getByRole('combobox', { name: t('automation.action') }));
 	await user.click(await screen.findByRole('option', { name: t('automation.create-task') }));
-	expect(within(dialog).getByRole('combobox', { name: t('automation.board') })).toBeTruthy();
+	expect(within(dialog).queryByRole('combobox', { name: t('automation.board') })).toBeNull();
+	expect(within(dialog).getByLabelText(t('automation.taskDueDate'))).toBeTruthy();
 	expect(within(dialog).getByRole('textbox', { name: t('automation.todoText') })).toBeTruthy();
 	expect(within(dialog).queryByRole('textbox', { name: t('automation.notifyText') })).toBeNull();
 	await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
@@ -61,7 +69,9 @@ test('a definition kept in a source document can only be a reminder', async () =
 		ownerWindow: window,
 	});
 	const dialog = await screen.findByRole('dialog');
-	expect((within(dialog).getByRole('combobox', { name: t('automation.action') }) as HTMLButtonElement).disabled).toBe(true);
+	expect((within(dialog).getByRole('combobox', { name: t('automation.action') }) as HTMLButtonElement).disabled).toBe(
+		true,
+	);
 	await userEvent.setup().click(within(dialog).getByRole('button', { name: 'Cancel' }));
 	await result;
 	f.view.dispose();

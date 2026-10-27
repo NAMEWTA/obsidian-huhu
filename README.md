@@ -20,6 +20,7 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 
 | Feature | Current capabilities |
 |---|---|
+| [Tasks](docs/tasks.md) | Independent task workspace, note/archive relations, separate due/reminder times, overdue carry and versioned agent tools |
 | [Dashboard and records](docs/dashboard.md) | Resizable widget grids, calendar, tasks, inbox, clock/weather, habits, expenses, reading, pomodoro and analytics |
 | [Notes navigator](docs/navigator.md) | Folder/tag browsing, search, previews, calendar, templates and keyboard operations |
 | [Agents and terminals](docs/agent-workbench.md) | CLI sessions, tab groups, resume, quick commands, skills and current-workspace usage |

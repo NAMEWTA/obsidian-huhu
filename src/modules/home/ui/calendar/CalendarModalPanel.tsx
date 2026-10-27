@@ -42,7 +42,6 @@ export function CalendarModalPanel({
 	byDay: initialByDay,
 	initialView,
 	initialPosition,
-	boardPath,
 	initialWeekStart,
 	openDay,
 	close,
@@ -61,7 +60,6 @@ export function CalendarModalPanel({
 		() => initialPosition?.selected ?? toIsoDate(initialWeekStart ?? new Date()),
 	);
 	const live = useCalendarData(app, {
-		boardPath,
 		filter: homeServices.calendar?.defaultScope().filter ?? 'all',
 		from: toIsoDate(new Date(anchor.getFullYear(), anchor.getMonth(), -6)),
 		to: toIsoDate(new Date(anchor.getFullYear(), anchor.getMonth() + 1, 7)),
@@ -237,7 +235,6 @@ export function DayAgendaPanel({
 	actions,
 	iso,
 	tasks: initialTasks,
-	boardPath,
 	addTask,
 	removeTask,
 	close,
@@ -250,7 +247,7 @@ export function DayAgendaPanel({
 	removeTask?: (task: VaultTask) => Promise<boolean>;
 	close: () => void;
 }) {
-	const live = useCalendarData(app, { boardPath, filter: 'all', from: iso, to: iso });
+	const live = useCalendarData(app, { filter: 'all', from: iso, to: iso });
 	const tasks = live.calendar ? (live.byDay.get(iso) ?? []) : initialTasks;
 	return (
 		<div className="relative">
@@ -272,7 +269,7 @@ export function DayAgendaPanel({
 				status={live.calendar ? live.snapshot.status : 'ready'}
 				app={app}
 				context={context}
-				boardPath={boardPath}
+
 				onToggle={async (task, checked) => {
 					await actions.onToggle(task, checked);
 				}}

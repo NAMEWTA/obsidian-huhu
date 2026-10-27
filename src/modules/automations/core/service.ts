@@ -308,7 +308,15 @@ export class AutomationService {
 		const recorded = this.state.runs.find((row) => row.id === original.id);
 		if (!recorded || !canRetryCalendarDelivery(recorded) || !recorded.definition)
 			return Promise.reject(new AutomationError('calendarRetryUnavailable'));
-		const launch = this.execute(recorded.definition, recorded.trigger, recorded.scheduledFor, Date.now(), undefined, undefined, recorded);
+		const launch = this.execute(
+			recorded.definition,
+			recorded.trigger,
+			recorded.scheduledFor,
+			Date.now(),
+			undefined,
+			undefined,
+			recorded,
+		);
 		this.launches.add(launch);
 		void launch.finally(() => this.launches.delete(launch)).catch(() => {});
 		return launch;
@@ -412,9 +420,14 @@ export class AutomationService {
 		const unavailable = actionAvailability(d.action.kind, trigger, this.options.desktop !== false);
 		if (unavailable) throw new Error(t(unavailable));
 		if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
-		if (!retry && trigger === 'scheduled' && d.action.kind === 'create-task' && d.action.target === 'calendar') {
-			const recorded = this.state.runs.find((row) => row.automationId === d.id && row.revision === d.revision &&
-				row.trigger === 'scheduled' && row.scheduledFor === at);
+		if (!retry && trigger === 'scheduled' && d.action.kind === 'create-task') {
+			const recorded = this.state.runs.find(
+				(row) =>
+					row.automationId === d.id &&
+					row.revision === d.revision &&
+					row.trigger === 'scheduled' &&
+					row.scheduledFor === at,
+			);
 			if (recorded) return recorded;
 		}
 		const active = this.state.runs.find((r) => r.automationId === d.id && isActiveRun(r));

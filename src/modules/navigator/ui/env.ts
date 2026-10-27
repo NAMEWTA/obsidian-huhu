@@ -6,7 +6,7 @@ import type { NavContext } from '../core/types';
 import type { PreviewStore } from '../platform/preview-store';
 import type { NavigatorService } from '../services/navigator';
 import type { ProductivityActions } from './actions';
-import type { CalendarService, CalendarTask } from '../../home/api';
+import type { TaskCalendarService, CalendarTask } from '../../task/api';
 import type { NavigatorPeriodic } from '../api';
 
 /** What the navigator's React tree needs from its host. */
@@ -29,7 +29,7 @@ export interface NavigatorEnv {
 	/** Notes from templates, periodic notes, merging and tag edits; absent in hosts that only browse. */
 	actions?: ProductivityActions;
 	periodic?: NavigatorPeriodic;
-	calendar?: () => CalendarService | undefined;
+	calendar?: () => TaskCalendarService | undefined;
 	watchCalendar?: (listener: () => void) => () => void;
 	remindCalendarTask?: (task: CalendarTask, date: string, owner?: Window) => void;
 	copyPath: (path: string) => void;

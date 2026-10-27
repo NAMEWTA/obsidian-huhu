@@ -11,8 +11,8 @@ import {
 } from '../../../shared/automation/types';
 import { t } from '../../../shared/i18n/index';
 import { AGENT_SESSIONS } from '../../agent/api';
-import { HOME_CALENDAR } from '../../home/api';
-import { deliverCalendarTask } from './calendar-delivery';
+import { TASKS } from '../../task/api';
+import { deliverTask } from './task-delivery';
 import type { NotificationOpener, NotificationRequest } from '../../notifications/api';
 import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_SOURCES, type AutomationSource } from '../api';
 import { actionAvailability, actionDefinition } from '../core/actions/registry';
@@ -91,13 +91,7 @@ export async function createAutomationRuntime(
 				throw new AutomationError(source.kind === 'widget' ? 'widgetModuleDisabled' : 'sourceMissing');
 			await provider.open(source, ownerWindow);
 		},
-		createTask: async (action, runId, execution) => {
-			if (action.target === 'calendar')
-				return deliverCalendarTask(context.services.peek(HOME_CALENDAR), action, execution);
-			const provider = (await providers()).find((item) => item.createTask);
-			if (!provider?.createTask) throw new AutomationError('sourceMissing');
-			return provider.createTask(action, runId);
-		},
+		createTask: async (action, _runId, execution) => deliverTask(context.services.peek(TASKS), action, execution),
 	};
 	const openRuns = (resourceId?: string) =>
 		shell.open(
