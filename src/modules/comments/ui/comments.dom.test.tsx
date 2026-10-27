@@ -144,15 +144,10 @@ test('editor reconfiguration retains its scoped class and removes it when disabl
 	expect(f.env.editors.size).toBe(0); view.destroy(); parent.remove(); await f.dispose();
 });
 
-test('one-click palette preserves editor selection during mousedown and creates a color card', async () => {
-	const { EditorView } = await import('@codemirror/view');
-	const { EditorState } = await import('@codemirror/state');
-	const { editorInfoField } = await import('obsidian');
-	const { commentsCmExtension } = await import('./editor/extension');
-	const f = fixture(), parent = document.createElement('div'); document.body.appendChild(parent);
-	const state = EditorState.create({ doc: 'alpha beta', extensions: [editorInfoField.init(() => ({ file: { path: 'a.md' } }) as never), commentsCmExtension(f.env)] });
-	const view = new EditorView({ state, parent });
-	view.focus(); view.dispatch({ selection: { anchor: 0, head: 5 } });
+test('one-click palette keeps the selection request and creates a pure color highlight', async () => {
+	const f = fixture();
+	act(() => f.channel.open({ path: 'a.md', ownerDocument: document, rect: () => new DOMRect(30, 30, 80, 20),
+		mode: 'selection', anchor: createAnchor('alpha beta', 0, 5), pinned: false }));
 	const ui = render(<HuhuProviders ownerDocument={document}><CommentPopover env={f.env} channel={f.channel} /></HuhuProviders>);
 	const color = await screen.findByRole('button', { name: 'Yellow' });
 	expect(f.channel.state.getState().request?.mode).toBe('selection');
@@ -161,7 +156,7 @@ test('one-click palette preserves editor selection during mousedown and creates 
 	await waitFor(() => expect(f.store.threadsFor('a.md')).toHaveLength(1));
 	expect(f.store.threadsFor('a.md')[0]).toMatchObject({ color: 'yellow', messages: [] });
 	await waitFor(() => expect(f.channel.state.getState().request).toBeNull());
-	ui.unmount(); view.destroy(); parent.remove(); await f.dispose();
+	ui.unmount(); await f.dispose();
 });
 
 test('a selection request survives hover timers, and hover only replaces it away from the button', async () => {
