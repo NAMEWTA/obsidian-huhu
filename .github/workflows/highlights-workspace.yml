@@ -4,23 +4,39 @@ on:
     branches: ["NAMEWTA/6"]
   pull_request:
     branches: [main]
+
 permissions:
-  contents: read
+  contents: write
+
 jobs:
   validate-highlights:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:css
       - run: pnpm run build
       - run: pnpm exec vitest run src/modules/comments src/app/workbench/comments-leaf.dom.test.tsx
       - run: pnpm run lint
+      - run: pnpm run lint:css
+      - name: Commit generated plugin assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/NAMEWTA/6'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- main.js styles.css
+          if ! git diff --cached --quiet; then
+            git commit -m "build(highlights): refresh main.js and styles.css"
+            git push origin HEAD:refs/heads/NAMEWTA/6
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: highlights-built-assets
