@@ -3,6 +3,7 @@ import { MarkdownRenderChild, MarkdownView, setIcon, type MarkdownPostProcessor 
 import { decodeHTMLStrict } from 'entities';
 import { mapSourceRange } from '../core/reading';
 import { locateAnchor, lineNumberAt } from '../core/anchor';
+import { threadHighlightHex } from '../core/highlight-colors';
 import { t } from '../../../shared/i18n';
 import type { CommentsEnv } from './env';
 
@@ -12,7 +13,7 @@ export function commentsReadingProcessor(env: CommentsEnv, cleanups: Set<() => v
 		const info = ctx.getSectionInfo(el); if (!info || el.closest('.huhu-comments-panel, .huhu-comments-overlay-root, [data-comments-overlay]')) return;
 		await env.service.load(ctx.sourcePath);
 		if (!env.alive()) return;
-		const threads = env.service.store.threadsFor(ctx.sourcePath).filter(thread => thread.status !== 'orphaned' && (thread.status !== 'resolved' || env.service.settings().highlightResolved));
+		const threads = env.service.store.threadsFor(ctx.sourcePath).filter(thread => thread.status !== 'orphaned' && (thread.status !== 'resolved' || env.service.settings().highlightResolved || !!thread.color));
 		let blockStart = 0; for (let line = 0; line < info.lineStart; line++) blockStart = info.text.indexOf('\n', blockStart) + 1;
 		let blockEnd = blockStart; for (let line = info.lineStart; line <= info.lineEnd; line++) { const next = info.text.indexOf('\n', blockEnd); blockEnd = next < 0 ? info.text.length : next + 1; }
 		for (const thread of threads) {
@@ -26,7 +27,8 @@ export function commentsReadingProcessor(env: CommentsEnv, cleanups: Set<() => v
 				const node = nodes[slice.index]!;
 				const target = slice.start > 0 ? node.splitText(slice.start) : node;
 				if (slice.end - slice.start < target.data.length) target.splitText(slice.end - slice.start);
-				const mark = el.ownerDocument.createElement('mark'); mark.className = 'huhu-comment-hl'; mark.dataset['commentIds'] = thread.id; target.replaceWith(mark); mark.appendChild(target);
+				const mark = el.ownerDocument.createElement('mark'); mark.className = 'huhu-comment-hl'; mark.dataset['commentIds'] = thread.id;
+					mark.style.setProperty('--huhu-highlight-color', threadHighlightHex(thread, env.service.settings())); target.replaceWith(mark); mark.appendChild(target);
 			} else {
 				const marker = el.createEl('button', { cls: 'huhu-comment-reading-marker', attr: { 'aria-label': t('editor.comments.lineCount', { count: 1 }) } });
 				marker.dataset['commentIds'] = thread.id; setIcon(marker, 'message-square'); el.prepend(marker);
