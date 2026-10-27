@@ -91,6 +91,7 @@ function fenceBody(text) {
 	return { unclosed: Boolean(fence), body: kept.join('\n') };
 }
 
+// GitHub strips CJK punctuation such as 、 from generated heading anchors.
 function githubSlug(text) {
 	const plain = text
 		.replace(/`([^`]*)`/g, '$1')
@@ -100,7 +101,7 @@ function githubSlug(text) {
 	return plain
 		.toLowerCase()
 		.replace(/[\u0000-\u001f]/g, '')
-		.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+		.replace(/[\u2000-\u206F\u2E00-\u2E7F\u3000-\u303F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
 		.replace(/\s/g, '-');
 }
 
