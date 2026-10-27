@@ -676,7 +676,7 @@ export class CommentStore {
 		const raw = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
 		try {
 			const loaded = raw === null ? emptyIndex() : normalizeIndex(raw);
-			this.index = loaded.version === 2 ? await this.migrateV2(loaded) : loaded;
+			this.index = (loaded as { version: 2 | 3 }).version === 2 ? await this.migrateV2(loaded) : loaded;
 		} catch (error) {
 			if (raw && asRecord(raw)?.['version'] !== 2 && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
 			throw error;

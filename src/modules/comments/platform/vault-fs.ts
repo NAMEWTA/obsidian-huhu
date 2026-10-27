@@ -10,7 +10,7 @@ export function vaultCommentFs(app: App): CommentFs {
 		read: (path) => adapter.read(normalizePath(path)),
 		list: async (path) => {
 			const folder = normalizePath(path);
-			const entries = await adapter.list(folder);
+			const entries = await app.vault.adapter.list(folder);
 			return { files: entries.files, folders: entries.folders };
 		},
 		write: async (path, data) => {
