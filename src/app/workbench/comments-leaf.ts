@@ -25,7 +25,7 @@ export class CommentsLeaf extends ItemView {
 		return t('editor.viewTitle');
 	}
 	getIcon(): string {
-		return 'message-square-text';
+		return 'highlighter';
 	}
 	onOpen(): Promise<void> {
 		this.register(this.host.services.watch(COMMENTS_PANEL, () => this.draw()));

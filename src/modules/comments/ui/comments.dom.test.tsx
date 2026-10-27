@@ -16,7 +16,16 @@ vi.mock('obsidian', async importOriginal => {
 	return { ...actual, Component: class { load() {} unload() {} }, MarkdownRenderer: { render: async (_app: unknown, text: string, el: HTMLElement) => { el.textContent = text; } }, Platform: { isPhone: false, isMobile: false } };
 });
 beforeAll(() => {
-	Object.assign(HTMLElement.prototype, { empty() { (this as HTMLElement).replaceChildren(); }, setText(value: string) { (this as HTMLElement).textContent = value; } });
+	Object.assign(HTMLElement.prototype, {
+		empty() { (this as HTMLElement).replaceChildren(); },
+		setText(value: string) { (this as HTMLElement).textContent = value; },
+		createSpan(options?: { cls?: string; text?: string }) {
+			const el = document.createElement('span');
+			if (options?.cls) el.className = options.cls;
+			if (options?.text) el.textContent = options.text;
+			(this as HTMLElement).appendChild(el); return el;
+		},
+	});
 });
 afterEach(() => { vi.useRealTimers(); });
 function fixture() {
