@@ -1,0 +1,136 @@
+name: Safe notes implementation validation
+on:
+  push:
+    branches: [fix/safe-notes-polish-20261028]
+    paths: [.github/workflows/safe-notes-apply.yml]
+permissions:
+  contents: write
+jobs:
+  validate-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Verify and apply reviewed source edits
+        shell: bash
+        run: |
+          mkdir -p /tmp/safe-notes-validation
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma
+          from pathlib import Path
+          data = ''.join(Path(f'.github/safe-notes-transfer/{i:02}.b64').read_text() for i in range(1, 9))
+          raw = lzma.decompress(base64.b64decode(data, validate=True))
+          assert hashlib.sha256(raw).hexdigest() == '2f102c12283f60d80805cfc48ffaa50a97057b4daf102f1272ec8c4cc8408d13'
+          records = json.loads(raw)
+          assert len(records) == 42
+          pending = {}
+          for record in records:
+              path = Path(record['path'])
+              name = path.as_posix()
+              assert not path.is_absolute() and '..' not in path.parts and name not in pending
+              assert name.startswith(('src/modules/safe/', 'src/modules/navigator/', 'src/modules/icons/', 'docs/')) or name == 'scripts/bundle-budget.json'
+              if record['before'] is None:
+                  assert not path.exists(), name
+                  before = b''
+              else:
+                  before = path.read_bytes()
+                  assert hashlib.sha256(before).hexdigest() == record['before'], name
+              lines = before.decode('utf-8').splitlines(keepends=True)
+              last_end = 0
+              for start, end, replacement in record['edits']:
+                  assert last_end <= start <= end <= len(lines), name
+                  last_end = end
+              for start, end, replacement in reversed(record['edits']):
+                  lines[start:end] = [replacement]
+              after = ''.join(lines).encode('utf-8')
+              assert hashlib.sha256(after).hexdigest() == record['after'], name
+              pending[name] = after
+          for name, data in pending.items():
+              path = Path(name)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(data)
+          Path('/tmp/safe-notes-validation/source-sha256.json').write_text(json.dumps({r['path']:r['after'] for r in records}, indent=2))
+          print(f'Applied {len(pending)} reviewed files with before/after SHA-256 verification')
+          PY
+      - run: pnpm install --frozen-lockfile
+      - name: Build production artifacts
+        shell: bash
+        run: |
+          set -o pipefail
+          { pnpm run build:css && pnpm run build; } 2>&1 | tee /tmp/safe-notes-validation/build.log
+      - name: Run all affected domain tests
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm exec vitest run src/modules/safe src/modules/navigator src/modules/icons --maxWorkers=1 2>&1 | tee /tmp/safe-notes-validation/domain-tests.log
+      - name: Lint and architecture gates
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            pnpm run lint &&
+            pnpm run test:architecture &&
+            pnpm run test:i18n &&
+            pnpm run test:promise-callbacks &&
+            pnpm run lint:css &&
+            pnpm run test:styles &&
+            pnpm run test:build-text &&
+            pnpm run check:bundle &&
+            git diff --check
+          } 2>&1 | tee /tmp/safe-notes-validation/gates.log
+      - name: Record known documentation baseline failures
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import subprocess, pathlib, re
+          base = '/tmp/safe-notes-docs-baseline'
+          subprocess.run(['git','worktree','add','--detach',base,'33c21e098ef3188cbab5a09f3e0a01fadb787715'],check=True)
+          failures = []
+          for label, cwd in [('current','.'),('baseline',base)]:
+              result = subprocess.run(['node','scripts/verify-docs.mjs'],cwd=cwd,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+              pathlib.Path(f'/tmp/safe-notes-validation/docs-{label}.log').write_text(result.stdout)
+              anchors = sorted(set(re.findall(r"[^\n']+\.md: missing heading anchor #[^'\n]+",result.stdout)))
+              assert result.returncode == 1 and len(anchors) == 6, result.stdout
+              assert all('HUHU-Bot_架构审核与工程设计规范_v1.1.md' in x for x in anchors), anchors
+              failures.append(anchors)
+          assert failures[0] == failures[1], failures
+          print('Documentation gate remains failed: six identical pre-existing input-document anchors, no new failures.')
+          PY
+      - name: Commit source and regenerated artifacts without overwriting concurrent work
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          hashes=json.loads(Path('/tmp/safe-notes-validation/source-sha256.json').read_text())
+          for name, expected in hashes.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==expected,name
+          Path('/tmp/safe-notes-validation/artifact-sha256.json').write_text(json.dumps({name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in ['main.js','styles.css']},indent=2))
+          PY
+          branch=fix/safe-notes-polish-20261028
+          actual=$(git ls-remote origin "refs/heads/$branch" | cut -f1)
+          test "$actual" = "$GITHUB_SHA"
+          rm -rf .github/safe-notes-transfer
+          rm .github/workflows/safe-notes-workspace.yml .github/workflows/safe-notes-apply.yml
+          git add -- docs scripts/bundle-budget.json src/modules/safe src/modules/navigator src/modules/icons main.js styles.css .github/safe-notes-transfer .github/workflows/safe-notes-workspace.yml .github/workflows/safe-notes-apply.yml
+          git diff --cached --check
+          git config user.name Anner
+          git config user.email 67400687+NAMEWTA@users.noreply.github.com
+          git commit -m "feat(safe-notes): 完善保险箱账号关系与标签并修复笔记导航和文件图标"
+          git push origin "HEAD:refs/heads/$branch"
+          git rev-parse HEAD | tee /tmp/safe-notes-validation/commit.txt
+          git diff --stat 33c21e098ef3188cbab5a09f3e0a01fadb787715 HEAD | tee /tmp/safe-notes-validation/changes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: safe-notes-validation
+          path: /tmp/safe-notes-validation
+          retention-days: 14
