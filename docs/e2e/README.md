@@ -2,7 +2,7 @@
 
 环境：Obsidian **1.14.5**（`obsidian_1.14.5_amd64.deb`），插件为 `dev` 分支上 `pnpm run build` 生成的 `main.js` / `styles.css`。每次点测使用一次性测试库，经远程调试操作真实界面。截图与本报告一起提交在 `docs/e2e/`。
 
-`pnpm run build` 通过。`pnpm run test:all` 通过：48 个脚本全部通过；其中 Vitest 为 **4300 passed、3 skipped、0 failed**（含改写后的 3 个档案黄金样本）。
+`pnpm run build` 通过。`pnpm run test:all` 再次通过：48 个脚本全部通过；其中 Vitest 为 **4300 passed、3 skipped、0 failed**。
 
 ## issue 与截图
 
@@ -29,13 +29,45 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 需求（含评论） | 实现 | 截图 | 结果 |
 |---|---|---|---|
 | #7 评论：独立任务、四类列表、创建后出现在工作台；Home 只挂载视图 | `src/modules/task`，主库 `huhu/任务/tasks.json`；无 Home 任务别名 | [task-create.png](task-create.png)、[task-saved.png](task-saved.png)、[dashboard-tasks.png](dashboard-tasks.png) | 通过。创建并保存后列表计数为 1 |
-| #7 评论 F20–F22：命令在排队前复制，关闭后不交付迟到的成功 | `TaskService.execute` 与工具入口；回归在 task 测试里 | 同上，宿主上只证明创建成功。参数复制和取消没有单独的界面 | 代码与测试覆盖。界面截图不单独证明异步边界 |
+| #7 评论 F20–F22：命令在排队前复制，关闭后不交付迟到的成功 | `TaskService.execute` 在入队前复制命令；工具在资源返回后复查取消和 ready。回归在 `src/modules/task/services/boundary.test.ts` | 无单独界面。关闭任务页不会弹出「迟到成功」，失败留在工具结果里，不写成功回执 | 测试覆盖。宿主上没有可截的成功提示 |
 | #3 P0–P4：自定义类型表单、可见迁移 | 通用档案 `core/generic` 与 `RecoveryCommands`。旧黄金样本已改写到这套 API，不适用的外层时间戳、日期兄弟键、关系 `status` 和旧备份路径记在实施方案 | [archives-create.png](archives-create.png) | 通过。打开的是通用个人档案表单 |
 | #3 P5：CSV 导入、Lookup/Rollup、局部图谱、项目集成 | 未实现 | 无 | 正文排除在首轮之外：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」 |
-| #6 P0：划词高亮、侧栏卡片、不改笔记正文 | 高亮实体与侧栏 | [highlights.png](highlights.png) | 通过。划词后出现色卡，侧栏计数为 1 |
-| #6 P1 检索、批量、自定义色、导出；P2 PDF/EPUB | P1 未作为本轮界面补齐。P2 正文写明不阻塞首版 | 无单独截图 | P2 按正文排除。P1 仍是后续界面工作 |
-| #2 A–D：历史列表与笔记历史 | `src/modules/versioning` | [versioning-history.png](versioning-history.png)、[note-history.png](note-history.png) | 通过。两次提交都出现在版本管理和笔记历史 |
-| #2 左右/上下/行内对照、恢复撤销的逐步界面 | 模块里有比较与恢复命令 | 本轮没有把三种布局和恢复向导各截一张 | 历史入口已打开。三种布局和恢复向导还没有逐张截图 |
+| #6 P0：划词高亮、侧栏卡片、不改笔记正文 | 高亮实体与侧栏 | [highlights.png](highlights.png)、[highlights-search.png](highlights-search.png) | 通过。划词后出现色卡，侧栏可搜索 |
+| #6 P1 检索与按颜色筛选 | 侧栏搜索框、颜色下拉、按文件/颜色/标签分组 | [highlights-search.png](highlights-search.png)、[highlights-filter.png](highlights-filter.png) | 通过。搜索「划词」留下该卡片；颜色筛为黄色 |
+| #6 P1 批量换色、打标签、归档、删除确认 | 批量管理条 | [highlights-bulk.png](highlights-bulk.png) | 通过。可见全选、四色、标签、归档和删除 |
+| #6 P1 自定义颜色 | 设置 → 编辑器 | [highlights-custom-color.png](highlights-custom-color.png) | 通过。已添加「琥珀」，并出现在侧栏颜色筛里 |
+| #6 P1 导出 Markdown | `exportHighlights`，目录 `huhu/导出/高亮` | [highlights-export.png](highlights-export.png) | 通过。通知写明已导出到该目录下的 Markdown |
+| #6 P2 PDF / EPUB / 可选 AI | 未实现 | 无 | 正文排除：「P2 — 单独拆分后续 Issue（不作为本 Issue 首版阻塞项）」。文末又写「建议按 P0 → P1 实现，P2 再分别开独立 Issue」 |
+| #2 历史列表与笔记历史 | `src/modules/versioning` | [versioning-history.png](versioning-history.png)、[versioning-note-history.png](versioning-note-history.png) | 通过。`revise note` 与 `initial note` 同时出现在版本管理和笔记历史 |
+| #2 左右对照 | Diff 布局「左右」 | [versioning-side-by-side.png](versioning-side-by-side.png) | 通过。同一文件左右两栏 |
+| #2 上下对照 | Diff 布局「上下」 | [versioning-stacked.png](versioning-stacked.png) | 通过。上下两栏 |
+| #2 行内对照 | Diff 布局「行内」 | [versioning-inline.png](versioning-inline.png) | 通过。同一栏里红绿相邻 |
+| #2 恢复向导 | 笔记历史打开版本对比后的恢复对话框 | [versioning-restore.png](versioning-restore.png) | 通过。标题「恢复此版本？」，三步为检查点、核对编辑器、应用版本 |
 | #1 / PR #5：独立任务空间、受管 Chromium、Agent 控制 | 浏览器模块 + 钉死运行包 | [browser-managed-page.png](browser-managed-page.png) | 通过。空间运行中，页面已打开，状态为 Agent 控制 |
 | #1 评论 / PR #14：同页交接对话框 | `HandoffAgentButton`，只在任务空间且 Agent 持有控制权时出现 | [browser-handoff.png](browser-handoff.png) | 通过。对话框真实打开 |
 | Bot 聊天页在 Runner 就绪后打开 | 本地覆盖路径，不改下载规则 | [huhubot-chat.png](huhubot-chat.png) | 通过。状态为就绪 |
+
+## Issue #1 第二阶段计划（评论第 0–17 章）
+
+这 18 节是实施合同，不是 18 个新页面。能在本环境点开的界面已有截图。协议、账本、原生隔离由既有测试覆盖。Windows/macOS 运行包、系统凭据库、真实输入法组字不在这台 Linux 容器里，不能冒充已点测。
+
+| 章 | 在 dev 上的实现 | 证据 |
+|---|---|---|
+| 0 继续什么 | 独立浏览器、单 writer、同页交接已在 `src/modules/browser` | [browser-managed-page.png](browser-managed-page.png)、[browser-handoff.png](browser-handoff.png) |
+| 1 引用与基线 | 代码入口仍是 `api.ts`、`workspace.ts`、`operation-ledger.ts`、`run-events.ts`、desktop runtime | 静态对照。不是界面 |
+| 2 分支合同 | 当时要求从 `NAMEWTA/1236` 开分支。后续指示改为只在 `dev` 上集成，没有另开分支，也没有动 `main` | 过程约束，无界面 |
+| 3 对现有实现的判断 | 账本、事件流、材料接口保留在上述服务里，没有另起一套浏览器 | 同上 |
+| 4 FR-01～28 | 模块、Space、只读/接管、交接、身份与文件页都在现有工作台 | 空间与交接见上；身份种子和文件是同一页的标签，见 [browser-runtime-ready.png](browser-runtime-ready.png) |
+| 5 架构职责 | 仍是一套 Workspace / Worker / 原生 Gate / 独占 Chromium，没有第二套 UI 框架 | 运行时版本 156.0.8078.47，见 [browser-managed-page.png](browser-managed-page.png) |
+| 6 同页接力 | `handoffAgent` 与交接对话框。确认后不重新打开 URL | [browser-handoff.png](browser-handoff.png) |
+| 7 感知与动作 | `driver.ts` 的观察、引用和截图。本环境能看到受管页第一帧 | [browser-managed-page.png](browser-managed-page.png)。遮挡、OOPIF、输入法没有在这台机器上逐项点测 |
+| 8 工具与账本 | `operation-ledger.ts`、`protocol-service.ts`、CLI。prepare/execute/unknown 由测试锁定 | 无单独按钮。替代验证是浏览器协议测试 |
+| 9 身份、文件、安全 | 身份种子、文件标签和临时空间同意都在产品界面里。系统凭据库在此环境不可用，所以新空间必须选临时存储 | [browser-runtime-ready.png](browser-runtime-ready.png)、[browser-managed-page.png](browser-managed-page.png) |
+| 10 Hello Halo 阅读包 | 产品按 Halo 的业务边界实现（观察、接管、交接、材料），没有把 Electron webview 拷进 Obsidian | 行为见交接与受管页截图 |
+| 11 阶段 P0–P7 | 合同、运行时、交接和恢复已经落在现有模块。P2 的 Windows/macOS 门禁保持「仅 Linux x64 已验证」 | 本机只能证明 Linux x64 |
+| 12 开发分工 | 过程说明，不是产品功能 | 无界面 |
+| 13 验收合同 | 同页交接、受管页、临时空间已点测。多窗口、真实 Bot 工具链、性能预算不在这次点测里 | 截图加上 `pnpm run test:all` 里的浏览器测试 |
+| 14 文档与迁移 | `docs/browser.md` 等保持现有协议。没有把旧 sync 数据改成浏览器数据 | 文档，不是新界面 |
+| 15 PR 门禁 | 集成 PR 仍是 #15，不合并、不关闭 issue | 过程 |
+| 16 启动指令 | 历史操作步骤。当前工作在 `dev` | 过程 |
+| 17 七个交付问题 | 相对 1236 的浏览器改动已含在 `dev`；同页交接保持原页面；旧连接在交接后失效由交接文案和 `handoffAgent` 测试说明。Windows 与系统凭据仍未验证 | 见上表截图 |
