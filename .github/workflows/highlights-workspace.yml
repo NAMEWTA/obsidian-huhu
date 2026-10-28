@@ -21,34 +21,103 @@ jobs:
       - uses: actions/checkout@v5
         with:
           ref: ${{ github.sha }}
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
-      - name: Apply the reviewed implementation with an exact createAnchor match
+      - name: Apply the reviewed implementation and mapped-edit regressions
         shell: python
         run: |
           import subprocess
           import textwrap
+          from pathlib import Path
           baseline = '1ba3aff5b469f192baa0c874d7bf141a10d8a12d'
           workflow = subprocess.check_output(['git', 'show', baseline + ':.github/workflows/highlights-workspace.yml'], text=True)
           marker = '      - name: Apply reviewed anchor safety changes to the exact source baseline\n'
-          body = workflow.split(marker, 1)[1].split('        run: |\n', 1)[1].split('      - run: pnpm install --frozen-lockfile\n', 1)[0]
+          body = workflow.split(marker, 1)[1].split('        run: |\n', 1)[1].split('\n      - run: pnpm install --frozen-lockfile\n', 1)[0]
           script = textwrap.dedent(body)
-          # The hash assignment also appears in Unicode normalization. Only the
-          # createAnchor assignment is immediately followed by the kind field.
           needle = r'\t\ttextHash: hashString(text),'
           if script.count(needle) != 2:
               raise RuntimeError('Reviewed patch structure changed')
           script = script.replace(needle, needle + r'\n\t\tkind,')
           exec(compile(script, '<reviewed-highlight-anchor-patch>', 'exec'))
+
+          # A verified ChangeSet establishes identity even when it leaves a
+          # particular range stationary. Refresh the document fingerprint and
+          # context, but do not pretend that the annotation itself was edited.
+          path = Path('src/modules/comments/core/store.ts')
+          source = path.read_text()
+          old = "\t\t\tif (start === thread.anchor.start && end === thread.anchor.end && exact === thread.anchor.text) {\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tthread.anchor.start = start;\n\t\t\tthread.anchor.end = end;\n\t\t\tthread.anchor = createAnchor(doc, start, end, thread.kind);"
+          new = "\t\t\tconst nextAnchor = createAnchor(doc, start, end, thread.kind);\n\t\t\tif (start === thread.anchor.start && end === thread.anchor.end && exact === thread.anchor.text) {\n\t\t\t\tif (thread.anchor.documentHash !== nextAnchor.documentHash) {\n\t\t\t\t\tthread.anchor = nextAnchor;\n\t\t\t\t\tchanged = true;\n\t\t\t\t}\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tthread.anchor = nextAnchor;"
+          source = replace_once(source, old, new)
+          source = replace_once(source,
+              "\t\t\t\tif (thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== doc.slice(located.start, located.end)) {\n\t\t\t\t\tthread.anchor = createAnchor(doc, located.start, located.end, thread.kind);",
+              "\t\t\t\tconst nextAnchor = createAnchor(doc, located.start, located.end, thread.kind);\n\t\t\t\tif (thread.anchor.documentHash !== nextAnchor.documentHash || thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== nextAnchor.text) {\n\t\t\t\t\tthread.anchor = nextAnchor;")
+          path.write_text(source)
+
+          path = Path('src/modules/comments/highlights.test.ts')
+          expected = 'fa2dd5215c80f47f988e58f4ab35bcc4308f258f'
+          actual = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+          if actual != expected:
+              raise RuntimeError('Highlight integration tests changed since review')
+          source = replace_once(path.read_text(), "import { createAnchor } from './core/anchor';", "import { createAnchor, locateAnchor } from './core/anchor';")
+          source += textwrap.dedent('''
+
+          test('mapped edits outside a duplicate highlight refresh its identity without editing the card', async () => {
+          \tconst fs = memoryFs();
+          \tconst store = new CommentStore(fs, { timers, debounceMs: 1e6 });
+          \tconst service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
+          \tconst block = 'L'.repeat(50) + 'abcdefghij' + 'R'.repeat(50);
+          \tconst before = block + '\\n' + block;
+          \tconst start = before.lastIndexOf('abcdefghij');
+          \tconst id = await service.highlight({}, 'a.md', { anchor: createAnchor(before, start, start + 10), color: 'yellow' });
+          \tstore.reconcile('a.md', before);
+          \tawait store.flush();
+          \tconst updatedAt = store.threadsFor('a.md')[0]!.updatedAt;
+          \tconst after = before + '\\nUnrelated new paragraph';
+          \tstore.applyChanges('a.md', { mapPos: position => position }, after, before);
+          \tconst current = store.threadsFor('a.md')[0]!;
+          \texpect(current).toMatchObject({ id, status: 'open', updatedAt });
+          \texpect(current.anchor.documentHash).toBe(createAnchor(after, start, start + 10).documentHash);
+          \texpect(locateAnchor(after, current.anchor)).toEqual({ start, end: start + 10 });
+          \tawait store.close();
+          \tservice.dispose();
+          \tconst restarted = new CommentStore(fs, { timers, debounceMs: 1e6 });
+          \ttry {
+          \t\tconst [saved] = await restarted.loadFile('a.md');
+          \t\texpect(saved).toMatchObject({ id, status: 'open', updatedAt });
+          \t\texpect(locateAnchor(after, saved!.anchor)).toEqual({ start, end: start + 10 });
+          \t} finally { await restarted.close(); }
+          });
+
+          test('successful external reconciliation refreshes the fingerprint of a stationary range', async () => {
+          \tconst fs = memoryFs();
+          \tconst store = new CommentStore(fs, { timers, debounceMs: 1e6 });
+          \tconst service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
+          \tconst before = 'Hello highlighted world';
+          \ttry {
+          \t\tawait service.highlight({}, 'a.md', { anchor: createAnchor(before, 6, 17), color: 'blue' });
+          \t\tstore.reconcile('a.md', before);
+          \t\tawait store.flush();
+          \t\tconst after = before + ' and a new ending';
+          \t\tstore.reconcile('a.md', after);
+          \t\tawait store.flush();
+          \t\tconst saved = store.threadsFor('a.md')[0]!;
+          \t\texpect(saved.status).toBe('open');
+          \t\texpect(saved.anchor).toEqual(createAnchor(after, 6, 17));
+          \t} finally { service.dispose(); await store.close(); }
+          });
+          ''')
+          path.write_text(source)
+          doc = Path('docs/highlights-implementation.md')
+          doc.write_text(doc.read_text() + '\n补充联动：已验证的编辑器 ChangeSet 即使没有移动某条摘录，也会刷新该锚点的文档指纹与上下文，但不修改卡片 updatedAt；成功的外部重定位同样刷新指纹。回归覆盖重复摘录之外的编辑、写盘和重启恢复，以及范围不变的外部重定位。\n')
       - run: pnpm install --frozen-lockfile
       - name: Run all comments and highlight regressions
         run: pnpm exec vitest run src/modules/comments
       - name: Lint changed TypeScript
-        run: pnpm exec eslint src/modules/comments/core/anchor.ts src/modules/comments/core/model.ts src/modules/comments/core/store.ts src/modules/comments/core/anchor-safety.test.ts --max-warnings 0
+        run: pnpm exec eslint src/modules/comments/core/anchor.ts src/modules/comments/core/model.ts src/modules/comments/core/store.ts src/modules/comments/core/anchor-safety.test.ts src/modules/comments/highlights.test.ts --max-warnings 0
       - run: pnpm run build:css
       - run: pnpm run build
       - run: pnpm run check:bundle
@@ -60,7 +129,7 @@ jobs:
           test "$remote_sha" = "$GITHUB_SHA" || { echo 'Branch advanced; refusing to push'; exit 1; }
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/modules/comments/core/anchor.ts src/modules/comments/core/model.ts src/modules/comments/core/store.ts src/modules/comments/core/anchor-safety.test.ts docs/highlights-implementation.md .github/workflows/highlights-workspace.yml main.js styles.css
+          git add src/modules/comments/core/anchor.ts src/modules/comments/core/model.ts src/modules/comments/core/store.ts src/modules/comments/core/anchor-safety.test.ts src/modules/comments/highlights.test.ts docs/highlights-implementation.md main.js styles.css
           git diff --cached --check
           git commit -m "fix(highlights): reject ambiguous anchors and verify cached document positions"
           git push origin HEAD:refs/heads/NAMEWTA/6
@@ -74,5 +143,6 @@ jobs:
             src/modules/comments/core/model.ts
             src/modules/comments/core/store.ts
             src/modules/comments/core/anchor-safety.test.ts
+            src/modules/comments/highlights.test.ts
             docs/highlights-implementation.md
           retention-days: 7
