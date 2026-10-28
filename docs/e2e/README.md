@@ -2,7 +2,11 @@
 
 环境：Obsidian **1.14.5**（`obsidian_1.14.5_amd64.deb`），插件为 `dev` 分支上 `pnpm run build` 生成的 `main.js` / `styles.css`。每次点测使用一次性测试库，经远程调试操作真实界面。截图与本报告一起提交在 `docs/e2e/`。
 
-`pnpm run build` 通过。`pnpm run test:all` 再次通过：48 个脚本全部通过；其中 Vitest 为 **4300 passed、3 skipped、0 failed**。
+`pnpm run build` 通过。`pnpm run test:all` 通过：48 个脚本全部通过；其中 Vitest 为 **4300 passed、3 skipped、0 failed**。
+
+## 模型
+
+用户指定整体前端交互设计和疑难问题使用 Opus 5.5。切换被系统拒绝，原因是额度，不是需求变更。因此下面这些界面和疑难点测都不是 Opus 5.5 做的，仍由当时已经在跑的模型完成：高亮检索、筛选、批量、自定义色和导出的界面；版本管理的左右、上下、行内对照和恢复向导；受管浏览器、同页交接、遮挡层与跨域 iframe 画面、弹出窗口；任务模块关闭后的页面。本文不把这些结果写成 Opus 5.5 的设计或修复。
 
 ## issue 与截图
 
@@ -29,7 +33,7 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 需求（含评论） | 实现 | 截图 | 结果 |
 |---|---|---|---|
 | #7 评论：独立任务、四类列表、创建后出现在工作台；Home 只挂载视图 | `src/modules/task`，主库 `huhu/任务/tasks.json`；无 Home 任务别名 | [task-create.png](task-create.png)、[task-saved.png](task-saved.png)、[dashboard-tasks.png](dashboard-tasks.png) | 通过。创建并保存后列表计数为 1 |
-| #7 评论 F20–F22：命令在排队前复制，关闭后不交付迟到的成功 | `TaskService.execute` 在入队前复制命令；工具在资源返回后复查取消和 ready。回归在 `src/modules/task/services/boundary.test.ts` | 无单独界面。关闭任务页不会弹出「迟到成功」，失败留在工具结果里，不写成功回执 | 测试覆盖。宿主上没有可截的成功提示 |
+| #7 评论 F20–F22：命令在排队前复制，关闭后不交付迟到的成功 | `TaskService.execute` 在入队前复制命令；工具在资源返回后复查取消和 ready。回归在 `src/modules/task/services/boundary.test.ts` | [task-module-closed.png](task-module-closed.png) | 仅测试覆盖迟到拒绝。点保存后立刻关闭任务模块，页面变成「此功能已关闭，原有数据仍然保留」，界面上没有「任务已保存」。这次写入在关闭前已经落盘，所以截图只证明关闭后不出现成功提示。产品界面本来也不渲染这句文案。入队后修改参数、以及模块卸载后拒绝迟到成功，仍然只在 `boundary.test.ts` 里 |
 | #3 P0–P4：自定义类型表单、可见迁移 | 通用档案 `core/generic` 与 `RecoveryCommands`。旧黄金样本已改写到这套 API，不适用的外层时间戳、日期兄弟键、关系 `status` 和旧备份路径记在实施方案 | [archives-create.png](archives-create.png) | 通过。打开的是通用个人档案表单 |
 | #3 P5：CSV 导入、Lookup/Rollup、局部图谱、项目集成 | 未实现 | 无 | 正文排除在首轮之外：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」 |
 | #6 P0：划词高亮、侧栏卡片、不改笔记正文 | 高亮实体与侧栏 | [highlights.png](highlights.png)、[highlights-search.png](highlights-search.png) | 通过。划词后出现色卡，侧栏可搜索 |
@@ -60,14 +64,28 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 4 FR-01～28 | 模块、Space、只读/接管、交接、身份与文件页都在现有工作台 | 空间与交接见上；身份种子和文件是同一页的标签，见 [browser-runtime-ready.png](browser-runtime-ready.png) |
 | 5 架构职责 | 仍是一套 Workspace / Worker / 原生 Gate / 独占 Chromium，没有第二套 UI 框架 | 运行时版本 156.0.8078.47，见 [browser-managed-page.png](browser-managed-page.png) |
 | 6 同页接力 | `handoffAgent` 与交接对话框。确认后不重新打开 URL | [browser-handoff.png](browser-handoff.png) |
-| 7 感知与动作 | `driver.ts` 的观察、引用和截图。本环境能看到受管页第一帧 | [browser-managed-page.png](browser-managed-page.png)。遮挡、OOPIF、输入法没有在这台机器上逐项点测 |
+| 7 感知与动作 | `driver.ts` 的观察和截图。受管页能画出遮挡层和另一个端口上的 iframe | [browser-managed-page.png](browser-managed-page.png)、[browser-iframe-occlusion.png](browser-iframe-occlusion.png)。遮挡后的点击拒绝、跨域 iframe 的独立目标：未验证，界面没有对应诊断。输入法组字：未验证，这台容器没有系统中文输入法，不能把 DOM 测试里的 composition 事件当成宿主组字 |
 | 8 工具与账本 | `operation-ledger.ts`、`protocol-service.ts`、CLI。prepare/execute/unknown 由测试锁定 | 无单独按钮。替代验证是浏览器协议测试 |
 | 9 身份、文件、安全 | 身份种子、文件标签和临时空间同意都在产品界面里。系统凭据库在此环境不可用，所以新空间必须选临时存储 | [browser-runtime-ready.png](browser-runtime-ready.png)、[browser-managed-page.png](browser-managed-page.png) |
 | 10 Hello Halo 阅读包 | 产品按 Halo 的业务边界实现（观察、接管、交接、材料），没有把 Electron webview 拷进 Obsidian | 行为见交接与受管页截图 |
 | 11 阶段 P0–P7 | 合同、运行时、交接和恢复已经落在现有模块。P2 的 Windows/macOS 门禁保持「仅 Linux x64 已验证」 | 本机只能证明 Linux x64 |
 | 12 开发分工 | 过程说明，不是产品功能 | 无界面 |
-| 13 验收合同 | 同页交接、受管页、临时空间已点测。多窗口、真实 Bot 工具链、性能预算不在这次点测里 | 截图加上 `pnpm run test:all` 里的浏览器测试 |
+| 13 验收合同 | 同页交接、受管页、临时空间已点测。`moveLeafToPopout` 打开了第二个窗口，里面仍是同一个浏览器叶子 | [browser-popout.png](browser-popout.png)。两个不同笔记分窗、批注不串状态：未验证。性能预算：未验证，Obsidian 里没有这项界面；构建时的包体检查不能代替这次点测 |
 | 14 文档与迁移 | `docs/browser.md` 等保持现有协议。没有把旧 sync 数据改成浏览器数据 | 文档，不是新界面 |
 | 15 PR 门禁 | 集成 PR 仍是 #15，不合并、不关闭 issue | 过程 |
 | 16 启动指令 | 历史操作步骤。当前工作在 `dev` | 过程 |
 | 17 七个交付问题 | 相对 1236 的浏览器改动已含在 `dev`；同页交接保持原页面；旧连接在交接后失效由交接文案和 `handoffAgent` 测试说明。Windows 与系统凭据仍未验证 | 见上表截图 |
+
+## PR 提交是否都在 dev
+
+用 `git merge-base --is-ancestor` 核对每个 PR 在 GitHub 上列出的全部提交。基准是当前 `dev`。七个 PR 的 tip 都是 `dev` 的祖先，列出的提交没有缺在 `dev` 之外的，因此没有再合并。
+
+| PR | head | 列出的提交 | 结论 |
+|---|---|---|---|
+| #10 | `refactor/task-domain-7` @ `c648219` | 8 | 都在 `dev` |
+| #11 | `NAMEWTA/6` @ `a735355` | 33 | 都在 `dev` |
+| #12 | `fix/safe-notes-polish-20261028` @ `6849c91` | 3 | 都在 `dev` |
+| #13 | `feat/archives-definition-domain-3` @ `cbf5209` | 6 | 都在 `dev` |
+| #14 | `feat/browser-phase2-issue-1` @ `9396254` | 18 | 都在 `dev` |
+| #4 | `feat/git-note-history-issue-2` @ `b9f3891` | 1 | 都在 `dev` |
+| #5 | `feat/independent-agent-browser-issue-1` @ `206abb5` | 5 | 都在 `dev` |
