@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/archives-workspace"
           git archive --format=tar HEAD > "$RUNNER_TEMP/archives-workspace/source.tar"
-          git bundle create "$RUNNER_TEMP/archives-workspace/source.bundle" HEAD refs/heads/feat/archives-definition-domain-3
+          git bundle create "$RUNNER_TEMP/archives-workspace/source.bundle" HEAD
           tar -czf "$RUNNER_TEMP/archives-workspace/dependencies.tgz" node_modules
           cp "$(command -v node)" "$RUNNER_TEMP/archives-workspace/node"
           node --version > "$RUNNER_TEMP/archives-workspace/versions.txt"
