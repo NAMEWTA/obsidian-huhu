@@ -13,7 +13,7 @@ import { useEnv, useNav, useNavigatorSettings } from './hooks';
  * The list filter field. Enter or Tab hands the keyboard to the list, Shift+Tab to the navigation pane, and Escape
  * closes the search (the query is kept and comes back when the search is opened again).
  */
-export function SearchBar() {
+export function SearchBar({ compact = false }: { compact?: boolean }) {
 	const env = useEnv();
 	const { service } = env;
 	const t = useT();
@@ -23,8 +23,9 @@ export function SearchBar() {
 	const input = useRef<HTMLInputElement>(null);
 	// Opening the search (command, button or a saved search) focuses the field.
 	useEffect(() => {
-		if (nonce > 0) input.current?.focus();
-	}, [nonce]);
+		const visible = settings.layout !== 'single' ? compact : compact === (settings.singleView === 'nav');
+		if (nonce > 0 && visible) input.current?.focus();
+	}, [nonce, compact, settings.layout, settings.singleView]);
 
 	const query = search.query.trim();
 	const saved = !!query && settings.shortcuts.some((entry) => entry.kind === 'search' && entry.key === query);
@@ -47,22 +48,22 @@ export function SearchBar() {
 	};
 
 	return (
-		<div role="search" className="flex shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-1" data-navigator-search>
+		<div role="search" className={cn('flex min-w-0 items-center gap-1', compact ? 'min-w-32 flex-1' : 'shrink-0 border-b border-sidebar-border px-2 py-1')} data-navigator-search>
 			<div className="relative min-w-0 flex-1">
 				<Search aria-hidden className="pointer-events-none absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					ref={input}
 					type="text"
-					value={search.query}
+					value={search.open ? search.query : ''}
 					placeholder={t('navigator.searchPlaceholder')}
 					aria-label={t('navigator.searchLabel')}
 					spellCheck={false}
 					autoComplete="off"
-					className={cn('h-7 pl-7 text-[13px]', search.query && 'pr-7')}
-					onChange={(event) => service.setSearchQuery(event.target.value)}
+					className={cn('h-8 pl-7 text-[13px]', search.open && search.query && 'pr-7')}
+					onChange={(event) => { service.setSearchQuery(event.target.value); if (!search.open) service.openSearch(); }}
 					onKeyDown={onKeyDown}
 				/>
-				{search.query && (
+				{search.open && search.query && (
 					<Button
 						type="button"
 						variant="ghost"

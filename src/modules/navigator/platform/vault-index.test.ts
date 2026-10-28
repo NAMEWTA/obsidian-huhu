@@ -80,3 +80,17 @@ test('switching the file-type filter recounts from the vault', () => {
 	expect(totals(index, '/', 'a')).toEqual([3, 3]);
 	index.dispose();
 });
+
+test('note tags come only from the tags property, not singular tag or body hashes', () => {
+	const vault = fixture(['a/one.md', 'a/two.md', 'a/picture.png']);
+	vault.app.metadataCache.getFileCache = (file) => ({
+		frontmatter: file.path === 'a/one.md' ? { tags: ['学习', '#参考', '学习', 123], tag: 'ignored' } : { tag: 'ignored' },
+		tags: [{ tag: '#chatgpt-mermaid-_r_1gn_', position: {} }, { tag: '#正文', position: {} }],
+	}) as never;
+	const index = new VaultIndex(vault.app);
+	index.start(vault.scope, true);
+	expect(index.get('a/one.md')!.tags).toEqual(['学习', '参考']);
+	expect(index.get('a/two.md')!.tags).toEqual([]);
+	expect(index.get('a/picture.png')!.tags).toEqual([]);
+	index.dispose();
+});

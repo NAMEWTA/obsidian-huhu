@@ -1,27 +1,30 @@
 import { useId, useRef, useState } from 'react';
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, ImagePlus, ImageOff, LockKeyhole, Plus, Trash2, UserRound } from 'lucide-react';
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Eye, EyeOff, ImagePlus, ImageOff, LockKeyhole, Plus, Trash2, UserRound, WandSparkles } from 'lucide-react';
 import { useStore } from 'zustand';
 import { Button } from '../../../ui/components/button';
 import { Input } from '../../../ui/components/input';
-import { Textarea } from '../../../ui/components/textarea';
+import { AutoTextarea } from './AutoTextarea';
+import { EntryTags } from './EntryTags';
+import { AccountRelations } from './AccountRelations';
+import { ConfirmDialog } from '../../../ui/components/huhu/ConfirmDialog';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../../../ui/components/dialog';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../../../ui/components/alert-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../ui/components/dropdown-menu';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
-import { MAX_CREDENTIALS, validateEntryInput, type CredentialInput, type EntryInput, type SafeEntry } from '../core/model';
+import { MAX_CREDENTIALS, collectTags, validateEntryInput, type CredentialInput, type EntryInput, type SafeEntry } from '../core/model';
 import type { SafeService } from '../services/safe-service';
 import { EntryIcon } from './EntryIcon';
-import { DIALOG_TITLE_CLASS, SafeErrorMessage, SecretInput, useSafeAction } from './SafeDialogs';
+import { DIALOG_TITLE_CLASS, safeErrorKey, SafeErrorMessage, SecretInput, useSafeAction } from './SafeDialogs';
 import { canvasDecoder, imageToIcon } from './icon-file';
 
-const newCredential = (): CredentialInput => ({ id: crypto.randomUUID(), username: '', password: '', notes: '' });
+const newCredential = (): CredentialInput => ({ id: crypto.randomUUID(), username: '', password: '', notes: '', phone: '', email: '', relations: [] });
 
 export function draftOf(entry?: SafeEntry): EntryInput {
-	if (!entry) return { title: '', url: '', notes: '', icon: null, credentials: [newCredential()] };
+	if (!entry) return { title: '', url: '', notes: '', icon: null, tags: [], credentials: [newCredential()] };
 	return {
-		title: entry.title, url: entry.url, notes: entry.notes, icon: entry.icon,
-		credentials: entry.credentials.map(({ id, username, password, notes }) => ({ id, username, password, notes })),
+		title: entry.title, url: entry.url, notes: entry.notes, icon: entry.icon, tags: [...entry.tags],
+		credentials: entry.credentials.map(({ updatedAt: _updatedAt, ...credential }) => structuredClone(credential)),
 	};
 }
 
@@ -46,6 +49,7 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 	const fileInput = useRef<HTMLInputElement>(null);
 	const action = useSafeAction(service);
 	const serviceBusy = useStore(service.store, state => state.busy);
+	const entries = useStore(service.store, state => state.entries);
 	const busy = action.busy || serviceBusy;
 	const dirty = !sameDraft(draft, initial);
 	const finishClose = (reason: 'close' | 'lock') => {
@@ -59,7 +63,8 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 	};
 	const save = (reason: 'close' | 'lock' = 'close') => action.run(async () => {
 		const input = validateEntryInput(draft);
-		await service.saveEntry(input, entry);
+		if (entry) await service.saveEntry(input, entry);
+		else await service.saveEntry(input, undefined, previewId);
 	}, () => finishClose(reason));
 	const edit = (change: (current: EntryInput) => EntryInput) => {
 		if (!service.checkDeadline()) return;
@@ -68,7 +73,7 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 		setNotice('');
 	};
 	const setField = (key: 'title' | 'url' | 'notes', value: string) => edit(current => ({ ...current, [key]: value }));
-	const setCredential = (credentialId: string, key: 'username' | 'password' | 'notes', value: string) => edit(current => ({
+	const setCredential = (credentialId: string, key: 'username' | 'password' | 'phone' | 'email' | 'notes', value: string) => edit(current => ({
 		...current, credentials: current.credentials.map(item => item.id === credentialId ? { ...item, [key]: value } : item),
 	}));
 	const add = () => {
@@ -100,10 +105,14 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 			else edit(current => ({ ...current, icon }));
 		});
 	};
+	const generate = (credentialId: string) => {
+		try { setCredential(credentialId, 'password', service.generatePassword()); } catch (cause) { action.setError(safeErrorKey(cause)); }
+	};
+	const relationEntries = [...entries.filter(item => item.id !== previewId), { ...draft, id: previewId, deletedAt: null }];
 	const preview = { id: previewId, icon: draft.icon, title: draft.title, url: draft.url, credentials: draft.credentials };
 	return <>
 		<Dialog open onOpenChange={open => { if (!open) close('close'); }}>
-			<DialogContent className="max-h-[90dvh] gap-3 overflow-y-auto p-5 scrollbar-sleek sm:max-w-2xl" showCloseButton={!busy} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()}>
+			<DialogContent className="max-h-[90dvh] gap-3 overflow-y-auto [scrollbar-gutter:stable] p-5 scrollbar-sleek sm:max-w-2xl" showCloseButton={!busy} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()}>
 				<DialogHeader className="gap-0.5">
 					<DialogTitle className={DIALOG_TITLE_CLASS}>{t(entry ? 'safe.editEntry' : 'safe.newEntry')}</DialogTitle>
 					<DialogDescription className="text-xs">{t('safe.draftWarning')}</DialogDescription>
@@ -129,7 +138,9 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 							</div>
 						</div>
 					</div>
-					<Textarea id={`${id}-notes`} rows={1} aria-label={t('safe.entryNotesField')} placeholder={t('safe.entryNotesField')} className="min-h-8 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={draft.notes} onChange={event => setField('notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
+					<AutoTextarea id={`${id}-notes`} rows={1} aria-label={t('safe.entryNotesField')} placeholder={t('safe.entryNotesField')} className="min-h-8 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={draft.notes} onChange={event => setField('notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
+					<EntryTags value={draft.tags} catalog={collectTags(entries)} disabled={busy} onChange={tags => edit(current => ({ ...current, tags }))} />
+					<p className="m-0 text-xs text-muted-foreground">{t('safe.optionalFields')}</p>
 					<div className="flex items-center justify-between gap-2">
 						<h3 className="m-0 text-sm font-medium text-foreground">{t('safe.accounts')} <span className="font-normal text-muted-foreground tabular-nums">{draft.credentials.length}</span></h3>
 						<Button type="button" size="sm" variant="outline" disabled={busy || draft.credentials.length >= MAX_CREDENTIALS} onClick={add}><Plus />{t('safe.addAccount')}</Button>
@@ -146,18 +157,28 @@ export function EntryDialog({ service, entry, onClose }: { service: SafeService;
 									</div>
 									<div className="flex items-center gap-1">
 										<SecretInput aria-label={label('safe.passwordField')} placeholder={t('safe.passwordField')} className={compactInput} value={credential.password} type={shown ? 'text' : 'password'} onChange={event => setCredential(credential.id, 'password', event.currentTarget.value)} disabled={busy} />
+										{credential.password ? <ConfirmDialog title={t('safe.generatePassword')} description={t('safe.replacePasswordDescription')} onConfirm={() => generate(credential.id)}>
+											<ActionButton type="button" size="icon-sm" label={label('safe.generatePassword')} disabled={busy}><WandSparkles /></ActionButton>
+										</ConfirmDialog> : <ActionButton type="button" size="icon-sm" label={label('safe.generatePassword')} disabled={busy} onClick={() => generate(credential.id)}><WandSparkles /></ActionButton>}
 										<ActionButton type="button" size="icon-sm" label={label(shown ? 'safe.hidePassword' : 'safe.showPassword')} disabled={busy} onClick={() => toggleReveal(credential.id)}>{shown ? <EyeOff /> : <Eye />}</ActionButton>
 										<ActionButton type="button" size="icon-sm" label={label('safe.copyPassword')} disabled={busy || !credential.password} onClick={() => { void copy(credential.password, 'safe.copiedPassword'); }}><Copy /></ActionButton>
 									</div>
 								</div>
-								<div className="flex items-start gap-1">
-									<Textarea aria-label={label('safe.accountNotesField')} placeholder={t('safe.accountNotesField')} rows={1} className="min-h-8 flex-1 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={credential.notes} onChange={event => setCredential(credential.id, 'notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
-									<div className="flex shrink-0 items-center">
+								<div className="grid gap-1.5 @lg:grid-cols-2">
+									<Input type="tel" aria-label={label('safe.phoneField')} placeholder={t('safe.phoneField')} className={compactInput} value={credential.phone} onChange={event => setCredential(credential.id, 'phone', event.currentTarget.value)} disabled={busy} autoComplete="off" />
+									<Input inputMode="email" aria-label={label('safe.emailField')} placeholder={t('safe.emailField')} className={compactInput} value={credential.email} onChange={event => setCredential(credential.id, 'email', event.currentTarget.value)} disabled={busy} autoComplete="off" autoCapitalize="off" spellCheck={false} />
+								</div>
+								<div className="grid min-w-0 gap-1 @lg:grid-cols-[minmax(0,1fr)_auto]">
+									<AutoTextarea aria-label={label('safe.accountNotesField')} placeholder={t('safe.accountNotesField')} rows={1} className="min-h-8 flex-1 resize-none px-3 py-1.5 text-[13px] md:text-[13px]" value={credential.notes} onChange={event => setCredential(credential.id, 'notes', event.currentTarget.value)} disabled={busy} autoComplete="off" spellCheck={false} />
+									<div className="flex shrink-0 items-center justify-self-end">
 										<ActionButton type="button" size="icon-sm" label={label('safe.moveUp')} disabled={busy || index === 0} onClick={() => move(credential.id, -1)}><ArrowUp /></ActionButton>
 										<ActionButton type="button" size="icon-sm" label={label('safe.moveDown')} disabled={busy || index === draft.credentials.length - 1} onClick={() => move(credential.id, 1)}><ArrowDown /></ActionButton>
 										<ActionButton type="button" size="icon-sm" label={label('safe.removeAccount')} disabled={busy || draft.credentials.length <= 1} onClick={() => remove(credential.id)}><Trash2 /></ActionButton>
 									</div>
 								</div>
+								<AccountRelations entries={relationEntries} currentEntry={previewId} credential={credential} disabled={busy} onChange={relations => edit(current => ({
+									...current, credentials: current.credentials.map(item => item.id === credential.id ? { ...item, relations } : item),
+								}))} />
 							</li>;
 						})}
 					</ul>

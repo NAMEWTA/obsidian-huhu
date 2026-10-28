@@ -124,7 +124,7 @@ test('removing the only tag of the selection is immediate and can be undone from
 	t.service.selectContext({ kind: 'folder', key: 'Notes' });
 	t.service.selectNote('Notes/A.md', 'only');
 	await t.actions.removeTagFromSelected();
-	expect(t.fake.read('Notes/A.md')).toBe('Body');
+	expect(t.fake.read('Notes/A.md')).toBe('Body #todo');
 	const fragment = messages().at(-1) as DocumentFragment;
 	expect(fragment.textContent).toContain('Changed tags in 1 note(s).');
 	fragment.querySelector('button')!.click();
@@ -143,7 +143,7 @@ test('rename tag asks to confirm, changes children too, and undo restores', asyn
 	expect(screen.getByText('1 note(s) change, including child tags. You can undo this right afterwards.')).toBeTruthy();
 	fireEvent.click(await button('Rename tag…'));
 	await done;
-	expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - done\n---\nBody #done/later');
+	expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - done\n---\nBody #todo/later');
 	expect(t.fake.read('Notes/B.md')).toBe('x #other');
 	await t.actions.undoTagEdit();
 	expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - todo\n---\nBody #todo/later');
@@ -152,20 +152,20 @@ test('rename tag asks to confirm, changes children too, and undo restores', asyn
 });
 
 test('rename refuses an invalid new name and deleting a tag needs the confirmation', async () => {
-	const t = await fixture({ 'Notes/A.md': 'x #todo' }, { 'Notes/A.md': ['todo'] }, {}, { name: 'a b' });
+	const t = await fixture({ 'Notes/A.md': '---\ntags: [todo]\n---\nx #todo' }, { 'Notes/A.md': ['todo'] }, {}, { name: 'a b' });
 	await t.actions.renameTag('todo');
 	expect(messages().at(-1)).toBe('This is not a valid tag name. Use letters, digits, _ - and / (not only digits).');
-	expect(t.fake.read('Notes/A.md')).toBe('x #todo');
+	expect(t.fake.read('Notes/A.md')).toBe('---\ntags: [todo]\n---\nx #todo');
 	const pending = t.actions.deleteTag('todo');
 	await screen.findByText('Delete tag #todo?');
 	fireEvent.click(await button('Cancel'));
 	await pending;
-	expect(t.fake.read('Notes/A.md')).toBe('x #todo');
+	expect(t.fake.read('Notes/A.md')).toBe('---\ntags: [todo]\n---\nx #todo');
 	const confirmed = t.actions.deleteTag('todo');
 	await screen.findByText('Delete tag #todo?');
 	fireEvent.click(await button('Delete tag'));
 	await confirmed;
-	expect(t.fake.read('Notes/A.md')).toBe('x');
+	expect(t.fake.read('Notes/A.md')).toBe('x #todo');
 });
 
 test('clearing tags is confirmed first', async () => {
@@ -176,7 +176,7 @@ test('clearing tags is confirmed first', async () => {
 	await screen.findByText('Remove all tags from 1 note(s)?');
 	fireEvent.click(await button('Remove all tags'));
 	await pending;
-	expect(t.fake.read('Notes/A.md')).toBe('Body');
+	expect(t.fake.read('Notes/A.md')).toBe('Body #c');
 });
 
 test('stopping the navigator closes a tag dialog without touching notes', async () => {
@@ -254,7 +254,7 @@ test('a failure midway reports it, keeps what was written restorable, and the un
 });
 
 test('each undo prompt undoes its own edit, and stopping the navigator closes the prompts and refuses the undo', async () => {
-	const t = await fixture({ 'Notes/A.md': 'a #one', 'Notes/B.md': 'b #two' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['two'] }, { sortBy: 'name', sortDirection: 'asc' });
+	const t = await fixture({ 'Notes/A.md': '---\ntags: [one]\n---\na #one', 'Notes/B.md': '---\ntags: [two]\n---\nb #two' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['two'] }, { sortBy: 'name', sortDirection: 'asc' });
 	t.service.selectContext({ kind: 'folder', key: 'Notes' });
 	let stopped = false;
 	const actions = createProductivityActions({
@@ -269,54 +269,54 @@ test('each undo prompt undoes its own edit, and stopping the navigator closes th
 	t.service.selectNote('Notes/B.md', 'only');
 	await actions.removeTagFromSelected();
 	const second = messages().at(-1) as DocumentFragment;
-	expect(t.fake.read('Notes/A.md')).toBe('a');
-	expect(t.fake.read('Notes/B.md')).toBe('b');
+	expect(t.fake.read('Notes/A.md')).toBe('a #one');
+	expect(t.fake.read('Notes/B.md')).toBe('b #two');
 	// the older prompt restores the older edit only
 	first.querySelector('button')!.click();
-	await waitFor(() => expect(t.fake.read('Notes/A.md')).toBe('a #one'));
-	expect(t.fake.read('Notes/B.md')).toBe('b');
+	await waitFor(() => expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - one\n---\na #one'));
+	expect(t.fake.read('Notes/B.md')).toBe('b #two');
 	actions.dispose();
 	stopped = true;
 	second.querySelector('button')!.click();
 	await new Promise((resolve) => setTimeout(resolve, 20));
-	expect(t.fake.read('Notes/B.md')).toBe('b');
+	expect(t.fake.read('Notes/B.md')).toBe('b #two');
 	await actions.undoTagEdit();
-	expect(t.fake.read('Notes/B.md')).toBe('b');
+	expect(t.fake.read('Notes/B.md')).toBe('b #two');
 });
 
 test('an old prompt whose edit was already undone does nothing, and cannot remove a newer edit\'s restore point', async () => {
-	const t = await fixture({ 'Notes/A.md': 'a #one', 'Notes/B.md': 'b #two' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['two'] }, { sortBy: 'name', sortDirection: 'asc' });
+	const t = await fixture({ 'Notes/A.md': '---\ntags: [one]\n---\na #one', 'Notes/B.md': '---\ntags: [two]\n---\nb #two' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['two'] }, { sortBy: 'name', sortDirection: 'asc' });
 	t.service.selectContext({ kind: 'folder', key: 'Notes' });
 	t.service.selectNote('Notes/A.md', 'only');
 	await t.actions.removeTagFromSelected();
 	const first = messages().at(-1) as DocumentFragment;
 	await t.actions.undoTagEdit();
-	expect(t.fake.read('Notes/A.md')).toBe('a #one');
+	expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - one\n---\na #one');
 	t.service.selectNote('Notes/B.md', 'only');
 	await t.actions.removeTagFromSelected();
-	expect(t.fake.read('Notes/B.md')).toBe('b');
+	expect(t.fake.read('Notes/B.md')).toBe('b #two');
 	// the first prompt is still on screen: its button must not touch the second edit
 	first.querySelector('button')!.click();
 	await new Promise((resolve) => setTimeout(resolve, 30));
-	expect(t.fake.read('Notes/B.md')).toBe('b');
-	await t.actions.undoTagEdit();
 	expect(t.fake.read('Notes/B.md')).toBe('b #two');
+	await t.actions.undoTagEdit();
+	expect(t.fake.read('Notes/B.md')).toBe('---\ntags:\n  - two\n---\nb #two');
 });
 
 test('the undo names the notes it had to leave alone because they changed since', async () => {
-	const t = await fixture({ 'Notes/A.md': 'a #one', 'Notes/B.md': 'b #one' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['one'] }, { sortBy: 'name', sortDirection: 'asc' });
+	const t = await fixture({ 'Notes/A.md': '---\ntags: [one]\n---\na #one', 'Notes/B.md': '---\ntags: [one]\n---\nb #one' }, { 'Notes/A.md': ['one'], 'Notes/B.md': ['one'] }, { sortBy: 'name', sortDirection: 'asc' });
 	t.service.selectContext({ kind: 'folder', key: 'Notes' });
 	t.service.selectNote('Notes/A.md', 'only');
 	t.service.selectNote('Notes/B.md', 'toggle');
 	await t.actions.removeTagFromSelected();
-	await t.fake.app.vault.modify(t.fake.app.vault.getFileByPath('Notes/B.md')!, 'b edited by me');
+	await t.fake.app.vault.modify(t.fake.app.vault.getFileByPath('Notes/B.md')!, '---\ntags: [mine]\n---\nb edited by me');
 	await t.actions.undoTagEdit();
-	expect(t.fake.read('Notes/A.md')).toBe('a #one');
-	expect(t.fake.read('Notes/B.md')).toBe('b edited by me');
+	expect(t.fake.read('Notes/A.md')).toBe('---\ntags:\n  - one\n---\na #one');
+	expect(t.fake.read('Notes/B.md')).toBe('---\ntags: [mine]\n---\nb edited by me');
 	expect(messages().at(-1)).toBe('Restored 1 note(s). Left alone because they changed since: Notes/B.md.');
 });
 
-test('a note whose tag index is behind its text is reported and left untouched', async () => {
+test('inline-only notes are untouched even if a stale index still lists them', async () => {
 	const t = await fixture({ 'Notes/A.md': 'inserted\na #one' }, { 'Notes/A.md': ['one'] }, { sortBy: 'name', sortDirection: 'asc' });
 	t.fake.setTags('Notes/A.md', [{ tag: '#one', start: 2, end: 6 }]);
 	t.service.selectContext({ kind: 'folder', key: 'Notes' });
@@ -327,7 +327,7 @@ test('a note whose tag index is behind its text is reported and left untouched',
 	await pending;
 	vi.useRealTimers();
 	expect(t.fake.read('Notes/A.md')).toBe('inserted\na #one');
-	expect(String(messages().at(-1))).toContain('left unchanged because Obsidian\'s tag index was behind their text: Notes/A.md');
+	expect(String(messages().at(-1))).toBe('No note needed a change.');
 });
 
 test('a note that changes while the merge dialog is open stops the merge', async () => {

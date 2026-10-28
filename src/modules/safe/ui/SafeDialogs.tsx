@@ -10,6 +10,7 @@ import type { SafeService } from '../services/safe-service';
 const errorKeys: Record<SafeErrorCode, string> = {
 	'invalid-format': 'safe.error.invalid-container',
 	'invalid-entry': 'safe.error.invalid-entry',
+	'invalid-relation': 'safe.error.invalid-relation',
 	'invalid-password': 'safe.error.invalid-password',
 	'too-large': 'safe.error.too-large',
 	'unlock-failed': 'safe.error.authentication',

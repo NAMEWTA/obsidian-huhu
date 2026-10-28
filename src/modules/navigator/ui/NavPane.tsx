@@ -1,7 +1,7 @@
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
 import { useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { CalendarDays, ChevronRight, ChevronsDownUp, ChevronsUpDown, Eye, EyeOff, FolderPlus, Layers, Search, Settings2 } from 'lucide-react';
+import { CalendarDays, ChevronRight, ChevronsDownUp, ChevronsUpDown, Eye, EyeOff, FolderPlus, Layers, LocateFixed, Search, Settings2 } from 'lucide-react';
 import { Button } from '../../../ui/components/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/components/tooltip';
 import { cn } from '../../../ui/lib/utils';
@@ -14,6 +14,7 @@ import { normalizeSections, type SectionId } from '../core/sections';
 import { makeShortcut, shortcutContext, shortcutForContext } from '../core/shortcuts';
 import { propertyTerm, tagTerm } from '../core/search';
 import type { IconTarget } from '../../icons/api';
+import { SearchBar } from './SearchBar';
 import { CalendarPanel } from './Calendar';
 import { EntryIcon } from './EntryIcon';
 import { InlineEditor } from './InlineEditor';
@@ -91,7 +92,6 @@ export function NavPane() {
 	const context = useNav(service, (state) => state.context);
 	const renaming = useNav(service, (state) => state.renaming);
 	const pane = useNav(service, (state) => state.pane);
-	const searchOpen = useNav(service, (state) => state.search.open);
 	const scroll = useNav(service, (state) => state.navScroll);
 	const focusNonce = useNav(service, (state) => state.focusNonce);
 	const navFocus = useNav(service, (state) => state.navFocus);
@@ -222,10 +222,11 @@ export function NavPane() {
 
 	return (
 		<section aria-labelledby={titleId} className="@container flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground" data-navigator-pane="nav">
-			<header className="flex shrink-0 items-center justify-between gap-1 border-b border-sidebar-border px-2 py-1">
-				<span id={titleId} className="truncate px-1 text-xs font-medium text-muted-foreground @max-[10rem]:hidden">{profiles.length > 1 && activeProfile ? activeProfile.name : t('navigator.navigation')}</span>
-				<div className="flex items-center">
-					<ToolbarButton label={t('navigator.search')} active={searchOpen} onClick={() => service.openSearch()}><Search /></ToolbarButton>
+			<header className="flex shrink-0 flex-wrap items-center justify-between gap-1 border-b border-sidebar-border px-2 py-1">
+				<span id={titleId} className="sr-only">{profiles.length > 1 && activeProfile ? activeProfile.name : t('navigator.navigation')}</span>
+				<SearchBar compact />
+				<div className="flex shrink-0 items-center">
+					<ToolbarButton label={t('navigator.cmd.revealFile')} onClick={() => { void service.revealActive().catch(env.report); }}><LocateFixed /></ToolbarButton>
 					<ToolbarButton label={t('navigator.newFolder')} onClick={() => { void service.newFolder().catch(env.report); }}><FolderPlus /></ToolbarButton>
 					<ToolbarButton label={t(allExpanded ? 'navigator.collapseAll' : 'navigator.expandAll')} onClick={() => (allExpanded ? service.collapseAll() : service.expandAll())}>
 						{allExpanded ? <ChevronsDownUp /> : <ChevronsUpDown />}

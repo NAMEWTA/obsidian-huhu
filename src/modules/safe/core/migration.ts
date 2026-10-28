@@ -1,5 +1,6 @@
 import {
 	MAX_PAYLOAD_BYTES,
+	PAYLOAD_VERSION,
 	SAFE_LIMITS,
 	SafeError,
 	isSafeId,
@@ -56,7 +57,8 @@ export function upgradeLegacyEntry(entry: LegacyEntry, newId: () => string): Saf
 		url: entry.url,
 		notes: '',
 		icon: null,
-		credentials: [{ id: newId(), username: entry.username, password: entry.password, notes: entry.notes, updatedAt: entry.updatedAt }],
+		tags: [],
+		credentials: [{ id: newId(), username: entry.username, password: entry.password, notes: entry.notes, phone: '', email: '', relations: [], updatedAt: entry.updatedAt }],
 		id: entry.id,
 		createdAt: entry.createdAt,
 		updatedAt: entry.updatedAt,
@@ -67,12 +69,26 @@ export function upgradeLegacyEntry(entry: LegacyEntry, newId: () => string): Saf
 export interface ParsedPayload {
 	payload: SafePayload;
 	/** The schema the stored plaintext was in when it differed from the current one (it must then be written back). */
-	upgradedFrom: 1 | null;
+	upgradedFrom: 1 | 2 | null;
 }
 
-/** Accepts the current schema and the first release's schema; anything else is a damaged or unsupported vault. */
+/** Accepts the current schema and both previous schemas; anything else is a damaged or unsupported vault. */
 export function parsePayload(value: unknown, newId: () => string): ParsedPayload {
-	if (recordWithKeys(value, ['version', 'entries'])) return { payload: validatePayload(value), upgradedFrom: null };
+	if (recordWithKeys(value, ['version', 'entries'])) {
+		if (value.version !== 2) return { payload: validatePayload(value), upgradedFrom: null };
+		if (!Array.isArray(value.entries)) throw new SafeError('invalid-format');
+		const entries = value.entries.map((entry: unknown) => {
+			if (!recordWithKeys(entry, ['title', 'url', 'notes', 'icon', 'credentials', 'id', 'createdAt', 'updatedAt', 'deletedAt'])
+				|| !Array.isArray(entry.credentials)) throw new SafeError('invalid-format');
+			const credentials = entry.credentials.map((credential: unknown) => {
+				if (!recordWithKeys(credential, ['id', 'username', 'password', 'notes', 'updatedAt'])
+					|| credential.username === '' || credential.password === '') throw new SafeError('invalid-format');
+				return { ...credential, phone: '', email: '', relations: [] };
+			});
+			return { ...entry, tags: [], credentials };
+		});
+		return { payload: validatePayload({ version: PAYLOAD_VERSION, entries }), upgradedFrom: 2 };
+	}
 	if (!recordWithKeys(value, ['entries']) || !Array.isArray(value.entries)) throw new SafeError('invalid-format');
 	const ids = new Set<string>();
 	const entries = value.entries.map((item: unknown) => {

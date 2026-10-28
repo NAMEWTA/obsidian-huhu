@@ -10,12 +10,13 @@ import { SegmentedControl } from '../../../ui/components/huhu/SegmentedControl';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../ui/components/dropdown-menu';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
 import { useVisible } from '../../../ui/react/contexts';
-import { searchEntries, validateMasterPassword, type SafeEntry } from '../core/model';
+import { collectTags, searchEntries, validateMasterPassword, type SafeEntry } from '../core/model';
 import type { MergeSummary } from '../core/merge';
 import type { LockPolicy } from '../core/policy';
 import type { SafePreferences } from '../services/preferences';
 import type { SafeService, SafeState } from '../services/safe-service';
 import { ImportDialog, RestoreDialog } from './BackupDialogs';
+import { TagManager } from './EntryTags';
 import { EntryDialog } from './EntryDialog';
 import { EntryCards, EntryRows, TrashRows, type EntryActions } from './EntryList';
 import { ChangePasswordDialog, SafeErrorMessage, SecretInput, safeErrorKey, useSafeAction } from './SafeDialogs';
@@ -120,13 +121,14 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 	const policy = useLockPolicy(service);
 	const mode = useSyncExternalStore(listener => preferences.subscribe(listener), () => preferences.viewMode());
 	const [query, setQuery] = useState('');
+	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [trash, setTrash] = useState(false);
 	const [editing, setEditing] = useState<{ entry?: SafeEntry } | null>(null);
-	const [dialog, setDialog] = useState<'password' | 'import' | 'replace' | null>(null);
+	const [dialog, setDialog] = useState<'password' | 'import' | 'replace' | 'tags' | null>(null);
 	const [notice, setNotice] = useState<Notice | null>(null);
 	const [upgradeDismissed, setUpgradeDismissed] = useState(false);
 	const action = useSafeAction(service);
-	const entries = searchEntries(state.entries, query, trash);
+	const entries = searchEntries(state.entries, query, trash, selectedTags);
 	const busy = state.busy || action.busy;
 	const openEntry = (entry?: SafeEntry) => {
 		if (!service.checkDeadline()) return;
@@ -159,6 +161,7 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild><ActionButton size="icon-sm" label={t('safe.menu')} disabled={busy}><MoreHorizontal /></ActionButton></DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
+					<DropdownMenuItem onSelect={() => setDialog('tags')}>{t('safe.manageTags')}</DropdownMenuItem>
 					<DropdownMenuItem onSelect={toggleTrash}><Trash2 />{t(trash ? 'safe.backToRecords' : 'safe.trash')}</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onSelect={() => { void action.run(async () => {
@@ -172,13 +175,17 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>
+		<div className="flex max-h-28 shrink-0 flex-wrap gap-1 overflow-y-auto scrollbar-sleek" role="group" aria-label={t('safe.filterTags')}>
+			{collectTags(state.entries).map(tag => <Button key={tag} size="sm" variant={selectedTags.includes(tag) ? 'secondary' : 'ghost'} aria-pressed={selectedTags.includes(tag)} onClick={() => setSelectedTags(current => current.includes(tag) ? current.filter(item => item !== tag) : [...current, tag])}>{tag}</Button>)}
+			{selectedTags.length > 0 && <Button size="sm" variant="outline" onClick={() => setSelectedTags([])}>{t('safe.clearTags')}</Button>}
+		</div>
 		{(action.error || state.error) && <div className="flex flex-wrap items-center gap-2" role="status"><SafeErrorMessage error={action.error || safeErrorKey(state.error)} /><Button size="xs" variant="ghost" onClick={() => { action.setError(''); service.clearError(); }}>{t('safe.dismissError')}</Button></div>}
 		{showUpgrade && !trash && <p role="status" className="m-0 flex flex-wrap items-center gap-2 rounded-md bg-muted/50 px-2.5 py-1.5 text-xs text-muted-foreground">
 			<span className="min-w-0 flex-1">{t('safe.upgradeNotice')}</span>
 			<Button size="xs" variant="ghost" onClick={() => setUpgradeDismissed(true)}>{t('safe.dismissError')}</Button>
 		</p>}
 		<div className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek">
-			{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() ? t('safe.emptyDescription') : trash && !query.trim() ? t('safe.trashHint') : undefined} />
+			{entries.length === 0 ? <EmptyState icon={trash ? <Trash2 /> : <Vault />} title={t(query.trim() || selectedTags.length ? 'safe.noResults' : trash ? 'safe.emptyTrash' : 'safe.emptyTitle')} description={!trash && !query.trim() && !selectedTags.length ? t('safe.emptyDescription') : trash && !query.trim() && !selectedTags.length ? t('safe.trashHint') : undefined} />
 				: trash ? <TrashRows entries={entries} busy={busy} onRestore={entry => { void action.run(() => service.restoreEntry(entry)); }} onDelete={entry => service.deleteEntry(entry)} />
 				: mode === 'cards' ? <EntryCards entries={entries} actions={actions} /> : <EntryRows entries={entries} actions={actions} />}
 		</div>
@@ -187,6 +194,7 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 			<span className="min-w-0 truncate" title={lockRuleLines(t, policy).join(' ')}>{policy.idleMs === null ? t('safe.rule.idleNever') : t('safe.rule.idle', { minutes: Math.round(policy.idleMs / 60_000) })}</span>
 		</div>
 		{editing && <EntryDialog service={service} entry={editing.entry} onClose={() => setEditing(null)} />}
+		{dialog === 'tags' && <TagManager service={service} onClose={() => setDialog(null)} changed={() => setSelectedTags([])} />}
 		{dialog === 'password' && <ChangePasswordDialog service={service} onClose={() => setDialog(null)} />}
 		{dialog === 'import' && <ImportDialog service={service} onClose={() => setDialog(null)} onImported={summary => setNotice(importNotice(summary))} />}
 		{dialog === 'replace' && <RestoreDialog service={service} onClose={() => setDialog(null)} />}

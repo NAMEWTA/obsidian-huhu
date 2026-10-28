@@ -15,7 +15,7 @@ describe('payload schema upgrade', () => {
 		fixture.entries.forEach((old, index) => {
 			const entry = payload.entries[index]!;
 			expect(entry).toMatchObject({ id: old.id, title: old.title, url: old.url, createdAt: old.createdAt, updatedAt: old.updatedAt, deletedAt: old.deletedAt, icon: null, notes: '' });
-			expect(entry.credentials).toEqual([{ id: expect.any(String), username: old.username, password: old.password, notes: old.notes, updatedAt: old.updatedAt }]);
+			expect(entry.credentials).toEqual([{ id: expect.any(String), username: old.username, password: old.password, notes: old.notes, phone: '', email: '', relations: [], updatedAt: old.updatedAt }]);
 		});
 		// Exact characters survive: spaces, emoji, combining marks and line breaks.
 		expect(payload.entries[0]!.credentials[0]).toMatchObject({ password: ' apple-pass-1 🔑 ', notes: '主 Apple ID，\n两行备注' });
@@ -31,7 +31,7 @@ describe('payload schema upgrade', () => {
 
 	test.each([
 		['an unknown top-level field', { entries: [], revision: 1 }],
-		['a future schema', { version: 3, entries: [] }],
+		['a future schema', { version: 4, entries: [] }],
 		['a record missing a field', { entries: [{ ...fixture.entries[0]!, notes: undefined }] }],
 		['a record with an extra field', { entries: [{ ...fixture.entries[0]!, tags: [] }] }],
 		['an empty password', { entries: [{ ...fixture.entries[0]!, password: '' }] }],
@@ -45,4 +45,19 @@ describe('payload schema upgrade', () => {
 		const entries = parsePayload({ entries: fixture.entries }, ids()).payload.entries as SafeEntry[];
 		for (const entry of entries) expect(entry.credentials[0]!.id).not.toBe(entry.id);
 	});
+});
+
+test('version 2 upgrades without changing ids, account order, exact values, icons, timestamps or trash', () => {
+	const current = parsePayload({ entries: fixture.entries }, ids()).payload;
+	const entries = current.entries.map(({ tags: _tags, ...entry }) => ({ ...entry, credentials: entry.credentials.map(({ phone: _phone, email: _email, relations: _relations, ...credential }) => credential) }));
+	const original = structuredClone(entries);
+	const result = parsePayload({ version: 2, entries }, () => { throw new Error('v2 must retain identities'); });
+	expect(result.upgradedFrom).toBe(2);
+	expect(result.payload).toEqual(current);
+	expect(entries).toEqual(original);
+	for (const bad of [
+		{ ...entries[0], ignored: true },
+		{ ...entries[0], credentials: [{ ...entries[0]!.credentials[0], password: '' }] },
+		{ ...entries[0], credentials: [{ ...entries[0]!.credentials[0], ignored: true }] },
+	]) expect(() => parsePayload({ version: 2, entries: [bad] }, ids())).toThrow('invalid-format');
 });

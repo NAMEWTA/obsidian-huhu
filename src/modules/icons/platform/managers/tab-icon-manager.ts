@@ -1,5 +1,5 @@
 import { Platform } from 'obsidian';
-import type { Category, FileItem } from '../../core/types';
+import type { Category } from '../../core/types';
 import { t } from '../../../../shared/i18n';
 import type IconicController from '../host/controller';
 import { internalApp, internalMenuItem, isHtmlElement } from '../utils/obsidian-internal';
@@ -80,28 +80,16 @@ export default class TabIconManager extends IconManager {
 					? (this.plugin.ruleManager?.checkRuling('file', tab.id, unloading) ?? tab)
 					: tab;
 
-			if (tab.isRoot && this.plugin.isSettingEnabled('clickableIcons')) {
-				if (tab.category === 'file') {
-					const file = this.plugin.getFileItem(tab.id);
-					this.refreshIcon(rule, iconEl, (event) => {
-						this.plugin.dialogsPort.openSingle(file, (newIcon, newColor) => {
-							this.plugin.saveFileIcon(file, newIcon, newColor);
-							this.plugin.refreshManagers('file');
-						});
-						event.stopPropagation();
+			// File tabs are mirrors of the file list, never another icon editor.
+			if (!unloading && tab.category !== 'file' && tab.isRoot && this.plugin.isSettingEnabled('clickableIcons')) {
+				this.refreshIcon(rule, iconEl, (event) => {
+					this.plugin.dialogsPort.openSingle(tab, (newIcon, newColor) => {
+						this.plugin.saveTabIcon(tab, newIcon, newColor);
+						this.plugin.refreshManagers('tab');
 					});
-				} else {
-					this.refreshIcon(rule, iconEl, (event) => {
-						this.plugin.dialogsPort.openSingle(tab, (newIcon, newColor) => {
-							this.plugin.saveTabIcon(tab, newIcon, newColor);
-							this.plugin.refreshManagers('tab');
-						});
-						event.stopPropagation();
-					});
-				}
-			} else {
-				this.refreshIcon(rule, iconEl);
-			}
+					event.stopPropagation();
+				});
+			} else this.refreshIcon(rule, iconEl);
 
 			// Update ghost icon when dragging
 			this.setEventListener(tabEl, 'dragstart', () => {
@@ -114,7 +102,7 @@ export default class TabIconManager extends IconManager {
 			});
 
 			// Skip menu listener if tab is handled by workspace.on('file-menu')
-			if (!this.plugin.settings.showMenuActions || (tab.category === 'file' && (tab.isActive || tab.isStacked))) {
+			if (!this.plugin.settings.showMenuActions || tab.category === 'file') {
 				this.stopEventListener(tabEl, 'contextmenu');
 			} else {
 				this.setEventListener(tabEl, 'contextmenu', () => this.onContextMenu(tab.id, tab.category));
@@ -162,28 +150,29 @@ export default class TabIconManager extends IconManager {
 	 * Refresh the two copies of an active tab that appear in a mobile sidebar.
 	 */
 	private refreshMobileSidebarActiveTab(tab: TabItem, tabsContainerEl: HTMLElement): void {
+		const appearance = tab.category === 'file' ? (this.plugin.ruleManager?.checkRuling('file', tab.id) ?? tab) : tab;
 		// Active tab on the drawer button
 		const drawerTabEl = tabsContainerEl.find('.workspace-drawer-tab-options > .workspace-tab-header');
 		if (drawerTabEl?.getText() === tab.name) {
-			if (this.plugin.settings.showMenuActions) {
+			if (this.plugin.settings.showMenuActions && tab.category !== 'file') {
 				this.setEventListener(drawerTabEl, 'contextmenu', () => this.onContextMenu(tab.id, tab.category));
 			} else {
 				this.stopEventListener(drawerTabEl, 'contextmenu');
 			}
 			const drawerIconEl = drawerTabEl.find('.workspace-tab-header-inner > .workspace-tab-header-inner-icon');
-			if (drawerIconEl) this.refreshIcon(tab, drawerIconEl);
+			if (drawerIconEl) this.refreshIcon(appearance, drawerIconEl);
 		}
 
 		// Active tab inside the drawer list
 		const listTabEl = tabsContainerEl.find(`.workspace-tab-header[data-type="${tab.id}"]`);
 		if (listTabEl) {
-			if (this.plugin.settings.showMenuActions) {
+			if (this.plugin.settings.showMenuActions && tab.category !== 'file') {
 				this.setEventListener(listTabEl, 'contextmenu', () => this.onContextMenu(tab.id, tab.category));
 			} else {
 				this.stopEventListener(listTabEl, 'contextmenu');
 			}
 			const listIconEl = listTabEl.find('.workspace-tab-header-inner > .workspace-tab-header-inner-icon');
-			if (listIconEl) this.refreshIcon(tab, listIconEl);
+			if (listIconEl) this.refreshIcon(appearance, listIconEl);
 		}
 	}
 
@@ -193,9 +182,7 @@ export default class TabIconManager extends IconManager {
 	private onContextMenu(tabId: string, tabCategory: Category) {
 		this.plugin.menuManager?.closeAndFlush();
 
-		if (tabCategory === 'file') {
-			this.onFileContextMenu(this.plugin.getFileItem(tabId));
-		} else {
+		if (tabCategory !== 'file') {
 			const tab = this.plugin.getTabItem(tabId);
 			if (tab) this.onTabContextMenu(tab);
 		}
@@ -233,61 +220,6 @@ export default class TabIconManager extends IconManager {
 						this.plugin.refreshManagers('tab');
 					}),
 			);
-		}
-	}
-
-	/**
-	 * Add custom items to a file tab menu.
-	 */
-	private onFileContextMenu(file: FileItem): void {
-		this.plugin.menuManager?.flush();
-
-		// Change icon
-		this.plugin.menuManager?.addItemAfter('close', (item) =>
-			item
-				.setTitle(t('iconic.menu.changeIcon'))
-				.setIcon('lucide-image-plus')
-				.setSection('icon')
-				.onClick(() =>
-					this.plugin.dialogsPort.openSingle(file, (newIcon, newColor) => {
-						this.plugin.saveFileIcon(file, newIcon, newColor);
-						this.plugin.refreshManagers('file');
-					}),
-				),
-		);
-
-		// Remove icon / Reset color
-		if (file.icon || file.color) {
-			this.plugin.menuManager?.addItem((item) =>
-				item
-					.setTitle(file.icon ? t('iconic.menu.removeIcon') : t('iconic.menu.resetColor'))
-					.setIcon(file.icon ? 'lucide-image-minus' : 'lucide-rotate-ccw')
-					.setSection('icon')
-					.onClick(() => {
-						this.plugin.saveFileIcon(file, null, null);
-						this.plugin.refreshManagers('file');
-					}),
-			);
-		}
-
-		// Edit rule
-		const rule = this.plugin.ruleManager?.checkRuling('file', file.id);
-		if (rule) {
-			this.plugin.menuManager?.addItem((item) => {
-				item.setTitle(t('iconic.menu.editRule'))
-					.setIcon('lucide-image-play')
-					.setSection('icon')
-					.onClick(() =>
-						this.plugin.openRuleEditor('file', rule, (newRule) => {
-							const isRulingChanged = newRule
-								? this.plugin.ruleManager?.saveRule('file', newRule)
-								: this.plugin.ruleManager?.deleteRule('file', rule.id);
-							if (isRulingChanged) {
-								this.plugin.refreshManagers('file');
-							}
-						}),
-					);
-			});
 		}
 	}
 

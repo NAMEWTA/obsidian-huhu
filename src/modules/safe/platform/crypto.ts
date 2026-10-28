@@ -39,7 +39,7 @@ export interface OpenedContainer {
 	key: CryptoKey;
 	envelope: SafeEnvelope;
 	/** Set when the stored plaintext used an older schema; `payload` is the upgraded in-memory form. */
-	upgradedFrom: 1 | null;
+	upgradedFrom: 1 | 2 | null;
 }
 
 function webCrypto(): Crypto {
