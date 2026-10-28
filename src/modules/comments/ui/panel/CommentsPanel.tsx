@@ -87,7 +87,7 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 		const next = new Set(old); if (checked) next.add(id); else next.delete(id); return next;
 	});
 	const rows: HighlightRow[] = (scope === 'current'
-		? (path ? store.threadsFor(path).map(thread => ({ path: path!, thread })) : [])
+		? (path ? store.threadsFor(path).map(thread => ({ path, thread })) : [])
 		: state.notes.flatMap(note => store.threadsFor(note.path).map(thread => ({ path: note.path, thread }))));
 	const visible = sortHighlightRows(filterHighlightRows(rows, { search, color, status: filter, showArchived }), sort);
 	const selectedRows = visible.filter(row => selected.has(row.thread.id));
@@ -141,7 +141,7 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 								<DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onSelect={() => { void env.exportHighlights(selectedRows.length ? selectedRows : visible).then(path => new Notice(t('editor.highlights.exported', { path })), () => new Notice(t('editor.highlights.exportFailed'))); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
-							{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path: path!, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
+							{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
 							<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem>
 						</DropdownMenuContent></DropdownMenu>
 				</div>
