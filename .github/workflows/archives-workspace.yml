@@ -1,4 +1,4 @@
-name: Archives workspace snapshot
+name: Archives transfer verification
 on:
   push:
     branches: [feat/archives-definition-domain-3]
@@ -6,37 +6,31 @@ on:
 permissions:
   contents: read
 jobs:
-  snapshot:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/github-script@v7
         with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24.x
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Package credential-free development inputs
-        run: |
-          mkdir -p "$RUNNER_TEMP/archives-workspace"
-          git archive --format=tar HEAD > "$RUNNER_TEMP/archives-workspace/source.tar"
-          git bundle create "$RUNNER_TEMP/archives-workspace/source.bundle" HEAD
-          tar -czf "$RUNNER_TEMP/archives-workspace/dependencies.tgz" node_modules
-          cp "$(command -v node)" "$RUNNER_TEMP/archives-workspace/node"
-          node --version > "$RUNNER_TEMP/archives-workspace/versions.txt"
-          pnpm --version >> "$RUNNER_TEMP/archives-workspace/versions.txt"
-          git rev-parse HEAD >> "$RUNNER_TEMP/archives-workspace/versions.txt"
-          cd "$RUNNER_TEMP/archives-workspace"
-          sha256sum source.tar source.bundle dependencies.tgz node > SHA256SUMS
+          script: |
+            const fs = require('fs');
+            const crypto = require('crypto');
+            const path = require('path');
+            const dir = path.join(process.env.RUNNER_TEMP, 'archives-transfer');
+            fs.mkdirSync(dir, {recursive: true});
+            const shas = ['78d8093af9ec569eed78727dac3b1926840f2652', '37b7f31666e74e9bc24037524f65c8ae9e86c4e6', 'c09c8beecee9a8f84b3c02e60ba85ffa66d9c937'];
+            const stats = [];
+            for (let i = 0; i < shas.length; i++) {
+              const {data} = await github.rest.git.getBlob({...context.repo, file_sha: shas[i]});
+              const bytes = Buffer.from(data.content, data.encoding);
+              fs.writeFileSync(path.join(dir, `part-${i}.bin`), bytes);
+              stats.push({sha: shas[i], size: bytes.length, prefix: bytes.subarray(0,32).toString('hex'), digest: crypto.createHash('sha256').update(bytes).digest('hex')});
+            }
+            fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(stats, null, 2));
+            console.log(JSON.stringify(stats, null, 2));
       - uses: actions/upload-artifact@v4
         with:
-          name: archives-workspace
-          path: ${{ runner.temp }}/archives-workspace/
+          name: archives-transfer-verification
+          path: ${{ runner.temp }}/archives-transfer/
           retention-days: 1
-          compression-level: 1
           if-no-files-found: error
