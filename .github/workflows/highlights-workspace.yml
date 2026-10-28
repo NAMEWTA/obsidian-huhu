@@ -1,73 +1,54 @@
-name: Highlights implementation workspace
+name: Highlights validation
 
 on:
   push:
     branches: ["NAMEWTA/6"]
-    paths: [".github/workflows/highlights-workspace.yml"]
+  pull_request:
+    paths:
+      - "src/modules/comments/**"
+      - "docs/highlights-implementation.md"
+      - ".github/workflows/highlights-workspace.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "scripts/bundle-budget.json"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: highlights-implementation-${{ github.ref }}
-  cancel-in-progress: false
+  group: highlights-validation-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  harden:
-    if: github.repository == 'NAMEWTA/obsidian-huhu' && github.ref == 'refs/heads/NAMEWTA/6'
+  highlights:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+          persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
-      - name: Apply the reviewed and regression-tested source changes
-        shell: python
-        run: |
-          import subprocess
-          import textwrap
-          baseline = '57e78d11024470c7db39c90b277581b8ba554a5f'
-          workflow = subprocess.check_output(['git', 'show', baseline + ':.github/workflows/highlights-workspace.yml'], text=True)
-          marker = '      - name: Apply the reviewed implementation and mapped-edit regressions\n'
-          body = workflow.split(marker, 1)[1].split('        run: |\n', 1)[1].split('\n      - run: pnpm install --frozen-lockfile\n', 1)[0]
-          exec(compile(textwrap.dedent(body), '<reviewed-highlight-anchor-patch>', 'exec'))
       - run: pnpm install --frozen-lockfile
-      - name: Run all comments and highlight regressions
+      - name: Verify comments and highlights, including anchor identity and persistence
         run: pnpm exec vitest run src/modules/comments
       - run: pnpm run lint
+      - run: pnpm run lint:css
       - run: pnpm run build:css
       - run: pnpm run build
       - run: pnpm run check:bundle
-      - name: Commit verified source and regenerated assets without overwriting concurrent work
-        shell: bash
-        run: |
-          set -euo pipefail
-          remote_sha="$(git ls-remote origin refs/heads/NAMEWTA/6 | cut -f1)"
-          test "$remote_sha" = "$GITHUB_SHA" || { echo 'Branch advanced; refusing to push'; exit 1; }
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/modules/comments/core/anchor.ts src/modules/comments/core/model.ts src/modules/comments/core/store.ts src/modules/comments/core/anchor-safety.test.ts src/modules/comments/highlights.test.ts docs/highlights-implementation.md main.js styles.css
-          git diff --cached --check
-          git commit -m "fix(highlights): reject ambiguous anchors and verify cached document positions"
-          git push origin HEAD:refs/heads/NAMEWTA/6
-          git rev-parse HEAD
+      - name: Ensure committed production assets match source
+        run: git diff --exit-code -- main.js styles.css
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: highlights-anchor-safety-review
+          name: highlights-built-assets-${{ github.sha }}
           path: |
-            src/modules/comments/core/anchor.ts
-            src/modules/comments/core/model.ts
-            src/modules/comments/core/store.ts
-            src/modules/comments/core/anchor-safety.test.ts
-            src/modules/comments/highlights.test.ts
-            docs/highlights-implementation.md
             main.js
             styles.css
+            manifest.json
+            docs/highlights-implementation.md
+          if-no-files-found: error
           retention-days: 7
