@@ -880,9 +880,16 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		// replies and stop retain their journal and authority checks, but must not
 		// wait behind the page operation they are intended to unblock.
 		const urgent = ['dialog', 'chooser', 'stop'].includes(request.command.kind);
-		const result = await (urgent ? dispatch() : this.queue(this.actions, s.id, dispatch));
-		if (result.state !== 'completed') throw new AgentBrowserError(result.error ?? result.state);
-		return result.result ?? null;
+		try {
+			const result = await (urgent ? dispatch() : this.queue(this.actions, s.id, dispatch));
+			if (result.state !== 'completed') throw new AgentBrowserError(result.error ?? result.state);
+			if (this.store.getState().error) this.store.setState({ error: undefined });
+			return result.result ?? null;
+		} catch (error) {
+			const code = error instanceof AgentBrowserError ? error.code : 'operation_failed';
+			this.store.setState({ error: code });
+			throw error;
+		}
 	}
 	async navigate(request: HumanPageRequest & { url: string }) {
 		await this.pageAction({ ...request, command: { kind: 'navigate', url: validatePageUrl(request.url) } });

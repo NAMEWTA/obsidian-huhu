@@ -55,6 +55,7 @@ const explained = new Set([
 	'material_target_timeout',
 	'material_cancelled',
 	'browser_stale_ref',
+	'browser_element_obscured',
 	'observation_stale',
 	'capture_unavailable',
 	'capture_quota',

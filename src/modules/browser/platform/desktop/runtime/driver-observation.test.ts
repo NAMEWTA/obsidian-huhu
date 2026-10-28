@@ -73,6 +73,7 @@ async function fixture() {
 						else if (String(params.functionDeclaration).includes('function readFillResult')) result = { result: { objectId: 'fill-readback' } };
 						else if (params.objectId === 'fill-readback') { await onReadback?.(); result = { result: { value: fillResult } }; }
 						else if (String(params.functionDeclaration).includes('frameContentBox')) result = { result: { value: { x: 100, y: 50, width: 200, height: 150 } } };
+						else if (String(params.functionDeclaration).includes('function viewportCenter')) result = { result: { value: { x: 160, y: 35 } } };
 						else result = { result: { value: true } };
 					}
 					if (method === 'DOM.getFrameOwner') result = { backendNodeId: 99 };

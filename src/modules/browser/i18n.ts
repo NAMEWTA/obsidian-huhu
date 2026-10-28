@@ -262,6 +262,8 @@ export const messages = {
 		'browser.v2.failure.material_target_timeout': 'The session did not become ready within 10 seconds. No material was pasted.',
 		'browser.v2.failure.material_cancelled': 'Material delivery was cancelled before pasting.',
 		'browser.v2.failure.browser_stale_ref': 'The selected element has changed. Observe and select it again.',
+		'browser.v2.failure.browser_element_obscured':
+			'That element is covered. The click was refused and nothing on the page was changed.',
 		'browser.v2.failure.observation_stale': 'The material source has changed. Observe and select it again.',
 		'browser.v2.failure.capture_unavailable': 'The selected material could not be captured. Nothing was delivered.',
 		'browser.v2.failure.capture_quota': 'Private material storage is full. No new material was delivered.',
@@ -659,6 +661,7 @@ export const messages = {
 		'browser.v2.failure.material_target_timeout': '会话未在 10 秒内就绪，未粘贴材料。',
 		'browser.v2.failure.material_cancelled': '材料交付已在粘贴前取消。',
 		'browser.v2.failure.browser_stale_ref': '所选元素已失效，请重新观察并选择。',
+		'browser.v2.failure.browser_element_obscured': '该元素被挡住了。点击已被拒绝，页面没有因此改变。',
 		'browser.v2.failure.observation_stale': '材料来源已改变，请重新观察并选择。',
 		'browser.v2.failure.capture_unavailable': '无法采集所选材料，未交付任何内容。',
 		'browser.v2.failure.capture_quota': '私有材料存储已满，未交付新材料。',

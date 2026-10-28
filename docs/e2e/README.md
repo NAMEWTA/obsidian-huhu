@@ -6,7 +6,7 @@
 
 ## 模型
 
-用户指定整体前端交互设计和疑难问题使用 Opus 5.5。切换被系统拒绝，原因是额度，不是需求变更。因此下面这些界面和疑难点测都不是 Opus 5.5 做的，仍由当时已经在跑的模型完成：高亮检索、筛选、批量、自定义色和导出的界面；版本管理的左右、上下、行内对照和恢复向导；受管浏览器、同页交接、遮挡层与跨域 iframe 画面、弹出窗口；任务模块关闭后的页面。本文不把这些结果写成 Opus 5.5 的设计或修复。
+用户指定整体前端交互设计和疑难问题使用 Opus 5.5。切换被系统拒绝，原因是额度，不是需求变更。因此下面这些界面和疑难点测都不是 Opus 5.5 做的，仍由当时已经在跑的模型完成：高亮检索、筛选、批量、自定义色和导出；版本对照和恢复向导；受管浏览器、同页交接、遮挡拒绝、跨域 iframe 点击、分窗批注、弹出窗口和输入法尝试。本文不把这些结果写成 Opus 5.5 的设计或修复。
 
 ## issue 与截图
 
@@ -64,17 +64,21 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 4 FR-01～28 | 模块、Space、只读/接管、交接、身份与文件页都在现有工作台 | 空间与交接见上；身份种子和文件是同一页的标签，见 [browser-runtime-ready.png](browser-runtime-ready.png) |
 | 5 架构职责 | 仍是一套 Workspace / Worker / 原生 Gate / 独占 Chromium，没有第二套 UI 框架 | 运行时版本 156.0.8078.47，见 [browser-managed-page.png](browser-managed-page.png) |
 | 6 同页接力 | `handoffAgent` 与交接对话框。确认后不重新打开 URL | [browser-handoff.png](browser-handoff.png) |
-| 7 感知与动作 | `driver.ts` 的观察和截图。受管页能画出遮挡层和另一个端口上的 iframe | [browser-managed-page.png](browser-managed-page.png)、[browser-iframe-occlusion.png](browser-iframe-occlusion.png)。遮挡后的点击拒绝、跨域 iframe 的独立目标：未验证，界面没有对应诊断。输入法组字：未验证，这台容器没有系统中文输入法，不能把 DOM 测试里的 composition 事件当成宿主组字 |
+| 7 感知与动作 | 被挡住的元素点击会拒绝，并在工作台显示原因。页外按钮和跨域 iframe 里的按钮分属不同 frame，可以分别点中 | [browser-occluded-refused.png](browser-occluded-refused.png) 显示「该元素被挡住了。点击已被拒绝，页面没有因此改变。」[browser-click-outside.png](browser-click-outside.png) 点中页外按钮。[browser-click-inside.png](browser-click-inside.png) 点中另一个 frame 里的框内按钮。输入法组字没有完成，见下方说明 |
 | 8 工具与账本 | `operation-ledger.ts`、`protocol-service.ts`、CLI。prepare/execute/unknown 由测试锁定 | 无单独按钮。替代验证是浏览器协议测试 |
 | 9 身份、文件、安全 | 身份种子、文件标签和临时空间同意都在产品界面里。系统凭据库在此环境不可用，所以新空间必须选临时存储 | [browser-runtime-ready.png](browser-runtime-ready.png)、[browser-managed-page.png](browser-managed-page.png) |
 | 10 Hello Halo 阅读包 | 产品按 Halo 的业务边界实现（观察、接管、交接、材料），没有把 Electron webview 拷进 Obsidian | 行为见交接与受管页截图 |
 | 11 阶段 P0–P7 | 合同、运行时、交接和恢复已经落在现有模块。P2 的 Windows/macOS 门禁保持「仅 Linux x64 已验证」 | 本机只能证明 Linux x64 |
 | 12 开发分工 | 过程说明，不是产品功能 | 无界面 |
-| 13 验收合同 | 同页交接、受管页、临时空间已点测。`moveLeafToPopout` 打开了第二个窗口，里面仍是同一个浏览器叶子 | [browser-popout.png](browser-popout.png)。两个不同笔记分窗、批注不串状态：未验证。性能预算：未验证，Obsidian 里没有这项界面；构建时的包体检查不能代替这次点测 |
+| 13 验收合同 | 两篇笔记分到主窗口和弹出窗口，各自划词。主窗口侧栏只有乙笔记的卡片 | [comments-window-a.png](comments-window-a.png) 是甲笔记及其高亮。[comments-window-b.png](comments-window-b.png) 是乙笔记，侧栏摘录只有乙。同一次真实启动里，打开首页工作台计时为 135.1 ms 和 182.4 ms。Issue 写的撤销确认 p95 ≤ 300 ms、输入到新画面 p95 ≤ 250 ms 没有做多次样本，不能把这两次打开工作台当成那两项已达标 |
 | 14 文档与迁移 | `docs/browser.md` 等保持现有协议。没有把旧 sync 数据改成浏览器数据 | 文档，不是新界面 |
 | 15 PR 门禁 | 集成 PR 仍是 #15，不合并、不关闭 issue | 过程 |
 | 16 启动指令 | 历史操作步骤。当前工作在 `dev` | 过程 |
 | 17 七个交付问题 | 相对 1236 的浏览器改动已含在 `dev`；同页交接保持原页面；旧连接在交接后失效由交接文案和 `handoffAgent` 测试说明。Windows 与系统凭据仍未验证 | 见上表截图 |
+
+## 输入法
+
+已安装 `ibus` 和 `ibus-libpinyin`，守护进程能起来，`ibus engine` 显示当前引擎是 `libpinyin`。`ibus engine libpinyin` 这次返回失败，dconf 也报 `unix:path` 地址写不进去。用 xdotool 向 Obsidian 发送 `nihao` 时，字母直接进了笔记正文，没有候选框，也没有变成「你好」。截图 [ime-composition.png](ime-composition.png)。所以真实组字没有完成：XTest 按键没有走进 ibus 的组字，Electron 这次也没有把这些键交给输入法。
 
 ## PR 提交是否都在 dev
 

@@ -1638,6 +1638,33 @@ export class BrowserDriver {
 		if (q.some((v, i) => Math.abs(v - before[i]!) > 1)) throw new AgentBrowserError('browser_element_unstable');
 		let point = { x: (q[0]! + q[4]!) / 2, y: (q[1]! + q[5]!) / 2 },
 			session = entry.session;
+		// Box-model quads are document coordinates. Hit testing uses the frame viewport,
+		// which is what getBoundingClientRect returns, including inside a cross-origin iframe.
+		const resolved = object(
+				await this.cdp.command(
+					'DOM.resolveNode',
+					{ backendNodeId: entry.node, objectGroup: 'huhu-browser-action' },
+					entry.session,
+					authority,
+				),
+			),
+			objectId = string(object(resolved.object).objectId);
+		const center = object(
+			await this.cdp.command(
+				'Runtime.callFunctionOn',
+				{
+					objectId,
+					functionDeclaration:
+						'function viewportCenter(){const r=this.getBoundingClientRect();if(!(r.width>0&&r.height>0))return null;return {x:r.left+r.width/2,y:r.top+r.height/2}}',
+					returnByValue: true,
+				},
+				entry.session,
+				authority,
+			),
+		);
+		const viewportPoint = object(object(center.result).value);
+		if (typeof viewportPoint.x === 'number' && typeof viewportPoint.y === 'number')
+			point = { x: viewportPoint.x, y: viewportPoint.y };
 		await this.hit(entry.node, session, point, authority);
 		const visited = new Set<string>();
 		while (session !== page.session) {
