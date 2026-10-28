@@ -18,19 +18,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .github/browser-phase2-transfer/part-{01,02,03,04} | base64 --decode | gzip --decompress > "$RUNNER_TEMP/browser-phase2.patch"
-          echo "e8db643b69a400306322e8ba37c415bdf1a4e5768ab5312abe391a087d5f48b9  $RUNNER_TEMP/browser-phase2.patch" | sha256sum --check
+          cat .github/browser-phase2-transfer/final-{01,02,03,04,05} | base64 --decode | gzip --decompress > "$RUNNER_TEMP/browser-phase2.patch"
+          echo "c5b1108da655f0d12662a53d1ded8b0c37d18ccdfc26d7849ed4253b8d7c748e  $RUNNER_TEMP/browser-phase2.patch" | sha256sum --check
           git apply --check --whitespace=error-all "$RUNNER_TEMP/browser-phase2.patch"
           git apply --index --whitespace=error-all "$RUNNER_TEMP/browser-phase2.patch"
           while IFS= read -r path; do
             case "$path" in
-              src/modules/browser/*|.agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/design-system.md) ;;
+              src/modules/browser/*|docs/browser*.md|scripts/bundle-budget.json|scripts/verify-browser-runtime-native.mjs) ;;
               *) echo "Unexpected source path: $path"; exit 1 ;;
             esac
           done < <(git diff --cached --name-only)
           git diff --cached --check
           git diff --cached --stat
-          git rm .github/browser-phase2-transfer/part-{01,02,03,04}
+          git rm .github/browser-phase2-transfer/final-{01,02,03,04,05}
       - name: Commit source without running repository code or rewriting history
         shell: bash
         env:
@@ -39,5 +39,5 @@ jobs:
           set -euo pipefail
           git fetch origin feat/browser-phase2-issue-1
           test "$(git rev-parse FETCH_HEAD)" = "$EXPECTED_HEAD"
-          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null commit -m 'feat(browser): 加固控制权并实现显式同页 Agent 交接与统一输出校验'
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null commit -m 'feat(browser): 核验输入与 iframe 焦点并补齐二阶段验收追踪'
           git push origin HEAD:refs/heads/feat/browser-phase2-issue-1
