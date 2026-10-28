@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import type { EditorContextAccess } from '../../../../app/contracts/editor-context';
 import { useStore } from 'zustand';
 import { Notice } from 'obsidian';
 import { MessageSquareText, MoreHorizontal, RefreshCw, Download, CheckSquare } from 'lucide-react';
@@ -47,8 +48,9 @@ function VaultSection({ env, path, open, total, filter, sort, selectMode, select
 			selected={selected} onSelect={onSelect} showArchived={showArchived} />}</CollapsibleContent>
 	</Collapsible>;
 }
-export function CommentsPanel({ env }: { env: CommentsEnv }) {
+export function CommentsPanel({ env, documents, container }: { env: CommentsEnv; documents?: EditorContextAccess; container?: HTMLElement }) {
 	const state = useStore(env.service.state);
+	const path = useSyncExternalStore(listener => documents?.subscribe(listener) ?? (() => undefined), () => documents && container?.ownerDocument.defaultView ? documents.current(container.ownerDocument.defaultView)?.path ?? null : state.path);
 	const [scope, setScope] = useState('current');
 	const [filter, setFilter] = useState<ThreadFilter>('all');
 	const [sort, setSort] = useState<SortOrder>(env.service.settings().sort);
@@ -85,7 +87,7 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 		const next = new Set(old); if (checked) next.add(id); else next.delete(id); return next;
 	});
 	const rows: HighlightRow[] = (scope === 'current'
-		? (state.path ? store.threadsFor(state.path).map(thread => ({ path: state.path!, thread })) : [])
+		? (path ? store.threadsFor(path).map(thread => ({ path: path!, thread })) : [])
 		: state.notes.flatMap(note => store.threadsFor(note.path).map(thread => ({ path: note.path, thread }))));
 	const visible = sortHighlightRows(filterHighlightRows(rows, { search, color, status: filter, showArchived }), sort);
 	const selectedRows = visible.filter(row => selected.has(row.thread.id));
@@ -139,7 +141,7 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 								<DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onSelect={() => { void env.exportHighlights(selectedRows.length ? selectedRows : visible).then(path => new Notice(t('editor.highlights.exported', { path })), () => new Notice(t('editor.highlights.exportFailed'))); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
-							{scope === 'current' && state.path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path: state.path!, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
+							{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path: path!, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
 							<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem>
 						</DropdownMenuContent></DropdownMenu>
 				</div>
@@ -167,7 +169,7 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 			{state.error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
 			{loading && <p role="status" className="text-xs text-muted-foreground">{t('editor.highlights.loading')}</p>}
 			{loadError && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
-			{scope === 'current' && !state.path ? <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p>
+			{scope === 'current' && !path ? <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p>
 				: lazyVault ? <>
 					{existing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} selectMode={selectMode} selected={selected} onSelect={selectedChanged} showArchived={showArchived} />)}
 					{missing.length > 0 && <h3 className="text-xs text-status-warning">{t('editor.comments.missingNotes')}</h3>}
@@ -177,7 +179,7 @@ export function CommentsPanel({ env }: { env: CommentsEnv }) {
 					{group.items.map(row => <ThreadCard key={row.thread.id} env={env} path={row.path} thread={row.thread}
 						selected={selected.has(row.thread.id)} onSelect={selectMode ? selectedChanged : undefined} />)}
 				</section>)}
-			{scope === 'current' && state.path && !visible.length && <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>}
+			{scope === 'current' && path && !visible.length && <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>}
 		</div>
 	</div>;
 }

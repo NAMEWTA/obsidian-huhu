@@ -16,9 +16,11 @@ jobs:
         uses: ./.github/workflows/lint.yml
     terminal:
         uses: ./.github/workflows/terminal-build.yml
+    browser:
+        uses: ./.github/workflows/browser-runtime-build.yml
     release:
-        needs: [checks, terminal]
-        if: ${{ needs.checks.result == 'success' && needs.terminal.result == 'success' }}
+        needs: [checks, terminal, browser]
+        if: ${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' }}
         runs-on: ubuntu-latest
 
         steps:
@@ -40,7 +42,7 @@ jobs:
               run: node scripts/verify-release-artifacts.mjs "$RELEASE_TAG"
             - run: pnpm run build
             - name: The tagged commit carries its own build
-              run: git diff --exit-code -- main.js styles.css
+              run: git diff --exit-code -- main.js styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 src/modules/browser/platform/desktop/runtime/main-source.generated.json src/modules/browser/platform/desktop/runtime/worker-digest.generated.json
             - run: pnpm run check:bundle
 
             - name: Package plugin files
@@ -51,8 +53,8 @@ jobs:
                   id=$(node -p "require('./manifest.json').id")
                   rm -rf dist release-assets
                   mkdir -p "dist/$id" release-assets
-                  cp main.js manifest.json styles.css LICENSE NOTICE THIRD-PARTY-NOTICES.md "dist/$id/"
-                  cp main.js manifest.json styles.css release-assets/
+                  cp main.js manifest.json styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 LICENSE NOTICE THIRD-PARTY-NOTICES.md "dist/$id/"
+                  cp main.js manifest.json styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 release-assets/
                   zip_name="${id}-${RELEASE_TAG}.zip"
                   (cd dist && zip -r "../release-assets/$zip_name" "$id")
                   echo "zip=release-assets/$zip_name" >> "$GITHUB_OUTPUT"
@@ -65,6 +67,8 @@ jobs:
                       ${{ steps.package.outputs.zip }}
                       release-assets/main.js
                       release-assets/styles.css
+                      release-assets/browser-worker.cjs
+                      release-assets/browser-cli.cjs
 
             - uses: actions/download-artifact@v4
               with:
@@ -82,11 +86,22 @@ jobs:
                   chmod +x terminal-artifacts/huhu-pty-linux-x64
                   node scripts/verify-pty-helper.mjs terminal-artifacts/huhu-pty-linux-x64
 
+            - uses: actions/download-artifact@v4
+              with:
+                  name: huhu-browser-runtime-linux-x64
+                  path: browser-artifacts
+
+            - name: Attest the sandbox-verified browser runtime
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: browser-artifacts/huhu-browser-runtime-linux-x64.tar.gz
+
             - name: Checksums for every asset
               env:
                   RELEASE_TAG: ${{ github.ref_name }}
               run: |
                   cp terminal-artifacts/* release-assets/
+                  cp browser-artifacts/huhu-browser-runtime-linux-x64.tar.gz release-assets/
                   cp LICENSE NOTICE THIRD-PARTY-NOTICES.md release-assets/
                   node scripts/verify-release-artifacts.mjs "$RELEASE_TAG" --sums release-assets
 

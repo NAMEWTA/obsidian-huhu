@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "3afb9f96cb2c8b73061745e4db87acaeabe3e451a2a1fe7ffd9c6630f75dacee",
+  "generated_at": "2026-10-26T09:41:03.844Z",
+  "provider": "Chrome/153.0.8010.47 / CDP / Linux headless",
+  "inspected_files": [
+    "comparison/index.html",
+    "comparison/variants/candidate-a.html",
+    "comparison/variants/candidate-b.html",
+    "comparison/variants/candidate-c.html",
+    "final/index.html"
+  ],
+  "cases": [
+    {
+      "id": "candidate-a-1440",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-a-1440.png",
+      "entry": "comparison/variants/candidate-a.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "candidate-a-390",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-a-390.png",
+      "entry": "comparison/variants/candidate-a.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "candidate-b-1440",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-b-1440.png",
+      "entry": "comparison/variants/candidate-b.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "candidate-b-390",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-b-390.png",
+      "entry": "comparison/variants/candidate-b.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "candidate-c-1440",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/candidate-c-1440.png",
+      "entry": "comparison/variants/candidate-c.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "candidate-c-390",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/candidate-c-390.png",
+      "entry": "comparison/variants/candidate-c.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    },
+    {
+      "id": "final-1440",
+      "width": 1440,
+      "height": 1000,
+      "screenshot": "evidence/final-1440.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error",
+        "PAGE-001:empty",
+        "PAGE-001:loading",
+        "PAGE-001:permission",
+        "PAGE-001:conflict",
+        "PAGE-001:noresults",
+        "PAGE-002:default",
+        "PAGE-002:empty",
+        "PAGE-002:loading",
+        "PAGE-002:error",
+        "PAGE-002:permission",
+        "PAGE-002:conflict",
+        "PAGE-002:recovery",
+        "PAGE-003:default",
+        "PAGE-003:empty",
+        "PAGE-003:loading",
+        "PAGE-003:error",
+        "PAGE-003:permission",
+        "PAGE-003:conflict",
+        "PAGE-003:recovery",
+        "PAGE-003:quota",
+        "PAGE-004:default",
+        "PAGE-004:empty",
+        "PAGE-004:loading",
+        "PAGE-004:error",
+        "PAGE-004:permission",
+        "PAGE-004:recovery",
+        "PAGE-004:unknown",
+        "PAGE-004:unsupported"
+      ]
+    },
+    {
+      "id": "final-390",
+      "width": 390,
+      "height": 1000,
+      "screenshot": "evidence/final-390.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "PAGE-001:default",
+        "PAGE-001:error"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/design-review.md",
+  "technical_review": "evidence/technical-review.md",
+  "rechecked": true
+}

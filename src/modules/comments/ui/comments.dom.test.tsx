@@ -11,6 +11,7 @@ import { createAnchor } from '../core/anchor';
 import { CommentStore, type CommentFs } from '../core/store';
 import { DEFAULT_COMMENTS_SETTINGS } from '../settings';
 import type { CommentsEnv } from './env';
+import type { EditorContextAccess, EditorDocumentContext } from '../../../app/contracts/editor-context';
 vi.mock('obsidian', async importOriginal => {
 	const actual = await importOriginal<Record<string, unknown>>();
 	return { ...actual, Component: class { load() {} unload() {} }, MarkdownRenderer: { render: async (_app: unknown, text: string, el: HTMLElement) => { el.textContent = text; } }, Platform: { isPhone: false, isMobile: false } };
@@ -89,6 +90,24 @@ test('panel follows current note and lazily loads vault sections; filtering hide
 	fireEvent.click(screen.getByRole('radio', { name: /Unresolved/ }));
 	await waitFor(() => expect(screen.queryByRole('button', { name: 'Resolved' })).toBeNull());
 	view.unmount(); await f.dispose();
+});
+
+test('panel uses its window document context while another leaf or sidebar changes global comment focus', async () => {
+	const f = fixture();
+	await f.store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'alpha-comment' });
+	await f.store.add('b.md', { anchor: createAnchor('beta', 0, 4), text: 'beta-comment' });
+	let context: EditorDocumentContext = { id: 'a:a.md', path: 'a.md', leafId: 'a', ownerWindow: window, generation: 0 };
+	const listeners = new Set<() => void>();
+	const documents = { current: vi.fn(() => context), subscribe(listener: () => void) { listeners.add(listener); return () => listeners.delete(listener); } } as unknown as EditorContextAccess;
+	const container = document.createElement('div'); document.body.appendChild(container);
+	const view = render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env} documents={documents} container={container} /></HuhuProviders>, { container });
+	await screen.findByText('alpha-comment');
+	act(() => { f.service.setPath('b.md'); f.service.setPath(null); });
+	expect(screen.getByText('alpha-comment')).toBeTruthy(); expect(screen.queryByText('beta-comment')).toBeNull();
+	expect(documents.current).toHaveBeenCalledWith(window);
+	act(() => { context = { ...context, id: 'b:b.md', leafId: 'b', path: 'b.md' }; for (const listener of listeners) listener(); });
+	await screen.findByText('beta-comment'); expect(screen.queryByText('alpha-comment')).toBeNull();
+	view.unmount(); expect(listeners.size).toBe(0); container.remove(); await f.dispose();
 });
 
 test('panel menu exposes sorting, settings and the resolve-all confirmation request', async () => {

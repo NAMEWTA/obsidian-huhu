@@ -1,4 +1,4 @@
-import type { BrowserPageHandle, BrowserViewState } from '../../browser/api';
+import type { BrowserWorkspace, BrowserPage } from '../../browser/api';
 import { t } from '../../../shared/i18n';
 import {
 	activeTab,
@@ -41,18 +41,8 @@ import type { WorkspaceStore } from './workspace-store';
 
 /** In-page confirmation; the optional wording replaces the "end session" texts of the shared dialog. */
 export type ConfirmFn = (message: string, options?: { title?: string; action?: string }) => Promise<boolean>;
-/** Stage 5 supplies this port from browser/api.ts; no browser implementation is imported here. */
-export interface WorkspaceBrowserHost {
-	resolveInput(input: string): string | null;
-	createPage(options: { url?: string; profileId?: string }): {
-		id: string;
-		url: string;
-		title: string;
-		profileId: string;
-	};
-	getPage?(id: string): BrowserPageHandle | undefined;
- disposePage(id: string): void;
-}
+/** The browser's public facade is optional; Agent never owns a native browser resource. */
+export type WorkspaceBrowserHost = Pick<BrowserWorkspace, 'resolveInput' | 'getState' | 'createSpace' | 'openPage'>;
 export interface WorkspaceLaunchPort {
 	shell(options: { shell?: ShellChoice; cwd?: string }): Promise<TerminalSession | undefined>;
 	agent(
@@ -154,24 +144,38 @@ export class WorkspaceService {
 		this.attach(session, options.groupId);
 		return session.id;
 	}
-	newBrowser(input?: string, options: { groupId?: string; profileId?: string } = {}): void {
+	async newBrowser(
+		input?: string,
+		options: { groupId?: string; spaceId?: string; pageId?: string } = {},
+	): Promise<string | undefined> {
+		await this.persistence.ready;
+		if (this.disposed) return undefined;
 		const host = this.browser();
 		if (!host) throw new Error(t('agent.workspace.browserDisabled'));
-		const page = host.createPage({
-			url: input ? (host.resolveInput(input) ?? (() => { throw new Error(t('browser.browser_invalid_url')); })()) : undefined,
-			profileId: options.profileId,
-		});
+		const url = input ? host.resolveInput(input) : undefined;
+		if (input && !url) throw new Error(t('browser.browser_invalid_url'));
+		let space = options.spaceId ? host.getState().spaces.find((item) => item.id === options.spaceId) : undefined;
+		if (options.spaceId && !space) throw new Error(t('agent.workspace.browserTargetMissing'));
+		if (!space) {
+			// Temporary storage requires an explicit consent flow in Browser Workspace.
+			if (host.getState().persistence !== 'secure') throw new Error(t('agent.workspace.browserNeedsWorkspace'));
+			space = await host.createSpace({ kind: 'task', url: url ?? undefined });
+		}
+		let page = options.pageId ? space.pages.find((item) => item.id === options.pageId) : space.pages[0];
+		if (options.pageId && !page) throw new Error(t('agent.workspace.browserTargetMissing'));
+		if (options.spaceId && url) page = await host.openPage({ spaceId: space.id, url });
+		if (!page) page = await host.openPage({ spaceId: space.id, url: url ?? undefined });
+		if (this.disposed) return undefined;
 		const tab: BrowserTabData = {
 			kind: 'browser',
 			id: `tab-${crypto.randomUUID()}`,
+			spaceId: space.id,
 			pageId: page.id,
-			title: page.title,
-			url: page.url,
-			profileId: page.profileId,
-			zoom: 1,
+			title: page.title || t('browser.newTab'),
 			createdAt: Date.now(),
 		};
 		this.update((s) => openTab(s, options.groupId, tab));
+		return tab.id;
 	}
 	/**
 	 * Show a page (the board or usage) as a tab. A page that is already open is activated instead of opened
@@ -180,18 +184,24 @@ export class WorkspaceService {
 	openPage(page: PageKind, options: { resourceId?: string; groupId?: string } = {}): string | undefined {
 		let tabId: string | undefined;
 		this.update((s) => {
-			const opened = openPage(s, options.groupId, { page, resourceId: options.resourceId, createdAt: Date.now() });
+			const opened = openPage(s, options.groupId, {
+				page,
+				resourceId: options.resourceId,
+				createdAt: Date.now(),
+			});
 			tabId = opened?.tabId;
 			return opened?.state ?? s;
 		});
 		return tabId;
 	}
-	updateBrowser(tabId:string,state:BrowserViewState):void {
-  this.update(s=>{const tab=s.tabs[tabId];if(tab?.kind!=='browser')return s;
-   const next={...tab,url:state.url,title:state.title||(state.url==='about:blank'?t('browser.newTab'):new URL(state.url).hostname||state.url),profileId:state.profileId??'default',zoom:state.zoom,faviconUrl:state.favicon};
-   return JSON.stringify(next)===JSON.stringify(tab)?s:{...s,tabs:{...s.tabs,[tabId]:next}};
-  });
- }
+	updateBrowser(tabId: string, state: Pick<BrowserPage, 'title'>): void {
+		this.update((s) => {
+			const tab = s.tabs[tabId];
+			if (tab?.kind !== 'browser') return s;
+			const next = { ...tab, title: state.title || t('browser.newTab') };
+			return JSON.stringify(next) === JSON.stringify(tab) ? s : { ...s, tabs: { ...s.tabs, [tabId]: next } };
+		});
+	}
 	activate(tabId: string): void {
 		this.update((s) => activateTab(s, tabId));
 		const tab = this.store.getState().tabs[tabId];
@@ -274,10 +284,6 @@ export class WorkspaceService {
 	async close(tabId: string, confirm: ConfirmFn): Promise<void> {
 		const tab = this.store.getState().tabs[tabId];
 		if (!tab) return;
-		if (tab.kind === 'browser') {
- const count=this.browser()?.getPage?.(tab.pageId)?.store.getState().downloads.filter(d=>d.state==='progressing').length??0;
- if(count && !(await confirm(t('browser.closeDownloads',{count}))))return;
- }
 		if (tab.kind === 'terminal') {
 			const running = tab.sessionIds.filter((id) => this.sessions.get(id)?.running);
 			if (
@@ -292,7 +298,6 @@ export class WorkspaceService {
 		}
 		this.update((s) => closeTab(s, tabId));
 		if (tab.kind === 'terminal') tab.sessionIds.forEach((id) => this.sessions.remove(id));
-		else if (tab.kind === 'browser') this.browser()?.disposePage(tab.pageId);
 	}
 	async end(tabId: string, confirm: (message: string) => Promise<boolean>): Promise<void> {
 		const tab = this.store.getState().tabs[tabId];
@@ -480,11 +485,13 @@ export class WorkspaceService {
 		}
 	}
 	reopen(id?: string): void {
-		const tab = id ? this.store.getState().closedTabs.find(tab => tab.id === id) : this.store.getState().closedTabs[0];
+		const tab = id
+			? this.store.getState().closedTabs.find((tab) => tab.id === id)
+			: this.store.getState().closedTabs[0];
 		if (!tab) return;
 		this.update((s) =>
 			openTab(
-				{ ...s, closedTabs: s.closedTabs.filter(closed => closed.id !== tab.id) },
+				{ ...s, closedTabs: s.closedTabs.filter((closed) => closed.id !== tab.id) },
 				s.activeGroupId,
 				tab.kind === 'terminal' ? { ...tab, resume: tab.panes[tab.focusedSessionId], unread: false } : tab,
 			),

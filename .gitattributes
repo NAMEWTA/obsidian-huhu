@@ -4,3 +4,8 @@ test/golden/** text eol=lf
 # Generated release assets have identical bytes on every platform.
 styles.css text eol=lf
 THIRD-PARTY-NOTICES.md text eol=lf
+browser-worker.cjs text eol=lf
+browser-worker.cjs.sha256 text eol=lf
+browser-cli.cjs text eol=lf
+browser-cli.cjs.sha256 text eol=lf
+src/modules/browser/platform/desktop/runtime/*.generated.json text eol=lf

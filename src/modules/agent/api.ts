@@ -46,8 +46,15 @@ export interface AgentSkillCatalog {
 }
 export const AGENT_SKILL_CATALOG = serviceKey<AgentSkillCatalog>('agent', 'skill-catalog');
 
-export interface AgentDirectoryEntry { id: AgentId; title: string; enabled: boolean; installed: boolean; }
-export interface AgentDirectory { list(): readonly AgentDirectoryEntry[]; }
+export interface AgentDirectoryEntry {
+	id: AgentId;
+	title: string;
+	enabled: boolean;
+	installed: boolean;
+}
+export interface AgentDirectory {
+	list(): readonly AgentDirectoryEntry[];
+}
 export const AGENT_DIRECTORY = serviceKey<AgentDirectory>('agent', 'directory');
 
 /** A running agent session that can receive material (browser selections, screenshots). */
@@ -61,7 +68,11 @@ export interface AgentSessionSummary {
 export interface AgentSessionsPort {
 	list(): Promise<AgentSessionSummary[]>;
 	/** Paste `text` (and attach `files`) into the session's input as one unsent block. */
-	attachMaterial(sessionId: string, material: { title: string; text: string; files: string[] }, options?: { agentId?: AgentId; signal?: AbortSignal }): Promise<void>;
+	attachMaterial(
+		sessionId: string,
+		material: { title: string; text: string; files: string[] },
+		options?: { agentId?: AgentId; signal?: AbortSignal },
+	): Promise<void>;
 }
 
 export const AGENT_SESSIONS = serviceKey<AgentSessionsPort>('agent', 'sessions');
@@ -90,7 +101,15 @@ export interface AgentPromptResult {
 	accountIdentity?: string;
 	terminalId?: string;
 	errorCode?: string;
-	usage?: { input: number; output: number; cacheRead: number; cacheWrite: number; cost: number | null; known: boolean; partial?: boolean };
+	usage?: {
+		input: number;
+		output: number;
+		cacheRead: number;
+		cacheWrite: number;
+		cost: number | null;
+		known: boolean;
+		partial?: boolean;
+	};
 }
 
 export interface AgentPromptRequest {
@@ -128,7 +147,10 @@ export interface AgentRunContextLease {
 }
 export interface AgentRunContextProvider {
 	id: string;
-	resolve(handle: string, run: { runId: string; cwd: string; signal: AbortSignal }): Promise<AgentRunContextLease | undefined>;
+	resolve(
+		handle: string,
+		run: { runId: string; cwd: string; signal: AbortSignal },
+	): Promise<AgentRunContextLease | undefined>;
 }
 export const AGENT_RUN_CONTEXTS = contributionPoint<AgentRunContextProvider>('agent', 'run-contexts');
 
@@ -160,18 +182,3 @@ export interface AgentQuickCommands {
 	run(id: string): Promise<void>;
 }
 export const AGENT_QUICK_COMMANDS = serviceKey<AgentQuickCommands>('agent', 'quick-commands');
-
-/** Read-only SQLite access for user-initiated browser Cookie snapshot imports. */
-export interface NativeHelperSqlite {
- readCookies(path: string, kind: 'chromium' | 'firefox', signal?: AbortSignal): Promise<{ rows: Array<Record<string, unknown>> }>;
-}
-export const NATIVE_HELPER_SQLITE = serviceKey<NativeHelperSqlite>('agent', 'native-helper-sqlite');
-
-export interface AgentBrowserTabs {
- sessionOrder(pageId:string):string[];
- open(url?:string,profileId?:string,reuse?:boolean):Promise<string>;
- close(pageId:string):Promise<void>;
- list():Array<{id:string;title:string;url:string;profileId:string}>;
- activate(pageId:string):void;
-}
-export const AGENT_BROWSER_TABS=serviceKey<AgentBrowserTabs>('agent','browser-tabs');

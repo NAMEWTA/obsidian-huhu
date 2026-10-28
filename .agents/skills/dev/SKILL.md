@@ -40,7 +40,7 @@ metadata:
 | 显示名称 | `HUHU` |
 | 插件 id | `huhu` |
 | 视图类型 | `huhu-workbench-view`（工作台）、`huhu-comments-view`（评论侧栏）、`huhu-navigator-view`（笔记导航器，左侧栏） |
-| 模块 | `home`、`task`、`agent`、`browser`、`archives`、`automations`、`notifications`、`icons`、`comments`、`navigator`、`sync`、`safe` |
+| 模块 | `home`、`task`、`agent`、`browser`、`archives`、`automations`、`notifications`、`icons`、`comments`、`navigator`、`versioning`、`safe` |
 | `minAppVersion` | `1.13.0`（不要使用标注 `@since 1.13.1` 或更高的 API） |
 | `isDesktopOnly` | `false` |
 | 许可证 | HUHU Source Available License 1.0（`LICENSE`）；商用须书面授权；第三方许可见 `NOTICE` 与 `THIRD-PARTY-NOTICES.md` |

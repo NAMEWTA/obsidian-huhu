@@ -2,6 +2,7 @@
 export function documentationKind(rel) {
 	if (rel === 'NOTICE' || rel === 'THIRD-PARTY-NOTICES.md' || rel.endsWith('/NOTICE.txt')) return 'license';
 	if (rel.startsWith('docs/')) return 'user-doc';
+	if (/^native\/[^/]+\/README\.md$/.test(rel)) return 'native-doc';
 	if (/^(README|CHANGELOG|SECURITY)(\.ZH)?\.md$/.test(rel)) return 'root-entry';
 	if (rel === 'AGENTS.md') return 'agent-handbook';
 	if (/^\.agents\/speculo\/\.speculo\/specdev\/(?:changes|archive)\//.test(rel)) return 'specdev-change';
@@ -19,6 +20,20 @@ export function documentationKind(rel) {
 	if (rel.startsWith('processes/')) return 'process-doc';
 	if (rel.startsWith('.github/')) return 'workflow-doc';
 	return '';
+}
+
+/** Normalize heading text for GitHub section anchors; duplicate suffixes are assigned per document. */
+export function githubSlug(text) {
+	const plain = text
+		.replace(/`([^`]*)`/g, '$1')
+		.replace(/!\[[^\]]*\]\([^)\n]*\)/g, '')
+		.replace(/\[([^\]]*)\]\([^)\n]*\)/g, '$1')
+		.replace(/<[^>\n]+>/g, '');
+	return plain
+		.toLowerCase()
+		.replace(/[\u0000-\u001f]/g, '')
+		.replace(/[\u2000-\u206F\u2E00-\u2E7F\u3001\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+		.replace(/\s/g, '-');
 }
 
 /** Captured issue titles contain literal adjacent labels. Body links and all inline URLs still get checked. */

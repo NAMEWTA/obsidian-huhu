@@ -1,0 +1,16 @@
+{
+  "status": "awaiting-confirmation",
+  "candidate": "candidate-a",
+  "change_design_digest": "e93b49a7a448f339ac836acda443c3c6cf6f14504e161e19b275aa840c997ded",
+  "prototype_digest": "3afb9f96cb2c8b73061745e4db87acaeabe3e451a2a1fe7ffd9c6630f75dacee",
+  "baseline": {
+    "revision": "DESIGN-0001",
+    "digest": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f"
+  },
+  "html": {
+    "path": "final/index.html",
+    "sha256": "47e645743c006beaa40fc19af299ca00f7b5b86dc06c7833e8483532ea805e3f"
+  },
+  "scope": "四个主页面及关键对话框；扩展 UI 缺口见 DESIGN。继承已有基线，不发布永久 delta。",
+  "generated_at": "2026-10-26T09:41:23.223Z"
+}

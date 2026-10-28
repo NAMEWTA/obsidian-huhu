@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { parse, serialize } from '../src/modules/home/core/board/parser/parse';
-import { BrowserOperationQueue } from '../src/modules/browser/core/operation-queue';
 import { HabitApplication } from '../src/modules/home/core/habit/application';
 import type { TextStorage } from '../src/shared/storage/ports';
 import { threeWayMerge } from '../src/shared/storage/three-way-merge';
@@ -139,29 +138,9 @@ test('dashboard preserves unknown YAML, comments, free prose and unchanged cards
 	);
 });
 
-test('closing cancels uncooperative and queued browser operations immediately', async () => {
-	const queue = new BrowserOperationQueue();
-	let finish!: (value: number) => void;
-	const active = queue.run(
-		() =>
-			new Promise<number>((resolve) => {
-				finish = resolve;
-			}),
-	);
-	const waiting = queue.run(async () => assert.fail('queued work must not start'));
-	const results = Promise.all([
-		assert.rejects(active, /browser_page_closed/),
-		assert.rejects(waiting, /browser_page_closed/),
-	]);
-	await Promise.resolve();
-	queue.close();
-	await results;
-	finish(1);
-	await assert.rejects(
-		queue.run(async () => 1),
-		/browser_page_closed/,
-	);
-});
+// Browser revocation now crosses the native authority boundary. Its replacement
+// regression lives in services/workspace.test.ts (delayed old/new Run queues),
+// with the production transport exercised by verify-browser-runtime-native.mjs.
 
 test('managed tables and sections preserve author prose, reject malformed markers and merge independent edits', async () => {
 	let text = '---\nowner: Ada # keep\n---\nPersonal prose.\n';

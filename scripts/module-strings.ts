@@ -11,7 +11,7 @@ import { messages as home } from '../src/modules/home/i18n';
 import { messages as icons } from '../src/modules/icons/i18n';
 import { messages as navigator } from '../src/modules/navigator/i18n';
 import { messages as notifications } from '../src/modules/notifications/i18n';
-import { messages as sync } from '../src/modules/sync/i18n';
+import { messages as sync } from '../src/modules/versioning/i18n';
 import { messages as safe } from '../src/modules/safe/i18n';
 import { messages as automationStrings } from '../src/shared/i18n/lazy/automation';
 import { messages as browserStrings } from '../src/shared/i18n/lazy/browser';

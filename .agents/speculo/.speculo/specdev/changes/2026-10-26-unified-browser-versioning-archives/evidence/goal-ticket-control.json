@@ -1,0 +1,391 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-26-unified-browser-versioning-archives",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "auto",
+  "max_parallel_tickets": null,
+  "input_digest": "4985128203dcffdf07ffae5150aa4f218cf1fcb2ff318a1a4cce0c0c0c087aea",
+  "goal_contract_digest": "bcf4cc2ce3af876def0c2f26e8888661bf2dbad533d824418021ba48bb385b1a",
+  "contract_digests": {
+    "T-01": "093e51dbfc3245f997d23e111f920884db60f6ba1edb8bf027f6188abe931296",
+    "T-02": "21061bab5eed90153c766a4fa2b5b640b9a36ccfe2b61ac489286c96829678ea",
+    "T-03": "600b9308d7f304c4a95359565d4c0a5f8e408a0e71f4de75a4ced8743c2c6812",
+    "T-04": "89417d7d10b3e8761bfdd3125cc787cea04b69ee2e74fc08e5c2709aa7fe0558",
+    "T-05": "a9ee5f3fd18923547a5a0496537a1fcb176323b1458daf046bf81e73cf34ce70",
+    "T-06": "d08f2305a689056600cfa5646006630407dab79c639daf030c250320dc499d74",
+    "T-07": "d00653d5371136ae2f821a6ce1e38d746156b6b11f2ed8e9520abb3bbde66ec6",
+    "T-08": "b56403d41e1a4502b485d07a747d74d1cf3f222e4137df1374022ab03f8d54fd",
+    "T-09": "7d552fc6fe5b3fed5b3937e42164b5df0f7fd180a016baf69761f831a4350166",
+    "T-10": "87a548fa2c75f72b90ffa032ef2a086dff4c81d9a3ed5ceeafe3a7f73e11dbcc",
+    "T-11": "2caee674f94f18fe1acbb84dd0001b8c98825122b1ae626eb75b85f9ebc88de0",
+    "T-12": "0477e223f3f1040866510cba30a7899cd44f75c18752acaa038ad4365d5592f3",
+    "T-13": "ba6884370b96ce9eec60552acd736b871b7fcc0cb4fb7b0cedc1aa76545866e8",
+    "T-14": "804883be7e975da381f0d22fd8d4a2732f516ba768fd6765fb85451aa73b181c",
+    "T-15": "4cd711c98178a93b63c36904641c3aa43b7d129f0e155f1708b853fdaa73d9b4",
+    "T-16": "6864e3d32e6d3bfe307550d9ae5f5e179be06267d2bf327dea8e92d056a72329",
+    "T-17": "608af0d5af013aab285f1f204ac7b183d126ac6e702b7c6ad1fe1290cd9c0d52",
+    "T-18": "bbffe034c647a34ad25899e25b09606e9118497ef8b8a417a908e649d4871f5b",
+    "T-19": "58fb39267f94f43c88f94a88d54b4e623aab47020f69bd0899c74fc233d99bc4",
+    "T-20": "3a3affdcce13a684a2da3e07cb56710edc2ab2360a859c4f614009a8958a734b",
+    "T-21": "4cb62c55e2ce4f8fa2210da80d761cd87a429ca4b53f90e5f5bdc88bbb0c0733",
+    "T-22": "02cbda96cdb5f53ff8e756eb1fd2098b1ea50b0f8fda45883a5b194fcb0d211d",
+    "T-23": "506e2bd97cfd670056004ff29136ca9b214432c53eb8ca871edf97f7348f6cb7",
+    "T-24": "9820023f69b446e7b93c108a23183723519dc110f512f747499bf2eb2f226381",
+    "T-25": "40d652908f3f197b658b7573c9028fe4dcfed1dfce6085da8fdc7cefa5e55a16",
+    "T-26": "4fca5383e387a0dda606dc164d13b9eb0130be56b247b1a333bf6d6120cc36a2",
+    "T-27": "1b76887886fdd578eed167bf75bdfde832ca9c6d27db83b8c24ab8843fa77be6",
+    "T-28": "8c5b406d425ceef8a43d922c965d58d6f532f91555aa59eeaf7200d8da15589f",
+    "T-29": "57c5c10b1d121099f33b8aef6ed88be30182f0f7f395522a42ee379e58a300d5",
+    "T-30": "fd8d982ff21f9412bcc916abc6289e6b56b37bbc037f8b85f5bc421ba76e6786",
+    "T-31": "dc18e209b12970b628bbb111ef46991d1761a34d0f1ef767a1681da74ccbb95e",
+    "T-32": "768e685372ecce7fc0b05ae0f7a57014bd217457a0eb95c66c8d6eb4205ba442"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "blocked dependency closure: T-03"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "blocked dependency closure: T-04"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "blocked dependency closure: T-07"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-10",
+        "blocked dependency closure: T-10"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-11",
+        "blocked dependency closure: T-11"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-13",
+        "blocked dependency closure: T-13"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-17"
+      ]
+    },
+    {
+      "id": "T-19",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-18",
+        "blocked dependency closure: T-18"
+      ]
+    },
+    {
+      "id": "T-20",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-19",
+        "blocked dependency closure: T-19"
+      ]
+    },
+    {
+      "id": "T-21",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-20",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-22",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-23",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-22",
+        "blocked dependency closure: T-22"
+      ]
+    },
+    {
+      "id": "T-24",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-23",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-23",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-25",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-24",
+        "blocked dependency closure: T-24"
+      ]
+    },
+    {
+      "id": "T-26",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-25",
+        "blocked dependency closure: T-25"
+      ]
+    },
+    {
+      "id": "T-27",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-26",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-26"
+      ]
+    },
+    {
+      "id": "T-28",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-27",
+        "blocked dependency closure: T-27"
+      ]
+    },
+    {
+      "id": "T-29",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-28",
+        "blocked dependency closure: T-28"
+      ]
+    },
+    {
+      "id": "T-30",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-29",
+        "blocked dependency closure: T-29"
+      ]
+    },
+    {
+      "id": "T-31",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-12",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-32",
+      "reasons": [
+        "source Spec is not Ready",
+        "Goal planning gate is not ready for execution",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-27",
+        "dependency not successfully satisfied: T-30",
+        "dependency not successfully satisfied: T-31",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-27",
+        "blocked dependency closure: T-30",
+        "blocked dependency closure: T-31"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [],
+  "validation_errors": [],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

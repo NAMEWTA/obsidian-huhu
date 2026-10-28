@@ -13,7 +13,7 @@ src/theme/          主题样式、Markdown 样式、把它们应用到每个窗
 src/host/           多个模块共用的 Obsidian 与桌面适配器
 src/shared/         工具函数、设置 DSL 与存储、存储辅助、i18n 运行时与启动词典
 src/types/          环境类型声明
-src/modules/<id>/   home | agent | browser | archives | automations | notifications | icons | comments | navigator | sync | safe
+src/modules/<id>/   home | agent | browser | archives | automations | notifications | icons | comments | navigator | versioning | safe
   manifest.ts       纯数据描述，启动时加载
   api.ts            其他模块可导入的类型和 serviceKey()/contributionPoint() 常量
   module.ts         懒加载入口：创建 ModuleInstance
@@ -26,6 +26,7 @@ src/modules/<id>/   home | agent | browser | archives | automations | notificati
   ui/               页面、面板、设置页、对话框
   styles/           模块的 CSS（列在 src/styles.json）
 native/pty-server/  Rust 终端辅助程序（stdio 帧）
+native/browser-runtime/ 独立浏览器监督进程与 Cookie SQLite 读取器
 test/               共用样本与跨模块测试（用户格式黄金样本）
 ```
 
@@ -66,7 +67,7 @@ ESLint 另外规定：`desktop/` 文件夹之外不得使用 `process`、`Buffer
 
 ## 启动与懒加载
 
-esbuild 构建一个不拆分代码的 CommonJS `main.js`。只能通过 `import()` 到达的文件被包进懒初始化器，首次导入时才运行；启动代码里只要有一条静态边，就会把它的整个闭包拉进启动集合。因此：
+插件 UI 的 esbuild 构建一个不拆分代码的 CommonJS `main.js`。独立的浏览器 utilityProcess Worker、CLI 和固定主进程桥由专门脚本构建，不作为第二个 React 入口。只能通过 `import()` 到达的 UI 文件被包进懒初始化器，首次导入时才运行；启动代码里只要有一条静态边，就会把它的整个闭包拉进启动集合。因此：
 
 - 启动代码是 `src/app/main.ts` 及它静态导入的内容：注册表、设置运行时、清单、`api.ts` 文件、设置模式、工作台叶子（`app/workbench/workbench-leaf.ts`）、评论叶子、主题运行时和启动词典。
 - React、React DOM、Radix 及组件渲染代码不得进入启动集合；`api.ts` 只保留类型和键，不能因声明设置组件或状态段而静态导入 UI。
@@ -90,7 +91,9 @@ esbuild 构建一个不拆分代码的 CommonJS `main.js`。只能通过 `import
 
 ## 工作台
 
-只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`sync`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 保留为引擎模块，通过 `BROWSER_HOST` 给智能体标签提供能力；批注使用右侧栏视图，记录使用看板弹窗，不再贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
+只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`browser`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`versioning`、`revision-review`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 是独立工作台功能，自己拥有 Space、Page 和运行进程；智能体标签只是可选查看入口。批注使用右侧栏视图，记录使用看板弹窗，不贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
+
+浏览器通过 `BROWSER_WORKSPACE`、`BROWSER_OPEN` 暴露工作区与打开能力，通过 `BROWSER_MATERIAL_CONSUMERS` 收集已经启用的可选材料接收方。不要从 browser 导入 Agent 的内部代码、借用 PTY SQLite helper，或从 UI 直接访问 CDP。独立 Worker 与 Rust 监督进程使用私有管道；每个 Space 绑定自己的 Chromium 用户目录、运行实例与控制代次。帧查看者不自动取得控制，跨窗口迁移只迁移查看界面。生产运行时仅开放 Linux x64，其他平台返回不支持。
 
 另外有两种侧栏视图，都在 `main.ts` 启动时注册，使保存的叶子能恢复；对应模块关闭时显示「开启模块」的提示，模块启动后切换为模块的 React 面板：
 
@@ -116,6 +119,7 @@ id 不带插件 id 前缀；名称里不写「命令」二字；没有默认快�
 - 跨模块服务只暴露只读快照和 `subscribe`，不把仓库对象传到其他模块。
 - 业务仓库落盘用现有 `shared/json-store.ts`，防抖 500ms；失败经 `report()` 告知并保留内存状态。设置继续使用设置存储，临时 UI 状态可用组件 `useState`。
 - `safe` 使用独立密文仓库和共享文件写队列：手动保存完整认证密文，禁止 JSON 合并、明文恢复草稿和未经认证的自动备份回退；页面状态不持久化敏感内容。
+- `browser` 使用自己的系统密钥保护密文存储、不可变身份版本、操作账本与根目录独占所有权，不使用 `JsonStore` 的 JSON 合并或明文恢复副本。系统保护不可用时必须经用户明确同意使用临时模式；运行中的 Chromium 用户目录和文件内容不因元数据加密而变成密文。
 
 ## 持久化名称
 
@@ -135,17 +139,19 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 设置（本机） | `.huhu/config/devices/<device-id>.json` | app |
 | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
 | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
-| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
+| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/页面标签，以及浏览器 Space/Page 引用；不拥有浏览器运行资料） | agent |
 | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
 | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |
 | 智能体历史与缓存 | `.huhu/terminal-agent/<device-id>/history.json`、`automation-sessions.json`、可重建的 `index.sqlite` | agent |
 | 托管智能体账号与运行文件 | `.huhu/agents/<device-id>/accounts/<provider>/<id>/`；生命周期 Hook、配置与事件在账号内的 `runtime/` | agent |
 | 系统 CLI 账号 | 沿用真实 CLI 数据根；运行事件在库内，状态 Hook 会维护用户主目录中的约定文件，见数据正文 | agent |
 | 终端辅助程序 | `.huhu/helpers/<device-id>/<platform-arch>/<version>/`，官方摘要与本机受保护回执 | agent |
-| 浏览器 Profile 列表 | `.huhu/browser/<device-id>/profiles.json` | browser |
-| 浏览器会话与下载 | `.huhu/browser/<device-id>/profiles/<id>/session/`、`.huhu/browser/<device-id>/profiles/<id>/downloads/` | browser |
-| 浏览历史与站点权限 | `.huhu/browser/<device-id>/state.json` | browser |
-| Cookie 导入临时快照 | `.huhu/browser/<device-id>/tmp/`，导入后立即删除 | browser |
+| 浏览器目录、操作记录与身份 | `.huhu/browser/<device-id>/v2/records/*.sealed`、`digest-key.sealed` 和 `identities/<版本 ID>.sealed` | browser |
+| 浏览器运行资料与下载暂存 | 同一 `v2/` 下的 `profiles/<Space ID>/`、`downloads/<Space ID>/`，各 Space 独立 | browser |
+| 浏览器受管文件 | 同一 `v2/` 下的 `files/data/<文件 ID>/<安全文件名>` 与 `files/metadata.sealed`；内容私有，元数据认证加密，上传保留文件名与扩展名 | browser |
+| Cookie 导入与清理任务 | 同一 `v2/` 下的 `import-staging/<UUID>/` 与 `cleanup/import-staging.json`；回收失败保留任务 | browser |
+| 浏览器运行包与本地连接 | 同一 `v2/` 下的 `runtime/`、`connections/<UUID>.json`；凭据不进入 Agent 标签状态 | browser |
+| 交付给智能体的网页截图 | `.huhu/browser-materials/activation-<UUID>/`，正常停用接收模块时清理 | agent |
 | 自动化定义 | `.huhu/automation/definitions/<名称>-<id>/操作.md` | automations |
 | 自动化运行 | `.huhu/automation/<device-id>/runtime.json` | automations |
 | 批注 | `.huhu/editor/comments/`（`index.json`、`pending.json`、`files/<hash>.json`，version 3） | comments；细则见 [编辑器批注](editor-comments.md) |
@@ -162,8 +168,8 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 笔记导航器设置 | 设置命名空间 `navigator`；显示与行为随库，布局、尺寸、展开状态和选中项在设备文件 | navigator |
 | 周期笔记（日志档案） | 库内可见目录，固定结构 `<日志文件夹>/日记/YYYY/MM/YYYY-MM-DD.md`、`周记/gggg/gggg-Www.md`、`月记/YYYY/YYYY-MM.md`、`季记/YYYY/YYYY-Qq.md`、`年记/YYYY.md`；日志文件夹默认 `huhu/日志`（设置 `navigator.periodicRoot`），路径由 `src/shared/periodic-paths.ts` 的纯函数生成，导航器和看板日历共用 | navigator（看板经 `NAVIGATOR_PERIODIC` 读取） |
 | 通知 | `.huhu/notifications/<device-id>/inbox.json` | notifications |
-| Git 同步设备状态 | `.huhu/sync/<device-id>/<repository-hash>.json` | sync |
-| Git 同步的排除规则 | 仓库 `.gitignore` 与 `.git/info/exclude` 里带起止标记的 HUHU 托管区块（浏览器、智能体账号与运行目录、辅助程序、各设备的自动化运行、缓存、恢复、迁移、锁与临时文件；`huhu/`、`.huhu/dashboards/`、`.huhu/automation/definitions/` 不排除）；清单在 `src/modules/sync/core/excludes.ts` | sync |
+| Git 同步设备状态 | `.huhu/sync/<device-id>/<repository-hash>.json` | versioning |
+| Git 同步的排除规则 | 仓库 `.gitignore` 与 `.git/info/exclude` 里带起止标记的 HUHU 托管区块（`.huhu/browser/`、`.huhu/browser-materials/`、智能体账号与运行目录、辅助程序、各设备的自动化运行、缓存、恢复、迁移、锁与临时文件；`huhu/`、`.huhu/dashboards/`、`.huhu/automation/definitions/` 不排除）；清单在 `src/modules/versioning/core/excludes.ts` | versioning |
 | 恢复草稿与看板冲突 | `.huhu/recovery/drafts/`、`.huhu/recovery/dashboard/conflicts/` | 共享存储、home |
 | 受管内容移动与回收 | `.huhu/content-moves/manifest.json`；恢复材料在 `.huhu/recovery/content-creates/`、`renames/`、`trash/` | host、shared |
 | 缓存 | `.huhu/cache/`（微信读书进度） | home |

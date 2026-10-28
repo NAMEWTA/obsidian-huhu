@@ -1,0 +1,1075 @@
+{
+  "scope": {
+    "version": 1,
+    "mode": "working-tree",
+    "review_mode": "working-tree",
+    "outcome": "changes",
+    "base_sha": "265e65f64bd0deb38fb7f1b5fccd08bfcb8a6bfa",
+    "observed_head": "265e65f64bd0deb38fb7f1b5fccd08bfcb8a6bfa",
+    "selection": "explicit-files",
+    "scope_paths": [
+      "src/modules/archives/api.ts",
+      "src/modules/archives/archives-relations.test.ts",
+      "src/modules/archives/archives-write-safety.test.ts",
+      "src/modules/archives/core/application.ts",
+      "src/modules/archives/core/catalog.ts",
+      "src/modules/archives/core/persist/v2/markdown.ts",
+      "src/modules/archives/core/persist/v2/patch.ts",
+      "src/modules/archives/core/relation-markdown.ts",
+      "src/modules/archives/core/relation-model.ts",
+      "src/modules/archives/core/relation-presets.ts",
+      "src/modules/archives/core/relation-store.ts",
+      "src/modules/archives/core/resources.ts",
+      "src/modules/archives/i18n.ts",
+      "src/modules/archives/services/archive-services.ts",
+      "src/modules/archives/ui/ArchiveEntityForm.tsx",
+      "src/modules/archives/ui/ArchiveRelations.tsx",
+      "src/modules/archives/ui/ArchiveWorkspace.tsx",
+      "src/modules/archives/ui/RecordDetail.tsx",
+      "src/modules/archives/ui/RelationTypeDesigner.tsx",
+      "src/modules/archives/ui/archive-forms.dom.test.tsx",
+      "src/modules/archives/ui/contacts-presentation.tsx",
+      "src/modules/archives/ui/panel-contract.ts",
+      "test/golden/__snapshots__/archive-relation-v2.md",
+      "test/golden/archive-relation.test.ts"
+    ],
+    "changed_paths": [
+      "src/modules/archives/api.ts",
+      "src/modules/archives/archives-relations.test.ts",
+      "src/modules/archives/archives-write-safety.test.ts",
+      "src/modules/archives/core/application.ts",
+      "src/modules/archives/core/catalog.ts",
+      "src/modules/archives/core/persist/v2/markdown.ts",
+      "src/modules/archives/core/persist/v2/patch.ts",
+      "src/modules/archives/core/relation-markdown.ts",
+      "src/modules/archives/core/relation-model.ts",
+      "src/modules/archives/core/relation-presets.ts",
+      "src/modules/archives/core/relation-store.ts",
+      "src/modules/archives/core/resources.ts",
+      "src/modules/archives/i18n.ts",
+      "src/modules/archives/services/archive-services.ts",
+      "src/modules/archives/ui/ArchiveEntityForm.tsx",
+      "src/modules/archives/ui/ArchiveRelations.tsx",
+      "src/modules/archives/ui/ArchiveWorkspace.tsx",
+      "src/modules/archives/ui/RecordDetail.tsx",
+      "src/modules/archives/ui/RelationTypeDesigner.tsx",
+      "src/modules/archives/ui/archive-forms.dom.test.tsx",
+      "src/modules/archives/ui/contacts-presentation.tsx",
+      "src/modules/archives/ui/panel-contract.ts",
+      "test/golden/__snapshots__/archive-relation-v2.md",
+      "test/golden/archive-relation.test.ts"
+    ],
+    "excluded_paths": [
+      ".agents/speculo/.speculo/AGENTS.md",
+      ".agents/speculo/.speculo/hub-skills.json",
+      ".agents/speculo/.speculo/install.json",
+      ".agents/speculo/.speculo/managed.json",
+      ".agents/speculo/.speculo/projections.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ADR.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/CONTEXT-MAP.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/CONTEXT.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/DESIGN.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/LOG.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/README.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/contexts/browser.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/contexts/versioning.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/design-tree.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-01-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-01-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-01.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-input-r3.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-report-r3.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-02.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-03-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-03-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-03-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-03-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-03.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-04-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-04-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-04-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-04-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-04.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-05-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-05-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-05.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-13-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-13-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-13-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-13-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-13.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-input-r3.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-report-r3.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-14.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-15-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-15-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-15-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-15-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-15.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-16-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-16-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-16-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-16-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-16.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-input-r2.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-input-r3.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-input.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report-r2.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report-r3.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-20.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/goal-planning-inputs.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/goal-planning-review.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/goal-ticket-control.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/integration.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/non-ui-spec-validation.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/pr-4.patch",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/pr-5.patch",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/pr-recheck.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/source-gap-analysis.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/source-manifest.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/ticket-contract-checks.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/ticket-control.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/ticket-inventory.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/ticket-planning-review.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/ticket-validation-inputs.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/tickets-validation.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/versioning-host-artifacts.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/versioning-host-host-errors.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/versioning-host-result.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/goal-plan.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval-sealed.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/index.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-a.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-b.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/comparison/variants/candidate-c.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/design-system.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/approval-attempt-initial.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-display-fields-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-display-fields-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-cards-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-cards-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-dark-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-dark-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-list-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-list-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/archive-tree-sheet-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/browser-check.mjs",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/browser-failure.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/browser-raw.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/browser.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-a-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-a-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-b-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-b-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-c-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/candidate-c-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/contact-r2-1.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/contact-r2-2.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/contact-r2-3.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/contrast.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/design-review.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/final-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/final-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/preview-binding.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/DESIGN.md.snapshot.txt",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/README.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/comparison/index.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/comparison/variants/candidate-a.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/comparison/variants/candidate-b.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/comparison/variants/candidate-c.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/design-system.md.snapshot.txt",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/archive-restore-refused.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/archives-conflict.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/archives-dark-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/archives-dark-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-dark-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-dark-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-light-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-light-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-raw.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-recovery.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser-unknown.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/browser.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/comparison-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/comparison-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/contact-1.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/contact-2.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/contact-3.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/contact-4.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/contact-5.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/failure.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/first-desktop.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/preview-binding.json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-conflict.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-dark-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-dark-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-light-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-light-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/schema-recovery.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-conflict.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-dark-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-dark-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-light-1440.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-light-390.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-quota.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/evidence/versioning-recovery.png",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/final/app.js",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/final/index.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/revision-1/final/styles.css",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/evidence/technical-review.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/app.js",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/index.html",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/styles.css",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/source.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-001.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-002.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-003.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-004.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-005.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-006.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-007.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-008.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-009.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-010.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/archive-restore-preflight.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/browser-lifecycle-preflight.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-1-body.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-2-body.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/native-platform-reuse.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/spec.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/01-joint-boundaries.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/02-browser-observation.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/03-browser-ledger.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/04-browser-events.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/05-browser-identity.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/06-browser-lifecycle.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/07-browser-files-input.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/08-browser-material-handoff.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/09-browser-windows.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/10-browser-macos-arm.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/11-browser-macos-x64.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/12-browser-linux-stress.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/13-automatic-history.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/14-history-retention.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/15-history-core-regression.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/16-history-advanced.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/17-archives-v2-contract.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/18-archives-safe-writes.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/19-archives-forms.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/20-archives-relations.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/21-archives-migrate.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/22-archives-sync-forks.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/23-archives-tree-views.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/24-archives-home-refs.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/25-archives-portability.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/26-archives-scale.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/27-archive-restore-owner.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/28-archives-fork-editor.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/29-archives-import.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/30-archives-derived-graph.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/31-browser-storage-extension.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/32-joint-acceptance.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/tickets-map.md",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/triage.md",
+      ".agents/speculo/commands/project-maintenance/references/agents-contract.md",
+      ".agents/speculo/references/change-scope/change-contract.md",
+      ".agents/speculo/references/research-and-reuse/research-contract.md",
+      ".agents/speculo/references/writing-for-agents/writing-contract.md",
+      ".agents/speculo/workflows/specdev/common/rules/documentation-standard.md",
+      ".agents/speculo/workflows/specdev/common/rules/domain-runtime.md",
+      ".agents/speculo/workflows/specdev/common/rules/planning-principles.md",
+      ".agents/speculo/workflows/specdev/common/skills/code-review/references/reviewer-contracts.md",
+      ".agents/speculo/workflows/specdev/common/skills/code-review/references/source-discovery.md",
+      ".agents/speculo/workflows/specdev/common/skills/plan-quality-review/references/checklist.md",
+      ".agents/speculo/workflows/specdev/common/skills/research/SKILL.md",
+      ".agents/speculo/workflows/specdev/specdev-g-grill-with-docs/references/interview-procedure.md",
+      ".agents/speculo/workflows/specdev/specdev-i-implement/assets/evidence-template.md",
+      ".agents/speculo/workflows/specdev/specdev-i-implement/references/implementation-procedure.md",
+      ".agents/speculo/workflows/specdev/specdev-p-goal-plan/assets/goal-plan-template.md",
+      ".agents/speculo/workflows/specdev/specdev-p-goal-plan/assets/implementation-plan-template.md",
+      ".agents/speculo/workflows/specdev/specdev-p-goal-plan/assets/lightweight-goal-plan-template.md",
+      ".agents/speculo/workflows/specdev/specdev-p-prototype/assets/change-design-template.md",
+      ".agents/speculo/workflows/specdev/specdev-p-prototype/design-library/research-snapshot/.gitignore",
+      ".agents/speculo/workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/.gitignore",
+      ".agents/speculo/workflows/specdev/specdev-p-prototype/references/style-selection-protocol.md",
+      ".agents/speculo/workflows/specdev/specdev-s-spec/SKILL.md",
+      ".agents/speculo/workflows/specdev/specdev-s-spec/assets/spec-template.md",
+      ".agents/speculo/workflows/specdev/specdev-t-tickets/assets/ticket-template.md",
+      ".agents/speculo/workflows/specdev/specdev-t-tickets/references/planning-procedure.md",
+      "AGENTS.md",
+      "scripts/obsidian-acceptance/versioning-history.mjs",
+      "scripts/verify-browser-runtime-native.mjs",
+      "src/app/modules/registry.test.ts",
+      "src/host/obsidian/document-mutation.test.ts",
+      "src/host/obsidian/document-mutation.ts",
+      "src/modules/archives/archives-v2.test.ts",
+      "src/modules/archives/archives.test.ts",
+      "src/modules/archives/core/field-codecs.ts",
+      "src/modules/archives/core/files.ts",
+      "src/modules/archives/core/form-definitions.ts",
+      "src/modules/archives/core/form-store.ts",
+      "src/modules/archives/core/legacy-adapter.ts",
+      "src/modules/archives/core/model.ts",
+      "src/modules/archives/core/persist/markdown.ts",
+      "src/modules/archives/core/persist/yaml-values.ts",
+      "src/modules/archives/core/reminders.ts",
+      "src/modules/archives/core/schema.ts",
+      "src/modules/archives/module.ts",
+      "src/modules/archives/platform/controller.ts",
+      "src/modules/archives/platform/vault-files.ts",
+      "src/modules/archives/services/form-drafts.ts",
+      "src/modules/archives/services/page-host.ts",
+      "src/modules/archives/ui/ArchiveTypeDesigner.tsx",
+      "src/modules/archives/ui/field-renderers.tsx",
+      "src/modules/archives/ui/settings-page.tsx",
+      "src/modules/archives/ui/surface.tsx",
+      "src/modules/archives/ui/use-archive-draft.ts",
+      "src/modules/browser/api.ts",
+      "src/modules/browser/core/contracts.ts",
+      "src/modules/browser/core/identity.ts",
+      "src/modules/browser/core/protocol.test.ts",
+      "src/modules/browser/core/protocol.ts",
+      "src/modules/browser/core/rpc.ts",
+      "src/modules/browser/i18n.ts",
+      "src/modules/browser/platform/desktop/cli.ts",
+      "src/modules/browser/platform/desktop/composition.ts",
+      "src/modules/browser/platform/desktop/identity/credential-store.test.ts",
+      "src/modules/browser/platform/desktop/identity/credential-store.ts",
+      "src/modules/browser/platform/desktop/identity/source-reader.test.ts",
+      "src/modules/browser/platform/desktop/identity/source-reader.ts",
+      "src/modules/browser/platform/desktop/persistence/operation-ledger.integration.test.ts",
+      "src/modules/browser/platform/desktop/rpc-server.test.ts",
+      "src/modules/browser/platform/desktop/rpc-server.ts",
+      "src/modules/browser/platform/desktop/runtime/adapter.ts",
+      "src/modules/browser/platform/desktop/runtime/driver-identity.test.ts",
+      "src/modules/browser/platform/desktop/runtime/driver-observation.test.ts",
+      "src/modules/browser/platform/desktop/runtime/driver.ts",
+      "src/modules/browser/platform/desktop/runtime/host-main.ts",
+      "src/modules/browser/platform/desktop/runtime/observation-dom.ts",
+      "src/modules/browser/platform/desktop/runtime/wire.ts",
+      "src/modules/browser/platform/desktop/runtime/worker.ts",
+      "src/modules/browser/services/create-workspace.test.ts",
+      "src/modules/browser/services/create-workspace.ts",
+      "src/modules/browser/services/identity-provision.test.ts",
+      "src/modules/browser/services/identity-provision.ts",
+      "src/modules/browser/services/identity-service.test.ts",
+      "src/modules/browser/services/identity-service.ts",
+      "src/modules/browser/services/operation-ledger.test.ts",
+      "src/modules/browser/services/operation-ledger.ts",
+      "src/modules/browser/services/protocol-service.test.ts",
+      "src/modules/browser/services/protocol-service.ts",
+      "src/modules/browser/services/run-events.test.ts",
+      "src/modules/browser/services/run-events.ts",
+      "src/modules/browser/services/workspace.test.ts",
+      "src/modules/browser/services/workspace.ts",
+      "src/modules/browser/ui/BrowserActionError.tsx",
+      "src/modules/browser/ui/BrowserWorkspace.dom.test.tsx",
+      "src/modules/browser/ui/BrowserWorkspace.tsx",
+      "src/modules/browser/ui/IdentityImportActions.dom.test.tsx",
+      "src/modules/browser/ui/IdentityImportActions.tsx",
+      "src/modules/browser/ui/testing/workspace.ts",
+      "src/modules/versioning/core/history-retention.test.ts",
+      "src/modules/versioning/core/history-retention.ts",
+      "src/modules/versioning/core/history.ts",
+      "src/modules/versioning/core/hunk-restore.test.ts",
+      "src/modules/versioning/core/hunk-restore.ts",
+      "src/modules/versioning/core/local-history.test.ts",
+      "src/modules/versioning/core/local-history.ts",
+      "src/modules/versioning/core/restore.ts",
+      "src/modules/versioning/i18n.ts",
+      "src/modules/versioning/module.ts",
+      "src/modules/versioning/platform/desktop/history-retention.test.ts",
+      "src/modules/versioning/platform/desktop/local-history-cancellation.test.ts",
+      "src/modules/versioning/platform/desktop/local-history-protection.test.ts",
+      "src/modules/versioning/platform/desktop/local-history-protection.ts",
+      "src/modules/versioning/platform/desktop/locate.ts",
+      "src/modules/versioning/platform/desktop/recovery-files.ts",
+      "src/modules/versioning/platform/obsidian/history-capture.test.ts",
+      "src/modules/versioning/platform/obsidian/history-capture.ts",
+      "src/modules/versioning/platform/obsidian/history-lifecycle.test.ts",
+      "src/modules/versioning/services/automatic-history.test.ts",
+      "src/modules/versioning/services/automatic-history.ts",
+      "src/modules/versioning/services/checkpoint-store.ts",
+      "src/modules/versioning/services/history-host.ts",
+      "src/modules/versioning/services/history-query.ts",
+      "src/modules/versioning/services/history-retention.ts",
+      "src/modules/versioning/services/local-history-store.ts",
+      "src/modules/versioning/services/local-snapshot-reader.ts",
+      "src/modules/versioning/services/note-review.test.ts",
+      "src/modules/versioning/services/note-review.ts",
+      "src/modules/versioning/services/recovery-metadata.ts",
+      "src/modules/versioning/services/restore-service.test.ts",
+      "src/modules/versioning/services/restore-service.ts",
+      "src/modules/versioning/settings.ts",
+      "src/modules/versioning/styles/diff.css",
+      "src/modules/versioning/ui/DiffSurface.tsx",
+      "src/modules/versioning/ui/GitWorkbench.tsx",
+      "src/modules/versioning/ui/HunkRestoreControls.tsx",
+      "src/modules/versioning/ui/diff-editors.ts",
+      "src/modules/versioning/ui/diff-model.ts",
+      "src/modules/versioning/ui/diff.dom.test.tsx",
+      "src/modules/versioning/ui/history/NoteHistoryPanel.dom.test.tsx",
+      "src/modules/versioning/ui/history/NoteHistoryPanel.tsx",
+      "src/modules/versioning/ui/history/NoteReviewPage.dom.test.tsx",
+      "src/modules/versioning/ui/history/NoteReviewPage.tsx",
+      "src/modules/versioning/ui/history/hunk-restore.dom.test.tsx",
+      "src/modules/versioning/ui/history/local-history.dom.test.tsx",
+      "src/modules/versioning/ui/hunk-controls.dom.test.tsx",
+      "src/modules/versioning/ui/hunk-mapping.test.ts",
+      "src/modules/versioning/ui/settings-page.tsx",
+      "src/modules/versioning/ui/sync.dom.test.tsx",
+      "test/golden/archives-v2.test.ts",
+      "test/release/browser-client.test.ts",
+      "test/release/browser-operation-ledger-process.fixture.ts",
+      "test/sync/git-flow.test.ts",
+      "test/sync/git-hunk-newlines.test.ts"
+    ],
+    "working_snapshot": [
+      {
+        "path": "src/modules/archives/api.ts",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "7cb14a4a7515dc9fba5dcf1d45ed6fb37e52394e",
+          "sha256": "d466c30d8bd2ff6decdbcd2412a8e3f9b09892ec72e93e59fe8458aa90740371"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "9f163a5ec84f4b2ef36f7e6736c297239b9190a3e24c0b4e3757f12b42aae6aa",
+          "bytes": 4711
+        }
+      },
+      {
+        "path": "src/modules/archives/archives-relations.test.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "1fe9b4a2a59cdf7dc5375296a47776233b5e18f079b7610cc26e34d99e33f5d3",
+          "bytes": 23406
+        }
+      },
+      {
+        "path": "src/modules/archives/archives-write-safety.test.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "15cdc0df9aeaea580657807eb5df0fc1f620358b62466249f699ee42e9753c40",
+          "bytes": 19429
+        }
+      },
+      {
+        "path": "src/modules/archives/core/application.ts",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "6ca0ad4aff6b59b43b19b40e7795c77c97995f96",
+          "sha256": "e4bdcc9ed3571e4d36ad08f693c0a3239af486dfb7e40d438ff5c74bb79e1b67"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "1e367b97a1bbb9578c90caf81f3e0d5533201e4803efd60f28ce2a66274c6a04",
+          "bytes": 20323
+        }
+      },
+      {
+        "path": "src/modules/archives/core/catalog.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "19278353679e64503ef769317d042316cca6b599c22439e10a5e52ebcf04100f",
+          "bytes": 30961
+        }
+      },
+      {
+        "path": "src/modules/archives/core/persist/v2/markdown.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "2cf19e928761bf0350d8f515cd669cc5c799af4e8e6351b185c2bc2b16a4ed46",
+          "bytes": 5943
+        }
+      },
+      {
+        "path": "src/modules/archives/core/persist/v2/patch.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "78a1886d13325552c1cf2b12121d0c68ba02084231768b31a3cd08a6afaba80e",
+          "bytes": 6471
+        }
+      },
+      {
+        "path": "src/modules/archives/core/relation-markdown.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "82312a70c235852d3054337028309c1a441db6aaa11d1d1414fc551bc7aa8c3e",
+          "bytes": 5462
+        }
+      },
+      {
+        "path": "src/modules/archives/core/relation-model.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "f2efe81fcab19f121364c6d2b3a73b5af43fd9deb72603a373af6491f8581af4",
+          "bytes": 12781
+        }
+      },
+      {
+        "path": "src/modules/archives/core/relation-presets.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "5904c50a8f4083189ee647c58102be893b56d8fdda059ec789806f982b0cc8c6",
+          "bytes": 2361
+        }
+      },
+      {
+        "path": "src/modules/archives/core/relation-store.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "faebcaabf606c962dae4627582ac8f17a12969374ca7bd34638bc434e481c678",
+          "bytes": 21841
+        }
+      },
+      {
+        "path": "src/modules/archives/core/resources.ts",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "90d250e6eb8bdd4139867164c30f3a845a450cf6",
+          "sha256": "04ef69ff079aa8987fa0ca97a4c66792b4462fc67de6247f3ae961de445ad781"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "bc92ebfe87a8fedec01b4efe8a0e93781a885ac9dbeb8b6af167d7f8d5591deb",
+          "bytes": 2843
+        }
+      },
+      {
+        "path": "src/modules/archives/i18n.ts",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "38bb0e46e97760854d8bce0e06051ac44e0f827e",
+          "sha256": "99a7f1226135cf8e3345764c58ee8d3b665398bcd08cfa3048971e3265aaed6d"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "8404a83ed68f916f195c3ec03b9c1409ef06a704838f5b4bbef717850d777457",
+          "bytes": 44498
+        }
+      },
+      {
+        "path": "src/modules/archives/services/archive-services.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "b0d2ea281bd485fc103edadc713f6e121340c2656af38cd2205b896f27164c0a",
+          "bytes": 1376
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/ArchiveEntityForm.tsx",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "dd9340e135722f88c17f4f051e6314cadc000ec104dd83262b8a334c9870f369",
+          "bytes": 10662
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/ArchiveRelations.tsx",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "296aca240b8fc084051ce9452cf9e1a9be092189131cffe767126071e3b0a013",
+          "bytes": 15481
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/ArchiveWorkspace.tsx",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "77b6434420f3fe507d159a2b09ac5c42dbd041db16ef90f66341f3ae47739603",
+          "bytes": 12281
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/RecordDetail.tsx",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "a2a355867a9d6b0da287f6ecffb99b6acb0ce56c",
+          "sha256": "ae55f1dd0e654e31c14f7813af8ba71e47ed97049c6abc2f3d817860c5b707a1"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "e0595437d5d5e0f64a06e4d3de02c02626e9fa15b6458343e6cd801114ad188a",
+          "bytes": 17143
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/RelationTypeDesigner.tsx",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "82e5876154f307966be97e7caefe910696d36d3bfac4aa827f74a79d21be34fd",
+          "bytes": 10984
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/archive-forms.dom.test.tsx",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "54fa5dd9b590120aa3a74649438cc70e7dae6ad20e594e0a1935815e34584a20",
+          "bytes": 51453
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/contacts-presentation.tsx",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "12efb98ebd402deb99915fea614c034c3df2933f",
+          "sha256": "9d6280783acf0a9bdfd6a3ae0c9358013d240b9907db53460ea32c680ad9196b"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "6611815730bf97526d48a18222711c8015de0a87231da5f3743ea60402cb8d2f",
+          "bytes": 18556
+        }
+      },
+      {
+        "path": "src/modules/archives/ui/panel-contract.ts",
+        "change": "modified",
+        "before": {
+          "mode": "100644",
+          "oid": "35a921624af7975234c889cfebf48e78519d7b4f",
+          "sha256": "cf195c5f0b48fb6e81726bc97d3443e1ae5d2cf8d54653d71432d83547fcdf97"
+        },
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "37b9ce4590c8acf29d6b2caab65e479a9697adfeea1128e2c3378c3add650ca3",
+          "bytes": 1930
+        }
+      },
+      {
+        "path": "test/golden/__snapshots__/archive-relation-v2.md",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "678d6d2f282bd4a754bc4875c45b3ddce87ed1b0da63d9e97ccaae918d36fe74",
+          "bytes": 670
+        }
+      },
+      {
+        "path": "test/golden/archive-relation.test.ts",
+        "change": "added",
+        "before": null,
+        "after": {
+          "kind": "file",
+          "mode": "100644",
+          "sha256": "64dbbb40562095a7ccfd70307481539ed20177907020a5ec0a3d640d4abc2c0c",
+          "bytes": 2767
+        }
+      }
+    ],
+    "index_sha256": "08b42f1e1afd6e5287d85faf2be149b32c4e80d9b0cbe603c0d4f31909b4459d",
+    "inventory_sha256": "6ca1db219292eb1d5c17897a5c082d98502f0dc24a5c1bee38325e5f8a8c1c7c",
+    "tracked_diff_sha256": "8e91cff6c276f26594a5b42793e52f35f809c6b3968531de93afc68f526b0c7c",
+    "tracked_diff_command": [
+      "git",
+      "diff",
+      "--no-color",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--no-renames",
+      "265e65f64bd0deb38fb7f1b5fccd08bfcb8a6bfa",
+      "--",
+      ":(literal)src/modules/archives/api.ts",
+      ":(literal)src/modules/archives/archives-relations.test.ts",
+      ":(literal)src/modules/archives/archives-write-safety.test.ts",
+      ":(literal)src/modules/archives/core/application.ts",
+      ":(literal)src/modules/archives/core/catalog.ts",
+      ":(literal)src/modules/archives/core/persist/v2/markdown.ts",
+      ":(literal)src/modules/archives/core/persist/v2/patch.ts",
+      ":(literal)src/modules/archives/core/relation-markdown.ts",
+      ":(literal)src/modules/archives/core/relation-model.ts",
+      ":(literal)src/modules/archives/core/relation-presets.ts",
+      ":(literal)src/modules/archives/core/relation-store.ts",
+      ":(literal)src/modules/archives/core/resources.ts",
+      ":(literal)src/modules/archives/i18n.ts",
+      ":(literal)src/modules/archives/services/archive-services.ts",
+      ":(literal)src/modules/archives/ui/ArchiveEntityForm.tsx",
+      ":(literal)src/modules/archives/ui/ArchiveRelations.tsx",
+      ":(literal)src/modules/archives/ui/ArchiveWorkspace.tsx",
+      ":(literal)src/modules/archives/ui/RecordDetail.tsx",
+      ":(literal)src/modules/archives/ui/RelationTypeDesigner.tsx",
+      ":(literal)src/modules/archives/ui/archive-forms.dom.test.tsx",
+      ":(literal)src/modules/archives/ui/contacts-presentation.tsx",
+      ":(literal)src/modules/archives/ui/panel-contract.ts",
+      ":(literal)test/golden/__snapshots__/archive-relation-v2.md",
+      ":(literal)test/golden/archive-relation.test.ts"
+    ],
+    "input_sha256": "7cae6be95085a3375958eae3611bc6f85e11bf84ea9e7dc392d36f4bc74bcef9"
+  },
+  "sources": [
+    {
+      "kind": "instructions",
+      "locator": "AGENTS.md",
+      "sha256": "7063443a3967e0e80fb587b4aeef05c11410e4756d7ae09c1401b4fdd58b9152"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/SKILL.md",
+      "sha256": "f48b2cb3e1690b4da959ba2820b6076087b9f606f847a49ff5a9304594ed044b"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/spec.md",
+      "sha256": "9cf600ab504cacaab7a30f8d684670f06b215c164d9c4f151c17fd1ea85e3248"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ADR.md",
+      "sha256": "d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md",
+      "sha256": "d3db125f2e97d8ed3af1d26bde5cc17e700dc28b90bac6cecbc2b679bddfbf93"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/SRC-010.md",
+      "sha256": "67548f49a0548d2d881b2edee2b34bfbfe299aee2c2b286e5d689df649a1f4fb"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/17-archives-v2-contract.md",
+      "sha256": "17aab6ec3cec6677b410aa344f054050e7acbd089ed4caabcd6dec0f87b7ecf8"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/tickets-map.md",
+      "sha256": "2c63a23d99b9beadc934b5b18739f73e1305c038cf83b027b02c00425a879448"
+    },
+    {
+      "kind": "specification",
+      "locator": "docs/contacts.md",
+      "sha256": "7f7479e00880c6faa12eaada4800f052c82ee9dccaaf8080a3cff0e6d371662b"
+    },
+    {
+      "kind": "standards",
+      "locator": "docs/architecture.md",
+      "sha256": "ee522347c6a5bd49eefbce24725518fbb9148ca2fb39ecac895b6d5b0fd52160"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/architecture.md",
+      "sha256": "34b54dcc8df7a01563e22b9d0bd84fd520486068fe09f69183a2d5fd0f2e3800"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/obsidian-api.md",
+      "sha256": "9fac8f21f8d4806331176cc8bf62cd1ffff94aaec3b58ba5a6c06bf348479417"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/testing.md",
+      "sha256": "43c1ff5b5f4a865a158d5c5e4714cd6562a8c9a4c9911cde473ef3f0097525a3"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "86b3e7a0b507a79fb40b679307ae045d36ccf894967e5f82c3f45dbd279e902c"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/references/change-scope/change-contract.md",
+      "sha256": "cc39fcb9216ad22ae4a4fe5c218837bff8ed5ba02e3b79a77585d5bc4e16abf7"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/references/coordination/coordination-contract.md",
+      "sha256": "736563f49903256de7367383dae2cc2f55112f2b592e066e9684253960775ed4"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/SKILL.md",
+      "sha256": "845d9c8d1dcaf383a0bf32dd4f7057ddef4ba963c55f8f3f57f34ed6695f55d3"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/working-tree-review.md",
+      "sha256": "f24a2d7eedb4ea76d4b416e8bfebc88eb13fe534590ff622e259b72063ab2e4d"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/source-discovery.md",
+      "sha256": "fc1ab8a59f3e5afd7ea99a91056dba681f4fd90da12662328126c9b569a02446"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/fowler-smells.md",
+      "sha256": "bcf1cf1b8ff7304266a4951bd3ce7dea57163a8ecf4b39641c6c796563389815"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/risk-review.md",
+      "sha256": "f4e5a2509481afb9a179bfc3c3b64c6831a10ab1d248ace7361e314727e6163b"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/reviewer-contracts.md",
+      "sha256": "e9cff72349827a2c40463f3818fd6a34d8a8703a3672f32e45289d10506da567"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/review-evidence.md",
+      "sha256": "e81d124de9795aaa2e5175b5adfc89ee861d782c37244f75ba3575bb6738808f"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/rules/error-handling.md",
+      "sha256": "e6e86a0d34dad87e299563120101011e40f3de223bf11e85f8a82ad06e428059"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/rules/test-reliability.md",
+      "sha256": "23e3ef9bd7fbbf32e01764aae43361e990c3fec551ea116c81562010a605f3e3"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/rules/activation-and-memory.md",
+      "sha256": "b34d897be251fb30e501e7328010a252c8279d5506cc61c75ebec441a8b39071"
+    },
+    {
+      "kind": "standards",
+      "locator": "eslint.config.mts",
+      "sha256": "5a9af879d865ade134004971298a14c3d5cfc02818198ed59211c5f707aee0c5"
+    },
+    {
+      "kind": "standards",
+      "locator": "tsconfig.json",
+      "sha256": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb"
+    },
+    {
+      "kind": "standards",
+      "locator": "vitest.config.ts",
+      "sha256": "db3f5373ac5348593928419f404796bbed7cfcd7649d8fdbb705718ac674eb42"
+    },
+    {
+      "kind": "standards",
+      "locator": ".editorconfig",
+      "sha256": "883e9b94eba3d12959a51e0b2132ead7a7c0fa4357094f1e1f2e5a039247a068"
+    },
+    {
+      "kind": "standards",
+      "locator": "package.json",
+      "sha256": "2ef9fb6023d219de0e510b220cd2d186c2e1208ce2c03aa8d619858ced3b3d0d"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/18-archives-safe-writes.md",
+      "sha256": "4464bfcbf70ea09bfd0757f0b3ebb9caa61140eddf8a30c811e6f5dd94828fee"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-input-r2.json",
+      "sha256": "b3acd30529b17154c64c159f9de95bc6de361137eee3ca51bfea6ceb0c33afed"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17-review-report-r2.md",
+      "sha256": "ba0385c623bc89ac4e3bbc77aebc2c234bf1c24d1c6e65241d460b0d05be5881"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-17.md",
+      "sha256": "d6997df93c3764c9fcda8a3f805db33e0bbc7cb18e3207a2ed452060ef97ecab"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/result-reuse.md",
+      "sha256": "73fef9141887c72e3f1cabb47574ce946727b8a01c90b2d6637b7465d6ffe67f"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-report.md",
+      "sha256": "ea486b885c80b13d45705a8241db950d020bd068bf0033f92eb02e5264139e58"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/DESIGN.md",
+      "sha256": "2793db41086d958492bac73188d0909b3786b4e0731730c51c737849e815a17a"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/19-archives-forms.md",
+      "sha256": "9df795760a23bd38896fa24a5cc9997eb816a95f606c5edb329a48adb1d56dbb"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/approval-sealed.md",
+      "sha256": "54b933fb590bf845f02a446407246d6752d44a0d80442cace3140fc819c1c68d"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/index.html",
+      "sha256": "0cd97261fe438a6c755494a45b131365149a32a65a4dc5a470f54f53b7487ccf"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/final/app.js",
+      "sha256": "1950858ee6e15df37e8782c125dd640d0ba82081daaea6021bca55ff910e1202"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-input-r2.json",
+      "sha256": "5827c6d6a4cc474da6eeb1c1112341b9978f7896757c5ccb612fd3b599c44f98"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18-review-report-r2.md",
+      "sha256": "694830a29002d7f627c286c7420d7ff1ffdc80d9b4313761511443a0d1d7c0ff"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-18.md",
+      "sha256": "15c7a2d76992ed482d84d6c0fdbca30b62a72a92a2097c5bbec6109eeda12e9e"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report.md",
+      "sha256": "1bf4b11585b2d9f142139f1e569ba77ad0499af4f6e9323cf39342f4300a563c"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/speculo/workflows/specdev/common/rules/design-contract.md",
+      "sha256": "10d961892c212bd00780746ee09be8bd6fad99aa1327c43e6dbef27f3d3e396c"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/references/design-system.md",
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/references/motion-a11y.md",
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/references/shell.md",
+      "sha256": "b6ac9252068575207ddab36f78c122d6cc012ce113669230b1e2c62fe441f328"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report-r2.md",
+      "sha256": "fe8bc34e50370e3f1c821346c3a0ff43612b2a26d9f84d6c27a1752dfa4b935d"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/ticket/20-archives-relations.md",
+      "sha256": "e8fcf7b55267c83921fb9ae57caeac5ce8f2dc9b15aeaa2e4854be0095ad5805"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-input-r3.json",
+      "sha256": "a5822655306ea68dcb9c79ede7f5f17479ceaa6692cf8614b61bfb4da4860954"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19-review-report-r3.md",
+      "sha256": "82f54a83d58fbfa56f2623216dfd8f97355b6e07f06967b860a88418b3e4b331"
+    },
+    {
+      "kind": "instructions",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/evidence/T-19.md",
+      "sha256": "092ad6cc0f93c3861dbcf6b54ff5ec5ce29f77c15b10d9c2d368145a5b5b69bc"
+    }
+  ],
+  "exclusions": [
+    {
+      "scope": "其他票写入、用户框架与前序不变源码",
+      "reason": "T20实际delta对T17r2+T18r2+T19r3联合快照比较；完整文件同baseline冻结，T18 shared native guard等未变依赖仍须按需读取。"
+    },
+    {
+      "scope": "生成物与真实宿主/视觉/平台/性能执行",
+      "reason": "生成物Lead/T32串行维护，真实验收SRC010用户负责；完整AC021关系本票代码必须审查。T21负责旧inline编辑迁移gate，T20不新增旁路；T23树/T30图不属当前票。"
+    }
+  ]
+}

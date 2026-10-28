@@ -1,0 +1,151 @@
+{
+  "head": "265e65f64bd0deb38fb7f1b5fccd08bfcb8a6bfa",
+  "checks": {
+    "prototype": "0 errors / 0 warnings",
+    "tickets": "0 errors / 0 warnings",
+    "docs": "551 Markdown, 446 local links, 827 external links (not fetched)",
+    "ticket_control": "errors=[], warnings=[], frontier=[]"
+  },
+  "artifacts": [
+    {
+      "path": "DESIGN.md",
+      "sha256": "2793db41086d958492bac73188d0909b3786b4e0731730c51c737849e815a17a"
+    },
+    {
+      "path": "spec.md",
+      "sha256": "b12f57e2caa167af907fd43c6b228db17da0b6e5423232f6f355bca044821bc5"
+    },
+    {
+      "path": "tickets-map.md",
+      "sha256": "b6f59948b0b1d00668c6b4f2430b2fe65063147bfeda5cf7f21e2c402a1115a5"
+    },
+    {
+      "path": "ticket/01-joint-boundaries.md",
+      "sha256": "8adb3743650a674e7d6867a5f6f882a1222fb9f2357c53b03c1a8c25d49e447c"
+    },
+    {
+      "path": "ticket/02-browser-observation.md",
+      "sha256": "d30704c033cc8e59377b94e0d866ce4e5dba54490edc5f1a7c77710ce67afced"
+    },
+    {
+      "path": "ticket/03-browser-ledger.md",
+      "sha256": "526350123729dcc9ac6c00e0c6955ea3c3afc33483fbb58abb7d66888dc70eee"
+    },
+    {
+      "path": "ticket/04-browser-events.md",
+      "sha256": "6194cb777dc77aae4b2f5d510ad86912ca23f1032f92ed2f634c1ead30325c44"
+    },
+    {
+      "path": "ticket/05-browser-identity.md",
+      "sha256": "e485a02c738338841f75d69d528c95d03e459f6ad57f32da56a1993d89927e53"
+    },
+    {
+      "path": "ticket/06-browser-lifecycle.md",
+      "sha256": "ae30e2588b722af2a5dff7b26a81321317c999cf369fc5ffd9b3ce7633c53f4a"
+    },
+    {
+      "path": "ticket/07-browser-files-input.md",
+      "sha256": "ca4f0536a04b2a3425dbbcf74ff2db83bb80bbdd419afe30a495896efe8c1974"
+    },
+    {
+      "path": "ticket/08-browser-material-handoff.md",
+      "sha256": "174efa1486c45e9eae17a06b4e577346d2d06fb230ffb5a8d3b94a7a632bcd31"
+    },
+    {
+      "path": "ticket/09-browser-windows.md",
+      "sha256": "87dc30d66eebd09aef2a24f2ec670efd198bd2df6120e76e7e595c9487af5236"
+    },
+    {
+      "path": "ticket/10-browser-macos-arm.md",
+      "sha256": "244462fc0f2968c55d4f2f5589f886a76ee376d90a0657e34877172c35a45bfa"
+    },
+    {
+      "path": "ticket/11-browser-macos-x64.md",
+      "sha256": "48a01e6e69adb716f1c72f82b1fe46a7be58758ba1868257165f81eb800fdc78"
+    },
+    {
+      "path": "ticket/12-browser-linux-stress.md",
+      "sha256": "948dced917ce5d6a346f7d82719faedbe71252215284a34d3f91a3d91b817a07"
+    },
+    {
+      "path": "ticket/13-automatic-history.md",
+      "sha256": "ad2a60f3e62719f3ab68747a551db8388f72638ea7c6963932893a35ae6637bd"
+    },
+    {
+      "path": "ticket/14-history-retention.md",
+      "sha256": "b0c61903cf877ceea7263c08f980c7d507a2714b98e26ca91876b2517d18002b"
+    },
+    {
+      "path": "ticket/15-history-core-regression.md",
+      "sha256": "3d11c620514bca3b410ae13209f16fd1961ad6690bb0c27a8307d16b0d852e1d"
+    },
+    {
+      "path": "ticket/16-history-advanced.md",
+      "sha256": "9a2b0f211df3d75f892a0831a5fd734822162cea1cdb7f5501f73dbd2960ff5c"
+    },
+    {
+      "path": "ticket/17-archives-v2-contract.md",
+      "sha256": "4a59df16b0affa01ebcee51379fafe06d6c751ddb22587355117f553da55776a"
+    },
+    {
+      "path": "ticket/18-archives-safe-writes.md",
+      "sha256": "dd210bec1b136e9f883735de5cb8b19581e77b3945119c153786733a03f62e7b"
+    },
+    {
+      "path": "ticket/19-archives-forms.md",
+      "sha256": "295a52baf8f320c7936acae129c1e8b4046f9091529277c0cc38c2c418a300cf"
+    },
+    {
+      "path": "ticket/20-archives-relations.md",
+      "sha256": "4055cbcc88fb2ec754d4a4b3ced8bae38b69e32d1f34fd09db3aba648b076bff"
+    },
+    {
+      "path": "ticket/21-archives-migrate.md",
+      "sha256": "96f49368e9a5fda48c242948a22baa3e763b907676b5b53dd12ac9ed7d4a55ea"
+    },
+    {
+      "path": "ticket/22-archives-sync-forks.md",
+      "sha256": "8f60fa4cdd2d32318b173b33537be77f2f9e5a47fd44d6e76b29d2c6bc7eff54"
+    },
+    {
+      "path": "ticket/23-archives-tree-views.md",
+      "sha256": "28a1f65dd0db3a4bb98190b6e8f4a029d0486a3c3cc64db3d5f6390722ec4b91"
+    },
+    {
+      "path": "ticket/24-archives-home-refs.md",
+      "sha256": "9193d3ad2c48071a6c266413e7ee415a36fb51a2c36cf6a7f82006e193cd4885"
+    },
+    {
+      "path": "ticket/25-archives-portability.md",
+      "sha256": "0746f5b463a95da0133b475ece19566a31d55c79ab623e2424047cca9e0a28cc"
+    },
+    {
+      "path": "ticket/26-archives-scale.md",
+      "sha256": "09500bdeb98bc38374fda04797eee67c5682d72f208b22f11b6632f1850c650c"
+    },
+    {
+      "path": "ticket/27-archive-restore-owner.md",
+      "sha256": "2897a9e62061a6955e2718d74826fbbb3e39c4f17078c5ecde94e818f9494b85"
+    },
+    {
+      "path": "ticket/28-archives-fork-editor.md",
+      "sha256": "cc906b0991ca9af38a512d50e2de0fbda89b4fd47c52969796d16e02452fe6fe"
+    },
+    {
+      "path": "ticket/29-archives-import.md",
+      "sha256": "0afd168d4466ac8ab04681eb677f61f63c72fe94f14d79373cde84e377d4ae86"
+    },
+    {
+      "path": "ticket/30-archives-derived-graph.md",
+      "sha256": "809311633e80bdb3e2530eab38525c2817dd3fa24a57d41cff8cf25208b51f41"
+    },
+    {
+      "path": "ticket/31-browser-storage-extension.md",
+      "sha256": "53b7514668cb2ae3aa6b125865b53969a581dfd8289466f93aa7c2f7e613b571"
+    },
+    {
+      "path": "ticket/32-joint-acceptance.md",
+      "sha256": "e51f523328e07030c66b05f16590d91ae275375b50ef708e9f25f22124fe5fa2"
+    }
+  ]
+}

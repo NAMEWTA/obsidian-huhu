@@ -4,6 +4,7 @@ import type { Extension } from '@codemirror/state';
 import type { SettingsStore } from '../../shared/settings/store';
 import type { PageCreate } from './workbench-host';
 import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from './workbench';
+import type { EditorContextAccess } from './editor-context';
 
 /** Feature modules shipped in HUHU. */
 export type ModuleId =
@@ -17,7 +18,7 @@ export type ModuleId =
 	| 'icons'
 	| 'comments'
 	| 'navigator'
-	| 'sync'
+	| 'versioning'
 	| 'safe';
 export const MODULE_IDS: readonly ModuleId[] = [
 	'home',
@@ -30,7 +31,7 @@ export const MODULE_IDS: readonly ModuleId[] = [
 	'icons',
 	'comments',
 	'navigator',
-	'sync',
+	'versioning',
 	'safe',
 ];
 
@@ -152,6 +153,8 @@ export interface ModuleContext {
 	readonly shell: ShellAccess;
 	readonly commands: CommandAccess;
 	readonly editor: EditorAccess;
+	/** Real note context, independent of sidebar and comparison focus. */
+	readonly documents: EditorContextAccess;
 }
 
 /** What a module's settings page gets from the workbench settings page showing it. */
@@ -161,6 +164,8 @@ export interface SettingsPageHost {
 }
 
 export interface ModuleInstance {
+	/** Resource owners may retain cleanup authority after an unconfirmed shutdown. */
+	readonly retainOnDisposeFailure?: boolean;
 	activate?(signal: AbortSignal): Promise<void> | void;
 	dispose(reason: 'disabled' | 'unload'): Promise<void> | void;
 	readonly services?: ReadonlyArray<readonly [ServiceKey<unknown>, unknown]>;

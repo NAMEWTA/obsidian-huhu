@@ -19,13 +19,14 @@ function fixture() {
 		}),
 		activate: vi.fn(),
 	};
-	const settings=normalizeTerminalSettings(undefined);
- const agents=[{id:'claude-code',title:'Claude Code',installed:true,enabled:true}];
- const controller = {
+	const settings = normalizeTerminalSettings(undefined);
+	const agents = [{ id: 'claude-code', title: 'Claude Code', installed: true, enabled: true }];
+	const controller = {
 		workspace,
+		browserWorkspace: () => undefined,
 		runtime: { listAgents: () => [{ id: 'claude-code', title: 'Claude Code', installed: true, enabled: true }] },
 		settings: { get: () => settings, subscribe: () => () => {} },
-  agents: {store:createStore(()=>({detected:{},refreshing:false,failed:false})),list:()=>agents},
+		agents: { store: createStore(() => ({ detected: {}, refreshing: false, failed: false })), list: () => agents },
 		agentTitle: () => 'Claude Code',
 		shells: () => [{ choice: 'default', title: 'Shell' }],
 		open: vi.fn(async () => {}),

@@ -37,7 +37,7 @@ jobs:
             - run: pnpm install --frozen-lockfile
             - run: pnpm run build
             - run: pnpm run check:bundle
-            - run: git diff --exit-code -- main.js styles.css
+            - run: git diff --exit-code -- main.js styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 src/modules/browser/platform/desktop/runtime/main-source.generated.json src/modules/browser/platform/desktop/runtime/worker-digest.generated.json
             - run: pnpm run lint
             - run: pnpm run lint:css
             - run: pnpm run test:all

@@ -1,0 +1,258 @@
+[
+  {
+    "id": "T-01",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-02",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-03",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-04",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-05",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-06",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-07",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-08",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-09",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-10",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-11",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-12",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-13",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-14",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-15",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-16",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "pending-design"
+  },
+  {
+    "id": "T-17",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-18",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-19",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-20",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-21",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-22",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-23",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-24",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-25",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-26",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-27",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  },
+  {
+    "id": "T-28",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "pending-design"
+  },
+  {
+    "id": "T-29",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "pending-design"
+  },
+  {
+    "id": "T-30",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "pending-design"
+  },
+  {
+    "id": "T-31",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "not-applicable"
+  },
+  {
+    "id": "T-32",
+    "normal_failure_regression": true,
+    "ordered_steps": true,
+    "expected_sources_exist": true,
+    "skill_hashes_match": true,
+    "ui_binding": "present"
+  }
+]

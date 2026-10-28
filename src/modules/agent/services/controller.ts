@@ -1,4 +1,4 @@
-import { BROWSER_HOST } from '../../browser/api';
+import { BROWSER_WORKSPACE, BROWSER_OPEN } from '../../browser/api';
 import { Notice, Platform, type App } from 'obsidian';
 import { SessionMaterialService } from './session-material';
 import type { ModuleContext } from '../../../app/contracts/module';
@@ -30,8 +30,17 @@ import type { QuickCommand, ShellChoice, TerminalSettings } from '../core/termin
 import { openPath, revealPath } from '../platform/desktop/files';
 import { resumeArgs } from '../platform/desktop/history/scope';
 import { launchArgs } from '../core/launch/flags';
-import { accountEnv, absolutePluginDir, restoredAccountReference, LEGACY_VAULT_ACCOUNT } from '../platform/desktop/agents/accounts';
-import { legacyDefaultAccountsToAdopt, markLegacyDefaultAdopted, inLegacyDefaultAccount } from '../platform/desktop/agents/legacy-default';
+import {
+	accountEnv,
+	absolutePluginDir,
+	restoredAccountReference,
+	LEGACY_VAULT_ACCOUNT,
+} from '../platform/desktop/agents/accounts';
+import {
+	legacyDefaultAccountsToAdopt,
+	markLegacyDefaultAdopted,
+	inLegacyDefaultAccount,
+} from '../platform/desktop/agents/legacy-default';
 import type { SystemHookResult } from '../platform/desktop/hooks/system-hooks';
 import { systemAccountLocation, systemAccountPaths } from '../platform/desktop/agents/system-homes';
 import { loginShellEnvironment } from '../platform/desktop/detection/shell-path';
@@ -88,14 +97,14 @@ export class AgentController {
 	readonly sessions: TerminalSessions;
 	readonly workspace: WorkspaceService;
 	readonly usage: AgentUsageSource;
- readonly agents: AgentsStore;
- readonly tools: AgentTools;
- readonly usageStore: UsageStore;
- readonly stats: StatsService;
- readonly historyStore: HistoryStore;
- readonly workspaceHistoryStore: HistoryStore;
- readonly workspaceUsage: WorkspaceUsageStore;
- private workspaceHistory?: NativeHistory;
+	readonly agents: AgentsStore;
+	readonly tools: AgentTools;
+	readonly usageStore: UsageStore;
+	readonly stats: StatsService;
+	readonly historyStore: HistoryStore;
+	readonly workspaceHistoryStore: HistoryStore;
+	readonly workspaceUsage: WorkspaceUsageStore;
+	private workspaceHistory?: NativeHistory;
 	readonly runtime: TerminalAutomationRuntime;
 	readonly prompts: PromptRunner;
 	readonly materials: SessionMaterialService;
@@ -111,8 +120,8 @@ export class AgentController {
 	private colors = { foreground: '#d4d4d4', background: '#1e1e1e', cursor: '#d4d4d4' };
 	private colorsReadAt = 0;
 	private installing?: Promise<string>;
- private lastActivity = new Map<string,string>();
- private lastHooks = true;
+	private lastActivity = new Map<string, string>();
+	private lastHooks = true;
 
 	constructor(
 		private readonly context: ModuleContext,
@@ -121,25 +130,37 @@ export class AgentController {
 	) {
 		const app = context.app;
 		const win = app.workspace.containerEl.win;
-  this.agents = new AgentsStore(settings);
-  this.tools = new AgentTools({
-   path: async () => (await loginShellPath()) ?? '',
-   detected: () => this.agents.store.getState().detected,
-   redetect: () => this.agents.refresh(true),
-  });
-  let inspected = '';
-  context.lifetime.register(this.agents.store.subscribe((state) => {
-   const key = JSON.stringify(state.detected);
-   if (state.refreshing || key === inspected) return;
-   inspected = key;
-   void this.tools.inspect().catch(() => undefined);
-  }));
-  context.lifetime.register(() => this.tools.dispose());
-  context.lifetime.register(this.agents.store.subscribe(() => { this.syncUsageScope(); this.changed(); }));
-  const detect = () => { void this.agents.refresh(); };
-  const idle = win.requestIdleCallback?.(detect, { timeout: 2000 });
-  const fallback = idle === undefined ? win.setTimeout(detect, 0) : undefined;
-  context.lifetime.register(() => { if (idle !== undefined) win.cancelIdleCallback(idle); if (fallback !== undefined) win.clearTimeout(fallback); });
+		this.agents = new AgentsStore(settings);
+		this.tools = new AgentTools({
+			path: async () => (await loginShellPath()) ?? '',
+			detected: () => this.agents.store.getState().detected,
+			redetect: () => this.agents.refresh(true),
+		});
+		let inspected = '';
+		context.lifetime.register(
+			this.agents.store.subscribe((state) => {
+				const key = JSON.stringify(state.detected);
+				if (state.refreshing || key === inspected) return;
+				inspected = key;
+				void this.tools.inspect().catch(() => undefined);
+			}),
+		);
+		context.lifetime.register(() => this.tools.dispose());
+		context.lifetime.register(
+			this.agents.store.subscribe(() => {
+				this.syncUsageScope();
+				this.changed();
+			}),
+		);
+		const detect = () => {
+			void this.agents.refresh();
+		};
+		const idle = win.requestIdleCallback?.(detect, { timeout: 2000 });
+		const fallback = idle === undefined ? win.setTimeout(detect, 0) : undefined;
+		context.lifetime.register(() => {
+			if (idle !== undefined) win.cancelIdleCallback(idle);
+			if (fallback !== undefined) win.clearTimeout(fallback);
+		});
 		this.hooks = new AutomationHooks(win, () => ({ vault: this.vaultPath() ?? '', device: deviceId(app) }));
 		this.sessions = new TerminalSessions({
 			app,
@@ -176,7 +197,11 @@ export class AgentController {
 					let session: TerminalSession | undefined;
 					await launchAgent(
 						this.captureLaunchHost(async (request) => {
-							session = await this.sessions.create({ ...request, kind: 'agent', hooks: this.settings.get().statusHooks });
+							session = await this.sessions.create({
+								...request,
+								kind: 'agent',
+								hooks: this.settings.get().statusHooks,
+							});
 							if (options.prompt) void this.typeWhenReady(session, options.prompt);
 						}),
 						id,
@@ -188,24 +213,43 @@ export class AgentController {
 				account: (id) => this.settings.get().agents.agents[id].accountId,
 				report,
 			},
-            () => context.services.peek(BROWSER_HOST),
+			() => context.services.peek(BROWSER_WORKSPACE),
 		);
-		context.lifetime.register(context.services.watch(BROWSER_HOST, () => this.changed()));
+		context.lifetime.register(context.services.watch(BROWSER_WORKSPACE, () => this.changed()));
 		context.lifetime.register(this.workspace.store.subscribe(() => this.changed()));
 		const idleTimer = win.setInterval(() => this.workspace.refreshStates(), 60_000);
 		context.lifetime.register(() => win.clearInterval(idleTimer));
-		context.lifetime.register(this.sessions.subscribe(() => {
-   const settings = this.settings.get();
-   for(const session of this.sessions.list()) {
-    const previous=this.lastActivity.get(session.id);this.lastActivity.set(session.id,session.activity);
-    if(session.agentId && settings.generatedTitles && session.generatedTitle) session.setGeneratedTitle(session.generatedTitle);
-    if(session.agentId && previous && previous!==session.activity && ['done','waiting','permission'].includes(session.activity) && settings.notifications && !win.document.hasFocus()) {
-     const inbox=context.services.peek(NOTIFICATION_INBOX);
-     if(inbox?.available('system')) void inbox.send({id:`agent:${session.id}:${session.activityAt}`,title:session.title,body:t(`agent.activity.${session.activity}`),channels:['system']}).catch(report);
-    }
-   }
-   this.changed();
-  }));
+		context.lifetime.register(
+			this.sessions.subscribe(() => {
+				const settings = this.settings.get();
+				for (const session of this.sessions.list()) {
+					const previous = this.lastActivity.get(session.id);
+					this.lastActivity.set(session.id, session.activity);
+					if (session.agentId && settings.generatedTitles && session.generatedTitle)
+						session.setGeneratedTitle(session.generatedTitle);
+					if (
+						session.agentId &&
+						previous &&
+						previous !== session.activity &&
+						['done', 'waiting', 'permission'].includes(session.activity) &&
+						settings.notifications &&
+						!win.document.hasFocus()
+					) {
+						const inbox = context.services.peek(NOTIFICATION_INBOX);
+						if (inbox?.available('system'))
+							void inbox
+								.send({
+									id: `agent:${session.id}:${session.activityAt}`,
+									title: session.title,
+									body: t(`agent.activity.${session.activity}`),
+									channels: ['system'],
+								})
+								.catch(report);
+					}
+				}
+				this.changed();
+			}),
+		);
 		this.usage = new AgentUsageSource({
 			read: () =>
 				readUsageSnapshots(this.usageAgents(), {
@@ -221,20 +265,33 @@ export class AgentController {
 		});
 		this.usage.setPinned(false);
 		context.lifetime.register(this.usage.subscribe(() => this.changed()));
-  let usageAccounts = JSON.stringify(AGENT_CATALOG.map(a => this.settings.get().agents.agents[a.id].accountId));
+		let usageAccounts = JSON.stringify(AGENT_CATALOG.map((a) => this.settings.get().agents.agents[a.id].accountId));
 		context.lifetime.register(
 			this.settings.subscribe(() => {
 				this.usage.setPinned(false);
 				this.syncUsageScope();
-    const accounts = JSON.stringify(AGENT_CATALOG.map(a => this.settings.get().agents.agents[a.id].accountId));
-    this.usage.invalidate(accounts !== usageAccounts); usageAccounts = accounts;
-    if(this.lastHooks && !this.settings.get().statusHooks) {
-     this.sessions.clearStatusHooks();
-     // A managed account's hooks live inside the vault and go with the setting. A live automation keeps its own.
-     // The system account's entries are shared with every vault and stay until the user removes them explicitly.
-     void Promise.all(AGENT_CATALOG.filter(agent => !this.sessions.list().some(session => session.automated && session.running && session.agentId === agent.id)).map(agent => this.removeAgentHooks(agent.id))).catch(report);
-    }
-    this.lastHooks=this.settings.get().statusHooks;
+				const accounts = JSON.stringify(
+					AGENT_CATALOG.map((a) => this.settings.get().agents.agents[a.id].accountId),
+				);
+				this.usage.invalidate(accounts !== usageAccounts);
+				usageAccounts = accounts;
+				if (this.lastHooks && !this.settings.get().statusHooks) {
+					this.sessions.clearStatusHooks();
+					// A managed account's hooks live inside the vault and go with the setting. A live automation keeps its own.
+					// The system account's entries are shared with every vault and stay until the user removes them explicitly.
+					void Promise.all(
+						AGENT_CATALOG.filter(
+							(agent) =>
+								!this.sessions
+									.list()
+									.some(
+										(session) =>
+											session.automated && session.running && session.agentId === agent.id,
+									),
+						).map((agent) => this.removeAgentHooks(agent.id)),
+					).catch(report);
+				}
+				this.lastHooks = this.settings.get().statusHooks;
 				for (const session of this.sessions.list()) session.setScrollback(this.settings.get().scrollback);
 				this.changed();
 			}),
@@ -296,8 +353,13 @@ export class AgentController {
 
 	/** Remove the status-hook entries of every managed account of one agent. */
 	private async removeAgentHooks(id: AgentId): Promise<void> {
-		const agent = getAgent(id), vault = this.vaultPath() ?? '', device = deviceId(this.app);
-		for (const name of new Set([this.settings.get().agents.agents[id].accountId, ...(this.settings.get().accounts[id] ?? [])]))
+		const agent = getAgent(id),
+			vault = this.vaultPath() ?? '',
+			device = deviceId(this.app);
+		for (const name of new Set([
+			this.settings.get().agents.agents[id].accountId,
+			...(this.settings.get().accounts[id] ?? []),
+		]))
 			if (name !== '') await removeStatusHooks(id, await accountEnv(agent, name, vault, device));
 	}
 
@@ -307,33 +369,48 @@ export class AgentController {
 	 */
 	async removeSystemStatusHooks(): Promise<SystemHookResult> {
 		const { removeSystemHooks, removeSystemScripts } = await import('../platform/desktop/hooks/system-hooks');
-		const env = { home: userHome(), platform: (Platform.isWin ? 'win32' : Platform.isMacOS ? 'darwin' : 'linux') as NodeJS.Platform };
+		const env = {
+			home: userHome(),
+			platform: (Platform.isWin ? 'win32' : Platform.isMacOS ? 'darwin' : 'linux') as NodeJS.Platform,
+		};
 		const result: SystemHookResult = await removeSystemHooks(systemAccountPaths(), env);
 		if (!result.skipped.length) {
 			const scripts = await removeSystemScripts(env);
-			result.changed.push(...scripts.changed); result.skipped.push(...scripts.skipped);
+			result.changed.push(...scripts.changed);
+			result.skipped.push(...scripts.skipped);
 		}
-		new Notice(result.skipped.length ? t('agent.hooks.systemSkipped', { files: result.skipped.map(row => `${row.file} (${row.reason})`).join(', ') }) : t('agent.hooks.systemRemoved', { count: result.changed.length }), 8000);
+		new Notice(
+			result.skipped.length
+				? t('agent.hooks.systemSkipped', {
+						files: result.skipped.map((row) => `${row.file} (${row.reason})`).join(', '),
+					})
+				: t('agent.hooks.systemRemoved', { count: result.changed.length }),
+			8000,
+		);
 		return result;
 	}
 
 	/** The vault's former default account becomes a named managed account; the empty name now selects the system account. */
 	private async adoptLegacyDefaultAccounts(): Promise<void> {
-		const vault = this.vaultPath(), device = deviceId(this.app);
+		const vault = this.vaultPath(),
+			device = deviceId(this.app);
 		if (!vault || !Platform.isDesktop) return;
 		const agents = await legacyDefaultAccountsToAdopt(vault, device);
-		if (agents.length) await this.settings.update(draft => {
-			for (const id of agents) {
-				draft.accounts[id] = [...new Set([...(draft.accounts[id] ?? []), LEGACY_VAULT_ACCOUNT])];
-				(draft.accountLabels[id] ??= {})[LEGACY_VAULT_ACCOUNT] ??= t('agent.manage.legacyVaultAccount');
-			}
-		});
+		if (agents.length)
+			await this.settings.update((draft) => {
+				for (const id of agents) {
+					draft.accounts[id] = [...new Set([...(draft.accounts[id] ?? []), LEGACY_VAULT_ACCOUNT])];
+					(draft.accountLabels[id] ??= {})[LEGACY_VAULT_ACCOUNT] ??= t('agent.manage.legacyVaultAccount');
+				}
+			});
 		await markLegacyDefaultAdopted(vault, device);
 	}
 
- agentSettings() { return launchSettings(this.settings.get(), this.agents.store.getState().detected); }
+	agentSettings() {
+		return launchSettings(this.settings.get(), this.agents.store.getState().detected);
+	}
 
- get app(): App {
+	get app(): App {
 		return this.context.app;
 	}
 
@@ -356,11 +433,32 @@ export class AgentController {
 		return absolutePluginDir(this.vaultPath() ?? '', this.context.manifest.dir ?? '');
 	}
 
-	configureBrowser() { return this.context.shell.open({feature:'settings',section:'browser'}); }
-	browserHost() { return this.context.services.peek(BROWSER_HOST); }
+	configureBrowser() {
+		return this.context.shell.open({ feature: 'settings', section: 'browser' });
+	}
+	browserWorkspace() {
+		return this.context.services.peek(BROWSER_WORKSPACE);
+	}
+	browserOpener() {
+		return this.context.services.peek(BROWSER_OPEN);
+	}
+	browserPage(target: { spaceId: string; pageId: string }) {
+		return this.browserWorkspace()
+			?.getState()
+			.spaces.find((space) => space.id === target.spaceId)
+			?.pages.find((page) => page.id === target.pageId);
+	}
+	openBrowserWorkspace(target?: { spaceId: string; pageId: string }) {
+		return this.context.shell.open({ feature: 'browser', resourceId: target?.spaceId, focusId: target?.pageId });
+	}
 	history(): NativeHistory {
 		if (!this.historyService) {
-			this.historyService = new NativeHistory(this.app, this.sessions, () => this.agentSettings(), () => this.settings.get().accounts);
+			this.historyService = new NativeHistory(
+				this.app,
+				this.sessions,
+				() => this.agentSettings(),
+				() => this.settings.get().accounts,
+			);
 			this.context.lifetime.register(this.historyService.subscribe(() => this.changed()));
 		}
 		return this.historyService;
@@ -555,7 +653,10 @@ export class AgentController {
 
 	/** Agents require input readiness; plain shells retain the existing five-second fallback. */
 	private async typeWhenReady(session: TerminalSession, text: string): Promise<void> {
-		if (!await submitInteractivePrompt(session, text, this.app.workspace.containerEl.win, !!session.agentId) && session.running)
+		if (
+			!(await submitInteractivePrompt(session, text, this.app.workspace.containerEl.win, !!session.agentId)) &&
+			session.running
+		)
 			report(t('agent.quick.notReady'));
 	}
 
@@ -589,57 +690,99 @@ export class AgentController {
 		await this.open();
 	}
 
- async runQuickCommand(command: QuickCommand, groupId?: string): Promise<void> {
-  const cwd = sessionDirectory(this.vaultPath(), true, command.cwd);
-  if (command.type === 'agent') {
-   const agentId = command.agentId ?? this.agents.list()[0]?.id;
-   if (!agentId) return;
-   const id = await this.workspace.newAgent(agentId, { cwd, groupId });
-   const session = id ? this.sessions.get(id) : undefined;
-   if (!session) return;
-   await this.typeWhenReady(session, command.content);
-  } else {
-   const id = await this.workspace.newTerminal({ cwd, groupId });
-   const session = id ? this.sessions.get(id) : undefined;
-   if (session) await this.typeWhenReady(session, command.content);
-  }
-  await this.settings.update(draft => { draft.lastQuickCommand = command.id; });
- }
+	async runQuickCommand(command: QuickCommand, groupId?: string): Promise<void> {
+		const cwd = sessionDirectory(this.vaultPath(), true, command.cwd);
+		if (command.type === 'agent') {
+			const agentId = command.agentId ?? this.agents.list()[0]?.id;
+			if (!agentId) return;
+			const id = await this.workspace.newAgent(agentId, { cwd, groupId });
+			const session = id ? this.sessions.get(id) : undefined;
+			if (!session) return;
+			await this.typeWhenReady(session, command.content);
+		} else {
+			const id = await this.workspace.newTerminal({ cwd, groupId });
+			const session = id ? this.sessions.get(id) : undefined;
+			if (session) await this.typeWhenReady(session, command.content);
+		}
+		await this.settings.update((draft) => {
+			draft.lastQuickCommand = command.id;
+		});
+	}
 
- async addAccount(id: AgentId, name: string) {
-  if (!name.trim() || name === LEGACY_VAULT_ACCOUNT) throw new Error(t('agent.accountInvalid'));
-  await accountEnv(getAgent(id), name, this.vaultPath() ?? '', deviceId(this.app));
-  await this.settings.update(d => { d.accounts[id] = [...new Set([...(d.accounts[id] ?? []), name])]; });
- }
- /** Where the system account's login lives for this provider, home-relative where possible. */
- systemAccountLocation(id: AgentId): string { return systemAccountLocation(id, userHome()); }
- async selectAccount(id: AgentId, name: string) {
-  await this.settings.update(d => { d.agents.agents[id].accountId = name; });
-  void this.historyStore.refresh();
- }
- async removeAccount(id: AgentId, name: string) {
-  if (!await this.confirm(t('agent.manage.removeAccount', { name }))) return;
-  await this.settings.update(d => { d.accounts[id] = (d.accounts[id] ?? []).filter(n => n !== name); if (d.agents.agents[id].accountId === name) d.agents.agents[id].accountId = ''; });
- }
+	async addAccount(id: AgentId, name: string) {
+		if (!name.trim() || name === LEGACY_VAULT_ACCOUNT) throw new Error(t('agent.accountInvalid'));
+		await accountEnv(getAgent(id), name, this.vaultPath() ?? '', deviceId(this.app));
+		await this.settings.update((d) => {
+			d.accounts[id] = [...new Set([...(d.accounts[id] ?? []), name])];
+		});
+	}
+	/** Where the system account's login lives for this provider, home-relative where possible. */
+	systemAccountLocation(id: AgentId): string {
+		return systemAccountLocation(id, userHome());
+	}
+	async selectAccount(id: AgentId, name: string) {
+		await this.settings.update((d) => {
+			d.agents.agents[id].accountId = name;
+		});
+		void this.historyStore.refresh();
+	}
+	async removeAccount(id: AgentId, name: string) {
+		if (!(await this.confirm(t('agent.manage.removeAccount', { name })))) return;
+		await this.settings.update((d) => {
+			d.accounts[id] = (d.accounts[id] ?? []).filter((n) => n !== name);
+			if (d.agents.agents[id].accountId === name) d.agents.agents[id].accountId = '';
+		});
+	}
 
- async resumeCommand(row: NativeSessionSummary): Promise<string> {
-  const id = row.agentId as AgentId, settings = this.agentSettings();
-  const vault = this.vaultPath() ?? '', cwd = await canonicalVaultCwd(vault, row.cwd);
-  const saved: unknown = JSON.parse(row.accountKey);
-  if (!saved || typeof saved !== 'object' || Array.isArray(saved) || Object.values(saved).some(value => typeof value !== 'string')) throw new Error(t('agent.accountScopeMismatch'));
-  const { env, transcriptPath } = await restoredAccountReference(getAgent(id), saved as Record<string,string>, vault, deviceId(this.app), row.transcriptPath);
-  await checkAccountTranscript(vault, env, transcriptPath);
-  return formatResumeCommand({file:settings.agents[id].cliPath || getAgent(id).detectCommand, args:resumeArgs(id, id === 'pi' ? transcriptPath! : row.sessionId, accountArgs(id,launchArgs(settings,id),env)), env:{...settings.agents[id].env,...env}, cwd}, Platform.isWin);
- }
- async openHistoryPath(row: NativeSessionSummary, kind: 'log' | 'reveal' | 'cwd') {
-  if(kind==='reveal') await revealPath(row.transcriptPath); else await openPath(kind==='cwd'?row.cwd:row.transcriptPath);
- }
- async resumeAt(row: NativeSessionSummary, groupId?: string, split?: 'right' | 'down') {
-  const before = new Set(Object.keys(this.workspace.store.getState().tabs));
-  await this.resume(row);
-  const tab = Object.values(this.workspace.store.getState().tabs).find(tab=>!before.has(tab.id));
-  if(tab && groupId) this.workspace.move(tab.id,split?{split,ofGroupId:groupId}:{groupId,index:Number.MAX_SAFE_INTEGER});
- }
+	async resumeCommand(row: NativeSessionSummary): Promise<string> {
+		const id = row.agentId as AgentId,
+			settings = this.agentSettings();
+		const vault = this.vaultPath() ?? '',
+			cwd = await canonicalVaultCwd(vault, row.cwd);
+		const saved: unknown = JSON.parse(row.accountKey);
+		if (
+			!saved ||
+			typeof saved !== 'object' ||
+			Array.isArray(saved) ||
+			Object.values(saved).some((value) => typeof value !== 'string')
+		)
+			throw new Error(t('agent.accountScopeMismatch'));
+		const { env, transcriptPath } = await restoredAccountReference(
+			getAgent(id),
+			saved as Record<string, string>,
+			vault,
+			deviceId(this.app),
+			row.transcriptPath,
+		);
+		await checkAccountTranscript(vault, env, transcriptPath);
+		return formatResumeCommand(
+			{
+				file: settings.agents[id].cliPath || getAgent(id).detectCommand,
+				args: resumeArgs(
+					id,
+					id === 'pi' ? transcriptPath! : row.sessionId,
+					accountArgs(id, launchArgs(settings, id), env),
+				),
+				env: { ...settings.agents[id].env, ...env },
+				cwd,
+			},
+			Platform.isWin,
+		);
+	}
+	async openHistoryPath(row: NativeSessionSummary, kind: 'log' | 'reveal' | 'cwd') {
+		if (kind === 'reveal') await revealPath(row.transcriptPath);
+		else await openPath(kind === 'cwd' ? row.cwd : row.transcriptPath);
+	}
+	async resumeAt(row: NativeSessionSummary, groupId?: string, split?: 'right' | 'down') {
+		const before = new Set(Object.keys(this.workspace.store.getState().tabs));
+		await this.resume(row);
+		const tab = Object.values(this.workspace.store.getState().tabs).find((tab) => !before.has(tab.id));
+		if (tab && groupId)
+			this.workspace.move(
+				tab.id,
+				split ? { split, ofGroupId: groupId } : { groupId, index: Number.MAX_SAFE_INTEGER },
+			);
+	}
 
 	/** Resume a conversation from native history in its CLI. */
 	async resume(row: NativeSessionSummary): Promise<void> {
@@ -695,7 +838,12 @@ export class AgentController {
 		if (!vault) throw new Error(t('agent.vaultMissing'));
 		let accountId = info.accountId ?? '';
 		// A session saved while the vault default account existed resumes in that directory.
-		if (accountId === '' && info.transcriptPath && await inLegacyDefaultAccount(vault, deviceId(this.app), info.agentId, info.transcriptPath)) accountId = LEGACY_VAULT_ACCOUNT;
+		if (
+			accountId === '' &&
+			info.transcriptPath &&
+			(await inLegacyDefaultAccount(vault, deviceId(this.app), info.agentId, info.transcriptPath))
+		)
+			accountId = LEGACY_VAULT_ACCOUNT;
 		const env = await accountEnv(getAgent(info.agentId), accountId, vault, deviceId(this.app), false);
 		let transcriptPath = info.transcriptPath;
 		if (!transcriptPath) {
@@ -710,7 +858,11 @@ export class AgentController {
 		let result: TerminalSession | undefined;
 		await resumeAgent(
 			this.captureLaunchHost(async (request) => {
-				result = await this.sessions.create({ ...request, kind: 'agent', hooks: this.settings.get().statusHooks });
+				result = await this.sessions.create({
+					...request,
+					kind: 'agent',
+					hooks: this.settings.get().statusHooks,
+				});
 			}),
 			{
 				agentId: info.agentId,
@@ -773,7 +925,7 @@ export class AgentController {
 						if (action === 'newAgent') {
 							const agent = this.agents.list()[0];
 							if (agent) await this.workspace.newAgent(agent.id);
-						} else if (action === 'newBrowser') this.workspace.newBrowser();
+						} else if (action === 'newBrowser') await this.workspace.newBrowser();
 						else if (action === 'newMenu') this.workspace.requestMenu();
 						else if (action === 'close' && tab && !tab.pinned) await this.closeTab(tab.id);
 						else if (action === 'reopen') this.workspace.reopen();
@@ -792,8 +944,27 @@ export class AgentController {
 				},
 			});
 		}
-  for (const [id, section, nameKey] of [['agent-board','board','agent.workspace.nav.board'],['agent-history','history','agent.history'],['agent-jump','jump','agent.jump.title']] as const) add({id,name:t(nameKey),nameKey,callback:()=>{void this.open({feature:'terminal',section});}});
-  add({id:'agent-refresh-usage',name:t('shell.refreshUsage'),nameKey:'shell.refreshUsage',callback:()=>{void this.usageStore.refresh().catch(report);}});
+		for (const [id, section, nameKey] of [
+			['agent-board', 'board', 'agent.workspace.nav.board'],
+			['agent-history', 'history', 'agent.history'],
+			['agent-jump', 'jump', 'agent.jump.title'],
+		] as const)
+			add({
+				id,
+				name: t(nameKey),
+				nameKey,
+				callback: () => {
+					void this.open({ feature: 'terminal', section });
+				},
+			});
+		add({
+			id: 'agent-refresh-usage',
+			name: t('shell.refreshUsage'),
+			nameKey: 'shell.refreshUsage',
+			callback: () => {
+				void this.usageStore.refresh().catch(report);
+			},
+		});
 		add({
 			id: 'terminal-new',
 			name: t('agent.cmd.newShell'),
@@ -917,11 +1088,11 @@ export class AgentController {
 
 	async dispose(): Promise<void> {
 		this.agents.dispose();
-  this.usageStore.dispose();
-  this.historyStore.dispose();
-  this.workspaceUsage.dispose();
-  this.workspaceHistoryStore.dispose();
-  await this.stats.dispose();
+		this.usageStore.dispose();
+		this.historyStore.dispose();
+		this.workspaceUsage.dispose();
+		this.workspaceHistoryStore.dispose();
+		await this.stats.dispose();
 		await this.workspace.dispose();
 		this.materials.dispose();
 		await this.prompts.dispose();
@@ -931,7 +1102,7 @@ export class AgentController {
 		this.sessions.dispose();
 		this.listeners.clear();
 		await this.historyService?.dispose();
-  await this.workspaceHistory?.dispose();
+		await this.workspaceHistory?.dispose();
 	}
 }
 

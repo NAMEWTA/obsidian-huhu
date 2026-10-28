@@ -21,9 +21,10 @@ import { dashboardSaveStatuses } from './status-policy';
 import { focusLeafState } from './focus-state';
 import { NOTIFICATION_INBOX } from '../../modules/notifications/api';
 import { AGENT_WORKBENCH, AGENT_USAGE } from '../../modules/agent/api';
+import { BROWSER_WORKSPACE } from '../../modules/browser/api';
 import { HOME_WORKBENCH } from '../../modules/home/api';
 import { AUTOMATIONS } from '../../modules/automations/api';
-import { SYNC_WORKBENCH } from '../../modules/sync/api';
+import { VERSIONING_WORKBENCH } from '../../modules/versioning/api';
 import { ARCHIVES_WORKBENCH } from '../../modules/archives/api';
 
 export function composeWorkbench(plugin: DashboardPlugin) {
@@ -160,6 +161,25 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			create: modulePage('agent', 'terminal'),
 		},
 		{
+			id: 'browser',
+			chrome: 'standard',
+			rail: { slot: 'top' },
+			navigation: { id: 'browser', labelKey: 'workbench.browser', icon: 'globe', target: { feature: 'browser' } },
+			title: (target) =>
+				plugin.services
+					.peek(BROWSER_WORKSPACE)
+					?.getState()
+					.spaces.find((space) => space.id === target.resourceId)?.label,
+			availability: () => ({
+				...ready(),
+				enabled: plugin.moduleEnabled('browser'),
+				supported: Platform.isDesktopApp,
+				ready: !!plugin.services.peek(BROWSER_WORKSPACE),
+			}),
+			stateKeys: ['spaceId', 'pageId'],
+			create: modulePage('browser', 'browser'),
+		},
+		{
 			id: 'automations',
 			chrome: 'none',
 			statusSegments: automationSegments,
@@ -243,27 +263,23 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			create: modulePage('safe', 'safe'),
 		},
 		{
-			id: 'sync',
-			statusSegments: () =>
-				(plugin.services.peek(SYNC_WORKBENCH)?.status() ?? []).map((row) => ({
-					id: `sync:${row.id}`,
-					icon: 'git-branch',
-					label: row.label,
-					tone: row.kind === 'error' ? 'error' : 'neutral',
-					target: { feature: 'sync', section: row.section },
-					order: 50,
-				})),
+			id: 'versioning',
+			statusSegments: () => (plugin.services.peek(VERSIONING_WORKBENCH)?.status() ?? []).map(row => ({ id: `sync:${row.id}`, icon: 'git-branch', label: row.label, tone: row.kind === 'error' ? 'error' : 'neutral', target: { feature: 'versioning', section: row.section }, order: 50 })),
 			rail: { slot: 'top' },
-			navigation: { id: 'sync', labelKey: 'workbench.sync', icon: 'git-branch', target: { feature: 'sync' } },
-			title: (target) => plugin.services.peek(SYNC_WORKBENCH)?.title(target),
-			availability: () => ({
-				...ready(),
-				enabled: plugin.moduleEnabled('sync'),
-				supported: Platform.isDesktopApp,
-				ready: plugin.moduleState('sync') === 'active',
-			}),
-			stateKeys: ['message'],
-			create: modulePage('sync', 'sync'),
+			navigation: { id: 'versioning', labelKey: 'workbench.sync', icon: 'git-branch', target: { feature: 'versioning' } },
+			title: (target) => plugin.services.peek(VERSIONING_WORKBENCH)?.title(target),
+			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('versioning'), supported: Platform.isDesktopApp, ready: plugin.moduleState('versioning') === 'active' }),
+			stateKeys: ['message', 'mode'],
+			create: modulePage('versioning', 'versioning'),
+		},
+		{
+			id: 'revision-review',
+			chrome: 'none',
+			railParent: 'versioning',
+			navigation: { id: 'revision-review', labelKey: 'workbench.revisionReview', icon: 'history' },
+			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('versioning'), supported: Platform.isDesktopApp, ready: plugin.moduleState('versioning') === 'active' }),
+			stateKeys: ['layout'],
+			create: modulePage('versioning', 'revision-review'),
 		},
 		{
 			id: 'icons',
@@ -504,11 +520,13 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 				dashboard: 'dashboard',
 				task: 'general',
 				terminal: 'terminal',
+				browser: 'browser',
 				contacts: 'contacts',
 				automations: 'automation',
 				notifications: 'general',
 				icons: 'iconic',
-				sync: 'sync',
+				versioning: 'versioning',
+				'revision-review': 'versioning',
 				safe: 'general',
 				content: 'general',
 				settings: 'general',
@@ -533,11 +551,17 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 
 	/** Workbench services for modules (`ShellAccess`). */
 	// The page keeps its identity (a module opening a new page in a tab waits for that page id).
-	const openFocus = async (
-		target: WorkbenchTarget,
-		state: Record<string, unknown>,
-		ownerWindow?: Window,
-	): Promise<void> => {
+	const openFocus = async (target: WorkbenchTarget, state: Record<string, unknown>, ownerWindow?: Window): Promise<void> => {
+		if (target.feature === 'revision-review' && target.resourceId) {
+			for (const kept of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) {
+				if (ownerWindow && kept.view.containerEl.win !== ownerWindow) continue;
+				if (kept.view instanceof WorkbenchView && kept.view.focusMode && kept.view.getSavedPages('revision-review').some(page => page.target.resourceId === target.resourceId)) {
+					await kept.view.navigate(target, state);
+					await plugin.app.workspace.revealLeaf(kept);
+					return;
+				}
+			}
+		}
 		activateWindowLeaf(ownerWindow);
 		const leaf = plugin.app.workspace.getLeaf('tab');
 		await leaf.setViewState({
@@ -641,8 +665,8 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			window.clearTimeout(contentTimer);
 		});
 	// Git status and runs refresh the sync panel and statuses while that module is active.
-	let offSync = plugin.services.peek(SYNC_WORKBENCH)?.subscribe(() => refresh());
-	const offSyncWatch = plugin.services.watch(SYNC_WORKBENCH, (sync) => {
+	let offSync = plugin.services.peek(VERSIONING_WORKBENCH)?.subscribe(() => refresh());
+	const offSyncWatch = plugin.services.watch(VERSIONING_WORKBENCH, (sync) => {
 		offSync?.();
 		offSync = sync?.subscribe(() => refresh());
 		refresh();
@@ -650,6 +674,16 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 	plugin.register(() => {
 		offSync?.();
 		offSyncWatch();
+	});
+	let offBrowser = plugin.services.peek(BROWSER_WORKSPACE)?.subscribe(() => refresh());
+	const offBrowserWatch = plugin.services.watch(BROWSER_WORKSPACE, (browser) => {
+		offBrowser?.();
+		offBrowser = browser?.subscribe(() => refresh());
+		refresh();
+	});
+	plugin.register(() => {
+		offBrowser?.();
+		offBrowserWatch();
 	});
 	// Agent sessions, history and usage refresh the agent panel and statuses while that module is active.
 	let offAgent = plugin.services.peek(AGENT_WORKBENCH)?.subscribe(() => refresh());

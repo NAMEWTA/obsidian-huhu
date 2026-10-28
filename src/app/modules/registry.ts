@@ -75,7 +75,9 @@ export class ModuleRegistry {
 	readonly contributionAccess: ContributionAccess = {
 		collect: async <T>(point: ContributionPoint<T>, options?: { activate?: boolean }) => {
 			if (options?.activate) {
-				const owners = [...this.entries.values()].filter((entry) => entry.manifest.contributes?.some((item) => key(item) === key(point)));
+				const owners = [...this.entries.values()].filter((entry) =>
+					entry.manifest.contributes?.some((item) => key(item) === key(point)),
+				);
 				await Promise.all(owners.map((entry) => this.activate(entry.manifest.id)));
 			}
 			const values = this.contributions.get(key(point)) ?? new Map<ModuleId, unknown>();
@@ -139,7 +141,7 @@ export class ModuleRegistry {
 				const id = entry.manifest.id;
 				if (this.host.enabled(id) && this.supported(id)) continue;
 				await this.deactivate(id, 'disabled');
-				this.setState(entry, this.supported(id) ? 'off' : 'unsupported');
+				if (!entry.instance) this.setState(entry, this.supported(id) ? 'off' : 'unsupported');
 			}
 			for (const entry of entries) {
 				const id = entry.manifest.id;
@@ -163,6 +165,20 @@ export class ModuleRegistry {
 		const run = this.transition(entry, async () => {
 			if (entry.state === 'active') return true;
 			if (!this.host.enabled(id) || !this.supported(id) || this.disposed) return false;
+			if (entry.instance) {
+				try {
+					await entry.instance.dispose('disabled');
+				} catch (error) {
+					entry.error = error;
+					this.setState(entry, 'failed');
+					this.host.report(id, 'dispose', error);
+					return false;
+				}
+				if (entry.context) this.host.releaseContext(entry.context);
+				entry.instance = undefined;
+				entry.context = undefined;
+				entry.controller = undefined;
+			}
 			this.setState(entry, 'loading');
 			const controller = new AbortController();
 			const context = this.host.createContext(entry.manifest, this.services, this.contributionAccess);
@@ -176,9 +192,14 @@ export class ModuleRegistry {
 				try {
 					await instance?.dispose('disabled');
 				} catch {
-					// The original activation error is what is reported.
+					if (instance?.retainOnDisposeFailure) {
+						entry.instance = instance;
+						entry.context = context;
+						entry.controller = controller;
+						controller.abort();
+					}
 				}
-				this.host.releaseContext(context);
+				if (!entry.instance) this.host.releaseContext(context);
 				this.setState(entry, 'failed');
 				this.host.report(id, 'activate', error);
 				return false;
@@ -215,7 +236,13 @@ export class ModuleRegistry {
 		this.disposed = true;
 		for (const entry of [...this.entries.values()].reverse()) {
 			const id = entry.manifest.id;
-			if (entry.state !== 'active' || !entry.instance) continue;
+			if ((entry.state !== 'active' && entry.state !== 'failed') || !entry.instance) continue;
+			if (entry.instance.retainOnDisposeFailure) {
+				entry.controller?.abort();
+				this.withdraw(id);
+				void this.deactivate(id, 'unload');
+				continue;
+			}
 			entry.controller?.abort();
 			this.withdraw(id);
 			try {
@@ -237,11 +264,11 @@ export class ModuleRegistry {
 		const entry = this.entries.get(id);
 		if (!entry) return Promise.resolve();
 		return this.transition(entry, async () => {
-			if (entry.state === 'failed') {
+			if (entry.state === 'failed' && !entry.instance) {
 				entry.error = undefined;
 				return;
 			}
-			if (entry.state !== 'active' || !entry.instance) return;
+			if (!entry.instance || (entry.state !== 'active' && entry.state !== 'failed')) return;
 			const { instance, context, controller } = entry;
 			this.setState(entry, 'disposing');
 			controller?.abort();
@@ -250,6 +277,11 @@ export class ModuleRegistry {
 				await instance.dispose(reason);
 			} catch (error) {
 				this.host.report(id, 'dispose', error);
+				if (instance.retainOnDisposeFailure) {
+					entry.error = error;
+					this.setState(entry, 'failed');
+					return;
+				}
 			}
 			if (context) this.host.releaseContext(context);
 			entry.instance = undefined;
@@ -261,7 +293,10 @@ export class ModuleRegistry {
 
 	private transition<T>(entry: Entry, step: () => Promise<T>): Promise<T> {
 		const run = entry.tail.then(step);
-		entry.tail = run.then(() => undefined, () => undefined);
+		entry.tail = run.then(
+			() => undefined,
+			() => undefined,
+		);
 		return run;
 	}
 

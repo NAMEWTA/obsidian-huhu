@@ -1,0 +1,265 @@
+{
+  "realObsidian": "1.13.7",
+  "environment": {
+    "obsidian": "1.13.7",
+    "platform": "linux",
+    "versions": {
+      "node": "24.18.1",
+      "acorn": "8.16.0",
+      "ada": "3.4.4",
+      "amaro": "1.1.9",
+      "ares": "1.34.6",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "148",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.69.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "0.0.0",
+      "simdjson": "4.6.4",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.1",
+      "tz": "2025c",
+      "undici": "7.29.0",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "15.0.245.23-electron.0",
+      "zlib": "1.3.2.1-motley",
+      "zstd": "1.6.0",
+      "electron": "43.3.0",
+      "chrome": "150.0.7871.212"
+    }
+  },
+  "passed": true,
+  "rows": [
+    {
+      "name": "native-comment-created",
+      "passed": true
+    },
+    {
+      "name": "preview-keeps-native-source-and-disk",
+      "passed": true
+    },
+    {
+      "name": "preview-never-replaces-source-markdown-view",
+      "passed": true
+    },
+    {
+      "name": "preview-does-not-change-git",
+      "passed": true
+    },
+    {
+      "name": "readonly-diff-has-no-comment-extension",
+      "passed": true
+    },
+    {
+      "name": "real-host-both-comparison-layouts",
+      "passed": true
+    },
+    {
+      "name": "native-restore-dialog-cancel-is-readonly",
+      "passed": true
+    },
+    {
+      "name": "native-dialog-confirm-and-undo-complete",
+      "passed": true
+    },
+    {
+      "name": "restore-preserves-draft-and-current-disk-checkpoint",
+      "passed": true,
+      "details": {
+        "dirty": true,
+        "draft": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+        "before": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+        "beforeDisk": "# Note\n\ncurrent top\nTARGET\ncurrent bottom\n",
+        "body": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "stage": "verified",
+        "hold": "bfd31cbf-6de4-4898-b3f4-8f22e517ab5f",
+        "autosaveCompleted": false
+      }
+    },
+    {
+      "name": "restore-verifies-native-save",
+      "passed": true,
+      "details": {
+        "dirty": true,
+        "draft": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+        "before": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+        "beforeDisk": "# Note\n\ncurrent top\nTARGET\ncurrent bottom\n",
+        "body": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "stage": "verified",
+        "hold": "bfd31cbf-6de4-4898-b3f4-8f22e517ab5f"
+      }
+    },
+    {
+      "name": "restore-preserves-comment-text-and-anchor",
+      "passed": true,
+      "details": {
+        "id": "c-mvozj7dy-6xnoj0ra",
+        "status": "open",
+        "kind": "range",
+        "anchor": {
+          "text": "TARGET",
+          "textHash": "e2f64cf4fcac09bf",
+          "kind": "range",
+          "before": "# Note\n\nhistorical top\n",
+          "after": "\nhistorical bottom\n",
+          "lineHint": 4,
+          "start": 23,
+          "end": 29
+        },
+        "messages": [
+          {
+            "id": "m-mvozj7dy-lgzl4yq7",
+            "createdAt": "2026-10-26T08:18:53.350Z",
+            "author": "",
+            "text": "Preserve this comment"
+          }
+        ],
+        "createdAt": "2026-10-26T08:18:53.350Z",
+        "updatedAt": "2026-10-26T08:18:56.309Z"
+      }
+    },
+    {
+      "name": "undo-restores-previous-unsaved-content",
+      "passed": true,
+      "details": {
+        "stage": "verified",
+        "body": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n",
+        "disk": "# Note\n\nUNSAVED current top\nTARGET\ncurrent bottom\n"
+      }
+    },
+    {
+      "name": "restore-verifies-multiple-native-leaves",
+      "passed": true,
+      "details": {
+        "stage": "verified",
+        "first": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "second": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "disk": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n"
+      }
+    },
+    {
+      "name": "other-native-leaf-change-after-plan-blocks-restore",
+      "passed": true,
+      "details": {
+        "blocked": true,
+        "message": "versioning.restore.changed",
+        "first": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n",
+        "second": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n"
+      }
+    },
+    {
+      "name": "restores-preserve-head-and-staged-index",
+      "passed": true
+    },
+    {
+      "name": "copy-and-undo-use-native-vault-apis",
+      "passed": true,
+      "details": {
+        "copied": "# Note\n\nhistorical top\nTARGET\nhistorical bottom\n",
+        "stage": "verified",
+        "removed": true,
+        "source": "# Note\n\nNEW DRAFT historical top\nTARGET\nhistorical bottom\n"
+      }
+    },
+    {
+      "name": "durable-private-checkpoints-written",
+      "passed": true,
+      "details": [
+        "19a629e9-85aa-42f2-a4fc-f117c78d5816"
+      ]
+    },
+    {
+      "name": "large-diff-runs-real-browser-worker",
+      "passed": true,
+      "details": {
+        "characters": 238890,
+        "workers": 1
+      }
+    },
+    {
+      "name": "restart-preserves-sync-hold-and-private-receipts",
+      "passed": true,
+      "details": {
+        "before": {
+          "hold": "4d75413d-4db7-4ea0-879b-3d5c31d00178",
+          "receipts": 7,
+          "panelTab": "history",
+          "reviewId": "91a816b4-bac2-42f1-bba0-9c0f1195a17b"
+        },
+        "after": {
+          "hold": "4d75413d-4db7-4ea0-879b-3d5c31d00178",
+          "receipts": 7,
+          "panelTab": "history",
+          "expired": true,
+          "hasOldBody": false
+        }
+      }
+    },
+    {
+      "name": "restart-persists-selected-history-panel",
+      "passed": true,
+      "details": {
+        "before": "history",
+        "after": "history"
+      }
+    },
+    {
+      "name": "restart-expires-temporary-comparison-without-old-body",
+      "passed": true,
+      "details": {
+        "hold": "4d75413d-4db7-4ea0-879b-3d5c31d00178",
+        "receipts": 7,
+        "panelTab": "history",
+        "expired": true,
+        "hasOldBody": false
+      }
+    },
+    {
+      "name": "popout-history-panel-keeps-window-source",
+      "passed": true,
+      "details": {
+        "popout": true,
+        "source": "Other.md",
+        "main": "Long.md",
+        "panelTab": "history"
+      }
+    },
+    {
+      "name": "popout-history-comparison-keeps-window-source",
+      "passed": true
+    },
+    {
+      "name": "explicit-review-releases-sync-hold-without-note-or-git-write",
+      "passed": true
+    },
+    {
+      "name": "no-unhandled-host-errors",
+      "passed": true,
+      "details": [
+        {
+          "session": "before-restart",
+          "errors": []
+        },
+        {
+          "session": "after-restart",
+          "errors": []
+        },
+        {
+          "session": "popout",
+          "errors": []
+        }
+      ]
+    }
+  ]
+}

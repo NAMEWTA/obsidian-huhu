@@ -82,12 +82,22 @@ export function openPage(
 	if (existing) {
 		const resourced = request.page === 'usage' && request.resourceId !== undefined;
 		const next: PageTabData = { ...existing, ...(resourced ? { resourceId: request.resourceId } : {}) };
-		const base = JSON.stringify(next) === JSON.stringify(existing) ? state : { ...state, tabs: { ...state.tabs, [existing.id]: next } };
+		const base =
+			JSON.stringify(next) === JSON.stringify(existing)
+				? state
+				: { ...state, tabs: { ...state.tabs, [existing.id]: next } };
 		return { state: activateTab(base, existing.id), tabId: existing.id };
 	}
 	const id = pageTabId(request.page);
 	if (state.tabs[id]) return undefined;
-	const tab: PageTabData = { kind: 'page', id, page: request.page, title: '', resourceId: request.resourceId, createdAt: request.createdAt };
+	const tab: PageTabData = {
+		kind: 'page',
+		id,
+		page: request.page,
+		title: '',
+		resourceId: request.resourceId,
+		createdAt: request.createdAt,
+	};
 	return { state: openTab(state, groupId, tab), tabId: id };
 }
 function prune(node: GroupLayoutNode | undefined, ids: Set<string>): GroupLayoutNode | undefined {
@@ -286,16 +296,14 @@ export function normalizeWorkspace(raw: unknown): WorkspaceState {
 			continue;
 		}
 		if (tab.kind === 'browser') {
+			const spaceId = text(tab.spaceId),
+				pageId = text(tab.pageId);
+			if (!spaceId || !pageId || spaceId.length > 180 || pageId.length > 180) continue;
 			state.tabs[id] = {
 				...base,
 				kind: 'browser',
-				pageId: text(tab.pageId),
-				url: text(tab.url),
-				profileId: text(tab.profileId) || 'default',
-				zoom:
-					typeof tab.zoom === 'number' && Number.isFinite(tab.zoom)
-						? Math.min(3, Math.max(0.25, tab.zoom))
-						: 1,
+				spaceId,
+				pageId,
 			};
 			continue;
 		}

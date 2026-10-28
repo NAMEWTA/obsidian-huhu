@@ -48,8 +48,13 @@ export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/导出`;
 
 /** Hidden Markdown documents HUHU owns (listed and edited through the managed-file index). */
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
+/** Per-device managed Chromium, encrypted identities and operation records. */
+export const BROWSER_ROOT = '.huhu/browser';
+/** User-selected material copies for Agent inputs; excluded from Git. */
+export const BROWSER_MATERIALS_ROOT = '.huhu/browser-materials';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
+export const VERSIONING_RECOVERY_ROOT = '.huhu/recovery/versioning';
 export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';
 export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];
 /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */

@@ -1,6 +1,6 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-bar/SortableTab.tsx
 import { useSortable } from '@dnd-kit/sortable';
-import { useState, useSyncExternalStore } from 'react';
+import { useCallback, useRef, useSyncExternalStore } from 'react';
 import { Globe, Loader2, X } from 'lucide-react';
 import type { BrowserTabData } from '../../core/workspace/model';
 import { useWorkspaceUI } from '../workspace/workspace-context';
@@ -12,23 +12,8 @@ import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-	ContextMenuSub,
-	ContextMenuSubTrigger,
-	ContextMenuSubContent,
 } from '../../../../ui/components/context-menu';
-import {
-	AlertDialog,
-	AlertDialogContent,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogCancel,
-	AlertDialogAction,
-} from '../../../../ui/components/alert-dialog';
 import { cn } from '../../../../ui/lib/utils';
-const emptySubscribe = () => () => undefined;
-const emptyState = () => undefined;
 export function BrowserWorkspaceTab({
 	tab,
 	groupId,
@@ -40,16 +25,15 @@ export function BrowserWorkspaceTab({
 }) {
 	const { controller, close } = useWorkspaceUI(),
 		workspace = controller.workspace,
-		host = controller.browserHost(),
-		page = host?.getPage(tab.pageId),
+		host = controller.browserWorkspace(),
 		t = useT();
-	const state = useSyncExternalStore(page?.store.subscribe ?? emptySubscribe, page?.store.getState ?? emptyState);
-	const profiles = useSyncExternalStore(
-		host?.profiles.subscribe ?? emptySubscribe,
-		host?.profiles.getState ?? emptyState,
+	const state = useSyncExternalStore(
+		useCallback((listener) => host?.subscribe(listener) ?? (() => undefined), [host]),
+		useCallback(() => host?.getState(), [host]),
 	);
-	const [broken, setBroken] = useState(''),
-		[switchTo, setSwitchTo] = useState('');
+	const page = state?.spaces.find((space) => space.id === tab.spaceId)?.pages.find((page) => page.id === tab.pageId);
+	const node = useRef<HTMLDivElement>(null);
+
 	const {
 		attributes,
 		listeners,
@@ -60,7 +44,7 @@ export function BrowserWorkspaceTab({
 	const run = (promise: Promise<unknown> | undefined) => {
 		void promise?.catch((error) => workspace.report(error));
 	};
-	const copy = (value: string) => run(controller.app.workspace.containerEl.win.navigator.clipboard.writeText(value));
+	const copy = (value: string) => run(node.current?.ownerDocument.defaultView?.navigator.clipboard?.writeText(value));
 	const group = workspace.group(tab.id)!;
 	const closeScope = (scope: 'others' | 'right') => {
 		const index = group.tabIds.indexOf(tab.id);
@@ -68,13 +52,15 @@ export function BrowserWorkspaceTab({
 			if (id !== tab.id && (scope === 'others' || i > index) && !workspace.store.getState().tabs[id]?.pinned)
 				close(id);
 	};
-	const icon = state?.favicon || tab.faviconUrl;
 	return (
 		<>
 			<ContextMenu>
 				<ContextMenuTrigger asChild>
 					<div
-						ref={setNodeRef}
+						ref={(element) => {
+							node.current = element;
+							setNodeRef(element);
+						}}
 						{...attributes}
 						{...listeners}
 						role="tab"
@@ -82,7 +68,7 @@ export function BrowserWorkspaceTab({
 						tabIndex={active ? 0 : -1}
 						data-tab-id={tab.id}
 						data-active={active}
-						title={tab.customTitle || tab.title || t('browser.newTab')}
+						title={tab.customTitle || page?.title || tab.title || t('browser.newTab')}
 						className={cn(
 							'group relative flex h-full w-[180px] min-w-[72px] cursor-pointer select-none items-center gap-1.5 border-t border-r border-border px-1.5 text-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 xl:w-[220px]',
 							active
@@ -129,20 +115,13 @@ export function BrowserWorkspaceTab({
 							}
 						}}
 					>
-						{state?.loading ? (
+						{page?.status === 'pending' ? (
 							<Loader2 className="size-4 shrink-0 animate-spin" />
-						) : icon && broken !== icon ? (
-							<img
-								src={icon}
-								alt=""
-								className="size-4 shrink-0 rounded-sm"
-								onError={() => setBroken(icon)}
-							/>
 						) : (
 							<Globe className="size-4 shrink-0" />
 						)}
 						<span className="min-w-0 flex-1 truncate">
-							{tab.customTitle || tab.title || t('browser.newTab')}
+							{tab.customTitle || page?.title || tab.title || t('browser.newTab')}
 						</span>
 						<Button
 							variant="ghost"
@@ -164,35 +143,33 @@ export function BrowserWorkspaceTab({
 					</div>
 				</ContextMenuTrigger>
 				<ContextMenuContent>
-					<ContextMenuItem disabled={!page} onSelect={() => run(page?.reload())}>
-						{t('browser.reload')}
-					</ContextMenuItem>
-					<ContextMenuItem onSelect={() => copy(tab.url)}>{t('browser.copyUrl')}</ContextMenuItem>
-					<ContextMenuItem onSelect={() => copy(`[${tab.title}](${tab.url})`)}>
-						{t('browser.copyMarkdown')}
-					</ContextMenuItem>
-					<ContextMenuItem disabled={!page} onSelect={() => page?.openExternal()}>
-						{t('browser.external')}
+					<ContextMenuItem disabled={!page} onSelect={() => run(controller.openBrowserWorkspace(tab))}>
+						{t('agent.workspace.openBrowser')}
 					</ContextMenuItem>
 					<ContextMenuItem
-						onSelect={() => workspace.newBrowser(tab.url, { groupId, profileId: tab.profileId })}
+						disabled={!page?.url}
+						onSelect={() => {
+							if (page) copy(page.url);
+						}}
+					>
+						{t('browser.copyUrl')}
+					</ContextMenuItem>
+					<ContextMenuItem
+						disabled={!page?.url}
+						onSelect={() => {
+							if (page) copy(`[${page.title}](${page.url})`);
+						}}
+					>
+						{t('browser.copyMarkdown')}
+					</ContextMenuItem>
+					<ContextMenuItem
+						disabled={!page}
+						onSelect={() =>
+							run(workspace.newBrowser(undefined, { groupId, spaceId: tab.spaceId, pageId: tab.pageId }))
+						}
 					>
 						{t('browser.duplicateTab')}
 					</ContextMenuItem>
-					<ContextMenuSub>
-						<ContextMenuSubTrigger>{t('browser.defaultProfile')}</ContextMenuSubTrigger>
-						<ContextMenuSubContent>
-							{profiles?.profiles.map((p) => (
-								<ContextMenuItem
-									key={p.id}
-									disabled={p.state !== 'ready' || p.id === tab.profileId}
-									onSelect={() => setSwitchTo(p.id)}
-								>
-									{p.label || t('browser.profile.default')}
-								</ContextMenuItem>
-							))}
-						</ContextMenuSubContent>
-					</ContextMenuSub>
 					<ContextMenuSeparator />
 					{(['right', 'down'] as const).map((edge) => (
 						<ContextMenuItem
@@ -212,36 +189,6 @@ export function BrowserWorkspaceTab({
 					))}
 				</ContextMenuContent>
 			</ContextMenu>
-			<AlertDialog
-				open={!!switchTo}
-				onOpenChange={(open) => {
-					if (!open) setSwitchTo('');
-				}}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>{t('browser.defaultProfile')}</AlertDialogTitle>
-						<AlertDialogDescription>
-							{t('browser.profile.switch', {
-								name:
-									profiles?.profiles.find((p) => p.id === switchTo)?.label ||
-									t('browser.profile.default'),
-							})}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>{t('browser.cancel')}</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={() => {
-								run(page?.setProfile(switchTo));
-								setSwitchTo('');
-							}}
-						>
-							{t('browser.apply')}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
 		</>
 	);
 }

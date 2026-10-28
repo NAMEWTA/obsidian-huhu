@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Globe } from 'lucide-react';
 import type { BrowserTabData } from '../../core/workspace/model';
-import type { BrowserPageHandle } from '../../../browser/api';
 import { Button } from '../../../../ui/components/button';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { HuhuProviders } from '../../../../ui/react/providers';
@@ -12,10 +11,9 @@ export function BrowserTabView({ tab, active }: { tab: BrowserTabData; active: b
 	const { controller } = useWorkspaceUI(),
 		t = useT(),
 		inheritedDocument = useOwnerDocument(),
-		host = controller.browserHost();
+		host = controller.browserWorkspace();
 	const ref = useRef<HTMLDivElement>(null),
-		[chrome, setChrome] = useState<ReactNode>(null),
-		[page, setPage] = useState<BrowserPageHandle>();
+		[viewer, setViewer] = useState<ReactNode>(null);
 	const [error, setError] = useState('');
 	// A popout can close before its MutationObserver delivers the adoption. Watch
 	// the stable workspace document as well, and keep browser portals on the new owner.
@@ -53,81 +51,73 @@ export function BrowserTabView({ tab, active }: { tab: BrowserTabData; active: b
 		snapshotDocument,
 	);
 
-	useLayoutEffect(() => {
+	const state = useSyncExternalStore(
+		useCallback((listener) => host?.subscribe(listener) ?? (() => undefined), [host]),
+		useCallback(() => host?.getState(), [host]),
+	);
+	const page = state?.spaces.find((space) => space.id === tab.spaceId)?.pages.find((page) => page.id === tab.pageId);
+	useEffect(() => {
 		let live = true;
-		void Promise.resolve().then(() => {
+		void Promise.resolve().then(async () => {
 			if (!live) return;
-			if (!host) {
-				setPage(undefined);
-				return;
-			}
+			setViewer(null);
+			setError('');
+			if (!host) return;
 			try {
-				setPage(
-					host.getPage(tab.pageId) ??
-						host.createPage({
-							restoreId: tab.pageId,
-							url: tab.url,
-							profileId: tab.profileId,
-							zoom: tab.zoom,
-						}),
-				);
-				setError('');
-			} catch (error) {
-				setError(String(error));
+				const node = await host.renderViewer({ spaceId: tab.spaceId, pageId: tab.pageId });
+				if (live) setViewer(node as ReactNode);
+			} catch {
+				if (live) setError('unavailable');
 			}
 		});
 		return () => {
 			live = false;
 		};
-	}, [host, tab.pageId, tab.url, tab.profileId, tab.zoom]);
-	useLayoutEffect(() => {
-		if (!page || !ref.current) return;
-		if (active) page.mount(ref.current);
-		else page.unmount(ownerDocument);
-		return () => page.unmount();
-	}, [page, active, ownerDocument]);
+	}, [host, tab.spaceId, tab.pageId]);
 	useEffect(() => {
-		if (!page || !host) return;
-		let live = true;
-		void host
-			.renderChrome(page)
-			.then((node) => {
-				if (live) setChrome(node as ReactNode);
-			})
-			.catch((error) => setError(String(error)));
-		const sync = () => controller.workspace.updateBrowser(tab.id, page.store.getState());
-		sync();
-		const off = page.store.subscribe(sync);
-		return () => {
-			live = false;
-			off();
-		};
-	}, [host, page, controller, tab.id]);
-	if (!host)
-		return (
-			<EmptyState
-				className="h-full"
-				icon={<Globe />}
-				title={t('agent.workspace.browserDisabled')}
-				description={tab.url}
-				action={
-					<Button
-						onClick={() => {
-							void controller.configureBrowser();
-						}}
-					>
-						{t('agent.workspace.menu.settings')}
-					</Button>
-				}
-			/>
-		);
-	if (error) return <EmptyState title={t('browser.loadFailed')} description={error} />;
+		if (page) controller.workspace.updateBrowser(tab.id, { title: page.title });
+	}, [controller, tab.id, page]);
 	return (
-		<div className="huhu-browser-tab flex h-full min-h-0 flex-col">
+		<div ref={ref} data-browser-viewer={tab.pageId} className="huhu-browser-tab flex h-full min-h-0 flex-col">
 			<HuhuProviders ownerDocument={ownerDocument} visible={active}>
-				{chrome}
+				{!host ? (
+					<EmptyState
+						className="h-full"
+						icon={<Globe />}
+						title={t('agent.workspace.browserDisabled')}
+						action={
+							<Button
+								onClick={() => {
+									void controller
+										.configureBrowser()
+										.catch((error) => controller.workspace.report(error));
+								}}
+							>
+								{t('agent.workspace.menu.settings')}
+							</Button>
+						}
+					/>
+				) : !page || error ? (
+					<EmptyState
+						className="h-full"
+						icon={<Globe />}
+						title={t('agent.workspace.browserTargetMissing')}
+						action={
+							<Button
+								onClick={() => {
+									void controller
+										.openBrowserWorkspace()
+										.catch((error) => controller.workspace.report(error));
+								}}
+							>
+								{t('agent.workspace.openBrowser')}
+							</Button>
+						}
+					/>
+				) : (
+					viewer
+				)}
 			</HuhuProviders>
-			<div ref={ref} data-browser-placeholder={tab.pageId} className="relative min-h-0 flex-1" />
 		</div>
 	);
 }

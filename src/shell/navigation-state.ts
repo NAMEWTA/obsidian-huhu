@@ -24,10 +24,11 @@ export const PANEL_DEFAULT = 280;
 
 const sections: Partial<Record<WorkbenchFeature, readonly string[]>> = {
 	terminal: ['running', 'history', 'usage', 'board', 'jump'],
+	browser: ['spaces', 'identities', 'files'],
 	contacts: ['person', 'company'],
 	automations: ['tasks', 'runs'],
 	notifications: ['unread', 'all'],
-	sync: ['changes', 'history'],
+	versioning: ['changes', 'history', 'compare'],
 };
 /** Features whose sections are open-ended ids (settings categories). */
 const freeSections = new Set<WorkbenchFeature>(['settings']);

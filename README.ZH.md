@@ -24,12 +24,12 @@ Obsidian 里的个人工作台：把笔记、可组合看板、编程智能体�
 | [看板与记录](docs/dashboard.md) | 可拖动和缩放的小组件、日历、待办、收件箱、时钟天气、习惯、记账、阅读、番茄钟和统计 |
 | [笔记导航](docs/navigator.md) | 文件夹与标签浏览、搜索、预览、日历、模板及键盘操作 |
 | [智能体与终端](docs/agent-workbench.md) | CLI 会话、标签分组、恢复、快捷命令、技能和当前工作空间用量 |
-| [内置浏览器](docs/browser.md) | 网页标签、个人资料、Cookie 导入、下载和材料采集 |
+| [独立 Agent Browser](docs/browser.md) | 隔离的个人/任务空间、观察与接管、身份导入、文件授权及 CLI/MCP；受管运行时当前支持 Linux x64 |
 | [档案](docs/contacts.md) | 自定义档案类型与表单、独立关系、可移植 Markdown 和可恢复迁移 |
 | [自动化与通知](docs/automation.md) | 手动及定时操作、执行预检、设备归属、运行记录和通知 |
 | [高亮摘录](docs/comments.md) | 四色选区高亮、摘录卡片、笔记与讨论、标签检索、批量管理和 Markdown 导出 |
 | [图标与外观](docs/appearance.md) | 文件及界面图标、主题、Markdown 配色和本地字体 |
-| [Git 同步](docs/sync.md) | 限定当前库的仓库初始化、提交、拉取、推送、忽略规则和冲突处理 |
+| [版本管理](docs/sync.md) | 紧凑 Git 工作区、笔记历史、三种差异布局、检查点恢复与撤销，以及提交、拉取和推送 |
 | [保险箱](docs/safe.md) | 独立主密码、加密记录、锁定、备份与认证恢复 |
 
 各模块可以独立开启或关闭。Git 的远端、认证与自动同步计划需要单独配置；CLI 提供方登录、天气及其他外部服务按各自要求使用。完整操作见 [文档索引](docs/README.md)、[工作台](docs/workbench.md)和[设置](docs/settings.md)。

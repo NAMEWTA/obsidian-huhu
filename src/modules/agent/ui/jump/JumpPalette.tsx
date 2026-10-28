@@ -49,7 +49,11 @@ export function JumpPalette({
 		.filter((tab) =>
 			[
 				tabTitle(tab, t),
-				tab.kind === 'terminal' ? tab.panes[tab.focusedSessionId]?.cwd : tab.kind === 'browser' ? tab.url : '',
+				tab.kind === 'terminal'
+					? tab.panes[tab.focusedSessionId]?.cwd
+					: tab.kind === 'browser'
+						? (controller.browserPage(tab)?.url ?? '')
+						: '',
 			]
 				.join(' ')
 				.toLowerCase()
@@ -172,7 +176,9 @@ export function JumpPalette({
 							<CommandItem
 								onSelect={() => {
 									close();
-									controller.workspace.newBrowser();
+									void controller.workspace
+										.newBrowser()
+										.catch((error) => controller.workspace.report(error));
 								}}
 							>
 								{t('agent.workspace.newBrowser')}

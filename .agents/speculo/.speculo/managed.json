@@ -2604,6 +2604,15 @@
       "package_version": "2.1.12"
     },
     {
+      "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/.gitignore",
+      "bytes": 32,
+      "sha256": "b75c124a428acc599b3df9199ff9a7561fd3e8f4cfa798ac2e2abbe52deab91b",
+      "mode": 436,
+      "owner": "workflow/specdev",
+      "kind": "static",
+      "package_version": "2.1.12"
+    },
+    {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/data/extended-projects.json",
       "bytes": 10798,
       "sha256": "680724e8d1ef5bb3e266686e2ee9a382125beee8eb81d50477648fffce5be4d9",
@@ -2724,6 +2733,15 @@
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/README.md",
       "bytes": 478,
       "sha256": "59c222f5c1635956d625e1aa9279836adff371782480d305bb3977d68c4a40b4",
+      "mode": 436,
+      "owner": "workflow/specdev",
+      "kind": "static",
+      "package_version": "2.1.12"
+    },
+    {
+      "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/.gitignore",
+      "bytes": 47,
+      "sha256": "a1b9b3aabbabe90958f5b13afee01981b529713cc1a54d5109e4ba88c5b0c77f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",

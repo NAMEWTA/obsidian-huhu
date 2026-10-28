@@ -45,7 +45,10 @@ function SessionCard({ tab }: { tab: Exclude<WorkspaceTab, PageTabData> }) {
 		[draft, setDraft] = useState('');
 	const current = workspace.active?.id === tab.id,
 		group = workspace.group(tab.id)!;
-	const path = tab.kind === 'terminal' ? (tab.panes[tab.focusedSessionId]?.cwd ?? '') : tab.url;
+	const path =
+		tab.kind === 'terminal'
+			? (tab.panes[tab.focusedSessionId]?.cwd ?? '')
+			: (controller.browserPage(tab)?.url ?? '');
 	const session = tab.kind === 'terminal' ? controller.sessions.get(tab.focusedSessionId) : undefined;
 	const actions: { label: string; run: () => void; destructive?: boolean; disabled?: boolean }[] = [
 		{
@@ -70,7 +73,7 @@ function SessionCard({ tab }: { tab: Exclude<WorkspaceTab, PageTabData> }) {
 					.writeText(
 						tab.kind === 'terminal'
 							? tab.panes[tab.focusedSessionId]?.nativeSessionId || tab.focusedSessionId
-							: tab.url,
+							: tab.pageId,
 					)
 					.catch((e) => workspace.report(e));
 			},
@@ -316,7 +319,10 @@ export function AgentSidebar({ togglePanel }: { togglePanel?: () => void }) {
 													current && 'bg-sidebar-accent text-sidebar-foreground',
 												)}
 											>
-												<Icon className="size-4 text-sidebar-foreground/30" strokeWidth={1.75} />
+												<Icon
+													className="size-4 text-sidebar-foreground/30"
+													strokeWidth={1.75}
+												/>
 												{t(`agent.workspace.nav.${item.key}`)}
 											</button>
 										</TooltipTrigger>

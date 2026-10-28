@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { documentationKind as classify, referenceLinkBody } from './documentation-policy.mjs';
+import { documentationKind as classify, githubSlug, referenceLinkBody } from './documentation-policy.mjs';
 
 const root = process.cwd();
 const failures = [];
@@ -70,7 +70,7 @@ for (const required of [
 
 // Speculo tooling contains owner-specific Path tags and templates; validate it
 // with the owning package checker, not the project-guide link rules below.
-const strict = new Set(['user-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
+const strict = new Set(['user-doc', 'native-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
 let links = 0;
 let external = 0;
 const headings = new Map();
