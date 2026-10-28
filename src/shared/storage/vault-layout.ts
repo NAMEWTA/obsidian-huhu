@@ -25,6 +25,14 @@ export const TASKS_PATH = `${HUHU_VISIBLE_ROOT}/待办/待办.md`;
 export const PROJECTS_ROOT = `${HUHU_VISIBLE_ROOT}/项目管理`;
 /** `<root>/个人档案/<姓名>/基本信息.md`, `<root>/企业档案/<名称>/基本信息.md`. */
 export const ARCHIVES_ROOT = `${HUHU_VISIBLE_ROOT}/档案`;
+/** Portable archive protocol, definitions, relations and recovery evidence. */
+export const ARCHIVE_PATHS = {
+	collection: '档案集合.md',
+	definitions: '档案定义',
+	relations: '关联记录',
+	migrations: '迁移记录',
+} as const;
+export const ARCHIVES_DRAFT_ROOT = '.huhu/archives/drafts';
 export const EXPENSE_ROOT = `${HUHU_VISIBLE_ROOT}/记账`;
 export const HABIT_ROOT = `${HUHU_VISIBLE_ROOT}/习惯`;
 export const POMODORO_ROOT = `${HUHU_VISIBLE_ROOT}/番茄钟`;

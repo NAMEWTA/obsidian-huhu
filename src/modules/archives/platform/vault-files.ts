@@ -1,11 +1,12 @@
-import { TFile, TFolder, normalizePath, type App, type TAbstractFile } from 'obsidian';
+import { MarkdownView, TFile, TFolder, normalizePath, type App, type TAbstractFile } from 'obsidian';
 import type { ContactsFile, ContactsFiles } from '../core/files';
 import { ContactsError } from '../core/model';
 import type { ArchiveFolderEntry } from '../core/resources';
 
 /**
  * The archives' file port on the vault itself. Archives are ordinary visible notes (`档案/个人档案/<名称>/基本信息.md`),
- * so Obsidian's own Vault API reads, writes and trashes them; `Vault.process` is atomic against an open editor.
+ * so Obsidian's Vault API reads, writes and trashes them. `process` serializes disk writes;
+ * a separate all-leaf guard below rejects unsaved editor buffers.
  */
 export function vaultContactsFiles(app: App, formatGuide: () => string): ContactsFiles {
 	const { vault } = app;
@@ -32,13 +33,21 @@ export function vaultContactsFiles(app: App, formatGuide: () => string): Contact
 			await vault.createFolder(current);
 		}
 	};
+	const checkEditor = (file: ContactsFile, disk: string): void => {
+		for (const leaf of app.workspace.getLeavesOfType('markdown')) {
+			const view = leaf.view;
+			if (view instanceof MarkdownView && view.file?.path === file.path && view.editor.getValue() !== disk)
+				throw new ContactsError('unsavedEditor', file.path);
+		}
+	};
 	const parentOf = (path: string) => path.slice(0, Math.max(0, path.lastIndexOf('/')));
 	const walk = (folder: TFolder, into: ArchiveFolderEntry[]): ArchiveFolderEntry[] => {
 		for (const child of folder.children) {
 			if (child instanceof TFolder) {
 				into.push({ path: child.path, folder: true, size: 0, modified: 0 });
 				walk(child, into);
-			} else if (child instanceof TFile) into.push({ path: child.path, folder: false, size: child.stat.size, modified: child.stat.mtime });
+			} else if (child instanceof TFile)
+				into.push({ path: child.path, folder: false, size: child.stat.size, modified: child.stat.mtime });
 		}
 		return into;
 	};
@@ -66,13 +75,23 @@ export function vaultContactsFiles(app: App, formatGuide: () => string): Contact
 		listFolder: (path) => walk(folderAt(path), []),
 		// Trash goes through the user's "deleted files" preference (system trash, .trash or permanent delete).
 		trashFolder: async (path) => app.fileManager.trashFile(folderAt(path)),
-		// Obsidian saves editors itself and `process` merges with them; there is no draft of ours to protect.
-		checkFolderEditors: () => Promise.resolve(),
+		// Vault.process serializes disk transforms, but does not authorize overwriting an unsaved editor buffer.
+		checkFolderEditors: async (path) => {
+			for (const leaf of app.workspace.getLeavesOfType('markdown')) {
+				const view = leaf.view;
+				if (!(view instanceof MarkdownView) || !view.file || !view.file.path.startsWith(path + '/')) continue;
+				const file = view.file,
+					sourcePath = file.path,
+					disk = await vault.read(file);
+				if (view.file !== file || file.path !== sourcePath) throw new ContactsError('conflict');
+				checkEditor(file, disk);
+			}
+		},
 		createFolder: async (path) => {
 			await mkdir(parentOf(path));
 			await vault.createFolder(path);
 		},
 		mkdir,
-		checkEditor: (_file: ContactsFile, _disk: string) => undefined,
+		checkEditor,
 	};
 }

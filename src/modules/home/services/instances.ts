@@ -1,5 +1,14 @@
-import type { AgentDispatch, AgentDirectoryEntry, AgentSessionsPort, AgentQuickCommands, AgentSkillCatalog, AgentSkills, AgentUsage } from '../../agent/api';
+import type {
+	AgentDispatch,
+	AgentDirectoryEntry,
+	AgentSessionsPort,
+	AgentQuickCommands,
+	AgentSkillCatalog,
+	AgentSkills,
+	AgentUsage,
+} from '../../agent/api';
 import type { NavigatorLists, NavigatorPeriodic } from '../../navigator/api';
+import type { ArchivesQuery } from '../../archives/api';
 import type { CalendarService } from '../api';
 import type { IndexedWidgets } from '../core/board/widget-registry';
 import type { ExpenseService } from '../platform/expense/expense-service';
@@ -16,6 +25,8 @@ import type { ReadingService } from '../platform/reading/reading-service';
  */
 export const homeServices: {
 	calendar?: CalendarService;
+	archives?: () => ArchivesQuery | undefined;
+	watchArchives?: (listener: () => void) => () => void;
 	periodic?: () => NavigatorPeriodic | undefined;
 	watchPeriodic?: (listener: () => void) => () => void;
 	habit?: HabitService;

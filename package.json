@@ -65,7 +65,8 @@
 		"test:ui-styles": "node scripts/verify-ui-styles.mjs",
 		"test:ui-adapters": "node scripts/verify-ui-adapters.mjs",
 		"test:ui-runtime": "node scripts/verify-ui-runtime.mjs",
-		"test:license-texts": "node --test scripts/license-texts.test.mjs"
+		"test:license-texts": "node --test scripts/license-texts.test.mjs",
+		"accept:archives-v2-scale": "esbuild scripts/accept-archives-v2-scale.ts --bundle --platform=node --format=cjs --outfile=scripts/tmp/accept-archives-v2-scale.cjs --alias:obsidian=./scripts/obsidian-stub.ts --log-level=warning && node --expose-gc scripts/tmp/accept-archives-v2-scale.cjs"
 	},
 	"keywords": [],
 	"license": "SEE LICENSE IN LICENSE",

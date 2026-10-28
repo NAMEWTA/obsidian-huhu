@@ -1,6 +1,6 @@
 import type { ModuleManifest } from '../../app/contracts/module';
 import { AUTOMATION_SOURCES } from '../automations/api';
-import { ARCHIVES_WORKBENCH } from './api';
+import { ARCHIVES_WORKBENCH, ARCHIVES_CATALOG, ARCHIVES_QUERY, ARCHIVES_COMMANDS } from './api';
 
 export const archivesManifest: ModuleManifest = {
 	id: 'archives',
@@ -11,7 +11,7 @@ export const archivesManifest: ModuleManifest = {
 	platforms: { desktop: true, mobile: true },
 	defaultEnabled: true,
 	activation: 'startup',
-	provides: [ARCHIVES_WORKBENCH],
+	provides: [ARCHIVES_WORKBENCH, ARCHIVES_CATALOG, ARCHIVES_QUERY, ARCHIVES_COMMANDS],
 	contributes: [AUTOMATION_SOURCES],
 	load: () => import('./module'),
 };
