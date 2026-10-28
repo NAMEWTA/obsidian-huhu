@@ -1,8 +1,8 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 6034432,
-  "stylesBytes": 1421312,
-  "eagerBytes": 122880,
+  "outputBytes": 6062080,
+  "stylesBytes": 1423360,
+  "eagerBytes": 124928,
   "forbiddenEagerAreas": [
     "npm:lunar-typescript",
     "npm:chart.js",
@@ -20,13 +20,13 @@
     "archives": 176128,
     "automations": 217088,
     "notifications": 20480,
-    "comments": 111616,
-    "navigator": 202752,
+    "comments": 122880,
+    "navigator": 203776,
     "sync": 98304,
     "safe": 60416
   },
-  "outputBudgetReason": "HUHU 0.0.1 初始基线：main.js 实测 6033579 字节，横幅包含自有许可、完整来源声明，以及 JS、主题、CSS 和内嵌字体的原许可；手动安装三个插件文件也保留声明。上限按 KiB 取整，无新增运行依赖。",
-  "eagerBudgetReason": "HUHU 0.0.1 初始基线：启动闭包实测 122867 字节，模块装配与懒加载边界保持，React/Radix 不进入启动闭包。上限按 KiB 取整。",
-  "stylesBudgetReason": "HUHU 0.0.1 初始基线：styles.css 实测 1420790 字节，所有自有作用域统一为 huhu；保留本地字体与既有设计系统，上限按 KiB 取整。",
-  "moduleActivationBudgetReason": "HUHU 0.0.1 初始基线：各模块以当前实测激活闭包按 KiB 取整；不包含页面与第二层延迟加载，不增加禁止启动加载区域。"
+  "outputBudgetReason": "HUHU 0.0.1 初始基线：main.js 实测 6033579 字节，横幅包含自有许可、完整来源声明，以及 JS、主题、CSS 和内嵌字体的原许可；手动安装三个插件文件也保留声明。上限按 KiB 取整，无新增运行依赖。；Issue #6 高亮摘录与卡片管理整合后，完整 CI 实测 6058252 B，预算收紧至 5920 KiB（6062080 B），较原预算仅放宽 27648 B；没有引入新运行时依赖。",
+  "eagerBudgetReason": "HUHU 0.0.1 初始基线：启动闭包实测 122867 字节，模块装配与懒加载边界保持，React/Radix 不进入启动闭包。上限按 KiB 取整。；Issue #6 新增调色板配置和编辑器入口，CI 实测启动集合 123589 B；新上限 122 KiB（124928 B），React/Radix 仍在延迟加载边界外。",
+  "stylesBudgetReason": "HUHU 0.0.1 初始基线：styles.css 实测 1420790 字节，所有自有作用域统一为 huhu；保留本地字体与既有设计系统，上限按 KiB 取整。；Issue #6 新增颜色高亮和侧栏卡片局部样式，CI 实测 1422266 B；新上限按 KiB 收紧为 1390 KiB（1423360 B）。",
+  "moduleActivationBudgetReason": "HUHU 0.0.1 初始基线：各模块以当前实测激活闭包按 KiB 取整；不包含页面与第二层延迟加载，不增加禁止启动加载区域。；Issue #6 的批注模块现包含 v3 迁移、纯高亮、可恢复写盘与锚点逻辑，CI 实测 comments 激活闭包 121150 B，设 120 KiB（122880 B）；navigator 激活闭包 202878 B，因共享启动声明/词典小幅变化，设 199 KiB（203776 B）。原有禁止 eager 依赖不变；卡片侧栏仍延迟加载。"
 }
