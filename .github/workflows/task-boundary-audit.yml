@@ -1,0 +1,168 @@
+name: Task boundary audit
+on:
+  push:
+    branches: [refactor/task-domain-7]
+    paths: [.github/workflows/task-boundary-audit.yml]
+permissions:
+  contents: write
+concurrency:
+  group: task-boundary-audit
+  cancel-in-progress: false
+jobs:
+  verify-and-commit:
+    if: github.repository == 'NAMEWTA/obsidian-huhu'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify reviewed source identities
+        run: |
+          test "$(git hash-object src/modules/task/services/service.ts)" = 332b7bc0f878fd1b048be4418fa374aa1f8c5df5
+          test "$(git hash-object src/modules/task/services/tools.ts)" = 1ad32a73a4cd8610d65ac3a33fcf1608612ffb5f
+          test "$(git hash-object src/modules/task/api.ts)" = 71a56feeda3ad94a75506496d556f94da643afc6
+          test "$(git hash-object docs/task-domain.md)" = c86913925c09be343d55333a68fd1f721aeb53f6
+          test "$(git hash-object .agents/skills/dev/SKILL.md)" = 27b8f6dabf88d257acf072d268367fa4c4a344c2
+      - name: Prove regression tests fail against unmodified implementation
+        run: |
+          set +e
+          pnpm exec vitest run --project unit src/modules/task/services/boundary.test.ts --reporter=json --outputFile=/tmp/task-boundary-before.json
+          status=$?
+          set -e
+          test "$status" = 1
+          python3 - <<'PY'
+          import json
+          report = json.load(open('/tmp/task-boundary-before.json'))
+          assert report['numTotalTests'] == 10, report
+          assert report['numFailedTests'] == 8, report
+          assert report['numPassedTests'] == 2, report
+          print('Confirmed: 8 targeted failures, 2 existing cancellation protections pass.')
+          PY
+      - name: Apply reviewed boundary fixes and document the contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace(path, old, new):
+              file = Path(path)
+              source = file.read_text()
+              assert source.count(old) == 1, (path, old)
+              file.write_text(source.replace(old, new))
+          replace('src/modules/task/services/service.ts',
+              '\t\tasync execute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult> {\n\t\t\treturn enqueue(async () => {',
+              '\t\tasync execute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult> {\n'
+              '\t\t\t// Own the submitted data before yielding; callers may immediately reuse their draft.\n'
+              '\t\t\t// The signal intentionally stays live, and the transaction remains the commit point.\n'
+              '\t\t\tlet accepted: TaskCommand;\n'
+              '\t\t\ttry {\n'
+              '\t\t\t\trunning(signal);\n'
+              '\t\t\t\taccepted = structuredClone(command);\n'
+              '\t\t\t} catch (error) {\n'
+              '\t\t\t\treturn failure(\n'
+              '\t\t\t\t\terror instanceof TaskError\n'
+              '\t\t\t\t\t\t? error\n'
+              '\t\t\t\t\t\t: new TaskError(\'invalid-input\', \'Task command must be cloneable data\'),\n'
+              '\t\t\t\t);\n'
+              '\t\t\t}\n'
+              '\t\t\treturn enqueue(async () => {')
+          replace('src/modules/task/services/service.ts',
+              'applied = applyTaskCommand(latest, command, {',
+              'applied = applyTaskCommand(latest, accepted, {')
+          replace('src/modules/task/services/tools.ts',
+              '\t\t\t\tassertToolArguments(arguments_, schema);\n\t\t\t\tconst args = arguments_ as Record<string, unknown>;',
+              '\t\t\t\t// Validate and consume the same owned snapshot across asynchronous adapters.\n'
+              '\t\t\t\tconst args = structuredClone(arguments_) as Record<string, unknown>;\n'
+              '\t\t\t\tassertToolArguments(args, schema);')
+          replace('src/modules/task/services/tools.ts',
+              '\t\t\t\t\tif (context.signal?.aborted) throw new TaskError(\'cancelled\');\n\t\t\t\t\treturn { ok: true, data };',
+              '\t\t\t\t\tif (context.signal?.aborted) throw new TaskError(\'cancelled\');\n'
+              '\t\t\t\t\tif (service.snapshot().status !== \'ready\')\n'
+              '\t\t\t\t\t\tthrow new TaskError(\'unavailable\', \'Task repository is not ready\');\n'
+              '\t\t\t\t\treturn { ok: true, data };')
+          replace('src/modules/task/api.ts',
+              '\texecute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult>;',
+              '\t/** Captures caller-owned command data synchronously; the signal stays live until commit. */\n'
+              '\texecute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult>;')
+          replace('.agents/skills/dev/SKILL.md',
+              '| 模块 | `home`、`agent`、',
+              '| 模块 | `home`、`task`、`agent`、')
+          section = '''### 7.3 异步边界与参数所有权
+
+          公共服务接收的是调用时的数据，而不是调用方随后可继续修改的对象。`execute(command)` 在返回 Promise、进入串行队列之前同步深复制命令；目标 ID、commandId、expectedRevision、字段和嵌套关联从此使用同一份领域持有的副本。校验、幂等指纹和事务消费此副本。调用方可以继续编辑自己的草稿，但不能借此改变已提交请求；重新提交修改后的内容必须使用新的 commandId。
+
+          无法复制的数据返回结构化 `invalid-input`，不写盘、不把仓库标成损坏，也不阻塞下一条有效命令。工具入口同样先获取独立参数副本，再校验和传给服务或异步资源适配器。这里的数据复制是所有权边界，不是用来隔离恶意进程内 JavaScript 的沙箱。
+
+          命令数据与取消信号必须区别处理：数据被复制，可信宿主传入的 `AbortSignal` 保持实时。排队后取消仍可阻止尚未提交的写入；事务已经提交后，必须返回真实成功回执，不能因稍后的卸载伪报写入失败。调用方发生超时或连接中断时仍应使用相同 commandId 和原始 payload 查询或重试，不假设取消已经回滚提交。
+
+          资源查询在异步适配器返回后重新检查取消信号及 Task 的 ready 状态。模块已关闭或仓库进入 error 时，迟到的资源结果返回 `unavailable`；已取消调用返回 `cancelled`。该读路径检查不附加在已提交写命令之后，不改变写入提交点。
+
+          回归测试位于 `src/modules/task/services/boundary.test.ts`，覆盖调用后修改创建/更新参数、幂等重放、无法复制的输入、AI 写入参数、异步资源参数、关闭/错误状态的迟到结果和实时取消。真实宿主验收范围仍按第 10 节执行。
+
+          '''
+          replace('docs/task-domain.md', '## 8. 独立界面与看板', section + '## 8. 独立界面与看板')
+          PY
+          pnpm exec prettier --write src/modules/task/services/service.ts src/modules/task/services/tools.ts src/modules/task/services/boundary.test.ts src/modules/task/api.ts
+      - name: Verify fixed boundary tests
+        run: |
+          pnpm exec vitest run --project unit src/modules/task/services/boundary.test.ts --reporter=json --outputFile=/tmp/task-boundary-after.json
+          python3 - <<'PY'
+          import json
+          report = json.load(open('/tmp/task-boundary-after.json'))
+          assert report['numTotalTests'] == 10 and report['numPassedTests'] == 10 and report['numFailedTests'] == 0, report
+          print('Confirmed: all 10 boundary tests pass.')
+          PY
+      - name: Task and consumer integration tests
+        run: pnpm exec vitest run src/modules/task test/automations/calendar-delivery.test.ts src/modules/automations/services/calendar-source.test.ts src/modules/navigator/ui/calendar-consistency.dom.test.tsx --maxWorkers=2
+      - name: Production and test types, CSS and JavaScript build
+        run: pnpm run build
+      - name: Full source lint and domain gates
+        run: |
+          pnpm run lint
+          pnpm run test:architecture
+          pnpm run test:promise-callbacks
+          pnpm run test:i18n
+          pnpm run test:safety-regressions
+          pnpm run test:docs
+          pnpm run test:build-text
+          pnpm run check:bundle
+          git diff --check
+      - name: Commit only reviewed files and rebuilt artifacts to the existing PR
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git ls-remote origin refs/heads/refactor/task-domain-7 | cut -f1)" = "$EXPECTED_HEAD"
+          rm .github/workflows/task-boundary-audit.yml
+          python3 - <<'PY'
+          import subprocess
+          allowed = {
+            '.github/workflows/task-boundary-audit.yml',
+            '.agents/skills/dev/SKILL.md', 'docs/task-domain.md',
+            'src/modules/task/api.ts', 'src/modules/task/services/service.ts',
+            'src/modules/task/services/tools.ts', 'src/modules/task/services/boundary.test.ts',
+            'main.js', 'styles.css',
+          }
+          changed = set(subprocess.check_output(['git','diff','--name-only','HEAD'], text=True).splitlines())
+          assert changed <= allowed, changed - allowed
+          assert not subprocess.check_output(['git','ls-files','--others','--exclude-standard'], text=True).strip()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/task-boundary-audit.yml .agents/skills/dev/SKILL.md docs/task-domain.md src/modules/task/api.ts src/modules/task/services/service.ts src/modules/task/services/tools.ts src/modules/task/services/boundary.test.ts main.js styles.css
+          git commit -m 'fix(task): 固定异步命令快照并拒绝失效资源结果'
+          git push origin HEAD:refs/heads/refactor/task-domain-7
+          echo "Implemented commit: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          sha256sum main.js styles.css >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep red-green test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: task-boundary-red-green
+          path: /tmp/task-boundary-*.json
+          if-no-files-found: warn
+          retention-days: 14
