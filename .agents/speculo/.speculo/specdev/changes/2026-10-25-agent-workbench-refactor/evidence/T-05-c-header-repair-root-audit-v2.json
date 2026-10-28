@@ -1,0 +1,1008 @@
+{
+  "observed_at": "2026-10-25T15:28:39.017531+00:00",
+  "source_checks": 174,
+  "changed_paths": [
+    "src/shared/native/frames.ts",
+    "src/shared/native/frames.test.ts"
+  ],
+  "commands": 6,
+  "errors": [],
+  "copies": [
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red.json",
+      "sha256": "aec52bc3dd26fc914ab866b51017e580fe3497fc3205249331c83abac7ece748"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red.log",
+      "sha256": "e01589abb586cf2781e3f2d6da5338667108a78de369db647addc9bc631d1253"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source.json",
+      "sha256": "7edfa4a6c3970b5f3891a026075e19dfa652d7777bc7da06ad47302b65023112"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red.json",
+      "sha256": "0babf8fa93eabd8166ccbc9645a906ffd608e7024d081be0859282e6b3654158"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red.log",
+      "sha256": "b47a73060e9c538418b7c2faf830ce2e5881f174757c08b1e7b581e2ea34f03e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source.json",
+      "sha256": "3b81e6a2d34a30f6b30ccd3d50ed3df0b4d92dd58a06b0aa4a70ebdf2c896e52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format.json",
+      "sha256": "e82acd0309f2a2f5fb565394e177fb40a4b7bd31f63ed52abf9f5ff323e41d5f"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format.log",
+      "sha256": "990b84f869064430f10fceb28bdcfdcedcaf5b6f6af98b8ba983d47e371056a3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source.json",
+      "sha256": "9c059144c46ced7023fbef8e20954a8298e5d81b87eb4d4f936f880146dd3b53"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green.json",
+      "sha256": "ecef23ff17dc489f03fa9aaa0c51316931f760abcd2ed6f274b00b228369064c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green.log",
+      "sha256": "7250c1a6b016894e8567d516d6e43543ac9e49f359ba19a9c15a9463f0654c58"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source.json",
+      "sha256": "b6d9435db16c910e46722df149ee067f65119183b82133b29f2cd824dec571f0"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types.json",
+      "sha256": "8d7eea3413ca8e99d8b02f9079ccd29e6c838e7a628c06dd533c077b49713d29"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source.json",
+      "sha256": "bf161bd17707dc027b4cc97a42d5649aa9c8bd992ac1780637874c72c63e8f0a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint.json",
+      "sha256": "54c0c7e6fd76ce2d01d130aee8982913e2734e131b1e3286af303abaf6ff5b7c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint.log",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source.json",
+      "sha256": "3d43dc8d4f6e292f69395d9a3dc50a3f5210e9f38b9185f90f15cf9ed00d9aa7"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-source-v3.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-source-v3.json",
+      "sha256": "142cac17fc1a3983c0acc0fcf17adc09a1f034e4c646a4ec866cdedd0da402a0"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-handoff.md",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-handoff.md",
+      "sha256": "2b91a3e1dfed5da3680d688bd592dcf7559ee762896eb1a133c3fe340a9d1970"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-checks.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-checks.json",
+      "sha256": "4ee2a81fa47e6b9c84e1c219a9bb90554dbd7eced8b9e51cdffcb67bb1c54c4e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original.json",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original.json",
+      "sha256": "13d2bf9aa5496ee6a4189deb0aef2153241753f6976f7b0c549ce695ca0e5e8b"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-final/src/shared/native/frames.ts",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/final-source/src/shared/native/frames.ts",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-final/src/shared/native/frames.test.ts",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/final-source/src/shared/native/frames.test.ts",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "9fe1192ab8ee4b690640d90f20b57f4e8cac7f92c01893ed1da8c9de986c4423"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "3a3b3a14e6a04962f103eb96aa0314102b36948e703679aca34b488c52fcf4ac"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-original-red-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-original-red-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "d2fd64823c6beb7624c76362e68f31aabccb1bdc610758fa4df4c453f8fb0023"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "3a3b3a14e6a04962f103eb96aa0314102b36948e703679aca34b488c52fcf4ac"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-regression-red-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-regression-red-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "d2fd64823c6beb7624c76362e68f31aabccb1bdc610758fa4df4c453f8fb0023"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-format-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-format-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-green-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-green-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-types-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-types-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/Cargo.lock",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/Cargo.toml",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/agent_data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/agent_data.rs",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/cookies.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/cookies.rs",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/data.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/data.rs",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/frame.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/job.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/main.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/outbox.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/session.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/inherited_fds.rs",
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/session_tree.rs",
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/stdio.rs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/scripts/verify-pty-helper.mjs",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/scripts/verify-pty-helper.mjs",
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper.test.ts",
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "c3b09f2e7436dcda22f60ac08385243a6a77fdb210dc5c8477cf82a277d42b6a"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/frames.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/frames.test.ts",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/frames.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/frames.ts",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/host.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/input.test.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/input.ts",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "original": "/tmp/huhu-t05-c-header-repair-lint-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/c-header-repair/huhu-t05-c-header-repair-lint-source-snapshot/test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4"
+    }
+  ],
+  "readback": "Root full handoff, exact production diff, complete new red/green logs and regression source; six actual command metadata/log/source hashes checked.",
+  "previous_audit": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-c-header-repair-root-audit.json",
+    "sha256": "d682686cb1a305075cae0415439dd667eabe54d72ce95653f24e4590f7f0efc3",
+    "disposition": "Root collector assumed -source instead of producer -source-snapshot directory; original audit retained, no product or command failure inferred"
+  }
+}

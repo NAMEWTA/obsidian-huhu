@@ -1,0 +1,520 @@
+{
+  "ticket": "T-04",
+  "owner": "/root/prepare_t03",
+  "state": "SOURCE STOPPED",
+  "observed_at_utc": "2026-10-25T11:44:57.735310+00:00",
+  "source_manifest": "/tmp/huhu-t04-a-repair-source.json",
+  "source_manifest_sha256": "217262ff07d8ef4b955756bf796cb087e9a0cee1846afe6551769fd259a18bb3",
+  "source_snapshot": "/tmp/huhu-t04-a-repair-final-source",
+  "round1_input_sha256": "6b88551127001cc9d60ee42794f8d450adeaa2d6cbe900de6daed1d36d129516",
+  "dispatch_first_observed_sha256": "76722d7a383308701398b04d9342869b60063a118ddd208d127021603e444a13",
+  "dispatch_current_sha256": "76722d7a383308701398b04d9342869b60063a118ddd208d127021603e444a13",
+  "runner": {
+    "path": "/tmp/huhu-check-runner.py",
+    "sha256": "1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c"
+  },
+  "command_count": 20,
+  "commands": [
+    {
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "-t",
+        "quiesce fences|quiesce cleans|archive observes|shutdown observer expires|natural root exit",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:19:13.376865+00:00",
+      "finished_at": "2026-10-25T11:19:24.492642+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-red-core.log",
+      "output_sha256": "15965f13eae2c3ae1ba9c0725122cf4500c5284dabfa5ccb33c138c5be27c365",
+      "record_file": "/tmp/huhu-t04-a-repair-red-core.json",
+      "record_sha256": "24662fc184f14aa1dd9470783063b4f74539866cac030ef62232aa7295c2724e",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:20:39.599007+00:00",
+      "finished_at": "2026-10-25T11:20:50.786391+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-green-spawn-stop.log",
+      "output_sha256": "899607acbc6f9878825e2b581d43605f7c78bd77828f07b79b2f37744401b5b8",
+      "record_file": "/tmp/huhu-t04-a-repair-green-spawn-stop.json",
+      "record_sha256": "20ca0effe0b749682ef6eadbab6cc207437845f1efaa62717aa75ddc1b67485d",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "-t",
+        "production shutdown keeps native cleanup",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:22:04.445234+00:00",
+      "finished_at": "2026-10-25T11:22:08.876250+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-red-controller.log",
+      "output_sha256": "b85dd18b6dcc366e13f871fe09eaa074541a182d385a3f34528a72cdecd229a7",
+      "record_file": "/tmp/huhu-t04-a-repair-red-controller.json",
+      "record_sha256": "0c4e9dc475705e5ad66d3f8c2dd134e7e3d1eed9611adf99fe93e264609b16f4",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "-t",
+        "cancelling while archive backup",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:24:36.494159+00:00",
+      "finished_at": "2026-10-25T11:24:38.521492+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-red-primary.log",
+      "output_sha256": "013fd420d15acc6ba381d373508e3bce31f81557325a94536e95fd67615eaf03",
+      "record_file": "/tmp/huhu-t04-a-repair-red-primary.json",
+      "record_sha256": "fa5db0286e51990516fa9938d97267ca6b89f4c2b7de3aed8bcfcf34216a6d28",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:26:25.294685+00:00",
+      "finished_at": "2026-10-25T11:26:28.749088+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-green-lifecycle-1.log",
+      "output_sha256": "5a98c2bfd7c796c800d2a16038017a53bbfd81ab9f75f3a23900b156e8f40167",
+      "record_file": "/tmp/huhu-t04-a-repair-green-lifecycle-1.json",
+      "record_sha256": "e1a938f2be2cd0706456d776a7348a0b092bee11bdfa724b612abd1f83b58487",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:30:38.510791+00:00",
+      "finished_at": "2026-10-25T11:30:41.904961+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-green-lifecycle-2.log",
+      "output_sha256": "8534c2008766b4c3d466f5f845d06082dd87014fe523fc7245ab4ca6d887b461",
+      "record_file": "/tmp/huhu-t04-a-repair-green-lifecycle-2.json",
+      "record_sha256": "516bbd618b8f0b80cce6f2a4b82e5a3ab2dd4790d7296f6bd5ab7c7cdedc1697",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:32:31.975383+00:00",
+      "finished_at": "2026-10-25T11:32:36.255685+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-green-final-notice.log",
+      "output_sha256": "465cff2ad1419eb76817a09a516bc9dadc09ab3dc1d2670b3a654d5ad193fa8d",
+      "record_file": "/tmp/huhu-t04-a-repair-green-final-notice.json",
+      "record_sha256": "98f22122f402a317b6e99b1ea5fdc23470aa113b2b7df179c6f7bb15d085df06",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:33:24.586311+00:00",
+      "finished_at": "2026-10-25T11:33:28.444799+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-green-ownership.log",
+      "output_sha256": "8017215458b31091607f2eb2ca70649b0e67d6cd3799ccbe78cbd4bb32a4a133",
+      "record_file": "/tmp/huhu-t04-a-repair-green-ownership.json",
+      "record_sha256": "ae594331e123dba95400f96a3b51de93541a123b673e9c54beb0f9d887462db1",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:35:13.480000+00:00",
+      "finished_at": "2026-10-25T11:35:17.603194+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-green-late-results.log",
+      "output_sha256": "60339a73ef9c3fb7407421c2744b354f062cbcccffcb54c3655e6e6b83981168",
+      "record_file": "/tmp/huhu-t04-a-repair-green-late-results.json",
+      "record_sha256": "6840c050dc17862b34110fe8b0aa34a8d1e802aba73986a1c889c260e71b98a1",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-production-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:35:24.792544+00:00",
+      "finished_at": "2026-10-25T11:35:29.894038+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-types-production.log",
+      "output_sha256": "8b7c932e255c1d327962348300a7b173b824dfebaf93a1c3f2e46ddd6a94184f",
+      "record_file": "/tmp/huhu-t04-a-repair-types-production.json",
+      "record_sha256": "84fb2ecc91ca14a427221f415873244e92d5d34ac5b8fa8a36a732af7d4b8570",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-production-tsconfig-initial.json",
+        "sha256": "3c9f4210cad564fa1baf209ad2ea65628ea13eea0d7c83154afabc97a01f79ff"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:36:41.585965+00:00",
+      "finished_at": "2026-10-25T11:36:47.169072+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-types-tests.log",
+      "output_sha256": "24b232c2d881963c88dffaaee68a3bd4c418a545db28efa05c0bb275ad4d4465",
+      "record_file": "/tmp/huhu-t04-a-repair-types-tests.json",
+      "record_sha256": "6ef289d5a00c5e6d70edb969b32195fa54e785c1d7c73d19169208a26e8744a2",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-tests-tsconfig-initial.json",
+        "sha256": "48b3432e7875088df981fa06d0ffbe25ea3b2d2ced165e72eb5e80c6c86b2b0f"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-production-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:37:03.760178+00:00",
+      "finished_at": "2026-10-25T11:37:08.073169+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-types-production-2.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-types-production-2.json",
+      "record_sha256": "224dfc1e0c330de6920d91cab068d9690977e6252d203fc3ed4a2b6b46794eee",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-production-tsconfig.json",
+        "sha256": "8dcc7c506c78be71300be85abc4d9eb530a0cc0963893eff07a04fd42b56f256"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:37:30.518145+00:00",
+      "finished_at": "2026-10-25T11:37:36.371817+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-a-repair-types-tests-2.log",
+      "output_sha256": "73831274ac1804f37a7fc302771c11cbadc6e898dd2751ef76001884331b683d",
+      "record_file": "/tmp/huhu-t04-a-repair-types-tests-2.json",
+      "record_sha256": "c500c6e468d9518e25d6cc525ebf0ac4ca54a181b4c6ae5766ffc47b24a9c9f6",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "sha256": "7c63cc95d0a40b62e3ea86874683690e7bb72279e3665c6d9fc27d97d1119274"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/modules/agent/services/terminal/sessions.ts",
+        "src/modules/agent/services/workspace-service.ts",
+        "src/modules/agent/services/spaces/space-service.ts",
+        "src/modules/agent/services/controller.ts",
+        "src/modules/agent/services/terminal/clock.ts",
+        "--max-warnings",
+        "0"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:37:30.553951+00:00",
+      "finished_at": "2026-10-25T11:37:40.589594+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-lint-production.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-lint-production.json",
+      "record_sha256": "20c63cfb52143a04582ce10233df5a38fee9b1af43c7de91668ce30022c9b916",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/terminal/session.test.ts",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+        "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+        "src/modules/agent/services/workspace-service.test.ts",
+        "src/modules/agent/services/workspace-service-spaces.test.ts",
+        "src/modules/agent/services/workspace-service-launch-failures.test.ts",
+        "src/modules/agent/services/workspace-service-native.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "src/modules/agent/services/spaces/records.test.ts",
+        "src/modules/agent/services/spaces/space-service.test.ts",
+        "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "src/modules/agent/services/workspace-store.test.ts",
+        "src/modules/agent/services/workspace-store-spaces.test.ts",
+        "src/modules/agent/services/controller-native.test.ts",
+        "src/modules/agent/services/controller-space.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/agent-runtime.test.ts",
+        "src/modules/agent/services/prompt-runner.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:38:55.635032+00:00",
+      "finished_at": "2026-10-25T11:39:07.096238+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-final-combination.log",
+      "output_sha256": "e0524c072aa75ab1bef156d36f1bf3530c0e44834261027b1780fd043c595899",
+      "record_file": "/tmp/huhu-t04-a-repair-final-combination.json",
+      "record_sha256": "1622fd939c4c4193aa22534e840fe7665e95906ede134f793f06ad91d190946a",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:39:25.878023+00:00",
+      "finished_at": "2026-10-25T11:39:32.562637+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-types-tests-final.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-types-tests-final.json",
+      "record_sha256": "47b195c8cbe2f9846ac4482ef596ccae063981a1813cb9a7c5cce75673244c3e",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "sha256": "7c63cc95d0a40b62e3ea86874683690e7bb72279e3665c6d9fc27d97d1119274"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-production-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:39:25.904804+00:00",
+      "finished_at": "2026-10-25T11:39:31.457493+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-types-production-final.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-types-production-final.json",
+      "record_sha256": "69c0965da0af4a9b327740eaa8ddb71f86e0e87a1fd54efa649bf5601bec10db",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-production-tsconfig.json",
+        "sha256": "8dcc7c506c78be71300be85abc4d9eb530a0cc0963893eff07a04fd42b56f256"
+      }
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/modules/agent/services/terminal/sessions.ts",
+        "src/modules/agent/services/workspace-service.ts",
+        "src/modules/agent/services/spaces/space-service.ts",
+        "src/modules/agent/services/controller.ts",
+        "src/modules/agent/services/terminal/clock.ts",
+        "--max-warnings",
+        "0"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:39:25.905930+00:00",
+      "finished_at": "2026-10-25T11:39:36.829683+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-lint-production-final.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-lint-production-final.json",
+      "record_sha256": "f45d86b4a1e61e2210b266396563e3b0dc4d5026a347444d73d9b8fba4f7906f",
+      "output_hash_matches": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "--pretty",
+        "false"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:40:58.206518+00:00",
+      "finished_at": "2026-10-25T11:41:02.305840+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-types-tests-delivery.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "record_file": "/tmp/huhu-t04-a-repair-types-tests-delivery.json",
+      "record_sha256": "820025e7a6a76234db4542a009aa746aa92142fad829def47f5bc35bdb080084",
+      "output_hash_matches": true,
+      "config_at_execution_snapshot": {
+        "path": "/tmp/huhu-t04-a-repair-tests-tsconfig.json",
+        "sha256": "7c63cc95d0a40b62e3ea86874683690e7bb72279e3665c6d9fc27d97d1119274"
+      }
+    },
+    {
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "--reporter=verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:40:58.230586+00:00",
+      "finished_at": "2026-10-25T11:41:09.300791+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-a-repair-native-cleanup-final.log",
+      "output_sha256": "2114b1d51cbd48f92805c4463cfe75e847bb55a515f56496faad289cc8d41d90",
+      "record_file": "/tmp/huhu-t04-a-repair-native-cleanup-final.json",
+      "record_sha256": "0e9c1f8a75dc29074000193cde0e93f7358077ceecd7e29ba1b622cb39af86b0",
+      "output_hash_matches": true
+    }
+  ],
+  "result_summary": {
+    "affected_closure": "21 files / 171 passed / 0 skipped",
+    "final_native_file": "2 passed / 0 skipped after final PID cleanup assertion/logging-only test edit",
+    "production_tsc": "exit0",
+    "test_tsc_final_delivery": "exit0",
+    "production_eslint": "5 modified production files / exit0 / zero warnings"
+  },
+  "evidence_timing_note": "21-file full affected closure preceded only the final extra own-PID cleanup assertions/logging in workspace-service-stop-native.test.ts. That exact final test file was rerun (2pass/0skip), followed by scoped test tsc. Production sources were unchanged and remained stopped.",
+  "failure_history_note": "All red and intermediate failures retained, including 9 behavior reds, 3 production Controller stall reds, backup-before-primary red, first lifecycle 30pass/1failure (old zero-timeout fault fixture, then accepted 50ms adjustment plus independent zero-budget test), and original type failures. Actual child exit126 is preserved. First /tmp scoped configs lacked Node typeRoots and also exposed TS7030; the next test type pass exposed happy-dom win typing, fixed before final green.",
+  "red_source_note": "Round1 production bytes are preserved in before_snapshot and original independent probe source/logs remain untouched. First added-test red revisions were not separately copied before later additions; exact edits remain in tool history and current expanded tests are in final-source. No reconstructed file is presented as an original runtime capture.",
+  "process_audit": {
+    "path": "/tmp/huhu-t04-a-repair-process-audit.json",
+    "sha256": "5bb29ac8601bbeccb9a40055cc72e1ea59ad5ac284960edf280bf1913600f4df"
+  },
+  "diff": {
+    "path": "/tmp/huhu-t04-a-repair.diff",
+    "sha256": "094f1796eb586c1b3fb7ae7ec3131ffd196a1dd6cc0321482f9f3649db001dc3"
+  },
+  "native_binary": {
+    "path": "/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+    "sha256": "ce263fd68bdbd792d2b36f675d2ee838ff39052926ce688dcb06b086eb076343",
+    "bytes": 23217880,
+    "usage": "Read-only via explicit HUHU_TEST_PTY_BINARY; no cargo/target/native writes"
+  },
+  "native_binary_current_sha256": "ce263fd68bdbd792d2b36f675d2ee838ff39052926ce688dcb06b086eb076343",
+  "not_run": [
+    "Global build/lint/architecture/Promise/bundle/generated assets (Root owns integration)",
+    "cargo/native target writes",
+    "Real Obsidian/Provider/account/five-platform E2E (user-owned)"
+  ]
+}

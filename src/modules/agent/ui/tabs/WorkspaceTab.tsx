@@ -160,10 +160,7 @@ export function WorkspaceTab({ tab, groupId, active }: { tab: Tab; groupId: stri
 								<Button
 									variant="ghost"
 									size="icon-xs"
-									className={cn(
-										'size-4 rounded-sm',
-										!active && 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100',
-									)}
+									className={cn('huhu-workspace-tab-close size-8 rounded-sm')}
 									aria-label={t('agent.workspace.closeTab')}
 									onPointerDown={(e) => e.stopPropagation()}
 									onClick={(e) => {

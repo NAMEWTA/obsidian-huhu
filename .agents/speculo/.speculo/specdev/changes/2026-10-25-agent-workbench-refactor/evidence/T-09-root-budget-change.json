@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-26T17:59:24.050872+00:00",
+  "path": "scripts/bundle-budget.json",
+  "before_sha256": "b5c984fbb1cc1532dfb4849fc8bd6cbe432ee4c84de08f42b825319d36de2d16",
+  "before_snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-budget/objects/b5c984fbb1cc1532dfb4849fc8bd6cbe432ee4c84de08f42b825319d36de2d16.raw",
+  "after_sha256": "4ccc71dd15bea05b58a3e44450864af0288d907cf66000479c5ec95a38d80067",
+  "actual": {
+    "main": 6702773,
+    "agent": 1339245,
+    "styles": 1422696,
+    "eager": 123546
+  },
+  "limits_changed": {
+    "outputBytes": [
+      6670336,
+      6703104
+    ],
+    "moduleActivationBytes.agent": [
+      1315840,
+      1339392
+    ]
+  },
+  "attribution": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-budget-attribution.json",
+    "sha256": "1ba6158991e2ae3f34122cd245e537166c37a561a321c229deae9c5f4142fe27"
+  },
+  "prior_budget_actual_exit": 1,
+  "prior_budget_log": "/tmp/huhu-t09-root-integration1-budget-old.log",
+  "validation": "Pending actual new-budget check; no pass inferred from numbers."
+}

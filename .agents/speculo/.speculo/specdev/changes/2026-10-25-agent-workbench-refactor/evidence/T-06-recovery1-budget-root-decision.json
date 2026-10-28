@@ -1,0 +1,89 @@
+{
+  "utc": "2026-10-25T22:58:09.101775+00:00",
+  "owner": "codex:/root",
+  "basis": "Actual frozen candidate build and read-only original integration1 esbuild replay; no arbitrary budget expansion.",
+  "command_receipt": "/tmp/huhu-t06-root-recovery1-attribution.json",
+  "attribution": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-recovery1-budget-attribution.json",
+  "attribution_sha256": "3908b943291745360fe879de7ffae0288555856485789149fb1074804025f9c1",
+  "before_budget_sha256": "335055403790308ccb28a3eea9f7861aa1dd42b5cb6f408a66db69588cf5c215",
+  "after_budget_sha256": "93e00327e2b7d973186622fe609f7443e8c73f0fc7795cd73cfe7008ebae8bc5",
+  "before_budget": {
+    "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
+    "outputBytes": 6300672,
+    "stylesBytes": 1422336,
+    "eagerBytes": 123904,
+    "forbiddenEagerAreas": [
+      "npm:lunar-typescript",
+      "npm:chart.js",
+      "npm:@xterm/xterm",
+      "npm:@xterm/headless",
+      "npm:simple-icons",
+      "npm:react-dom",
+      "npm:radix-ui"
+    ],
+    "moduleActivationBytes": {
+      "home": 492544,
+      "agent": 1167360,
+      "icons": 158720,
+      "browser": 103424,
+      "archives": 176128,
+      "automations": 217088,
+      "notifications": 20480,
+      "comments": 111616,
+      "navigator": 203776,
+      "sync": 98304,
+      "safe": 60416
+    },
+    "outputBudgetReason": "T-06 活动来源、物理Hook资源池、呈现后已读与有限完成提示后main.js实测6300269B，较T-05最终6234832B增加65437B。主要增量为Hook spool16733B、Session9407B、TerminalHost5629B、AutomationHooks5153B、词典4807B、Space writer4148B、Sidebar4109B；其余详见2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root/huhu-t06-budget-attribution-data.json。只读前序覆盖精确重现T-05产物，当前产物SHA一致；无新增依赖。启动闭包仍106输入，实测123531B较前序增加13B，未改源的压缩贡献有小幅变化，未扩启动边界。仅输出上限按最小KiB向上取整。",
+    "eagerBudgetReason": "T-01首用加载优化后启动闭包实测123387字节（基线122867），新增520字节为能力缓存/卸载代理；原生工厂、取消等待及desktop实现均在首次acquire后加载，启动输入108减至106。上限按最小KiB向上取整，forbiddenEagerAreas和模块激活阈值未变。",
+    "stylesBudgetReason": "T-02 Space表单、导航和空态新增Tailwind规则后styles.css实测1421356B，较T-01增加566B；仅按最小KiB向上取整，作者CSS与现有设计系统未改变。",
+    "moduleActivationBudgetReason": "T-06 Agent激活闭包实测1166472B，较T-05的1113712B增加52760B，来自活动权威、物理Hook池与完成提示持久化；预算仅按最小KiB取1167360B。真实前序覆盖与逐输入归因见T-06-logs/root/huhu-t06-budget-attribution-data.json。启动106输入不变，其他模块闭包输入集合不变且继续使用原预算；styles.css仍1421846B及原SHA，eager/styles/其他模块上限均不扩大。"
+  },
+  "after_budget": {
+    "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
+    "outputBytes": 6308864,
+    "stylesBytes": 1422336,
+    "eagerBytes": 123904,
+    "forbiddenEagerAreas": [
+      "npm:lunar-typescript",
+      "npm:chart.js",
+      "npm:@xterm/xterm",
+      "npm:@xterm/headless",
+      "npm:simple-icons",
+      "npm:react-dom",
+      "npm:radix-ui"
+    ],
+    "moduleActivationBytes": {
+      "home": 492544,
+      "agent": 1172480,
+      "icons": 158720,
+      "browser": 103424,
+      "archives": 176128,
+      "automations": 217088,
+      "notifications": 20480,
+      "comments": 111616,
+      "navigator": 203776,
+      "sync": 98304,
+      "safe": 60416
+    },
+    "outputBudgetReason": "T-06 最终候选 main.js 实测6307900B，较T-05最终6234832B增加73068B。首轮活动权威、物理Hook池、呈现后已读与完成提示增加65437B；后续精确Pane/原显示意图一次消费和Host/View呈现修复再增加7631B（Workspace4811B、Host1248B、View1158B、ForegroundIntent245B、Sessions157B、Controller12B）。只读前序覆盖精确重现首轮6300269B产物，当前产物SHA一致；逐输入归因见2026-10-25-agent-workbench-refactor/evidence/T-06-recovery1-budget-attribution.json。无新增依赖，启动闭包仍106输入/123531B；仅输出上限按最小KiB向上取整。",
+    "eagerBudgetReason": "T-01首用加载优化后启动闭包实测123387字节（基线122867），新增520字节为能力缓存/卸载代理；原生工厂、取消等待及desktop实现均在首次acquire后加载，启动输入108减至106。上限按最小KiB向上取整，forbiddenEagerAreas和模块激活阈值未变。",
+    "stylesBudgetReason": "T-02 Space表单、导航和空态新增Tailwind规则后styles.css实测1421356B，较T-01增加566B；仅按最小KiB向上取整，作者CSS与现有设计系统未改变。",
+    "moduleActivationBudgetReason": "T-06 最终Agent激活闭包实测1171697B，较T-05的1113712B增加57985B；首轮活动权威/物理Hook池/完成提示增加52760B，精确显示意图修复再增加5225B。预算按最小KiB取1172480B；真实首轮覆盖与逐输入归因见T-06-recovery1-budget-attribution.json。启动106输入/123531B、其他模块闭包及styles.css的1421846B与原SHA保持；eager/styles/其他模块上限均不扩大。"
+  },
+  "measured": {
+    "main": 6307900,
+    "agent": 1171697,
+    "eager": 123531,
+    "eager_inputs": 106,
+    "main_sha256": "bc0422968f6fa5a76bd3319385c25250dbafa2a83c41ca92ce1284082176517c"
+  },
+  "unchanged": [
+    "All other module bytes and input sets",
+    "Startup bytes and 106 input set",
+    "styles.css exact bytes",
+    "Dependencies",
+    "All caps other than outputBytes and agent activation"
+  ],
+  "check_status": "Final enforcing bundle check pending; this decision is not a passing check."
+}

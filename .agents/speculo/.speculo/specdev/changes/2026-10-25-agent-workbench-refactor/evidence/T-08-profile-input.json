@@ -1,0 +1,111 @@
+{
+  "utc": "2026-10-26T05:41:37.757235+00:00",
+  "purpose": "Root actual source readback and accepted recipe subtype for an independent artifact verifier; full editor port/native implementation remains pending.",
+  "source": "src/shared/native/control-schema.json",
+  "schemas": {
+    "editorFileIdentity": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "maxUtf8Bytes": 4096
+        },
+        "dev": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "decimal",
+          "maxUtf8Bytes": 128
+        },
+        "ino": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "decimal",
+          "maxUtf8Bytes": 128
+        }
+      },
+      "required": [
+        "path",
+        "dev",
+        "ino"
+      ],
+      "additionalProperties": false
+    },
+    "editorRecipe": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "profileId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "maxUtf8Bytes": 128
+        },
+        "artifactDigest": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "hex256",
+          "maxUtf8Bytes": 64
+        },
+        "executable": {
+          "ref": "editorFileIdentity"
+        },
+        "entry": {
+          "ref": "editorFileIdentity"
+        }
+      },
+      "required": [
+        "version",
+        "profileId",
+        "artifactDigest",
+        "executable",
+        "entry"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "generated_source": "src/shared/native/control-wire.generated.ts",
+  "generated_exports": "export type NativeEditorFileIdentity = { readonly path: string; readonly dev: string; readonly ino: string };\nexport type NativeEditorRecipe = {\n\treadonly version: 1;\n\treadonly profileId: string;\n\treadonly artifactDigest: string;\n\treadonly executable: NativeEditorFileIdentity;\n\treadonly entry: NativeEditorFileIdentity;\n};\n",
+  "generated_exports_sha256": "758cdb0460ed330da7209f75041ffbd0ca8e7f15bffbe63d6de500c5a8a80d07",
+  "producer_profile": {
+    "path": "/tmp/huhu-t08-b-producer-proof/producer-profile.json",
+    "sha256": "2e33cbe021af96a1de8b462064a667448be244b8c0bc8408aa178c163465ab48",
+    "bytes": 199835
+  },
+  "before": [
+    {
+      "path": "src/modules/agent/platform/desktop/agents/program-identity.ts",
+      "sha256": null,
+      "missing": true
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/program-identity.test.ts",
+      "sha256": null,
+      "missing": true
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/pi-artifact-profiles.json",
+      "sha256": null,
+      "missing": true
+    }
+  ],
+  "scope": "Only these generated subtype definitions are accepted; the rest of the generated file remains under the original C writer and must not be represented as immutable.",
+  "semantics": [
+    "executable and entry are realpath plus decimal dev/ino from the actual final launch inputs.",
+    "artifactDigest identifies the fully verified official Pi and actually resolved Jiti closure, not a hash of the thin CLI entry.",
+    "Native later rechecks physical identity and foreground; this does not claim an atomic whole-directory hash-to-submit guarantee.",
+    "No launcher/runtime/UI/Host writes in this task; the verifier is consumed by a later authorized integration."
+  ],
+  "goal_sha256": "dffd85f1c7a697a0b4b2b0a8a6a556067d0d07c748119d8d05960f04ca087510",
+  "map_sha256": "86b654d61171abb1202d4da26ecd3d468197da9e502037f40b08be9a06fd07ba",
+  "prior_A_audit": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-a-stage1-root-audit.json",
+    "sha256": "0612256a5575f867deea1f0fa65f81e824e8f0e2b98299fdee3012187ca46c91"
+  }
+}

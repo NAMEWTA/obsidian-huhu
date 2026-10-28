@@ -1,0 +1,386 @@
+{
+  "task": "T-10 passive-inbox strict read-only preflight",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+  "notAFrozenSnapshot": true,
+  "meaning": "Final byte observations, not proof active T-03 sources stayed unchanged. No session.ts/sessions.ts mutation-window observations or reruns. T-03 C owned test remains stopped and is not modified.",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/10-passive-inbox.md",
+      "sha256": "06621674b776747233614a3e3a7c11dd2c50a652e6efdb8a3f350b8082caffff",
+      "bytes": 16206,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval.md",
+      "sha256": "5c84504ba7fb6911c8a5789953125d867c2d69db342d83e174585ec4d939bde3",
+      "bytes": 2509,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/final/app.js",
+      "sha256": "e4ef8d0d69a2ff5e90065ebc82f6f4e4981084e067a0d8162341b1ddd6c0ca5c",
+      "bytes": 41739,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/final/index.html",
+      "sha256": "c44923a86fb41e3818b4d292bff6d2618bdeb3a87d46812a391aa368510903da",
+      "bytes": 3520,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "bytes": 9072,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "bytes": 8182,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "bytes": 4304,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/api.ts",
+      "sha256": "d54784fd945cf78f57057925d77249232b919f270123985308c86c9c19f53f88",
+      "bytes": 1787,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/module.ts",
+      "sha256": "c78c7a5f021eca4f40ccc95a46f96f7da020ebced86b72463927977142244f2c",
+      "bytes": 2133,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/manifest.ts",
+      "sha256": "8688ac0fd31841c76a7d34aa67dccfd9bec2c520553b2773230ac584143fffc2",
+      "bytes": 460,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/core/service.ts",
+      "sha256": "3b8ddd63e0a866482516c3c8fa143e31ccd1d94a012e1e9b2eb8b2db780aeedd",
+      "bytes": 6209,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/core/service.test.ts",
+      "sha256": "84b2d9f1c267162d7cb691e54db7154fec638f3c2f6de542951bc79f5f0bb024",
+      "bytes": 5266,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/platform/delivery.ts",
+      "sha256": "e2ca8b7341cc69c449ce0b25307a002a160a157fef8b4db2a12c916db27415ce",
+      "bytes": 1182,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/ui/workbench-page.ts",
+      "sha256": "c5eec6a175c9906b248297a5b8951d9554f6e2b9777da05b993f11a4f10c4dee",
+      "bytes": 799,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/ui/InboxPanel.tsx",
+      "sha256": "196cec6a76cf908c6a8f959e6bca5d6c13b0860387ecda097197c44648244d1c",
+      "bytes": 4115,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/notifications/ui/InboxPanel.dom.test.tsx",
+      "sha256": "94e7f5d7b5edda835449b5bcde967461fef87319b8203bee74ce322c56a00a34",
+      "bytes": 2132,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/automations/module.ts",
+      "sha256": "0f19c44067f9e6d271eca2f790af7dd7e03e313e93c9db10734ce59e6ebee98f",
+      "bytes": 8019,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/automations/services/runtime.ts",
+      "sha256": "c48383f13a424d590361dd87cdcaf85db9f2f205fbaee676fd8d52a77531ecbe",
+      "bytes": 11146,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "1cd9f4d34fff872ecf1e483aac83de4a100f7a95ffac61adfaa7119405324645",
+      "bytes": 44087,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "a8086a18170d9586302266d9816c471844a15c9574f00da479124590f3e99f68",
+      "bytes": 36965,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-view.ts",
+      "sha256": "8be12da06de9320a0c093def10ca0a0992af396465682411b4b7f580d36c9437",
+      "bytes": 671,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "bytes": 16158,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "bytes": 4239,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "bytes": 1234,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/json-store.ts",
+      "sha256": "74fef079c0f2bac8654081986b142455a1c2f6fbd0674f0c49f0b258e8052e53",
+      "bytes": 5587,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/json-store.test.ts",
+      "sha256": "fac8ba2567d9348c6fa12b6afc5461d53ccfdd2554a9f0623689c39c8340d8d4",
+      "bytes": 10214,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/storage/write-queue.ts",
+      "sha256": "0d30c9db993783ac08e4d10e051a9a95c5bef1d41bbdb6403efb220a878fc820",
+      "bytes": 2215,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/storage/write-queue.test.ts",
+      "sha256": "6a0462f48ae9e5fbc923c4821971f01ddc3ea81ac3b1e4be6f536f9948542199",
+      "bytes": 2467,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/storage/three-way-merge.ts",
+      "sha256": "cfb5b5ec61995b4e62b4d0aab59ead3f870455b3b9152ebc815e1e0ffa096c13",
+      "bytes": 2766,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "bytes": 5554,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "src/host/obsidian/storage/private-storage.ts",
+      "sha256": "4c280b6728b1b7a6bd06bd961c09f7d8e5223b42fee956e8e1fb74b331a6296e",
+      "bytes": 707,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    },
+    {
+      "path": "docs/data.md",
+      "sha256": "f1b8c4808f44d67eee5564e29682a4bb5f67c9bf3dbb152aa485e8f63f7d5bf5",
+      "bytes": 22771,
+      "observedAtUtc": "2026-10-25T08:15:25.245067+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted partial/full read or previous unchanged dev/ui rules reused; whole-file digest"
+    }
+  ],
+  "proposedDirectories": [
+    {
+      "path": "src/modules/agent/core/inbox",
+      "existsAtObservation": false
+    },
+    {
+      "path": "src/modules/agent/services/inbox",
+      "existsAtObservation": false
+    },
+    {
+      "path": "src/modules/agent/ui/inbox",
+      "existsAtObservation": false
+    }
+  ],
+  "notRun": [
+    "tests",
+    "build",
+    "lint",
+    "full repository scan",
+    "Obsidian",
+    "helper",
+    "Provider",
+    "external messages",
+    "Git operations"
+  ]
+}

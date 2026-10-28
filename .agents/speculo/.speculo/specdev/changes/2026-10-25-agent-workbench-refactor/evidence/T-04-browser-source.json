@@ -1,0 +1,20 @@
+{
+  "ticket": "T-04 Browser fixture closure",
+  "owner": "codex:/root/implement_t01",
+  "source_writes_stopped": true,
+  "observed_at_utc": "2026-10-25T10:49:37.281621+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "dispatch_prepared_sha256": "51f4ef10fe16c1357a6ca70645b76dfccc37fe04868bcf9ccb5287a26a4948b7",
+  "dispatch_current_sha256": "5fb3f36731eb3b15f922042a986816408ea75b30a998a663f32b9cde20d36233",
+  "dispatch_note": "Root appended actual_dispatch only; deleting that bookkeeping field exactly reproduces the prepared packet SHA supplied in the authorized task",
+  "before_sha256": "9a1247a66a237c850e10533fc39bf426150b2e5bbfdb5541ef9c364bc36acb36",
+  "files": [
+    {
+      "path": "src/modules/browser/module.test.ts",
+      "bytes": 5318,
+      "sha256": "b2175b6625a4033760e963ea404f4d2b4f275a69b47449561a3991b35d7c5842",
+      "snapshot": "/tmp/huhu-t04-c-browser-source-snapshot.ts"
+    }
+  ],
+  "all_other_sources_rust_target_binary": "remained STOPPED; no writes during this narrow task"
+}

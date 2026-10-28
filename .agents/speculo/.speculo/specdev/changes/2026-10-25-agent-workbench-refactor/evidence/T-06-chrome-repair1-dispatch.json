@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-25T21:16:36.348705+00:00",
+  "root_decision": "T-06-chrome-v1-diagnosis-root-audit.json",
+  "actual_followups": [
+    {
+      "target": "/root/prepare_t03",
+      "tool": "collaboration.followup_task",
+      "returned": "success, empty body",
+      "scope": "three A paths in decision"
+    },
+    {
+      "target": "/root/prepare_t05_screen",
+      "tool": "collaboration.followup_task",
+      "returned": "success, empty body",
+      "scope": "three B paths in decision"
+    }
+  ],
+  "additional_actual_message": {
+    "target": "/root/prepare_t05_screen",
+    "tool": "collaboration.send_message",
+    "returned": "success, empty body",
+    "reason": "Root visually observed untranslated common.retry; actual key absent from loaded dictionaries. ui.retry exists in en/zh and HuhuProviders registers it before children.",
+    "additional_paths": [
+      {
+        "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+        "sha256": "69462f4724654e99eb80bdeb7fcf28dc508d0b1e2e079129b1bdd88baf0c1de7",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/b-stopped/objects/69462f4724654e99eb80bdeb7fcf28dc508d0b1e2e079129b1bdd88baf0c1de7.raw"
+      },
+      {
+        "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+        "sha256": "ec442c4006cd453d106611fe41cc9572f273f972e72ecc18000adb0f3aeb7158",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/b-stopped/objects/ec442c4006cd453d106611fe41cc9572f273f972e72ecc18000adb0f3aeb7158.raw"
+      }
+    ],
+    "scope": "reuse ui.retry in existing retry control; existing test asserts translated text; update browser lookup and accurately label controlled TextStorage rejection.",
+    "not_authorized": "other Host changes, layout, dictionaries or future tickets"
+  },
+  "integration_attempts": 1,
+  "status": "A and B bounded repair active; C SOURCE STOPPED; new Root integration has not run"
+}

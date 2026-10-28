@@ -1,0 +1,23 @@
+{
+  "recorded_at": "2026-10-26T10:11:25.344708+00:00",
+  "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/011-t08-full-review/TASK.md",
+  "task_sha256": "5882ec4fa6208d5ed4b548cfd39e60f4874532b681eec60058ba468bf02ce999",
+  "input": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-review-input.json",
+  "input_sha256": "67522a2ee5d8579aca8469511d6529d6425b40fd6cd265db784e7900a9c0cf26",
+  "dispatch_validation": {
+    "tool": "exec_command",
+    "chunk_id": "8c8980",
+    "exit_code": 0,
+    "errors": [],
+    "warnings": [],
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "tool": "collaboration.followup_task",
+  "target": "/root/review_t08_native",
+  "tool_return": "empty successful response",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "model_provenance": "Same native reviewer originally spawned for009 with explicit gpt-6-astra/high/fork none; followup retains identity and configuration.",
+  "independence": "Reviewer has performed only009 read-only C33 review; not among T08 implementers.",
+  "source_state": "All A/B/C/Root product writers SOURCE STOPPED before85-file freeze."
+}

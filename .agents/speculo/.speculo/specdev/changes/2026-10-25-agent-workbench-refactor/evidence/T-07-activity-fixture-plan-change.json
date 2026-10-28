@@ -1,0 +1,85 @@
+{
+  "utc": "2026-10-26T02:51:16.859624+00:00",
+  "before": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "9d218b89f13deaf6dcfb94361857598ac4321a42c33a60d34557996bd58cf7ec",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/9d218b89f13deaf6dcfb94361857598ac4321a42c33a60d34557996bd58cf7ec.raw",
+      "bytes": 38196
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "01bdca936633f7c3d926db6429320d576a6bb3ecf5abb886f8361dc33315df28",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/01bdca936633f7c3d926db6429320d576a6bb3ecf5abb886f8361dc33315df28.raw",
+      "bytes": 32225
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/07-local-cli.md",
+      "sha256": "33507fae1a84756250a630024848155660b58f4258a7393d6f0307c536a5a8a4",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/33507fae1a84756250a630024848155660b58f4258a7393d6f0307c536a5a8a4.raw",
+      "bytes": 27813
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-engineering-packet.md",
+      "sha256": "56601875e63c8411a5b0860fd3f0e831523e5edd69c67d3c46adc0bb9dfea8c3",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/56601875e63c8411a5b0860fd3f0e831523e5edd69c67d3c46adc0bb9dfea8c3.raw",
+      "bytes": 15231
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-write-allocation.json",
+      "sha256": "bd2e4cc55fe3d24ffebb1628b3b61a83b4e66a920f6901a039be48b68e2c8b55",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/bd2e4cc55fe3d24ffebb1628b3b61a83b4e66a920f6901a039be48b68e2c8b55.raw",
+      "bytes": 4347
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07.md",
+      "sha256": "2f329bdf1fbbf1818a8724680b1ec139da77baf2e6910f651c59f4ae634c0893",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/2f329bdf1fbbf1818a8724680b1ec139da77baf2e6910f651c59f4ae634c0893.raw",
+      "bytes": 14301
+    }
+  ],
+  "after": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "8c4c5d6328a4c71ba7c176615e7add76556e73120dd2a327d310edb6b728afe9",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/8c4c5d6328a4c71ba7c176615e7add76556e73120dd2a327d310edb6b728afe9.raw",
+      "bytes": 38225
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "da724c5ec33538aceadba4fe2dd7af01d2a5ad967c3a1d7a811b57cd2030bb3e",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/da724c5ec33538aceadba4fe2dd7af01d2a5ad967c3a1d7a811b57cd2030bb3e.raw",
+      "bytes": 32225
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/07-local-cli.md",
+      "sha256": "32ca29135424fcbd6aa06a8c4a0191ce63289e7cea623e1d09bb2f1788fbe584",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/32ca29135424fcbd6aa06a8c4a0191ce63289e7cea623e1d09bb2f1788fbe584.raw",
+      "bytes": 28444
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-engineering-packet.md",
+      "sha256": "3a4aa3545c856e2445deafaa6fda3807f36ebf1a97dc666853b0cbf9dad03a51",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/3a4aa3545c856e2445deafaa6fda3807f36ebf1a97dc666853b0cbf9dad03a51.raw",
+      "bytes": 15720
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-write-allocation.json",
+      "sha256": "8426502397dc7aa68020fe6f404a30c026682f5487103acbe562cbf621fa0a4e",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/8426502397dc7aa68020fe6f404a30c026682f5487103acbe562cbf621fa0a4e.raw",
+      "bytes": 4652
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07.md",
+      "sha256": "dc75e6258703bd0ce9a469a899df9d0ea4cdd08789898e26c4026da38561494d",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/activity-fixture-plan/objects/dc75e6258703bd0ce9a469a899df9d0ea4cdd08789898e26c4026da38561494d.raw",
+      "bytes": 15431
+    }
+  ],
+  "added_product_path": "src/modules/agent/services/controller-activity.test.ts",
+  "previous_revision": "GP023/Map24",
+  "current_revision": "GP024/Map25",
+  "validation_pending": true,
+  "implementation_dispatch_pending": true,
+  "integration_attempts": 1
+}

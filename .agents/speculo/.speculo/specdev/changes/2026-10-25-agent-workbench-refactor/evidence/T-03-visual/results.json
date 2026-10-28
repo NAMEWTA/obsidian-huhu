@@ -1,0 +1,1115 @@
+[
+  {
+    "scene": "sidebar",
+    "state": "normal",
+    "width": 1200,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-normal-1200-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nBackground worker 1\n\nBackground · Connected\n\nother-0\n\nBackground worker 2\n\nBackground · Starting…\n\nother-1\n\nBackground worker 3\n\nBackground · Start failed\n\nother-2\n\nBackground worker 4\n\nBackground · Start cancelled\n\nother-3\n\nBackground worker 5\n\nView closed · Disconnected\n\nother-4\n\nRestored session\n\nRestored record · not running\n\nrestored\n\nWorking\n1\nA very long terminal name to verify truncation, state and accessible actions\n/fixture-vault · 29881933 min ago",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Current project",
+        "width": 227,
+        "height": 36,
+        "hitWidth": 227,
+        "hitHeight": 36
+      },
+      {
+        "name": "Rename Current project",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Find",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "Usage statistics",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New tab",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Background worker 1",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Background worker 2",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Background worker 3",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Background worker 4",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Background worker 5",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: Restored session",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "Working1",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "A very long terminal name to verify truncation, state and accessible actions/fixture-vault · 29881933 min ago",
+        "width": 212,
+        "height": 37.5,
+        "hitWidth": 212,
+        "hitHeight": 37.5
+      },
+      {
+        "name": "More actions",
+        "width": 20,
+        "height": 20,
+        "hitWidth": 32,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "normal",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-normal-800-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n后台任务 1\n\n后台 · 已连接\n\nother-0\n\n后台任务 2\n\n后台 · 启动中…\n\nother-1\n\n后台任务 3\n\n后台 · 启动失败\n\nother-2\n\n后台任务 4\n\n后台 · 启动已取消\n\nother-3\n\n后台任务 5\n\n视图已关闭 · 已断开\n\nother-4\n\n恢复的会话\n\n已恢复记录 · 未运行\n\nrestored\n\n运行中\n1\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n/fixture-vault · 29881933 分钟前",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [],
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "当前项目空间",
+        "width": 227,
+        "height": 36,
+        "hitWidth": 227,
+        "hitHeight": 36
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "查找",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "智能体看板",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "用量统计",
+        "width": 263,
+        "height": 32,
+        "hitWidth": 263,
+        "hitHeight": 32
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建标签",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 后台任务 1",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 后台任务 2",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 后台任务 3",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 后台任务 4",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 后台任务 5",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 恢复的会话",
+        "width": 232,
+        "height": 32,
+        "hitWidth": 232,
+        "hitHeight": 32
+      },
+      {
+        "name": "运行中1",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压/fixture-vault · 29881933 分钟前",
+        "width": 212,
+        "height": 37.5,
+        "hitWidth": 212,
+        "hitHeight": 37.5
+      },
+      {
+        "name": "更多操作",
+        "width": 20,
+        "height": 20,
+        "hitWidth": 32,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "empty",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-empty-320-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": true,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New Space",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Current project",
+        "width": 215,
+        "height": 44,
+        "hitWidth": 215,
+        "hitHeight": 44
+      },
+      {
+        "name": "Rename Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Find",
+        "width": 263,
+        "height": 44,
+        "hitWidth": 263,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 263,
+        "height": 44,
+        "hitWidth": 263,
+        "hitHeight": 44
+      },
+      {
+        "name": "Usage statistics",
+        "width": 263,
+        "height": 44,
+        "hitWidth": 263,
+        "hitHeight": 44
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "normal",
+    "width": 960,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "terminal-normal-960-theme-dark-en.png",
+    "body": "The process keeps running. Reopen it from the session list.\n\n$ printf \"fixture screen\\n\"\nfixture screen\n$",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [],
+    "controls": [],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "pending",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "terminal-pending-480-theme-light-zh.png",
+    "body": "启动中…",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": true,
+    "requests": [],
+    "controls": [],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "failed",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "terminal-failed-480-theme-dark-en.png",
+    "body": "$ printf \"fixture screen\\n\"\nfixture screen\n$\nStart failed\nThe configured program is unavailable.\nClose\nRestart",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": true,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Close",
+        "width": 78.4375,
+        "height": 44,
+        "hitWidth": 78.4375,
+        "hitHeight": 44
+      },
+      {
+        "name": "Restart",
+        "width": 89.90625,
+        "height": 44,
+        "hitWidth": 89.90625,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "disconnected",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "terminal-disconnected-800-theme-light-zh.png",
+    "body": "$ printf \"fixture screen\\n\"\nfixture screen\n$\n已断开\n关闭\n重新启动",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [],
+    "controls": [
+      {
+        "name": "关闭",
+        "width": 70,
+        "height": 32,
+        "hitWidth": 70,
+        "hitHeight": 32
+      },
+      {
+        "name": "重新启动",
+        "width": 98,
+        "height": 32,
+        "hitWidth": 98,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "restored",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "terminal-restored-320-theme-light-zh.png",
+    "body": "已恢复记录 · 未运行\n\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n/fixture-vault\n\n重新启动\n关闭",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": true,
+    "requests": [],
+    "controls": [
+      {
+        "name": "重新启动",
+        "width": 104,
+        "height": 44,
+        "hitWidth": 104,
+        "hitHeight": 44
+      },
+      {
+        "name": "关闭",
+        "width": 60,
+        "height": 44,
+        "hitWidth": 60,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "menu",
+    "state": "normal",
+    "width": 1200,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "menu-normal-1200-theme-dark-en.png",
+    "body": "Other target\nName (optional)\nStart in background\nTerminal and browser actions\nNew terminal\nCtrl T\nOther shells\nNew browser tab\nCtrl ⇧B\nAgents\nClaude Code\nCtrl Alt N\nCodex\nGrok\nOpenCode\nGemini CLI\nPi\nSettings\nAgent settings…",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Other target",
+        "width": 84.8125,
+        "height": 32,
+        "hitWidth": 84.8125,
+        "hitHeight": 32
+      },
+      {
+        "name": "New tab",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Search open tabs, URLs, agents…",
+        "width": 278,
+        "height": 36,
+        "hitWidth": 278,
+        "hitHeight": 36
+      },
+      {
+        "name": null,
+        "width": 262,
+        "height": 32,
+        "hitWidth": 262,
+        "hitHeight": 32
+      },
+      {
+        "name": null,
+        "width": 16,
+        "height": 16,
+        "hitWidth": 262,
+        "hitHeight": 32
+      },
+      {
+        "name": "New terminalCtrl T",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Other shells",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "New browser tabCtrl ⇧B",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Claude CodeCtrl Alt N",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Codex",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Grok",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "OpenCode",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Gemini CLI",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Pi",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Agent settings…",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "menu",
+    "state": "normal",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "menu-normal-320-theme-light-zh.png",
+    "body": "Other target\n名称（可选）\n在后台启动\n终端与浏览器操作\n新建终端\nCtrl T\n其他 Shell\n新建浏览器标签\nCtrl ⇧B\n智能体\nClaude Code\nCtrl Alt N\nCodex\nGrok\nOpenCode\nGemini CLI\nPi\n设置\n智能体设置…",
+    "overflow": false,
+    "reducedMotion": true,
+    "coarse": true,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Other target",
+        "width": 84.8125,
+        "height": 44,
+        "hitWidth": 84.8125,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "搜索已打开的标签、网址、智能体…",
+        "width": 278,
+        "height": 44,
+        "hitWidth": 278,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 262,
+        "height": 44,
+        "hitWidth": 262,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 16,
+        "height": 16,
+        "hitWidth": 262,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建终端Ctrl T",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "其他 Shell",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建浏览器标签Ctrl ⇧B",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Claude CodeCtrl Alt N",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Codex",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Grok",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "OpenCode",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Gemini CLI",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Pi",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体设置…",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "menu",
+    "state": "loading",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "menu-loading-480-theme-dark-en.png",
+    "body": "Other target\nName (optional)\nStart in background\nTerminal and browser actions\nNew terminal\nCtrl T\nOther shells\nNew browser tab\nCtrl ⇧B\nAgents\nClaude Code\nCtrl Alt N\nCodex\nGrok\nOpenCode\nGemini CLI\nPi\nSettings\nAgent settings…",
+    "overflow": false,
+    "reducedMotion": true,
+    "coarse": true,
+    "requests": [
+      {
+        "spaceId": "948cea79-413b-495b-b51d-b3a5e10b7e55",
+        "foreground": true,
+        "kind": "shell"
+      }
+    ],
+    "controls": [
+      {
+        "name": "Other target",
+        "width": 84.8125,
+        "height": 44,
+        "hitWidth": 84.8125,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Search open tabs, URLs, agents…",
+        "width": 278,
+        "height": 44,
+        "hitWidth": 278,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 262,
+        "height": 44,
+        "hitWidth": 262,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 16,
+        "height": 16,
+        "hitWidth": 262,
+        "hitHeight": 44
+      },
+      {
+        "name": "New terminalCtrl T",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Other shells",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "New browser tabCtrl ⇧B",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Claude CodeCtrl Alt N",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Codex",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Grok",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "OpenCode",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Gemini CLI",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Pi",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent settings…",
+        "width": 255,
+        "height": 44,
+        "hitWidth": 255,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "menu",
+    "state": "error",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "menu-error-800-theme-light-zh.png",
+    "body": "Other target\n名称（可选）\n在后台启动\n\n配置的程序不可用。\n\n终端与浏览器操作\n新建终端\nCtrl T\n其他 Shell\n新建浏览器标签\nCtrl ⇧B\n智能体\nClaude Code\nCtrl Alt N\nCodex\nGrok\nOpenCode\nGemini CLI\nPi\n设置\n智能体设置…",
+    "overflow": false,
+    "reducedMotion": false,
+    "coarse": false,
+    "requests": [
+      {
+        "spaceId": "3df13321-2c45-4d40-a3f2-67f863c5b4a0",
+        "foreground": true,
+        "kind": "shell"
+      }
+    ],
+    "controls": [
+      {
+        "name": "Other target",
+        "width": 84.8125,
+        "height": 32,
+        "hitWidth": 84.8125,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建标签",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "搜索已打开的标签、网址、智能体…",
+        "width": 278,
+        "height": 36,
+        "hitWidth": 278,
+        "hitHeight": 36
+      },
+      {
+        "name": null,
+        "width": 262,
+        "height": 32,
+        "hitWidth": 262,
+        "hitHeight": 32
+      },
+      {
+        "name": null,
+        "width": 16,
+        "height": 16,
+        "hitWidth": 262,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建终端Ctrl T",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "其他 Shell",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建浏览器标签Ctrl ⇧B",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Claude CodeCtrl Alt N",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Codex",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Grok",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "OpenCode",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Gemini CLI",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "Pi",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      },
+      {
+        "name": "智能体设置…",
+        "width": 255,
+        "height": 32,
+        "hitWidth": 255,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "menu",
+    "state": "short",
+    "width": 320,
+    "height": 360,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "menu-short-320-theme-dark-en.png",
+    "body": "Other target\nName (optional)\nStart in background\nTerminal and browser actions\nNew terminal\nCtrl T\nOther shells\nNew browser tab\nCtrl ⇧B\nAgents\nClaude Code\nCtrl Alt N\nCodex\nGrok\nOpenCode\nGemini CLI\nPi\nSettings\nAgent settings…",
+    "overflow": false,
+    "reducedMotion": true,
+    "coarse": true,
+    "requests": [],
+    "controls": [
+      {
+        "name": "Other target",
+        "width": 84.8125,
+        "height": 44,
+        "hitWidth": 84.8125,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Search open tabs, URLs, agents…",
+        "width": 268,
+        "height": 44,
+        "hitWidth": 268,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 252,
+        "height": 44,
+        "hitWidth": 252,
+        "hitHeight": 44
+      },
+      {
+        "name": null,
+        "width": 16,
+        "height": 16,
+        "hitWidth": 252,
+        "hitHeight": 44
+      },
+      {
+        "name": "New terminalCtrl T",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Other shells",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "New browser tabCtrl ⇧B",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Claude CodeCtrl Alt N",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Codex",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Grok",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "OpenCode",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Gemini CLI",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Pi",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent settings…",
+        "width": 245,
+        "height": 44,
+        "hitWidth": 245,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  }
+]

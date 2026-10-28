@@ -1,0 +1,15 @@
+{
+  "task": "T-03 narrow lazy fixture adaptation",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "writerStoppedAtUtc": "2026-10-25T08:32:10.975248+00:00",
+  "onlyRepositoryWrite": "src/modules/agent/services/controller-native.test.ts",
+  "files": [
+    {
+      "path": "src/modules/agent/services/controller-native.test.ts",
+      "sha256": "ddf2520976892701993331afa7650c6cdbc317106f1e897fab23565d84b9bb54",
+      "bytes": 5449
+    }
+  ],
+  "noOtherRepositoryWrites": true,
+  "unchangedFrozenCSource": "src/modules/agent/services/workspace-service-native.test.ts"
+}

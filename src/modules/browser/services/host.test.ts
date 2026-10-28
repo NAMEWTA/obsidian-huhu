@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { PageHandle, type BrowserEngine } from './host';
+import { BrowserEngine, PageHandle } from './host';
 import { newPageState } from '../core/model';
 it('switches an inactive page profile lazily without requiring an existing guest', async () => {
 	const host = {
@@ -13,4 +13,14 @@ it('switches an inactive page profile lazily without requiring an existing guest
 	expect(page.native).toBeUndefined();
 	await expect(page.setProfile('missing')).rejects.toThrow('missing profile');
 	expect(page.profileId).toBe('secondary');
+});
+
+it('closePage keeps the native page alive when the workspace removal fails, and disposes it after success', async () => {
+	const close = vi.fn().mockRejectedValueOnce(new Error('write failed')).mockResolvedValue(undefined);
+	const disposePage = vi.fn();
+	const engine = { workspace: { close }, disposePage } as unknown as BrowserEngine;
+	await expect(BrowserEngine.prototype.closePage.call(engine, 'p')).rejects.toThrow('write failed');
+	expect(disposePage).not.toHaveBeenCalled();
+	await BrowserEngine.prototype.closePage.call(engine, 'p');
+	expect(disposePage).toHaveBeenCalledExactlyOnceWith('p');
 });

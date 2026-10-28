@@ -1,0 +1,173 @@
+{
+  "authority": "GP-012 / Map13 task brief; read-only observation, not T03 delivery freeze",
+  "sources": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "30baf56ea3c709b83a64b06cb9814acc16d520e6fb9edec46a190397d0dba6fc",
+      "bytes": 18118,
+      "observed_at_utc": "2026-10-25T07:36:18.836438+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observed_at_utc": "2026-10-25T07:36:18.836532+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observed_at_utc": "2026-10-25T07:36:18.836569+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817",
+      "bytes": 31587,
+      "observed_at_utc": "2026-10-25T07:36:18.836607+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "343bb8730ddb652b6795912a9a73ceebe8429176981291b6097166be0a6a8d60",
+      "bytes": 37041,
+      "observed_at_utc": "2026-10-25T07:36:18.836653+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "/tmp/huhu-t05-preflight.md",
+      "sha256": "c43e6573160d2e0c7dbaadc0e1d91216a92ccdd8c88a109fa0cc0cb2e0876acd",
+      "bytes": 17923,
+      "observed_at_utc": "2026-10-25T07:36:18.836679+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "/tmp/huhu-t06-preflight.md",
+      "sha256": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "bytes": 9271,
+      "observed_at_utc": "2026-10-25T07:36:18.836700+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "/tmp/huhu-t07-preflight.md",
+      "sha256": "3f2f585d819b0a76dc82b3bc62b32abbc0140c29cf618b4e03b52744fb3b5033",
+      "bytes": 39375,
+      "observed_at_utc": "2026-10-25T07:36:18.836737+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "4816c181ecbf91efd9bda8176c0c815db005a9b9480a144745c19e6a1eeecccb",
+      "bytes": 15147,
+      "observed_at_utc": "2026-10-25T07:36:18.836771+00:00",
+      "active_t03_writer_scope": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "96efa04e1c06e36ab72868810c082bb1e2ec0c99e44739def393c6f70b7fc099",
+      "bytes": 15532,
+      "observed_at_utc": "2026-10-25T07:36:18.836795+00:00",
+      "active_t03_writer_scope": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190,
+      "observed_at_utc": "2026-10-25T07:36:18.836812+00:00",
+      "active_t03_writer_scope": true
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+      "bytes": 7898,
+      "observed_at_utc": "2026-10-25T07:36:18.836830+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712",
+      "bytes": 8270,
+      "observed_at_utc": "2026-10-25T07:36:18.836847+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/prompt-port.ts",
+      "sha256": "1db277a9ac54772719b6c2fc9e0ac55e41a6c21e014a86807a261ff7edbb274d",
+      "bytes": 2702,
+      "observed_at_utc": "2026-10-25T07:36:18.836860+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/prompt-port.test.ts",
+      "sha256": "4f6dd0a68405b3d62963eac40e1373794c1de008b965e93862394fe51c67af91",
+      "bytes": 3763,
+      "observed_at_utc": "2026-10-25T07:36:18.836876+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/session-material.ts",
+      "sha256": "24c00ccf18035b84b0a9ee349d948ff25b5a0974a92873e61177533fc63a427d",
+      "bytes": 4742,
+      "observed_at_utc": "2026-10-25T07:36:18.836891+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/session-material.test.ts",
+      "sha256": "67a335a0528ad130f4ff8fb9d40237a0b459f697429e7cd49238100a05a11709",
+      "bytes": 5029,
+      "observed_at_utc": "2026-10-25T07:36:18.836907+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "4aaeae21fe5c032d4df4944fd7c6e3502d09a01fda0be453374a83d7c9c48336",
+      "bytes": 38818,
+      "observed_at_utc": "2026-10-25T07:36:18.836945+00:00",
+      "active_t03_writer_scope": true
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "sha256": "1624981d8036026b02350507f376279a1af225f35c769494f7a78a2b66357356",
+      "bytes": 15353,
+      "observed_at_utc": "2026-10-25T07:36:18.836968+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/keyboard.ts",
+      "sha256": "56c7311b677789a02e74325c539e6347e2ef2c5abbec74ed801e83bb2e96191a",
+      "bytes": 8751,
+      "observed_at_utc": "2026-10-25T07:36:18.836988+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/paste.ts",
+      "sha256": "5683739172f010d69a7ac4c4159c226a7bc31c14fc9e4911cc3a71cfd33988e5",
+      "bytes": 1368,
+      "observed_at_utc": "2026-10-25T07:36:18.837035+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/terminal-core.test.ts",
+      "sha256": "3403fd74537b8e05643d04f48d3dcde113e9c68094ea509ce2e9d4bedbf86d8a",
+      "bytes": 7218,
+      "observed_at_utc": "2026-10-25T07:36:18.837089+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407,
+      "observed_at_utc": "2026-10-25T07:36:18.837113+00:00",
+      "active_t03_writer_scope": false
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569",
+      "bytes": 2032,
+      "observed_at_utc": "2026-10-25T07:36:18.837130+00:00",
+      "active_t03_writer_scope": false
+    }
+  ]
+}

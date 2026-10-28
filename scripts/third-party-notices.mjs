@@ -1,5 +1,5 @@
 // Generate THIRD-PARTY-NOTICES.md: the license of every npm package bundled into main.js (from the esbuild
-// metafile) and of every crate linked into the huhu-pty helper (from `cargo metadata`, dev-dependencies
+// metafile) and of every crate linked into the huhu-pty helper or huhu CLI (from `cargo metadata`, dev-dependencies
 // excluded). SPDX alternatives select permissive terms; every provided notice is retained.
 // Usage: node scripts/third-party-notices.mjs --write | --check
 import { execFileSync } from 'node:child_process';
@@ -48,7 +48,7 @@ function stylePackages() {
  return packages;
 }
 
-/** Crates in the helper's normal dependency graph, for every target platform. */
+/** Crates in the helper/CLI package's normal dependency graph, for every target platform. */
 function cratePackages() {
 	const metadata = JSON.parse(execFileSync('cargo', ['metadata', '--format-version', '1', '--locked', '--manifest-path', path.join(root, 'native/pty-server/Cargo.toml')], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }));
 	const byId = new Map(metadata.packages.map((pkg) => [pkg.id, pkg]));
@@ -88,7 +88,7 @@ const text = [
 	'',
 	section('Bundled in main.js', 'npm packages whose code is part of the plugin bundle.', npm),
 	section('Embedded in styles.css', 'CSS and fonts embedded in the plugin stylesheet.', styles),
-	section('Linked into huhu-pty', 'Rust crates compiled into the terminal helper (all platforms). Selected permissive terms are listed for each crate; every supplied notice, including AND obligations, is retained.', crates),
+	section('Linked into huhu-pty and huhu', 'Rust crates compiled into either the terminal helper or local CLI (all platforms). Selected permissive terms are listed for each crate; every supplied notice, including AND obligations, is retained.', crates),
 ].join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n';
 
 if (mode === 'write') {

@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-25T23:57:44.131Z",
+  "reason": "Before actual dispatch, correct one audit navigation filename and include its actual prior semantic readback. No product/spec behavior changed and no reviewer had started.",
+  "preliminary_input_sha256": "b80f3a2067a7de63c3db753ef39dbd0bbdb7a5b1780956a29a60cdaed781028b",
+  "final_input_sha256": "9385796b452e0c596305021d0a8bb8c73051d6d47cd7f1b58473283ab77fc6a3",
+  "preserved_preliminary": [
+    "/tmp/huhu-t06-review-round2-pre-dispatch-readback.raw",
+    "/tmp/huhu-t06-review-round2-pre-dispatch-input.raw",
+    "/tmp/huhu-t06-review-round2-pre-dispatch-formal.raw"
+  ]
+}

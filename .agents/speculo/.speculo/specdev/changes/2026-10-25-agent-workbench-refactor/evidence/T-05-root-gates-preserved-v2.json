@@ -1,0 +1,185 @@
+{
+  "utc": "2026-10-25T15:46:06.296594+00:00",
+  "files": [
+    {
+      "source": "/tmp/huhu-t05-root-lint.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-lint.json",
+      "bytes": 671,
+      "sha256": "c3421fd39d5702157af300de170ec8f9b979402403f51b47b2903e41a896968e"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-lint.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-lint.log",
+      "bytes": 28,
+      "sha256": "960f1eb37ac4d28430af9bef2c98f32333254854ffde619330f53d373ce0f632"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-architecture.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-architecture.json",
+      "bytes": 681,
+      "sha256": "be3bfbc759dba467243b175430e71be919acebdfd7ddbd9873ba15093967cc80"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-architecture.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-architecture.log",
+      "bytes": 132,
+      "sha256": "3ee5dc302c5bf98d230110a9bdf6939c25b76b47e5e92fb9ab84aecfdec190fe"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-promise.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-promise.json",
+      "bytes": 681,
+      "sha256": "f8db3935950e4951f6f552a68d42e2eca22986b4b2aa32a0b9f52789f21b8e31"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-promise.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-promise.log",
+      "bytes": 110,
+      "sha256": "46ad46247718e7227ceba05283dcbff1a0357d667d20ad959f33d4f9534c88fc"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-i18n.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-i18n.json",
+      "bytes": 665,
+      "sha256": "2f5f5aadd9e2d37bd920f35c1265e78061676dbd007ad5b24d99baca7d18d5dc"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-i18n.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-i18n.log",
+      "bytes": 111,
+      "sha256": "f741807314c3f5582adc92aab2975f55a463c8c5b381d4a184aa1aaa21a42d5e"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs.json",
+      "bytes": 667,
+      "sha256": "04ee43119970d684436432ba3b5a333e8705f5d0a88efdf89880a8fc4d66b058"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs.log",
+      "bytes": 85517,
+      "sha256": "7f29342f0916ebdfe9a08c4f30a147c41af25727382baba44d7dbf69601c81ba"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs-v2.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs-v2.json",
+      "bytes": 670,
+      "sha256": "088daf317cdd9ea7c487ce8a69df69850c64ded11cf28ee9494fa767b6998d11"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs-v2.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs-v2.log",
+      "bytes": 9514,
+      "sha256": "f264965ca88705e89eac0403529c746e4a8b9241d26803dd4a295c1bf8d23e85"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs-v3.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs-v3.json",
+      "bytes": 670,
+      "sha256": "70739129741e3bb1484aed4c119b1c817360fa4e75aed52484902c87cbb97051"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-docs-v3.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-docs-v3.log",
+      "bytes": 2944,
+      "sha256": "ec6b8b9ca6cc95f0f97690916eb689bc842d42878d4fa69813f18398f2a556ce"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-similarity.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-similarity.json",
+      "bytes": 982,
+      "sha256": "b634dfe682d18d559c03fab8bf288b8e1c013312aac6e951c175482ad8a07b39"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-similarity.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-similarity.log",
+      "bytes": 837,
+      "sha256": "bc23f52d8dfbe86bac9b15b02ea9f7c519bbc39fb96efdaaecefbfe7deb030fc"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-similarity-v2.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-similarity-v2.json",
+      "bytes": 1017,
+      "sha256": "15c520c5a062e5dfabd07ea6221a3ca54ed6030b114b28845fc64fb93d8d4120"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-similarity-v2.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-similarity-v2.log",
+      "bytes": 4446,
+      "sha256": "992b6a77e2bac2bc1ebfbcbf18c6e9b710e817deb225d05453cfca2ff9157fd0"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-attribution.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-attribution.json",
+      "bytes": 699,
+      "sha256": "e523b5f31ca547b516f598c892a94ffdc8a12f2ed31cee52d98552503acb9797"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-attribution.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-attribution.log",
+      "bytes": 3706,
+      "sha256": "5c580ea7867e30cdfde76e20797d30e825885b8d6bfc6c461ba17670240c0642"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-bundle.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-bundle.json",
+      "bytes": 683,
+      "sha256": "e5f3b0bc506befb477cb30f55f39b30b36810ff7579f56744397479951e4d0a2"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-bundle.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-bundle.log",
+      "bytes": 1630,
+      "sha256": "eb21acfb3244444cd3b4a66f5385bf8c40d5afe9e0b118fe6dcfe44dede96f0d"
+    },
+    {
+      "source": "/tmp/huhu-t05-budget-attribution-data.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-budget-attribution-data.json",
+      "bytes": 867869,
+      "sha256": "1023249faebd6be5d46fa19da69ab103b983363337d9da1c461a6438baf95545"
+    },
+    {
+      "source": "/tmp/huhu-t05-similarity.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-similarity.json",
+      "bytes": 9012,
+      "sha256": "545aedd6d131afc94adb16bd621e0912e31fd4b2600a253320d4c8928075e1e2"
+    },
+    {
+      "source": "/tmp/huhu-t05-root-inputs-v2.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-root-inputs-v2.json",
+      "bytes": 389415,
+      "sha256": "8c4d96b36353b7f80318130e49dbfb494e107ba85280cc512f848e331c8fd274"
+    },
+    {
+      "source": "/tmp/huhu-t05-c-round2-probe-receipt.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-c-round2-probe-receipt.json",
+      "bytes": 7778,
+      "sha256": "26a0b9666d84bc1484bb26c9c99d558c23fcab62348031af142ae6a96f383a6a"
+    },
+    {
+      "source": "/tmp/huhu-t05-c-round2-probe-assembly.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-c-round2-probe-assembly.json",
+      "bytes": 6148,
+      "sha256": "3509b579a7f294fe568f740e3210b6ca57b6e18bc66a93415e118d9ad67bcb6c"
+    },
+    {
+      "source": "/tmp/huhu-t05-c-round2-probe-once.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-c-round2-probe-once.json",
+      "bytes": 580,
+      "sha256": "63ade5948b73d6dc7d3340791ec341af8e3a283d2d19291a50f179cd61f41ae0"
+    },
+    {
+      "source": "/tmp/huhu-t05-c-round2-probe-once.log",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/huhu-t05-c-round2-probe-once.log",
+      "bytes": 18862,
+      "sha256": "a39eb2072343f031eacf832d35f955dd5824bf998650eb54c8d98bbe925a70fa"
+    },
+    {
+      "source": "/home/wta/orca/workspaces/obsidian-huhu/terminal/scripts/bundle-budget.json",
+      "preserved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/root/bundle-budget-before-t05.json",
+      "bytes": 2862,
+      "sha256": "a40d8e5b8c49f854eb761ea5fdc8e96df7ee7f19b0dc7e4b9d218fbe6649c4b4"
+    }
+  ]
+}

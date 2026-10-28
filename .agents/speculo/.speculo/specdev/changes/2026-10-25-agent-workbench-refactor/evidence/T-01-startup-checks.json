@@ -1,0 +1,50 @@
+{
+  "writer_stopped": true,
+  "source_manifest": "/tmp/huhu-t01-source-manifest-v2.json",
+  "bundle": {
+    "before": {
+      "output": 6041860,
+      "eager": 124164
+    },
+    "after": {
+      "output": 6042396,
+      "eager": 123387
+    },
+    "baseline": {
+      "output": 6033579,
+      "eager": 122867
+    },
+    "recommended_minimum_kib_limits": {
+      "outputBytes": 6042624,
+      "eagerBytes": 123904
+    },
+    "budget_changed_by_worker": false,
+    "log": "/tmp/huhu-t01-bundle-optimized.log",
+    "json": "/tmp/huhu-t01-bundle-optimized.json"
+  },
+  "checks": [
+    {
+      "command": "pnpm exec eslint src/app/main.ts src/app/native.ts --max-warnings 0",
+      "exit": 0,
+      "raw": "/tmp/huhu-t01-startup-lint.log"
+    },
+    {
+      "command": "pnpm test:architecture",
+      "exit": 0,
+      "raw": "/tmp/huhu-t01-startup-architecture.log"
+    },
+    {
+      "command": "pnpm exec vitest run src/shared/native/lazy-host.test.ts src/host/desktop/native/host.test.ts",
+      "exit": 0,
+      "raw": "/tmp/huhu-t01-startup-regression.log",
+      "result": "2 files, 9 tests passed"
+    },
+    {
+      "command": "node /tmp/huhu-t01-startup-boundary.mjs",
+      "exit": 0,
+      "raw": "/tmp/huhu-t01-startup-boundary.log",
+      "result": "app native bootstrap, lazy owner, abort, runtime, helper and binary excluded from startup closure"
+    }
+  ],
+  "prior_unchanged_behavior_evidence": "/tmp/huhu-t01-checks.json"
+}

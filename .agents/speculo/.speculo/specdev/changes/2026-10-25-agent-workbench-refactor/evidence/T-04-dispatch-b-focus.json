@@ -1,0 +1,69 @@
+{
+  "task": "T-04 B exact focus scope supplement and record-view API",
+  "actual_agent": "/root/prepare_t02",
+  "prepared_at": "2026-10-25T10:06:28.115312+00:00",
+  "goal_revision": "GP-016",
+  "map_revision": 17,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "previous_packet": "evidence/T-04-dispatch-b.json",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "371b54738488ef393eab2e41a75e849acad2941d608c5b446f0a3e2089c5c977"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "75dfd23b48eeceafe1cc4533b04bb797f9bf7254350c1fddb41882c0feefe713"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "fa306c70bafd6d5e97cf557c522afc720ea3ecde932733ce0840d57856e7fa77"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-dispatch-b.json",
+      "sha256": "22462d3a7c310413a972dedba172b15061e4482d05bce1c24ae80089d3e93f6c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-api-record-view.md",
+      "sha256": "8b97dbc3dbfd6998f56b17fef6dfdc6b608c446dd768734579b2ca6e30dc1f7f"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+      "sha256": "7b0d025c658348dd3d763fa5ff7501381b894cadd365336645c8b8daccc90eed"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "223a12cb6b915ddc4f486074b8c38f2d5b00e2f1d3067799b195cce42b280ef8"
+    }
+  ],
+  "added_write_paths": [
+    "src/modules/agent/ui/AgentWorkspacePage.tsx",
+    "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx"
+  ],
+  "owner": "B only",
+  "purpose": "Fix demonstrated real Chrome Escape focus return for controlled AlertDialog without Trigger; preserve origin document and user focus changes, no delayed force focus",
+  "record_api_observation": [
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "producer_sha256": "17a9582150b769867195d3a2782c2b67912640dac229cab3c43683b9fb139869",
+      "current_sha256": "17a9582150b769867195d3a2782c2b67912640dac229cab3c43683b9fb139869",
+      "matches": true
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "producer_sha256": "223a12cb6b915ddc4f486074b8c38f2d5b00e2f1d3067799b195cce42b280ef8",
+      "current_sha256": "223a12cb6b915ddc4f486074b8c38f2d5b00e2f1d3067799b195cce42b280ef8",
+      "matches": true
+    }
+  ],
+  "record_api": "openManagedRecord(target) opens saved placeholder with zero native side effects; original stop/wait/archive methods and DTO unchanged",
+  "instructions": "Other prior exact scope/constraints continue; A/C source owners unchanged. Actual Page focus DOM and Chrome red/green required; original failures retained. No global build/lint/native/Git/remote write.",
+  "dispatched": true,
+  "actual_tool": "collaboration.send_message",
+  "actual_handle": "/root/prepare_t02",
+  "dispatch_receipt_observed_at": "2026-10-25T10:07:05.558530+00:00"
+}

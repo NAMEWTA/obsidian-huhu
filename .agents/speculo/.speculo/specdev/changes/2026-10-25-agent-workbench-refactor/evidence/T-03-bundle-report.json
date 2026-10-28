@@ -1,0 +1,895 @@
+{
+	"output": {
+		"bytes": 6106030
+	},
+	"eager": {
+		"inputs": 106,
+		"bytes": 123518,
+		"areas": [
+			{
+				"name": "src/shared",
+				"bytes": 43493
+			},
+			{
+				"name": "src/app",
+				"bytes": 41779
+			},
+			{
+				"name": "src/modules/home/core",
+				"bytes": 13147
+			},
+			{
+				"name": "src/theme",
+				"bytes": 8375
+			},
+			{
+				"name": "src/host",
+				"bytes": 7008
+			},
+			{
+				"name": "src/modules/home/settings.ts",
+				"bytes": 2758
+			},
+			{
+				"name": "src/modules/browser/core",
+				"bytes": 1235
+			},
+			{
+				"name": "src/modules/comments/settings.ts",
+				"bytes": 1092
+			},
+			{
+				"name": "src/modules/agent/api.ts",
+				"bytes": 417
+			},
+			{
+				"name": "src/modules/agent/manifest.ts",
+				"bytes": 295
+			},
+			{
+				"name": "src/modules/automations/manifest.ts",
+				"bytes": 288
+			},
+			{
+				"name": "src/modules/home/manifest.ts",
+				"bytes": 286
+			},
+			{
+				"name": "src/modules/archives/manifest.ts",
+				"bytes": 280
+			},
+			{
+				"name": "src/modules/navigator/manifest.ts",
+				"bytes": 269
+			},
+			{
+				"name": "src/modules/notifications/manifest.ts",
+				"bytes": 268
+			},
+			{
+				"name": "src/modules/comments/manifest.ts",
+				"bytes": 267
+			},
+			{
+				"name": "src/modules/browser/manifest.ts",
+				"bytes": 254
+			},
+			{
+				"name": "src/modules/sync/manifest.ts",
+				"bytes": 252
+			},
+			{
+				"name": "src/modules/icons/manifest.ts",
+				"bytes": 247
+			},
+			{
+				"name": "src/modules/automations/api.ts",
+				"bytes": 244
+			},
+			{
+				"name": "src/modules/safe/manifest.ts",
+				"bytes": 225
+			},
+			{
+				"name": "src/modules/home/api.ts",
+				"bytes": 178
+			},
+			{
+				"name": "src/modules/navigator/api.ts",
+				"bytes": 155
+			},
+			{
+				"name": "src/modules/browser/api.ts",
+				"bytes": 121
+			},
+			{
+				"name": "src/modules/notifications/api.ts",
+				"bytes": 104
+			},
+			{
+				"name": "src/modules/archives/settings.ts",
+				"bytes": 104
+			},
+			{
+				"name": "src/modules/comments/api.ts",
+				"bytes": 95
+			},
+			{
+				"name": "src/modules/browser/settings.ts",
+				"bytes": 89
+			},
+			{
+				"name": "src/modules/archives/api.ts",
+				"bytes": 67
+			},
+			{
+				"name": "src/modules/sync/api.ts",
+				"bytes": 63
+			},
+			{
+				"name": "src/modules/icons/api.ts",
+				"bytes": 63
+			}
+		]
+	},
+	"lazy": {
+		"inputs": 3342,
+		"bytes": 5793800,
+		"areas": [
+			{
+				"name": "src/modules/home/ui",
+				"bytes": 832246
+			},
+			{
+				"name": "npm:@xterm/xterm",
+				"bytes": 346104
+			},
+			{
+				"name": "src/modules/icons/core",
+				"bytes": 322438
+			},
+			{
+				"name": "npm:lunar-typescript",
+				"bytes": 302543
+			},
+			{
+				"name": "npm:chart.js",
+				"bytes": 199373
+			},
+			{
+				"name": "npm:react-dom",
+				"bytes": 182627
+			},
+			{
+				"name": "npm:@xterm/headless",
+				"bytes": 181096
+			},
+			{
+				"name": "src/modules/home/core",
+				"bytes": 163053
+			},
+			{
+				"name": "src/ui",
+				"bytes": 147922
+			},
+			{
+				"name": "src/modules/home/i18n.ts",
+				"bytes": 146763
+			},
+			{
+				"name": "src/modules/agent/ui",
+				"bytes": 146270
+			},
+			{
+				"name": "npm:@xterm/addon-webgl",
+				"bytes": 126236
+			},
+			{
+				"name": "src/modules/agent/services",
+				"bytes": 116541
+			},
+			{
+				"name": "src/modules/navigator/ui",
+				"bytes": 102721
+			},
+			{
+				"name": "src/modules/icons/platform",
+				"bytes": 101291
+			},
+			{
+				"name": "npm:yaml",
+				"bytes": 101244
+			},
+			{
+				"name": "src/modules/home/platform",
+				"bytes": 96006
+			},
+			{
+				"name": "src/shared",
+				"bytes": 94279
+			},
+			{
+				"name": "src/modules/agent/platform",
+				"bytes": 85034
+			},
+			{
+				"name": "src/modules/automations/ui",
+				"bytes": 72462
+			},
+			{
+				"name": "src/host",
+				"bytes": 70263
+			},
+			{
+				"name": "src/modules/browser/platform",
+				"bytes": 61523
+			},
+			{
+				"name": "src/modules/agent/i18n.ts",
+				"bytes": 57195
+			},
+			{
+				"name": "src/modules/archives/ui",
+				"bytes": 54927
+			},
+			{
+				"name": "src/modules/navigator/i18n.ts",
+				"bytes": 52018
+			},
+			{
+				"name": "src/modules/home/services",
+				"bytes": 49704
+			},
+			{
+				"name": "npm:lucide-react",
+				"bytes": 49560
+			},
+			{
+				"name": "src/shell",
+				"bytes": 48647
+			},
+			{
+				"name": "src/modules/navigator/core",
+				"bytes": 47568
+			},
+			{
+				"name": "src/app",
+				"bytes": 46804
+			},
+			{
+				"name": "src/modules/archives/core",
+				"bytes": 46685
+			},
+			{
+				"name": "src/modules/sync/ui",
+				"bytes": 44164
+			},
+			{
+				"name": "src/modules/browser/ui",
+				"bytes": 42281
+			},
+			{
+				"name": "src/modules/comments/ui",
+				"bytes": 39864
+			},
+			{
+				"name": "npm:@xterm/addon-search",
+				"bytes": 38698
+			},
+			{
+				"name": "src/modules/agent/core",
+				"bytes": 38593
+			},
+			{
+				"name": "src/modules/icons/i18n.ts",
+				"bytes": 38011
+			},
+			{
+				"name": "src/modules/safe/ui",
+				"bytes": 37891
+			},
+			{
+				"name": "src/modules/icons/ui",
+				"bytes": 36793
+			},
+			{
+				"name": "npm:@dnd-kit/core",
+				"bytes": 36110
+			},
+			{
+				"name": "src/modules/automations/core",
+				"bytes": 35315
+			},
+			{
+				"name": "npm:@lezer/markdown",
+				"bytes": 34752
+			},
+			{
+				"name": "src/modules/sync/i18n.ts",
+				"bytes": 33383
+			},
+			{
+				"name": "src/modules/navigator/platform",
+				"bytes": 33269
+			},
+			{
+				"name": "npm:react-draggable",
+				"bytes": 29185
+			},
+			{
+				"name": "npm:tailwind-merge",
+				"bytes": 29084
+			},
+			{
+				"name": "npm:react-resizable-panels",
+				"bytes": 27277
+			},
+			{
+				"name": "src/modules/navigator/services",
+				"bytes": 25086
+			},
+			{
+				"name": "src/modules/sync/core",
+				"bytes": 24981
+			},
+			{
+				"name": "npm:react-grid-layout",
+				"bytes": 24423
+			},
+			{
+				"name": "npm:entities",
+				"bytes": 24068
+			},
+			{
+				"name": "npm:@tanstack/virtual-core",
+				"bytes": 24012
+			},
+			{
+				"name": "src/modules/comments/core",
+				"bytes": 20984
+			},
+			{
+				"name": "npm:@floating-ui/react",
+				"bytes": 20947
+			},
+			{
+				"name": "src/modules/safe/i18n.ts",
+				"bytes": 20360
+			},
+			{
+				"name": "npm:@radix-ui/react-select",
+				"bytes": 19362
+			},
+			{
+				"name": "npm:sonner",
+				"bytes": 19271
+			},
+			{
+				"name": "src/modules/automations/i18n.ts",
+				"bytes": 19106
+			},
+			{
+				"name": "npm:@headless-tree/core",
+				"bytes": 18488
+			},
+			{
+				"name": "src/modules/browser/i18n.ts",
+				"bytes": 17909
+			},
+			{
+				"name": "src/modules/archives/i18n.ts",
+				"bytes": 17859
+			},
+			{
+				"name": "src/modules/sync/services",
+				"bytes": 16354
+			},
+			{
+				"name": "npm:@xterm/addon-serialize",
+				"bytes": 15718
+			},
+			{
+				"name": "src/modules/sync/platform",
+				"bytes": 14533
+			},
+			{
+				"name": "npm:@radix-ui/react-menu",
+				"bytes": 14183
+			},
+			{
+				"name": "src/modules/safe/services",
+				"bytes": 14160
+			},
+			{
+				"name": "npm:@radix-ui/react-scroll-area",
+				"bytes": 13281
+			},
+			{
+				"name": "npm:react-resizable",
+				"bytes": 12080
+			},
+			{
+				"name": "npm:cmdk",
+				"bytes": 12054
+			},
+			{
+				"name": "npm:react-activity-calendar",
+				"bytes": 11555
+			},
+			{
+				"name": "npm:date-fns",
+				"bytes": 11238
+			},
+			{
+				"name": "src/modules/browser/services",
+				"bytes": 11082
+			},
+			{
+				"name": "npm:@radix-ui/react-dismissable-layer",
+				"bytes": 11020
+			},
+			{
+				"name": "src/modules/automations/platform",
+				"bytes": 10662
+			},
+			{
+				"name": "npm:@radix-ui/react-slider",
+				"bytes": 9888
+			},
+			{
+				"name": "src/modules/safe/platform",
+				"bytes": 9817
+			},
+			{
+				"name": "npm:@radix-ui/react-dialog",
+				"bytes": 9196
+			},
+			{
+				"name": "npm:@radix-ui/react-focus-scope",
+				"bytes": 8596
+			},
+			{
+				"name": "src/modules/comments/i18n.ts",
+				"bytes": 8539
+			},
+			{
+				"name": "src/modules/safe/core",
+				"bytes": 8464
+			},
+			{
+				"name": "npm:@radix-ui/react-tooltip",
+				"bytes": 8308
+			},
+			{
+				"name": "npm:react",
+				"bytes": 8231
+			},
+			{
+				"name": "src/modules/automations/services",
+				"bytes": 8084
+			},
+			{
+				"name": "npm:@floating-ui/core",
+				"bytes": 8014
+			},
+			{
+				"name": "npm:@kurkle/color",
+				"bytes": 7720
+			},
+			{
+				"name": "npm:@radix-ui/react-collection",
+				"bytes": 7339
+			},
+			{
+				"name": "npm:@floating-ui/dom",
+				"bytes": 7287
+			},
+			{
+				"name": "npm:@dnd-kit/sortable",
+				"bytes": 6606
+			},
+			{
+				"name": "src/modules/browser/core",
+				"bytes": 6479
+			},
+			{
+				"name": "npm:react-remove-scroll",
+				"bytes": 6407
+			},
+			{
+				"name": "npm:tabbable",
+				"bytes": 5888
+			},
+			{
+				"name": "src/modules/home/module.ts",
+				"bytes": 5639
+			},
+			{
+				"name": "npm:@radix-ui/react-presence",
+				"bytes": 5535
+			},
+			{
+				"name": "npm:@radix-ui/react-slot",
+				"bytes": 5278
+			},
+			{
+				"name": "src/modules/navigator/settings.ts",
+				"bytes": 4841
+			},
+			{
+				"name": "npm:@radix-ui/react-popper",
+				"bytes": 4735
+			},
+			{
+				"name": "npm:@radix-ui/react-dropdown-menu",
+				"bytes": 4722
+			},
+			{
+				"name": "npm:@radix-ui/react-popover",
+				"bytes": 4686
+			},
+			{
+				"name": "npm:@radix-ui/react-context-menu",
+				"bytes": 4585
+			},
+			{
+				"name": "npm:@radix-ui/react-hover-card",
+				"bytes": 4466
+			},
+			{
+				"name": "npm:@radix-ui/react-use-controllable-state",
+				"bytes": 4253
+			},
+			{
+				"name": "npm:@radix-ui/react-accordion",
+				"bytes": 4220
+			},
+			{
+				"name": "npm:@radix-ui/react-roving-focus",
+				"bytes": 4015
+			},
+			{
+				"name": "npm:@floating-ui/utils",
+				"bytes": 3989
+			},
+			{
+				"name": "npm:@radix-ui/react-checkbox",
+				"bytes": 3929
+			},
+			{
+				"name": "npm:scheduler",
+				"bytes": 3780
+			},
+			{
+				"name": "src/modules/notifications/ui",
+				"bytes": 3760
+			},
+			{
+				"name": "src/modules/agent/module.ts",
+				"bytes": 3703
+			},
+			{
+				"name": "npm:fast-equals",
+				"bytes": 3692
+			},
+			{
+				"name": "npm:@radix-ui/react-switch",
+				"bytes": 3603
+			},
+			{
+				"name": "npm:@radix-ui/react-context",
+				"bytes": 3545
+			},
+			{
+				"name": "src/modules/archives/platform",
+				"bytes": 3404
+			},
+			{
+				"name": "src/modules/automations/module.ts",
+				"bytes": 3371
+			},
+			{
+				"name": "src/modules/home/contrib",
+				"bytes": 3368
+			},
+			{
+				"name": "npm:@floating-ui/react-dom",
+				"bytes": 3309
+			},
+			{
+				"name": "src/modules/sync/module.ts",
+				"bytes": 3286
+			},
+			{
+				"name": "npm:@dnd-kit/utilities",
+				"bytes": 3254
+			},
+			{
+				"name": "src/modules/notifications/core",
+				"bytes": 3062
+			},
+			{
+				"name": "npm:@radix-ui/react-toggle-group",
+				"bytes": 2562
+			},
+			{
+				"name": "npm:@radix-ui/react-tabs",
+				"bytes": 2542
+			},
+			{
+				"name": "src/modules/comments/services",
+				"bytes": 2440
+			},
+			{
+				"name": "npm:@radix-ui/react-collapsible",
+				"bytes": 2426
+			},
+			{
+				"name": "npm:react-remove-scroll-bar",
+				"bytes": 2411
+			},
+			{
+				"name": "npm:@xterm/addon-web-links",
+				"bytes": 2408
+			},
+			{
+				"name": "npm:@radix-ui/primitive",
+				"bytes": 2046
+			},
+			{
+				"name": "npm:@radix-ui/react-alert-dialog",
+				"bytes": 2004
+			},
+			{
+				"name": "npm:@radix-ui/react-progress",
+				"bytes": 1997
+			},
+			{
+				"name": "src/modules/navigator/module.ts",
+				"bytes": 1944
+			},
+			{
+				"name": "npm:@tanstack/react-virtual",
+				"bytes": 1895
+			},
+			{
+				"name": "src/modules/browser/module.ts",
+				"bytes": 1823
+			},
+			{
+				"name": "npm:@radix-ui/react-focus-guards",
+				"bytes": 1819
+			},
+			{
+				"name": "npm:aria-hidden",
+				"bytes": 1547
+			},
+			{
+				"name": "src/modules/archives/services",
+				"bytes": 1511
+			},
+			{
+				"name": "npm:@radix-ui/react-primitive",
+				"bytes": 1266
+			},
+			{
+				"name": "npm:use-sidecar",
+				"bytes": 1259
+			},
+			{
+				"name": "src/modules/safe/module.ts",
+				"bytes": 1254
+			},
+			{
+				"name": "src/modules/comments/platform",
+				"bytes": 1230
+			},
+			{
+				"name": "npm:@xterm/addon-fit",
+				"bytes": 1226
+			},
+			{
+				"name": "src/modules/sync/settings.ts",
+				"bytes": 1072
+			},
+			{
+				"name": "src/modules/archives/module.ts",
+				"bytes": 953
+			},
+			{
+				"name": "npm:react-style-singleton",
+				"bytes": 936
+			},
+			{
+				"name": "npm:@headless-tree/react",
+				"bytes": 923
+			},
+			{
+				"name": "src/modules/icons/module.ts",
+				"bytes": 906
+			},
+			{
+				"name": "npm:prop-types",
+				"bytes": 851
+			},
+			{
+				"name": "npm:clsx",
+				"bytes": 820
+			},
+			{
+				"name": "npm:@radix-ui/react-portal",
+				"bytes": 791
+			},
+			{
+				"name": "src/modules/comments/module.ts",
+				"bytes": 776
+			},
+			{
+				"name": "npm:use-callback-ref",
+				"bytes": 772
+			},
+			{
+				"name": "npm:tslib",
+				"bytes": 763
+			},
+			{
+				"name": "src/modules/notifications/module.ts",
+				"bytes": 704
+			},
+			{
+				"name": "npm:class-variance-authority",
+				"bytes": 677
+			},
+			{
+				"name": "npm:zustand",
+				"bytes": 629
+			},
+			{
+				"name": "npm:@radix-ui/react-use-callback-ref",
+				"bytes": 615
+			},
+			{
+				"name": "npm:@dnd-kit/accessibility",
+				"bytes": 601
+			},
+			{
+				"name": "npm:@radix-ui/react-use-size",
+				"bytes": 582
+			},
+			{
+				"name": "src/modules/notifications/platform",
+				"bytes": 569
+			},
+			{
+				"name": "npm:@radix-ui/react-toggle",
+				"bytes": 545
+			},
+			{
+				"name": "npm:@radix-ui/react-separator",
+				"bytes": 537
+			},
+			{
+				"name": "npm:@radix-ui/react-compose-refs",
+				"bytes": 521
+			},
+			{
+				"name": "npm:@radix-ui/react-use-effect-event",
+				"bytes": 513
+			},
+			{
+				"name": "npm:@radix-ui/react-use-is-hydrated",
+				"bytes": 485
+			},
+			{
+				"name": "npm:radix-ui",
+				"bytes": 479
+			},
+			{
+				"name": "npm:@radix-ui/react-visually-hidden",
+				"bytes": 452
+			},
+			{
+				"name": "src/modules/archives/contrib",
+				"bytes": 438
+			},
+			{
+				"name": "npm:@radix-ui/react-arrow",
+				"bytes": 424
+			},
+			{
+				"name": "npm:@radix-ui/react-label",
+				"bytes": 403
+			},
+			{
+				"name": "npm:@radix-ui/react-use-previous",
+				"bytes": 317
+			},
+			{
+				"name": "npm:@radix-ui/react-id",
+				"bytes": 315
+			},
+			{
+				"name": "src/modules/safe/settings.ts",
+				"bytes": 303
+			},
+			{
+				"name": "npm:@radix-ui/react-direction",
+				"bytes": 262
+			},
+			{
+				"name": "npm:@radix-ui/number",
+				"bytes": 171
+			},
+			{
+				"name": "src/modules/agent/settings.ts",
+				"bytes": 148
+			},
+			{
+				"name": "src/modules/notifications/i18n.ts",
+				"bytes": 139
+			},
+			{
+				"name": "npm:get-nonce",
+				"bytes": 116
+			},
+			{
+				"name": "src/modules/automations/settings.ts",
+				"bytes": 112
+			},
+			{
+				"name": "npm:@radix-ui/react-use-layout-effect",
+				"bytes": 88
+			},
+			{
+				"name": "npm:detect-node-es",
+				"bytes": 0
+			}
+		]
+	},
+	"modules": {
+		"agent": {
+			"activation": 1037965,
+			"deferred": 1186247
+		},
+		"archives": {
+			"activation": 175626,
+			"deferred": 543158
+		},
+		"automations": {
+			"activation": 216069,
+			"deferred": 718819
+		},
+		"browser": {
+			"activation": 102935,
+			"deferred": 413816
+		},
+		"comments": {
+			"activation": 110764,
+			"deferred": 526251
+		},
+		"home": {
+			"activation": 492390,
+			"deferred": 2361525
+		},
+		"icons": {
+			"activation": 158407,
+			"deferred": 939246
+		},
+		"navigator": {
+			"activation": 202539,
+			"deferred": 885169
+		},
+		"notifications": {
+			"activation": 20361,
+			"deferred": 374326
+		},
+		"sync": {
+			"activation": 97601,
+			"deferred": 590752
+		},
+		"safe": {
+			"activation": 60062,
+			"deferred": 517718
+		}
+	}
+}

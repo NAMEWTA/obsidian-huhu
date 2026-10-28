@@ -1,0 +1,419 @@
+{
+  "task": "T-04 pre-start TS/native interface proposal",
+  "owner": "codex:/root/prepare_t03",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_head_from_dispatch": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "dispatch_context": "GP-014 / Map15; Root reports T-03 done after second review; T-04 implementation NOT unlocked",
+  "observed_at_utc": "2026-10-25T09:28:15.842432+00:00",
+  "read_only_stopped": true,
+  "operations": "Read source, rules and supplied reports; SHA/stat only; no test/build/lint/native/helper/product process launch/Git/network write/repo or target mutation. Only this JSON and the proposal Markdown are written.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278,
+      "mtime_ns": 1792902541168531288,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "mtime_ns": 1792902541132090773,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "mtime_ns": 1792902541132090773,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235,
+      "mtime_ns": 1792902541094421511,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "mtime_ns": 1792902541089508824,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "mtime_ns": 1792908526749567240,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "mtime_ns": 1792902541092170573,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "mtime_ns": 1792902541090170537,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "mtime_ns": 1792902541093621153,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1",
+      "bytes": 31587,
+      "mtime_ns": 1792918141258341053,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e",
+      "bytes": 17143,
+      "mtime_ns": 1792909211666904657,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "mtime_ns": 1792905086797777508,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "mtime_ns": 1792905086798215116,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100,
+      "mtime_ns": 1792902541096170645,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d",
+      "bytes": 2486,
+      "mtime_ns": 1792918584155020435,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905,
+      "mtime_ns": 1792904434298146732,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "bytes": 9005,
+      "mtime_ns": 1792905450897042557,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc",
+      "bytes": 9398,
+      "mtime_ns": 1792918584156020452,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7",
+      "bytes": 4182,
+      "mtime_ns": 1792913576581781630,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/core/space/errors.ts",
+      "sha256": "8159653372f3b24851644c4933b3a251584ae75faddd670bb385c9d78898062e",
+      "bytes": 683,
+      "mtime_ns": 1792907432660936736,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "bytes": 15635,
+      "mtime_ns": 1792916673075731234,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "bytes": 16536,
+      "mtime_ns": 1792918584157020470,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae",
+      "bytes": 37279,
+      "mtime_ns": 1792918584158020488,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "bytes": 7204,
+      "mtime_ns": 1792912577927254791,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "bytes": 44420,
+      "mtime_ns": 1792916673077731270,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995,
+      "mtime_ns": 1792907759555801997,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "bytes": 16158,
+      "mtime_ns": 1792911976091984614,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "bytes": 4239,
+      "mtime_ns": 1792908574349421294,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/messages.ts",
+      "sha256": "bc1fe43f7f31b0c89a946e224d110d12fd45d71d4471eb915a2dfd573fd48c83",
+      "bytes": 857,
+      "mtime_ns": 1792907996278690441,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "sha256": "9cfb58d9798b82c59b29bfedabdfb1fa816d64eb9ad9ee9fe5afd9071ef4ddaa",
+      "bytes": 3959,
+      "mtime_ns": 1792908982444743475,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "d8486da50c46e19a8ac6b6b8dcb8b5a02489ff2146042e62580fdeb761828f39",
+      "bytes": 19226,
+      "mtime_ns": 1792915634286092940,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "sha256": "fc530751695b834a3081aec8f3fcac12d17b0f387e96905813f9c9106d4e45a6",
+      "bytes": 17382,
+      "mtime_ns": 1792915634349094071,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/confirm.tsx",
+      "sha256": "5cfde3b4d065a365dbc01436f02dbd87bb33f1471c09b117b6f84179523b2ee2",
+      "bytes": 3337,
+      "mtime_ns": 1792902541232965441,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5",
+      "bytes": 15183,
+      "mtime_ns": 1792918602414348045,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68",
+      "bytes": 5284,
+      "mtime_ns": 1792918602415348063,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "native/pty-server/src/job.rs",
+      "sha256": "49c9fecfc1c9d5a931f3aebd4786f2791186b04ad614b3595e05959e4accd540",
+      "bytes": 1251,
+      "mtime_ns": 1792902541201172529,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "sha256": "e0559a4673c6d3b1c0e45de3d10b057dd8248205b7baa1d2d70b7d808d695a9d",
+      "bytes": 790,
+      "mtime_ns": 1792902541200628783,
+      "read_mode": "relevant sections / unchanged prior source evidence reused; observed after reads"
+    },
+    {
+      "path": "/tmp/huhu-t04-lead-refresh.md",
+      "sha256": "11963ec2b605336529f685b6358b33f49c98c284dc8ed0a4507141cb2b51e049",
+      "bytes": 3393,
+      "read_mode": "provided read-only design/evidence; source observation inventory reused, underlying external study not rerun"
+    },
+    {
+      "path": "/tmp/huhu-t04-native-design.md",
+      "sha256": "fac5017e35a2f25b17ae8bb35193c1cd713ff7510f7667b98666f6b15c3bd6b5",
+      "bytes": 21068,
+      "read_mode": "provided read-only design/evidence; source observation inventory reused, underlying external study not rerun"
+    },
+    {
+      "path": "/tmp/huhu-t04-native-source-observation.json",
+      "sha256": "3bbc17864083185aef68f6b9db72c26529112c9b70efbf21f76722f40d24cdea",
+      "bytes": 43160,
+      "read_mode": "provided read-only design/evidence; source observation inventory reused, underlying external study not rerun"
+    },
+    {
+      "path": "/tmp/huhu-t03-a-repair-source.json",
+      "sha256": "f71c1f946a7a2978d0241c3cab87da76a65275e7dd3090a1fe1bf47535b3dbf9",
+      "bytes": 18973,
+      "read_mode": "provided read-only design/evidence; source observation inventory reused, underlying external study not rerun"
+    }
+  ],
+  "T03_A24_match_final_repair_manifest": [
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "expected_sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7",
+      "actual_sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7"
+    },
+    {
+      "path": "src/modules/agent/services/launch/managed-errors.ts",
+      "expected_sha256": "cb465822dcdb86f066102eadf614350c0e451af28a91b2cbee72ab31aebf7c5a",
+      "actual_sha256": "cb465822dcdb86f066102eadf614350c0e451af28a91b2cbee72ab31aebf7c5a"
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "expected_sha256": "120eaad70791037fd82d619728362ae41c70408de43b9bba745c021c32b33481",
+      "actual_sha256": "120eaad70791037fd82d619728362ae41c70408de43b9bba745c021c32b33481"
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.dom.test.tsx",
+      "expected_sha256": "7839cfa1b0c1a68e4af673104fc70fea83fdbf0d820d28eccec34dc94b9c1814",
+      "actual_sha256": "7839cfa1b0c1a68e4af673104fc70fea83fdbf0d820d28eccec34dc94b9c1814"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "expected_sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "actual_sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher-space.test.ts",
+      "expected_sha256": "f34d40831d9ed0bed14a09ac63e9c0b9d5ca806e32c3f297539b5fbcdfa1cf28",
+      "actual_sha256": "f34d40831d9ed0bed14a09ac63e9c0b9d5ca806e32c3f297539b5fbcdfa1cf28"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "expected_sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "actual_sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "expected_sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "actual_sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "expected_sha256": "af9062760e386193fb4bc5da238cfd486b7fb53a5fc9c85ed211ee637171a368",
+      "actual_sha256": "af9062760e386193fb4bc5da238cfd486b7fb53a5fc9c85ed211ee637171a368"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "expected_sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae",
+      "actual_sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.test.ts",
+      "expected_sha256": "9e5c99cead94f79a79e39cd932886b319eb7f5f64c3ae6ca8d3a8243f23d0514",
+      "actual_sha256": "9e5c99cead94f79a79e39cd932886b319eb7f5f64c3ae6ca8d3a8243f23d0514"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "expected_sha256": "7e167e2a1cf50e42da195101b60569bf07858b860d8565aa7a58b598c6bbce05",
+      "actual_sha256": "7e167e2a1cf50e42da195101b60569bf07858b860d8565aa7a58b598c6bbce05"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "expected_sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "actual_sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04"
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "expected_sha256": "ca65d7be8b595319e2b5662bd5ad4c1b0dcf97df72e2828857a8116cf8aae145",
+      "actual_sha256": "ca65d7be8b595319e2b5662bd5ad4c1b0dcf97df72e2828857a8116cf8aae145"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "expected_sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3",
+      "actual_sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3"
+    },
+    {
+      "path": "docs/agent-workbench.md",
+      "expected_sha256": "bb4d7172bb015daf29e1e5fd588460647ecc54ccfe12ebe4eae2309426eefc85",
+      "actual_sha256": "bb4d7172bb015daf29e1e5fd588460647ecc54ccfe12ebe4eae2309426eefc85"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "expected_sha256": "2e7299a20195ba9f4cc26d937836921aae3d72bd6685bf8862b22035eaf32542",
+      "actual_sha256": "2e7299a20195ba9f4cc26d937836921aae3d72bd6685bf8862b22035eaf32542"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "expected_sha256": "54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d",
+      "actual_sha256": "54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "expected_sha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc",
+      "actual_sha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc"
+    },
+    {
+      "path": "src/host/desktop/native/helper.test.ts",
+      "expected_sha256": "a7249f29a2a87465cbcce2b381113ad468444fc28b12680c298b5d179bc0b3d6",
+      "actual_sha256": "a7249f29a2a87465cbcce2b381113ad468444fc28b12680c298b5d179bc0b3d6"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "expected_sha256": "960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5",
+      "actual_sha256": "960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "expected_sha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68",
+      "actual_sha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68"
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "expected_sha256": "7d6ac76d0a0b13ec5153133e9dd3ac3eafaeb08f763bad1bd5025a0e846f041a",
+      "actual_sha256": "7d6ac76d0a0b13ec5153133e9dd3ac3eafaeb08f763bad1bd5025a0e846f041a"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-launch-failures.test.ts",
+      "expected_sha256": "36592650e7077eaf820b2c70ba1b4597bc3a7dec1f8e69267febf0e3b782616f",
+      "actual_sha256": "36592650e7077eaf820b2c70ba1b4597bc3a7dec1f8e69267febf0e3b782616f"
+    }
+  ],
+  "boundaries": "No new external source fetch in this turn. Official API/recent activity/license studies reuse supplied native design and its original 40-response evidence. No validation result asserted.",
+  "root_later_dispatch_context": "Root reports GP-015 / Map16 and sole T04 frontier after this observation. Historical input hashes retained; formal packet must bind new versions. Still no T04 production authorization."
+}

@@ -1,0 +1,623 @@
+{
+  "task": "T06 C read-only producer/API feedback; not Ticket implementation or acceptance",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_head_supplied_by_root": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "gp_map": "GP019 / Map20; unchanged",
+  "created_at_utc": "2026-10-25T17:11:39.086534+00:00",
+  "report": {
+    "path": "/tmp/huhu-t06-c-api-feedback.md",
+    "sha256": "4515b92c003e5b0510f92087cf75afa3d9c502021529ebd02c2cbe658e7ba049",
+    "bytes": 16569
+  },
+  "source_files": [
+    {
+      "path": "/tmp/huhu-t06-activity-api-candidate.md",
+      "repository_relative_path": null,
+      "kind": "input",
+      "sha256": "b3e651be176897777127fb09ce186ff9b644ef82345f0a557322fdc8026b61ac",
+      "bytes": 27321,
+      "observed_at_utc": "2026-10-25T17:11:39.084113+00:00",
+      "reviewed_ranges": [
+        [
+          "all"
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085625+00:00",
+      "rechecked_sha256": "b3e651be176897777127fb09ce186ff9b644ef82345f0a557322fdc8026b61ac",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-t06-root-admission-notes.md",
+      "repository_relative_path": null,
+      "kind": "input",
+      "sha256": "248999297d67760a216eba1258d40bbea959f1274ee23a0afee60bdce537a648",
+      "bytes": 2956,
+      "observed_at_utc": "2026-10-25T17:11:39.084147+00:00",
+      "reviewed_ranges": [
+        [
+          "all"
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085665+00:00",
+      "rechecked_sha256": "248999297d67760a216eba1258d40bbea959f1274ee23a0afee60bdce537a648",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-t06-root-foreground-research.md",
+      "repository_relative_path": null,
+      "kind": "input",
+      "sha256": "f67a36cf43e8e7248c16f323ca4dffc59f93b8e934b79b48dd683d670b4b059c",
+      "bytes": 3061,
+      "observed_at_utc": "2026-10-25T17:11:39.084168+00:00",
+      "reviewed_ranges": [
+        [
+          "all"
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085681+00:00",
+      "rechecked_sha256": "f67a36cf43e8e7248c16f323ca4dffc59f93b8e934b79b48dd683d670b4b059c",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-t06-hooks-contract-proposal.md",
+      "repository_relative_path": null,
+      "kind": "prior-proposal",
+      "sha256": "21d96133eae44d3d6a0300bba0a4d79882f8d04f8c749012140fefce17c03076",
+      "bytes": 10567,
+      "observed_at_utc": "2026-10-25T17:11:39.084191+00:00",
+      "reviewed_ranges": [
+        [
+          "all"
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085697+00:00",
+      "rechecked_sha256": "21d96133eae44d3d6a0300bba0a4d79882f8d04f8c749012140fefce17c03076",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-t06-hooks-source-observation.json",
+      "repository_relative_path": null,
+      "kind": "prior-observation",
+      "sha256": "f7d95bfd8cb126112c6db11eefe73407ff2968de20e686d161e8453859272259",
+      "bytes": 45192,
+      "observed_at_utc": "2026-10-25T17:11:39.084242+00:00",
+      "reviewed_ranges": [
+        [
+          "whole-byte-read"
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085720+00:00",
+      "rechecked_sha256": "f7d95bfd8cb126112c6db11eefe73407ff2968de20e686d161e8453859272259",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "kind": "repo-source",
+      "sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "bytes": 12306,
+      "observed_at_utc": "2026-10-25T17:11:39.084300+00:00",
+      "reviewed_ranges": [
+        [
+          31,
+          167
+        ],
+        [
+          189,
+          276
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085758+00:00",
+      "rechecked_sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "kind": "repo-source",
+      "sha256": "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714",
+      "bytes": 4250,
+      "observed_at_utc": "2026-10-25T17:11:39.084322+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085778+00:00",
+      "rechecked_sha256": "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "kind": "repo-source",
+      "sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "bytes": 1027,
+      "observed_at_utc": "2026-10-25T17:11:39.084461+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          20
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085792+00:00",
+      "rechecked_sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "kind": "repo-source",
+      "sha256": "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff",
+      "bytes": 651,
+      "observed_at_utc": "2026-10-25T17:11:39.084510+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085805+00:00",
+      "rechecked_sha256": "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "kind": "repo-source",
+      "sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "bytes": 21448,
+      "observed_at_utc": "2026-10-25T17:11:39.084546+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          78
+        ],
+        [
+          219,
+          260
+        ],
+        [
+          282,
+          355
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085819+00:00",
+      "rechecked_sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/hook-entries.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/hook-entries.ts",
+      "kind": "repo-source",
+      "sha256": "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282",
+      "bytes": 2178,
+      "observed_at_utc": "2026-10-25T17:11:39.084566+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085841+00:00",
+      "rechecked_sha256": "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/hooks/settings-write.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/hooks/settings-write.ts",
+      "kind": "repo-source",
+      "sha256": "0f54599b7d115731c83f3c08b7cf70774903ddadc3aef0f182bcf20eb458c256",
+      "bytes": 2705,
+      "observed_at_utc": "2026-10-25T17:11:39.084639+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          51
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085853+00:00",
+      "rechecked_sha256": "0f54599b7d115731c83f3c08b7cf70774903ddadc3aef0f182bcf20eb458c256",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/agents/accounts.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "kind": "repo-source",
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "bytes": 8135,
+      "observed_at_utc": "2026-10-25T17:11:39.084670+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085867+00:00",
+      "rechecked_sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/detection/probe.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/detection/probe.ts",
+      "kind": "repo-source",
+      "sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "bytes": 558,
+      "observed_at_utc": "2026-10-25T17:11:39.084689+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085882+00:00",
+      "rechecked_sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/platform/desktop/agents/resolver.ts",
+      "repository_relative_path": "src/modules/agent/platform/desktop/agents/resolver.ts",
+      "kind": "repo-source",
+      "sha256": "0f709905aacf7207de66fa77492fd04d78733b96e8a441bc109c114f777b3b50",
+      "bytes": 2328,
+      "observed_at_utc": "2026-10-25T17:11:39.084708+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          61
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085895+00:00",
+      "rechecked_sha256": "0f709905aacf7207de66fa77492fd04d78733b96e8a441bc109c114f777b3b50",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/controller.ts",
+      "repository_relative_path": "src/modules/agent/services/controller.ts",
+      "kind": "repo-source",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743,
+      "observed_at_utc": "2026-10-25T17:11:39.084761+00:00",
+      "reviewed_ranges": [
+        [
+          172,
+          193
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085916+00:00",
+      "rechecked_sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/terminal/sessions.ts",
+      "repository_relative_path": "src/modules/agent/services/terminal/sessions.ts",
+      "kind": "repo-source",
+      "sha256": "9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2",
+      "bytes": 28839,
+      "observed_at_utc": "2026-10-25T17:11:39.084813+00:00",
+      "reviewed_ranges": [
+        [
+          41,
+          90
+        ],
+        [
+          477,
+          535
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085956+00:00",
+      "rechecked_sha256": "9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/agent-runtime.ts",
+      "repository_relative_path": "src/modules/agent/services/agent-runtime.ts",
+      "kind": "repo-source",
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "bytes": 23866,
+      "observed_at_utc": "2026-10-25T17:11:39.084852+00:00",
+      "reviewed_ranges": [
+        [
+          175,
+          248
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.085984+00:00",
+      "rechecked_sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/host.ts",
+      "repository_relative_path": "src/shared/native/host.ts",
+      "kind": "repo-source",
+      "sha256": "edf4e9a6bdab714258fc761cde4b4d160f5587f97ba2bc5e5ff2341448729e96",
+      "bytes": 5120,
+      "observed_at_utc": "2026-10-25T17:11:39.084878+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          135
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086010+00:00",
+      "rechecked_sha256": "edf4e9a6bdab714258fc761cde4b4d160f5587f97ba2bc5e5ff2341448729e96",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/input.ts",
+      "repository_relative_path": "src/shared/native/input.ts",
+      "kind": "repo-source",
+      "sha256": "72cf9a2571a26aa397838e17ec94e0b847ec72c56f0c8528f0596b012b26b7a5",
+      "bytes": 7432,
+      "observed_at_utc": "2026-10-25T17:11:39.084948+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086025+00:00",
+      "rechecked_sha256": "72cf9a2571a26aa397838e17ec94e0b847ec72c56f0c8528f0596b012b26b7a5",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/job.rs",
+      "repository_relative_path": "native/pty-server/src/job.rs",
+      "kind": "repo-source",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "bytes": 15567,
+      "observed_at_utc": "2026-10-25T17:11:39.084986+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086043+00:00",
+      "rechecked_sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/session.rs",
+      "repository_relative_path": "native/pty-server/src/session.rs",
+      "kind": "repo-source",
+      "sha256": "9876602a429d3012150ac0e17b5c3a8b7a6bf3212f0aa15b16a906c55b8436d2",
+      "bytes": 74920,
+      "observed_at_utc": "2026-10-25T17:11:39.085063+00:00",
+      "reviewed_ranges": [
+        [
+          642,
+          690
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086068+00:00",
+      "rechecked_sha256": "9876602a429d3012150ac0e17b5c3a8b7a6bf3212f0aa15b16a906c55b8436d2",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/lib.rs",
+      "repository_relative_path": null,
+      "kind": "locked-dependency",
+      "sha256": "8b1d45c520f17c8be2d51069bb6ed46a6fa612d0395bc55a5b6e0ef30cc1c004",
+      "bytes": 13378,
+      "observed_at_utc": "2026-10-25T17:11:39.085103+00:00",
+      "reviewed_ranges": [
+        [
+          94,
+          118
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086117+00:00",
+      "rechecked_sha256": "8b1d45c520f17c8be2d51069bb6ed46a6fa612d0395bc55a5b6e0ef30cc1c004",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/unix.rs",
+      "repository_relative_path": null,
+      "kind": "locked-dependency",
+      "sha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3",
+      "bytes": 12978,
+      "observed_at_utc": "2026-10-25T17:11:39.085136+00:00",
+      "reviewed_ranges": [
+        [
+          368,
+          384
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086140+00:00",
+      "rechecked_sha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/LICENSE",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "observed_at_utc": "2026-10-25T17:11:39.085167+00:00",
+      "reviewed_ranges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086162+00:00",
+      "rechecked_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/app/api/agents.rs",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "3d1d53596bd6b0d414bd665817b6db7cc3152f1e1d25aac7fa5abe5987105cd1",
+      "bytes": 36956,
+      "observed_at_utc": "2026-10-25T17:11:39.085214+00:00",
+      "reviewed_ranges": [
+        [
+          145,
+          205
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086184+00:00",
+      "rechecked_sha256": "3d1d53596bd6b0d414bd665817b6db7cc3152f1e1d25aac7fa5abe5987105cd1",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/app/agents.rs",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "ca3098441379df882c94681f795dd8b22bb30efcda19f8c1524e4463a03015a7",
+      "bytes": 19474,
+      "observed_at_utc": "2026-10-25T17:11:39.085244+00:00",
+      "reviewed_ranges": [
+        [
+          424,
+          456
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086214+00:00",
+      "rechecked_sha256": "ca3098441379df882c94681f795dd8b22bb30efcda19f8c1524e4463a03015a7",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/linux.rs",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "dab501bb9c15ba2f83bb5ddea13eafaabf26f887272f528fc0883c4750c32887",
+      "bytes": 79618,
+      "observed_at_utc": "2026-10-25T17:11:39.085338+00:00",
+      "reviewed_ranges": [
+        [
+          349,
+          384
+        ],
+        [
+          662,
+          706
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086244+00:00",
+      "rechecked_sha256": "dab501bb9c15ba2f83bb5ddea13eafaabf26f887272f528fc0883c4750c32887",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/macos.rs",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "3b6f92876cceac382777be1cf8237bf88df383433c97f8d52064abbf47e7391c",
+      "bytes": 43428,
+      "observed_at_utc": "2026-10-25T17:11:39.085391+00:00",
+      "reviewed_ranges": [
+        [
+          430,
+          469
+        ],
+        [
+          520,
+          556
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086331+00:00",
+      "rechecked_sha256": "3b6f92876cceac382777be1cf8237bf88df383433c97f8d52064abbf47e7391c",
+      "changed_during_final_observation_pass": false
+    },
+    {
+      "path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/windows.rs",
+      "repository_relative_path": null,
+      "kind": "fixed-reference",
+      "sha256": "09add751d6eb3e8768cfffe83507bb4959900377a7e4d4c3be5aca572d264d6e",
+      "bytes": 194702,
+      "observed_at_utc": "2026-10-25T17:11:39.085597+00:00",
+      "reviewed_ranges": [
+        [
+          1696,
+          1754
+        ]
+      ],
+      "status": "time-point observation; not an API/source freeze",
+      "repository_mutation": false,
+      "rechecked_at_utc": "2026-10-25T17:11:39.086387+00:00",
+      "rechecked_sha256": "09add751d6eb3e8768cfffe83507bb4959900377a7e4d4c3be5aca572d264d6e",
+      "changed_during_final_observation_pass": false
+    }
+  ],
+  "source_count": 30,
+  "changed_during_final_observation_pass": [],
+  "reference_reuse": {
+    "herdr_commit_from_fixed_research": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+    "license": "Apache-2.0; local LICENSE re-read; no source copied",
+    "external_research_this_task": "none; official URLs and activity/license determination reused from Root fixed research, not newly independently certified"
+  },
+  "limits": [
+    "Source hashes are point-in-time observations, not a new freeze of A or C candidates.",
+    "This pass records current whole-byte reads; no timestamps for earlier conversational reads are reconstructed.",
+    "No tests/build/lint/cargo/helper/Provider/foreground process inspection/user-data operations executed.",
+    "No public DTO/wire/profile thresholds frozen or production capabilities certified.",
+    "Only two authorized /tmp artifacts written; all repository/cargo/target/helper artifacts remain SOURCE STOPPED."
+  ],
+  "state": "READ-ONLY SOURCE STOPPED",
+  "report_finalized_at_utc": "2026-10-25T17:13:06.139723+00:00",
+  "targeted_discovery": {
+    "command": "rg --files src/modules/agent/platform/desktop/hooks src/modules/agent/platform/desktop/agents -g *test.ts",
+    "purpose": "Confirm existing neighboring test paths; no test contents read or executed."
+  }
+}

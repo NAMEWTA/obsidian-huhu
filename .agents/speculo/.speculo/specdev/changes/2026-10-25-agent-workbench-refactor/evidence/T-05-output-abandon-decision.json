@@ -1,0 +1,28 @@
+{
+  "ticket": "T-05",
+  "at": "2026-10-25T13:27:48.967014+00:00",
+  "origin": "Root/C actual source audit: model resource failure retains unparsed raw without ACK, and native retiring slot requires raw credit zero; previous path could permanently retain slots while Browser keeps helper alive.",
+  "decision": "Approve optional protocol3 outputAbandon:1 and NativeConnection readonly outputAbandon?:1 / abandonOutput?(sid):void; strict control {type:output-abandon,sid}; no new paths or dependencies.",
+  "semantics": [
+    "captured owner/generation/SID only",
+    "explicit display discard with truncated or unknown output, never parser ACK or successful scope cleanup",
+    "native output gate prevents future enqueue before raw-credit abandonment; encoded outbox remains charged until written",
+    "normal stop and final parsing still use actual ACK",
+    "Node drops future frames only after explicit local abandonment, never silently falls back to raw replay",
+    "method initiation is not remote receipt; capacity/disconnect observable and exact responsibility retained",
+    "legacy capability absent: no method, no helper restart, unknown retained until transport end"
+  ],
+  "producer": "C /root/implement_t01 actual TS/wire/fixture v3 handoff first",
+  "consumer_gate": "Root actual source/check audit before A consumes new API",
+  "actual_tool": "collaboration.send_message to C and A",
+  "status": "direction authorized; implementation and tests pending",
+  "actual_public_gate": {
+    "at": "2026-10-25T13:42:01.882323+00:00",
+    "report": "T-05-c-public-api-v3.json",
+    "report_sha256": "ffe47c5c31feafecc42f1bafc3841a93cf335c051d3ce5ca9535a1bc92e3997e",
+    "audit": "T-05-c-api-v3-root-audit.json",
+    "audit_sha256": "b80189c1a48348411b726b31effac323cb81d86933e7b39fbcdad66409eea7c8",
+    "actual_action": "Root collaboration.send_message released A to consume actual v3; C retains enforcement/pressure responsibility",
+    "limits": "Only public codec/type gate; no final native/Node chain acceptance"
+  }
+}

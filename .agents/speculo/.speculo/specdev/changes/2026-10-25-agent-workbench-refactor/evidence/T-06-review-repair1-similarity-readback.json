@@ -1,0 +1,158 @@
+{
+  "utc": "2026-10-25T23:56:27.174572+00:00",
+  "prior_full_scan": "T-06-recovery1-similarity-full-root-audit.json",
+  "prior_semantic_readback": "T-06-recovery1-similarity-readback.json",
+  "actual_current_scan": "T-06-review-repair1-similarity-root-audit.json",
+  "actual_results": "T-06-review-repair1-similarity-results.json",
+  "actual_results_sha256": "25bf658c8009f069ac1ea005ac739c93b79d50d4f8f009e06c3e269458186792",
+  "counts": {
+    "current_paths": 7,
+    "unchanged_prior_paths": 32,
+    "reference_paths": 33627
+  },
+  "current_max": {
+    "raw_share": 0.004,
+    "raw_run": 25,
+    "normalized_share": 0.011,
+    "normalized_run": 41
+  },
+  "reused_paths": [
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-activity.mjs",
+      "sha256": "c0b7d26b4eab12a48021f1b927734c4fa0226fcf2526bd69a432125c1aef8baf"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "5ffed2a0096b3917722bb5704eb10d01961402cc9c6e0920726adb250d462a2c"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "sha256": "9e10093ef193285ea40522c64ee1a98ad85bc31d1197c3d9f4185e55ea263dd6"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.test.ts",
+      "sha256": "e045fba2cdef6abe8ebf27986f19c03da74355076e3f696e3395c4d1f96fef5a"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/hook-spool.test.ts",
+      "sha256": "89fd1d7b877ec9640948ff05bfe5caa5bd87af7d0a50e17848d855867b8f1f62"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/hook-spool.ts",
+      "sha256": "dcfb5df61261180ab110dd6af915cf938ccb0ae1cfaf70e16ac6944d9f058e72"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "sha256": "ea204539ccd9f450c596e04039ee379e79e58a979aacd754534610ce91d08b8b"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "sha256": "fb9b33646fe73334cfbe40c8baab914c737210bc5004ff040acf84438a315610"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.test.ts",
+      "sha256": "5303ba2047b97c91d466c3cb0934cca3489ab29dfc53acd3ea345d7aa906ec41"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "sha256": "234da8dc820b4c2966515bafe2dff1e6720a1362e54f2539af5806fae0132f2d"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.test.ts",
+      "sha256": "b0c59cd4fa7cd6ef93aa1852e3d5af67addba2053fb7ffb521af461591926c4b"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "sha256": "68e2789ffdad8b0307ea9fea253781db1479be8a1450cc9d4d5ee2b073867292"
+    },
+    {
+      "path": "src/modules/agent/services/controller-activity.test.ts",
+      "sha256": "9b6d11dd5b2865f6c767e92e34a19b98778b6dcda85bfd1ea33dee8b56d48762"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "7cafa43c279b6585dbf8dcb991d7b706f12b223f37304c5ae983bea4f84bd775"
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.dom.test.tsx",
+      "sha256": "f02d9dad19f69ebd900e7709ac5c32742ed3e8143632181558dc1fc4e6a50233"
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "sha256": "cae086afc2dc5c5fcde66bd7f75bd985735d1180ccf3eefd286aa2d2cce7db17"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.test.ts",
+      "sha256": "099132e815e197296aa948750cbfbb1ceca14201d9b74a19b6e668e6b427bebf"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "a6ef4a9d57fa8c217150aa5a3fe95bb41f096717e692cece5f075223b7961b0d"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.test.ts",
+      "sha256": "f2754c931daf514d09c5465ed0ea1dc4bf7dce00712287c8b1cd01feff78b8c9"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "dc386283a1dd1593788fc328c7a89fea174c666ee62cce4523ee0a8b00ee7dc4"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "e3149af24858070b863bc74da7c06d0a200d66a396eed406d93662d01a5aa6ce"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.test.ts",
+      "sha256": "efd0e14a07829982f6a6225f8f901d9a6ca14cba93fe21ad770d7910aeb1b6a3"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "1e2320a417afcf8a77932f4036d1120b7da429b6d17b27a14d7a740f11abd9ff"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-activity.test.ts",
+      "sha256": "98bb62814c66d144b4c758b9408fd33e2aa29a2b1351ac424340c4a2683e4dc7"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-foreground.dom.test.tsx",
+      "sha256": "6516e43356ff4ea51d31fcc9e5d88df0a86dc5cde9fb7946e1e47d98d0a31e48"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "cbef3b77f843ba3b20c6bcc5d77250367e29618b7dc01bcf82863a0d280d6d0c"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "sha256": "aab983401b272b16d7d10c5b4d73b9e3fe27d129b4efaf1a859432e6b176b724"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "63ec319e98791cc4aa7c50bca1ee525754ea901f25d0d010031834a5daa6e1f1"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "sha256": "9794ea270d85f4301c1dbdf6d1925b676aadfc12e068f57de0ce7c288854971f"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "sha256": "7a7aa74f727596fc135e3bd9ac75d340e84841454c7fd9a6a938f8eb8d98eaec"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+      "sha256": "fdd5a16a7f966d512da5f3a930a3ed30ebe8b5ea9e7503e9c03498e0ea611f55"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "sha256": "a1ed592ee8d2b9b75780d2cdf55856fc47a20cb036e7af5b6ee455aebf6abd44"
+    }
+  ],
+  "root_readback": [
+    "All seven current files emitted a row with --min 0; managed-runtime raw match is explicitly zero. Raw maximum 0.004 / 25 tokens; normalized maximum 0.011 / 41 tokens occurs in new physical-provider test scaffolding.",
+    "Root read own production delta and physical-provider helper/tests: source-local bounded Map/Session reducer and routine fixture setup/cleanup. Numeric matches do not establish copied implementation. No reference GPL source was opened.",
+    "Previous full scan conclusions and explicit template-tokenization limitation remain for unchanged sources; this is supplemental numeric screening, not a proof of universal originality."
+  ],
+  "failures_preserved": [
+    "T-06-review-repair1-similarity-preflight.json: old absolute source inventory rejected before scan",
+    "T-06-review-repair1-similarity-interruption.json: tool session143, no completed result; independent actual v3 subsequently exit0 without source drift"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "recorded_utc": "2026-10-26T16:30:07.606291+00:00",
+  "before": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09.md",
+    "sha256": "a46865c685619d15c70d5e09108e0f114a574a8fecd72f1f1fe41dc0839ad30a",
+    "bytes": 4004,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/a46865c685619d15c70d5e09108e0f114a574a8fecd72f1f1fe41dc0839ad30a.raw"
+  },
+  "after": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09.md",
+    "sha256": "143592b22be23e21d8d3b6a91618f88a70b08ccf4e883e8bd6c5cfd8d3550cdb",
+    "bytes": 4667,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/143592b22be23e21d8d3b6a91618f88a70b08ccf4e883e8bd6c5cfd8d3550cdb.raw"
+  },
+  "dispatch": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-dispatch-ui.json",
+    "sha256": "d5f03230efcd264229d883b88d6551e887f7dd5232ea5486084ea286f71967c8",
+    "bytes": 4234,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/d5f03230efcd264229d883b88d6551e887f7dd5232ea5486084ea286f71967c8.raw"
+  },
+  "attempts": 0
+}

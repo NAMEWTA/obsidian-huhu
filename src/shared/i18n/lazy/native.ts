@@ -1,0 +1,38 @@
+/** Existing helper keys remain stable for Agent settings and independent Browser requests. */
+export const messages = {
+	en: {
+		'agent.helper.downloading': 'Downloading the terminal helper…',
+		'agent.helper.verifying': 'Checking the terminal helper…',
+		'agent.helper.ready': 'Terminal helper {version} is ready.',
+		'agent.helper.failed': 'The terminal helper is not available: {message}',
+		'agent.helper.unsupported': 'there is no helper for this platform',
+		'agent.helper.offlineMissing': 'offline mode is on and no helper is installed',
+		'agent.helper.http': 'the download for version {version} failed (HTTP {status}); try again later',
+		'agent.helper.unpublished':
+			'the helper or checksum for version {version} has not been published for this platform (HTTP 404)',
+		'agent.helper.network': 'the download could not connect or was interrupted; check the network and try again',
+		'agent.helper.redirects': 'the download was redirected too many times',
+		'agent.helper.timeout': 'the download timed out; try again',
+		'agent.helper.tooLarge': 'the downloaded helper or checksum file is too large',
+		'agent.helper.checksumMissing': 'the published checksum is missing or invalid',
+		'agent.helper.checksumMismatch': 'the download does not match its checksum; the previous file was kept',
+		'agent.helper.inUse': 'the helper file is in use; close Obsidian windows that use it and try again',
+	},
+	zh: {
+		'agent.helper.downloading': '正在下载终端组件…',
+		'agent.helper.verifying': '正在校验终端组件…',
+		'agent.helper.ready': '终端组件 {version} 已就绪。',
+		'agent.helper.failed': '终端组件不可用：{message}',
+		'agent.helper.unsupported': '这个平台没有终端组件',
+		'agent.helper.offlineMissing': '已开启离线模式，但没有安装终端组件',
+		'agent.helper.http': '版本 {version} 下载失败（HTTP {status}），请稍后重试',
+		'agent.helper.unpublished': '版本 {version} 尚未发布此平台的终端组件或校验文件（HTTP 404）',
+		'agent.helper.network': '下载无法连接或连接中断，请检查网络后重试',
+		'agent.helper.redirects': '下载重定向次数过多',
+		'agent.helper.timeout': '下载超时，请重试',
+		'agent.helper.tooLarge': '下载的终端组件或校验文件过大',
+		'agent.helper.checksumMissing': '发布的校验值缺失或无效',
+		'agent.helper.checksumMismatch': '下载内容与校验值不符，已保留原文件',
+		'agent.helper.inUse': '终端组件文件正在使用，请关闭使用它的 Obsidian 窗口后重试',
+	},
+};

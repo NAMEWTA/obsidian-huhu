@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-25T12:17:14.206670+00:00",
+  "status": "SOURCE STOPPED",
+  "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "scope": "T-05 K03 test-only admission step; no production API/profile freeze",
+  "files": [
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "bytes": 5979,
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "before_sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "modified": false,
+      "raw_copy": "/tmp/huhu-t05-k03-final-source/src/modules/agent/services/terminal/session.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-resize.test.ts",
+      "bytes": 6935,
+      "sha256": "1b4b8244e9f5283b34ed5f6250ef9bc41389aba1816f9c5e86459a71dc118d18",
+      "before_sha256": null,
+      "modified": true,
+      "raw_copy": "/tmp/huhu-t05-k03-final-source/src/modules/agent/services/terminal/session-resize.test.ts"
+    }
+  ],
+  "unchanged_packet_source_guards": [
+    {
+      "path": "AGENTS.md",
+      "before_sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "current_sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "unchanged": true
+    },
+    {
+      "path": "package.json",
+      "before_sha256": "8a0ec223a318cd4deca6177496edf227b89d136cc31319a57b653e61f438f4ce",
+      "current_sha256": "8a0ec223a318cd4deca6177496edf227b89d136cc31319a57b653e61f438f4ce",
+      "unchanged": true
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "before_sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "current_sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "unchanged": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "before_sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "current_sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "unchanged": true
+    }
+  ],
+  "input_observation": "/tmp/huhu-t05-k03-input-observation.json",
+  "input_observation_sha256": "007ce53e934a78772c36879527897e59cc4a0aac0a6cfe98ed7334bcca65958a",
+  "headless_package_sha256": "6c39530ee759998113bd8bcc306d1b725c0b1d5b0cdc04e071f6945a5f5edf1a",
+  "headless_bundle_sha256": "17a90b650cf6b77cce2b98c4063884d43545e4ce177a54b76ccfc906f1aacaed",
+  "forced_probe_archive": "/tmp/huhu-t05-k03-forced-probes-with-adjacent.test.ts",
+  "forced_probe_archive_sha256": "c3f7b4e0ff6117d298d844a5667fe3175b8d840d620dbf93e3e962748090cdba"
+}

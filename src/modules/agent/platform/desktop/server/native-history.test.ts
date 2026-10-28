@@ -15,6 +15,7 @@ import { deviceId } from '../../../../../host/obsidian/storage/device-id';
 import { prepareLegacyAccounts } from '../agents/legacy-accounts';
 import { LEGACY_VAULT_ACCOUNT, accountEnv } from '../agents/accounts';
 import { getAgent } from '../../../core/launch/catalog';
+import { t } from '../../../../../shared/i18n';
 
 globalThis.window = { require: createRequire(import.meta.url) } as unknown as Window & typeof globalThis;
 const page: HistoryPage = { rows: [], total: 0, usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null, known: false }, revision: 1 };
@@ -159,5 +160,75 @@ test('history requests cancelled while awaiting a client never execute the nativ
 			assert.equal(requests, 0, operation);
 			await history.dispose();
 		}
+	} finally { await fs.rm(fixture, { recursive: true }); }
+}, 30000);
+
+test('owned HUHU sessions are sent on every scan, query and read, and a changed owner set makes the index stale', async () => {
+	const fixture = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-history-owned-sessions-')));
+	try {
+		const files = new Map<string, string>();
+		const app = { loadLocalStorage: () => '11111111-1111-4111-8111-111111111111', vault: { adapter: { getBasePath: () => fixture, exists: async (name: string) => files.has(name), read: async (name: string) => files.get(name), write: async (name: string, body: string) => { files.set(name, body); }, mkdir: async () => {} } } } as unknown as App;
+		await initializeTestDevice(app);
+		const seen: Array<{ op: string; owned: unknown }> = [];
+		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async (op: string, payload: { ownedSessions?: unknown }) => { seen.push({ op, owned: payload.ownedSessions }); return op === 'scan' ? { warnings: [], revision: 1 } : op === 'query' ? page : { key: 'k', text: '' }; } };
+		let owned = [{ agentId: 'codex', sessionId: 'b' }, { agentId: 'codex', sessionId: 'a' }, { agentId: 'codex', sessionId: 'a' }];
+		const history = new NativeHistory(app, { historyClient: async () => client } as unknown as HistoryClientSource, () => normalizeAgentSettings({}), () => ({}), 'vault', () => owned);
+		try {
+			assert.equal(history.stale, true);
+			await history.scan();
+			assert.equal(history.stale, false);
+			await history.query();
+			await history.read({ key: 'k' } as import('./agent-data-client.ts').NativeSessionSummary);
+			const expected = [{ agentId: 'codex', sessionId: 'a' }, { agentId: 'codex', sessionId: 'b' }];
+			assert.deepEqual(seen.map((row) => row.op), ['scan', 'query', 'read']);
+			for (const row of seen) assert.deepEqual(row.owned, expected, row.op);
+			owned = [...owned, { agentId: 'claude-code', sessionId: 'c' }];
+			assert.equal(history.stale, true);
+			await history.scan();
+			assert.equal(history.stale, false);
+			assert.equal((seen.at(-1)!.owned as unknown[]).length, 3);
+		} finally { await history.dispose(); }
+	} finally { await fs.rm(fixture, { recursive: true }); }
+}, 30000);
+
+test('export refuses unavailable sources and marks truncated bodies', async () => {
+	const fixture = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-history-export-')));
+	try {
+		const files = new Map<string, string>();
+		const created = new Map<string, string>();
+		const adapter = { getBasePath: () => fixture, exists: async (name: string) => files.has(name), read: async (name: string) => files.get(name), write: async (name: string, body: string) => { files.set(name, body); }, mkdir: async () => {} };
+		const app = {
+			loadLocalStorage: () => '11111111-1111-4111-8111-111111111111',
+			vault: {
+				adapter,
+				getAbstractFileByPath: (name: string) => (created.has(name) || name === 'huhu' || name === 'huhu/导出' ? {} : null),
+				createFolder: async () => {},
+				create: async (name: string, body: string) => { created.set(name, body); return { path: name }; },
+			},
+		} as unknown as App;
+		await initializeTestDevice(app);
+		let reply: Record<string, unknown> = {};
+		let reads = 0;
+		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async () => { reads++; return reply; } };
+		const history = new NativeHistory(app, { historyClient: async () => client } as unknown as HistoryClientSource, () => normalizeAgentSettings({}), () => ({}), 'vault');
+		const row = { key: 'k', agentId: 'codex', sessionId: 's', title: 'T', usage: {}, sourceStatus: 'available' } as unknown as import('./agent-data-client.ts').NativeSessionSummary;
+		try {
+			for (const status of ['changed', 'missing', 'permission-denied'] as const) {
+				reply = { ...row, text: '', sourceStatus: status };
+				await assert.rejects(history.export(row), (error: Error) => error.message === t('agent.exportReadFailed', { message: t(`agent.historyUI.source.${status}`) }));
+			}
+			// A row already known to be unreadable never reaches the helper.
+			reads = 0;
+			await assert.rejects(history.export({ ...row, sourceStatus: 'missing' }), /./);
+			assert.equal(reads, 0);
+			assert.equal(created.size, 0);
+			reply = { ...row, text: 'body', usage: { partial: true } };
+			await history.export(row);
+			const [body] = [...created.values()];
+			assert.ok(body!.includes(t('agent.exportPartialNote')) && body!.includes('body'));
+			reply = { ...row, text: 'whole', usage: {} };
+			await history.export(row);
+			assert.ok([...created.values()].some((value) => value.includes('whole') && !value.includes(t('agent.exportPartialNote'))));
+		} finally { await history.dispose(); }
 	} finally { await fs.rm(fixture, { recursive: true }); }
 }, 30000);

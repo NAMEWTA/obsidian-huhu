@@ -1,0 +1,363 @@
+{
+  "review_input": {
+    "scope": {
+      "version": 1,
+      "mode": "source-files",
+      "review_mode": "source-files",
+      "outcome": "source-snapshot",
+      "source_snapshot": [
+        {
+          "path": "src/modules/agent/core/inbox/model.ts",
+          "sha256": "6952859e17bf10f6e77e1320dd85594a1d798139bdb8da001d27747d9aecee43",
+          "bytes": 7212
+        },
+        {
+          "path": "src/modules/agent/core/inbox/model.test.ts",
+          "sha256": "1a5bb7b1d1c32f639d185f836cbe3b87788a71367e4f38a6e64a191f28768cbb",
+          "bytes": 2384
+        },
+        {
+          "path": "src/modules/agent/services/spaces/records.ts",
+          "sha256": "d4b543a7028f49740e40a3047cdca8eb7379128f6bc441e5623c7b912373a12e",
+          "bytes": 7319
+        },
+        {
+          "path": "src/modules/agent/services/spaces/records.test.ts",
+          "sha256": "954876fe2adc1acde6379e1a4e3866f2ed5390240c2dcb8c3300ca202f34f3d7",
+          "bytes": 3829
+        },
+        {
+          "path": "src/modules/agent/services/spaces/space-service.ts",
+          "sha256": "84e41b416f729918e9be22f85e61529c5f6a2c331150b4f651b02138252e95d4",
+          "bytes": 51493
+        },
+        {
+          "path": "src/modules/agent/services/spaces/space-service-inbox.test.ts",
+          "sha256": "3bd14bb5da7dc5bd43529528b64b0a89a7de790e838acaeae9b9403ce819bdb0",
+          "bytes": 9339
+        },
+        {
+          "path": "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+          "sha256": "3ba9ca059fbd0faac17993a37bdfe3fde3537d708b2d05c8543e01c0e765acf6",
+          "bytes": 6682
+        },
+        {
+          "path": "src/modules/agent/services/inbox/service.ts",
+          "sha256": "7408191558bf23269c3affb830fda54ff1ddd429769978fc78a6ac1a6b1f9e53",
+          "bytes": 6829
+        },
+        {
+          "path": "src/modules/agent/services/inbox/service.test.ts",
+          "sha256": "7e49aa9973693f958e135fa121a0f9e89776a66e60841230b75cbcd62de4cb84",
+          "bytes": 3319
+        },
+        {
+          "path": "src/modules/agent/platform/vault/inbox-sources.ts",
+          "sha256": "743812b08002126569a30d07608770cb2a2a911d737df9ab01328201e5158ca0",
+          "bytes": 2569
+        },
+        {
+          "path": "src/modules/agent/platform/vault/inbox-sources.test.ts",
+          "sha256": "3aad48142dbd6a42e459146c2f9a0bc152866b9eeac06fb3b91c01aae6614a55",
+          "bytes": 1023
+        },
+        {
+          "path": "src/modules/agent/services/controller.ts",
+          "sha256": "d86899904f21ac2944708e0c988693e2269df2dca820e450653994cffc9d04a2",
+          "bytes": 54785
+        },
+        {
+          "path": "src/modules/agent/services/controller-inbox.test.ts",
+          "sha256": "adfc3e7f7712ea9acf6935a7ac7ce1166a5ef180ed67d646afd29f5cc6161546",
+          "bytes": 665
+        },
+        {
+          "path": "src/modules/agent/services/controller-control.test.ts",
+          "sha256": "c4ce2484efce2e46150a79c95f15090c5caa76982ade05de1b00dcf96e91b9d0",
+          "bytes": 18153
+        },
+        {
+          "path": "src/modules/agent/services/inbox/presentation.ts",
+          "sha256": "b5fe1268890e00a7ad183721aa7884eaa783d052b6558512e02f52829cf4f1d9",
+          "bytes": 4723
+        },
+        {
+          "path": "src/modules/agent/services/inbox/presentation.test.ts",
+          "sha256": "4d91a8ba451da8de14321ce1e902baa6d35b7ccd1e737c4135aa175cefa64a13",
+          "bytes": 1530
+        },
+        {
+          "path": "docs/data.md",
+          "sha256": "5d226186603fde88837602aa59fd44f7b8301a6a44d9bce8faa0cd22ebd7619f",
+          "bytes": 23233
+        },
+        {
+          "path": "src/shared/native/control-schema.json",
+          "sha256": "16349dda4fdde366689edc2de4c8331576243ce808deb18f48f27cfc89196070",
+          "bytes": 58112
+        },
+        {
+          "path": "src/shared/native/control-wire.generated.ts",
+          "sha256": "cf3af9f6470050044bc7f2a104d439eb30d26d9d9bf0ca8bdb43fd66370261c2",
+          "bytes": 118381
+        },
+        {
+          "path": "src/shared/native/control-wire.test.ts",
+          "sha256": "f448df89abbe2016402e9bd0ba433e8a1f5886d40e37c942847cf7cfe828872c",
+          "bytes": 14934
+        },
+        {
+          "path": "native/pty-server/src/control/wire_generated.rs",
+          "sha256": "7221972a432829b8ed121dadd4ae853fca1997d5104a1fec37ce8ddc1b0470c4",
+          "bytes": 43423
+        },
+        {
+          "path": "native/pty-server/src/control/cli.rs",
+          "sha256": "fdf3920b229f3fb6451b836cf18bbea87c5272fb60dee9270287d10061471b60",
+          "bytes": 29005
+        },
+        {
+          "path": "native/pty-server/tests/control.rs",
+          "sha256": "43b9cb5f1304482fba01cb7daa65592eb5b109b25bc32a1a7cd8da5c7d60f683",
+          "bytes": 66779
+        },
+        {
+          "path": "native/pty-server/tests/control_protocol.rs",
+          "sha256": "c64c438af25dc15987420f9787179292a349f3565770b76e8608b7329cb2ad8a",
+          "bytes": 7569
+        },
+        {
+          "path": "test/fixtures/native/control-v1.json",
+          "sha256": "896c15d62a959edc638dacaf840747120f0bb21089e002431ccaafa7a609acf3",
+          "bytes": 147849
+        },
+        {
+          "path": "test/native/control-protocol.test.ts",
+          "sha256": "dd06e82b4d581b46d98db0125ff2444f64c7e28b461d9bdf7ac27d87a20f804a",
+          "bytes": 7178
+        },
+        {
+          "path": "src/modules/agent/services/control/inbox.ts",
+          "sha256": "728c6ec97c6baeab6a8833f23fa7a625f0b5769573475352889771b9e8edf160",
+          "bytes": 12994
+        },
+        {
+          "path": "src/modules/agent/services/control/inbox.test.ts",
+          "sha256": "5dcfcb61279f016972437fa7a1281e17728bf9a1163a3055e450fe6ddb5a2bdd",
+          "bytes": 10769
+        },
+        {
+          "path": "src/modules/agent/services/control/commands.ts",
+          "sha256": "a44962f61d0e52493ed0afef53431702def980340abe4e10ffdd26f1fc0ecb78",
+          "bytes": 25584
+        },
+        {
+          "path": "src/modules/agent/services/control/commands.test.ts",
+          "sha256": "4f9a660ff0cb4889a7a553d91a17c0f3a72b768332c8dc8a42e002c776335d28",
+          "bytes": 21842
+        },
+        {
+          "path": "src/modules/agent/services/control/paging.ts",
+          "sha256": "07ee216a7e49dcbaccffd4f7af1c60b35551bf1a41b387ddda9e42a4b15b221c",
+          "bytes": 9742
+        },
+        {
+          "path": "src/modules/agent/services/control/paging.test.ts",
+          "sha256": "fa84f33c53e9ed18e3da41ba2195000e1f8273dc470345e8d06c42e70b170a8a",
+          "bytes": 3132
+        },
+        {
+          "path": "src/modules/agent/services/control/router.ts",
+          "sha256": "939cb2f903990d3503603e55c28132ea78fcc22b17f8818b7d6bea6f9e2dfc68",
+          "bytes": 13609
+        },
+        {
+          "path": "src/modules/agent/services/control/router.test.ts",
+          "sha256": "310a30180c03151a5e091096d19c0eaf6664d9712bd2534ab8eed67cbd9e044e",
+          "bytes": 23666
+        },
+        {
+          "path": "src/modules/agent/services/control/control-inbox-native.test.ts",
+          "sha256": "25a25bf360823d13e51cba05acac61e0ed4fc6456fde5758784726ec034f45f6",
+          "bytes": 1533
+        },
+        {
+          "path": "docs/agent-workbench-cli.md",
+          "sha256": "f12a5b687aa37cd673f419ba93a8d783a2d05a0d59cb3316493243a46b96c320",
+          "bytes": 14875
+        },
+        {
+          "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+          "sha256": "0eeca21535f28af6f11d6fc9aa265128c4ecc76e005df71cdba4e4a5a02acfb7",
+          "bytes": 19003
+        },
+        {
+          "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+          "sha256": "8bc52a4328b2201fad2fcb372c9fc7739c05e9ee952c84bf124223d2ab72e5ba",
+          "bytes": 11640
+        },
+        {
+          "path": "src/modules/agent/ui/workspace/WorkspaceToolbar.tsx",
+          "sha256": "513297ccb3563726e205e682f1d02196e37ecc66ba498e0fe48184c48e064c19",
+          "bytes": 7526
+        },
+        {
+          "path": "src/modules/agent/ui/workspace/WorkspaceToolbar.dom.test.tsx",
+          "sha256": "93859fd54d8fe5f1f296b2c882262eb1ba79dbcc6929774a09792376c1172fbe",
+          "bytes": 10778
+        },
+        {
+          "path": "src/modules/agent/ui/workspace/WorkspaceTools.tsx",
+          "sha256": "8e1e924579f940572d80f8b31817ebbf034fed720a5305d786dff25aa8062d6c",
+          "bytes": 2309
+        },
+        {
+          "path": "src/modules/agent/ui/inbox/InboxPanel.tsx",
+          "sha256": "5cf2cd6892decf9d05f6314224181a462dd3317c020a7af782edda9ee42b3a54",
+          "bytes": 19350
+        },
+        {
+          "path": "src/modules/agent/ui/inbox/InboxPanel.dom.test.tsx",
+          "sha256": "5df76718f7ac667d487e90a720285e181b9184ca345a7d66487fbd09b1c986a9",
+          "bytes": 8069
+        },
+        {
+          "path": "src/modules/agent/services/workspace-view.ts",
+          "sha256": "362f5b7d173b21442366d53aa6fc6e29435640f102dc109fc2cde0069f4f7367",
+          "bytes": 857
+        },
+        {
+          "path": "src/modules/agent/services/workspace-view.test.ts",
+          "sha256": "3eb22ea0ffe562057e054287756925fd70b29e43890e1fce2c35f34a360c5a53",
+          "bytes": 890
+        },
+        {
+          "path": "src/app/workbench/compose-workbench.ts",
+          "sha256": "4fc665b2841becad345081d439456111372de78e908d72003b5b7211ccb57166",
+          "bytes": 21947
+        },
+        {
+          "path": "src/app/workbench/agent-contribution.test.ts",
+          "sha256": "7791fb1c5f627998582cb9bdf7d987eaa734704e40a72ac62b32d4f29f729b4b",
+          "bytes": 3193
+        },
+        {
+          "path": "src/modules/agent/i18n.ts",
+          "sha256": "01efbfa9fe7585aa9cc65832f40467618bd357053dcc0a171524e011b06e4c2d",
+          "bytes": 88282
+        },
+        {
+          "path": "docs/agent-workbench.md",
+          "sha256": "2bf24c8bbd322c969b4916866cc4461ae00accd9a662963470eddac2a6f2eed9",
+          "bytes": 35639
+        },
+        {
+          "path": "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+          "sha256": "9e7317b94dff9e867ed73b476fb5ce8ee7aa32db891dbf8ee88237a6a850e417",
+          "bytes": 56743
+        },
+        {
+          "path": "main.js",
+          "sha256": "4959affc61f78e81003779ccdf2a55f149b9661326e5f7645b31d8bcdb4cb5e0",
+          "bytes": 6757867
+        },
+        {
+          "path": "styles.css",
+          "sha256": "7432a2262c180fdc9abbb373067edeacd0cb2e3882f1650d1d2d651e913bf53e",
+          "bytes": 1422956
+        },
+        {
+          "path": "scripts/bundle-budget.json",
+          "sha256": "09bb318fc693440d01e63abd760c0198c0517008555d6101293be465422755ad",
+          "bytes": 2520
+        },
+        {
+          "path": "THIRD-PARTY-NOTICES.md",
+          "sha256": "fbd0b28f589a716d82c6f53f72321cfd8f30b41ecbe22ec01d411c0bfdec776e",
+          "bytes": 785935
+        }
+      ]
+    },
+    "sources": [
+      {
+        "kind": "specification",
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+        "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+      },
+      {
+        "kind": "specification",
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+        "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+      },
+      {
+        "kind": "specification",
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+        "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+      },
+      {
+        "kind": "specification",
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/10-passive-inbox.md",
+        "sha256": "61820a785c9e0dfdffce2be97484dc7367efc69ee8489a64ce553a96e9929938"
+      },
+      {
+        "kind": "instructions",
+        "locator": "AGENTS.md",
+        "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/dev/SKILL.md",
+        "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/dev/references/architecture.md",
+        "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/dev/references/testing.md",
+        "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/ui/SKILL.md",
+        "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/ui/references/design-system.md",
+        "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/ui/references/shell.md",
+        "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/skills/ui/references/motion-a11y.md",
+        "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/SKILL.md",
+        "sha256": "845d9c8d1dcaf383a0bf32dd4f7057ddef4ba963c55f8f3f57f34ed6695f55d3"
+      },
+      {
+        "kind": "standards",
+        "locator": ".agents/speculo/workflows/specdev/common/skills/code-review/references/risk-review.md",
+        "sha256": "f4e5a2509481afb9a179bfc3c3b64c6831a10ab1d248ace7361e314727e6163b"
+      }
+    ],
+    "exclusions": [
+      "Review TASK/REPORT and review-input evidence are outside the implementation source scope.",
+      "Existing T01-T09 dirty workspace changes are not independently reattributed; reviewer uses the T10 ticket/contracts and the exact 54-path current source snapshot.",
+      "Real Obsidian, Provider, OS IME, and five-platform host acceptance are user-owned and excluded from this code review claim.",
+      "The 055 request-changes review is retained as history; 056-060 repair tasks are included in this new current source snapshot.",
+      "The 061 r2 request-changes review is retained as history; 062-063 fence and observation repairs are included in this current source snapshot.",
+      "The 064 r3 request-changes review is retained as history; 065 bounded cursor, TTL, and disposal repairs are included in this current source snapshot."
+    ]
+  },
+  "input_sha256": "22c10955ef6b7be0004ff17fffe788e5fd00c7b60505f5209d64f8619424816a"
+}

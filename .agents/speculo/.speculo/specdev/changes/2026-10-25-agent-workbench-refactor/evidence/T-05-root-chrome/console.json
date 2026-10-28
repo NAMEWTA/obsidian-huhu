@@ -1,0 +1,270 @@
+[
+  {
+    "method": "Runtime.executionContextCreated",
+    "params": {
+      "context": {
+        "id": 1,
+        "origin": "://",
+        "name": "",
+        "uniqueId": "1475430315156396359.-4830824694650279178",
+        "auxData": {
+          "isDefault": true,
+          "type": "default",
+          "frameId": "C41C5F2BD18B8BDD62C6925625055250"
+        }
+      }
+    }
+  },
+  {
+    "method": "Runtime.executionContextsCleared",
+    "params": {}
+  },
+  {
+    "method": "Runtime.executionContextCreated",
+    "params": {
+      "context": {
+        "id": 2,
+        "origin": "http://127.0.0.1:35723",
+        "name": "",
+        "uniqueId": "-7980696951559538444.-6123233160794199177",
+        "auxData": {
+          "isDefault": true,
+          "type": "default",
+          "frameId": "C41C5F2BD18B8BDD62C6925625055250"
+        }
+      }
+    }
+  },
+  {
+    "method": "Log.entryAdded",
+    "params": {
+      "entry": {
+        "source": "network",
+        "level": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "timestamp": 1792942601956.079,
+        "url": "http://127.0.0.1:35723/favicon.ico",
+        "networkRequestId": "1971441.8"
+      }
+    }
+  },
+  {
+    "method": "Runtime.consoleAPICalled",
+    "params": {
+      "type": "error",
+      "args": [
+        {
+          "type": "string",
+          "value": "[HUHU terminal]"
+        },
+        {
+          "type": "object",
+          "subtype": "error",
+          "className": "Error",
+          "description": "Error: deliberate fixture observer failure\n    at window.ResizeObserver.observe (http://127.0.0.1:35723/fixture.js:25705:17)\n    at TerminalView.mount (http://127.0.0.1:35723/fixture.js:23767:18)\n    at TerminalView.setVisible (http://127.0.0.1:35723/fixture.js:23911:25)\n    at http://127.0.0.1:35723/fixture.js:25715:12\n    at check (http://127.0.0.1:35723/fixture.js:25418:30)\n    at browserFixture (http://127.0.0.1:35723/fixture.js:25687:11)",
+          "objectId": "2033639615400219085.2.1",
+          "preview": {
+            "type": "object",
+            "subtype": "error",
+            "description": "Error: deliberate fixture observer failure\n    at window.ResizeObserver.observe (http://127.0.0.1:35723/fixture.js:25705:17)\n    at TerminalView.mount (http://127.0.0.1:35723/fixture.js:23767:18)\n    at TerminalView.setVisible (http://127.0.0.1:35723/fixture.js:23911:25)\n    at http://127.0.0.1:35723/fixture.js:25715:12\n    at check (http://127.0.0.1:35723/fixture.js:25418:30)\n    at browserFixture (http://127.0.0.1:35723/fixture.js:25687:11)",
+            "overflow": false,
+            "properties": [
+              {
+                "name": "stack",
+                "type": "string",
+                "value": "Error: deliberate fixture observer failure\n    at …ture (http://127.0.0.1:35723/fixture.js:25687:11)"
+              },
+              {
+                "name": "message",
+                "type": "string",
+                "value": "deliberate fixture observer failure"
+              }
+            ]
+          }
+        }
+      ],
+      "executionContextId": 2,
+      "timestamp": 1792942604048.455,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "mount",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 23770,
+            "columnNumber": 16
+          },
+          {
+            "functionName": "setVisible",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 23910,
+            "columnNumber": 24
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 25714,
+            "columnNumber": 11
+          },
+          {
+            "functionName": "check",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 25417,
+            "columnNumber": 29
+          },
+          {
+            "functionName": "browserFixture",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 25686,
+            "columnNumber": 10
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "Runtime.consoleAPICalled",
+    "params": {
+      "type": "error",
+      "args": [
+        {
+          "type": "string",
+          "value": "[HUHU terminal]"
+        },
+        {
+          "type": "object",
+          "subtype": "error",
+          "className": "Error",
+          "description": "Error: Screen resource-limit\n    at TerminalPresentation.receive (http://127.0.0.1:35723/fixture.js:19719:15)\n    at Object.sink (http://127.0.0.1:35723/fixture.js:19657:46)\n    at SessionScreen.resyncObserver (http://127.0.0.1:35723/fixture.js:18190:18)\n    at SessionScreen.limit (http://127.0.0.1:35723/fixture.js:17560:51)\n    at XtermScreenSource.onFault (http://127.0.0.1:35723/fixture.js:17534:26)\n    at http://127.0.0.1:35723/fixture.js:17201:20\n    at Array.<anonymous> (http://127.0.0.1:35723/fixture.js:2631:64)\n    at c.parse (http://127.0.0.1:35723/fixture.js:2312:52)\n    at A3.parse (http://127.0.0.1:35723/fixture.js:319:40)\n    at n2._action (http://127.0.0.1:35723/fixture.js:141:105)",
+          "objectId": "2033639615400219085.2.2",
+          "preview": {
+            "type": "object",
+            "subtype": "error",
+            "description": "Error: Screen resource-limit\n    at TerminalPresentation.receive (http://127.0.0.1:35723/fixture.js:19719:15)\n    at Object.sink (http://127.0.0.1:35723/fixture.js:19657:46)\n    at SessionScreen.resyncObserver (http://127.0.0.1:35723/fixture.js:18190:18)\n    at SessionScreen.limit (http://127.0.0.1:35723/fixture.js:17560:51)\n    at XtermScreenSource.onFault (http://127.0.0.1:35723/fixture.js:17534:26)\n    at http://127.0.0.1:35723/fixture.js:17201:20\n    at Array.<anonymous> (http://127.0.0.1:35723/fixture.js:2631:64)\n    at c.parse (http://127.0.0.1:35723/fixture.js:2312:52)\n    at A3.parse (http://127.0.0.1:35723/fixture.js:319:40)\n    at n2._action (http://127.0.0.1:35723/fixture.js:141:105)",
+            "overflow": false,
+            "properties": [
+              {
+                "name": "stack",
+                "type": "string",
+                "value": "Error: Screen resource-limit\n    at TerminalPresen…ction (http://127.0.0.1:35723/fixture.js:141:105)"
+              },
+              {
+                "name": "message",
+                "type": "string",
+                "value": "Screen resource-limit"
+              }
+            ]
+          }
+        }
+      ],
+      "executionContextId": 2,
+      "timestamp": 1792942605647.595,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "error",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 23734,
+            "columnNumber": 38
+          },
+          {
+            "functionName": "stop",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 19671,
+            "columnNumber": 16
+          },
+          {
+            "functionName": "receive",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 19717,
+            "columnNumber": 17
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 19656,
+            "columnNumber": 45
+          },
+          {
+            "functionName": "resyncObserver",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 18189,
+            "columnNumber": 17
+          },
+          {
+            "functionName": "limit",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 17559,
+            "columnNumber": 50
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 17533,
+            "columnNumber": 25
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 17200,
+            "columnNumber": 19
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 2630,
+            "columnNumber": 63
+          },
+          {
+            "functionName": "parse",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 2311,
+            "columnNumber": 51
+          },
+          {
+            "functionName": "parse",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 318,
+            "columnNumber": 39
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 140,
+            "columnNumber": 104
+          },
+          {
+            "functionName": "_innerWrite",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 1991,
+            "columnNumber": 77
+          },
+          {
+            "functionName": "",
+            "scriptId": "4",
+            "url": "http://127.0.0.1:35723/fixture.js",
+            "lineNumber": 1984,
+            "columnNumber": 38
+          }
+        ]
+      }
+    }
+  }
+]

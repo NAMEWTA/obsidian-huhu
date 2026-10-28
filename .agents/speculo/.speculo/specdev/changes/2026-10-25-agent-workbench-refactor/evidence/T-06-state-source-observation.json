@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "task": "T06 state/projection read-only candidate, implementation NOT unlocked",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observed_utc": "2026-10-25T15:33:28.636402+00:00",
+  "source_write_state": "ALL PRODUCT SOURCE STOPPED; no repository writes/test/build/helper/Provider/cargo/Git operations in this task",
+  "map_observed_revision": 20,
+  "c_hooks_expected_sha256": "21d96133eae44d3d6a0300bba0a4d79882f8d04f8c749012140fefce17c03076",
+  "c_hooks_matches_expected": true,
+  "observations": [
+    {
+      "path": "AGENTS.md",
+      "read_scope": "user supplied authority; current filesystem digest only",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "observed_utc": "2026-10-25T15:33:28.635190+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "read_scope": "full roots",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "observed_utc": "2026-10-25T15:33:28.635231+00:00"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "read_scope": "full capability catalogue",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "observed_utc": "2026-10-25T15:33:28.635269+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "read_scope": "runtime guide",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "observed_utc": "2026-10-25T15:33:28.635290+00:00"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "read_scope": "development scope and ownership rules; prior rules reused",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "observed_utc": "2026-10-25T15:33:28.635345+00:00"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "read_scope": "read-only UI constraints",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "observed_utc": "2026-10-25T15:33:28.635381+00:00"
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "read_scope": "entry only; implementation not activated",
+      "bytes": 4971,
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "observed_utc": "2026-10-25T15:33:28.635404+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "read_scope": "T06 rows, dependency and revision",
+      "bytes": 31828,
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e",
+      "observed_utc": "2026-10-25T15:33:28.635450+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "read_scope": "full ticket",
+      "bytes": 16717,
+      "sha256": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "observed_utc": "2026-10-25T15:33:28.635483+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "read_scope": "sections 3.2-3.4 and AC001-039",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "observed_utc": "2026-10-25T15:33:28.635559+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "read_scope": "sections 1-4 and adjacent ownership defaults",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "observed_utc": "2026-10-25T15:33:28.635589+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "read_scope": "state, focus and native approval sections",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "observed_utc": "2026-10-25T15:33:28.635621+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "read_scope": "existing reference policy/previous R01 K01 K02 reused; no new research",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "observed_utc": "2026-10-25T15:33:28.635645+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "read_scope": "initialisation, lifecycle, activity, input, view wrappers and subscription methods",
+      "bytes": 29735,
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "observed_utc": "2026-10-25T15:33:28.635683+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "read_scope": "host hook port, mapper, runtime projection, routes, create and stop priority",
+      "bytes": 28690,
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "observed_utc": "2026-10-25T15:33:28.635716+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "read_scope": "full status projection",
+      "bytes": 1190,
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "observed_utc": "2026-10-25T15:33:28.635730+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen.ts",
+      "read_scope": "view lease ownership/visibility/focus methods only",
+      "bytes": 40933,
+      "sha256": "9215431e5ce37a067e4e6b5a9609528b60e96ee08a348ec85a52e17bc11d5014",
+      "observed_utc": "2026-10-25T15:33:28.635771+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames-screen.ts",
+      "read_scope": "screen mark/view lease/stream signatures only",
+      "bytes": 9254,
+      "sha256": "4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca",
+      "observed_utc": "2026-10-25T15:33:28.635791+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/shell-marks.ts",
+      "read_scope": "foreground capability search only",
+      "bytes": 3981,
+      "sha256": "971c6271e83d626582e0de695ce4da94283358c97835bc022116c57b0d18303e",
+      "observed_utc": "2026-10-25T15:33:28.635806+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "read_scope": "runtime display state and persistence model",
+      "bytes": 2415,
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "observed_utc": "2026-10-25T15:33:28.635822+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "read_scope": "full public managed DTO",
+      "bytes": 6060,
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "observed_utc": "2026-10-25T15:33:28.635839+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "read_scope": "managed projection/attach/focus/seen legacy/sync/restore and lifecycle excerpts",
+      "bytes": 56587,
+      "sha256": "9dce3d419810f2e9d2aa50f8e3447351d45d2e41f906b7081b63a480827f884a",
+      "observed_utc": "2026-10-25T15:33:28.635881+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "read_scope": "hooks assembly, notifications, focus intent and launch port excerpts",
+      "bytes": 47743,
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "observed_utc": "2026-10-25T15:33:28.635920+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "read_scope": "full intent contract and implementation",
+      "bytes": 1857,
+      "sha256": "120eaad70791037fd82d619728362ae41c70408de43b9bba745c021c32b33481",
+      "observed_utc": "2026-10-25T15:33:28.635934+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "read_scope": "Session/attempt schema and validation",
+      "bytes": 5673,
+      "sha256": "46bf4dadae3af5c985ca60dbda3c15d3acabb062aa3eff68d0bd535e52c4c944",
+      "observed_utc": "2026-10-25T15:33:28.635952+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "read_scope": "layout/checkpoint/flush signatures and queue ownership excerpts",
+      "bytes": 23621,
+      "sha256": "172a40e6185394da0c2106f23c592d6c6925448f925de3f74eee8db6469f3cd5",
+      "observed_utc": "2026-10-25T15:33:28.635979+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "read_scope": "interactive prompt readiness and boundary; original runner semantics",
+      "bytes": 8944,
+      "sha256": "8f63a7718bb26756e1d798ed06845701cff482a6dd7b9aecd777c0c9c5df9f13",
+      "observed_utc": "2026-10-25T15:33:28.635998+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "read_scope": "legacy Hook receive/result/native answer/submit excerpts",
+      "bytes": 23866,
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "observed_utc": "2026-10-25T15:33:28.636026+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "read_scope": "producer, spool, token/slot lifecycle and poll",
+      "bytes": 12306,
+      "sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "observed_utc": "2026-10-25T15:33:28.636048+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "read_scope": "bounded native payload",
+      "bytes": 1027,
+      "sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "observed_utc": "2026-10-25T15:33:28.636061+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "read_scope": "shared hook command/provider attribution excerpts",
+      "bytes": 21448,
+      "sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "observed_utc": "2026-10-25T15:33:28.636087+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "read_scope": "full scope guard",
+      "bytes": 651,
+      "sha256": "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff",
+      "observed_utc": "2026-10-25T15:33:28.636100+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "read_scope": "system account runtime root extraction seam",
+      "bytes": 8135,
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "observed_utc": "2026-10-25T15:33:28.636119+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/detection/probe.ts",
+      "read_scope": "full path-only installed probe",
+      "bytes": 558,
+      "sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "observed_utc": "2026-10-25T15:33:28.636132+00:00"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "read_scope": "foreground/process capability search only; no native API proposal",
+      "bytes": 4658,
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4",
+      "observed_utc": "2026-10-25T15:33:28.636150+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "read_scope": "actual view/visibility/focus wiring and recovery excerpt",
+      "bytes": 19628,
+      "sha256": "d037ddeb15d892e0fa2a847a5eeaf87609007c29a213d99cdb40286bc1bc41ee",
+      "observed_utc": "2026-10-25T15:33:28.636174+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "read_scope": "view visibility/focus methods and focus callbacks",
+      "bytes": 19900,
+      "sha256": "63d8d3c10cfe32ac29b99b5b03adfe187d254eda93a59cf1fad5d22f146961d5",
+      "observed_utc": "2026-10-25T15:33:28.636198+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "read_scope": "ManagedCard/ManagedSessions and attention filters",
+      "bytes": 23176,
+      "sha256": "0f500b21596a56374801ca3733d1af81feb6d23ecde4c912031210035ef2014f",
+      "observed_utc": "2026-10-25T15:33:28.636224+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.test.ts",
+      "read_scope": "existing activity/time/seen and restore tests excerpt",
+      "bytes": 9797,
+      "sha256": "2d622a5ecdb1c62ac6bf61688b0e68d2f7f3c8202b5c45f3b22fa8c26593b665",
+      "observed_utc": "2026-10-25T15:33:28.636242+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "read_scope": "production fixture and existing admission/attachment tests excerpt",
+      "bytes": 31016,
+      "sha256": "0c628f4082ae59019ce7fb225a87ea01df9bf0fa536e0bd6d44c380c08884aca",
+      "observed_utc": "2026-10-25T15:33:28.636281+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "read_scope": "production assembly and asynchronous foreground regression excerpt",
+      "bytes": 16645,
+      "sha256": "bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a",
+      "observed_utc": "2026-10-25T15:33:28.636304+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "read_scope": "legacy Hook mapper inventory only; K03/source unchanged",
+      "bytes": 6008,
+      "sha256": "39cf7cc56d61569ea7bddf520a3ee7cbbb1dedc2708df5479291cd7ba76d81e3",
+      "observed_utc": "2026-10-25T15:33:28.636326+00:00"
+    },
+    {
+      "path": "/tmp/huhu-t06-hooks-contract-proposal.md",
+      "read_scope": "full C producer candidate",
+      "bytes": 10567,
+      "sha256": "21d96133eae44d3d6a0300bba0a4d79882f8d04f8c749012140fefce17c03076",
+      "observed_utc": "2026-10-25T15:33:28.636354+00:00"
+    },
+    {
+      "path": "/tmp/huhu-t06-ui-after-t05-readonly.md",
+      "read_scope": "full B consumer candidate",
+      "bytes": 10032,
+      "sha256": "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a",
+      "observed_utc": "2026-10-25T15:33:28.636374+00:00"
+    },
+    {
+      "path": "/tmp/huhu-t06-preflight.md",
+      "read_scope": "full prior read-only preflight",
+      "bytes": 9271,
+      "sha256": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "observed_utc": "2026-10-25T15:33:28.636392+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.test.ts",
+      "read_scope": "inventory existence/digest only for exact future write/test path; not test execution or full source review",
+      "bytes": 2248,
+      "sha256": "44236f8a398d8acc53fad9f5a0bb94766a29c12a0f2b85f70413fbfc6730fb95",
+      "observed_utc": "2026-10-25T15:39:02.295257+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.test.ts",
+      "read_scope": "inventory existence/digest only for exact future write/test path; not test execution or full source review",
+      "bytes": 9334,
+      "sha256": "249ec1a373317bc8b8d6e71d67ce527f086fe96910053202b85b5f73ba8d6774",
+      "observed_utc": "2026-10-25T15:39:02.295377+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+      "read_scope": "inventory existence/digest only for exact future write/test path; not test execution or full source review",
+      "bytes": 11682,
+      "sha256": "c1455cc493b302447cf3cd52b3f4ad0d6132acc5e5b28376407351509eb9106c",
+      "observed_utc": "2026-10-25T15:39:02.295417+00:00"
+    }
+  ],
+  "failed_path_lookups": [
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/Spec.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/map.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-session-state-and-input.md",
+    "src/modules/agent/services/workspace-service-managed.test.ts",
+    "src/modules/agent/services/launch/foreground-intent.test.ts"
+  ],
+  "drift_check": {
+    "checked_utc": "2026-10-25T15:39:02.297003+00:00",
+    "changes": [],
+    "c_frames_note": "Root reports C actively repairing two shared frames files; not read or proposed as T06 implementation input here. Source snapshot is a read-only observation, not a T05 acceptance snapshot."
+  },
+  "report": {
+    "path": "/tmp/huhu-t06-state-contract-proposal.md",
+    "sha256": "ae2aa21432a20e7d893b9d777dac6897edcfe1aa85307a819b24f2fd550fc153"
+  }
+}

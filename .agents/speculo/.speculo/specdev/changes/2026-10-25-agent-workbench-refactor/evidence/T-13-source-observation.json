@@ -1,0 +1,597 @@
+{
+  "schema_version": 1,
+  "task": "T-13 read-only preflight",
+  "mode": "READ-ONLY; NOT IMPLEMENTATION OR FROZEN REVIEW INPUT",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch_declared": "NAMEWTA/terminal",
+  "base_head_declared": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "plan": "GP-013 / Map revision 14",
+  "observed_at_utc": "2026-10-25T08:47:09.770775+00:00",
+  "source_mutation": false,
+  "tests_build_lint_native_provider_helper_git": "NOT RUN",
+  "warning": "T-03 source is stopped under independent review. T-04–09 are not assumed implemented. Re-read affected hashes after predecessors deliver. Metadata/partial searches are observations, not test results.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "bytes": 19768,
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "bytes": 6155,
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11452,
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "bytes": 8182,
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "bytes": 9072,
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "bytes": 4304,
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31587,
+      "sha256": "5352dd1f725d047cff4647596f5fffb01536ab2f3ce551d84546e05e82e9c2bb",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/13-independent-browser.md",
+      "bytes": 16592,
+      "sha256": "084fc5329f96461b50e851ef7124751f5d57fb3a48dad1dcb829e0ecaeebe3a9",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-preflight.md",
+      "bytes": 8168,
+      "sha256": "33c7c508d4680979ab0dfb8c0751d472f5fd46f81512b71dde9fe8b08c97e8e8",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-14-preflight.md",
+      "bytes": 11858,
+      "sha256": "8d72e0ac112991ccfd0036a646b609d25cf785b00d79e0a1f7510558c3109d10",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/api.ts",
+      "bytes": 4493,
+      "sha256": "3a20d33411f62d05d6d03b8ac52ee7d6c6ffc4c5cf5d1ae4902ceb84d2e72096",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/module.ts",
+      "bytes": 3728,
+      "sha256": "82e494d025a8c0bb2612864a5d1d4a7bbc1fa060629b637476c82b28872b77dc",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/manifest.ts",
+      "bytes": 486,
+      "sha256": "2d80064102382bc159235aa114bd5a6ab2e4982de5d7047c984c9a8f4a175f20",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/module.test.ts",
+      "bytes": 4127,
+      "sha256": "9a1247a66a237c850e10533fc39bf426150b2e5bbfdb5541ef9c364bc36acb36",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/browser.test.ts",
+      "bytes": 12541,
+      "sha256": "5f041b6bd6463b74bc81de7abfe3dab25fedc200e7aee9ff1b49c313fa01e029",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/settings.ts",
+      "bytes": 388,
+      "sha256": "9b26a375de0581f437ad138debc82ff4e0d2abf9935574df5d9b691f0ba5dc3c",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/core/model.ts",
+      "bytes": 3948,
+      "sha256": "0e7ba3c5661be73f85575ccd868cfd145552806b5c55cf33d317a79d18739440",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/services/host.ts",
+      "bytes": 19470,
+      "sha256": "96f01340af9206390a168391a6f8abaab8c43ac3f8c81dfdda3152733e223b60",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/services/host.test.ts",
+      "bytes": 782,
+      "sha256": "2998fdd73caf1bfca04ca88d158f14f04f5b2389f59fb829afc85e7451e18062",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/store.ts",
+      "bytes": 2883,
+      "sha256": "981c18f9562dd04b0b9e7eea5f40be59a33481f141eda40f593f68633c18c1e9",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/note-links.dom.test.tsx",
+      "bytes": 1776,
+      "sha256": "45024696540c11b37b56b7374c4f8ec726aaddbb331ea2f04e5888a32758a5a1",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/page.ts",
+      "bytes": 18099,
+      "sha256": "1be0374beead9e1633bb65f2cc03cf5afdef007da3e02136793c5398f4b684f7",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/electron-api.ts",
+      "bytes": 3819,
+      "sha256": "604af62d8219862638a482dec277a0b51ea21dd068fad905a843428ab056c3cf",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/retained-page.ts",
+      "bytes": 3548,
+      "sha256": "2b1bfee07f46e2b97f5ee98a44fc3c96b5ceac051ba23522913ada612427ee1e",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/retained-page.dom.test.tsx",
+      "bytes": 1283,
+      "sha256": "8995671de88e5923b2088598a60a0bae05ec21b80e479c96563da3bcd0282bd7",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/page-lifecycle.dom.test.tsx",
+      "bytes": 12197,
+      "sha256": "39ec75e5183b98e0dd137f16dd1a7caa38fb5b17f0009fd83662e6ae5cd7c3f8",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/prepared-session.ts",
+      "bytes": 2530,
+      "sha256": "039c89c3027e8c01f4f839d69c53f992d773fc53296af08cfa4a1965191918be",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/prepared-session.test.ts",
+      "bytes": 2720,
+      "sha256": "30ee44f661144a194592148136d55c4ea602322f09e248b8b35fbea0d06989fa",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/session-window.ts",
+      "bytes": 451,
+      "sha256": "7580b9fcc1f22473c75a7fb6f502c8d8171eedeabe7f916024151eb06d302248",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/session-window.test.ts",
+      "bytes": 668,
+      "sha256": "9aa0ea94e16b3f57b952b66b6618f24c2778d8ddf6a31a42b24fac2b6a28a6ab",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/guest-policy.ts",
+      "bytes": 6888,
+      "sha256": "4b4ec9d68c6d5819b414d5b0b285ca77678f185242e9cbbbe8fdae43c20102da",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/platform/desktop/automation.test.ts",
+      "bytes": 3339,
+      "sha256": "f0d80353318eccd72d14b3e2f7e444e4ce470d79af0c6a5d2409e66e217bcf97",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/ui/BrowserChrome.tsx",
+      "bytes": 28654,
+      "sha256": "e831328d65fd688eb7d88cc474c31ecfbff8fc6eb9f1cb78978b912fb83daa6c",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/ui/BrowserChrome.dom.test.tsx",
+      "bytes": 2600,
+      "sha256": "5acf4333b9a7865d2bbf3480e03c39bce19c197cde7ad470df6bd7038ed80157",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/browser/ui/design/DesignTools.tsx",
+      "bytes": 9447,
+      "sha256": "d72182bd5af0a05ccc858dc8ee951496c01ea60ba9427853f66e5353acb6e0e0",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "bytes": 8407,
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "bytes": 8995,
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "bytes": 44420,
+      "sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytes": 36965,
+      "sha256": "a8086a18170d9586302266d9816c471844a15c9574f00da479124590f3e99f68",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "bytes": 7204,
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "bytes": 16158,
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "bytes": 4239,
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/layout-merge.ts",
+      "bytes": 2418,
+      "sha256": "06baad04a1741894e8d5dec412fbdd284768391e944a0a727475dd7f87942af1",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/session-material.ts",
+      "bytes": 4742,
+      "sha256": "24c00ccf18035b84b0a9ee349d948ff25b5a0974a92873e61177533fc63a427d",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/session-material.test.ts",
+      "bytes": 5029,
+      "sha256": "67a335a0528ad130f4ff8fb9d40237a0b459f697429e7cd49238100a05a11709",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.test.ts",
+      "bytes": 5463,
+      "sha256": "e3496393f98156f13f4fb245eb389ec86709826b22793ccc5efa40e54aad1a4f",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store-spaces.test.ts",
+      "bytes": 9405,
+      "sha256": "fd027b5386fe38f01cd03269c6498c96412f0d54c8049e814c5f1c76ac0cce8b",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.test.ts",
+      "bytes": 9766,
+      "sha256": "9e5c99cead94f79a79e39cd932886b319eb7f5f64c3ae6ca8d3a8243f23d0514",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "bytes": 25603,
+      "sha256": "12e665e37585a4611481218b65ce03624ae79d6ed034775ba652190a498e2c77",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "bytes": 2415,
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "bytes": 15857,
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/workbench-page.ts",
+      "bytes": 118,
+      "sha256": "751037119f3ebca079299914d5221efb44024d59a33f8e6ac4d0e5031d90dea0",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "bytes": 12540,
+      "sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+      "bytes": 6235,
+      "sha256": "e8c3c3a6d112725c32a1c20bf69b883501f18308f2d55546430dcca620f824c6",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.dom.test.tsx",
+      "bytes": 3147,
+      "sha256": "25226aa777d29c261e92937a145c0cb74aee1d136de9055b1e80622704e864a9",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/browser/BrowserWorkspaceTab.tsx",
+      "bytes": 8257,
+      "sha256": "dc41f35527cd75270edbf3c473699af23cc3949e8c89613f2159a02ae2cb8772",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/browser/BrowserTabView.tsx",
+      "bytes": 4229,
+      "sha256": "a8941e791cb369c05301afba2c770bd36d2b83078a3f06a26251e4ccb7eb9d63",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/browser/BrowserTabView.dom.test.tsx",
+      "bytes": 2545,
+      "sha256": "a58ced9acc9a0b1e8a079327f9d572c38444c1d46a0c9472c98ab80216a0da04",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceEmptyState.tsx",
+      "bytes": 1981,
+      "sha256": "9734d3964a4f718301cf9d9cefb35d18ed30c51444c10a96bc0a4ee134fac388",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "bytes": 12490,
+      "sha256": "a23321b680603e3efd0f6f75740fa28ed7b0e6ae6c89d7e6374568cb9b1bfba1",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/tabs/TabStrip.tsx",
+      "bytes": 6812,
+      "sha256": "26ce5746045842fbe6c179a020b6726e92d54db41b25d95beb8b78901831c771",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/modules/agent/ui/tabs/WorkspaceTab.tsx",
+      "bytes": 8460,
+      "sha256": "95a7e2b68336a917f748865547415a3626ae70685054588b86bc29dfcf398c8e",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/contracts/module.ts",
+      "bytes": 6999,
+      "sha256": "c23485d4b2380bb33828d4bf87cd49e091555134ad5d82867fd03098fa6049fb",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/contracts/workbench.ts",
+      "bytes": 6960,
+      "sha256": "76f0afef332869e70a54097729a8e0f84163073a2c277c0d41aa13c30e907f9a",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/contracts/workbench-host.ts",
+      "bytes": 4598,
+      "sha256": "245dbf1bc373a1e9a8f7a79d84581060c22bdc09b1824763efd0bf1dc83d738d",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/workbench/compose-workbench.ts",
+      "bytes": 21918,
+      "sha256": "1d6d9c8174096646f5d2dda49f645bbc1f3a66b28018df697997cffb785e452e",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/main.ts",
+      "bytes": 16610,
+      "sha256": "3bcd26ae09610f8589a47c0b83a9107bebfad417381200f1af621de28d262c22",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/commands.ts",
+      "bytes": 2864,
+      "sha256": "8b26f0e92238f413f8f25c2828cfb43e6f761111e7e36b612ec3ca95b2a1cdaf",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/modules/registry.ts",
+      "bytes": 11239,
+      "sha256": "2f1fd47357def35fc7634f70f3acfd72596b59a2bf06727ee60b77efd00ca20e",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/app/modules/registry.test.ts",
+      "bytes": 5983,
+      "sha256": "73bf4e084e91d63af02484b0abe1075c1db86477c4d403219d1a7d2905a5a484",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shell/navigation-state.ts",
+      "bytes": 5126,
+      "sha256": "35e6ea52a82ff8028f21528c9c227f71d3078f96b4c3b0aec6294bfcf3066097",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shell/navigation-state.test.ts",
+      "bytes": 7276,
+      "sha256": "e2a6e2f9d48cafea1acf56d604a0a03dff181b9663a59bc49980095fb2e9f790",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shell/host/workbench-pages.ts",
+      "bytes": 13040,
+      "sha256": "cf1dcd5718ed070d50e9af4162c188df509d2f834ae660a406edf3c78dd6cce7",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shell/host/workbench-surface.tsx",
+      "bytes": 16855,
+      "sha256": "72d80f0e4eae73dbc7434d460563b0ec4def0824a77b9cc58a8b17a32d249177",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shell/host/workbench-surface.dom.test.tsx",
+      "bytes": 7353,
+      "sha256": "ca8148349326056c91b9217234c263d1ba7b533bc857e266055f0a1470bb7ca9",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/shared/native/cookies.ts",
+      "bytes": 1001,
+      "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "bytes": 9005,
+      "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "bytes": 7164,
+      "sha256": "2368913c32487d291e3d263eff79c51fa84ba02382212b9800380a321b940907",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/electron-main.ts",
+      "bytes": 717,
+      "sha256": "79af83239d17028714d5eed227045683d4476315da08469c03baf66cc3844065",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/browser-session.ts",
+      "bytes": 9931,
+      "sha256": "87d656a11dc522ba8b05e7dcb24b0cfbe72fe28b8ba52d378ccc7180f134b419",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/browser-session-main.test.ts",
+      "bytes": 4618,
+      "sha256": "8359bcd71f6b9dbd0bb14b087e0f390b08101fd9ec91b9079f127352fbe6dc70",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/browser-session-concurrency.test.ts",
+      "bytes": 9625,
+      "sha256": "f89cd6b24383b4aed9089ab9edb12d7e6927c9b3aa496faeb903a97dd39238d1",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/browser-session-migration.test.ts",
+      "bytes": 10845,
+      "sha256": "0dcb9312394c9f02d125ef144aad087723be70cd10d2c0f52a77a55a07100fa0",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/host/desktop/browser-session-recovery.test.ts",
+      "bytes": 6862,
+      "sha256": "87e738209bfc1dd9f7484dc71369aeeeab230d59f89abd266becf1604ffcb7dc",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "src/ui/react/providers.tsx",
+      "bytes": 2408,
+      "sha256": "b33de5d419b86baf7aaacab495fcbba57e83e327995dcd9fdf644a131b94ae34",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/browser-cookie-import.mjs",
+      "bytes": 6942,
+      "sha256": "0f614f04245b0c73441d1facdb0b700cac1c2069f77de288ea28db95c0319709",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    },
+    {
+      "path": "docs/browser.md",
+      "bytes": 7334,
+      "sha256": "8c52a5718d567d6fdbe96437cf3f01069eeaf2268a3e3472c6524cc735d3b86a",
+      "coverage": "whole file or task-targeted excerpt/search; hash is full-file observation"
+    }
+  ]
+}

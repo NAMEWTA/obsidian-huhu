@@ -1,0 +1,128 @@
+[
+  {
+    "name": "red",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/services/spaces/space-service-recovery.test.ts src/modules/agent/services/workspace-service-spaces.test.ts > /tmp/huhu-t02-a-repair-red.log 2>&1",
+    "tool_exit": 126,
+    "output_path": "/tmp/huhu-t02-a-repair-red.log",
+    "output_sha256": "2eee31a6a6c3a725d05859e79cd54e4a223e41ac4e198b40c63081eb9711fd2a",
+    "output_bytes": 19673
+  },
+  {
+    "name": "first-green",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/services/spaces/space-service-recovery.test.ts src/modules/agent/services/workspace-service-spaces.test.ts > /tmp/huhu-t02-a-repair-green-first.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-green-first.log",
+    "output_sha256": "b68f67fe82e5d6e2b4d7b54d5147a75c79a173a96274a4973977ee140d8c42d7",
+    "output_bytes": 471
+  },
+  {
+    "name": "first-production-types",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/typescript/bin/tsc -noEmit -skipLibCheck > /tmp/huhu-t02-a-repair-type-first.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-type-first.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  },
+  {
+    "name": "first-test-types",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/typescript/bin/tsc -skipLibCheck -p tsconfig.test.json > /tmp/huhu-t02-a-repair-test-types-first.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-test-types-first.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  },
+  {
+    "name": "first-lint",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/eslint/bin/eslint.js src/modules/agent/services/spaces src/modules/agent/services/workspace-service.ts --max-warnings 0 > /tmp/huhu-t02-a-repair-lint-first.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-lint-first.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  },
+  {
+    "name": "first-regression",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/services/spaces src/modules/agent/services/workspace-service-spaces.test.ts src/modules/agent/services/workspace-service.test.ts src/modules/agent/services/workspace-store.test.ts src/modules/agent/services/controller-space.test.ts src/modules/agent/services/launch/launcher-space.test.ts src/modules/agent/services/terminal/sessions-space.test.ts src/modules/agent/services/terminal/sessions-cancellation.test.ts src/modules/agent/core/workspace/ops.test.ts src/shared/storage/vault-identity.test.ts > /tmp/huhu-t02-a-repair-unit-first.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-unit-first.log",
+    "output_sha256": "6abbd4e2a506928fcb2fd60d27dffc40793ce2e0b2821c43c99155d30a554876",
+    "output_bytes": 486
+  },
+  {
+    "name": "dom",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/vitest/vitest.mjs run --project dom src/modules/agent/ui/create/SpaceForm.dom.test.tsx src/modules/agent/ui/workspace/WorkspaceLayout.dom.test.tsx > /tmp/huhu-t02-a-repair-dom.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-dom.log",
+    "output_sha256": "91a3e9aca7becbce6998de9ae5b5ee67c56e384e99b9ae1ed0bcbdad36471b08",
+    "output_bytes": 486
+  },
+  {
+    "name": "final-regression",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/services/spaces src/modules/agent/services/workspace-service-spaces.test.ts src/modules/agent/services/workspace-service.test.ts src/modules/agent/services/workspace-store.test.ts src/modules/agent/services/controller-space.test.ts src/modules/agent/services/launch/launcher-space.test.ts src/modules/agent/services/terminal/sessions-space.test.ts src/modules/agent/services/terminal/sessions-cancellation.test.ts src/modules/agent/core/workspace/ops.test.ts src/shared/storage/vault-identity.test.ts > /tmp/huhu-t02-a-repair-unit-v2.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-unit-v2.log",
+    "output_sha256": "9c6b69d22fafe655c1222580849db275369dc8e67afc770b4e118dd0489d429d",
+    "output_bytes": 485
+  },
+  {
+    "name": "rebuild-review-probes",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node /tmp/huhu-t02-review-rebuild-probes.mjs > /tmp/huhu-t02-a-repair-probe-build.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-probe-build.log",
+    "output_sha256": "d989a22899181ab58e8da0042b44e17e32b992e689b908c8aabf46c61ea57c8d",
+    "output_bytes": 59
+  },
+  {
+    "name": "storage-review-probe",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node /tmp/huhu-t02-storage-probe.mjs > /tmp/huhu-t02-a-repair-storage-probe.stdout 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-storage-probe.stdout",
+    "output_sha256": "45f83ca158934057833c25e4d6f609c06fa006926489cd377bf740c723ab3307",
+    "output_bytes": 1703
+  },
+  {
+    "name": "layout-review-probe",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node /tmp/huhu-t02-layout-probe.mjs > /tmp/huhu-t02-a-repair-layout-probe.stdout 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-layout-probe.stdout",
+    "output_sha256": "1c8a0318ecdcdd9f1e5fcad1045ba1a5e3dec870c4537566a3ae3e0781becde0",
+    "output_bytes": 421
+  },
+  {
+    "name": "final-production-types",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/typescript/bin/tsc -noEmit -skipLibCheck > /tmp/huhu-t02-a-repair-type-v2.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-type-v2.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  },
+  {
+    "name": "final-test-types",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/typescript/bin/tsc -skipLibCheck -p tsconfig.test.json > /tmp/huhu-t02-a-repair-test-types-v2.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-test-types-v2.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  },
+  {
+    "name": "final-lint",
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "command": "node node_modules/eslint/bin/eslint.js src/modules/agent/services/spaces src/modules/agent/services/workspace-service.ts --max-warnings 0 > /tmp/huhu-t02-a-repair-lint-v2.log 2>&1",
+    "tool_exit": 0,
+    "output_path": "/tmp/huhu-t02-a-repair-lint-v2.log",
+    "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_bytes": 0
+  }
+]

@@ -1,0 +1,123 @@
+{
+  "agent": "/root/implement_t01",
+  "writer_stopped": true,
+  "source_manifest": "/tmp/huhu-t01-source-manifest.json",
+  "checks": [
+    {
+      "command": "pnpm exec vitest run src/shared/native src/host/desktop/native src/modules/agent/platform/desktop/pty src/modules/agent/platform/desktop/server src/modules/agent/services/controller-native.test.ts src/modules/agent/services/terminal src/modules/agent/core/terminal src/modules/agent/module.test.ts src/modules/browser/module.test.ts src/modules/browser/services/host.test.ts src/modules/browser/platform/desktop/cookies/read.test.ts",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-regression-delivery.log",
+      "note": "18 files; 59 passed; no skip"
+    },
+    {
+      "command": "pnpm exec tsc -noEmit -skipLibCheck",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-types-delivery.log",
+      "note": "production types"
+    },
+    {
+      "command": "pnpm exec tsc -skipLibCheck -p tsconfig.test.json",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-test-types-delivery.log",
+      "note": "test types"
+    },
+    {
+      "command": "pnpm exec eslint src/app/contracts/module.ts src/app/main.ts src/shared/native src/shared/i18n/lazy/native.ts src/host/desktop/native src/modules/agent/api.ts src/modules/agent/module.ts src/modules/agent/i18n.ts src/modules/agent/core/terminal/frames.ts src/modules/agent/platform/desktop/pty/helper.ts src/modules/agent/platform/desktop/pty/binary.ts src/modules/agent/platform/desktop/server/cookie-client.ts src/modules/agent/services/controller.ts src/modules/agent/services/terminal/sessions.ts src/modules/browser/module.ts src/modules/browser/services/host.ts --max-warnings 0",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-lint-final.log",
+      "note": "all implementation production paths; tests/scripts ignored by repo lint config"
+    },
+    {
+      "command": "pnpm exec eslint src/host/desktop/native/host.ts src/modules/agent/services/terminal/sessions.ts --max-warnings 0",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-lint-delivery.log",
+      "note": "final changed production paths after preceding targeted lint"
+    },
+    {
+      "command": "pnpm test:architecture",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-architecture-final.log",
+      "note": "1203 modules; no zone/package/desktop/barrel/cycle violations"
+    },
+    {
+      "command": "pnpm test:i18n",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-i18n.log",
+      "note": "31 dictionaries; 4562 keys; placeholders/literal references valid"
+    },
+    {
+      "command": "cargo build --locked --manifest-path native/pty-server/Cargo.toml",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-native-build.log",
+      "note": "real debug helper; Rust source unchanged"
+    },
+    {
+      "command": "pnpm exec vitest run src/host/desktop/native/runtime.test.ts src/host/desktop/native/host.integration.test.ts",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-native-integration.log",
+      "note": "actual helper PTY + locked SQLite Cookie read + PID reaping; en/zh install feedback; 3 tests"
+    },
+    {
+      "command": "pnpm exec vitest run src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "shell_exit": 0,
+      "raw_output": "/tmp/huhu-t01-real-helper.log",
+      "note": "existing native PTY output/input/resize/exit/history regression; actually ran"
+    },
+    {
+      "command": "pnpm test:docs",
+      "shell_exit": 126,
+      "raw_output": "/tmp/huhu-t01-docs.log",
+      "note": "pnpm reports inner lifecycle exit 1; exactly six pre-existing huhu-bot-architecture input heading anchors; no T01 path findings"
+    }
+  ],
+  "red_green": [
+    {
+      "behavior": "Agent lease release preserves Browser Cookie capability",
+      "red": "/tmp/huhu-t01-red-01.log",
+      "green": "/tmp/huhu-t01-green-01.log"
+    },
+    {
+      "behavior": "native crash broadcasts to every owner and permits a fresh generation",
+      "red": "/tmp/huhu-t01-red-02.log",
+      "green": "/tmp/huhu-t01-green-02.log"
+    },
+    {
+      "behavior": "startup cancellation promptly ends admission and reclaims a late helper",
+      "red": "/tmp/huhu-t01-red-04.log",
+      "green": "/tmp/huhu-t01-green-04.log"
+    },
+    {
+      "behavior": "helper disposal waits for observed child exit",
+      "red": "/tmp/huhu-t01-red-05.log",
+      "green": "/tmp/huhu-t01-green-05.log"
+    },
+    {
+      "behavior": "PTY owner release waits for its exit while Browser remains connected",
+      "red": "/tmp/huhu-t01-red-06.log",
+      "green": "/tmp/huhu-t01-green-06.log"
+    },
+    {
+      "behavior": "host unloaded while desktop factory is loading is reclaimed once",
+      "red": "/tmp/huhu-t01-red-07.log",
+      "green": "/tmp/huhu-t01-green-07.log"
+    }
+  ],
+  "controller_negative_control": {
+    "red": "/tmp/huhu-t01-red-03-valid.log",
+    "green": "/tmp/huhu-t01-green-04.log",
+    "restored_digest_receipt": "/tmp/huhu-t01-controller-mutation.sha256",
+    "note": "earlier red-03/green-03 logs failed fixture import; they are NOT behavior red/green evidence"
+  },
+  "not_run_by_worker": [
+    "plugin build / main.js / styles.css generation",
+    "check:bundle",
+    "full-repo lint",
+    "independent review",
+    "real Obsidian, real Provider, five-platform human acceptance"
+  ],
+  "notes": [
+    "No Git index/ref/remote operations; no change artifact or lockfile writes.",
+    "Fixed reference-notes R-01/R-02/R-05 used for owner/runtime separation, existing protocol and portable-pty preserved; no dependency or external source code added.",
+    "Read-only pending checks have completed; source/test/docs/Skill writer stopped."
+  ]
+}

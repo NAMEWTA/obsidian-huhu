@@ -1,0 +1,994 @@
+{
+	"version": 1,
+	"limits": {
+		"operationBytes": 262144,
+		"fragmentBytes": 16384,
+		"sessionQueuedBytes": 524288,
+		"sessionQueuedOperations": 32,
+		"helperQueuedBytes": 2097152,
+		"helperQueuedOperations": 128,
+		"replyFrameBytes": 4096,
+		"sessionReplyBytes": 16384,
+		"helperReplyBytes": 131072
+	},
+	"cases": [
+		{
+			"name": "finite profile",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": true
+		},
+		{
+			"name": "invalid operationBytes",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 0,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": false
+		},
+		{
+			"name": "invalid fragmentBytes",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 262145,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": false
+		},
+		{
+			"name": "invalid sessionQueuedBytes",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 1,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": false
+		},
+		{
+			"name": "invalid helperQueuedOperations",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 1,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": false
+		},
+		{
+			"name": "invalid helperReplyBytes",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": 4096,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "invalid replyFrameBytes",
+			"codec": "limits",
+			"wire": {
+				"operationBytes": 262144,
+				"fragmentBytes": 16384,
+				"sessionQueuedBytes": 524288,
+				"sessionQueuedOperations": 32,
+				"helperQueuedBytes": 2097152,
+				"helperQueuedOperations": 128,
+				"replyFrameBytes": true,
+				"sessionReplyBytes": 16384,
+				"helperReplyBytes": 131072
+			},
+			"valid": false
+		},
+		{
+			"name": "input-begin",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": 1,
+				"totalBytes": 5
+			},
+			"valid": true
+		},
+		{
+			"name": "input-begin invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 0,
+				"op": 1,
+				"totalBytes": 5
+			},
+			"valid": false
+		},
+		{
+			"name": "input-begin invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": -1,
+				"totalBytes": 5
+			},
+			"valid": false
+		},
+		{
+			"name": "input-begin invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": "7",
+				"op": 1,
+				"totalBytes": 5
+			},
+			"valid": false
+		},
+		{
+			"name": "input-begin invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": [1],
+				"totalBytes": 5
+			},
+			"valid": false
+		},
+		{
+			"name": "input-begin invalid extra",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": 1,
+				"totalBytes": 5,
+				"extra": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-commit",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": 7,
+				"op": 1
+			},
+			"valid": true
+		},
+		{
+			"name": "input-commit invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": 0,
+				"op": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-commit invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": 7,
+				"op": -1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-commit invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": "7",
+				"op": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-commit invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": 7,
+				"op": [1]
+			},
+			"valid": false
+		},
+		{
+			"name": "input-commit invalid extra",
+			"codec": "control",
+			"wire": {
+				"type": "input-commit",
+				"sid": 7,
+				"op": 1,
+				"extra": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-cancel",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": 7,
+				"op": 1
+			},
+			"valid": true
+		},
+		{
+			"name": "input-cancel invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": 0,
+				"op": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-cancel invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": 7,
+				"op": -1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-cancel invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": "7",
+				"op": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input-cancel invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": 7,
+				"op": [1]
+			},
+			"valid": false
+		},
+		{
+			"name": "input-cancel invalid extra",
+			"codec": "control",
+			"wire": {
+				"type": "input-cancel",
+				"sid": 7,
+				"op": 1,
+				"extra": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "resize",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": 1,
+				"cols": 80,
+				"rows": 24
+			},
+			"valid": true
+		},
+		{
+			"name": "resize invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 0,
+				"op": 1,
+				"cols": 80,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "resize invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": -1,
+				"cols": 80,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "resize invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": "7",
+				"op": 1,
+				"cols": 80,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "resize invalid op",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": [1],
+				"cols": 80,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "resize invalid extra",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": 1,
+				"cols": 80,
+				"rows": 24,
+				"extra": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "input reserved",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "reserved"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array reserved",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["reserved"]
+			},
+			"valid": false
+		},
+		{
+			"name": "input queued",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "queued"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array queued",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["queued"]
+			},
+			"valid": false
+		},
+		{
+			"name": "input started",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "started"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array started",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["started"]
+			},
+			"valid": false
+		},
+		{
+			"name": "input written",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "written"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array written",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["written"]
+			},
+			"valid": false
+		},
+		{
+			"name": "input none",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "none",
+				"reason": "capacity"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array none",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["none"],
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "input unknown",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "unknown",
+				"reason": "transport-lost"
+			},
+			"valid": true
+		},
+		{
+			"name": "input array unknown",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": ["unknown"],
+				"reason": "transport-lost"
+			},
+			"valid": false
+		},
+		{
+			"name": "resize queued",
+			"codec": "control",
+			"wire": {
+				"type": "resize-state",
+				"sid": 7,
+				"op": 2,
+				"state": "queued"
+			},
+			"valid": true
+		},
+		{
+			"name": "resize applied",
+			"codec": "control",
+			"wire": {
+				"type": "resize-state",
+				"sid": 7,
+				"op": 2,
+				"state": "applied"
+			},
+			"valid": true
+		},
+		{
+			"name": "resize superseded",
+			"codec": "control",
+			"wire": {
+				"type": "resize-state",
+				"sid": 7,
+				"op": 2,
+				"state": "superseded"
+			},
+			"valid": true
+		},
+		{
+			"name": "resize none",
+			"codec": "control",
+			"wire": {
+				"type": "resize-state",
+				"sid": 7,
+				"op": 2,
+				"state": "none",
+				"reason": "closed"
+			},
+			"valid": true
+		},
+		{
+			"name": "resize unknown",
+			"codec": "control",
+			"wire": {
+				"type": "resize-state",
+				"sid": 7,
+				"op": 2,
+				"state": "unknown",
+				"reason": "write-failed"
+			},
+			"valid": true
+		},
+		{
+			"name": "written cannot have failure",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "written",
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "none needs reason",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "none"
+			},
+			"valid": false
+		},
+		{
+			"name": "unknown cannot prove capacity",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "unknown",
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "none cannot assert expired",
+			"codec": "control",
+			"wire": {
+				"type": "input-state",
+				"sid": 7,
+				"op": 1,
+				"state": "none",
+				"reason": "expired"
+			},
+			"valid": false
+		},
+		{
+			"name": "oversized begin",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": 1,
+				"totalBytes": 262145
+			},
+			"valid": false
+		},
+		{
+			"name": "empty begin",
+			"codec": "control",
+			"wire": {
+				"type": "input-begin",
+				"sid": 7,
+				"op": 1,
+				"totalBytes": 0
+			},
+			"valid": false
+		},
+		{
+			"name": "fractional grid",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": 1,
+				"cols": 80.1,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "large grid",
+			"codec": "control",
+			"wire": {
+				"type": "resize",
+				"sid": 7,
+				"op": 1,
+				"cols": 65536,
+				"rows": 24
+			},
+			"valid": false
+		},
+		{
+			"name": "array control",
+			"codec": "control",
+			"wire": [],
+			"valid": false
+		},
+		{
+			"name": "explicit output abandon",
+			"wire": {
+				"type": "output-abandon",
+				"sid": 7
+			},
+			"valid": true,
+			"codec": "control"
+		},
+		{
+			"name": "abandon has no op",
+			"wire": {
+				"type": "output-abandon",
+				"sid": 7,
+				"op": 1
+			},
+			"valid": false,
+			"codec": "control"
+		},
+		{
+			"name": "abandon rejects array sid",
+			"wire": {
+				"type": "output-abandon",
+				"sid": [7]
+			},
+			"valid": false,
+			"codec": "control"
+		},
+		{
+			"name": "abandon rejects zero sid",
+			"wire": {
+				"type": "output-abandon",
+				"sid": 0
+			},
+			"valid": false,
+			"codec": "control"
+		},
+		{
+			"name": "reply failure none capacity",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "capacity"
+			},
+			"valid": true
+		},
+		{
+			"name": "reply failure none closed",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "closed"
+			},
+			"valid": true
+		},
+		{
+			"name": "reply failure none invalid",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "invalid"
+			},
+			"valid": true
+		},
+		{
+			"name": "reply failure unknown transport-lost",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "unknown",
+				"reason": "transport-lost"
+			},
+			"valid": true
+		},
+		{
+			"name": "reply failure unknown write-failed",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "unknown",
+				"reason": "write-failed"
+			},
+			"valid": true
+		},
+		{
+			"name": "reply failure array state",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": ["none"],
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure array reason",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": ["capacity"]
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure wrong unknown reason",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "unknown",
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure wrong none reason",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "write-failed"
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure invalid sid",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 0,
+				"state": "none",
+				"reason": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure extra op",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "capacity",
+				"op": 1
+			},
+			"valid": false
+		},
+		{
+			"name": "reply failure free message",
+			"codec": "control",
+			"wire": {
+				"type": "reply-failure",
+				"sid": 1,
+				"state": "none",
+				"reason": "capacity",
+				"message": "capacity"
+			},
+			"valid": false
+		},
+		{
+			"name": "reply-close strict settlement marker",
+			"codec": "control",
+			"valid": true,
+			"wire": {
+				"type": "reply-close",
+				"sid": 4294967295
+			}
+		},
+		{
+			"name": "reply-settled strict settlement marker",
+			"codec": "control",
+			"valid": true,
+			"wire": {
+				"type": "reply-settled",
+				"sid": 4294967295
+			}
+		},
+		{
+			"name": "reply-close rejects extra field",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-close",
+				"sid": 1,
+				"op": 1
+			}
+		},
+		{
+			"name": "reply-close rejects array sid",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-close",
+				"sid": [1]
+			}
+		},
+		{
+			"name": "reply-close rejects zero sid",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-close",
+				"sid": 0
+			}
+		},
+		{
+			"name": "reply-settled rejects extra field",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-settled",
+				"sid": 1,
+				"op": 1
+			}
+		},
+		{
+			"name": "reply-settled rejects array sid",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-settled",
+				"sid": [1]
+			}
+		},
+		{
+			"name": "reply-settled rejects zero sid",
+			"codec": "control",
+			"valid": false,
+			"wire": {
+				"type": "reply-settled",
+				"sid": 0
+			}
+		}
+	],
+	"frames": [
+		{
+			"name": "part",
+			"kind": "part",
+			"sid": 7,
+			"op": 1,
+			"offset": 2,
+			"data": [65, 0, 255],
+			"bytes": [0, 0, 0, 16, 4, 0, 0, 0, 7, 0, 0, 0, 1, 0, 0, 0, 2, 65, 0, 255]
+		},
+		{
+			"name": "reply",
+			"kind": "reply",
+			"sid": 7,
+			"op": 0,
+			"offset": 0,
+			"data": [27, 91, 49, 82],
+			"bytes": [0, 0, 0, 9, 5, 0, 0, 0, 7, 27, 91, 49, 82]
+		}
+	],
+	"rawCases": [
+		{
+			"name": "integer 1",
+			"json": "{\"type\":\"input-begin\",\"sid\":1,\"op\":1,\"totalBytes\":1}",
+			"valid": true
+		},
+		{
+			"name": "integer 1.0",
+			"json": "{\"type\":\"input-begin\",\"sid\":1.0,\"op\":1.0,\"totalBytes\":1.0}",
+			"valid": true
+		},
+		{
+			"name": "integer 1e0",
+			"json": "{\"type\":\"input-begin\",\"sid\":1e0,\"op\":1e0,\"totalBytes\":1e0}",
+			"valid": true
+		},
+		{
+			"name": "integer 1.5",
+			"json": "{\"type\":\"input-begin\",\"sid\":1.5,\"op\":1.5,\"totalBytes\":1.5}",
+			"valid": false
+		},
+		{
+			"name": "integer 4294967296",
+			"json": "{\"type\":\"input-begin\",\"sid\":4294967296,\"op\":4294967296,\"totalBytes\":4294967296}",
+			"valid": false
+		},
+		{
+			"name": "integer true",
+			"json": "{\"type\":\"input-begin\",\"sid\":true,\"op\":true,\"totalBytes\":true}",
+			"valid": false
+		},
+		{
+			"name": "integer \"1\"",
+			"json": "{\"type\":\"input-begin\",\"sid\":\"1\",\"op\":\"1\",\"totalBytes\":\"1\"}",
+			"valid": false
+		},
+		{
+			"name": "reply sid 1.0",
+			"json": "{\"type\":\"reply-failure\",\"sid\":1.0,\"state\":\"none\",\"reason\":\"capacity\"}",
+			"valid": true
+		},
+		{
+			"name": "reply sid 1e0",
+			"json": "{\"type\":\"reply-failure\",\"sid\":1e0,\"state\":\"none\",\"reason\":\"capacity\"}",
+			"valid": true
+		}
+	]
+}

@@ -469,3 +469,287 @@
 - **恢复：** 模型不可用、writer 未知、输入漂移、局部环境缺项、迁移失败及重复 blocker 均有对应暂停范围和恢复条件；当前宿主槽位只是当次能力，不新增项目固定实现者人数。
 - **对齐：** README 更新当前 Work 和接续；Map 只导航 Goal 的 Gate/Wave/团队安排并递增 revision；Spec 补正式 Goal 导航。T-01 的 required E2E 明确限定共享 native/Cookie 租约，不再把 T-13/AC-041 的完整独立网页交互提前作为完成前置，消除隐含循环；责任覆盖与产品验收要求没有删减。其余 Ticket 内容、所有票状态/依赖、批准记录、DESIGN、原型、输入和旧 Evidence 保留。
 - **验证：** 逐轴规划自查、结构校验、只读 ticket-control 与文档检查结果见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/goal-plan-review.md</Path>。规划交付完成；Goal 仍为 draft / ready_for_execution false，因为尚未收到 run 指令，不能将计划通过冒充已获实现授权。
+
+
+## LOG-027 — 用户授权完整实施与代码验收
+- **日期/Work：** 2026-10-25，specdev/goal-plan run；Lead codex:/root。
+- **用户请求：** 根据 plan/spec/map 实施，允许 Agent Team，由 Root 编排与最后整体代码验收；用户明确补充“真实的端到端的验收 用户自己进行”。
+- **生效合同：** 全部生产功能、自动化、构建与独立代码审查仍须完成。真实 Obsidian、Provider、人工审批及五平台主链交给用户；未运行项保留为人工清单，不冒充 passed。此处是用户改变验收责任，不是因环境不足擅自降低门禁。
+- **工作区：** current；NAMEWTA/terminal；HEAD/base 33c21e098ef3188cbab5a09f3e0a01fadb787715，启动前 git status --short 为空。README 建立唯一 Execution Context。
+- **编排：** GP-002 / Map revision 3，跨票 serial。允许 Lead 将本票源文件委托唯一实际实现者；正式状态/Evidence、生成产物仍由 Lead 负责。模型沿原用户安排；无提交、推送、发布授权。
+
+## LOG-028 — 承接实施前审查与验收依赖修正
+- **输入：** 上轮只读审查确认四项 P2：早票的完整 AC 依赖后续 CLI/邮箱；旧业务调用未含 Space；备份跨 owner 缺公开一致性接缝；原型焦点切换后目标显示与发送不一致。
+- **处置：** 按原 T/S owner 修订各切片的代码验收与最终组合责任，不删 AC；跨 owner 备份增加真实服务公共接缝和原 owner 写集；生产 UI 依 DESIGN 保持显式目标，不复制原型缺陷。获批原型与历史批准不改写。旧业务运行与 Space 规则已向用户提出聚焦选择，T-01 不受其影响。
+- **T-01：** 扩展帧协议与 binary 安装器兼容重导出、Browser 模块装配测试与 controller 回归测试的精确写集；原因是 host 不得反向依赖 Agent，同时需证明未使用不触发扫描。实现者 /root/implement_t01；此前只读预检，正式解锁另在原 Evidence 记录。
+
+
+## LOG-029 — 备份真实 owner 与恢复合同闭合
+- **依据：** 独立 reviewer /root/review_data_and_delivery 的只读真实源码核查，原报告逐字节保存在 evidence/backup-owner-analysis.md；未冒称实现/测试通过。
+- **决定：** 按现有“完整业务数据”承诺覆盖工作台相关设备集合、自动化定义及原 run/invocation/result、通知records/read/receipts；来源笔记不递归打包。采用活动BUSY、有界全owner门禁/严格排空、共同快照、journal与启动恢复门，目标为空或同摘要幂等，身份碰撞拒绝。导入及重启不补执行任务/通知，目录/权限确认重新核对，结构化env/凭据不导出。
+- **落实：** 公共实施合同 §6 固定局部工程默认值，Spec §3.8 明示可见恢复限制，T-15/T-16补原owner/app/shared的精确写集及故障、竞态、往返、无副作用自动化。保留原数据结构，不新增业务DB/Run平台。T-17补T-01实际迁入host的binary安装器写集。
+- **边界：** 不执行用户真实库迁移/导入；实际实现按原票推进，真实端到端由用户进行。
+
+- **修订：** GP-003 / Map revision 4 固定上述恢复合同、已复核的跨票AC组合分工与 T-17 路径修订。T-01 的 AC/写集/实现方案不变；此前 GP-002 派单快照保留，最终审查冻结当前有效合同。
+
+
+## LOG-030 — 所有旧业务运行必须明确绑定 Space
+- **用户原话：** 对“现有自动化和快捷按钮只传cwd、没有Space”的聚焦问题，用户选择“必须绑定 Space，旧入口先要求用户选择”。不采用建议的独立业务运行例外。
+- **合同：** 所有受管Shell/Agent及一次性业务运行启动前必须得到明确有效Space；交互入口先选择，无Space先创建，取消无副作用；后台未绑定/失效返回需配置且不启动。绑定在接纳前冻结，不随界面焦点/cwd猜测；原生结果、取消、既有receipt与invocation去重保持。
+- **实施责任：** Spec§3.10与公共合同§4.1固定新行为；T-02提供可复用选择/解析，T-14扩展真实消费者/配置schema/UI与测试并绑定ui Skill及原A的Space选择/设置设计，T-15保留旧配置未绑定状态而不自动补值。原设计/原型批准不改写，也不重排无关界面。
+- **修订：** GP-004 / Map revision 5。T-01合同和当前写集不变，继续实施；新契约在最终代码审查作为生效规范。
+
+- **T-01 路径补充：** helper 移至 host 后，下载进度/摘要失败提示的词典也需由共享惰性native拥有，不能通过启用Agent取得。GP-005/Maprevision6增 shared/i18n/lazy/native.ts、scripts/module-strings.ts、agent/i18n.ts 最小迁移写集；执行者不变，补i18n验证。
+
+## LOG-031 — T-01 宿主归属事实同步
+- **范围：** helper/binary 已实际迁至 host/desktop/native；按 dev 的技能维护规则，仅更新 architecture 参考中终端辅助程序缓存的 owner 单元格。Lead明确将该文件窄行加入T-01写集，实际 writer 仍为 /root/implement_t01。
+- **摘要：** architecture 参考变为 `f9ae1496c12ed18be88ade5baafd0a6aca5ebec3a025d0bb522f2bd3698c661f`，所有Ticket中对应真实reference摘要同步；历史派单与原Evidence保留原文。规则内容、AC和产品行为不变。
+- **修订：** GP-006 / Map revision 7。实现者已停止源文件写入，Lead开始构建、lint和固定快照独立审查；未宣称票已完成。
+
+## LOG-032 — 原生首用加载与包体预算核实
+- **实际失败：** T-01首轮bundle检查超限；实施者用esbuild内存overlay重放HEAD，基线6033579B，新候选6041860B，净增加8281B，旧binary/frames重导出输出0，没有双实现。增加来自NativeHost能力owner/代次、取消/退出等待及接线。
+- **改进：** 将app原生工厂移入首次acquire才加载的src/app/native.ts；Root批准该精确写集，源writer仍为原实施者。先减少启动求值，再按最终实测决定最小必要阈值。原启动预算仅比基线多13B，不能据其删除功能合同。
+- **预算所有权：** scripts/bundle-budget.json明确允许有记录理由的增长；新增必要代码经逐项归因后由Root独占调整output/eager最小KiB边界，其余阈值和禁止eagerAreas保留。原失败、分析与最终结果都保留，不能冒充原预算已通过。GP-007 / Map revision 8。
+
+## LOG-033 — T-02生产接缝与单writer最小原语
+- **依据：** /root/prepare_t02只读生产源码与官方机制比较，逐字节保存 evidence/T-02-preflight.md；没有将预检视为实施或测试。
+- **决定：** 采用同TS写进程持有的loopback确定端口互斥；避免helper持锁与TS写入分离的fencing缺口，无新增依赖/native协议/业务控制服务。不同程序或散列碰撞保守冲突，不换端口，不按PID/mtime接管；正常严格排空后释放，崩溃由OS释放，异常效果未知不重放。Windows安全边界保持Spec原定义。
+- **存储/接线：** workbench-v2单envelope与v1隔离；生产workspace-service先存身份再启动，model/ops保存稳定引用，真实主空态与module惰性selector接通。旧消费者完整适配仍归T-14，完整迁移T-15。
+- **路径/Skill：** T-02补真正生产服务/normalizer/主空态/module/路径常量及架构事实精确写集；vault-identity源保持只读；补实际适用dev参考摘要。GP-008 / Map revision 9。T-02仍ready未分派，只有T-01活动；等其独立审查/验收后才解锁。
+
+## LOG-034 — T-01代码验收与T-02同票协作
+- **T-01：** 最终38文件固定快照、构建与适用自动化通过；独立reviewer /root/review_t01 两轴pass，原P2取消竞态已修复，原报告和反例红绿输出保留。代码层面done；真实宿主/Provider/五平台E2E仍由用户验收，G-01尚未关闭。
+- **结构核验：** goal-plan检查0错误，5项已按serial处理的后票共享路径警告；ticket-control确认T-01 done，无Evidence错误。
+- **T-02：** 按既有GP-008/Map9解锁；先由 /root/prepare_t02 固定core/space三份纯合同，再以不重叠desktop/spaces写集委派第二实现者。每条路径唯一writer，Root持有产物与正式记录；实际派单及摘要记录在T-02 Evidence。
+
+## LOG-035 — T-02最终spawn重验与接口冻结
+- **源码事实：** TerminalSessions.create在Controller调用后仍等待helper、environment和Hook；仅在WorkspaceService校验会留下等待窗口。A确认最小CreateSession.beforeSpawn钩子，在最后spawn前重验并再次检查取消/关闭，失败保留failed记录且不spawn。
+- **写集：** T-02增加services/terminal/sessions.ts与精确sessions-space.test.ts，由A唯一写；B仍仅desktop/spaces。GP-009 / Map revision 10，行为合同不变，只闭合已要求的最后启动重验。
+- **接口：** A三份core/space合同由Root逐字节核对后冻结；B已实际followup_task解锁，接现有6.1-sol/xhigh，实际摘要见T-02-dispatch-b.json。
+- **布局：** v2 envelope的sharedLayout承接无Space网页/业务页面显示，仍由同一业务队列和writer持久化；各Space布局保持layouts[spaceId]。v1不被新写入覆盖，独立Browser owner留T-13。属于既定合同内的局部schema选择。
+
+## LOG-036 — T-02已授权库外目录的现有restore接线
+- **事实：** 旧resumeAgent在captureLaunchHost前使用canonicalVaultCwd拒绝全部库外目录，不能承接已明确授权的库外Space。
+- **最小变更：** 给LaunchHost注入可选validateCwd；只有已持久化并冻结Space/目录的生产restore使用该校验，其余旧调用继续canonicalVaultCwd。账号、原生来源、权限确认保持原链，最终beforeSpawn再次重验。
+- **写集：** A独占services/launch/launcher.ts及新增launcher-space.test.ts，验证注入失败零start与未注入的默认边界；不复制launcher、不开放任意字符串授权。GP-010 / Map revision 11，B端口不变。
+
+## LOG-037 — 严格flush失败仍完成清理与后票只读预检
+- **T-02事实：** 新workspace严格flush可reject，旧Controller.dispose会提前退出并跳过后续清理。A确认顺序settle全部清理，已启动sessionsStopped立即处理拒绝，最后聚合原始错误而不吞持久失败。新增controller-space.test.ts由A唯一写，使用真实dispose及真实workspace/SpaceService失败验证。
+- **T-03只读预检：** /root/prepare_t03报告已逐字节保存在evidence/T-03-preflight.md；证实关闭视图仍remove进程、后台列表仅枚举tabs。补充Sidebar生产/DOM、TerminalTabView DOM与controller-managed-runtimes精确写集；T-03仍ready/unassigned，未授予实现。最终消费T-02接口须在其done后重新回读。
+- **修订：** GP-011 / Map revision 12。产品合同未改，T-02 B端口/写集不变。
+
+## LOG-038 — T-02实际包体与架构事实收束
+- **停止与事实：** A/B源writer已停；Root核对33+8文件候选清单与当前字节。架构参考仅按实际v2路径/归属更新，所有Ticket的当前Skill引用摘要同步；历史派单与审查原件不改写。
+- **实测：** 首次T-02包体门未通过：main.js 6075071B（T-01最终6042405B，+32666B）；styles.css 1421356B（+566B）；Agent激活1013408B，原阈值991232B。启动106输入、123533B仍在既有123904B以内，无新增禁止启动区域、运行依赖或重复原生实现。
+- **所有权与恢复：** T-02精确加入scripts/bundle-budget.json，由Root独占；按元数据核对Space业务、目录校验、writer、UI与词典新增后，仅对实测超限的总JS、样式和Agent激活阈值按最小KiB向上取整，保留原失败与归因原件，不将原预算记为通过。GP-012 / Map revision 13；行为/设计合同不变。
+
+## LOG-039 — T-02独立反例修复与再次冻结
+- **原始审查：** 独立reviewer两轴request-changes，复现future格式降级、foreign scope写后拒绝、首次writer load EIO后无效实例缓存、切Space双启动丢标签；原报告/输入/反例保留，不以首轮常规绿灯覆盖。
+- **修复所有权：** 仅原A写SpaceService/WorkspaceService及邻近测试4文件；每次primary/backup读取与写前在同permit分类版本/完整scope，成功初始化才采用disk，追加布局在业务队列中使用最新值。产品/设计/写集合同不变，无新增授权问题。
+- **实际验证：** 正式红灯后94条相关测试与8条DOM通过；Root build、全lint、架构/回调检查通过。架构与临时夹具脚本并行造成的扫描失败已保留并串行复验；不再并行这两项。
+- **预算：** 修复后main.js6075528B（+457B）、Agent激活1013868B（+460B），启动仍123533B/106输入；原2 over失败和最小KiB阈值6076416/1014784理由均保存。下一步固定45文件独立复审，当前票仍in_progress。
+
+## LOG-040 — T-02选择/布局闭包新反例与实质恢复
+- **复审：** round2关闭版本/scope与首次读取恢复原缺陷，但独立控制select写入与后台append顺序后复现新P2：A当前界面未adopt刚保存的terminal，后续正常UI保存将其删除。原报告与probe字节已核对保留。
+- **复盘与恢复：** 前集成周期3次尝试已保留；新证据要求把原A的workspace-store bridge纳入修复，在选择、服务变换和本地dirty/在途save之间协调同一布局。输入/方法/责任范围有实质变化，按Goal deviation-control开启新Packet/周期，不盲目原样重试；原总票写集和GP-012/Map13不变。
+- **边界：** 原A继续唯一源码writer，B/UI/词典/docs不动；独立reviewer已停审后才解冻。T-03只读准备，仍不允许生产实施。无用户待决定项、无新增产品范围。
+
+## LOG-041 — T-02布局草稿协调闭包与第三轮冻结
+- **实施：** 原A在原总写集中协调每Space base/view/dirty/在途回执；UI提交冻结base/value，业务队列与后台transform合并，同ID新布局可见且保留后续本地编辑和焦点。真实既有字段冲突拒绝并保留双方；无定时补偿或自动重放。
+- **验证：** 精确反例正式红灯后14文件116测试通过，三条原probe当前源重建观察均修复；Root完整回读清单/命令原件，build/full lint/架构/Promise检查通过。原UI/B源码未变，按证据闭包复用。
+- **预算与审查：** 最终main6077894B/Agent1016228B，新增2366B/2360B；原超限保留，Root仅必要KiB阈值6078464/1016832及理由更新后bundle通过。47文件冻结，实际调用原独立reviewer第三轮，未返回前T-02保持in_progress、T-03未解锁。GP-012/Map13与产品/设计合同不变。
+
+## LOG-042 — T-02代码验收通过
+- **独立回执：** 原reviewer第三轮standards/specification均pass，前两轮反例全部关闭；额外两个晚关闭/append断言及6文件74测试通过。Root逐字节保存原报告，核对12份产物SHA并回读源/原输出。
+- **最终输入：** 47文件/28来源/31份T-01复用源无漂移，Input-SHA256 `1eab3f4af09475cad4c562fecbe4be304f06b16389c67f579a6763661fe33901`；Root在解锁下一票前实际checkCurrent:true/requireDelivery:true校验errors=[]。
+- **投影：** T-02代码层面done；真实宿主/Provider/五平台E2E按用户分工未运行，完整Goal/Gates尚未完成。保持GP-012/Map13与串行调度，下一frontier是T-03；没有提交/推送/发版/归档。
+
+## LOG-043 — T-03正式解锁与同票接口先行
+- **前置：** T-02最终当前输入核验及Goal结构通过；分配A owner后ticket-control返回唯一frontier T-03、errors=[]。原T-02 47文件与此前总78路径字节快照已保存。
+- **真实派单：** Root实际followup_task解锁 /root/prepare_t03（既有6.1-sol/xhigh）；先冻结纯DTO、公开方法和en/zh键，再给 /root/prepare_t02 单独解锁不重叠UI。当前B只读预备，无提前生产写入。
+- **边界：** 唯一TerminalSessions运行owner，SpaceService持久owner，WorkspaceService只编排/投影；Root保留产物和正式状态。Controller取消/失败/后台/迟到失效不得无条件open，旧菜单和六Provider语义保持。GP-012/Map13、已批准产品/设计不变；真实E2E仍用户负责。
+
+## LOG-044 — T-03真实接口冻结与界面接线
+- **已核验：** Root逐字节回读A回执，纯managed-runtime DTO与en/zh键SHA一致，create/query/subscribe/attach公开方法已经落源且订阅函数绑定稳定。A首次生产类型检查更正旧rename调用后通过；这只是接口里程碑，不是整票验收。
+- **真实派单：** 实际followup_task解锁原B句柄 /root/prepare_t02（6.1-sol/xhigh）；只写指定create、Sidebar、TerminalTabView及邻近DOM。冻结原件与派单摘要保存在evidence/T-03-api-frozen.md及T-03-dispatch-b.json。
+- **协调：** A继续服务/生命周期内部实现，i18n仍A唯一owner；B消费缓存快照并保留原菜单。接口变更先通知，整库生成/检查等双方停写后由Root执行。GP-012/Map13、用户Space决定与设计合同保持。
+
+## LOG-045 — T-03隔离真实Shell组合测试委派
+- **范围：** A确认workspace-service-native.test.ts尚不存在且不再准备写；Root实际followup_task分配给原 /root/implement_t01（6.1-sol/xhigh），从A原workspace-service*.ts分配中精确排除。总Ticket写集与GP-012/Map13不变。
+- **目的：** 真实desktop Space/JsonStore、WorkspaceService、TerminalSessions与NativeHost/helper组合证明后台、detach、同runtime/PID/屏幕重新附加及无额外spawn；有界等待、只清理自有测试进程。C不改生产源与其他测试，不冒充用户Obsidian/Provider/五平台E2E。
+- **协调：** C先收尾T-14只读预检后实施当前T-03；后票仍不解锁。Root等A/B/C停写后生成、固定快照与审查；派单原件见evidence/T-03-dispatch-c.json。
+
+## LOG-046 — T-03候选收尾的菜单实例时序修复
+- **新观察：** B停写后自查发现旧Omnibox请求等待期间菜单关闭并重新打开，旧created回调可能关闭新实例。尚未固定整票候选，不能把先前43条DOM通过视为覆盖该顺序。
+- **实际协调：** Root实际send_message仅解除B自有Omnibox与NewTabMenu DOM两路径冻结，要求确定顺序红灯、卸载后忽略旧UI回调的最小修复；不能取消已提交的业务运行。其余B路径和C真实native测试保持停写，A仍收尾自己的服务写集。
+- **边界：** 无公共签名、词典、产品或设计变化，无扩展Ticket写集；GP-012/Map13保持。待再次STOPPED并核对完整清单后再统一构建、冻结和独立审查。
+
+## LOG-047 — T-03统一回归与实测预算的精确补集
+- **原始结果：** Root统一build通过。扩大原入口回归为16文件91测试，89通过、2失败，均controller-native.test.ts旧fixture缺getBasePath，真实Space目录门拒绝空路径；未删除或跳过这两条lazy/discovery/native零副作用断言。原输出及exit126保留。
+- **测试边界：** T-03补controller-native.test.ts精确写集，拟由C唯一适配为有效隔离临时Vault并验证完整清理；生产目录门和Controller不放宽，A/B其他源保持STOPPED。C原真实Shell组合文件仍冻结。
+- **预算实测：** main.js6104991B，较T-02最终+27097B；Agent激活1037298B，+21070B；styles1421645B，仍在原阈值内。初次budget真实exit126、2 over；启动106输入仍在原阈值，未增依赖。Root先核对元数据归因，再按最小KiB仅调整必要总JS/Agent阈值，保留失败原件。
+- **修订：** 同时补scripts/bundle-budget.json，Root唯一writer。GP-013 / Map revision14；没有产品或设计决定变化，原派单与先前证据不回写。
+
+## LOG-048 — T-03独立审查反例与原owner修复
+- **实际审查：** 新独立reviewer codex:/root/review_t03（Astra/high）对29文件固定输入返回两轴request-changes；Root全文回读报告及生产链探针/真实输出、逐SHA保存原件。明确不存在Shell仍EFFECT_UNKNOWN、原Shell选择在attach→restart丢失，两项均为AC-005既定闭包；YOLO覆盖整份设置假设已证伪。
+- **精确补集：** 补shared/native/host.ts、host/desktop/native/helper.ts及helper.test.ts、native main.rs与tests/stdio.rs，native session.rs已在原票写集。允许原A单一writer建立结构化已知拒绝/未知区分并修配置来源；不得按人类错误字符串判断，也不得把Rust post-spawn初始化失败无条件标零进程。旧helper无新增证据字段须保守处理；现有owner隔离与早exit保持。
+- **修订：** GP-014 / Map revision15；产品/设计合同不变，原输入/报告/命令与首轮source另存，不覆盖失败历史。Root构建/预算/正式状态，B所有UI与C两测试继续冻结。
+- **尝试：** 首次集成旧fixture失败为attempt1，修复后29文件候选独立审查失败为attempt2；同范围修复进入attempt3。只改两项已证实行为与必要类型/原生证据接缝，新增正式红灯回归和真实helper闭包后重新冻结复审；T04仍不解锁。
+
+## LOG-049 — T-03代码验收通过
+- **复审：** 独立Astra/high reviewer第二轮standards/specification均pass，两项旧P2关闭且新增0；Root回读原报告/真实探针与22份原件，源与SHA核对一致。
+- **实际检查：** 当前build、22文件115测试零skip、全库lint、架构、Promise与最终预算exit0；Rust36测试零ignored与helper验证通过，UI未变复用44DOM及13状态14截图。范围外Bot文档6锚点失败及用户负责的真实E2E明确保留。
+- **冻结与校验：** 37文件/28来源/61前序复用，Input cdc8b69094eaae3db8a18f890b6f403ea190a3203b8c14ba71876f442ac92ad4；状态投影前checkCurrent/requireDelivery errors=[]。Evidence机器字段缺失造成的校验126保留，格式补齐后implement 0errors/5serial warnings。
+- **投影：** T-03代码层面done；GP-014/Map15保持，G-01仍待T-04。下一frontier T-04需按已完成T-03与只读提案核定精确路径/合同后派单；全18票Goal继续，未提交/推送/发布/归档。
+
+## LOG-050 — T-04 停止/归档/恢复真实接缝与唯一 owner
+- **前置：** T-03 已done，Root状态投影前最终当前审查errors=[]，implement/goal-plan均0errors；98份前序产品源与完整字节快照保存T-04-prior-delivery.json，HEAD/branch未变。旧预检中的已修复early-exit假设不重复实施。
+- **补集：** T-04增加实际SpaceService/records及回归、managed-runtime/必要model/ops、Controller停止恢复测试、限定旧runner停止适配、TerminalTabView/confirm DOM、真实shared/native与desktop host/helper、Windows内部bootstrap、既有windows-sys必要features及Root测量后预算。所有路径实际写者仍按派单唯一，条件路径不要求必改。
+- **局部决定：** 首次Session/运行尝试持久提交先于spawn；归档冻结集合并在单队列关准入/复核，等待不占磁盘队列；根exit与native清理证据分开。Windows选择受控bootstrap私有gate与单Session Job，Unix保留可证范围与partial/unknown，不宣称任意宿主外daemon均可控制。停用Agent必须保留Browser租约；恢复读取无自动执行。
+- **修订：** GP-015 / Map revision16。产品/设计合同及用户Space决定不变；既有官方研究/许可原件保留，T-04具体API提案须Root回读后随正式派单冻结，未以只读报告预填实现通过。
+
+- **派单前最终提案补充：** Root全文回读A最后只读提案（SHA9307a35ade6d9b00639111dcad090299befc19f6049080fd6436887fd0ae78ee），在C packet投递前同次GP015/Map16补SpaceError/messages、launcher权限等待取消和唯一test/fixtures/native/terminal-termination-v1.json；该packet尚未投递，不覆盖已发生派单。采纳protocol3可选capability/版本化termination notice、四个业务方法与pre-spawn checkpoint/归档闸；numeric exit、root-only或坏字段不得合成cleanup confirmed。
+
+## LOG-051 — T-04 实际双 owner 派单与协议先行
+- **实际工具：** Root分别followup_task原 /root/implement_t01 原生C与 /root/prepare_t03 业务A，沿用户指定6.1-sol/xhigh；两份实际packet/输入SHA/路径与调用回执在T-04-dispatch-c.json、T-04-dispatch-a.json。同票并行，跨票仍serial。
+- **接口顺序：** C首先实际落源统一native纯类型/codec/单一Rust+TS fixture，Root回读后A消费；A先可做自身持久准入/归档队列，公开四方法/DTO/词典落源冻结后才给B UI写权。C拥有cargo与debug binary lane，A真实helper测试等待新binary交接；Root统一生成与全局验证。
+- **状态：** T-04 in_progress、attempts0，无预填代码/审查通过。T-05–18保持锁定，原始失败/前序证据不改写。所有writer只修改获分配源，Root不并写其源码，无新增用户批准事项。
+
+## LOG-052 — T-04 实际业务接口冻结与 UI 派单
+- **已核对：** Root全文回读A公开DTO、stop/wait/previewArchive/archive四方法与en/zh文案，5份源SHA一致；scoped API类型检查exit0。C codec数组类型反例红→绿及35项唯一fixture也已核验，原v1和失败输出保留。
+- **实际工具：** followup_task解锁原B /root/prepare_t02，沿6.1-sol/xhigh与GP015/Map16。只写sidebar、TerminalTabView与条件confirm精确路径；A业务/词典、C原生/host、Root生成物与正式记录继续唯一owner。
+- **边界：** 公共签名停改但内部实现未完，B按固定目标确认、结构化结果和恢复准入接线；真实生产组件Chrome验证与用户真实E2E分列。全局生成/检查待writer停写，T04仍in_progress/attempts0，后票保持锁定。
+
+## LOG-053 — T-04 真实确认焦点反例的精确范围补集
+- **观察：** B实际Chrome取消停止确认时effects=[]、dialog=false，但焦点未回原按钮。分离confirm与业务busy后第二次仍复现；原v2/v3日志保留。Root回读页面受控AlertDialog没有Trigger及原真实日志，问题属于本票键盘/焦点合同。
+- **补集：** GP-016 / Map17，仅新增src/modules/agent/ui/AgentWorkspacePage.tsx及其DOM测试到B写集；捕获原document/trigger并按连接、可见、窗口与用户焦点意图恢复，隐藏/卸载不抢焦点，不用延时强制focus。其他源owner不变，原GP015工件字节另存T-04-logs/scope-v16-*。
+- **接口闭包：** 无Pane的恢复记录需由WorkspaceService显式打开只读占位，零helper/scan/spawn，再复用明确继续；Root已接受A最小openManagedRecord提案，实际冻结另存，不使UI自行造runtime。原产品、设计、18票目标与用户E2E分工不变。
+
+## LOG-054 — T-04 原生中间候选与业务组合验收
+- **已回读：** Host后置numeric exit缺失超时红绿、Unix已知成员不可读反例红绿及隔离真实进程树通过，原始输出/SHA在T-04-logs；不把根退出或读取失败当完整清理。
+- **实际协调：** C冻结独立Linux helper副本，Root核SHA后实际send_message交A，仅经显式HUHU_TEST_PTY_BINARY运行生产Workspace/Space/NativeHost停止、归档和重开零执行组合。C继续独占cargo/target与Windows实现，中间副本不可覆写。
+- **环境验证：** 允许C向现有rustup cache添加同版本Windows std target进行cargo check --locked；无新增仓库依赖、锁或权限要求，交叉类型检查与真实平台运行分列。GP016/Map17和产品/设计合同不变，整票仍in_progress/attempts0。
+
+## LOG-055 — T-04 整合回归与旧 Browser 测试补集
+- **实际结果：** Root全build在正常重生成styles后exit0；lint、架构、Promise、i18n、CSS及构建文本通过。最终固定helper组合37文件234测试中233通过、1失败：旧browser/module.test.ts只模拟numeric exit，当前生产正确返回清理未确认。原始失败保留，不放宽生产断言。
+- **补集：** GP-017 / Map18仅新增src/modules/browser/module.test.ts到本票共享写集，拟委派C唯一适配，原17路径生产源保持停止。测试仍证明Browser惰性与Cookie在Agent停用后完成，并分别观察已确认清理和旧协议未知失败；不改Browser生产实现或T-13范围。
+- **构建观察：** main6147898B、Agent1066150B、Navigator202878B导致3项预算超限；启动123518B/106输入未变，styles1421846B在原阈值内。Root继续核对逐输入归因后才调整必要最小阈值；文档仍为范围外Bot原6锚点，不记全绿。
+- **范围审计：** 另发现Cargo.lock仅huhu-pty package区块顺序变化，Root按解析package图证实依赖/版本/校验相同，要求保留原件后恢复干净固定base字节。C以实际记录/隔离复现区分事实和mtime推断，不覆盖已冻结helper或原producer证据。没有新增依赖或修改许可范围。
+
+## LOG-056 — T-04 独立审查三项反例与同范围修复
+- **实际审查：** 原独立Astra/high返回standards/specification均request-changes，57文件/30来源交付复核未漂移。原报告SHA2fd68b12ef9d8954fdfe60425235ea60502b41caca66aa8d60cb09f76e2d6772及四组真实反例已Root回读/保全，见T-04-review-root-audit-round1.json。
+- **处置：** F1残余后代首stop/force零请求；F2pending持久化使关闭/归档观察无界；F3quiesce后旧请求仍spawn/adopt。均属原T04合同，交原A修复；不可取消write须保持owner隔离/未知事实，不能提前释放writer或晚到归档。F3不提前T14消费者绑定迁移。
+- **执行：** GP017/Map18与原写集不变；先核A只读修复方案，实际Packet后才解锁。原红灯、冻结快照及attempts2保留；第三轮集成须在实质修复后执行，独立review未通过前T04保持in_progress、G01open、T05仅只读预检。
+
+## LOG-057 — T-04代码验收与G-01代码关闭
+- **复审：** 新独立Astra/high /root/review_t04_round2两轴pass，F1/F2/F3及对应规范问题闭合；Root全文回读原报告、实际5probe和58修复测试日志，核8报告SHA/3命令记录并保全22原件。原request-changes不改写。
+- **整合：** 第3次build、37文件262tests零skip、lint零warning、architecture1226模块、Promise及最终预算exit0；docs仍另一Bot六个既有锚点。UI/Rust未改源证据按原范围复用；main修复增量2316B/Agent2310B只调整最小两阈值。
+- **冻结：** Input22acab5546bc320876cbf8030e00f2fe8e8234d84e0d647f8a639fbe16e9fa00，57scope/31来源/58前序复用；投影前checkCurrent/requireDelivery errors=[]，implement0errors/5既有serial warnings。T04 review→done，attempts3保留。
+- **Gate：** Root按Goal G01核对T01–04与当前生产组合，代码部分关闭；真实宿主/Provider/五平台仍由用户待验收。下一frontier T05先核定精确范围与K03复现，再实施；18票Goal继续，无提交/推送/发版/归档。
+
+## LOG-058 — T-05真实源准入与精确范围补集
+- **前置：** T04 done与G01代码关闭，最终goal-plan校验0errors/5既有serial warnings。115份前序产品源字节快照在T-05-prior-delivery.json，原T04审查与历史输入不覆盖。
+- **路线：** Root全文回读算法、native、Session和view窄提案；后两份32+20源SHA全部一致。选择固定xterm6集中语义投影，单headless接收raw；source/target对象不共享，normal/alt/extended/OSC8及事件桥需真实证明。native采用相关整笔输入准入、单公平有界outbox与独立parser reply，不以write(false)当未写。候选字段/profile尚待K03后实际冻结。
+- **补集：** GP018/Map19增加A两个paste+Enter调用端和Controller失败分类、B集中view adapter/资格测试、C真实shared/desktop host及main/outbox/data/cookies/agent_data生产前预算、唯一cross-language fixture；Root条件pin现有xterm/search版本和预算。无新运行平台、无enginefork、无默认依赖升级或node_modules改写。
+- **先后：** 第一实际子任务仅K03在当前6.0.0复现及相邻行为测试；A返回原源/命令/输出后再解锁生产DTO/native实现，B等待实际接口冻结。容量必须覆盖model/combining/link/parser/clone和native生产前预算，不能以队列有界伪称RSS无界风险已解决。
+
+## LOG-059 — T-05 K03核验与当前版本固定
+- **事实：** 原A返回SOURCE STOPPED；Root核验5次实际运行全部源/命令/UTC/退出码/日志与115前序字节，保全73原件。最终16tests/0skip/exit0；人工缺行两probe真实exit126，自然fixture坐标失败单独保留，不冒充生产根因。
+- **决定：** 自然路径未复现缺行，不做engine升级、补行或reset修复；仅精确pin已有解析版本xterm6.0.0/search0.16.0，依赖图不变。后续集中adapter验证固定版本shape。
+- **执行门：** A先交实际纯screen/Session public API，C先交实际统一wire fixture/TS合同；Root读取真实源再解锁B。生产副作用与检查以实际Packet/工具回执为准，整票保持in_progress/attempts0。
+
+## LOG-060 — T-05实际接口冻结与界面生产派单
+- **接口：** Root回读C实际input/wire v1、v2和output credit常量，TS/Rust同fixture及原失败日志分别保全；native enforce/压力仍在C实施。A实际pure DTO、Session stream/lease/input包装及source effects核读，5命令源/日志SHA无差异，140原件保存；public字段/签名/11双语键冻结，内部继续。
+- **界面：** B临时真实Chrome可行性49原件已审计，stock滚动IME限制如实保留，不冒充生产验收。Root现通过实际followup_task派B在10条精确路径实施生产target adapter/接线/Chrome验收，T-05-dispatch-b.json记录原准备SHA与实际回执；不改engine、依赖或原设计。
+- **测量：** C可在显式测试env和自有临时目录写一次有限队列峰值，默认无I/O，不改wire；只采真实生产计数器，未知、逻辑预算与RSS分列。尚未交付的测量不记已通过。
+- **状态：** A/B/C并行独占各自写集，Root待SOURCE STOPPED后串行整合和独立双轴审查；T05仍in_progress/attempts0，后继票未解锁。
+
+## LOG-061 — T-05失败收束与明确放弃显示
+- **实际问题：** Root只读核得history预检/实际行间并发更新、spawn本地容量拒绝被当未知scope、失败spawn提前释放reader/ACK归属；C已复现第一项红绿，其余按原写集修复，最终证据待交。
+- **最小方案：** 失败spawn采用Host内部output/ACK计数和failedNone专用drain，native失败帧按SID排在既收raw之后，保留retiring资源；不新增waitSessionDrained API。
+- **显式丢弃：** 模型超限后不得ACK未解析raw；仅靠旧协议会永久留native credit。Root批准可选outputAbandon:1和captured abandonOutput：明确截断显示、单独释放raw credit，encoded outbox/reader/scope责任继续。普通stop仍解析到最后；legacy不猜新能力。C先交v3实际合同，Root核后A消费。
+- **界面组合：** B真实生产Chrome抓到一次批量滚屏结构增量非法，交A内部修正，B严格trim检查保留；不修改固定DTO或放宽断言。上述尚非整票通过。
+
+## LOG-062 — T-05公共丢弃接口核定与生产组合反例
+- **实际接口：** C交付v3真实outputAbandon/abandonOutput及strict控制fixture；Root核7公共源SHA、TS/Rust各29份源码快照、2原命令/日志，保全72原件。TS六测试通过；Rust同一fixture在两个binary执行，不重复计数。Root已实际发消息交A消费，内部enforcement和压力仍未验收。
+- **界面反例：** B实际Session→Chrome捕获长批次trim非法、同owner重复focus后失去尺寸资格、?12l未覆盖用户光标闪烁默认；原失败保留，交A修模型，B严格验证不放宽。不是Obsidian/真实OS IME验收。
+- **调度审读：** Root从当前Outbox发现burst不复位会使持续输出后的high控制饥饿，high与bulk持续时又可饿死stream；u32::MAX游标也不能依saturating_add轮换。已交C同范围先复现再修，尚无通过声明。
+- **状态：** T05继续in_progress/attempts0，A/B/C各守原写集，整合和独立审查待实际SOURCE STOPPED；后继票保持依赖锁定。
+
+## LOG-063 — T-05多视图分配前准入与中间证据保全
+- **实际核验：** B于13:58:27Z停源的10条分配路径、28次原命令及浏览器工件完成812项SHA检查，816原件保全于T-05-logs/b-production-v1；31项定向测试与15项真实Chrome检查通过，三张可读生产pane截图已Root查看。A在这些检查后仍修改，旧结果不冒充最终组合通过。
+- **最小解冻：** Root/B实际读得mount先new Terminal/open后registerView，拒绝仍留empty Terminal，无法兑现分配前总预算。Root已实际send_message仅解冻B原写集中的View与必要回归，将lease准入前移、拒绝零bootstrap、构建失败释放partial资源。A内部按lease保留多视图shadow/xterm/search及传输峰值高水位，hide不减账；不扩公开DTO或产品合同。
+- **窄修复：** C两端公平调度/u32最大SID红绿、history并发读红绿与A稳定read/UTF8/历史snapshot预算检查，共9次实际记录及源码273原件已核SHA。A历史read最早红灯为parse ACK timeout，不把它当隔离预算反例；最终测试固定Date并分别检查明确容量拒绝和受控到期。详见T-05-midfixes-root-audit.json。
+- **剩余：** C真实压力中慢stdout/无ACK后显式放弃通过；blocked-input业务断言通过但helper强退前metrics未生成，原失败保留，正在查retiring资源。Linux不可变候选交接、A真实Session压力、全局整合与独立审查仍待完成。GP018/Map19及attempts0不变。
+
+## LOG-064 — T-05界面再次停源与压力结果纠偏
+- **B最终局部交付：** 14:29:23Z v3停源，普通dispose与bootstrap失败共用完整清理、lease最后释放；原抛错回归失败保留。Root回读34项定向测试、scoped类型检查、16项真实Chrome结果及三张pane截图，核12次v2/v3命令与356份源检查、保全420原件，当前B十路径SHA一致。见T-05-b-production-final-root-audit.json；最终A/C组合及独立审查仍未完成。
+- **压力纠偏：** C一份exit0压力原件仍含ACK容量错误与12285B未确认raw，撤回该通过判定；后续每SID有界ACK合并及Unix可取消writer定向运行3项通过且无consumer错误，最终credit与三个handle待完成计数均零。EOF时点slot尚待监控线程收束，不冒充最终全局资源快照；真实handle drop顺序、保留Browser再spawn及不可变二进制交接仍待C收尾。
+- **文案窄补：** A发现非破坏性scrollback拒绝不能复用“已请求清理”文案。Root实际消息授权仅新增agent.screen.retentionRejected双语键及既有setScrollback拒绝提示，原11键冻结历史保留，DTO/方法不变。最终行为证据待交，不扩大产品范围。
+- **只读准备：** B生产保持停写，Root仅委派它复用T06旧预检核对当前UI/定位接缝，输出临时只读报告；未解锁T06实施。GP018/Map19、T05 attempts0及后票依赖不变。
+
+## LOG-065 — T-05最终组合中的生命周期回归与窄测试补集
+- **稳定组合：** A在C的TS停写窗口完成真实3000行UTF-8压力，raw/ACK同为91915B、两个scope confirmed/drained、自有PID均退，before/after无源码漂移。所用7e03不可变helper仍是中间候选，C后续原生修复须在最终组合重验。
+- **实际回归：** C完整cargo发现typed-none启动失败后立即复用SID时，旧reader/writer/master尚未drop；保留原红灯，仅在worker内对零raw的本地资源有界观察真实drop，不占main/control锁、不提前释放slot。定向原用例已绿，全native仍在收尾。
+- **测试补集：** A真实T04三项组合2过1失败，失败发生在业务断言完成后finally再次停止已retired SID，释放链被异常短路。Root读原源/日志后授权A仅新增workspace-service-stop-native.test.ts，按confirmed事实避免重复stop，各清理独立执行且保留错误。GP019/Map20补此唯一路径；不放宽生产unknown SID拒绝或原业务断言。
+- **后继只读：** B的T06入口报告及29来源观察已保全；既有split命中只activate tab、未选目标pane为静态发现，尚无运行复现。T06继续依赖锁定。整票仍in_progress/attempts0。
+
+## LOG-066 — T-05原生最终停源接收与旧Session兼容回归
+- **C接收：** 最终正常helper ebbf169532e29e5eaeb706a1ec286b8d13285d2b1b0a2da1160c28df2dbbf0a6、0555/25714024B及12份Rust/Cargo来源已核。完整cargo、verify、Windows交叉类型与最终4文件24tests/0skip通过；Root核78原命令及1566源快照、保全1785原件，19失败和1 invalid green保持。原早期源/metrics缺口不补造。
+- **最终范围：** C仅格式化的helper.test.ts已按Root派单恢复T05前序字节，原v1保留；v2实际24允许路径+5只读native输入核SHA一致。其余源/cargo停止。最终native与command/current-source审计分别见T-05-c-linux-final-root-audit.json、T-05-c-production-commands-root-audit.json、T-05-c-production-final-root-audit.json。
+- **A兼容：** 旧真实T04清理修复后3项通过；70项相邻单元出现3处原契约回归，保留原红灯。异步订阅时序与提前exit身份修复后相关47项通过；Root另指出pending输出已进snapshot又重放的静态风险及legacy保留量，A继续原写集验证水位和聚合预算。不是整票通过。
+- **后继：** C仅获T06 hooks/detection实际证据接缝只读提案，T05生产继续停源，T06未解锁。最终A停源、Root整合、真实组件Chrome与独立双轴审查仍待完成；GP019/Map20、attempts0不变。
+
+## LOG-067 — T-05 最终停源与统一整合启动
+
+2026-10-25 15:21Z。Root已接收原A最终交接，核对A/B/C共56当前源和原始副本无差异，全部产品writer保持SOURCE STOPPED。冻结1948构建/测试输入，开始T-05整合第1轮，使用C最终ebbf1695… helper。T06仅只读准备，尚未解锁实施。
+
+
+## LOG-068 — T-05 两轮集成、生产Chrome及诊断恢复
+
+- **整合：** 两次实际build通过；第一轮182/183tests，旧4字节非法header立即拒绝回归由C窄修且14项通过。第二轮184/185tests，final helper屏幕压力3000行/raw=ACK91915B、设备回复一次、双scope确认并自有PID退出；唯一blocked-input失败的cleanup master=1可能覆盖primary，未放宽或宣称根因。
+- **恢复方法：** 一次/tmp隔离probe按原34cycles/断言/预算通过，不能证明组合稳定。Root仅解锁C原host-stream.integration.test.ts，保留primary与每层cleanup并记录有界stage/cycle/SID；生产源/helper不变。下一次整合为attempt3，原计数与失败不清空。
+- **UI与门禁：** Root真实Chrome生产组件16/16通过，输入48源无漂移，三张pane图实际核对；明确fake native/Obsidian边界。lint零警告、架构、Promise、i18n、notices通过；docs仅六个既有无关Bot锚点失败。原始Markdown快照改扩展名保留字节，未改guard。
+- **归因：** 完整相似度在12GiB堆完成，4GiB OOM原件保留；唯一raw阈值命中既有MIT StatCard且本轮字节未变。只读T04覆盖精确归因main+77459B/Agent+42511B，启动和其他模块不增；Root按实测最小KiB更新两个预算，最终检查待执行。
+- **后票：** A/C/B三份T06只读提案及48/58/29来源回核已保存；API、实施范围及实现仍未解锁。T05 in_progress、GP019/Map20、G02 open。
+
+
+## LOG-069 — T-05 独立审查拒绝当前候选并形成修复输入
+
+2026-10-25 16:11Z。第3轮30文件185tests与预算检查通过，随后独立Astra/high对固定48交付/43来源完成双轴审查，均request-changes。四项为已产生输入终态被exit越过、RIS选择及同步模式残留、resize失败运行中不可见、reply容量拒绝无Session诊断。Root核读并保全原报告、全部有效与装配失败探针及终审收据；reviewer及产品writer均停写。原第2轮压力主因仍未知，不能由本次Outbox反例推认。原周期attempts3保留，Root将以新确定反例及精确跨owner修复合同开启下一周期，不降低断言或产品范围。T06只读API候选已保存及15源回核，尚未冻结/编译/解锁。
+
+
+## LOG-070 — T-06 精确接缝与写集就绪前核验
+
+T-05最终代码验收和独立两轴通过后，Root回读三方只读提案及对账，将原T-06宽泛路径替换为A20/B7/C14/Root3共44精确路径。GP020/Map21只落实既定活动证据、原生人工入口和呈现后已读切片，不改变Spec或批准DESIGN，不提前实施T07/T08/T09。真实接口先由A落源，Root回读后C/B消费；物理资源额度、原始答案保全、双来源与未知状态、精确seen和异步清理均保留。此记录是DoR重审，是否启动以随后真实校验和派遣回执为准。
+
+
+## LOG-071 — T-06 真实显示意图与几何不变量恢复
+
+原三次整合后，Root通过固定源码实际Chrome对照确认旧夹具漏接真实foreground：中间companion自动focus撤销Sidebar导航token，exact attach返回focused:false。另一个受控seen barrier实验确认同owner合法102×38→102×37→102×38也使原resize次数断言失败；新验证直接检查lease/实际请求与拒绝非owner。全部原件与旧失败保留，两个问题不互相冒充因果。
+
+GP021/Map22仅增加foreground-intent实现/DOM测试和Workspace真实foreground组合DOM测试三路径，总47，owner不变。服务先完成显示提交，再由精确Host一次消费原token；所有用户撤销源、精确身份和原split/modal兼容保持。Root沿原授权形成窄Packet，旧周期attempts3保存，新恢复周期从0计且上限仍3；是否实施以正式重审与实际派遣为准，不改变Spec、DESIGN、T08前台安全责任或用户真实E2E分工。
+
+## LOG-072 — T-06恢复周期1正式派遣
+- **预检：** GP021/Map22的ticket-control与goal validator实际通过，0 errors/no drift；五条未来票重叠警告由串行策略处理。2096份前输入与两条原回执保全于T-06-recovery1-preflight-root-audit.json。
+- **实际动作：** 原Lead通过followup_task派原A实施六路径焦点修复与组合红绿，原B先实施独立浏览器真实capture/几何所有权验证。B的Host接线等待Root核验A实际API，C及其余产品源停写。见T-06-recovery1-dispatch.json。
+- **状态：** T06 in_progress，恢复周期1 attempts0；原周期attempts3保留。T07–18依赖锁定，18票Goal保持active，无提交/推送/发布/归档。
+
+
+## LOG-073 — T06代码验收完成与T07精确接缝重审
+
+T06恢复周期1第二次候选完成526tests/0skip、构建/零警告lint/受影响guards与Chrome11/11；新独立Astra/high对完整42路径双轴pass，真实原反例关闭。Root当前交付校验errors=[]，review阶段实现验证退出0后将原票置done；旧失败、三次原周期及恢复两次计数保留，真实宿主/Provider/五平台E2E仍用户负责。
+
+GP022/Map23只把T07真实接缝和写集落为65精确路径。A/B/C只读回读均无新增产品决定或必需路径；Root补清最后spawn同代检查、capture一次性交接/非撤回onReserved、C新raw codec与B纯帧包装、Rust/Node真实闭环归属。选择有限本机IPC、同helper owner与单源wire，CI前移已有native构建测试，不增加daemon/HTTP/业务store。该记录不冒充DoR校验或派遣成功；T07生产仍待实际预检和消息解锁，后续接口必须按真实源码逐段交接。
+
+
+## LOG-074 — T07 实际旧夹具影响与关闭终态顺序
+
+A真实定向controller-managed-runtimes用例exit1，假transport缺localControl导致prepare失败与原environment门等待超时；9项是名称筛选未执行，不是通过。GP023/Map24仅增加该1个旧测试路径给原A，成为66精确路径；不绕生产注册、不删除生命周期/前景断言，不宣称尚未运行的controller-native失败。原实施继续，新增路径待实际结构校验与续派；Root整合attempts仍0。
+
+C真实原生反例发现unregistered已被Host收到、core.current尚待2ms轮询才清造成立即重注册误BUSY。Root澄清实际资源/call/socket收束并取得固定ACK permit、成功有序排队后先提交终态；ACK自身permit仍持有至物理write结算，TS仍需实际ACK及本地结算。两个终态和传输额度不混为一谈；详细条件见T-07-close-ack-order-decision.md。
+
+
+## LOG-075 — 编排接替与模型切换（2026-10-27）
+
+用户原话：“请你根据 plan spec map 继续完成，你作为编排和验收，实现可以派遣subagent sonnet 5.5，真实的端到端的验收 用户自己进行。” Claude Code 会话接替 Lead；实现改用 Sonnet 5.5，独立 review 用新 Opus 5.5 子代理。接续点：T01–T10 done；T13 代码阶段 081 双轴 pass，显式关闭清理增量未测；T11 082 接线中断（commands.ts 7 处类型错误）。T11 OpenCode 安全来源按 GP040 快照副本方案恢复。无提交/推送/发布。

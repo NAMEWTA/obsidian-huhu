@@ -160,8 +160,9 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 		},
 	};
 	const invocations: AutomationInvocations = {
-		invoke: (request, options) => {
-			if (!runtime) return Promise.reject(new AutomationError('moduleOff'));
+		// Async so a refusal (module off, recovery hold) is always a rejected promise, never a synchronous throw.
+		invoke: async (request, options) => {
+			if (!runtime) throw new AutomationError('moduleOff');
 			return runtime.service.invokeAgent(request, options?.signal);
 		},
 		receipt: (id) => {
@@ -202,6 +203,8 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 				new Notice(t('automation.failedLoad'));
 				throw error;
 			}
+			for (const owner of runtime.recoveryOwners)
+				context.lifetime.register(context.recovery?.register(owner) ?? (() => undefined));
 			context.lifetime.register(
 				runtime.service.subscribe(() => {
 					for (const listener of [...listeners]) listener();

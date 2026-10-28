@@ -1,0 +1,101 @@
+{
+  "utc": "2026-10-26T03:18:22.281989+00:00",
+  "initial_integration_input": {
+    "path": "/tmp/huhu-t07-root-integration1-source-inputs.json",
+    "sha256": "17825a2d9d835536cdb0a14055fa05eaa20b5232a04d1b5cd31e143c29fc350d"
+  },
+  "final_input": {
+    "path": "/tmp/huhu-t07-root-integration2-final-inputs.json",
+    "sha256": "0d8885283ce3dd932dc0085bd44ca8a7f0d93e5817b27b4634dfc7df0265c26a"
+  },
+  "initial_input_count": 2101,
+  "actual_current_changes_since_integration1": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-write-allocation.json",
+      "before": "bd2e4cc55fe3d24ffebb1628b3b61a83b4e66a920f6901a039be48b68e2c8b55",
+      "after": "a0b9f4865a81a7f91e158b7c9f79855da00443c7e947e54a30131f76144cfe95"
+    },
+    {
+      "path": "docs/third-party/licenses/sources.json",
+      "before": "d0b9a9b75c4cac512a7e28c01bdc8b3fdd5674053e3c51fbf0a1cf87e4b41305",
+      "after": "5470877eb972abd6e32ab9bce811bb231e933187069b217f9b15a45351099032"
+    },
+    {
+      "path": "scripts/bundle-budget.json",
+      "before": "c14d00e982b22c80cef12a2337e9c4c5e8d277c954998948ac56360cb4579b1a",
+      "after": "2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23"
+    },
+    {
+      "path": "src/modules/agent/services/controller-activity.test.ts",
+      "before": "9b6d11dd5b2865f6c767e92e34a19b98778b6dcda85bfd1ea33dee8b56d48762",
+      "after": "43271d5d99797760e099291f79cb48c1bdeaba18ac2075223dcd1c008d4682ec"
+    }
+  ],
+  "new_product_inputs": [
+    "docs/third-party/licenses/objc2-historical-MIT.txt",
+    "docs/third-party/licenses/dispatch2-original-MIT.txt"
+  ],
+  "reused_checks": {
+    "regression": {
+      "path": "/tmp/huhu-t07-root-i1-regression.json",
+      "sha256": "cba31e19c002ff3be567888dc858ca4f41a35c68fd10e5c6d8b73a5651a5f725",
+      "exit_code": 1,
+      "log_sha256": "6cacef4b9178dc4ea3c766b98773ff5ff644646a1e0a493edef18c8c0080687e"
+    },
+    "lint": {
+      "path": "/tmp/huhu-t07-root-i1-lint.json",
+      "sha256": "b78c4fa49460d5c1cc6d60d12ff95810ce16574d2bec45f09d22b60d81dd3bce",
+      "exit_code": 0,
+      "log_sha256": "960f1eb37ac4d28430af9bef2c98f32333254854ffde619330f53d373ce0f632"
+    },
+    "architecture": {
+      "path": "/tmp/huhu-t07-root-i1-architecture.json",
+      "sha256": "8da006e7e36fce639f407944e5e6abce307570680ecba82449d81708cfe7cfec",
+      "exit_code": 0,
+      "log_sha256": "35facdf267beea2a4691984ffdda9414a1c0f8349639d9deef0da33a6aba81ba"
+    },
+    "protocol-generated": {
+      "path": "/tmp/huhu-t07-root-i1-protocol-generated.json",
+      "sha256": "2abe9b40598733aa9a2e768b5f29285b31b2f1085373ad2cd5e40c3ec17f09b4",
+      "exit_code": 0,
+      "log_sha256": "854c2373b51a38d70a87609fcfde91222280204c9c5b8c8d58355340d5c89c8d"
+    },
+    "docs": {
+      "path": "/tmp/huhu-t07-root-i1-docs.json",
+      "sha256": "d761c2d768551ea25eb01c8643d92e44dc303217cd2476d874ac747738010638",
+      "exit_code": 1,
+      "log_sha256": "d42b5c66ad2e3f79ea1afaceed8d419f43c910be541be6308b332d934cb8ad56"
+    },
+    "i18n": {
+      "path": "/tmp/huhu-t07-root-i1-i18n.json",
+      "sha256": "a1347265026304f84b49bce739908512fa7659b1290ddf5ccf441141aa104cb0",
+      "exit_code": 0,
+      "log_sha256": "8a4bcda837b4c57e4b78ea3b4968d6616f6d86b9723301e5175069d67e6231c1"
+    }
+  },
+  "supporting_evidence": {
+    "T-07-a-activity-fixture-root-audit.json": {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-a-activity-fixture-root-audit.json",
+      "sha256": "30172f23eee768cb85fd2414c9cd1124a96cccbf81285e299934ea68f270e911"
+    },
+    "T-07-c-license-inputs-root-audit.json": {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-c-license-inputs-root-audit.json",
+      "sha256": "1ad733fc0a3f54a9395c7f77fb0be3521570bf2e609d577e88e7560e05ff0ec8"
+    },
+    "T-07-integration2-build-root-audit.json": {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-integration2-build-root-audit.json",
+      "sha256": "e5d8dfcceb6a002fb4678b63bcb556c5984ad9e434f6e7a4050f13551ad402c6"
+    },
+    "T-07-c-final-handoff-root-audit.json": {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-c-final-handoff-root-audit.json",
+      "sha256": "9bd50d26a57b50dd0c418401be5842ed3d68bf13b2a35f59d0a00c54de91409e"
+    }
+  },
+  "decisions": [
+    "All runtime production code, canonical/generator/shared fixtures, Rust/Cargo, final binaries and actual tool inputs from integration1 remain byte-identical. Only the old activity test fake, license cache, budget gate and formal allocation changed.",
+    "Integration1 ran66files555tests with554passed/1failed/0skipped. The sole failed old activity fixture now passed with all original assertions retained in4Controller files18tests/0skipped. Reuse554passes plus targeted repaired proof; no claim of a newly run whole555green suite.",
+    "Production lint/architecture/i18n/generated results and final native105tests/Windows cross-check remain applicable. New current build covers all source/test types; Promise guard and budget final passed. Notices write/check100npm+73crates passed after exact C3 repair.",
+    "Build/notice generation pre-budget input differs only in gate budget, which is not a production build or notice input. Actual final main and styles hashes independently reproduced by attribution.",
+    "Docs baseline retains6unrelated Bot anchors; no product docs source change since that run. Real Obsidian/Provider/five-platform end-to-end remains not run/user-owned. Independent review pending."
+  ]
+}

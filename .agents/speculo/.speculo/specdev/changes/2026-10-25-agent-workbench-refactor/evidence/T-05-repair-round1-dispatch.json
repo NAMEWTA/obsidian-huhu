@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-10-25T16:18:39.086536+00:00",
+  "packet": "evidence/T-05-repair-round1-packet.md",
+  "packet_sha256": "6f9e0ef5e31b0da34e072ea35a14904b0e3e5e0c095c402d308912ffaa54aece",
+  "input": "evidence/T-05-repair-round1-input.json",
+  "input_sha256": "e2cb2096f05c1a3520bd465afceb22e3e05dc1e7546659dce5f9ae7a98ad70e5",
+  "actual_dispatch": [
+    {
+      "target": "/root/implement_t01",
+      "tool": "collaboration.followup_task",
+      "tool_return": {},
+      "authorization": "C14 paths repair; public native API first; original model gpt-6.1-sol/xhigh retained"
+    },
+    {
+      "target": "/root/prepare_t03",
+      "tool": "collaboration.send_message",
+      "tool_return": {},
+      "authorization": "A10 paths repair; reset/resize first, reply after C actual API; original model gpt-6.1-sol/xhigh retained"
+    },
+    {
+      "target": "/root/prepare_t05_screen",
+      "tool": "collaboration.followup_task",
+      "tool_return": {},
+      "authorization": "B4 paths tests/preparation; production consumer gated on A actual interface; original model gpt-6.1-sol/xhigh retained"
+    }
+  ],
+  "root_owner": [
+    "formal evidence",
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "integrated checks"
+  ],
+  "not_authorized": [
+    "T06 implementation",
+    "commit",
+    "push",
+    "PR",
+    "release",
+    "archive",
+    "real user E2E"
+  ],
+  "source_writes": "Only allocated writers after actual dispatch; new global checks await SOURCE STOPPED."
+}

@@ -1,0 +1,98 @@
+{
+  "utc": "2026-10-26T12:35:36.294651+00:00",
+  "reason": "019 independent F6, actual native failure lost at public final Host disposal",
+  "review_audit_sha256": "f671b374477dae45b8737b67da68509248b44e495ebe00e6ea5acf6a989a5578",
+  "goal_revision": "GP-030",
+  "map_revision": 31,
+  "recovery_cycle": 1,
+  "attempts": 1,
+  "next_integration_attempt": 2,
+  "old_cycle_attempts": 3,
+  "scope_paths": 87,
+  "repair_unlocked_only_on_dispatch": [
+    "src/host/desktop/native/host.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/host.test.ts",
+    "src/host/desktop/native/helper-stream.test.ts",
+    "src/host/desktop/native/helper-control.test.ts",
+    "src/host/desktop/native/helper-editor.test.ts",
+    "src/host/desktop/native/host-control.test.ts",
+    "src/host/desktop/native/host-editor.integration.test.ts",
+    "src/shared/native/host.ts",
+    "src/shared/native/lazy-host.test.ts"
+  ],
+  "snapshots": [
+    {
+      "stage": "before",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "627d426b8b528f2d8808f1dda00442ad834dbe7d451e2724897293a21ffd8e23",
+      "bytes": 39557,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/627d426b8b528f2d8808f1dda00442ad834dbe7d451e2724897293a21ffd8e23.raw"
+    },
+    {
+      "stage": "before",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "8b4db165e5e2141c63892cff5dff60ba908ae037b523c828cf777ccc6e452d6f",
+      "bytes": 33428,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/8b4db165e5e2141c63892cff5dff60ba908ae037b523c828cf777ccc6e452d6f.raw"
+    },
+    {
+      "stage": "before",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "60829e004887d6999fbe7ac9fb8b0dd2031768d727bbb8b69029cf6e28ca7def",
+      "bytes": 37239,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/60829e004887d6999fbe7ac9fb8b0dd2031768d727bbb8b69029cf6e28ca7def.raw"
+    },
+    {
+      "stage": "before",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "72acc0a787334ce90a744e72aa2d8e4c8575589c6f58a52a5e1ac4aa3ce4d1ea",
+      "bytes": 47704,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/72acc0a787334ce90a744e72aa2d8e4c8575589c6f58a52a5e1ac4aa3ce4d1ea.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "04ca8b2420991ccdcd7e808de839d2fc31321bb0f2037f9161f3f5b1c4077964",
+      "bytes": 40057,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/04ca8b2420991ccdcd7e808de839d2fc31321bb0f2037f9161f3f5b1c4077964.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "32c3739c4dec374dcdcf83de616a403c04eb184c2ffbb719895519e99e7a5101",
+      "bytes": 33738,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/32c3739c4dec374dcdcf83de616a403c04eb184c2ffbb719895519e99e7a5101.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "3eeed93094b26eb4b942ef434b3ea68c5e2e8df61197065cc3bbf73454bf410c",
+      "bytes": 37926,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/3eeed93094b26eb4b942ef434b3ea68c5e2e8df61197065cc3bbf73454bf410c.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "f6fe298dbb7acf7120225e08cb3e322a6cd7a9c65895e5b6e0b96e4648f1128b",
+      "bytes": 48669,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/f6fe298dbb7acf7120225e08cb3e322a6cd7a9c65895e5b6e0b96e4648f1128b.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-write-allocation-r4.json",
+      "sha256": "f09a7cdd0dd0987b8e3352598890cf18db78901c1a347add976bd2053cc34dd9",
+      "bytes": 10228,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/f09a7cdd0dd0987b8e3352598890cf18db78901c1a347add976bd2053cc34dd9.raw"
+    },
+    {
+      "stage": "after",
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-shutdown-result-packet.md",
+      "sha256": "b6d9c9fa5eae76d755babee02aef54667ecb3b89be832d972f99ec5f2320e14e",
+      "bytes": 3915,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/shutdown-result-replan/b6d9c9fa5eae76d755babee02aef54667ecb3b89be832d972f99ec5f2320e14e.raw"
+    }
+  ],
+  "product_changes_at_replan": [],
+  "authorization": "Existing full18-ticket implementation/Agent Team authorization; no new user decision."
+}

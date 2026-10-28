@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-25T12:40:35.258342Z",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "versions": {
+    "xterm": "6.0.0",
+    "addon-search": "0.16.0"
+  },
+  "pinned_commit": "f447274f430fd22513f6adbf9862d19524471c04",
+  "sources": [
+    {
+      "path": "node_modules/@xterm/xterm/package.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/package.json",
+      "sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f",
+      "bytes": 4348,
+      "observed_utc": "2026-10-25T12:40:35.255534Z",
+      "mtime_utc": "2026-10-24T08:21:02.313733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/lib/xterm.js",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/lib/xterm.js",
+      "sha256": "14903579ff54664cd72f8e8699e6961a6272c21863ec1c3b118cdc8af5d4a972",
+      "bytes": 488663,
+      "observed_utc": "2026-10-25T12:40:35.255953Z",
+      "mtime_utc": "2026-10-24T08:21:02.312733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/css/xterm.css",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/css/xterm.css",
+      "sha256": "854a7c0fb70e8b1a083c16797ab827299fb18744f5ad34f227b48337e33293c6",
+      "bytes": 7112,
+      "observed_utc": "2026-10-25T12:40:35.256447Z",
+      "mtime_utc": "2026-10-24T08:21:02.312733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/LICENSE",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/LICENSE",
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "bytes": 1261,
+      "observed_utc": "2026-10-25T12:40:35.256563Z",
+      "mtime_utc": "2026-10-24T08:21:02.312733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/package.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/package.json",
+      "sha256": "9724dbe0ba2a52235ed3959e3b88ae32819f163c15af34680160e2c15f43e7d9",
+      "bytes": 686,
+      "observed_utc": "2026-10-25T12:40:35.256652Z",
+      "mtime_utc": "2026-10-24T08:21:01.897726Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/lib/addon-search.js",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/lib/addon-search.js",
+      "sha256": "7bc1b8c7b3549411f6f6f779524c4ded6ca621fd80d64b40a70ae7c78aefbf55",
+      "bytes": 78826,
+      "observed_utc": "2026-10-25T12:40:35.256759Z",
+      "mtime_utc": "2026-10-24T08:21:01.897726Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/services/OscLinkService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/services/OscLinkService.ts",
+      "sha256": "559eae342ee18934af8e1e22f6f03425f229b71a0161eb6de304863f4e2ebcda",
+      "bytes": 3530,
+      "observed_utc": "2026-10-25T12:40:35.256904Z",
+      "mtime_utc": "2026-10-24T08:21:02.329733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/Buffer.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/Buffer.ts",
+      "sha256": "7d48cc12cf3c32b9cac1b6f6cfcee01215a1edb66e0dab48ceb3f87d9c25b422",
+      "bytes": 24364,
+      "observed_utc": "2026-10-25T12:40:35.257012Z",
+      "mtime_utc": "2026-10-24T08:21:02.320733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/BufferSet.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/BufferSet.ts",
+      "sha256": "65876e87f6b8e6e71b90c953a380a48f8689cee3d4467ae91e04ce88ec0f1bd2",
+      "bytes": 4151,
+      "observed_utc": "2026-10-25T12:40:35.257108Z",
+      "mtime_utc": "2026-10-24T08:21:02.323733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/CoreTerminal.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/CoreTerminal.ts",
+      "sha256": "538d1740cb2c1e1d1af7b58aac3518dba5c29ea83b4dad60b41a05333b7ca749",
+      "bytes": 12640,
+      "observed_utc": "2026-10-25T12:40:35.257192Z",
+      "mtime_utc": "2026-10-24T08:21:02.325733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/InputHandler.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/InputHandler.ts",
+      "sha256": "b03afd5d38dd708440699e81135f1735626d55ffdf24621fbd54cfbc41320925",
+      "bytes": 148730,
+      "observed_utc": "2026-10-25T12:40:35.257327Z",
+      "mtime_utc": "2026-10-24T08:21:02.327734Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/WindowsMode.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/WindowsMode.ts",
+      "sha256": "1f449ede2f770a1dc90340a922dac4f087d49f9337100d563f1fe505fcba5cb6",
+      "bytes": 1361,
+      "observed_utc": "2026-10-25T12:40:35.257487Z",
+      "mtime_utc": "2026-10-24T08:21:02.334733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/CoreBrowserTerminal.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/CoreBrowserTerminal.ts",
+      "sha256": "15c1149d38db18e9aa2c4a896e6c69c5cc40fb73a3fa01bb0602828cae3210a1",
+      "bytes": 52916,
+      "observed_utc": "2026-10-25T12:40:35.257573Z",
+      "mtime_utc": "2026-10-24T08:21:02.324733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/input/CompositionHelper.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/input/CompositionHelper.ts",
+      "sha256": "270ea7fa05ebb48e14f50a63dd61e0230f36f40f4d0232579e4b884d8579ed99",
+      "bytes": 10238,
+      "observed_utc": "2026-10-25T12:40:35.257680Z",
+      "mtime_utc": "2026-10-24T08:21:02.324733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/services/RenderService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/services/RenderService.ts",
+      "sha256": "c2c30de3a383d7d848b20a1789f6c54aa28f93ec979d5f8665a31d256f0630a4",
+      "bytes": 13356,
+      "observed_utc": "2026-10-25T12:40:35.257779Z",
+      "mtime_utc": "2026-10-24T08:21:02.330734Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/services/SelectionService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/services/SelectionService.ts",
+      "sha256": "0bd2c55a0119dd91549b5d62778c649ec45f3c8aecf160be6324e5e2590a3d7c",
+      "bytes": 37952,
+      "observed_utc": "2026-10-25T12:40:35.257861Z",
+      "mtime_utc": "2026-10-24T08:21:02.331733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/Linkifier.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/Linkifier.ts",
+      "sha256": "b53e05a656bc725f12ff7019cca9990568a4f038d42fbe9575a7e36779fa328a",
+      "bytes": 15934,
+      "observed_utc": "2026-10-25T12:40:35.257955Z",
+      "mtime_utc": "2026-10-24T08:21:02.328733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/AccessibilityManager.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/AccessibilityManager.ts",
+      "sha256": "ae0a3ae70941f926e739195dbb939f9b810653ddcc7faa53ed57baaf2bc61e1b",
+      "bytes": 16827,
+      "observed_utc": "2026-10-25T12:40:35.258031Z",
+      "mtime_utc": "2026-10-24T08:21:02.319733Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/src/SearchLineCache.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/src/SearchLineCache.ts",
+      "sha256": "20cd1205c3146834ad556c5ec0a5bd829a33f5817a7cdc2e9c8c85cfdeedacac",
+      "bytes": 4040,
+      "observed_utc": "2026-10-25T12:40:35.258107Z",
+      "mtime_utc": "2026-10-24T08:21:01.899726Z",
+      "stable_during_fingerprint": true
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/src/SearchAddon.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/src/SearchAddon.ts",
+      "sha256": "3b100893e2de186d304cf3cb4552c6367dc705d4f60a5125ce93f3ee82922ddb",
+      "bytes": 8894,
+      "observed_utc": "2026-10-25T12:40:35.258172Z",
+      "mtime_utc": "2026-10-24T08:21:01.899726Z",
+      "stable_during_fingerprint": true
+    }
+  ],
+  "source_count": 20,
+  "changed_since_narrow_proposal": [],
+  "repository_writes": false,
+  "production_source_imported_into_fixture": false,
+  "new_external_sources": false,
+  "license": "Installed xterm package MIT; reuse previously observed R-04 official-source activity/license evidence; no copied external source.",
+  "notes": "Loaded real published browser bundles and CSS. Experimental target helper code is confined to /tmp. No production A/B DTO assumed."
+}

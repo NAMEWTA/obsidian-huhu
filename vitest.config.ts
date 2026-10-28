@@ -30,7 +30,15 @@ const nativeIntegrationTests = ['test/sync/git-flow.test.ts', 'test/sync/git-bou
 export default defineConfig({
 	test: {
 		projects: [
-			{ ...shared, resolve: { alias: { obsidian: repo('./scripts/obsidian-stub.ts') } }, test: { name: 'dom', include: ['src/**/*.dom.test.tsx'], environment: 'happy-dom', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts', './scripts/dom-setup.ts'] } },
+			{
+				...shared,
+				resolve: { alias: {
+					obsidian: repo('./scripts/obsidian-stub.ts'),
+					// The package's Node export disables layout effects; DOM tests need the real browser behavior.
+					'react-resizable-panels': repo('./node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js'),
+				} },
+				test: { name: 'dom', include: ['src/**/*.dom.test.tsx'], environment: 'happy-dom', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts', './scripts/dom-setup.ts'] },
+			},
 			{
 				...shared,
 				resolve: { alias: { obsidian: repo('./scripts/obsidian-stub.ts') } },

@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-25T23:48:25.301044+00:00",
+  "actual_tool_exit": 1,
+  "execution": "Root runner rejected v1 before executing similarity; no comparison ran and no passing result exists.",
+  "reason": "Inherited old absolute repo source paths were mistakenly included alongside the current snapshot, producing seven expected/actual mismatches corresponding exactly to this repair. This was manifest preparation error, not concurrent source drift.",
+  "failed_manifest": "/tmp/huhu-t06-root-review-repair1-similarity-inputs.json",
+  "failed_manifest_sha256": "82299acd3b68680e6c57df5ce1aaef8d92b636a20c39be4de560128a71e191ad",
+  "correction": "New v2 reuses only isolated reference inventory; current product/tool inputs remain the new Root freeze. v1 retained.",
+  "corrected_manifest": "/tmp/huhu-t06-root-review-repair1-similarity-inputs-v2.json",
+  "corrected_manifest_sha256": "548ca485c106ff179ceda04fdb0413ec3f325fda8f48c4b494c5cef5ad217192",
+  "reference_files": 33627
+}

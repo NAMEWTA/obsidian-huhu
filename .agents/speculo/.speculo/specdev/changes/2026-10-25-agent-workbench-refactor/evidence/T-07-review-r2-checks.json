@@ -1,0 +1,209 @@
+{
+  "reviewer": "codex:/root/review_t07_r1",
+  "review_round": 2,
+  "requested_identity": "gpt-6-astra/high; actual spawn receipt owned by Root",
+  "utc": "2026-10-26T04:17:08.767210+00:00",
+  "input_sha256": "80e66f4ab3e1f859f3e13bd529b90b92c76f787d7d0a92c812c92bc72202d0d8",
+  "results": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "unique_findings": 0,
+  "closed_r1": [
+    "STD-01/SPEC-01",
+    "STD-02/SPEC-02",
+    "STD-03/SPEC-03"
+  ],
+  "additional_query_effect": "independently verified pass",
+  "sources_modified": false,
+  "source_stopped": true,
+  "verification": [
+    {
+      "name": "frozen-input-before",
+      "command": [
+        "node",
+        "/tmp/huhu-t07-review-r2-verify.mjs"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-freeze-before.json"
+    },
+    {
+      "name": "cli-original-boundary-counterexamples",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r2-cli-probe.py"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-cli-probe.json"
+    },
+    {
+      "name": "normal-timeout-latest-target",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r2-timeout-probe.py"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-timeout-probe.json"
+    },
+    {
+      "name": "query-mutation-timeout-closing-matrix",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r2-query-probe.py"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-query-probe.json"
+    },
+    {
+      "name": "cas-and-product-delta",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r2-audit.py"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-audit.json"
+    },
+    {
+      "name": "frozen-input-after",
+      "command": [
+        "node",
+        "/tmp/huhu-t07-review-r2-verify.mjs"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r2-freeze.json"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/huhu-t07-review-r2-task.md",
+      "bytes": 6162,
+      "sha256": "4bed8e77ed0c89b623468d3c4199ee0a9af24b11649a629452bf56ae8e015293"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-verify.mjs",
+      "bytes": 1691,
+      "sha256": "13939a56e451fd0ebb976d78f8ccdfe4dad5eca558666e14a4ab72f54b6f4962"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-freeze-before.json",
+      "bytes": 570,
+      "sha256": "65eae4fb9c459b1339e7f16ce0d216c7985afd531d1d0c1f8f89f5d4e591301e"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-freeze.json",
+      "bytes": 570,
+      "sha256": "6a293860834d160b04221a8b6518bf01a6aabd504d5d65034645942c52913411"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-cli-probe.py",
+      "bytes": 2231,
+      "sha256": "d72c8b59e90af22ca191ad7dd4ee7a71738b12407c8ffe2c6d730b07d00d7c85"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-cli-probe.json",
+      "bytes": 33896,
+      "sha256": "0d8a431f583404a43bd8de6251db073a45439990382a0b4cb5aef23e32bacb11"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-timeout-probe.py",
+      "bytes": 2962,
+      "sha256": "c4eda61b70238c8fcfcb030d3cf0bf448300b0d78d5a33369eb803821b1c5fdd"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-timeout-probe.json",
+      "bytes": 2969,
+      "sha256": "c39b0867b13ed559449a05b0edc408ab89423c6878c05bbc285d82b259860517"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-query-probe.py",
+      "bytes": 4502,
+      "sha256": "44ac9b371c82f470ee330f74afa07bdaf31f2b19be4a0401e136e1616ca2cb6d"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-query-probe.json",
+      "bytes": 13118,
+      "sha256": "a6522f6404443e35e9547d2a061c5246cba967ae5d818a6c4683c537beeb1b11"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-audit.py",
+      "bytes": 1917,
+      "sha256": "7b4b51b463deeaed94f8fe629ff6fb95bc02400eff0a93290c838d125fc133e1"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-audit.json",
+      "bytes": 1098,
+      "sha256": "6b35c46ef101495188158849ba26ade2a004c89bc507aec2ea0d90ba1e86e408"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r2-report.md",
+      "bytes": 12809,
+      "sha256": "5a486ed60f374edb13c5d0a1f46b4faf353eed959cf7a62042e176be94eacd50"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/late-json.stdout",
+      "bytes": 206,
+      "sha256": "5bac122560bc1ea415c830b2e94850337b2b43e51ca20ecc5b5c72120eebf06c"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/late-json.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/early-json.stdout",
+      "bytes": 206,
+      "sha256": "5bac122560bc1ea415c830b2e94850337b2b43e51ca20ecc5b5c72120eebf06c"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/early-json.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/invalid-utf8.stdout",
+      "bytes": 205,
+      "sha256": "3f9867ec7f4b037df85cccf1c5e6f08fc97e9ae9981ea4e86fd097b2df57dc1c"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/invalid-utf8.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/oversize-discovery.stdout",
+      "bytes": 30332,
+      "sha256": "60e56a81d660b89a58f65bbf452b8045616de2b1576808aa3cb26a49f471dafb"
+    },
+    {
+      "path": "/tmp/ht7r2-khra1rxu/oversize-discovery.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reused_current_checks": [
+    "C full native111/0ignored",
+    "C Windows crosscheck, scoped rustfmt, immutable same-source binaries, helper verify",
+    "Root current-bin required3files4tests/0skip",
+    "Unchanged JS/config/deps/root artifacts: original554pass + repaired18 targeted, build/lint/architecture/i18n/generated/Promise/bundle/notices"
+  ],
+  "known_nonpassing": [
+    "full cargo fmt exit1 unchanged generated wire and two inherited_fds",
+    "six unrelated Bot docs anchors",
+    "historical product reds and copy metadata failure preserved"
+  ],
+  "limitations": [
+    "No real Provider/Obsidian/user Vault or five-platform E2E",
+    "No Rust rebuild; new frozen immutable bins only",
+    "Synthetic Host progress is transport evidence; current Root production test evidence reused separately",
+    "No new full555 run",
+    "No GPL source read",
+    "No product/official artifact writes or recursive delegation"
+  ],
+  "status": "READ-ONLY SOURCE STOPPED"
+}

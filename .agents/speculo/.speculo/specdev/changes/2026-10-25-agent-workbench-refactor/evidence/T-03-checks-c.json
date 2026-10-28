@@ -1,0 +1,106 @@
+{
+  "task": "T-03 C",
+  "observedAtUtc": "2026-10-25T08:08:29.127742+00:00",
+  "runner": {
+    "path": "/tmp/huhu-check-runner.py",
+    "sha256": "1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c",
+    "bytes": 1121,
+    "role": "existing supplied recorder, not edited"
+  },
+  "typecheckConfig": {
+    "path": "/tmp/huhu-t03-native-c-tsconfig.json",
+    "sha256": "e31d9fd5cdba36f341a948aad07fb48f0166f46c387696a4a06dd3469a0381ae",
+    "bytes": 538,
+    "role": "task-scoped /tmp configuration"
+  },
+  "checks": [
+    {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/workspace-service-native.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:05:20.862351+00:00",
+      "finished_at": "2026-10-25T08:05:22.889118+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t03-native-c-first.log",
+      "output_sha256": "fdaf7016be83946b72c800fb352353a44e93d1f5e42915231d8ac36a784021dd",
+      "classification": "passed; default reporter omitted console observations"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "-p",
+        "/tmp/huhu-t03-native-c-tsconfig.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:06:11.428225+00:00",
+      "finished_at": "2026-10-25T08:06:13.912715+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t03-native-c-types-first.log",
+      "output_sha256": "f337a5039019df99750a13c58679b6041fd9720d19a5adea565528f3c6d2fd02",
+      "classification": "failed; TS2344 in new test spy generic; original exit126 retained"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "unit",
+        "--reporter",
+        "verbose",
+        "--silent=false",
+        "--disableConsoleIntercept",
+        "src/modules/agent/services/workspace-service-native.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:06:41.871327+00:00",
+      "finished_at": "2026-10-25T08:06:43.952191+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t03-native-c-verbose.log",
+      "output_sha256": "0b55e4a26956036fbbb6fd58df076f4df6e90e433c0a36caaf438f63e55d4149",
+      "classification": "passed after test-only type correction; 1 test, no skip; actual process/cleanup output"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "-p",
+        "/tmp/huhu-t03-native-c-tsconfig.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:06:41.902467+00:00",
+      "finished_at": "2026-10-25T08:06:44.444011+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t03-native-c-types-green.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "passed; only new test entry plus global augmentation/import closure, not full repository tsc"
+    }
+  ],
+  "platform": "linux",
+  "finalTestCounts": {
+    "files": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "notRun": [
+    "full build",
+    "full lint",
+    "full repository tsc",
+    "other test files",
+    "Obsidian",
+    "Provider",
+    "non-Linux platforms"
+  ],
+  "productionSourcesMutable": true
+}

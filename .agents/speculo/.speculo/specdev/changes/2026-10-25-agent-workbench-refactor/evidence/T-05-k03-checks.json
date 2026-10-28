@@ -1,0 +1,169 @@
+{
+  "checks": [
+    {
+      "record": "/tmp/huhu-t05-k03-exact-first.json",
+      "record_sha256": "ae75fa5527d82a1a70c60381f19903055c7867cf83789bedf1a4b9b49a18d1ac",
+      "source_input": "/tmp/huhu-t05-k03-exact-first-input.json",
+      "source_input_sha256": "0622b78e6e90c0e160262e04d14512833f05ef71293c3eca8ceef47f17046546",
+      "summary": {
+        "passed": 0,
+        "failed": 1,
+        "filtered": 0,
+        "classification": "external forced-state invariant failure; genuine engine sensitivity, not natural product reproduction"
+      },
+      "argv": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/terminal/session-resize.test.ts",
+        "--reporter",
+        "verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T12:10:13.914556+00:00",
+      "finished_at": "2026-10-25T12:10:15.158753+00:00",
+      "exit_code": 126,
+      "log": "/tmp/huhu-t05-k03-exact-first.log",
+      "log_sha256": "cf182a9015127ebeb762d82b13d1367c18992de63a691ca0ed7e4fae05963914",
+      "source_directory": "/tmp/huhu-t05-k03-exact-first-source",
+      "headless_version": "6.0.0"
+    },
+    {
+      "record": "/tmp/huhu-t05-k03-forced-production.json",
+      "record_sha256": "6cee66219fc961e7981c2278410313797f99f3e1666b566246c0340767c945ad",
+      "source_input": "/tmp/huhu-t05-k03-forced-production-input.json",
+      "source_input_sha256": "c389e1f53943105629f2abc7b99e473017ceda9c98e63bd69e3c916a4c64940b",
+      "summary": {
+        "passed": 0,
+        "failed": 1,
+        "filtered": 6,
+        "classification": "same forced state through production Session.resize; genuine conditional sensitivity only"
+      },
+      "argv": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/terminal/session-resize.test.ts",
+        "--testNamePattern",
+        "K03 forced-state production",
+        "--reporter",
+        "verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T12:13:13.955301+00:00",
+      "finished_at": "2026-10-25T12:13:15.229846+00:00",
+      "exit_code": 126,
+      "log": "/tmp/huhu-t05-k03-forced-production.log",
+      "log_sha256": "d5cedad3e47f3a28f67b7751977019fa7efb186640a2c32f7c0b36e038aaf9d8",
+      "source_directory": "/tmp/huhu-t05-k03-forced-production-source",
+      "headless_version": "6.0.0"
+    },
+    {
+      "record": "/tmp/huhu-t05-k03-natural-first.json",
+      "record_sha256": "f5e3383dbd75dcfe518e537e999a8b95f559a487539412f46279abe56c7bce79",
+      "source_input": "/tmp/huhu-t05-k03-natural-first-input.json",
+      "source_input_sha256": "5481f5a158f09694699ae667dbac5eb56da549495422c3604e655fc5c2005404",
+      "summary": {
+        "passed": 4,
+        "failed": 1,
+        "filtered": 2,
+        "classification": "fixture viewport/absolute-line coordinate error; not missing-line product failure"
+      },
+      "argv": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/terminal/session-resize.test.ts",
+        "--testNamePattern",
+        "K03 natural",
+        "--reporter",
+        "verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T12:13:22.239470+00:00",
+      "finished_at": "2026-10-25T12:13:23.630769+00:00",
+      "exit_code": 126,
+      "log": "/tmp/huhu-t05-k03-natural-first.log",
+      "log_sha256": "37d83da64ab1c94ff0e25f0b752152c2e63f8323cf88566b43e2a6d56f6c660b",
+      "source_directory": "/tmp/huhu-t05-k03-natural-first-source",
+      "headless_version": "6.0.0"
+    },
+    {
+      "record": "/tmp/huhu-t05-k03-natural-corrected.json",
+      "record_sha256": "60dc4989963533761d741142e4232a35722749fafb8e9e60bf44ca66b3dd8465",
+      "source_input": "/tmp/huhu-t05-k03-natural-corrected-input.json",
+      "source_input_sha256": "5541bb20e27054bc1b22bb39d57838df547c14ab667ae0176519d5c952a12e93",
+      "summary": {
+        "passed": 5,
+        "failed": 0,
+        "filtered": 2,
+        "classification": "corrected read uses baseY+viewport row; no production changes"
+      },
+      "argv": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/terminal/session-resize.test.ts",
+        "--testNamePattern",
+        "K03 natural",
+        "--reporter",
+        "verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T12:14:06.812537+00:00",
+      "finished_at": "2026-10-25T12:14:08.293242+00:00",
+      "exit_code": 0,
+      "log": "/tmp/huhu-t05-k03-natural-corrected.log",
+      "log_sha256": "b31b614472fa31f8ed5df38b927acb1abd397187dc266ab5ba2ff8c32de035f3",
+      "source_directory": "/tmp/huhu-t05-k03-natural-corrected-source",
+      "headless_version": "6.0.0"
+    },
+    {
+      "record": "/tmp/huhu-t05-k03-final-regression.json",
+      "record_sha256": "7fe5a1a5353d2daef333800026a793e35caedaea8755096cb22c033cd925f816",
+      "source_input": "/tmp/huhu-t05-k03-final-regression-input.json",
+      "source_input_sha256": "a9705592b19fdd89aa0ca34ecf9fb281f3c612d9eab0e3cea33c4f439d7987a2",
+      "summary": {
+        "passed": 16,
+        "failed": 0,
+        "filtered": 0,
+        "classification": "final retained natural regressions plus original Session suite"
+      },
+      "argv": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--project",
+        "unit",
+        "src/modules/agent/services/terminal/session.test.ts",
+        "src/modules/agent/services/terminal/session-resize.test.ts",
+        "--reporter",
+        "verbose"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T12:15:13.738025+00:00",
+      "finished_at": "2026-10-25T12:15:15.364370+00:00",
+      "exit_code": 0,
+      "log": "/tmp/huhu-t05-k03-final-regression.log",
+      "log_sha256": "58e786cd1748a63c71bd9c5706a4e780c2142f7b0c36f8864d4fc2e0bdc1b5de",
+      "source_directory": "/tmp/huhu-t05-k03-final-regression-source",
+      "headless_version": "6.0.0"
+    }
+  ],
+  "runner": "/tmp/huhu-t05-k03-run.py",
+  "runner_sha256": "6471473beef64fc89f981ad888168f568bee31cfc6fd06031d58d4d66abf835c",
+  "note": "Before every execution, actual test bytes, production Session/Sessions, package/lock/config and headless bundle bytes were copied. No helper/build/global/type/lint commands were run."
+}

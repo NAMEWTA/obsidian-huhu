@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-10-25T11:12:28.492Z",
+  "verified_by": "codex:/root",
+  "input_sha256": "6b88551127001cc9d60ee42794f8d450adeaa2d6cbe900de6daed1d36d129516",
+  "scope_match": true,
+  "source_count": 30,
+  "source_mismatches": [],
+  "phase": "before repair dispatch; original independent review is request-changes"
+}

@@ -1,0 +1,53 @@
+{
+  "note": "Production metafile of the T-16 tree. Post-T-15 per-input sizes were not retained (same limit as T-15 attribution): new inputs carry their full size, edited inputs carry only the after size; deltas for the two activation budgets are against the committed limits, which the post-T-15 tree met.",
+  "mainJs": 6858951,
+  "previousLimit": 6795264,
+  "newLimit": 6859776,
+  "newInputs": {
+    "total": 60982,
+    "bytes": {
+      "src/shared/i18n/lazy/backup.ts": 20439,
+      "src/modules/agent/ui/settings/BackupSection.tsx": 10726,
+      "src/modules/agent/services/backup/plan.ts": 6682,
+      "src/modules/agent/core/backup/transforms.ts": 4646,
+      "src/modules/agent/core/backup/format.ts": 4202,
+      "src/modules/agent/services/backup/export.ts": 4014,
+      "src/modules/agent/services/backup/import.ts": 2662,
+      "src/modules/agent/core/backup/settings-codec.ts": 2203,
+      "src/modules/agent/services/backup/records.ts": 1518,
+      "src/modules/agent/services/backup/owners.ts": 1329,
+      "src/modules/agent/core/backup/paths.ts": 1187,
+      "src/modules/agent/services/backup/entry.ts": 620,
+      "src/modules/agent/services/backup/actions.ts": 614,
+      "src/modules/agent/core/backup/model.ts": 140
+    }
+  },
+  "editedInputsAfter": {
+    "src/modules/automations/core/service.ts": 18336,
+    "src/modules/agent/module.ts": 6185,
+    "src/modules/automations/services/runtime.ts": 4733,
+    "src/modules/notifications/core/service.ts": 3943,
+    "src/modules/automations/module.ts": 3464,
+    "src/app/recovery.ts": 2295,
+    "src/modules/agent/ui/settings-page.tsx": 2189,
+    "src/shared/storage/recovery-contracts.ts": 1217,
+    "src/modules/notifications/module.ts": 747,
+    "src/modules/automations/api.ts": 624,
+    "src/modules/notifications/api.ts": 271
+  },
+  "activation": {
+    "automations": {
+      "measured": 219410,
+      "previousLimit": 218112,
+      "newLimit": 220160,
+      "cause": "quiesce/resume/recoveryBusy/drainWrites/adoptFromDisk, restored marker in publish/commit, automationRecoveryOwners, module registration"
+    },
+    "notifications": {
+      "measured": 21285,
+      "previousLimit": 20480,
+      "newLimit": 21504,
+      "cause": "hold, deferred failures, busyWork, drainWrites, adoptFromDisk, notificationsRecoveryOwner, module registration"
+    }
+  },
+  "eager": "unchanged within limit (122.8 KB measured, limit 125952); agent activation 1331.4 KB within 1370112"
+}

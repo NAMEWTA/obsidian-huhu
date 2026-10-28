@@ -1,0 +1,79 @@
+{
+  "frozen_at_utc": "2026-10-25T10:39:06.146112+00:00",
+  "frozen_copy": "/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+  "source_binary": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/target/debug/huhu-pty",
+  "bytes": 23217880,
+  "sha256": "ce263fd68bdbd792d2b36f675d2ee838ff39052926ce688dcb06b086eb076343",
+  "target_matches_copy": true,
+  "source_manifest": "/tmp/huhu-t04-native-source.json",
+  "source_manifest_sha256": "298e412852083b82ca10c052ec6c841993fb53ddafd0779a9391116f6562db55",
+  "producer_record": "/tmp/huhu-t04-c-native-source-frozen.json",
+  "producer_record_sha256": "24ba1a0a871c8fe881410e57f53e890d1136eb1f250b302148b62e29cb3d9058",
+  "producer_argv": [
+    "cargo",
+    "test",
+    "--locked",
+    "--manifest-path",
+    "native/pty-server/Cargo.toml"
+  ],
+  "producer_inputs": [
+    {
+      "path": "native/pty-server/Cargo.lock",
+      "sha256": "95dc808bd7e40a5659f4fae5b1b76bd1f2ad700750078c4750250c234f8ea3ed",
+      "bytes": 17755
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c",
+      "bytes": 876
+    },
+    {
+      "path": "native/pty-server/src/agent_data.rs",
+      "sha256": "12a184efb05a83ffdfee1eee70aefbd0a6e12921a86813cd05f7994a8e0f6080",
+      "bytes": 83199
+    },
+    {
+      "path": "native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8",
+      "bytes": 22732
+    },
+    {
+      "path": "native/pty-server/src/cookies.rs",
+      "sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39",
+      "bytes": 4199
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "bytes": 4190
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "bytes": 4115
+    },
+    {
+      "path": "native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "bytes": 1244
+    },
+    {
+      "path": "native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "bytes": 15567
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "ede0ebd60a46dd859772c028d9d6679be484edff10e4cd9146416bee82148f8b",
+      "bytes": 7582
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "2589a3cbb077115653d8b080ed621a22aa8ca5d232f342ef35389f68927c0dfb",
+      "bytes": 33398
+    }
+  ],
+  "verify_record": "/tmp/huhu-t04-c-verify-helper-frozen.json",
+  "verify_record_sha256": "f854ccaf9b8052d451a3359e08ffdee0db73e8b97c822a5dd751329aa5c60605",
+  "note": "Final normal Linux debug helper. All controlled force mutations restored; all four accidental format changes restored. This copy will not be rewritten; no Windows runtime claim."
+}

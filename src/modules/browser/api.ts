@@ -74,6 +74,8 @@ export interface BrowserHost {
 	createPage(init: { url?: string; profileId?: string; zoom?: number; restoreId?: string }): BrowserPageHandle;
 	getPage(id: string): BrowserPageHandle | undefined;
 	disposePage(id: string): void;
+	/** Explicitly closes a persisted Browser resource and releases its native page. */
+	closePage(id: string): Promise<void>;
 	resolveInput(input: string): string | null;
 	renderChrome(page: BrowserPageHandle): Promise<unknown>;
 	readonly profiles: BrowserReadableStore<{ profiles: BrowserProfile[]; defaultProfileId: string }>;

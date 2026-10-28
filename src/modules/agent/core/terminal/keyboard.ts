@@ -90,8 +90,18 @@ function baseCharacter(key: KeyDescription): string | undefined {
 	if (/^Key[A-Z]$/.test(key.code)) return key.code.slice(3).toLowerCase();
 	if (/^Digit[0-9]$/.test(key.code)) return key.code.slice(5);
 	const punctuation: Record<string, string> = {
-		Minus: '-', Equal: '=', BracketLeft: '[', BracketRight: ']', Backslash: '\\', Semicolon: ';',
-		Quote: "'", Backquote: '`', Comma: ',', Period: '.', Slash: '/', Space: ' ',
+		Minus: '-',
+		Equal: '=',
+		BracketLeft: '[',
+		BracketRight: ']',
+		Backslash: '\\',
+		Semicolon: ';',
+		Quote: "'",
+		Backquote: '`',
+		Comma: ',',
+		Period: '.',
+		Slash: '/',
+		Space: ' ',
 	};
 	return punctuation[key.code] ?? (key.key.length === 1 ? key.key.toLowerCase() : undefined);
 }
@@ -108,7 +118,8 @@ const SET1_BY_CODE =
 	'Numpad7 Numpad8 Numpad9 NumpadSubtract Numpad4 Numpad5 Numpad6 NumpadAdd Numpad1 Numpad2 Numpad3 Numpad0 ' +
 	'NumpadDecimal - - - F11 F12';
 /** Extended keys and the base key whose scan code they share. */
-const EXTENDED_AS = 'NumpadEnter=Enter ControlRight=ControlLeft NumpadDivide=Slash AltRight=AltLeft Home=Numpad7 ArrowUp=Numpad8 PageUp=Numpad9 ArrowLeft=Numpad4 ArrowRight=Numpad6 End=Numpad1 ArrowDown=Numpad2 PageDown=Numpad3 Insert=Numpad0 Delete=NumpadDecimal';
+const EXTENDED_AS =
+	'NumpadEnter=Enter ControlRight=ControlLeft NumpadDivide=Slash AltRight=AltLeft Home=Numpad7 ArrowUp=Numpad8 PageUp=Numpad9 ArrowLeft=Numpad4 ArrowRight=Numpad6 End=Numpad1 ArrowDown=Numpad2 PageDown=Numpad3 Insert=Numpad0 Delete=NumpadDecimal';
 const SCAN_CODES: Record<string, number> = {};
 SET1_BY_CODE.split(' ').forEach((name, index) => {
 	if (name !== '-') SCAN_CODES[name] = index + 1;
@@ -124,12 +135,51 @@ Object.assign(SCAN_CODES, { MetaLeft: 0x5b, MetaRight: 0x5c, ContextMenu: 0x5d }
 for (const name of ['MetaLeft', 'MetaRight', 'ContextMenu']) ENHANCED.add(name);
 
 const NAMED_VK: Record<string, number> = {
-	Backspace: 8, Tab: 9, Enter: 13, NumpadEnter: 13, ShiftLeft: 16, ShiftRight: 16, ControlLeft: 17, ControlRight: 17,
-	AltLeft: 18, AltRight: 18, Pause: 19, CapsLock: 20, Escape: 27, Space: 32, PageUp: 33, PageDown: 34, End: 35, Home: 36,
-	ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, Insert: 45, Delete: 46, MetaLeft: 91, MetaRight: 92,
-	ContextMenu: 93, NumpadMultiply: 106, NumpadAdd: 107, NumpadSubtract: 109, NumpadDecimal: 110, NumpadDivide: 111,
-	NumLock: 144, ScrollLock: 145, Semicolon: 186, Equal: 187, Comma: 188, Minus: 189, Period: 190, Slash: 191,
-	Backquote: 192, BracketLeft: 219, Backslash: 220, BracketRight: 221, Quote: 222,
+	Backspace: 8,
+	Tab: 9,
+	Enter: 13,
+	NumpadEnter: 13,
+	ShiftLeft: 16,
+	ShiftRight: 16,
+	ControlLeft: 17,
+	ControlRight: 17,
+	AltLeft: 18,
+	AltRight: 18,
+	Pause: 19,
+	CapsLock: 20,
+	Escape: 27,
+	Space: 32,
+	PageUp: 33,
+	PageDown: 34,
+	End: 35,
+	Home: 36,
+	ArrowLeft: 37,
+	ArrowUp: 38,
+	ArrowRight: 39,
+	ArrowDown: 40,
+	Insert: 45,
+	Delete: 46,
+	MetaLeft: 91,
+	MetaRight: 92,
+	ContextMenu: 93,
+	NumpadMultiply: 106,
+	NumpadAdd: 107,
+	NumpadSubtract: 109,
+	NumpadDecimal: 110,
+	NumpadDivide: 111,
+	NumLock: 144,
+	ScrollLock: 145,
+	Semicolon: 186,
+	Equal: 187,
+	Comma: 188,
+	Minus: 189,
+	Period: 190,
+	Slash: 191,
+	Backquote: 192,
+	BracketLeft: 219,
+	Backslash: 220,
+	BracketRight: 221,
+	Quote: 222,
 };
 
 /** Windows virtual-key code for a `KeyboardEvent.code` (0 when unknown). */
@@ -143,7 +193,13 @@ export function virtualKey(code: string): number {
 }
 
 // Control-key state bits (Windows KEY_EVENT_RECORD.dwControlKeyState).
-const RIGHT_ALT = 0x1, LEFT_ALT = 0x2, RIGHT_CTRL = 0x4, LEFT_CTRL = 0x8, SHIFT = 0x10, CAPS = 0x80, ENHANCED_KEY = 0x100;
+const RIGHT_ALT = 0x1,
+	LEFT_ALT = 0x2,
+	RIGHT_CTRL = 0x4,
+	LEFT_CTRL = 0x8,
+	SHIFT = 0x10,
+	CAPS = 0x80,
+	ENHANCED_KEY = 0x100;
 
 function unicodeOf(key: KeyDescription): number {
 	if (key.key.length === 1) {
@@ -173,12 +229,142 @@ export interface KeyboardModes {
 	win32: boolean;
 }
 
+export interface NamedKeyModes extends KeyboardModes {
+	readonly applicationCursorKeys: boolean;
+}
+
+/**
+ * Space-separated ASCII letters/digits or named keys, with unique Ctrl/Alt/Shift prefixes (e.g. Ctrl+C).
+ * Up to 4096 characters / 256 presses. Unsupported legacy combinations reject the whole operation.
+ * Uses the GUI's protocol encoders; win32 presses include their matching release.
+ * An unmodified uppercase letter implies Shift; prefixed letter names are case-insensitive physical keys.
+ */
+export function encodeNamedKeys(keys: string, modes: NamedKeyModes): string {
+	if (!keys || keys.length > 4096 || /[^\x20-\x7e]/.test(keys)) throw new NamedKeyError();
+	const tokens = keys.trim().split(/ +/);
+	if (!tokens[0] || tokens.length > 256) throw new NamedKeyError();
+	return tokens
+		.map(parseNamedKey)
+		.map((key) => {
+			const encoded = encodeKey(key, modes, false);
+			if (modes.win32) return encoded! + encodeKey({ ...key, type: 'keyup' }, modes, false)!;
+			return encoded ?? encodeLegacyKey(key, modes.applicationCursorKeys);
+		})
+		.join('');
+}
+
+export class NamedKeyError extends Error {
+	readonly code = 'INVALID_ARGUMENT';
+	constructor() {
+		super('INVALID_ARGUMENT');
+		this.name = 'NamedKeyError';
+	}
+}
+
+const NAMED_KEYS = new Set([
+	'Enter',
+	'Tab',
+	'Backspace',
+	'Escape',
+	'Space',
+	'ArrowUp',
+	'ArrowDown',
+	'ArrowLeft',
+	'ArrowRight',
+	'Home',
+	'End',
+	'Insert',
+	'Delete',
+	'PageUp',
+	'PageDown',
+	...Array.from({ length: 12 }, (_, index) => `F${index + 1}`),
+]);
+
+function parseNamedKey(token: string): KeyDescription {
+	const parts = token.split('+');
+	const name = parts.pop() ?? '';
+	if (
+		(!NAMED_KEYS.has(name) && !/^[a-z0-9]$/i.test(name)) ||
+		new Set(parts).size !== parts.length ||
+		parts.some((part) => !['Ctrl', 'Alt', 'Shift'].includes(part))
+	)
+		throw new NamedKeyError();
+	const shift = parts.includes('Shift') || (!parts.length && /^[A-Z]$/.test(name));
+	const code = /^[a-z]$/i.test(name) ? `Key${name.toUpperCase()}` : /^[0-9]$/.test(name) ? `Digit${name}` : name;
+	const key =
+		name === 'Space'
+			? ' '
+			: /^[a-z]$/i.test(name)
+				? shift
+					? name.toUpperCase()
+					: name.toLowerCase()
+				: /^[0-9]$/.test(name) && shift
+					? ')!@#$%^&*('[Number(name)]!
+					: name;
+	return { type: 'keydown', key, code, shift, ctrl: parts.includes('Ctrl'), alt: parts.includes('Alt'), meta: false };
+}
+
+function encodeLegacyKey(key: KeyDescription, applicationCursorKeys: boolean): string {
+	const modifiers = kittyModifiers(key);
+	const nav: Record<string, string> = {
+		ArrowUp: 'A',
+		ArrowDown: 'B',
+		ArrowRight: 'C',
+		ArrowLeft: 'D',
+		Home: 'H',
+		End: 'F',
+	};
+	if (nav[key.key])
+		return modifiers === 1
+			? `\x1b${applicationCursorKeys ? 'O' : '['}${nav[key.key]}`
+			: `\x1b[1;${modifiers}${nav[key.key]}`;
+	const tilde: Record<string, number> = {
+		Insert: 2,
+		Delete: 3,
+		PageUp: 5,
+		PageDown: 6,
+		F5: 15,
+		F6: 17,
+		F7: 18,
+		F8: 19,
+		F9: 20,
+		F10: 21,
+		F11: 23,
+		F12: 24,
+	};
+	if (tilde[key.key]) return `\x1b[${tilde[key.key]}${modifiers === 1 ? '' : `;${modifiers}`}~`;
+	if (/^F[1-4]$/.test(key.key)) {
+		const final = 'PQRS'[Number(key.key.slice(1)) - 1];
+		return modifiers === 1 ? `\x1bO${final}` : `\x1b[1;${modifiers}${final}`;
+	}
+	let text: string;
+	if (key.key.length === 1) {
+		if (key.shift && key.key === ' ') throw new NamedKeyError();
+		if (key.ctrl && (key.shift || !/^[a-z ]$/i.test(key.key))) throw new NamedKeyError();
+		text = key.ctrl ? String.fromCharCode(key.key === ' ' ? 0 : key.key.charCodeAt(0) & 0x1f) : key.key;
+	} else if (key.key === 'Enter') {
+		if (key.ctrl || (key.shift && key.alt)) throw new NamedKeyError();
+		text = key.shift ? '\x1b\r' : '\r';
+	} else if (key.key === 'Tab') {
+		if (key.ctrl || (key.shift && key.alt)) throw new NamedKeyError();
+		text = key.shift ? '\x1b[Z' : '\t';
+	} else if (key.key === 'Backspace') {
+		if (key.shift) throw new NamedKeyError();
+		text = key.ctrl ? '\b' : '\x7f';
+	} else if (key.key === 'Escape') {
+		if (key.ctrl || key.shift) throw new NamedKeyError();
+		text = '\x1b';
+	} else throw new NamedKeyError();
+	return (key.alt ? '\x1b' : '') + text;
+}
+
 /**
  * What to send for a key, or undefined to let the terminal's default encoder handle it. Input-method
  * composition is never intercepted.
  */
 export function encodeKey(key: KeyDescription, modes: KeyboardModes, composing: boolean): string | undefined {
-	if (composing || key.key === 'Process' || key.key === 'Dead' || key.key === 'Unidentified') return undefined;
+	if (composing || key.keyCode === 229 || key.key === 'Process' || key.key === 'Dead' || key.key === 'Unidentified')
+		return undefined;
 	if (modes.win32) {
 		// Modifier-only and printable keys are both reported; the console layer builds text from them.
 		return encodeWin32(key);
@@ -186,6 +372,7 @@ export function encodeKey(key: KeyDescription, modes: KeyboardModes, composing: 
 	const kitty = encodeKitty(key, modes.kitty);
 	if (kitty !== undefined) return kitty;
 	// Without either protocol, Shift+Enter is sent as ESC CR, which agent CLIs read as a newline.
-	if (key.type === 'keydown' && key.key === 'Enter' && key.shift && !key.ctrl && !key.alt && !key.meta) return '\x1b\r';
+	if (key.type === 'keydown' && key.key === 'Enter' && key.shift && !key.ctrl && !key.alt && !key.meta)
+		return '\x1b\r';
 	return undefined;
 }

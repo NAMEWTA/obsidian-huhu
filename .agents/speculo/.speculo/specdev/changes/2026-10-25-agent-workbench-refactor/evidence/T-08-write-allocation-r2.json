@@ -1,0 +1,162 @@
+{
+  "A": [
+    "src/modules/agent/core/control/context.ts",
+    "src/modules/agent/core/control/terminal-coordination.ts",
+    "src/modules/agent/services/control/commands.ts",
+    "src/modules/agent/services/control/router.ts",
+    "src/modules/agent/services/control/terminal-coordination.ts",
+    "src/modules/agent/services/control/commands.test.ts",
+    "src/modules/agent/services/control/router.test.ts",
+    "src/modules/agent/services/control/terminal-coordination.test.ts",
+    "src/modules/agent/services/control/control-coordination-native.test.ts",
+    "src/modules/agent/services/terminal/session.ts",
+    "src/modules/agent/services/terminal/sessions.ts",
+    "src/modules/agent/services/terminal/session-coordination.test.ts",
+    "src/modules/agent/services/terminal/sessions-control.test.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/services/controller-control.test.ts",
+    "src/modules/agent/platform/desktop/agents/program-identity.ts",
+    "src/modules/agent/platform/desktop/agents/program-identity.test.ts",
+    "src/modules/agent/platform/desktop/agents/pi-artifact-profiles.json",
+    "src/modules/agent/services/launch/launcher.ts",
+    "src/modules/agent/services/launch/launcher-space.test.ts",
+    "src/modules/agent/core/terminal/keyboard.ts",
+    "src/modules/agent/core/terminal/keyboard.test.ts",
+    "src/modules/agent/i18n.ts",
+    "docs/agent-workbench-cli.md",
+    "src/modules/agent/ui/control/TerminalControlPanel.tsx",
+    "src/modules/agent/ui/control/TerminalControlPanel.dom.test.tsx",
+    "src/modules/agent/ui/AgentWorkspacePage.tsx",
+    "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+    "src/modules/agent/services/workspace-view.ts",
+    "src/modules/agent/services/workspace-view.test.ts",
+    "src/modules/agent/ui/tabs/TabStrip.tsx",
+    "scripts/obsidian-acceptance/agent-workbench-coordination.mjs",
+    "src/app/workbench/compose-workbench.ts",
+    "src/app/workbench/agent-contribution.test.ts"
+  ],
+  "B": [
+    "src/host/desktop/native/host.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/host.test.ts",
+    "src/host/desktop/native/helper-stream.test.ts",
+    "src/host/desktop/native/helper-control.test.ts",
+    "src/host/desktop/native/host-control.test.ts",
+    "src/host/desktop/native/host-control.integration.test.ts",
+    "src/host/desktop/native/helper-editor.test.ts",
+    "src/host/desktop/native/host-editor.integration.test.ts",
+    "src/shared/native/lazy-host.test.ts",
+    "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+    "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+    "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+    "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+    "scripts/verify-pi-editor.mjs"
+  ],
+  "Root": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "THIRD-PARTY-NOTICES.md",
+    "src/modules/agent/services/terminal/sessions-cancellation.test.ts"
+  ],
+  "C": [
+    "src/shared/native/control-schema.json",
+    "scripts/generate-control-protocol.mjs",
+    "src/shared/native/control-wire.generated.ts",
+    "src/shared/native/control-wire.ts",
+    "src/shared/native/control-wire.test.ts",
+    "test/fixtures/native/control-v1.json",
+    "test/native/control-protocol.test.ts",
+    "src/shared/native/host.ts",
+    "src/shared/native/input.ts",
+    "src/shared/native/input.test.ts",
+    "native/pty-server/src/lib.rs",
+    "native/pty-server/src/main.rs",
+    "native/pty-server/src/frame.rs",
+    "native/pty-server/src/session.rs",
+    "native/pty-server/src/outbox.rs",
+    "native/pty-server/src/foreground.rs",
+    "native/pty-server/src/editor.rs",
+    "native/pty-server/src/control/mod.rs",
+    "native/pty-server/src/control/wire_generated.rs",
+    "native/pty-server/src/control/codec.rs",
+    "native/pty-server/src/control/cli.rs",
+    "native/pty-server/src/control/client.rs",
+    "native/pty-server/src/control/broker.rs",
+    "native/pty-server/src/control/ipc.rs",
+    "native/pty-server/src/control/unix.rs",
+    "native/pty-server/src/control/windows.rs",
+    "native/pty-server/src/control/locator.rs",
+    "native/pty-server/tests/control_protocol.rs",
+    "native/pty-server/tests/control.rs",
+    "native/pty-server/tests/control_outbox.rs",
+    "native/pty-server/tests/stdio.rs",
+    "native/pty-server/tests/foreground.rs",
+    "native/pty-server/tests/editor.rs"
+  ],
+  "total": 87,
+  "goal_revision": "GP-028",
+  "map_revision": 29,
+  "scope": "T08 only; source writers unlocked only by actual stage dispatch after DoR",
+  "roles": {
+    "A": "codex:/root/implement_t08_profile; F2/F3/F4 only as narrow repair dispatch",
+    "B": "codex:/root/prepare_t08_full_cli; F1 only as narrow repair dispatch",
+    "C": "codex:/root/implement_t01; remains SOURCE STOPPED",
+    "Root": "codex:/root; formal records, generated outputs and measured budget"
+  },
+  "stage_one": {
+    "A": [
+      "src/modules/agent/core/control/context.ts",
+      "src/modules/agent/core/control/terminal-coordination.ts",
+      "src/modules/agent/services/control/terminal-coordination.ts",
+      "src/modules/agent/services/control/terminal-coordination.test.ts",
+      "src/modules/agent/services/terminal/session.ts",
+      "src/modules/agent/services/terminal/session-coordination.test.ts",
+      "src/modules/agent/core/terminal/keyboard.ts",
+      "src/modules/agent/core/terminal/keyboard.test.ts"
+    ],
+    "C": "canonical readOnly/state and shared editor port first; native implementation only after Root actual interface readback",
+    "B": "STOP until C actual shared port/codec readback"
+  },
+  "revision": "r2-independent-review-repairs",
+  "prior": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-write-allocation-r1.json",
+    "sha256": "77ed28e2fbf19d771aba339e561e12f10066e4d334a6a223b16e876cb392e40b"
+  },
+  "root_addendum": {
+    "utc": "2026-10-26T09:02:00.726190+00:00",
+    "owner": "codex:/root",
+    "reason": "Sessions now reaches automation-hooks in the standalone cancellation esbuild fixture; Root owns the minimal Obsidian alias fix. A32/B15/C33 unchanged.",
+    "preimage": {
+      "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+      "sha256": "db65040d334382e42dd0e7a90ef4ebeff7f22f518d97a20f3e3323b6bd0e3b19",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-fixture-closure/db65040d334382e42dd0e7a90ef4ebeff7f22f518d97a20f3e3323b6bd0e3b19.raw",
+      "bytes": 6274,
+      "mode": "0o600"
+    },
+    "observed_failure": "/tmp/huhu-t08-a-stage2-20261026T070746Z/business-final/output.log"
+  },
+  "review_repair_addendum": {
+    "utc": "2026-10-26T10:32:54.933551+00:00",
+    "owner": "codex:/root",
+    "finding": "011 F3 real shell whitelist drops agentControl false",
+    "extra_paths": [
+      "src/app/workbench/compose-workbench.ts",
+      "src/app/workbench/agent-contribution.test.ts"
+    ],
+    "before": [
+      {
+        "path": "src/app/workbench/compose-workbench.ts",
+        "sha256": "1d6d9c8174096646f5d2dda49f645bbc1f3a66b28018df697997cffb785e452e",
+        "bytes": 21918,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/review-repair-plan/1d6d9c8174096646f5d2dda49f645bbc1f3a66b28018df697997cffb785e452e.raw"
+      },
+      {
+        "path": "src/app/workbench/agent-contribution.test.ts",
+        "missing": true
+      }
+    ],
+    "scope": "Only terminal contribution stateKeys and actual compose→shell sanitizer→workspace view regression. No new shell layout/behavior or product contract. A now34/B15/C33/Root5; each later TASK unlocks only its narrow subset."
+  }
+}

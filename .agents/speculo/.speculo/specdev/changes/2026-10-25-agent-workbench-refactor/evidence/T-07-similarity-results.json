@@ -1,0 +1,784 @@
+{
+	"k": 25,
+	"window": 20,
+	"minimum": 0,
+	"ours": [
+		"/tmp/huhu-t07-root-integration2-similarity-source"
+	],
+	"theirs": [
+		"stablyai-orca-464bd5a",
+		"huhu-herdr-reference-lKa8rI0L"
+	],
+	"results": [
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/main.rs",
+			"tokens": 1979,
+			"raw": {
+				"share": 0.017,
+				"match": "repo/src/app/custom_commands.rs",
+				"run": 53
+			},
+			"normalized": {
+				"share": 0.016,
+				"match": "repo/src/app/api/plugins/manifest.rs",
+				"run": 50
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/paging.test.ts",
+			"tokens": 781,
+			"raw": {
+				"share": 0.013,
+				"match": "src/renderer/src/lib/pane-manager/terminal-reflow-scroll-anchor.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.042,
+				"match": "cloud/apps/relay/src/regional-host-drain-app.test.ts",
+				"run": 39
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/control-wire.test.ts",
+			"tokens": 1169,
+			"raw": {
+				"share": 0.009,
+				"match": "src/main/daemon/terminal-host-options.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "cloud/dev/scripts/relay-load-run-lifecycle.test.mjs",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/host.ts",
+			"tokens": 1100,
+			"raw": {
+				"share": 0.009,
+				"match": "src/renderer/src/components/browser-webauthn-account-dialog.tsx",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/terminal/sessions-control.test.ts",
+			"tokens": 1469,
+			"raw": {
+				"share": 0.008,
+				"match": "mobile/src/worktree/agent-row-lineage-parity.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.032,
+				"match": "src/renderer/src/store/slices/ui-page-navigation.test.ts",
+				"run": 45
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/spaces/space-service-control.test.ts",
+			"tokens": 1339,
+			"raw": {
+				"share": 0.008,
+				"match": "repo/src/client/input/windows_vti.rs",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.017,
+				"match": "src/main/browser/browser-client-page-command-integration.test.ts",
+				"run": 31
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/platform/desktop/control/environment.ts",
+			"tokens": 1359,
+			"raw": {
+				"share": 0.008,
+				"match": "src/renderer/src/components/sidebar/worktree-manual-order-ranks.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.008,
+				"match": "cloud/apps/relay/src/relay-server.ts",
+				"run": 29
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/client.rs",
+			"tokens": 1417,
+			"raw": {
+				"share": 0.007,
+				"match": "src/renderer/src/components/right-sidebar/PortsPanel.test.tsx",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.008,
+				"match": "src/shared/promise-settlement-waiters.ts",
+				"run": 25
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/unix.rs",
+			"tokens": 1891,
+			"raw": {
+				"share": 0.006,
+				"match": "repo/crates/ghostty-vt/src/pane_graphics_files.rs",
+				"run": 29
+			},
+			"normalized": {
+				"share": 0.026,
+				"match": "repo/src/platform/unix_common.rs",
+				"run": 50
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/module.ts",
+			"tokens": 1914,
+			"raw": {
+				"share": 0.006,
+				"match": "src/main/ipc/worktree-head-identity-refresh.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "mobile/src/host-screen/host-screen-action-error.test.tsx",
+				"run": 37
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/scripts/generate-control-protocol.mjs",
+			"tokens": 2400,
+			"raw": {
+				"share": 0.005,
+				"match": "src/renderer/src/store/slices/runtime-status.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "src/main/browser/cdp-keyboard-us-layout.ts",
+				"run": 38
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/frames.ts",
+			"tokens": 2303,
+			"raw": {
+				"share": 0.005,
+				"match": "src/renderer/src/components/sidebar/visible-worktrees.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.005,
+				"match": "src/main/gitlab/glab-api-response.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/tests/control_outbox.rs",
+			"tokens": 3252,
+			"raw": {
+				"share": 0.004,
+				"match": "src/main/claude/claude-structured-journal-translation.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.018,
+				"match": "repo/src/api/server.rs",
+				"run": 36
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/controller-activity.test.ts",
+			"tokens": 2567,
+			"raw": {
+				"share": 0.004,
+				"match": "src/wsl-guest/dispatcher.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "src/main/codex/codex-structured-prompt-ownership.test.ts",
+				"run": 32
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/cli.rs",
+			"tokens": 3073,
+			"raw": {
+				"share": 0.004,
+				"match": "src/renderer/src/lib/primary-selection-paste.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.007,
+				"match": "repo/src/plugin_paths.rs",
+				"run": 39
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/frames.test.ts",
+			"tokens": 2549,
+			"raw": {
+				"share": 0.004,
+				"match": "src/shared/automation-cron-dialect.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "cloud/apps/relay/src/host-session-registry.ts",
+				"run": 28
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/codec.rs",
+			"tokens": 2373,
+			"raw": {
+				"share": 0.004,
+				"match": "src/renderer/src/runtime/remote-server-update-coordinator.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/wire_generated.rs",
+			"tokens": 4159,
+			"raw": {
+				"share": 0.003,
+				"match": "src/renderer/src/components/sidebar/WorktreeCardMeta.tsx",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.014,
+				"match": "repo/crates/ghostty-vt/src/bindings.rs",
+				"run": 218
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/tests/control.rs",
+			"tokens": 7889,
+			"raw": {
+				"share": 0.003,
+				"match": "repo/tests/remote_attach.rs",
+				"run": 43
+			},
+			"normalized": {
+				"share": 0.01,
+				"match": "repo/src/platform/unix_image_files.rs",
+				"run": 49
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/commands.ts",
+			"tokens": 3185,
+			"raw": {
+				"share": 0.003,
+				"match": "src/renderer/src/lib/agent-status.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.007,
+				"match": "cloud/apps/relay/src/database.test.ts",
+				"run": 42
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/broker.rs",
+			"tokens": 3447,
+			"raw": {
+				"share": 0.003,
+				"match": "src/main/ssh/ssh-relay-sentinel.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "repo/src/server/autodetect.rs",
+				"run": 52
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/controller-control.test.ts",
+			"tokens": 3297,
+			"raw": {
+				"share": 0.003,
+				"match": "src/wsl-guest/dispatcher.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "mobile/src/host-screen/host-show-pinned-in-groups.test.ts",
+				"run": 31
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/control-native.test.ts",
+			"tokens": 3417,
+			"raw": {
+				"share": 0.003,
+				"match": "src/renderer/src/components/editor/rich-markdown-table-enter.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "src/main/runtime/rpc/methods/client-ui.test.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/i18n.ts",
+			"tokens": 4921,
+			"raw": {
+				"share": 0.002,
+				"match": "src/main/ipc/worktree-git-common-watch.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.333,
+				"match": "cloud/apps/relay-ops/src/pre-drain-sample.test.ts",
+				"run": 2453
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/control-wire.generated.ts",
+			"tokens": 7105,
+			"raw": {
+				"share": 0.002,
+				"match": "mobile/src/mobile-web-shell/shell-switch-decision.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.022,
+				"match": "cloud/dev/scripts/relay-recovery-wave-gate.mjs",
+				"run": 109
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/outbox.rs",
+			"tokens": 9383,
+			"raw": {
+				"share": 0.002,
+				"match": "repo/src/platform/windows/clipboard_image.rs",
+				"run": 47
+			},
+			"normalized": {
+				"share": 0.008,
+				"match": "repo/src/protocol/wire.rs",
+				"run": 49
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/controller-managed-runtimes.test.ts",
+			"tokens": 4574,
+			"raw": {
+				"share": 0.002,
+				"match": "src/wsl-guest/dispatcher.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "mobile/src/host-screen/host-show-pinned-in-groups.test.ts",
+				"run": 31
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/control-wire.ts",
+			"tokens": 4935,
+			"raw": {
+				"share": 0.002,
+				"match": "src/renderer/src/lib/monaco-languages/register-jsonl.ts",
+				"run": 44
+			},
+			"normalized": {
+				"share": 0.002,
+				"match": "src/renderer/src/lib/monaco-languages/register-jsonl.ts",
+				"run": 44
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/terminal/sessions.ts",
+			"tokens": 7472,
+			"raw": {
+				"share": 0.001,
+				"match": "config/vitest.config.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "src/main/daemon/terminal-host-session-create.ts",
+				"run": 34
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/spaces/space-service.ts",
+			"tokens": 8067,
+			"raw": {
+				"share": 0.001,
+				"match": "src/main/runtime/orca-runtime-terminal-retirement.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "src/renderer/src/components/terminal-pane/terminal-pane-pane-created.ts",
+				"run": 50
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/host/desktop/native/helper.ts",
+			"tokens": 10726,
+			"raw": {
+				"share": 0.001,
+				"match": "src/renderer/src/components/editor/csv/csv-text-document.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "src/main/runtime/push/push-gateway-session.ts",
+				"run": 33
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/controller.ts",
+			"tokens": 11460,
+			"raw": {
+				"share": 0.001,
+				"match": "src/shared/structured-agent-session-reducer.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "mobile/src/transport/stable-logical-rpc-client.ts",
+				"run": 45
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/host/desktop/native/host.ts",
+			"tokens": 8719,
+			"raw": {
+				"share": 0.001,
+				"match": "src/renderer/src/components/status-bar/workspace-space-breakdown-list.tsx",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.002,
+				"match": "src/main/rate-limits/service/service-fetch-targets.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/workspace-service.ts",
+			"tokens": 17535,
+			"raw": {
+				"share": 0.001,
+				"match": "src/shared/runtime-client-events.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.002,
+				"match": "src/main/claude-usage/usage-aggregation.ts",
+				"run": 46
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/platform/desktop/control/environment.test.ts",
+			"tokens": 960,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.021,
+				"match": "cloud/apps/relay/src/relay-observability.test.ts",
+				"run": 29
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/host/desktop/native/host-control.integration.test.ts",
+			"tokens": 664,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.019,
+				"match": "src/renderer/src/lib/ephemeral-vm-worktree-creation.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/paging.ts",
+			"tokens": 1540,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.014,
+				"match": "src/renderer/src/components/sidebar/WorktreeMetaDialog.test.tsx",
+				"run": 33
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/router.ts",
+			"tokens": 1569,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.014,
+				"match": "cloud/apps/relay/src/cell-seat-log.ts",
+				"run": 38
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/ipc.rs",
+			"tokens": 1038,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.012,
+				"match": "src/main/runtime/rpc/methods/terminal/terminal-subscribe-binary.ts",
+				"run": 25
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/locator.rs",
+			"tokens": 1843,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.011,
+				"match": "repo/src/client/endpoint/catalog.rs",
+				"run": 32
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/windows.rs",
+			"tokens": 3212,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.01,
+				"match": "repo/src/ipc.rs",
+				"run": 72
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/scripts/obsidian-acceptance/agent-workbench-control.mjs",
+			"tokens": 1086,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "cloud/apps/relay-ops/src/incident-monitor-cli.ts",
+				"run": 56
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/scripts/third-party-notices.mjs",
+			"tokens": 1200,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "src/main/claude-usage/claude-usage-report-aggregation.ts",
+				"run": 33
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/host/desktop/native/helper-control.test.ts",
+			"tokens": 2655,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "mobile/src/session/use-mobile-structured-agent-session.test.tsx",
+				"run": 28
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/commands.test.ts",
+			"tokens": 1829,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "src/main/codex-accounts/legacy-shared-auth-migration.test.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/router-foreground.dom.test.tsx",
+			"tokens": 1722,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "src/main/codex-accounts/legacy-shared-auth-migration.test.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/control/router.test.ts",
+			"tokens": 3094,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "src/main/codex-accounts/legacy-shared-auth-migration.test.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/services/workspace-service-control.test.ts",
+			"tokens": 2862,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "src/main/codex-accounts/legacy-shared-auth-migration.test.ts",
+				"run": 27
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/host/desktop/native/host-control.test.ts",
+			"tokens": 4486,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "mobile/src/mobile-web-shell/bridge/bridge-page-client-identity.test.ts",
+				"run": 26
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/bin/huhu.rs",
+			"tokens": 213,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/src/control/mod.rs",
+			"tokens": 50,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/native/pty-server/tests/control_protocol.rs",
+			"tokens": 348,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/modules/agent/core/control/context.ts",
+			"tokens": 102,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/src/shared/native/lazy-host.test.ts",
+			"tokens": 543,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t07-root-integration2-similarity-source/test/native/control-protocol.test.ts",
+			"tokens": 539,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			}
+		}
+	]
+}

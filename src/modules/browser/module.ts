@@ -1,6 +1,6 @@
 import { Notice } from 'obsidian';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
-import { AGENT_SESSIONS, AGENT_BROWSER_TABS, NATIVE_HELPER_SQLITE } from '../agent/api';
+import { AGENT_SESSIONS, AGENT_BROWSER_TABS } from '../agent/api';
 import { BROWSER_HOST, BROWSER_OPEN, BROWSER_PROFILES, type BrowserOpener } from './api';
 import { BrowserEngine } from './services/host';
 import { observeNoteLinks } from './platform/note-links';
@@ -8,20 +8,23 @@ import { browserSettings } from './settings';
 import { registerMessages, t } from '../../shared/i18n';
 import { messages as shared } from '../../shared/i18n/lazy/browser';
 import { messages } from './i18n';
+import type { SharedBrowserTab, SharedWorkspaceOwner } from '../../app/contracts/shared-workspace';
 registerMessages(shared);
 registerMessages(messages);
 export default function createBrowserModule(context: ModuleContext): ModuleInstance {
 	const settings = context.settings.bind('browser', browserSettings);
 	let host: BrowserEngine | undefined;
+	let sharedWorkspace: SharedWorkspaceOwner | undefined;
 	const current = () => {
 		if (!host) throw new Error(t('browser.browser_disabled'));
 		return host;
 	};
 	const open: BrowserOpener = {
 		open: async (request) => {
-			const lease = await context.services.acquire(AGENT_BROWSER_TABS);
-			if (!lease) throw new Error(t('browser.browser_agent_unavailable'));
-			return lease.value.open(request.url, request.profileId, request.reuse);
+			const pageId = await current().workspace.open(request.url, request.profileId, request.reuse);
+			if (typeof context.shell.open === 'function')
+				await context.shell.open({ feature: 'browser', resourceId: pageId });
+			return pageId;
 		},
 		show: async (request) => {
 			try {
@@ -51,9 +54,58 @@ export default function createBrowserModule(context: ModuleContext): ModuleInsta
 					]
 				: [];
 		},
+		pages: {
+			browser: async () => {
+				const { createBrowserPage } = await import('./ui/workbench-page');
+				if (!sharedWorkspace) throw new Error(t('browser.browser_agent_unavailable'));
+				return async (ctx, target) => createBrowserPage(current(), sharedWorkspace!.browser, ctx, target);
+			},
+		},
 		settingsPage: async () => (await import('./ui/settings-page')).browserSettingsPage(current()),
 		async activate() {
 			if (!context.env.desktop) return;
+			sharedWorkspace = context.sharedWorkspace ?? (await context.ensureSharedWorkspace?.());
+			const shared = sharedWorkspace;
+			if (shared) await shared.ready;
+			const workspace = shared
+				? {
+						open: async (url?: string, profileId?: string, reuse?: boolean) => {
+							await shared.ready;
+							const page = host?.createPage({ url, profileId });
+							if (!page) throw new Error(t('browser.browser_disabled'));
+							const tab: SharedBrowserTab = {
+								id: `tab-${crypto.randomUUID()}`,
+								pageId: page.id,
+								title: page.title,
+								url: page.url,
+								profileId: page.profileId,
+								zoom: 1,
+								createdAt: Date.now(),
+							};
+							try {
+								const pageId = await shared.browser.open(tab, { reuse });
+								if (pageId !== page.id) host?.disposePage(page.id);
+								return pageId;
+							} catch (error) {
+								host?.disposePage(page.id);
+								throw error;
+							}
+						},
+						close: async (id: string) => {
+							await shared.browser.close(id);
+							host?.disposePage(id);
+						},
+						list: () => shared.browser.list(),
+						activate: (id: string) => shared.browser.activate(id),
+					}
+				: {
+						// Production always provides the shared workspace. The old fallback that reached the Agent module's
+						// `agent.browser-tabs` service had no remaining caller; without the shared owner pages are unavailable.
+						open: () => Promise.reject(new Error(t('browser.browser_agent_unavailable'))),
+						list: () => [],
+						close: async () => {},
+						activate: () => {},
+					};
 			host = new BrowserEngine(
 				context.app,
 				settings,
@@ -71,25 +123,14 @@ export default function createBrowserModule(context: ModuleContext): ModuleInsta
 						await sessions.attachMaterial(id, { title: t('browser.contextMaterial'), text, files });
 					},
 				},
-				{
-					open: (url, profileId, reuse) => open.open({ url, profileId, reuse }),
-					list: () => context.services.peek(AGENT_BROWSER_TABS)?.list() ?? [],
-					close: async (id) => {
-						await context.services.peek(AGENT_BROWSER_TABS)?.close(id);
-					},
-					activate: (id) => context.services.peek(AGENT_BROWSER_TABS)?.activate(id),
-				},
-				async () => {
-					const lease = await context.services.acquire(NATIVE_HELPER_SQLITE);
-					if (!lease) throw new Error(t('browser.browser_agent_unavailable'));
-					return { readCookies: (path, kind, signal) => lease.value.readCookies(path, kind, signal) };
-				},
+				workspace,
+				context.native,
 				async (page) => (await import('./ui/chrome-loader')).browserChrome(current(), page),
 				() => {
 					void context.shell.open({ feature: 'settings', section: 'browser' });
 				},
 			);
-			await host.ready;
+			await Promise.all([host.ready, shared?.ready]);
 			context.lifetime.register(
 				observeNoteLinks(
 					context.app.workspace,

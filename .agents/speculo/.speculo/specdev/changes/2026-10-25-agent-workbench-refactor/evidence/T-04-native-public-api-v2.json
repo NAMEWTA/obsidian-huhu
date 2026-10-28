@@ -1,0 +1,35 @@
+{
+  "observedAtUtc": "2026-10-25T09:40:09.406669+00:00",
+  "publicContractFrozen": true,
+  "exports": "host.ts reexports TerminationEvidence/RootEvidence/TerminationReason/NativeTerminationNotice and NATIVE_TERMINATION_TIMEOUT_MS=8000/NATIVE_TERMINATION_OBSERVE_MS=10000; NativeEvents.termination?; NativeConnection.terminalTermination?:1/requestStop?; NativeReleaseError(outcomes). termination.ts exports parseTerminationEvidence/parseTerminationNotice/terminationConfirmed",
+  "files": [
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "f1521198d3e5574a544594437f3356c5cb07c3f4185e2693fd85f45ff7012764",
+      "bytes": 3324
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "sha256": "945723a552a262d284024f7789c73aff3c5a671568afd55a04964bd0ac03c687",
+      "bytes": 5085
+    },
+    {
+      "path": "src/shared/native/termination.test.ts",
+      "sha256": "c71410e533ddcf0fe734cb678d6dc6dbf4b5619300292e0599fe87655a57370e",
+      "bytes": 637
+    },
+    {
+      "path": "test/fixtures/native/terminal-termination-v1.json",
+      "sha256": "18194c49e178a4e1cb17f0f918cc655b4a545756e9729e6c3d1c26a61829a28a",
+      "bytes": 22923
+    }
+  ],
+  "note": "Root 回读原始红绿输出、全部 codec/test 与新增4个fixture，核对5份当前字节和两组原始记录/日志 SHA；公开签名、strict codec 与35项fixture冻结供A消费。此为局部接缝冻结，不代表T04/native实现已完成。原v1与原失败保留。",
+  "leadVerifiedAtUtc": "2026-10-25T09:46:13.047195+00:00",
+  "producerOriginalObservedAtUtc": "2026-10-25T09:40:09.406669+00:00"
+}

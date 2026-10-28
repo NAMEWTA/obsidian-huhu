@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "purpose": "T-03 fixed working-tree independent standards and specification review",
+  "goal_revision": "GP-013",
+  "map_revision": 14,
+  "ticket": "ticket/03-managed-runtimes.md",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "input": "evidence/T-03-review-input.md",
+  "input_sha256": "db7cb4065ab35568e1159321b71be2d5524bbb4d87c588e5d25d1fa867335223",
+  "scope_sha256": "d7c840741599f8c00465d0df59d860ad86f2d44e05e8b69c7108048d573c7343",
+  "files": 29,
+  "implementers": [
+    "codex:/root/prepare_t03",
+    "codex:/root/prepare_t02",
+    "codex:/root/implement_t01",
+    "codex:/root"
+  ],
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "source_write_allowed": false,
+  "allowed_artifacts": [
+    "/tmp/huhu-t03-review-*"
+  ],
+  "report": "/tmp/huhu-t03-review-round1.md",
+  "required_axes": [
+    "standards",
+    "specification"
+  ],
+  "work": ".agents/speculo/workflows/specdev/common/skills/code-review/SKILL.md",
+  "checks": "evidence/T-03-checks-root.json",
+  "known_limitation": "真实Obsidian/Provider/五平台E2E用户负责；全库docs仅范围外Bot6处原锚点失败。",
+  "stop": "Return original report/findings/probes/log hashes and SOURCE STOPPED; no source fixes, formal evidence/state, generated outputs, git, network writes or subdelegation",
+  "prepared_at": "2026-10-25T08:39:12.046987+00:00",
+  "actual_tool": "collaboration.spawn_agent",
+  "actual_handle": "/root/review_t03",
+  "dispatched": true,
+  "recorded_at": "2026-10-25T08:41:51.191133+00:00"
+}

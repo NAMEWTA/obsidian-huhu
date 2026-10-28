@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-26T05:46:14.920344+00:00",
+  "tool": "collaboration.spawn_agent",
+  "returned_task_name": "/root/prepare_t08_full_cli",
+  "requested_model": "gpt-6.1-sol",
+  "requested_reasoning_effort": "xhigh",
+  "fork_turns": "none",
+  "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/004-t08-full-cli-proof/TASK.md",
+  "task_sha256": "016a66dc138940e51b5d88df0aebce79274d5a7472170613b49441233718d970",
+  "input": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-full-cli-proof-input.json",
+  "input_sha256": "db9246df4de8e0120193eec2741b921f618adbb4684d098886c9e62f2e5df541",
+  "dispatch_validation": {
+    "stage": "dispatch",
+    "actual_exit": 0,
+    "errors": [],
+    "warnings": []
+  },
+  "product_writes": [],
+  "boundary": "Read-only test observation. Official CLI/real AgentSession with controlled loopback model endpoint; not T08 authenticated-editor implementation, real Provider or E2E acceptance."
+}

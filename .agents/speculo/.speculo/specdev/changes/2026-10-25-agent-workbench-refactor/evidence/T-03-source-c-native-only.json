@@ -1,0 +1,16 @@
+{
+  "task": "T-03 C owned candidate manifest normalized by Root",
+  "actual_agent": "/root/implement_t01",
+  "original_observation_manifest": "evidence/T-03-source-c-observation.json",
+  "original_sha256": "600865200003514558d92991ba9e6e2a4c2f5d023a23058f601ae1a11d6db7e4",
+  "normalization": "Original files contains both sole owned write and explicitly read-only active observations. This file selects only onlyRepositoryWrite for final production review scope; original untouched.",
+  "writer_stopped": true,
+  "files": [
+    {
+      "path": "src/modules/agent/services/workspace-service-native.test.ts",
+      "sha256": "dec2134b65b65037ae1ef8d8472f89cf17543c74d8370dc4e1686ccabe88f77b",
+      "bytes": 12844,
+      "role": "sole owned new test; writer stopped"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "utc": "2026-10-26T15:35:00.746584+00:00",
+  "before": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "a0d210677757da32f9078791b67bf49e6412cd085496865c324a5fb025a649ae",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/a0d210677757da32f9078791b67bf49e6412cd085496865c324a5fb025a649ae.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "a7fc987c48acb8f775e1a13ae95a13c67458af528306d8a57d1c5052b653835f",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/a7fc987c48acb8f775e1a13ae95a13c67458af528306d8a57d1c5052b653835f.raw"
+    }
+  ],
+  "after": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "9da518032be395df05cba0d506c1e048188abdc05cd48fa5c5e010801a342bd0",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/9da518032be395df05cba0d506c1e048188abdc05cd48fa5c5e010801a342bd0.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "d867db5e2793a3ed018f0400dfbd9cfb31709b2ed51bf237af9dd905ac3cd143",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/d867db5e2793a3ed018f0400dfbd9cfb31709b2ed51bf237af9dd905ac3cd143.raw"
+    }
+  ],
+  "review_input_digest": "3fb0874e02f2d7d0d46cb50056288f9db74bef75b1369d66c14d36172f3e47c1",
+  "state": "review",
+  "attempts": 3,
+  "recovery_cycle": 1,
+  "next": "Actual implement validation, then done and T09 DoR"
+}

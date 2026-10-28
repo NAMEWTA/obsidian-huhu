@@ -1,0 +1,39 @@
+{
+  "observed_at_utc": "2026-10-25T18:07:27.466786+00:00",
+  "agent": "codex:/root/prepare_t05_screen",
+  "delivery": "Actual collaboration MESSAGE; no file changes or test runs by B",
+  "state": "READ-ONLY SOURCE STOPPED; T06 not unlocked",
+  "sources": [
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-screen.mjs",
+      "bytes": 56484,
+      "sha256": "53dc2479beffe7cd76889217a3bac35ca8f6c22e4603325ccb1985f946e725cb"
+    },
+    {
+      "path": "/tmp/huhu-t06-ui-presentation-seam.md",
+      "bytes": 12394,
+      "sha256": "c5401c9c40da0ccfbf387c876dacffe72b685be5b00f2dcd80b974aeb9654290"
+    },
+    {
+      "path": "/tmp/huhu-t06-contract-reconciliation.md",
+      "bytes": 9829,
+      "sha256": "254445bc98ca7a205c1154d6afefab21946bd536762803ba03677afe31af1f1c"
+    }
+  ],
+  "root_decision": "Accept engineering proposal for forthcoming T06 packet; no source/API freeze or implementation permission yet",
+  "proposed_additional_B_path": "scripts/obsidian-acceptance/agent-workbench-activity.mjs",
+  "method": "New single script, reuse existing screen script method without modifying that script or extracting common code. Bundle actual React TerminalTabView/AgentSidebar, WorkspaceService/Sessions, Session/View. Controlled host/native/provider/disk boundaries only; real markManagedSeen/attachManaged are observed and forwarded, not replaced.",
+  "scenarios": [
+    "pending click, attach resolved and installed ready do not alone mark seen; capture actual commit/install/public onRender/seen/persist order",
+    "captured N versus later N+1, delayed or failed disk write, bounded render and seen observations",
+    "two observers; hidden/inert/offscreen/blur/noncurrent leaf/disposed callbacks; readonly hint original tuple and zero spawn",
+    "cross-Space existing split target exact focus; unknown with blocked lastFact remains manually reachable; seen does not clear blocking",
+    "CDP trusted keyboard and actual native bytes; paint/seen/background activity cannot acquire geometry owner",
+    "legible pending/blocked/focused/error pane clips with role/accessibility name and sizes"
+  ],
+  "limits": [
+    "No real Obsidian or Provider verification",
+    "No OS foreground proof",
+    "No T06 execution or current Ticket write-set change"
+  ]
+}

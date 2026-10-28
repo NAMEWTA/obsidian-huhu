@@ -1,0 +1,193 @@
+{
+  "scope": "read-only T-05 preflight; mutable T-02 Space/WorkspaceService not read for conclusions",
+  "sources": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "bytes": 16854,
+      "sha256": "0befe4d829122ff34476866765844e620e2974e85690e1aea2168b070e822952",
+      "observed_at_utc": "2026-10-25T06:50:42.294756+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "observed_at_utc": "2026-10-25T06:50:42.294879+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "observed_at_utc": "2026-10-25T06:50:42.294939+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "observed_at_utc": "2026-10-25T06:50:42.294974+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytes": 14411,
+      "sha256": "483203afdcb172c92e934bd2db6c95ef180fdc703f1e53eea4a9f9da2277072b",
+      "observed_at_utc": "2026-10-25T06:50:42.295009+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytes": 11773,
+      "sha256": "94069dfd409b84eb96314d0fa827e9fcf01e3a6a0e9ea2c913c4cc0f1f61d323",
+      "observed_at_utc": "2026-10-25T06:50:42.295037+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "bytes": 5979,
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "observed_at_utc": "2026-10-25T06:50:42.295060+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "bytes": 15353,
+      "sha256": "1624981d8036026b02350507f376279a1af225f35c769494f7a78a2b66357356",
+      "observed_at_utc": "2026-10-25T06:50:42.295092+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "bytes": 4539,
+      "sha256": "c8b2623e10adb94535d26f83647cfb998846612fbda51c193808f47c33d0b6fc",
+      "observed_at_utc": "2026-10-25T06:50:42.295114+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/stable-terminal-fit.ts",
+      "bytes": 1695,
+      "sha256": "d0196ed9f9ea16256bf950f74f7e5f143538f7775887c41b156c596316fda6ca",
+      "observed_at_utc": "2026-10-25T06:50:42.295131+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-scheduling.test.ts",
+      "bytes": 6678,
+      "sha256": "8e8bc24f84e626dc4fd6aa54c0aff278b93d8b994974815e3295aececc0109aa",
+      "observed_at_utc": "2026-10-25T06:50:42.295154+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/hidden-renderer-retention.ts",
+      "bytes": 738,
+      "sha256": "183418dbf9e4fae1cf47931ada09ffa0054f962a0dbe3cf4c7fa94895742937c",
+      "observed_at_utc": "2026-10-25T06:50:42.295173+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 16080,
+      "sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f",
+      "observed_at_utc": "2026-10-25T06:50:42.295202+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 4461,
+      "sha256": "83c4396b94611b006490f9ad80eb1b2edb5d57f86da1b2deb1a28ff9a3d9023f",
+      "observed_at_utc": "2026-10-25T06:50:42.295226+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames.ts",
+      "bytes": 50,
+      "sha256": "be51d2bf292a253c08f97ce426cf1ff5f1b89b8d10e540d382b43840ccdbbb8f",
+      "observed_at_utc": "2026-10-25T06:50:42.295243+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/terminal-core.test.ts",
+      "bytes": 7218,
+      "sha256": "3403fd74537b8e05643d04f48d3dcde113e9c68094ea509ce2e9d4bedbf86d8a",
+      "observed_at_utc": "2026-10-25T06:50:42.295294+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "bytes": 8742,
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "observed_at_utc": "2026-10-25T06:50:42.295321+00:00"
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "bytes": 2905,
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "observed_at_utc": "2026-10-25T06:50:42.295346+00:00"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "bytes": 2032,
+      "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569",
+      "observed_at_utc": "2026-10-25T06:50:42.295365+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "bytes": 9005,
+      "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "observed_at_utc": "2026-10-25T06:50:42.295401+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "bytes": 8653,
+      "sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1",
+      "observed_at_utc": "2026-10-25T06:50:42.295425+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "bytes": 13479,
+      "sha256": "e66231fc943fc37e2db244bec8fd67111a7a97cb986cf43fc06f532c0db8c928",
+      "observed_at_utc": "2026-10-25T06:50:42.295468+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "bytes": 4115,
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "observed_at_utc": "2026-10-25T06:50:42.295488+00:00"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "bytes": 5201,
+      "sha256": "cc4080ae15d34684f9216710f916b21bd8f5e9530c668b149837640a428cb1fe",
+      "observed_at_utc": "2026-10-25T06:50:42.295508+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "bytes": 6376,
+      "sha256": "821862321ebd753a2216d743ee0ba91e97ad2626e36e99a7e1e7677d83859049",
+      "observed_at_utc": "2026-10-25T06:50:42.295530+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "bytes": 2731,
+      "sha256": "b65aed981f4756a913579043c9992d92585cd9b748e48b2bbc86969c06957c9f",
+      "observed_at_utc": "2026-10-25T06:50:42.295549+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "src/host/desktop/native/host.integration.test.ts",
+      "bytes": 2466,
+      "sha256": "d47756c71903e37437832a9afa51b2769bb797e064a09060c9347ab5a170e9b5",
+      "observed_at_utc": "2026-10-25T06:50:42.295569+00:00",
+      "unchanged_from_t04_observation": true
+    },
+    {
+      "path": "scripts/verify-pty-helper.mjs",
+      "bytes": 5143,
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1",
+      "observed_at_utc": "2026-10-25T06:50:42.295593+00:00"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 299613,
+      "sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "observed_at_utc": "2026-10-25T06:50:42.296016+00:00"
+    }
+  ]
+}

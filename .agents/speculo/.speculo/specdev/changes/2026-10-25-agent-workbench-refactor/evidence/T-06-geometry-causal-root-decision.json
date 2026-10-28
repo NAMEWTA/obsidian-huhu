@@ -1,0 +1,1566 @@
+{
+  "utc": "2026-10-25T22:05:18.726532+00:00",
+  "kind": "Root executed controlled barrier counterexample to resize-count ownership proxy",
+  "capture": {
+    "path": "T-06-geometry-causal1-root-capture.json",
+    "sha256": "91132b722338b70a1901947a5ada6ea94f73521fc83b7a5c142f236f92e2cad2"
+  },
+  "source_manifest_sha256": "169d5f16ad8a8505df27a3979e34ba1fbcf9a8cc164b9c1ecfc31ab83157cbb4",
+  "phases": [
+    {
+      "index": 372,
+      "at": 2510.5999999940395,
+      "kind": "geometry-probe",
+      "phase": "controlled-barrier:baseline-ready",
+      "callId": 11,
+      "capturedOwner": {
+        "lease": {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "viewId": "terminal-view-8",
+          "leaseId": "1"
+        },
+        "revision": 4,
+        "visible": true,
+        "focused": true
+      },
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 1
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    },
+    {
+      "index": 396,
+      "at": 2626.7000000178814,
+      "kind": "geometry-probe",
+      "phase": "controlled-barrier:hint-accepted-before-release",
+      "callId": 12,
+      "capturedOwner": {
+        "lease": {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "viewId": "terminal-view-8",
+          "leaseId": "1"
+        },
+        "revision": 4,
+        "visible": true,
+        "focused": true
+      },
+      "pending": 1,
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 37
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": true
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": true,
+            "completionHint": true
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": false,
+            "completionHint": true
+          }
+        ]
+      }
+    },
+    {
+      "index": 421,
+      "at": 2709.800000011921,
+      "kind": "geometry-probe",
+      "phase": "controlled-barrier:seen-return-accepted",
+      "callId": 13,
+      "capturedOwner": {
+        "lease": {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "viewId": "terminal-view-8",
+          "leaseId": "1"
+        },
+        "revision": 4,
+        "visible": true,
+        "focused": true
+      },
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    },
+    {
+      "index": 422,
+      "at": 2741.5,
+      "kind": "geometry-probe",
+      "phase": "before-original-length-assert",
+      "before": 2,
+      "actual": 4,
+      "nativeSizes": [
+        {
+          "sid": 1,
+          "cols": 48,
+          "rows": 38
+        },
+        {
+          "sid": 1,
+          "cols": 102,
+          "rows": 38
+        },
+        {
+          "sid": 1,
+          "cols": 102,
+          "rows": 37
+        },
+        {
+          "sid": 1,
+          "cols": 102,
+          "rows": 38
+        }
+      ],
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    }
+  ],
+  "actual_size_calls": [
+    {
+      "index": 390,
+      "at": 2593.300000011921,
+      "kind": "geometry-probe",
+      "phase": "requestViewSize:call",
+      "callId": 12,
+      "args": [
+        {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "viewId": "terminal-view-8",
+          "leaseId": "1"
+        },
+        {
+          "cols": 102,
+          "rows": 37
+        }
+      ],
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": true
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": true
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": true
+          }
+        ]
+      }
+    },
+    {
+      "index": 392,
+      "at": 2611.4000000059605,
+      "kind": "geometry-probe",
+      "phase": "native-resize-context",
+      "sid": 1,
+      "cols": 102,
+      "rows": 37,
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 37
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": true
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": true,
+            "completionHint": true
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": false,
+            "completionHint": true
+          }
+        ]
+      }
+    },
+    {
+      "index": 394,
+      "at": 2612.9000000059605,
+      "kind": "geometry-probe",
+      "phase": "requestViewSize:fulfilled",
+      "callId": 12,
+      "result": {
+        "status": "accepted",
+        "at": {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "contentSequence": 7
+        },
+        "geometry": {
+          "cols": 102,
+          "rows": 37
+        },
+        "native": "unsupported"
+      },
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 37
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": true
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 52,
+              "width": 880,
+              "height": 668,
+              "top": 52,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": true,
+            "completionHint": true
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 780,
+              "width": 420,
+              "height": 668,
+              "top": 780,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": false,
+            "completionHint": true
+          }
+        ]
+      }
+    },
+    {
+      "index": 415,
+      "at": 2677.0999999940395,
+      "kind": "geometry-probe",
+      "phase": "requestViewSize:call",
+      "callId": 13,
+      "args": [
+        {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "viewId": "terminal-view-8",
+          "leaseId": "1"
+        },
+        {
+          "cols": 102,
+          "rows": 38
+        }
+      ],
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 37
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 37
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    },
+    {
+      "index": 417,
+      "at": 2692.2000000178814,
+      "kind": "geometry-probe",
+      "phase": "native-resize-context",
+      "sid": 1,
+      "cols": 102,
+      "rows": 38,
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    },
+    {
+      "index": 419,
+      "at": 2693.4000000059605,
+      "kind": "geometry-probe",
+      "phase": "requestViewSize:fulfilled",
+      "callId": 13,
+      "result": {
+        "status": "accepted",
+        "at": {
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+          "contentSequence": 10
+        },
+        "geometry": {
+          "cols": 102,
+          "rows": 38
+        },
+        "native": "unsupported"
+      },
+      "snapshot": {
+        "model": {
+          "cols": 102,
+          "rows": 38
+        },
+        "activity": {
+          "at": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "activitySequence": 2
+          },
+          "unreadCompletion": false
+        },
+        "owner": {
+          "lease": {
+            "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+            "viewId": "terminal-view-8",
+            "leaseId": "1"
+          },
+          "revision": 4,
+          "visible": true,
+          "focused": true
+        },
+        "views": [
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-8",
+              "leaseId": "1"
+            },
+            "revision": 4,
+            "visible": true,
+            "focused": true
+          },
+          {
+            "lease": {
+              "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67",
+              "viewId": "terminal-view-9",
+              "leaseId": "3"
+            },
+            "revision": 3,
+            "visible": true,
+            "focused": false
+          }
+        ],
+        "activeElement": {
+          "tag": "TEXTAREA",
+          "ownerId": "geometry-primary",
+          "runtimeId": "terminal-7e87bee9-a3b3-48b0-a0ce-a33059e0ff67"
+        },
+        "docFocused": true,
+        "visibility": "visible",
+        "panes": [
+          {
+            "name": "primary",
+            "ownerId": "geometry-primary",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 0,
+              "width": 1160,
+              "height": 720,
+              "top": 0,
+              "right": 1168,
+              "bottom": 720,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 36,
+              "width": 880,
+              "height": 684,
+              "top": 36,
+              "right": 1168,
+              "bottom": 720,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": true,
+            "completionHint": false
+          },
+          {
+            "name": "follower",
+            "ownerId": "geometry-follower",
+            "hidden": false,
+            "ownerRect": {
+              "x": 8,
+              "y": 728,
+              "width": 700,
+              "height": 720,
+              "top": 728,
+              "right": 708,
+              "bottom": 1448,
+              "left": 8
+            },
+            "viewRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "xtermRect": {
+              "x": 288,
+              "y": 764,
+              "width": 420,
+              "height": 684,
+              "top": 764,
+              "right": 708,
+              "bottom": 1448,
+              "left": 288
+            },
+            "grid": {
+              "cols": 102,
+              "rows": 38
+            },
+            "textareaActive": false,
+            "completionHint": false
+          }
+        ]
+      }
+    }
+  ],
+  "owner_drift": [],
+  "assertion_result": {
+    "name": "activity-and-seen-do-not-transfer-explicit-size-owner",
+    "ok": false,
+    "error": "Error: activity/seen transferred geometry ownership [{\"sid\":1,\"cols\":48,\"rows\":38},{\"sid\":1,\"cols\":102,\"rows\":38},{\"sid\":1,\"cols\":102,\"rows\":37},{\"sid\":1,\"cols\":102,\"rows\":38}]",
+    "stack": "Error: activity/seen transferred geometry ownership [{\"sid\":1,\"cols\":48,\"rows\":38},{\"sid\":1,\"cols\":102,\"rows\":38},{\"sid\":1,\"cols\":102,\"rows\":37},{\"sid\":1,\"cols\":102,\"rows\":38}]\n    at assert2 (http://127.0.0.1:40585/fixture.js:71770:25)\n    at http://127.0.0.1:40585/fixture.js:72741:13\n    at async check (http://127.0.0.1:40585/fixture.js:71782:24)\n    at async Object.geometryDone (http://127.0.0.1:40585/fixture.js:72688:9)"
+  },
+  "conclusion": "All three phases completed on actual production fit/model/Session methods and unchanged primary lease/revision. The original count assertion fails (2 to4) despite no ownership transfer. It is therefore not a valid ownership invariant.",
+  "limits": [
+    "Controlled markManagedSeen delegation barrier changes timing only for geometry; this does not reconstruct original uninstrumented v3 ordering.",
+    "Native legacy resize boundary lacks submitResize acknowledgement; accepted result says unsupported, not physical PTY-confirmed."
+  ],
+  "required_replacement": [
+    "Await actual accepted primary fit and native/model agreement, not equality between two projections of one model.",
+    "Verify exact owner lease/revision throughout activity and seen; every accepted/native resize must correspond to that owner actual call; allow legitimate row changes.",
+    "Exercise actual follower original lease requestViewSize and assert rejected/not-owner with no model/native change.",
+    "Include a meaningful positive ownership-transfer counterexample so the checker detects a real different owner."
+  ],
+  "authorization": "Decision establishes replacement requirements. Product/script writers remain STOP until Root recovery Packet with precise owner paths; original attempts3 retained."
+}

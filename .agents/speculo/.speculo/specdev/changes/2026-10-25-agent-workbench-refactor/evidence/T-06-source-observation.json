@@ -1,0 +1,185 @@
+{
+  "scope": "T06 read-only; no current SpaceService/WorkspaceService/workspace-store used as stable facts",
+  "sources": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "sha256": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "bytes": 16717,
+      "observed_at_utc": "2026-10-25T07:00:36.667971+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observed_at_utc": "2026-10-25T07:00:36.668103+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observed_at_utc": "2026-10-25T07:00:36.668142+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573,
+      "observed_at_utc": "2026-10-25T07:00:36.668169+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "bytes": 12306,
+      "observed_at_utc": "2026-10-25T07:00:36.668197+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "sha256": "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714",
+      "bytes": 4250,
+      "observed_at_utc": "2026-10-25T07:00:36.668214+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "bytes": 1027,
+      "observed_at_utc": "2026-10-25T07:00:36.668229+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/hook-entries.ts",
+      "sha256": "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282",
+      "bytes": 2178,
+      "observed_at_utc": "2026-10-25T07:00:36.668244+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190,
+      "observed_at_utc": "2026-10-25T07:00:36.668272+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "483203afdcb172c92e934bd2db6c95ef180fdc703f1e53eea4a9f9da2277072b",
+      "bytes": 14411,
+      "observed_at_utc": "2026-10-25T07:00:36.668297+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "94069dfd409b84eb96314d0fa827e9fcf01e3a6a0e9ea2c913c4cc0f1f61d323",
+      "bytes": 11773,
+      "observed_at_utc": "2026-10-25T07:00:36.668319+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/launch/catalog.ts",
+      "sha256": "f81a413eecb90392d46020e1348895a180ebf3ae0db712d46819ca444dc3a35d",
+      "bytes": 5137,
+      "observed_at_utc": "2026-10-25T07:00:36.668341+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/launch/types.ts",
+      "sha256": "0beab97c9e21f390d5d32327443021ceaffcda34a27a526d2a3315651c5435b0",
+      "bytes": 1346,
+      "observed_at_utc": "2026-10-25T07:00:36.668358+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.ts",
+      "sha256": "a4dc83f347ed4aa4aa271e6624cb744295225d1368d49052193851071d765da0",
+      "bytes": 1776,
+      "observed_at_utc": "2026-10-25T07:00:36.668373+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.test.ts",
+      "sha256": "e095009403a7c51f331b9626c042a376d01bb399e11cddd49b767c4edf91976f",
+      "bytes": 1061,
+      "observed_at_utc": "2026-10-25T07:00:36.668387+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/launch/defaults.ts",
+      "sha256": "2a2d5014243b6ac8fe4f36bdcbf43be667b34297d5f2699ab0cd1209bdc16d90",
+      "bytes": 1699,
+      "observed_at_utc": "2026-10-25T07:00:36.668401+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "70ec678f407c442f7bdfd1f7f586b5c2541e8f40c0c7dc9c65c5de11f1b38dc3",
+      "bytes": 5526,
+      "observed_at_utc": "2026-10-25T07:00:36.668419+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/detection/probe.ts",
+      "sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "bytes": 558,
+      "observed_at_utc": "2026-10-25T07:00:36.668435+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/runtime-process.ts",
+      "sha256": "a1b4a39fabe1abae7c80424f541d266f63d685124d99fe4b53f44ad38727452d",
+      "bytes": 357,
+      "observed_at_utc": "2026-10-25T07:00:36.668448+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/detection/merge.ts",
+      "sha256": "0f78b190634b7ae5c07061fbf7643d189da48b7149b35eab92898ae9b68b0ce3",
+      "bytes": 1881,
+      "observed_at_utc": "2026-10-25T07:00:36.668462+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "4aaeae21fe5c032d4df4944fd7c6e3502d09a01fda0be453374a83d7c9c48336",
+      "bytes": 38818,
+      "observed_at_utc": "2026-10-25T07:00:36.668503+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+      "bytes": 7898,
+      "observed_at_utc": "2026-10-25T07:00:36.668525+00:00"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712",
+      "bytes": 8270,
+      "observed_at_utc": "2026-10-25T07:00:36.668551+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/sidebar.ts",
+      "sha256": "992b0ad5aacaf68f7f32e9fc6225bd43f862f0c1301a55212c4f10f0ab7a2af5",
+      "bytes": 726,
+      "observed_at_utc": "2026-10-25T07:00:36.668569+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/sidebar.test.ts",
+      "sha256": "1e27f2303a7b8a0836fb8eba5576912f643a5d33176a003c38b276cff2a6f4eb",
+      "bytes": 2131,
+      "observed_at_utc": "2026-10-25T07:00:36.668586+00:00"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a",
+      "bytes": 14861,
+      "observed_at_utc": "2026-10-25T07:00:36.668614+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+      "sha256": "1aa5f2f2ea3f8baac9136b42e0b89afd5b81e008b74686e2a7503566d839fedc",
+      "bytes": 3268,
+      "observed_at_utc": "2026-10-25T07:00:36.668639+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+      "sha256": "503c7c10a1d661196b984ef08b9e506157e6522e2c65a325107641f672633a7a",
+      "bytes": 4245,
+      "observed_at_utc": "2026-10-25T07:00:36.668657+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.test.ts",
+      "sha256": "b01a3a2c19978c602053b3096fb0d5857619de3bfaa57b72688d4632f6c58635",
+      "bytes": 24605,
+      "observed_at_utc": "2026-10-25T07:00:36.668688+00:00"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/account-permissions.test.ts",
+      "sha256": "77335025b3283451b28766c1482ecfe6dc108610d5b0ef054c17dc62a45eacd3",
+      "bytes": 1916,
+      "observed_at_utc": "2026-10-25T07:00:36.668718+00:00"
+    }
+  ]
+}

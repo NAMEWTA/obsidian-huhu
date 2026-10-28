@@ -1,0 +1,145 @@
+{
+  "task": "T-04 implementation C native owner",
+  "prepared_at": "2026-10-25T09:35:05.491392+00:00",
+  "actual_agent": "/root/implement_t01",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "Existing actual handle inherits user-requested model and effort",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-015",
+  "map_revision": 16,
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "020776efcff1410f3d85ec0d98fa9d6fee0860118b772f1de2fec1dddceaf5e6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "71bf6c23c1c6e4ee64492a1a8d5e0c9212b6aa7e63fa72ba7d33f9bd8472f34d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "0ba184acfcccce67a6b49374b219904c6a500e0136df271a9705f8cf131f6b2f"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03.md",
+      "sha256": "07d5e6adcdde1624028fedc9bf9b0b449100ebfb0a169ddf6fa771a7c3468525"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-review-input.md",
+      "sha256": "fdf604588b123b7343491e31ceeff0b4c90cd8040e93cd4d92611810abfd29b9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-review-round2.md",
+      "sha256": "e0b837bfdcc9a84c072e995aa9bda03ac257959441ce437b85136a374c5bde32"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-final-current-review-after-format.json",
+      "sha256": "f93d6a121f04851d405508d23f3af4b3767347a3e896b41bb9aa95b2754d9e22"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-prior-delivery.json",
+      "sha256": "ee88a521ee4a88730afc84f00fd55bb1cea75a94c588e6a47df0fe8452cf874a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-frontier.json",
+      "sha256": "af32a37712f9f2cb6c4dd7c83424c15777e147e932e73117fb486e3f87ce6b26"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-design.md",
+      "sha256": "fac5017e35a2f25b17ae8bb35193c1cd713ff7510f7667b98666f6b15c3bd6b5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-source-observation.json",
+      "sha256": "3bbc17864083185aef68f6b9db72c26529112c9b70efbf21f76722f40d24cdea"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-ui-preflight.md",
+      "sha256": "f0c7bf8f71e0a8a0c6b204b6a063f26e3eee42cddfdc7fd6f964dc480db692f8"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-runtime-proposal.md",
+      "sha256": "9307a35ade6d9b00639111dcad090299befc19f6049080fd6436887fd0ae78ee"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-runtime-source-observation.json",
+      "sha256": "ffff28e0c1432df805572d196f8257facee1f3de0d420ff9b7da03ad3ff51b46"
+    }
+  ],
+  "write_allocation": [
+    "native/pty-server/src/session.rs",
+    "native/pty-server/src/job.rs",
+    "native/pty-server/src/main.rs",
+    "native/pty-server/src/bootstrap.rs",
+    "native/pty-server/tests/**",
+    "native/pty-server/Cargo.toml",
+    "src/shared/native/host.ts",
+    "src/shared/native/frames.ts",
+    "src/shared/native/termination.ts",
+    "src/shared/native/termination.test.ts",
+    "src/host/desktop/native/host.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/host.test.ts",
+    "src/host/desktop/native/helper.test.ts",
+    "src/host/desktop/native/host.integration.test.ts",
+    "test/fixtures/native/terminal-termination-v1.json"
+  ],
+  "prerequisite": "T-01/02/03 done; final T-03 current review errors=[]; goal validator 0 errors; frontier only T-04",
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal change records"
+  ],
+  "other_owners": {
+    "A": "TerminalSessions/WorkspaceService/SpaceService/records/Controller/managed DTO/i18n/docs; no native paths",
+    "B": "UI after actual API freeze; currently stopped"
+  },
+  "first_delivery": "Root accepts T-04-runtime-proposal §2–5. First deliver actual shared NativeEvents/NativeConnection/TerminationEvidence/NativeReleaseError, validated codec and sole test/fixtures/native/terminal-termination-v1.json; report SHA and freeze shared contract. A consumes types only after Root verifies. Then continue Rust + native host/helper under same ownership.",
+  "selected_design": "Windows same verified helper bootstrap + private bounded gate/status + checked per-session Job and outer helper fallback. Unix validated owned session/groups with finite graceful then real SIGKILL; root wait separate from cleanup confirmed/partial/unknown. No arbitrary detached daemon proof, no kill-by-old-persisted-PID.",
+  "checks": "C exclusively owns cargo build/test and native debug binary lane until source stopped. TS native tests scoped; Root final build/global checks serial after all source writers stopped. A must wait for C binary handoff before real-helper tests.",
+  "real_e2e": "User-owned actual Obsidian/Provider/five platforms; this Linux environment only claims actual tests run",
+  "returns": [
+    "/tmp/huhu-t04-native-handoff.md",
+    "/tmp/huhu-t04-native-source.json",
+    "/tmp/huhu-t04-native-checks.json"
+  ],
+  "forbidden": "commit/push/PR/release/archive/permanent knowledge/dependency version or new dependency/lock changes/registry changes/other source paths/user processes",
+  "wire_decision": "Keep protocol3; require negotiated capabilities.terminalTermination=1 for new notices/requestStop, structured version1 root/cleanup/output evidence. Legacy or invalid evidence never synthesizes confirmed. Root-only never confirmed; enforce cross-field/platform invariants and captured identity/sequence. Natural root exit separate from cleanup; T03 numeric exit compatibility retained.",
+  "budget_decision": "One native stop deadline including graceful and drain, proposed native <=8s and host/business observation <=10s; Root/A/C must use same finalized finite budget. Force/re-entry never resets deadline. No stdin/global lock waiting.",
+  "actual_tool": "collaboration.followup_task",
+  "actual_handle": "/root/implement_t01",
+  "dispatched": true,
+  "dispatch_receipt_observed_at": "2026-10-25T09:38:37.073530+00:00"
+}

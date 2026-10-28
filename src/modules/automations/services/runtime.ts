@@ -14,9 +14,10 @@ import { AGENT_SESSIONS } from '../../agent/api';
 import { HOME_CALENDAR } from '../../home/api';
 import { deliverCalendarTask } from './calendar-delivery';
 import type { NotificationOpener, NotificationRequest } from '../../notifications/api';
-import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_SOURCES, type AutomationSource } from '../api';
+import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_SOURCES, automationRuntimePath, type AutomationSource } from '../api';
+import type { RecoveryOwner } from '../../../shared/storage/recovery-contracts';
 import { actionAvailability, actionDefinition } from '../core/actions/registry';
-import { AutomationService } from '../core/service';
+import { AutomationService, automationRecoveryOwners } from '../core/service';
 import { createActionHost, openNote } from './action-host';
 import { MarkdownAutomationDefinitions } from '../platform/definitions';
 import { createAutomationViewStore, type AutomationViewStore } from './view-store';
@@ -34,6 +35,8 @@ export interface AutomationRuntime {
 	runAction(id: string): Promise<void>;
 	stopAction(id: string): Promise<void>;
 	openAction(id: string): Promise<void>;
+	/** Backup/restore owners for the files this runtime really writes (run history and definition documents). */
+	readonly recoveryOwners: readonly RecoveryOwner[];
 	/** Stop admission and owned runs (`disabled`) or interrupt them (`unload`), then release storage. */
 	shutdown(reason: 'disabled' | 'unload'): Promise<void>;
 }
@@ -119,7 +122,7 @@ export async function createAutomationRuntime(
 	};
 	const service = new AutomationService(
 		privateVaultStorage(app),
-		`.huhu/automation/${deviceId}/runtime.json`,
+		automationRuntimePath(deviceId),
 		deviceId,
 		sources,
 		() => context.services.peek(AUTOMATION_AGENT_RUNTIME),
@@ -222,6 +225,7 @@ export async function createAutomationRuntime(
 	return {
 		service,
 		store: view.store,
+		recoveryOwners: automationRecoveryOwners(service, deviceId),
 		opener,
 		sources: providers,
 		retry,

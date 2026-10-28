@@ -242,6 +242,10 @@ function resumeInfo(value: unknown): ResumeInfo {
 	const v = record(value);
 	return {
 		cwd: text(v.cwd),
+		// Preserve explicit invalid identity as invalid; it must never turn into a legacy alias.
+		...(v.paneId === undefined ? {} : { paneId: typeof v.paneId === 'string' ? v.paneId : '' }),
+		spaceId: text(v.spaceId) || undefined,
+		persistentSessionId: text(v.persistentSessionId) || undefined,
 		customTitle: text(v.customTitle).slice(0, 200) || undefined,
 		nativeSessionId: text(v.nativeSessionId) || undefined,
 		transcriptPath: text(v.transcriptPath) || undefined,

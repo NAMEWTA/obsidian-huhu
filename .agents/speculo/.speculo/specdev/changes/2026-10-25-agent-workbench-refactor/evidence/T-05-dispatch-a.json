@@ -1,0 +1,328 @@
+{
+  "ticket": "T-05",
+  "goal_revision": "GP-018",
+  "map_revision": 19,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "scope_state": "prepared_K03_accepted_actual_dispatch_required",
+  "task": "T-05 A authoritative Session model/stream/input adapter",
+  "write_allocation": [
+    "src/modules/agent/services/terminal/session*.ts",
+    "src/modules/agent/core/terminal/frames-screen.ts",
+    "src/modules/agent/core/terminal/frames-screen.test.ts",
+    "src/modules/agent/services/prompt-runner.ts",
+    "src/modules/agent/services/prompt-runner.test.ts",
+    "src/modules/agent/services/agent-runtime.ts",
+    "src/modules/agent/services/agent-runtime.test.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/services/controller-native.test.ts",
+    "src/modules/agent/i18n.ts",
+    "docs/agent-workbench.md"
+  ],
+  "scope_constraints": [
+    "Controller仅typeWhenReady的原input结果分类及其测试，不改其他生命周期/Space/业务接口。",
+    "A唯一source私有adapter与pure screen DTO owner；不写B UI/C native/shared host。",
+    "先交实际纯DTO及Session stream/lease/geometry/limits public API回执，Root核读后B才开始；内部实现可在同写集继续。",
+    "input强接口等待C实际NativeInputSubmission签名，不能自造另一套wire/op manager；两个旧paste+CR生产者必须整笔。",
+    "单模型事务保证原始UTF8/ANSI一次解析，ACK在真实callback且先于慢投影；exit在已收output/localnotice解析之后，不退化T04 checkpoint/drain。",
+    "所有raw/handler/model/combining/link/clone及observer/read/全Agent容量有finite admission/pressure；异常listener不能阻断ACK/其他owner；超限沿captured T04 stop并准确truncated/unknown，不静默丢未解析raw。",
+    "现有source只读获取renderer私有字段必须集中固定版本shape验证；普通帧不得每批full reset。",
+    "不写生产原型/永久知识/正式工件/产物/依赖或node_modules/native target。"
+  ],
+  "actual_agent": "/root/prepare_t03",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_source": "existing actual handle; Goal section4 original requested model",
+  "prepared_at": "2026-10-25T12:21:43.235420+00:00",
+  "authorization": "User all18 implementation/Agent Team/code acceptance, Goal LOG027; no commit/push/release/archive.",
+  "dependency_receipt": "T04 done; G01 code closed; T05 K03 accepted with source/log audit; exact current pins verified exit0.",
+  "directions": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+  "first_handoff": "Actual source signatures/DTOs plus fixture schema and hashes, test/negative evidence and provisional finite limits. Do not substitute report text for actual compilable types. Root reads and freezes before other owner consumers.",
+  "subdelegation": "No nested agents. Only this owner writes allocated source. Root owns formal records/artifacts/budgets/dependency files.",
+  "read_only_contracts": [
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+    "AGENTS.md",
+    ".agents/speculo/.speculo/workspace.json",
+    ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+    ".agents/skills/dev/SKILL.md",
+    ".agents/skills/ui/SKILL.md",
+    ".agents/skills/dev/references/testing.md",
+    ".agents/skills/dev/references/licensing.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-handoff.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-root-audit.json",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-exact-pin.json",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-prior-delivery.json",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "source_snapshot": "/tmp/huhu-t05-implementation-start-source",
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "53dc0ab5d173b11811cb4fe848d19aa6408f52cf72553c9be54dc6c1be8aaf23",
+      "bytes": 31828
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "5d2914175905e724573542863ec286ccecf5d2873d6fa57f6335fd2a388cc73c",
+      "bytes": 37972
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "500af48360e0195627dd6935e7046141f6ee56536b13fe748be17773053db2aa",
+      "bytes": 25075
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "3a5582e9ab1d51e12f9e1198612577183513d23c12a9c45105cde10d3ca5673b",
+      "bytes": 5714
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "bytes": 4971
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+      "sha256": "b8186317fb276e87603c37704297dc971e30931a8d7b11c177680c3d774a4dd8",
+      "bytes": 6474
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-handoff.md",
+      "sha256": "12f9703242ea2b4dd5db7f7eb1bc0c02ac6fa439c43cf2a34c72c0cfff4bfece",
+      "bytes": 5213
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-root-audit.json",
+      "sha256": "11e769a27a553a7f1b1cdda4296b348e61af477a1d7004a1b702512a0046ee9a",
+      "bytes": 31003
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-exact-pin.json",
+      "sha256": "656d86018c9b6ea195aa1c019bbe8a6852f70da026345b573b94c0dbf292822a",
+      "bytes": 1210
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-prior-delivery.json",
+      "sha256": "6d602b723c2e8f2218dccac2141ec213491d90efc23a8a8abbf0e80a8bbd262f",
+      "bytes": 20875
+    },
+    {
+      "path": "package.json",
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c",
+      "bytes": 13443
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "004818ad2aaab47043b39d4e545dd77f8be62fd1544f2eecfbaa5285c088285a",
+      "bytes": 299611
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-session-contract-proposal.md",
+      "sha256": "31d809f1908d6e19532125b5276e9dcb6e9fb7fc2b31fa1aee123eef89951f13",
+      "bytes": 24576
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-screen-algorithm-proposal.md",
+      "sha256": "7c73c94c45bae6b3b2d77953539f66fe5bc133fec7f4df42bb13a2be7fc32d4d",
+      "bytes": 31303
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-view-adapter-contract-proposal.md",
+      "sha256": "15dc59e19e3aaaed96226c1d499a04238cc0df7e58375600af38d5ca05275438",
+      "bytes": 17129
+    },
+    {
+      "path": "node_modules/@xterm/headless/package.json",
+      "sha256": "6c39530ee759998113bd8bcc306d1b725c0b1d5b0cdc04e071f6945a5f5edf1a",
+      "bytes": 614
+    },
+    {
+      "path": "node_modules/@xterm/headless/lib-headless/xterm-headless.js",
+      "sha256": "17a90b650cf6b77cce2b98c4063884d43545e4ce177a54b76ccfc906f1aacaed",
+      "bytes": 182672
+    }
+  ],
+  "source_baseline": [
+    {
+      "path": "src/modules/agent/core/terminal/frames-screen.ts",
+      "exists": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames-screen.test.ts",
+      "exists": false
+    },
+    {
+      "path": "docs/agent-workbench.md",
+      "exists": true,
+      "bytes": 30429,
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "exists": true,
+      "bytes": 65783,
+      "sha256": "223a12cb6b915ddc4f486074b8c38f2d5b00e2f1d3067799b195cce42b280ef8"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.test.ts",
+      "exists": true,
+      "bytes": 5124,
+      "sha256": "b917878b1c27c8934c82f60a6c40b5e9539e1f8bb180cc568678455bbbe59177"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "exists": true,
+      "bytes": 23052,
+      "sha256": "4df5489210382cc52e9276f96746f11a3757f27d9cde47acc6d58b78094a6c9c"
+    },
+    {
+      "path": "src/modules/agent/services/controller-native.test.ts",
+      "exists": true,
+      "bytes": 5449,
+      "sha256": "ddf2520976892701993331afa7650c6cdbc317106f1e897fab23565d84b9bb54"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "exists": true,
+      "bytes": 46046,
+      "sha256": "1645905e8e0ccef0c75451d6a29192a7154d8938f8a78f64e6d1a25080f03709"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "exists": true,
+      "bytes": 8270,
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "exists": true,
+      "bytes": 7898,
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-resize.test.ts",
+      "exists": true,
+      "bytes": 6935,
+      "sha256": "1b4b8244e9f5283b34ed5f6250ef9bc41389aba1816f9c5e86459a71dc118d18"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "exists": true,
+      "bytes": 5979,
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "exists": true,
+      "bytes": 15892,
+      "sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+      "exists": true,
+      "bytes": 6274,
+      "sha256": "db65040d334382e42dd0e7a90ef4ebeff7f22f518d97a20f3e3323b6bd0e3b19"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "exists": true,
+      "bytes": 13553,
+      "sha256": "92dd3088a4736cfbb4a9bd2e839bb8ca49c585b00963742dc25f1cd760163cc5"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "exists": true,
+      "bytes": 3049,
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "exists": true,
+      "bytes": 26094,
+      "sha256": "421fe822d75bb0e737740aaf93374b1f22dd90d4ac23d9b9f95d7af7344e50bf"
+    }
+  ],
+  "checks": [
+    "Write meaningful behavior/negative tests before production behavior and preserve actual first-red source/log/command/UTC/exit; all final checks zero skip.",
+    "Scoped unit/native checks only while writers active. Root owns full build/lint/architecture/Promise/bundle serial after all SOURCE STOPPED.",
+    "Record exact actual argv/cwd/environment/source hashes/raw log/exit and clean up only own processes.",
+    "Return handoff + source manifest + command/check manifest in /tmp; include residual gaps and explicit SOURCE STOPPED. No formal records edits.",
+    "K03 regression remains without engine patch; adapt only correct asynchronous transaction waits if API changes, never remove behavior assertions.",
+    "Real headless snapshot+continuous frames, fragment/resize/alternate/reset/local/exit order, captured ACK before slow projection, observer throw/pressure/resync, single size owner/latefit, stable bounded read/expiry, model/handler resource budget, prompt entire rejection/cancel/unknown.",
+    "Use only Root-approved immutable C helper when available; do not run cargo or build target. T04 helper remains immutable baseline ce263fd68bdbd792d2b36f675d2ee838ff39052926ce688dcb06b086eb076343."
+  ],
+  "stop_conditions": [
+    "Undeclared source path/dependency or higher-impact behavior gap: report exact missing path/contract to Root, stop only affected branch.",
+    "Private adapter uncertain bound or shape cannot be proven: preserve precise counterexample and proposed minimum gap, do not reset authority/drop raw/claim complete.",
+    "No user decisions missing for declared implementation; do not ask user to reauthorize current work."
+  ],
+  "actual_tool_receipt": {
+    "tool": "collaboration.followup_task",
+    "target": "/root/prepare_t03",
+    "result": "returned successfully with empty result body",
+    "recorded_at": "2026-10-25T12:22:43.020337+00:00",
+    "prepared_packet_sha256": "5196fdb0cd8926ab243701b86dd87b9be3ae3c09a5aec21950d19c1f3ebfd891",
+    "stage": "T05 production source write allocation now dispatched; API handoff first"
+  }
+}

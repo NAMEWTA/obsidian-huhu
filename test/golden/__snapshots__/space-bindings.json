@@ -1,0 +1,60 @@
+{
+  "quickCommands": [
+    {
+      "id": "old",
+      "name": "Old",
+      "content": "ls",
+      "type": "terminal",
+      "agentId": "claude-code",
+      "cwd": "src",
+      "scope": "vault"
+    },
+    {
+      "id": "bound",
+      "name": "Bound",
+      "content": "review",
+      "type": "agent",
+      "agentId": "codex",
+      "cwd": "",
+      "scope": "vault",
+      "spaceId": "a1b2c3d4-0000-4000-8000-000000000001"
+    },
+    {
+      "id": "global",
+      "name": "Global",
+      "content": "pwd",
+      "type": "terminal",
+      "agentId": "claude-code",
+      "cwd": "",
+      "scope": "global"
+    }
+  ],
+  "shortcutButtons": [
+    {
+      "id": "old",
+      "label": "Old",
+      "icon": "bot",
+      "type": "agent",
+      "target": "",
+      "agentId": "codex",
+      "prompt": "hi"
+    },
+    {
+      "id": "bound",
+      "label": "Bound",
+      "icon": "bot",
+      "type": "agent",
+      "target": "",
+      "agentId": "codex",
+      "prompt": "hi",
+      "spaceId": "a1b2c3d4-0000-4000-8000-000000000001"
+    },
+    {
+      "id": "file",
+      "label": "Note",
+      "icon": "file",
+      "type": "file",
+      "target": "A.md"
+    }
+  ]
+}

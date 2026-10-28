@@ -1,0 +1,126 @@
+[
+  {
+    "path": "docs/architecture.md",
+    "sha256": "6a8fa9b6709459f4a78ce13aac2ea2ca59450f9d6c071b6cbe183cebe905ff77"
+  },
+  {
+    "path": "scripts/module-strings.ts",
+    "sha256": "12b88d8724abf38b180cf87139124565ae696ea708575d5a6facb3b372fe8e50"
+  },
+  {
+    "path": "src/app/contracts/module.ts",
+    "sha256": "c23485d4b2380bb33828d4bf87cd49e091555134ad5d82867fd03098fa6049fb"
+  },
+  {
+    "path": "src/app/main.ts",
+    "sha256": "3bcd26ae09610f8589a47c0b83a9107bebfad417381200f1af621de28d262c22"
+  },
+  {
+    "path": "src/modules/agent/api.ts",
+    "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09"
+  },
+  {
+    "path": "src/modules/agent/core/terminal/frames.ts",
+    "sha256": "be51d2bf292a253c08f97ce426cf1ff5f1b89b8d10e540d382b43840ccdbbb8f"
+  },
+  {
+    "path": "src/modules/agent/platform/desktop/pty/binary.ts",
+    "sha256": "a2d28d36e08ac7c2fc78577fd8f999d343d5f4d9f4d7c4c63cc71849ab15cc57"
+  },
+  {
+    "path": "src/modules/agent/platform/desktop/pty/helper-environment.test.ts",
+    "sha256": "16dd6d3895607945259d0e7958cb123c787e773cdadafb223588aee0247ab1ba"
+  },
+  {
+    "path": "src/modules/agent/platform/desktop/pty/helper.ts",
+    "sha256": "235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4"
+  },
+  {
+    "path": "src/modules/agent/platform/desktop/server/cookie-client.ts",
+    "sha256": "f05f44df1069f4b02e2351eddbbaf4d01ce0f84867711a93811dd7cdff3151e7"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+    "sha256": "b65aed981f4756a913579043c9992d92585cd9b748e48b2bbc86969c06957c9f"
+  },
+  {
+    "path": "src/modules/browser/module.ts",
+    "sha256": "82e494d025a8c0bb2612864a5d1d4a7bbc1fa060629b637476c82b28872b77dc"
+  },
+  {
+    "path": "src/modules/browser/services/host.ts",
+    "sha256": "96f01340af9206390a168391a6f8abaab8c43ac3f8c81dfdda3152733e223b60"
+  },
+  {
+    "path": "src/app/native.ts",
+    "sha256": "e9ce6c355dd7a6ec143413ecfea2ff54d3b8bffa16adadbd9ef4eaf842d7004d"
+  },
+  {
+    "path": "src/host/desktop/native/binary.ts",
+    "sha256": "e62dddb3c655cb6317de7503d255ee235c01994a2a21700a9f68bcd4f5d83934"
+  },
+  {
+    "path": "src/host/desktop/native/helper.ts",
+    "sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1"
+  },
+  {
+    "path": "src/host/desktop/native/host.integration.test.ts",
+    "sha256": "d47756c71903e37437832a9afa51b2769bb797e064a09060c9347ab5a170e9b5"
+  },
+  {
+    "path": "src/host/desktop/native/host.test.ts",
+    "sha256": "2368913c32487d291e3d263eff79c51fa84ba02382212b9800380a321b940907"
+  },
+  {
+    "path": "src/host/desktop/native/host.ts",
+    "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068"
+  },
+  {
+    "path": "src/host/desktop/native/runtime.test.ts",
+    "sha256": "5b5b11a5fa92461ed6dd40f058227c168c33cf60274a644eed4c6462deeab9e8"
+  },
+  {
+    "path": "src/host/desktop/native/runtime.ts",
+    "sha256": "4ceeb76d3316d37e4e14109672f47316f87ec4d4eca9015a124344fb00f068d3"
+  },
+  {
+    "path": "src/modules/agent/services/controller-native.test.ts",
+    "sha256": "a2a903d106a039608755faa52ec0bfdbe600001997a1a311b7ec71ab12d98855"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+    "sha256": "59106c02234f0f3325711e863ee84b4fd4e658b1f62335ab2f9705360391e6d2"
+  },
+  {
+    "path": "src/modules/browser/module.test.ts",
+    "sha256": "9a1247a66a237c850e10533fc39bf426150b2e5bbfdb5541ef9c364bc36acb36"
+  },
+  {
+    "path": "src/shared/i18n/lazy/native.ts",
+    "sha256": "30582ee95e003c664db3998f3f9728b2edc3bd7280e12b891398790c33ff1b6b"
+  },
+  {
+    "path": "src/shared/native/abort.ts",
+    "sha256": "eeaf64fa3d619bf36b9e7aabaebc739e5598f456bb070e5158b6c290a6193711"
+  },
+  {
+    "path": "src/shared/native/cookies.ts",
+    "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9"
+  },
+  {
+    "path": "src/shared/native/frames.ts",
+    "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12"
+  },
+  {
+    "path": "src/shared/native/host.ts",
+    "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569"
+  },
+  {
+    "path": "src/shared/native/lazy-host.test.ts",
+    "sha256": "da0eb81941aec6758cd6110cd0f470ef04da6c811327edf711ec836215ecf468"
+  },
+  {
+    "path": "src/shared/native/lazy-host.ts",
+    "sha256": "28cbc6242e0f4dde3181d5aaade49ff9d23c33ecba9386c261df552748962bd1"
+  }
+]

@@ -1,0 +1,218 @@
+{
+  "task": "T-04 F1/F2/F3 same-scope repair by original business owner",
+  "prepared_at": "2026-10-25T11:16:33.455047+00:00",
+  "actual_agent": "/root/prepare_t03",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "existing actual implementation handle; user Goal §4",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-017",
+  "map_revision": 18,
+  "ticket_status": "in_progress",
+  "integration_attempts_so_far": 2,
+  "source_input_sha256": "6b88551127001cc9d60ee42794f8d450adeaa2d6cbe900de6daed1d36d129516",
+  "round1_snapshot": "/tmp/huhu-t04-round1-source-snapshot",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "33b9a10bedf85dc0ec5f66794d3aa1334f3f4e7cf6572d7a9eaabdb99b985717"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "89a723a42217fd7fef7f9c927b09367b602b65c0fca6df6cb0ae91e30d2bb8d5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "b42456e70b8a15390f933f2821d180374daa8881e80ac3b5211bdc09aeda3879"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03.md",
+      "sha256": "07d5e6adcdde1624028fedc9bf9b0b449100ebfb0a169ddf6fa771a7c3468525"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-review-input-round1.md",
+      "sha256": "3f99117a509b61c4e986d64960c0af598971ce719da7b9f27197fb742aa5971f"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-review-round1.md",
+      "sha256": "2fd68b12ef9d8954fdfe60425235ea60502b41caca66aa8d60cb09f76e2d6772"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-review-root-current-round1.json",
+      "sha256": "adb617810c162574ba8e6e3687809140537f82c6a4d40a0be03b6684cd25bc9b"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-repair-plan-a.md",
+      "sha256": "d501fa1ae3e1cafc38a6634bfd2f0ced004a4e631289a4bd5cb7a921829ab7ee"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-linux-final.json",
+      "sha256": "fb325c9d0ba367d2e83cbbf9af1f6a6ee545eab9f44bbe3780b1512a12a6bcdc"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-handoff-a.md",
+      "sha256": "6d13f4b4393c073962957760bd8ab2c8b554b5a26d591968262883f2eb671ead"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-api-frozen.md",
+      "sha256": "230cbdf3866532c95c796a6b9ca72598bd2cb189c129b021b7a5684df11d46fd"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-api-record-view.md",
+      "sha256": "8b97dbc3dbfd6998f56b17fef6dfdc6b608c446dd768734579b2ca6e30dc1f7f"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ],
+  "write_allocation": [
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "exists": true,
+      "sha256_before": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "exists": true,
+      "sha256_before": "28b54dbb8ec02e7114fd789886e1a58847f9f4afd889a25a4fdc710318187ab5"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "exists": true,
+      "sha256_before": "f04d30a206782996c448aec8b7f7a5cf8501a730f54b7f51bce2e713aa17515a"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "exists": true,
+      "sha256_before": "1207b19bd828dfb90a1f3cb1ce68602db123750b4b65c0d89275e9c92b607c66"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "exists": true,
+      "sha256_before": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/clock.ts",
+      "exists": true,
+      "sha256_before": "f67ca8cdd9b19733183dc4dcc40f9b724345ee5d3e335d314c04c3ec38713b18"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "exists": true,
+      "sha256_before": "c426e4c687c39a9ba1a1585a899997611babc869dcaa4707890cfaaec926afc7"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+      "exists": true,
+      "sha256_before": "db65040d334382e42dd0e7a90ef4ebeff7f22f518d97a20f3e3323b6bd0e3b19"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop.test.ts",
+      "exists": true,
+      "sha256_before": "881aba4bef24aec8e44be6b45d2f8eb0021936da88d70650873437b5517d6f7a"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop-native.test.ts",
+      "exists": true,
+      "sha256_before": "c39e4ee735ea1bd9b525e10781c65f9d1c3ecfc8a55b913e7240f2600200e562"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+      "exists": true,
+      "sha256_before": "afd85ce623a4300f561707f008fce955fe866ee80eaef162f773b7e606807e7f"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store-spaces.test.ts",
+      "exists": true,
+      "sha256_before": "fd027b5386fe38f01cd03269c6498c96412f0d54c8049e814c5f1c76ac0cce8b"
+    },
+    {
+      "path": "src/modules/agent/services/controller-stop-recovery.test.ts",
+      "exists": false
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "exists": true,
+      "sha256_before": "7aff7c1bd554d09f706c9e0e3d2cd93e3bc09463d947c4510095938349d44963"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.test.ts",
+      "exists": true,
+      "sha256_before": "b917878b1c27c8934c82f60a6c40b5e9539e1f8bb180cc568678455bbbe59177"
+    },
+    {
+      "path": "docs/agent-workbench.md",
+      "exists": true,
+      "sha256_before": "003688e3182ffcbed685140b195fc73993b969f425dccf9255f51f2a5a74ad52"
+    }
+  ],
+  "conditional_paths": "workspace-store/clock only bounded lifecycle seams; existing controller/agent-runtime tests only affected lifecycle fixture assertions; docs only accurate shutdown observation/unknown limitations. No required modification of every allocated path.",
+  "accepted_design": "T-04-repair-plan-a.md §§1–6, same approved behavior; Root checked all37 source/probe SHA. F1 stop control distinct from observation, exact captured transport, no new deadline. F2 observed vs true settlement and original-writer quarantine; 15s shutdown caller observation envelope covers existing10s native plus4+1s physical phases without claiming disk cancellation; every late archive effect accurately staged. F3 all async resume/final-send/post-send closing gates, existing legacy input shape protected without T14 migration.",
+  "root_caveats": [
+    "Preserve final native notices/checkpoint intent before TerminalSessions.dispose clears runtime maps; concurrent cleanup cannot drop last evidence or fake persisted=true.",
+    "Archive not-yet-started primary must never start after cancellation. Already invoked non-cancellable primary can only return unknown and reconcile under the original writer; no rollback claim or automatic retry.",
+    "Keep exact captured lease/generation/sid and original request deadline; disconnected scope cannot become successful or spawn a replacement helper.",
+    "Controller full production closure must prove registry/checkpoint/layout stalls cannot block native cleanup; late success/failure and re-enable ownership remain isolated.",
+    "All failure evidence remains; no count reset. Only after final SOURCE STOPPED will Root start actual integration attempt3."
+  ],
+  "native_binary": {
+    "path": "/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+    "sha256": "ce263fd68bdbd792d2b36f675d2ee838ff39052926ce688dcb06b086eb076343",
+    "bytes": 23217880,
+    "usage": "Read-only via explicit HUHU_TEST_PTY_BINARY; no cargo/target/native writes"
+  },
+  "checks": "Migrate actual behavior probes to meaningful scoped regressions, preserve genuine red on frozen production before fix, then green + affected lifecycle closure/scoped types/lint. Use actual commands/exit/logSHA via /tmp/huhu-check-runner.py, unique repair prefixes. No global build/lint/architecture/Promise; Root owns final serial gates. Preserve legacy native results, Browser accepted cookie and output/reply/ACK drain.",
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal change records"
+  ],
+  "other_owners": "B and C production remain STOPPED; C only read-only T05 planning. No UI/native/shared storage changes.",
+  "forbidden": "Unallocated files, dependencies/lockfiles/node_modules, Git write/PR/remote messaging/push/release/archive/permanent knowledge, T05 implementation/T14 migration, new model/writer/platform",
+  "stop_conditions": "New path/API/native/UI or product decision required: report precise gap to Root before mutation. No same-failure blind retry. Preserve all source/probe/check snapshots.",
+  "returns": [
+    "/tmp/huhu-t04-a-repair-handoff.md",
+    "/tmp/huhu-t04-a-repair-source.json",
+    "/tmp/huhu-t04-a-repair-checks.json"
+  ],
+  "return_contract": "Actual changed/unchanged paths and SHA/bytes/snapshots; exact command/cwd/time/exit/original logSHA; completed boundaries and unverified real E2E; SOURCE STOPPED. Do not overwrite original A/T04 handoff or reviewer artifacts.",
+  "real_e2e": "User-owned actual Obsidian/Provider/five-platform; code-layer local production seams only",
+  "dispatched": true,
+  "actual_tool": "collaboration.followup_task",
+  "actual_handle": "/root/prepare_t03",
+  "dispatch_receipt_observed_at": "2026-10-25T11:17:14.051206+00:00",
+  "actual_tool_return": "Call completed without error; no textual payload. Original implementation handle reactivated."
+}

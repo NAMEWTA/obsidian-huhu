@@ -43,7 +43,7 @@ export type CreateTaskAction =
 	  };
 
 export type AutomationAction =
-	| { kind: 'script'; script: string; cwd: string; shell: 'powershell' | 'bash' }
+	| { kind: 'script'; script: string; cwd: string; shell: 'powershell' | 'bash'; spaceId?: string }
 	| { kind: 'obsidian-command'; command: string }
 	| { kind: 'open-file'; path: string }
 	| { kind: 'open-url'; url: string }
@@ -57,6 +57,11 @@ export type AutomationAction =
 			sessionMode: 'fresh' | 'reuse' | 'specific';
 			session?: AgentSessionRef;
 			extraArgs?: string;
+			/**
+			 * The Space the run belongs to. Older definitions have none and stay readable but cannot start until
+			 * the user chooses one; it is never filled in from `cwd`, the focused page or a lone Space.
+			 */
+			spaceId?: string;
 	  };
 export interface AutomationActionCompletion extends AutomationMessage {
 	status: 'succeeded' | 'failed' | 'cancelled' | 'interrupted';
@@ -140,7 +145,20 @@ export interface AgentRunHandle {
 		session?: AgentSessionRef;
 	}>;
 }
+/** A Space as the automation editor lists it: the stable id is what is stored. */
+export interface AgentSpaceChoice {
+	id: string;
+	name: string;
+	directoryLabel: string;
+}
 export interface AgentRuntimePort {
+	/** Active Spaces a definition may bind to; absent when the agent module cannot list them. */
+	listSpaces?(): AgentSpaceChoice[];
+	/**
+	 * The directory a Space-bound terminal action really starts in (so its precheck runs there too). Rejects with the
+	 * run's `spaceRequired` / `spaceUnavailable` / `cwdInvalid` error when the binding cannot be honoured.
+	 */
+	boundCwd?(spaceId: string | undefined, cwd: string): Promise<string>;
 	startScript?(action: Extract<AutomationAction, { kind: 'script' }>, run: AutomationRun): Promise<AgentRunHandle>;
 	listAgents(): AgentDescription[];
 	listSessions(cwd: string): Promise<AgentSessionRef[]>;

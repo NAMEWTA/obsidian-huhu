@@ -1,0 +1,49 @@
+{
+  "finding": "S-01 / C-01 (same P2)",
+  "writer_stopped": true,
+  "source_manifest": "/tmp/huhu-t01-source-manifest-v3.json",
+  "changes": [
+    "src/modules/agent/services/terminal/sessions.ts: cancellation forwards end only while its original lease remains alive",
+    "src/modules/agent/services/terminal/sessions-cancellation.test.ts: native AbortSignal events run in isolated children; dispose→abort, abort→dispose, crash→abort; late spawn cleanup and Browser continuity"
+  ],
+  "checks": [
+    {
+      "command": "pnpm exec vitest run src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+      "shell_exit": 126,
+      "raw": "/tmp/huhu-t01-review-fix-red.log",
+      "result": "valid behavior red: dispose-abort and crash-abort uncaught arrays nonempty; inverse order already passed"
+    },
+    {
+      "command": "pnpm exec vitest run src/modules/agent/services/terminal/sessions-cancellation.test.ts src/host/desktop/native/host.test.ts src/modules/browser/module.test.ts",
+      "shell_exit": 0,
+      "raw": "/tmp/huhu-t01-review-fix-green.log",
+      "result": "3 files / 11 tests passed"
+    },
+    {
+      "command": "node /tmp/huhu-t01-review-rebuild-probe.mjs",
+      "shell_exit": 0,
+      "raw": "/tmp/huhu-t01-review-fix-original-repro.log",
+      "result": "original reviewer entry rebundled against current source: {\"uncaught\":[]}; explicit empty-array assertion passed"
+    },
+    {
+      "command": "pnpm exec eslint src/modules/agent/services/terminal/sessions.ts --max-warnings 0",
+      "shell_exit": 0,
+      "raw": "/tmp/huhu-t01-review-fix-lint.log"
+    },
+    {
+      "command": "pnpm exec tsc -skipLibCheck -p tsconfig.test.json",
+      "shell_exit": 0,
+      "raw": "/tmp/huhu-t01-review-fix-types.log"
+    }
+  ],
+  "original_review_probe": {
+    "path": "/tmp/huhu-t01-review-abort-repro.mjs",
+    "sha256": "c30f9bbd3960b1c9f06b794a6721b9a795b752a952f4cb535851b16815354bb8",
+    "unchanged": true
+  },
+  "rebuilt_probe": "/tmp/huhu-t01-review-abort-repro-fixed.mjs",
+  "not_run": [
+    "unchanged i18n and full regression checks reused",
+    "Root owns rebuild, budget verification and independent re-review"
+  ]
+}

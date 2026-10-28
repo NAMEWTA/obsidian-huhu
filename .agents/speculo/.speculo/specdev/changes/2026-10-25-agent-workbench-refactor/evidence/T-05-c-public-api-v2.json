@@ -1,0 +1,41 @@
+{
+  "utc": "2026-10-25T12:36:41.386291+00:00",
+  "note": "signatures unchanged; raw JSON representation + numeric normalization and preallocation bounds; output limits provisional until enforcement",
+  "files": [
+    {
+      "path": "src/shared/native/input.ts",
+      "sha256": "61ccace85a18e5beb4ddd21d29ff0950c5f107907c2495c12ecbd7edd2425be2",
+      "bytes": 6291
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "d6d4d75f6e862c22edd7e2a61cac3307f230a9860ba290539512d43d9187e332",
+      "bytes": 4434
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b671e67510ba07af6ca9eda205d8423199c15bf4a89ff0a6be7fcdb7e4178bcf",
+      "bytes": 6872
+    },
+    {
+      "path": "src/shared/native/input.test.ts",
+      "sha256": "a02dc8548c0a09bb65521384e7e277c708a912b011c556af7868dfd87ae18d4c",
+      "bytes": 1268
+    },
+    {
+      "path": "src/shared/native/frames.test.ts",
+      "sha256": "63151d2ec98d3c13cb78c592c45b79076e3a4cb5f3d9fae0532be204aac9487b",
+      "bytes": 1144
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "e11d25f1674f5363e80d9ef9826c16c4d16e43e50085916d5f9edf0bcd013056",
+      "bytes": 10487
+    },
+    {
+      "path": "test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "6ef9398ccdda2c172e7e5f534ad3ac14c789a835fb9e3dcb13f395e8f721526a",
+      "bytes": 16239
+    }
+  ]
+}

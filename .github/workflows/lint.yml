@@ -40,6 +40,9 @@ jobs:
             - run: git diff --exit-code -- main.js styles.css
             - run: pnpm run lint
             - run: pnpm run lint:css
-            - run: pnpm run test:all
-            - run: pnpm run check:notices
             - run: pnpm run check:native
+            - run: pnpm run test:all
+              env:
+                  HUHU_TEST_PTY_BINARY: ${{ github.workspace }}/native/pty-server/target/debug/huhu-pty${{ runner.os == 'Windows' && '.exe' || '' }}
+                  HUHU_TEST_CONTROL_BINARY: ${{ github.workspace }}/native/pty-server/target/debug/huhu${{ runner.os == 'Windows' && '.exe' || '' }}
+            - run: pnpm run check:notices

@@ -1,0 +1,43 @@
+{
+  "started": "2026-10-25T15:36:40.412Z",
+  "finished": "2026-10-25T15:36:45.752Z",
+  "argv": [
+    "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/scripts/obsidian-acceptance/agent-workbench-screen.mjs",
+    "/tmp/huhu-t05-root-chrome"
+  ],
+  "commands": [
+    {
+      "executable": "/usr/bin/google-chrome",
+      "args": [
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-background-networking",
+        "--disable-component-update",
+        "--disable-sync",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--remote-debugging-address=127.0.0.1",
+        "--remote-debugging-port=0",
+        "--window-size=1200,1800",
+        "--user-data-dir=/tmp/huhu-t05-root-chrome/profile",
+        "http://127.0.0.1:35723/"
+      ],
+      "utc": "2026-10-25T15:36:40.693Z"
+    }
+  ],
+  "chromeVersion": "Google Chrome 153.0.8010.47",
+  "version": {
+    "Browser": "Chrome/153.0.8010.47",
+    "Protocol-Version": "1.3",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "V8-Version": "15.3.76.12",
+    "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+    "webSocketDebuggerUrl": "ws://127.0.0.1:38449/devtools/browser/e396948e-9b09-41b2-8127-b5c0d6a3ef9f"
+  },
+  "nodeVersion": "v26.11.1",
+  "exitCode": 0,
+  "changedDuringRun": [],
+  "screenshotSHA": "74b62cc1ed7faef88bca25eb38ad8344d74b62cd2a9d227750ade58f03723eb0",
+  "notObsidianOrHelperAcceptance": true
+}

@@ -1,0 +1,212 @@
+[
+  {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+    "sha256": "360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e",
+    "bytes": 17143,
+    "observed_at_utc": "2026-10-25T06:27:23.122890+00:00"
+  },
+  {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+    "sha256": "dbdf0c05167acb300d004dd09df771184a46c2b735eda9b89fb32a8ee90e1ca1",
+    "bytes": 18027,
+    "observed_at_utc": "2026-10-25T06:27:23.123082+00:00"
+  },
+  {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+    "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+    "bytes": 55822,
+    "observed_at_utc": "2026-10-25T06:27:23.123392+00:00"
+  },
+  {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+    "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+    "bytes": 17046,
+    "observed_at_utc": "2026-10-25T06:27:23.123613+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/sessions.ts",
+    "sha256": "94069dfd409b84eb96314d0fa827e9fcf01e3a6a0e9ea2c913c4cc0f1f61d323",
+    "bytes": 11773,
+    "observed_at_utc": "2026-10-25T06:27:23.123883+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/session.ts",
+    "sha256": "483203afdcb172c92e934bd2db6c95ef180fdc703f1e53eea4a9f9da2277072b",
+    "bytes": 14411,
+    "observed_at_utc": "2026-10-25T06:27:23.123988+00:00"
+  },
+  {
+    "path": "src/host/desktop/native/host.ts",
+    "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+    "bytes": 9005,
+    "observed_at_utc": "2026-10-25T06:27:23.124135+00:00"
+  },
+  {
+    "path": "src/host/desktop/native/helper.ts",
+    "sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1",
+    "bytes": 8653,
+    "observed_at_utc": "2026-10-25T06:27:23.124807+00:00"
+  },
+  {
+    "path": "src/shared/native/host.ts",
+    "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569",
+    "bytes": 2032,
+    "observed_at_utc": "2026-10-25T06:27:23.124958+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/workspace-service.ts",
+    "sha256": "3a62ab673d88bc04e5ff7c5019aeae1cb2d0d256fbc4211e3e926a906f2e163f",
+    "bytes": 21851,
+    "observed_at_utc": "2026-10-25T06:27:23.125098+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/controller.ts",
+    "sha256": "4aaeae21fe5c032d4df4944fd7c6e3502d09a01fda0be453374a83d7c9c48336",
+    "bytes": 38818,
+    "observed_at_utc": "2026-10-25T06:27:23.125256+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/spaces/space-service.ts",
+    "sha256": "8712c1981016dff663fb688cf69de038d053b11e1dbd6427f3cf064abdde2de7",
+    "bytes": 14562,
+    "observed_at_utc": "2026-10-25T06:27:23.125418+00:00"
+  },
+  {
+    "path": "src/modules/agent/core/space/model.ts",
+    "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+    "bytes": 1234,
+    "observed_at_utc": "2026-10-25T06:27:23.125529+00:00"
+  },
+  {
+    "path": "src/modules/agent/core/space/ports.ts",
+    "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+    "bytes": 1063,
+    "observed_at_utc": "2026-10-25T06:27:23.125589+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+    "sha256": "b65aed981f4756a913579043c9992d92585cd9b748e48b2bbc86969c06957c9f",
+    "bytes": 2731,
+    "observed_at_utc": "2026-10-25T06:27:23.125651+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+    "sha256": "59106c02234f0f3325711e863ee84b4fd4e658b1f62335ab2f9705360391e6d2",
+    "bytes": 5681,
+    "observed_at_utc": "2026-10-25T06:27:23.125711+00:00"
+  },
+  {
+    "path": "src/host/desktop/native/host.integration.test.ts",
+    "sha256": "d47756c71903e37437832a9afa51b2769bb797e064a09060c9347ab5a170e9b5",
+    "bytes": 2466,
+    "observed_at_utc": "2026-10-25T06:27:23.125772+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+    "sha256": "3a0ba25a7a34f909150ce6c5f9d6622b919957cdabe0e3cd2458c8b55024e430",
+    "bytes": 11752,
+    "observed_at_utc": "2026-10-25T06:27:23.125842+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/workspace-store.ts",
+    "sha256": "cd0eba9b220e237ea69f464eb80eefee729ce7e2440f41947674516dd59bc11a",
+    "bytes": 4230,
+    "observed_at_utc": "2026-10-25T06:31:43.803831+00:00"
+  },
+  {
+    "path": "src/modules/agent/module.ts",
+    "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+    "bytes": 8995,
+    "observed_at_utc": "2026-10-25T06:31:43.804034+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/spaces/records.ts",
+    "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+    "bytes": 4239,
+    "observed_at_utc": "2026-10-25T06:31:43.804216+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/agent-runtime.ts",
+    "sha256": "499dba720ad4b5a357bb79b0605044199a9bc110cc5173ab3f12ce4c60d8b2fc",
+    "bytes": 22946,
+    "observed_at_utc": "2026-10-25T06:31:43.804387+00:00"
+  },
+  {
+    "path": "src/modules/agent/services/prompt-runner.ts",
+    "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+    "bytes": 7898,
+    "observed_at_utc": "2026-10-25T06:31:43.804483+00:00"
+  },
+  {
+    "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+    "sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a",
+    "bytes": 14861,
+    "observed_at_utc": "2026-10-25T06:31:43.804701+00:00"
+  },
+  {
+    "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+    "sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f",
+    "bytes": 16080,
+    "observed_at_utc": "2026-10-25T06:31:43.804873+00:00"
+  },
+  {
+    "path": "src/modules/agent/core/workspace/model.ts",
+    "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+    "bytes": 2415,
+    "observed_at_utc": "2026-10-25T06:31:43.804966+00:00"
+  },
+  {
+    "path": "src/modules/agent/core/workspace/ops.ts",
+    "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+    "bytes": 15857,
+    "observed_at_utc": "2026-10-25T06:31:43.805064+00:00"
+  },
+  {
+    "path": "native/pty-server/src/session.rs",
+    "sha256": "e66231fc943fc37e2db244bec8fd67111a7a97cb986cf43fc06f532c0db8c928",
+    "bytes": 13479,
+    "observed_at_utc": "2026-10-25T06:31:43.805234+00:00"
+  },
+  {
+    "path": "native/pty-server/src/job.rs",
+    "sha256": "49c9fecfc1c9d5a931f3aebd4786f2791186b04ad614b3595e05959e4accd540",
+    "bytes": 1251,
+    "observed_at_utc": "2026-10-25T06:31:43.805367+00:00"
+  },
+  {
+    "path": "native/pty-server/src/main.rs",
+    "sha256": "cc4080ae15d34684f9216710f916b21bd8f5e9530c668b149837640a428cb1fe",
+    "bytes": 5201,
+    "observed_at_utc": "2026-10-25T06:31:43.805446+00:00"
+  },
+  {
+    "path": "native/pty-server/tests/stdio.rs",
+    "sha256": "821862321ebd753a2216d743ee0ba91e97ad2626e36e99a7e1e7677d83859049",
+    "bytes": 6376,
+    "observed_at_utc": "2026-10-25T06:31:43.805527+00:00"
+  },
+  {
+    "path": "src/host/desktop/native/host.test.ts",
+    "sha256": "2368913c32487d291e3d263eff79c51fa84ba02382212b9800380a321b940907",
+    "bytes": 7164,
+    "observed_at_utc": "2026-10-25T06:31:43.805607+00:00"
+  },
+  {
+    "path": "src/host/desktop/native/runtime.test.ts",
+    "sha256": "5b5b11a5fa92461ed6dd40f058227c168c33cf60274a644eed4c6462deeab9e8",
+    "bytes": 1570,
+    "observed_at_utc": "2026-10-25T06:31:43.805665+00:00"
+  },
+  {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+    "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+    "bytes": 13573,
+    "observed_at_utc": "2026-10-25T06:31:43.805770+00:00"
+  },
+  {
+    "path": ".agents/skills/dev/references/architecture.md",
+    "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+    "bytes": 19768,
+    "observed_at_utc": "2026-10-25T06:31:43.806154+00:00"
+  }
+]

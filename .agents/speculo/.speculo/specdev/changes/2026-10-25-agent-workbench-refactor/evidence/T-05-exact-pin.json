@@ -1,0 +1,33 @@
+{
+  "ticket": "T-05",
+  "decision": "Exact pin only current resolved xterm 6.0.0 and addon-search 0.16.0 for concentrated private adapters; no engine upgrade/patch or dependency graph change.",
+  "at": "2026-10-25T12:19:53.724123+00:00",
+  "files": [
+    {
+      "path": "package.json",
+      "before_sha256": "8a0ec223a318cd4deca6177496edf227b89d136cc31319a57b653e61f438f4ce",
+      "after_sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "before_sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "after_sha256": "004818ad2aaab47043b39d4e545dd77f8be62fd1544f2eecfbaa5285c088285a"
+    }
+  ],
+  "verification": {
+    "command": [
+      "pnpm",
+      "install",
+      "--offline",
+      "--lockfile-only",
+      "--frozen-lockfile",
+      "--ignore-scripts"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T12:19:53.772068+00:00",
+    "finished_at": "2026-10-25T12:20:37.165004+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t05-root-exact-pin.log",
+    "output_sha256": "2ec11228f3cd9d26140448eac4151ec1b317b9d52c1bf3607dd5a85a50fd3587"
+  }
+}

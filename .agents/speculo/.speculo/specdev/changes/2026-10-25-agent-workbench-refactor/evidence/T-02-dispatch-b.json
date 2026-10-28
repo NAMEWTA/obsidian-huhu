@@ -1,0 +1,63 @@
+{
+  "task": "T-02 implementation B",
+  "actual_agent": "/root/implement_t01",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "bada01fea2f4d831413e057294a4eb8d548adf9b4efa657571fb06caee57abd9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "9fadc49dc27ebb40231c8c7cfb79eff62c5901b16b907b82261ece93c2515cd6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/02-space-identities.md",
+      "sha256": "8d90a8b6d1bc9055978d1f386db6d49921f1821a5a94abfc39cd50368b0b37ac"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "13c562c5ed4006aff4c7cf5089965f3ba0d7811ed65dc6dfe9f473453a8e0473"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-preflight.md",
+      "sha256": "1c1d74826fc0d971b0e1b7966036819b2622bec8e07809a8cace4c1bcf826aab"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-ports-draft.md",
+      "sha256": "22612095c31d745e1c7dde46bb6299a9b48be3b3dfcd2e63a7d666826ae801d5"
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e"
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1"
+    },
+    {
+      "path": "src/modules/agent/core/space/errors.ts",
+      "sha256": "8159653372f3b24851644c4933b3a251584ae75faddd670bb385c9d78898062e"
+    }
+  ],
+  "writable_paths": [
+    "src/modules/agent/platform/desktop/spaces/**"
+  ],
+  "read_only_core_contracts": [
+    "model.ts",
+    "ports.ts",
+    "errors.ts"
+  ],
+  "note": "Dispatch originally read GP-008/Map9; GP-009/Map10 adds only A beforeSpawn exact paths; B contracts unchanged, updated via actual message."
+}

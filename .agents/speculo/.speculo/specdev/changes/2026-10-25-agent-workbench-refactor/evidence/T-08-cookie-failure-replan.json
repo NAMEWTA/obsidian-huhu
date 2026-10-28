@@ -1,0 +1,150 @@
+{
+  "utc": "2026-10-26T14:35:10.000849+00:00",
+  "goal_revision": "GP-032",
+  "map_revision": 33,
+  "recovery_cycle": 1,
+  "attempts": 2,
+  "next_root_attempt": 3,
+  "reason": "Accepted complete independent R4 F7 actual Cookie consumer dual failure",
+  "scope_paths": 91,
+  "repair_paths": [
+    "src/shared/native/cookies.ts",
+    "src/shared/native/cookies.test.ts",
+    "src/host/desktop/native/host.integration.test.ts"
+  ],
+  "owner": "codex:/root/implement_t08_profile",
+  "original_sources": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/cookies.ts",
+      "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9",
+      "bytes": 1001,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/cookies.test.ts",
+      "missing": true,
+      "sha256": null
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1",
+      "bytes": 3070,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1.raw"
+    }
+  ],
+  "snapshots": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/cookies.ts",
+      "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9",
+      "bytes": 1001,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/host/desktop/native/host.integration.test.ts",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1",
+      "bytes": 3070,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "70dd240ecdf13e4f0542acc5e2f94ee6c579352f797bdf7b5c214eb6dd5ee305",
+      "bytes": 40400,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/70dd240ecdf13e4f0542acc5e2f94ee6c579352f797bdf7b5c214eb6dd5ee305.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "c01e181a42a62250ed4d9720b1cb70d4f8d3018523bde03317757f97f2bece47",
+      "bytes": 34007,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/c01e181a42a62250ed4d9720b1cb70d4f8d3018523bde03317757f97f2bece47.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "b016799f027289bd3c11a37052087b28dea308408abab67cf06b8982c29df25f",
+      "bytes": 38738,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/b016799f027289bd3c11a37052087b28dea308408abab67cf06b8982c29df25f.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "31246004e70f8c5b1853d1b086b43e5818219635195d24df6ac358473acee9e1",
+      "bytes": 52808,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/31246004e70f8c5b1853d1b086b43e5818219635195d24df6ac358473acee9e1.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-write-allocation-r5.json",
+      "sha256": "88978ec8a462ca88a426c8bfe8e98591aa6346739779edc916b49ae181e140a7",
+      "bytes": 10819,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/88978ec8a462ca88a426c8bfe8e98591aa6346739779edc916b49ae181e140a7.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-review-r4-root-audit.json",
+      "sha256": "aa4aa329d16bc9100936d18f1f9dd1973fc8d5998c09927e5cc3ec451f7f8a91",
+      "bytes": 62170,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/aa4aa329d16bc9100936d18f1f9dd1973fc8d5998c09927e5cc3ec451f7f8a91.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-review-r4-report.md",
+      "sha256": "c72d0496569781666f16c138da534994b80adae023e98927a00d4f8c832c927b",
+      "bytes": 21675,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/c72d0496569781666f16c138da534994b80adae023e98927a00d4f8c832c927b.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-write-allocation-r6.json",
+      "sha256": "2153eb3ba07a2c3ab479506b6465e6600ce664b6a8d2d0c02a54d20db808d306",
+      "bytes": 11075,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/2153eb3ba07a2c3ab479506b6465e6600ce664b6a8d2d0c02a54d20db808d306.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "caa2e0621c11a6d980f5eef5dfe64e1a45a34c55e9e75d9307418db7fff0743a",
+      "bytes": 40767,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/caa2e0621c11a6d980f5eef5dfe64e1a45a34c55e9e75d9307418db7fff0743a.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "c19603a58e6e2839982109be7ca7509a550d44ab1ed3e95864e1adb6d121ce80",
+      "bytes": 34244,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/c19603a58e6e2839982109be7ca7509a550d44ab1ed3e95864e1adb6d121ce80.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/08-terminal-coordination.md",
+      "sha256": "a7fc987c48acb8f775e1a13ae95a13c67458af528306d8a57d1c5052b653835f",
+      "bytes": 39964,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/a7fc987c48acb8f775e1a13ae95a13c67458af528306d8a57d1c5052b653835f.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+      "sha256": "6e3370c36f8549c01baba4a6e24db2f7c74595be1044431d07bd457e84a09168",
+      "bytes": 53489,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/6e3370c36f8549c01baba4a6e24db2f7c74595be1044431d07bd457e84a09168.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-cookie-failure-packet.md",
+      "sha256": "9bca290f1000966f64e2aa101ebed71bd61d8c24dbd732d1d77c68fb541f8229",
+      "bytes": 5147,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/cookie-failure-replan/objects/9bca290f1000966f64e2aa101ebed71bd61d8c24dbd732d1d77c68fb541f8229.raw"
+    }
+  ],
+  "product_writes": [],
+  "permission_basis": "Existing full18-ticket implementation and same-scope defect repair; no new public behavior or user decision.",
+  "pre_dispatch_clarification": {
+    "allocation_sha256": "33d0217ef8c2840a4d74dc8686ee8eb02bda7dd21eb040b509ac7ba794c19f05",
+    "reason": "Root5 includes an already completed cancellation fixture; only main/styles/budget/notices form the new Root generation window, that fixture remains readonly."
+  }
+}

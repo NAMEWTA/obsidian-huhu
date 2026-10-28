@@ -1,0 +1,45 @@
+{
+  "utc": "2026-10-26T15:11:13.617619+00:00",
+  "reason": "F7 same reader preserves original read and final cleanup errors; exact single-source minified growth293B",
+  "before": {
+    "path": "scripts/bundle-budget.json",
+    "sha256": "8dfce686accf050cde383516d5a834550fe5f90f64f10d24fca3d790ae54a4a0",
+    "bytes": 2946,
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/8dfce686accf050cde383516d5a834550fe5f90f64f10d24fca3d790ae54a4a0.raw"
+  },
+  "after": {
+    "path": "scripts/bundle-budget.json",
+    "sha256": "b5c984fbb1cc1532dfb4849fc8bd6cbe432ee4c84de08f42b825319d36de2d16",
+    "bytes": 3306,
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/b5c984fbb1cc1532dfb4849fc8bd6cbe432ee4c84de08f42b825319d36de2d16.raw"
+  },
+  "changed_limit": {
+    "moduleActivationBytes.agent": [
+      1314816,
+      1315840
+    ]
+  },
+  "unchanged_limits": [
+    "outputBytes",
+    "stylesBytes",
+    "eagerBytes",
+    "other moduleActivationBytes"
+  ],
+  "actual": {
+    "main": 6669973,
+    "agent": 1314959,
+    "eager": 123533
+  },
+  "attribution": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-budget-attribution-r5.json",
+    "sha256": "a4261cd97ca0dc7b692fa0e9d4e525e8f156e0b0248f29461a9f2f52d11c4749",
+    "bytes": 1314104,
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/a4261cd97ca0dc7b692fa0e9d4e525e8f156e0b0248f29461a9f2f52d11c4749.raw"
+  },
+  "original_enforced_failure": {
+    "path": "/tmp/huhu-t08-root-r5-bundle-before.log",
+    "sha256": "3986152ea9a525007cc8dfe4d3e1e33843e0271e5c21d09343684ca40f78659c",
+    "bytes": 1604,
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/3986152ea9a525007cc8dfe4d3e1e33843e0271e5c21d09343684ca40f78659c.raw"
+  }
+}

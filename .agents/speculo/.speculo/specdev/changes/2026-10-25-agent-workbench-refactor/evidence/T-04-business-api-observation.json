@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-10-25T09:50:20.667018+00:00",
+  "note": "Public methods/DTO/i18n frozen; internal Workspace implementation continues. Snapshot is local API handoff, not final candidate or code acceptance.",
+  "files": [
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "producer_sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "root_observed_sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "matches": true
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "producer_sha256": "902cd834289ed6e6456c49ade2bf09d8dab57600ee0b63fef48d7f6a58eebbd0",
+      "root_observed_sha256": "902cd834289ed6e6456c49ade2bf09d8dab57600ee0b63fef48d7f6a58eebbd0",
+      "matches": true
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "producer_sha256": "682ae35d1b9ef73146ad4fcf29791ceff05a5b7870f6fd575b7cfa3384d83911",
+      "root_observed_sha256": "682ae35d1b9ef73146ad4fcf29791ceff05a5b7870f6fd575b7cfa3384d83911",
+      "matches": true
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "producer_sha256": "f1521198d3e5574a544594437f3356c5cb07c3f4185e2693fd85f45ff7012764",
+      "root_observed_sha256": "f1521198d3e5574a544594437f3356c5cb07c3f4185e2693fd85f45ff7012764",
+      "matches": true
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "producer_sha256": "945723a552a262d284024f7789c73aff3c5a671568afd55a04964bd0ac03c687",
+      "root_observed_sha256": "945723a552a262d284024f7789c73aff3c5a671568afd55a04964bd0ac03c687",
+      "matches": true
+    }
+  ]
+}

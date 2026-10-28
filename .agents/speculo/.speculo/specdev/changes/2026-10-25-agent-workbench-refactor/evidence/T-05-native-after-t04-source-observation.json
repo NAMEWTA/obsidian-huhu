@@ -1,0 +1,219 @@
+{
+  "task": "T-05 native/transport after T04 read-only design",
+  "owner": "codex:/root/implement_t01",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observed_at_utc": "2026-10-25T11:15:18.857524+00:00",
+  "authorization": "read-only; only this JSON and the paired /tmp plan written",
+  "files": [
+    {
+      "path": "/tmp/huhu-t05-after-t04-preflight.md",
+      "sha256": "c7b7c91803b24a28a2878008ed80874ff1d6b8828ac4a81c109de4c83fcdee74",
+      "bytes": 17205,
+      "observed_at_utc": "2026-10-25T11:15:18.855926+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "/tmp/huhu-t05-preflight.md",
+      "sha256": "c43e6573160d2e0c7dbaadc0e1d91216a92ccdd8c88a109fa0cc0cb2e0876acd",
+      "bytes": 17923,
+      "observed_at_utc": "2026-10-25T11:15:18.856044+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "0befe4d829122ff34476866765844e620e2974e85690e1aea2168b070e822952",
+      "bytes": 16854,
+      "observed_at_utc": "2026-10-25T11:15:18.856100+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observed_at_utc": "2026-10-25T11:15:18.856167+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observed_at_utc": "2026-10-25T11:15:18.856314+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573,
+      "observed_at_utc": "2026-10-25T11:15:18.856367+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "99c83f27f65ebc6203dda1f4f937f5159369cea656a31e63ba77c7beddd58167",
+      "bytes": 11031,
+      "observed_at_utc": "2026-10-25T11:15:18.856404+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "d1c4b479b595fd3d18efd9a642ab1e4b34ca5840ac25bb7bdde386e147c1c36b",
+      "bytes": 13023,
+      "observed_at_utc": "2026-10-25T11:15:18.856446+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "2e39c4f4c74b4c371b59ed16b76c60759ab90e19d232f58dc72d5744e7977eeb",
+      "bytes": 3480,
+      "observed_at_utc": "2026-10-25T11:15:18.856617+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905,
+      "observed_at_utc": "2026-10-25T11:15:18.856722+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "sha256": "d5bc6bbcd4df5a48a766225b241898ca402cefee81dc0ee14ee67ee436f0400c",
+      "bytes": 5135,
+      "observed_at_utc": "2026-10-25T11:15:18.856788+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/shared/native/cookies.ts",
+      "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9",
+      "bytes": 1001,
+      "observed_at_utc": "2026-10-25T11:15:18.856833+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "ede0ebd60a46dd859772c028d9d6679be484edff10e4cd9146416bee82148f8b",
+      "bytes": 7582,
+      "observed_at_utc": "2026-10-25T11:15:18.856908+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "2589a3cbb077115653d8b080ed621a22aa8ca5d232f342ef35389f68927c0dfb",
+      "bytes": 33398,
+      "observed_at_utc": "2026-10-25T11:15:18.856953+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "bytes": 4115,
+      "observed_at_utc": "2026-10-25T11:15:18.857011+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "bytes": 4190,
+      "observed_at_utc": "2026-10-25T11:15:18.857047+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/cookies.rs",
+      "sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39",
+      "bytes": 4199,
+      "observed_at_utc": "2026-10-25T11:15:18.857081+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "native/pty-server/src/agent_data.rs",
+      "sha256": "12a184efb05a83ffdfee1eee70aefbd0a6e12921a86813cd05f7994a8e0f6080",
+      "bytes": 83199,
+      "observed_at_utc": "2026-10-25T11:15:18.857115+00:00",
+      "scope": "targeted production sections and constants, not whole-file semantic audit",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "bytes": 15892,
+      "observed_at_utc": "2026-10-25T11:15:18.857211+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998",
+      "bytes": 25192,
+      "observed_at_utc": "2026-10-25T11:15:18.857296+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "sha256": "c8b2623e10adb94535d26f83647cfb998846612fbda51c193808f47c33d0b6fc",
+      "bytes": 4539,
+      "observed_at_utc": "2026-10-25T11:15:18.857360+00:00",
+      "scope": "read-only task input/production call-chain observation",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    },
+    {
+      "path": "node_modules/@types/node/stream.d.ts",
+      "sha256": "849484324695b587f06abee7579641efe061b7338f9694ec410a76f477fe4df3",
+      "bytes": 74430,
+      "observed_at_utc": "2026-10-25T11:15:18.857431+00:00",
+      "scope": "targeted production sections and constants, not whole-file semantic audit",
+      "active_writer": false,
+      "freeze_status": "point-in-time observation; T04 independent review pending, not a new dispatch freeze"
+    }
+  ],
+  "not_run": [
+    "tests",
+    "build",
+    "lint",
+    "cargo",
+    "helper",
+    "PTY",
+    "Provider",
+    "K-03 reproduction"
+  ],
+  "unchanged_boundary": "No repository/formal evidence/Git/dependency/target writes; original T04 frozen helper copy untouched",
+  "proposal_status": "No public DTO, numeric budget, new wire or writable path is authorized/frozen by this report"
+}

@@ -1,0 +1,32 @@
+{
+  "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
+  "outputBytes": 6310912,
+  "stylesBytes": 1422336,
+  "eagerBytes": 123904,
+  "forbiddenEagerAreas": [
+    "npm:lunar-typescript",
+    "npm:chart.js",
+    "npm:@xterm/xterm",
+    "npm:@xterm/headless",
+    "npm:simple-icons",
+    "npm:react-dom",
+    "npm:radix-ui"
+  ],
+  "moduleActivationBytes": {
+    "home": 492544,
+    "agent": 1174528,
+    "icons": 158720,
+    "browser": 103424,
+    "archives": 176128,
+    "automations": 217088,
+    "notifications": 20480,
+    "comments": 111616,
+    "navigator": 203776,
+    "sync": 98304,
+    "safe": 60416
+  },
+  "outputBudgetReason": "T-06 审查修复候选 main.js 实测6310559B，较T-05最终6234832B增加75727B；较恢复周期首个候选6307900B增加2659B：Session连续批次/临时缺口2184B、Hook consumer原子补洞与OpenCode root fence465B、共用窗口常量10B。只读前序覆盖精确重现旧产物，新产物SHA一致；逐输入归因见2026-10-25-agent-workbench-refactor/evidence/T-06-review-repair1-budget-attribution.json。无新增依赖，启动闭包仍106输入/123531B；仅输出上限按最小KiB向上取整。",
+  "eagerBudgetReason": "T-01首用加载优化后启动闭包实测123387字节（基线122867），新增520字节为能力缓存/卸载代理；原生工厂、取消等待及desktop实现均在首次acquire后加载，启动输入108减至106。上限按最小KiB向上取整，forbiddenEagerAreas和模块激活阈值未变。",
+  "stylesBudgetReason": "T-02 Space表单、导航和空态新增Tailwind规则后styles.css实测1421356B，较T-01增加566B；仅按最小KiB向上取整，作者CSS与现有设计系统未改变。",
+  "moduleActivationBudgetReason": "T-06 审查修复后Agent激活闭包实测1174356B，较前候选1171697B增加2659B；较T-05的1113712B增加60644B。预算按最小KiB取1174528B；实际前序覆盖与逐输入归因见T-06-review-repair1-budget-attribution.json。启动106输入/123531B、其他模块闭包及styles.css1421846B保持；eager/styles/其他模块上限不扩大。"
+}

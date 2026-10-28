@@ -1,0 +1,55 @@
+{
+  "recorded_at": "2026-10-25T22:20:48.203844+00:00",
+  "lead": "codex:/root",
+  "goal_revision": "GP-021",
+  "map_revision": 22,
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "preflight": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-recovery1-preflight-root-audit.json",
+    "sha256": "19561a99d5bb27861c56d2258e12145873e3e5adc33590d0639d40afe8de970c"
+  },
+  "packet": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-recovery1-packet.md",
+    "sha256": "ca372aa20a33132b4b7e3bd3a9d0bab1bcfdcedf9ca9ae6f6ce10a26a29ef356"
+  },
+  "allocation": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-recovery1-write-allocation.json",
+    "sha256": "1a90ae13f142c606728438ad752ad3377ac6f4c765e62f99d73889cf76810718"
+  },
+  "actual_native_dispatches": [
+    {
+      "tool": "collaboration.followup_task",
+      "target": "/root/prepare_t03",
+      "scope": [
+        "src/modules/agent/services/workspace-service.ts",
+        "src/modules/agent/services/workspace-service-activity.test.ts",
+        "src/modules/agent/services/controller.ts",
+        "src/modules/agent/services/launch/foreground-intent.ts",
+        "src/modules/agent/services/launch/foreground-intent.dom.test.tsx",
+        "src/modules/agent/services/workspace-service-foreground.dom.test.tsx"
+      ],
+      "condition": "A implements actual capture + Workspace red/green and freezes API for Root; B consumer not yet released."
+    },
+    {
+      "tool": "collaboration.followup_task",
+      "target": "/root/prepare_t05_screen",
+      "scope": [
+        "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+        "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+        "src/modules/agent/ui/terminal/terminal-view.ts",
+        "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+        "scripts/obsidian-acceptance/agent-workbench-activity.mjs"
+      ],
+      "condition": "Independent browser script geometry and capture work released; Host/API consumers wait for Root actual A API readback."
+    }
+  ],
+  "still_stopped": [
+    "All C paths",
+    "Other A/B allocated paths",
+    "T07-T18 implementation"
+  ],
+  "original_integration_attempts": 3,
+  "recovery_cycle": 1,
+  "recovery_attempts": 0,
+  "authorization": "Existing user full18-ticket Agent Team and code acceptance; no commit/push/PR/release/archive; real host/provider/platform E2E user-owned."
+}

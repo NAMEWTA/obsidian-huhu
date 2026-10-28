@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-25T22:12:15.804252+00:00",
+  "choice": "B: suppress intermediate automatic focus, then exact one-time commit of original intent",
+  "source": {
+    "path": "/tmp/huhu-t06-a-foreground-repair-design.md",
+    "sha256": "3725bf26e5453fbf18774f8c407d860dbbba30fba0c2ac7d3aa7f9535938db17",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-preplan/objects/3725bf26e5453fbf18774f8c407d860dbbba30fba0c2ac7d3aa7f9535938db17.raw"
+  },
+  "deadline": "1000ms from committed publication; one timer, no renewal or replay",
+  "identity": "One monotonic id per caller with phase changes; committed publishes even with unchanged layout. Original token ownership transfers only at commit.",
+  "required_before_B_consumption": "A actual typed API source read by Root; exact normal-navigation generation and stale effect gating must be explicit. Cancel cleanup alone must not create focus; later genuine navigation must still work.",
+  "subscriber_policy": "Lifecycle-bound subscription per mounted Host; no per-activity observer creation. Establish actual bound from existing view budgets or return a concrete capacity design to Root; do not add an arbitrary independent limit silently.",
+  "external_scope": "Existing approved display/navigation behavior only; OS foreground remains T08 unknown.",
+  "product_write_state": "Not dispatched yet; no product writes authorized by this record alone."
+}

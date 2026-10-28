@@ -1,3 +1,4 @@
+import { messages as nativeStrings } from '../src/shared/i18n/lazy/native';
 // Tests and verify scripts render module code without loading module entries; give them every module's
 // strings and the dictionaries modules share (in the plugin each module registers them when it loads).
 import { messages as uiStrings } from '../src/shared/i18n/lazy/ui';
@@ -20,3 +21,5 @@ import { messages as calendarStrings } from '../src/shared/i18n/lazy/calendar';
 import { messages as appearanceStrings } from '../src/shared/i18n/lazy/appearance';
 
 for (const messages of [uiStrings, calendarStrings, automationStrings, browserStrings, commonStrings, appearanceStrings, agent, archives, automations, browser, comments, home, icons, navigator, notifications, sync, safe]) registerMessages(messages);
+
+registerMessages(nativeStrings);

@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-10-25T14:39:24.956751+00:00",
+  "tool": "collaboration.send_message",
+  "target": "/root/prepare_t03",
+  "actual_action": "Root sent immutable intermediate binary path/SHA and audited producer to A for production TerminalSessions pressure; also required C Host/helper source snapshots and coordination around pending normal-exit late ACK fix.",
+  "binary": "/tmp/huhu-t05-c-linux-checkpoint-20261025T143558Z",
+  "binary_sha256": "7e03d6cdc7b47d3e77e97bbe175129ec59ea5039eaf065c0222ff37d05279d04",
+  "root_audit": "T-05-c-linux-checkpoint-root-audit.json",
+  "root_audit_sha256": "b8c5c276132dedcbf5a77a0775584d3ccc91afade407949ac357f9db87ab1b9a",
+  "status": "actual relay complete; intermediate pressure/final integration pending, not final T05 pass"
+}

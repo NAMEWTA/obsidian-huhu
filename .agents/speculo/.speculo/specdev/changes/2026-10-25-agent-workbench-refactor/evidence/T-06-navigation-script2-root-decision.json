@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-10-25T21:34:26.074750+00:00",
+  "root_read_full_report": true,
+  "diagnosis": [
+    {
+      "original": "/tmp/huhu-t06-b-navigation-v2-diagnosis.json",
+      "sha256": "58e546e5d4a73b5f8dbcc05b1688d66a6c7694aba88e99e7357347a6750b3560",
+      "bytes": 59665,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/navigation-v2-root/58e546e5d4a73b5f8dbcc05b1688d66a6c7694aba88e99e7357347a6750b3560.raw"
+    },
+    {
+      "original": "/tmp/huhu-t06-b-navigation-v2-diagnosis.md",
+      "sha256": "16d334d1efb1f3056af03c084839ffab0445b4899a2705350da5202a69b45a82",
+      "bytes": 9224,
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/navigation-v2-root/16d334d1efb1f3056af03c084839ffab0445b4899a2705350da5202a69b45a82.raw"
+    }
+  ],
+  "source_observations_verified": 9,
+  "prior_source": {
+    "original": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root-integration2/objects/c40866f20d2c7cd06de49e161080a1ad137214449c1bab6296a034dfb85823e0.raw",
+    "sha256": "c40866f20d2c7cd06de49e161080a1ad137214449c1bab6296a034dfb85823e0",
+    "bytes": 48312,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/navigation-v2-root/c40866f20d2c7cd06de49e161080a1ad137214449c1bab6296a034dfb85823e0.raw"
+  },
+  "actual_dispatch": {
+    "tool": "collaboration.followup_task",
+    "target": "/root/prepare_t05_screen",
+    "returned": "success empty receipt",
+    "requested_model_effort": "existing gpt-6.1-sol/xhigh",
+    "allowed_paths": [
+      "scripts/obsidian-acceptance/agent-workbench-activity.mjs"
+    ],
+    "scope": [
+      "Default complete Enter packet; preserve original diagnostic option",
+      "Capture readonly original React hint after unchanged assertions; no new focus/output/refresh or timeout changes"
+    ],
+    "all_other_B_sources": "STOPPED",
+    "global_chrome_build": "Root only"
+  },
+  "runtime_status": "No new browser execution; candidate3 not frozen or run. A owns causality test and two-path service repair."
+}
