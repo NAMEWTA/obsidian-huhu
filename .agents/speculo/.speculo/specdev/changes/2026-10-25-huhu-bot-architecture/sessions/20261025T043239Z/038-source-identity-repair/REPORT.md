@@ -12,7 +12,7 @@ Status: completed
 
 ## 产物与验证
 
-生产修改仅 [sources.ts](/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/platform/obsidian/sources/sources.ts)：内部 `FileVersion`/`unchangedFile` 统一核对对象与版本，`save` 在异步hash后、生成句柄和缓存写入前执行复核；scope读操作也在实际task开始时复核，避免前置检查与真正读取之间的微任务窗口。编辑器捕获不重新读取 live 文件，因此编辑器内容、leaf 或registry之后变化不会替换已捕获正文。
+生产修改仅 [sources.ts](../../../../../../../../../src/modules/huhubot/platform/obsidian/sources/sources.ts)：内部 `FileVersion`/`unchangedFile` 统一核对对象与版本，`save` 在异步hash后、生成句柄和缓存写入前执行复核；scope读操作也在实际task开始时复核，避免前置检查与真正读取之间的微任务窗口。编辑器捕获不重新读取 live 文件，因此编辑器内容、leaf 或registry之后变化不会替换已捕获正文。
 
 永久回归位于 `sources.test.ts` 和 `services/host-read/host-read.test.ts`：
 

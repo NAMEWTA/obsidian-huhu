@@ -6,7 +6,7 @@ Status: completed
 
 ## 聚焦交接
 
-唯一源码变更是 [hap_test.go](/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/tests/contract/assistant/hap_test.go:58) 末段的一处 reason：`ADAPTER_NOT_ASSEMBLED` → `CREDENTIAL_MISSING`。默认 Responses 已装配，缺凭证必须明确拒绝；仍严格要求非空 Error 和 `MODEL_UNAVAILABLE`，没有弱化成任意错误通过，也没有修改生产行为。
+唯一源码变更是 [hap_test.go](../../../../../../../../../native/huhubot/tests/contract/assistant/hap_test.go:58) 末段的一处 reason：`ADAPTER_NOT_ASSEMBLED` → `CREDENTIAL_MISSING`。默认 Responses 已装配，缺凭证必须明确拒绝；仍严格要求非空 Error 和 `MODEL_UNAVAILABLE`，没有弱化成任意错误通过，也没有修改生产行为。
 
 修改前 SHA256 `7ea55761a5efae8349efc558f48ad2349228b4a3a03efab1416bcbe586ee2f70`；最终 SHA256 `6816ceb54a0067bf007c0b551e38f8f8f35d2db5e2973ceb2b71608b15af6ca0`。完整 before（历史日志已清理：`logs/00-hap_test.go.before.txt`）、一行 diff（历史日志已清理：`logs/03-expectation.patch`）和逐字节证明（历史日志已清理：`logs/03-own-change.json`）保存，其他所有测试字节保持，包括 strict DTO 的未知字段、大小写、CAS、secret/apiKey 拒绝及公开错误不回显 sentinel。
 

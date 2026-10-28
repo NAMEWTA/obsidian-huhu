@@ -160,6 +160,7 @@ async function main() {
 	for (const language of ['en', 'zh', 'zh', 'en'] as const) {
 		setLanguage(language);
 		const keys = [
+			'editor.highlights.add',
 			'editor.comments.add',
 			'editor.comments.openPanel',
 			'editor.comments.atCursor',
@@ -181,8 +182,8 @@ async function main() {
 	scriptName = '用户改名 / Keep English';
 	setLanguage('zh');
 	assert.equal(workflow.name, `HUHU: ${t('workbench.agent')}: ${scriptName}`);
-	assert.equal(commands.length, 9, 'Repeated language events do not register commands again');
-	assert.equal(commandCleanups.length, 9);
+	assert.equal(commands.length, 10, 'Repeated language events do not register commands again');
+	assert.equal(commandCleanups.length, 10);
 	const disposedNames = commands.map((command) => command.name);
 	commandCleanups.forEach((off) => off());
 	setLanguage('en');
@@ -213,7 +214,7 @@ async function main() {
 			},
 		},
 	} as unknown as DashboardPlugin);
-	const shellCommands = commands.slice(9);
+	const shellCommands = commands.slice(10);
 	// Board commands are registered by the home module itself.
 	const expectedShellIds = [
 		'open-workbench',
@@ -255,12 +256,12 @@ async function main() {
 		);
 		assert.deepEqual(
 			commands
-				.slice(9)
+				.slice(10)
 				.map((command) => command.id)
 				.sort(),
 			expectedShellIds,
 		);
-		shellCommands.forEach((command, i) => assert.equal(commands[i + 9], command));
+		shellCommands.forEach((command, i) => assert.equal(commands[i + 10], command));
 		assert.equal(commandCleanups.length, commands.length, 'One subscription per command');
 	}
 	assert.deepEqual([automationOpens, inboxOpens, browserOpens, safeOpens], [3, 3, 3, 3]);
@@ -268,7 +269,7 @@ async function main() {
 	assert.equal(openSafe.checkCallback?.(true), false, 'Disabling the safe removes its command from the palette');
 	assert.equal(openSafe.checkCallback?.(false), false, 'Disabled safe commands do not execute');
 	assert.equal(safeOpens, 3);
-	commandCleanups.slice(9).forEach((off) => off());
+	commandCleanups.slice(10).forEach((off) => off());
 	// React composer/IME/draft/error behavior is covered by comments DOM tests.
 
 	setLanguage('en');

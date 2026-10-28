@@ -6,7 +6,7 @@ Status: completed
 
 ## 聚焦交接
 
-唯一改动是 [channel_test.go](/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials/channel_test.go:170)：每次发送私有 Register 帧后，用原 `time.Second` barrier 等待对应真实 backend entered，再发送下一次。8 个实际 backend 仍在等待各自的 ctx 取消，第 9 帧才检验通道拒绝；`ServeChannel` 返回仍经过真实 worker Wait。原 private hello、Provider/catalog、请求期限、第 9 帧及关闭断言全部保留。
+唯一改动是 [channel_test.go](../../../../../../../../../native/huhubot/internal/adapters/outbound/credentials/channel_test.go:170)：每次发送私有 Register 帧后，用原 `time.Second` barrier 等待对应真实 backend entered，再发送下一次。8 个实际 backend 仍在等待各自的 ctx 取消，第 9 帧才检验通道拒绝；`ServeChannel` 返回仍经过真实 worker Wait。原 private hello、Provider/catalog、请求期限、第 9 帧及关闭断言全部保留。
 
 这是 Root 接纳的**测试就绪步骤维护**，不是生产修复；原 Root r3 偶发红的原因仍 **unconfirmed**。修改前 SHA256 `0a8cf1d4aacb441526c3a0fded788d100702ebe7ac0909b5431193b84faea85d`，最终 SHA256 `286ef1e481d4af296873a4ad65332c6a65b8ac721d6a2312440a9ee92ea3b9a0`。完整 before（历史日志已清理：`logs/06-channel-before.go.txt`）与最终最小差异（历史日志已清理：`logs/06-channel-barrier.patch`）保存，实际字节与先交 Root 的 05 候选完全相同。所有生产、API、SQL、锁和其他测试未改。
 

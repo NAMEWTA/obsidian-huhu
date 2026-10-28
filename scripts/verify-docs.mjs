@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { documentationKind as classify, referenceLinkBody, withoutCodeSpans } from './documentation-policy.mjs';
@@ -156,11 +156,13 @@ function checkTarget(fromFile, raw) {
 	let resolved = destination
 		? path.resolve(root, path.dirname(fromFile), destination)
 		: path.resolve(root, fromFile);
-	// The host supports absolute file:line links. Exact filenames containing a colon win.
-	if (path.isAbsolute(destination) && !fs.existsSync(resolved)) {
+	// Editors accept file:line targets. A real file of that exact name wins; otherwise the line suffix is navigation.
+	if (!fs.existsSync(resolved)) {
 		const location = /^(.+):([1-9]\d*)$/.exec(destination);
 		if (location && Number.isSafeInteger(Number(location[2]))) {
-			const source = path.resolve(location[1]);
+			const source = path.isAbsolute(location[1])
+				? path.resolve(location[1])
+				: path.resolve(root, path.dirname(fromFile), location[1]);
 			if (fs.existsSync(source) && fs.statSync(source).isFile()) {
 				const actual = path.relative(fs.realpathSync(root), fs.realpathSync(source));
 				if (!actual.startsWith('..') && !path.isAbsolute(actual)) resolved = source;
@@ -175,6 +177,9 @@ function checkTarget(fromFile, raw) {
 		// Those paths exist in a user vault, not in this repository.
 		const vaultExample = fromFile.startsWith('src/modules/archives/core/persist/format-guide');
 		if (missing && !vaultExample) {
+			// Session evidence logs are gitignored on purpose. A link to them is a local
+			// pointer, not a repository document that this gate can require to exist.
+			if (spawnSync('git', ['check-ignore', '-q', '--', relative], { cwd: root }).status === 0) return;
 			failures.push(`${fromFile}: missing local link ${target}`);
 			return;
 		}

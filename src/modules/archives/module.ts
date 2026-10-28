@@ -152,7 +152,8 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 			const runtime = application?.runtime;
 			runtime?.dispose(); // Revoke first: queued writes must not start during unload.
 			if (runtime) await runtime.queue.settled();
-			await storageWriteQueue(context.app.vault.adapter).settled();
+			const adapter = context.app.vault?.adapter;
+			if (adapter) await storageWriteQueue(adapter).settled();
 			application = undefined;
 			reminders = undefined;
 		},

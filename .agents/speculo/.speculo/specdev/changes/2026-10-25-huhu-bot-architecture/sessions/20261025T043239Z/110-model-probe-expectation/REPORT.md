@@ -8,7 +8,7 @@ Status: completed
 
 只将默认 Core 重开后 `TestModel` 的旧错误预期由 `ADAPTER_NOT_ASSEMBLED` 改为 `CREDENTIAL_MISSING`。Responses 已装配，而 session-memory 凭证没有跨重开保留；这是过期测试预期维护，没有生产修复。
 
-唯一测试写入为 [model_test.go](/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/tests/contract/assistant/model_test.go:98)。原 SHA256 为 `51e6aed207df9b94dfe72103448bd713a74ca6c46f5145c6b15a8fd2d9438d02`，当前冻结 SHA256 为 `e06c1fe8ca597cd0ef2f04d3727054247d0f15d871bbaa58d8622b6bde92b6b4`。完整差异（历史日志已清理：`logs/01-expectation.patch`）只有这一行；其他凭证状态、共享引用、引用不可复用、秘密不落 SQLite 的原断言保持。
+唯一测试写入为 [model_test.go](../../../../../../../../../native/huhubot/tests/contract/assistant/model_test.go:98)。原 SHA256 为 `51e6aed207df9b94dfe72103448bd713a74ca6c46f5145c6b15a8fd2d9438d02`，当前冻结 SHA256 为 `e06c1fe8ca597cd0ef2f04d3727054247d0f15d871bbaa58d8622b6bde92b6b4`。完整差异（历史日志已清理：`logs/01-expectation.patch`）只有这一行；其他凭证状态、共享引用、引用不可复用、秘密不落 SQLite 的原断言保持。
 
 ## 产物与验证
 

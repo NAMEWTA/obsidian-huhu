@@ -163,7 +163,13 @@ const toolCall = (id: number, name: string, args: Record<string, unknown> = {}) 
 });
 
 test('source CLI and MCP carry bounded frame scopes through the production schema', async () => {
-	const observation = { id: 'observed', viewportVersion: 3, coverage: [{ frameId: 'frame-A', status: 'partial' }], frameErrors: [{ frameId: 'frame-A', code: 'closed_shadow_root' }] };
+	const observation = {
+		id: 'observed', spaceId: 'space', pageId: 'page-A', runtimeId: 'runtime', documentId: 'document', epoch: 1, viewportVersion: 3,
+		scope: { spaceId: 'space', pageId: 'page-A', frameId: 'frame-A', mode: 'visible' as const, maxNodes: 12, maxBytes: 4096 },
+		coverage: [{ frameId: 'frame-A', documentId: 'document', status: 'partial' as const, nodes: 1 }],
+		frameErrors: [{ frameId: 'frame-A', code: 'closed_shadow_root' as const }],
+		url: 'https://example.com/', title: 'Fixture', truncated: false, nodes: [],
+	};
 	const f = await fixture(() => ({ body: { result: observation } }));
 	const executable = path.join(f.root, 'current-browser-cli.cjs');
 	// Compile only into this fixture: release-root assets remain owned by the final build.
@@ -203,7 +209,7 @@ test('source CLI/MCP share event snapshot/replay schemas, stream recovery and se
 }, 15_000);
 
 test('release CLI calls page.list in a real Node process without Window and injects its private connection scope', async () => {
-	const pages = [{ id: 'page-fixture', title: 'Local fixture', url: 'https://example.invalid/' }];
+	const pages = [{ id: 'page-fixture', spaceId: 'space-fixture', title: 'Local fixture', url: 'https://example.invalid/', documentId: 'document-fixture', status: 'open' as const, zoom: 1, viewportVersion: 0 }];
 	const f = await fixture(() => ({ body: { result: pages } }));
 	const output = await run(f, ['call', 'page.list', '{}']);
 	expect(output.code).toBe(0);
@@ -219,10 +225,12 @@ test('release CLI calls page.list in a real Node process without Window and inje
 
 test('release MCP initializes, exposes credential-free schemas and privately retains newly granted Run capabilities', async () => {
 	const nextCapability = `SYNTHETIC_NEXT_CAPABILITY_${randomUUID()}`;
+	const page = (runId: string) => ({ id: `page-${runId}`, spaceId: 'space-fixture', title: 'Local fixture', url: 'https://example.invalid/', documentId: 'document-fixture', status: 'open' as const, zoom: 1, viewportVersion: 0 });
+	const started = { id: 'run-next', spaceId: 'space-next', runtimeId: 'runtime', issuerId: 'issuer', epoch: 1, leaseId: 'lease-next', state: 'active' as const, expiresAt: 1 };
 	const f = await fixture((request) => ({ body: {
 		result: request.method === 'run.start'
-			? { run: { id: 'run-next' }, capability: nextCapability }
-			: [{ id: `page-${String(request.params.runId)}` }],
+			? { run: started, capability: nextCapability }
+			: [page(String(request.params.runId))],
 	} }));
 	const output = await run(f, ['mcp'], [
 		{ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2024-11-05', capabilities: {}, clientInfo: { name: 'fixture', version: '1' } } },
@@ -248,9 +256,9 @@ test('release MCP initializes, exposes credential-free schemas and privately ret
 		expect(tool.inputSchema.required ?? []).not.toContain('capability');
 		expect(tool.inputSchema.required ?? []).not.toContain('runId');
 	}
-	expect(JSON.parse(replies[2]!.result.content![0]!.text)).toEqual([{ id: 'page-run-fixture' }]);
-	expect(JSON.parse(replies[3]!.result.content![0]!.text)).toEqual({ run: { id: 'run-next' } });
-	expect(JSON.parse(replies[4]!.result.content![0]!.text)).toEqual([{ id: 'page-run-next' }]);
+	expect(JSON.parse(replies[2]!.result.content![0]!.text)).toEqual([page('run-fixture')]);
+	expect(JSON.parse(replies[3]!.result.content![0]!.text)).toEqual({ run: started });
+	expect(JSON.parse(replies[4]!.result.content![0]!.text)).toEqual([page('run-next')]);
 	expect(replies[5]!.result).toEqual({ isError: true, content: [{ type: 'text', text: 'capability_scope_mismatch' }] });
 	for (const secret of [f.connection.token, f.connection.capability, nextCapability]) expect(output.stdout).not.toContain(secret);
 	expect(f.requests).toHaveLength(3);

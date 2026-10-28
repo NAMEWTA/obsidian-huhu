@@ -6,7 +6,7 @@ Status: completed
 
 ## 聚焦交接
 
-仅维护 [probe_http_test.go](/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/tests/contract/assistant/probe_http_test.go:73) 的 Responses 末段。默认 Registry 已装配 Responses，原 `ADAPTER_NOT_ASSEMBLED` / HTTP2 预期过期；实际缺失模型应产生一次 GET 和安全的 `MODEL_PROBE_FAILED`。这是测试预期维护，没有修改生产代码、协议、凭证或配置。
+仅维护 [probe_http_test.go](../../../../../../../../../native/huhubot/tests/contract/assistant/probe_http_test.go:73) 的 Responses 末段。默认 Registry 已装配 Responses，原 `ADAPTER_NOT_ASSEMBLED` / HTTP2 预期过期；实际缺失模型应产生一次 GET 和安全的 `MODEL_PROBE_FAILED`。这是测试预期维护，没有修改生产代码、协议、凭证或配置。
 
 修改前 SHA256：`9cdfb0c1204d013097350a9532e5953efc8c0654b4479385875a9575c3c22c3f`；最终 SHA256：`a9b5795f6a555ea84e90faa5ebe02a7cf2443974d2c73592c1bc413137463426`。完整 before（历史日志已清理：`logs/00-probe_http_test.go.before.txt`）、精确 diff（历史日志已清理：`logs/03-expectation.patch`） 与变更证明（历史日志已清理：`logs/03-own-change.json`）保留；原 Chat 成功 GET、404、安全错误以及全部 setup 字节相同。
 

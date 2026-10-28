@@ -85,7 +85,7 @@ T13其他已锁定行为与代码/可复用实际证据一致：无@仅A、明�
 | `-run '^TestReviewerCountLimitedPageDoesNotConsumeOmittedResult$' -timeout=45s`：limit=3控制 | exit0；包0.153s；实际移除未返回成员后Dispatch1 |
 | `-race -run '^TestReviewerPrivateUnionSQLFailureRollsBackWholeRead$' -timeout=45s`：真实第二次UPDATE SQL ABORT | exit0；包2.102s；预期SQL错误完整回滚，不吞错 |
 
-完整命令/exit/Wait见 independent-runs.json（历史日志已清理：`logs/independent-runs.json`），代码和最初分页探针原文在 [probes](probes/)，所有原始输出在 [logs](logs/)。表中时长是Go包输出，不冒充包含编译的wall time。所有数据库为隔离t.TempDir，Core.Close停止并等待Executor，正常/失败路径均释放握手；SQL观测DB与临时目录由测试清理，持久事实原始行已保存日志。
+完整命令/exit/Wait见 independent-runs.json（历史日志已清理：`logs/independent-runs.json`），代码和最初分页探针原文在 [probes](probes/)，所有原始输出曾写在已清理的 `logs/`。表中时长是Go包输出，不冒充包含编译的wall time。所有数据库为隔离t.TempDir，Core.Close停止并等待Executor，正常/失败路径均释放握手；SQL观测DB与临时目录由测试清理，持久事实原始行已保存日志。
 
 ### 复用证据的独立摘要核验
 
