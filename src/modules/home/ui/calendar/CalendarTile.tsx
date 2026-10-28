@@ -8,7 +8,7 @@ import { calendarDate } from '../../../../ui/components/huhu/calendar/CalendarMo
 import { cn } from '../../../../ui/lib/utils';
 import { t, getLanguage } from '../../../../shared/i18n';
 import type { VaultTask } from '../../platform/calendar/alltasks-scan';
-import type { CalendarTaskFilter, CalendarSnapshot } from '../../api';
+import type { CalendarTaskFilter, CalendarSnapshot } from '../../../task/api';
 import { IconButton } from '../board/controls';
 import { WidgetActions } from '../canvas/widget-frame';
 import type { DashboardRenderContext } from '../renderer/render-context';

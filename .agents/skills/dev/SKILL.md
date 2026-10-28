@@ -23,6 +23,7 @@ metadata:
 | 查领域术语、架构决定或当前基线 | [开发文档索引](../../../docs/architecture.md) |
 | 移动文件、跨区导入、添加命令、涉及持久化名称 | [references/architecture.md](references/architecture.md) |
 | 添加模块、工作台页面、服务或设置页 | [references/module-authoring.md](references/module-authoring.md) |
+| 修改 Task 命令、时间/重复规则、公共 API 或 AI 工具 | [Task 领域设计](../../../docs/task-domain.md)，尤其是公共接口与异步边界契约 |
 | 添加或修改设置、界面文案或语言规则 | [references/settings-and-i18n.md](references/settings-and-i18n.md) |
 | 调用 Obsidian API，或修改 DOM、CSS、计时器 | [references/obsidian-api.md](references/obsidian-api.md) |
 | 在工作台里渲染页面、面板或对话框 | [../ui/SKILL.md](../ui/SKILL.md) |
@@ -39,7 +40,7 @@ metadata:
 | 显示名称 | `HUHU` |
 | 插件 id | `huhu` |
 | 视图类型 | `huhu-workbench-view`（工作台）、`huhu-comments-view`（评论侧栏）、`huhu-navigator-view`（笔记导航器，左侧栏） |
-| 模块 | `home`、`agent`、`browser`、`archives`、`automations`、`notifications`、`icons`、`comments`、`navigator`、`sync`、`safe` |
+| 模块 | `home`、`task`、`agent`、`browser`、`archives`、`automations`、`notifications`、`icons`、`comments`、`navigator`、`sync`、`safe` |
 | `minAppVersion` | `1.13.0`（不要使用标注 `@since 1.13.1` 或更高的 API） |
 | `isDesktopOnly` | `false` |
 | 许可证 | HUHU Source Available License 1.0（`LICENSE`）；商用须书面授权；第三方许可见 `NOTICE` 与 `THIRD-PARTY-NOTICES.md` |

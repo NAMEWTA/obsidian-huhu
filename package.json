@@ -65,7 +65,8 @@
 		"test:ui-styles": "node scripts/verify-ui-styles.mjs",
 		"test:ui-adapters": "node scripts/verify-ui-adapters.mjs",
 		"test:ui-runtime": "node scripts/verify-ui-runtime.mjs",
-		"test:license-texts": "node --test scripts/license-texts.test.mjs"
+		"test:license-texts": "node --test scripts/license-texts.test.mjs",
+		"test:task": "vitest run src/modules/task test/automations/calendar-delivery.test.ts src/modules/automations/services/calendar-source.test.ts src/modules/navigator/ui/calendar-consistency.dom.test.tsx"
 	},
 	"keywords": [],
 	"license": "SEE LICENSE IN LICENSE",

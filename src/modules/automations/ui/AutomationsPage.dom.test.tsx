@@ -11,11 +11,30 @@ import type { AutomationRun } from '../../../shared/automation/types';
 beforeEach(() => setLanguage('en'));
 import { definition, fixture } from './test-fixture';
 test('failed calendar history retries the original delivery and opens its receipt instead of launching a new manual task', async () => {
-	const original = { ...definition('Calendar'), action: { kind: 'create-task' as const, target: 'calendar' as const, path: 'Board.md', text: 'Review' } };
-	const failed: AutomationRun = { id: 'old-run', automationId: original.id, revision: 1, title: original.name,
-		definition: original, status: 'failed', trigger: 'scheduled', scheduledFor: 1000, startedAt: 1000, message: '',
-		taskDelivery: { effectKey: 'one-occurrence', date: '2026-10-23', timezone: 'Asia/Taipei', receipt: { id: 'task', path: 'Tasks.md', line: 4, date: '2026-10-23' } } };
-	const f = fixture([original], [failed]), user = userEvent.setup();
+	const original = {
+		...definition('Calendar'),
+		action: { kind: 'create-task' as const, text: 'Review', timezone: 'UTC' },
+	};
+	const failed: AutomationRun = {
+		id: 'old-run',
+		automationId: original.id,
+		revision: 1,
+		title: original.name,
+		definition: original,
+		status: 'failed',
+		trigger: 'scheduled',
+		scheduledFor: 1000,
+		startedAt: 1000,
+		message: '',
+		taskDelivery: {
+			effectKey: 'one-occurrence',
+			date: '2026-10-23',
+			timezone: 'Asia/Taipei',
+			receipt: { commandId: 'create', taskId: 'task:created', taskRevision: 1, committedAt: 1 },
+		},
+	};
+	const f = fixture([original], [failed]),
+		user = userEvent.setup();
 	f.service.retryRun = vi.fn(async () => ({ ...failed, id: 'retried-run' }));
 	f.host.openLink = vi.fn(async () => {});
 	f.host.openCalendarSource = vi.fn(async () => {});
@@ -103,7 +122,12 @@ test('source reminder keeps task identity and source-provided title through save
 	const source = { kind: 'dashboard' as const, path: 'Board.md', id: 'task-id' };
 	render(
 		<TestProviders>
-			<EditorView host={f.host} request={{ source, prefill: { name: 'Follow up' } }} onSaved={close} onClose={close} />
+			<EditorView
+				host={f.host}
+				request={{ source, prefill: { name: 'Follow up' } }}
+				onSaved={close}
+				onClose={close}
+			/>
 		</TestProviders>,
 	);
 	await userEvent.click(screen.getByRole('button', { name: 'Create' }));

@@ -4,6 +4,7 @@ import { archivesManifest } from '../modules/archives/manifest';
 import { automationsManifest } from '../modules/automations/manifest';
 import { browserManifest } from '../modules/browser/manifest';
 import { commentsManifest } from '../modules/comments/manifest';
+import { taskManifest } from '../modules/task/manifest';
 import { homeManifest } from '../modules/home/manifest';
 import { iconsManifest } from '../modules/icons/manifest';
 import { navigatorManifest } from '../modules/navigator/manifest';
@@ -15,6 +16,7 @@ import { safeManifest } from '../modules/safe/manifest';
 export const MANIFESTS: readonly ModuleManifest[] = [
 	browserManifest,
 	homeManifest,
+	taskManifest,
 	commentsManifest,
 	navigatorManifest,
 	archivesManifest,

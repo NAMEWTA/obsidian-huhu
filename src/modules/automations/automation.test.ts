@@ -349,7 +349,7 @@ test('failure committing pending state prevents external task creation', async (
 	const f = fixture(),
 		service = f.make();
 	await service.load();
-	const d = definition({ action: { kind: 'create-task', path: 'Board.md', cardId: 'c', text: 'todo' } });
+	const d = definition({ action: { kind: 'create-task', text: 'todo', timezone: 'UTC' } });
 	await service.save(d);
 	f.fail();
 	await assert.rejects(service.run(d));
@@ -496,53 +496,20 @@ test('completed delivery is not replayed even after notification retention has t
 	assert.equal(f.notified.length, 1);
 });
 
-test('dashboard source indexes explicit ownership, ignores plain task lines and creates each run once', async () => {
-	let raw = '# Board\n\n## Todo\n\n### Tasks\n\n- [ ] Parent\n  - [ ] Nested ⏰ 2026-09-27 09:00\n';
-	const file = { path: '.huhu/dashboards/Board.md', basename: 'Board' };
+test('dashboard no longer owns task creation or embedded task reminders', async () => {
+	const raw = '# Board\n- [ ] Old task' + taskMetaSuffix({ id: 'old', automation: definition() });
+	const vault = memoryVault({ '.huhu/dashboards/Board.md': raw });
 	const settings = { ...homeSettings.defaults(), dashboardFile: '.huhu/dashboards/Board', workspaceFiles: [] };
-	const vault = memoryVault({ [file.path]: raw }),
-		app = vault.app;
-	const read = vault.adapter.read.bind(vault.adapter),
-		write = vault.adapter.write.bind(vault.adapter);
-	vault.adapter.read = async (path) => (path === file.path ? raw : read(path));
-	vault.adapter.write = async (path, value) => {
-		if (path === file.path) raw = value;
-		await write(path, value);
-	};
 	const source = new DashboardAutomationSource(
-		app,
+		vault.app,
 		() => settings,
-		'first-device',
+		'device',
 		async () => {},
 		() => true,
 	);
-	assert.equal((await source.list()).length, 0, 'a plain task line is not an automation');
-	raw = raw.replace(
-		'Nested ⏰ 2026-09-27 09:00',
-		'Nested' + taskMetaSuffix({ id: 'nested-id', automation: definition({ deviceId: 'first-device' }) }),
-	);
-	source.invalidate(file.path);
-	const [original] = await source.list();
-	assert.ok(original?.source?.id);
-	assert.equal(original.deviceId, 'first-device');
-	const other = new DashboardAutomationSource(
-		app,
-		() => settings,
-		'other-device',
-		async () => {},
-		() => true,
-	);
-	assert.equal((await other.list())[0]?.deviceId, 'first-device');
-	raw = raw.replace('- [ ] Nested', '- [x] Nested');
-	source.invalidate(file.path);
 	assert.equal((await source.list()).length, 0);
-	const [target] = await source.targets();
-	assert.ok(target);
-	const action = { kind: 'create-task' as const, ...target, text: 'Scheduled todo' };
-	await source.createTask(action, 'one-run');
-	await source.createTask(action, 'one-run');
-	assert.equal(raw.split('Scheduled todo').length - 1, 1);
-	assert.equal(readTaskMeta(raw.split('\n').find((line) => line.includes('Scheduled todo'))!).runId, 'one-run');
+	assert.equal('createTask' in source, false);
+	assert.equal(vault.contents.get('.huhu/dashboards/Board.md'), raw);
 });
 
 test('failed state commits are invisible and retry preserves scheduler cursors', async () => {
@@ -598,7 +565,11 @@ test('partial primary write recovers last valid data and a later write can succe
 test('widget sources resolve dashboard paths with and without the .md extension without changing reminder identity', async () => {
 	for (const language of ['zh', 'en', 'zh'] as const) {
 		setLanguage(language);
-		for (const path of ['.huhu/dashboards/dashboard', '.huhu/dashboards/Projects/My board', '.huhu/dashboards/Projects/My board.md']) {
+		for (const path of [
+			'.huhu/dashboards/dashboard',
+			'.huhu/dashboards/Projects/My board',
+			'.huhu/dashboards/Projects/My board.md',
+		]) {
 			const settings = homeSettings.defaults();
 			settings.dashboardFile = path;
 			settings.workspaceFiles = [path];
@@ -794,7 +765,7 @@ test('structured failures survive run and inbox persistence, language changes, c
 		);
 	let service = make();
 	await service.load();
-	const d = definition({ action: { kind: 'create-task', path: 'Board.md', cardId: 'one', text: 'User text 原文' } });
+	const d = definition({ action: { kind: 'create-task', text: 'User text 原文', timezone: 'UTC' } });
 	await service.save(d);
 	const run = (await service.run(d))!;
 	assert.equal(run.errorCode, 'processExit');
@@ -869,7 +840,7 @@ test('cleared once history reads only the matching revision cursor and never rep
 	await service.load();
 	for (const d of [
 		definition({ id: 'success' }),
-		definition({ id: 'failure', action: { kind: 'create-task', path: 'missing', cardId: 'none', text: 'Keep' } }),
+		definition({ id: 'failure', action: { kind: 'create-task', text: 'Keep', timezone: 'UTC' } }),
 		definition({ id: 'skipped', schedule: { kind: 'once', at: -200000 }, graceMinutes: 0 }),
 		definition({ id: 'future', schedule: { kind: 'once', at: 1000000 } }),
 		definition({ id: 'manual', schedule: { kind: 'manual' } }),
@@ -920,7 +891,7 @@ test('shutdown drains an already-started file effect without undoing it or sendi
 	};
 	const service = f.make();
 	await service.load();
-	const d = definition({ action: { kind: 'create-task', path: 'Board.md', cardId: 'c', text: 'Preserve effect' } });
+	const d = definition({ action: { kind: 'create-task', text: 'Preserve effect', timezone: 'UTC' } });
 	await service.save(d);
 	const running = service.run(d);
 	await starting;
@@ -1002,7 +973,11 @@ test('switching an automation action keeps the shared text and drops kind-specif
 	);
 	assert.deepEqual(agent, { kind: 'notify', body: 'Keep this text' });
 	const task = switchAutomationAction(agent, 'create-task', defaults);
-	assert.deepEqual(task, { kind: 'create-task', path: '', cardId: '', text: 'Keep this text' });
+	assert.deepEqual(task, {
+		kind: 'create-task',
+		text: 'Keep this text',
+		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+	});
 	const withTarget = { ...task, path: 'Board.md', cardId: 'card' };
 	const again = switchAutomationAction(withTarget, 'agent', { agentId: 'grok', cwd: '/now' });
 	assert.deepEqual(again, {

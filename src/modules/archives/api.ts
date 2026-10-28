@@ -11,3 +11,17 @@ export interface ArchivesWorkbench {
 }
 
 export const ARCHIVES_WORKBENCH = serviceKey<ArchivesWorkbench>('archives', 'workbench');
+
+/** Stable entity references for other domains; consumers never import the archive index. */
+export interface ArchiveResource {
+	id: string;
+	label: string;
+	path: string;
+	type: string;
+}
+export interface ArchiveResources {
+	list(query?: string): Promise<readonly ArchiveResource[]>;
+	get(id: string): Promise<ArchiveResource | undefined>;
+	open(id: string, owner?: Window): Promise<void>;
+}
+export const ARCHIVE_RESOURCES = serviceKey<ArchiveResources>('archives', 'resources');

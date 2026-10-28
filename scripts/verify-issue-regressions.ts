@@ -76,8 +76,13 @@ async function main() {
 		);
 		const fresh = parse(generateDefaultMarkdown());
 		assert.deepEqual(
-			fresh.columns.slice(0, 2).map((column) => column.name),
-			language === 'zh' ? ['收件箱', '待办'] : ['Inbox', 'Todo'],
+			fresh.columns.map((column) => column.name),
+			language === 'zh' ? ['收件箱', '项目'] : ['Inbox', 'Projects'],
+		);
+		assert.equal(
+			fresh.widgets?.filter((widget) => widget.provider === 'task' && widget.kind === 'tasks').length,
+			1,
+			'New boards include the external Task widget, not a Home-owned todo column',
 		);
 		for (const column of fresh.columns.slice(0, 2))
 			assert.ok(

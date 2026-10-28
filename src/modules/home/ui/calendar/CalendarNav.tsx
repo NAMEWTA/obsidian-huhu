@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../../../ui/componen
 import { Button } from '../../../../ui/components/button';
 import { ToggleGroup, ToggleGroupItem } from '../../../../ui/components/toggle-group';
 import { t } from '../../../../shared/i18n/index';
-import type { CalendarTaskFilter } from '../../core/calendar/task-filter';
+import type { CalendarTaskFilter } from '../../../task/api';
 import { CALENDAR_TASK_FILTERS } from '../../platform/calendar/alltasks-scan';
 import { Choice, IconButton } from '../board/controls';
 
@@ -39,8 +39,28 @@ export function CalendarNav({
 				>
 					<ChevronLeft />
 				</IconButton>
-				{picker ? <Popover><PopoverTrigger asChild><Button variant="ghost" className="min-h-8 min-w-28 px-1 text-sm font-medium" aria-label={t('calendarUnified.chooseMonth')}>{label}</Button></PopoverTrigger><PopoverContent className="w-80 p-2">{picker}</PopoverContent></Popover> : <span className="min-w-28 text-center text-sm font-medium" aria-live="polite">{label}</span>}
-				<IconButton label={t(view === 'week' ? 'calendar.nextWeek' : 'calendar.nextMonth')} onClick={() => onShift(1)}>
+				{picker ? (
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button
+								variant="ghost"
+								className="min-h-8 min-w-28 px-1 text-sm font-medium"
+								aria-label={t('calendarUnified.chooseMonth')}
+							>
+								{label}
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-80 p-2">{picker}</PopoverContent>
+					</Popover>
+				) : (
+					<span className="min-w-28 text-center text-sm font-medium" aria-live="polite">
+						{label}
+					</span>
+				)}
+				<IconButton
+					label={t(view === 'week' ? 'calendar.nextWeek' : 'calendar.nextMonth')}
+					onClick={() => onShift(1)}
+				>
 					<ChevronRight />
 				</IconButton>
 			</div>

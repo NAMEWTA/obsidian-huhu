@@ -5,7 +5,7 @@ import { ContactsController } from './platform/controller';
 import { archivesSettings } from './settings';
 import type { ContactsHost } from './services/page-host';
 import type { ArchiveRecord } from './core/model';
-import { ARCHIVES_WORKBENCH } from './api';
+import { ARCHIVES_WORKBENCH, ARCHIVE_RESOURCES, type ArchiveResources } from './api';
 import { archivesWorkbench } from './services/workbench';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
@@ -38,8 +38,38 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 			},
 		};
 	};
+	const resources: ArchiveResources = {
+		async list(query = '') {
+			if (!controller) throw new Error('Archives unavailable');
+			await controller.ensureLoaded();
+			const needle = query.trim().toLocaleLowerCase();
+			return [...controller.index.byPath.values()]
+				.filter(
+					(record) => !needle || `${record.fields.name} ${record.path}`.toLocaleLowerCase().includes(needle),
+				)
+				.slice(0, 100)
+				.map((record) => ({ id: record.id, label: record.fields.name, path: record.path, type: record.kind }));
+		},
+		async get(id) {
+			if (!controller) throw new Error('Archives unavailable');
+			await controller.ensureLoaded();
+			const matches = [...controller.index.byPath.values()].filter((record) => record.id === id);
+			const record = matches.length === 1 ? matches[0] : undefined;
+			return record
+				? { id: record.id, label: record.fields.name, path: record.path, type: record.kind }
+				: undefined;
+		},
+		async open(id, owner) {
+			if (!(await resources.get(id))) throw new Error('Archive reference is missing or ambiguous');
+			await context.shell.open({ feature: 'contacts', resourceId: id }, owner);
+		},
+	};
+
 	return {
-		services: [[ARCHIVES_WORKBENCH, workbench]],
+		services: [
+			[ARCHIVES_WORKBENCH, workbench],
+			[ARCHIVE_RESOURCES, resources],
+		],
 		/** Read after `activate()`. */
 		get contributions() {
 			return reminders ? [[AUTOMATION_SOURCES, reminders] as const] : [];

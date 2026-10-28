@@ -3,8 +3,7 @@ import type { ModuleContext } from '../../../app/contracts/module';
 import type { AppWithCommands } from '../../../host/obsidian/obsidian-internal';
 import { AutomationError } from '../../../shared/automation/errors';
 import type { AutomationTaskDelivery } from '../../../shared/automation/types';
-import { locateTaskLine } from '../../../shared/automation/task-line';
-import { openNoteAt } from '../../../host/obsidian/open-note';
+import type { TaskViews } from '../../task/api';
 import { t } from '../../../shared/i18n/index';
 import { BROWSER_OPEN } from '../../browser/api';
 import type { ActionHost } from '../core/actions/definition';
@@ -16,33 +15,16 @@ export async function openNote(app: App, path: string, line?: number): Promise<v
 	await app.workspace.getLeaf('tab').openFile(file, line === undefined ? undefined : { eState: { line } });
 }
 
-/** Receipts outlive their original line positions and the home module's activation. */
+/** A task receipt opens its stable domain identity, never a stale file offset. */
 export async function openCalendarSource(
-	app: App,
+	views: TaskViews | undefined,
 	delivery: AutomationTaskDelivery,
 	owner?: Window,
 ): Promise<void> {
-	const receipt = delivery.receipt;
-	if (!receipt || typeof receipt.id !== 'string' || !receipt.id ||
-		typeof delivery.effectKey !== 'string' || !delivery.effectKey ||
-		(receipt.effectKey !== undefined && receipt.effectKey !== delivery.effectKey))
-		throw new AutomationError('calendarSourceChanged');
-	const file = app.vault.getFileByPath(receipt.path);
-	if (!file) throw new AutomationError('sourceMissing');
-	for (let attempt = 0; attempt < 2; attempt++) {
-		if (owner?.closed) throw new AutomationError('cancelled');
-		const { mtime, size } = file.stat;
-		const content = await app.vault.read(file);
-		if (owner?.closed) throw new AutomationError('cancelled');
-		if (file.path !== receipt.path || app.vault.getFileByPath(receipt.path) !== file)
-			throw new AutomationError('sourceMissing');
-		if (file.stat.mtime !== mtime || file.stat.size !== size) continue;
-		const line = locateTaskLine(content, { ...receipt, effectKey: delivery.effectKey }, mtime);
-		if (line === undefined) throw new AutomationError('calendarSourceChanged');
-		await openNoteAt(app, file, { owner, line });
-		return;
-	}
-	throw new AutomationError('calendarSourceChanged');
+	if (owner?.closed) throw new AutomationError('cancelled');
+	if (!views) throw new AutomationError('calendarUnavailable');
+	if (!delivery.receipt?.taskId) throw new AutomationError('calendarSourceChanged');
+	await views.open(delivery.receipt.taskId, owner);
 }
 
 /** What in-process actions do to Obsidian: the host the run service hands to them. */

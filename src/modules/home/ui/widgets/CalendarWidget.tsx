@@ -31,12 +31,10 @@ export function CalendarWidget({ store, section = false }: { store: BoardStore; 
 		},
 	};
 	const openNote = (file: { path: string }, line?: number, task?: VaultTask) => {
-		const opened = homeServices.calendar
-			? homeServices.calendar.openSource(
-					task ?? { path: file.path, line: line ?? 0 },
-					doc.defaultView ?? undefined,
-				)
-			: store.openFile(file.path);
+		const opened =
+			homeServices.calendar && task
+				? homeServices.calendar.openSource(task, doc.defaultView ?? undefined)
+				: store.openFile(file.path);
 		void opened.catch(() => new Notice(t('calendarUnified.error.source-missing')));
 	};
 	const remind = (task: VaultTask) => {

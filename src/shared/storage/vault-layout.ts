@@ -22,6 +22,8 @@ export const JOURNAL_ROOT = `${HUHU_VISIBLE_ROOT}/日志`;
 export const INBOX_ROOT = `${HUHU_VISIBLE_ROOT}/收件箱`;
 export const TASK_ARCHIVE_PATH = `${HUHU_VISIBLE_ROOT}/待办/已完成.md`;
 export const TASKS_PATH = `${HUHU_VISIBLE_ROOT}/待办/待办.md`;
+/** Canonical task-domain state; legacy board checkboxes are not a data source. */
+export const TASK_STORE_PATH = `${HUHU_VISIBLE_ROOT}/任务/tasks.json`;
 export const PROJECTS_ROOT = `${HUHU_VISIBLE_ROOT}/项目管理`;
 /** `<root>/个人档案/<姓名>/基本信息.md`, `<root>/企业档案/<名称>/基本信息.md`. */
 export const ARCHIVES_ROOT = `${HUHU_VISIBLE_ROOT}/档案`;

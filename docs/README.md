@@ -5,7 +5,8 @@
 | 主题 | 指南 |
 |---|---|
 | 工作台、模块与导航 | [工作台](workbench.md)、[设置](settings.md) |
-| 小组件、日历、待办、记录与统计 | [看板](dashboard.md) |
+| 小组件、日历、记录与统计 | [看板](dashboard.md) |
+| 独立任务、提醒、关联与 AI 工具 | [任务待办](tasks.md)、[任务领域设计](task-domain.md) |
 | 笔记与批注 | [笔记导航器](navigator.md)、[批注](comments.md) |
 | 智能体、终端、技能与用量 | [智能体工作台](agent-workbench.md) |
 | 网页与资料 | [浏览器](browser.md)、[档案](contacts.md) |
