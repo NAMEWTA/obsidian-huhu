@@ -49,6 +49,22 @@ v2 使用新的外层 `huhu-type: archive-record/archive-relation`，与仅识�
 
 P5 的 CSV 导入、Lookup/Rollup、局部关系图和深入 Home 项目执行整合不纳入这次 P0–P4 范围。Archives 只拥有主资料与关系，不接管 Home 的任务、里程碑、日志与进度。
 
+Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导入、Lookup／Rollup、局部图谱和项目集成」。分阶段路线写明：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」因此本次合入不实现 P5。依据保存在 `.agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md`。
+
+### 黄金样本改写到通用协议
+
+旧的 `test/golden/archives-v2.test.ts`、`archive-relation.test.ts`、`archive-migration.test.ts` 依赖已删除的并行档案 API（`createEntityMarkdown`、`createRelationMarkdown`、`ContactsApplication.archives.migrations`）。验证意图已改写到通用实现：`encodeEntity` / `decodeEntity`、`encodeRelation` / `patchValues`，以及 `RecoveryCommands`。前导零、`false`、金额字符串、月精度、Markdown 托管块、关系上下文、不受管理的正文，以及迁移原文备份与附件，仍由这些测试锁定。
+
+以下旧场景不再按原字节断言，原因是协议有意更换，不是放宽检查：
+
+| 旧断言 | 现在怎么证明 | 为什么原样不再适用 |
+|---|---|---|
+| 实体外层 `huhu-created-at` / `huhu-updated-at`，以及迁移后 `createdAt === null` | 通用外层没有这两个键；身份仍是 `huhu-id`，迁移后 `format === 2` | v2 实体用 `draft` / `active` / `archived`，时间取文件修改时间，不再写创建时间字符串 |
+| 日期旁路键 `tax-period-precision: month` | 月精度写在字段定义上，值本身是 `2026-03`；把 `2026-03-01` 写入月精度字段会拒绝 | 精度属于类型，不再在每条记录上重复一个兄弟键 |
+| 关系顶层 `status: past` 与 `lifecycle: active` 并存 | 通用生命周期仍是 `active`；任职「在职/离任」是预设字段，不是外层状态。黄金样本锁定有效期（`2024-05` 月、`2025-06-30` 日）和上下文角色 `project` | 旧 `status` 是 v1 任职投影，不是通用关系外层 |
+| 路径 `迁移恢复/<id>/原始.md` 和单独的 `迁移记录/<id>-完成.md` | 原文备份是 `迁移记录/<id>/原文/<ownerId>.md`，且字节等于迁移前全文（含附件行）；回执是同一条 `huhu-type: archive-migration` 计划，提交后 `state` 为 `committed` | 计划与备份都在可见迁移目录，不再另写一份完成回执 |
+| 回执里的 `collectionId` 字节 | 断言它是本次库的 36 位身份，并把快照中的该字段替换成 `collection-id` | 集合身份在首次引导时随机分配，不属于这条企业记录本身；其余回执字节仍被样本锁定 |
+
 ## 四、测试矩阵
 
 - 纯模型：类型/字段标识、保留字与跨类型 Properties 冲突；枚举历史值；子表 rowId；条件深度与非法输入；语义摘要/DAG 分叉。
