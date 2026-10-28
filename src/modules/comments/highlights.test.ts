@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { createAnchor } from './core/anchor';
+import { createAnchor, locateAnchor } from './core/anchor';
 import { CommentStore } from './core/store';
 import { createCommentsService } from './services/comments';
 import { DEFAULT_COMMENTS_SETTINGS } from './settings';
@@ -85,4 +85,50 @@ test('failed zero-message highlight flush retains operation id and never duplica
 	expect(store.threadsFor('a.md')).toHaveLength(1);
 	expect(store.threadsFor('a.md')[0]?.id).toBe(id);
 	service.dispose(); await store.close();
+});
+
+
+test('mapped edits outside a duplicate highlight refresh its identity without editing the card', async () => {
+	const fs = memoryFs();
+	const store = new CommentStore(fs, { timers, debounceMs: 1e6 });
+	const service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
+	const block = 'L'.repeat(50) + 'abcdefghij' + 'R'.repeat(50);
+	const before = block + '\n' + block;
+	const start = before.lastIndexOf('abcdefghij');
+	const id = await service.highlight({}, 'a.md', { anchor: createAnchor(before, start, start + 10), color: 'yellow' });
+	store.reconcile('a.md', before);
+	await store.flush();
+	const updatedAt = store.threadsFor('a.md')[0]!.updatedAt;
+	const after = before + '\nUnrelated new paragraph';
+	store.applyChanges('a.md', { mapPos: position => position }, after, before);
+	const current = store.threadsFor('a.md')[0]!;
+	expect(current).toMatchObject({ id, status: 'open', updatedAt });
+	expect(current.anchor.documentHash).toBe(createAnchor(after, start, start + 10).documentHash);
+	expect(locateAnchor(after, current.anchor)).toEqual({ start, end: start + 10 });
+	await store.close();
+	service.dispose();
+	const restarted = new CommentStore(fs, { timers, debounceMs: 1e6 });
+	try {
+		const [saved] = await restarted.loadFile('a.md');
+		expect(saved).toMatchObject({ id, status: 'open', updatedAt });
+		expect(locateAnchor(after, saved!.anchor)).toEqual({ start, end: start + 10 });
+	} finally { await restarted.close(); }
+});
+
+test('successful external reconciliation refreshes the fingerprint of a stationary range', async () => {
+	const fs = memoryFs();
+	const store = new CommentStore(fs, { timers, debounceMs: 1e6 });
+	const service = createCommentsService(store, () => DEFAULT_COMMENTS_SETTINGS);
+	const before = 'Hello highlighted world';
+	try {
+		await service.highlight({}, 'a.md', { anchor: createAnchor(before, 6, 17), color: 'blue' });
+		store.reconcile('a.md', before);
+		await store.flush();
+		const after = before + ' and a new ending';
+		store.reconcile('a.md', after);
+		await store.flush();
+		const saved = store.threadsFor('a.md')[0]!;
+		expect(saved.status).toBe('open');
+		expect(saved.anchor).toEqual(createAnchor(after, 6, 17));
+	} finally { service.dispose(); await store.close(); }
 });

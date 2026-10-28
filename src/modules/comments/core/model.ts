@@ -6,6 +6,8 @@ export interface TextAnchorV2 {
 	kind: 'range' | 'line';
 	text: string;
 	textHash: string;
+	/** Document fingerprint validating cached UTF-16 offsets; absent on legacy anchors. */
+	documentHash?: string;
 	before: string;
 	after: string;
 	lineHint: number;

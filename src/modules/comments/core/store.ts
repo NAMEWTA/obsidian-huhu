@@ -86,6 +86,7 @@ function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
 	const anchor = asRecord(rec['anchor']);
 	if (!anchor || anchor['kind'] !== rec['kind']) return null;
 	for (const key of ['text', 'textHash', 'before', 'after']) if (typeof anchor[key] !== 'string') return null;
+	if (anchor['documentHash'] !== undefined && (typeof anchor['documentHash'] !== 'string' || !/^[a-f0-9]{16}$/.test(anchor['documentHash']))) return null;
 	for (const key of ['start', 'end', 'lineHint']) if (typeof anchor[key] !== 'number' || !Number.isInteger(anchor[key]) || anchor[key] < 0) return null;
 	if ((anchor['end'] as number) < (anchor['start'] as number) || (anchor['lineHint'] as number) < 1) return null;
 	if (!Array.isArray(rec['messages']) || (version === 2 && !rec['messages'].length)) return null;
@@ -420,12 +421,15 @@ export class CommentStore {
 				changed = true;
 				continue;
 			}
+			const nextAnchor = createAnchor(doc, start, end, thread.kind);
 			if (start === thread.anchor.start && end === thread.anchor.end && exact === thread.anchor.text) {
+				if (thread.anchor.documentHash !== nextAnchor.documentHash) {
+					thread.anchor = nextAnchor;
+					changed = true;
+				}
 				continue;
 			}
-			thread.anchor.start = start;
-			thread.anchor.end = end;
-			thread.anchor = createAnchor(doc, start, end, thread.kind);
+			thread.anchor = nextAnchor;
 			thread.updatedAt = nowIso();
 			changed = true;
 		}
@@ -450,8 +454,9 @@ export class CommentStore {
 					changed = true;
 					continue;
 				}
-				if (thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== doc.slice(located.start, located.end)) {
-					thread.anchor = createAnchor(doc, located.start, located.end, thread.kind);
+				const nextAnchor = createAnchor(doc, located.start, located.end, thread.kind);
+				if (thread.anchor.documentHash !== nextAnchor.documentHash || thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== nextAnchor.text) {
+					thread.anchor = nextAnchor;
 					changed = true;
 				}
 			}
