@@ -55,6 +55,7 @@ export function workspaceFixture() {
 	const ack = vi.fn(),
 		disposeFrames = vi.fn();
 	const api: BrowserWorkspace = {
+		handoffAgent: vi.fn(async () => { throw new Error('unused'); }),
 		getState: () => state,
 		subscribe: (listener) => {
 			listeners.add(listener);

@@ -18,6 +18,7 @@ import type {
 	BrowserRunHealth,
 	BrowserRunEvent,
 	BrowserEventSnapshot,
+	BrowserHandoffRequest,
 } from './core/contracts';
 import type { IdentitySummary, IdentityImportPreview, IdentitySource, IdentitySaveReceipt } from './core/identity';
 import type { BrowserFile, BrowserDownload } from './core/files';
@@ -75,6 +76,8 @@ export interface BrowserWorkspace {
 	releaseViewer(spaceId: string, viewerId: string): Promise<void>;
 	pause(spaceId: string): Promise<void>;
 	resumeAgent(spaceId: string): Promise<RunGrant>;
+	/** Explicit trusted user authorization. Never exposed in model tools/CLI/RPC. */
+	handoffAgent(request: BrowserHandoffRequest): Promise<RunGrant>;
 	copyAgentConnection(spaceId: string, options?: { allowTaskCreation?: boolean }): Promise<string>;
 	pageAction(request: HumanPageRequest & { command: BrowserCommand }): Promise<JsonValue>;
 	humanInput(
@@ -139,5 +142,6 @@ export interface BrowserAgentAccess {
 	eventSnapshot(runId: string, capability: string): BrowserEventSnapshot;
 }
 export const BROWSER_WORKSPACE = serviceKey<BrowserWorkspace>('browser', 'workspace');
+export const BROWSER_AGENT_ACCESS = serviceKey<BrowserAgentAccess>('browser', 'agent-access');
 export const BROWSER_OPEN = serviceKey<BrowserOpener>('browser', 'open');
 export const BROWSER_MATERIAL_CONSUMERS = contributionPoint<BrowserMaterialConsumer>('browser', 'material-consumers');

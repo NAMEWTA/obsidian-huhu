@@ -1,5 +1,17 @@
 export const messages = {
 	en: {
+		"browser.v2.handoff": "Hand off to another Agent",
+		"browser.v2.handoffTitle": "Authorize same-page Agent handoff",
+		"browser.v2.handoffDescription": "Revoke the current Agent and authorize this target for the same task Space. The existing page stays open. The target must observe it again before changing it.",
+		"browser.v2.handoffConnection": "This does not launch an Agent. After confirmation, copy the new connection and give it only to the authorized target. Old connections stop working.",
+		"browser.v2.handoff.agentId": "Target Agent ID",
+		"browser.v2.handoff.externalRunId": "External Run ID",
+		"browser.v2.handoff.attemptId": "Attempt ID",
+		"browser.v2.handoffConfirm": "Authorize and hand off",
+		"browser.v2.failure.control_unconfirmed": "The native browser did not confirm this control grant. Input remains blocked; check the Space before retrying.",
+		"browser.v2.failure.execution_identity_invalid": "Use 1–128 letters, digits, or these symbols for each execution ID: _ . : @ / -",
+		"browser.v2.failure.fresh_observation_required": "Observe the handed-off Page with the new Run before making changes.",
+
 		'browser.v2.failure.unsupported_url':
 			'Enter a web address or a search query. Only HTTP and HTTPS pages are supported.',
 		'browser.v2.failure.human_lease_expired': 'Human control expired. Take control again before sending input.',
@@ -416,6 +428,18 @@ export const messages = {
 			'Browser profile data could not be read. Repair the profile file before enabling the module.',
 	},
 	zh: {
+		"browser.v2.handoff": "转交给另一个 Agent",
+		"browser.v2.handoffTitle": "授权同页 Agent 交接",
+		"browser.v2.handoffDescription": "撤销当前 Agent，并授权目标接管同一个任务 Space。现有页面不会重新打开；目标必须重新观察页面后才能修改。",
+		"browser.v2.handoffConnection": "此操作不会启动 Agent。确认后复制新连接，仅交给已授权目标；旧连接随即失效。",
+		"browser.v2.handoff.agentId": "目标 Agent ID",
+		"browser.v2.handoff.externalRunId": "外部 Run ID",
+		"browser.v2.handoff.attemptId": "Attempt ID",
+		"browser.v2.handoffConfirm": "授权并转交",
+		"browser.v2.failure.control_unconfirmed": "原生浏览器未确认本次控制权授予。输入保持阻断，请先检查 Space 状态。",
+		"browser.v2.failure.execution_identity_invalid": "每个执行身份使用 1–128 位字母、数字或这些符号：_ . : @ / -",
+		"browser.v2.failure.fresh_observation_required": "请先用新 Run 重新观察交接的 Page，再进行修改。",
+
 		'browser.v2.failure.unsupported_url': '请输入网址或搜索词，仅支持 HTTP 和 HTTPS 网页。',
 		'browser.v2.failure.human_lease_expired': '人工控制已过期，请重新接管后再操作。',
 		'browser.v2.failure.frame_stale': '当前画面已过期，请等待新画面后重试。',

@@ -4,7 +4,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { setTimeout as nodeSetTimeout, clearTimeout as nodeClearTimeout } from 'node:timers';
 import { AgentBrowserError } from '../../core/contracts';
-import { envelopeSchema } from '../../core/protocol';
+import { envelopeSchema, PROTOCOL_LIMITS } from '../../core/protocol';
 import type {
 	BrowserConnectionScope,
 	BrowserRpcConnection,
@@ -63,7 +63,7 @@ export function createBrowserRpcServer(options: {
 			reply(res, 403, { error: { code: 'transport_rejected' } });
 			return;
 		}
-		if (active >= 32) {
+		if (active >= PROTOCOL_LIMITS.inFlight) {
 			reply(res, 429, { error: { code: 'request_quota' } });
 			return;
 		}
@@ -90,7 +90,7 @@ export function createBrowserRpcServer(options: {
 			for await (const chunk of req) {
 				const data = typeof chunk === 'string' ? Buffer.from(chunk) : Buffer.from(chunk as Uint8Array);
 				size += data.length;
-				if (size > 512 * 1024) throw new AgentBrowserError('request_too_large');
+				if (size > PROTOCOL_LIMITS.requestBytes) throw new AgentBrowserError('request_too_large');
 				chunks.push(data);
 			}
 			let value: unknown;
@@ -104,7 +104,7 @@ export function createBrowserRpcServer(options: {
 			const envelope = parsed.data;
 			if (envelope.bootId !== bootId) throw new AgentBrowserError('boot_changed');
 			const remaining = envelope.deadlineAtMs - Date.now();
-			if (remaining <= 0 || remaining > 60_000) throw new AgentBrowserError('deadline_invalid');
+			if (remaining <= 0 || remaining > PROTOCOL_LIMITS.deadlineMs) throw new AgentBrowserError('deadline_invalid');
 			const acceptedAt = performance.now(), remainingMs = () => Math.max(0, remaining - (performance.now() - acceptedAt));
 			let timeout: ReturnType<typeof nodeSetTimeout> | undefined;
 			try {
@@ -123,7 +123,7 @@ export function createBrowserRpcServer(options: {
 					? options.guardResponse(envelope.method, envelope.params, match[0], result)
 					: result;
 				const body = { protocolVersion: 2, requestId: envelope.requestId, result: guarded ?? null };
-				if (Buffer.byteLength(JSON.stringify(body)) > 12 * 1024 * 1024)
+				if (Buffer.byteLength(JSON.stringify(body)) > PROTOCOL_LIMITS.responseBytes)
 					throw new AgentBrowserError('response_too_large');
 				reply(res, 200, body);
 			} finally {

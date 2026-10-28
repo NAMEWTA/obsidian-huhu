@@ -27,11 +27,13 @@ import {
 	type BrowserRunEvent,
 	type BrowserEventType,
 	type BrowserEventSnapshot,
+	type BrowserHandoffRequest,
 } from '../core/contracts';
 import type { IdentitySummary, IdentityImportPreview, IdentitySource, IdentityProvisionPhase, IdentitySaveReceipt } from '../core/identity';
 import type { IdentityProvisionResult } from './identity-provision';
 import type { BrowserFile, BrowserDownload, BrowserFileScope } from '../core/files';
 import { normalizeBrowserNavigationUrl } from '../core/url';
+import { assertRunAuthority, confirmControlAck, isCurrentLease, validateExecutionRef } from '../core/authority';
 import { validatePageUrl, humanInputSchema } from '../core/protocol';
 import { OperationLedger, operationErrorCode } from './operation-ledger';
 import { FrameBroker } from './frame-broker';
@@ -58,6 +60,7 @@ const agentCommands = new Set([
 	'upload',
 ]);
 interface RunEntry {
+	freshObservationPage?: string;
 	run: BrowserRun;
 	capability: string;
 }
@@ -284,7 +287,8 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 					const renewed = { ...lease, expiresAt: this.now() + 120000 };
 					void this.runtime(s)
 						.setControl(renewed, lease.epoch)
-						.then(() => {
+						.then(ack => {
+							confirmControlAck(ack, renewed.runtimeId, renewed.epoch);
 							if (s.control.lease?.leaseId === lease.leaseId) s.control.lease = renewed;
 						})
 						.catch(() => {
@@ -588,8 +592,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				const epoch = s.control.epoch + 1;
 				s.control = { mode: 'quiescing', epoch };
 				const ack = await runtime.setControl(undefined, epoch);
-				if (ack.runtimeId !== runtime.id || ack.epoch !== epoch || ack.transportState !== 'open')
-					throw new AgentBrowserError('revocation_unconfirmed');
+				confirmControlAck(ack, runtime.id, epoch, 'revocation_unconfirmed');
 				if (this.intents.get(id) !== intent || this.closing || this.runtimes.get(id) !== runtime)
 					throw new AgentBrowserError('control_superseded');
 				if (mode === 'human' && (!viewer || !this.frames.has(viewer.viewerId, id)))
@@ -610,26 +613,30 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 					expiresAt: this.now() + 120_000,
 					...viewer,
 				};
-				await runtime.setControl(lease, lease.epoch);
+				confirmControlAck(await runtime.setControl(lease, lease.epoch), runtime.id, lease.epoch);
 				if (
 					this.intents.get(id) !== intent ||
 					this.closing ||
 					this.runtimes.get(id) !== runtime ||
 					(mode === 'human' && (!viewer || !this.frames.has(viewer.viewerId, id)))
 				) {
-					await runtime.setControl(undefined, lease.epoch + 1);
+					confirmControlAck(await runtime.setControl(undefined, lease.epoch + 1), runtime.id, lease.epoch + 1, 'revocation_unconfirmed');
 					s.control = { mode: 'paused', epoch: lease.epoch + 1 };
 					throw new AgentBrowserError('control_superseded');
 				}
 				s.control = { mode: mode === 'workspace' ? 'quiescing' : mode, epoch: lease.epoch, lease };
 				await this.persist();
 				this.notify();
+				// Persistence and synchronous subscribers can supersede a completed native grant.
+				if (this.intents.get(id) !== intent || this.closing || this.runtimes.get(id) !== runtime || !isCurrentLease(s, lease, this.now()) ||
+					(mode === 'human' && (!viewer || !this.frames.has(viewer.viewerId, id))))
+					throw new AgentBrowserError('control_superseded');
 				return clone(lease);
 			} catch (error) {
 				if (this.intents.get(id) === intent) {
 					s.control = { mode: 'blocked', epoch: s.control.epoch + 1 };
 					try {
-						await runtime.setControl(undefined, s.control.epoch);
+						confirmControlAck(await runtime.setControl(undefined, s.control.epoch), runtime.id, s.control.epoch, 'revocation_unconfirmed');
 					} catch {
 						try {
 							await runtime.stop();
@@ -651,6 +658,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (!this.frames.has(viewerId, spaceId)) throw new AgentBrowserError('viewer_not_registered');
 		const lease = await this.changeControl(spaceId, 'human', viewerId, { viewerId, windowId });
 		if (!lease) throw new AgentBrowserError('control_missing');
+		if (!isCurrentLease(this.space(spaceId), lease, this.now())) throw new AgentBrowserError('control_superseded');
 		return lease;
 	}
 	async releaseViewer(spaceId: string, viewerId: string) {
@@ -662,26 +670,49 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		await this.changeControl(id, 'paused', 'workspace');
 	}
 	async resumeAgent(id: string): Promise<RunGrant> {
+		return this.grantAgent(id);
+	}
+	/** The caller is the trusted user surface/coordinator, not the source Agent. Expected authority
+	 * makes a lost response safe: replaying A's request cannot revoke the successor B. */
+	async handoffAgent(request: BrowserHandoffRequest): Promise<RunGrant> {
+		const target = validateExecutionRef(request.target), s = this.space(request.spaceId);
+		if (s.kind !== 'task') throw new AgentBrowserError('personal_space_forbidden');
+		const entry = this.runs.get(request.fromRunId);
+		if (!entry || entry.run.spaceId !== s.id || entry.run.runtimeId !== request.runtimeId || entry.run.epoch !== request.expectedEpoch)
+			throw new AgentBrowserError('control_superseded');
+		this.authorize(entry.run.id, entry.capability);
+		if (this.page(s, request.pageId).status !== 'open') throw new AgentBrowserError('page_not_ready');
+		return this.grantAgent(s.id, { ...request, target });
+	}
+	private async grantAgent(id: string, handoff?: BrowserHandoffRequest): Promise<RunGrant> {
 		const s = this.space(id);
 		if (s.kind !== 'task') throw new AgentBrowserError('personal_space_forbidden');
 		const runId = this.persistence.id(),
 			lease = await this.changeControl(id, 'agent', runId);
 		if (!lease) throw new AgentBrowserError('control_missing');
+		if (!isCurrentLease(s, lease, this.now())) throw new AgentBrowserError('control_superseded');
+		if (handoff && (lease.runtimeId !== handoff.runtimeId || this.page(s, handoff.pageId).status !== 'open')) {
+			await this.pause(id);
+			throw new AgentBrowserError('control_superseded');
+		}
 		const run: BrowserRun = {
-			id: runId,
-			spaceId: id,
-			runtimeId: lease.runtimeId,
-			issuerId: id,
-			epoch: lease.epoch,
-			leaseId: lease.leaseId,
-			state: 'active',
-			expiresAt: lease.expiresAt,
+			id: runId, spaceId: id, runtimeId: lease.runtimeId, issuerId: id,
+			epoch: lease.epoch, leaseId: lease.leaseId, state: 'active', expiresAt: lease.expiresAt,
+			...(handoff ? { execution: clone(handoff.target), handoff: { transitionId: this.persistence.id(), fromRunId: handoff.fromRunId, pageId: handoff.pageId } } : {}),
 		};
 		const capability = this.persistence.id() + this.persistence.id();
-		this.runs.set(runId, { run, capability });
+		this.runs.set(runId, { run, capability, ...(handoff ? { freshObservationPage: handoff.pageId } : {}) });
 		this.eventsStore.open(runId);
+		if (handoff) {
+			const event = { kind: 'controlChanged' as const, spaceId: id, runtimeId: run.runtimeId, epoch: run.epoch, entityId: run.id, state: 'agent' as const };
+			this.eventsStore.append(handoff.fromRunId, event); this.eventsStore.append(runId, event);
+		}
 		this.notify();
+		this.authorize(runId, capability);
 		return { run: clone(run), capability };
+	}
+	private requireFreshObservation(runId: string): void {
+		if (this.runs.get(runId)?.freshObservationPage) throw new AgentBrowserError('fresh_observation_required');
 	}
 	async startRun(spaceId: string, issuerId: string): Promise<RunGrant> {
 		const entry = [...this.runs.values()].find(
@@ -689,7 +720,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		);
 		if (!entry) throw new AgentBrowserError('user_run_grant_required');
 		this.authorize(entry.run.id, entry.capability);
-		return clone(entry);
+		return { run: clone(entry.run), capability: entry.capability };
 	}
 	async copyAgentConnection(spaceId: string, options?: { allowTaskCreation?: boolean }) {
 		const entry = [...this.runs.values()].find((e) => e.run.spaceId === spaceId && e.run.state === 'active');
@@ -700,20 +731,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		this.assertWritable();
 		const entry = this.runs.get(runId);
 		if (!entry || entry.capability !== capability) throw new AgentBrowserError('capability_invalid');
-		const { run } = entry,
-			s = this.space(run.spaceId),
-			lease = s.control.lease;
-		if (
-			run.state !== 'active' ||
-			run.expiresAt <= this.now() ||
-			s.kind !== 'task' ||
-			s.control.mode !== 'agent' ||
-			!lease ||
-			lease.leaseId !== run.leaseId ||
-			s.control.epoch !== run.epoch ||
-			s.runtimeId !== run.runtimeId
-		)
-			throw new AgentBrowserError('run_revoked');
+		const { run } = entry, s = this.space(run.spaceId), lease = assertRunAuthority(s, run, this.now());
 		return { s, run, lease, runtime: this.runtime(s) };
 	}
 	async stopRun(runId: string, capability: string) {
@@ -723,7 +741,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	async heartbeat(runId: string, capability: string) {
 		const { run, lease, runtime, s } = this.authorize(runId, capability);
 		const expiresAt = this.now() + 120_000;
-		await runtime.setControl({ ...lease, expiresAt }, lease.epoch);
+		confirmControlAck(await runtime.setControl({ ...lease, expiresAt }, lease.epoch), runtime.id, lease.epoch);
 		this.authorize(runId, capability);
 		run.expiresAt = expiresAt;
 		s.control.lease = { ...lease, expiresAt };
@@ -954,12 +972,15 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			result.documentId !== this.page(s, pageId).documentId
 		)
 			throw new AgentBrowserError('observation_stale');
+		const entry = this.runs.get(runId);
+		if (entry?.freshObservationPage === pageId) delete entry.freshObservationPage;
 		return result;
 	}
 	async prepare(runId: string, capability: string, pageId: string, requestId: string, command: BrowserCommand, timeoutMs?: number) {
 		const { s, run } = this.authorize(runId, capability);
 		this.page(s, pageId);
 		if (!agentCommands.has(command.kind)) throw new AgentBrowserError('command_forbidden');
+		if (!['snapshot', 'text', 'screenshot', 'wait', 'stop'].includes(command.kind)) this.requireFreshObservation(runId);
 		if (command.kind === 'navigate') validatePageUrl(command.url);
 		return this.ledger.prepare(
 			requestId,
@@ -980,6 +1001,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (!record || record.scope.spaceId !== s.id || !record.scope.pageId)
 			throw new AgentBrowserError('operation_not_found');
 		if (!agentCommands.has(command.kind)) throw new AgentBrowserError('command_forbidden');
+		if (!['snapshot', 'text', 'screenshot', 'wait', 'stop'].includes(command.kind)) this.requireFreshObservation(runId);
 		const pageId = record.scope.pageId;
 		const dispatch = async () => {
 			let paths: Awaited<ReturnType<BrowserWorkspaceService['uploadPaths']>>;
@@ -1207,6 +1229,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		timeoutMs?: number,
 	): Promise<OperationRecord> {
 		const { s, run } = this.authorize(runId, capability);
+		this.requireFreshObservation(runId);
 		url = validatePageUrl(url);
 		const payload = { kind: 'page.open', url },
 			record = await this.ledger.prepare(
@@ -1250,6 +1273,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	}
 	async pageClose(runId: string, capability: string, requestId: string, pageId: string, timeoutMs?: number): Promise<OperationRecord> {
 		const { s, run } = this.authorize(runId, capability);
+		this.requireFreshObservation(runId);
 		const payload = { kind: 'page.close', pageId },
 			record = await this.ledger.prepare(
 				requestId,

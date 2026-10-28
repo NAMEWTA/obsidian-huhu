@@ -58,3 +58,36 @@ it('shares stream cursor schemas and rejects secret-bearing or inconsistent even
 it('does not expose trusted human element-material capture as an Agent command', () => {
 	expect(() => parseMethod('operation.prepare', { runId: 'r', capability: 'a'.repeat(40), pageId: 'p', requestId: 'q', command: { kind: 'material', observationId: 'observation', ref: 'opaque-ref' } })).toThrow('invalid_request');
 });
+
+it('derives every exposed input, output and execution policy from the same bounded registry', async () => {
+	const { methodNames, methodRegistry, PROTOCOL_LIMITS } = await import('./protocol');
+	const tools = protocolTools();
+	expect(tools.map(tool => tool.method)).toEqual(methodNames);
+	for (const tool of tools) {
+		expect(tool.outputSchema).toBeDefined(); expect(methodRegistry[tool.method].output).toBeDefined();
+		expect(tool.deadlineMs).toBe(PROTOCOL_LIMITS.deadlineMs); expect(tool.maxResponseBytes).toBe(PROTOCOL_LIMITS.responseBytes);
+		expect(['read', 'control', 'mutation']).toContain(tool.risk);
+	}
+	for (const trusted of ['handoffAgent', 'resumeAgent', 'takeover', 'readIdentity', 'rawCDP']) expect(JSON.stringify(tools)).not.toContain(trusted);
+	expect(methodRegistry['operation.execute'].idempotency).toBe('operation-id');
+});
+
+it('rejects malformed and secret-bearing result envelopes before the transport publishes them', async () => {
+	const { parseResult } = await import('./protocol');
+	const health = { runId: 'run', runtimeId: 'runtime', epoch: 1, eventCursor: 0, pages: 1, viewers: 0, framesReceived: 0, framesReplaced: 0, queuedFrameBytes: 0, pendingRequests: 0 };
+	expect(parseResult('health', health)).toEqual(health);
+	for (const invalid of [{ ...health, capability: 'secret' }, { ...health, pages: -1 }, { ...health, epoch: 0.5 }, { ...health, runtimeId: '' }]) expect(() => parseResult('health', invalid)).toThrow('invalid_response');
+	expect(parseResult('operation.get', undefined)).toBeNull();
+	expect(parseResult('run.stop', { stopped: true })).toEqual({ stopped: true });
+	expect(() => parseResult('run.stop', { stopped: false })).toThrow('invalid_response');
+	expect(() => parseResult('file.list', [{ id: 'file', path: '/private/host' }])).toThrow('invalid_response');
+});
+
+it('enforces observation identity, declared node and byte budgets on outgoing results', async () => {
+	const { parseResult } = await import('./protocol');
+	const observation = { id: 'snapshot', spaceId: 'space', pageId: 'page', runtimeId: 'runtime', documentId: 'document', epoch: 1, viewportVersion: 0, url: 'https://example.com/', title: 'Fixture', scope: snapshotScope('space', 'page', { maxNodes: 1, maxBytes: 1024 }), coverage: [], frameErrors: [], nodes: [], truncated: false };
+	expect(parseResult('observe', observation)).toEqual(observation);
+	const node = { ref: 'opaque', frameId: 'frame', role: 'button', name: 'name', visible: true };
+	for (const changed of [{ scope: { ...observation.scope, pageId: 'other' } }, { nodes: [node, { ...node, ref: 'other' }] }, { text: 'a'.repeat(1024) }, { secret: 'do not publish' }])
+		expect(() => parseResult('observe', { ...observation, ...changed })).toThrow('invalid_response');
+});

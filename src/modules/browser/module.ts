@@ -1,6 +1,6 @@
 import { Notice } from 'obsidian';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
-import { BROWSER_WORKSPACE, BROWSER_OPEN, BROWSER_MATERIAL_CONSUMERS, type BrowserOpener } from './api';
+import { BROWSER_WORKSPACE, BROWSER_AGENT_ACCESS, BROWSER_OPEN, BROWSER_MATERIAL_CONSUMERS, type BrowserOpener } from './api';
 import { AgentBrowserError } from './core/contracts';
 import { composeBrowserWorkspace } from './services/create-workspace';
 import { observeNoteLinks } from './platform/note-links';
@@ -59,7 +59,7 @@ export default function createBrowserModule(context: ModuleContext): ModuleInsta
 		retainOnDisposeFailure: true,
 		get services() {
 			return application
-				? [[BROWSER_WORKSPACE, application.workspace] as const, [BROWSER_OPEN, open] as const]
+				? [[BROWSER_WORKSPACE, application.workspace] as const, [BROWSER_AGENT_ACCESS, application.workspace] as const, [BROWSER_OPEN, open] as const]
 				: [];
 		},
 		pages: { browser: async () => (await import('./ui/workbench-page')).createBrowserPage(workspace()) },

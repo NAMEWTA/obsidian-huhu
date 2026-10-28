@@ -22,6 +22,7 @@ import { InlineInput } from './InlineInput';
 import { PendingRequestCard } from './PendingRequestCard';
 import { CopySelectionButton } from './CopySelectionButton';
 import { SendMaterialButton } from './SendMaterialButton';
+import { HandoffAgentButton } from './HandoffAgentButton';
 
 async function paintFrame(canvas: HTMLCanvasElement, frame: BrowserFrame, signal: AbortSignal, current: () => boolean) {
 	const win = canvas.ownerDocument.defaultView;
@@ -424,6 +425,9 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 							<Pause />
 							{t('browser.v2.pause')}
 						</Button>
+					)}
+					{space.kind === 'task' && space.control.mode === 'agent' && (
+						<HandoffAgentButton api={api} spaceId={spaceId} pageId={pageId} disabled={controlPending || state.readOnly || space.status !== 'ready' || page.status !== 'open'} />
 					)}
 					{space.kind === 'task' && space.control.mode !== 'agent' && (
 						<Button

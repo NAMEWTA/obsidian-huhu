@@ -1,5 +1,6 @@
 import * as z from 'zod/mini';
 import { AgentBrowserError, type SnapshotOptions, type SnapshotScope, type BrowserRunEvent, type BrowserEventSnapshot } from './contracts';
+import { grantResultSchema, createdResultSchema, pageResultSchema, observationResultSchema, operationResultSchema, fileResultSchema, downloadResultSchema, healthResultSchema, batchResultSchema, statusResultSchema } from './protocol-results';
 export const PROTOCOL_VERSION = 2 as const;
 const string = (maximum: number, minimum = 0) => z.string().check(z.minLength(minimum), z.maxLength(maximum));
 const integer = (minimum: number, maximum: number) => z.int().check(z.gte(minimum), z.lte(maximum));
@@ -127,8 +128,61 @@ const schemas = {
 	health: z.strictObject(runScope),
 } as const;
 export type BrowserMethod = keyof typeof schemas;
+export const PROTOCOL_LIMITS = { requestBytes: 512 * 1024, responseBytes: 12 * 1024 * 1024, inFlight: 32, deadlineMs: 60_000 } as const;
+const resultSchemas = {
+	status: statusResultSchema,
+	'space.create': createdResultSchema,
+	'run.start': grantResultSchema,
+	'run.stop': z.strictObject({ stopped: z.literal(true) }),
+	'run.heartbeat': z.strictObject({ expiresAt: z.number().check(z.gte(0)) }),
+	'page.list': z.array(pageResultSchema).check(z.maxLength(12)),
+	'page.open': operationResultSchema,
+	'page.close': operationResultSchema,
+	observe: observationResultSchema,
+	'operation.prepare': operationResultSchema,
+	'operation.execute': operationResultSchema,
+	'operation.get': z.nullable(operationResultSchema),
+	batch: batchResultSchema,
+	'file.list': z.array(fileResultSchema).check(z.maxLength(10000)),
+	'download.list': z.array(downloadResultSchema).check(z.maxLength(10000)),
+	'events.poll': z.array(runEventSchema).check(z.maxLength(256)),
+	'events.snapshot': eventSnapshotSchema,
+	health: healthResultSchema,
+} as const satisfies Record<BrowserMethod, z.ZodMiniType>;
+interface MethodPolicy {
+	scope: 'connection' | 'run' | 'page' | 'operation';
+	risk: 'read' | 'control' | 'mutation';
+	idempotency: 'read' | 'request-id' | 'operation-id' | 'no-retry';
+}
+const policies = {
+	status: { scope: 'connection', risk: 'read', idempotency: 'read' },
+	'space.create': { scope: 'connection', risk: 'mutation', idempotency: 'request-id' },
+	'run.start': { scope: 'connection', risk: 'read', idempotency: 'read' },
+	'run.stop': { scope: 'run', risk: 'control', idempotency: 'no-retry' },
+	'run.heartbeat': { scope: 'run', risk: 'control', idempotency: 'no-retry' },
+	'page.list': { scope: 'run', risk: 'read', idempotency: 'read' },
+	'page.open': { scope: 'run', risk: 'mutation', idempotency: 'request-id' },
+	'page.close': { scope: 'page', risk: 'mutation', idempotency: 'request-id' },
+	observe: { scope: 'page', risk: 'read', idempotency: 'read' },
+	'operation.prepare': { scope: 'page', risk: 'mutation', idempotency: 'request-id' },
+	'operation.execute': { scope: 'operation', risk: 'mutation', idempotency: 'operation-id' },
+	'operation.get': { scope: 'operation', risk: 'read', idempotency: 'read' },
+	batch: { scope: 'page', risk: 'mutation', idempotency: 'request-id' },
+	'file.list': { scope: 'run', risk: 'read', idempotency: 'read' },
+	'download.list': { scope: 'run', risk: 'read', idempotency: 'read' },
+	'events.poll': { scope: 'run', risk: 'read', idempotency: 'read' },
+	'events.snapshot': { scope: 'run', risk: 'read', idempotency: 'read' },
+	health: { scope: 'run', risk: 'read', idempotency: 'read' },
+} as const satisfies Record<BrowserMethod, MethodPolicy>;
+/** One registry feeds validation, discovery, CLI and MCP. Trusted UI operations are absent. */
+export const methodRegistry = Object.fromEntries(Object.keys(schemas).map(key => {
+	const name = key as BrowserMethod;
+	return [name, { input: schemas[name], output: resultSchemas[name], ...policies[name], exposure: 'agent' as const, deadlineMs: PROTOCOL_LIMITS.deadlineMs, maxResponseBytes: PROTOCOL_LIMITS.responseBytes }];
+})) as { [M in BrowserMethod]: { input: (typeof schemas)[M]; output: (typeof resultSchemas)[M]; exposure: 'agent'; deadlineMs: number; maxResponseBytes: number } & (typeof policies)[M] };
+export type MethodResult<M extends BrowserMethod> = z.infer<(typeof resultSchemas)[M]>;
+
 export type MethodParams<M extends BrowserMethod> = z.infer<(typeof schemas)[M]>;
-export const methodNames = Object.keys(schemas) as BrowserMethod[];
+export const methodNames = Object.keys(methodRegistry) as BrowserMethod[];
 export const envelopeSchema = z.strictObject({
 	protocolVersion: z.literal(PROTOCOL_VERSION),
 	requestId: id,
@@ -138,17 +192,32 @@ export const envelopeSchema = z.strictObject({
 	deadlineAtMs: z.number(),
 });
 export function parseMethod<M extends BrowserMethod>(method: M, params: unknown): MethodParams<M> {
-	const result = schemas[method].safeParse(params);
-	if (!result.success) throw new AgentBrowserError('invalid_request');
+	const result = methodRegistry[method]?.input.safeParse(params);
+	if (!result?.success) throw new AgentBrowserError('invalid_request');
 	return result.data as MethodParams<M>;
 }
+export function parseResult<M extends BrowserMethod>(method: M, value: unknown): MethodResult<M> {
+	if (method === 'events.poll') return parseEventResult('events.poll', value) as MethodResult<M>;
+	if (method === 'events.snapshot') return parseEventResult('events.snapshot', value) as MethodResult<M>;
+	try {
+		const candidate = method === 'operation.get' && value === undefined ? null : value;
+		const encoded = JSON.stringify(candidate);
+		if (encoded === undefined || new TextEncoder().encode(encoded).byteLength > PROTOCOL_LIMITS.responseBytes) throw new Error();
+		const result = methodRegistry[method]?.output.safeParse(candidate);
+		if (!result?.success) throw new Error();
+		if (method === 'observe') {
+			const observation = result.data as MethodResult<'observe'>;
+			if (observation.scope.spaceId !== observation.spaceId || observation.scope.pageId !== observation.pageId ||
+				observation.nodes.length > observation.scope.maxNodes || new TextEncoder().encode(encoded).byteLength > observation.scope.maxBytes) throw new Error();
+		}
+		return result.data as MethodResult<M>;
+	} catch { throw new AgentBrowserError('invalid_response'); }
+}
 export function protocolTools() {
-	return methodNames.map((name) => ({
-		name: `browser_${name.replaceAll('.', '_')}`,
-		method: name,
-		inputSchema: z.toJSONSchema(schemas[name]),
-		exposure: 'agent' as const,
-	}));
+	return methodNames.map(name => {
+		const { input, output, ...policy } = methodRegistry[name];
+		return { name: `browser_${name.replaceAll('.', '_')}`, method: name, inputSchema: z.toJSONSchema(input), outputSchema: z.toJSONSchema(output), ...policy };
+	});
 }
 export function validatePageUrl(input: string): string {
 	if (input === 'about:blank') return input;

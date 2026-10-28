@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { BrowserMaterialConsumer } from '../api';
 import { BrowserWorkspaceService, type BrowserWorkspaceExtensions } from './workspace';
 import { BrowserProtocolService, type ConnectionGrant } from './protocol-service';
-import { AgentBrowserError, type BrowserPersistence, type BrowserRuntime, type BrowserRuntimeFactory, type ControlLease, type BrowserCommand, type RuntimeEvent, type RuntimePage, type BrowserObservation, type JsonValue, type RuntimeIdentityState, type BrowserSpace, type BrowserFrame, type HumanInput, type OperationRecord } from '../core/contracts';
+import { AgentBrowserError, type BrowserPersistence, type BrowserRuntime, type BrowserRuntimeFactory, type ControlLease, type BrowserCommand, type RuntimeEvent, type RuntimePage, type BrowserObservation, type JsonValue, type RuntimeIdentityState, type BrowserSpace, type BrowserFrame, type HumanInput, type OperationRecord, type RevocationAck } from '../core/contracts';
 import { BrowserFileError, sameFileScope, type BrowserFile, type BrowserFileScope, type BrowserDownload } from '../core/files';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -30,7 +30,7 @@ class FakeRuntime implements BrowserRuntime {
 	constructor(readonly id: string, readonly spaceId: string) {}
 	onEvent(listener: (event: RuntimeEvent) => void) { this.listeners.add(listener); return () => this.listeners.delete(listener); }
 	emit(event: RuntimeEvent) { for (const listener of this.listeners) listener(event); }
-	setControl = vi.fn(async (lease: ControlLease | undefined, epoch: number) => { this.lease = lease; this.epoch = epoch; return { runtimeId: this.id, epoch, lastDispatchedSequence: 0, transportState: 'open' as const }; });
+	setControl = vi.fn(async (lease: ControlLease | undefined, epoch: number): Promise<RevocationAck> => { this.lease = lease; this.epoch = epoch; return { runtimeId: this.id, epoch, lastDispatchedSequence: 0, transportState: 'open' as const }; });
 	createPage = vi.fn(async (id: string, url: string) => { const page: RuntimePage = { id, url, title: 'Page', documentId: `document-${this.id}-${id}`, zoom: 1, viewportVersion: 0 }; this.pages.set(id, page); return { ...page }; });
 	closePage = vi.fn(async (pageId: string) => { this.pages.delete(pageId); this.emit({ kind: 'page-closed', runtimeId: this.id, pageId }); });
 	execute = vi.fn(async (_pageId: string, _command: BrowserCommand, _authority: ControlLease): Promise<JsonValue> => ({ ok: true }));
@@ -679,5 +679,112 @@ describe('Browser workspace authority and lifecycle', () => {
 		const memory = new MemoryPersistence(); memory.secure = false; const { workspace } = await setup(memory);
 		await expect(workspace.createSpace({ kind: 'task', ephemeral: true })).rejects.toMatchObject({ code: 'ephemeral_consent_required' }); await workspace.consentEphemeral();
 		await expect(workspace.createSpace({ kind: 'task' })).rejects.toMatchObject({ code: 'ephemeral_consent_required' }); expect((await workspace.createSpace({ kind: 'task', ephemeral: true })).retention).toBe('ephemeral');
+	});
+});
+
+describe('phase 2 control publication boundaries', () => {
+	it.each(['runtime', 'epoch', 'transport'] as const)('does not publish a Run after a mismatched native grant ACK (%s)', async mismatch => {
+		const { workspace, space, native, state } = await task();
+		const original = native.setControl.getMockImplementation()!;
+		native.setControl.mockImplementation(async (lease, epoch) => {
+			const ack = await original(lease, epoch);
+			if (lease) return { ...ack, runtimeId: mismatch === 'runtime' ? 'other-runtime' : ack.runtimeId, epoch: mismatch === 'epoch' ? epoch - 1 : epoch, transportState: mismatch === 'transport' ? 'closed' as const : 'open' as const };
+			return ack;
+		});
+		await expect(workspace.resumeAgent(space.id)).rejects.toMatchObject({ code: 'control_unconfirmed' });
+		expect(state(space.id).control.mode).toBe('blocked');
+		expect(native.lease).toBeUndefined();
+	});
+	it('does not publish a Run superseded during the final catalog commit', async () => {
+		const entered = gate(), blocked = gate();
+		class DelayedCatalog extends MemoryPersistence {
+			armed = false;
+			override async write(key: string, value: unknown) {
+				if (key === 'catalog' && this.armed) { this.armed = false; entered.resolve(); await blocked.promise; }
+				return super.write(key, value);
+			}
+		}
+		const storage = new DelayedCatalog(), { workspace, space, native, state } = await task(storage);
+		storage.armed = true;
+		const granting = workspace.resumeAgent(space.id), rejected = expect(granting).rejects.toMatchObject({ code: 'control_superseded' });
+		await entered.promise;
+		const pausing = workspace.pause(space.id);
+		blocked.resolve();
+		await rejected; await pausing;
+		expect(state(space.id).control.mode).toBe('paused');
+		expect(native.lease).toBeUndefined();
+		await expect(workspace.startRun(space.id, space.id)).rejects.toMatchObject({ code: 'user_run_grant_required' });
+	});
+});
+
+describe('explicit same-Page Agent handoff', () => {
+	const target = { consumerId: 'cli', agentId: 'agent-B', externalRunId: 'external-run-B', attemptId: 'attempt-1' };
+	async function source() {
+		const context = await task(), grant = await context.workspace.resumeAgent(context.space.id);
+		return { ...context, grant, request: { spaceId: context.space.id, pageId: context.pageId, runtimeId: grant.run.runtimeId, fromRunId: grant.run.id, expectedEpoch: grant.run.epoch, target } };
+	}
+	it('retains the runtime, live Page and document, rotates authority, and requires a fresh observation before mutation', async () => {
+		const { workspace, space, pageId, native, factory, state, grant: a, request } = await source();
+		const original = state(space.id).pages[0]!, pageTarget = native.pages.get(pageId), created = native.createPage.mock.calls.length;
+		const b = await workspace.handoffAgent(request);
+		expect(factory.start).toHaveBeenCalledOnce(); expect(native.createPage).toHaveBeenCalledTimes(created);
+		expect(native.pages.get(pageId)).toBe(pageTarget); expect(state(space.id).pages[0]).toEqual(original);
+		expect(b.run.runtimeId).toBe(a.run.runtimeId); expect(b.run.leaseId).not.toBe(a.run.leaseId); expect(b.capability).not.toBe(a.capability);
+		expect(b.run.execution).toEqual(target); expect(b.run.handoff).toMatchObject({ fromRunId: a.run.id, pageId });
+		await expect(workspace.prepare(b.run.id, b.capability, pageId, 'before-observe', { kind: 'reload' })).rejects.toMatchObject({ code: 'fresh_observation_required' });
+		await expect(workspace.pageOpen(b.run.id, b.capability, 'before-page-open')).rejects.toMatchObject({ code: 'fresh_observation_required' });
+		await expect(workspace.pageClose(b.run.id, b.capability, 'before-page-close', pageId)).rejects.toMatchObject({ code: 'fresh_observation_required' });
+		await workspace.observe(b.run.id, b.capability, pageId);
+		const ticket = await workspace.prepare(b.run.id, b.capability, pageId, 'after-observe', { kind: 'reload' });
+		expect((await workspace.execute(b.run.id, b.capability, ticket.id, { kind: 'reload' })).state).toBe('completed');
+	});
+	it('rejects A late stop, heartbeat, reads, writes and replayed handoff without changing B', async () => {
+		const { workspace, pageId, state, space, grant: a, request } = await source(), b = await workspace.handoffAgent(request);
+		await expect(workspace.stopRun(a.run.id, a.capability)).rejects.toMatchObject({ code: 'run_revoked' });
+		await expect(workspace.heartbeat(a.run.id, a.capability)).rejects.toMatchObject({ code: 'run_revoked' });
+		await expect(workspace.observe(a.run.id, a.capability, pageId)).rejects.toMatchObject({ code: 'run_revoked' });
+		await expect(workspace.prepare(a.run.id, a.capability, pageId, 'old-write', { kind: 'reload' })).rejects.toMatchObject({ code: 'run_revoked' });
+		await expect(workspace.handoffAgent(request)).rejects.toMatchObject({ code: 'run_revoked' });
+		expect(state(space.id).control.lease?.leaseId).toBe(b.run.leaseId);
+		expect(workspace.eventSnapshot(a.run.id, a.capability)).toMatchObject({ active: false, pages: [], requests: [], downloads: [] });
+		expect(workspace.events(a.run.id, a.capability).some(row => row.type === 'controlChanged' && row.entityId === b.run.id)).toBe(true);
+	});
+	it.each(['observe', 'heartbeat'] as const)('drops an A %s that finishes after B receives authority', async method => {
+		const { workspace, pageId, native, state, space, grant: a, request, advance } = await source(), blocked = gate(), entered = gate();
+		if (method === 'observe') {
+			const observation = native.observe.getMockImplementation()!;
+			native.observe.mockImplementationOnce(async (...args) => { const result = await observation(...args); entered.resolve(); await blocked.promise; return result; });
+		} else {
+			advance(1); const renew = native.setControl.getMockImplementation()!;
+			native.setControl.mockImplementationOnce(async (...args) => { const result = await renew(...args); entered.resolve(); await blocked.promise; return result; });
+		}
+		const reading = method === 'observe' ? workspace.observe(a.run.id, a.capability, pageId) : workspace.heartbeat(a.run.id, a.capability), rejected = expect(reading).rejects.toMatchObject({ code: 'run_revoked' });
+		await entered.promise;
+		const b = await workspace.handoffAgent(request); blocked.resolve(); await rejected;
+		expect(state(space.id).control.lease?.leaseId).toBe(b.run.leaseId);
+	});
+	it('does not transfer before the native revoke ACK and admits only one competing successor', async () => {
+		const { workspace, native, state, space, request } = await source(), blocked = gate(), entered = gate();
+		const original = native.setControl.getMockImplementation()!;
+		native.setControl.mockImplementationOnce(async (lease, epoch) => { entered.resolve(); await blocked.promise; return original(lease, epoch); });
+		const handing = workspace.handoffAgent(request); await entered.promise;
+		expect(state(space.id).control.mode).toBe('quiescing');
+		await expect(workspace.handoffAgent({ ...request, target: { ...target, agentId: 'agent-C' } })).rejects.toMatchObject({ code: 'run_revoked' });
+		blocked.resolve(); const b = await handing;
+		expect(state(space.id).control.lease?.controllerId).toBe(b.run.id);
+	});
+	it('rejects invented external identities and stale scopes before revoking the current writer', async () => {
+		const { workspace, native, state, space, grant, request } = await source(), count = native.setControl.mock.calls.length;
+		await expect(workspace.handoffAgent({ ...request, target: { ...target, agentId: 'model\nrole=admin' } })).rejects.toMatchObject({ code: 'execution_identity_invalid' });
+		await expect(workspace.handoffAgent({ ...request, expectedEpoch: request.expectedEpoch + 1 })).rejects.toMatchObject({ code: 'control_superseded' });
+		await expect(workspace.handoffAgent({ ...request, runtimeId: 'replacement-runtime' })).rejects.toMatchObject({ code: 'control_superseded' });
+		expect(native.setControl).toHaveBeenCalledTimes(count); expect(state(space.id).control.lease?.leaseId).toBe(grant.run.leaseId);
+	});
+	it('cannot hand off personal space or a Page belonging to another Space', async () => {
+		const { workspace, request, space, state, grant } = await source();
+		const personal = await workspace.createSpace({ kind: 'personal' });
+		await expect(workspace.handoffAgent({ ...request, spaceId: personal.id })).rejects.toMatchObject({ code: 'personal_space_forbidden' });
+		await expect(workspace.handoffAgent({ ...request, pageId: personal.pages[0]!.id })).rejects.toMatchObject({ code: 'page_not_found' });
+		expect(state(space.id).control.lease?.leaseId).toBe(grant.run.leaseId);
 	});
 });

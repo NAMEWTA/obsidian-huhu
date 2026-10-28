@@ -303,7 +303,7 @@ render();
 
 ## Validation and Handoff
 
-浏览器记录见 [browser.json](evidence/browser.json)，任务与视觉评估见 [design-review.md](evidence/design-review.md)，机械检查与复核见 [technical-review.md](evidence/technical-review.md)。命令结果见 [validation.log](evidence/validation.log)。
+浏览器记录见 [browser.json](evidence/browser.json)，任务与视觉评估见 [design-review.md](evidence/design-review.md)，机械检查与复核见 [technical-review.md](evidence/technical-review.md)。原文引用的 `evidence/validation.log` 未随该基线提交，当前无法回读；不将其作为本次验证通过的证据。
 
 - 预览门：物化逐字一致、运行资源离线闭包、候选差异、页面状态与真实浏览器证据。
 - 封板门：用户确认前不运行为通过、不设 ready。确认后运行 --check-ready 与 prototype stage。

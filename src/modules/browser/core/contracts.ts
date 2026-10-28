@@ -51,6 +51,21 @@ export interface BrowserSpace {
 	updatedAt: number;
 	error?: string;
 }
+/** Descriptive execution identity supplied by a trusted adapter/user, never a model permission. */
+export interface BrowserExecutionRef {
+	consumerId: string;
+	agentId: string;
+	externalRunId: string;
+	attemptId: string;
+}
+export interface BrowserHandoffRequest {
+	spaceId: string;
+	pageId: string;
+	runtimeId: string;
+	fromRunId: string;
+	expectedEpoch: number;
+	target: BrowserExecutionRef;
+}
 export interface BrowserRun {
 	id: string;
 	spaceId: string;
@@ -61,6 +76,10 @@ export interface BrowserRun {
 	state: 'active' | 'revoked' | 'stopped';
 	expiresAt: number;
 	externalTaskId?: string;
+	execution?: BrowserExecutionRef;
+	/** Immutable lineage only, not a second external task tree. */
+	handoff?: { transitionId: string; fromRunId: string; pageId: string };
+
 }
 export interface RunGrant {
 	run: BrowserRun;

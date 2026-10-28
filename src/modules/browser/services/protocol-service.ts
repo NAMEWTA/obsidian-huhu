@@ -1,6 +1,6 @@
 import type { BrowserWorkspaceService } from './workspace';
 import { AgentBrowserError, type BrowserObservation, type OperationRecord, type RunGrant } from '../core/contracts';
-import { parseMethod, parseEventResult, protocolTools, type BrowserMethod } from '../core/protocol';
+import { parseMethod, parseEventResult, parseResult, protocolTools, type BrowserMethod } from '../core/protocol';
 
 export interface ConnectionGrant {
 	spaceId: string;
@@ -16,6 +16,9 @@ export class BrowserProtocolService {
 	constructor(private readonly workspace: BrowserWorkspaceService) {}
 	/** Must run synchronously at the last transport boundary, after all asynchronous ownership checks. */
 	finalize(method: BrowserMethod, params: unknown, grant: ConnectionGrant, result: unknown): unknown {
+		return parseResult(method, this.finalizeAuthority(method, params, grant, result));
+	}
+	private finalizeAuthority(method: BrowserMethod, params: unknown, grant: ConnectionGrant, result: unknown): unknown {
 		if (method === 'run.stop') return { stopped: true };
 		if (method === 'events.poll' || method === 'events.snapshot') {
 			const p = parseMethod(method, params); this.queryOwn(grant, p.runId, p.capability);
