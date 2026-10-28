@@ -1,0 +1,109 @@
+name: Browser phase 2 evidence
+
+on:
+  push:
+    branches: ['feat/browser-phase2-issue-1']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-phase2-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      TZ: UTC
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Preserve the exact source under review
+        run: |
+          git rev-parse HEAD > "$RUNNER_TEMP/browser-source.sha"
+          git archive --format=tar.gz --output="$RUNNER_TEMP/browser-source.tar.gz" HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-source-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/browser-source.tar.gz
+            ${{ runner.temp }}/browser-source.sha
+          retention-days: 7
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Rebuild tracked assets from the reviewed source
+        run: |
+          pnpm run build:css
+          pnpm run build 2>&1 | tee "$RUNNER_TEMP/browser-build.log"
+      - name: Lint and public boundary checks
+        run: |
+          pnpm run lint
+          pnpm run test:architecture
+          pnpm run test:i18n
+          pnpm run test:docs
+          pnpm run check:bundle
+      - name: Run the integrated test suite
+        run: pnpm exec vitest run --reporter=default --reporter=json --outputFile="$RUNNER_TEMP/browser-vitest.json" 2>&1 | tee "$RUNNER_TEMP/browser-vitest.log"
+      - name: Bind generated files to source and create an auditable patch
+        if: always()
+        run: |
+          git rev-parse HEAD > "$RUNNER_TEMP/browser-tested-source.sha"
+          sha256sum main.js styles.css browser-worker.cjs browser-cli.cjs > "$RUNNER_TEMP/browser-assets.sha256"
+          git diff --binary -- main.js styles.css browser-worker.cjs browser-worker.cjs.sha256 browser-cli.cjs browser-cli.cjs.sha256 src/modules/browser/platform/desktop/runtime/main-source.generated.json src/modules/browser/platform/desktop/runtime/worker-digest.generated.json > "$RUNNER_TEMP/browser-generated.patch"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-phase2-evidence-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/browser-build.log
+            ${{ runner.temp }}/browser-vitest.log
+            ${{ runner.temp }}/browser-vitest.json
+            ${{ runner.temp }}/browser-tested-source.sha
+            ${{ runner.temp }}/browser-assets.sha256
+            ${{ runner.temp }}/browser-generated.patch
+          retention-days: 14
+
+  generated-assets:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/browser-phase2-issue-1' && github.repository == 'NAMEWTA/obsidian-huhu'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: browser-phase2-evidence-${{ github.sha }}
+          path: evidence
+      - name: Commit only verified generated assets without overwriting newer work
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(cat evidence/browser-tested-source.sha)" = "$EXPECTED_HEAD"
+          if [ ! -s evidence/browser-generated.patch ]; then exit 0; fi
+          git fetch origin feat/browser-phase2-issue-1
+          if [ "$(git rev-parse FETCH_HEAD)" != "$EXPECTED_HEAD" ]; then
+            echo 'Branch advanced; retain the patch as evidence and let the newer run rebuild.'
+            exit 0
+          fi
+          git apply --index evidence/browser-generated.patch
+          while IFS= read -r path; do
+            case "$path" in
+              main.js|styles.css|browser-worker.cjs|browser-worker.cjs.sha256|browser-cli.cjs|browser-cli.cjs.sha256|src/modules/browser/platform/desktop/runtime/main-source.generated.json|src/modules/browser/platform/desktop/runtime/worker-digest.generated.json) ;;
+              *) echo "Unexpected generated path: $path"; exit 1 ;;
+            esac
+          done < <(git diff --cached --name-only)
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null commit -m 'build(browser): 同步已验证的二阶段构建产物'
+          git push origin HEAD:refs/heads/feat/browser-phase2-issue-1
