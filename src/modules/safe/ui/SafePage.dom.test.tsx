@@ -14,10 +14,10 @@ import type { SafeService, SafeState } from '../services/safe-service';
 import { messages } from '../i18n';
 import { SafePage } from './SafePage';
 
-const cred = (n: number, username: string, password: string, notes = '') => ({ id: `c000000${n}-1111-4111-8111-111111111111`, username, password, notes, updatedAt: '2026-10-21T00:00:00.000Z' });
+const cred = (n: number, username: string, password: string, notes = '') => ({ id: `c000000${n}-1111-4111-8111-111111111111`, username, password, notes, phone: '', email: '', relations: [], updatedAt: '2026-10-21T00:00:00.000Z' });
 const entry: SafeEntry = {
 	id: 'e164e6ed-3986-4c8c-a7ef-4349727dfdf3',
-	title: 'Private mailbox', url: 'https://private.example.test', notes: '', icon: null,
+	title: 'Private mailbox', url: 'https://private.example.test', notes: '', icon: null, tags: [],
 	credentials: [cred(1, 'person@example.test', 'secret-password-sentinel', '仅在内存中检索')],
 	createdAt: '2026-10-21T00:00:00.000Z', updatedAt: '2026-10-21T00:00:00.000Z', deletedAt: null,
 };
@@ -35,7 +35,9 @@ function setup(status: SafeState['status'] = 'unlocked', entries: SafeEntry[] = 
 		lock: vi.fn(() => store.setState(state => ({ status: 'locked', entries: [], generation: state.generation + 1, busy: false }))),
 		checkDeadline: vi.fn(() => true), touch: vi.fn(), clearError: vi.fn(), leave: vi.fn(),
 		lockPolicy: vi.fn(() => policy), subscribePolicy: vi.fn(() => () => {}),
-		saveEntry: vi.fn(async (_input: EntryInput, _base?: SafeEntry) => {}),
+		saveEntry: vi.fn(async (_input: EntryInput, _base?: SafeEntry, _id?: string) => {}),
+		generatePassword: vi.fn(() => 'Aa2!Bb3@Cc4#'),
+		renameTag: vi.fn(async (_from: string, _to: string | null) => {}),
 		trashEntry: vi.fn(async (_entry: SafeEntry) => {}),
 		restoreEntry: vi.fn(async (_entry: SafeEntry) => {}),
 		deleteEntry: vi.fn(async (_entry: SafeEntry) => {}),
@@ -70,7 +72,7 @@ test('search matches notes and account fields, excludes passwords, and never ren
 	expect(document.body.innerHTML).not.toContain('apple-secret-one');
 	const search = screen.getByRole('searchbox', { name: 'Search records' });
 	fireEvent.change(search, { target: { value: 'mailbox 内存' } });
-	expect(screen.getByRole('button', { name: /Private mailbox/ })).toBeTruthy();
+	expect(screen.getByRole('button', { name: /^Private mailbox/ })).toBeTruthy();
 	expect(screen.queryByRole('button', { name: /^Apple/ })).toBeNull();
 	fireEvent.change(search, { target: { value: 'second@icloud 孩子' } });
 	expect(screen.getByRole('button', { name: /^Apple/ })).toBeTruthy();
@@ -103,7 +105,7 @@ test('the card view lists accounts with copy buttons and the choice is remembere
 
 test('the editor masks secrets, preserves exact input and removes every sensitive subtree when the session locks', async () => {
 	const service = setup();
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	const password = screen.getByLabelText('Password 1') as HTMLInputElement;
 	expect(password.type).toBe('password');
 	expect(password.value).toBe(entry.credentials[0]!.password);
@@ -116,11 +118,11 @@ test('the editor masks secrets, preserves exact input and removes every sensitiv
 	expect(service.copy).toHaveBeenCalledWith(exact, window);
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
 	expect(service.saveEntry).toHaveBeenCalledWith({
-		title: entry.title, url: entry.url, notes: '', icon: null,
-		credentials: [{ id: entry.credentials[0]!.id, username: 'person@example.test', password: exact, notes: '仅在内存中检索' }],
+		title: entry.title, url: entry.url, notes: '', icon: null, tags: [],
+		credentials: [{ id: entry.credentials[0]!.id, username: 'person@example.test', password: exact, notes: '仅在内存中检索', phone: '', email: '', relations: [] }],
 	}, entry);
 	await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	const removedInput = screen.getByLabelText('Password 1') as HTMLInputElement;
 	await act(async () => service.lock());
 	expect(screen.queryByRole('dialog')).toBeNull();
@@ -132,7 +134,7 @@ test('the editor masks secrets, preserves exact input and removes every sensitiv
 
 test('hiding discards the editor and decrypted DOM while keeping a session allowed by the switch policy', async () => {
 	const f = setup();
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	const input = screen.getByLabelText('Password 1') as HTMLInputElement;
 	fireEvent.change(input, { target: { value: 'unsaved secret' } });
 	f.setVisible(false);
@@ -144,7 +146,7 @@ test('hiding discards the editor and decrypted DOM while keeping a session allow
 	expect(document.body.textContent).not.toContain('person@example.test');
 	expect(input.value).toBe('');
 	f.setVisible(true);
-	expect(screen.getByRole('button', { name: /Private mailbox/ })).toBeTruthy();
+	expect(screen.getByRole('button', { name: /^Private mailbox/ })).toBeTruthy();
 	expect(screen.queryByRole('dialog')).toBeNull();
 	expect(f.saveEntry).not.toHaveBeenCalled();
 });
@@ -166,20 +168,20 @@ test('accounts can be added, reordered and removed in the editor, and the last o
 	expect(saved.credentials[0]!.id).not.toBe(apple.credentials[0]!.id);
 });
 
-test('an entry with one account cannot lose it, and a blank account is refused with a fixed message', async () => {
+test('an entry keeps at least one account and accepts an entirely blank planned account', async () => {
 	const service = setup();
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	expect((screen.getByRole('button', { name: 'Remove account 1' }) as HTMLButtonElement).disabled).toBe(true);
 	await userEvent.click(screen.getByRole('button', { name: 'Add account' }));
 	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
-	expect(service.saveEntry).not.toHaveBeenCalled();
-	expect(screen.getByRole('alert').textContent).toMatch(/required fields/);
+	expect(service.saveEntry).toHaveBeenCalledOnce();
+	expect(service.saveEntry.mock.calls[0]![0].credentials[1]).toMatchObject({ username: '', password: '', phone: '', email: '', notes: '', relations: [] });
 });
 
 test('IME Enter does not save, and failed saving keeps the draft without showing raw errors', async () => {
 	const service = setup();
 	service.saveEntry.mockRejectedValue(new Error('secret-file-path-and-password'));
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	const notes = screen.getByLabelText('Notes 1');
 	fireEvent.change(notes, { target: { value: '未保存草稿' } });
 	fireEvent.compositionStart(notes);
@@ -198,7 +200,7 @@ test('IME Enter does not save, and failed saving keeps the draft without showing
 
 test('a chosen picture becomes the entry icon through the decoder, and an unusable one shows a fixed message', async () => {
 	setup();
-	await userEvent.click(screen.getByRole('button', { name: /Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
 	const input = screen.getByLabelText('Upload icon…', { selector: 'input' }) as HTMLInputElement;
 	fireEvent.change(input, { target: { files: [new File(['x'], 'doc.txt', { type: 'text/plain' })] } });
 	await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/could not be used as an icon/));
@@ -295,4 +297,92 @@ test('trash requires confirmation before permanent deletion and sanitizes a fail
 	expect(service.deleteEntry).toHaveBeenCalledOnce();
 	expect(screen.getByRole('alertdialog')).toBeTruthy();
 	expect(document.body.textContent).not.toContain('private-path-and-secret');
+});
+
+test('a single-account record uses the same disclosure and shows contacts without leaking its password', async () => {
+	const record = { ...entry, credentials: [{ ...entry.credentials[0]!, phone: '+886 123', email: 'contact@private.test' }] };
+	setup('unlocked', [record]);
+	const disclosure = screen.getByRole('button', { name: 'Show accounts of Private mailbox' });
+	expect(disclosure.getAttribute('aria-expanded')).toBe('false');
+	await userEvent.click(disclosure);
+	expect(screen.getByText(/\+886 123/)).toBeTruthy();
+	expect(screen.getByText(/contact@private.test/)).toBeTruthy();
+	expect(disclosure.getAttribute('aria-expanded')).toBe('true');
+	expect(document.body.innerHTML).not.toContain(record.credentials[0]!.password);
+	await userEvent.click(disclosure);
+	expect(screen.queryByText(/\+886 123/)).toBeNull();
+});
+
+test('phone/email are optional exact values; the generator confirms replacement and does not save or copy', async () => {
+	const service = setup();
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	fireEvent.change(screen.getByLabelText('Phone 1'), { target: { value: ' +886 001 ' } });
+	fireEvent.change(screen.getByLabelText('Email 1'), { target: { value: ' contact@example.test ' } });
+	await userEvent.click(screen.getByRole('button', { name: 'Generate 12-character password 1' }));
+	expect(service.generatePassword).not.toHaveBeenCalled();
+	const confirmation = screen.getByRole('alertdialog');
+	await userEvent.click(within(confirmation).getByRole('button', { name: 'Cancel' }));
+	expect((screen.getByLabelText('Password 1') as HTMLInputElement).value).toBe(entry.credentials[0]!.password);
+	await userEvent.click(screen.getByRole('button', { name: 'Generate 12-character password 1' }));
+	await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Confirm' }));
+	expect(service.generatePassword).toHaveBeenCalledTimes(1);
+	expect(service.saveEntry).not.toHaveBeenCalled();
+	expect(service.copy).not.toHaveBeenCalled();
+	const password = screen.getByLabelText('Password 1') as HTMLInputElement;
+	expect(password.value).toBe('Aa2!Bb3@Cc4#');
+	expect(password.type).toBe('password');
+	expect(document.body.innerHTML).not.toContain('Aa2!Bb3@Cc4#');
+	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
+	expect(service.saveEntry).toHaveBeenCalledWith(expect.objectContaining({ credentials: [expect.objectContaining({ phone: ' +886 001 ', email: ' contact@example.test ', password: 'Aa2!Bb3@Cc4#' })] }), entry);
+});
+
+test('empty planned passwords generate immediately; same-draft account relations use the identity passed to save', async () => {
+	const service = setup('unlocked', []);
+	await userEvent.click(screen.getByRole('button', { name: 'Add entry' }));
+	await userEvent.click(screen.getByRole('button', { name: 'Generate 12-character password 1' }));
+	expect(screen.queryByRole('alertdialog')).toBeNull();
+	expect(service.generatePassword).toHaveBeenCalledTimes(1);
+	await userEvent.click(screen.getByRole('button', { name: 'Add account' }));
+	const first = within(screen.getByRole('group', { name: 'Account 1' }));
+	await userEvent.click(first.getByRole('button', { name: 'Add account relation' }));
+	await userEvent.click(first.getByRole('button', { name: 'Untitled entry · Account 2' }));
+	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
+	const [draft, base, id] = service.saveEntry.mock.calls[0]!;
+	expect(base).toBeUndefined();
+	expect(draft.credentials[0]!.relations).toEqual([{ entryId: id, credentialId: draft.credentials[1]!.id, kind: 'related' }]);
+});
+
+test('cross-entry account relation selection never contains passwords and locking clears contacts and relation editor', async () => {
+	const service = setup('unlocked', [entry, apple]);
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	await userEvent.click(screen.getByRole('button', { name: 'Add account relation' }));
+	await userEvent.click(screen.getByRole('button', { name: 'Apple · second@icloud.test' }));
+	expect(document.body.innerHTML).not.toContain('apple-secret-two');
+	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
+	expect(service.saveEntry.mock.calls[0]![0].credentials[0]!.relations).toEqual([{ entryId: apple.id, credentialId: apple.credentials[1]!.id, kind: 'related' }]);
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	fireEvent.change(screen.getByLabelText('Phone 1'), { target: { value: 'private-phone-draft' } });
+	act(() => service.lock());
+	expect(screen.queryByLabelText('Phone 1')).toBeNull();
+	expect(screen.queryByRole('group', { name: 'Account relations' })).toBeNull();
+	expect(document.body.innerHTML).not.toContain('private-phone-draft');
+});
+
+test('custom tags support multi-select, immediate intersection filtering and global rename controls', async () => {
+	const service = setup('unlocked', [{ ...entry, tags: ['AI', 'Company'] }, { ...apple, tags: ['AI'] }]);
+	const filters = within(screen.getByRole('group', { name: 'Filter by tags (match all selected)' }));
+	await userEvent.click(filters.getByRole('button', { name: 'AI' }));
+	await userEvent.click(filters.getByRole('button', { name: 'Company' }));
+	expect(screen.queryByRole('button', { name: /^Apple/ })).toBeNull();
+	await userEvent.click(screen.getByRole('button', { name: /^Private mailbox/ }));
+	fireEvent.change(screen.getByLabelText('New tag'), { target: { value: ' Finance ' } });
+	await userEvent.click(screen.getByRole('button', { name: 'Add tag' }));
+	await userEvent.click(screen.getByRole('button', { name: /^Save$/ }));
+	expect(service.saveEntry.mock.calls[0]![0].tags).toEqual(['AI', 'Company', 'Finance']);
+	await userEvent.click(screen.getByRole('button', { name: 'Safe actions' }));
+	await userEvent.click(screen.getByRole('menuitem', { name: 'Manage tags' }));
+	const field = screen.getByLabelText('Rename tag AI');
+	fireEvent.change(field, { target: { value: 'Models' } });
+	await userEvent.click(within(field.parentElement!).getByRole('button', { name: 'Save' }));
+	expect(service.renameTag).toHaveBeenCalledWith('AI', 'Models');
 });

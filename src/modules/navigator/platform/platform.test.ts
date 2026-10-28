@@ -245,7 +245,7 @@ test('a note whose frontmatter is not valid YAML stops the merge', async () => {
 
 const noWait = { wait: () => Promise.resolve() };
 
-test('tag edits change the frontmatter and the reported inline tags only, and can be undone', async () => {
+test('tag edits change only the tags property, preserve inline hashes, and can be undone', async () => {
 	const fake = createFakeApp({
 		'a.md': '---\ntags:\n  - todo\n  - keep\n---\nText #todo here\n```\n#todo\n```\n',
 		'b.md': '---\ntags: [todo/sub]\n---\nplain',
@@ -257,7 +257,7 @@ test('tag edits change the frontmatter and the reported inline tags only, and ca
 	const { records, skipped } = await editTags(fake.app, files, renameMapper('todo', 'done'), noWait);
 	expect(skipped).toEqual([]);
 	expect(records.map((record) => record.path)).toEqual(['a.md', 'b.md']);
-	expect(fake.read('a.md')).toBe('---\ntags:\n  - done\n  - keep\n---\nText #done here\n```\n#todo\n```\n');
+	expect(fake.read('a.md')).toBe('---\ntags:\n  - done\n  - keep\n---\nText #todo here\n```\n#todo\n```\n');
 	expect(fake.read('b.md')).toBe('---\ntags:\n  - done/sub\n---\nplain');
 	expect(fake.read('c.md')).toBe('nothing #other');
 	const undone = await undoTagEdit(fake.app, records);
@@ -266,41 +266,41 @@ test('tag edits change the frontmatter and the reported inline tags only, and ca
 	expect(fake.read('b.md')).toBe('---\ntags:\n  - todo/sub\n---\nplain');
 });
 
-test('code that only looks like tags is never touched because only reported positions are edited', async () => {
+test('body hashes remain untouched even when Obsidian reports them as tags', async () => {
 	const text = '#nestprobe\n\n- item\n\n      #nestprobe\n\n>     #nestprobe\n`code`#tailprobe trailing prose\n';
 	const fake = createFakeApp({ 'a.md': text });
 	fake.setTags('a.md', [{ tag: '#nestprobe', start: 0, end: 10 }]);
 	await editTags(fake.app, [fake.app.vault.getFileByPath('a.md')!], renameMapper('nestprobe', 'nestchanged'), noWait);
-	expect(fake.read('a.md')).toBe(text.replace('#nestprobe', '#nestchanged'));
+	expect(fake.read('a.md')).toBe(text);
 	const tail = createFakeApp({ 'b.md': '`code`#tailprobe trailing prose\n' });
 	await editTags(tail.app, [tail.app.vault.getFileByPath('b.md')!], removeMapper('tailprobe', true), noWait);
-	expect(tail.read('b.md')).toBe('`code` trailing prose\n');
+	expect(tail.read('b.md')).toBe('`code`#tailprobe trailing prose\n');
 });
 
-test('a cache that is behind the file is waited for, then the note is skipped untouched and reported', async () => {
+test('stale inline tag positions are irrelevant to property-only edits', async () => {
 	const fake = createFakeApp({ 'a.md': 'new line\n#edge here' });
 	fake.setTags('a.md', [{ tag: '#edge', start: 0, end: 5 }]);
 	let waits = 0;
 	const result = await editTags(fake.app, [fake.app.vault.getFileByPath('a.md')!], renameMapper('edge', 'x'), { retries: 3, wait: () => { waits++; return Promise.resolve(); } });
-	expect(result.skipped).toEqual(['a.md']);
+	expect(result.skipped).toEqual([]);
 	expect(result.records).toEqual([]);
-	expect(waits).toBe(3);
+	expect(waits).toBe(0);
 	expect(fake.read('a.md')).toBe('new line\n#edge here');
 	const caught = await editTags(fake.app, [fake.app.vault.getFileByPath('a.md')!], renameMapper('edge', 'x'), { wait: () => { fake.setTags('a.md', undefined); return Promise.resolve(); } });
 	expect(caught.skipped).toEqual([]);
-	expect(fake.read('a.md')).toBe('new line\n#x here');
+	expect(fake.read('a.md')).toBe('new line\n#edge here');
 });
 
-test('undo never overwrites an independent edit: the changed part is skipped and listed', async () => {
+test('undo restores tag properties without disturbing independent body edits', async () => {
 	const fake = createFakeApp({ 'a.md': '---\ntags: [probe]\n---\nbody #probe' });
 	const file = fake.app.vault.getFileByPath('a.md')!;
 	const { records } = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
-	expect(fake.read('a.md')).toBe('---\ntags:\n  - changed\n---\nbody #changed');
+	expect(fake.read('a.md')).toBe('---\ntags:\n  - changed\n---\nbody #probe');
 	await fake.app.vault.process(file, (data) => `${data}\nwritten later by someone else`);
 	const undone = await undoTagEdit(fake.app, records);
-	expect(undone.skipped).toEqual(['a.md']);
+	expect(undone.skipped).toEqual([]);
 	expect(undone.restored).toBe(1);
-	expect(fake.read('a.md')).toBe('---\ntags:\n  - probe\n---\nbody #changed\nwritten later by someone else');
+	expect(fake.read('a.md')).toBe('---\ntags:\n  - probe\n---\nbody #probe\nwritten later by someone else');
 });
 
 test('undo leaves tag properties alone when they were changed after the edit', async () => {
@@ -313,7 +313,7 @@ test('undo leaves tag properties alone when they were changed after the edit', a
 	expect(fake.read('a.md')).toContain('mine');
 });
 
-test('an edit that lands between the body write and the property write is not lost by the undo', async () => {
+test('a body edit during the property write survives tag undo', async () => {
 	const fake = createFakeApp({ 'a.md': '---\ntags: [probe]\n---\nbody #probe' });
 	const file = fake.app.vault.getFileByPath('a.md')!;
 	const original = fake.app.fileManager.processFrontMatter.bind(fake.app.fileManager);
@@ -323,18 +323,18 @@ test('an edit that lands between the body write and the property write is not lo
 		return original(target, edit);
 	};
 	const { records } = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
-	expect(fake.read('a.md')).toBe('---\ntags:\n  - changed\n---\nbody #changed\nseparate user edit');
+	expect(fake.read('a.md')).toBe('---\ntags:\n  - changed\n---\nbody #probe\nseparate user edit');
 	fake.app.fileManager.processFrontMatter = original;
 	const undone = await undoTagEdit(fake.app, records);
 	expect(fake.read('a.md')).toContain('separate user edit');
-	expect(undone.skipped).toEqual(['a.md']);
+	expect(undone.skipped).toEqual([]);
 	expect(fake.read('a.md')).toContain('tags:\n  - probe');
 });
 
-test('clearing tags removes frontmatter and inline tags', async () => {
+test('clearing tags removes the tags property but leaves body hashes', async () => {
 	const fake = createFakeApp({ 'a.md': '---\ntags: [x, y]\n---\nBody #z' });
 	await clearTags(fake.app, [fake.app.vault.getFileByPath('a.md')!], noWait);
-	expect(fake.read('a.md')).toBe('Body');
+	expect(fake.read('a.md')).toBe('Body #z');
 });
 
 test('a write that fails midway still returns every note written so far, and the undo works', async () => {
@@ -351,24 +351,23 @@ test('a write that fails midway still returns every note written so far, and the
 	expect(fake.read('a.md')).toBe('---\ntags:\n  - probe\n---\nbody #probe');
 });
 
-test('a note whose body was written before the property write failed is still restorable, and a failing undo can be retried', async () => {
+test('failed property writes leave the body untouched, and a failing property undo can be retried', async () => {
 	const fake = createFakeApp({ 'a.md': '---\ntags: [probe]\n---\nbody #probe' });
 	const file = fake.app.vault.getFileByPath('a.md')!;
 	const original = fake.app.fileManager.processFrontMatter.bind(fake.app.fileManager);
 	fake.app.fileManager.processFrontMatter = () => Promise.reject(new Error('locked'));
-	const result = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
-	expect(result.failed?.path).toBe('a.md');
-	expect(result.records).toHaveLength(1);
-	expect(fake.read('a.md')).toContain('body #changed');
-	const process = fake.app.vault.process;
-	fake.app.vault.process = () => Promise.reject(new Error('locked'));
-	const first = await undoTagEdit(fake.app, result.records);
-	expect(first.remaining).toHaveLength(1);
-	fake.app.vault.process = process;
-	fake.app.fileManager.processFrontMatter = original;
-	const second = await undoTagEdit(fake.app, first.remaining);
-	expect(second).toMatchObject({ restored: 1, remaining: [] });
+	const failed = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
+	expect(failed.failed?.path).toBe('a.md');
+	expect(failed.records).toEqual([]);
 	expect(fake.read('a.md')).toBe('---\ntags: [probe]\n---\nbody #probe');
+	fake.app.fileManager.processFrontMatter = original;
+	const changed = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
+	fake.app.fileManager.processFrontMatter = () => Promise.reject(new Error('locked'));
+	const first = await undoTagEdit(fake.app, changed.records);
+	expect(first.remaining).toHaveLength(1);
+	fake.app.fileManager.processFrontMatter = original;
+	expect(await undoTagEdit(fake.app, first.remaining)).toMatchObject({ restored: 1, remaining: [] });
+	expect(fake.read('a.md')).toBe('---\ntags:\n  - probe\n---\nbody #probe');
 });
 
 function periodicFor(fake: ReturnType<typeof createFakeApp>, settings: ReturnType<typeof memorySettings>) {
@@ -537,21 +536,21 @@ test('undo tells a missing property from null, an empty list and an empty value,
 });
 
 test('a renamed tag property keeps its exact before-state: undo restores a key that existed, removes one that did not', async () => {
-	const fake = createFakeApp({ 'a.md': '---\ntag: probe\n---\nBody' });
+	const fake = createFakeApp({ 'a.md': '---\ntags: probe\n---\nBody' });
 	const file = fake.app.vault.getFileByPath('a.md')!;
 	const { records } = await editTags(fake.app, [file], renameMapper('probe', 'changed'), noWait);
-	expect(fake.read('a.md')).toContain('tag:');
+	expect(fake.read('a.md')).toContain('tags:');
 	expect((await undoTagEdit(fake.app, records)).restored).toBe(1);
-	expect(fake.read('a.md')).toContain('tag: probe');
+	expect(fake.read('a.md')).toContain('tags: probe');
 });
 
-test('tag properties with a quoted key are found through the parsed frontmatter', async () => {
+test('quoted tags properties are found while singular tag and unrelated keys stay untouched', async () => {
 	const fake = createFakeApp({ 'a.md': '---\n"tags": [quotedprobe]\n---\nBody', 'b.md': "---\n'tag': quotedprobe\n---\nB", 'c.md': '---\nnot_tags: [quotedprobe]\n---\nC' });
 	const files = ['a.md', 'b.md', 'c.md'].map((path) => fake.app.vault.getFileByPath(path)!);
 	const { records } = await editTags(fake.app, files, renameMapper('quotedprobe', 'quotedchanged'), noWait);
-	expect(records.map((record) => record.path)).toEqual(['a.md', 'b.md']);
+	expect(records.map((record) => record.path)).toEqual(['a.md']);
 	expect(fake.read('a.md')).toContain('quotedchanged');
-	expect(fake.read('b.md')).toContain('quotedchanged');
+	expect(fake.read('b.md')).toContain('quotedprobe');
 	expect(fake.read('c.md')).toBe('---\nnot_tags: [quotedprobe]\n---\nC');
 });
 
@@ -629,9 +628,9 @@ test('tag edits leave a note with properties they cannot handle completely alone
 	const files = ['a.md', 'b.md'].map((path) => fake.app.vault.getFileByPath(path)!);
 	const result = await withYaml11(() => editTags(fake.app, files, renameMapper('probe', 'changed'), noWait));
 	expect(result.unreadable).toEqual(['a.md']);
-	expect(result.records.map((record) => record.path)).toEqual(['b.md']);
+	expect(result.records.map((record) => record.path)).toEqual([]);
 	expect(fake.read('a.md')).toBe('---\ntags: [probe]\nextra: !!set {k: null}\n---\nbody #probe');
-	expect(fake.read('b.md')).toBe('plain #changed');
+	expect(fake.read('b.md')).toBe('plain #probe');
 });
 
 test('a note whose frontmatter root is a date (or any other non-mapping) stops the merge', async () => {
