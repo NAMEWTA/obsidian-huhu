@@ -1,0 +1,42 @@
+name: Archives workspace snapshot
+on:
+  push:
+    branches: [feat/archives-definition-domain-3]
+    paths: [.github/workflows/archives-workspace.yml]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Package credential-free development inputs
+        run: |
+          mkdir -p "$RUNNER_TEMP/archives-workspace"
+          git archive --format=tar HEAD > "$RUNNER_TEMP/archives-workspace/source.tar"
+          git bundle create "$RUNNER_TEMP/archives-workspace/source.bundle" HEAD refs/heads/feat/archives-definition-domain-3
+          tar -czf "$RUNNER_TEMP/archives-workspace/dependencies.tgz" node_modules
+          cp "$(command -v node)" "$RUNNER_TEMP/archives-workspace/node"
+          node --version > "$RUNNER_TEMP/archives-workspace/versions.txt"
+          pnpm --version >> "$RUNNER_TEMP/archives-workspace/versions.txt"
+          git rev-parse HEAD >> "$RUNNER_TEMP/archives-workspace/versions.txt"
+          cd "$RUNNER_TEMP/archives-workspace"
+          sha256sum source.tar source.bundle dependencies.tgz node > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: archives-workspace
+          path: ${{ runner.temp }}/archives-workspace/
+          retention-days: 1
+          compression-level: 1
+          if-no-files-found: error
