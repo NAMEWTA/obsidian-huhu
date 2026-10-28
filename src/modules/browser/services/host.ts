@@ -3,7 +3,8 @@ import { Notice, Menu, type App } from 'obsidian';
 import type { BrowserHost, BrowserPageHandle, BrowserViewState } from '../api';
 import { BrowserError, newPageState, type BrowserAgentDeliveryPort, type BrowserSettings } from '../core/model';
 import type { BrowserProfile } from '../core/profiles';
-import type { NativeHelperSqlite } from '../../agent/api';
+import type { NativeCookieReader, NativeHostAccess } from '../../../shared/native/host';
+import { nativeCookieReader } from '../../../shared/native/cookies';
 import { terminalWebLinkAction } from '../core/link-policy';
 import type { CookieImportResult } from '../core/cookies';
 import type { SettingsHandle } from '../../../shared/settings/store';
@@ -42,15 +43,17 @@ export class BrowserEngine implements BrowserHost {
 	private abort = new AbortController();
 	private imports = new Map<string, Promise<CookieImportResult>>();
 	private off: () => void;
+	private readonly cookies: NativeCookieReader;
 	constructor(
 		readonly app: App,
 		readonly settings: SettingsHandle<BrowserSettings>,
 		readonly agents: BrowserAgentDeliveryPort,
 		readonly workspace: BrowserWorkspacePort,
-		private helper: () => Promise<NativeHelperSqlite>,
+		native: NativeHostAccess,
 		readonly renderChrome: BrowserHost['renderChrome'],
 		readonly openSettings: () => void,
 	) {
+		this.cookies = nativeCookieReader(native, this.abort.signal);
 		this.identity = settings.get().identity;
 		const refresh = () => {
 			this.profiles.setState({
@@ -144,6 +147,10 @@ export class BrowserEngine implements BrowserHost {
 		this.pages.get(id)?.dispose();
 		this.pages.delete(id);
 	}
+	async closePage(id: string): Promise<void> {
+		await this.workspace.close(id);
+		this.disposePage(id);
+	}
 	createProfile(name: string) {
 		return this.metadata.create(name);
 	}
@@ -204,6 +211,11 @@ export class BrowserEngine implements BrowserHost {
 			(await import('../platform/desktop/cookies/write')).cookieSession(this.window).count(path),
 		);
 	}
+	/** Native Cookie reads use a Browser-owned lease, independent of Agent activation. */
+	readCookies(path: string, kind: 'chromium' | 'firefox', signal?: AbortSignal) {
+		if (this.stopped) return Promise.reject(new BrowserError('browser_disabled'));
+		return this.cookies.readCookies(path, kind, signal);
+	}
 	async detectBrowsers() {
 		return (await import('../platform/desktop/cookies/detect')).detectBrowsers();
 	}
@@ -229,7 +241,7 @@ export class BrowserEngine implements BrowserHost {
 				source.profileDir,
 				directory,
 				await browserTempPath(this.app),
-				await this.helper(),
+				this,
 				this.abort.signal,
 			);
 		});

@@ -135,13 +135,13 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 设置（本机） | `.huhu/config/devices/<device-id>.json` | app |
 | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
 | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
-| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
+| 智能体空间与布局 | `.huhu/terminal-agent/<device-id>/workbench-v2.json`（Space/持久 Session、设备/物理目录授权、按 Space 键分开的布局及无 Space 网页/页面布局）；原 `workspace.json` 保留隔离，不自动迁移或回写 | agent |
 | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
 | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |
 | 智能体历史与缓存 | `.huhu/terminal-agent/<device-id>/history.json`、`automation-sessions.json`、可重建的 `index.sqlite` | agent |
 | 托管智能体账号与运行文件 | `.huhu/agents/<device-id>/accounts/<provider>/<id>/`；生命周期 Hook、配置与事件在账号内的 `runtime/` | agent |
 | 系统 CLI 账号 | 沿用真实 CLI 数据根；运行事件在库内，状态 Hook 会维护用户主目录中的约定文件，见数据正文 | agent |
-| 终端辅助程序 | `.huhu/helpers/<device-id>/<platform-arch>/<version>/`，官方摘要与本机受保护回执 | agent |
+| 终端辅助程序 | `.huhu/helpers/<device-id>/<platform-arch>/<version>/`，官方摘要与本机受保护回执 | host/desktop/native |
 | 浏览器 Profile 列表 | `.huhu/browser/<device-id>/profiles.json` | browser |
 | 浏览器会话与下载 | `.huhu/browser/<device-id>/profiles/<id>/session/`、`.huhu/browser/<device-id>/profiles/<id>/downloads/` | browser |
 | 浏览历史与站点权限 | `.huhu/browser/<device-id>/state.json` | browser |

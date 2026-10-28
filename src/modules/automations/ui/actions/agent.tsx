@@ -8,10 +8,91 @@ import { validatedExtraArgs } from '../../../../shared/automation/extra-args';
 import { t as translate } from '../../../../shared/i18n';
 import { availableAgents } from '../../core/actions/agent';
 import { Field, SearchChoice } from '../parts';
+import type { AutomationViewHost } from '../panel-contract';
 import { SessionField } from '../editor/SessionField';
 import { WorkingDirectory } from './working-directory';
 import { TextContent } from './text-form';
 import type { ActionFormProps, ActionView } from './types';
+
+type SpaceList = () => ReadonlyArray<{ id: string; name: string }> | undefined;
+let spaceLookup: SpaceList = () => undefined;
+/**
+ * The detail rows (`facts`) are plain functions without the host, so the page that owns the host hands them the
+ * Space list here. Assigning the same lookup again is harmless.
+ */
+export function bindSpaceLookup(lookup: SpaceList): void {
+	spaceLookup = lookup;
+}
+/** "Space: Name" for a bound action, the unset hint for an old one, and "unavailable" for a gone Space. */
+export function spaceFact(spaceId?: string): string {
+	if (!spaceId) return translate('automation.spaceRequired');
+	const list = spaceLookup();
+	// Without the agent module the list is unknown, which is not the same as the Space being gone.
+	if (!list) return translate('automation.spaceTarget', { name: spaceId });
+	const found = list.find((space) => space.id === spaceId);
+	return found
+		? translate('automation.spaceTarget', { name: found.name })
+		: translate('automation.spaceUnavailableOption');
+}
+
+/** Spaces the agent module lists right now; empty while it is off or has none. */
+export const activeSpaces = (host: AutomationViewHost) => host.service.agent()?.listSpaces?.() ?? [];
+
+/**
+ * The Space a terminal action belongs to. The choice is explicit and saved with the definition; an old definition
+ * shows as unset and a deleted or archived Space as unavailable. Nothing here picks a Space for the user.
+ */
+export function SpaceField({
+	spaceId,
+	host,
+	showErrors,
+	onChange,
+}: {
+	spaceId?: string;
+	host: AutomationViewHost;
+	showErrors: boolean;
+	onChange: (spaceId: string) => void;
+}) {
+	const t = useT();
+	const spaces = activeSpaces(host);
+	const known = spaces.some((space) => space.id === spaceId);
+	const options = spaces.map((space) => ({ value: space.id, label: `${space.name} · ${space.directoryLabel}` }));
+	if (spaceId && !known && host.service.agent()?.listSpaces)
+		options.unshift({ value: spaceId, label: t('automation.spaceUnavailableOption') });
+	const error = !spaceId
+		? showErrors
+			? t('automation.spaceRequired')
+			: undefined
+		: !known && host.service.agent()?.listSpaces
+			? t('automation.spaceUnavailable')
+			: undefined;
+	return (
+		<Field
+			label={t('automation.space')}
+			help={spaces.length ? t('automation.spaceHelp') : t('automation.noSpaces')}
+			error={error}
+		>
+			{(id) => (
+				<SearchChoice
+					id={id}
+					label={t('automation.space')}
+					value={spaceId ?? ''}
+					options={options}
+					disabled={!spaces.length && !spaceId}
+					onChange={onChange}
+				/>
+			)}
+		</Field>
+	);
+}
+
+/** Save only against a Space that is active now; the stored id may have been archived since it was chosen. */
+export async function assertSpaceAvailable(spaceId: string | undefined, host: AutomationViewHost): Promise<void> {
+	if (!spaceId) throw new Error(translate('automation.spaceRequired'));
+	const spaces = host.service.agent()?.listSpaces?.();
+	if (spaces && !spaces.some((space) => space.id === spaceId))
+		throw new Error(translate('automation.spaceUnavailable'));
+}
 
 function Content({ action, update, host, showErrors, onTouch }: ActionFormProps<'agent'>) {
 	const t = useT();
@@ -65,7 +146,7 @@ function Content({ action, update, host, showErrors, onTouch }: ActionFormProps<
 
 function Options(props: ActionFormProps<'agent'>) {
 	const t = useT(),
-		{ action, update, host, draft, onChange } = props;
+		{ action, update, host, draft, onChange, showErrors } = props;
 	const agents = availableAgents(host.service.agent()?.listAgents() ?? []);
 	let extraError = '';
 	try {
@@ -113,6 +194,16 @@ function Options(props: ActionFormProps<'agent'>) {
 					/>
 				)}
 			</Field>
+			<SpaceField
+				spaceId={action.spaceId}
+				host={host}
+				showErrors={showErrors}
+				onChange={(spaceId) =>
+					update((a) => {
+						a.spaceId = spaceId;
+					})
+				}
+			/>
 			<WorkingDirectory
 				cwd={action.cwd}
 				host={host}
@@ -135,10 +226,18 @@ export const agentView: ActionView<'agent'> = {
 	Content,
 	Options,
 	facts: (action) => [
-		{ label: translate('automation.agent'), value: `${action.agentId}${action.extraArgs ? ` ${action.extraArgs}` : ''}` },
+		{
+			label: translate('automation.agent'),
+			value: `${action.agentId}${action.extraArgs ? ` ${action.extraArgs}` : ''}`,
+		},
+		{
+			label: translate('automation.space'),
+			value: spaceFact(action.spaceId),
+		},
 		{ label: translate('automation.cwd'), value: action.cwd },
 		{ label: translate('automation.sessionMode'), value: translate(`automation.${action.sessionMode}`) },
 	],
 	hint: (action) => action.cwd,
+	beforeSave: (action, host) => assertSpaceAvailable(action.spaceId, host),
 	badge: (action) => ({ icon: <AgentIcon agent={action.agentId} />, label: action.agentId }),
 };

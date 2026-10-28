@@ -45,3 +45,10 @@ export interface NotificationOpener {
 
 export const NOTIFICATION_INBOX = serviceKey<NotificationInbox>('notifications', 'inbox');
 export const NOTIFICATION_OPENERS = contributionPoint<NotificationOpener>('notifications', 'openers');
+
+/** Recovery owner id and the one file it owns for a device (backup and restore address it by these, never by a package path). */
+export const NOTIFICATIONS_RECOVERY_OWNER = 'notifications-inbox';
+export function notificationInboxPath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/notifications/${deviceId}/inbox.json`;
+}

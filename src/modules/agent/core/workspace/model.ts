@@ -5,6 +5,10 @@ import type { ShellChoice } from '../terminal/settings';
 export type AgentState = 'working' | 'waiting' | 'permission' | 'done' | 'idle' | 'failed' | 'interrupted' | 'unknown';
 export type TabColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
 export interface ResumeInfo {
+	/** Display identity, independent of the runtime leaf key. Missing legacy IDs are projected without writing. */
+	paneId?: string;
+	spaceId?: string;
+	persistentSessionId?: string;
 	customTitle?: string;
 	nativeSessionId?: string;
 	cwd: string;

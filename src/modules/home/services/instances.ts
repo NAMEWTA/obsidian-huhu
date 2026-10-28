@@ -1,4 +1,4 @@
-import type { AgentDispatch, AgentDirectoryEntry, AgentSessionsPort, AgentQuickCommands, AgentSkillCatalog, AgentSkills, AgentUsage } from '../../agent/api';
+import type { AgentDispatch, AgentDirectoryEntry, AgentSpaceInfo, AgentSessionsPort, AgentQuickCommands, AgentSkillCatalog, AgentSkills, AgentUsage } from '../../agent/api';
 import type { NavigatorLists, NavigatorPeriodic } from '../../navigator/api';
 import type { CalendarService } from '../api';
 import type { IndexedWidgets } from '../core/board/widget-registry';
@@ -29,6 +29,8 @@ export const homeServices: {
 	watchWidgets?: (listener: () => void) => () => void;
 	acquireDispatch?: () => Promise<AgentDispatch | undefined>;
 	agents?: () => readonly AgentDirectoryEntry[];
+	/** Active Spaces a button can be saved against; empty while the agent module is off. */
+	spaces?: () => readonly AgentSpaceInfo[];
 	sessions?: () => AgentSessionsPort | undefined;
 	skills?: () => AgentSkills | undefined;
 	skillCatalog?: () => AgentSkillCatalog | undefined;

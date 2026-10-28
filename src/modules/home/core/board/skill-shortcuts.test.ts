@@ -20,3 +20,9 @@ test('invalid destinations cannot silently become fresh sessions; duplicate IDs 
 	expect(readSkillShortcuts([row, row])?.[0]?.destination).toEqual(row.destination);
 	expect(readSkillShortcuts([row, row])).toHaveLength(1);
 });
+test('a fresh destination keeps a saved Space id; a blank or non-string id reads as unbound', () => {
+	const row = { id: 'a', label: 'A', agentId: 'codex', skillName: '', promptTemplate: 'Hi' };
+	const read = (spaceId: unknown) => readSkillShortcuts([{ ...row, destination: { kind: 'fresh', cwd: '', spaceId } }])?.[0]?.destination;
+	expect(read('space-1')).toEqual({ kind: 'fresh', cwd: '', spaceId: 'space-1' });
+	for (const bad of ['', 7, null, undefined]) expect(read(bad)).toEqual({ kind: 'fresh', cwd: '' });
+});

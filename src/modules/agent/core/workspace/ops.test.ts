@@ -30,6 +30,14 @@ export const terminalTab = (id: string): TerminalTabData => ({
 	updatedAt: 1,
 });
 const three = () => ['a', 'b', 'c'].reduce((s, id) => openTab(s, 'g', terminalTab(id)), emptyWorkspace());
+it('normalization preserves explicit Pane identity including invalid strings for diagnosis', () => {
+	for (const paneId of ['opaque 原身份', '', 'x'.repeat(4097)]) {
+		const tab = terminalTab('a');
+		Reflect.set(tab.panes.a!, 'paneId', paneId);
+		const view = normalizeWorkspace(openTab(emptyWorkspace(), 'g', tab));
+		expect(view.tabs.a?.kind === 'terminal' && Reflect.get(view.tabs.a.panes.a!, 'paneId')).toBe(paneId);
+	}
+});
 describe('workspace operations', () => {
 	it('opens in an empty workspace and activates, without mutating the baseline', () => {
 		const original = emptyWorkspace(),

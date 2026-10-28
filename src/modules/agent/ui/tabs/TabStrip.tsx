@@ -2,7 +2,7 @@
 import { SortableContext } from '@dnd-kit/sortable';
 import { useDroppable } from '@dnd-kit/core';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, MoreHorizontal, PanelLeft, PanelRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import type { TabGroup } from '../../core/workspace/model';
 import { Button } from '../../../../ui/components/button';
 import {
@@ -22,11 +22,6 @@ export function TabStrip({ group }: { group: TabGroup }) {
 	const { controller, close, chrome } = useWorkspaceUI(),
 		state = controller.workspace.store.getState(),
 		t = useT();
-	const ordered = (node: typeof state.layout): string[] =>
-		!node ? [] : node.kind === 'group' ? [node.groupId] : node.children.flatMap(ordered);
-	const ids = ordered(state.layout),
-		first = !ids.length || ids[0] === group.id,
-		last = !ids.length || ids.at(-1) === group.id;
 	const ref = useRef<HTMLDivElement>(null),
 		[overflow, setOverflow] = useState(false);
 	const { setNodeRef } = useDroppable({ id: `strip:${group.id}`, data: { groupId: group.id, kind: 'strip' } });
@@ -49,32 +44,16 @@ export function TabStrip({ group }: { group: TabGroup }) {
 	return (
 		<div
 			ref={setNodeRef}
-			className="@container/strip flex h-9 min-w-0 shrink-0 items-stretch border-b border-border bg-card"
+			className="@container/strip flex min-h-9 min-w-0 shrink-0 items-stretch border-b border-border bg-card"
 			data-group-strip={group.id}
 		>
-			{first && chrome && (
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<Button
-							variant="ghost"
-							size="icon-xs"
-							className="mx-1 my-auto"
-							aria-label={t('agent.workspace.toggleSidebar')}
-							onClick={chrome.context.togglePanel}
-						>
-							<PanelLeft className="size-4" />
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent>{t('agent.workspace.toggleSidebar')}</TooltipContent>
-				</Tooltip>
-			)}
 			{overflow && (
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
 							variant="ghost"
 							size="icon-xs"
-							className="mx-0.5 my-auto h-6 w-5"
+							className="mx-0.5 my-auto min-h-8 min-w-8"
 							aria-label={t('agent.workspace.scrollLeft')}
 							data-tab-scroll="left"
 							onClick={() => ref.current?.scrollBy({ left: -180 })}
@@ -99,7 +78,19 @@ export function TabStrip({ group }: { group: TabGroup }) {
 						else if (event.clientX > box.right - 24) el.scrollLeft += 12;
 					}}
 				>
-					{group.tabIds.map(id => { const tab=state.tabs[id]; return tab?.kind === 'browser' ? <BrowserWorkspaceTab key={id} tab={tab} groupId={group.id} active={id===group.activeTabId}/> : tab ? <WorkspaceTab key={id} tab={tab} groupId={group.id} active={id===group.activeTabId}/> : null; })}
+					{group.tabIds.map((id) => {
+						const tab = state.tabs[id];
+						return tab?.kind === 'browser' ? (
+							<BrowserWorkspaceTab
+								key={id}
+								tab={tab}
+								groupId={group.id}
+								active={id === group.activeTabId}
+							/>
+						) : tab ? (
+							<WorkspaceTab key={id} tab={tab} groupId={group.id} active={id === group.activeTabId} />
+						) : null;
+					})}
 				</div>
 			</SortableContext>
 			{overflow && (
@@ -108,7 +99,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 						<Button
 							variant="ghost"
 							size="icon-xs"
-							className="mx-0.5 my-auto h-6 w-5"
+							className="mx-0.5 my-auto min-h-8 min-w-8"
 							aria-label={t('agent.workspace.scrollRight')}
 							data-tab-scroll="right"
 							onClick={() => ref.current?.scrollBy({ left: 180 })}
@@ -132,7 +123,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 					<Button
 						variant="ghost"
 						size="icon-xs"
-						className="mx-2 my-auto"
+						className="mx-1 my-auto size-8"
 						aria-label={t('agent.workspace.groupMenu')}
 					>
 						<MoreHorizontal className="size-3.5" />
@@ -151,39 +142,6 @@ export function TabStrip({ group }: { group: TabGroup }) {
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
-			{last && chrome && (
-				<>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon-xs"
-								className="my-auto"
-								aria-pressed={chrome.view?.getState().history}
-        onClick={() => chrome.view?.setState(s => ({history:!s.history}))}
-								aria-label={t('agent.history')}
-							>
-								<PanelRight className="size-4 text-muted-foreground/50" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>{t('agent.history')}</TooltipContent>
-					</Tooltip>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon-xs"
-								className="mx-1 my-auto"
-								aria-label={t('agent.workspace.pageMenu')}
-								onClick={(event) => chrome.context.openPageMenu?.(event.nativeEvent)}
-							>
-								<MoreHorizontal className="size-4" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>{t('agent.workspace.pageMenu')}</TooltipContent>
-					</Tooltip>
-				</>
-			)}
 		</div>
 	);
 }

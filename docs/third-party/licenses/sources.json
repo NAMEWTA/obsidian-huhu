@@ -37,5 +37,33 @@
     "source": "https://github.com/retep998/winapi-rs/blob/796a8e6c2971dc2ff1bcff166e6671284f9b5b6b/i686/LICENSE-MIT",
     "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b",
     "note": "The pinned winapi 0.3.9 repository contains the two GNU import-library packages at version 0.4.0."
+  },
+  "block2@0.6.2": {
+    "license": "MIT",
+    "file": "objc2-historical-MIT.txt",
+    "source": "https://github.com/madsmtm/objc2/blob/4fc083f1c6d6784577e38b0ee8dbd344481e2fd2/LICENSE.txt",
+    "sha256": "e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5",
+    "note": "发布包 block2@0.6.2 声明 MIT 但未附许可全文；发布源码的许可政策见 https://github.com/madsmtm/objc2/blob/b4167b582b2f75f9a1be75495c41b765344fd03c/LICENSE.md（含上游 Apple SDK 说明）。此处逐字节保留同项目固定历史提交的 MIT 全文及 Steven Sheldon 原版权行。该历史提交不是本版本的发布提交，全文不冒称来自本发布包。"
+  },
+  "dispatch2@0.3.1": {
+    "license": "MIT",
+    "file": "dispatch2-original-MIT.txt",
+    "source": "https://github.com/marysaka/dispatch2/blob/a7d82e59ea1bc19596c516e4addd6ee116e6339d/LICENSE-MIT",
+    "sha256": "30fefc3a7d6a0041541858293bcbea2dde4caa4c0a5802f996a7f7e8c0085652",
+    "note": "发布包 dispatch2 0.3.1 声明 Zlib OR Apache-2.0 OR MIT，此处选择 MIT；发布源码的许可政策见 https://github.com/madsmtm/objc2/blob/8852b424193ca41602281b3d7540d7c8ed51e49a/LICENSE.md（含上游 Apple SDK 说明）。全文逐字节保留自原 dispatch2 项目的固定提交，原仓库 README 已说明维护移交 objc2。原文未列版权持有人或年份，未作补写；该原项目提交不是本版本的发布提交，全文不冒称来自本发布包。"
+  },
+  "objc2@0.6.5": {
+    "license": "MIT",
+    "file": "objc2-historical-MIT.txt",
+    "source": "https://github.com/madsmtm/objc2/blob/4fc083f1c6d6784577e38b0ee8dbd344481e2fd2/LICENSE.txt",
+    "sha256": "e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5",
+    "note": "发布包 objc2@0.6.5 声明 MIT 但未附许可全文；发布源码的许可政策见 https://github.com/madsmtm/objc2/blob/d7d2fa23ceaa5e6096c923b081040e5d81b3b9df/LICENSE.md（含上游 Apple SDK 说明）。此处逐字节保留同项目固定历史提交的 MIT 全文及 Steven Sheldon 原版权行。该历史提交不是本版本的发布提交，全文不冒称来自本发布包。"
+  },
+  "objc2-encode@4.1.0": {
+    "license": "MIT",
+    "file": "objc2-historical-MIT.txt",
+    "source": "https://github.com/madsmtm/objc2/blob/4fc083f1c6d6784577e38b0ee8dbd344481e2fd2/LICENSE.txt",
+    "sha256": "e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5",
+    "note": "发布包 objc2-encode@4.1.0 声明 MIT 但未附许可全文；发布源码的许可政策见 https://github.com/madsmtm/objc2/blob/8d214f5477365ffcbcbb7de058c86ed9a518efb7/LICENSE.md（含上游 Apple SDK 说明）。此处逐字节保留同项目固定历史提交的 MIT 全文及 Steven Sheldon 原版权行。该历史提交不是本版本的发布提交，全文不冒称来自本发布包。"
   }
 }

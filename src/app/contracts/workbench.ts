@@ -2,7 +2,18 @@
 import type { ModuleId } from './module';
 import type { TreeNode } from '../../ui/components/tree';
 
-export const WORKBENCH_FEATURES = ['dashboard', 'terminal', 'contacts', 'automations', 'notifications', 'icons', 'sync', 'safe', 'content', 'settings',
+export const WORKBENCH_FEATURES = [
+	'dashboard',
+	'terminal',
+	'contacts',
+	'automations',
+	'notifications',
+	'icons',
+	'sync',
+	'safe',
+	'content',
+	'settings',
+	'browser',
 ] as const;
 export type WorkbenchFeature = (typeof WORKBENCH_FEATURES)[number];
 
@@ -18,6 +29,7 @@ export const FEATURE_MODULES: Readonly<Record<WorkbenchFeature, ModuleId | 'app'
 	safe: 'safe',
 	settings: 'app',
 	content: 'app',
+	browser: 'browser',
 };
 
 export interface WorkbenchTarget {
@@ -28,13 +40,18 @@ export interface WorkbenchTarget {
 }
 
 /** One compatibility mapping for old icon pages, used by live routes and workspace restoration. */
-export function iconSettingsTarget(target: Pick<WorkbenchTarget, 'section' | 'resourceId' | 'focusId'>,
+export function iconSettingsTarget(
+	target: Pick<WorkbenchTarget, 'section' | 'resourceId' | 'focusId'>,
 ): WorkbenchTarget {
-	const page = target.section ?? target.resourceId, focusId = target.focusId;
+	const page = target.section ?? target.resourceId,
+		focusId = target.focusId;
 	return {
-		feature: 'settings', section: 'iconic',
+		feature: 'settings',
+		section: 'iconic',
 		...(page && page.length <= 64 && /^iconic-[a-z-]+$/.test(page) ? { resourceId: page } : {}),
-		...(focusId && focusId.length <= 256 && ![...focusId].some((character) => character.charCodeAt(0) < 32) ? { focusId } : {}),
+		...(focusId && focusId.length <= 256 && ![...focusId].some((character) => character.charCodeAt(0) < 32)
+			? { focusId }
+			: {}),
 	};
 }
 export interface FeatureAvailability {
@@ -123,42 +140,42 @@ export interface WorkbenchStatus {
 
 export type PageChrome = 'standard' | 'none';
 export interface StatusSegment {
- id: string;
- icon: string;
- label: string;
- tone?: 'neutral' | 'running' | 'attention' | 'error';
- count?: number;
- target?: WorkbenchTarget;
- order: number;
+	id: string;
+	icon: string;
+	label: string;
+	tone?: 'neutral' | 'running' | 'attention' | 'error';
+	count?: number;
+	target?: WorkbenchTarget;
+	order: number;
 }
 export interface StatusBarPreferences {
- /** Per-item visibility keyed by item group (`usage`, `sync`, …); a missing key means shown. */
- segments: Record<string, boolean>;
- usageMode: 'verbose' | 'compact';
- usageDisplay: 'used' | 'remaining';
+	/** Per-item visibility keyed by item group (`usage`, `sync`, …); a missing key means shown. */
+	segments: Record<string, boolean>;
+	usageMode: 'verbose' | 'compact';
+	usageDisplay: 'used' | 'remaining';
 }
 /** Transport-only quota model; shell never imports a module implementation. */
 export interface UsageProvider {
- provider?: string;
- rateStatus?: 'idle' | 'fetching' | 'ok' | 'error' | 'unavailable';
- planType?: string;
- updatedAt?: number;
- error?: string;
- accountId?: string;
- accounts?: readonly { id: string; name: string; selected: boolean }[];
- id: string;
- name: string;
- account?: string;
- status?: string;
- statusLabel?: string;
- stale?: boolean;
- failed?: boolean;
- windows: readonly { key?: string; windowMinutes?: number; label: string; usedPercent: number; resetsAt?: number }[];
+	provider?: string;
+	rateStatus?: 'idle' | 'fetching' | 'ok' | 'error' | 'unavailable';
+	planType?: string;
+	updatedAt?: number;
+	error?: string;
+	accountId?: string;
+	accounts?: readonly { id: string; name: string; selected: boolean }[];
+	id: string;
+	name: string;
+	account?: string;
+	status?: string;
+	statusLabel?: string;
+	stale?: boolean;
+	failed?: boolean;
+	windows: readonly { key?: string; windowMinutes?: number; label: string; usedPercent: number; resetsAt?: number }[];
 }
 export interface UsageSnapshot {
- lastRefreshAt?: number;
- providers: readonly UsageProvider[];
- refreshing: boolean;
+	lastRefreshAt?: number;
+	providers: readonly UsageProvider[];
+	refreshing: boolean;
 	workspace?: {
 		root: string;
 		total: number;
@@ -177,25 +194,25 @@ export interface UsageSnapshot {
 	};
 }
 export interface AgentUsage {
- selectAccount?(provider: string, accountId: string): Promise<void>;
- snapshot(): UsageSnapshot;
- subscribe(listener: () => void): () => void;
- refresh(): Promise<void>;
- setDisplay(display: StatusBarPreferences['usageDisplay']): void;
- /** Refresh on focus of this window while the caller shows usage there. Returns the release function. */
- observeWindow?(win: Window): () => void;
+	selectAccount?(provider: string, accountId: string): Promise<void>;
+	snapshot(): UsageSnapshot;
+	subscribe(listener: () => void): () => void;
+	refresh(): Promise<void>;
+	setDisplay(display: StatusBarPreferences['usageDisplay']): void;
+	/** Refresh on focus of this window while the caller shows usage there. Returns the release function. */
+	observeWindow?(win: Window): () => void;
 }
 /** What the Obsidian status bar usage entry needs from the host; the React view is mounted from `shell`. */
 export interface UsageStatusProps {
- usage: AgentUsage;
- preferences: StatusBarPreferences;
- /** Changes when the language does, so labels rendered with `t()` refresh. */
- revision: number;
- onPreferences: (next: StatusBarPreferences) => void;
- navigate: (target: WorkbenchTarget) => void;
- report: (error: unknown) => void;
+	usage: AgentUsage;
+	preferences: StatusBarPreferences;
+	/** Changes when the language does, so labels rendered with `t()` refresh. */
+	revision: number;
+	onPreferences: (next: StatusBarPreferences) => void;
+	navigate: (target: WorkbenchTarget) => void;
+	report: (error: unknown) => void;
 }
 export interface UsageStatusHandle {
- update(props: UsageStatusProps): void;
- dispose(): void;
+	update(props: UsageStatusProps): void;
+	dispose(): void;
 }

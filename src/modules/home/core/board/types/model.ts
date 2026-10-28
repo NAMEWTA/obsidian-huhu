@@ -893,7 +893,8 @@ export interface SkillShortcut {
 	promptTemplate: string;
 	inputPlaceholder?: string;
 	directSend: boolean;
-	destination: { kind: 'fresh'; cwd: string } | { kind: 'existing'; sessionId: string };
+	/** `fresh.spaceId`: the Space a new session starts in. Absent means the Space chooser opens on every press. */
+	destination: { kind: 'fresh'; cwd: string; spaceId?: string } | { kind: 'existing'; sessionId: string };
 }
 
 export interface DashboardData {

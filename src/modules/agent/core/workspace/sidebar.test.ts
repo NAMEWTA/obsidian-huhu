@@ -19,13 +19,23 @@ test('unknown is explicit regardless of unread, working stays working and ordina
 	expect(sessionBucket({ ...tab('unknown'), agentId: undefined })).toBe('terminal');
 });
 test.each([false, true])('completion before and after 30 minutes retains discoverability when unread=%s', (unread) => {
-	const session = { connection: 'connected', activity: 'done', activityAt: 1000 } as TerminalSession;
+	const session = {
+		connection: 'connected',
+		activity: 'done',
+		activityAt: 1000,
+		getActivitySnapshot: () => ({ sources: [], source: {} }),
+	} as unknown as TerminalSession;
 	expect(sessionBucket(tab(sessionState(session, 1000 + 29 * 60_000), unread))).toBe('done');
 	expect(sessionBucket(tab(sessionState(session, 1000 + 31 * 60_000), unread))).toBe(unread ? 'done' : 'idle');
 });
 
 test('successful process exit uses the same read/unread aging rule', () => {
-	const session = { connection: 'exited', exitCode: 0, activityAt: 1000 } as TerminalSession;
+	const session = {
+		connection: 'exited',
+		exitCode: 0,
+		activityAt: 1000,
+		getActivitySnapshot: () => ({ sources: [], source: {} }),
+	} as unknown as TerminalSession;
 	expect(sessionBucket(tab(sessionState(session, 1000 + 29 * 60_000)))).toBe('done');
 	expect(sessionBucket(tab(sessionState(session, 1000 + 31 * 60_000)))).toBe('idle');
 	expect(sessionBucket(tab(sessionState(session, 1000 + 31 * 60_000), true))).toBe('done');

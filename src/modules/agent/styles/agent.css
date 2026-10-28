@@ -18,3 +18,18 @@
 .huhu-ui .huhu-agent-resize { position: relative; }
 .huhu-ui .huhu-agent-resize::after { content: ''; position: absolute; inset: -4px; }
 .huhu-ui .huhu-agent-resize:focus-visible { outline: 2px solid var(--ring); }
+
+.huhu-ui [data-agent-workspace] { container: agent-workspace / inline-size; }
+.huhu-ui .huhu-agent-pane-header button { min-height: 32px; }
+.huhu-ui [data-group-strip] button { min-height: 32px; min-width: 32px; }
+@container agent-workspace (width < 600px) {
+	.huhu-ui .huhu-workspace-toolbar button,
+	.huhu-ui .huhu-agent-pane-header button,
+	.huhu-ui .huhu-workspace-tab-close,
+	.huhu-ui [data-group-strip] button { min-width: 44px; min-height: 44px; }
+	.huhu-ui .huhu-agent-pane-header { min-height: 44px; }
+	.huhu-ui .huhu-workspace-background { display: none; }
+}
+@container agent-workspace (width < 480px) {
+	.huhu-ui .huhu-agent-pane-focus { display: none; }
+}

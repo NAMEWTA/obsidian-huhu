@@ -19,3 +19,13 @@ test('hotkeys list modifiers in a fixed order and capitalize a letter key', () =
 	expect(hotkeyKeys({ modifiers: ['Shift', 'Mod'], key: 'p' })).toEqual(['Mod', 'Shift', 'P']);
 	expect(hotkeyKeys({ modifiers: [], key: 'F5' })).toEqual(['F5']);
 });
+
+test('an agent button keeps its saved Space id; other types and blank ids carry none', () => {
+	const read = readShortcutButtons([
+		{ id: 'a', type: 'agent', agentId: 'codex', prompt: 'go', spaceId: 'space-1' },
+		{ id: 'b', type: 'agent', agentId: 'codex', prompt: 'go', spaceId: '' },
+		{ id: 'c', type: 'file', target: 'n.md', spaceId: 'space-1' },
+		{ id: 'd', type: 'agent', agentId: 'codex', prompt: 'go', spaceId: 7 },
+	]);
+	expect(read.map((button) => button.spaceId)).toEqual(['space-1', undefined, undefined, undefined]);
+});

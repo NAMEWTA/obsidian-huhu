@@ -13,7 +13,8 @@ test('unknown targets fall back to the home board; settings is its own page', ()
 });
 test('restoration accepts known sections and excludes unrelated or secret fields', () => {
 	assert.deepEqual(normalizeTarget({ feature: 'contacts', section: 'person', resourceId: 'stable-id', token: 'secret', dom: {} }), { feature: 'contacts', section: 'person', resourceId: 'stable-id' });
-	assert.deepEqual(normalizeTarget({ feature: 'browser', section: 'history', resourceId: '\u0000bad' }), { feature: 'dashboard' });
+	assert.deepEqual(normalizeTarget({ feature: 'not-a-feature', section: 'history', resourceId: '\u0000bad' }), { feature: 'dashboard' });
+	assert.deepEqual(normalizeTarget({ feature: 'browser', section: 'history', resourceId: '\u0000bad' }), { feature: 'browser' });
 });
 test('panel width and open state are bounded and deterministic', () => {
 	assert.equal(panelWidth(NaN), 280); assert.equal(panelWidth(100), 220); assert.equal(panelWidth(600), 500);

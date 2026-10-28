@@ -47,6 +47,7 @@ export const automationDocuments: DocumentCollectionCodec<DefinitionCollection> 
 		'start',
 		'timezone',
 		'extraArgs',
+		'spaceId',
 		'precheck',
 		'templateId',
 		'linkPath',

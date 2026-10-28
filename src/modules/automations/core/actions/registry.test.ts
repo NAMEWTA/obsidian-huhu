@@ -1,5 +1,5 @@
 import { beforeEach, expect, test } from 'vitest';
-import { setLanguage } from '../../../../shared/i18n';
+import { setLanguage, t } from '../../../../shared/i18n';
 import type { AutomationAction } from '../../../../shared/automation/types';
 import { actionAvailability, actionDefinition, actionDefinitions, actionText, decodeAction, encodeAction, switchAutomationAction } from './registry';
 
@@ -55,9 +55,11 @@ test('switching keeps the text; scheduling and desktop rules come from the defin
 });
 test('agent checks: directory inside the vault, an available agent, no extra arguments on a reused session', () => {
 	const agent = actionDefinition('agent')!;
-	const action = agent.create(defaults) as Extract<AutomationAction, { kind: 'agent' }>;
+	const action = { ...(agent.create(defaults) as Extract<AutomationAction, { kind: 'agent' }>), spaceId: 'space-a' };
 	const check = { cwd: '/vault', agents: [{ id: 'codex', title: 'Codex', enabled: true }], channels: ['in-app' as const] };
 	expect(agent.settingsError?.(action, check)).toBeUndefined();
+	const { spaceId: _unbound, ...unbound } = action;
+	expect(agent.settingsError?.(unbound, check)).toBe(t('automation.spaceRequired'));
 	expect(agent.settingsError?.({ ...action, cwd: '/elsewhere' }, check)).toBeTruthy();
 	expect(agent.settingsError?.({ ...action, agentId: 'other' }, check)).toBeTruthy();
 	expect(agent.settingsError?.({ ...action, sessionMode: 'reuse', extraArgs: '--model opus' }, check)).toBeTruthy();

@@ -13,12 +13,22 @@ import { AGENT_CATALOG } from '../../core/launch/catalog';
 import { readHistoryDetails } from '../desktop/history/details';
 import { historyNodeModules } from '../desktop/history/node-modules';
 import { absoluteHuhuPath } from '../../../../host/desktop/huhu-paths';
-import type { HistoryClient, HistoryClientSource, HistoryPage, NativeSession, NativeSessionSummary, NativeUsage } from '../desktop/server/agent-data-client';
+import type {
+	HistoryClient,
+	HistoryClientSource,
+	HistoryFence,
+	HistoryPage,
+	NativeSession,
+	NativeSessionSummary,
+	NativeUsage,
+} from '../desktop/server/agent-data-client';
 export interface HistoryMetadata {
 	title?: string;
 	tags?: string[];
 	favorite?: boolean;
 	archived?: boolean;
+	/** Persisted sourceRef owner is maintained by SpaceService; this field is reserved for projections. */
+	spaceId?: string;
 }
 interface SharedRead<T> {
 	promise: Promise<T>;
@@ -28,11 +38,11 @@ interface SharedRead<T> {
 }
 /** The provider directories a system account may read; the helper accepts a system session only inside one of them. */
 function systemBases(roots: ReadonlyArray<{ systemBase?: string }>): string[] {
-	return [...new Set(roots.flatMap(root => root.systemBase ? [root.systemBase] : []))];
+	return [...new Set(roots.flatMap((root) => (root.systemBase ? [root.systemBase] : [])))];
 }
 /** The history sources of system accounts, which the helper must also see named before trusting an indexed row. */
 function systemRoots(roots: ReadonlyArray<{ path: string; systemBase?: string }>): string[] {
-	return [...new Set(roots.flatMap(root => root.systemBase ? [root.path] : []))];
+	return [...new Set(roots.flatMap((root) => (root.systemBase ? [root.path] : [])))];
 }
 function checkCancelled(signal?: AbortSignal): void {
 	if (signal?.aborted) throw new Error('History request cancelled');
@@ -58,24 +68,49 @@ function consume<T>(read: SharedRead<T>, signal?: AbortSignal): Promise<T> {
 			reject(new Error('History request cancelled'));
 		};
 		signal?.addEventListener('abort', cancel, { once: true });
-		void read.promise.then(value => { if (finish()) resolve(value); }, (error: unknown) => { if (finish()) reject(error instanceof Error ? error : new Error(String(error))); });
+		void read.promise.then(
+			(value) => {
+				if (finish()) resolve(value);
+			},
+			(error: unknown) => {
+				if (finish()) reject(error instanceof Error ? error : new Error(String(error)));
+			},
+		);
 	});
 }
 function sharedRead<T>(load: (signal: AbortSignal) => Promise<T>): SharedRead<T> {
 	const abort = new AbortController();
-	const read: SharedRead<T> = { abort, consumers: 0, settled: false, promise: Promise.resolve().then(() => { checkCancelled(abort.signal); return load(abort.signal); }) };
-	void read.promise.then(() => { read.settled = true; }, () => { read.settled = true; });
+	const read: SharedRead<T> = {
+		abort,
+		consumers: 0,
+		settled: false,
+		promise: Promise.resolve().then(() => {
+			checkCancelled(abort.signal);
+			return load(abort.signal);
+		}),
+	};
+	void read.promise.then(
+		() => {
+			read.settled = true;
+		},
+		() => {
+			read.settled = true;
+		},
+	);
 	return read;
 }
 export class NativeHistory {
 	private accountAliases = new Map<string, string>();
 	private metadata: Record<string, HistoryMetadata> = {};
 	private store: JsonStore<Record<string, HistoryMetadata>>;
+	private readonly openStore: () => JsonStore<Record<string, HistoryMetadata>>;
+	private writesClosed = false;
 	private loaded: Promise<void>;
 	private tail: Promise<void> = Promise.resolve();
 	private listeners = new Set<() => void>();
 	private indexVersion = 0;
 	private scanned = false;
+	private scannedOwned = '[]';
 	private metadataVersion = 0;
 	private version = 0;
 	private scanRead?: { key: string; read: SharedRead<string[]> };
@@ -90,25 +125,43 @@ export class NativeHistory {
 		private app: App,
 		private service: HistoryClientSource,
 		private settings: () => AgentSettings,
-  private accounts: () => Partial<Record<AgentId,string[]>> = () => ({}),
-  private readonly historyScope: 'account' | 'vault' = 'account',
+		private accounts: () => Partial<Record<AgentId, string[]>> = () => ({}),
+		/** The vault projection is the only history scope; the account-wide index is gone. */
+		_scope: 'vault' = 'vault',
+		/** HUHU-launched sessions whose history belongs to the vault projection even when their cwd is outside it. */
+		private readonly owned: () => ReadonlyArray<{ agentId: string; sessionId: string }> = () => [],
 	) {
 		const device = getDeviceId(app);
-		this.store = new JsonStore(
-			privateVaultStorage(app),
-			`.huhu/terminal-agent/${device}/history.json`,
-			(v): v is Record<string, HistoryMetadata> => !!v && typeof v === 'object' && !Array.isArray(v),
-		);
+		const storage = privateVaultStorage(app);
+		this.openStore = () =>
+			new JsonStore(
+				storage,
+				`.huhu/terminal-agent/${device}/history.json`,
+				(v): v is Record<string, HistoryMetadata> => !!v && typeof v === 'object' && !Array.isArray(v),
+			);
+		this.store = this.openStore();
 		this.loaded = this.store.load({}).then((rows) => {
 			this.metadata = rows;
 			this.metadataVersion++;
 			this.changed();
 		});
 	}
-	get revision(): number { return this.version; }
-	get indexRevision(): number { return this.indexVersion; }
-	get hasScanned(): boolean { return this.scanned; }
-	get metadataRevision(): number { return this.metadataVersion; }
+	get revision(): number {
+		return this.version;
+	}
+	get indexRevision(): number {
+		return this.indexVersion;
+	}
+	get hasScanned(): boolean {
+		return this.scanned;
+	}
+	/** True before the first scan of this helper connection, or after the owned-session set changed since the last scan. */
+	get stale(): boolean {
+		return !this.scanned || this.scannedOwned !== JSON.stringify(this.ownedSessions());
+	}
+	get metadataRevision(): number {
+		return this.metadataVersion;
+	}
 	subscribe(listener: () => void): () => void {
 		this.listeners.add(listener);
 		return () => this.listeners.delete(listener);
@@ -163,8 +216,13 @@ export class NativeHistory {
 		const result = { ...this.metadata };
 		for (const [key, metadata] of Object.entries(this.metadata)) {
 			let tuple: unknown;
-			try { tuple = JSON.parse(key); } catch { continue; }
-			if (!Array.isArray(tuple) || tuple.length !== 3 || !tuple.every(value => typeof value === 'string')) continue;
+			try {
+				tuple = JSON.parse(key);
+			} catch {
+				continue;
+			}
+			if (!Array.isArray(tuple) || tuple.length !== 3 || !tuple.every((value) => typeof value === 'string'))
+				continue;
 			const replacement = this.accountAliases.get(JSON.stringify([tuple[0], tuple[1]]));
 			if (!replacement) continue;
 			const mapped = JSON.stringify([tuple[0], replacement, tuple[2]]);
@@ -172,8 +230,32 @@ export class NativeHistory {
 		}
 		return result;
 	}
+	/** Recovery protocol: refuse new annotation writes visibly (never drop them silently). */
+	quiesceWrites(): void {
+		this.writesClosed = true;
+	}
+	resumeWrites(): void {
+		this.writesClosed = false;
+	}
+	/** Strict drain: every admitted annotation write settled and the last commit succeeded, or this rejects. */
+	async drainWrites(): Promise<void> {
+		await this.loaded;
+		await this.tail;
+		await this.store.flush();
+	}
+	/** Rebuild the metadata cache and the JsonStore baseline from disk so a restored file is never overwritten by stale memory. */
+	async reloadFromDisk(): Promise<void> {
+		await this.drainWrites();
+		const next = this.openStore();
+		const rows = await next.load({});
+		this.store = next;
+		this.metadata = rows;
+		this.metadataVersion++;
+		this.changed();
+	}
 	update(key: string, patch: HistoryMetadata): Promise<void> {
 		this.active();
+		if (this.writesClosed) return Promise.reject(new Error('history-writes-closed'));
 		const result = this.tail.then(async () => {
 			await this.loaded;
 			const next = { ...this.metadata, [key]: { ...this.meta(key), ...patch } };
@@ -189,54 +271,109 @@ export class NativeHistory {
 		const adapter = this.app.vault.adapter as unknown as { getBasePath(): string };
 		const vault = await fs.realpath(adapter.getBasePath());
 		const device = getDeviceId(this.app);
-		return { vault, index: path.join(vault, '.huhu', 'terminal-agent', device, this.historyScope === 'vault' ? 'workspace-index.sqlite' : 'index.sqlite') };
+		return {
+			vault,
+			index: path.join(
+				vault,
+				'.huhu',
+				'terminal-agent',
+				device,
+				'workspace-index.sqlite',
+			),
+		};
+	}
+
+	/** Deterministic, de-duplicated provenance list the helper uses to admit owned out-of-vault sessions. */
+	private ownedSessions(): Array<{ agentId: string; sessionId: string }> {
+		const seen = new Map<string, { agentId: string; sessionId: string }>();
+		for (const { agentId, sessionId } of this.owned())
+			if (agentId && sessionId) seen.set(JSON.stringify([agentId, sessionId]), { agentId, sessionId });
+		return [...seen.values()].sort((a, b) =>
+			(a.agentId + '\0' + a.sessionId).localeCompare(b.agentId + '\0' + b.sessionId),
+		);
 	}
 
 	private scanScope() {
-		const settings = structuredClone(this.settings()), accounts = structuredClone(this.accounts()), key = JSON.stringify([settings,accounts]);
+		const settings = structuredClone(this.settings()),
+			accounts = structuredClone(this.accounts()),
+			key = JSON.stringify([settings, accounts]);
 		if (this.preparingScope?.key === key) return this.preparingScope.promise;
-		const promise = this.loadScanScope(settings,accounts).finally(() => { if (this.preparingScope?.promise === promise) this.preparingScope = undefined; });
+		const promise = this.loadScanScope(settings, accounts).finally(() => {
+			if (this.preparingScope?.promise === promise) this.preparingScope = undefined;
+		});
 		this.preparingScope = { key, promise };
 		return promise;
 	}
-	private async loadScanScope(settings: AgentSettings, accounts: Partial<Record<AgentId,string[]>>) {
+	private async loadScanScope(settings: AgentSettings, accounts: Partial<Record<AgentId, string[]>>) {
 		const [path] = await historyNodeModules();
-		const scope = await this.scope(), roots = [], warnings: string[] = [], aliases = new Map<string, string>();
-		for (const agent of AGENT_CATALOG) for (const name of new Set(['',settings.agents[agent.id].accountId,...(accounts[agent.id] ?? [])])) {
-			try {
-			const device = getDeviceId(this.app), env = await accountEnv(agent, name, scope.vault, device), system = isSystemAccount(env);
-			const paths = accountPaths(env);
-			// A managed account's sources are confined to the vault; the system account reads the provider's own directory.
-			const source = system ? historySource(agent.id, paths) : await absoluteHuhuPath(scope.vault, path.relative(scope.vault, historySource(agent.id, paths)).split(path.sep).join('/'));
-			const keyEnv = await historyAccountEnv(agent, env, scope.vault, device);
-			roots.push({ agentId: agent.id, path: source, accountKey: JSON.stringify(keyEnv), ...(system ? { systemBase: historyBase(agent.id, paths) } : {}) });
-			const references = system ? [] : await legacyReferences(scope.vault, device, agent.id);
-			for (const reference of references) if (reference.name === keyEnv.HUHU_ACCOUNT_NAME && references.filter(row => row.from === reference.from).length === 1)
-				aliases.set(JSON.stringify([agent.id, JSON.stringify(reference.env)]), JSON.stringify(keyEnv));
-			} catch (error) { warnings.push(agent.title + ': ' + (error instanceof Error ? error.message : String(error))); }
-		}
+		const scope = await this.scope(),
+			roots = [],
+			warnings: string[] = [],
+			aliases = new Map<string, string>();
+		for (const agent of AGENT_CATALOG)
+			for (const name of new Set(['', settings.agents[agent.id].accountId, ...(accounts[agent.id] ?? [])])) {
+				try {
+					const device = getDeviceId(this.app),
+						env = await accountEnv(agent, name, scope.vault, device),
+						system = isSystemAccount(env);
+					const paths = accountPaths(env);
+					// A managed account's sources are confined to the vault; the system account reads the provider's own directory.
+					const source = system
+						? historySource(agent.id, paths)
+						: await absoluteHuhuPath(
+								scope.vault,
+								path.relative(scope.vault, historySource(agent.id, paths)).split(path.sep).join('/'),
+							);
+					const keyEnv = await historyAccountEnv(agent, env, scope.vault, device);
+					roots.push({
+						agentId: agent.id,
+						path: source,
+						accountKey: JSON.stringify(keyEnv),
+						...(system ? { systemBase: historyBase(agent.id, paths) } : {}),
+					});
+					const references = system ? [] : await legacyReferences(scope.vault, device, agent.id);
+					for (const reference of references)
+						if (
+							reference.name === keyEnv.HUHU_ACCOUNT_NAME &&
+							references.filter((row) => row.from === reference.from).length === 1
+						)
+							aliases.set(
+								JSON.stringify([agent.id, JSON.stringify(reference.env)]),
+								JSON.stringify(keyEnv),
+							);
+				} catch (error) {
+					warnings.push(agent.title + ': ' + (error instanceof Error ? error.message : String(error)));
+				}
+			}
 		this.accountAliases = aliases;
-		return { ...scope, roots, warnings, scope: this.historyScope };
+		return { ...scope, roots, warnings, scope: 'vault' as const };
 	}
 	async scan(signal?: AbortSignal): Promise<string[]> {
 		this.active();
 		if (signal?.aborted) throw new Error('History request cancelled');
-		const scope = await this.scanScope();
+		const scope = { ...(await this.scanScope()), ownedSessions: this.ownedSessions() };
 		checkCancelled(signal);
 		const key = JSON.stringify(scope);
 		if (!this.scanRead || this.scanRead.key !== key || this.scanRead.read.abort.signal.aborted) {
-			const read = this.createRead(async sharedSignal => {
+			const read = this.createRead(async (sharedSignal) => {
 				const client = await this.service.historyClient();
 				checkCancelled(sharedSignal);
 				this.observeClient(client);
-				const result = await client.request<{ warnings: string[]; revision: number }>('scan', scope, sharedSignal);
+				const result = await client.request<{ warnings: string[]; revision: number }>(
+					'scan',
+					scope,
+					sharedSignal,
+				);
 				this.indexVersion = result.revision;
 				this.scanned = true;
+				this.scannedOwned = JSON.stringify(scope.ownedSessions);
 				this.changed();
 				return [...scope.warnings, ...result.warnings];
 			});
 			this.scanRead = { key, read };
-			const clear = () => { if (this.scanRead?.read === read) this.scanRead = undefined; };
+			const clear = () => {
+				if (this.scanRead?.read === read) this.scanRead = undefined;
+			};
 			void read.promise.then(clear, clear);
 		}
 		return consume(this.scanRead.read, signal);
@@ -246,7 +383,14 @@ export class NativeHistory {
 		// leaf shares that same scan instead of launching another traversal.
 		return this.scan(signal);
 	}
-	async query(query = '', offset = 0, signal?: AbortSignal, filter = 'all', historyScope: 'account' | 'vault' = this.historyScope): Promise<HistoryPage> {
+	async query(
+		query = '',
+		offset = 0,
+		signal?: AbortSignal,
+		filter = 'all',
+		_scope: 'vault' = 'vault',
+		fence?: HistoryFence,
+	): Promise<HistoryPage> {
 		this.active();
 		await this.loaded;
 		if (signal?.aborted) throw new Error('History request cancelled');
@@ -255,16 +399,44 @@ export class NativeHistory {
 		const client = await this.service.historyClient();
 		checkCancelled(signal);
 		this.observeClient(client);
-		const key = JSON.stringify([scope, this.revision, this.clientRevision, query, offset, filter, historyScope]);
+		const ownedSessions = this.ownedSessions();
+		const key = JSON.stringify([
+			scope,
+			ownedSessions,
+			this.revision,
+			this.clientRevision,
+			query,
+			offset,
+			filter,
+			fence?.revision,
+		]);
 		let read = this.pages.get(key);
 		if (!read || read.abort.signal.aborted) {
 			const metadata = this.mappedMetadata();
-			read = this.createRead(async sharedSignal => client.request<HistoryPage>(
-				'query', { vault: scope.vault, index: scope.index, query, offset, filter, metadata, scope: historyScope, systemBases: systemBases(scope.roots), systemRoots: systemRoots(scope.roots) }, sharedSignal,
-			));
+			read = this.createRead(async (sharedSignal) =>
+				client.request<HistoryPage>(
+					'query',
+					{
+						vault: scope.vault,
+						index: scope.index,
+						query,
+						offset,
+						filter,
+						metadata,
+						scope: 'vault',
+						expectedRevision: fence?.revision,
+						systemBases: systemBases(scope.roots),
+						systemRoots: systemRoots(scope.roots),
+						ownedSessions,
+					},
+					sharedSignal,
+				),
+			);
 			this.pages.set(key, read);
 			const current = read;
-			void read.promise.catch(() => { if (this.pages.get(key) === current) this.pages.delete(key); });
+			void read.promise.catch(() => {
+				if (this.pages.get(key) === current) this.pages.delete(key);
+			});
 			if (this.pages.size > 32) {
 				const oldest: unknown = this.pages.keys().next().value;
 				if (typeof oldest === 'string') this.pages.delete(oldest);
@@ -277,28 +449,52 @@ export class NativeHistory {
 	}
 	async read(session: NativeSessionSummary, signal?: AbortSignal): Promise<NativeSession> {
 		this.active();
-		const scope = await this.scope(), systemBase = systemBases((await this.scanScope()).roots);
+		const scope = await this.scope(),
+			systemBase = systemBases((await this.scanScope()).roots);
 		checkCancelled(signal);
-		return consume(this.createRead(async sharedSignal => {
-			const client = await this.service.historyClient();
-			checkCancelled(sharedSignal);
-			this.active();
-			return client.request<NativeSession>('read', { ...scope, key: session.key, scope: this.historyScope, systemBases: systemBase, systemRoots: systemRoots((await this.scanScope()).roots) }, sharedSignal);
-		}), signal);
+		return consume(
+			this.createRead(async (sharedSignal) => {
+				const client = await this.service.historyClient();
+				checkCancelled(sharedSignal);
+				this.active();
+				return client.request<NativeSession>(
+					'read',
+					{
+						...scope,
+						key: session.key,
+						scope: 'vault',
+						systemBases: systemBase,
+						systemRoots: systemRoots((await this.scanScope()).roots),
+						ownedSessions: this.ownedSessions(),
+					},
+					sharedSignal,
+				);
+			}),
+			signal,
+		);
 	}
- async details(session: NativeSessionSummary, text: string, signal: AbortSignal) {
-  return readHistoryDetails(session,(await this.scope()).vault,getDeviceId(this.app),text,signal);
- }
+	async details(session: NativeSessionSummary, text: string, signal: AbortSignal) {
+		return readHistoryDetails(session, (await this.scope()).vault, getDeviceId(this.app), text, signal);
+	}
 	async export(session: NativeSessionSummary): Promise<ContentFile> {
 		let full: NativeSession;
+		const unreadable = (status: string) =>
+			new Error(t('agent.exportReadFailed', { message: t(`agent.historyUI.source.${status}`) }));
+		// A source already known to be bad is never exported as an empty log.
+		if (session.sourceStatus && session.sourceStatus !== 'available') throw unreadable(session.sourceStatus);
 		try {
 			await this.loaded;
 			full = await this.read(session);
 		} catch (error) {
-			throw new Error(t('agent.exportReadFailed', { message: error instanceof Error ? error.message : String(error) }));
+			throw new Error(
+				t('agent.exportReadFailed', { message: error instanceof Error ? error.message : String(error) }),
+			);
 		}
+		// The helper re-verifies the source at read time and reports a status instead of a body.
+		if (full.sourceStatus && full.sourceStatus !== 'available') throw unreadable(full.sourceStatus);
 		try {
-			const vault = this.app.vault, folder = `${EXPORTS_ROOT}/智能体`;
+			const vault = this.app.vault,
+				folder = `${EXPORTS_ROOT}/智能体`;
 			let made = '';
 			for (const part of folder.split('/')) {
 				made = made ? `${made}/${part}` : part;
@@ -306,19 +502,23 @@ export class NativeHistory {
 			}
 			const agent = session.agentId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 32) || 'agent';
 			const id = session.sessionId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 96) || 'session';
-			const content = `# ${this.meta(session.key).title || session.title}\n\n${full.text}`;
+			const note = full.usage?.partial ? `> ${t('agent.exportPartialNote')}\n\n` : '';
+			const content = `# ${this.meta(session.key).title || session.title}\n\n${note}${full.text}`;
 			for (let index = 0; index < 1000; index++) {
 				const path = `${folder}/${agent}-${id}${index ? `-${index + 1}` : ''}.md`;
 				if (vault.getAbstractFileByPath(path)) continue;
-				try { return await vault.create(path, content); }
-				catch (error) {
+				try {
+					return await vault.create(path, content);
+				} catch (error) {
 					// A simultaneous export can claim this name; Vault.create never overwrites it.
 					if (!vault.getAbstractFileByPath(path)) throw error;
 				}
 			}
 			throw new Error(t('agent.exportNameUnavailable'));
 		} catch (error) {
-			throw new Error(t('agent.exportWriteFailed', { message: error instanceof Error ? error.message : String(error) }));
+			throw new Error(
+				t('agent.exportWriteFailed', { message: error instanceof Error ? error.message : String(error) }),
+			);
 		}
 	}
 }

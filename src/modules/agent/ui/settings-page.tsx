@@ -12,6 +12,10 @@ import { AgentsSettings } from './settings/AgentsSettings';
 import { TerminalSettings } from './settings/TerminalSettings';
 import { AccountsSection } from './settings/AccountsSection';
 import { QuickCommandsSection } from './settings/QuickCommandsSection';
+import { BackupSection } from './settings/BackupSection';
+import { LegacyImportSection } from './settings/LegacyImportSection';
+import type { BackupActions } from '../services/backup/actions';
+import type { LegacyImportView } from '../services/migrations/legacy-workbench';
 import { SkillsAdvanced, SkillsSection } from './settings/SkillsSection';
 import type { SkillManager } from '../services/skill-manager';
 import { useAgentSettings } from './settings/settings-context';
@@ -69,6 +73,8 @@ export function agentSettingsPage(
 	portable?: SettingsHandle<Settings>,
 	desktop = true,
 	getSkillManager: () => SkillManager | undefined = () => undefined,
+	loadLegacyImport: () => Promise<LegacyImportView | undefined> = () => Promise.resolve(undefined),
+	loadBackup: () => Promise<BackupActions | undefined> = () => Promise.resolve(undefined),
 ) {
 	return function AgentSettingsPage({ resourceId }: SettingsPageHost) {
 		const t = useT(),
@@ -82,14 +88,14 @@ export function agentSettingsPage(
 		return (
 			<Tabs
 				defaultValue={
-					resourceId && ['agents', 'terminal', 'accounts', 'usage', 'quick', 'skills'].includes(resourceId)
+					resourceId && ['agents', 'terminal', 'accounts', 'usage', 'quick', 'skills', 'import', 'backup'].includes(resourceId)
 						? resourceId
 						: 'agents'
 				}
 				className="space-y-6"
 			>
 				<TabsList className="flex h-auto flex-wrap">
-					{(['agents', 'terminal', 'accounts', 'usage', 'quick', 'skills'] as const).map((key) => (
+					{(['agents', 'terminal', 'accounts', 'usage', 'quick', 'skills', 'import', 'backup'] as const).map((key) => (
 						<TabsTrigger key={key} value={key} className="flex-auto">
 							{t(`agent.manage.tab.${key}`)}
 						</TabsTrigger>
@@ -119,6 +125,12 @@ export function agentSettingsPage(
 							<PortableSettings handle={controller.settings} desktop={desktop} />
 						);
 					})()}
+				</TabsContent>
+				<TabsContent value="import">
+					<LegacyImportSection load={loadLegacyImport} />
+				</TabsContent>
+				<TabsContent value="backup">
+					<BackupSection load={loadBackup} />
 				</TabsContent>
 			</Tabs>
 		);

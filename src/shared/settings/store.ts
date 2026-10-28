@@ -58,6 +58,8 @@ export class SettingsStore {
 	private currentStatus: SaveStatus = 'idle';
 	private readonly persistedListeners = new Set<() => void>();
 	private disposed = false;
+	/** Set only by the recovery owner (`settings-recovery.ts`): changes are refused while a restore replaces the files. */
+	private held = false;
 
 	constructor(
 		private readonly persistence: SettingsPersistence,
@@ -161,6 +163,8 @@ export class SettingsStore {
 	}
 
 	private schedule(mode: 'debounced' | 'immediate'): Promise<void> {
+		// While a restore owns the files nothing is written; callers see the rejection (a restored namespace is then reloaded).
+		if (this.held) return Promise.reject(new Error('held'));
 		if (this.disposed) return Promise.reject(new Error('Settings store is disposed'));
 		const promise = new Promise<void>((resolve, reject) => this.waiting.push({ resolve, reject }));
 		const timers = this.options.timers;

@@ -60,3 +60,8 @@ release-assets/
 terminal-artifacts/
 /evidence/
 /coverage/
+
+# SpecDev change execution logs and generated run audits (keep REPORT.md/TASK.md)
+/.agents/speculo/.speculo/specdev/changes/*/evidence/*-logs/
+/.agents/speculo/.speculo/specdev/changes/*/evidence/*-root-audit.json
+/.agents/speculo/.speculo/specdev/changes/*/evidence/*-audit.json
