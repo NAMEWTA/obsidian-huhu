@@ -533,6 +533,7 @@ describe('Browser workspace authority and lifecycle', () => {
 	it('an approved upload retains its original Run scope after takeover and cannot be consumed by a new Run', async () => {
 		const { workspace, space, pageId, native } = await task(); await workspace.resumeAgent(space.id); const file = await workspace.chooseUpload(space.id, 'agent'); expect(file).toBeDefined();
 		await workspace.pause(space.id); const next = await workspace.resumeAgent(space.id), command: BrowserCommand = { kind: 'upload', observationId: 'snapshot', ref: 'node', fileIds: [file!.id] };
+		await workspace.observe(next.run.id, next.capability, pageId);
 		const ticket = await workspace.prepare(next.run.id, next.capability, pageId, 'wrong-run-upload', command), result = await workspace.execute(next.run.id, next.capability, ticket.id, command);
 		expect(result).toMatchObject({ state: 'rejected', error: 'file_scope_mismatch' }); expect(native.execute).not.toHaveBeenCalled(); expect(workspace.fileList(next.run.id, next.capability)).toEqual([]);
 	});
@@ -787,4 +788,17 @@ describe('explicit same-Page Agent handoff', () => {
 		await expect(workspace.handoffAgent({ ...request, pageId: personal.pages[0]!.id })).rejects.toMatchObject({ code: 'page_not_found' });
 		expect(state(space.id).control.lease?.leaseId).toBe(grant.run.leaseId);
 	});
+});
+
+
+it.each([false, true])('requires a fresh observation after human control, including paused=%s, without a previous Agent Run', async paused => {
+ const { workspace, space, pageId, native } = await task(); viewer(workspace, space);
+ await workspace.takeover({ spaceId: space.id, viewerId: 'viewer-A', windowId: 'window-A' });
+ if (paused) await workspace.pause(space.id);
+ const grant = await workspace.resumeAgent(space.id);
+ await expect(workspace.prepare(grant.run.id, grant.capability, pageId, 'unobserved', { kind: 'reload' })).rejects.toMatchObject({ code: 'fresh_observation_required' });
+ expect(native.execute).not.toHaveBeenCalled();
+ await workspace.observe(grant.run.id, grant.capability, pageId);
+ const ticket = await workspace.prepare(grant.run.id, grant.capability, pageId, 'observed', { kind: 'reload' });
+ expect((await workspace.execute(grant.run.id, grant.capability, ticket.id, { kind: 'reload' })).state).toBe('completed');
 });

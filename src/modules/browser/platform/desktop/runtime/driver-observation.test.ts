@@ -23,7 +23,10 @@ function dom(frameId: string, label: string, backend: number) {
 /** Replaces only Chromium/native wire I/O; the production driver, registry and NativeCdp all run. */
 async function fixture() {
 	let socket: Socket | undefined, failFrame = '', localPresent = true, transparentParent = false, password = false, closedShadow = false, onAX: (() => Promise<void>) | undefined, onViewport: (() => Promise<void>) | undefined;
-	let nested = false;
+	let nested = false, frameFocused = true;
+	let onFrameFocus: (() => Promise<void>) | undefined;
+	let fillResult: Record<string, unknown> = { ok: true, verification: 'matched', sensitive: false };
+	let onReadback: (() => Promise<void>) | undefined;
 	let onMaterial: (() => Promise<void>) | undefined, onScreenshot: (() => Promise<void>) | undefined;
 	let fileInput = false, onDescribe: (() => Promise<void>) | undefined, onUpload: ((params: Record<string, unknown>, deadline: unknown) => Promise<void>) | undefined;
 	const remoteReady = deferred(), calls: Array<{ method: string; params: Record<string, unknown>; sessionId?: string }> = [];
@@ -65,7 +68,10 @@ async function fixture() {
 					if (method === 'DOM.setFileInputFiles') await onUpload?.(params, message.deadlineAtMs);
 					if (method === 'Runtime.callFunctionOn') {
 						new Script(`(${String(params.functionDeclaration)})`); // Parse fixed functions without running webpage code.
-						if (String(params.functionDeclaration).includes('styles={}')) { await onMaterial?.(); result = { result: { value: { rect: { x: 10, y: 20, width: 120, height: 30 }, styles: { color: 'rgb(1, 2, 3)', 'background-image': 'url(SYNTHETIC_SECRET)' } } } }; }
+						if (String(params.functionDeclaration).includes('function confirmFrameFocus')) { await onFrameFocus?.(); result = { result: { value: frameFocused } }; }
+						else if (String(params.functionDeclaration).includes('styles={}')) { await onMaterial?.(); result = { result: { value: { rect: { x: 10, y: 20, width: 120, height: 30 }, styles: { color: 'rgb(1, 2, 3)', 'background-image': 'url(SYNTHETIC_SECRET)' } } } }; }
+						else if (String(params.functionDeclaration).includes('function readFillResult')) result = { result: { objectId: 'fill-readback' } };
+						else if (params.objectId === 'fill-readback') { await onReadback?.(); result = { result: { value: fillResult } }; }
 						else if (String(params.functionDeclaration).includes('frameContentBox')) result = { result: { value: { x: 100, y: 50, width: 200, height: 150 } } };
 						else result = { result: { value: true } };
 					}
@@ -95,7 +101,7 @@ async function fixture() {
 	cleanup.push(async () => { driver.stop(); socket?.destroy(); await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); });
 	await driver.start(address.port, 'fixture-token');
 	await driver.createPage('page', 'about:blank', lease); await remoteReady.promise;
-	return { driver, lease, calls, event, events, nested: () => { nested = true; }, material: (callback: typeof onMaterial) => { onMaterial = callback; }, screenshot: (callback: typeof onScreenshot) => { onScreenshot = callback; }, popup: async () => {
+	return { driver, lease, calls, event, events, frameFocus: (value: boolean, callback?: () => Promise<void>) => { frameFocused = value; onFrameFocus = callback; }, fill: (value: typeof fillResult) => { fillResult = value; }, readback: (callback: typeof onReadback) => { onReadback = callback; }, nested: () => { nested = true; }, material: (callback: typeof onMaterial) => { onMaterial = callback; }, screenshot: (callback: typeof onScreenshot) => { onScreenshot = callback; }, popup: async () => {
 		event('Target.attachedToTarget', { sessionId: 'popup-session', targetInfo: { targetId: 'popup', type: 'page', openerId: 'target', url: 'about:blank' } });
 		await popupReady.promise;
 		const published = events.find(event => event.kind === 'page' && event.page.id !== 'page');
@@ -222,7 +228,7 @@ it('drops only child results invalidated by in-flight same-document navigation',
 		expect(observed.url).toBe(initial.url);
 		await expect(f.driver.execute('page', { kind: 'fill', observationId: initial.id, ref: initial.nodes.find(node => node.frameId === frameId)!.ref, text: 'denied' }, f.lease)).rejects.toMatchObject({ code: 'browser_stale_ref' });
 		expect(f.calls.some(call => call.method === 'Input.insertText')).toBe(false);
-		await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'stable main' }, f.lease)).resolves.toEqual({ ok: true });
+		await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'stable main' }, f.lease)).resolves.toEqual({ ok: true, verification: 'matched', sensitive: false });
 		const fresh = await f.driver.observe('page', f.lease);
 		expect(fresh.coverage.find(frame => frame.frameId === frameId)).toMatchObject({ status: 'complete', nodes: 1 });
 	}
@@ -282,7 +288,7 @@ it('keeps stable frame results when an already-read child detaches or changes do
 		expect(observed.nodes.map(node => node.frameId)).toEqual(['main', 'remote']);
 		expect(observed.coverage.find(frame => frame.frameId === 'local')).toMatchObject({ status: 'failed', nodes: 0 });
 		expect(observed.frameErrors).toContainEqual({ frameId: 'local', code: 'frame_unavailable' });
-		await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'stable main' }, f.lease)).resolves.toEqual({ ok: true });
+		await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'stable main' }, f.lease)).resolves.toEqual({ ok: true, verification: 'matched', sensitive: false });
 		f.event('Page.frameNavigated', { frame: { id: 'local', parentId: 'main', loaderId: 'restored' } }, 'main-session');
 		await f.driver.cdp.command('Browser.getVersion');
 		const restored = await f.driver.observe('page', f.lease);
@@ -365,4 +371,44 @@ it('composes nested same-process iframe owner coordinates exactly once per paren
 	const f = await fixture(), human = { ...f.lease, mode: 'human' as const, controllerId: 'viewer' }; await f.driver.setControl(human, human.epoch); f.nested(); const observation = await f.driver.observe('page', human), selected = observation.nodes.find(node => node.frameId === 'inner')!;
 	const captured = await f.driver.execute('page', { kind: 'material', observationId: observation.id, ref: selected.ref }, human); expect(captured).toMatchObject({ clip: { x: 152.5, y: 80, width: 30, height: 7.5 } });
 	expect(f.calls.filter(call => call.method === 'DOM.resolveNode' && call.params.executionContextId !== undefined).length).toBeGreaterThan(2);
+});
+
+
+it.each(['matched', 'rejected', 'truncated', 'transformed', 'unverified'])('returns fill %s from the exact ref session, once and without secret echoes', async verification => {
+	const f = await fixture(), observed = await f.driver.observe('page', f.lease);
+	const node = observed.nodes.find(node => node.frameId === 'remote')!;
+	f.fill({ ok: verification === 'matched', verification, sensitive: true, value: 'SYNTHETIC_SECRET' });
+	const result = await f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: node.ref, text: 'SYNTHETIC_SECRET' }, f.lease);
+	expect(result).toEqual({ ok: verification === 'matched', verification, sensitive: true });
+	expect(JSON.stringify(result)).not.toContain('SECRET');
+	expect(f.calls.filter(call => call.method === 'Input.insertText')).toEqual([{ method: 'Input.insertText', params: { text: 'SYNTHETIC_SECRET' }, sessionId: 'remote-session' }]);
+	expect(f.calls.some(call => call.method === 'Runtime.releaseObjectGroup' && call.params.objectGroup === 'huhu-browser-action')).toBe(true);
+});
+it('does not treat malformed fill readback as success or retry the insertion', async () => {
+	const f = await fixture(), observed = await f.driver.observe('page', f.lease);
+	f.fill({ ok: true, verification: 'transformed', sensitive: false, value: 'secret' });
+	await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'expected' }, f.lease)).resolves.toEqual({ ok: false, verification: 'unverified' });
+	expect(f.calls.filter(call => call.method === 'Input.insertText')).toHaveLength(1);
+});
+it('discards late fill readback after revocation without retrying the submitted write', async () => {
+	const f = await fixture(), observed = await f.driver.observe('page', f.lease), entered = deferred(), release = deferred();
+	cleanup.unshift(async () => { release.resolve(); }); f.readback(async () => { entered.resolve(); await release.promise; });
+	const pending = f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: observed.nodes[0]!.ref, text: 'expected' }, f.lease);
+	const denied = expect(pending).rejects.toMatchObject({ code: 'browser_stale_control' }); await entered.promise;
+	await f.driver.setControl(undefined, 1); release.resolve(); await denied;
+	expect(f.calls.filter(call => call.method === 'Input.insertText')).toHaveLength(1);
+});
+
+
+it.each(['local', 'remote', 'inner'])('checks every %s frame owner before inserting, including a focused child under an unfocused parent', async frameId => {
+ const f = await fixture(); f.nested(); const observed = await f.driver.observe('page', f.lease), node = observed.nodes.find(node => node.frameId === frameId)!;
+ f.frameFocus(false);
+ await expect(f.driver.execute('page', { kind: 'fill', observationId: observed.id, ref: node.ref, text: 'must not insert' }, f.lease)).rejects.toMatchObject({ code: 'browser_element_not_actionable' });
+ expect(f.calls.filter(call => call.method === 'Input.insertText')).toHaveLength(0);
+});
+it('rejects ancestor navigation during focus validation before dispatching text to an OOPIF', async () => {
+ const f = await fixture(), observed = await f.driver.observe('page', f.lease), node = observed.nodes.find(node => node.frameId === 'remote')!;
+ f.frameFocus(true, async () => { f.event('Page.navigatedWithinDocument', { frameId: 'main', url: 'https://fixture.invalid/#focus-change' }, 'main-session'); await new Promise(resolve => setImmediate(resolve)); });
+ await expect(f.driver.execute('page', { kind: 'type', observationId: observed.id, ref: node.ref, text: 'must not insert' }, f.lease)).rejects.toBeDefined();
+ expect(f.calls.filter(call => call.method === 'Input.insertText')).toHaveLength(0);
 });

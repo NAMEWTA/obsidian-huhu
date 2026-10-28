@@ -52,6 +52,23 @@ async function until(predicate, timeout = 12000) {
 	throw Error('Timed out waiting for expected browser event');
 }
 const server = createServer((req, res) => {
+	if (req.url === '/fill-frame') {
+		res.setHeader('Content-Type', 'text/html');
+		res.end('<input aria-label="Frame fill">');
+		return;
+	}
+	if (req.url === '/fill-checks') {
+		res.setHeader('Content-Type', 'text/html');
+		res.end(`<!doctype html><meta charset="UTF-8"><input id="fill-target" aria-label="Fixture input">
+		<input aria-label="Truncated fill" maxlength="3">
+		<input aria-label="Transformed fill" oninput="this.value=this.value.toUpperCase()">
+		<input aria-label="Rejected fill" value="locked" onbeforeinput="event.preventDefault()">
+		<input aria-label="Detached fill" oninput="this.remove()">
+		<input aria-label="Secret fill" type="password">
+		<input aria-label="Redirected focus" onfocus="document.getElementById('fill-target').focus()">
+		<iframe src="/fill-frame"></iframe><iframe src="http://localhost:${server.address().port}/fill-frame"></iframe>`);
+		return;
+	}
 	if (req.url === '/auth') {
 		res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="HUHU isolated fixture"', 'Content-Type': 'text/html' });
 		res.end('<title>Authentication denied</title>Denied');
@@ -309,6 +326,25 @@ try {
 	assert.equal((await snapshot(a, pageId)).nodes.find((node) => node.name === 'Fixture input').value, '隔离输入');
 	await action(a, pageId, 'select', 'Fixture select', { values: ['b'] });
 	check('AX references support fill, append typing and native select');
+	const fillPage = randomUUID(); await a.driver.createPage(fillPage, origin + '/fill-checks', a.lease);
+	for (const [name, text, verification, sensitive] of [
+		['Fixture input', '中文🙂', 'matched', false], ['Truncated fill', 'abcdef', 'truncated', false],
+		['Transformed fill', 'lowercase', 'transformed', false], ['Rejected fill', 'replacement', 'rejected', false],
+		['Detached fill', 'detached', 'unverified', false], ['Secret fill', 'SYNTHETIC_FILL_SECRET', 'matched', true],
+	]) {
+		const result = await action(a, fillPage, 'fill', name, { text });
+		assert.deepEqual(result, { ok: verification === 'matched', verification, sensitive });
+		assert.ok(!JSON.stringify(result).includes(text));
+	}
+	await assert.rejects(action(a, fillPage, 'fill', 'Redirected focus', { text: 'must-not-insert' }), error => error.code === 'browser_element_not_actionable');
+	const frameInputs = (await snapshot(a, fillPage)).nodes.filter(node => node.name === 'Frame fill'); assert.equal(frameInputs.length, 2);
+	for (const index of [0, 1]) {
+		const fresh = await snapshot(a, fillPage), target = fresh.nodes.filter(node => node.name === 'Frame fill')[index];
+		assert.deepEqual(await a.driver.execute(fillPage, { kind: 'fill', observationId: fresh.id, ref: target.ref, text: '框架输入' }, a.lease), { ok: true, verification: 'matched', sensitive: false });
+	}
+	await a.driver.closePage(fillPage, a.lease);
+	check('fill readback confirms Unicode, truncation, formatting, refusal, detach, secret redaction and iframe focus');
+
 	await action(a, pageId, 'click', 'Counter');
 	await a.driver.execute(
 		pageId,

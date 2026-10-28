@@ -118,6 +118,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	private readonly runtimes = new Map<string, BrowserRuntime>();
 	private readonly unlisten = new Map<string, () => void>();
 	private readonly runs = new Map<string, RunEntry>();
+	private readonly humanVisited = new Set<string>();
 	private readonly eventsStore: RunEvents;
 	private readonly eventStates = new Map<string, { space: string; control: string; cleanup: string; pages: Map<string, string> }>();
 	private readonly cleanupStates = new Map<string, 'pending' | 'failed' | 'completed'>();
@@ -248,7 +249,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				if (s.retention === 'ephemeral' || s.status === 'cleanup_pending') {
 					await this.extra.files.removeSpace(s.id);
 					await this.factory.removeProfile(s.id);
-					this.spaces.delete(s.id);
+					this.spaces.delete(s.id); this.humanVisited.delete(s.id);
 					continue;
 				}
 				s.status = 'stopped';
@@ -656,6 +657,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	}
 	async takeover({ spaceId, viewerId, windowId }: { spaceId: string; viewerId: string; windowId: string }) {
 		if (!this.frames.has(viewerId, spaceId)) throw new AgentBrowserError('viewer_not_registered');
+		this.humanVisited.add(spaceId);
 		const lease = await this.changeControl(spaceId, 'human', viewerId, { viewerId, windowId });
 		if (!lease) throw new AgentBrowserError('control_missing');
 		if (!isCurrentLease(this.space(spaceId), lease, this.now())) throw new AgentBrowserError('control_superseded');
@@ -687,6 +689,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	private async grantAgent(id: string, handoff?: BrowserHandoffRequest): Promise<RunGrant> {
 		const s = this.space(id);
 		if (s.kind !== 'task') throw new AgentBrowserError('personal_space_forbidden');
+		const freshObservationPage = handoff?.pageId ?? (this.humanVisited.has(id) || [...this.runs.values()].some(entry => entry.run.spaceId === id) ? '*' : undefined);
 		const runId = this.persistence.id(),
 			lease = await this.changeControl(id, 'agent', runId);
 		if (!lease) throw new AgentBrowserError('control_missing');
@@ -701,7 +704,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			...(handoff ? { execution: clone(handoff.target), handoff: { transitionId: this.persistence.id(), fromRunId: handoff.fromRunId, pageId: handoff.pageId } } : {}),
 		};
 		const capability = this.persistence.id() + this.persistence.id();
-		this.runs.set(runId, { run, capability, ...(handoff ? { freshObservationPage: handoff.pageId } : {}) });
+		this.runs.set(runId, { run, capability, ...(freshObservationPage ? { freshObservationPage } : {}) });
 		this.eventsStore.open(runId);
 		if (handoff) {
 			const event = { kind: 'controlChanged' as const, spaceId: id, runtimeId: run.runtimeId, epoch: run.epoch, entityId: run.id, state: 'agent' as const };
@@ -973,7 +976,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		)
 			throw new AgentBrowserError('observation_stale');
 		const entry = this.runs.get(runId);
-		if (entry?.freshObservationPage === pageId) delete entry.freshObservationPage;
+		if (entry?.freshObservationPage === pageId || entry?.freshObservationPage === '*') delete entry.freshObservationPage;
 		return result;
 	}
 	async prepare(runId: string, capability: string, pageId: string, requestId: string, command: BrowserCommand, timeoutMs?: number) {
@@ -1366,7 +1369,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			this.unlisten.delete(s.id);
 			await this.extra.files.removeSpace(s.id);
 			await this.factory.removeProfile(s.id);
-			this.spaces.delete(s.id);
+			this.spaces.delete(s.id); this.humanVisited.delete(s.id);
 			await this.persist();
 			this.cleanupStates.set(s.id, 'completed'); this.notify();
 		} catch (error) { this.cleanupStates.set(s.id, 'failed'); this.notify(); throw error; }

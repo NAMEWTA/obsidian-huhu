@@ -20,6 +20,7 @@ import {
 } from '../../../core/contracts';
 import { NativeCdp, type CdpFrame } from './cdp';
 import { encodedDimensions } from './image-dimensions';
+import { prepareFill, readFillResult, confirmTypingTarget, confirmFrameFocus } from './editing-functions';
 import policy from './page-policy.json';
 import { snapshotScope } from '../../../core/protocol';
 import { observationDocuments, observationSelection, type ObservationDom } from './observation-dom';
@@ -1102,19 +1103,25 @@ export class BrowserDriver {
 				if (Buffer.byteLength(command.text) > 48 * 1024) throw new AgentBrowserError('browser_text_limit');
 				const ref = await this.resolve(page, command.observationId, command.ref, authority);
 				await send('DOM.focus', { backendNodeId: ref.entry.node }, ref.entry.session);
-				const result = await send(
-					'Runtime.callFunctionOn',
-					{
-						objectId: ref.objectId,
-						functionDeclaration:
-							'function(){if(this.disabled||this.readOnly)throw Error();if(this.isContentEditable){const r=document.createRange();r.selectNodeContents(this);const s=getSelection();s.removeAllRanges();s.addRange(r)}else if(this instanceof HTMLInputElement||this instanceof HTMLTextAreaElement){this.select()}else throw Error()}',
-						returnByValue: true,
-					},
-					ref.entry.session,
-				);
-				if (result.exceptionDetails) throw new AgentBrowserError('browser_element_not_actionable');
+				const prepared = await send('Runtime.callFunctionOn', {
+					objectId: ref.objectId, functionDeclaration: prepareFill,
+					arguments: [{ value: command.text }], objectGroup: 'huhu-browser-action',
+				}, ref.entry.session);
+				const readbackId = string(object(prepared.result).objectId);
+				if (prepared.exceptionDetails || !readbackId) throw new AgentBrowserError('browser_element_not_actionable');
+				await this.assertFrameFocus(page, ref.entry, authority);
+				// Exactly one insertion. Never retry a write on mismatch or uncertain readback.
 				await send('Input.insertText', { text: command.text }, ref.entry.session);
-				return { ok: true };
+				const checked = await send('Runtime.callFunctionOn', {
+					objectId: readbackId, functionDeclaration: readFillResult, returnByValue: true,
+				}, ref.entry.session);
+				const value = object(object(checked.result).value);
+				if (checked.exceptionDetails || typeof value.ok !== 'boolean' || typeof value.sensitive !== 'boolean' ||
+					!['matched', 'rejected', 'truncated', 'transformed', 'unverified'].includes(string(value.verification)) ||
+					value.ok !== (value.verification === 'matched'))
+					return { ok: false, verification: 'unverified' };
+				// Explicit projection prevents a hostile page from smuggling a value into the result.
+				return { ok: value.ok, verification: string(value.verification), sensitive: value.sensitive };
 			}
 			case 'type': {
 				if (Buffer.byteLength(command.text) > 48 * 1024) throw new AgentBrowserError('browser_text_limit');
@@ -1125,13 +1132,14 @@ export class BrowserDriver {
 					{
 						objectId: ref.objectId,
 						functionDeclaration:
-							'function(){return !this.disabled&&!this.readOnly&&(this.isContentEditable||this instanceof HTMLInputElement||this instanceof HTMLTextAreaElement)}',
+							confirmTypingTarget,
 						returnByValue: true,
 					},
 					ref.entry.session,
 				);
 				if (object(checked.result).value !== true)
 					throw new AgentBrowserError('browser_element_not_actionable');
+				await this.assertFrameFocus(page, ref.entry, authority);
 				await send('Input.insertText', { text: command.text }, ref.entry.session);
 				return { ok: true };
 			}
@@ -1470,6 +1478,41 @@ export class BrowserDriver {
 		this.authority(authority);
 		if (this.pages.get(page.id) !== page || entry.documentId !== page.documentId || entry.epoch !== this.epoch || entry.viewportVersion !== page.viewportVersion || page.frames.get(entry.frameId) !== entry.session || page.frameDocuments.get(entry.frameId) !== entry.frameDocumentId)
 			throw new AgentBrowserError('browser_stale_ref');
+	}
+	/** Child document.activeElement alone does not prove top-level focus. Validate each
+	 * iframe owner (including OOPIF) in its own parent session; no focus-changing reads. */
+	private async assertFrameFocus(page: Page, entry: Reference, authority: ControlLease): Promise<void> {
+		if (entry.frameId === page.mainFrameId) return;
+		const proof = new Map([...page.frames].map(([id, session]) => [id, { session, document: page.frameDocuments.get(id), navigation: page.frameNavigations.get(id) }]));
+		const check = () => {
+			this.assertReference(page, entry, authority);
+			for (const [id, previous] of proof) if (page.frames.get(id) !== previous.session || page.frameDocuments.get(id) !== previous.document || page.frameNavigations.get(id) !== previous.navigation) throw new AgentBrowserError('browser_stale_ref');
+		};
+		const read = async (method: string, params: Record<string, unknown>, session: string) => {
+			check(); const result = object(await this.cdp.command(method, params, session, authority)); check(); return result;
+		};
+		const parents = new Map<string, string>();
+		for (const session of new Set([page.session, ...page.frames.values()])) {
+			const tree = await read('Page.getFrameTree', {}, session);
+			const track = (raw: unknown, parent = '') => {
+				const item = object(raw), frame = object(item.frame), id = string(frame.id), owner = string(frame.parentId) || parent;
+				if (id && owner) parents.set(id, owner);
+				if (Array.isArray(item.childFrames)) for (const child of item.childFrames) track(child, id);
+			}; track(tree.frameTree);
+		}
+		let frameId = entry.frameId; const visited = new Set<string>();
+		while (frameId !== page.mainFrameId) {
+			if (visited.has(frameId) || visited.size >= 16) throw new AgentBrowserError('browser_frame_owner_missing'); visited.add(frameId);
+			const parent = parents.get(frameId), session = parent && page.frames.get(parent);
+			if (!parent || !session) throw new AgentBrowserError('browser_frame_owner_missing');
+			const owner = await read('DOM.getFrameOwner', { frameId }, session);
+			const handle = await read('DOM.resolveNode', { backendNodeId: owner.backendNodeId, objectGroup: 'huhu-browser-action' }, session);
+			const objectId = string(object(handle.object).objectId);
+			if (!objectId) throw new AgentBrowserError('browser_frame_owner_missing');
+			const focused = await read('Runtime.callFunctionOn', { objectId, functionDeclaration: confirmFrameFocus, returnByValue: true }, session);
+			if (focused.exceptionDetails || object(object(focused.result)).value !== true) throw new AgentBrowserError('browser_element_not_actionable');
+			frameId = parent;
+		}
 	}
 	/** Fixed readonly projection; no page-authored script, style URLs, values or raw snapshot escape.
 	 * Coordinates/reference design (Apache-2.0; no copied code):

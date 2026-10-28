@@ -22,7 +22,7 @@ browser 使用 HUHU 的模块化单体与端口/适配器结构，不增加 Obsi
 | `ui/` | 独立工作台、只读/接管查看器、身份向导、文件页 |
 | `native/browser-runtime/` | 最终 pipe writer、epoch fencing、进程收容、SQLite 只读入口 |
 
-公开进程内服务是 `BROWSER_WORKSPACE` 和 `BROWSER_OPEN`，材料出口是贡献点 `BROWSER_MATERIAL_CONSUMERS`。这两个服务供可信的 HUHU UI/模块调用；它们不是可以全部原样暴露给模型的工具表。外部 Agent 仅获得下面的严格协议方法。Agent 模块关闭时，browser 不会主动激活它来寻找材料消费者。
+公开进程内服务是 `BROWSER_WORKSPACE`、`BROWSER_AGENT_ACCESS` 和 `BROWSER_OPEN`，材料出口是贡献点 `BROWSER_MATERIAL_CONSUMERS`。这些服务供可信的 HUHU UI/模块调用；它们不是可以全部原样暴露给模型的工具表。外部 Agent 仅获得下面的严格协议方法。Agent 模块关闭时，browser 不会主动激活它来寻找材料消费者。
 
 主要模式是模块 Facade、依赖注入的 Port/Adapter、不可变身份值对象、按 Space 串行的控制转换、按 epoch 分离的动作队列、持久操作账本与有界发布订阅。控制转换队列和普通动作队列分开，撤权不等待被撤销的操作 Promise。
 
@@ -175,3 +175,12 @@ MCP 的 stdout 仅承载协议消息，错误不回显输入全文。连接文�
 纯 schema/账本/租约测试证明规则；真实 loopback 测试证明传输边界；native probe 证明实际 Chromium/pipe/撤权；Obsidian probe 证明 utilityProcess、查看器、所属窗口和 UI/文件流程。四层不能互相冒充。
 
 维护入口是 `pnpm run build`、`pnpm run lint`、`pnpm exec vitest run`、`pnpm run check:browser-native`，以及运行时文档中的 native/Obsidian 探针。发行产物同时校验主插件、Worker、CLI 及其摘要。Windows/macOS 的 supervisor、OS 剪贴板/焦点、系统密钥与签名发行门槛仍需各自实现和实机证据；当前显式 unsupported，不沿用 Linux 的隔离结论。
+
+
+## 二阶段控制、结果与输入核验
+
+`core/protocol.ts` 的 methodRegistry 汇总 18 个方法的输入/输出 schema 和权限策略；服务端与 CLI 使用相同结果校验及响应预算。`operation.get` 不存在时返回 null。操作 payload 保留 JSON 扩展边界，不宣称每一类动作结果都已由细粒度 schema 推导。MCP 仍是最小 stdio 适配，不是官方 SDK 接入完成声明。
+
+可信 `BrowserWorkspace.handoffAgent` 不属于模型协议。用户或可信协调器提供当前 Space/Page/runtime/Run/epoch 和目标 consumer/Agent/Run/Attempt 身份；旧 A 撤权后，B 取得新授权但必须先 observe 同一 Page。Page/Target 不重建，旧 A 的 stop/cancel/heartbeat 不能作用到 B。人交回及已有 Run 的重新授权同样要求 fresh observe；旧连接不能换取新授权。执行身份是关联元数据，不是权限凭证。
+
+fill 结果为 `{ok, verification, sensitive}`；verification 为 matched/rejected/truncated/transformed/unverified，只有 matched 的 ok 为 true，读回不可确认时 sensitive 可缺省。结果不回显字段值或密码。只执行一次插入，核验不符不自动重试；派发后失联或撤权由账本保留 unknown。操作 completed 不能代替网站业务成功确认。具体实现和边界见[二阶段交付](browser-phase2.md)。

@@ -1,5 +1,7 @@
 # Agent Browser 实施与验收记录
 
+> 本文前部为既有版本的历史验收，摘要只适用于记录的产物，不是 PR #14 的复跑结果。二阶段现状、证据及未完成门禁见[二阶段交付](browser-phase2.md)。
+
 本轮依据 [Issue #1](https://github.com/NAMEWTA/obsidian-huhu/issues/1) 重构独立 browser 模块。当前运行时启用 Linux x64；Windows、macOS、Linux ARM64 与移动端显示明确的不支持状态。Issue 中剩余的完整观察合同、事件种类、设计材料和跨平台门禁继续保留，本文逐项说明当前覆盖范围。
 
 产品使用见[浏览器](browser.md)，技术合同见[浏览器协议](browser-protocol.md)，构建和进程边界见[运行时维护](browser-runtime.md)。本轮没有发布新版本或迁移旧资料。
@@ -110,11 +112,11 @@ DISPLAY=:99 node scripts/obsidian-acceptance/agent-browser-v2.mjs \
 | Issue 范围 | 当前边界与剩余工作 |
 |---|---|
 | G-01～G-06 与平台发行 | Linux 有上面的真实子场景证据；完整宿主/Worker/supervisor 分别强杀、饱和 IPC、popup POST/opener 与初始 Worker realm 时序矩阵仍需补齐。Windows/macOS 还需原生 containment、系统密钥、沙箱、宿主与发行实测 |
-| FR-10 观察合同 | 当前为有界 AX 节点与引用，动作前再验证 DOM/几何；尚未提供完整 coverage、逐 frame 部分失败、frameErrors、snapshot viewportVersion 与观察模式/根作用域 |
-| FR-13 与 §14.3 账本 | 保留终态幂等证据，达到 10,000 条明确拒绝新意图；结果正文在初始化时按 30 天清理。尚未实现发行序号/持久低水位压缩；派发后的错误保守记录为结果未知 |
-| §14.4 事件 | 已有 runtime 绑定、淘汰检查与 cursor 恢复；当前只发布 page/page-closed，control/operation/request/download/fault/cleanup 的完整事件投影仍需补齐 |
-| FR-26 设计材料 | 已提供整页语义与截图、可选消费者和未发送输入；元素选择、定位 ref、设计样式材料与完整 Agent 宿主交付链路尚未完成 |
-| 协议与 MCP | 输入 schema 统一；输出 schema 和完整 outcome 还未全部由同一 schema 推导。MCP 为自实现最小 2024-11-05 stdio 适配，没有使用官方 SDK |
+| FR-10 观察合同 | 指定基线已提供 AX/DOM/布局、coverage、frameErrors、viewportVersion 与 scope；本次保留并复测。真实全部 frame/控件场景仍需验收 |
+| FR-13 与 §14.3 账本 | 指定基线已有 issued/lowWater、checkpoint 与结果回收；本次保留并复测，不能沿用旧“尚未实现”结论；全耐久崩溃点矩阵仍未闭合 |
+| §14.4 事件 | 指定基线已有 control/operation/request/download/fault/cleanup 等元数据投影及 snapshot/cursor 一致性；本次补交接相关元数据，真实长时断连/饱和矩阵仍需补证 |
+| FR-26 设计材料 | 指定基线已有元素 ref、选区截图/样式和草稿贡献点；真实完整 Bot 消费链路与 unknown 回执故障矩阵仍待验证 |
+| 协议与 MCP | 二阶段已有方法级输入/输出注册表和双端校验；operation payload 仍通用 JSON，细粒度 outcome 待补。MCP 为最小 2024-11-05 stdio 适配，没有使用官方 SDK |
 | 身份与权限扩展 | 目标为 owned-default Context；非空 localStorage/IndexedDB、无法无损保存的来源容器/分区和 v20/App-Bound Encryption 明确拒绝。HTTP auth 默认取消、敏感权限默认拒绝；没有按站点人工凭据授权面板 |
 | 体验与性能 | 中文证明限于宿主文本提交辅助及组件回归；完整网页原位系统 IME、PRIMARY selection、长拖拽、撤权/输入 p95、CPU/RSS 基准仍需专项验证 |
 
