@@ -47,7 +47,9 @@ function resourceProvider(gate: ReturnType<typeof deferred>): TaskResources {
 	return {
 		async search() {
 			await gate.promise;
-			return [{ resource: { kind: 'file', path: 'Project/accepted.md' }, status: 'available', label: 'Accepted' }];
+			return [
+				{ resource: { kind: 'file', path: 'Project/accepted.md' }, status: 'available', label: 'Accepted' },
+			];
 		},
 		async resolve(resource) {
 			await gate.promise;
@@ -61,7 +63,9 @@ describe('task public boundary ownership', () => {
 	it('captures create payload and idempotency key before queueing', async () => {
 		const { tasks } = await fixture();
 		const command: Extract<TaskCommand, { kind: 'create' }> = {
-			kind: 'create', commandId: 'accepted', draft: draft(),
+			kind: 'create',
+			commandId: 'accepted',
+			draft: draft(),
 		};
 		const original = structuredClone(command);
 		const pending = tasks.execute(command);
@@ -80,7 +84,10 @@ describe('task public boundary ownership', () => {
 		await tasks.execute({ kind: 'create', commandId: 'first', draft: draft() });
 		await tasks.execute({ kind: 'create', commandId: 'second', draft: draft() });
 		const command: Extract<TaskCommand, { kind: 'update' }> = {
-			kind: 'update', commandId: 'edit', id: 'task:first', expectedRevision: 1,
+			kind: 'update',
+			commandId: 'edit',
+			id: 'task:first',
+			expectedRevision: 1,
 			fields: { ...draft(), title: 'Accepted edit' },
 		};
 		const pending = tasks.execute(command);
@@ -96,11 +103,14 @@ describe('task public boundary ownership', () => {
 		const { tasks, writes } = await fixture();
 		const invalid = Object.assign(draft(), { unsupported: () => undefined });
 		expect(await tasks.execute({ kind: 'create', commandId: 'bad', draft: invalid })).toMatchObject({
-			ok: false, error: { code: 'invalid-input' },
+			ok: false,
+			error: { code: 'invalid-input' },
 		});
 		expect(writes()).toBe(0);
 		expect(tasks.snapshot().status).toBe('ready');
-		expect(await tasks.execute({ kind: 'create', commandId: 'healthy', draft: draft() })).toMatchObject({ ok: true });
+		expect(await tasks.execute({ kind: 'create', commandId: 'healthy', draft: draft() })).toMatchObject({
+			ok: true,
+		});
 		await tasks.dispose();
 	});
 	it('keeps cancellation live after capturing a queued command', async () => {
@@ -134,11 +144,14 @@ describe('task public boundary ownership', () => {
 		await tasks.dispose();
 	});
 	it.each(['task.resources.search', 'task.resources.resolve'])(
-		'rejects late %s data after module disposal', async (name) => {
+		'rejects late %s data after module disposal',
+		async (name) => {
 			const { tasks } = await fixture();
 			const gate = deferred();
 			const tools = createTaskTools(tasks, resourceProvider(gate));
-			const args = name.endsWith('.search') ? { text: 'accepted' } : { resource: { kind: 'file', path: 'Project/accepted.md' } };
+			const args = name.endsWith('.search')
+				? { text: 'accepted' }
+				: { resource: { kind: 'file', path: 'Project/accepted.md' } };
 			const pending = tools.call(name, args, { grants: ['task:read'] });
 			await tasks.dispose();
 			gate.release();
@@ -161,7 +174,11 @@ describe('task public boundary ownership', () => {
 		const gate = deferred();
 		const controller = new AbortController();
 		const tools = createTaskTools(tasks, resourceProvider(gate));
-		const pending = tools.call('task.resources.search', { text: 'accepted' }, { grants: ['task:read'], signal: controller.signal });
+		const pending = tools.call(
+			'task.resources.search',
+			{ text: 'accepted' },
+			{ grants: ['task:read'], signal: controller.signal },
+		);
 		controller.abort();
 		gate.release();
 		expect(await pending).toMatchObject({ ok: false, error: { code: 'cancelled' } });

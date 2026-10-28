@@ -41,6 +41,7 @@ export interface TaskService {
 	history(id?: string, offset?: number, limit?: number): readonly TaskEvent[];
 	/** Future occurrences are explicit read-only projections, not persisted tasks. */
 	preview(from: string, to: string): readonly TaskView[];
+	/** Captures caller-owned command data synchronously; the signal stays live until commit. */
 	execute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult>;
 	reconcile(): Promise<void>;
 }

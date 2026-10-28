@@ -73,8 +73,9 @@ export function createTaskTools(service: TaskService, resources?: TaskResources)
 				if (context.signal?.aborted) throw new TaskError('cancelled');
 				if (service.snapshot().status !== 'ready')
 					throw new TaskError('unavailable', 'Task repository is not ready');
-				assertToolArguments(arguments_, schema);
-				const args = arguments_ as Record<string, unknown>;
+				// Validate and consume the same owned snapshot across asynchronous adapters.
+				const args = structuredClone(arguments_) as Record<string, unknown>;
+				assertToolArguments(args, schema);
 				if (name === 'task.preview')
 					return { ok: true, data: service.preview(args.from as string, args.to as string) };
 				if (name === 'task.resources.search' || name === 'task.resources.resolve') {
@@ -84,6 +85,8 @@ export function createTaskTools(service: TaskService, resources?: TaskResources)
 							? await resources.search(args.text as string, args.kind as TaskResource['kind'] | undefined)
 							: await resources.resolve(args.resource as TaskResource);
 					if (context.signal?.aborted) throw new TaskError('cancelled');
+					if (service.snapshot().status !== 'ready')
+						throw new TaskError('unavailable', 'Task repository is not ready');
 					return { ok: true, data };
 				}
 				if (name === 'task.list') return { ok: true, data: service.query(args) };

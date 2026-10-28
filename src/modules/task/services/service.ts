@@ -132,13 +132,26 @@ export function createTaskService(deps: TaskServiceDeps): OwnedTaskService {
 			}));
 		},
 		async execute(command: TaskCommand, signal?: AbortSignal): Promise<TaskResult> {
+			// Own the submitted data before yielding; callers may immediately reuse their draft.
+			// The signal intentionally stays live, and the transaction remains the commit point.
+			let accepted: TaskCommand;
+			try {
+				running(signal);
+				accepted = structuredClone(command);
+			} catch (error) {
+				return failure(
+					error instanceof TaskError
+						? error
+						: new TaskError('invalid-input', 'Task command must be cloneable data'),
+				);
+			}
 			return enqueue(async () => {
 				try {
 					running(signal);
 					let applied: ReturnType<typeof applyTaskCommand> | undefined;
 					const next = await deps.repository.transact((latest) => {
 						running(signal);
-						applied = applyTaskCommand(latest, command, {
+						applied = applyTaskCommand(latest, accepted, {
 							now: clock(),
 							deviceId: deps.deviceId,
 							schedule: deps.schedule?.(),
