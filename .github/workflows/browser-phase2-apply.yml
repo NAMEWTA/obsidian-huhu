@@ -1,0 +1,43 @@
+name: Apply reviewed browser phase 2 source
+on:
+  push:
+    branches: ['feat/browser-phase2-issue-1']
+    paths: ['.github/workflows/browser-phase2-apply.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.repository == 'NAMEWTA/obsidian-huhu' && github.ref == 'refs/heads/feat/browser-phase2-issue-1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - name: Decode the reviewed patch and verify its exact digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/browser-phase2-transfer/part-{01,02,03,04} | base64 --decode | gzip --decompress > "$RUNNER_TEMP/browser-phase2.patch"
+          echo "e8db643b69a400306322e8ba37c415bdf1a4e5768ab5312abe391a087d5f48b9  $RUNNER_TEMP/browser-phase2.patch" | sha256sum --check
+          git apply --check --whitespace=error-all "$RUNNER_TEMP/browser-phase2.patch"
+          git apply --index --whitespace=error-all "$RUNNER_TEMP/browser-phase2.patch"
+          while IFS= read -r path; do
+            case "$path" in
+              src/modules/browser/*|.agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/prototypes/UI-001/design-system.md) ;;
+              *) echo "Unexpected source path: $path"; exit 1 ;;
+            esac
+          done < <(git diff --cached --name-only)
+          git diff --cached --check
+          git diff --cached --stat
+          git rm .github/browser-phase2-transfer/part-{01,02,03,04}
+      - name: Commit source without running repository code or rewriting history
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin feat/browser-phase2-issue-1
+          test "$(git rev-parse FETCH_HEAD)" = "$EXPECTED_HEAD"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c core.hooksPath=/dev/null commit -m 'feat(browser): 加固控制权并实现显式同页 Agent 交接与统一输出校验'
+          git push origin HEAD:refs/heads/feat/browser-phase2-issue-1
