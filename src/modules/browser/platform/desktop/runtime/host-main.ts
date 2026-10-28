@@ -8,6 +8,7 @@ import {
 	AgentBrowserError,
 	type BrowserCommand,
 	type BrowserObservation,
+	type SnapshotOptions,
 	type BrowserRuntime,
 	type BrowserRuntimeFactory,
 	type ControlLease,
@@ -156,7 +157,7 @@ class NativeHost {
 export interface MainRuntime extends BrowserRuntime {
 	ackFrame(pageId: string): void;
 }
-class ManagedRuntime implements MainRuntime {
+export class ManagedRuntime implements MainRuntime {
 	private listeners = new Set<(event: RuntimeEvent) => void>();
 	private native: NativeHost;
 	private worker?: UtilityProcess;
@@ -216,6 +217,8 @@ class ManagedRuntime implements MainRuntime {
 		);
 		if (boot.protocol !== 2 || typeof boot.port !== 'number' || boot.port <= 0 || boot.port > 65535)
 			throw new AgentBrowserError('browser_native_protocol');
+		if (object(boot.features).composition !== true || object(boot.features).dispatchDeadline !== true)
+			throw new AgentBrowserError('browser_runtime_capability_missing');
 		this.worker = this.electron.utilityProcess.fork(this.assets.worker, [], {
 			serviceName: 'HUHU isolated browser',
 			stdio: 'pipe',
@@ -305,7 +308,7 @@ class ManagedRuntime implements MainRuntime {
 		clearTimeout(wait.timer);
 		message.error ? wait.reject(new AgentBrowserError(message.error)) : wait.resolve(message.value);
 	}
-	private rpc<T = WorkerResult>(message: RequestBody): Promise<T> {
+	private rpc<T = WorkerResult>(message: RequestBody, timeout = 35000): Promise<T> {
 		if (!this.worker || this.workerExited || this.stopped || this.pending.size >= 96)
 			return Promise.reject(new AgentBrowserError('browser_worker_unavailable'));
 		const id = ++this.next;
@@ -313,7 +316,7 @@ class ManagedRuntime implements MainRuntime {
 			const timer = setTimeout(() => {
 				this.pending.delete(id);
 				reject(new AgentBrowserError('outcome_unknown'));
-			}, 35000);
+			}, timeout);
 			timer.unref();
 			this.pending.set(id, { resolve: (value) => resolve(value as T), reject, timer });
 			try {
@@ -336,6 +339,7 @@ class ManagedRuntime implements MainRuntime {
 			value.leaseId !== this.lease.leaseId ||
 			value.controllerId !== this.lease.controllerId ||
 			value.mode !== this.lease.mode ||
+			!Number.isSafeInteger(value.expiresAt) || Date.now() >= value.expiresAt ||
 			Date.now() >= this.lease.expiresAt
 		)
 			throw new AgentBrowserError('browser_stale_control');
@@ -362,20 +366,25 @@ class ManagedRuntime implements MainRuntime {
 		)
 			throw new AgentBrowserError('browser_stale_control');
 		const ack = await this.native.call({ type: 'control', epoch, lease: lease ?? null });
-		if (ack.epoch !== epoch || typeof ack.lastDispatchedSequence !== 'number' || ack.transportState !== 'open')
+		if (ack.epoch !== epoch || !Number.isSafeInteger(ack.lastDispatchedSequence) || Number(ack.lastDispatchedSequence) < 0 || ack.transportState !== 'open')
 			throw new AgentBrowserError('browser_native_protocol');
-		// Authoritative ACK is delivered without waiting for a potentially wedged Worker.
+		if (epoch < this.epoch) throw new AgentBrowserError('browser_stale_control');
+		// Native revocation is already effective. Worker convergence is a separate,
+		// bounded prerequisite for handing control to another writer.
 		this.epoch = epoch;
 		this.lease = lease;
 		this.provisioning = false;
-		void this.rpc({ type: 'control', epoch, lease }).catch((error) => {
-			if (!this.closing && !this.stopped && this.epoch === epoch)
-				this.emit({ kind: 'fault', runtimeId: this.id, code: code(error) });
-		});
+		try { await this.rpc({ type: 'control', epoch, lease }, 5000); }
+		catch {
+			if (this.epoch === epoch) this.lease = undefined;
+			throw new AgentBrowserError('browser_control_unsettled');
+		}
+		if (this.closing || this.stopped || this.epoch !== epoch || this.lease?.leaseId !== lease?.leaseId)
+			throw new AgentBrowserError('browser_stale_control');
 		return {
 			runtimeId: this.id,
 			epoch,
-			lastDispatchedSequence: ack.lastDispatchedSequence,
+			lastDispatchedSequence: Number(ack.lastDispatchedSequence),
 			transportState: 'open',
 		};
 	}
@@ -399,9 +408,9 @@ class ManagedRuntime implements MainRuntime {
 		this.authority(authority);
 		return this.rpc<JsonValue>({ type: 'execute', pageId, command, authority, uploadPaths: options?.uploadPaths });
 	}
-	observe(pageId: string, authority: ControlLease): Promise<BrowserObservation> {
+	observe(pageId: string, authority: ControlLease, scope?: SnapshotOptions): Promise<BrowserObservation> {
 		this.authority(authority);
-		return this.rpc<BrowserObservation>({ type: 'observe', pageId, authority });
+		return this.rpc<BrowserObservation>({ type: 'observe', pageId, authority, scope });
 	}
 	async watch(pageId: string, enabled: boolean): Promise<void> {
 		await this.rpc({ type: 'watch', pageId, enabled });

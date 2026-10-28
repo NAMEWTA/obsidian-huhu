@@ -44,9 +44,21 @@ export function IdentityImportActions({
 	const [review, setReview] = useState<{ preview: IdentityImportPreview; persist: boolean }>();
 	const [domains, setDomains] = useState<string[]>([]),
 		[filter, setFilter] = useState('');
+	const [cancelling, setCancelling] = useState(false),
+		[outcome, setOutcome] = useState<{ kind: 'saved' | 'savedAfterCancel' | 'cancelled'; count: number }>();
 	const plan = useRef<string | undefined>(undefined),
 		mounted = useRef(false),
 		generation = useRef(0);
+	const preflight = useRef<AbortController | undefined>(undefined),
+		committing = useRef(false),
+		cancelRequested = useRef(false);
+	const fileTrigger = useRef<HTMLButtonElement | null>(null),
+		returnFocus = useRef<HTMLButtonElement | null>(null);
+	const restoreFocus = (event: Event) => {
+		event.preventDefault();
+		if (mounted.current && !review && !pasting)
+			(returnFocus.current?.isConnected ? returnFocus.current : fileTrigger.current)?.focus();
+	};
 	const discard = (id: string) => {
 		api.discardIdentityImport(id);
 	};
@@ -55,6 +67,7 @@ export function IdentityImportActions({
 		generation.current++;
 		return () => {
 			mounted.current = false;
+			preflight.current?.abort();
 			if (plan.current) api.discardIdentityImport(plan.current);
 			plan.current = undefined;
 		};
@@ -71,32 +84,49 @@ export function IdentityImportActions({
 		setFilter('');
 		setText('');
 		setPasting(false);
+		setOutcome(undefined);
 	};
-	useImperativeHandle(ref, () => ({ review: show }));
+	useImperativeHandle(ref, () => ({
+		review: (preview, capturedPersist) => {
+			if (committing.current || preflight.current) discard(preview.planId);
+			else show(preview, capturedPersist);
+		},
+	}));
 	const prepare = async (kind: 'text' | 'file') => {
 		if (!label.trim() || pending) return;
-		const current = generation.current,
+		const current = ++generation.current,
 			capturedPersist = persist;
+		const controller = new AbortController();
+		preflight.current = controller;
+		setOutcome(undefined);
 		setPending(true);
 		try {
 			const preview =
 				kind === 'text'
-					? await api.prepareIdentityImport({ label: label.trim(), text })
-					: await api.prepareIdentityFile({ label: label.trim() });
+					? await api.prepareIdentityImport({ label: label.trim(), text, signal: controller.signal })
+					: await api.prepareIdentityFile({ label: label.trim(), signal: controller.signal });
 			if (!preview) return;
-			if (!mounted.current || generation.current !== current) {
+			if (!mounted.current || generation.current !== current || controller.signal.aborted) {
 				discard(preview.planId);
 				return;
 			}
 			show(preview, capturedPersist);
 		} catch (reason) {
-			if (mounted.current && generation.current === current) report(reason);
+			if (mounted.current && generation.current === current && !controller.signal.aborted) report(reason);
 		} finally {
+			if (preflight.current === controller) preflight.current = undefined;
 			if (mounted.current && generation.current === current) setPending(false);
 		}
 	};
 	const close = () => {
-		if (pending) return;
+		if (committing.current) {
+			if (plan.current) discard(plan.current);
+			cancelRequested.current = true;
+			setCancelling(true);
+			return;
+		}
+		preflight.current?.abort();
+		preflight.current = undefined;
 		generation.current++;
 		if (plan.current) discard(plan.current);
 		plan.current = undefined;
@@ -104,6 +134,8 @@ export function IdentityImportActions({
 		setText('');
 		setPasting(false);
 		setDomains([]);
+		setPending(false);
+		setOutcome({ kind: 'cancelled', count: 0 });
 	};
 	const preview = review?.preview;
 	const blocked =
@@ -116,35 +148,84 @@ export function IdentityImportActions({
 		preview?.domains.filter((item) => item.domain.toLowerCase().includes(filter.trim().toLowerCase())) ?? [];
 	const commit = async () => {
 		if (!review || blocked || !domains.length || pending) return;
-		const current = generation.current;
+		const current = ++generation.current;
+		committing.current = true;
+		cancelRequested.current = false;
+		setOutcome(undefined);
 		setPending(true);
 		try {
-			await api.commitIdentityImport({ planId: review.preview.planId, persist: review.persist, domains });
+			const saved = await api.commitIdentityImport({
+				planId: review.preview.planId,
+				persist: review.persist,
+				domains,
+			});
 			if (!mounted.current || generation.current !== current) return;
 			plan.current = undefined;
 			setReview(undefined);
 			setDomains([]);
+			setOutcome({ kind: cancelRequested.current ? 'savedAfterCancel' : 'saved', count: saved.cookieCount });
 			onImported();
 		} catch (reason) {
-			if (mounted.current && generation.current === current) report(reason);
+			if (mounted.current && generation.current === current) {
+				if (reason instanceof Error && reason.message === 'cancelled') {
+					plan.current = undefined;
+					setReview(undefined);
+					setDomains([]);
+					setOutcome({ kind: 'cancelled', count: 0 });
+				} else {
+					report(reason);
+					if (cancelRequested.current) {
+						plan.current = undefined;
+						setReview(undefined);
+					}
+				}
+			}
 		} finally {
-			if (mounted.current && generation.current === current) setPending(false);
+			committing.current = false;
+			if (mounted.current && generation.current === current) {
+				setPending(false);
+				setCancelling(false);
+			}
 		}
 	};
 	return (
 		<>
 			<Button
+				ref={fileTrigger}
 				variant="outline"
 				disabled={disabled || pending || !label.trim()}
-				onClick={() => void prepare('file')}
+				onClick={(event) => {
+					returnFocus.current = event.currentTarget;
+					void prepare('file');
+				}}
 			>
 				<FileInput />
 				{t('browser.v2.chooseIdentityFile')}
 			</Button>
+			{outcome && (
+				<p role="status" className="text-sm text-muted-foreground">
+					{t(
+						`browser.v2.identity${outcome.kind === 'saved' ? 'Saved' : outcome.kind === 'savedAfterCancel' ? 'SavedAfterCancel' : 'Cancelled'}`,
+						{ count: outcome.count },
+					)}
+				</p>
+			)}
+			{pending && !pasting && !review && (
+				<>
+					<p role="status" className="text-sm">
+						{t('browser.v2.identityReading')}
+					</p>
+					<Button variant="outline" onClick={close}>
+						{t('browser.v2.cancel')}
+					</Button>
+				</>
+			)}
 			<Button
 				variant="outline"
 				disabled={disabled || pending || !label.trim()}
-				onClick={() => {
+				onClick={(event) => {
+					returnFocus.current = event.currentTarget;
+					setOutcome(undefined);
 					setText('');
 					setPasting(true);
 				}}
@@ -158,7 +239,7 @@ export function IdentityImportActions({
 					if (!open) close();
 				}}
 			>
-				<DialogContent>
+				<DialogContent onCloseAutoFocus={restoreFocus}>
 					<DialogHeader>
 						<DialogTitle>{t('browser.v2.pasteIdentity')}</DialogTitle>
 						<DialogDescription>{t('browser.v2.identityText')}</DialogDescription>
@@ -172,7 +253,7 @@ export function IdentityImportActions({
 						onChange={(event) => setText(event.target.value)}
 					/>
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={close}>
+						<Button variant="outline" onClick={close}>
 							{t('browser.v2.cancel')}
 						</Button>
 						<Button disabled={pending || !text.trim()} onClick={() => void prepare('text')}>
@@ -187,11 +268,16 @@ export function IdentityImportActions({
 					if (!open) close();
 				}}
 			>
-				<DialogContent className="max-h-[85vh] overflow-y-auto">
+				<DialogContent className="max-h-[85vh] overflow-y-auto" onCloseAutoFocus={restoreFocus}>
 					<DialogHeader>
 						<DialogTitle>{t('browser.v2.reviewTitle')}</DialogTitle>
 						<DialogDescription>{t('browser.v2.reviewHelp')}</DialogDescription>
 					</DialogHeader>
+					{pending && (
+						<p role="status" className="text-sm">
+							{t(cancelling ? 'browser.v2.identityCancelling' : 'browser.v2.identitySaving')}
+						</p>
+					)}
 					{preview && (
 						<>
 							<div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -281,7 +367,7 @@ export function IdentityImportActions({
 						</>
 					)}
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={close}>
+						<Button variant="outline" disabled={cancelling} onClick={close}>
 							{t('browser.v2.cancel')}
 						</Button>
 						<Button disabled={pending || blocked || !domains.length} onClick={() => void commit()}>

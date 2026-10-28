@@ -2,17 +2,21 @@ import type { AutomationDefinition } from '../../../shared/automation/types';
 import { validContactsFolder, type ContactsSettings } from '../../../shared/contacts-settings';
 import { WriteQueue } from '../../../shared/storage/write-queue';
 import type { ContactsFile, ContactsFiles } from './files';
+import { ArchiveRepository } from './catalog';
 import { ContactsIndex } from './index-store';
 import {
 	ContactsError,
 	cloneRecord,
+	same,
+	newRecord,
 	validateRecord,
 	type ArchiveRecord,
 	type EntityRef,
 	type RecordKind,
 } from './model';
 import { createMarkdown, parseRecord, patchMarkdown, relativeLink } from './persist/markdown';
-import { patchReminders } from './reminders';
+import { patchReminders, readReminders } from './reminders';
+import { archiveFrontmatter } from './persist/v2/markdown';
 import {
 	archiveCategories,
 	archiveEntryName,
@@ -27,6 +31,21 @@ import {
 
 /** Application rules; atomic storage and native draft protection are supplied by the host. */
 export class ContactsApplication {
+	readonly archives: ArchiveRepository;
+	private authorityRefreshPending = false;
+	private migrationMetadata(path: string): boolean {
+		const directory = this.root + '/迁移记录';
+		return path === directory || path.startsWith(directory + '/');
+	}
+	private refreshLegacyAuthority(): void {
+		if (this.authorityRefreshPending) return;
+		this.authorityRefreshPending = true;
+		void Promise.resolve().then(() => {
+			this.authorityRefreshPending = false;
+			if (!this.active) return;
+			for (const file of this.files.getMarkdownFiles().filter(file => this.inside(file.path))) this.refreshFile(file);
+		});
+	}
 	private resourceCache = new Map<string, ArchiveResource[]>();
 	private invalidateResources(path: string): void {
 		for (const folder of this.resourceCache.keys()) if (path === folder || path.startsWith(folder + '/') || folder.startsWith(path + '/')) this.resourceCache.delete(folder);
@@ -34,12 +53,29 @@ export class ContactsApplication {
 	constructor(
 		private readonly files: ContactsFiles,
 		private getSettings: () => ContactsSettings,
-	) {}
+	) {
+		this.archives = new ArchiveRepository(
+			files,
+			() => this.root,
+			this.queue,
+			(kind, id, values, prepareCommit) => {
+				const draft = newRecord(kind);
+				draft.id = id;
+				Object.assign(draft.fields, values);
+				return this.create(draft, prepareCommit);
+			},
+			async (base, draft, beforeCommit) => {
+				await this.ensureLoaded();
+				return this.save(base, draft, beforeCommit);
+			},
+		);
+	}
 	activate(): void {
 		this.active = true;
 	}
 	dispose(): void {
 		this.active = false;
+		this.archives.dispose();
 		this.generation++;
 		this.ready = null;
 		this.resourceCache.clear();
@@ -59,12 +95,16 @@ export class ContactsApplication {
 		await this.ready;
 	}
 	fileChanged(file: ContactsFile): void {
+		this.archives.invalidate();
 		this.invalidateResources(file.path);
 		if (!this.active) return;
+		if (this.migrationMetadata(file.path)) this.refreshLegacyAuthority();
 		if (this.inside(file.path)) this.refreshFile(file);
 		else if (file.path.startsWith(this.root + '/')) this.emit();
 	}
 	fileDeleted(path: string, folder: boolean): void {
+		this.archives.invalidate();
+		if (this.migrationMetadata(path)) this.refreshLegacyAuthority();
 		this.invalidateResources(path);
 		this.versions.set(path, (this.versions.get(path) ?? 0) + 1);
 		if (!folder) this.index.remove(path);
@@ -77,6 +117,7 @@ export class ContactsApplication {
 		this.invalidateResources(oldPath);
 		this.invalidateResources(newPath);
 		if (!this.active) return;
+		if (this.migrationMetadata(oldPath) || this.migrationMetadata(newPath)) this.refreshLegacyAuthority();
 		// Keep observers on one consistent index, including a folder rename in a split pane.
 		this.batching++;
 		const generation = this.generation;
@@ -98,20 +139,59 @@ export class ContactsApplication {
 			});
 	}
 	async saveReminder(definition: AutomationDefinition, remove = false): Promise<void> {
-		const source = definition.source;
+		const draft = structuredClone(definition),
+			source = draft.source,
+			root = this.root;
 		if (!source) throw new ContactsError('missing');
+		if (await this.archives.saveMigratedReminder(draft, remove)) return;
 		await this.ensureLoaded();
 		await this.queue.run(source.id, async () => {
 			this.guard();
+			if (this.root !== root) throw new ContactsError('folderChanged');
 			const record = this.index.get(source.id);
 			if (!record) throw new ContactsError('missing');
-			const base = await this.snapshot(record.path);
-			const file = this.files.getFileByPath(base.path);
+			if (source.kind !== 'contacts' || source.path !== record.path) throw new ContactsError('invalidRecord');
+			const path = record.path,
+				generation = this.generation;
+			const file = this.files.getFileByPath(record.path);
 			if (!file) throw new ContactsError('missing');
+			const checkEditors = await this.files.captureEditors([file]);
+			const checkAuthority = await this.archives.captureLegacyAuthority(path, source.id);
+			const snapshot = await this.snapshot(path),
+				formatVersion = archiveFrontmatter(snapshot.raw)['huhu-format-version'];
+			const beforeCommit = () => {
+				this.guard();
+				if (this.root !== root || file.path !== path || !this.inside(path)) throw new ContactsError('folderChanged');
+				if (this.generation !== generation || this.files.getFileByPath(path) !== file)
+					throw new ContactsError('invalidRecord');
+				checkEditors(); checkAuthority();
+			};
+			const validate = (raw: string) => {
+				const current = parseRecord(raw, path);
+				if (
+					!current ||
+					current.errors.length ||
+					current.id !== snapshot.id ||
+					current.id !== source.id ||
+					current.kind !== snapshot.kind ||
+					current.kind !== archiveLocation(root, path)?.kind ||
+					archiveFrontmatter(raw)['huhu-format-version'] !== formatVersion ||
+					this.index.issues(current).length
+				)
+					throw new ContactsError('invalidRecord');
+			};
 			await this.files.process(file, (raw) => {
+				beforeCommit();
 				this.files.checkEditor(file, raw);
-				return patchReminders(raw, definition, remove);
-			});
+				validate(raw);
+				const patched = patchReminders(raw, draft, remove);
+				validate(patched);
+				const saved = readReminders(patched).filter((item) => item.id === draft.id);
+				if (remove ? saved.length !== 0 : saved.length !== 1 || JSON.stringify(saved[0]) !== JSON.stringify(draft))
+					throw new ContactsError('invalidRecord');
+				beforeCommit();
+				return patched;
+			}, beforeCommit);
 			await this.readFile(file, this.generation);
 		});
 	}
@@ -142,6 +222,7 @@ export class ContactsApplication {
 	}
 	async reload(): Promise<void> {
 		this.ready = null;
+		this.archives.invalidate();
 		await this.ensureLoaded();
 	}
 	private async rebuild(generation: number): Promise<void> {
@@ -204,7 +285,8 @@ export class ContactsApplication {
 			!this.inside(path)
 		)
 			return;
-		const record = parseRecord(raw, path, file.stat.mtime);
+		const parsed = parseRecord(raw, path, file.stat.mtime), record = parsed ? await this.archives.legacyProjection(parsed) : null;
+		if (!this.active || generation !== this.generation || this.versions.get(path) !== version || file.path !== path || !this.inside(path)) return;
 		if (record && record.kind !== archiveLocation(this.root, path)?.kind) record.errors.push('wrongCategory');
 		if (record) {
 			for (const [ref] of this.index.refs(record))
@@ -251,6 +333,7 @@ export class ContactsApplication {
 		const raw = await this.files.read(file);
 		this.files.checkEditor(file, raw);
 		const record = parseRecord(raw, path, file.stat.mtime);
+		if (record) { const authority = await this.archives.captureLegacyAuthority(path, record.id); authority(); }
 		if (
 			!record ||
 			record.kind !== archiveLocation(this.root, path)?.kind ||
@@ -260,7 +343,8 @@ export class ContactsApplication {
 			throw new ContactsError('invalidRecord');
 		return record;
 	}
-	async save(base: ArchiveRecord, draft: ArchiveRecord): Promise<ArchiveRecord> {
+	async save(base: ArchiveRecord, draft: ArchiveRecord, beforeCommit?: () => void): Promise<ArchiveRecord> {
+		if (!same(base.employments, draft.employments) || !same(base.relations, draft.relations)) throw new ContactsError('migrationRequired');
 		const root = this.root;
 		if (!this.inside(base.path)) throw new ContactsError('folderChanged');
 		return this.queue.run(base.id, async () => {
@@ -273,16 +357,22 @@ export class ContactsApplication {
 			const next = this.prepare({ ...draft, path: file.path, folderPath: indexed.folderPath });
 			this.index.validateRelations(next);
 			if (this.index.issues(next).length) throw new ContactsError('referenceConflict');
+			const checkAuthority = await this.archives.captureLegacyAuthority(file.path, base.id);
+			const native = await this.files.captureEditors([file]), checkEditors = () => { checkAuthority(); native(); };
 			const current = await this.files.read(file);
+			checkEditors();
 			this.files.checkEditor(file, current);
 			const written = await this.files.process(file, (latest) => {
+				checkEditors();
+				beforeCommit?.();
 				this.guard();
 				if (this.root !== root) throw new ContactsError('folderChanged');
 				this.files.checkEditor(file, latest);
 				const patched = patchMarkdown(latest, { ...base, path: file.path }, next);
 				if (parseRecord(patched, file.path)?.errors.length) throw new ContactsError('invalidRecord');
+				beforeCommit?.();
 				return patched;
-			});
+			}, checkEditors);
 			const saved = parseRecord(written, file.path, file.stat.mtime)!;
 			try {
 				await this.readFile(file, this.generation);
@@ -293,12 +383,14 @@ export class ContactsApplication {
 			return saved;
 		});
 	}
-	async create(draft: ArchiveRecord): Promise<ArchiveRecord> {
+	async create(draft: ArchiveRecord, prepareCommit?: () => Promise<() => void>): Promise<ArchiveRecord> {
+		if (draft.employments.length || draft.relations.length) throw new ContactsError('migrationRequired');
 		const root = this.root;
 		return this.queue.run('create', async () => {
 			await this.files.ready();
 			this.guard();
 			if (root !== this.root) throw new ContactsError('folderChanged');
+			await this.archives.assertIdentityAvailable(draft.id);
 			validateRecord(draft);
 			const category = `${root}/${archiveCategories[draft.kind]}`;
 			const name = safeArchiveName(draft.fields.name);
@@ -313,12 +405,19 @@ export class ContactsApplication {
 			if (root !== this.root) throw new ContactsError('folderChanged');
 			const content = createMarkdown(next);
 			if (parseRecord(content, path)?.errors.length) throw new ContactsError('invalidRecord');
+			const proof = await prepareCommit?.();
+			const beforeCommit = () => {
+				this.guard();
+				if (root !== this.root) throw new ContactsError('folderChanged');
+				proof?.();
+			};
+			beforeCommit();
 			await this.files.mkdir(category);
 			// Exclusive creation: a racing external directory must never become ours.
 			await this.files.createFolder(folder);
 			this.guard();
 			if (root !== this.root) throw new ContactsError('folderChanged');
-			const file = await this.files.create(path, content);
+			const file = await this.files.create(path, content, beforeCommit);
 			const created = parseRecord(content, path, file.stat.mtime)!;
 			if (this.active) this.index.set(created);
 			try {
@@ -334,6 +433,7 @@ export class ContactsApplication {
 					this.error = 'guideFailed';
 				}
 			}
+			this.archives.invalidate();
 			this.emit();
 			return created;
 		});
@@ -424,7 +524,9 @@ export class ContactsApplication {
 		return this.queue.run(id, async () => {
 			const latest = await this.snapshot(this.current(id).path);
 			await this.files.checkFolderEditors(latest.folderPath);
+			const relations = await this.archives.relations.deletion(id);
 			return {
+				relations: relations.count,
 				id,
 				path: latest.path,
 				folderPath: latest.folderPath,
@@ -435,23 +537,30 @@ export class ContactsApplication {
 		});
 	}
 	async remove(base: ArchiveDeletion): Promise<void> {
-		await this.queue.run(base.id, async () => {
+		await this.queue.run('archives:relations', () => this.queue.run(base.id, async () => {
 			this.guard();
 			if (!this.inside(base.path)) throw new ContactsError('folderChanged');
-			const latest = await this.snapshot(this.current(base.id).path);
+			const current = this.current(base.id);
+			const checkRelations = await this.archives.relations.deletion(base.id);
+			const checkEditors = await this.files.checkFolderEditors(current.folderPath);
+			const latest = await this.snapshot(current.path);
 			if (latest.raw !== base.raw) throw new ContactsError('conflict');
-			await this.files.checkFolderEditors(latest.folderPath);
-			this.guard();
-			if (
-				latest.path !== base.path ||
-				this.current(base.id).path !== base.path ||
-				folderFingerprint(this.files.listFolder(latest.folderPath)) !== base.fingerprint
-			)
-				throw new ContactsError('deleteChanged');
-			await this.files.trashFolder(latest.folderPath);
+			const beforeCommit = () => {
+				checkRelations.check();
+				checkEditors();
+				this.guard();
+				if (
+					latest.path !== base.path ||
+					this.current(base.id).path !== base.path ||
+					folderFingerprint(this.files.listFolder(latest.folderPath)) !== base.fingerprint
+				)
+					throw new ContactsError('deleteChanged');
+			};
+			beforeCommit();
+			await this.files.trashFolder(latest.folderPath, beforeCommit);
 			this.index.remove(latest.path);
 			this.emit();
-		});
+		}));
 	}
 	ref(record: ArchiveRecord): EntityRef {
 		return { id: record.id, label: record.fields.name, link: record.path };

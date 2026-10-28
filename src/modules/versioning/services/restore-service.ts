@@ -6,6 +6,7 @@ import {
 import { textEdits, textHash } from '../../../shared/storage/text-edits';
 import { huhuName } from '../../../shared/storage/vault-layout';
 import { WriteQueue } from '../../../shared/storage/write-queue';
+import { applySelectedHunks } from '../core/hunk-restore';
 import {
 	RestoreError,
 	type PrepareRestore,
@@ -13,6 +14,7 @@ import {
 	type RestoreDependencies,
 	type RestorePlan,
 	type RestoreReceipt,
+	type RestoreCheckpointPort,
 } from '../core/restore';
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -66,11 +68,24 @@ export class RestoreService {
 			(document.diskText === null ? null : this.deps.documents.editableText(document.diskText, document))
 		);
 	}
+	/** Read-only identity/generation baseline for a fixed review buffer; it grants no write permission. */
+	async captureTarget(path: string, originLeafId: string): Promise<DocumentSnapshot> {
+		this.assertOpen();
+		return this.deps.documents.capture(path, originLeafId);
+	}
 
 	async prepare(request: PrepareRestore): Promise<RestorePlan> {
 		this.assertOpen();
 		await this.initialize();
 		this.bounded(request.source.text);
+		if (request.hunks && (request.mode !== 'replace-current' || request.hunks.target.path !== request.targetPath
+			|| request.hunks.target.originLeafId !== request.originLeafId || !request.originLeafId
+			|| !request.hunks.target.exists || !request.hunks.target.buffers.length || request.hunks.target.text === null
+			|| request.hunks.origin.path !== request.targetPath || request.hunks.origin.leafId !== request.originLeafId)) throw new RestoreError('changed');
+		if (request.hunks) {
+			if (!this.deps.assertHunkOrigin) throw new Error('versioning.restore.hunks-unavailable');
+			this.deps.assertHunkOrigin(request.hunks.origin);
+		}
 		const id = crypto.randomUUID(),
 			time = this.now();
 		let path = request.targetPath;
@@ -82,7 +97,7 @@ export class RestoreService {
 				request.copyPath ??
 				`${parent}${huhuName(`${name}-恢复-${new Date(time).toISOString().slice(0, 19).replace(/[-:T]/g, '')}-${id.slice(0, 6)}`)}.md`;
 		}
-		const document = await this.deps.documents.capture(
+		const document = request.hunks ? await this.revalidate(request.hunks.target) : await this.deps.documents.capture(
 			path,
 			request.mode === 'create-copy' ? undefined : request.originLeafId,
 		);
@@ -98,11 +113,15 @@ export class RestoreService {
 			sourceLabel: request.source.label ?? request.source.id,
 			mode: request.mode,
 			beforeText: document.text,
-			afterText: this.deps.documents.editableText(request.source.text, document),
+			afterText: request.hunks
+				? applySelectedHunks(request.source.text, document.text ?? '', request.hunks.diff, request.hunks.selected,
+					text => this.deps.documents.editableText(text, document))
+				: this.deps.documents.editableText(request.source.text, document),
 			dirty: this.dirty(document),
 			createdAt: time,
+			...(request.hunks ? { selectedHunks: [...request.hunks.selected] } : {}),
 		};
-		this.plans.set(id, { plan, document, repositoryBaseline });
+		this.plans.set(id, { plan, document, repositoryBaseline, ...(request.hunks ? { hunkOrigin: { ...request.hunks.origin } } : {}) });
 		if (this.plans.size > 64) this.plans.delete(this.plans.keys().next().value!);
 		return structuredClone(plan);
 	}
@@ -121,6 +140,10 @@ export class RestoreService {
 	}
 	private async repositoryUnchanged(baseline: string): Promise<void> {
 		if ((await this.deps.gate.capture()) !== baseline) throw new RestoreError('repository-changed');
+	}
+	private checkpointLease<T>(work: (checkpoints: RestoreCheckpointPort) => Promise<T>): Promise<T> {
+		const checkpoints = this.deps.checkpoints;
+		return checkpoints.transaction ? checkpoints.transaction(work) : work(checkpoints);
 	}
 
 	apply(planId: string): Promise<RestoreReceipt> {
@@ -146,9 +169,10 @@ export class RestoreService {
 		if (previous) throw new RestoreError('unverified');
 		const prepared = this.plans.get(planId);
 		if (!prepared) throw new RestoreError('plan-missing');
-		return this.deps.gate.run(planId, () =>
+		return this.deps.gate.run(planId, () => this.checkpointLease(checkpoints =>
 			this.deps.documents.exclusive(prepared.plan.path, async () => {
 				this.assertOpen();
+				if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
 				let document = await this.revalidate(prepared.document);
 				await this.repositoryUnchanged(prepared.repositoryBaseline);
 				await this.deps.gate.hold(planId);
@@ -175,11 +199,11 @@ export class RestoreService {
 						admitted = true;
 					}
 					const beforeObject =
-						document.text === null ? null : await this.deps.checkpoints.putObject(document.text);
+						document.text === null ? null : await checkpoints.putObject(document.text);
 					let beforeDiskObject =
-						document.diskText === null ? null : await this.deps.checkpoints.putObject(document.diskText);
+						document.diskText === null ? null : await checkpoints.putObject(document.diskText);
 					const afterObject =
-						plan.afterText === null ? null : await this.deps.checkpoints.putObject(plan.afterText);
+						plan.afterText === null ? null : await checkpoints.putObject(plan.afterText);
 					receipt = {
 						id: plan.id,
 						path: plan.path,
@@ -195,23 +219,25 @@ export class RestoreService {
 						repositoryBaseline: prepared.repositoryBaseline,
 						...(annotationsBefore === undefined ? {} : { annotationsBefore }),
 						...(plan.undoOf ? { undoOf: plan.undoOf } : {}),
+						...(plan.selectedHunks ? { selectedHunks: plan.selectedHunks } : {}),
 					};
-					await this.deps.checkpoints.putReceipt(receipt);
+					await checkpoints.putReceipt(receipt);
 					const current = await this.revalidate(document);
 					if (current.diskText !== document.diskText)
 						beforeDiskObject =
-							current.diskText === null ? null : await this.deps.checkpoints.putObject(current.diskText);
+							current.diskText === null ? null : await checkpoints.putObject(current.diskText);
 					document = current;
 					await this.repositoryUnchanged(prepared.repositoryBaseline);
 					this.assertOpen();
 					if (participant && participant !== this.deps.participant?.()) throw new RestoreError('changed');
 					receipt = { ...receipt, beforeDiskObject, stage: 'applying', updatedAt: this.now() };
-					await this.deps.checkpoints.putReceipt(receipt);
+					await checkpoints.putReceipt(receipt);
 					// Once admitted, preserve and verify any completed write even when the module begins closing.
 					this.assertOpen();
+					if (prepared.hunkOrigin) this.deps.assertHunkOrigin!(prepared.hunkOrigin);
 					const after = await this.deps.documents.apply(document, plan.afterText, plan.id);
 					receipt = { ...receipt, stage: 'applied', updatedAt: this.now() };
-					await this.deps.checkpoints.putReceipt(receipt);
+					await checkpoints.putReceipt(receipt);
 					let annotationsAfter: unknown;
 					if (admitted && participant) {
 						annotationsAfter = await participant.commit(plan.id, after.text ?? '');
@@ -224,7 +250,7 @@ export class RestoreService {
 					);
 					if (!sameDocumentSnapshot(after, verified)) throw new RestoreError('unverified');
 					const actualDiskObject =
-						verified.diskText === null ? null : await this.deps.checkpoints.putObject(verified.diskText);
+						verified.diskText === null ? null : await checkpoints.putObject(verified.diskText);
 					receipt = {
 						...receipt,
 						stage: 'verified',
@@ -232,11 +258,11 @@ export class RestoreService {
 						...(annotationsAfter === undefined ? {} : { annotationsAfter }),
 						updatedAt: this.now(),
 					};
-					await this.deps.checkpoints.putReceipt(receipt);
+					await checkpoints.putReceipt(receipt);
 					if (plan.undoOf) {
 						const original = this.receipts().find((item) => item.id === plan.undoOf);
 						if (original)
-							await this.deps.checkpoints.putReceipt({
+							await checkpoints.putReceipt({
 								...original,
 								undoneBy: plan.id,
 								updatedAt: this.now(),
@@ -267,7 +293,7 @@ export class RestoreService {
 							updatedAt: this.now(),
 						};
 						try {
-							await this.deps.checkpoints.putReceipt(next);
+							await checkpoints.putReceipt(next);
 						} catch {
 							/* A prior verified journal phase remains authoritative. Never replay the write. */
 						}
@@ -276,7 +302,7 @@ export class RestoreService {
 					this.emit();
 					throw error;
 				}
-			}),
+			})),
 		);
 	}
 
@@ -284,7 +310,7 @@ export class RestoreService {
 		this.assertOpen();
 		await this.initialize();
 		const receipt = this.receipts().find((item) => item.id === receiptId);
-		if (!receipt || receipt.stage !== 'verified' || receipt.undoneBy) throw new RestoreError('undo-unavailable');
+		if (!receipt || receipt.stage !== 'verified' || receipt.undoneBy || receipt.objectsReleasedAt !== undefined) throw new RestoreError('undo-unavailable');
 		const document = await this.deps.documents.capture(receipt.path);
 		const expectedText =
 			receipt.afterObject === null ? null : await this.deps.checkpoints.readObject(receipt.afterObject);

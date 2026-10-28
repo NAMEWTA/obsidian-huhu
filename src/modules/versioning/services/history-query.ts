@@ -11,6 +11,8 @@ import type {
 } from '../core/history';
 import { GitError } from '../core/errors';
 import type { GitRepo } from '../core/repo';
+import type { LocalHistoryStore } from './local-history-store';
+import { isInlineRevision, resolveInlineRevision } from './local-snapshot-reader';
 
 /** Supplied by the existing repository lifecycle; no second Git backend or protection writes. */
 export interface HistoryRepositoryAccess {
@@ -20,7 +22,24 @@ export interface HistoryRepositoryAccess {
 }
 
 export class HistoryQueryService implements VersioningQueries {
-	constructor(private readonly access: () => Promise<HistoryRepositoryAccess>) {}
+	constructor(private readonly access: () => Promise<HistoryRepositoryAccess>, private readonly local?: () => LocalHistoryStore | undefined) {}
+
+	async localHistory(path: string, signal?: AbortSignal) {
+		if (signal?.aborted) throw new GitError('cancelled');
+		const entries = await this.local?.()?.list(path) ?? [];
+		if (signal?.aborted) throw new GitError('cancelled');
+		return entries.map(entry => ({ id: entry.id, commitOid: '', parents: [], author: '', time: entry.createdAt / 1000,
+			subject: '', pathAtRevision: path, status: 'M',
+			ref: { kind: 'local-snapshot' as const, path, snapshotId: entry.id, text: '' } }));
+	}
+	async readLocalSnapshot(id: string, signal?: AbortSignal): Promise<string> {
+		if (signal?.aborted) throw new GitError('cancelled');
+		const local = this.local?.();
+		if (!local) throw new Error('versioning.localHistory.missing');
+		const text = await local.readSnapshot(id);
+		if (signal?.aborted) throw new GitError('cancelled');
+		return text;
+	}
 
 	async fileHistory(path: string, options: HistoryOptions = {}): Promise<FileHistoryPage> {
 		const { repo } = await this.repository(options.signal);
@@ -33,6 +52,7 @@ export class HistoryQueryService implements VersioningQueries {
 	}
 
 	async resolve(ref: RevisionRef, signal?: AbortSignal): Promise<ResolvedEndpoint> {
+		if (isInlineRevision(ref)) return resolveInlineRevision(ref, 'local-history', signal);
 		const { reader } = await this.repository(signal);
 		return reader.resolve(ref, { signal });
 	}
@@ -47,6 +67,13 @@ export class HistoryQueryService implements VersioningQueries {
 	}
 
 	async compare(request: ComparisonRequest, signal?: AbortSignal): Promise<ResolvedComparison> {
+		if (!request.repositoryId && isInlineRevision(request.left) && isInlineRevision(request.right)) {
+			const repositoryId = request.repositoryId ?? 'local-history';
+			const [left, right] = await Promise.all([resolveInlineRevision(request.left, repositoryId, signal), resolveInlineRevision(request.right, repositoryId, signal)]);
+			return Object.freeze({ id: `${left.id}\0${right.id}`, repositoryId, intent: request.intent, left, right, capturedAt: Date.now(),
+				identical: left.status === 'text' && right.status === 'text' ? left.snapshot.hash === right.snapshot.hash : left.status === 'missing' && right.status === 'missing',
+				canCompare: [left, right].every(endpoint => endpoint.status === 'text' || endpoint.status === 'missing') });
+		}
 		return this.compareWithin(await this.repository(signal), request, signal);
 	}
 

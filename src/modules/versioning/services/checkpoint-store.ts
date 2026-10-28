@@ -5,6 +5,8 @@ import { textHash } from '../../../shared/storage/text-edits';
 import { VERSIONING_RECOVERY_ROOT } from '../../../shared/storage/vault-layout';
 import { storageWriteQueue } from '../../../shared/storage/write-queue';
 import { RestoreError, type RestoreCheckpointPort, type RestoreReceipt } from '../core/restore';
+import { protectsRestoreObjects, receiptObjects } from '../core/history-retention';
+import { readRecoveryCopies } from './recovery-metadata';
 
 interface CheckpointIndex {
 	version: 1;
@@ -32,8 +34,12 @@ function validReceipt(value: unknown): value is RestoreReceipt {
 		nullableHash(item['beforeDiskObject']) &&
 		nullableHash(item['afterObject']) &&
 		(item['actualDiskObject'] === undefined || nullableHash(item['actualDiskObject'])) &&
+		(item['selectedHunks'] === undefined || (Array.isArray(item['selectedHunks']) && item['selectedHunks'].every(id => typeof id === 'string' && /^\d+:\d+:\d+:\d+$/.test(id))
+			&& new Set(item['selectedHunks']).size === item['selectedHunks'].length)) &&
 		(item['acknowledgedAt'] === undefined ||
 			(typeof item['acknowledgedAt'] === 'number' && Number.isFinite(item['acknowledgedAt']))) &&
+		(item['objectsReleasedAt'] === undefined || (typeof item['objectsReleasedAt'] === 'number' && Number.isFinite(item['objectsReleasedAt'])
+			&& (item['stage'] === 'aborted' || (item['stage'] === 'verified' && typeof item['undoneBy'] === 'string')))) &&
 		typeof item['repositoryBaseline'] === 'string'
 	);
 }
@@ -103,8 +109,8 @@ export class CheckpointStore implements RestoreCheckpointPort {
 		if (exists) throw new RestoreError('checkpoint-corrupt');
 		return { version: 1, receipts: {} };
 	}
-	private async loadWriter(): Promise<void> {
-		if (!this.writerLoading) {
+	private async loadWriter(revalidate = false): Promise<void> {
+		if (revalidate || !this.writerLoading) {
 			const operation = this.store.load(this.index).then((value) => {
 				this.index = value;
 			});
@@ -121,6 +127,16 @@ export class CheckpointStore implements RestoreCheckpointPort {
 			.sort((a, b) => b.createdAt - a.createdAt);
 	}
 	async putObject(text: string): Promise<string> {
+		return this.transaction(checkpoints => checkpoints.putObject(text));
+	}
+	/** The repository gate is acquired before this lease; collection never acquires a repository or document gate. */
+	transaction<T>(work: (checkpoints: RestoreCheckpointPort) => Promise<T>): Promise<T> {
+		return storageWriteQueue(this.storage).run(`${this.root}:retention`, () => work({
+			load: () => this.load(), receipts: () => this.receipts(), readObject: hash => this.readObject(hash),
+			putObject: text => this.putObjectWithin(text), putReceipt: receipt => this.putReceiptWithin(receipt),
+		}));
+	}
+	private async putObjectWithin(text: string): Promise<string> {
 		const hash = await textHash(text),
 			path = `${this.root}/objects/${hash}.txt`;
 		await storageWriteQueue(this.storage).run(path, async () => {
@@ -141,8 +157,12 @@ export class CheckpointStore implements RestoreCheckpointPort {
 		return text;
 	}
 	async putReceipt(receipt: RestoreReceipt): Promise<void> {
+		return this.transaction(checkpoints => checkpoints.putReceipt(receipt));
+	}
+	private async putReceiptWithin(receipt: RestoreReceipt): Promise<void> {
 		await this.load();
 		if (!validReceipt(receipt)) throw new RestoreError('checkpoint-corrupt');
+		for (const hash of new Set(receiptObjects(receipt))) await this.readObject(hash);
 		await storageWriteQueue(this.storage).run(`${this.root}:receipts`, async () => {
 			await this.loadWriter();
 			this.index = await this.store.commit({
@@ -150,5 +170,24 @@ export class CheckpointStore implements RestoreCheckpointPort {
 				value: { version: 1, receipts: { ...this.index.receipts, [receipt.id]: structuredClone(receipt) } },
 			});
 		});
+	}
+	async retentionState() {
+		const state = await readRecoveryCopies(this.storage, `${this.root}/journal.json`, validIndex, { version: 1, receipts: {} });
+		return { ...state, receipts: Object.values(state.current.receipts),
+			references: new Set(state.copies.flatMap(copy => Object.values(copy.value.receipts).flatMap(receiptObjects))) };
+	}
+	/** Caller holds transaction(). Both metadata copies are verified before a released body can be swept. */
+	async releaseTerminalObjects(ids: ReadonlySet<string>, now: number, rotateBackup = false): Promise<void> {
+		if (!ids.size && !rotateBackup) return;
+		await this.loadWriter(true);
+		const receipts = { ...this.index.receipts };
+		for (const id of ids) {
+			const receipt = receipts[id];
+			if (!receipt || receipt.objectsReleasedAt !== undefined) continue;
+			if (protectsRestoreObjects(receipt)) throw new Error('versioning.localHistory.retentionChanged');
+			receipts[id] = { ...receipt, objectsReleasedAt: now };
+		}
+		for (let pass = 0; pass < 2; pass++)
+			this.index = await this.store.commit({ base: this.index, value: { version: 1, receipts } });
 	}
 }

@@ -38,14 +38,19 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 		() => host.sync.snapshot,
 	);
 	const [receiptRevision, setReceiptRevision] = useState(0);
+	const automatic = useSyncExternalStore(
+		useCallback(listener => host.automaticHistory?.subscribe(listener) ?? (() => {}), [host]),
+		() => host.automaticHistory?.snapshot,
+	);
 	const [, setReviewRevision] = useState(0);
 	useEffect(() => host.restores.subscribe(() => setReceiptRevision((value) => value + 1)), [host]);
 	useEffect(() => host.reviews.subscribe(() => setReviewRevision((value) => value + 1)), [host]);
 	const documentId = document?.id,
 		documentPath = document?.path;
-	const [source, setSource] = useState('git'),
+	const [preferredSource, setSource] = useState('git'),
 		[reference, setReference] = useState('HEAD'),
 		[draftReference, setDraftReference] = useState('');
+	const source = preferredSource === 'git' && !host.sync.ready && host.queries.localHistory ? 'local' : preferredSource;
 	const [refresh, setRefresh] = useState(0),
 		[actionError, setActionError] = useState('');
 	const identity = JSON.stringify([
@@ -56,16 +61,19 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 		reference,
 		refresh,
 		source === 'checkpoints' ? receiptRevision : 0,
+		source !== 'git' ? automatic?.revision : 0,
 	]);
 	const currentIdentity = useRef(identity),
 		selection = useRef({ value: 0 });
 	const request = useRef<AbortController | null>(null);
 	const [list, setList] = useState<HistoryListState>({ identity: '', phase: 'loading', entries: [] });
-	const path = document ? snapshot.place?.toRepo(document.path) : null;
+	const path = document ? source === 'git' ? snapshot.place?.toRepo(document.path) : document.path : null;
 	const materialize = async (entry: FileHistoryEntry): Promise<FileHistoryEntry> =>
 		entry.ref.kind !== 'local-snapshot'
 			? entry
-			: { ...entry, ref: { ...entry.ref, text: await host.restores.readSnapshot(entry.ref.snapshotId) } };
+			: { ...entry, ref: { ...entry.ref, text: source === 'local'
+				? await host.queries.readLocalSnapshot!(entry.ref.snapshotId)
+				: await host.restores.readSnapshot(entry.ref.snapshotId) } };
 	useEffect(() => {
 		currentIdentity.current = identity;
 		const selectedRequest = selection.current;
@@ -100,14 +108,17 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 
 	useEffect(() => {
 		request.current?.abort();
-		if (!documentId || !documentPath || !host.sync.ready || path == null) return;
+		if (!documentId || !documentPath || (source === 'git' && !host.sync.ready) || path == null) return;
 		const controller = new AbortController();
 		request.current = controller;
 		const load = async () => {
-			if (source === 'checkpoints') {
+			if (source === 'local') {
+				const entries = await host.queries.localHistory?.(documentPath, controller.signal) ?? [];
+				if (!controller.signal.aborted) setList({ identity, phase: 'ready', entries });
+			} else if (source === 'checkpoints') {
 				await host.restores.initialize();
 				const entries: FileHistoryEntry[] = [];
-				for (const receipt of host.restores.receipts().filter((item) => item.path === documentPath)) {
+				for (const receipt of host.restores.receipts().filter((item) => item.path === documentPath && item.objectsReleasedAt === undefined)) {
 					if (!receipt.beforeObject) continue;
 					if (controller.signal.aborted) return;
 					// The checkpoint body is loaded only on selection, never for every visible metadata row.
@@ -194,7 +205,7 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 				)}
 			</div>
 		);
-	if (!host.sync.ready)
+	if (!host.sync.ready && source === 'git')
 		return (
 			<div className="flex flex-col gap-3 p-4 text-sm text-muted-foreground">
 				<p>{t('history.noRepository')}</p>
@@ -237,7 +248,8 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="git">{t('history.git')}</SelectItem>
+						<SelectItem value="git" disabled={!host.sync.ready}>{t('history.git')}</SelectItem>
+						{host.queries.localHistory && <SelectItem value="local">{t('history.local')}</SelectItem>}
 						<SelectItem value="checkpoints">{t('history.checkpoints')}</SelectItem>
 					</SelectContent>
 				</Select>
@@ -261,6 +273,11 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 					</form>
 				)}
 			</div>
+			{automatic && <div className="space-y-1 border-b px-3 py-2 text-xs" role={automatic.phase === 'error' ? 'alert' : 'status'}>
+				<p>{t(automatic.enabled ? 'history.localEnabled' : 'history.localDisabled')}</p>
+				{automatic.phase === 'error' && <p className="text-destructive">{t(automatic.error ?? 'versioning.localHistory.failed')}</p>}
+				<Button variant="link" size="sm" onClick={() => host.openSettings()}>{t('history.settings')}</Button>
+			</div>}
 			{actionError && (
 				<p role="alert" className="m-0 px-3 py-2 text-xs text-destructive">
 					{actionError}
@@ -274,7 +291,7 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 				selected={selected ?? null}
 				label={t('history.title')}
 				itemLabel={(entry) =>
-					`${entry.subject || t('history.checkpoint')} · ${date(entry.time)} · ${entry.pathAtRevision}`
+					`${entry.subject || t(source === 'local' ? 'history.local' : 'history.checkpoint')} · ${date(entry.time)} · ${entry.pathAtRevision}`
 				}
 				onSelect={(entry) => openEntry(entry)}
 				renderItem={(entry) => (
@@ -282,7 +299,7 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 						<span className="truncate text-[13px]">
 							{source === 'checkpoints'
 								? t('history.checkpoint')
-								: entry.subject || entry.commitOid.slice(0, 8)}
+								: entry.subject || (source === 'local' ? t('history.local') : entry.commitOid.slice(0, 8))}
 						</span>
 						<span className="truncate text-xs text-muted-foreground">
 							{date(entry.time)}
@@ -329,7 +346,7 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 				)}
 				{list.identity === identity && list.phase === 'ready' && !entries.length && (
 					<p className="px-3 py-4 text-sm text-muted-foreground">
-						{t(source === 'git' ? 'history.empty' : 'history.emptyCheckpoints')}
+						{t(source === 'git' ? 'history.empty' : source === 'local' ? 'history.emptyLocal' : 'history.emptyCheckpoints')}
 					</p>
 				)}
 				{list.identity === identity && list.phase === 'error' && (

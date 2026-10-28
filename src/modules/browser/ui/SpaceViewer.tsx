@@ -18,6 +18,7 @@ import { useOwnerDocument, useVisible } from '../../../ui/react/contexts';
 import { useT } from '../../../ui/react/hooks';
 import { BrowserActionError, actionError } from './BrowserActionError';
 import { framePoint, latestFramePresenter, windowIdentity } from './viewer-geometry';
+import { InlineInput } from './InlineInput';
 import { PendingRequestCard } from './PendingRequestCard';
 import { CopySelectionButton } from './CopySelectionButton';
 import { SendMaterialButton } from './SendMaterialButton';
@@ -81,6 +82,8 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		lease?.windowId === viewer.windowId;
 	const canvas = useRef<HTMLCanvasElement>(null),
 		textInput = useRef<HTMLTextAreaElement>(null);
+	const inlineInput = useRef<HTMLTextAreaElement>(null), draftGeneration = useRef(0);
+	const [inlinePoint, setInlinePoint] = useState({ x: 0, y: 0 });
 	const lastFrame = useRef<BrowserFrame | undefined>(undefined);
 	const invalidateFrame = useRef<(() => void) | undefined>(undefined);
 	const inputSequence = useRef(0),
@@ -99,6 +102,7 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 	const [showFind, setShowFind] = useState(false),
 		[findText, setFindText] = useState('');
 	const [creationGrant, setCreationGrant] = useState<{ runtimeId: string; epoch: number; allowed: boolean }>();
+	useEffect(() => { draftGeneration.current++; setText(''); setComposing(false); }, [lease?.leaseId, ownsControl, visible, space?.runtimeId, page?.documentId]);
 	const allowTaskCreation =
 		!!space?.runtimeId &&
 		creationGrant?.runtimeId === space.runtimeId &&
@@ -204,7 +208,7 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		};
 		invalidateFrame.current = invalidate;
 		try {
-			subscription = api.subscribeFrames({ spaceId, pageId, viewerId: viewer.id }, (frame) =>
+			subscription = api.subscribeFrames({ spaceId, pageId, viewerId: viewer.id, isAlive: () => element.isConnected && !!ownerDocument.defaultView && !ownerDocument.defaultView.closed }, (frame) =>
 				presenter.enqueue(frame),
 			);
 		} catch (reason) {
@@ -251,20 +255,27 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 		};
 	}, [api, spaceId, viewer.id, ownerDocument, visible, report]);
 	const send = useCallback(
-		async (input: HumanInput): Promise<boolean> => {
+		async (input: HumanInput, settleFailure = false): Promise<boolean> => {
 			const scope = authority(),
 				frame = lastFrame.current;
-			if (busy.current || !scope || !frame || !frameCurrent(frame) || frame.epoch !== scope.epoch) return false;
+			if (busy.current || !scope || !frame || !frameCurrent(frame) || frame.epoch !== scope.epoch) {
+				// A withheld cancel still has to converge any previously admitted preedit.
+				if (settleFailure && scope && input.kind === 'composition' && input.phase === 'cancel') void api.releaseViewer(spaceId, viewer.id).catch(report);
+				return false;
+			}
 			try {
 				inputSequence.current = Math.max(inputSequence.current + 1, frame.inputSequence + 1);
 				await api.humanInput({ ...scope, frameId: frame.frameId, inputSequence: inputSequence.current, input });
 				return true;
 			} catch (reason) {
-				report(reason);
+				if (authority()?.leaseId === scope.leaseId) {
+					report(reason);
+					if (settleFailure && (input.kind === 'composition' && input.phase === 'cancel' || !(reason instanceof Error && reason.message === 'frame_stale'))) void api.releaseViewer(spaceId, viewer.id).catch(report);
+				}
 				return false;
 			}
 		},
-		[api, authority, frameCurrent, report],
+		[api, authority, frameCurrent, report, spaceId, viewer.id],
 	);
 	useEffect(() => {
 		const element = canvas.current,
@@ -607,6 +618,7 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 					aria-describedby={helpId}
 					tabIndex={ownsControl ? 0 : -1}
 					className="h-full w-full object-contain outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+					onFocus={() => { if (authority() && lastFrame.current) inlineInput.current?.focus({ preventScroll: true }); }}
 					onClick={(event) => {
 						const frame = lastFrame.current;
 						if (!authority() || !frame) return;
@@ -617,7 +629,9 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 							event.clientY,
 						);
 						if (!point) return;
+						const rect = event.currentTarget.getBoundingClientRect(); setInlinePoint({ x: Math.max(0, event.clientX - rect.left), y: Math.max(0, event.clientY - rect.top) });
 						event.currentTarget.focus();
+						inlineInput.current?.focus({ preventScroll: true });
 						void send({ kind: 'click', ...point, button: 'left', clickCount: event.detail > 1 ? 2 : 1 });
 					}}
 					onContextMenu={(event) => {
@@ -633,6 +647,9 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 						if (point) void send({ kind: 'click', ...point, button: 'right', clickCount: 1 });
 					}}
 				/>
+				{ownsControl && <InlineInput key={`${actionKey}:${page.documentId}`} inputRef={inlineInput} point={inlinePoint}
+					send={input => authority()?.leaseId === lease?.leaseId ? send(input, true) : Promise.resolve(false)}
+					fallback={() => textInput.current?.focus()} />}
 				{!hasFrame && (
 					<div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6 text-center text-sm text-muted-foreground">
 						{t('browser.v2.waitingFrame')}
@@ -662,9 +679,9 @@ export function SpaceViewer({ api, spaceId, pageId }: { api: BrowserWorkspace; s
 						size="sm"
 						disabled={disabled || !hasFrame || !text || composing}
 						onClick={() => {
-							const draft = text;
+							const draft = text, generation = draftGeneration.current;
 							void send({ kind: 'text', text: draft }).then((sent) => {
-								if (sent) setText((current) => (current === draft ? '' : current));
+								if (sent && draftGeneration.current === generation) setText((current) => (current === draft ? '' : current));
 							});
 						}}
 					>

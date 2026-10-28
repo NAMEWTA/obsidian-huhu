@@ -57,6 +57,35 @@ it('blocks invalid/unsupported input even after domain changes, and cancel disca
 	expect(f.api.commitIdentityImport).not.toHaveBeenCalled();
 });
 
+it('lets the user cancel an in-flight source read and discards its late preview', async () => {
+	const f = workspaceFixture(); let finish!: (value: IdentityImportPreview) => void;
+	vi.mocked(f.api.prepareIdentityFile).mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+	render(<TestProviders><IdentityImportActions api={f.api} label="Synthetic" persist onImported={vi.fn()} report={vi.fn()} /></TestProviders>);
+	fireEvent.click(screen.getByRole('button', { name: t('browser.v2.chooseIdentityFile') }));
+	expect(screen.getByRole('status').textContent).toBe(t('browser.v2.identityReading'));
+	const signal = vi.mocked(f.api.prepareIdentityFile).mock.calls[0]![0].signal; expect(signal?.aborted).toBe(false);
+	fireEvent.click(screen.getByRole('button', { name: t('browser.v2.cancel') })); expect(signal?.aborted).toBe(true);
+	await act(async () => finish(preview)); expect(f.api.discardIdentityImport).toHaveBeenCalledWith(preview.planId); expect(f.api.commitIdentityImport).not.toHaveBeenCalled();
+	expect(screen.queryByRole('heading', { name: t('browser.v2.reviewTitle') })).toBeNull();
+});
+
+it.each(['cancelled', 'committed', 'cleanup_pending'] as const)('shows the confirmed %s outcome after requesting cancellation during commit', async outcome => {
+	const f = workspaceFixture(), imported = vi.fn(), report = vi.fn(), saved = await f.api.commitIdentityImport({ planId: 'fixture', persist: true });
+	vi.mocked(f.api.commitIdentityImport).mockClear(); let finish!: () => void;
+	vi.mocked(f.api.commitIdentityImport).mockImplementation(() => new Promise((resolve, reject) => { finish = () => outcome === 'committed' ? resolve(saved) : reject(new Error(outcome)); }));
+	render(<TestProviders><IdentityImportActions api={f.api} label="Synthetic" persist onImported={imported} report={report} /></TestProviders>);
+	const trigger = screen.getByRole('button', { name: t('browser.v2.chooseIdentityFile') }); trigger.focus(); fireEvent.click(trigger);
+	await screen.findByRole('heading', { name: t('browser.v2.reviewTitle') }); fireEvent.click(screen.getByRole('button', { name: t('browser.v2.commitIdentity') }));
+	fireEvent.click(screen.getByRole('button', { name: t('browser.v2.cancel') }));
+	expect(f.api.discardIdentityImport).toHaveBeenCalledWith(preview.planId); expect(screen.getByRole('status').textContent).toBe(t('browser.v2.identityCancelling'));
+	expect(imported).not.toHaveBeenCalled(); expect(screen.queryByText(t('browser.v2.identityCancelled'))).toBeNull();
+	await act(async () => finish());
+	if (outcome === 'committed') { expect(screen.getByRole('status').textContent).toBe(t('browser.v2.identitySavedAfterCancel', { count: saved.cookieCount })); expect(imported).toHaveBeenCalledOnce(); }
+	else if (outcome === 'cancelled') { expect(screen.getByRole('status').textContent).toBe(t('browser.v2.identityCancelled')); expect(imported).not.toHaveBeenCalled(); }
+	else { expect(report).toHaveBeenCalledWith(expect.objectContaining({ message: 'cleanup_pending' })); expect(screen.queryByText(t('browser.v2.identityCancelled'))).toBeNull(); expect(imported).not.toHaveBeenCalled(); }
+	await waitFor(() => expect(document.activeElement).toBe(trigger));
+});
+
 it('discards a late preflight result after the view closes without saving any identity', async () => {
 	const f = workspaceFixture();
 	let finish!: (value: IdentityImportPreview | undefined) => void;

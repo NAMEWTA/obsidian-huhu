@@ -4,6 +4,7 @@ import path from 'node:path';
 import type { RepoPlace } from '../../core/ports';
 import { GitError } from '../../core/errors';
 import { gitEnvironment } from './git-environment';
+import { createGitRunner } from './git-runner';
 
 /** Where git usually lives when it is not on the PATH Obsidian was started with (macOS apps get a short PATH). */
 function candidates(preferred: string): string[] {
@@ -15,18 +16,23 @@ function candidates(preferred: string): string[] {
 	return [...new Set(list)];
 }
 
-function version(binary: string): Promise<string | null> {
-	return new Promise((resolve) => {
-		execFile(binary, ['--version'], { timeout: 10_000, windowsHide: true, encoding: 'utf8' }, (error, stdout) => {
-			resolve(error ? null : stdout.trim());
-		});
-	});
+async function version(binary: string, signal?: AbortSignal): Promise<string | null> {
+	const runner = createGitRunner(binary, process.cwd());
+	try {
+		const result = await runner.run(['--version'], { timeoutMs: 10_000, signal });
+		return result.code === 0 ? result.stdout.trim() : null;
+	} catch (error) {
+		if (signal?.aborted) throw new GitError('cancelled');
+		if (error instanceof GitError && error.kind === 'cancelled') throw error;
+		return null;
+	} finally { runner.dispose(); }
 }
 
 /** The first git that runs: the configured path, then PATH, then the usual install locations. */
-export async function locateGit(preferred: string): Promise<{ binary: string; version: string } | null> {
+export async function locateGit(preferred: string, signal?: AbortSignal): Promise<{ binary: string; version: string } | null> {
 	for (const binary of candidates(preferred)) {
-		const found = await version(binary);
+		if (signal?.aborted) throw new GitError('cancelled');
+		const found = await version(binary, signal);
 		if (found) return { binary, version: found };
 	}
 	return null;

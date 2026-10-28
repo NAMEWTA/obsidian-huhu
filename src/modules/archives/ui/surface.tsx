@@ -227,6 +227,7 @@ export function ContactsSurface({ view }: { view: ContactsPanelHost }) {
 					</div>
 				</header>
 			)}
+			{view.openGeneric && <div className="flex flex-wrap justify-end gap-2"><Button type="button" variant="outline" className="min-h-11" onClick={() => view.openGeneric?.()}>{ct('allArchiveTypes')}</Button></div>}
 			{outsideFilter && <p role="status" className="text-sm text-muted-foreground">{ct('outsideFilter')}</p>}
 			{controller.error && (
 				<div

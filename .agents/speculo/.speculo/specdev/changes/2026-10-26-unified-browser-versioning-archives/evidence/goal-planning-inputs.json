@@ -1,0 +1,46 @@
+{
+  "mode": "plan",
+  "schema_version": 8,
+  "head": "265e65f64bd0deb38fb7f1b5fccd08bfcb8a6bfa",
+  "branch": "NAMEWTA/34",
+  "source_map_revision": 2,
+  "production_dirty_paths": [],
+  "implementation_selection": {
+    "provider": "native-subagent",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "fork_turns": "none",
+    "required": true,
+    "dispatched": false
+  },
+  "artifacts": [
+    {
+      "path": "goal-plan.md",
+      "sha256": "97eea724ca8e3eb41a1c27862427086147578f917480b6c960f09142d65cbf7f"
+    },
+    {
+      "path": "tickets-map.md",
+      "sha256": "4a7c047480e14410badf3ce9f0f30fc15a26c3f5007ac9e8c1b0e6f4b0fdaf7e"
+    },
+    {
+      "path": "README.md",
+      "sha256": "5e64a40b046c53d901b68abd498a3db568b14df0941299d97391ed92a0ccf852"
+    },
+    {
+      "path": "spec.md",
+      "sha256": "b12f57e2caa167af907fd43c6b228db17da0b6e5423232f6f355bca044821bc5"
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "2793db41086d958492bac73188d0909b3786b4e0731730c51c737849e815a17a"
+    },
+    {
+      "path": "ADR.md",
+      "sha256": "d8f5aab74ea4836a42af44e9d5ba10d49b84fc64b95ad8cbe4d5310947c85bc3"
+    },
+    {
+      "path": "sources/SRC-009.md",
+      "sha256": "afd7187deffb360f96b16a977ccd8b86a1ff1594d82c6f5cb35d5b5b8198caba"
+    }
+  ]
+}

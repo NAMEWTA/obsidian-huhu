@@ -1,6 +1,6 @@
 import { AgentBrowserError, type BrowserFrame, type FrameSubscription } from '../core/contracts';
 interface Viewer {
-	scope: { spaceId: string; pageId: string; viewerId: string };
+	scope: { spaceId: string; pageId: string; viewerId: string; isAlive?: () => boolean };
 	receive: (frame: BrowserFrame) => void;
 	inflight?: BrowserFrame;
 	latest?: BrowserFrame;
@@ -45,6 +45,7 @@ export class FrameBroker {
 		};
 	}
 	private deliver(viewer: Viewer, frame: BrowserFrame) {
+		if (!this.alive(viewer)) return;
 		viewer.inflight = frame;
 		try {
 			viewer.receive(frame);
@@ -64,6 +65,7 @@ export class FrameBroker {
 		counts.received++;
 		for (const viewer of this.viewers.values()) {
 			if (viewer.scope.spaceId !== frame.spaceId || viewer.scope.pageId !== frame.pageId) continue;
+			if (!this.alive(viewer)) continue;
 			if (viewer.inflight) {
 				if (viewer.latest) counts.replaced++;
 				viewer.latest = frame;
@@ -106,7 +108,17 @@ export class FrameBroker {
 		}
 	}
 	has(viewerId: string, spaceId: string) {
-		return this.viewers.get(viewerId)?.scope.spaceId === spaceId;
+		const viewer = this.viewers.get(viewerId);
+		return !!viewer && viewer.scope.spaceId === spaceId && this.alive(viewer);
+	}
+	private alive(viewer: Viewer): boolean {
+		if (this.viewers.get(viewer.scope.viewerId) !== viewer) return false;
+		try { if (!viewer.scope.isAlive || viewer.scope.isAlive()) return true; } catch { /* Lost windows fail closed. */ }
+		this.viewers.delete(viewer.scope.viewerId);
+		viewer.inflight = undefined; viewer.latest = undefined; viewer.displayed = undefined;
+		if (![...this.viewers.values()].some(other => other.scope.spaceId === viewer.scope.spaceId && other.scope.pageId === viewer.scope.pageId))
+			void this.watch(viewer.scope.spaceId, viewer.scope.pageId, false).catch(() => undefined);
+		return false;
 	}
 	stats(spaceId: string) {
 		const views = [...this.viewers.values()].filter((v) => v.scope.spaceId === spaceId),

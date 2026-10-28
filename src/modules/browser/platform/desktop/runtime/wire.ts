@@ -6,6 +6,7 @@ import type {
 	RuntimeEvent,
 	RuntimeIdentityState,
 	RuntimePage,
+	SnapshotOptions,
 } from '../../../core/contracts';
 export interface WorkerInit {
 	type: 'init';
@@ -22,7 +23,7 @@ export type WorkerRequest = { id: number } & (
 	| { type: 'create'; pageId: string; url: string; authority: ControlLease }
 	| { type: 'close'; pageId: string; authority: ControlLease }
 	| { type: 'execute'; pageId: string; command: BrowserCommand; authority: ControlLease; uploadPaths?: string[] }
-	| { type: 'observe'; pageId: string; authority: ControlLease }
+	| { type: 'observe'; pageId: string; authority: ControlLease; scope?: SnapshotOptions }
 	| { type: 'watch'; pageId: string; enabled: boolean }
 	| { type: 'readIdentity'; authority: ControlLease }
 	| { type: 'writeIdentity'; seed: RuntimeIdentityState; authority: ControlLease }

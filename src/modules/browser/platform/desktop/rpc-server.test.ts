@@ -34,6 +34,15 @@ function post(descriptor: BrowserRpcConnection, options: { headers?: Record<stri
 }
 
 describe('actual loopback browser RPC', () => {
+	it('passes a bounded monotonic remaining deadline through the real HTTP envelope', async () => {
+		const { server } = await setup(async (_method, _params, _id, remainingMs) => {
+			expect(remainingMs).toBeTypeOf('function'); const before = remainingMs!();
+			expect(before).toBeGreaterThan(0); expect(before).toBeLessThanOrEqual(10000);
+			return { bounded: remainingMs!() <= before };
+		});
+		const { descriptor } = await connection(server);
+		expect((await post(descriptor, { envelope: { deadlineAtMs: Date.now() + 10000 } })).body.result).toEqual({ bounded: true });
+	});
 	it('returns a private descriptor path and binds only loopback with independent connection scopes', async () => {
 		const { server, root, dispatch } = await setup(), a = await connection(server, scope('A')), b = await connection(server, scope('B'));
 		expect(path.isAbsolute(a.file)).toBe(true); expect(path.dirname(a.file)).toBe(root); expect(new URL(a.descriptor.endpoint).hostname).toBe('127.0.0.1'); expect(a.descriptor.token).not.toBe(b.descriptor.token);

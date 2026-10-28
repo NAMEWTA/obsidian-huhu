@@ -47,6 +47,7 @@ function viewFor(records: ArchiveRecord[]) {
 		add: vi.fn(),
 		edit: vi.fn(),
 		deleteRow: vi.fn(),
+		openGeneric: vi.fn(),
 		recordActions: () => [],
 		newNote: vi.fn(),
 		addResources: vi.fn(),
@@ -367,7 +368,8 @@ test('an empty person archive shows a compact header, no empty cards, and one ad
 	]);
 	// The active (empty) tab is one row with an add action.
 	await user.click(screen.getByRole('button', { name: t('contacts.add') }));
-	expect(view.edit).toHaveBeenCalled();
+	expect(view.openGeneric).toHaveBeenCalledWith(r.path);
+	expect(view.edit).not.toHaveBeenCalled();
 });
 
 test.each(['person', 'company'] as const)('a saved %s outside the original list filters stays selected with an explanation', (kind) => {

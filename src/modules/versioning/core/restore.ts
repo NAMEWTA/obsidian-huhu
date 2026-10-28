@@ -4,6 +4,7 @@ import type {
 	DocumentMutationPort,
 	DocumentSnapshot,
 } from '../../../shared/storage/document-mutation';
+import type { HunkRestoreOrigin, HunkRestoreSelection } from './hunk-restore';
 
 export interface RestoreSource {
 	readonly id: string;
@@ -17,6 +18,7 @@ export interface PrepareRestore {
 	readonly originLeafId?: string;
 	readonly mode: 'replace-current' | 'create-copy';
 	readonly copyPath?: string;
+	readonly hunks?: HunkRestoreSelection;
 }
 
 export interface RestorePlan {
@@ -30,6 +32,7 @@ export interface RestorePlan {
 	readonly dirty: boolean;
 	readonly createdAt: number;
 	readonly undoOf?: string;
+	readonly selectedHunks?: readonly string[];
 }
 
 export type RestoreStage = 'prepared' | 'applying' | 'applied' | 'verified' | 'aborted' | 'needs-review';
@@ -56,6 +59,9 @@ export interface RestoreReceipt {
 	readonly recoveryObservation?: 'before' | 'after' | 'diverged' | 'missing';
 	/** Explicit human review closes the pending prompt without claiming a successful write. */
 	readonly acknowledgedAt?: number;
+	/** Terminal receipt facts remain readable after its retained checkpoint bodies have been reclaimed. */
+	readonly objectsReleasedAt?: number;
+	readonly selectedHunks?: readonly string[];
 }
 
 /** Pure coordination: no protection repair, staging, commit, checkout or automatic resume is hidden here. */
@@ -70,6 +76,8 @@ export interface RestoreGate {
 }
 
 export interface RestoreCheckpointPort {
+	/** Publish objects and their references under the collector's lease. Nested calls use the supplied scoped port. */
+	transaction?<T>(work: (checkpoints: RestoreCheckpointPort) => Promise<T>): Promise<T>;
 	load(): Promise<void>;
 	putObject(text: string): Promise<string>;
 	readObject(hash: string): Promise<string>;
@@ -83,6 +91,7 @@ export interface RestoreDependencies {
 	readonly gate: RestoreGate;
 	readonly participant?: () => DocumentChangeParticipant | undefined;
 	readonly now?: () => number;
+	readonly assertHunkOrigin?: (origin: HunkRestoreOrigin) => void;
 }
 
 export interface PreparedRestoreState {
@@ -90,6 +99,7 @@ export interface PreparedRestoreState {
 	readonly document: DocumentSnapshot;
 	readonly repositoryBaseline: string;
 	readonly annotationUndo?: AnnotationUndo;
+	readonly hunkOrigin?: HunkRestoreOrigin;
 }
 
 export class RestoreError extends Error {

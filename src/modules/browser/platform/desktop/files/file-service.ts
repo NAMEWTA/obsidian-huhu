@@ -40,6 +40,7 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 	readonly ready: Promise<void>;
 	private readonly files = new Map<string, StoredFile>();
 	private readonly grants = new Map<string, BrowserFileGrant>();
+	private readonly consumed = new Map<string, BrowserFileGrant>();
 	private readonly downloads = new Map<string, BrowserDownload>();
 	private readonly removed = new Set<string>();
 	private readonly generations = new Map<string, number>();
@@ -106,7 +107,7 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 		try { bytes = await readPrivateFile(this.metadata, 4 * 1024 * 1024); } catch (error) { if (!isMissing(error)) throw error; }
 		if (bytes) {
 			if (!this.secure) throw new BrowserFileError('key_unavailable');
-			const raw = JSON.parse(await openPayload(this.options.metadataProtector, bytes.toString('utf8'), this.purpose)) as { version: number; files: BrowserFile[] };
+			const raw = JSON.parse(await openPayload(this.options.metadataProtector, bytes.toString('utf8'), this.purpose)) as { version: number; files: BrowserFile[]; downloadCleanups?: BrowserDownload[] };
 			if (raw.version !== 2 || !Array.isArray(raw.files) || raw.files.length > MAX_FILES) throw new BrowserFileError('file_corrupt');
 			for (const file of raw.files) {
 				if (!file || !UUID.test(file.id) || this.files.has(file.id) || !validFileScope(file.scope) || !Number.isSafeInteger(file.size) || file.size < 0 || file.size > MAX_FILE || typeof file.name !== 'string' || file.name !== safeBrowserFilename(file.name) || !/^[a-f0-9]{64}$/.test(file.sha256) || !['upload', 'download'].includes(file.kind) || file.state !== 'ready') throw new BrowserFileError('file_corrupt');
@@ -116,6 +117,12 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 				this.files.set(file.id, { file: copyFile(file), persistent: true });
 			}
 			if (this.total() > MAX_TOTAL) throw new BrowserFileError('file_quota');
+			if (raw.downloadCleanups !== undefined && (!Array.isArray(raw.downloadCleanups) || raw.downloadCleanups.length > 128)) throw new BrowserFileError('file_corrupt');
+			for (const row of raw.downloadCleanups ?? []) {
+				const file = this.files.get(row?.fileId ?? '')?.file;
+				if (!file || !UUID.test(row.id) || this.downloads.has(row.id) || !validFileScope(row.scope) || !sameFileScope(file.scope, row.scope) || row.state !== 'completed' || row.cleanup !== 'pending' || file.kind !== 'download' || !/^[a-zA-Z0-9_-]{1,160}$/.test(row.pageId)) throw new BrowserFileError('file_corrupt');
+				this.downloads.set(row.id, { id: row.id, pageId: row.pageId, scope: cloneFileScope(file.scope), name: file.name, state: 'completed', cleanup: 'pending', fileId: file.id, receivedBytes: file.size, totalBytes: file.size });
+			}
 		}
 		const names = await fs.readdir(data); if (names.length > MAX_FILES * 3) throw new BrowserFileError('file_quota');
 		const ephemeral = new Set(names.filter((name) => name.endsWith('.ephemeral') && UUID.test(name.slice(0, -10))).map((name) => name.slice(0, -10))), cleanup: string[] = [], directories: string[] = [];
@@ -142,14 +149,28 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 		const ephemeral = this.options.allowEphemeralFiles?.(scope) === true;
 		if (!this.secure && !ephemeral) throw new BrowserFileError('key_unavailable'); return this.secure && !ephemeral;
 	}
-	private async persist(): Promise<void> {
+	private async persist(publication?: { state: 'unpublished' | 'published' | 'unknown'; id: string }): Promise<void> {
 		if (!this.secure) return; await this.owner();
-		const text = JSON.stringify({ version: 2, files: [...this.files.values()].filter((item) => item.persistent).map((item) => item.file) });
-		const sealed = await sealPayload(this.options.metadataProtector, text, this.purpose); await this.owner(); await atomicPrivateFile(this.metadata, sealed);
+		const text = JSON.stringify({ version: 2, files: [...this.files.values()].filter((item) => item.persistent).map((item) => item.file), downloadCleanups: [...this.downloads.values()].filter(item => item.cleanup === 'pending' && item.fileId && this.files.get(item.fileId)?.persistent).map(copyDownload) });
+		const sealed = await sealPayload(this.options.metadataProtector, text, this.purpose); await this.owner(); if (publication) publication.state = 'unknown';
+		try { await atomicPrivateFile(this.metadata, sealed); if (publication) publication.state = 'published'; }
+		catch (error) {
+			if (publication) {
+				// A rejected rename+sync operation does not establish non-publication.
+				// Only an authenticated authoritative index can authorize compensation.
+				try {
+					const current = await readPrivateFile(this.metadata, 4 * 1024 * 1024);
+					const raw = JSON.parse(await openPayload(this.options.metadataProtector, current.toString('utf8'), this.purpose)) as { version: number; files: BrowserFile[] };
+					if (raw.version !== 2 || !Array.isArray(raw.files)) throw new BrowserFileError('file_corrupt');
+					publication.state = raw.files.some(file => file.id === publication.id) ? 'published' : 'unpublished';
+				} catch { /* Unreadable authority remains unknown; never unlink possible references. */ }
+			}
+			throw error;
+		}
 	}
-	private async capture(source: string, name: string, scope: BrowserFileScope, kind: BrowserFile['kind'], generation: number): Promise<BrowserFile> {
+	private async capture(source: string, name: string, scope: BrowserFileScope, kind: BrowserFile['kind'], generation: number, download?: BrowserDownload): Promise<BrowserFile> {
 		this.check(scope, generation); const persistent = this.persistent(scope), id = randomUUID(), safeName = safeBrowserFilename(name), temporary = path.join(this.directory, 'data', `${id}.stage`), target = this.filePath(id, safeName);
-		const parent = path.dirname(target); let allocated = false;
+		const parent = path.dirname(target); let allocated = false, published = false; const publication = { state: 'unpublished' as 'unpublished' | 'published' | 'unknown', id };
 		try {
 			const initial = await fs.lstat(source); this.quota(initial.size);
 			if (!persistent) await atomicPrivateFile(this.ephemeralMarker(id), '', true);
@@ -158,15 +179,27 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 			await this.inspectPayload(id); await fs.link(temporary, target); await fs.unlink(temporary); await syncDirectory(parent); await syncDirectory(path.dirname(parent));
 			const file: BrowserFile = { id, name: safeName, ...fixed, kind, state: 'ready', scope: cloneFileScope(scope), createdAt: this.now() };
 			this.files.set(id, { file, persistent });
-			try { await this.persist(); this.check(scope, generation); } catch (error) { this.files.delete(id); throw error; }
+			const previous = download && copyDownload(download);
+			if (download) Object.assign(download, { fileId: id, state: 'completed', receivedBytes: file.size, cleanup: 'pending' });
+			try { await this.persist(publication); published = true; } catch (error) {
+				if (publication.state !== 'unpublished') {
+					published = true; // Preserve possible references; this is not a success receipt.
+					if (download) download.error = 'file_publication_unknown';
+					throw new BrowserFileError('file_publication_unknown');
+				}
+				this.files.delete(id); if (download && previous) { delete download.fileId; delete download.cleanup; Object.assign(download, previous); } throw error;
+			}
+			// The fixed file and its cleanup ownership are published together. A later
+			// lease/Space change cannot undo that confirmed fact; consumers still fence dispatch.
 			return copyFile(file);
-		} catch (error) { if (allocated) await this.unlinkManaged(id); throw error; }
-		finally { await this.owner(); await fs.rm(temporary, { force: true }); if (!this.files.has(id)) await fs.rm(this.ephemeralMarker(id), { force: true }); }
+		} catch (error) { if (allocated && !published) await this.unlinkManaged(id); throw error; }
+		finally { if (!published) { await this.owner(); await fs.rm(temporary, { force: true }); if (!this.files.has(id)) await fs.rm(this.ephemeralMarker(id), { force: true }); } }
 	}
 	grantUpload(source: string, inputScope: BrowserFileScope): Promise<{ file: BrowserFile; grant: BrowserFileGrant }> {
 		this.check(inputScope); const scope = cloneFileScope(inputScope), generation = this.generations.get(scope.spaceId) ?? 0;
 		return this.enqueue(async () => { await this.ready; this.check(scope, generation); await this.owner();
 			const file = await this.capture(source, path.basename(source), scope, 'upload', generation);
+			this.check(scope, generation);
 			const grant: BrowserFileGrant = { id: randomUUID(), fileId: file.id, scope, expiresAt: this.now() + 300000 }; this.grants.set(file.id, grant);
 			return { file, grant: { ...grant, scope: cloneFileScope(scope) } };
 		});
@@ -180,8 +213,15 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 			await this.inspectPayload(fileId, stored.file.name);
 			const fixed = await fixedCopy(this.filePath(fileId)); this.check(scope, generation);
 			await this.inspectPayload(fileId, stored.file.name);
-			if (fixed.size !== stored.file.size || fixed.sha256 !== stored.file.sha256) throw new BrowserFileError('file_changed'); return this.filePath(fileId);
+			if (grant.expiresAt <= this.now()) throw new BrowserFileError('file_grant_invalid');
+			if (fixed.size !== stored.file.size || fixed.sha256 !== stored.file.sha256) throw new BrowserFileError('file_changed');
+			this.consumed.set(fileId, grant); return this.filePath(fileId);
 		});
+	}
+	uploadDeadline(fileId: string, scope: BrowserFileScope): number {
+		this.check(scope); const proof = this.consumed.get(fileId);
+		if (!proof || !sameFileScope(proof.scope, scope) || proof.expiresAt <= this.now()) throw new BrowserFileError('file_grant_invalid');
+		return proof.expiresAt;
 	}
 	beginDownload(id: string, pageId: string, inputScope: BrowserFileScope, name: string): void {
 		this.check(inputScope); if (!UUID.test(id) || !/^[a-zA-Z0-9_-]{1,160}$/.test(pageId)) throw new BrowserFileError('file_path_invalid');
@@ -205,12 +245,52 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 			if (progress.state === 'completed') {
 				try {
 					const directory = await privateDirectory(this.options.downloadDirectory(item.scope.spaceId)), source = path.join(directory, id);
-					const file = await this.capture(source, item.name, item.scope, 'download', generation);
-					this.check(item.scope, generation); item.fileId = file.id; item.state = 'completed'; item.receivedBytes = file.size;
-					await fs.rm(source, { force: true }); await syncDirectory(directory);
-				} catch (error) { item.state = 'failed'; item.error = error instanceof BrowserFileError ? error.code : 'file_corrupt'; }
+					await this.capture(source, item.name, item.scope, 'download', generation, item);
+					item.state = 'completed';
+				} catch (error) { if (error instanceof BrowserFileError && error.code === 'file_publication_unknown') throw error; item.state = 'failed'; item.error = error instanceof BrowserFileError ? error.code : 'file_corrupt'; }
+				if (item.state === 'completed') {
+					try { await this.cleanupDownload(item); } catch { /* Captured content remains completed; cleanup is independently retryable. */ }
+				}
 			}
 			return copyDownload(item);
+		});
+	}
+	private async cleanupDownload(item: BrowserDownload): Promise<void> {
+		await this.persist(); await this.owner();
+		const directory = await privateDirectory(this.options.downloadDirectory(item.scope.spaceId));
+		const source = path.join(directory, item.id), stored = this.files.get(item.fileId ?? '')?.file;
+		if (!stored) throw new BrowserFileError('file_corrupt');
+		// Atomically acquire the pathname's current object into a private claim. From
+		// here on deletion touches only this owned slot, never a later GUID occupant.
+		// The deterministic fileId slot is recoverable from the authenticated job.
+		const claimDirectory = await privateDirectory(path.join(directory, `.huhu-cleanup-${stored.id}`)), claim = path.join(claimDirectory, 'claimed');
+		const identity = await fs.lstat(claimDirectory);
+		try { await fs.lstat(claim); }
+		catch (error) {
+			if (!isMissing(error)) throw error;
+			try { await fs.rename(source, claim); await syncDirectory(directory); await syncDirectory(claimDirectory); }
+			catch (error) { if (!isMissing(error)) throw error; }
+		}
+		try {
+			const actual = await fixedCopy(claim);
+			if (actual.size !== stored.size || actual.sha256 !== stored.sha256) {
+				// Restore a changed acquired object without overwriting a new GUID file.
+				try { await fs.link(claim, source); await fs.unlink(claim); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
+				throw new BrowserFileError('file_changed');
+			}
+			if (!sameFile(identity, await fs.lstat(claimDirectory)) || await fs.realpath(claimDirectory) !== claimDirectory) throw new BrowserFileError('file_path_invalid');
+			await fs.rm(claim); await syncDirectory(claimDirectory);
+		} catch (error) { if (!(error instanceof BrowserFileError && error.code === 'file_missing')) throw error; }
+		await syncDirectory(directory);
+		try { await fs.lstat(source); throw new BrowserFileError('file_changed'); } catch (error) { if (!isMissing(error)) throw error; }
+		item.cleanup = 'complete'; delete item.error;
+		try { await this.persist(); } catch (error) { item.cleanup = 'pending'; throw error; }
+	}
+	retryDownloadCleanup(spaceId: string, id: string): Promise<void> {
+		return this.enqueue(async () => {
+			await this.ready; this.check(); const item = this.downloads.get(id);
+			if (!item || item.scope.spaceId !== spaceId) throw new BrowserFileError('file_scope_mismatch');
+			if (item.state === 'completed' && item.cleanup === 'pending') await this.cleanupDownload(item);
 		});
 	}
 	listFiles(scope: BrowserFileScope): BrowserFile[] { this.check(scope); return [...this.files.values()].filter((item) => sameFileScope(item.file.scope, scope)).map((item) => copyFile(item.file)); }
@@ -234,9 +314,10 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 		});
 	}
 	removeFile(spaceId: string, id: string): Promise<void> {
-		if (this.files.get(id)?.file.scope.spaceId === spaceId) this.grants.delete(id);
+		if (this.files.get(id)?.file.scope.spaceId === spaceId) { this.grants.delete(id); this.consumed.delete(id); }
 		return this.enqueue(async () => { await this.ready; this.check(); await this.owner(); const stored = this.files.get(id);
 			if (!stored || stored.file.scope.spaceId !== spaceId) throw new BrowserFileError('file_scope_mismatch');
+			for (const download of this.downloads.values()) if (download.fileId === id && download.cleanup === 'pending') await this.cleanupDownload(download);
 			await this.inspectPayload(id, stored.file.name);
 			this.files.delete(id);
 			try { await this.persist(); } catch (error) { this.files.set(id, stored); throw error; }
@@ -246,6 +327,7 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 	removeSpace(spaceId: string): Promise<void> {
 		this.removed.add(spaceId); this.generations.set(spaceId, (this.generations.get(spaceId) ?? 0) + 1);
 		for (const [id, grant] of this.grants) if (grant.scope.spaceId === spaceId) this.grants.delete(id);
+		for (const [id, grant] of this.consumed) if (grant.scope.spaceId === spaceId) this.consumed.delete(id);
 		return this.enqueue(async () => { await this.ready; await this.owner();
 			const removed = [...this.files.entries()].filter(([, item]) => item.file.scope.spaceId === spaceId);
 			for (const [id, item] of removed) await this.inspectPayload(id, item.file.name);
@@ -258,7 +340,8 @@ export class DesktopBrowserFileService implements BrowserFileServicePort {
 	}
 	dispose(): Promise<void> { return this.disposal ??= this.disposeOnce().catch((error: unknown) => { this.disposal = undefined; throw error; }); }
 	private async disposeOnce(): Promise<void> {
-		this.closed = true; this.grants.clear(); await this.ready; await this.tail; await this.owner();
+		this.closed = true; this.grants.clear(); this.consumed.clear(); await this.ready; await this.tail; await this.owner();
+		for (const item of this.downloads.values()) if (item.cleanup === 'pending') await this.cleanupDownload(item);
 		for (const [id, item] of this.files) if (!item.persistent) { await this.unlinkManaged(id); this.files.delete(id); }
 		await this.persist(); this.downloads.clear();
 	}

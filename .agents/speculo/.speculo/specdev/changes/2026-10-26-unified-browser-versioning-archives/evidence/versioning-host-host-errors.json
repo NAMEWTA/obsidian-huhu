@@ -1,0 +1,14 @@
+[
+  {
+    "session": "before-restart",
+    "errors": []
+  },
+  {
+    "session": "after-restart",
+    "errors": []
+  },
+  {
+    "session": "popout",
+    "errors": []
+  }
+]

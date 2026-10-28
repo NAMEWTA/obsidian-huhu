@@ -2,6 +2,10 @@ export type RecordKind = 'person' | 'company';
 export const scalarFields = ['name', 'birthday', 'birthplace', 'region', 'website'] as const;
 export const listFields = ['aliases', 'mobiles', 'phones', 'wechat', 'emails', 'tags'] as const;
 export type Fields = Record<(typeof scalarFields)[number], string> & Record<(typeof listFields)[number], string[]>;
+export const legacyFieldKeys: Record<RecordKind, readonly (keyof Fields)[]> = {
+	person: [...scalarFields.filter(key => key !== 'website'), ...listFields],
+	company: ['name', 'aliases', 'region', 'website', 'tags', 'phones', 'emails'],
+};
 export interface EntityRef {
 	id: string;
 	label: string;

@@ -8,9 +8,26 @@ import { planIdentityImport } from '../../../core/identity';
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
-const row = { host_key: '.example.com', name: 'sid', value: 'plain', path: '/', expires_utc: '13390000000000001', has_expires: 1, is_secure: 1, is_httponly: 1, samesite: 1, top_frame_site_key: 'https://top.example', has_cross_site_ancestor: 1, priority: 2, source_scheme: 2, source_port: 443, is_same_party: 0 };
-const response = (rows: unknown[], version: string | null = '24', kind = 'chromium') => ({ schemaVersion: 2, kind, databaseVersion: version, columns: Object.keys(row), rows });
+const row = { host_key: '.example.com', name: 'sid', value: 'plain', encrypted_value_hex: '', path: '/', expires_utc: '13390000000000001', has_expires: 1, is_secure: 1, is_httponly: 1, samesite: 1, top_frame_site_key: 'https://top.example', has_cross_site_ancestor: 1, priority: 2, source_scheme: 2, source_port: 443, is_same_party: 0 };
+const response = (rows: unknown[], version: string | null = '24', kind = 'chromium') => ({ schemaVersion: 2, kind, databaseVersion: version, columns: kind === 'chromium' ? Object.keys(row).map(key => key === 'encrypted_value_hex' ? 'encrypted_value' : key) : ['host', 'name', 'value', 'path', 'expiry', 'isSecure', 'isHttpOnly', 'sameSite', 'originAttributes'], rows });
 describe('explicit source grants and source cookie semantics', () => {
+	it('checks reader field capabilities instead of accepting lost modern partition semantics', () => {
+		const modern = response([{ ...row, top_frame_site_key: null, has_cross_site_ancestor: null }]); modern.columns = modern.columns.filter(column => !['top_frame_site_key', 'has_cross_site_ancestor'].includes(column));
+		expect(() => sourceRows(modern, 'chromium', null)).toThrow('unsupported_cookie');
+		const old = response([{ ...row, top_frame_site_key: '', has_cross_site_ancestor: null }], '22'); old.columns = old.columns.filter(column => column !== 'has_cross_site_ancestor');
+		expect(sourceRows(old, 'chromium', null)).toMatchObject([{ domain: '.example.com', value: 'plain' }]);
+		expect(() => sourceRows({ ...old, rows: [{ ...row, has_cross_site_ancestor: null }] }, 'chromium', null)).toThrow('unsupported_cookie');
+		const legacy = response([{ ...row, top_frame_site_key: null, has_cross_site_ancestor: null, source_scheme: null, source_port: null, is_same_party: null }], '11'); legacy.columns = legacy.columns.filter(column => !['top_frame_site_key', 'has_cross_site_ancestor', 'source_scheme', 'source_port', 'is_same_party'].includes(column));
+		expect(sourceRows(legacy, 'chromium', null)).toMatchObject([{ value: 'plain', domain: '.example.com' }]);
+		for (const field of ['encrypted_value_hex', 'priority', 'source_scheme', 'source_port']) expect(() => sourceRows(response([{ ...row, [field]: null }]), 'chromium', null)).toThrow('unsupported_cookie');
+	});
+	it('cancels only the selected source read and consumes its grant without affecting another import', async () => {
+		const root = await fs.mkdtemp(path.join(tmpdir(), 'huhu-source-cancel-')); roots.push(root); const file = path.join(root, 'cookies.json'); await fs.writeFile(file, '[]');
+		const reader = new DesktopIdentitySourceReader({ temporaryDirectory: path.join(root, 'staging'), readerExecutable: async () => 'unused', recordCleanupFailure: async () => {} }), controller = new AbortController();
+		const cancelled = reader.issueFileGrant(file), other = reader.issueFileGrant(file); controller.abort();
+		await expect(reader.captureFileText(cancelled.id, controller.signal)).rejects.toMatchObject({ code: 'cancelled' });
+		await expect(reader.captureFileText(cancelled.id)).rejects.toMatchObject({ code: 'source_grant_invalid' }); expect(await reader.captureFileText(other.id)).toBe('[]'); await reader.dispose();
+	});
 	it('returns a raw UTF8 file for accurate preflight exactly once, without invoking a native browser', async () => {
 		const root = await fs.mkdtemp(path.join(tmpdir(), 'huhu-source-')); roots.push(root); const raw = JSON.stringify([{ domain: 'example.com', name: 'bad' }]); const file = path.join(root, 'cookies.json'); await fs.writeFile(file, raw);
 		const executable = vi.fn(async () => 'must-not-run'), reader = new DesktopIdentitySourceReader({ temporaryDirectory: path.join(root, 'staging'), readerExecutable: executable, recordCleanupFailure: async () => undefined });
@@ -53,7 +70,11 @@ describe('explicit source grants and source cookie semantics', () => {
 		try {
 			const temporaryDirectory = path.join(root, 'import-staging'), reader = new DesktopIdentitySourceReader({ temporaryDirectory, readerExecutable: async () => helper, recordCleanupFailure: async () => undefined });
 			const grant = reader.issueBrowserGrant({ family: 'fixture', label: 'Fixture', root: profile, kind: 'firefox', profiles: [{ name: 'Default', directory: 'default', cookiesPath: database }] }, 'default');
-			expect((await reader.capture(grant.id)).seed.cookies[0]?.value).toBe('plain'); expect(await fs.readdir(temporaryDirectory)).toEqual([]); await reader.dispose();
+			const captured = await reader.capture(grant.id); expect(captured.seed.cookies[0]?.value).toBe('plain'); expect(captured.capture).toMatchObject({ readerSchemaVersion: 2, consistency: 'stable-sqlite-snapshot', digestKind: 'reader-response', fields: expect.arrayContaining(['originAttributes']) }); expect(await fs.readdir(temporaryDirectory)).toEqual([]);
+			const remove = fs.rm.bind(fs), recordCleanupFailure = vi.fn(async () => {}), failed = new DesktopIdentitySourceReader({ temporaryDirectory, readerExecutable: async () => helper, recordCleanupFailure });
+			const intercept = vi.spyOn(fs, 'rm').mockImplementation(async (file, options) => { if (typeof file === 'string' && path.dirname(file) === temporaryDirectory) throw new Error('SYNTHETIC_PRIVATE_PATH'); return remove(file, options); });
+			try { await expect(failed.capture(failed.issueBrowserGrant({ family: 'fixture', label: 'Fixture', root: profile, kind: 'firefox', profiles: [{ name: 'Default', directory: 'default', cookiesPath: database }] }, 'default').id)).rejects.toMatchObject({ code: 'cleanup_pending' }); expect(recordCleanupFailure).toHaveBeenCalledOnce(); }
+			finally { intercept.mockRestore(); await failed.dispose(); await reader.dispose(); }
 		} finally {
 			if (original === undefined) delete process.env.HUHU_BROWSER_SOURCE_TEST_SECRET; else process.env.HUHU_BROWSER_SOURCE_TEST_SECRET = original;
 			if (originalNode === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = originalNode;

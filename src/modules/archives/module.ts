@@ -5,7 +5,9 @@ import { ContactsController } from './platform/controller';
 import { archivesSettings } from './settings';
 import type { ContactsHost } from './services/page-host';
 import type { ArchiveRecord } from './core/model';
-import { ARCHIVES_WORKBENCH } from './api';
+import { ARCHIVES_WORKBENCH, ARCHIVES_CATALOG, ARCHIVES_QUERY, ARCHIVES_COMMANDS } from './api';
+import { ArchiveDraftOwner } from './services/form-drafts';
+import { archiveServices } from './services/archive-services';
 import { archivesWorkbench } from './services/workbench';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
@@ -19,10 +21,14 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 	let reminders: AutomationSource | undefined;
 	let offIndex: (() => void) | undefined;
 	const workbench = archivesWorkbench(() => controller);
+	const archives = archiveServices(() => controller?.archives);
+	const drafts = new ArchiveDraftOwner();
 	const host = (): ContactsHost => {
 		if (!controller) throw new Error('Archives are not loaded');
 		return {
 			controller,
+			archives,
+			drafts,
 			settings,
 			get newReminder() {
 				const composer = context.services.peek(AUTOMATION_COMPOSER);
@@ -39,7 +45,12 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 		};
 	};
 	return {
-		services: [[ARCHIVES_WORKBENCH, workbench]],
+		services: [
+			[ARCHIVES_WORKBENCH, workbench],
+			[ARCHIVES_CATALOG, archives.catalog],
+			[ARCHIVES_QUERY, archives.query],
+			[ARCHIVES_COMMANDS, archives.commands],
+		],
 		/** Read after `activate()`. */
 		get contributions() {
 			return reminders ? [[AUTOMATION_SOURCES, reminders] as const] : [];
@@ -49,7 +60,7 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 		},
 		settingsPage: async () => {
 			if (!controller) throw new Error('Archives are not loaded');
-			return (await import('./ui/settings-page')).archivesSettingsPage(context.app, controller, settings);
+			return (await import('./ui/settings-page')).archivesSettingsPage(context.app, controller, settings, archives, drafts);
 		},
 		activate() {
 			controller = new ContactsController(context.app, () => settings.get());
@@ -66,6 +77,7 @@ export default function createArchivesModule(context: ModuleContext): ModuleInst
 				controller.unload();
 			}
 			controller = undefined;
+			drafts.dispose();
 		},
 	};
 }

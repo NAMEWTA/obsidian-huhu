@@ -8,16 +8,111 @@ import { DesktopBrowserFileService } from './file-service';
 import type { BrowserFileScope } from '../../../core/files';
 
 const roots: string[] = [], services: DesktopBrowserFileService[] = [];
-afterEach(async () => { await Promise.all(services.splice(0).map((service) => service.dispose().catch(() => undefined))); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
+afterEach(async () => { vi.restoreAllMocks(); await Promise.all(services.splice(0).map((service) => service.dispose().catch(() => undefined))); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 const scope = (runId = 'run-A', spaceId = 'space-A'): BrowserFileScope => ({ spaceId, execution: { kind: 'agent', runId } });
 async function setup(provider: TestBrowserProtector['provider'] = 'available', ephemeral = false) {
 	// Compare paths within the physical root, including Windows 8.3 temporary-directory aliases.
 	const root = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'huhu-files-'))); roots.push(root); const protector = new TestBrowserProtector(); protector.provider = provider;
-	const cancelDownload = vi.fn(async () => undefined), options = { directory: path.join(root, 'managed'), metadataProtector: protector, metadataScope: 'test-vault-device', allowEphemeralFiles: () => ephemeral, downloadDirectory: (spaceId: string) => path.join(root, 'downloads', spaceId), cancelDownload };
+	const cancelDownload = vi.fn(async () => undefined), options = { directory: path.join(root, 'managed'), metadataProtector: protector, metadataScope: 'test-vault-device', allowEphemeralFiles: () => ephemeral, downloadDirectory: (spaceId: string) => path.join(root, 'downloads', spaceId), cancelDownload, now: () => Date.now() };
 	const service = new DesktopBrowserFileService(options); services.push(service); await service.ready; const source = path.join(root, 'private-original.txt'); await fs.writeFile(source, 'private file content');
 	return { root, source, protector, options, service, cancelDownload };
 }
 describe('scoped browser files', () => {
+	it('does not return an upload path when its grant expires during the actual hash read', async () => {
+		const { service, source, options } = await setup(); let now = 1000; options.now = () => now;
+		const { file, grant } = await service.grantUpload(source, scope()), originalOpen = fs.open;
+		vi.spyOn(fs, 'open').mockImplementation(async (filePath, flags, mode) => {
+			const handle = await originalOpen(filePath, flags, mode);
+			if (filePath === path.join(options.directory, 'data', file.id, file.name)) {
+				const read = handle.read.bind(handle);
+				handle.read = ((...args: Parameters<typeof read>) => { now = grant.expiresAt; return read(...args); }) as typeof handle.read;
+			}
+			return handle;
+		});
+		await expect(service.consumeUpload(file.id, scope())).rejects.toMatchObject({ code: 'file_grant_invalid' });
+		await expect(service.consumeUpload(file.id, scope())).rejects.toMatchObject({ code: 'file_grant_invalid' });
+	});
+	it.each(['remove', 'sync'] as const)('preserves a captured download across %s failure and restart, then retries cleanup without recapturing', async failure => {
+		const { service, options } = await setup(), id = randomUUID(), directory = options.downloadDirectory('space-A');
+		await fs.mkdir(directory, { recursive: true }); const source = path.join(directory, id); await fs.writeFile(source, 'captured download');
+		service.beginDownload(id, 'page-A', scope(), 'file.txt'); const originalRm = fs.rm;
+		if (failure === 'remove') vi.spyOn(fs, 'rm').mockImplementation(async (filePath, options) => { if (path.basename(String(filePath)) === 'claimed') throw Error('synthetic source cleanup'); return originalRm(filePath, options); });
+		else {
+			if (process.platform === 'win32') return;
+			const open = fs.open; vi.spyOn(fs, 'open').mockImplementation(async (filePath, flags, mode) => { const handle = await open(filePath, flags, mode); if (filePath === directory) vi.spyOn(handle, 'sync').mockRejectedValue(Error('synthetic directory sync')); return handle; });
+		}
+		const result = await service.updateDownload(id, { state: 'completed', receivedBytes: 17 });
+		expect(result).toMatchObject({ state: 'completed', cleanup: 'pending' }); expect(result.fileId).toBeDefined();
+		const files = service.listFiles(scope()); expect(files).toHaveLength(1);
+		await expect(service.dispose()).rejects.toBeDefined();
+		vi.restoreAllMocks(); const reopened = new DesktopBrowserFileService(options); services.push(reopened); await reopened.ready;
+		expect(reopened.listDownloads(scope())[0]).toMatchObject({ state: 'completed', cleanup: 'pending', fileId: result.fileId });
+		await expect(reopened.retryDownloadCleanup('space-B', id)).rejects.toMatchObject({ code: 'file_scope_mismatch' });
+		if (failure === 'remove') expect(await fs.readFile(path.join(directory, `.huhu-cleanup-${result.fileId}`, 'claimed'), 'utf8')).toBe('captured download');
+		await reopened.retryDownloadCleanup('space-A', id);
+		expect(reopened.listDownloads(scope())[0]).toMatchObject({ state: 'completed', cleanup: 'complete', fileId: result.fileId });
+		expect(reopened.listFiles(scope())).toEqual(files); await expect(fs.stat(source)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+	it('claims the cleanup object before deleting it, preserving a replacement at the GUID path across restart', async () => {
+		const { service, options } = await setup(), id = randomUUID(), directory = options.downloadDirectory('space-A');
+		await fs.mkdir(directory, { recursive: true }); const source = path.join(directory, id); await fs.writeFile(source, 'captured');
+		service.beginDownload(id, 'page-A', scope(), 'file.txt'); const rm = fs.rm; let replaced = false;
+		vi.spyOn(fs, 'rm').mockImplementation(async (filePath, opts) => {
+			if (!replaced && (filePath === source || path.basename(String(filePath)) === 'claimed')) { replaced = true; await fs.writeFile(source + '.replacement', 'replacement'); await fs.rename(source + '.replacement', source); }
+			return rm(filePath, opts);
+		});
+		const result = await service.updateDownload(id, { state: 'completed', receivedBytes: 8 });
+		expect(replaced).toBe(true); expect(await fs.readFile(source, 'utf8')).toBe('replacement');
+		expect(result).toMatchObject({ state: 'completed', cleanup: 'pending' });
+		vi.restoreAllMocks(); const reopened = new DesktopBrowserFileService(options); services.push(reopened); await reopened.ready;
+		await expect(reopened.retryDownloadCleanup('space-A', id)).rejects.toMatchObject({ code: 'file_changed' });
+		expect(await fs.readFile(source, 'utf8')).toBe('replacement'); expect(reopened.listFiles(scope()).map(file => file.id)).toEqual([result.fileId]);
+	});
+	it.each(['before-claim', 'after-claim', 'changed-claim'] as const)('recovers the same cleanup ownership after interruption %s without deleting or overwriting a later GUID object', async phase => {
+		const { service, options } = await setup(), id = randomUUID(), directory = options.downloadDirectory('space-A'); await fs.mkdir(directory, { recursive: true }); const source = path.join(directory, id); await fs.writeFile(source, 'captured'); service.beginDownload(id, 'page-A', scope(), 'file.txt');
+		const rename = fs.rename; let interrupted = false;
+		vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => {
+			if (path.basename(String(to)) !== 'claimed' || interrupted) return rename(from, to);
+			interrupted = true; if (phase === 'before-claim') throw Error('before claim');
+			await rename(from, to); if (phase === 'changed-claim') await fs.writeFile(to, 'changed claimed object'); await fs.writeFile(source, 'later GUID object'); throw Error('after claim');
+		});
+		const result = await service.updateDownload(id, { state: 'completed', receivedBytes: 8 }); expect(result.cleanup).toBe('pending'); vi.restoreAllMocks();
+		const reopened = new DesktopBrowserFileService(options); services.push(reopened); await reopened.ready;
+		if (phase === 'before-claim') { await reopened.retryDownloadCleanup('space-A', id); expect(reopened.listDownloads(scope())[0]?.cleanup).toBe('complete'); }
+		else { await expect(reopened.retryDownloadCleanup('space-A', id)).rejects.toMatchObject({ code: 'file_changed' }); expect(await fs.readFile(source, 'utf8')).toBe('later GUID object'); if (phase === 'changed-claim') expect(await fs.readFile(path.join(directory, `.huhu-cleanup-${result.fileId}`, 'claimed'), 'utf8')).toBe('changed claimed object'); }
+		expect(reopened.listFiles(scope()).map(file => file.id)).toEqual([result.fileId]);
+	});
+	it.each(['sync', 'check', 'unreadable'] as const)('keeps an indexed payload after metadata publication %s failure', async failure => {
+		if (process.platform === 'win32') return;
+		const { service, options } = await setup(), id = randomUUID(), directory = options.downloadDirectory('space-A');
+		await fs.mkdir(directory, { recursive: true }); const source = path.join(directory, id); await fs.writeFile(source, 'captured'); service.beginDownload(id, 'page-A', scope(), 'file.txt');
+		const open = fs.open, rename = fs.rename, realpath = fs.realpath, lstat = fs.lstat; let injected = false, renamed = false, readFailed = false;
+		vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => { await rename(from, to); if (to === path.join(options.directory, 'metadata.sealed')) renamed = true; });
+		if (failure === 'check') vi.spyOn(fs, 'realpath').mockImplementation(async (...args: Parameters<typeof realpath>) => { if (renamed && !injected) { injected = true; throw Error('synthetic post-rename check'); } return realpath(...args); });
+		else vi.spyOn(fs, 'open').mockImplementation(async (filePath, flags, mode) => { const handle = await open(filePath, flags, mode); if (filePath === options.directory && !injected) { injected = true; vi.spyOn(handle, 'sync').mockRejectedValue(Error('synthetic post-rename sync')); } return handle; });
+		if (failure === 'unreadable') vi.spyOn(fs, 'lstat').mockImplementation(async (...args: Parameters<typeof lstat>) => { if (renamed && injected && !readFailed && args[0] === path.join(options.directory, 'metadata.sealed')) { readFailed = true; throw Error('synthetic unreadable authority'); } return lstat(...args); });
+		await expect(service.updateDownload(id, { state: 'completed', receivedBytes: 8 })).rejects.toMatchObject({ code: 'file_publication_unknown' });
+		vi.restoreAllMocks(); const reopened = new DesktopBrowserFileService(options); services.push(reopened); await reopened.ready;
+		expect(reopened.listFiles(scope())).toHaveLength(1); expect(reopened.listDownloads(scope())[0]).toMatchObject({ state: 'completed', cleanup: 'pending' });
+		await reopened.retryDownloadCleanup('space-A', id); expect(reopened.listFiles(scope())).toHaveLength(1);
+	});
+	it('compensates payload allocation only when the authenticated index proves publication did not happen', async () => {
+		const { service, options, source } = await setup(), rename = fs.rename;
+		vi.spyOn(fs, 'rename').mockImplementation(async (from, to) => { if (to === path.join(options.directory, 'metadata.sealed')) throw Error('synthetic before rename'); return rename(from, to); });
+		await expect(service.grantUpload(source, scope())).rejects.toThrow('synthetic before rename');
+		expect(service.listFiles(scope())).toEqual([]); expect(await fs.readdir(path.join(options.directory, 'data'))).toEqual([]);
+		vi.restoreAllMocks(); const reopened = new DesktopBrowserFileService(options); services.push(reopened); await reopened.ready; expect(reopened.listFiles(scope())).toEqual([]);
+	});
+	it('does not delete a new GUID file that appears after cleanup observed the original missing', async () => {
+		const { service, options } = await setup(), id = randomUUID(), directory = options.downloadDirectory('space-A'); await fs.mkdir(directory, { recursive: true }); const source = path.join(directory, id); await fs.writeFile(source, 'captured'); service.beginDownload(id, 'page-A', scope(), 'file.txt');
+		const rm = fs.rm; vi.spyOn(fs, 'rm').mockImplementation(async (filePath, opts) => { if (path.basename(String(filePath)) === 'claimed') throw Error('pause cleanup'); return rm(filePath, opts); });
+		const result = await service.updateDownload(id, { state: 'completed', receivedBytes: 8 }); vi.restoreAllMocks();
+		await fs.unlink(path.join(directory, `.huhu-cleanup-${result.fileId}`, 'claimed'));
+		const lstat = fs.lstat; let injected = false;
+		vi.spyOn(fs, 'lstat').mockImplementation(async (...args: Parameters<typeof lstat>) => { if (!injected && String(args[0]).endsWith('claimed')) { injected = true; await fs.writeFile(source, 'later object'); } return lstat(...args); });
+		await expect(service.retryDownloadCleanup('space-A', id)).rejects.toMatchObject({ code: 'file_changed' });
+		expect(await fs.readFile(source, 'utf8')).toBe('later object'); expect(service.listFiles(scope()).map(file => file.id)).toEqual([result.fileId]);
+	});
 	it('copies the explicit source privately and grants exactly one consume to its original Run', async () => {
 		const { service, source, options } = await setup(); const { file } = await service.grantUpload(source, scope());
 		await fs.writeFile(source, 'changed original'); await expect(service.consumeUpload(file.id, scope('run-B'))).rejects.toMatchObject({ code: 'file_scope_mismatch' });

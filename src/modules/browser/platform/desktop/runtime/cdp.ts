@@ -119,7 +119,7 @@ export class NativeCdp {
 				id,
 				lane: authority ? 'lease' : 'maintenance',
 				...(authority
-					? { epoch: authority.epoch, leaseId: authority.leaseId, controllerId: authority.controllerId }
+					? { epoch: authority.epoch, leaseId: authority.leaseId, controllerId: authority.controllerId, deadlineAtMs: authority.expiresAt }
 					: {}),
 				frames: frames.map((frame, index) => ({ ...frame, id: ids[index] })),
 			});

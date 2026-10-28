@@ -1,4 +1,6 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
+import { ArchiveDraftOwner } from '../services/form-drafts';
+import { ArchiveWorkspace, type ArchiveUiServices } from './ArchiveWorkspace';
 import { useState, useSyncExternalStore } from 'react';
 import type { App } from 'obsidian';
 import { toast } from 'sonner';
@@ -16,6 +18,8 @@ export function archivesSettingsPage(
 	app: App,
 	controller: ContactsController,
 	settings: SettingsHandle<ContactsSettings>,
+	archives?: ArchiveUiServices,
+	drafts = new ArchiveDraftOwner(),
 ) {
 	return function ArchivesSettingsPage() {
 		useT();
@@ -61,6 +65,7 @@ export function archivesSettingsPage(
 			}
 		};
 		return (
+			<>
 			<SettingsSection title={ct('storage')}>
 				<SettingsRow
 					label={ct('folder')}
@@ -110,6 +115,8 @@ export function archivesSettingsPage(
 					}
 				/>
 			</SettingsSection>
+			{archives && <ArchiveWorkspace key={value.rootFolder} services={archives} settings drafts={drafts} draftScope={"settings:" + value.rootFolder} />}
+			</>
 		);
 	};
 }

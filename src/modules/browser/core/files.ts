@@ -6,8 +6,10 @@ export interface BrowserFileGrant { id: string; fileId: string; scope: BrowserFi
 export interface BrowserDownload {
 	id: string; pageId: string; scope: BrowserFileScope; name: string; state: 'in-progress' | 'completed' | 'canceled' | 'failed';
 	receivedBytes: number; totalBytes: number; fileId?: string; error?: string;
+	/** Local source cleanup is independent of the already captured download. */
+	cleanup?: 'pending' | 'complete';
 }
-export type BrowserFileErrorCode = 'file_scope_mismatch' | 'file_grant_invalid' | 'file_missing' | 'file_changed' | 'file_too_large' | 'file_quota' | 'file_path_invalid' | 'file_exists' | 'file_closed' | 'file_corrupt' | 'key_unavailable' | 'weak_provider' | 'download_unknown';
+export type BrowserFileErrorCode = 'file_scope_mismatch' | 'file_grant_invalid' | 'file_missing' | 'file_changed' | 'file_too_large' | 'file_quota' | 'file_path_invalid' | 'file_exists' | 'file_closed' | 'file_corrupt' | 'file_publication_unknown' | 'key_unavailable' | 'weak_provider' | 'download_unknown';
 export class BrowserFileError extends Error { constructor(readonly code: BrowserFileErrorCode) { super(code); this.name = 'BrowserFileError'; } }
 export function cloneFileScope(scope: BrowserFileScope): BrowserFileScope { return { spaceId: scope.spaceId, execution: { ...scope.execution } }; }
 export function validFileScope(scope: BrowserFileScope): boolean {
@@ -24,8 +26,10 @@ export interface BrowserFileServicePort {
 	readonly ready: Promise<void>;
 	grantUpload(source: string, scope: BrowserFileScope): Promise<{ file: BrowserFile; grant: BrowserFileGrant }>;
 	consumeUpload(fileId: string, scope: BrowserFileScope): Promise<string>;
+	uploadDeadline(fileId: string, scope: BrowserFileScope): number;
 	beginDownload(id: string, pageId: string, scope: BrowserFileScope, name: string): void;
 	updateDownload(id: string, progress: { state: 'inProgress' | 'completed' | 'canceled'; receivedBytes: number; totalBytes?: number }): Promise<BrowserDownload>;
+	retryDownloadCleanup(spaceId: string, id: string): Promise<void>;
 	listFiles(scope: BrowserFileScope): BrowserFile[]; listDownloads(scope: BrowserFileScope): BrowserDownload[];
 	listSpaceFiles(spaceId: string): BrowserFile[]; listSpaceDownloads(spaceId: string): BrowserDownload[];
 	exportForUser(spaceId: string, fileId: string, destination: string): Promise<void>;

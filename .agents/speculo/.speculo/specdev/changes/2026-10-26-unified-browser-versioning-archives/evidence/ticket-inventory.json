@@ -1,0 +1,283 @@
+{
+  "plan_revision": 1,
+  "tickets": [
+    {
+      "id": "T-01",
+      "file": "01-joint-boundaries.md",
+      "title": "联合入口与私有资料排除",
+      "contracts": [
+        "AC-001",
+        "AC-002"
+      ]
+    },
+    {
+      "id": "T-02",
+      "file": "02-browser-observation.md",
+      "title": "跨框架观察与引用失效",
+      "contracts": [
+        "AC-005"
+      ]
+    },
+    {
+      "id": "T-03",
+      "file": "03-browser-ledger.md",
+      "title": "操作账本低水位与故障对账",
+      "contracts": [
+        "AC-006"
+      ]
+    },
+    {
+      "id": "T-04",
+      "file": "04-browser-events.md",
+      "title": "事件补全与游标恢复",
+      "contracts": [
+        "AC-010"
+      ]
+    },
+    {
+      "id": "T-05",
+      "file": "05-browser-identity.md",
+      "title": "Cookie 与 Identity 原子导入",
+      "contracts": [
+        "AC-007"
+      ]
+    },
+    {
+      "id": "T-06",
+      "file": "06-browser-lifecycle.md",
+      "title": "接管与 Space 重启资源恢复",
+      "contracts": [
+        "AC-003",
+        "AC-004",
+        "AC-008"
+      ]
+    },
+    {
+      "id": "T-07",
+      "file": "07-browser-files-input.md",
+      "title": "文件授权、背压和原位输入",
+      "contracts": [
+        "AC-009"
+      ]
+    },
+    {
+      "id": "T-08",
+      "file": "08-browser-material-handoff.md",
+      "title": "元素材料交付指定会话",
+      "contracts": [
+        "AC-011"
+      ]
+    },
+    {
+      "id": "T-09",
+      "file": "09-browser-windows.md",
+      "title": "Windows x64 运行时闭环",
+      "contracts": [
+        "AC-012"
+      ]
+    },
+    {
+      "id": "T-10",
+      "file": "10-browser-macos-arm.md",
+      "title": "macOS ARM64 运行时闭环",
+      "contracts": [
+        "AC-012"
+      ]
+    },
+    {
+      "id": "T-11",
+      "file": "11-browser-macos-x64.md",
+      "title": "macOS x64 运行时闭环",
+      "contracts": [
+        "AC-012"
+      ]
+    },
+    {
+      "id": "T-12",
+      "file": "12-browser-linux-stress.md",
+      "title": "Linux x64 故障压力与四组汇总",
+      "contracts": [
+        "AC-012"
+      ]
+    },
+    {
+      "id": "T-13",
+      "file": "13-automatic-history.md",
+      "title": "主动开启与未保存笔记采样",
+      "contracts": [
+        "AC-017"
+      ]
+    },
+    {
+      "id": "T-14",
+      "file": "14-history-retention.md",
+      "title": "保护恢复依据的保留与配额",
+      "contracts": [
+        "AC-034"
+      ]
+    },
+    {
+      "id": "T-15",
+      "file": "15-history-core-regression.md",
+      "title": "历史比较与恢复回路整合",
+      "contracts": [
+        "AC-013",
+        "AC-014",
+        "AC-015",
+        "AC-016"
+      ]
+    },
+    {
+      "id": "T-16",
+      "file": "16-history-advanced.md",
+      "title": "精确按块恢复与可选历史增强",
+      "contracts": [
+        "AC-017"
+      ]
+    },
+    {
+      "id": "T-17",
+      "file": "17-archives-v2-contract.md",
+      "title": "通用类型与 v2 实体协议",
+      "contracts": [
+        "AC-018",
+        "AC-019",
+        "AC-023"
+      ]
+    },
+    {
+      "id": "T-18",
+      "file": "18-archives-safe-writes.md",
+      "title": "档案并发写入与原生草稿保护",
+      "contracts": [
+        "AC-020",
+        "AC-033"
+      ]
+    },
+    {
+      "id": "T-19",
+      "file": "19-archives-forms.md",
+      "title": "类型设置与多表单实体编辑",
+      "contracts": [
+        "AC-018",
+        "AC-019",
+        "AC-020"
+      ]
+    },
+    {
+      "id": "T-20",
+      "file": "20-archives-relations.md",
+      "title": "独立关系与双向展示",
+      "contracts": [
+        "AC-021"
+      ]
+    },
+    {
+      "id": "T-21",
+      "file": "21-archives-migrate.md",
+      "title": "v1 预检与可恢复显式迁移",
+      "contracts": [
+        "AC-023",
+        "AC-024",
+        "AC-033"
+      ]
+    },
+    {
+      "id": "T-22",
+      "file": "22-archives-sync-forks.md",
+      "title": "同步乱序、删除事实与定义分叉",
+      "contracts": [
+        "AC-022",
+        "AC-025"
+      ]
+    },
+    {
+      "id": "T-23",
+      "file": "23-archives-tree-views.md",
+      "title": "动态档案树与类型列表卡片",
+      "contracts": [
+        "AC-035",
+        "AC-036",
+        "AC-031"
+      ]
+    },
+    {
+      "id": "T-24",
+      "file": "24-archives-home-refs.md",
+      "title": "项目资料与任务执行引用",
+      "contracts": [
+        "AC-028"
+      ]
+    },
+    {
+      "id": "T-25",
+      "file": "25-archives-portability.md",
+      "title": "档案可携带重建与删除生命周期",
+      "contracts": [
+        "AC-027"
+      ]
+    },
+    {
+      "id": "T-26",
+      "file": "26-archives-scale.md",
+      "title": "关系差量索引与规模预算",
+      "contracts": [
+        "AC-029"
+      ]
+    },
+    {
+      "id": "T-27",
+      "file": "27-archive-restore-owner.md",
+      "title": "历史恢复必须经档案预检",
+      "contracts": [
+        "AC-026",
+        "AC-033"
+      ]
+    },
+    {
+      "id": "T-28",
+      "file": "28-archives-fork-editor.md",
+      "title": "定义分叉解决与兼容发布编辑器",
+      "contracts": [
+        "AC-022",
+        "AC-018"
+      ]
+    },
+    {
+      "id": "T-29",
+      "file": "29-archives-import.md",
+      "title": "CSV 导入与逐项恢复",
+      "contracts": [
+        "AC-030"
+      ]
+    },
+    {
+      "id": "T-30",
+      "file": "30-archives-derived-graph.md",
+      "title": "Lookup、Rollup 与局部图谱",
+      "contracts": [
+        "AC-030"
+      ]
+    },
+    {
+      "id": "T-31",
+      "file": "31-browser-storage-extension.md",
+      "title": "条件 origin 存储扩展",
+      "contracts": [
+        "AC-007"
+      ]
+    },
+    {
+      "id": "T-32",
+      "file": "32-joint-acceptance.md",
+      "title": "三模块联合验收与构建交付",
+      "contracts": [
+        "AC-001",
+        "AC-002",
+        "AC-012",
+        "AC-031",
+        "AC-032"
+      ]
+    }
+  ]
+}

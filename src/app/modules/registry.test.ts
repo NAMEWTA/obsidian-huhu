@@ -8,6 +8,7 @@ import {
 	type ModuleManifest,
 } from '../contracts/module';
 import { ModuleRegistry, type RegistryHost } from './registry';
+import { MANIFESTS } from '../manifests';
 
 type Behavior = {
 	fail?: 'load' | 'activate' | 'dispose';
@@ -16,6 +17,31 @@ type Behavior = {
 	service?: string;
 	retain?: boolean;
 };
+
+test('the shipped browser, versioning and archives factories retain their separate workbench pages', async () => {
+	const pages: string[] = [];
+	const expected = new Map<ModuleId, string[]>([
+		['browser', ['browser']],
+		['versioning', ['revision-review', 'versioning']],
+		['archives', ['archives']],
+	]);
+	for (const [id, names] of expected) {
+		const manifests = MANIFESTS.filter(manifest => manifest.id === id);
+		assert.equal(manifests.length, 1);
+		const manifest = manifests[0]!;
+		assert.equal(manifest.defaultEnabled, true);
+		assert.equal(manifest.platforms.desktop, true);
+		const context = { settings: { bind: () => ({}) }, app: {}, shell: {} } as unknown as ModuleContext;
+		const instance = await (await manifest.load()).default(context);
+		try {
+			assert.deepEqual(Object.keys(instance.pages ?? {}).sort(), names);
+			pages.push(...Object.keys(instance.pages ?? {}));
+		} finally {
+			await instance.dispose('unload');
+		}
+	}
+	assert.equal(new Set(pages).size, 4);
+});
 
 function setup(
 	behaviors: Partial<Record<ModuleId, Behavior>>,

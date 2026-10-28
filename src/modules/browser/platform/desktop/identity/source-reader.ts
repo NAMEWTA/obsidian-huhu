@@ -4,13 +4,13 @@ import { spawn } from 'node:child_process';
 import { createDecipheriv, createHash, randomUUID } from 'node:crypto';
 import { setTimeout as schedule, clearTimeout as cancel } from 'node:timers';
 import type { DetectedBrowser } from '../../../core/cookies';
-import { IdentityError, MAX_IDENTITY_BYTES, planIdentityImport, requireStrictIdentityPlan, type IdentitySeedV1 } from '../../../core/identity';
+import { IdentityError, MAX_IDENTITY_BYTES, planIdentityImport, requireStrictIdentityPlan, clearIdentitySeed, type IdentitySeedV1, type IdentityCapture } from '../../../core/identity';
 import { copyStableDatabase } from '../cookies/snapshot';
 import { getEncryptionKey, type EncryptionKeyResult } from '../cookies/keys';
 import { privateDirectory } from '../persistence/private-files';
 
 export interface IdentitySourceGrant { id: string; kind: 'cookie-file' | 'browser-source'; expiresAt: number }
-interface CapturedSource { seed: IdentitySeedV1; source: 'cookie-file' | 'browser-source'; capturedAt: number; consistency: 'fixed-file' | 'stable-sqlite-snapshot' }
+interface CapturedSource { seed: IdentitySeedV1; source: 'cookie-file' | 'browser-source'; capturedAt: number; consistency: 'fixed-file' | 'stable-sqlite-snapshot'; capture: IdentityCapture }
 type GrantedSource = { kind: 'cookie-file'; path: string } | { kind: 'browser-source'; browser: DetectedBrowser; profileDir: string; domains: readonly string[] };
 export class DesktopIdentitySourceReader {
 	private readonly grants = new Map<string, { source: GrantedSource; expiresAt: number }>();
@@ -30,33 +30,38 @@ export class DesktopIdentitySourceReader {
 	}
 	revoke(): void { this.generation++; this.grants.clear(); for (const controller of this.active) controller.abort(); }
 	async dispose(): Promise<void> { this.disposed = true; this.revoke(); await Promise.allSettled([...this.tasks]); }
-	private track<T>(work: (signal: AbortSignal) => Promise<T>): Promise<T> {
+	private track<T>(work: (signal: AbortSignal) => Promise<T>, signal?: AbortSignal): Promise<T> {
 		const controller = new AbortController(); this.active.add(controller);
-		const task = work(controller.signal).finally(() => { this.active.delete(controller); this.tasks.delete(task); }); this.tasks.add(task); return task;
+		const abort = () => controller.abort(); if (signal?.aborted) abort(); else signal?.addEventListener('abort', abort, { once: true });
+		const task = Promise.resolve().then(() => { if (controller.signal.aborted) throw new IdentityError('cancelled'); return work(controller.signal); }).catch(error => { throw error instanceof IdentityError ? error : new IdentityError('source_unavailable'); }).finally(() => { signal?.removeEventListener('abort', abort); this.active.delete(controller); this.tasks.delete(task); }); this.tasks.add(task); return task;
 	}
 	private consume(id: string) {
 		if (this.disposed) throw new IdentityError('source_grant_invalid');
 		const grant = this.grants.get(id); this.grants.delete(id);
 		if (!grant || grant.expiresAt <= this.clock()) throw new IdentityError('source_grant_invalid'); return grant;
 	}
-	captureFileText(id: string): Promise<string> {
-		return this.track(async (signal) => {
-			const grant = this.consume(id), generation = this.generation;
-			if (grant.source.kind !== 'cookie-file') throw new IdentityError('source_grant_invalid');
-			const text = await fixedText(grant.source.path, MAX_IDENTITY_BYTES);
-			if (this.disposed || signal.aborted || generation !== this.generation) throw new IdentityError('cancelled');
-			if (grant.expiresAt <= this.clock()) throw new IdentityError('source_grant_invalid'); return text;
-		});
+	captureFileText(id: string, signal?: AbortSignal): Promise<string> {
+		return this.captureText(id, signal).then(result => result.text);
 	}
-	capture(id: string): Promise<CapturedSource> { return this.track((signal) => this.captureOnce(id, signal)); }
+	captureText(id: string, signal?: AbortSignal): Promise<{ text: string; capture: IdentityCapture }> {
+		return this.track<{ text: string; capture: IdentityCapture }>(async (signal) => {
+			const grant = this.consume(id), generation = this.generation, startedAt = this.clock();
+			if (grant.source.kind !== 'cookie-file') throw new IdentityError('source_grant_invalid');
+			const fixed = await fixedText(grant.source.path, MAX_IDENTITY_BYTES);
+			if (this.disposed || signal.aborted || generation !== this.generation) throw new IdentityError('cancelled');
+			if (grant.expiresAt <= this.clock()) throw new IdentityError('source_grant_invalid'); return { text: fixed.text, capture: { startedAt, completedAt: this.clock(), consistency: 'fixed-file', digestKind: 'source-bytes', sha256: fixed.sha256 } };
+		}, signal).finally(() => { this.grants.delete(id); });
+	}
+	capture(id: string, signal?: AbortSignal): Promise<CapturedSource> { return this.track((signal) => this.captureOnce(id, signal), signal).finally(() => { this.grants.delete(id); }); }
 	private async captureOnce(id: string, signal: AbortSignal): Promise<CapturedSource> {
-		const grant = this.consume(id), generation = this.generation;
+		const grant = this.consume(id), generation = this.generation, startedAt = this.clock();
 		const check = () => { if (this.disposed || signal.aborted || generation !== this.generation) throw new IdentityError('cancelled'); if (grant.expiresAt <= this.clock()) throw new IdentityError('source_grant_invalid'); };
-		if (grant.source.kind === 'cookie-file') { const text = await fixedText(grant.source.path, MAX_IDENTITY_BYTES); check(); return { seed: requireStrictIdentityPlan(planIdentityImport(text, this.clock())), source: 'cookie-file', capturedAt: this.clock(), consistency: 'fixed-file' }; }
+		check();
+		if (grant.source.kind === 'cookie-file') { const fixed = await fixedText(grant.source.path, MAX_IDENTITY_BYTES); check(); return { seed: requireStrictIdentityPlan(planIdentityImport(fixed.text, this.clock())), source: 'cookie-file', capturedAt: this.clock(), consistency: 'fixed-file', capture: { startedAt, completedAt: this.clock(), consistency: 'fixed-file', digestKind: 'source-bytes', sha256: fixed.sha256 } }; }
 		const { browser, profileDir, domains } = grant.source, profile = browser.profiles.find((item) => item.directory === profileDir);
 		if (!profile) throw new IdentityError('source_grant_invalid');
 		const parent = await privateDirectory(this.options.temporaryDirectory), temporary = join(parent, randomUUID());
-		await fs.mkdir(temporary, { mode: 0o700 }); let key: EncryptionKeyResult | null = null;
+		await fs.mkdir(temporary, { mode: 0o700 }); let key: EncryptionKeyResult | null = null, seed: IdentitySeedV1 | undefined, outcome: CapturedSource | undefined, failure: IdentityError | undefined;
 		try {
 			if (await fs.realpath(dirname(profile.cookiesPath)) !== resolve(dirname(profile.cookiesPath))) throw new IdentityError('source_unavailable');
 			for (const suffix of ['', '-wal', '-shm']) {
@@ -66,21 +71,24 @@ export class DesktopIdentitySourceReader {
 			await copyStableDatabase(profile.cookiesPath, join(temporary, 'Cookies')); check();
 			if (await fs.realpath(dirname(profile.cookiesPath)) !== resolve(dirname(profile.cookiesPath))) throw new IdentityError('source_changed');
 			if (browser.kind === 'chromium') {
-				if (process.platform === 'win32') { const state = await fixedText(join(browser.root, 'Local State'), 16 * 1024 * 1024); check(); await fs.writeFile(join(temporary, 'Local State'), state, { mode: 0o600, flag: 'wx' }); }
+				if (process.platform === 'win32') { const state = await fixedText(join(browser.root, 'Local State'), 16 * 1024 * 1024); check(); await fs.writeFile(join(temporary, 'Local State'), state.text, { mode: 0o600, flag: 'wx' }); }
 				key = await getEncryptionKey({ ...browser, root: process.platform === 'win32' ? temporary : browser.root }); check();
 			}
 			const executable = await this.options.readerExecutable(); check();
 			const raw = await readNative(executable, join(temporary, 'Cookies'), browser.kind, signal); check();
-			const seed = requireStrictIdentityPlan(planIdentityImport(JSON.stringify(sourceRows(raw, browser.kind, key, domains)), this.clock())); check();
-			return { seed, source: 'browser-source', capturedAt: this.clock(), consistency: 'stable-sqlite-snapshot' };
-		} catch (error) { if (error instanceof IdentityError) throw error; throw new IdentityError('source_unavailable'); }
+			seed = requireStrictIdentityPlan(planIdentityImport(JSON.stringify(sourceRows(raw, browser.kind, key, domains)), this.clock())); check();
+			const metadata = raw as { columns: string[]; databaseVersion: string | null };
+			outcome = { seed, source: 'browser-source', capturedAt: this.clock(), consistency: 'stable-sqlite-snapshot', capture: { startedAt, completedAt: this.clock(), consistency: 'stable-sqlite-snapshot', digestKind: 'reader-response', sha256: createHash('sha256').update(JSON.stringify(raw)).digest('hex'), readerSchemaVersion: 2, ...(metadata.databaseVersion !== null ? { databaseVersion: Number(metadata.databaseVersion) } : {}), fields: [...metadata.columns].sort() } };
+		} catch (error) { if (seed) clearIdentitySeed(seed); failure = error instanceof IdentityError ? error : new IdentityError('source_unavailable'); }
 		finally {
 			if (key?.mode === 'aes-256-gcm') key.key.fill(0); else if (key?.mode === 'aes-128-cbc') { key.keysByVersion.v10?.fill(0); key.keysByVersion.v11?.fill(0); }
-			try { await fs.rm(temporary, { recursive: true, force: true }); } catch { await this.options.recordCleanupFailure(temporary); }
 		}
+		try { await fs.rm(temporary, { recursive: true, force: true }); } catch { if (seed) clearIdentitySeed(seed); try { await this.options.recordCleanupFailure(temporary); } catch { /* The owned staging directory remains discoverable during cleanup recovery. */ } throw new IdentityError('cleanup_pending'); }
+		if (failure) throw failure; if (!outcome) throw new IdentityError('source_unavailable');
+		try { check(); } catch (error) { if (seed) clearIdentitySeed(seed); throw error; } return outcome;
 	}
 }
-async function fixedText(file: string, maximum: number): Promise<string> {
+async function fixedText(file: string, maximum: number): Promise<{ text: string; sha256: string }> {
 	const stat = await fs.lstat(file);
 	if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > maximum) throw new IdentityError(stat.size > maximum ? 'too_large' : 'source_unavailable');
 	const handle = await fs.open(file, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0));
@@ -92,7 +100,7 @@ async function fixedText(file: string, maximum: number): Promise<string> {
 			while (offset < bytes.length) { const result = await handle.read(bytes, offset, bytes.length - offset, offset); if (!result.bytesRead) throw new IdentityError('source_changed'); offset += result.bytesRead; }
 			const after = await handle.stat({ bigint: true }), current = await fs.lstat(file, { bigint: true });
 			if (after.size !== before.size || after.mtimeNs !== before.mtimeNs || after.ctimeNs !== before.ctimeNs || current.ino !== before.ino || current.dev !== before.dev) throw new IdentityError('source_changed');
-			try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch { throw new IdentityError('invalid_format'); }
+			try { return { text: new TextDecoder('utf-8', { fatal: true }).decode(bytes), sha256: createHash('sha256').update(bytes).digest('hex') }; } catch { throw new IdentityError('invalid_format'); }
 		} finally { bytes.fill(0); }
 	} finally { await handle.close(); }
 }
@@ -135,13 +143,24 @@ function decrypt(hex: unknown, host: string, databaseVersion: number | undefined
 export function sourceRows(raw: unknown, kind: 'chromium' | 'firefox', key: EncryptionKeyResult | null, domains: readonly string[] = []): unknown[] {
 	if (!record(raw) || raw.schemaVersion !== 2 || raw.kind !== kind || !Array.isArray(raw.rows) || raw.rows.length > 50000 || !Array.isArray(raw.columns)) throw new IdentityError('source_unavailable');
 	const version = raw.databaseVersion === null ? undefined : Number(raw.databaseVersion);
+	if (raw.columns.some(column => typeof column !== 'string') || new Set(raw.columns).size !== raw.columns.length || version !== undefined && (!Number.isSafeInteger(version) || version < 1)) throw new IdentityError('source_unavailable');
+	const columns = new Set(raw.columns);
+	const required = kind === 'chromium' ? ['host_key', 'name', 'value', 'path', 'expires_utc', 'has_expires', 'is_secure', 'is_httponly', 'samesite'] : ['host', 'name', 'value', 'path', 'expiry', 'isSecure', 'isHttpOnly', 'sameSite', 'originAttributes'];
+	if (kind === 'chromium') required.push('encrypted_value', 'priority', ...(version !== undefined && version < 12 ? [] : ['source_scheme']), ...(version !== undefined && version < 13 ? [] : ['source_port']));
+	if (required.some(column => !columns.has(column))) throw new IdentityError('unsupported_cookie');
+	// Chromium's schema history: v15 adds partition keys, v21 removes SameParty,
+	// v23 adds the ancestor bit. Known older ordinary cookies remain representable;
+	// absent modern fields are not evidence that a cookie was unpartitioned.
+	// https://chromium.googlesource.com/chromium/src/+/8f93c3443faacdb1096ada43a496bb07238c3137/net/extras/sqlite/sqlite_persistent_cookie_store.cc
+	if (kind === 'chromium' && (!columns.has('top_frame_site_key') && !(version !== undefined && version >= 11 && version < 15) || !columns.has('has_cross_site_ancestor') && !(version !== undefined && version >= 11 && version < 23) || !columns.has('is_same_party') && !(version !== undefined && (version >= 11 && version < 13 || version >= 21)))) throw new IdentityError('unsupported_cookie');
 	return raw.rows.filter((row: unknown) => {
 		if (!record(row) || typeof row.host_key !== 'string') throw new IdentityError('source_unavailable');
 		return !domains.length || domains.some((domain) => row.host_key === domain || row.host_key === `.${domain}` || (typeof row.host_key === 'string' && row.host_key.endsWith(`.${domain}`)));
 	}).map((row: unknown) => {
 		if (!record(row) || typeof row.host_key !== 'string' || typeof row.value !== 'string') throw new IdentityError('source_unavailable');
-		if (kind === 'firefox' && row.origin_attributes !== null && row.origin_attributes !== '') throw new IdentityError('unsupported_cookie');
-		if (kind === 'chromium' && row.is_same_party === 1) throw new IdentityError('unsupported_cookie');
+		if (kind === 'firefox' && row.origin_attributes !== '') throw new IdentityError('unsupported_cookie');
+		if (kind === 'chromium' && (columns.has('is_same_party') && row.is_same_party !== 0 || columns.has('has_cross_site_ancestor') && row.has_cross_site_ancestor !== 0 && row.has_cross_site_ancestor !== 1 || columns.has('top_frame_site_key') && typeof row.top_frame_site_key !== 'string' || row.has_expires !== 0 && row.has_expires !== 1)) throw new IdentityError('unsupported_cookie');
+		if (kind === 'chromium' && (typeof row.encrypted_value_hex !== 'string' || ![0, 1, 2].includes(row.priority as number) || columns.has('source_scheme') && ![0, 1, 2].includes(row.source_scheme as number) || columns.has('source_port') && (typeof row.source_port !== 'number' || !Number.isInteger(row.source_port)))) throw new IdentityError('unsupported_cookie');
 		const value = typeof row.encrypted_value_hex === 'string' && row.encrypted_value_hex ? decrypt(row.encrypted_value_hex, row.host_key, version, key) : row.value;
 		let expiry: number;
 		try { expiry = kind === 'firefox' ? Number(row.expiry) : Number(BigInt(String(row.expires_utc)) - 11644473600000000n) / 1000000; } catch { throw new IdentityError('source_unavailable'); }

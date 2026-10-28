@@ -12,6 +12,7 @@ import { onLeafLanguageChanged } from '../../../host/obsidian/workspace-title';
 import { confirm, ct, deleteRow, editBase, errorText, FilterModal, type EditScope } from './forms';
 import type { ContactsHost } from '../services/page-host';
 import type { ContactsPanelState } from './panel-contract';
+import { ArchiveWorkspace } from './ArchiveWorkspace';
 import { ContactsSurface } from './surface';
 import { ArchiveNoteModal } from './note-modal';
 import type { ArchiveResource } from '../core/resources';
@@ -24,6 +25,13 @@ export class ContactsPresentation extends ReactSurface {
 	private history: Array<{ path: string; id: string }> = [];
 	private editor?: Omit<ArchiveEditorProps, 'ref'>;
 	private editorKey = 0;
+	private generic = false;
+	private genericPath?: string;
+	private readonly draftContext = crypto.randomUUID();
+	private genericLeave?: () => Promise<boolean>;
+	openGeneric = (path?: string): void => { this.genericPath = path; this.generic = true; this.render(); this.context.changed?.(); };
+	private closeGeneric = (): void => { this.generic = false; this.genericLeave = undefined; this.render(); this.context.changed?.(); };
+	private registerArchiveLeave = (check: (() => Promise<boolean>) | undefined): void => { this.genericLeave = check; };
 	private editorRequest = 0;
 	private editorOrigin?: { path: string; scroll: number };
 	private editorHandle: { current: ArchiveEditorHandle | null } = { current: null };
@@ -128,7 +136,8 @@ export class ContactsPresentation extends ReactSurface {
 		this.unsubscribe = undefined;
 	}
 	protected renderContent() {
-		return this.editor ? (
+		const draftScope = this.draftContext + ":" + this.host.controller.root + (this.genericPath ? ":" + this.genericPath : "");
+		return this.generic ? <ArchiveWorkspace initialPath={this.genericPath} key={draftScope} drafts={this.host.drafts} draftScope={draftScope} services={this.host.archives} onClose={this.closeGeneric} registerLeave={this.registerArchiveLeave} /> : this.editor ? (
 			<ArchiveEditor key={this.editorKey} {...this.editor} ref={this.editorHandle} />
 		) : (
 			<ContactsSurface view={this} />
@@ -141,11 +150,13 @@ export class ContactsPresentation extends ReactSurface {
 		const target = contactsTarget(this.state);
 		// A form is a distinct live route so clicking its current category is not
 		// swallowed by the shell's repeated-target shortcut. No draft is serialized.
-		return this.editor ? { ...target, focusId: 'archive-editor' } : target;
+		return this.editor || this.generic ? { ...target, focusId: 'archive-editor' } : target;
 	}
 	async setState(raw: Record<string, unknown>, result: ViewStateResult): Promise<void> {
 		this.state = restoreContactsState(raw, this.host.settings.get().layouts);
-		if (this.app.workspace.layoutReady) await this.controller?.ensureLoaded();
+		const state = this.state, controller = this.controller, root = controller?.root;
+		if (this.app.workspace.layoutReady) await controller?.ensureLoaded();
+		if (this.state !== state || this.controller !== controller || controller?.root !== root) return;
 		if (
 			this.app.workspace.layoutReady &&
 			this.controller &&
@@ -153,9 +164,10 @@ export class ContactsPresentation extends ReactSurface {
 			!this.controller.index.byPath.has(this.state.selectedPath) &&
 			!this.controller.index.get(this.state.selectedId)
 		) {
-			this.state.selectedPath = '';
-			this.state.selectedId = '';
-			this.persist();
+			const matches = (await this.controller.archives.snapshot()).entities.filter(entity => entity.formatVersion === 2 && ['type-person', 'type-company'].includes(entity.typeId) && (entity.path === this.state.selectedPath || entity.id === this.state.selectedId));
+			if (this.state !== state || this.controller !== controller || controller?.root !== root) return;
+			if (matches.length === 1) { this.generic = true; this.genericPath = matches[0]!.path; }
+			else { this.state.selectedPath = ''; this.state.selectedId = ''; this.persist(); }
 		}
 		this.render();
 		await super.setState(raw, result);
@@ -325,6 +337,7 @@ export class ContactsPresentation extends ReactSurface {
 	/** Leave an open form first (asking about unsaved changes); used before navigating elsewhere in the page. */
 	leaveEditor(): Promise<boolean> {
 		this.editorRequest++;
+		if (this.generic) return this.genericLeave?.() ?? Promise.resolve(false);
 		return this.editor ? this.editorHandle.current?.close() ?? Promise.resolve(false) : Promise.resolve(true);
 	}
 	deleteRow(record: ArchiveRecord, scope: 'employment' | 'relation', id: string): void {
@@ -419,7 +432,7 @@ export class ContactsPresentation extends ReactSurface {
 					this.app,
 					ct('deleteFolderPrompt', {
 						name: record.fields.name,
-						count,
+						count: count + (base.relations ?? 0),
 						folder: base.folderPath,
 						resources: base.resources,
 					}),

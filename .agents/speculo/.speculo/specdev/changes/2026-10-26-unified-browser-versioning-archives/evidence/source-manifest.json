@@ -1,0 +1,53 @@
+{
+  "captured_at": "2026-10-26T08:13:28.214Z",
+  "files": [
+    {
+      "path": "source.md",
+      "sha256": "23b1bd347dedc12f9770e798f5a028e81df1858274eab87a4efee054a7610d20"
+    },
+    {
+      "path": "sources/SRC-001.md",
+      "sha256": "52720fa9516383099c5999fee415b5a91e1af6095127c15ea5575f3fc99e7e0e"
+    },
+    {
+      "path": "sources/SRC-002.md",
+      "sha256": "9a43c28cd125c5204b6a19e573cc9c130fe0384b73c8d1a7f658555eddbd4c05"
+    },
+    {
+      "path": "sources/SRC-003.md",
+      "sha256": "057de2a55817addc9ef9b99b3b72f3608bb84891007b295ec131ff220dff8a3a"
+    },
+    {
+      "path": "sources/SRC-004.md",
+      "sha256": "063bbeecb3723c9cadf523d39de56949e785bce5736277722ce75615ec34fa96"
+    },
+    {
+      "path": "evidence/pr-4.patch",
+      "sha256": "288da3ece2f4bce701be1f6954531fa1cb7d724fd2a8378c45eccd9630cad2f4"
+    },
+    {
+      "path": "sources/SRC-005.md",
+      "sha256": "0264508fed618db661a262b74435445879ff6bc30f42375ba5162db059d2b669"
+    },
+    {
+      "path": "evidence/pr-5.patch",
+      "sha256": "90644ee8d0156211109e8c7927f147178d850ef2e6e70b352d23e786358ce5cd"
+    },
+    {
+      "path": "sources/issue-1-body.md",
+      "sha256": "0ff048d42bfa99e5098781a27adcaac6a2e54b1b6a3e8a10d1a7e983a3681e98"
+    },
+    {
+      "path": "sources/issue-2-body.md",
+      "sha256": "43ba8eaf7585045995b05bef80b85cfeeaa8e9d9bc714f075266eca9ec0315db"
+    },
+    {
+      "path": "sources/issue-3-body.md",
+      "sha256": "d3db125f2e97d8ed3af1d26bde5cc17e700dc28b90bac6cecbc2b679bddfbf93"
+    },
+    {
+      "path": "sources/SRC-006.md",
+      "sha256": "ffb59b3ab2b6a00df40f52f3410f14ed4496f8950d1a232063aa890f675d7fdc"
+    }
+  ]
+}

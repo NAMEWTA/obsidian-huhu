@@ -1,6 +1,6 @@
 import type { BrowserWorkspaceService } from './workspace';
-import { AgentBrowserError, type OperationRecord, type RunGrant } from '../core/contracts';
-import { parseMethod, protocolTools, type BrowserMethod } from '../core/protocol';
+import { AgentBrowserError, type BrowserObservation, type OperationRecord, type RunGrant } from '../core/contracts';
+import { parseMethod, parseEventResult, protocolTools, type BrowserMethod } from '../core/protocol';
 
 export interface ConnectionGrant {
 	spaceId: string;
@@ -17,6 +17,22 @@ export class BrowserProtocolService {
 	/** Must run synchronously at the last transport boundary, after all asynchronous ownership checks. */
 	finalize(method: BrowserMethod, params: unknown, grant: ConnectionGrant, result: unknown): unknown {
 		if (method === 'run.stop') return { stopped: true };
+		if (method === 'events.poll' || method === 'events.snapshot') {
+			const p = parseMethod(method, params); this.queryOwn(grant, p.runId, p.capability);
+			const current = this.workspace.eventIdentity(p.runId, p.capability);
+			const active = current.active && this.connectionActive(grant);
+			if (method === 'events.snapshot') {
+				const snapshot = parseEventResult('events.snapshot', result);
+				if (snapshot.runId !== current.runId || snapshot.spaceId !== current.spaceId || snapshot.runtimeId !== current.runtimeId || snapshot.cursor > current.cursor || snapshot.streamId !== current.streamId || snapshot.runEpoch !== current.runEpoch || snapshot.generation !== current.generation || snapshot.active !== active) throw new AgentBrowserError('resync_required');
+				return snapshot;
+			}
+			const poll = parseMethod('events.poll', params), rows = parseEventResult('events.poll', result);
+			// The original response may be empty. Recheck the same replay gate after the
+			// transport's final await, without adding newly arrived rows to that response.
+			this.workspace.events(poll.runId, poll.capability, poll.afterSequence, poll.streamId);
+			if (poll.streamId && poll.streamId !== current.streamId || rows.some(row => row.spaceId !== current.spaceId || row.runtimeId !== current.runtimeId || row.streamId !== current.streamId || row.sequence > current.cursor)) throw new AgentBrowserError('resync_required');
+			return active ? rows : rows.filter(row => ['controlChanged', 'operationChanged', 'runtimeFault', 'cleanupChanged'].includes(row.type));
+		}
 		if (
 			method === 'operation.get' ||
 			method === 'operation.prepare' ||
@@ -31,15 +47,10 @@ export class BrowserProtocolService {
 		}
 		if (method === 'batch') {
 			const p = parseMethod(method, params);
+			const batch = result as { results: OperationRecord[]; completedCount: number; failedIndex?: number; truncated?: boolean };
 			try {
 				this.own(grant, p.runId, p.capability);
 			} catch {
-				const batch = result as {
-					results: OperationRecord[];
-					completedCount: number;
-					failedIndex?: number;
-					truncated?: boolean;
-				};
 				return {
 					...batch,
 					results: batch.results.map((record) => {
@@ -50,7 +61,7 @@ export class BrowserProtocolService {
 					error: 'run_revoked',
 				};
 			}
-			return result;
+			return { ...batch, results: batch.results.map(record => this.metadata(grant, p.runId, p.capability, record)) };
 		}
 		this.current(grant);
 		if (method === 'space.create' || method === 'run.start') {
@@ -62,13 +73,23 @@ export class BrowserProtocolService {
 			const p = parseMethod(method, params);
 			if ('runId' in p && 'capability' in p) this.own(grant, p.runId, p.capability);
 		}
+		if (method === 'observe') {
+			const p = parseMethod(method, params), observation = result as BrowserObservation | undefined;
+			if (!observation || !this.observationCurrent(p.runId, p.capability, p.pageId, observation))
+				throw new AgentBrowserError('observation_stale');
+		}
 		return result;
 	}
-	async call(method: BrowserMethod, params: unknown, grant: ConnectionGrant): Promise<unknown> {
-		return this.finalize(method, params, grant, await this.dispatch(method, params, grant));
+	async call(method: BrowserMethod, params: unknown, grant: ConnectionGrant, remainingMs?: () => number): Promise<unknown> {
+		return this.finalize(method, params, grant, await this.dispatch(method, params, grant, remainingMs));
 	}
 	private current(grant: ConnectionGrant) {
 		this.workspace.health(grant.runId, grant.capability);
+	}
+	private connectionActive(grant: ConnectionGrant) { try { this.current(grant); return true; } catch { return false; } }
+	private queryOwn(grant: ConnectionGrant, runId: string, capability: string) {
+		const own = runId === grant.runId ? grant.capability : grant.runs.get(runId)?.capability;
+		if (own !== capability) throw new AgentBrowserError('capability_scope_mismatch');
 	}
 	private own(grant: ConnectionGrant, runId: string, capability: string) {
 		this.current(grant);
@@ -91,10 +112,22 @@ export class BrowserProtocolService {
 		const result = { ...record };
 		try {
 			this.own(grant, runId, capability);
+			const value = result.result;
+			if (value && typeof value === 'object' && !Array.isArray(value) && Array.isArray(value.coverage) && Array.isArray(value.nodes)) {
+				if (!record.scope.pageId || !this.observationCurrent(runId, capability, record.scope.pageId, value as unknown as BrowserObservation)) {
+					delete result.result;
+					result.error = 'observation_stale';
+				}
+			}
 		} catch {
 			delete result.result;
 		}
 		return result;
+	}
+	private observationCurrent(runId: string, capability: string, pageId: string, observation: BrowserObservation): boolean {
+		const page = this.workspace.pageList(runId, capability).find(page => page.id === pageId);
+		const health = this.workspace.health(runId, capability);
+		return !!page && observation.pageId === pageId && observation.scope?.pageId === pageId && observation.scope.spaceId === observation.spaceId && observation.runtimeId === health.runtimeId && observation.epoch === health.epoch && observation.documentId === page.documentId && observation.viewportVersion === page.viewportVersion;
 	}
 	private async operation(
 		grant: ConnectionGrant,
@@ -105,7 +138,13 @@ export class BrowserProtocolService {
 		this.own(grant, runId, capability);
 		return this.metadata(grant, runId, capability, await work());
 	}
-	private async dispatch(method: BrowserMethod, params: unknown, grant: ConnectionGrant): Promise<unknown> {
+	private async dispatch(method: BrowserMethod, params: unknown, grant: ConnectionGrant, remainingMs?: () => number): Promise<unknown> {
+		if (method === 'events.poll' || method === 'events.snapshot') {
+			const p = parseMethod(method, params); this.queryOwn(grant, p.runId, p.capability);
+			if (method === 'events.snapshot') return this.workspace.eventSnapshot(p.runId, p.capability, !this.connectionActive(grant));
+			const poll = parseMethod('events.poll', params);
+			return this.workspace.events(poll.runId, poll.capability, poll.afterSequence, poll.streamId);
+		}
 		if (method === 'operation.get') {
 			const p = parseMethod(method, params);
 			const own = p.runId === grant.runId ? grant.capability : grant.runs.get(p.runId)?.capability;
@@ -141,6 +180,7 @@ export class BrowserProtocolService {
 					const space = await this.workspace.createSpace(
 						{ kind: 'task', label: p.label, ephemeral: p.ephemeral, url: p.url },
 						`connection:${grant.runId}:${p.requestId}`,
+						remainingMs?.(),
 					);
 					try {
 						this.current(grant);
@@ -196,31 +236,31 @@ export class BrowserProtocolService {
 			case 'page.open': {
 				const p = parseMethod(method, params);
 				return this.operation(grant, p.runId, p.capability, () =>
-					this.workspace.pageOpen(p.runId, p.capability, p.requestId, p.url),
+					this.workspace.pageOpen(p.runId, p.capability, p.requestId, p.url, remainingMs?.()),
 				);
 			}
 			case 'page.close': {
 				const p = parseMethod(method, params);
 				return this.operation(grant, p.runId, p.capability, () =>
-					this.workspace.pageClose(p.runId, p.capability, p.requestId, p.pageId),
+					this.workspace.pageClose(p.runId, p.capability, p.requestId, p.pageId, remainingMs?.()),
 				);
 			}
 			case 'observe': {
 				const p = parseMethod(method, params);
 				return this.content(grant, p.runId, p.capability, () =>
-					this.workspace.observe(p.runId, p.capability, p.pageId),
+					this.workspace.observe(p.runId, p.capability, p.pageId, p.scope),
 				);
 			}
 			case 'operation.prepare': {
 				const p = parseMethod(method, params);
 				return this.operation(grant, p.runId, p.capability, () =>
-					this.workspace.prepare(p.runId, p.capability, p.pageId, p.requestId, p.command),
+					this.workspace.prepare(p.runId, p.capability, p.pageId, p.requestId, p.command, remainingMs?.()),
 				);
 			}
 			case 'operation.execute': {
 				const p = parseMethod(method, params);
 				return this.operation(grant, p.runId, p.capability, () =>
-					this.workspace.execute(p.runId, p.capability, p.operationId, p.command),
+					this.workspace.execute(p.runId, p.capability, p.operationId, p.command, remainingMs),
 				);
 			}
 			case 'file.list': {
@@ -238,11 +278,6 @@ export class BrowserProtocolService {
 				this.own(grant, p.runId, p.capability);
 				return this.workspace.health(p.runId, p.capability);
 			}
-			case 'events.poll': {
-				const p = parseMethod(method, params);
-				this.own(grant, p.runId, p.capability);
-				return this.workspace.events(p.runId, p.capability, p.afterSequence);
-			}
 			case 'batch': {
 				const p = parseMethod(method, params);
 				this.own(grant, p.runId, p.capability);
@@ -258,9 +293,10 @@ export class BrowserProtocolService {
 							p.pageId,
 							`${p.requestId}:${index}`,
 							command,
+							remainingMs?.(),
 						);
 						this.own(grant, p.runId, p.capability);
-						const result = await this.workspace.execute(p.runId, p.capability, ticket.id, command);
+						const result = await this.workspace.execute(p.runId, p.capability, ticket.id, command, remainingMs);
 						const safe = this.metadata(grant, p.runId, p.capability, result);
 						bytes += new TextEncoder().encode(JSON.stringify(safe)).byteLength;
 						if (bytes > 8 * 1024 * 1024) {

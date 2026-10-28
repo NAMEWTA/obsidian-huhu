@@ -2,6 +2,12 @@ import { Chunk } from '@codemirror/merge';
 import { Text } from '@codemirror/state';
 
 export type DiffLayout = 'side-by-side' | 'stacked' | 'unified';
+export interface DiffPreferences {
+	readonly swapped: boolean;
+	readonly syncScroll: boolean;
+	readonly stackedRatio: number;
+}
+export const DEFAULT_DIFF_PREFERENCES: DiffPreferences = { swapped: false, syncScroll: true, stackedRatio: 50 };
 export type DiffSide = 'a' | 'b';
 
 export interface DiffChange {

@@ -73,7 +73,9 @@ try {
  await until(`document.querySelector('[data-layout="side-by-side"]')`); await runtime.shot('history-side-by-side');
  await click(`[...document.querySelectorAll('[role="radio"]')].find(el=>el.textContent.trim()==='Stacked')`);
  await until(`document.querySelector('[data-layout="stacked"]')`); await runtime.shot('history-stacked');
- check('real-host-both-comparison-layouts',true);
+ await click(`[...document.querySelectorAll('[role="radio"]')].find(el=>el.textContent.trim()==='Unified')`);
+ await until(`document.querySelector('[data-layout="unified"]')?.querySelectorAll('.cm-editor').length===1`); await runtime.shot('history-unified');
+ check('real-host-three-comparison-layouts',true);
  await click(button('Restore to current note')); await until(`document.querySelector('[role="alertdialog"]')`);
  await click(button('Cancel',`document.querySelector('[role="alertdialog"]')`)); await until(`!document.querySelector('[role="alertdialog"]')`);
  check('native-restore-dialog-cancel-is-readonly',await c.evaluate(`probeSource.view.editor.getValue()===${JSON.stringify(current)}&&!probeHost.sync.snapshot.device.restoreHold`));

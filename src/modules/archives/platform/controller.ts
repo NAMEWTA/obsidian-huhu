@@ -5,16 +5,29 @@ import guide from '../core/persist/format-guide.md';
 import englishGuide from '../core/persist/format-guide-en.md';
 import type { ContactsSettings } from '../../../shared/contacts-settings';
 import { getLanguage } from '../../../shared/i18n';
+import { DocumentMutationCoordinator } from '../../../host/obsidian/document-mutation';
+import { ContactsError } from '../core/model';
 /** Native lifecycle, Vault IO and protection of unsaved editor content. */
 export class ContactsController extends Component {
 	private readonly application: ContactsApplication;
+	private documents?: DocumentMutationCoordinator;
 	constructor(
 		readonly app: App,
 		getSettings: () => ContactsSettings,
 	) {
 		super();
-		const files = vaultContactsFiles(app, () => (getLanguage() === 'en' ? englishGuide : guide));
+		const files = vaultContactsFiles(
+			app,
+			() => (getLanguage() === 'en' ? englishGuide : guide),
+			() => {
+				if (!this.documents) throw new ContactsError('disabled');
+				return this.documents;
+			},
+		);
 		this.application = new ContactsApplication(files, getSettings);
+	}
+	get archives() {
+		return this.application.archives;
 	}
 	get index() {
 		return this.application.index;
@@ -37,16 +50,19 @@ export class ContactsController extends Component {
 		return path === root || path.startsWith(root + '/');
 	}
 	onload(): void {
+		this.documents = new DocumentMutationCoordinator(this.app, { lifetime: this, resolveLeaf: () => undefined });
 		this.application.activate();
 		const { vault } = this.app;
 		const changed = (file: TAbstractFile) => {
-			if (this.app.workspace.layoutReady && file instanceof TFile && this.under(file.path)) this.application.fileChanged(file);
+			if (this.app.workspace.layoutReady && file instanceof TFile && this.under(file.path))
+				this.application.fileChanged(file);
 		};
 		this.registerEvent(vault.on('create', changed));
 		this.registerEvent(vault.on('modify', changed));
 		this.registerEvent(
 			vault.on('delete', (file) => {
-				if (this.app.workspace.layoutReady && this.under(file.path)) this.application.fileDeleted(file.path, file instanceof TFolder);
+				if (this.app.workspace.layoutReady && this.under(file.path))
+					this.application.fileDeleted(file.path, file instanceof TFolder);
 			}),
 		);
 		this.registerEvent(
@@ -58,6 +74,7 @@ export class ContactsController extends Component {
 	}
 	onunload(): void {
 		this.application.dispose();
+		this.documents = undefined;
 	}
 	saveReminder = (
 		...args: Parameters<ContactsApplication['saveReminder']>

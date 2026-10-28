@@ -135,7 +135,7 @@ export function RecordDetail({ view, record }: { view: ContactsPanelHost; record
 	const index = controller.index;
 	const issues = index.issues(record),
 		blocked = issues.length > 0;
-	const edit = (scope: Parameters<ContactsPanelHost['edit']>[1], id?: string) => view.edit(record, scope, id);
+	const edit = (scope: Parameters<ContactsPanelHost['edit']>[1], id?: string) => { if (scope === 'employment' || scope === 'relation') view.openGeneric?.(record.path); else view.edit(record, scope, id); };
 	const rows = (
 		['mobiles', 'phones', 'emails', 'wechat', 'region', 'website', 'aliases', 'birthday', 'birthplace'] as const
 	)
@@ -240,7 +240,7 @@ export function RecordDetail({ view, record }: { view: ContactsPanelHost; record
 											<Action
 												icon="trash-2"
 												label={ct('delete')}
-												action={() => view.deleteRow(record, 'employment', job.id)}
+												action={() => view.openGeneric?.(record.path)}
 												disabled={blocked}
 											/>
 										</RowActions>
@@ -309,7 +309,7 @@ export function RecordDetail({ view, record }: { view: ContactsPanelHost; record
 										<Action
 											icon="trash-2"
 											label={ct('delete')}
-											action={() => view.deleteRow(entry.owner, 'relation', entry.relation.id)}
+											action={() => view.openGeneric?.(entry.owner.path)}
 											disabled={!!index.issues(entry.owner).length}
 										/>
 									</RowActions>
@@ -381,6 +381,9 @@ export function RecordDetail({ view, record }: { view: ContactsPanelHost; record
 					</DropdownMenu>
 				</div>
 			</header>
+			{view.openGeneric && <Button variant="outline" onClick={() => view.openGeneric?.(record.path)}>{ct('independentRelations')}</Button>}
+			{view.openGeneric && <Button variant="outline" onClick={() => view.openGeneric?.(record.path)}>{ct('migrateLegacy')}</Button>}
+			<p className="text-sm text-muted-foreground">{ct('migrationRequired')}</p>
 			{view.state.focus === 'body' && (
 				<p className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
 					{bodyLine ? ct('bodyHint', { line: bodyLine }) : ct('bodyHintUnmapped')}

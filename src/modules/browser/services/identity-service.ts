@@ -1,4 +1,4 @@
-import { IdentityError, hasIdentityControls, identityIdValid, planIdentityImport, requireStrictIdentityPlan, cloneIdentitySeed, clearIdentitySeed, type CredentialStorePort, type IdentityImportPlan, type IdentityImportPreview, type IdentitySeedV1, type IdentitySourceKind, type IdentityVersion, type IdentityVersionSummary } from '../core/identity';
+import { IdentityError, hasIdentityControls, identityIdValid, planIdentityImport, requireStrictIdentityPlan, cloneIdentitySeed, clearIdentitySeed, type CredentialStorePort, type IdentityImportPlan, type IdentityImportPreview, type IdentitySeedV1, type IdentitySourceKind, type IdentityVersion, type IdentityVersionSummary, type IdentityCapture } from '../core/identity';
 
 export interface SecretUsePermit { id: string; versionId: string; spaceId: string; expiresAt: number }
 export type PreparedIdentitySummary = IdentityImportPreview;
@@ -6,26 +6,27 @@ const summary = (version: IdentityVersion, persistent: boolean): IdentityVersion
 
 /** Only trusted human composition can issue these source/secret permissions. */
 export class IdentityService {
-	private readonly prepared = new Map<string, { plan: IdentityImportPlan; label: string; source: IdentitySourceKind; expiresAt: number }>();
+	private readonly prepared = new Map<string, { plan: IdentityImportPlan; label: string; source: IdentitySourceKind; expiresAt: number; controller: AbortController; saving: boolean; capture: IdentityCapture }>();
 	private readonly ephemeral = new Map<string, IdentityVersion>();
 	private readonly permits = new Map<string, SecretUsePermit>();
 	private generation = 0;
 	private locked = false;
 	constructor(private readonly credentials: CredentialStorePort, private readonly clock: () => number, private readonly id: () => string) {}
 	private active(generation = this.generation): void { if (this.locked || this.generation !== generation) throw new IdentityError('identity_locked'); }
-	prepareText(label: string, text: string, source: IdentitySourceKind = 'cookie-file'): IdentityImportPreview {
+	prepareText(label: string, text: string, source: IdentitySourceKind = 'cookie-file', capture?: IdentityCapture): IdentityImportPreview {
 		this.active(); this.sweep();
 		if (!label.trim() || label.length > 256 || hasIdentityControls(label)) throw new IdentityError('invalid_format');
 		if (this.prepared.size >= 8) throw new IdentityError('too_large');
 		const planId = this.id(), plan = planIdentityImport(text, this.clock()), domains = new Map<string, number>();
+		if (plan.seed.origins.length) { plan.counts.unsupported++; plan.issues.push({ index: -1, code: 'unsupported_storage' }); }
 		for (const cookie of plan.seed.cookies) domains.set(cookie.domain, (domains.get(cookie.domain) ?? 0) + 1);
-		this.prepared.set(planId, { plan, label: label.trim(), source, expiresAt: this.clock() + 300000 });
+		this.prepared.set(planId, { plan, label: label.trim(), source, expiresAt: this.clock() + 300000, controller: new AbortController(), saving: false, capture: capture ? structuredClone(capture) : { startedAt: this.clock(), completedAt: this.clock(), consistency: source === 'manual-login' ? 'runtime-readback' : 'provided-text' } });
 		return { planId, counts: { ...plan.counts }, originCount: plan.seed.origins.length, issues: plan.issues.map((issue) => ({ ...issue })), domains: [...domains].map(([domain, count]) => ({ domain, count })).sort((a, b) => a.domain.localeCompare(b.domain)) };
 	}
-	discardPlan(planId: string): void { const item = this.prepared.get(planId); if (item) clearIdentitySeed(item.plan.seed); this.prepared.delete(planId); }
-	async savePrepared(planId: string, storage: 'persistent' | 'ephemeral' = 'persistent', domains?: readonly string[]): Promise<IdentityVersionSummary> {
+	discardPlan(planId: string): void { const item = this.prepared.get(planId); if (item) { item.controller.abort(); clearIdentitySeed(item.plan.seed); } this.prepared.delete(planId); }
+	async savePrepared(planId: string, storage: 'persistent' | 'ephemeral' = 'persistent', domains?: readonly string[], control?: { signal?: AbortSignal; validate?(): void }): Promise<IdentityVersionSummary> {
 		this.active(); this.sweep();
-		const item = this.prepared.get(planId); if (!item) throw new IdentityError('source_grant_invalid');
+		const item = this.prepared.get(planId); if (!item || item.saving) throw new IdentityError('source_grant_invalid');
 		const validated = requireStrictIdentityPlan(item.plan); let selected: Set<string> | undefined;
 		if (domains !== undefined) {
 			const available = new Set(validated.cookies.map((cookie) => cookie.domain));
@@ -37,21 +38,31 @@ export class IdentityService {
 			const bytes = (value: IdentitySeedV1) => new TextEncoder().encode(JSON.stringify(value)).length;
 			if (this.ephemeral.size >= 64 || [...this.ephemeral.values()].reduce((total, version) => total + bytes(version.seed), bytes(seed)) > 64 * 1024 * 1024) { clearIdentitySeed(seed); throw new IdentityError('too_large'); }
 		}
-		const version: IdentityVersion = { id: this.id(), identityId: this.id(), label: item.label, createdAt: this.clock(), source: item.source, seed };
-		const generation = this.generation; this.prepared.delete(planId);
-		try { if (storage === 'persistent') await this.credentials.create(version); }
-		catch (error) { clearIdentitySeed(seed); if (!this.locked && generation === this.generation && item.expiresAt > this.clock()) this.prepared.set(planId, item); else clearIdentitySeed(item.plan.seed); throw error; }
+		const version: IdentityVersion = { id: this.id(), identityId: this.id(), label: item.label, createdAt: this.clock(), source: item.source, seed, capture: structuredClone(item.capture) };
+		const generation = this.generation; item.saving = true;
+		const abort = () => item.controller.abort(); if (control?.signal?.aborted) abort(); else control?.signal?.addEventListener('abort', abort, { once: true });
+		try {
+			if (item.controller.signal.aborted) throw new IdentityError('cancelled'); control?.validate?.();
+			if (storage === 'persistent') await this.credentials.create(version, item.controller.signal, () => control?.validate?.());
+		}
+		catch (error) { clearIdentitySeed(seed); item.saving = false; if (this.locked || generation !== this.generation || item.controller.signal.aborted || item.expiresAt <= this.clock()) this.discardPlan(planId); throw error; }
+		finally { control?.signal?.removeEventListener('abort', abort); }
+		this.prepared.delete(planId);
 		clearIdentitySeed(item.plan.seed);
-		try { this.active(generation); } catch (error) { clearIdentitySeed(seed); throw error; }
+		// Durable success is already the publication fact. A late discard/lock must
+		// neither claim rollback nor delete the correctly committed new identity.
+		if (storage === 'ephemeral') try { this.active(generation); if (item.controller.signal.aborted) throw new IdentityError('cancelled'); } catch (error) { clearIdentitySeed(seed); throw error; }
 		if (storage === 'ephemeral') this.ephemeral.set(version.id, version);
 		const result = summary(version, storage === 'persistent'); if (storage === 'persistent') clearIdentitySeed(seed); return result;
 	}
-	async list(): Promise<IdentityVersionSummary[]> {
+	async list(requirePersistent = false): Promise<IdentityVersionSummary[]> {
 		this.active(); const generation = this.generation, result = [...this.ephemeral.values()].map((version) => summary(version, false));
-		if ((await this.credentials.availability()) === 'available') {
+		const available = await this.credentials.availability();
+		if (available === 'available') {
 			const ids = await this.credentials.listIds(); this.active(generation);
-			for (const id of ids) { const version = await this.credentials.read(id); this.active(generation); result.push(summary(version, true)); clearIdentitySeed(version.seed); }
+			for (const id of ids) { const version = await this.credentials.read(id); try { this.active(generation); result.push(summary(version, true)); } finally { clearIdentitySeed(version.seed); } }
 		}
+		else if (requirePersistent) throw new IdentityError(available === 'weak-provider' ? 'weak_provider' : 'key_unavailable');
 		this.active(generation); return result.sort((a, b) => b.createdAt - a.createdAt);
 	}
 	issueUsePermit(versionId: string, spaceId: string): SecretUsePermit {
@@ -62,7 +73,7 @@ export class IdentityService {
 		this.active(); this.sweep(); const permit = this.permits.get(permitId);
 		if (!permit || permit.spaceId !== spaceId) throw new IdentityError('secret_permit_invalid'); this.permits.delete(permitId);
 		const generation = this.generation, memory = this.ephemeral.get(permit.versionId), version = memory ?? await this.credentials.read(permit.versionId);
-		this.active(generation); const seed = cloneIdentitySeed(version.seed); if (!memory) clearIdentitySeed(version.seed); return seed;
+		try { this.active(generation); return cloneIdentitySeed(version.seed); } finally { if (!memory) clearIdentitySeed(version.seed); }
 	}
 	async remove(id: string): Promise<void> {
 		this.active(); for (const [key, permit] of this.permits) if (permit.versionId === id) this.permits.delete(key);

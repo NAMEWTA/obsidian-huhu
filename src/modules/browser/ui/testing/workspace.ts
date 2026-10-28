@@ -75,6 +75,7 @@ export function workspaceFixture() {
 		retryCleanup: vi.fn(async () => {}),
 		openPage: vi.fn(async () => state.spaces[0]!.pages[0]!),
 		closePage: vi.fn(async () => {}),
+		retryPage: vi.fn(async () => state.spaces[0]!.pages[0]!),
 		takeover: vi.fn(async (request: Parameters<BrowserWorkspace['takeover']>[0]) => {
 			const space = state.spaces[0]!,
 				epoch = space.control.epoch + 1;
@@ -113,10 +114,13 @@ export function workspaceFixture() {
 		),
 		renderViewer: vi.fn(async () => null),
 		listIdentities: vi.fn(() => []),
+		refreshIdentities: vi.fn(async () => {}),
 		prepareIdentityImport: vi.fn(async () => preview),
 		prepareIdentityFile: vi.fn(async () => preview),
 		prepareBrowserIdentityImport: vi.fn(async () => preview),
 		commitIdentityImport: vi.fn(async () => ({
+			publication: 'committed' as const,
+			catalogRefresh: 'complete' as const,
 			id: 'seed',
 			identityId: 'identity',
 			label: 'Fixture identity',
@@ -139,6 +143,7 @@ export function workspaceFixture() {
 		removeFile: vi.fn(async () => {}),
 		cancelDownload: vi.fn(async () => {}),
 		listMaterialTargets: vi.fn(async () => []),
+		observeMaterial: vi.fn(async () => ({ id: 'observation', spaceId: 'space', pageId: 'page', runtimeId: 'runtime', documentId: 'document', epoch: 2, viewportVersion: 0, scope: { spaceId: 'space', pageId: 'page', mode: 'visible' as const, maxNodes: 512, maxBytes: 65536 }, coverage: [], frameErrors: [], url: 'https://example.com', title: 'Page', nodes: [{ ref: 'selected-ref', frameId: 'main', role: 'button', name: 'Selected element', visible: true }], truncated: false })),
 		sendMaterial: vi.fn(async () => {}),
 	};
 	const frame = (overrides: Partial<BrowserFrame> = {}): BrowserFrame => ({

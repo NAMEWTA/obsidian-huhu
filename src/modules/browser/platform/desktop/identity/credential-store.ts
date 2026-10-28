@@ -2,7 +2,7 @@ import { promises as fs, type Stats } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import type { SecretProtector } from '../../../../../host/desktop/secret-protector';
-import { IdentityError, identityIdValid, planIdentityImport, requireStrictIdentityPlan, type CredentialStorePort, type IdentityVersion } from '../../../core/identity';
+import { IdentityError, identityIdValid, planIdentityImport, requireStrictIdentityPlan, clearIdentitySeed, type CredentialStorePort, type IdentityVersion } from '../../../core/identity';
 import { atomicPrivateFile, isMissing, privateDirectory, readPrivateFile, sameFile, syncDirectory } from '../persistence/private-files';
 import { sealPayload, openPayload } from '../persistence/sealed-payload';
 
@@ -46,25 +46,31 @@ export class DesktopCredentialStore implements CredentialStorePort {
 		if (!raw || typeof raw !== 'object') throw new IdentityError('identity_corrupt');
 		const version = raw as IdentityVersion;
 		if (version.id !== id || !identityIdValid(version.identityId) || typeof version.label !== 'string' || !version.label.trim() || version.label.length > 256 || !Number.isSafeInteger(version.createdAt) || !['cookie-file', 'browser-source', 'manual-login'].includes(version.source)) throw new IdentityError('identity_corrupt');
+		const capture = version.capture;
+		if (capture && (!Number.isSafeInteger(capture.startedAt) || !Number.isSafeInteger(capture.completedAt) || capture.completedAt < capture.startedAt || !['provided-text', 'fixed-file', 'stable-sqlite-snapshot', 'runtime-readback'].includes(capture.consistency) || capture.sha256 !== undefined && !/^[a-f0-9]{64}$/.test(capture.sha256) || capture.digestKind !== undefined && !['source-bytes', 'reader-response'].includes(capture.digestKind) || capture.readerSchemaVersion !== undefined && capture.readerSchemaVersion !== 2 || capture.databaseVersion !== undefined && !Number.isSafeInteger(capture.databaseVersion) || capture.fields !== undefined && (!Array.isArray(capture.fields) || capture.fields.length > 256 || capture.fields.some(field => typeof field !== 'string' || !/^[a-zA-Z0-9_]{1,100}$/.test(field))))) throw new IdentityError('identity_corrupt');
 		try { const seed = requireStrictIdentityPlan(planIdentityImport(JSON.stringify(version.seed), 0)); return { ...version, seed }; }
 		catch { throw new IdentityError('identity_corrupt'); }
 	}
-	create(input: IdentityVersion): Promise<void> {
+	create(input: IdentityVersion, signal?: AbortSignal, validate?: () => void): Promise<void> {
 		const version = this.validate(JSON.parse(JSON.stringify(input)), input.id), generation = this.generation;
 		return this.enqueue(async () => {
-			await this.ready(generation); const target = this.file(version.id), stage = path.join(this.options.directory, `${version.id}.${randomUUID()}.stage`);
-			let published = false;
+			const check = () => { this.check(generation); if (signal?.aborted) throw new IdentityError('cancelled'); validate?.(); };
+			const target = this.file(version.id), stage = path.join(this.options.directory, `${version.id}.${randomUUID()}.stage`);
+			let published = false, staged = false;
 			try {
-				const sealed = await sealPayload(this.options.protector, JSON.stringify(version), this.purpose(version.id)); this.check(generation);
-				await this.capacity(Buffer.byteLength(sealed)); this.check(generation);
-				await atomicPrivateFile(stage, sealed, true);
+				check(); await this.ready(generation); check();
+				const sealed = await sealPayload(this.options.protector, JSON.stringify(version), this.purpose(version.id)); check();
+				await this.capacity(Buffer.byteLength(sealed)); check();
+				await atomicPrivateFile(stage, sealed, true); staged = true; check();
 				const verified = this.validate(JSON.parse(await openPayload(this.options.protector, (await readPrivateFile(stage)).toString('utf8'), this.purpose(version.id))), version.id);
-				if (JSON.stringify(verified) !== JSON.stringify(version)) throw new IdentityError('verification_failed');
-				await this.binding(); this.check(generation);
+				try { if (JSON.stringify(verified) !== JSON.stringify(version)) throw new IdentityError('verification_failed'); } finally { clearIdentitySeed(verified.seed); }
+				await this.binding(); check();
+				// fs.link starts the atomic publication. Cancellation while that I/O is in
+				// flight cannot prove it was rolled back; a successful commit stays success.
 				try { await fs.link(stage, target); published = true; } catch (error) { if ((error as NodeJS.ErrnoException).code === 'EEXIST') throw new IdentityError('identity_exists'); throw error; }
-				await fs.unlink(stage); await syncDirectory(this.options.directory); this.check(generation);
+				await fs.unlink(stage); staged = false; await syncDirectory(this.options.directory);
 			} catch (error) { if (published) { await this.binding(); await fs.rm(target, { force: true }); await syncDirectory(this.options.directory); } throw error; }
-			finally { await this.binding(); await fs.rm(stage, { force: true }); }
+			finally { clearIdentitySeed(version.seed); if (staged) { await this.binding(); await fs.rm(stage, { force: true }); } }
 		});
 	}
 	read(id: string): Promise<IdentityVersion> {

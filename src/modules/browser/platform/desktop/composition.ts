@@ -9,7 +9,7 @@ import { absoluteHuhuPath } from '../../../../host/desktop/huhu-paths';
 import { desktopRemote } from '../../../../host/desktop/electron-main';
 import { createSecretProtector } from '../../../../host/desktop/secret-protector';
 import { AgentBrowserError, type BrowserRuntime } from '../../core/contracts';
-import type { IdentitySource } from '../../core/identity';
+import { IdentityError, type IdentitySource, type IdentityCapture } from '../../core/identity';
 import type { BrowserFileScope } from '../../core/files';
 import { createBrowserPersistence } from './persistence/browser-persistence';
 import { createDesktopRuntimeFactoryForWindow } from './runtime/adapter';
@@ -142,22 +142,25 @@ export async function createDesktopBrowserPorts(options: {
 				return { id, label: browser.label, profiles: summaries };
 			});
 		},
-		async sourceText(label: string) {
+		async sourceText(label: string, signal?: AbortSignal): Promise<{ label: string; text: string; capture?: IdentityCapture } | undefined> {
 			return track(async () => {
+				if (signal?.aborted) throw new IdentityError('cancelled');
 				await assertOwner();
 				const selected = await pick();
+				if (signal?.aborted) throw new IdentityError('cancelled');
 				if (!selected) return undefined;
-				return { label, text: await source.captureFileText(source.issueFileGrant(selected).id) };
+				return { label, ...await source.captureText(source.issueFileGrant(selected).id, signal) };
 			});
 		},
-		async sourceSeed(request: { sourceId: string; profileId?: string }) {
+		async sourceSeed(request: { sourceId: string; profileId?: string; signal?: AbortSignal }) {
 			return track(async () => {
 				await assertOwner();
 				const grant = sourceGrants.get(request.sourceId),
 					directory = request.profileId ? grant?.profiles.get(request.profileId) : undefined;
 				if (!grant || grant.expiresAt <= Date.now() || !directory)
 					throw new AgentBrowserError('source_grant_invalid');
-				return source.capture(source.issueBrowserGrant(grant.browser, directory).id);
+				sourceGrants.delete(request.sourceId);
+				return source.capture(source.issueBrowserGrant(grant.browser, directory).id, request.signal);
 			});
 		},
 		async staging(): Promise<{ runtime: BrowserRuntime; cleanup: () => Promise<void> }> {

@@ -9,6 +9,7 @@ import type {
 	VersioningQueries,
 } from '../core/history';
 import { NoteReviewService } from './note-review';
+import type { DocumentSnapshot } from '../../../shared/storage/document-mutation';
 
 function deferred<T>() {
 	let resolve!: (value: T | PromiseLike<T>) => void;
@@ -67,7 +68,7 @@ function comparison(request: ComparisonRequest, id = 'comparison'): ResolvedComp
 	};
 }
 
-function fixture() {
+function fixture(captureTarget?: (source: EditorDocumentContext, signal: AbortSignal) => Promise<DocumentSnapshot | undefined>) {
 	const sources = new Map<string, { context: EditorDocumentContext; text: string }>();
 	const capture = vi.fn((id: string) => {
 		const source = sources.get(id);
@@ -107,7 +108,7 @@ function fixture() {
 	};
 	const open = vi.fn(async (_id: string, _win: Window): Promise<void> => {});
 	const toRepo = vi.fn((path: string) => (path.startsWith('vault/') ? path.slice('vault/'.length) : null));
-	const service = new NoteReviewService({ documents, queries, toRepo, open });
+	const service = new NoteReviewService({ documents, queries, toRepo, open, captureTarget });
 	return {
 		service,
 		sources,
@@ -129,6 +130,49 @@ function fixture() {
 }
 
 describe('NoteReviewService', () => {
+	it('a failed or generation-stale target capture disables only new hunk recovery and never refreshes B implicitly', async () => {
+		const pending = deferred<DocumentSnapshot>();
+		const host = fixture(() => pending.promise), source = host.add('source');
+		await host.service.openVersion(source.id, entry('first'));
+		host.edit(source.id, 'intervening edit'); host.edit(source.id, 'unsaved B');
+		pending.resolve({ path: source.path, documentKey: 'new-file', exists: true, text: 'unsaved B', diskText: 'unsaved B',
+			originLeafId: source.leafId, buffers: [{ id: 'editor', text: 'unsaved B', generation: 2 }] });
+		await Promise.resolve(); await Promise.resolve();
+		expect(host.service.forDocument(source.id)).toMatchObject({ phase: 'ready', targetPhase: 'unavailable', buffer: { generation: 0, text: 'unsaved B' } });
+		expect(host.service.forDocument(source.id)?.restoreTarget).toBeUndefined();
+		host.service.dispose();
+		const failed = fixture(async () => { throw new Error('cannot read writable target'); }), next = failed.add('next');
+		await failed.service.openVersion(next.id, entry('first'));
+		expect(failed.service.forDocument(next.id)).toMatchObject({ phase: 'ready', targetPhase: 'unavailable' });
+		failed.service.dispose();
+	});
+	it('binds a target baseline to fixed B and ignores a late capture after explicit refresh or close', async () => {
+		const captures: Array<{ source: EditorDocumentContext; signal: AbortSignal; pending: ReturnType<typeof deferred<DocumentSnapshot>> }> = [];
+		const host = fixture((source, signal) => { const pending = deferred<DocumentSnapshot>(); captures.push({ source, signal, pending }); return pending.promise; });
+		const source = host.add('source');
+		await host.service.openVersion(source.id, entry('first'));
+		expect(captures).toHaveLength(1);
+		host.edit(source.id, 'fresh B');
+		const id = host.service.forDocument(source.id)!.id;
+		await host.service.refreshCurrent(id);
+		expect(captures[0]!.signal.aborted).toBe(true);
+		const target = (text: string) => ({ path: source.path, documentKey: text, exists: true, text, diskText: text,
+			originLeafId: source.leafId, buffers: [{ id: 'editor', text, generation: 1 }] });
+		captures[1]!.pending.resolve(target('fresh B'));
+		await Promise.resolve(); await Promise.resolve();
+		expect(host.service.get(id)?.restoreTarget?.documentKey).toBe('fresh B');
+		captures[0]!.pending.resolve(target('unsaved B'));
+		await Promise.resolve(); await Promise.resolve();
+		expect(host.service.get(id)?.restoreTarget?.documentKey).toBe('fresh B');
+		await host.service.openVersion(source.id, entry('next'));
+		expect(captures).toHaveLength(2);
+		await host.service.refreshCurrent(id);
+		host.service.close(id);
+		captures[2]!.pending.resolve(target('fresh B'));
+		await Promise.resolve(); await Promise.resolve();
+		expect(host.service.get(id)).toBeUndefined();
+		host.service.dispose();
+	});
 	it('holds B fixed across history selections and recaptures it only on explicit refresh', async () => {
 		const host = fixture(),
 			source = host.add('source');

@@ -28,48 +28,48 @@ export class BrowserMaterialFiles {
 	}
 
 	async prepare(
-		image: BrowserMaterial['image'],
+		input: BrowserMaterial | BrowserMaterial['image'],
 		signal: AbortSignal,
-	): Promise<{ files: string[]; release(): Promise<void> }> {
-		if (this.closed || signal.aborted) throw new Error('material_cancelled');
-		if (!image) return { files: [], release: async () => {} };
-		const data = new Uint8Array(image.data);
-		const png =
-			image.mime === 'image/png' &&
-			[137, 80, 78, 71, 13, 10, 26, 10].every((value, index) => data[index] === value);
-		const jpeg = image.mime === 'image/jpeg' && data[0] === 255 && data[1] === 216 && data[2] === 255;
-		if ((!png && !jpeg) || !data.length || data.length > MAX_IMAGE_BYTES) throw new Error('capture_unavailable');
-		if (this.entries.size >= MAX_IMAGES || this.bytes + data.length > MAX_TOTAL_BYTES)
-			throw new Error('capture_quota');
-		const key = `${crypto.randomUUID()}.${png ? 'png' : 'jpg'}`;
-		this.entries.set(key, data.length);
-		this.bytes += data.length;
-		let file: string | undefined;
+	): Promise<{ files: string[]; preview: string; release(): Promise<void> }> {
+		const check = () => { if (this.closed || signal.aborted) throw new Error('material_cancelled'); };
+		check();
+		const material: BrowserMaterial = input && 'mime' in input ? { title: '', text: '', image: input } : input ?? { title: '', text: '' };
+		const artifacts: Array<{ key: string; data: Uint8Array; file?: string }> = [];
+		if (material.image) {
+			const data = new Uint8Array(material.image.data), png = material.image.mime === 'image/png' && [137, 80, 78, 71, 13, 10, 26, 10].every((value, index) => data[index] === value), jpeg = material.image.mime === 'image/jpeg' && data[0] === 255 && data[1] === 216 && data[2] === 255;
+			if ((!png && !jpeg) || !data.length || data.length > MAX_IMAGE_BYTES) throw new Error('capture_unavailable');
+			artifacts.push({ key: `${crypto.randomUUID()}.${png ? 'png' : 'jpg'}`, data });
+		}
+		if (material.text.length > 16000 || material.styles) {
+			const data = new TextEncoder().encode(JSON.stringify({ title: material.title, text: material.text, source: material.source, styles: material.styles }));
+			if (data.length > 512 * 1024) throw new Error('capture_quota');
+			artifacts.push({ key: `${crypto.randomUUID()}.json`, data });
+		}
+		const total = artifacts.reduce((size, item) => size + item.data.length, 0);
+		if (this.entries.size + artifacts.length > MAX_IMAGES || this.bytes + total > MAX_TOTAL_BYTES) throw new Error('capture_quota');
+		for (const item of artifacts) this.entries.set(item.key, item.data.length);
+		this.bytes += total;
 		const release = async () => {
-			const length = this.entries.get(key);
-			if (length === undefined) return;
-			if (file) await rm(file, { force: true });
-			this.entries.delete(key);
-			this.bytes -= length;
+			for (const item of artifacts) {
+				const length = this.entries.get(item.key); if (length === undefined) continue;
+				if (item.file) await rm(item.file, { force: true });
+				this.entries.delete(item.key); this.bytes -= length;
+			}
 		};
 		try {
-			const directory = await this.root();
-			if (this.closed || signal.aborted) throw new Error('material_cancelled');
-			file = path.join(directory, key);
-			const handle = await open(file, 'wx', 0o600);
-			try {
-				await handle.writeFile(data);
-			} finally {
-				await handle.close();
+			if (artifacts.length) {
+				const directory = await this.root(); check();
+				for (const item of artifacts) {
+					if (await realpath(directory) !== directory) throw new Error('material_storage_invalid'); check();
+					item.file = path.join(directory, item.key);
+					const handle = await open(item.file, 'wx', 0o600);
+					try { check(); await handle.writeFile(item.data); } finally { await handle.close(); }
+					check();
+				}
 			}
-			if (this.closed || signal.aborted) throw new Error('material_cancelled');
-			return { files: [file], release };
-		} catch (error) {
-			await release();
-			throw error;
-		} finally {
-			data.fill(0);
-		}
+			return { files: artifacts.map(item => item.file!), preview: material.text.length > 16000 ? material.text.slice(0, 15999) + '…' : material.text, release };
+		} catch (error) { await release(); throw error; }
+		finally { for (const item of artifacts) item.data.fill(0); }
 	}
 
 	async dispose(): Promise<void> {

@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { createInterface } from 'node:readline';
 import type { BrowserRpcConnection } from '../../core/rpc';
-import { methodNames, parseMethod, protocolTools, type BrowserMethod } from '../../core/protocol';
+import { methodNames, parseMethod, parseEventResult, protocolTools, type BrowserMethod } from '../../core/protocol';
 
 async function readConnection(file: string): Promise<BrowserRpcConnection> {
 	const stat = await fs.lstat(file);
@@ -55,6 +55,8 @@ async function rpc(connection: BrowserRpcConnection, method: BrowserMethod, inpu
 	if (text.length > 12 * 1024 * 1024) throw new Error('response_too_large');
 	const body = JSON.parse(text) as { result?: unknown; error?: { code?: string } };
 	if (!response.ok || body.error) throw new Error(body.error?.code ?? 'request_failed');
+	if (method === 'events.poll') return parseEventResult('events.poll', body.result);
+	if (method === 'events.snapshot') return parseEventResult('events.snapshot', body.result);
 	return body.result;
 }
 async function mcp(connection: BrowserRpcConnection) {

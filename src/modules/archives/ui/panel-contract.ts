@@ -17,6 +17,7 @@ export interface ContactsPanelState {
 }
 /** A panel can be composed in any workbench without constructing an ItemView. */
 export interface ContactsPanelHost {
+	openGeneric?(path?: string): void;
 	state: ContactsPanelState;
 	enabled: boolean;
 	columns: number;

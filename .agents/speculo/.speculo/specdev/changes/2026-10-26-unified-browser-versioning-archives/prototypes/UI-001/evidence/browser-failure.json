@@ -1,0 +1,887 @@
+{
+  "message": "offline no network",
+  "results": [
+    {
+      "name": "candidate-a 1440 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 1440 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-a 390 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 1440 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-b 390 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 1440 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 renders",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 focus return",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "candidate-c 390 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "final 1440 renders",
+      "passed": true
+    },
+    {
+      "name": "final 1440 no overflow",
+      "passed": true
+    },
+    {
+      "name": "final 1440 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "final 1440 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "final 1440 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "final 1440 focus return",
+      "passed": true
+    },
+    {
+      "name": "final 1440 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "final 1440 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "final 1440 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "final 1440 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "final 1440 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "final 390 renders",
+      "passed": true
+    },
+    {
+      "name": "final 390 no overflow",
+      "passed": true
+    },
+    {
+      "name": "final 390 keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "final 390 modal initial focus",
+      "passed": true
+    },
+    {
+      "name": "final 390 modal focus trap",
+      "passed": true
+    },
+    {
+      "name": "final 390 focus return",
+      "passed": true
+    },
+    {
+      "name": "final 390 long text wraps",
+      "passed": true
+    },
+    {
+      "name": "final 390 200% zoom no overflow",
+      "passed": true
+    },
+    {
+      "name": "final 390 reduced motion",
+      "passed": true
+    },
+    {
+      "name": "final 390 error keeps data",
+      "passed": true
+    },
+    {
+      "name": "final 390 retry recovered",
+      "passed": true
+    },
+    {
+      "name": "archives:default rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:default no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:empty rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:empty no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:loading rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:loading no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:loading persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "archives:error rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:error no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:error persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "archives:permission rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:permission no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:permission persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "archives:conflict rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:conflict no overflow",
+      "passed": true
+    },
+    {
+      "name": "archives:conflict persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "archives:noresults rendered",
+      "passed": true
+    },
+    {
+      "name": "archives:noresults no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:default rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:default no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:empty rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:empty no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:loading rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:loading no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:loading persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "schema:error rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:error no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:error persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "schema:permission rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:permission no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:permission persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "schema:conflict rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:conflict no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:conflict persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "schema:recovery rendered",
+      "passed": true
+    },
+    {
+      "name": "schema:recovery no overflow",
+      "passed": true
+    },
+    {
+      "name": "schema:recovery persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:default rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:default no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:empty rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:empty no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:loading rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:loading no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:loading persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:error rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:error no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:error persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:permission rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:permission no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:permission persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:conflict rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:conflict no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:conflict persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:recovery rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:recovery no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:recovery persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "versioning:quota rendered",
+      "passed": true
+    },
+    {
+      "name": "versioning:quota no overflow",
+      "passed": true
+    },
+    {
+      "name": "versioning:quota persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:default rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:default no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:empty rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:empty no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:loading rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:loading no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:loading persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:error rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:error no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:error persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:permission rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:permission no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:permission persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:recovery rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:recovery no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:recovery persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:unknown rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:unknown no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:unknown persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "browser:unsupported rendered",
+      "passed": true
+    },
+    {
+      "name": "browser:unsupported no overflow",
+      "passed": true
+    },
+    {
+      "name": "browser:unsupported persistent feedback",
+      "passed": true
+    },
+    {
+      "name": "conflict rejects save",
+      "passed": true
+    },
+    {
+      "name": "conflict draft preserved",
+      "passed": true
+    },
+    {
+      "name": "recheck preserves draft",
+      "passed": true
+    },
+    {
+      "name": "relation added",
+      "passed": true
+    },
+    {
+      "name": "shared form preserves value",
+      "passed": true
+    },
+    {
+      "name": "third type created",
+      "passed": true
+    },
+    {
+      "name": "field label saved",
+      "passed": true
+    },
+    {
+      "name": "fork blocks unsafe upgrade",
+      "passed": true
+    },
+    {
+      "name": "cancel migration no switch",
+      "passed": true
+    },
+    {
+      "name": "migration interruption shown",
+      "passed": true
+    },
+    {
+      "name": "migration receipt shown",
+      "passed": true
+    },
+    {
+      "name": "diff stacked",
+      "passed": true
+    },
+    {
+      "name": "diff inline",
+      "passed": true
+    },
+    {
+      "name": "diff side",
+      "passed": true
+    },
+    {
+      "name": "cancel restore readonly",
+      "passed": true
+    },
+    {
+      "name": "restore receipt and hold",
+      "passed": true
+    },
+    {
+      "name": "restore undo removes receipt",
+      "passed": true
+    },
+    {
+      "name": "unsafe archive restore refused",
+      "passed": true
+    },
+    {
+      "name": "history default opt in",
+      "passed": true
+    },
+    {
+      "name": "history settings persisted in memory",
+      "passed": true
+    },
+    {
+      "name": "takeover waits",
+      "passed": true
+    },
+    {
+      "name": "takeover ack shown",
+      "passed": true
+    },
+    {
+      "name": "personal has no agent return",
+      "passed": true
+    },
+    {
+      "name": "origin storage refusal",
+      "passed": true
+    },
+    {
+      "name": "cookie full verification",
+      "passed": true
+    },
+    {
+      "name": "unknown no retry submit",
+      "passed": true
+    },
+    {
+      "name": "unknown reconcile no dispatch",
+      "passed": true
+    },
+    {
+      "name": "dark archives 1440",
+      "passed": true
+    },
+    {
+      "name": "dark schema 1440",
+      "passed": true
+    },
+    {
+      "name": "dark versioning 1440",
+      "passed": true
+    },
+    {
+      "name": "dark browser 1440",
+      "passed": true
+    },
+    {
+      "name": "dark archives 390",
+      "passed": true
+    },
+    {
+      "name": "dark schema 390",
+      "passed": true
+    },
+    {
+      "name": "dark versioning 390",
+      "passed": true
+    },
+    {
+      "name": "dark browser 390",
+      "passed": true
+    },
+    {
+      "name": "touch opens navigation sheet",
+      "passed": true
+    },
+    {
+      "name": "navigation focus contained",
+      "passed": true
+    },
+    {
+      "name": "navigation focus returns",
+      "passed": true
+    },
+    {
+      "name": "comparison all candidates",
+      "passed": true
+    },
+    {
+      "name": "comparison narrow no overflow",
+      "passed": true
+    },
+    {
+      "name": "comparison desktop no overflow",
+      "passed": true
+    },
+    {
+      "name": "no runtime console errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "network": [
+    "file://prototype/comparison/variants/candidate-a.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/variants/candidate-a.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/variants/candidate-b.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/variants/candidate-b.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/variants/candidate-c.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/variants/candidate-c.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/final/index.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/final/index.html",
+    "file://prototype/final/styles.css",
+    "file://prototype/final/app.js",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZmZmZmZmIiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+    "file://prototype/comparison/index.html",
+    "file://prototype/final/styles.css"
+  ]
+}

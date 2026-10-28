@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { BrowserRunEvent } from '../core/contracts';
 import { RunEvents } from './run-events';
 
-const pageEvent = (pageId: string, runtimeId = 'runtime-A'): Omit<BrowserRunEvent, 'sequence' | 'at'> => ({
+const pageEvent = (pageId: string, runtimeId = 'runtime-A'): Parameters<RunEvents['append']>[1] => ({
 	kind: 'page',
 	spaceId: 'space-A',
 	runtimeId,
@@ -10,6 +9,18 @@ const pageEvent = (pageId: string, runtimeId = 'runtime-A'): Omit<BrowserRunEven
 });
 
 describe('Run event recovery cursors', () => {
+	it('binds replay to an explicit stream and takes a coherent snapshot/cursor across a reentrant update', () => {
+		const events = new RunEvents(); events.open('run-A'); let version = 1, reads = 0;
+		const snapshot = events.snapshot('run-A', () => {
+			const captured = version;
+			if (++reads === 1) { version++; events.append('run-A', pageEvent('page-changed')); }
+			return { version: captured };
+		});
+		expect(snapshot).toMatchObject({ cursor: 1, projection: { version: 2 } });
+		const [event] = events.poll('run-A', 0, snapshot.streamId);
+		expect(event).toMatchObject({ eventId: expect.any(String), streamId: snapshot.streamId, streamSequence: 1, entityVersion: 1, type: 'pageChanged' });
+		expect(() => events.poll('run-A', 0, 'another-stream')).toThrow('resync_required');
+	});
 	it('keeps independent cursors and returns event copies with their source runtime', () => {
 		const events = new RunEvents();
 		events.open('run-A');
@@ -71,10 +82,17 @@ describe('Run event recovery cursors', () => {
 		events.append('run-A', pageEvent('page-A'));
 		events.close('run-A');
 		events.append('run-A', pageEvent('late-page'));
-		expect(() => events.cursor('run-A')).toThrowError('run_revoked');
-		expect(() => events.poll('run-A')).toThrowError('run_revoked');
+		expect(() => events.cursor('run-A')).toThrowError('resync_required');
+		expect(() => events.poll('run-A')).toThrowError('resync_required');
 		events.open('run-B');
 		events.clear();
-		expect(() => events.cursor('run-B')).toThrowError('run_revoked');
+		expect(() => events.cursor('run-B')).toThrowError('resync_required');
+	});
+	it('bounds retained streams and permits only control/history notifications after sealing', () => {
+		const events = new RunEvents(); events.open('retired'); events.append('retired', pageEvent('before')); events.seal('retired');
+		events.append('retired', pageEvent('human-page')); events.append('retired', { kind: 'controlChanged', spaceId: 'space-A', runtimeId: 'runtime-A', state: 'human' });
+		expect(events.poll('retired').map(row => row.type)).toEqual(['controlChanged']);
+		for (let index = 0; index < 128; index++) { events.open(`run-${index}`); events.seal(`run-${index}`); }
+		expect(() => events.poll('retired')).toThrow('resync_required');
 	});
 });

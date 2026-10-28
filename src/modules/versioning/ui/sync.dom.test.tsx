@@ -286,6 +286,43 @@ test('history keeps commit and file navigation separate, uses the selected merge
 	expect(operations.checkout).not.toHaveBeenCalled();
 });
 
+test('a manual comparison layout survives new files and all three workbench modes', async () => {
+	mockLayout();
+	const snapshot = baseSnapshot(`# branch.oid ${hash('c3')}\0# branch.head main\0` +
+		'1 MM N... 100644 100644 100644 aaa bbb notes/a.md\0? notes/new.md\0');
+	const service = { ...graphQueries() } as unknown as SyncService;
+	const versioning = queries();
+	const view = render(<TestProviders><SyncPage {...propsFor(snapshot, service, versioning)} /></TestProviders>);
+	fireEvent.click(screen.getByRole('button', { name: 'notes/a.md' }));
+	await waitFor(() => expect(view.container.querySelector('[data-layout]')).toBeTruthy());
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.diff.stacked') }));
+	const reads = vi.mocked(versioning.compare).mock.calls.length;
+	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.swap') }));
+	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.syncScroll') }));
+	expect(vi.mocked(versioning.compare)).toHaveBeenCalledTimes(reads);
+	const expectPreferences = () => {
+		expect(screen.getByRole('button', { name: t('versioning.diff.swap') }).getAttribute('aria-pressed')).toBe('true');
+		expect(screen.getByRole('button', { name: t('versioning.diff.syncScroll') }).getAttribute('aria-pressed')).toBe('false');
+	};
+	fireEvent.click(screen.getByRole('button', { name: 'notes/new.md' }));
+	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
+	expectPreferences();
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.mode.history') }));
+	fireEvent.click(await screen.findByRole('button', { name: /Merge feature/ }));
+	fireEvent.click(await screen.findByRole('button', { name: 'notes/a.md' }));
+	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
+	expectPreferences();
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.mode.compare') }));
+	const user = userEvent.setup();
+	await user.click(screen.getByRole('combobox', { name: t('versioning.compare.target') }));
+	await user.click(await screen.findByRole('option', { name: /feature/ }));
+	fireEvent.click(await screen.findByRole('button', { name: 'notes/b.md' }));
+	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
+	expectPreferences();
+	expect(view.container.querySelector('[data-versioning-navigation] .cm-editor')).toBeNull();
+	expect(versioning.compare).toHaveBeenLastCalledWith(expect.objectContaining({ intent: 'branches' }), expect.any(AbortSignal));
+});
+
 test('file navigation windows long lists, keeps fixed targets, groups folders and supports arrow keys', async () => {
 	mockLayout();
 	const select = vi.fn();

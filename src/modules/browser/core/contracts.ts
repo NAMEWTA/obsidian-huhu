@@ -44,6 +44,7 @@ export interface BrowserSpace {
 	status: SpaceStatus;
 	runtimeId?: string;
 	identityVersionId?: string;
+	identityImport?: import('./identity').IdentityProvisionProgress;
 	pages: BrowserPage[];
 	control: { mode: ControlMode; epoch: number; lease?: ControlLease };
 	createdAt: number;
@@ -99,6 +100,7 @@ export type HumanInput =
 	| { kind: 'click'; x: number; y: number; button?: 'left' | 'right' | 'middle'; clickCount?: 1 | 2 }
 	| { kind: 'scroll'; x: number; y: number; deltaX: number; deltaY: number }
 	| { kind: 'key'; key: string; modifiers?: number }
+	| { kind: 'composition'; phase: 'start' | 'update' | 'end' | 'cancel'; text: string; selectionStart: number; selectionEnd: number }
 	| { kind: 'text'; text: string };
 export interface HumanPageRequest {
 	spaceId: string;
@@ -109,9 +111,42 @@ export interface HumanPageRequest {
 }
 export interface SnapshotNode {
 	ref: string;
+	frameId: string;
 	role: string;
 	name: string;
 	value?: string;
+	visible: boolean;
+	/** Frame-local document CSS coordinates, never top-level input coordinates. */
+	bounds?: { x: number; y: number; width: number; height: number };
+}
+/** Omitted fields select all frames, semantic mode, 512 nodes and a 64 KiB JSON result budget.
+ * Budgets are 1–512 nodes and 1024–65536 bytes including coverage metadata; if metadata alone
+ * cannot fit, observation rejects with browser_observation_budget_too_small.
+ * rootRef is a still-valid opaque ref from this Page, and restricts observation to its DOM subtree.
+ */
+export interface SnapshotOptions {
+	frameId?: string;
+	rootRef?: string;
+	mode?: 'interactive' | 'semantic' | 'visible';
+	maxNodes?: number;
+	maxBytes?: number;
+}
+export interface SnapshotScope extends SnapshotOptions {
+	spaceId: string;
+	pageId: string;
+	mode: 'interactive' | 'semantic' | 'visible';
+	maxNodes: number;
+	maxBytes: number;
+}
+export interface SnapshotFrameCoverage {
+	frameId: string;
+	documentId: string;
+	status: 'complete' | 'partial' | 'failed' | 'omitted';
+	nodes: number;
+}
+export interface SnapshotFrameError {
+	frameId: string;
+	code: 'frame_unavailable' | 'frame_tree_unavailable' | 'accessibility_unavailable' | 'dom_unavailable' | 'closed_shadow_root' | 'budget_exceeded';
 }
 export interface BrowserObservation {
 	id: string;
@@ -120,6 +155,10 @@ export interface BrowserObservation {
 	runtimeId: string;
 	documentId: string;
 	epoch: number;
+	viewportVersion: number;
+	scope: SnapshotScope;
+	coverage: SnapshotFrameCoverage[];
+	frameErrors: SnapshotFrameError[];
 	url: string;
 	title: string;
 	nodes: SnapshotNode[];
@@ -129,7 +168,10 @@ export interface BrowserObservation {
 /** All executable page actions are fixed code. Raw JS/CDP and host paths have no public variant. */
 export type BrowserCommand =
 	| { kind: 'navigate'; url: string }
-	| { kind: 'back' | 'forward' | 'reload' | 'stop' | 'snapshot' | 'text' | 'selection' | 'screenshot' }
+	| { kind: 'back' | 'forward' | 'reload' | 'stop' | 'text' | 'selection' | 'screenshot' }
+	| { kind: 'snapshot'; scope?: SnapshotOptions }
+	/** Trusted human material capture only; excluded from Agent command schema. */
+	| { kind: 'material'; observationId: string; ref: string }
 	| { kind: 'find'; text: string; forward?: boolean }
 	| { kind: 'click'; observationId: string; ref: string }
 	| { kind: 'fill' | 'type'; observationId: string; ref: string; text: string }
@@ -215,7 +257,7 @@ export interface BrowserRuntime {
 		authority: ControlLease,
 		options?: { uploadPaths?: string[] },
 	): Promise<JsonValue>;
-	observe(pageId: string, authority: ControlLease): Promise<BrowserObservation>;
+	observe(pageId: string, authority: ControlLease, scope?: SnapshotOptions): Promise<BrowserObservation>;
 	watch(pageId: string, enabled: boolean): Promise<void>;
 	readIdentity(): Promise<RuntimeIdentityState>;
 	writeIdentity(seed: RuntimeIdentityState): Promise<void>;
@@ -250,6 +292,7 @@ export interface BrowserWorkspaceState {
 	spaces: BrowserSpace[];
 	requests: PendingHumanRequest[];
 	cleanupPending: number;
+	identityRefreshPending?: boolean;
 	error?: string;
 }
 export interface BrowserReadableStore<T> {
@@ -257,6 +300,8 @@ export interface BrowserReadableStore<T> {
 	subscribe(listener: () => void): () => void;
 }
 export interface CreateSpaceRequest {
+	/** Trusted local UI cancellation only; never included in ledger payloads or RPC schemas. */
+	signal?: AbortSignal;
 	kind: SpaceKind;
 	label?: string;
 	identityVersionId?: string;
@@ -268,6 +313,8 @@ export type OperationState =
 export interface OperationScope {
 	principal: 'agent' | 'human' | 'workspace';
 	issuerId: string;
+	/** Concrete grant/lease incarnation; never reused after that authority stops being writable. */
+	authorityId?: string;
 	spaceId?: string;
 	pageId?: string;
 	runtimeId?: string;
@@ -281,6 +328,9 @@ export interface OperationRecord {
 	state: OperationState;
 	createdAt: number;
 	updatedAt: number;
+	/** Absent only on legacy UUID tickets. New tickets are issued monotonically per scope/issuer. */
+	sequence?: number;
+	expiresAt?: number;
 	error?: string;
 	result?: JsonValue;
 }
@@ -301,14 +351,50 @@ export interface FrameSubscription {
 	ack(frameId: string): void;
 	dispose(): void;
 }
+export type BrowserEventType = 'spaceChanged' | 'pageChanged' | 'controlChanged' | 'operationChanged' | 'humanRequest' | 'downloadChanged' | 'runtimeFault' | 'cleanupChanged';
+export type BrowserEventState = SpaceStatus | ControlMode | OperationState | BrowserPage['status'] | 'denied' | 'resolved' | 'progressing' | 'cancelled' | 'removed' | 'revoked';
+export interface BrowserOperationSummary {
+	id: string;
+	state: OperationState;
+	updatedAt: number;
+	sequence?: number;
+}
+/** Metadata only: no page text, URL/title, request message, filename, command or credential. */
 export interface BrowserRunEvent {
+	eventId: string;
+	streamId: string;
+	streamSequence: number;
+	/** Monotonic projection version within this stream; a new stream establishes a new version namespace. */
+	entityVersion: number;
 	sequence: number;
 	at: number;
-	kind: string;
+	type: BrowserEventType;
+	/** Existing page/page-closed kinds remain readable; type is the canonical projection notification. */
+	kind: BrowserEventType | 'page' | 'page-closed';
 	spaceId: string;
 	runtimeId: string;
+	epoch: number;
+	entityId?: string;
 	pageId?: string;
-	code?: string;
+	state?: BrowserEventState;
+	code?: 'runtime_fault';
+}
+export interface BrowserEventSnapshot {
+	runId: string;
+	spaceId: string;
+	runtimeId: string;
+	runEpoch: number;
+	generation: number;
+	active: boolean;
+	streamId: string;
+	cursor: number;
+	space: { status: SpaceStatus | 'removed'; kind: SpaceKind };
+	control: { mode: ControlMode; epoch: number };
+	cleanup: { state: 'pending' | 'failed' | 'completed' };
+	pages: Array<Pick<BrowserPage, 'id' | 'documentId' | 'status' | 'viewportVersion'>>;
+	requests: Array<Pick<PendingHumanRequest, 'id' | 'pageId' | 'kind' | 'status' | 'revision' | 'expiresAt'>>;
+	downloads: Array<{ id: string; pageId: string; state: 'in-progress' | 'completed' | 'canceled' | 'failed'; receivedBytes: number; totalBytes: number }>;
+	operations: BrowserOperationSummary[];
 }
 export interface BrowserRunHealth {
 	runId: string;

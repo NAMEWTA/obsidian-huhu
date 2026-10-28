@@ -153,37 +153,37 @@ function changedDecorations(doc: Text, model: DiffModel, side: DiffSide): Extens
 	];
 }
 
-function syncScroll(a: EditorView, b: EditorView, model: DiffModel): () => void {
+function syncScroll(a: EditorView, b: EditorView, model: DiffModel, hostA: HTMLElement, hostB: HTMLElement): () => void {
 	const ownerWindow = a.dom.ownerDocument.defaultView;
 	if (!ownerWindow) return () => {};
 	let scheduled = 0;
 	let release = 0;
 	let syncing = false;
-	const listen = (source: EditorView, target: EditorView, side: DiffSide) => () => {
+	const listen = (source: EditorView, target: EditorView, sourceHost: HTMLElement, targetHost: HTMLElement, side: DiffSide) => () => {
 		if (syncing) return;
 		if (scheduled) ownerWindow.cancelAnimationFrame(scheduled);
 		scheduled = ownerWindow.requestAnimationFrame(() => {
 			scheduled = 0;
-			const block = source.lineBlockAtHeight(source.scrollDOM.scrollTop);
+			const block = source.lineBlockAtHeight(sourceHost.scrollTop);
 			const position = mapDiffAnchor(model.chunks, block.from, side, target.state.doc.length);
 			const targetBlock = target.lineBlockAt(position);
-			const withinLine = block.height ? (source.scrollDOM.scrollTop - block.top) / block.height : 0;
+			const withinLine = block.height ? (sourceHost.scrollTop - block.top) / block.height : 0;
 			syncing = true;
-			target.scrollDOM.scrollTop = targetBlock.top + withinLine * targetBlock.height;
-			target.scrollDOM.scrollLeft = source.scrollDOM.scrollLeft;
+			targetHost.scrollTop = targetBlock.top + withinLine * targetBlock.height;
+			targetHost.scrollLeft = sourceHost.scrollLeft;
 			release = ownerWindow.requestAnimationFrame(() => {
 				syncing = false;
 				release = 0;
 			});
 		});
 	};
-	const scrollA = listen(a, b, 'a');
-	const scrollB = listen(b, a, 'b');
-	a.scrollDOM.addEventListener('scroll', scrollA, { passive: true });
-	b.scrollDOM.addEventListener('scroll', scrollB, { passive: true });
+	const scrollA = listen(a, b, hostA, hostB, 'a');
+	const scrollB = listen(b, a, hostB, hostA, 'b');
+	hostA.addEventListener('scroll', scrollA, { passive: true });
+	hostB.addEventListener('scroll', scrollB, { passive: true });
 	return () => {
-		a.scrollDOM.removeEventListener('scroll', scrollA);
-		b.scrollDOM.removeEventListener('scroll', scrollB);
+		hostA.removeEventListener('scroll', scrollA);
+		hostB.removeEventListener('scroll', scrollB);
 		if (scheduled) ownerWindow.cancelAnimationFrame(scheduled);
 		if (release) ownerWindow.cancelAnimationFrame(release);
 	};
@@ -194,6 +194,7 @@ export interface DiffEditors {
 	reveal: (index: number) => void;
 	anchor: () => number;
 	revealAnchor: (position: number) => void;
+	setSyncScroll: (enabled: boolean) => void;
 	destroy: () => void;
 }
 
@@ -204,11 +205,14 @@ export interface DiffEditorOptions {
 	collapse: boolean;
 	leftLabel: string;
 	rightLabel: string;
+	syncScroll?: boolean;
+	stackedParents?: readonly [HTMLElement, HTMLElement];
 }
 
 export function createDiffEditors(parent: HTMLElement, options: DiffEditorOptions): DiffEditors {
 	const { model, layout, wrap, collapse, leftLabel, rightLabel } = options;
 	const views: EditorView[] = [];
+	const roots: HTMLElement[] = [];
 	const expand = (id: number) => {
 		for (const view of views) view.dispatch({ effects: expandFold.of(id) });
 	};
@@ -231,7 +235,7 @@ export function createDiffEditors(parent: HTMLElement, options: DiffEditorOption
 	);
 	const diffConfig = { override: () => changes };
 	let destroy: () => void;
-	let sharedScroll: HTMLElement | null = null;
+	let scrollHosts: HTMLElement[];
 	if (layout === 'side-by-side') {
 		const merge = new MergeView({
 			parent,
@@ -243,7 +247,9 @@ export function createDiffEditors(parent: HTMLElement, options: DiffEditorOption
 			diffConfig,
 		});
 		views.push(merge.a, merge.b);
-		sharedScroll = merge.dom;
+		roots.push(merge.dom);
+		// CM merge keeps its inner editors auto-height; the columns own independent vertical scrollports.
+		scrollHosts = [merge.a.dom.parentElement!, merge.b.dom.parentElement!];
 		destroy = () => merge.destroy();
 	} else if (layout === 'unified') {
 		const view = new EditorView({
@@ -263,10 +269,14 @@ export function createDiffEditors(parent: HTMLElement, options: DiffEditorOption
 			],
 		});
 		views.push(view);
+		roots.push(view.dom);
+		scrollHosts = [view.scrollDOM];
 		destroy = () => view.destroy();
 	} else {
 		for (const side of ['a', 'b'] as const) {
-			const pane = parent.appendChild(parent.ownerDocument.createElement('section'));
+			const host = options.stackedParents?.[side === 'a' ? 0 : 1] ?? parent;
+			const pane = host.appendChild(parent.ownerDocument.createElement('section'));
+			roots.push(pane);
 			pane.className = 'huhu-versioning-stacked-pane';
 			const title = pane.appendChild(parent.ownerDocument.createElement('div'));
 			title.className = 'huhu-versioning-pane-title';
@@ -286,8 +296,15 @@ export function createDiffEditors(parent: HTMLElement, options: DiffEditorOption
 		destroy = () => {
 			for (const view of views) view.destroy();
 		};
+		scrollHosts = views.map(view => view.scrollDOM);
 	}
-	const stopScrollSync = layout === 'stacked' ? syncScroll(views[0]!, views[1]!, model) : () => {};
+	let stopScrollSync = () => {};
+	const setSyncScroll = (enabled: boolean) => {
+		stopScrollSync();
+		stopScrollSync = enabled && layout !== 'unified'
+			? syncScroll(views[0]!, views[1]!, model, scrollHosts[0]!, scrollHosts[1]!) : () => {};
+	};
+	setSyncScroll(options.syncScroll !== false);
 	const revealPosition = (position: number) => {
 		views.forEach((view, index) => {
 			const pos = Math.min(
@@ -310,13 +327,14 @@ export function createDiffEditors(parent: HTMLElement, options: DiffEditorOption
 		},
 		anchor: () => {
 			const view = views.at(-1)!;
-			return view.lineBlockAtHeight((sharedScroll ?? view.scrollDOM).scrollTop).from;
+			return view.lineBlockAtHeight(scrollHosts.at(-1)!.scrollTop).from;
 		},
 		revealAnchor: revealPosition,
+		setSyncScroll,
 		destroy: () => {
 			stopScrollSync();
 			destroy();
-			parent.replaceChildren();
+			for (const root of roots) root.remove();
 		},
 	};
 }

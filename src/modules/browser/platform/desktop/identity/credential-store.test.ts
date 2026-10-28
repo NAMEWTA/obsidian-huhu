@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TestBrowserProtector } from '../../../../../../test/fixtures/browser-protector';
 import { DesktopCredentialStore } from './credential-store';
 import type { IdentityVersion } from '../../../core/identity';
@@ -29,5 +29,22 @@ describe('immutable encrypted identity versions', () => {
 		const gate = new Promise<void>((resolve) => { release = resolve; }), started = new Promise<void>((resolve) => { entered = resolve; });
 		protector.protect = async (...args) => { entered(); await gate; return original(...args); };
 		const saving = store.create(version()); await started; store.lock(); release(); await expect(saving).rejects.toMatchObject({ code: 'identity_locked' }); expect(await fs.readdir(directory)).toEqual([]);
+	});
+	it('honors cancellation before atomic publication without treating a late cancellation as rollback', async () => {
+		const { store, directory, protector } = await setup(), controller = new AbortController();
+		const original = protector.unprotect.bind(protector); let enter!: () => void, release!: () => void;
+		const started = new Promise<void>(done => { enter = done; }), gate = new Promise<void>(done => { release = done; });
+		protector.unprotect = async (...args) => { enter(); await gate; return original(...args); };
+		const saving = store.create(version(), controller.signal); await started; controller.abort(); release();
+		await expect(saving).rejects.toMatchObject({ code: 'cancelled' }); expect(await fs.readdir(directory)).toEqual([]);
+		protector.unprotect = original;
+		const late = new AbortController(); await store.create(version(), late.signal); late.abort(); expect((await store.read('seed-A')).seed.cookies[0]?.value).toBe('top-secret-cookie');
+	});
+	it('keeps a real committed ciphertext when cancellation arrives inside the publication await', async () => {
+		const { store, directory } = await setup(), controller = new AbortController(), link = fs.link.bind(fs);
+		let enter!: () => void, release!: () => void; const started = new Promise<void>(done => { enter = done; }), gate = new Promise<void>(done => { release = done; });
+		const intercepted = vi.spyOn(fs, 'link').mockImplementation(async (source, target) => { await link(source, target); if (target === path.join(directory, 'seed-A.sealed')) { enter(); await gate; } });
+		try { const saving = store.create(version(), controller.signal); await started; controller.abort(); release(); await saving; expect((await store.read('seed-A')).seed.cookies[0]?.value).toBe('top-secret-cookie'); expect(await fs.readdir(directory)).toEqual(['seed-A.sealed']); }
+		finally { release(); intercepted.mockRestore(); }
 	});
 });

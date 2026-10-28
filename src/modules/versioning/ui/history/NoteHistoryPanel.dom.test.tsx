@@ -60,7 +60,7 @@ function checkpoint(id: string): RestoreReceipt {
 	};
 }
 
-async function fixture(more = false) {
+async function fixture(more = false, released = false) {
 	setLanguage('en');
 	let source: EditorDocumentContext = {
 		id: 'document-a',
@@ -105,7 +105,7 @@ async function fixture(more = false) {
 	const restores = {
 		initialize,
 		readSnapshot,
-		receipts: () => [checkpoint('A'), checkpoint('B')],
+		receipts: () => [released ? { ...checkpoint('A'), objectsReleasedAt: 10 } : checkpoint('A'), checkpoint('B')],
 		subscribe: (listener: () => void) => {
 			restoreListeners.add(listener);
 			return () => {
@@ -264,5 +264,14 @@ test('keeps a current snapshot-read failure visible without opening an empty com
 	fireEvent.click(await screen.findByRole('button', { name: /Checkpoint A/ }));
 	await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('checkpoint cannot be read'));
 	expect(f.openVersion).not.toHaveBeenCalled();
+	f.view.unmount();
+});
+
+test('a retained receipt whose body was released is not offered as a readable checkpoint', async () => {
+	const f = await fixture(false, true);
+	await selectSource('Restore checkpoints');
+	await screen.findByRole('button', { name: /Checkpoint B/ });
+	expect(screen.queryByRole('button', { name: /Checkpoint A/ })).toBeNull();
+	expect(f.readSnapshot).not.toHaveBeenCalled();
 	f.view.unmount();
 });

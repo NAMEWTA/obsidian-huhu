@@ -2,9 +2,11 @@ import { t } from '../../../shared/i18n';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
 
 export interface ContactsNavigationSurface {
+	openGeneric?(path?: string): void;
 	getTarget?(): WorkbenchTarget;
 	controller?: {
 		ensureLoaded(): Promise<void>;
+		archives?: { snapshot(): Promise<import('../api').ArchiveQuerySnapshot> };
 		index: {
 			get(id: string): { kind: 'person' | 'company'; path: string } | undefined;
 			byPath: { get(path: string): { kind: 'person' | 'company'; path: string } | undefined };
@@ -29,7 +31,13 @@ export async function navigateContacts(surface: ContactsNavigationSurface, targe
 		await surface.controller?.ensureLoaded();
 		if (signal.aborted) return;
 		const record = surface.controller?.index.get(target.resourceId) ?? surface.controller?.index.byPath.get(target.resourceId);
-		if (!record) throw new Error(t('workbench.missing'));
+		if (!record) {
+			const snapshot = await surface.controller?.archives?.snapshot();
+			if (signal.aborted) return;
+			const matches = snapshot?.entities.filter(entity => (entity.id === target.resourceId || entity.path === target.resourceId) && entity.formatVersion === 2 && ['type-person', 'type-company'].includes(entity.typeId)) ?? [];
+			if (matches.length === 1 && surface.openGeneric) { surface.openGeneric(matches[0]!.path); return; }
+			throw new Error(t('workbench.missing'));
+		}
 		surface.changeKind(record.kind);
 		if (signal.aborted) return;
 		surface.select(record.path);

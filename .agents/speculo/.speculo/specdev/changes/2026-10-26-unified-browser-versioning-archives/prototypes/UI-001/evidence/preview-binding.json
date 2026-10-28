@@ -1,0 +1,16 @@
+{
+  "status": "awaiting-confirmation",
+  "candidate": "candidate-a",
+  "change_design_digest": "b53d04882d302aef806c3f1513d31f0fbdd806ee6e1c353219473409ea112663",
+  "prototype_digest": "5f49a4740daf0550130bc325526fe2f93809db9e48829ae532dc2e4f9548f437",
+  "baseline": {
+    "revision": "DESIGN-0001",
+    "digest": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f"
+  },
+  "html": {
+    "path": "final/index.html",
+    "sha256": "0cd97261fe438a6c755494a45b131365149a32a65a4dc5a470f54f53b7487ccf"
+  },
+  "scope": "五个主页面及关键对话框；档案类型树与总览按 SRC-007 修订；扩展 UI 缺口见 DESIGN。继承已有基线，不发布永久 delta。",
+  "generated_at": "2026-10-26T10:09:59.708Z"
+}

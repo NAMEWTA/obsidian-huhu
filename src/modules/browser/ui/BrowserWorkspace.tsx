@@ -91,10 +91,30 @@ export function BrowserWorkspace({
 	const [sources, setSources] = useState<Awaited<ReturnType<BrowserWorkspaceApi['listIdentitySources']>>>([]);
 	const [files, setFiles] = useState<{
 		spaceId: string;
-		items: Array<Pick<BrowserFile, 'id' | 'name' | 'size' | 'kind' | 'state'> & { downloadId?: string }>;
+		items: Array<Pick<BrowserFile, 'id' | 'name' | 'size' | 'kind' | 'state'> & { downloadId?: string; cleanupPending?: boolean }>;
 	}>();
 	const importing = useRef<IdentityImportActionsHandle>(null),
 		busy = useRef(false);
+	const sourceAbort = useRef<AbortController | undefined>(undefined),
+		createAbort = useRef<AbortController | undefined>(undefined),
+		manualAbort = useRef<AbortController | undefined>(undefined),
+		creationBaseline = useRef(new Set<string>());
+	const [cancellingCreate, setCancellingCreate] = useState(false),
+		[identityOutcome, setIdentityOutcome] = useState(''),
+		[identityCount, setIdentityCount] = useState(0),
+		[cancellingSave, setCancellingSave] = useState(false);
+	useEffect(
+		() => () => {
+			sourceAbort.current?.abort();
+			createAbort.current?.abort();
+			manualAbort.current?.abort();
+		},
+		[api],
+	);
+	const creatingIdentity = pending
+		? state.spaces.find((item) => !creationBaseline.current.has(item.id) && item.identityVersionId === seed)
+				?.identityImport
+		: undefined;
 	const report = useCallback((reason: unknown) => setError(actionError(reason)), []);
 	const run = useCallback(
 		async (work: () => Promise<unknown>) => {
@@ -143,7 +163,7 @@ export function BrowserWorkspace({
 						setFiles({
 							spaceId: id,
 							items: [
-								...items,
+								...items.map(file => ({ ...file, cleanupPending: api.listDownloads(id).some(download => download.fileId === file.id && download.cleanup === 'pending') })),
 								...api
 									.listDownloads(id)
 									.filter((item) => item.state !== 'completed' && item.state !== 'canceled')
@@ -174,16 +194,37 @@ export function BrowserWorkspace({
 		});
 	const refreshed = () => setRevision((value) => value + 1);
 	const create = async () => {
-		if (state.persistence === 'unavailable' && temporary) await api.consentEphemeral();
-		const created = await api.createSpace({
-			kind,
-			label: label.trim(),
-			...(seed !== 'empty' ? { identityVersionId: seed } : {}),
-			ephemeral: temporary,
-		});
-		setCreating(false);
-		setSection('spaces');
-		onSelect({ spaceId: created.id, pageId: created.pages[0]?.id });
+		const controller = new AbortController();
+		createAbort.current = controller;
+		creationBaseline.current = new Set(state.spaces.map((item) => item.id));
+		setCancellingCreate(false);
+		setIdentityOutcome('');
+		try {
+			if (state.persistence === 'unavailable' && temporary) await api.consentEphemeral();
+			const created = await api.createSpace({
+				kind,
+				label: label.trim(),
+				...(seed !== 'empty' ? { identityVersionId: seed } : {}),
+				ephemeral: temporary,
+				signal: controller.signal,
+			});
+			if (controller.signal.aborted) setIdentityOutcome('browser.v2.spaceCreatedAfterCancel');
+			setCreating(false);
+			setSection('spaces');
+			onSelect({ spaceId: created.id, pageId: created.pages[0]?.id });
+		} catch (reason) {
+			if (
+				controller.signal.aborted &&
+				reason instanceof Error &&
+				['cancelled', 'start_cancelled'].includes(reason.message)
+			) {
+				setCreating(false);
+				setIdentityOutcome('browser.v2.identityCancelled');
+			} else throw reason;
+		} finally {
+			if (createAbort.current === controller) createAbort.current = undefined;
+			setCancellingCreate(false);
+		}
 	};
 	const startImport = async () => {
 		const items = await api.listIdentitySources();
@@ -192,15 +233,64 @@ export function BrowserWorkspace({
 		setProfileId('');
 		setSourceOpen(true);
 	};
+	const saveManualIdentity = async () => {
+		if (!saveFrom) return;
+		const controller = new AbortController();
+		manualAbort.current = controller;
+		setCancellingSave(false);
+		setIdentityOutcome('');
+		try {
+			const receipt = await api.saveIdentity({
+				...saveFrom,
+				label: identityName.trim(),
+				persist: persist && state.persistence === 'secure',
+				signal: controller.signal,
+			});
+			setSaveFrom(undefined);
+			setIdentityCount(receipt.cookieCount);
+			setIdentityOutcome(
+				controller.signal.aborted ? 'browser.v2.identitySavedAfterCancel' : 'browser.v2.identitySaved',
+			);
+			refreshed();
+		} catch (reason) {
+			if (controller.signal.aborted && reason instanceof Error && reason.message === 'cancelled') {
+				setSaveFrom(undefined);
+				setIdentityCount(0);
+				setIdentityOutcome('browser.v2.identityCancelled');
+			} else throw reason;
+		} finally {
+			if (manualAbort.current === controller) manualAbort.current = undefined;
+			setCancellingSave(false);
+		}
+	};
+	const cancelManualSave = () => {
+		if (manualAbort.current) {
+			manualAbort.current.abort();
+			setCancellingSave(true);
+		} else if (!pending) setSaveFrom(undefined);
+	};
 	const prepareSource = async () => {
-		const preview = await api.prepareBrowserIdentityImport({
-			sourceId,
-			profileId,
-			label: identityName.trim(),
-		});
-		setSourceOpen(false);
-		if (importing.current) importing.current.review(preview, persist && state.persistence === 'secure');
-		else api.discardIdentityImport(preview.planId);
+		const controller = new AbortController();
+		sourceAbort.current = controller;
+		try {
+			const preview = await api.prepareBrowserIdentityImport({
+				sourceId,
+				profileId,
+				label: identityName.trim(),
+				signal: controller.signal,
+			});
+			if (controller.signal.aborted) {
+				api.discardIdentityImport(preview.planId);
+				return;
+			}
+			setSourceOpen(false);
+			if (importing.current) importing.current.review(preview, persist && state.persistence === 'secure');
+			else api.discardIdentityImport(preview.planId);
+		} catch (reason) {
+			if (!controller.signal.aborted) throw reason;
+		} finally {
+			if (sourceAbort.current === controller) sourceAbort.current = undefined;
+		}
 	};
 	const spaceActions = (current: BrowserSpace) => (
 		<>
@@ -208,15 +298,15 @@ export function BrowserWorkspace({
 				size="sm"
 				variant="outline"
 				disabled={
-					pending || state.readOnly || (current.status === 'stopped' && state.availability.state !== 'ready')
+					pending || state.readOnly || (['stopped', 'faulted'].includes(current.status) && state.availability.state !== 'ready')
 				}
 				onClick={() =>
 					void run(() =>
-						current.status === 'stopped' ? api.startSpace(current.id) : api.stopSpace(current.id),
+						['stopped', 'faulted'].includes(current.status) ? api.startSpace(current.id) : api.stopSpace(current.id),
 					)
 				}
 			>
-				{t(current.status === 'stopped' ? 'browser.v2.start' : 'browser.v2.stop')}
+				{t(['stopped', 'faulted'].includes(current.status) ? 'browser.v2.start' : 'browser.v2.stop')}
 			</Button>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
@@ -329,6 +419,40 @@ export function BrowserWorkspace({
 				</div>
 			)}
 			<BrowserActionError code={error || state.error} />
+			{identityOutcome && (
+				<p role="status" className="px-3 py-2 text-sm">
+					{t(identityOutcome, { count: identityCount })}
+				</p>
+			)}
+			{state.identityRefreshPending && (
+				<div className="flex flex-wrap items-center gap-2 px-3 py-2">
+					<p role="alert" className="text-sm text-muted-foreground">
+						{t('browser.v2.identityListPending')}
+					</p>
+					<Button
+						variant="outline"
+						disabled={pending}
+						onClick={() =>
+							void run(async () => {
+								await api.refreshIdentities();
+								refreshed();
+							})
+						}
+					>
+						{t('browser.v2.reloadIdentities')}
+					</Button>
+				</div>
+			)}
+			{space?.identityImport && (
+				<p role="status" className="px-3 py-2 text-sm text-muted-foreground">
+					{space.identityImport.importedCount !== undefined
+						? t('browser.v2.identityVerified', {
+								count: space.identityImport.importedCount,
+								expired: space.identityImport.naturallyExpired ?? 0,
+							})
+						: t(`browser.v2.identityPhase.${space.identityImport.phase}`)}
+				</p>
+			)}
 			<Tabs value={section} onValueChange={setSection} className="shrink-0 border-b border-border px-3 py-1">
 				<TabsList className="max-w-full bg-transparent">
 					<TabsTrigger value="spaces">
@@ -528,6 +652,7 @@ export function BrowserWorkspace({
 																)}
 															</p>
 														</div>
+														{file.cleanupPending && <Button size="sm" variant="outline" disabled={pending || state.readOnly} onClick={() => void run(async () => { await api.retryCleanup(space.id); refreshed(); })}>{t('browser.v2.downloadCleanupPending')}</Button>}
 														{file.kind === 'download' && file.state === 'pending' ? (
 															<Button
 																size="sm"
@@ -601,6 +726,13 @@ export function BrowserWorkspace({
 														>
 															{item.title || item.url}
 														</Button>
+														{item.status === 'failed' && (
+															<Button size="icon-sm" variant="ghost" aria-label={t('browser.v2.retryPage')}
+																disabled={pending || state.readOnly || space.status !== 'ready' || ['agent', 'quiescing', 'blocked'].includes(space.control.mode)}
+																onClick={() => void run(async () => { await api.retryPage({ spaceId: space.id, pageId: item.id }); })}>
+																<RefreshCw />
+															</Button>
+														)}
 														<Button
 															size="icon-sm"
 															variant="ghost"
@@ -658,6 +790,7 @@ export function BrowserWorkspace({
 												<Plus />
 											</Button>
 										</div>
+										{page?.status === 'failed' && <p role="alert" className="px-3 py-2 text-sm text-destructive">{t('browser.v2.pageRestoreFailed')}</p>}
 										{page ? (
 											<SpaceViewer
 												key={`${space.id}:${page.id}`}
@@ -684,7 +817,10 @@ export function BrowserWorkspace({
 			<Dialog
 				open={creating}
 				onOpenChange={(open) => {
-					if (!pending) setCreating(open);
+					if (!open && createAbort.current) {
+						createAbort.current.abort();
+						setCancellingCreate(true);
+					} else if (!pending) setCreating(open);
 				}}
 			>
 				<DialogContent>
@@ -725,7 +861,27 @@ export function BrowserWorkspace({
 						</label>
 					)}
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={() => setCreating(false)}>
+						{pending && (
+							<p role="status" className="text-sm">
+								{t(
+									cancellingCreate
+										? 'browser.v2.identityCancelling'
+										: creatingIdentity
+											? `browser.v2.identityPhase.${creatingIdentity.phase}`
+											: 'browser.v2.identityCreating',
+								)}
+							</p>
+						)}
+						<Button
+							variant="outline"
+							disabled={cancellingCreate}
+							onClick={() => {
+								if (createAbort.current) {
+									createAbort.current.abort();
+									setCancellingCreate(true);
+								} else setCreating(false);
+							}}
+						>
 							{t('browser.v2.cancel')}
 						</Button>
 						<Button
@@ -805,7 +961,8 @@ export function BrowserWorkspace({
 			<Dialog
 				open={sourceOpen}
 				onOpenChange={(open) => {
-					if (!pending) setSourceOpen(open);
+					if (!open) sourceAbort.current?.abort();
+					if (!pending || sourceAbort.current) setSourceOpen(open);
 				}}
 			>
 				<DialogContent>
@@ -846,7 +1003,18 @@ export function BrowserWorkspace({
 						</SelectContent>
 					</Select>
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={() => setSourceOpen(false)}>
+						{pending && (
+							<p role="status" className="text-sm">
+								{t('browser.v2.identityReading')}
+							</p>
+						)}
+						<Button
+							variant="outline"
+							onClick={() => {
+								sourceAbort.current?.abort();
+								setSourceOpen(false);
+							}}
+						>
 							{t('browser.v2.cancel')}
 						</Button>
 						<Button disabled={pending || !sourceId || !profileId} onClick={() => void run(prepareSource)}>
@@ -858,7 +1026,7 @@ export function BrowserWorkspace({
 			<Dialog
 				open={!!saveFrom}
 				onOpenChange={(open) => {
-					if (!open && !pending) setSaveFrom(undefined);
+					if (!open) cancelManualSave();
 				}}
 			>
 				<DialogContent>
@@ -871,36 +1039,28 @@ export function BrowserWorkspace({
 						<Input
 							value={identityName}
 							maxLength={120}
+							disabled={pending}
 							onChange={(event) => setIdentityName(event.target.value)}
 						/>
 					</Label>
 					<label className="flex items-center gap-2 text-sm">
 						<Switch
 							checked={persist && state.persistence === 'secure'}
-							disabled={state.persistence !== 'secure'}
+							disabled={pending || state.persistence !== 'secure'}
 							onCheckedChange={setPersist}
 						/>
 						{t('browser.v2.persistIdentity')}
 					</label>
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={() => setSaveFrom(undefined)}>
+						{pending && (
+							<p role="status" className="text-sm">
+								{t(cancellingSave ? 'browser.v2.identityCancelling' : 'browser.v2.identitySaving')}
+							</p>
+						)}
+						<Button variant="outline" disabled={cancellingSave} onClick={cancelManualSave}>
 							{t('browser.v2.cancel')}
 						</Button>
-						<Button
-							disabled={pending || !identityName.trim()}
-							onClick={() =>
-								void run(async () => {
-									if (saveFrom)
-										await api.saveIdentity({
-											...saveFrom,
-											label: identityName.trim(),
-											persist: persist && state.persistence === 'secure',
-										});
-									setSaveFrom(undefined);
-									refreshed();
-								})
-							}
-						>
+						<Button disabled={pending || !identityName.trim()} onClick={() => void run(saveManualIdentity)}>
 							{t('browser.v2.save')}
 						</Button>
 					</DialogFooter>

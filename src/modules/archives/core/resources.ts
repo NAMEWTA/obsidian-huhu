@@ -39,6 +39,7 @@ export interface ArchiveFolderEntry {
 	modified: number;
 }
 export interface ArchiveDeletion {
+	relations?: number;
 	id: string;
 	path: string;
 	folderPath: string;

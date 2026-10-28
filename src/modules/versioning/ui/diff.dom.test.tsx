@@ -8,7 +8,9 @@ import type { ResolvedComparison, ResolvedEndpoint, TextSnapshot } from '../core
 import { AsyncDiffSurface, DiffSurface } from './DiffSurface';
 
 registerMessages(diffMessages);
-afterEach(() => vi.restoreAllMocks());
+// The package's Node condition selects an inert server build; exercise the installed browser implementation in happy-dom.
+vi.mock('react-resizable-panels', () => vi.importActual('../../../../node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js'));
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 function snapshot(text: string): TextSnapshot {
 	return {
@@ -73,6 +75,99 @@ test('three layouts render real read-only CM views, with two independent source 
 	expect(view.container.querySelector('.cm-chunkButtons')).toBeNull();
 	view.unmount();
 	expect(destroy).toHaveBeenCalledTimes(5);
+});
+
+test('auto layout uses stacked panes in a narrow comparison and never overrides a manual choice on resize', async () => {
+	let width = 390, measure = () => {};
+	vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => width);
+	vi.stubGlobal('ResizeObserver', class implements ResizeObserver {
+		constructor(private readonly callback: ResizeObserverCallback) {}
+		observe(element: Element) {
+			if (element.classList.contains('huhu-versioning-diff')) measure = () => this.callback([], this);
+		}
+		unobserve() {}
+		disconnect() {}
+	});
+	const view = render(<TestProviders><DiffSurface comparison={comparison()} /></TestProviders>);
+	await act(async () => measure());
+	await waitFor(() => expect(view.container.querySelector('[data-layout="stacked"]')).toBeTruthy());
+	width = 1200;
+	await act(async () => measure());
+	await waitFor(() => expect(view.container.querySelector('[data-layout="side-by-side"]')).toBeTruthy());
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.diff.unified') }));
+	width = 390;
+	await act(async () => measure());
+	await waitFor(() => expect(view.container.querySelector('[data-layout="unified"]')).toBeTruthy());
+});
+
+test.each(['side-by-side', 'stacked', 'unified'] as const)('swapping twice in %s restores fixed endpoints without changing the comparison', async layout => {
+	const left = '# 旧版\n', right = '# 新版\n';
+	const source = comparison('swap', left, right), baseline = structuredClone(source);
+	const view = render(<TestProviders><DiffSurface comparison={source} initialLayout={layout} /></TestProviders>);
+	const docs = () => [...view.container.querySelectorAll('.cm-editor')].map(element => EditorView.findFromDOM(element as HTMLElement)!.state.doc.toString());
+	await waitFor(() => expect(docs()).toEqual(layout === 'unified' ? [right] : [left, right]));
+	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.swap') }));
+	await waitFor(() => expect(docs()).toEqual(layout === 'unified' ? [left] : [right, left]));
+	expect(view.container.querySelector('[data-endpoint="left"]')?.textContent).toContain('bbb');
+	expect(view.container.querySelector('[data-endpoint="right"]')?.textContent).toContain('aaa');
+	fireEvent.click(screen.getByRole('button', { name: t('versioning.diff.swap') }));
+	await waitFor(() => expect(docs()).toEqual(layout === 'unified' ? [right] : [left, right]));
+	expect(source).toEqual(baseline);
+});
+
+test.each(['side-by-side', 'stacked'] as const)('%s scroll sync maps real editor line blocks, can be disabled and releases pending work on close', async layout => {
+	const view = render(<TestProviders><DiffSurface initialLayout={layout}
+		comparison={comparison('scroll', 'one\ntwo\nthree\nfour\nfive\n', 'one\nadded-a\nadded-b\ntwo\nthree\nfour\nfive\n')} /></TestProviders>);
+	await waitFor(() => expect(view.container.querySelectorAll('.cm-editor')).toHaveLength(2));
+	const [a, b] = [...view.container.querySelectorAll('.cm-editor')].map(element => EditorView.findFromDOM(element as HTMLElement)!);
+	const hostA = layout === 'side-by-side' ? a!.dom.parentElement! : a!.scrollDOM;
+	const hostB = layout === 'side-by-side' ? b!.dom.parentElement! : b!.scrollDOM;
+	const toggle = screen.getByRole('button', { name: t('versioning.diff.syncScroll') });
+	expect(toggle.getAttribute('aria-pressed')).toBe('true');
+	fireEvent.click(toggle);
+	const source = a!.lineBlockAt(a!.state.doc.line(4).from), target = b!.lineBlockAt(b!.state.doc.line(6).from);
+	hostA.scrollTop = source.top + source.height / 2;
+	fireEvent.scroll(hostA);
+	const frame = () => new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+	await act(async () => { await frame(); await frame(); });
+	expect(hostB.scrollTop).toBe(0);
+	fireEvent.click(toggle);
+	fireEvent.scroll(hostA);
+	await waitFor(() => expect(hostB.scrollTop).toBeCloseTo(target.top + target.height / 2));
+	await act(async () => { await frame(); await frame(); });
+	const backSource = b!.lineBlockAt(b!.state.doc.line(7).from), backTarget = a!.lineBlockAt(a!.state.doc.line(5).from);
+	hostB.scrollTop = backSource.top;
+	fireEvent.scroll(hostB);
+	await waitFor(() => expect(hostA.scrollTop).toBeCloseTo(backTarget.top));
+	await act(async () => { await frame(); await frame(); });
+	const oldTarget = hostB.scrollTop;
+	hostA.scrollTop = 1;
+	fireEvent.scroll(hostA);
+	view.unmount();
+	await frame();
+	expect(hostB.scrollTop).toBe(oldTarget);
+});
+
+test('stacked panes have a bounded keyboard separator and retain their ratio across layouts', async () => {
+	const view = render(<TestProviders><DiffSurface comparison={comparison()} initialLayout="stacked" /></TestProviders>);
+	await waitFor(() => expect(view.container.querySelectorAll('.cm-editor')).toHaveLength(2));
+	let handle = screen.getByRole('separator', { name: t('versioning.diff.resizeStacked') });
+	expect(handle.getAttribute('aria-orientation')).toBe('horizontal');
+	await waitFor(() => expect(handle.getAttribute('aria-valuenow')).toBe('50'));
+	fireEvent.keyDown(handle, { key: 'ArrowDown' });
+	await waitFor(() => expect(handle.getAttribute('aria-valuenow')).toBe('55'));
+	fireEvent.keyDown(handle, { key: 'End' });
+	await waitFor(() => expect(handle.getAttribute('aria-valuenow')).toBe('80'));
+	fireEvent.keyDown(handle, { key: 'Home' });
+	await waitFor(() => expect(handle.getAttribute('aria-valuenow')).toBe('20'));
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.diff.unified') }));
+	expect(screen.queryByRole('separator')).toBeNull();
+	fireEvent.click(screen.getByRole('radio', { name: t('versioning.diff.stacked') }));
+	handle = await screen.findByRole('separator', { name: t('versioning.diff.resizeStacked') });
+	await waitFor(() => expect(handle.getAttribute('aria-valuenow')).toBe('20'));
+	expect(view.container.querySelectorAll('.cm-editor')).toHaveLength(2);
+	view.unmount();
+	expect(screen.queryByRole('separator')).toBeNull();
 });
 
 test('switching a file immediately clears the old diff and stale responses cannot replace the selection', async () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { IdentityService } from './identity-service';
-import type { CredentialStorePort, IdentityCookie, IdentityVersion } from '../core/identity';
+import { IdentityError, type CredentialStorePort, type IdentityCookie, type IdentityVersion } from '../core/identity';
 
 const cookie = (domain: string, name = 'credential-secret-name'): IdentityCookie => ({ domain, name, value: 'credential-secret-value', hostOnly: !domain.startsWith('.'), path: '/', secure: true, httpOnly: true, session: true });
 function setup() {
@@ -9,6 +9,21 @@ function setup() {
 	return { service: new IdentityService(credentials, () => at, () => `id-${++serial}`), credentials, stored, advance: () => { at += 300001; } };
 }
 describe('identity preflight and immutable seeds', () => {
+	it('rejects unsupported origin storage in preflight and never persists a misleading Cookie-only success', async () => {
+		const { service, credentials } = setup(), preview = service.prepareText('Unsupported', JSON.stringify({ cookies: [cookie('example.com')], origins: [{ origin: 'https://example.com', localStorage: [{ name: 'auth', value: 'secret' }] }] }));
+		expect(preview.originCount).toBe(1); expect(preview.issues).toContainEqual({ index: -1, code: 'unsupported_storage' });
+		await expect(service.savePrepared(preview.planId)).rejects.toMatchObject({ code: 'unsupported_storage' }); expect(credentials.create).not.toHaveBeenCalled();
+	});
+	it('cancels a discarded plan before publication but reports a real committed result after late cancellation', async () => {
+		const { service, credentials, stored } = setup(); let entered!: () => void, release!: () => void;
+		const started = new Promise<void>(done => { entered = done; }), gate = new Promise<void>(done => { release = done; });
+		vi.mocked(credentials.create).mockImplementationOnce(async (version, signal) => { entered(); await gate; if (signal?.aborted) throw new IdentityError('cancelled'); stored.set(version.id, structuredClone(version)); });
+		const first = service.prepareText('Cancel', JSON.stringify([cookie('example.com')])), saving = service.savePrepared(first.planId);
+		await started; service.discardPlan(first.planId); release(); await expect(saving).rejects.toMatchObject({ code: 'cancelled' }); expect(stored.size).toBe(0);
+		vi.mocked(credentials.create).mockImplementationOnce(async version => { stored.set(version.id, structuredClone(version)); service.discardPlan(second.planId); });
+		const second = service.prepareText('Committed', JSON.stringify([cookie('example.com')]));
+		expect(await service.savePrepared(second.planId)).toMatchObject({ label: 'Committed', cookieCount: 1, persistent: true }); expect(stored.size).toBe(1);
+	});
 	it('shows safe counts and exact domain choices, then commits only an explicitly selected validated domain', async () => {
 		const { service, stored } = setup(); const preview = service.prepareText('Personal', JSON.stringify([cookie('example.com'), cookie('.example.com'), cookie('other.example')]));
 		expect(JSON.stringify(preview)).not.toContain('credential-secret'); expect(preview.domains).toHaveLength(3);

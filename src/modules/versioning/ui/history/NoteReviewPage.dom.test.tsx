@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import type { App, WorkspaceLeaf } from 'obsidian';
 import type { EditorContextAccess, EditorDocumentContext } from '../../../../app/contracts/editor-context';
@@ -197,6 +197,7 @@ async function fixture() {
 		device: { ...EMPTY_DEVICE_STATE },
 	};
 	const sync = {
+		ready: true,
 		snapshot,
 		subscribe: (listener: () => void) => {
 			syncListeners.add(listener);
@@ -205,7 +206,7 @@ async function fixture() {
 			};
 		},
 		acknowledgeRestore: vi.fn(async () => {}),
-	} satisfies Pick<SyncService, 'snapshot' | 'subscribe' | 'acknowledgeRestore'>;
+	} satisfies Pick<SyncService, 'snapshot' | 'ready' | 'subscribe' | 'acknowledgeRestore'>;
 	const host: NoteHistoryHost = {
 		documents,
 		queries,
@@ -275,7 +276,12 @@ test('keeps unsaved B in the visible comparison until Refresh current version is
 test('requires an explicit confirmation and restores the full historical text to the captured source leaf', async () => {
 	const f = await fixture();
 	fireEvent.click(screen.getByRole('button', { name: 'Restore to current note' }));
-	await screen.findByRole('alertdialog', { name: 'Restore this version?' });
+	const dialog = await screen.findByRole('alertdialog', { name: 'Restore this version?' });
+	expect(within(dialog).getAllByRole('listitem').map(item => item.textContent)).toEqual([
+		'Save the recovery checkpoint, including the current content and disk state.',
+		'Recheck the note, open editors and Git state; refuse the write if they changed.',
+		'Apply the selected version, verify the saved content and record a receipt.',
+	]);
 	expect(f.prepare).toHaveBeenCalledExactlyOnceWith({
 		source: { id: f.reviews.get(f.id)!.comparison!.left.id, text: 'Historical A', label: 'Version A' },
 		targetPath: 'note.md',

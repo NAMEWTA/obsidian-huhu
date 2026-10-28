@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "schema_version": 1,
+    "artifact": "change-design",
+    "change": "2026-10-26-unified-browser-versioning-archives",
+    "revision": 2,
+    "status": "approved",
+    "scope": [
+      "huhu.workbench"
+    ],
+    "baseline": {
+      "revision": "DESIGN-0001",
+      "digest": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f"
+    },
+    "prototype_ref": {
+      "id": "UI-001",
+      "digest": "5f49a4740daf0550130bc325526fe2f93809db9e48829ae532dc2e4f9548f437"
+    },
+    "selection": {
+      "candidate_id": "candidate-a"
+    },
+    "tokens": {
+      "rail_width": "52px",
+      "sidebar_width": "280px",
+      "header_height": "44px",
+      "header_narrow": "56px",
+      "control_desktop": "32px",
+      "control_touch": "44px",
+      "spacing_unit": "4px",
+      "radius_control": "6px",
+      "radius_dialog": "10px",
+      "font_ui": "Geist, system Chinese sans-serif",
+      "font_size": "14px",
+      "line_height": "1.55",
+      "title_size": "23px",
+      "focus_ring": "3px",
+      "background": "var(--background-primary)",
+      "foreground": "var(--text-normal)",
+      "muted": "var(--text-muted)",
+      "border": "var(--background-modifier-border)",
+      "primary": "var(--interactive-accent)",
+      "primary_foreground": "var(--text-on-accent)"
+    },
+    "pages": [
+      {
+        "id": "PAGE-001",
+        "route": "workbench/archives",
+        "task": "维护项目资料与关系，保留草稿",
+        "states": [
+          "default",
+          "empty",
+          "loading",
+          "error",
+          "permission",
+          "conflict",
+          "noresults"
+        ],
+        "acceptance": [
+          "AC-018",
+          "AC-019",
+          "AC-020",
+          "AC-021",
+          "AC-028",
+          "AC-033"
+        ]
+      },
+      {
+        "id": "PAGE-002",
+        "route": "workbench/archives/types",
+        "task": "定义字段与表单，预检与继续旧档案迁移",
+        "states": [
+          "default",
+          "empty",
+          "loading",
+          "error",
+          "permission",
+          "conflict",
+          "recovery"
+        ],
+        "acceptance": [
+          "AC-018",
+          "AC-022",
+          "AC-023",
+          "AC-024",
+          "AC-025",
+          "AC-033"
+        ]
+      },
+      {
+        "id": "PAGE-003",
+        "route": "workbench/versioning/review",
+        "task": "比较历史、查看恢复预检并配置自动采集",
+        "states": [
+          "default",
+          "empty",
+          "loading",
+          "error",
+          "permission",
+          "conflict",
+          "recovery",
+          "quota"
+        ],
+        "acceptance": [
+          "AC-013",
+          "AC-014",
+          "AC-015",
+          "AC-016",
+          "AC-017",
+          "AC-026",
+          "AC-034"
+        ]
+      },
+      {
+        "id": "PAGE-004",
+        "route": "workbench/browser",
+        "task": "查看独立空间、接管、导入身份与核实未知操作",
+        "states": [
+          "default",
+          "empty",
+          "loading",
+          "error",
+          "permission",
+          "recovery",
+          "unknown",
+          "unsupported"
+        ],
+        "acceptance": [
+          "AC-003",
+          "AC-004",
+          "AC-006",
+          "AC-007",
+          "AC-008",
+          "AC-009",
+          "AC-011",
+          "AC-012"
+        ]
+      },
+      {
+        "id": "PAGE-005",
+        "route": "workbench/archives/type",
+        "task": "从类型树查看实例列表或卡片，按类型配置显示字段",
+        "states": [
+          "default",
+          "empty",
+          "loading",
+          "error",
+          "permission",
+          "noresults"
+        ],
+        "acceptance": [
+          "AC-018",
+          "AC-031",
+          "AC-035",
+          "AC-036"
+        ]
+      }
+    ],
+    "overrides": [],
+    "confirmation": {
+      "by": "user",
+      "at": "2026-10-26T10:15:37.637Z",
+      "record": "prototypes/UI-001/approval.md",
+      "record_digest": "d16d5d8afd5abda911f22c1b659172a6f87257fb2b4f811d5d420b6cff613822",
+      "digest": "b53d04882d302aef806c3f1513d31f0fbdd806ee6e1c353219473409ea112663"
+    },
+    "updated_at": "2026-10-26T10:15:37.637Z"
+  },
+  "receipt": "# UI-001 修订 2 用户确认\n\n确认来源：当前会话，2026-10-26T10:15:37.637Z。\n\n> 确定这个原型，请你帮我落实，然后激活 .agents/speculo/workflows/specdev/specdev-t-tickets/SKILL.md .agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives\n\n上引机器根路径仅是原请求定位，在本记录中归一化如下：激活项目内 specdev-t-tickets，并针对当前统一 change 继续。\n\n- change DESIGN：revision 2，designDigest b53d04882d302aef806c3f1513d31f0fbdd806ee6e1c353219473409ea112663\n- prototype_ref.digest：5f49a4740daf0550130bc325526fe2f93809db9e48829ae532dc2e4f9548f437\n- baseline：DESIGN-0001，digest 50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f\n- 实际展示 HTML：final/index.html，SHA-256 0cd97261fe438a6c755494a45b131365149a32a65a4dc5a470f54f53b7487ccf\n- 选定方案：candidate-a 的详情组织；final 默认从类型树与类型总览开始。\n- 批准范围：DESIGN revision 2 中 PAGE-001–005 与当前实际 HTML/交互。继承已有基线，不发布永久 delta。\n- 边界：复杂分叉解决、精确按块恢复、图谱及其他 DESIGN 明示未展示扩展不因本确认自动获批；按后续设计前置处理。\n- 本次明确后续动作：落实设计确认并生成当前 change 的完整 Tickets。提交、推送、远端写入与发版不包含在本次动作中。\n\n本文件是固定确认快照，后续 LOG 只追加定位，不改写本快照。\n",
+  "result": "rejected: baseline revision/digest mismatch"
+}

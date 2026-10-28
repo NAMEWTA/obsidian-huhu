@@ -13,6 +13,7 @@ import {
 	type RunGrant,
 	type BrowserCommand,
 	type BrowserObservation,
+	type SnapshotOptions,
 	type HumanPageRequest,
 	type HumanInput,
 	type BrowserFrame,
@@ -21,16 +22,20 @@ import {
 	type RuntimeEvent,
 	type JsonValue,
 	type OperationRecord,
+	type OperationScope,
 	type BrowserRunHealth,
 	type BrowserRunEvent,
+	type BrowserEventType,
+	type BrowserEventSnapshot,
 } from '../core/contracts';
-import type { IdentitySummary, IdentityImportPreview, IdentitySource } from '../core/identity';
+import type { IdentitySummary, IdentityImportPreview, IdentitySource, IdentityProvisionPhase, IdentitySaveReceipt } from '../core/identity';
+import type { IdentityProvisionResult } from './identity-provision';
 import type { BrowserFile, BrowserDownload, BrowserFileScope } from '../core/files';
 import { normalizeBrowserNavigationUrl } from '../core/url';
-import { validatePageUrl } from '../core/protocol';
+import { validatePageUrl, humanInputSchema } from '../core/protocol';
 import { OperationLedger, operationErrorCode } from './operation-ledger';
 import { FrameBroker } from './frame-broker';
-import { RunEvents } from './run-events';
+import { RunEvents, type RunEventInput } from './run-events';
 
 const clone = <T>(v: T): T => structuredClone(v);
 const uuid = /^[a-zA-Z0-9_-]{8,128}$/;
@@ -57,17 +62,19 @@ interface RunEntry {
 	capability: string;
 }
 export interface BrowserWorkspaceExtensions {
-	seed?(versionId: string, space: BrowserSpace, runtime: BrowserRuntime): Promise<void>;
+	seed?(versionId: string, space: BrowserSpace, runtime: BrowserRuntime, control: { isCancelled(): boolean; progress(phase: IdentityProvisionPhase): void }): Promise<IdentityProvisionResult | void>;
 	identities: {
 		list(): IdentitySummary[];
+		refresh?(): Promise<void>;
+		refreshPending?(): boolean;
 		prepareText(label: string, text: string): Promise<IdentityImportPreview>;
-		prepareFile(label: string): Promise<IdentityImportPreview | undefined>;
-		prepareSource(request: { sourceId: string; profileId?: string; label: string }): Promise<IdentityImportPreview>;
-		commit(request: { planId: string; persist: boolean; domains?: string[] }): Promise<IdentitySummary>;
+		prepareFile(label: string, signal?: AbortSignal): Promise<IdentityImportPreview | undefined>;
+		prepareSource(request: { sourceId: string; profileId?: string; label: string; signal?: AbortSignal }): Promise<IdentityImportPreview>;
+		commit(request: { planId: string; persist: boolean; domains?: string[] }): Promise<IdentitySaveReceipt>;
 		discard(planId: string): void;
 		sources(): Promise<IdentitySource[]>;
 		remove(id: string): Promise<void>;
-		save(runtime: BrowserRuntime, label: string, persist: boolean, validate: () => void): Promise<IdentitySummary>;
+		save(runtime: BrowserRuntime, label: string, persist: boolean, validate: () => void, signal?: AbortSignal): Promise<IdentitySaveReceipt>;
 		dispose(): Promise<void>;
 	};
 	files: {
@@ -76,10 +83,11 @@ export interface BrowserWorkspaceExtensions {
 		listSpaceFiles(spaceId: string): BrowserFile[];
 		listSpaceDownloads(spaceId: string): BrowserDownload[];
 		chooseUpload(scope: BrowserFileScope): Promise<BrowserFile | undefined>;
-		consumeUpload(fileId: string, scope: BrowserFileScope): Promise<string>;
+		consumeUpload(fileId: string, scope: BrowserFileScope): Promise<{ path: string; expiresAt: number }>;
 		exportFile(spaceId: string, fileId: string): Promise<void>;
 		removeFile(fileId: string): Promise<void>;
 		removeSpace(spaceId: string): Promise<void>;
+		retryCleanup?(spaceId: string): Promise<void>;
 		dispose(): Promise<void>;
 		download(event: Extract<RuntimeEvent, { kind: 'download' }>, scope: BrowserFileScope): Promise<void>;
 	};
@@ -107,7 +115,9 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	private readonly runtimes = new Map<string, BrowserRuntime>();
 	private readonly unlisten = new Map<string, () => void>();
 	private readonly runs = new Map<string, RunEntry>();
-	private readonly eventsStore = new RunEvents();
+	private readonly eventsStore: RunEvents;
+	private readonly eventStates = new Map<string, { space: string; control: string; cleanup: string; pages: Map<string, string> }>();
+	private readonly cleanupStates = new Map<string, 'pending' | 'failed' | 'completed'>();
 	private readonly controls = new Map<string, Promise<unknown>>();
 	private readonly actions = new Map<string, Promise<unknown>>();
 	private readonly intents = new Map<string, number>();
@@ -115,9 +125,14 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	private queuedActions = 0;
 	private readonly renewals = new Set<string>();
 	private readonly starts = new Map<string, Promise<void>>();
+	private readonly stops = new Map<string, Promise<void>>();
 	private readonly inputSequences = new Map<string, number>();
+	private readonly materialObservations = new Map<string, { request: HumanPageRequest; observation: BrowserObservation }>();
 	private readonly downloadOwners = new Map<string, BrowserFileScope>();
 	private readonly ledger: OperationLedger;
+	private ledgerStarted = false;
+	private readonly workspaceAuthority: string;
+	private ledgerMaintenanceAt = 0;
 	private readonly frames: FrameBroker;
 	private catalogWrite: Promise<unknown> = Promise.resolve();
 	private stopTimer: (() => void) | undefined;
@@ -128,7 +143,13 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		private readonly extra: BrowserWorkspaceExtensions,
 		private readonly now = () => Date.now(),
 	) {
-		this.ledger = new OperationLedger(persistence, now);
+		this.workspaceAuthority = persistence.id();
+		this.eventsStore = new RunEvents(() => persistence.id(), now);
+		this.ledger = new OperationLedger(persistence, now, scope => this.operationWritable(scope), undefined, (scope, operation, retired) => {
+			const entry = scope.principal === 'agent' ? this.runs.get(scope.issuerId) : undefined;
+			if (!entry || entry.run.spaceId !== scope.spaceId || entry.run.runtimeId !== scope.runtimeId) return;
+			this.eventsStore.append(entry.run.id, { kind: 'operationChanged', spaceId: entry.run.spaceId, runtimeId: entry.run.runtimeId, epoch: scope.epoch, entityId: operation.id, state: retired ? 'removed' : operation.state });
+		});
 		this.frames = new FrameBroker(async (spaceId, pageId, on) => {
 			await this.runtimes.get(spaceId)?.watch(pageId, on);
 		});
@@ -136,12 +157,40 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	getState = (): BrowserWorkspaceState => this.store.getState();
 	subscribe = (listener: () => void): (() => void) => this.store.subscribe(listener);
 	private notify() {
+		this.projectEvents();
 		this.store.setState({
 			spaces: [...this.spaces.values()].map(clone),
+			identityRefreshPending: this.extra.identities.refreshPending?.() ?? false,
 			cleanupPending:
 				[...this.spaces.values()].filter((s) => s.status === 'cleanup_pending' || s.status === 'quarantined')
-					.length + (this.extra.cleanupPending?.() ?? 0),
+					.length + [...this.spaces.values()].reduce((count, space) => count + this.extra.files.listSpaceDownloads(space.id).filter(item => item.cleanup === 'pending').length, 0) + (this.extra.cleanupPending?.() ?? 0),
 		});
+	}
+	private emitSpace(spaceId: string, type: BrowserEventType, detail: Partial<RunEventInput> = {}) {
+		const space = this.spaces.get(spaceId), live = type === 'pageChanged' || type === 'humanRequest' || type === 'downloadChanged';
+		for (const { run } of this.runs.values()) {
+			if (run.spaceId !== spaceId || live && (run.state !== 'active' || run.expiresAt <= this.now() || run.runtimeId !== space?.runtimeId)) continue;
+			this.eventsStore.append(run.id, { ...detail, kind: detail.kind ?? type, type, spaceId, runtimeId: run.runtimeId, epoch: space?.control.epoch ?? run.epoch });
+		}
+	}
+	private projectEvents() {
+		for (const s of this.spaces.values()) {
+			const previous = this.eventStates.get(s.id), cleanup = this.cleanupState(s);
+			const current = { space: JSON.stringify([s.kind, s.status, s.runtimeId, s.label]), control: JSON.stringify([s.control.mode, s.control.epoch]), cleanup, pages: new Map(s.pages.map(page => [page.id, JSON.stringify(page)])) };
+			if (previous?.space !== current.space) this.emitSpace(s.id, 'spaceChanged', { entityId: s.id, state: s.status });
+			if (previous?.control !== current.control) this.emitSpace(s.id, 'controlChanged', { entityId: s.id, state: s.control.mode });
+			if (previous?.cleanup !== cleanup) this.emitSpace(s.id, 'cleanupChanged', { entityId: s.id, state: cleanup });
+			for (const page of s.pages) if (previous?.pages.get(page.id) !== current.pages.get(page.id)) this.emitSpace(s.id, 'pageChanged', { kind: page.status === 'closed' ? 'page-closed' : 'page', entityId: page.id, pageId: page.id, state: page.status });
+			for (const pageId of previous?.pages.keys() ?? []) if (!current.pages.has(pageId)) this.emitSpace(s.id, 'pageChanged', { kind: 'page-closed', entityId: pageId, pageId, state: 'removed' });
+			this.eventStates.set(s.id, current);
+		}
+		for (const spaceId of this.eventStates.keys()) if (!this.spaces.has(spaceId)) {
+			this.emitSpace(spaceId, 'spaceChanged', { entityId: spaceId, state: 'removed' }); this.emitSpace(spaceId, 'cleanupChanged', { entityId: spaceId, state: this.cleanupStates.get(spaceId) ?? 'completed' });
+			this.eventStates.delete(spaceId); if (this.cleanupStates.get(spaceId) !== 'failed') this.cleanupStates.delete(spaceId);
+		}
+	}
+	private cleanupState(s: BrowserSpace): 'pending' | 'failed' | 'completed' {
+		return this.cleanupStates.get(s.id) ?? (s.status === 'cleanup_pending' ? 'pending' : s.status === 'quarantined' ? 'failed' : this.extra.files.listSpaceDownloads(s.id).some(item => item.cleanup === 'pending') ? 'pending' : 'completed');
 	}
 	private async persist() {
 		const snapshot = [...this.spaces.values()].map((s) => ({
@@ -164,6 +213,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			return;
 		}
 		await this.ledger.initialize();
+		this.ledgerStarted = true;
 		await this.ledger.prune();
 		const saved = await this.persistence.read<BrowserSpace[]>('catalog');
 		if (
@@ -210,13 +260,17 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		this.notify();
 		this.store.setState({ ready: true });
 		this.stopTimer = this.extra.scheduleInterval?.(() => {
+			if (this.now() - this.ledgerMaintenanceAt >= 60_000) {
+				this.ledgerMaintenanceAt = this.now();
+				void this.ledger.prune().catch(error => this.store.setState({ error: operationErrorCode(error) }));
+			}
 			for (const { run } of this.runs.values())
 				if (run.state === 'active' && run.expiresAt <= this.now())
 					void this.pause(run.spaceId).catch(() => undefined);
 			for (const s of this.spaces.values()) {
 				const lease = s.control.lease;
 				if (s.control.mode !== 'human' || !lease) continue;
-				if (lease.expiresAt <= this.now()) {
+				if (lease.expiresAt <= this.now() || !lease.viewerId || !this.frames.has(lease.viewerId, s.id)) {
 					void this.pause(s.id).catch(() => undefined);
 					continue;
 				}
@@ -246,6 +300,20 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (this.closing) throw new AgentBrowserError('workspace_closing');
 		if (this.persistence.readOnly || this.getState().readOnly)
 			throw new AgentBrowserError('workspace_owned_elsewhere');
+	}
+	private operationWritable(scope: OperationScope): boolean {
+		if (this.closing || this.persistence.readOnly || this.getState().readOnly) return false;
+		if (scope.principal === 'workspace' && !scope.spaceId)
+			return scope.issuerId === this.persistence.ownerId && scope.authorityId === this.workspaceAuthority;
+		const space = scope.spaceId ? this.spaces.get(scope.spaceId) : undefined, lease = space?.control.lease;
+		if (!space || !lease || lease.expiresAt <= this.now() || scope.runtimeId !== space.runtimeId || scope.epoch !== lease.epoch) return false;
+		if (scope.principal === 'agent') {
+			const run = this.runs.get(scope.issuerId)?.run;
+			return !!run && run.state === 'active' && run.expiresAt > this.now() && run.leaseId === lease.leaseId && scope.authorityId === run.leaseId;
+		}
+		return scope.authorityId === lease.leaseId && (scope.principal === 'human'
+			? space.control.mode === 'human' && lease.viewerId === scope.issuerId
+			: space.control.mode === 'quiescing' && lease.mode === 'workspace' && scope.issuerId === this.persistence.ownerId);
 	}
 	private space(id: string) {
 		const s = this.spaces.get(id);
@@ -301,18 +369,22 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	async refreshRuntime() {
 		this.store.setState({ availability: await this.factory.availability() });
 	}
-	async createSpace(request: CreateSpaceRequest, requestId = this.persistence.id()): Promise<BrowserSpace> {
+	async createSpace(request: CreateSpaceRequest, requestId = this.persistence.id(), timeoutMs?: number): Promise<BrowserSpace> {
 		this.assertWritable();
+		const { signal, ...portableRequest } = request;
+		const writable = () => { this.assertWritable(); if (signal?.aborted) throw new AgentBrowserError('cancelled'); };
+		writable();
 		if (request.kind !== 'personal' && request.kind !== 'task') throw new AgentBrowserError('invalid_space_kind');
 		const ticket = await this.ledger.prepare(
 			requestId,
-			{ principal: 'workspace', issuerId: this.persistence.ownerId },
-			{ kind: 'space.create', request },
+			{ principal: 'workspace', issuerId: this.persistence.ownerId, authorityId: this.workspaceAuthority },
+			{ kind: 'space.create', request: portableRequest },
+			timeoutMs,
 		);
 		const result = await this.ledger.execute(
 			ticket.id,
-			{ kind: 'space.create', request },
-			() => this.assertWritable(),
+			{ kind: 'space.create', request: portableRequest },
+			writable,
 			async () => {
 				if (this.spaces.size >= 200) throw new AgentBrowserError('space_quota');
 				if (this.getState().availability.state !== 'ready') throw new AgentBrowserError('runtime_unavailable');
@@ -350,7 +422,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				await this.persist();
 				this.notify();
 				try {
-					await this.startOwned(space, true);
+					await this.startOwned(space, true, signal);
 					return { spaceId: id };
 				} catch (error) {
 					space.status = 'cleanup_pending';
@@ -384,10 +456,13 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		await this.persist();
 		this.notify();
 	}
-	private async startOwned(space: BrowserSpace, fresh = false): Promise<void> {
+	private async startOwned(space: BrowserSpace, fresh = false, signal?: AbortSignal): Promise<void> {
+		if (this.stops.has(space.id)) throw new AgentBrowserError('space_stopping');
 		if (this.starts.has(space.id)) return this.starts.get(space.id)!;
 		const intent = (this.intents.get(space.id) ?? 0) + 1;
 		this.intents.set(space.id, intent);
+		const cancelled = () => this.closing || this.intents.get(space.id) !== intent || signal?.aborted === true;
+		const check = () => { if (cancelled()) throw new AgentBrowserError('start_cancelled'); };
 		const task = (async () => {
 			this.assertWritable();
 			if (new Set([...this.runtimes.keys(), ...this.starts.keys()].filter((id) => id !== space.id)).size >= 3)
@@ -398,54 +473,69 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				throw new AgentBrowserError('ephemeral_consent_required');
 			space.status = fresh ? 'provisioning' : 'starting';
 			space.runtimeId = this.persistence.id();
-			await this.persist();
-			this.notify();
-			await this.factory.reclaim(space.id);
-			const runtime = await this.factory.start({
-				spaceId: space.id,
-				runtimeId: space.runtimeId,
-				ephemeral: space.retention === 'ephemeral',
-			});
-			this.runtimes.set(space.id, runtime);
-			this.unlisten.set(
-				space.id,
-				runtime.onEvent((event) => this.onRuntime(space.id, event)),
-			);
+			let runtime: BrowserRuntime | undefined;
+			let startAttempted = false;
 			try {
-				if (this.closing || this.intents.get(space.id) !== intent)
-					throw new AgentBrowserError('start_cancelled');
+				await this.persist();
+				this.notify();
+				await this.factory.reclaim(space.id);
+				check();
+				startAttempted = true;
+				runtime = await this.factory.start({
+					spaceId: space.id,
+					runtimeId: space.runtimeId,
+					ephemeral: space.retention === 'ephemeral',
+				});
+				this.runtimes.set(space.id, runtime);
+				this.unlisten.set(
+					space.id,
+					runtime.onEvent((event) => this.onRuntime(space.id, event)),
+				);
+				check();
+				let imported: IdentityProvisionResult | void = undefined;
 				if (fresh && space.identityVersionId) {
 					if (!this.extra.seed) throw new AgentBrowserError('identity_unavailable');
-					await this.extra.seed(space.identityVersionId, clone(space), runtime);
+					space.identityImport = { phase: 'source' }; this.notify();
+					imported = await this.extra.seed(space.identityVersionId, clone(space), runtime, { isCancelled: cancelled, progress: phase => { if (!cancelled()) { space.identityImport = { phase }; this.notify(); } } });
 				}
+				check();
 				space.status = 'hydrating';
 				this.notify();
 				for (const page of space.pages) {
-					if (this.intents.get(space.id) !== intent) throw new AgentBrowserError('start_cancelled');
+					check();
 					try {
 						Object.assign(page, await runtime.createPage(page.id, page.url), { status: 'open' as const });
 					} catch (error) {
 						page.status = 'failed';
 						page.error = operationErrorCode(error);
+						if (page.error === 'browser_page_cleanup_pending') throw error;
 					}
+					check();
 				}
 				if (space.pages.length && !space.pages.some((p) => p.status === 'open'))
 					throw new AgentBrowserError('page_restore_failed');
-				space.status = 'ready';
-				space.control = { mode: 'paused', epoch: space.control.epoch + 1 };
-				await runtime.setControl(undefined, space.control.epoch);
+				const epoch = space.control.epoch + 1;
+				await runtime.setControl(undefined, epoch); check();
+				// Ready publication begins here. A late UI cancellation does not undo a
+				// completed new Space or claim its already published identity was rolled back.
+				space.status = 'ready'; space.control = { mode: 'paused', epoch }; delete space.error;
+				if (imported) space.identityImport = { phase: 'verified', ...imported };
 				await this.persist();
 				this.notify();
 				await this.frames.restart(space.id);
 			} catch (error) {
 				try {
-					await runtime.stop();
+					await runtime?.stop();
+					if (!runtime) await this.factory.reclaim(space.id, startAttempted ? space.runtimeId : undefined);
 					this.runtimes.delete(space.id);
 					this.unlisten.get(space.id)?.();
 					this.unlisten.delete(space.id);
 					space.status = 'faulted';
+					delete space.runtimeId;
+					space.control = { mode: 'paused', epoch: space.control.epoch };
 				} catch {
 					space.status = 'quarantined';
+					space.control = { mode: 'blocked', epoch: space.control.epoch };
 				}
 				space.error = operationErrorCode(error);
 				await this.persist();
@@ -468,7 +558,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		for (const entry of this.runs.values())
 			if (entry.run.spaceId === spaceId && entry.run.state === 'active') {
 				entry.run.state = 'revoked';
-				this.eventsStore.close(entry.run.id);
+				this.eventsStore.seal(entry.run.id);
 			}
 		this.frames.reset(spaceId);
 	}
@@ -658,7 +748,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		return { s, runtime, lease };
 	}
 	subscribeFrames(
-		scope: { spaceId: string; pageId: string; viewerId: string },
+		scope: { spaceId: string; pageId: string; viewerId: string; isAlive?: () => boolean },
 		receive: (frame: BrowserFrame) => void,
 	): FrameSubscription {
 		this.page(this.space(scope.spaceId), scope.pageId);
@@ -695,9 +785,17 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	}
 	private async uploadPaths(command: BrowserCommand, scope: BrowserFileScope) {
 		if (command.kind !== 'upload' && command.kind !== 'chooser') return undefined;
-		const paths: string[] = [];
-		for (const id of command.fileIds) paths.push(await this.extra.files.consumeUpload(id, scope));
-		return paths;
+		const paths: string[] = []; let expiresAt = Number.MAX_SAFE_INTEGER;
+		for (const id of command.fileIds) { const item = await this.extra.files.consumeUpload(id, scope); paths.push(item.path); expiresAt = Math.min(expiresAt, item.expiresAt); }
+		return { paths, expiresAt };
+	}
+	private uploadAuthority(lease: ControlLease, upload?: { paths: string[]; expiresAt: number }): ControlLease {
+		if (!upload) return lease;
+		if (upload.expiresAt <= this.now()) throw new AgentBrowserError('file_grant_invalid');
+		return { ...lease, expiresAt: Math.min(lease.expiresAt, upload.expiresAt) };
+	}
+	private uploadRemaining(upload: { expiresAt: number } | undefined, remaining?: () => number): number {
+		return Math.min(remaining?.() ?? 60000, upload ? upload.expiresAt - this.now() : 60000);
 	}
 	async pageAction(request: HumanPageRequest & { command: BrowserCommand }): Promise<JsonValue> {
 		this.assertWritable();
@@ -710,6 +808,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			{
 				principal: 'human',
 				issuerId: request.viewerId,
+				authorityId: lease.leaseId,
 				spaceId: s.id,
 				pageId: request.pageId,
 				runtimeId: s.runtimeId,
@@ -718,7 +817,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			request.command,
 		);
 		const dispatch = async () => {
-			let paths: string[] | undefined;
+			let paths: Awaited<ReturnType<BrowserWorkspaceService['uploadPaths']>>;
 			return this.ledger.execute(
 				record.id,
 				request.command,
@@ -732,8 +831,8 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 						geometry = request.command.kind === 'zoom' || request.command.kind === 'viewport';
 					if (geometry) this.frames.barrier(s.id, request.pageId, true);
 					try {
-						const response = await current.runtime.execute(request.pageId, request.command, current.lease, {
-							uploadPaths: paths,
+						const response = await current.runtime.execute(request.pageId, request.command, this.uploadAuthority(current.lease, paths), {
+							uploadPaths: paths?.paths,
 						});
 						this.human(request);
 						if (geometry) {
@@ -753,6 +852,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 						throw error;
 					}
 				},
+				() => this.uploadRemaining(paths),
 			);
 		};
 		// A click can await the very dialog/chooser this command answers. These
@@ -784,6 +884,9 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	}
 	async humanInput(request: HumanPageRequest & { frameId: string; inputSequence: number; input: HumanInput }) {
 		this.assertWritable();
+		const parsed = humanInputSchema.safeParse(request.input);
+		if (!parsed.success) throw new AgentBrowserError('invalid_input');
+		request = { ...request, input: parsed.data };
 		const { s, runtime, lease } = this.human(request),
 			page = this.page(s, request.pageId),
 			frame = this.frames.frame(request.viewerId, request.frameId);
@@ -795,8 +898,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			frame.documentId !== page.documentId ||
 			frame.epoch !== lease.epoch ||
 			frame.viewportVersion !== page.viewportVersion ||
-			(coordinates && frame.inputSequence < (this.inputSequences.get(lease.leaseId) ?? 0)) ||
-			this.now() - frame.capturedAt > 3000
+			(coordinates && frame.inputSequence < (this.inputSequences.get(lease.leaseId) ?? 0))
 		)
 			throw new AgentBrowserError('frame_stale');
 		if (
@@ -806,11 +908,29 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			throw new AgentBrowserError('input_sequence_stale');
 		this.inputSequences.set(lease.leaseId, request.inputSequence);
 		await this.queue(this.actions, s.id, async () => {
-			const current = this.human(request);
+			let current = this.human(request);
+			if (this.now() - frame.capturedAt > 3000) {
+				// A static, acknowledged picture can age without a navigation. Validate
+				// the current document/layout read-only, with a bounded wait, before the
+				// first dispatch. Never retry text after an uncertain dispatch. The service
+				// timer belongs to the workspace runtime, not a viewer/popout window.
+				let stopDeadline: (() => void) | undefined;
+				try {
+					const observation = await Promise.race([
+						runtime.observe(page.id, current.lease, { mode: 'interactive', maxNodes: 1, maxBytes: 1024 }),
+						new Promise<never>((_, reject) => {
+							// Reuse the workspace-owned host scheduler; no viewer window timer.
+							stopDeadline = this.extra.scheduleInterval?.(() => reject(new AgentBrowserError('frame_stale')), 1500);
+							if (!stopDeadline) reject(new AgentBrowserError('frame_stale'));
+						}),
+					]);
+					current = this.human(request);
+					if (observation.runtimeId !== frame.runtimeId || observation.documentId !== frame.documentId || observation.viewportVersion !== frame.viewportVersion || observation.epoch !== frame.epoch || observation.pageId !== page.id || observation.spaceId !== s.id) throw new AgentBrowserError('frame_stale');
+				} finally { stopDeadline?.(); }
+			}
 			if (
 				this.page(s, request.pageId).documentId !== frame.documentId ||
 				this.page(s, request.pageId).viewportVersion !== frame.viewportVersion ||
-				this.now() - frame.capturedAt > 3000 ||
 				(coordinates && !this.frames.frame(request.viewerId, request.frameId))
 			)
 				throw new AgentBrowserError('frame_stale');
@@ -821,28 +941,31 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			);
 		});
 	}
-	async observe(runId: string, capability: string, pageId: string): Promise<BrowserObservation> {
+	async observe(runId: string, capability: string, pageId: string, scope?: SnapshotOptions): Promise<BrowserObservation> {
 		const { s, runtime, lease } = this.authorize(runId, capability);
 		this.page(s, pageId);
-		const result = await runtime.observe(pageId, lease);
+		const result = await runtime.observe(pageId, lease, scope);
 		this.authorize(runId, capability);
 		if (
+			result.spaceId !== s.id || result.pageId !== pageId ||
 			result.runtimeId !== runtime.id ||
 			result.epoch !== lease.epoch ||
+			result.viewportVersion !== this.page(s, pageId).viewportVersion ||
 			result.documentId !== this.page(s, pageId).documentId
 		)
 			throw new AgentBrowserError('observation_stale');
 		return result;
 	}
-	async prepare(runId: string, capability: string, pageId: string, requestId: string, command: BrowserCommand) {
+	async prepare(runId: string, capability: string, pageId: string, requestId: string, command: BrowserCommand, timeoutMs?: number) {
 		const { s, run } = this.authorize(runId, capability);
 		this.page(s, pageId);
 		if (!agentCommands.has(command.kind)) throw new AgentBrowserError('command_forbidden');
 		if (command.kind === 'navigate') validatePageUrl(command.url);
 		return this.ledger.prepare(
 			requestId,
-			{ principal: 'agent', issuerId: run.id, spaceId: s.id, pageId, runtimeId: s.runtimeId, epoch: run.epoch },
+			{ principal: 'agent', issuerId: run.id, authorityId: run.leaseId, spaceId: s.id, pageId, runtimeId: s.runtimeId, epoch: run.epoch },
 			command,
+			timeoutMs,
 		);
 	}
 	async execute(
@@ -850,6 +973,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		capability: string,
 		operationId: string,
 		command: BrowserCommand,
+		remainingMs?: () => number,
 	): Promise<OperationRecord> {
 		const { s, run } = this.authorize(runId, capability),
 			record = this.ledger.get(operationId, { principal: 'agent', issuerId: run.id });
@@ -858,7 +982,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (!agentCommands.has(command.kind)) throw new AgentBrowserError('command_forbidden');
 		const pageId = record.scope.pageId;
 		const dispatch = async () => {
-			let paths: string[] | undefined;
+			let paths: Awaited<ReturnType<BrowserWorkspaceService['uploadPaths']>>;
 			return this.ledger.execute(
 				operationId,
 				command,
@@ -871,10 +995,13 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				async () => {
 					const current = this.authorize(runId, capability);
 					this.page(s, pageId);
-					const value = await current.runtime.execute(pageId, command, current.lease, { uploadPaths: paths });
+					const value = command.kind === 'snapshot'
+						? await this.observe(runId, capability, pageId, command.scope) as unknown as JsonValue
+						: await current.runtime.execute(pageId, command, this.uploadAuthority(current.lease, paths), { uploadPaths: paths?.paths });
 					this.authorize(runId, capability);
 					return value;
 				},
+				() => this.uploadRemaining(paths, remainingMs),
 			);
 		};
 		return command.kind === 'stop' ? dispatch() : this.queue(this.actions, s.id, dispatch);
@@ -912,9 +1039,43 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				.length,
 		};
 	}
-	events(runId: string, capability: string, afterSequence = 0): BrowserRunEvent[] {
-		this.authorize(runId, capability);
-		return this.eventsStore.poll(runId, afterSequence);
+	private eventRun(runId: string, capability: string) {
+		if (this.closing) throw new AgentBrowserError('module_stopped');
+		const entry = this.runs.get(runId);
+		if (!entry || entry.capability !== capability) throw new AgentBrowserError('capability_invalid');
+		let active = true; try { this.authorize(runId, capability); } catch { active = false; this.eventsStore.seal(runId); }
+		return { run: entry.run, active };
+	}
+	events(runId: string, capability: string, afterSequence = 0, streamId?: string): BrowserRunEvent[] {
+		this.eventRun(runId, capability);
+		return this.eventsStore.poll(runId, afterSequence, streamId);
+	}
+	/** Final transport guard reads only authority/stream identity, never live page or file ports. */
+	eventIdentity(runId: string, capability: string) {
+		const snapshot = this.eventsStore.snapshot(runId, () => {
+			const { run, active } = this.eventRun(runId, capability);
+			return { runId, spaceId: run.spaceId, runtimeId: run.runtimeId, runEpoch: run.epoch, generation: this.spaces.get(run.spaceId)?.control.epoch ?? run.epoch, active };
+		});
+		return { ...snapshot.projection, streamId: snapshot.streamId, cursor: snapshot.cursor };
+	}
+	eventSnapshot(runId: string, capability: string, metadataOnly = false): BrowserEventSnapshot {
+		const owner = this.eventRun(runId, capability);
+		if (!this.eventsStore.has(runId)) { this.eventsStore.open(runId, true); if (!owner.active) this.eventsStore.seal(runId); }
+		const snapshot = this.eventsStore.snapshot(runId, (): Omit<BrowserEventSnapshot, 'streamId' | 'cursor'> => {
+			const owner = this.eventRun(runId, capability), { run } = owner, active = owner.active && !metadataOnly, s = this.spaces.get(run.spaceId);
+			return {
+				runId, spaceId: run.spaceId, runtimeId: run.runtimeId, runEpoch: run.epoch, generation: s?.control.epoch ?? run.epoch, active,
+				space: { status: s?.status ?? 'removed', kind: s?.kind ?? 'task' }, control: { mode: s?.control.mode ?? 'paused', epoch: s?.control.epoch ?? run.epoch },
+				cleanup: { state: s ? this.cleanupState(s) : this.cleanupStates.get(run.spaceId) ?? 'completed' },
+				pages: active ? (s?.pages ?? []).map(page => ({ id: page.id, documentId: page.documentId, status: page.status, viewportVersion: page.viewportVersion })) : [],
+				requests: active ? this.getState().requests.filter(request => request.spaceId === run.spaceId && request.runtimeId === run.runtimeId && request.epoch === run.epoch && request.expiresAt > this.now() && request.status === 'pending' && s?.pages.some(page => page.id === request.pageId && page.documentId === request.documentId)).map(request => ({ id: request.id, pageId: request.pageId, kind: request.kind, status: request.status, revision: request.revision, expiresAt: request.expiresAt })) : [],
+				downloads: active ? this.extra.files.listDownloads(this.runScope(run)).map(download => ({ id: download.id, pageId: download.pageId, state: download.state, receivedBytes: download.receivedBytes, totalBytes: download.totalBytes })) : [],
+				operations: this.ledger.summaries({ principal: 'agent', issuerId: runId }),
+			};
+		});
+		const current = this.eventRun(runId, capability);
+		if ((current.active && !metadataOnly) !== snapshot.projection.active || (this.spaces.get(current.run.spaceId)?.control.epoch ?? current.run.epoch) !== snapshot.projection.generation) throw new AgentBrowserError('resync_required');
+		return { ...snapshot.projection, streamId: snapshot.streamId, cursor: snapshot.cursor };
 	}
 	private async managedPage<T extends JsonValue>(
 		s: BrowserSpace,
@@ -928,6 +1089,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			{
 				principal: 'workspace',
 				issuerId: this.persistence.ownerId,
+				authorityId: lease.leaseId,
 				spaceId: s.id,
 				runtimeId: s.runtimeId,
 				epoch: lease.epoch,
@@ -1009,19 +1171,49 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			return null;
 		});
 	}
+	async retryPage({ spaceId, pageId }: { spaceId: string; pageId: string }): Promise<BrowserPage> {
+		this.assertWritable();
+		const s = this.space(spaceId), page = this.page(s, pageId);
+		const check = () => {
+			if (s.status !== 'ready' || this.page(s, pageId) !== page || !['failed', 'pending'].includes(page.status))
+				throw new AgentBrowserError('page_not_retryable');
+		};
+		check();
+		await this.managedPage(s, { kind: 'page.retry', pageId }, async (runtime, lease) => {
+			check();
+			page.status = 'pending'; delete page.error;
+			await this.persist(); this.notify();
+			try {
+				if (s.control.lease?.leaseId !== lease.leaseId) throw new AgentBrowserError('control_superseded');
+				const restored = await runtime.createPage(pageId, page.url, lease);
+				if (this.runtimes.get(spaceId) !== runtime || s.control.lease?.leaseId !== lease.leaseId)
+					throw new AgentBrowserError('control_superseded');
+				Object.assign(page, restored, { status: 'open' }); delete page.error;
+			} catch (error) {
+				if (this.runtimes.get(spaceId) === runtime && s.status === 'ready') {
+					page.status = 'failed'; page.error = operationErrorCode(error);
+				}
+				throw error;
+			} finally { await this.persist(); this.notify(); }
+			return { id: pageId };
+		});
+		return clone(page);
+	}
 	async pageOpen(
 		runId: string,
 		capability: string,
 		requestId: string,
 		url = 'about:blank',
+		timeoutMs?: number,
 	): Promise<OperationRecord> {
 		const { s, run } = this.authorize(runId, capability);
 		url = validatePageUrl(url);
 		const payload = { kind: 'page.open', url },
 			record = await this.ledger.prepare(
 				requestId,
-				{ principal: 'agent', issuerId: run.id, spaceId: s.id, runtimeId: s.runtimeId, epoch: run.epoch },
+				{ principal: 'agent', issuerId: run.id, authorityId: run.leaseId, spaceId: s.id, runtimeId: s.runtimeId, epoch: run.epoch },
 				payload,
+				timeoutMs,
 			);
 		return this.queue(this.actions, s.id, () =>
 			this.ledger.execute(
@@ -1056,7 +1248,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			),
 		);
 	}
-	async pageClose(runId: string, capability: string, requestId: string, pageId: string): Promise<OperationRecord> {
+	async pageClose(runId: string, capability: string, requestId: string, pageId: string, timeoutMs?: number): Promise<OperationRecord> {
 		const { s, run } = this.authorize(runId, capability);
 		const payload = { kind: 'page.close', pageId },
 			record = await this.ledger.prepare(
@@ -1064,12 +1256,14 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				{
 					principal: 'agent',
 					issuerId: run.id,
+					authorityId: run.leaseId,
 					spaceId: s.id,
 					pageId,
 					runtimeId: s.runtimeId,
 					epoch: run.epoch,
 				},
 				payload,
+				timeoutMs,
 			);
 		return this.queue(this.actions, s.id, () =>
 			this.ledger.execute(
@@ -1092,6 +1286,13 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		);
 	}
 	async stopSpace(id: string) {
+		const existing = this.stops.get(id);
+		if (existing) return existing;
+		const task = this.stopOwned(id);
+		this.stops.set(id, task);
+		try { await task; } finally { if (this.stops.get(id) === task) this.stops.delete(id); }
+	}
+	private async stopOwned(id: string) {
 		const s = this.space(id);
 		this.newIntent(id);
 		s.status = 'closing';
@@ -1132,16 +1333,19 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (failure) throw failure instanceof Error ? failure : new AgentBrowserError('cleanup_pending');
 	}
 	private async cleanupSpace(s: BrowserSpace) {
-		await this.runtimes.get(s.id)?.stop();
-		await this.factory.reclaim(s.id, s.runtimeId);
-		this.runtimes.delete(s.id);
-		this.unlisten.get(s.id)?.();
-		this.unlisten.delete(s.id);
-		await this.extra.files.removeSpace(s.id);
-		await this.factory.removeProfile(s.id);
-		this.spaces.delete(s.id);
-		await this.persist();
-		this.notify();
+		this.cleanupStates.set(s.id, 'pending'); this.notify();
+		try {
+			await this.runtimes.get(s.id)?.stop();
+			await this.factory.reclaim(s.id, s.runtimeId);
+			this.runtimes.delete(s.id);
+			this.unlisten.get(s.id)?.();
+			this.unlisten.delete(s.id);
+			await this.extra.files.removeSpace(s.id);
+			await this.factory.removeProfile(s.id);
+			this.spaces.delete(s.id);
+			await this.persist();
+			this.cleanupStates.set(s.id, 'completed'); this.notify();
+		} catch (error) { this.cleanupStates.set(s.id, 'failed'); this.notify(); throw error; }
 	}
 	async removeSpace(id: string) {
 		this.assertWritable();
@@ -1155,14 +1359,18 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	async retryCleanup(id: string) {
 		this.assertWritable();
 		const s = this.space(id);
-		if (s.status === 'cleanup_pending') await this.cleanupSpace(s);
-		else if (s.status === 'quarantined') await this.stopSpace(id);
+		try {
+			await this.extra.files.retryCleanup?.(id);
+			if (s.status === 'cleanup_pending') await this.cleanupSpace(s);
+			else if (s.status === 'quarantined') await this.stopSpace(id);
+		} finally { this.notify(); }
 	}
 	async retryPendingCleanup() {
 		this.assertWritable();
 		try {
 			await this.extra.retryCleanup?.();
 			for (const s of [...this.spaces.values()]) {
+				await this.extra.files.retryCleanup?.(s.id);
 				if (s.status === 'cleanup_pending') await this.cleanupSpace(s);
 				else if (s.status === 'quarantined') await this.stopSpace(s.id);
 			}
@@ -1194,18 +1402,24 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		if (event.kind === 'request') {
 			const r = event.request,
 				p = s.pages.find((p) => p.id === r.pageId);
-			if (!p || r.documentId !== p.documentId || r.epoch !== s.control.epoch) return;
+			if (!p || r.documentId !== p.documentId || r.epoch !== s.control.epoch || r.expiresAt <= this.now()) return;
 			const rows = this.getState().requests.filter((old) => old.id !== r.id && old.expiresAt > this.now());
 			rows.push({ ...r, message: r.message.slice(0, 4096) });
 			this.store.setState({ requests: rows.slice(-64) });
+			this.emitSpace(s.id, 'humanRequest', { entityId: r.id, pageId: r.pageId, state: r.status });
 			return;
 		}
 		if (event.kind === 'request-resolved') {
+			const request = this.getState().requests.find(request => request.id === event.requestId && request.spaceId === s.id && request.runtimeId === event.runtimeId);
 			this.store.setState({ requests: this.getState().requests.filter((r) => r.id !== event.requestId) });
+			if (request && request.epoch === s.control.epoch && s.pages.some(page => page.id === request.pageId && page.documentId === request.documentId)) this.emitSpace(s.id, 'humanRequest', { entityId: request.id, pageId: request.pageId, state: 'resolved' });
 			return;
 		}
 		if (event.kind === 'download') {
 			void this.handleDownload(s, event).catch(() => {
+				// A failed update/query does not establish the file's business state.
+				this.downloadEvent(event);
+				this.notify();
 				void this.runtimes
 					.get(s.id)
 					?.cancelDownload(event.id)
@@ -1214,6 +1428,7 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			return;
 		}
 		if (event.kind === 'fault') {
+			this.emitSpace(s.id, 'runtimeFault', { entityId: s.id, state: 'quarantined', code: 'runtime_fault' });
 			this.newIntent(s.id);
 			s.status = 'quarantined';
 			s.error = event.code;
@@ -1239,25 +1454,22 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			}
 		} else if (event.kind === 'page-closed') {
 			const p = s.pages.find((p) => p.id === event.pageId);
-			if (p) {
+			if (p?.status === 'open') {
 				p.status = 'closed';
 				p.documentId = '';
 				this.frames.invalidate(s.id, p.id);
 			}
 		}
-		for (const { run } of this.runs.values())
-			if (run.spaceId === s.id && run.runtimeId === eventRuntime && run.state === 'active')
-				this.eventsStore.append(run.id, {
-					spaceId: s.id,
-					runtimeId: eventRuntime,
-					kind: event.kind,
-					pageId: event.kind === 'page' ? event.page.id : event.pageId,
-				});
 		this.notify();
 		void this.persist().catch(() => {
 			this.store.setState({ readOnly: true, error: 'catalog_unavailable' });
 			void this.stopSpace(s.id).catch(() => undefined);
 		});
+	}
+	private downloadEvent(event: Extract<RuntimeEvent, { kind: 'download' }>, state?: 'progressing' | 'completed' | 'cancelled' | 'failed') {
+		const scope = this.downloadOwners.get(`${event.runtimeId}:${event.id}`), entry = scope?.execution.kind === 'agent' ? this.runs.get(scope.execution.runId) : undefined;
+		if (!entry || entry.run.state !== 'active' || entry.run.expiresAt <= this.now() || entry.run.runtimeId !== event.runtimeId || entry.run.epoch !== event.epoch) return;
+		this.eventsStore.append(entry.run.id, { kind: state ? 'downloadChanged' : 'runtimeFault', spaceId: entry.run.spaceId, runtimeId: event.runtimeId, epoch: event.epoch, entityId: event.id, pageId: event.pageId, ...(state ? { state } : { code: 'runtime_fault' }) });
 	}
 	private async handleDownload(s: BrowserSpace, event: Extract<RuntimeEvent, { kind: 'download' }>) {
 		const key = `${event.runtimeId}:${event.id}`;
@@ -1276,20 +1488,34 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 			this.downloadOwners.set(key, scope);
 		}
 		await this.extra.files.download(event, scope);
+		if (this.spaces.get(s.id)?.runtimeId === event.runtimeId) {
+			// Native completion only proves transport completion. Local quota/capture can
+			// fail normally, and the file service retains the authoritative terminal state.
+			const download = this.extra.files.listDownloads(scope).find(item => item.id === event.id && item.pageId === event.pageId);
+			if (!download) throw new AgentBrowserError('download_projection_unavailable');
+			this.downloadEvent(event, download.state === 'in-progress' ? 'progressing' : download.state === 'canceled' ? 'cancelled' : download.state);
+		}
 		this.notify();
 	}
 	listIdentities() {
 		return this.extra.identities.list();
 	}
-	async prepareIdentityImport({ label, text }: { label: string; text: string }) {
+	async refreshIdentities() {
 		this.assertWritable();
+		try { await this.extra.identities.refresh?.(); }
+		catch { throw new AgentBrowserError('identity_refresh_unavailable'); }
+		finally { this.notify(); }
+	}
+	async prepareIdentityImport({ label, text, signal }: { label: string; text: string; signal?: AbortSignal }) {
+		this.assertWritable();
+		if (signal?.aborted) throw new AgentBrowserError('cancelled');
 		return this.extra.identities.prepareText(label, text);
 	}
-	async prepareIdentityFile({ label }: { label: string }) {
+	async prepareIdentityFile({ label, signal }: { label: string; signal?: AbortSignal }) {
 		this.assertWritable();
-		return this.extra.identities.prepareFile(label);
+		return this.extra.identities.prepareFile(label, signal);
 	}
-	async prepareBrowserIdentityImport(request: { sourceId: string; profileId?: string; label: string }) {
+	async prepareBrowserIdentityImport(request: { sourceId: string; profileId?: string; label: string; signal?: AbortSignal }) {
 		this.assertWritable();
 		return this.extra.identities.prepareSource(request);
 	}
@@ -1309,17 +1535,18 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 	listIdentitySources() {
 		return this.extra.identities.sources();
 	}
-	async saveIdentity(request: HumanPageRequest & { label: string; persist: boolean }) {
+	async saveIdentity(request: HumanPageRequest & { label: string; persist: boolean; signal?: AbortSignal }) {
 		this.assertWritable();
-		const { runtime } = this.human(request);
-		if (request.persist && this.getState().persistence !== 'secure')
+		const { label, persist, signal, ...authority } = request, { runtime } = this.human(authority);
+		if (persist && this.getState().persistence !== 'secure')
 			throw new AgentBrowserError('secure_storage_unavailable');
-		if (!request.persist && !this.getState().ephemeralConsent)
+		if (!persist && !this.getState().ephemeralConsent)
 			throw new AgentBrowserError('ephemeral_consent_required');
-		const result = await this.extra.identities.save(runtime, request.label, request.persist, () => {
-			this.human(request);
-		});
-		this.human(request);
+		const result = await this.extra.identities.save(runtime, label, persist, () => {
+			if (this.human(authority).runtime !== runtime) throw new AgentBrowserError('human_lease_expired');
+		}, signal);
+		// This is a whitelisted committed summary, not a late webpage read. Losing
+		// the source lease after publication cannot revoke the saved identity fact.
 		this.notify();
 		return result;
 	}
@@ -1387,43 +1614,53 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 				targets.push({ id: `${consumer.id}:${target.id}`, label: target.label });
 		return targets;
 	}
-	async sendMaterial(request: HumanPageRequest & { targetId: string }) {
-		const { s, runtime, lease } = this.human(request),
-			page = this.page(s, request.pageId),
-			documentId = page.documentId;
-		const consumerId = request.targetId.slice(0, request.targetId.indexOf(':')),
-			targetId = request.targetId.slice(request.targetId.indexOf(':') + 1),
-			consumer = (await this.extra.materials()).find((c) => c.id === consumerId);
-		if (!consumer || (await consumer.targets()).every((t) => t.id !== targetId))
-			throw new AgentBrowserError('material_target_missing');
-		const observation = await runtime.observe(page.id, lease);
+	async observeMaterial(request: HumanPageRequest): Promise<BrowserObservation> {
+		const { runtime, lease, s } = this.human(request), page = this.page(s, request.pageId);
+		const observation = await runtime.observe(page.id, lease, { mode: 'visible', maxNodes: 512, maxBytes: 65536 });
 		this.human(request);
-		const image = await runtime.execute(page.id, { kind: 'screenshot' }, lease);
-		this.human(request);
-		if (this.page(s, page.id).documentId !== documentId) throw new AgentBrowserError('observation_stale');
-		const material: BrowserMaterial = {
-			title: page.title || page.url,
-			text: [page.url, observation.title, ...observation.nodes.slice(0, 200).map((n) => `${n.role}: ${n.name}`)]
-				.join('\n')
-				.slice(0, 65_536),
-		};
-		if (
-			image &&
-			typeof image === 'object' &&
-			!Array.isArray(image) &&
-			typeof image.data === 'string' &&
-			image.data.length <= 12 * 1024 * 1024 &&
-			(image.mime === 'image/png' || image.mime === 'image/jpeg')
-		) {
-			const binary = atob(image.data);
-			if (binary.length > 8 * 1024 * 1024) throw new AgentBrowserError('material_too_large');
-			material.image = { mime: image.mime, data: Uint8Array.from(binary, (c) => c.charCodeAt(0)) };
-		}
-		this.human(request);
-		await consumer.deliver(targetId, material);
+		if (observation.spaceId !== s.id || observation.pageId !== page.id || observation.runtimeId !== runtime.id || observation.documentId !== this.page(s, page.id).documentId || observation.viewportVersion !== this.page(s, page.id).viewportVersion || observation.epoch !== lease.epoch) throw new AgentBrowserError('observation_stale');
+		this.materialObservations.set(observation.id, { request: { ...request }, observation: clone(observation) });
+		while (this.materialObservations.size > 8) this.materialObservations.delete(this.materialObservations.keys().next().value!);
+		return observation;
 	}
+	async sendMaterial(request: HumanPageRequest & { targetId: string; observationId: string; ref: string; signal?: AbortSignal }) {
+		const { s, runtime, lease } = this.human(request), page = this.page(s, request.pageId), documentId = page.documentId, viewportVersion = page.viewportVersion;
+		const selected = this.materialObservations.get(request.observationId), observation = selected?.observation, node = observation?.nodes.find(item => item.ref === request.ref);
+		if (!selected || !observation || !node || !node.visible || selected.request.spaceId !== s.id || selected.request.pageId !== page.id || selected.request.viewerId !== request.viewerId || selected.request.leaseId !== lease.leaseId || observation.documentId !== documentId || observation.viewportVersion !== viewportVersion || observation.runtimeId !== runtime.id || observation.epoch !== lease.epoch) throw new AgentBrowserError('observation_stale');
+		const abort = new AbortController(), cancel = () => abort.abort();
+		const validate = () => {
+			if (abort.signal.aborted || request.signal?.aborted || this.closing) throw new AgentBrowserError('cancelled');
+			const current = this.human(request), currentPage = this.page(current.s, page.id);
+			if (current.runtime !== runtime || currentPage.documentId !== documentId || currentPage.viewportVersion !== viewportVersion) throw new AgentBrowserError('observation_stale');
+		};
+		const unsubscribe = this.subscribe(() => { try { validate(); } catch { abort.abort(); } });
+		request.signal?.addEventListener('abort', cancel, { once: true });
+		try {
+			validate(); const separator = request.targetId.indexOf(':'), consumerId = request.targetId.slice(0, separator), targetId = request.targetId.slice(separator + 1);
+			const consumer = (await this.extra.materials()).find(item => item.id === consumerId); validate();
+			if (!consumer || !(await consumer.targets()).some(item => item.id === targetId)) throw new AgentBrowserError('material_target_missing'); validate();
+			const capture = await runtime.execute(page.id, { kind: 'material', observationId: request.observationId, ref: request.ref }, lease); validate();
+			if (!capture || typeof capture !== 'object' || Array.isArray(capture) || capture.observationId !== observation.id || capture.ref !== node.ref || capture.frameId !== node.frameId || capture.documentId !== documentId || capture.epoch !== lease.epoch || capture.viewportVersion !== viewportVersion) throw new AgentBrowserError('observation_stale');
+			const semantic = capture.semantic;
+			if (!semantic || typeof semantic !== 'object' || Array.isArray(semantic) || semantic.runtimeId !== runtime.id || semantic.pageId !== page.id || semantic.spaceId !== s.id || semantic.documentId !== documentId || semantic.epoch !== lease.epoch || semantic.viewportVersion !== viewportVersion || !semantic.scope || typeof semantic.scope !== 'object' || Array.isArray(semantic.scope) || semantic.scope.rootRef !== request.ref || semantic.scope.frameId !== node.frameId || !Array.isArray(semantic.nodes) || !semantic.nodes.length || !Array.isArray(semantic.coverage) || !Array.isArray(semantic.frameErrors) || typeof semantic.id !== 'string' || typeof semantic.truncated !== 'boolean' || JSON.stringify(semantic).length > 65536) throw new AgentBrowserError('capture_unavailable');
+			const captured = semantic as unknown as BrowserObservation;
+			const clip = capture.clip, image = capture.image, styles = capture.styles;
+			if (!clip || typeof clip !== 'object' || Array.isArray(clip) || !['x','y','width','height'].every(key => typeof clip[key] === 'number' && Number.isFinite(clip[key])) || Number(clip.x) < 0 || Number(clip.y) < 0 || Number(clip.width) <= 0 || Number(clip.height) <= 0 || !image || typeof image !== 'object' || Array.isArray(image) || image.mime !== 'image/png' || typeof image.data !== 'string' || image.data.length > 12 * 1024 * 1024 || !styles || typeof styles !== 'object' || Array.isArray(styles) || Object.keys(styles).length > 24 || !Object.values(styles).every(value => typeof value === 'string' && value.length <= 256)) throw new AgentBrowserError('capture_unavailable');
+			const binary = atob(image.data); if (!binary.length || binary.length > 8 * 1024 * 1024) throw new AgentBrowserError('material_too_large');
+			const source: NonNullable<BrowserMaterial['source']> = { capturedAt: new Date(this.now()).toISOString(), url: observation.url, spaceId: s.id, pageId: page.id, runtimeId: runtime.id, documentId, epoch: lease.epoch, viewportVersion, observationId: observation.id, semanticObservationId: captured.id, ref: node.ref, frameId: node.frameId, scope: clone(captured.scope), coverage: clone(captured.coverage), frameErrors: clone(captured.frameErrors), truncated: observation.truncated || captured.truncated, clip: clip as { x: number; y: number; width: number; height: number }, clipped: capture.clipped === true };
+			const material: BrowserMaterial = { title: observation.title || observation.url, text: JSON.stringify({ semantic: captured.nodes, styles, source }), source, styles: styles as Record<string,string>, image: { mime: 'image/png', data: Uint8Array.from(binary, char => char.charCodeAt(0)) } };
+			try {
+				if (!(await this.extra.materials()).includes(consumer)) throw new AgentBrowserError('material_target_missing'); validate();
+				await consumer.deliver(targetId, material, { signal: abort.signal, validate });
+				// Delivery has committed to the unsent input. Later cancellation/cleanup
+				// must not erase this receipt or cause automatic delivery again.
+			} finally { material.image?.data.fill(0); }
+		} finally { unsubscribe(); request.signal?.removeEventListener('abort', cancel); }
+	}
+
 	async dispose(): Promise<void> {
 		this.closing = true;
+		this.materialObservations.clear();
 		this.stopTimer?.();
 		this.stopTimer = undefined;
 		this.eventsStore.clear();
@@ -1444,6 +1681,8 @@ export class BrowserWorkspaceService implements BrowserWorkspace, BrowserAgentAc
 		await this.extra.identities.dispose();
 		await this.extra.files.dispose();
 		await this.factory.dispose();
-		await this.persistence.dispose();
+		try {
+			if (this.ledgerStarted && !this.persistence.readOnly) await this.ledger.prune();
+		} finally { this.ledgerStarted = false; await this.persistence.dispose(); }
 	}
 }

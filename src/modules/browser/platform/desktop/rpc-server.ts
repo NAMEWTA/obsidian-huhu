@@ -105,10 +105,11 @@ export function createBrowserRpcServer(options: {
 			if (envelope.bootId !== bootId) throw new AgentBrowserError('boot_changed');
 			const remaining = envelope.deadlineAtMs - Date.now();
 			if (remaining <= 0 || remaining > 60_000) throw new AgentBrowserError('deadline_invalid');
+			const acceptedAt = performance.now(), remainingMs = () => Math.max(0, remaining - (performance.now() - acceptedAt));
 			let timeout: ReturnType<typeof nodeSetTimeout> | undefined;
 			try {
 				dispatched = true;
-				const work = Promise.resolve().then(() => options.handler(envelope.method, envelope.params, match[0]));
+				const work = Promise.resolve().then(() => options.handler(envelope.method, envelope.params, match[0], remainingMs));
 				void work.finally(release).catch(() => undefined);
 				const result = await Promise.race([
 					work,

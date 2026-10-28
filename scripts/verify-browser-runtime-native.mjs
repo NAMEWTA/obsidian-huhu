@@ -65,16 +65,16 @@ const server = createServer((req, res) => {
 		res.end('Authorized browser fixture');
 		return;
 	}
-	if (req.url === '/frame') {
+	if (req.url === '/frame' || req.url === '/local-frame') {
 		res.setHeader('Content-Type', 'text/html');
 		res.end(
-			'<button aria-label="Frame counter" onclick="this.textContent=\'Frame clicked\'">Frame counter</button>',
+			`<button aria-label="${req.url === '/frame' ? 'Frame counter' : 'Local frame counter'}" onclick="this.textContent='Frame clicked'">Frame counter</button>`,
 		);
 		return;
 	}
 	res.setHeader('Content-Type', 'text/html');
 	res.end(
-		`<!doctype html><meta charset="UTF-8"><title>Owned browser fixture</title><style>body{font:20px sans-serif;margin:24px}button,input,select{font:20px sans-serif;margin:5px;padding:8px}iframe{width:500px;height:90px}</style><script>window.__events=[];for(const type of ["mousedown","mouseup","click"])document.addEventListener(type,e=>window.__events.push({type,x:e.clientX,y:e.clientY,target:e.target.getAttribute("aria-label")}),true)</script><h1>HUHU isolated fixture</h1><input aria-label="Fixture input"><select aria-label="Fixture select"><option value="a">Alpha</option><option value="b">Beta</option></select><button aria-label="Counter" onclick="this.dataset.count=String(+(this.dataset.count||0)+1);this.textContent='Count '+this.dataset.count">Counter</button><button aria-label="Prompt" onclick="document.querySelector('output').textContent='Prompt:'+prompt('Fixture prompt')">Prompt</button><button aria-label="Select heading" onclick="const r=document.createRange();r.selectNodeContents(document.querySelector('h1'));getSelection().removeAllRanges();getSelection().addRange(r)">Select heading</button><button aria-label="Choose file" onclick="document.querySelector('#file').click()">Choose file</button><input id="file" type="file" hidden><a href="/download">Download fixture</a><output></output><iframe src="http://localhost:${server.address().port}/frame"></iframe>`,
+		`<!doctype html><meta charset="UTF-8"><title>Owned browser fixture</title><style>body{font:20px sans-serif;margin:24px}button,input,select{font:20px sans-serif;margin:5px;padding:8px}iframe{width:500px;height:90px}</style><script>window.__events=[];for(const type of ["mousedown","mouseup","click"])document.addEventListener(type,e=>window.__events.push({type,x:e.clientX,y:e.clientY,target:e.target.getAttribute("aria-label")}),true)</script><h1>HUHU isolated fixture</h1><input aria-label="Fixture input"><select aria-label="Fixture select"><option value="a">Alpha</option><option value="b">Beta</option></select><button aria-label="Counter" onclick="this.dataset.count=String(+(this.dataset.count||0)+1);this.textContent='Count '+this.dataset.count">Counter</button><button aria-label="Prompt" onclick="document.querySelector('output').textContent='Prompt:'+prompt('Fixture prompt')">Prompt</button><button aria-label="Select heading" onclick="const r=document.createRange();r.selectNodeContents(document.querySelector('h1'));getSelection().removeAllRanges();getSelection().addRange(r)">Select heading</button><button aria-label="Choose file" onclick="document.querySelector('#file').click()">Choose file</button><input id="file" type="file" hidden><a href="/download">Download fixture</a><output></output><iframe src="/local-frame"></iframe><iframe src="http://localhost:${server.address().port}/frame"></iframe><input type="password" aria-label="Password fixture" value="SYNTHETIC_NATIVE_PASSWORD"><a href="/popup" target="_blank" aria-label="Popup fixture">Popup fixture</a>`,
 	);
 });
 await new Promise((resolve) => server.listen(0, '0.0.0.0', resolve));
@@ -205,7 +205,7 @@ async function snapshot(runtime, pageId) {
 			const value = await runtime.driver.observe(pageId, runtime.lease);
 			return value.nodes.some((node) => node.name === 'Fixture input') && value;
 		} catch (error) {
-			if (!['browser_document_changed', 'browser_cdp_error'].includes(error.code)) throw error;
+			if (!['browser_document_changed', 'browser_viewport_changed', 'browser_frame_changed', 'browser_cdp_error'].includes(error.code)) throw error;
 		}
 	});
 }
@@ -268,7 +268,29 @@ try {
 	);
 	await pause(a);
 	await grant(a, 'agent');
-	await snapshot(a, pageId);
+	const observedFrames = await until(async () => {
+		const value = await snapshot(a, pageId);
+		return value.nodes.some(node => node.name === 'Local frame counter') && value.nodes.some(node => node.name === 'Frame counter') && value;
+	});
+	assert.ok(observedFrames.coverage.length >= 3);
+	assert.ok(observedFrames.coverage.every(frame => frame.status === 'complete'));
+	assert.deepEqual(observedFrames.frameErrors, []);
+	assert.equal(observedFrames.scope.pageId, pageId);
+	assert.ok(Number.isInteger(observedFrames.viewportVersion));
+	assert.ok(!JSON.stringify(observedFrames).includes('SYNTHETIC_NATIVE_PASSWORD'));
+	const childNode = observedFrames.nodes.find(node => node.name === 'Frame counter');
+	const scopedFrame = await a.driver.observe(pageId, a.lease, { frameId: childNode.frameId, rootRef: childNode.ref, mode: 'interactive', maxNodes: 8, maxBytes: 4096 });
+	assert.equal(scopedFrame.coverage.length, 1);
+	assert.ok(scopedFrame.nodes.every(node => node.frameId === childNode.frameId));
+	assert.ok(Buffer.byteLength(JSON.stringify(scopedFrame)) <= 4096);
+	check('same-process and cross-origin frame coverage, scoped layout and password redaction');
+	await action(a, pageId, 'click', 'Popup fixture');
+	const popupPage = await until(() => events.findLast(event => event.kind === 'page' && event.runtimeId === a.runtimeId && event.page.id !== initial && event.page.id !== pageId && event.page.url === origin + '/popup'));
+	const popupObservation = await snapshot(a, popupPage.page.id);
+	assert.equal(popupObservation.scope.pageId, popupPage.page.id);
+	await assert.rejects(a.driver.execute(popupPage.page.id, { kind: 'click', observationId: observedFrames.id, ref: childNode.ref }, a.lease), error => error.code === 'browser_stale_ref');
+	await a.driver.closePage(popupPage.page.id, a.lease);
+	check('popup keeps a separate Page and refuses opener references');
 	await a.driver.watch(pageId, true);
 	check('multiple Pages share only their own Runtime and permanently seal provisioning');
 	const stillSince = Date.now();

@@ -24,7 +24,7 @@ import type { RunReport, SyncService, SyncSnapshot } from '../services/sync-serv
 import { hasConflictBlocks } from '../core/conflict-blocks';
 import { layoutGraph } from '../core/graph';
 import { AsyncDiffSurface, DiffMessage } from './DiffSurface';
-import { isCancelled } from './diff-model';
+import { DEFAULT_DIFF_PREFERENCES, isCancelled, type DiffLayout, type DiffPreferences } from './diff-model';
 import { ChoiceList, FileNavigator, type NavigationFile } from './VersioningNavigator';
 import { confirmAction } from './dialogs';
 import { GraphCell, graphWidth } from './GraphCell';
@@ -49,6 +49,10 @@ interface SharedWorkspaceProps extends GitWorkbenchProps {
 	navigationOpen: boolean;
 	onFileSelected: () => void;
 	statusRevision: number;
+	layout?: DiffLayout;
+	onLayoutChange: (layout: DiffLayout) => void;
+	preferences: DiffPreferences;
+	onPreferencesChange: (preferences: DiffPreferences) => void;
 }
 
 /** Three browse modes, one stable file selection and one shared diff surface. */
@@ -56,6 +60,8 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 	const { requestedMode = 'changes', requestId = 0, snapshot } = props;
 	const [selection, setSelection] = useState({ requestId, mode: requestedMode });
 	const [navigationOpen, setNavigationOpen] = useState(true);
+	const [layout, setLayout] = useState<DiffLayout>();
+	const [preferences, setPreferences] = useState(DEFAULT_DIFF_PREFERENCES);
 	const [statusVersion, setStatusVersion] = useState({ status: snapshot.status, revision: 0 });
 	const root = useRef<HTMLDivElement>(null);
 	if (selection.requestId !== requestId) setSelection({ requestId, mode: requestedMode });
@@ -65,6 +71,10 @@ export function GitWorkbench(props: GitWorkbenchProps) {
 	const shared: SharedWorkspaceProps = {
 		...props,
 		navigationOpen,
+		layout,
+		onLayoutChange: setLayout,
+		preferences,
+		onPreferencesChange: setPreferences,
 		statusRevision: statusVersion.revision,
 		onFileSelected: () => {
 			if ((root.current?.clientWidth ?? 900) < 736) setNavigationOpen(false);
@@ -426,6 +436,10 @@ function ChangesWorkspace(props: SharedWorkspaceProps) {
 				<AsyncDiffSurface
 					identity={`${selected.key}:${statusRevision}`}
 					load={load}
+					initialLayout={props.layout}
+					onLayoutChange={props.onLayoutChange}
+					preferences={props.preferences}
+					onPreferencesChange={props.onPreferencesChange}
 					createWorker={props.createWorker}
 				/>
 			) : (
@@ -878,6 +892,10 @@ function HistoryWorkspace(props: SharedWorkspaceProps) {
 				<AsyncDiffSurface
 					identity={`${commitOid}:${parent ?? 'root'}:${selected.path}`}
 					load={load}
+					initialLayout={props.layout}
+					onLayoutChange={props.onLayoutChange}
+					preferences={props.preferences}
+					onPreferencesChange={props.onPreferencesChange}
 					createWorker={props.createWorker}
 				/>
 			) : (
@@ -979,6 +997,10 @@ function CompareWorkspace(props: SharedWorkspaceProps) {
 				<AsyncDiffSurface
 					identity={`${left}:${right}:${selected.path}`}
 					load={load}
+					initialLayout={props.layout}
+					onLayoutChange={props.onLayoutChange}
+					preferences={props.preferences}
+					onPreferencesChange={props.onPreferencesChange}
 					createWorker={props.createWorker}
 				/>
 			) : (

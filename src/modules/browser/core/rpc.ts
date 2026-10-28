@@ -19,7 +19,7 @@ export interface BrowserRpcServer {
 	create(scope: BrowserConnectionScope): Promise<string>;
 	dispose(): Promise<void>;
 }
-export type RpcHandler = (method: BrowserMethod, params: unknown, connectionId: string) => Promise<unknown>;
+export type RpcHandler = (method: BrowserMethod, params: unknown, connectionId: string, remainingMs?: () => number) => Promise<unknown>;
 export type RpcResponseGuard = (
 	method: BrowserMethod,
 	params: unknown,

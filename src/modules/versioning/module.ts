@@ -16,6 +16,8 @@ import { HistoryQueryService } from './services/history-query';
 import type { RestoreService } from './services/restore-service';
 import type { NoteReviewService } from './services/note-review';
 import type { NoteHistoryHost } from './services/history-host';
+import type { AutomaticHistory } from './services/automatic-history';
+import type { LocalHistoryStore } from './services/local-history-store';
 
 registerMessages(commonStrings);
 registerMessages(messages);
@@ -31,24 +33,31 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 	let automatics: Automatics | undefined;
 	let restores: RestoreService | undefined;
 	let reviews: NoteReviewService | undefined;
+	let localHistory: LocalHistoryStore | undefined;
+	let automaticHistory: AutomaticHistory | undefined;
 	let disposed = false;
 	const queries = new HistoryQueryService(async () => {
 		if (!service) throw new Error(t('sync.starting'));
 		return service.versionAccess();
-	});
+	}, () => localHistory);
 	const listeners = new Set<() => void>();
 	const changed = () => {
 		for (const listener of [...listeners]) listener();
 		shell.refresh();
 	};
 	const report = (error: unknown) => new Notice(error instanceof Error ? error.message : String(error));
-	const workbench = syncWorkbench(
+	const syncPanel = syncWorkbench(
 		() => service,
 		(listener) => {
 			listeners.add(listener);
 			return () => listeners.delete(listener);
 		},
 	);
+	const workbench = { ...syncPanel, status: () => {
+		const rows = [...syncPanel.status()];
+		if (automaticHistory?.snapshot.phase === 'error') rows.push({ id: 'local-history', kind: 'error', label: t('versioning.localHistory.failed'), section: 'history' });
+		return rows;
+	} };
 	const repoFolder = () =>
 		settings
 			.get()
@@ -58,7 +67,7 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 	const openSettings = () => void shell.open({ feature: 'settings', section: 'versioning' }).catch(report);
 	const historyHost = (): NoteHistoryHost => {
 		if (!service || !restores || !reviews) throw new Error(t('sync.starting'));
-		return { documents: context.documents, queries, reviews, restores, sync: service, openSettings };
+		return { documents: context.documents, queries, reviews, restores, sync: service, automaticHistory, openSettings };
 	};
 	const openHistory = async (ownerWindow?: Window) => {
 		const owner =
@@ -132,7 +141,7 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 			'revision-review': async () =>
 				(await import('./ui/history/review-page')).createNoteReviewPage(historyHost()),
 		},
-		settingsPage: async () => (await import('./ui/settings-page')).syncSettingsPage(settings, () => service, app),
+		settingsPage: async () => (await import('./ui/settings-page')).syncSettingsPage(settings, () => service, app, () => automaticHistory),
 		async activate() {
 			const adapter = app.vault.adapter;
 			if (!(adapter instanceof FileSystemAdapter)) throw new Error(t('sync.desktopOnly'));
@@ -190,6 +199,8 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 				import('./platform/obsidian/restore-documents'),
 				import('./services/note-review'),
 			]);
+			const recoveryStorage = privateVaultStorage(app), recoveryDevice = deviceId(app);
+			const checkpoints = new CheckpointStore(recoveryStorage, recoveryDevice);
 			restores = new Restores({
 				documents: createObsidianRestoreDocuments(app, {
 					lifetime: context.lifetime,
@@ -197,9 +208,14 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 					checkDrafts: (path, text) => context.documents.checkDrafts?.(path, text),
 					allowPath: (path) => current.snapshot.place?.toRepo(path) != null,
 				}),
-				checkpoints: new CheckpointStore(privateVaultStorage(app), deviceId(app)),
+				checkpoints,
 				gate: current.restoreGate(),
 				participant: () => context.services.peek(COMMENTS_DOCUMENT_CHANGES),
+				assertHunkOrigin: origin => {
+					const source = context.documents.get(origin.id);
+					if (!source || source.path !== origin.path || source.leafId !== origin.leafId || source.generation !== origin.generation)
+						throw new Error('versioning.restore.changed');
+				},
 			});
 			await restores.initialize();
 			if (current.ready && restores.pending().length) await restores.recoverPending().catch(report);
@@ -207,8 +223,30 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 				documents: context.documents,
 				queries,
 				toRepo: (path) => current.snapshot.place?.toRepo(path) ?? null,
+				captureTarget: async (source, signal) => {
+					if (!current.ready || signal.aborted) return undefined;
+					const target = await restores!.captureTarget(source.path, source.leafId);
+					return signal.aborted ? undefined : target;
+				},
 				open: (id, owner) => shell.openFocus({ feature: 'revision-review', resourceId: id }, {}, owner),
 			});
+			const [{ LocalHistoryStore: HistoryStore }, { AutomaticHistory: HistoryClock }, { createHistoryCapture }, { assertLocalHistoryProtection }, { HistoryRetention }, { createRecoveryFiles }] = await Promise.all([
+				import('./services/local-history-store'), import('./services/automatic-history'),
+				import('./platform/obsidian/history-capture'), import('./platform/desktop/local-history-protection'),
+				import('./services/history-retention'), import('./platform/desktop/recovery-files'),
+			]);
+			localHistory = new HistoryStore(recoveryStorage, recoveryDevice, undefined, checkpoints);
+			const retention = new HistoryRetention(recoveryStorage, recoveryDevice, localHistory,
+				createRecoveryFiles(adapter.getBasePath(), recoveryDevice), () => ({ days: settings.get().localHistoryRetentionDays,
+					quotaBytes: settings.get().localHistoryQuotaMiB * 1024 * 1024 }));
+			const captures = createHistoryCapture(app, () => settings.get().localHistoryEnabled);
+			automaticHistory = new HistoryClock({ settings, history: localHistory, capture: captures.capture,
+				timers: win, assertProtection: signal => assertLocalHistoryProtection(adapter.getBasePath(), settings.get().gitPath, signal),
+				admit: (allocation, scope, signal) => retention.admit(allocation, scope, signal), maintain: signal => retention.collect(signal) });
+			context.lifetime.register(automaticHistory.subscribe(changed));
+			captures.attach(context.lifetime, automaticHistory, report);
+			automaticHistory.start();
+			context.lifetime.register(restores.subscribe(() => { void automaticHistory?.sample('important'); }));
 			clock.start();
 
 			const command = (id: string, nameKey: string, callback: () => void) =>
@@ -330,16 +368,21 @@ export default function createVersioningModule(context: ModuleContext): ModuleIn
 		},
 		async dispose() {
 			disposed = true;
+			const historyStopping = automaticHistory?.stop();
+			automaticHistory = undefined;
+			localHistory = undefined;
 			automatics?.stop();
 			automatics = undefined;
 			reviews?.dispose();
 			reviews = undefined;
-			await restores?.dispose();
+			const restoresStopping = restores?.dispose();
 			restores = undefined;
 			const current = service;
 			service = undefined;
 			listeners.clear();
-			await current?.dispose();
+			const results = await Promise.allSettled([historyStopping, restoresStopping, current?.dispose()]);
+			const failures = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+			if (failures.length) throw new AggregateError(failures.map(result => result.reason as unknown), 'versioning cleanup failed');
 		},
 	};
 }

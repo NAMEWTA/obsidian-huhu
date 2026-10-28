@@ -648,6 +648,99 @@ describe('the sync service', () => {
 			assert.equal((await service.commit('all')).steps[0]?.state, 'nothing');
 		} finally { await service.dispose(); }
 	});
+	test('automatic commits upgrade old exclusions, retain visible archive facts and stay private after restart', async () => {
+		const w = await published();
+		const previous = '# user rules\nkeep-local.txt\n# >>> HUHU managed (do not edit between these lines) >>>\n**/.huhu/browser/\n# <<< HUHU managed <<<\n# user footer\n';
+		write(w.a, '.gitignore', previous);
+		write(w.a, '.git/info/exclude', previous);
+		const privateFiles = [
+			'.huhu/browser/dev/profiles/personal/Network/Cookies',
+			'.huhu/browser-materials/dev/material-1/content.md',
+			'.huhu/recovery/versioning/dev/checkpoint.json',
+			'nested/.huhu/browser-materials/dev/material-2/content.md',
+		];
+		const archiveFiles = [
+			'huhu/档案/个人档案/测试/基本信息.md',
+			'huhu/档案/类型/项目.md',
+			'huhu/档案/关系/关系-1.md',
+			'huhu/档案/迁移/迁移-1/提交.md',
+		];
+		for (const file of privateFiles) write(w.a, file, 'private before restart\n');
+		for (const file of archiveFiles) write(w.a, file, '# portable archive fact\n');
+		write(w.a, 'keep-local.txt', 'user exclusion\n');
+		const create = () => new SyncService({
+			host: desktopGitHost(w.a, 'test-device'),
+			settings: settingsOf({ pullBeforePush: false, disablePush: true }),
+			dialogs: { confirmUpstream: async () => true }, notify() {}, describe: describeReport,
+		});
+		let service = create();
+		try {
+			await service.connect();
+			assert.equal(service.snapshot.error, undefined);
+			assert.deepEqual(service.snapshot.status?.untracked.sort(), ['.gitignore', ...archiveFiles].sort());
+			const ignore = read(w.a, '.gitignore'), exclude = read(w.a, '.git/info/exclude');
+			for (const text of [ignore, exclude]) {
+				assert.ok(text.startsWith('# user rules\nkeep-local.txt\n'));
+				assert.ok(text.endsWith('# user footer\n'));
+			}
+			assert.equal((await service.commit('all', { auto: true })).ok, true);
+			assert.deepEqual(sh(w.a, 'diff-tree', '--no-commit-id', '--name-only', '-r', '-z', 'HEAD').split('\0').filter(Boolean).sort(), ['.gitignore', ...archiveFiles].sort());
+			await service.dispose();
+			for (const file of privateFiles) write(w.a, file, 'private after restart\n');
+			service = create();
+			await service.connect();
+			assert.equal(service.snapshot.error, undefined);
+			assert.equal(read(w.a, '.gitignore'), ignore);
+			assert.equal(read(w.a, '.git/info/exclude'), exclude);
+			const head = sh(w.a, 'rev-parse', 'HEAD');
+			assert.equal((await service.commit('all', { auto: true })).steps[0]?.state, 'nothing');
+			assert.equal(sh(w.a, 'rev-parse', 'HEAD'), head);
+			assert.equal(sh(w.a, 'status', '--porcelain', '--untracked-files=all'), '');
+			for (const file of privateFiles) assert.equal(read(w.a, file), 'private after restart\n');
+		} finally { await service.dispose(); }
+	});
+
+	test('connecting backs up private staged blobs before untracking them and leaves archive files tracked', async () => {
+		const w = await published();
+		const privateFiles = [
+			'.huhu/browser/dev/profiles/personal/Network/Cookies',
+			'.huhu/browser-materials/dev/material-1/content.md',
+			'.huhu/recovery/versioning/dev/checkpoint.json',
+		];
+		const archive = 'huhu/档案/迁移/迁移-1/提交.md';
+		for (const file of [...privateFiles, archive]) write(w.a, file, 'committed value\n');
+		sh(w.a, 'add', '.');
+		sh(w.a, 'commit', '-qm', 'pre-existing tracked files');
+		for (const file of privateFiles) write(w.a, file, 'staged private value\n');
+		sh(w.a, 'add', '--', ...privateFiles);
+		for (const file of privateFiles) write(w.a, file, 'working private value\n');
+		const head = sh(w.a, 'rev-parse', 'HEAD');
+		const index = readFileSync(path.join(w.a, '.git/index'));
+		const service = new SyncService({
+			host: desktopGitHost(w.a, 'test-device'),
+			settings: settingsOf({ pullBeforePush: false, disablePush: true }),
+			dialogs: { confirmUpstream: async () => true }, notify() {}, describe: describeReport,
+		});
+		try {
+			await service.connect();
+			assert.equal(service.snapshot.error, undefined);
+			assert.deepEqual(service.snapshot.protection?.removed.sort(), [...privateFiles].sort());
+			const recovery = service.snapshot.protection?.recovery;
+			assert.ok(recovery);
+			assert.deepEqual(readFileSync(path.join(w.a, recovery, 'index')), index);
+			const manifest = JSON.parse(read(w.a, `${recovery}/manifest.json`)) as { entries: { path: string; blob: string }[] };
+			assert.deepEqual(manifest.entries.map(entry => entry.path).sort(), [...privateFiles].sort());
+			for (const entry of manifest.entries) assert.equal(Buffer.from(entry.blob, 'base64').toString(), 'staged private value\n');
+			for (const file of privateFiles) assert.equal(read(w.a, file), 'working private value\n');
+			assert.equal(sh(w.a, 'rev-parse', 'HEAD'), head);
+			assert.equal(sh(w.a, 'ls-files', '-z', '--', ...privateFiles), '');
+			assert.equal(sh(w.a, 'ls-files', '-z', '--', archive), `${archive}\0`);
+			assert.equal((await service.commit('all', { auto: true })).ok, true);
+			assert.equal(sh(w.a, 'ls-tree', '-r', '--name-only', '-z', 'HEAD', '--', '.huhu'), '');
+			assert.equal(sh(w.a, 'show', `HEAD:${archive}`), 'committed value\n');
+			assert.equal(sh(w.a, 'status', '--porcelain', '--untracked-files=all'), '');
+		} finally { await service.dispose(); }
+	});
 	test('resume admitted while pause is saving wins after the queue drains and after restart', async () => {
 		const w = await published(), host = desktopGitHost(w.a, 'test-device');
 		const save = host.saveDevice;

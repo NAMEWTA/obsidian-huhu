@@ -14,6 +14,8 @@ let initialized = false;
 let stopped = false;
 let queue = Promise.resolve();
 let queued = 0;
+let controlEpoch = 0;
+const urgentActions = new Set<Promise<void>>();
 const frames = new Map<string, { inFlight: boolean; latest?: BrowserFrame }>();
 
 function emit(event: RuntimeEvent): void {
@@ -56,7 +58,7 @@ async function dispatch(message: WorkerRequest): Promise<WorkerResult> {
 		case 'execute':
 			return current.execute(message.pageId, message.command, message.authority, message.uploadPaths);
 		case 'observe':
-			return current.observe(message.pageId, message.authority);
+			return current.observe(message.pageId, message.authority, message.scope);
 		case 'watch':
 			if (!message.enabled) frames.delete(message.pageId);
 			await current.watch(message.pageId, message.enabled);
@@ -79,9 +81,11 @@ async function dispatch(message: WorkerRequest): Promise<WorkerResult> {
 			return;
 	}
 }
-async function respond(message: WorkerRequest): Promise<void> {
+async function respond(message: WorkerRequest, settling?: Promise<unknown>): Promise<void> {
 	try {
-		port.postMessage({ type: 'result', id: message.id, value: await dispatch(message) });
+		const value = await dispatch(message);
+		await settling;
+		port.postMessage({ type: 'result', id: message.id, value });
 	} catch (error) {
 		port.postMessage({
 			type: 'result',
@@ -115,13 +119,21 @@ port.on('message', ({ data }) => {
 		return;
 	}
 	if (!Number.isSafeInteger(data.id) || data.id <= 0) return;
-	// Revocation ACK is native-only. Mirrors, prompt answers and stream credit must
-	// remain serviceable even while a navigation or script-blocked action awaits CDP.
+	// Native revocation never waits for this mailbox. Mirror the new epoch urgently,
+	// then acknowledge handoff only after all previously admitted page work settles.
 	const urgent =
 		['control', 'watch', 'frameAck', 'cancelDownload', 'stop'].includes(data.type) ||
 		(data.type === 'execute' && ['dialog', 'chooser'].includes(data.command.kind));
 	if (urgent) {
-		void respond(data);
+		if (data.type === 'control' && data.epoch > controlEpoch) {
+			controlEpoch = data.epoch;
+			frames.clear();
+			void respond(data, Promise.all([queue, ...urgentActions]));
+		} else if (data.type === 'execute') {
+			const task = respond(data);
+			urgentActions.add(task);
+			void task.finally(() => urgentActions.delete(task));
+		} else void respond(data);
 		return;
 	}
 	if (queued >= 64) {

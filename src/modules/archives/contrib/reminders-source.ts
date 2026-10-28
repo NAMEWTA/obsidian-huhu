@@ -6,7 +6,10 @@ import type { ContactsController } from '../platform/controller';
 
 async function listContactReminders(controller: ContactsController): Promise<AutomationDefinition[]> {
 	await controller.ensureLoaded();
-	return [...controller.index.byPath.values()].flatMap((record) => {
+	const snapshot = await controller.archives.snapshot(), blocked = new Set(snapshot.diagnostics.filter(item => item.code.startsWith('migration')).map(item => item.entityId));
+	const migrated = snapshot.entities.filter(entity => entity.formatVersion === 2 && ['type-person', 'type-company'].includes(entity.typeId) && !blocked.has(entity.id));
+	const migratedPaths = new Set(migrated.map(entity => entity.path));
+	return [...[...controller.index.byPath.values()].filter(record => !migratedPaths.has(record.path) && !blocked.has(record.id) && !record.errors.some(code => code.startsWith('migration'))), ...migrated].flatMap((record) => {
 		try {
 			return readReminders(record.raw).map((definition) => ({
 				...definition,

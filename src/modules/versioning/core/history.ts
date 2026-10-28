@@ -106,6 +106,9 @@ export interface RevisionReader {
 
 /** The UI consumes this contract; the service owns immutable resolution and repository checks. */
 export interface VersioningQueries {
+	/** Automatic local history remains readable without a Git repository. Metadata is loaded before bodies. */
+	localHistory?(path: string, signal?: AbortSignal): Promise<readonly FileHistoryEntry[]>;
+	readLocalSnapshot?(snapshotId: string, signal?: AbortSignal): Promise<string>;
 	fileHistory(path: string, options?: HistoryOptions): Promise<FileHistoryPage>;
 	resolveCommit(ref: string, signal?: AbortSignal): Promise<string | null>;
 	resolve(ref: RevisionRef, signal?: AbortSignal): Promise<ResolvedEndpoint>;

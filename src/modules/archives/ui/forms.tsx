@@ -715,31 +715,18 @@ export async function editBase(
 	controller: ContactsController,
 	record: ArchiveRecord,
 	scope: EditScope,
-	rowId: string | undefined,
+	_rowId: string | undefined,
 ): Promise<ArchiveRecord> {
+	if (scope === 'employment' || scope === 'relation') throw new ContactsError('migrationRequired');
 	const base = await controller.snapshot(record.path);
-	if (
-		rowId &&
-		((scope === 'employment' && !base.employments.some((r) => r.id === rowId)) ||
-			(scope === 'relation' && !base.relations.some((r) => r.id === rowId)))
-	)
-		throw new ContactsError('conflict');
 	return base;
 }
-export async function deleteRow(
-	controller: ContactsController,
-	record: ArchiveRecord,
-	scope: 'employment' | 'relation',
-	id: string,
+export function deleteRow(
+	_controller: ContactsController,
+	_record: ArchiveRecord,
+	_scope: 'employment' | 'relation',
+	_id: string,
 ): Promise<void> {
-	try {
-		const base = await controller.snapshot(record.path);
-		if (!(await confirm(controller.app, ct('deleteEntry'), ct('delete')))) return;
-		const next = cloneRecord(base);
-		if (scope === 'employment') next.employments = next.employments.filter((r) => r.id !== id);
-		else next.relations = next.relations.filter((r) => r.id !== id);
-		await controller.save(base, next);
-	} catch (error) {
-		new Notice(errorText(error));
-	}
+	new Notice(errorText(new ContactsError('migrationRequired')));
+	return Promise.resolve();
 }

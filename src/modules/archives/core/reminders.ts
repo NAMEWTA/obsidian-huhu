@@ -29,5 +29,5 @@ export function patchReminders(raw: string, definition: AutomationDefinition, re
 	const region = `${OPEN}\n\`\`\`json\n${JSON.stringify(definitions, null, 2).replace(/</g, '\\u003c')}\n\`\`\`\n${CLOSE}`;
 	const start = raw.indexOf(OPEN),
 		end = raw.indexOf(CLOSE);
-	return start < 0 ? `${raw.trimEnd()}\n\n${region}\n` : raw.slice(0, start) + region + raw.slice(end + CLOSE.length);
+	return start < 0 ? `${raw}\n\n${region}\n` : raw.slice(0, start) + region + raw.slice(end + CLOSE.length);
 }

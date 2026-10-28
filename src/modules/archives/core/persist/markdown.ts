@@ -1,9 +1,11 @@
 import { parseDocument, stringify } from 'yaml';
 import { getLanguage, t } from '../../../../shared/i18n/index';
 import { COLUMN_LABELS } from './column-labels';
+import { patchYamlValues } from './yaml-values';
 import {
 	ContactsError,
 	listFields,
+	legacyFieldKeys,
 	proseSections,
 	same,
 	scalarFields,
@@ -188,6 +190,7 @@ export function parseRecord(raw: string, path: string, modified = 0): ArchiveRec
 		if (!value || typeof value !== 'object' || Array.isArray(value)) throw new ContactsError('invalidYaml');
 		const values = value as Record<string, unknown>;
 		if (values['huhu-type'] !== 'person' && values['huhu-type'] !== 'company') return null;
+		if (values['huhu-format-version'] !== undefined && values['huhu-format-version'] !== 1) throw new ContactsError('futureFormat');
 		record.kind = values['huhu-type'];
 		record.id = stringValue(values['huhu-id']);
 		if (!/^[\w-]+$/.test(record.id)) throw new ContactsError('invalidId');
@@ -234,13 +237,7 @@ export function parseRecord(raw: string, path: string, modified = 0): ArchiveRec
 }
 export function createMarkdown(record: ArchiveRecord): string {
 	validateRecord(record);
-	const fields = Object.fromEntries(
-		Object.entries(record.fields).filter(([key]) =>
-			record.kind === 'person'
-				? key !== 'website'
-				: ['name', 'aliases', 'region', 'website', 'tags', 'phones', 'emails'].includes(key),
-		),
-	);
+	const fields = Object.fromEntries(Object.entries(record.fields).filter(([key]) => legacyFieldKeys[record.kind].includes(key as keyof ArchiveRecord['fields'])));
 	const values = { 'huhu-type': record.kind, 'huhu-id': record.id, ...fields };
 	const used = record.kind === 'person' ? sections : (['notes'] as const);
 	return (
@@ -261,14 +258,12 @@ export function patchMarkdown(current: string, base: ArchiveRecord, next: Archiv
 	if (!latest || latest.errors.length || latest.id !== base.id || latest.kind !== base.kind)
 		throw new ContactsError('invalidRecord');
 	const fm = front(current);
-	const doc = parseDocument(fm.yaml);
-	let changedFields = false;
+	const changedFields = new Map<string, unknown>();
 	for (const key of [...scalarFields, ...listFields]) {
 		if (same(base.fields[key], next.fields[key])) continue;
 		if (!same(latest.fields[key], base.fields[key]) && !same(latest.fields[key], next.fields[key]))
 			throw new ContactsError('conflict', key);
-		doc.set(key, next.fields[key]);
-		changedFields = true;
+		changedFields.set(key, next.fields[key]);
 	}
 	let result = current;
 	for (const key of sections) {
@@ -297,7 +292,7 @@ export function patchMarkdown(current: string, base: ArchiveRecord, next: Archiv
 				body.slice(title[0].length);
 		}
 	}
-	return changedFields ? `---\n${doc.toString()}---\n` + result.slice(fm.end) : result;
+	return changedFields.size ? patchYamlValues(result, changedFields) : result;
 }
 export function relativeLink(from: string, to: string): string {
 	const a = from.split('/').slice(0, -1),

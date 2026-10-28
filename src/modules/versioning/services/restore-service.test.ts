@@ -10,6 +10,23 @@ import { WriteQueue } from '../../../shared/storage/write-queue';
 import type { RestoreGate } from '../core/restore';
 import { CheckpointStore } from './checkpoint-store';
 import { RestoreService } from './restore-service';
+import { LocalHistoryStore } from './local-history-store';
+import { HistoryRetention } from './history-retention';
+import { AutomaticHistory } from './automatic-history';
+import { syncSettings } from '../settings';
+import type { SettingsHandle } from '../../../shared/settings/store';
+import type { SyncSettings } from '../settings';
+import { restoreHunks, type HunkDiff } from '../core/hunk-restore';
+
+function memoryRecoveryFiles(files: Map<string, string>) {
+	return {
+		async inventory() { return [...files].map(([path, text]) => ({ path, byteLength: new TextEncoder().encode(text).byteLength, stamp: text,
+			...(/\/objects\/([a-f0-9]{64})\.txt$/.test(path) ? { hash: /\/objects\/([a-f0-9]{64})\.txt$/.exec(path)![1]! } : {}) })); },
+		async remove(file: { path: string; stamp: string }) {
+			if (files.get(file.path) !== file.stamp) throw new Error('changed'); files.delete(file.path);
+		},
+	};
+}
 
 function fixture(disk = 'disk before', buffer = disk) {
 	const files = new Map<string, string>(),
@@ -90,7 +107,10 @@ function fixture(disk = 'disk before', buffer = disk) {
 		},
 	};
 	const checkpoints = new CheckpointStore(storage, 'device-1'),
-		service = new RestoreService({ documents, gate, checkpoints });
+		service = new RestoreService({ documents, gate, checkpoints, assertHunkOrigin: origin => {
+			if (origin.id !== 'editor-context' || origin.path !== 'note.md' || origin.leafId !== 'source-leaf'
+				|| origin.generation !== objects.get('note.md')?.buffers[0]?.generation) throw new Error('versioning.restore.changed');
+		} });
 	return {
 		files,
 		objects,
@@ -126,6 +146,35 @@ const request = (text = 'historical contents') => ({
 	targetPath: 'note.md',
 	originLeafId: 'source-leaf',
 	mode: 'replace-current' as const,
+});
+
+test('partial preparation validates the original B identity and generations before using exact raw selections', async () => {
+	const before = '\uFEFF新一\r\n保持😀\r\n新二', historical = '\uFEFF旧一\r\n保持😀\r\n旧二';
+	const diff: HunkDiff = { left: '旧一\n保持😀\n旧二', right: '新一\n保持😀\n新二', precise: true,
+		chunks: [{ fromA: 0, toA: 3, fromB: 0, toB: 3, precise: true }, { fromA: 8, toA: 11, fromB: 8, toB: 11, precise: true }] };
+	for (const drift of ['replace', 'ABA-before-prepare', 'ABA-after-prepare', 'none'] as const) {
+		const f = fixture(before), target = await f.service.captureTarget('note.md', 'source-leaf');
+		const hunks = { target, origin: { id: 'editor-context', path: 'note.md', leafId: 'source-leaf', generation: 1 },
+			diff, selected: [restoreHunks(historical, before, diff)[0]!.id] };
+		if (drift === 'replace') f.objects.set('note.md', { ...target, documentKey: 'same-bytes-new-file' });
+		if (drift === 'ABA-before-prepare') { f.edit('new draft'); f.edit(before); }
+		if (drift === 'replace' || drift === 'ABA-before-prepare') {
+			await expect(f.service.prepare({ ...request(historical), hunks })).rejects.toThrow('versioning.restore.changed');
+			expect(f.writes()).toBe(0); continue;
+		}
+		const plan = await f.service.prepare({ ...request(historical), hunks });
+		expect(plan.afterText).toBe('\uFEFF旧一\r\n保持😀\r\n新二');
+		if (drift === 'ABA-after-prepare') {
+			f.edit('new draft'); f.edit(before);
+			await expect(f.service.apply(plan.id)).rejects.toThrow('versioning.restore.changed');
+			expect(f.writes()).toBe(0);
+		} else {
+			const receipt = await f.service.apply(plan.id);
+			expect(receipt.selectedHunks).toEqual(hunks.selected);
+			await f.service.undo(receipt.id);
+			expect(f.objects.get('note.md')!.text).toBe(before);
+		}
+	}
 });
 
 test('preparing and cancelling is read-only; recovery hold begins only on apply', async () => {
@@ -325,6 +374,68 @@ test('explicit acknowledgement closes a pending review across restarts without c
 	await expect(restarted.undo(plan.id)).rejects.toThrow('undo-unavailable');
 	await restarted.dispose();
 	await f.service.dispose();
+});
+
+test('collection preserves the actual restore and restart undo chain while reclaiming unrelated expired history', async () => {
+	const f = fixture('disk before', 'unsaved draft before');
+	const receipt = await f.service.apply((await f.service.prepare(request())).id);
+	let now = 1_000_000;
+	const history = new LocalHistoryStore(f.storage, 'device-1', () => now, f.checkpoints);
+	const old = await history.capture('old.md', 'unrelated expired text', 'interval');
+	now += 31 * 86_400_000;
+	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1024 * 1024 }), () => now);
+	await retention.collect();
+	expect([...f.files.keys()].some(path => path.endsWith(`${old!.hash}.txt`))).toBe(false);
+	const restarted = new RestoreService({ documents: f.documents, gate: f.gate, checkpoints: new CheckpointStore(f.storage, 'device-1') });
+	await restarted.initialize();
+	expect((await restarted.undo(receipt.id)).stage).toBe('verified');
+	expect(f.objects.get('note.md')!.text).toBe('unsaved draft before');
+	await restarted.dispose(); await f.service.dispose();
+});
+
+test('an actual restore holds unpublished checkpoint objects until its recovery journal is durable', async () => {
+	const f = fixture();
+	let entered!: () => void, release!: () => void;
+	const enteredPromise = new Promise<void>(resolve => { entered = resolve; });
+	const blocked = new Promise<void>(resolve => { release = resolve; });
+	const write = f.storage.write;
+	let first = true;
+	f.storage.write = async (path, text) => {
+		if (first && path.includes('/objects/')) { first = false; entered(); await blocked; }
+		await write(path, text);
+	};
+	const plan = await f.service.prepare(request());
+	const applying = f.service.apply(plan.id); await enteredPromise;
+	const history = new LocalHistoryStore(f.storage, 'device-1', undefined, f.checkpoints);
+	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1024 * 1024 }));
+	let complete = false;
+	const collecting = retention.collect().then(() => { complete = true; });
+	await Promise.resolve(); expect(complete).toBe(false);
+	release(); const [receipt] = await Promise.all([applying, collecting]);
+	expect(receipt.stage).toBe('verified');
+	expect(await f.checkpoints.readObject(receipt.beforeObject!)).toBe('disk before');
+	await f.service.dispose();
+});
+
+test('quota-paused automatic history cannot waive forced checkpoints, and checkpoint write failure still refuses note overwrite', async () => {
+	const f = fixture();
+	await f.service.apply((await f.service.prepare(request())).id);
+	const history = new LocalHistoryStore(f.storage, 'device-1', undefined, f.checkpoints);
+	const retention = new HistoryRetention(f.storage, 'device-1', history, memoryRecoveryFiles(f.files), () => ({ days: 30, quotaBytes: 1 }));
+	const settings = { get: () => ({ ...syncSettings.defaults(), localHistoryEnabled: true }), subscribe: () => () => {} } as unknown as SettingsHandle<SyncSettings>;
+	const automatic = new AutomaticHistory({ settings, history, capture: () => [{ path: 'note.md', text: 'another sample', sourceId: 'leaf' }],
+		assertProtection: async () => {}, timers: { setTimeout: () => 1, clearTimeout() {} } as unknown as Window,
+		admit: (allocation, scope, signal) => retention.admit(allocation, scope, signal) });
+	try {
+		automatic.start(); await automatic.sample('important');
+		expect(automatic.snapshot).toMatchObject({ phase: 'error', error: 'versioning.localHistory.quota' });
+		const successful = await f.service.apply((await f.service.prepare(request('second restored text'))).id);
+		expect(successful.stage).toBe('verified'); expect(f.objects.get('note.md')!.text).toBe('second restored text');
+		const count = f.writes();
+		f.fail(path => path.includes('/objects/'));
+		await expect(f.service.apply((await f.service.prepare(request('cannot checkpoint this version'))).id)).rejects.toThrow('disk-full');
+		expect(f.writes()).toBe(count); expect(f.objects.get('note.md')!.text).toBe('second restored text');
+	} finally { await automatic.stop(); await f.service.dispose(); }
 });
 
 test.each(['open-to-closed', 'closed-to-open'] as const)(

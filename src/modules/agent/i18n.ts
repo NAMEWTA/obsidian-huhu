@@ -362,6 +362,7 @@ export const messages = {
 		'agent.skills.clear': 'Clear remembered names',
 		'agent.delivery.missing': 'The selected interactive agent session is unavailable. Select a session again.',
 		'agent.delivery.failed': 'Material delivery failed.',
+		'agent.delivery.unknown': 'The paste result is unknown. Check the selected input before adding the material again.',
 		'agent.delivery.busy': 'The selected agent is busy. Wait before pasting more material.',
 		'agent.delivery.timeout':
 			'The agent did not become ready within 10 seconds. Nothing was pasted; its task was not stopped.',
@@ -869,6 +870,7 @@ export const messages = {
 		'agent.skills.clear': '清除已记住的名称',
 		'agent.delivery.missing': '所选交互式智能体会话不可用，请重新选择会话。',
 		'agent.delivery.failed': '材料交付失败。',
+		'agent.delivery.unknown': '无法确认粘贴结果。请先核对所选输入区，再决定是否重新附加材料。',
 		'agent.delivery.busy': '所选智能体正忙，请稍后再粘贴材料。',
 		'agent.delivery.timeout': '智能体未在 10 秒内就绪。未粘贴任何内容，原任务仍未停止。',
 		'agent.delivery.cancelled': '已取消材料交付，未粘贴任何内容。',

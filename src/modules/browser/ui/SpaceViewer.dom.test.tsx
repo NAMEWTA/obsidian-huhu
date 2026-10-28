@@ -54,6 +54,59 @@ async function human(f: ReturnType<typeof workspaceFixture>) {
 	return frame;
 }
 
+it('sends in-place composition with UTF-16 selection from the focused viewer and cancels on blur', async () => {
+	const f = workspaceFixture(); render(<TestProviders><input aria-label="Host note" /><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>);
+	await human(f); const canvas = screen.getByLabelText(t('browser.v2.canvas')); fireEvent.focus(canvas);
+	const inline = screen.getByLabelText(t('browser.v2.inlineInput')) as HTMLTextAreaElement;
+	const processKey = new KeyboardEvent('keydown', { key: 'Process', keyCode: 229, bubbles: true, cancelable: true }); fireEvent(inline, processKey); expect(processKey.defaultPrevented).toBe(false);
+	inline.focus(); fireEvent.compositionStart(inline, { data: '' }); inline.value = '中😀'; fireEvent.compositionUpdate(inline, { data: '中😀' });
+	inline.value = '中😀'; inline.setSelectionRange(1, 3); fireEvent.select(inline);
+	fireEvent.compositionEnd(inline, { data: '中😀' }); fireEvent.input(inline, { data: '中😀', inputType: 'insertFromComposition' });
+	await waitFor(() => expect(f.api.humanInput).toHaveBeenCalledWith(expect.objectContaining({ input: { kind: 'composition', phase: 'end', text: '中😀', selectionStart: 3, selectionEnd: 3 } })));
+	expect(vi.mocked(f.api.humanInput).mock.calls.filter(([request]) => request.input.kind === 'text')).toEqual([]);
+	fireEvent.compositionStart(inline); fireEvent.compositionUpdate(inline, { data: '未提交' }); screen.getByLabelText('Host note').focus(); fireEvent.blur(inline);
+	await waitFor(() => expect(f.api.humanInput).toHaveBeenCalledWith(expect.objectContaining({ input: { kind: 'composition', phase: 'cancel', text: '', selectionStart: 0, selectionEnd: 0 } })));
+	expect(document.activeElement).toBe(screen.getByLabelText('Host note'));
+});
+
+it('keeps control for a recoverable frame refusal but releases an uncertain composition cancellation', async () => {
+	const f = workspaceFixture(); render(<TestProviders><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>); await human(f);
+	const inline = screen.getByLabelText(t('browser.v2.inlineInput'));
+	vi.mocked(f.api.humanInput).mockRejectedValueOnce(Error('frame_stale'));
+	fireEvent.compositionStart(inline); await waitFor(() => expect(f.api.humanInput).toHaveBeenCalledOnce()); await act(async () => { await Promise.resolve(); });
+	expect(f.api.releaseViewer).not.toHaveBeenCalled();
+	vi.mocked(f.api.humanInput).mockRejectedValueOnce(Error('outcome_unknown')); fireEvent.blur(inline);
+	await waitFor(() => expect(f.api.releaseViewer).toHaveBeenCalledOnce());
+	expect(f.api.humanInput).toHaveBeenCalledTimes(2);
+});
+
+it('clears draft and composition on control change and ignores completion from the old lease', async () => {
+	const f = workspaceFixture(); render(<TestProviders><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>); await human(f);
+	const draft = screen.getByLabelText(t('browser.v2.textInput')); fireEvent.change(draft, { target: { value: 'secret old draft' } }); fireEvent.compositionStart(draft);
+	const initial = f.api.getState(), space = initial.spaces[0]!;
+	act(() => f.set({ ...initial, spaces: [{ ...space, control: { mode: 'paused', epoch: 3 } }] }));
+	vi.mocked(f.api.takeover).mockClear();
+	await human(f); expect((screen.getByLabelText(t('browser.v2.textInput')) as HTMLTextAreaElement).value).toBe('');
+	fireEvent.change(screen.getByLabelText(t('browser.v2.textInput')), { target: { value: 'new draft' } });
+	expect((screen.getByRole('button', { name: t('browser.v2.insertText') }) as HTMLButtonElement).disabled).toBe(false);
+});
+
+it('does not clear an identical new-lease draft when an old insertion finishes late', async () => {
+	const f = workspaceFixture(); render(<TestProviders><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>); await human(f);
+	let finish!: () => void; vi.mocked(f.api.humanInput).mockImplementationOnce(() => new Promise<void>(resolve => { finish = resolve; }));
+	fireEvent.change(screen.getByLabelText(t('browser.v2.textInput')), { target: { value: 'same text' } }); fireEvent.click(screen.getByRole('button', { name: t('browser.v2.insertText') }));
+	const state = f.api.getState(), space = state.spaces[0]!; act(() => f.set({ ...state, spaces: [{ ...space, control: { mode: 'paused', epoch: 3 } }] })); vi.mocked(f.api.takeover).mockClear(); await human(f);
+	fireEvent.change(screen.getByLabelText(t('browser.v2.textInput')), { target: { value: 'same text' } }); await act(async () => finish());
+	expect((screen.getByLabelText(t('browser.v2.textInput')) as HTMLTextAreaElement).value).toBe('same text');
+});
+
+it('provides a current owner-window liveness check even when close lifecycle events are lost', () => {
+	const f = workspaceFixture(), view = render(<TestProviders><SpaceViewer api={f.api} spaceId="space" pageId="page" /></TestProviders>);
+	const scope = vi.mocked(f.api.subscribeFrames).mock.calls[0]![0];
+	expect(scope.isAlive?.()).toBe(true); view.container.remove(); expect(scope.isAlive?.()).toBe(false);
+	view.unmount();
+});
+
 it('opens as an observer, retains the stream during takeover, rejects stale frames and releases only its viewer on close', async () => {
 	const f = workspaceFixture();
 	const view = render(

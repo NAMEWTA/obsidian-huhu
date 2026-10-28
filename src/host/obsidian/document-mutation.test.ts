@@ -232,3 +232,30 @@ test.each(['../note.md', '.huhu/config/settings.json', '.huhu/dashboards/note.md
 		expect(f.create).not.toHaveBeenCalled();
 	},
 );
+
+test('read-only structured-write checks reject dirty or changed native leaves without saving them', async () => {
+	const f = fixture({ 'note.md': 'disk' });
+	expect(f.documents).toHaveProperty('assertClean');
+	const first = f.open('main', 'note.md');
+	const before = await f.documents.capture('note.md');
+	expect(() => f.documents.assertClean(before, 'disk')).not.toThrow();
+	first.edit('new draft');
+	expect(() => f.documents.assertClean(before, 'disk')).toThrow();
+	first.edit('disk');
+	expect(() => f.documents.assertClean(before, 'disk')).toThrow();
+	const clean = await f.documents.capture('note.md');
+	f.open('popout', 'note.md', 'other draft');
+	expect(() => f.documents.assertClean(clean, 'disk')).toThrow();
+	expect(first.save).not.toHaveBeenCalled();
+	expect(first.transaction).not.toHaveBeenCalled();
+	expect(f.contents.get('note.md')).toBe('disk');
+});
+
+test('read-only archive capture does not inherit the restore writer size limit', async () => {
+	const f = fixture({ 'large.md': 'x'.repeat(5 * 1024 * 1024 + 1) });
+	expect(f.documents).toHaveProperty('captureClean');
+	await expect(f.documents.capture('large.md')).rejects.toMatchObject({ code: 'unsupported' });
+	const snapshot = await f.documents.captureClean('large.md');
+	expect(() => f.documents.assertClean(snapshot, snapshot.diskText!)).not.toThrow();
+	expect(f.process).not.toHaveBeenCalled();
+});

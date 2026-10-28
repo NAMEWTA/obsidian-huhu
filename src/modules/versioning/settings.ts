@@ -3,11 +3,15 @@ import { defineSettings, f } from '../../shared/settings/schema';
 const minutes = (fallback = 0) => f.number({ default: fallback, min: 0, max: 7 * 24 * 60, integer: true });
 
 /**
- * Settings namespace `sync`. Commit, pull and push behaviour is shared by every device of the vault; where git
+ * Settings namespace `versioning`. Commit, pull and push behaviour is shared by every device of the vault; where git
  * lives and which folder holds the repository belong to this device. The automatic-sync clock and pause state are
  * not settings: they are kept per repository and device inside the git directory.
  */
 export const syncSettings = defineSettings({
+	localHistoryEnabled: f.boolean({ default: false, scope: 'device' }),
+	localHistoryIntervalMinutes: f.number({ default: 5, min: 1, max: 24 * 60, integer: true, scope: 'device' }),
+	localHistoryRetentionDays: f.number({ default: 30, min: 1, max: 3650, integer: true, scope: 'device' }),
+	localHistoryQuotaMiB: f.number({ default: 1024, min: 1, max: 1024 * 1024, integer: true, scope: 'device' }),
 	commitMessage: f.string({ default: 'vault backup: {{date}}', max: 2000 }),
 	autoCommitMessage: f.string({ default: 'vault backup: {{date}}', max: 2000 }),
 	commitDateFormat: f.string({ default: 'YYYY-MM-DD HH:mm:ss', max: 100 }),

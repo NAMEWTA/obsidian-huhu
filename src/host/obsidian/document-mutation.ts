@@ -79,6 +79,20 @@ export class DocumentMutationCoordinator implements DocumentMutationPort {
 		return view;
 	}
 	async capture(input: string, originLeafId?: string): Promise<DocumentSnapshot> {
+		return this.captureSnapshot(input, originLeafId, true);
+	}
+	/** Captures existing native leaves for a structured-write preflight; it does not grant restore/apply authority. */
+	async captureClean(input: string): Promise<DocumentSnapshot> {
+		const snapshot = await this.captureSnapshot(input, undefined, false);
+		if (snapshot.diskText === null) throw new DocumentMutationError('missing', input);
+		this.assertClean(snapshot, snapshot.diskText);
+		return snapshot;
+	}
+	private async captureSnapshot(
+		input: string,
+		originLeafId: string | undefined,
+		bounded: boolean,
+	): Promise<DocumentSnapshot> {
 		const path = this.path(input),
 			source = this.origin(path, originLeafId),
 			file = this.app.vault.getFileByPath(path);
@@ -87,7 +101,7 @@ export class DocumentMutationCoordinator implements DocumentMutationPort {
 				throw new DocumentMutationError('invalid-path', path);
 			return { path, documentKey: `missing:${path}`, exists: false, text: null, diskText: null, buffers: [] };
 		}
-		if (!(file instanceof TFile) || file.stat.size > MAX_NOTE_BYTES)
+		if (!(file instanceof TFile) || (bounded && file.stat.size > MAX_NOTE_BYTES))
 			throw new DocumentMutationError('unsupported', path);
 		const initial = this.buffers(path),
 			diskText = await this.app.vault.read(file);
@@ -140,6 +154,16 @@ export class DocumentMutationCoordinator implements DocumentMutationPort {
 			throw new DocumentMutationError('changed', expected.path);
 		this.options.checkDrafts?.(expected.path, expected.text ?? '');
 	}
+	/** Read-only commit guard for structured writers. It rejects dirty buffers and any leaf/generation drift without saving or changing editors. */
+	assertClean(expected: DocumentSnapshot, diskText: string): void {
+		const file = this.app.vault.getFileByPath(expected.path);
+		if (!expected.exists || !(file instanceof TFile) || this.key(file) !== expected.documentKey)
+			throw new DocumentMutationError('identity-changed', expected.path);
+		this.checkBuffers(expected);
+		if (this.buffers(expected.path).some((buffer) => nativeText(buffer.text) !== nativeText(diskText)))
+			throw new DocumentMutationError('editor-conflict', expected.path);
+	}
+
 	async apply(expected: DocumentSnapshot, text: string | null, operationId: string): Promise<DocumentSnapshot> {
 		const current = await this.capture(expected.path, expected.originLeafId);
 		if (!sameDocumentSnapshot(expected, current)) throw new DocumentMutationError('changed', expected.path);

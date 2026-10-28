@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, expect, test } from 'vitest';
 import type { BrowserRpcConnection } from '../../src/modules/browser/core/rpc';
+import { build } from 'esbuild';
 
 // Run the actual release entry point in Node, outside Vitest's module transforms and browser globals.
 // This fixture proves client transport/protocol behavior, not native Chromium behavior.
@@ -106,9 +107,9 @@ async function fixture(respond: (request: RpcRequest, index: number) => Response
 	return { root, file, guard, connection, requests };
 }
 
-function run(f: Fixture, args: string[], messages: unknown[] = []) {
+function run(f: Fixture, args: string[], messages: unknown[] = [], executable = client) {
 	return new Promise<{ code: number | null; signal: NodeJS.Signals | null; stdout: string; stderr: string }>((resolve, reject) => {
-		const child = spawn(process.execPath, ['--require', f.guard, client, ...args, '--connection', f.file], {
+		const child = spawn(process.execPath, ['--require', f.guard, executable, ...args, '--connection', f.file], {
 			cwd: f.root,
 			env: { ...process.env, NODE_OPTIONS: '' },
 			stdio: ['pipe', 'pipe', 'pipe'],
@@ -160,6 +161,46 @@ const parseReplies = (stdout: string) => stdout.trim().split('\n').map((line) =>
 const toolCall = (id: number, name: string, args: Record<string, unknown> = {}) => ({
 	jsonrpc: '2.0', id, method: 'tools/call', params: { name, arguments: args },
 });
+
+test('source CLI and MCP carry bounded frame scopes through the production schema', async () => {
+	const observation = { id: 'observed', viewportVersion: 3, coverage: [{ frameId: 'frame-A', status: 'partial' }], frameErrors: [{ frameId: 'frame-A', code: 'closed_shadow_root' }] };
+	const f = await fixture(() => ({ body: { result: observation } }));
+	const executable = path.join(f.root, 'current-browser-cli.cjs');
+	// Compile only into this fixture: release-root assets remain owned by the final build.
+	await build({ entryPoints: ['src/modules/browser/platform/desktop/cli.ts'], outfile: executable, bundle: true, platform: 'node', format: 'cjs', target: 'node22', logLevel: 'silent' });
+	const scope = { frameId: 'frame-A', mode: 'visible', maxNodes: 12, maxBytes: 4096 };
+	const output = await run(f, ['call', 'observe', JSON.stringify({ pageId: 'page-A', scope })], [], executable);
+	expect(output).toMatchObject({ code: 0, stderr: '' }); expect(JSON.parse(output.stdout)).toEqual(observation);
+	expect(f.requests[0]!.body.params).toEqual({ runId: f.connection.runId, capability: f.connection.capability, pageId: 'page-A', scope });
+	const invalid = await run(f, ['call', 'observe', JSON.stringify({ pageId: 'page-A', scope: { maxNodes: 513 } })], [], executable);
+	expect(invalid).toMatchObject({ code: 1, stdout: '', stderr: 'invalid_request\n' }); expect(f.requests).toHaveLength(1);
+	const mcp = await run(f, ['mcp'], [{ jsonrpc: '2.0', id: 1, method: 'tools/list' }, toolCall(2, 'browser_observe', { pageId: 'page-A', scope })], executable);
+	const replies = parseReplies(mcp.stdout);
+	expect(replies[0]!.result.tools!.find(tool => tool.name === 'browser_observe')!.inputSchema.properties).toHaveProperty('scope');
+	expect(JSON.parse(replies[1]!.result.content![0]!.text)).toEqual(observation);
+	expect(f.requests[1]!.body.params).toMatchObject({ pageId: 'page-A', scope });
+}, 15_000);
+
+test('source CLI/MCP share event snapshot/replay schemas, stream recovery and secret rejection', async () => {
+	const event = { eventId: 'stream-fixture:1', streamId: 'stream-fixture', streamSequence: 1, sequence: 1, entityVersion: 1, at: 1000, kind: 'controlChanged', type: 'controlChanged', spaceId: 'space-fixture', runtimeId: 'runtime-fixture', epoch: 1, state: 'agent' };
+	const snapshot = { runId: 'run-fixture', spaceId: 'space-fixture', runtimeId: 'runtime-fixture', runEpoch: 1, generation: 1, active: true, streamId: 'stream-fixture', cursor: 1, space: { status: 'ready', kind: 'task' }, control: { mode: 'agent', epoch: 1 }, cleanup: { state: 'completed' }, pages: [], requests: [], downloads: [], operations: [] };
+	const f = await fixture(request => request.params.streamId === 'old-stream'
+		? { status: 400, body: { error: { code: 'resync_required' } } }
+		: { body: { result: request.method === 'events.snapshot' ? snapshot : request.params.afterSequence === 2 ? [{ ...event, message: 'SYNTHETIC_EVENT_SECRET' }] : [event] } });
+	const executable = path.join(f.root, 'events-browser-cli.cjs');
+	await build({ entryPoints: ['src/modules/browser/platform/desktop/cli.ts'], outfile: executable, bundle: true, platform: 'node', format: 'cjs', target: 'node22', logLevel: 'silent' });
+	const projected = await run(f, ['call', 'events.snapshot', '{}'], [], executable); expect(projected.code).toBe(0); expect(JSON.parse(projected.stdout)).toEqual(snapshot);
+	const replay = await run(f, ['call', 'events.poll', JSON.stringify({ afterSequence: 0, streamId: snapshot.streamId })], [], executable); expect(replay.code).toBe(0); expect(JSON.parse(replay.stdout)).toEqual([event]);
+	const expired = await run(f, ['call', 'events.poll', JSON.stringify({ afterSequence: 0, streamId: 'old-stream' })], [], executable); expect(expired).toMatchObject({ code: 1, stdout: '', stderr: 'resync_required\n' });
+	const secret = await run(f, ['call', 'events.poll', JSON.stringify({ afterSequence: 2, streamId: snapshot.streamId })], [], executable); expect(secret).toMatchObject({ code: 1, stdout: '', stderr: 'invalid_event_response\n' });
+	const count = f.requests.length, invalid = await run(f, ['call', 'events.poll', JSON.stringify({ afterSequence: Number.MAX_SAFE_INTEGER + 1 })], [], executable); expect(invalid.stderr).toBe('invalid_request\n'); expect(f.requests).toHaveLength(count);
+	const mcp = await run(f, ['mcp'], [{ jsonrpc: '2.0', id: 1, method: 'tools/list' }, toolCall(2, 'browser_events_snapshot'), toolCall(3, 'browser_events_poll', { afterSequence: 0, streamId: snapshot.streamId })], executable);
+	const replies = parseReplies(mcp.stdout); expect(mcp.code).toBe(0); expect(replies[0]!.result.tools!.some(tool => tool.name === 'browser_events_snapshot')).toBe(true);
+	expect(replies[0]!.result.tools!.find(tool => tool.name === 'browser_events_poll')!.inputSchema.properties).toHaveProperty('streamId');
+	expect(JSON.parse(replies[1]!.result.content![0]!.text)).toEqual(snapshot); expect(JSON.parse(replies[2]!.result.content![0]!.text)).toEqual([event]);
+	for (const request of f.requests) expect(request.body.params).toMatchObject({ runId: f.connection.runId, capability: f.connection.capability });
+	expect(mcp.stdout + secret.stdout + secret.stderr).not.toContain('SYNTHETIC_EVENT_SECRET');
+}, 15_000);
 
 test('release CLI calls page.list in a real Node process without Window and injects its private connection scope', async () => {
 	const pages = [{ id: 'page-fixture', title: 'Local fixture', url: 'https://example.invalid/' }];

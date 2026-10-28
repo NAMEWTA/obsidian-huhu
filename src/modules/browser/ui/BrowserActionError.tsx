@@ -7,10 +7,13 @@ const explained = new Set([
 	'input_sequence_stale',
 	'request_expired',
 	'control_superseded',
+	'browser_control_unsettled',
 	'run_revoked',
 	'user_run_grant_required',
 	'runtime_unavailable',
+	'browser_runtime_capability_missing',
 	'space_create_failed',
+	'space_stopping',
 	'workspace_owned_elsewhere',
 	'cleanup_pending',
 	'catalog_unavailable',
@@ -26,8 +29,17 @@ const explained = new Set([
 	'unsupported_storage',
 	'verification_failed',
 	'file_too_large',
+	'file_publication_unknown',
 	'file_scope_mismatch',
 	'identity_locked',
+	'identity_refresh_unavailable',
+	'identity_corrupt',
+	'identity_missing',
+	'source_changed',
+	'source_unavailable',
+	'source_grant_invalid',
+	'browser_identity_readback_invalid',
+	'context_mismatch',
 	'clipboard_unavailable',
 	'browser_profile_version_missing',
 	'browser_profile_version_downgrade',
@@ -36,6 +48,17 @@ const explained = new Set([
 	'browser_profile_path_invalid',
 	'material_target_unavailable',
 	'material_target_busy',
+	'material_delivery_unknown',
+	'material_target_timeout',
+	'material_cancelled',
+	'browser_stale_ref',
+	'observation_stale',
+	'capture_unavailable',
+	'capture_quota',
+	'material_too_large',
+	'material_target_missing',
+	'browser_frame_transform_unsupported',
+	'browser_frame_owner_missing',
 	'browser_disabled',
 	'personal_space_forbidden',
 ]);
@@ -50,5 +73,6 @@ export function BrowserActionError({ code }: { code?: string }) {
 }
 
 export function actionError(reason: unknown): string {
-	return reason instanceof Error ? reason.message : 'operation_failed';
+	const code = reason instanceof Error ? reason.message : '';
+	return /^[a-z][a-z0-9_]{1,100}$/.test(code) ? code : 'operation_failed';
 }

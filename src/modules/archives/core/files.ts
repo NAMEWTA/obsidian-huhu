@@ -13,12 +13,14 @@ export interface ContactsFiles {
 	getAbstractFileByPath(path: string): unknown;
 	read(file: ContactsFile): Promise<string>;
 	cachedRead(file: ContactsFile): Promise<string>;
-	process(file: ContactsFile, update: (latest: string) => string): Promise<string>;
-	create(path: string, content: string): Promise<ContactsFile>;
+	process(file: ContactsFile, update: (latest: string) => string, beforeCommit?: () => void): Promise<string>;
+	create(path: string, content: string, beforeCommit?: () => void): Promise<ContactsFile>;
 	createBinary(path: string, content: ArrayBuffer): Promise<ContactsFile>;
 	listFolder(path: string): ArchiveFolderEntry[];
-	trashFolder(path: string): Promise<void>;
-	checkFolderEditors(path: string): Promise<void>;
+	trashFolder(path: string, beforeCommit?: () => void): Promise<void>;
+	checkFolderEditors(path: string): Promise<() => void>;
+	/** Captures all native leaves once; the returned check detects leaf/generation changes at the synchronous commit point. */
+	captureEditors(files: readonly ContactsFile[]): Promise<() => void>;
 	createFolder(path: string): Promise<void>;
 	mkdir(path: string): Promise<void>;
 	checkEditor(file: ContactsFile, disk: string): void;

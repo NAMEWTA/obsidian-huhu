@@ -16,8 +16,8 @@ function setup() {
 		stopSpace: vi.fn(async (spaceId: string) => { for (const [id, run] of active) if (run.run.spaceId === spaceId) active.delete(id); }),
 		startRun: vi.fn(async (spaceId: string) => { const found = [...active.values()].find((run) => run.run.spaceId === spaceId); if (!found) throw new AgentBrowserError('user_run_grant_required'); return structuredClone(found); }),
 		stopRun: vi.fn(async (id: string) => { active.delete(id); }), heartbeat: vi.fn(async () => Date.now() + 120000),
-		pageList: vi.fn(() => [{ id: 'page-A', title: 'private-title', url: 'https://private.example' }]),
-		observe: vi.fn(async (runId: string, capability: string, pageId: string): Promise<BrowserObservation> => { const h = health(runId, capability); return { id: 'observation-A', spaceId: active.get(runId)!.run.spaceId, pageId, runtimeId: h.runtimeId, documentId: 'document-A', epoch: h.epoch, url: 'https://private.example', title: 'private-title', nodes: [], text: 'private-observation', truncated: false }; }),
+		pageList: vi.fn(() => [{ id: 'page-A', title: 'private-title', url: 'https://private.example', documentId: 'document-A', viewportVersion: 1 }]),
+		observe: vi.fn(async (runId: string, capability: string, pageId: string): Promise<BrowserObservation> => { const h = health(runId, capability); return { id: 'observation-A', spaceId: active.get(runId)!.run.spaceId, pageId, runtimeId: h.runtimeId, documentId: 'document-A', epoch: h.epoch, viewportVersion: 1, scope: { spaceId: active.get(runId)!.run.spaceId, pageId, mode: 'semantic', maxNodes: 512, maxBytes: 65536 }, coverage: [], frameErrors: [], url: 'https://private.example', title: 'private-title', nodes: [], text: 'private-observation', truncated: false }; }),
 		prepare: vi.fn(async (runId: string, capability: string, pageId: string, requestId: string, _command: BrowserCommand): Promise<OperationRecord> => { health(runId, capability); const record: OperationRecord = { id: `operation-${++serial}`, requestId, digest: 'opaque-digest', scope: { principal: 'agent', issuerId: runId, spaceId: active.get(runId)!.run.spaceId, pageId }, state: 'prepared', createdAt: 1, updatedAt: 1 }; records.set(record.id, record); return structuredClone(record); }),
 		execute: vi.fn(async (runId: string, capability: string, id: string): Promise<OperationRecord> => { health(runId, capability); const record = records.get(id)!; record.state = 'completed'; record.result = { text: 'private-result' }; return structuredClone(record); }),
 		operation: vi.fn(async (runId: string, capability: string, id: string): Promise<OperationRecord | undefined> => { const record = records.get(id); if (!record || record.scope.issuerId !== runId) return; const copy = structuredClone(record); try { health(runId, capability); } catch { delete copy.result; } return copy; }),
@@ -30,6 +30,55 @@ function setup() {
 const scoped = (run: RunGrant) => ({ runId: run.run.id, capability: run.capability });
 
 describe('per-connection browser protocol authority', () => {
+	it('forwards the accepted request deadline into ticket preparation', async () => {
+		const { protocol, workspace, grant, parent } = setup();
+		await protocol.call('operation.prepare', { ...scoped(parent), pageId: 'page-A', requestId: 'deadline', command: { kind: 'reload' } }, grant, () => 1234);
+		expect(workspace.prepare).toHaveBeenCalledWith(parent.run.id, parent.capability, 'page-A', 'deadline', { kind: 'reload' }, 1234);
+	});
+	it('filters an earlier snapshot again after a later navigation in the same batch', async () => {
+		const { protocol, workspace, grant, parent, records } = setup();
+		const observation = await workspace.observe(parent.run.id, parent.capability, 'page-A');
+		let step = 0;
+		workspace.execute.mockImplementation(async (_runId, _capability, id) => {
+			const record = records.get(id)!;
+			if (++step === 1) return { ...record, state: 'completed', result: observation as unknown as OperationRecord['result'] };
+			workspace.pageList.mockReturnValue([{ id: 'page-A', title: 'new', url: 'https://private.example/new', documentId: 'document-B', viewportVersion: 2 }]);
+			return { ...record, state: 'completed', result: { ok: true } };
+		});
+		const response = await protocol.call('batch', { ...scoped(parent), pageId: 'page-A', requestId: 'snapshot-navigation', commands: [{ kind: 'snapshot' }, { kind: 'navigate', url: 'https://private.example/new' }] }, grant) as { results: OperationRecord[]; completedCount: number };
+		expect(response.completedCount).toBe(2);
+		expect(response.results[0]).toMatchObject({ state: 'completed', error: 'observation_stale' });
+		expect(response.results[0]).not.toHaveProperty('result');
+		expect(response.results[1]!.result).toEqual({ ok: true });
+	});
+	it('filters every batch record again when the transport ownership check outlasts a viewport change', async () => {
+		const { protocol, workspace, grant, parent } = setup();
+		const observation = await workspace.observe(parent.run.id, parent.capability, 'page-A');
+		const ticket = await workspace.prepare(parent.run.id, parent.capability, 'page-A', 'snapshot-request', { kind: 'snapshot' });
+		const batch = { results: [{ ...ticket, state: 'completed', result: observation }], completedCount: 1 };
+		workspace.pageList.mockReturnValue([{ id: 'page-A', title: 'same document', url: 'https://private.example', documentId: 'document-A', viewportVersion: 2 }]);
+		const response = protocol.finalize('batch', { ...scoped(parent), pageId: 'page-A', requestId: 'late-batch', commands: [{ kind: 'snapshot' }] }, grant, batch) as { results: OperationRecord[] };
+		expect(response.results[0]).toMatchObject({ id: ticket.id, state: 'completed', error: 'observation_stale' });
+		expect(response.results[0]).not.toHaveProperty('result');
+		expect(batch.results[0]!.result).toEqual(observation);
+	});
+	it('drops observation bodies if navigation changes the Page during the final transport ownership check', async () => {
+		const { protocol, workspace, grant, parent } = setup(), params = { ...scoped(parent), pageId: 'page-A' };
+		const observed = await protocol.call('observe', params, grant);
+		workspace.pageList.mockReturnValue([{ id: 'page-A', title: 'new', url: 'https://private.example/new', documentId: 'document-B', viewportVersion: 2 }]);
+		expect(() => protocol.finalize('observe', params, grant, observed)).toThrow('observation_stale');
+	});
+	it('retains snapshot operation metadata while stripping a stale observation at the response boundary', async () => {
+		const { protocol, workspace, grant, parent } = setup(), params = { ...scoped(parent), pageId: 'page-A' };
+		const observation = await workspace.observe(parent.run.id, parent.capability, 'page-A');
+		const record = await workspace.prepare(parent.run.id, parent.capability, 'page-A', 'snapshot-request', { kind: 'snapshot' });
+		const completed: OperationRecord = { ...record, state: 'completed', result: observation as unknown as OperationRecord['result'] };
+		workspace.pageList.mockReturnValue([{ id: 'page-A', title: 'new', url: 'https://private.example/new', documentId: 'document-B', viewportVersion: 2 }]);
+		const response = protocol.finalize('operation.execute', { ...scoped(parent), operationId: record.id, command: { kind: 'snapshot' } }, grant, completed);
+		expect(response).toMatchObject({ id: record.id, state: 'completed', error: 'observation_stale' });
+		expect(response).not.toHaveProperty('result'); expect(completed.result).toEqual(observation);
+		await expect(protocol.call('observe', params, grant)).rejects.toMatchObject({ code: 'observation_stale' });
+	});
 	it('refuses a different connection Run even with its valid capability and prevents self-resume', async () => {
 		const { protocol, workspace, grant, makeRun, active, parent } = setup(), other = makeRun('space-other');
 		await expect(protocol.call('page.list', scoped(other), grant)).rejects.toMatchObject({ code: 'capability_scope_mismatch' }); expect(workspace.pageList).not.toHaveBeenCalled();

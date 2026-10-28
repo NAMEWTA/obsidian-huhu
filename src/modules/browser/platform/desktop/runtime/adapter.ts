@@ -39,7 +39,7 @@ async function call<T>(task: () => Promise<T>): Promise<T> {
 		return translate(error);
 	}
 }
-function runtime(native: MainRuntime): BrowserRuntime {
+export function adaptRuntime(native: MainRuntime): BrowserRuntime {
 	return {
 		id: native.id,
 		spaceId: native.spaceId,
@@ -59,7 +59,7 @@ function runtime(native: MainRuntime): BrowserRuntime {
 		createPage: (id, url, authority) => call(() => native.createPage(id, url, authority)),
 		closePage: (id, authority) => call(() => native.closePage(id, authority)),
 		execute: (id, command, authority, options) => call(() => native.execute(id, command, authority, options)),
-		observe: (id, authority) => call(() => native.observe(id, authority)),
+		observe: (id, authority, scope) => call(() => native.observe(id, authority, scope)),
 		watch: (id, enabled) => call(() => native.watch(id, enabled)),
 		readIdentity: () => call(() => native.readIdentity()),
 		writeIdentity: (seed) => call(() => native.writeIdentity(seed)),
@@ -77,7 +77,7 @@ export function createDesktopRuntimeFactoryForWindow(options: DesktopRuntimeFact
 	});
 	return {
 		availability: () => call(() => native.availability()),
-		start: async (value) => runtime((await call(() => native.start(value))) as MainRuntime),
+		start: async (value) => adaptRuntime((await call(() => native.start(value))) as MainRuntime),
 		reclaim: (spaceId, runtimeId) => call(() => native.reclaim(spaceId, runtimeId)),
 		removeProfile: (spaceId) => call(() => native.removeProfile(spaceId)),
 		readerExecutable: () => call(() => native.readerExecutable()),

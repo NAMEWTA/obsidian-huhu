@@ -410,7 +410,7 @@ function memoryVault() {
 	};
 	const app = {
 		vault,
-		workspace: { getLeavesOfType: () => [], layoutReady: true, onLayoutReady: (fn: () => void) => fn() },
+		workspace: { getLeavesOfType: () => [], on: () => ({}), layoutReady: true, onLayoutReady: (fn: () => void) => fn() },
 		fileManager: {
 			trashFile: async (file: TFile) => {
 				for (const path of files.keys())

@@ -1,13 +1,16 @@
 import { useEffect, useEffectEvent, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
-import { ArrowDown, ArrowUp, ChevronsDownUp, Loader2, WrapText, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowLeftRight, ChevronsDownUp, Link, Loader2, WrapText, X } from 'lucide-react';
 import { t } from '../../../shared/i18n';
 import { Button } from '../../../ui/components/button';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
 import { SegmentedControl } from '../../../ui/components/huhu/SettingsFormControls';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../../ui/components/resizable';
 import { useVisible } from '../../../ui/react/contexts';
 import type { ResolvedComparison, ResolvedEndpoint } from '../core/history';
 import { createDiffEditors, type DiffEditors } from './diff-editors';
-import { computeDiff, DiffLimitError, isCancelled, type DiffLayout, type DiffModel } from './diff-model';
+import { HunkRestoreControls, type HunkRestoreAction } from './HunkRestoreControls';
+import { restoreHunks, type HunkDiff } from '../core/hunk-restore';
+import { computeDiff, DEFAULT_DIFF_PREFERENCES, DiffLimitError, isCancelled, mapDiffAnchor, type DiffLayout, type DiffModel, type DiffPreferences } from './diff-model';
 
 export interface DiffSurfaceProps {
 	comparison: ResolvedComparison;
@@ -15,36 +18,55 @@ export interface DiffSurfaceProps {
 	onLayoutChange?: (layout: DiffLayout) => void;
 	onClose?: () => void;
 	createWorker?: () => Worker;
+	preferences?: DiffPreferences;
+	onPreferencesChange?: (preferences: DiffPreferences) => void;
+	hunkRestore?: HunkRestoreAction;
 }
 
-type ComputationState = { id: string; model: DiffModel } | { id: string; error: unknown };
+type ComputationState = { id: string; model: DiffModel; hunkValid?: boolean } | { id: string; error: unknown };
 
 /** A read-only source comparison shared by the Git workbench and note revision review. */
-export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose, createWorker }: DiffSurfaceProps) {
+export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose, createWorker, preferences, onPreferencesChange, hunkRestore }: DiffSurfaceProps) {
 	const visible = useVisible();
+	const [localPreferences, setLocalPreferences] = useState(DEFAULT_DIFF_PREFERENCES);
+	const presentation = preferences ?? localPreferences;
+	const updatePreferences = (patch: Partial<DiffPreferences>) => {
+		const next = { ...presentation, ...patch };
+		setLocalPreferences(next);
+		onPreferencesChange?.(next);
+	};
+	const { swapped } = presentation;
+	const displayed = swapped ? { ...comparison, left: comparison.right, right: comparison.left } : comparison;
 	const [layout, setLayout] = useState<DiffLayout>(initialLayout ?? 'side-by-side');
 	const [wrap, setWrap] = useState(true);
 	const [collapse, setCollapse] = useState(true);
 	const [state, setState] = useState<ComputationState | null>(null);
+	const [hunkProof, setHunkProof] = useState<{ id: string; diff: HunkDiff }>();
 	const [navigation, setNavigation] = useState({ id: '', index: -1 });
 	const [cancelledId, setCancelledId] = useState<string | null>(null);
 	const [retry, setRetry] = useState(0);
 	const controller = useRef<AbortController | null>(null);
 	const mount = useRef<HTMLDivElement>(null);
+	const stackedA = useRef<HTMLDivElement>(null), stackedB = useRef<HTMLDivElement>(null);
 	const surface = useRef<HTMLElement>(null);
 	const manualLayout = useRef(initialLayout !== undefined);
 	const editors = useRef<DiffEditors | null>(null);
 	const rememberedAnchor = useRef<{ id: string; position: number } | null>(null);
-	const requestId = `${comparison.id}:${retry}`;
-	const leftText = comparison.left.status === 'text' ? comparison.left.snapshot.text : '';
-	const rightText = comparison.right.status === 'text' ? comparison.right.snapshot.text : '';
+	const requestId = `${comparison.id}:${swapped ? 'reverse' : 'forward'}:${retry}`;
+	const leftText = displayed.left.status === 'text' ? displayed.left.snapshot.text : '';
+	const rightText = displayed.right.status === 'text' ? displayed.right.snapshot.text : '';
 	const result = state?.id === requestId ? state : null;
 	const model = result && 'model' in result ? result.model : null;
+	const sourceText = comparison.left.status === 'text' ? comparison.left.snapshot.text : '';
+	const targetText = comparison.right.status === 'text' ? comparison.right.snapshot.text : '';
+	const hasHunkRestore = !!hunkRestore;
+	const canonicalDiff = result && 'model' in result && result.hunkValid && hunkProof?.id === comparison.id ? hunkProof.diff : undefined;
 	const currentChunk = navigation.id === requestId ? navigation.index : -1;
-	const leftLabel = endpointLabel(comparison.left);
-	const rightLabel = endpointLabel(comparison.right);
+	const leftLabel = endpointLabel(displayed.left);
+	const rightLabel = endpointLabel(displayed.right);
 	const cancelled = cancelledId === requestId;
 	const makeWorker = useEffectEvent(() => createWorker!());
+	const scrollPreference = useEffectEvent(() => presentation.syncScroll);
 	const hasWorker = !!createWorker;
 	useEffect(() => {
 		const element = surface.current;
@@ -52,7 +74,7 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 		if (!element || !ownerWindow) return;
 		const measure = () => {
 			if (!manualLayout.current && element.clientWidth > 0)
-				setLayout(element.clientWidth < 736 ? 'unified' : 'side-by-side');
+				setLayout(element.clientWidth < 736 ? 'stacked' : 'side-by-side');
 		};
 		const observer = new ownerWindow.ResizeObserver(measure);
 		observer.observe(element);
@@ -73,7 +95,19 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 			hasWorker ? () => makeWorker() : undefined,
 		).then(
 			(next) => {
-				if (!abort.signal.aborted) setState({ id: requestId, model: next });
+				if (abort.signal.aborted) return;
+				let hunkValid = false;
+				if (hasHunkRestore) {
+					const diff = swapped ? { left: next.right, right: next.left, precise: next.precise,
+						chunks: next.chunks.map(chunk => ({ fromA: chunk.fromB, toA: chunk.toB, fromB: chunk.fromA, toB: chunk.toA, precise: chunk.precise })) } : next;
+					try {
+						restoreHunks(sourceText, targetText, diff);
+						// Keep canonical selections stable even if reverse diffing groups ambiguous lines differently.
+						setHunkProof(previous => previous?.id === comparison.id ? previous : { id: comparison.id, diff });
+						hunkValid = true;
+					} catch { /* Viewing remains available when selective recovery cannot be proven. */ }
+				}
+				setState({ id: requestId, model: next, hunkValid });
 			},
 			(error: unknown) => {
 				if (!abort.signal.aborted && !isCancelled(error)) setState({ id: requestId, error });
@@ -83,20 +117,24 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 			abort.abort();
 			if (controller.current === abort) controller.current = null;
 		};
-	}, [requestId, leftText, rightText, comparison.canCompare, visible, hasWorker, cancelled]);
+	}, [requestId, leftText, rightText, comparison.canCompare, comparison.id, visible, hasWorker, cancelled, hasHunkRestore, swapped, sourceText, targetText]);
 
 	useEffect(() => {
 		if (!mount.current || !model || !visible || cancelled) return;
-		const adapter = createDiffEditors(mount.current, { model, layout, wrap, collapse, leftLabel, rightLabel });
+		const adapter = createDiffEditors(mount.current, { model, layout, wrap, collapse, leftLabel, rightLabel, syncScroll: scrollPreference(),
+			stackedParents: layout === 'stacked' && stackedA.current && stackedB.current ? [stackedA.current, stackedB.current] : undefined });
 		editors.current = adapter;
 		const remembered = rememberedAnchor.current;
-		if (remembered?.id === comparison.id) adapter.revealAnchor(remembered.position);
+		if (remembered?.id === comparison.id) adapter.revealAnchor(swapped
+			? mapDiffAnchor(model.chunks, remembered.position, 'a', model.right.length) : remembered.position);
 		return () => {
-			rememberedAnchor.current = { id: comparison.id, position: adapter.anchor() };
+			rememberedAnchor.current = { id: comparison.id, position: swapped
+				? mapDiffAnchor(model.chunks, adapter.anchor(), 'b', model.left.length) : adapter.anchor() };
 			adapter.destroy();
 			if (editors.current === adapter) editors.current = null;
 		};
-	}, [model, layout, wrap, collapse, leftLabel, rightLabel, visible, comparison.id, cancelled]);
+	}, [model, layout, wrap, collapse, leftLabel, rightLabel, visible, comparison.id, cancelled, swapped]);
+	useEffect(() => { editors.current?.setSyncScroll(presentation.syncScroll); }, [presentation.syncScroll]);
 
 	const move = (direction: -1 | 1) => {
 		if (!model?.chunks.length) return;
@@ -151,6 +189,14 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 					]}
 				/>
 				<span className="ml-auto flex items-center gap-0.5">
+					<ActionButton size="icon-sm" label={t('versioning.diff.swap')} aria-pressed={swapped}
+						onClick={() => updatePreferences({ swapped: !swapped })}>
+						<ArrowLeftRight />
+					</ActionButton>
+					<ActionButton size="icon-sm" label={t('versioning.diff.syncScroll')} aria-pressed={presentation.syncScroll}
+						disabled={layout === 'unified'} onClick={() => updatePreferences({ syncScroll: !presentation.syncScroll })}>
+						<Link />
+					</ActionButton>
 					<ActionButton
 						size="icon-sm"
 						label={t('versioning.diff.wrap')}
@@ -191,13 +237,19 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 				</span>
 			</div>
 			<div className="grid shrink-0 grid-cols-2 divide-x divide-border border-b border-border bg-muted/20 text-xs">
-				<EndpointHeading endpoint={comparison.left} label={leftLabel} side="left" />
-				<EndpointHeading endpoint={comparison.right} label={rightLabel} side="right" />
+				<EndpointHeading endpoint={displayed.left} label={leftLabel} side="left" />
+				<EndpointHeading endpoint={displayed.right} label={rightLabel} side="right" />
 			</div>
+			{hunkRestore && <HunkRestoreControls identity={comparison.id} source={sourceText} target={targetText} diff={canonicalDiff} action={hunkRestore}
+				reveal={hunk => {
+					const position = swapped ? hunk.fromA : hunk.fromB;
+					const index = model?.chunks.findIndex(chunk => position >= chunk.fromB && position <= chunk.toB) ?? -1;
+					setNavigation({ id: requestId, index }); editors.current?.revealAnchor(position);
+				}} />}
 			{!comparison.canCompare ? (
 				<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-4" role="status">
-					<EndpointProblem endpoint={comparison.left} />
-					<EndpointProblem endpoint={comparison.right} />
+					<EndpointProblem endpoint={displayed.left} />
+					<EndpointProblem endpoint={displayed.right} />
 				</div>
 			) : cancelled ? (
 				<DiffMessage
@@ -239,8 +291,24 @@ export function DiffSurface({ comparison, initialLayout, onLayoutChange, onClose
 						ref={mount}
 						className="huhu-versioning-editors min-h-0 min-w-0 flex-1"
 						data-layout={layout}
+						data-direction={swapped ? 'reverse' : 'forward'}
 						data-comparison-id={comparison.id}
-					/>
+					>
+						{layout === 'stacked' && <ResizablePanelGroup direction="vertical" keyboardResizeBy={5}
+							onLayout={sizes => {
+								const ratio = Math.max(20, Math.min(80, sizes[0] ?? 50));
+								if (ratio !== presentation.stackedRatio) updatePreferences({ stackedRatio: ratio });
+								for (const view of editors.current?.views ?? []) view.requestMeasure();
+							}}>
+							<ResizablePanel defaultSize={presentation.stackedRatio} minSize={20} maxSize={80}>
+								<div ref={stackedA} className="h-full min-h-0" />
+							</ResizablePanel>
+							<ResizableHandle withHandle aria-orientation="horizontal" aria-label={t('versioning.diff.resizeStacked')} />
+							<ResizablePanel defaultSize={100 - presentation.stackedRatio} minSize={20} maxSize={80}>
+								<div ref={stackedB} className="h-full min-h-0" />
+							</ResizablePanel>
+						</ResizablePanelGroup>}
+					</div>
 					<div
 						className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t border-border px-3 py-1 text-xs text-muted-foreground"
 						role="status"

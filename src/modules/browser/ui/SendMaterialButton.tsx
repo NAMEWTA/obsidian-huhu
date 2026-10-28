@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
-import type { BrowserWorkspace, HumanPageRequest } from '../api';
+import type { BrowserWorkspace, HumanPageRequest, BrowserObservation } from '../api';
 import { Button } from '../../../ui/components/button';
 import {
 	Dialog,
@@ -30,51 +30,52 @@ export function SendMaterialButton({
 	const [pending, setPending] = useState(false);
 	const [targets, setTargets] = useState<Array<{ id: string; label: string }>>([]);
 	const [target, setTarget] = useState('');
-	const [sent, setSent] = useState(false);
+	const [sent, setSent] = useState(false), [cancelling, setCancelling] = useState(false);
+	const [observation, setObservation] = useState<BrowserObservation>(), [ref, setRef] = useState('');
+	const operation = useRef<AbortController | undefined>(undefined);
 	const generation = useRef(0),
 		mounted = useRef(false);
 	useEffect(() => {
 		mounted.current = true;
 		generation.current++;
 		return () => {
-			mounted.current = false;
+			mounted.current = false; operation.current?.abort();
 		};
 	}, [authority]);
 	const choose = async () => {
-		const current = generation.current;
-		setPending(true);
-		setSent(false);
+		const scope = authority(), page = scope && captureHumanPage(api, scope), current = generation.current;
+		if (!scope || !page) return;
+		operation.current?.abort(); const abort = new AbortController(); operation.current = abort;
+		setPending(true); setCancelling(false); setSent(false); setTargets([]); setTarget(''); setRef(''); setObservation(undefined); setOpen(true);
 		try {
 			const items = await api.listMaterialTargets();
-			if (!mounted.current || current !== generation.current) return;
+			if (abort.signal.aborted || !mounted.current || current !== generation.current) return;
+			if (!sameHumanPage(api, scope, authority(), page)) throw new Error('control_revoked');
 			setTargets(items);
-			setTarget('');
-			setOpen(true);
-		} catch (reason) {
-			if (mounted.current && current === generation.current) report(reason);
-		} finally {
-			if (mounted.current && current === generation.current) setPending(false);
-		}
+			if (items.length) {
+				const observed = await api.observeMaterial(scope);
+				if (abort.signal.aborted || !mounted.current || current !== generation.current) return;
+				if (!sameHumanPage(api, scope, authority(), page)) throw new Error('observation_stale');
+				setObservation(observed);
+			}
+		} catch (reason) { if (mounted.current && current === generation.current) report(reason); }
+		finally { if (mounted.current && current === generation.current) { setPending(false); if (abort.signal.aborted) setOpen(false); } }
 	};
+	const cancel = () => { operation.current?.abort(); if (pending) setCancelling(true); else setOpen(false); };
 	const send = async () => {
-		const scope = authority(),
-			page = scope && captureHumanPage(api, scope),
-			current = generation.current;
-		if (!scope || !page || !target) return;
-		setPending(true);
+		const scope = authority(), page = scope && captureHumanPage(api, scope), current = generation.current;
+		if (!scope || !page || !target || !observation || !ref) return;
+		const abort = new AbortController(); operation.current?.abort(); operation.current = abort;
+		setPending(true); setCancelling(false);
 		try {
 			if (!sameHumanPage(api, scope, authority(), page)) throw new Error('control_revoked');
-			await api.sendMaterial({ ...scope, targetId: target });
-			if (mounted.current && current === generation.current) {
-				setOpen(false);
-				setSent(true);
-			}
+			await api.sendMaterial({ ...scope, targetId: target, observationId: observation.id, ref, signal: abort.signal });
+			if (mounted.current && current === generation.current) { setOpen(false); setSent(true); }
 		} catch (reason) {
-			if (mounted.current && current === generation.current) report(reason);
-		} finally {
-			if (mounted.current && current === generation.current) setPending(false);
-		}
+			if (mounted.current && current === generation.current) { if (abort.signal.aborted && !(reason instanceof Error && reason.message === 'material_delivery_unknown')) setOpen(false); else report(reason); }
+		} finally { if (mounted.current && current === generation.current) setPending(false); }
 	};
+
 	return (
 		<>
 			<Button size="sm" variant="outline" disabled={disabled || pending} onClick={() => void choose()}>
@@ -89,7 +90,7 @@ export function SendMaterialButton({
 			<Dialog
 				open={open}
 				onOpenChange={(value) => {
-					if (!pending) setOpen(value);
+					if (!value) cancel(); else setOpen(true);
 				}}
 			>
 				<DialogContent>
@@ -113,11 +114,19 @@ export function SendMaterialButton({
 					) : (
 						<p>{t('browser.v2.materialEmpty')}</p>
 					)}
+					{observation && <div className="space-y-2">
+						<Select value={ref} onValueChange={setRef} disabled={pending}>
+							<SelectTrigger aria-label={t('browser.v2.materialElement')}><SelectValue placeholder={t('browser.v2.materialElement')} /></SelectTrigger>
+							<SelectContent>{observation.nodes.filter(node => node.visible).map(node => <SelectItem key={node.ref} value={node.ref}>{`${node.role}: ${node.name} (${node.frameId})`}</SelectItem>)}</SelectContent>
+						</Select>
+						<p className="text-xs text-muted-foreground">{t('browser.v2.materialSnapshotHelp')}</p>
+					</div>}
+					{cancelling && <p role="status">{t('browser.v2.materialCancelling')}</p>}
 					<DialogFooter>
-						<Button variant="outline" disabled={pending} onClick={() => setOpen(false)}>
+						<Button variant="outline" disabled={cancelling} onClick={cancel}>
 							{t('browser.v2.cancel')}
 						</Button>
-						<Button disabled={pending || disabled || !target} onClick={() => void send()}>
+						<Button disabled={pending || disabled || !target || !ref} onClick={() => void send()}>
 							{t('browser.v2.sendMaterial')}
 						</Button>
 					</DialogFooter>

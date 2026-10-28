@@ -8,9 +8,14 @@ export interface IdentityOrigin { origin: string; localStorage: Array<{ name: st
 export interface IdentitySeedV1 { format: 'huhu-browser-identity'; version: 1; cookies: IdentityCookie[]; origins: IdentityOrigin[] }
 export type IdentitySourceKind = 'cookie-file' | 'browser-source' | 'manual-login';
 export interface IdentitySource { id: string; label: string; profiles: Array<{ id: string; label: string }> }
-export interface IdentityVersion { id: string; identityId: string; label: string; source: IdentitySourceKind; createdAt: number; seed: IdentitySeedV1 }
+/** Encrypted provenance only. Public identity summaries never expose source details. */
+export interface IdentityCapture { startedAt: number; completedAt: number; consistency: 'provided-text' | 'fixed-file' | 'stable-sqlite-snapshot' | 'runtime-readback'; digestKind?: 'source-bytes' | 'reader-response'; sha256?: string; readerSchemaVersion?: number; databaseVersion?: number; fields?: string[] }
+export interface IdentityVersion { id: string; identityId: string; label: string; source: IdentitySourceKind; createdAt: number; seed: IdentitySeedV1; capture?: IdentityCapture }
 export interface IdentityVersionSummary { id: string; identityId: string; label: string; source: IdentitySourceKind; createdAt: number; cookieCount: number; originCount: number; persistent: boolean }
 export type IdentitySummary = IdentityVersionSummary;
+export interface IdentitySaveReceipt extends IdentityVersionSummary { publication: 'committed'; catalogRefresh: 'complete' | 'pending' }
+export type IdentityProvisionPhase = 'source' | 'staging' | 'target' | 'cleanup' | 'verified';
+export interface IdentityProvisionProgress { phase: IdentityProvisionPhase; importedCount?: number; naturallyExpired?: number; loginStatus?: 'not-verified' }
 export type IdentityErrorCode = 'invalid_format' | 'too_large' | 'invalid_cookie' | 'unsupported_cookie' | 'conflicting_cookie' |
 	'unsupported_storage' | 'key_unavailable' | 'weak_provider' | 'identity_locked' | 'identity_missing' | 'identity_corrupt' |
 	'identity_exists' | 'source_grant_invalid' | 'secret_permit_invalid' | 'cancelled' | 'target_not_empty' | 'context_mismatch' |
@@ -18,7 +23,8 @@ export type IdentityErrorCode = 'invalid_format' | 'too_large' | 'invalid_cookie
 export class IdentityError extends Error { constructor(readonly code: IdentityErrorCode) { super(code); this.name = 'IdentityError'; } }
 export interface CredentialStorePort {
 	availability(): Promise<'available' | 'unavailable' | 'weak-provider'>;
-	create(version: IdentityVersion): Promise<void>; listIds(): Promise<string[]>; read(id: string): Promise<IdentityVersion>;
+	/** Check cancellation before starting atomic publication; success reports a committed version even if cancellation arrives later. */
+	create(version: IdentityVersion, signal?: AbortSignal, validate?: () => void): Promise<void>; listIds(): Promise<string[]>; read(id: string): Promise<IdentityVersion>;
 	remove(id: string): Promise<void>; lock(): void; unlock(): void;
 }
 export interface IdentityImportPlan {

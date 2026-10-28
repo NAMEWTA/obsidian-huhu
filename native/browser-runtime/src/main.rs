@@ -281,7 +281,7 @@ fn run() -> io::Result<()> {
     }
     framing::write(
         &mut *stdout.lock().unwrap(),
-        &json!({"id":id,"result":{"protocol":2,"port":port,"pid":browser.pid,"birth":browser.birth}}),
+        &json!({"id":id,"result":{"protocol":2,"port":port,"pid":browser.pid,"birth":browser.birth,"features":{"composition":true,"dispatchDeadline":true}}}),
     )?;
     loop {
         let request = match framing::read(&mut stdin) {
