@@ -25,7 +25,7 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 | [Notes navigator](docs/navigator.md) | Folder/tag browsing, search, previews, calendar, templates and keyboard operations |
 | [Agents and terminals](docs/agent-workbench.md) | CLI sessions, tab groups, resume, quick commands, skills and current-workspace usage |
 | [Built-in browser](docs/browser.md) | Web tabs, profiles, Cookie import, downloads and material capture |
-| [Archives](docs/contacts.md) | People/company archives, relationships, material and linked notes |
+| [Archives](docs/contacts.md) | Custom archive types, forms, independent relationships, portable Markdown and recoverable migrations |
 | [Automations and notifications](docs/automation.md) | Manual/scheduled actions, prechecks, device ownership, run history and notifications |
 | [Highlights](docs/comments.md) | Four-color non-intrusive Markdown highlights, searchable excerpt cards, notes, tags, comments and export |
 | [Icons and appearance](docs/appearance.md) | File/interface icons, themes, Markdown palettes and local fonts |

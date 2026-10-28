@@ -8,6 +8,7 @@ import type {
 	AgentUsage,
 } from '../../agent/api';
 import type { NavigatorLists, NavigatorPeriodic } from '../../navigator/api';
+import type { ArchivesQuery } from '../../archives/api';
 import type { TaskCalendarService, TaskViews } from '../../task/api';
 import type { IndexedWidgets } from '../core/board/widget-registry';
 import type { ExpenseService } from '../platform/expense/expense-service';
@@ -25,6 +26,8 @@ import type { ReadingService } from '../platform/reading/reading-service';
 export const homeServices: {
 	calendar?: TaskCalendarService;
 	taskViews?: TaskViews;
+	archives?: () => ArchivesQuery | undefined;
+	watchArchives?: (listener: () => void) => () => void;
 	periodic?: () => NavigatorPeriodic | undefined;
 	watchPeriodic?: (listener: () => void) => () => void;
 	habit?: HabitService;

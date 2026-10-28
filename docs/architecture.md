@@ -38,6 +38,7 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 - agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 经公开宿主服务提供网页能力。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
+- archives 在一个领域内管理类型/字段、表单、模板、实体、关系与视图；公开 catalog/query/commands 和工作台契约。v1 只留在适配边界，v2 定义修订和恢复计划随可见资料保存；详见[档案实施方案](archives-implementation.md)。
 - sync 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。
 
 ## 验证与产物

@@ -63,6 +63,8 @@ export interface FeatureAvailability {
 export interface NavigationItem {
 	id: string;
 	labelKey: string;
+	/** Literal user-defined name; never interpreted as a translation key. */
+	label?: string;
 	icon: string;
 	target?: WorkbenchTarget;
 	children?: readonly NavigationItem[];

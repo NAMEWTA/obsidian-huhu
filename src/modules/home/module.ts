@@ -1,3 +1,4 @@
+import { ARCHIVES_QUERY } from '../archives/api';
 import { closeRssStore } from './platform/rss/rss-store';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { deviceId } from '../../host/obsidian/storage/device-id';
@@ -102,6 +103,19 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 					host.refreshAllDashboards();
 				}),
 			);
+			homeServices.archives = () => context.services.peek(ARCHIVES_QUERY);
+			homeServices.watchArchives = (listener) => {
+				let inner = context.services.peek(ARCHIVES_QUERY)?.subscribe(listener);
+				const stop = context.services.watch(ARCHIVES_QUERY, (archives) => {
+					inner?.();
+					inner = archives?.subscribe(listener);
+					listener();
+				});
+				return () => {
+					inner?.();
+					stop();
+				};
+			};
 			homeServices.periodic = () => context.services.peek(NAVIGATOR_PERIODIC);
 			homeServices.watchPeriodic = (listener) => {
 				let inner = context.services.peek(NAVIGATOR_PERIODIC)?.subscribe(listener);

@@ -8,6 +8,7 @@ import type { ExpenseService } from '../../platform/expense/expense-service';
 import type { TextStorage } from '../../../../shared/storage/ports';
 import { DEFAULT_DASHBOARD_SETTINGS } from '../../core/board/types/model';
 import type { BoardStore } from '../../services/board-store';
+import { isRecentUserDocument } from '../../core/board/recent-doc-policy';
 import { RecentWidget } from '../canvas/RecentWidget';
 import { QuickNotesWidget } from '../quickbar/QuickNotesWidget';
 import { ExpenseWidget } from './ExpenseWidget';
@@ -68,12 +69,16 @@ function boardStore(files: unknown[], settings = {}) {
 			settings: { ...structuredClone(DEFAULT_DASHBOARD_SETTINGS), recentDocCount: 5, ...settings },
 		})),
 		openFile: vi.fn(async () => {}),
+		isRecentDocument: (path: string) => isRecentUserDocument(path, {}),
 	} as unknown as BoardStore;
 }
 test('recent notes are 36px rows with a default file icon, and an empty list says so', () => {
 	const files = ['Notes/A.md', 'Notes/B.pdf'].map((path) => ({
 		path,
-		basename: path.split('/').pop()!.replace(/\.\w+$/, ''),
+		basename: path
+			.split('/')
+			.pop()!
+			.replace(/\.\w+$/, ''),
 		extension: path.split('.').pop()!,
 		stat: { mtime: Date.now() },
 	}));
@@ -107,7 +112,14 @@ test('quick notes is a list of buttons, each making a note in its own folder and
 	const store = {
 		...boardStore([], {
 			quickNotePresets: [
-				{ id: 'a', icon: 'file-plus', label: 'Journal', folder: 'Journal', templatePath: 'T.md', filename: 'YYYY-MM-DD' },
+				{
+					id: 'a',
+					icon: 'file-plus',
+					label: 'Journal',
+					folder: 'Journal',
+					templatePath: 'T.md',
+					filename: 'YYYY-MM-DD',
+				},
 				{ id: 'b', icon: 'file-plus', label: 'Idea', folder: 'Ideas', templatePath: '', filename: '' },
 			],
 		}),
@@ -121,7 +133,11 @@ test('quick notes is a list of buttons, each making a note in its own folder and
 	const root = view.container.querySelector('[data-quick-notes]') as HTMLElement;
 	const buttons = root.querySelector('[data-quick-buttons]') as HTMLElement;
 	expect(buttons.className).toContain('flex-wrap');
-	expect(within(buttons).getAllByRole('button').map((b) => b.textContent)).toEqual(['Journal', 'Idea']);
+	expect(
+		within(buttons)
+			.getAllByRole('button')
+			.map((b) => b.textContent),
+	).toEqual(['Journal', 'Idea']);
 	expect(root.querySelector('[data-capture]')).toBeNull();
 	fireEvent.click(within(buttons).getByRole('button', { name: 'Journal' }));
 	expect(newNote).toHaveBeenCalledWith('Journal', expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/), 'T.md');

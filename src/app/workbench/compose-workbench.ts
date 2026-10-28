@@ -202,27 +202,32 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 				labelKey: 'workbench.contacts',
 				icon: 'contact-round',
 				target: { feature: 'contacts' },
-				children: [
-					{
-						id: 'contacts-person',
-						labelKey: 'workbench.people',
-						icon: 'user',
-						target: { feature: 'contacts', section: 'person' },
-					},
-					{
-						id: 'contacts-company',
-						labelKey: 'workbench.companies',
-						icon: 'building-2',
-						target: { feature: 'contacts', section: 'company' },
-					},
-				],
+				get children() {
+					return plugin.services.peek(ARCHIVES_WORKBENCH)?.navigation?.() ?? [];
+				},
 			},
 			availability: () => ({
 				...ready(),
 				enabled: plugin.moduleEnabled('archives'),
 				ready: plugin.moduleState('archives') === 'active',
 			}),
-			stateKeys: ['query', 'page', 'selectedPath', 'selectedId', 'scroll', 'layout', 'anchors'],
+			stateKeys: [
+				'query',
+				'page',
+				'selectedPath',
+				'selectedId',
+				'scroll',
+				'layout',
+				'anchors',
+				'section',
+				'typeId',
+				'viewId',
+				'search',
+				'offset',
+				'states',
+				'sort',
+				'filter',
+			],
 			create: modulePage('archives', 'archives'),
 		},
 		{

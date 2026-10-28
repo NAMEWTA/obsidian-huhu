@@ -176,3 +176,7 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 ## TypeScript
 
 `strict`、`noUncheckedIndexedAccess`、`noImplicitReturns`、`useUnknownInCatchVariables`，目标 ES2021。未处理的 Promise 是错误（有意不等待时用 `void`）。不要在 Promise 回调里返回 Obsidian 的链式控件（`huhu/no-obsidian-thenable`）。文件和文件夹用 kebab-case；React 业务组件文件用 PascalCase（复制的 shadcn 组件保留上游 kebab-case）；其他文件导入的常量（视图类型、键）用 `SCREAMING_SNAKE`。只用相对路径导入。
+
+## 档案定义领域
+
+`archives/core/schema` 定义八类模型、字段规则与修订 DAG，`core/generic` 负责 v2 保真协议、元数据索引、查询和 v1 适配。`services/generic` 统一命令、迁移和恢复；`platform` 提供 Vault 与私有草稿适配；通用界面在 `ui/generic`，按需加载。跨模块通过 `ARCHIVES_CATALOG / ARCHIVES_QUERY / ARCHIVES_COMMANDS / ARCHIVES_WORKBENCH` 消费，Home 使用资源分类排除业务元数据。定义和恢复计划是可见业务协议，不能迁到私有缓存；真实宿主验收边界见[实施方案](../../../../docs/archives-implementation.md)。
