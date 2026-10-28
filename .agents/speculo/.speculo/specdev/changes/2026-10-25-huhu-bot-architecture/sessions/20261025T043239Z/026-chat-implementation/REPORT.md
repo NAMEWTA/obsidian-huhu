@@ -8,7 +8,7 @@ Status: completed
 
 T-03 已从真实公共 Conversation Facade/HAP 装配到同一 SQLite：受理事务持久化配置 pin、Session 占用、Run、用户消息、首事件及幂等回执；有界执行器扫描 accepted，事务外准备资料和调用纯 HUHU Engine，终结事务同时保存消息/usage/事件/终态并释放占用。生产 Engine 当前明确 `ADAPTER_NOT_ASSEMBLED`，只有测试显式注入 fake，无生产假回答。与027/028共同冻结 SourceSnapshot、Scope、Grant、Host read/search、lease、历史访问和 cursor 合同；资料历史外发按当前固定接收方重新检查 read+send，实际消费来源写入派生回答。
 
-所有本片生产/测试 writer 已停止，现交回候选供 Lead E2E、工程接纳及独立双轴审查；`completed` 不表示自行推进 Ticket。联合源码快照为 [logs/source-snapshot.json](logs/source-snapshot.json)，105 files，tree SHA256 `4187569a76a91f343b456a7e930f58b21c2cabd5120060ea95c4be038dd9585c`。这是明确范围的 Go/合同/public API 源码快照，不冒充发行资产 hash；不包含 TS 消费者、dist、正式状态或他人报告。
+所有本片生产/测试 writer 已停止，现交回候选供 Lead E2E、工程接纳及独立双轴审查；`completed` 不表示自行推进 Ticket。联合源码快照为 logs/source-snapshot.json（历史日志已清理：`logs/source-snapshot.json`），105 files，tree SHA256 `4187569a76a91f343b456a7e930f58b21c2cabd5120060ea95c4be038dd9585c`。这是明确范围的 Go/合同/public API 源码快照，不冒充发行资产 hash；不包含 TS 消费者、dist、正式状态或他人报告。
 
 ## 产物与验证
 
@@ -40,7 +40,7 @@ Prepare 后和真正 Engine 前重验 read+send、固定 recipient、父范围�
 | `go vet ./...`，[logs/06-vet.log](logs/06-vet.log) | 0 | 无输出、无诊断。 |
 | Python 固定 venv `.../bin/python contracts/hap/v0.1/validate.py`，[logs/07-schema-pinned.log](logs/07-schema-pinned.log) | 0 | 126 method shapes、3 frame goldens、25 decimal negatives、174 shared method cases 全部一致。系统 python 首次缺 jsonschema，原 setup 错误保留 [logs/07-schema.log](logs/07-schema.log)，不算生产 red。复用既有固定工具 venv，不加项目 runtime 依赖。 |
 | `node scripts/verify-huhu-bot-architecture.mjs`，[logs/08-architecture.log](logs/08-architecture.log) | 0 | 24 production files 检查通过，application/domain 无 SQL/宿主/adapter 越界。 |
-| [logs/check-generated.py](logs/check-generated.py)，[logs/09-generator-reproducible.log](logs/09-generator-reproducible.log) | 0 | 隔离临时目录重新生成，6份 schema/method/golden/Go 输出逐字节相同；临时目录自动删除。 |
+| logs/check-generated.py（历史日志已清理：`logs/check-generated.py`），[logs/09-generator-reproducible.log](logs/09-generator-reproducible.log) | 0 | 隔离临时目录重新生成，6份 schema/method/golden/Go 输出逐字节相同；临时目录自动删除。 |
 | `gofmt -l native/huhubot` | 0 | 无输出；未为检查改写源码。 |
 
 关键反例单列，避免混淆证明范围：

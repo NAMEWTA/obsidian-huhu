@@ -349,3 +349,108 @@ func TestCanceledChildOutcomePreservesActualUnsettledUsageAndProducerSlot(t *tes
 	}
 	wait(t, c, root.RunID, "failed")
 }
+
+func TestCanceledChildLateKnownUsageIsReflectedInPublicRun(t *testing.T) {
+	var target string
+	created := make(chan api.Delegation, 1)
+	release := make(chan struct{})
+	var once sync.Once
+	var wg sync.WaitGroup
+	defer func() { once.Do(func() { close(release) }); wg.Wait() }()
+	type pending struct {
+		port api.ModelAttempts
+		r    api.AttemptReservation
+		done chan error
+	}
+	started := make(chan pending, 1)
+	eng := engineFunc(func(c context.Context, i api.EngineInput) (api.EngineResult, error) {
+		if i.Intent == "root" {
+			for _, name := range []string{"B", "C"} {
+				v, e := i.Tools.Invoke(c, api.ToolCall{ID: name, Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: name, Constraints: []string{}}})
+				if e != nil {
+					return api.EngineResult{}, e
+				}
+				if name == "B" {
+					created <- *v.Delegation
+				}
+			}
+			return api.EngineResult{Status: "finished", Text: "parent"}, nil
+		}
+		if i.Intent == "C" {
+			return api.EngineResult{Status: "finished", Text: "sibling"}, nil
+		}
+		r, e := i.Attempts.Reserve(c, api.AttemptRequest{LogicalCallID: "request", Purpose: "child", InputEstimate: "1", OutputBound: "9"})
+		if e != nil {
+			return api.EngineResult{}, e
+		}
+		done := make(chan error, 1)
+		entered := make(chan struct{})
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			done <- i.Attempts.Dispatch(context.Background(), r, func(context.Context) error { close(entered); <-release; return nil })
+		}()
+		<-entered
+		started <- pending{i.Attempts, r, done}
+		<-c.Done()
+		return api.EngineResult{}, c.Err()
+	})
+	c, _, loc := open(t, bootstrap.Options{Engine: eng})
+	b := agent(t, c, "B", nil)
+	target = b.ID
+	a := agent(t, c, "A", []string{b.ID})
+	if _, e := c.API.Collaboration.ConfigureBudget(ctx, owner, api.BudgetConfigure{CommandMeta: meta(t, c, "budget", "1"), Policy: api.BudgetPolicy{RootTokenLimit: "10", ProfileTokenLimit: "10", MaintenanceTokenLimit: "0"}}); e != nil {
+		t.Fatal(e)
+	}
+	root := start(t, c, session(t, c, a), "root")
+	var d api.Delegation
+	var p pending
+	select {
+	case d = <-created:
+	case <-time.After(5 * time.Second):
+		t.Fatal("not created")
+	}
+	select {
+	case p = <-started:
+	case <-time.After(5 * time.Second):
+		t.Fatal("not dispatched")
+	}
+	if _, e := c.API.Collaboration.CancelTask(ctx, owner, api.TaskCancel{CommandMeta: meta(t, c, "cancel", d.Revision), ID: d.ID}); e != nil {
+		t.Fatal(e)
+	}
+	task, e := c.API.Collaboration.GetTask(ctx, owner, api.IDQuery{ProfileID: meta(t, c, "q", "").ProfileID, ID: d.ID})
+	if e != nil || task.Result == nil || task.Result.Status != "canceled" || task.Result.Usage == nil || task.Result.Usage.Knowledge != "unknown" || task.Result.Text != "" {
+		t.Fatalf("canceled usage lost %#v %v", task, e)
+	}
+	db := database(t, loc)
+	if count(t, db, "SELECT child_slot FROM execution_runs WHERE run_id=?", d.ChildRunID) != 1 {
+		t.Fatal("cancel released live producer slot")
+	}
+	final := wait(t, c, root.RunID, "failed")
+	if final.Reason != "DESCENDANT_MODEL_PRODUCER_UNSETTLED" {
+		t.Fatalf("parent ignored live canceled producer %#v", final)
+	}
+	once.Do(func() { close(release) })
+	select {
+	case e := <-p.done:
+		if e != nil {
+			t.Fatal(e)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("producer not waited")
+	}
+	if _, e = p.port.Settle(ctx, p.r, api.AttemptObservation{Knowledge: "known", InputTokens: "5", OutputTokens: "2", ProducerEnded: true}); e != nil {
+		t.Fatal(e)
+	}
+	if count(t, db, "SELECT child_slot FROM execution_runs WHERE run_id=?", d.ChildRunID) != 0 {
+		t.Fatal("ended producer slot leaked")
+	}
+	late, e := c.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: meta(t, c, "q", "").ProfileID, ID: d.ChildRunID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if late.Usage == nil || late.Usage.Knowledge != "known" || late.Usage.InputTokens != "5" || late.Usage.OutputTokens != "2" {
+		t.Fatalf("late actual settled usage is not reflected by public Run; usage=%#v", late.Usage)
+	}
+	wait(t, c, root.RunID, "failed")
+}

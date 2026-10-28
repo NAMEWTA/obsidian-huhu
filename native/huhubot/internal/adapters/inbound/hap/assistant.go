@@ -3,6 +3,7 @@ package hap
 import (
 	"context"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	portable "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
 	wire "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/protocol/hap"
 )
 
@@ -13,6 +14,9 @@ func (r *Router) methods() []string {
 	methods := append([]string(nil), ImplementedMethods...)
 	if r.App.Assistant != nil {
 		methods = append(methods, assistantMethods...)
+	}
+	if r.App.Data != nil {
+		methods = append(methods, "sessions.deletePreview", "sessions.delete")
 	}
 	if r.App.Profile != nil {
 		methods = append(methods, profileMethods...)
@@ -46,6 +50,9 @@ func (r *Router) methods() []string {
 	}
 	if r.portable != nil {
 		methods = append(methods, "portable.export", "portable.importPreview", "portable.import")
+		if _, ok := r.portable.(portable.StageAPI); ok {
+			methods = append(methods, "portable.stage")
+		}
 	}
 	return methods
 }

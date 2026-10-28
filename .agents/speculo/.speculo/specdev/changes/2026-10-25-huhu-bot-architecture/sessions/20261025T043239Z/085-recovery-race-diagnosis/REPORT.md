@@ -8,9 +8,9 @@ Status: completed
 
 本任务仅诊断，生产、永久测试、081历史报告、正式状态均未修改。群聊缺一条回复的**合法交错触发fixture主动报错**已由双模式对照确证；事件失败已确认为**真实270条事件仍正常推进时，3秒轮询context先到期**，不是第二次StartRun失败、旧context泄漏或永久卡死。针对恢复guard的单SQL候选未达到现有helper的3秒门，不能作为已验证修复。该3秒来自waitTerminal测试夹具，不是已找到的Spec/T04产品性能要求；是否需要产品优化或正确配置测试lane，仍待原owner量化后决定。
 
-Root正式派遣 [TASK](TASK.md)，作者 `/root/credential_provider`，沿请求的 `gpt-6.1-sol/xhigh` 偏好执行，不声称工具可独立核验实际底层模型。按dev/testing与SpecDev D的单变量/失败保留规则执行，未另派代理。输入为080 [21-final-joint-source.json](../080-recovery-core/logs/21-final-joint-source.json)，377文件树 SHA256 `02eb94d9c8f4f6caeb2ca378554ad2f9f39c6b65847e7801be622787f0803dea`；[00输入逐SHA](logs/00-input.json)无漂移。
+Root正式派遣 [TASK](TASK.md)，作者 `/root/credential_provider`，沿请求的 `gpt-6.1-sol/xhigh` 偏好执行，不声称工具可独立核验实际底层模型。按dev/testing与SpecDev D的单变量/失败保留规则执行，未另派代理。输入为080 21-final-joint-source.json（历史日志已清理：`../080-recovery-core/logs/21-final-joint-source.json`），377文件树 SHA256 `02eb94d9c8f4f6caeb2ca378554ad2f9f39c6b65847e7801be622787f0803dea`；00输入逐SHA（历史日志已清理：`logs/00-input.json`）无漂移。
 
-原证据080 [24-risk-race.log](../080-recovery-core/logs/24-risk-race.log) / [24实际结果](../080-recovery-core/logs/24-risk-race-result.json)：11包race实际exit1、Wait563.245s，仅groups/events各一失败，其余9包通过，无DATA RACE报告，377输入drift=[]。Root明确释放此进程结束后的唯一085窗口，才开始以下七条定向Go命令；不是在080矩阵期间抢跑。
+原证据080 [24-risk-race.log](../080-recovery-core/logs/24-risk-race.log) / 24实际结果（历史日志已清理：`../080-recovery-core/logs/24-risk-race-result.json`）：11包race实际exit1、Wait563.245s，仅groups/events各一失败，其余9包通过，无DATA RACE报告，377输入drift=[]。Root明确释放此进程结束后的唯一085窗口，才开始以下七条定向Go命令；不是在080矩阵期间抢跑。
 
 ## 群聊：确证fixture把合法公开历史当失败
 
@@ -53,9 +53,9 @@ T16 AppendEvent现每条调用原恢复guard，依次读runtime/root/tree。本�
 
 ## 产物与验证
 
-所有七条命令为Go1.26.10、CGO_ENABLED=1、`go -C native/huhubot test -race -mod=readonly`，选单个完整原测试名、`-count=1`，完整参数与overlay绝对定位均保存在各原始日志。组结果汇总 [03](logs/03-groups-results.json)，事件原/诊断 [06](logs/06-events-results.json)，query对照 [09](logs/09-guard-query-results.json)，同插桩对比 [11](logs/11-events-observed-query-result.json)。所有进程均实际subprocess.run返回/PTY最终Wait，未用包装器exit0冒充其中真实exit1。没有Node、真实Provider、模型、Obsidian、用户数据或keyring操作。
+所有七条命令为Go1.26.10、CGO_ENABLED=1、`go -C native/huhubot test -race -mod=readonly`，选单个完整原测试名、`-count=1`，完整参数与overlay绝对定位均保存在各原始日志。组结果汇总 03（历史日志已清理：`logs/03-groups-results.json`），事件原/诊断 06（历史日志已清理：`logs/06-events-results.json`），query对照 09（历史日志已清理：`logs/09-guard-query-results.json`），同插桩对比 11（历史日志已清理：`logs/11-events-observed-query-result.json`）。所有进程均实际subprocess.run返回/PTY最终Wait，未用包装器exit0冒充其中真实exit1。没有Node、真实Provider、模型、Obsidian、用户数据或keyring操作。
 
-外部唯一 `[DEBUG-085]` 插桩仅保存在本任务probes与原始日志中，overlay执行结束后不挂接到后续命令；生产/永久测试没有debug代码。guard probe比较helper在首次运行前补当前subtest的testing.T参数，prepared SHA回执已注明并校正为实际执行字节，原生产候选未变。所有overlay原/替换逐文件SHA均可回读。首次return结构校验exit126仅因本节标题未用要求的“产物与验证”，已修文案并保留 [13回执](logs/13-return-first.json)，不当业务失败；后续实际return结果另记。自有原始红/绿保留，不修改081报告。
+外部唯一 `[DEBUG-085]` 插桩仅保存在本任务probes与原始日志中，overlay执行结束后不挂接到后续命令；生产/永久测试没有debug代码。guard probe比较helper在首次运行前补当前subtest的testing.T参数，prepared SHA回执已注明并校正为实际执行字节，原生产候选未变。所有overlay原/替换逐文件SHA均可回读。首次return结构校验exit126仅因本节标题未用要求的“产物与验证”，已修文案并保留 13回执（历史日志已清理：`logs/13-return-first.json`），不当业务失败；后续实际return结果另记。自有原始红/绿保留，不修改081报告。
 
 ## 问题与下一步
 

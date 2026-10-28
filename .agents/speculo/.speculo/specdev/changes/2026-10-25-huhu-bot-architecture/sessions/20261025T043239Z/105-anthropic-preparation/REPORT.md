@@ -8,7 +8,7 @@ Status: completed
 
 ## 聚焦交接
 
-**推荐一条路线：在 Eino adapter 内直接调用固定 `anthropic-sdk-go v1.56.0` 的 `Messages.NewStreaming`，增加有界的 Messages block/回放窄桥，复用同一个 common.Engine、Broker、CP 和 Attempts。** 不直接运行 claude / agenticclaude 的 Generate/Stream，不引入第二个 Runner 或账本。两种 Ext 保留为已比较的映射参考；不把研究缓存中的模块、云分支当作实际生产依赖。精确私有形状、原 owner 请求及全部 not-run 矩阵见 [接口与差异附件](logs/interfaces-and-matrix.md)；下文来源编号对应 [完整来源索引](logs/source-index.md)。
+**推荐一条路线：在 Eino adapter 内直接调用固定 `anthropic-sdk-go v1.56.0` 的 `Messages.NewStreaming`，增加有界的 Messages block/回放窄桥，复用同一个 common.Engine、Broker、CP 和 Attempts。** 不直接运行 claude / agenticclaude 的 Generate/Stream，不引入第二个 Runner 或账本。两种 Ext 保留为已比较的映射参考；不把研究缓存中的模块、云分支当作实际生产依赖。精确私有形状、原 owner 请求及全部 not-run 矩阵见 接口与差异附件（历史日志已清理：`logs/interfaces-and-matrix.md`）；下文来源编号对应 完整来源索引（历史日志已清理：`logs/source-index.md`）。
 
 1. **固定 Ext 无法原样满足合同。** claude v0.1.26 的 Config/构造没有 SDK MaxRetries 入口；普通 Stream 自建 goroutine，redacted 分支为空，输入 thinking 还要求文本非空。agenticclaude v0.1.7 能保存空 thinking 的签名，但显式丢 redacted，Config 同样没有重试开关。两者都依赖 v1.56.0，而 SDK 默认 MaxRetries=2。直接 SDK 的公开 `WithMaxRetries(0)` 可明确关闭，无须修改 module cache、fork 整包或捕获 Generate 错误后重发。（E1/E2/S2/L1）
 2. **097 的私有 Turn/state 方案适用，不能直接移植 Responses item 组装器。** Anthropic 只有 block start/delta/stop；block_stop 不附最终完整 block。需按 index 组装完整有序 content，保存 tool_use ID/参数、thinking 文本与晚到 signature、redacted data 及合法空 thinking。SDK `Message.Accumulate` 会在 stop 时重新编码，注释也承认 JSON presence 不完整，不能把它的 RawJSON 当原始无损状态。工具结果只从 common 已净化投影形成 user/tool_result，原控制 Token、权限和完整 ToolResult 继续留在私有 CP。（S1/S3/C1/H2）
@@ -21,10 +21,10 @@ Status: completed
 
 ## 产物与验证
 
-- [接口、精确 owner 与故障矩阵](logs/interfaces-and-matrix.md)：全部行为 **not-run**，包含 block/工具/opaque/usage/恢复/关闭/认证/Probe 接缝；列举数量不是后续测试上限。
-- [来源索引](logs/source-index.md)、[机器来源清单](logs/sources.json)、[逐次观察](logs/observations.json)、[原文行段](logs/read-excerpts.log)：固定本地源码优先；历史官方资料仅复用 047 在 2026-10-25 的实际读取记录，本次没有新网络查询。
-- [来源复核](logs/source-recheck.json) 和 [工作区读取](logs/workspace-read.json)：记录本次读取时摘要与最终是否漂移。与 047 可按原路径对齐的 6 个来源无差异；与 097 对齐的 26 个来源中，common/engine.go、common/checkpoint.go、chat/body.go、Broker/recovery.go 与 tickets-map.md 共 5 个已有变化，完整旧/新 SHA 保留，未改旧证据。
-- [探索日志](logs/exploration-notes.md)、[结构 return](logs/return.json)、[产物自核](logs/artifact-check.json)、[manifest](logs/manifest.json)：只做本任务轻量读取、字节/链接核对和 TASK 指定结构交回；结构结果不认证研究建议的运行行为。
+- 接口、精确 owner 与故障矩阵（历史日志已清理：`logs/interfaces-and-matrix.md`）：全部行为 **not-run**，包含 block/工具/opaque/usage/恢复/关闭/认证/Probe 接缝；列举数量不是后续测试上限。
+- 来源索引（历史日志已清理：`logs/source-index.md`）、机器来源清单（历史日志已清理：`logs/sources.json`）、逐次观察（历史日志已清理：`logs/observations.json`）、[原文行段](logs/read-excerpts.log)：固定本地源码优先；历史官方资料仅复用 047 在 2026-10-25 的实际读取记录，本次没有新网络查询。
+- 来源复核（历史日志已清理：`logs/source-recheck.json`） 和 工作区读取（历史日志已清理：`logs/workspace-read.json`）：记录本次读取时摘要与最终是否漂移。与 047 可按原路径对齐的 6 个来源无差异；与 097 对齐的 26 个来源中，common/engine.go、common/checkpoint.go、chat/body.go、Broker/recovery.go 与 tickets-map.md 共 5 个已有变化，完整旧/新 SHA 保留，未改旧证据。
+- 探索日志（历史日志已清理：`logs/exploration-notes.md`）、结构 return（历史日志已清理：`logs/return.json`）、产物自核（历史日志已清理：`logs/artifact-check.json`）、manifest（历史日志已清理：`logs/manifest.json`）：只做本任务轻量读取、字节/链接核对和 TASK 指定结构交回；结构结果不认证研究建议的运行行为。
 
 使用 dev 的架构/测试/许可边界及 I 只读准备入口；未进入 T10 实施。实际依赖仍以现有 go.mod 为准，本次没有下载或改锁。Anthropic SDK 的本地 LICENSE 为 MIT，两个 Ext 为 Apache-2.0；未来 T01/T27 应按真正生产五目标闭包决定 notices，不能复制研究依赖全集。（A0/L1）
 

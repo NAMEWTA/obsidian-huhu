@@ -35,6 +35,9 @@ func (s *Store) loadReconciliationInTx(ctx context.Context, tx *sql.Tx, id api.R
 	}
 	v = api.EffectView{ID: effect.ID, RunID: runID, Revision: run.Revision, Status: effect.State, Reason: effect.Reason, Receipt: effect.Receipt}
 	d = api.EffectDispatch{EffectID: effect.ID, RunID: runID, ProfileID: effect.ProfileID, CommandEpoch: effect.CommandEpoch, ApprovalID: effect.ApprovalID, ApprovalRevision: effect.ApprovalRevision, ExpiresAt: effect.ExpiresAt, Target: effect.Preview.Target, Tool: effect.Preview.Tool, Content: effect.Preview.Content, Preview: effect.Preview, Lease: effect.Lease}
+	if e = tx.QueryRowContext(ctx, "SELECT reconciliation_fingerprint FROM execution_effects WHERE effect_id=?", q.ID).Scan(&d.Fingerprint); e != nil {
+		return v, d, e
+	}
 	return v, d, nil
 }
 func (s *Store) LoadEffect(ctx context.Context, id api.RequestIdentity, q api.EffectQuery) (api.EffectView, api.EffectDispatch, error) {

@@ -230,7 +230,7 @@
     },
     "sessions.deletePreview": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/sessions.deletePreview.params"
       },
@@ -240,7 +240,7 @@
     },
     "sessions.delete": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/sessions.delete.params"
       },
@@ -418,6 +418,16 @@
         "$ref": "#/$defs/collaboration.proposeCreate.result"
       }
     },
+    "collaboration.proposals": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.proposals.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.proposals.result"
+      }
+    },
     "collaboration.confirmProposal": {
       "direction": "client-to-server",
       "implemented": true,
@@ -426,6 +436,16 @@
       },
       "result": {
         "$ref": "#/$defs/collaboration.confirmProposal.result"
+      }
+    },
+    "collaboration.rejectProposal": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.rejectProposal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.rejectProposal.result"
       }
     },
     "grants.list": {
@@ -570,7 +590,7 @@
     },
     "profile.deletePreview": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/profile.deletePreview.params"
       },
@@ -580,7 +600,7 @@
     },
     "profile.delete": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/profile.delete.params"
       },
@@ -598,9 +618,19 @@
         "$ref": "#/$defs/profile.status.result"
       }
     },
+    "portable.stage": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/portable.stage.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.stage.result"
+      }
+    },
     "portable.export": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/portable.export.params"
       },
@@ -610,7 +640,7 @@
     },
     "portable.importPreview": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/portable.importPreview.params"
       },
@@ -620,7 +650,7 @@
     },
     "portable.import": {
       "direction": "client-to-server",
-      "implemented": false,
+      "implemented": true,
       "params": {
         "$ref": "#/$defs/portable.import.params"
       },

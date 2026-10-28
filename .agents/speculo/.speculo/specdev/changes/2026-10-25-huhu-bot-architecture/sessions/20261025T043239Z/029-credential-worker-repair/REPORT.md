@@ -42,7 +42,7 @@ CLI 五目标交叉编译由019负责，本任务没有重复编译或把旧020�
 
 ### 冻结摘要与规则
 
-[affected-input.sha256](logs/affected-input.sha256) 逐项固定测试、CLI、worker、worker测试、go.mod/sum、旧020报告与本TASK，manifest SHA-256 `e4a9bd0b50e55fd82b979afb05919f8835aefe046a48b507008844eabc1b9a2f`。
+affected-input.sha256（历史日志已清理：`logs/affected-input.sha256`） 逐项固定测试、CLI、worker、worker测试、go.mod/sum、旧020报告与本TASK，manifest SHA-256 `e4a9bd0b50e55fd82b979afb05919f8835aefe046a48b507008844eabc1b9a2f`。
 
 - 本次唯一修改测试 SHA-256：`d1899ff4260a0286803e31f980745e8d6143d2cd4d32fa0eb007e7dfed931404`。
 - 019 修复后 main.go SHA-256：`7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f`。

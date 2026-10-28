@@ -12,7 +12,7 @@ Status: completed
 
 ### 来源、授权与范围
 
-使用本次唯一 current checkout：`/home/wta/orca/workspaces/obsidian-huhu/bot`，branch `NAMEWTA/bot`，HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`。起始已有的共享 dirty tree 保留，见 [00-start-input.json](logs/00-start-input.json)；无提交、推送、发布或 worktree。TASK、Root 原生消息、ROOT-ADDENDUM-01（仅纯 TaskConfig hash 两文件）、Map15/Goal14/LOG072–077 的原 owner 窗口是本次边界；没有写 api.ts/schema/Go/package/lock/正式状态/他人报告。
+使用本次唯一 current checkout：`/home/wta/orca/workspaces/obsidian-huhu/bot`，branch `NAMEWTA/bot`，HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`。起始已有的共享 dirty tree 保留，见 00-start-input.json（历史日志已清理：`logs/00-start-input.json`）；无提交、推送、发布或 worktree。TASK、Root 原生消息、ROOT-ADDENDUM-01（仅纯 TaskConfig hash 两文件）、Map15/Goal14/LOG072–077 的原 owner 窗口是本次边界；没有写 api.ts/schema/Go/package/lock/正式状态/他人报告。
 
 实际使用 `dev` 和 `specdev-i-implement`，读取 AGENTS、workspace/catalog/runtime、Map/本票和实现/预检/协调/错误与并发测试规则，按实际持久化、异步生命周期、公开协议风险实施并验证。项目 Skill 及 architecture/testing/licensing/obsidian-api 的起始 SHA 已在 00 保存。完整读取 036-note-effect-preflight、045-group-recovery-preflight 与 051 回执根来源，复用固定官方 Obsidian API 规则：`obsidian-api` commit `9abd9605ce081383674aae1ed111c456edde0688`（MIT，固定活动来源 2026-10-05）、本地 types 1.13.1、支持 minAppVersion 1.13.0；`loadLocalStorage/saveLocalStorage` 标注 since 1.8.7。借鉴设计而未复制外部代码，无新增依赖。宿主生命周期、Vault.process 同步回调、明确 leaf 与所有相关编辑器检查按 dev/references/obsidian-api.md 落实；真实宿主行为不由受控对象证明。
 
@@ -30,7 +30,7 @@ Status: completed
 
 ### 合同输入
 
-最终作者观察的共享合同为 71 methods / 142 方法 params+result shapes / 252 shared method cases（cancel 与 ErrorData 的独立 validators 不计方法数）。052 消息确认本批 TS API/schema 无计划新字段；Go 内部装配仍由其独占，不将观察值冒充整个联合 Go 最终快照。精确输入记录见 [35-source-freeze.json](logs/35-source-freeze.json)、[37-final-checks.json](logs/37-final-checks.json)，最终复读共享与自有输入漂移均 `[]`。
+最终作者观察的共享合同为 71 methods / 142 方法 params+result shapes / 252 shared method cases（cancel 与 ErrorData 的独立 validators 不计方法数）。052 消息确认本批 TS API/schema 无计划新字段；Go 内部装配仍由其独占，不将观察值冒充整个联合 Go 最终快照。精确输入记录见 35-source-freeze.json（历史日志已清理：`logs/35-source-freeze.json`）、37-final-checks.json（历史日志已清理：`logs/37-final-checks.json`），最终复读共享与自有输入漂移均 `[]`。
 
 | 只读合同/根 | SHA256 |
 | --- | --- |
@@ -43,7 +43,7 @@ Status: completed
 
 ### 验证及真实红灯
 
-最终命令、exitCode、观察与原日志逐项记录在 [37-final-checks.json](logs/37-final-checks.json)。日志是原始命令输出，空 tsc/lint 文件对应工具实际退出 0，非跳过检查。
+最终命令、exitCode、观察与原日志逐项记录在 37-final-checks.json（历史日志已清理：`logs/37-final-checks.json`）。日志是原始命令输出，空 tsc/lint 文件对应工具实际退出 0，非跳过检查。
 
 | 检查 | 结果与证据 |
 | --- | --- |
@@ -60,12 +60,12 @@ Status: completed
 保留以下红灯及修复，不用后来的绿灯覆盖原始记录：
 
 - [01](logs/01-source-target-red.log) 原 Sources 14 tests 绿、3 个新增可信目标测试因 Port 缺失红（Vitest exit 126）；实现后 [02](logs/02-source-target-green.log) 17 tests 绿。
-- [05](logs/05-production-tsc-first.json)、[07](logs/07-production-tsc-protocol.log)、[19](logs/19-tests-tsc.log) 是首轮自身类型问题（HostReceipt 状态推断、泛型 preview/result 收窄、测试 required description/协议枚举/对象推断）；均已修复并由最终双 tsc 覆盖。[20](logs/20-own-lint.log) 首轮自身 lint 错误已修，误选默认忽略 tests 的 warnings [22](logs/22-own-lint.log) 改精确定向运行参数后最终 [32] 0。
+- 05（历史日志已清理：`logs/05-production-tsc-first.json`）、[07](logs/07-production-tsc-protocol.log)、[19](logs/19-tests-tsc.log) 是首轮自身类型问题（HostReceipt 状态推断、泛型 preview/result 收窄、测试 required description/协议枚举/对象推断）；均已修复并由最终双 tsc 覆盖。[20](logs/20-own-lint.log) 首轮自身 lint 错误已修，误选默认忽略 tests 的 warnings [22](logs/22-own-lint.log) 改精确定向运行参数后最终 [32] 0。
 - [09](logs/09-protocol-first.log) 老测试 mock receipt 缺少 committed receiptId，被新增严格生产检查拒绝；补准确 fixture，未放宽生产要求。[12](logs/12-host-service-first.log) query 误 spread invoke 多余字段被唯一 schema 正确拒绝；修正测试 query 字段，生产严格性保留。
 - [15](logs/15-effect-fingerprint.log) 实际共享 content-changed 黄金向量红，定位末字段误用 preview.content；按冻结字节合同改为外层 request.content，[16](logs/16-effect-fingerprint-green.log) 同 4 向量绿。
 - [29](logs/29-prepare-version-red.log) 使用相同真实 WebCrypto + 受控 mtime 竞争：replacement hash await 期间原 TFile 版本改变，prepare 原实现错误返回预览；补准备全过程 stat 复核后 [30] 同输入转绿，0 mutation/0 receipt。rename/同路径替换/多编辑器未保存/CAS 竞争原测试一并保持。
 
-中间 [08](logs/08-host-contract-input.json) 是 69 methods/138 shapes/248 cases 的协作点，非最终输入；最后新增预算公开消费者由唯一 owner 生成到 71/142/252。中间“59 protocol tests / 31 Host 切片”是当时真实结果，最终总数以 119 tests 为准，不累加重复执行。
+中间 08（历史日志已清理：`logs/08-host-contract-input.json`） 是 69 methods/138 shapes/248 cases 的协作点，非最终输入；最后新增预算公开消费者由唯一 owner 生成到 71/142/252。中间“59 protocol tests / 31 Host 切片”是当时真实结果，最终总数以 119 tests 为准，不累加重复执行。
 
 ### 用户后验入口及未跑边界
 
@@ -77,7 +77,7 @@ Root 稳定窗口还需全插件 build/lint 与联合 E2E。共享 fresh-vault.m
 
 ### 26 文件冻结 SHA
 
-[35-source-freeze.json](logs/35-source-freeze.json) 是可机器复核的完整自有输入清单；仅下列源/测试/脚本，另有本 TASK logs/REPORT。treeSHA 是该 files map 以 sorted JSON keys、紧凑 UTF-8 JSON 编码后的 SHA256。
+35-source-freeze.json（历史日志已清理：`logs/35-source-freeze.json`） 是可机器复核的完整自有输入清单；仅下列源/测试/脚本，另有本 TASK logs/REPORT。treeSHA 是该 files map 以 sorted JSON keys、紧凑 UTF-8 JSON 编码后的 SHA256。
 
 | 文件 | SHA256 |
 | --- | --- |

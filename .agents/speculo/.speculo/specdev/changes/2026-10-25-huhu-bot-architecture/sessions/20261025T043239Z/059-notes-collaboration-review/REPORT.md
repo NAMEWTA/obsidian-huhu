@@ -12,13 +12,13 @@ Reviewer: `native:/root/foundation_review`，未参与本候选实现/修复，�
 
 唯一输入：`evidence/T-07.md#review-input-notes-r1`，**Input-SHA256: 63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98**；257文件、65来源；HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`，branch `NAMEWTA/bot`，Map16/Goal15。TASK SHA256 `5412b03db39ac9e1091936f60483eb6b4b5ffaa34ceeff849fb82cfd04cc9c6c`。
 
-独立重新解析实际 `scope.scope_paths`，比较完整工作副本、index、mode、HEAD/base及所有来源原字节/锚点。相对050，140文件变化或新增、117文件相同，20来源变化/新增、45来源相同。完整输入保存于 [input.json](logs/input.json)，差异清单 [changed.json](logs/changed.json)，起始、测试后及末次核对分别在 [input-start.log](logs/input-start.log)、[input-after-tests.log](logs/input-after-tests.log)、[input-final.log](logs/input-final.log)。范围外导航/报告工件增加不改变冻结scope，不重新取候选。旧050/040/033等结论只在文件摘要相同且本次影响未推翻时复用，不把旧通过当新代码已验收。
+独立重新解析实际 `scope.scope_paths`，比较完整工作副本、index、mode、HEAD/base及所有来源原字节/锚点。相对050，140文件变化或新增、117文件相同，20来源变化/新增、45来源相同。完整输入保存于 input.json（历史日志已清理：`logs/input.json`），差异清单 changed.json（历史日志已清理：`logs/changed.json`），起始、测试后及末次核对分别在 [input-start.log](logs/input-start.log)、[input-after-tests.log](logs/input-after-tests.log)、[input-final.log](logs/input-final.log)。范围外导航/报告工件增加不改变冻结scope，不重新取候选。旧050/040/033等结论只在文件摘要相同且本次影响未推翻时复用，不把旧通过当新代码已验收。
 
 先按TASK提出可证伪假设：Host异步间隙可能误写；取消/重建可能提前归还真实资源；回执可能伪造成功；迁移恢复集可能遗漏终态CP；协作受理/Claim/工具端可能绕过当前权限或丢失参数；取消/汇合可能复活旧父或掩盖partial；预算和来源在重开、等待、Reply时可能换根失效。下面分别记录实际支持的反例和其余闭包观察。
 
 ## 产物与验证
 
-所有新增反例仅在 `/tmp/huhu-notes-review/repo` 的当前精确副本追加探针；副本201个冻结Go/合同文件逐项与候选一致，见 [external-copy-manifest.json](logs/external-copy-manifest.json)。只新增外部probe，不改副本生产代码。源探针保存在本任务 [probes](probes/)，未加入永久测试。临时Profile由测试创建并Close清理；持久SQL状态的实际查询结果保存在原始日志，未假称已保留这些已清理Profile的数据库文件。
+所有新增反例仅在 `/tmp/huhu-notes-review/repo` 的当前精确副本追加探针；副本201个冻结Go/合同文件逐项与候选一致，见 external-copy-manifest.json（历史日志已清理：`logs/external-copy-manifest.json`）。只新增外部probe，不改副本生产代码。源探针保存在本任务 [probes](probes/)，未加入永久测试。临时Profile由测试创建并Close清理；持久SQL状态的实际查询结果保存在原始日志，未假称已保留这些已清理Profile的数据库文件。
 
 | 独立执行 | 实际结果与证据 |
 | --- | --- |
@@ -31,7 +31,7 @@ Reviewer: `native:/root/foundation_review`，未参与本候选实现/修复，�
 | 委派要求与工具白名单反例 | [delegation-boundaries.log](logs/delegation-boundaries.log)，exit1来自三个实际负向分支：existing/temporary要求丢失及allowed=false工具绕过；allowed=true正常对照通过。源 [reviewer_envelope_test.go](probes/reviewer_envelope_test.go)、[reviewer_tools_test.go](probes/reviewer_tools_test.go)。 |
 | Root插件及联合E2E证据 | 完整回读 `evidence/T-07-logs/lead-note-e2e-r2.json`、`lead-plugin-checks-r3.json`、`e2e-fixture-reuse-r1.json`及实际原始日志。Root build exit0/38.506s，最终lint exit0/66.667s，151TS exit0；r2真实TS→Go→Host3次mutation（2update/1create）、新lease只读恢复、协作/预算/Reply均通过。属于Root执行，本reviewer没有重新构建插件或改main.js/styles.css。 |
 
-命令/退出见 [commands.json](logs/commands.json)；前三次queue探针提供可复放的等价argv，不冒称重建了原工具调用的逐字节argv，原输出与各版源码均保留。本reviewer为 [toolchain.log](logs/toolchain.log) 所示 **go1.27.1 linux/amd64**；052/053/Root本轮所记录为 **go1.26.10**。两者不合并成同环境重复样本；计时仅为此次独占窗口观察，不承诺所有机器耗时相同。本轮没有为择绿重跑同一性能测量。
+命令/退出见 commands.json（历史日志已清理：`logs/commands.json`）；前三次queue探针提供可复放的等价argv，不冒称重建了原工具调用的逐字节argv，原输出与各版源码均保留。本reviewer为 [toolchain.log](logs/toolchain.log) 所示 **go1.27.1 linux/amd64**；052/053/Root本轮所记录为 **go1.26.10**。两者不合并成同环境重复样本；计时仅为此次独占窗口观察，不承诺所有机器耗时相同。本轮没有为择绿重跑同一性能测量。
 
 历史红灯均保留且已回读：052原默认bridge审批后waiting、整Go r2删除Assistant在单连接事务内checkpoint自锁超时；053 LOG080取消/嵌套partial原失败与实际后继绿、LOG082 tasks.reply来源及agents.message kind=reply提前分支原失败与修复；052 r3的270/3s SQLite interrupted、800 source 252.987151ms超250ms、终态child_slot未结束三个并发失败。孤立270和policy投影控制、最终Run-only projection改善及producer真正结束清理有原始依据，没有抬预算或删除来源输入。本次独立normal/race在最终候选通过支持该处置，但不改写早期失败。
 
@@ -145,6 +145,6 @@ Findings: SPEC-01(P1), SPEC-02(P2), SPEC-03(P2). 与标准轴对应同三项实�
 
 请Root完整回读后按原owner安排三项精确修复，再固定新候选补审；本reviewer未修生产、未改永久测试、未提交/推送/发布或更新正式状态。以上最小满足条件保留原失败输入/权限语义/资源预算，不预设吞错或扩大能力的修复。
 
-所有自有测试命令均实际结束并Wait，Go Core.Close等待Executor及producer；测试子进程/pipe/Node fixture均走自己的完成与Wait，未留下writer。最后进程清点、完整输入与结构校验在 [final-cleanup.json](logs/final-cleanup.json)、[input-final.log](logs/input-final.log)、[return.log](logs/return.log)。结构校验仅验证交回格式，不认证审查质量或抹去request-changes。完成实际交回后停写并释放重测试窗口。
+所有自有测试命令均实际结束并Wait，Go Core.Close等待Executor及producer；测试子进程/pipe/Node fixture均走自己的完成与Wait，未留下writer。最后进程清点、完整输入与结构校验在 final-cleanup.json（历史日志已清理：`logs/final-cleanup.json`）、[input-final.log](logs/input-final.log)、[return.log](logs/return.log)。结构校验仅验证交回格式，不认证审查质量或抹去request-changes。完成实际交回后停写并释放重测试窗口。
 
 真实Provider/模型、Obsidian、用户Vault、目标Windows/macOS及宿主keyring现场均 **user-owned / not-run**。未索凭证、未访问用户keyring或运行旧默认D-Bus自动激活fixture。本轮受控Engine/Host、Linux pipe、SQLite与生产TS→Go消费者证明其明确列出的代码边界，不等同用户现场验收。

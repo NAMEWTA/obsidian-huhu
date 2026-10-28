@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -185,7 +186,7 @@ func TestDefaultMemoryRuntimeSealsActualContextAndComposesAgentUsage(t *testing.
 		t.Fatal(e)
 	}
 	t.Cleanup(func() { _ = db.Close() })
-	for query, want := range map[string]int{"PRAGMA user_version": 11, "SELECT count(*) FROM memory_run_contexts": 2, "SELECT count(*) FROM memory_completion_outbox": 2, "SELECT count(*) FROM model_attempts": 0} {
+	for query, want := range map[string]int{"PRAGMA user_version": migrations.CurrentVersion, "SELECT count(*) FROM memory_run_contexts": 2, "SELECT count(*) FROM memory_completion_outbox": 2, "SELECT count(*) FROM model_attempts": 0} {
 		var got int
 		if e = db.QueryRowContext(ctx, query).Scan(&got); e != nil || got != want {
 			t.Fatal(query, got, want, e)

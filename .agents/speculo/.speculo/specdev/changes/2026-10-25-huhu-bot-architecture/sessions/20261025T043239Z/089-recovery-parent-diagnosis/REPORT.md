@@ -12,9 +12,9 @@ Status: completed
 
 ### 固定输入与真正可达的前提
 
-[00-input.json](logs/00-input.json) 从 083 只读快照复制其原 280 文件到本任务独立临时目录：树 SHA256 `f9853dac6bedee5433f1811b665057fa6c93bee7291e6b1eb2c62eed44584a69`，原/复制件逐文件均无漂移。原清单为 [083 输入](../083-recovery-review/logs/00-probe-input.json)，不是在 088 活跃共享源上取不稳定输入。原 `usage/waits.go` SHA256 `fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f`。
+00-input.json（历史日志已清理：`logs/00-input.json`） 从 083 只读快照复制其原 280 文件到本任务独立临时目录：树 SHA256 `f9853dac6bedee5433f1811b665057fa6c93bee7291e6b1eb2c62eed44584a69`，原/复制件逐文件均无漂移。原清单为 083 输入（历史日志已清理：`../083-recovery-review/logs/00-probe-input.json`），不是在 088 活跃共享源上取不稳定输入。原 `usage/waits.go` SHA256 `fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f`。
 
-唯一新增文件是外部 `tests/contract/recovery/diagnosis089_parent_test.go`，完整执行字节保存在 [01 探针](logs/01-parent-probe.go.txt)，SHA256 `9d578468a9a1b8fa72c076ba13865e7bd68756095f41115468ceaadb9c0b2c7e`。没有 overlay 修改生产谓词，也没有伪造 SQL Run/parent/CP 状态。
+唯一新增文件是外部 `tests/contract/recovery/diagnosis089_parent_test.go`，完整执行字节保存在 01 探针（历史日志已清理：`logs/01-parent-probe.go.txt`），SHA256 `9d578468a9a1b8fa72c076ba13865e7bd68756095f41115468ceaadb9c0b2c7e`。没有 overlay 修改生产谓词，也没有伪造 SQL Run/parent/CP 状态。
 
 1. `ExecutorPaused` 下经公开 Assistant/CreateSession/StartRun 受理 128 个独立 direct 根；每次根受理前的活动队列不超过既有 128 上限，没有先塞满队列后再非法新增晚根。关闭该 Core 并等待 Done 后，以同一 Profile、同一个真实 Executor 启动全部根。
 2. 127 个前根各真实 delegate 一个叶；第 128 个根 delegate B，B 再 delegate 叶。根与 B 实际 Engine 返回 finished 后，由原 Finalize 持久 waiting_children/parent_result；每棵树累计最多 2 个子任务、深度最多 2，保留配置 3/32/4/8/8 及本机 WorkerCapacity16。
@@ -29,7 +29,7 @@ Status: completed
 go test ./tests/contract/recovery -run '^TestDiagnosis089WaitingParentBeyondFirstPage$' -count=1 -v -timeout=120s
 ```
 
-实际工作目录/环境/探针 SHA 在 [02 原始输出](logs/02-parent-original-red.log) 与 [03 命令回执](logs/03-parent-original-result.json)。**真实 Go exit1，外层耗时 7.796 秒，case 5.82 秒，subprocess.run 已返回并完成 Wait**；没有用包装器 exit0 冒充业务成功。
+实际工作目录/环境/探针 SHA 在 [02 原始输出](logs/02-parent-original-red.log) 与 03 命令回执（历史日志已清理：`logs/03-parent-original-result.json`）。**真实 Go exit1，外层耗时 7.796 秒，case 5.82 秒，subprocess.run 已返回并完成 Wait**；没有用包装器 exit0 冒充业务成功。
 
 | 阶段 | 真实观察与断言 |
 | --- | --- |
@@ -53,7 +53,7 @@ go test ./tests/contract/recovery -run '^TestDiagnosis089WaitingParentBeyondFirs
 
 1.525 秒是本诊断的有界观察，不是 Spec 的吞吐 SLA，也不单独声称实测了无限等待。确认结论由稳定前提、实际失败、查询/循环结构和同 DB 单动作反向控制共同支持；本轮只执行一次该最小页数边界构造，不宣称复现率或所有等待类型均已覆盖。未运行 127 根额外控制、race、全矩阵、真实模型、用户 Vault、Obsidian、目标 OS 或任何凭证探针。
 
-[04 源回读与 Wait 回执](logs/04-source-readback-and-wait.json) 证实原 083 快照及执行副本的全部 280 原文件前后 SHA 无漂移。共享 checkout 正由 088 按其他授权维护，本报告不把他人的变更冒称为“全仓零变化”。本任务没有活跃 Go/Node/Runner 或遗留 producer；独立外部源码复制件保留供复验，完整探针和输入 SHA 亦在本任务 logs。唯一 Go 窗口已实际通知 Root 和 088 释放。
+04 源回读与 Wait 回执（历史日志已清理：`logs/04-source-readback-and-wait.json`） 证实原 083 快照及执行副本的全部 280 原文件前后 SHA 无漂移。共享 checkout 正由 088 按其他授权维护，本报告不把他人的变更冒称为“全仓零变化”。本任务没有活跃 Go/Node/Runner 或遗留 producer；独立外部源码复制件保留供复验，完整探针和输入 SHA 亦在本任务 logs。唯一 Go 窗口已实际通知 Root 和 088 释放。
 
 ## 问题与下一步
 

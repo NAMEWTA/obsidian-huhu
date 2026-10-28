@@ -40,13 +40,19 @@ type ImportPreviewRequest struct {
 	Artifact  ArtifactRef
 }
 type ImportPreviewResult struct {
-	Token     string
-	Conflicts []ImportConflict
+	Token       string           `json:"token"`
+	MappingMode string           `json:"mappingMode"`
+	Mappings    []IDMapping      `json:"mappings"`
+	Conflicts   []ImportConflict `json:"conflicts"`
 }
 type ImportConflict struct {
-	ID       string `json:"id"`
-	Revision string `json:"revision"`
-	Hash     string `json:"hash"`
+	ID          string `json:"id"`
+	Revision    string `json:"revision"`
+	Hash        string `json:"hash"`
+	Kind        string `json:"kind"`
+	ExistingID  string `json:"existingId"`
+	Reason      string `json:"reason"`
+	NeedsReview bool   `json:"needsReview"`
 }
 type ImportRequest struct {
 	CommandID, IdempotencyKey, ProfileID, CommandEpoch, ExpectedRevision, PreviewToken string
@@ -80,7 +86,30 @@ const (
 	MaxTextBytes       = 1 << 20
 	MaxItems           = 4096
 	MaxManifestEntries = 16384
+	// Public preview payloads leave room for a bounded transport envelope.
+	MaxPreviewBytes     = 64 << 10
+	MaxPreviewConflicts = 4096
 )
+
+func previewTooLarge() error {
+	return &api.Fault{Kind: "RESOURCE_LIMIT", Reason: "PORTABLE_PREVIEW_TOO_LARGE"}
+}
+
+// ValidatePreviewBudget is transport-neutral. Adapters can reuse the same
+// public payload budget without letting an injected service overflow a frame.
+func ValidatePreviewBudget(preview ImportPreviewResult) error {
+	if len(preview.Mappings) > MaxItems || len(preview.Conflicts) > MaxPreviewConflicts {
+		return previewTooLarge()
+	}
+	encoded, err := json.Marshal(preview)
+	if err != nil {
+		return err
+	}
+	if len(encoded) > MaxPreviewBytes {
+		return previewTooLarge()
+	}
+	return nil
+}
 
 // Package is an explicit allow-list.  Do not add credential, grant, approval,
 // checkpoint, queue or lease fields here: their absence is part of AC-041.
@@ -170,10 +199,11 @@ type Selection struct {
 }
 
 type Target struct {
-	ProfileID string
-	Agents    []TargetAgent
-	Sessions  []TargetSession
-	Memories  []TargetMemory
+	ProfileID              string
+	CommandEpoch, Revision string
+	Agents                 []TargetAgent
+	Sessions               []TargetSession
+	Memories               []TargetMemory
 }
 type TargetAgent struct{ ID, Name, Revision string }
 type TargetSession struct{ ID, Title, Revision string }
@@ -420,6 +450,9 @@ func PreviewImport(p Package, target Target) (Preview, error) {
 		pr.Mappings = append(pr.Mappings, IDMapping{"agent", a.ID, id})
 		for _, t := range target.Agents {
 			if strings.EqualFold(a.Name, t.Name) {
+				if len(pr.Conflicts) >= MaxPreviewConflicts {
+					return Preview{}, previewTooLarge()
+				}
 				pr.Conflicts = append(pr.Conflicts, Conflict{"agent", a.ID, t.ID, "NAME_CONFLICT", true})
 			}
 		}
@@ -429,6 +462,9 @@ func PreviewImport(p Package, target Target) (Preview, error) {
 		pr.Mappings = append(pr.Mappings, IDMapping{"session", s.ID, id})
 		for _, t := range target.Sessions {
 			if strings.EqualFold(s.Title, t.Title) {
+				if len(pr.Conflicts) >= MaxPreviewConflicts {
+					return Preview{}, previewTooLarge()
+				}
 				pr.Conflicts = append(pr.Conflicts, Conflict{"session", s.ID, t.ID, "TITLE_CONFLICT", true})
 			}
 		}
@@ -438,6 +474,9 @@ func PreviewImport(p Package, target Target) (Preview, error) {
 		pr.Mappings = append(pr.Mappings, IDMapping{"memory", m.ID, id})
 		for _, t := range target.Memories {
 			if m.NamespaceKind == t.NamespaceKind && m.NamespaceID == t.NamespaceID {
+				if len(pr.Conflicts) >= MaxPreviewConflicts {
+					return Preview{}, previewTooLarge()
+				}
 				pr.Conflicts = append(pr.Conflicts, Conflict{"memory", m.ID, t.ID, "NAMESPACE_CONFLICT", true})
 			}
 		}
@@ -470,9 +509,12 @@ func Import(ctx context.Context, plan ImportPlan, sink Sink) (Receipt, error) {
 		}
 		resolutions[resolution.ID] = action
 	}
+	if err := rejectAmbiguousTargets(plan.Preview, resolutions); err != nil {
+		return Receipt{}, err
+	}
 	conflictTargets := make(map[string]string, len(plan.Preview.Conflicts))
 	for _, conflict := range plan.Preview.Conflicts {
-		if resolutions[conflict.ImportedID] == "replace" {
+		if resolutions[conflict.ImportedID] == "replace" || (conflict.Kind == "agent" && resolutions[conflict.ImportedID] == "skip") {
 			conflictTargets[conflict.ImportedID] = conflict.ExistingID
 		}
 	}
@@ -502,6 +544,13 @@ func Import(ctx context.Context, plan ImportPlan, sink Sink) (Receipt, error) {
 		if resolutions[a.ID] == "skip" {
 			continue
 		}
+		targets := []string{}
+		for _, target := range a.AllowedCollaborationTargets {
+			if mapped := mapID("agent", target); mapped != "" {
+				targets = append(targets, mapped)
+			}
+		}
+		a.AllowedCollaborationTargets = targets
 		a.ID = mapID("agent", a.ID)
 		a.IsDefault = false
 		id, e := tx.PutAgent(ctx, a)
@@ -520,6 +569,7 @@ func Import(ctx context.Context, plan ImportPlan, sink Sink) (Receipt, error) {
 		s.MemberIDs = append([]string(nil), s.MemberIDs...)
 		s.Messages = append([]Message(nil), s.Messages...)
 		s.ID = mapID("session", s.ID)
+		s.WorkspaceID = ""
 		s.CoordinatorID = mapID("agent", s.CoordinatorID)
 		for i := range s.MemberIDs {
 			s.MemberIDs[i] = mapID("agent", s.MemberIDs[i])
@@ -545,6 +595,22 @@ func Import(ctx context.Context, plan ImportPlan, sink Sink) (Receipt, error) {
 		m.ID = mapID("memory", m.ID)
 		if m.NamespaceKind == "agent" {
 			m.NamespaceID = mapID("agent", m.NamespaceID)
+			if m.NamespaceID == "" {
+				return Receipt{}, api.Denied("PORTABLE_AGENT_MAPPING_REQUIRED")
+			}
+		} else if m.NamespaceKind == "global" {
+			m.NamespaceID = plan.Preview.TargetProfile
+		} else {
+			return Receipt{}, api.Denied("PORTABLE_TEMPORARY_MEMORY_UNSUPPORTED")
+		}
+		if m.ScopeKind == "session" {
+			m.ScopeID = mapID("session", m.ScopeID)
+			if m.ScopeID == "" {
+				return Receipt{}, api.Denied("PORTABLE_SESSION_MAPPING_REQUIRED")
+			}
+		}
+		if m.ScopeKind == "work_thread" {
+			return Receipt{}, api.Denied("PORTABLE_TASK_MEMORY_UNSUPPORTED")
 		}
 		id, e := tx.PutMemory(ctx, m)
 		if e != nil {

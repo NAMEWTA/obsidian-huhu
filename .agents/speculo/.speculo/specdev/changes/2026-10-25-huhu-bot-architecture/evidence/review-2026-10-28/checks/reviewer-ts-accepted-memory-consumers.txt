@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 /home/wta/orca/workspaces/obsidian-huhu/bot
+
+·······································
+
+ Test Files  6 passed (6)
+      Tests  39 passed (39)
+   Start at  18:39:22
+   Duration  4.69s (tests 44%, transform 21%, import 14%, setup 10%, environment 10%, worker 1%)
+
+    Isolate  6 workers spawned · ~152ms startup each (spawn + environment, per file)
+             at least ~762ms faster with isolate: false — reuses workers across files instead of one per file

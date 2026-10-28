@@ -12,7 +12,7 @@ Status: completed
 
 冻结 TASK SHA 为 `b19019746ac99aa1741fb111705fffc420cdb5c497749558399bf0f298309385`，Map27/Goal26；复用既有 current 工作区、`NAMEWTA/bot` 分支和 HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`。沿已读 SpecDev I/dev/testing 和未变 workspace/catalog 执行，无 UI、依赖或许可规则变化，无委派、提交、推送、发布、归档或用户数据操作。
 
-只写原 owner 的以下四个业务文件；before 原字节在 `logs/before/`，完整差异见 [04-owned-change.patch](logs/04-owned-change.patch)，产品与保护输入摘要见 [final-inputs.json](final-inputs.json)，本任务工件清单见 [artifact-manifest.json](artifact-manifest.json)。
+只写原 owner 的以下四个业务文件；before 原字节在 `logs/before/`，完整差异见 04-owned-change.patch（历史日志已清理：`logs/04-owned-change.patch`），产品与保护输入摘要见 [final-inputs.json](final-inputs.json)，本任务工件清单见 [artifact-manifest.json](artifact-manifest.json)。
 
 | 文件 | before SHA-256 | after SHA-256 |
 |---|---|---|

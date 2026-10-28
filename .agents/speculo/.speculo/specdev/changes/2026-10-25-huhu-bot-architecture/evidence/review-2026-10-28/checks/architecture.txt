@@ -1,0 +1,2 @@
+$ node scripts/verify-architecture.mjs
+Architecture: 1263 modules; no zone, host-package, desktop-only, barrel or cycle violations.

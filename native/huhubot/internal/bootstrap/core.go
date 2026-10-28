@@ -14,6 +14,7 @@ import (
 	readbridge "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/hostbridge/read"
 	writebridge "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/hostbridge/write"
 	portablefile "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/portable"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/profilecleanup"
 	assistantstore "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/assistant"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/base"
 	collabstore "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/collaboration"
@@ -37,8 +38,10 @@ import (
 	messagesapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/collaboration/messages"
 	directapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/conversation/direct"
 	groupapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/conversation/group"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/guard"
 	portableapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
 	purgeapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/purge"
+	sessionsdata "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/sessions"
 	eventsapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/events"
 	executorapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/executor"
 	recoveryapp "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/recovery"
@@ -102,6 +105,7 @@ type Core struct {
 }
 
 type Options struct {
+	Artifacts        portableapp.ArtifactStore
 	ExecutionLimits  api.ExecutionLimits
 	Budget           api.BudgetPolicy
 	Usage            api.AgentUsagePort
@@ -333,9 +337,25 @@ func OpenWithOptions(ctx context.Context, root, locator string, options Options)
 	effects.SetCancelCallback(executor.CancelRun)
 	eventsStore := eventsstore.New(store, accessStore)
 	eventsStore.SetGlobalProposalReader(globalMemoryStore)
-	purgeAPI := purgeapp.NewAPI(purgeapp.New(purgestore.New(store)))
-	portableAPI := portableapp.NewService(store, portablefile.NewArtifactStore(h.Directory), portablesql.New(store))
-	core := &Core{stopAdmission: func() { collaborations.StopAdmission(); recovery.StopAdmission() }, memory: memory, models: models, assistants: assistants, executions: executions, effects: effects, closed: make(chan struct{}), recovery: recovery, policy: policy, Portable: portableAPI, API: &api.Facade{Memory: memories, GlobalMemory: globalMemory, Recovery: recoveryapp.New(recovery, executor.Wake), Groups: groups, Effects: reconcileapp.New(effects, host, store), Collaboration: delegates, Messages: messages, Service: service, Host: host, Assistant: assistants, Grants: grants, Context: accessContext, Conversation: conversation, Events: eventsapp.New(eventsStore), Approvals: approvalsapp.New(effects, time.Now, executor.Wake, executor.CancelRun), Profile: purgeAPI}, store: store, profile: h, provider: provider, Credentials: credentials.NewRegistration(provider, catalog), executor: executor, tooling: tooling}
+	purgeStore := purgestore.New(store)
+	cleaner := profilecleanup.New(h.Directory, provider)
+	cleaner.SetCollector(func(ctx context.Context) error { _, err := tooling.Collect(ctx); return err })
+	dataGate := guard.New()
+	purgeService := purgeapp.New(purgeStore, dataGate)
+	purgeService.SetCleaner(cleaner)
+	sessionData := sessionsdata.New(purgestore.NewSessions(purgeStore), cleaner, dataGate)
+	// Committed deletions are retried before model admission; failures retain the durable restricted state.
+	_ = sessionData.Recover(ctx)
+	purgeAPI := purgeapp.NewAPI(purgeService)
+	portableStore := portablesql.New(store)
+	portableStore.SetReaders(memories, conversation)
+	artifactStore := options.Artifacts
+	if artifactStore == nil {
+		artifactStore = portablefile.NewArtifactStore(h.Directory)
+	}
+	portableAPI := portableapp.NewService(store, artifactStore, portableStore, dataGate)
+	cleaner.SetDiscard(portableAPI.DiscardEphemeral)
+	core := &Core{stopAdmission: func() { collaborations.StopAdmission(); recovery.StopAdmission() }, memory: memory, models: models, assistants: assistants, executions: executions, effects: effects, closed: make(chan struct{}), recovery: recovery, policy: policy, Portable: portableAPI, API: &api.Facade{Memory: memories, GlobalMemory: globalMemory, Recovery: recoveryapp.New(recovery, executor.Wake), Groups: groups, Effects: reconcileapp.New(effects, host, store), Collaboration: delegates, Messages: messages, Service: service, Host: host, Assistant: assistants, Grants: grants, Context: accessContext, Conversation: conversation, Events: eventsapp.New(eventsStore), Approvals: approvalsapp.New(effects, time.Now, executor.Wake, executor.CancelRun), Profile: purgeAPI, Data: sessionData}, store: store, profile: h, provider: provider, Credentials: credentials.NewRegistration(provider, catalog), executor: executor, tooling: tooling}
 	purgeAPI.SetAfterDelete(func() { _ = core.RequestStop() })
 	service.SetShutdownHook(core.RequestStop)
 	if !options.ExecutorPaused {

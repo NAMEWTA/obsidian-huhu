@@ -10,7 +10,7 @@ Status: completed
 
 只改3个自有生产文件、1个既有测试并新增2个测试。101原owner只维护两个内部Inspection.Intent、SQLite原同Tx受理Intent与Broker透传，本作者没有写其文件。没有改092或098旧报告/日志、正式Map/Goal/Evidence、go.mod/sum或其它生产；没有再次委派、提交、推送、发布或归档。
 
-已按 AGENTS workspace/catalog 发现、SpecDev I 权威入口及已读实施/预检/风险/失败与可靠测试规则执行，实际调用 dev 的原生Go/恢复/生命周期对应验证。重新读取 dev/SKILL、testing参考与本次TASK/正式窗口/098完整报告、两探针源码和真实原始log；[00输入与规则摘要](logs/00-input-and-preflight.json)保留HEAD、实际来源SHA及17个原自有文件字节副本。HEAD仍 `33c21e098ef3188cbab5a09f3e0a01fadb787715`；共享工作区既有dirty状态不清理或接管。
+已按 AGENTS workspace/catalog 发现、SpecDev I 权威入口及已读实施/预检/风险/失败与可靠测试规则执行，实际调用 dev 的原生Go/恢复/生命周期对应验证。重新读取 dev/SKILL、testing参考与本次TASK/正式窗口/098完整报告、两探针源码和真实原始log；00输入与规则摘要（历史日志已清理：`logs/00-input-and-preflight.json`）保留HEAD、实际来源SHA及17个原自有文件字节副本。HEAD仍 `33c21e098ef3188cbab5a09f3e0a01fadb787715`；共享工作区既有dirty状态不清理或接管。
 
 F-098-01：`readState` 与 `validateTranscript` 从外部获得可信accepted Intent，纯Inspector消费101的 `q.Intent`，Resume消费原 `resume.Input.Intent`。同一校验严格比较 `Messages[Initial-1].Content == intent`，在 applyDecision、Resolve、后续工具/HTTP前拒绝替换。不是在CP自己复制hash，未新增正文事实源。最后初始user角色、Persona、原调用与结果顺序等原检查保留；不把当前刷新后的完整History机械替代/比较旧CP，也不承诺没有独立基线的任意历史真实性。
 
@@ -20,15 +20,15 @@ F-098-02：解压后的response仍经原observedBody，但原始字节先用有�
 
 ## 产物与验证
 
-[01稳定候选](logs/01-candidate-source.json)在101三个生产接口逐SHA匹配后冻结，自有候选SHA `93560d76c69dc04c3042e8cffc777597db70595b0afde7511dabe254d6016274`。Root细化唯一Go窗口允许101仅并行编辑不进入Chat编译的独立foundation测试；本次实际输入固定 production Go/SQL、cmd、锁及全部Chat测试，显式排除其它不编译测试/报告。两命令共同输入 `e7a1a41e8780004d114707be5538ef91c5c472fc704420f3cf31c17ed7b387a8`，sourceDrift均[]；没有将非依赖的101新test写入误报产品漂移。
+01稳定候选（历史日志已清理：`logs/01-candidate-source.json`）在101三个生产接口逐SHA匹配后冻结，自有候选SHA `93560d76c69dc04c3042e8cffc777597db70595b0afde7511dabe254d6016274`。Root细化唯一Go窗口允许101仅并行编辑不进入Chat编译的独立foundation测试；本次实际输入固定 production Go/SQL、cmd、锁及全部Chat测试，显式排除其它不编译测试/报告。两命令共同输入 `e7a1a41e8780004d114707be5538ef91c5c472fc704420f3cf31c17ed7b387a8`，sourceDrift均[]；没有将非依赖的101新test写入误报产品漂移。
 
 固定环境：`GOTOOLCHAIN=go1.26.10 GOFLAGS=-mod=readonly GOWORK=off GOEXPERIMENT=`；normal明确CGO0，race明确CGO1。没有使用local/go1.27.1，没有锁操作/下载，没有全模块或旧重型大队列重跑。Root授予窗口后才执行Go，类型稳定前只读/编辑/gofmt。
 
 | 检查 | 实际结果与证据 |
 | --- | --- |
 | 原098产品红复用 | [098原报告](../098-chat-review/REPORT.md)、01 CP探针actual1/2.240s/Wait、02 raw wire探针actual1/0.929s/Wait已完整回读，SHA收录00。原正常控制通过；Intent替换实际第二HTTP/Resolve、原始0xff实际effect/approval1，均为真实SDK/Application/Broker/SQLite反例。未重跑不变原红，未把正常历史前缀变动扩大成第三finding。 |
-| [02定向normal](logs/02-target-normal.json) / [完整log](logs/02-target-normal.log) | actual0/4.485s/Wait，包1.906s，8顶层。新Intent六控制、raw UTF8七控制，加原完整CP语义、审批两调用、真实重开、SDK held body.Close、HTTP错误/redirect及decoded limits/20轮。全通过，sourceDrift=[]。 |
-| [03受影响race](logs/03-target-race.json) / [完整log](logs/03-target-race.log) | actual0/21.891s/Wait，包14.900s，3顶层：新Intent、rawUTF8与真实SDK body.Close末端ACK。无race诊断，sourceDrift=[]，没有扩大旧全队列。 |
+| 02定向normal（历史日志已清理：`logs/02-target-normal.json`） / [完整log](logs/02-target-normal.log) | actual0/4.485s/Wait，包1.906s，8顶层。新Intent六控制、raw UTF8七控制，加原完整CP语义、审批两调用、真实重开、SDK held body.Close、HTTP错误/redirect及decoded limits/20轮。全通过，sourceDrift=[]。 |
+| 03受影响race（历史日志已清理：`logs/03-target-race.json`） / [完整log](logs/03-target-race.log) | actual0/21.891s/Wait，包14.900s，3顶层：新Intent、rawUTF8与真实SDK body.Close末端ACK。无race诊断，sourceDrift=[]，没有扩大旧全队列。 |
 
 02的完整命令为 `go test ./tests/contract/engine/chat -run '^(TestCheckpointIntentUsesAcceptedRunBeforeResumeIO|TestRawWireUTF8BeforeSDKAndEntireToolBatch|TestCheckpointInspectionRejectsCompleteSemanticDamageWithoutIO|TestSuspendedBatchKeepsOriginalCallsAndDoesNotRepeatEffects|TestChatCheckpointSurvivesRestartAndOriginalDecision|TestFinalSDKProducerAckWaitsForBodyCloseAndSettlement|TestHTTPFailuresAndRedirectsNeverRetryOrLeak|TestDecodedStreamAndToolBoundsFailWithoutEffects)$' -count=1 -timeout=90s -v`。03同包仅保留新Intent/rawUTF8/SDK body.Close三个名字并加 `-race`；精确argv/env/stdout/stderr/时间/输入SHA/Wait均在JSON，日志原样保留。
 
@@ -42,7 +42,7 @@ raw wire永久消费者的default_*变体使用默认bootstrap/私有合成凭�
 
 所有Core.Close/Done、显式Engine.Stop/Done、HTTP Server/Transport cleanup与Go子进程均已实际完成；没有悬挂producer/settlement worker或Go产品检查。两次输出Wait已原生通知Root，唯一Go窗口交回101。101自身的可信同Tx→Broker透传测试及Root新构建E2E/复审另由原owner提供，不冒认为本作者运行。
 
-精确[自有diff](logs/04-own-final.patch) SHA `e5c46d1ec2cb62ad06da6913ebb621b48c94cd5594fdb481694cb599dd87254f`；[最终六文件与接缝摘要](logs/05-own-final.json) SHA `3485cc5561178af3848d3c32472b1ee07b8d6132dc6d94f8e256840997beaacb`，own tree `926199cdc6d4934be20de7b97e59d2f22edb462e97933fb492bc03da7acfc023`。00内未涉及的原自有源码逐SHA无漂移。
+精确自有diff（历史日志已清理：`logs/04-own-final.patch`） SHA `e5c46d1ec2cb62ad06da6913ebb621b48c94cd5594fdb481694cb599dd87254f`；最终六文件与接缝摘要（历史日志已清理：`logs/05-own-final.json`） SHA `3485cc5561178af3848d3c32472b1ee07b8d6132dc6d94f8e256840997beaacb`，own tree `926199cdc6d4934be20de7b97e59d2f22edb462e97933fb492bc03da7acfc023`。00内未涉及的原自有源码逐SHA无漂移。
 
 | 自有路径（仓库根相对） | SHA256 |
 | --- | --- |

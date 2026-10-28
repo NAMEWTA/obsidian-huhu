@@ -1,3 +1,4 @@
+import { isHostLeaseRenewal } from '../../core/protocol/host-lease';
 import type { BotMethodMap, HostCheckWriteRequest, HostInvoke, HostLease, HostPrepareWriteRequest, HostReceiptQuery } from '../../api';
 import { BotRpcError, type ProtocolTimers } from '../../core/protocol/connection';
 import { methodValidation } from '../../core/protocol/method-validation';
@@ -30,6 +31,10 @@ export class HostWriteService {
 	private readonly operations = new Map<AbortController, Promise<unknown>>();
 	constructor(private readonly effects: NoteEffects, private readonly timers: ProtocolTimers, quotaOwner: object = effects) { this.quota = sharedQuota(quotaOwner); }
 	readonly setLease = (lease: HostLease | undefined): void => {
+		if (isHostLeaseRenewal(this.lease, lease)) {
+			this.effects.setLease(lease);
+			this.lease!.expiresAt = lease!.expiresAt; return;
+		}
 		for (const controller of this.operations.keys()) controller.abort();
 		this.lease = undefined;
 		if (this.disposed && lease) throw noteFault('HOST_OFFLINE', 'HOST_UNAVAILABLE');

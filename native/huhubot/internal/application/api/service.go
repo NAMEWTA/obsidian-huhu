@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -37,7 +38,16 @@ func (s *Service) Status(ctx context.Context, i RequestIdentity) (ServiceStatus,
 	if err != nil {
 		return ServiceStatus{}, err
 	}
-	return ServiceStatus{State: "ready", Profile: p, HostAttached: s.host.Attached()}, nil
+	out := ServiceStatus{State: "ready", Profile: p, HostAttached: s.host.Attached()}
+	if reader, ok := s.profiles.(interface {
+		ReadCleanup(context.Context, RequestIdentity) (*CleanupStatus, error)
+	}); ok {
+		out.Cleanup, err = reader.ReadCleanup(ctx, i)
+		if err != nil {
+			return ServiceStatus{}, err
+		}
+	}
+	return out, nil
 }
 func (s *Service) Diagnostics(ctx context.Context, i RequestIdentity) (Diagnostics, error) {
 	if err := s.Health(ctx, i); err != nil {
@@ -88,6 +98,14 @@ func (h *HostService) Attach(_ context.Context, i RequestIdentity, c HostAttachC
 	}
 	h.mu.Lock()
 	defer h.mu.Unlock()
+	if c.RenewLeaseID != "" {
+		if h.remote == nil || h.owner != i.ConnectionID() || h.lease.LeaseID != c.RenewLeaseID ||
+			h.lease.WorkspaceID != c.WorkspaceID || !slices.Equal(h.lease.Capabilities, c.Capabilities) || !h.now().Before(parseTime(h.lease.ExpiresAt)) {
+			return HostLease{}, Denied("HOST_LEASE_CHANGED")
+		}
+		h.lease.ExpiresAt = h.now().UTC().Add(5 * time.Minute).Format(time.RFC3339Nano)
+		return cloneLease(h.lease), nil
+	}
 	if h.remote != nil && h.owner != i.ConnectionID() && h.now().Before(parseTime(h.lease.ExpiresAt)) {
 		return HostLease{}, &Fault{Kind: "CONFLICT", Reason: "HOST_ALREADY_ATTACHED"}
 	}

@@ -116,7 +116,7 @@ func TestHelloGateNotificationsSchemaAndOwner(t *testing.T) {
 	if e = receive(t, c)[0]; e.Error == nil || e.Error.Data.Kind != "INVALID_ARGUMENT" {
 		t.Fatal("accepted payload identity")
 	}
-	send(t, c, request("c:unavailable", "sessions.deletePreview", map[string]any{"profileId": "profile:x", "id": "session:missing"}))
+	send(t, c, request("c:unavailable", "future.unimplemented", map[string]any{"profileId": "profile:x", "id": "session:missing"}))
 	if e = receive(t, c)[0]; e.Error == nil || e.Error.Data.Reason != "METHOD_NOT_AVAILABLE" {
 		t.Fatal("unimplemented method faked success")
 	}

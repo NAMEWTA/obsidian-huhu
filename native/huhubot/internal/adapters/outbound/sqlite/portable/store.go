@@ -9,6 +9,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	conv "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/conversation"
+	"reflect"
 	"strings"
 	"time"
 
@@ -17,9 +19,18 @@ import (
 	contract "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
 )
 
-type Store struct{ base *base.Store }
+type Store struct {
+	base         *base.Store
+	memory       appapi.MemoryAPI
+	conversation appapi.ConversationAPI
+}
 
 func New(b *base.Store) *Store { return &Store{base: b} }
+
+// SetReaders binds the same authorization-aware readers used by the UI.
+func (s *Store) SetReaders(memory appapi.MemoryAPI, conversation appapi.ConversationAPI) {
+	s.memory, s.conversation = memory, conversation
+}
 
 var _ contract.Repository = (*Store)(nil)
 var _ contract.PrincipalSink = (*Store)(nil)
@@ -55,7 +66,7 @@ func (s *Store) Snapshot(ctx context.Context, identity appapi.RequestIdentity, p
 		return out, err
 	}
 	for _, id := range sessionIDs {
-		v, e := s.session(ctx, profileID, identity.PrincipalID(), id)
+		v, e := s.session(ctx, identity, profileID, id)
 		if e != nil {
 			return out, e
 		}
@@ -66,7 +77,7 @@ func (s *Store) Snapshot(ctx context.Context, identity appapi.RequestIdentity, p
 		return out, err
 	}
 	for _, id := range memoryIDs {
-		v, e := s.memory(ctx, profileID, identity.PrincipalID(), id)
+		v, e := s.exportMemory(ctx, identity, profileID, id)
 		if e != nil {
 			return out, e
 		}
@@ -83,12 +94,17 @@ func (s *Store) TargetForPrincipal(ctx context.Context, profileID, principal str
 	return s.target(ctx, profileID, principal)
 }
 
-func (s *Store) target(ctx context.Context, profileID, principal string) (contract.Target, error) {
-	if _, err := s.metadata(ctx, profileID); err != nil {
+func (s *Store) target(ctx context.Context, profileID, principal string) (out contract.Target, err error) {
+	err = s.base.WithinTx(ctx, func(tx *sql.Tx) error { var e error; out, e = targetInTx(ctx, tx, profileID, principal); return e })
+	return out, err
+}
+func targetInTx(ctx context.Context, tx *sql.Tx, profileID, principal string) (contract.Target, error) {
+	p, err := conv.Metadata(ctx, tx, profileID)
+	if err != nil {
 		return contract.Target{}, err
 	}
-	out := contract.Target{ProfileID: profileID}
-	rows, err := s.base.Database().QueryContext(ctx, "SELECT agent_id,CAST(revision AS TEXT),p.body FROM agents a JOIN persona_revisions p ON p.agent_id=a.agent_id AND p.revision=a.persona_revision ORDER BY agent_id")
+	out := contract.Target{ProfileID: profileID, CommandEpoch: p.CommandEpoch, Revision: p.Revision}
+	rows, err := tx.QueryContext(ctx, "SELECT a.agent_id,CAST(a.revision AS TEXT),p.body FROM agents a JOIN persona_revisions p ON p.agent_id=a.agent_id AND p.revision=a.persona_revision ORDER BY a.agent_id")
 	if err != nil {
 		return out, err
 	}
@@ -110,13 +126,13 @@ func (s *Store) target(ctx context.Context, profileID, principal string) (contra
 		return out, err
 	}
 	rows.Close()
-	query := "SELECT session_id,title,CAST(revision AS TEXT) FROM conversation_sessions WHERE profile_id=? ORDER BY session_id"
+	query := "SELECT session_id,title,CAST(revision AS TEXT) FROM conversation_sessions WHERE body_deleted=0 AND profile_id=? ORDER BY session_id"
 	args := []any{profileID}
 	if principal != "" {
-		query = "SELECT session_id,title,CAST(revision AS TEXT) FROM conversation_sessions WHERE profile_id=? AND principal_id=? ORDER BY session_id"
+		query = "SELECT session_id,title,CAST(revision AS TEXT) FROM conversation_sessions WHERE body_deleted=0 AND profile_id=? AND principal_id=? ORDER BY session_id"
 		args = append(args, principal)
 	}
-	rows, err = s.base.Database().QueryContext(ctx, query, args...)
+	rows, err = tx.QueryContext(ctx, query, args...)
 	if err != nil {
 		return out, err
 	}
@@ -139,7 +155,7 @@ func (s *Store) target(ctx context.Context, profileID, principal string) (contra
 		query = "SELECT i.item_id,n.kind,n.subject_id,CAST(i.revision AS TEXT) FROM memory_items i JOIN memory_namespaces n ON n.namespace_id=i.namespace_id WHERE n.profile_id=? AND (n.principal_id=? OR n.kind='global') ORDER BY i.item_id"
 		args = append(args, principal)
 	}
-	rows, err = s.base.Database().QueryContext(ctx, query, args...)
+	rows, err = tx.QueryContext(ctx, query, args...)
 	if err != nil {
 		return out, err
 	}
@@ -185,7 +201,7 @@ func (s *Store) sessionIDs(ctx context.Context, profile, principal string, ids [
 	if len(ids) != 0 {
 		return append([]string(nil), ids...), nil
 	}
-	return queryStrings(ctx, s.base.Database(), "SELECT session_id FROM conversation_sessions WHERE profile_id=? AND principal_id=? ORDER BY session_id", profile, principal)
+	return queryStrings(ctx, s.base.Database(), "SELECT session_id FROM conversation_sessions WHERE body_deleted=0 AND profile_id=? AND principal_id=? ORDER BY session_id", profile, principal)
 }
 
 func (s *Store) memoryIDs(ctx context.Context, profile, principal string, ids []string) ([]string, error) {
@@ -247,70 +263,57 @@ func (s *Store) agent(ctx context.Context, id string) (contract.Agent, error) {
 	return out, nil
 }
 
-func (s *Store) session(ctx context.Context, profile, principal, id string) (contract.Session, error) {
-	var out contract.Session
-	var archived bool
-	if err := s.base.Database().QueryRowContext(ctx, "SELECT session_id,kind,title,workspace_id,archived,coordinator_id FROM conversation_sessions WHERE profile_id=? AND principal_id=? AND session_id=?", profile, principal, id).Scan(&out.ID, &out.Kind, &out.Title, &out.WorkspaceID, &archived, &out.CoordinatorID); errors.Is(err, sql.ErrNoRows) {
-		return out, fault("NOT_FOUND", "SESSION_NOT_FOUND")
-	} else if err != nil {
-		return out, err
+func (s *Store) session(ctx context.Context, identity appapi.RequestIdentity, profile, id string) (contract.Session, error) {
+	if s.conversation == nil {
+		return contract.Session{}, appapi.Denied("ACCESS_NOT_ASSEMBLED")
 	}
-	out.Archived = archived
-	rows, err := s.base.Database().QueryContext(ctx, "SELECT agent_id FROM conversation_members WHERE session_id=? AND active=1 ORDER BY agent_id", id)
+	current, err := s.conversation.GetSession(ctx, identity, appapi.IDQuery{ProfileID: profile, ID: id})
 	if err != nil {
-		return out, err
+		return contract.Session{}, err
 	}
-	for rows.Next() {
-		var agent string
-		if err := rows.Scan(&agent); err != nil {
-			rows.Close()
-			return out, err
+	out := contract.Session{ID: current.ID, Kind: current.Kind, Title: current.Title, WorkspaceID: current.WorkspaceID, Archived: current.Archived, CoordinatorID: current.CoordinatorID, MemberIDs: append([]string{}, current.MemberIDs...)}
+	cursor := ""
+	for {
+		page, e := s.conversation.History(ctx, identity, appapi.HistoryQuery{PageQuery: appapi.PageQuery{ProfileID: profile, Limit: 100, Cursor: cursor}, SessionID: id})
+		if e != nil {
+			return out, e
 		}
-		out.MemberIDs = append(out.MemberIDs, agent)
-	}
-	if err := rows.Err(); err != nil {
-		rows.Close()
-		return out, err
-	}
-	rows.Close()
-	rows, err = s.base.Database().QueryContext(ctx, "SELECT message_id,role,text,created_at,agent_id FROM conversation_messages WHERE session_id=? ORDER BY seq", id)
-	if err != nil {
-		return out, err
-	}
-	for rows.Next() {
-		var m contract.Message
-		if err := rows.Scan(&m.ID, &m.Role, &m.Text, &m.CreatedAt, &m.AgentID); err != nil {
-			rows.Close()
-			return out, err
+		for _, m := range page.Items {
+			out.Messages = append(out.Messages, contract.Message{ID: m.ID, Role: m.Role, Text: m.Text, CreatedAt: m.CreatedAt, AgentID: m.AgentID})
 		}
-		out.Messages = append(out.Messages, m)
+		if page.NextCursor == "" {
+			break
+		}
+		if page.NextCursor == cursor {
+			return out, fault("CONFLICT", "HISTORY_CURSOR_STALLED")
+		}
+		cursor = page.NextCursor
 	}
-	if err := rows.Err(); err != nil {
-		rows.Close()
-		return out, err
-	}
-	rows.Close()
 	return out, nil
 }
 
-func (s *Store) memory(ctx context.Context, profile, principal, id string) (contract.Memory, error) {
-	var out contract.Memory
-	var revisionID, body, sourceJSON string
-	var pinned bool
-	if err := s.base.Database().QueryRowContext(ctx, "SELECT i.item_id,n.kind,n.subject_id,i.scope_kind,i.scope_id,i.state,i.pinned,i.head_revision_id,b.text,r.provenance,r.source_json FROM memory_items i JOIN memory_namespaces n ON n.namespace_id=i.namespace_id JOIN memory_revisions r ON r.revision_id=i.head_revision_id JOIN memory_revision_bodies b ON b.revision_id=r.revision_id WHERE i.item_id=? AND n.profile_id=? AND (n.principal_id=? OR n.kind='global')", id, profile, principal).Scan(&out.ID, &out.NamespaceKind, &out.NamespaceID, &out.ScopeKind, &out.ScopeID, &out.State, &pinned, &revisionID, &body, &out.Provenance, &sourceJSON); errors.Is(err, sql.ErrNoRows) {
-		return out, fault("NOT_FOUND", "MEMORY_NOT_FOUND")
-	} else if err != nil {
-		return out, err
+func (s *Store) exportMemory(ctx context.Context, identity appapi.RequestIdentity, profile, id string) (contract.Memory, error) {
+	if s.memory == nil {
+		return contract.Memory{}, appapi.Denied("ACCESS_NOT_ASSEMBLED")
 	}
-	out.Pinned = pinned
-	var sources []appapi.SourceSnapshot
-	if err := json.Unmarshal([]byte(sourceJSON), &sources); err != nil {
-		return out, fault("CONFLICT", "MEMORY_SOURCE_STATE_INVALID")
+	var kind, subject string
+	if err := s.base.Database().QueryRowContext(ctx, "SELECT n.kind,n.subject_id FROM memory_items i JOIN memory_namespaces n ON n.namespace_id=i.namespace_id WHERE i.item_id=? AND n.profile_id=? AND (n.principal_id=? OR n.kind='global')", id, profile, identity.PrincipalID()).Scan(&kind, &subject); err != nil {
+		return contract.Memory{}, err
 	}
-	// The portable contract carries source identity only as references. The
-	// adapter intentionally drops host lease fields and never exports grants.
-	for _, source := range sources {
+	object, err := s.memory.Get(ctx, identity, appapi.MemoryGet{ProfileID: profile, Namespace: appapi.MemoryNamespace{Kind: kind, ID: subject}, Kind: "item", ID: id})
+	if err != nil {
+		return contract.Memory{}, err
+	}
+	if object.Item == nil || object.Item.Body == nil {
+		return contract.Memory{}, appapi.Denied("MEMORY_FORGOTTEN")
+	}
+	i, b := object.Item, object.Item.Body
+	out := contract.Memory{ID: i.ID, NamespaceKind: i.Namespace.Kind, NamespaceID: i.Namespace.ID, ScopeKind: i.Scope.Kind, ScopeID: i.Scope.ID, State: i.State, Pinned: i.Pinned, Text: b.Text, Provenance: b.Provenance}
+	for _, source := range b.SourceRefs {
 		out.SourceRefs = append(out.SourceRefs, contract.Source{Kind: source.Kind, ID: source.ResourceID, Revision: source.Revision, Hash: source.Hash})
+	}
+	for _, derived := range b.Derived {
+		out.SourceRefs = append(out.SourceRefs, contract.Source{Kind: derived.Kind, ID: derived.ID, Revision: derived.Revision, Hash: derived.Hash})
 	}
 	return out, nil
 }
@@ -320,6 +323,8 @@ type transaction struct {
 	profile   string
 	principal string
 	closed    bool
+	identity  appapi.RequestIdentity
+	request   *contract.ImportRequest
 }
 
 func (s *Store) Begin(ctx context.Context, profile string) (contract.Transaction, error) {
@@ -330,17 +335,13 @@ func (s *Store) BeginForPrincipal(ctx context.Context, profile, principal string
 	if profile == "" || principal == "" {
 		return nil, appapi.Invalid("PROFILE_REQUIRED")
 	}
-	p, err := s.metadata(ctx, profile)
-	if err != nil {
-		return nil, err
-	}
 	tx, err := s.base.Database().BeginTx(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	if p.ProfileID != profile {
+	if _, err = conv.Metadata(ctx, tx, profile); err != nil {
 		_ = tx.Rollback()
-		return nil, appapi.Denied("PROFILE_MISMATCH")
+		return nil, err
 	}
 	return &transaction{tx: tx, profile: profile, principal: principal}, nil
 }
@@ -407,9 +408,24 @@ func (t *transaction) PutSession(ctx context.Context, s contract.Session) (strin
 	if s.Kind != "direct" && s.Kind != "group" {
 		return "", appapi.Invalid("INVALID_SESSION_KIND")
 	}
-	if len(s.MemberIDs) == 0 {
+	if len(s.MemberIDs) == 0 || s.Kind == "direct" && len(s.MemberIDs) != 1 {
 		return "", fault("CONFLICT", "SESSION_MEMBER_REQUIRED")
 	}
+	seen := map[string]bool{}
+	coordinator := s.Kind == "direct" && s.CoordinatorID == ""
+	for _, member := range s.MemberIDs {
+		if member == "" || seen[member] {
+			return "", appapi.Invalid("INVALID_SESSION_MEMBERS")
+		}
+		seen[member] = true
+		if member == s.CoordinatorID {
+			coordinator = true
+		}
+	}
+	if !coordinator {
+		return "", appapi.Invalid("INVALID_GROUP_COORDINATOR")
+	}
+	var joinSeq int64 = 1
 	var existing string
 	lookupErr := t.tx.QueryRowContext(ctx, "SELECT session_id FROM conversation_sessions WHERE session_id=? AND profile_id=? AND principal_id=?", s.ID, t.profile, t.principal).Scan(&existing)
 	if errors.Is(lookupErr, sql.ErrNoRows) {
@@ -418,14 +434,29 @@ func (t *transaction) PutSession(ctx context.Context, s contract.Session) (strin
 		}
 	} else if lookupErr != nil {
 		return "", lookupErr
-	} else if _, err := t.tx.ExecContext(ctx, "UPDATE conversation_sessions SET title=?,workspace_id=?,archived=?,coordinator_id=?,revision=revision+1 WHERE session_id=?", s.Title, s.WorkspaceID, s.Archived, s.CoordinatorID, s.ID); err != nil {
-		return "", err
+	} else {
+		var blocked int
+		if err := t.tx.QueryRowContext(ctx, "SELECT (SELECT count(*) FROM execution_runs WHERE session_id=? AND (status NOT IN('succeeded','failed','canceled') OR effects_unresolved=1))+(SELECT count(*) FROM model_attempts a JOIN execution_runs r ON r.run_id=a.run_id WHERE r.session_id=? AND a.producer_ended=0)+(SELECT count(*) FROM execution_effects e JOIN execution_runs r ON r.run_id=e.run_id WHERE r.session_id=? AND e.state IN('dispatching','unknown_outcome'))", s.ID, s.ID, s.ID).Scan(&blocked); err != nil {
+			return "", err
+		}
+		if blocked != 0 {
+			return "", fault("CONFLICT", "SESSION_HAS_ACTIVE_RUNS")
+		}
+		if err := t.tx.QueryRowContext(ctx, "SELECT message_seq+1 FROM conversation_sessions WHERE session_id=?", s.ID).Scan(&joinSeq); err != nil {
+			return "", err
+		}
+		if _, err := t.tx.ExecContext(ctx, "UPDATE conversation_sessions SET kind=?,title=?,workspace_id=?,archived=?,coordinator_id=?,revision=revision+1 WHERE session_id=? AND body_deleted=0", s.Kind, s.Title, s.WorkspaceID, s.Archived, s.CoordinatorID, s.ID); err != nil {
+			return "", err
+		}
+		if _, err := t.tx.ExecContext(ctx, "UPDATE conversation_members SET active=0,incarnation=CAST(incarnation AS INTEGER)+1,history_revision=history_revision+1,history_json='{\"kind\":\"none\"}',join_seq=? WHERE session_id=?", joinSeq, s.ID); err != nil {
+			return "", err
+		}
 	}
 	for _, agent := range s.MemberIDs {
 		if agent == "" {
 			return "", fault("CONFLICT", "SESSION_AGENT_MAPPING_MISSING")
 		}
-		if _, err := t.tx.ExecContext(ctx, "INSERT INTO conversation_members(session_id,agent_id,active,incarnation,history_revision,history_json,join_seq) VALUES(?,?,1,'1',1,'{\"kind\":\"none\"}',1) ON CONFLICT(session_id,agent_id) DO UPDATE SET active=1", s.ID, agent); err != nil {
+		if _, err := t.tx.ExecContext(ctx, "INSERT INTO conversation_members(session_id,agent_id,active,incarnation,history_revision,history_json,join_seq) VALUES(?,?,1,'1',1,'{\"kind\":\"none\"}',?) ON CONFLICT(session_id,agent_id) DO UPDATE SET active=1,join_seq=excluded.join_seq", s.ID, agent, joinSeq); err != nil {
 			return "", err
 		}
 	}
@@ -547,12 +578,23 @@ func (t *transaction) Commit(ctx context.Context) (string, error) {
 		t.closed = true
 		return "", err
 	}
+	receiptID := appapi.NewID("portable-receipt:")
+	if t.request != nil {
+		var revision string
+		if err := t.tx.QueryRowContext(ctx, "SELECT CAST(revision AS TEXT) FROM profile_metadata WHERE singleton=1").Scan(&revision); err != nil {
+			return "", err
+		}
+		result := contract.ImportResult{CommandID: t.request.CommandID, ReceiptID: receiptID, Revision: revision}
+		if err := conv.SaveReceipt(ctx, t.tx, t.identity, importMeta(*t.request), "portable.import", ImportHash(*t.request), "", result); err != nil {
+			return "", err
+		}
+	}
 	if err := t.tx.Commit(); err != nil {
 		t.closed = true
 		return "", err
 	}
 	t.closed = true
-	return appapi.NewID("portable-receipt:"), nil
+	return receiptID, nil
 }
 
 func (t *transaction) Rollback(_ context.Context) error {
@@ -571,4 +613,68 @@ func mapSQLiteConflict(err error, reason string) error {
 		return fault("CONFLICT", reason)
 	}
 	return err
+}
+
+func importMeta(q contract.ImportRequest) appapi.CommandMeta {
+	return appapi.CommandMeta{CommandID: q.CommandID, IdempotencyKey: q.IdempotencyKey, ProfileID: q.ProfileID, CommandEpoch: q.CommandEpoch, ExpectedRevision: q.ExpectedRevision}
+}
+func ImportHash(q contract.ImportRequest) string {
+	q.CommandID = ""
+	b, _ := json.Marshal(q)
+	v := sha256.Sum256(b)
+	return hex.EncodeToString(v[:])
+}
+func (s *Store) FindImport(ctx context.Context, id appapi.RequestIdentity, q contract.ImportRequest) (out contract.ImportResult, found bool, err error) {
+	if !id.Valid() {
+		return out, false, appapi.Denied("IDENTITY_REQUIRED")
+	}
+	err = s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+		if _, e := conv.Epoch(ctx, tx, importMeta(q)); e != nil {
+			return e
+		}
+		var e error
+		found, e = conv.Receipt(ctx, tx, id, importMeta(q), "portable.import", ImportHash(q), &out)
+		return e
+	})
+	return
+}
+func (s *Store) BeginImport(ctx context.Context, id appapi.RequestIdentity, q contract.ImportRequest, target contract.Target) (contract.Transaction, error) {
+	tx, err := s.base.Database().BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	ok := false
+	defer func() {
+		if !ok {
+			_ = tx.Rollback()
+		}
+	}()
+	p, err := conv.Epoch(ctx, tx, importMeta(q))
+	if err != nil {
+		return nil, err
+	}
+	if p.CommandEpoch != target.CommandEpoch || p.Revision != target.Revision || q.ExpectedRevision != "" && q.ExpectedRevision != p.Revision {
+		return nil, fault("CONFLICT", "IMPORT_PREVIEW_STALE")
+	}
+	current, err := targetInTx(ctx, tx, q.ProfileID, id.PrincipalID())
+	if err != nil {
+		return nil, err
+	}
+	if !reflect.DeepEqual(current, target) {
+		return nil, fault("CONFLICT", "IMPORT_PREVIEW_STALE")
+	}
+	ok = true
+	return &transaction{tx: tx, profile: q.ProfileID, principal: id.PrincipalID(), identity: id, request: &q}, nil
+}
+
+func (s *Store) CheckDataAccess(ctx context.Context, id appapi.RequestIdentity, profile string) error {
+	if !id.Valid() {
+		return appapi.Denied("IDENTITY_REQUIRED")
+	}
+	return s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+		if _, err := conv.Metadata(ctx, tx, profile); err != nil {
+			return err
+		}
+		return base.CheckDataAdmission(ctx, tx)
+	})
 }

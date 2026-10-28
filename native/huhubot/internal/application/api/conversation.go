@@ -162,3 +162,16 @@ type Engine interface {
 	Run(context.Context, EngineInput, func(EngineEvent) error) (EngineResult, error)
 	Resume(context.Context, EngineResumeInput, func(EngineEvent) error) (EngineResult, error)
 }
+
+// SessionDataAPI owns destructive previews and body deletion. Unknown effects
+// retain only metadata needed for receipt reconciliation, never executable CPs.
+type SessionDelete struct {
+	CommandMeta
+	ID              string   `json:"id,omitempty"`
+	PreviewToken    string   `json:"previewToken"`
+	RetainMemoryIDs []string `json:"retainMemoryIds,omitempty"`
+}
+type SessionDataAPI interface {
+	DeletePreview(context.Context, RequestIdentity, IDQuery) (DeletionPreview, error)
+	Delete(context.Context, RequestIdentity, SessionDelete) (Receipt, error)
+}

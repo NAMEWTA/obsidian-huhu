@@ -31,6 +31,7 @@ type Provider struct {
 	ctx     context.Context
 	cancel  context.CancelFunc
 	mu      sync.Mutex
+	writeMu sync.RWMutex
 	closed  bool
 	memory  map[string][]byte
 	wg      sync.WaitGroup
@@ -139,6 +140,8 @@ func safeReason(s string) bool {
 }
 
 func (p *Provider) Put(parent context.Context, profile, ref, mode string, secret []byte) (api.CredentialStatus, error) {
+	p.writeMu.RLock()
+	defer p.writeMu.RUnlock()
 	if err := invalidIdentity(profile, ref); err != nil {
 		return failure(mode, faultReason(err)), err
 	}
@@ -231,6 +234,8 @@ func (p *Provider) Delete(parent context.Context, profile, ref string) (api.Cred
 	if !guarded {
 		return NewRegistration(p, p.catalog).Delete(parent, profile, ref)
 	}
+	p.writeMu.RLock()
+	defer p.writeMu.RUnlock()
 	ctx, done, err := p.enter(parent)
 	if err != nil {
 		return failure(mode, faultReason(err)), err
@@ -334,4 +339,42 @@ func (r *registration) Delete(ctx context.Context, profile, ref string) (api.Cre
 		return status(m.Status.Mode, "unknown", "CATALOG_UNAVAILABLE"), api.Denied("CATALOG_UNAVAILABLE")
 	}
 	return s, err
+}
+
+// EraseProfile is composition-only, after the durable Profile cleanup fence.
+// Catalog rows are deliberately retained until all external erasures succeed.
+func (p *Provider) EraseProfile(parent context.Context, profile string, refs []api.CredentialMetadata) error {
+	p.writeMu.Lock()
+	defer p.writeMu.Unlock()
+	for _, m := range refs {
+		if m.ProfileID != profile {
+			return api.Denied("PROFILE_MISMATCH")
+		}
+		if err := invalidIdentity(profile, m.CredentialRef); err != nil {
+			return err
+		}
+		ctx, done, err := p.enter(parent)
+		if err != nil {
+			return err
+		}
+		if m.Status.Mode == "session-memory" {
+			p.mu.Lock()
+			key := identityKey(profile, m.CredentialRef)
+			wipe(p.memory[key])
+			delete(p.memory, key)
+			p.mu.Unlock()
+			done()
+			continue
+		}
+		if m.Status.Mode != "protected" {
+			done()
+			return api.Denied("REGISTRATION_FAILED")
+		}
+		_, reason := p.backend(ctx, 2, profile, m.CredentialRef, nil)
+		done()
+		if reason != "" && reason != "CREDENTIAL_MISSING" {
+			return api.Denied(reason)
+		}
+	}
+	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	grantsstore "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/grants"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/mailbox"
 	"strings"
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/execution"
@@ -13,7 +14,8 @@ import (
 )
 
 // MessagesInTx is consumed by the original Executor after claim. Only this
-// execution's durable inbox is selected; Agent ID alone is never a namespace.
+// execution's durable inbox and root-scoped notifications are selected; an
+// Agent ID alone is never a namespace and notifications never create a Run.
 func (s *Store) MessagesInTx(ctx context.Context, tx *sql.Tx, runID string) ([]api.AgentMessage, error) {
 	items, err := s.readMessagesInTx(ctx, tx, runID, nil)
 	if err != nil {
@@ -51,12 +53,12 @@ func (s *Store) readMessagesInTx(ctx context.Context, tx *sql.Tx, runID string, 
 		return nil, e
 	}
 	id := api.NewConnectionIdentity("executor:"+runID, principal, false)
-	_, in, e := execution.ReadInTx(ctx, tx, id, api.IDQuery{ProfileID: profile, ID: runID})
+	run, in, e := execution.ReadInTx(ctx, tx, id, api.IDQuery{ProfileID: profile, ID: runID})
 	if e != nil {
 		return nil, e
 	}
-	query := "SELECT message_id,from_agent_id,to_agent_id,text,created_at,kind,status,delegation_id,question_id,work_thread_id,source_json FROM collaboration_messages WHERE to_run_id=? AND principal_id=?"
-	args := []any{runID, principal}
+	query := "SELECT message_id,from_agent_id,to_agent_id,text,created_at,kind,status,delegation_id,question_id,work_thread_id,source_json FROM collaboration_messages WHERE " + mailbox.InboxWhere
+	args := mailbox.InboxArgs(principal, run)
 	if selected != nil {
 		query += " AND message_id IN (" + strings.TrimSuffix(strings.Repeat("?,", len(selected)), ",") + ")"
 		for _, id := range selected {

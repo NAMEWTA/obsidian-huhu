@@ -461,6 +461,25 @@
     "service.status.result": {
       "type": "object",
       "properties": {
+        "cleanup": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "boolean"
+            },
+            "sessionIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "sessionIds"
+          ],
+          "additionalProperties": false
+        },
         "policy": {
           "type": "object",
           "properties": {
@@ -7234,6 +7253,138 @@
       ],
       "additionalProperties": false
     },
+    "collaboration.proposals.params": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "cursor": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "runId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "profileId"
+      ],
+      "additionalProperties": false
+    },
+    "collaboration.proposals.result": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "proposalId": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "previewHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "draft": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "persona": {
+                    "type": "string"
+                  },
+                  "model": {
+                    "type": "object",
+                    "properties": {
+                      "modelId": {
+                        "type": "string"
+                      },
+                      "providerId": {
+                        "type": "string"
+                      },
+                      "endpoint": {
+                        "type": "string"
+                      },
+                      "credentialRef": {
+                        "type": "string"
+                      },
+                      "capabilities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "protocol": {
+                        "type": "string",
+                        "enum": [
+                          "openai-chat-completions",
+                          "openai-responses",
+                          "anthropic-messages"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "modelId",
+                      "providerId",
+                      "endpoint",
+                      "capabilities",
+                      "protocol"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "allowedTools": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "allowedCollaborationTargets": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "persona"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "proposalId",
+              "revision",
+              "previewHash",
+              "draft"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "nextCursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
     "collaboration.confirmProposal.params": {
       "type": "object",
       "properties": {
@@ -7404,6 +7555,66 @@
         "name",
         "description",
         "persona"
+      ],
+      "additionalProperties": false
+    },
+    "collaboration.rejectProposal.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "proposalId": {
+          "type": "string"
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "expectedRevision",
+        "proposalId",
+        "previewHash"
+      ],
+      "additionalProperties": false
+    },
+    "collaboration.rejectProposal.result": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "receiptId",
+        "revision"
       ],
       "additionalProperties": false
     },
@@ -19272,12 +19483,107 @@
             "budgetPaused"
           ],
           "additionalProperties": false
+        },
+        "cleanup": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "boolean"
+            },
+            "sessionIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "sessionIds"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "state",
         "schemaVersion",
         "profile"
+      ],
+      "additionalProperties": false
+    },
+    "portable.stage.params": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "uploadId": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "offset": {
+          "type": "string"
+        },
+        "dataBase64": {
+          "type": "string",
+          "maxLength": 349528,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+        },
+        "final": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "profileId",
+        "commandEpoch",
+        "size",
+        "offset",
+        "dataBase64",
+        "final"
+      ],
+      "additionalProperties": false
+    },
+    "portable.stage.result": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string"
+        },
+        "nextOffset": {
+          "type": "string"
+        },
+        "artifact": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string"
+            },
+            "mediaType": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "mediaType",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "uploadId",
+        "nextOffset"
       ],
       "additionalProperties": false
     },
@@ -19401,6 +19707,38 @@
         "token": {
           "type": "string"
         },
+        "mappingMode": {
+          "type": "string",
+          "const": "copy-candidate"
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "agent",
+                  "memory",
+                  "session"
+                ]
+              },
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "from",
+              "to"
+            ],
+            "additionalProperties": false
+          }
+        },
         "conflicts": {
           "type": "array",
           "items": {
@@ -19416,12 +19754,33 @@
               "hash": {
                 "type": "string",
                 "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "agent",
+                  "memory",
+                  "session"
+                ]
+              },
+              "existingId": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "needsReview": {
+                "type": "boolean"
               }
             },
             "required": [
               "id",
               "revision",
-              "hash"
+              "hash",
+              "kind",
+              "existingId",
+              "reason",
+              "needsReview"
             ],
             "additionalProperties": false
           }
@@ -19429,6 +19788,8 @@
       },
       "required": [
         "token",
+        "mappingMode",
+        "mappings",
         "conflicts"
       ],
       "additionalProperties": false
@@ -19530,6 +19891,9 @@
           "minItems": 1,
           "maxItems": 32,
           "uniqueItems": true
+        },
+        "renewLeaseId": {
+          "type": "string"
         }
       },
       "required": [

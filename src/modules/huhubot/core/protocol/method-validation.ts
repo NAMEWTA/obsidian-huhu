@@ -21,10 +21,10 @@ export class HapProtocolError extends Error {
 }
 
 type MethodPart = 'params' | 'result';
-const MAX_METHOD_VALIDATORS = 144;
 const definitions = new Set(
 	Object.keys(schema.$defs).filter((key) => key.endsWith('.params') || key.endsWith('.result')),
 );
+const MAX_METHOD_VALIDATORS = definitions.size;
 
 const encoder = new TextEncoder();
 const MEMORY_OBJECT_BYTES = 245760;
@@ -241,7 +241,7 @@ export class MethodValidation {
 		if (!definitions.has(key)) return false;
 		let validate = this.validators.get(key);
 		if (!validate) {
-			if (this.validators.size >= MAX_METHOD_VALIDATORS || definitions.size !== MAX_METHOD_VALIDATORS)
+			if (this.validators.size >= MAX_METHOD_VALIDATORS)
 				throw new HapProtocolError('METHOD_VALIDATOR_LIMIT');
 			validate = this.schemaEngine().getSchema(`${schema.$id}#/$defs/${key}`);
 			if (!validate) throw new HapProtocolError('METHOD_SCHEMA_MISSING');
@@ -249,7 +249,7 @@ export class MethodValidation {
 		}
 		return validate(value) && (!memoryMethods.has(method) || memorySemantics(method, part, value));
 	}
-	/** One additional fixed validator, shared with the codec; method cache remains capped at 144. */
+	/** One additional fixed validator, shared with the codec; method cache remains capped by this version’s static schema. */
 	validateErrorData(value: unknown): value is BotErrorData {
 		this.errorValidator ??= this.schemaEngine().getSchema(`${schema.$id}#/$defs/BotErrorData`);
 		if (!this.errorValidator) throw new HapProtocolError('ERROR_SCHEMA_MISSING');

@@ -20,7 +20,7 @@ Status: completed
 
 接口附件给出：
 
-1. T01唯一Go/HAP/TS DTO、六个MemoryAPI和T15两个GlobalMemoryAPI；严格Kind/分支/CAS/UTF8字节与完整页预算，item不可变revisionID、forgotten安全stub、settings、job与pin冲突candidate可回读。add是用户独立意图；correct/apply_candidate/pin/forget不让模型自证owner/来源/批准。八方法当前false事实另存[现状快照](logs/00-current-memory-methods.json)。
+1. T01唯一Go/HAP/TS DTO、六个MemoryAPI和T15两个GlobalMemoryAPI；严格Kind/分支/CAS/UTF8字节与完整页预算，item不可变revisionID、forgotten安全stub、settings、job与pin冲突candidate可回读。add是用户独立意图；correct/apply_candidate/pin/forget不让模型自证owner/来源/批准。八方法当前false事实另存现状快照（历史日志已清理：`logs/00-current-memory-methods.json`）。
 2. 原T03 adapter-only MemoryHooks及完整参数/返回，RecordCompletion、bounded admission、NewMaintenanceInTx、PrepareAndMarkRunning、实际输出关联、同Finalize Commit；T02独立PinTask与usage/凭证屏障、未知SQL整体回滚和commit后cursor发布。
 3. 纯ExecutionMemoryInput/候选格式、可信摘要与原Intent：common无工具提炼经原Attempts输出候选到同Finalize，模型不选bank。推荐在已有Messages内加入独立固定绑定块，由DB受信参数在Inspector/Resume核完整字节，不改EngineVersion或旧Chat v1/Responses v2 DTO编码。Memory=nil旧路径保持字节；带引用却缺manifest不能降legacy；无完整CP的在途维护崩溃仍blocked，不自动重播收费HTTP。
 4. T14本域Facts→T05原Grant/Group校验的非递归边界、memory_revision/candidate物理subjects、复用现250ms短fence和stdio writer生命周期；原用户文字与已公开历史按实际message依赖，避免整Run一刀切。原800subjects热路径要求批读取/真实回归，未运行性能测试。

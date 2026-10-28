@@ -30,6 +30,9 @@ func Epoch(ctx context.Context, tx *sql.Tx, m api.CommandMeta) (api.ProfileMetad
 	if e == nil && p.CommandEpoch != m.CommandEpoch {
 		e = Fault("CONFLICT", "COMMAND_EPOCH_CONFLICT")
 	}
+	if e == nil {
+		e = base.CheckDataAdmission(ctx, tx)
+	}
 	return p, e
 }
 func Receipt(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, m api.CommandMeta, method, hash string, out any) (bool, error) {
@@ -200,7 +203,7 @@ func (s *Store) ListSessions(ctx context.Context, id api.RequestIdentity, q api.
 				return Fault("CURSOR_EXPIRED", "SESSIONS_CHANGED")
 			}
 		}
-		rows, e := tx.QueryContext(ctx, "SELECT session_id FROM conversation_sessions WHERE profile_id=? AND principal_id=? AND session_id>? ORDER BY session_id LIMIT ?", q.ProfileID, id.PrincipalID(), cur.After, limit+1)
+		rows, e := tx.QueryContext(ctx, "SELECT session_id FROM conversation_sessions WHERE profile_id=? AND principal_id=? AND body_deleted=0 AND session_id>? ORDER BY session_id LIMIT ?", q.ProfileID, id.PrincipalID(), cur.After, limit+1)
 		if e != nil {
 			return e
 		}

@@ -45,4 +45,4 @@
 | S39 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/sources.json` | fingerprint/55 source byte comparison only；115既有来源身份复用边界 | `0944bcb0d950` |
 | S40 | `native/huhubot/internal/bootstrap/core.go` | fingerprint only, not new implementation review；115唯一已知119第三driver差量 | `cfcf4316660a` |
 
-115长期合同SHA严格匹配Root已接纳406bdd…acdfc4；本次不回写115。55源只读字节复核见[00](logs/00-115-source-recheck.json)，仅Core119第三driver有差量，123不重做长期研究。当前迁移注册schema9；T10三协议代码门由Root在123期间接纳，新产品没有因此由本作者改写。
+115长期合同SHA严格匹配Root已接纳406bdd…acdfc4；本次不回写115。55源只读字节复核见00（历史日志已清理：`logs/00-115-source-recheck.json`），仅Core119第三driver有差量，123不重做长期研究。当前迁移注册schema9；T10三协议代码门由Root在123期间接纳，新产品没有因此由本作者改写。

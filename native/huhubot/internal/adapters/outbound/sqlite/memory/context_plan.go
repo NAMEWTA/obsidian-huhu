@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/mailbox"
 	"reflect"
 	"sort"
 	"strconv"
@@ -244,7 +245,7 @@ func planWatermark(plan execution.InitialContextPlan, r runContext) string {
 func (s *Store) contextCandidates(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, r runContext) ([]selection.Candidate, []selection.Candidate, map[ownerKey]api.RunAccessInput, bool, error) {
 	inbox, history := []selection.Candidate{}, []selection.Candidate{}
 	access := map[ownerKey]api.RunAccessInput{}
-	rows, err := tx.QueryContext(ctx, "SELECT message_id,from_agent_id,to_agent_id,created_at,kind,status,delegation_id,question_id,work_thread_id FROM collaboration_messages WHERE to_run_id=? AND principal_id=? ORDER BY created_at,message_id LIMIT 101", r.Run.ID, id.PrincipalID())
+	rows, err := tx.QueryContext(ctx, "SELECT message_id,from_agent_id,to_agent_id,created_at,kind,status,delegation_id,question_id,work_thread_id FROM collaboration_messages WHERE "+mailbox.InboxWhere+" ORDER BY created_at,message_id LIMIT 101", mailbox.InboxArgs(id.PrincipalID(), r.Run)...)
 	if err != nil {
 		return nil, nil, nil, false, err
 	}

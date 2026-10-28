@@ -42,7 +42,7 @@ Observed: 对照T09及T01/T02/T06/T08/T27稳定验收anchor、097差异矩阵与
 
 ## 产物与验证
 
-外部副本 `/tmp/huhu-review112-6a9053en` 的332原模块文件逐字节匹配冻结输入；只新增外部 `review112_test.go`，完整副本留在 [探针源码](logs/01-review112_test.go.txt)，SHA256 `af62a7dec2995eb33188220e71ecc9fed4eb534919290638b3bf64c0acf7ce76`。共享fixture只负责公开Core/SQLite/NoteWriter建置，本人新控制在真实HTTP loopback上发送gzip并在已解压body强制1/2/1/3/4/1/5字节Read，实际记录Uncompressed、read/close次数。显式注入的是生产Responses Driver/Registry/common.Engine加只读transport观察和受控resolver，不能称这四项为默认装配或真实Provider；默认装配另由Root/108已验路径支撑。没有SQL写入/触发器模拟、没有改持久凭证或生产源码。
+外部副本 `/tmp/huhu-review112-6a9053en` 的332原模块文件逐字节匹配冻结输入；只新增外部 `review112_test.go`，完整副本留在 探针源码（历史日志已清理：`logs/01-review112_test.go.txt`），SHA256 `af62a7dec2995eb33188220e71ecc9fed4eb534919290638b3bf64c0acf7ce76`。共享fixture只负责公开Core/SQLite/NoteWriter建置，本人新控制在真实HTTP loopback上发送gzip并在已解压body强制1/2/1/3/4/1/5字节Read，实际记录Uncompressed、read/close次数。显式注入的是生产Responses Driver/Registry/common.Engine加只读transport观察和受控resolver，不能称这四项为默认装配或真实Provider；默认装配另由Root/108已验路径支撑。没有SQL写入/触发器模拟、没有改持久凭证或生产源码。
 
 | 独立控制 | 实际结果（normal/race一致） |
 | --- | --- |
@@ -53,10 +53,10 @@ Observed: 对照T09及T01/T02/T06/T08/T27稳定验收anchor、097差异矩阵与
 
 | 本人命令 | actual exit / Wait | 原始输出 |
 | --- | --- | --- |
-| `go test -count=1 -timeout=90s -run '^TestReview112' -v ./tests/contract/engine/responses` | 0 / 2.564574331s，1顶层4子控制 | [normal](logs/02-gzip-normal.log)、[receipt](logs/02-gzip-normal.json) |
-| 同控制 `go test -race -count=1 -timeout=90s` | 0 / 7.492119740s，无race报告 | [race](logs/03-gzip-race.log)、[receipt](logs/03-gzip-race.json) |
-| `go vet ./internal/adapters/outbound/eino/... ./internal/bootstrap ./internal/application/tooling/broker ./internal/application/assistant ./tests/contract/engine/responses` | 0 / 1.378543335s | [receipt](logs/04-vet.json)、[log](logs/04-vet.log) |
-| `pnpm test:huhu-bot-architecture` | 0 / 0.386628929s，57生产文件 | [receipt](logs/05-architecture.json)、[log](logs/05-architecture.log) |
+| `go test -count=1 -timeout=90s -run '^TestReview112' -v ./tests/contract/engine/responses` | 0 / 2.564574331s，1顶层4子控制 | [normal](logs/02-gzip-normal.log)、receipt（历史日志已清理：`logs/02-gzip-normal.json`） |
+| 同控制 `go test -race -count=1 -timeout=90s` | 0 / 7.492119740s，无race报告 | [race](logs/03-gzip-race.log)、receipt（历史日志已清理：`logs/03-gzip-race.json`） |
+| `go vet ./internal/adapters/outbound/eino/... ./internal/bootstrap ./internal/application/tooling/broker ./internal/application/assistant ./tests/contract/engine/responses` | 0 / 1.378543335s | receipt（历史日志已清理：`logs/04-vet.json`）、[log](logs/04-vet.log) |
+| `pnpm test:huhu-bot-architecture` | 0 / 0.386628929s，57生产文件 | receipt（历史日志已清理：`logs/05-architecture.json`）、[log](logs/05-architecture.log) |
 
 全部Go使用 `GOTOOLCHAIN=go1.26.10 GOFLAGS=-mod=readonly GOWORK=off GOEXPERIMENT=''`；normal/vet CGO0，race CGO1。执行器用subprocess.run实际等待，工具运行session也已亲自Wait回收；每个Core/Engine/HTTP server/body按测试cleanup真实结束。此次独立产品探针首跑即0，没有被隐藏或改写的产品失败。只读路径定位曾有不存在文件的命令错误，随后按实际目录重读；它们不是产品/探针结果。
 
@@ -71,14 +71,14 @@ Observed: 对照T09及T01/T02/T06/T08/T27稳定验收anchor、097差异矩阵与
 - **113/docs**：完整四文件patch、七测试负控与已接纳真实checker输出一致；Root最后docs actual0/Wait1.264198s、796 Markdown/1803 local links，外链未fetch。以后新报告带来的计数变化不能回填旧观察。
 - **Root生产E2E**：`lead-responses-e2e-r1.json` 的2017文件/input `9a79af0ecca957327cf3f1084383ccc59e2f996a4daafc5e86fca3c198ec8a0f` 本人逐字节重核无漂移。实际新CLI build0/2.697s、TS bundle0/2.673s、运行0/0.858s；生产TS/HAP/Host适配器受控Vault，7POST/1GET，两进程自然exit0，写1拒绝1。SQL7 settled/producer1，known4合58、unknown3合13240，pins/slots/reserved0、integrity ok；这是代码E2E，不是Obsidian现场。完整原请求中的store/background=false、truncationdisabled、encrypted include、本地完整items及净化结果与实现相符。
 
-本人复核记录见 [证据交叉核对](logs/06-evidence-crosscheck.json)。没有把作者、Root运行说成本人重新执行；没有用模块require列表冒充五平台实际编译闭包。
+本人复核记录见 证据交叉核对（历史日志已清理：`logs/06-evidence-crosscheck.json`）。没有把作者、Root运行说成本人重新执行；没有用模块require列表冒充五平台实际编译闭包。
 
 ## 问题与下一步
 
-[初始输入](logs/00-input.json) 与 [最终输入核对](logs/07-final-freeze.json) 记录2048原文件、文件模式、32来源section/全文SHA、332外部副本全部无漂移；用正式reviewInputDigest复算仍为同一输入，用resolveReviewScope复算选定scope一致，HEAD/index不变。111旧源与当前三处差异单列，不隐瞒历史快照变化。探针自身仅写112日志及外部固定副本。
+初始输入（历史日志已清理：`logs/00-input.json`） 与 最终输入核对（历史日志已清理：`logs/07-final-freeze.json`） 记录2048原文件、文件模式、32来源section/全文SHA、332外部副本全部无漂移；用正式reviewInputDigest复算仍为同一输入，用resolveReviewScope复算选定scope一致，HEAD/index不变。111旧源与当前三处差异单列，不隐瞒历史快照变化。探针自身仅写112日志及外部固定副本。
 
 没有运行真实Provider、真实Obsidian/Vault/系统keyring或目标OS现场；没有本轮五平台资产build，没有重复未变插件build/lint，没有Responses专用再跑全部审批过期/重复resolve/unknown Host/群成员/children/question排列、完整45s/15s/2min墙钟上限。它们分别由原未改共享合同证据及实际源码影响审查支撑或留给后续对应任务，不能冒称逐项现场通过。T10/T14及之后功能不在此结论中。
 
-首次return实际126/Wait0.057156717s，仅因本人报告缺三个协调模板标题；[原失败回执](logs/08-return-first.json)、[原输出](logs/08-return-first.log)及原报告SHA保留。仅修报告标题，产品、冻结输入与两轴结论均未变，随后本人重跑return。
+首次return实际126/Wait0.057156717s，仅因本人报告缺三个协调模板标题；原失败回执（历史日志已清理：`logs/08-return-first.json`）、[原输出](logs/08-return-first.log)及原报告SHA保留。仅修报告标题，产品、冻结输入与两轴结论均未变，随后本人重跑return。
 
-本人所有检查/探针进程已实际Wait，生产/永久测试/正式Evidence/Map/Goal/他人报告未写，无提交/推送/发布/归档。[return校验回执](logs/08-return.json)与[原输出](logs/08-return.log)记录本人最终结构校验；以实际exit为准。原生MESSAGE和FINAL交回后停止写入，唯一Go窗口归Root。Root应全文回读后自行维护正式代码门状态。
+本人所有检查/探针进程已实际Wait，生产/永久测试/正式Evidence/Map/Goal/他人报告未写，无提交/推送/发布/归档。return校验回执（历史日志已清理：`logs/08-return.json`）与[原输出](logs/08-return.log)记录本人最终结构校验；以实际exit为准。原生MESSAGE和FINAL交回后停止写入，唯一Go窗口归Root。Root应全文回读后自行维护正式代码门状态。

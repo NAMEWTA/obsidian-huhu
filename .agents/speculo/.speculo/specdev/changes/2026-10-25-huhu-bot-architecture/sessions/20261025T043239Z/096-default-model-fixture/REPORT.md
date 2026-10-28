@@ -12,11 +12,11 @@ Status: completed
 
 ## 产物与验证
 
-[00 初始字节与写集](logs/00-read-input-and-scope.json)核原测试 SHA `f71fde5f5b470d3bf54a20441af4ec22f4e7d2d92d4ce538fe795b280e19951b` 与 TASK SHA，保存[完整原字节](logs/00-workflow-before.go.txt)。[精确 patch](logs/01-workflow.patch)只把默认尾段拿到真实 locator、更新缺配置理由，并新增按实际 RunID 查询持久 `model_attempts` 必须为 0；原 `Usage == nil`、两个 `none/partial` 子例与其它全部函数字节不变。
+00 初始字节与写集（历史日志已清理：`logs/00-read-input-and-scope.json`）核原测试 SHA `f71fde5f5b470d3bf54a20441af4ec22f4e7d2d92d4ce538fe795b280e19951b` 与 TASK SHA，保存完整原字节（历史日志已清理：`logs/00-workflow-before.go.txt`）。精确 patch（历史日志已清理：`logs/01-workflow.patch`）只把默认尾段拿到真实 locator、更新缺配置理由，并新增按实际 RunID 查询持久 `model_attempts` 必须为 0；原 `Usage == nil`、两个 `none/partial` 子例与其它全部函数字节不变。
 
-默认空模型/不支持协议的原生产目标红由 092 实际 [13 原始结果](../092-engine-chat/logs/13-model-unavailable-red.json)引用：actual exit1/Wait，两个理由被泛化成 `MODEL_EXECUTION_FAILED`，Resolve/HTTP 均 0。092 在其 common 写集内修正；本任务没有制造第二套生产修复或重复反事实。此历史生产红与本次旧测试预期维护分别记录。
+默认空模型/不支持协议的原生产目标红由 092 实际 13 原始结果（历史日志已清理：`../092-engine-chat/logs/13-model-unavailable-red.json`）引用：actual exit1/Wait，两个理由被泛化成 `MODEL_EXECUTION_FAILED`，Resolve/HTTP 均 0。092 在其 common 写集内修正；本任务没有制造第二套生产修复或重复反事实。此历史生产红与本次旧测试预期维护分别记录。
 
-092 原生确认其 16/17 命令实际 Wait、生产短暂稳定且无 Go 进程后，按 TASK 允许的信号接窄窗口，已提前通知 Root。[02 实际测试输入](logs/02-single-test-input.json)固定 175 个 internal Go/内嵌 SQL、chat 测试 Go 与锁文件，tree `322b0f3e80eaa0b89fd02dfec1e9c103f3e1ddfca3e33e1fb3c32e33575d5fa9`。
+092 原生确认其 16/17 命令实际 Wait、生产短暂稳定且无 Go 进程后，按 TASK 允许的信号接窄窗口，已提前通知 Root。02 实际测试输入（历史日志已清理：`logs/02-single-test-input.json`）固定 175 个 internal Go/内嵌 SQL、chat 测试 Go 与锁文件，tree `322b0f3e80eaa0b89fd02dfec1e9c103f3e1ddfca3e33e1fb3c32e33575d5fa9`。
 
 在 `native/huhubot` 实际执行：
 
@@ -24,9 +24,9 @@ Status: completed
 GOTOOLCHAIN=go1.26.10 CGO_ENABLED=1 go test -mod=readonly -p=1 ./tests/contract/chat -run '^TestFailedPartialResultAndProductionUnavailableRemainHonest$' -count=1 -timeout=60s -v
 ```
 
-[03 完整原始日志](logs/03-single-test.log) / [结果](logs/03-single-test-result.json)：actual exit0 / Wait 1.831s，原 case 0.13s，none/partial 两子例与默认空模型尾段均通过，sourceDrift=[]。默认缺模型 Run 真实失败、理由精确、usage=nil、持久 attempt0；选择的用例不创建子进程或外部网络 endpoint，Core worker 沿原清理退出。没有运行整个 chat 大队列包、race 或重复生产 counterfactual。检查结束立即原生交还 Root/092，此后无自有 Go/Node/Runner 检查进程。
+[03 完整原始日志](logs/03-single-test.log) / 结果（历史日志已清理：`logs/03-single-test-result.json`）：actual exit0 / Wait 1.831s，原 case 0.13s，none/partial 两子例与默认空模型尾段均通过，sourceDrift=[]。默认缺模型 Run 真实失败、理由精确、usage=nil、持久 attempt0；选择的用例不创建子进程或外部网络 endpoint，Core worker 沿原清理退出。没有运行整个 chat 大队列包、race 或重复生产 counterfactual。检查结束立即原生交还 Root/092，此后无自有 Go/Node/Runner 检查进程。
 
-最终 [04 自有一文件清单](logs/04-own-final-source.json)与 patch 可反推完整旧字节；测试新 SHA `d1b559bf42090e6b7ad138cf6af8dad08e042203a683675003eda8b221390378`。本票只有这一测试文件变更，非全产品最终 joint 候选；T08 作者继续其已授权范围。
+最终 04 自有一文件清单（历史日志已清理：`logs/04-own-final-source.json`）与 patch 可反推完整旧字节；测试新 SHA `d1b559bf42090e6b7ad138cf6af8dad08e042203a683675003eda8b221390378`。本票只有这一测试文件变更，非全产品最终 joint 候选；T08 作者继续其已授权范围。
 
 ## 问题与下一步
 

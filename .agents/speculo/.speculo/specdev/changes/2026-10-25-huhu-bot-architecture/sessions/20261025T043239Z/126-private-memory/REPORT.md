@@ -8,7 +8,7 @@ Status: completed
 
 完成 T14 分配的本域实现与已授权作者检查，交付 19 个生产文件（18 Go、014 SQL）及 11 个永久测试文件。作者四个定向批次共 **15 个顶层目标、23 个子场景全部通过**；最初同一默认 Core/HAP 管理消费者的有效缺失红及 Root 后续目标绿均保留。所有实际命令和测试资源已结束，Go 窗口归还 Root，30 源冻结。这里的 completed 表示作者候选已交付，不替代 Root 的共同物理投递验收、独立审查或 T14 正式签票。
 
-[最终源清单](logs/final-source.json)的 30 源摘要为 `5179a3de5f52f214c436fbbae90d57c744dc96c0e39cf3b4aa7ea8131917ddb0`，[完整自有差异](logs/final-own.patch)保留全部代码。首个 Store/Hooks checkpoint 后仅按 Root 指令在 `context_read.go` 增加统一 body-free manifest 预检；[原字节](logs/08-context-read-before.go.txt)和[精确补丁](logs/09-manifest-precheck.patch)保留。后两批消费者没有发现需修复的生产或夹具反例，原 19 个生产文件在首次真实默认 Core 联编前已稳定。本作者未写 API/HAP/TS、Core/Run writer、Grant/usage、Engine、恢复实现、模块锁、迁移注册或正式状态，没有提交、推送、发布、归档、再委派。
+最终源清单（历史日志已清理：`logs/final-source.json`）的 30 源摘要为 `5179a3de5f52f214c436fbbae90d57c744dc96c0e39cf3b4aa7ea8131917ddb0`，完整自有差异（历史日志已清理：`logs/final-own.patch`）保留全部代码。首个 Store/Hooks checkpoint 后仅按 Root 指令在 `context_read.go` 增加统一 body-free manifest 预检；原字节（历史日志已清理：`logs/08-context-read-before.go.txt`）和精确补丁（历史日志已清理：`logs/09-manifest-precheck.patch`）保留。后两批消费者没有发现需修复的生产或夹具反例，原 19 个生产文件在首次真实默认 Core 联编前已稳定。本作者未写 API/HAP/TS、Core/Run writer、Grant/usage、Engine、恢复实现、模块锁、迁移注册或正式状态，没有提交、推送、发布、归档、再委派。
 
 `sqlite/memory.New(base, Config, Access, Eligibility)*Store` 持有原 owner 的窄端口，不访问数据库、不启动 worker。`application/memory/private.New(repo api.MemoryAPI, wake func())*Service` 提供六个实际管理用例；同一个 Store 同时实现 MemoryHooks、MemoryFactsReader、`SnapshotUsageInTx`、`RecoveryWatermarkInTx` 与 `StopAdmission/Done`。014 正文保存 namespace、item/不可变 revision/body、candidate、completion outbox/job、实际上下文 manifest/entries、完整依赖、稳定来源抑制及可重建索引。实际 schema10 的注册、Core 单实例装配与调用顺序由129/134原 owner 实施，后续 Core/Executor/recovery 消费者归140；本域不复制原 Run/Attempt/Group 状态机。
 
@@ -26,20 +26,20 @@ Status: completed
 
 执行沿已读 AGENTS、dev 与 SpecDev I 的预检/TDD/原生 Go/生命周期规则，复用115完整记忆合同、123短期合同、125公共接口、128权限/预算和132统一 manifest helper。没有新增依赖或再次开展宽泛开源研究。此前研究仅作已接纳背景，当前行为由实际源码与消费者证明。
 
-全部 Go 均在 Root 调度的唯一窗口。后四个作者批次使用真实绝对路径 Go1.26.10、`GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' CGO_ENABLED=0 GOFLAGS=-mod=readonly GOPROXY=off`；[批一版本回执](logs/14-go-version.json)、[批二版本回执](logs/19-go-version-batch2.json)记录实际 stdout/exit/Wait。每次保存原 JSONL/stderr、准确命令、Popen.wait、native Go/SQL/JSON/锁输入及 ZIP；未把 Root CLI 不编译的测试排除范围用于测试输入。[命令索引](logs/command-index.json)含逐测试结果，[五份 ZIP 核验](logs/input-archives-verification.json)逐项验证原始346、388、388、393、393个文件的字节与 SHA。
+全部 Go 均在 Root 调度的唯一窗口。后四个作者批次使用真实绝对路径 Go1.26.10、`GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' CGO_ENABLED=0 GOFLAGS=-mod=readonly GOPROXY=off`；批一版本回执（历史日志已清理：`logs/14-go-version.json`）、批二版本回执（历史日志已清理：`logs/19-go-version-batch2.json`）记录实际 stdout/exit/Wait。每次保存原 JSONL/stderr、准确命令、Popen.wait、native Go/SQL/JSON/锁输入及 ZIP；未把 Root CLI 不编译的测试排除范围用于测试输入。命令索引（历史日志已清理：`logs/command-index.json`）含逐测试结果，五份 ZIP 核验（历史日志已清理：`logs/input-archives-verification.json`）逐项验证原始346、388、388、393、393个文件的字节与 SHA。
 
 | 阶段与原结果 | exit / 整个命令实际 Wait秒 | 观察 |
 |---|---|---|
-| [初始默认入口红](logs/initial-red-result.json) | 1 / 1.265920 | 可编译默认 Core→HAP；实际 METHOD_NOT_AVAILABLE，未装配行为红 |
+| 初始默认入口红（历史日志已清理：`logs/initial-red-result.json`） | 1 / 1.265920 | 可编译默认 Core→HAP；实际 METHOD_NOT_AVAILABLE，未装配行为红 |
 | [同一默认目标绿，Root执行](../../../evidence/T-14-logs/first-joint-core-return.json) | 0 / 7.245179 | 虚拟设置零物化、add修订、真实关闭与重开一致 |
-| [第一批管理/上下文](logs/batch1-controls-initial-result.json) | 0 / 2.650176 | 5 top / 4 sub，package0.322秒 |
-| [第一批维护](logs/batch1-maintenance-initial-result.json) | 0 / 2.885152 | 2 top / 7 sub，package1.829秒 |
-| [第二批原子性/闭包](logs/batch2-atomic-ancestry-initial-result.json) | 0 / 2.106666 | 4 top / 10 sub，package0.932秒 |
-| [第二批生命周期/来源](logs/batch2-lifecycle-origin-initial-result.json) | 0 / 1.365551 | 4 top / 2 sub，package0.422秒 |
+| 第一批管理/上下文（历史日志已清理：`logs/batch1-controls-initial-result.json`） | 0 / 2.650176 | 5 top / 4 sub，package0.322秒 |
+| 第一批维护（历史日志已清理：`logs/batch1-maintenance-initial-result.json`） | 0 / 2.885152 | 2 top / 7 sub，package1.829秒 |
+| 第二批原子性/闭包（历史日志已清理：`logs/batch2-atomic-ancestry-initial-result.json`） | 0 / 2.106666 | 4 top / 10 sub，package0.932秒 |
+| 第二批生命周期/来源（历史日志已清理：`logs/batch2-lifecycle-origin-initial-result.json`） | 0 / 1.365551 | 4 top / 2 sub，package0.422秒 |
 
-后四批首次均绿，无编译/夹具失败冒充行为红，也没有为 TDD 人为制造失败。两批最新实际输入同为393文件 SHA `cadf811840e09a8b1ae2a88072ef3e57639bacd9bbc1866c837b022056312f8a`，drift=[]。与首批388输入相比，只增加本票五个测试文件，另有140原 owner 后续授权的三个其他测试文件变化；生产没有变化，历史快照保持原字节，不将旧回执冒称最新完整输入。[第二批归窗记录](logs/20-batch2-actual-return.json)记录此差异。
+后四批首次均绿，无编译/夹具失败冒充行为红，也没有为 TDD 人为制造失败。两批最新实际输入同为393文件 SHA `cadf811840e09a8b1ae2a88072ef3e57639bacd9bbc1866c837b022056312f8a`，drift=[]。与首批388输入相比，只增加本票五个测试文件，另有140原 owner 后续授权的三个其他测试文件变化；生产没有变化，历史快照保持原字节，不将旧回执冒称最新完整输入。第二批归窗记录（历史日志已清理：`logs/20-batch2-actual-return.json`）记录此差异。
 
-[风险与消费者映射](logs/risk-matrix.md)逐项区分作者、原 owner/Root 与待验边界。作者主要沿默认 Core 的公开 API/真实 SQLite/原 Executor 生成实际记录。维护输出使用受控 fake Engine，零远端请求；SQL批故障使用同库真实 Memory/Grant/Config adapter，先证实事务内已有第一项或完整两项，再分别在第二 statement 与真正 deferred-FK Commit 失败后核全回滚，最后由原 Executor 完成相同结果。未绑定准入的正控仅使用当前持久凭证元数据，不代表已关闭 session secret 恢复或模型可派发。800 subject 的原 Grant 组件对照使用 fake FactsReader，仅证明共同 gate，不冒称本票实际 Reader 的全量物理投递。
+风险与消费者映射（历史日志已清理：`logs/risk-matrix.md`）逐项区分作者、原 owner/Root 与待验边界。作者主要沿默认 Core 的公开 API/真实 SQLite/原 Executor 生成实际记录。维护输出使用受控 fake Engine，零远端请求；SQL批故障使用同库真实 Memory/Grant/Config adapter，先证实事务内已有第一项或完整两项，再分别在第二 statement 与真正 deferred-FK Commit 失败后核全回滚，最后由原 Executor 完成相同结果。未绑定准入的正控仅使用当前持久凭证元数据，不代表已关闭 session secret 恢复或模型可派发。800 subject 的原 Grant 组件对照使用 fake FactsReader，仅证明共同 gate，不冒称本票实际 Reader 的全量物理投递。
 
 Root共同证据单独引用且未冒领运行权：[管理CLI](../../../evidence/T-14-logs/lead-memory-management-r1-accepted.json)证明生产 TS/HAP/默认 CLI、schema10、持久重开与两个 namespace；[三协议SDK CLI r2](../../../evidence/T-14-logs/lead-memory-model-r2.json)记录 complete=true、1890输入无漂移，每协议6次本地 HTTP、1次维护，自动提交修订进入下一次真实 SDK 请求及context，全部 attempt settled/producer ended、pins0、SQLite完整、各两次自然exit0。该证据是固定本地响应与一次性 Profile；不证明远端模型质量或 Obsidian。原共同首次11目标中的群根状态预期失败由128仅修测试，原失败和[局部复验](../../../evidence/T-14-logs/128-history-expectation-repair-return.json)保留；本域生产没有因此变更。
 
@@ -47,4 +47,4 @@ Root共同证据单独引用且未冒领运行权：[管理CLI](../../../evidenc
 
 本域代码候选与获准作者检查已交付，没有本轮实际失败待修复。交错物理 stdio、真实800 mixed subject的完整 Reader/fence消费、Core/producer/pin/DB 排空、Host→Seal重规划、缺 manifest恢复等由 Root 调度原 owner 与独立消费者继续验收；本报告不把这些共同门宣称通过，也不因共同审查未结束扣留作者候选。新的有效问题应回原 owner 修复。本作者未运行单次全package、全module、race、vet、插件build/lint或生成；各永久目标已有上述分批或Root同入口证据，未按无新风险扩跑。
 
-临时任务 namespace、每种复合权限/群代及大量混合批未各自铺满本票重复矩阵；具体复用和未跑项列在映射，研究/例子数量不是实施覆盖上限。真实模型、Obsidian、目标OS及系统keyring均用户后验/not-run，未索取凭证或以本地夹具代替现场验收。所有生产和测试保持冻结，本作者无活跃 Go/HTTP/Core/DB 子进程；只读结构 [return](logs/return.json) 与最终[工件 manifest](logs/artifact-manifest.json)随本候选交回，结构校验不认证行为或总票完成。原生 MESSAGE+FINAL 后停止全部写入。
+临时任务 namespace、每种复合权限/群代及大量混合批未各自铺满本票重复矩阵；具体复用和未跑项列在映射，研究/例子数量不是实施覆盖上限。真实模型、Obsidian、目标OS及系统keyring均用户后验/not-run，未索取凭证或以本地夹具代替现场验收。所有生产和测试保持冻结，本作者无活跃 Go/HTTP/Core/DB 子进程；只读结构 return（历史日志已清理：`logs/return.json`） 与最终工件 manifest（历史日志已清理：`logs/artifact-manifest.json`）随本候选交回，结构校验不认证行为或总票完成。原生 MESSAGE+FINAL 后停止全部写入。

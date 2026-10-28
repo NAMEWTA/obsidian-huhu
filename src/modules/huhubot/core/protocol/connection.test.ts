@@ -42,6 +42,23 @@ const hello = {
 	limits: { maxFrameBytes: 1048576, maxBatchItems: 8 },
 };
 
+it('refreshes the current command epoch after data deletion without rewriting prior intent metadata', async () => {
+	const peer = new Peer();
+	const connection = new HapConnection(peer, { after: () => () => {} });
+	const connecting = connection.connect({ name: 'test', version: '1' }); peer.reply('c:1', hello);
+	const client = await connecting;
+	const old = { profileId: 'p1', commandEpoch: client.hello.profile.commandEpoch };
+	const update = vi.fn();
+	client.setHost({ profileChanged: update, invoke: async () => { throw new Error('unused'); }, queryReceipt: async () => { throw new Error('unused'); } });
+	const status = client.service.status({});
+	peer.reply('c:2', { schemaVersion: 1, state: 'ready', hostAttached: false, profile: { ...hello.profile, commandEpoch: '2', revision: '2' } });
+	await status;
+	expect(client.hello.profile.commandEpoch).toBe('2');
+	expect(old.commandEpoch).toBe('1');
+	expect(update).toHaveBeenCalledWith(expect.objectContaining({ commandEpoch: '2' }));
+	client.close();
+});
+
 it('gates calls on hello, associates replies, and fails pending calls on EOF', async () => {
 	const peer = new Peer();
 	const connection = new HapConnection(peer, {

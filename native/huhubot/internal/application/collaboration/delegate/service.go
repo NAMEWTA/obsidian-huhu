@@ -86,5 +86,23 @@ func (s *Service) ConfirmProposal(ctx context.Context, id api.RequestIdentity, c
 	}
 	return s.repo.ConfirmProposal(ctx, id, c)
 }
+func (s *Service) Proposals(ctx context.Context, id api.RequestIdentity, q api.DiscoverQuery) (api.AgentProposalPage, error) {
+	if !id.Valid() || q.ProfileID == "" {
+		return api.AgentProposalPage{}, api.Denied("IDENTITY_REQUIRED")
+	}
+	if _, bound := Execution(ctx); bound {
+		return api.AgentProposalPage{}, api.Denied("USER_CONFIRMATION_REQUIRED")
+	}
+	if q.Limit < 0 || q.Limit > 100 || len(q.Cursor) > 2048 || len(q.RunID) > 512 {
+		return api.AgentProposalPage{}, api.Invalid("INVALID_PROPOSAL_QUERY")
+	}
+	return s.repo.Proposals(ctx, id, q)
+}
+func (s *Service) RejectProposal(ctx context.Context, id api.RequestIdentity, q api.ConfirmProposal) (api.Receipt, error) {
+	if _, bound := Execution(ctx); bound {
+		return api.Receipt{}, api.Denied("USER_CONFIRMATION_REQUIRED")
+	}
+	return s.repo.RejectProposal(ctx, id, q)
+}
 
 var _ api.CollaborationAPI = (*Service)(nil)

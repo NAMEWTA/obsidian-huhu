@@ -1,0 +1,2 @@
+$ node scripts/verify-huhu-bot-architecture.mjs
+huhu-bot architecture: 77 production files checked

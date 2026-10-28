@@ -10,13 +10,13 @@ Status: completed
 
 已按 AGENTS / 当前 Map16 / Goal15、dev 测试参考、SpecDev I 与 test-reliability 读取本 TASK、070 完整两轴、原整包 race、原 isolated 通过和强制交错探针/输出。原059三项产品缺陷本次没有重开；070 唯一 P2 是测试未约束前提，不是产品 slot 死锁，也不是053早期终态/defer清槽缺陷。attempts2 与原 request-changes 结论保持，由Root管理新候选。
 
-原文件 SHA `160126a3a10ec2dae92ba3a769bf92fdc18ae9991da620505653da0fbe3481bd`；最终 SHA **`7c5d9de337c41651384ef0c98c6dbd179887e6ce417daedd230f1b843f33fa1d`**。完整单文件差异见 [05-single-file-repair.diff](logs/05-single-file-repair.diff)，旧字节见 [before-wait_test.go.txt](logs/before-wait_test.go.txt)。最终265文件清单 [06](logs/06-final-source-before-package-checks.json) 的树摘要 `62aff51305e0af709247b797fa501c0f70bd953a6413216e386b70a491d2d5c9`；相比070仅该测试路径变化，其余264个文件（含全部冻结生产）逐SHA一致，Git文件模式不变。[12末次回读/清理](logs/12-final-source-and-cleanup.json) 确认无漂移、gofmt0、无自有进程。
+原文件 SHA `160126a3a10ec2dae92ba3a769bf92fdc18ae9991da620505653da0fbe3481bd`；最终 SHA **`7c5d9de337c41651384ef0c98c6dbd179887e6ce417daedd230f1b843f33fa1d`**。完整单文件差异见 05-single-file-repair.diff（历史日志已清理：`logs/05-single-file-repair.diff`），旧字节见 before-wait_test.go.txt（历史日志已清理：`logs/before-wait_test.go.txt`）。最终265文件清单 06（历史日志已清理：`logs/06-final-source-before-package-checks.json`） 的树摘要 `62aff51305e0af709247b797fa501c0f70bd953a6413216e386b70a491d2d5c9`；相比070仅该测试路径变化，其余264个文件（含全部冻结生产）逐SHA一致，Git文件模式不变。12末次回读/清理（历史日志已清理：`logs/12-final-source-and-cleanup.json`） 确认无漂移、gofmt0、无自有进程。
 
 ## 产物与验证
 
 ### 原红灯、因果与复用边界
 
-精确复用070已有确定性红，不机械重跑旧测试择绿。[01](logs/01-before-current-input.json) 先确认当前265个候选文件与070逐字节一致，070 REPORT SHA `7a5044ad9a4a22ec79b343216582a39a811e807dd8dd5821cc622865854deb07`；[02](logs/02-reused-deterministic-red.json) 固定三个原始日志及原/强制探针、diff的SHA与解释：
+精确复用070已有确定性红，不机械重跑旧测试择绿。01（历史日志已清理：`logs/01-before-current-input.json`） 先确认当前265个候选文件与070逐字节一致，070 REPORT SHA `7a5044ad9a4a22ec79b343216582a39a811e807dd8dd5821cc622865854deb07`；02（历史日志已清理：`logs/02-reused-deterministic-red.json`） 固定三个原始日志及原/强制探针、diff的SHA与解释：
 
 - [原整包impact race](../070-notes-collaboration-r2-review/logs/impact-race.log) exit1，只有本用例5.36s报原死锁文案；当次未记录失败前SQL，不能事后声称其精确状态已知。
 - [原受理顺序isolated观察](../070-notes-collaboration-r2-review/logs/slots-observed-race.log) exit0，存在正常顺序，但不能覆盖原整包失败。
@@ -50,12 +50,12 @@ Status: completed
 | 整包normal：`CGO_ENABLED=0 go test -mod=readonly -timeout=6m -p=1 -count=1 -v ./tests/contract/delegation` | [08](logs/08-package-normal.log) exit0，wall6.491s；完整原用例及新两场景均通过 |
 | 整包race：上一整包命令加`-race`，CGO1 | [09](logs/09-package-race.log) exit0，wall58.852s，包58.140s；目标两场景2.92/2.65s，无race报告 |
 
-[10命令回执](logs/10-package-check-results.json) 与唯一 [07执行器](logs/07-run-package-checks.py) 记录整包前后同265输入无漂移，非零会停止，没有重复求绿。首轮 [03定向normal](logs/03-target-normal.log) exit0/0.451s 后仅把新增回调SQL错误从test.Fatal路径改为Engine错误返回；因此在最终字节上另留11的定向normal，不把中间字节冒称最终执行。
+10命令回执（历史日志已清理：`logs/10-package-check-results.json`） 与唯一 07执行器（历史日志已清理：`logs/07-run-package-checks.py`） 记录整包前后同265输入无漂移，非零会停止，没有重复求绿。首轮 [03定向normal](logs/03-target-normal.log) exit0/0.451s 后仅把新增回调SQL错误从test.Fatal路径改为Engine错误返回；因此在最终字节上另留11的定向normal，不把中间字节冒称最终执行。
 
 末次回读脚本最初误将Git100644直接对比文件系统0600，产生诊断exit1；源码SHA检查已通过。改为Git实际记录的可执行位比较后Git mode drift=[]，没有任何源文件或权限改动、没有为此重跑Go测试；事实记录在12，不冒称产品失败或隐去诊断错误。
 
 ## 问题与下一步
 
-授权单文件修复与必要定向/整包普通和race验证已完成，测试、报告和日志停止写入，所有进程及reader实际收回；return结构校验见 [13-return-validation.json](logs/13-return-validation.json)。Root接续固定候选3与独立审查，本报告不自改070 verdict、attempts2或正式票状态，不宣称全八票/28票完成。
+授权单文件修复与必要定向/整包普通和race验证已完成，测试、报告和日志停止写入，所有进程及reader实际收回；return结构校验见 13-return-validation.json（历史日志已清理：`logs/13-return-validation.json`）。Root接续固定候选3与独立审查，本报告不自改070 verdict、attempts2或正式票状态，不宣称全八票/28票完成。
 
 没有运行不受影响的TS/build/lint/跨平台/迁移矩阵，也未访问真实模型、Provider、keyring、D-Bus、用户Vault/Obsidian或目标OS。它们的既有证据仅按摘要和本次测试专属影响复用；本次证明测试可靠地覆盖两种合法交错及既定生命周期合同，不新增产品调度约束。

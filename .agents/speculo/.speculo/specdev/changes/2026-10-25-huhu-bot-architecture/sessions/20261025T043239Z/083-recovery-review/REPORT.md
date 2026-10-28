@@ -45,7 +45,7 @@ Observed: F-083-01 为已实测的正确性/活性缺陷。固定128项候选页
 
 **真实可达触发：** 公开受理6个独立 direct root（当时仅6条活动行，未绕过 RUN_QUEUE_LIMIT），随后用同一受控 Engine 的 channel barrier 逐树真实 `agents.delegate` 32次，limits为 MaxChildren32/RootChildren1/ProfileChildren8。前5树各有1个真实运行child与31个未领取child；第6树的32child均为原始 accepted，父已正常保存 application result 并等待子结果。真实 Core.Close/Done 与重开使前5树的实际运行child interrupted、整树blocked；第6树没有被中断的执行位置，`runs.recovery` 明确为 none，理应扫描原accepted。
 
-**实测：** [05原始日志](logs/05-starvation.log) 与 [05实际回执](logs/05-result.json)，Go actual exit1，subprocess.run真实Wait，16.669秒；目标六树子case在正常6秒观察内保持父 waiting_children、Engine调用0，SQL回读5个blocked tree、0个resuming tree、187条accepted（前方155+目标32）。这是目标行为断言失败，不是编译、setup、超时杀进程或SQL状态伪造。
+**实测：** [05原始日志](logs/05-starvation.log) 与 05实际回执（历史日志已清理：`logs/05-result.json`），Go actual exit1，subprocess.run真实Wait，16.669秒；目标六树子case在正常6秒观察内保持父 waiting_children、Engine调用0，SQL回读5个blocked tree、0个resuming tree、187条accepted（前方155+目标32）。这是目标行为断言失败，不是编译、setup、超时杀进程或SQL状态伪造。
 
 **单变量反向控制：** 同一进程、同一目标Run/DB/Engine，只有一次公开 `runs.cancel` 取消最前方一个无关blocked root，将前方闭门accepted从155降至124；没有对第6树调用resume、换Run、改SQL、替换worker或改变预算。随后目标原32child全部执行一次，父succeeded。四树正常控制则为前方93条闭门accepted，最后树cancel不可恢复leaf、合法CAS/generation resume后原31个queued child全部完成；其余3树继续blocked，未越门。
 
@@ -79,7 +79,7 @@ Observed: 同一F-083-01独立违反Spec §4及T16的“accepted未领取继续�
 
 ## 产物与验证
 
-独立探针固定副本在 `/tmp/huhu-review083-yi8bg_f3`；原始复制清单 [00-probe-input.json](logs/00-probe-input.json)。源码、配置、原永久测试全按输入复制，未修改；仅新增外部 `tests/contract/recovery/reviewer_starvation_test.go`。每次实际执行的探针原字节均保存为相应 `logs/NN-starvation-probe.go.txt`，最终05 SHA256 `56ce8e2540bdaf22d9b267c59de4d195d28e55b10c29e2b1dfb94d2042a04275`。
+独立探针固定副本在 `/tmp/huhu-review083-yi8bg_f3`；原始复制清单 00-probe-input.json（历史日志已清理：`logs/00-probe-input.json`）。源码、配置、原永久测试全按输入复制，未修改；仅新增外部 `tests/contract/recovery/reviewer_starvation_test.go`。每次实际执行的探针原字节均保存为相应 `logs/NN-starvation-probe.go.txt`，最终05 SHA256 `56ce8e2540bdaf22d9b267c59de4d195d28e55b10c29e2b1dfb94d2042a04275`。
 
 所有独立Go命令均为 `GOTOOLCHAIN=go1.26.10 go test -mod=readonly ./tests/contract/recovery -run '^TestReviewerRecoveryQueueDoesNotStarveIndependentRoot$' -count=1 -timeout=60s -v`，在外部固定副本 `native/huhubot` 执行；没有改原性能门，没有重跑无关全矩阵，没有真实网络模型、OS keyring或用户Vault。
 
@@ -97,7 +97,7 @@ Observed: 同一F-083-01独立违反Spec §4及T16的“accepted未领取继续�
 
 Root独立E2E的普通/race四组与真实TS链实际0、build/lint实际0只证明它们覆盖的场景，本次F-083-01仍有效。本文不声称重新执行其命令，也不声称最终输入新跑过一轮完整全模块normal或11包race。首轮失败normal仅顶层Go Wait可证、历史嵌套CLI Wait未证实的限制保留，不用后来无进程倒推历史。
 
-最终 [06-final-input-process.json](logs/06-final-input-process.json) 重新执行固定输入校验：337文件/107来源无漂移，HEAD不变，index SHA256 `10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1`，外部原始源码也无漂移。五次Go命令全部真实subprocess.run返回并Wait；当前自有进程为空。Core的清理使用立即登记的Close与协作ctx，最终05在失败断言后继续控制与Close/Done，没有kill冒充join；无独立HTTP/Node/Runner子进程。
+最终 06-final-input-process.json（历史日志已清理：`logs/06-final-input-process.json`） 重新执行固定输入校验：337文件/107来源无漂移，HEAD不变，index SHA256 `10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1`，外部原始源码也无漂移。五次Go命令全部真实subprocess.run返回并Wait；当前自有进程为空。Core的清理使用立即登记的Close与协作ctx，最终05在失败断言后继续控制与Close/Done，没有kill冒充join；无独立HTTP/Node/Runner子进程。
 
 ## 问题与下一步
 

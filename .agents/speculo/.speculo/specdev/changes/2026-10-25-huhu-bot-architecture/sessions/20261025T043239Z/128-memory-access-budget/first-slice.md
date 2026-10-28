@@ -12,7 +12,7 @@ Status: in_progress
 - `sqlite/usage/memory.go`：115 四字段 AttemptBinding、只读 MaintenanceEligibilityInTx、ReadAttemptBindingInTx。Eligibility 不创建 account/reservation；绑定读取实际 claim、job→run/namespace/settings、独立 config pin，缺 Memory 表原样失败，缺 namespace 关系明确 MEMORY_STATE_INVALID。普通真实 Run 在已存在但无关联 job 的 schema 下仍得到原 root 族。没有把原 BindAttempts 改成已完整消费维护账户的假能力。
 - 原 access/delivery 只拆出私有 `checkSourcesInTx/readSourcesDeadlineInTx`，保持旧业务逻辑与单/批检查；供新 Memory 显式入口避免回调 reader。Store 仅加启动时注入字段。
 
-完整 7 文件 SHA 与差异见 [freeze](logs/04-first-slice-freeze.json)、[patch](logs/04-first-slice.patch)。原 3 文件 before 是按自身精确改动逆向重建，逐个核对准备阶段已保存 SHA 后才保存副本，来源说明见 [original-source-proof](logs/01-original-source-proof.json)，不冒称修改前已提前复制了文件。
+完整 7 文件 SHA 与差异见 freeze（历史日志已清理：`logs/04-first-slice-freeze.json`）、patch（历史日志已清理：`logs/04-first-slice.patch`）。原 3 文件 before 是按自身精确改动逆向重建，逐个核对准备阶段已保存 SHA 后才保存副本，来源说明见 original-source-proof（历史日志已清理：`logs/01-original-source-proof.json`），不冒称修改前已提前复制了文件。
 
 ## 实际证据与边界
 

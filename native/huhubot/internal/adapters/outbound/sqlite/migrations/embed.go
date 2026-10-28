@@ -39,7 +39,10 @@ var GlobalMemory string
 //go:embed 017-command-epoch.sql
 var Purge string
 
-const CurrentVersion = 12
+//go:embed 018-data-lifecycle.sql
+var DataLifecycle string
+
+const CurrentVersion = 13
 
 // ApplicationID is the SQLite application_id "HUHU".
 const ApplicationID = 0x48554855
@@ -52,4 +55,4 @@ type Migration struct {
 	RebuildForeignKeys bool
 }
 
-var Ordered = []Migration{{Version: 1, SQL: Core}, {Version: 2, SQL: Assistant}, {Version: 3, SQL: Conversation}, {Version: 4, SQL: Grants}, {Version: 5, SQL: ApprovalEffect}, {Version: 6, SQL: Delegation}, {Version: 7, SQL: BudgetMessage}, {Version: 8, SQL: Groups, RebuildForeignKeys: true}, {Version: 9, SQL: Recovery}, {Version: 10, SQL: Memory}, {Version: 11, SQL: GlobalMemory}, {Version: 12, SQL: Purge}}
+var Ordered = []Migration{{Version: 1, SQL: Core}, {Version: 2, SQL: Assistant}, {Version: 3, SQL: Conversation}, {Version: 4, SQL: Grants}, {Version: 5, SQL: ApprovalEffect}, {Version: 6, SQL: Delegation}, {Version: 7, SQL: BudgetMessage}, {Version: 8, SQL: Groups, RebuildForeignKeys: true}, {Version: 9, SQL: Recovery}, {Version: 10, SQL: Memory}, {Version: 11, SQL: GlobalMemory}, {Version: 12, SQL: Purge}, {Version: 13, SQL: DataLifecycle}}

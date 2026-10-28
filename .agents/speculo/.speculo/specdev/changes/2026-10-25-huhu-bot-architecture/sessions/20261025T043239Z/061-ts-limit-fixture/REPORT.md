@@ -12,7 +12,7 @@ Status: completed
 
 本次复用 dev 与 SpecDev I 的已读未变化规则，完整读取061 TASK（SHA4028d2780d1eaec63716f345e2b7573b2391aa4decb9ad35c0a9994af1335ba8）、Root原红日志、LOG079/082和唯一schema的 collaboration.budget.result 全部约束。工作区仍为 /home/wta/orca/workspaces/obsidian-huhu/bot，HEAD/base33c21e098ef3188cbab5a09f3e0a01fadb787715，无提交/推送/发布。054报告与原日志保持原时间输入。
 
-唯一仓库源文件为 `src/modules/huhubot/core/protocol/connection.test.ts`。保留完整 [before快照](logs/connection.test.before.ts)、[单行diff](logs/02-fixture.diff)、[输入/只读文件摘要](logs/00-inputs.json) 及 [最终逐SHA复读](logs/04-final-inputs.json)。这是测试输入跟随已批准合同；当前schema对 maxDepth/rootChildren/profileChildren/maxWakes 的上限分别3/4/8/8，旧4/32/64/16本就不合法，未发现要求放宽产品校验的新问题。
+唯一仓库源文件为 `src/modules/huhubot/core/protocol/connection.test.ts`。保留完整 before快照（历史日志已清理：`logs/connection.test.before.ts`）、单行diff（历史日志已清理：`logs/02-fixture.diff`）、输入/只读文件摘要（历史日志已清理：`logs/00-inputs.json`） 及 最终逐SHA复读（历史日志已清理：`logs/04-final-inputs.json`）。这是测试输入跟随已批准合同；当前schema对 maxDepth/rootChildren/profileChildren/maxWakes 的上限分别3/4/8/8，旧4/32/64/16本就不合法，未发现要求放宽产品校验的新问题。
 
 | 输入 | 旧/当前 SHA256 |
 | --- | --- |
@@ -30,8 +30,8 @@ Status: completed
 pnpm exec vitest run src/modules/huhubot/core/protocol/connection.test.ts
 ```
 
-- 红：[01-red.log](logs/01-red.log)、[exit/Wait回执](logs/01-red.json)，42项中41通过、1失败，Vitest exit126；失败正是 initial zero budget / INVALID_METHOD_RESULT，与Root151中的失败一致。外围记录脚本的exit0仅表示已捕获预期红灯，不冒充测试通过。
-- 绿：[03-green.log](logs/03-green.log)、[exit/Wait回执](logs/03-green.json)，42项全部通过，Vitest exit0，821ms。原fixture CAS调用、响应严格校验、取消/迟到/兄弟隔离等该文件既有断言均保留。
+- 红：[01-red.log](logs/01-red.log)、exit/Wait回执（历史日志已清理：`logs/01-red.json`），42项中41通过、1失败，Vitest exit126；失败正是 initial zero budget / INVALID_METHOD_RESULT，与Root151中的失败一致。外围记录脚本的exit0仅表示已捕获预期红灯，不冒充测试通过。
+- 绿：[03-green.log](logs/03-green.log)、exit/Wait回执（历史日志已清理：`logs/03-green.json`），42项全部通过，Vitest exit0，821ms。原fixture CAS调用、响应严格校验、取消/迟到/兄弟隔离等该文件既有断言均保留。
 - 最终逐SHA复读仅授权的 connection.test.ts 改变；connection.ts、api.ts、schema、Root原红日志、054 REPORT 均未漂移。未运行全151、build/lint、Go或宿主检查，按TASK由Root负责后续稳定窗口，不把未运行检查写成通过。
 
 ## 问题与下一步

@@ -38,7 +38,7 @@ Status: completed
 | `pnpm exec tsc -skipLibCheck -p tsconfig.test.json` | 0 | [tsc-test.log](logs/tsc-test.log) |
 | `pnpm exec eslint src/modules/huhubot/core/protocol src/modules/huhubot/platform/desktop/transport --max-warnings 0` | 0 | 定向零警告；[lint.log](logs/lint.log) |
 | `pnpm test:architecture` | 0 | 无区域、宿主包、desktop、barrel 或 cycle 违规；[architecture.log](logs/architecture.log) |
-| `node <本任务>/measure-runtime.mjs` | 0 | 纯 browser 平台 bundle 与局部调用实测；[runtime-measurement.json](logs/runtime-measurement.json) |
+| `node <本任务>/measure-runtime.mjs` | 0 | 纯 browser 平台 bundle 与局部调用实测；runtime-measurement.json（历史日志已清理：`logs/runtime-measurement.json`） |
 | `node .agents/speculo/references/coordination/scripts/validate-dispatch.mjs --repo /home/wta/orca/workspaces/obsidian-huhu/bot --scope-root .agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture --session 20261025T043239Z --task 012-foundation-client-repair --stage return` | 0 | errors/warnings 为空；[validate-return.log](logs/validate-return.log) |
 
 **39 tests 与 159 样本的含义不同：** 两个 validator 测试之一使用真实 Ajv runtime 消费 Go owner 生成的 **159 个方法样本（122 正向、37 负向）**，覆盖全部 61 方法的 params/result，逐例断言有效性并确认输入未被修改；这些不是另报 159 个 Vitest tests。其余真实连接测试覆盖实际投递/拒绝边界，包括 hello/lease unknown、非法真实日期和 non-UTC offset。既有 3 个逐字节有效 golden 与 12 个 malformed frame golden 继续通过。

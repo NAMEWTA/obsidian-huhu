@@ -10,7 +10,7 @@ Status: completed
 
 自有源码只有 5 个 common/chat Go 文件、12 个 Chat 合同测试文件，新增 23 个顶层测试。流夹具直接在 loopback Handler 构造，没有复制 SDK parser、改 module cache、生成另一套 SDK、使用 Generate+capture serializer 或新增持久域。模块引入、Profile-bound resolver、默认 CLI/Core 装配和 notices 分属093/094/095；这些是原 owner 的实际证据，不能冒认本作者写入或全部重跑。
 
-[最终17文件清单](logs/24-own-source-manifest.json) SHA256 `4eacd1b5a1ae1845286667fee0f9390f6e3d8a160b0a2f4b0a7d0a3e05e52efb`，own tree `a7524be1481553c12ec4887b806096eb02d2b63e9402b258658c57463aec0cd8`。五生产文件在095最终五目标闭包前已冻结，之后没有变更。21 normal 与22 targeted race 用相同输入 `5b7f3d106efc6e9a1ab4955c68d08140718338767a3f1b1722faf2e2cf7c66f2`；其后只新增身份负控测试，并经23单独通过。
+最终17文件清单（历史日志已清理：`logs/24-own-source-manifest.json`） SHA256 `4eacd1b5a1ae1845286667fee0f9390f6e3d8a160b0a2f4b0a7d0a3e05e52efb`，own tree `a7524be1481553c12ec4887b806096eb02d2b63e9402b258658c57463aec0cd8`。五生产文件在095最终五目标闭包前已冻结，之后没有变更。21 normal 与22 targeted race 用相同输入 `5b7f3d106efc6e9a1ab4955c68d08140718338767a3f1b1722faf2e2cf7c66f2`；其后只新增身份负控测试，并经23单独通过。
 
 ## 实现行为
 
@@ -30,7 +30,7 @@ metadata Probe 只用显式 endpoint/modelId/key 执行固定 fork GetModel，�
 
 ## SDK producer 与结算证据
 
-[源码 SHA 与完整生命周期合同](logs/20-sdk-lifecycle-contract.json)记录实际固定源码，不以普通网络 EOF 充当 join：ACL chat_model.go894 的唯一 producer 最后 defer 顺序为 recover→stream.Close897 返回→必要 panic sw.Send899–901→最终 sw.Close903。Eino StreamWriter.Close→closeSend428–430 关闭 items；recv400–407 对该最终 channel-close 才返回精确 io.EOF。无 callback handler 的989–1003 WithConvert 链不新增异步 producer。
+源码 SHA 与完整生命周期合同（历史日志已清理：`logs/20-sdk-lifecycle-contract.json`）记录实际固定源码，不以普通网络 EOF 充当 join：ACL chat_model.go894 的唯一 producer 最后 defer 顺序为 recover→stream.Close897 返回→必要 panic sw.Send899–901→最终 sw.Close903。Eino StreamWriter.Close→closeSend428–430 关闭 items；recv400–407 对该最终 channel-close 才返回精确 io.EOF。无 callback handler 的989–1003 WithConvert 链不新增异步 producer。
 
 Generate 遇取消、sink error/panic、任何 SDK receive error 均 cancel HTTP，继续排空同一尚未 Close 的 reader，直到 `err == io.EOF`（不用 errors.Is、首个错误或 consumer.Close 冒充）。随后关闭 consumer，等待实际 body.Close 返回，再 Settle。无 SDK/global handlers、Copy、自动 Close 或 ResponseModifier；sdkContext 不把继承的 callback values 带入 SDK。F09 用真实 net/http 的 body.Close 阻塞证明：字节已经读完但 writer 最终 ACK 未到时 SQL 仍 dispatched/producer_ended0，Engine.Done/Core.Done 不提前关闭；释放后真实结算和清理结束。
 

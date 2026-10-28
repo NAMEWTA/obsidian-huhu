@@ -85,7 +85,7 @@ func (s *Store) Send(ctx context.Context, id api.RequestIdentity, c api.MessageC
 		toRun := ""
 		thread := "mailbox:" + target.ID
 		delegationID := c.DelegationID
-		if c.Kind == "question" {
+		if c.Kind == "question" || c.Kind == "notify" && c.DelegationID != "" {
 			if c.DelegationID == "" {
 				dc := api.DelegateCommand{CommandMeta: c.CommandMeta, RunID: c.RunID, Target: api.DelegationTarget{Kind: "existing", AgentID: target.ID}, Task: c.Text, Constraints: []string{}, Context: api.ContextEnvelope{SourceRefs: c.SourceRefs, MessageIDs: c.MessageIDs, Excerpts: []api.ContextExcerpt{}}}
 				dc.IdempotencyKey = "question:" + c.IdempotencyKey
@@ -116,9 +116,26 @@ func (s *Store) Send(ctx context.Context, id api.RequestIdentity, c api.MessageC
 				} else {
 					return api.Denied("MESSAGE_TARGET_MISMATCH")
 				}
-				if e = s.policy.WakeInTx(ctx, tx, a.run.RootRunID); e != nil {
-					return e
+				if c.Kind == "question" {
+					if e = s.policy.WakeInTx(ctx, tx, a.run.RootRunID); e != nil {
+						return e
+					}
 				}
+			}
+		}
+		if c.Kind == "notify" && toRun != "" {
+			receiver, _, e := execution.ReadInTx(ctx, tx, id, api.IDQuery{ProfileID: c.ProfileID, ID: toRun})
+			if e != nil {
+				return e
+			}
+			if receiver.AgentID != target.ID || receiver.RootRunID != a.run.RootRunID {
+				return api.Denied("MESSAGE_TARGET_MISMATCH")
+			}
+			if e = s.checkReplyTargetInTx(ctx, tx, id, c.ProfileID, toRun, a); e != nil {
+				return e
+			}
+			if e = tx.QueryRowContext(ctx, "SELECT work_thread_id FROM execution_runs WHERE run_id=?", toRun).Scan(&thread); e != nil {
+				return e
 			}
 		}
 		out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: a.agent.ID, ToAgentID: target.ID, Text: c.Text, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano), Kind: c.Kind, Status: "delivered", DelegationID: delegationID, WorkThreadID: thread}

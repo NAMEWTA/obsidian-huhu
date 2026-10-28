@@ -12,7 +12,7 @@ Status: completed
 
 ## 产物与验证
 
-修改范围与实际输入全部SHA见 [23-source-input.json](logs/23-source-input.json)，26文件，manifest本身SHA256 `28204f95c2b7317b3ef4ee63ba17baed7044909a8f0d99e56cd7ae1daa048e40`；11个自有文件都逐项列在其中。规范输入见 [24-normative-input.json](logs/24-normative-input.json)：dev及适用架构/测试/许可参考、I入口、当前Map/Goal/T04、Spec/ARCHITECTURE/ADR、034完整报告和observations、044不可变TASK。034的52来源索引及原始行是研究输入，未把其未运行矩阵记成通过；采用其DB-first、bounded tail、丢wake仍查DB与Run+seq去重思路，未复制OpenBot/Eino源码或引依赖。
+修改范围与实际输入全部SHA见 23-source-input.json（历史日志已清理：`logs/23-source-input.json`），26文件，manifest本身SHA256 `28204f95c2b7317b3ef4ee63ba17baed7044909a8f0d99e56cd7ae1daa048e40`；11个自有文件都逐项列在其中。规范输入见 24-normative-input.json（历史日志已清理：`logs/24-normative-input.json`）：dev及适用架构/测试/许可参考、I入口、当前Map/Goal/T04、Spec/ARCHITECTURE/ADR、034完整报告和observations、044不可变TASK。034的52来源索引及原始行是研究输入，未把其未运行矩阵记成通过；采用其DB-first、bounded tail、丢wake仍查DB与Run+seq去重思路，未复制OpenBot/Eino源码或引依赖。
 
 | 生产文件 | 交付行为 | SHA256 |
 | --- | --- | --- |
@@ -55,7 +55,7 @@ Status: completed
 
 ## 问题与下一步
 
-Root最新独立反例已回读、只读复制为 [25-root-state-observations.json](logs/25-root-state-observations.json)：实际生产reducer上，匹配Go writer的synthetic `approval.pending/status waiting_approval` 和 `run.canceled/status canceled` 两输入，seq推进但projection.status仍running。它是Root的synthetic字段向量，**不是live Go wire，也不是本agent执行**；83绿不覆盖该T06消费缺口。
+Root最新独立反例已回读、只读复制为 25-root-state-observations.json（历史日志已清理：`logs/25-root-state-observations.json`）：实际生产reducer上，匹配Go writer的synthetic `approval.pending/status waiting_approval` 和 `run.canceled/status canceled` 两输入，seq推进但projection.status仍running。它是Root的synthetic字段向量，**不是live Go wire，也不是本agent执行**；83绿不覆盖该T06消费缺口。
 
 042已选择统一生产合同：Run状态永远裸type=Run.status；Publish同事务先保存 `approval.pending/status pending` ledger，再追加 `waiting_approval/status waiting_approval`；Cancel发 `canceled/status canceled`。044保持冻结，不能把任意effect.status提升为Run状态；已请求042/043基于真实审批/取消Facade经当前TS服务证明修复，而不是只增加手造事件向量。该联合补验及Go fence最终状态归Root收口，本票候选不宣称联合gate已关闭。
 

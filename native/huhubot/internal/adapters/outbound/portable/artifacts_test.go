@@ -41,3 +41,61 @@ func TestArtifactStoreRoundTripIsOpaqueAndPrivate(t *testing.T) {
 		t.Fatal("path traversal artifact id accepted")
 	}
 }
+
+func TestArtifactStoreRejectsSymlinkedAncestors(t *testing.T) {
+	for _, component := range []string{"portable", "artifacts"} {
+		t.Run(component, func(t *testing.T) {
+			profile, external := t.TempDir(), t.TempDir()
+			if component == "artifacts" {
+				if err := os.Mkdir(filepath.Join(profile, "portable"), 0700); err != nil {
+					t.Fatal(err)
+				}
+			}
+			link := filepath.Join(profile, "portable")
+			if component == "artifacts" {
+				link = filepath.Join(link, "artifacts")
+			}
+			if err := os.Symlink(external, link); err != nil {
+				t.Skip("symlink unavailable", err)
+			}
+			pkg, err := contract.Build(contract.Selection{SourceProfile: "profile:symlink"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err = NewArtifactStore(profile).Put(context.Background(), pkg); err == nil {
+				t.Fatal("managed artifact escaped through ancestor symlink")
+			}
+			files, err := os.ReadDir(external)
+			if err != nil || len(files) != 0 {
+				t.Fatal("untrusted ancestor caused external writes", files, err)
+			}
+			other := NewArtifactStore(t.TempDir())
+			ref, err := other.Put(context.Background(), pkg)
+			if err != nil {
+				t.Fatal(err)
+			}
+			path, err := other.path(ref.ArtifactID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			bytes, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err = os.WriteFile(filepath.Join(external, filepath.Base(path)), bytes, 0600); err != nil {
+				t.Fatal(err)
+			}
+			if component == "portable" {
+				if err = os.Mkdir(filepath.Join(external, "artifacts"), 0700); err != nil {
+					t.Fatal(err)
+				}
+				if err = os.WriteFile(filepath.Join(external, "artifacts", filepath.Base(path)), bytes, 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if _, err = NewArtifactStore(profile).Get(context.Background(), ref); err == nil {
+				t.Fatal("managed artifact read escaped through ancestor symlink")
+			}
+		})
+	}
+}

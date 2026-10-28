@@ -8,9 +8,9 @@ Status: completed
 
 本票只修复077的同源 P2 STD/SPEC-077-01：字节预算未返回的私有结果被记为模型已消费贡献。已完整读取078 TASK、077两轴报告/原分页、条数控制、多贡献者和SQL探针、074最终交回及当前 T13 review-input-groups-r1；沿用未变的 AGENTS发现/dev/I/error/test-reliability、Map19/Goal18与T11/T13边界。无委派、正式票/失败attempts维护、提交、推送或发布，T16未开工。
 
-077 REPORT SHA `79025664b38e2ff00a3360e775c64f0e74f74ceb4b14f2c67e85388ec22bb5ec`；其独立review input `bac9f195888efe857183f3ff4e5e9ba05ba263a77ea9aba7ad81fd52a2611bc5`。本作者修改生产前 [01-current-input-before.json](logs/01-current-input-before.json) 固定299代码文件，逐项匹配077 frozen working_snapshot，drift=[]；87来源的完整核验来自Root/077交接，不冒称本作者重新跑077全套审查。
+077 REPORT SHA `79025664b38e2ff00a3360e775c64f0e74f74ceb4b14f2c67e85388ec22bb5ec`；其独立review input `bac9f195888efe857183f3ff4e5e9ba05ba263a77ea9aba7ad81fd52a2611bc5`。本作者修改生产前 01-current-input-before.json（历史日志已清理：`logs/01-current-input-before.json`） 固定299代码文件，逐项匹配077 frozen working_snapshot，drift=[]；87来源的完整核验来自Root/077交接，不冒称本作者重新跑077全套审查。
 
-生产唯一变更 `sqlite/collaboration/store.go`，前SHA `c747f0b3cd7288cb756294f32ccae6e9e1b4d323ac57b8cc4508703c94748aa9`，后SHA `796d3790ef825f42a670e07120534cbe1f2e53c88f086fd76e10eb038b674ac0`；[精确差异](logs/07-production.diff)。另新增四个groups永久回归，无旧测试断言改动。初始冻结 [09](logs/09-final-source-before-checks.json) 含5自有文件SHA/352支持输入，除了该生产文件，旧299代码及原348支持集其余347字节不变。最终测试清理补充及最终摘要在下文，09原输入保留。
+生产唯一变更 `sqlite/collaboration/store.go`，前SHA `c747f0b3cd7288cb756294f32ccae6e9e1b4d323ac57b8cc4508703c94748aa9`，后SHA `796d3790ef825f42a670e07120534cbe1f2e53c88f086fd76e10eb038b674ac0`；精确差异（历史日志已清理：`logs/07-production.diff`）。另新增四个groups永久回归，无旧测试断言改动。初始冻结 09（历史日志已清理：`logs/09-final-source-before-checks.json`） 含5自有文件SHA/352支持输入，除了该生产文件，旧299代码及原348支持集其余347字节不变。最终测试清理补充及最终摘要在下文，09原输入保留。
 
 ## 产物与验证
 
@@ -24,7 +24,7 @@ ListTasks在同一短事务先读取授权候选并确定页，再只对**实际
 
 ### 原红与永久回归
 
-[01-reviewer-probe-source.json](logs/01-reviewer-probe-source.json) 固定077原探针逐字节来源；首次复制到自有groups测试路径，旧生产未改，用 `GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 go -C native/huhubot test -mod=readonly ./tests/contract/groups -run '^TestReviewerListPageDoesNotConsumeOmittedResult$' -count=1 -v -timeout=45s` 真实复现。[02](logs/02-original-review-red.log) exit1/Wait，包0.260s；不移除对照通过，页返回三份131072-byte结果却记录四位贡献者；只移除未返回成员后actual Dispatch0、原want1失败，slots/pins仍0。原探针备份在[02源码](logs/02-original-review-probe.go.txt)，旧077材料只读；临时复制测试随后被独立永久例替代，没有把它修后“找不到phantom就不remove”的行为作为成功证明。
+01-reviewer-probe-source.json（历史日志已清理：`logs/01-reviewer-probe-source.json`） 固定077原探针逐字节来源；首次复制到自有groups测试路径，旧生产未改，用 `GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 go -C native/huhubot test -mod=readonly ./tests/contract/groups -run '^TestReviewerListPageDoesNotConsumeOmittedResult$' -count=1 -v -timeout=45s` 真实复现。[02](logs/02-original-review-red.log) exit1/Wait，包0.260s；不移除对照通过，页返回三份131072-byte结果却记录四位贡献者；只移除未返回成员后actual Dispatch0、原want1失败，slots/pins仍0。原探针备份在02源码（历史日志已清理：`logs/02-original-review-probe.go.txt`），旧077材料只读；临时复制测试随后被独立永久例替代，没有把它修后“找不到phantom就不remove”的行为作为成功证明。
 
 永久 `TestTaskListBytePageConsumesOnlyReturnedBodiesAndNextPageCreatesRealDependency` 从**admitted delegation IDs减actual returned IDs**得到未返回项，修后也真的移除该成员。四个真实公共群/同Executor/绑定Tools控制：
 
@@ -49,7 +49,7 @@ ListTasks在同一短事务先读取授权候选并确定页，再只对**实际
 
 ### 冻结影响检查
 
-352输入初始tree `1f425c1252f3a58632eb0eb3768e39887272491d929523058d4c58788200e67f`，自有5文件tree `eb47abb3de3957f3f6164e2fffad442bdec062cb8dfd52c32f3f3fe9fc21ca2f`，见09。唯一串行执行器[10](logs/10-run-affected-checks.py)每条前后回读全部352路径；环境Go1.26.10 Linux，模块cwd=`native/huhubot`。实际[14-check-results.json](logs/14-check-results.json)三条全部exit0/Wait、before/each/after drift=[]：
+352输入初始tree `1f425c1252f3a58632eb0eb3768e39887272491d929523058d4c58788200e67f`，自有5文件tree `eb47abb3de3957f3f6164e2fffad442bdec062cb8dfd52c32f3f3fe9fc21ca2f`，见09。唯一串行执行器10（历史日志已清理：`logs/10-run-affected-checks.py`）每条前后回读全部352路径；环境Go1.26.10 Linux，模块cwd=`native/huhubot`。实际14-check-results.json（历史日志已清理：`logs/14-check-results.json`）三条全部exit0/Wait、before/each/after drift=[]：
 
 | 固定GOTOOLCHAIN=go1.26.10，模块cwd执行 | 实际结果 |
 |---|---|
@@ -57,11 +57,11 @@ ListTasks在同一短事务先读取授权候选并确定页，再只对**实际
 | `CGO_ENABLED=1 go test -mod=readonly -race -p 1 ./tests/contract/groups ./tests/contract/delegation ./tests/contract/access -count=1 -v -timeout=8m` | [12](logs/12-affected-race.log)，exit0，wall145.961s，无race detector报告 |
 | `CGO_ENABLED=0 go vet -mod=readonly ./...` | [13](logs/13-vet.log)，exit0，wall0.359s |
 
-Root在矩阵期间只读指出新测试的失败清理遗漏：Engine等待next请求，但cleanup只释放allowRead/release。当前矩阵全部Wait后只给测试next缓冲channel补非阻塞false释放；[15精确差异](logs/15-test-cleanup.diff)不改生产/断言，仅保证较早Fatal也能在Core.Close前释放实际producer。初次匹配预备脚本误按多行cleanup，断言在改源前失败，随后shell仍额外跑了一次旧输入normal，[15-old](logs/15-preparation-old-input-normal.log)保留且不计作新cleanup验证；没有修改产品或重新择绿跑矩阵。
+Root在矩阵期间只读指出新测试的失败清理遗漏：Engine等待next请求，但cleanup只释放allowRead/release。当前矩阵全部Wait后只给测试next缓冲channel补非阻塞false释放；15精确差异（历史日志已清理：`logs/15-test-cleanup.diff`）不改生产/断言，仅保证较早Fatal也能在Core.Close前释放实际producer。初次匹配预备脚本误按多行cleanup，断言在改源前失败，随后shell仍额外跑了一次旧输入normal，[15-old](logs/15-preparation-old-input-normal.log)保留且不计作新cleanup验证；没有修改产品或重新择绿跑矩阵。
 
-最终[16-final-source-r2.json](logs/16-final-source-r2.json)逐项固定5自有/352支持文件：自有tree `f1ee260b63ddb27c7853f76cc07a1f7e34aea71d8c9a1aed3f5bf482d94f23fa`、完整支持tree `674dc115fcc0ba1a3debed82e73768a39d7a74a90b53c33af8ce8f14bb95c665`。相对09仅该新测试cleanup变动，生产SHA、所有旧断言与另外351输入完全不变。
+最终16-final-source-r2.json（历史日志已清理：`logs/16-final-source-r2.json`）逐项固定5自有/352支持文件：自有tree `f1ee260b63ddb27c7853f76cc07a1f7e34aea71d8c9a1aed3f5bf482d94f23fa`、完整支持tree `674dc115fcc0ba1a3debed82e73768a39d7a74a90b53c33af8ce8f14bb95c665`。相对09仅该新测试cleanup变动，生产SHA、所有旧断言与另外351输入完全不变。
 
-相同GOTOOLCHAIN及模块cwd，用 `go test -mod=readonly ./tests/contract/groups -run '^TestTaskListBytePageConsumesOnlyReturnedBodiesAndNextPageCreatesRealDependency$' -count=1 -v -timeout=60s`，先CGO0普通、再CGO1加`-race`：[17](logs/17-cleanup-normal.log)/[18](logs/18-cleanup-race.log)分别exit0/Wait、wall1.078s/8.238s，四控制均实际remove并保持全部原断言；[19](logs/19-cleanup-check-results.json)每条后352输入drift=[]。因此14其余checks按纯测试清理影响复用，不宣称14当时已包含尚未写入的cleanup。最终回读、资源和return回执见[20](logs/20-final-source-readback.json)与[21](logs/21-return-validation.json)。
+相同GOTOOLCHAIN及模块cwd，用 `go test -mod=readonly ./tests/contract/groups -run '^TestTaskListBytePageConsumesOnlyReturnedBodiesAndNextPageCreatesRealDependency$' -count=1 -v -timeout=60s`，先CGO0普通、再CGO1加`-race`：[17](logs/17-cleanup-normal.log)/[18](logs/18-cleanup-race.log)分别exit0/Wait、wall1.078s/8.238s，四控制均实际remove并保持全部原断言；19（历史日志已清理：`logs/19-cleanup-check-results.json`）每条后352输入drift=[]。因此14其余checks按纯测试清理影响复用，不宣称14当时已包含尚未写入的cleanup。最终回读、资源和return回执见20（历史日志已清理：`logs/20-final-source-readback.json`）与21（历史日志已清理：`logs/21-return-validation.json`）。
 
 ## 问题与下一步
 

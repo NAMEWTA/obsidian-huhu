@@ -32,7 +32,8 @@ export async function registerObsidianNoteHost(app: App, client: BotClient, opti
 		deviceId: device, workspaceId: options.workspaceId, lifetime: options.lifetime });
 	const writes = new HostWriteService(effects, options.timers, app);
 	const host: BotHost = { prepareWrite: writes.prepareWrite, checkWrite: writes.checkWrite, invoke: writes.invoke, queryReceipt: writes.queryReceipt,
-		read: reads.read, search: reads.search, leaseChanged: lease => { reads.setLease(lease); writes.setLease(lease); } };
+		read: reads.read, search: reads.search, leaseChanged: lease => { reads.setLease(lease); writes.setLease(lease); },
+		profileChanged: next => { if (next.profileId !== profile.profileId) throw noteFault('NOTE_PROFILE_MISMATCH'); effects.setCommandEpoch(next.commandEpoch); } };
 	try { client.setHost(host); }
 	catch (error) { writes.dispose(); reads.dispose(); sources.dispose(); throw error; }
 	let disposed = false;

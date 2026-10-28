@@ -83,7 +83,14 @@ HUHU 的库内数据分在当前 vault 的两块根里。**`huhu/`（可见）**
 
 ## 库之外的数据
 
-Bot Runner 底座的 Profile 位于本机受管根，每份目录包含 `profile.sqlite3` 及 SQLite WAL/SHM。Linux 使用绝对 `$XDG_STATE_HOME/huhu/huhubot/profiles/`，缺省为 `~/.local/state/huhu/huhubot/profiles/`；macOS 为 `~/Library/Application Support/HUHU/huhubot/profiles/`，Windows 为 `%LOCALAPPDATA%/HUHU/huhubot/profiles/`。CLI 的 `--profile` 必须是受管根内的绝对目录，不接受库内任意数据库路径。Profile 根由 Runner 独立构造，数据库按文件身份互斥，关闭后才能重开；当前底座持久化身份、command epoch、修订与创建时间。不把数据库放进 vault 或由插件 JSON store 改写；这不是移动端或多设备同步的承诺。
+Bot Runner 底座的 Profile 位于本机受管根，每份目录包含 `profile.sqlite3` 及 SQLite WAL/SHM。Linux 使用绝对 `$XDG_STATE_HOME/huhu/huhubot/profiles/`，缺省为 `~/.local/state/huhu/huhubot/profiles/`；macOS 为 `~/Library/Application Support/HUHU/huhubot/profiles/`，Windows 为 `%LOCALAPPDATA%/HUHU/huhubot/profiles/`。CLI 的 `--profile` 必须是受管根内的绝对目录，不接受库内任意数据库路径。Profile 根由 Runner 独立构造，数据库按文件身份互斥，关闭后才能重开；Profile 持久化身份、会话/调用树、审批与效果、来源权限、记忆、预算及幂等回执。不把数据库放进 vault 或由插件 JSON store 改写；这不是移动端或多设备同步的承诺。
+
+
+Profile 的本机绑定不放入 Vault：插件以 Vault ID 与规范化本机路径的摘要定位 Obsidian App 本机键 `huhu.huhubot.profile.v1.<摘要>`，值为随机目录标识。重开同一位置复用绑定，复制 Vault 或 portable 包不复制有效 Profile 身份。已存在的其他 Profile 目录不会被自动删除或合并。模型秘密仅经私有凭据通道登记，保护模式使用操作系统凭据服务，仅会话模式在 Runner 停止后丢失。
+
+portable 包缓存在 `<Profile>/portable/artifacts/<随机ID>.json`，只允许受管目录和不超过 16 MiB 的包；导出目的地和导入文件均由用户通过系统选择器明确选择。文件桥只读取用户明确选择的文件与受管导出包；导入按有界 HAP 分块上传，由 Go 校验完整包并在同一个清理门内发布，TS 不直接写 Profile。Go 检查包格式、hash、对象权限与导入修订。包不包含凭据、有效授权、审批、运行队列或可执行恢复点；导入不会自动运行任务。 预览展示固定于该令牌的复制新 ID 候选和全部已有冲突目标；覆盖使用明确的单一已有目标，匹配多个目标时仅允许复制。预览过大时返回明确限制并保留连接，请减少对象或处理重名后分批导入。
+
+会话正文删除先预览，清除受管派生正文与自动来源记忆，保留的固定/全局独立条目按用户选择处理；未知效果仅暂存核查所需绑定与原指纹。会话清理与 Profile 全清均要求本 Profile 没有活动运行或未结算生产者，避免清理门影响无关在途任务。清理先持久记录门禁，再清除受管包、恢复点、备份和相应凭据，并检查 SQLite WAL 截断；失败保持受限，数据页在重启后仍可列出待完成清理并重试。Profile 全清不保留记忆条目，需要保留时请先显式导出；完成后旧身份与 command epoch 不能复活数据，新 Profile 的调用额度清零并暂停。用户主动导出的外部副本和已写入的 Vault 笔记不随 Profile 清除。
 
 默认的“系统账号”不重定向 HOME、提供方数据根或 XDG/Windows 数据目录，CLI 沿用本机已有登录。HUHU 的运行事件保存在库内；开启状态 Hook 或自动化运行所需 Hook 时，会在 `~/.huhu/agent-hooks/` 保存共用脚本与备份，并修改真实提供方配置中的约定条目或扩展文件。它们不会随关库自动移除，具体范围和移除操作见[智能体工作台](agent-workbench.md#状态-hook)。
 

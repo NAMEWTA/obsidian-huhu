@@ -1,5 +1,5 @@
 import type { ModuleManifest } from '../../app/contracts/module';
-import { BOT_CLIENT } from './api';
+import { BOT_RUNTIME } from './api';
 
 export const huhubotManifest: ModuleManifest = {
 	id: 'huhubot',
@@ -10,6 +10,6 @@ export const huhubotManifest: ModuleManifest = {
 	platforms: { desktop: true, mobile: false },
 	defaultEnabled: true,
 	activation: 'on-demand',
-	provides: [BOT_CLIENT],
+	provides: [BOT_RUNTIME],
 	load: () => import('./module'),
 };

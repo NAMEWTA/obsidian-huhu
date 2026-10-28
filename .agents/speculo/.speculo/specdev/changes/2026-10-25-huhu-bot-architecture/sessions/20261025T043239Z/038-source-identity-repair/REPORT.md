@@ -20,7 +20,7 @@ Status: completed
 - hash测试只暂停外部 WebCrypto 调度，实际digest仍委托生产SHA-256；不是替换应用判断。失败发布后仍能填满全部128 source/scope槽，证明拒绝不泄漏条目。
 - 实际 ObsidianSources.captureSelection→HostReadService.read/search，在ASCII原文131072、131073、1048576 UTF-16 code units的末尾一字节选区都返回Z，范围为原文绝对坐标。1048577字节未保存正文拒绝；实际1MiB整篇快照最多输出65536字节并标记truncated，65537读/搜索预算仍拒绝。中文/emoji/换行的原文UTF-16坐标、UTF-8 hash与输出预算保持。
 
-冻结输入见 [12-final-input.json](logs/12-final-input.json)：30文件，文件本身SHA256 `c6297dbbe9e80cad778addaf1cd45b277a31f73d70d86635d7e1ae161f0ffc0b`。自有文件SHA256：
+冻结输入见 12-final-input.json（历史日志已清理：`logs/12-final-input.json`）：30文件，文件本身SHA256 `c6297dbbe9e80cad778addaf1cd45b277a31f73d70d86635d7e1ae161f0ffc0b`。自有文件SHA256：
 
 | 文件 | SHA256 |
 | --- | --- |
@@ -30,9 +30,9 @@ Status: completed
 
 037通知并实际核对的唯一schema SHA256 `63d16a0a891b14d6c685514d57913ccccbaac59c184f9b76b45d8a6779db9e4e`，仍63 methods/126 params-result shapes，226共享方法样本。原文start/end整数上限1048576与正文maxBytes<=65536分离；本票未写共享文件，未扩正文预算。
 
-原035 `/tmp/huhu-chat-review` 探针及bundle只读复制到本票 [logs/probes](logs/probes)，原脚本副本保留。baseline使用原035冻结bundle；断言只从“观察缺陷”改成“应拒绝替换/应读取合法选区”，正文、stat与边界输入不变，得到实际红灯。当前生产另行bundle后以相同探针输入转绿；baseline/current各文件摘要见 [13-probe-manifest.json](logs/13-probe-manifest.json)。038初始源文件和037已冻结schema摘要另见 [00-input.json](logs/00-input.json)。没有覆写035原探针/日志；没有把原观察性exit0当产品验收。
+原035 `/tmp/huhu-chat-review` 探针及bundle只读复制到本票 [logs/probes](logs/probes)，原脚本副本保留。baseline使用原035冻结bundle；断言只从“观察缺陷”改成“应拒绝替换/应读取合法选区”，正文、stat与边界输入不变，得到实际红灯。当前生产另行bundle后以相同探针输入转绿；baseline/current各文件摘要见 13-probe-manifest.json（历史日志已清理：`logs/13-probe-manifest.json`）。038初始源文件和037已冻结schema摘要另见 00-input.json（历史日志已清理：`logs/00-input.json`）。没有覆写035原探针/日志；没有把原观察性exit0当产品验收。
 
-命令和实际退出码见 [14-command-results.json](logs/14-command-results.json)，全部由本agent实际执行；红灯工具返回126，输出是对应产品断言失败，不是审批阻断。
+命令和实际退出码见 14-command-results.json（历史日志已清理：`logs/14-command-results.json`），全部由本agent实际执行；红灯工具返回126，输出是对应产品断言失败，不是审批阻断。
 
 | 检查 | 实际结果 |
 | --- | --- |

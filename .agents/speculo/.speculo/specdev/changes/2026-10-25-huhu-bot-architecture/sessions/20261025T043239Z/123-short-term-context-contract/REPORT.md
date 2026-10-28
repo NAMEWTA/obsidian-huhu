@@ -25,9 +25,9 @@ Status: completed
 | §6 DESIGN真实读取 | 同Memory API窄增只读Kind=context；get ID=实际RunID，list只列真实manifest摘要，get按entry+UTF8片段分页。pending/sealed/redacted/legacy_untracked分明，temporary走任务实际namespace，orchestration无A模型上下文。上下文entry物理fence，不能用sessions.history拼假实际输入。 |
 | §7 原owner请求 | T01唯一纯DTO/严格wire/生成；T03/T16输入UoW/受理标记/恢复水位；T14本域planner/manifest/投影/014；原T05/T11–13资格/消费与T04投递；T08共同层渲染/Inspector；T24只消费真实页。精确路径与顺序均写明，未授写权。 |
 
-[40项来源指纹](sources.json)tree `065d99fe176de1bde51c5b12ac52fa5d1719fbb3b3157874c3ce1be26d7e7ab8`；[索引](sources.md)标实际读取range/search，未把哈希核对冒称全文件审查。[00](logs/00-115-source-recheck.json)另对115的55文本来源逐字节核验，只有Core119第三driver已知差量，115接口合同SHA严格保持 `406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4`。没有执行原型app.js或重跑旧产品验证。
+[40项来源指纹](sources.json)tree `065d99fe176de1bde51c5b12ac52fa5d1719fbb3b3157874c3ce1be26d7e7ab8`；[索引](sources.md)标实际读取range/search，未把哈希核对冒称全文件审查。00（历史日志已清理：`logs/00-115-source-recheck.json`）另对115的55文本来源逐字节核验，只有Core119第三driver已知差量，115接口合同SHA严格保持 `406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4`。没有执行原型app.js或重跑旧产品验证。
 
-本次实际验证仅：文本读取、来源SHA/末次无漂移回读、交接内部链接检查，以及亲自[return结构校验](logs/01-return-result.json)。它们不证明任何新产品行为。§8的C1–C7隔离/真实模型输入、UTF8压缩、当前失效、Memory组合、事务/Stop、CP/legacy和UI物理页消费者**全部not-run**；无任何模型、数据库、网络或并发通过声明。最终来源/链接结果见[02](logs/02-final-source-readback.json)，所有交接工件SHA见[manifest.json](manifest.json)。
+本次实际验证仅：文本读取、来源SHA/末次无漂移回读、交接内部链接检查，以及亲自return结构校验（历史日志已清理：`logs/01-return-result.json`）。它们不证明任何新产品行为。§8的C1–C7隔离/真实模型输入、UTF8压缩、当前失效、Memory组合、事务/Stop、CP/legacy和UI物理页消费者**全部not-run**；无任何模型、数据库、网络或并发通过声明。最终来源/链接结果见02（历史日志已清理：`logs/02-final-source-readback.json`），所有交接工件SHA见[manifest.json](manifest.json)。
 
 ## 问题与下一步
 

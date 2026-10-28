@@ -37,10 +37,10 @@ Observed: F-133-01 不满足 TASK Acceptance 2 和 R3 Go/TS 字节、Unicode、�
 ## 来源与输入核验
 
 - 正式唯一 scope/sources/exclusions 为 `evidence/T-14-logs/review-input-memory-components-r1.json`，对应 `evidence/T-14.md#review-input-memory-components-r1`；TASK SHA256 `207e524a9a4993f6c9eef50ee5a040abaaebf8fda1b43b34b0f80623fb716541`。Map37/Goal36/LOG124。
-- [初始输入](logs/00-input.json)与[最终核对](logs/13-final-freeze.json)：31 主文件、1719 固定文件及模式、31 来源，scope 重算相同、source/file/mode/copy drift 全空。HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`、index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494` 均未变。固定副本 `/tmp/huhu-review133-9yin8zqa` 的原 1719 项未变，探针为额外文件。
-- G2 实际工作副本不是未提交 HEAD：[独立复用核对](logs/11-reuse-verification.json)验证原 1697 项及 ZIP，SHA256 `4d05eb7b0fd74a2e6da5512b71e1dfddfc184d6c79893aa928d2f559bda87cea`。12 changed/22 addedSinceG2 中，四个旧配置/setup 仅是 G2 捕获缺项，不能称本次新增。31 主文件的真实旧字节比较在 [diff](logs/11-primary-g2.diff.txt)。
-- 五作者 REPORT 全文、原失败分类、最终报告及 119+29+108+18+26=300 个工件逐 SHA 核验无漂移；Root 五份接纳回执与报告/manifest 对应。131 当前 1647 项、130 自有 11 项、132 当前 API/vet 23 项再次核对无漂移，见[复用源](logs/14-reused-final-sources.json)。
-- Root 额外授予纯 typedHAP 窗：仅增加只读 `methods_generated.go`，131820 B、mode0600、SHA256 `cbfeab29e5dad9f4eef8d17e7ead5c0abde7b6e41651bc29030681f155487049`。授权为 `evidence/T-14-logs/133-hap-probe-window.json`；[04 输入](logs/04-hap-extra-input.json)与[12 回读](logs/12-review-observations.json)证明原件及副本一致。原正式 reviewInput 未改变。
+- 初始输入（历史日志已清理：`logs/00-input.json`）与最终核对（历史日志已清理：`logs/13-final-freeze.json`）：31 主文件、1719 固定文件及模式、31 来源，scope 重算相同、source/file/mode/copy drift 全空。HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`、index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494` 均未变。固定副本 `/tmp/huhu-review133-9yin8zqa` 的原 1719 项未变，探针为额外文件。
+- G2 实际工作副本不是未提交 HEAD：独立复用核对（历史日志已清理：`logs/11-reuse-verification.json`）验证原 1697 项及 ZIP，SHA256 `4d05eb7b0fd74a2e6da5512b71e1dfddfc184d6c79893aa928d2f559bda87cea`。12 changed/22 addedSinceG2 中，四个旧配置/setup 仅是 G2 捕获缺项，不能称本次新增。31 主文件的真实旧字节比较在 diff（历史日志已清理：`logs/11-primary-g2.diff.txt`）。
+- 五作者 REPORT 全文、原失败分类、最终报告及 119+29+108+18+26=300 个工件逐 SHA 核验无漂移；Root 五份接纳回执与报告/manifest 对应。131 当前 1647 项、130 自有 11 项、132 当前 API/vet 23 项再次核对无漂移，见复用源（历史日志已清理：`logs/14-reused-final-sources.json`）。
+- Root 额外授予纯 typedHAP 窗：仅增加只读 `methods_generated.go`，131820 B、mode0600、SHA256 `cbfeab29e5dad9f4eef8d17e7ead5c0abde7b6e41651bc29030681f155487049`。授权为 `evidence/T-14-logs/133-hap-probe-window.json`；04 输入（历史日志已清理：`logs/04-hap-extra-input.json`）与12 回读（历史日志已清理：`logs/12-review-observations.json`）证明原件及副本一致。原正式 reviewInput 未改变。
 - 先真实 go list：基础 428 packages、7 本仓目录；HAP 扩展 131 packages、3 本仓目录，与基础合计 9 个纯目录，未导入 Core/SQL/活动 writer。原输出及提取位于 01/02/04。闭包外来源路径仅为可达性静态追踪，SHA 和不作执行证明的边界记于 12，不偷加为本轮已测组件。
 
 ## Findings
@@ -51,7 +51,7 @@ Observed: F-133-01 不满足 TASK Acceptance 2 和 R3 Go/TS 字节、Unicode、�
 
 可证伪假设是“所有 Memory 结果字符串在 Marshal 前已被纯 API 验证，后置 schema 不会洗掉非法值”。03 从合法 active item 构造正控：source ResourceID 为 170 个“中”加 `ab`，恰 512 UTF8 bytes。四个单变量反控为再加 `c`（513 bytes）、source revision=`9223372036854775808`、ResourceID 含原始 Go `0xff`、可选 title 含原始 Go `0xff`。正文/hash、namespace、scope、其他来源字段保持合法。结果全是 typedError=nil。
 
-05 不直接调用私有 handler：实际 New Router+Service、公开 protocol.hello 成功 Ready、显式 fake MemoryAPI.Get 返回该 typed 对象，再调用真实 memory.get。每个 case calls=1、RouterError=nil；非法 Go 字符被 encoding/json 替换为 U+FFFD。08 将实际 Router 字节作为真实 TS 客户端响应：512-byte 正控通过；513-byte ID 和越界 revision 触发 INVALID_METHOD_RESULT/closed；已替换的两个字符串通过，因为原始坏字节已丢失。见 [API 探针](logs/03-review133-api-probe.go.txt)、[API 原红](logs/03-api-boundary.log)、[Router 探针](logs/05-review133-hap-probe.go.txt)、[Router 原红](logs/05-hap-boundary.log)、[实际字节](logs/05-router-results.json)、[TS 探针](logs/07-review133-ts-probe.ts.txt)、[TS 回执](logs/08-ts-router-controls.json)。
+05 不直接调用私有 handler：实际 New Router+Service、公开 protocol.hello 成功 Ready、显式 fake MemoryAPI.Get 返回该 typed 对象，再调用真实 memory.get。每个 case calls=1、RouterError=nil；非法 Go 字符被 encoding/json 替换为 U+FFFD。08 将实际 Router 字节作为真实 TS 客户端响应：512-byte 正控通过；513-byte ID 和越界 revision 触发 INVALID_METHOD_RESULT/closed；已替换的两个字符串通过，因为原始坏字节已丢失。见 API 探针（历史日志已清理：`logs/03-review133-api-probe.go.txt`）、[API 原红](logs/03-api-boundary.log)、Router 探针（历史日志已清理：`logs/05-review133-hap-probe.go.txt`）、[Router 原红](logs/05-hap-boundary.log)、实际字节（历史日志已清理：`logs/05-router-results.json`）、TS 探针（历史日志已清理：`logs/07-review133-ts-probe.ts.txt`）、TS 回执（历史日志已清理：`logs/08-ts-router-controls.json`）。
 
 影响与前提：这是明确承诺的 typed 输出合同缺口，错误/损坏的应用返回可形成不兼容响应或静默字符替换。**没有证明正常用户经当前来源受理链能构造上述坏值，更不是权限突破。** 静态追踪 ContextAccess sourceIdentity→grants.Opaque/Positive，正常入站 Source 的超长 ID/越界 revision 已被拒绝；Go 非法字符串不是合法 JSON wire 值。来源进入 MemoryBody 是真实已消费 Access.Sources/Scopes 的拷贝，持久 JSON 亦有自己的编解码边界。探针 fake 的责任是验证 TASK Acceptance 2 的非法 typed 返回门，不假装是实际 SQL producer。
 
@@ -71,7 +71,7 @@ Observed: F-133-01 不满足 TASK Acceptance 2 和 R3 Go/TS 字节、Unicode、�
 | 合同内反例 | 249443 | 249642 | false，INVALID_METHOD_RESULT，closed |
 | 超出整包阈值 | 266723 | 266922 | false，INVALID_METHOD_RESULT，closed，符合拒绝预期 |
 
-09 首次红保留；10 使用真实 HapConnection、codec、hello、BotClient.memory.get，并在每分支 finally close，四测试三通过一失败。完整请求值、精确预算、source ID 上界和连接状态在[10 原始结果](logs/10-budget-results.json)、[10 探针](logs/10-review133-ts-budget-controls.ts.txt)、[10 日志](logs/10-ts-budget-controls.log)。Go API 的 ValidateMemoryResult context 分支静态设置 max=MemoryPageBytes，ValidateExecutionContextView 不设置此 entry 上限；本轮未重新执行 Go budget case，因为 Go 窗已归还。
+09 首次红保留；10 使用真实 HapConnection、codec、hello、BotClient.memory.get，并在每分支 finally close，四测试三通过一失败。完整请求值、精确预算、source ID 上界和连接状态在10 原始结果（历史日志已清理：`logs/10-budget-results.json`）、10 探针（历史日志已清理：`logs/10-review133-ts-budget-controls.ts.txt`）、[10 日志](logs/10-ts-budget-controls.log)。Go API 的 ValidateMemoryResult context 分支静态设置 max=MemoryPageBytes，ValidateExecutionContextView 不设置此 entry 上限；本轮未重新执行 Go budget case，因为 Go 窗已归还。
 
 可达性和限制：这不是要求真实 Core 能返回任意内部 typed 假形状。闭包外的当前 `sqlite/memory/context_view.go:89` 会把全部 ExplicitSources 放在同一 attachment view，`:326` 原样返回该 metadata entry。3×32 scope IDs 各自符合来源形状/字节约束，Scope IDs 是不透明标识；本例不依赖控制字符或不可解析 UTF8。**这是实际 producer 的静态路径证明，尚未做 Store/SQL/Host 权限端到端受理复现。** 正常有效 Host/Grant/lease 仍是实际调用前提，本组件结论不认证它们。该限制已经足以拒绝合同明确允许的纯公开结果；约 250 KiB 的合法页使用户无法读取本轮上下文，并牵连整个 HAP 连接。
 
@@ -79,7 +79,7 @@ Observed: F-133-01 不满足 TASK Acceptance 2 和 R3 Go/TS 字节、Unicode、�
 
 ## 产物与验证
 
-所有命令的真实 argv/cwd/env、actualExit、waitSeconds、完整 stdout/stderr 摘要均在同名 JSON/log，执行器 [runner](logs/runner.py.txt)。固定 Go1.26.10、GOWORK=off、GOEXPERIMENT 空、GOFLAGS=-mod=readonly、GOPROXY=off；本轮独立 Go 为 CGO0 normal，没有宣称新跑 race。
+所有命令的真实 argv/cwd/env、actualExit、waitSeconds、完整 stdout/stderr 摘要均在同名 JSON/log，执行器 runner（历史日志已清理：`logs/runner.py.txt`）。固定 Go1.26.10、GOWORK=off、GOEXPERIMENT 空、GOFLAGS=-mod=readonly、GOPROXY=off；本轮独立 Go 为 CGO0 normal，没有宣称新跑 race。
 
 | 本轮命令 / 工件前缀 | 实际退出 | Wait 秒 | 观察 |
 |---|---:|---:|---|

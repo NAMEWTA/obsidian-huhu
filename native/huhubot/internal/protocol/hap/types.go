@@ -42,7 +42,12 @@ type HelloResult struct {
 type HealthResult struct {
 	Status string `json:"status"`
 }
+type CleanupStatus struct {
+	Profile    bool     `json:"profile"`
+	SessionIDs []string `json:"sessionIds"`
+}
 type StatusResult struct {
+	Cleanup       *CleanupStatus       `json:"cleanup,omitempty"`
 	Policy        *RuntimePolicyStatus `json:"policy,omitempty"`
 	SchemaVersion int                  `json:"schemaVersion"`
 	State         string               `json:"state"`
@@ -62,6 +67,7 @@ type EmptyParams struct{}
 type HostAttachParams struct {
 	WorkspaceID  string   `json:"workspaceId"`
 	Capabilities []string `json:"capabilities"`
+	RenewLeaseID string   `json:"renewLeaseId,omitempty"`
 }
 type HostLease struct {
 	HostConnectionID string   `json:"hostConnectionId"`

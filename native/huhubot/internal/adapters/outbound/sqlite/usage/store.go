@@ -557,6 +557,9 @@ func (b *bound) Settle(ctx context.Context, res api.AttemptReservation, o api.At
 		if _, e := tx.ExecContext(ctx, "UPDATE execution_runs SET child_slot=0 WHERE run_id=? AND status NOT IN('running','preparing') AND NOT EXISTS(SELECT 1 FROM model_attempts WHERE run_id=? AND state='dispatched' AND producer_ended=0)", b.e.Run.ID, b.e.Run.ID); e != nil {
 			return e
 		}
+		if e := b.s.refreshSettledUsageInTx(ctx, tx, b.e.Run.ID); e != nil {
+			return e
+		}
 		return b.s.cleanupInTx(ctx, tx, b.e.Run.ID)
 	})
 	return out, err

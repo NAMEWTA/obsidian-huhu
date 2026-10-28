@@ -8,9 +8,9 @@ Status: completed
 
 本作者完成 T13 新群 domain/application/SQLite、013 正文和原 T04/T05/T11/T12 的真实消费适配。沿 AGENTS 发现 → 本票/当前 Map、dev 与 SpecDev I 执行，完整读取 060 报告/接口、T13、当前 Spec/ARCH/ADR 及原维护接口。Root 先后接纳 Map18/Goal17 的附件/迁移、stdio 附件 proof 合并补充，以及 Map19/Goal18 的效果 owner 控制查询补充；最后一项只有 073 写原 T06/T07，本作者没有扩改那些目录。全局 preflight 对联合维护/分支 Ready 的已有诊断保留，不称全局通过。
 
-初始实际 216 个 native 输入见 [01](logs/01-source-before.json)。最终本作者 **37 文件**逐项路径、起始/最终 SHA 见 [30-own-freeze-r2.json](logs/30-own-freeze-r2.json)，tree `1975045a4ffa2734a5c753e052d0cdc62c9b887113a4ee7ae2b548ff1b24ec29`；首冻结 [26](logs/26-own-freeze-before-joint.json) 原样保留；gofmt 与 scoped diff-check 都为 0。该清单是本票实际改变/新增文件，不把共享 checkout 中原来未提交文件算成本轮作者改动。源码和测试已停写；所有作者 Go/Node/Runner 子进程已 Wait。
+初始实际 216 个 native 输入见 01（历史日志已清理：`logs/01-source-before.json`）。最终本作者 **37 文件**逐项路径、起始/最终 SHA 见 30-own-freeze-r2.json（历史日志已清理：`logs/30-own-freeze-r2.json`），tree `1975045a4ffa2734a5c753e052d0cdc62c9b887113a4ee7ae2b548ff1b24ec29`；首冻结 26（历史日志已清理：`logs/26-own-freeze-before-joint.json`） 原样保留；gofmt 与 scoped diff-check 都为 0。该清单是本票实际改变/新增文件，不把共享 checkout 中原来未提交文件算成本轮作者改动。源码和测试已停写；所有作者 Go/Node/Runner 子进程已 Wait。
 
-073 是唯一公共 API/schema/生成物、配置 pin、Executor、bootstrap、迁移注册/底座迁移、stdio 合并与 owner effect 核查 writer；其 35 文件摘要见 [18](../073-groups-core/logs/18-own-source-freeze-before-joint.json)。075 是唯一 TS 消费者 writer；已冻结 GroupClient `9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33`、EventClient `1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0`、mentions `4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336`。这些是共享消费来源，不冒称本作者实现。 当前共享 api.ts SHA `9cf6d25e4783e203bf47a475852bed436490da4892eaec86c1ba2b78739d4f34`、schema SHA `d45693a3b4b2abbe635cf2f8b4655b63a4419458bb1e4854723f786a63ed1217`；013正文 SHA `26f23f3bae8d6db44c8d9df0510f77278854ac0de679c90a7a3e22a6bd89f2a1`。
+073 是唯一公共 API/schema/生成物、配置 pin、Executor、bootstrap、迁移注册/底座迁移、stdio 合并与 owner effect 核查 writer；其 35 文件摘要见 18（历史日志已清理：`../073-groups-core/logs/18-own-source-freeze-before-joint.json`）。075 是唯一 TS 消费者 writer；已冻结 GroupClient `9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33`、EventClient `1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0`、mentions `4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336`。这些是共享消费来源，不冒称本作者实现。 当前共享 api.ts SHA `9cf6d25e4783e203bf47a475852bed436490da4892eaec86c1ba2b78739d4f34`、schema SHA `d45693a3b4b2abbe635cf2f8b4655b63a4419458bb1e4854723f786a63ed1217`；013正文 SHA `26f23f3bae8d6db44c8d9df0510f77278854ac0de679c90a7a3e22a6bd89f2a1`。
 
 ## 产物与验证
 
@@ -52,7 +52,7 @@ Status: completed
 - [16](logs/16-group-reply-red.log) 公开用户等待补充被 RUN_CONFIG_NOT_PINNED 误拒（exit1）；[17](logs/17-group-reply-green.log) 同 CP 消费与幂等/无新 Run 控制 exit0。
 - [18b](logs/18b-question-red.log) 已回答后移除导致 root waiting_children 卡住（exit1，5.133s）；[19c](logs/19c-question-green.log) 原合法与失权两控制 exit0。
 - [21](logs/21-membership-first.log) 实际新 child Tail0 为 EVENT_LOG_GAP（exit1）；073 将新 child accepted 真正写 seq1，未改旧 SQL/Gap 检测；[22](logs/22-membership-green.log) 同永久消费者 exit0，0.120s。
-- 缺 deliver 两个 guard 已先由两 owner 按合同修正，未伪称当时跑过旧代码。[20-overlay.json](logs/20-overlay.json)、[精确差异](logs/20-counterfactual.diff) 仅在 Go overlay 恢复 child 的原 read/send 与结果前原 membership-only guard，**是当前输入上的受控 counterfactual，不是完整历史快照**；[20 red](logs/20-deliver-counterfactual-red.log) 同永久例实际表现缺 deliver 受理、发布前撤 deliver 后 root 卡住，exit1/5.083s。生产 15 保留两项 exit0。
+- 缺 deliver 两个 guard 已先由两 owner 按合同修正，未伪称当时跑过旧代码。20-overlay.json（历史日志已清理：`logs/20-overlay.json`）、精确差异（历史日志已清理：`logs/20-counterfactual.diff`） 仅在 Go overlay 恢复 child 的原 read/send 与结果前原 membership-only guard，**是当前输入上的受控 counterfactual，不是完整历史快照**；[20 red](logs/20-deliver-counterfactual-red.log) 同永久例实际表现缺 deliver 受理、发布前撤 deliver 后 root 卡住，exit1/5.083s。生产 15 保留两项 exit0。
 
 夹具/命令失败另列，不冒称产品红：[08a](logs/08a-fixture-compile.log) 错 Attempt 字段/Abort 返回值，[10](logs/10-private-closure-compile.log) 本作者新文件漏 import，[12/12b](logs/12-task-getters-first.log) 单 ToolCall 同时填两种具体载荷被合法拒绝；修成单一载荷后 [12c](logs/12c-task-getters-green.log) 四控制 exit0/0.268s。[18](logs/18-question-red.log) 新测试错误读取不存在 Run.Partial；[19/19b](logs/19b-question-diagnostic.log) 新断言误指定包装 reason，实际 Claim 保留 current GROUP_MEMBER_REMOVED，未为断言改变产品。最初 shell 工作目录/重定向两处失败未实际启动 Go，后来一律用 repo 根 `go -C native/huhubot`，没有把失败算通过。
 
@@ -62,11 +62,11 @@ Status: completed
 
 ## 同一冻结输入与最终联合检查
 
-073 在共同停写输入采 [19-joint-source-before-checks.json](../073-groups-core/logs/19-joint-source-before-checks.json)，348 文件 tree `62c543c90a4191e733b228ab2c71eaa0e522d43cbea5252421ae2c56e046ac22`。其 [20 普通全模块](../073-groups-core/logs/20-joint-normal.log) / [23结果](../073-groups-core/logs/23-joint-check-results.json) 实际 exit1/Wait，71.004s，前后 drift=[]；唯一失败为原 access 单读/批读 run-principal 对相同失配返回不同 reason，race/vet 因失败未启动，未冒称全绿。
+073 在共同停写输入采 19-joint-source-before-checks.json（历史日志已清理：`../073-groups-core/logs/19-joint-source-before-checks.json`），348 文件 tree `62c543c90a4191e733b228ab2c71eaa0e522d43cbea5252421ae2c56e046ac22`。其 [20 普通全模块](../073-groups-core/logs/20-joint-normal.log) / 23结果（历史日志已清理：`../073-groups-core/logs/23-joint-check-results.json`） 实际 exit1/Wait，71.004s，前后 drift=[]；唯一失败为原 access 单读/批读 run-principal 对相同失配返回不同 reason，race/vet 因失败未启动，未冒称全绿。
 
-Root 释放最小窗口后只修 groups/access.go **一行**：真实 DB profile/principal/session scope mismatch 恢复原 RUN_SCOPE_MISMATCH，真正 BindingContains/成员代错误仍原 Group reason，所有实际 DB 查询/成员检查/nil 防伪不变，旧测试不改。[27 精确差异](logs/27-scope-reason.diff) 与 [前后 SHA](logs/27-scope-reason-source.json) 保留。`GOTOOLCHAIN=go1.26.10 go -C native/huhubot test -mod=readonly ./tests/contract/access -run '^TestBatchReadFactsKeepSingleDecoderRecipientAndCurrentTransactionSemantics$' -count=1 -v`，见 [28](logs/28-single-batch-scope-green.log)，exit0/Wait，0.053s；同前缀 groups `-run 'TestSourceFreeRemoval|TestOnlyTargetSourceGrants'`，见 [29](logs/29-scope-group-controls-green.log)，exit0/Wait。重新冻结37文件，26→30精确仅此一行。
+Root 释放最小窗口后只修 groups/access.go **一行**：真实 DB profile/principal/session scope mismatch 恢复原 RUN_SCOPE_MISMATCH，真正 BindingContains/成员代错误仍原 Group reason，所有实际 DB 查询/成员检查/nil 防伪不变，旧测试不改。27 精确差异（历史日志已清理：`logs/27-scope-reason.diff`） 与 前后 SHA（历史日志已清理：`logs/27-scope-reason-source.json`） 保留。`GOTOOLCHAIN=go1.26.10 go -C native/huhubot test -mod=readonly ./tests/contract/access -run '^TestBatchReadFactsKeepSingleDecoderRecipientAndCurrentTransactionSemantics$' -count=1 -v`，见 [28](logs/28-single-batch-scope-green.log)，exit0/Wait，0.053s；同前缀 groups `-run 'TestSourceFreeRemoval|TestOnlyTargetSourceGrants'`，见 [29](logs/29-scope-group-controls-green.log)，exit0/Wait。重新冻结37文件，26→30精确仅此一行。
 
-最终 r2 已固定于073 [25-joint-source-r2.json](../073-groups-core/logs/25-joint-source-r2.json)，348文件 tree `49eb41c7b11d57051d2b12edfbf1ae1bfb682b85cd9ac4e0c2de4c1c24595be1`，相对首轮联合输入仅上述一行。348清单中沿用的五份旧 dist JSON 只作支持输入冻结，不表示本轮重建了五目标二进制。073按Root协调独占串行执行以下三条，最终 [29-joint-check-results-r2.json](../073-groups-core/logs/29-joint-check-results-r2.json) 全部实际 **exit0 / Wait**，348输入 before/each/after drift=[]。这些联合命令由073实际执行，本作者引用同一输入，不冒称独立再跑：
+最终 r2 已固定于073 25-joint-source-r2.json（历史日志已清理：`../073-groups-core/logs/25-joint-source-r2.json`），348文件 tree `49eb41c7b11d57051d2b12edfbf1ae1bfb682b85cd9ac4e0c2de4c1c24595be1`，相对首轮联合输入仅上述一行。348清单中沿用的五份旧 dist JSON 只作支持输入冻结，不表示本轮重建了五目标二进制。073按Root协调独占串行执行以下三条，最终 29-joint-check-results-r2.json（历史日志已清理：`../073-groups-core/logs/29-joint-check-results-r2.json`） 全部实际 **exit0 / Wait**，348输入 before/each/after drift=[]。这些联合命令由073实际执行，本作者引用同一输入，不冒称独立再跑：
 
 | module cwd=`native/huhubot`，固定 GOTOOLCHAIN=go1.26.10 | 真实结果 |
 |---|---|
@@ -74,7 +74,7 @@ Root 释放最小窗口后只修 groups/access.go **一行**：真实 DB profile
 | `CGO_ENABLED=1 go test -mod=readonly -race -p 1 ./tests/contract/groups ./tests/contract/access ./tests/contract/events ./tests/contract/delegation ./tests/contract/collaboration-policy ./tests/contract/chat ./tests/contract/approval ./tests/contract/effect-reconcile ./tests/contract/foundation ./tests/contract/assistant -count=1` | [27](../073-groups-core/logs/27-joint-race-r2.log)，exit0，wall462.458s，无 data-race 报告；10包全部通过 |
 | `CGO_ENABLED=0 go vet -mod=readonly ./...` | [28](../073-groups-core/logs/28-joint-vet-r2.log)，exit0，wall0.788s |
 
-race各包真实耗时：groups34.965s、access17.730s、events169.537s、delegation73.336s、policy5.644s、chat23.349s、approval26.871s、effect-reconcile12.389s、foundation48.943s、assistant36.802s。旧100/800实际来源250ms门、snapshot message provenance、270事件/3s及071完整等待交错断言均保留并在此次实际执行通过；没有提高阈值/改旧断言或择绿重跑。最终作者只读回验与进程事实见 [31](logs/31-final-source-and-process-receipt.json)。
+race各包真实耗时：groups34.965s、access17.730s、events169.537s、delegation73.336s、policy5.644s、chat23.349s、approval26.871s、effect-reconcile12.389s、foundation48.943s、assistant36.802s。旧100/800实际来源250ms门、snapshot message provenance、270事件/3s及071完整等待交错断言均保留并在此次实际执行通过；没有提高阈值/改旧断言或择绿重跑。最终作者只读回验与进程事实见 31（历史日志已清理：`logs/31-final-source-and-process-receipt.json`）。
 
 ## 问题与下一步
 

@@ -8,7 +8,7 @@ Status: completed
 
 推荐单一不可变 common.Registry，按 pinned Model.Protocol 选择同一协议实例，统一供 Engine/Inspector/Probe/SupportsProtocol 与 Broker EngineVersionForProtocol callback 使用。Generation struct 取代继续增长的参数列表；TurnResult 显式返回 Message 与完整 ProtocolState。ValidateState(StateView{Messages,Initial,Turns,Intent}, bytes) 只做受限本地校验。Generate 成功后必须先 common 整批检查，再候选 native state 检查，然后才首次 Invoke。私有 SDK 类型不进入 Application，不新增 Runner、账本或恢复资格服务。
 
-完整有限签名、构造失败归属、身份 literal、state/CP 校验时机、精确 owner 路径及未运行控制见 [interface-contract.md](logs/interface-contract.md)。核心交付：
+完整有限签名、构造失败归属、身份 literal、state/CP 校验时机、精确 owner 路径及未运行控制见 interface-contract.md（历史日志已清理：`logs/interface-contract.md`）。核心交付：
 
 - Chat 保持 huhu-eino-0.9.22-chat-bridge-v1、huhu-model-state-v1、原 `{Version,Tools,Aliases}` digest seed/编码与严格 legacy DTO。Chat sidecar 必须为空，不能把 opaque 数据塞入新字段。Responses 使用独立 version/state identity、完整 raw items 与必需 state；总 CP 实际编码仍限 1MiB，缺失或错误不自动兼容。
 - Registry 成功构造后转移各 driver 所有权；失败清理归调用方。Engine.Stop→Registry.Stop→全部 drivers.Stop；Done 必须覆盖活动 Run/Probe、各 SDK 真实 producer 结束、真实 body.Close、watcher 与结算；Close 只在 Done 后释放 idle transport。没有全局当前协议或仅关最后一个 driver。

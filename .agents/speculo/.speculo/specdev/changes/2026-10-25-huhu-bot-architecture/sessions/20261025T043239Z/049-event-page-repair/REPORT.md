@@ -25,7 +25,7 @@ Status: completed
 
 未扩大单事件文本 64KiB、页 512KiB、HAP frame 1MiB、pendingText 256KiB、投影 1MiB、facts 128 或最多 16 Run 等既有限额。不是对其它 `RESOURCE_LIMIT` 的通用放大或循环重试。冻结的唯一 schema SHA 为 `5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863`（63 methods、126 方法形状、234 方法样本、4 valid/12 invalid frame goldens），校验选项未变。
 
-完整 22 项源码/合同/配置输入见 [logs/12-final-source-input.json](logs/12-final-source-input.json)，文件 SHA `f83271af57fb6994df0c7de622b9270d21fddd77104d2a83005e31a4b4e49026`。原反例及当前 bundle 的哈希见 [logs/02-original-probe-input.json](logs/02-original-probe-input.json) 和 [logs/13-probe-artifacts.json](logs/13-probe-artifacts.json)。本仓库为共享 dirty 工作树，HEAD/base 为 `33c21e098ef3188cbab5a09f3e0a01fadb787715`；没有通过 reset/checkout 处理其他 owner 的改动。
+完整 22 项源码/合同/配置输入见 logs/12-final-source-input.json（历史日志已清理：`logs/12-final-source-input.json`），文件 SHA `f83271af57fb6994df0c7de622b9270d21fddd77104d2a83005e31a4b4e49026`。原反例及当前 bundle 的哈希见 logs/02-original-probe-input.json（历史日志已清理：`logs/02-original-probe-input.json`） 和 logs/13-probe-artifacts.json（历史日志已清理：`logs/13-probe-artifacts.json`）。本仓库为共享 dirty 工作树，HEAD/base 为 `33c21e098ef3188cbab5a09f3e0a01fadb787715`；没有通过 reset/checkout 处理其他 owner 的改动。
 
 ### 真实原反例红→绿
 
@@ -33,9 +33,9 @@ Status: completed
 
 | 步骤 | 实际命令/日志 | 退出及观察 |
 | --- | --- | --- |
-| 原封真实红灯 | `node logs/probes/large-original.cjs logs/probes/events-probe <isolated profiles>`；完整绝对命令见 [03 command](logs/03-real-original-red-command.json)，[03 log](logs/03-real-original-red.log) | Node exit 126（预期断言失败）。65000 到 seq5/succeeded、正文 65000；65536 在 seq3/running、paused/EVENT_PAGE_TOO_SMALL 间无法收敛，服务端实际上 succeeded/head5，直接 524288 页可取全部 5 事件。 |
+| 原封真实红灯 | `node logs/probes/large-original.cjs logs/probes/events-probe <isolated profiles>`；完整绝对命令见 03 command（历史日志已清理：`logs/03-real-original-red-command.json`），[03 log](logs/03-real-original-red.log) | Node exit 126（预期断言失败）。65000 到 seq5/succeeded、正文 65000；65536 在 seq3/running、paused/EVENT_PAGE_TOO_SMALL 间无法收敛，服务端实际上 succeeded/head5，直接 524288 页可取全部 5 事件。 |
 | 单变量构建 | 原 `large.ts` 仅将生产 TS import 打包为 `large-current.cjs`；[05 log](logs/05-original-probe-build.log) | esbuild exit 0；Go binary 与脚本输入不变。 |
-| 同输入真实绿灯 | `node logs/probes/large-current.cjs logs/probes/events-probe <new isolated profiles>`；完整命令见 [06 command](logs/06-real-original-green-command.json)，[06 log](logs/06-real-original-green.log) | Node exit 0。65000、65536 均 seq3→seq5/succeeded，完整正文分别为 65000、65536；再刷新不重复；直接大页仍 head5/5events。 |
+| 同输入真实绿灯 | `node logs/probes/large-current.cjs logs/probes/events-probe <new isolated profiles>`；完整命令见 06 command（历史日志已清理：`logs/06-real-original-green-command.json`），[06 log](logs/06-real-original-green.log) | Node exit 0。65000、65536 均 seq3→seq5/succeeded，完整正文分别为 65000、65536；再刷新不重复；直接大页仍 head5/5events。 |
 
 红绿均使用自有临时 Profile，位置记录在命令 JSON，不涉及用户库。父脚本通过 subprocess Wait 等待 Node，Node 的 finally 完成 client/core/transport dispose 和 Go 子进程退出；无强制 kill 的成功替代。复放安排在 Root/048 已释放的窗口，本任务没有启动新的 Go 构建或重测来污染其性能测量。原 binary 固定的目的在于证明 TS 修复，不能把它算作 048 最终新 Go 输入的联合验收。
 

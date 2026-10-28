@@ -14,7 +14,7 @@ Reviewer 为 `native:/root/foundation_review`，未参与本范围实现、修�
 
 ## 产物与验证
 
-[命令与退出码](logs/commands.json)、[原始输入](logs/input.json)、[起始一致性](logs/input-start.log)、[末次一致性](logs/input-final.log)、[隔离副本校验](logs/copy-integrity.json)、[探针与日志摘要](logs/artifacts-sha.json) 可回读。外部副本 `/tmp/huhu-events-review/repo/native/huhubot` 的 132 个固定 native 输入逐项与本轮 SHA 相同；只添加独立探针。生产源码、已有测试、规范、锁与正式状态均未写入。
+命令与退出码（历史日志已清理：`logs/commands.json`）、原始输入（历史日志已清理：`logs/input.json`）、[起始一致性](logs/input-start.log)、[末次一致性](logs/input-final.log)、隔离副本校验（历史日志已清理：`logs/copy-integrity.json`）、探针与日志摘要（历史日志已清理：`logs/artifacts-sha.json`） 可回读。外部副本 `/tmp/huhu-events-review/repo/native/huhubot` 的 132 个固定 native 输入逐项与本轮 SHA 相同；只添加独立探针。生产源码、已有测试、规范、锁与正式状态均未写入。
 
 | 独立实际运行 | 观察 |
 | --- | --- |
@@ -29,7 +29,7 @@ Reviewer 为 `native:/root/foundation_review`，未参与本范围实现、修�
 
 所有计时探针均在 Root 明确让出的独占重测试窗口串行运行；普通/race 的同一夹具各用一次性 Profile，随机ID/时间不要求字节相同。v1集合不是声称可由单条HAP历史请求直接生成；最终 finding 使用真实单Session公开History及实际HAP消费者。正常对照与失败都保存，没有仅挑最慢一次。
 
-大事件探针使用受控 Engine 发出合法文本、真实 Executor/DB/stdio 和生产 TS；不是实际模型。源码与首次/逐次refresh版本在 [probes](probes/)，实际模型/Host/Vault均未调用。Node探针设置非零退出，工具实际返回126；两个Runner均在finally关闭连接、Core并Wait，未触发kill，也没有清理失败。两份Profile仍在 `/tmp/huhu-events-review/large-profiles*`；[持久状态回读](logs/large-persistent.json) 记录两个succeeded/head5及65000/65536正文，原结果未删除。
+大事件探针使用受控 Engine 发出合法文本、真实 Executor/DB/stdio 和生产 TS；不是实际模型。源码与首次/逐次refresh版本在 [probes](probes/)，实际模型/Host/Vault均未调用。Node探针设置非零退出，工具实际返回126；两个Runner均在finally关闭连接、Core并Wait，未触发kill，也没有清理失败。两份Profile仍在 `/tmp/huhu-events-review/large-profiles*`；持久状态回读（历史日志已清理：`logs/large-persistent.json`） 记录两个succeeded/head5及65000/65536正文，原结果未删除。
 
 快照探针的第一次cursor扩展误把已强类型的 `Fault.Details` 当接口作类型断言，编译exit1，见 [provenance-cursor.log](logs/provenance-cursor.log)。改正探针后才得到r2/r3真实行为失败；该准备错误不算产品finding。早期直接Snapshot反例与最终真实Tail/压缩反例都保留。
 

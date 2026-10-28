@@ -1,0 +1,1 @@
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/hap	0.140s

@@ -17,7 +17,7 @@ Status: completed
 
 最小实现使用私有 `refSet` 在遍历中累加精确身份，只在每个 owner 的完整结果和最终闭包处排序一次。每条关系仍校验合法 Ref，同 Kind/ID 的不一致 Revision/hash/namespace/thread 仍拒绝；每个关系集合和消费闭包保留 128 条上限，DFS 三色循环拒绝与 `relation!='audit'` 查询保持。结果仍是稳定排序的非 nil 数组，错误不转空成功。权限、正文前置资格、Scope、当前 Grant、抑制、Pin、恢复水位、事务边界和 SQL 查询未改。
 
-改动前 SHA 为 `694bdf035a0d43f391724916aea1c2045286cfe4c07205196cec3395ab92d526`，改动后为 `2fdae080990d702d2d8cc41ec3e2d5487985c1821d28fd87b06a1b0875c75d0e`。完整旧字节和逐行差异见 [原文件](logs/05-dependencies-before.go.txt) 与 [最小 patch](logs/05-dependencies.patch)。新代码没有 import、build tag、embed、模块或迁移变化；不新增或复制外部实现。
+改动前 SHA 为 `694bdf035a0d43f391724916aea1c2045286cfe4c07205196cec3395ab92d526`，改动后为 `2fdae080990d702d2d8cc41ec3e2d5487985c1821d28fd87b06a1b0875c75d0e`。完整旧字节和逐行差异见 原文件（历史日志已清理：`logs/05-dependencies-before.go.txt`） 与 最小 patch（历史日志已清理：`logs/05-dependencies.patch`）。新代码没有 import、build tag、embed、模块或迁移变化；不新增或复制外部实现。
 
 ## 产物与验证
 
@@ -27,17 +27,17 @@ Status: completed
 
 | 实际命令目标/阶段 | exit / 整个命令 Wait | 包时间与实际结果 | 原始证据 |
 | --- | --- | --- | --- |
-| 原 `TestSingleSessionHundredSourceMessagesReachActualHistoryWriter` | 1 / 33.913926973s | 32.766s；构造阶段 deadline，未到 History | [03 result](logs/03-original-result.json)、[JSONL](logs/03-original.jsonl) |
-| 同目标仅附 CPU profile | 1 / 35.645996389s | 33.916s；相同构造失败；采样覆盖原代码 | [04 result](logs/04-profile-result.json)、[CPU 原数据](logs/04-cpu.pprof)、[累计剖析](logs/04-pprof-cum.txt) |
-| 最小修复后的原 50 Run 目标 | 0 / 25.312862995s | 23.320s；100 条 History 物理 HAP 投递，gate 34.284885ms < 250ms | [06 result](logs/06-set-accumulation-result.json)、[JSONL](logs/06-set-accumulation.jsonl) |
-| `TestEightHundredActualSourceMessagesFitGateAndRecheckRevocation` | 0 / 18.077942915s | 16.862s；400 个独立 Session 的真实 Run/800 来源消息，gate 41.114962ms；下一事务撤权拒绝 | [07 result](logs/07-actual-800-source-result.json)、[JSONL](logs/07-actual-800-source.jsonl) |
-| 两个既有完整祖先消费者 | 0 / 1.903757914s | 0.473s；2 top / 6 sub 全绿 | [09 result](logs/09-ancestry-contracts-result.json)、[JSONL](logs/09-ancestry-contracts.jsonl) |
+| 原 `TestSingleSessionHundredSourceMessagesReachActualHistoryWriter` | 1 / 33.913926973s | 32.766s；构造阶段 deadline，未到 History | 03 result（历史日志已清理：`logs/03-original-result.json`）、JSONL（历史日志已清理：`logs/03-original.jsonl`） |
+| 同目标仅附 CPU profile | 1 / 35.645996389s | 33.916s；相同构造失败；采样覆盖原代码 | 04 result（历史日志已清理：`logs/04-profile-result.json`）、CPU 原数据（历史日志已清理：`logs/04-cpu.pprof`）、累计剖析（历史日志已清理：`logs/04-pprof-cum.txt`） |
+| 最小修复后的原 50 Run 目标 | 0 / 25.312862995s | 23.320s；100 条 History 物理 HAP 投递，gate 34.284885ms < 250ms | 06 result（历史日志已清理：`logs/06-set-accumulation-result.json`）、JSONL（历史日志已清理：`logs/06-set-accumulation.jsonl`） |
+| `TestEightHundredActualSourceMessagesFitGateAndRecheckRevocation` | 0 / 18.077942915s | 16.862s；400 个独立 Session 的真实 Run/800 来源消息，gate 41.114962ms；下一事务撤权拒绝 | 07 result（历史日志已清理：`logs/07-actual-800-source-result.json`）、JSONL（历史日志已清理：`logs/07-actual-800-source.jsonl`） |
+| 两个既有完整祖先消费者 | 0 / 1.903757914s | 0.473s；2 top / 6 sub 全绿 | 09 result（历史日志已清理：`logs/09-ancestry-contracts-result.json`）、JSONL（历史日志已清理：`logs/09-ancestry-contracts.jsonl`） |
 
 最后两目标精确为 `TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody` 和 `TestPrivateMemoryCompleteConsumptionClosureHasAnExact128ReferenceBoundary`。覆盖坏 JSON/null、缺关系/祖先、循环、同身份矛盾、合法 128 与 129 拒绝，保留正文不返回和持久记录不被修补的断言。复用已有有意义的永久消费者，没有新增只镜像 refSet 实现的测试。
 
-5 次测试的各次输入均无漂移；5 个不可变 ZIP 已逐文件重验，共含 199/199/199/199/202 个输入。前两轮树 `eccf7d88c2021a4931d9aab937aca24f7b7b29c5eb688dfc24ce28c2035b7779`；修复后 events 树 `7c0144eaff0718705203428753d87a4337e88103d253ab1e751d2fdac7135ebb`；Memory 对照树 `10d00861695b4a8d834bbd12ba56a270937fcbb3d24279b2352d7b89e6db083f`。实际模式、文件 SHA、ZIP SHA 与校验见各 `*-inputs.json` 和 [ZIP 复核](logs/11-archive-verification.json)，不可把前两轮红的字节冒称当前候选。
+5 次测试的各次输入均无漂移；5 个不可变 ZIP 已逐文件重验，共含 199/199/199/199/202 个输入。前两轮树 `eccf7d88c2021a4931d9aab937aca24f7b7b29c5eb688dfc24ce28c2035b7779`；修复后 events 树 `7c0144eaff0718705203428753d87a4337e88103d253ab1e751d2fdac7135ebb`；Memory 对照树 `10d00861695b4a8d834bbd12ba56a270937fcbb3d24279b2352d7b89e6db083f`。实际模式、文件 SHA、ZIP SHA 与校验见各 `*-inputs.json` 和 ZIP 复核（历史日志已清理：`logs/11-archive-verification.json`），不可把前两轮红的字节冒称当前候选。
 
-最终 [源码冻结](logs/10-final-source.json) 对原126全部30源复核，仅上述1文件改变，树为 `1840f4fbc3e3a8c13a4509147e43afd25f2e4033c72aa0830fcc9fd0b617b872`。events/history_test.go 的 `a4630d640d8630fde6a8c5e0ef055a317ddbbf2f9637b05d700edbcd20083c9a` 及模块锁与首次原目标一致；014与其余29源保持原126字节，旧126 REPORT/manifest/return不动。所有 Go/test/Core/HTTP 资源已实际结束，已向 Root 明确归窗；此后只写本任务报告材料。
+最终 源码冻结（历史日志已清理：`logs/10-final-source.json`） 对原126全部30源复核，仅上述1文件改变，树为 `1840f4fbc3e3a8c13a4509147e43afd25f2e4033c72aa0830fcc9fd0b617b872`。events/history_test.go 的 `a4630d640d8630fde6a8c5e0ef055a317ddbbf2f9637b05d700edbcd20083c9a` 及模块锁与首次原目标一致；014与其余29源保持原126字节，旧126 REPORT/manifest/return不动。所有 Go/test/Core/HTTP 资源已实际结束，已向 Root 明确归窗；此后只写本任务报告材料。
 
 ## 问题与下一步
 

@@ -48,6 +48,10 @@ type ContractServiceStatusParams struct {
 }
 
 type ContractServiceStatusResult struct {
+	Cleanup *struct {
+		Profile    bool     `json:"profile"`
+		SessionIds []string `json:"sessionIds"`
+	} `json:"cleanup,omitempty"`
 	Policy *struct {
 		Limits struct {
 			MaxDepth        float64 `json:"maxDepth"`
@@ -1445,6 +1449,37 @@ type ContractCollaborationProposeCreateResult struct {
 	} `json:"draft"`
 }
 
+type ContractCollaborationProposalsParams struct {
+	ProfileId string   `json:"profileId"`
+	Cursor    *string  `json:"cursor,omitempty"`
+	Limit     *float64 `json:"limit,omitempty"`
+	RunId     *string  `json:"runId,omitempty"`
+}
+
+type ContractCollaborationProposalsResult struct {
+	Items []struct {
+		ProposalId  string `json:"proposalId"`
+		Revision    string `json:"revision"`
+		PreviewHash string `json:"previewHash"`
+		Draft       struct {
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			Persona     string `json:"persona"`
+			Model       *struct {
+				ModelId       string   `json:"modelId"`
+				ProviderId    string   `json:"providerId"`
+				Endpoint      string   `json:"endpoint"`
+				CredentialRef *string  `json:"credentialRef,omitempty"`
+				Capabilities  []string `json:"capabilities"`
+				Protocol      string   `json:"protocol"`
+			} `json:"model,omitempty"`
+			AllowedTools                []string `json:"allowedTools,omitempty"`
+			AllowedCollaborationTargets []string `json:"allowedCollaborationTargets,omitempty"`
+		} `json:"draft"`
+	} `json:"items"`
+	NextCursor *string `json:"nextCursor,omitempty"`
+}
+
 type ContractCollaborationConfirmProposalParams struct {
 	CommandId        string `json:"commandId"`
 	IdempotencyKey   string `json:"idempotencyKey"`
@@ -1481,6 +1516,22 @@ type ContractCollaborationConfirmProposalResult struct {
 	Persona                     string   `json:"persona"`
 	AllowedTools                []string `json:"allowedTools,omitempty"`
 	AllowedCollaborationTargets []string `json:"allowedCollaborationTargets,omitempty"`
+}
+
+type ContractCollaborationRejectProposalParams struct {
+	CommandId        string `json:"commandId"`
+	IdempotencyKey   string `json:"idempotencyKey"`
+	ProfileId        string `json:"profileId"`
+	CommandEpoch     string `json:"commandEpoch"`
+	ExpectedRevision string `json:"expectedRevision"`
+	ProposalId       string `json:"proposalId"`
+	PreviewHash      string `json:"previewHash"`
+}
+
+type ContractCollaborationRejectProposalResult struct {
+	CommandId string `json:"commandId"`
+	ReceiptId string `json:"receiptId"`
+	Revision  string `json:"revision"`
 }
 
 type ContractGrantsListParams struct {
@@ -2866,6 +2917,30 @@ type ContractProfileStatusResult struct {
 		BudgetConfigured bool `json:"budgetConfigured"`
 		BudgetPaused     bool `json:"budgetPaused"`
 	} `json:"policy,omitempty"`
+	Cleanup *struct {
+		Profile    bool     `json:"profile"`
+		SessionIds []string `json:"sessionIds"`
+	} `json:"cleanup,omitempty"`
+}
+
+type ContractPortableStageParams struct {
+	ProfileId    string  `json:"profileId"`
+	CommandEpoch string  `json:"commandEpoch"`
+	UploadId     *string `json:"uploadId,omitempty"`
+	Size         string  `json:"size"`
+	Offset       string  `json:"offset"`
+	DataBase64   string  `json:"dataBase64"`
+	Final        bool    `json:"final"`
+}
+
+type ContractPortableStageResult struct {
+	UploadId   string `json:"uploadId"`
+	NextOffset string `json:"nextOffset"`
+	Artifact   *struct {
+		ArtifactId string `json:"artifactId"`
+		MediaType  string `json:"mediaType"`
+		Size       string `json:"size"`
+	} `json:"artifact,omitempty"`
 }
 
 type ContractPortableExportParams struct {
@@ -2897,11 +2972,21 @@ type ContractPortableImportPreviewParams struct {
 }
 
 type ContractPortableImportPreviewResult struct {
-	Token     string `json:"token"`
+	Token       string `json:"token"`
+	MappingMode string `json:"mappingMode"`
+	Mappings    []struct {
+		Kind string `json:"kind"`
+		From string `json:"from"`
+		To   string `json:"to"`
+	} `json:"mappings"`
 	Conflicts []struct {
-		Id       string `json:"id"`
-		Revision string `json:"revision"`
-		Hash     string `json:"hash"`
+		Id          string `json:"id"`
+		Revision    string `json:"revision"`
+		Hash        string `json:"hash"`
+		Kind        string `json:"kind"`
+		ExistingId  string `json:"existingId"`
+		Reason      string `json:"reason"`
+		NeedsReview bool   `json:"needsReview"`
 	} `json:"conflicts"`
 }
 
@@ -2927,6 +3012,7 @@ type ContractPortableImportResult struct {
 type ContractHostAttachParams struct {
 	WorkspaceId  string   `json:"workspaceId"`
 	Capabilities []string `json:"capabilities"`
+	RenewLeaseId *string  `json:"renewLeaseId,omitempty"`
 }
 
 type ContractHostAttachResult struct {

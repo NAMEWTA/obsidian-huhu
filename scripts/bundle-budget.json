@@ -1,8 +1,8 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 6034432,
-  "stylesBytes": 1421312,
-  "eagerBytes": 122880,
+  "outputBytes": 6737920,
+  "stylesBytes": 1427456,
+  "eagerBytes": 125952,
   "forbiddenEagerAreas": [
     "npm:lunar-typescript",
     "npm:chart.js",
@@ -13,20 +13,21 @@
     "npm:radix-ui"
   ],
   "moduleActivationBytes": {
-    "home": 492544,
-    "agent": 991232,
+    "home": 493568,
+    "agent": 993280,
     "icons": 158720,
     "browser": 103424,
     "archives": 176128,
     "automations": 217088,
     "notifications": 20480,
     "comments": 111616,
-    "navigator": 202752,
+    "navigator": 203776,
     "sync": 98304,
-    "safe": 60416
+    "safe": 60416,
+    "huhubot": 547840
   },
-  "outputBudgetReason": "HUHU 0.0.1 初始基线：main.js 实测 6033579 字节，横幅包含自有许可、完整来源声明，以及 JS、主题、CSS 和内嵌字体的原许可；手动安装三个插件文件也保留声明。上限按 KiB 取整，无新增运行依赖。",
-  "eagerBudgetReason": "HUHU 0.0.1 初始基线：启动闭包实测 122867 字节，模块装配与懒加载边界保持，React/Radix 不进入启动闭包。上限按 KiB 取整。",
-  "stylesBudgetReason": "HUHU 0.0.1 初始基线：styles.css 实测 1420790 字节，所有自有作用域统一为 huhu；保留本地字体与既有设计系统，上限按 KiB 取整。",
-  "moduleActivationBudgetReason": "HUHU 0.0.1 初始基线：各模块以当前实测激活闭包按 KiB 取整；不包含页面与第二层延迟加载，不增加禁止启动加载区域。"
+  "outputBudgetReason": "2026-10-28 全量复审：旧上限 6034432 已低于起点 HEAD 的提交产物 6558734 字节；本轮实际修复后 main.js 为 6737602 字节（净增 178868），含真实 Host/文件桥、完整工作台、75 方法合同、身份映射、受权执行上下文、失败恢复与宿主视觉修复。按 KiB 取整，无新增运行依赖，许可保留。",
+  "eagerBudgetReason": "2026-10-28 实测启动闭包 125886 字节，包含 Bot 注册表/导航/设置元数据；页面、Runner 和 HAP 运行代码仍懒加载，React/Radix 等禁止区域未进入启动闭包。上限按 KiB 取整。",
+  "stylesBudgetReason": "2026-10-28 真实 Tailwind/样式流水线：旧上限 1421312 已低于 HEAD 提交的 1425011 字节；本轮 styles.css 实测 1427325，较已提交产物增加 2314 字节，包含窄屏表单、聊天页脚、数据页标题与共享复选框的实际可用性修复。上限按 KiB 取整，保留设计系统、主题与字体。",
+  "moduleActivationBudgetReason": "2026-10-28 补个人 Bot 激活预算，实测 547094 字节，含无启动进程副作用的 Runtime、75 方法校验与共享服务；页面仍分层延迟加载。既有 agent/home/navigator 按本次重新构建测得的共享激活闭包调整至 KiB 整数，它们的业务代码未扩展；其余预算不变。"
 }

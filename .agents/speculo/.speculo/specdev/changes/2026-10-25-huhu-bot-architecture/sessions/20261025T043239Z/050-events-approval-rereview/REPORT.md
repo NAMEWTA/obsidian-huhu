@@ -16,20 +16,20 @@ Reviewer：`native:/root/foundation_review`，未参与本范围实现/修复或
 
 ## 产物与验证
 
-[固定输入](logs/input.json)、[起始核对](logs/input-start.log)、[末次核对](logs/input-final.log)、[命令与实际退出](logs/commands.json)、[隔离副本摘要](logs/copy-integrity.json)、[探针摘要](logs/probe-artifacts.json) 可回读。外部副本 `/tmp/huhu-events-rereview/repo/native/huhubot` 的 132 个固定 native 文件逐项与当前输入相同；046 三份 Go probe 和 `large.ts` 逐字节不变，只在外部副本追加独立 probe。原 046 失败、原临时数据库及作者中间失败日志均未改写。
+固定输入（历史日志已清理：`logs/input.json`）、[起始核对](logs/input-start.log)、[末次核对](logs/input-final.log)、命令与实际退出（历史日志已清理：`logs/commands.json`）、隔离副本摘要（历史日志已清理：`logs/copy-integrity.json`）、探针摘要（历史日志已清理：`logs/probe-artifacts.json`） 可回读。外部副本 `/tmp/huhu-events-rereview/repo/native/huhubot` 的 132 个固定 native 文件逐项与当前输入相同；046 三份 Go probe 和 `large.ts` 逐字节不变，只在外部副本追加独立 probe。原 046 失败、原临时数据库及作者中间失败日志均未改写。
 
 | 独立实际运行 | 结果与边界 |
 | --- | --- |
 | 原 046 来源历史 + 真实 cursor 快照，normal | [original-normal.log](logs/original-normal.log)，exit0。单 Session、50 个真实公开 Run、100 条合法来源消息约 94KB；2/20/100 subjects，100 条门 1.749775ms，实际 HAP History 返回100项。明确来源正常对照成立；第二 Run 用户空来源在 SQLite/History/真实 CURSOR_EXPIRED snapshotSeq274 中均为空。 |
 | 原 046 同一来源 History，独占 race | [original-race.log](logs/original-race.log)，exit0。原2/20/100规模未改，100条26.434614ms <250ms、writer实际调用，HAP100项。保留真实 Source/Grant，不以无来源测试替代。 |
-| 原 046 生产 EventClient→HapConnection→stdio→Executor/SQLite，重建当前 Go binary | [original-large.log](logs/original-large.log)，exit0。65000/65536均 seq3→seq5/succeeded，正文分别完整65000/65536，第三次refresh无重复；同 Run 524288页仍完整5事件。当前持久库只读回核见 [large-persistent.json](logs/large-persistent.json)。 |
+| 原 046 生产 EventClient→HapConnection→stdio→Executor/SQLite，重建当前 Go binary | [original-large.log](logs/original-large.log)，exit0。65000/65536均 seq3→seq5/succeeded，正文分别完整65000/65536，第三次refresh无重复；同 Run 524288页仍完整5事件。当前持久库只读回核见 large-persistent.json（历史日志已清理：`logs/large-persistent.json`）。 |
 | 受影响 access/events/chat/approval，normal `-p=1 -count=1` | [contracts-normal.log](logs/contracts-normal.log)，四包exit0，分别1.611/14.736/1.194/1.236s；177条RUN记录含子用例，不冒称177个顶层测试。含当前批单语义、坏数据/parent/alternative、832 Grant分块、来源历史、快照、实际TS-Go、pipe、审批恢复与3个真实checkpoint crash窗口。 |
 | access/events，独占 `-race -p=1 -count=1` | [contracts-race.log](logs/contracts-race.log)，两包exit0，8.626/92.854s，无data race。来源100门25.214423ms；来源800门**200.480037ms <250ms**；下一Tx公开Revoke拒绝相同集合。无来源800门114.600948ms。800例是400个独立Session/真实Run的直接gate上界，未冒充一条跨Session History RPC。 |
 | 新独立批单授权差分，race | [policy-differential-race.log](logs/policy-differential-race.log)，exit0。先32项同Grant合法输入，末项分别改变source scope、workspace、session、task，批读与单读都给出相同拒绝reason。相同事务内第二次batch在显式fixture revoke后也重新读事实并拒绝。源码见 [reviewer_policy_test.go](probes/reviewer_policy_test.go)；这是adapter差分，不冒充33个公开Run。 |
 | TS reducer/codec/connection/validator/EventClient | [ts-suites.log](logs/ts-suites.log)，5文件75项exit0，1.30s。精确错误补读、转义、最大仍不足、显式refresh、失效前后竞态和正文清理均通过。 |
 | Root全插件 build/lint | 回读 `evidence/T-04-logs/lead-ts-build-result-r2.json`：均exit0，39.787/73.385s，1814项输入drift[]。这是Root运行证据，本reviewer没有重复构建插件或改产物。 |
 
-本轮独立执行环境 [toolchain.log](logs/toolchain.log) / [toolchain-env.json](logs/toolchain-env.json) 为 **go1.27.1 linux/amd64**；048作者明确 `GOTOOLCHAIN=go1.26.10`，其最终来源800为202.843077ms；Root自己的go1.27.1原100 race为28.067005ms。三方独立结果分别记录，不合并成同环境重复采样。计时均在Root授予独占重窗口内串行运行，未为择绿重复同一性能测试。200ms只是本机受控窗口观察，不宣称任意机器和任意合法多来源组合恒定耗时。
+本轮独立执行环境 [toolchain.log](logs/toolchain.log) / toolchain-env.json（历史日志已清理：`logs/toolchain-env.json`） 为 **go1.27.1 linux/amd64**；048作者明确 `GOTOOLCHAIN=go1.26.10`，其最终来源800为202.843077ms；Root自己的go1.27.1原100 race为28.067005ms。三方独立结果分别记录，不合并成同环境重复采样。计时均在Root授予独占重窗口内串行运行，未为择绿重复同一性能测试。200ms只是本机受控窗口观察，不宣称任意机器和任意合法多来源组合恒定耗时。
 
 048原来源100 race250ms失败、原快照错误，及首次新增800 race251.380989ms失败均保留；JSON解码复用后的229.663508ms为中间结果，随后还有不可变policy转换/纯验证复用的源码变化，最终独立验证的是完整最终候选。049原Go旧binary下的单变量TS红绿仅用作作者修复证据；本轮原大事件重新构建当前Go候选，不把旧binary当联合验收。本 reviewer 初次读取报告时的目录拼写错误仅为准备性错误，不构成产品观察，未据此判通过或失败。
 

@@ -11,10 +11,18 @@ import (
 // requiredInbox observes the sealed input the Engine actually receives. An
 // intent alias retains the message identity while its text is supplied by Intent.
 func requiredInbox(i api.EngineInput, want string) (api.ShortTermEntry, error) {
-	if i.ShortTerm == nil {
-		return api.ShortTermEntry{}, fmt.Errorf("missing sealed short-term input")
+	entries, err := requiredInboxes(i, want)
+	return entries[want], err
+}
+func requiredInboxes(i api.EngineInput, want ...string) (map[string]api.ShortTermEntry, error) {
+	out := map[string]api.ShortTermEntry{}
+	expected := map[string]bool{}
+	for _, body := range want {
+		expected[body] = true
 	}
-	var found api.ShortTermEntry
+	if i.ShortTerm == nil {
+		return out, fmt.Errorf("missing sealed short-term input")
+	}
 	count := 0
 	for _, entry := range i.ShortTerm.Entries {
 		if entry.Use != "inbox" {
@@ -22,25 +30,26 @@ func requiredInbox(i api.EngineInput, want string) (api.ShortTermEntry, error) {
 		}
 		count++
 		if entry.Message == nil || entry.OriginKind != "thread_message" || entry.Ref.Kind != "message" || entry.Ref.ID == "" || entry.Ref.ID != entry.Message.ID || entry.Ref.Namespace != entry.Message.WorkThreadID || entry.Message.Text != "" {
-			return api.ShortTermEntry{}, fmt.Errorf("invalid sealed inbox identity: %#v", entry)
+			return out, fmt.Errorf("invalid sealed inbox identity: %#v", entry)
 		}
 		body := entry.Text
 		if entry.Representation == "intent_alias" {
 			if entry.Text != "" || entry.Ref.Hash != i.ShortTerm.IntentHash {
-				return api.ShortTermEntry{}, fmt.Errorf("invalid intent alias: %#v", entry)
+				return out, fmt.Errorf("invalid intent alias: %#v", entry)
 			}
 			body = i.Intent
 		} else if entry.Representation != "full" {
-			return api.ShortTermEntry{}, fmt.Errorf("inbox was abbreviated: %#v", entry)
+			return out, fmt.Errorf("inbox was abbreviated: %#v", entry)
 		}
-		if body == want {
-			found = entry
+		if !expected[body] || out[body].Message != nil {
+			return out, fmt.Errorf("unexpected/duplicate inbox body %q: %#v", body, entry)
 		}
+		out[body] = entry
 	}
-	if count != 1 || found.Message == nil {
-		return api.ShortTermEntry{}, fmt.Errorf("expected one required inbox %q, got %#v", want, i.ShortTerm.Entries)
+	if count != len(want) || len(out) != len(want) {
+		return out, fmt.Errorf("expected exact required inbox %q, got %#v", want, i.ShortTerm.Entries)
 	}
-	return found, nil
+	return out, nil
 }
 
 // requiredResumeMessages checks the durable decision's actual message bodies

@@ -85,7 +85,7 @@ Go命令cwd为 `native/huhubot/`，实际Linux/amd64，全部真实exit0：
 
 ### 冻结摘要与研究来源
 
-[source.sha256](logs/source.sha256)固定本任务10文件，manifest SHA `6934e02072c0aa0f2eda59e756092d65df5d711662cc103f57d6910f0add2833`：
+source.sha256（历史日志已清理：`logs/source.sha256`）固定本任务10文件，manifest SHA `6934e02072c0aa0f2eda59e756092d65df5d711662cc103f57d6910f0add2833`：
 
 | 文件（均位于native/huhubot） | SHA-256 |
 | --- | --- |
@@ -100,7 +100,7 @@ Go命令cwd为 `native/huhubot/`，实际Linux/amd64，全部真实exit0：
 | tests/contract/access/access_test.go | `0bd4743d986e1fa262096a092b6a2ae6fc39f99e87638d8f9dc1e1c6c19b5a5e` |
 | tests/contract/access/host_ts_test.go | `812b324f2ec329580c328765e4eface5706b14374a9383ce0243b46dd9fe82bc` |
 
-[inputs.sha256](logs/inputs.sha256) SHA `73173e72b2ed0e4816dab0a733fb530bf93dc1c5b4152c5f954b86f5d194f6d0` 固定TASK/Map/Goal/T05/规范、031预检、共享API/Host/stdio/bootstrap/executor/SQL注册、Go锁、TS生产协议/Host及schema。026共同冻结105文件树 `4187569a76a91f343b456a7e930f58b21c2cabd5120060ea95c4be038dd9585c`，全部10个本任务文件已逐项核对一致。
+inputs.sha256（历史日志已清理：`logs/inputs.sha256`） SHA `73173e72b2ed0e4816dab0a733fb530bf93dc1c5b4152c5f954b86f5d194f6d0` 固定TASK/Map/Goal/T05/规范、031预检、共享API/Host/stdio/bootstrap/executor/SQL注册、Go锁、TS生产协议/Host及schema。026共同冻结105文件树 `4187569a76a91f343b456a7e930f58b21c2cabd5120060ea95c4be038dd9585c`，全部10个本任务文件已逐项核对一致。
 
 研究复用031与IMPLEMENTATION-REFERENCES的固定活动/许可证据，并实际回读官方固定源码：[OpenHanako PathGuard](https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/lib/sandbox/path-guard.ts)（Apache-2.0）与[OpenBot handoff](https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/server/src/agents/handoff.ts)（MIT，固定LICENSE已回读）。采用先授权再访问、逐跳解析真实主体和持久意图的设计思路；不采用路径FULL或更大Bot权限扩张，不移植Postgres/外部Agent服务、不复制上游代码。近两年活动日期与许可定位沿用本change已核实REF-03/04，没有冒称执行上游测试。
 

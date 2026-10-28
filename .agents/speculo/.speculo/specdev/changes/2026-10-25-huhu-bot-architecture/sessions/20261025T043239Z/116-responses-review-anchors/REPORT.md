@@ -32,7 +32,7 @@ Observed: 对照T09及T01/T02/T06/T08/T27稳定验收anchor、097差异矩阵与
 
 ## 产物与验证
 
-本人用项目 `readArtifactSectionSync` 实际提取本116的两个显式anchor，与原112各section的Reviewer、Axis、Result、Input-SHA256、Observed逐字段逐字比对，回执见 [anchor校验](logs/01-anchor-check.json) 和 [原始输出](logs/01-anchor-check.log)。同时只读重核112 REPORT、manifest和其22项工件，保存原来源摘要；这不是2048产品输入或产品测试的新验收轮。
+本人用项目 `readArtifactSectionSync` 实际提取本116的两个显式anchor，与原112各section的Reviewer、Axis、Result、Input-SHA256、Observed逐字段逐字比对，回执见 anchor校验（历史日志已清理：`logs/01-anchor-check.json`） 和 [原始输出](logs/01-anchor-check.log)。同时只读重核112 REPORT、manifest和其22项工件，保存原来源摘要；这不是2048产品输入或产品测试的新验收轮。
 
 本次仅运行来源hash、section提取和116结构return校验；没有Go、产品Node检查、数据库/SDK或现场请求。原normal/race、vet/架构、CLI/TS/HAP/Host验证与全部具体数值均来自112，不宣称116重新执行。112真实Provider/Obsidian/目标OS user-owned/not-run等限制继续有效。
 
@@ -40,4 +40,4 @@ Observed: 对照T09及T01/T02/T06/T08/T27稳定验收anchor、097差异矩阵与
 
 原112首轮缺模板标题return126仍在原日志；Root本次五票闭环的 `closure-evidence-missing` 原失败保留于 [闭环回执](../../../evidence/responses-code-closure-validation.json)。本次只修显式anchor展示定位，不把格式失败算产品失败或新审查轮，也不覆盖旧报告。
 
-本人116的 [return回执](logs/02-return.json) 与 [输出](logs/02-return.log) 记录实际结构校验。全部命令实际Wait后停写，通过原生MESSAGE+FINAL交回；Root回读后修当前五票Independent Review的引用和正式状态。无生产、测试、锁、正式Evidence/Map/Goal或永久知识写入，无提交/推送/发布/归档。
+本人116的 return回执（历史日志已清理：`logs/02-return.json`） 与 [输出](logs/02-return.log) 记录实际结构校验。全部命令实际Wait后停写，通过原生MESSAGE+FINAL交回；Root回读后修当前五票Independent Review的引用和正式状态。无生产、测试、锁、正式Evidence/Map/Goal或永久知识写入，无提交/推送/发布/归档。

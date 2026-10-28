@@ -14,7 +14,7 @@ Status: completed
 
 ## 产物与验证
 
-最终五文件与只读 usage 摘要见 [10-own-final-freeze.json](logs/10-own-final-freeze.json)，tree SHA256 `1f9158a5f4dfb75aad33e17e55d846420c7132c4f3893277feeb7ee18cc36611`；相对05候选 sourceDrift=[]、usageDrift=[]。原始自有输入及副本见 [00-own-before.json](logs/00-own-before.json)，生产精确差异见 [10-production.patch](logs/10-production.patch)。
+最终五文件与只读 usage 摘要见 10-own-final-freeze.json（历史日志已清理：`logs/10-own-final-freeze.json`），tree SHA256 `1f9158a5f4dfb75aad33e17e55d846420c7132c4f3893277feeb7ee18cc36611`；相对05候选 sourceDrift=[]、usageDrift=[]。原始自有输入及副本见 00-own-before.json（历史日志已清理：`logs/00-own-before.json`），生产精确差异见 10-production.patch（历史日志已清理：`logs/10-production.patch`）。
 
 | 自有最终文件 | SHA256 |
 | --- | --- |
@@ -32,13 +32,13 @@ Status: completed
 | --- | --- |
 | [03 selector counterfactual](logs/03-selector-counterfactual-red.log) | exit1，Wait 2.681s。仅外部 overlay 恢复旧 `ListModels` 全局 Probe 谓词；Responses、Anthropic 与无 selector 注入误报 available。只证明 selector 缺口，不是旧整体 bootstrap 或 Stop 行为红灯。 |
 | [04 三个生产用例](logs/04-assistant-policy-green.log) | exit0，Wait 1.195s。协议发现无网络、无 selector 显式测试兼容、取消与真正返回/secret clear 的区分均通过。 |
-| [03–04 共同回执](logs/03-04-results.json) | 每命令实际 Wait；所采生产、锁与 Assistant 测试输入 sourceDrift=[]。 |
-| [06 默认 metadata HTTP](logs/06-metadata-http.log) / [07 回执](logs/07-metadata-result.json) | exit0，Wait 1.509s，sourceDrift=[]。公开 Assistant→默认工厂→真实 loopback GET；列表无网络，匹配 ID 返回空 capabilities，404 原始正文/假 key 不外泄，未实现协议没有第三次 HTTP。 |
-| [08 真实 SDK 预算消费](logs/08-budget-http.log) / [09 回执](logs/09-budget-http-result.json) | exit0，Wait 1.896s，sourceDrift=[]。仅一个永久用例；默认工厂、公开配置、真实 HTTP、实际 SQL 账本与公开根预算投影全部参与。 |
+| 03–04 共同回执（历史日志已清理：`logs/03-04-results.json`） | 每命令实际 Wait；所采生产、锁与 Assistant 测试输入 sourceDrift=[]。 |
+| [06 默认 metadata HTTP](logs/06-metadata-http.log) / 07 回执（历史日志已清理：`logs/07-metadata-result.json`） | exit0，Wait 1.509s，sourceDrift=[]。公开 Assistant→默认工厂→真实 loopback GET；列表无网络，匹配 ID 返回空 capabilities，404 原始正文/假 key 不外泄，未实现协议没有第三次 HTTP。 |
+| [08 真实 SDK 预算消费](logs/08-budget-http.log) / 09 回执（历史日志已清理：`logs/09-budget-http-result.json`） | exit0，Wait 1.896s，sourceDrift=[]。仅一个永久用例；默认工厂、公开配置、真实 HTTP、实际 SQL 账本与公开根预算投影全部参与。 |
 
 直接关闭测试先进入实际受控 Probe，再 Stop；取消发生但 held Probe 未返回时 Done 不关闭。释放 barrier 后调用返回 `MODEL_PROBE_FAILED`，调用者 secret 切片已全清，Done 才关闭。关闭后持有的 Assistant 引用仍拒绝 Background 新调用，不进入 repo/Resolve/Probe。
 
-辅助脚本初次因错误祖先层数选择 `repo/.agents`，在生成 Go 子进程前 exit1，见 [02-runner-setup-failure.txt](logs/02-runner-setup-failure.txt)；修正路径发现后才执行03/04。这不是产品红灯。
+辅助脚本初次因错误祖先层数选择 `repo/.agents`，在生成 Go 子进程前 exit1，见 02-runner-setup-failure.txt（历史日志已清理：`logs/02-runner-setup-failure.txt`）；修正路径发现后才执行03/04。这不是产品红灯。
 
 08的实际断言：默认预算未配时 `BUDGET_NOT_CONFIGURED`、HTTP0、attempt0；用户通过 CAS 配置后第一次真实 HTTP 完整 usage=9+4，charged=13。预留额严格等于网络捕获的最终完整 UTF-8 请求字节数+4096，实际请求 n=1。然后把 Profile 额度设成13加这一完整预留额，两个 fresh root 使用相同意图竞争：赢家实际 HTTP 被 barrier 保持，败者在赢家结束前以 `MODEL_BUDGET_EXHAUSTED` 终结且 attempt0；两根合计仅一次出站。释放赢家后，其缺失 usage 明确 unknown/estimated，并按整个预留额收费；Profile reserved归零、charged=13+完整预留额，公开 `Budget(runId)` 同样返回 unknown 和真实费用。不是固定缩小请求后构造的伪竞争。
 

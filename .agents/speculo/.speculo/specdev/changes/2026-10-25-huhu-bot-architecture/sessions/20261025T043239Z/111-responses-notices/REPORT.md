@@ -12,7 +12,7 @@ Status: completed
 
 冻结 TASK SHA 为 `5c1b28579517dd0009aa2b8de673538132d42b2e2e4cdcfb9f6f59fd79be982f`，Map27/Goal26；沿095已验收实现与 `evidence/095-lead-return.json`、Responses联合窗口/私有合同和108消费请求执行。工作区为既有 `NAMEWTA/bot` current 目录，HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`。使用未变的 SpecDev I 与 dev 许可/测试/构建规则，不涉及 UI 或 Skill 维护；本票无委派、提交、推送、发布、归档或真实凭证请求。
 
-实际只写六个产品文件。NOTICE 及所有旧本地法律文本未改；Go源码/锁、SDK缓存、API/HAP/TS、main.js/styles.css、发行资产及正式状态均未写。逐字节 before 与本轮 patch 分别在 `logs/before/`、[13-owned-change.patch](logs/13-owned-change.patch)；产品清单见 [final-inputs.json](final-inputs.json)，本任务全部工件见 [artifact-manifest.json](artifact-manifest.json)。
+实际只写六个产品文件。NOTICE 及所有旧本地法律文本未改；Go源码/锁、SDK缓存、API/HAP/TS、main.js/styles.css、发行资产及正式状态均未写。逐字节 before 与本轮 patch 分别在 `logs/before/`、13-owned-change.patch（历史日志已清理：`logs/13-owned-change.patch`）；产品清单见 [final-inputs.json](final-inputs.json)，本任务全部工件见 [artifact-manifest.json](artifact-manifest.json)。
 
 | 文件 | before SHA-256 | after SHA-256 |
 |---|---|---|
@@ -25,7 +25,7 @@ Status: completed
 
 六文件树 SHA 为 `4281905928440d5a9d39f6dc2cbfbdbb518df1d9081601ad2e4fbfcf7491c6b8`，按排序后的 `path + NUL + fileSHA + LF` 计算；final-inputs.json SHA 为 `923e0cde4051e0849f4b4252e1c7324167adfa1cdaa2daa67a81cf4b9debf665`。这是本票写集摘要，不是发行二进制 sourceTreeHash。前序本地 Go 法律输入实际为18文件，逐个哈希未变；初始原生消息里的18/19口头差异只在本轮按实际数量澄清，未改任何历史报告。
 
-固定新增模块的下载/根文本/源头记录见 [01-new-module-license-inventory.json](logs/01-new-module-license-inventory.json)，最终45模块的精确 zip/go.mod checksums、根全文摘要及 supplemental 来源见 [12-final-runtime-license-sources.json](logs/12-final-runtime-license-sources.json)。以下五项在每个实际目标都已进入非测试编译闭包：
+固定新增模块的下载/根文本/源头记录见 01-new-module-license-inventory.json（历史日志已清理：`logs/01-new-module-license-inventory.json`），最终45模块的精确 zip/go.mod checksums、根全文摘要及 supplemental 来源见 12-final-runtime-license-sources.json（历史日志已清理：`logs/12-final-runtime-license-sources.json`）。以下五项在每个实际目标都已进入非测试编译闭包：
 
 | 模块 | 版本 | module checksum / go.mod checksum | 根法律原文 SHA-256 |
 |---|---|---|---|
@@ -37,7 +37,7 @@ Status: completed
 
 官方 SDK 固定 origin `83462dff240801783d9cd32dece645c86875abec`，根 LICENSE 是完整 Apache-2.0（Copyright 2026 OpenAI）。四个 tidwall 模块为完整 MIT（Josh Baker）；gjson/sjson/pretty 的固定 commit 来自下载元数据，match 的 tag 经实际只读 `git ls-remote` 固定为 `4c9fc61b493b7aa0a3d347e9190aa78c5bec09cf`，均已记录到当前中文说明与来源证据。发行包五项根全文齐备，生成器从经锁校验的发行内容读取，不另造根许可副本，也不联网浮动抓全文。
 
-官方 SDK 的 `internal/apijson/encoder.go` 导入其内置 `internal/encoding/json`，其中 encode/decode/indent/scanner/stream 的 Copyright 2010、tags 的2011、fold 的2013、tables 的2016 Go Authors BSD 头不能由根 Apache 文本替代。五个目标均实际选中该包的10个文件，逐文件 SHA 在 [07-selected-compiled-files.json](logs/07-selected-compiled-files.json) 和12清单中。新增 `docs/third-party/licenses/go/go-1.24rc1-BSD-3-Clause.txt` 中的完整 Go BSD 原文 来源于[固定 Go 1.24rc1 LICENSE](https://github.com/golang/go/blob/16afa6a740fac7442e94dcd2ec5ea4a4853e45dc/LICENSE)，原样 SHA `911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad`，实际 HTTP200/下载元数据见 [02-fixed-license-source.json](logs/02-fixed-license-source.json)。SDK 仅声明代码来自 Go1.24预发布版，未提供精确 vendoring commit；本票明确该 commit 只固定法律全文，不虚构 SDK 那批实现的精确来源。模块版本、补充来源/许可/摘要组合仍严格匹配，缺失、篡改、未知来源或版本全部失败；没有放宽095的允许集或 fail-closed 规则。
+官方 SDK 的 `internal/apijson/encoder.go` 导入其内置 `internal/encoding/json`，其中 encode/decode/indent/scanner/stream 的 Copyright 2010、tags 的2011、fold 的2013、tables 的2016 Go Authors BSD 头不能由根 Apache 文本替代。五个目标均实际选中该包的10个文件，逐文件 SHA 在 07-selected-compiled-files.json（历史日志已清理：`logs/07-selected-compiled-files.json`） 和12清单中。新增 `docs/third-party/licenses/go/go-1.24rc1-BSD-3-Clause.txt` 中的完整 Go BSD 原文 来源于[固定 Go 1.24rc1 LICENSE](https://github.com/golang/go/blob/16afa6a740fac7442e94dcd2ec5ea4a4853e45dc/LICENSE)，原样 SHA `911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad`，实际 HTTP200/下载元数据见 02-fixed-license-source.json（历史日志已清理：`logs/02-fixed-license-source.json`）。SDK 仅声明代码来自 Go1.24预发布版，未提供精确 vendoring commit；本票明确该 commit 只固定法律全文，不虚构 SDK 那批实现的精确来源。模块版本、补充来源/许可/摘要组合仍严格匹配，缺失、篡改、未知来源或版本全部失败；没有放宽095的允许集或 fail-closed 规则。
 
 已只读回读真实生产 `responses/driver.go`、`request.go` 与装配消费：使用公开 ResponseService.NewStreaming / ModelService.Get、SDK 类型及公开 raw 参数扩点，同一私有 Registry 与 HUHU 自有 httpcall/common 辅助负责生命周期及预算。不是复制整个 SDK/Runner，也不是另造 SDK fork；Go SDK 内部自带的 BSD 代码属于依赖自身义务，与 HUHU 直接改编分别记录。两份中文当前说明已更新这些事实，Chat 的原 EinoExt/fork 义务继续保留。实际选中包没有 Azure/cloud SDK 包；SDK 仓库其它包、测试或整个 require 表没有直接当作发行依赖。
 
@@ -51,16 +51,16 @@ Status: completed
 | `darwin-arm64` | 407 | 38 |
 | `win32-x64` | 445 | 44 |
 
-真实并集45，未把095旧40表或单机43表冒称当前 union。所有原始 JSON、目标/环境/退出状态分别在 `07-<target>-deps.log` 与 [07-commands.json](logs/07-commands.json)。本次窗口 `cmd/internal` 排除 tests/testdata/dist 及 `_test.go` 后的生产/嵌入输入共 167 文件，窗口前后哈希相同，树 SHA `fc3010339f7560367301e4cc7100aa57b20eb5def205607df97e253359b1281e`，见 [07-production-before.json](logs/07-production-before.json)；逐目标实际选中文件清单 SHA `3b933b325826aaa2a6a0e7742f9535d9bdd17bfafdefba04c89c26551e244658`。这些是该稳定采集窗口的生产快照，不把109其后工作或不相关测试编辑混入编译输入，也不承诺未来全部源码封盘。没有执行五目标 go build 或目标OS运行。
+真实并集45，未把095旧40表或单机43表冒称当前 union。所有原始 JSON、目标/环境/退出状态分别在 `07-<target>-deps.log` 与 07-commands.json（历史日志已清理：`logs/07-commands.json`）。本次窗口 `cmd/internal` 排除 tests/testdata/dist 及 `_test.go` 后的生产/嵌入输入共 167 文件，窗口前后哈希相同，树 SHA `fc3010339f7560367301e4cc7100aa57b20eb5def205607df97e253359b1281e`，见 07-production-before.json（历史日志已清理：`logs/07-production-before.json`）；逐目标实际选中文件清单 SHA `3b933b325826aaa2a6a0e7742f9535d9bdd17bfafdefba04c89c26551e244658`。这些是该稳定采集窗口的生产快照，不把109其后工作或不相关测试编辑混入编译输入，也不承诺未来全部源码封盘。没有执行五目标 go build 或目标OS运行。
 
 | 检查 | 实际结果 / Wait | 原始回执 |
 |---|---|---|
 | 许可红灯 | 12 pass / 2 fail；观察到 Node outer126 / Wait，缺精确官方SDK登记和BSD补充全文 | [03-node-red.log](logs/03-node-red.log)、JSON |
-| 无Go本地原文检查 | 五个固定发行模块完整全文校验0；只检查法律输入，不冒称闭包 | [05-local-license-check.json](logs/05-local-license-check.json) |
-| Node工具/许可 | 红→绿后与末次均27/27，outer0 / Wait；保留未知版本、摘要不匹配、缺文件/篡改/未知固定来源等负控 | [04-node-green.log](logs/04-node-green.log)、[10-final-node-tools.json](logs/10-final-node-tools.json) |
+| 无Go本地原文检查 | 五个固定发行模块完整全文校验0；只检查法律输入，不冒称闭包 | 05-local-license-check.json（历史日志已清理：`logs/05-local-license-check.json`） |
+| Node工具/许可 | 红→绿后与末次均27/27，outer0 / Wait；保留未知版本、摘要不匹配、缺文件/篡改/未知固定来源等负控 | [04-node-green.log](logs/04-node-green.log)、10-final-node-tools.json（历史日志已清理：`logs/10-final-node-tools.json`） |
 | mod verify + 五目标 go list | 全部实际0 / Wait，生产和锁窗口内无漂移 | 07系列 |
-| `pnpm run notices` | outer0 / Wait，100npm / 62crates / 46Go runtime/modules | [08-notices-write.json](logs/08-notices-write.json) |
-| `pnpm run check:notices` | outer0 / Wait，同一固定输入生成一致 | [09-notices-check.json](logs/09-notices-check.json) |
+| `pnpm run notices` | outer0 / Wait，100npm / 62crates / 46Go runtime/modules | 08-notices-write.json（历史日志已清理：`logs/08-notices-write.json`） |
+| `pnpm run check:notices` | outer0 / Wait，同一固定输入生成一致 | 09-notices-check.json（历史日志已清理：`logs/09-notices-check.json`） |
 | `pnpm test:docs` | 内部 ELIFECYCLE1 / outer126 / Wait，四项外部文档finding，详见下一节 | [11-docs.log](logs/11-docs.log)、JSON |
 | 自有脚本/说明 diff检查 | `git diff --check` 实际0 / Wait | [14-diff-check.log](logs/14-diff-check.log) |
 

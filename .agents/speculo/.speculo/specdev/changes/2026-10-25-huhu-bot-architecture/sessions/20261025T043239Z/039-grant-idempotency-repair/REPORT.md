@@ -10,11 +10,11 @@ Status: completed
 
 本轮唯一源码/测试写入为 `native/huhubot/internal/application/access/grants/service.go` 和 `native/huhubot/tests/contract/access/access_test.go`。没有新增 import、依赖、公共接口、迁移或生成物，没有修改 commands、SQL、API、凭证、锁文件、正式状态、他人报告或 035 原探针。当前沿用既有 dev / SpecDev I 规则与 Map10 / Goal9 / T05；执行身份为 native `/root/credential_provider`，未再委派、提交或发布。
 
-两文件已停写，所有本轮命令与 probe 均结束并 Wait；最终摘要见 [final-source-sha.json](logs/final-source-sha.json)，清理及未变输入核对见 [08-freeze-cleanup.json](logs/08-freeze-cleanup.json)。此候选仍待 Root 组合冻结及未参与实现者复审；不把本报告当作正式 Ticket 接纳或双轴 pass。共享 Go 接缝本轮未改，038 的独立 TS 修复不属于本写集，联合输入以 Root 随后固定的版本为准。
+两文件已停写，所有本轮命令与 probe 均结束并 Wait；最终摘要见 final-source-sha.json（历史日志已清理：`logs/final-source-sha.json`），清理及未变输入核对见 08-freeze-cleanup.json（历史日志已清理：`logs/08-freeze-cleanup.json`）。此候选仍待 Root 组合冻结及未参与实现者复审；不把本报告当作正式 Ticket 接纳或双轴 pass。共享 Go 接缝本轮未改，038 的独立 TS 修复不属于本写集，联合输入以 Root 随后固定的版本为准。
 
 ## 产物与验证
 
-先完整回读 039 TASK、035 REPORT 两轴及 raw-probes 的原 Facade/SQLite 反例源码，复用原测试入口，没有从内部 digest 单测替代实际调用链。自有隔离副本位于 `/tmp/huhu-grant-idempotency-039/module`；从 `/tmp/huhu-chat-review/module` 复制，未改原目录。原 probe 的输入、原 ID 正常对照和 SQLite 事实保留，绿色回放仅替换自有副本的 service 与两个缺陷断言，接受断言要求恢复原 Grant ID 和完整原 Receipt。原探针文本、接受文本与断言差异分别保存在 [original-review-probe.go.txt](logs/original-review-probe.go.txt)、[acceptance-review-probe.go.txt](logs/acceptance-review-probe.go.txt)、[probe-assertions.diff](logs/probe-assertions.diff)。
+先完整回读 039 TASK、035 REPORT 两轴及 raw-probes 的原 Facade/SQLite 反例源码，复用原测试入口，没有从内部 digest 单测替代实际调用链。自有隔离副本位于 `/tmp/huhu-grant-idempotency-039/module`；从 `/tmp/huhu-chat-review/module` 复制，未改原目录。原 probe 的输入、原 ID 正常对照和 SQLite 事实保留，绿色回放仅替换自有副本的 service 与两个缺陷断言，接受断言要求恢复原 Grant ID 和完整原 Receipt。原探针文本、接受文本与断言差异分别保存在 original-review-probe.go.txt（历史日志已清理：`logs/original-review-probe.go.txt`）、acceptance-review-probe.go.txt（历史日志已清理：`logs/acceptance-review-probe.go.txt`）、probe-assertions.diff（历史日志已清理：`logs/probe-assertions.diff`）。
 
 永久回归 `TestGrantRetriesRecoverOriginalResultsAcrossAttemptIDs` 经真实公共 Facade → application service → SQLite，包含：
 
@@ -35,7 +35,7 @@ Status: completed
 | 完整 access | `CGO_ENABLED=0 go test -mod=readonly -v ./tests/contract/access -count=1` | exit 0，1.425s。[05](logs/05-access-full.log) |
 | 并发检查 | `CGO_ENABLED=1 go test -mod=readonly -race ./tests/contract/access -count=1` | exit 0，5.176s。[06](logs/06-access-race.log) |
 | 静态检查 | `CGO_ENABLED=0 go vet -mod=readonly ./internal/application/access/... ./tests/contract/access` | exit 0。[07](logs/07-access-vet.log) |
-| 格式/范围核对 | `git diff --check -- <本轮两文件>`、`gofmt -l <本轮两文件>`、对新增 diff 行补充空白检查 | exit 0 / 无待格式化，写集及输入 SHA 核对通过。[08](logs/08-freeze-cleanup.json) |
+| 格式/范围核对 | `git diff --check -- <本轮两文件>`、`gofmt -l <本轮两文件>`、对新增 diff 行补充空白检查 | exit 0 / 无待格式化，写集及输入 SHA 核对通过。08（历史日志已清理：`logs/08-freeze-cleanup.json`） |
 
 完整 access 包也运行现有真实生产 bootstrap/stdio ↔ TS HapConnection / HostReadService 受控外部 HostSources、fake Engine 联调；其自身记录两个进程 Wait。它不是真实 Obsidian、Vault、模型或产品 CLI 现场验收，本轮也未新建这些活动，未触碰 OS keyring 或运行 D-Bus 探针。未重复全仓、schema、构建和凭证检查，因为此次仅改变强类型命令摘要输入；Root 最终联合验证仍保留。
 
@@ -53,7 +53,7 @@ Status: completed
 | access_test.go 修复前 | `0bd4743d986e1fa262096a092b6a2ae6fc39f99e87638d8f9dc1e1c6c19b5a5e` |
 | access_test.go 最终 | `b66e55eebb44fc5a549d8ea4b1abe9ec48c19691ff2338cea3775ae39528b9c7` |
 
-输入的 API、commands、SQL、go.mod/sum 与旧报告/原探针 SHA 在结束时均与开始相同；详见 [input-sha.json](logs/input-sha.json)。生产及测试实际差异在 [repair.diff](logs/repair.diff) / [test.diff](logs/test.diff)。无外部代码复制改编或新增许可证来源。
+输入的 API、commands、SQL、go.mod/sum 与旧报告/原探针 SHA 在结束时均与开始相同；详见 input-sha.json（历史日志已清理：`logs/input-sha.json`）。生产及测试实际差异在 repair.diff（历史日志已清理：`logs/repair.diff`） / test.diff（历史日志已清理：`logs/test.diff`）。无外部代码复制改编或新增许可证来源。
 
 ## 问题与下一步
 

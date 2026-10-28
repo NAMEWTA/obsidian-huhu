@@ -92,7 +92,8 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		},
 		{
 			id: 'huhubot',
-			navigationContext: true,
+			resourcePages: true,
+			resourceTabs: () => false,
 			rail: { slot: 'top' },
 			navigation: { id: 'huhubot', labelKey: 'workbench.huhubot', icon: 'bot', target: { feature: 'huhubot' }, children: [
 				{ id: 'huhubot-chat', labelKey: 'workbench.huhubotChat', icon: 'message-circle', target: { feature: 'huhubot', section: 'chat' } },
@@ -108,7 +109,7 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			// HUHU Bot is on-demand: an idle module has no client to peek yet, but
 			// its navigation must remain discoverable so opening the page can activate it.
 			availability: () => ({ ...ready(), enabled: plugin.moduleEnabled('huhubot'), supported: Platform.isDesktopApp, ready: plugin.moduleState('huhubot') !== 'failed' }),
-			stateKeys: [],
+			stateKeys: ['sessionId', 'runId'],
 			create: huhubotPage,
 		},
 		{

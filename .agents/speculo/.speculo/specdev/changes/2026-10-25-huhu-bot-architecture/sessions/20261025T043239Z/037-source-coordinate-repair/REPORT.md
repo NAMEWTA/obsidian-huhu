@@ -18,13 +18,13 @@ Status: completed
 
 原 foundation `TestSharedMethodSchemas` 与实际 TS `MethodValidation` 已直接消费新增共享样本，无需再造平行字段表或重复测试。生成入口新增52例：6处SourceRange载体的原边界/相邻边界/最大合法坐标，以及 start/end 越界、非整数、负数；另有 read/search 的65536合法/65537拒绝对照。SourceRange 的业务非空、正文hash与surrogate规则未由本片改动；038补永久真实捕获链回归。
 
-[logs/source-manifest.json](logs/source-manifest.json) 记录7个自有输入/输出的前后SHA，tree SHA256 `f4a0eba530c925c22742e6b2f6ce38b36930694c9fdedb714581cc20abdfaf5a`。关键SHA：
+logs/source-manifest.json（历史日志已清理：`logs/source-manifest.json`） 记录7个自有输入/输出的前后SHA，tree SHA256 `f4a0eba530c925c22742e6b2f6ce38b36930694c9fdedb714581cc20abdfaf5a`。关键SHA：
 
 - generator：`d5522bfacb7f19ac62b2b9730be813933d299c7a24afb48572809f72d7902c5a`。
 - 唯一/public与Go嵌入schema：`63d16a0a891b14d6c685514d57913ccccbaac59c184f9b76b45d8a6779db9e4e`。
 - 226共享样本：`67e7757e5de642810e3585780be9e6626a8638ff93ad6b5c8066012a27308d48`。
 
-[logs/schema-semantic-diff.json](logs/schema-semantic-diff.json) 对照035冻结 schema，18处差异全部仅为 `start/end.maximum:131072→1048576`，无其它合同差异。[logs/input-hashes.json](logs/input-hashes.json) 记录实际TASK、035 REPORT/raw-probes、原独立range探针及原输出SHA；对应035 review-input-r1仍为 `2a43d12b56b6e68c676ef89348295bbacc5ad3e496d5599e0fece0846968401d`。原035文件与 `/tmp/huhu-chat-review` 均只读保留。
+logs/schema-semantic-diff.json（历史日志已清理：`logs/schema-semantic-diff.json`） 对照035冻结 schema，18处差异全部仅为 `start/end.maximum:131072→1048576`，无其它合同差异。logs/input-hashes.json（历史日志已清理：`logs/input-hashes.json`） 记录实际TASK、035 REPORT/raw-probes、原独立range探针及原输出SHA；对应035 review-input-r1仍为 `2a43d12b56b6e68c676ef89348295bbacc5ad3e496d5599e0fece0846968401d`。原035文件与 `/tmp/huhu-chat-review` 均只读保留。
 
 ### 实际红绿及检查
 
@@ -39,9 +39,9 @@ Status: completed
 | 固定 venv Python `contracts/hap/v0.1/validate.py` | exit0，126 method shapes、226 samples、25 decimal negatives、3 frame goldens | [logs/09-python-schema.log](logs/09-python-schema.log) |
 | `go vet ./internal/protocol/hap ./tests/contract/foundation` | exit0，无诊断 | [logs/10-vet.log](logs/10-vet.log) |
 | `node scripts/verify-huhu-bot-architecture.mjs` | exit0，24 production files | [logs/11-architecture.log](logs/11-architecture.log) |
-| 隔离临时目录运行唯一generator，逐字节比较六输出 | exit0，全部相同 | [logs/check-generated.py](logs/check-generated.py)、[logs/12-generator.log](logs/12-generator.log) |
+| 隔离临时目录运行唯一generator，逐字节比较六输出 | exit0，全部相同 | logs/check-generated.py（历史日志已清理：`logs/check-generated.py`）、[logs/12-generator.log](logs/12-generator.log) |
 
-实际TS探针路径见 [logs/probe-location.json](logs/probe-location.json)，使用受控外部 Obsidian 类/editor 边界，生产 capture/HostReadService/validator 均是真实代码。红绿之间冻结 TS 字节不变，SHA清单见 [logs/frozen-ts-probe-inputs.json](logs/frozen-ts-probe-inputs.json)；没有修改原035探针来伪造通过。实际子进程均同步Run/Wait，probe中service.dispose清理；[logs/13-probe-stopped.json](logs/13-probe-stopped.json) 确认自有隔离目录无活动进程。
+实际TS探针路径见 logs/probe-location.json（历史日志已清理：`logs/probe-location.json`），使用受控外部 Obsidian 类/editor 边界，生产 capture/HostReadService/validator 均是真实代码。红绿之间冻结 TS 字节不变，SHA清单见 logs/frozen-ts-probe-inputs.json（历史日志已清理：`logs/frozen-ts-probe-inputs.json`）；没有修改原035探针来伪造通过。实际子进程均同步Run/Wait，probe中service.dispose清理；logs/13-probe-stopped.json（历史日志已清理：`logs/13-probe-stopped.json`） 确认自有隔离目录无活动进程。
 
 复用已读 dev/I、T01/T05与风险/测试规则，本次没有需要新增开源依赖或设计的陌生点。作者为 `/root/foundation_go`；沿Lead派遣请求的 `gpt-6.1-sol/xhigh` 偏好，仅是请求记录，不冒称实际底层model attestation。
 

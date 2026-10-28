@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/guard"
 	domain "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/execution/purge"
 )
 
@@ -38,14 +39,58 @@ type Repository interface {
 	Execute(context.Context, ExecuteRequest) (Result, error)
 }
 
-type Service struct{ repo Repository }
+type Cleaner interface {
+	Clean(context.Context, string, []api.CredentialMetadata) error
+}
+type CleanupRepository interface {
+	BeginCleanup(context.Context, ExecuteRequest) ([]api.CredentialMetadata, error)
+	CleanupPending(context.Context) (bool, error)
+}
+type Service struct {
+	gate    *guard.Gate
+	repo    Repository
+	cleaner Cleaner
+}
 
-func New(repo Repository) *Service { return &Service{repo: repo} }
+func New(repo Repository, gates ...*guard.Gate) *Service {
+	g := guard.New()
+	if len(gates) > 0 && gates[0] != nil {
+		g = gates[0]
+	}
+	return &Service{repo: repo, gate: g}
+}
+func (s *Service) SetCleaner(cleaner Cleaner) { s.cleaner = cleaner }
 func (s *Service) Preview(ctx context.Context, req PreviewRequest) (domain.Plan, error) {
 	return s.repo.Preview(ctx, req)
 }
-func (s *Service) Execute(ctx context.Context, req ExecuteRequest) (Result, error) {
+func (s *Service) Execute(ctx context.Context, req ExecuteRequest) (out Result, err error) {
+	if len(req.RetainMemoryIDs) > 0 {
+		return out, api.Invalid("PROFILE_RETENTION_NOT_SUPPORTED")
+	}
+	err = s.gate.Run(ctx, func(ctx context.Context) error { var e error; out, e = s.execute(ctx, req); return e })
+	return
+}
+func (s *Service) execute(ctx context.Context, req ExecuteRequest) (Result, error) {
+	if s.cleaner != nil {
+		repo, ok := s.repo.(CleanupRepository)
+		if !ok {
+			return Result{}, api.Denied("PROFILE_CLEANUP_UNAVAILABLE")
+		}
+		refs, err := repo.BeginCleanup(ctx, req)
+		if err != nil {
+			return Result{}, err
+		}
+		if err = s.cleaner.Clean(ctx, req.ProfileID, refs); err != nil {
+			return Result{}, &api.Fault{Kind: "CONFLICT", Reason: "PROFILE_CLEANUP_FAILED", Retryable: true}
+		}
+	}
 	return s.repo.Execute(ctx, req)
+}
+func (a *API) Restricted(ctx context.Context) (bool, error) {
+	if repo, ok := a.service.repo.(CleanupRepository); ok {
+		return repo.CleanupPending(ctx)
+	}
+	return false, nil
 }
 
 // API is the profile lifecycle facade. It keeps wire/application DTOs out of the

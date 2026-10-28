@@ -107,6 +107,19 @@ it('uses actual single-note Vault.process, persists completion, and does not rep
 	} finally { f.dispose(); }
 });
 
+it('allows receipt-only reconciliation of historical bindings after a command epoch change', async () => {
+	const f = await fixture();
+	try {
+		const preview = await f.prepare('committed before deletion');
+		const { request, result } = await f.invoke(preview);
+		await expect(result).resolves.toMatchObject({ status: 'committed' });
+		f.adapter.setCommandEpoch('2');
+		await expect(f.adapter.queryReceipt({ ...authority(), commandEpoch: '2', effectId: request.effectId, fingerprint: request.fingerprint, preview }, signal())).resolves.toMatchObject({ status: 'committed' });
+		await expect(f.adapter.invoke({ ...request, commandEpoch: '2' }, signal())).rejects.toThrow();
+		expect(f.mutations()).toBe(1);
+	} finally { f.dispose(); }
+});
+
 it('creates only the explicit canonical candidate and never creates folders, overwrites, or renames on conflict', async () => {
 	const f = await fixture();
 	try {

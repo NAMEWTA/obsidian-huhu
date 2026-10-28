@@ -70,9 +70,9 @@ T13无@/明确@、全目标一事务、一根用户意图、独立公开历史/�
 
 ## 产物与验证
 
-独占窗口内自有测试串行，Go1.26.10 linux/amd64、CGO_ENABLED=1，外部cwd `/tmp/huhu-groups-r2-review/repo/native/huhubot`。所有命令/退出/工具Wait标识及版本区别见 [independent-runs.json](logs/independent-runs.json)，所有原始输出与两版探针已保存。只写079与隔离/tmp，未写产品、永久测试、正式状态或他人报告。
+独占窗口内自有测试串行，Go1.26.10 linux/amd64、CGO_ENABLED=1，外部cwd `/tmp/huhu-groups-r2-review/repo/native/huhubot`。所有命令/退出/工具Wait标识及版本区别见 independent-runs.json（历史日志已清理：`logs/independent-runs.json`），所有原始输出与两版探针已保存。只写079与隔离/tmp，未写产品、永久测试、正式状态或他人报告。
 
-[reuse-readback.json](logs/reuse-readback.json)亲自逐SHA核对078最终352支持文件、Root当前2070输入、插件1873输入及main.js/styles.css两产物、241个原始外部副本及工作区对应文件，errors均为空。078最终完整tree为 `674dc115fcc0ba1a3debed82e73768a39d7a74a90b53c33af8ce8f14bb95c665`。078三包normal/race及全Go vet是作者实跑，后续仅测试失败清理改变，作者另跑最终四控制normal/race；分别承接，未称旧矩阵含后写cleanup。本review未机械重跑这组矩阵。
+reuse-readback.json（历史日志已清理：`logs/reuse-readback.json`）亲自逐SHA核对078最终352支持文件、Root当前2070输入、插件1873输入及main.js/styles.css两产物、241个原始外部副本及工作区对应文件，errors均为空。078最终完整tree为 `674dc115fcc0ba1a3debed82e73768a39d7a74a90b53c33af8ce8f14bb95c665`。078三包normal/race及全Go vet是作者实跑，后续仅测试失败清理改变，作者另跑最终四控制normal/race；分别承接，未称旧矩阵含后写cleanup。本review未机械重跑这组矩阵。
 
 Root [当前补验](../../../evidence/T-13-logs/lead-groups-e2e-candidate2.json)四公开分页控制normal0、合并四控制/六union/SQL rollback的race0及Wait事实已回读。Root旧全E2E和插件build/lint的复用由实际原执行者、逐输入SHA及不调用新模型字节分页的闭包支撑，不冒称本轮新跑完整TS或真实平台。078原红、误插Directory导致编译失败、清理准备匹配错误，Root旧夹具busy kind/缺description、073旧single/batch reason真实红均在原位置保存并按原性质区分，没有择绿覆盖失败。
 

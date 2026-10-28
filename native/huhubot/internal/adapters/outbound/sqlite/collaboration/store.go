@@ -682,27 +682,11 @@ func (s *Store) ConfirmProposal(ctx context.Context, id api.RequestIdentity, c a
 		if e != nil || found {
 			return e
 		}
-		var body, preview, state, expiry, principal, revision, origin string
-		if e = tx.QueryRowContext(ctx, "SELECT draft_json,preview_hash,state,expires_at,principal_id,CAST(revision AS TEXT),run_id FROM collaboration_proposals WHERE proposal_id=? AND profile_id=?", c.ProposalID, c.ProfileID).Scan(&body, &preview, &state, &expiry, &principal, &revision, &origin); e != nil {
-			return e
-		}
-		if principal != id.PrincipalID() {
-			return api.Denied("PROPOSAL_READ_DENIED")
-		}
-		until, e := time.Parse(time.RFC3339Nano, expiry)
-		if e != nil {
-			return fail("CONFLICT", "PROPOSAL_STATE_INVALID")
-		}
-		if state != "pending" || preview != c.PreviewHash || revision != c.ExpectedRevision || !time.Now().Before(until) {
-			return fail("CONFLICT", "PROPOSAL_CHANGED")
-		}
-		_, originAccess, e := execution.ReadInTx(ctx, tx, id, api.IDQuery{ProfileID: c.ProfileID, ID: origin})
+		body, e := s.pendingProposalInTx(ctx, tx, id, c)
 		if e != nil {
 			return e
 		}
-		if e = s.access.CheckInTx(ctx, tx, id, originAccess, []string{"read"}); e != nil {
-			return e
-		}
+
 		var draft api.AgentDraft
 		if json.Unmarshal([]byte(body), &draft) != nil {
 			return fail("CONFLICT", "PROPOSAL_STATE_INVALID")

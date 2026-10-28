@@ -89,6 +89,17 @@ func (r *Router) dispatch(ctx context.Context, e wire.Envelope, remote api.HostR
 	if r.App.Service.Stopping() {
 		return Failure(e.ID, -32000, "CONFLICT", "SERVICE_STOPPING", false)
 	}
+	if guard, ok := r.App.Profile.(interface {
+		Restricted(context.Context) (bool, error)
+	}); ok {
+		restricted, err := guard.Restricted(ctx)
+		if err != nil {
+			return fail(err)
+		}
+		if restricted && e.Method != "protocol.hello" && e.Method != "service.status" && e.Method != "service.health" && e.Method != "service.diagnostics" && e.Method != "profile.status" && e.Method != "profile.delete" && e.Method != "profile.deletePreview" && e.Method != "sessions.delete" && e.Method != "sessions.deletePreview" && e.Method != "service.shutdown" {
+			return fail(&api.Fault{Kind: "CONFLICT", Reason: "PROFILE_CLEANUP_PENDING"})
+		}
+	}
 	switch e.Method {
 	case "protocol.hello":
 		if r.ready.Load() {
@@ -105,9 +116,12 @@ func (r *Router) dispatch(ctx context.Context, e wire.Envelope, remote api.HostR
 		if err != nil {
 			return fail(err)
 		}
-		policy, err := r.policyStatus(ctx, s.Profile.ProfileID)
-		if err != nil {
-			return fail(err)
+		var policy *wire.RuntimePolicyStatus
+		if s.Cleanup == nil {
+			policy, err = r.policyStatus(ctx, s.Profile.ProfileID)
+			if err != nil {
+				return fail(err)
+			}
 		}
 		response.Result = wire.HelloResult{Policy: policy, ProtocolVersion: wire.ProtocolVersion, BuildVersion: wire.BuildVersion, SchemaVersion: wire.SchemaVersion, Profile: metadata(s.Profile), Capabilities: r.availableMethods(), Limits: wire.Limits{MaxFrameBytes: wire.MaxFrameBytes, MaxBatchItems: wire.MaxBatchItems}}
 	case "service.health", "service.status", "profile.status", "service.diagnostics", "service.shutdown":
@@ -125,19 +139,27 @@ func (r *Router) dispatch(ctx context.Context, e wire.Envelope, remote api.HostR
 			if err != nil {
 				return fail(err)
 			}
-			policy, err := r.policyStatus(ctx, s.Profile.ProfileID)
-			if err != nil {
-				return fail(err)
+			var policy *wire.RuntimePolicyStatus
+			if s.Cleanup == nil {
+				policy, err = r.policyStatus(ctx, s.Profile.ProfileID)
+				if err != nil {
+					return fail(err)
+				}
+			}
+			var cleanup *wire.CleanupStatus
+			if s.Cleanup != nil {
+				cleanup = &wire.CleanupStatus{Profile: s.Cleanup.Profile, SessionIDs: s.Cleanup.SessionIDs}
 			}
 			if e.Method == "profile.status" {
 				response.Result = struct {
+					Cleanup       *wire.CleanupStatus       `json:"cleanup,omitempty"`
 					Policy        *wire.RuntimePolicyStatus `json:"policy,omitempty"`
 					SchemaVersion int                       `json:"schemaVersion"`
 					State         string                    `json:"state"`
 					Profile       wire.ProfileMetadata      `json:"profile"`
-				}{policy, wire.SchemaVersion, s.State, metadata(s.Profile)}
+				}{cleanup, policy, wire.SchemaVersion, s.State, metadata(s.Profile)}
 			} else {
-				response.Result = wire.StatusResult{Policy: policy, SchemaVersion: wire.SchemaVersion, State: s.State, Profile: metadata(s.Profile), HostAttached: s.HostAttached}
+				response.Result = wire.StatusResult{Cleanup: cleanup, Policy: policy, SchemaVersion: wire.SchemaVersion, State: s.State, Profile: metadata(s.Profile), HostAttached: s.HostAttached}
 			}
 		case "service.diagnostics":
 			d, err := r.App.Service.Diagnostics(ctx, r.Identity)
@@ -156,7 +178,7 @@ func (r *Router) dispatch(ctx context.Context, e wire.Envelope, remote api.HostR
 		if err != nil {
 			return fail(api.Invalid("INVALID_HOST_PARAMS"))
 		}
-		l, err := r.App.Host.Attach(ctx, r.Identity, api.HostAttachCommand{WorkspaceID: p.WorkspaceID, Capabilities: p.Capabilities}, remote)
+		l, err := r.App.Host.Attach(ctx, r.Identity, api.HostAttachCommand{WorkspaceID: p.WorkspaceID, Capabilities: p.Capabilities, RenewLeaseID: p.RenewLeaseID}, remote)
 		if err != nil {
 			return fail(err)
 		}

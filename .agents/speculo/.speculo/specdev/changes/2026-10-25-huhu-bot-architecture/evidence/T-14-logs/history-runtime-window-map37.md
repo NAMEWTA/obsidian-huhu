@@ -2,7 +2,7 @@
 
 Root实读direct/service.go确认History与ModelHistory在SourceRefs为空时直接返回，已有Memory祖先并不一定含显式SourceRefs。仅有物理输出fence不能正确表达逐消息过滤；旧消息失效也不能把整页独立用户文本一起隐藏。
 
-原direct/Run/Core owner foundation_go在132完成并停写后，134接续129未完成运行集成（原18源checkpoint和原始证据保留），新增精确direct/{ports,service}.go与contracts/hap/v0.1/generate.mjs窗口。128仅在其grants原写集提供ReadHistoryMemory(ctx,id,profile,targetRunID,[]api.VisibleMessage)([]api.VisibleMessage,map[string][]api.DerivedInput,error)。应用层先资格过滤，再走原source规则；只有最终保留消息才合并完整Derived及DeliverySubjects。未知SQL/持久坏状态不伪装被过滤，独立用户Intent不继承整Run记忆。
+原direct/Run/Core owner foundation_go在132完成并停写后，134接续129未完成运行集成（原18源checkpoint和原始证据保留），新增精确direct/{ports,service}.go与contracts/hap/v0.1/generate.mjs窗口。128仅在其grants原写集提供`ReadHistoryMemory(ctx,id,profile,targetRunID,[]api.VisibleMessage)([]api.VisibleMessage,map[string][]api.DerivedInput,error)`。应用层先资格过滤，再走原source规则；只有最终保留消息才合并完整Derived及DeliverySubjects。未知SQL/持久坏状态不伪装被过滤，独立用户Intent不继承整Run记忆。
 
 134同时消费126的ContextUsageInTx、128的DeriveMaintenanceInTx，仍由原Run writer同Tx保存实际recipient Grant集合。真实装配完成后仅在generator implemented Set增加六个private memory方法并真实生成methods.json/methods_generated.go；其余schema/API/fixture字节必须不变，T15两个方法仍false。不能手改生成标志掩盖源事实。
 

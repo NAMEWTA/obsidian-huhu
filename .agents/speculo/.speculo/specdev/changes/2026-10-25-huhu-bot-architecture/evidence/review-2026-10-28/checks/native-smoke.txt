@@ -1,0 +1,1 @@
+huhu-bot native smoke passed: linux-x64, version=0.0.1, HAP=0.1, schema=1 (SQLite reopen, EOF, shutdown)

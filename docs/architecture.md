@@ -2,7 +2,9 @@
 
 HUHU 是 Obsidian 插件，入口为 `src/app/main.ts`，esbuild 生成单个 CommonJS `main.js`。样式由有序清单生成单个 `styles.css`；原生终端 helper 在 `native/pty-server`，通过 stdio 帧通信。工程规则从 [AGENTS](../AGENTS.md) 和[开发技能](../.agents/skills/dev/SKILL.md)进入。
 
-Bot 底座由 `native/huhubot` 的独立 Go module 与 `src/modules/huhubot` 的 TS 公共 API/协议客户端组成，wire 合同在 `contracts/hap/v0.1`。当前底座提供本机 Profile、SQLite 元数据、hello/status、Host 接缝和有界 stdio 生命周期；模块页面与业务能力以实际装配为准。Go 的 Application 类型、HAP DTO 与 SQLite Row 分开转换，入站不能直接依赖数据库，`pnpm test:huhu-bot-architecture` 检查内层和入站依赖。
+Bot 由 `native/huhubot` 的独立 Go module 与 `src/modules/huhubot` 的桌面工作台组成，wire 合同在 `contracts/hap/v0.1`。Go 拥有持久 Bot、单聊/群聊、调用树、预算、审批、事件、恢复及记忆；三个模型协议通过同一 Engine/Broker 执行。Application 类型、HAP DTO 与 SQLite Row 分开转换，入站不能直接依赖数据库，`pnpm test:huhu-bot-architecture` 检查内层和入站依赖。
+
+`huhubot` 按需激活，设置页和 `BOT_RUNTIME` 服务查询不启动进程，打开业务页或明确连接才启动受管 Runner。模块拥有进程、私有凭据通道、Obsidian 资料/笔记 Host 与共享 `services/workbench` 仓库；页面只订阅并发送动作。Host 续租保持原资料身份，权限变更与失效仍清理投影。工作台以分区和资源区分页面，聊天、身份、群聊、记忆、任务、授权、审批和数据入口使用各自的懒加载器。
 
 ## 分区与模块
 
@@ -13,7 +15,7 @@ Bot 底座由 `native/huhubot` 的独立 Go module 与 `src/modules/huhubot` 的
 | `ui` / `theme` | React 组件、所属窗口 Portal、令牌、主题及 Markdown 外观 |
 | `host` | 共用 Obsidian 和桌面适配 |
 | `shared` | 纯工具、设置、路径、存储和国际化契约 |
-| `modules` | home、agent、browser、archives、automations、notifications、icons、comments、navigator、sync、safe |
+| `modules` | home、agent、huhubot、browser、archives、automations、notifications、icons、comments、navigator、sync、safe |
 
 模块通过彼此的 `api.ts` 访问服务和贡献点，不能导入别的模块内部实现。core 不依赖宿主；Node/Electron 仅存在于 desktop 边界。模块、页面与设置页按需加载，React/Radix 不进入启动闭包；架构和包体检查强制这些约束。
 
@@ -37,6 +39,7 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 
 - home 管理看板、小组件、任务聚合与记录；周期笔记经 navigator API 访问。
 - agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 经公开宿主服务提供网页能力。
+- huhubot 管理个人 Bot 工作台；SQLite 是业务权威，TS 的草稿、分页和事件投影保存在模块服务，不能经 JSON store 改写 Profile。原生安装、秘密登记和用户明确选择的 portable 文件操作留在 desktop 适配层。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。
 - sync 只接受当前打开库内的仓库身份，不把父目录仓库误作当前库。

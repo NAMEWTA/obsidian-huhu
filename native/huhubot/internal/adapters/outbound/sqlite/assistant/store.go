@@ -57,6 +57,15 @@ func newAgentID(ctx context.Context, tx *sql.Tx) (string, error) {
 }
 func (s *Store) EnsureDefault(ctx context.Context) error {
 	return s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+		if err := base.CheckDataAdmission(ctx, tx); err != nil {
+			var fault *api.Fault
+			if errors.As(err, &fault) && fault.Reason == "PROFILE_CLEANUP_PENDING" {
+				// Restricted startup serves the pending cleanup, without
+				// reintroducing business rows into the committed SQL erasure.
+				return nil
+			}
+			return err
+		}
 		var n int
 		if e := tx.QueryRowContext(ctx, "SELECT (SELECT count(*) FROM agents)+(SELECT count(*) FROM assistant_identity_tombstones)").Scan(&n); e != nil {
 			return e
@@ -281,6 +290,9 @@ func (s *Store) Mutate(ctx context.Context, m app.Mutation) (app.MutationResult,
 }
 func (s *Store) MutateInTx(ctx context.Context, tx *sql.Tx, m app.Mutation) (app.MutationResult, error) {
 	var out app.MutationResult
+	if err := base.CheckDataAdmission(ctx, tx); err != nil {
+		return out, err
+	}
 	e := func() error {
 		p, e := metadata(ctx, tx)
 		if e != nil {

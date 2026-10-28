@@ -11,7 +11,7 @@ Status: completed
 ## 产物与验证
 
 - 工作区：原 change 工作副本，HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`；无提交、推送、发布，无派生 Agent。正式 Ticket/Map/Evidence、其他任务报告、API/schema/Go/依赖均未写入。
-- 输入：完整 TASK、Map20/Goal19 窄窗口、T16/T01/T04、dev 与 SpecDev I 规则；066/073/074/075/076/077/078/079 的实际报告与 Root 079 代码门。原始摘要在 [logs/00-inputs.json](logs/00-inputs.json)、[logs/08-independent-stage.json](logs/08-independent-stage.json)。后者明确是共享合同尚未冻结的独立阶段，不冒充最终 API 输入。
+- 输入：完整 TASK、Map20/Goal19 窄窗口、T16/T01/T04、dev 与 SpecDev I 规则；066/073/074/075/076/077/078/079 的实际报告与 Root 079 代码门。原始摘要在 logs/00-inputs.json（历史日志已清理：`logs/00-inputs.json`）、logs/08-independent-stage.json（历史日志已清理：`logs/08-independent-stage.json`）。后者明确是共享合同尚未冻结的独立阶段，不冒充最终 API 输入。
 - 当前唯一 API SHA256：`ff921139bdd82f2c6e2b83892fc499489ccef93183e7f827fe6709ec4697a401`。schema SHA256：`a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534`。实际 72 方法、144 方法 params/result validator、276 共享方法样本。未关闭 Ajv 严格选项，未 coerce/remove/default，日期、Decimal、Host binding、取消与错误详情的既有约束保留。
 - [source-manifest.json](source-manifest.json)：9 自有文件与 10 只读输入的逐文件 SHA；规范 `path + NUL + sha + LF` 排序摘要为 `101eaeadc2c259eabb05cca81208d86355cfcb2c88a52675e801001f694c27a2`。managed.ts、codec.ts、T13 GroupClient、core event reducer/transcript 保持只读。
 

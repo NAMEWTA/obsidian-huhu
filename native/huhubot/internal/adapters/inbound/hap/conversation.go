@@ -12,6 +12,22 @@ var groupMethods = []string{"sessions.updateMembers", "sessions.setCoordinator"}
 var grantsMethods = []string{"grants.create", "grants.list", "grants.revoke"}
 
 func (r *Router) conversation(ctx context.Context, e wire.Envelope) (Response, bool) {
+	if r.App.Data != nil {
+		switch e.Method {
+		case "sessions.deletePreview":
+			params, err := wire.DecodeParams[wire.ContractSessionsDeletePreviewParams](e.Params)
+			if err != nil {
+				return FromError(e.ID, api.Invalid("INVALID_METHOD_PARAMS")), true
+			}
+			value, err := r.App.Data.DeletePreview(ctx, r.Identity, api.IDQuery{ProfileID: params.ProfileId, ID: params.Id})
+			if err != nil {
+				return FromError(e.ID, err), true
+			}
+			return Response{JSONRPC: "2.0", ID: e.ID, Result: value}, true
+		case "sessions.delete":
+			return handle(ctx, e, r.Identity, r.App.Data.Delete), true
+		}
+	}
 	if r.App.Groups != nil {
 		switch e.Method {
 		case "sessions.updateMembers":

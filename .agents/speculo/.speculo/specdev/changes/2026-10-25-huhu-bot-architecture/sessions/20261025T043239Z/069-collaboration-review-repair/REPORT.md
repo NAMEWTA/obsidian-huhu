@@ -8,11 +8,11 @@ Status: completed
 
 本票修复 059 的 STD/SPEC-01、02、03，与 068 原共享 owner 形成同一候选。已完整读取本 TASK、059 两轴报告及三个探针/原始反例，复用 AGENTS → 当前 Map16/Goal15、dev / SpecDev I、错误恢复与 agent-experience 规则、当前 T11/T12/T05 / Spec / ARCH / ADR。没有修改原 053 / 059 报告、正式状态或失败 attempts，也未委派、提交、推送、发布。
 
-059 原报告 SHA `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`。本作者在任何生产修改前，以 [01-old-production-manifest.json](logs/01-old-production-manifest.json) 固定旧 201 个 Go/合同文件，逐项与 059 外部冻结副本一致，树 SHA `c59606fe9c1cd5f7eaac4354b4eae186bd391d01a89e327e71df80b41ddbceba`；[03](logs/03-old-red-completion.json) 再回读无漂移并记录实际 exit1 / Wait。永久回归最初从 059 的 reviewer_tools / reviewer_queue / reviewer_envelope 探针整理成项目测试，原探针只读，不冒称由本作者首先发现。
+059 原报告 SHA `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`。本作者在任何生产修改前，以 01-old-production-manifest.json（历史日志已清理：`logs/01-old-production-manifest.json`） 固定旧 201 个 Go/合同文件，逐项与 059 外部冻结副本一致，树 SHA `c59606fe9c1cd5f7eaac4354b4eae186bd391d01a89e327e71df80b41ddbceba`；03（历史日志已清理：`logs/03-old-red-completion.json`） 再回读无漂移并记录实际 exit1 / Wait。永久回归最初从 059 的 reviewer_tools / reviewer_queue / reviewer_envelope 探针整理成项目测试，原探针只读，不冒称由本作者首先发现。
 
-本作者仅两个生产路径：sqlite/collaboration/store.go 保持原两阶段输入边界并验证实际材料化输入；sqlite/usage/delegation.go 按真实持久 Run/Delegation 加载要求。另有五个自有 delegation 永久测试。最终七文件逐 SHA 见 [08-own-freeze-before-joint.json](logs/08-own-freeze-before-joint.json)，树 SHA `67e93587aaa6becad9f72c4c01d44450e20c2bc222226a891d58b3c8907e1423`。
+本作者仅两个生产路径：sqlite/collaboration/store.go 保持原两阶段输入边界并验证实际材料化输入；sqlite/usage/delegation.go 按真实持久 Run/Delegation 加载要求。另有五个自有 delegation 永久测试。最终七文件逐 SHA 见 08-own-freeze-before-joint.json（历史日志已清理：`logs/08-own-freeze-before-joint.json`），树 SHA `67e93587aaa6becad9f72c4c01d44450e20c2bc222226a891d58b3c8907e1423`。
 
-068 唯一修改共同 API / EngineInput / 纯验证 helper、Broker、Claim / Finalize 及其 chat 故障测试，五路径摘要见其 [04](../068-shared-review-repair/logs/04-own-freeze-before-joint.json)；本作者不把这些文件算作自有作者。没有修改 wire/schema/TS/生成物、SQL迁移、锁、T05、凭证或 Provider。
+068 唯一修改共同 API / EngineInput / 纯验证 helper、Broker、Claim / Finalize 及其 chat 故障测试，五路径摘要见其 04（历史日志已清理：`../068-shared-review-repair/logs/04-own-freeze-before-joint.json`）；本作者不把这些文件算作自有作者。没有修改 wire/schema/TS/生成物、SQL迁移、锁、T05、凭证或 Provider。
 
 ## 产物与验证
 
@@ -31,7 +31,7 @@ loader 对无 Delegation 的普通根返回 nil；对有 task 配置/parent 却�
 ### 本作者真实红绿与故障
 
 - [02-three-old-input-red.log](logs/02-three-old-input-red.log)：`GOTOOLCHAIN=go1.26.10 go -C native/huhubot test -mod=readonly -timeout=45s ./tests/contract/delegation -run '^(TestPinnedToolAllowlistGuardsActualCollaborationEffects|TestAcceptedDelegationRequirementsReachActualChildEngine|TestQueuedQuestionRevocationDoesNotStarveIndependentRoot)$' -count=1 -v`，实际 exit1 / Wait、1.914s。禁止工具仍 child=1 / notify=1 / childEngine=1；existing/temp 要求持久有而完整 Engine 输入缺失；撤权 question 与无关根1200ms均 accepted / slot0，公开 CancelTask 后立即恢复。三个正常控制通过，旧失败原样保留。
-- [04](logs/04-three-findings-and-adjacent-green.log)：修复后首轮 exit1 / Wait、1.358s，唯一失败是本作者新增的“终态 claim_token 必须空”夹具假设。原 Finalize 本就保留历史 token；Root 与 068 核对后没有为测试清 token。精确修正前内容与 diff 见 [05-before](logs/05-claim-token-fixture-before.go.txt) / [05-diff](logs/05-claim-token-fixture-correction.diff)；slot/pin、Engine0、持久原因/结果、SQL失败全回滚断言保持。该 exit1 明确不是新产品缺陷。
+- [04](logs/04-three-findings-and-adjacent-green.log)：修复后首轮 exit1 / Wait、1.358s，唯一失败是本作者新增的“终态 claim_token 必须空”夹具假设。原 Finalize 本就保留历史 token；Root 与 068 核对后没有为测试清 token。精确修正前内容与 diff 见 05-before（历史日志已清理：`logs/05-claim-token-fixture-before.go.txt`） / 05-diff（历史日志已清理：`logs/05-claim-token-fixture-correction.diff`）；slot/pin、Engine0、持久原因/结果、SQL失败全回滚断言保持。该 exit1 明确不是新产品缺陷。
 - [06](logs/06-three-findings-and-adjacent-green.log)：同五顶层/11子场景，`-mod=readonly -timeout=90s ... -count=1 -v`，实际 exit0 / Wait、1.328s，包含全八工具与合法大 Context / 重开 CP 控制。
 - [07](logs/07-queue-parent-outcome-green.log)：queue 三场景 allowed / revoked / failed-commit，`-mod=readonly -timeout=45s ... -run '^TestQueuedQuestionRevocationDoesNotStarveIndependentRoot$' -count=1 -v`，实际 exit0 / Wait、0.896s；补 exact GRANT_REVOKED 和父已可见成功时的真实 partial 原因。
 
@@ -39,9 +39,9 @@ loader 对无 Delegation 的普通根返回 nil；对有 task 配置/parent 却�
 
 ### 同一输入联合检查
 
-307 文件固定于 [09-joint-source-before-checks.json](logs/09-joint-source-before-checks.json)，树 SHA `ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0`。依据是 059 当前完整257候选，以及原 052 未变支持夹具；旧052相比059已存在的061 connection.test.ts修正用059摘要覆盖，不误报成本轮修改。第一次仅以旧052为基底的清单准备断言正确发现这项预先差异，未启动测试或修改源码；当前与059/支持集相比仅本轮12路径变化/新增（068五个、069七个），不宣称旧052到现在所有字节未变。09分别标明059 code-scope摘要与完整复合Input摘要，不混同两种哈希。
+307 文件固定于 09-joint-source-before-checks.json（历史日志已清理：`logs/09-joint-source-before-checks.json`），树 SHA `ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0`。依据是 059 当前完整257候选，以及原 052 未变支持夹具；旧052相比059已存在的061 connection.test.ts修正用059摘要覆盖，不误报成本轮修改。第一次仅以旧052为基底的清单准备断言正确发现这项预先差异，未启动测试或修改源码；当前与059/支持集相比仅本轮12路径变化/新增（068五个、069七个），不宣称旧052到现在所有字节未变。09分别标明059 code-scope摘要与完整复合Input摘要，不混同两种哈希。
 
-唯一执行器 [10-run-joint-checks.py](logs/10-run-joint-checks.py) 每条命令前后回读同一307文件；所有命令串行，非零就停止后续，068与Root不并行重测。最终结果见 [14-joint-check-results.json](logs/14-joint-check-results.json)，三命令实际均 exit0 / Wait，环境固定 `GOTOOLCHAIN=go1.26.10`、Linux，普通 CGO0 / race和vet CGO1：
+唯一执行器 10-run-joint-checks.py（历史日志已清理：`logs/10-run-joint-checks.py`） 每条命令前后回读同一307文件；所有命令串行，非零就停止后续，068与Root不并行重测。最终结果见 14-joint-check-results.json（历史日志已清理：`logs/14-joint-check-results.json`），三命令实际均 exit0 / Wait，环境固定 `GOTOOLCHAIN=go1.26.10`、Linux，普通 CGO0 / race和vet CGO1：
 
 | 真实命令与日志 | 实际结果 |
 |---|---|
@@ -51,7 +51,7 @@ loader 对无 Delegation 的普通根返回 nil；对有 task 配置/parent 却�
 
 原实际来源100单Session History门为4.215248ms，source800 direct gate18.922934ms，无来源800为6.248804ms，原250ms及拒绝writer断言保持。800为400个实际Run的gate上界，不冒称一条跨Session History RPC。原正常/取消/held HTTP、slots/pins、CP与late effects也进入普通/相关race；新四slot后撤权/SQL回滚、全八工具/固定pin、大Context/重开Resume与068全部故障case均通过。原events/access额外race不重复：其T04/T05热路径字节未改，068更改Claim/Finalize而非投递查询，依据059固定输入的实际race及本次普通闭包按影响复用；未将059 go1.27.1计时与本作者go1.26.10当作同环境样本。TS/Host/wire/锁未改，未新增TS、平台构建或真实现场验收宣称。
 
-末次 [15-final-source-readback.json](logs/15-final-source-readback.json) 回读自有七文件、联合307文件均 drift=[]，gofmt / 精确 diff-check 均 exit0，所有进程均已 Wait。return结构校验见 [16-return-validation.json](logs/16-return-validation.json)。
+末次 15-final-source-readback.json（历史日志已清理：`logs/15-final-source-readback.json`） 回读自有七文件、联合307文件均 drift=[]，gofmt / 精确 diff-check 均 exit0，所有进程均已 Wait。return结构校验见 16-return-validation.json（历史日志已清理：`logs/16-return-validation.json`）。
 
 ## 问题与下一步
 

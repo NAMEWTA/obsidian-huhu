@@ -1,3 +1,4 @@
+import { isHostLeaseRenewal } from './host-lease';
 import type {
 	BotClient,
 	BotConnectionState,
@@ -194,6 +195,7 @@ export class HapConnection {
 
 	private client(): BotClient {
 		const currentState = () => this.state;
+		const currentHello = () => this.helloResult!;
 		const groups: Record<string, Record<string, (params: never, options?: CallOptions) => Promise<unknown>>> = {};
 		const methods = {
 			service: ['health', 'status', 'diagnostics', 'shutdown'],
@@ -211,13 +213,13 @@ export class HapConnection {
 				'delete',
 			],
 			runs: ['start', 'get', 'subscribe', 'cancel', 'recovery', 'resume'],
-			collaboration: ['budget', 'configureBudget', 'configurationHash', 'discover', 'message', 'delegate', 'get', 'list', 'reply', 'cancel', 'proposeCreate', 'confirmProposal'],
+			collaboration: ['budget', 'configureBudget', 'configurationHash', 'discover', 'message', 'delegate', 'get', 'list', 'reply', 'cancel', 'proposeCreate', 'proposals', 'confirmProposal', 'rejectProposal'],
 			effects: ['get', 'reconcile'],
 			grants: ['list', 'create', 'revoke'],
 			approvals: ['list', 'get', 'resolve'],
 			memory: ['list', 'get', 'pin', 'correct', 'forget', 'setAutoMaintenance', 'proposeGlobal', 'resolveGlobal'],
 			profile: ['deletePreview', 'delete', 'status'],
-			portable: ['export', 'importPreview', 'import'],
+			portable: ['stage', 'export', 'importPreview', 'import'],
 			host: ['attach', 'detach'],
 		};
 		for (const [group, names] of Object.entries(methods)) {
@@ -228,7 +230,7 @@ export class HapConnection {
 		}
 		return {
 			...groups,
-			hello: this.helloResult,
+			get hello() { return currentHello(); },
 			get state() {
 				return currentState();
 			},
@@ -301,6 +303,22 @@ export class HapConnection {
 				this.finish(error);
 				return;
 			}
+			if (this.helloResult && ((pending.method === 'service.status' && methodValidation.validate('service.status', 'result', message.result)) ||
+				(pending.method === 'profile.status' && methodValidation.validate('profile.status', 'result', message.result)))) {
+				const profile = message.result.profile;
+				const previous = this.helloResult.profile;
+				if (profile.profileId !== previous.profileId) {
+					const error = new HapProtocolError('PROFILE_CHANGED');
+					pending.reject(error); this.finish(error); return;
+				}
+				if (BigInt(profile.commandEpoch) >= BigInt(previous.commandEpoch)) {
+					this.helloResult = { ...this.helloResult, profile };
+					if (profile.commandEpoch !== previous.commandEpoch) {
+						try { this.host?.profileChanged?.(profile); }
+						catch { const error = new HapProtocolError('HOST_LIFECYCLE_FAILED'); pending.reject(error); this.finish(error); return; }
+					}
+				}
+			}
 			if (
 				pending.method === 'host.attach' &&
 				methodValidation.validate('host.attach', 'result', message.result)
@@ -311,8 +329,11 @@ export class HapConnection {
 					this.finish(error);
 					return;
 				}
-				for (const entry of this.reverse.values()) entry.controller.abort();
-				this.hostLease = message.result;
+				if (isHostLeaseRenewal(this.hostLease, message.result)) this.hostLease!.expiresAt = message.result.expiresAt;
+				else {
+					for (const entry of this.reverse.values()) entry.controller.abort();
+					this.hostLease = message.result;
+				}
 				try { this.host?.leaseChanged?.(message.result); }
 				catch {
 					const error = new HapProtocolError('HOST_LIFECYCLE_FAILED');

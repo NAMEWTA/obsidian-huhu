@@ -6,7 +6,7 @@ import (
 	wire "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/protocol/hap"
 )
 
-var collaborationMethods = []string{"collaboration.configurationHash", "collaboration.budget", "collaboration.configureBudget", "collaboration.discover", "collaboration.delegate", "collaboration.get", "collaboration.list", "collaboration.cancel", "collaboration.proposeCreate", "collaboration.confirmProposal"}
+var collaborationMethods = []string{"collaboration.configurationHash", "collaboration.budget", "collaboration.configureBudget", "collaboration.discover", "collaboration.delegate", "collaboration.get", "collaboration.list", "collaboration.cancel", "collaboration.proposeCreate", "collaboration.proposals", "collaboration.confirmProposal", "collaboration.rejectProposal"}
 
 func (r *Router) collaboration(ctx context.Context, e wire.Envelope) (Response, bool) {
 	var response Response
@@ -31,12 +31,18 @@ func (r *Router) collaboration(ctx context.Context, e wire.Envelope) (Response, 
 			response = handle(ctx, e, r.Identity, c.CancelTask)
 		case "collaboration.proposeCreate":
 			return handle(ctx, e, r.Identity, c.ProposeCreate), true
+		case "collaboration.proposals":
+			response = handle(ctx, e, r.Identity, c.Proposals)
+		case "collaboration.rejectProposal":
+			return handle(ctx, e, r.Identity, c.RejectProposal), true
 		case "collaboration.confirmProposal":
 			return handle(ctx, e, r.Identity, c.ConfirmProposal), true
 		}
 	}
 	if response.JSONRPC != "" {
 		switch v := response.Result.(type) {
+		case api.AgentProposalPage:
+			response.DeliverySubjects = v.DeliverySubjects
 		case api.Delegation:
 			if v.Result != nil && v.Result.Text != "" {
 				response.DeliverySubjects = []api.DeliverySubject{{Kind: "run", ID: v.ChildRunID}}

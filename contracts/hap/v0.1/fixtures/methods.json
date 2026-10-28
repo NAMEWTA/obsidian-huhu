@@ -77,6 +77,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -2028,6 +2034,55 @@
       "valid": true
     },
     {
+      "name": "collaboration.proposals.params.valid",
+      "method": "collaboration.proposals",
+      "part": "params",
+      "value": {
+        "profileId": "fixture",
+        "cursor": "fixture",
+        "limit": 1,
+        "runId": "fixture"
+      },
+      "valid": true
+    },
+    {
+      "name": "collaboration.proposals.result.valid",
+      "method": "collaboration.proposals",
+      "part": "result",
+      "value": {
+        "items": [
+          {
+            "proposalId": "fixture",
+            "revision": "1",
+            "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "draft": {
+              "name": "fixture",
+              "description": "fixture",
+              "persona": "fixture",
+              "model": {
+                "modelId": "fixture",
+                "providerId": "fixture",
+                "endpoint": "fixture",
+                "credentialRef": "fixture",
+                "capabilities": [
+                  "fixture"
+                ],
+                "protocol": "openai-chat-completions"
+              },
+              "allowedTools": [
+                "fixture"
+              ],
+              "allowedCollaborationTargets": [
+                "fixture"
+              ]
+            }
+          }
+        ],
+        "nextCursor": "fixture"
+      },
+      "valid": true
+    },
+    {
       "name": "collaboration.confirmProposal.params.valid",
       "method": "collaboration.confirmProposal",
       "part": "params",
@@ -2078,6 +2133,32 @@
         "allowedCollaborationTargets": [
           "fixture"
         ]
+      },
+      "valid": true
+    },
+    {
+      "name": "collaboration.rejectProposal.params.valid",
+      "method": "collaboration.rejectProposal",
+      "part": "params",
+      "value": {
+        "commandId": "fixture",
+        "idempotencyKey": "fixture",
+        "profileId": "fixture",
+        "commandEpoch": "1",
+        "expectedRevision": "1",
+        "proposalId": "fixture",
+        "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "valid": true
+    },
+    {
+      "name": "collaboration.rejectProposal.result.valid",
+      "method": "collaboration.rejectProposal",
+      "part": "result",
+      "value": {
+        "commandId": "fixture",
+        "receiptId": "fixture",
+        "revision": "1"
       },
       "valid": true
     },
@@ -2922,6 +3003,42 @@
           },
           "budgetConfigured": true,
           "budgetPaused": true
+        },
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "portable.stage.params.valid",
+      "method": "portable.stage",
+      "part": "params",
+      "value": {
+        "profileId": "fixture",
+        "commandEpoch": "1",
+        "uploadId": "fixture",
+        "size": "1",
+        "offset": "fixture",
+        "dataBase64": "1",
+        "final": true
+      },
+      "valid": true
+    },
+    {
+      "name": "portable.stage.result.valid",
+      "method": "portable.stage",
+      "part": "result",
+      "value": {
+        "uploadId": "fixture",
+        "nextOffset": "fixture",
+        "artifact": {
+          "artifactId": "fixture",
+          "mediaType": "fixture",
+          "size": "1"
         }
       },
       "valid": true
@@ -2981,11 +3098,23 @@
       "part": "result",
       "value": {
         "token": "fixture",
+        "mappingMode": "copy-candidate",
+        "mappings": [
+          {
+            "kind": "agent",
+            "from": "fixture",
+            "to": "fixture"
+          }
+        ],
         "conflicts": [
           {
             "id": "fixture",
             "revision": "1",
-            "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+            "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "kind": "agent",
+            "existingId": "fixture",
+            "reason": "fixture",
+            "needsReview": true
           }
         ]
       },
@@ -3030,7 +3159,8 @@
         "workspaceId": "fixture",
         "capabilities": [
           "fixture"
-        ]
+        ],
+        "renewLeaseId": "fixture"
       },
       "valid": true
     },
@@ -3771,6 +3901,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3817,6 +3953,12 @@
           },
           "budgetConfigured": true,
           "budgetPaused": true
+        },
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
         }
       },
       "valid": false
@@ -3838,6 +3980,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3863,6 +4011,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3891,6 +4045,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3919,6 +4079,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3947,6 +4113,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -3975,6 +4147,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -4004,6 +4182,12 @@
       "method": "service.status",
       "part": "result",
       "value": {
+        "cleanup": {
+          "profile": true,
+          "sessionIds": [
+            "fixture"
+          ]
+        },
         "policy": {
           "limits": {
             "maxDepth": 0,
@@ -4091,7 +4275,8 @@
       "part": "params",
       "value": {
         "workspaceId": "fixture",
-        "capabilities": []
+        "capabilities": [],
+        "renewLeaseId": "fixture"
       },
       "valid": false
     },
@@ -4104,6 +4289,7 @@
         "capabilities": [
           "fixture"
         ],
+        "renewLeaseId": "fixture",
         "owner": true
       },
       "valid": false

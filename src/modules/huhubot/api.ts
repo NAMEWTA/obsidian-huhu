@@ -57,7 +57,9 @@ export interface HelloResult {
 	capabilities: string[];
 	limits: { maxFrameBytes: number; maxBatchItems: number };
 }
+export interface CleanupStatus {profile:boolean;sessionIds:string[]}
 export interface ServiceStatus {
+ cleanup?: CleanupStatus;
 	policy?: RuntimePolicyStatus;
 	schemaVersion: number;
 	state: 'ready';
@@ -551,7 +553,18 @@ export interface DeleteCommand extends CommandMeta {
 }
 export interface PortablePreview {
 	token: string;
-	conflicts: Array<{ id: string; revision: Decimal; hash: string }>;
+	/** The frozen target IDs below are candidates for copy, before conflict resolution. */
+	mappingMode: 'copy-candidate';
+	mappings: Array<{ kind: 'agent' | 'session' | 'memory'; from: string; to: string }>;
+	conflicts: Array<{
+		id: string;
+		revision: Decimal;
+		hash: string;
+		kind: 'agent' | 'session' | 'memory';
+		existingId: string;
+		reason: string;
+		needsReview: boolean;
+	}>;
 }
 export interface HostLease {
 	leaseId: string;
@@ -688,6 +701,7 @@ export interface HostSearchResult {
 /** Implemented only by the trusted module Host; receipt lookup must not repeat a write. */
 export interface BotHost {
 	leaseChanged?(lease: HostLease | undefined): void;
+	profileChanged?(profile: ProfileMetadata): void;
 	prepareWrite?(request: HostPrepareWriteRequest, signal: AbortSignal): Promise<NoteTargetPreview>;
 	checkWrite?(request: HostCheckWriteRequest, signal: AbortSignal): Promise<HostCheckWriteResult>;
 	invoke(request: HostInvoke, signal: AbortSignal): Promise<HostReceipt>;
@@ -820,9 +834,14 @@ export interface BotMethodMap {
 		params: CommandMeta & { runId: string; draft: AgentDraft };
 		result: AgentProposal;
 	};
+	'collaboration.proposals': { params: PageQuery & { runId?: string }; result: Page<AgentProposal> };
 	'collaboration.confirmProposal': {
 		params: CommandMeta & { proposalId: string; previewHash: string; expectedRevision: Decimal };
 		result: Agent;
+	};
+	'collaboration.rejectProposal': {
+		params: CommandMeta & { proposalId: string; previewHash: string; expectedRevision: Decimal };
+		result: Receipt;
 	};
 	'grants.list': { params: PageQuery; result: Page<Grant> };
 	'grants.create': {
@@ -863,8 +882,12 @@ export interface BotMethodMap {
 	'profile.delete': { params: DeleteCommand; result: Receipt };
 	'profile.status': {
 		params: Record<string, never>;
-		result: { state: 'ready'; schemaVersion: number; profile: ProfileMetadata; policy?: RuntimePolicyStatus };
+		result: { state: 'ready'; schemaVersion: number; profile: ProfileMetadata; policy?: RuntimePolicyStatus;cleanup?:CleanupStatus };
 	};
+	'portable.stage': {
+        params: {profileId:string;commandEpoch:Decimal;uploadId?:string;size:Decimal;offset:Decimal;dataBase64:string;final:boolean};
+        result: {uploadId:string;nextOffset:Decimal;artifact?:ArtifactRef};
+    };
 	'portable.export': {
 		params: CommandMeta & { agentIds: string[]; memoryIds: string[]; sessionIds: string[] };
 		result: { artifact: ArtifactRef };
@@ -877,7 +900,7 @@ export interface BotMethodMap {
 		};
 		result: Receipt;
 	};
-	'host.attach': { params: { workspaceId: string; capabilities: string[] }; result: HostLease };
+	'host.attach': { params: { workspaceId: string; capabilities: string[]; renewLeaseId?: string }; result: HostLease };
 	'host.detach': { params: { leaseId: string }; result: { detached: true } };
 	'host.prepareWrite': { params: HostPrepareWriteRequest; result: NoteTargetPreview };
 	'host.checkWrite': { params: HostCheckWriteRequest; result: HostCheckWriteResult };
@@ -921,3 +944,14 @@ export interface BotClient {
 	close(): void;
 }
 export const BOT_CLIENT = serviceKey<BotClient>('huhubot', 'client');
+
+/** On-demand connection owner. Looking up this service starts no process. Secrets
+ * use the private desktop channel; registerCredential consumes the mutable bytes.
+ */
+export interface BotRuntimeAccess {
+	readonly client?: BotClient;
+	connect(): Promise<BotClient>;
+	registerCredential(secret: Uint8Array, mode: 'protected' | 'session-memory'): Promise<CredentialStatus & { credentialRef: string }>;
+	deleteCredential(reference: string): Promise<CredentialStatus & { credentialRef: string }>;
+}
+export const BOT_RUNTIME = serviceKey<BotRuntimeAccess>('huhubot', 'runtime');

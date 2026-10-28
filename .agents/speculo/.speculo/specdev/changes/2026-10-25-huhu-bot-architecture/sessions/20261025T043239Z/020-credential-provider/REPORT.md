@@ -10,7 +10,7 @@ Status: completed
 
 工作区 `/home/wta/orca/workspaces/obsidian-huhu/bot`，branch `NAMEWTA/bot`，HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`。本任务只写 `native/huhubot/internal/adapters/outbound/credentials/**`、`native/huhubot/tests/contract/assistant/credentials*` 与本任务报告/日志；未修改 API、SQL、go.mod/sum、CLI/bootstrap、TS、根构建、notices 或正式状态。019 唯一维护共享 API/CLI/catalog/依赖，021 唯一维护 TS transport/client；没有另派 Agent、提交、推送或发布。
 
-冻结的 22 个 owned 源/测试文件逐项 SHA-256 见 [source.sha256](logs/source.sha256)，manifest SHA-256 `0f8f6eb223e4e1b9d42f09e258723bbf8f4de357d2b7591a22ec16f29e5e83fc`。当前输入逐项摘要见 [inputs.sha256](logs/inputs.sha256)，manifest SHA-256 `88853e0f4f8d56abc4c01406edd438311f83b5a0c411a9411303feb364d7bb09`。
+冻结的 22 个 owned 源/测试文件逐项 SHA-256 见 source.sha256（历史日志已清理：`logs/source.sha256`），manifest SHA-256 `0f8f6eb223e4e1b9d42f09e258723bbf8f4de357d2b7591a22ec16f29e5e83fc`。当前输入逐项摘要见 inputs.sha256（历史日志已清理：`logs/inputs.sha256`），manifest SHA-256 `88853e0f4f8d56abc4c01406edd438311f83b5a0c411a9411303feb364d7bb09`。
 
 ### 已冻结接口与消费者
 

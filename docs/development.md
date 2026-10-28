@@ -31,7 +31,7 @@ manifest、package、versions、CHANGELOG 和 native crate 使用当前版本。
 
 发布入口仅为 `.github/workflows/release.yml`。先推送 main 并通过检查，再推送版本标签；同一提交需通过 Linux Node 22/24、Windows Node 24 检查、五目标 PTY 与 Bot Runner 构建。CI 核对提交产物、插件清单、版本、原生 stdio 和 SHA-256，生成来源证明，再发布插件、huhu-<版本>.zip、huhu-pty、huhu-bot、许可和校验文件。这里只描述工作流配置；尚未运行的 CI 与平台不能写为实测支持。
 
-Bot Runner 使用 `GOTOOLCHAIN=go1.26.10`、`CGO_ENABLED=0`、`GOWORK=off`，以 `-mod=readonly -trimpath -buildvcs=false` 构建，版本由 manifest 注入。`node scripts/build-huhu-bot.mjs --all` 交叉编译 Linux/macOS x64、arm64 和 Windows x64。二进制与相邻 `.sha256`、`.json` 只输出到忽略目录 `native/huhubot/dist/`；元数据记录 Go 目标、工具链、版本、源码提交与输入树 SHA-256、HAP 协议版本和 HAP schema 版本。清单的 `schemaVersion` 与 SQLite 的 `PRAGMA user_version` 独立，数据库版本由迁移注册表管理。发行验证拒绝缺目标、多余文件、摘要或兼容字段不符，以及目标之间源码输入不一致。
+Bot Runner 使用 `GOTOOLCHAIN=go1.26.10`、`CGO_ENABLED=0`、`GOWORK=off`，以 `-mod=readonly -trimpath -buildvcs=false` 构建，版本由 manifest 注入。`node scripts/build-huhu-bot.mjs --all` 交叉编译 Linux/macOS x64、arm64 和 Windows x64。二进制与相邻 `.sha256`、`.json` 只输出到忽略目录 `native/huhubot/dist/`；元数据记录 Go 目标、工具链、版本、源码提交与输入树 SHA-256、HAP 协议版本和 HAP schema 版本。清单的 `schemaVersion` 与 SQLite 的 `PRAGMA user_version` 独立，数据库版本由迁移注册表管理。 portable 公共预览限制为 64 KiB、最多构造 4096 条冲突，并在占用预览槽前拒绝超限；八项 batch 仍须满足 1 MiB HAP 帧上限。包的 16 MiB 格式上限与预览预算分别生效。发行验证拒绝缺目标、多余文件、摘要或兼容字段不符，以及目标之间源码输入不一致。
 
 `node scripts/verify-huhu-bot.mjs native/huhubot/dist/huhu-bot-linux-x64` 使用本机目标运行真实 framed stdio，核对 hello/status、SQLite 文件、EOF 退出、同一 Profile 重开与显式 shutdown。脚本创建一次性 HOME、XDG 和 Windows 数据根，不继承 Provider 密钥；请求与退出都有超时，完成或失败后清理子进程和数据。五目标工作流在各自原生 runner 运行这套检查；交叉编译不证明 TLS、凭证服务或 Obsidian 操作已通过。
 
@@ -40,3 +40,5 @@ Bot Runner 使用 `GOTOOLCHAIN=go1.26.10`、`CGO_ENABLED=0`、`GOWORK=off`，以
 ## Issue
 
 通过[分类表单](https://github.com/NAMEWTA/obsidian-huhu/issues/new/choose)提交 BUG、需求、优化、兼容、文档和咨询；商业使用走专用授权表单，必须取得书面许可。标签定义保存在 .github/labels.json，表单位于 .github/ISSUE_TEMPLATE；新增分类时同步二者与 README。
+
+Bot 的实际页面验收入口为 `scripts/obsidian-acceptance/huhu-bot.mjs`：使用一次性 Vault/HOME，配置当前本机 Runner，检查按需启动、各分区页面、主机错误、关闭与代表性宽度截图。`--check` 仅证明入口配置存在，不能替代真实宿主运行；三协议的本地 HTTP 合同测试也不能代替真实 Provider/model 及其他 OS 的验收。

@@ -74,8 +74,8 @@ Observed: 原059三项规范差距均关闭；当前生产授权/持久输入/�
 
 原始输入及复用证据：
 
-- [input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、[完整当前输入](logs/input.json)、[核验脚本](probes/check-input.mjs)。脚本按scope_paths核完整来源/hash与HEAD/index/mode；排除新报告造成的excluded inventory元数据差异，未排除任何实际审查文件。
-- [upstream-input-readback.json](logs/upstream-input-readback.json)：作者307、Root2032、插件1867、外部精确副本209均errors空。068报告SHA `44c778e6202d83852c5fa8930b78bc518896127e98ec1e80c1f392ca6174d896`；069 `eab4d29acc11fe22017009069f2f00690898ae10f9d420ec773f5aa222bcca62`；059 `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`，全量回读一致。
+- [input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、完整当前输入（历史日志已清理：`logs/input.json`）、[核验脚本](probes/check-input.mjs)。脚本按scope_paths核完整来源/hash与HEAD/index/mode；排除新报告造成的excluded inventory元数据差异，未排除任何实际审查文件。
+- upstream-input-readback.json（历史日志已清理：`logs/upstream-input-readback.json`）：作者307、Root2032、插件1867、外部精确副本209均errors空。068报告SHA `44c778e6202d83852c5fa8930b78bc518896127e98ec1e80c1f392ca6174d896`；069 `eab4d29acc11fe22017009069f2f00690898ae10f9d420ec773f5aa222bcca62`；059 `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`，全量回读一致。
 - 068 Claim故障日志、069三项old-input red、修复green及claim-token夹具修正均回读；早期绿色前的额外“终态claim_token必须空”假设已明确移除，原终态保留token用于迟到账本，不把夹具错误报成产品缺陷。作者joint最终8 normal/5 race/vet结果为上游证据，不冒称本review重跑。
 - Root [lead-note-repair-r2.json](../../../evidence/T-07-logs/lead-note-repair-r2.json)及原059回放、公共协作、真实TS/HAP/stdio/Go/SQLite/Host日志已回读；Root当前2032输入无漂移。插件151TS/build/lint及迁移按明确未变闭包复用；没有在本轮冒称重新构建。067全局docs仍有6个原输入anchor失败，未报告全局docs绿。
 
@@ -89,7 +89,7 @@ Observed: 原059三项规范差距均关闭；当前生产授权/持久输入/�
 | 外部原受理顺序诊断：`go test -race -count=1 -v -run '^TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots$' -timeout=30s ./tests/contract/delegation` | exit0；包3.542s；[slots-observed-race.log](logs/slots-observed-race.log) |
 | 外部单变量强制合法交错：同上一命令但无`-race` | exit1；包5.135s；[slots-forced-schedule.log](logs/slots-forced-schedule.log)；原5s失败后继续观察最终完整成功，未覆盖失败 |
 
-外部源码探针保存在 [probes](probes/)：原059三个probe、新Claim事务/真实question Resume探针、wait原始/仅观察/强制调度三个版本及精确diff。它们没有写入生产或永久测试。原始包失败、isolated绿色与forced红色三种事实全部保留，未机械重跑整包求绿。外部诊断wait_test已恢复精确当前原字节，209项复核仍一致。 [process-cleanup.json](logs/process-cleanup.json)记录所有自有exec会话实际结束并Wait、剩余probe进程空，产品写入0、子代理0。
+外部源码探针保存在 [probes](probes/)：原059三个probe、新Claim事务/真实question Resume探针、wait原始/仅观察/强制调度三个版本及精确diff。它们没有写入生产或永久测试。原始包失败、isolated绿色与forced红色三种事实全部保留，未机械重跑整包求绿。外部诊断wait_test已恢复精确当前原字节，209项复核仍一致。 process-cleanup.json（历史日志已清理：`logs/process-cleanup.json`）记录所有自有exec会话实际结束并Wait、剩余probe进程空，产品写入0、子代理0。
 
 ## 问题与下一步
 

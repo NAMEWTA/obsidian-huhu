@@ -36,11 +36,11 @@ Observed: F-133-01 的编码前同族元数据缺口和TS来源epoch遗漏已覆
 
 ## 输入、来源与复用核验
 
-正式 scope/sources/exclusions 为 `evidence/T-14-logs/review-input-memory-components-r2.json`，定位 `evidence/T-14.md#review-input-memory-components-r2`。TASK SHA256 `8388fc1b6668ac5745f685d42c63178187b0f77607349ac829a85efa0fc08110`，Map37/Goal36/LOG125。初始及最终核验在 [00](logs/00-input.json)、[10](logs/10-final-freeze.json)：1722 文件/模式、33主源、38来源，重算 scope 相同，file/mode/source/copy drift 全空。HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`、index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494` 未变。
+正式 scope/sources/exclusions 为 `evidence/T-14-logs/review-input-memory-components-r2.json`，定位 `evidence/T-14.md#review-input-memory-components-r2`。TASK SHA256 `8388fc1b6668ac5745f685d42c63178187b0f77607349ac829a85efa0fc08110`，Map37/Goal36/LOG125。初始及最终核验在 00（历史日志已清理：`logs/00-input.json`）、10（历史日志已清理：`logs/10-final-freeze.json`）：1722 文件/模式、33主源、38来源，重算 scope 相同，file/mode/source/copy drift 全空。HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`、index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494` 未变。
 
-固定检查副本 `/tmp/huhu-review139-cetl_mxa` 原1722项未变，探针为额外文件。`methods_generated.go` 本轮已在固定输入中，保持当前false flags，未 generation。133 实际1719文件旧字节ZIP逐项核验，SHA256 `c56e01b3bdd44c748e300549fd069037ecf060fbd8d5302b20a3aaaeaacdf395`；见 [01 baseline](logs/01-baseline.json) 与[四处原字节diff](logs/01-r1-diff.txt)。三个新增检查路径中包括既存 methods_generated 依赖，不能将额外纳入捕获等同全部本轮新增产品。真实G2更早基线及133的边界说明保持原引用，不用HEAD代替未提交候选旧版本。
+固定检查副本 `/tmp/huhu-review139-cetl_mxa` 原1722项未变，探针为额外文件。`methods_generated.go` 本轮已在固定输入中，保持当前false flags，未 generation。133 实际1719文件旧字节ZIP逐项核验，SHA256 `c56e01b3bdd44c748e300549fd069037ecf060fbd8d5302b20a3aaaeaacdf395`；见 01 baseline（历史日志已清理：`logs/01-baseline.json`） 与四处原字节diff（历史日志已清理：`logs/01-r1-diff.txt`）。三个新增检查路径中包括既存 methods_generated 依赖，不能将额外纳入捕获等同全部本轮新增产品。真实G2更早基线及133的边界说明保持原引用，不用HEAD代替未提交候选旧版本。
 
-[09 复用回执](logs/09-evidence-reuse.json)逐SHA核验136的19工件/1647 TS输入和137的36工件/35纯Go输入，无漂移；两份最终REPORT全文、最终原红/绿日志及Root回执已回读。133原REPORT SHA `875f1e58db2e2e0ad14e044db3f21361eecf35b7b0c7e91609060d91a8381179`、manifest SHA `8e28e8782105cb5dee2f1deb66abc71f8f52cb6b91ea952361282dea49766b9b`及47工件无漂移。137作者为 `native:/root/foundation_api_repair`，135容量失败不是其产品红，也不影响本人独立性。
+09 复用回执（历史日志已清理：`logs/09-evidence-reuse.json`）逐SHA核验136的19工件/1647 TS输入和137的36工件/35纯Go输入，无漂移；两份最终REPORT全文、最终原红/绿日志及Root回执已回读。133原REPORT SHA `875f1e58db2e2e0ad14e044db3f21361eecf35b7b0c7e91609060d91a8381179`、manifest SHA `8e28e8782105cb5dee2f1deb66abc71f8f52cb6b91ea952361282dea49766b9b`及47工件无漂移。137作者为 `native:/root/foundation_api_repair`，135容量失败不是其产品红，也不影响本人独立性。
 
 七个纯模型输入函数逐函数旧字节一致：CanonicalMemoryInputBinding、CanonicalMemoryInputManifestBinding、其共用实现、ValidateMemoryJSON、CanonicalShortTermBinding、ValidateShortTermOriginal、RenderShortTermInput；24个 Eino 生产文件与133逐字一致。新 helper 只被结果投影验证调用，没有替换模型正文验证入口。因而133三协议真实SDK九场景及130原normal/race/CP控制在该影响边界内复用；没有宣称本轮重跑这些矩阵，也不拿它们证明新结果门。
 
@@ -53,7 +53,7 @@ Observed: F-133-01 的编码前同族元数据缺口和TS来源epoch遗漏已覆
 独立可证伪假设有两层：原五反例是否真的在公开输出门修复；同族字段是否仍有遗漏或误拒合法对象。
 
 1. 原133公开Router探针保持正常512-byte中文ID、513-byte、越界revision、坏UTF8 ID/title五控制。新候选正常值成功，四个坏 typed 返回被拒；原133失败原件不动。
-2. 对六个合法对象（item、candidate、job、eligible settings、readable attachment context、redacted context）先验证公开调用成功，再逐个污染所有实际存在的字符串槽，含原来空的可选字段；每次新 clone、单变量变更、请求身份固定，MemoryAPI.calls=1。**253次非法UTF8字段变体均被真实 Router 拒绝**。零用量/普通Unicode/合法redacted元数据在正控中保持。具体输入、源码和逐字段结果见 [05对象](logs/05-object-inputs.json)、[07探针](logs/07-corrected-independent-go-probe.go.txt)、[07完整输出](logs/07-independent-go.log)；未走到的可选pointer/scope分支不冒称该遍历已覆盖，结合137实测及静态共享helper检查。
+2. 对六个合法对象（item、candidate、job、eligible settings、readable attachment context、redacted context）先验证公开调用成功，再逐个污染所有实际存在的字符串槽，含原来空的可选字段；每次新 clone、单变量变更、请求身份固定，MemoryAPI.calls=1。**253次非法UTF8字段变体均被真实 Router 拒绝**。零用量/普通Unicode/合法redacted元数据在正控中保持。具体输入、源码和逐字段结果见 05对象（历史日志已清理：`logs/05-object-inputs.json`）、07探针（历史日志已清理：`logs/07-corrected-independent-go-probe.go.txt`）、[07完整输出](logs/07-independent-go.log)；未走到的可选pointer/scope分支不冒称该遍历已覆盖，结合137实测及静态共享helper检查。
 3. 作者137永久真实Router覆盖 SourceScopes、scopeResourceIds、epoch/修订MaxInt64及溢出、optional IDs512/513、zero/省略/max usage、context元数据；当前35输入及Go1.26.10 test/vet实际0证据可复用。136与本人Node控制均验证 source epoch1/Max允许、0/前导零/Max+1拒绝，zero usage仍合法。
 
 前提边界保持：这是 typed 输出合同修复，正常来源受理此前已拒所测越界ID/revision；没有把旧 finding升级成用户可绕权限漏洞。非法Go字符串不等于合法JSON入站字符串。当前生产Source权限/租约/数据库关系仍属闭包外本域门，不由新纯helper授予。
@@ -70,7 +70,7 @@ TS只删除 `memoryContext` 中错误的单entry245760限制，仍通过真实 m
 | 精确最大值 | 261945 | 262144 | resolve / ready |
 | 最大值加一 | 261946 | 262145 | INVALID_METHOD_RESULT / closed |
 
-每个值先经实际schema形状正控；精确最大值用普通合法title补齐，不依赖坏字符或超限ID。大小按R3 Go HTML转义计数，实际输入/结果见 [08预算](logs/08-budget-results.json)，真实客户端源码见 [08探针](logs/08-final-client-probe.ts.txt)。每次 finally close，错误响应确实关闭连接，允许响应保持ready。
+每个值先经实际schema形状正控；精确最大值用普通合法title补齐，不依赖坏字符或超限ID。大小按R3 Go HTML转义计数，实际输入/结果见 08预算（历史日志已清理：`logs/08-budget-results.json`），真实客户端源码见 08探针（历史日志已清理：`logs/08-final-client-probe.ts.txt`）。每次 finally close，错误响应确实关闭连接，允许响应保持ready。
 
 Go独立精确上界控制还使用真实 `json.Marshal` 计算到262144/262145，再交公开Router，分别成功/拒绝。该正常/反向控制可排除“TS只是一起放宽所有预算”的误判。136的四文件79测试、原普通object/page精确边界与144-validator缓存控制当前源码未变，按1647项完整摘要复用。没有修改schema或增加wire方法。
 
@@ -89,7 +89,7 @@ Go独立精确上界控制还使用真实 `json.Marshal` 计算到262144/262145�
 | 08 独立真实TS客户端 | 0 | 3.103989 | 七tests全通过，五预算及epoch/zero控制 |
 | 10 完整冻结/源/HEAD/index核验 | 0 | 10.076910 | 1722/38/1722，零漂移 |
 
-06 原因：探针 helper 用被污染的返回 `Kind` 同时生成请求 Kind，六次收到 INVALID_METHOD_PARAMS、MemoryAPI未调用；这不能证明输出门失败。[05原探针](logs/05-full-independent-go-probe.go.txt)和[06原日志](logs/06-independent-go.log)保留。07仅将请求Kind由未污染的对应pointer分支确定，返回值污染不改，原六目标均真正到 MemoryAPI 后被拒绝，没有生产改动或缩减断言。
+06 原因：探针 helper 用被污染的返回 `Kind` 同时生成请求 Kind，六次收到 INVALID_METHOD_PARAMS、MemoryAPI未调用；这不能证明输出门失败。05原探针（历史日志已清理：`logs/05-full-independent-go-probe.go.txt`）和[06原日志](logs/06-independent-go.log)保留。07仅将请求Kind由未污染的对应pointer分支确定，返回值污染不改，原六目标均真正到 MemoryAPI 后被拒绝，没有生产改动或缩减断言。
 
 08第一测试特意使用保存的133旧Router字节，证明客户端对旧超长/越界wire仍拒绝；其U+FFFD值已经是合法替换后字符串，仍可接收。它不宣称修复后Go还会产生这些坏返回，修复后Go证据是07。探针源码版本各自单独保留，不以最终源码替代首次前提错误输入。
 

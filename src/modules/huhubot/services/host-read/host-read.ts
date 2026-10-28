@@ -1,3 +1,4 @@
+import { isHostLeaseRenewal } from '../../core/protocol/host-lease';
 import type { HostLease, HostReadRequest, HostReadResult, HostSearchRequest, HostSearchResult, SourceIdentity } from '../../api';
 import { BotRpcError, type ProtocolTimers } from '../../core/protocol/connection';
 import { methodValidation } from '../../core/protocol/method-validation';
@@ -15,6 +16,10 @@ export class HostReadService {
 	private disposed = false;
 	constructor(private readonly sources: HostSources, private readonly timers: ProtocolTimers) {}
 	readonly setLease = (lease: HostLease | undefined): void => {
+		if (isHostLeaseRenewal(this.lease, lease)) {
+			this.sources.setLease(lease);
+			this.lease!.expiresAt = lease!.expiresAt; return;
+		}
 		for (const controller of this.operations) controller.abort();
 		this.lease = undefined;
 		if (this.disposed && lease) { this.sources.setLease(undefined); throw denied('INVALID_HOST_LEASE'); }

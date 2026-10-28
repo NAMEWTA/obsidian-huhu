@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	file "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/portable"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 	app "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
 )
 
@@ -160,5 +161,93 @@ func TestArchiveRoundTripAndNoOverwrite(t *testing.T) {
 	}
 	if _, err := file.ReadFile(context.Background(), path); err == nil {
 		t.Fatal("truncated package accepted")
+	}
+}
+
+func TestAmbiguousTargetsRequireCopyBeforeAnyImportWrite(t *testing.T) {
+	p := sample()
+	cases := []struct {
+		kind, id string
+		target   app.Target
+	}{
+		{"agent", p.Agents[0].ID, app.Target{ProfileID: "profile:new", Agents: []app.TargetAgent{{ID: "agent:a", Name: "Writer"}, {ID: "agent:b", Name: "Writer"}}}},
+		{"session", p.Sessions[0].ID, app.Target{ProfileID: "profile:new", Sessions: []app.TargetSession{{ID: "session:a", Title: "Project"}, {ID: "session:b", Title: "Project"}}}},
+		{"memory", p.Memories[0].ID, app.Target{ProfileID: "profile:new", Memories: []app.TargetMemory{{ID: "memory:a", NamespaceKind: p.Memories[0].NamespaceKind, NamespaceID: p.Memories[0].NamespaceID}, {ID: "memory:b", NamespaceKind: p.Memories[0].NamespaceKind, NamespaceID: p.Memories[0].NamespaceID}}}},
+	}
+	for _, test := range cases {
+		t.Run(test.kind, func(t *testing.T) {
+			preview, err := app.PreviewImport(p, test.target)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, action := range []string{"keep", "skip", "replace"} {
+				tx := &fakeTx{}
+				_, err = app.Import(context.Background(), app.ImportPlan{Package: p, Preview: preview, Confirm: true, Resolutions: []app.ImportResolution{{ID: test.id, Action: action}}}, fakeSink{tx})
+				var fault *api.Fault
+				if !errors.As(err, &fault) || fault.Reason != "AMBIGUOUS_IMPORT_TARGET" || tx.puts != 0 || tx.committed {
+					t.Fatal("ambiguous existing target reached writes", action, tx, err)
+				}
+			}
+			tx := &fakeTx{}
+			receipt, err := app.Import(context.Background(), app.ImportPlan{Package: p, Preview: preview, Confirm: true, Resolutions: []app.ImportResolution{{ID: test.id, Action: "copy"}}}, fakeSink{tx})
+			if err != nil || !tx.committed {
+				t.Fatal("safe copy was rejected", receipt, err)
+			}
+			for _, mapping := range preview.Mappings {
+				if mapping.From != test.id {
+					continue
+				}
+				ids := append(append(append([]string{}, receipt.AgentIDs...), receipt.SessionIDs...), receipt.MemoryIDs...)
+				found := false
+				for _, id := range ids {
+					if id == mapping.To {
+						found = true
+					}
+				}
+				if !found {
+					t.Fatal("copy ignored frozen candidate ID", mapping, receipt)
+				}
+			}
+		})
+	}
+}
+
+func TestSingleTargetResolutionUsesExistingOrFrozenCopyIdentity(t *testing.T) {
+	p := sample()
+	preview, err := app.PreviewImport(p, app.Target{ProfileID: "profile:new", Agents: []app.TargetAgent{{ID: "agent:existing", Name: "Writer"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	candidate := ""
+	for _, mapping := range preview.Mappings {
+		if mapping.Kind == "agent" && mapping.From == p.Agents[0].ID {
+			candidate = mapping.To
+		}
+	}
+	if candidate == "" {
+		t.Fatal("agent copy candidate absent")
+	}
+	for _, action := range []string{"keep", "replace", "copy"} {
+		t.Run(action, func(t *testing.T) {
+			tx := &fakeTx{}
+			_, err := app.Import(context.Background(), app.ImportPlan{Package: p, Preview: preview, Confirm: true, Resolutions: []app.ImportResolution{{ID: p.Agents[0].ID, Action: action}}}, fakeSink{tx})
+			if err != nil || !tx.committed {
+				t.Fatal(err)
+			}
+			want := "agent:existing"
+			if action == "copy" {
+				want = candidate
+			}
+			if action == "keep" {
+				if len(tx.agents) != 0 {
+					t.Fatal("keep wrote existing Agent", tx.agents)
+				}
+			} else if len(tx.agents) != 1 || tx.agents[0].ID != want {
+				t.Fatal("Agent resolution identity was misreported", want, tx.agents)
+			}
+			if len(tx.sessions) != 1 || tx.sessions[0].CoordinatorID != want || len(tx.sessions[0].MemberIDs) != 1 || tx.sessions[0].MemberIDs[0] != want || len(tx.memories) != 1 || tx.memories[0].NamespaceID != want {
+				t.Fatal("dependent references did not follow the selected identity", want, tx.sessions, tx.memories)
+			}
+		})
 	}
 }

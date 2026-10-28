@@ -22,8 +22,8 @@ Grants 侧依据 161 的真实 `ReadFactsInTx` 语义增加了一个窄分支：
 
 ## 产物与验证
 
-- [160 contract](../../../../160-global-memory-api/contract.md) 与 [158 contract](../../../../158-global-memory-contract/global-memory-contract.md) 是接缝来源；[Root scope addendum](../../evidence/T-15-logs/162-scope-addendum-1.md) 是 service.go 单行入口授权。
-- [source before](logs/01-source-before.json) 保存 3 个既有边界文件 bytes/mode；[source checkpoint](logs/02-source-checkpoint.json) 保存本轮 8 文件 SHA、tree 和引用事实；[diff](logs/02-source-checkpoint.patch) 可回读精确改动；[git status](logs/03-git-status-source-checkpoint.txt) 保存工作副本状态。
+- [160 contract](../160-global-memory-api/contract.md) 与 [158 contract](../158-global-memory-contract/global-memory-contract.md) 是接缝来源；[Root scope addendum](../../../evidence/T-15-logs/162-scope-addendum-1.md) 是 service.go 单行入口授权。
+- source before（历史日志已清理：`logs/01-source-before.json`） 保存 3 个既有边界文件 bytes/mode；source checkpoint（历史日志已清理：`logs/02-source-checkpoint.json`） 保存本轮 8 文件 SHA、tree 和引用事实；diff（历史日志已清理：`logs/02-source-checkpoint.patch`） 可回读精确改动；git status（历史日志已清理：`logs/03-git-status-source-checkpoint.txt`） 保存工作副本状态。
 - 本轮 8 个文件最终 SHA：
   - `events/store.go` `2b2ffbab3f04c2ba2a5e182e8161b4d18f06970b24045b047bf55fcd697159b6`
   - `events/global_delivery.go` `e9bcdb24b146481812571dfdad934834a055b314c015f230b117d01150796291`

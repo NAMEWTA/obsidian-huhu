@@ -7,10 +7,11 @@ import (
 	"time"
 )
 
-// Selection is the user's explicit choice for durable memory that is otherwise
-// safe to retain during a profile clear. It is deliberately not inferred from
-// the contents of the database.
+// Selection is persisted with the preview. Profile full clear rejects retention;
+// DataErased records the committed SQL phase while WAL cleanup is still pending.
 type Selection struct {
+	DataErased      bool     `json:"dataErased,omitempty"`
+	MemoryFence     string   `json:"memoryFence,omitempty"`
 	KeepPinned      bool     `json:"keepPinned"`
 	KeepGlobal      bool     `json:"keepGlobal"`
 	RetainMemoryIDs []string `json:"retainMemoryIds,omitempty"`

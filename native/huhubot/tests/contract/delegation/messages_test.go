@@ -39,7 +39,8 @@ func TestNotifyDoesNotWakeQuestionReplyHasDurableIdentityAndRealWaitCycle(t *tes
 		}
 		if i.Intent == "actual question" {
 			check := func() error {
-				entry, e := requiredInbox(i, "actual question")
+				entries, e := requiredInboxes(i, "actual question", "notification")
+				entry := entries["actual question"]
 				if e != nil || entry.Message.Kind != "question" || entry.Message.QuestionID == "" {
 					return fmt.Errorf("actual thread question missing: %#v %v", entry, e)
 				}
@@ -98,5 +99,60 @@ func TestNotifyDoesNotWakeQuestionReplyHasDurableIdentityAndRealWaitCycle(t *tes
 	}
 	if count(t, db, "SELECT count(*) FROM collaboration_wait_edges") != 0 {
 		t.Fatal("answered wait retained")
+	}
+}
+
+func TestReviewAssociatedNotifyHasActualRecipientInbox(t *testing.T) {
+	var target string
+	release := make(chan struct{})
+	defer close(release)
+	result := make(chan struct {
+		child, message string
+		err            error
+	}, 1)
+	eng := engineFunc(func(c context.Context, i api.EngineInput) (api.EngineResult, error) {
+		if i.Intent != "notify-parent" {
+			select { case <-release: case <-c.Done(): return api.EngineResult{}, c.Err() }
+			return api.EngineResult{Status: "finished", Text: "child"}, nil
+		}
+		d, e := i.Tools.Invoke(c, api.ToolCall{ID: "delegate-notify-child", Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: "notify-child", Constraints: []string{}}})
+		if e != nil {
+			result <- struct {
+				child, message string
+				err            error
+			}{err: e}
+			return api.EngineResult{}, e
+		}
+		m, e := i.Tools.Invoke(c, api.ToolCall{ID: "associated-notify", Name: "agents.message", Message: &api.MessageCommand{TargetAgentID: target, DelegationID: d.Delegation.ID, Kind: "notify", Text: "important-update", SourceRefs: []api.SourceSnapshot{}}})
+		id := ""
+		if m.Message != nil {
+			id = m.Message.ID
+		}
+		result <- struct {
+			child, message string
+			err            error
+		}{d.Delegation.ChildRunID, id, e}
+		return api.EngineResult{Status: "finished", Text: "parent"}, e
+	})
+	c, _, locator := open(t, bootstrap.Options{Engine: eng})
+	b := agent(t, c, "notify-B", nil)
+	target = b.ID
+	a := agent(t, c, "notify-A", []string{b.ID})
+	start(t, c, session(t, c, a), "notify-parent")
+	select {
+	case r := <-result:
+		if r.err != nil {
+			t.Fatal(r.err)
+		}
+		db := database(t, locator)
+		var toRun, thread, status string
+		if e := db.QueryRow("SELECT to_run_id,work_thread_id,status FROM collaboration_messages WHERE message_id=?", r.message).Scan(&toRun, &thread, &status); e != nil {
+			t.Fatal(e)
+		}
+		if toRun != r.child {
+			t.Fatalf("notify acknowledged status=%s but to_run_id=%q, thread=%q; intended existing recipient Run=%q can never select it with WHERE to_run_id=?", status, toRun, thread, r.child)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("sender did not complete")
 	}
 }

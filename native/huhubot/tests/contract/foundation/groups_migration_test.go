@@ -87,7 +87,7 @@ func TestGroupMigrationRebuildPreservesGraphAndRestoresForeignKeys(t *testing.T)
 	if e = db.QueryRow("PRAGMA foreign_keys").Scan(&enabled); e != nil || enabled != 1 {
 		t.Fatalf("foreign keys %d %v", enabled, e)
 	}
-	if e = db.QueryRow("PRAGMA user_version").Scan(&version); e != nil || version != 11 {
+	if e = db.QueryRow("PRAGMA user_version").Scan(&version); e != nil || version != migrations.CurrentVersion {
 		t.Fatalf("version %d %v", version, e)
 	}
 	for table, want := range map[string]int{"conversation_sessions": 1, "conversation_members": 1, "conversation_messages": 1, "execution_runs": 1, "execution_events": 1, "collaboration_threads": 1} {

@@ -68,7 +68,7 @@ Observed: SPEC-077-01 / P2，与STD-077-01同一事实：将未向实际模型�
 
 T13其他已锁定行为与代码/可复用实际证据一致：无@仅A、明确@仅目标且A可未配模型/Grant/allowlist、全目标同Tx、一根用户意图、真实目标子Run和独立发表；新成员none/明确同群历史、私有thread/私聊隔离、协调者活动根互斥；完整成员代和当前来源/Grant约束贯穿Dispatch/派生/恢复/最终writer；展示metadata不是模型访问权。Effect owner补充仅松开已发生效果的无正文审计读取，不改变Host物理效果或Approval正文授权。上述独立正常与故障控制没有扩大raw三项128KiB/材料化Task另128KiB、单次Host正文、事件/frame、页或并发预算。
 
-合同只保持wire **0.1**、schemaVersion **1**；实际SQLite升级到8不是新wire版本。[独立静态合同核验](logs/contract-readback.json)确认71方法、142验证器、266样本、schema与Go嵌入字节一致，旧SQL不变。073六输出生成复验和075消费同API/schema的证据已回读，未冒称本轮重生成。当前缺陷要求修消费/分页提交顺序，不要求加未来协议或扩合同。
+合同只保持wire **0.1**、schemaVersion **1**；实际SQLite升级到8不是新wire版本。独立静态合同核验（历史日志已清理：`logs/contract-readback.json`）确认71方法、142验证器、266样本、schema与Go嵌入字节一致，旧SQL不变。073六输出生成复验和075消费同API/schema的证据已回读，未冒称本轮重生成。当前缺陷要求修消费/分页提交顺序，不要求加未来协议或扩合同。
 
 真实Provider/模型、用户Obsidian、目标OS/keyring仍user-owned/not-run；无索取凭证、访问真实Vault、旧默认D-Bus或模型请求。本轮只断言受控Engine、合成数据和现有API/消费者的代码行为，不把未来T08–10/T16等未实施范围或T27完整发行验收算作已交付。原六处docs锚点及全局计划校验已知诊断保留，未称全局文档/计划绿色。
 
@@ -85,18 +85,18 @@ T13其他已锁定行为与代码/可复用实际证据一致：无@仅A、明�
 | `-run '^TestReviewerCountLimitedPageDoesNotConsumeOmittedResult$' -timeout=45s`：limit=3控制 | exit0；包0.153s；实际移除未返回成员后Dispatch1 |
 | `-race -run '^TestReviewerPrivateUnionSQLFailureRollsBackWholeRead$' -timeout=45s`：真实第二次UPDATE SQL ABORT | exit0；包2.102s；预期SQL错误完整回滚，不吞错 |
 
-完整命令/exit/Wait见 [independent-runs.json](logs/independent-runs.json)，代码和最初分页探针原文在 [probes](probes/)，所有原始输出在 [logs](logs/)。表中时长是Go包输出，不冒充包含编译的wall time。所有数据库为隔离t.TempDir，Core.Close停止并等待Executor，正常/失败路径均释放握手；SQL观测DB与临时目录由测试清理，持久事实原始行已保存日志。
+完整命令/exit/Wait见 independent-runs.json（历史日志已清理：`logs/independent-runs.json`），代码和最初分页探针原文在 [probes](probes/)，所有原始输出在 [logs](logs/)。表中时长是Go包输出，不冒充包含编译的wall time。所有数据库为隔离t.TempDir，Core.Close停止并等待Executor，正常/失败路径均释放握手；SQL观测DB与临时目录由测试清理，持久事实原始行已保存日志。
 
 ### 复用证据的独立摘要核验
 
-[reuse-readback.json](logs/reuse-readback.json)逐SHA匹配：073联合348输入、075最终9文件、Root E2E当前2066输入、插件1873输入及main.js/styles.css、独立237文件副本。073联合当前tree `49eb41c7b11d57051d2b12edfbf1ae1bfb682b85cd9ac4e0c2de4c1c24595be1`。因此复用作者完整normal/十包race/vet、180TS/类型/架构及Root build/lint；这些都是各原执行人的实跑，非本review重复执行。
+reuse-readback.json（历史日志已清理：`logs/reuse-readback.json`）逐SHA匹配：073联合348输入、075最终9文件、Root E2E当前2066输入、插件1873输入及main.js/styles.css、独立237文件副本。073联合当前tree `49eb41c7b11d57051d2b12edfbf1ae1bfb682b85cd9ac4e0c2de4c1c24595be1`。因此复用作者完整normal/十包race/vet、180TS/类型/架构及Root build/lint；这些都是各原执行人的实跑，非本review重复执行。
 
 Root [E2E r3](../../../evidence/T-13-logs/lead-groups-e2e-r3.json)的新TS/Host链及其明确复用Go公有API/效果重开/v7+CP迁移均已回读。原r1 public用错busy错误kind、r2漏AgentDraft.description是Root外部夹具失败，原日志保留；只修夹具且产品摘要不变后成功，不称原失败本已通过。073首次联合normal确有run-principal single/batch reason不一致；074只修groups/access.go的一行reason，资格谓词和原测试未变，首次exit1、最终normal/race/vet0分别保留。074 private贡献泄漏、失败草稿、waiting用户补充和question撤权卡住的原红/绿已逐项核对；其20反事实overlay是当前代码删除防线的负向控制，不能冒充历史生产快照。075 proof两项红→当前绿及controlled startup已回读；startup controlled executable证明窄reason透传/未知stderr抑制，真实旧库已有孤儿属于备份前置拒绝，不是迁移内生FK失败。
 
-初次/末次冻结核验见 [input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、[input.json](logs/input.json)。核验排除新审查材料造成的excluded inventory元数据变化，未排除任何已选产品/来源/HEAD/index。原072输入和最终报告不变的历史事实继续有效，当前报告不覆盖其原先未启用T13的范围边界。
+初次/末次冻结核验见 [input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、input.json（历史日志已清理：`logs/input.json`）。核验排除新审查材料造成的excluded inventory元数据变化，未排除任何已选产品/来源/HEAD/index。原072输入和最终报告不变的历史事实继续有效，当前报告不覆盖其原先未启用T13的范围边界。
 
 ## 问题与下一步
 
 将STD/SPEC-077-01交原owner修复后重新冻结复审；本review没有实施修复、修改正式票状态或提前接受候选。建议保留本次字节/条数分页对照和真实多贡献者/SQL失败控制，复验只提交实际返回页的资格，不能以整包绿色覆盖反例。
 
-所有自有进程已完成Wait，剩余probe进程为空，237项外部原始输入无漂移，见 [process-cleanup.json](logs/process-cleanup.json)。末次299/87完整输入无漂移；亲自return结构校验输出见 [return.log](logs/return.log)。原生MESSAGE/FINAL交回后停写。产品写入0、永久测试写入0、委派0；没有提交、推送、发版或归档。
+所有自有进程已完成Wait，剩余probe进程为空，237项外部原始输入无漂移，见 process-cleanup.json（历史日志已清理：`logs/process-cleanup.json`）。末次299/87完整输入无漂移；亲自return结构校验输出见 [return.log](logs/return.log)。原生MESSAGE/FINAL交回后停写。产品写入0、永久测试写入0、委派0；没有提交、推送、发版或归档。

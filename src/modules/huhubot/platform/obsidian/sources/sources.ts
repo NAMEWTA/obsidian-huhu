@@ -1,3 +1,4 @@
+import { isHostLeaseRenewal } from '../../../core/protocol/host-lease';
 import { MarkdownView, TFile, TFolder, type App, type WorkspaceLeaf } from 'obsidian';
 import type { HostLease, HostSearchRequest, HostSearchResult, SourceIdentity, SourceOpenResult, SourceRange, SourceScope, SourceSnapshot } from '../../../api';
 import { BotRpcError, type ProtocolTimers } from '../../../core/protocol/connection';
@@ -54,6 +55,9 @@ export class ObsidianSources implements HostSources, HostWriteSources {
 	constructor(private readonly app: App, private readonly options: ObsidianSourceOptions) {}
 
 	setLease(lease: HostLease | undefined): void {
+		if (isHostLeaseRenewal(this.lease, lease)) {
+			this.lease!.expiresAt = lease!.expiresAt; return;
+		}
 		this.generation++;
 		this.lease = undefined;
 		this.records.clear(); this.scopes.clear(); this.cursors.clear(); this.cachedBytes = 0;

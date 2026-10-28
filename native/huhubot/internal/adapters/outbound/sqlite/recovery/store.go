@@ -62,7 +62,7 @@ func (s *Store) ReadRecoveryStatusInTx(ctx context.Context, tx *sql.Tx, id api.R
 // ResetRuntimeInTx is called only after the original exclusive Profile lock has
 // proved that the preceding process and its producers no longer exist.
 func (s *Store) ResetRuntimeInTx(ctx context.Context, tx *sql.Tx) error {
-	_, e := tx.ExecContext(ctx, "UPDATE execution_recovery_runtime SET state='open' WHERE singleton=1")
+	_, e := tx.ExecContext(ctx, "UPDATE execution_recovery_runtime SET state=CASE WHEN EXISTS(SELECT 1 FROM purge_previews WHERE state='failed') OR EXISTS(SELECT 1 FROM session_deletions WHERE state='pending') THEN 'stopping' ELSE 'open' END WHERE singleton=1")
 	return e
 }
 

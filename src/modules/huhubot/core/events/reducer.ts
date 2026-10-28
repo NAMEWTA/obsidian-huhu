@@ -71,6 +71,7 @@ export function applyEventPage(previous: EventProjection, page: EventPage): Proj
 				if (event.usage !== undefined) projection.usage = structuredClone(event.usage);
 				if (event.messageId !== undefined) projection.messageId = event.messageId;
 			}
+			if (event.type === 'usage.settled' && event.usage !== undefined) projection.usage = structuredClone(event.usage);
 			if (event.effectId !== undefined) projection.lastEffectId = event.effectId;
 			if (event.approvalId !== undefined) projection.lastApprovalId = event.approvalId;
 			projection.lastEventType = event.type;

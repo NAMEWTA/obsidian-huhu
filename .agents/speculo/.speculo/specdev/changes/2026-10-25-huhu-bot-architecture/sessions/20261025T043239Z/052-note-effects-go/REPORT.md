@@ -14,15 +14,15 @@ T07 Go 默认 Host 写桥、只读效果核查、单请求取消、迁移前完�
 
 - 作者：`native:/root/foundation_go`。派遣请求 `model=gpt-6.1-sol / reasoning_effort=xhigh`，仅记录派遣偏好，工具未提供实际底层 model 证明。
 - 未提交、推送、发布或改正式状态；HEAD 保持 `33c21e098ef3188cbab5a09f3e0a01fadb787715`，分支 `NAMEWTA/bot`。沿 Root 工作副本实施，没有另建源码工作树。
-- 复用 dev 与 SpecDev I 已读规则，起始 Map14/Goal13；058 后依 Root Map16/Goal15 重绑定架构来源。起始 architecture SHA `6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0`，当前 `0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42`，新增 HostReceiptStore/ReceiptAuthority 两行 owner，无 Go 边界变化。[规则/旧输入](logs/23-immutable-and-rules.json)、[最终只读检查](logs/51-own-readonly-checks.json)。
-- 自有路径以 [59 文件 manifest](logs/42-own-source-r4.json) 为准，tree SHA `df4e76f45619a9869855f089e39d86541440e371c2b52e91a0abaa0d4fc331ca`。它包含本票新增/修改的 API/schema/Go 共享与 T07 源/测试，不等于全仓 Git 差异。r5 未改这些路径。
-- 最终 [联合 r5 manifest](logs/50-joint-source-r5-final.json)：291 文件，tree SHA `d167e50122ba1edbfdf84f9bc45144f4fa4dcf5deb1b7f656f83151257982ac9`。r4 十项检查输入为 [291 文件 r4](logs/42-joint-source-r4.json) `5aeef292e5966d9127ad51efe7aff67448970eb80c22926e26000bd39d3ef3a0`；r5 相对它仅 053 的 `answer.go` 与 `reply_sources_test.go` 两路径变化，由其新增 delegation 全包普通/race覆盖。
-- r3 全 Go/race历史输入：[own](logs/31-source-freeze-r3.json) 与 [joint289](logs/32-joint-source-r3.json)，后者 SHA `1ea371fb9ec6bca1dbbfb5d382e87ba28c315cd0072d3b5fc3b0d054f863ce52`。r1/r2 与失败输入仍保留在 22、26、27，不覆盖为最终结果。
-- [48 边界核对](logs/48-immutable-boundaries-r4.json) 证明 T04 七个源/测试与接纳050逐 SHA 相同，旧 SQL001/002/003/005/006 与 go.mod/go.sum 也完全相同；没有写 raw credentials。053 独占 credentials.go guard、协作/预算与011/012，054独占生产TS Host/protocol/source/hash切片，未把它们归为052作者。
+- 复用 dev 与 SpecDev I 已读规则，起始 Map14/Goal13；058 后依 Root Map16/Goal15 重绑定架构来源。起始 architecture SHA `6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0`，当前 `0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42`，新增 HostReceiptStore/ReceiptAuthority 两行 owner，无 Go 边界变化。规则/旧输入（历史日志已清理：`logs/23-immutable-and-rules.json`）、最终只读检查（历史日志已清理：`logs/51-own-readonly-checks.json`）。
+- 自有路径以 59 文件 manifest（历史日志已清理：`logs/42-own-source-r4.json`） 为准，tree SHA `df4e76f45619a9869855f089e39d86541440e371c2b52e91a0abaa0d4fc331ca`。它包含本票新增/修改的 API/schema/Go 共享与 T07 源/测试，不等于全仓 Git 差异。r5 未改这些路径。
+- 最终 联合 r5 manifest（历史日志已清理：`logs/50-joint-source-r5-final.json`）：291 文件，tree SHA `d167e50122ba1edbfdf84f9bc45144f4fa4dcf5deb1b7f656f83151257982ac9`。r4 十项检查输入为 291 文件 r4（历史日志已清理：`logs/42-joint-source-r4.json`） `5aeef292e5966d9127ad51efe7aff67448970eb80c22926e26000bd39d3ef3a0`；r5 相对它仅 053 的 `answer.go` 与 `reply_sources_test.go` 两路径变化，由其新增 delegation 全包普通/race覆盖。
+- r3 全 Go/race历史输入：own（历史日志已清理：`logs/31-source-freeze-r3.json`） 与 joint289（历史日志已清理：`logs/32-joint-source-r3.json`），后者 SHA `1ea371fb9ec6bca1dbbfb5d382e87ba28c315cd0072d3b5fc3b0d054f863ce52`。r1/r2 与失败输入仍保留在 22、26、27，不覆盖为最终结果。
+- 48 边界核对（历史日志已清理：`logs/48-immutable-boundaries-r4.json`） 证明 T04 七个源/测试与接纳050逐 SHA 相同，旧 SQL001/002/003/005/006 与 go.mod/go.sum 也完全相同；没有写 raw credentials。053 独占 credentials.go guard、协作/预算与011/012，054独占生产TS Host/protocol/source/hash切片，未把它们归为052作者。
 
 ### 公共合同与入口
 
-当前 71 个显式方法、142 个方法参数/结果 validator、255 个共享方法样本。唯一 `api.ts` SHA `40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c`；schema 与 Go 内嵌同字节 SHA `4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc`。六个生成输出的实际独立临时目录重生成及逐字节一致证据在 [34](logs/34-isolated-generation-r3.json)，最终七个 API/生成物摘要在 [49](logs/49-final-freeze-and-cleanup-r4.json)；r4/r5未改公共合同。Go/TS共享消费 task-config v1 八组、effect fingerprint 四组黄金向量，保持 Unicode/控制/HTML/顺序/省略默认语义，未使用 JSON 排序替代冻结算法。
+当前 71 个显式方法、142 个方法参数/结果 validator、255 个共享方法样本。唯一 `api.ts` SHA `40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c`；schema 与 Go 内嵌同字节 SHA `4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc`。六个生成输出的实际独立临时目录重生成及逐字节一致证据在 34（历史日志已清理：`logs/34-isolated-generation-r3.json`），最终七个 API/生成物摘要在 49（历史日志已清理：`logs/49-final-freeze-and-cleanup-r4.json`）；r4/r5未改公共合同。Go/TS共享消费 task-config v1 八组、effect fingerprint 四组黄金向量，保持 Unicode/控制/HTML/顺序/省略默认语义，未使用 JSON 排序替代冻结算法。
 
 永久真实 TS-Go 入口：`go test -run '^TestActualTSGoProductionNoteHost$' ./tests/contract/effect-reconcile`。用户后验可用 `go test -c -o <绝对路径> ./tests/contract/effect-reconcile` 构建受控测试 child，参数 `-test.run=^TestNoteEffectChild$`，环境 `HUHU_NOTE_EFFECT_CHILD=1`、`HUHU_NOTE_EFFECT_PROFILE_ROOT`、`HUHU_NOTE_EFFECT_PROFILE`；此 child stdout 仅 HAP、退出前不会输出 Go 测试 PASS。生产 `registerObsidianNoteHost` 与默认 writebridge 均真实装配，只有模型 Engine 和 Obsidian App/Vault 外边界受控；没有增加生产 probe RPC。真实运行用户 probe 仍由用户后验。
 
@@ -65,24 +65,24 @@ T07使用生产默认Host writebridge，经同一个Broker、SQLite效果/审批
 
 ### 最终实际检查与复用边界
 
-工具链为 Go1.26.10 / linux amd64，普通/交叉编译 `CGO_ENABLED=0`，race/vet 为 `CGO_ENABLED=1`；Node26.11.1、pnpm11.1.3。重检查由052独占、`-p=1` 串行，所有命令均实际 Wait；[41 调度脚本](logs/41-run-r4-checks.py) 与 [47 命令/env/exit/耗时清单](logs/47-r4-checks.json) 可直接回读。
+工具链为 Go1.26.10 / linux amd64，普通/交叉编译 `CGO_ENABLED=0`，race/vet 为 `CGO_ENABLED=1`；Node26.11.1、pnpm11.1.3。重检查由052独占、`-p=1` 串行，所有命令均实际 Wait；41 调度脚本（历史日志已清理：`logs/41-run-r4-checks.py`） 与 47 命令/env/exit/耗时清单（历史日志已清理：`logs/47-r4-checks.json`） 可直接回读。
 
 | 输入与检查 | 实际结果 | 原始证据 |
 | --- | --- | --- |
 | r3 `go test -timeout=5m -p=1 -count=1 ./...` | 全 Go 普通 exit0 | [33](logs/33-all-go-r3.log) |
-| r3 九包 `go test -race -timeout=8m -p=1 -count=1 -v ...` | exit1，七包通过；events 两项和 delegation slot 一项失败，无 data race 报告 | [35](logs/35-race-r3.log)、[36 完整分类](logs/36-race-failures-and-isolation.json) |
+| r3 九包 `go test -race -timeout=8m -p=1 -count=1 -v ...` | exit1，七包通过；events 两项和 delegation slot 一项失败，无 data race 报告 | [35](logs/35-race-r3.log)、36 完整分类（历史日志已清理：`logs/36-race-failures-and-isolation.json`） |
 | r4 access/events/delegation/collaboration-policy 普通 | exit0，23.785s | [43](logs/43-affected-normal-r4.log) |
 | r4 同四包 race | exit0，215.283s；原270=2.77s/3s，来源100 gate28.115306ms，来源800 gate225.426984ms/250ms，无来源800 gate118.226101ms；原4/8 slots、held HTTP、Reply来源/等待均通过 | [44](logs/44-affected-race-r4.log) |
 | r4 单/批 scanner ACL/损坏JSON/错Profile/缺失Run/无member/外人等价，普通与race | 两项exit0 | [45 普通](logs/45-delivery-reader-normal-r4.log)、[45 race](logs/45-delivery-reader-race-r4.log) |
 | r4 `go vet ./...` | exit0 | [46](logs/46-vet-r4.log) |
-| r4 `go build -trimpath ... ./cmd/huhubot` | linux amd64/arm64、darwin amd64/arm64、windows amd64 五目标均exit0 | 五份 `46-build-*-r4.log`、[47](logs/47-r4-checks.json) |
-| r5 053 最小 answer guard 与真实 Tools/question/CP 消费者 | 原49两向量真红；50 delegation完整ordinary exit0/3.607s，51完整race exit0/46.201s，全部Wait | [053红](../053-collaboration-policy/logs/49-agent-answer-source-red.log)、[普通](../053-collaboration-policy/logs/50-delegation-answer-final-ordinary.log)、[race](../053-collaboration-policy/logs/51-delegation-answer-final-race.log)、[r5冻结](../053-collaboration-policy/logs/52-own-final-freeze-r5.json) |
+| r4 `go build -trimpath ... ./cmd/huhubot` | linux amd64/arm64、darwin amd64/arm64、windows amd64 五目标均exit0 | 五份 `46-build-*-r4.log`、47（历史日志已清理：`logs/47-r4-checks.json`） |
+| r5 053 最小 answer guard 与真实 Tools/question/CP 消费者 | 原49两向量真红；50 delegation完整ordinary exit0/3.607s，51完整race exit0/46.201s，全部Wait | [053红](../053-collaboration-policy/logs/49-agent-answer-source-red.log)、[普通](../053-collaboration-policy/logs/50-delegation-answer-final-ordinary.log)、[race](../053-collaboration-policy/logs/51-delegation-answer-final-race.log)、r5冻结（历史日志已清理：`../053-collaboration-policy/logs/52-own-final-freeze-r5.json`） |
 
 r4范围外复用的是 r3 已通过的 chat/approval/effect-reconcile/foundation/assistant 完整 race；access/policy 则在 r4再跑，approval 的共享 scanner 边界也在 r4补跑。r3全Go普通结合r4受影响闭包和r5 delegation闭包使用，不声称在最终r5重跑了全module全部检查。原T07真实TS-Go链、完整恢复集与全部错误证据没有被删减或改期望。
 
 最后相邻来源支路准确区分：053 的45 Reply红→46/47绿只闭合 Reply/followup；其后发现 `Send(kind=reply)` 直接answer的入口同样需要subset校验。r5仅在 `answer.go` 复用现有 `checkReplySources` 三行，真实Tool/question/CP的foreign SourceRefs在任何message/receipt/question/waitedge写前拒绝；合法空/完整actual provenance与幂等保持。无API、SQL、limits、T04或052源变化，故不重复events/平台检查。
 
-[49](logs/49-final-freeze-and-cleanup-r4.json) 记录每项r4检查前后291摘要无漂移、05347文件无漂移、外部成本副本和五目标临时编译资产实际删除；[50](logs/50-joint-source-r5-final.json) 再次证明05259文件和053最终47文件无漂移。受控Node/Go/HTTP/真实os.Exit测试的清理均走实际Wait，当前没有运行中的作者测试/产品/probe。编译结果不冒充目标OS运行或最终发行资产，后续资产由Root/T27处理。
+49（历史日志已清理：`logs/49-final-freeze-and-cleanup-r4.json`） 记录每项r4检查前后291摘要无漂移、05347文件无漂移、外部成本副本和五目标临时编译资产实际删除；50（历史日志已清理：`logs/50-joint-source-r5-final.json`） 再次证明05259文件和053最终47文件无漂移。受控Node/Go/HTTP/真实os.Exit测试的清理均走实际Wait，当前没有运行中的作者测试/产品/probe。编译结果不冒充目标OS运行或最终发行资产，后续资产由Root/T27处理。
 
 ## 问题与下一步
 

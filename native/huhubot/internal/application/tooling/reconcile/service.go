@@ -61,7 +61,10 @@ func (s *Service) Reconcile(ctx context.Context, id api.RequestIdentity, c api.E
 		return v, e
 	}
 	command := api.HostInvokeCommand{ProfileID: proof.ProfileID, CommandEpoch: proof.CommandEpoch, EffectID: proof.EffectID, RunID: proof.RunID, ApprovalID: proof.ApprovalID, ApprovalRevision: proof.ApprovalRevision, ExpiresAt: proof.ExpiresAt, Content: proof.Content, Preview: proof.Preview}
-	fingerprint := api.EffectFingerprint(command)
+	fingerprint := proof.Fingerprint
+	if fingerprint == "" {
+		fingerprint = api.EffectFingerprint(command)
+	}
 	receipt, e := s.host.QueryReceipt(ctx, api.HostReceiptQuery{ProfileID: meta.ProfileID, CommandEpoch: meta.CommandEpoch, LeaseID: lease.LeaseID, HostConnectionID: lease.HostConnectionID, LeaseEpoch: lease.LeaseEpoch, WorkspaceID: lease.WorkspaceID, EffectID: proof.EffectID, Fingerprint: fingerprint, Preview: proof.Preview})
 	if e != nil {
 		return v, e

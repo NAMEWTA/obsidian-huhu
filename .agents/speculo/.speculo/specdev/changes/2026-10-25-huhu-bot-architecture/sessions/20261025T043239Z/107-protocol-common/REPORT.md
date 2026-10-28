@@ -6,7 +6,7 @@ Status: completed
 
 ## 聚焦交接
 
-按冻结 TASK、106 有限合同及 Map26 补充完成原 T08 写集维护。仅维护 9 个生产文件、7 个 Chat 测试和 4 个旧 producer 样本；[完整自有源摘要](logs/16-own-final-source.json)与[实际差异](logs/15-own-final.patch)可回读。未修改 Responses/Anthropic、bootstrap、Broker、API/HAP/SQL/TS、锁或 notices；没有再委派、提交、推送、发布或归档。正式联合代码门由 Root 决定。
+按冻结 TASK、106 有限合同及 Map26 补充完成原 T08 写集维护。仅维护 9 个生产文件、7 个 Chat 测试和 4 个旧 producer 样本；完整自有源摘要（历史日志已清理：`logs/16-own-final-source.json`）与实际差异（历史日志已清理：`logs/15-own-final.patch`）可回读。未修改 Responses/Anthropic、bootstrap、Broker、API/HAP/SQL/TS、锁或 notices；没有再委派、提交、推送、发布或归档。正式联合代码门由 Root 决定。
 
 common 新增有限 ProtocolIdentity、StateView、Generation、TurnResult、ProtocolDriver 与不可变 Registry。同一 registry 按 pinned protocol 路由 Engine/Inspector/Probe/selector/纯 EngineVersion callback；无当前协议或 fallback。构造拒绝 empty/nil/typed nil/重复/非冻结身份，成功才转移 driver 所有权。Engine/Registry Stop→Done→Close 覆盖所有注册 driver、活动 Run/Probe、真实 producer 和结算，Close 不能替代 join。108/109 已消费精确签名，未各自另造一套。
 
@@ -25,9 +25,9 @@ SDK producer 证明按各 SDK 区分：Chat 原固定 ACL/Eino writer 最终精�
 
 ## 产物与验证
 
-实际使用 dev 的原生 Go/持久化兼容/异步生命周期验证，复用未变化的 I/preflight/设计/TDD/错误/可靠测试/风险规则；[输入与计划](logs/00-input-and-plan.json)记录 AGENTS、TASK、冻结合同 SHA、HEAD 与 owner 边界。HEAD 保持 `33c21e098ef3188cbab5a09f3e0a01fadb787715`。所有 Go 检查均在 Root 唯一窗口，固定 go1.26.10/GOWORK=off/GOEXPERIMENT空/readonly；normal CGO0，race CGO1。
+实际使用 dev 的原生 Go/持久化兼容/异步生命周期验证，复用未变化的 I/preflight/设计/TDD/错误/可靠测试/风险规则；输入与计划（历史日志已清理：`logs/00-input-and-plan.json`）记录 AGENTS、TASK、冻结合同 SHA、HEAD 与 owner 边界。HEAD 保持 `33c21e098ef3188cbab5a09f3e0a01fadb787715`。所有 Go 检查均在 Root 唯一窗口，固定 go1.26.10/GOWORK=off/GOEXPERIMENT空/readonly；normal CGO0，race CGO1。
 
-生产改写前，实际旧 Chat SDK→Executor→Broker→SQLite 产生“第一原调用批准并物理写 1 次、第二原调用待审批”的 CP，再实际拒绝第二原调用成功结束；HTTP2、物理写1。保存原 CP 2768 字节（SHA `7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631`）、真实 Config/Intent/Inspection/Resume Decision 和两份 wire，四样本之后保持原字节。[legacy 摘要](logs/03-legacy-baseline.json)记录原字段顺序与 ToolDigest `sha256:a44fe0c483fdea2896c66cf9070454768e893e18e1353d0f01a5fcf55ac2e80a`。
+生产改写前，实际旧 Chat SDK→Executor→Broker→SQLite 产生“第一原调用批准并物理写 1 次、第二原调用待审批”的 CP，再实际拒绝第二原调用成功结束；HTTP2、物理写1。保存原 CP 2768 字节（SHA `7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631`）、真实 Config/Intent/Inspection/Resume Decision 和两份 wire，四样本之后保持原字节。legacy 摘要（历史日志已清理：`logs/03-legacy-baseline.json`）记录原字段顺序与 ToolDigest `sha256:a44fe0c483fdea2896c66cf9070454768e893e18e1353d0f01a5fcf55ac2e80a`。
 
 新兼容测试直接读取这份独立旧字节：新 Inspector 纯检、新 Engine.Resume 与真实 Chat SDK bridge 接受旧 CP，原完成工具不重复 Invoke；新编码器用同一可信输入及记录的原工具结果重建，2768 字节逐字相等，涵盖原 digest。此 codec/Resume 控制重绑私有 memory CP/attempt/tool 夹具和受控 RoundTripper，不冒称重开已删除的临时 Profile；实际 Core/SQLite 重开另由 10 的原 restart 用例覆盖。capture 助手显式 opt-in，且已存在样本时硬拒绝覆盖。
 

@@ -1,0 +1,90 @@
+$ node scripts/build-huhu-bot.mjs --test
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/cmd/huhubot	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/hap	0.381s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/stdio	0.265s
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/blob/store	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/anthropic	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/chat	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common/protocolcontext	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/httpcall	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/responses	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/hostbridge/read	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/hostbridge/write	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/portable	0.013s
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/profilecleanup	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/assistant	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/base	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/collaboration	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/conversation	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/effects	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/events	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/execution	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/globalmemory	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/grants	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/groups	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/mailbox	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/memory	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/portable	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/purge	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/recovery	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/usage	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/access/approvals	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/access/context	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/access/grants	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/assistant	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/collaboration/delegate	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/collaboration/messages	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/conversation/direct	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/conversation/group	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/guard	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable	0.559s
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/purge	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/sessions	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/commands	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/events	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/executor	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/execution/recovery	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/memory/context	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/memory/global	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/memory/maintenance	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/memory/private	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/tooling/broker	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/tooling/collaboration-tools	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/tooling/reconcile	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap	2.873s
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/access/approval	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/access/grants	(cached)
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/assistant	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/collaboration/delegation	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/collaboration/policy	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/conversation/direct	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/conversation/group	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/execution/effect	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/execution/purge	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/execution/recovery	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/execution/run	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/protocol/hap	[no test files]
+?   	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile	[no test files]
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/access	6.293s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/approval	13.378s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/assistant	42.586s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/chat	41.730s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/collaboration-policy	19.584s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation	26.275s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/effect-reconcile	5.619s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic	13.414s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat	18.327s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses	10.883s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/events	88.055s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation	32.169s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups	17.858s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/migration	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/performance	0.363s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/portable	0.009s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/private-memory	204.082s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/purge	(cached)
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery	10.021s

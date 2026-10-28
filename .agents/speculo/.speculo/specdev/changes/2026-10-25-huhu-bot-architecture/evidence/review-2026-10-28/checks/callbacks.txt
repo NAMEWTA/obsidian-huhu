@@ -1,0 +1,2 @@
+$ node scripts/verify-promise-callbacks.mjs
+Promise callback guard passed against real Obsidian control types

@@ -128,27 +128,36 @@ func TestPreviewExpiryDoesNotMutateProfile(t *testing.T) {
 	}
 }
 
-func TestKeepGlobalMovesNamespaceToNewProfile(t *testing.T) {
+func TestProfileClearRejectsGlobalRetentionWithoutMutation(t *testing.T) {
 	s, b, cleanup := openStore(t)
 	defer cleanup()
 	ctx := context.Background()
-	id, _, _ := profileMeta(t, b)
+	id, epoch, revision := profileMeta(t, b)
 	if _, err := b.Database().ExecContext(ctx, "INSERT INTO memory_namespaces(namespace_id,profile_id,principal_id,kind,subject_id,enabled) VALUES(?,?,?,?,?,0)", "global:test", id, "global:test", "global", id); err != nil {
 		t.Fatal(err)
 	}
-	plan, err := s.Preview(ctx, app.PreviewRequest{ProfileID: id, Selection: purge.Selection{KeepGlobal: true}})
-	if err != nil {
+	_, err := s.Preview(ctx, app.PreviewRequest{ProfileID: id, Selection: purge.Selection{KeepGlobal: true}})
+	var fault *api.Fault
+	if !errors.As(err, &fault) || fault.Reason != "PROFILE_RETENTION_NOT_SUPPORTED" {
+		t.Fatalf("Profile full clear accepted unsupported global retention: %v", err)
+	}
+	var owner, principal, subject string
+	var enabled bool
+	if err = b.Database().QueryRow("SELECT profile_id,principal_id,subject_id,enabled FROM memory_namespaces WHERE namespace_id='global:test'").Scan(&owner, &principal, &subject, &enabled); err != nil {
 		t.Fatal(err)
 	}
-	res, err := s.Execute(ctx, app.ExecuteRequest{ProfileID: id, Token: plan.Token})
-	if err != nil {
+	if owner != id || principal != "global:test" || subject != id || enabled {
+		t.Fatalf("rejected retention changed namespace: owner=%q principal=%q subject=%q enabled=%t", owner, principal, subject, enabled)
+	}
+	gotID, gotEpoch, gotRevision := profileMeta(t, b)
+	if gotID != id || gotEpoch != epoch || gotRevision != revision {
+		t.Fatalf("rejected retention changed Profile: %q/%d/%d", gotID, gotEpoch, gotRevision)
+	}
+	var previews int
+	if err = b.Database().QueryRow("SELECT count(*) FROM purge_previews").Scan(&previews); err != nil {
 		t.Fatal(err)
 	}
-	var owner string
-	if err = b.Database().QueryRow("SELECT profile_id FROM memory_namespaces WHERE namespace_id='global:test'").Scan(&owner); err != nil {
-		t.Fatal(err)
-	}
-	if owner != res.ProfileID {
-		t.Fatalf("global namespace owner %q, want %q", owner, res.ProfileID)
+	if previews != 0 {
+		t.Fatalf("rejected retention created a destructive preview: %d", previews)
 	}
 }

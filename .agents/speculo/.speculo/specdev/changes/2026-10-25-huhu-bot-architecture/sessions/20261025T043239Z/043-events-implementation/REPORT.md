@@ -8,7 +8,7 @@ Status: completed
 
 交回 T04 Go 持久事件、快照恢复，以及原 T05 owner 范围内的当前 read / 到期 / 撤权投递 fence 候选。公共 Facade 已由 042 实际装配本 Service / SQLite Store，生产 stdio 出队使用同一 `WithDelivery`；不是未被消费的内部 helper。执行身份为 native `/root/credential_provider`，沿用已读 dev / SpecDev I 与 LOG066 授权，未再委派、提交、推送或发布。起始 Map11 / Goal10 后，Root 为实际物理输出与精确 message provenance 维护登记到 Map13 / Goal12；本作者不写正式状态。
 
-本轮精确写集为 6 个生产文件及 8 个测试文件，最终逐文件 SHA 在下表和 [source-snapshot.json](logs/source-snapshot.json)。未写公共 API / schema / stdio / bootstrap、SQL 迁移、Host sources/read、凭证或 Go 锁；这些接缝由原 owner 042 维护并参与联合输入。旧 003 / 005、go.mod/sum 和历史 034 报告与本轮起始摘要一致。Map / Goal / T04 Ticket 的合法维护变化在 [final-input-sha.json](logs/final-input-sha.json) 明示，未把它们误报成“全部输入未变”。
+本轮精确写集为 6 个生产文件及 8 个测试文件，最终逐文件 SHA 在下表和 source-snapshot.json（历史日志已清理：`logs/source-snapshot.json`）。未写公共 API / schema / stdio / bootstrap、SQL 迁移、Host sources/read、凭证或 Go 锁；这些接缝由原 owner 042 维护并参与联合输入。旧 003 / 005、go.mod/sum 和历史 034 报告与本轮起始摘要一致。Map / Goal / T04 Ticket 的合法维护变化在 final-input-sha.json（历史日志已清理：`logs/final-input-sha.json`） 明示，未把它们误报成“全部输入未变”。
 
 生产和测试已停写。联合全 Go 首轮发现旧大序号夹具直接跳 head、遗留中间缺口；仅在同夹具事务平移既有 accepted seq 和 head，保持合法连续后缀，原精度 / 重开断言转绿，未放宽产品 gap 校验。随后并发五包 race 及单独 events race 的 800 subject 均触发 250ms 时限；保留红灯后，Root 仅打开 events/store.go 与 history_test.go 最小窗口，先同事务缓存重复 Run 原始读取、再按有界集合批取 message provenance 并消费 042 唯一 Run batch helper，但 race 仍因重复 profile metadata 超时；Root 最后打开原 T05 私有批检查窗口，消除同事务内重复 metadata 查询，逐消息当前授权不省略，重新停写，最大门普通 / race 转绿，详见下文。所有本作者启动的命令已返回；真实 Node / Go child、stdio worker、pipe fixture 均有 Wait 和关闭路径。联合检查的最终记录在下文单独注明执行者。候选仍待 Root 固定输入及未参与实现者双轴审查，本报告不是正式 Ticket 接纳。
 
@@ -61,7 +61,7 @@ TS 联调用 inline esbuild fixture，不新增 Node 生产入口；`TestEventsR
 | `go test -mod=readonly -v ./tests/contract/events -run '^TestMaximumEightHistoryPagesDeliverySubjectsFitOneBoundedGate$' -count=1` | [15](logs/15-max-delivery-subjects.log) exit0 / 3.453s；400 实际 Run、800 持久消息授权仅 70.749065ms<250ms，最后外人消息 writer0（最终测试另加最后 missing message 同样 writer0）。运行与 Root build/lint CPU 窗口重叠但仍通过，未据此虚构吞吐基准或放宽预算 |
 | `go test -mod=readonly -v ./tests/contract/events -run '^TestTerminalCompactionCannotHideAMiddleLogGap$' -count=1` | [17](logs/17-gap-before-retention-red.log) 自有隔离副本用先前043 store 的受控反例 exit1；当前 [18](logs/18-gap-before-retention-green.log) exit0 / 0.065s |
 | `go test -mod=readonly -v ./tests/contract/events -run '^TestRunSequencesStayIndependentAboveJavaScriptIntegerRangeAndSurviveReopen$' -count=1` | 042 联合 allGo 首轮因旧 fixture 真 gap 失败，原 [19-all-go](../042-approval-implementation/logs/19-all-go.log) 保留；仅修测试连续后缀后 [19](logs/19-bigint-fixture-green.log) exit0 / 0.029s，产品未改 |
-| `go test -mod=readonly -v ./tests/contract/events -run '^TestMessageDeliveryUsesItsOwnPersistedSourceSubset$' -count=1` | 缓存修复后的原子 provenance 反例 [23](logs/23-cache-provenance-green.log) exit0 / 0.035s；精确两文件前后 SHA 在 [22](logs/22-cache-repair-before.json) / [24](logs/24-cache-repair-after.json) |
+| `go test -mod=readonly -v ./tests/contract/events -run '^TestMessageDeliveryUsesItsOwnPersistedSourceSubset$' -count=1` | 缓存修复后的原子 provenance 反例 [23](logs/23-cache-provenance-green.log) exit0 / 0.035s；精确两文件前后 SHA 在 22（历史日志已清理：`logs/22-cache-repair-before.json`） / 24（历史日志已清理：`logs/24-cache-repair-after.json`） |
 | `go test -mod=readonly -v ./tests/contract/events -run '^TestMessageDeliveryUsesItsOwnPersistedSourceSubset$' -count=1` | 最终批读消费后 [26](logs/26-batch-provenance-green.log) exit0 / 0.030s；保持 mixed message/Run 当前授权与 cache 隔离断言 |
 | `go test -mod=readonly -v ./tests/contract/events -run '^TestMaximumEightHistoryPagesDeliverySubjectsFitOneBoundedGate$' -count=1` | 最终批 metadata 方案 [28](logs/28-max-batch-deadline-normal.log) exit0 / 3.130s，实际 gate 6.764491ms；800 subject / 250ms 原断言、foreign-last 与 missing-message writer0 均保留 |
 | `CGO_ENABLED=1 go test -mod=readonly -v -race ./tests/contract/events -run '^TestMaximumEightHistoryPagesDeliverySubjectsFitOneBoundedGate$' -count=1` | [29](logs/29-max-batch-deadline-race.log) exit0 / 21.000s，实际 gate 105.477891ms，无 data race；不是抬时限、改断言或 race 跳测试 |
@@ -73,7 +73,7 @@ TS 联调用 inline esbuild fixture，不新增 Node 生产入口；`TestEventsR
 
 只读成本分析：800 message / 400 Run 在首个 cache 后仍约 2801 次 SQL（profile1、message800、Run各 metadata/read/session1200、每 subject metadata800）。Root 接受有界批读方案；043 精确两文件批 message，042 原 T03 新 `execution/delivery.go` 和 `store.go` 复用 decoder / owner ACL，中间 r4 降为常数项 batch + 800 次逐 subject 当前 metadata 检查，但 r4 race 仍 250.720647ms 超预算（[33](../042-approval-implementation/logs/33-affected-race-r4.log)）。最后 Root 放行原 T05 access.go 私有 helper 与 delivery.go / events/store.go：只去除同事务内重复不可变 metadata，逐 input 先核真实 Profile 一致，其他当前检查不缓存。无来源路径约 4 查询，最大 gate normal 6.764491ms、race 105.477891ms 双绿；有来源例仍完整验证每项当前 recipient / Grant / parent / expiry。没有新增 wire/API/schema/锁或扩大功能。
 
-最终联合 r5 由 **042 实际执行并 Wait**，本作者完整回读日志 / 摘要，不冒称自己运行。139 文件联合输入 SHA `c0950eccd0d2395833ef71a9b726b58cf3f5a1d53159985550a35df26f077b2e` 固定在 [joint-source-r5.json](../042-approval-implementation/logs/joint-source-r5.json)，与本作者最终 14 文件一致。最初 136 文件 `5c9bcc68...` 和中间 r2/r3/r4 不当作最终输入。
+最终联合 r5 由 **042 实际执行并 Wait**，本作者完整回读日志 / 摘要，不冒称自己运行。139 文件联合输入 SHA `c0950eccd0d2395833ef71a9b726b58cf3f5a1d53159985550a35df26f077b2e` 固定在 joint-source-r5.json（历史日志已清理：`../042-approval-implementation/logs/joint-source-r5.json`），与本作者最终 14 文件一致。最初 136 文件 `5c9bcc68...` 和中间 r2/r3/r4 不当作最终输入。
 
 | 042 最终命令（cwd `native/huhubot`） | 实际结果 |
 |---|---|
@@ -81,7 +81,7 @@ TS 联调用 inline esbuild fixture，不新增 Node 生产入口；`TestEventsR
 | `CGO_ENABLED=1 go test -mod=readonly -p=1 -race -v ./tests/contract/approval ./tests/contract/chat ./tests/contract/access ./tests/contract/events -count=1` | [39](../042-approval-implementation/logs/39-affected-race-r5.log) exit0；approval9.154s / chat5.622s / access6.955s / events35.867s；最终 800 gate108.12745ms<250ms，无 data race；真实 OS pipe、TS 11 观察、scope / batch 当前权限等同输入全绿 |
 | `go vet -mod=readonly ./internal/adapters/outbound/sqlite/execution ./internal/adapters/outbound/sqlite/events ./internal/adapters/outbound/sqlite/grants ./internal/application/tooling/broker ./tests/contract/approval ./tests/contract/chat ./tests/contract/access ./tests/contract/events` | [40](../042-approval-implementation/logs/40-vet-r5.log) exit0 |
 
-命令/exit/耗时汇总见 [41-r5-checks.json](../042-approval-implementation/logs/41-r5-checks.json)。042 先前 r2 全 Go / vet 及未受影响 foundation race 按影响复用；它先前五目标 CLI 编译成功，最后共享 Go 内部收敛后未重发资产，不拿编译代替目标 OS 现场 IO。Root 的全插件 build/lint 已实际 exit0、1814 项 TS/schema/工程输入前后不漂移，证据 `evidence/T-04-logs/lead-ts-build-result-r1.json` 由 Root 执行，非本作者运行。最终格式、diff、14文件无漂移 / exec 清理在 [31](logs/31-final-r5-freeze.json)；最后 metadata 修复前后 SHA 引用 042 r4 原 manifest 记录于 [32](logs/32-metadata-repair-before-after.json)。
+命令/exit/耗时汇总见 41-r5-checks.json（历史日志已清理：`../042-approval-implementation/logs/41-r5-checks.json`）。042 先前 r2 全 Go / vet 及未受影响 foundation race 按影响复用；它先前五目标 CLI 编译成功，最后共享 Go 内部收敛后未重发资产，不拿编译代替目标 OS 现场 IO。Root 的全插件 build/lint 已实际 exit0、1814 项 TS/schema/工程输入前后不漂移，证据 `evidence/T-04-logs/lead-ts-build-result-r1.json` 由 Root 执行，非本作者运行。最终格式、diff、14文件无漂移 / exec 清理在 31（历史日志已清理：`logs/31-final-r5-freeze.json`）；最后 metadata 修复前后 SHA 引用 042 r4 原 manifest 记录于 32（历史日志已清理：`logs/32-metadata-repair-before-after.json`）。
 
 
 最终本作者写集 SHA256：

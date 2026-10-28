@@ -10,9 +10,9 @@ Status: completed
 
 公共 API、canonical hash、schema / api.ts、注册与 bootstrap、原配置 pin / execution / effects / Blob / stdio 均由 052 唯一维护；054 维护 TS 消费者及独立 hash 黄金向量。本作者没有把对方代码或其验证算作自有产物。自有 011 / 012 正文由 052 注册为实际版本 6 / 7，没有改旧 SQL。ROOT-ADDENDUM 仅给原 domain/access/grants/policy.go 的 Recipient 加三个 typed string，原 exact equality、scope / expiry 授权规则保持。
 
-最终自有生产与测试为 **47 文件**，逐项 SHA、树摘要编码与停写时点见 [52-own-final-freeze-r5.json](logs/52-own-final-freeze-r5.json)，树摘要 `eaa7529b75a00d3bc364725dc3b31931b0728033dbf3356f1156bde6d6fd0b0a`。首次 43 文件冻结 [37](logs/37-own-final-freeze.json) 与取消结果修复后的 45 文件冻结 [43](logs/43-own-final-freeze-r3.json) 均保留。最后 Root 明确授权的 Reply / stopped-slot 修复相对 43 改变七个文件：collaboration/{messages,followup,reply_access,answer}.go、usage/finalize.go、delegation/{followup_test,reply_sources_test}.go；其中 reply_access.go / reply_sources_test.go 是新增窄 helper / 永久消费者回归。r4 后最后只给 answer.go 加同一来源子集校验并扩展原测试，未改 API / SQL。其他冻结实现没有顺手重写。
+最终自有生产与测试为 **47 文件**，逐项 SHA、树摘要编码与停写时点见 52-own-final-freeze-r5.json（历史日志已清理：`logs/52-own-final-freeze-r5.json`），树摘要 `eaa7529b75a00d3bc364725dc3b31931b0728033dbf3356f1156bde6d6fd0b0a`。首次 43 文件冻结 37（历史日志已清理：`logs/37-own-final-freeze.json`） 与取消结果修复后的 45 文件冻结 43（历史日志已清理：`logs/43-own-final-freeze-r3.json`） 均保留。最后 Root 明确授权的 Reply / stopped-slot 修复相对 43 改变七个文件：collaboration/{messages,followup,reply_access,answer}.go、usage/finalize.go、delegation/{followup_test,reply_sources_test}.go；其中 reply_access.go / reply_sources_test.go 是新增窄 helper / 永久消费者回归。r4 后最后只给 answer.go 加同一来源子集校验并扩展原测试，未改 API / SQL。其他冻结实现没有顺手重写。
 
-起始来源摘要见 [input-sha.json](logs/input-sha.json)。Root 的导航从 Map14/Goal13 推进到 Map16/Goal15，LOG075/076 接纳明确临时接收方、公开 hash 与预算配置，LOG079 说明 legacy limits 兼容回填；058 只给 architecture.md 补 Host 回执 / 本机认证键的数据 owner 与 docs/data.md 链接，当前 SHA `0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42`。这些是 Root 允许的外围来源 / 共享 owner 维护，不宣称全部起始来源未变；冻结 TASK 未改。
+起始来源摘要见 input-sha.json（历史日志已清理：`logs/input-sha.json`）。Root 的导航从 Map14/Goal13 推进到 Map16/Goal15，LOG075/076 接纳明确临时接收方、公开 hash 与预算配置，LOG079 说明 legacy limits 兼容回填；058 只给 architecture.md 补 Host 回执 / 本机认证键的数据 owner 与 docs/data.md 链接，当前 SHA `0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42`。这些是 Root 允许的外围来源 / 共享 owner 维护，不宣称全部起始来源未变；冻结 TASK 未改。
 
 ## 产物与验证
 
@@ -99,9 +99,9 @@ notify / question / reply 的永久 `TestNotifyDoesNotWakeQuestionReplyHasDurabl
 
 首次 joint287 / SHA `988c9ffb30a71bcbcd55623954eea3e14c52bb21bc16ae9ddf14bd49b38f70a3` 由 052 采集，原全 Go 检查保留；其中原 assistant.Tx 内 checkpoint 死锁由 052 原 owner 修复，非本作者生产变更。之后 Root 060 反例的上述同 owner 修复已重新冻结。
 
-052 的 r3 联合普通 exit0；[35-race-r3.log](../052-note-effects-go/logs/35-race-r3.log) 实际 exit1，有三项失败：原 270 事件 / 3s snapshot、原真实来源800 / 250ms 门，以及上述 stopped child_slot 窗口；没有 data-race 报告。其他七包通过不能冒称全部九包通过，完整提取见 [36](../052-note-effects-go/logs/36-race-failures-and-isolation.json)。原 270 用例同断言独立 race 通过，矩阵失败仍保留。052 在逐 SHA 外部固定副本仅去掉 adapter-only delivery Run limits 投影，原真实来源800 / 250ms race 203.733626ms 通过；其生产最小投影修复由 052 唯一维护，不是本作者文件，见 [38](../052-note-effects-go/logs/38-policy-projection-control-result.json) / [39](../052-note-effects-go/logs/39-delivery-projection-production.json)。没有改 T04、旧事件断言或投递预算，也没有缓存授权资格。
+052 的 r3 联合普通 exit0；[35-race-r3.log](../052-note-effects-go/logs/35-race-r3.log) 实际 exit1，有三项失败：原 270 事件 / 3s snapshot、原真实来源800 / 250ms 门，以及上述 stopped child_slot 窗口；没有 data-race 报告。其他七包通过不能冒称全部九包通过，完整提取见 36（历史日志已清理：`../052-note-effects-go/logs/36-race-failures-and-isolation.json`）。原 270 用例同断言独立 race 通过，矩阵失败仍保留。052 在逐 SHA 外部固定副本仅去掉 adapter-only delivery Run limits 投影，原真实来源800 / 250ms race 203.733626ms 通过；其生产最小投影修复由 052 唯一维护，不是本作者文件，见 38（历史日志已清理：`../052-note-effects-go/logs/38-policy-projection-control-result.json`） / 39（历史日志已清理：`../052-note-effects-go/logs/39-delivery-projection-production.json`）。没有改 T04、旧事件断言或投递预算，也没有缓存授权资格。
 
-最终联合 r4 由 052 采集 291 文件，SHA `5aeef292e5966d9127ad51efe7aff67448970eb80c22926e26000bd39d3ef3a0`，见 [42-joint-source-r4.json](../052-note-effects-go/logs/42-joint-source-r4.json)。相对 r3 为六个本作者路径加两个 052 delivery projection 路径，新增两个本作者文件；前后逐项 SHA 无漂移。052 实际执行 / Wait 的 [47-r4-checks.json](../052-note-effects-go/logs/47-r4-checks.json) 记录十项 exit0，本作者完整回读并引用，不冒称自己运行：
+最终联合 r4 由 052 采集 291 文件，SHA `5aeef292e5966d9127ad51efe7aff67448970eb80c22926e26000bd39d3ef3a0`，见 42-joint-source-r4.json（历史日志已清理：`../052-note-effects-go/logs/42-joint-source-r4.json`）。相对 r3 为六个本作者路径加两个 052 delivery projection 路径，新增两个本作者文件；前后逐项 SHA 无漂移。052 实际执行 / Wait 的 47-r4-checks.json（历史日志已清理：`../052-note-effects-go/logs/47-r4-checks.json`） 记录十项 exit0，本作者完整回读并引用，不冒称自己运行：
 
 | 命令 / 输入 | 实际结果 |
 |---|---|
@@ -109,15 +109,15 @@ notify / question / reply 的永久 `TestNotifyDoesNotWakeQuestionReplyHasDurabl
 | 上述四包 `go test -race -timeout=8m -p=1 -count=1 -v`，CGO1 | [44race](../052-note-effects-go/logs/44-affected-race-r4.log) exit0，wall215.283s，无 race 报告 |
 | `go test [-race] -timeout=2m -p=1 -count=1 -run '^TestDeliveryBatchMatchesSingleReaderOwnershipAndDecodeRules$' -v ./tests/contract/approval` | [45普通](../052-note-effects-go/logs/45-delivery-reader-normal-r4.log) / [45race](../052-note-effects-go/logs/45-delivery-reader-race-r4.log) 均 exit0 |
 | `go vet ./...`，CGO1 | [46vet](../052-note-effects-go/logs/46-vet-r4.log) exit0 |
-| `go build -trimpath -o <临时资产> ./cmd/huhubot`，CGO0，linux amd64/arm64、darwin amd64/arm64、windows amd64 | 五项均 exit0，仅编译未执行目标 OS；临时资产已删除，见 [清理回执](../052-note-effects-go/logs/46-build-cleanup-r4.json) |
+| `go build -trimpath -o <临时资产> ./cmd/huhubot`，CGO0，linux amd64/arm64、darwin amd64/arm64、windows amd64 | 五项均 exit0，仅编译未执行目标 OS；临时资产已删除，见 清理回执（历史日志已清理：`../052-note-effects-go/logs/46-build-cleanup-r4.json`） |
 
 最终 race 保留原门和原断言：真实单 Session / 50 个完成 Run / 100 条来源消息实际 HAP History 全部送达，gate28.115306ms；source-free800 / 400 Run 为118.226101ms；真实来源800 / 400 Run 为225.426984ms，均小于原250ms，随后事务撤权拒绝且不调用 writer。800 跨 Run 是直接测 gate 合法上界，未冒称单个跨 Session History 请求。原270事件 / 3s snapshot2.77s通过；原 root4 / Profile8 槽位压力2.75s通过，未延长等待或改断言。225.427ms 只有约24.6ms余量，记录该实际环境测量，不承诺任意机器的绝对耗时，也不以择绿抹掉旧253ms失败。
 
 最后原 owner 最小两路径增量为 answer.go 三行校验及 reply_sources_test.go 新增两个真实 Tools / CP 向量。`go -C native/huhubot test ./tests/contract/delegation -count=1 -v` 实际 [50](logs/50-delegation-answer-final-ordinary.log) exit0 / Wait，3.607s；`go -C native/huhubot test -race -timeout=6m -p=1 ./tests/contract/delegation -count=1 -v` 实际 [51](logs/51-delegation-answer-final-race.log) exit0 / Wait，46.201s。原模型 live claim / 目标与当前授权检查保持；没有更动 T04、access、policy、scanner 或平台特有实现；三行平台无关调用已由本次真实 Go 普通 / race 编译运行。按 Root 要求基于影响复用 r4 其余结果，不再跑完整 events、全 module vet 或五目标矩阵，不冒称 r4 这些命令在最后两路径新字节上重新执行。
 
-最终 r5 联合 291 文件由 052 重采，SHA `d167e50122ba1edbfdf84f9bc45144f4fa4dcf5deb1b7f656f83151257982ac9`，见 [50-joint-source-r5-final.json](../052-note-effects-go/logs/50-joint-source-r5-final.json)。相对 r4 仅上述两路径，052 的 59 项与本作者 47 项逐 SHA 均 drift=[]；本作者自有最终树及命令 / exit / Wait 见 [52](logs/52-own-final-freeze-r5.json)。公共 API / schema、两 SQL、锁及其余生产没有再次改变。
+最终 r5 联合 291 文件由 052 重采，SHA `d167e50122ba1edbfdf84f9bc45144f4fa4dcf5deb1b7f656f83151257982ac9`，见 50-joint-source-r5-final.json（历史日志已清理：`../052-note-effects-go/logs/50-joint-source-r5-final.json`）。相对 r4 仅上述两路径，052 的 59 项与本作者 47 项逐 SHA 均 drift=[]；本作者自有最终树及命令 / exit / Wait 见 52（历史日志已清理：`logs/52-own-final-freeze-r5.json`）。公共 API / schema、两 SQL、锁及其余生产没有再次改变。
 
-本作者普通红绿与所有测试子进程均已 Wait。052 串行命令也全部 Wait，052 已回读 r4 的 291 项与本作者 47 项均 drift=[]，临时成本副本 / 目标编译资产删除，见 [49清理与回读](../052-note-effects-go/logs/49-final-freeze-and-cleanup-r4.json)。本作者最后仅上述两路径增量，最终所有 writer / probe 均已停止，无自有活动进程；本报告 return 结构校验见 [54-return-validation.json](logs/54-return-validation.json)。Root 后续独立 E2E、严格 TS 消费者 / build 和双轴审查仍由其验收，不把本轮通过写成独立 review pass。
+本作者普通红绿与所有测试子进程均已 Wait。052 串行命令也全部 Wait，052 已回读 r4 的 291 项与本作者 47 项均 drift=[]，临时成本副本 / 目标编译资产删除，见 49清理与回读（历史日志已清理：`../052-note-effects-go/logs/49-final-freeze-and-cleanup-r4.json`）。本作者最后仅上述两路径增量，最终所有 writer / probe 均已停止，无自有活动进程；本报告 return 结构校验见 54-return-validation.json（历史日志已清理：`logs/54-return-validation.json`）。Root 后续独立 E2E、严格 TS 消费者 / build 和双轴审查仍由其验收，不把本轮通过写成独立 review pass。
 
 ## 问题与下一步
 

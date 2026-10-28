@@ -8,11 +8,11 @@ Status: completed
 
 交回 046 的 STD-01 / SPEC-01（来源 History 投递成本）和 STD-03 / SPEC-03（快照消息来源）修复候选；STD-02 / SPEC-02 的 EventClient 生产修复由 049 原 TS owner 完成，本作者只维护正式授权的 Go `ts_test.go` 真实联调。执行身份为 native `/root/credential_provider`，复用 dev / SpecDev I、当前 Map13 / Goal12 及 048 TASK。未再委派、提交、推送、发布或修改正式状态。
 
-完整回读 046 最终两轴 REPORT、三个原始失败日志和两个 Go probe / 大事件消费者源码。046 REPORT SHA 为 `6d5f6e72de4379fee1dbae92c71ba808cdb5e940c1ba78de7af862217e49588d`，原候选输入 `a129b2b03c62625b541392a92321f9cf16d74383d2de85dbd3c3b44f92339371`。自有隔离副本 `/tmp/huhu-source-delivery-048/repo/native/huhubot` 从 reviewer 只读副本复制；132 个 native 输入与当前起始文件逐项一致、两个正式 probe 逐字节一致，证据 [01](logs/01-copy-integrity.json)。没有改原 046 报告、原 probe 或原临时目录。
+完整回读 046 最终两轴 REPORT、三个原始失败日志和两个 Go probe / 大事件消费者源码。046 REPORT SHA 为 `6d5f6e72de4379fee1dbae92c71ba808cdb5e940c1ba78de7af862217e49588d`，原候选输入 `a129b2b03c62625b541392a92321f9cf16d74383d2de85dbd3c3b44f92339371`。自有隔离副本 `/tmp/huhu-source-delivery-048/repo/native/huhubot` 从 reviewer 只读副本复制；132 个 native 输入与当前起始文件逐项一致、两个正式 probe 逐字节一致，证据 01（历史日志已清理：`logs/01-copy-integrity.json`）。没有改原 046 报告、原 probe 或原临时目录。
 
-仅写 TASK 列出的 8 个文件（4 生产、4 测试），无新 helper 文件、迁移、公开 DTO/Port、schema、锁或依赖。原 T03 execution scanner/batch helper保持冻结。生产/测试已停写，8 文件与最终普通/race/vet开始时摘要无漂移，全部进程 Wait；精确差异 [repair.diff](logs/repair.diff)、起始/最终 SHA [input-sha.json](logs/input-sha.json) / [source-snapshot.json](logs/source-snapshot.json) / [18](logs/18-final-freeze.json)。候选待 Root 固定联合 r2、Lead 回放和 050 独立审查，不当作正式双轴 pass 或全票 done。
+仅写 TASK 列出的 8 个文件（4 生产、4 测试），无新 helper 文件、迁移、公开 DTO/Port、schema、锁或依赖。原 T03 execution scanner/batch helper保持冻结。生产/测试已停写，8 文件与最终普通/race/vet开始时摘要无漂移，全部进程 Wait；精确差异 repair.diff（历史日志已清理：`logs/repair.diff`）、起始/最终 SHA input-sha.json（历史日志已清理：`logs/input-sha.json`） / source-snapshot.json（历史日志已清理：`logs/source-snapshot.json`） / 18（历史日志已清理：`logs/18-final-freeze.json`）。候选待 Root 固定联合 r2、Lead 回放和 050 独立审查，不当作正式双轴 pass 或全票 done。
 
-18 的汇总命令实际 exit1：仅 Root-owned `goal-plan.md` 的起止 checkpoint 改变，`unchanged:false` 原样保留。Root 已实际确认 `/tmp/huhu-record-events-review-failure.mjs` 更新 046 回修导航，仍 Map13/Goal12，未启 Map14；见 [20](logs/20-navigation-change-classification.json)。这不是源码漂移或产品失败，也不宣称全规范来源未变。8 源码/测试、冻结锁、原 execution helper、046 REPORT/两 probe/TASK未变；049 两 TS SHA 在18明确单独登记。
+18 的汇总命令实际 exit1：仅 Root-owned `goal-plan.md` 的起止 checkpoint 改变，`unchanged:false` 原样保留。Root 已实际确认 `/tmp/huhu-record-events-review-failure.mjs` 更新 046 回修导航，仍 Map13/Goal12，未启 Map14；见 20（历史日志已清理：`logs/20-navigation-change-classification.json`）。这不是源码漂移或产品失败，也不宣称全规范来源未变。8 源码/测试、冻结锁、原 execution helper、046 REPORT/两 probe/TASK未变；049 两 TS SHA 在18明确单独登记。
 
 ## 产物与验证
 
@@ -28,7 +28,7 @@ Grant JSON 的单读/批读共用 scanner / decoder，完整 `recipient_json` �
 
 **TS消费者。** 只读消费049冻结生产 `event-client.ts` SHA `9976369d282bb08345d597d79489647e1200d7fdcfff63a9b87e2135b51852b2` 与其测试 SHA `58324e7d050a833012a0cb5dfe2434564f1e33b44fdc816bcaeac71ea73277fb`。永久Go fake Engine发出单个65000、65536、控制字符/引号/反斜杠混合65536 UTF8 bytes，以及带真实Source metadata的65536事件。生产EventClient/HapConnection/HostReadService ↔ Go bootstrap/stdio/Executor/SQLite 全链最终均seq5/succeeded、正文exact，下一refresh不重复，并用已有524288页RPC作对照；原11项权限/Broker/Cancel/BigInt行为仍通过，合计15观察。
 
-旧TS生产已先打包固定 [05](logs/05-old-ts-bundle.log) / [摘要](logs/old-ts-bundle-sha.json)，再由真实Go child执行新永久fixture；[07](logs/07-large-old-ts-red.log) Node实际exit126，65000对照先通过，65536四次refresh在seq3/running与paused/seq0/EVENT_PAGE_TOO_SMALL之间重复。因断言早退，旧TS红中尚未执行escaped/Source后续向量，不冒称四项都红；新TS最终四项及其余11项全真。旧bundle仍可回读，不受049后续生产写入影响。
+旧TS生产已先打包固定 [05](logs/05-old-ts-bundle.log) / 摘要（历史日志已清理：`logs/old-ts-bundle-sha.json`），再由真实Go child执行新永久fixture；[07](logs/07-large-old-ts-red.log) Node实际exit126，65000对照先通过，65536四次refresh在seq3/running与paused/seq0/EVENT_PAGE_TOO_SMALL之间重复。因断言早退，旧TS红中尚未执行escaped/Source后续向量，不冒称四项都红；新TS最终四项及其余11项全真。旧bundle仍可回读，不受049后续生产写入影响。
 
 永久新增/扩展入口：
 
@@ -59,7 +59,7 @@ Grant JSON 的单读/批读共用 scanner / decoder，完整 `recipient_json` �
 | repo根 `node scripts/verify-huhu-bot-architecture.mjs` | [19](logs/19-architecture.log) exit0，38 production files checked |
 | scoped `git diff --check` / `gofmt -l` / 8文件起止核对 | 18内格式/差异检查均exit0、无格式输出、源码drift[]；外围Goal变化导致汇总exit1已按20分类，未改写原观察 |
 
-最终命令汇总 [final-checks-r2.json](logs/final-checks-r2.json)。Root已报告独占间隙全插件build39.787s/lint73.385s均exit0、TS/工程漂移[]且Wait；这是Root执行，非本作者重跑。未额外重复全Go/平台资产/旧凭证探针，不用无来源800绿代替来源性能。
+最终命令汇总 final-checks-r2.json（历史日志已清理：`logs/final-checks-r2.json`）。Root已报告独占间隙全插件build39.787s/lint73.385s均exit0、TS/工程漂移[]且Wait；这是Root执行，非本作者重跑。未额外重复全Go/平台资产/旧凭证探针，不用无来源800绿代替来源性能。
 
 最终8文件SHA256（以 `native/huhubot/` 为根，原值及bytes见18）：
 

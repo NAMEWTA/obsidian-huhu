@@ -335,9 +335,13 @@ export async function launchManagedBotSession(
 	client: { name: string; version: string },
 	callOptions?: CallOptions,
 	limits?: ConnectionLimits,
+	onLaunch?: (transport: Pick<DesktopHapTransport, 'close' | 'exited'>) => void,
 ): Promise<{ client: BotClient; credentials: DesktopCredentialClient; exited: Promise<void>; close(): void }> {
+	if (callOptions?.signal?.aborted) throw new Error('HUHUBOT_RUNTIME_CLOSED');
 	const transport = await DesktopHapTransport.launch({ ...options, credentialChannel: true });
 	try {
+		onLaunch?.(transport);
+		if (callOptions?.signal?.aborted) throw new Error('HUHUBOT_RUNTIME_CLOSED');
 		const bot = await new HapConnection(transport, {
 			after: (ms, run) => { const timer = setTimeout(run, ms); return () => clearTimeout(timer); },
 		}, limits).connect(client, callOptions);

@@ -315,6 +315,9 @@ func (s *Store) Mutate(ctx context.Context, m app.Mutation) (app.MutationResult,
 	}
 	defer func() { <-s.deliveryGate }()
 	e := s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+		if err := base.CheckDataAdmission(ctx, tx); err != nil {
+			return err
+		}
 		p, e := metadata(ctx, tx, m.Meta.ProfileID)
 		if e != nil {
 			return e

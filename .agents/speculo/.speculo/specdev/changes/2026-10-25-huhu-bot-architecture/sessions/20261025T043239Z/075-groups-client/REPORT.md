@@ -29,7 +29,7 @@ Status: completed
 
 ### 自有实现与源码冻结
 
-逐文件完整摘要在 [最终输入manifest](logs/37-final-inputs.json)（SHA `aa29a3edf3a513d2f3bae083fbd915177a3df0affd587fce6e2f1c3dfd0341e6`）：
+逐文件完整摘要在 最终输入manifest（历史日志已清理：`logs/37-final-inputs.json`）（SHA `aa29a3edf3a513d2f3bae083fbd915177a3df0affd587fce6e2f1c3dfd0341e6`）：
 
 | 自有文件 | SHA256 |
 | --- | --- |
@@ -48,17 +48,17 @@ Status: completed
 - `core/events/transcript` 只接纳服务器已发布History；以Decimal/BigInt公共seq排序/去重，允许过滤导致的seq空洞，不借消息ID或Run事件seq猜公开顺序。相同ID/seq可被后续授权读取明确替换/去除正文；跨Session/冲突seq拒绝。窗口最多512条/1MiB，满额明确停在原opaque cursor，用户可显式重置窗口继续，未删除持久历史事实。
 - `EventClient` 保留原64KiB默认页→仅精确EVENT_PAGE_TOO_SMALL补一次512KiB、正文/投影/frame限额、EOF/lease/取消/晚页等既有行为。attach接纳从真实Run传来的revision；更高revision完整proof严格superset会abort旧页、清旧正文，100个tuple逐个核当前成员代，旧revision不覆盖，等revision不同proof和任何subset/旧代替换拒绝。成员fingerprint变化时全群Run流先变unknown并清空/abort，避免本地尚不知道的新私有依赖被移除后残留正文；合法兄弟refresh先runs.get当前proof再tail0。实际Snapshot中的Run也执行相同revision/proof规则，较旧或冲突snapshot不能覆盖缓存。已知失效proof保持denied，重加入新incarnation也不复活旧Run；没有取消仍有效兄弟任务。
 - `permissionsChanged()`/History权限拒绝/连接和Profile变化清公开缓存及该群Run流；成员移除本身保留已合法公开History。未来T21需要连接实际权限/Session更新事件到这些现有消费者接缝，不能把公开缓存视为免撤权。
-- managed.ts仅新增有限安全原因 `PROFILE_MIGRATION_FOREIGN_KEY_FAILED`，保留未知stderr/正文/路径抑制，未改进程生命周期、参数、环境或凭证。[完整单行diff](logs/38-managed-one-line.diff)。
+- managed.ts仅新增有限安全原因 `PROFILE_MIGRATION_FOREIGN_KEY_FAILED`，保留未知stderr/正文/路径抑制，未改进程生命周期、参数、环境或凭证。完整单行diff（历史日志已清理：`logs/38-managed-one-line.diff`）。
 
 T21真实composer交接：处于@候选交互中的未决项必须保留显式pending/invalid token（例如空agentId），阻止发送并保留草稿；用户明确把它作为普通文本后才不算token。core不会用正则一律拦截裸@；当前测试分别证明普通文本与显式空ID token的不同处理。本票未跨写UI、module激活、Host/source/receipt适配器或资产。
 
 ### 研究来源与复用决定
 
-按AGENTS陌生能力先检索，比较维护活跃、许可明确的[Tiptap mention](https://github.com/ueberdosis/tiptap/blob/242a44e16d77e0773678811142edc612f9aced15/packages/extension-mention/src/mention.ts)（固定commit `242a44e16d77e0773678811142edc612f9aced15`、对应文件活动2026-08-26、MIT）及Lexical官方MentionNode。采用稳定身份/显示文本分离与明确选择token思路；[上游复制粘贴问题4845](https://github.com/ueberdosis/tiptap/issues/4845)说明正文不保证保留token元数据，故本实现检查显式token文本/range。没有引入编辑器框架、依赖或复制上游代码，未执行上游。具体URL/许可摘要/比较见 [research-mentions.json](logs/research-mentions.json)、[固定commit观察](logs/mention-commit.json)。
+按AGENTS陌生能力先检索，比较维护活跃、许可明确的[Tiptap mention](https://github.com/ueberdosis/tiptap/blob/242a44e16d77e0773678811142edc612f9aced15/packages/extension-mention/src/mention.ts)（固定commit `242a44e16d77e0773678811142edc612f9aced15`、对应文件活动2026-08-26、MIT）及Lexical官方MentionNode。采用稳定身份/显示文本分离与明确选择token思路；[上游复制粘贴问题4845](https://github.com/ueberdosis/tiptap/issues/4845)说明正文不保证保留token元数据，故本实现检查显式token文本/range。没有引入编辑器框架、依赖或复制上游代码，未执行上游。具体URL/许可摘要/比较见 research-mentions.json（历史日志已清理：`logs/research-mentions.json`）、固定commit观察（历史日志已清理：`logs/mention-commit.json`）。
 
 ### 真实红灯、修正与最终检查
 
-完整实际exit/Wait与观察汇总见 [36-checks.json](logs/36-checks.json)，原始失败没有抹除：
+完整实际exit/Wait与观察汇总见 36-checks.json（历史日志已清理：`logs/36-checks.json`），原始失败没有抹除：
 
 | 日志 | 实际观察/退出码 |
 | --- | --- |
@@ -83,13 +83,13 @@ GroupClient就近测试使用真实生产HapConnection+严格framed peer，证�
 
 ### 启动安全原因的实际边界
 
-Root提供只读真实v7 Profile/完整DB+5CP，manifest SHA `33638a60e3e0619eb4f4f6c6e9e5f251d0ee4f5e132a993eb2bc90202caf1dae`。本作者逐SHA确认原6文件后，独立复制到自有临时managed root，保留0700/0600；只在副本关闭foreign_keys后注入一条conversation_messages.session_id孤儿。实际临时Go CLI构建exit0，binary SHA `a70471a1024c445b2d559d39b0e6ffcb041ddb9d26043ab24addd9285a5564cb`；原始来源和临时输入在 [22-managed-inputs.json](logs/22-managed-inputs.json)。未篡改原件，也没有用hardlink。
+Root提供只读真实v7 Profile/完整DB+5CP，manifest SHA `33638a60e3e0619eb4f4f6c6e9e5f251d0ee4f5e132a993eb2bc90202caf1dae`。本作者逐SHA确认原6文件后，独立复制到自有临时managed root，保留0700/0600；只在副本关闭foreign_keys后注入一条conversation_messages.session_id孤儿。实际临时Go CLI构建exit0，binary SHA `a70471a1024c445b2d559d39b0e6ffcb041ddb9d26043ab24addd9285a5564cb`；原始来源和临时输入在 22-managed-inputs.json（历史日志已清理：`logs/22-managed-inputs.json`）。未篡改原件，也没有用hardlink。
 
 [23观察](logs/23-managed-red.log)仅证明旧allowlist抑制此真实启动失败，不能证明它原本就是新FK原因；[24原绿预期失败](logs/24-managed-green.log)保留exit126。只读核实的真实CLI输出为CONFLICT/PROFILE_BACKUP_FAILED、stdout0：`CompleteMigrationBackup`在013迁移之前全库PRAGMA foreign_key_check，旧库孤儿触发CHECKPOINT_ASSOCIATION_INVALID后被包装成PROFILE_BACKUP_FAILED，完整CP不能绕过该先验保护。073和Root均确认不放宽备份检查；013内生FK/rollback由073在成功备份后受控注入的永久Go测试负责。该实际CLI不是新FK原因透传绿证据。
 
-另用 [controlled-startup-probe.mjs](logs/controlled-startup-probe.mjs) 启动真正受控可执行子进程，经过生产DesktopHapTransport/HapConnection与launchBotClient，明确只替代进程输出的启动stderr，不冒充真实013迁移。固定旧bundle/new bundle各测试known reason/unknown reason，四观察全通过：[28-controlled-startup.log](logs/28-controlled-startup.log)、[结果JSON](logs/28-controlled-startup.json)。旧版抑制新原因，新版只透传 `CONFLICT: PROFILE_MIGRATION_FOREIGN_KEY_FAILED`；未知reason/私有路径正文仍抑制；所有公共launcher及直接transport流程都await退出。中途初稿probe在等待exit前读取startupError，会先见STDIN_WRITE_FAILED；已修正自有观察脚本为Wait后选startupError，与现有公共launcher一致，没有改生产生命周期。
+另用 controlled-startup-probe.mjs（历史日志已清理：`logs/controlled-startup-probe.mjs`） 启动真正受控可执行子进程，经过生产DesktopHapTransport/HapConnection与launchBotClient，明确只替代进程输出的启动stderr，不冒充真实013迁移。固定旧bundle/new bundle各测试known reason/unknown reason，四观察全通过：[28-controlled-startup.log](logs/28-controlled-startup.log)、结果JSON（历史日志已清理：`logs/28-controlled-startup.json`）。旧版抑制新原因，新版只透传 `CONFLICT: PROFILE_MIGRATION_FOREIGN_KEY_FAILED`；未知reason/私有路径正文仍抑制；所有公共launcher及直接transport流程都await退出。中途初稿probe在等待exit前读取startupError，会先见STDIN_WRITE_FAILED；已修正自有观察脚本为Wait后选startupError，与现有公共launcher一致，没有改生产生命周期。
 
-[40初始输入比较](logs/40-start-input-comparison.json)表明原19输入中只出现本票允许的两个EventClient文件和073拥有的API/schema/共享fixture变化，其余14项只读输入未变；managed原文件另存before副本及单行diff。最终manifest再次核Root原6文件SHA完全不变。所有自有Vitest/tsc/lint/架构/CLI/受控startup子进程已实际Wait，当前无自有活跃产品或检查进程。
+40初始输入比较（历史日志已清理：`logs/40-start-input-comparison.json`）表明原19输入中只出现本票允许的两个EventClient文件和073拥有的API/schema/共享fixture变化，其余14项只读输入未变；managed原文件另存before副本及单行diff。最终manifest再次核Root原6文件SHA完全不变。所有自有Vitest/tsc/lint/架构/CLI/受控startup子进程已实际Wait，当前无自有活跃产品或检查进程。
 
 ## 问题与下一步
 

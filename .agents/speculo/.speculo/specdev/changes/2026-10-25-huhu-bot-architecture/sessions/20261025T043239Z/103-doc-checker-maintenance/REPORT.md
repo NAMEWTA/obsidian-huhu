@@ -12,7 +12,7 @@ Status: completed
 
 执行范围来自 Map25/Goal24 和冻结 TASK，SHA-256 为 `cbd0ddfd727a6e3d50f49777244cfa134e87d01697072706ef2538790aa452bd`。工作区为既有 `NAMEWTA/bot` current 目录，HEAD/base `33c21e098ef3188cbab5a09f3e0a01fadb787715`；沿用 SpecDev I、dev/testing/文档规则，原 owner /root/build_integration。Root 原生确认 100 继续持唯一 Go 窗、没有其它重检查，并明确批准本次两个轻量 Vitest 与 docs；本票没有调用 Go、全仓 build/lint 或插件重建，没有新依赖、原输入改写或正式状态维护。
 
-自有写集和逐字节前后摘要如下；真实 before 内容在 `logs/before/`，完整差异在 [04-owned-change.patch](logs/04-owned-change.patch)，产品及只读输入清单见 [final-inputs.json](final-inputs.json)，所有本任务工件摘要见 [artifact-manifest.json](artifact-manifest.json)。
+自有写集和逐字节前后摘要如下；真实 before 内容在 `logs/before/`，完整差异在 04-owned-change.patch（历史日志已清理：`logs/04-owned-change.patch`），产品及只读输入清单见 [final-inputs.json](final-inputs.json)，所有本任务工件摘要见 [artifact-manifest.json](artifact-manifest.json)。
 
 | 文件 | before SHA-256 | after SHA-256 |
 |---|---|---|

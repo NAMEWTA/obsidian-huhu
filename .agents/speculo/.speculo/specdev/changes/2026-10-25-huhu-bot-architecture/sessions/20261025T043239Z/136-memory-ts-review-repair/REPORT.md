@@ -23,10 +23,10 @@ Status: completed
 
 - 三控制的SourceID最大分别424/434/464 UTF8 bytes，均≤512；值前后深比较保持不变，每次finally close。此为生产TS客户端与受控wire对端的真实消费，不是实际SQL/Vault producer执行；没有超限值偷偷转成功或提高整页预算。
 - hostLeaseEpoch正控1与9223372036854775807，反控0/01/9223372036854775808/20位数字；MemoryBody的SourceRefs、SourceScopes及context标签全部覆盖。非Memory host.read的原schema仍允许0形状，**这不是Host当前授权通过的证明**；MemoryJob的inputTokens/outputTokens=`"0"`继续合法。131目录修订号回归保持。
-- [06-test-types.json](logs/06-test-types.json)：`node node_modules/typescript/bin/tsc --skipLibCheck -p tsconfig.test.json` actual exit0/Wait，24.55s，输入漂移`[]`，覆盖新增测试和导入的真实生产消费者。本次没有签名/类型变化，不重复运行不变生产tsc。测试和格式化直接使用已安装Node工具，没有安装、改锁或绕过TTY进行自动安装。
+- 06-test-types.json（历史日志已清理：`logs/06-test-types.json`）：`node node_modules/typescript/bin/tsc --skipLibCheck -p tsconfig.test.json` actual exit0/Wait，24.55s，输入漂移`[]`，覆盖新增测试和导入的真实生产消费者。本次没有签名/类型变化，不重复运行不变生产tsc。测试和格式化直接使用已安装Node工具，没有安装、改锁或绕过TTY进行自动安装。
 - [source-manifest.json](source-manifest.json)固定2自有源、1645只读TS/config/resource输入，共1647，tree `06b63507ff30514d1c89c3cc066bcf730bee6fdfad53eee5c199096bf7c8718b`；各检查与最终核对漂移`[]`。API仍`78948204281914149059429b3e0250143e41efa73642d985c2e31e544cfa0a17`，schema仍`2fd592f7a503004b5b315f0becf1fc1ad9e8266aff46bfc12e2473fe73e3a615`。独立Node闭包不读取/执行当前Go writer的输出。
-- 133 REPORT、10探针与原预算结果仅只读，SHA记在[01-baseline-inputs.json](logs/01-baseline-inputs.json)，最终漂移`[]`；其三预算摘要另存[01-review-budget-observations.json](logs/01-review-budget-observations.json)。127原29工件、131原18工件逐SHA核对均未变，各原artifact-manifest本身未变。原始136基线、最终增量diff与红绿日志仅写自有目录；没有改133审查结论。
-- 实际return结构校验见[07-return.json](logs/07-return.json)，不代替行为验证或Root复审。
+- 133 REPORT、10探针与原预算结果仅只读，SHA记在01-baseline-inputs.json（历史日志已清理：`logs/01-baseline-inputs.json`），最终漂移`[]`；其三预算摘要另存01-review-budget-observations.json（历史日志已清理：`logs/01-review-budget-observations.json`）。127原29工件、131原18工件逐SHA核对均未变，各原artifact-manifest本身未变。原始136基线、最终增量diff与红绿日志仅写自有目录；没有改133审查结论。
+- 实际return结构校验见07-return.json（历史日志已清理：`logs/07-return.json`），不代替行为验证或Root复审。
 
 ## 问题与下一步
 

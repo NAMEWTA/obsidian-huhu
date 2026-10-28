@@ -25,6 +25,17 @@ function fixture() {
 	return { sources, app, files, contents, read, leaf, view, setEditor: (text: string) => { editorValue = text; } };
 }
 
+it('preserves captured content through renewal of the same live Host lease', async () => {
+	const current = fixture();
+	try {
+		const source = await current.sources.captureSelection(current.view);
+		current.sources.setLease({ ...lease, expiresAt: '2099-01-01T00:05:00Z' });
+		await expect(current.sources.readSnapshot(source, new AbortController().signal)).resolves.toMatchObject({ text: 'first', source });
+		current.sources.setLease({ ...lease, leaseId: 'lease:other' });
+		await expect(current.sources.readSnapshot(source, new AbortController().signal)).rejects.toThrow('SOURCE_SNAPSHOT_INVALID');
+	} finally { current.sources.dispose(); }
+});
+
 it('pins an explicit unsaved selection before async work and ignores later focus/content changes', async () => {
 	const current = fixture();
 	try {

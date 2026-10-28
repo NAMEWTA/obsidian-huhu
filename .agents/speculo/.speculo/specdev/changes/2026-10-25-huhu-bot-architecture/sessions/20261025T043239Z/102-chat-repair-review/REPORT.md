@@ -14,9 +14,9 @@ Reviewer: native:/root/recovery_review。我未参与100/101/103实现，已原�
 
 ## 固定输入与复用边界
 
-正式来源 `evidence/T-08.md#review-input-chat-r2`，Input-SHA256 `d0f13ca8b86a1c8defdd8e93d9626556c90b426351193ee1d16e4569c6a31768`。通过原 `reviewInputDigest` 对scope/sources/exclusions计算，与冻结值一致；28来源含anchor的实际文本逐SHA全部匹配，[来源复核](logs/03-sources.json)。TASK SHA256 `5fce8d96e2bdcb4bcd165127acf6818a0a37106fa116621048c8781f3816784c`。
+正式来源 `evidence/T-08.md#review-input-chat-r2`，Input-SHA256 `d0f13ca8b86a1c8defdd8e93d9626556c90b426351193ee1d16e4569c6a31768`。通过原 `reviewInputDigest` 对scope/sources/exclusions计算，与冻结值一致；28来源含anchor的实际文本逐SHA全部匹配，来源复核（历史日志已清理：`logs/03-sources.json`）。TASK SHA256 `5fce8d96e2bdcb4bcd165127acf6818a0a37106fa116621048c8781f3816784c`。
 
-base/HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`，branch `NAMEWTA/bot`，首尾index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494`。2018文件字节/模式无漂移；外部副本303原文件无漂移。[初始输入](logs/00-input.json)、[最终输入与前轮比较](logs/10-final-input.json)。用原resolveReviewScope重新生成完整working-tree范围，按正式validator同样规则只排除范围外编排文件引起的excluded_paths/inventory/input汇总变化，余scope完整相同，[正式范围复核](logs/09-formal-scope.json)。这里使用正式reviewInputDigest，不混用原098的自定义文件表SHA。
+base/HEAD `33c21e098ef3188cbab5a09f3e0a01fadb787715`，branch `NAMEWTA/bot`，首尾index SHA256 `d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494`。2018文件字节/模式无漂移；外部副本303原文件无漂移。初始输入（历史日志已清理：`logs/00-input.json`）、最终输入与前轮比较（历史日志已清理：`logs/10-final-input.json`）。用原resolveReviewScope重新生成完整working-tree范围，按正式validator同样规则只排除范围外编排文件引起的excluded_paths/inventory/input汇总变化，余scope完整相同，正式范围复核（历史日志已清理：`logs/09-formal-scope.json`）。这里使用正式reviewInputDigest，不混用原098的自定义文件表SHA。
 
 与098共同2011文件中只有7项变化（6个Go生产、1既有测试）；新增入scope7项为3个新Go测试和103的4文件。21个旧全票/编排输入退出产品范围，由稳定behavior-scope/acceptance来源anchor及正式instructions替代，避免正式状态自指，并非缩减生产闭包。8生产/脚本与6测试的本轮差异均已回读。其余默认装配、SDK/锁、预算、权限/取消/Host、许可来源及原底座按相同字节与实际影响复用098的完整独立审查；未用原pass覆盖新变化。
 
@@ -72,13 +72,13 @@ Root r4已重新构建当前Go CLI及TS/HAP探针，1988输入SHA `35d4e3d2ddcad
 
 | 检查 | 实际结果 | 证据 |
 | --- | --- | --- |
-| 首次独立normal | actual1 / Wait，2.820s；坏Intent和gzip三控制通过，正常CP误期待ready，被真实CREDENTIAL_MISSING拒绝；探针前提错误，非产品finding | [原探针](logs/01-probe.go.txt)、[原始log](logs/02-normal.log)、[结果](logs/02-normal.json) |
-| 修正前提后的独立normal | 两顶层/五控制，actual0 / Wait，1.167s；未改产品 | [修正探针](logs/04-probe-r2.go.txt)、[log](logs/05-normal-r2.log)、[结果](logs/05-normal-r2.json) |
-| 相同独立探针race | actual0 / Wait，8.334s，CGO1，无race诊断；五控制与清理全部通过 | [log](logs/06-race.log)、[结果](logs/06-race.json) |
-| 定向Go vet | common/chat/sqlite execution/Broker/api，actual0 / Wait，0.270s | [结果](logs/07-vet.json)、[空log](logs/07-vet.log) |
-| 仓库架构 | actual0 / Wait，57 production files，0.458s | [结果](logs/08-architecture.json)、[log](logs/08-architecture.log) |
-| 正式scope与来源 | resolveReviewScope比较一致；28来源实际anchor/文件摘要一致 | [scope](logs/09-formal-scope.json)、[来源](logs/03-sources.json) |
-| 最终固定输入 | 2018字节/模式、303原副本、HEAD/index无漂移，9份报告SHA与真实接收凭据匹配 | [最终记录](logs/10-final-input.json) |
+| 首次独立normal | actual1 / Wait，2.820s；坏Intent和gzip三控制通过，正常CP误期待ready，被真实CREDENTIAL_MISSING拒绝；探针前提错误，非产品finding | 原探针（历史日志已清理：`logs/01-probe.go.txt`）、[原始log](logs/02-normal.log)、结果（历史日志已清理：`logs/02-normal.json`） |
+| 修正前提后的独立normal | 两顶层/五控制，actual0 / Wait，1.167s；未改产品 | 修正探针（历史日志已清理：`logs/04-probe-r2.go.txt`）、[log](logs/05-normal-r2.log)、结果（历史日志已清理：`logs/05-normal-r2.json`） |
+| 相同独立探针race | actual0 / Wait，8.334s，CGO1，无race诊断；五控制与清理全部通过 | [log](logs/06-race.log)、结果（历史日志已清理：`logs/06-race.json`） |
+| 定向Go vet | common/chat/sqlite execution/Broker/api，actual0 / Wait，0.270s | 结果（历史日志已清理：`logs/07-vet.json`）、[空log](logs/07-vet.log) |
+| 仓库架构 | actual0 / Wait，57 production files，0.458s | 结果（历史日志已清理：`logs/08-architecture.json`）、[log](logs/08-architecture.log) |
+| 正式scope与来源 | resolveReviewScope比较一致；28来源实际anchor/文件摘要一致 | scope（历史日志已清理：`logs/09-formal-scope.json`）、来源（历史日志已清理：`logs/03-sources.json`） |
+| 最终固定输入 | 2018字节/模式、303原副本、HEAD/index无漂移，9份报告SHA与真实接收凭据匹配 | 最终记录（历史日志已清理：`logs/10-final-input.json`） |
 
 全部Go命令固定Go1.26.10、GOWORK=off、GOFLAGS=-mod=readonly、GOEXPERIMENT空；normal/vet CGO0，race CGO1。没有全模块/旧大队列重跑，没有用户真实凭证或keyring操作。所有测试子进程真实Wait；SDK/body/settlement以及显式注入Engine/Core均实际停止、Done；服务器/transport由cleanup收尾，无未结束进程。记录脚本outer0不覆盖Go首轮actual1。
 

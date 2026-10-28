@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import fixtures from '../../../../../contracts/hap/v0.1/fixtures/methods.json';
+import methods from '../../../../../contracts/hap/v0.1/methods.json';
 import type { BotMethod } from '../../api';
 import { MethodValidation } from './method-validation';
 import frames from '../../../../../contracts/hap/v0.1/fixtures/golden.json';
@@ -16,10 +17,10 @@ it('validates the complete shared method corpus against the sole version schema'
 		expect(JSON.stringify(value), fixture.name).toBe(before);
 		names.add(`${method}.${part}`);
 	}
-	expect(names.size).toBe(144);
-	expect(validation.compiledCount).toBe(144);
+	expect(names.size).toBe(Object.keys(methods.methods).length * 2);
+	expect(validation.compiledCount).toBe(names.size);
 	expect(validation.validate('unregistered.method' as BotMethod, 'params', {})).toBe(false);
-	expect(validation.compiledCount).toBe(144);
+	expect(validation.compiledCount).toBe(names.size);
 });
 
 it('compiles a method part only when first used and never coerces or removes input', () => {

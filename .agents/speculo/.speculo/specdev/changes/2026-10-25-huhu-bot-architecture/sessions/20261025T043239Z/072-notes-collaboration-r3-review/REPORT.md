@@ -77,9 +77,9 @@ Observed: SPEC-070-01关闭；两种合法调度均保护原槽位、CP和真实
 | 外部CP正文负向，CGO0，仅选择`/four-leaves-before-last-parents$` | Go exit1，包0.206s，预期检查阻止通过 |
 | 外部真实配置pin删除负向，同一选择 | Go exit1，包0.124s，预期原pin断言失败 |
 
-负向完整命令、返回及实际Wait在 [negative-results.json](logs/negative-results.json)，执行器 [negative-controls.py](probes/negative-controls.py) exit0只表示两次预期红均验证成功；没有把Go exit1改写成Go绿。所有外部差异、原测试字节和变体保存在 [probes](probes/)。结束时外部测试已恢复当前冻结字节，209项native/contract精确副本核验一致。
+负向完整命令、返回及实际Wait在 negative-results.json（历史日志已清理：`logs/negative-results.json`），执行器 [negative-controls.py](probes/negative-controls.py) exit0只表示两次预期红均验证成功；没有把Go exit1改写成Go绿。所有外部差异、原测试字节和变体保存在 [probes](probes/)。结束时外部测试已恢复当前冻结字节，209项native/contract精确副本核验一致。
 
-初次/末次固定输入核验：[input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、[input.json](logs/input.json)、[核验脚本](probes/check-input.mjs)。脚本排除新报告造成的excluded inventory元数据，不排除选定产品或来源。Root [r3复用回执](../../../evidence/T-07-logs/lead-note-repair-r3-reuse.json)明确没有新跑产品E2E；本review逐SHA重新核对作者265、Root当前2032、插件1867及main.js/styles.css，全部一致，Root r2→r3恰一处测试差异。结果见 [reuse-readback.json](logs/reuse-readback.json)。原生产E2E、151TS/build/lint、迁移及无影响平台矩阵按该闭包复用，没有本轮重新执行的主张。
+初次/末次固定输入核验：[input-start.log](logs/input-start.log)、[input-final.log](logs/input-final.log)、input.json（历史日志已清理：`logs/input.json`）、[核验脚本](probes/check-input.mjs)。脚本排除新报告造成的excluded inventory元数据，不排除选定产品或来源。Root [r3复用回执](../../../evidence/T-07-logs/lead-note-repair-r3-reuse.json)明确没有新跑产品E2E；本review逐SHA重新核对作者265、Root当前2032、插件1867及main.js/styles.css，全部一致，Root r2→r3恰一处测试差异。结果见 reuse-readback.json（历史日志已清理：`logs/reuse-readback.json`）。原生产E2E、151TS/build/lint、迁移及无影响平台矩阵按该闭包复用，没有本轮重新执行的主张。
 
 071完整diff与原始normal/race已回读，其265最终manifest匹配当前输入。作者初次mode检查把Git100644与文件系统0600直接比较的诊断错误，及目标normal中间版本与最终版本的区别均保留；它们不是产品失败，也未将中间normal冒称最终字节验证。070整包红、强制红和isolated绿的不同含义维持原记录。
 
@@ -87,4 +87,4 @@ Observed: SPEC-070-01关闭；两种合法调度均保护原槽位、CP和真实
 
 本轮无待修finding。原STD/SPEC-070-01在候选三关闭，原059三个问题保持关闭；前两次失败与attempts历史由Root保留。Root收到并全读本报告后维护正式状态，本review不修改Evidence、Map、票状态或启动后续实现。
 
-所有自有exec及负向子进程均已实际Wait，剩余probe进程为空；产品/永久测试写入0、委派0，见 [process-cleanup.json](logs/process-cleanup.json)。末次完整输入无漂移，亲自return结构校验结果见 [return.log](logs/return.log)。真实MESSAGE/FINAL交回后停写，释放重测试窗口；没有提交、推送、发版或归档。
+所有自有exec及负向子进程均已实际Wait，剩余probe进程为空；产品/永久测试写入0、委派0，见 process-cleanup.json（历史日志已清理：`logs/process-cleanup.json`）。末次完整输入无漂移，亲自return结构校验结果见 [return.log](logs/return.log)。真实MESSAGE/FINAL交回后停写，释放重测试窗口；没有提交、推送、发版或归档。

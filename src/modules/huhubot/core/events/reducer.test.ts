@@ -17,6 +17,14 @@ function recovery(runId: string, seq: string): EventCursorRecovery {
 	return data;
 }
 
+it('applies late measured usage without reopening a canceled Run', () => {
+	const canceled = applyEventPage(emptyProjection('a'), page('a', [event('a', '1', { type: 'canceled', usage: { knowledge: 'unknown', estimated: true } })])).projection;
+	const measured = applyEventPage(canceled, page('a', [event('a', '2', { type: 'usage.settled', usage: { knowledge: 'known', inputTokens: '5', outputTokens: '2', estimated: false } })])).projection;
+	expect(measured.status).toBe('canceled');
+	expect(measured.usage).toEqual({ knowledge: 'known', inputTokens: '5', outputTokens: '2', estimated: false });
+	expect(applyEventPage(measured, page('a', [event('a', '2', { type: 'usage.settled' })])).projection).toEqual(measured);
+});
+
 it('orders and deduplicates large decimal sequences per Run without Number precision loss', () => {
 	let first = restoreEventSnapshot(emptyProjection('a'), recovery('a', '9007199254740993'));
 	first = applyEventPage(first, page('a', [event('a', '9007199254740995', { text: '!' }),

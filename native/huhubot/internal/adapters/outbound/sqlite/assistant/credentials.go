@@ -28,6 +28,13 @@ func credential(ctx context.Context, q queryer, profileID, ref string) (api.Cred
 	if e = profileCheck(p, profileID); e != nil {
 		return m, e
 	}
+	var cleaning int
+	if e = q.QueryRowContext(ctx, "SELECT count(*) FROM purge_previews WHERE profile_id=? AND state='failed'", profileID).Scan(&cleaning); e != nil {
+		return m, e
+	}
+	if cleaning > 0 {
+		return m, fail("CONFLICT", "PROFILE_CLEANUP_PENDING")
+	}
 	var owner string
 	var deleting int
 	e = q.QueryRowContext(ctx, "SELECT profile_id,mode,state,reason,deleting FROM credential_metadata WHERE credential_ref=?", ref).Scan(&owner, &m.Status.Mode, &m.Status.State, &m.Status.Reason, &deleting)
@@ -59,6 +66,13 @@ func (s *Store) Reserve(ctx context.Context, profileID, ref, mode string) error 
 		}
 		if e = profileCheck(p, profileID); e != nil {
 			return e
+		}
+		var cleaning int
+		if e = tx.QueryRowContext(ctx, "SELECT count(*) FROM purge_previews WHERE profile_id=? AND state='failed'", profileID).Scan(&cleaning); e != nil {
+			return e
+		}
+		if cleaning > 0 {
+			return fail("CONFLICT", "PROFILE_CLEANUP_PENDING")
 		}
 		var count int
 		if e = tx.QueryRowContext(ctx, "SELECT count(*) FROM credential_metadata WHERE credential_ref=?", ref).Scan(&count); e != nil {

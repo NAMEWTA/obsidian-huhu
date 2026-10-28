@@ -14,9 +14,9 @@ Status: completed
 
 作者 `native:/root/foundation_go`；沿原派遣gpt-6.1-sol/xhigh偏好，只是派遣记录，未取得实际底层model attestation。复用dev与SpecDev I，重新读取当前TASK、059完整双轴REPORT/三个原始探针及日志、Spec协作/工具/固定配置合同、ARCHITECTURE分层/事务/恢复与ADR-002/003/006/008，以及error-handling/agent-experience规则。没有新增产品决定或DAG，没有再委派。
 
-HEAD/base仍 `33c21e098ef3188cbab5a09f3e0a01fadb787715`。旧059 Input SHA `63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98`，REPORT SHA `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`。069先独占旧201文件红灯窗口，确认三个真实失败/正常对照与进程Wait后才释放生产writer；[00输入](logs/00-input.json) 保存本片三个原文件的完整字节副本和不可变合同摘要，未写原review探针/日志或052报告。
+HEAD/base仍 `33c21e098ef3188cbab5a09f3e0a01fadb787715`。旧059 Input SHA `63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98`，REPORT SHA `78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17`。069先独占旧201文件红灯窗口，确认三个真实失败/正常对照与进程Wait后才释放生产writer；00输入（历史日志已清理：`logs/00-input.json`） 保存本片三个原文件的完整字节副本和不可变合同摘要，未写原review探针/日志或052报告。
 
-本片仅五路径，逐SHA见 [04 own manifest](logs/04-own-freeze-before-joint.json)，tree SHA `87df3311f53ad5df1dfe24e9254b8626c4234402c62dcfb385d314b88c7b9cb4`：
+本片仅五路径，逐SHA见 04 own manifest（历史日志已清理：`logs/04-own-freeze-before-joint.json`），tree SHA `87df3311f53ad5df1dfe24e9254b8626c4234402c62dcfb385d314b88c7b9cb4`：
 
 - `internal/application/api/conversation.go`：EngineInput新增纯Go Delegation指针。
 - `internal/application/api/delegation_input.go`：任务要求DTO与兼容原边界的纯校验helper。
@@ -24,9 +24,9 @@ HEAD/base仍 `33c21e098ef3188cbab5a09f3e0a01fadb787715`。旧059 Input SHA `63e7
 - `internal/adapters/outbound/sqlite/execution/executor.go`：同Tx领取、已知拒绝终结/继续候选、共享原Finalize事务体、持久要求读口消费。
 - `tests/contract/chat/claim_failure_test.go`：十一项错误隔离、真实SQL/终结写入/Commit故障回滚断言。
 
-以上路径相对 `native/huhubot/`。精确完整差异见 [03 patch](logs/03-shared-production.diff)，含新文件。069的七路径由其独占；本片不冒领业务/测试作者。无bootstrap调整，无HAP/schema/TS、SQL、依赖、规则或后续票修改；未commit/push/release。
+以上路径相对 `native/huhubot/`。精确完整差异见 03 patch（历史日志已清理：`logs/03-shared-production.diff`），含新文件。069的七路径由其独占；本片不冒领业务/测试作者。无bootstrap调整，无HAP/schema/TS、SQL、依赖、规则或后续票修改；未commit/push/release。
 
-两份报告使用同一个 [联合manifest](../069-collaboration-review-repair/logs/09-joint-source-before-checks.json)：307文件，tree SHA `ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0`，manifest文件SHA `c5137b3d2bb94852bad16a11278fa77c8d4e2a61cd3e4029ce551533f1d82346`。其基底为059完整候选加未变支撑输入，已覆盖061在059中生效的测试摘要；本修复仅068五路径和069七路径变化。[05读回](logs/05-joint-readback.json) 与 [06最终读回](logs/06-final-readback.json) 均drift=[]。
+两份报告使用同一个 联合manifest（历史日志已清理：`../069-collaboration-review-repair/logs/09-joint-source-before-checks.json`）：307文件，tree SHA `ce39be40d1ce45a17d0fcfdaa5cda50a65f496b24d06bf6be145cc5be67482f0`，manifest文件SHA `c5137b3d2bb94852bad16a11278fa77c8d4e2a61cd3e4029ce551533f1d82346`。其基底为059完整候选加未变支撑输入，已覆盖061在059中生效的测试摘要；本修复仅068五路径和069七路径变化。05读回（历史日志已清理：`logs/05-joint-readback.json`） 与 06最终读回（历史日志已清理：`logs/06-final-readback.json`） 均drift=[]。
 
 ### STD-01 / SPEC-01：固定工具能力实际执行
 
@@ -60,11 +60,11 @@ Claim最多读取128个accepted候选并先关闭rows。每个可领取项进入
 
 | 执行与输入 | 实际观察 | 回读证据 |
 | --- | --- | --- |
-| 069旧生产201文件逐SHA与三个主要公共反例 | 原工具禁止仍委派/notify、要求SQL有而Engine无、撤权queued阻塞健康根三个真实红；正常组绿，exit1/1.914s，全Wait后释放writer | [旧输入](../069-collaboration-review-repair/logs/01-old-production-manifest.json)、069 logs02/03原始记录 |
-| 本片 `go test -mod=readonly -run '^$'` broker/execution/usage | exit0，仅编译，无测试选择 | [01](logs/01-compile.json)、[raw](logs/01-compile.log) |
-| `go test -mod=readonly -timeout=2m -p=1 -count=1 -run '^TestClaimInboxRefusalFinalizationIsAtomicAndUnknownErrorsRollback$' -v ./tests/contract/chat` | exit0/1.398s；十一子case，实际statement触发器和deferred FK Commit失败均回滚，nilWork/accepted/pin/占用/事件不伪变 | [02](logs/02-claim-faults.json)、[raw](logs/02-claim-faults.log) |
+| 069旧生产201文件逐SHA与三个主要公共反例 | 原工具禁止仍委派/notify、要求SQL有而Engine无、撤权queued阻塞健康根三个真实红；正常组绿，exit1/1.914s，全Wait后释放writer | 旧输入（历史日志已清理：`../069-collaboration-review-repair/logs/01-old-production-manifest.json`）、069 logs02/03原始记录 |
+| 本片 `go test -mod=readonly -run '^$'` broker/execution/usage | exit0，仅编译，无测试选择 | 01（历史日志已清理：`logs/01-compile.json`）、[raw](logs/01-compile.log) |
+| `go test -mod=readonly -timeout=2m -p=1 -count=1 -run '^TestClaimInboxRefusalFinalizationIsAtomicAndUnknownErrorsRollback$' -v ./tests/contract/chat` | exit0/1.398s；十一子case，实际statement触发器和deferred FK Commit失败均回滚，nilWork/accepted/pin/占用/事件不伪变 | 02（历史日志已清理：`logs/02-claim-faults.json`）、[raw](logs/02-claim-faults.log) |
 | 069主要红例修后及相邻八工具/大Context/CP/父结果 | 06主要普通exit0/1.328s；07精确原Reason和父partial/commit断言exit0/0.896s | 069 logs06/07 |
-| 联合八包 normal `go test -mod=readonly -timeout=6m -p=1 -count=1 -v` | effect-reconcile/delegation/collaboration-policy/approval/access/chat/events/foundation全exit0，37.332s；100source4.215248ms、source80018.922934ms、无来源8006.248804ms，原250ms门不变 | [统一命令/exit/Wait](../069-collaboration-review-repair/logs/14-joint-check-results.json)、[raw11](../069-collaboration-review-repair/logs/11-eight-normal.log) |
+| 联合八包 normal `go test -mod=readonly -timeout=6m -p=1 -count=1 -v` | effect-reconcile/delegation/collaboration-policy/approval/access/chat/events/foundation全exit0，37.332s；100source4.215248ms、source80018.922934ms、无来源8006.248804ms，原250ms门不变 | 统一命令/exit/Wait（历史日志已清理：`../069-collaboration-review-repair/logs/14-joint-check-results.json`）、[raw11](../069-collaboration-review-repair/logs/11-eight-normal.log) |
 | 联合五包 race 同参数加 `-race -timeout=8m` | delegation/collaboration-policy/chat/approval/effect-reconcile全exit0，109.671s，无data race，涵盖新三反例/十一故障/实际TS Host | [raw12](../069-collaboration-review-repair/logs/12-five-race.log) |
 | `go vet -mod=readonly ./...` | exit0/0.598s | [raw13](../069-collaboration-review-repair/logs/13-vet.log) |
 
@@ -76,6 +76,6 @@ Claim最多读取128个accepted候选并先关闭rows。每个可领取项进入
 
 ## 问题与下一步
 
-没有已知未闭合的本片修复问题。源/测试已停止写入，所有作者命令和受控测试子进程完成Wait，最终307摘要drift=[]；原052 REPORT SHA仍766ff1f9…024c，059 REPORT仍78ed3de8…db17，TS/wire/锁无漂移，见 [06](logs/06-final-readback.json)。后续出现新的当前拒绝理由须明确扩展有限分类并验证，不能改成吞全部Fault；持久坏数据/存储故障仍返回错误而不是伪造任务成功。
+没有已知未闭合的本片修复问题。源/测试已停止写入，所有作者命令和受控测试子进程完成Wait，最终307摘要drift=[]；原052 REPORT SHA仍766ff1f9…024c，059 REPORT仍78ed3de8…db17，TS/wire/锁无漂移，见 06（历史日志已清理：`logs/06-final-readback.json`）。后续出现新的当前拒绝理由须明确扩展有限分类并验证，不能改成吞全部Fault；持久坏数据/存储故障仍返回错误而不是伪造任务成功。
 
 Root下一步重放059三原探针并执行公开协作/真实TS→HAP→Go→Host选择性E2E，然后冻结新候选独立补审。068/069候选绿测不覆盖或改写原059双轴request-changes，也不改正式状态。真实Provider/模型、Obsidian/用户Vault、系统keyring及目标OS实机验收均user-owned/not-run，未索取凭证；T08及后续功能未借本修复提前开工或宣称完成。return结构校验回执另存，之后实际MESSAGE/FINAL并继续停写。

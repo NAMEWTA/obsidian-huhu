@@ -20,7 +20,7 @@ Reviewer: native:/root/recovery_review。已原生 ACK，沿用户既有独立 r
 - 权威行为依据仍为 Spec §4、§7–11、T16 AC-016/017、AC-033 接缝和 recovery-window-map20；本轮 Map21 三份领取/父队列/测试分层补充只明确现有合同与必要内部维护，没有改变 Application/HAP、schema、迁移、依赖和限额。
 - 080/081/082/085/086 的完整报告、原始失败与已核调用链沿本 reviewer 原 083 审查复用；它们及原规范逐 SHA 未变。083 原有效失败全文回读；088/089/090 完整报告、具体修复/诊断及新红绿日志、Root 088/090 实际接收凭据、r3 原始输出和插件复用记录另行回读。
 
-[逐项比较](logs/04-r1-r2-scope-comparison.json) 确认：旧 337 文件中 331 个原字节/模式未变，仅 6 个生产文件变化，新增 12 个测试/夹具文件，无删除。6 个生产文件是 effects/continuations.go、execution/children.go、execution/executor.go、execution/store.go、usage/finalize.go、usage/waits.go；已完整比较旧固定副本与当前字节并重新追踪其现有调用闭包。其余恢复/CP/取消/Host/TS 路径不是以旧 pass 代替 T16：使用原 083 对同字节的具体审查和本轮 Root r3 对真实生产链的证据。079 仅作历史背景。
+逐项比较（历史日志已清理：`logs/04-r1-r2-scope-comparison.json`） 确认：旧 337 文件中 331 个原字节/模式未变，仅 6 个生产文件变化，新增 12 个测试/夹具文件，无删除。6 个生产文件是 effects/continuations.go、execution/children.go、execution/executor.go、execution/store.go、usage/finalize.go、usage/waits.go；已完整比较旧固定副本与当前字节并重新追踪其现有调用闭包。其余恢复/CP/取消/Host/TS 路径不是以旧 pass 代替 T16：使用原 083 对同字节的具体审查和本轮 Root r3 对真实生产链的证据。079 仅作历史背景。
 
 ## 可证伪假设与实际结果
 
@@ -77,10 +77,10 @@ Observed: 在本次明确代码验收范围内，未领取 accepted 可跨闭门
 
 自有工件：
 
-- [00 副本输入](logs/00-probe-input.json)，[01 实际探针](logs/01-independent-probe.go.txt)，探针 SHA256 `d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe`。
-- [02 normal 输出](logs/02-independent-normal.log) 与 [实际回执](logs/02-independent-normal.json)：`go test -mod=readonly ./tests/contract/chat -run '^TestReview091' -count=1 -timeout=45s -v`，actual exit0、Wait true、2.501 秒。
-- [03 race 输出](logs/03-independent-race.log) 与 [实际回执](logs/03-independent-race.json)：同命令加 `-race`，actual exit0、Wait true、6.597 秒。仅这组受新并发状态直接影响的小反例，没有重跑大队列或无关全矩阵。
-- [04 范围比较](logs/04-r1-r2-scope-comparison.json)，[05 最终输入/进程复核](logs/05-final-input-process.json)：349/122、HEAD/index 全一致；外部及仓库原 292 文件无漂移。独立复核 Root r3 的2116输入、插件1875输入和 main.js/styles.css 都无漂移；作者报告、15+3自有文件和088回执68工件 SHA 无漂移。090工件未在05再次全量核哈希，沿 Root 已接纳30工件回执与本轮所读关键原始日志使用，未冒称独立全量重核。
+- 00 副本输入（历史日志已清理：`logs/00-probe-input.json`），01 实际探针（历史日志已清理：`logs/01-independent-probe.go.txt`），探针 SHA256 `d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe`。
+- [02 normal 输出](logs/02-independent-normal.log) 与 实际回执（历史日志已清理：`logs/02-independent-normal.json`）：`go test -mod=readonly ./tests/contract/chat -run '^TestReview091' -count=1 -timeout=45s -v`，actual exit0、Wait true、2.501 秒。
+- [03 race 输出](logs/03-independent-race.log) 与 实际回执（历史日志已清理：`logs/03-independent-race.json`）：同命令加 `-race`，actual exit0、Wait true、6.597 秒。仅这组受新并发状态直接影响的小反例，没有重跑大队列或无关全矩阵。
+- 04 范围比较（历史日志已清理：`logs/04-r1-r2-scope-comparison.json`），05 最终输入/进程复核（历史日志已清理：`logs/05-final-input-process.json`）：349/122、HEAD/index 全一致；外部及仓库原 292 文件无漂移。独立复核 Root r3 的2116输入、插件1875输入和 main.js/styles.css 都无漂移；作者报告、15+3自有文件和088回执68工件 SHA 无漂移。090工件未在05再次全量核哈希，沿 Root 已接纳30工件回执与本轮所读关键原始日志使用，未冒称独立全量重核。
 
 其他实际验证按输入及影响复用，而非本 reviewer 重跑：088 最终 normal 0/8.437s；旧源相同6秒停滞判据预期红1/15.022s；race完整4/6消费0/84.838s，vet/Go架构0。090 两父例 normal0/4.159s、race0/73.669s。Root r3 普通完整大队列/129父/旧恢复/审批边界0/21.950s，不同旧崩溃/坏CP/drain/Stop/审批 race0/19.503s；Runner build0/.548s、TS bundle0/.488s、生产 TS/HAP/stdio0/.625s。真实 Model 入口1/恢复请求2/真实 Provider0；所有实际 Runner/Core Wait，无强杀。插件 build0/36.094s、lint0/64.110s 按1875相同输入与产物复用，明确未重跑。
 

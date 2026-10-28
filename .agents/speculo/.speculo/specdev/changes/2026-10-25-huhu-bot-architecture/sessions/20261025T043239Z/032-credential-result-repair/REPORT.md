@@ -30,7 +30,7 @@ Status: completed
 
 生产修复后同一回放脚本/取消响应得 [02原绿灯](logs/02-original-replay-green.log)，exit 0，两项回执及 Status 前 catalog 都 failed/PROTECTION_DENIED；create Status missing，delete Status available。01/02采用历史默认 session bus 配置，只保留为红→绿记录，不据其宣称完整隔离。
 
-发现自动激活风险后，仅调整 bus 隔离方式，不改这两个取消输入、受控服务的“无写入/无删除 + Completed.dismissed=true”响应或生产调用链。执行 [13-isolated-original-replay.py](logs/13-isolated-original-replay.py)，exit 0，[最终原反例回放日志](logs/13-original-replay-isolated-green.log) 明确 `CATALOG_BEFORE_STATUS` 均 failed/PROTECTION_DENIED、bus stderr为空、两项 cancellation violation 均消除、ALL_CHILDREN_REAPED true。回放临时目录 `/tmp/huhu-credential-result-repair-pze71r3r` 及其中 binary 已在全部进程 Wait 后删除；保存脚本是历史证据，不保证脱离当时构建目录独立可执行。永久 Go 测试负责可重复验收。
+发现自动激活风险后，仅调整 bus 隔离方式，不改这两个取消输入、受控服务的“无写入/无删除 + Completed.dismissed=true”响应或生产调用链。执行 13-isolated-original-replay.py（历史日志已清理：`logs/13-isolated-original-replay.py`），exit 0，[最终原反例回放日志](logs/13-original-replay-isolated-green.log) 明确 `CATALOG_BEFORE_STATUS` 均 failed/PROTECTION_DENIED、bus stderr为空、两项 cancellation violation 均消除、ALL_CHILDREN_REAPED true。回放临时目录 `/tmp/huhu-credential-result-repair-pze71r3r` 及其中 binary 已在全部进程 Wait 后删除；保存脚本是历史证据，不保证脱离当时构建目录独立可执行。永久 Go 测试负责可重复验收。
 
 ### 永久实际链路测试与逐场景观察
 
@@ -88,7 +88,7 @@ prompt-success / unlock-success 把 Completed 信号放在 Prompt 方法回执�
 
 实际查阅的固定SDK：godbus v5.2.2，commit `a8ac15ba63645f02ffd57f4b443203279ab40b30`，BSD-2-Clause（Georg Reinke/Google版权）；go-keyring v0.2.8，commit `a8cdfe320cc8bc0534c895a648dc9214715a9da5`，root MIT，仅定位其取消处理缺陷；Windows继续使用既有keyring+wincred v1.2.3，没有改其代码。完整module/实际各目标GoFiles许可union、正式notices及Linux CI辅助工具归025工程owner，不用Linux import减少来擅删module许可。
 
-[19-production-go-files.json](logs/19-production-go-files.json) 来自实际 `GOOS=<os> GOARCH=amd64 go list -mod=readonly -deps -json ./cmd/huhubot`，不是强行指定未使用包：Linux运行依赖godbus30个GoFiles，不含go-keyring root；Windows keyring4个、wincred4个GoFiles，逐文件SHA已固定。manifest SHA `8acd7939a42947e1d3d7306f6399f3e1eeb8021910361de079ce4b9f93475e49`；本作者登记两目标，025负责最终五目标union。go.mod SHA仍 `b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b`，go.sum仍 `2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816`，`tidy -diff`真实无差异，未忽略import造成的可观察metadata漂移。
+19-production-go-files.json（历史日志已清理：`logs/19-production-go-files.json`） 来自实际 `GOOS=<os> GOARCH=amd64 go list -mod=readonly -deps -json ./cmd/huhubot`，不是强行指定未使用包：Linux运行依赖godbus30个GoFiles，不含go-keyring root；Windows keyring4个、wincred4个GoFiles，逐文件SHA已固定。manifest SHA `8acd7939a42947e1d3d7306f6399f3e1eeb8021910361de079ce4b9f93475e49`；本作者登记两目标，025负责最终五目标union。go.mod SHA仍 `b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b`，go.sum仍 `2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816`，`tidy -diff`真实无差异，未忽略import造成的可观察metadata漂移。
 
 本次三个文件最终SHA-256：
 
@@ -98,7 +98,7 @@ prompt-success / unlock-success 把 Completed 信号放在 Prompt 方法回执�
 | `native/huhubot/internal/adapters/outbound/credentials/secret_service_linux.go` | `eaf37195a1329ccef71c1255c9ae205701a97b54953ab6111ecda594726f9c21` |
 | `native/huhubot/tests/contract/assistant/credentials_dbus_linux_test.go` | `0786c93b03a4920bc8b9fb2efb13174d1f4cde70d5e47aca3f3c9460f6ea0fed` |
 
-[source.sha256](logs/source.sha256) manifest SHA `6a3edec4cceab64bba123993bd6a24987c12229256b1f88049f8f07a1a5fbcc7`；[inputs.sha256](logs/inputs.sha256) SHA `4e3f3bed9cfa1ec393ac5fe2d9eb5c1bf2bde40b953cf748c1b4adde0338e0cf` 固定TASK、020/029/024报告/原始反例、CLI/worker/API/catalog与locks。旧报告未覆盖，修复前失败仍可回读。
+source.sha256（历史日志已清理：`logs/source.sha256`） manifest SHA `6a3edec4cceab64bba123993bd6a24987c12229256b1f88049f8f07a1a5fbcc7`；inputs.sha256（历史日志已清理：`logs/inputs.sha256`） SHA `4e3f3bed9cfa1ec393ac5fe2d9eb5c1bf2bde40b953cf748c1b4adde0338e0cf` 固定TASK、020/029/024报告/原始反例、CLI/worker/API/catalog与locks。旧报告未覆盖，修复前失败仍可回读。
 
 ## 问题与下一步
 

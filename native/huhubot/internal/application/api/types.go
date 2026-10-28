@@ -46,7 +46,12 @@ type ProfileMetadata struct{ ProfileID, CommandEpoch, Revision, CreatedAt string
 type ProfileReader interface {
 	ReadMetadata(context.Context) (ProfileMetadata, error)
 }
+type CleanupStatus struct {
+	Profile    bool     `json:"profile"`
+	SessionIDs []string `json:"sessionIds"`
+}
 type ServiceStatus struct {
+	Cleanup      *CleanupStatus
 	State        string
 	Profile      ProfileMetadata
 	HostAttached bool
@@ -65,6 +70,7 @@ type ServiceAPI interface {
 type HostAttachCommand struct {
 	WorkspaceID  string
 	Capabilities []string
+	RenewLeaseID string
 }
 type HostLease struct {
 	LeaseID          string   `json:"leaseId"`
@@ -151,4 +157,5 @@ type Facade struct {
 	Messages      MessagesAPI
 	Effects       EffectsAPI
 	Profile       ProfileAPI
+	Data          SessionDataAPI
 }

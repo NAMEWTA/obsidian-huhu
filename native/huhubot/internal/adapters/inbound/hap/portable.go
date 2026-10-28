@@ -16,13 +16,24 @@ type portableExportResult struct {
 	Artifact portableArtifact `json:"artifact"`
 }
 type portableConflict struct {
-	ID       string `json:"id"`
-	Revision string `json:"revision"`
-	Hash     string `json:"hash"`
+	ID          string `json:"id"`
+	Revision    string `json:"revision"`
+	Hash        string `json:"hash"`
+	Kind        string `json:"kind"`
+	ExistingID  string `json:"existingId"`
+	Reason      string `json:"reason"`
+	NeedsReview bool   `json:"needsReview"`
+}
+type portableMapping struct {
+	Kind string `json:"kind"`
+	From string `json:"from"`
+	To   string `json:"to"`
 }
 type portablePreviewResult struct {
-	Token     string             `json:"token"`
-	Conflicts []portableConflict `json:"conflicts"`
+	Token       string             `json:"token"`
+	MappingMode string             `json:"mappingMode"`
+	Mappings    []portableMapping  `json:"mappings"`
+	Conflicts   []portableConflict `json:"conflicts"`
 }
 type portableImportResult struct {
 	CommandID string `json:"commandId"`
@@ -37,6 +48,12 @@ func (r *Router) portableHandle(ctx context.Context, e wire.Envelope) (Response,
 	var result any
 	var err error
 	switch e.Method {
+	case "portable.stage":
+		stage, ok := r.portable.(portable.StageAPI)
+		if !ok {
+			return Failure(e.ID, -32601, "CAPABILITY_DENIED", "METHOD_NOT_AVAILABLE", false), true
+		}
+		return handle(ctx, e, r.Identity, stage.Stage), true
 	case "portable.export":
 		p, decodeErr := wire.DecodeParams[wire.ContractPortableExportParams](e.Params)
 		if decodeErr != nil {
@@ -54,11 +71,21 @@ func (r *Router) portableHandle(ctx context.Context, e wire.Envelope) (Response,
 			return FromError(e.ID, decodeErr), true
 		}
 		v, callErr := r.portable.ImportPreview(ctx, r.Identity, portable.ImportPreviewRequest{ProfileID: p.ProfileId, Artifact: portable.ArtifactRef{ArtifactID: p.Artifact.ArtifactId, MediaType: p.Artifact.MediaType, Size: p.Artifact.Size}})
+		if callErr == nil {
+			callErr = portable.ValidatePreviewBudget(v)
+		}
+		if callErr != nil {
+			return FromError(e.ID, callErr), true
+		}
 		conflicts := make([]portableConflict, 0, len(v.Conflicts))
 		for _, c := range v.Conflicts {
-			conflicts = append(conflicts, portableConflict{ID: c.ID, Revision: c.Revision, Hash: c.Hash})
+			conflicts = append(conflicts, portableConflict{ID: c.ID, Revision: c.Revision, Hash: c.Hash, Kind: c.Kind, ExistingID: c.ExistingID, Reason: c.Reason, NeedsReview: c.NeedsReview})
 		}
-		err, result = callErr, portablePreviewResult{Token: v.Token, Conflicts: conflicts}
+		mappings := make([]portableMapping, 0, len(v.Mappings))
+		for _, m := range v.Mappings {
+			mappings = append(mappings, portableMapping{Kind: m.Kind, From: m.From, To: m.To})
+		}
+		err, result = callErr, portablePreviewResult{Token: v.Token, MappingMode: v.MappingMode, Mappings: mappings, Conflicts: conflicts}
 	case "portable.import":
 		p, decodeErr := wire.DecodeParams[wire.ContractPortableImportParams](e.Params)
 		if decodeErr != nil {

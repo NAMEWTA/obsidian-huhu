@@ -1,0 +1,35 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: data inner content clipping at 390
++ actual - expected
+
++ [
++   {
++     className: 'min-w-0 flex-1',
++     overflow: 23,
++     slot: null,
++     tag: 'DIV'
++   }
++ ]
+- []
+
+    at assertRendered (file:///home/wta/orca/workspaces/obsidian-huhu/bot/scripts/obsidian-acceptance/huhu-bot.mjs:76:10)
+    at file:///home/wta/orca/workspaces/obsidian-huhu/bot/scripts/obsidian-acceptance/huhu-bot.mjs:198:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      tag: 'DIV',
+      slot: null,
+      className: 'min-w-0 flex-1',
+      overflow: 23
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.11.1

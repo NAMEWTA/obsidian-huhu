@@ -121,6 +121,11 @@ type AgentProposal struct {
 	ProposalID  string     `json:"proposalId"`
 	Draft       AgentDraft `json:"draft"`
 }
+type AgentProposalPage struct {
+	Items            []AgentProposal   `json:"items"`
+	NextCursor       string            `json:"nextCursor,omitempty"`
+	DeliverySubjects []DeliverySubject `json:"-"`
+}
 type ConfirmProposal struct {
 	CommandMeta
 	ProposalID  string `json:"proposalId"`
@@ -173,7 +178,9 @@ type CollaborationAPI interface {
 	ListTasks(context.Context, RequestIdentity, DelegationQuery) (DelegationPage, error)
 	CancelTask(context.Context, RequestIdentity, TaskCancel) (Delegation, error)
 	ProposeCreate(context.Context, RequestIdentity, CreateProposal) (AgentProposal, error)
+	Proposals(context.Context, RequestIdentity, DiscoverQuery) (AgentProposalPage, error)
 	ConfirmProposal(context.Context, RequestIdentity, ConfirmProposal) (Agent, error)
+	RejectProposal(context.Context, RequestIdentity, ConfirmProposal) (Receipt, error)
 }
 type MessagesAPI interface {
 	Send(context.Context, RequestIdentity, MessageCommand) (AgentMessage, error)

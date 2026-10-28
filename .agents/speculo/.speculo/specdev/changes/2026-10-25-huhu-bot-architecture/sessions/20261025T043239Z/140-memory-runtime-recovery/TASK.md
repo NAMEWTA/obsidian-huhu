@@ -40,7 +40,7 @@ repo /home/wta/orca/workspaces/obsidian-huhu/bot；branch NAMEWTA/bot；HEAD/bas
 ## Acceptance
 
 1. 完成129 TASK全部8项原合同及其当前适用验证，报告清晰归集129既有18源与134实际变化。默认Memory实际装配/关闭/失败清理、同两Tx Plan/Seal、同Executor维护、同Finalize候选和原账户/producer/恢复/stdio安全边界不能省略。原已通过G2组件/旧底座只按真实输入复用。
-2. application-private HistoryMemoryPort使用128提供的ReadHistoryMemory(ctx,id,profile,targetRunID,[]api.VisibleMessage)([]api.VisibleMessage,map[string][]api.DerivedInput,error)，不把adapter/SQL类型引入Application。Core显式装配真实grants Store。History在SourceRefs空快路之前逐消息资格过滤，保留原来源和Group规则；DeliverySubjects仅来自最终实际visible项及最终附件，不为被过滤项留下proof。旧失效消息不抹掉独立user意图，不吞未知错误。
+2. application-private HistoryMemoryPort使用128提供的`ReadHistoryMemory(ctx,id,profile,targetRunID,[]api.VisibleMessage)([]api.VisibleMessage,map[string][]api.DerivedInput,error)`，不把adapter/SQL类型引入Application。Core显式装配真实grants Store。History在SourceRefs空快路之前逐消息资格过滤，保留原来源和Group规则；DeliverySubjects仅来自最终实际visible项及最终附件，不为被过滤项留下proof。旧失效消息不抹掉独立user意图，不吞未知错误。
 3. ModelHistory在source快路前做纯资格读取，target使用当前实际Run且read/send，保留原来源预算；只对最终预算保留的消息合并完整Memory祖先与原message Ref，严格同key一致、去重及128上限，不静默截断。lookahead/被source或Group过滤/预算挤掉的消息不增加Run资格要求；真正持久化仍原Run writer。新普通extractive流程不能为修legacy重复注入旧History。
 4. GetRun通过126 ContextUsageInTx(ctx,tx,id,profileID,runID)(*api.ContextUsage,error)读取安全manifest计数，已失效正文不阻塞查询终态；Engine/Recovery仍严格ReadInput/ReadContext，不变成空成功。实际维护NewRun/Memory.BindRun之后调用128 DeriveMaintenanceInTx(ctx,tx,id,in)，由你唯一Run writer同外层Tx保存来源/effective GrantIDs再complete Check；不清task scope、不伪造Parent/namespace，不让Memory业务写execution_runs。
 5. 真正装配可用后，只在generator implemented Set添加memory.list/get/pin/correct/forget/setAutoMaintenance六字面量，真实生成methods两文件，schema/API/fixtures字节不变；T15两个方法继续false。用真实默认Core/HAP验证hello与方法调用一致，而未装配Facade仍确定拒绝。任何旧fixture失败先区分夹具错误，不能放宽产品断言。

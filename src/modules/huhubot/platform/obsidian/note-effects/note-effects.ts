@@ -1,3 +1,4 @@
+import { isHostLeaseRenewal } from '../../../core/protocol/host-lease';
 import { MarkdownView, TFile, TFolder, type App, type Component, type EventRef, type TAbstractFile, type WorkspaceLeaf } from 'obsidian';
 import type { ApprovalPreview, EffectTarget, HostInvoke, HostLease, HostReceipt, HostReceiptQuery, NoteWriteBinding, ToolDescriptor } from '../../../api';
 import { BotRpcError } from '../../../core/protocol/connection';
@@ -53,11 +54,22 @@ export class ObsidianNoteEffects implements NoteEffects {
 		for (const event of this.events) options.lifetime.registerEvent(event);
 	}
 	setLease(lease: HostLease | undefined): void {
+		if (isHostLeaseRenewal(this.lease, lease)) {
+			this.lease!.expiresAt = lease!.expiresAt; return;
+		}
 		this.generation++;
 		for (const target of this.preparations.values()) target.valid = false;
 		for (const target of this.preparing) target.valid = false;
 		this.preparations.clear(); this.createdTargets.clear(); this.preparedBytes = 0;
 		this.lease = lease ? structuredClone(lease) : undefined;
+	}
+	setCommandEpoch(epoch: string): void {
+		if (!/^[1-9][0-9]*$/.test(epoch) || BigInt(epoch) < BigInt(this.options.commandEpoch)) throw noteFault('NOTE_PROFILE_MISMATCH');
+		if (epoch === this.options.commandEpoch) return;
+		this.options.commandEpoch = epoch;
+		const lease = this.lease;
+		this.setLease(undefined);
+		this.setLease(lease);
 	}
 	private current(): HostLease {
 		const lease = this.lease, expiry = lease ? Date.parse(lease.expiresAt) : NaN;
@@ -184,9 +196,10 @@ export class ObsidianNoteEffects implements NoteEffects {
 			return structuredClone(result);
 		} finally { this.preparing.delete(target); }
 	}
-	private binding(preview: ApprovalPreview): NoteWriteBinding {
+	private binding(preview: ApprovalPreview, historical = false): NoteWriteBinding {
 		const binding = preview.binding;
-		if (!binding || binding.profileId !== this.options.profileId || binding.commandEpoch !== this.options.commandEpoch ||
+		const validEpoch = binding && /^[1-9][0-9]*$/.test(binding.commandEpoch) && (binding.commandEpoch === this.options.commandEpoch || historical && BigInt(binding.commandEpoch) < BigInt(this.options.commandEpoch));
+		if (!binding || binding.profileId !== this.options.profileId || !validEpoch ||
 			binding.deviceId !== this.options.deviceId || binding.workspaceId !== this.options.workspaceId || binding.targetResourceId !== preview.target.resourceId ||
 			binding.capabilityVersion !== '1' || binding.implementationVersion !== '1' || binding.policyVersion !== '1' || !sameJson(preview.tool, NOTE_WRITE_TOOL))
 			throw noteFault('NOTE_BINDING_MISMATCH');
@@ -211,7 +224,7 @@ export class ObsidianNoteEffects implements NoteEffects {
 			...(receipt.phase === 'completed' ? { receiptId: receipt.receiptId } : {}), ...(receipt.reason ? { reason: receipt.reason } : {}) };
 	}
 	private async reconcile(request: HostReceiptQuery | HostInvoke, observation: ReceiptObservation, signal: AbortSignal): Promise<HostReceipt> {
-		const binding = this.binding(request.preview);
+		const binding = this.binding(request.preview, true);
 		if (observation.state === 'verified' && observation.receipt.phase !== 'received') return this.result(observation.receipt);
 		let locator: NoteLocator | undefined;
 		if (observation.state === 'verified') locator = observation.receipt.locator;
@@ -235,7 +248,7 @@ export class ObsidianNoteEffects implements NoteEffects {
 	}
 	async queryReceipt(request: HostReceiptQuery, signal: AbortSignal): Promise<HostReceipt> {
 		this.checkRequest(request); this.checkSignal(signal);
-		return this.reconcile(request, await this.receipts.lookup({ effectId: request.effectId, fingerprint: request.fingerprint, binding: this.binding(request.preview) }), signal);
+		return this.reconcile(request, await this.receipts.lookup({ effectId: request.effectId, fingerprint: request.fingerprint, binding: this.binding(request.preview, true) }), signal);
 	}
 	async invoke(request: HostInvoke, signal: AbortSignal): Promise<HostReceipt> {
 		this.checkRequest(request); this.checkSignal(signal);

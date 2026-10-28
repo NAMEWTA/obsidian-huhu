@@ -8,7 +8,7 @@ Status: completed
 
 ## 聚焦交接
 
-**建议采用固定 openai-go/v3 v3.44.0 的直接流入口，加一个有界、可无损回放的 Responses 数据桥，继续运行同一个 common.Engine。** 保留 Eino schema 工具投影和现有 Application/Executor/Broker/Attempts/Blob；不复制 Runner，不造第二套账本，不升级 SDK。固定 agenticopenai v0.2.4 已提供请求和事件映射参考，但其现成转换不能单独承担本票完整 opaque CP 合同。以下事实与建议逐项对应 [来源索引](logs/source-index.md) C1–C7；精确签名草案、原 owner 文件和未运行矩阵见 [接缝附件](logs/interfaces-and-matrix.md)。
+**建议采用固定 openai-go/v3 v3.44.0 的直接流入口，加一个有界、可无损回放的 Responses 数据桥，继续运行同一个 common.Engine。** 保留 Eino schema 工具投影和现有 Application/Executor/Broker/Attempts/Blob；不复制 Runner，不造第二套账本，不升级 SDK。固定 agenticopenai v0.2.4 已提供请求和事件映射参考，但其现成转换不能单独承担本票完整 opaque CP 合同。以下事实与建议逐项对应 来源索引（历史日志已清理：`logs/source-index.md`） C1–C7；精确签名草案、原 owner 文件和未运行矩阵见 接缝附件（历史日志已清理：`logs/interfaces-and-matrix.md`）。
 
 本任务没有把任何方案接入生产。建议实现实际调用固定 openai-go 的 ResponseService/Stream/参数 API；不调用 agenticopenai.NewResponsesModel、Generate 或 Stream，也不因研究过它就把该模块列作运行分发。ARCH §7.2 与 Spec 技术风险允许 adapter 内部桥接/替换实现，既有三协议和公共用例合同保持。
 
@@ -67,11 +67,11 @@ T01/T06 的最小内部接缝是 Broker Options 增加纯 `EngineVersionForProto
 
 ## 产物与验证
 
-- [接口与矩阵](logs/interfaces-and-matrix.md)：原 owner 的精确文件/签名草案、旧 Chat/fake 控制路径和 Responses 差异场景；所有行为场景均未跑。
-- [来源索引](logs/source-index.md)、[完整来源清单](logs/sources.json)、[逐次读取记录](logs/observations.json)、[源码行摘录](logs/read-excerpts.log)：记录绝对路径、实际读取 UTC、行段、字节数和 SHA256，并将 C1–C7 与来源关联。
-- [末次来源复核](logs/source-recheck.json)：保留首次/后续读取与交回时差异；它只证明这些实际来源，不证明整个工作区冻结。
-- [探索说明](logs/exploration-notes.md)：路径误定位和裁剪均保留，没有把失败读取当成功证据。
-- [return 回执](logs/return.json)、[原始输出](logs/return.log)、[产物清单](logs/manifest.json)：仅本任务结构校验与产物字节核对，不是产品验收。
+- 接口与矩阵（历史日志已清理：`logs/interfaces-and-matrix.md`）：原 owner 的精确文件/签名草案、旧 Chat/fake 控制路径和 Responses 差异场景；所有行为场景均未跑。
+- 来源索引（历史日志已清理：`logs/source-index.md`）、完整来源清单（历史日志已清理：`logs/sources.json`）、逐次读取记录（历史日志已清理：`logs/observations.json`）、[源码行摘录](logs/read-excerpts.log)：记录绝对路径、实际读取 UTC、行段、字节数和 SHA256，并将 C1–C7 与来源关联。
+- 末次来源复核（历史日志已清理：`logs/source-recheck.json`）：保留首次/后续读取与交回时差异；它只证明这些实际来源，不证明整个工作区冻结。
+- 探索说明（历史日志已清理：`logs/exploration-notes.md`）：路径误定位和裁剪均保留，没有把失败读取当成功证据。
+- return 回执（历史日志已清理：`logs/return.json`）、[原始输出](logs/return.log)、产物清单（历史日志已清理：`logs/manifest.json`）：仅本任务结构校验与产物字节核对，不是产品验收。
 
 本次仅只读源码/规则与写自有报告日志；未执行 Go、产品 Node 检查、build/test、数据库、Provider、真实模型、Obsidian、系统 keyring、目标 OS 或下载/安装。全部轻量命令结束，没有本任务后台产品进程。依 TASK 运行的 validate-dispatch return 是唯一 Node 结构检查；实际结果以回执为准。
 

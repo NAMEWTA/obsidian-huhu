@@ -1,0 +1,24 @@
+
+ RUN  v5.0.3 /home/wta/orca/workspaces/obsidian-huhu/bot
+
+(node:2760374) [TAG_RESOLVE_FAILED] YAMLWarning: Unresolved tag: !safe at line 1, column 7:
+
+base: !safe original
+      ^^^^^
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2760374) [TAG_RESOLVE_FAILED] YAMLWarning: Unresolved tag: tag:yaml.org,2002:safe at line 1, column 7:
+
+base: !!safe original
+      ^^^^^^
+
+(node:2760374) Warning: Keys with collection values will be stringified due to JS Object restrictions: "{ unknown }". Set mapAsMap: true to use object keys.
+(node:2760374) Warning: Keys with collection values will be stringified due to JS Object restrictions: "{ unknown }". Set mapAsMap: true to use object keys.
+
+ Test Files  436 passed | 3 skipped (439)
+      Tests  3681 passed | 4 skipped (3685)
+   Start at  18:10:07
+   Duration  299.35s (tests 78%, import 7%, setup 5%, environment 5%, transform 5%)
+
+    Isolate  439 workers spawned · ~176ms startup each (spawn + environment, per file)
+             at least ~19.12s faster with isolate: false — reuses workers across files instead of one per file

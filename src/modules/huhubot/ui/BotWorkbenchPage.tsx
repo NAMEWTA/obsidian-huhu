@@ -1,212 +1,863 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Bot, CircleAlert, CircleCheck, LoaderCircle, MessageCircle, Plus, Search, Send, Users, X } from 'lucide-react';
+import { useVisible } from '../../../ui/react/contexts';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useStore } from 'zustand';
+import { Bot, CircleAlert, LoaderCircle, Menu, Paperclip, Plus, RefreshCw, Send, Users, X } from 'lucide-react';
 import { Badge } from '../../../ui/components/badge';
 import { Button } from '../../../ui/components/button';
+import { Checkbox } from '../../../ui/components/checkbox';
 import { Input } from '../../../ui/components/input';
 import { Label } from '../../../ui/components/label';
 import { Textarea } from '../../../ui/components/textarea';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
-import { useT } from '../../../ui/react/hooks';
-import { registerMessages, t } from '../../../shared/i18n';
-import type { Agent, BotClient, CommandMeta, Session, VisibleMessage } from '../api';
-import { chatMessages } from '../i18n/chat';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../ui/components/popover';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '../../../ui/components/alert-dialog';
+import { useOwnerWindow, useT } from '../../../ui/react/hooks';
+import type { Agent, DeletionPreview, Session } from '../api';
+import { mentionChoices, resolveMentionTargets, selectMention } from '../core/mentions/mentions';
+import {
+	EMPTY_THREAD,
+	WorkbenchClient,
+	runIsActive,
+	type BotWorkbenchHost,
+} from '../services/workbench/workbench-client';
+export type { BotWorkbenchHost } from '../services/workbench/workbench-client';
+import { TaskSummary } from './tasks/TaskSummary';
+import { InlineApproval } from './approvals/ApprovalsPage';
+import { AgentProposals } from './agents/AgentProposals';
+import { BotManagementMenu } from './BotNavigation';
+import { deletionCategoryLabel } from './deletion-category';
 
-registerMessages(chatMessages);
-
-export interface BotWorkbenchHost {
-	client: () => BotClient | undefined;
-	report?: (error: unknown) => void;
-	openSettings?: () => void;
-}
-
-interface BotChatPageProps {
+export interface BotChatPageProps {
 	host: BotWorkbenchHost;
+	selectedSessionId?: string;
+	onSessionChanged?: (id: string | undefined) => void;
 }
-
-type LoadState = 'loading' | 'ready' | 'error';
-
-function commandMeta(client: BotClient): CommandMeta {
-	const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
-	return {
-		commandId: id,
-		idempotencyKey: id,
-		profileId: client.hello.profile.profileId,
-		commandEpoch: client.hello.profile.commandEpoch,
-	};
-}
-
 function initials(name: string): string {
-	return name.trim().split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase() || '?';
+	return (
+		name
+			.trim()
+			.split(/\s+/)
+			.map((part) => part[0])
+			.join('')
+			.slice(0, 2)
+			.toUpperCase() || '?'
+	);
 }
 
-function statusLabel(status: Agent['enabled'] extends true ? string : string): string {
-	return status === 'ready' || status === 'enabled' ? t('huhubot.chat.ready') : status;
-}
-
-function formatCount(count: number): string {
-	return t('huhubot.chat.members', { count });
-}
-
-export function BotWorkbenchPage({ host }: BotChatPageProps) {
-	const translate = useT();
-	const client = host.client();
-	const [agents, setAgents] = useState<Agent[]>([]);
-	const [sessions, setSessions] = useState<Session[]>([]);
-	const [selectedSessionId, setSelectedSessionId] = useState<string>();
-	const [messages, setMessages] = useState<VisibleMessage[]>([]);
-	const [draft, setDraft] = useState('');
-	const [query, setQuery] = useState('');
-	const [loading, setLoading] = useState<LoadState>(client ? 'loading' : 'error');
-	const [historyLoading, setHistoryLoading] = useState(false);
-	const [busy, setBusy] = useState(false);
-	const [error, setError] = useState<string>();
-	const [runnerState, setRunnerState] = useState<'ready' | 'offline'>('ready');
-	const composing = useRef(false);
-
-	const loadDirectory = useCallback(async () => {
-		const current = host.client();
-		if (!current) { setRunnerState('offline'); setLoading('error'); return; }
-		setLoading('loading');
-		setError(undefined);
-		try {
-			const [agentPage, sessionPage] = await Promise.all([
-				current.agents.list({ profileId: current.hello.profile.profileId, limit: 100 }),
-				current.sessions.list({ profileId: current.hello.profile.profileId, limit: 100 }),
-			]);
-			setAgents(agentPage.items);
-			setSessions(sessionPage.items);
-			setRunnerState('ready');
-			setLoading('ready');
-		} catch (cause) {
-			setRunnerState('offline');
-			setLoading('error');
-			setError(translate('huhubot.chat.error'));
-			host.report?.(cause);
-		}
-	}, [host, translate]);
-
+export function BotWorkbenchPage({ host, selectedSessionId: initialSelection, onSessionChanged }: BotChatPageProps) {
+	const visible = useVisible();
+	const t = useT(),
+		win = useOwnerWindow(),
+		id = useId();
+	const [workspace] = useState(
+		() =>
+			host.workspace ??
+			new WorkbenchClient(host, {
+				after: (ms, action) => {
+					const timer = win.setTimeout(action, ms);
+					return () => win.clearTimeout(timer);
+				},
+			}),
+	);
+	const view = useStore(workspace.store);
+	const [selectedId, setSelectedId] = useState(initialSelection);
+	const [query, setQuery] = useState(''),
+		[rosterOpen, setRosterOpen] = useState(false);
+	const [error, setError] = useState<string>(),
+		[scopeConsent, setScopeConsent] = useState<'folder' | 'vault'>();
+	const [writePath, setWritePath] = useState('');
+	const [taskExpanded, setTaskExpanded] = useState(false);
+	const [deletion, setDeletion] = useState<DeletionPreview>(),
+		[deleting, setDeleting] = useState(false);
+	const [retainedMemoryIds, setRetainedMemoryIds] = useState<string[]>([]);
+	const composing = useRef(false),
+		selectionGeneration = useRef(0),
+		input = useRef<HTMLTextAreaElement>(null);
+	const selected = view.sessions.find((session) => session.id === selectedId);
+	const thread = (selectedId && view.threads[selectedId]) || EMPTY_THREAD;
+	const selectedAgent =
+		selected?.kind === 'direct' ? view.agents.find((agent) => agent.id === selected.memberIds[0]) : undefined;
 	useEffect(() => {
-		void loadDirectory();
-		if (!client) return;
-		return client.onClose(() => setRunnerState('offline'));
-	}, [client, loadDirectory]);
-
-	const selectedSession = sessions.find(session => session.id === selectedSessionId);
-	const selectedAgent = selectedSession?.memberIds.length === 1 ? agents.find(agent => agent.id === selectedSession.memberIds[0]) : undefined;
-	const filteredAgents = useMemo(() => agents.filter(agent => `${agent.name} ${agent.description}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())), [agents, query]);
-	const filteredSessions = useMemo(() => sessions.filter(session => session.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())), [sessions, query]);
-
-	const loadHistory = useCallback(async (sessionId: string) => {
-		const current = host.client();
-		if (!current) return;
-		setHistoryLoading(true);
-		setError(undefined);
-		try {
-			const page = await current.sessions.history({ profileId: current.hello.profile.profileId, sessionId, limit: 100 });
-			setMessages(page.items);
-		} catch (cause) {
-			setError(translate('huhubot.chat.error'));
+		void workspace.refreshDirectory().catch((cause) => {
+			setError(t('huhubot.chat.error'));
 			host.report?.(cause);
-		} finally {
-			setHistoryLoading(false);
-		}
-	}, [host, translate]);
-
-	const chooseSession = (session: Session) => {
-		setSelectedSessionId(session.id);
-		setDraft('');
-		void loadHistory(session.id);
-	};
-
-	const chooseAgent = async (agent: Agent) => {
-		const current = host.client();
-		if (!current) { setRunnerState('offline'); return; }
-		setError(undefined);
-		const existing = sessions.find(session => session.kind === 'direct' && session.memberIds.length === 1 && session.memberIds[0] === agent.id);
-		if (existing) { chooseSession(existing); return; }
-		try {
-			const session = await current.sessions.create({ ...commandMeta(current), kind: 'direct', title: agent.name, memberIds: [agent.id] });
-			setSessions(previous => [session, ...previous]);
-			chooseSession(session);
-		} catch (cause) {
-			setError(translate('huhubot.chat.error'));
-			host.report?.(cause);
-		}
-	};
-
-	const send = async () => {
-		const text = draft.trim();
-		const current = host.client();
-		if (!text || !selectedSession || !current || busy) return;
-		setBusy(true);
-		setError(undefined);
-		setDraft('');
-		const optimistic: VisibleMessage = {
-			id: `draft-${Date.now()}`,
-			sessionId: selectedSession.id,
-			role: 'user',
-			text,
-			createdAt: new Date().toISOString(),
-			sourceRefs: [],
+		});
+		return () => {
+			if (!host.workspace) workspace.dispose();
 		};
-		setMessages(previous => [...previous, optimistic]);
+	}, [host, workspace, t]);
+	useEffect(() => {
+		if (selectedId && view.online) void workspace.refreshHistory(selectedId).catch((cause) => host.report?.(cause));
+	}, [selectedId, view.online, workspace, host]);
+	const perform = async (action: () => Promise<unknown>) => {
+		setError(undefined);
 		try {
-			await current.runs.start({
-				...commandMeta(current),
-				sessionId: selectedSession.id,
-				expectedRevision: selectedSession.revision,
-				intent: text,
-				sourceRefs: [],
-				targetAgentIds: selectedSession.memberIds,
-			});
-			await loadHistory(selectedSession.id);
+			await action();
 		} catch (cause) {
-			setDraft(text);
-			setError(translate('huhubot.chat.error'));
+			setError(t('huhubot.chat.error'));
 			host.report?.(cause);
-		} finally {
-			setBusy(false);
 		}
 	};
-
-	if (loading === 'loading') return <div className="flex h-full min-h-0 items-center justify-center p-6"><EmptyState icon={<LoaderCircle className="animate-spin" />} title={translate('huhubot.chat.title')} description={translate('huhubot.chat.loading')} /></div>;
-	if (loading === 'error' && agents.length === 0 && sessions.length === 0 && !client) return <div className="flex h-full min-h-0 items-center justify-center p-6"><EmptyState icon={<CircleAlert />} title={translate('huhubot.chat.title')} description={translate('huhubot.chat.offline')} action={host.openSettings ? <Button onClick={host.openSettings}>{translate('huhubot.chat.configure')}</Button> : undefined} /></div>;
-
-	return <section className="flex h-full min-h-0 flex-col overflow-hidden @container" aria-label={translate('huhubot.chat.title')}>
-		<header className="flex min-h-11 shrink-0 flex-wrap items-center gap-2 border-b border-border px-3 py-2 sm:px-4">
-			<div className="flex min-w-0 flex-1 items-center gap-2">
-				<Bot className="size-4 shrink-0" aria-hidden />
-				<h1 className="m-0 truncate text-sm font-semibold">{translate('huhubot.chat.title')}</h1>
-				<Badge variant={runnerState === 'ready' ? 'outline' : 'destructive'} className="shrink-0" aria-label={`${translate('huhubot.chat.connection')}: ${runnerState === 'ready' ? translate('huhubot.chat.ready') : translate('huhubot.chat.offline')}`}>
-					{runnerState === 'ready' ? <CircleCheck className="size-3" aria-hidden /> : <CircleAlert className="size-3" aria-hidden />}
-					{runnerState === 'ready' ? translate('huhubot.chat.ready') : translate('huhubot.chat.offline')}
-				</Badge>
+	const chooseSession = (session: Session) => {
+		selectionGeneration.current++;
+		setSelectedId(session.id);
+		onSessionChanged?.(session.id);
+		setRosterOpen(false);
+		setError(undefined);
+	};
+	const chooseAgent = (agent: Agent) => {
+		const generation = ++selectionGeneration.current;
+		void perform(async () => {
+			const session = await workspace.chooseAgent(agent);
+			if (generation === selectionGeneration.current) chooseSession(session);
+		});
+	};
+	const resetSelection = () => {
+		selectionGeneration.current++;
+		setSelectedId(undefined);
+		onSessionChanged?.(undefined);
+	};
+	const agents = useMemo(
+		() =>
+			view.agents.filter((agent) =>
+				`${agent.name} ${agent.description}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+			),
+		[view.agents, query],
+	);
+	const sessions = useMemo(
+		() =>
+			view.sessions.filter(
+				(session) => !session.archived && session.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+			),
+		[view.sessions, query],
+	);
+	const mentions = selected ? mentionChoices(view.agents, selected.memberIds) : [];
+	const resolution = selected ? resolveMentionTargets(thread.draft, selected, view.agents) : undefined;
+	const projections = Object.values(thread.projections);
+	const active = thread.sending || projections.some((projection) => runIsActive(projection.status));
+	const lastRunId = thread.latestRunId ?? thread.runIds.at(-1);
+	const lastApproval = projections.map((projection) => projection.lastApprovalId).find(Boolean);
+	const groupAttachmentNames =
+		selected?.kind === 'group'
+			? (resolution?.valid && resolution.targetAgentIds.length
+					? resolution.targetAgentIds
+					: [selected.coordinatorId]
+				)
+					.flatMap((agentId) =>
+						agentId ? [view.agents.find((agent) => agent.id === agentId)?.name ?? agentId] : [],
+					)
+					.join(', ')
+			: '';
+	const roster = (
+		<div className="flex h-full min-h-0 flex-col gap-2 p-2">
+			<Label className="sr-only" htmlFor={`${id}-search`}>
+				{t('huhubot.chat.search')}
+			</Label>
+			<Input
+				id={`${id}-search`}
+				value={query}
+				onChange={(event) => setQuery(event.currentTarget.value)}
+				placeholder={t('huhubot.chat.search')}
+			/>
+			<div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+				<h2 className="m-2 text-xs font-medium text-muted-foreground">{t('huhubot.chat.roster')}</h2>
+				<ul className="m-0 grid list-none gap-1 p-0">
+					{agents.map((agent) => (
+						<li key={agent.id}>
+							<button
+								type="button"
+								disabled={!agent.enabled}
+								className="flex min-h-11 w-full items-center gap-2 rounded-md px-2 py-2 text-left outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+								aria-label={agent.name}
+								onClick={() => chooseAgent(agent)}
+							>
+								<span
+									className="grid size-8 shrink-0 place-items-center rounded-md border border-border bg-background text-xs"
+									aria-hidden
+								>
+									{initials(agent.name)}
+								</span>
+								<span className="min-w-0 flex-1">
+									<span className="block truncate text-sm">{agent.name}</span>
+									<span className="block truncate text-xs text-muted-foreground">
+										{agent.enabled ? agent.description : t('huhubot.common.disabled')}
+									</span>
+								</span>
+							</button>
+						</li>
+					))}
+				</ul>
+				{!agents.length && <p className="m-2 text-xs text-muted-foreground">{t('huhubot.chat.noBots')}</p>}
+				<h2 className="m-2 mt-4 text-xs font-medium text-muted-foreground">{t('huhubot.chat.sessions')}</h2>
+				<ul className="m-0 grid list-none gap-1 p-0">
+					{sessions.map((session) => (
+						<li key={session.id}>
+							<button
+								type="button"
+								className="flex min-h-11 w-full items-center gap-2 rounded-md px-2 py-2 text-left outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring aria-[current=true]:bg-accent"
+								aria-label={`${session.title} ${session.kind === 'group' ? t('huhubot.chat.group') : t('huhubot.chat.direct')}`}
+								aria-current={selectedId === session.id ? 'true' : undefined}
+								onClick={() => chooseSession(session)}
+							>
+								{session.kind === 'group' ? (
+									<Users className="size-4 shrink-0" aria-hidden />
+								) : (
+									<Bot className="size-4 shrink-0" aria-hidden />
+								)}
+								<span className="min-w-0 truncate text-sm">{session.title}</span>
+							</button>
+						</li>
+					))}
+				</ul>
+				{(view.agentCursor || view.sessionCursor) && (
+					<Button
+						variant="outline"
+						size="sm"
+						className="mt-3 w-full"
+						disabled={view.loading}
+						onClick={() => void perform(() => workspace.refreshDirectory(true))}
+					>
+						{t('huhubot.common.more')}
+					</Button>
+				)}
 			</div>
-			<Button variant="outline" size="sm" onClick={() => { setSelectedSessionId(undefined); setMessages([]); }}><Plus aria-hidden />{translate('huhubot.chat.newSession')}</Button>
-		</header>
-		<div className="grid min-h-0 flex-1 grid-cols-1 @3xl:grid-cols-[17rem,minmax(0,1fr)]">
-			<aside className="flex min-h-0 flex-col border-b border-border bg-sidebar @3xl:border-r @3xl:border-b-0" aria-label={translate('huhubot.chat.roster')}>
-				<div className="flex items-center gap-2 border-b border-border p-3"><Search className="size-4 shrink-0 text-muted-foreground" aria-hidden /><Label htmlFor="huhubot-chat-search" className="sr-only">{translate('huhubot.chat.search')}</Label><Input id="huhubot-chat-search" className="h-8" value={query} onChange={event => setQuery(event.currentTarget.value)} placeholder={translate('huhubot.chat.search')} /></div>
-				<div className="min-h-0 flex-1 overflow-y-auto p-2">
-					<div className="mb-1 flex items-center justify-between px-2 py-1 text-xs font-medium text-muted-foreground"><span>{translate('huhubot.chat.roster')}</span><span>{filteredAgents.length}</span></div>
-					{filteredAgents.length === 0 ? <p className="m-2 text-xs text-muted-foreground">{translate('huhubot.chat.noBots')}</p> : <ul className="m-0 grid list-none gap-1 p-0">{filteredAgents.map(agent => <li key={agent.id}><button type="button" className="flex min-h-14 w-full min-w-0 items-center gap-2 rounded-md px-2 py-2 text-left outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring" aria-label={agent.name} onClick={() => void chooseAgent(agent)}><span className="grid size-8 shrink-0 place-items-center rounded-md border border-border bg-background text-xs font-semibold" aria-hidden>{initials(agent.name)}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{agent.name}</span><span className="block truncate text-xs text-muted-foreground">{statusLabel(agent.enabled ? 'enabled' : 'disabled')}</span></span>{agent.enabled ? <CircleCheck className="size-3.5 shrink-0 text-status-success" aria-label={translate('huhubot.chat.ready')} /> : <X className="size-3.5 shrink-0 text-muted-foreground" aria-label={translate('huhubot.chat.offline')} />}</button></li>)}</ul>}
-					<div className="mb-1 mt-4 flex items-center justify-between px-2 py-1 text-xs font-medium text-muted-foreground"><span>{translate('huhubot.chat.sessions')}</span><span>{filteredSessions.length}</span></div>
-					<ul className="m-0 grid list-none gap-1 p-0">{filteredSessions.map(session => <li key={session.id}><button type="button" className="flex min-h-12 w-full min-w-0 items-center gap-2 rounded-md px-2 py-2 text-left outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring aria-[current=true]:bg-sidebar-accent" aria-current={selectedSessionId === session.id ? 'true' : undefined} onClick={() => chooseSession(session)}><span className="grid size-8 shrink-0 place-items-center rounded-md border border-border bg-background" aria-hidden>{session.kind === 'group' ? <Users className="size-4" /> : <MessageCircle className="size-4" />}</span><span className="min-w-0 flex-1"><span className="block truncate text-sm">{session.title}</span><span className="block truncate text-xs text-muted-foreground">{session.kind === 'group' ? formatCount(session.memberIds.length) : translate('huhubot.chat.direct')}</span></span></button></li>)}</ul>
-				</div>
-			</aside>
-			<main className="flex min-h-0 min-w-0 flex-col" aria-label={selectedSession ? selectedSession.title : translate('huhubot.chat.selectBot')}>
-				{!selectedSession ? <div className="flex min-h-0 flex-1 items-center justify-center p-6"><EmptyState icon={<MessageCircle />} title={translate('huhubot.chat.selectBot')} description={agents.length ? translate('huhubot.chat.empty') : translate('huhubot.chat.noBots')} action={!agents.length && host.openSettings ? <Button onClick={host.openSettings}>{translate('huhubot.chat.configure')}</Button> : undefined} /></div> : <>
-					<header className="flex min-h-12 shrink-0 items-center gap-2 border-b border-border px-3 py-2 sm:px-5"><span className="grid size-8 shrink-0 place-items-center rounded-md border border-border bg-secondary text-xs font-semibold" aria-hidden>{selectedSession.kind === 'group' ? <Users className="size-4" /> : initials(selectedAgent?.name ?? selectedSession.title)}</span><div className="min-w-0 flex-1"><h2 className="m-0 truncate text-sm font-semibold">{selectedSession.title}</h2><p className="m-0 truncate text-xs text-muted-foreground">{selectedSession.kind === 'group' ? formatCount(selectedSession.memberIds.length) : selectedAgent?.description ?? translate('huhubot.chat.direct')}</p></div>{busy && <Badge variant="secondary"><LoaderCircle className="size-3 animate-spin" aria-hidden />{translate('huhubot.chat.busy')}</Badge>}</header>
-					<div className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-8"><div className="mx-auto flex w-full max-w-3xl flex-col gap-5">{historyLoading ? <p role="status" className="text-center text-xs text-muted-foreground">{translate('huhubot.chat.loadingHistory')}</p> : messages.length === 0 ? <p className="text-center text-xs text-muted-foreground">{translate('huhubot.chat.noMessages')}</p> : messages.map(message => <MessageBubble key={message.id} message={message} />)}{error && <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-xs text-destructive" role="alert">{error}<Button variant="link" size="sm" className="ml-2 h-auto p-0" onClick={() => void loadDirectory()}>{translate('huhubot.chat.retry')}</Button></div>}</div></div>
-					<form className="shrink-0 border-t border-border px-3 py-3 sm:px-8" onSubmit={event => { event.preventDefault(); if (!composing.current) void send(); }}><div className="mx-auto flex w-full max-w-3xl items-end gap-2"><Label htmlFor="huhubot-chat-composer" className="sr-only">{translate('huhubot.chat.placeholder')}</Label><Textarea id="huhubot-chat-composer" className="max-h-36 min-h-16 resize-y" value={draft} onChange={event => setDraft(event.currentTarget.value)} onCompositionStart={() => { composing.current = true; }} onCompositionEnd={() => { composing.current = false; }} placeholder={translate('huhubot.chat.placeholder')} disabled={busy || runnerState === 'offline'} aria-describedby="huhubot-chat-draft-status" /><Button type="submit" size="icon" aria-label={translate('huhubot.chat.send')} title={translate('huhubot.chat.send')} disabled={busy || !draft.trim() || runnerState === 'offline'}><Send aria-hidden /></Button></div><p id="huhubot-chat-draft-status" className="m-1 mx-auto max-w-3xl text-right text-[11px] text-muted-foreground">{draft ? translate('huhubot.chat.draftSaved') : ''}</p></form>
-				</>}
-			</main>
+			<div className="flex flex-wrap gap-1 border-t border-border pt-2">
+				<Button size="sm" variant="outline" onClick={() => host.openTarget?.('agents')}>
+					{t('huhubot.agent.create')}
+				</Button>
+				<Button size="sm" variant="outline" onClick={() => host.openTarget?.('groups')}>
+					{t('huhubot.chat.newGroup')}
+				</Button>
+				<BotManagementMenu openTarget={host.openTarget} openSettings={host.openSettings} />
+			</div>
 		</div>
-	</section>;
-}
+	);
+	const attach = (kind: 'note' | 'folder' | 'vault') =>
+		void perform(async () => {
+			if (!selectedId) return;
+			const source = kind === 'note' ? await host.captureSource?.() : await host.captureScope?.(kind);
+			if (source) workspace.attach(selectedId, source);
+		});
+	const errorText = thread.error?.startsWith('MENTION_')
+		? t('huhubot.chat.mentionInvalid')
+		: thread.error === 'SESSION_BUSY'
+			? t('huhubot.chat.busyError')
+			: thread.uncertain
+				? t('huhubot.chat.startUncertain')
+				: (error ?? (thread.error || view.error ? t('huhubot.chat.error') : undefined));
 
-function MessageBubble({ message }: { message: VisibleMessage }) {
-	const translate = useT();
-	const user = message.role === 'user';
-	return <article className={`flex gap-2 ${user ? 'flex-row-reverse' : ''}`} aria-label={user ? translate('huhubot.chat.you') : message.agentId ?? translate('huhubot.chat.title')}><span className="grid size-7 shrink-0 place-items-center rounded-md border border-border bg-secondary text-xs" aria-hidden>{user ? 'Y' : <Bot className="size-3.5" />}</span><div className={`min-w-0 max-w-[88%] rounded-xl border border-border px-3 py-2 text-sm ${user ? 'bg-secondary' : 'bg-card'}`}><p className="m-0 whitespace-pre-wrap break-words">{message.text}</p>{message.sourceRefs.length > 0 && <div className="mt-2 flex flex-wrap gap-1" aria-label={translate('huhubot.chat.sources')}>{message.sourceRefs.map(source => <Badge variant="outline" key={`${source.resourceId}:${source.revision ?? ''}`} title={source.resourceId}>{source.title ?? source.resourceId}</Badge>)}</div>}</div></article>;
+	if (!host.client())
+		return (
+			<div className="flex h-full items-center justify-center p-6">
+				<EmptyState
+					icon={<CircleAlert />}
+					title={t('huhubot.chat.title')}
+					description={t('huhubot.chat.offline')}
+					action={
+						host.openSettings ? (
+							<Button onClick={host.openSettings}>{t('huhubot.chat.configure')}</Button>
+						) : undefined
+					}
+				/>
+			</div>
+		);
+	if (!view.loaded && view.loading)
+		return (
+			<EmptyState
+				icon={<LoaderCircle className="animate-spin" />}
+				title={t('huhubot.chat.title')}
+				description={t('huhubot.chat.loading')}
+			/>
+		);
+	return (
+		<section
+			className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden @container"
+			aria-label={t('huhubot.chat.title')}
+		>
+			<header className="flex min-h-12 shrink-0 flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+				<Popover open={visible && rosterOpen} onOpenChange={setRosterOpen} modal>
+					<PopoverTrigger asChild>
+						<Button
+							variant="outline"
+							size="icon"
+							className="@min-[960px]:hidden"
+							aria-label={t('huhubot.chat.rosterToggle')}
+						>
+							<Menu aria-hidden />
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent
+						align="start"
+						onCloseAutoFocus={(event) => {
+							if (!visible) event.preventDefault();
+						}}
+						className="h-[min(75vh,36rem)] w-[min(85vw,20rem)] p-0"
+						aria-label={t('huhubot.chat.roster')}
+					>
+						{roster}
+					</PopoverContent>
+				</Popover>
+				<Bot className="size-4" aria-hidden />
+				<h1 className="m-0 min-w-0 flex-1 truncate text-sm font-semibold">{t('huhubot.chat.title')}</h1>
+				<Badge variant={view.online ? 'outline' : 'destructive'}>
+					{view.online ? t('huhubot.chat.ready') : t('huhubot.chat.offline')}
+				</Badge>
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label={t('huhubot.chat.renewDirectory')}
+					disabled={view.loading}
+					onClick={() => void perform(() => workspace.refreshDirectory())}
+				>
+					<RefreshCw aria-hidden />
+				</Button>
+				<Button variant="outline" size="sm" onClick={resetSelection}>
+					<Plus aria-hidden />
+					{t('huhubot.chat.newSession')}
+				</Button>
+			</header>
+			<div className="grid min-h-0 flex-1 grid-cols-1 @min-[960px]:grid-cols-[17rem_minmax(0,1fr)]">
+				<aside
+					className="hidden min-h-0 border-r border-border bg-sidebar @min-[960px]:block"
+					aria-label={t('huhubot.chat.roster')}
+				>
+					{roster}
+				</aside>
+				<main
+					className="flex min-h-0 min-w-0 flex-col"
+					aria-label={selected?.title ?? t('huhubot.chat.selectBot')}
+				>
+					{!selected ? (
+						<div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-6">
+							<EmptyState
+								icon={<Bot />}
+								title={t('huhubot.chat.selectBot')}
+								description={view.agents.length ? t('huhubot.chat.empty') : t('huhubot.chat.noBots')}
+								action={
+									<Button
+										onClick={() =>
+											host.openTarget ? host.openTarget('agents') : host.openSettings?.()
+										}
+									>
+										{t('huhubot.chat.configure')}
+									</Button>
+								}
+							/>
+						</div>
+					) : (
+						<>
+							<header className="flex min-h-12 shrink-0 flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+								<div className="min-w-0 flex-1">
+									<h2 className="m-0 truncate text-sm font-semibold">{selected.title}</h2>
+									<p className="m-0 text-xs text-muted-foreground">
+										{selected.kind === 'group'
+											? t('huhubot.chat.members', { count: selected.memberIds.length })
+											: selectedAgent?.description}
+									</p>
+								</div>
+								{active && (
+									<>
+										<Badge variant="secondary">{t('huhubot.chat.busy')}</Badge>
+										<Button
+											variant="outline"
+											size="sm"
+											disabled={thread.sending}
+											onClick={() => void perform(() => workspace.cancelRun(selected.id))}
+										>
+											{t('huhubot.chat.stop')}
+										</Button>
+									</>
+								)}
+								{lastRunId && (
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() => host.openTarget?.('tasks', lastRunId)}
+									>
+										{t('huhubot.chat.openTask')}
+									</Button>
+								)}
+								<Button
+									size="sm"
+									variant="ghost"
+									onClick={() =>
+										void perform(async () => {
+											const generation = selectionGeneration.current;
+											const preview = await workspace.deletionPreview(selected.id);
+											if (generation === selectionGeneration.current) {
+												setRetainedMemoryIds([]);
+												setDeletion(preview);
+											}
+										})
+									}
+								>
+									{t('huhubot.chat.deleteBody')}
+								</Button>
+							</header>
+							<div className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
+								<div className="mx-auto grid w-full max-w-3xl gap-4">
+									{thread.historyLoading && !thread.historyLoaded ? (
+										<p role="status" className="text-xs text-muted-foreground">
+											{t('huhubot.chat.loadingHistory')}
+										</p>
+									) : (
+										!thread.messages.length &&
+										!projections.some((projection) => projection.pendingText) && (
+											<p className="text-sm text-muted-foreground">
+												{t('huhubot.chat.noMessages')}
+											</p>
+										)
+									)}
+									{thread.messages.map((message) => (
+										<article
+											key={message.id}
+											className="min-w-0 rounded-lg border border-border bg-card p-3"
+										>
+											<header className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+												<span>
+													{message.role === 'user'
+														? t('huhubot.chat.you')
+														: (view.agents.find((agent) => agent.id === message.agentId)
+																?.name ??
+															selectedAgent?.name ??
+															selected.title)}
+												</span>
+												{message.partial && (
+													<Badge variant="outline">{t('huhubot.tasks.partial')}</Badge>
+												)}
+												{message.runId && (
+													<Button
+														size="sm"
+														variant="link"
+														className="ml-auto h-auto p-0"
+														onClick={() => host.openTarget?.('tasks', message.runId)}
+													>
+														{t('huhubot.chat.openTask')}
+													</Button>
+												)}
+											</header>
+											<p className="m-0 mt-2 whitespace-pre-wrap break-words text-sm">
+												{message.text}
+											</p>
+											{message.sourceRefs.length > 0 && (
+												<div className="mt-2 flex flex-wrap gap-1">
+													{message.sourceRefs.map((source) => (
+														<Button
+															key={source.resourceId}
+															size="sm"
+															variant="outline"
+															onClick={() => host.openSource?.(source)}
+														>
+															{source.title ?? source.resourceId}
+														</Button>
+													))}
+												</div>
+											)}
+										</article>
+									))}
+									{projections
+										.filter(
+											(projection) => projection.pendingText && runIsActive(projection.status),
+										)
+										.map((projection) => (
+											<article
+												key={projection.runId}
+												className="rounded-lg border border-border p-3"
+												aria-live="polite"
+											>
+												<Badge variant="outline">{t('huhubot.chat.stream')}</Badge>
+												<p className="whitespace-pre-wrap break-words text-sm">
+													{projection.pendingText}
+												</p>
+											</article>
+										))}
+									{lastRunId && (
+										<AgentProposals
+											key={`proposals:${lastRunId}`}
+											client={host.client()!}
+											workspace={workspace}
+											runId={lastRunId}
+										/>
+									)}
+									{lastRunId && (
+										<details
+											className="rounded-lg border border-border p-3"
+											onToggle={(event) => setTaskExpanded(event.currentTarget.open)}
+										>
+											<summary className="cursor-pointer text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring">
+												{t('huhubot.tasks.delegations')}
+											</summary>
+											{taskExpanded && (
+												<TaskSummary key={lastRunId} host={host} runId={lastRunId} />
+											)}
+										</details>
+									)}
+									{lastApproval && (
+										<InlineApproval
+											key={lastApproval}
+											workspace={workspace}
+											client={host.client()!}
+											approvalId={lastApproval}
+											onResolved={() => void workspace.refreshHistory(selected.id)}
+										/>
+									)}
+									{thread.historyCursor && (
+										<Button
+											variant="outline"
+											disabled={thread.historyLoading}
+											onClick={() =>
+												void perform(() => workspace.refreshHistory(selected.id, true))
+											}
+										>
+											{t('huhubot.chat.historyMore')}
+										</Button>
+									)}
+								</div>
+							</div>
+							<footer className="shrink-0 border-t border-border p-3">
+								<div className="mx-auto grid w-full max-w-3xl gap-2">
+									{errorText && (
+										<p role="alert" className="m-0 text-xs text-destructive">
+											{errorText}
+											{thread.uncertain ? (
+												<Button
+													size="sm"
+													variant="link"
+													onClick={() => void perform(() => workspace.retrySend(selected.id))}
+												>
+													{t('huhubot.chat.retryOriginal')}
+												</Button>
+											) : (
+												<Button
+													size="sm"
+													variant="link"
+													onClick={() =>
+														void perform(() => workspace.refreshHistory(selected.id))
+													}
+												>
+													{t('huhubot.chat.retry')}
+												</Button>
+											)}
+										</p>
+									)}
+									<div className="flex flex-wrap items-center gap-1">
+										{[...thread.sources, ...thread.scopes].map((source) => (
+											<span
+												key={source.resourceId}
+												className="inline-flex max-w-full items-center gap-1 rounded border border-border px-2 text-xs"
+											>
+												<span className="min-w-0 truncate">
+													{source.title ?? source.resourceId}
+												</span>
+												<Button
+													size="icon-sm"
+													variant="ghost"
+													aria-label={t('huhubot.chat.removeSource')}
+													onClick={() =>
+														workspace.removeAttachment(selected.id, source.resourceId)
+													}
+												>
+													<X aria-hidden />
+												</Button>
+											</span>
+										))}
+									</div>
+									{selected.kind === 'group' &&
+										(thread.sources.length > 0 || thread.scopes.length > 0) && (
+											<p className="m-0 text-xs text-muted-foreground">
+												{t('huhubot.chat.groupAttachmentRecipients', {
+													names: groupAttachmentNames,
+												})}
+											</p>
+										)}
+									{host.writeTarget && (
+										<div className="flex flex-wrap items-end gap-2">
+											<div className="min-w-0 flex-1">
+												<Label htmlFor={`${id}-write-path`} className="text-xs">
+													{t('huhubot.chat.writeTarget')}
+												</Label>
+												<Input
+													id={`${id}-write-path`}
+													placeholder={t('huhubot.chat.writePath')}
+													value={writePath}
+													onChange={(event) => setWritePath(event.currentTarget.value)}
+												/>
+											</div>
+											<Button
+												variant="outline"
+												size="sm"
+												disabled={!writePath.trim()}
+												onClick={() =>
+													void perform(async () => {
+														const target = await host.writeTarget!(
+															writePath.trim(),
+															selected.id,
+														);
+														if (target) {
+															workspace.setWriteTarget(selected.id, {
+																target,
+																path: writePath.trim(),
+															});
+															setWritePath('');
+														}
+													})
+												}
+											>
+												{t('huhubot.chat.authorizeWrite')}
+											</Button>
+										</div>
+									)}
+									{thread.writeTarget && (
+										<div className="flex items-center gap-2 rounded border border-border p-2 text-xs">
+											<span className="min-w-0 flex-1 break-all">
+												{t('huhubot.chat.writeTarget')}: {thread.writeTarget.path}
+											</span>
+											<Button
+												size="icon-sm"
+												variant="ghost"
+												aria-label={t('huhubot.common.close')}
+												onClick={() => workspace.setWriteTarget(selected.id, undefined)}
+											>
+												<X aria-hidden />
+											</Button>
+										</div>
+									)}
+									{selected.kind === 'group' && (
+										<div className="flex flex-wrap items-center gap-2 text-xs">
+											<Label htmlFor={`${id}-mention`}>{t('huhubot.chat.mention')}</Label>
+											<select
+												id={`${id}-mention`}
+												value=""
+												className="h-9 max-w-full rounded border border-input bg-background px-2"
+												onChange={(event) => {
+													const agent = view.agents.find(
+														(item) => item.id === event.currentTarget.value,
+													);
+													if (!agent) return;
+													const draft = resolution?.valid
+															? thread.draft
+															: { ...thread.draft, mentions: [] },
+														start = input.current?.selectionStart ?? draft.text.length,
+														end = input.current?.selectionEnd ?? start;
+													workspace.setDraft(
+														selected.id,
+														selectMention(draft, start, end, agent),
+													);
+													input.current?.focus();
+												}}
+											>
+												<option value="">{t('huhubot.chat.mention')}</option>
+												{mentions.map((choice) => (
+													<option key={choice.agentId} value={choice.agentId}>
+														{choice.identityLabel}
+													</option>
+												))}
+											</select>
+											{thread.draft.mentions.length > 0 && (
+												<Button
+													size="sm"
+													variant="ghost"
+													onClick={() =>
+														workspace.setDraft(selected.id, {
+															text: thread.draft.text,
+															mentions: [],
+														})
+													}
+												>
+													{t('huhubot.common.close')} @
+												</Button>
+											)}
+											<span>
+												{t('huhubot.chat.target')}:{' '}
+												{resolution?.valid && resolution.targetAgentIds.length
+													? resolution.targetAgentIds
+															.map(
+																(target) =>
+																	view.agents.find((agent) => agent.id === target)
+																		?.name ?? target,
+															)
+															.join(', ')
+													: (view.agents.find((agent) => agent.id === selected.coordinatorId)
+															?.name ?? t('huhubot.chat.coordinator'))}
+											</span>
+										</div>
+									)}
+									<Label htmlFor={`${id}-composer`} className="sr-only">
+										{t('huhubot.chat.placeholder')}
+									</Label>
+									<Textarea
+										ref={input}
+										id={`${id}-composer`}
+										value={thread.draft.text}
+										onChange={(event) => workspace.setText(selected.id, event.currentTarget.value)}
+										placeholder={t('huhubot.chat.placeholder')}
+										className="min-h-20 max-h-48 resize-y"
+										onCompositionStart={() => {
+											composing.current = true;
+										}}
+										onCompositionEnd={() => {
+											composing.current = false;
+										}}
+										onKeyDown={(event) => {
+											if (
+												event.key === 'Enter' &&
+												!event.shiftKey &&
+												!event.nativeEvent.isComposing &&
+												!composing.current
+											) {
+												event.preventDefault();
+												if (!active && !thread.uncertain && thread.draft.text.trim())
+													void perform(() => workspace.send(selected.id));
+											}
+										}}
+									/>
+									<div className="flex flex-wrap items-center gap-2">
+										<Button
+											size="sm"
+											variant="outline"
+											disabled={!host.captureSource}
+											onClick={() => attach('note')}
+										>
+											<Paperclip aria-hidden />
+											{t('huhubot.chat.attach')}
+										</Button>
+										<Button
+											size="sm"
+											variant="ghost"
+											disabled={!host.captureScope}
+											onClick={() => setScopeConsent('folder')}
+										>
+											{t('huhubot.chat.attachFolder')}
+										</Button>
+										<Button
+											size="sm"
+											variant="ghost"
+											disabled={!host.captureScope}
+											onClick={() => setScopeConsent('vault')}
+										>
+											{t('huhubot.chat.attachVault')}
+										</Button>
+										<span
+											data-slot="bot-draft-status"
+											className="basis-full text-xs text-muted-foreground @min-[42rem]:min-w-0 @min-[42rem]:flex-1 @min-[42rem]:basis-auto"
+										>
+											{t('huhubot.chat.draftSaved')}
+										</span>
+										<Button
+											disabled={
+												!thread.draft.text.trim() || active || thread.uncertain || !view.online
+											}
+											onClick={() => void perform(() => workspace.send(selected.id))}
+										>
+											<Send aria-hidden />
+											{t('huhubot.chat.send')}
+										</Button>
+									</div>
+								</div>
+							</footer>
+						</>
+					)}
+				</main>
+			</div>
+			<AlertDialog
+				open={visible && !!scopeConsent}
+				onOpenChange={(open) => {
+					if (!open) setScopeConsent(undefined);
+				}}
+			>
+				<AlertDialogContent
+					onCloseAutoFocus={(event) => {
+						if (!visible) event.preventDefault();
+					}}
+				>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							{scopeConsent === 'vault' ? t('huhubot.chat.attachVault') : t('huhubot.chat.attachFolder')}
+						</AlertDialogTitle>
+						<AlertDialogDescription>{t('huhubot.chat.scopeConsent')}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>{t('huhubot.common.cancel')}</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={() => {
+								if (scopeConsent) attach(scopeConsent);
+								setScopeConsent(undefined);
+							}}
+						>
+							{t('huhubot.common.confirm')}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+			<AlertDialog
+				open={visible && !!deletion}
+				onOpenChange={(open) => {
+					if (!open && !deleting) setDeletion(undefined);
+				}}
+			>
+				<AlertDialogContent
+					onCloseAutoFocus={(event) => {
+						if (!visible) event.preventDefault();
+					}}
+				>
+					<AlertDialogHeader>
+						<AlertDialogTitle>{t('huhubot.chat.deleteBody')}</AlertDialogTitle>
+						<AlertDialogDescription>{t('huhubot.chat.deleteConfirm')}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<ul className="m-0 list-disc pl-5 text-xs">
+						{deletion?.categories.map((category) => (
+							<li key={category.kind}>
+								{deletionCategoryLabel(category.kind)}: {category.count}
+								{category.retained ? ` · ${t('huhubot.chat.retained')}` : ''}
+							</li>
+						))}
+					</ul>
+					{deletion?.categories
+						.filter((category) => category.kind.startsWith('memory:'))
+						.map((category) => (
+							<label key={category.kind} className="flex min-h-11 items-center gap-2 text-xs">
+								<Checkbox
+									checked={retainedMemoryIds.includes(category.kind.slice(7))}
+									onCheckedChange={(checked) => {
+										setRetainedMemoryIds((previous) =>
+											checked === true
+												? [...previous, category.kind.slice(7)]
+												: previous.filter((id) => id !== category.kind.slice(7)),
+										);
+									}}
+								/>
+								{t('huhubot.data.retainMemory')}: {category.kind.slice(7)}
+							</label>
+						))}
+					<AlertDialogFooter>
+						<AlertDialogCancel disabled={deleting}>{t('huhubot.common.cancel')}</AlertDialogCancel>
+						<AlertDialogAction
+							disabled={deleting}
+							onClick={(event) => {
+								event.preventDefault();
+								if (!selected || !deletion) return;
+								setDeleting(true);
+								void perform(async () => {
+									await workspace.deleteSession(selected.id, deletion, retainedMemoryIds);
+									setDeletion(undefined);
+									resetSelection();
+								}).finally(() => setDeleting(false));
+							}}
+						>
+							{t('huhubot.chat.deleteConfirmAction')}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</section>
+	);
 }
