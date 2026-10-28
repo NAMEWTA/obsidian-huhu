@@ -2015,6 +2015,10 @@
     width: calc(var(--spacing) * 1);
   }
 
+.w-1\.5:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    width: calc(var(--spacing) * 1.5);
+  }
+
 .w-1\/2:is(.huhu-ui, .huhu-ui *):not(#\#) {
     width: 50%;
   }
@@ -2641,6 +2645,10 @@
 
 .max-w-\[calc\(100vw-24px\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     max-width: calc(100vw - 24px);
+  }
+
+.max-w-\[min\(90vw\,420px\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    max-width: min(90vw, 420px);
   }
 
 .max-w-\[min\(720px\,_86vw\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -4231,6 +4239,10 @@
 
 .border-\[var\(--db-border-card\)\]:is(.huhu-ui, .huhu-ui *):not(#\#) {
     border-color: var(--db-border-card);
+  }
+
+.border-background:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    border-color: var(--background);
   }
 
 .border-border:is(.huhu-ui, .huhu-ui *):not(#\#), .border-border\/40:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -7350,6 +7362,10 @@
     outline-width: 1px;
   }
 
+.outline-offset-2:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    outline-offset: 2px;
+  }
+
 .outline-foreground\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
     outline-color: var(--foreground);
   }
@@ -9557,6 +9573,11 @@
     outline-width: 1px;
   }
 
+.focus-visible\:outline-2:focus-visible:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    outline-style: var(--tw-outline-style);
+    outline-width: 2px;
+  }
+
 .focus-visible\:outline-ring:focus-visible:is(.huhu-ui, .huhu-ui *):not(#\#) {
     outline-color: var(--ring);
   }
@@ -9655,6 +9676,15 @@
     .aria-invalid\:ring-destructive\/20[aria-invalid="true"]:is(.huhu-ui, .huhu-ui *):not(#\#) {
       --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
+  }
+
+.aria-pressed\:ring-2[aria-pressed="true"]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+.aria-pressed\:ring-ring[aria-pressed="true"]:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    --tw-ring-color: var(--ring);
   }
 
 .aria-selected\:font-medium[aria-selected="true"]:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -21468,8 +21498,8 @@ body.huhu-theme-line-height {
 /* Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: styles.css (editor and reading marks). */
 .huhu-comments-editor { --nd-comment-color: var(--interactive-accent); }
 .huhu-comment-hl {
-	background: color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 22%, transparent);
-	border-bottom: 1px solid color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 60%, transparent);
+	background: color-mix(in srgb, var(--huhu-highlight-color, var(--nd-comment-color, var(--interactive-accent))) 28%, transparent);
+	border-bottom: 1px solid color-mix(in srgb, var(--huhu-highlight-color, var(--nd-comment-color, var(--interactive-accent))) 70%, transparent);
 	cursor: pointer;
 }
 .huhu-comments-editor .huhu-comment-line { background: color-mix(in srgb, var(--nd-comment-color) 8%, transparent); }
@@ -21505,6 +21535,11 @@ body.huhu-theme-line-height {
 	.huhu-comments-editor .huhu-comment-marker::before { inset: -13px; }
 	.huhu-comment-reading-marker { min-width: 44px; min-height: 44px; }
 }
+
+/* Overlapping marks retain all associated card IDs; the popover lists each. */
+.huhu-comment-hl[data-highlight-count]:not([data-highlight-count="1"]) { border-bottom-style: dashed; }
+.huhu-comments-panel .huhu-highlight-color { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; border: 1px solid var(--background-modifier-border); }
+.huhu-comments-panel .huhu-highlight-card-note { overflow-wrap: anywhere; }
 /**
  * Copyright (c) 2014 The xterm.js authors. All rights reserved.
  * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)

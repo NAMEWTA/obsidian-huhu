@@ -7,7 +7,7 @@ import { Button } from '../../ui/components/button';
 
 function CommentsEmptyState({ openSettings }: { openSettings: () => void }) {
 	const t = useT();
-	return <EmptyState icon={<MessageSquareText />} title={t('modules.editor')} description={t('modules.editorOff')} action={<Button onClick={openSettings}>{t('workbench.enableModule')}</Button>} />;
+	return <EmptyState icon={<MessageSquareText />} title={t('modules.highlights')} description={t('modules.editorOff')} action={<Button onClick={openSettings}>{t('workbench.enableModule')}</Button>} />;
 }
 
 /** Loaded only when a disabled comments leaf is actually opened. */

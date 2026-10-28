@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import type { CommentedNote } from '../api';
 import type { CommentStore } from '../core/store';
-import type { CommentMessage, CommentThread, NewCommentInput } from '../core/model';
+import type { CommentMessage, CommentThread, NewCommentInput, NewHighlightInput } from '../core/model';
 import type { CommentsSettings } from '../settings';
 
 /** UI snapshots and write actions. The durable queue remains owned by CommentStore. */
@@ -19,6 +19,7 @@ export function createCommentsService(store: CommentStore, settings: () => Comme
 	const off = store.subscribe(() => { state.setState(s => ({ revision: s.revision + 1 })); void refresh(); });
 	// A retry after flush failure must not append the same draft again.
 	const accepted = new WeakMap<object, { id: string; messageId: string; text: string; author: string }>();
+	const acceptedHighlights = new WeakMap<object, string>();
 	const persistOnce = async (key: object, text: string, operation: () => Promise<CommentThread>) => {
 		let draft = accepted.get(key);
 		if (!draft) {
@@ -36,6 +37,17 @@ export function createCommentsService(store: CommentStore, settings: () => Comme
 		state, store, settings, refresh,
 		setPath(path: string | null) { state.setState({ path }); },
 		async load(path: string) { await store.loadFile(path); if (!dead) state.setState(s => ({ revision: s.revision + 1, error: false })); },
+		async highlight(key: object, path: string, input: NewHighlightInput) {
+			let id = acceptedHighlights.get(key);
+			if (!id) { const thread = await store.highlight(path, input); id = thread.id; acceptedHighlights.set(key, id); }
+			await store.flush(); acceptedHighlights.delete(key);
+			return id;
+		},
+		async recolor(id: string, color: NewHighlightInput['color'], hex?: string) { await store.setHighlightColor(id, color, hex); await store.flush(); },
+		async note(id: string, text: string) { await store.setNote(id, text); await store.flush(); },
+		async tags(id: string, tags: string[]) { await store.setTags(id, tags); await store.flush(); },
+		async pin(id: string, pin: boolean) { await store.setPinned(id, pin); await store.flush(); },
+		async archive(id: string, archive: boolean) { await store.setArchived(id, archive); await store.flush(); },
 		add(key: object, path: string, input: NewCommentInput) { return persistOnce(key, input.text, () => store.add(path, { ...input, author: settings().author })); },
 		reply(key: object, id: string, text: string) { return persistOnce(key, text, () => store.reply(id, text, settings().author)); },
 		async edit(id: string, messageId: string, text: string) { await store.editMessage(id, messageId, text, settings().author); await store.flush(); },

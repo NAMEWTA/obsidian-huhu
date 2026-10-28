@@ -26,7 +26,7 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 | [Built-in browser](docs/browser.md) | Web tabs, profiles, Cookie import, downloads and material capture |
 | [Archives](docs/contacts.md) | People/company archives, relationships, material and linked notes |
 | [Automations and notifications](docs/automation.md) | Manual/scheduled actions, prechecks, device ownership, run history and notifications |
-| [Comments](docs/comments.md) | Line/selection comments, anchors, hover threads and sidebar |
+| [Highlights](docs/comments.md) | Four-color non-intrusive Markdown highlights, searchable excerpt cards, notes, tags, comments and export |
 | [Icons and appearance](docs/appearance.md) | File/interface icons, themes, Markdown palettes and local fonts |
 | [Git sync](docs/sync.md) | Current-vault repository initialization, commit, pull, push, exclusions and conflicts |
 | [Encrypted safe](docs/safe.md) | Independent master password, encrypted records, locking, backup and authenticated recovery |

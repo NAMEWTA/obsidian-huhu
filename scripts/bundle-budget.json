@@ -1,8 +1,8 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 6050816,
-  "stylesBytes": 1422336,
-  "eagerBytes": 122880,
+  "outputBytes": 6291456,
+  "stylesBytes": 1441792,
+  "eagerBytes": 124928,
   "forbiddenEagerAreas": [
     "npm:lunar-typescript",
     "npm:chart.js",
@@ -20,13 +20,13 @@
     "archives": 176128,
     "automations": 217088,
     "notifications": 20480,
-    "comments": 111616,
-    "navigator": 202752,
+    "comments": 122880,
+    "navigator": 203776,
     "sync": 98304,
     "safe": 68608
   },
-  "outputBudgetReason": "2026-10-28 保险箱与笔记调整：main.js 实测 6050185 字节（较基线 +16606），新增账号联系方式、关联、标签、密码生成、v3 迁移与导入重映射，以及对应界面；按 KiB 向上取整，无新增运行依赖。",
-  "eagerBudgetReason": "HUHU 0.0.1 初始基线：启动闭包实测 122867 字节，模块装配与懒加载边界保持，React/Radix 不进入启动闭包。上限按 KiB 取整。",
-  "stylesBudgetReason": "2026-10-28 响应式保险箱和导航搜索：styles.css 实测 1421729 字节（较基线 +939），新增的作用域内 Tailwind 规则支持紧凑列表、长备注和窄栏换行；按 KiB 向上取整。",
-  "moduleActivationBudgetReason": "2026-10-28：safe 激活闭包 67891 字节，包含 v3 校验、迁移、关系重映射、标签命令和密码生成；agent 991249 字节，业务源码未变，构建共享符号重排使其比原上限高 17 字节。两项按 KiB 向上取整，其他模块和启动预算不变，UI 保持延迟加载。"
+  "outputBudgetReason": "2026-10-28 集成分支暂用上限：同时纳入保险箱调整（main.js 6050185）与高亮摘录（6058252）。合并后产物将在统一构建后按实测收紧。当前 6144 KiB 只覆盖两处增量叠加，无新增运行依赖。",
+  "eagerBudgetReason": "Issue #6 新增调色板配置和编辑器入口，启动集合实测 123589 B；上限 122 KiB。保险箱改动未提高启动闭包。React/Radix 仍在延迟加载边界外。合并后按实测复核。",
+  "stylesBudgetReason": "2026-10-28 集成暂用上限：保险箱响应式样式与高亮卡片样式分别在基线 1420790 上增加约 939 与 1476 字节。1408 KiB 覆盖叠加，统一构建后按实测收紧。",
+  "moduleActivationBudgetReason": "取两侧已记录的更高模块上限：safe 68608（v3/关系/标签/密码）、agent 992256（共享符号重排）、comments 122880（v3 高亮与锚点）、navigator 203776（共享词典）。其余模块保持基线。统一构建后按实测收紧。"
 }
