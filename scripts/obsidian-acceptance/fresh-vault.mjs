@@ -85,7 +85,10 @@ export async function launchFreshVault({ root, files = {}, settings, port = 9237
 		let deadline;
 		try { await Promise.race([exited, new Promise(resolve => { deadline = setTimeout(resolve, 20000); })]); }
 		finally { clearTimeout(deadline); }
-		if (app.exitCode === null) app.kill('SIGKILL');
+		if (app.exitCode === null) {
+			app.kill('SIGKILL');
+			await exited;
+		}
 		session.app = undefined;
 		session.connection = undefined;
 	};

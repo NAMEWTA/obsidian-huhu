@@ -1,0 +1,25 @@
+{
+  "observer": "native:/root",
+  "task": "116-responses-review-anchors",
+  "kind": "display-only-successor",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "8bf4f9",
+  "rootArtifactAndAnchorCheckToolChunk": "55314c",
+  "reportSha256": "9a10ccb5dd0213c41da83cd428e3c63f5f30fb6dfa1e6260a9040cce1a575e9e",
+  "manifestSha256": "728c6680a1db55620e37753d7876762c034756e50296a72ca340a59a13277e46",
+  "verifiedArtifacts": 8,
+  "original112Artifacts": 22,
+  "original112Drift": [],
+  "anchorFieldsMatchOriginal": true,
+  "inputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "productChecksRun": [],
+  "disposition": "accepted; current Independent Review links may reference explicit anchors in 116; original112 remains the immutable full review"
+}

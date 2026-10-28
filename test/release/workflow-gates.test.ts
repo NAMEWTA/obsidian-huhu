@@ -28,17 +28,20 @@ test('tag releases require successful checks and all helpers from the calling co
 	const release = workflow('release'),
 		checks = workflow('lint'),
 		terminal = workflow('terminal-build'),
-		browser = workflow('browser-runtime-build');
+		browser = workflow('browser-runtime-build'),
+		bot = workflow('huhu-bot');
 	expect(checks.on).toHaveProperty('workflow_call');
 	expect(release.jobs.checks?.uses).toBe('./.github/workflows/lint.yml');
 	expect(release.jobs.terminal?.uses).toBe('./.github/workflows/terminal-build.yml');
-	expect(release.jobs.release?.needs).toEqual(['checks', 'terminal', 'browser']);
+	expect(release.jobs.release?.needs).toEqual(['checks', 'terminal', 'browser', 'bot']);
 	expect(release.jobs.release?.if).toBe(
-		"${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' }}",
+		"${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' && needs.bot.result == 'success' }}",
 	);
 	expect(release.jobs.browser?.uses).toBe('./.github/workflows/browser-runtime-build.yml');
 	expect(browser.on).toHaveProperty('workflow_call');
-	for (const file of [release, checks, terminal, browser])
+	expect(bot.on).toHaveProperty('workflow_call');
+	expect(release.jobs.bot?.uses).toBe('./.github/workflows/huhu-bot.yml');
+	for (const file of [release, checks, terminal, browser, bot])
 		for (const job of Object.values(file.jobs)) {
 			expect(job['continue-on-error']).not.toBe(true);
 			for (const step of job.steps ?? []) {

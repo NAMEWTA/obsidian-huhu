@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "nativeResult": "FINAL_ANSWER Agent errored: Selected model is at capacity. Please try a different model.",
+  "interruptionPreviousStatus": {
+    "errored": "Selected model is at capacity. Please try a different model."
+  },
+  "known": "135 has TASK only; memory.go/context.go match dispatch SHA; no ACK or candidate/test evidence",
+  "result": "no product completion; no running original writer",
+  "successor": "137-memory-result-validation-recovery",
+  "replacementModel": "gpt-6-sol",
+  "reasoningEffort": "xhigh",
+  "businessAttemptsReset": false,
+  "ticketOwnerStill": "/root",
+  "scopeChange": false
+}

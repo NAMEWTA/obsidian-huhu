@@ -1,0 +1,76 @@
+{
+  "checks": [
+    {
+      "name": "open_wal",
+      "pass": true,
+      "detail": {
+        "go": "go1.27.1",
+        "journal": "wal",
+        "platform": "linux/amd64",
+        "sqlite": "3.53.4"
+      },
+      "millis": 4
+    },
+    {
+      "name": "atomic_commit_rollback",
+      "pass": true,
+      "detail": 1
+    },
+    {
+      "name": "foreign_key",
+      "pass": true,
+      "detail": "sqlite3: constraint failed: FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "native_online_backup_with_wal",
+      "pass": true,
+      "detail": {
+        "integrity": "ok",
+        "rows": 1,
+        "wal_bytes": 20632
+      },
+      "millis": 1
+    },
+    {
+      "name": "running_query_cancel",
+      "pass": true,
+      "detail": {
+        "error": "sqlite3: interrupted",
+        "rows_after": 1,
+        "wraps_context_deadline": false
+      },
+      "millis": 50
+    },
+    {
+      "name": "cross_process_writer_busy",
+      "pass": true,
+      "detail": {
+        "child": "sqlite3: database is locked\n",
+        "error": "exit status 25"
+      },
+      "millis": 155
+    },
+    {
+      "name": "actual_db_inode_lock_all_aliases",
+      "pass": true,
+      "detail": {
+        "hardlink.sqlite": "INSTANCE_CONFLICT\n",
+        "profile.sqlite": "INSTANCE_CONFLICT\n",
+        "symlink.sqlite": "INSTANCE_CONFLICT\n"
+      },
+      "millis": 8
+    },
+    {
+      "name": "durable_reopen",
+      "pass": true,
+      "detail": 1,
+      "millis": 1
+    },
+    {
+      "name": "corruption_no_empty_fallback",
+      "pass": true,
+      "detail": "sqlite3: file is not a database"
+    }
+  ],
+  "driver": "ncruces/go-sqlite3@v0.35.6"
+}

@@ -1,0 +1,13 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:55:32.405520+00:00",
+  "task": "128-memory-access-budget",
+  "taskSHA256": "915b0bbb4d15bbc1738dd0d2086c7ee6d983efba7e47ec91e87c4b8daa59777b",
+  "nativeFollowupAndACK": true,
+  "phase": "remaining actual grants/usage/propagation/events source-only",
+  "context": "129 real18source checkpoint stopped;126 still own Memory source;130 sole Go component tester",
+  "checksGranted": false,
+  "scope": "same original TASK only; no API/Core/014/stdio/common/locks writes",
+  "priorFirstSlice": "evidence/T-14-logs/128-first-slice-return.json",
+  "pending": "dynamic deps-before-emptySources, actual maintenance Grant/task mapping +BindAttempts/Reserve/Dispatch, published lineage, physical memory fence; source-level red probes before first check"
+}

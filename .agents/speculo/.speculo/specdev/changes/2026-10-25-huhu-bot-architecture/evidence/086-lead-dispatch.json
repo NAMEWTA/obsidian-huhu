@@ -1,0 +1,39 @@
+{
+  "task": "086-recovery-fixture-repair",
+  "recordedAt": "2026-10-25T22:19:15.955354+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "nativeTarget": "/root/credential_provider",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "taskSha256": "ba8a6706b9e50cb094f07c5e6c7f004938fa7610278c68f6f8063498d2d76b96",
+  "mapRevision": 21,
+  "goalRevision": 20,
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "errors": [],
+    "warnings": []
+  },
+  "soleGoWindow": true,
+  "scope": "Only groups/sources_test.go permanent edit; events external-only lane/cost diagnosis; all production readonly",
+  "nativeAckAt": "2026-10-25T22:20:25.937183+00:00",
+  "nativeAck": "Original owner confirms only sources_test.go permanent changes, external-only events cost diagnosis, production/old reports readonly, sole narrow Go window.",
+  "eventsSupplement": {
+    "at": "2026-10-25T22:25:54.960545+00:00",
+    "nativeGrantSent": true,
+    "rootFullRawLogsRead": [
+      "05-events-normal-poll.log",
+      "06-events-race-poll.log",
+      "07-events-race-after-emits.log"
+    ],
+    "path": "evidence/T-16-logs/events-lane-supplement-map21.md",
+    "sha256": "be4500df1334224af3f2a008ad108c96da8c8c1ed50a653e07b8898e454dc399",
+    "precisePaths": [
+      "native/huhubot/tests/contract/events/history_test.go",
+      "native/huhubot/tests/contract/events/events_test.go"
+    ],
+    "contract": "Only270-source-snapshot correctness wait6s; allother3s and800/250ms unchanged; no production changes",
+    "initialSha256": "5dfc70abb4ebfe3fd5457bb94767976933513752b47a79941b178a594b4757c9",
+    "measurementClarification": "BeginTx elapsed includes connection wait and BEGIN itself; not all1.372s identified as purequeue. Scope/6s local budget unchanged."
+  }
+}

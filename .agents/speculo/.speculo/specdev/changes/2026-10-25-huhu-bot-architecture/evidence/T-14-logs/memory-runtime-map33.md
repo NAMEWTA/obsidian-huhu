@@ -1,0 +1,9 @@
+# Map33：记忆接入原执行器、恢复和共同模型
+
+保持125当前唯一产品检查窗口、126/127/128未完成TASK与原写集。Root已回读当前Core、PinTaskInTx、Run唯一writer、Executor、Recovery和Broker，按115/123开启原owner的实际消费者维护：129由foundation_go负责T01/T02/T03/T06/T16；130由engine_adapter负责T08 common。T02/T06/T08/T16原代码证据保留，新记忆责任待验。三协议driver、旧SQL/CP fixture、依赖锁和28票55AC均不改范围。
+
+129只在125正式交回且Root授窗后写入；先和126接真实014、Store构造/六用例、Facts与生命周期，注册实际schema10并接默认Core。执行器沿原Claim/MarkRunning/Finalize，维护仍独立根、同16池且每Profile最多一个；Plan短Tx结束后原Host授权，再Seal与MarkRunning同Tx。恢复读真实manifest并纳入本树记忆水位，Broker纯转交Memory/ShortTerm；Agent使用预检同Tx组合实际记忆引用。stdio沿原物理门处理新subject。
+
+130只消费125稳定API及115/123，普通Run模型顺序与原文绑定、维护空工具严格候选、CP/Inspector一致性和legacy nil字节控制。维护继续实际Attempts，不增加Engine或driver旁路。初始可做有限只读准备，产品写/检查由Root后续明确窗口，避免与125冻结检查并写。
+
+128先最小Facts/预算接口、126真实私有存储、129实际装配、130共同Engine相互按真实接口交接；检查时相关writer全部停写，同一Go/product检查窗口，固定Go1.26.10与只读锁。Root最终新建代码E2E并派独立双轴，当前没有此门通过。真实Provider/Obsidian/目标OS继续由用户后验，不索凭证、不提交推送发布归档。

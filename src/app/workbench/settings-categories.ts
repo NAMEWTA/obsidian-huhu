@@ -16,6 +16,7 @@ export function settingsCategories(plugin: DashboardPlugin): Array<{ id: string;
 		automation: { labelKey: 'automation.title', icon: 'workflow' },
 		versioning: { labelKey: 'workbench.sync', icon: 'git-branch' },
 		safe: { labelKey: 'workbench.safe', icon: 'vault' },
+		huhubot: { labelKey: 'settings.productHuhuBot', icon: 'bot' },
 	};
 	return [
 		{ id: 'general', label: t('settings.tabGeneral'), icon: 'settings' },

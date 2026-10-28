@@ -18,9 +18,11 @@ jobs:
         uses: ./.github/workflows/terminal-build.yml
     browser:
         uses: ./.github/workflows/browser-runtime-build.yml
+    bot:
+        uses: ./.github/workflows/huhu-bot.yml
     release:
-        needs: [checks, terminal, browser]
-        if: ${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' }}
+        needs: [checks, terminal, browser, bot]
+        if: ${{ needs.checks.result == 'success' && needs.terminal.result == 'success' && needs.browser.result == 'success' && needs.bot.result == 'success' }}
         runs-on: ubuntu-latest
 
         steps:
@@ -96,12 +98,29 @@ jobs:
               with:
                   subject-path: browser-artifacts/huhu-browser-runtime-linux-x64.tar.gz
 
+            - uses: actions/download-artifact@v4
+              with:
+                  pattern: huhu-bot-*
+                  merge-multiple: true
+                  path: native/huhubot/dist
+
+            - name: Verify every Bot target, checksum and compatibility manifest
+              env:
+                  RELEASE_TAG: ${{ github.ref_name }}
+              run: node scripts/verify-release-artifacts.mjs "$RELEASE_TAG" --bot native/huhubot/dist
+
+            - name: Exercise packaged Linux Bot Runner
+              run: |
+                  chmod +x native/huhubot/dist/huhu-bot-linux-x64
+                  node scripts/verify-huhu-bot.mjs native/huhubot/dist/huhu-bot-linux-x64
+
             - name: Checksums for every asset
               env:
                   RELEASE_TAG: ${{ github.ref_name }}
               run: |
                   cp terminal-artifacts/* release-assets/
                   cp browser-artifacts/huhu-browser-runtime-linux-x64.tar.gz release-assets/
+                  cp native/huhubot/dist/* release-assets/
                   cp LICENSE NOTICE THIRD-PARTY-NOTICES.md release-assets/
                   node scripts/verify-release-artifacts.mjs "$RELEASE_TAG" --sums release-assets
 

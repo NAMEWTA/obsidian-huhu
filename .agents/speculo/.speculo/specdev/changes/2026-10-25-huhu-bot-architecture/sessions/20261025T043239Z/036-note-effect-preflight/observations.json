@@ -1,0 +1,1466 @@
+{
+  "task": "036-note-effect-preflight",
+  "observedAt": "2026-10-25T09:15:37.378341+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "bytes": 5499,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "bytes": 7961,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+      "bytes": 20543,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "bytes": 11911,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+      "bytes": 6884,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/obsidian-api.md",
+      "sha256": "9fac8f21f8d4806331176cc8bf62cd1ffff94aaec3b58ba5a6c06bf348479417",
+      "bytes": 8356,
+      "observations": []
+    },
+    {
+      "path": "src/modules/huhubot/platform/obsidian/sources/sources.ts",
+      "sha256": "c2c3435650ae964af11ed71ea6effff61a51e25f86449db29626528291fc54ab",
+      "bytes": 17775,
+      "observations": [
+        {
+          "start": 54,
+          "end": 90,
+          "lines": [
+            "54: ",
+            "55: \tsetLease(lease: HostLease | undefined): void {",
+            "56: \t\tthis.generation++;",
+            "57: \t\tthis.lease = undefined;",
+            "58: \t\tthis.records.clear(); this.scopes.clear(); this.cursors.clear(); this.cachedBytes = 0;",
+            "59: \t\tfor (const controller of this.controllers) controller.abort();",
+            "60: \t\tif (lease && lease.workspaceId !== this.options.workspaceId) throw fault('WORKSPACE_MISMATCH');",
+            "61: \t\tthis.lease = lease ? structuredClone(lease) : undefined;",
+            "62: \t}",
+            "63: \tprivate current(): HostLease {",
+            "64: \t\tconst lease = this.lease;",
+            "65: \t\tconst expiry = lease ? Date.parse(lease.expiresAt) : NaN;",
+            "66: \t\tif (this.disposed || !lease || !Number.isFinite(expiry) || expiry <= Date.now()) throw fault('SOURCE_LEASE_UNAVAILABLE', 'HOST_UNAVAILABLE');",
+            "67: \t\treturn lease;",
+            "68: \t}",
+            "69: \tprivate origin(leaf: WorkspaceLeaf): string {",
+            "70: \t\tif (leaf.view.app !== this.app) throw fault('SOURCE_ORIGIN_INVALID');",
+            "71: \t\tlet originViewId = this.views.get(leaf.view);",
+            "72: \t\tif (!originViewId) { originViewId = opaque('view'); this.views.set(leaf.view, originViewId); }",
+            "73: \t\treturn originViewId;",
+            "74: \t}",
+            "75: \tprivate identity(originViewId: string, resourceId: string, digest: string): SourceIdentity {",
+            "76: \t\tconst lease = this.current();",
+            "77: \t\treturn { resourceId, workspaceId: lease.workspaceId, originClientId: this.options.originClientId, originViewId,",
+            "78: \t\t\thostConnectionId: lease.hostConnectionId, hostLeaseId: lease.leaseId, hostLeaseEpoch: lease.leaseEpoch,",
+            "79: \t\t\trevision: String(++this.serial), hash: digest };",
+            "80: \t}",
+            "81: \tprivate validFile(file: TFile, enforceSize = true): void {",
+            "82: \t\tif (!(file instanceof TFile) || file.extension !== 'md' || this.privatePath(file.path) ||",
+            "83: \t\t\tthis.app.vault.getAbstractFileByPath(file.path) !== file) throw fault('SOURCE_FILE_INVALID');",
+            "84: \t\tif (enforceSize && file.stat.size > MAX_SOURCE_BYTES) throw fault('SOURCE_SIZE_LIMIT', 'RESOURCE_LIMIT');",
+            "85: \t}",
+            "86: \tprivate privatePath(path: string): boolean {",
+            "87: \t\tconst config = this.app.vault.configDir;",
+            "88: \t\treturn path.startsWith('/') || path.includes('\\\\') || path.includes(':') || path.includes('\\0') ||",
+            "89: \t\t\tpath.split('/').some((segment) => segment === '..' || ['.huhu', '.git'].includes(segment)) ||",
+            "90: \t\t\t!!config && (path === config || path.startsWith(`${config}/`));"
+          ]
+        },
+        {
+          "start": 121,
+          "end": 143,
+          "lines": [
+            "121: \t}",
+            "122: \tprivate async save(file: TFile, originViewId: string, text: string, fullText: string, kind: 'note' | 'selection', range?: SourceRange,",
+            "123: \t\tscopeResourceIds: string[] = [], view?: MarkdownView, signal?: AbortSignal): Promise<SourceSnapshot> {",
+            "124: \t\tif (utf8.encode(fullText).length > MAX_SOURCE_BYTES || utf8.encode(text).length + this.cachedBytes > MAX_CACHE_BYTES ||",
+            "125: \t\t\tthis.records.size + this.scopes.size >= MAX_RECORDS) throw fault('SOURCE_CACHE_LIMIT', 'RESOURCE_LIMIT');",
+            "126: \t\tconst generation = this.generation;",
+            "127: \t\tconst [digest, fullHash] = await Promise.all([hash(text), hash(fullText)]);",
+            "128: \t\tif (signal?.aborted || generation !== this.generation) throw fault('SOURCE_REQUEST_ABORTED', 'HOST_UNAVAILABLE');",
+            "129: \t\tconst source: SourceSnapshot = { ...this.identity(originViewId, opaque('source'), digest), kind, scopeResourceIds,",
+            "130: \t\t\ttitle: Array.from(file.basename).slice(0, 256).join(''), ...(range ? { range } : {}) };",
+            "131: \t\tif (utf8.encode(text).length + this.cachedBytes > MAX_CACHE_BYTES || this.records.size + this.scopes.size >= MAX_RECORDS)",
+            "132: \t\t\tthrow fault('SOURCE_CACHE_LIMIT', 'RESOURCE_LIMIT');",
+            "133: \t\tthis.records.set(source.resourceId, { source: structuredClone(source), file, text, view, fullHash });",
+            "134: \t\tthis.cachedBytes += utf8.encode(text).length;",
+            "135: \t\treturn structuredClone(source);",
+            "136: \t}",
+            "137: \tasync captureSelection(view: MarkdownView, signal?: AbortSignal): Promise<SourceSnapshot> {",
+            "138: \t\tif (!(view instanceof MarkdownView) || view.app !== this.app || view.leaf.view !== view || !view.file) return Promise.reject(fault('SOURCE_ORIGIN_INVALID'));",
+            "139: \t\tthis.validFile(view.file);",
+            "140: \t\tconst selections = view.editor.listSelections();",
+            "141: \t\tif (selections.length !== 1) return Promise.reject(fault('SOURCE_SELECTION_REQUIRED'));",
+            "142: \t\tconst selected = selections[0]!;",
+            "143: \t\tconst from = view.editor.posToOffset(selected.anchor), to = view.editor.posToOffset(selected.head);"
+          ]
+        },
+        {
+          "start": 149,
+          "end": 167,
+          "lines": [
+            "149: \t\treturn this.task((active) => this.save(file, originViewId, fullText.slice(range.start, range.end), fullText, 'selection', range, [], view, active), signal);",
+            "150: \t}",
+            "151: \tasync captureNote(file: TFile, leaf: WorkspaceLeaf, signal?: AbortSignal): Promise<SourceSnapshot> {",
+            "152: \t\tthis.validFile(file);",
+            "153: \t\tconst view = leaf.view instanceof MarkdownView && leaf.view.file === file ? leaf.view : undefined;",
+            "154: \t\tconst captured = view?.editor.getValue();",
+            "155: \t\tconst originViewId = this.origin(leaf);",
+            "156: \t\tconst fileVersion = { path: file.path, mtime: file.stat.mtime, size: file.stat.size };",
+            "157: \t\treturn this.task(async (active) => {",
+            "158: \t\t\tif (file.path !== fileVersion.path || file.stat.mtime !== fileVersion.mtime || file.stat.size !== fileVersion.size)",
+            "159: \t\t\t\tthrow fault('SOURCE_CHANGED', 'SOURCE_CHANGED');",
+            "160: \t\t\tconst text = captured ?? await this.app.vault.read(file);",
+            "161: \t\t\tif (active.aborted) throw fault('SOURCE_REQUEST_ABORTED', 'HOST_UNAVAILABLE');",
+            "162: \t\t\tif (captured === undefined && (file.path !== fileVersion.path || file.stat.mtime !== fileVersion.mtime || file.stat.size !== fileVersion.size))",
+            "163: \t\t\t\tthrow fault('SOURCE_CHANGED', 'SOURCE_CHANGED');",
+            "164: \t\t\treturn this.save(file, originViewId, text, text, 'note', undefined, [], view, active);",
+            "165: \t\t}, signal);",
+            "166: \t}",
+            "167: \tasync captureFolder(folder: TFolder, leaf: WorkspaceLeaf, signal?: AbortSignal): Promise<SourceScope> {"
+          ]
+        },
+        {
+          "start": 270,
+          "end": 281,
+          "lines": [
+            "270: \t\t\tconst live = entry.view?.file === entry.file ? entry.view.editor.getValue() : await this.app.vault.read(entry.file);",
+            "271: \t\t\tconst changed = await hash(live) !== entry.fullHash;",
+            "272: \t\t\tif (active.aborted) throw fault('SOURCE_REQUEST_ABORTED', 'HOST_UNAVAILABLE');",
+            "273: \t\t\tconst leaf = this.app.workspace.getLeaf('tab');",
+            "274: \t\t\tawait leaf.openFile(entry.file);",
+            "275: \t\t\tif (!changed && source.range && leaf.view instanceof MarkdownView)",
+            "276: \t\t\t\tleaf.view.editor.setSelection(leaf.view.editor.offsetToPos(source.range.start), leaf.view.editor.offsetToPos(source.range.end));",
+            "277: \t\t\treturn { source: structuredClone(source), changed };",
+            "278: \t\t}, signal);",
+            "279: \t}",
+            "280: \tdispose(): void { this.setLease(undefined); this.disposed = true; }",
+            "281: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/platform/obsidian/sources/port.ts",
+      "sha256": "e45d3962e55712c1045a0f6fdebd3bd6e719af8f8b1336951f50db6d36bb70f7",
+      "bytes": 854,
+      "observations": [
+        {
+          "start": 1,
+          "end": 10,
+          "lines": [
+            "1: import type { HostLease, HostSearchRequest, HostSearchResult, SourceSnapshot } from '../../../api';",
+            "2: ",
+            "3: export interface SourceContent { source: SourceSnapshot; text: string }",
+            "4: export interface HostSources {",
+            "5: \tsetLease(lease: HostLease | undefined): void;",
+            "6: \treadSnapshot(source: SourceSnapshot, signal: AbortSignal): Promise<SourceContent>;",
+            "7: \tsearchSnapshots(request: HostSearchRequest, signal: AbortSignal): Promise<HostSearchResult>;",
+            "8: }",
+            "9: ",
+            "10: /** Wire limits count UTF-8 bytes; SourceRange offsets count UTF-16 code units in the original note. */"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/services/host-read/host-read.ts",
+      "sha256": "660dd392315786e1e7c39bb828ddcd263b3e1731b5eadc20b2b2ef0f417196f0",
+      "bytes": 4827,
+      "observations": [
+        {
+          "start": 10,
+          "end": 63,
+          "lines": [
+            "10: /** Coordinates only the current trusted Host session; persistent Grants remain the Go boundary. */",
+            "11: export class HostReadService {",
+            "12: \tprivate lease?: HostLease;",
+            "13: \tprivate readonly operations = new Set<AbortController>();",
+            "14: \tprivate active = 0;",
+            "15: \tprivate disposed = false;",
+            "16: \tconstructor(private readonly sources: HostSources, private readonly timers: ProtocolTimers) {}",
+            "17: \treadonly setLease = (lease: HostLease | undefined): void => {",
+            "18: \t\tfor (const controller of this.operations) controller.abort();",
+            "19: \t\tthis.lease = undefined;",
+            "20: \t\tif (this.disposed && lease) { this.sources.setLease(undefined); throw denied('INVALID_HOST_LEASE'); }",
+            "21: \t\tthis.sources.setLease(lease);",
+            "22: \t\tthis.lease = lease ? structuredClone(lease) : undefined;",
+            "23: \t};",
+            "24: \tprivate check(request: HostReadRequest | HostSearchRequest, capability: string): HostLease {",
+            "25: \t\tconst lease = this.lease, expiry = lease ? Date.parse(lease.expiresAt) : NaN;",
+            "26: \t\tif (this.disposed || !lease || !Number.isFinite(expiry) || expiry <= Date.now() || request.leaseId !== lease.leaseId ||",
+            "27: \t\t\trequest.hostConnectionId !== lease.hostConnectionId || request.leaseEpoch !== lease.leaseEpoch ||",
+            "28: \t\t\trequest.workspaceId !== lease.workspaceId || !lease.capabilities.includes(capability)) throw denied('INVALID_HOST_LEASE');",
+            "29: \t\tconst identities: SourceIdentity[] = 'source' in request ? [request.source] : [...request.sources, ...request.scopes];",
+            "30: \t\tif (identities.some((source) => source.workspaceId !== lease.workspaceId || source.hostConnectionId !== lease.hostConnectionId ||",
+            "31: \t\t\tsource.hostLeaseId !== lease.leaseId || source.hostLeaseEpoch !== lease.leaseEpoch)) throw denied('SOURCE_SCOPE_MISMATCH');",
+            "32: \t\treturn lease;",
+            "33: \t}",
+            "34: \tprivate async execute<T>(request: HostReadRequest | HostSearchRequest, capability: string, signal: AbortSignal,",
+            "35: \t\trun: (signal: AbortSignal) => Promise<T>): Promise<T> {",
+            "36: \t\tconst lease = this.check(request, capability);",
+            "37: \t\tif (signal.aborted) throw denied('SOURCE_REQUEST_ABORTED');",
+            "38: \t\tif (this.active >= 8) throw denied('SOURCE_TASK_LIMIT');",
+            "39: \t\tthis.active++;",
+            "40: \t\tconst controller = new AbortController(); this.operations.add(controller);",
+            "41: \t\tconst abort = () => controller.abort(); signal.addEventListener('abort', abort, { once: true });",
+            "42: \t\tconst cancel = this.timers.after(3000, abort);",
+            "43: \t\tlet rejectAbort: (() => void) | undefined;",
+            "44: \t\tconst aborted = new Promise<never>((_resolve, reject) => {",
+            "45: \t\t\trejectAbort = () => reject(denied('SOURCE_REQUEST_ABORTED'));",
+            "46: \t\t\tcontroller.signal.addEventListener('abort', rejectAbort, { once: true });",
+            "47: \t\t});",
+            "48: \t\ttry {",
+            "49: \t\t\tconst operation = Promise.resolve().then(() => run(controller.signal)).finally(() => { this.active--; });",
+            "50: \t\t\tconst result = await Promise.race([operation, aborted]);",
+            "51: \t\t\tif (this.lease !== lease || controller.signal.aborted) throw denied('INVALID_HOST_LEASE');",
+            "52: \t\t\tthis.check(request, capability);",
+            "53: \t\t\treturn result;",
+            "54: \t\t} finally {",
+            "55: \t\t\tcancel(); signal.removeEventListener('abort', abort);",
+            "56: \t\t\tif (rejectAbort) controller.signal.removeEventListener('abort', rejectAbort);",
+            "57: \t\t\tthis.operations.delete(controller);",
+            "58: \t\t}",
+            "59: \t}",
+            "60: \treadonly read = async (request: HostReadRequest, signal: AbortSignal): Promise<HostReadResult> => {",
+            "61: \t\tif (!methodValidation.validate('host.read', 'params', request)) throw denied('INVALID_HOST_PARAMS');",
+            "62: \t\treturn this.execute(request, 'note.read', signal, async (active) => {",
+            "63: \t\t\tconst content = await this.sources.readSnapshot(request.source, active);"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/connection.ts",
+      "sha256": "e0f2754ca0ba2cc788eb4f14168acc6b521ad0d4c44e68d557ecc174b5d82ee7",
+      "bytes": 18395,
+      "observations": [
+        {
+          "start": 303,
+          "end": 348,
+          "lines": [
+            "303: \tprivate async handleHost(message: HapRequest & { id?: string }): Promise<void> {",
+            "304: \t\tconst id = message.id;",
+            "305: \t\tif (!id) return;",
+            "306: \t\tconst reject = (kind: BotErrorData['kind'], reason: string) =>",
+            "307: \t\t\tthis.sendReply({",
+            "308: \t\t\t\tjsonrpc: '2.0',",
+            "309: \t\t\t\tid,",
+            "310: \t\t\t\terror: { code: -32000, message: reason, data: { kind, reason, retryable: false, correlationId: id } },",
+            "311: \t\t\t});",
+            "312: \t\tif (this.connectionState !== 'ready') {",
+            "313: \t\t\tawait reject('PROTOCOL_INCOMPATIBLE', 'HELLO_REQUIRED');",
+            "314: \t\t\treturn;",
+            "315: \t\t}",
+            "316: \t\tif (!this.host || (message.method !== 'host.invoke' && message.method !== 'host.queryReceipt' && message.method !== 'host.read' && message.method !== 'host.search')) {",
+            "317: \t\t\tawait reject('HOST_UNAVAILABLE', 'HOST_UNAVAILABLE');",
+            "318: \t\t\treturn;",
+            "319: \t\t}",
+            "320: \t\tif (this.reverse.size >= this.maxHostRequests) {",
+            "321: \t\t\tawait reject('STREAM_SLOW_CONSUMER', 'HOST_REQUEST_LIMIT');",
+            "322: \t\t\treturn;",
+            "323: \t\t}",
+            "324: \t\tconst method = message.method;",
+            "325: \t\tconst host = this.host;",
+            "326: \t\tconst reading = method === 'host.read' || method === 'host.search';",
+            "327: \t\tif ((method === 'host.read' && !host.read) || (method === 'host.search' && !host.search)) {",
+            "328: \t\t\tawait reject('HOST_UNAVAILABLE', 'HOST_UNAVAILABLE'); return;",
+            "329: \t\t}",
+            "330: \t\tconst params = message.params;",
+            "331: \t\tif (!methodValidation.validate(method, 'params', params)) {",
+            "332: \t\t\tawait reject('INVALID_ARGUMENT', 'INVALID_HOST_PARAMS');",
+            "333: \t\t\treturn;",
+            "334: \t\t}",
+            "335: \t\tconst capability = method === 'host.read' ? 'note.read' : method === 'host.search' ? 'note.search' :",
+            "336: \t\t\t'capability' in params && typeof params.capability === 'string' ? params.capability : '';",
+            "337: \t\tconst lease = this.hostLease;",
+            "338: \t\tif (",
+            "339: \t\t\t!lease ||",
+            "340: \t\t\tparams.leaseId !== lease.leaseId ||",
+            "341: \t\t\tparams.workspaceId !== lease.workspaceId ||",
+            "342: \t\t\t!activeHostLease(lease) ||",
+            "343: \t\t\t((method === 'host.invoke' || reading) && !lease.capabilities.includes(capability)) ||",
+            "344: \t\t\t(reading && ('hostConnectionId' in params && (params.hostConnectionId !== lease.hostConnectionId || params.leaseEpoch !== lease.leaseEpoch)))",
+            "345: \t\t) {",
+            "346: \t\t\tawait reject('CAPABILITY_DENIED', 'INVALID_HOST_LEASE');",
+            "347: \t\t\treturn;",
+            "348: \t\t}"
+          ]
+        },
+        {
+          "start": 368,
+          "end": 410,
+          "lines": [
+            "368: \t\t\tconst operation = method === 'host.invoke' && methodValidation.validate('host.invoke', 'params', params)",
+            "369: \t\t\t\t? host.invoke(params, controller.signal)",
+            "370: \t\t\t\t: method === 'host.queryReceipt' && methodValidation.validate('host.queryReceipt', 'params', params)",
+            "371: \t\t\t\t\t? host.queryReceipt(params, controller.signal)",
+            "372: \t\t\t\t\t: method === 'host.read' && methodValidation.validate('host.read', 'params', params) && host.read",
+            "373: \t\t\t\t\t\t? host.read(params, controller.signal)",
+            "374: \t\t\t\t\t\t: method === 'host.search' && methodValidation.validate('host.search', 'params', params) && host.search",
+            "375: \t\t\t\t\t\t\t? host.search(params, controller.signal) : Promise.reject(new HapProtocolError('INVALID_HOST_PARAMS'));",
+            "376: \t\t\tconst result = await Promise.race([operation, deadline]);",
+            "377: \t\t\tif (reading && (this.hostLease !== lease || this.host !== host || controller.signal.aborted || !activeHostLease(lease))) {",
+            "378: \t\t\t\tawait reject('CAPABILITY_DENIED', 'INVALID_HOST_LEASE'); return;",
+            "379: \t\t\t}",
+            "380: \t\t\tlet valid = methodValidation.validate(method, 'result', result);",
+            "381: \t\t\tif (method === 'host.invoke' || method === 'host.queryReceipt')",
+            "382: \t\t\t\tvalid = valid && 'effectId' in result && 'effectId' in params && result.effectId === params.effectId;",
+            "383: \t\t\telse if (method === 'host.read' && methodValidation.validate('host.read', 'params', params) && methodValidation.validate('host.read', 'result', result))",
+            "384: \t\t\t\tvalid = valid && sameJson(result.source, params.source) && new TextEncoder().encode(result.text).length <= params.maxBytes;",
+            "385: \t\t\telse if (method === 'host.search' && methodValidation.validate('host.search', 'params', params) && methodValidation.validate('host.search', 'result', result))",
+            "386: \t\t\t\tvalid = valid && result.matches.length <= params.limit && result.matches.reduce((total, match) => total + new TextEncoder().encode(match.text).length, 0) <= params.maxBytes &&",
+            "387: \t\t\t\t\tresult.matches.every((match) => sourceOnLease(match.source, lease) && match.range.end - match.range.start === match.text.length &&",
+            "388: \t\t\t\t\t\t(!match.source.range || (match.range.start >= match.source.range.start && match.range.end <= match.source.range.end)) &&",
+            "389: \t\t\t\t\t\t(params.sources.some((source) => sameJson(source, match.source)) || params.scopes.some((scope) =>",
+            "390: \t\t\t\t\t\t\tmatch.source.scopeResourceIds.includes(scope.resourceId) && match.source.originClientId === scope.originClientId && match.source.originViewId === scope.originViewId)));",
+            "391: \t\t\tif (!valid) {",
+            "392: \t\t\t\tawait reject('INVALID_ARGUMENT', 'INVALID_HOST_RESULT');",
+            "393: \t\t\t\treturn;",
+            "394: \t\t\t}",
+            "395: \t\t\tawait this.sendReply({ jsonrpc: '2.0', id, result: result as unknown as JsonValue });",
+            "396: \t\t} catch (error) {",
+            "397: \t\t\tconst safeReasons = ['SOURCE_CHANGED', 'SOURCE_SNAPSHOT_INVALID', 'SOURCE_SCOPE_INVALID', 'SOURCE_SCOPE_MISMATCH', 'SOURCE_REQUEST_ABORTED', 'SOURCE_READ_FAILED',",
+            "398: \t\t\t\t'SOURCE_CACHE_LIMIT', 'SOURCE_SIZE_LIMIT', 'SOURCE_CURSOR_LIMIT', 'SOURCE_CURSOR_INVALID', 'SOURCE_TASK_LIMIT', 'INVALID_HOST_LEASE', 'SOURCE_LEASE_UNAVAILABLE'];",
+            "399: \t\t\tif (reading && error instanceof BotRpcError && safeReasons.includes(error.data.reason)) {",
+            "400: \t\t\t\tawait reject(error.data.kind, error.data.reason); return;",
+            "401: \t\t\t}",
+            "402: \t\t\tawait reject(",
+            "403: \t\t\t\t'HOST_UNAVAILABLE',",
+            "404: \t\t\t\tcontroller.signal.aborted ? 'HOST_REQUEST_ABORTED' : 'HOST_REQUEST_FAILED',",
+            "405: \t\t\t);",
+            "406: \t\t\tif (controller.signal.aborted && !reading) this.finish(new HapProtocolError('STREAM_SLOW_CONSUMER'));",
+            "407: \t\t} finally {",
+            "408: \t\t\tcancelTimer?.();",
+            "409: \t\t\tthis.reverse.delete(id);",
+            "410: \t\t\tthis.reads.delete(controller);"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/connection.test.ts",
+      "sha256": "520bef8529004bc593bd68bad686a8e3277648b315e56ffab491eb81df9222bf",
+      "bytes": 24554,
+      "observations": []
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "sha256": "8bc03dfb02ecf1177cc2c2e35447bce60ffde979a2c3b73d16e302e1c0f5d05f",
+      "bytes": 17798,
+      "observations": [
+        {
+          "start": 249,
+          "end": 249,
+          "lines": [
+            "249: export type GrantOperation = 'read' | 'search' | 'send' | 'summarize' | 'memory' | 'delegate' | 'deliver';"
+          ]
+        },
+        {
+          "start": 306,
+          "end": 366,
+          "lines": [
+            "306: export interface HostLease {",
+            "307: \tleaseId: string;",
+            "308:  hostConnectionId: string;",
+            "309:  leaseEpoch: Decimal;",
+            "310: \tworkspaceId: string;",
+            "311: \tcapabilities: string[];",
+            "312: \texpiresAt: string;",
+            "313: }",
+            "314: export interface HostInvoke {",
+            "315: \tleaseId: string;",
+            "316: \tworkspaceId: string;",
+            "317: \tcapability: string;",
+            "318: \teffectId: string;",
+            "319: \tresource: { resourceId: string; revision?: Decimal };",
+            "320: \texpectedRevision?: Decimal;",
+            "321: \tcontent?: string;",
+            "322: }",
+            "323: export interface HostReceiptQuery {",
+            "324: \tleaseId: string;",
+            "325: \tworkspaceId: string;",
+            "326: \teffectId: string;",
+            "327: }",
+            "328: export interface HostReceipt {",
+            "329: \teffectId: string;",
+            "330: \tstatus: 'committed' | 'reconciled' | 'rejected' | 'unknown_outcome';",
+            "331: \trevision?: Decimal;",
+            "332: \treceiptId?: string;",
+            "333: }",
+            "334: export interface HostReadRequest {",
+            "335:  leaseId: string;",
+            "336:  hostConnectionId: string;",
+            "337:  leaseEpoch: Decimal;",
+            "338:  workspaceId: string;",
+            "339:  source: SourceSnapshot;",
+            "340:  maxBytes: number;",
+            "341: }",
+            "342: export interface HostReadResult { source: SourceSnapshot; text: string; format: 'text/markdown'; truncated: boolean }",
+            "343: export interface HostSearchRequest {",
+            "344:  leaseId: string;",
+            "345:  hostConnectionId: string;",
+            "346:  leaseEpoch: Decimal;",
+            "347:  workspaceId: string;",
+            "348:  sources: SourceSnapshot[];",
+            "349:  scopes: SourceScope[];",
+            "350:  query: string;",
+            "351:  limit: number;",
+            "352:  maxBytes: number;",
+            "353:  cursor?: string;",
+            "354: }",
+            "355: export interface HostSearchResult {",
+            "356:  matches: Array<{ source: SourceSnapshot; text: string; range: SourceRange }>;",
+            "357:  truncated: boolean;",
+            "358:  nextCursor?: string;",
+            "359: }",
+            "360: /** Implemented only by the trusted module Host; receipt lookup must not repeat a write. */",
+            "361: export interface BotHost {",
+            "362:  leaseChanged?(lease: HostLease | undefined): void;",
+            "363: \tinvoke(request: HostInvoke, signal: AbortSignal): Promise<HostReceipt>;",
+            "364: \tqueryReceipt(request: HostReceiptQuery, signal: AbortSignal): Promise<HostReceipt>;",
+            "365:  read?(request: HostReadRequest, signal: AbortSignal): Promise<HostReadResult>;",
+            "366:  search?(request: HostSearchRequest, signal: AbortSignal): Promise<HostSearchResult>;"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/obsidian/storage/content-files.ts",
+      "sha256": "630b4100e450e926df20532e68d8a1be4f10f950a9d5f777c1035ef12f0f1767",
+      "bytes": 25075,
+      "observations": [
+        {
+          "start": 405,
+          "end": 432,
+          "lines": [
+            "405: \tcheckEditor(path: string, disk: string, owner?: symbol, transactionText?: string): void {",
+            "406: \t\tpath = vaultDocumentPath(path);",
+            "407: \t\tconst matches = (text: string) => text === disk || transactionText !== undefined && text === transactionText;",
+            "408: \t\tfor (const [token, draft] of this.drafts) if (token !== owner && draft.path === path && !matches(draft.read())) throw new Error(`Unsaved editor: ${path}`);",
+            "409: \t\tfor (const leaf of this.app.workspace.getLeavesOfType('markdown')) {",
+            "410: \t\t\tif (leaf.view instanceof MarkdownView && leaf.view.file?.path === path && !matches(leaf.view.editor.getValue())) throw new Error(`Unsaved editor: ${path}`);",
+            "411: \t\t}",
+            "412: \t}",
+            "413: \tasync process(path: string, update: (text: string | null) => string, owner?: symbol): Promise<string> {",
+            "414: \t\tpath = vaultDocumentPath(path);",
+            "415: \t\treturn this.queue.run(isContentPath(path) ? 'huhu-content:mutation' : 'huhu-content:write:' + path, async () => {",
+            "416: \t\t\tconst storage = privateVaultStorage(this.app), adapter = this.app.vault.adapter;",
+            "417: \t\t\tconst apply = (current: string) => { this.checkEditor(path, current, owner); return update(current); };",
+            "418: \t\t\tlet result: string;",
+            "419: \t\t\tif (isContentPath(path)) {",
+            "420: \t\t\t\tawait this.moves.load(); await this.moves.recover((path, before, after) => this.checkEditor(path, before, undefined, after));",
+            "421: \t\t\t\tif (await storage.exists(path)) result = await adapter.process(path, apply);",
+            "422: \t\t\t\telse { result = update(null); await ensureDirectory(storage, path.slice(0, path.lastIndexOf('/'))); await this.moves.created(path); await createContentExclusive(this.app, path, result); }",
+            "423: \t\t\t\tawait this.scan();",
+            "424: \t\t\t} else {",
+            "425: \t\t\t\tconst file = this.app.vault.getFileByPath(path);",
+            "426: \t\t\t\tif (file) result = await this.app.vault.process(file, apply);",
+            "427: \t\t\t\telse {",
+            "428: \t\t\t\t\tif (this.app.vault.getAbstractFileByPath(path)) throw new Error(`Not a document: ${path}`);",
+            "429: \t\t\t\t\tresult = update(null); await ensureDirectory(adapter, path.split('/').slice(0, -1).join('/')); await this.app.vault.create(path, result);",
+            "430: \t\t\t\t}",
+            "431: \t\t\t}",
+            "432: \t\t\treturn result;"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/obsidian/storage/content-moves.ts",
+      "sha256": "0dbe6d13c6ebe13372a9b8858a37dcf8eea8977dcb11d0f4f15eaa10080d292f",
+      "bytes": 6382,
+      "observations": [
+        {
+          "start": 40,
+          "end": 64,
+          "lines": [
+            "40: \t\tconst { from, to } = pending;",
+            "41: \t\tconst entries = this.value.entries.filter(entry => entry.from !== from).map(entry => entry.to === from ? { ...entry, to } : entry);",
+            "42: \t\tawait this.save({ version: 1, entries: [...entries, { from, to }] });",
+            "43: \t}",
+            "44: \tasync created(path: string): Promise<void> {",
+            "45: \t\tconst entries = this.value.entries.filter(entry => entry.to !== path && entry.from !== path);",
+            "46: \t\tif (entries.length !== this.value.entries.length) await this.save({ ...this.value, entries });",
+            "47: \t}",
+            "48: \tasync apply(edit: LinkEdit, forward: boolean, check: CheckEditors, path = edit.path): Promise<void> {",
+            "49: \t\tconst expected = forward ? edit.before : edit.after, wanted = forward ? edit.after : edit.before;",
+            "50: \t\tconst update = (current: string) => {",
+            "51: \t\t\tcheck(edit.path, edit.before, edit.after);",
+            "52: \t\t\tif (current === wanted) return current;",
+            "53: \t\t\tif (current !== expected) throw new Error(`huhu-content.move-conflict: ${path}`);",
+            "54: \t\t\treturn wanted;",
+            "55: \t\t};",
+            "56: \t\tif (path.startsWith('.huhu/')) {",
+            "57: \t\t\tif (!await privateVaultStorage(this.app).exists(path)) throw new Error(`huhu-content.move-missing: ${path}`);",
+            "58: \t\t\tawait this.app.vault.adapter.process(path, update);",
+            "59: \t\t} else {",
+            "60: \t\t\tconst file = this.app.vault.getFileByPath(path);",
+            "61: \t\t\tif (!file) throw new Error(`huhu-content.move-missing: ${path}`);",
+            "62: \t\t\tawait this.app.vault.process(file, update);",
+            "63: \t\t}",
+            "64: \t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/obsidian/storage/content-io.ts",
+      "sha256": "f184e8b22e00697f7cf509ce7b7de811ff605371974d48d420fa9cfdfa3321ce",
+      "bytes": 1665,
+      "observations": [
+        {
+          "start": 1,
+          "end": 30,
+          "lines": [
+            "1: import { FileSystemAdapter, Platform, type App } from 'obsidian';",
+            "2: import { privateVaultStorage } from './private-storage';",
+            "3: import { ensureDirectory } from '../../../shared/storage/durable-state';",
+            "4: ",
+            "5: export async function contentDigest(app: App, path: string): Promise<string> {",
+            "6: \tif (!await privateVaultStorage(app).exists(path)) throw new Error('huhu-content.missing');",
+            "7: \treturn [...new Uint8Array(await crypto.subtle.digest('SHA-256', await app.vault.adapter.readBinary(path)))].map(byte => byte.toString(16).padStart(2, '0')).join('');",
+            "8: }",
+            "9: ",
+            "10: export async function copyContentExclusive(app: App, source: string, target: string): Promise<void> {",
+            "11: \tconst adapter = app.vault.adapter;",
+            "12: \tif (Platform.isDesktopApp && adapter instanceof FileSystemAdapter) {",
+            "13: \t\tawait (await import('../../desktop/content-io')).copyContentExclusive(adapter.getBasePath(), source, target);",
+            "14: \t} else {",
+            "15: \t\t// DataAdapter.copy's public contract rejects an existing destination.",
+            "16: \t\tawait adapter.copy(source, target);",
+            "17: \t}",
+            "18: }",
+            "19: ",
+            "20: /** Stage before publishing so a concurrent target is retained, even for binary creates. */",
+            "21: export async function createContentExclusive(app: App, target: string, value: string | ArrayBuffer, admit: () => void = () => {}): Promise<void> {",
+            "22: \tconst storage = privateVaultStorage(app);",
+            "23: \tconst stage = `.huhu/recovery/content-creates/${crypto.randomUUID()}`;",
+            "24: \tawait ensureDirectory(storage, stage.slice(0, stage.lastIndexOf('/')));",
+            "25: \tawait storage.write(stage, typeof value === 'string' ? value : '');",
+            "26: \tif (typeof value !== 'string') await app.vault.adapter.writeBinary(stage, value);",
+            "27: \tadmit();",
+            "28: \tawait copyContentExclusive(app, stage, target);",
+            "29: \tawait app.vault.adapter.remove(stage);",
+            "30: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/desktop/content-io.ts",
+      "sha256": "dd4f5e108df2bfa506fba5cf8c91c76b16264d1c01bb0938d30563e3d8f3dd2d",
+      "bytes": 630,
+      "observations": [
+        {
+          "start": 1,
+          "end": 11,
+          "lines": [
+            "1: import { constants } from 'node:fs';",
+            "2: import { copyFile, chmod } from 'node:fs/promises';",
+            "3: import { absoluteHuhuPath, absoluteVaultPath } from './huhu-paths';",
+            "4: import { chmodAllowed, PRIVATE_FILE_MODE } from './private-mode';",
+            "5: ",
+            "6: /** COPYFILE_EXCL is checked by the filesystem at the destination commit. */",
+            "7: export async function copyContentExclusive(root: string, source: string, target: string): Promise<void> {",
+            "8: \tconst from = await absoluteVaultPath(root, source), to = await absoluteHuhuPath(root, target);",
+            "9: \tawait copyFile(from, to, constants.COPYFILE_EXCL);",
+            "10: \tif (chmodAllowed(process.platform)) await chmod(to, PRIVATE_FILE_MODE);",
+            "11: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/obsidian/storage/private-storage.ts",
+      "sha256": "4c280b6728b1b7a6bd06bd961c09f7d8e5223b42fee956e8e1fb74b331a6296e",
+      "bytes": 707,
+      "observations": [
+        {
+          "start": 1,
+          "end": 15,
+          "lines": [
+            "1: import { FileSystemAdapter, Platform, type App } from 'obsidian';",
+            "2: import type { TextStorage } from '../../../shared/storage/ports';",
+            "3: import { privateStorageIfDesktop } from '../../private-storage';",
+            "4: ",
+            "5: export function desktopVaultRoot(app: App): string {",
+            "6: \tif (!(app.vault.adapter instanceof FileSystemAdapter)) throw new Error('browser_session_unavailable');",
+            "7: \treturn app.vault.adapter.getBasePath();",
+            "8: }",
+            "9: ",
+            "10: /** Keep Node code out of mobile and virtual vaults. */",
+            "11: export function privateVaultStorage(app: App): TextStorage {",
+            "12: \tconst adapter = app.vault.adapter;",
+            "13: \tif (!Platform.isDesktopApp || !(adapter instanceof FileSystemAdapter)) return adapter;",
+            "14: \treturn privateStorageIfDesktop(adapter, adapter.getBasePath());",
+            "15: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/host/obsidian/storage/device-id.ts",
+      "sha256": "207ec5b8e20594289ff2aba087184cfc4329229c9864539e6058f979d8f7ae3c",
+      "bytes": 2025,
+      "observations": []
+    },
+    {
+      "path": "src/host/desktop/huhu-paths.ts",
+      "sha256": "73edf198b6181715d32e66026a156fe37d078c4bf1f5bd49542a80811ee7e12a",
+      "bytes": 2042,
+      "observations": []
+    },
+    {
+      "path": "src/host/private-storage.ts",
+      "sha256": "c7674661a4552a066b816d9a308ea66b72fc36a23956a4e2d7ed5e6ee8a1c05c",
+      "bytes": 1202,
+      "observations": []
+    },
+    {
+      "path": "src/shared/json-store.ts",
+      "sha256": "74fef079c0f2bac8654081986b142455a1c2f6fbd0674f0c49f0b258e8052e53",
+      "bytes": 5587,
+      "observations": [
+        {
+          "start": 96,
+          "end": 117,
+          "lines": [
+            "96: \t/** Only the existence checks (including the one after a failed mkdir) are re-issued; mkdir stays a single call. */",
+            "97: \tprivate directoryPort(): TextStorage {",
+            "98: \t\treturn {",
+            "99: \t\t\texists: path => this.exists(path),",
+            "100: \t\t\tread: path => this.adapter.read(path),",
+            "101: \t\t\twrite: (path, text) => this.adapter.write(path, text),",
+            "102: \t\t\tmkdir: path => this.adapter.mkdir(path),",
+            "103: \t\t};",
+            "104: \t}",
+            "105: \tprivate decode(text: string): T | undefined {",
+            "106: \t\ttry { const value: unknown = JSON.parse(text); return this.validate(value) ? value : undefined; }",
+            "107: \t\tcatch { return undefined; }",
+            "108: \t}",
+            "109: \tprivate async writeVerified(path: string, text: string): Promise<void> {",
+            "110: \t\tawait this.adapter.write(path, text);",
+            "111: \t\tif (await this.read(path) !== text) throw new Error('Write verification failed: ' + path);",
+            "112: \t}",
+            "113: \tasync flush(): Promise<void> {",
+            "114: \t\tawait this.tail;",
+            "115: \t\tif (this.error) throw this.error;",
+            "116: \t}",
+            "117: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/shared/storage/ports.ts",
+      "sha256": "942367985344944bc335866e1cf975f3ec773a3f94e167bae882e5682b2a0eeb",
+      "bytes": 433,
+      "observations": []
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "sha256": "3202219040c65d4d115cbbaac9ae645ef2ecec8c579d3a0859fd3048badac52c",
+      "bytes": 5337,
+      "observations": [
+        {
+          "start": 1,
+          "end": 14,
+          "lines": [
+            "1: /**",
+            "2:  * The two persistence roots of a vault and every default path under them, in one place.",
+            "3:  *",
+            "4:  *   huhu/   visible. The user's content and records (journal, captures, inbox, archives, ledgers, RSS, new notes).",
+            "5:  *           Read and written through the Obsidian vault API, so Obsidian indexes, searches and syncs it.",
+            "6:  *   .huhu/  hidden. HUHU's own configuration and runtime data. Only `.huhu/dashboards/` and",
+            "7:  *           `.huhu/automation/definitions/` hold Markdown documents (board layouts, automation definitions).",
+            "8:  *",
+            "9:  * Folder names are Chinese on purpose: they are the user's vault structure, not interface text.",
+            "10:  * Nothing HUHU generates may contain a space; `huhuName` is the one function that makes a title safe.",
+            "11:  */",
+            "12: ",
+            "13: /** Visible root: user content and records. */",
+            "14: export const HUHU_VISIBLE_ROOT = 'huhu';"
+          ]
+        },
+        {
+          "start": 35,
+          "end": 48,
+          "lines": [
+            "35: export const NEW_NOTE_ROOT = `${HUHU_VISIBLE_ROOT}/笔记`;",
+            "36: /** Exports (ledger CSV, agent conversation exports). */",
+            "37: export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/导出`;",
+            "38: ",
+            "39: /** Hidden Markdown documents HUHU owns (listed and edited through the managed-file index). */",
+            "40: export const DASHBOARDS_ROOT = '.huhu/dashboards';",
+            "41: export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';",
+            "42: export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';",
+            "43: export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';",
+            "44: export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];",
+            "45: /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */",
+            "46: export const DEFAULT_DASHBOARD_FILE = '.huhu/dashboards/dashboard';",
+            "47: ",
+            "48: export function isVisibleHuhuPath(path: string): boolean {"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/shared/storage/huhu-paths.ts",
+      "sha256": "83b31cf87fe1316de4513176d8d045080045e8143918bb7fe8953fa1cb9f389b",
+      "bytes": 745,
+      "observations": []
+    },
+    {
+      "path": "src/shared/storage/vault-identity.ts",
+      "sha256": "e25dda5401f32754a8b86f940e082bc86aff1d112162767a4585c22d6c485dbe",
+      "bytes": 4965,
+      "observations": []
+    },
+    {
+      "path": "src/modules/sync/core/excludes.ts",
+      "sha256": "a5ab70c55cb07fef7ba95484ba954ce8ae8060a9dceb3e30ee452ca5ee82ef19",
+      "bytes": 2628,
+      "observations": [
+        {
+          "start": 5,
+          "end": 35,
+          "lines": [
+            "5: export const HUHU_EXCLUDE_PATTERNS: readonly string[] = [",
+            "6: \t'.DS_Store',",
+            "7: \t'._*',",
+            "8: \t'Thumbs.db',",
+            "9: \t'Desktop.ini',",
+            "10: \t'.Spotlight-V100/',",
+            "11: \t'.Trashes/',",
+            "12: \t'.trash/',",
+            "13: \t'**/.huhu/config/devices/',",
+            "14: \t'**/.huhu/config/identity.json',",
+            "15: \t'**/.huhu/sync/',",
+            "16: \t'**/.huhu/notifications/',",
+            "17: \t'**/.huhu/browser/',",
+            "18: \t'**/.huhu/terminal-agent/',",
+            "19: \t'**/.huhu/agents/',",
+            "20: \t'**/.huhu/helpers/',",
+            "21: \t// Per-device automation runs stay local; the shared definitions (`.huhu/automation/definitions/`) are tracked.",
+            "22: \t'**/.huhu/automation/*',",
+            "23: \t'!**/.huhu/automation/definitions/',",
+            "24: \t'**/.huhu/cache/',",
+            "25: \t'**/.huhu/recovery/',",
+            "26: \t'**/.huhu/migrations/',",
+            "27: \t'**/.huhu/**/*.lock',",
+            "28: \t'**/.huhu/**/*.tmp',",
+            "29: \t// The JsonStore's local recovery copy of a settings/state file; it exists to restore this machine only.",
+            "30: \t'**/.huhu/**/*.backup',",
+            "31: \t'**/.huhu/**/*.sqlite',",
+            "32: \t'**/.huhu/**/*.sqlite-wal',",
+            "33: \t'**/.huhu/**/*.sqlite-shm',",
+            "34: \t'**/.huhu/**/*.sqlite-journal',",
+            "35: \t'**/.huhu/**/.DS_Store',"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/data.md",
+      "sha256": "08dfc229b2e73755a589e95e313d4dce8b6c1da4be756b455b88cfe5adab2d8e",
+      "bytes": 21446,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/application/api/service.go",
+      "sha256": "2675f961baf8795f1ab9b35012ee2699330d4e5d665ef9c7423e4c126985cd88",
+      "bytes": 5354,
+      "observations": [
+        {
+          "start": 67,
+          "end": 94,
+          "lines": [
+            "67: func (h *HostService) Attach(_ context.Context, i RequestIdentity, c HostAttachCommand, r HostRemote) (HostLease, error) {",
+            "68: \tif !i.ManagedOwner() {",
+            "69: \t\treturn HostLease{}, Denied(\"MANAGED_HOST_REQUIRED\")",
+            "70: \t}",
+            "71: \tif c.WorkspaceID == \"\" || utf8.RuneCountInString(c.WorkspaceID) > 128 || len(c.Capabilities) == 0 || len(c.Capabilities) > 32 || r == nil {",
+            "72: \t\treturn HostLease{}, Invalid(\"INVALID_HOST_LEASE\")",
+            "73: \t}",
+            "74: \tseen := make(map[string]bool)",
+            "75: \tfor _, v := range c.Capabilities {",
+            "76: \t\tif v == \"\" || utf8.RuneCountInString(v) > 128 || seen[v] {",
+            "77: \t\t\treturn HostLease{}, Invalid(\"INVALID_HOST_CAPABILITIES\")",
+            "78: \t\t}",
+            "79: \t\tseen[v] = true",
+            "80: \t}",
+            "81: \th.mu.Lock()",
+            "82: \tdefer h.mu.Unlock()",
+            "83: \tif h.remote != nil && h.owner != i.ConnectionID() && h.now().Before(parseTime(h.lease.ExpiresAt)) {",
+            "84: \t\treturn HostLease{}, &Fault{Kind: \"CONFLICT\", Reason: \"HOST_ALREADY_ATTACHED\"}",
+            "85: \t}",
+            "86: \tif h.epoch == ^uint64(0) {",
+            "87: \t\treturn HostLease{}, &Fault{Kind: \"RESOURCE_LIMIT\", Reason: \"HOST_EPOCH_EXHAUSTED\"}",
+            "88: \t}",
+            "89: \th.epoch++",
+            "90: \th.lease = HostLease{HostConnectionID: i.ConnectionID(), LeaseEpoch: strconv.FormatUint(h.epoch, 10), LeaseID: NewID(\"lease:\"), WorkspaceID: c.WorkspaceID, Capabilities: append([]string(nil), c.Capabilities...), ExpiresAt: h.now().UTC().Add(5 * time.Minute).Format(time.RFC3339Nano)}",
+            "91: \th.owner = i.ConnectionID()",
+            "92: \th.remote = r",
+            "93: \treturn cloneLease(h.lease), nil",
+            "94: }"
+          ]
+        },
+        {
+          "start": 128,
+          "end": 169,
+          "lines": [
+            "128: func (h *HostService) acquire(lease, workspace, capability string) (HostRemote, error) {",
+            "129: \th.mu.Lock()",
+            "130: \tdefer h.mu.Unlock()",
+            "131: \tif h.remote == nil || !h.now().Before(parseTime(h.lease.ExpiresAt)) {",
+            "132: \t\treturn nil, &Fault{Kind: \"HOST_UNAVAILABLE\", Reason: \"HOST_OFFLINE\", Retryable: true}",
+            "133: \t}",
+            "134: \tif lease != h.lease.LeaseID || workspace != h.lease.WorkspaceID {",
+            "135: \t\treturn nil, Denied(\"HOST_LEASE_MISMATCH\")",
+            "136: \t}",
+            "137: \tif capability != \"\" {",
+            "138: \t\tallowed := false",
+            "139: \t\tfor _, c := range h.lease.Capabilities {",
+            "140: \t\t\tif c == capability {",
+            "141: \t\t\t\tallowed = true",
+            "142: \t\t\t}",
+            "143: \t\t}",
+            "144: \t\tif !allowed {",
+            "145: \t\t\treturn nil, Denied(\"HOST_CAPABILITY_NOT_LEASED\")",
+            "146: \t\t}",
+            "147: \t}",
+            "148: \treturn h.remote, nil",
+            "149: }",
+            "150: func (h *HostService) Invoke(ctx context.Context, c HostInvokeCommand) (HostReceipt, error) {",
+            "151: \tif c.EffectID == \"\" || c.Resource.ResourceID == \"\" || c.Capability == \"\" {",
+            "152: \t\treturn HostReceipt{}, Invalid(\"INVALID_HOST_INVOCATION\")",
+            "153: \t}",
+            "154: \tr, err := h.acquire(c.LeaseID, c.WorkspaceID, c.Capability)",
+            "155: \tif err != nil {",
+            "156: \t\treturn HostReceipt{}, err",
+            "157: \t}",
+            "158: \treturn r.Invoke(ctx, c)",
+            "159: }",
+            "160: func (h *HostService) QueryReceipt(ctx context.Context, c HostReceiptQuery) (HostReceipt, error) {",
+            "161: \tif c.EffectID == \"\" {",
+            "162: \t\treturn HostReceipt{}, Invalid(\"INVALID_RECEIPT_QUERY\")",
+            "163: \t}",
+            "164: \tr, err := h.acquire(c.LeaseID, c.WorkspaceID, \"\")",
+            "165: \tif err != nil {",
+            "166: \t\treturn HostReceipt{}, err",
+            "167: \t}",
+            "168: \treturn r.QueryReceipt(ctx, c)",
+            "169: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "sha256": "17c24b97f6be06cc05f48275bd820ffbcda4b8f7f4bbeed64d7dbd18bc0ff46f",
+      "bytes": 3620,
+      "observations": [
+        {
+          "start": 68,
+          "end": 104,
+          "lines": [
+            "68: type HostLease struct {",
+            "69: \tLeaseID, WorkspaceID         string",
+            "70: \tHostConnectionID, LeaseEpoch string",
+            "71: \tCapabilities                 []string",
+            "72: \tExpiresAt                    string",
+            "73: }",
+            "74: type HostResource struct{ ResourceID, Revision string }",
+            "75: type HostInvokeCommand struct {",
+            "76: \tLeaseID, WorkspaceID, Capability, EffectID string",
+            "77: \tResource                                   HostResource",
+            "78: \tExpectedRevision, Content                  string",
+            "79: }",
+            "80: type HostReceiptQuery struct{ LeaseID, WorkspaceID, EffectID string }",
+            "81: type HostReceipt struct{ EffectID, Status, Revision, ReceiptID string }",
+            "82: ",
+            "83: // HostRemote is a consumer port. Wire DTOs and transport state stay in adapters.",
+            "84: type HostRemote interface {",
+            "85: \tInvoke(context.Context, HostInvokeCommand) (HostReceipt, error)",
+            "86: \tQueryReceipt(context.Context, HostReceiptQuery) (HostReceipt, error)",
+            "87: }",
+            "88: type HostAPI interface {",
+            "89: \tHostReadAPI",
+            "90: \tAttach(context.Context, RequestIdentity, HostAttachCommand, HostRemote) (HostLease, error)",
+            "91: \tDetach(context.Context, RequestIdentity, string) error",
+            "92: \tDisconnect(RequestIdentity)",
+            "93: \tAttached() bool",
+            "94: \tInvoke(context.Context, HostInvokeCommand) (HostReceipt, error)",
+            "95: \tQueryReceipt(context.Context, HostReceiptQuery) (HostReceipt, error)",
+            "96: }",
+            "97: ",
+            "98: // Facade composes narrow services; it neither owns SQL nor provider state.",
+            "99: type Facade struct {",
+            "100: \tService      ServiceAPI",
+            "101: \tHost         HostAPI",
+            "102: \tAssistant    AssistantAPI",
+            "103: \tGrants       GrantsAPI",
+            "104: \tContext      ContextAccess"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/host_read.go",
+      "sha256": "7c4a48b0cb05d35516f9223a4a3120598801f2c3aef8660288960754756e3018",
+      "bytes": 2210,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "sha256": "87ddaefc8b50518e61c0e52291cc1862d4efcfe31606992534dd8b42287af07f",
+      "bytes": 12611,
+      "observations": [
+        {
+          "start": 330,
+          "end": 394,
+          "lines": [
+            "330: func (s *Server) call(ctx context.Context, method string, params any) (wire.Envelope, error) {",
+            "331: \tvar empty wire.Envelope",
+            "332: \t// Even a caller without a deadline has a finite reverse wait.",
+            "333: \tctx, cancel := context.WithTimeout(ctx, RemoteTimeout)",
+            "334: \tdefer cancel()",
+            "335: \tid := \"s:\" + api.NewID(\"\")",
+            "336: \tp, err := json.Marshal(params)",
+            "337: \tif err == nil {",
+            "338: \t\terr = wire.ValidateMethod(method, \"params\", p)",
+            "339: \t}",
+            "340: \tif err != nil {",
+            "341: \t\treturn empty, err",
+            "342: \t}",
+            "343: \tc := make(chan reply, 1)",
+            "344: \ts.pendingMu.Lock()",
+            "345: \tif len(s.pending) >= MaxInFlight {",
+            "346: \t\ts.pendingMu.Unlock()",
+            "347: \t\treturn empty, &api.Fault{Kind: \"RESOURCE_LIMIT\", Reason: \"HOST_PENDING_LIMIT\", Retryable: true}",
+            "348: \t}",
+            "349: \tselect {",
+            "350: \tcase <-s.closed:",
+            "351: \t\ts.pendingMu.Unlock()",
+            "352: \t\treturn empty, &api.Fault{Kind: \"HOST_UNAVAILABLE\", Reason: \"HOST_OFFLINE\", Retryable: true}",
+            "353: \tdefault:",
+            "354: \t}",
+            "355: \ts.pending[id] = c",
+            "356: \ts.pendingMu.Unlock()",
+            "357: \tdefer func() { s.pendingMu.Lock(); delete(s.pending, id); s.pendingMu.Unlock() }()",
+            "358: \t// Closing the transport unblocks a write when the Host stops consuming.",
+            "359: \twrote := make(chan error, 1)",
+            "360: \tgo func() { wrote <- s.write(wire.Envelope{JSONRPC: \"2.0\", ID: &id, Method: method, Params: p}) }()",
+            "361: \tselect {",
+            "362: \tcase err = <-wrote:",
+            "363: \t\tif err != nil {",
+            "364: \t\t\treturn empty, err",
+            "365: \t\t}",
+            "366: \tcase <-ctx.Done():",
+            "367: \t\ts.Close()",
+            "368: \t\treturn empty, ctx.Err()",
+            "369: \tcase <-s.closed:",
+            "370: \t\treturn empty, io.EOF",
+            "371: \t}",
+            "372: \tselect {",
+            "373: \tcase r := <-c:",
+            "374: \t\tif r.err != nil {",
+            "375: \t\t\treturn empty, r.err",
+            "376: \t\t}",
+            "377: \t\tif r.env.Error != nil {",
+            "378: \t\t\treason := \"HOST_REJECTED\"",
+            "379: \t\t\tif method == \"host.read\" || method == \"host.search\" {",
+            "380: \t\t\t\tswitch r.env.Error.Data.Reason {",
+            "381: \t\t\t\tcase \"SOURCE_CHANGED\", \"HOST_OFFLINE\", \"HOST_LEASE_MISMATCH\", \"SOURCE_SNAPSHOT_INVALID\", \"SOURCE_SCOPE_INVALID\", \"SOURCE_SCOPE_MISMATCH\", \"SOURCE_CURSOR_INVALID\", \"SOURCE_REQUEST_ABORTED\", \"SOURCE_LEASE_UNAVAILABLE\", \"SOURCE_CACHE_LIMIT\", \"SOURCE_SIZE_LIMIT\", \"SOURCE_TASK_LIMIT\", \"SOURCE_CURSOR_LIMIT\":",
+            "382: \t\t\t\t\treason = r.env.Error.Data.Reason",
+            "383: \t\t\t\t}",
+            "384: \t\t\t}",
+            "385: \t\t\treturn empty, &api.Fault{Kind: r.env.Error.Data.Kind, Reason: reason, Retryable: r.env.Error.Data.Retryable}",
+            "386: \t\t}",
+            "387: \t\treturn r.env, nil",
+            "388: \tcase <-ctx.Done():",
+            "389: \t\ts.Close()",
+            "390: \t\treturn empty, ctx.Err()",
+            "391: \tcase <-s.closed:",
+            "392: \t\treturn empty, io.EOF",
+            "393: \t}",
+            "394: }"
+          ]
+        },
+        {
+          "start": 416,
+          "end": 444,
+          "lines": [
+            "416: func (s *Server) Invoke(ctx context.Context, c api.HostInvokeCommand) (api.HostReceipt, error) {",
+            "417: \te, err := s.call(ctx, \"host.invoke\", wire.HostInvokeParams{LeaseID: c.LeaseID, WorkspaceID: c.WorkspaceID, Capability: c.Capability, EffectID: c.EffectID, Resource: wire.ResourceRef{ResourceID: c.Resource.ResourceID, Revision: c.Resource.Revision}, ExpectedRevision: c.ExpectedRevision, Content: c.Content})",
+            "418: \tif err != nil {",
+            "419: \t\treturn api.HostReceipt{}, err",
+            "420: \t}",
+            "421: \treturn decodeReceipt(\"host.invoke\", e.Result, c.EffectID)",
+            "422: }",
+            "423: func (s *Server) QueryReceipt(ctx context.Context, c api.HostReceiptQuery) (api.HostReceipt, error) {",
+            "424: \te, err := s.call(ctx, \"host.queryReceipt\", wire.HostReceiptQuery{LeaseID: c.LeaseID, WorkspaceID: c.WorkspaceID, EffectID: c.EffectID})",
+            "425: \tif err != nil {",
+            "426: \t\treturn api.HostReceipt{}, err",
+            "427: \t}",
+            "428: \treturn decodeReceipt(\"host.queryReceipt\", e.Result, c.EffectID)",
+            "429: }",
+            "430: func decodeReceipt(method string, p json.RawMessage, effect string) (api.HostReceipt, error) {",
+            "431: \tif wire.ValidateMethod(method, \"result\", p) != nil {",
+            "432: \t\treturn api.HostReceipt{}, api.Invalid(\"INVALID_HOST_RECEIPT\")",
+            "433: \t}",
+            "434: \tr, err := wire.DecodeParams[wire.HostReceipt](p)",
+            "435: \tif err != nil || r.EffectID != effect || !wire.ValidDecimalOrEmpty(r.Revision) {",
+            "436: \t\treturn api.HostReceipt{}, api.Invalid(\"INVALID_HOST_RECEIPT\")",
+            "437: \t}",
+            "438: \tswitch r.Status {",
+            "439: \tcase \"committed\", \"reconciled\", \"rejected\", \"unknown_outcome\":",
+            "440: \tdefault:",
+            "441: \t\treturn api.HostReceipt{}, api.Invalid(\"INVALID_HOST_RECEIPT\")",
+            "442: \t}",
+            "443: \treturn api.HostReceipt{EffectID: r.EffectID, Status: r.Status, Revision: r.Revision, ReceiptID: r.ReceiptID}, nil",
+            "444: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "sha256": "9f8c60311f79fa8f4062936504444327974e7f90b6d003b962ac0154fbc53716",
+      "bytes": 7771,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/types.go",
+      "sha256": "1f02cbf1242849ec3ceb6545c5e7b6374c5bd42df81af2c4acae82fcb74e732c",
+      "bytes": 2916,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "b3694ea7c527fae0cd8c55b3a5d6f849e205ee270dc3a666ba04e8150d6c2ba3",
+      "bytes": 4154,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/duplex_test.go",
+      "sha256": "5c040af68cd9bdfe928ccfade52516ac81445ef4c0427f4fe107a014ac174819",
+      "bytes": 8767,
+      "observations": []
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "sha256": "99c47f8c6f2b5e12860e8c71111e74bd8fa77d63b747c034c8965b89625e2ba8",
+      "bytes": 189723,
+      "observations": []
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "sha256": "7d1a4ffacea612d51658371fc09fe03dcabc21bdb21bec56b3c2acce9a79bae4",
+      "bytes": 15940,
+      "observations": []
+    },
+    {
+      "path": "scripts/obsidian-acceptance/fresh-vault.mjs",
+      "sha256": "2a169a1970bfe4c9e285e4368ee0d7e87fed7ea211671700cf5306418adf2120",
+      "bytes": 7323,
+      "observations": [
+        {
+          "start": 1,
+          "end": 34,
+          "lines": [
+            "1: // Launch real Obsidian on a NEW disposable vault and profile (never an existing one).",
+            "2: // Requires HUHU_OBSIDIAN_EXECUTABLE (absolute) and a root directory that does not exist yet.",
+            "3: import assert from 'node:assert/strict';",
+            "4: import fs from 'node:fs/promises';",
+            "5: import { openSync, closeSync } from 'node:fs';",
+            "6: import path from 'node:path';",
+            "7: import { spawn } from 'node:child_process';",
+            "8: import { once } from 'node:events';",
+            "9: import { setTimeout as delay } from 'node:timers/promises';",
+            "10: import { connect } from './cdp.mjs';",
+            "11: ",
+            "12: /**",
+            "13:  * HUHU_ACCEPTANCE_PORT moves the CDP port; HUHU_PLUGIN_SOURCE installs a build from another directory than the checkout.",
+            "14:  * @param {{ root: string; files?: Record<string, string>; settings?: unknown; port?: number; pluginSource?: string }} options",
+            "15:  * `files` are vault-relative paths; `settings` is written to .huhu/config/settings.json.",
+            "16:  */",
+            "17: export async function launchFreshVault({ root, files = {}, settings, port = 9237, pluginSource = process.cwd() }) {",
+            "18: \tconst executable = process.env.HUHU_OBSIDIAN_EXECUTABLE;",
+            "19: \tassert.ok(executable && path.isAbsolute(executable), 'HUHU_OBSIDIAN_EXECUTABLE must be absolute');",
+            "20: \tassert.ok(path.isAbsolute(root) && path.parse(root).root !== root, 'root must be an absolute, non-root path');",
+            "21: \t// A caller can move every launch to another CDP port, so parallel runs of the scripts do not collide.",
+            "22: \tport = Number(process.env.HUHU_ACCEPTANCE_PORT) || port;",
+            "23: \tpluginSource = process.env.HUHU_PLUGIN_SOURCE || pluginSource;",
+            "24: \tawait fs.mkdir(root);",
+            "25: \tconst vault = path.join(root, 'vault');",
+            "26: \tconst profile = path.join(root, 'profile');",
+            "27: \tconst evidence = path.join(root, 'evidence');",
+            "28: \tconst manifest = JSON.parse(await fs.readFile(path.join(pluginSource, 'manifest.json'), 'utf8'));",
+            "29: \tconst pluginDir = path.join(vault, '.obsidian', 'plugins', manifest.id);",
+            "30: \tfor (const dir of [vault, profile, evidence, pluginDir, path.join(root, 'home'), path.join(root, 'config'), path.join(root, 'runtime')]) await fs.mkdir(dir, { recursive: true });",
+            "31: \tfor (const file of ['main.js', 'styles.css', 'manifest.json']) await fs.copyFile(path.join(pluginSource, file), path.join(pluginDir, file));",
+            "32: \tawait fs.writeFile(path.join(vault, '.obsidian', 'community-plugins.json'), JSON.stringify([manifest.id]));",
+            "33: \tawait fs.writeFile(path.join(vault, '.obsidian', 'app.json'), JSON.stringify({ livePreview: true }));",
+            "34: \tif (settings) {"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts/obsidian-acceptance/workbench-probe.mjs",
+      "sha256": "f301b7cd8fe3c7ac1ad0d79814be2d0244b2f10d64f6cde086fa7c6c8d946092",
+      "bytes": 10414,
+      "observations": []
+    },
+    {
+      "path": "node_modules/obsidian/obsidian.d.ts",
+      "sha256": "250cb2e990a34735b89a209ae9dc31c2f38acadceff1d59803ec94d506e3860b",
+      "bytes": 203660,
+      "observations": [
+        {
+          "start": 7378,
+          "end": 7416,
+          "lines": [
+            "7378:     /**",
+            "7379:      * Create a new plaintext file inside the vault.",
+            "7380:      * @param path - Vault absolute path for the new file, with extension.",
+            "7381:      * @param data - text content for the new file.",
+            "7382:      * @param options - (Optional)",
+            "7383:      * @public",
+            "7384:      * @since 0.9.7",
+            "7385:      */",
+            "7386:     create(path: string, data: string, options?: DataWriteOptions): Promise<TFile>;",
+            "7387:     /**",
+            "7388:      * Create a new binary file inside the vault.",
+            "7389:      * @param path - Vault absolute path for the new file, with extension.",
+            "7390:      * @param data - content for the new file.",
+            "7391:      * @param options - (Optional)",
+            "7392:      * @throws Error if file already exists",
+            "7393:      * @public",
+            "7394:      * @since 0.9.7",
+            "7395:      */",
+            "7396:     createBinary(path: string, data: ArrayBuffer, options?: DataWriteOptions): Promise<TFile>;",
+            "7397:     /**",
+            "7398:      * Create a new folder inside the vault.",
+            "7399:      * @param path - Vault absolute path for the new folder.",
+            "7400:      * @throws Error if folder already exists",
+            "7401:      * @public",
+            "7402:      * @since 1.4.0",
+            "7403:      */",
+            "7404:     createFolder(path: string): Promise<TFolder>;",
+            "7405:     /**",
+            "7406:      * Read a plaintext file that is stored inside the vault, directly from disk.",
+            "7407:      * Use this if you intend to modify the file content afterwards.",
+            "7408:      * Use {@link Vault.cachedRead} otherwise for better performance.",
+            "7409:      * @public",
+            "7410:      * @since 0.9.7",
+            "7411:      */",
+            "7412:     read(file: TFile): Promise<string>;",
+            "7413:     /**",
+            "7414:      * Read the content of a plaintext file stored inside the vault",
+            "7415:      * Use this if you only want to display the content to the user.",
+            "7416:      * If you want to modify the file content afterward use {@link Vault.read}"
+          ]
+        },
+        {
+          "start": 7495,
+          "end": 7510,
+          "lines": [
+            "7495:     /**",
+            "7496:      * Atomically read, modify, and save the contents of a note.",
+            "7497:      * @param file - the file to be read and modified.",
+            "7498:      * @param fn - a callback function which returns the new content of the note synchronously.",
+            "7499:      * @param options - write options.",
+            "7500:      * @returns string - the text value of the note that was written.",
+            "7501:      * @example",
+            "7502:      * ```ts",
+            "7503:      * app.vault.process(file, (data) => {",
+            "7504:      *  return data.replace('Hello', 'World');",
+            "7505:      * });",
+            "7506:      * ```",
+            "7507:      * @public",
+            "7508:      * @since 1.1.0",
+            "7509:      */",
+            "7510:     process(file: TFile, fn: (data: string) => string, options?: DataWriteOptions): Promise<string>;"
+          ]
+        },
+        {
+          "start": 7046,
+          "end": 7060,
+          "lines": [
+            "7046: export abstract class TextFileView extends EditableFileView {",
+            "7047: ",
+            "7048:     /**",
+            "7049:      * In memory data",
+            "7050:      * @public",
+            "7051:      * @since 0.10.12",
+            "7052:      */",
+            "7053:     data: string;",
+            "7054:     /**",
+            "7055:      * Debounced save in 2 seconds from now",
+            "7056:      * @public",
+            "7057:      * @since 0.10.12",
+            "7058:      */",
+            "7059:     requestSave: () => void;",
+            "7060: "
+          ]
+        },
+        {
+          "start": 7998,
+          "end": 8015,
+          "lines": [
+            "7998:     /**",
+            "7999:      * Iterate through all leaves in the main area of the workspace.",
+            "8000:      * @public",
+            "8001:      * @since 0.9.7",
+            "8002:      */",
+            "8003:     iterateRootLeaves(callback: (leaf: WorkspaceLeaf) => any): void;",
+            "8004:     /**",
+            "8005:      * Iterate through all leaves, including main area leaves, floating leaves, and sidebar leaves.",
+            "8006:      * @public",
+            "8007:      * @since 0.9.7",
+            "8008:      */",
+            "8009:     iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void;",
+            "8010:     /**",
+            "8011:      * Get all leaves of a given type.",
+            "8012:      * @public",
+            "8013:      * @since 0.9.7",
+            "8014:      */",
+            "8015:     getLeavesOfType(viewType: string): WorkspaceLeaf[];"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "node_modules/obsidian/package.json",
+      "sha256": "af6991863cfbcd776df59a192ab71e88ceface2f2249c161653deec839430c8a",
+      "bytes": 611,
+      "observations": []
+    },
+    {
+      "path": "node_modules/obsidian/LICENSE.md",
+      "sha256": "c7e9eeb6640ebb1c22d8888f6d2c771b1f058a54e6216d69c7e2224b3cbad394",
+      "bytes": 1058,
+      "observations": []
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "ecb829cbfb589532b8617b50e283b9891ce105e5bdd06ee87cfb41ce16dc49c6",
+      "bytes": 244,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "sha256": "bed39fa20d1af79220191e5d18e1a055cac2fb3532a89f062a85727fe4f62bc3",
+      "bytes": 29281,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md",
+      "sha256": "31ea2c4060ace38cb7f0f9d78e97f7e50db80c38bdd054be862003bd463d1d00",
+      "bytes": 38334,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "bytes": 51066,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "bytes": 24422,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md",
+      "sha256": "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6",
+      "bytes": 16925,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/07-note-write-reconcile.md",
+      "sha256": "64be9ea110bf2af4bb9f80dcaa8a5c338b1626e8a7d559aa557747a36cad0459",
+      "bytes": 12135,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/034-events-approval-preflight/REPORT.md",
+      "sha256": "b322ac16d7f68aff30260f656fadf402fd3f2335fc4d357a30625554aee12691",
+      "bytes": 35616,
+      "observations": []
+    }
+  ],
+  "external": [
+    {
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-api/9abd9605ce081383674aae1ed111c456edde0688/obsidian.d.ts",
+      "status": 200,
+      "bytes": 306430,
+      "sha256": "97c86417c893db691e401fdffd9026e348dc96da6bfcfa5d49a301d7fe7542a0",
+      "observations": [
+        {
+          "start": 3355,
+          "lines": [
+            "3354:      * Create a copy of a file.",
+            "3355:      * This will fail if there is already a file at `normalizedNewPath`.",
+            "3356:      * @param normalizedPath path to file, use {@link normalizePath} to normalize beforehand.",
+            "3357:      * @param normalizedNewPath path to file, use {@link normalizePath} to normalize beforehand.",
+            "3358:      * @public",
+            "3359:      */",
+            "3360:     copy(normalizedPath: string, normalizedNewPath: string): Promise<void>;",
+            "3361: ",
+            "3362: }",
+            "3363: ",
+            "3364: /**",
+            "3365:  * Options for writing to a file."
+          ]
+        },
+        {
+          "start": 10246,
+          "lines": [
+            "10245:     /**",
+            "10246:      * Create a new plaintext file inside the vault.",
+            "10247:      * @param path Vault absolute path for the new file, with extension.",
+            "10248:      * @param data The text content.",
+            "10249:      * @param options Write options.",
+            "10250:      * @throws Error if file already exists.",
+            "10251:      * @public",
+            "10252:      * @since 0.9.7",
+            "10253:      */",
+            "10254:     create(path: string, data: string, options?: DataWriteOptions): Promise<TFile>;",
+            "10255:     /**",
+            "10256:      * Create a new binary file inside the vault."
+          ]
+        },
+        {
+          "start": 10368,
+          "lines": [
+            "10367:     /**",
+            "10368:      * Atomically read, modify, and save the contents of a note.",
+            "10369:      * @param file The file.",
+            "10370:      * @param fn A callback function which returns the new content of the note synchronously.",
+            "10371:      * @param options Write options.",
+            "10372:      * @returns The new content of the note.",
+            "10373:      * @example",
+            "10374:      * ```ts",
+            "10375:      * await vault.process(file, (data) => {",
+            "10376:      *     return data.replace('foo', 'bar');",
+            "10377:      * });",
+            "10378:      * ```"
+          ]
+        },
+        {
+          "start": 10964,
+          "lines": [
+            "10963:     /**",
+            "10964:      * Iterate through all leaves, including main area leaves, floating leaves, and sidebar leaves.",
+            "10965:      * @param callback Called for each leaf.",
+            "10966:      * @public",
+            "10967:      * @since 0.9.7",
+            "10968:      */",
+            "10969:     iterateAllLeaves(callback: (leaf: WorkspaceLeaf) => any): void;",
+            "10970:     /**",
+            "10971:      * Get all leaves of a given type.",
+            "10972:      * @param viewType The view type.",
+            "10973:      * @public",
+            "10974:      * @since 0.9.7"
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/obsidianmd/obsidian-api/9abd9605ce081383674aae1ed111c456edde0688/LICENSE.md",
+      "status": 200,
+      "bytes": 1058,
+      "sha256": "c7e9eeb6640ebb1c22d8888f6d2c771b1f058a54e6216d69c7e2224b3cbad394"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CopilotKit/OpenBot/46642d6c91daa663bccff673595f4e12a419a496/server/src/work/queue.ts",
+      "status": 200,
+      "bytes": 17046,
+      "sha256": "a9f928ef57b26899e052763f3adbb07188dbe58823a722a1f7ab833a5a29ed4b"
+    },
+    {
+      "url": "https://api.github.com/repos/obsidianmd/obsidian-api/commits/9abd9605ce081383674aae1ed111c456edde0688",
+      "status": 200,
+      "bytes": 4495,
+      "sha256": "11ea92407e4a7a85134d9e825455ab2664a007dbfa46ec644f879332bebaac26",
+      "commit": {
+        "sha": "9abd9605ce081383674aae1ed111c456edde0688",
+        "date": "2026-10-05T19:06:20Z",
+        "subject": "Add FrontmatterValue."
+      }
+    }
+  ],
+  "commands": [
+    {
+      "command": "git ls-remote https://github.com/obsidianmd/obsidian-api.git HEAD refs/tags/1.13.1 refs/tags/v1.13.1",
+      "exitCode": 0,
+      "stdout": "9abd9605ce081383674aae1ed111c456edde0688 HEAD; no matching version tag"
+    }
+  ],
+  "notes": [
+    "Only report/log written. No implementation, installed deps, Vault/Obsidian/model/keyring access or runtime probe.",
+    "Read corrections: official type tag 1.13.1 and LICENSE returned 404; fixed HEAD with LICENSE.md verified. Some old Reference URLs returned not-found/timeout; relied on successful Plugins/Vault guide and official fixed declaration.",
+    "Initial src/app/contracts/host.ts does not exist; actual ModuleContext in module.ts. No context/execution.md assumed.",
+    "Obsidian local 1.13.1 differs from current official fixed HEAD; current create docs explicitly throw existing-file error, local plaintext create comment omits it. No runtime guarantee inferred from doc-only update."
+  ],
+  "returnRecheck": {
+    "at": "2026-10-25T09:28:48.784086+00:00",
+    "sourceFiles": 52,
+    "changed": [
+      {
+        "path": "src/modules/huhubot/platform/obsidian/sources/sources.ts",
+        "observedSha256": "c2c3435650ae964af11ed71ea6effff61a51e25f86449db29626528291fc54ab",
+        "returnSha256": "e7128894ee98e5f4dd28c3c011c675c65174a385937ef6a4b0052a9a32171561"
+      },
+      {
+        "path": "contracts/hap/v0.1/schema.json",
+        "observedSha256": "99c47f8c6f2b5e12860e8c71111e74bd8fa77d63b747c034c8965b89625e2ba8",
+        "returnSha256": "63d16a0a891b14d6c685514d57913ccccbaac59c184f9b76b45d8a6779db9e4e"
+      },
+      {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md",
+        "observedSha256": "31ea2c4060ace38cb7f0f9d78e97f7e50db80c38bdd054be862003bd463d1d00",
+        "returnSha256": "23a9966b4c59a9990ee7eb3ce55b9cf3cb4bca3d285ea89eb598a88d094b838e"
+      }
+    ],
+    "targetedRead": "sources.ts gained unchangedFile object/path/stat checks for background reads including after hash; host.invoke/queryReceipt params/result definitions remain unchanged in shape; Goal plan remains revision 9. These are other-owner changes, not reviewed/accepted by this task."
+  }
+}

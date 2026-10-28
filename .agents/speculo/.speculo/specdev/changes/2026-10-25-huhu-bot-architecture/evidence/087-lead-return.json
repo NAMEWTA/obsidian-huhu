@@ -1,0 +1,19 @@
+{
+  "task": "087-engine-adapter-preparation",
+  "checkedAt": "2026-10-25T22:39:34.612354+00:00",
+  "reportSha256": "595a39e40281ce264475161dfdebc34e6eda1f6cc1eac7e622e472cc8ef7e322",
+  "taskSha256": "7aeba54d93d368b612be6e489f7714b6c35c3f62858bbe1ca93e1776501d7418",
+  "manifestSha256": "7a0a4c15d6a5478aa195d61c81ea71a7850e8d9ae055e1b60cd514a15a6343f1",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "sourceFilesVerified": 70,
+  "artifactsVerified": 5,
+  "sourceDrift": [],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "productionWrites": [],
+  "disposition": "Accept read-only T08 preparation only. No T08 activation, product implementation, test or live acceptance. Current interfaces and O1-O6/F01-F20 guide later owner-scoped implementation after T16 gate."
+}

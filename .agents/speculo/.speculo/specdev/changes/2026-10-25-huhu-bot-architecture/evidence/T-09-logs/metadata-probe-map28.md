@@ -1,0 +1,9 @@
+# 默认元数据测试的精确维护
+
+109静态回读原T02测试发现，probe_http_test.go末段仍把已经默认装配的Responses视为未装配。Root回读确认该段在已有有效ref与明确endpoint下使用missing-model；fixture会返回404。预计为一次GET后MODEL_PROBE_FAILED，尚须114在冻结真实输入实际运行原测试，不把推断写为已发生红灯。
+
+当前T02已经在Map27的同一次维护中active/pending，attempts保持0，不重置或删除110实际红绿证据。Map28仅将本窗口范围增加到native/huhubot/tests/contract/assistant/probe_http_test.go的末段预期及必要请求/安全错误观察，所有生产与其他历史写集保持只读。原owner为credential_provider；114 TASK校验并实际派发后先只读准备，109冻结后Root串行授原红、编辑、绿窗。
+
+Responses的404不得改成不可用协议的0HTTP假象；测试继续证明明确目的地/仅GET/空body/凭证来源/无重试或生成fallback/安全错误。显式Chat-only selector来自独立注入fixture，原负控保持。用户现场后验、28票55AC、DAG、所有既有业务合同与T09最终共同门不变。
+
+113文档检查维护只使用T27早已登记的四checker/policy路径；冻结历史报告不改。其候选与114一并纳入112最终独立审查。Map28不声称109/113/114或T09已完成。

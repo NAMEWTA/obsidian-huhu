@@ -1,0 +1,27 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T09:18:43.608143+00:00",
+  "task": "124-ui-consumer-preflight",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullConsumerMapRead": true,
+  "writersStopped": true,
+  "activeAuthorProductProcesses": 0,
+  "returnExit": 0,
+  "rootReturnToolChunk": "aa4ded",
+  "reportSha256": "679b18bfe7e359f77534363395b2b88db36cb6a68e847bccbe17af79601dba37",
+  "artifactManifestSha256": "f2e5c446d81c28e01d9ef7a874ab55bb31179172ef5b81b2734c4c0aa4581927",
+  "verifiedArtifacts": 6,
+  "verifiedSources": 63,
+  "sourceAndModeDrift": [],
+  "result": "accepted-read-only-preparation",
+  "productConsumers": "not-run",
+  "consumerMapSha256": "3602bc782fa9cf19ade67ab3201bc0c75839c1081203bc4184d0e020e1ce9a4e",
+  "queuedOriginalOwnerRequests": [
+    "G1 activeRun",
+    "G2 enable",
+    "G3 group reanchor"
+  ],
+  "g2ProductSourceRecheck": "Root 964c35 checked all 2063 frozen product files before writing 123 receipt; subsequent 124 metadata lookup used wrong key and stopped, corrected actual sourceTreeSHA256 here; no product change/check failure.",
+  "boundary": "接纳六页消费路线，不激活T20–25或证明新产品/现场行为；真实操作用户后验。"
+}

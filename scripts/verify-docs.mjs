@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { documentationKind as classify, githubSlug, referenceLinkBody } from './documentation-policy.mjs';
+import { documentationKind as classify, referenceLinkBody, withoutCodeSpans } from './documentation-policy.mjs';
 
 const root = process.cwd();
 const failures = [];
@@ -84,6 +84,8 @@ function fenceBody(text) {
 		if (marker) {
 			if (!fence) fence = marker[1][0];
 			else if (marker[1][0] === fence) fence = '';
+			// Omitted fences remain block boundaries for subsequent inline-code scanning.
+			kept.push('');
 			continue;
 		}
 		if (!fence) kept.push(line);
@@ -140,7 +142,7 @@ function checkTarget(fromFile, raw) {
 	const title = target.match(/\s+(?:"[^"]*"|'[^']*'|\([^)]*\))\s*$/);
 	if (title) target = target.slice(0, title.index).trim();
 	if (!target) return;
-	if (/^[a-z][a-z\d+.-]*:/i.test(target) || target.startsWith('//')) {
+	if ((/^[a-z][a-z\d+.-]*:/i.test(target) && !path.isAbsolute(target)) || target.startsWith('//')) {
 		external += 1;
 		return;
 	}
@@ -151,9 +153,20 @@ function checkTarget(fromFile, raw) {
 		try { fragment = decodeURIComponent(target.slice(hash + 1)); }
 		catch { failures.push(`${fromFile}: bad link fragment ${target}`); return; }
 	}
-	const resolved = destination
+	let resolved = destination
 		? path.resolve(root, path.dirname(fromFile), destination)
 		: path.resolve(root, fromFile);
+	// The host supports absolute file:line links. Exact filenames containing a colon win.
+	if (path.isAbsolute(destination) && !fs.existsSync(resolved)) {
+		const location = /^(.+):([1-9]\d*)$/.exec(destination);
+		if (location && Number.isSafeInteger(Number(location[2]))) {
+			const source = path.resolve(location[1]);
+			if (fs.existsSync(source) && fs.statSync(source).isFile()) {
+				const actual = path.relative(fs.realpathSync(root), fs.realpathSync(source));
+				if (!actual.startsWith('..') && !path.isAbsolute(actual)) resolved = source;
+			}
+		}
+	}
 	const relative = posix(path.relative(root, resolved));
 	if (destination) {
 		links += 1;
@@ -171,15 +184,16 @@ function checkTarget(fromFile, raw) {
 }
 
 for (const [file, body] of bodies) {
+	const linkBody = withoutCodeSpans(body);
 	const definitions = new Map();
-	for (const line of body.split('\n')) {
+	for (const line of linkBody.split('\n')) {
 		const defined = line.match(/^ {0,3}\[([^\]\n]+)\]:[ \t]+(\S+)(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^)\n]*\)))?\s*$/);
 		if (!defined) continue;
 		definitions.set(labelKey(defined[1]), defined[2].replace(/^<|>$/g, ''));
 	}
 	for (const destination of definitions.values()) checkTarget(file, destination);
-	for (const match of body.matchAll(/!?\[[^\]\n]*\]\(([^)\n]+)\)/g)) checkTarget(file, match[1]);
-	for (const match of referenceLinkBody(file, body).matchAll(/!?\[([^\]\n]*)\]\[([^\]\n]*)\]/g)) {
+	for (const match of linkBody.matchAll(/!?\[[^\]\n]*\]\(([^)\n]+)\)/g)) checkTarget(file, match[1]);
+	for (const match of referenceLinkBody(file, linkBody).matchAll(/!?\[([^\]\n]*)\]\[([^\]\n]*)\]/g)) {
 		const key = labelKey(match[2] || match[1]);
 		const destination = definitions.get(key);
 		if (!destination) failures.push(`${file}: unresolved reference link [${match[1]}][${match[2]}]`);

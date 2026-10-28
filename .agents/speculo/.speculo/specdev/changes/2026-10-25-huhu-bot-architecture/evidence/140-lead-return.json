@@ -1,0 +1,44 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-author-candidate",
+  "task": "140-memory-runtime-recovery",
+  "reportSHA256": "cb659aaa706fcb5702ded5ff8e02bf1b775b027ce7ce51b1f9e4478d097d7bdf",
+  "manifestSHA256": "07b977d998a4fdb5bb620329c39f9d415e2c17de1d9771996a6c1abc7795845f",
+  "sourceFiles": 24,
+  "artifactFiles": 32,
+  "currentFinalInputFiles": 238,
+  "currentFinalInputDrift": [],
+  "initialCheckInputFiles": 244,
+  "initialCheckTimeDrift": [],
+  "laterAuthorizedChange": [
+    "native/huhubot/tests/contract/foundation/memory_runtime_test.go"
+  ],
+  "laterChangeReason": "140 subsequently added default-Core/HAP six-method consumer in this same test file; captured and passed in the final 238-file closure. No production drift.",
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "140-memory-runtime-recovery",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05906885200238321,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "scope": "T01/T03 runtime candidate; common T14 regression and full independent review remain pending",
+  "rawLogsRead": [
+    "04-core-target.log",
+    "05-prepare-target.log",
+    "14-recovery-target.log",
+    "15-default-hap-target.log"
+  ]
+}

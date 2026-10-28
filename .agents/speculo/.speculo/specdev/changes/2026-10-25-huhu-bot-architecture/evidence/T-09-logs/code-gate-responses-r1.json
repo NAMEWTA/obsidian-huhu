@@ -1,0 +1,38 @@
+{
+  "observer": "native:/root",
+  "acceptedAt": "2026-10-26T06:32:17.415670+00:00",
+  "result": "passed",
+  "tickets": [
+    "T-01",
+    "T-02",
+    "T-06",
+    "T-08",
+    "T-09"
+  ],
+  "input": "evidence/T-09.md#review-input-responses-r1",
+  "inputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "reviewer": "native:/root/recovery_review",
+  "reviewReport": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+  "reviewReportSha256": "a965452dbd9dbb6e4c3a78c6ffb61fdd0579075ef2339fe3b5950cb001770e14",
+  "displaySuccessor": "sessions/20261025T043239Z/116-responses-review-anchors/REPORT.md",
+  "rootReceipts": [
+    "evidence/112-lead-return.json",
+    "evidence/116-lead-return.json"
+  ],
+  "rootE2E": "evidence/T-09-logs/lead-responses-e2e-r1.json",
+  "rootE2ESha256": "fbca287954c2af536d169c54032c9729adc0ad83bf4d829a481e88fe06bf621b",
+  "validation": {
+    "path": "evidence/responses-code-closure-validation-r2.json",
+    "sha256": "ec7919e26b29b9e0e23a14e28744139e4aa422f8945126d1f311ade5a55ad7a5",
+    "actualExit": 0,
+    "waited": true,
+    "seconds": 0.545,
+    "errors": [],
+    "plans": 28,
+    "jointRecords": 5,
+    "toolChunk": "9fc148"
+  },
+  "reviewAttempts": 1,
+  "priorFailuresPreserved": true,
+  "boundary": "Responses及必要共享代码责任；G2等T10，T27仅部分接纳，28票55AC Goal继续。真实Provider/Obsidian/目标OS user-owned/not-run。"
+}

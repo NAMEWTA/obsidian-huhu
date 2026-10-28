@@ -1,0 +1,127 @@
+package lead_recovery_stdio_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/stdio"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+// A controlled Engine behind the real public stdio server. It deliberately
+// does not contact a model or a Host, and records actual application port calls.
+type leadWireEngine struct {
+	directory string
+	mu        sync.Mutex
+}
+
+func (e *leadWireEngine) record(v any) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	f, err := os.OpenFile(filepath.Join(e.directory, "observations.jsonl"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	err = json.NewEncoder(f).Encode(v)
+	ce := f.Close()
+	if err != nil {
+		return err
+	}
+	return ce
+}
+func (e *leadWireEngine) Run(_ context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	_ = e.record(map[string]any{"phase": "unexpectedRun", "runId": in.RunID})
+	return api.EngineResult{}, fmt.Errorf("interrupted fixture must use Resume, never Run")
+}
+func (e *leadWireEngine) InspectCheckpoint(_ context.Context, in api.CheckpointInspection) error {
+	body, err := io.ReadAll(in.Reader)
+	if err != nil {
+		return err
+	}
+	if string(body) != `{"fixture":"lead-v8-complete-cp","phase":"children","version":1}` {
+		return fmt.Errorf("complete original checkpoint payload mismatch")
+	}
+	return e.record(map[string]any{"phase": "inspect", "runId": in.Run.ID, "checkpoint": in.Checkpoint, "bytes": len(body)})
+}
+func (e *leadWireEngine) Resume(ctx context.Context, in api.EngineResumeInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	r, err := in.Input.Checkpoints.Open(ctx, in.Checkpoint)
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	body, err := io.ReadAll(r)
+	ce := r.Close()
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	if ce != nil {
+		return api.EngineResult{}, ce
+	}
+	if len(body) != 64 {
+		return api.EngineResult{}, fmt.Errorf("actual Resume did not read complete CP")
+	}
+	if err = e.record(map[string]any{"phase": "resume", "runId": in.Input.RunID, "config": in.Input.Config, "group": in.Input.Lineage.Group, "decision": in.Decision, "checkpoint": in.Checkpoint}); err != nil {
+		return api.EngineResult{}, err
+	}
+	a, err := in.Input.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: "lead-hap-explicit-resume", InputEstimate: "3", OutputBound: "4"})
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	if err = in.Input.Attempts.Dispatch(ctx, a, func(context.Context) error {
+		return e.record(map[string]any{"phase": "physical", "runId": in.Input.RunID, "attemptId": a.ID})
+	}); err != nil {
+		return api.EngineResult{}, err
+	}
+	if _, err = in.Input.Attempts.Settle(ctx, a, api.AttemptObservation{Knowledge: "known", InputTokens: "1", OutputTokens: "1", ProducerEnded: true}); err != nil {
+		return api.EngineResult{}, err
+	}
+	ticker := time.NewTicker(5 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		if _, err = os.Stat(filepath.Join(e.directory, "release")); err == nil {
+			break
+		} else if !os.IsNotExist(err) {
+			return api.EngineResult{}, err
+		}
+		select {
+		case <-ctx.Done():
+			return api.EngineResult{}, ctx.Err()
+		case <-ticker.C:
+		}
+	}
+	return api.EngineResult{Status: "finished", Text: "LEAD_HAP_RESUMED_ORIGINAL_RUN"}, nil
+}
+func TestLeadRecoveryStdioRunner(t *testing.T) {
+	root, control := os.Getenv("LEAD_RECOVERY_PROFILES"), os.Getenv("LEAD_RECOVERY_CONTROL")
+	if root == "" || control == "" {
+		t.Fatal("explicit one-time profile/control paths required")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	core, err := bootstrap.OpenWithOptions(ctx, root, filepath.Join(root, "one"), bootstrap.Options{Engine: &leadWireEngine{directory: control}})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	server := stdio.New(os.Stdin, os.Stdout, core.API, api.NewConnectionIdentity("lead-recovery-stdio", "owner", true))
+	err = server.Run(ctx)
+	server.Close()
+	ce := core.Close()
+	if ce != nil {
+		waitCtx, done := context.WithTimeout(context.Background(), 5*time.Second)
+		ce = core.WaitClosed(waitCtx)
+		done()
+	}
+	if err != nil || ce != nil {
+		fmt.Fprintln(os.Stderr, err, ce)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}

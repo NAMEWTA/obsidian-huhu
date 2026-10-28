@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T09:46:37.822496+00:00",
+  "task": "128-memory-access-budget",
+  "target": "native:/root/credential_provider",
+  "taskSha256": "915b0bbb4d15bbc1738dd0d2086c7ee6d983efba7e47ec91e87c4b8daa59777b",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "237722"
+  },
+  "mapValidation": {
+    "actualExit": 0,
+    "toolChunk": "60d913",
+    "path": "evidence/map32-maintenance-validation.json"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received; read-only 115/123/actual consumers, own directory only until Root window",
+  "productWindow": "not yet granted; 125 remains sole product check writer"
+}

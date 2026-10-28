@@ -1,0 +1,31 @@
+{
+  "observer": "native:/root",
+  "command": [
+    "go",
+    "test",
+    "./tests/contract/assistant",
+    "-run",
+    "^TestAssistantHAPStrictDTOAndNoSecretSurface$",
+    "-count=1",
+    "-timeout=30s",
+    "-json"
+  ],
+  "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+  "environment": {
+    "GOTOOLCHAIN": "go1.26.10",
+    "GOWORK": "off",
+    "GOEXPERIMENT": "",
+    "GOFLAGS": "-mod=readonly",
+    "CGO_ENABLED": "0"
+  },
+  "exitCode": 1,
+  "waited": true,
+  "seconds": 1.9464003630000661,
+  "inputSHA256": "9579090bfcdb20ab0053d944979653dc861c047e54cb8d4ed5e1c638e4a85c26",
+  "inputCount": 2032,
+  "inputSnapshot": "/tmp/huhu-lead-anthropic-r1-lq1wawl_",
+  "inputManifest": "evidence/T-10-logs/lead-anthropic-e2e-r1.json",
+  "sourceDrift": [],
+  "rawLog": "evidence/T-02-logs/hap-default-after-three-protocols-r1.log",
+  "hypothesis": "Existing default HAP test still expects Responses ADAPTER_NOT_ASSEMBLED despite default registered protocol; inspect actual fault without changing product/test."
+}

@@ -1,0 +1,57 @@
+{
+  "files": {
+    "src/shared/storage/vault-layout.ts": "26b94019ddf6bd8b270ba5b0cf7c9445de60f300bc33d2e0ee734e50de7c2e8c",
+    "src/shared/storage/vault-layout.test.ts": "71749d17e0bcf4d47e9e13d7a440b667571718a30b8d3134f9ed970286df3b05",
+    "src/modules/sync/core/excludes.ts": "9a25f04d747956fa7b79d57a6bc0d458212bce314a6f457375de08851cf58b23",
+    "src/modules/sync/platform/desktop/excludes.test.ts": "fdf1bca9fd480b3223391d74c8b32699f816eee6255763e90bffa7dd9560b522",
+    "docs/data.md": "40b7d0ec872f915febb450fb50e8ff601d58efe92e866fa431fac36b1c04cb85"
+  },
+  "input_hashes": {
+    "src/shared/storage/vault-layout.ts": "3202219040c65d4d115cbbaac9ae645ef2ecec8c579d3a0859fd3048badac52c",
+    "src/shared/storage/vault-layout.test.ts": "6ba15f9c63ea2d7d0afac37782b451676483acc4b535e12e4fb9c47f60df00a9",
+    "src/modules/sync/core/excludes.ts": "a5ab70c55cb07fef7ba95484ba954ce8ae8060a9dceb3e30ee452ca5ee82ef19",
+    "src/modules/sync/platform/desktop/excludes.test.ts": "8db8a4b4c16f76a7c37511285c5a1658778020fcae30e7236962154aed4ef9c3",
+    "docs/data.md": "08dfc229b2e73755a589e95e313d4dce8b6c1da4be756b455b88cfe5adab2d8e"
+  },
+  "protected_inputs_unchanged": {
+    "main.js": "d9d91103ba8885a76b2ed6f7eeb90fbff9f714ee92fe1d838e10783ffcdf4cb6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+    "THIRD-PARTY-NOTICES.md": "15b56ca45a571e43bd5f3c4bbf530987bcb3a6b61808c970b2ffe3173e1e1e8c",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+    "native/huhubot/go.mod": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+    "native/huhubot/go.sum": "2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816",
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    "native/huhubot/dist/huhu-bot-darwin-arm64": "508e32d61b2ac17bece6250ac198887e625295b24c149c25c3f6bb618efbc692",
+    "native/huhubot/dist/huhu-bot-darwin-arm64.json": "c10cd4d54c64b492e625d1021b4c0422461f752e16c8ed19b02ec22c02da2049",
+    "native/huhubot/dist/huhu-bot-darwin-arm64.sha256": "7f19c8676edc42f2a5af10c11d2c6daa1cd0cd9cc7e98e86c5ddce07edb3e334",
+    "native/huhubot/dist/huhu-bot-darwin-x64": "2bd702f3a6018595f70235ea5ddb0075529ed38e75b233ab601f3b0ab10944fc",
+    "native/huhubot/dist/huhu-bot-darwin-x64.json": "108ce15945ad6c29f9a66ae0d36fdfb40964ec54c98f98fe68b17b84c196a0da",
+    "native/huhubot/dist/huhu-bot-darwin-x64.sha256": "76b171ecca621f09b3285ce2521c8aa6fd19709c33b958d923630b6e460693d2",
+    "native/huhubot/dist/huhu-bot-linux-arm64": "b90affeec6abaf2d14c3f0bdd29f697cddcad6f22778cd302824a21c36b2ea6e",
+    "native/huhubot/dist/huhu-bot-linux-arm64.json": "453c0db4224e68c1e5e753a8c7bc1d27b8c0bf2aa67f9fb700bf55851c9b5cc9",
+    "native/huhubot/dist/huhu-bot-linux-arm64.sha256": "460f897b131d5cde4114ded83a7dd1c8efd72ae9a3899180bd9b24f00fa4d598",
+    "native/huhubot/dist/huhu-bot-linux-x64": "d4510b02adacfe69d3ec534c1a596ba35696ae813147a34321a9b03a0754216e",
+    "native/huhubot/dist/huhu-bot-linux-x64.json": "27a98a31300f849b485b1300e5566cad30d69b90e64b4a283b99a62848d3609a",
+    "native/huhubot/dist/huhu-bot-linux-x64.sha256": "43b6049ce33d4a7bdea09da0be61c56ffc2766546e046778c002e5084917479e",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe": "8e702107f64814268dfeb2f5643b213f8ad78822fe8d25e76185f48a016ca0a7",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe.json": "30f5e61b8dd400d982f19259742d831c6461954fb67bc676a08049a113dac4a2",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe.sha256": "b1f6c8921801d53ca70ed77437984a4d61626528a3cbabf0d1e53d345c50e482"
+  },
+  "patch_sha256": "4eda6416662fdc92851ec4d3b4b233605967eddbeec691a356a05b5ee2c6cd7c",
+  "read_only_references_at_return": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/051-host-receipt-root/TASK.md": "549e9b239ff09e8583e0133bb54cab43b4807ea306682a58acb8bd1ddde840fc",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md": "614f3c6b899a4a7a676b7731fb838c7dd14cad5eb6e1c51bad690dac673dc94d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md": "a394d2d842805a9cdd919e0199fc891482cd53c5b4d0a6cb1954a955e4798ea5",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/27-build-platform-notices.md": "8dfbeeac7d0df8374714a9e4fec9b1fe5a375eedb959240b39884e258ab41546",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/036-note-effect-preflight/REPORT.md": "5b5b3292c08084ce31dcdab386e8c429631efb147cb131b3288d3cfa687f925d",
+    "AGENTS.md": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    ".agents/skills/dev/references/architecture.md": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+    ".agents/skills/dev/references/testing.md": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+    ".agents/skills/dev/references/licensing.md": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+    ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae"
+  }
+}

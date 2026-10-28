@@ -1,0 +1,2 @@
+$ node scripts/third-party-notices.mjs --check
+THIRD-PARTY-NOTICES.md is current (105 npm packages, 62 crates, 52 Go runtime/modules)

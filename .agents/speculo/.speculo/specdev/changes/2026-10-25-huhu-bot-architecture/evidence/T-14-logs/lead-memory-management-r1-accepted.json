@@ -1,0 +1,44 @@
+{
+  "observer": "native:/root",
+  "result": "lead-memory-management-r1.json",
+  "resultSHA256": "5c91ea3c9bc94544c65c8dd8b30547e89fa0f03c896ed09f1ae150a680622004",
+  "actualRootSession": 50711,
+  "actualRootExit": 0,
+  "actualWait": "exec initiale6852a and finalc7867c",
+  "inputFiles": 1891,
+  "inputSHA256": "9285679bf1f885ac1cca01a621178021e6d39db1168cbdab23d0bd414c0f00e2",
+  "sourceDrift": [],
+  "summary": {
+    "newBuild": "Go1.26.10 defaultCLI",
+    "productionTS": "BotClient/HapConnection/DesktopHapTransport",
+    "naturalCLIExits": [
+      {
+        "code": 0,
+        "signal": null
+      },
+      {
+        "code": 0,
+        "signal": null
+      }
+    ],
+    "persistentReadback": {
+      "integrity": "ok",
+      "foreignKeys": [],
+      "schemaVersion": 10,
+      "modelAttempts": 0,
+      "configPins": 0
+    },
+    "cases": [
+      "virtual default settings",
+      "real typed management through production TS/HAP",
+      "namespace separation",
+      "idempotent receipt",
+      "pin preserves text revision",
+      "correct immutable revision and stale CAS refusal",
+      "forgotten response body absent",
+      "persistent auto pause",
+      "natural exit and reopen preserves both namespaces"
+    ]
+  },
+  "boundary": "managementonly; newRoot3protocolSDK/context/budget probe nowinprogress; nofullT14done"
+}

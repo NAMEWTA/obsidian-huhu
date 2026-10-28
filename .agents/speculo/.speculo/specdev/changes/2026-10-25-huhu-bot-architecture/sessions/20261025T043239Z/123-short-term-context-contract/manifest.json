@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-10-26T09:13:33.655770+00:00",
+  "files": {
+    "REPORT.md": "7faeda6f3b5715cf288e04d910651fbe751677d10a9c19a9834f024c33ac1763",
+    "TASK.md": "0d5a31b887bee74418acbc682dde1cc5bbc11f8932395a32fce0100f56d53fbb",
+    "logs/00-115-source-recheck.json": "4caf2c502e00dfa984d201f64a716ec1ac45be72be8564629e4714aefa4fa7fc",
+    "logs/01-return-result.json": "9be46d19fe0ac9771d033b8802edb9cc6db393db74b6527e95d5047fc2182366",
+    "logs/01-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/02-final-source-readback.json": "58302de1e9ef1166b3a3a036ccb3931c2e3507107cb03288e3dc63e0d9d7ff95",
+    "short-term-contract.md": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+    "sources.json": "4c25a0344ee07cd93528ff4f6283424a6ad59e62477781bc963de611922d4983",
+    "sources.md": "8e9f869bf9b0e92b93a7eca34139eecd73f76e52e7371c1f62bc5ea9d8c80d13"
+  },
+  "count": 9,
+  "treeSHA256": "3f4fa20492a458f3d0215b3cbe6008ab7ef0d67c7c0ee94016adc1ebf22ae3f9",
+  "treeAlgorithm": "sha256 of compact UTF8 sorted relative-path/SHA JSON map; self excluded",
+  "manifestSelfExcluded": true,
+  "sourceManifest": "sources.json",
+  "sourceCount": 40,
+  "sourceTreeSHA256": "065d99fe176de1bde51c5b12ac52fa5d1719fbb3b3157874c3ce1be26d7e7ab8",
+  "contractSHA256": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+  "REPORTSHA256": "7faeda6f3b5715cf288e04d910651fbe751677d10a9c19a9834f024c33ac1763",
+  "return": "logs/01-return-result.json",
+  "returnExitCode": 0,
+  "returnWaited": true,
+  "newProductWrites": false,
+  "allNewConsumers": "not-run",
+  "T14ActivatedByThisTask": false
+}

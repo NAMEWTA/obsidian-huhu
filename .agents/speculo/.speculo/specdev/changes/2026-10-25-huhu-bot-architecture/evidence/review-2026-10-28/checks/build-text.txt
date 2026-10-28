@@ -1,0 +1,2 @@
+$ node scripts/verify-build-text.mjs
+Build text: LF/CRLF assets and license banners are equivalent

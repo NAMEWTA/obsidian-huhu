@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-10-26T06:59:06.119138+00:00",
+  "artifacts": {
+    "REPORT.md": {
+      "sha256": "6159120dbdd5659cdf1e5878c0ca0ef8d2676b68a6fd5ed7ca315b803f54532e",
+      "bytes": 6245
+    },
+    "TASK.md": {
+      "sha256": "7422cdc27e93ff516d11381ccd812d3ff91267bd0d4c1e22a219b63c131a302a",
+      "bytes": 5383
+    },
+    "interface-contract.md": {
+      "sha256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+      "bytes": 48715
+    },
+    "logs/00-current-memory-methods.json": {
+      "sha256": "02dbd9951c3a7ded1058a52f66772571d120d73ef5288c4fd8277076a9937796",
+      "bytes": 1852
+    },
+    "logs/01-return-result.json": {
+      "sha256": "4b2e00f65471bad27460ed61fda98795d7221ec3e29a04182545a0c455c0eaa9",
+      "bytes": 811
+    },
+    "logs/01-return.log": {
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "bytes": 200
+    },
+    "logs/02-final-source-readback.json": {
+      "sha256": "aaab60600ab08d1bb3a8bc2ec0f81adb7ab854bd7c3c9a24c1950e3956ecf57b",
+      "bytes": 1108
+    },
+    "sources.json": {
+      "sha256": "0944bcb0d9504643f472a34f6fe95ed84fdd2feca1fcac3bfe7f98b389e8f49c",
+      "bytes": 18123
+    },
+    "sources.md": {
+      "sha256": "05c505101f4f0c47035c59b3725a2f5a9380513469836e121010f12474a23724",
+      "bytes": 10123
+    }
+  },
+  "selfExcluded": "manifest.json",
+  "REPORTSHA256": "6159120dbdd5659cdf1e5878c0ca0ef8d2676b68a6fd5ed7ca315b803f54532e",
+  "interfaceSHA256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+  "sourceManifest": "sources.json",
+  "sourceTreeSHA256": "49385af11e952888ac109dfa3462265acd3523b1b11d55dced3031fe46adac1a",
+  "return": "logs/01-return-result.json",
+  "sourceRecheck": "logs/02-final-source-readback.json",
+  "productImplementationOrTests": "not-run; all new signatures/DDL/tests proposed only",
+  "stopped": true
+}

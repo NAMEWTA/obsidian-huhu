@@ -1,0 +1,7 @@
+{
+  "mode": "host-probe",
+  "passed": true,
+  "evidence": "/tmp/huhu-bot-host-20261028-final-reviewed/evidence",
+  "renderedScenarios": 48,
+  "realProvider": false
+}

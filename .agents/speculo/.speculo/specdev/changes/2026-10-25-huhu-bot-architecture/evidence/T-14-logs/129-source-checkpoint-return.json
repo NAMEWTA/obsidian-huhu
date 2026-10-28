@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:55:32.405520+00:00",
+  "task": "129-memory-runtime-integration",
+  "state": "in_progress source-only checkpoint; native MESSAGE + FINAL received",
+  "manifest": "sessions/20261025T043239Z/129-memory-runtime-integration/logs/03-runtime-source-checkpoint.json",
+  "manifestSHA256": "755460c3c63300e5a4e23add8895d3031084c5240a707d47a0b132307d6134e2",
+  "handoffSHA256": "c18851603cd612250087a1d53dfacdc61bf2bfbe6f041fa0e34d635346e561e3",
+  "sourceFiles": 18,
+  "rootVerifiedDrift": [],
+  "verificationToolChunk": "a78459",
+  "compiled": false,
+  "tested": false,
+  "returnValidated": false,
+  "activeProcesses": 0,
+  "stoppedSources": true,
+  "next": "126 real Hooks +128 permissions/budget, later132 generator Set and six flags, then129 original-owner joint checks; ContextUsageInTx metadata reader accepted as queued precise adapter-only consumer."
+}

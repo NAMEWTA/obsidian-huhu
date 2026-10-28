@@ -1,0 +1,758 @@
+{
+  "scope": {
+    "version": 1,
+    "mode": "source-files",
+    "review_mode": "source-files",
+    "outcome": "source-snapshot",
+    "source_snapshot": [
+      {
+        "path": "docs/architecture.md",
+        "sha256": "f5ffad7c0543b840dda6a21485099f2eb723c6b9906cdae0e2cbbec5565b47c7",
+        "bytes": 4784
+      },
+      {
+        "path": "docs/data.md",
+        "sha256": "89ac3b5d953f6a227d5572eeec3d1eb12d7ecc8d24c2817a43ddcc7e65a0dc2e",
+        "bytes": 25977
+      },
+      {
+        "path": "docs/development.md",
+        "sha256": "8cba1a13ea5b51b9c426fcfaffb4cf4befe4b5e9a90621b29fa93d573c278290",
+        "bytes": 5372
+      },
+      {
+        "path": "docs/workbench.md",
+        "sha256": "acf703295e2be9243aeba88e885f567ac3de9dcd31ad2b44e64a2062636e379c",
+        "bytes": 11315
+      },
+      {
+        "path": "scripts/bundle-budget.json",
+        "sha256": "bc29ac1ba227de87ce7ee86bb245ce99aabbffa9183921155672da218915bc18",
+        "bytes": 2291
+      },
+      {
+        "path": "scripts/module-strings.ts",
+        "sha256": "b24a8abad5a3b8813963d564aaa55290062be9e5088de9f41cd36fa0b52097ca",
+        "bytes": 1807
+      },
+      {
+        "path": "src/app/contracts/module.ts",
+        "sha256": "c55e9b07e2e61bb4d6c2e34ec602e200138266cc4d86482d681ae409fe429120",
+        "bytes": 6832
+      },
+      {
+        "path": "src/app/contracts/workbench-host.ts",
+        "sha256": "245dbf1bc373a1e9a8f7a79d84581060c22bdc09b1824763efd0bf1dc83d738d",
+        "bytes": 4598
+      },
+      {
+        "path": "src/app/main.ts",
+        "sha256": "8281b8171105dcfaf67a032b2ff979855c5d1bb0ae17b72f5615d3d3a61c14c2",
+        "bytes": 15719
+      },
+      {
+        "path": "src/app/workbench/compose-workbench.ts",
+        "sha256": "8fbf288f35029a1efca34e45e8cd5a7c9b4dc28612383827d1a048032acedaf6",
+        "bytes": 24257
+      },
+      {
+        "path": "src/host/desktop/protected-receipt.ts",
+        "sha256": "bc8edca7c3fc11fc38f2509449994499be4a31642aa4989033b7edac8541588b",
+        "bytes": 942
+      },
+      {
+        "path": "src/host/obsidian/storage/device-id.ts",
+        "sha256": "207ec5b8e20594289ff2aba087184cfc4329229c9864539e6058f979d8f7ae3c",
+        "bytes": 2025
+      },
+      {
+        "path": "src/modules/huhubot/api.ts",
+        "sha256": "953c02192660b762e36cf58714d4a1022ac2e156ebddb752ce7e7c61e13a095d",
+        "bytes": 31305
+      },
+      {
+        "path": "src/modules/huhubot/core/events/reducer.test.ts",
+        "sha256": "6a1bbccbf924eb2b9ee4bc5709db18d31cd121fdf3e49984f7b13e1e849e32ec",
+        "bytes": 6256
+      },
+      {
+        "path": "src/modules/huhubot/core/events/reducer.ts",
+        "sha256": "3c8aec2a5823940c7bd85bf37921fcefb1867a8b5b0652fd1de695ad33553409",
+        "bytes": 6046
+      },
+      {
+        "path": "src/modules/huhubot/core/events/transcript.test.ts",
+        "sha256": "214dc3ccc6c472e18b0d59b000b9cff858247f5b502bcc4a01a08dacdc3b08ff",
+        "bytes": 2543
+      },
+      {
+        "path": "src/modules/huhubot/core/events/transcript.ts",
+        "sha256": "44223f4725cfeaaedaac4080a139d97db74a69619699abd3296778652d4dd428",
+        "bytes": 2254
+      },
+      {
+        "path": "src/modules/huhubot/core/mentions/mentions.test.ts",
+        "sha256": "0d3c1fdeb3d11dc90fe7e8fb22400b04ad51b530e5f5853d8604fd2ea7013902",
+        "bytes": 4496
+      },
+      {
+        "path": "src/modules/huhubot/core/mentions/mentions.ts",
+        "sha256": "4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336",
+        "bytes": 4748
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/codec.test.ts",
+        "sha256": "7a89fa9b33c3bf1c29588600464cc7c60410f139e50c647ce1261431d428ff86",
+        "bytes": 5789
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/codec.ts",
+        "sha256": "2891c56da79be31194204ede79108b48e63e3dcda016543ae40b8aba7118afa9",
+        "bytes": 6622
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/connection.test.ts",
+        "sha256": "fa6b7f42c05e78f3b82a324114b06bfd6f7e9367e0e3e3e484f20114ad32e5ee",
+        "bytes": 40501
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/connection.ts",
+        "sha256": "d1c2b6d2a4101f57e8adf5a9573b1f39b824c8946f7ba81d0fb6a8a4fdd22471",
+        "bytes": 25167
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/host-lease.ts",
+        "sha256": "53816fd67686a90638d82f0ab82ea421677964b60da2b2c84a2fc144d07cccf9",
+        "bytes": 722
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/memory-validation.test.ts",
+        "sha256": "b8c7d98b1eac64bd58f1f5a0d6cd77ac54d5910266207e87be8de84e11d6a594",
+        "bytes": 27499
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/method-validation.test.ts",
+        "sha256": "e7aa4d003dd7642376a28cb309b5f0423c9288e189a4fff8ea36f85f0144221d",
+        "bytes": 5431
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/method-validation.ts",
+        "sha256": "bd73e207a5302e288ad16cb8213597b0b2415114e025e106d08ee3ef03002919",
+        "bytes": 10627
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/task-config-hash.test.ts",
+        "sha256": "dc6bffcb101094adfd75a018ef93fb37c28f7b91b0b9ed1bcf657d251a92a6c7",
+        "bytes": 1640
+      },
+      {
+        "path": "src/modules/huhubot/core/protocol/task-config-hash.ts",
+        "sha256": "f3421d9fd974e7a390567ebb616727aa42a3d0debf15ac9bbf4957feb44d97c3",
+        "bytes": 1325
+      },
+      {
+        "path": "src/modules/huhubot/i18n.ts",
+        "sha256": "f9c08f68ae59fd2fa5ae3d556832c33c71d36a2c59d07d4c45aa8a4437de06e0",
+        "bytes": 46969
+      },
+      {
+        "path": "src/modules/huhubot/manifest.test.ts",
+        "sha256": "fbcac7f1f789a48b9e93a55b63c4eb88ed5c6a574ece13ba0b50a0c159691559",
+        "bytes": 374
+      },
+      {
+        "path": "src/modules/huhubot/manifest.ts",
+        "sha256": "000c10809b396e3877dff02d5265fd6739599c67a3b0520e12d23dbe71f717e4",
+        "bytes": 423
+      },
+      {
+        "path": "src/modules/huhubot/module.ts",
+        "sha256": "a1985938ac5a98942a034f1510ad70eceee95d4c8ed9b53ad813d43bdb4e173d",
+        "bytes": 7672
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/credentials/client.test.ts",
+        "sha256": "8897db4b792485ca63ed8c18c476d8f94d285d71ca36dd198c2c08372220a801",
+        "bytes": 5877
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/credentials/client.ts",
+        "sha256": "393752328fec117cca5f442dede0ba681bbec633d891b17804742c31560e2b0e",
+        "bytes": 6900
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/credentials/protocol.test.ts",
+        "sha256": "39b11dac8402c581309e0445264c8e2d6241caa4689fde5587bb6c5d7c4cf09e",
+        "bytes": 2899
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/credentials/protocol.ts",
+        "sha256": "f30114d74435d62878b656afd560f1724ea28cc7688c6947b3e9777e3523267d",
+        "bytes": 6090
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/installation/binary.test.ts",
+        "sha256": "a62be28f5149d00ac899b083f2d507cd366aac15b98a0a062b079bb4d4a2fb20",
+        "bytes": 2756
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/installation/binary.ts",
+        "sha256": "ee13864301ed135073743908a14ad4f22b18d72ce374a22c57dd55dabe370ef4",
+        "bytes": 7415
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/runtime/client-runtime.test.ts",
+        "sha256": "caeeef60e0c5ba976f9648ab37a76bcd8e4270f18f83e4f934d5e6efa50bfdd7",
+        "bytes": 6325
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/runtime/client-runtime.ts",
+        "sha256": "3ac2d80735791179ebc89125ca03a13875cdd937d2e59b6ffc76c75a74e332ed",
+        "bytes": 10540
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/runtime/portable-files.test.ts",
+        "sha256": "8d6210fc6944424c5f9f7fe493d0cfa5fd82a9e69f6abfe2aff33fc806962c1b",
+        "bytes": 3767
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/runtime/portable-files.ts",
+        "sha256": "651488e19a561815c684de5183b03cfea8b57e91b67a76e6128f60b7324e0ce4",
+        "bytes": 5249
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/transport/credentials-runner.test.ts",
+        "sha256": "55c17fec1870fe647f947a375820bbc75bb31c2236a8f72befb776e8bfdbda4f",
+        "bytes": 9787
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/transport/managed.test.ts",
+        "sha256": "13117a224044b2d16e549cfdb244d2145784c0f8066e08bfe4089a878c3e7e6a",
+        "bytes": 3156
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/transport/managed.ts",
+        "sha256": "14c8f02e80dddd70972dbbf85dca9a3bd665fbd1e1d1b58efefaeff573e84171",
+        "bytes": 12375
+      },
+      {
+        "path": "src/modules/huhubot/platform/desktop/transport/runner.test.ts",
+        "sha256": "d15b0ec34afcaac3ebfe6f1c0e04c0c78ab2c48c7f4a2e9a53ef005aafb52484",
+        "bytes": 10094
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/fingerprint.test.ts",
+        "sha256": "d47f60af77d6aae340f98eedb2c6a8a46080651a8c8e8337e7ae24178f18d469",
+        "bytes": 721
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/fingerprint.ts",
+        "sha256": "fb70c58f4d87e7b1858a62bfa22421438393fd43883a13aaa423e4271435c746",
+        "bytes": 1373
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/note-effects.test.ts",
+        "sha256": "afc31ca6d134fd4b9a8f82bdbc897d600df0e9cd39bcdd6acd776980f27eadd6",
+        "bytes": 25283
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/note-effects.ts",
+        "sha256": "228532f27b914cc0e964a6c2e1fd4bc3edf0a62ac0907b7b6128adc6cc07b6ea",
+        "bytes": 22554
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/port.ts",
+        "sha256": "a6afda6e6d02cc03d3dbf96b8881d67ead1ff306bc628caf7e7c2ad3f1cf6095",
+        "bytes": 776
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/primitives.ts",
+        "sha256": "0f534258434894bfdd5f1c87e140b26a9b51a5f32301a28335560aa25cd3fab4",
+        "bytes": 2991
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/receipt-authority.test.ts",
+        "sha256": "376bde75a955a8fb7173baed9b6bd2c1be3a6fc5742c53250edc5cdded8cab10",
+        "bytes": 2746
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/receipt-authority.ts",
+        "sha256": "c0e64459f242293caa78b74ba20e2060f79a9fe341ad7f1c2f9c5fdcdd0c5a0f",
+        "bytes": 3668
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/receipt-store.test.ts",
+        "sha256": "d6d84d5d8c73492914149d5c74e4740dde58f8c11159394e0fb31f571e40e8f0",
+        "bytes": 6997
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/note-effects/receipt-store.ts",
+        "sha256": "6077ddab8e43838a054a9a538366d09533c366a396c83deef70ae5317fbcebf7",
+        "bytes": 9156
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/sources/port.ts",
+        "sha256": "09ec5c96e25426d2a9fa2b956cf4bcc610a27e6f2f064cf4dc5f9ddffdd66008",
+        "bytes": 1462
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/sources/selection.ts",
+        "sha256": "712ca1ac5c1805b803d55610f1e19cc66868b8dbdac35acaca5098b6cc0b6f38",
+        "bytes": 3062
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/sources/sources.test.ts",
+        "sha256": "c9ac054e0d2572da56c5dad1c4b51c62763ca27b4823909cd291da009883cdae",
+        "bytes": 16744
+      },
+      {
+        "path": "src/modules/huhubot/platform/obsidian/sources/sources.ts",
+        "sha256": "004e02be29728014a62c58076e49ce181bfa4384493f99ac3b8541caaafb3566",
+        "bytes": 19686
+      },
+      {
+        "path": "src/modules/huhubot/services/assistant-client.test.ts",
+        "sha256": "0142e6eecbd7eba91841c82453c2c2d35d468c093931c9efa34d1665870bad7c",
+        "bytes": 3668
+      },
+      {
+        "path": "src/modules/huhubot/services/assistant-client.ts",
+        "sha256": "8f049a1d95e5a55c3b4474fcb976022d0def221798c13d4b0e4ab4f7f16e3a3b",
+        "bytes": 2099
+      },
+      {
+        "path": "src/modules/huhubot/services/events/event-client.test.ts",
+        "sha256": "816b4535ae6cc96e3dbf4e27c394cb0c084cc5e5fdc1456462f9e088b63ffdcd",
+        "bytes": 30128
+      },
+      {
+        "path": "src/modules/huhubot/services/events/event-client.ts",
+        "sha256": "31ac66ee70cc75b381e3f0289aa52ad57a88b92e318fed78c1caff611684dca8",
+        "bytes": 14723
+      },
+      {
+        "path": "src/modules/huhubot/services/events/runner.test.ts",
+        "sha256": "609ded3e6953cf02186aa0bb209eb0c2bd7ea5594bd3d34663d2bd2a709a12e4",
+        "bytes": 5491
+      },
+      {
+        "path": "src/modules/huhubot/services/groups/group-client.test.ts",
+        "sha256": "5d1611366989bd90670c277b0ce46d3ab2a166508d364aa7bb8f675d82df123f",
+        "bytes": 15730
+      },
+      {
+        "path": "src/modules/huhubot/services/groups/group-client.ts",
+        "sha256": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33",
+        "bytes": 16833
+      },
+      {
+        "path": "src/modules/huhubot/services/host-read/host-read.test.ts",
+        "sha256": "ae4f71bdc624517b98cf34158989f4e0a58ace7295ce5c24c0a46c1ab3a14a2c",
+        "bytes": 7302
+      },
+      {
+        "path": "src/modules/huhubot/services/host-read/host-read.ts",
+        "sha256": "f32552bf2083e4b921988d3c53809ecb3c903bb13ccfd158169973125451660f",
+        "bytes": 5033
+      },
+      {
+        "path": "src/modules/huhubot/services/host-write/host-write.test.ts",
+        "sha256": "de316cdc0f8b4959375dfef0d7dbe0019c606be8752ba490d382a89021e1f2b2",
+        "bytes": 4272
+      },
+      {
+        "path": "src/modules/huhubot/services/host-write/host-write.ts",
+        "sha256": "21548a3ef682bea3fa0e3ed12d34119044c5dbf06e04bc94c1f80680151d3c99",
+        "bytes": 6426
+      },
+      {
+        "path": "src/modules/huhubot/services/host-write/obsidian-host.test.ts",
+        "sha256": "077cff44a54aa5b1142c57133efd96eba6c9e258baf055bc399c7ebc57d3a145",
+        "bytes": 7977
+      },
+      {
+        "path": "src/modules/huhubot/services/host-write/obsidian-host.ts",
+        "sha256": "612723c8c2128d0746abee80724fd8bf2665b90bd53a66366c556a5b3a744b75",
+        "bytes": 3482
+      },
+      {
+        "path": "src/modules/huhubot/services/recovery/recovery-client.test.ts",
+        "sha256": "546796e35b49272cfd9e13d682ecae0e2479cc3bc0ce249e0a4fb3c87c62995d",
+        "bytes": 18105
+      },
+      {
+        "path": "src/modules/huhubot/services/recovery/recovery-client.ts",
+        "sha256": "2db067395ef098ce7171ce80961736455daa265726746f0d9718aaff70f00367",
+        "bytes": 12314
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/access-directory.ts",
+        "sha256": "d11268219478d394d62b33ba5be6457fe41d555c2eff2357b487b01a920f2f1c",
+        "bytes": 5079
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/agent-deletion.ts",
+        "sha256": "a3e74a711bcd34f60d28563b99c47e40dde1f3d311faca05de7afb514141f895",
+        "bytes": 3565
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/approval-client.ts",
+        "sha256": "d5505ebe5152c93ed88626e03150e4827538625f373f9fad8ba075e0c25be0a7",
+        "bytes": 5492
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/command-attempt.test.ts",
+        "sha256": "226df34fa65671ef21fdeda3d80eeaf2728418a3e2f2df6e324642b968a437d2",
+        "bytes": 1650
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/command-attempt.ts",
+        "sha256": "e4434f8bab1daacae7b4ae090db5a85acc106d8db1ac090acb60fd87378ec1e6",
+        "bytes": 1878
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/data-client.test.ts",
+        "sha256": "a721c799a9e58d03740e6cb1c4b4d371c4b23ffd4c77b9756ec594aa88cf2779",
+        "bytes": 7608
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/data-client.ts",
+        "sha256": "4362421c360d6399312ea899162f3337bbb5819ac93b6a43a2d1687a96c6f5b9",
+        "bytes": 12490
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/memory-client.test.ts",
+        "sha256": "549d697bf7d33dc664d242a35deb36f93a067b3e011514fe9643126a32d67dfe",
+        "bytes": 7746
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/memory-client.ts",
+        "sha256": "bc7923a6335b873f6b9a8900c44497751271f601ba0f006b08976d4c26a48fda",
+        "bytes": 10342
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/proposal-client.test.ts",
+        "sha256": "614ec55e93d4049b09224788875183a74993f881eb5c2c565a0252791172fb31",
+        "bytes": 3191
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/proposal-client.ts",
+        "sha256": "ebdd7d1b258ad3a0ddf3ec20f81cb38a233974a1b7baeb1f35f714de85950b3a",
+        "bytes": 5114
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/run-watch.test.ts",
+        "sha256": "85c8c6ec09df50d9c7eab96159f977604f175025abad636314a4e5d6bca253d0",
+        "bytes": 2665
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/task-client.test.ts",
+        "sha256": "60bbc867b94284a22baee6b02ddaeae5807630ba202aef0e38c27c0dc7e5a90f",
+        "bytes": 4222
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/task-client.ts",
+        "sha256": "ce195485466feefeff854cab2b68c697d4ce2f08f2efd51447be49535e40c495",
+        "bytes": 10418
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/workbench-client.test.ts",
+        "sha256": "d142d412fec0bb3fdd44876483b0fb65fbb0d8ef7d80ec59636da5e8f93bc479",
+        "bytes": 13903
+      },
+      {
+        "path": "src/modules/huhubot/services/workbench/workbench-client.ts",
+        "sha256": "005b76ac13fa32f0aa7ce561e782d25dafb6b6f8830ef7e8b7103c486b2136e3",
+        "bytes": 27972
+      },
+      {
+        "path": "src/modules/huhubot/settings.ts",
+        "sha256": "3b6cc71a2137e6f782336d4f1958c2d2a0dcb736cd667c9c52ff3d763995d992",
+        "bytes": 489
+      },
+      {
+        "path": "src/modules/huhubot/styles/agent.css",
+        "sha256": "636213921eaae77a9b299139bb9abaf3928252f1c5082ccd8679126990f7410f",
+        "bytes": 356
+      },
+      {
+        "path": "src/modules/huhubot/styles/data.css",
+        "sha256": "ea10ca5c167e2f8dded06c018c882995e2e0e6a4e80942210cee602c87df7cf5",
+        "bytes": 45
+      },
+      {
+        "path": "src/modules/huhubot/styles/tasks.css",
+        "sha256": "349654e3d8325a101b3ae11f232a35695e06ced504071b7d930f59e53b216151",
+        "bytes": 140
+      },
+      {
+        "path": "src/modules/huhubot/ui/BotNavigation.tsx",
+        "sha256": "634787d117ee7d999ce95a046fa2b2fc670baaa3c0f94bbd761b16acd2247e6e",
+        "bytes": 1948
+      },
+      {
+        "path": "src/modules/huhubot/ui/BotWorkbenchPage.dom.test.tsx",
+        "sha256": "ec26d6e0b146a8f15ffcbf1e4c243071e3024c76d177c83ec3ff466911c48db4",
+        "bytes": 6592
+      },
+      {
+        "path": "src/modules/huhubot/ui/BotWorkbenchPage.tsx",
+        "sha256": "4abfb4d93becbc26d66499f5f652abd7b89afda40b86f34db2902b9a3b5b2e81",
+        "bytes": 30232
+      },
+      {
+        "path": "src/modules/huhubot/ui/UnsavedChangesDialog.tsx",
+        "sha256": "fd7cee0b6782fc83e6a475c5a5bf2a87b64c43e6dcc07035d200587b74241cb1",
+        "bytes": 1252
+      },
+      {
+        "path": "src/modules/huhubot/ui/access/AccessPage.dom.test.tsx",
+        "sha256": "fa71344661a8af5d5c246ee0d81058612f4c3a0a21a8e680a73306c3c0e5a449",
+        "bytes": 6761
+      },
+      {
+        "path": "src/modules/huhubot/ui/access/AccessPage.tsx",
+        "sha256": "46df8fff9462481247a2f7ce84acdf23b1a2ac2d1b30eecd67faa51827ee42b4",
+        "bytes": 12512
+      },
+      {
+        "path": "src/modules/huhubot/ui/access/workbench-page.ts",
+        "sha256": "d0ef2654f08e3d18e7ea89b1c8e8899839fef7367bbe863c4b359c78abf32fdb",
+        "bytes": 1134
+      },
+      {
+        "path": "src/modules/huhubot/ui/agent-page.tsx",
+        "sha256": "ca3050804327ccf1515a448889dcc38e8dae2db048055a14e97c9cc8b201a334",
+        "bytes": 6338
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/AgentDeletion.tsx",
+        "sha256": "b448fbcdd06690d175e2e6a75f3de02f672dca69cf8d7227a0785ce610ad1a75",
+        "bytes": 4688
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/AgentEditor.dom.test.tsx",
+        "sha256": "82b6477f5f6ed3986674748975f3b97056cd81bbbd10821fb0dfe73561eecbee",
+        "bytes": 10425
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/AgentEditor.tsx",
+        "sha256": "ebaf4ac277364f7f66b5910f34ecaca0ce72c2938793ed1d2cbca996c29a2fd3",
+        "bytes": 19987
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/AgentProposals.dom.test.tsx",
+        "sha256": "59e1117387fedb9bac848adcc5b47cbb408f38c1fe5c55e3fd55a0c1e46462b7",
+        "bytes": 3347
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/AgentProposals.tsx",
+        "sha256": "d151a07dfc3e25ae35a3be61d04afca08c31be970bd10e34a96cc42dace17346",
+        "bytes": 4381
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/model.test.ts",
+        "sha256": "9ecf13d3e9e2fa926a6de8b3b1df6b7abe6f6773f9f2683832bb914cdbae1e7e",
+        "bytes": 2712
+      },
+      {
+        "path": "src/modules/huhubot/ui/agents/model.ts",
+        "sha256": "71988dcd434e92ce669eada8cdfa0107ec593141778a67fb75c5d9dd9b4d9ef8",
+        "bytes": 2408
+      },
+      {
+        "path": "src/modules/huhubot/ui/approvals/ApprovalsPage.dom.test.tsx",
+        "sha256": "08d3278cacfa62d3438339e0999d3448fff84fd5d18ddd90f84ecfb9baa23f30",
+        "bytes": 5222
+      },
+      {
+        "path": "src/modules/huhubot/ui/approvals/ApprovalsPage.tsx",
+        "sha256": "57fa5ff5ae29f9cec1fe26a6b5b5272e458f31b4173334a7de00b9cc7bbfec02",
+        "bytes": 8243
+      },
+      {
+        "path": "src/modules/huhubot/ui/approvals/workbench-page.ts",
+        "sha256": "44dd55ba5eab0e8d25d40a52dd76903c7ae6889a72724a4040fabb022069d293",
+        "bytes": 1167
+      },
+      {
+        "path": "src/modules/huhubot/ui/data/DataPage.dom.test.tsx",
+        "sha256": "f89e0fe68a2f634c2658745eaa667e0b7d9ef8b697cad6f48cf9b44d6618ed4f",
+        "bytes": 5840
+      },
+      {
+        "path": "src/modules/huhubot/ui/data/DataPage.tsx",
+        "sha256": "34adaae70abd0041f3351d7c698a5744ba77451bfe562eae11db417ab896ae78",
+        "bytes": 15177
+      },
+      {
+        "path": "src/modules/huhubot/ui/data/ImportPreviewPanel.dom.test.tsx",
+        "sha256": "90258a8743af0a957dcbd464bdf432c0156b6a220a97c3bb0f19d2af298b5673",
+        "bytes": 2613
+      },
+      {
+        "path": "src/modules/huhubot/ui/data/ImportPreviewPanel.tsx",
+        "sha256": "794828df05f16453d9f2162a9420c9a2b59cf4a2a2ffecda2ba340d75a2f4366",
+        "bytes": 4881
+      },
+      {
+        "path": "src/modules/huhubot/ui/data/workbench-page.ts",
+        "sha256": "f1a2968dd4ee6b6aefbafad73264e486a847f62b8a5c383b481bbf77d705ce69",
+        "bytes": 1209
+      },
+      {
+        "path": "src/modules/huhubot/ui/deletion-category.ts",
+        "sha256": "4373ab4cbf4b05c4f0eeb2dcfe66969eaaf17b20603cbbe65c6fc7f6ebd82737",
+        "bytes": 659
+      },
+      {
+        "path": "src/modules/huhubot/ui/group-page.tsx",
+        "sha256": "83ed9237a4945891b0124b1de969f4064b2f23288e737a8a9335e7a60405c25e",
+        "bytes": 6260
+      },
+      {
+        "path": "src/modules/huhubot/ui/groups/GroupEditor.dom.test.tsx",
+        "sha256": "f321899118709484f365a6908724c064c2cc6f9e956c79ea78bc9a05b8eeea00",
+        "bytes": 11611
+      },
+      {
+        "path": "src/modules/huhubot/ui/groups/GroupEditor.tsx",
+        "sha256": "acc3b46901f820d1d27280f173eeb60f3cb92f2ae2562a521cde147c667442df",
+        "bytes": 15263
+      },
+      {
+        "path": "src/modules/huhubot/ui/memory/MemoryWorkbenchPage.dom.test.tsx",
+        "sha256": "e682c1b53db09d8788daaf1056b7df2c154e31d331f6c6ac3dccc37d24ccc281",
+        "bytes": 17243
+      },
+      {
+        "path": "src/modules/huhubot/ui/memory/MemoryWorkbenchPage.tsx",
+        "sha256": "7ececd23db21481af1661cf632e94cb61609e2f0b51b4bbcc80c25f125e66fe2",
+        "bytes": 34362
+      },
+      {
+        "path": "src/modules/huhubot/ui/memory/workbench-page.ts",
+        "sha256": "4e61cfe0a08e6658561b048ee82970b5b2421a329cb7050dc7435f667352f346",
+        "bytes": 1301
+      },
+      {
+        "path": "src/modules/huhubot/ui/pages-reconnect.dom.test.tsx",
+        "sha256": "9defeade3e2817e1a02373f03726ac7bce851c5521d6fad13ce7033c6999686b",
+        "bytes": 4997
+      },
+      {
+        "path": "src/modules/huhubot/ui/settings-page.dom.test.tsx",
+        "sha256": "3012778069dd1f41290d4774bbd68ec74bfb19c5c9de67d1407faffe135728f1",
+        "bytes": 5264
+      },
+      {
+        "path": "src/modules/huhubot/ui/settings-page.tsx",
+        "sha256": "ab8bd79482c08d83c62b7ebb7b174b815ddb2beb9ab5465f8e1bb0c86288cac5",
+        "bytes": 10443
+      },
+      {
+        "path": "src/modules/huhubot/ui/tasks/TaskSummary.tsx",
+        "sha256": "ddd6d4750ef1b4d47b7bde4ebe548f9da82eb53fba2c63348a9824eb08a605f9",
+        "bytes": 1905
+      },
+      {
+        "path": "src/modules/huhubot/ui/tasks/TasksPage.dom.test.tsx",
+        "sha256": "2d395506c72ed8c29f402afae7e6efa10f4aededf4136907981e82fe0b503744",
+        "bytes": 3707
+      },
+      {
+        "path": "src/modules/huhubot/ui/tasks/TasksPage.tsx",
+        "sha256": "3d2fbf46e989fe3dd2cfcadbf8534d766a4d15735c014996f81f5effbcc0b3dc",
+        "bytes": 11956
+      },
+      {
+        "path": "src/modules/huhubot/ui/tasks/workbench-page.ts",
+        "sha256": "bf7666293d9239d5747ea57b3902c99366af511220a8aa7cf92d65aa09a0f525",
+        "bytes": 1569
+      },
+      {
+        "path": "src/modules/huhubot/ui/useBotDirectory.ts",
+        "sha256": "b4c2be6b64ea102a2ddb20e16feed9043ab7155e6cc58086cedd4ae6bb4fbe00",
+        "bytes": 2459
+      },
+      {
+        "path": "src/modules/huhubot/ui/workbench-page.ts",
+        "sha256": "897babc1fdded2975258a18ed4138ee12dcfad92403edf139428a826feec2ccc",
+        "bytes": 2024
+      },
+      {
+        "path": "test/release/workflow-gates.test.ts",
+        "sha256": "13f11cc55ccdf1bbc8cfd1c51ce181ab8c9dee3cf6963085dd486be1d6d03c29",
+        "bytes": 2907
+      }
+    ]
+  },
+  "sources": [
+    {
+      "kind": "instructions",
+      "locator": "AGENTS.md",
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/SKILL.md",
+      "sha256": "d36500cfe1ba6c251467eb7c7006ee6bcc33fbb48795659ec68c62a1178eed5f"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/architecture.md",
+      "sha256": "581c285ddc52e255917edf02493449c189b4927de68a80d2e0e8669c6b6d69be"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/testing.md",
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/settings-and-i18n.md",
+      "sha256": "8ab588cba6ad602ab22e8f2ef4d89003331b7b26afb0af02721593af256c22c1"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/dev/references/build-and-release.md",
+      "sha256": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "kind": "standards",
+      "locator": ".agents/skills/ui/references/shell.md",
+      "sha256": "219144b29b8ff6045792d54249764ed945c86a9744cae5eccd41c1800c826f8b"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/DESIGN.md",
+      "sha256": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9"
+    },
+    {
+      "kind": "specification",
+      "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138"
+    }
+  ],
+  "exclusions": [
+    "Go及版本化HAP已按482文件caac63f228eda48db11bf0b471396b69d2c3f664f0a7f4acdc5fa9d603de0349独立双轴复审通过，TS核对其消费者接缝",
+    "main.js/styles.css已重建，生成物以构建与字节一致性确认，不逐行审查",
+    "真实模型、完整宿主故障/多窗口和其他目标OS仍后验；实际Host smoke独立运行",
+    "probe脚本在真实宿主选择器修正范围，业务源码冻结"
+  ]
+}

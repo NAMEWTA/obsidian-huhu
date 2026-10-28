@@ -1,0 +1,20 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T09:27:14.583031+00:00",
+  "task": "125-memory-foundation-contract",
+  "target": "native:/root/foundation_go",
+  "taskSha256": "30e90f12731be48baf53af136ed7cfc8b6e06e054c917939df28a3299ddd63db",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "4c820f"
+  },
+  "mapValidation": {
+    "actualExit": 0,
+    "toolChunk": "f0ac00",
+    "path": "evidence/map31-maintenance-validation.json"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received: 125 ACK; exact scope and exclusive fixed-toolchain window confirmed",
+  "goWindow": "125 exclusive; Go1.26.10, GOWORK off, GOEXPERIMENT empty, GOFLAGS -mod=readonly; no tidy",
+  "scope": "TASK exact paths; no other product writer"
+}

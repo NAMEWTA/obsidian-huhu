@@ -1,0 +1,37 @@
+{
+  "observer": "native:/root",
+  "task": "136-memory-ts-review-repair",
+  "report": "sessions/20261025T043239Z/136-memory-ts-review-repair/REPORT.md",
+  "reportSHA256": "7e02bb3d4353f70970d192f7ebfbd67fcf532610ad62a28356ecd93f18530b1e",
+  "nativeReturn": "MESSAGE+FINAL completed, allprocessesWaited/sourcefrozen",
+  "verification": {
+    "artifacts": 19,
+    "ownedSources": 2,
+    "readonlyTSInputs": 1645,
+    "readonlyReviewSources": 3,
+    "drift": [],
+    "reportRead": "tool13827b",
+    "hashesDiffRawLogs": "tool31babc",
+    "rootReturnValidator": {
+      "actualExit": 0,
+      "tool": "9ba7d8"
+    }
+  },
+  "actualChecks": {
+    "red": {
+      "actualExit": 126,
+      "seconds": 2.492924928665161
+    },
+    "fourTestFiles": {
+      "actualExit": 0,
+      "tests": 79,
+      "seconds": 3.753668785095215
+    },
+    "testTypes": {
+      "actualExit": 0,
+      "seconds": 24.549330472946167
+    }
+  },
+  "disposition": "accepted repair candidate and evidence; F13302 and TS epoch awaiting independent new-input review; Go F13301 remains137; no wholeT14 done",
+  "sourceTreeSHA256": "06b63507ff30514d1c89c3cc066bcf730bee6fdfad53eee5c199096bf7c8718b"
+}

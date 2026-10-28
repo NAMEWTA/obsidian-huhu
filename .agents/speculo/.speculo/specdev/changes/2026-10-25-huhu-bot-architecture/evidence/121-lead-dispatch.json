@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "task": "121-anthropic-review",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/recovery_review",
+  "independent": "original reviewer;not implementation author",
+  "nativeAckReceived": true,
+  "taskSha256": "e75f70f4471e6d65bb1e647a60772e9d9fe99984a4e97956c669d91bba1324a2",
+  "inputSha256": "2a649a6cf8959681c6dc87f5dc59151f3895c8c7938eab5e98e9ab36a2c2c1b4",
+  "files": 2063,
+  "sources": 30,
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "122672",
+  "freezeActualExit": 0,
+  "freezeWaitToolChunk": "986ad4",
+  "uniqueGoWindow": "121 only;all product writers stopped"
+}

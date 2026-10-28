@@ -1,0 +1,44 @@
+{
+  "observer": "native:/root",
+  "checkpoint": "sessions/20261025T043239Z/128-memory-access-budget/logs/11-memory-history-repair-checkpoint.json",
+  "checkpointSHA256": "e173a1e6c7ce747ed008c40e60ef5d19729396c301120b9830330f9db944a234",
+  "sourceCount": 18,
+  "sourceTreeSHA256": "db6d817c100e744b7a3b1705d52e395b3bd31783a5cbdeabb46ed1dfc6337fa4",
+  "sourceDrift": [],
+  "artifactCount": 7,
+  "artifactDrift": [],
+  "command": {
+    "command": [
+      "go",
+      "test",
+      "-mod=readonly",
+      "-p=1",
+      "./tests/contract/groups",
+      "-run",
+      "^Test(PublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritance|PublicationDeliverRevocationTerminatesBodyFreeInsteadOfLeavingRunning)$",
+      "-count=1",
+      "-timeout=90s",
+      "-v"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "CGO_ENABLED": "0",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off"
+    },
+    "pid": 400735,
+    "actualExit": 0,
+    "waited": true,
+    "seconds": 5.920040300003166,
+    "inputCount": 404,
+    "inputTreeSHA256": "e5229618630c7dd7a3db7f3b788d55e2674f3ccbec60eaf97d8939a4deef8758",
+    "sourceDrift": [],
+    "boundary": "two exact groups targets; normal only; original lead red retained; no production change, no full suite/Node/generator"
+  },
+  "classification": "new-test expectation repaired to existing orchestration partial failure; production unchanged; original red preserved; full128 remains incomplete",
+  "actualReceipt": "Root tools2ac4c5/69099e and this verification",
+  "goWindowReturned": true
+}

@@ -1,0 +1,56 @@
+{
+  "mapRevision": 19,
+  "goalRevision": 18,
+  "recordedAt": "2026-10-25T19:37:40.132380+00:00",
+  "executor": "native:/root/foundation_go",
+  "nativeDispatchTool": "collaboration.send_message",
+  "nativeDispatchSucceeded": true,
+  "allProductWritersStoppedNativeMessagesReceived": true,
+  "074NotifiedReadOnly": true,
+  "rootNoHeavyProcesses": true,
+  "authorFreezeManifests": {
+    "sessions/20261025T043239Z/073-groups-core/logs/18-own-source-freeze-before-joint.json": "c34b1b2e940963269292ac13879c5634e32b1938948844467ead3b1763822ebd",
+    "sessions/20261025T043239Z/074-groups-domain/logs/26-own-freeze-before-joint.json": "cb07e05181c9139aa5bfef233683d24965d38a95ab78c59b26bf5deea11c69b1"
+  },
+  "075AcceptedReceipt": "evidence/075-lead-return.json",
+  "checks": "One serial normal full module, race affected 10 contract packages -p1, module vet. No real Provider/keyring/Obsidian. Thresholds unchanged; failures retained and reported before source change.",
+  "status": "allocated, not yet verified",
+  "firstNormal": {
+    "exit": 1,
+    "waited": true,
+    "sourceDrift": [],
+    "rawLog": "sessions/20261025T043239Z/073-groups-core/logs/20-joint-normal.log",
+    "authorReceipt": "sessions/20261025T043239Z/073-groups-core/logs/23-joint-check-results.json",
+    "failure": "Original direct single/batch RUN_SCOPE_MISMATCH error contract regression; sole access package failure"
+  },
+  "repair": {
+    "owner": "credential_provider",
+    "path": "native/huhubot/internal/adapters/outbound/sqlite/groups/access.go",
+    "change": "Exactly one error reason, identity/binding/current checks remain unchanged; original assertion unchanged",
+    "authorFreeze": "sessions/20261025T043239Z/074-groups-domain/logs/30-own-freeze-r2.json",
+    "targetChecks": "28 original single/batch and29 group revocation controls actual0/Wait per native receipt",
+    "rootReadback": "Root fully read exact one-line diff and original single/batch and group controls raw outputs; actual0/Wait per native receipt and logs. Final joint matrix pending.",
+    "rawArtifacts": {
+      "sessions/20261025T043239Z/074-groups-domain/logs/27-scope-reason.diff": "c05e8a425a550ee464e1d736a1b79a0b2dd8ea3a3cfa3717ea40d823f39c99ef",
+      "sessions/20261025T043239Z/074-groups-domain/logs/27-scope-source-before.go.txt": "582afbe7878db9e7063d06716da9627d188b2248cf0814dc7cb470d3acafebef",
+      "sessions/20261025T043239Z/074-groups-domain/logs/28-single-batch-scope-green.log": "37793235a0f5974f1e47759fc68520cf96fdfdf7fe1d1a1ea98e5eb560deee45",
+      "sessions/20261025T043239Z/074-groups-domain/logs/29-scope-group-controls-green.log": "36cab1909d1eb015e4917b142c0ded743b354e07be7df983eb06af70c7be900f",
+      "sessions/20261025T043239Z/074-groups-domain/logs/27-scope-reason-source.json": "3a1dbfe916ae86feb2f4fdca1ad7136a5b78b82b2bc28d445b88ce557ec05a66"
+    }
+  },
+  "secondWindow": {
+    "nativeDispatchSucceeded": true,
+    "executor": "foundation_go",
+    "status": "allocated; fixed r2, normal then race then vet, not yet verified"
+  },
+  "secondWindowFinal": {
+    "rootReadAt": "2026-10-25T19:55:42.768673+00:00",
+    "result": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/073-groups-core/logs/29-joint-check-results-r2.json",
+    "sha256": "0b4a5ad10d7712ff717d28174d40d6ad5be96e121b184a3d11da0035ae40c692",
+    "allExit0AndWait": true,
+    "sourceDrift": [],
+    "allAuthorHandoffsAccepted": true,
+    "authorHeavyWindowReleased": true,
+    "nextWindow": "Root fixed-input independent E2E followed sequentially by plugin build/lint; production writers stopped"
+  }
+}

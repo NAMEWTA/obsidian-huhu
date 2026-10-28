@@ -1,0 +1,11 @@
+# Map36：无正文记忆清单的纯绑定校验
+
+126/128实际接入确认：维护Run独立root/work_thread，而其固定Targets可能属于source completion的旧work_thread。直接复用当前scope相等检查会拒绝合法维护；在读正文前必须核对实际job持久清单，不能凭caller字段放宽。既有CanonicalMemoryInputBinding先校验正文hash，无法处理合法body-free manifest。
+
+原API owner foundation_go的129已在18文件checkpoint安全停写；130和131均完整返回。132仅维护application/api/memory.go并新增同包memory_manifest_test.go，抽取同一canonical编码、增加明确body-free校验入口；不改wire/DTO/schema/fixtures或已有完整输入摘要。原完整入口继续验证正文UTF8/hash及总字节，Engine不改为manifest入口。
+
+132是当前唯一Go检查者，先冻结api全包/锁/读取夹具，并用实际go list确认输入。仅纯api定向测试及适用vet；若依赖扩大到Core/SQL/其他活动writer，回Root重排。126/128只写其原闭包外源码，不运行检查。132没有129运行集成写权，也不修改generator或implemented flags；这些在真实Memory装配后另行原owner窗口。
+
+后续128允许旧scope必须证明真实bound job、namespace/principal/profile、当前task配置pin、source Run与completion scope、job固定Targets及当前head全部匹配，且manifest摘要一致；普通直接读保持原scope规则。metadata-only验证不授予正文读取，不代替当前Grant/来源/suppression检查。
+
+本次只是既有115/123合同的内部纯值接缝；28票55AC、DAG、用户现场后验与原owner保持。130组件历史检查按原输入保留，新共享输入需相应复验，133独立审查在helper稳定后冻结。

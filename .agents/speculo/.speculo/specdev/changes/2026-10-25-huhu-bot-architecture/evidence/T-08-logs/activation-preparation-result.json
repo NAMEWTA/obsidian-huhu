@@ -1,0 +1,50 @@
+{
+  "mapRevision": 22,
+  "goalRevision": 21,
+  "log": 99,
+  "windowSha256": "ca9ae6fa9e9e50720c4f93a705510d9726df87d525ea5ea6ad2a14610f712f8c",
+  "taskHashes": {
+    "092-engine-chat": "c3f17c6e4bb46720b76a4e362c748a8a77bf721db2f896dcd9423ab4b5f9e030",
+    "093-engine-foundation": "6dd55a1365fee2afc4dce5c3c5e0f456f93308b7eb1303ee37068044a3e0616b",
+    "094-engine-policy": "2f1bcfde70bbba0e235205cafc128c753ee99e4e1c68d46afbfb2853e29ea79d"
+  },
+  "nativeDispatchSent": true,
+  "priorInput": "a62e8c7de0b7ca0542f418e239344eb0ea2625f11d6f6e8ccc6872eb573db89a",
+  "priorReviewReport": "5c78b49ff6b4b83669298f5f193e29b166d6da5f95e1eced617fe15c5e789109",
+  "initialTaskHashes": {
+    "092-engine-chat": "746904e30e78d9b014ab3cb7522f43bc7bad62e4f5ab04b067884c42f6345f5a",
+    "093-engine-foundation": "739a67bc4d1485232080bd46c19bd48c38d9dffb0316e69e483aa0e0e47eab98",
+    "094-engine-policy": "dd164e0ebe29737b08413222a3321ecbaed2c9c907f492a8833090e23ceb0a26"
+  },
+  "dispatchFormatCorrection": {
+    "initialExit": 126,
+    "errors": [
+      "expected one Goal section"
+    ],
+    "observed": "尚未原生派遣；补齐共享TASK v2五个必需标题，不改写集/产品决定/验收。旧准备字节保留各任务TASK-before-dispatch-format.md。"
+  },
+  "nativeDispatchedAt": "2026-10-26T00:55:20.901504+00:00",
+  "nativeAgents": {
+    "092-engine-chat": "native:/root/engine_adapter",
+    "093-engine-foundation": "native:/root/foundation_go",
+    "094-engine-policy": "native:/root/credential_provider"
+  },
+  "dispatchValidation": {
+    "092-engine-chat": {
+      "exit": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "093-engine-foundation": {
+      "exit": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "094-engine-policy": {
+      "exit": 0,
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "note": "Root实际分别调用followup_task，冻结正式TASK；当前先协商私有合同，尚未授予Go依赖/重检查窗口。"
+}

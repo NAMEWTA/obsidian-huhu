@@ -1,0 +1,61 @@
+{
+  "task": "066-recovery-current-seams",
+  "createdAt": "2026-10-25T16:56:07.796538+00:00",
+  "excluded": {
+    "TASK.md": "Root-provided input, hashed in observations",
+    "manifest.json": "Self-reference excluded",
+    "manifest-verification.json": "Independent verification output excluded"
+  },
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 8748,
+      "sha256": "22b88e2a54a507477a16aac3c25df8d0e94d9ce1521608262749f8185d05c219"
+    },
+    {
+      "path": "command-observations.json",
+      "bytes": 1350,
+      "sha256": "fb354374d60e3e873aff34f56567108181364ddb200192c31892e95587432401"
+    },
+    {
+      "path": "command-results.md",
+      "bytes": 2303,
+      "sha256": "c64b216324033e270381db538a598f05d872c68f84fbce211c74c7920831a28f"
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "bytes": 11129,
+      "sha256": "96090e882f79a3826de7d1c10e9efabb9b647e17a1c71815686959ddeb12f4b2"
+    },
+    {
+      "path": "observations.json",
+      "bytes": 22440,
+      "sha256": "c57995e52891a2c2acba17f7f1f351bd3f36b8d6c6e203c79387773cb438badf"
+    },
+    {
+      "path": "read-excerpts.log",
+      "bytes": 260956,
+      "sha256": "b05ebd55ef521b1574285a62b025b9f20b34cea57f0f0eca0667a111aa8110d6"
+    },
+    {
+      "path": "return-validation.json",
+      "bytes": 709,
+      "sha256": "1d294ec054e5cef98fc56b2c7edb2010dbaef1715cbf2bf245be2573bd638fe8"
+    },
+    {
+      "path": "return-validation.log",
+      "bytes": 224,
+      "sha256": "c8c406d26f00dd4e381ce1ee85420eb4bd97459e0694f662ea70c827a9baa45a"
+    },
+    {
+      "path": "source-recheck.json",
+      "bytes": 28297,
+      "sha256": "f94fe3d35a3e3ab4f24af5e2fde95d0ad2478c08547a58176b85159f4abd94dc"
+    },
+    {
+      "path": "wire-recovery-slice.json",
+      "bytes": 3533,
+      "sha256": "19eb594999afa9b9587e77a96283ee70344e377516c1c5c33935cf68e15f32ff"
+    }
+  ]
+}

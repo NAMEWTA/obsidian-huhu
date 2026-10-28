@@ -1,0 +1,963 @@
+{
+	"output": {
+		"bytes": 6737602
+	},
+	"eager": {
+		"inputs": 108,
+		"bytes": 125886,
+		"areas": [
+			{
+				"name": "src/shared",
+				"bytes": 44055
+			},
+			{
+				"name": "src/app",
+				"bytes": 43103
+			},
+			{
+				"name": "src/modules/home/core",
+				"bytes": 13149
+			},
+			{
+				"name": "src/theme",
+				"bytes": 8375
+			},
+			{
+				"name": "src/host",
+				"bytes": 7128
+			},
+			{
+				"name": "src/modules/home/settings.ts",
+				"bytes": 2758
+			},
+			{
+				"name": "src/modules/browser/core",
+				"bytes": 1235
+			},
+			{
+				"name": "src/modules/comments/settings.ts",
+				"bytes": 1092
+			},
+			{
+				"name": "src/modules/agent/api.ts",
+				"bytes": 419
+			},
+			{
+				"name": "src/modules/agent/manifest.ts",
+				"bytes": 296
+			},
+			{
+				"name": "src/modules/automations/manifest.ts",
+				"bytes": 288
+			},
+			{
+				"name": "src/modules/home/manifest.ts",
+				"bytes": 286
+			},
+			{
+				"name": "src/modules/archives/manifest.ts",
+				"bytes": 281
+			},
+			{
+				"name": "src/modules/navigator/manifest.ts",
+				"bytes": 269
+			},
+			{
+				"name": "src/modules/notifications/manifest.ts",
+				"bytes": 268
+			},
+			{
+				"name": "src/modules/comments/manifest.ts",
+				"bytes": 267
+			},
+			{
+				"name": "src/modules/browser/manifest.ts",
+				"bytes": 254
+			},
+			{
+				"name": "src/modules/sync/manifest.ts",
+				"bytes": 253
+			},
+			{
+				"name": "src/modules/huhubot/manifest.ts",
+				"bytes": 252
+			},
+			{
+				"name": "src/modules/icons/manifest.ts",
+				"bytes": 247
+			},
+			{
+				"name": "src/modules/automations/api.ts",
+				"bytes": 244
+			},
+			{
+				"name": "src/modules/safe/manifest.ts",
+				"bytes": 225
+			},
+			{
+				"name": "src/modules/home/api.ts",
+				"bytes": 181
+			},
+			{
+				"name": "src/modules/navigator/api.ts",
+				"bytes": 155
+			},
+			{
+				"name": "src/modules/browser/api.ts",
+				"bytes": 121
+			},
+			{
+				"name": "src/modules/notifications/api.ts",
+				"bytes": 104
+			},
+			{
+				"name": "src/modules/archives/settings.ts",
+				"bytes": 104
+			},
+			{
+				"name": "src/modules/huhubot/api.ts",
+				"bytes": 98
+			},
+			{
+				"name": "src/modules/comments/api.ts",
+				"bytes": 95
+			},
+			{
+				"name": "src/modules/browser/settings.ts",
+				"bytes": 89
+			},
+			{
+				"name": "src/modules/archives/api.ts",
+				"bytes": 68
+			},
+			{
+				"name": "src/modules/sync/api.ts",
+				"bytes": 64
+			},
+			{
+				"name": "src/modules/icons/api.ts",
+				"bytes": 63
+			}
+		]
+	},
+	"lazy": {
+		"inputs": 3477,
+		"bytes": 6416125,
+		"areas": [
+			{
+				"name": "src/modules/home/ui",
+				"bytes": 832149
+			},
+			{
+				"name": "npm:@xterm/xterm",
+				"bytes": 346104
+			},
+			{
+				"name": "src/modules/icons/core",
+				"bytes": 322438
+			},
+			{
+				"name": "npm:lunar-typescript",
+				"bytes": 302543
+			},
+			{
+				"name": "contracts",
+				"bytes": 232794
+			},
+			{
+				"name": "npm:chart.js",
+				"bytes": 199524
+			},
+			{
+				"name": "npm:react-dom",
+				"bytes": 182625
+			},
+			{
+				"name": "npm:@xterm/headless",
+				"bytes": 181096
+			},
+			{
+				"name": "src/modules/home/core",
+				"bytes": 163057
+			},
+			{
+				"name": "src/ui",
+				"bytes": 147920
+			},
+			{
+				"name": "src/modules/home/i18n.ts",
+				"bytes": 146763
+			},
+			{
+				"name": "src/modules/agent/ui",
+				"bytes": 132083
+			},
+			{
+				"name": "npm:@xterm/addon-webgl",
+				"bytes": 126236
+			},
+			{
+				"name": "npm:ajv",
+				"bytes": 121024
+			},
+			{
+				"name": "src/modules/huhubot/ui",
+				"bytes": 120644
+			},
+			{
+				"name": "src/modules/navigator/ui",
+				"bytes": 102710
+			},
+			{
+				"name": "npm:yaml",
+				"bytes": 101437
+			},
+			{
+				"name": "src/modules/icons/platform",
+				"bytes": 101291
+			},
+			{
+				"name": "src/modules/home/platform",
+				"bytes": 96011
+			},
+			{
+				"name": "src/shared",
+				"bytes": 89372
+			},
+			{
+				"name": "src/modules/agent/platform",
+				"bytes": 89107
+			},
+			{
+				"name": "src/modules/agent/services",
+				"bytes": 80685
+			},
+			{
+				"name": "src/modules/automations/ui",
+				"bytes": 72448
+			},
+			{
+				"name": "src/modules/browser/platform",
+				"bytes": 61523
+			},
+			{
+				"name": "src/modules/huhubot/platform",
+				"bytes": 59306
+			},
+			{
+				"name": "src/modules/huhubot/services",
+				"bytes": 59067
+			},
+			{
+				"name": "src/host",
+				"bytes": 55063
+			},
+			{
+				"name": "src/modules/archives/ui",
+				"bytes": 54920
+			},
+			{
+				"name": "src/modules/agent/i18n.ts",
+				"bytes": 52045
+			},
+			{
+				"name": "src/modules/navigator/i18n.ts",
+				"bytes": 52018
+			},
+			{
+				"name": "npm:lucide-react",
+				"bytes": 51893
+			},
+			{
+				"name": "src/modules/home/services",
+				"bytes": 49707
+			},
+			{
+				"name": "src/shell",
+				"bytes": 48753
+			},
+			{
+				"name": "src/modules/navigator/core",
+				"bytes": 47568
+			},
+			{
+				"name": "src/modules/archives/core",
+				"bytes": 46685
+			},
+			{
+				"name": "src/app",
+				"bytes": 46151
+			},
+			{
+				"name": "src/modules/sync/ui",
+				"bytes": 44156
+			},
+			{
+				"name": "src/modules/huhubot/i18n.ts",
+				"bytes": 43718
+			},
+			{
+				"name": "src/modules/browser/ui",
+				"bytes": 42274
+			},
+			{
+				"name": "src/modules/comments/ui",
+				"bytes": 39858
+			},
+			{
+				"name": "src/modules/agent/core",
+				"bytes": 39654
+			},
+			{
+				"name": "npm:@xterm/addon-search",
+				"bytes": 38698
+			},
+			{
+				"name": "src/modules/icons/i18n.ts",
+				"bytes": 38011
+			},
+			{
+				"name": "src/modules/safe/ui",
+				"bytes": 37885
+			},
+			{
+				"name": "src/modules/icons/ui",
+				"bytes": 36786
+			},
+			{
+				"name": "npm:@dnd-kit/core",
+				"bytes": 36154
+			},
+			{
+				"name": "src/modules/automations/core",
+				"bytes": 35316
+			},
+			{
+				"name": "npm:@lezer/markdown",
+				"bytes": 34752
+			},
+			{
+				"name": "src/modules/sync/i18n.ts",
+				"bytes": 33383
+			},
+			{
+				"name": "src/modules/navigator/platform",
+				"bytes": 33269
+			},
+			{
+				"name": "npm:react-draggable",
+				"bytes": 29181
+			},
+			{
+				"name": "npm:tailwind-merge",
+				"bytes": 29084
+			},
+			{
+				"name": "src/modules/huhubot/core",
+				"bytes": 27865
+			},
+			{
+				"name": "npm:react-resizable-panels",
+				"bytes": 27324
+			},
+			{
+				"name": "src/modules/navigator/services",
+				"bytes": 25433
+			},
+			{
+				"name": "src/modules/sync/core",
+				"bytes": 24999
+			},
+			{
+				"name": "npm:react-grid-layout",
+				"bytes": 24434
+			},
+			{
+				"name": "npm:entities",
+				"bytes": 24068
+			},
+			{
+				"name": "npm:@tanstack/virtual-core",
+				"bytes": 24020
+			},
+			{
+				"name": "src/modules/comments/core",
+				"bytes": 20984
+			},
+			{
+				"name": "npm:@floating-ui/react",
+				"bytes": 20944
+			},
+			{
+				"name": "src/modules/safe/i18n.ts",
+				"bytes": 20360
+			},
+			{
+				"name": "npm:@radix-ui/react-select",
+				"bytes": 19361
+			},
+			{
+				"name": "npm:sonner",
+				"bytes": 19273
+			},
+			{
+				"name": "src/modules/automations/i18n.ts",
+				"bytes": 19106
+			},
+			{
+				"name": "npm:@headless-tree/core",
+				"bytes": 18494
+			},
+			{
+				"name": "src/modules/browser/i18n.ts",
+				"bytes": 17909
+			},
+			{
+				"name": "src/modules/archives/i18n.ts",
+				"bytes": 17859
+			},
+			{
+				"name": "src/modules/sync/services",
+				"bytes": 16354
+			},
+			{
+				"name": "npm:@xterm/addon-serialize",
+				"bytes": 15718
+			},
+			{
+				"name": "src/modules/sync/platform",
+				"bytes": 14533
+			},
+			{
+				"name": "npm:@radix-ui/react-menu",
+				"bytes": 14182
+			},
+			{
+				"name": "src/modules/safe/services",
+				"bytes": 14160
+			},
+			{
+				"name": "npm:@radix-ui/react-scroll-area",
+				"bytes": 13279
+			},
+			{
+				"name": "npm:react-resizable",
+				"bytes": 12077
+			},
+			{
+				"name": "npm:cmdk",
+				"bytes": 12053
+			},
+			{
+				"name": "npm:react-activity-calendar",
+				"bytes": 11552
+			},
+			{
+				"name": "npm:date-fns",
+				"bytes": 11238
+			},
+			{
+				"name": "npm:@radix-ui/react-dismissable-layer",
+				"bytes": 11018
+			},
+			{
+				"name": "src/modules/browser/services",
+				"bytes": 10954
+			},
+			{
+				"name": "src/modules/automations/platform",
+				"bytes": 10662
+			},
+			{
+				"name": "npm:ajv-formats",
+				"bytes": 10220
+			},
+			{
+				"name": "npm:@radix-ui/react-slider",
+				"bytes": 9887
+			},
+			{
+				"name": "src/modules/safe/platform",
+				"bytes": 9817
+			},
+			{
+				"name": "npm:fast-uri",
+				"bytes": 9628
+			},
+			{
+				"name": "npm:@radix-ui/react-dialog",
+				"bytes": 9194
+			},
+			{
+				"name": "npm:@radix-ui/react-focus-scope",
+				"bytes": 8594
+			},
+			{
+				"name": "src/modules/comments/i18n.ts",
+				"bytes": 8539
+			},
+			{
+				"name": "src/modules/safe/core",
+				"bytes": 8464
+			},
+			{
+				"name": "npm:@radix-ui/react-tooltip",
+				"bytes": 8307
+			},
+			{
+				"name": "npm:react",
+				"bytes": 8230
+			},
+			{
+				"name": "src/modules/automations/services",
+				"bytes": 8085
+			},
+			{
+				"name": "npm:@floating-ui/core",
+				"bytes": 8014
+			},
+			{
+				"name": "npm:@kurkle/color",
+				"bytes": 7736
+			},
+			{
+				"name": "npm:@radix-ui/react-collection",
+				"bytes": 7337
+			},
+			{
+				"name": "npm:@floating-ui/dom",
+				"bytes": 7287
+			},
+			{
+				"name": "npm:@dnd-kit/sortable",
+				"bytes": 6625
+			},
+			{
+				"name": "src/modules/browser/core",
+				"bytes": 6479
+			},
+			{
+				"name": "npm:react-remove-scroll",
+				"bytes": 6404
+			},
+			{
+				"name": "npm:tabbable",
+				"bytes": 5888
+			},
+			{
+				"name": "src/modules/home/module.ts",
+				"bytes": 5639
+			},
+			{
+				"name": "npm:@radix-ui/react-presence",
+				"bytes": 5531
+			},
+			{
+				"name": "npm:@radix-ui/react-slot",
+				"bytes": 5276
+			},
+			{
+				"name": "src/modules/navigator/settings.ts",
+				"bytes": 4841
+			},
+			{
+				"name": "npm:@radix-ui/react-popper",
+				"bytes": 4734
+			},
+			{
+				"name": "npm:@radix-ui/react-dropdown-menu",
+				"bytes": 4721
+			},
+			{
+				"name": "npm:@radix-ui/react-popover",
+				"bytes": 4685
+			},
+			{
+				"name": "npm:@radix-ui/react-context-menu",
+				"bytes": 4584
+			},
+			{
+				"name": "npm:@radix-ui/react-hover-card",
+				"bytes": 4465
+			},
+			{
+				"name": "npm:@radix-ui/react-use-controllable-state",
+				"bytes": 4249
+			},
+			{
+				"name": "npm:@radix-ui/react-accordion",
+				"bytes": 4231
+			},
+			{
+				"name": "src/modules/huhubot/module.ts",
+				"bytes": 4210
+			},
+			{
+				"name": "npm:@radix-ui/react-roving-focus",
+				"bytes": 4014
+			},
+			{
+				"name": "npm:@floating-ui/utils",
+				"bytes": 3989
+			},
+			{
+				"name": "npm:@radix-ui/react-checkbox",
+				"bytes": 3928
+			},
+			{
+				"name": "npm:scheduler",
+				"bytes": 3780
+			},
+			{
+				"name": "src/modules/notifications/ui",
+				"bytes": 3760
+			},
+			{
+				"name": "npm:fast-equals",
+				"bytes": 3692
+			},
+			{
+				"name": "npm:@radix-ui/react-switch",
+				"bytes": 3602
+			},
+			{
+				"name": "npm:@radix-ui/react-context",
+				"bytes": 3543
+			},
+			{
+				"name": "src/modules/archives/platform",
+				"bytes": 3404
+			},
+			{
+				"name": "src/modules/automations/module.ts",
+				"bytes": 3371
+			},
+			{
+				"name": "src/modules/home/contrib",
+				"bytes": 3368
+			},
+			{
+				"name": "npm:@floating-ui/react-dom",
+				"bytes": 3307
+			},
+			{
+				"name": "src/modules/sync/module.ts",
+				"bytes": 3287
+			},
+			{
+				"name": "npm:@dnd-kit/utilities",
+				"bytes": 3262
+			},
+			{
+				"name": "src/modules/notifications/core",
+				"bytes": 3062
+			},
+			{
+				"name": "src/modules/agent/module.ts",
+				"bytes": 3057
+			},
+			{
+				"name": "npm:@radix-ui/react-toggle-group",
+				"bytes": 2561
+			},
+			{
+				"name": "npm:@radix-ui/react-tabs",
+				"bytes": 2541
+			},
+			{
+				"name": "src/modules/comments/services",
+				"bytes": 2440
+			},
+			{
+				"name": "npm:@radix-ui/react-collapsible",
+				"bytes": 2425
+			},
+			{
+				"name": "npm:react-remove-scroll-bar",
+				"bytes": 2410
+			},
+			{
+				"name": "npm:@xterm/addon-web-links",
+				"bytes": 2408
+			},
+			{
+				"name": "npm:@radix-ui/primitive",
+				"bytes": 2046
+			},
+			{
+				"name": "npm:@radix-ui/react-alert-dialog",
+				"bytes": 2003
+			},
+			{
+				"name": "npm:@radix-ui/react-progress",
+				"bytes": 1996
+			},
+			{
+				"name": "src/modules/browser/module.ts",
+				"bytes": 1978
+			},
+			{
+				"name": "src/modules/navigator/module.ts",
+				"bytes": 1944
+			},
+			{
+				"name": "npm:@tanstack/react-virtual",
+				"bytes": 1895
+			},
+			{
+				"name": "npm:@radix-ui/react-focus-guards",
+				"bytes": 1817
+			},
+			{
+				"name": "npm:aria-hidden",
+				"bytes": 1547
+			},
+			{
+				"name": "src/modules/archives/services",
+				"bytes": 1511
+			},
+			{
+				"name": "npm:@radix-ui/react-primitive",
+				"bytes": 1264
+			},
+			{
+				"name": "npm:use-sidecar",
+				"bytes": 1258
+			},
+			{
+				"name": "npm:json-schema-traverse",
+				"bytes": 1258
+			},
+			{
+				"name": "src/modules/safe/module.ts",
+				"bytes": 1254
+			},
+			{
+				"name": "src/modules/comments/platform",
+				"bytes": 1230
+			},
+			{
+				"name": "npm:@xterm/addon-fit",
+				"bytes": 1226
+			},
+			{
+				"name": "src/modules/sync/settings.ts",
+				"bytes": 1072
+			},
+			{
+				"name": "src/modules/archives/module.ts",
+				"bytes": 954
+			},
+			{
+				"name": "npm:react-style-singleton",
+				"bytes": 935
+			},
+			{
+				"name": "npm:@headless-tree/react",
+				"bytes": 921
+			},
+			{
+				"name": "src/modules/icons/module.ts",
+				"bytes": 906
+			},
+			{
+				"name": "npm:prop-types",
+				"bytes": 851
+			},
+			{
+				"name": "npm:clsx",
+				"bytes": 820
+			},
+			{
+				"name": "npm:@radix-ui/react-portal",
+				"bytes": 789
+			},
+			{
+				"name": "src/modules/comments/module.ts",
+				"bytes": 776
+			},
+			{
+				"name": "npm:use-callback-ref",
+				"bytes": 770
+			},
+			{
+				"name": "npm:tslib",
+				"bytes": 763
+			},
+			{
+				"name": "npm:fast-deep-equal",
+				"bytes": 741
+			},
+			{
+				"name": "src/modules/notifications/module.ts",
+				"bytes": 704
+			},
+			{
+				"name": "npm:class-variance-authority",
+				"bytes": 677
+			},
+			{
+				"name": "npm:zustand",
+				"bytes": 628
+			},
+			{
+				"name": "npm:@radix-ui/react-use-callback-ref",
+				"bytes": 613
+			},
+			{
+				"name": "npm:@dnd-kit/accessibility",
+				"bytes": 600
+			},
+			{
+				"name": "npm:@radix-ui/react-use-size",
+				"bytes": 581
+			},
+			{
+				"name": "src/modules/notifications/platform",
+				"bytes": 569
+			},
+			{
+				"name": "npm:@radix-ui/react-toggle",
+				"bytes": 544
+			},
+			{
+				"name": "npm:@radix-ui/react-separator",
+				"bytes": 536
+			},
+			{
+				"name": "npm:@radix-ui/react-compose-refs",
+				"bytes": 520
+			},
+			{
+				"name": "npm:@radix-ui/react-use-effect-event",
+				"bytes": 512
+			},
+			{
+				"name": "npm:@radix-ui/react-use-is-hydrated",
+				"bytes": 483
+			},
+			{
+				"name": "npm:radix-ui",
+				"bytes": 479
+			},
+			{
+				"name": "npm:@radix-ui/react-visually-hidden",
+				"bytes": 451
+			},
+			{
+				"name": "src/modules/archives/contrib",
+				"bytes": 438
+			},
+			{
+				"name": "npm:@radix-ui/react-arrow",
+				"bytes": 423
+			},
+			{
+				"name": "npm:@radix-ui/react-label",
+				"bytes": 402
+			},
+			{
+				"name": "npm:@radix-ui/react-use-previous",
+				"bytes": 316
+			},
+			{
+				"name": "npm:@radix-ui/react-id",
+				"bytes": 314
+			},
+			{
+				"name": "src/modules/safe/settings.ts",
+				"bytes": 303
+			},
+			{
+				"name": "npm:@radix-ui/react-direction",
+				"bytes": 261
+			},
+			{
+				"name": "src/modules/huhubot/settings.ts",
+				"bytes": 233
+			},
+			{
+				"name": "npm:@radix-ui/number",
+				"bytes": 171
+			},
+			{
+				"name": "src/modules/notifications/i18n.ts",
+				"bytes": 139
+			},
+			{
+				"name": "npm:get-nonce",
+				"bytes": 116
+			},
+			{
+				"name": "src/modules/automations/settings.ts",
+				"bytes": 112
+			},
+			{
+				"name": "src/modules/agent/settings.ts",
+				"bytes": 106
+			},
+			{
+				"name": "npm:@radix-ui/react-use-layout-effect",
+				"bytes": 87
+			},
+			{
+				"name": "src/modules/huhubot/styles",
+				"bytes": 18
+			},
+			{
+				"name": "npm:detect-node-es",
+				"bytes": 0
+			}
+		]
+	},
+	"modules": {
+		"agent": {
+			"activation": 993227,
+			"deferred": 1174400
+		},
+		"archives": {
+			"activation": 175820,
+			"deferred": 545428
+		},
+		"automations": {
+			"activation": 216274,
+			"deferred": 721070
+		},
+		"browser": {
+			"activation": 102480,
+			"deferred": 416072
+		},
+		"comments": {
+			"activation": 110764,
+			"deferred": 528528
+		},
+		"home": {
+			"activation": 492593,
+			"deferred": 2363964
+		},
+		"icons": {
+			"activation": 158407,
+			"deferred": 941575
+		},
+		"navigator": {
+			"activation": 202886,
+			"deferred": 887681
+		},
+		"notifications": {
+			"activation": 20361,
+			"deferred": 376643
+		},
+		"sync": {
+			"activation": 97629,
+			"deferred": 593035
+		},
+		"safe": {
+			"activation": 60072,
+			"deferred": 519997
+		},
+		"huhubot": {
+			"activation": 547094,
+			"deferred": 613400
+		}
+	}
+}

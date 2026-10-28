@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:37:10.696171+00:00",
+  "source": "sessions/20261025T043239Z/126-private-memory/logs/05-first-hooks-candidate.json",
+  "sourceSha256": "6b97f10ac7ab9e24b5a89a1093df7e0cbbce5d7b524e7d03157496342d4200d5",
+  "files": 20,
+  "treeSHA256": "418821b5c0adfab199647cd661611c79e166a20a7cf743e909f0002ba3a87e4e",
+  "drift": [],
+  "nativeMessage": "20 sources stopped; gofmt only; no Go check since initial red",
+  "acceptedScope": "source checkpoint only;126 unfinished, compile/behavior unverified",
+  "next": "first real default Core compilation once132 ends and128 source freezes"
+}

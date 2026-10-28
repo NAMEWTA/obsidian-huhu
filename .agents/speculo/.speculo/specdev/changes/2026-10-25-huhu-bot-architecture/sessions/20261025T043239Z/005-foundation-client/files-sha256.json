@@ -1,0 +1,11 @@
+{
+  "src/modules/huhubot/api.ts": "73dbd4b785dbd896affc5f22baa7fb3550343ffee26d972befc75daf3010eb13",
+  "src/modules/huhubot/core/protocol/codec.test.ts": "219ac72bc887d0d196037c43d32ed9bc39ccd17ab7e7caf68394b089db6377bb",
+  "src/modules/huhubot/core/protocol/codec.ts": "3a4fbe15b8acf58b5ac7bd5c19e06a6d2940d2d0b6a8a282d25ed4e061aa3491",
+  "src/modules/huhubot/core/protocol/connection.test.ts": "3fa042d56eef5c26e4537279b7e28104ba0ca790fb66aaa68e6e32b92dcbd901",
+  "src/modules/huhubot/core/protocol/connection.ts": "f50e3ab708c88feb1868eed9f38c0606970bb10daf08e4805a32c36ace3bec64",
+  "src/modules/huhubot/platform/desktop/transport/managed.test.ts": "632aa182c07f9651a8f4560c6a115b16c0e6588fa5d941eba40cae23d83cfda8",
+  "src/modules/huhubot/platform/desktop/transport/managed.ts": "966b2b0383b07c3100ebdb61c9dd212920d064bd22462a8bf42edd250d2d3d2b",
+  "src/modules/huhubot/platform/desktop/transport/runner.test.ts": "7000c6a65f4e095fdef362c58e4801d7a5a10a01d1ed01e48a39eb428ef2a9bd",
+  "src/app/contracts/module.ts": "fcfb00282bbd7ba22a043a5147729882801c3c2131a5faad67034983e50422d1"
+}

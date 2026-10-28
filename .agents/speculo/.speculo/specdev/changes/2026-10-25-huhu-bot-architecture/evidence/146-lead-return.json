@@ -1,0 +1,32 @@
+{
+  "observer": "native:/root",
+  "task": "146-resume-inbox-runtime",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "b0d08c3251f48d0cc37c4062ad3b0f2e463434b5e26661eb2739eda7598e0f56",
+  "manifestSHA256": "97bdf25f3428606f8056717117d2504629d079d2583681415a3273998e7e585a",
+  "sourceFiles": 8,
+  "artifactFiles": 36,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "146-resume-inbox-runtime",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05669263700110605,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "scope": "Targeted author candidate accepted after direct REPORT/source/artifact review. Full current T14 shared regression, physical CLI three-protocol inbox composition and independent review remain pending. No real provider, Obsidian or target OS acceptance is claimed."
+}

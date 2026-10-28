@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Go runtime and standard library",
+    "version": "go1.26.10",
+    "license": "BSD-3-Clause",
+    "selected": [
+      "BSD-3-Clause"
+    ],
+    "source": ""
+  },
+  {
+    "name": "github.com/ncruces/go-sqlite3",
+    "version": "v0.35.6",
+    "license": "MIT",
+    "selected": [
+      "MIT"
+    ],
+    "source": ""
+  },
+  {
+    "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+    "version": "v6.3.35304",
+    "license": "MIT-0",
+    "selected": [
+      "MIT-0"
+    ],
+    "source": ""
+  },
+  {
+    "name": "github.com/ncruces/julianday",
+    "version": "v1.0.0",
+    "license": "MIT",
+    "selected": [
+      "MIT"
+    ],
+    "source": ""
+  },
+  {
+    "name": "github.com/santhosh-tekuri/jsonschema/v6",
+    "version": "v6.0.3",
+    "license": "Apache-2.0",
+    "selected": [
+      "Apache-2.0",
+      "BSD-3-Clause"
+    ],
+    "source": "JSON Schema metaschemas: https://github.com/json-schema-org/json-schema-spec/blob/ce9738c9064662ec791fcb13f56b5cab5b3bc450/LICENSE\n\njsonschema/v6 embeds metaschemas/. The pinned upstream README offers BSD-3-Clause OR AFL-3.0; BSD-3-Clause is selected, and the complete supplied LICENSE is retained."
+  },
+  {
+    "name": "golang.org/x/sys",
+    "version": "v0.48.0",
+    "license": "BSD-3-Clause",
+    "selected": [
+      "BSD-3-Clause"
+    ],
+    "source": ""
+  },
+  {
+    "name": "golang.org/x/text",
+    "version": "v0.42.0",
+    "license": "BSD-3-Clause",
+    "selected": [
+      "BSD-3-Clause",
+      "Unicode-DFS-2016"
+    ],
+    "source": "Unicode CLDR 32 data: https://github.com/unicode-org/cldr/blob/5dfac9269ed58eeaeddd6ca887bdc7eb43a481fd/unicode-license.txt\n\nThe compiled language, internal/language, internal/language/compact, feature/plural and internal/number tables declare CLDRVersion 32. This is the matching CLDR 32 data license, not the unrelated CLDR tools licenses."
+  }
+]

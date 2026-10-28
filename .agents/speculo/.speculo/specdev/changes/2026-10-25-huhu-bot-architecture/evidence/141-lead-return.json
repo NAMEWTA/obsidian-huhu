@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "659329a1ccab2244a944e9eff80187d5fe52f2d719e69b83d5a1d431bd318140",
+  "manifestSHA256": "31d158996f08a9795fdd34456d87afe00f6d790411a99a828ee09afd60b5043c",
+  "sources": 1,
+  "artifacts": 17,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "exitCode": 0,
+    "seconds": 0.06692931999714347,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "boundary": "Scope candidate accepted; whole T14 regression/independent review pending; Root complete Go regression is running.",
+  "firstFailure": "Own fixture counted exactly two subjects, but actual context legitimately also includes intent. Preserved original; corrected only membership assertion."
+}

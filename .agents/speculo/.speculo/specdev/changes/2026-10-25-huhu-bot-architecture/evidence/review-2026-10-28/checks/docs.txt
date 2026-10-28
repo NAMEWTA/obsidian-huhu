@@ -1,0 +1,2 @@
+$ node scripts/verify-docs.mjs
+Documentation: 922 Markdown files (skill=27, speculo-tooling=295, specdev-change=537, specdev=3, agent-handbook=2, root-entry=4, license=1, user-doc=30, test-fixture=19, source-template=4), 1494 local links, 746 external links (fetch not requested).

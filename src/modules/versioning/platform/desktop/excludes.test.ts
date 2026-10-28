@@ -36,6 +36,14 @@ function repository() {
 	writeFileSync(path.join(root, '.huhu/automation/definitions/weekly-1/操作.md'), '# definition');
 	mkdirSync(path.join(root, '.huhu/automation/dev/runs'), { recursive: true });
 	writeFileSync(path.join(root, '.huhu/automation/dev/runs/1.json'), '{}');
+	for (const relative of [
+		'.huhu/huhubot/device-a/host-receipts/profile-a/effect-a.json',
+		'nested-vault/.huhu/huhubot/device-b/host-receipts/profile-b/effect-b.json',
+	]) {
+		const receipt = path.join(root, relative);
+		mkdirSync(path.dirname(receipt), { recursive: true });
+		writeFileSync(receipt, '{"effectFingerprint":"fixture","status":"received"}');
+	}
 	mkdirSync(path.join(root, 'huhu/闪念/2026/10'), { recursive: true });
 	writeFileSync(path.join(root, 'huhu/闪念/2026/10/2026-10-21.md'), '- 16:54 idea');
 	writeFileSync(path.join(root, 'note.md'), 'hello');

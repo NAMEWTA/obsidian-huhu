@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root",
+  "task": "163-global-memory-runtime",
+  "status": "accepted-targeted-code-candidate",
+  "reportSHA256": "cb5be8b2b0d54fa6fadc79ec6810ff5300d8f7e105890d14b7bf88b49b996fca",
+  "manifestSHA256": "15fbe0f5b1b9df8cdb21f1308ca59e561057c4666b5c85ebc16c17b1d52e5f2b",
+  "rootValidation": "evidence/T-15-logs/root-code-validation-20261027.json",
+  "scope": "Global proposal adapter, schema 11, HAP/stdio owner capability, Core assembly, Broker/common integration, and terminal body-free client validation accepted at code level. Real Provider/Obsidian/target OS acceptance remains user-owned and not-run; T15 stays in_progress.",
+  "additionalRootFix": "globalmemory.ResolveOwner commits expired/conflicted terminal state before returning the original Fault; unknown errors still roll back.",
+  "additionalRootSource": {
+    "path": "native/huhubot/internal/adapters/outbound/sqlite/globalmemory/store.go",
+    "sha256": "0a5d2c6c9f2b0056585826cecd17ba1dc313a974c7871f800d44b0b159105dd3"
+  },
+  "returnValidation": {
+    "exitCode": 0,
+    "waited": true
+  }
+}

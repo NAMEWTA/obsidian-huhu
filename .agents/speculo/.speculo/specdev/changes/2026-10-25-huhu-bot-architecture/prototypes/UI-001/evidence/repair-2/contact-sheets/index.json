@@ -1,0 +1,112 @@
+[
+  {
+    "file": "contact-sheets/sheet-01.png",
+    "cases": [
+      "candidate-1440",
+      "candidate-390",
+      "chat-desktop",
+      "chat-empty",
+      "chat-loading",
+      "chat-error",
+      "chat-offline",
+      "chat-permission",
+      "chat-recovery"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-02.png",
+    "cases": [
+      "chat-long",
+      "tasks-approval",
+      "tasks-temporary",
+      "approval-diff",
+      "tasks-canceled",
+      "tasks-running",
+      "tasks-completed",
+      "tasks-unknown",
+      "agent-normal"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-03.png",
+    "cases": [
+      "agent-editing",
+      "agent-disabled",
+      "agent-creating",
+      "group-create",
+      "memory-private",
+      "memory-forget-confirm",
+      "memory-forgotten",
+      "memory-global-pending",
+      "memory-global-confirm"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-04.png",
+    "cases": [
+      "memory-short",
+      "access-attached",
+      "access-grant",
+      "access-denied",
+      "data-preflight",
+      "data-retained",
+      "data-purged",
+      "dirty-new-bot-escape-warning",
+      "dirty-new-bot-cancel-warning"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-05.png",
+    "cases": [
+      "dirty-new-bot-close-warning",
+      "dirty-edit-bot-escape-warning",
+      "dirty-edit-bot-cancel-warning",
+      "dirty-edit-bot-close-warning",
+      "chat-800",
+      "navigation-800",
+      "tasks-800",
+      "memory-800",
+      "agent-800"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-06.png",
+    "cases": [
+      "access-800",
+      "data-800",
+      "long-800",
+      "dark-800",
+      "chat-390",
+      "navigation-390",
+      "tasks-390",
+      "memory-390",
+      "agent-390"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-07.png",
+    "cases": [
+      "access-390",
+      "data-390",
+      "long-390",
+      "dark-390",
+      "long-message-1440",
+      "long-message-390",
+      "touch-emulated",
+      "touch-navigation",
+      "touch-approval"
+    ]
+  },
+  {
+    "file": "contact-sheets/sheet-08.png",
+    "cases": [
+      "touch-tasks",
+      "touch-memory",
+      "touch-settings",
+      "touch-data",
+      "touch-access",
+      "touch-form",
+      "native-200pct"
+    ]
+  }
+]

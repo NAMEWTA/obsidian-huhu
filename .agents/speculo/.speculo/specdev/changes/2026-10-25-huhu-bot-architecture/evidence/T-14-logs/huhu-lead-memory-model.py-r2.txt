@@ -1,0 +1,115 @@
+from pathlib import Path
+import hashlib, json, os, shutil, sqlite3, subprocess, sys, tempfile, time
+
+# Build one immutable candidate, then use three distinct Profiles and real SDKs.
+# This harness is prepared now, but must not run until Root freezes all inputs.
+repo = Path.cwd()
+change = repo / '.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture'
+logs = change / 'evidence/T-14-logs'
+attempt = sys.argv[1]
+assert attempt.isdigit()
+result_path = logs / f'lead-memory-model-r{attempt}.json'
+assert not result_path.exists(), 'Do not overwrite executed evidence'
+sha = lambda data: hashlib.sha256(data).hexdigest()
+roots = ['native/huhubot', 'src', 'contracts/hap/v0.1', 'package.json', 'pnpm-lock.yaml', 'tsconfig.json', 'tsconfig.test.json']
+def inventory():
+    names = subprocess.check_output(['git', 'ls-files', '-c', '-o', '--exclude-standard', '-z', '--', *roots], text=True).split('\0')
+    return {p: {'sha256': sha((repo / p).read_bytes()), 'mode': (repo / p).stat().st_mode & 0o777}
+            for p in sorted(set(names)) if p and (repo / p).is_file()
+            and not (p.startswith('native/huhubot/') and (p.endswith('_test.go') or p.startswith('native/huhubot/tests/')))}
+before = inventory()
+snapshot = Path(tempfile.mkdtemp(prefix=f'huhu-lead-memory-model-r{attempt}-'))
+for name in before:
+    target = snapshot / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(repo / name, target)
+os.symlink(repo / 'node_modules', snapshot / 'node_modules', target_is_directory=True)
+probes = {}
+for name in ['huhu-lead-memory-model.ts', 'huhu-lead-obsidian-stub.ts']:
+    source = Path('/tmp') / name
+    copied = source.read_text().replace(str(repo) + '/', str(snapshot) + '/')
+    (snapshot / name).write_text(copied)
+    (logs / f'{name}-r{attempt}.txt').write_bytes(source.read_bytes())
+    probes[name] = {'source': sha(source.read_bytes()), 'snapshot': sha(copied.encode())}
+(logs / f'huhu-lead-memory-model.py-r{attempt}.txt').write_bytes(Path(__file__).read_bytes())
+result = {'observer': 'native:/root', 'snapshot': str(snapshot), 'input': before, 'inputFiles': len(before),
+          'inputSha256': sha(json.dumps(before, sort_keys=True, separators=(',', ':')).encode()),
+          'probes': probes, 'commands': [], 'protocols': {}, 'complete': False, 'sourceDrift': None,
+          'boundary': 'production TS/default CLI/real SDKs/local HTTP/actual SQLite; no real Provider/Obsidian/target OS acceptance'}
+def save():
+    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+def run(args, cwd, label):
+    env = os.environ.copy()
+    env.update(GOTOOLCHAIN='local', CGO_ENABLED='0', GOFLAGS='-mod=readonly', GOWORK='off', GOEXPERIMENT='', GOPROXY='off')
+    logfile = logs / f'lead-memory-model-{label}-r{attempt}.log'
+    start = time.monotonic()
+    with logfile.open('w') as output:
+        output.write('Command: ' + json.dumps(args) + '\nCwd: ' + str(cwd) + '\n')
+        output.flush()
+        process = subprocess.run(args, cwd=cwd, env=env, stdout=output, stderr=subprocess.STDOUT)
+    command = {'command': args, 'cwd': str(cwd), 'log': str(logfile.relative_to(change)),
+               'exitCode': process.returncode, 'seconds': time.monotonic() - start, 'waited': True}
+    result['commands'].append(command); save(); print(json.dumps(command), flush=True)
+    assert process.returncode == 0, f'Actual failure preserved in {logfile}'
+try:
+    save()
+    binary = snapshot / 'huhu-bot'
+    bundle = snapshot / 'lead-memory-model.mjs'
+    run(['/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go', 'version'], snapshot / 'native/huhubot', 'go-version')
+    run(['/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go', 'build', '-o', str(binary), './cmd/huhubot'], snapshot / 'native/huhubot', 'build')
+    run(['pnpm', 'exec', 'esbuild', str(snapshot / 'huhu-lead-memory-model.ts'), '--bundle', '--platform=node', '--format=esm',
+         '--alias:obsidian=' + str(snapshot / 'huhu-lead-obsidian-stub.ts'), '--outfile=' + str(bundle)], repo, 'ts-build')
+    for protocol in ['openai-chat-completions', 'openai-responses', 'anthropic-messages']:
+        output_dir = snapshot / protocol
+        output_dir.mkdir(mode=0o700)
+        run(['node', str(bundle), str(binary), str(output_dir), protocol], repo, protocol)
+        wire = json.loads((output_dir / 'result.json').read_text())
+        result['protocols'][protocol] = {'wire': wire}; save()
+        assert wire['complete'] and wire['exits'] == [{'code': 0, 'signal': None}] * 2
+        database = Path(wire['profileDir']) / 'profile.sqlite3'
+        with sqlite3.connect('file:' + str(database) + '?mode=ro&immutable=1', uri=True) as db:
+            db.row_factory = sqlite3.Row
+            facts = {'integrity': db.execute('PRAGMA integrity_check').fetchone()[0],
+                     'foreignKeys': [list(x) for x in db.execute('PRAGMA foreign_key_check')],
+                     'schemaVersion': db.execute('PRAGMA user_version').fetchone()[0],
+                     'attempts': [dict(x) for x in db.execute('SELECT run_id,root_run_id,account_id,purpose,state,producer_ended,knowledge,input_tokens,output_tokens FROM model_attempts ORDER BY created_at,attempt_id')],
+                     'accounts': [dict(x) for x in db.execute('SELECT account_id,root_run_id,purpose,reserved_tokens,charged_tokens FROM model_budget_accounts ORDER BY account_id')],
+                     'pins': db.execute('SELECT (SELECT count(*) FROM config_snapshot_pins)+(SELECT count(*) FROM task_config_pins)').fetchone()[0],
+                     'job': dict(db.execute('SELECT job_id,run_id,source_run_id,admission,commit_state,task_config_id FROM memory_jobs WHERE job_id=?', [wire['jobId']]).fetchone()),
+                     'contextCount': db.execute('SELECT count(*) FROM memory_run_contexts').fetchone()[0],
+                     'automaticRecallDependency': db.execute("SELECT count(*) FROM memory_dependencies WHERE owner_kind='run' AND owner_id=? AND ancestor_kind='memory_revision' AND ancestor_id=? AND relation='effective'", [wire['automaticRecallRunId'], wire['automaticRecallRevisionId']]).fetchone()[0],
+                     'activeSessionRuns': db.execute("SELECT count(*) FROM conversation_sessions WHERE active_run_id IS NOT NULL AND active_run_id!=''").fetchone()[0]}
+            manifests = list(db.execute('SELECT short_term_json,memory_json FROM memory_run_contexts'))
+            jobs = list(db.execute('SELECT input_json FROM memory_jobs'))
+        result['protocols'][protocol]['persistentReadback'] = facts; save()
+        assert facts['integrity'] == 'ok' and facts['foreignKeys'] == [] and facts['schemaVersion'] >= 10
+        assert facts['pins'] == facts['activeSessionRuns'] == 0
+        assert len(facts['attempts']) == 6
+        assert all(x['state'] == 'settled' and x['producer_ended'] == 1 and x['knowledge'] == 'known' for x in facts['attempts'])
+        maintenance = [x for x in facts['attempts'] if x['run_id'] == wire['maintenanceRunId']]
+        assert len(maintenance) == 1
+        assert maintenance[0]['purpose'] == 'maintenance'
+        assert maintenance[0]['account_id'] == 'maintenance:' + wire['profileId']
+        accounts = {x['account_id']: x for x in facts['accounts']}
+        assert 'root:' + wire['maintenanceRunId'] not in accounts
+        assert accounts['maintenance:' + wire['profileId']]['charged_tokens'] == 16
+        assert accounts['profile:' + wire['profileId']]['charged_tokens'] == 96
+        assert all(x['reserved_tokens'] == 0 for x in facts['accounts'])
+        assert facts['job']['source_run_id'] == wire['sourceRunId'] and facts['job']['run_id'] == wire['maintenanceRunId']
+        assert facts['job']['admission'] == 'bound' and facts['job']['commit_state'] == 'committed'
+        assert facts['contextCount'] >= 5
+        assert facts['automaticRecallDependency'] == 1
+        for row in manifests:
+            for raw in row:
+                assert 'ROOT_A_RECALL' not in raw and 'ROOT_A_FIRST' not in raw and 'ROOT_REPLY_1' not in raw, 'Manifest duplicated source body'
+        for row in jobs:
+            assert 'ROOT_AUTO_INTENT' not in row[0], 'Job input duplicated source body'
+        result['protocols'][protocol]['complete'] = True; save()
+    result['complete'] = True
+finally:
+    after = inventory()
+    result['sourceDrift'] = [p for p in sorted(before.keys() | after.keys()) if before.get(p) != after.get(p)]
+    result['waitBoundary'] = 'Each subprocess.run waits; TS waits natural CLI close twice; SQLite only read after CLI exits; one frozen build for all3 isolated Profiles'
+    save()
+print(json.dumps({'result': str(result_path), 'complete': result['complete'], 'sourceDrift': result['sourceDrift']}), flush=True)
+assert not result['sourceDrift'], 'Input drift invalidates integration result'

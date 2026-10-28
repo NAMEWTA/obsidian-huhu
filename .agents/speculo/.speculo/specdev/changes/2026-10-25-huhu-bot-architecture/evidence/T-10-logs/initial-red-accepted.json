@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root",
+  "task": "117-engine-anthropic",
+  "stage": "first real missing behavior red accepted",
+  "sourceAndRawLogsRead": true,
+  "readToolChunks": [
+    "7c3437",
+    "3b4a1f"
+  ],
+  "inputSha256": "c46809f55e4d121b6ebca2ffc3615b807afa0e56ea9d5660bcab280bd5a7d8f6",
+  "verifiedCurrentAndArchiveFiles": 333,
+  "actualExit": 1,
+  "actualWaitSeconds": 0.9364553650002563,
+  "failureClass": "missing implemented protocol through existing defaultCore/publicAPI; compile succeeded; ADAPTER_NOT_ASSEMBLED and HTTP0",
+  "productionAndLocksUnchanged": true,
+  "goWindowReturned": true,
+  "next": "117/118 may begin precise source writing; all Go remains serial Root window;119 awaits115 actual return"
+}

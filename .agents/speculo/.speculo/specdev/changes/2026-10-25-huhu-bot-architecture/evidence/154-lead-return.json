@@ -1,0 +1,33 @@
+{
+  "observer": "native:/root",
+  "task": "154-context-alias-wire",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "a387efd30c087aab441e776bfc5815b196ccb56085604ead5f71de56d6c69edd",
+  "sourceManifestSHA256": "86f71ed76297c906ab882518f92ab6ab114518f8b6de35857de5c2d0230f1076",
+  "artifactManifestSHA256": "9b5d3849422e990ef2d36f30ee2de67dc0881a3c71bc676599d1292764263a0d",
+  "sourceFiles": 1686,
+  "artifactFiles": 56,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "154-context-alias-wire",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.06451253099658061,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "boundary": "Author tests and typed/wire/Router layers accepted. Actual producer/physical CLI and joint independent review still required; no overall T14/Goal closure."
+}

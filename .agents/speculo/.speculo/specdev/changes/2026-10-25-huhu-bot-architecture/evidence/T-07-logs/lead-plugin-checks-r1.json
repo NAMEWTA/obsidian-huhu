@@ -1,0 +1,42 @@
+{
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "reports": {
+    "052-note-effects-go": "766ff1f9f76f2680babbbea0e7a715742f94d28382f0408d565a90674fbd024c",
+    "053-collaboration-policy": "94258ec9f317f1e56b4b8edfdaf5a3b3637a3a1c8a37dd380aef48d2bd8c3b83",
+    "054-note-effects-client": "17e14cb04a74d9b3ed1efb3e2d698941721c2f2d94caa8da8143d355e581ab70",
+    "058-host-receipt-docs-cleanup": "3f509a4f2a5c148deddc62224a182408edee962f3b6163a183f73546ba8b9bb7"
+  },
+  "inputManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-input-r1.json",
+  "filesChecked": 1867,
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/huhubot/core/protocol/connection.test.ts",
+        "src/modules/huhubot/core/protocol/codec.test.ts",
+        "src/modules/huhubot/core/protocol/method-validation.test.ts",
+        "src/modules/huhubot/core/protocol/task-config-hash.test.ts",
+        "src/modules/huhubot/platform/obsidian/sources/sources.test.ts",
+        "src/modules/huhubot/platform/obsidian/note-effects",
+        "src/modules/huhubot/services/host-write",
+        "src/modules/huhubot/services/host-read",
+        "src/modules/huhubot/services/events/event-client.test.ts",
+        "src/modules/huhubot/core/events/reducer.test.ts",
+        "src/modules/huhubot/services/assistant-client.test.ts"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-current-ts-consumers-r1.log",
+      "exit": 126,
+      "seconds": 2.814
+    }
+  ],
+  "complete": false,
+  "drift": [],
+  "outputs": {
+    "main.js": "d9d91103ba8885a76b2ed6f7eeb90fbff9f714ee92fe1d838e10783ffcdf4cb6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+  },
+  "processes": "Every subprocess.run child exited and was waited; no product/Provider/Obsidian process started"
+}

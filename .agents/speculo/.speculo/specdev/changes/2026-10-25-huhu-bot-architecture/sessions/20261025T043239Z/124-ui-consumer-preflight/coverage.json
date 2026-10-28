@@ -1,0 +1,675 @@
+{
+  "capturedAt": "2026-10-26T09:07:47.477971+00:00",
+  "pages": {
+    "BOT-CHAT": {
+      "states": [
+        "normal",
+        "empty",
+        "loading",
+        "error",
+        "offline",
+        "permission",
+        "recovery",
+        "long"
+      ],
+      "ticket": "T-21",
+      "methods": [
+        "agents.list",
+        "sessions.list",
+        "sessions.get",
+        "sessions.create",
+        "sessions.history",
+        "runs.start",
+        "runs.get",
+        "runs.subscribe",
+        "runs.cancel"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "agents.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.create": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.history": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.start": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.subscribe": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.cancel": {
+          "direction": "client-to-server",
+          "implemented": true
+        }
+      }
+    },
+    "BOT-TASKS": {
+      "states": [
+        "approval",
+        "running",
+        "completed",
+        "canceled",
+        "unknown",
+        "temporary"
+      ],
+      "ticket": "T-23",
+      "methods": [
+        "runs.get",
+        "collaboration.list",
+        "collaboration.get",
+        "collaboration.cancel",
+        "approvals.list",
+        "approvals.get",
+        "approvals.resolve",
+        "effects.get",
+        "effects.reconcile",
+        "runs.cancel",
+        "runs.recovery",
+        "runs.resume",
+        "collaboration.budget"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "runs.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "collaboration.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "collaboration.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "collaboration.cancel": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "approvals.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "approvals.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "approvals.resolve": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "effects.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "effects.reconcile": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.cancel": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.recovery": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "runs.resume": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "collaboration.budget": {
+          "direction": "client-to-server",
+          "implemented": true
+        }
+      }
+    },
+    "BOT-AGENT": {
+      "states": [
+        "normal",
+        "creating",
+        "editing",
+        "disabled"
+      ],
+      "ticket": "T-22",
+      "methods": [
+        "agents.create",
+        "agents.get",
+        "agents.update",
+        "agents.disable",
+        "agents.deletePreview",
+        "agents.delete",
+        "models.list",
+        "models.bind",
+        "models.test",
+        "sessions.create",
+        "sessions.updateMembers",
+        "sessions.setCoordinator"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "agents.create": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "agents.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "agents.update": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "agents.disable": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "agents.deletePreview": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "agents.delete": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "models.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "models.bind": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "models.test": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.create": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.updateMembers": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "sessions.setCoordinator": {
+          "direction": "client-to-server",
+          "implemented": true
+        }
+      }
+    },
+    "BOT-MEMORY": {
+      "states": [
+        "private",
+        "global",
+        "short",
+        "pending",
+        "forgotten"
+      ],
+      "ticket": "T-24",
+      "methods": [
+        "memory.list",
+        "memory.get",
+        "memory.pin",
+        "memory.correct",
+        "memory.forget",
+        "memory.setAutoMaintenance",
+        "memory.proposeGlobal",
+        "memory.resolveGlobal"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "memory.list": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.get": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.pin": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.correct": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.forget": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.setAutoMaintenance": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.proposeGlobal": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "memory.resolveGlobal": {
+          "direction": "client-to-server",
+          "implemented": false
+        }
+      }
+    },
+    "BOT-ACCESS": {
+      "states": [
+        "attached",
+        "grant",
+        "denied"
+      ],
+      "ticket": "T-23",
+      "methods": [
+        "agents.get",
+        "models.list",
+        "grants.list",
+        "grants.create",
+        "grants.revoke",
+        "collaboration.configurationHash"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "agents.get": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "models.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "grants.list": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "grants.create": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "grants.revoke": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "collaboration.configurationHash": {
+          "direction": "client-to-server",
+          "implemented": true
+        }
+      }
+    },
+    "BOT-DATA": {
+      "states": [
+        "preflight",
+        "retained",
+        "purged"
+      ],
+      "ticket": "T-25",
+      "methods": [
+        "sessions.deletePreview",
+        "sessions.delete",
+        "profile.status",
+        "profile.deletePreview",
+        "profile.delete",
+        "portable.export",
+        "portable.importPreview",
+        "portable.import"
+      ],
+      "validation": "not-run; mapped source and future consumer only",
+      "methodAvailability": {
+        "sessions.deletePreview": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "sessions.delete": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "profile.status": {
+          "direction": "client-to-server",
+          "implemented": true
+        },
+        "profile.deletePreview": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "profile.delete": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "portable.export": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "portable.importPreview": {
+          "direction": "client-to-server",
+          "implemented": false
+        },
+        "portable.import": {
+          "direction": "client-to-server",
+          "implemented": false
+        }
+      }
+    }
+  },
+  "pageCount": 6,
+  "designStateCount": 29,
+  "allCurrentMethodAvailability": {
+    "protocol.hello": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "service.health": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "service.status": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "service.diagnostics": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "service.shutdown": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.create": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.update": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.disable": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "agents.delete": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "models.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "models.test": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "models.bind": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.create": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.history": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.archive": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.updateMembers": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.setCoordinator": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "sessions.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "sessions.delete": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "runs.start": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "runs.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "runs.subscribe": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "runs.cancel": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "runs.recovery": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "runs.resume": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.budget": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.configureBudget": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.configurationHash": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.discover": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.message": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.delegate": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.reply": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.cancel": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.proposeCreate": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "collaboration.confirmProposal": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "grants.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "grants.create": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "grants.revoke": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "approvals.list": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "approvals.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "approvals.resolve": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "memory.list": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.get": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.pin": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.correct": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.forget": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.setAutoMaintenance": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.proposeGlobal": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "memory.resolveGlobal": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "profile.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "profile.delete": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "profile.status": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "portable.export": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "portable.importPreview": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "portable.import": {
+      "direction": "client-to-server",
+      "implemented": false
+    },
+    "host.attach": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "host.detach": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "host.prepareWrite": {
+      "direction": "server-to-client",
+      "implemented": false
+    },
+    "host.checkWrite": {
+      "direction": "server-to-client",
+      "implemented": false
+    },
+    "effects.get": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "effects.reconcile": {
+      "direction": "client-to-server",
+      "implemented": true
+    },
+    "host.invoke": {
+      "direction": "server-to-client",
+      "implemented": false
+    },
+    "host.queryReceipt": {
+      "direction": "server-to-client",
+      "implemented": false
+    },
+    "host.read": {
+      "direction": "server-to-client",
+      "implemented": false
+    },
+    "host.search": {
+      "direction": "server-to-client",
+      "implemented": false
+    }
+  },
+  "methodCount": 72,
+  "clientImplementedCount": 51,
+  "clientNotImplementedCount": 15,
+  "reverseCount": 6,
+  "proposedContracts": {
+    "115": "Root-accepted implementation route; no Memory methods implemented",
+    "123": "Owner-finalized candidate text SHA68333f68…; §6 reread; no public schema/implementation yet"
+  },
+  "futureTestsRun": false
+}

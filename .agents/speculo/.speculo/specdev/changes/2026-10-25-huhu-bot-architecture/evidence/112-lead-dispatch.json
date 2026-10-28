@@ -1,0 +1,51 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T05:56:19.789882+00:00",
+  "task": "112-responses-review",
+  "nativeTarget": "/root/recovery_review",
+  "nativeTool": "collaboration.followup_task",
+  "nativeFollowupIssued": true,
+  "taskSha256": "402090061c0f46f8873c4c9ee8b4f29d011b40bb2b3dc134927c829aae262c79",
+  "dispatchExit": 0,
+  "dispatchToolEvidence": "ae94ac",
+  "inputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "frozenFileCount": 2048,
+  "sourceCount": 32,
+  "freezeSha256": "ef2e42c2ff887c49793e69be890f1628d4173af06c3b2e96df82b58072ddf875",
+  "reviewInputSha256": "06adbe2656dc0458fdbd049640792983a14e567f207873f839a5cb5524c95652",
+  "actualAuthorTasksAccepted": [
+    "107",
+    "108",
+    "109",
+    "110",
+    "111",
+    "113",
+    "114"
+  ],
+  "allProductionWritersStopped": true,
+  "rootE2E": "evidence/T-09-logs/lead-responses-e2e-r1.json",
+  "rootE2EOuterExit": 0,
+  "rootE2EToolEvidence": "ef9a4b",
+  "goWindowGranted": true,
+  "goWindowOwner": "native:/root/recovery_review",
+  "goEnvironment": {
+    "GOTOOLCHAIN": "go1.26.10",
+    "GOWORK": "off",
+    "GOEXPERIMENT": "",
+    "GOFLAGS": "-mod=readonly",
+    "normalCGO": "0",
+    "raceCGO": "1"
+  },
+  "authority": "User full28-ticket code implementation and Agent Team authorization; actual Provider/Obsidian/OS acceptance user-owned.",
+  "nativeACKReceived": true,
+  "nativeACK": {
+    "identity": "native:/root/recovery_review",
+    "independence": "not an implementer of 107-114",
+    "fullTaskRead": true,
+    "inputSha256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+    "frozenFiles": 2048,
+    "sources": 32,
+    "goWindowAccepted": true,
+    "writes": "112 REPORT/logs and temporary external probes only"
+  }
+}

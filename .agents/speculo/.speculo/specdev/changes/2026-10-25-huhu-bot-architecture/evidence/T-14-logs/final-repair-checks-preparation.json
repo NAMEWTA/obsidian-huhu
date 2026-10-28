@@ -1,0 +1,25 @@
+{
+  "observer": "native:/root",
+  "boundary": "Preparation only; no Root Go/DB/CLI check executed while153 owns window",
+  "task156Prepared": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/156-memory-repair-review/TASK.md",
+  "scripts": {
+    "/tmp/huhu-freeze-memory-full-r2.mjs": {
+      "sha256": "d7da8c21b24fc482f34db19b68b540550afa8b2e013116b672b1c922ac7daa5f"
+    },
+    "/tmp/huhu-lead-memory-quality.py": {
+      "sha256": "5cf5b1c2408ccaa2071a99fb07e5555ff418a27395aa9b429b564fe0b63a4a9b"
+    },
+    "/tmp/huhu-lead-memory-regression.py": {
+      "sha256": "58351dc5a158e1c6e6a3210d0aa3333915057e788fea2f1f66b500ad0f2cf045"
+    },
+    "/tmp/huhu-lead-memory-inbox.py": {
+      "sha256": "e04b8417943797554acdf4f502f0e416fef3e7aa716a58cef3a2c79004888f42"
+    },
+    "/tmp/huhu-lead-memory-inbox.ts": {
+      "sha256": "7c92b1da7efee852bf3a765405db7d8c3e373a9df5d1b68bd9c8c1c47ce2c6db"
+    },
+    "/tmp/huhu-lead-memory-model.py": {
+      "sha256": "8ea4b213bbd17f55e491bc832e356189be926f8f0daa043af3d17f68d9f14cd0"
+    }
+  }
+}

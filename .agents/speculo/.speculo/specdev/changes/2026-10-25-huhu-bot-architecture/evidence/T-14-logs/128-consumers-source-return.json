@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:54:55.584129+00:00",
+  "task": "128-memory-access-budget",
+  "checkpointSha256": "dd326c316c2b8709e92707b5c11abaafcb427c59ec2aa3422afa33dbafd5d2cb",
+  "handoffSha256": "afb971d56bc9206f4f86ee2baaa76f434fa9798fc6719e7432a64f7a0b61b152",
+  "files": 18,
+  "treeSHA256": "1fce5b30585920616db26204c95cf83b2362c67f3a9f58163e11bdc880bb2e8d",
+  "drift": [],
+  "nativeReturn": "MESSAGE+FINAL source checkpoint, all18 source paths stopped;no product check processes",
+  "rootHandoffReadChunk": "fb37be",
+  "acceptedScope": "source checkpoint only;no compiled or behavior pass;128 remains unfinished",
+  "next": "134 actual direct history and Run-writer consumers, then coordinated first real Core check"
+}

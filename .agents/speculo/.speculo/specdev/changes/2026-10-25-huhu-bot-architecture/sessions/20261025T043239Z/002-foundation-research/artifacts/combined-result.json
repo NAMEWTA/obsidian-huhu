@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "stdout": "eino adapter imports compiled: go1.26.10 user; sqlite=3.53.4\n",
+  "stderr": ""
+}

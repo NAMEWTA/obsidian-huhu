@@ -1,0 +1,22 @@
+{
+  "inputSha256": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+  "files": 303,
+  "sources": 91,
+  "source": "evidence/T-13.md#review-input-groups-r2",
+  "reports": {
+    "073-groups-core": "2000a25e0d82113bc02c0f8dce960e29720d7482d523993730ecfb92b48acb66",
+    "074-groups-domain": "9b2d3f5011654a0adc3ac5239957dce7e55855b54a0af510f81e52c61c26b166",
+    "075-groups-client": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e",
+    "078-groups-pagination-repair": "bc1d95b2c24ee23d0d1ae2f14b0e2e39231a906818c331d05af77599179f1f89"
+  },
+  "leadProbe": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-groups-e2e-candidate2.json",
+  "plugin": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-plugin-checks-groups-r1.json",
+  "deltaFromCandidate1": [
+    "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+    "native/huhubot/tests/contract/groups/page_consumption_test.go",
+    "native/huhubot/tests/contract/groups/page_failure_test.go",
+    "native/huhubot/tests/contract/groups/page_rollback_test.go",
+    "native/huhubot/tests/contract/groups/page_union_test.go"
+  ],
+  "previousFailure": "evidence/077-lead-return.json"
+}

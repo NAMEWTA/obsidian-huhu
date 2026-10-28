@@ -15,6 +15,7 @@ import {
 	isVisibleHuhuPath,
 	huhuName,
 	HUHU_VISIBLE_ROOT,
+	HUHUBOT_RUNTIME_ROOT,
 	TASK_ARCHIVE_PATH,
 } from './vault-layout';
 
@@ -45,6 +46,14 @@ test('only boards and automation definitions are hidden HUHU documents', () => {
 	expect(dashboardPath('.huhu/dashboards/Work')).toBe('.huhu/dashboards/Work');
 	expect(dashboardPath()).toBe(DEFAULT_DASHBOARD_FILE);
 	expect(() => dashboardPath('.git/x')).toThrow();
+});
+
+test('Bot host receipts stay in the private runtime root and outside indexed documents', () => {
+	expect(HUHUBOT_RUNTIME_ROOT).toBe('.huhu/huhubot');
+	for (const path of [HUHUBOT_RUNTIME_ROOT, `${HUHUBOT_RUNTIME_ROOT}/device-a/host-receipts/profile-a/effect-a.json`, `${HUHUBOT_RUNTIME_ROOT}/device-b/host-receipts/profile-b/effect-b.md`]) {
+		expect(isVisibleHuhuPath(path)).toBe(false);
+		expect(isContentPath(path)).toBe(false);
+	}
 });
 
 test('generated names never contain whitespace or characters a filesystem refuses', () => {

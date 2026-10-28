@@ -1,0 +1,88 @@
+{
+  "snapshot": "/tmp/huhu-lead-v5-fixtures-v87ic335",
+  "sourceSnapshot": "/tmp/huhu-lead-events-repair-r2-omcp4rlq",
+  "sourceInputSha256": "1f1e1eb34e1a4eb144358a78291b9035d4d077e110d2d94094576eeca3e93951",
+  "sourceFiles": 169,
+  "probeSha256": "a69c4ecef8e296b467875ee70f3dcc2302fa317677b35abea955fc21ca65ce76",
+  "fixtureRoot": "/tmp/huhu-lead-v5-fixtures-v87ic335/fixtures",
+  "command": [
+    "go",
+    "test",
+    "-mod=readonly",
+    "-v",
+    "./tests/contract/approval",
+    "-run",
+    "^TestLeadProduceRealSchemaFiveCheckpoints$",
+    "-count=1",
+    "-timeout=45s"
+  ],
+  "exit": 0,
+  "seconds": 1.263,
+  "processes": "subprocess.run returned, Go test and Core/DB handles exited/Wait; only controlled Engine/Host ports, no external services",
+  "fixtures": {
+    "waiting": {
+      "approvalId": "approval:5fca1b1286b165c6b4c161ab06a5538f",
+      "artifact": {
+        "Ref": "cp:99c5a6b9eca65ae02b93575b67a79659",
+        "Digest": "sha256:b5d89e769b766acac40a226c71f2a0ad76b9964138b2f68fb3bb8a4109c4112d",
+        "Size": 20,
+        "RunID": "run:c68f0cf4831cb2d87b12b3d42a1a1bd6",
+        "AttemptID": "claim:d3bee759c4eae6321609e3c685889152",
+        "Metadata": {
+          "EngineVersion": "huhu-engine-v1",
+          "FormatVersion": "1",
+          "DefinitionDigest": "sha256:2fcc98965c512103b1f077a06b6832ba2099c10b61001151c3f97c1545bfb50c"
+        }
+      },
+      "effectId": "effect:b4d9cd16ff0ba9815d9d303914b0e477",
+      "files": {
+        "checkpoints/99c5a6b9eca65ae02b93575b67a79659.cp": "e8a8e61ff2c468fc287aaa83a48124d59a72da53b417f2c105c69471a119a4a0",
+        "profile.sqlite3": "4e873490b3db28d49067d205a8a74fe15502d23a5b00751e1c552f58344986ec"
+      },
+      "hostMutationCalls": 0,
+      "mode": "waiting",
+      "profileId": "profile:eb8b906075c2932f50cec583689ac8e2",
+      "runId": "run:c68f0cf4831cb2d87b12b3d42a1a1bd6",
+      "runStatusBeforeClose": "waiting_approval",
+      "schema": 5,
+      "sessionId": "session:84c982005f14e7996669d48a85adc964"
+    },
+    "terminal": {
+      "approvalId": "approval:466b24bedc9b6240ece29d498bf33d32",
+      "artifact": {
+        "Ref": "cp:78d8b2da2059062d00a3f27499a5b46b",
+        "Digest": "sha256:b5d89e769b766acac40a226c71f2a0ad76b9964138b2f68fb3bb8a4109c4112d",
+        "Size": 20,
+        "RunID": "run:5f16e91a9430a0a1cf6ec455465aeca2",
+        "AttemptID": "claim:2b8191eaf82856f1ddee92eeb5b6db13",
+        "Metadata": {
+          "EngineVersion": "huhu-engine-v1",
+          "FormatVersion": "1",
+          "DefinitionDigest": "sha256:886bdd116f9a3c90e8a10781f9b96d41fd091fa2545638aa3077b238132d5b31"
+        }
+      },
+      "effectId": "effect:2f29674365e03fd2d57c2048ac78ad1b",
+      "files": {
+        "checkpoints/78d8b2da2059062d00a3f27499a5b46b.cp": "69b517e1448d26dc5186f9549cbe40395e4c234471ae28d003de9a5c2ccf0f05",
+        "profile.sqlite3": "49fb6d1685853e2480e5bd8f045c647f03ec6899e4c7975fbff386e0fb0362d1"
+      },
+      "hostMutationCalls": 0,
+      "mode": "terminal",
+      "profileId": "profile:31a2f6259d89b2beeec4909ca1344936",
+      "runId": "run:5f16e91a9430a0a1cf6ec455465aeca2",
+      "runStatusBeforeClose": "succeeded",
+      "schema": 5,
+      "sessionId": "session:a1e98959e18c01479dd422e7ffd1616c"
+    }
+  },
+  "toolchainObservedAfterRun": {
+    "command": [
+      "go",
+      "version"
+    ],
+    "cwd": "/tmp/huhu-lead-v5-fixtures-v87ic335/native/huhubot",
+    "exit": 0,
+    "output": "go version go1.27.1 linux/amd64",
+    "stderr": ""
+  }
+}

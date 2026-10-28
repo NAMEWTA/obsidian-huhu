@@ -1,0 +1,11 @@
+--- frozen/wait_test.go
++++ external-negative/wait_test.go
+@@ -316,6 +316,8 @@
+ 			if count(t, db, "SELECT count(*) FROM execution_runs WHERE status IN('waiting_children','accepted') AND child_slot<>0") != 0 {
+ 				t.Fatal("stopped waiting or queued producer kept an active slot")
+ 			}
++			deleted, de := db.Exec("DELETE FROM task_config_pins WHERE run_id=(SELECT run_id FROM execution_runs WHERE intent='parent-child' ORDER BY created_at,run_id LIMIT 1)")
++			if de != nil { t.Fatal(de) }; dn,de := deleted.RowsAffected(); if de != nil || dn != 1 { t.Fatalf("negative pin setup rows=%d error=%v",dn,de) }; t.Log("REVIEWER negative removed one real waiting parent pin")
+ 			if count(t, db, "SELECT count(*) FROM execution_runs r WHERE r.intent='parent-child' AND NOT EXISTS(SELECT 1 FROM task_config_pins p WHERE p.run_id=r.run_id AND p.snapshot_id=r.task_config_id)") != 0 {
+ 				t.Fatal("waiting/queued task released its live configuration pin")
+ 			}

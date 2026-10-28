@@ -1,0 +1,28 @@
+{
+  "task": "066-recovery-current-seams",
+  "reportSha256": "22b88e2a54a507477a16aac3c25df8d0e94d9ce1521608262749f8185d05c219",
+  "manifestSha256": "3e43cd0b75f28c2256f4a9f465e15b5c4fa0d48cc05ebb9065bc47c2902d3a82",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullAttachmentRead": true,
+  "returnExit": 0,
+  "acceptedAt": "2026-10-25T17:00:26.258398+00:00",
+  "manifestArtifactsVerified": 12,
+  "sourceFilesVerified": 52,
+  "sourceDrift": [],
+  "correction": {
+    "changedPreviousArtifacts": [
+      "interfaces-and-owners.md",
+      "return-validation.json"
+    ],
+    "rootFullDiffRead": true,
+    "oldAttachmentAndManifestBytesPreserved": true,
+    "newAttachmentSha256": "ee0b2c5be23eb52779d7f05e75fd068a6577b3bd25a542a7243f8d2b1cc30f5b",
+    "reason": "Keep api.ts generation with original T01 Go owner; research scenario count is not a limit on implementation verification. return-validation.json also records the new actual structural check time; report and product observations are unchanged."
+  },
+  "firstRootCheck": {
+    "exit": 1,
+    "classification": "Root expected only the attachment to differ and initially omitted the regenerated return-validation.json timestamp. Current return receipt was then fully read and its actual exit0 confirmed; changed artifact set is recorded exactly."
+  },
+  "boundary": "Read-only research only; no T13/T16 activation, implementation or product acceptance. T13 final group interfaces must be reread later."
+}

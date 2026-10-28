@@ -1,0 +1,125 @@
+{
+  "scope": "095 only: legal texts, notices generator/tests, current docs and generated root notices; no binary/plugin build; not T27 completion",
+  "taskSha256": "9ea95aef1e5f326587ff1bf5fc8221c07a9929252ff3c0ffa1b8a586583b013e",
+  "fileCount": 20,
+  "treeSha256": "2778f80de2833aa7f89a048f19c1e7f2691e6673e0c3574c6c789763721041fc",
+  "files": {
+    "THIRD-PARTY-NOTICES.md": {
+      "beforeSha256": "15b56ca45a571e43bd5f3c4bbf530987bcb3a6b61808c970b2ffe3173e1e1e8c",
+      "afterSha256": "04dce87bb9fdb48553ca7e93cd6cf98c27bdb2dcaf73d0ff46da03c9291fa9df",
+      "change": "modified"
+    },
+    "docs/references.md": {
+      "beforeSha256": "ed94067977c57e173dfa77ea99d6adba139f20758e487572311a100529ce0d7e",
+      "afterSha256": "c21b67fc2cf54d152881f47f0f17da8bc6620acfced06614cf00b0581080e981",
+      "change": "modified"
+    },
+    "docs/third-party/huhu-bot.md": {
+      "beforeSha256": "e6d2d20055cdf374ad4ddeb1df6f33fce2db434effe570b06b7141a97c61c08d",
+      "afterSha256": "55f165f177cb850950421239febf39e499be49d54ae95a7e21bfba888123920a",
+      "change": "modified"
+    },
+    "docs/third-party/licenses/go/Apache-2.0-full.txt": {
+      "beforeSha256": null,
+      "afterSha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/eino-ext-openai-v0.1.13-LICENSE-APACHE.txt": {
+      "beforeSha256": null,
+      "afterSha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-1-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "27d3a94ff600a1f100136f7743777284c8dccf707606ab07a2e20d032996cb15",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-2-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "bb1458854751422ecfac21563c365bf09d8e3a0838db75ba815c14395cbadb57",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-3-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "7c886985b97808b0ddcda7bcb747fb39b3026dd2d50cd4b3d557c37b629722d2",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-4-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "c00b4b59c25a4054fe88a51dd32fc1e4f223f93cf77855ecdb74ebad574b2215",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-5-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "eeecad0dc7d079ac0151c13c7b3cba4f56732c33471f36969f9298ac2e81cbee",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/logrus-v1.9.3-atexit-MIT.txt": {
+      "beforeSha256": null,
+      "afterSha256": "017f4e6ccc2a628990502e0394691722427f258cd9264246e328c74fb82d7931",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-Drachennest.txt": {
+      "beforeSha256": null,
+      "afterSha256": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-eisel_lemire.txt": {
+      "beforeSha256": null,
+      "afterSha256": "cc3a949197f7f066770ae05ced2a2e1dfebb850f5a7587f085dd314bdbbce5c0",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang-asm.txt": {
+      "beforeSha256": null,
+      "afterSha256": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang.txt": {
+      "beforeSha256": null,
+      "afterSha256": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-simdjson.txt": {
+      "beforeSha256": null,
+      "afterSha256": "1c351ddfc2b959867290106301ba287d0525071630896709f74b3c3a621b0586",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-yyjson.txt": {
+      "beforeSha256": null,
+      "afterSha256": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+      "change": "added"
+    },
+    "docs/third-party/licenses/go/sources.json": {
+      "beforeSha256": null,
+      "afterSha256": "46f03a5717956c944bf32e08193b22a6ee24e11f260b79c995348728baf0e5f9",
+      "change": "added"
+    },
+    "scripts/huhu-bot-notices.mjs": {
+      "beforeSha256": "d0e9aa290d6e842164f287d206dae5e94878b56e104608b8884423bac7ffb154",
+      "afterSha256": "52f3d6c4b0ca020131d247ac80c524b5813c0e0b02659e37057112f754088ba9",
+      "change": "modified"
+    },
+    "scripts/huhu-bot-notices.test.mjs": {
+      "beforeSha256": "df6a693739dc6cb417e4711e0776fb1300b3e0d6003336430c50f6aeb05926e1",
+      "afterSha256": "6317f6d88cc3738bfaacbceffbcea3f9c26c8b4c59879e22e3169e67f067da11",
+      "change": "modified"
+    }
+  },
+  "protectedUnchanged": {
+    "NOTICE": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+    "native/huhubot/go.sum": "a5547b752487c8ab3e116b95f30d95f460ca58e3a7a0c6487a2a1272f89b3937"
+  },
+  "finalGoLocks": {
+    "go.mod": "75386c4e53aa851394ed6fa7ae167c0822c530690e4e240b83ace65c97154814",
+    "go.sum": "a5547b752487c8ab3e116b95f30d95f460ca58e3a7a0c6487a2a1272f89b3937"
+  },
+  "productionScope": "cmd/internal non-test production inputs with embed data; excludes tests/testdata/dist, not the asset sourceTreeHash",
+  "productionFileCount": 156,
+  "productionTreeSha256": "c96a0342e32eb83520cbdc48c6a565eefc1df615f428670f11160617f30b96a2",
+  "selectedCompiledFilesManifestSha256": "4dc0d39cdecb599ee2ac093bd91f2489ce88aa506817b997a0498ddf59ca4bd2",
+  "closureManifestSha256": "9dc44c23dab48c02da2ea9d837fae7ab2f524e928322622d6d999396c0cce2b6",
+  "unionThirdPartyModuleCount": 40,
+  "noticeCountIncludingGoRuntime": 41
+}

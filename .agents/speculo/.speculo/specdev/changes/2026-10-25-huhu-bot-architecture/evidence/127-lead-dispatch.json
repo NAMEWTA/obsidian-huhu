@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T09:37:16.051293+00:00",
+  "task": "127-memory-ts-validation",
+  "target": "native:/root/foundation_client",
+  "taskSha256": "581b179fd493645a5a679d0ef06ec37bb64afd8cef483557eee94eeed6191f68",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "a019d0"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received; exact two files, read-only until Root stable schema and source/check window",
+  "productWindow": "not yet granted; own task directory only",
+  "reason": "125 actual request: standard JSONschema maxLength does not express Memory UTF8 bytes/source aggregate/page byte budgets; original TS owner handles MethodValidation."
+}

@@ -1,0 +1,42 @@
+{
+  "task": "070-notes-collaboration-r2-review",
+  "dispatchedAt": "2026-10-25T17:41:54.083288+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_review",
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledgementReceived": true,
+  "taskSha256": "4b56886297c89a6da2a0f6fec4fafec024c43d9d6f8967215ee91d766e2d6bb0",
+  "dispatchExit": 0,
+  "dispatchErrors": [],
+  "dispatchWarnings": [],
+  "input": {
+    "inputSha256": "3edb78e691126e3377c2d1b00f286cc1b0524ba91bea4bbe5892f69033384e02",
+    "files": 265,
+    "sources": 69,
+    "source": "evidence/T-07.md#review-input-notes-r2",
+    "reports": {
+      "068-shared-review-repair": "44c778e6202d83852c5fa8930b78bc518896127e98ec1e80c1f392ca6174d896",
+      "069-collaboration-review-repair": "eab4d29acc11fe22017009069f2f00690898ae10f9d420ec773f5aa222bcca62"
+    },
+    "leadProbe": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-note-repair-r2.json",
+    "pluginReuse": {
+      "from": "lead-plugin-checks-r3.json",
+      "sha256": "fff03efb21d32253929f3dc11ad5a31e0df0e3c349cac3de8c977e5413533d11",
+      "inputFilesVerified": 1867,
+      "outputs": {
+        "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+        "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+      },
+      "reason": "All TS/compiler/bundler/lint inputs and generated outputs byte-identical; only Go production and regression tests changed."
+    },
+    "failedReview": "evidence/059-lead-return.json",
+    "attempts": 2
+  },
+  "writersStopped": true,
+  "rootE2ECompleteAndAllProcessesWaited": true,
+  "rootHeavyChecksStopped": true,
+  "reviewerOwnsHeavyWindow": true,
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "indexEntrySha256": "10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1",
+  "reviewOutcome": "pending"
+}

@@ -1,0 +1,13 @@
+{
+  "inputSha256": "bac9f195888efe857183f3ff4e5e9ba05ba263a77ea9aba7ad81fd52a2611bc5",
+  "files": 299,
+  "sources": 87,
+  "source": "evidence/T-13.md#review-input-groups-r1",
+  "reports": {
+    "073-groups-core": "2000a25e0d82113bc02c0f8dce960e29720d7482d523993730ecfb92b48acb66",
+    "074-groups-domain": "9b2d3f5011654a0adc3ac5239957dce7e55855b54a0af510f81e52c61c26b166",
+    "075-groups-client": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e"
+  },
+  "leadProbe": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-groups-e2e-r3.json",
+  "plugin": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-plugin-checks-groups-r1.json"
+}

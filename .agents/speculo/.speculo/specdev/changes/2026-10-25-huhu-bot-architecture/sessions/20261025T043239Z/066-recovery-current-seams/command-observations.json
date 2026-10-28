@@ -1,0 +1,54 @@
+{
+  "observedAt": "2026-10-25T16:51:25.208751+00:00",
+  "commands": [
+    {
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "stdout": "NAMEWTA/bot\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "33c21e098ef3188cbab5a09f3e0a01fadb787715\n",
+      "stderr": ""
+    }
+  ],
+  "futurePaths": [
+    {
+      "path": "native/huhubot/internal/application/execution/recovery",
+      "exists": false
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/cancel",
+      "exists": false
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/recovery",
+      "exists": false
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/016-recovery.sql",
+      "exists": false
+    },
+    {
+      "path": "native/huhubot/internal/application/conversation/group",
+      "exists": false
+    }
+  ],
+  "reviewBoundary": {
+    "source": "066 TASK, not independently recalculated review input",
+    "inputSha256": "63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98",
+    "files": 257,
+    "sources": 65
+  },
+  "noExecution": "No product, DB, test, build, Provider, Vault, keyring, D-Bus or agent process launched"
+}

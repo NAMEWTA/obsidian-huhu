@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-10-25T06:32:14.880948+00:00",
+  "files": {
+    "src/modules/huhubot/platform/desktop/credentials/client.test.ts": "8897db4b792485ca63ed8c18c476d8f94d285d71ca36dd198c2c08372220a801",
+    "src/modules/huhubot/platform/desktop/credentials/client.ts": "393752328fec117cca5f442dede0ba681bbec633d891b17804742c31560e2b0e",
+    "src/modules/huhubot/platform/desktop/credentials/protocol.test.ts": "39b11dac8402c581309e0445264c8e2d6241caa4689fde5587bb6c5d7c4cf09e",
+    "src/modules/huhubot/platform/desktop/credentials/protocol.ts": "f30114d74435d62878b656afd560f1724ea28cc7688c6947b3e9777e3523267d",
+    "src/modules/huhubot/platform/desktop/transport/credentials-runner.test.ts": "522fc31bd96b846225805e19209a3a0624d15ea74d0353c4432d64a486c3fa31",
+    "src/modules/huhubot/platform/desktop/transport/managed.test.ts": "06925ae30120bec53776bde4bbdb1ed2d786463943b7fdf4a53f9d497c72a043",
+    "src/modules/huhubot/platform/desktop/transport/managed.ts": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+    "src/modules/huhubot/platform/desktop/transport/runner.test.ts": "afe2a6c3a7fcd328847f9bff65d13d3be894fe1f00a243e1a9e764903b4a39eb",
+    "src/modules/huhubot/services/assistant-client.test.ts": "0142e6eecbd7eba91841c82453c2c2d35d468c093931c9efa34d1665870bad7c",
+    "src/modules/huhubot/services/assistant-client.ts": "8f049a1d95e5a55c3b4474fcb976022d0def221798c13d4b0e4ab4f7f16e3a3b"
+  }
+}

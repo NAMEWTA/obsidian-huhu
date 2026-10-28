@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "acceptedScope": "首条默认Responses文本消费者行为红→绿；不代表工具、opaque、恢复或T09全票完成",
+  "sourceResult": "sessions/20261025T043239Z/109-engine-responses/logs/slice1-green-result.json",
+  "inputSHA256": "a03e302c7299bf2c788f8ccbf0e0fd978888d32cda4d715ca35ff2ebbd72e46b",
+  "inputFilesVerified": 336,
+  "currentHashDrift": [],
+  "resultAndRawLogRead": true,
+  "exitCode": 0,
+  "actualWaitSeconds": 11.503932397987228,
+  "boundary": "固定Go1.26.10，真实SDK与默认Core，loopback/synthetic credentials；真实Provider/Obsidian/目标OS用户后验",
+  "remaining": [
+    "tools/opaque/recovery/fault matrix",
+    "legacy Chat compatibility and shared lifecycle",
+    "foundation and Broker targets",
+    "Root CLI/HAP/Host E2E",
+    "independent dual-axis review"
+  ]
+}

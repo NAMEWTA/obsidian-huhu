@@ -1,0 +1,39 @@
+{
+  "observer": "native:/root",
+  "acceptedAt": "2026-10-26T03:18:26.027196+00:00",
+  "result": "passed",
+  "tickets": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-06",
+    "T-08",
+    "T-12"
+  ],
+  "input": "evidence/T-08.md#review-input-chat-r2",
+  "inputSha256": "d0f13ca8b86a1c8defdd8e93d9626556c90b426351193ee1d16e4569c6a31768",
+  "reviewer": "native:/root/recovery_review",
+  "reviewReport": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+  "reviewReportSha256": "f48850d61e76a066df16d2bd6025fccb8445307cc08c4de41914630a97f30de6",
+  "rootReceipt": "evidence/102-lead-return.json",
+  "rootE2E": "evidence/T-08-logs/lead-chat-e2e-r4.json",
+  "rootE2ESha256": "d3acb4a618604a6c1a8570d6624f59a27dfc12a25e359116c0f662adec2d5482",
+  "validation": {
+    "path": "evidence/T-08-logs/code-gate-chat-r2-validation.json",
+    "sha256": "51dce21f4f744afc3d835155a1bdc20cfa1278b0ba1a74ca7477c212967a9da5",
+    "command": "node /tmp/huhu-validate-chat-code-gate.mjs",
+    "actualExit": 0,
+    "waited": true,
+    "seconds": 24.214,
+    "errors": [],
+    "plans": 28,
+    "jointRecords": 6,
+    "currentScopeRehash": "one common input onT08; other5 validated exact same input and own records"
+  },
+  "closedFindings": [
+    "F-098-01",
+    "F-098-02"
+  ],
+  "priorFailuresPreserved": true,
+  "boundary": "Chat code responsibility and original-owner necessary maintenance only; G1 retained, G2 awaitsT09/T10, T27 final assets and whole28/55 Goal still active. Provider/Obsidian/targetOS user-owned not-run."
+}

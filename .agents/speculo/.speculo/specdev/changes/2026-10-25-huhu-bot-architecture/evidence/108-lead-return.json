@@ -1,0 +1,94 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:01:25.888926+00:00",
+  "task": "108-responses-foundation",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "b1a09c",
+  "rootReturnErrors": [],
+  "rootReturnWarnings": [],
+  "reportSha256": "38764acc689e4a9877e56f8c1f8e0178f1ab6865265ac622a28d4b550315d47e",
+  "manifestSha256": "4ca51074fa43dfe9a3352918aec93a9028c5c14e23491c314ed3563ac41573ac",
+  "artifactsVerified": 67,
+  "sourceFilesVerified": 9,
+  "currentHashDrift": [],
+  "ownFiles": {
+    "native/huhubot/internal/bootstrap/core.go": "d271ab45e892c0a73e93863e5c21526096535469e51874a530a9b1ad38f7f807",
+    "native/huhubot/go.mod": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+    "native/huhubot/go.sum": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad",
+    "native/huhubot/internal/application/tooling/broker/service.go": "2ef00c9bab0628dcf72a7b4132ef359d69a69a697317cba64ddbe83ddb05876e",
+    "native/huhubot/internal/application/tooling/broker/recovery.go": "e91e94e47fdd64df51a4175ece9c89d8deada09e3e6ae31e32ea72f66934e9b6",
+    "native/huhubot/tests/contract/approval/protocol_metadata_test.go": "f8ff7662d1663ea8d858385f171be9863c146b8bae1220e2bb9913f3666bb72a",
+    "native/huhubot/tests/contract/foundation/default_engine_cli_test.go": "5f46e9e8fc82678aa456001dad3a0a982ab610b3114ceaad855ede3877a850f8",
+    "native/huhubot/tests/contract/foundation/default_responses_cli_test.go": "c1e51e65dcf2205b7f7bc4b6b70a14d8d5ea1bfc04f484e000c714c1b495d972",
+    "native/huhubot/tests/contract/foundation/default_protocol_recovery_test.go": "4bcbe26567a2c089ab90628c87adce3e9ed011ca4e4d2e0ad34aa50971e88b1c"
+  },
+  "actualFinalChecks": {
+    "22-default-recovery": {
+      "capturedAt": "2026-10-26T04:49:58.910234+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/foundation",
+        "-run",
+        "^TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.3215525920095388,
+      "sourceTree": "e9b9eddef84a11c3d54a65c4682c9d6aa60cc9baa57e00d8c346f80ddf6c606a",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "single new real default protocol recovery consumer"
+    },
+    "23-construction-overlay": {
+      "capturedAt": "2026-10-26T04:50:07.167917+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "-overlay=/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/108-responses-foundation/logs/15-execution-construction-overlay.json",
+        "./internal/bootstrap",
+        "-run",
+        "^TestDefaultRegistryConstructionFailureDrainsBothCreatedDrivers$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.1178033890028019,
+      "sourceTree": "e9b9eddef84a11c3d54a65c4682c9d6aa60cc9baa57e00d8c346f80ddf6c606a",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "external overlay of actual composition failure; no product test knob; idle driver cleanup plus Profile reopen"
+    }
+  },
+  "rawFinalTargetLogsRead": true,
+  "newRecoveryTestAndConstructionOverlayRead": true,
+  "boundary": "22纯Inspector正控只显式模拟当前credential metadata；未恢复secret。真实默认重开缺凭证阻断、旧ref重注册拒绝。23为实际两driver空闲构造失败清理，不代替在途HTTP控制。",
+  "disposition": "接收108候选；T01/T06/T09联合代码门保持pending，等待109与Root E2E及独立审查。"
+}

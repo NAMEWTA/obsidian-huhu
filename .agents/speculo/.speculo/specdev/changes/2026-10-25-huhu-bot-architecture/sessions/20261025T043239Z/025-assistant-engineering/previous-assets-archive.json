@@ -1,0 +1,80 @@
+{
+  "archive": "/tmp/huhu-bot-pre-025-assets-r8ay2x_5",
+  "files": [
+    {
+      "file": "huhu-bot-darwin-arm64",
+      "sha256": "252745452f4f88dd7607c510abe8d45a38cade4dd5b333cc4ed8b5fae776e9fd",
+      "bytes": 15135298
+    },
+    {
+      "file": "huhu-bot-darwin-arm64.json",
+      "sha256": "5b2e8ad71366cb16331914ef0a0ae11272b040f5f3136712b8a76f87e827b6e2",
+      "bytes": 477
+    },
+    {
+      "file": "huhu-bot-darwin-arm64.sha256",
+      "sha256": "38715f5c933656cfd88192d32075c85783cd9ec88cfa8e2ab2f382b60cbd6585",
+      "bytes": 88
+    },
+    {
+      "file": "huhu-bot-darwin-x64",
+      "sha256": "53f27f98bb38a3d14c3323273d776806446b2c29d595782ed2bdde378f980428",
+      "bytes": 15381072
+    },
+    {
+      "file": "huhu-bot-darwin-x64.json",
+      "sha256": "6e5c3afa1a3f75c8f05c46d732e5c3c646fdb8669269d587d89e1dcff2128f56",
+      "bytes": 473
+    },
+    {
+      "file": "huhu-bot-darwin-x64.sha256",
+      "sha256": "d2178a67425438525f98801dad7d7d1192681cd3d62f1f63d3aedda8af3ed4e6",
+      "bytes": 86
+    },
+    {
+      "file": "huhu-bot-linux-arm64",
+      "sha256": "eb55e0375c5ebb82f6090b80a2bfe2e5af66784328eafcbcd70e566cb64ea71d",
+      "bytes": 15277381
+    },
+    {
+      "file": "huhu-bot-linux-arm64.json",
+      "sha256": "dbd30d5c74909348aebe411e9814c0f919cf16017ab5bb8c9774773f2ef7bddb",
+      "bytes": 474
+    },
+    {
+      "file": "huhu-bot-linux-arm64.sha256",
+      "sha256": "17821babce229566f5f7c5ab911301b9024b25ccd26b3de2937c4949289cdb2a",
+      "bytes": 87
+    },
+    {
+      "file": "huhu-bot-linux-x64",
+      "sha256": "19eaf561bb5a64a2b4d660379e220c747c9127893e8a451830265c1e6a26cff2",
+      "bytes": 15124599
+    },
+    {
+      "file": "huhu-bot-linux-x64.json",
+      "sha256": "265080192f326d938b98bb419cd4f7f34df0fd2cb87e56df8dc907c6c8f8db92",
+      "bytes": 470
+    },
+    {
+      "file": "huhu-bot-linux-x64.sha256",
+      "sha256": "85176eba33644b6d82510a7c88a27faf32fa8463aebd7495c1238bf511e7e467",
+      "bytes": 85
+    },
+    {
+      "file": "huhu-bot-win32-x64.exe",
+      "sha256": "93b43c92cd99239c888027dd5d3a9241db74be1c5115ad3af113ac8c7c4bccaf",
+      "bytes": 15844352
+    },
+    {
+      "file": "huhu-bot-win32-x64.exe.json",
+      "sha256": "c3d3de1cf423b71fbba9ff558aaad396868e016952606285e7663da996eee9af",
+      "bytes": 476
+    },
+    {
+      "file": "huhu-bot-win32-x64.exe.sha256",
+      "sha256": "e3f7a5509dcd06c68a32029faf139bc7630eaa64640b9d441514cae890b24dad",
+      "bytes": 89
+    }
+  ]
+}

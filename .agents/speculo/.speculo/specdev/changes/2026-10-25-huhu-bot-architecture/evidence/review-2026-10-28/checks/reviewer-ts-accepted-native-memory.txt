@@ -1,0 +1,5 @@
+
+  ..../tmp/huhu-bot-review-20261028/native-memory-client-accepted.mjs  1.1mb ⚠️
+
+⚡ Done in 49ms
+{"actualManagedHap":true,"globalMemory":"ready","privateMemory":"ready","sessionContextCatalog":"ready","dataCatalog":"ready","providerCalls":0}

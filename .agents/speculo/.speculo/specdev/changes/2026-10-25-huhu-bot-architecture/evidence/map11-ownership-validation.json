@@ -1,0 +1,28 @@
+{
+  "overlaps": [
+    [
+      "T-01",
+      "T-03",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-05",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-06",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/006-approval-effect.sql</Path>"
+    ]
+  ],
+  "resolution": "票级保留原owner精确维护；pathsOverlap对migrations/*.go与SQL正文按目录前缀保守报交集。只有042写注册Go、T03旧003和T05旧005冻结、T06写006正文，扩展名无实际双writer。T03/T06 run-admission-contract同一042顺序维护。042与044仅T01下Go/API/schema/api.ts和TS协议实现分工，无同文件。043持T04 Go/T05权限，044持T04 TS；三个独立fixture，root build串行。",
+  "tasks": {
+    "042": "T06及原T01 Go公共合同/传输/装配/注册、原T03执行器；已实际派遣",
+    "043": "T04 Go及原T05授权投递fence；已实际派遣",
+    "044": "T04 TS及原T01协议codec；TASK通过，待041释放槽位实际派遣"
+  }
+}

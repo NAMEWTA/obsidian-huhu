@@ -1,0 +1,81 @@
+{
+  "observer": "native:/root",
+  "scope": "117 terminal/usage/batch/HTTP slice accepted, final candidate still pending",
+  "testAndClassificationRead": "5fe0bf",
+  "fullPatchRead": "e41314",
+  "originalJSONLParsedAndBoth343ArchivesVerified": "ae460c",
+  "inputCount": 343,
+  "redFailures": 6,
+  "greenSubcases": 60,
+  "actualChecks": [
+    {
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^(TestTerminalAndUsagePresenceSettleEachActualRequestOnce|TestInvalidCompleteToolBatchNeverPublishesFirstApproval|TestHTTPFailuresNeverRetryOrFollowRedirect)$",
+        "-count=1",
+        "-timeout=60s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T07:38:03.225688+00:00",
+      "finishedAt": "2026-10-26T07:38:06.840282+00:00",
+      "elapsedSeconds": 3.6145780180004294,
+      "exitCode": 1,
+      "waitCompleted": true,
+      "inputSHA256": "e0f34db3648f90a6ff897470188c61fa560c31037647efdf8fcb6c3f1fbf6c04",
+      "frozenFileCount": 343,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice3-initial.stdout.jsonl",
+      "stderr": "slice3-initial.stderr.log"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^(TestTerminalAndUsagePresenceSettleEachActualRequestOnce|TestInvalidCompleteToolBatchNeverPublishesFirstApproval|TestHTTPFailuresNeverRetryOrFollowRedirect)$",
+        "-count=1",
+        "-timeout=60s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T07:43:02.890730+00:00",
+      "finishedAt": "2026-10-26T07:43:07.414617+00:00",
+      "elapsedSeconds": 4.523875187000158,
+      "exitCode": 0,
+      "waitCompleted": true,
+      "inputSHA256": "748d8c25db003df8a5bc009a6e4ebc3323dc7966bc18e786749a9ae92cb51f64",
+      "frozenFileCount": 343,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice3-fixed.stdout.jsonl",
+      "stderr": "slice3-fixed.stderr.log"
+    }
+  ],
+  "redToGreenChangedFiles": [
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/blocks.go",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/checkpoint.go"
+  ],
+  "patchSHA256": "7a30e4fb396eb6d87f1d3a1010fe732880bbab3d1a9b7535a130a9d99e5917b3",
+  "observed": "Three legitimate terminal mapping gaps fixed: stop_sequence presence and no-tools, nullable refusal explanation, safe provider-error terminal with independently trusted cumulative usage. Same60 controls pass; invalid batch/partial tools have zero approvals and effects; HTTP statuses do not retry/redirect; raw bad wire remains unknown. No shared/locks/import changes.",
+  "boundaries": "This is the immutable slice3 input, not a claim about future CP/lifecycle edits; no configured custom-stop feature, liveProvider, Obsidian or OS acceptance."
+}

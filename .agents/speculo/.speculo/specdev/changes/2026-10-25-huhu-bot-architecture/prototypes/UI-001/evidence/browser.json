@@ -1,0 +1,1181 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "3c93a0c085cf3458148befdeb29ff445fe444601861c3bacb8dc9e421706444b",
+  "generated_at": "2026-10-25T04:39:25.284Z",
+  "provider": "Chrome/153.0.8010.47; Linux Xvfb; Chrome CDP / Node v26.11.1; native browser zoom through XTest",
+  "inspected_files": [
+    "final/index.html",
+    "comparison/variants/candidate-a.html"
+  ],
+  "cases": [
+    {
+      "id": "candidate-1440",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/candidate-1440.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal",
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "candidate-390",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal",
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "chat-desktop",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-desktop.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "chat-empty",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-empty.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:empty"
+      ]
+    },
+    {
+      "id": "chat-loading",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-loading.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:loading"
+      ]
+    },
+    {
+      "id": "chat-error",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-error.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:error"
+      ]
+    },
+    {
+      "id": "chat-offline",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-offline.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:offline"
+      ]
+    },
+    {
+      "id": "chat-permission",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-permission.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:permission"
+      ]
+    },
+    {
+      "id": "chat-recovery",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-recovery.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:recovery"
+      ]
+    },
+    {
+      "id": "chat-long",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-long.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "tasks-approval",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-approval.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "tasks-temporary",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-temporary.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:temporary"
+      ]
+    },
+    {
+      "id": "approval-diff",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/approval-diff.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "tasks-canceled",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-canceled.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:canceled"
+      ]
+    },
+    {
+      "id": "tasks-running",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-running.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:running"
+      ]
+    },
+    {
+      "id": "tasks-completed",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-completed.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:completed"
+      ]
+    },
+    {
+      "id": "tasks-unknown",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-unknown.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:unknown"
+      ]
+    },
+    {
+      "id": "agent-normal",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/agent-normal.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "agent-editing",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/agent-editing.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:editing"
+      ]
+    },
+    {
+      "id": "agent-disabled",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/agent-disabled.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:disabled"
+      ]
+    },
+    {
+      "id": "agent-creating",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/agent-creating.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": false,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "group-create",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/group-create.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:empty"
+      ]
+    },
+    {
+      "id": "memory-private",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-private.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "memory-forget-confirm",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-forget-confirm.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "memory-forgotten",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-forgotten.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:forgotten"
+      ]
+    },
+    {
+      "id": "memory-global-pending",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-global-pending.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:global",
+        "BOT-MEMORY:pending"
+      ]
+    },
+    {
+      "id": "memory-global-confirm",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-global-confirm.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:pending"
+      ]
+    },
+    {
+      "id": "memory-short",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-short.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:short"
+      ]
+    },
+    {
+      "id": "access-attached",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/access-attached.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "access-grant",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/access-grant.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:grant"
+      ]
+    },
+    {
+      "id": "access-denied",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/access-denied.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:denied"
+      ]
+    },
+    {
+      "id": "data-preflight",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/data-preflight.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "data-retained",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/data-retained.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:retained"
+      ]
+    },
+    {
+      "id": "data-purged",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/data-purged.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:purged"
+      ]
+    },
+    {
+      "id": "unsaved-form-before",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/unsaved-form-before.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "unsaved-form-after",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/unsaved-form-after.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": false
+      },
+      "states": [
+        "BOT-AGENT:creating"
+      ]
+    },
+    {
+      "id": "chat-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/chat-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "navigation-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/navigation-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "tasks-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/tasks-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "memory-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/memory-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "agent-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/agent-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "access-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/access-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "data-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/data-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "long-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/long-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "dark-800",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "screenshot": "evidence/screenshots/dark-800.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "chat-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/chat-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "navigation-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/navigation-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "tasks-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/tasks-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-TASKS:approval"
+      ]
+    },
+    {
+      "id": "memory-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/memory-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-MEMORY:private"
+      ]
+    },
+    {
+      "id": "agent-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/agent-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-AGENT:normal"
+      ]
+    },
+    {
+      "id": "access-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/access-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-ACCESS:attached"
+      ]
+    },
+    {
+      "id": "data-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/data-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-DATA:preflight"
+      ]
+    },
+    {
+      "id": "long-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/long-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "dark-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/dark-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "long-message-1440",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "screenshot": "evidence/screenshots/long-message-1440.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "long-message-390",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/long-message-390.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    },
+    {
+      "id": "touch-emulated",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/touch-emulated.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:normal"
+      ]
+    },
+    {
+      "id": "native-200pct",
+      "entry": "final/index.html",
+      "width": 720,
+      "height": 448,
+      "screenshot": "evidence/screenshots/native-200pct.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "BOT-CHAT:long"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/design-review.md",
+  "technical_review": "evidence/technical-review.md",
+  "rechecked": false
+}

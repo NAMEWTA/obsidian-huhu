@@ -1,0 +1,42 @@
+[
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go test ./tests/contract/foundation/... -count=1 (initial red codec)",
+    "exit": 1,
+    "log": "red-codec.log"
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go -C native/huhubot test ./tests/contract/foundation/... -count=1 -v",
+    "exit": 0,
+    "evidence": "direct tool output; 1.574s; non-race 1MiB p50=10.116858ms p95=12.297933ms"
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go -C native/huhubot test -race ./tests/contract/foundation/... -count=1 -v",
+    "exit": 0,
+    "log": "foundation-race.log",
+    "seconds": 24.013
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go -C native/huhubot test ./... -count=1",
+    "exit": 0,
+    "log": "all-tests.log"
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go -C native/huhubot vet ./...",
+    "exit": 0
+  },
+  {
+    "command": "/tmp/huhubot-contract-validator/bin/python contracts/hap/v0.1/validate.py",
+    "exit": 0,
+    "log": "schema-validation.log"
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go -C native/huhubot build -o /tmp/huhubot-t01-windows.exe ./cmd/huhubot",
+    "exit": 0,
+    "note": "after unowned mutex change; compilation only"
+  },
+  {
+    "command": "GOTOOLCHAIN=go1.26.10 go -C native/huhubot list -m -json all",
+    "exit": 0,
+    "log": "modules.jsonl"
+  }
+]

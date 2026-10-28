@@ -62,3 +62,5 @@ terminal-artifacts/
 /coverage/
 # Native browser build outputs
 native/browser-runtime/target/
+# Speculo session logs are local process evidence, not repository artifacts
+.agents/speculo/.speculo/specdev/changes/**/sessions/**/logs/

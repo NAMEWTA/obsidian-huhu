@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "task": "117-engine-anthropic",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_research",
+  "actualDispatch": true,
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "71c51e",
+  "taskSha256": "f0b7a7e14253aaa2ea7b4e553a3f418e51906c7c7eb3046001cbf7bb5a0d5b48",
+  "mapRevision": 29,
+  "goalRevision": 28,
+  "initialGoWindow": "117 only; 118 read-only until Root accepts real behavioral red",
+  "nativeAckReceived": true,
+  "authorization": "Original full28tickets55AC/AgentTeam; user-owned liveProvider/Obsidian/targetOS; no commit/push/release/archive"
+}

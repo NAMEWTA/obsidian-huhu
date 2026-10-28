@@ -1,0 +1,375 @@
+{
+  "note": "Read/hash only. Matching bytes do not freeze concurrent writer or validate behavior. Different bytes invalidate precise old implementation observations, not Spec-derived future requirements.",
+  "checks": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md",
+      "recheckedAt": "2026-10-25T12:09:57.913096+00:00",
+      "bytes": 12804,
+      "sha256": "93d3ca4ba3db4ffd782d8fb881f20c333e1be37c9e4bdbf1495bc35b537ee04d",
+      "observedHashes": [
+        "93d3ca4ba3db4ffd782d8fb881f20c333e1be37c9e4bdbf1495bc35b537ee04d"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:53:46.714081+00:00",
+        "2026-10-25T12:01:42.934592+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md",
+      "recheckedAt": "2026-10-25T12:09:57.913149+00:00",
+      "bytes": 11780,
+      "sha256": "d72bfdb3cb61e6055a1d9f37132d0e3c50eb08e055de1433ab9fd175fb502221",
+      "observedHashes": [
+        "d72bfdb3cb61e6055a1d9f37132d0e3c50eb08e055de1433ab9fd175fb502221"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:53:46.714213+00:00",
+        "2026-10-25T12:01:42.934664+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "recheckedAt": "2026-10-25T12:09:57.913221+00:00",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "observedHashes": [
+        "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:53:59.467902+00:00",
+        "2026-10-25T11:54:07.387975+00:00",
+        "2026-10-25T11:59:11.121391+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md",
+      "recheckedAt": "2026-10-25T12:09:57.913282+00:00",
+      "bytes": 16925,
+      "sha256": "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6",
+      "observedHashes": [
+        "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:53:59.468103+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/17-permanent-purge.md",
+      "recheckedAt": "2026-10-25T12:09:57.913314+00:00",
+      "bytes": 12648,
+      "sha256": "3ba3b5c12b59da20af1c5b6a0c2a94601613c1af07b14c01d2fd1b7ee948f1c7",
+      "observedHashes": [
+        "3ba3b5c12b59da20af1c5b6a0c2a94601613c1af07b14c01d2fd1b7ee948f1c7"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:53:59.468196+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "recheckedAt": "2026-10-25T12:09:57.913371+00:00",
+      "bytes": 51066,
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "observedHashes": [
+        "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:07.387595+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "recheckedAt": "2026-10-25T12:09:57.913403+00:00",
+      "bytes": 24422,
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "observedHashes": [
+        "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:07.387777+00:00",
+        "2026-10-25T11:59:11.121514+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "recheckedAt": "2026-10-25T12:09:57.913431+00:00",
+      "bytes": 6302,
+      "sha256": "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d",
+      "observedHashes": [
+        "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:35.954789+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "recheckedAt": "2026-10-25T12:09:57.913451+00:00",
+      "bytes": 5329,
+      "sha256": "268c302d0de0c91a5821062faef4724a5342f8a963729e282a7ce73eeb148633",
+      "observedHashes": [
+        "268c302d0de0c91a5821062faef4724a5342f8a963729e282a7ce73eeb148633"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:35.954882+00:00"
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "recheckedAt": "2026-10-25T12:09:57.913481+00:00",
+      "bytes": 19018,
+      "sha256": "3a0404c4aa9c0ecc1fed687cf73330ad82da50767a79c19474688fae8f40a40c",
+      "observedHashes": [
+        "3a0404c4aa9c0ecc1fed687cf73330ad82da50767a79c19474688fae8f40a40c"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:35.954976+00:00",
+        "2026-10-25T12:01:42.933800+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql",
+      "recheckedAt": "2026-10-25T12:09:57.913502+00:00",
+      "bytes": 2430,
+      "sha256": "ffdd2a1b6b5b5c3d92fb360a77563e21ebe2b3373e87a9f90783945111409d1c",
+      "observedHashes": [
+        "ffdd2a1b6b5b5c3d92fb360a77563e21ebe2b3373e87a9f90783945111409d1c"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:35.955163+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/conversation/store.go",
+      "recheckedAt": "2026-10-25T12:09:57.913528+00:00",
+      "bytes": 12485,
+      "sha256": "8b710247572f462ecd6778eaf942042d2c936c48163f9d6f7616f06bc218bc72",
+      "observedHashes": [
+        "8b710247572f462ecd6778eaf942042d2c936c48163f9d6f7616f06bc218bc72"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:54:35.955227+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "recheckedAt": "2026-10-25T12:09:57.913550+00:00",
+      "bytes": 8076,
+      "sha256": "9cd88d733bfed8a3681d42d22557f40dbb3988c95e5441df24fd497026edec57",
+      "observedHashes": [
+        "9cd88d733bfed8a3681d42d22557f40dbb3988c95e5441df24fd497026edec57"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:59:11.120991+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "recheckedAt": "2026-10-25T12:09:57.913573+00:00",
+      "bytes": 10057,
+      "sha256": "87b98a74915baef527ff1308e9bf09ea5050c1b52cf01a4f604674e223dd6bc7",
+      "observedHashes": [
+        "87b98a74915baef527ff1308e9bf09ea5050c1b52cf01a4f604674e223dd6bc7"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:59:11.121090+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "recheckedAt": "2026-10-25T12:09:57.913599+00:00",
+      "bytes": 19147,
+      "sha256": "ee6afb61ab9b134bb24b589e6bc9f666a436f8fa9a609c7e4c3eaacb4ffcf087",
+      "observedHashes": [
+        "ee6afb61ab9b134bb24b589e6bc9f666a436f8fa9a609c7e4c3eaacb4ffcf087"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T11:59:11.121182+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "recheckedAt": "2026-10-25T12:09:57.913624+00:00",
+      "bytes": 13149,
+      "sha256": "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de",
+      "observedHashes": [
+        "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:00:04.973823+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "recheckedAt": "2026-10-25T12:09:57.913651+00:00",
+      "bytes": 8223,
+      "sha256": "93d3217a02ba4606394dc8a0fe042af96fd869bdf22ec626243def4baf9f47c6",
+      "observedHashes": [
+        "417f1000d94c6bf4bcf6d2d3dcc447d5373118da5da4379d98f86e40ac57ebed"
+      ],
+      "matchesLastRead": false,
+      "allRecordedReadsMatch": false,
+      "originalReadTimes": [
+        "2026-10-25T12:00:04.973929+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/REPORT.md",
+      "recheckedAt": "2026-10-25T12:09:57.913693+00:00",
+      "bytes": 42922,
+      "sha256": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956",
+      "observedHashes": [
+        "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:00:04.974151+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/learning/02_多Bot协作与记忆隔离.md",
+      "recheckedAt": "2026-10-25T12:09:57.913721+00:00",
+      "bytes": 15257,
+      "sha256": "426ec9769e8a848487e5d3ac9f844990e76037383a2b80ab121eb368d18e2cff",
+      "observedHashes": [
+        "426ec9769e8a848487e5d3ac9f844990e76037383a2b80ab121eb368d18e2cff"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:00:04.974273+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "recheckedAt": "2026-10-25T12:09:57.913755+00:00",
+      "bytes": 31559,
+      "sha256": "74943d96c797ac9e4039c46d1729dd529d0374c6222bebf4598c04a20af2473d",
+      "observedHashes": [
+        "74943d96c797ac9e4039c46d1729dd529d0374c6222bebf4598c04a20af2473d"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:00:04.974447+00:00"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "recheckedAt": "2026-10-25T12:09:57.913775+00:00",
+      "bytes": 8156,
+      "sha256": "3dae90e0b08dad69466e957dc908f3ab13160d46405fef0354d02425bf226171",
+      "observedHashes": [
+        "3dae90e0b08dad69466e957dc908f3ab13160d46405fef0354d02425bf226171"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:01:42.933940+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/041-delegation-preflight/REPORT.md",
+      "recheckedAt": "2026-10-25T12:09:57.913811+00:00",
+      "bytes": 36479,
+      "sha256": "c58cad4f502274a5392d89fa9240a2df4b30e451662622e94a6a07d5fbdda30b",
+      "observedHashes": [
+        "c58cad4f502274a5392d89fa9240a2df4b30e451662622e94a6a07d5fbdda30b"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:01:42.934167+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/045-group-recovery-preflight/REPORT.md",
+      "recheckedAt": "2026-10-25T12:09:57.913952+00:00",
+      "bytes": 46223,
+      "sha256": "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf",
+      "observedHashes": [
+        "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:01:42.934460+00:00"
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "recheckedAt": "2026-10-25T12:09:57.914367+00:00",
+      "bytes": 238576,
+      "sha256": "5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863",
+      "observedHashes": [
+        "5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:02:22.986149+00:00"
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "recheckedAt": "2026-10-25T12:09:57.914455+00:00",
+      "bytes": 15935,
+      "sha256": "17655ed40fa83ebe9a80e26d62652fabf5f66834873fbddd25d03b135254c216",
+      "observedHashes": [
+        "17655ed40fa83ebe9a80e26d62652fabf5f66834873fbddd25d03b135254c216"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:02:22.988879+00:00"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/reference-audit.json",
+      "recheckedAt": "2026-10-25T12:09:57.914504+00:00",
+      "bytes": 13282,
+      "sha256": "09ee51b9f0913dccfff25a682154576008356ba4fd2586d486c001057470cd7e",
+      "observedHashes": [
+        "09ee51b9f0913dccfff25a682154576008356ba4fd2586d486c001057470cd7e"
+      ],
+      "matchesLastRead": true,
+      "allRecordedReadsMatch": true,
+      "originalReadTimes": [
+        "2026-10-25T12:02:22.989546+00:00"
+      ]
+    }
+  ]
+}

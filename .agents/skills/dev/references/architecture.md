@@ -14,6 +14,7 @@ src/host/           多个模块共用的 Obsidian 与桌面适配器
 src/shared/         工具函数、设置 DSL 与存储、存储辅助、i18n 运行时与启动词典
 src/types/          环境类型声明
 src/modules/<id>/   home | agent | browser | archives | automations | notifications | icons | comments | navigator | versioning | safe
+src/modules/<id>/   home | agent | huhubot | browser | archives | automations | notifications | icons | comments | navigator | sync | safe
   manifest.ts       纯数据描述，启动时加载
   api.ts            其他模块可导入的类型和 serviceKey()/contributionPoint() 常量
   module.ts         懒加载入口：创建 ModuleInstance
@@ -27,6 +28,8 @@ src/modules/<id>/   home | agent | browser | archives | automations | notificati
   styles/           模块的 CSS（列在 src/styles.json）
 native/pty-server/  Rust 终端辅助程序（stdio 帧）
 native/browser-runtime/ 独立浏览器监督进程与 Cookie SQLite 读取器
+native/huhubot/     独立 Go Runner 底座（Application API、SQLite、stdio HAP）
+contracts/hap/v0.1/ 版本化 wire schema、方法目录与双端样本
 test/               共用样本与跨模块测试（用户格式黄金样本）
 ```
 
@@ -65,6 +68,8 @@ UI 包允许列表见 [设计系统参考](../../ui/references/design-system.md)
 
 ESLint 另外规定：`desktop/` 文件夹之外不得使用 `process`、`Buffer`、`__dirname`、`__filename`、`global`。
 
+Go Runner 的 `internal/domain` 与 `internal/application` 只依赖内层与标准库，不导入 SQL、Provider SDK、HAP DTO、Obsidian、runtime 或 adapter。入站 adapter 经 Application API 访问业务，不导入 outbound/SQLite。`pnpm test:huhu-bot-architecture` 对实际 Go 生产文件执行这组边界；Go wire DTO 与 Application 类型分开转换。
+
 ## 启动与懒加载
 
 插件 UI 的 esbuild 构建一个不拆分代码的 CommonJS `main.js`。独立的浏览器 utilityProcess Worker、CLI 和固定主进程桥由专门脚本构建，不作为第二个 React 入口。只能通过 `import()` 到达的 UI 文件被包进懒初始化器，首次导入时才运行；启动代码里只要有一条静态边，就会把它的整个闭包拉进启动集合。因此：
@@ -94,6 +99,7 @@ ESLint 另外规定：`desktop/` 文件夹之外不得使用 `process`、`Buffer
 只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`browser`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`versioning`、`revision-review`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 是独立工作台功能，自己拥有 Space、Page 和运行进程；智能体标签只是可选查看入口。批注使用右侧栏视图，记录使用看板弹窗，不贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
 
 浏览器通过 `BROWSER_WORKSPACE`、`BROWSER_OPEN` 暴露工作区与打开能力，通过 `BROWSER_MATERIAL_CONSUMERS` 收集已经启用的可选材料接收方。不要从 browser 导入 Agent 的内部代码、借用 PTY SQLite helper，或从 UI 直接访问 CDP。独立 Worker 与 Rust 监督进程使用私有管道；每个 Space 绑定自己的 Chromium 用户目录、运行实例与控制代次。帧查看者不自动取得控制，跨窗口迁移只迁移查看界面。生产运行时仅开放 Linux x64，其他平台返回不支持。
+只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`huhubot`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`sync`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 保留为引擎模块，通过 `BROWSER_HOST` 给智能体标签提供能力；批注使用右侧栏视图，记录使用看板弹窗，不再贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
 
 另外有两种侧栏视图，都在 `main.ts` 启动时注册，使保存的叶子能恢复；对应模块关闭时显示「开启模块」的提示，模块启动后切换为模块的 React 面板：
 
@@ -132,6 +138,10 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 
 下表用于定位工程 owner，完整保存、例外和恢复行为由[数据与恢复](../../../../docs/data.md)说明。系统 CLI 账号、宿主 IndexedDB 与显式导出（含保险箱的加密备份）不能误归为库内数据。不可读文件不能被当作空数据覆盖。
 
+Bot 模块通过 `BOT_RUNTIME.connect()` 按需取得客户端，设置激活与服务查询不启动进程；模块拥有共享的 `services/workbench` 状态和 Host，页面不拥有 Runner。Bot 分区设置 `resourcePages: true`、`resourceTabs: () => false`，避免复用聊天页面处理其他分区。
+
+Bot Runner 的 Profile 是另一个明确库外边界：`internal/runtime/profile` 从 OS 本机数据根构造受管根，`internal/adapters/outbound/sqlite` 拥有 `profile.sqlite3`。TS/HAP 只传序列化命令与结果，不能通过 JSON store 直接维护这份数据库；根目录、权限和身份锁见[数据文档](../../../../docs/data.md#库之外的数据)。
+
 | 数据 | 位置 | 负责方 |
 |---|---|---|
 | 保险箱 | `.huhu/safe/vault.enc`、`.backup` 与随机冲突/恢复前密文副本；固定 `huhu-safe` version 1 | safe |
@@ -140,6 +150,9 @@ HUHU 自动生成的文件夹和文件名不含空格，一律经 `huhuName()` �
 | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
 | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
 | 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/页面标签，以及浏览器 Space/Page 引用；不拥有浏览器运行资料） | agent |
+| Bot 宿主回执与索引 | `.huhu/huhubot/`，设备/Profile 隔离；不是业务数据库 | huhubot 的 HostReceiptStore，复用 privateVaultStorage |
+| Bot 回执认证键 | Obsidian App 本机存储，独立于 Vault JSON；完整路径、键归属及失败边界见[数据正文](../../../../docs/data.md#bot-宿主回执与本机认证键) | huhubot 的 ReceiptAuthority；宿主持有持久化 |
+| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
 | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
 | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |
 | 智能体历史与缓存 | `.huhu/terminal-agent/<device-id>/history.json`、`automation-sessions.json`、可重建的 `index.sqlite` | agent |

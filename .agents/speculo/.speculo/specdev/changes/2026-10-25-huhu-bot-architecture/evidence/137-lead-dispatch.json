@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "owner": "native:/root/foundation_api_repair",
+  "task": "137-memory-result-validation-recovery",
+  "taskSHA256": "8a04c6d852408038e09ff5bf71a4a02580467ff4d7bb3aa4f94eb66cc3c64000",
+  "actualDispatch": "collaboration.spawn_agent /root/foundation_api_repair; nativeACK received",
+  "model": "gpt-6-sol",
+  "reasoningEffort": "xhigh",
+  "validator": {
+    "stage": "dispatch",
+    "actualExit": 0,
+    "toolChunk": "baca88"
+  },
+  "predecessor": "135-lead-capacity-return.json",
+  "scope": "same pureAPI/HAP repair; formalT01ownerRoot; original134runtime remains stopped",
+  "window": "solepureGo;126Store source-only;136Node independent"
+}

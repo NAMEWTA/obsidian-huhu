@@ -1,0 +1,56 @@
+{
+  "task": "060-groups-current-seams",
+  "createdAt": "2026-10-25T15:29:01.816653+00:00",
+  "excluded": {
+    "TASK.md": "Root-provided dispatch input",
+    "manifest.json": "Self-reference excluded",
+    "manifest-verification.json": "Independent verification output excluded"
+  },
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 8347,
+      "sha256": "8be43aba0b18b3663d35011aa78d8afccd44679ff4ba7016c304dbe6ccd76d7a"
+    },
+    {
+      "path": "command-results.md",
+      "bytes": 1993,
+      "sha256": "d4c2d3f79dc62ac3ee9dc893f36097704c11b64cc99bc9b14d269928af0fc913"
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "bytes": 9800,
+      "sha256": "8528f267a958d5cbf5e74a0451f421b60239264e82bc01865957ffd09ee80ad2"
+    },
+    {
+      "path": "observations.json",
+      "bytes": 22966,
+      "sha256": "fcec0fcbc4135791f8dde70a4f9c8256bdf2e949a6ec0fd2e0cad94adcde1f3b"
+    },
+    {
+      "path": "read-excerpts.log",
+      "bytes": 339366,
+      "sha256": "fad41267c8a7671ea674d955aa4b3005d30bf8597154f468cc2fba42758cdb7b"
+    },
+    {
+      "path": "return-validation.json",
+      "bytes": 707,
+      "sha256": "6af731dd04dee6028209cc9ab55b834b45667731c6e5833c5e6776ffa2a4d1e2"
+    },
+    {
+      "path": "return-validation.log",
+      "bytes": 224,
+      "sha256": "c8c406d26f00dd4e381ce1ee85420eb4bd97459e0694f662ea70c827a9baa45a"
+    },
+    {
+      "path": "source-recheck.json",
+      "bytes": 23050,
+      "sha256": "876e1b18e024ec022e9143b32875c1429b397bb8749eef548e08b21504dc216e"
+    },
+    {
+      "path": "wire-group-slice.json",
+      "bytes": 14144,
+      "sha256": "cc5a243c640d134168372f7ab8676f6a62ff4f497bc8589392c49663792c7b43"
+    }
+  ]
+}

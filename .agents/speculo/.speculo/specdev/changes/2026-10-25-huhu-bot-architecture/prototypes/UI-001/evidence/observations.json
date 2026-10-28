@@ -1,0 +1,6804 @@
+{
+  "version": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/153.0.8010.47",
+    "revision": "@73934a44f61e6b3878d1943064c141a5a820f5f7",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+    "jsVersion": "15.3.76.12"
+  },
+  "observations": [
+    {
+      "at": "2026-10-25T04:39:00.078Z",
+      "step": "startup",
+      "kind": "environment",
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Chrome/153.0.8010.47",
+        "revision": "@73934a44f61e6b3878d1943064c141a5a820f5f7",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+        "jsVersion": "15.3.76.12"
+      },
+      "node": "v26.11.1",
+      "platform": "linux",
+      "display": "Xvfb 1920x1200x24",
+      "tool": "Google Chrome CDP via Node built-in WebSocket",
+      "screenshots": "actual browser Page.captureScreenshot; no image synthesis"
+    },
+    {
+      "at": "2026-10-25T04:39:00.506Z",
+      "step": "startup",
+      "kind": "navigate",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:00.539Z",
+      "step": "startup",
+      "kind": "click",
+      "selector": "[data-action=\"approval\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:01.122Z",
+      "step": "startup",
+      "kind": "assertion",
+      "id": "dialog-focus-trap",
+      "passed": false,
+      "actual": [
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BODY",
+          "inDialog": false,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        }
+      ],
+      "expected": "Tab and Shift+Tab never focus background page controls; browser chrome is an allowed native boundary"
+    },
+    {
+      "at": "2026-10-25T04:39:01.164Z",
+      "step": "startup",
+      "kind": "assertion",
+      "id": "dialog-escape-focus-return",
+      "passed": true,
+      "actual": {
+        "open": false,
+        "action": "approval"
+      },
+      "expected": "Escape closes and returns focus to the approval trigger"
+    },
+    {
+      "at": "2026-10-25T04:39:01.168Z",
+      "step": "candidate-1440",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:01.215Z",
+      "step": "candidate-1440",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:01.215Z",
+      "step": "candidate-1440",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:01.293Z",
+      "step": "candidate-1440",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/candidate-1440.png",
+      "focusBefore": "<button type=\"button\" class=\"primary\" data-action=\"approval\">查看并确认</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:01.517Z",
+      "step": "candidate-1440",
+      "kind": "navigate",
+      "entry": "comparison/variants/candidate-a.html",
+      "width": 390,
+      "height": 844,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:01.528Z",
+      "step": "candidate-1440",
+      "kind": "click",
+      "selector": "[data-action=\"approval\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:02.080Z",
+      "step": "candidate-1440",
+      "kind": "assertion",
+      "id": "dialog-focus-trap",
+      "passed": true,
+      "actual": [
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BODY",
+          "inDialog": false,
+          "documentFocus": false
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        }
+      ],
+      "expected": "Tab and Shift+Tab never focus background page controls; browser chrome is an allowed native boundary"
+    },
+    {
+      "at": "2026-10-25T04:39:02.121Z",
+      "step": "candidate-1440",
+      "kind": "assertion",
+      "id": "dialog-escape-focus-return",
+      "passed": true,
+      "actual": {
+        "open": false,
+        "action": "approval"
+      },
+      "expected": "Escape closes and returns focus to the approval trigger"
+    },
+    {
+      "at": "2026-10-25T04:39:02.122Z",
+      "step": "candidate-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:02.162Z",
+      "step": "candidate-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:02.162Z",
+      "step": "candidate-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:02.195Z",
+      "step": "candidate-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/candidate-390.png",
+      "focusBefore": "<button type=\"button\" class=\"primary\" data-action=\"approval\">查看并确认</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:02.412Z",
+      "step": "candidate-390",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:02.421Z",
+      "step": "candidate-390",
+      "kind": "click",
+      "selector": "[data-action=\"approval\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:02.987Z",
+      "step": "candidate-390",
+      "kind": "assertion",
+      "id": "dialog-focus-trap",
+      "passed": false,
+      "actual": [
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BODY",
+          "inDialog": false,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        }
+      ],
+      "expected": "Tab and Shift+Tab never focus background page controls; browser chrome is an allowed native boundary"
+    },
+    {
+      "at": "2026-10-25T04:39:03.030Z",
+      "step": "candidate-390",
+      "kind": "assertion",
+      "id": "dialog-escape-focus-return",
+      "passed": true,
+      "actual": {
+        "open": false,
+        "action": "approval"
+      },
+      "expected": "Escape closes and returns focus to the approval trigger"
+    },
+    {
+      "at": "2026-10-25T04:39:03.030Z",
+      "step": "chat-desktop",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:03.071Z",
+      "step": "chat-desktop",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:03.071Z",
+      "step": "chat-desktop",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:03.123Z",
+      "step": "chat-desktop",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-desktop.png",
+      "focusBefore": "<button type=\"button\" class=\"primary\" data-action=\"approval\">查看并确认</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:03.128Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "click",
+      "selector": "#resize-handle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:03.242Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "ArrowRight",
+      "passed": true,
+      "actual": "288",
+      "expected": "288"
+    },
+    {
+      "at": "2026-10-25T04:39:03.282Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "ArrowLeft",
+      "passed": true,
+      "actual": "280",
+      "expected": "280"
+    },
+    {
+      "at": "2026-10-25T04:39:03.323Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "Home",
+      "passed": true,
+      "actual": "220",
+      "expected": "220"
+    },
+    {
+      "at": "2026-10-25T04:39:03.365Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "End",
+      "passed": true,
+      "actual": "500",
+      "expected": "500"
+    },
+    {
+      "at": "2026-10-25T04:39:03.572Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:03.581Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "click",
+      "selector": "#search",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:03.655Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "input",
+      "selector": "#search",
+      "text": "NO-MATCH-20261025"
+    },
+    {
+      "at": "2026-10-25T04:39:03.662Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "search-empty",
+      "passed": true,
+      "actual": "我的 Bot 4\n群聊\n\n没有匹配结果，试试 Bot 名称或职责。",
+      "expected": "no matching result while create stays reachable"
+    },
+    {
+      "at": "2026-10-25T04:39:03.665Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "click",
+      "selector": "#search",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:03.738Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "input",
+      "selector": "#search",
+      "text": ""
+    },
+    {
+      "at": "2026-10-25T04:39:03.745Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "click",
+      "selector": "#draft",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:03.817Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "input",
+      "selector": "#draft",
+      "text": "忙时请保留这份草稿"
+    },
+    {
+      "at": "2026-10-25T04:39:03.822Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "click",
+      "selector": "[data-action=\"send\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:03.894Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "assertion",
+      "id": "busy-draft-preserved",
+      "passed": true,
+      "actual": "本轮仍在执行或等待处理。请先处理任务，草稿已保留。",
+      "expected": "draft retained and busy hint"
+    },
+    {
+      "at": "2026-10-25T04:39:03.901Z",
+      "step": "sidebar-keyboard-resize",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "empty"
+    },
+    {
+      "at": "2026-10-25T04:39:03.964Z",
+      "step": "chat-empty",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:04.003Z",
+      "step": "chat-empty",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:04.003Z",
+      "step": "chat-empty",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:04.048Z",
+      "step": "chat-empty",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-empty.png",
+      "focusBefore": "<button type=\"button\" class=\"primary send-button\" data-action=\"send\" aria-label=\"发送消息\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 20V4m-7 7 7-7 7 7\"></path></svg></button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:04.050Z",
+      "step": "chat-empty",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "loading"
+    },
+    {
+      "at": "2026-10-25T04:39:04.114Z",
+      "step": "chat-loading",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:04.165Z",
+      "step": "chat-loading",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:04.165Z",
+      "step": "chat-loading",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:04.239Z",
+      "step": "chat-loading",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-loading.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:04.244Z",
+      "step": "chat-loading",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "error"
+    },
+    {
+      "at": "2026-10-25T04:39:04.306Z",
+      "step": "chat-error",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:04.346Z",
+      "step": "chat-error",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:04.346Z",
+      "step": "chat-error",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:04.429Z",
+      "step": "chat-error",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-error.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:04.438Z",
+      "step": "chat-error",
+      "kind": "click",
+      "selector": "[data-action=\"retry\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:04.510Z",
+      "step": "chat-error",
+      "kind": "assertion",
+      "id": "retry-keeps-draft",
+      "passed": true,
+      "actual": "忙时请保留这份草稿",
+      "expected": "draft survives error/retry"
+    },
+    {
+      "at": "2026-10-25T04:39:04.512Z",
+      "step": "chat-error",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "offline"
+    },
+    {
+      "at": "2026-10-25T04:39:04.576Z",
+      "step": "chat-offline",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:04.625Z",
+      "step": "chat-offline",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:04.626Z",
+      "step": "chat-offline",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:04.702Z",
+      "step": "chat-offline",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-offline.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">周报协作</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:04.705Z",
+      "step": "chat-offline",
+      "kind": "assertion",
+      "id": "offline-blocks-send",
+      "passed": true,
+      "actual": true,
+      "expected": "saved content and disabled composer"
+    },
+    {
+      "at": "2026-10-25T04:39:04.716Z",
+      "step": "chat-offline",
+      "kind": "click",
+      "selector": "[data-action=\"reconnect\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:04.789Z",
+      "step": "chat-offline",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "permission"
+    },
+    {
+      "at": "2026-10-25T04:39:04.851Z",
+      "step": "chat-permission",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:04.895Z",
+      "step": "chat-permission",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:04.895Z",
+      "step": "chat-permission",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:04.983Z",
+      "step": "chat-permission",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-permission.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">周报协作</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:04.987Z",
+      "step": "chat-permission",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "recovery"
+    },
+    {
+      "at": "2026-10-25T04:39:05.049Z",
+      "step": "chat-recovery",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:05.091Z",
+      "step": "chat-recovery",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:05.091Z",
+      "step": "chat-recovery",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:05.157Z",
+      "step": "chat-recovery",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-recovery.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:05.160Z",
+      "step": "chat-recovery",
+      "kind": "assertion",
+      "id": "recovery-explicit",
+      "passed": true,
+      "actual": "任务可以恢复\n\n已核查上下文与效果。继续会产生后续模型调用，由你决定。\n\n继续任务",
+      "expected": "continuation requires click"
+    },
+    {
+      "at": "2026-10-25T04:39:05.168Z",
+      "step": "chat-recovery",
+      "kind": "click",
+      "selector": "[data-action=\"resume\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:05.241Z",
+      "step": "chat-recovery",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "long"
+    },
+    {
+      "at": "2026-10-25T04:39:05.303Z",
+      "step": "chat-long",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:05.345Z",
+      "step": "chat-long",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:05.345Z",
+      "step": "chat-long",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:05.428Z",
+      "step": "chat-long",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-long.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">周报协作</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:05.647Z",
+      "step": "chat-long",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:05.658Z",
+      "step": "chat-long",
+      "kind": "click",
+      "selector": "[data-action=\"tasks\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:05.731Z",
+      "step": "tasks-approval",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:05.773Z",
+      "step": "tasks-approval",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:05.773Z",
+      "step": "tasks-approval",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:05.824Z",
+      "step": "tasks-approval",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-approval.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协作任务</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:05.833Z",
+      "step": "tasks-approval",
+      "kind": "click",
+      "selector": "[data-action=\"task-detail\"][data-task=\"temp\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:05.907Z",
+      "step": "tasks-approval",
+      "kind": "assertion",
+      "id": "temporary-identity",
+      "passed": true,
+      "actual": "临时子任务 · 复核引用\n执行者\n临时 sub-agent，任务结束后不加入 Bot 目录\n发起者\n写作助手\n上下文\n本任务描述与明确附加的两份资料；不含其他 Bot 私聊\n状态\n等待草稿\n\n只停止此任务不会停止其他独立会话。结果会回到发起任务。\n\n关闭\n停止这个子任务",
+      "expected": "temporary child has explicit caller/context boundary"
+    },
+    {
+      "at": "2026-10-25T04:39:05.908Z",
+      "step": "tasks-temporary",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": "临时子任务 · 复核引用"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:05.948Z",
+      "step": "tasks-temporary",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "关闭",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:05.948Z",
+      "step": "tasks-temporary",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "关闭",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:06.027Z",
+      "step": "tasks-temporary",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": "临时子任务 · 复核引用",
+      "path": "evidence/screenshots/tasks-temporary.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "关闭",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:06.036Z",
+      "step": "tasks-temporary",
+      "kind": "click",
+      "selector": "[data-action=\"cancel-child\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.108Z",
+      "step": "tasks-temporary",
+      "kind": "assertion",
+      "id": "cancel-child",
+      "passed": true,
+      "actual": "整理本周项目进展\n\n协调员统筹 · 资料助手、写作助手参与 · 一次发送产生的任务\n\n停止整项任务\n提取进展 → 整理草稿 → 核对引用 → 你确认后写入笔记\n已完成\n已有 Bot · 资料助手\n提取本周进展\n\n核对两份资料，整理出 3 项完成、2 项进行中。\n\n查看结果\n需要处理\n已有 Bot · 写作助手\n整理周报草稿\n\n草稿已就绪，等待确认写入「项目周报.md」。\n\n查看任务\n子任务\n临时 sub-agent\n复核资料引用\n\n由写作助手创建，只使用本任务上下文。已停止。\n\n查看关系\n\n用量：根任务与所有子执行合并统计。当前示例不产生实际费用。\n\n返回对话",
+      "expected": "child stop preserves parent task"
+    },
+    {
+      "at": "2026-10-25T04:39:06.117Z",
+      "step": "tasks-temporary",
+      "kind": "click",
+      "selector": "[data-action=\"task-detail\"][data-task=\"write\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.196Z",
+      "step": "tasks-temporary",
+      "kind": "click",
+      "selector": "[data-action=\"approval\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.267Z",
+      "step": "approval-diff",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": "确认创建笔记"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:06.311Z",
+      "step": "approval-diff",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "返回",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:06.311Z",
+      "step": "approval-diff",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "返回",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:06.378Z",
+      "step": "approval-diff",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": "确认创建笔记",
+      "path": "evidence/screenshots/approval-diff.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "返回",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:06.387Z",
+      "step": "approval-diff",
+      "kind": "click",
+      "selector": "[data-action=\"reject\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.458Z",
+      "step": "tasks-canceled",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:06.500Z",
+      "step": "tasks-canceled",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:06.500Z",
+      "step": "tasks-canceled",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:06.558Z",
+      "step": "tasks-canceled",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-canceled.png",
+      "focusBefore": "<button type=\"button\" class=\"quiet\" data-action=\"task-detail\" data-task=\"research\">查看结果</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:06.776Z",
+      "step": "tasks-canceled",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:06.788Z",
+      "step": "tasks-canceled",
+      "kind": "click",
+      "selector": "[data-action=\"approval\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.867Z",
+      "step": "tasks-canceled",
+      "kind": "click",
+      "selector": "[data-action=\"approve\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:06.939Z",
+      "step": "tasks-running",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:06.982Z",
+      "step": "tasks-running",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:06.982Z",
+      "step": "tasks-running",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:07.039Z",
+      "step": "tasks-running",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-running.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">周报协作</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:07.564Z",
+      "step": "tasks-running",
+      "kind": "click",
+      "selector": "[data-action=\"tasks\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:07.635Z",
+      "step": "tasks-completed",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:07.678Z",
+      "step": "tasks-completed",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:07.678Z",
+      "step": "tasks-completed",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:07.739Z",
+      "step": "tasks-completed",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-completed.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协作任务</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:07.741Z",
+      "step": "tasks-completed",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "unknown"
+    },
+    {
+      "at": "2026-10-25T04:39:07.808Z",
+      "step": "tasks-completed",
+      "kind": "click",
+      "selector": "[data-action=\"tasks\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:07.880Z",
+      "step": "tasks-unknown",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:07.921Z",
+      "step": "tasks-unknown",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:07.921Z",
+      "step": "tasks-unknown",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:07.970Z",
+      "step": "tasks-unknown",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-unknown.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协作任务</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:08.192Z",
+      "step": "tasks-unknown",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:08.204Z",
+      "step": "tasks-unknown",
+      "kind": "click",
+      "selector": "[data-action=\"select\"][data-id=\"reviewer\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.290Z",
+      "step": "tasks-unknown",
+      "kind": "click",
+      "selector": "[data-action=\"details\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.362Z",
+      "step": "agent-normal",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:08.405Z",
+      "step": "agent-normal",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:08.405Z",
+      "step": "agent-normal",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:08.453Z",
+      "step": "agent-normal",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手",
+      "modal": null,
+      "path": "evidence/screenshots/agent-normal.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">审校助手</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:08.462Z",
+      "step": "agent-normal",
+      "kind": "click",
+      "selector": "[data-action=\"edit-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.533Z",
+      "step": "agent-editing",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手",
+        "modal": "编辑 Bot"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:08.578Z",
+      "step": "agent-editing",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:08.578Z",
+      "step": "agent-editing",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:08.634Z",
+      "step": "agent-editing",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手",
+      "modal": "编辑 Bot",
+      "path": "evidence/screenshots/agent-editing.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:08.638Z",
+      "step": "agent-editing",
+      "kind": "click",
+      "selector": "#bot-name",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.711Z",
+      "step": "agent-editing",
+      "kind": "input",
+      "selector": "#bot-name",
+      "text": "审校助手修订"
+    },
+    {
+      "at": "2026-10-25T04:39:08.715Z",
+      "step": "agent-editing",
+      "kind": "click",
+      "selector": "#bot-description",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.787Z",
+      "step": "agent-editing",
+      "kind": "input",
+      "selector": "#bot-description",
+      "text": "核对事实、来源以及长中文描述"
+    },
+    {
+      "at": "2026-10-25T04:39:08.795Z",
+      "step": "agent-editing",
+      "kind": "click",
+      "selector": "[data-action=\"save-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.867Z",
+      "step": "agent-editing",
+      "kind": "assertion",
+      "id": "bot-revision",
+      "passed": true,
+      "actual": "审校助手修订\n\n核对事实、来源以及长中文描述\n\n编辑 Bot\n模型\n\nOpenAI · Responses · 新任务使用当前配置\n\n管理\n人格与职责\n\n核对事实、来源以及长中文描述。需要协作时发现已有 Bot，明确任务和资料范围。\n\n修订 2\n私有记忆\n\n独立维护，其他 Bot 不能直接读取。\n\n查看\n可用状态\n\n停用前会检查活动任务。停用保留历史和记忆。\n\n停用 Bot",
+      "expected": "editing increments the same bot revision"
+    },
+    {
+      "at": "2026-10-25T04:39:08.875Z",
+      "step": "agent-editing",
+      "kind": "click",
+      "selector": "[data-action=\"disable-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:08.947Z",
+      "step": "agent-disabled",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手修订",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:08.989Z",
+      "step": "agent-disabled",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:08.989Z",
+      "step": "agent-disabled",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:09.035Z",
+      "step": "agent-disabled",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手修订",
+      "modal": null,
+      "path": "evidence/screenshots/agent-disabled.png",
+      "focusBefore": "<button type=\"button\" class=\"quiet\" data-action=\"disable-bot\">重新启用</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:09.043Z",
+      "step": "agent-disabled",
+      "kind": "click",
+      "selector": "[data-action=\"disable-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.120Z",
+      "step": "agent-disabled",
+      "kind": "click",
+      "selector": "[data-action=\"new-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.192Z",
+      "step": "agent-disabled",
+      "kind": "assertion",
+      "id": "bot-initial-focus",
+      "passed": false,
+      "actual": {
+        "id": "",
+        "action": "close-modal"
+      },
+      "expected": "opening a form focuses its primary input"
+    },
+    {
+      "at": "2026-10-25T04:39:09.197Z",
+      "step": "agent-disabled",
+      "kind": "click",
+      "selector": "[data-action=\"save-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.270Z",
+      "step": "agent-disabled",
+      "kind": "assertion",
+      "id": "bot-required",
+      "passed": true,
+      "actual": "请填写名称和职责描述。",
+      "expected": "required-name and description error"
+    },
+    {
+      "at": "2026-10-25T04:39:09.271Z",
+      "step": "agent-creating",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手修订",
+        "modal": "创建 Bot"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:09.313Z",
+      "step": "agent-creating",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:09.313Z",
+      "step": "agent-creating",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:09.373Z",
+      "step": "agent-creating",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手修订",
+      "modal": "创建 Bot",
+      "path": "evidence/screenshots/agent-creating.png",
+      "focusBefore": "<button type=\"button\" class=\"primary\" data-action=\"save-bot\" data-edit=\"\">创建 Bot</button>",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:09.377Z",
+      "step": "agent-creating",
+      "kind": "click",
+      "selector": "#bot-name",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.449Z",
+      "step": "agent-creating",
+      "kind": "input",
+      "selector": "#bot-name",
+      "text": "浏览器验证助手"
+    },
+    {
+      "at": "2026-10-25T04:39:09.454Z",
+      "step": "agent-creating",
+      "kind": "click",
+      "selector": "#bot-description",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.525Z",
+      "step": "agent-creating",
+      "kind": "input",
+      "selector": "#bot-description",
+      "text": "仅用于离线浏览器演示"
+    },
+    {
+      "at": "2026-10-25T04:39:09.535Z",
+      "step": "agent-creating",
+      "kind": "click",
+      "selector": "[data-action=\"save-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.607Z",
+      "step": "agent-creating",
+      "kind": "assertion",
+      "id": "bot-created",
+      "passed": true,
+      "actual": "我的 Bot 5\n协\n协调员\n规划任务，把结果整理给你\n资\n资料助手\n从附加资料中提取事实与来源\n写\n写作助手\n把材料组织成清晰的文字\n审\n审校助手修订\n核对事实、来源以及长中文描述\n浏\n浏览器验证助手\n仅用于离线浏览器演示\n群聊\n周报协作\n周报草稿 · 等你确认\n1\n阅读小组\n2 位成员 · 空闲",
+      "expected": "explicit submit adds persistent identity"
+    },
+    {
+      "at": "2026-10-25T04:39:09.613Z",
+      "step": "agent-creating",
+      "kind": "click",
+      "selector": "[data-action=\"new-group\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.685Z",
+      "step": "group-create",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "浏览器验证助手",
+        "modal": "创建协作群聊"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:09.729Z",
+      "step": "group-create",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:09.729Z",
+      "step": "group-create",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:09.794Z",
+      "step": "group-create",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "浏览器验证助手",
+      "modal": "创建协作群聊",
+      "path": "evidence/screenshots/group-create.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:09.799Z",
+      "step": "group-create",
+      "kind": "click",
+      "selector": "#group-name",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.871Z",
+      "step": "group-create",
+      "kind": "input",
+      "selector": "#group-name",
+      "text": "浏览器验证群"
+    },
+    {
+      "at": "2026-10-25T04:39:09.880Z",
+      "step": "group-create",
+      "kind": "click",
+      "selector": "[data-action=\"save-group\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:09.953Z",
+      "step": "group-create",
+      "kind": "assertion",
+      "id": "group-created",
+      "passed": true,
+      "actual": "浏览器验证群",
+      "expected": "group uses existing members"
+    },
+    {
+      "at": "2026-10-25T04:39:10.166Z",
+      "step": "group-create",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:10.175Z",
+      "step": "group-create",
+      "kind": "click",
+      "selector": "[data-action=\"memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.248Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:10.291Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:10.292Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:10.350Z",
+      "step": "memory-private",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-private.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">记忆</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:10.362Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "[data-action=\"toggle-memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.437Z",
+      "step": "memory-private",
+      "kind": "select",
+      "selector": "#memory-owner",
+      "value": "writer"
+    },
+    {
+      "at": "2026-10-25T04:39:10.500Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "memory-owner-isolation",
+      "passed": true,
+      "actual": "已开启",
+      "expected": "writer unaffected when coordinator paused"
+    },
+    {
+      "at": "2026-10-25T04:39:10.503Z",
+      "step": "memory-private",
+      "kind": "select",
+      "selector": "#memory-owner",
+      "value": "coordinator"
+    },
+    {
+      "at": "2026-10-25T04:39:10.565Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "memory-owner-retained",
+      "passed": true,
+      "actual": "已暂停",
+      "expected": "coordinator remains paused"
+    },
+    {
+      "at": "2026-10-25T04:39:10.572Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "[data-action=\"memory-source\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.645Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "memory-source",
+      "passed": true,
+      "actual": "记忆来源\n来源\n周报偏好对话 · 10 月 25 日\n范围\n当前 Profile；仍需满足模型接收方授权\n版本\n来源修订 1；条目修订 1\n\n删除或撤销来源后，自动派生条目会失去召回资格。\n\n关闭",
+      "expected": "source/revision shown"
+    },
+    {
+      "at": "2026-10-25T04:39:10.690Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "[data-action=\"correct-memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.765Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "#memory-text",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.837Z",
+      "step": "memory-private",
+      "kind": "input",
+      "selector": "#memory-text",
+      "text": "先列可信来源，再说明不确定项。"
+    },
+    {
+      "at": "2026-10-25T04:39:10.845Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "[data-action=\"save-memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.919Z",
+      "step": "memory-private",
+      "kind": "assertion",
+      "id": "memory-corrected",
+      "passed": true,
+      "actual": "记忆\n\n每个 Bot 有自己的记忆。全局记忆经你确认后共享。\n\n查看 Bot \n协调员\n资料助手\n写作助手\n审校助手\n私有长期\n全局长期\n本轮上下文\n自动维护私有记忆\n\n在交互后提炼有用信息，可能消耗模型额度。你可以暂停、纠正或忘记。\n\n已暂停\n\n先列可信来源，再说明不确定项。\n\n你已固定仅 协调员 · 来源：周报偏好对话 · 修订 2\n来源\n修正\n忘记",
+      "expected": "new content/revision visible"
+    },
+    {
+      "at": "2026-10-25T04:39:10.924Z",
+      "step": "memory-private",
+      "kind": "click",
+      "selector": "[data-action=\"forget-memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:10.996Z",
+      "step": "memory-forget-confirm",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": "忘记这条记忆？"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:11.038Z",
+      "step": "memory-forget-confirm",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:11.038Z",
+      "step": "memory-forget-confirm",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:11.102Z",
+      "step": "memory-forget-confirm",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": "忘记这条记忆？",
+      "path": "evidence/screenshots/memory-forget-confirm.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:11.113Z",
+      "step": "memory-forget-confirm",
+      "kind": "click",
+      "selector": "[data-action=\"confirm-forget\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.184Z",
+      "step": "memory-forgotten",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:11.226Z",
+      "step": "memory-forgotten",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:11.226Z",
+      "step": "memory-forgotten",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:11.282Z",
+      "step": "memory-forgotten",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-forgotten.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">记忆</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:11.293Z",
+      "step": "memory-forgotten",
+      "kind": "click",
+      "selector": "[data-action=\"memory-scope\"][data-scope=\"global\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.365Z",
+      "step": "memory-global-pending",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:11.407Z",
+      "step": "memory-global-pending",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:11.407Z",
+      "step": "memory-global-pending",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:11.470Z",
+      "step": "memory-global-pending",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-global-pending.png",
+      "focusBefore": "<button type=\"button\" class=\"\" data-action=\"memory-scope\" data-scope=\"private\" aria-pressed=\"false\">私有长期</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:11.481Z",
+      "step": "memory-global-pending",
+      "kind": "click",
+      "selector": "[data-action=\"dismiss-proposal\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.555Z",
+      "step": "memory-global-pending",
+      "kind": "assertion",
+      "id": "global-rejected",
+      "passed": true,
+      "actual": "记忆\n\n每个 Bot 有自己的记忆。全局记忆经你确认后共享。\n\n查看 Bot \n协调员\n资料助手\n写作助手\n审校助手\n私有长期\n全局长期\n本轮上下文\n共享范围：当前本机 Profile\n\n所有 Bot 可在资料授权允许的范围内使用；任何变更都需确认。\n\n需你确认\n\n偏好使用中文沟通，必要时保留技术术语。\n\n你已确认Profile 共享 · 来源：周报偏好对话 · 修订 1\n来源\n修正\n忘记",
+      "expected": "reject removes proposal without creating shared entry"
+    },
+    {
+      "at": "2026-10-25T04:39:11.765Z",
+      "step": "memory-global-pending",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:11.774Z",
+      "step": "memory-global-pending",
+      "kind": "click",
+      "selector": "[data-action=\"memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.849Z",
+      "step": "memory-global-pending",
+      "kind": "click",
+      "selector": "[data-action=\"memory-scope\"][data-scope=\"global\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.927Z",
+      "step": "memory-global-pending",
+      "kind": "click",
+      "selector": "[data-action=\"global-proposal\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:11.999Z",
+      "step": "memory-global-confirm",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": "确认写入全局记忆"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:12.041Z",
+      "step": "memory-global-confirm",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:12.041Z",
+      "step": "memory-global-confirm",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:12.104Z",
+      "step": "memory-global-confirm",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": "确认写入全局记忆",
+      "path": "evidence/screenshots/memory-global-confirm.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "取消",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:12.115Z",
+      "step": "memory-global-confirm",
+      "kind": "click",
+      "selector": "[data-action=\"approve-global\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:12.189Z",
+      "step": "memory-global-confirm",
+      "kind": "assertion",
+      "id": "global-confirmed",
+      "passed": true,
+      "actual": "记忆\n\n每个 Bot 有自己的记忆。全局记忆经你确认后共享。\n\n查看 Bot \n协调员\n资料助手\n写作助手\n审校助手\n私有长期\n全局长期\n本轮上下文\n共享范围：当前本机 Profile\n\n所有 Bot 可在资料授权允许的范围内使用；任何变更都需确认。\n\n需你确认\n\n偏好使用中文沟通，必要时保留技术术语。\n\n你已确认Profile 共享 · 来源：周报偏好对话 · 修订 1\n来源\n修正\n忘记\n\n每周五整理项目周报，包含完成、进行中和下一步。\n\n你已确认来源：协调员提案 · Profile 共享",
+      "expected": "only explicit approval creates shared entry"
+    },
+    {
+      "at": "2026-10-25T04:39:12.197Z",
+      "step": "memory-global-confirm",
+      "kind": "click",
+      "selector": "[data-action=\"memory-scope\"][data-scope=\"short\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:12.269Z",
+      "step": "memory-short",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:12.313Z",
+      "step": "memory-short",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:12.313Z",
+      "step": "memory-short",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:12.389Z",
+      "step": "memory-short",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-short.png",
+      "focusBefore": "<button type=\"button\" class=\"\" data-action=\"memory-scope\" data-scope=\"private\" aria-pressed=\"false\">私有长期</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:12.599Z",
+      "step": "memory-short",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:12.607Z",
+      "step": "memory-short",
+      "kind": "click",
+      "selector": "[data-action=\"access\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:12.678Z",
+      "step": "access-attached",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "资料与权限",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:12.720Z",
+      "step": "access-attached",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:12.720Z",
+      "step": "access-attached",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:12.774Z",
+      "step": "access-attached",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "资料与权限",
+      "modal": null,
+      "path": "evidence/screenshots/access-attached.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">资料与权限</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:12.783Z",
+      "step": "access-attached",
+      "kind": "click",
+      "selector": "[data-action=\"grant\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:12.861Z",
+      "step": "access-attached",
+      "kind": "assertion",
+      "id": "grant-default",
+      "passed": true,
+      "actual": {
+        "scope": "项目文件夹",
+        "recipient": false
+      },
+      "expected": "no default full-vault or recipient grant"
+    },
+    {
+      "at": "2026-10-25T04:39:12.866Z",
+      "step": "access-attached",
+      "kind": "click",
+      "selector": "[data-action=\"save-grant\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:12.939Z",
+      "step": "access-attached",
+      "kind": "assertion",
+      "id": "grant-requires-recipient",
+      "passed": true,
+      "actual": "请明确是否授权这些接收方。",
+      "expected": "recipient approval required"
+    },
+    {
+      "at": "2026-10-25T04:39:12.940Z",
+      "step": "access-grant",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "资料与权限",
+        "modal": "增加资料授权"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:12.981Z",
+      "step": "access-grant",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "SELECT",
+        "name": "项目文件夹整个知识库",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:12.981Z",
+      "step": "access-grant",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "SELECT",
+        "name": "项目文件夹整个知识库",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:13.061Z",
+      "step": "access-grant",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "资料与权限",
+      "modal": "增加资料授权",
+      "path": "evidence/screenshots/access-grant.png",
+      "focusBefore": "<button type=\"button\" class=\"primary\" data-action=\"save-grant\">确认授权</button>",
+      "focus": {
+        "tag": "SELECT",
+        "name": "项目文件夹整个知识库",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:13.068Z",
+      "step": "access-grant",
+      "kind": "click",
+      "selector": "#grant-recipient",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:13.148Z",
+      "step": "access-grant",
+      "kind": "click",
+      "selector": "[data-action=\"save-grant\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:13.227Z",
+      "step": "access-grant",
+      "kind": "click",
+      "selector": "[data-action=\"revoke\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:13.299Z",
+      "step": "access-denied",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "资料与权限",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:13.351Z",
+      "step": "access-denied",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:13.351Z",
+      "step": "access-denied",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:13.417Z",
+      "step": "access-denied",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "资料与权限",
+      "modal": null,
+      "path": "evidence/screenshots/access-denied.png",
+      "focusBefore": "<button type=\"button\" class=\"quiet danger\" data-action=\"revoke\">撤销本轮资料授权</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:13.621Z",
+      "step": "access-denied",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:13.625Z",
+      "step": "access-denied",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "unknown"
+    },
+    {
+      "at": "2026-10-25T04:39:13.698Z",
+      "step": "access-denied",
+      "kind": "click",
+      "selector": "[data-action=\"data\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:13.778Z",
+      "step": "access-denied",
+      "kind": "click",
+      "selector": "[data-action=\"delete-session\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:13.849Z",
+      "step": "data-preflight",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "本机数据",
+        "modal": "清除当前会话"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:13.892Z",
+      "step": "data-preflight",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:13.892Z",
+      "step": "data-preflight",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:13.962Z",
+      "step": "data-preflight",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "本机数据",
+      "modal": "清除当前会话",
+      "path": "evidence/screenshots/data-preflight.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:13.966Z",
+      "step": "data-preflight",
+      "kind": "assertion",
+      "id": "data-preflight-scope",
+      "passed": true,
+      "actual": "清除当前会话\n\n将删除消息、子任务上下文、摘要和自动来源记忆。Vault 中已交付的笔记保留。\n\n保留你独立固定或确认的记忆\n还有一条未决效果\n\n只清除正文；保留效果 ID、目标定位、状态和核查依据，核查后可完整清除。\n\n取消\n永久清除正文",
+      "expected": "body deletion distinguishes retained effect and delivered files"
+    },
+    {
+      "at": "2026-10-25T04:39:13.978Z",
+      "step": "data-preflight",
+      "kind": "click",
+      "selector": "[data-action=\"confirm-delete-session\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.049Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "本机数据",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:14.093Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:14.093Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:14.157Z",
+      "step": "data-retained",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "本机数据",
+      "modal": null,
+      "path": "evidence/screenshots/data-retained.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">本机数据</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:14.164Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"delete-profile\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.237Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "profile-unknown-gate",
+      "passed": true,
+      "actual": "完整清除尚不可用\n\n仍有一条未决效果。可以先清除正文，核查完成后再清除整个 Profile。\n\n返回\n去核查",
+      "expected": "unresolved effect blocks profile purge"
+    },
+    {
+      "at": "2026-10-25T04:39:14.246Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"reconcile\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.326Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"mock-reconcile\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.397Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "reconcile-no-retry",
+      "passed": true,
+      "actual": "经核查：目标满足后置条件，未重复写入。安全记录可完整清除。",
+      "expected": "postcondition reconciliation distinguished from original receipt"
+    },
+    {
+      "at": "2026-10-25T04:39:14.405Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"delete-profile\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.480Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"confirm-purge\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.554Z",
+      "step": "data-retained",
+      "kind": "assertion",
+      "id": "purge-typed-confirm",
+      "passed": true,
+      "actual": "请输入「清除」以确认范围。",
+      "expected": "typed confirmation required"
+    },
+    {
+      "at": "2026-10-25T04:39:14.559Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "#purge-confirm",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.629Z",
+      "step": "data-retained",
+      "kind": "input",
+      "selector": "#purge-confirm",
+      "text": "清除"
+    },
+    {
+      "at": "2026-10-25T04:39:14.636Z",
+      "step": "data-retained",
+      "kind": "click",
+      "selector": "[data-action=\"confirm-purge\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:14.718Z",
+      "step": "data-purged",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "新的开始",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:14.772Z",
+      "step": "data-purged",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:14.772Z",
+      "step": "data-purged",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:14.839Z",
+      "step": "data-purged",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "新的开始",
+      "modal": null,
+      "path": "evidence/screenshots/data-purged.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">新的开始</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:14.845Z",
+      "step": "data-purged",
+      "kind": "assertion",
+      "id": "purge-directory-cleared",
+      "passed": true,
+      "actual": "本机 Profile 已清除。刷新可重置离线示例。",
+      "expected": "previous profile directory gone"
+    },
+    {
+      "at": "2026-10-25T04:39:15.072Z",
+      "step": "data-purged",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:15.082Z",
+      "step": "data-purged",
+      "kind": "click",
+      "selector": "[data-action=\"select\"][data-id=\"reviewer\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:15.159Z",
+      "step": "data-purged",
+      "kind": "click",
+      "selector": "#draft",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:15.232Z",
+      "step": "data-purged",
+      "kind": "input",
+      "selector": "#draft",
+      "text": "输入法测试"
+    },
+    {
+      "at": "2026-10-25T04:39:15.237Z",
+      "step": "ime-and-enter",
+      "kind": "assertion",
+      "id": "ime-composing-not-sent",
+      "passed": true,
+      "actual": "输入法测试",
+      "expected": "synthetic composing Enter keeps draft (not a system IME test)"
+    },
+    {
+      "at": "2026-10-25T04:39:15.277Z",
+      "step": "ime-and-enter",
+      "kind": "assertion",
+      "id": "shift-enter-newline",
+      "passed": true,
+      "actual": "输入法测试\n",
+      "expected": "Shift+Enter inserts newline"
+    },
+    {
+      "at": "2026-10-25T04:39:15.321Z",
+      "step": "ime-and-enter",
+      "kind": "assertion",
+      "id": "enter-send",
+      "passed": true,
+      "actual": "与 审校助手 的单聊\n审\n审校助手\n\n我可以核对表述、来源和遗漏。这段单聊使用我的独立上下文；需要协作时，我会说明任务和参与者。\n\n整理一份周报\n邀请 Bot 建群\n\n输入法测试\n\n项目周记.md\n会议记录.md\n@\n仅附加资料\nOpenAI · Responses · 运行中\nEnter 发送 · Shift + Enter 换行",
+      "expected": "Enter sends when idle"
+    },
+    {
+      "at": "2026-10-25T04:39:15.981Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "[data-action=\"attachments\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.058Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "input[name=\"attachment\"][value=\"路线图.md\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.141Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "[data-action=\"save-attachments\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.213Z",
+      "step": "ime-and-enter",
+      "kind": "assertion",
+      "id": "attachment-selection",
+      "passed": true,
+      "actual": "项目周记.md\n会议记录.md\n路线图.md\n@\n仅附加资料",
+      "expected": "explicit attachment chip visible"
+    },
+    {
+      "at": "2026-10-25T04:39:16.221Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "[data-action=\"mention\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.294Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "input[name=\"mention\"][value=\"reviewer\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.375Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "[data-action=\"save-mentions\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.447Z",
+      "step": "ime-and-enter",
+      "kind": "assertion",
+      "id": "mention-target",
+      "passed": true,
+      "actual": "项目周记.md\n会议记录.md\n路线图.md\n@审校助手\n@\n仅附加资料",
+      "expected": "selected recipient token visible"
+    },
+    {
+      "at": "2026-10-25T04:39:16.449Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "#draft",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.521Z",
+      "step": "ime-and-enter",
+      "kind": "input",
+      "selector": "#draft",
+      "text": "未完成表单测试"
+    },
+    {
+      "at": "2026-10-25T04:39:16.527Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "[data-action=\"new-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.604Z",
+      "step": "ime-and-enter",
+      "kind": "click",
+      "selector": "#bot-name",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.676Z",
+      "step": "ime-and-enter",
+      "kind": "input",
+      "selector": "#bot-name",
+      "text": "尚未保存的身份"
+    },
+    {
+      "at": "2026-10-25T04:39:16.677Z",
+      "step": "unsaved-form-before",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手",
+        "modal": "创建 Bot"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:16.720Z",
+      "step": "unsaved-form-before",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:16.720Z",
+      "step": "unsaved-form-before",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:16.794Z",
+      "step": "unsaved-form-before",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手",
+      "modal": "创建 Bot",
+      "path": "evidence/screenshots/unsaved-form-before.png",
+      "focusBefore": "<input id=\"bot-name\" required=\"\" maxlength=\"80\" value=\"\" placeholder=\"例如：阅读助手\">",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:16.840Z",
+      "step": "unsaved-form-before",
+      "kind": "click",
+      "selector": "[data-action=\"new-bot\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:16.913Z",
+      "step": "unsaved-form-before",
+      "kind": "assertion",
+      "id": "unsaved-bot-form",
+      "passed": false,
+      "actual": {
+        "closedWithoutConfirmation": true,
+        "reopenedName": ""
+      },
+      "expected": "unsaved form must not disappear silently"
+    },
+    {
+      "at": "2026-10-25T04:39:16.914Z",
+      "step": "unsaved-form-after",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手",
+        "modal": "创建 Bot"
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:16.954Z",
+      "step": "unsaved-form-after",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:16.954Z",
+      "step": "unsaved-form-after",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:17.023Z",
+      "step": "unsaved-form-after",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手",
+      "modal": "创建 Bot",
+      "path": "evidence/screenshots/unsaved-form-after.png",
+      "focusBefore": "<button type=\"button\" class=\"icon-button\" data-action=\"close-modal\" aria-label=\"关闭对话框\"><span data-icon=\"close\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 5 14 14M5 19 19 5\"></path></svg><",
+      "focus": {
+        "tag": "INPUT",
+        "name": "",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": true
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:17.278Z",
+      "step": "unsaved-form-after",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 800,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:17.279Z",
+      "step": "chat-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:17.319Z",
+      "step": "chat-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:17.319Z",
+      "step": "chat-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:17.360Z",
+      "step": "chat-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-800.png",
+      "focusBefore": "<body>\n  <div class=\"preview-bar\" aria-label=\"原型检查工具\">\n    <span class=\"preview-brand\">HUHU Bot</span>\n    <span id=\"selection-label\">已确认方案 · 对话与协作</span>\n    <span class=\"preview-note\">离线演示 · 不调用模型或修",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:17.367Z",
+      "step": "chat-800",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:17.440Z",
+      "step": "navigation-800",
+      "kind": "assertion",
+      "id": "drawer-inert",
+      "passed": true,
+      "actual": "true",
+      "expected": "drawer is modal and main inert"
+    },
+    {
+      "at": "2026-10-25T04:39:17.441Z",
+      "step": "navigation-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:17.483Z",
+      "step": "navigation-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:17.483Z",
+      "step": "navigation-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:17.521Z",
+      "step": "navigation-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/navigation-800.png",
+      "focusBefore": "<input id=\"search\" type=\"search\" placeholder=\"搜索 Bot 或群聊\" aria-label=\"搜索 Bot 或群聊\">",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:17.561Z",
+      "step": "navigation-800",
+      "kind": "assertion",
+      "id": "drawer-focus-return",
+      "passed": true,
+      "actual": "menu-toggle",
+      "expected": "escape returns focus and restores main"
+    },
+    {
+      "at": "2026-10-25T04:39:17.568Z",
+      "step": "navigation-800",
+      "kind": "click",
+      "selector": "[data-action=\"tasks\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:17.640Z",
+      "step": "tasks-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:17.681Z",
+      "step": "tasks-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:17.681Z",
+      "step": "tasks-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:17.736Z",
+      "step": "tasks-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-800.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协作任务</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:17.745Z",
+      "step": "tasks-800",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:17.823Z",
+      "step": "tasks-800",
+      "kind": "click",
+      "selector": "[data-action=\"memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:17.895Z",
+      "step": "memory-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:17.936Z",
+      "step": "memory-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:17.936Z",
+      "step": "memory-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:17.966Z",
+      "step": "memory-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-800.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">记忆</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:17.974Z",
+      "step": "memory-800",
+      "kind": "click",
+      "selector": "[data-action=\"settings\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:18.046Z",
+      "step": "agent-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "协调员",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:18.086Z",
+      "step": "agent-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:18.086Z",
+      "step": "agent-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:18.115Z",
+      "step": "agent-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "协调员",
+      "modal": null,
+      "path": "evidence/screenshots/agent-800.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协调员</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:18.126Z",
+      "step": "agent-800",
+      "kind": "click",
+      "selector": "[data-action=\"chat\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:18.202Z",
+      "step": "agent-800",
+      "kind": "click",
+      "selector": "[data-action=\"access\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:18.274Z",
+      "step": "access-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "资料与权限",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:18.316Z",
+      "step": "access-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:18.316Z",
+      "step": "access-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:18.369Z",
+      "step": "access-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "资料与权限",
+      "modal": null,
+      "path": "evidence/screenshots/access-800.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">资料与权限</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:18.378Z",
+      "step": "access-800",
+      "kind": "click",
+      "selector": "[data-action=\"data\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:18.449Z",
+      "step": "data-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "本机数据",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:18.490Z",
+      "step": "data-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:18.490Z",
+      "step": "data-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:18.534Z",
+      "step": "data-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "本机数据",
+      "modal": null,
+      "path": "evidence/screenshots/data-800.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">本机数据</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:18.537Z",
+      "step": "data-800",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "long"
+    },
+    {
+      "at": "2026-10-25T04:39:18.598Z",
+      "step": "long-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:18.638Z",
+      "step": "long-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:18.638Z",
+      "step": "long-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:18.673Z",
+      "step": "long-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/long-800.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:18.681Z",
+      "step": "long-800",
+      "kind": "click",
+      "selector": "[data-action=\"theme\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:18.752Z",
+      "step": "dark-800",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 800,
+        "height": 960,
+        "documentWidth": 800,
+        "documentHeight": 960,
+        "leaf": "medium",
+        "workspaceWidth": 748,
+        "workspaceScrollWidth": 748,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:18.796Z",
+      "step": "dark-800",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:18.796Z",
+      "step": "dark-800",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:18.855Z",
+      "step": "dark-800",
+      "kind": "screenshot",
+      "width": 800,
+      "height": 960,
+      "documentWidth": 800,
+      "documentHeight": 960,
+      "leaf": "medium",
+      "workspaceWidth": 748,
+      "workspaceScrollWidth": 748,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/dark-800.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.069Z",
+      "step": "dark-800",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:19.070Z",
+      "step": "chat-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:19.111Z",
+      "step": "chat-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:19.111Z",
+      "step": "chat-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:19.163Z",
+      "step": "chat-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/chat-390.png",
+      "focusBefore": "<body>\n  <div class=\"preview-bar\" aria-label=\"原型检查工具\">\n    <span class=\"preview-brand\">HUHU Bot</span>\n    <span id=\"selection-label\">已确认方案 · 对话与协作</span>\n    <span class=\"preview-note\">离线演示 · 不调用模型或修",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.168Z",
+      "step": "chat-390",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.241Z",
+      "step": "navigation-390",
+      "kind": "assertion",
+      "id": "drawer-inert",
+      "passed": true,
+      "actual": "true",
+      "expected": "drawer is modal and main inert"
+    },
+    {
+      "at": "2026-10-25T04:39:19.242Z",
+      "step": "navigation-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:19.286Z",
+      "step": "navigation-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:19.286Z",
+      "step": "navigation-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:19.312Z",
+      "step": "navigation-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/navigation-390.png",
+      "focusBefore": "<input id=\"search\" type=\"search\" placeholder=\"搜索 Bot 或群聊\" aria-label=\"搜索 Bot 或群聊\">",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.354Z",
+      "step": "navigation-390",
+      "kind": "assertion",
+      "id": "drawer-focus-return",
+      "passed": true,
+      "actual": "menu-toggle",
+      "expected": "escape returns focus and restores main"
+    },
+    {
+      "at": "2026-10-25T04:39:19.361Z",
+      "step": "navigation-390",
+      "kind": "click",
+      "selector": "[data-action=\"tasks\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.433Z",
+      "step": "tasks-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "协作任务",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:19.475Z",
+      "step": "tasks-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:19.475Z",
+      "step": "tasks-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:19.511Z",
+      "step": "tasks-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "协作任务",
+      "modal": null,
+      "path": "evidence/screenshots/tasks-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协作任务</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.519Z",
+      "step": "tasks-390",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.598Z",
+      "step": "tasks-390",
+      "kind": "click",
+      "selector": "[data-action=\"memory\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.672Z",
+      "step": "memory-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "记忆",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:19.715Z",
+      "step": "memory-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:19.715Z",
+      "step": "memory-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:19.760Z",
+      "step": "memory-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "记忆",
+      "modal": null,
+      "path": "evidence/screenshots/memory-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">记忆</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.778Z",
+      "step": "memory-390",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.858Z",
+      "step": "memory-390",
+      "kind": "click",
+      "selector": "[data-action=\"settings\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:19.929Z",
+      "step": "agent-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "协调员",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:19.970Z",
+      "step": "agent-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:19.970Z",
+      "step": "agent-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:19.993Z",
+      "step": "agent-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "协调员",
+      "modal": null,
+      "path": "evidence/screenshots/agent-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">协调员</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:19.998Z",
+      "step": "agent-390",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.081Z",
+      "step": "agent-390",
+      "kind": "click",
+      "selector": "[data-action=\"chat\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.159Z",
+      "step": "agent-390",
+      "kind": "click",
+      "selector": "[data-action=\"access\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.233Z",
+      "step": "access-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "资料与权限",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:20.275Z",
+      "step": "access-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:20.275Z",
+      "step": "access-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:20.310Z",
+      "step": "access-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "资料与权限",
+      "modal": null,
+      "path": "evidence/screenshots/access-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">资料与权限</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:20.316Z",
+      "step": "access-390",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.394Z",
+      "step": "access-390",
+      "kind": "click",
+      "selector": "[data-action=\"data\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.465Z",
+      "step": "data-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "本机数据",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:20.506Z",
+      "step": "data-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:20.506Z",
+      "step": "data-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:20.526Z",
+      "step": "data-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "本机数据",
+      "modal": null,
+      "path": "evidence/screenshots/data-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">本机数据</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:20.529Z",
+      "step": "data-390",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "long"
+    },
+    {
+      "at": "2026-10-25T04:39:20.592Z",
+      "step": "long-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:20.633Z",
+      "step": "long-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:20.633Z",
+      "step": "long-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:20.661Z",
+      "step": "long-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/long-390.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:20.669Z",
+      "step": "long-390",
+      "kind": "click",
+      "selector": "[data-action=\"theme\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:20.740Z",
+      "step": "dark-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:20.781Z",
+      "step": "dark-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:20.781Z",
+      "step": "dark-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:20.829Z",
+      "step": "dark-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/dark-390.png",
+      "focusBefore": "<button type=\"button\" data-action=\"theme\" aria-label=\"切换明暗主题\" title=\"切换明暗主题\">◐</button>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:21.047Z",
+      "step": "dark-390",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:21.056Z",
+      "step": "dark-390",
+      "kind": "click",
+      "selector": "[data-action=\"select\"][data-id=\"reviewer\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:21.131Z",
+      "step": "dark-390",
+      "kind": "click",
+      "selector": "#draft",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:21.204Z",
+      "step": "dark-390",
+      "kind": "input",
+      "selector": "#draft",
+      "text": "长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容 UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier"
+    },
+    {
+      "at": "2026-10-25T04:39:21.928Z",
+      "step": "long-message-1440",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 1440,
+        "height": 960,
+        "documentWidth": 1440,
+        "documentHeight": 960,
+        "leaf": "wide",
+        "workspaceWidth": 1108,
+        "workspaceScrollWidth": 1108,
+        "title": "审校助手",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:21.969Z",
+      "step": "long-message-1440",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:21.969Z",
+      "step": "long-message-1440",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:22.022Z",
+      "step": "long-message-1440",
+      "kind": "screenshot",
+      "width": 1440,
+      "height": 960,
+      "documentWidth": 1440,
+      "documentHeight": 960,
+      "leaf": "wide",
+      "workspaceWidth": 1108,
+      "workspaceScrollWidth": 1108,
+      "title": "审校助手",
+      "modal": null,
+      "path": "evidence/screenshots/long-message-1440.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">审校助手</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:22.241Z",
+      "step": "long-message-1440",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:22.250Z",
+      "step": "long-message-1440",
+      "kind": "click",
+      "selector": "#menu-toggle",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:22.330Z",
+      "step": "long-message-1440",
+      "kind": "click",
+      "selector": "[data-action=\"select\"][data-id=\"reviewer\"]",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:22.407Z",
+      "step": "long-message-1440",
+      "kind": "click",
+      "selector": "#draft",
+      "index": 0
+    },
+    {
+      "at": "2026-10-25T04:39:22.482Z",
+      "step": "long-message-1440",
+      "kind": "input",
+      "selector": "#draft",
+      "text": "长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容长中文核查内容 UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier UnbrokenEnglishIdentifier"
+    },
+    {
+      "at": "2026-10-25T04:39:23.211Z",
+      "step": "long-message-390",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "审校助手",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:23.254Z",
+      "step": "long-message-390",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:23.254Z",
+      "step": "long-message-390",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:23.274Z",
+      "step": "long-message-390",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "审校助手",
+      "modal": null,
+      "path": "evidence/screenshots/long-message-390.png",
+      "focusBefore": "<h1 id=\"page-title\" tabindex=\"-1\">审校助手</h1>",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:23.487Z",
+      "step": "long-message-390",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 390,
+      "height": 844,
+      "touch": true
+    },
+    {
+      "at": "2026-10-25T04:39:23.489Z",
+      "step": "touch-emulation",
+      "kind": "assertion",
+      "id": "touch-targets-44px",
+      "passed": false,
+      "actual": [
+        {
+          "action": "send",
+          "name": "发送消息",
+          "width": 40,
+          "height": 44
+        }
+      ],
+      "expected": "touch hit areas at least 44px in both axes"
+    },
+    {
+      "at": "2026-10-25T04:39:23.491Z",
+      "step": "touch-emulated",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 390,
+        "height": 844,
+        "documentWidth": 375,
+        "documentHeight": 867,
+        "leaf": "narrow",
+        "workspaceWidth": 375,
+        "workspaceScrollWidth": 375,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:23.533Z",
+      "step": "touch-emulated",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:23.533Z",
+      "step": "touch-emulated",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:23.562Z",
+      "step": "touch-emulated",
+      "kind": "screenshot",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "documentHeight": 867,
+      "leaf": "narrow",
+      "workspaceWidth": 375,
+      "workspaceScrollWidth": 375,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/touch-emulated.png",
+      "focusBefore": "<body>\n  <div class=\"preview-bar\" aria-label=\"原型检查工具\">\n    <span class=\"preview-brand\">HUHU Bot</span>\n    <span id=\"selection-label\">已确认方案 · 对话与协作</span>\n    <span class=\"preview-note\">离线演示 · 不调用模型或修",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:23.563Z",
+      "step": "reduced-motion",
+      "kind": "assertion",
+      "id": "reduced-motion",
+      "passed": true,
+      "actual": {
+        "matches": true,
+        "sidebarTransition": "0s",
+        "scroll": "auto"
+      },
+      "expected": "reduced motion removes sidebar movement/transition and smooth scroll"
+    },
+    {
+      "at": "2026-10-25T04:39:23.774Z",
+      "step": "reduced-motion",
+      "kind": "navigate",
+      "entry": "final/index.html",
+      "width": 1440,
+      "height": 960,
+      "touch": false
+    },
+    {
+      "at": "2026-10-25T04:39:23.777Z",
+      "step": "reduced-motion",
+      "kind": "select",
+      "selector": "#scenario",
+      "value": "long"
+    },
+    {
+      "at": "2026-10-25T04:39:25.187Z",
+      "step": "reduced-motion",
+      "kind": "assertion",
+      "id": "native-browser-200pct",
+      "passed": true,
+      "actual": {
+        "before": {
+          "innerWidth": 1440,
+          "innerHeight": 897,
+          "dpr": 1,
+          "outerWidth": 1440,
+          "outerHeight": 1040
+        },
+        "after": {
+          "innerWidth": 720,
+          "innerHeight": 448,
+          "dpr": 2,
+          "outerWidth": 1440,
+          "outerHeight": 1040
+        }
+      },
+      "expected": "native Chrome zoom doubles devicePixelRatio and halves CSS viewport"
+    },
+    {
+      "at": "2026-10-25T04:39:25.188Z",
+      "step": "native-200pct",
+      "kind": "assertion",
+      "id": "horizontal-overflow",
+      "passed": true,
+      "actual": {
+        "width": 720,
+        "height": 448,
+        "documentWidth": 712,
+        "documentHeight": 460,
+        "leaf": "medium",
+        "workspaceWidth": 661,
+        "workspaceScrollWidth": 661,
+        "title": "周报协作",
+        "modal": null
+      },
+      "expected": "document and workspace have no horizontal overflow"
+    },
+    {
+      "at": "2026-10-25T04:39:25.229Z",
+      "step": "native-200pct",
+      "kind": "assertion",
+      "id": "keyboard-tab",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "Tab reaches an interactive control"
+    },
+    {
+      "at": "2026-10-25T04:39:25.229Z",
+      "step": "native-200pct",
+      "kind": "assertion",
+      "id": "visible-focus",
+      "passed": true,
+      "actual": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      },
+      "expected": "keyboard focus is visible"
+    },
+    {
+      "at": "2026-10-25T04:39:25.283Z",
+      "step": "native-200pct",
+      "kind": "screenshot",
+      "width": 720,
+      "height": 448,
+      "documentWidth": 712,
+      "documentHeight": 460,
+      "leaf": "medium",
+      "workspaceWidth": 661,
+      "workspaceScrollWidth": 661,
+      "title": "周报协作",
+      "modal": null,
+      "path": "evidence/screenshots/native-200pct.png",
+      "focusBefore": "<body>\n  <div class=\"preview-bar\" aria-label=\"原型检查工具\">\n    <span class=\"preview-brand\">HUHU Bot</span>\n    <span id=\"selection-label\">已确认方案 · 对话与协作</span>\n    <span class=\"preview-note\">离线演示 · 不调用模型或修",
+      "focus": {
+        "tag": "BUTTON",
+        "name": "切换明暗主题",
+        "outline": "solid",
+        "outlineWidth": "3px",
+        "focusVisible": true,
+        "inDialog": false
+      }
+    },
+    {
+      "at": "2026-10-25T04:39:25.284Z",
+      "step": "native-200pct",
+      "kind": "assertion",
+      "id": "approved-bytes-unchanged",
+      "passed": true,
+      "actual": {
+        "before": {
+          "design-system.md": "7a530e67c70b013152149326fa83de82aee565209373e0cb6521b41fda87fa10",
+          "bindings.json": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+          "../../DESIGN.md": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+          "final/index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+          "final/app.js": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+          "final/styles.css": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9"
+        },
+        "after": {
+          "design-system.md": "7a530e67c70b013152149326fa83de82aee565209373e0cb6521b41fda87fa10",
+          "bindings.json": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+          "../../DESIGN.md": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+          "final/index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+          "final/app.js": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+          "final/styles.css": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9"
+        }
+      },
+      "expected": "all approved source/design/binding bytes unchanged"
+    }
+  ],
+  "findings": [
+    {
+      "id": "dialog-focus-trap",
+      "passed": false,
+      "actual": [
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BODY",
+          "inDialog": false,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        }
+      ],
+      "expected": "Tab and Shift+Tab never focus background page controls; browser chrome is an allowed native boundary",
+      "step": "startup"
+    },
+    {
+      "id": "dialog-focus-trap",
+      "passed": false,
+      "actual": [
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BODY",
+          "inDialog": false,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "approve",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "reject",
+          "inDialog": true,
+          "documentFocus": true
+        },
+        {
+          "tag": "BUTTON",
+          "action": "close-modal",
+          "inDialog": true,
+          "documentFocus": true
+        }
+      ],
+      "expected": "Tab and Shift+Tab never focus background page controls; browser chrome is an allowed native boundary",
+      "step": "candidate-390"
+    },
+    {
+      "id": "bot-initial-focus",
+      "passed": false,
+      "actual": {
+        "id": "",
+        "action": "close-modal"
+      },
+      "expected": "opening a form focuses its primary input",
+      "step": "agent-disabled"
+    },
+    {
+      "id": "unsaved-bot-form",
+      "passed": false,
+      "actual": {
+        "closedWithoutConfirmation": true,
+        "reopenedName": ""
+      },
+      "expected": "unsaved form must not disappear silently",
+      "step": "unsaved-form-before"
+    },
+    {
+      "id": "touch-targets-44px",
+      "passed": false,
+      "actual": [
+        {
+          "action": "send",
+          "name": "发送消息",
+          "width": 40,
+          "height": 44
+        }
+      ],
+      "expected": "touch hit areas at least 44px in both axes",
+      "step": "touch-emulation"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:33603/comparison/variants/candidate-a.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/GeistMono-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/comparison/variants/candidate-a.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/GeistMono-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/GeistMono-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/GeistMono-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/GeistMono-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/index.html",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/styles.css",
+      "type": "Stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/app.js",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:33603/final/assets/Geist-Variable.woff2",
+      "type": "Font"
+    },
+    {
+      "url": "http://127.0.0.1:33603/favicon.ico",
+      "type": "Other"
+    }
+  ],
+  "errors": [],
+  "sourceHashes": {
+    "before": {
+      "design-system.md": "7a530e67c70b013152149326fa83de82aee565209373e0cb6521b41fda87fa10",
+      "bindings.json": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+      "../../DESIGN.md": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+      "final/index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+      "final/app.js": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+      "final/styles.css": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9"
+    },
+    "after": {
+      "design-system.md": "7a530e67c70b013152149326fa83de82aee565209373e0cb6521b41fda87fa10",
+      "bindings.json": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+      "../../DESIGN.md": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+      "final/index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+      "final/app.js": "618c7aa000362c056883b06955ffe3a7ed1d3728b5531d0d01774d98d765e587",
+      "final/styles.css": "fcc91215a6eb8e58351dcdb3790ef2fb1a4aeb8adfb21e263157ca9cd69d28b9"
+    }
+  },
+  "limitations": [
+    "No physical touchscreen",
+    "No system IME exercised; composing event test only",
+    "No Obsidian multi-window lifecycle or production backend test",
+    "Formal package state and bindings are lead-owned and unmodified"
+  ]
+}

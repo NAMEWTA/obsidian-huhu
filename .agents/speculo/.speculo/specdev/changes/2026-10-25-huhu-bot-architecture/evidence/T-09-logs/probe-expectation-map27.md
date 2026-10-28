@@ -1,0 +1,9 @@
+# 默认Responses装配后的探测预期维护
+
+108在316固定输入b5557939ffc6bcd57e2bac946b2c40d8578b2773be5700fe58f441bc79d89a93上运行TestDraftModelAvailabilitySharedCredentialAndSessionReopen：退出1、实际Wait 1.225755秒、源码drift[]。原始日志明确model_test.go:98期望ADAPTER_NOT_ASSEMBLED而实际MODEL_UNAVAILABLE: CREDENTIAL_MISSING。先前已读到重开后session-memory凭证state=missing；当前Responses真实默认装配已通过109同消费者文字绿和108真实CLI。原失败见sessions/20261025T043239Z/108-responses-foundation/logs/12-assistant-old-expectation-result.json与同名.log，Root均已回读。
+
+这是新协议能力落地后的过期测试预期，产品应先确认协议已装配，再报告丢失凭证并保持0网络；不应恢复ADAPTER_NOT_ASSEMBLED。原T02 owner native:/root/credential_provider只维护native/huhubot/tests/contract/assistant/model_test.go，原测试其他凭证生命周期/不可复用/秘密不落盘断言保持。显式仅Chat的selector来自另一个独立fixture，probe_policy_test.go只读且相关负控仍须通过。
+
+110任务准备不代表已派遣。当前四槽中107/108/109并行自有源码，待一槽原生结束后由Root actual followup；任一Go命令须Root安排唯一短窗口并冻结实际编译输入。原真实红可以复用，不机械重跑相同旧断言；修改后只跑原消费者与显式selector负控，不运行全Go/race。
+
+T02原Chat r2 verified/attempts2记录保留为历史，新测试维护active/pending/attempts0并入T09共同冻结输入、RootCLI重开CREDENTIAL_MISSING和独立双轴。没有新生产行为、API/SQL/权限/依赖变更，真实Provider/Obsidian/目标OS仍user-owned/not-run。

@@ -1,0 +1,253 @@
+import assert from 'node:assert/strict';
+import type { ChildProcess } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { createServer, type ServerResponse } from 'node:http';
+import { join } from 'node:path';
+import { DesktopHapTransport } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/platform/desktop/transport/managed';
+import { HapConnection } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/core/protocol/connection';
+import { AssistantClient } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/services/assistant-client';
+import type { BotClient, CommandMeta, ExecutionContextEntryView, ExecutionContextView, MemoryNamespace, ModelBindingDraft, Run } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/api';
+
+// Independent Root integration consumer. Run only against the jointly frozen
+// default CLI candidate. HTTP is local; every model adapter/SDK remains real.
+const [binaryValue, rootValue, protocolValue] = process.argv.slice(2);
+assert(binaryValue && rootValue && protocolValue);
+assert(['openai-chat-completions', 'openai-responses', 'anthropic-messages'].includes(protocolValue));
+const binary: string = binaryValue, root: string = rootValue;
+const protocol = protocolValue as ModelBindingDraft['protocol'];
+const secret = 'root-memory-synthetic-local-key';
+const recentMarker = 'HUHU short-term context v1\n', memoryMarker = 'HUHU authorized memory input v1\n';
+const maintenanceMarker = 'HUHU memory maintenance instruction v1\n';
+const remembered = 'ROOT_A_RECALL 中文😀 '.repeat(420);
+const learned = `ROOT_AUTO_PRIVATE_${protocol} prefers concise explanations.`;
+const homeDir = join(root, 'home'), stateDir = join(root, 'state');
+const profileDir = join(stateDir, 'huhu/huhubot/profiles/one');
+const exits: Array<{code: number | null; signal: string | null}> = [];
+const requests: Array<{path: string; maintenance: boolean; texts: string[]; body: any}> = [];
+const sockets = new Set<import('node:net').Socket>();
+const outcomes: Run[] = [], timerIDs = new Set<ReturnType<typeof setTimeout>>();
+const timers = { after(ms: number, callback: () => void) {
+  const timer = setTimeout(() => { timerIDs.delete(timer); callback(); }, ms); timerIDs.add(timer);
+  return () => { clearTimeout(timer); timerIDs.delete(timer); };
+} };
+let current: {bot: BotClient; transport: DesktopHapTransport; childEnd: Promise<void>} | undefined;
+let sequence = 0, serverError: string | undefined;
+const report: Record<string, unknown> = {complete: false, protocol, profileDir, exits, requests, outcomes,
+  boundary: 'default CLI, production TS/HAP, real SDK and SQLite with local HTTP; no real Provider/Obsidian/target OS acceptance'};
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+async function until<T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string): Promise<T> {
+  const deadline = Date.now() + 15000; let last: T | undefined;
+  do { last = await read(); if (accept(last)) return last; if (serverError) throw new Error(serverError); await sleep(15); } while (Date.now() < deadline);
+  throw new Error(`${label}: ${JSON.stringify(last)}`);
+}
+async function bounded<T>(work: Promise<T>, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try { return await Promise.race([work, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(label)), 15000); })]); }
+  finally { clearTimeout(timer); }
+}
+function texts(body: any): string[] {
+  const content = (value: any): string => typeof value === 'string' ? value : Array.isArray(value) ? value.map(x => x.text ?? '').join('') : '';
+  if (protocol === 'openai-responses') return [...(body.instructions ? [body.instructions] : []), ...(body.input ?? []).map((x: any) => content(x.content))];
+  return [...(body.system ? [content(body.system)] : []), ...(body.messages ?? []).map((x: any) => content(x.content))];
+}
+function emit(res: ServerResponse, value: string) {
+  res.setHeader('Content-Type', 'text/event-stream'); res.flushHeaders();
+  if (protocol === 'openai-chat-completions') {
+    const send = (payload: unknown) => res.write(`data: ${JSON.stringify(payload)}\n\n`);
+    send({id: 'root-memory', choices: [{index: 0, delta: {role: 'assistant', content: value}, finish_reason: null}]});
+    send({id: 'root-memory', choices: [{index: 0, delta: {}, finish_reason: 'stop'}]});
+    send({choices: [], usage: {prompt_tokens: 11, completion_tokens: 5, total_tokens: 16}});
+    res.end('data: [DONE]\n\n'); return;
+  }
+  if (protocol === 'anthropic-messages') {
+    const send = (type: string, payload: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, ...payload})}\n\n`);
+    send('message_start', {message: {id: 'root-memory', type: 'message', role: 'assistant', model: 'root-model', content: [], stop_reason: null, stop_sequence: null, usage: {input_tokens: 11, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0}}});
+    send('content_block_start', {index: 0, content_block: {type: 'text', text: ''}});
+    send('content_block_delta', {index: 0, delta: {type: 'text_delta', text: value}});
+    send('content_block_stop', {index: 0});
+    send('message_delta', {delta: {stop_reason: 'end_turn', stop_sequence: null}, usage: {output_tokens: 5}});
+    send('message_stop', {}); res.end(); return;
+  }
+  let number = 0;
+  const send = (type: string, payload: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, sequence_number: number++, ...payload})}\n\n`);
+  const envelope = (status: string, output: unknown[], usage?: object) => ({id: 'resp-root-memory', object: 'response', created_at: 1, model: 'root-model', status, output, error: null, incomplete_details: null, ...(usage ? {usage} : {})});
+  const item = {id: 'msg-root-memory', type: 'message', role: 'assistant', status: 'completed', phase: 'final_answer', content: [{type: 'output_text', text: value, annotations: [], logprobs: []}]};
+  send('response.created', {response: envelope('in_progress', [])});
+  send('response.in_progress', {response: envelope('in_progress', [])});
+  send('response.output_item.added', {output_index: 0, item: {...item, status: 'in_progress', content: []}});
+  send('response.content_part.added', {item_id: item.id, output_index: 0, content_index: 0, part: {type: 'output_text', text: '', annotations: [], logprobs: []}});
+  send('response.output_text.delta', {item_id: item.id, output_index: 0, content_index: 0, delta: value, logprobs: []});
+  send('response.output_text.done', {item_id: item.id, output_index: 0, content_index: 0, text: value, logprobs: []});
+  send('response.content_part.done', {item_id: item.id, output_index: 0, content_index: 0, part: item.content[0]});
+  send('response.output_item.done', {output_index: 0, item});
+  send('response.completed', {response: envelope('completed', [item], {input_tokens: 11, output_tokens: 5, total_tokens: 16, input_tokens_details: {cached_tokens: 0}, output_tokens_details: {reasoning_tokens: 0}})});
+  res.end();
+}
+const server = createServer(async (req, res) => {
+  try {
+    assert.equal(req.method, 'POST');
+    const expected = protocol === 'anthropic-messages' ? '/v1/messages' : protocol === 'openai-responses' ? '/v1/responses' : '/v1/chat/completions';
+    assert.equal(req.url, expected);
+    assert(protocol === 'anthropic-messages' ? req.headers['x-api-key'] === secret : req.headers.authorization === `Bearer ${secret}`);
+    const chunks: Buffer[] = []; for await (const part of req) chunks.push(Buffer.from(part));
+    const raw = Buffer.concat(chunks); assert(raw.byteLength < 1048576);
+    const body = JSON.parse(raw.toString('utf8')), sent = texts(body);
+    assert.equal(body.model, 'root-model'); assert.equal(body.stream, true);
+    const maintenance = sent.some(x => x.startsWith(maintenanceMarker));
+    requests.push({path: req.url!, maintenance, texts: sent, body});
+    if (maintenance) {
+      assert.equal(requests.filter(x => x.maintenance).length, 1, 'maintenance must not recursively create more model work');
+      assert.equal((body.tools ?? []).length, 0, 'maintenance has no tools even if the Agent allows note.write');
+      assert(!sent.some(x => x.startsWith(recentMarker)));
+      assert(sent.some(x => x.startsWith(memoryMarker)));
+      emit(res, JSON.stringify({items: [{operation: 'create', text: learned, provenance: 'observation'}]}));
+    } else emit(res, `ROOT_REPLY_${requests.length}`);
+  } catch (error) { serverError = String(error); res.destroy(error as Error); }
+});
+server.on('connection', socket => {sockets.add(socket); socket.once('close', () => sockets.delete(socket));});
+async function open() {
+  const transport = await DesktopHapTransport.launch({binary, profileDir, cwd: root, credentialChannel: true, shutdownGraceMs: 5000,
+    environment: {HOME: homeDir, USERPROFILE: homeDir, XDG_STATE_HOME: stateDir, LANG: 'C.UTF-8'}});
+  const child = (transport as unknown as {child: ChildProcess}).child;
+  const childEnd = new Promise<void>(resolve => child.once('close', (code, signal) => {exits.push({code, signal}); resolve();}));
+  try {
+    const bot = await new HapConnection(transport, timers).connect({name: 'root-memory-model', version: '1'});
+    current = {bot, transport, childEnd}; return {...current, credentials: await transport.openCredentials(bot.hello.profile.profileId)};
+  } catch (error) {transport.close(); await bounded(Promise.all([transport.exited, childEnd]), 'failed CLI open drain'); throw error;}
+}
+async function close() {
+  if (!current) return; const active = current; current = undefined; active.bot.close();
+  await bounded(Promise.all([active.transport.exited, active.childEnd]), 'CLI did not naturally drain');
+  assert.deepEqual(exits.at(-1), {code: 0, signal: null}); assert.equal(active.transport.diagnostics.stderrBytes, 0);
+}
+function meta(): CommandMeta;
+function meta(revision: string): CommandMeta & {expectedRevision: string};
+function meta(revision?: string) {
+  assert(current); const key = `root-memory-${++sequence}`;
+  return {profileId: current.bot.hello.profile.profileId, commandEpoch: current.bot.hello.profile.commandEpoch, commandId: key, idempotencyKey: key, ...(revision ? {expectedRevision: revision} : {})};
+}
+async function contextPages(bot: BotClient, namespace: MemoryNamespace, runId: string) {
+  const entries: ExecutionContextEntryView[] = []; let cursor: string | undefined, first: ExecutionContextView | undefined;
+  for (let page = 0; page < 128; page++) {
+    const value = await bot.memory.get({profileId: bot.hello.profile.profileId, namespace, kind: 'context', id: runId, limit: 1, ...(cursor ? {cursor} : {})});
+    assert.equal(value.kind, 'context'); if (value.kind !== 'context') throw new Error('context discriminator');
+    first ??= value.context; assert.equal(value.context.state, 'sealed'); assert.equal(value.context.entries.length, 1);
+    for (const entry of value.context.entries) {
+      if (entry.state === 'readable' && entry.text !== undefined) {
+        assert(Buffer.byteLength(entry.text) <= 4096); assert(entry.displaySlice);
+        assert.equal(entry.displaySlice.end - entry.displaySlice.start, Buffer.byteLength(entry.text));
+      }
+      entries.push(entry);
+    }
+    cursor = value.context.nextCursor;
+    if (!cursor) return {first: first!, entries};
+  }
+  throw new Error('context pagination failed to terminate');
+}
+async function main() {
+  await mkdir(homeDir, {recursive: true, mode: 0o700});
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address === 'object');
+  const opened = await open(), bot = opened.bot, profileId = bot.hello.profile.profileId;
+  const credential = await opened.credentials.register(Buffer.from(secret), 'session-memory');
+  const model: ModelBindingDraft = {providerId: 'root-local', protocol, endpoint: `http://127.0.0.1:${address.port}${protocol === 'anthropic-messages' ? '' : '/v1'}`, modelId: 'root-model', credentialRef: credential.credentialRef, capabilities: []};
+  const budget = await bot.collaboration.budget({profileId});
+  await bot.collaboration.configureBudget({...meta(budget.revision), policy: {rootTokenLimit: '1000000', profileTokenLimit: '10000000', maintenanceTokenLimit: '0', paused: false}});
+  const assistant = new AssistantClient(bot);
+  const a = await assistant.createAgent({...meta(), draft: {name: 'Root A', description: '', persona: 'Keep memory private.', model, allowedTools: []}});
+  const b = await assistant.createAgent({...meta(), draft: {name: 'Root B', description: '', persona: 'Keep memory private.', model, allowedTools: []}});
+  const na: MemoryNamespace = {kind: 'agent', id: a.id}, nb: MemoryNamespace = {kind: 'agent', id: b.id};
+  const empty = await bot.memory.list({profileId, namespace: na, kind: 'item'});
+  const seeded = await bot.memory.correct({...meta(empty.namespaceRevision), namespace: na, action: 'add', scope: {kind: 'profile'}, text: remembered});
+  assert.equal(seeded.state, 'active'); if (seeded.state !== 'active') throw new Error('seeded discriminator');
+  const session = await bot.sessions.create({...meta(), kind: 'direct', title: 'A context', memberIds: [a.id]});
+  async function run(sessionId: string, intent: string) {
+    const fresh = await bot.sessions.get({profileId, id: sessionId});
+    const receipt = await bot.runs.start({...meta(fresh.revision), sessionId, intent, sourceRefs: []});
+    const finished = await until(() => bot.runs.get({profileId, id: receipt.runId}), x => ['succeeded', 'failed', 'canceled'].includes(x.status), 'Run terminal');
+    assert.equal(finished.status, 'succeeded', JSON.stringify(finished)); outcomes.push(finished); return finished;
+  }
+  const first = await run(session.id, 'ROOT_A_FIRST: use ROOT_A_RECALL.');
+  const secondIntent = 'ROOT_A_SECOND: use ROOT_A_RECALL and our earlier exchange.';
+  const second = await run(session.id, secondIntent);
+  assert.equal(requests.length, 2, 'zero maintenance budget must never start extra HTTP');
+  const secondRequest = requests[1]; assert(secondRequest);
+  const sent = secondRequest.texts;
+  assert.equal(sent.at(-1), secondIntent); assert.equal(sent.filter(x => x === secondIntent).length, 1);
+  const st = sent.find(x => x.startsWith(recentMarker)), recall = sent.find(x => x.startsWith(memoryMarker));
+  assert(st?.includes('ROOT_A_FIRST')); assert(st?.includes('ROOT_REPLY_1'));
+  assert(recall); assert(sent.indexOf(st!) < sent.indexOf(recall));
+  const memory = JSON.parse(recall.slice(memoryMarker.length));
+  assert(memory.entries.some((x: {text: string}) => x.text === remembered));
+  const context = await contextPages(bot, na, second.id);
+  assert(second.contextUsage && context.first.state === 'sealed');
+  assert.deepEqual(context.first.usage, second.contextUsage);
+  const parts = context.entries.filter((x): x is Extract<ExecutionContextEntryView, {state: 'readable'}> => x.state === 'readable' && x.kind === 'memory_recall' && x.source?.id === seeded.revisionId);
+  assert(parts.length >= 2, 'long recalled body must be split for UI');
+  assert.equal(parts.sort((x, y) => (x.partIndex ?? 0) - (y.partIndex ?? 0)).map(x => x.text).join(''), remembered);
+  const summaries = await bot.memory.list({profileId, namespace: na, kind: 'context', scope: {kind: 'session', id: session.id}});
+  assert(summaries.items.some(x => x.kind === 'context' && x.context.runId === second.id));
+  for (const item of summaries.items) if (item.kind === 'context') assert.deepEqual(item.context.entries, []);
+  await assert.rejects(bot.memory.get({profileId, namespace: nb, kind: 'context', id: second.id}), /NOT_FOUND|MEMORY_NAMESPACE_DENIED|MEMORY_SCOPE_MISMATCH/);
+  const bSession = await bot.sessions.create({...meta(), kind: 'direct', title: 'B context', memberIds: [b.id]});
+  await run(bSession.id, 'ROOT_B_ONLY: tell me a greeting.');
+  assert.equal(requests.length, 3);
+  const bRequest = requests[2]; assert(bRequest);
+  assert(!bRequest.texts.join('\n').includes('ROOT_A_')); assert(!bRequest.texts.join('\n').includes('ROOT_REPLY_1'));
+  for (const namespace of [na, nb]) {
+    const settings = await bot.memory.get({profileId, namespace, kind: 'settings'});
+    assert.equal(settings.kind, 'settings'); if (settings.kind !== 'settings') throw new Error('settings discriminator');
+    await bot.memory.setAutoMaintenance({...meta(settings.settings.revision), namespace, enabled: false});
+  }
+  const c = await assistant.createAgent({...meta(), draft: {name: 'Root auto', description: '', persona: 'Keep memory private.', model, allowedTools: ['note.write']}});
+  const nc: MemoryNamespace = {kind: 'agent', id: c.id};
+  const latestBudget = await bot.collaboration.budget({profileId});
+  await bot.collaboration.configureBudget({...meta(latestBudget.revision), policy: {...latestBudget.policy, maintenanceTokenLimit: '1000000'}});
+  const cSession = await bot.sessions.create({...meta(), kind: 'direct', title: 'Automatic private memory', memberIds: [c.id]});
+  const sourceRun = await run(cSession.id, 'ROOT_AUTO_INTENT: I prefer concise explanations.');
+  const completed = await until(() => bot.memory.list({profileId, namespace: nc, kind: 'job'}), page => page.items.some(x => x.kind === 'job' && x.job.sourceRunId === sourceRun.id && x.job.commit === 'committed' && x.job.run?.status === 'succeeded'), 'automatic memory commit');
+  const job = completed.items.find(x => x.kind === 'job' && x.job.sourceRunId === sourceRun.id);
+  assert(job?.kind === 'job' && job.job.run); assert.notEqual(job.job.run.id, sourceRun.id);
+  assert.equal(requests.length, 5); assert.equal(requests.filter(x => x.maintenance).length, 1);
+  const autoItems = await bot.memory.list({profileId, namespace: nc, kind: 'item'});
+  const autoItem = autoItems.items.find(x => x.kind === 'item' && x.item.state === 'active' && x.item.body.text === learned);
+  assert(autoItem?.kind === 'item' && autoItem.item.state === 'active');
+  assert.equal(autoItem.item.body.creatorKind, 'agent'); assert.equal(autoItem.item.body.creatorAgentId, c.id);
+  assert.equal(autoItem.item.body.provenance, 'observation'); assert.equal(autoItem.item.body.jobId, job.job.id);
+  const history = await bot.sessions.history({profileId, sessionId: cSession.id});
+  assert.equal(history.items.length, 2); assert(!JSON.stringify(history).includes(learned));
+  const events = await bot.runs.subscribe({profileId, runId: job.job.run.id, afterSeq: '0', limit: 100, waitMillis: 0});
+  assert(!events.events.some(x => x.type === 'text.delta' || x.type === 'text_delta'));
+  assert(!JSON.stringify(events).includes(learned));
+  // Pause only future maintenance, then prove the automatically committed
+  // revision is actually consumed by a later ordinary SDK request.
+  const cSettings = await bot.memory.get({profileId, namespace: nc, kind: 'settings'});
+  assert.equal(cSettings.kind, 'settings'); if (cSettings.kind !== 'settings') throw new Error('settings discriminator');
+  await bot.memory.setAutoMaintenance({...meta(cSettings.settings.revision), namespace: nc, enabled: false});
+  const recalledRun = await run(cSession.id, 'ROOT_AUTO_FOLLOWUP: recalls preferences and prefers concise explanations.');
+  assert.equal(requests.length, 6); assert.equal(requests.filter(x => x.maintenance).length, 1);
+  const finalRequest = requests[5]; assert(finalRequest && !finalRequest.maintenance);
+  const automaticRecallBlock = finalRequest.texts.find(x => x.startsWith(memoryMarker));
+  assert(automaticRecallBlock, 'next ordinary SDK request must receive automatic memory');
+  const automaticRecall = JSON.parse(automaticRecallBlock.slice(memoryMarker.length));
+  assert(automaticRecall.entries.some((x: {text: string}) => x.text === learned));
+  const automaticContext = await contextPages(bot, nc, recalledRun.id);
+  assert(automaticContext.entries.some(x => x.kind === 'memory_recall' && x.source?.id === autoItem.item.revisionId && x.text === learned));
+  assert.deepEqual(automaticContext.first.usage, recalledRun.contextUsage);
+  Object.assign(report, {automaticRecallRunId: recalledRun.id, automaticRecallRevisionId: autoItem.item.revisionId});
+  Object.assign(report, {profileId, agentIds: [a.id, b.id, c.id], sourceRunId: sourceRun.id, maintenanceRunId: job.job.run.id, jobId: job.job.id,
+    firstRunId: first.id, contextRunId: second.id, contextEntryCount: context.entries.length, recalledDisplayParts: parts.length, seededRevisionId: seeded.revisionId, learnedItemId: autoItem.item.id});
+  await close(); const reopened = await open();
+  const persisted = await reopened.bot.memory.get({profileId, namespace: nc, kind: 'item', id: autoItem.item.id});
+  assert.deepEqual(persisted, autoItem); assert.deepEqual((await contextPages(reopened.bot, na, second.id)).entries, context.entries);
+  assert.equal(requests.length, 6, 'reopen must not replay a completed maintenance job');
+  await close(); assert.equal(timerIDs.size, 0); assert.equal(serverError, undefined);
+  Object.assign(report, {complete: true, cases: ['actual model request includes sealed short-term and private recall', 'previous exchange selected once', 'separate Bot namespace remains private', 'UTF8 context display paging and summary-only list', 'zero maintenance budget sends no HTTP', 'auto maintenance uses original executor and SDK with empty tools', 'private candidate commits without user text/history leakage', 'automatically committed revision reaches the next actual SDK request and context after pausing future maintenance', 'natural exit/reopen preserves memory and context without model replay']});
+}
+try { await main(); }
+finally {
+  try { await close(); }
+  finally { for (const socket of sockets) socket.destroy(); await new Promise<void>(resolve => server.close(() => resolve()));
+    Object.assign(report, {serverError}); await writeFile(join(root, 'result.json'), JSON.stringify(report, null, 2) + '\n', {mode: 0o600}); }
+}
+console.log(JSON.stringify({complete: report.complete, protocol, requests: requests.length, exits}));

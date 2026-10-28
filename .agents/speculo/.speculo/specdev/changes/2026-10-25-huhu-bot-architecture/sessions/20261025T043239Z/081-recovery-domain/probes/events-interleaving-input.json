@@ -1,0 +1,17 @@
+{
+  "note": "exact current source overlay changes only external barriers/diagnostic; no product/test input writes; business assertions and original3s preserved",
+  "files": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "sha256": "e27d13089880686b86361965a903c952437a561f22aed3b9846fa3d34a347aed"
+    },
+    {
+      "path": "native/huhubot/tests/contract/events/delivery_test.go",
+      "sha256": "4ca181345027e1b4a832c68f0c40c36ef4f78346128d595e2b10ae2405d06ea4"
+    },
+    {
+      "path": "native/huhubot/tests/contract/events/history_test.go",
+      "sha256": "5e61949b538bb78088b2ddb199d2d619ed47027d98b158c359e2600185098cd6"
+    }
+  ]
+}

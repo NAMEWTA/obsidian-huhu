@@ -1,0 +1,16 @@
+{
+  "observer": "native:/root",
+  "task": "106-protocol-private-contract",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullInterfaceContractRead": true,
+  "returnExit": 0,
+  "reportSha256": "a002c1d1aadc0b9a3e5b40ea5bd3348468f892fc79e2c67002b981dd652fb366",
+  "interfaceSha256": "63a9f3bff30f9c2fb14f596a82e27f5216aab4c7951ff5240060686b584eaee2",
+  "manifestSha256": "1e39ade177a4ba096248832a63691775efc61e00810676e8b6d5a16586993c8d",
+  "artifactCount": 9,
+  "artifactDrift": [],
+  "sourceCount": 30,
+  "sourceDrift": [],
+  "disposition": "Accepted finite private contract and helper A; new implementation107 and exact raw observer/context supplement separately frozen. Initial author Status enum failure preserved; no product tests claimed."
+}

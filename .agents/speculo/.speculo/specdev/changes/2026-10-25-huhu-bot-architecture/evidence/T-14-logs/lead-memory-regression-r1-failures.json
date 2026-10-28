@@ -1,0 +1,342 @@
+{
+  "source": "evidence/T-14-logs/lead-memory-regression-r1.json",
+  "failureCount": 67,
+  "failedTopLevelCount": 29,
+  "failures": [
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/chat",
+      "test": "TestLegalHistoryInheritanceRetainsDerivedProvenanceAfterReopen",
+      "output": "=== RUN   TestLegalHistoryInheritanceRetainsDerivedProvenanceAfterReopen\n    provenance_test.go:135: legal source history omitted: []api.VisibleMessage(nil)\n--- FAIL: TestLegalHistoryInheritanceRetainsDerivedProvenanceAfterReopen (0.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/chat",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/chat\t11.142s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/collaboration-policy",
+      "test": "TestDefaultChatConsumesPublicBudgetAndOnlyOneLastAllowanceOverHTTP",
+      "output": "=== RUN   TestDefaultChatConsumesPublicBudgetAndOnlyOneLastAllowanceOverHTTP\n    chat_http_test.go:144: last allowance control used a different serialized request\n--- FAIL: TestDefaultChatConsumesPublicBudgetAndOnlyOneLastAllowanceOverHTTP (0.13s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/collaboration-policy",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/collaboration-policy\t6.215s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/existing",
+      "output": "=== RUN   TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/existing\n    followup_test.go:100: wait succeeded: api.Run{ContextUsage:(*api.ContextUsage)(0x28f71ee8c438), Recovery:(*api.RecoveryStatus)(nil), Role:\"execution\", Group:(*api.GroupBinding)(nil), Limits:(*api.ExecutionLimits)(0x28f71f378b70), BudgetRootRunID:\"run:46456b8eeee64ad16193327a1dee9801\", ID:\"run:485eb36c2ec76e3039a6af135f386fdb\", SessionID:\"session:3b5a589cadf26f12851ee2c8f0910006\", Status:\"failed\", Revision:\"4\", AgentID:\"agent:c3c1fd9fb78f7abc80fa5a39f35a93e9\", PersonaRevision:\"1\", ModelBindingRevision:\"1\", ParentRunID:\"\", RootRunID:\"run:485eb36c2ec76e3039a6af135f386fdb\", RetryOfRunID:\"run:b50671f325529c035c2556587579346b\", EffectsUnresolved:false, Reason:\"MODEL_EXECUTION_FAILED\", Usage:(*api.RunUsage)(nil)}\n--- FAIL: TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/existing (8.10s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/temporary",
+      "output": "=== RUN   TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/temporary\n    followup_test.go:100: wait succeeded: api.Run{ContextUsage:(*api.ContextUsage)(0x28f71ede0138), Recovery:(*api.RecoveryStatus)(nil), Role:\"execution\", Group:(*api.GroupBinding)(nil), Limits:(*api.ExecutionLimits)(0x28f71f2e6cf0), BudgetRootRunID:\"run:0588a4ecf4aa9fe7b523762a05d3d5ad\", ID:\"run:7ea9a2da4cc690b6e62fb31eb602cdec\", SessionID:\"session:f6c96bee83a37cd8b1b6309a6b6f2ef0\", Status:\"failed\", Revision:\"4\", AgentID:\"temporary:70697aa5138457db9b5debb43435aebb\", PersonaRevision:\"1\", ModelBindingRevision:\"1\", ParentRunID:\"\", RootRunID:\"run:7ea9a2da4cc690b6e62fb31eb602cdec\", RetryOfRunID:\"run:8ab95f379646ec0b376625fa0a642c45\", EffectsUnresolved:false, Reason:\"MODEL_EXECUTION_FAILED\", Usage:(*api.RunUsage)(nil)}\n--- FAIL: TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount/temporary (8.08s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount",
+      "output": "=== RUN   TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount\n--- FAIL: TestTerminalTaskReplyCreatesNewPrivateRunAndKeepsOriginalBudgetAccount (16.18s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestNotifyDoesNotWakeQuestionReplyHasDurableIdentityAndRealWaitCycle",
+      "output": "=== RUN   TestNotifyDoesNotWakeQuestionReplyHasDurableIdentityAndRealWaitCycle\n    messages_test.go:85: actual thread messages missing: []api.AgentMessage(nil)\n--- FAIL: TestNotifyDoesNotWakeQuestionReplyHasDurableIdentityAndRealWaitCycle (0.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-user",
+      "output": "=== RUN   TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-user\n    reply_sources_test.go:194: supplement not actually consumed with lineage/context []api.AgentMessage(nil) api.ExecutionLineage{Group:(*api.GroupBinding)(nil), BudgetRootRunID:\"run:8bedcfb0bc28c695e1601933a73c05b7\", DelegationID:\"delegation:03777383ceda8de14032bdfe1a39ca20\", RootRunID:\"run:8bedcfb0bc28c695e1601933a73c05b7\", ParentRunID:\"run:8bedcfb0bc28c695e1601933a73c05b7\", WorkThreadID:\"thread:9906e04a2c991bb33f9ed3fb5f8520f0\", ConfigSnapshotID:\"snapshot:6f448631bdf0a0bd3d0d29db9896e1f3\", SubjectID:\"agent:bd0157e3677f9f700c202a7a52bd1593\", SubjectKind:\"agent\", SponsorAgentID:\"\", CancelGeneration:\"0\", Derived:[]api.DerivedInput{api.DerivedInput{Kind:\"message\", ID:\"message:b6e5a2e3326037cc2b5f096bbee73cd7\", Revision:\"1\", Hash:\"sha256:4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2\", Namespace:\"session:65017f6cf4ea5530eb1339c5d219ba8b\", WorkThreadID:\"session:65017f6cf4ea5530eb1339c5d219ba8b\"}, api.DerivedInput{Kind:\"task_result\", ID:\"run:e2fabfca03e6b87757806349e10f3410\", Revision:\"4\", Hash:\"sha256:9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b\", Namespace:\"thread:7ea5dff57cc55db9a6814135359097ea\", WorkThreadID:\"thread:7ea5dff57cc55db9a6814135359097ea\"}, api.DerivedInput{Kind:\"message\", ID:\"agent-message:669f8d708f5e752f4d1e4a65b2b4f1e5\", Revision:\"1\", Hash:\"sha256:32d6e5c430fdc4a338478c1979a884d427864f59a2acc2c65082e99db0bee726\", Namespace:\"thread:9906e04a2c991bb33f9ed3fb5f8520f0\", WorkThreadID:\"thread:9906e04a2c991bb33f9ed3fb5f8520f0\"}}}\n--- FAIL: TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-user (0.16s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-model",
+      "output": "=== RUN   TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-model\n    reply_sources_test.go:194: supplement not actually consumed with lineage/context []api.AgentMessage(nil) api.ExecutionLineage{Group:(*api.GroupBinding)(nil), BudgetRootRunID:\"run:875adb9516b643a31775dba5e021a541\", DelegationID:\"delegation:510ae10e840ed325538710b282f94052\", RootRunID:\"run:875adb9516b643a31775dba5e021a541\", ParentRunID:\"run:875adb9516b643a31775dba5e021a541\", WorkThreadID:\"thread:d9926a3b3124ddd27fa8f72a7dd8acf1\", ConfigSnapshotID:\"snapshot:73a072a7b78e5b3d3e8a9a4a0ddff97d\", SubjectID:\"agent:db85ee38ec9a3b2238b205add139a090\", SubjectKind:\"agent\", SponsorAgentID:\"\", CancelGeneration:\"0\", Derived:[]api.DerivedInput{api.DerivedInput{Kind:\"message\", ID:\"message:c207c26cf70d81a4c456b7c5c8dc940c\", Revision:\"1\", Hash:\"sha256:4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2\", Namespace:\"session:924f05ff44c3433411235989e7f755d6\", WorkThreadID:\"session:924f05ff44c3433411235989e7f755d6\"}, api.DerivedInput{Kind:\"task_result\", ID:\"run:4442f7be8641affc17a95ab10f01981e\", Revision:\"4\", Hash:\"sha256:9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b\", Namespace:\"thread:6ddc3248f37c76d2320bd8af99185f5a\", WorkThreadID:\"thread:6ddc3248f37c76d2320bd8af99185f5a\"}, api.DerivedInput{Kind:\"message\", ID:\"agent-message:14d7ffdc5ae69b40d83ae4077ba2b5a3\", Revision:\"1\", Hash:\"sha256:32d6e5c430fdc4a338478c1979a884d427864f59a2acc2c65082e99db0bee726\", Namespace:\"thread:d9926a3b3124ddd27fa8f72a7dd8acf1\", WorkThreadID:\"thread:d9926a3b3124ddd27fa8f72a7dd8acf1\"}}}\n--- FAIL: TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/active-model (0.15s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/waiting-user",
+      "output": "=== RUN   TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/waiting-user\n    reply_sources_test.go:194: supplement not actually consumed with lineage/context []api.AgentMessage(nil) api.ExecutionLineage{Group:(*api.GroupBinding)(nil), BudgetRootRunID:\"run:adc60a97d8ad8f56a67b6d7c4a0a1592\", DelegationID:\"delegation:e67a47cd3207c03242029129800514ec\", RootRunID:\"run:adc60a97d8ad8f56a67b6d7c4a0a1592\", ParentRunID:\"run:adc60a97d8ad8f56a67b6d7c4a0a1592\", WorkThreadID:\"thread:9ea1c8c83d44a4c470fa9c7452608a08\", ConfigSnapshotID:\"snapshot:b7241d0875609bf761e2d44c6bfa3e96\", SubjectID:\"agent:e6e510aee727c1677eb58e4c6c6f663d\", SubjectKind:\"agent\", SponsorAgentID:\"\", CancelGeneration:\"0\", Derived:[]api.DerivedInput{api.DerivedInput{Kind:\"message\", ID:\"message:08685fa2cc57a11e57d0e7e0f8181bb5\", Revision:\"1\", Hash:\"sha256:4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2\", Namespace:\"session:6465b2324ffe10765d1d4d40344f90cb\", WorkThreadID:\"session:6465b2324ffe10765d1d4d40344f90cb\"}, api.DerivedInput{Kind:\"task_result\", ID:\"run:9327781b9150db30ae8ae14fe6f95bc4\", Revision:\"4\", Hash:\"sha256:9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b\", Namespace:\"thread:69b269c81d7b61e4c9074295e4146bb1\", WorkThreadID:\"thread:69b269c81d7b61e4c9074295e4146bb1\"}, api.DerivedInput{Kind:\"message\", ID:\"agent-message:c89ca7715985c2179614f1f5c56e6aae\", Revision:\"1\", Hash:\"sha256:32d6e5c430fdc4a338478c1979a884d427864f59a2acc2c65082e99db0bee726\", Namespace:\"thread:9ea1c8c83d44a4c470fa9c7452608a08\", WorkThreadID:\"thread:9ea1c8c83d44a4c470fa9c7452608a08\"}}}\n--- FAIL: TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume/waiting-user (0.15s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume",
+      "output": "=== RUN   TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume\n--- FAIL: TestTaskReplySourceBoundaryAndWaitingUserSupplementReachActualResume (0.46s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/active-model",
+      "output": "=== RUN   TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/active-model\n    reply_sources_test.go:443: reply inbox/source missing\n--- FAIL: TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/active-model (0.11s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/waiting-user",
+      "output": "=== RUN   TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/waiting-user\n    reply_sources_test.go:443: reply inbox/source missing\n--- FAIL: TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/waiting-user (0.14s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-empty",
+      "output": "=== RUN   TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-empty\n    reply_sources_test.go:443: reply inbox/source missing\n--- FAIL: TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-empty (0.15s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-subset",
+      "output": "=== RUN   TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-subset\n    reply_sources_test.go:443: reply inbox/source missing\n--- FAIL: TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer/agent-message-subset (0.15s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer",
+      "output": "=== RUN   TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer\n--- FAIL: TestQuestionTaskReplyUsesActualSenderScopeAndSupportsWaitingUserAnswer (0.68s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/revoked",
+      "output": "=== RUN   TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/revoked\n    review_queue_test.go:132: independent Engine entered\n    review_queue_test.go:160: rejected question has no stable stopped disposition: failed RECIPIENT_NOT_GRANTED claim:228d3b3d188170281c9d6d6f70502862 0 <nil>\n--- FAIL: TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/revoked (0.28s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/failed-commit",
+      "output": "=== RUN   TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/failed-commit\n    review_queue_test.go:132: independent Engine entered\n    review_queue_test.go:160: rejected question has no stable stopped disposition: failed RECIPIENT_NOT_GRANTED claim:b9cb1a23d01bf4679b80c9ac93ae1fef 0 <nil>\n--- FAIL: TestQueuedQuestionRevocationDoesNotStarveIndependentRoot/failed-commit (0.45s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestQueuedQuestionRevocationDoesNotStarveIndependentRoot",
+      "output": "=== RUN   TestQueuedQuestionRevocationDoesNotStarveIndependentRoot\n--- FAIL: TestQueuedQuestionRevocationDoesNotStarveIndependentRoot (1.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions/question",
+      "output": "=== RUN   TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions/question\n    wait_test.go:122: child not entered\n--- FAIL: TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions/question (5.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": "TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions",
+      "output": "=== RUN   TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions\n--- FAIL: TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestions (5.09s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/delegation\t30.119s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions",
+      "output": "=== RUN   TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions\n    checkpoint_test.go:344: restart omitted local messages 4 <nil>\n--- FAIL: TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions (0.12s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestDefaultAnthropicPersistsTextAndSettledUsage",
+      "output": "=== RUN   TestDefaultAnthropicPersistsTextAndSettledUsage\n    engine_test.go:124: complete local initial messages missing map[max_tokens:4096 messages:[map[content:[map[text:HUHU short-term context v1\n        {\"Version\":\"1\",\"Namespace\":{\"SubjectKind\":\"agent\",\"SubjectID\":\"agent:7517578248fea8e3160dea6628e41c45\",\"SessionID\":\"session:0fc7fe5fa7733cba3acc19b2a0db46b4\",\"WorkThreadID\":\"session:0fc7fe5fa7733cba3acc19b2a0db46b4\"},\"IntentHash\":\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\",\"Entries\":[],\"Usage\":{\"policyVersion\":\"extractive-v1\",\"selected\":0,\"excerpted\":0,\"omittedAuthorized\":0,\"windowLimited\":false},\"BindingDigest\":\"sha256:5ed214a008ba1fe282cd7433420d959878ee64d8c16cf48cfe5d22844c0152ce\"} type:text]] role:user] map[content:[map[text:one intention type:text]] role:user]] model:fixture-model stream:true system:[map[text:Keep literal {\"sample\":{\"x\":1}}. type:text]]]\n--- FAIL: TestDefaultAnthropicPersistsTextAndSettledUsage (0.05s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestEmptyToolObjectRemainsPresentWithoutJSONDelta/no_delta",
+      "output": "=== RUN   TestEmptyToolObjectRemainsPresentWithoutJSONDelta/no_delta\n    protocol_edges_test.go:210: missing local replay [{\"content\":[{\"text\":\"HUHU short-term context v1\\n{\\\"Version\\\":\\\"1\\\",\\\"Namespace\\\":{\\\"SubjectKind\\\":\\\"agent\\\",\\\"SubjectID\\\":\\\"agent:98ee2bd8ff1eff827d3ae77bc417f8b2\\\",\\\"SessionID\\\":\\\"session:6b9714b46860a4ce63b8d28b9374c8a2\\\",\\\"WorkThreadID\\\":\\\"session:6b9714b46860a4ce63b8d28b9374c8a2\\\"},\\\"IntentHash\\\":\\\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\\\",\\\"Entries\\\":[],\\\"Usage\\\":{\\\"policyVersion\\\":\\\"extractive-v1\\\",\\\"selected\\\":0,\\\"excerpted\\\":0,\\\"omittedAuthorized\\\":0,\\\"windowLimited\\\":false},\\\"BindingDigest\\\":\\\"sha256:d4d51882af56ea4235fc6895925dab8464ff6ee78c045e9b4074bb8487dfa6d7\\\"}\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"text\":\"one intention\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"id\":\"toolu_empty\",\"input\":{},\"name\":\"agents_discover\",\"type\":\"tool_use\"}],\"role\":\"assistant\"},{\"content\":[{\"content\":\"{\\\"directory\\\":{\\\"items\\\":[]},\\\"status\\\":\\\"completed\\\"}\",\"is_error\":false,\"tool_use_id\":\"toolu_empty\",\"type\":\"tool_result\"}],\"role\":\"user\"}]\n--- FAIL: TestEmptyToolObjectRemainsPresentWithoutJSONDelta/no_delta (0.06s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestEmptyToolObjectRemainsPresentWithoutJSONDelta/empty_delta",
+      "output": "=== RUN   TestEmptyToolObjectRemainsPresentWithoutJSONDelta/empty_delta\n    protocol_edges_test.go:210: missing local replay [{\"content\":[{\"text\":\"HUHU short-term context v1\\n{\\\"Version\\\":\\\"1\\\",\\\"Namespace\\\":{\\\"SubjectKind\\\":\\\"agent\\\",\\\"SubjectID\\\":\\\"agent:e51469a283f2aa9479ac125ebf9de7ac\\\",\\\"SessionID\\\":\\\"session:645d621506928c61b0d19790af01683a\\\",\\\"WorkThreadID\\\":\\\"session:645d621506928c61b0d19790af01683a\\\"},\\\"IntentHash\\\":\\\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\\\",\\\"Entries\\\":[],\\\"Usage\\\":{\\\"policyVersion\\\":\\\"extractive-v1\\\",\\\"selected\\\":0,\\\"excerpted\\\":0,\\\"omittedAuthorized\\\":0,\\\"windowLimited\\\":false},\\\"BindingDigest\\\":\\\"sha256:f91a0603cb1a6844a7a822fe71fb4a2caa92d8fae4d384f3f301ddba8f211498\\\"}\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"text\":\"one intention\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"id\":\"toolu_empty\",\"input\":{},\"name\":\"agents_discover\",\"type\":\"tool_use\"}],\"role\":\"assistant\"},{\"content\":[{\"content\":\"{\\\"directory\\\":{\\\"items\\\":[]},\\\"status\\\":\\\"completed\\\"}\",\"is_error\":false,\"tool_use_id\":\"toolu_empty\",\"type\":\"tool_result\"}],\"role\":\"user\"}]\n--- FAIL: TestEmptyToolObjectRemainsPresentWithoutJSONDelta/empty_delta (0.06s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestEmptyToolObjectRemainsPresentWithoutJSONDelta/more_text_blocks_than_tool_limit",
+      "output": "=== RUN   TestEmptyToolObjectRemainsPresentWithoutJSONDelta/more_text_blocks_than_tool_limit\n    protocol_edges_test.go:210: missing local replay [{\"content\":[{\"text\":\"HUHU short-term context v1\\n{\\\"Version\\\":\\\"1\\\",\\\"Namespace\\\":{\\\"SubjectKind\\\":\\\"agent\\\",\\\"SubjectID\\\":\\\"agent:20c4842c82419828714bd71127270950\\\",\\\"SessionID\\\":\\\"session:f2c236dd692e2f3ee680c4996f663f6f\\\",\\\"WorkThreadID\\\":\\\"session:f2c236dd692e2f3ee680c4996f663f6f\\\"},\\\"IntentHash\\\":\\\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\\\",\\\"Entries\\\":[],\\\"Usage\\\":{\\\"policyVersion\\\":\\\"extractive-v1\\\",\\\"selected\\\":0,\\\"excerpted\\\":0,\\\"omittedAuthorized\\\":0,\\\"windowLimited\\\":false},\\\"BindingDigest\\\":\\\"sha256:b2b54ff61a0e4457b1f55e1754c3275937578ae2226ddc1047779d96af37595e\\\"}\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"text\":\"one intention\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"text\":\"\",\"type\":\"text\"},{\"id\":\"toolu_empty\",\"input\":{},\"name\":\"agents_discover\",\"type\":\"tool_use\"}],\"role\":\"assistant\"},{\"content\":[{\"content\":\"{\\\"directory\\\":{\\\"items\\\":[]},\\\"status\\\":\\\"completed\\\"}\",\"is_error\":false,\"tool_use_id\":\"toolu_empty\",\"type\":\"tool_result\"}],\"role\":\"user\"}]\n--- FAIL: TestEmptyToolObjectRemainsPresentWithoutJSONDelta/more_text_blocks_than_tool_limit (0.06s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestEmptyToolObjectRemainsPresentWithoutJSONDelta",
+      "output": "=== RUN   TestEmptyToolObjectRemainsPresentWithoutJSONDelta\n--- FAIL: TestEmptyToolObjectRemainsPresentWithoutJSONDelta (0.17s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": "TestMixedBlocksKeepThinkingAndOriginalToolDecisions",
+      "output": "=== RUN   TestMixedBlocksKeepThinkingAndOriginalToolDecisions\n    tools_test.go:157: local complete messages/results missing [{\"content\":[{\"text\":\"HUHU short-term context v1\\n{\\\"Version\\\":\\\"1\\\",\\\"Namespace\\\":{\\\"SubjectKind\\\":\\\"agent\\\",\\\"SubjectID\\\":\\\"agent:278a2bd48c19af7b087e976e071e64b3\\\",\\\"SessionID\\\":\\\"session:c6a2898fe1739af0c969668754300326\\\",\\\"WorkThreadID\\\":\\\"session:c6a2898fe1739af0c969668754300326\\\"},\\\"IntentHash\\\":\\\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\\\",\\\"Entries\\\":[],\\\"Usage\\\":{\\\"policyVersion\\\":\\\"extractive-v1\\\",\\\"selected\\\":0,\\\"excerpted\\\":0,\\\"omittedAuthorized\\\":0,\\\"windowLimited\\\":false},\\\"BindingDigest\\\":\\\"sha256:d7182710cd1f6acc19fa4f635b12bb706d8a8bb98b7d402de38d3f3d32ba5b49\\\"}\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"text\":\"one intention\",\"type\":\"text\"}],\"role\":\"user\"},{\"content\":[{\"signature\":\"opaque-signature+/==\\\\u4e2d\",\"thinking\":\"synthetic private thinking 思考🙂\",\"type\":\"thinking\"},{\"caller\":{\"type\":\"direct\"},\"id\":\"toolu_first\",\"input\":{\"content\":\"第一段🙂\",\"target\":{\"workspaceId\":\"workspace:anthropic\",\"resourceId\":\"resource:first\",\"operation\":\"update\",\"baseRevision\":\"1\"}},\"name\":\"note_write\",\"type\":\"tool_use\"},{\"citations\":[],\"text\":\"EchoEcho\",\"type\":\"text\"},{\"id\":\"toolu_second\",\"input\":{\"content\":\"第二段\",\"target\":{\"workspaceId\":\"workspace:anthropic\",\"resourceId\":\"resource:second\",\"operation\":\"update\",\"baseRevision\":\"1\"}},\"name\":\"note_write\",\"type\":\"tool_use\"},{\"data\":\"opaque-redacted+/==\\\\u4e2d\",\"type\":\"redacted_thinking\"},{\"signature\":\"empty-thinking-signature+/==\",\"thinking\":\"\",\"type\":\"thinking\"}],\"role\":\"assistant\"},{\"content\":[{\"content\":\"{\\\"effectId\\\":\\\"effect:0a4767a71032b11598bc55cbfc09bf50\\\",\\\"receipt\\\":{\\\"effectId\\\":\\\"effect:0a4767a71032b11598bc55cbfc09bf50\\\",\\\"status\\\":\\\"committed\\\",\\\"revision\\\":\\\"2\\\",\\\"receiptId\\\":\\\"receipt:anthropic\\\"},\\\"status\\\":\\\"completed\\\"}\",\"is_error\":false,\"tool_use_id\":\"toolu_first\",\"type\":\"tool_result\"},{\"content\":\"{\\\"effectId\\\":\\\"effect:e8a58e0b9512b289cdd3fa8053e14f6a\\\",\\\"reason\\\":\\\"APPROVAL_REJECTED\\\",\\\"status\\\":\\\"denied\\\"}\",\"is_error\":true,\"tool_use_id\":\"toolu_second\",\"type\":\"tool_result\"}],\"role\":\"user\"}]\n--- FAIL: TestMixedBlocksKeepThinkingAndOriginalToolDecisions (0.10s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/anthropic\t4.766s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat",
+      "test": "TestOneHTTPPersistsLiteralPersonaAndSettledUsage",
+      "output": "=== RUN   TestOneHTTPPersistsLiteralPersonaAndSettledUsage\n    engine_test.go:159: literal persona/current intention changed [map[content:Keep literal {\"sample\":{\"x\":1}}. role:system] map[content:HUHU short-term context v1\n        {\"Version\":\"1\",\"Namespace\":{\"SubjectKind\":\"agent\",\"SubjectID\":\"agent:8ef234c76af56725196afc3f61801e08\",\"SessionID\":\"session:b4ad5ce95215542fc03a61badccbf0a5\",\"WorkThreadID\":\"session:b4ad5ce95215542fc03a61badccbf0a5\"},\"IntentHash\":\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\",\"Entries\":[],\"Usage\":{\"policyVersion\":\"extractive-v1\",\"selected\":0,\"excerpted\":0,\"omittedAuthorized\":0,\"windowLimited\":false},\"BindingDigest\":\"sha256:5091cbc73f610c072394a1b9607e23421dc37c5969c55bf35c2a070b029ac78c\"} role:user] map[content:one intention role:user]]\n--- FAIL: TestOneHTTPPersistsLiteralPersonaAndSettledUsage (0.04s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat",
+      "test": "TestQuestionBatchResumesOriginalCallsWithExplicitReplyIdentity",
+      "output": "=== RUN   TestQuestionBatchResumesOriginalCallsWithExplicitReplyIdentity\n    question_test.go:51: accepted question reply identity missing map[max_completion_tokens:4096 messages:[map[content:question worker role:system] map[content:Accepted task requirements (data):\n        {\"delegationId\":\"delegation:fc16ece23e2b43394f2e1ab55e990810\",\"constraints\":[],\"expectedOutput\":\"\"} role:user] map[content:HUHU short-term context v1\n        {\"Version\":\"1\",\"Namespace\":{\"SubjectKind\":\"agent\",\"SubjectID\":\"agent:ac76efa63688499268a27a6c41d0b353\",\"SessionID\":\"session:bd5a60c512526ed58fcefb3e3d1ef14b\",\"WorkThreadID\":\"thread:ce24bc6990042d7d633fd3703673d216\"},\"IntentHash\":\"sha256:3187f6f0c9a8a087131fdcd81e2626604cdb242ca64afae69963d7d56d01ecf9\",\"Entries\":[{\"ID\":\"context-entry:b93c9653909f2629a2383c3f15b66f19\",\"OriginKind\":\"thread_message\",\"Ref\":{\"kind\":\"message\",\"id\":\"agent-message:7cdf050ad1969cd8417dbd110a5ea9f3\",\"revision\":\"1\",\"hash\":\"sha256:3187f6f0c9a8a087131fdcd81e2626604cdb242ca64afae69963d7d56d01ecf9\",\"namespace\":\"thread:ce24bc6990042d7d633fd3703673d216\",\"workThreadId\":\"thread:ce24bc6990042d7d633fd3703673d216\"},\"Use\":\"inbox\",\"Role\":\"data\",\"Representation\":\"intent_alias\",\"Message\":{\"id\":\"agent-message:7cdf050ad1969cd8417dbd110a5ea9f3\",\"fromAgentId\":\"agent:c21f1c9cb7eec6d9c6f320b0ec10e4a7\",\"toAgentId\":\"agent:ac76efa63688499268a27a6c41d0b353\",\"text\":\"\",\"createdAt\":\"2026-10-26T15:23:52.705774873Z\",\"kind\":\"question\",\"status\":\"delivered\",\"delegationId\":\"delegation:fc16ece23e2b43394f2e1ab55e990810\",\"questionId\":\"agent-message:7cdf050ad1969cd8417dbd110a5ea9f3\",\"workThreadId\":\"thread:ce24bc6990042d7d633fd3703673d216\"},\"Partial\":false,\"Spans\":[],\"Text\":\"\",\"TextHash\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}],\"Usage\":{\"policyVersion\":\"extractive-v1\",\"selected\":1,\"excerpted\":0,\"omittedAuthorized\":0,\"windowLimited\":false},\"BindingDigest\":\"sha256:ba231b53f64513e608107e72a93b686d4c9b3e68e2b74fceb7c7164c54edb2f7\"} role:user] map[content:question-1 role:user]] model:fixture-model n:1 stream:true stream_options:map[include_usage:true] tool_choice:auto tools:[map[function:map[description:Send explicit notify/question/reply. Notify does not start a task; question waits within the same root budget. name:agents_message parameters:map[$schema:https://json-schema.org/draft/2020-12/schema additionalProperties:false properties:map[delegationId:map[type:string] kind:map[type:string] messageIds:map[items:map[type:string] type:array] questionId:map[type:string] sourceRefs:map[items:map[additionalProperties:false properties:map[hash:map[type:string] hostConnectionId:map[type:string] hostLeaseEpoch:map[type:string] hostLeaseId:map[type:string] kind:map[type:string] originClientId:map[type:string] originViewId:map[type:string] range:map[additionalProperties:false properties:map[end:map[type:integer] start:map[type:integer]] required:[end start] type:object] resourceId:map[type:string] revision:map[type:string] scopeResourceIds:map[items:map[type:string] type:array] title:map[type:string] workspaceId:map[type:string]] required:[hash hostConnectionId hostLeaseEpoch hostLeaseId kind originClientId originViewId resourceId revision scopeResourceIds workspaceId] type:object] type:array] targetAgentId:map[type:string] text:map[type:string]] required:[kind sourceRefs targetAgentId text] type:object]] type:function]]]\n    question_test.go:51: accepted question reply identity missing map[max_completion_tokens:4096 messages:[map[content:question worker role:system] map[content:Accepted task requirements (data):\n        {\"delegationId\":\"delegation:5228a70e1db6d69c4cffdd841a6a0fa1\",\"constraints\":[],\"expectedOutput\":\"\"} role:user] map[content:HUHU short-term context v1\n        {\"Version\":\"1\",\"Namespace\":{\"SubjectKind\":\"agent\",\"SubjectID\":\"agent:ac76efa63688499268a27a6c41d0b353\",\"SessionID\":\"session:bd5a60c512526ed58fcefb3e3d1ef14b\",\"WorkThreadID\":\"thread:2f01abb635bbe7dbb28de090811b07a2\"},\"IntentHash\":\"sha256:dea1ecab63154dc826f26982fddeca4f9dba358a614997c6f1868c829ba95384\",\"Entries\":[{\"ID\":\"context-entry:1486af3a233fca4307ea77dc67286f8a\",\"OriginKind\":\"thread_message\",\"Ref\":{\"kind\":\"message\",\"id\":\"agent-message:1488ac1f004d72dcd7624654616df0b6\",\"revision\":\"1\",\"hash\":\"sha256:dea1ecab63154dc826f26982fddeca4f9dba358a614997c6f1868c829ba95384\",\"namespace\":\"thread:2f01abb635bbe7dbb28de090811b07a2\",\"workThreadId\":\"thread:2f01abb635bbe7dbb28de090811b07a2\"},\"Use\":\"inbox\",\"Role\":\"data\",\"Representation\":\"intent_alias\",\"Message\":{\"id\":\"agent-message:1488ac1f004d72dcd7624654616df0b6\",\"fromAgentId\":\"agent:c21f1c9cb7eec6d9c6f320b0ec10e4a7\",\"toAgentId\":\"agent:ac76efa63688499268a27a6c41d0b353\",\"text\":\"\",\"createdAt\":\"2026-10-26T15:23:52.698215148Z\",\"kind\":\"question\",\"status\":\"delivered\",\"delegationId\":\"delegation:5228a70e1db6d69c4cffdd841a6a0fa1\",\"questionId\":\"agent-message:1488ac1f004d72dcd7624654616df0b6\",\"workThreadId\":\"thread:2f01abb635bbe7dbb28de090811b07a2\"},\"Partial\":false,\"Spans\":[],\"Text\":\"\",\"TextHash\":\"sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}],\"Usage\":{\"policyVersion\":\"extractive-v1\",\"selected\":1,\"excerpted\":0,\"omittedAuthorized\":0,\"windowLimited\":false},\"BindingDigest\":\"sha256:9de754b82d5044829ce4a68b9bbd57f597d51f3cce32a526d4f8bc0d37a5ed77\"} role:user] map[content:question-0 role:user]] model:fixture-model n:1 stream:true stream_options:map[include_usage:true] tool_choice:auto tools:[map[function:map[description:Send explicit notify/question/reply. Notify does not start a task; question waits within the same root budget. name:agents_message parameters:map[$schema:https://json-schema.org/draft/2020-12/schema additionalProperties:false properties:map[delegationId:map[type:string] kind:map[type:string] messageIds:map[items:map[type:string] type:array] questionId:map[type:string] sourceRefs:map[items:map[additionalProperties:false properties:map[hash:map[type:string] hostConnectionId:map[type:string] hostLeaseEpoch:map[type:string] hostLeaseId:map[type:string] kind:map[type:string] originClientId:map[type:string] originViewId:map[type:string] range:map[additionalProperties:false properties:map[end:map[type:integer] start:map[type:integer]] required:[end start] type:object] resourceId:map[type:string] revision:map[type:string] scopeResourceIds:map[items:map[type:string] type:array] title:map[type:string] workspaceId:map[type:string]] required:[hash hostConnectionId hostLeaseEpoch hostLeaseId kind originClientId originViewId resourceId revision scopeResourceIds workspaceId] type:object] type:array] targetAgentId:map[type:string] text:map[type:string]] required:[kind sourceRefs targetAgentId text] type:object]] type:function]]]\n    question_test.go:91: {0x11c4b5244378 <nil> execution <nil> 0x11c4b5555500 run:cd920dc21bbb7685be2d70440f401fc6 run:cd920dc21bbb7685be2d70440f401fc6 session:bd5a60c512526ed58fcefb3e3d1ef14b succeeded 8 agent:c21f1c9cb7eec6d9c6f320b0ec10e4a7 2 2  run:cd920dc21bbb7685be2d70440f401fc6  false  0x11c4b52b9000} 4 2\n--- FAIL: TestQuestionBatchResumesOriginalCallsWithExplicitReplyIdentity (0.13s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat",
+      "test": "TestCheckpointIntentUsesAcceptedRunBeforeResumeIO/history_refresh",
+      "output": "=== RUN   TestCheckpointIntentUsesAcceptedRunBeforeResumeIO/history_refresh\n    review_intent_test.go:78: missing protocol suspension {0x11c4b4f18af8 <nil> execution <nil> 0x11c4b5554870 run:66fc6ddddf36c08ca6e0d815e1d28b01 run:66fc6ddddf36c08ca6e0d815e1d28b01 session:5ef54ed77107c8410b77e7c80e2eac3c failed 4 agent:f0f954ee83a1ac8ed9fe50e8eb204639 1 1  run:66fc6ddddf36c08ca6e0d815e1d28b01  false CONTEXT_INPUT_STATE_INVALID <nil>}\n--- FAIL: TestCheckpointIntentUsesAcceptedRunBeforeResumeIO/history_refresh (0.04s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat",
+      "test": "TestCheckpointIntentUsesAcceptedRunBeforeResumeIO",
+      "output": "=== RUN   TestCheckpointIntentUsesAcceptedRunBeforeResumeIO\n--- FAIL: TestCheckpointIntentUsesAcceptedRunBeforeResumeIO (0.36s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/chat\t8.216s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions",
+      "output": "=== RUN   TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions\n    checkpoint_test.go:338: restart omitted full local items 9 <nil>\n--- FAIL: TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions (0.12s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestDefaultResponsesPersistsTextAndSettledUsage",
+      "output": "=== RUN   TestDefaultResponsesPersistsTextAndSettledUsage\n    engine_test.go:120: complete local initial input missing map[background:false include:[reasoning.encrypted_content] input:[map[content:Keep literal {\"sample\":{\"x\":1}}. role:system] map[content:HUHU short-term context v1\n        {\"Version\":\"1\",\"Namespace\":{\"SubjectKind\":\"agent\",\"SubjectID\":\"agent:90dc4c00f0b768b7a0c012aeb79e324a\",\"SessionID\":\"session:de573379685b585f853287d83d60dbb1\",\"WorkThreadID\":\"session:de573379685b585f853287d83d60dbb1\"},\"IntentHash\":\"sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c\",\"Entries\":[],\"Usage\":{\"policyVersion\":\"extractive-v1\",\"selected\":0,\"excerpted\":0,\"omittedAuthorized\":0,\"windowLimited\":false},\"BindingDigest\":\"sha256:926740eabed8e58942c16af8d617c7d2f8e3e3f603e8524ea39a30d89fe7f195\"} role:user] map[content:one intention role:user]] max_output_tokens:4096 model:fixture-model store:false stream:true truncation:disabled]\n--- FAIL: TestDefaultResponsesPersistsTextAndSettledUsage (0.05s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_absent",
+      "output": "=== RUN   TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_absent\n    protocol_edges_test.go:129: known shape lost complete replay 9 <nil>\n--- FAIL: TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_absent (0.09s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_null",
+      "output": "=== RUN   TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_null\n    protocol_edges_test.go:129: known shape lost complete replay 9 <nil>\n--- FAIL: TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_null (0.10s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_final_answer",
+      "output": "=== RUN   TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_final_answer\n    protocol_edges_test.go:129: known shape lost complete replay 9 <nil>\n--- FAIL: TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning/phase_final_answer (0.11s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning",
+      "output": "=== RUN   TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning\n--- FAIL: TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning (0.41s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": "TestMixedItemsKeepOpaqueStateAndOriginalToolDecisions",
+      "output": "=== RUN   TestMixedItemsKeepOpaqueStateAndOriginalToolDecisions\n    tools_test.go:160: full local history and results missing 9 <nil>\n--- FAIL: TestMixedItemsKeepOpaqueStateAndOriginalToolDecisions (0.10s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/engine/responses\t3.973s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/events",
+      "test": "TestSingleSessionHundredSourceMessagesReachActualHistoryWriter",
+      "output": "=== RUN   TestSingleSessionHundredSourceMessagesReachActualHistoryWriter\n    history_test.go:298: sqlite3: interrupted\n--- FAIL: TestSingleSessionHundredSourceMessagesReachActualHistoryWriter (34.05s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/events",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/events\t65.754s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation",
+      "test": "TestDefaultAnthropicCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen",
+      "output": "=== RUN   TestDefaultAnthropicCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen\n    default_protocol_recovery_test.go:79: real Resume lost the original provider call or user decision\n    default_anthropic_composition_test.go:22: default Registry: real protocol CP/Resume interruption; reopen correctly blocked/CREDENTIAL_MISSING and old ref cannot Register again; simulated current credential metadata gives pure-Inspector ready with same Run/Artifact/decision/unknown charge, HTTP2/Host0, no restored secret\n--- FAIL: TestDefaultAnthropicCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen (0.09s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation",
+      "test": "TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen",
+      "output": "=== RUN   TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen\n    default_protocol_recovery_test.go:79: real Resume lost the original provider call or user decision\n    default_protocol_recovery_test.go:31: default Registry: real protocol CP/Resume interruption; reopen correctly blocked/CREDENTIAL_MISSING and old ref cannot Register again; simulated current credential metadata gives pure-Inspector ready with same Run/Artifact/decision/unknown charge, HTTP2/Host0, no restored secret\n--- FAIL: TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen (0.10s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation",
+      "test": "TestGroupMigrationRebuildPreservesGraphAndRestoresForeignKeys",
+      "output": "=== RUN   TestGroupMigrationRebuildPreservesGraphAndRestoresForeignKeys\n    groups_migration_test.go:91: version 10 <nil>\n--- FAIL: TestGroupMigrationRebuildPreservesGraphAndRestoresForeignKeys (0.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation\t17.735s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/legal",
+      "output": "=== RUN   TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/legal\n    messages_test.go:138: actual private inbox=[]api.AgentMessage(nil)\n--- FAIL: TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/legal (0.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/remove-after-consume",
+      "output": "=== RUN   TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/remove-after-consume\n    messages_test.go:138: actual private inbox=[]api.AgentMessage(nil)\n--- FAIL: TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch/remove-after-consume (0.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch",
+      "output": "=== RUN   TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch\n--- FAIL: TestPrivateAgentMessageCurrentQualificationIsConsumedBeforeEngineAndDispatch (0.22s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=false",
+      "output": "=== RUN   TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=false\n    question_test.go:79: actual answer absent\n--- FAIL: TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=false (3.04s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=true",
+      "output": "=== RUN   TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=true\n    question_test.go:79: actual answer absent\n--- FAIL: TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume/removed=true (3.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume",
+      "output": "=== RUN   TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume\n--- FAIL: TestAnsweredPrivateQuestionChecksCurrentContributorBeforeCheckpointResume (6.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestUserSupplementToWaitingGroupMemberReachesSameCheckpointThread",
+      "output": "=== RUN   TestUserSupplementToWaitingGroupMemberReachesSameCheckpointThread\n    reply_test.go:121: actual resumed thread lost user supplement: []api.AgentMessage(nil)\n--- FAIL: TestUserSupplementToWaitingGroupMemberReachesSameCheckpointThread (0.09s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestMemberHistoryNoneAndBoundedRangeNeverIncludePrivateThreads",
+      "output": "=== RUN   TestMemberHistoryNoneAndBoundedRangeNeverIncludePrivateThreads\n    routing_test.go:253: explicit range absent: map[]\n--- FAIL: TestMemberHistoryNoneAndBoundedRangeNeverIncludePrivateThreads (0.11s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/both-history",
+      "output": "=== RUN   TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/both-history\n    sources_test.go:226: actual child failed {0x344a9b884f78 <nil> execution 0x344a9ba507b0 0x344a9ba0bd10 run:501f97d107bf180010167f46797074ae run:bd7b60941901cd508ba7f780d4f40bca session:02c4fc5471598dbf602dfa2cad6de0ff failed 4 agent:d69f472c87ed0984ca538cb235dd5d0b 1 1 run:501f97d107bf180010167f46797074ae run:501f97d107bf180010167f46797074ae  false MODEL_EXECUTION_FAILED <nil>} <nil>\n--- FAIL: TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/both-history (0.07s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/late-history",
+      "output": "=== RUN   TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/late-history\n    sources_test.go:211: first member never published\n--- FAIL: TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced/late-history (5.04s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": "TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced",
+      "output": "=== RUN   TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced\n--- FAIL: TestOnlyTargetSourceGrantsAuthorizeAtomicBatchAndAttachmentLabelsAreFenced (5.11s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/groups\t16.966s\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery",
+      "test": "TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/legacy_cp",
+      "output": "=== RUN   TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/legacy_cp\n    migration_test.go:160: migration fabricated runtime recovery or broke schema/FK\n--- FAIL: TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/legacy_cp (0.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery",
+      "test": "TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/groups",
+      "output": "=== RUN   TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/groups\n    migration_test.go:160: migration fabricated runtime recovery or broke schema/FK\n--- FAIL: TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/groups (0.02s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery",
+      "test": "TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/inflight",
+      "output": "=== RUN   TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/inflight\n    migration_test.go:160: migration fabricated runtime recovery or broke schema/FK\n--- FAIL: TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet/inflight (0.03s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery",
+      "test": "TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet",
+      "output": "=== RUN   TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet\n--- FAIL: TestRealSchema8CompleteDatabaseAndCheckpointUpgradePreservesEveryOldColumnAndRecoverySet (0.08s)\n"
+    },
+    {
+      "package": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery",
+      "test": null,
+      "output": "FAIL\nFAIL\tgithub.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/recovery\t5.823s\n"
+    }
+  ]
+}

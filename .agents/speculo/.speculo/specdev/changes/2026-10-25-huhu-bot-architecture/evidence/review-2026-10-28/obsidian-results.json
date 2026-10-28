@@ -1,0 +1,1890 @@
+{
+  "mode": "real-obsidian-and-runner",
+  "passed": true,
+  "artifacts": {
+    "mainSha256": "44c4daa30901a8fd7dda12d58764bda0c5049d7213c4842e054ddfa7a99c3216",
+    "stylesSha256": "7e2852172ffb40ea2d59ce25bb6a2f4fe39ab65d3a2f880033a7428c6e2e3355",
+    "runnerSha256": "4702fe5b8b9bbe75bd856f804d34f153ed034d94412cb53eec71be387a5db7e6"
+  },
+  "results": [
+    {
+      "kind": "setup-before-start",
+      "initial": {
+        "moduleState": "idle",
+        "hasWorkbench": true
+      },
+      "setup": {
+        "moduleState": "active",
+        "clientStarted": false
+      }
+    },
+    {
+      "kind": "bot-creation",
+      "names": [
+        "Acceptance Bot A",
+        "Acceptance Bot B"
+      ],
+      "realProvider": false
+    },
+    {
+      "kind": "conversation-draft-isolation",
+      "passed": true
+    },
+    {
+      "kind": "native-source-picker",
+      "path": "Notes/Source.md",
+      "sentToModel": false
+    },
+    {
+      "kind": "group-creation",
+      "memberCount": 2
+    },
+    {
+      "kind": "user-navigation-menu-and-return",
+      "passed": true
+    },
+    {
+      "kind": "real-runner-disconnect-and-ui-reconnect",
+      "passed": true
+    },
+    {
+      "kind": "private-memory-and-scoped-context-read",
+      "passed": true,
+      "realProvider": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-chat-1440-theme-light.png",
+      "text": "Bot chat\nReady\nNew conversation\nSearch bots and conversations\nBots\nAB\nAcceptance Bot A\nDisposable acceptance fixture\nAB\nAcceptance Bot B\nDisposable acceptance fixture\nH\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nCreate persistent Bot\nNew group\nManage\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-agents-1440-theme-light.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-groups-1440-theme-light.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0 0 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-memory-1440-theme-light.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-tasks-1440-theme-light.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-access-1440-theme-light.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-approvals-1440-theme-light.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-data-1440-theme-light.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:fe6518778a5a7e9ae387e978d6afb0af · 2026-10-28T11:24:12.421747271Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-settings-1440-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 1064,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "screenshot": "bot-settings-budget-1440-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 1064,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-chat-800-theme-light.png",
+      "text": "Bot chat\nReady\nNew conversation\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-agents-800-theme-light.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-groups-800-theme-light.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0 0 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-memory-800-theme-light.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-tasks-800-theme-light.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-access-800-theme-light.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-approvals-800-theme-light.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-data-800-theme-light.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:a084f73e67a52fc7afdfa0860bcaa257 · 2026-10-28T11:24:14.083054202Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-settings-800-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "screenshot": "bot-settings-budget-800-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-chat-390-theme-light.png",
+      "text": "Bot chat\nReady\nNew conversation\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-agents-390-theme-light.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-groups-390-theme-light.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0 0 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-memory-390-theme-light.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-tasks-390-theme-light.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-access-390-theme-light.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-approvals-390-theme-light.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-data-390-theme-light.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:046219d2e9fe6a34c646e11cb532d9f2 · 2026-10-28T11:24:15.495654592Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-settings-390-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "screenshot": "bot-settings-budget-390-theme-light.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-chat-1440-theme-dark.png",
+      "text": "Bot chat\nReady\nNew conversation\nSearch bots and conversations\nBots\nAB\nAcceptance Bot A\nDisposable acceptance fixture\nAB\nAcceptance Bot B\nDisposable acceptance fixture\nH\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nCreate persistent Bot\nNew group\nManage\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-agents-1440-theme-dark.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-groups-1440-theme-dark.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0.999994 0.0000497986 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-memory-1440-theme-dark.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-tasks-1440-theme-dark.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-access-1440-theme-dark.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-approvals-1440-theme-dark.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-data-1440-theme-dark.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:04d1d6877f58fd6474c4f290e905954a · 2026-10-28T11:24:17.120973095Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 1344,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-settings-1440-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 1064,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "screenshot": "bot-settings-budget-1440-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 1064,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-chat-800-theme-dark.png",
+      "text": "Bot chat\nReady\nNew conversation\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-agents-800-theme-dark.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-groups-800-theme-dark.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0.999994 0.0000497986 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-memory-800-theme-dark.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-tasks-800-theme-dark.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-access-800-theme-dark.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-approvals-800-theme-dark.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-data-800-theme-dark.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:5f7f860c8f17546fdca26159452d6871 · 2026-10-28T11:24:18.662688704Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-settings-800-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "screenshot": "bot-settings-budget-800-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 704,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-chat-390-theme-dark.png",
+      "text": "Bot chat\nReady\nNew conversation\nAcceptance Bot A\n\nDisposable acceptance fixture\n\nDelete conversation content\n\nNo messages yet. Ask a question to begin.\n\nWriting destination\nPrepare writing destination\nMessage this Bot…\nAttach note or selection\nAuthorize folder\nAuthorize entire vault\nDraft kept locally\nSend message",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-agents-390-theme-dark.png",
+      "text": "Bot chat\nCreate persistent Bot\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nPending Bot proposals\nRefresh\n\nReview the persona, model and permissions before creating a persistent Bot.\n\nNo pending Bot proposals.\n\nEdit Bot\n\nUnsaved changes are kept if the save conflicts or fails.\n\nEnabled · Revision 1\nEdit Bot\nName\nDescription\nPersona\nAllowed tools (comma-separated)\nAllowed Bot targets (comma-separated IDs)\nAPI key\nCredential storage\nOS protected storage\nSession memory only\nStore credential\nProtocol\n\nOnly the protected credential reference is saved with this Bot. The API key is sent separately to credential storage and is never written to settings or chat.\n\nProtocol\nOpenAI Chat Completions\nOpenAI Responses\nAnthropic Messages\nProvider\nModel\nEndpoint\nCredential reference\n\nCredential status unknown\n\nTest connection\nDisable Bot\nSave Bot",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-groups-390-theme-dark.png",
+      "text": "Bot chat\nCreate group\nAcceptance research group\nEdit group\n\nUnsaved member changes are kept until you save them.\n\nGroup name\nGroup name\n\nThe current protocol keeps an existing group name unchanged.\n\nMembers\nAcceptance Bot A\nEnabled\nAcceptance Bot B\nEnabled\nHUHU\nEnabled\nCoordinator\nAcceptance Bot A\nAcceptance Bot B\nHistory scope\nNo prior history\nBounded range\nSave group",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [
+        {
+          "checked": "true",
+          "width": 125.171875,
+          "height": 28,
+          "background": "oklch(0.999994 0.0000497986 none / 0.067)"
+        },
+        {
+          "checked": "false",
+          "width": 121.53125,
+          "height": 28,
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-memory-390-theme-dark.png",
+      "text": "Bot chat\nMemory\n\nBot memory · Acceptance Bot A\n\nMemory scope\nGlobal memory\nBot memory · Acceptance Bot A\nBot memory · Acceptance Bot B\nBot memory · HUHU\nExecution context scope\nChoose an authorized conversation or open its task details to select a work thread.\nAcceptance research group\nAcceptance Bot A\nAutomatic maintenance is on\nManual\nCancel\n\nPaused: BUDGET_NOT_CONFIGURED\n\nNo memory entries in this scope.\n\nBot memory · Acceptance Bot A\n\nAdd a private memory\nA fact to remember in this Bot only…\nAdd a private memory",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-tasks-390-theme-dark.png",
+      "text": "Bot chat\nTasks\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nTasks\n\nNo tasks recorded. Open a conversation and send a message first.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-access-390-theme-dark.png",
+      "text": "Bot chat\nAccess\n\n0 Active\n\nGrant access\nWorkspace\nResource ID\nScope\nSource\nFolder\nEntire vault\nRecipients\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nOperations\nRead\nSearch\nSend to model\nSummarize\nUse in memory\nDelegate\nDeliver result\nCreate grant\n\nNo grants are active.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "true",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": true
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-approvals-390-theme-dark.png",
+      "text": "Bot chat\nApprovals\nRefresh\nApprovals\n\nNo approvals are pending.",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-page",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-data-390-theme-dark.png",
+      "text": "Bot chat\nBot data\n\nReview the exact server preview before deleting a Profile or importing portable data.\n\nRefresh preview\nDelete Profile\n\nThis action clears managed runtime data and rotates the Profile identity. It cannot be undone from this page.\n\nPreview token: purge:78674b312068a2e92018a02bb1e561bf · 2026-10-28T11:24:20.073272959Z\n\nBot profile: 1 · Scheduled for managed purge\nDelete Profile\nPortable export\n\nChoose durable IDs explicitly. Credentials, approvals, queues and checkpoints are never exported.\n\nBots\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nConversations\nAcceptance research group\nAcceptance Bot A\nAcceptance Bot B\nMemory\nGlobal memory\nAcceptance Bot A\nAcceptance Bot B\nHUHU\nExport selected data\nPortable import\n\nImported identities do not inherit permissions or credentials. Review each mapping and grant access again after import.\n\nChoose import file",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        },
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-settings-390-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    },
+    {
+      "kind": "rendered-settings-budget",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "screenshot": "bot-settings-budget-390-theme-dark.png",
+      "text": "Bot\nManaged Runner\n\nThe Runner starts only when the Bot workbench is opened.\n\nRunner binary\n\nLeave empty to install the verified release. A local override requires its matching .json and .sha256 files.\n\nWorking directory\n\nOptional private directory used by the Runner process.\n\nProfile root\n\nOptional absolute subdirectory within the OS-managed Bot profile root.\n\nPath changes apply after disabling and re-enabling the Bot module. Closing a page does not stop tasks.\n\nRunner connected\nModel credentials\n\nCredentials stay in the protected provider channel and are never stored in these settings.\n\nAPI key\nCredential storage\nProtected by this operating system\nSession memory only; lost when Runner stops\nRegister credential\nModel call budget\n\nCalls require nonzero task and profile token limits. Automatic memory uses its own allowance and also counts toward the profile. Unknown usage is not zero cost.\n\nTokens per task tree\nProfile token allowance\nAutomatic memory token allowance\nPause new model cal",
+      "width": 346,
+      "height": 916,
+      "overflow": 0,
+      "contentOverflow": [],
+      "checkboxes": [
+        {
+          "checked": "false",
+          "width": 16,
+          "height": 16,
+          "border": 1,
+          "indicator": false
+        }
+      ],
+      "radios": [],
+      "alerts": [],
+      "untranslatedKeys": false
+    }
+  ],
+  "errors": [],
+  "hookErrors": [],
+  "realProvider": false,
+  "unverified": [
+    "Real provider model execution and streaming",
+    "OS file picker import/export interactions",
+    "User-owned notes write approval and unknown-effect recovery",
+    "Real mobile platform"
+  ],
+  "note": "No real credentials or provider calls. Native Runner and SQLite are real; screenshots cover desktop narrow containers, not mobile support."
+}

@@ -1,0 +1,14 @@
+{
+  "task": "059-notes-collaboration-review",
+  "reviewer": "native:/root/foundation_review",
+  "taskSha256": "5412b03db39ac9e1091936f60483eb6b4b5ffaa34ceeff849fb82cfd04cc9c6c",
+  "inputSha256": "63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98",
+  "files": 257,
+  "sources": 65,
+  "dispatchExit": 0,
+  "nativeFollowupTaskIssued": true,
+  "nativeAcknowledgementReceived": true,
+  "heavyWindow": "exclusive reviewer; Root and authors have no running product checks",
+  "result": "pending",
+  "recordedAt": "2026-10-25T16:41:24.640920+00:00"
+}

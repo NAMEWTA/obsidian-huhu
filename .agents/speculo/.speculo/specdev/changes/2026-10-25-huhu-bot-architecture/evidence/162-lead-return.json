@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "task": "162-global-memory-delivery",
+  "status": "accepted-code-candidate",
+  "reportSHA256": "1e45943648b2a446f18394040bba441dff24bef594fdcf085e340ea10367f812",
+  "manifestSHA256": "bd6d555e7309dc9fd47e4c25dec7ebdc61ea277ca273f7f641f99c6660f05215",
+  "sourceTree": "d5cc74a29e6f029e35daffac2d9ff8df892312344e0854bfedd845aa82397408",
+  "rootValidation": "evidence/T-15-logs/root-code-validation-20261027.json",
+  "scope": "Events proposal-delivery reader and Grants global-root qualification source candidate accepted after current production-package and race validation; source checkpoint remains immutable and real Provider/Obsidian/target OS acceptance is user-owned and not-run.",
+  "returnValidation": {
+    "exitCode": 0,
+    "waited": true
+  }
+}

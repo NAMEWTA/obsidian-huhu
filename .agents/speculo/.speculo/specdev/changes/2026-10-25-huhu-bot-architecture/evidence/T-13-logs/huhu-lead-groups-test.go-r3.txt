@@ -1,0 +1,457 @@
+package lead_groups_test
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+	_ "github.com/ncruces/go-sqlite3/driver"
+)
+
+type engine struct {
+	run func(context.Context, api.EngineInput) (api.EngineResult, error)
+}
+
+func (e engine) Run(ctx context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	return e.run(ctx, in)
+}
+func (engine) Resume(context.Context, api.EngineResumeInput, func(api.EngineEvent) error) (api.EngineResult, error) {
+	return api.EngineResult{}, fmt.Errorf("pure group orchestration must not model-resume")
+}
+
+type harness struct {
+	t      *testing.T
+	ctx    context.Context
+	core   *bootstrap.Core
+	db     *sql.DB
+	user   api.RequestIdentity
+	p      api.ProfileMetadata
+	serial int
+}
+
+func newHarness(t *testing.T, e api.Engine, release func()) *harness {
+	t.Helper()
+	ctx := context.Background()
+	root := filepath.Join(t.TempDir(), "profiles")
+	if err := os.MkdirAll(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	locator := filepath.Join(root, "one")
+	c, err := bootstrap.OpenWithOptions(ctx, root, locator, bootstrap.Options{Engine: e, Budget: api.BudgetPolicy{RootTokenLimit: "1000", ProfileTokenLimit: "10000", MaintenanceTokenLimit: "0"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	user := api.NewConnectionIdentity("lead-groups", "lead-user", false)
+	status, err := c.API.Service.Status(ctx, user)
+	if err != nil {
+		_ = c.Close()
+		t.Fatal(err)
+	}
+	db, err := sql.Open("sqlite3", "file:"+filepath.Join(locator, "profile.sqlite3")+"?mode=ro")
+	if err != nil {
+		_ = c.Close()
+		t.Fatal(err)
+	}
+	db.SetMaxOpenConns(1)
+	h := &harness{t: t, ctx: ctx, core: c, db: db, user: user, p: status.Profile}
+	t.Cleanup(func() {
+		release()
+		if err := c.Close(); err != nil {
+			t.Error(err)
+		}
+		if err := db.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	return h
+}
+func (h *harness) meta(revision string) api.CommandMeta {
+	h.serial++
+	id := fmt.Sprintf("lead-group-%d", h.serial)
+	return api.CommandMeta{CommandID: id, IdempotencyKey: id, ProfileID: h.p.ProfileID, CommandEpoch: h.p.CommandEpoch, ExpectedRevision: revision}
+}
+func (h *harness) agent(name string, configured bool) api.Agent {
+	h.t.Helper()
+	draft := api.AgentDraft{Name: name, Persona: "fixture", AllowedTools: []string{}, AllowedCollaborationTargets: []string{}}
+	if configured {
+		draft.Model = &api.ModelBindingDraft{ProviderID: "fixture", Protocol: "openai-chat-completions", Endpoint: "https://fixture.invalid/v1", ModelID: "fixture", Capabilities: []string{}}
+	}
+	v, e := h.core.API.Assistant.Create(h.ctx, h.user, api.AgentCreate{CommandMeta: h.meta(""), Draft: draft})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) group(members []string, coordinator string) api.Session {
+	h.t.Helper()
+	v, e := h.core.API.Groups.CreateSession(h.ctx, h.user, api.SessionCreate{CommandMeta: h.meta(""), Kind: "group", Title: "Lead group", MemberIDs: members, CoordinatorID: coordinator})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) session(id string) api.Session {
+	h.t.Helper()
+	v, e := h.core.API.Conversation.GetSession(h.ctx, h.user, api.IDQuery{ProfileID: h.p.ProfileID, ID: id})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) start(s api.Session, intent string, targets ...string) api.RunReceipt {
+	h.t.Helper()
+	v, e := h.core.API.Groups.StartRun(h.ctx, h.user, api.RunStart{CommandMeta: h.meta(s.Revision), SessionID: s.ID, Intent: intent, TargetAgentIDs: targets, SourceRefs: []api.SourceSnapshot{}})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) run(id string) api.Run {
+	h.t.Helper()
+	v, e := h.core.API.Conversation.GetRun(h.ctx, h.user, api.IDQuery{ProfileID: h.p.ProfileID, ID: id})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) until(label string, done func() bool) {
+	h.t.Helper()
+	deadline := time.Now().Add(5 * time.Second)
+	for !done() {
+		if time.Now().After(deadline) {
+			h.t.Fatal("deadline:", label)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+func (h *harness) terminal(id string) api.Run {
+	h.t.Helper()
+	var r api.Run
+	h.until("terminal "+id, func() bool {
+		r = h.run(id)
+		return r.Status == "succeeded" || r.Status == "failed" || r.Status == "canceled"
+	})
+	return r
+}
+func (h *harness) history(session string) []api.VisibleMessage {
+	h.t.Helper()
+	p, e := h.core.API.Conversation.History(h.ctx, h.user, api.HistoryQuery{PageQuery: api.PageQuery{ProfileID: h.p.ProfileID, Limit: 100}, SessionID: session})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return p.Items
+}
+func (h *harness) count(query string, args ...any) int {
+	h.t.Helper()
+	var n int
+	if e := h.db.QueryRow(query, args...).Scan(&n); e != nil {
+		h.t.Fatal(e)
+	}
+	return n
+}
+func (h *harness) update(s api.Session, members []string, scope api.GroupHistoryScope) api.Session {
+	h.t.Helper()
+	v, e := h.core.API.Groups.UpdateMembers(h.ctx, h.user, api.SessionMembersUpdate{CommandMeta: h.meta(s.Revision), ID: s.ID, MemberIDs: members, HistoryScope: scope})
+	if e != nil {
+		h.t.Fatal(e)
+	}
+	return v
+}
+func (h *harness) counts() []int {
+	v := []int{}
+	for _, table := range []string{"execution_runs", "conversation_messages", "command_receipts", "config_snapshot_pins", "task_config_pins", "model_budget_accounts", "model_attempts", "collaboration_delegations"} {
+		v = append(v, h.count("SELECT count(*) FROM "+table))
+	}
+	return v
+}
+func modelAttempt(ctx context.Context, in api.EngineInput, callback func()) error {
+	if in.Attempts == nil {
+		return fmt.Errorf("actual model attempt port missing")
+	}
+	purpose := "main"
+	if in.Lineage.ParentRunID != "" {
+		purpose = "child"
+	}
+	r, e := in.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: "lead-call", InputEstimate: "5", OutputBound: "10", Purpose: purpose})
+	if e != nil {
+		return e
+	}
+	if e = in.Attempts.Dispatch(ctx, r, func(context.Context) error { callback(); return nil }); e != nil {
+		return e
+	}
+	_, e = in.Attempts.Settle(ctx, r, api.AttemptObservation{Knowledge: "known", InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+	return e
+}
+func receive(t *testing.T, ch <-chan api.EngineInput) api.EngineInput {
+	t.Helper()
+	timer := time.NewTimer(5 * time.Second)
+	defer timer.Stop()
+	select {
+	case v := <-ch:
+		return v
+	case <-timer.C:
+		t.Fatal("engine did not receive expected work")
+		return api.EngineInput{}
+	}
+}
+func hasText(messages []api.VisibleMessage, text string) bool {
+	for _, m := range messages {
+		if strings.Contains(m.Text, text) {
+			return true
+		}
+	}
+	return false
+}
+
+func TestLeadPublicBatchOrderingAtomicityRealBudgetAndBoundedHistory(t *testing.T) {
+	observed := make(chan api.EngineInput, 16)
+	gate := make(chan struct{})
+	var once sync.Once
+	release := func() { once.Do(func() { close(gate) }) }
+	var callbacks atomic.Int64
+	e := engine{run: func(ctx context.Context, in api.EngineInput) (api.EngineResult, error) {
+		observed <- in
+		if e := modelAttempt(ctx, in, func() { callbacks.Add(1) }); e != nil {
+			return api.EngineResult{}, e
+		}
+		if strings.Contains(in.Intent, "ordered-batch") && in.Agent.Name == "B" {
+			select {
+			case <-gate:
+			case <-ctx.Done():
+				return api.EngineResult{}, ctx.Err()
+			}
+		}
+		return api.EngineResult{Status: "finished", Text: "public:" + in.Agent.Name + ":" + in.Intent}, nil
+	}}
+	h := newHarness(t, e, release)
+	a := h.agent("A-unconfigured", false)
+	b := h.agent("B", true)
+	c := h.agent("C", true)
+	s := h.group([]string{a.ID, b.ID, c.ID}, a.ID)
+	command := api.RunStart{CommandMeta: h.meta(s.Revision), SessionID: s.ID, Intent: "ordered-batch", TargetAgentIDs: []string{b.ID, c.ID}, SourceRefs: []api.SourceSnapshot{}}
+	accepted, err := h.core.API.Groups.StartRun(h.ctx, h.user, command)
+	if err != nil {
+		t.Fatal(err)
+	}
+	duplicate, err := h.core.API.Groups.StartRun(h.ctx, h.user, command)
+	if err != nil || !reflect.DeepEqual(accepted, duplicate) {
+		t.Fatal("same intent not idempotent", accepted, duplicate, err)
+	}
+	seen := map[string]api.EngineInput{}
+	for len(seen) < 2 {
+		in := receive(t, observed)
+		seen[in.Agent.ID] = in
+	}
+	if len(accepted.TargetRunIDs) != 2 || len(seen) != 2 || seen[b.ID].RunID == "" || seen[c.ID].RunID == "" {
+		t.Fatal("targets were not exactly B/C", accepted, seen)
+	}
+	for _, in := range seen {
+		if in.Lineage.RootRunID != accepted.RunID || in.Lineage.ParentRunID != accepted.RunID || in.Lineage.WorkThreadID == "" || in.Delegation == nil {
+			t.Fatal("missing durable actual-child envelope", in.Lineage, in.Delegation)
+		}
+	}
+	if seen[b.ID].Lineage.WorkThreadID == seen[c.ID].Lineage.WorkThreadID {
+		t.Fatal("members share work thread")
+	}
+	h.until("C published before B release", func() bool { return hasText(h.history(s.ID), "public:C:ordered-batch") })
+	if hasText(h.history(s.ID), "public:B:ordered-batch") {
+		t.Fatal("B body appeared before result")
+	}
+	if r := h.run(accepted.RunID); r.Role != "orchestration" || r.Status == "succeeded" {
+		t.Fatal("root is not live pure orchestration", r)
+	}
+	release()
+	if r := h.terminal(accepted.RunID); r.Status != "succeeded" {
+		t.Fatal(r)
+	}
+	page := h.history(s.ID)
+	if len(page) != 3 || page[0].Role != "user" || page[1].AgentID != c.ID || page[2].AgentID != b.ID || page[0].Seq != "1" || page[1].Seq != "2" || page[2].Seq != "3" {
+		t.Fatal("durable public order", page)
+	}
+	if callbacks.Load() != 2 || h.count("SELECT count(*) FROM model_attempts") != 2 || h.count("SELECT count(*) FROM model_attempts WHERE run_id=?", accepted.RunID) != 0 || h.count("SELECT count(*) FROM execution_runs WHERE agent_id=? AND execution_role='execution'", a.ID) != 0 {
+		t.Fatal("A/root consumed a model attempt")
+	}
+	budget, err := h.core.API.Collaboration.Budget(h.ctx, h.user, api.BudgetQuery{ProfileID: h.p.ProfileID, RunID: accepted.RunID})
+	if err != nil || budget.ChargedTokens != "10" || budget.ReservedTokens != "0" {
+		t.Fatal("actual child token accounting", budget, err)
+	}
+	before := h.counts()
+	current := h.session(s.ID)
+	_, err = h.core.API.Groups.StartRun(h.ctx, h.user, api.RunStart{CommandMeta: h.meta(current.Revision), SessionID: s.ID, Intent: "invalid-batch", TargetAgentIDs: []string{b.ID, "agent:missing"}, SourceRefs: []api.SourceSnapshot{}})
+	if err == nil || !reflect.DeepEqual(before, h.counts()) || callbacks.Load() != 2 {
+		t.Fatal("invalid target batch partially admitted", before, h.counts(), err)
+	}
+	d := h.agent("D", true)
+	current = h.update(h.session(s.ID), []string{a.ID, b.ID, c.ID, d.ID}, api.GroupHistoryScope{Kind: "none"})
+	r := h.start(current, "history-none", d.ID)
+	in := receive(t, observed)
+	if in.Agent.ID != d.ID || hasText(in.History, "ordered-batch") {
+		t.Fatal("new member received prejoin history", in.Agent.ID, in.History)
+	}
+	if got := h.terminal(r.RunID); got.Status != "succeeded" {
+		t.Fatal(got)
+	}
+	f := h.agent("E", true)
+	current = h.update(h.session(s.ID), []string{a.ID, b.ID, c.ID, d.ID, f.ID}, api.GroupHistoryScope{Kind: "range", AfterSeq: "1", ThroughSeq: "2"})
+	r = h.start(current, "history-range", f.ID)
+	in = receive(t, observed)
+	if in.Agent.ID != f.ID || !hasText(in.History, "public:C:ordered-batch") || hasText(in.History, "public:B:ordered-batch") || hasText(in.History, "public:D:history-none") {
+		t.Fatal("bounded public history leaked or omitted grant", in.Agent.ID, in.History)
+	}
+	if got := h.terminal(r.RunID); got.Status != "succeeded" {
+		t.Fatal(got)
+	}
+	a2 := h.agent("A-default", true)
+	plain := h.group([]string{a2.ID, b.ID}, a2.ID)
+	r = h.start(plain, "default-only-A")
+	in = receive(t, observed)
+	if in.Agent.ID != a2.ID {
+		t.Fatal("ordinary group send dispatched wrong member", in.Agent.ID)
+	}
+	if got := h.terminal(r.RunID); got.Status != "succeeded" {
+		t.Fatal(got)
+	}
+	if h.count("SELECT count(*) FROM execution_runs WHERE parent_run_id=?", r.RunID) != 1 {
+		t.Fatal("ordinary group send dispatched more than coordinator")
+	}
+	t.Log("public group APIs: B/C-only zero A model/cost; real 10-token child budget; C/B durable order; whole-batch rejection; none/range member history; default only coordinator")
+}
+
+func TestLeadRemovalRejoinFencesActualDispatchWithoutSourcesAndKeepsOtherSession(t *testing.T) {
+	ready := make(chan api.EngineInput, 4)
+	gateB := make(chan struct{})
+	gateC := make(chan struct{})
+	var onceB, onceC sync.Once
+	releaseB := func() { onceB.Do(func() { close(gateB) }) }
+	releaseC := func() { onceC.Do(func() { close(gateC) }) }
+	var callbacksB, callbacksC atomic.Int64
+	late := make(chan error, 1)
+	e := engine{run: func(ctx context.Context, in api.EngineInput) (api.EngineResult, error) {
+		if strings.Contains(in.Intent, "remove-before-dispatch") {
+			r, err := in.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: "held-call", InputEstimate: "5", OutputBound: "10", Purpose: "child"})
+			if err != nil {
+				return api.EngineResult{}, err
+			}
+			ready <- in
+			if in.Agent.Name == "B" {
+				<-gateB
+				// Deliberately late producer: membership must still be checked when
+				// a stale consumer does not cooperate with context cancellation.
+				lateCtx := context.WithoutCancel(ctx)
+				err = in.Attempts.Dispatch(lateCtx, r, func(context.Context) error { callbacksB.Add(1); return nil })
+				late <- err
+				if err == nil {
+					_, _ = in.Attempts.Settle(lateCtx, r, api.AttemptObservation{Knowledge: "known", InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+				}
+				return api.EngineResult{Status: "finished", Text: "REMOVED_LATE_B"}, nil
+			}
+			select {
+			case <-gateC:
+			case <-ctx.Done():
+				return api.EngineResult{}, ctx.Err()
+			}
+			if err = in.Attempts.Dispatch(ctx, r, func(context.Context) error { callbacksC.Add(1); return nil }); err != nil {
+				return api.EngineResult{}, err
+			}
+			_, err = in.Attempts.Settle(ctx, r, api.AttemptObservation{Knowledge: "known", InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+			return api.EngineResult{Status: "finished", Text: "C-still-valid"}, err
+		}
+		if err := modelAttempt(ctx, in, func() { callbacksB.Add(1) }); err != nil {
+			return api.EngineResult{}, err
+		}
+		return api.EngineResult{Status: "finished", Text: "other-session-or-new-member-ok"}, nil
+	}}
+	h := newHarness(t, e, func() { releaseB(); releaseC() })
+	a := h.agent("A-unconfigured", false)
+	b := h.agent("B", true)
+	c := h.agent("C", true)
+	s := h.group([]string{a.ID, b.ID, c.ID}, a.ID)
+	accepted := h.start(s, "remove-before-dispatch", b.ID, c.ID)
+	seen := map[string]api.EngineInput{}
+	for len(seen) < 2 {
+		in := receive(t, ready)
+		seen[in.Agent.ID] = in
+	}
+	if seen[b.ID].RunID == "" || seen[c.ID].RunID == "" {
+		t.Fatal("wrong actual members", seen)
+	}
+	oldIdentity := ""
+	for _, m := range s.GroupMembers {
+		if m.AgentID == b.ID {
+			oldIdentity = m.Incarnation
+		}
+	}
+	if oldIdentity == "" {
+		t.Fatal("missing original member generation")
+	}
+	s = h.update(h.session(s.ID), []string{a.ID, c.ID}, api.GroupHistoryScope{Kind: "none"})
+	s = h.update(s, []string{a.ID, b.ID, c.ID}, api.GroupHistoryScope{Kind: "none"})
+	newIdentity := ""
+	for _, m := range s.GroupMembers {
+		if m.AgentID == b.ID {
+			newIdentity = m.Incarnation
+		}
+	}
+	if newIdentity == "" || newIdentity == oldIdentity {
+		t.Fatal("rejoin revived old identity", oldIdentity, newIdentity)
+	}
+	_, err := h.core.API.Groups.SetCoordinator(h.ctx, h.user, api.SessionCoordinatorUpdate{CommandMeta: h.meta(s.Revision), ID: s.ID, CoordinatorID: c.ID})
+	var fault *api.Fault
+	if !errors.As(err, &fault) || fault.Kind != "SESSION_BUSY" || fault.Reason != "SESSION_BUSY" {
+		t.Fatal("active root coordinator change did not return SESSION_BUSY", err)
+	}
+	other, err := h.core.API.Conversation.CreateSession(h.ctx, h.user, api.SessionCreate{CommandMeta: h.meta(""), Kind: "direct", MemberIDs: []string{b.ID}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	sibling, err := h.core.API.Conversation.StartRun(h.ctx, h.user, api.RunStart{CommandMeta: h.meta(other.Revision), SessionID: other.ID, Intent: "same-B-other-session", SourceRefs: []api.SourceSnapshot{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := h.terminal(sibling.RunID); got.Status != "succeeded" {
+		t.Fatal("group removal canceled other session", got)
+	}
+	releaseB()
+	timer := time.NewTimer(5 * time.Second)
+	defer timer.Stop()
+	select {
+	case err = <-late:
+		if err == nil {
+			t.Fatal("old B callback admitted after remove/rejoin")
+		}
+	case <-timer.C:
+		t.Fatal("late dispatch did not settle")
+	}
+	releaseC()
+	h.terminal(accepted.RunID)
+	if callbacksC.Load() != 1 || callbacksB.Load() != 1 {
+		t.Fatal("wrong physical callbacks", callbacksB.Load(), callbacksC.Load())
+	}
+	page := h.history(s.ID)
+	if hasText(page, "REMOVED_LATE_B") || !hasText(page, "C-still-valid") {
+		t.Fatal("removed body published or valid sibling lost", page)
+	}
+	r := h.start(h.session(s.ID), "new-member-run", b.ID)
+	if got := h.terminal(r.RunID); got.Status != "succeeded" {
+		t.Fatal("rejoined B cannot do new work", got)
+	}
+	if callbacksB.Load() != 2 {
+		t.Fatal("new B did not dispatch exactly once")
+	}
+	current := h.session(s.ID)
+	if _, err = h.core.API.Groups.SetCoordinator(h.ctx, h.user, api.SessionCoordinatorUpdate{CommandMeta: h.meta(current.Revision), ID: s.ID, CoordinatorID: c.ID}); err != nil {
+		t.Fatal("terminal root still blocks coordinator", err)
+	}
+	t.Log("empty-source membership gate: old B actual Dispatch denied after remove/rejoin; zero stale body; C and same-B direct survive; new member works; coordinator changes only after terminal")
+}

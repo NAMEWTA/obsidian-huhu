@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "artifactCount": 24,
+  "sourceCount": 4,
+  "goInputCount": 27,
+  "sourceDrift": [],
+  "reportSha256": "f8e03ff7e24ffe2fb5cb6feacd24f675756f01e9105b7b5bafe4afc923c2b429",
+  "manifestSha256": "fc4928c769838c0295682e9c301979d0ca8d8c20d015bfd683549d0cbeda6835",
+  "returnExit": 0,
+  "returnWaited": true,
+  "returnWaitSeconds": 0.06564039300428703,
+  "returnOutput": {
+    "errors": [],
+    "warnings": [],
+    "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+  },
+  "scope": "Pure API component handoff accepted, T15 integration still pending",
+  "knownConsumerGap": "161 and Root independently identified pending metadata-only owner delete preview rejected by current nonnil Body rule; repair/test in new163, keep160 fixed report/input."
+}

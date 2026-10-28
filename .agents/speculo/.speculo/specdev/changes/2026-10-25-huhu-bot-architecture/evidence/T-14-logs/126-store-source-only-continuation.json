@@ -1,0 +1,13 @@
+{
+  "observer": "native:/root",
+  "owner": "native:/root/foundation_research",
+  "task": "126-private-memory",
+  "scope": "same original Store/domain/application private paths and tests; SOURCE ONLY",
+  "sharedWindow": "135 pureAPI/HAP checks do not import Core/SQL/private implementation; 136 independent TS",
+  "forbidden": [
+    "Go/Node/productchecks",
+    "generation",
+    "API/HAP/Core/SQLotherowners/locks"
+  ],
+  "next": "126 regression source checkpoint then explicit uniqueGo window after135 Wait"
+}

@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "command": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "159-memory-final-review",
+    "--stage",
+    "dispatch"
+  ],
+  "exitCode": 0,
+  "seconds": 0.060594061003939714,
+  "waited": true,
+  "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": "",
+  "inputSha256": "d52ab1fa4039b0dbaed7540b871ca479d69012804fa1cf62e413372badb15219"
+}

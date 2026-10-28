@@ -1,0 +1,40 @@
+{
+  "observedAt": "2026-10-25T21:42:14.115342+00:00",
+  "window": "joint-go-window-r1.json",
+  "inputSha256": "68b4115aeba1d786ebab562699f01b37ace1d47f64da75dc4aad56d3fc01b52a",
+  "actualResult": {
+    "command": [
+      "go",
+      "test",
+      "-mod=readonly",
+      "-p",
+      "1",
+      "./...",
+      "-count=1",
+      "-v"
+    ],
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10"
+    },
+    "exitCode": 1,
+    "allProcessesWaited": true,
+    "wallSeconds": 93.80321931198705,
+    "jointTreeSha256": "68b4115aeba1d786ebab562699f01b37ace1d47f64da75dc4aad56d3fc01b52a",
+    "sourceDrift": []
+  },
+  "failedPackages": [
+    "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/events",
+    "github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/foundation"
+  ],
+  "normalLogSha256": "b9542abf0a4627a9dc968855f15042c72ae1e95b7b57844cb0db48b0d3dce08e",
+  "laterRaceVetStarted": false,
+  "rootProductChecksStarted": false,
+  "disposition": {
+    "foundation": "080 original T01 owner: update stale no-recovery capability assumption using actual Facade present/absent controls; expected migration version9 with old v7/FK assertions retained",
+    "events": "081 original Go T04 owner: sole narrow unchanged reproduction/read-only diagnosis of first source Run terminal wait; no timeout/assertion/production edit authorized yet",
+    "foundationCleanup": "080 authorized only runner_test.go Start-success cleanup registration and exactly-once cmd.Wait; normal branch shares Wait; original5s and behavior assertions retained."
+  },
+  "sourceFreezeStillValidForFinalAcceptance": false,
+  "candidateAccepted": false,
+  "waitBoundaryCorrection": "080 subsequently verified: top-level go test Popen was waited. Existing foundation runner_test hello fatal branch skipped explicit nested cmd.Wait/cancel, so original allProcessesWaited field does not authenticate nested CLI Wait. No current processes were observed, but this is not proof of reap. Original 14 result retained; precise runner_test cleanup assigned to080 before next verification."
+}

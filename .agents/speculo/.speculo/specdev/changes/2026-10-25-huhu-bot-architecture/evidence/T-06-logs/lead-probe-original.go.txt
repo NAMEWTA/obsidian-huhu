@@ -1,0 +1,70 @@
+package approval_test
+
+import (
+	"context"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+)
+
+// Root-owned acceptance observation. This is copied into an isolated source
+// snapshot, never into the product checkout. Engine/Host are controlled ports;
+// Facade, Broker, checkpoint publication, executor, ledger and SQLite are real.
+func TestLeadDecisionReceiptStateAndEventAgreement(t *testing.T) {
+	for _, action := range []string{"cancel", "reject"} {
+		t.Run(action, func(t *testing.T) {
+			var resumes atomic.Int32
+			e := engine{
+				run: func(c context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+					return suspend(c, in)
+				},
+				resume: func(_ context.Context, in api.EngineResumeInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+					resumes.Add(1)
+					if in.Decision.Status != "rejected" {
+						return api.EngineResult{}, api.Invalid("LEAD_UNEXPECTED_DECISION")
+					}
+					return api.EngineResult{Status: "finished", Text: "declined without write"}, nil
+				},
+			}
+			f := open(t, e, time.Minute)
+			r, err := f.core.API.Conversation.StartRun(ctx, owner, f.command)
+			if err != nil { t.Fatal(err) }
+			a := waitApproval(t, f)
+			pending := waitRun(t, f, r.RunID, "waiting_approval")
+			d := db(t, f)
+			if count(t, d, "SELECT count(*) FROM config_snapshot_pins") != 1 || count(t, d, "SELECT count(*) FROM execution_checkpoints") != 1 {
+				t.Fatal("published wait did not retain its durable checkpoint and pin")
+			}
+			wantStatus := "succeeded"
+			wantResumes := int32(1)
+			if action == "cancel" {
+				wantStatus, wantResumes = "canceled", 0
+				cmd := api.RunCancel{CommandMeta: meta(t, f.core, "lead-cancel", pending.Revision), ID: r.RunID}
+				first, err := f.core.API.Approvals.Cancel(ctx, owner, cmd)
+				if err != nil { t.Fatal(err) }
+				cmd.CommandID = "lead-cancel-new-attempt"
+				again, err := f.core.API.Approvals.Cancel(ctx, owner, cmd)
+				if err != nil || again != first { t.Fatalf("cancel replay changed original receipt: %#v %#v %v", first, again, err) }
+			} else {
+				cmd := api.ApprovalResolve{CommandMeta: meta(t, f.core, "lead-reject", a.Revision), ID: a.ID, EffectID: a.EffectID, Decision: "reject", PreviewHash: a.Preview.PreviewHash}
+				first, err := f.core.API.Approvals.Resolve(ctx, owner, cmd)
+				if err != nil { t.Fatal(err) }
+				cmd.CommandID = "lead-reject-new-attempt"
+				again, err := f.core.API.Approvals.Resolve(ctx, owner, cmd)
+				if err != nil || again.ID != first.ID || again.Status != first.Status || again.Revision != first.Revision { t.Fatalf("decision replay changed fact: %#v %v", again, err) }
+			}
+			final := waitRun(t, f, r.RunID, wantStatus)
+			page, err := f.core.API.Events.Tail(ctx, owner, api.EventTailQuery{ProfileID: f.command.ProfileID, RunID: r.RunID, AfterSeq: "0", Limit: 128})
+			if err != nil { t.Fatal(err) }
+			states := map[string]int{}
+			for _, event := range page.Events { states[event.Type]++ }
+			if states["waiting_approval"] != 1 || states[wantStatus] != 1 { t.Fatalf("public Run/event disagreement: %s %#v", final.Status, states) }
+			if final.EffectsUnresolved || f.writer.count() != 0 || resumes.Load() != wantResumes { t.Fatalf("unexpected write/resume/final state: %#v calls=%d resumes=%d", final, f.writer.count(), resumes.Load()) }
+			if count(t, d, "SELECT count(*) FROM config_snapshot_pins") != 0 || count(t, d, "SELECT count(*) FROM conversation_sessions WHERE active_run_id IS NOT NULL") != 0 || count(t, d, "SELECT count(*) FROM execution_continuations WHERE state IN ('pending','claimed')") != 0 { t.Fatal("terminal state leaked ownership or pending continuation") }
+			if count(t, d, "SELECT count(*) FROM access_approvals WHERE status='pending'") != 0 || count(t, d, "SELECT count(*) FROM execution_effects WHERE state IN ('prepared','awaiting_approval','dispatching','unknown_outcome')") != 0 { t.Fatal("terminal decision left an executable or unresolved effect") }
+			t.Logf("action=%s run=%s status=%s waitingEvents=%d terminalEvents=%d HostCalls=%d Resume=%d; durable pin/session/pending continuation/effect all released", action, r.RunID, final.Status, states["waiting_approval"], states[wantStatus], f.writer.count(), resumes.Load())
+		})
+	}
+}

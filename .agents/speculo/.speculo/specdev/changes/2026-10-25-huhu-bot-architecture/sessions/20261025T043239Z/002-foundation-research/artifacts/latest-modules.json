@@ -1,0 +1,44 @@
+[
+  {
+    "module": "github.com/mattn/go-sqlite3",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/mattn/go-sqlite3\",\n\t\"Version\": \"v1.14.52\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-09-05T04:18:43Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/mattn/go-sqlite3/@v/v1.14.52.mod\",\n\t\"GoVersion\": \"1.21\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/ncruces/go-sqlite3",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/ncruces/go-sqlite3\",\n\t\"Version\": \"v0.35.6\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-09-23T13:05:19Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod\",\n\t\"GoVersion\": \"1.26.0\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino\",\n\t\"Version\": \"v0.9.22\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-10-19T10:03:00Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino/@v/v0.9.22.mod\",\n\t\"GoVersion\": \"1.18\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/openai",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/openai\",\n\t\"Version\": \"v0.1.13\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-04-16T08:10:55Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/openai/@v/v0.1.13.mod\",\n\t\"GoVersion\": \"1.18\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/agenticopenai",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/agenticopenai\",\n\t\"Version\": \"v0.2.4\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-09-24T07:41:45Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticopenai/@v/v0.2.4.mod\",\n\t\"GoVersion\": \"1.22\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/claude",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/claude\",\n\t\"Version\": \"v0.1.26\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-09-24T07:41:45Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/claude/@v/v0.1.26.mod\",\n\t\"GoVersion\": \"1.24\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "module": "github.com/cloudwego/eino-ext/components/model/agenticclaude",
+    "exit_code": 0,
+    "stdout": "{\n\t\"Path\": \"github.com/cloudwego/eino-ext/components/model/agenticclaude\",\n\t\"Version\": \"v0.1.7\",\n\t\"Query\": \"latest\",\n\t\"Time\": \"2026-09-24T07:41:45Z\",\n\t\"GoMod\": \"/home/wta/go/pkg/mod/cache/download/github.com/cloudwego/eino-ext/components/model/agenticclaude/@v/v0.1.7.mod\",\n\t\"GoVersion\": \"1.24\"\n}\n",
+    "stderr": ""
+  }
+]

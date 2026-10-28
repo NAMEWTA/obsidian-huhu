@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:12:48.962266+00:00",
+  "task": "114-metadata-probe-expectation",
+  "taskSha256": "7fc9c66b94e5b21346106aa10dc9011f7e1168ba6b7db986d173e900948d05f2",
+  "rootDispatchToolChunk": "23827a",
+  "mapValidationToolChunk": "888040",
+  "exitCode": 0,
+  "errors": [],
+  "warnings": [],
+  "nativeFollowupAndACKReceived": true,
+  "owner": "native:/root/credential_provider",
+  "goWindowGranted": true,
+  "window": "109 14源冻结后明确授原单例红→同scope维护→原目标/selector绿连续短窗，逐次真实Wait；当前尚未收到结果。"
+}

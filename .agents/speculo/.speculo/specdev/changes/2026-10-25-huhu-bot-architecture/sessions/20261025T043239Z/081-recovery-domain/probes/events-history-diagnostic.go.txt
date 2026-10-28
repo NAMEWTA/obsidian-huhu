@@ -1,0 +1,364 @@
+package events_test
+
+import (
+	"context"
+	"encoding/json"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+type observedConversation struct {
+	api.ConversationAPI
+	loaded chan struct{}
+	once   sync.Once
+}
+
+func (o *observedConversation) History(ctx context.Context, id api.RequestIdentity, q api.HistoryQuery) (api.MessagePage, error) {
+	p, e := o.ConversationAPI.History(ctx, id, q)
+	o.once.Do(func() { close(o.loaded) })
+	return p, e
+}
+func (f *fixture) waitTerminal(t *testing.T, run string) {
+	t.Helper()
+	bounded, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+	for {
+		r, e := f.c.API.Conversation.GetRun(bounded, owner, api.IDQuery{ProfileID: f.profile, ID: run})
+		if e != nil {
+			t.Fatal(e)
+		}
+		if r.Status == "succeeded" || r.Status == "failed" {
+			return
+		}
+		timer := time.NewTimer(5 * time.Millisecond)
+		select {
+		case <-bounded.Done():
+			timer.Stop()
+			rows, diagnosticError := f.db.Query("SELECT run_id,status,reason,claim_token,execution_position_json,event_seq,revision FROM execution_runs ORDER BY created_at,run_id")
+			if diagnosticError != nil { t.Logf("diagnostic query: %v", diagnosticError) } else {
+				for rows.Next() { var run,status,reason,claim,position string;var seq,revision int64;if x:=rows.Scan(&run,&status,&reason,&claim,&position,&seq,&revision);x!=nil{t.Logf("diagnostic scan %v",x);break};t.Logf("TIMEOUT RUN id=%s status=%s reason=%s claim=%s seq=%d rev=%d position=%s",run,status,reason,claim,seq,revision,position) };rows.Close()
+			}
+			rows,diagnosticError=f.db.Query("SELECT run_id,seq,event_type,body_json FROM execution_events ORDER BY run_id,seq")
+			if diagnosticError==nil { for rows.Next(){var run,kind,body string;var seq int64;if x:=rows.Scan(&run,&seq,&kind,&body);x!=nil{t.Log(x);break};t.Logf("TIMEOUT EVENT %s %d %s %s",run,seq,kind,body)};rows.Close() }
+			t.Fatal("Run did not finish")
+		case <-timer.C:
+		}
+	}
+}
+func historyRuns(t *testing.T) (*fixture, api.Grant) {
+	t.Helper()
+	f := openWithOptions(t, bootstrap.Options{Engine: &eventEngine{release: make(chan struct{})}})
+	grant := f.sourceRun(t, "")
+	f.waitTerminal(t, f.run.RunID)
+	for i := range 10 {
+		session, e := f.c.API.Conversation.GetSession(ctx, owner, api.IDQuery{ProfileID: f.profile, ID: f.session.ID})
+		if e != nil {
+			t.Fatal(e)
+		}
+		key := api.NewID("history:")
+		run, e := f.c.API.Conversation.StartRun(ctx, owner, api.RunStart{CommandMeta: f.meta(key, session.Revision), SessionID: f.session.ID, Intent: "plain user request " + string(rune('a'+i)), SourceRefs: []api.SourceSnapshot{}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		f.waitTerminal(t, run.RunID)
+	}
+	return f, grant
+}
+
+func TestActualHistoryWriterAllowsMoreThanEightRunsAndRechecksQueuedMessageProvenance(t *testing.T) {
+	for _, revoke := range []bool{false, true} {
+		name := "eleven-runs"
+		if revoke {
+			name = "queued-then-one-grant-revoked"
+		}
+		t.Run(name, func(t *testing.T) {
+			f, grant := historyRuns(t)
+			query := api.HistoryQuery{PageQuery: api.PageQuery{ProfileID: f.profile, Limit: 100}, SessionID: f.session.ID}
+			before, e := f.c.API.Conversation.History(ctx, owner, query)
+			if e != nil || len(before.Items) != 22 || len(before.DeliverySubjects) != 22 {
+				t.Fatal("actual history provenance missing", len(before.Items), len(before.DeliverySubjects), e)
+			}
+			observed := &observedConversation{ConversationAPI: f.c.API.Conversation, loaded: make(chan struct{})}
+			f.c.API.Conversation = observed
+			client, _ := pendingServer(t, f)
+			send(t, client, "c:history", "sessions.history", query)
+			select {
+			case <-observed.loaded:
+			case <-time.After(time.Second):
+				t.Fatal("history did not finish while writer blocked")
+			}
+			if revoke {
+				f.revoke(t, grant)
+			}
+			if r := receive(t, client); r.Error != nil {
+				t.Fatal(r.Error)
+			}
+			response := receive(t, client)
+			if !revoke {
+				var page api.MessagePage
+				if response.Error != nil || json.Unmarshal(response.Result, &page) != nil || len(page.Items) != 22 {
+					t.Fatalf("valid >8-Run history refused: %#v", response.Error)
+				}
+			} else {
+				if response.Error == nil || response.Error.Data.Kind != "CAPABILITY_DENIED" || len(response.Result) != 0 {
+					t.Fatal("queued history leaked old private text", response)
+				}
+				send(t, client, "c:current-history", "sessions.history", query)
+				response = receive(t, client)
+				var current api.MessagePage
+				if response.Error != nil || json.Unmarshal(response.Result, &current) != nil || len(current.Items) != 10 {
+					t.Fatal("message fence incorrectly denied source-free user history", len(current.Items), response.Error)
+				}
+				for _, message := range current.Items {
+					if len(message.SourceRefs) != 0 || message.Role != "user" {
+						t.Fatal("revoked source/derived message survived", message)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestMessageDeliveryUsesItsOwnPersistedSourceSubset(t *testing.T) {
+	f := open(t)
+	first := f.sourceRun(t, "")
+	page, e := f.c.API.Events.Tail(ctx, owner, f.tail("1"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	one := page.Events[0].SourceRefs[0]
+	two := one
+	two.ResourceID = "source:inherited"
+	second, e := f.c.API.Grants.Create(ctx, owner, api.GrantCreate{CommandMeta: f.meta("inherited-grant", ""), WorkspaceID: one.WorkspaceID, Scope: "source", ResourceID: two.ResourceID, Recipients: first.Recipients, Operations: []string{"read", "send"}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	sources, _ := json.Marshal([]api.SourceSnapshot{one, two})
+	grantIDs, _ := json.Marshal([]string{first.ID, second.ID})
+	if _, e = f.db.Exec("UPDATE execution_runs SET effective_source_json=?,effective_grants_json=? WHERE run_id=?", string(sources), string(grantIDs), f.run.RunID); e != nil {
+		t.Fatal(e)
+	}
+	_, e = f.c.API.Grants.Revoke(ctx, owner, api.GrantRevoke{CommandMeta: f.meta("revoke-inherited", second.Revision), ID: second.ID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	current, e := f.c.API.Conversation.History(ctx, owner, api.HistoryQuery{PageQuery: api.PageQuery{ProfileID: f.profile}, SessionID: f.session.ID})
+	if e != nil || len(current.Items) != 1 {
+		t.Fatal("valid original message subset hidden", current, e)
+	}
+	delivered := false
+	e = f.c.API.Events.WithDelivery(ctx, owner, current.DeliverySubjects, func(context.Context) error { delivered = true; return nil })
+	if e != nil || !delivered {
+		t.Fatal("message expanded into revoked inherited Run source", e)
+	}
+	e = f.c.API.Events.WithDelivery(ctx, owner, []api.DeliverySubject{{Kind: "run", ID: f.run.RunID}}, func(context.Context) error { t.Error("whole Run bypassed revoked effective source"); return nil })
+	if e == nil {
+		t.Fatal("whole Run was authorized")
+	}
+	group := append([]api.DeliverySubject(nil), current.DeliverySubjects...)
+	group = append(group, api.DeliverySubject{Kind: "run", ID: f.run.RunID})
+	e = f.c.API.Events.WithDelivery(ctx, owner, group, func(context.Context) error {
+		t.Error("message narrowing contaminated cached whole Run provenance")
+		return nil
+	})
+	if e == nil {
+		t.Fatal("mixed message/Run group bypassed revoked inherited source")
+	}
+}
+
+func TestMaximumEightHistoryPagesDeliverySubjectsFitOneBoundedGate(t *testing.T) {
+	f := openWithOptions(t, bootstrap.Options{Engine: &eventEngine{release: make(chan struct{})}})
+	f.waitTerminal(t, f.run.RunID)
+	agents, e := f.c.API.Assistant.List(ctx, owner, api.PageQuery{ProfileID: f.profile})
+	if e != nil {
+		t.Fatal(e)
+	}
+	for range 399 {
+		key := api.NewID("max-history:")
+		session, e := f.c.API.Conversation.CreateSession(ctx, owner, api.SessionCreate{CommandMeta: f.meta(key, ""), Kind: "direct", Title: "Bounded history fixture", MemberIDs: []string{agents.Items[0].ID}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		run, e := f.c.API.Conversation.StartRun(ctx, owner, api.RunStart{CommandMeta: f.meta(key+"-run", session.Revision), SessionID: session.ID, Intent: "plain user request", SourceRefs: []api.SourceSnapshot{}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		f.waitTerminal(t, run.RunID)
+	}
+	rows, e := f.db.Query("SELECT m.message_id,m.run_id FROM conversation_messages m JOIN execution_runs r ON r.run_id=m.run_id WHERE r.principal_id=? ORDER BY m.message_id", owner.PrincipalID())
+	if e != nil {
+		t.Fatal(e)
+	}
+	subjects := []api.DeliverySubject{}
+	runs := map[string]bool{}
+	for rows.Next() {
+		var message, run string
+		if e = rows.Scan(&message, &run); e != nil {
+			_ = rows.Close()
+			t.Fatal(e)
+		}
+		subjects = append(subjects, api.DeliverySubject{Kind: "message", ID: message})
+		runs[run] = true
+	}
+	e = rows.Err()
+	_ = rows.Close()
+	if e != nil || len(subjects) != 800 || len(runs) != 400 {
+		t.Fatal("not the legitimate maximum set", len(subjects), len(runs), e)
+	}
+	started := time.Now()
+	called := false
+	e = f.c.API.Events.WithDelivery(ctx, owner, subjects, func(permit context.Context) error { called = true; return permit.Err() })
+	elapsed := time.Since(started)
+	if e != nil || !called || elapsed > 250*time.Millisecond {
+		t.Fatal("valid maximum history group exceeded permit", elapsed, e)
+	}
+	foreign := api.NewConnectionIdentity("events:foreign", "other", false)
+	key := api.NewID("foreign:")
+	session, e := f.c.API.Conversation.CreateSession(ctx, foreign, api.SessionCreate{CommandMeta: f.meta(key, ""), Kind: "direct", Title: "Other owner", MemberIDs: []string{agents.Items[0].ID}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	receipt, e := f.c.API.Conversation.StartRun(ctx, foreign, api.RunStart{CommandMeta: f.meta(key+"-run", session.Revision), SessionID: session.ID, Intent: "foreign private intent", SourceRefs: []api.SourceSnapshot{}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	var foreignMessage string
+	if e = f.db.QueryRow("SELECT user_message_id FROM execution_runs WHERE run_id=?", receipt.RunID).Scan(&foreignMessage); e != nil {
+		t.Fatal(e)
+	}
+	subjects[len(subjects)-1] = api.DeliverySubject{Kind: "message", ID: foreignMessage}
+	called = false
+	e = f.c.API.Events.WithDelivery(ctx, owner, subjects, func(context.Context) error { called = true; return nil })
+	fault(t, e, "SESSION_READ_DENIED")
+	if called {
+		t.Fatal("source-free foreign message bypassed ownership")
+	}
+	subjects[len(subjects)-1] = api.DeliverySubject{Kind: "message", ID: "message:missing"}
+	called = false
+	e = f.c.API.Events.WithDelivery(ctx, owner, subjects, func(context.Context) error { called = true; return nil })
+	fault(t, e, "MESSAGE_NOT_FOUND")
+	if called {
+		t.Fatal("missing persisted message reached writer")
+	}
+	t.Logf("800 persisted message subjects / 400 actual Facade Runs, equivalent to batch8×page100, authorized in %s within total250ms; foreign message at final position rejected without writer callback", elapsed)
+}
+
+type sourceHistoryEngine struct{}
+
+func (sourceHistoryEngine) Run(context.Context, api.EngineInput, func(api.EngineEvent) error) (api.EngineResult, error) {
+	return api.EngineResult{Status: "finished", Text: "ok"}, nil
+}
+func (sourceHistoryEngine) Resume(context.Context, api.EngineResumeInput, func(api.EngineEvent) error) (api.EngineResult, error) {
+	panic("unexpected continuation")
+}
+
+func sourceHistoryRuns(t *testing.T, count int, separateSessions bool) (*fixture, api.Grant) {
+	t.Helper()
+	f := openWithOptions(t, bootstrap.Options{Engine: sourceHistoryEngine{}})
+	first := f.sourceRun(t, "")
+	f.waitTerminal(t, f.run.RunID)
+	var encoded string
+	if e := f.db.QueryRow("SELECT source_json FROM conversation_messages WHERE run_id=? AND role='user'", f.run.RunID).Scan(&encoded); e != nil {
+		t.Fatal(e)
+	}
+	var sources []api.SourceSnapshot
+	if e := json.Unmarshal([]byte(encoded), &sources); e != nil {
+		t.Fatal(e)
+	}
+	other := sources[0]
+	other.ResourceID = "source:second"
+	second, e := f.c.API.Grants.Create(ctx, owner, api.GrantCreate{CommandMeta: f.meta("second-source", ""), WorkspaceID: first.WorkspaceID, Scope: "source", ResourceID: other.ResourceID, Recipients: first.Recipients, Operations: []string{"read", "send"}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	sources = append(sources, other)
+	for i := 1; i < count; i++ {
+		key := api.NewID("source-history:")
+		var session api.Session
+		if separateSessions {
+			session, e = f.c.API.Conversation.CreateSession(ctx, owner, api.SessionCreate{CommandMeta: f.meta(key, ""), Kind: "direct", Title: "Sources", MemberIDs: []string{first.Recipients[0].AgentID}, WorkspaceID: first.WorkspaceID})
+		} else {
+			session, e = f.c.API.Conversation.GetSession(ctx, owner, api.IDQuery{ProfileID: f.profile, ID: f.session.ID})
+		}
+		if e != nil {
+			t.Fatal(e)
+		}
+		run, e := f.c.API.Conversation.StartRun(ctx, owner, api.RunStart{CommandMeta: f.meta(key+"-run", session.Revision), SessionID: session.ID, Intent: "request", SourceRefs: sources, GrantIDs: []string{first.ID, second.ID}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		f.waitTerminal(t, run.RunID)
+	}
+	return f, first
+}
+
+func TestSingleSessionHundredSourceMessagesReachActualHistoryWriter(t *testing.T) {
+	f, _ := sourceHistoryRuns(t, 50, false)
+	query := api.HistoryQuery{PageQuery: api.PageQuery{ProfileID: f.profile, Limit: 100}, SessionID: f.session.ID}
+	page, e := f.c.API.Conversation.History(ctx, owner, query)
+	if e != nil || len(page.Items) != 100 || len(page.DeliverySubjects) != 100 {
+		t.Fatal("not the public single-session source page", page, e)
+	}
+	for _, message := range page.Items {
+		if len(message.SourceRefs) < 1 {
+			t.Fatal("fixture lost actual source provenance")
+		}
+	}
+	started := time.Now()
+	called := false
+	e = f.c.API.Events.WithDelivery(ctx, owner, page.DeliverySubjects, func(permit context.Context) error { called = true; return permit.Err() })
+	elapsed := time.Since(started)
+	if e != nil || !called || elapsed >= 250*time.Millisecond {
+		t.Fatal("legal source page exceeded unchanged gate", elapsed, e)
+	}
+	client, _ := pendingServer(t, f)
+	if reply := receive(t, client); reply.Error != nil {
+		t.Fatal(reply.Error)
+	}
+	send(t, client, "c:source-history", "sessions.history", query)
+	reply := receive(t, client)
+	var remote api.MessagePage
+	if reply.Error != nil || json.Unmarshal(reply.Result, &remote) != nil || len(remote.Items) != 100 {
+		t.Fatal("actual source History response failed", reply.Error, len(remote.Items))
+	}
+	t.Logf("one Session/50 completed Facade Runs/100 source messages: gate=%s<250ms; actual HAP History delivered100 items", elapsed)
+}
+
+func TestEightHundredActualSourceMessagesFitGateAndRecheckRevocation(t *testing.T) {
+	f, grant := sourceHistoryRuns(t, 400, true)
+	rows, e := f.db.Query("SELECT m.message_id FROM conversation_messages m JOIN execution_runs r ON r.run_id=m.run_id WHERE r.agent_id=? ORDER BY m.message_id", grant.Recipients[0].AgentID)
+	if e != nil {
+		t.Fatal(e)
+	}
+	subjects := []api.DeliverySubject{}
+	for rows.Next() {
+		var id string
+		if e = rows.Scan(&id); e != nil {
+			_ = rows.Close()
+			t.Fatal(e)
+		}
+		subjects = append(subjects, api.DeliverySubject{Kind: "message", ID: id})
+	}
+	e = rows.Err()
+	_ = rows.Close()
+	if e != nil || len(subjects) != 800 {
+		t.Fatal("not800 real source-message subjects", len(subjects), e)
+	}
+	started := time.Now()
+	called := false
+	e = f.c.API.Events.WithDelivery(ctx, owner, subjects, func(permit context.Context) error { called = true; return permit.Err() })
+	elapsed := time.Since(started)
+	if e != nil || !called || elapsed >= 250*time.Millisecond {
+		t.Fatal("maximum source subjects exceeded unchanged gate", elapsed, e)
+	}
+	f.revoke(t, grant)
+	e = f.c.API.Events.WithDelivery(ctx, owner, subjects, func(context.Context) error { t.Error("same subjects reused previous authorization"); return nil })
+	if e == nil {
+		t.Fatal("actual revocation did not invalidate source batch")
+	}
+	t.Logf("400 separate actual Facade Runs/800 source messages: direct gate=%s<250ms; next transaction revoke rejected; this measures gate upper count, not one cross-session HAP History request", elapsed)
+}

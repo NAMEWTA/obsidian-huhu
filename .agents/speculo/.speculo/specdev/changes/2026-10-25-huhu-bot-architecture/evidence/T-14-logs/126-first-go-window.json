@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:01:46.542550+00:00",
+  "task": "126-private-memory",
+  "nativeFollowupAndAck": true,
+  "goOwner": "native:/root/foundation_research",
+  "phase": "only first actual defaultCore/HAP unavailable behavior red, then126 own implementation",
+  "stableContracts": [
+    "125 R3 accepted, evidence/125-lead-return.json",
+    "128 seven-file minimal interfaces, evidence/T-14-logs/128-first-slice-return.json",
+    "129 exact composition preparation read by Root f9836a"
+  ],
+  "initialCheckScope": "new private-memory Go test only, real bootstrap.Core + in-process HAP + SQLite; no Node/TS, no manually registered014 or fake MemoryAPI",
+  "inputBoundary": "native Go/SQL/JSON+locks; shared API/schema remains frozen;127 independent Node window does not enter this compiler or runtime input",
+  "currentOtherGoWriters": "128 ended;129/130 stopped;Root no product checks",
+  "next": "after initial red actual Wait and Go window release,Root may permit126+129 nonconflicting sources; joint Go check must freeze all its true writers",
+  "result": "not-run at grant"
+}

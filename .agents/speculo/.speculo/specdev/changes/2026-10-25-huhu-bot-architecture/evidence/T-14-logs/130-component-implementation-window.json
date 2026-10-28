@@ -1,0 +1,13 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:32:19.734963+00:00",
+  "task": "130-memory-common-engine",
+  "taskSha256": "7c90a342a8f665ed793127edb8d46c539b1598e6e063f00a2b2dd6a9ce92ceb0",
+  "nativeACK": "actual production implementation and sole component Go check window acknowledged",
+  "firstRedAccepted": "evidence/T-14-logs/130-common-initial-red-r1.json",
+  "actualImportClosure": "evidence/T-14-logs/130-common-closure-r1.json",
+  "mapRevision": 35,
+  "implementation": "TASK common/** and necessary engine/chat tests; API/driver/locks/old fixtures readonly",
+  "checks": "Only own frozen common test closure of common/chat/api; confirm with actual go list each changed closure, precise normal/race/vet, no Core/SQL/public chat package/generation. Other126/129 remain source-only.",
+  "rootActiveGoProcesses": 0
+}

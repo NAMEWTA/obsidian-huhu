@@ -1,0 +1,93 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:02:30.381688+00:00",
+  "rawJSONLParsedInFull": true,
+  "slice3ProductionFixRead": true,
+  "slice4TestReadInFull": true,
+  "checks": {
+    "slice3-fixed": {
+      "result": {
+        "command": [
+          "go",
+          "test",
+          "./tests/contract/engine/responses",
+          "-run",
+          "^(TestTerminalAndUsagePresenceSettleEachActualRequestOnce|TestInvalidCompleteToolBatchNeverPublishesFirstApproval|TestHTTPFailuresNeverRetryOrFollowRedirect)$",
+          "-count=1",
+          "-timeout=90s",
+          "-json"
+        ],
+        "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+        "environment": {
+          "GOTOOLCHAIN": "go1.26.10",
+          "GOWORK": "off",
+          "GOEXPERIMENT": "",
+          "CGO_ENABLED": "0",
+          "GOFLAGS": "-mod=readonly"
+        },
+        "startedAt": "2026-10-26T04:44:42.964451+00:00",
+        "finishedAt": "2026-10-26T04:44:45.946525+00:00",
+        "elapsedSeconds": 2.982058560999576,
+        "exitCode": 0,
+        "waitCompleted": true,
+        "inputSHA256": "a2b717e77843323e000813cd8d1fe382aa5b16c2f0c0d61798f7bd7d4de7a355",
+        "frozenFileCount": 328,
+        "changedInputs": [],
+        "addedInputs": [],
+        "stdout": "slice3-fixed.stdout.jsonl",
+        "stderr": "slice3-fixed.stderr.log"
+      },
+      "archiveFilesIndependentlyVerified": 328,
+      "archiveSha256": "c05b8905341cc4d27bfe5b4797db474eef362a7061d6bd58206642f64afb1479",
+      "passedSubcases": 41,
+      "passedTopTests": [
+        "TestTerminalAndUsagePresenceSettleEachActualRequestOnce",
+        "TestInvalidCompleteToolBatchNeverPublishesFirstApproval",
+        "TestHTTPFailuresNeverRetryOrFollowRedirect"
+      ]
+    },
+    "slice4-initial": {
+      "result": {
+        "command": [
+          "go",
+          "test",
+          "./tests/contract/engine/responses",
+          "-run",
+          "^(TestCompleteResponsesCheckpointRejectsSemanticDamageBeforeResumeIO|TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions|TestDefaultResponsesPersistsTextAndSettledUsage|TestMixedItemsKeepOpaqueStateAndOriginalToolDecisions)$",
+          "-count=1",
+          "-timeout=90s",
+          "-json"
+        ],
+        "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+        "environment": {
+          "GOTOOLCHAIN": "go1.26.10",
+          "GOWORK": "off",
+          "GOEXPERIMENT": "",
+          "CGO_ENABLED": "0",
+          "GOFLAGS": "-mod=readonly"
+        },
+        "startedAt": "2026-10-26T04:59:33.585947+00:00",
+        "finishedAt": "2026-10-26T04:59:34.843389+00:00",
+        "elapsedSeconds": 1.2574255469953641,
+        "exitCode": 0,
+        "waitCompleted": true,
+        "inputSHA256": "f3555d4ee1542166033bee2b0b30f3164d1de17b85a376ca5a074b5a0e7b3088",
+        "frozenFileCount": 329,
+        "changedInputs": [],
+        "addedInputs": [],
+        "stdout": "slice4-initial.stdout.jsonl",
+        "stderr": "slice4-initial.stderr.log"
+      },
+      "archiveFilesIndependentlyVerified": 329,
+      "archiveSha256": "1e27b16a2e7f7e63231d9cfbb9d4a1effa25377e64c75066bbd7b9fcf0dc8d3f",
+      "passedSubcases": 15,
+      "passedTopTests": [
+        "TestCompleteResponsesCheckpointRejectsSemanticDamageBeforeResumeIO",
+        "TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions",
+        "TestDefaultResponsesPersistsTextAndSettledUsage",
+        "TestMixedItemsKeepOpaqueStateAndOriginalToolDecisions"
+      ]
+    }
+  },
+  "boundary": "slice3原39/40红保持；真实incomplete terminal修复后41case通过。slice4原完整CP重算外壳hash的15语义损坏双入口均零新增IO；跨重启使用显式假resolver/当前metadata正控，非持久secret恢复。109仍在完成剩余生命周期矩阵，未标全票通过。"
+}

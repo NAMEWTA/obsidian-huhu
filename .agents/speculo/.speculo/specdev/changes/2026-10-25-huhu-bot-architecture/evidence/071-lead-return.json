@@ -1,0 +1,95 @@
+{
+  "task": "071-delegation-wait-repair",
+  "checkedAt": "2026-10-25T18:12:25.658755+00:00",
+  "reportSha256": "fa869f8e8263f4ef49d96702927ec0182e63cdcd64fc2cf6ac423829feea75a2",
+  "taskSha256": "37e001c07ea5a6f71281f92ea4b63b05d2f7fd59b8b0a7967f5196c33dd30fe0",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "onlyExpectedTestChanged": true,
+  "testSha256": "7c5d9de337c41651384ef0c98c6dbd179887e6ce417daedd230f1b843f33fa1d",
+  "diffSha256": "633f375f08182b71bf3b87675be6cb245af18bcd9db53ba8e0aff53f20b34fe4",
+  "scopeReadback": {
+    "checkedAt": "2026-10-25T18:11:59.936Z",
+    "files": 265,
+    "sources": 69,
+    "changedOnly": [
+      "native/huhubot/tests/contract/delegation/wait_test.go"
+    ],
+    "sourceDrift": [],
+    "unexpectedScopeDrift": [],
+    "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "indexEntrySha256": "10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1"
+  },
+  "otherExistingTestFunctionBytesUnchanged": true,
+  "productionChanges": [],
+  "finalTargetNormalPackageSeconds": 0.445,
+  "finalTargetRacePackageSeconds": 6.179,
+  "packageChecks": [
+    {
+      "label": "08-package-normal",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-timeout=6m",
+        "-p=1",
+        "-count=1",
+        "-v",
+        "./tests/contract/delegation"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "0"
+      },
+      "exit": 0,
+      "wallSeconds": 6.490689766971627,
+      "actualWait": true,
+      "sourceTreeSha256": "62aff51305e0af709247b797fa501c0f70bd953a6413216e386b70a491d2d5c9"
+    },
+    {
+      "label": "09-package-race",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-race",
+        "-timeout=6m",
+        "-p=1",
+        "-count=1",
+        "-v",
+        "./tests/contract/delegation"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "1"
+      },
+      "exit": 0,
+      "wallSeconds": 58.852465581003344,
+      "actualWait": true,
+      "sourceTreeSha256": "62aff51305e0af709247b797fa501c0f70bd953a6413216e386b70a491d2d5c9"
+    }
+  ],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "readback": "Root fully read final REPORT, entire exact diff and all target/package normal/race raw outputs.03 is intermediate normal; final11 covers corrected callback error handling. Root recomputed diff and265 current file hashes, compared69 unchanged sources/HEAD/index/Git modes; only expected test changed. Both schedules preserve live slot/CP/results and cleanup invariants.",
+  "disposition": "Accept test-only repair slice for explicit current E2E reuse and independent candidate3 review; no ticket or full change completion yet.",
+  "observedArtifacts": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md": "fa869f8e8263f4ef49d96702927ec0182e63cdcd64fc2cf6ac423829feea75a2",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/TASK.md": "37e001c07ea5a6f71281f92ea4b63b05d2f7fd59b8b0a7967f5196c33dd30fe0",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/01-before-current-input.json": "3d3ba22d59ee728375f3fd1cf02a1b20e1505087109220f6d280295a73c1885c",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/02-reused-deterministic-red.json": "ea321b3ebcc90a7809ed72db40821312a3caf27eb263d0e43b45cd50a31d5a29",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/03-target-normal.log": "4306afeebfce41d742147a716d6c3f55021e858392a5c9e191489edaa4527729",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/04-target-race.log": "06d04bb86b3637374f5f3df458c767d3d8c0df22af8a2195216d7e0b22b1d380",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/05-single-file-repair.diff": "633f375f08182b71bf3b87675be6cb245af18bcd9db53ba8e0aff53f20b34fe4",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/06-final-source-before-package-checks.json": "394a4304326e971c119de95bc63fcd02955eef6326a15294679de74e6910da39",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/08-package-normal.log": "53f8c117c99030c5b4704298a1da19b45189a2e5e9342b3af0944ec7d89204c9",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/09-package-race.log": "a92d8359e2bbb33f79731de1f9112f718f27287533246b047fca30dc8e32fefe",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/10-package-check-results.json": "53bd81330f12d6270d3219832ce2f1a22979cf564333bca503503c0fb8e63ab8",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/11-final-target-normal.log": "8ba194338d8f3367037dee355d23fe0fe779d2a241d4a8ae9031803a04467588",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/12-final-source-and-cleanup.json": "b668940c185bb54267a0e946de0a35074231a4ce27c18dd42fb84e92782534cd",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/071-delegation-wait-repair/logs/14-final-handoff.json": "61f99ceba3a54d949d1b31b82bc6211b1875953d5b18a50f4b4b177df9b8ecc1"
+  }
+}

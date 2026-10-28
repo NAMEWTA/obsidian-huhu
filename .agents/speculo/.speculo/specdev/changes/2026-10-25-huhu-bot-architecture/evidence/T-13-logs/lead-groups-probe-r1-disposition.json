@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-25T19:56:29.798771+00:00",
+  "actualOverallExit": 1,
+  "allChildrenWaited": true,
+  "productFailure": false,
+  "reason": "Root probe expected CONFLICT kind for active Session coordinator change; actual product returned documented SESSION_BUSY kind/reason. Only external probe expectation is corrected. Successful full v7 migration and toolchain checks reused on identical product/fixture/probe bytes; failed public package rerun.",
+  "sourceDrift": [],
+  "beforeProbeSha256": "4a7078496b1cdc0a9baa7ee678e043ecc1490faace0c005a4916a2935afc6252",
+  "afterProbeSha256": "13eca97bc27a636ce0217d192e3b111fe74cc2eec17fda9d1fe7dcb7025e58f2"
+}

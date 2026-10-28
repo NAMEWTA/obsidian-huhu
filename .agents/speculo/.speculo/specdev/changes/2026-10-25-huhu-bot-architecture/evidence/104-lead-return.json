@@ -1,0 +1,31 @@
+{
+  "observer": "native:/root",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportAndExactPatchRead": true,
+  "reportSHA256": "a972c95cc0dedc5cba30d92865c50299815b0afce83c86c2c748a987530d1ae7",
+  "manifestSHA256": "0f5658e3295d567beb06107940968e18596b01a40c94c929500ef02643bba41a",
+  "checkedEntries": 27,
+  "drift": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "104-responses-report-format",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.07502676898729987,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "Accepted two display-only successors; original097 bytes remain in104 .txt and original097 manifest/return/Root receipt unchanged; no research semantics changed."
+}

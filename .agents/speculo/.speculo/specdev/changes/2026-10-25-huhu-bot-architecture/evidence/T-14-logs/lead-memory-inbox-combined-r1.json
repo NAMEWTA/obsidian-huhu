@@ -1,0 +1,74 @@
+{
+  "observer": "native:/root",
+  "complete": true,
+  "sourceSHA256": "b8be5c1a10b0ca9c3ce736ec7ffcd0e17e1686afd9c9ffc59d8688629f4956c0",
+  "sourceFiles": 1892,
+  "sourceDrift": [],
+  "protocols": {
+    "openai-chat-completions": {
+      "attempt": 3,
+      "record": "lead-memory-inbox-r3.json",
+      "recordSHA256": "67a709d7bff53ec24a229e1046f604d737ea778dfaf01bb861646106f6ea3992",
+      "actualHTTP": 5,
+      "successfulRuns": 3,
+      "knownSettledAttempts": 5,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "contextCount": 3
+    },
+    "openai-responses": {
+      "attempt": 3,
+      "record": "lead-memory-inbox-r3.json",
+      "recordSHA256": "67a709d7bff53ec24a229e1046f604d737ea778dfaf01bb861646106f6ea3992",
+      "actualHTTP": 5,
+      "successfulRuns": 3,
+      "knownSettledAttempts": 5,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "contextCount": 3
+    },
+    "anthropic-messages": {
+      "attempt": 4,
+      "record": "lead-memory-inbox-r4.json",
+      "recordSHA256": "0a8157f89b97434aef0b9d4a22a7ce3b515f89518013929e355562b299c39e55",
+      "actualHTTP": 5,
+      "successfulRuns": 3,
+      "knownSettledAttempts": 5,
+      "pins": 0,
+      "activeSessionRuns": 0,
+      "naturalCLIExits": [
+        {
+          "code": 0,
+          "signal": null
+        },
+        {
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "contextCount": 3
+    }
+  },
+  "fixtureOnlyChange": "Exact unique Anthropic tool-turn message_start cache-usage fields corrected; Chat/Responses fixture branches and every product byte/mode identical. Original r3 overall failure preserved.",
+  "boundary": "Production TS BotClient/physical stdio/default CLI/actual SDKs/local HTTP/SQLite/reopen. Real Provider/Obsidian/target OS user-owned/not-run."
+}

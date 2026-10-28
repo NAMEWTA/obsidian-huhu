@@ -1,0 +1,29 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T13:07:53.046603+00:00",
+  "ownerCheckpoints": [
+    {
+      "path": "sessions/20261025T043239Z/126-private-memory/logs/10-manifest-precheck-source-checkpoint.json",
+      "sha256": "75de4908fc009cbc54afdf06278dd3012b4a0f740aa802bbe88c167d5efe2097",
+      "count": 20,
+      "drift": []
+    },
+    {
+      "path": "sessions/20261025T043239Z/128-memory-access-budget/logs/06-consumer-source-checkpoint.json",
+      "sha256": "dd326c316c2b8709e92707b5c11abaafcb427c59ec2aa3422afa33dbafd5d2cb",
+      "count": 18,
+      "drift": []
+    },
+    {
+      "path": "sessions/20261025T043239Z/134-memory-runtime-consumers/logs/01-source-checkpoint.json",
+      "sha256": "f163b691d31c20e7d5767a7b0d10358ad4650d5ef624cceda0deedd3e345e783",
+      "count": 22,
+      "drift": []
+    }
+  ],
+  "reviewFiles": 1719,
+  "reviewDrift": [],
+  "window": "Root soleGo;133 Go actuallyWaited and returned window,may static/limitedNode;all126/128/134 sources stopped",
+  "command": "python3 /tmp/huhu-lead-memory-joint.py 1",
+  "boundary": "actual defaultCore first jointcompile+same original management target; no generation, no real Provider/Obsidian/OS"
+}

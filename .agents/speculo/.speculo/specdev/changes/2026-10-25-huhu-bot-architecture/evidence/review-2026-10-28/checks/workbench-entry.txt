@@ -1,0 +1,12 @@
+$ node --test scripts/verify-workbench-entry.mjs
+✔ one ribbon registration owner opens the workbench (20.419108ms)
+✔ the shell UI only consumes contracts, the design system and shared code (0.666552ms)
+✔ only the workbench, comments and navigator panels are registered views (16.889878ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.061597

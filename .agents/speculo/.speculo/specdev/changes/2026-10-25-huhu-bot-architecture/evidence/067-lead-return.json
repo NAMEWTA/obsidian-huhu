@@ -1,0 +1,30 @@
+{
+  "task": "067-draft-link-maintenance",
+  "reportSha256": "36d35392689fb62520a55ccadc4ef33b7d3a84fab94d4286af282ea316ccf782",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "acceptedAt": "2026-10-25T16:56:04.252005+00:00",
+  "protectedFilesChecked": 332,
+  "protectedDrift": [],
+  "rootVerifiedExactFourUrlReplacement": true,
+  "rootVerifiedFourTargets": true,
+  "originalBytesPreserved": true,
+  "rawGitIndexSha256": "d2a2cc618e08f39b6730478bed302db78480d2d10642879f55b1811035e50494",
+  "gitStagedEntriesSha256": "10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1",
+  "firstRootCheck": {
+    "exit": 1,
+    "classification": "Root initially compared the author raw .git/index file hash with the hash of git ls-files --stage -z output. Both hash domains were then independently compared with their matching original record; both unchanged. No product or report changes were needed."
+  },
+  "artifacts": {
+    "04-return-validation.json": "1361c522f1027b0f195a2cd12e10f4962c4e8e619538367c4dec3eb3f8707720",
+    "REPORT.md": "36d35392689fb62520a55ccadc4ef33b7d3a84fab94d4286af282ea316ccf782",
+    "042-report-draft-original.txt": "29d2702ce0ec7074b7a29cd9f20b86c46ba1e87c4cdc75bbc2f9f3c68ed2fa60",
+    "TASK.md": "c812cf77a4d2314e86ea39f2bcb2def37bf0f8dafe4109633e4ef4dc942ac996",
+    "05-final-handoff.json": "c9d5ae6cfb0c017648ecafc3c7d4128ac17b9db346b944402ffb35e603cf868a",
+    "02-four-links.patch": "d546fe8d5165fa3eb01ff1597d850e6138f17f1e80c15790ca6a68f05e34bcc0",
+    "03-validation.json": "e8c2d53312332f487f4be52bd6b1f8ee02a9eaa8437930bed2b9217751aa48a6",
+    "01-before-and-backup.json": "02d6e1c6c8e6f805d93ebf41d6fb42422202899efa0eccddfe1a1535473a9dc3"
+  },
+  "boundary": "Exact document maintenance accepted; T27 and global docs validation remain pending. Product/059 input unchanged."
+}

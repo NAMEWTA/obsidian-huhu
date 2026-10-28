@@ -1,0 +1,36 @@
+{
+  "observer": "native:/root",
+  "task": "156-memory-repair-review",
+  "status": "accepted-independent-request-changes",
+  "reviewer": "native:/root/memory_integration_review",
+  "inputSha256": "e5a2e6e317eb5b37931e34a7e0bbfdb397761f321866d67fd79a18a3a87c175e",
+  "standards": "request-changes",
+  "specification": "request-changes",
+  "reportSHA256": "78cf92a0381492a32e0a99beeb1d20452a98673c482e15cdf1ef7c5deab24169",
+  "manifestSHA256": "71836253fc91d825f9cf1e519e60608cccfb80fc31bd26626b3b311e144da58a",
+  "sourceFiles": 2141,
+  "artifactFiles": 11,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "156-memory-repair-review",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.05954171999474056,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "findingDisposition": "151 F1/F2/F3 closed on e5a2 input;155 no new confirmed product finding. G1 unexplained r3 credential setup failure preserved;157 readiness-only test change will be separately frozen. G2 vet/race/architecture/tooling still pending. No T14/Goal closure."
+}

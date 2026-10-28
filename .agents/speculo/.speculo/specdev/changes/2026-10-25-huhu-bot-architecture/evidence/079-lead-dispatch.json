@@ -1,0 +1,54 @@
+{
+  "task": "079-groups-r2-review",
+  "recordedAt": "2026-10-25T20:39:46.667170+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "nativeTarget": "/root/foundation_review",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "taskSha256": "da90388f293965185a17d4f689e3487d2e38e24588ae5e3c4520464078d7b769",
+  "mapRevision": 19,
+  "goalRevision": 18,
+  "inputSha256": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+  "scopeFiles": 303,
+  "sources": 91,
+  "actualFinalAuthorReceipts": [
+    "evidence/073-lead-return.json",
+    "evidence/074-lead-return.json",
+    "evidence/075-lead-return.json",
+    "evidence/078-lead-return.json"
+  ],
+  "rootProbe": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-groups-e2e-candidate2.json",
+  "rootPluginChecks": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-13-logs/lead-plugin-checks-groups-r1.json",
+  "allProductWritersStopped": true,
+  "rootNoActiveHeavyProcesses": true,
+  "heavyWindow": {
+    "owner": "079 /root/foundation_review",
+    "granted": true,
+    "released": true
+  },
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "result": {
+      "errors": [],
+      "warnings": [],
+      "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+    }
+  },
+  "nativeAck": {
+    "receivedAt": "2026-10-25T20:40:39.810590+00:00",
+    "inputSha256": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+    "files": 303,
+    "sources": 91,
+    "observed": "Reviewer native MESSAGE confirms full TASK read and actual scope/source/HEAD/index/modes check exit0; only current impact review, no redelegation or real user environment."
+  },
+  "finalReturn": {
+    "receipt": "evidence/079-lead-return.json",
+    "reportSha256": "d61215836a08969b7d7d8162845bcb7e6126ca2df16326099a436a599691cd1b",
+    "axes": {
+      "standards": "pass",
+      "specification": "pass"
+    },
+    "finding077Closed": true
+  }
+}

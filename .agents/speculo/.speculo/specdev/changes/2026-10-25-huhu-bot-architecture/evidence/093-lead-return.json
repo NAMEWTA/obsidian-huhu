@@ -1,0 +1,42 @@
+{
+  "observer": "native:/root",
+  "reportSHA256": "9ba5d1ee6d9ef9eb31995cabb8b6e174f386a656666cb51b125110828577c833",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullOwnedProductionPatchRead": true,
+  "lifecycleRawLogsRead": true,
+  "ownFiles": {
+    "native/huhubot/go.mod": "75386c4e53aa851394ed6fa7ae167c0822c530690e4e240b83ace65c97154814",
+    "native/huhubot/go.sum": "a5547b752487c8ab3e116b95f30d95f460ca58e3a7a0c6487a2a1272f89b3937",
+    "native/huhubot/internal/bootstrap/core.go": "4c857dfde5aaaba215c50ee73868fc204c4070de3502be98c1b1970baa2950dc",
+    "native/huhubot/tests/contract/foundation/default_engine_cli_test.go": "0b35337cf9de12e0c3f32d4b1b4aabe78dc74596435b95408d25d18f6743f763",
+    "native/huhubot/tests/contract/foundation/default_engine_compatibility_test.go": "279fa57915f07f204f93ccec8782b94c0f87256387b147c5228ad82a5945abc4",
+    "native/huhubot/tests/contract/foundation/default_probe_lifecycle_test.go": "df1a702868fe79c58749a31a31adf0e17980c34d3d196c395069bc2e04b39438"
+  },
+  "ownFileCount": 6,
+  "ownDrift": [],
+  "reportRelativeLinkCount": 29,
+  "missingLinks": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "093-engine-foundation",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "local candidate accepted for composition; T08 joint E2E, matrix, licensing and independent review pending",
+  "knownFollowingMaintenance": "096 owns only old T03 test; no change to these six production/test files"
+}

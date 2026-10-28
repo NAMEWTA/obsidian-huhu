@@ -1,0 +1,9 @@
+# 073 真实stdio投递接缝补充（Map18 / Goal17）
+
+原T01已拥有inbound目录及shared_path_owners明确的`native/huhubot/internal/adapters/inbound/stdio/server.go`，本次只扩展073同一任务的精确维护窗口，Ticket/Map既有文件owner与DAG不变，原TASK及前次补充SHA不改写。
+
+Root已实际回读deliver：当前按Kind+ID仅保留首个DeliverySubject，会遗漏同一batch后续响应带出的server-only Attachments检查期待。现由073原owner仅维护此处合并：同message的所有实际将发送附件proof必须被物理fence覆盖；SourceSnapshot/SourceScope按完整捕获身份精确去重、有界32，超限或不一致不得静默截断成允许发送。nil/无标签的第一份subject不能覆盖后续带标签的subject。字段仍server-only，不允许客户端构造权限证明。
+
+保留既有writer/cancel/队列预算/partial frame断连语义；不得因这个合并改变正文权限、放宽上限或修改T04 Go owner文件。foundation公开stdio batch回归需覆盖首份无标签/后份有标签及相反顺序、实际撤权后physical callback未发敏感标签。实际事件权限判断由074原owner维护并在同一合同接通。
+
+root当前仅确认必要接缝及明确写集，不代表实现或验证通过。真实模型/Obsidian/目标OS仍用户后验。

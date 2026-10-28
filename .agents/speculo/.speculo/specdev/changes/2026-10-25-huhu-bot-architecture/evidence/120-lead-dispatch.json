@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "task": "120-anthropic-notices",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/build_integration",
+  "actualDispatch": true,
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "4e2e58",
+  "taskSha256": "8d94e74081b0164225e8dd312973d3a7d3b99dc315cba2c95bd082741401df1c",
+  "mapRevision": 29,
+  "goalRevision": 28,
+  "initialScope": "fixedSDK licenses/generator registration + independent lightweight Node only; no Go/fullgraph/notices generation until119 real lock stable and Root window",
+  "nativeAckReceived": true
+}

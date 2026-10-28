@@ -1,0 +1,482 @@
+{
+  "task": "041-delegation-preflight",
+  "observedAt": "2026-10-25T09:44:13.596973+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "freezeFromTask": {
+    "r2": "131 files / 36 source files",
+    "sha256": "78581af912849fe0591b3bb697859a903e167b2642a099d4185d95c7e2d81588",
+    "status": "parent-supplied freeze identity; not independent review acceptance"
+  },
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5499,
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7961,
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "bytes": 20543,
+      "sha256": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11911,
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "bytes": 6884,
+      "sha256": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "bytes": 30069,
+      "sha256": "7886aeafca9e60df5d153dd2126bdbe4a3840d45d50b4f8c65a4076ae903ba5a",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md",
+      "bytes": 39009,
+      "sha256": "b63448f43d612c30fe172a0181e56473e119c37b5b51e937e5e600a93e78dfbe",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/11-delegation-directory.md",
+      "bytes": 13245,
+      "sha256": "8636fe2ac1d0b403d1fe034ba4fc4bba4c43dbbf9099471ddab695683a5cbf06",
+      "selectedLines": [
+        "22: expected_changes: [\"<Path>native/huhubot/internal/domain/collaboration/delegation/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/delegate/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/discover/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/proposecreate/**</Path>\",\"<Path>native/huhubot/internal/adapters/outbound/sqlite/collaboration/**</Path>\",\"<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql</Path>\",\"<Path>native/huhubot/internal/application/tooling/collaboration-tools/**</Path>\",\"<Path>native/huhubot/tests/contract/delegation/**</Path>\"]",
+        "23: writable_paths: [\"<Path>native/huhubot/internal/domain/collaboration/delegation/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/delegate/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/discover/**</Path>\",\"<Path>native/huhubot/internal/application/collaboration/proposecreate/**</Path>\",\"<Path>native/huhubot/internal/adapters/outbound/sqlite/collaboration/**</Path>\",\"<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql</Path>\",\"<Path>native/huhubot/internal/application/tooling/collaboration-tools/**</Path>\",\"<Path>native/huhubot/tests/contract/delegation/**</Path>\"]",
+        "46: IN：discover/delegate/tasks get/list/cancel 的应用/工具合同、ContextEnvelope、幂等原子受理、proposeCreate。REUSE：同一 Engine/RunExecutor，不启动另一个团队引擎。OUT：复用目标私聊、未经确认持久创建、无限递归。"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/12-messages-limits-budget.md",
+      "bytes": 13350,
+      "sha256": "39388147bff72713216071c25e84bf70a658fcb4d5d1224c473a72bf013247f8",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "selectedLines": [
+        "75: | `agents.delegate` | target=existing/temporary、已有 agentId 或临时配置、task、constraints、expectedOutput、ContextEnvelope；返回 delegationId/childRunId | 新工作线程隔离执行；不复用目标 Bot 的私聊上下文，不隐式新增持久 Bot；先持久受理再执行 |",
+        "85: existing 目标取得自己的工作上下文与获准私有记忆；它不借用调用者私聊，也不能把自身更大权限传给本任务。temporary 目标使用任务级人格、能力和独立短期/任务记忆域，可落盘恢复；不继承所有 sponsor 长期记忆，只有 ContextEnvelope 显式传入且可外发的摘录。其结果可被持久 Bot 按来源规则学习，不能直接修改 sponsor 的记忆。",
+        "162: | 协作 | `collaboration.discover/message/delegate/get/list/reply/cancel/proposeCreate` | 与工具的受信应用映射；普通客户端不能伪造运行中的模型身份 |"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "bytes": 51066,
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "selectedLines": [
+        "127: | collaboration | Delegation、AgentMessage、ContextEnvelope、任务关系 | 既有 Bot/临时执行、投递与回执、父子关系、共享预算和结果归属 |",
+        "164: 群聊可见消息与每个成员的私有工作线程分开。只有明确共享的消息、所选来源、获准记忆摘录和结构化任务进入 ContextEnvelope；调用者不直接读取被调用 Bot 的私有记忆。被调用 Bot 在自身授权范围内召回，并在结果发布前检查目标群聊、接收方模型和来源流向。"
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "bytes": 24422,
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md",
+      "bytes": 16925,
+      "sha256": "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/reference-audit.json",
+      "bytes": 13282,
+      "sha256": "09ee51b9f0913dccfff25a682154576008356ba4fd2586d486c001057470cd7e",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/034-events-approval-preflight/REPORT.md",
+      "bytes": 35616,
+      "sha256": "b322ac16d7f68aff30260f656fadf402fd3f2335fc4d357a30625554aee12691",
+      "selectedLines": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/036-note-effect-preflight/REPORT.md",
+      "bytes": 34235,
+      "sha256": "5b5b3292c08084ce31dcdab386e8c429631efb147cb131b3288d3cfa687f925d",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "bytes": 499,
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "bytes": 3620,
+      "sha256": "17c24b97f6be06cc05f48275bd820ffbcda4b8f7f4bbeed64d7dbd18bc0ff46f",
+      "selectedLines": [
+        "29: type RequestIdentity struct {",
+        "99: type Facade struct {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "bytes": 5736,
+      "sha256": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "bytes": 5087,
+      "sha256": "4aa513a902449310298429e9e4e94fd05b007e969d60311b05058af92a008c5e",
+      "selectedLines": [
+        "56: type RunUsage struct {",
+        "109: type EngineInput struct {",
+        "120: type EngineResult struct {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "bytes": 6302,
+      "sha256": "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d",
+      "selectedLines": [
+        "128: // ParentScope is absent only for a user root intention. A nonnil empty scope",
+        "141: \tParentScope                  *AccessScope"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/ports.go",
+      "bytes": 1249,
+      "sha256": "bef21a2209fd6dfd8683e3f59fdd9ca7d7d1c9f8356c34dd6bece02cad797590",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "bytes": 12241,
+      "sha256": "e66398955b30c443767318328880fee3ef648cd18ef06ba66e97147788e5f913",
+      "selectedLines": [
+        "49: func (UnassembledUsage) SnapshotUsage(context.Context, string) (api.AgentUsage, error) {",
+        "143: func (s *Service) List(ctx context.Context, id api.RequestIdentity, q api.PageQuery) (api.AgentPage, error) {",
+        "264: func (s *Service) ListModels(ctx context.Context, id api.RequestIdentity, q api.PageQuery) (api.ModelPage, error) {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/conversation/direct/ports.go",
+      "bytes": 884,
+      "sha256": "48854725d02731372b15ad2ca6eaf24e95d697980e4d6d147fe69e8e9a1bda88",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/conversation/direct/service.go",
+      "bytes": 6825,
+      "sha256": "9fddcb902f2b3b7921ca396645d27857b0a47241a389196c82fd7fd0ebacc453",
+      "selectedLines": [
+        "34: func (s *Service) ListSessions(ctx context.Context, id api.RequestIdentity, q api.PageQuery) (api.SessionPage, error) {",
+        "46: func (s *Service) History(ctx context.Context, id api.RequestIdentity, q api.HistoryQuery) (api.MessagePage, error) {",
+        "85: func (s *Service) StartRun(ctx context.Context, id api.RequestIdentity, c api.RunStart) (api.RunReceipt, error) {",
+        "126: func (s *Service) ModelHistory(ctx context.Context, id api.RequestIdentity, q api.HistoryQuery, current api.RunAccessInput) (api.ModelHistory, error) {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/commands/validation.go",
+      "bytes": 1007,
+      "sha256": "63511c86efc541cf7ead25fdb0012ab525ef0bb9e75980640033cfd899bf673c",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "bytes": 602,
+      "sha256": "0da1ac8c1c9408418cf81e7fed702531e5ed2f9138b3850a318693573c031b10",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "bytes": 5648,
+      "sha256": "28694830d8ef57a16c4613d1590f357debcadcf3943b29d5cf93d1cc49b29406",
+      "selectedLines": [
+        "43: \treturn &Executor{repo: repo, engine: engine, access: access, conversation: conversation, ctx: run, cancel: cancel, wake: make(chan struct{}, 1), slots: make(chan struct{}, 2), done: make(chan struct{})}, nil"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "bytes": 12652,
+      "sha256": "7a07e13a6c2f3e4626cb688b64c7fb24708e0203fff7a2853e2ab796e6850509",
+      "selectedLines": [
+        "62: \tif in.ParentScope == nil {",
+        "67: \t\tfor _, p := range in.ParentScope.Sources {",
+        "72: \t\tfor _, p := range in.ParentScope.Scopes {",
+        "83: \t\tfor _, p := range in.ParentScope.Scopes {",
+        "119: \tif parent := in.ParentScope; parent != nil {",
+        "139: func (s *Service) AuthorizeAdmission(ctx context.Context, id api.RequestIdentity, in api.RunAccessInput) error {",
+        "145: func (s *Service) AuthorizeRead(ctx context.Context, id api.RequestIdentity, in api.RunAccessInput) error {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "bytes": 6651,
+      "sha256": "10107d72818eece37b7681005d043140fe658fafd211a6df1609ae1ebae11b7a",
+      "selectedLines": [
+        "39: \tdb.SetMaxOpenConns(1)"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "bytes": 19147,
+      "sha256": "ee6afb61ab9b134bb24b589e6bc9f666a436f8fa9a609c7e4c3eaacb4ffcf087",
+      "selectedLines": [
+        "139: func (s *Store) List(ctx context.Context, q api.PageQuery) (api.AgentPage, error) {",
+        "218: \t_, e := tx.ExecContext(ctx, \"DELETE FROM persona_revisions WHERE agent_id=? AND revision<>(SELECT persona_revision FROM agents WHERE agent_id=?) AND revision NOT IN(SELECT persona_revision FROM config_snapshot_pins WHERE agent_id=?)\", id, id, id)",
+        "222: \t_, e = tx.ExecContext(ctx, \"DELETE FROM model_binding_revisions WHERE agent_id=? AND revision<>(SELECT model_revision FROM agents WHERE agent_id=?) AND revision NOT IN(SELECT model_revision FROM config_snapshot_pins WHERE agent_id=?)\", id, id, id)",
+        "380: \t\t\t\tif e = tx.QueryRowContext(ctx, \"SELECT count(*) FROM config_snapshot_pins WHERE agent_id=?\", id).Scan(&pins); e != nil {",
+        "451: \t\tif e = tx.QueryRowContext(ctx, \"SELECT count(*) FROM config_snapshot_pins WHERE agent_id=?\", q.ID).Scan(&pins); e != nil {",
+        "481: func (s *Store) PinInTx(ctx context.Context, tx *sql.Tx, profileID, id string) (api.ConfigSnapshot, error) {",
+        "506: \tif _, e = tx.ExecContext(ctx, \"INSERT INTO config_snapshot_pins VALUES(?,?,?,?,?,?,?)\", snap.Token, id, a.Revision, a.PersonaRevision, a.ModelBindingRevision, a.Enabled, a.IsDefault); e != nil {",
+        "512: func (s *Store) ReadPinInTx(ctx context.Context, tx *sql.Tx, token string) (api.ConfigSnapshot, error) {",
+        "515: \te := tx.QueryRowContext(ctx, \"SELECT p.agent_id,CAST(p.agent_revision AS TEXT),CAST(p.persona_revision AS TEXT),CAST(p.model_revision AS TEXT),p.enabled,p.is_default,r.body FROM config_snapshot_pins p JOIN persona_revisions r ON r.agent_id=p.agent_id AND r.revision=p.persona_revision WHERE p.token=?\", token).Scan(&a.ID, &a.Revision, &a.PersonaRevision, &a.ModelBindingRevision, &a.Enabled, &a.IsDefault, &body)",
+        "522: func (s *Store) ReleaseInTx(ctx context.Context, tx *sql.Tx, token string) error {",
+        "524: \te := tx.QueryRowContext(ctx, \"SELECT agent_id FROM config_snapshot_pins WHERE token=?\", token).Scan(&id)",
+        "531: \tif _, e = tx.ExecContext(ctx, \"DELETE FROM config_snapshot_pins WHERE token=?\", token); e != nil {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/conversation/store.go",
+      "bytes": 12485,
+      "sha256": "8b710247572f462ecd6778eaf942042d2c936c48163f9d6f7616f06bc218bc72",
+      "selectedLines": [
+        "157: func (s *Store) ListSessions(ctx context.Context, id api.RequestIdentity, q api.PageQuery) (api.SessionPage, error) {",
+        "266: func (s *Store) History(ctx context.Context, id api.RequestIdentity, q api.HistoryQuery) (directapp.HistoryPage, error) {",
+        "336: \t\t\t\te = tx.QueryRowContext(ctx, \"SELECT r.recipient_json,r.effective_source_json,r.effective_scope_json,r.effective_grants_json,r.run_id FROM execution_runs r JOIN conversation_messages m ON m.run_id=r.run_id WHERE m.session_id=? AND m.message_id=?\", q.SessionID, m.ID).Scan(&recipient, &sources, &scopes, &grants, &runID)"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go",
+      "bytes": 10754,
+      "sha256": "bebef956e995657740dbe7082398c1f7e266024ff780a30c7bc8d36019fe25c3",
+      "selectedLines": [
+        "47: func (s *Store) StartRun(ctx context.Context, id api.RequestIdentity, c api.RunStart, hash string) (api.RunReceipt, error) {",
+        "114: \t\t_, e = tx.ExecContext(ctx, \"INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at) VALUES(?,?,?,?,?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,?,'','','','',1,?)\", runID, session.ID, id.PrincipalID(), userMessage, string(recipientJSON), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, snap.Token, c.Intent, jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), c.RetryOfRunID, time.Now().UTC().Format(time.RFC3339Nano))",
+        "150: \te := tx.QueryRowContext(ctx, \"SELECT r.run_id,r.session_id,r.status,CAST(r.revision AS TEXT),r.agent_id,CAST(r.persona_revision AS TEXT),CAST(r.model_revision AS TEXT),r.reason,r.usage_json,r.principal_id,r.pin_token,r.recipient_json,r.effective_source_json,r.effective_scope_json,r.effective_grants_json,s.profile_id,r.retry_of_run_id FROM execution_runs r JOIN conversation_sessions s ON s.session_id=r.session_id WHERE r.run_id=?\", id).Scan(&r.ID, &r.SessionID, &r.Status, &r.Revision, &r.AgentID, &r.PersonaRevision, &r.ModelBindingRevision, &r.Reason, &usage, &principal, &nullable, &recipientJSON, &sources, &scopes, &grants, &input.ProfileID, &r.RetryOfRunID)",
+        "160: \tr.RootRunID = r.ID",
+        "195: func (s *Store) SnapshotUsageInTx(ctx context.Context, tx *sql.Tx, agent string) (api.AgentUsage, error) {",
+        "238: func (s *Store) SnapshotUsage(ctx context.Context, agent string) (api.AgentUsage, error) {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "bytes": 7726,
+      "sha256": "67cae93fbab8b8f08181f44420adcbb824e9157753d57fa18092232535d8d7f4",
+      "selectedLines": [
+        "15: func (s *Store) Recover(ctx context.Context) error {",
+        "46: func (s *Store) Claim(ctx context.Context) (*executorapp.Work, error) {",
+        "84: func (s *Store) MarkRunning(ctx context.Context, w executorapp.Work) error {",
+        "91: \t\tr, e := tx.ExecContext(ctx, \"UPDATE execution_runs SET status='running',revision=revision+1,effective_source_json=?,effective_scope_json=?,effective_grants_json=? WHERE run_id=? AND status='preparing' AND claim_token=?\", jsonArray(w.Access.Sources), jsonArray(w.Access.Scopes), jsonArray(w.Access.GrantIDs), w.Run.ID, w.ClaimToken)",
+        "126: func (s *Store) Finalize(ctx context.Context, w executorapp.Work, result api.EngineResult) error {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "bytes": 5974,
+      "sha256": "a5b20b3f257f43b52f13dfbacf1b38a5265b0ff0e3a47e8bc95a75308433cf13",
+      "selectedLines": [
+        "22: func (s *Store) AuthorizeInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, in api.RunAccessInput) error {",
+        "25: func (s *Store) CheckInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, in api.RunAccessInput, ops []string) error {",
+        "45: \tif in.ParentScope != nil {",
+        "46: \t\tif len(in.ParentScope.Sources)+len(in.ParentScope.Scopes) > 0 && len(in.ParentScope.GrantIDs) == 0 {",
+        "49: \t\tfor _, grantID := range in.ParentScope.GrantIDs {",
+        "161: \te = tx.QueryRowContext(ctx, \"SELECT count(*) FROM execution_runs r JOIN config_snapshot_pins p ON p.token=r.pin_token AND p.agent_id=r.agent_id AND p.model_revision=r.model_revision AND p.persona_revision=r.persona_revision WHERE r.run_id=? AND r.pin_token=?\", in.TaskID, pin.String).Scan(&count)"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/store.go",
+      "bytes": 8399,
+      "sha256": "33ce4c0e7dd36a57f06219bb6aa4b9605981b4295a66934b1140a78354b3b8ba",
+      "selectedLines": [
+        "173: func (s *Store) List(ctx context.Context, id api.RequestIdentity, q api.PageQuery) (api.GrantPage, error) {"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql",
+      "bytes": 2423,
+      "sha256": "4f180ffdc1aa064bb7695c34a7abfb6b96f2224a17d024c6d78312716e3bf293",
+      "selectedLines": [
+        "31: CREATE TABLE config_snapshot_pins (",
+        "40: CREATE INDEX config_snapshot_agent ON config_snapshot_pins(agent_id);"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql",
+      "bytes": 2430,
+      "sha256": "ffdd2a1b6b5b5c3d92fb360a77563e21ebe2b3373e87a9f90783945111409d1c",
+      "selectedLines": [
+        "41:  pin_token TEXT UNIQUE REFERENCES config_snapshot_pins(token) ON DELETE SET NULL,",
+        "48:  effective_source_json TEXT NOT NULL,",
+        "59: CREATE UNIQUE INDEX execution_one_active_root ON execution_runs(session_id) WHERE status NOT IN('succeeded','failed','canceled');"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql",
+      "bytes": 763,
+      "sha256": "e7958f23e0f8b4247e9faaa8653f7f4fd3664ca64feb5eba908b05fe5bc75a0b",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "bytes": 771,
+      "sha256": "5ef7af07fdfcf9994a1648ea09e77688a911c2e727a25349deec8885d1f9dcf6",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "bytes": 7771,
+      "sha256": "9f8c60311f79fa8f4062936504444327974e7f90b6d003b962ac0154fbc53716",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/conversation.go",
+      "bytes": 1514,
+      "sha256": "eb76976407caf0260ff95a75731475ad43975b4ff4fb9043e7308a36fcd73db4",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/domain/access/grants/policy.go",
+      "bytes": 2001,
+      "sha256": "53d64fefec6ff22f72d1e8605a782d027847a220de4929f326b6a9a2cea779ad",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/domain/execution/run/state.go",
+      "bytes": 341,
+      "sha256": "f53c513860f43352fa9940ea8e931860e71be59c390bd98ecf1edd2f23eb7ece",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "bytes": 4154,
+      "sha256": "b3694ea7c527fae0cd8c55b3a5d6f849e205ee270dc3a666ba04e8150d6c2ba3",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/tests/contract/access/access_test.go",
+      "bytes": 33626,
+      "sha256": "b66e55eebb44fc5a549d8ea4b1abe9ec48c19691ff2338cea3775ae39528b9c7",
+      "selectedLines": [
+        "494: func TestParentScopeAndConfiguredRecipientCannotBeExpanded(t *testing.T) {",
+        "500: \tin.ParentScope = &api.AccessScope{Sources: []api.SourceSnapshot{one}, GrantIDs: []string{g1.ID}}",
+        "507: \tin.ParentScope = &api.AccessScope{}",
+        "510: \tin.ParentScope = nil",
+        "587: \tin.ParentScope = &api.AccessScope{Sources: []api.SourceSnapshot{source}, GrantIDs: []string{parent.ID}}",
+        "717: \t\t\tin.ParentScope = &api.AccessScope{Sources: []api.SourceSnapshot{one}, GrantIDs: []string{parent.ID}}"
+      ]
+    },
+    {
+      "path": "native/huhubot/tests/contract/access/host_ts_test.go",
+      "bytes": 16080,
+      "sha256": "812b324f2ec329580c328765e4eface5706b14374a9383ce0243b46dd9fe82bc",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/provenance_test.go",
+      "bytes": 6867,
+      "sha256": "eddca674c6ce8ac87416ee16fc504d6d534502f01d2cc935ee9c5d00229980fe",
+      "selectedLines": [
+        "142: \tif n := count(t, db, \"SELECT json_array_length(effective_source_json) FROM execution_runs WHERE run_id=?\", second.RunID); n != 1 {"
+      ]
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/durability_test.go",
+      "bytes": 10465,
+      "sha256": "d81412da618c9b929171a256bdbaf350d71fa6326b01ae78c71683b12ed7e587",
+      "selectedLines": [
+        "88: \tif n := count(t, store.Database(), \"SELECT count(*) FROM config_snapshot_pins\"); n != 1 {",
+        "266: \tif n := count(t, db, \"SELECT count(*) FROM config_snapshot_pins\"); n != 0 {"
+      ]
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/transport_test.go",
+      "bytes": 4237,
+      "sha256": "78b4edbb75fe6d5577cefef5a84d8c52dce8f43f66da2844a4d2b860df1174b9",
+      "selectedLines": []
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/workflow_test.go",
+      "bytes": 10306,
+      "sha256": "f71fde5f5b470d3bf54a20441af4ec22f4e7d2d92d4ce538fe795b280e19951b",
+      "selectedLines": [
+        "139: \tfor _, table := range []string{\"execution_runs\", \"execution_events\", \"conversation_messages\", \"config_snapshot_pins\"} {"
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "bytes": 17798,
+      "sha256": "8bc03dfb02ecf1177cc2c2e35447bce60ffde979a2c3b73d16e302e1c0f5d05f",
+      "selectedLines": [
+        "222: export interface ContextEnvelope {",
+        "434: \t'collaboration.discover': { params: PageQuery & { runId?: string }; result: Page<Agent> };",
+        "453: \t\t\tcontext: ContextEnvelope;"
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "bytes": 189741,
+      "sha256": "63d16a0a891b14d6c685514d57913ccccbaac59c184f9b76b45d8a6779db9e4e",
+      "selectedLines": [
+        "3678:     \"collaboration.discover.params\": {",
+        "3701:     \"collaboration.discover.result\": {"
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "bytes": 15940,
+      "sha256": "7d1a4ffacea612d51658371fc09fe03dcabc21bdb21bec56b3c2acce9a79bae4",
+      "selectedLines": [
+        "301:     \"collaboration.discover\": {",
+        "305:         \"$ref\": \"#/$defs/collaboration.discover.params\"",
+        "308:         \"$ref\": \"#/$defs/collaboration.discover.result\""
+      ]
+    }
+  ],
+  "upstream": "observations-upstream.json",
+  "readCorrections": [
+    {
+      "command": "rg native/huhubot/tests/contract/conversation/*.go ...",
+      "exitCode": 2,
+      "reason": "nonexistent guessed test directory; corrected by rg --files to tests/contract/chat/"
+    },
+    {
+      "command": "rg native/huhubot/tests/contract/conversation-run/*.go",
+      "exitCode": 2,
+      "reason": "nonexistent guessed test directory; actual tests/contract/chat/ read; no missing path used as evidence"
+    }
+  ],
+  "validationBoundary": "No product tests, runtime probe, application processes, real model, Vault, keyring, D-Bus or agents started. Only report/observations/logs written."
+}

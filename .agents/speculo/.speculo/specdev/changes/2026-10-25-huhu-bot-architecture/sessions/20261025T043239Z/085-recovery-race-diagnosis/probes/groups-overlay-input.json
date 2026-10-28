@@ -1,0 +1,23 @@
+{
+  "original": [
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "sha256": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef"
+    },
+    {
+      "path": "native/huhubot/tests/contract/groups/sources_test.go",
+      "sha256": "286138ec2099a18dd77be5192aa7257fa58b4c3c2ba4d58ea36cac49ad34f5d3"
+    }
+  ],
+  "replacement": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/groups-executor.go.txt",
+      "sha256": "a3564f551dfbcc0e1fd9f13140f43a45cf8ffc7237adc936e1c412b24ec0892c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/groups-sources.go.txt",
+      "sha256": "568f2e96b592bd7ab888b41f7829c79b34df78170a816f2636c75d3103f49c7a"
+    }
+  ],
+  "purpose": "Original business/assertions retained; same external overlay only changes pre-ModelHistory scheduling via env late-history vs both-history. No experiment run until Root explicitly releases window."
+}

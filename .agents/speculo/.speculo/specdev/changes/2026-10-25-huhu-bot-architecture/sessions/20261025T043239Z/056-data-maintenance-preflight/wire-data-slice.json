@@ -1,0 +1,330 @@
+{
+  "schema": {
+    "path": "contracts/hap/v0.1/schema.json",
+    "readAt": "2026-10-25T12:30:25.160299+00:00",
+    "bytes": 238576,
+    "sha256": "5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863",
+    "lineCount": 9231,
+    "selection": "portable.* definitions and profile.status.result"
+  },
+  "methods": {
+    "path": "contracts/hap/v0.1/methods.json",
+    "readAt": "2026-10-25T12:30:25.162954+00:00",
+    "bytes": 15935,
+    "sha256": "17655ed40fa83ebe9a80e26d62652fabf5f66834873fbddd25d03b135254c216",
+    "lineCount": 642,
+    "selection": "portable.* methods"
+  },
+  "definitions": {
+    "profile.status.result": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "const": "ready"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "const": 1
+        },
+        "profile": {
+          "type": "object",
+          "properties": {
+            "profileId": {
+              "type": "string"
+            },
+            "commandEpoch": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            }
+          },
+          "required": [
+            "profileId",
+            "commandEpoch",
+            "revision",
+            "createdAt"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "state",
+        "schemaVersion",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "portable.export.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "agentIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memoryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sessionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "agentIds",
+        "memoryIds",
+        "sessionIds"
+      ],
+      "additionalProperties": false
+    },
+    "portable.export.result": {
+      "type": "object",
+      "properties": {
+        "artifact": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string"
+            },
+            "mediaType": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "mediaType",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "artifact"
+      ],
+      "additionalProperties": false
+    },
+    "portable.importPreview.params": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "artifact": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string"
+            },
+            "mediaType": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "mediaType",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "profileId",
+        "artifact"
+      ],
+      "additionalProperties": false
+    },
+    "portable.importPreview.result": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "revision",
+              "hash"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "token",
+        "conflicts"
+      ],
+      "additionalProperties": false
+    },
+    "portable.import.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "previewToken": {
+          "type": "string"
+        },
+        "resolutions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "keep",
+                  "replace",
+                  "copy"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "action"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "previewToken",
+        "resolutions"
+      ],
+      "additionalProperties": false
+    },
+    "portable.import.result": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "receiptId",
+        "revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "registry": {
+    "portable.export": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/portable.export.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.export.result"
+      }
+    },
+    "portable.importPreview": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/portable.importPreview.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.importPreview.result"
+      }
+    },
+    "portable.import": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/portable.import.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.import.result"
+      }
+    }
+  }
+}

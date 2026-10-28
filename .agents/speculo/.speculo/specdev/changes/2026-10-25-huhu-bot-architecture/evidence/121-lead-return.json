@@ -1,0 +1,119 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T09:04:29.116Z",
+  "task": "121-anthropic-review",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "023a8c",
+  "fullReportReadToolChunk": "d246c2",
+  "fullProbeSourceReadToolChunk": "f7fd37",
+  "allRawCheckLogsReadToolChunk": "9cf0c2",
+  "captureScriptReadToolChunk": "01698a",
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "inputSha256": "2a649a6cf8959681c6dc87f5dc59151f3895c8c7938eab5e98e9ab36a2c2c1b4",
+  "reportSha256": "66b0dcdeca0a4ddc1d4453cd272e3f79b42e150b2f666e1241730e6141adad18",
+  "manifestSha256": "bb8eb4665504234f2d7c04c8df97f4fada2a8411094a04725d3a31b8988e01f6",
+  "verifiedArtifacts": 27,
+  "verifiedFiles": 2063,
+  "verifiedSources": 30,
+  "verifiedExternalCopyFiles": 347,
+  "sourceAndModeDrift": [],
+  "actualChecks": {
+    "02-gzip-normal": {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-timeout=90s",
+        "-run",
+        "^TestReview121",
+        "-v",
+        "./tests/contract/engine/anthropic"
+      ],
+      "cwd": "/tmp/huhu-review121-6fhb3yc4/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 4.2771991019999405,
+      "logSHA256": "065c36c1342f4e81f273f95bf75f44ec49a3697e2d3e9483b4f03bcafa98358e"
+    },
+    "03-gzip-race": {
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-timeout=120s",
+        "-run",
+        "^TestReview121",
+        "-v",
+        "./tests/contract/engine/anthropic"
+      ],
+      "cwd": "/tmp/huhu-review121-6fhb3yc4/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "1"
+      },
+      "actualExit": 0,
+      "waitSeconds": 8.49974975800069,
+      "logSHA256": "c17ecbc6f389c297fa3f00120fac9a37d18b997880eee12fd4c2708ca08ffc61"
+    },
+    "04-vet": {
+      "command": [
+        "go",
+        "vet",
+        "./internal/adapters/outbound/eino/anthropic",
+        "./internal/adapters/outbound/eino/common",
+        "./internal/adapters/outbound/eino/httpcall",
+        "./internal/bootstrap/...",
+        "./tests/contract/engine/anthropic",
+        "./tests/contract/assistant"
+      ],
+      "cwd": "/tmp/huhu-review121-6fhb3yc4/native/huhubot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 1.3640666699993744,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "05-architecture": {
+      "command": [
+        "pnpm",
+        "test:huhu-bot-architecture"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "env": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOFLAGS": "-mod=readonly",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0"
+      },
+      "actualExit": 0,
+      "waitSeconds": 0.6353578150010435,
+      "logSHA256": "51fe1f5e24fb1976977c0876a3ad18606c452ec427cd3f86b424eaed66fa098f"
+    }
+  },
+  "findings": [],
+  "qualification": "Original independent reviewer;not author of117/118/119/120/122;did not modify product or delegate.",
+  "boundary": "Normal/race gzip valid-trailer,bad-CRC,publicCancel test with explicit synthetic resolver/Host. Root production TS/private pipe E2E separately verified. Field Provider/Obsidian/OS not-run. T27/full Goal not complete."
+}

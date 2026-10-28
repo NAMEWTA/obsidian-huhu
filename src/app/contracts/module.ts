@@ -19,7 +19,8 @@ export type ModuleId =
 	| 'comments'
 	| 'navigator'
 	| 'versioning'
-	| 'safe';
+	| 'safe'
+	| 'huhubot';
 export const MODULE_IDS: readonly ModuleId[] = [
 	'home',
 	'task',
@@ -33,6 +34,7 @@ export const MODULE_IDS: readonly ModuleId[] = [
 	'navigator',
 	'versioning',
 	'safe',
+	'huhubot',
 ];
 
 /**

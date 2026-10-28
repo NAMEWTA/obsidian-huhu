@@ -24,6 +24,7 @@
 | 以上全部 | 除自身外的每个 `test:*` 脚本 | `pnpm run test:all` |
 | Rust 辅助程序 | `native/pty-server/tests`、单元测试 | `pnpm run check:native`（`cargo test --locked`） |
 | 独立浏览器 Rust | `native/browser-runtime` 的单元测试 | `pnpm run check:browser-native`；真实 Chromium 另用 `accept:browser-native` |
+| Go Bot Runner | `native/huhubot/tests/contract`、包内测试 | `pnpm check:huhu-bot`；`pnpm build:huhu-bot` 后对本机二进制运行 `node scripts/verify-huhu-bot.mjs <binary>` |
 | 真实 Obsidian | `scripts/obsidian-acceptance/`（针对一次性库的 CDP） | 见下文 |
 
 ## Vitest
@@ -55,6 +56,7 @@
 | 版本管理 | `src/modules/versioning` 对应测试；Git 流程、历史和恢复暂停用 `test/sync/` 的真实临时仓库；笔记恢复补原生编辑器与多叶宿主验证 |
 | 终端模型、键盘、呈现 | `src/modules/agent/**` 中对应测试；原生辅助程序变化加 `pnpm run check:native` 和 `node scripts/verify-pty-helper.mjs <二进制>` |
 | 独立浏览器 | `src/modules/browser/{core,services,platform/desktop,ui}` 中对应测试；Worker 类型与产物用 `pnpm build:browser`，Rust 用 `pnpm check:browser-native`；协议、进程和输入隔离变化补真实 Chromium 及受影响的 Obsidian 宿主场景 |
+| Go Runner、HAP 或其工程脚本 | `pnpm check:huhu-bot`、`pnpm test:huhu-bot-architecture`、`pnpm test:huhu-bot-tooling`；构建后运行本机 stdio 冒烟；依赖变化重算完整 notices。TS 协议/客户端另跑对应 Vitest；Rust 检查不能代替 Go |
 | 升版本、发版文件 | `test/release/release-artifacts.test.ts` 和 `node scripts/verify-release-artifacts.mjs <version>`；实际发布遵守完整发行门禁 |
 | 文档或技能 | `pnpm test:docs` 及变更事实/链接核对；触发、权限或流程语义变化验证对应正常、近邻不触发和失败分支 |
 | SpecDev 合同 | `node .agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs --self-check`；状态工件变化再验证相关 change，不创建无关工件 |

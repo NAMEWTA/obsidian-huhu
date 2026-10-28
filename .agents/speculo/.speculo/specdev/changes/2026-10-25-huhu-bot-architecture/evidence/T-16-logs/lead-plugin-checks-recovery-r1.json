@@ -1,0 +1,41 @@
+{
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "reports": {
+    "080-recovery-core": "4bae16ff612c08b4dd83f1c70718b5d54653d0fc933e5166a519de7e400a70c5",
+    "081-recovery-domain": "30d6a434ae23c9b22debee20bf7466b42bb563abac445a8df17afde64c45caa2",
+    "082-recovery-client": "39be2985e7a68cb83f06477850a7591c4777428b5717170792ac3128aa4b8e6b"
+  },
+  "inputManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-plugin-input-recovery-r1.json",
+  "filesChecked": 1875,
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-build-recovery-r1.log",
+      "exit": 0,
+      "seconds": 36.094,
+      "waited": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-16-logs/lead-lint-recovery-r1.log",
+      "exit": 0,
+      "seconds": 64.11,
+      "waited": true
+    }
+  ],
+  "complete": true,
+  "drift": [],
+  "outputs": {
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+  },
+  "processes": "Every subprocess.run child exited and was waited; no product/Provider/Obsidian process started"
+}

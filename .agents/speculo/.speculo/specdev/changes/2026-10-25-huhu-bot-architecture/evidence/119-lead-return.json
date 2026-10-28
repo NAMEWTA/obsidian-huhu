@@ -1,0 +1,266 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T07:49:53.984448+00:00",
+  "task": "119-anthropic-foundation",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "3828a6",
+  "fullReportReadToolChunk": "95df51",
+  "fullFinalTargetLogsReadToolChunk": "cb2cae",
+  "sourceDiffReadToolChunks": [
+    "946a6b",
+    "4dfa31",
+    "0edddf",
+    "867fcc",
+    "d2be6c"
+  ],
+  "reportSha256": "0a713081cd34eb4a3ff238ae57dfb07279722a7a4039648d120ce86e5218cac0",
+  "manifestSha256": "f9cc6be8c0a5e39b67b11189bbe429192a038a8c37b9b076e9272ca0766fd81b",
+  "verifiedArtifacts": 70,
+  "ownFiles": {
+    "native/huhubot/internal/bootstrap/core.go": "cfcf4316660a2ef463f93ce0400dcfca94bd57370eb8c1602fd249f7f8f0a94a",
+    "native/huhubot/go.mod": "943f91b31c7f9ea341c3779a4bd9bfd0a4a51f658e20a0d4f5def0a5f287a668",
+    "native/huhubot/go.sum": "bbb9c65d33563690674169c8091f00a445a9e503d5bc639c9081945e7c6587e8",
+    "native/huhubot/tests/contract/foundation/default_protocol_recovery_test.go": "221155f36fcb71c5b9b4a983869fb2b01e1ee638a65f9d0bb4c50fd513d8652c",
+    "native/huhubot/tests/contract/foundation/default_anthropic_composition_test.go": "e27c57f1c97379273e1a21aea3fcc077ef864283edb5c946639087c8e2791914"
+  },
+  "ownTreeSha256": "c272888674e1ddf2d58bf49cac6978250eb8435e01266645f84baebd6126c0c0",
+  "actualChecks": {
+    "04-default-anthropic": {
+      "capturedAt": "2026-10-26T07:10:31.799053+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^TestDefaultAnthropicPersistsTextAndSettledUsage$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 8.199738797999998,
+      "sourceTreeSHA256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "original117 public default Core/SDK/SQLite first text target",
+      "nestedCLI": "none"
+    },
+    "05-existing-foundation": {
+      "capturedAt": "2026-10-26T07:10:48.164232+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/foundation",
+        "-run",
+        "^(TestDefaultCLIEngineUsesPrivateCredentialAndPersistsActualAttempt|TestDefaultResponsesCLIEngineUsesPrivateCredentialAndPersistsActualAttempt|TestDefaultProductionEngineRejectsLegacyFakePayloadWhileExplicitInspectorRemainsUsable|TestCoreCloseWaitsForActualProbeReturnBeforeProviderAndProfileCleanup)$",
+        "-count=1",
+        "-timeout=120s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 8.001902357999825,
+      "sourceTreeSHA256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "four existing default/fake/Probe lifecycle targets; closest Chat/Responses actual CLI consumers under necessary MVS jsonparser upgrade; not whole package",
+      "nestedCLI": "actual Chat/Responses CLI builds; both CGO0 and real Wait, existing harness cleanup unchanged"
+    },
+    "06-legacy-chat-cp": {
+      "capturedAt": "2026-10-26T07:13:54.183452+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/engine/chat",
+        "-run",
+        "^TestLegacyChatCheckpointBytesInspectorAndResumeStayCompatible$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.570179387999815,
+      "sourceTreeSHA256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "Root explicitly selected old independent Chat CP bytes/Inspector/Resume; no capture generator or fixture mutation",
+      "nestedCLI": "none"
+    },
+    "07-responses-cp": {
+      "capturedAt": "2026-10-26T07:14:11.479632+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/engine/responses",
+        "-run",
+        "^TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.520446937000088,
+      "sourceTreeSHA256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+      "sourceDrift": [],
+      "outerTimeout": false,
+      "scope": "Root explicitly selected two-call real Responses CP reopen/opaque decisions consumer; no whole suite",
+      "nestedCLI": "none"
+    },
+    "14-new-foundation": {
+      "capturedAt": "2026-10-26T07:34:33.520180+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "./tests/contract/foundation",
+        "-run",
+        "^(TestDefaultResponsesCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen|TestDefaultAnthropicCheckpointUsesRegistryIdentityAfterInterruptedResumeReopen|TestDefaultAnthropicProbeStopJoinsActualCallBeforeProfileCleanup)$",
+        "-count=1",
+        "-timeout=90s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.9756142300002466,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "shared Responses regression + default Anthropic CP/Registry pure qualification metadata simulation + actual default Probe lifecycle"
+    },
+    "15-third-factory": {
+      "capturedAt": "2026-10-26T07:34:51.412944+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "-overlay=/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/119-anthropic-foundation/logs/10-third_factory-overlay.json",
+        "./internal/bootstrap",
+        "-run",
+        "^TestDefaultAnthropicConstructionFailureDrainsCreatedDrivers$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.368676661999416,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "fresh-core isolated overlay: third_factory; observe actual driver Stop/Done/Close and same-Profile reopen; idle construction error only"
+    },
+    "16-registry": {
+      "capturedAt": "2026-10-26T07:35:00.569636+00:00",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p=1",
+        "-overlay=/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/119-anthropic-foundation/logs/10-registry-overlay.json",
+        "./internal/bootstrap",
+        "-run",
+        "^TestDefaultAnthropicConstructionFailureDrainsCreatedDrivers$",
+        "-count=1",
+        "-timeout=60s",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0"
+      },
+      "exitCode": 0,
+      "waited": true,
+      "seconds": 1.3229367869998896,
+      "sourceTreeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "sourceDrift": [],
+      "actualExpectedTestsMissing": [],
+      "outerTimeout": false,
+      "scope": "fresh-core isolated overlay: registry; observe actual driver Stop/Done/Close and same-Profile reopen; idle construction error only"
+    }
+  },
+  "verifiedImmutableInputs": {
+    "stage1": {
+      "count": 336,
+      "treeSHA256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+      "rootEvidence": "evidence/T-10-logs/shared-first-stage-accepted.json"
+    },
+    "stage2": {
+      "count": 339,
+      "treeSHA256": "56257b1b7300d7f23f86da2a2a9bec93ccfb7a86a8981f9d07c221136a66d95c",
+      "rootEvidence": "evidence/T-10-logs/shared-final-stage-input-verification.json",
+      "archiveSha256": "f41ec230a788ac410508f0be875ab4d6d1695b304d0aafd1096b83b977bbb86a"
+    }
+  },
+  "currentOwnDrift": [],
+  "authorizedOtherOwnerDrift": "After119windowreturn117changedblocks/checkpoint; source339 andRoot ZIP are actual tested historical candidate, not later current candidate. This does not authorize119 to rerun products.",
+  "preservedStructuralFailures": [
+    "19-return-result.json",
+    "22-return-result.json"
+  ],
+  "disposition": "Accepted119own5candidate and scoped controls; joint117/120final Root E2E and independent review pending. T01/T10 remain active until joint gate.",
+  "boundary": "Default reopen session secret missing/old ref cannot Register; metadata-only Inspector ready is not secret restore. External overlays observe actual idle constructed drivers, not in-flight constructor HTTP. No liveProvider/Obsidian/OS/keyring or release."
+}

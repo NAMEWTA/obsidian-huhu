@@ -1,0 +1,30 @@
+{
+  "observer": "native:/root",
+  "classification": "Root consumer fixture field casing error, not product failure",
+  "evidence": "Actual rendered ShortTerm JSON uses Entries/Use/Representation/Text/Message (internal Go input); Root probe incorrectly used public HAP-style lowercase. First two real SDK HTTPs and initial intent_alias were successfully emitted before fixture threw TypeError on undefined.find.",
+  "run": {
+    "command": [
+      "node",
+      "/tmp/huhu-lead-memory-inbox-r1-e_geosoh/lead-memory-inbox.mjs",
+      "/tmp/huhu-lead-memory-inbox-r1-e_geosoh/huhu-bot",
+      "/tmp/huhu-lead-memory-inbox-r1-e_geosoh/openai-chat-completions",
+      "openai-chat-completions"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "exitCode": 126,
+    "seconds": 0.5794929969997611,
+    "waited": true,
+    "log": "evidence/T-14-logs/lead-memory-inbox-r1-openai-chat-completions.log",
+    "logSHA256": "250d3360053abd8ef5e342e57ce3973d5f2cc2fa2a1db1323139aa4b174f7256"
+  },
+  "naturalCLIExits": [
+    {
+      "code": 0,
+      "signal": null
+    }
+  ],
+  "actualHTTP": 2,
+  "sourceDrift": [],
+  "snapshotDrift": [],
+  "repair": "Only /tmp Root probe uses actual frozen internal casing; no product/source/timeout/assertion requirement changed. Original r1 probe bytes and all outputs retained. New r2 uses a fresh snapshot/build/profile."
+}

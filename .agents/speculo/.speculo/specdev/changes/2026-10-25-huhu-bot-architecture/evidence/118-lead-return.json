@@ -1,0 +1,119 @@
+{
+  "observer": "native:/root",
+  "task": "118-anthropic-registry",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "6edf60",
+  "sourceDiffReadToolChunk": "be3379",
+  "fullReportReadToolChunk": "b015a7",
+  "rawLogsReadToolChunk": "3af4fd",
+  "reportSha256": "b3ac654d68278d88dd7ee6bfd3638f09c053f390aa6080ab81cd685a8c8a8ce3",
+  "manifestSha256": "44d71bf3560f4d4c63abb57322e92676f3c7880616485b63bf49411d0b275ad9",
+  "verifiedArtifacts": 24,
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/common/protocol.go": "31bc1acce212f8c918711702af1693beedfbc878d47a3d6ddf8514c5ae1ecbe2",
+    "native/huhubot/internal/adapters/outbound/eino/common/registry.go": "8a9a50e6d716a2bff84bdfb33835903545c33fce13ed09dad024383d23486db1",
+    "native/huhubot/tests/contract/engine/chat/protocol_common_test.go": "554b0cffccaa84aed74b85901dda7920ede7d01b4e23bd32d03d62f5d1718ee7"
+  },
+  "ownTreeSha256": "c081459516466e75de9dfd6c20abdedbe56b50a3ce445ef088b59e922ba00ded",
+  "verifiedReadonlySources": 10,
+  "archivedInputsPerCommand": 314,
+  "redToGreenDifferences": [
+    "native/huhubot/internal/adapters/outbound/eino/common/protocol.go",
+    "native/huhubot/internal/adapters/outbound/eino/common/registry.go"
+  ],
+  "actualChecks": [
+    {
+      "label": "01-registry-red",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/chat",
+        "-run",
+        "^TestRegistryThirdProtocolUsesExactIdentityAndSharedLifecycle$",
+        "-count=1",
+        "-v"
+      ],
+      "go_version": "go version go1.26.10 linux/amd64",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0",
+        "GOPROXY": "off"
+      },
+      "input_count": 314,
+      "input_tree_sha256": "4d907fbdf5899d3f99c9e5b557473ef02f439aee36b2293dced637f9f94777e3",
+      "input_zip_sha256": "e7e1d9a6b12189954ae3237a0fb225af2dba8c2a1285cfdb3952e52ae009c7d5",
+      "exit_code": 1,
+      "elapsed_seconds": 2.5464672449998034,
+      "actual_wait": true,
+      "source_drift": [],
+      "completed_at": "2026-10-26T06:48:16.563093+00:00"
+    },
+    {
+      "label": "02-registry-green",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/chat",
+        "-run",
+        "^TestRegistryThirdProtocolUsesExactIdentityAndSharedLifecycle$",
+        "-count=1",
+        "-v"
+      ],
+      "go_version": "go version go1.26.10 linux/amd64",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0",
+        "GOPROXY": "off"
+      },
+      "input_count": 314,
+      "input_tree_sha256": "b920c6cd708ad1d9ca92c88807563c8569094b4bd9ccbd7437554d4e8a48570a",
+      "input_zip_sha256": "cca0f232018b47aba0635edb1c1d68c3ffd729fc0cb02f193e0c2a57ea59320f",
+      "exit_code": 0,
+      "elapsed_seconds": 3.1915774760000204,
+      "actual_wait": true,
+      "source_drift": [],
+      "completed_at": "2026-10-26T06:48:58.374646+00:00"
+    },
+    {
+      "label": "03-registry-existing-controls",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/chat",
+        "-run",
+        "^(TestRegistryRejectsInvalidConstructionWithoutTakingOwnership|TestRegistryKeepsPinnedRoutingAndWaitsForProbe)$",
+        "-count=1",
+        "-v"
+      ],
+      "go_version": "go version go1.26.10 linux/amd64",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "GOFLAGS": "-mod=readonly",
+        "CGO_ENABLED": "0",
+        "GOPROXY": "off"
+      },
+      "input_count": 314,
+      "input_tree_sha256": "b920c6cd708ad1d9ca92c88807563c8569094b4bd9ccbd7437554d4e8a48570a",
+      "input_zip_sha256": "cca0f232018b47aba0635edb1c1d68c3ffd729fc0cb02f193e0c2a57ea59320f",
+      "exit_code": 0,
+      "elapsed_seconds": 0.9384660420000728,
+      "actual_wait": true,
+      "source_drift": [],
+      "completed_at": "2026-10-26T06:49:40.688045+00:00"
+    }
+  ],
+  "disposition": "accepted narrow third identity/registry; actualSDK/defaultCore remain117/119 and Root joint E2E/review pending",
+  "boundary": "No live Provider/Obsidian/OS; noGo rerun by Root, stub not SDK proof"
+}

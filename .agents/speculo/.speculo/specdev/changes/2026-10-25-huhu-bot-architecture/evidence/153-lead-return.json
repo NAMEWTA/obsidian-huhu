@@ -1,0 +1,33 @@
+{
+  "observer": "native:/root",
+  "task": "153-memory-integration-repair",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "86541ddb1c9edfbd92cf3a7cee39b691b0bea8af5ee660ea884438fee78c1242",
+  "manifestSHA256": "0fc7fec9b1273d8e87a9963df46146d07c3cd652e1afe1a5757692c91cdd6e17",
+  "sourceFiles": 4,
+  "artifactFiles": 75,
+  "currentGoInputs": 207,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "153-memory-integration-repair",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "seconds": 0.21592231599788647,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "boundary": "Two top-level/seven subscenarios accepted on actual Core/SQLite, including 70/71 ordinary attempts. Root physical inbox combined all3 passed; remaining shared regression/quality/independent review still pending."
+}

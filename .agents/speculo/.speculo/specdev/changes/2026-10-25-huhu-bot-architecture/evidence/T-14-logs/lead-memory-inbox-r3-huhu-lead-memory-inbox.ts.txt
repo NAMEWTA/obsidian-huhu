@@ -1,0 +1,245 @@
+import assert from 'node:assert/strict';
+import type { ChildProcess } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { createServer, type ServerResponse } from 'node:http';
+import { join } from 'node:path';
+import { DesktopHapTransport } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/platform/desktop/transport/managed';
+import { HapConnection } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/core/protocol/connection';
+import { AssistantClient } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/services/assistant-client';
+import type { BotClient, CommandMeta, ExecutionContextEntryView, ExecutionContextView, MemoryNamespace, ModelBindingDraft, Run } from '/home/wta/orca/workspaces/obsidian-huhu/bot/src/modules/huhubot/api';
+
+// Independent Root integration consumer. Run only against the jointly frozen
+// default CLI candidate. HTTP is local; every model adapter/SDK remains real.
+const [binaryValue, rootValue, protocolValue] = process.argv.slice(2);
+assert(binaryValue && rootValue && protocolValue);
+assert(['openai-chat-completions', 'openai-responses', 'anthropic-messages'].includes(protocolValue));
+const binary: string = binaryValue, root: string = rootValue;
+const protocol = protocolValue as ModelBindingDraft['protocol'];
+const secret = 'root-memory-synthetic-local-key';
+const recentMarker = 'HUHU short-term context v1\n', memoryMarker = 'HUHU authorized memory input v1\n';
+const maintenanceMarker = 'HUHU memory maintenance instruction v1\n';
+const remembered = 'ROOT_A_RECALL 中文😀 '.repeat(420);
+const learned = `ROOT_AUTO_PRIVATE_${protocol} prefers concise explanations.`;
+const homeDir = join(root, 'home'), stateDir = join(root, 'state');
+const profileDir = join(stateDir, 'huhu/huhubot/profiles/one');
+const exits: Array<{code: number | null; signal: string | null}> = [];
+const requests: Array<{path: string; maintenance: boolean; texts: string[]; body: any}> = [];
+const sockets = new Set<import('node:net').Socket>();
+const outcomes: Run[] = [], timerIDs = new Set<ReturnType<typeof setTimeout>>();
+const timers = { after(ms: number, callback: () => void) {
+  const timer = setTimeout(() => { timerIDs.delete(timer); callback(); }, ms); timerIDs.add(timer);
+  return () => { clearTimeout(timer); timerIDs.delete(timer); };
+} };
+let current: {bot: BotClient; transport: DesktopHapTransport; childEnd: Promise<void>} | undefined;
+let sequence = 0, serverError: string | undefined;
+const report: Record<string, unknown> = {complete: false, protocol, profileDir, exits, requests, outcomes,
+  boundary: 'default CLI, production TS/HAP, real SDK and SQLite with local HTTP; no real Provider/Obsidian/target OS acceptance'};
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+async function until<T>(read: () => Promise<T>, accept: (value: T) => boolean, label: string): Promise<T> {
+  const deadline = Date.now() + 15000; let last: T | undefined;
+  do { last = await read(); if (accept(last)) return last; if (serverError) throw new Error(serverError); await sleep(15); } while (Date.now() < deadline);
+  throw new Error(`${label}: ${JSON.stringify(last)}`);
+}
+async function bounded<T>(work: Promise<T>, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try { return await Promise.race([work, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(label)), 15000); })]); }
+  finally { clearTimeout(timer); }
+}
+function texts(body: any): string[] {
+  const content = (value: any): string => typeof value === 'string' ? value : Array.isArray(value) ? value.map(x => x.text ?? '').join('') : '';
+  if (protocol === 'openai-responses') return [...(body.instructions ? [body.instructions] : []), ...(body.input ?? []).map((x: any) => content(x.content))];
+  return [...(body.system ? [content(body.system)] : []), ...(body.messages ?? []).map((x: any) => content(x.content))];
+}
+function emit(res: ServerResponse, value: string) {
+  res.setHeader('Content-Type', 'text/event-stream'); res.flushHeaders();
+  if (protocol === 'openai-chat-completions') {
+    const send = (payload: unknown) => res.write(`data: ${JSON.stringify(payload)}\n\n`);
+    send({id: 'root-memory', choices: [{index: 0, delta: {role: 'assistant', content: value}, finish_reason: null}]});
+    send({id: 'root-memory', choices: [{index: 0, delta: {}, finish_reason: 'stop'}]});
+    send({choices: [], usage: {prompt_tokens: 11, completion_tokens: 5, total_tokens: 16}});
+    res.end('data: [DONE]\n\n'); return;
+  }
+  if (protocol === 'anthropic-messages') {
+    const send = (type: string, payload: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, ...payload})}\n\n`);
+    send('message_start', {message: {id: 'root-memory', type: 'message', role: 'assistant', model: 'root-model', content: [], stop_reason: null, stop_sequence: null, usage: {input_tokens: 11, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0}}});
+    send('content_block_start', {index: 0, content_block: {type: 'text', text: ''}});
+    send('content_block_delta', {index: 0, delta: {type: 'text_delta', text: value}});
+    send('content_block_stop', {index: 0});
+    send('message_delta', {delta: {stop_reason: 'end_turn', stop_sequence: null}, usage: {output_tokens: 5}});
+    send('message_stop', {}); res.end(); return;
+  }
+  let number = 0;
+  const send = (type: string, payload: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, sequence_number: number++, ...payload})}\n\n`);
+  const envelope = (status: string, output: unknown[], usage?: object) => ({id: 'resp-root-memory', object: 'response', created_at: 1, model: 'root-model', status, output, error: null, incomplete_details: null, ...(usage ? {usage} : {})});
+  const item = {id: 'msg-root-memory', type: 'message', role: 'assistant', status: 'completed', phase: 'final_answer', content: [{type: 'output_text', text: value, annotations: [], logprobs: []}]};
+  send('response.created', {response: envelope('in_progress', [])});
+  send('response.in_progress', {response: envelope('in_progress', [])});
+  send('response.output_item.added', {output_index: 0, item: {...item, status: 'in_progress', content: []}});
+  send('response.content_part.added', {item_id: item.id, output_index: 0, content_index: 0, part: {type: 'output_text', text: '', annotations: [], logprobs: []}});
+  send('response.output_text.delta', {item_id: item.id, output_index: 0, content_index: 0, delta: value, logprobs: []});
+  send('response.output_text.done', {item_id: item.id, output_index: 0, content_index: 0, text: value, logprobs: []});
+  send('response.content_part.done', {item_id: item.id, output_index: 0, content_index: 0, part: item.content[0]});
+  send('response.output_item.done', {output_index: 0, item});
+  send('response.completed', {response: envelope('completed', [item], {input_tokens: 11, output_tokens: 5, total_tokens: 16, input_tokens_details: {cached_tokens: 0}, output_tokens_details: {reasoning_tokens: 0}})});
+  res.end();
+}
+function toolTurn(res: ServerResponse, name: string, args: object, id: string) {
+  res.setHeader('Content-Type', 'text/event-stream'); res.flushHeaders();
+  const argumentsText = JSON.stringify(args);
+  if (protocol === 'openai-chat-completions') {
+    const send = (data: unknown) => res.write(`data: ${JSON.stringify(data)}\n\n`);
+    send({id, choices: [{index: 0, delta: {role: 'assistant', tool_calls: [{index: 0, id, type: 'function', function: {name, arguments: argumentsText}}]}, finish_reason: null}]});
+    send({id, choices: [{index: 0, delta: {}, finish_reason: 'tool_calls'}]});
+    send({choices: [], usage: {prompt_tokens: 11, completion_tokens: 5, total_tokens: 16}});
+    res.end('data: [DONE]\n\n'); return;
+  }
+  if (protocol === 'anthropic-messages') {
+    const send = (type: string, data: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, ...data})}\n\n`);
+    send('message_start', {message: {id, type: 'message', role: 'assistant', model: 'root-model', content: [], stop_reason: null, stop_sequence: null, usage: {input_tokens: 11, output_tokens: 0}}});
+    send('content_block_start', {index: 0, content_block: {type: 'tool_use', id, name, input: {}}});
+    send('content_block_delta', {index: 0, delta: {type: 'input_json_delta', partial_json: argumentsText}});
+    send('content_block_stop', {index: 0});
+    send('message_delta', {delta: {stop_reason: 'tool_use', stop_sequence: null}, usage: {output_tokens: 5}});
+    send('message_stop', {}); res.end(); return;
+  }
+  let sequence = 0;
+  const send = (type: string, data: object) => res.write(`event: ${type}\ndata: ${JSON.stringify({type, sequence_number: sequence++, ...data})}\n\n`);
+  const response = (status: string, output: object[]) => ({id: `resp_${id}`, object: 'response', created_at: 1, model: 'root-model', status, output, error: null, incomplete_details: null});
+  const item = {id: `item_${id}`, type: 'function_call', call_id: id, name, arguments: '', status: 'in_progress'};
+  send('response.created', {response: response('in_progress', [])});
+  send('response.in_progress', {response: response('in_progress', [])});
+  send('response.output_item.added', {output_index: 0, item});
+  send('response.function_call_arguments.delta', {output_index: 0, item_id: item.id, delta: argumentsText});
+  send('response.function_call_arguments.done', {output_index: 0, item_id: item.id, name, arguments: argumentsText});
+  const final = {...item, arguments: argumentsText, status: 'completed'};
+  send('response.output_item.done', {output_index: 0, item: final});
+  send('response.completed', {response: {...response('completed', [final]), usage: {input_tokens: 11, output_tokens: 5, total_tokens: 16}}});
+  res.end();
+}
+
+let agentB = '', agentC = '', leafSeen = false;
+let question: {questionId: string; delegationId: string; id: string} | undefined;
+let releaseLeaf!: () => void;
+const leafRelease = new Promise<void>(resolve => {releaseLeaf = resolve;});
+const turns = {A: 0, B: 0, C: 0}, prefixes = new Map<string, string>();
+const answerText = 'ROOT_ANSWER_中文😀', supplementText = 'ROOT_LATE_SUPPLEMENT_中文😀';
+function occurrences(value: string, text: string) { return value.split(text).length - 1; }
+const server = createServer(async (req, res) => {
+  try {
+    assert.equal(req.method, 'POST');
+    const expected = protocol === 'anthropic-messages' ? '/v1/messages' : protocol === 'openai-responses' ? '/v1/responses' : '/v1/chat/completions';
+    assert.equal(req.url, expected);
+    assert(protocol === 'anthropic-messages' ? req.headers['x-api-key'] === secret : req.headers.authorization === `Bearer ${secret}`);
+    const chunks: Buffer[] = []; for await (const chunk of req) chunks.push(Buffer.from(chunk));
+    const body = JSON.parse(Buffer.concat(chunks).toString('utf8')), sent = texts(body), raw = JSON.stringify(body);
+    assert.equal(body.model, 'root-model'); assert.equal(body.stream, true);
+    const who = (['A', 'B', 'C'] as const).find(x => sent.includes(`ROOT_INBOX_${x}`)); assert(who);
+    const turn = ++turns[who]; requests.push({path: req.url!, maintenance: false, texts: sent, body});
+    const short = sent.find(x => x.startsWith(recentMarker)); assert(short, 'real sealed context required');
+    if (turn === 1) prefixes.set(who, short); else assert.equal(short, prefixes.get(who), 'frozen initial prefix changed on Resume');
+    if (who === 'A' && turn === 1) {
+      toolTurn(res, 'agents_message', {targetAgentId: agentB, kind: 'question', text: 'B_TASK', sourceRefs: []}, 'root_question'); return;
+    }
+    if (who === 'B' && turn === 1) {
+      const block = JSON.parse(short.slice(recentMarker.length));
+      const entry = block.Entries.find((x: any) => x.Use === 'inbox');
+      assert.equal(entry?.Representation, 'intent_alias'); assert.equal(entry?.Text, '');
+      question = entry.Message; assert(question?.questionId && question.delegationId);
+      toolTurn(res, 'agents_delegate', {target: {kind: 'existing', agentId: agentC}, task: 'C_TASK', constraints: [], expectedOutput: 'Return leaf completion', context: {messageIds: [], sourceRefs: [], excerpts: []}}, 'middle_delegate'); return;
+    }
+    if (who === 'C') {
+      assert.equal(turn, 1); leafSeen = true; await leafRelease; emit(res, 'LEAF_DONE'); return;
+    }
+    assert.equal(turn, 2);
+    if (who === 'A') {
+      assert.equal(occurrences(raw, answerText), 1, 'question answer must be sent once');
+      assert.equal(occurrences(raw, supplementText), 0); emit(res, 'ROOT_DONE'); return;
+    }
+    assert.equal(occurrences(raw, supplementText), 1, 'qualified supplement must reach actual SDK exactly once');
+    assert(raw.includes('middle_delegate')); emit(res, 'MIDDLE_DONE');
+  } catch (error) { serverError = String(error); res.destroy(error as Error); }
+});
+server.on('connection', socket => {sockets.add(socket); socket.once('close', () => sockets.delete(socket));});
+
+async function open() {
+  const transport = await DesktopHapTransport.launch({binary, profileDir, cwd: root, credentialChannel: true, shutdownGraceMs: 5000,
+    environment: {HOME: homeDir, USERPROFILE: homeDir, XDG_STATE_HOME: stateDir, LANG: 'C.UTF-8'}});
+  const child = (transport as unknown as {child: ChildProcess}).child;
+  const childEnd = new Promise<void>(resolve => child.once('close', (code, signal) => {exits.push({code, signal}); resolve();}));
+  try {
+    const bot = await new HapConnection(transport, timers).connect({name: 'root-memory-model', version: '1'});
+    current = {bot, transport, childEnd}; return {...current, credentials: await transport.openCredentials(bot.hello.profile.profileId)};
+  } catch (error) {transport.close(); await bounded(Promise.all([transport.exited, childEnd]), 'failed CLI open drain'); throw error;}
+}
+async function close() {
+  if (!current) return; const active = current; current = undefined; active.bot.close();
+  await bounded(Promise.all([active.transport.exited, active.childEnd]), 'CLI did not naturally drain');
+  assert.deepEqual(exits.at(-1), {code: 0, signal: null}); assert.equal(active.transport.diagnostics.stderrBytes, 0);
+}
+function meta(): CommandMeta;
+function meta(revision: string): CommandMeta & {expectedRevision: string};
+function meta(revision?: string) {
+  assert(current); const key = `root-memory-${++sequence}`;
+  return {profileId: current.bot.hello.profile.profileId, commandEpoch: current.bot.hello.profile.commandEpoch, commandId: key, idempotencyKey: key, ...(revision ? {expectedRevision: revision} : {})};
+}
+
+
+async function main() {
+  await mkdir(homeDir, {recursive: true, mode: 0o700});
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address(); assert(address && typeof address === 'object');
+  const opened = await open(), bot = opened.bot, profileId = bot.hello.profile.profileId;
+  const credential = await opened.credentials.register(Buffer.from(secret), 'session-memory');
+  const model: ModelBindingDraft = {providerId: 'root-local', protocol, endpoint: `http://127.0.0.1:${address.port}${protocol === 'anthropic-messages' ? '' : '/v1'}`, modelId: 'root-model', credentialRef: credential.credentialRef, capabilities: []};
+  const budget = await bot.collaboration.budget({profileId});
+  await bot.collaboration.configureBudget({...meta(budget.revision), policy: {rootTokenLimit: '1000000', profileTokenLimit: '10000000', maintenanceTokenLimit: '0', paused: false}});
+  const assistant = new AssistantClient(bot);
+  const make = (name: string, allowedTools: string[], allowedCollaborationTargets: string[]) => assistant.createAgent({...meta(), draft: {name, description: '', persona: `ROOT_INBOX_${name}`, model, allowedTools, allowedCollaborationTargets}});
+  const c = await make('C', [], []), b = await make('B', ['agents.delegate'], [c.id]), a = await make('A', ['agents.message', 'agents.delegate'], [b.id, c.id]);
+  agentB = b.id; agentC = c.id;
+  const session = await bot.sessions.create({...meta(), kind: 'direct', title: 'Actual resume inbox', memberIds: [a.id]});
+  const receipt = await bot.runs.start({...meta(session.revision), sessionId: session.id, intent: 'ROOT_TASK', sourceRefs: []});
+  await until(async () => leafSeen && !!question, Boolean, 'actual leaf HTTP and question inbox');
+  assert(question);
+  const task = await bot.collaboration.get({profileId, id: question.delegationId});
+  await until(() => bot.runs.get({profileId, id: task.childRunId}), x => x.status === 'waiting_children', 'middle checkpoint');
+  await until(() => bot.runs.get({profileId, id: receipt.runId}), x => x.status === 'waiting_children', 'question checkpoint');
+  const answer = await bot.collaboration.reply({...meta(task.revision), delegationId: task.id, questionId: question.questionId, text: answerText, sourceRefs: []});
+  await until(async () => turns.A, x => x === 2, 'answer must resume original root');
+  const freshTask = await bot.collaboration.get({profileId, id: task.id});
+  const supplementCommand = {...meta(freshTask.revision), delegationId: task.id, text: supplementText, sourceRefs: []};
+  const supplement = await bot.collaboration.reply(supplementCommand);
+  const replay = await bot.collaboration.reply({...supplementCommand, commandId: 'root-inbox-transport-retry'});
+  assert.equal(replay.id, supplement.id, 'command retry must return same actual message');
+  releaseLeaf();
+  report.stage = 'whole-tree-terminal';
+  const rootRun = await until(() => bot.runs.get({profileId, id: receipt.runId}), x => ['succeeded', 'failed', 'canceled'].includes(x.status), 'root whole tree terminal');
+  assert.equal(rootRun.status, 'succeeded', JSON.stringify(rootRun));
+  report.stage = 'middle-run-get';
+  const middle = await bot.runs.get({profileId, id: task.childRunId}); assert.equal(middle.status, 'succeeded');
+  assert.deepEqual(turns, {A: 2, B: 2, C: 1}); assert.equal(requests.length, 5);
+  Object.assign(report, {profileId, agentIds: [a.id, b.id, c.id], rootRun, middleRun: middle, question, answer, supplement});
+  report.stage = 'alias-context-get';
+  const context = await bot.memory.get({profileId, namespace: {kind: 'agent', id: b.id}, kind: 'context', id: middle.id});
+  assert.equal(context.kind, 'context'); if (context.kind !== 'context') throw new Error('context discriminator');
+  assert.equal(context.context.state, 'sealed'); assert(context.context.entries.some(x => x.representation === 'intent_alias'));
+  report.stage = 'budget-get';
+  const ledger = await bot.collaboration.budget({profileId, runId: receipt.runId});
+  assert.equal(ledger.reservedTokens, '0'); assert.equal(ledger.chargedTokens, '80');
+  Object.assign(report, {profileId, agentIds: [a.id, b.id, c.id], rootRun, middleRun: middle, question, answer, supplement, ledger, context});
+  await close(); const reopened = await open();
+  report.stage = 'reopened-run-context-get';
+  const after = await reopened.bot.runs.get({profileId, id: receipt.runId}); assert.equal(after.status, 'succeeded');
+  const afterContext = await reopened.bot.memory.get({profileId, namespace: {kind: 'agent', id: b.id}, kind: 'context', id: middle.id});
+  assert.deepEqual(afterContext, context); assert.equal(requests.length, 5, 'reopen must not replay model requests');
+  await close(); assert.equal(timerIDs.size, 0); assert.equal(serverError, undefined);
+  Object.assign(report, {complete: true, cases: ['physical TS/HAP task reply to waiting model task', 'original question answer exactly once', 'sealed intent_alias restores after mutable question status changes', 'late user supplement reaches actual SDK once', 'idempotent public reply receipt', 'unchanged prefix and original tool-call position', 'same three Runs and five settled HTTP attempts', 'natural CLI reopen preserves context without replay']});
+}
+try { await main(); }
+finally {
+  releaseLeaf();
+  try { await close(); }
+  finally { for (const socket of sockets) socket.destroy(); await new Promise<void>(resolve => server.close(() => resolve()));
+    Object.assign(report, {serverError}); await writeFile(join(root, 'result.json'), JSON.stringify(report, null, 2) + '\n', {mode: 0o600}); }
+}
+console.log(JSON.stringify({complete: report.complete, protocol, requests: requests.length, exits}));

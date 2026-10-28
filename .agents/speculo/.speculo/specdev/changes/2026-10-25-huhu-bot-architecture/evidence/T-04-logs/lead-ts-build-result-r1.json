@@ -1,0 +1,8 @@
+{
+  "files_checked": 1814,
+  "drift": [],
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "build_exit": 0,
+  "lint_exit": 0,
+  "note": "Go source/tests remain active; this receipt is only frozen TypeScript/schema and plugin build/lint."
+}

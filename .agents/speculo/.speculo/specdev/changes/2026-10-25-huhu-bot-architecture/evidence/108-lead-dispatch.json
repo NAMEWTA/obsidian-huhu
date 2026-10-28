@@ -1,0 +1,9 @@
+{
+  "observer": "native:/root",
+  "task": "108-responses-foundation",
+  "taskSha256": "1b1ebb5717910285be11b6122f176d5432b30f8260ba661fd22c2fa47040d209",
+  "dispatchExit": 0,
+  "nativeTarget": "/root/foundation_go",
+  "nativeFollowupDispatched": true,
+  "initialStage": "read-only; no product writes or Go until109 actual behavioral red has Waited"
+}

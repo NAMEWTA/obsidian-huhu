@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T09:18:19.136827+00:00",
+  "task": "123-short-term-context-contract",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "primaryContractRead": true,
+  "writersStopped": true,
+  "activeAuthorProductProcesses": 0,
+  "returnExit": 0,
+  "rootReturnToolChunk": "7d437d",
+  "reportSha256": "7faeda6f3b5715cf288e04d910651fbe751677d10a9c19a9834f024c33ac1763",
+  "artifactManifestSha256": "2ac93f5759470268e689723f7664f536e5549fdaa87862f458896adacad75cf5",
+  "verifiedArtifacts": 9,
+  "verifiedSources": 40,
+  "verifiedG2ProductSnapshotFiles": 2063,
+  "sourceAndModeDrift": [],
+  "result": "accepted-read-only-preparation",
+  "productConsumers": "not-run",
+  "boundary": "接纳具体实施/消费路线；不证明新产品行为，不据此完成T14或UI票。用户现场后验保持。",
+  "adoptedContractSha256": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+  "precedence": "115长期方案保持；123短期Plan/Seal与真实Kind=context窄增量优先于115对应Prepare签名。"
+}

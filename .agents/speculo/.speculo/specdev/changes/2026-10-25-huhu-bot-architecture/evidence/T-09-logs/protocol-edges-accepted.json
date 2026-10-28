@@ -1,0 +1,186 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T05:43:26.721503+00:00",
+  "status": "slice6 accepted; final author normal/race/report, Root CLI E2E and independent review still pending",
+  "rootToolEvidence": [
+    "c02d38 full failure classification and patch",
+    "2da703 current driver/items/item_events read",
+    "b1c19d independently verified each 332-file red ZIP",
+    "66e75b full green JSONL parsed and 332-file ZIP verified"
+  ],
+  "results": {
+    "slice6-initial": {
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/responses",
+        "-run",
+        "^(TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning|TestResponsesOpaqueCheckpointBoundIncludesEncodingExpansion|TestDefaultResponsesProbeUsesMatchingMetadataOnly|TestTerminalAndUsagePresenceSettleEachActualRequestOnce)$",
+        "-count=1",
+        "-timeout=90s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T05:17:58.424063+00:00",
+      "finishedAt": "2026-10-26T05:18:00.987874+00:00",
+      "elapsedSeconds": 2.563798630988458,
+      "exitCode": 1,
+      "waitCompleted": true,
+      "inputSHA256": "aa673974134b797519ae807294704c7ffe94036432fdd0e4776317dcd0ba6282",
+      "frozenFileCount": 332,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice6-initial.stdout.jsonl",
+      "stderr": "slice6-initial.stderr.log"
+    },
+    "slice6-error-valid-red": {
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/responses",
+        "-run",
+        "^TestTerminalAndUsagePresenceSettleEachActualRequestOnce$/^provider_error_event$",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T05:21:49.763572+00:00",
+      "finishedAt": "2026-10-26T05:21:50.909097+00:00",
+      "elapsedSeconds": 1.1454936079971958,
+      "exitCode": 1,
+      "waitCompleted": true,
+      "inputSHA256": "b9bab322aa41bf931a38dbe4a2f3554dfb37e4a168cabcc8871a26c486a77b73",
+      "frozenFileCount": 332,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice6-error-valid-red.stdout.jsonl",
+      "stderr": "slice6-error-valid-red.stderr.log"
+    },
+    "slice6-fixed": {
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/responses",
+        "-run",
+        "^(TestKnownPhaseAndReasoningDeltasKeepNativeReplayAndTerminalMeaning|TestResponsesOpaqueCheckpointBoundIncludesEncodingExpansion|TestDefaultResponsesProbeUsesMatchingMetadataOnly|TestTerminalAndUsagePresenceSettleEachActualRequestOnce)$",
+        "-count=1",
+        "-timeout=90s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T05:38:32.767044+00:00",
+      "finishedAt": "2026-10-26T05:42:11.881279+00:00",
+      "elapsedSeconds": 219.11420173400006,
+      "exitCode": 0,
+      "waitCompleted": true,
+      "inputSHA256": "b869b93ee94d6689df4ed3f245c0ea3728bd73eabf74761cff3259cb57716266",
+      "frozenFileCount": 332,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice6-fixed.stdout.jsonl",
+      "stderr": "slice6-fixed.stderr.log"
+    }
+  },
+  "classification": [
+    {
+      "test": "summary_incomplete_terminal",
+      "kind": "own production semantic defect",
+      "source": "responses/item_events.go: summary_part.done rejects known interrupted status; private final item must remain incomplete",
+      "planned": "part incomplete marker plus strict final-completed rejection; preserve real incomplete terminal usage"
+    },
+    {
+      "test": "provider_error_event",
+      "kind": "own production error routing plus positive fixture type issue",
+      "source": "httpcall/body.go intentionally normalizes callback failures; responses observer uses callback failure for known error; fixed SDK ResponseErrorEvent.Param is required string",
+      "planned": "known error passes raw shape gate and returns fixed safe failure through typed consumer; fix positive param from null to empty string without widening protocol"
+    },
+    {
+      "test": "opaque/90000",
+      "kind": "test contract expectation error",
+      "source": "common/checkpoint.go returns CHECKPOINT_SIZE_LIMIT; execution/executor.go maps returned engine error to public MODEL_EXECUTION_FAILED",
+      "planned": "capture actual delegated common.Engine result in own fixture; verify internal cause and public safe projection, zero CP/approval/Host"
+    }
+  ],
+  "actualCounts": {
+    "initial": {
+      "topPass": 1,
+      "topFail": 3,
+      "subPass": 36,
+      "subFail": 3
+    },
+    "validErrorRed": {
+      "subFail": 1
+    },
+    "fixed": {
+      "topPass": 4,
+      "subPass": 40,
+      "fail": 0
+    }
+  },
+  "fixedOwnFileTree": "4184af71060fb557e7de60268b2d76e740fcab46a298a76635a46c10b78933c2",
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/responses/checkpoint.go": "0502cb4c290c8237bbf000a0c794fa5dfe843fcd7c22e0a3c8eb7871ffdbc870",
+    "native/huhubot/internal/adapters/outbound/eino/responses/driver.go": "52d5516e6f287bd56821dbf0bf673710be87c2b58df257528ca77ed7fab86573",
+    "native/huhubot/internal/adapters/outbound/eino/responses/item_events.go": "f73de20c0e6a67fbaecf99b6448a07b99110d47e8713a5710e2f4b56942d57cc",
+    "native/huhubot/internal/adapters/outbound/eino/responses/item_validation.go": "de96b983fb1dc5a0f34d80a66ceede4d025593565d40954cd8d8b59803fd550a",
+    "native/huhubot/internal/adapters/outbound/eino/responses/items.go": "b67524757e54fa38b9aeca0c6abf16e0abf96f675923055aa870bb55d2765eae",
+    "native/huhubot/internal/adapters/outbound/eino/responses/request.go": "6c825d2c9264c3fd5646f44b544dda42bab34f22bd0c6dc11ee68261db0c0039",
+    "native/huhubot/tests/contract/engine/responses/checkpoint_test.go": "5cbaaf2cf13605f2c702deb30129361b214d0e54ef70fd24962a166216dbc4b3",
+    "native/huhubot/tests/contract/engine/responses/current_gate_test.go": "55e9e3605c4a8fa8268a09bba32881d212a349a4d4c47fc615f6bf4b7b731683",
+    "native/huhubot/tests/contract/engine/responses/engine_test.go": "8ea1c4359a3abc635cefb698c817da026f33e51b7048741fd933487a1c806c22",
+    "native/huhubot/tests/contract/engine/responses/faults_test.go": "4dac9dbfb25000b588d2a18a7baac5498fc2a677d30df8bb3ebf6993105fa70d",
+    "native/huhubot/tests/contract/engine/responses/fixture_test.go": "23a2b6aea037a930458771700a10b6510780e9db94b432f2abf8230a6f58f279",
+    "native/huhubot/tests/contract/engine/responses/lifecycle_test.go": "6696911b36b291af734d97431d78d128036ed03c8df589627c457587cd4f29ec",
+    "native/huhubot/tests/contract/engine/responses/protocol_edges_test.go": "e84044c6df2ed9d759c5dba7361d728d4bca866b71aa5f6f4aa25a054b63f62c",
+    "native/huhubot/tests/contract/engine/responses/tools_test.go": "d4129cf9612bfc4f258ceaa753954351cfbf1bd26de2b2aeaaa1375685e0e237"
+  },
+  "artifacts": {
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fix.patch": "c32c225445700c6277d01fbe7b2ae3b28936fb9feb96ab59a25674527afca3f3",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed-frozen.json": "b130b191230b1512f07592568b0f0819906e2afe1988260455fc2dac34d5d350",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial-classification.json": "1e17e5c916bd1e413d387973afa3efa78c8f3e359bc1185204b9e1c3b004203a",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial-result.json": "7b35f9a21882ba40dbf37e18e9b81db775f091982f50fa730a6aa03afcdedb47",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial-input.json": "eadff58f4d96df223d2370712f4ec9e09f8c7c46f769179f939f84db4543ecbc",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial-input.zip": "dac030f332acf5fdd79cf1258bde462c8c9da7475b58930669b474af20d65416",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial.stdout.jsonl": "50f5afdf3c98d76f3cc79221d734f083ab33782a02c9105fea15fb9e8ae3d2e9",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-initial.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-error-valid-red-result.json": "d6b7afa17a011d3f70eddac98839efd12cebd28c7bc17bf5bf27be09735ce98a",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-error-valid-red-input.json": "2d5f4a51742b4bce0e329ca771c951905bcb06acb10844ff94ff8cdfc80a5567",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-error-valid-red-input.zip": "45081667acf524afb6542ea9594885a04cb040339e6e2f82b47e902d2cd89ca8",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-error-valid-red.stdout.jsonl": "a36ed9820a2f36696ad0a58c2cf631bee36ab68a2f357a3ba429946cf3d4b74b",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-error-valid-red.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed-result.json": "3ee55a7e78e3a3c19699e28e2dbeb12b55c9ce751b4cb83be10338769a561c29",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed-input.json": "ca864b2e700c0826ddf259a9e5b186f56d2ae5c687a43b1effd68e230e45da37",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed-input.zip": "94ea76283d45a45871ec86c7421d72326dc1f947b11b4b0ca6ba16d737151f64",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed.stdout.jsonl": "c79289d3c1100146352443e53b64109e8d60ec5614b866cc19046e0a1ff44897",
+    "sessions/20261025T043239Z/109-engine-responses/logs/slice6-fixed.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "observed": "Valid incomplete reasoning summary now reaches the incomplete terminal and preserves known billing, while incomplete summary plus completed item remains rejected. Legal error event returns fixed safe failure; null param remains malformed negative control. Opaque CP overflow observes real common.Engine internal CHECKPOINT_SIZE_LIMIT and separately asserts existing public MODEL_EXECUTION_FAILED with zero CP/approval/Host; positive encoded state crosses 500000 bytes below 1MiB. Metadata-only default probe checks matching ID, empty capabilities, path rejection, zero generation/attempts.",
+  "boundaries": [
+    "CP size fixture explicitly wraps real common.Engine with controlled resolver to observe internal return; it is not default bootstrap credential restoration.",
+    "All transport is local fixture; no real provider, Obsidian or target OS acceptance.",
+    "Original failures and test-contract correction retained; not all original failures are product defects.",
+    "111 module/license graph remains historical source hashes. Later own production changes only preserve graph-affecting imports, build tags, embed directives and Go locks; slice5 net/http already occurs in each actual graph."
+  ]
+}

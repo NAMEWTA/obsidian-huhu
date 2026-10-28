@@ -70,7 +70,12 @@
 		"accept:archives-v2-scale": "esbuild scripts/accept-archives-v2-scale.ts --bundle --platform=node --format=cjs --outfile=scripts/tmp/accept-archives-v2-scale.cjs --alias:obsidian=./scripts/obsidian-stub.ts --log-level=warning && node --expose-gc scripts/tmp/accept-archives-v2-scale.cjs",
 		"build:browser": "tsc -p tsconfig.browser-worker.json && node scripts/build-browser-runtime.mjs && node scripts/build-browser-client.mjs",
 		"check:browser-native": "cargo test --locked --manifest-path native/browser-runtime/Cargo.toml",
-		"accept:browser-native": "node scripts/verify-browser-runtime-native.mjs"
+		"accept:browser-native": "node scripts/verify-browser-runtime-native.mjs",
+		"build:huhu-bot": "node scripts/build-huhu-bot.mjs",
+		"check:huhu-bot": "node scripts/build-huhu-bot.mjs --test",
+		"test:huhu-bot-tooling": "node --test scripts/huhu-bot-build.test.mjs scripts/huhu-bot-notices.test.mjs",
+		"test:huhu-bot-architecture": "node scripts/verify-huhu-bot-architecture.mjs",
+		"bench:huhu-bot": "node scripts/bench-huhu-bot.mjs"
 	},
 	"keywords": [],
 	"license": "SEE LICENSE IN LICENSE",
@@ -120,6 +125,8 @@
 		"@xterm/addon-webgl": "^0.19.0",
 		"@xterm/headless": "6.0.0",
 		"@xterm/xterm": "^6.0.0",
+		"ajv": "8.20.0",
+		"ajv-formats": "3.0.1",
 		"chart.js": "^4.5.1",
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",

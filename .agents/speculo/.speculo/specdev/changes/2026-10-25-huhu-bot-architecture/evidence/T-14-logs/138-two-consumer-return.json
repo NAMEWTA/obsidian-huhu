@@ -1,0 +1,66 @@
+{
+  "observer": "native:/root",
+  "task": "138-memory-access-recovery",
+  "receipt": "sessions/20261025T043239Z/138-memory-access-recovery/logs/06-two-target-result.json",
+  "receiptSHA256": "9fac83ad94883e25e22473ec32bc4d550e0b7f4288c2d340109e0f39f9b68b9c",
+  "checks": [
+    {
+      "target": "TestEightHundredMemorySubjectsShareAncestorBatchAndRecheckCurrentGrant",
+      "command": "/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go test -mod=readonly -p=1 ./tests/contract/access -run '^TestEightHundredMemorySubjectsShareAncestorBatchAndRecheckCurrentGrant$' -count=1 -timeout=90s -v",
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 1.184642641,
+      "testSeconds": 0.04,
+      "rawLog": "logs/03-access-batch.log",
+      "rawLogSHA256": "0fb2194a74e1d935a04b66f538ebd572cc050a8f9cdd284cf4964cef5f903b84"
+    },
+    {
+      "target": "TestMaintenanceRetryCannotBorrowSettledAttemptFromAnotherJob",
+      "command": "/home/wta/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.26.10.linux-amd64/bin/go test -mod=readonly -p=1 ./tests/contract/collaboration-policy -run '^TestMaintenanceRetryCannotBorrowSettledAttemptFromAnotherJob$' -count=1 -timeout=90s -v",
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 1.172049441,
+      "testSeconds": 0.1,
+      "rawLog": "logs/04-maintenance-cross-job.log",
+      "rawLogSHA256": "0b47993a33431febb9170a2b59750071da177cb63bd792e63b6d7706edd36e2c"
+    }
+  ],
+  "productionChanged": false,
+  "nativeReturn": "MESSAGE+FINAL allchecksWait/sourcefreeze/windowreturned",
+  "boundary": "800subj test fake only Factsreader/currentGrantSQL; two realmaintenancejobs andloopbackHTTP sameaccountcrossRunRetryOf reject; fullstdioE2E/rootindependentreviewpending",
+  "disposition": "accepted executed targets, full138 inprogress",
+  "rootInputReadback": {
+    "originalCount": 411,
+    "currentMatchingFiles": 409,
+    "laterAuthorizedTestChanges": [
+      {
+        "path": "native/huhubot/tests/contract/chat/memory_transaction_test.go",
+        "oldSHA256": "215a8cd0915e6c3c26a1b5f6c75ad4dcc82877065e92a90719970a13d83e36ea",
+        "oldBytesVerifiedIn": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob/native/huhubot/tests/contract/chat/memory_transaction_test.go",
+        "currentMTimeUTC": "2026-10-26T14:42:00.594729+00:00"
+      },
+      {
+        "path": "native/huhubot/tests/contract/foundation/memory_runtime_test.go",
+        "oldSHA256": "9d3a5194ff66db3bfdc5030f4670a5634ec89da7b8ab18a901d3dbeec7af115f",
+        "oldBytesVerifiedIn": "/tmp/huhu-lead-memory-default-core-r1-3l8wvuob/native/huhubot/tests/contract/foundation/memory_runtime_test.go",
+        "currentMTimeUTC": "2026-10-26T14:39:19.064831+00:00"
+      }
+    ],
+    "reason": "140/126 later source-only tests after138 actualWait; these test packages are outside138 access/collaboration-policy compilation closure. No138 production/test or schema changed. Initial fullcurrent-tree assertions0fc6d9/b8e746 preserved as metadata timing mismatch, not product failure.",
+    "actual138AfterReceipt": {
+      "capturedAt": "2026-10-26T14:30:19.258058+00:00",
+      "count": 411,
+      "treeSHA256": "17741d960b9dad4ac92462b2b9dd907f152a6cf3cff1c7733906c98f4388ec96",
+      "beforeTreeSHA256": "17741d960b9dad4ac92462b2b9dd907f152a6cf3cff1c7733906c98f4388ec96",
+      "sourceDrift": {},
+      "logSHA256": {
+        "03-access-batch.log": "0fb2194a74e1d935a04b66f538ebd572cc050a8f9cdd284cf4964cef5f903b84",
+        "04-maintenance-cross-job.log": "0b47993a33431febb9170a2b59750071da177cb63bd792e63b6d7706edd36e2c"
+      },
+      "allChecksWaited": true,
+      "goWindowReadyToReturn": true
+    },
+    "rawLogsRead": "Root483bc2",
+    "twoTestDiffRead": "Roote0a9c0"
+  }
+}

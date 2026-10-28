@@ -1,0 +1,13 @@
+{
+  "observer": "native:/root",
+  "task": "110-model-probe-expectation",
+  "taskSha256": "bf365f2271a6d51537e536f58451d0293854708afd3e59edffedd339634717ac",
+  "dispatchExit": 0,
+  "nativeTarget": "/root/credential_provider",
+  "nativeFollowupDispatched": true,
+  "nativeAckReceived": true,
+  "mapRevision": 27,
+  "goalRevision": 26,
+  "initialStage": "one existing model test expectation; current no Go window",
+  "slot": "108 phase-only FINAL with no active processes; original TASK incomplete and ownership retained"
+}

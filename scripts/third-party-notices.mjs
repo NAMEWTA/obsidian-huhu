@@ -10,6 +10,7 @@ import { pluginBuildOptions } from './esbuild-options.mjs';
 import { browserCliOptions } from './browser-cli-options.mjs';
 import { packageNotice } from './license-texts.mjs';
 import { buildVersioningWorker } from './versioning-worker.mjs';
+import { goNoticeSection, goPackages } from './huhu-bot-notices.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const out = path.join(root, 'THIRD-PARTY-NOTICES.md');
@@ -90,6 +91,7 @@ const npm = await npmPackages();
 const crates = cratePackages('native/pty-server/Cargo.toml');
 const browserCrates = cratePackages('native/browser-runtime/Cargo.toml');
 const styles = stylePackages();
+const go = goPackages();
 const text = [
 	'# Third-party notices',
 	'',
@@ -99,16 +101,17 @@ const text = [
 	section('Embedded in styles.css', 'CSS and fonts embedded in the plugin stylesheet.', styles),
 	section('Linked into huhu-pty', 'Rust crates compiled into the terminal helper (all platforms). Selected permissive terms are listed for each crate; every supplied notice, including AND obligations, is retained.', crates),
 	section('Linked into huhu-browser-runtime', 'Rust crates compiled into the independent browser supervisor (Linux x64). Chromium ships with its original upstream license inventory in the complete runtime bundle.', browserCrates),
+	goNoticeSection(go),
 ].join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n';
 
 if (mode === 'write') {
 	fs.writeFileSync(out, text);
-	console.log(`THIRD-PARTY-NOTICES.md: ${npm.length} npm packages, ${crates.length} terminal crates, ${browserCrates.length} browser crates`);
+	console.log(`THIRD-PARTY-NOTICES.md: ${npm.length} npm packages, ${crates.length} terminal crates, ${browserCrates.length} browser crates, ${go.length} Go runtime/modules`);
 } else {
 	const current = fs.existsSync(out) ? fs.readFileSync(out, 'utf8') : '';
 	if (current !== text) {
 		console.error('THIRD-PARTY-NOTICES.md is out of date; run node scripts/third-party-notices.mjs --write');
 		process.exit(1);
 	}
-	console.log(`THIRD-PARTY-NOTICES.md is current (${npm.length} npm packages, ${crates.length} terminal crates, ${browserCrates.length} browser crates)`);
+	console.log(`THIRD-PARTY-NOTICES.md is current (${npm.length} npm packages, ${crates.length} terminal crates, ${browserCrates.length} browser crates, ${go.length} Go runtime/modules)`);
 }

@@ -1,0 +1,280 @@
+{
+  "task": "076-recovery-client-seams",
+  "capturedAt": "2026-10-25T19:15:55.791987+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "sources": {
+    "AGENTS.md": {
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "lines": 83
+    },
+    ".agents/speculo/.speculo/workspace.json": {
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "lines": 15
+    },
+    ".agents/speculo/catalog.json": {
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "lines": 243
+    },
+    ".agents/speculo/.speculo/AGENTS.md": {
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "lines": 19
+    },
+    ".agents/skills/dev/SKILL.md": {
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "lines": 79
+    },
+    ".agents/skills/dev/references/architecture.md": {
+      "sha256": "0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42",
+      "lines": 186
+    },
+    ".agents/skills/dev/references/testing.md": {
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "lines": 92
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md": {
+      "sha256": "d648b74b1278548c6aa57dd66d4a383df17fbd48e1f809e399265a2b378332d2",
+      "lines": 300
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md": {
+      "sha256": "5eb778950901942443a8691ba5a28666ace05909e5a49d7b6e081058f22c27aa",
+      "lines": 334
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/16-cancel-recovery.md": {
+      "sha256": "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c",
+      "lines": 100
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/20-module-runtime.md": {
+      "sha256": "b93e93ac715dc71d004e8b86f97276196db6e9009d30e7cacae9132e382468cf",
+      "lines": 105
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/066-recovery-current-seams/REPORT.md": {
+      "sha256": "22b88e2a54a507477a16aac3c25df8d0e94d9ce1521608262749f8185d05c219",
+      "lines": 48
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/066-recovery-current-seams/interfaces-and-owners.md": {
+      "sha256": "ee0b2c5be23eb52779d7f05e75fd068a6577b3bd25a542a7243f8d2b1cc30f5b",
+      "lines": 105
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/075-groups-client/REPORT.md": {
+      "sha256": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e",
+      "lines": 98
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/075-lead-return.json": {
+      "sha256": "a5676c0ab812e77dd1134db4ad0959e2557d09fc31cca3427f4e581ce4d9db70",
+      "lines": 265
+    },
+    "src/modules/huhubot/api.ts": {
+      "sha256": "9cf6d25e4783e203bf47a475852bed436490da4892eaec86c1ba2b78739d4f34",
+      "lines": 865
+    },
+    "src/modules/huhubot/core/protocol/connection.ts": {
+      "sha256": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+      "lines": 518
+    },
+    "src/modules/huhubot/core/protocol/codec.ts": {
+      "sha256": "2891c56da79be31194204ede79108b48e63e3dcda016543ae40b8aba7118afa9",
+      "lines": 178
+    },
+    "src/modules/huhubot/core/protocol/method-validation.ts": {
+      "sha256": "db90d2096e7c1f65b78d10500b380d84934ee4b1cec2dd0b8a124d275feba9f8",
+      "lines": 79
+    },
+    "src/modules/huhubot/core/events/reducer.ts": {
+      "sha256": "756036a598c5e18e41fc5540c92c9c994f7d263183ccb6ad4c8dacd0c4d43301",
+      "lines": 105
+    },
+    "src/modules/huhubot/core/events/transcript.ts": {
+      "sha256": "44223f4725cfeaaedaac4080a139d97db74a69619699abd3296778652d4dd428",
+      "lines": 38
+    },
+    "src/modules/huhubot/services/events/event-client.ts": {
+      "sha256": "1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0",
+      "lines": 276
+    },
+    "src/modules/huhubot/services/groups/group-client.ts": {
+      "sha256": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33",
+      "lines": 238
+    },
+    "src/modules/huhubot/platform/desktop/transport/managed.ts": {
+      "sha256": "f74ced41a9bf78c5d191ef2164ba7973018e76e8cefd992142a79be44714e989",
+      "lines": 351
+    },
+    "src/modules/huhubot/services/host-write/host-write.ts": {
+      "sha256": "bfc778925cf44ddd6cf8bc5224c807d7aa13dfa6b96abe0ff83ebdeedde36a51",
+      "lines": 90
+    },
+    "src/modules/huhubot/services/host-write/obsidian-host.ts": {
+      "sha256": "dc7c3283e57c3c6636690b7fb46e579ed5038618a5049b8715e03ae81039bbad",
+      "lines": 43
+    },
+    "src/modules/huhubot/services/assistant-client.ts": {
+      "sha256": "8f049a1d95e5a55c3b4474fcb976022d0def221798c13d4b0e4ab4f7f16e3a3b",
+      "lines": 42
+    },
+    "src/modules/huhubot/core/protocol/connection.test.ts": {
+      "sha256": "ff589efd4ef674fa748f358a1d94544e75c7690ef4b40654b4d238b3dd3a17aa",
+      "lines": 748
+    },
+    "src/modules/huhubot/services/events/event-client.test.ts": {
+      "sha256": "c99d437f6cd32a2377aa4b13f97118e68bd343919b12427b9909970893b5ce1c",
+      "lines": 372
+    },
+    "src/modules/huhubot/services/events/runner.test.ts": {
+      "sha256": "609ded3e6953cf02186aa0bb209eb0c2bd7ea5594bd3d34663d2bd2a709a12e4",
+      "lines": 86
+    },
+    "src/modules/huhubot/services/groups/group-client.test.ts": {
+      "sha256": "5d1611366989bd90670c277b0ce46d3ab2a166508d364aa7bb8f675d82df123f",
+      "lines": 181
+    },
+    "src/modules/huhubot/platform/desktop/transport/runner.test.ts": {
+      "sha256": "afe2a6c3a7fcd328847f9bff65d13d3be894fe1f00a243e1a9e764903b4a39eb",
+      "lines": 221
+    },
+    "contracts/hap/v0.1/schema.json": {
+      "sha256": "d45693a3b4b2abbe635cf2f8b4655b63a4419458bb1e4854723f786a63ed1217",
+      "lines": 13883
+    },
+    "contracts/hap/v0.1/methods.json": {
+      "sha256": "1a85dee850427b234f7795075b860051575977640768ccc18e0847463567ea1e",
+      "lines": 722
+    },
+    "native/huhubot/cmd/huhubot/main.go": {
+      "sha256": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f",
+      "lines": 100
+    },
+    "native/huhubot/internal/application/api/service.go": {
+      "sha256": "b6d5cfeee2479d380f8dc6b02c6bb2bd7c99aa4a4fe613d8b1f8f6e9d4ce7521",
+      "lines": 192
+    },
+    "native/huhubot/internal/bootstrap/core.go": {
+      "sha256": "36fbd3262599e2f2143555ec1c7e771b92cddc0ea3ac89b7dabf905688684148",
+      "lines": 199
+    },
+    "native/huhubot/internal/adapters/inbound/stdio/server.go": {
+      "sha256": "3404bd3043f9d54af2037937408c9f2e7c08f07a76fa1677142773ff20419076",
+      "lines": 670
+    },
+    "native/huhubot/internal/adapters/inbound/hap/router.go": {
+      "sha256": "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730",
+      "lines": 228
+    },
+    "native/huhubot/internal/application/execution/executor/executor.go": {
+      "sha256": "68a364c7f2d3aa58b50e2ff25ae07c41a4954c2e61cb827b878152886fa9049e",
+      "lines": 320
+    },
+    "src/app/manifests.ts": {
+      "sha256": "6e29a6fdae6c958ee15151d5bc12074be47a50ba77d40c5d3035c7ca0be13809",
+      "lines": 27
+    },
+    "src/app/modules/registry.ts": {
+      "sha256": "2f1fd47357def35fc7634f70f3acfd72596b59a2bf06727ee60b77efd00ca20e",
+      "lines": 297
+    },
+    "src/app/contracts/module.ts": {
+      "sha256": "fcfb00282bbd7ba22a043a5147729882801c3c2131a5faad67034983e50422d1",
+      "lines": 148
+    }
+  },
+  "prior075": {
+    "manifestSha256": "aa29a3edf3a513d2f3bae083fbd915177a3df0affd587fce6e2f1c3dfd0341e6",
+    "ownFiles": {
+      "src/modules/huhubot/core/mentions/mentions.ts": {
+        "expected": "4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336",
+        "actual": "4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336"
+      },
+      "src/modules/huhubot/core/mentions/mentions.test.ts": {
+        "expected": "0d3c1fdeb3d11dc90fe7e8fb22400b04ad51b530e5f5853d8604fd2ea7013902",
+        "actual": "0d3c1fdeb3d11dc90fe7e8fb22400b04ad51b530e5f5853d8604fd2ea7013902"
+      },
+      "src/modules/huhubot/core/events/transcript.ts": {
+        "expected": "44223f4725cfeaaedaac4080a139d97db74a69619699abd3296778652d4dd428",
+        "actual": "44223f4725cfeaaedaac4080a139d97db74a69619699abd3296778652d4dd428"
+      },
+      "src/modules/huhubot/core/events/transcript.test.ts": {
+        "expected": "214dc3ccc6c472e18b0d59b000b9cff858247f5b502bcc4a01a08dacdc3b08ff",
+        "actual": "214dc3ccc6c472e18b0d59b000b9cff858247f5b502bcc4a01a08dacdc3b08ff"
+      },
+      "src/modules/huhubot/services/events/event-client.ts": {
+        "expected": "1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0",
+        "actual": "1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0"
+      },
+      "src/modules/huhubot/services/events/event-client.test.ts": {
+        "expected": "c99d437f6cd32a2377aa4b13f97118e68bd343919b12427b9909970893b5ce1c",
+        "actual": "c99d437f6cd32a2377aa4b13f97118e68bd343919b12427b9909970893b5ce1c"
+      },
+      "src/modules/huhubot/services/groups/group-client.ts": {
+        "expected": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33",
+        "actual": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33"
+      },
+      "src/modules/huhubot/services/groups/group-client.test.ts": {
+        "expected": "5d1611366989bd90670c277b0ce46d3ab2a166508d364aa7bb8f675d82df123f",
+        "actual": "5d1611366989bd90670c277b0ce46d3ab2a166508d364aa7bb8f675d82df123f"
+      },
+      "src/modules/huhubot/platform/desktop/transport/managed.ts": {
+        "expected": "f74ced41a9bf78c5d191ef2164ba7973018e76e8cefd992142a79be44714e989",
+        "actual": "f74ced41a9bf78c5d191ef2164ba7973018e76e8cefd992142a79be44714e989"
+      }
+    },
+    "drift": []
+  },
+  "wire": {
+    "resume": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/runs.resume.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.resume.result"
+      }
+    },
+    "paramsRequired": [
+      "commandId",
+      "idempotencyKey",
+      "profileId",
+      "commandEpoch",
+      "id",
+      "recoveryGeneration"
+    ],
+    "paramsProperties": [
+      "commandId",
+      "idempotencyKey",
+      "profileId",
+      "commandEpoch",
+      "expectedRevision",
+      "id",
+      "recoveryGeneration"
+    ],
+    "resultRequired": [
+      "runId",
+      "status",
+      "commandId",
+      "receiptId",
+      "revision"
+    ],
+    "methodCount": 71,
+    "validatorCount": 142
+  },
+  "absentPaths": [
+    "src/modules/huhubot/module.ts",
+    "src/modules/huhubot/manifest.ts",
+    "src/modules/huhubot/services/runtime",
+    "src/modules/huhubot/platform/desktop/runtime"
+  ],
+  "goSourceDisposition": "073/074 active T13 writers. SHA is a point-in-time read, not a final Go freeze or validation result.",
+  "checksRun": [],
+  "notRun": [
+    "product processes",
+    "Go/Node products",
+    "tests",
+    "build",
+    "lint",
+    "network",
+    "Provider/keyring",
+    "Obsidian",
+    "target OS"
+  ],
+  "writesLimitedToThisTask": true
+}

@@ -1,0 +1,13 @@
+{
+  "eslint.config.mts": "910f79dcf2359611786732378565f115f02e4c2c11524571674351c08ab80e31",
+  "tsconfig.json": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb",
+  "tsconfig.test.json": "e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b",
+  "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs": "794501db18be666efd9fb74c2f1167da8120f3ddcc27a56feda12ce29dbe7d88",
+  "native/huhubot/tests/contract/effect-reconcile/obsidian-fixture.mjs": "5fd6f58fd51db280491733575df9dff01454f1becc91aa5ddcf67d12c82af9e2",
+  "src/modules/huhubot/core/protocol/connection.ts": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+  "src/modules/huhubot/services/host-write/obsidian-host.ts": "dc7c3283e57c3c6636690b7fb46e579ed5038618a5049b8715e03ae81039bbad",
+  "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+  "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+  "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+  "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934"
+}

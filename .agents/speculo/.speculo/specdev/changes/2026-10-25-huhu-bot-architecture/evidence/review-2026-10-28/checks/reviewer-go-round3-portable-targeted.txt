@@ -1,0 +1,4 @@
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable	0.223s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/hap	0.124s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/portable	0.003s
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap	0.265s

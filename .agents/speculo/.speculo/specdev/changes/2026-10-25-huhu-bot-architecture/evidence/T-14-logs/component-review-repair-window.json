@@ -1,0 +1,24 @@
+{
+  "observer": "native:/root",
+  "mapRevision": 37,
+  "goalRevision": 36,
+  "review": "sessions/20261025T043239Z/133-memory-component-review/REPORT.md",
+  "reviewSha256": "875f1e58db2e2e0ad14e044db3f21361eecf35b7b0c7e91609060d91a8381179",
+  "findings": [
+    "F-133-01",
+    "F-133-02"
+  ],
+  "disposition": "both accepted, component review remains request-changes untilnew fixed input independently reviewed",
+  "owners": {
+    "135": "originalfoundation_go;pureAPI result repair",
+    "136": "originalfoundation_client;contextpage andsourceepoch repair"
+  },
+  "ordering": [
+    "128 sole fullCore Go target mustfinish before135 source/api writes",
+    "136 twoTS files/Node mayproceed independently underexistingMap34 actualinput split;sharedschema frozen",
+    "135 pureAPI/HAP Go window only afterRoot explicitgrant;noCore/SQL generation",
+    "126/134 sources staystopped untilnew originalscope window;allgeneration/fullbuild/mixedCLI staysRoot serial"
+  ],
+  "scopeChange": false,
+  "note": "sameT01/T14 writablepaths and existingindependentresource contract;noTicket/DAG/Maprevisionchange for same-scopefix"
+}

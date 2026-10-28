@@ -1,0 +1,23 @@
+{
+  "observer": "native:/root",
+  "task": "137-memory-result-validation-recovery",
+  "report": "sessions/20261025T043239Z/137-memory-result-validation-recovery/REPORT.md",
+  "reportSHA256": "4c0eb2088083f1df5cbf3f3cc1ae8a9862421c37925ef239f7b3a2db7f65176a",
+  "manifestSHA256": "d5b63c8d1cb7e06624cb3bf73bd795a1209e62244d6ab8b28532682ec3e4c20c",
+  "nativeReturn": "MESSAGE+FINAL; allownprocessesWait/sourcefrozen",
+  "verified": {
+    "sourceFiles": 4,
+    "artifacts": 36,
+    "fixedInputsWithMode": 35,
+    "drift": [],
+    "fullReport": "47453d",
+    "productionDiffAndHelper": "a0119d",
+    "artifactsAndRawChecks": "d46b1d",
+    "returnValidator": {
+      "actualExit": 0,
+      "tool": "3400b6"
+    }
+  },
+  "checkBoundary": "finalGo1.26.10 pureAPI/HAP noCore/SQL; initial1.27.1 exploratoryreceipts preserved and superseded, explicitfixedGo redandgreen proven",
+  "disposition": "accepted repaircandidate/evidence pending newindependentreview; no wholeT14pass; Go windowreleased"
+}

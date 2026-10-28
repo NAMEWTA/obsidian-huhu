@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-25T15:29:01.817330+00:00",
+  "manifestSha256": "5a8359804549396755e46adef9a4c38100ceaea14b2bb146bb54641e1e4311a3",
+  "count": 9,
+  "allMatch": true,
+  "checks": [
+    {
+      "path": "REPORT.md",
+      "ok": true
+    },
+    {
+      "path": "command-results.md",
+      "ok": true
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "ok": true
+    },
+    {
+      "path": "observations.json",
+      "ok": true
+    },
+    {
+      "path": "read-excerpts.log",
+      "ok": true
+    },
+    {
+      "path": "return-validation.json",
+      "ok": true
+    },
+    {
+      "path": "return-validation.log",
+      "ok": true
+    },
+    {
+      "path": "source-recheck.json",
+      "ok": true
+    },
+    {
+      "path": "wire-group-slice.json",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "grantedAt": "2026-10-25T21:54:05.718404+00:00",
+  "owner": "native:/root/foundation_go",
+  "nativeGrantSent": true,
+  "nativeAckReceived": true,
+  "relatedWritersStopped": true,
+  "allAuthorProcessesWaitedBeforeGrant": true,
+  "rootProductChecksRunning": false,
+  "steps": [
+    "normal: events and foundation only",
+    "risk race 11 packages -p1",
+    "go vet all module",
+    "unique schema generation consistency and architecture"
+  ],
+  "retainedFailure": "080 logs/13-normal.log and 14-normal-result.json; nested process Wait not proven at old failing cleanup branch",
+  "reuse": "Other full-normal packages reusable only with exact source/dependency stability; r1-r2 expected difference five tests",
+  "authorManifests": {
+    "080": {
+      "path": "sessions/20261025T043239Z/080-recovery-core/logs/16-own-source-freeze-r2.json",
+      "tree": "71059e3b5b6823ae1104311d3391f47f7b74c810e0071feae5b3cb7e25c5c8c4"
+    },
+    "081": {
+      "path": "sessions/20261025T043239Z/081-recovery-domain/logs/18-own-source-freeze-r2.json",
+      "tree": "d6ba6d1db4147f4f0495fd89c72e1e1219f9bf796b52df6968e11bc3c9a370fd"
+    }
+  },
+  "candidateAccepted": false
+}

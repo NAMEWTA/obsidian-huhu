@@ -1,0 +1,21 @@
+{
+  "observer": "native:/root",
+  "acceptedScope": "默认Core/SDK混合items→审批首批批准与拒绝、完整opaque回放及首文本回归；不是T09全票完成",
+  "rawResultAndLogsRead": true,
+  "sourceResult": "sessions/20261025T043239Z/109-engine-responses/logs/slice2-green-result.json",
+  "inputSHA256": "a764286954849be2c87b84ce74ffef132b21265a4c07dc9bb9214216670c4a6c",
+  "immutableZipInputsVerified": 326,
+  "immutableZipHashMismatches": [],
+  "exitCode": 0,
+  "actualWaitSeconds": 1.1992963409866206,
+  "textRegression": {
+    "exitCode": 0,
+    "actualWaitSeconds": 0.8744805720052682
+  },
+  "remaining": [
+    "跨重启与纯checkpoint负向/当前资格",
+    "terminal/usage/错误/取消矩阵",
+    "Root最终CLI/HAP/Host代码E2E",
+    "独立双轴审查"
+  ]
+}

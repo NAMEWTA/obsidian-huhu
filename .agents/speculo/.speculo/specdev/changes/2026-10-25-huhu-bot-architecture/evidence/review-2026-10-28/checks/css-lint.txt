@@ -1,0 +1,2 @@
+$ node scripts/lint-css.mjs
+stylelint: 25 files; 1 files keep 3 baselined rule groups; no new violations.

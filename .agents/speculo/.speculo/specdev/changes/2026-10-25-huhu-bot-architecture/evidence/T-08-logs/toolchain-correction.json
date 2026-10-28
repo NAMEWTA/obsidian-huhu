@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-26",
+  "observer": "native:/root",
+  "actualCommands": [
+    {"command": "env GOTOOLCHAIN=local go version", "exitCode": 0, "output": "go version go1.27.1 linux/amd64", "waited": true},
+    {"command": "env GOTOOLCHAIN=go1.26.10 go version", "exitCode": 0, "output": "go version go1.26.10 linux/amd64", "waited": true}
+  ],
+  "cause": "Root此前将local当作项目固定工具链，实际默认编译器是go1.27.1；092初次窄检查沿该指令运行。",
+  "affected": "092/logs/01-red、02-red、03-first-green、04-tool-red；原始退出/输入/行为结果保留，标记为go1.27.1诊断，不当作最终固定工具链验收。",
+  "unaffected": "093明确GOTOOLCHAIN=go1.26.10的依赖、编译和默认CLI/旧CP检查；094明确go1.26.10的selector/Stop/metadata检查。093的10父test CGO1、nested CLI build CGO0分别记录。",
+  "resolution": "092后续全部显式go1.26.10，并在工具/CP稳定候选上补首条HTTP与工具定向绿；不回滚生产、不删除旧结果、不为工具链重新制造旧红。",
+  "fixedToolchainRecheck": {
+    "status": "passed-targeted",
+    "evidence": "sessions/20261025T043239Z/092-engine-chat/logs/07-tool-green.json",
+    "inputSha256": "2473156922a554ff691cf3114b3e34789c28f77f18bba93ba91d85f48b39c37e",
+    "toolchain": "go1.26.10",
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 1.0164016759954393,
+    "sourceDrift": [],
+    "scope": "首条真实HTTP和同批工具批准/拒绝两项；不代表完整T08矩阵通过",
+    "precedingAttempt": "06在固定工具链下因夹具Decision用approved/rejected而非API的approve/reject失败；原始记录保留，只修改本票夹具后07通过。"
+  },
+  "sourceMutationByThisCheck": false
+}

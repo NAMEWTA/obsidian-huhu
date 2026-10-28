@@ -1,0 +1,235 @@
+{
+  "at": "2026-10-26T17:52:27.030709+00:00",
+  "files": {
+    "REPORT.md": {
+      "sha256": "a387efd30c087aab441e776bfc5815b196ccb56085604ead5f71de56d6c69edd",
+      "mode": "0o664"
+    },
+    "TASK.md": {
+      "sha256": "21e6a847af8a0417ecb48bc371e92a854ec729431df88485ca50c57f3974ee39",
+      "mode": "0o664"
+    },
+    "logs/00-read-preparation.json": {
+      "sha256": "54ac12f114cb180b67d99094ce0a82413ed605c389f0a36a5384642d224aceeb",
+      "mode": "0o664"
+    },
+    "logs/01-authorized-baseline.json": {
+      "sha256": "9ec2f423e07dd24e7ec18fc255dc06f117afb23d5658cfa4849ef64e342d18bf",
+      "mode": "0o664"
+    },
+    "logs/02-ts-red-inputs.json": {
+      "sha256": "15970d5d72a7b23c029cd87656176400e0424ab4ea07b2a349b307ff55c65dc8",
+      "mode": "0o664"
+    },
+    "logs/03-alias-ts-red.json": {
+      "sha256": "7433fc41b54aa78525c2e26c7ef83fe02f3edcea556230175e9ea1b8cb79b8f1",
+      "mode": "0o664"
+    },
+    "logs/03-alias-ts-red.log": {
+      "sha256": "ea5d0991b2eeec884441ff7c1faa5dfb7db92cc8769638bbc1d653c8c32bed58",
+      "mode": "0o664"
+    },
+    "logs/04-alias-ts-red-stable.json": {
+      "sha256": "1a0bf574b549e35715db62ed70f8c6a0ce16ca595c58f4301fd4158500782c43",
+      "mode": "0o664"
+    },
+    "logs/04-alias-ts-red-stable.log": {
+      "sha256": "6eea4165d66d37f7b86436e0140f1430a0daac7f090b6b09b9ba3b22b7c89397",
+      "mode": "0o664"
+    },
+    "logs/04-ts-red-stable-inputs.json": {
+      "sha256": "a64ac2bd2e3c5f1ab3f7f6bea46c4040d9f10926481f4cf811d48537a708a686",
+      "mode": "0o664"
+    },
+    "logs/05-generator.json": {
+      "sha256": "b92f6e8a7c5359765bb0426053c3c10ac9a3b2ae561ca7803ad938c79b205831",
+      "mode": "0o664"
+    },
+    "logs/05-generator.log": {
+      "sha256": "82c1ff2ed0a94c859c67cf9f4d9d0bf52e3d9d8a75c400eef1e08f3c6d6812aa",
+      "mode": "0o664"
+    },
+    "logs/06-generation-semantic-diff.json": {
+      "sha256": "63dc282a7f543bb211a0854c992a5f2d29297bdbc47fe0e4842b9b964869f940",
+      "mode": "0o664"
+    },
+    "logs/07-ts-check-inputs.json": {
+      "sha256": "f39eb4b1a8edc28458af2158719d24d39f27f8a9a1f8f7418a47e7fcf557173c",
+      "mode": "0o664"
+    },
+    "logs/08-alias-ts-green.json": {
+      "sha256": "7c725c6cac8c12b9afde3a689b2d9b5d2e4742f61bfaf409848c059919169c70",
+      "mode": "0o664"
+    },
+    "logs/08-alias-ts-green.log": {
+      "sha256": "954bb5d4d4917ce541944bc664d80a5a4f7b61269e65ba76cedd2b86a0c61443",
+      "mode": "0o664"
+    },
+    "logs/09-test-types.json": {
+      "sha256": "461bf210dfcbceaccc1c27305acb3c2d5c41855711ba1c364756ff29ed9b73ac",
+      "mode": "0o664"
+    },
+    "logs/09-test-types.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    "logs/10-go-version.json": {
+      "sha256": "e28c3b19ff92ecacf5778d82eef038f05c1b6d26cbede7ff5b5ab57b4460cfd7",
+      "mode": "0o664"
+    },
+    "logs/10-go-version.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    "logs/10-go-version.stdout": {
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b",
+      "mode": "0o664"
+    },
+    "logs/11-go-list.json": {
+      "sha256": "be37ac5b8bc5a00e2834ae17b32935411b13c74de6f9558900ebe8af8b3772ee",
+      "mode": "0o664"
+    },
+    "logs/11-go-list.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    "logs/11-go-list.stdout": {
+      "sha256": "117a4047bcf59cd958692e59086671e8419a2ab5c3bf0fb70cc22efe113a5964",
+      "mode": "0o664"
+    },
+    "logs/12-go-closure.json": {
+      "sha256": "4602c3d37b1d3ead35fafd25c368665088ee522696c1544644f662b458f5bd64",
+      "mode": "0o664"
+    },
+    "logs/13-go-list-final.json": {
+      "sha256": "82e86e40c4659825d00607a788b9b4e7701b00dd359e6570e9dde656493caaed",
+      "mode": "0o664"
+    },
+    "logs/13-go-list-final.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    "logs/13-go-list-final.stdout": {
+      "sha256": "fe134dbaf45296e079b7266dd1ad02d87de579445eb57a10f6c326963129046f",
+      "mode": "0o664"
+    },
+    "logs/14-go-final-inputs.json": {
+      "sha256": "586543007d961c07243e955f7b4a7f84bcd8140f1a8642479d2cf104a3c5385c",
+      "mode": "0o664"
+    },
+    "logs/15-go-hap-tests.json": {
+      "sha256": "1b3bd2b36b3479b1b029078056b3eee640eef3fef0ae577cb6b6dcf5d6d08ad6",
+      "mode": "0o664"
+    },
+    "logs/15-go-hap-tests.log": {
+      "sha256": "6167f8cec8b962da8aefba8ce46da0ab5567447489df48dee21eaee2ff265d87",
+      "mode": "0o664"
+    },
+    "logs/16-formatters.json": {
+      "sha256": "43dd1ba8401dc0c8291bb5cdb3f3aab6ff661d4b6212d6d7148093a124766b2f",
+      "mode": "0o664"
+    },
+    "logs/17-return.json": {
+      "sha256": "19459de606cab6de4bfb256b02956633a7277f4efa759558726a75ba10ae19b1",
+      "mode": "0o664"
+    },
+    "logs/17-return.log": {
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    },
+    "logs/baseline/contracts/hap/v0.1/fixtures/golden.json": {
+      "sha256": "458a7a49654f29a29f95fffac4044b10496aa9f84e46bce758c67305811bf0f0",
+      "mode": "0o600"
+    },
+    "logs/baseline/contracts/hap/v0.1/fixtures/methods.json": {
+      "sha256": "0b806aacda291dd60b0097001d57b7b1c271d800936430b79f08c3d9fa2f925f",
+      "mode": "0o600"
+    },
+    "logs/baseline/contracts/hap/v0.1/generate.mjs": {
+      "sha256": "35a55ac4a4c0c0188b12e4e5a647f2b8f195e612fcbf2f1993c41285620783e3",
+      "mode": "0o600"
+    },
+    "logs/baseline/contracts/hap/v0.1/methods.json": {
+      "sha256": "1de08db017684d228fd02002fc2e4a47358f6330825d64da582e3172ceb7816b",
+      "mode": "0o600"
+    },
+    "logs/baseline/contracts/hap/v0.1/schema.json": {
+      "sha256": "2fd592f7a503004b5b315f0becf1fc1ad9e8266aff46bfc12e2473fe73e3a615",
+      "mode": "0o600"
+    },
+    "logs/baseline/native/huhubot/internal/protocol/hap/methods_generated.go": {
+      "sha256": "cbfeab29e5dad9f4eef8d17e7ead5c0abde7b6e41651bc29030681f155487049",
+      "mode": "0o600"
+    },
+    "logs/baseline/native/huhubot/internal/protocol/hap/schema_generated.json": {
+      "sha256": "2fd592f7a503004b5b315f0becf1fc1ad9e8266aff46bfc12e2473fe73e3a615",
+      "mode": "0o600"
+    },
+    "logs/baseline/src/modules/huhubot/api.ts": {
+      "sha256": "78948204281914149059429b3e0250143e41efa73642d985c2e31e544cfa0a17",
+      "mode": "0o600"
+    },
+    "logs/baseline/src/modules/huhubot/core/protocol/memory-validation.test.ts": {
+      "sha256": "306a67568a77879178210421435ec8e2518eba6bd7cdba5ed00512f99fbd2706",
+      "mode": "0o664"
+    },
+    "logs/baseline/src/modules/huhubot/core/protocol/method-validation.ts": {
+      "sha256": "3a3df3d382823db09d80685c3fa9d2c9bcd879a0e6664fac6c50bac29249fc90",
+      "mode": "0o600"
+    },
+    "logs/diff-contracts__hap__v0.1__fixtures__methods.json.txt": {
+      "sha256": "eb45ccd2b456356c2f3d3222b4d04b85a9a4b5ef72ccbf051ec4b8488036e240",
+      "mode": "0o664"
+    },
+    "logs/diff-contracts__hap__v0.1__generate.mjs.txt": {
+      "sha256": "b3265dada3799af44a4f36cbdc9b133b3019fb64aac8d14222dd8ddaf5726098",
+      "mode": "0o664"
+    },
+    "logs/diff-contracts__hap__v0.1__schema.json.txt": {
+      "sha256": "0c7a891bc5e94f0d0b5912e5195b1891e35bde825450bdcad1bba70a0ca8413a",
+      "mode": "0o664"
+    },
+    "logs/diff-native__huhubot__internal__protocol__hap__schema_generated.json.txt": {
+      "sha256": "15a1174b961b4beb489fba632bebecb80531db14d24e24ba53e25aa497dafc5b",
+      "mode": "0o664"
+    },
+    "logs/diff-src__modules__huhubot__core__protocol__memory-validation.test.ts.txt": {
+      "sha256": "bfefd8c9332b2b649d6be65721b24512e64a006bf3acecfb0a97f7b1b993b3ea",
+      "mode": "0o664"
+    },
+    "logs/final-diff-contracts__hap__v0.1__fixtures__methods.json.txt": {
+      "sha256": "eb45ccd2b456356c2f3d3222b4d04b85a9a4b5ef72ccbf051ec4b8488036e240",
+      "mode": "0o664"
+    },
+    "logs/final-diff-contracts__hap__v0.1__generate.mjs.txt": {
+      "sha256": "b3265dada3799af44a4f36cbdc9b133b3019fb64aac8d14222dd8ddaf5726098",
+      "mode": "0o664"
+    },
+    "logs/final-diff-contracts__hap__v0.1__schema.json.txt": {
+      "sha256": "0c7a891bc5e94f0d0b5912e5195b1891e35bde825450bdcad1bba70a0ca8413a",
+      "mode": "0o664"
+    },
+    "logs/final-diff-native__huhubot__internal__adapters__inbound__hap__context_alias_test.go.txt": {
+      "sha256": "bdaeb7cf814374a09205f8b4e8ce5c00cfde52e3d8fb95a59cebdc34502dabe2",
+      "mode": "0o664"
+    },
+    "logs/final-diff-native__huhubot__internal__protocol__hap__schema_generated.json.txt": {
+      "sha256": "15a1174b961b4beb489fba632bebecb80531db14d24e24ba53e25aa497dafc5b",
+      "mode": "0o664"
+    },
+    "logs/final-diff-src__modules__huhubot__core__protocol__memory-validation.test.ts.txt": {
+      "sha256": "bfefd8c9332b2b649d6be65721b24512e64a006bf3acecfb0a97f7b1b993b3ea",
+      "mode": "0o664"
+    },
+    "source-manifest.json": {
+      "sha256": "86f71ed76297c906ab882518f92ab6ab114518f8b6de35857de5c2d0230f1076",
+      "mode": "0o664"
+    }
+  },
+  "artifactTreeSHA256": "d4fd9151fc931f2781fbe3082edc10d5a75bc99aef95b9c9afa5c443b9663639",
+  "sourceInputDrift": [],
+  "sourceWritersStopped": true,
+  "allProcessesWaited": true,
+  "activeOwnedProcesses": 0,
+  "GoWindowReturned": true
+}

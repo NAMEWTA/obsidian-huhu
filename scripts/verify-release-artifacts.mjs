@@ -9,6 +9,8 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { normalizeBuildText } from './build-text-resources.mjs';
+import { sourceTreeHash, verifyBotAssets } from './build-huhu-bot.mjs';
+import { execFileSync } from 'node:child_process';
 
 export const terminalAssets = [
 	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
@@ -91,6 +93,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
 	} else if (rest[0] === '--sums') {
 		verifyVersions(root, tag);
 		console.log(`SHA256SUMS.txt: ${writeChecksums(rest[1]).length} files`);
+	} else if (rest[0] === '--bot') {
+		verifyVersions(root, tag);
+		verifyBotAssets(rest[1], tag, { sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(), sourceTreeHash: sourceTreeHash(root) });
+		console.log(`huhu-bot release assets for ${tag} verified`);
 	} else {
 		verifyReleaseArtifacts(root, tag, rest[0]);
 		console.log('Release versions and supplied assets verified');

@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-10-25T22:34:16.033189+00:00",
+  "finishedAt": "2026-10-25T22:34:16.099768+00:00",
+  "command": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "087-engine-adapter-preparation",
+    "--stage",
+    "return"
+  ],
+  "exitCode": 0,
+  "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": "",
+  "scope": "Root-authorized read-only return structure validation only; no product build/test/Node checks",
+  "process": "waited for validator; no background child"
+}

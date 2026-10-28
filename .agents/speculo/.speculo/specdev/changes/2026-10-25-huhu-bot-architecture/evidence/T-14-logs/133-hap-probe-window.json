@@ -1,0 +1,16 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T13:01:16.663394+00:00",
+  "reviewTask": "133-memory-component-review",
+  "reviewInputSha256": "6619727eaa9258e3fd26820b22c9dc82fed23b9cc59d4748f2979022276b0c2d",
+  "existingReviewScope": "puretypedHAP and protocol/schema already included; this is execution import closure only, not new product semantics",
+  "additionalReadOnlyTestDependency": {
+    "path": "native/huhubot/internal/protocol/hap/methods_generated.go",
+    "bytes": 131820,
+    "sha256": "cbfeab29e5dad9f4eef8d17e7ead5c0abde7b6e41651bc29030681f155487049",
+    "mode": 384
+  },
+  "condition": "134 generation and output edits prohibited until133 returns. Reviewer must copy exact dependency to frozen probe and record full actual input; perform go list first, reject Core/SQL/imports outside9 pure dirs. No foundation suite or production mutation.",
+  "permitted": "actual Router fakeMemoryAPI return-shape contract probe and TS validation comparison; final defaultStore reachability must still be assessed",
+  "boundary": "does not accept currentimplemented flags as final feature availability or extend133 conclusion toCore"
+}

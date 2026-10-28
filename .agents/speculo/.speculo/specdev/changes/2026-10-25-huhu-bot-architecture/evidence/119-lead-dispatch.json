@@ -1,0 +1,16 @@
+{
+  "observer": "native:/root",
+  "task": "119-anthropic-foundation",
+  "target": "/root/foundation_go",
+  "nativeTool": "collaboration.followup_task",
+  "actualDispatch": true,
+  "nativeAckReceived": true,
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "95ad53",
+  "taskSha256": "1cf4033e186594d6528a0de7eebdacb6f92c81a67ca6a74ff652457aad0c7d37",
+  "mapRevision": 29,
+  "goalRevision": 28,
+  "predecessor115Accepted": "evidence/115-lead-return.json",
+  "goWindow": "unique119: actual fixedSDK tidy/defaultCore/117 firsttext then affectedfoundation and dependency-sensitive oldconsumer targets;117 frozen,120 noGo",
+  "repairRouting": "119 may request original117 ownfile minimalfix after actual failure; await fixed source freeze before sequential retry, no takeover/no parallelGo"
+}

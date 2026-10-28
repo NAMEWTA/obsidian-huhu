@@ -1,0 +1,15 @@
+{
+  "task": "076-recovery-client-seams",
+  "actor": "native:/root/foundation_client",
+  "checkedAt": "2026-10-25T19:12:21.969145+00:00",
+  "taskSha256": "ae677a14a51d5d3d5db2264afe11d762ecb2a3e0def055b61f2d32e875401110",
+  "dispatchExit": 0,
+  "errors": [],
+  "warnings": [],
+  "nativeFollowupSent": true,
+  "ackReceived": true,
+  "mode": "read-only preparation; no T16 activation or production write window",
+  "mapRevision": 18,
+  "goalRevision": 17,
+  "ackTaskSha256": "ae677a14a51d5d3d5db2264afe11d762ecb2a3e0def055b61f2d32e875401110"
+}

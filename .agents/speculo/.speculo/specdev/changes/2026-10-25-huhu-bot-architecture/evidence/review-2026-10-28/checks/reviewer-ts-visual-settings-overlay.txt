@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/wta/orca/workspaces/obsidian-huhu/bot
+
+----·
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  19:15:49
+   Duration  1.19s (transform 45%, environment 17%, import 17%, tests 12%, setup 10%)

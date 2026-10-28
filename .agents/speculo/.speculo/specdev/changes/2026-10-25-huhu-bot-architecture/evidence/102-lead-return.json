@@ -1,0 +1,48 @@
+{
+  "observer": "native:/root",
+  "reviewer": "native:/root/recovery_review",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullCorrectedProbeAndOriginalFailureAndNormalRaceLogsRead": true,
+  "reportSha256": "f48850d61e76a066df16d2bd6025fccb8445307cc08c4de41914630a97f30de6",
+  "manifestSha256": "3537a50e5d315b0cfc8e090080ff820a177dcbd8a5e775bacb010d5819784e6a",
+  "inputSha256": "d0f13ca8b86a1c8defdd8e93d9626556c90b426351193ee1d16e4569c6a31768",
+  "artifactsChecked": 19,
+  "artifactDrift": [],
+  "filesChecked": 2018,
+  "sourceDrift": [],
+  "modeDrift": [],
+  "writersStopped": true,
+  "allReviewerProcessesWaited": true,
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "returnExit": 0,
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "102-chat-repair-review",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.11543638902367093,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "findingDisposition": {
+    "F-098-01": "fixed with original acceptedIntent sameTx propagation and actual restart Inspector path",
+    "F-098-02": "fixed with raw UTF8 before SDK; independent decoded gzip valid/invalid/truncated and prior usage controls"
+  },
+  "limitations": "Normal session-memory CP after restart passes Inspector then current credential gate blocks; original failed probe expectation preserved. True Provider/Obsidian/target OS user-owned not-run."
+}

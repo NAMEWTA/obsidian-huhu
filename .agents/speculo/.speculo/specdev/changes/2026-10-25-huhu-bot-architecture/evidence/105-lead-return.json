@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "task": "105-anthropic-preparation",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullInterfaceMatrixRead": true,
+  "returnCommand": "validate-dispatch.mjs --task 105-anthropic-preparation --stage return",
+  "returnExit": 0,
+  "reportSha256": "b7634fa32bc9dc1ecec48dc944bbeb908f975a438394ddd2778000d64d4b644d",
+  "manifestSha256": "4cf603d3a3f3b0b31c0213b88f111af3f625c38e7340889a5fc90b5c6c77d2fd",
+  "artifactCount": 16,
+  "artifactDrift": [],
+  "checkedSourceCount": 58,
+  "sourceDriftSinceFinalCheck": [],
+  "historicalSourceChanges": [
+    "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md"
+  ],
+  "disposition": "Accepted bounded Anthropic research; no product/SDK tests executed and T10 remains ready. Map25→26 is Root-owned plan drift only. New T09 implementation is separately dispatched."
+}

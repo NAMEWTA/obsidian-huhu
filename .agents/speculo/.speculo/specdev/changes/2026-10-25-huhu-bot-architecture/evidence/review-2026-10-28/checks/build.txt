@@ -1,0 +1,7 @@
+$ tsc -noEmit -skipLibCheck && tsc -skipLibCheck -p tsconfig.test.json && node scripts/build-tailwind.mjs && node scripts/build-styles.mjs --check && node esbuild.config.mjs production
+≈ tailwindcss v4.1.13
+
+(node:2806479) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Done in 359ms
+styles.css matches 26 ordered author sources (1427325 bytes)

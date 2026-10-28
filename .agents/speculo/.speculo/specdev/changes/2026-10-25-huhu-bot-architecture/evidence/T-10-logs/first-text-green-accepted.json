@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "stage": "first Anthropic default text code green",
+  "authorTask": "119-anthropic-foundation",
+  "testOwner": "117-engine-anthropic",
+  "fullTestReadToolChunk": "7c3437",
+  "resultAndRawLogReadToolChunk": "946a6b",
+  "actualExit": 0,
+  "actualWaitSeconds": 8.199738797999998,
+  "inputSha256": "2553da190f92a3df5d971e7fa3bf55a2d76bd90277d3e816b4242594b5274bd4",
+  "verifiedCurrentInputFiles": 336,
+  "testUnchangedFromInitialBehaviorRed": true,
+  "observed": "defaultCore publicAPI→actual Anthropic SDK loopback physicalPOST1, literal system/intent, durable history, known9+4 usage; original ADAPTER_NOT_ASSEMBLED red now green",
+  "boundary": "first text only; mixedblocks/tools/CP/faults/lifecycle/RootCLI E2E/new independentreview still pending; realProvider/Obsidian/OS not run"
+}
