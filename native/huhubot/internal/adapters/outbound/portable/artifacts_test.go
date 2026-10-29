@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	contract "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile"
 )
 
 func TestArtifactStoreRoundTripIsOpaqueAndPrivate(t *testing.T) {
@@ -30,12 +31,8 @@ func TestArtifactStoreRoundTripIsOpaqueAndPrivate(t *testing.T) {
 	if got.PackageHash != pkg.PackageHash || got.SourceProfile != pkg.SourceProfile {
 		t.Fatalf("round trip mismatch: got=%+v want=%+v", got, pkg)
 	}
-	info, err := os.Stat(filepath.Join(root, artifactDirectory))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if info.Mode().Perm()&0077 != 0 {
-		t.Fatalf("artifact directory is too broad: %o", info.Mode().Perm())
+	if err := profile.PermissionsArePrivate(filepath.Join(root, filepath.FromSlash(artifactDirectory))); err != nil {
+		t.Fatalf("artifact directory is not private: %v", err)
 	}
 	if _, err := store.Get(context.Background(), contract.ArtifactRef{ArtifactID: "../profile.db"}); err == nil {
 		t.Fatal("path traversal artifact id accepted")

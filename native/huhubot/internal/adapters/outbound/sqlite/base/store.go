@@ -212,9 +212,13 @@ func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
 	if err = work(tx); err != nil {
 		return err
 	}
-	err = tx.Commit()
-	if ctx.Err() != nil {
-		return ctx.Err()
+	// A commit that returned nil is durable. Preferring ctx.Err() here reported
+	// success as CATALOG_UNAVAILABLE when the caller deadline elapsed during commit.
+	if err = tx.Commit(); err != nil {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+		return err
 	}
-	return err
+	return nil
 }

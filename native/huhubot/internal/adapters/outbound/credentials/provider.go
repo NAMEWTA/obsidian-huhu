@@ -15,6 +15,11 @@ const MaxInFlight = 8
 const RequestTimeout = 3 * time.Second
 const defaultWorkerTimeout = 2500 * time.Millisecond
 
+// catalogSettleTimeout bounds the post-OS catalog write. It stays inside the
+// worker budget, and is long enough that CI scheduling does not turn a
+// definitive OS denial into CATALOG_UNAVAILABLE.
+const catalogSettleTimeout = 2 * time.Second
+
 // Options binds the provider to the existing Profile catalog and current binary.
 // Executable, when supplied, must identify this running executable, never PATH.
 type Options struct {
@@ -308,7 +313,7 @@ func (r *registration) Register(ctx context.Context, profile, ref, mode string, 
 		return failure(mode, faultReason(err)), api.Denied(faultReason(err))
 	}
 	s, err := r.provider.Put(ctx, profile, ref, mode, secret)
-	cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), 200*time.Millisecond)
+	cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), catalogSettleTimeout)
 	defer cancel()
 	if e := r.catalog.Update(cleanup, profile, ref, s); e != nil {
 		return status(mode, "unknown", "CATALOG_UNAVAILABLE"), api.Denied("CATALOG_UNAVAILABLE")
@@ -333,7 +338,7 @@ func (r *registration) Delete(ctx context.Context, profile, ref string) (api.Cre
 		return failure("none", "PROFILE_MISMATCH"), api.Denied("PROFILE_MISMATCH")
 	}
 	s, err := r.provider.Delete(context.WithValue(ctx, deleteModeKey{}, m.Status.Mode), profile, ref)
-	cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), 200*time.Millisecond)
+	cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), catalogSettleTimeout)
 	defer cancel()
 	if e := r.catalog.FinishDelete(cleanup, profile, ref, s); e != nil {
 		return status(m.Status.Mode, "unknown", "CATALOG_UNAVAILABLE"), api.Denied("CATALOG_UNAVAILABLE")

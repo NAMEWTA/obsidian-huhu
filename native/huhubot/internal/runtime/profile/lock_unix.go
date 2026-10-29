@@ -3,12 +3,10 @@
 package profile
 
 import (
-	"errors"
-	"fmt"
-	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
-	"golang.org/x/sys/unix"
 	"os"
 	"syscall"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 )
 
 func verifyPrivate(_ string, info os.FileInfo, _ bool) error {
@@ -21,17 +19,11 @@ func verifyPrivate(_ string, info os.FileInfo, _ bool) error {
 	}
 	return nil
 }
-func lockDatabase(f *os.File) (func() error, error) {
-	if err := unix.Flock(int(f.Fd()), unix.LOCK_EX|unix.LOCK_NB); err != nil {
-		if errors.Is(err, unix.EWOULDBLOCK) || errors.Is(err, unix.EAGAIN) {
-			return nil, &api.Fault{Kind: "INSTANCE_CONFLICT", Reason: "PROFILE_ALREADY_OPEN"}
-		}
-		return nil, fmt.Errorf("profile instance lock unavailable")
-	}
-	return func() error { return unix.Flock(int(f.Fd()), unix.LOCK_UN) }, nil
-}
-
 func protectNew(string, bool) error { return nil }
+
+// A Unix mode of 0777 is not claimable. Tightening it would hide a directory
+// this process did not create as private storage.
+func claimable(string) bool { return false }
 
 func verifySingleLink(f *os.File) error {
 	info, err := f.Stat()

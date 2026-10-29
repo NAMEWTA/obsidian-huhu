@@ -21,7 +21,8 @@ function dom(frameId: string, label: string, backend: number) {
 }
 
 /** Replaces only Chromium/native wire I/O; the production driver, registry and NativeCdp all run. */
-async function fixture() {
+async function fixture(options?: { remoteTargetId?: string }) {
+	const remoteTargetId = options?.remoteTargetId ?? 'remote';
 	let socket: Socket | undefined, failFrame = '', localPresent = true, transparentParent = false, password = false, closedShadow = false, onAX: (() => Promise<void>) | undefined, onViewport: (() => Promise<void>) | undefined;
 	let nested = false, frameFocused = true;
 	let onFrameFocus: (() => Promise<void>) | undefined;
@@ -53,7 +54,7 @@ async function fixture() {
 						result = { targetId: 'target' };
 					}
 					if (method === 'Page.getFrameTree') result = { frameTree: { frame: { id: sessionId?.startsWith('remote-session') ? 'remote' : 'main', url: 'https://fixture.invalid' }, ...(sessionId === 'main-session' ? { childFrames: [...(localPresent ? [{ frame: { id: 'local', parentId: 'main' }, ...(nested ? { childFrames: [{ frame: { id: 'inner', parentId: 'local' } }] } : {}) }] : []), { frame: { id: 'remote', parentId: 'main' } }] } : {}) } };
-					if (method === 'Runtime.runIfWaitingForDebugger' && sessionId === 'main-session') event('Target.attachedToTarget', { sessionId: 'remote-session', targetInfo: { targetId: 'remote', type: 'iframe' } }, 'main-session');
+					if (method === 'Runtime.runIfWaitingForDebugger' && sessionId === 'main-session') event('Target.attachedToTarget', { sessionId: 'remote-session', targetInfo: { targetId: remoteTargetId, type: 'iframe' } }, 'main-session');
 					if (method === 'Runtime.runIfWaitingForDebugger' && sessionId?.startsWith('remote-session')) remoteReady.resolve();
 					if (method === 'DOMSnapshot.captureSnapshot') {
 						const samples = sessionId?.startsWith('remote-session') ? [dom('remote', 'Remote button', 42)] : [dom('main', 'Main button', 42), ...(localPresent ? [dom('local', 'Local button', 52), ...(nested ? [dom('inner', 'Inner button', 62)] : [])] : [])];
@@ -139,6 +140,15 @@ it('observes each same-process and cross-process frame with explicit coverage an
 	expect(observed.nodes.map(node => [node.frameId, node.name, node.visible, node.bounds])).toEqual(['main', 'local', 'remote'].map(frame => [frame, `${frame[0]!.toUpperCase()}${frame.slice(1)} button`, true, { x: 10, y: 20, width: 120, height: 30 }]));
 	expect(calls.filter(call => call.method === 'Accessibility.getFullAXTree').map(call => [call.params.frameId, call.sessionId])).toEqual([['main', 'main-session'], ['local', 'main-session'], ['remote', 'remote-session']]);
 	expect(calls.some(call => /^(Input\.|DOM\.set|Page\.navigate)/.test(call.method))).toBe(false);
+});
+
+it('keeps OOPIF coverage on the page frame id when the target id differs', async () => {
+	const { driver, lease, calls } = await fixture({ remoteTargetId: 'oopif-target' });
+	const observed = await driver.observe('page', lease);
+	expect(observed.frameErrors).toEqual([]);
+	expect(observed.coverage.map(frame => [frame.frameId, frame.status, frame.nodes])).toEqual([['main', 'complete', 1], ['local', 'complete', 1], ['remote', 'complete', 1]]);
+	expect(observed.coverage.some(frame => frame.frameId === 'oopif-target')).toBe(false);
+	expect(calls.filter(call => call.method === 'Accessibility.getFullAXTree' && call.params.frameId === 'remote').map(call => call.sessionId)).toEqual(['remote-session']);
 });
 
 it('reports a failed child frame while retaining other frame observations and scoped budgets', async () => {

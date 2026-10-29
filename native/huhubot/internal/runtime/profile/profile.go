@@ -52,14 +52,8 @@ func within(root, path string) bool {
 	return err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) && !filepath.IsAbs(rel)
 }
 func privateDir(path string) error {
-	_, before := os.Stat(path)
 	if err := os.MkdirAll(path, 0700); err != nil {
 		return err
-	}
-	if os.IsNotExist(before) {
-		if err := protectNew(path, true); err != nil {
-			return err
-		}
 	}
 	info, err := os.Stat(path)
 	if err != nil {
@@ -68,7 +62,44 @@ func privateDir(path string) error {
 	if !info.IsDir() {
 		return fmt.Errorf("profile root is not a directory")
 	}
-	return verifyPrivate(path, info, true)
+	return ensurePrivate(path, info, true)
+}
+
+// PermissionsArePrivate reports whether path is already private to this user.
+func PermissionsArePrivate(path string) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	return verifyPrivate(path, info, info.IsDir())
+}
+
+// EnsurePrivate repairs a directory or file this process is allowed to claim,
+// then checks the same privacy rule as profile acquisition.
+func EnsurePrivate(path string) error {
+	info, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	return ensurePrivate(path, info, info.IsDir())
+}
+
+func ensurePrivate(path string, info os.FileInfo, isDir bool) error {
+	err := verifyPrivate(path, info, isDir)
+	if err == nil {
+		return nil
+	}
+	if !claimable(path) {
+		return err
+	}
+	if err = protectNew(path, isDir); err != nil {
+		return err
+	}
+	info, err = os.Stat(path)
+	if err != nil {
+		return err
+	}
+	return verifyPrivate(path, info, isDir)
 }
 
 // Acquire accepts only a locator under an independently constructed managed root.
@@ -101,7 +132,7 @@ func Acquire(root, locator string) (*Handle, error) {
 		if e != nil {
 			return nil, e
 		}
-		if e = verifyPrivate(p, info, true); e != nil {
+		if e = ensurePrivate(p, info, true); e != nil {
 			return nil, e
 		}
 	}
@@ -124,7 +155,7 @@ func Acquire(root, locator string) (*Handle, error) {
 	if !info.Mode().IsRegular() {
 		return nil, api.Invalid("PROFILE_DB_NOT_REGULAR")
 	}
-	if err = verifyPrivate(name, info, false); err != nil {
+	if err = ensurePrivate(name, info, false); err != nil {
 		return nil, err
 	}
 	realDB, err := filepath.EvalSymlinks(name)

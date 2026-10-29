@@ -335,6 +335,9 @@ export class BrowserDriver {
 			this.pages.set(id, page);
 			this.targets.set(target, id);
 			this.sessions.set(session, id);
+			// A provisional popup has no page agent until the debugger releases it.
+			// Page.enable otherwise waits forever, so the target never reaches its URL.
+			if (!string(info.url)) await this.cdp.command('Runtime.runIfWaitingForDebugger', {}, session);
 			await this.bootstrap(page, session);
 			this.pageEvent(page);
 		} else if (type === 'iframe') {
@@ -342,11 +345,13 @@ export class BrowserDriver {
 			if (!id || !parent) throw new AgentBrowserError('browser_frame_owner_missing');
 			const page = this.page(id);
 			if (page.frames.size >= 64) throw new AgentBrowserError('browser_frame_quota');
-			page.frames.set(target, session);
-			page.frameDocuments.set(target, randomUUID());
 			this.sessions.set(session, id);
-			this.parents.set(session, { session: parent, frame: target });
-			await this.bootstrap(page, session);
+			// Mark ownership before bootstrap. The CDP target id is not the page frame id;
+			// recording it made cross-process frames fail DOM lookup.
+			this.parents.set(session, { session: parent, frame: '' });
+			const rootFrameId = await this.bootstrap(page, session);
+			if (!rootFrameId) throw new AgentBrowserError('browser_frame_owner_missing');
+			this.parents.set(session, { session: parent, frame: rootFrameId });
 		} else {
 			await this.cdp
 				.command(
@@ -358,7 +363,7 @@ export class BrowserDriver {
 			await this.cdp.command('Runtime.runIfWaitingForDebugger', {}, session).catch(() => undefined);
 		}
 	}
-	private async bootstrap(page: Page, session: string): Promise<void> {
+	private async bootstrap(page: Page, session: string): Promise<string> {
 		for (const method of ['Page.enable', 'Runtime.enable', 'DOM.enable', 'Network.enable'])
 			await this.cdp.command(method, {}, session);
 		await this.cdp.command(
@@ -384,22 +389,43 @@ export class BrowserDriver {
 				{ width: page.width, height: page.height, deviceScaleFactor: page.zoom, mobile: false },
 				session,
 			);
+		const child = session !== page.session && this.parents.has(session);
 		const tree = object(await this.cdp.command('Page.getFrameTree', {}, session));
-		if (session === page.session) page.mainFrameId = string(object(object(tree.frameTree).frame).id);
-		const track = (value: unknown) => {
+		const rootId = string(object(object(tree.frameTree).frame).id);
+		const owned = session === page.session || this.parents.has(session);
+		if (session === page.session && rootId) page.mainFrameId = rootId;
+		const track = (value: unknown, isRoot: boolean) => {
 			const item = object(value),
 				frame = object(item.frame);
 			if (typeof frame.id === 'string') {
+				// An OOPIF session owns its root frame even when the parent already
+				// recorded that page frame id. Nested frames stay with whoever registered them.
 				if (!page.frames.has(frame.id)) {
 					if (page.frames.size >= 64) throw new AgentBrowserError('browser_frame_quota');
 					page.frames.set(frame.id, session);
-				}
+				} else if (isRoot && owned) page.frames.set(frame.id, session);
 				if (!page.frameDocuments.has(frame.id)) page.frameDocuments.set(frame.id, randomUUID());
 			}
-			if (Array.isArray(item.childFrames)) item.childFrames.forEach(track);
+			if (Array.isArray(item.childFrames)) item.childFrames.forEach(child => track(child, false));
 		};
-		track(tree.frameTree);
+		track(tree.frameTree, true);
 		await this.cdp.command('Runtime.runIfWaitingForDebugger', {}, session);
+		if (!child) return rootId;
+		// While paused, Chrome reports the OOPIF target id as the frame id.
+		// After release, the session's root is the real page frame.
+		const live = object(await this.cdp.command('Page.getFrameTree', {}, session));
+		const liveId = string(object(object(live.frameTree).frame).id);
+		if (!liveId || liveId === rootId) return rootId;
+		if (page.frames.get(rootId) === session) {
+			page.frames.delete(rootId);
+			page.frameDocuments.delete(rootId);
+		}
+		if (!page.frames.has(liveId)) {
+			if (page.frames.size >= 64) throw new AgentBrowserError('browser_frame_quota');
+		}
+		page.frames.set(liveId, session);
+		if (!page.frameDocuments.has(liveId)) page.frameDocuments.set(liveId, randomUUID());
+		return liveId;
 	}
 	private forget(id: string): void {
 		const row = this.requests.get(id);
@@ -678,10 +704,14 @@ export class BrowserDriver {
 				const frame = object(p.frame),
 					frameId = string(frame.id),
 					loader = string(frame.loaderId);
-				page.frames.set(frameId, session!);
-				page.frameDocuments.set(frameId, randomUUID());
-				page.loaders.set(frameId, { loader, documentId: page.documentId });
-				if (session === page.session && !frame.parentId) { page.mainFrameId = frameId; page.url = string(frame.url); }
+				const current = page.frames.get(frameId);
+				const childOwns = Boolean(current && this.parents.has(current) && current !== session);
+				if (!childOwns) {
+					page.frames.set(frameId, session!);
+					page.frameDocuments.set(frameId, randomUUID());
+					page.loaders.set(frameId, { loader, documentId: page.documentId });
+					if (session === page.session && !frame.parentId) { page.mainFrameId = frameId; page.url = string(frame.url); }
+				}
 				this.pageEvent(page);
 				for (const row of this.auth.values())
 					if (row.page === page && row.frame === frameId && row.loader && row.loader === loader) {
@@ -1742,20 +1772,43 @@ export class BrowserDriver {
 				input.y > page.height
 			)
 				throw new AgentBrowserError('browser_invalid_coordinates');
-			if (input.kind === 'click')
-				for (const type of ['mousePressed', 'mouseReleased'])
-					frames.push({
-						method: 'Input.dispatchMouseEvent',
-						params: {
-							type,
-							x: input.x,
-							y: input.y,
-							button: input.button ?? 'left',
-							clickCount: input.clickCount ?? 1,
-							modifiers: 0,
-						},
-						sessionId,
-					});
+			if (input.kind === 'click') {
+				const button = input.button ?? 'left';
+				const mask = button === 'right' ? 2 : button === 'middle' ? 4 : 1;
+				// Headless Chrome treats a press with buttons=0 as no user gesture, so
+				// target=_blank never opens. Move, then press with the button mask.
+				frames.push({
+					method: 'Input.dispatchMouseEvent',
+					params: { type: 'mouseMoved', x: input.x, y: input.y, button: 'none', buttons: 0, modifiers: 0 },
+					sessionId,
+				});
+				frames.push({
+					method: 'Input.dispatchMouseEvent',
+					params: {
+						type: 'mousePressed',
+						x: input.x,
+						y: input.y,
+						button,
+						buttons: mask,
+						clickCount: input.clickCount ?? 1,
+						modifiers: 0,
+					},
+					sessionId,
+				});
+				frames.push({
+					method: 'Input.dispatchMouseEvent',
+					params: {
+						type: 'mouseReleased',
+						x: input.x,
+						y: input.y,
+						button,
+						buttons: 0,
+						clickCount: input.clickCount ?? 1,
+						modifiers: 0,
+					},
+					sessionId,
+				});
+			}
 			else
 				frames.push({
 					method: 'Input.dispatchMouseEvent',
@@ -1806,7 +1859,13 @@ export class BrowserDriver {
 				});
 		}
 		if (input.kind === 'scroll') { page.viewportVersion++; page.publishedViewports.clear(); this.observations.clear(); this.pageEvent(page); }
+		if (input.kind === 'click')
+			await this.cdp.command('Target.activateTarget', { targetId: page.target }, undefined, authority);
 		await this.cdp.gesture(frames, authority);
+		// The CDP ack can arrive before the renderer applies the click. Hold this
+		// Page's visual section so the next read observes the click, and so an
+		// idle screencast capture cannot discard it.
+		if (input.kind === 'click') await delay(50);
 		this.authority(authority);
 	}
 	private async compositionCommand(row: Composition, method: string, params: Record<string, unknown>, authority?: ControlLease): Promise<void> {

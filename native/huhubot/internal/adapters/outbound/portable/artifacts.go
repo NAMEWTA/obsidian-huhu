@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 	contract "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile"
 )
 
 const (
@@ -168,20 +170,29 @@ func (s *ArtifactStore) openRoot(create bool) (*os.Root, error) {
 		return nil, err
 	}
 	defer root.Close()
-	for _, name := range []string{"portable", artifactDirectory} {
-		info, err = root.Lstat(name)
+	abs := s.profile
+	rel := ""
+	for _, name := range strings.Split(artifactDirectory, "/") {
+		rel = path.Join(rel, name)
+		abs = filepath.Join(abs, name)
+		info, err = root.Lstat(rel)
 		if os.IsNotExist(err) && create {
-			err = root.Mkdir(name, 0700)
+			err = root.Mkdir(rel, 0700)
 			if err != nil && !os.IsExist(err) {
 				return nil, err
 			}
-			info, err = root.Lstat(name)
+			info, err = root.Lstat(rel)
 		}
 		if err != nil {
 			return nil, err
 		}
 		if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
 			return nil, errors.New("portable: managed directory invalid")
+		}
+		// Windows reports directory mode 0777. Privacy is the owner and DACL,
+		// applied before any artifact file is created so inheritance sticks.
+		if err = profile.EnsurePrivate(abs); err != nil {
+			return nil, err
 		}
 	}
 	return root.OpenRoot(artifactDirectory)

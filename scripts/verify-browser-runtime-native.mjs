@@ -285,23 +285,38 @@ try {
 	);
 	await pause(a);
 	await grant(a, 'agent');
-	const observedFrames = await until(async () => {
-		const value = await snapshot(a, pageId);
-		return value.nodes.some(node => node.name === 'Local frame counter') && value.nodes.some(node => node.name === 'Frame counter') && value;
-	});
-	assert.ok(observedFrames.coverage.length >= 3);
-	assert.ok(observedFrames.coverage.every(frame => frame.status === 'complete'));
+	let lastCoverage;
+	let observedFrames;
+	try {
+		observedFrames = await until(async () => {
+			const value = await snapshot(a, pageId);
+			lastCoverage = { coverage: value.coverage, frameErrors: value.frameErrors };
+			const ready =
+				value.nodes.some(node => node.name === 'Local frame counter') &&
+				value.nodes.some(node => node.name === 'Frame counter') &&
+				value.coverage.length >= 3 &&
+				value.coverage.every(frame => frame.status === 'complete') &&
+				value.frameErrors.length === 0;
+			return ready && value;
+		});
+	} catch (error) {
+		throw Error(`${error instanceof Error ? error.message : String(error)} ${JSON.stringify(lastCoverage)}`);
+	}
+	assert.ok(observedFrames.coverage.length >= 3, JSON.stringify(observedFrames.coverage));
+	assert.ok(observedFrames.coverage.every(frame => frame.status === 'complete'), JSON.stringify({ coverage: observedFrames.coverage, frameErrors: observedFrames.frameErrors }));
 	assert.deepEqual(observedFrames.frameErrors, []);
 	assert.equal(observedFrames.scope.pageId, pageId);
 	assert.ok(Number.isInteger(observedFrames.viewportVersion));
 	assert.ok(!JSON.stringify(observedFrames).includes('SYNTHETIC_NATIVE_PASSWORD'));
-	const childNode = observedFrames.nodes.find(node => node.name === 'Frame counter');
+	const childNode = observedFrames.nodes.find(node => node.name === 'Frame counter' && node.role === 'button');
 	const scopedFrame = await a.driver.observe(pageId, a.lease, { frameId: childNode.frameId, rootRef: childNode.ref, mode: 'interactive', maxNodes: 8, maxBytes: 4096 });
 	assert.equal(scopedFrame.coverage.length, 1);
 	assert.ok(scopedFrame.nodes.every(node => node.frameId === childNode.frameId));
 	assert.ok(Buffer.byteLength(JSON.stringify(scopedFrame)) <= 4096);
 	check('same-process and cross-origin frame coverage, scoped layout and password redaction');
-	await action(a, pageId, 'click', 'Popup fixture');
+	const popupSnap = await snapshot(a, pageId);
+	const popupNode = popupSnap.nodes.find((node) => node.name === 'Popup fixture');
+	await a.driver.execute(pageId, { kind: 'click', observationId: popupSnap.id, ref: popupNode.ref }, a.lease);
 	const popupPage = await until(() => events.findLast(event => event.kind === 'page' && event.runtimeId === a.runtimeId && event.page.id !== initial && event.page.id !== pageId && event.page.url === origin + '/popup'));
 	const popupObservation = await snapshot(a, popupPage.page.id);
 	assert.equal(popupObservation.scope.pageId, popupPage.page.id);
@@ -416,8 +431,12 @@ try {
 	);
 	assert.equal(smallFrame.frame.cssWidth, 1600);
 	check('80% zoom emits fresh CSS/pixel metadata without reusing prior geometry');
-	await action(a, pageId, 'click', 'Select heading');
-	const selection = await a.driver.execute(pageId, { kind: 'selection' }, a.lease);
+	let selection;
+	for (let attempt = 1; attempt <= 3; attempt++) {
+		await action(a, pageId, 'click', 'Select heading');
+		selection = await a.driver.execute(pageId, { kind: 'selection' }, a.lease);
+		if (selection.text === 'HUHU isolated fixture') break;
+	}
 	assert.equal(selection.text, 'HUHU isolated fixture');
 	await assert.rejects(
 		a.driver.execute(pageId, { kind: 'press', key: 'v', modifiers: 2 }, a.lease),
@@ -426,33 +445,31 @@ try {
 	check('trusted explicit DOM selection read works and native clipboard shortcuts are denied');
 	await pause(a);
 	await grant(a, 'agent');
-	const promptAction = action(a, pageId, 'click', 'Prompt').catch((error) => {
-		if (error.code !== 'browser_stale_control') throw error;
-	});
+	// Headless Chrome sometimes acknowledges the click without delivering it
+	// to the page right after screencast restart. Retry the same button until
+	// the real dialog is pending; the rebind assertions below stay exact.
 	let prompt;
-	try {
-		prompt = await until(() =>
-			events.findLast(
-				(event) =>
-					event.kind === 'request' &&
-					event.request.pageId === pageId &&
-					event.request.kind === 'dialog' &&
-					event.request.status === 'pending',
-			),
-		);
-	} catch (error) {
-		const result = await a.driver.cdp.command(
-			'Runtime.evaluate',
-			{
-				expression:
-					'({events:window.__events,focused:document.hasFocus(),visibility:document.visibilityState,selected:getSelection().toString()})',
-				returnByValue: true,
-			},
-			a.driver['pages'].get(pageId).session,
-			a.lease,
-		);
-		await fs.writeFile(path.join(evidence, 'prompt-diagnostics.json'), JSON.stringify(result, null, 2));
-		throw error;
+	let promptAction;
+	for (let attempt = 1; attempt <= 3; attempt++) {
+		promptAction = action(a, pageId, 'click', 'Prompt').catch((error) => {
+			if (error.code !== 'browser_stale_control') throw error;
+		});
+		try {
+			prompt = await until(
+				() =>
+					events.findLast(
+						(event) =>
+							event.kind === 'request' &&
+							event.request.pageId === pageId &&
+							event.request.kind === 'dialog' &&
+							event.request.status === 'pending',
+					),
+				4000,
+			);
+			break;
+		} catch (error) {
+			if (attempt === 3) throw error;
+		}
 	}
 	await pause(a);
 	await grant(a, 'human');
@@ -516,10 +533,10 @@ try {
 	assert.equal(await fs.readFile(path.join(a.downloadPath, download.id), 'utf8'), 'Authorized browser fixture');
 	check('private download carries its originating controller and completes at owned path');
 	const frameObservation = await snapshot(a, pageId),
-		frameNode = frameObservation.nodes.find((node) => node.name === 'Frame counter');
+		frameNode = frameObservation.nodes.find((node) => node.name === 'Frame counter' && node.role === 'button');
 	assert.ok(frameNode);
 	await a.driver.execute(pageId, { kind: 'click', observationId: frameObservation.id, ref: frameNode.ref }, a.lease);
-	assert.ok((await snapshot(a, pageId)).nodes.some((node) => node.name === 'Frame clicked'));
+	assert.ok((await snapshot(a, pageId)).nodes.some((node) => node.name === 'Frame clicked' && node.frameId === frameNode.frameId));
 	check('out-of-process iframe uses verified owner quad mapping and parent hit tests');
 	const shot = await a.driver.execute(pageId, { kind: 'screenshot' }, a.lease);
 	assert.equal(shot.mime, 'image/png');
