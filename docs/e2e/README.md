@@ -231,7 +231,9 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 这台机器不能验证的项：Windows ConPTY 的真实界面、macOS 伪终端、系统输入法在终端里的组字、已安装的 CLI 智能体（这次没有配置 Codex / Claude 等可执行文件）、以及从 GitHub 下载已发布辅助程序。那些仍要在对应系统上看。CI 里没有 Obsidian。
 
-合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。那是锚点清理没能在时限内确认“没有用户进程”，于是拒绝把结果写成 `program-rejected` / `none`。后来不再走这条确认：文件不存在时 `CreateProcess` 在进程出现前就失败，系统错误号 2、3、123、161、193、206、267 直接记为 `program-rejected` / `none`。手写的 `CreateProcess` 让 `cmd.exe` 停在控制台连接里，2 秒内没有任何帧；只去掉继承光标、把启动标志改成 0、加大管道，仍然如此。载荷改回由 portable-pty 创建：它先解析可执行文件的完整路径，再作为 `lpApplicationName` 交给 `CreateProcess`。会话作业仍在进程出现后加入。同一个会话号仍要跑起来并得到退出码 7。断言不放宽。这次点测没有因此重跑。
+合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。那是锚点清理没能在时限内确认“没有用户进程”，于是拒绝把结果写成 `program-rejected` / `none`。后来不再走这条确认：文件不存在时 `CreateProcess` 在进程出现前就失败，系统错误号 2、3、123、161、193、206、267 直接记为 `program-rejected` / `none`。已经存在的 `cmd.exe` 则停在 `CreateProcess` 里，2 秒内没有任何帧。手写创建、去掉继承光标、启动标志改为 0、加大管道，以及改由 portable-pty 创建，都是这样：辅助程序是控制台子系统，`cargo test` 把它附着在测试进程的控制台上，伪控制台客户会卡在这把锁上。缺失程序在拿到锁之前就失败，所以分类已经是对的。辅助程序现在一启动就 `FreeConsole`。标准输入输出当时已经是管道，脱离控制台不会关掉它们；`windowsHide` 启动时本来就没有控制台，这次调用失败后继续。载荷仍由 portable-pty 解析完整路径并作为 `lpApplicationName` 创建，会话作业仍在进程出现后加入。同一个会话号仍要得到退出码 7。断言不放宽。这次点测没有因此重跑。
+
+macOS 上这份夹具的临时目录超过 50 字节，`XDG_RUNTIME_DIR` 被忽略，显式定位器就被看成在私有根外面（`SCOPE_MISMATCH`，退出码 3）。夹具改到不超过这个上限的目录。定位器文件不存在时仍是连接失败；文件在、但调用方路径经过目录符号链接（macOS 的 `/tmp` 指向 `/private/tmp`，`/var` 指向 `/private/var`）时，按规范化后的路径确认它仍在私有根里。
 
 `dev` 相对 `main` 的差异超过 3000 个文件。GitHub 对带路径过滤的工作流只检查差异里的前 3000 个路径，终端、Bot、浏览器和批注的过滤路径都在这之后，所以这些工作流在合入后的提交上没有启动。`dev` 的推送现在不带路径过滤，每次推送都会跑这些检查。
 

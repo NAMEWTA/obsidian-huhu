@@ -13,11 +13,30 @@ import { EventClient } from './event-client';
 const repository = fileURLToPath(new URL('../../../../../', import.meta.url));
 const timers = { after: (ms: number, run: () => void) => { const timer = setTimeout(run, ms); return () => clearTimeout(timer); } };
 let root: string, binary: string;
+function goFailureText(error: unknown) {
+	const stderr = typeof error === 'object' && error !== null && 'stderr' in error ? String((error as { stderr?: unknown }).stderr ?? '') : '';
+	const message = error instanceof Error ? error.message : String(error);
+	return `${stderr}\n${message}`;
+}
+async function buildHuhubot(output: string) {
+	const options = { cwd: join(repository, 'native/huhubot'), env: { ...process.env, GOTOOLCHAIN: 'go1.26.10', CGO_ENABLED: '0' }, timeout: 120000 };
+	let last: unknown;
+	for (let attempt = 1; attempt <= 4; attempt++) {
+		try {
+			await promisify(execFile)('go', ['build', '-o', output, './cmd/huhubot'], options);
+			return;
+		} catch (error) {
+			last = error;
+			if (!/INTERNAL_ERROR|proxy\.golang\.org|connection reset|ECONNRESET|ETIMEDOUT|TLS handshake|i\/o timeout|temporary error|502|503|504/.test(goFailureText(error)) || attempt === 4) throw error;
+			await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+		}
+	}
+	throw last;
+}
 beforeAll(async () => {
 	root = await mkdtemp(join(tmpdir(), 'huhu-events-runner-'));
 	binary = join(root, process.platform === 'win32' ? 'huhubot.exe' : 'huhubot');
-	await promisify(execFile)('go', ['build', '-o', binary, './cmd/huhubot'], { cwd: join(repository, 'native/huhubot'),
-		env: { ...process.env, GOTOOLCHAIN: 'go1.26.10', CGO_ENABLED: '0' }, timeout: 120000 });
+	await buildHuhubot(binary);
 }, 130000);
 afterAll(async () => { await rm(root, { recursive: true, force: true }); });
 async function options(): Promise<ManagedRunnerOptions> {
