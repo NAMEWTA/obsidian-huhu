@@ -65,8 +65,8 @@ mod tests {
     }
 }
 /// Windows command line for one payload. Rust's `Command` always sets
-/// `STARTF_USESTDHANDLES`. The helper creates the process itself, with the
-/// pseudoconsole attribute and the session job, instead of inheriting a console.
+/// `STARTF_USESTDHANDLES`. The helper creates the process itself with the
+/// pseudoconsole attribute, then places that process in the session job.
 #[cfg(any(windows, test))]
 pub(crate) fn windows_command_line(file: &str, args: &[String]) -> Vec<u16> {
     let mut out = Vec::new();
@@ -215,7 +215,7 @@ mod platform {
     use windows_sys::Win32::{
         Foundation::*,
         Security::{Authorization::*, *},
-        System::{JobObjects::IsProcessInJob, Memory::*, Threading::*},
+        System::{Memory::*, Threading::*},
     };
     const SIZE: usize = 256 * 1024;
     const REQUEST: usize = 1024;
@@ -410,8 +410,9 @@ mod platform {
             ));
         }
         // The pseudoconsole handle cannot be duplicated: DuplicateHandle returns
-        // ERROR_INVALID_HANDLE. This process owns it and is not a console client,
-        // so CreateProcess here does not deadlock the way it does from an attached one.
+        // ERROR_INVALID_HANDLE. This process owns it and is not a console client.
+        // The session job is applied after CreateProcess. Putting it in
+        // PROC_THREAD_ATTRIBUTE_JOB_LIST kept a real console program inside CreateProcess.
         let hpcon = console
             .raw()
             .map_err(|error| SpawnFailure::before_spawn("pty-unavailable", error))?;
@@ -422,12 +423,11 @@ mod platform {
             .as_ref()
             .filter(|cwd| !cwd.is_empty())
             .map(|cwd| wide(cwd));
-        let created = match create_in_job(
+        let created = match create_payload(
             &mut command_line,
             environment.as_deref(),
             directory.as_deref(),
             hpcon as HANDLE,
-            job.as_raw(),
         ) {
             Ok(created) => created,
             Err(error) => {
@@ -442,16 +442,19 @@ mod platform {
             }
         };
         let handle = Handle(created.process);
-        let mut belongs = 0;
-        if unsafe { IsProcessInJob(handle.0, job.as_raw(), &mut belongs) } == 0 || belongs == 0 {
-            unsafe {
-                TerminateProcess(handle.0, 1);
+        if let Err(error) = job.assign(handle.0) {
+            // A process that has already exited cannot join the job. Its handle
+            // still carries the exit code, and nothing remains to leak.
+            if !process_has_exited(handle.0) {
+                unsafe {
+                    TerminateProcess(handle.0, 1);
+                }
+                return Err(SpawnFailure {
+                    code: "pty-unavailable",
+                    effect: "unknown",
+                    message: format!("Payload was not assigned to the session job: {error}"),
+                });
             }
-            return Err(SpawnFailure {
-                code: "pty-unavailable",
-                effect: "unknown",
-                message: "Payload was not assigned to the session job".into(),
-            });
         }
         if unsafe { GetProcessId(handle.0) } != created.pid {
             unsafe {
@@ -473,24 +476,22 @@ mod platform {
         // CreateProcess reports these before a process exists. The effect is none.
         matches!(error.raw_os_error(), Some(2 | 3 | 123 | 161 | 193 | 206 | 267))
     }
-    fn create_in_job(
+    fn process_has_exited(handle: HANDLE) -> bool {
+        let mut code = 0;
+        let ok = unsafe { GetExitCodeProcess(handle, &mut code) };
+        ok != 0 && code != 259
+    }
+    fn create_payload(
         command_line: &mut [u16],
         environment: Option<&[u16]>,
         directory: Option<&[u16]>,
         console: HANDLE,
-        job: HANDLE,
     ) -> io::Result<Created> {
-        let mut attributes = AttributeList::new(2)?;
+        let mut attributes = AttributeList::new(1)?;
         attributes.set(
             PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
             console as *const _,
             mem::size_of::<HANDLE>(),
-        )?;
-        let jobs = [job];
-        attributes.set(
-            PROC_THREAD_ATTRIBUTE_JOB_LIST as usize,
-            jobs.as_ptr() as *const _,
-            mem::size_of_val(&jobs),
         )?;
         let mut startup: STARTUPINFOEXW = unsafe { mem::zeroed() };
         startup.StartupInfo.cb = mem::size_of::<STARTUPINFOEXW>() as u32;
