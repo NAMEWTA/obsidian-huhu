@@ -10,10 +10,16 @@ import (
 	policy "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/access/grants"
 )
 
-// DeliveryLifetime caps work inside the read fence. It is a failure bound:
-// ordinary member and memory SQL on a shared CI runner exceeds 250ms while
-// go test runs packages in parallel, and that canceled a finished command.
-const DeliveryLifetime = 2 * time.Second
+// DeliveryLifetime is the authorization window returned to a caller. A read
+// or delivery permit must not outlive it.
+const DeliveryLifetime = 250 * time.Millisecond
+
+// readFenceTimeout bounds how long SQL may hold the mutation gate. Parallel
+// go test on a shared runner makes ordinary member and memory SQL exceed
+// DeliveryLifetime, and canceling that qualification failed a command the
+// caller had already accepted. Writer permits are still capped at
+// DeliveryLifetime after qualification returns.
+const readFenceTimeout = 2 * time.Second
 
 // WithReadFence serializes actual delivery with Grant mutation commits. fn must
 // stop physical I/O before returning; SQL transactions must close before I/O.
@@ -27,7 +33,7 @@ func (s *Store) WithReadFence(ctx context.Context, fn func(context.Context) erro
 	if e := ctx.Err(); e != nil {
 		return e
 	}
-	permit, cancel := context.WithTimeout(ctx, DeliveryLifetime)
+	permit, cancel := context.WithTimeout(ctx, readFenceTimeout)
 	defer cancel()
 	if e := fn(permit); e != nil {
 		return e

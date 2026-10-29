@@ -12,6 +12,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	contract "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/data/portable"
@@ -100,9 +101,14 @@ func WriteFile(ctx context.Context, path string, p contract.Package) error {
 	if err = os.Link(tmpName, path); err != nil {
 		return fmt.Errorf("portable: publish export: %w", err)
 	}
-	if d, e := os.Open(dir); e == nil {
-		err = d.Sync()
-		_ = d.Close()
+	// A Windows directory handle rejects FlushFileBuffers with Access Denied.
+	// File bytes are already synced; the link is the publication. Backup and
+	// the artifact store skip this directory flush for the same reason.
+	if runtime.GOOS != "windows" {
+		if d, e := os.Open(dir); e == nil {
+			err = d.Sync()
+			_ = d.Close()
+		}
 	}
 	return err
 }

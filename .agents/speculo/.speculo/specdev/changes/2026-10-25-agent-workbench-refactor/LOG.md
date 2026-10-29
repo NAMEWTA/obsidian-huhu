@@ -770,7 +770,7 @@ T18 独立审查 121 指出两处 DESIGN 偏差。Lead 按 DESIGN 权威收敛�
 - 终端工作台（Space、PTY、CLI、收件箱、备份、`workbench-v2.json`）来自 terminal。`native/pty-server` 自合并基线后只在 terminal 上有改动，整份进入 dev。
 - 独立浏览器留在 dev：`BROWSER_WORKSPACE`、`BROWSER_OPEN`、`composeBrowserWorkspace`、`native/browser-runtime`。terminal 的 `BrowserEngine`、`BROWSER_HOST` 和 `src/modules/browser/services/host.ts` 不再作为生产浏览器。Agent 控制器、工作台装配和终端标签上的打开动作改接到 `browserWorkspace()` / `browserOpener()`。新开的智能体标签只保存 Space 与 Page 引用。旧布局里没有浏览器 Space、但带有地址的网页标签在读盘时保留 `pageId`、`url`、`profileId` 和 `zoom`，所以一次性导入后仍能从所选 Space 的布局里找到。
 - `cookie-client.ts` 仍是 `nativeCookieReader` 的薄再导出，并继续登记 `NATIVE_HELPER_SQLITE`。浏览器模块不再借用 PTY helper 读 Cookie。原先挂在 `module.test.ts` 上的「已准入 Cookie 读取熬过 confirmed/legacy 终端清理、且不新开 helper」断言改到 `src/modules/agent/services/terminal/cookie-survives-cleanup.test.ts`，断言不变。
-- dev 上已推送的 huhubot 修复（Windows `file:C:/` DSN、预检空普查确认、CLI 通道 EAGAIN）不在冲突文件里，合入后仍在。
+- dev 上已推送的 huhubot 修复（Windows `file:C:/` DSN、预检空普查确认、CLI 通道 EAGAIN）不在冲突文件里，合入后仍在。合入之后的检查里，授权截止仍是 `DeliveryLifetime` 250ms；读栅栏上的 SQL 上下文单独用 2s，避免并行 `go test` 时成员和记忆语句被 250ms 取消。写许可在资格检查之后仍被 250ms 截断。Windows 导出仍先同步文件内容；目录句柄上的 FlushFileBuffers 会拒绝访问，所以目录同步与备份、附件库一样在 Windows 上跳过。
 - 工作台功能列表留 dev：含 task、huhubot、versioning、revision-review，不含旧 `sync` 功能名。`FEATURE_MODULES` 里重复的 `browser` 键删掉。
 - 依赖留 dev 的 `@xterm/xterm` `^6.0.0`，以及 notices 需要的 `ajv` / `ajv-formats`。`.gitignore` 同时保留 browser-runtime 构建产物和 terminal 的证据目录忽略。
 - 词典、自动化动作的 `spaceId`、导航测试和模块上下文字段取并集。定时任务去重留 dev 的更宽条件（凡 `create-task`，不只日历）。关闭终端视图不确认、不拆除运行时；停止仍走 `end()`。

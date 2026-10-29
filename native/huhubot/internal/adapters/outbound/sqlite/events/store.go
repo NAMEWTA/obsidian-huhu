@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/base"
 	execution "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/execution"
@@ -453,7 +454,12 @@ func (s *Store) WithDelivery(ctx context.Context, id api.RequestIdentity, subjec
 					return e
 				}
 			}
-			until, _ := permit.Deadline()
+			// The fence context outlives DeliveryLifetime so qualification SQL can
+			// finish on a busy runner. The writer permit must not.
+			until := time.Now().Add(grants.DeliveryLifetime)
+			if fence, ok := permit.Deadline(); ok && fence.Before(until) {
+				until = fence
+			}
 			inputs := make([]api.RunAccessInput, 0, len(subjects))
 			for _, subject := range subjects {
 				if subject.Kind != "run" && subject.Kind != "message" {
