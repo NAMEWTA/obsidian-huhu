@@ -613,7 +613,7 @@ test('M2: a reservation that lands after shutdown is tracked under the same post
 	const a = await instance('A', 100, alive(100));
 	const imported = await a.service.importSource({ spaceId: a.space.id, row: row() });
 	const target = { spaceId: a.space.id, sessionId: imported.sessionId };
-	let reserve!: (runtimeId: string) => void;
+	let reserve: ((runtimeId: string) => void) | undefined;
 	let finish!: () => void;
 	a.launch.mockImplementationOnce(async (_request, reserved) => {
 		reserve = reserved;
@@ -621,10 +621,20 @@ test('M2: a reservation that lands after shutdown is tracked under the same post
 		return { runtimeId: 'late' };
 	});
 	const pending = a.service.resumeSource({ spaceId: a.space.id, row: row() });
-	await flush();
+	let settled = false;
+	void pending.then(
+		() => {
+			settled = true;
+		},
+		() => {
+			settled = true;
+		},
+	);
+	for (let i = 0; i < 250 && !reserve && !settled; i += 1) await flush();
+	expect(reserve).toEqual(expect.any(Function));
 	await a.service.dispose();
 	a.setRuntime(target, { runtimeId: 'late', phase: 'launch-pending' } as ManagedSessionSummary['runtime']);
-	reserve('late');
+	reserve!('late');
 	finish();
 	await pending;
 	expect(a.listeners.size).toBe(1);

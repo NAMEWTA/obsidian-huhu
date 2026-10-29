@@ -6,6 +6,8 @@
 mod agent_data;
 #[cfg(any(windows, test))]
 mod bootstrap;
+#[cfg(windows)]
+mod conpty;
 mod cookies;
 mod data;
 mod inherited_fds;

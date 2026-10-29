@@ -1,6 +1,8 @@
 //! Pseudo-terminal sessions; root exit and bounded cleanup are separate evidence.
 use crate::{editor, frame, job};
-use portable_pty::{native_pty_system, CommandBuilder, MasterPty, PtySize};
+use portable_pty::{MasterPty, PtySize};
+#[cfg(unix)]
+use portable_pty::{native_pty_system, CommandBuilder};
 use serde_json::{json, Value};
 use std::{
     collections::HashMap,
@@ -972,6 +974,34 @@ fn write_inputs(
     }
     drop(owned);
 }
+struct OpenedPty {
+    master: Box<dyn MasterPty + Send>,
+    #[cfg(unix)]
+    slave: Box<dyn portable_pty::SlavePty + Send>,
+    #[cfg(windows)]
+    console: crate::conpty::Console,
+}
+fn open_session_pty(cols: u16, rows: u16) -> Result<OpenedPty, SpawnFailure> {
+    #[cfg(unix)]
+    {
+        let pair = native_pty_system()
+            .openpty(size(cols, rows))
+            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
+        Ok(OpenedPty {
+            master: pair.master,
+            slave: pair.slave,
+        })
+    }
+    #[cfg(windows)]
+    {
+        let opened = crate::conpty::open(cols, rows)
+            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
+        Ok(OpenedPty {
+            master: opened.master,
+            console: opened.console,
+        })
+    }
+}
 fn size(cols: u16, rows: u16) -> PtySize {
     PtySize {
         cols: cols.max(1),
@@ -1189,9 +1219,7 @@ impl Sessions {
         ticket: SpawnTicket,
     ) -> Result<Option<u32>, SpawnFailure> {
         let stop = ticket.pending.stop;
-        let pair = native_pty_system()
-            .openpty(size(request.cols, request.rows))
-            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
+        let opened = open_session_pty(request.cols, request.rows)?;
         if request
             .cwd
             .as_ref()
@@ -1231,17 +1259,21 @@ impl Sessions {
         } else {
             None
         };
-        let mut command = CommandBuilder::new(&request.file);
-        command.args(&request.args);
-        if let Some(cwd) = request.cwd.as_ref().filter(|s| !s.is_empty()) {
-            command.cwd(cwd);
-        }
-        for (key, value) in &request.env {
-            command.env(key, value);
-        }
-        if let Some(binding) = &enrolled {
-            command.env("HUHU_EDITOR_CAPABILITY_FILE", binding.cap_path());
-        }
+        #[cfg(unix)]
+        let command = {
+            let mut command = CommandBuilder::new(&request.file);
+            command.args(&request.args);
+            if let Some(cwd) = request.cwd.as_ref().filter(|s| !s.is_empty()) {
+                command.cwd(cwd);
+            }
+            for (key, value) in &request.env {
+                command.env(key, value);
+            }
+            if let Some(binding) = &enrolled {
+                command.env("HUHU_EDITOR_CAPABILITY_FILE", binding.cap_path());
+            }
+            command
+        };
         if self.closing.load(Ordering::SeqCst) || stop.lock().unwrap().at.is_some() {
             return Err(SpawnFailure::before_spawn(
                 "program-rejected",
@@ -1252,15 +1284,17 @@ impl Sessions {
         let scope =
             job::Scope::new().map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
         #[cfg(unix)]
-        nonblocking_master(&*pair.master)?;
+        nonblocking_master(&*opened.master)?;
         let (reader, input, ()) = prepare_before_spawn(
             || {
-                pair.master
+                opened
+                    .master
                     .try_clone_reader()
                     .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))
             },
             || {
-                pair.master
+                opened
+                    .master
                     .take_writer()
                     .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))
             },
@@ -1282,7 +1316,7 @@ impl Sessions {
             .master_done
             .store(false, Ordering::SeqCst);
         let streams = Arc::new(Streams {
-            master: Arc::new(Mutex::new(Some(pair.master))),
+            master: Arc::new(Mutex::new(Some(opened.master))),
             flow: ticket.pending.flow,
             drain: ticket.pending.drain.clone(),
             close_started: AtomicBool::new(false),
@@ -1385,16 +1419,18 @@ impl Sessions {
         let child_result = {
             #[cfg(unix)]
             {
-                pair.slave
+                opened
+                    .slave
                     .spawn_command(command)
                     .map_err(|e| SpawnFailure::before_spawn("program-rejected", e))
             }
             #[cfg(windows)]
             {
-                crate::bootstrap::spawn(&*pair.slave, &request, id, &scope.job, &stop)
+                crate::bootstrap::spawn(&opened.console, &request, id, &scope.job, &stop)
             }
         };
-        drop(pair.slave);
+        #[cfg(unix)]
+        drop(opened.slave);
         let mut child = match child_result {
             Ok(child) => child,
             Err(error) => {

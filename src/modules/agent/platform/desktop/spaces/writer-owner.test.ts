@@ -31,10 +31,12 @@ async function fixture() {
 describe('Space writer OS lease', () => {
 	test('port identity has one stable namespace/range and excludes paths, logical Vault, and instance IDs', () => {
 		const physical = { canonicalPath: '/one', dev: '12345678901234567890', ino: '98765432109876543210' };
-		expect(writerPort('device', physical)).toBe(17249);
-		expect(writerPort('device', { ...physical, canonicalPath: '/alias' })).toBe(17249);
-		expect(writerPort('device-b', physical)).not.toBe(17249);
-		expect(writerPort('device', { ...physical, ino: '98765432109876543211' })).not.toBe(17249);
+		expect(writerPort('device', physical)).toBe(33633);
+		expect(writerPort('device', { ...physical, canonicalPath: '/alias' })).toBe(33633);
+		expect(writerPort('device-b', physical)).not.toBe(33633);
+		expect(writerPort('device', { ...physical, ino: '98765432109876543211' })).not.toBe(33633);
+		expect(writerPort('device', physical)).toBeGreaterThanOrEqual(32768);
+		expect(writerPort('device', physical)).toBeLessThan(49152);
 	});
 
 	test('inspection creates no listener; acquisition awaits real listening; close is idempotent and awaits kernel release', async () => {

@@ -4,10 +4,12 @@ import { SpaceError } from '../../../core/space/errors';
 import type { PhysicalDirectory } from '../../../core/space/model';
 import type { DirectoryPort, WriterLease, WriterOwnerPort } from '../../../core/space/ports';
 
-/** One fixed protocol key and range across instances; collisions deliberately fail closed. */
+/** One fixed protocol key across instances; collisions deliberately fail closed.
+ *  This band is 32768–49151. Hook readers use 16384–32767 and browser owners use 49152–65535,
+ *  so those listeners cannot be mistaken for the space writer. */
 export function writerPort(deviceId: string, root: PhysicalDirectory): number {
 	const key = JSON.stringify(['huhu-space-writer', deviceId, root.dev, root.ino]);
-	return 16384 + createHash('sha256').update(key).digest().readUInt32BE(0) % 49152;
+	return 32768 + createHash('sha256').update(key).digest().readUInt32BE(0) % 16384;
 }
 
 type ListenerState = 'acquiring' | 'held' | 'failed' | 'closing' | 'closed';

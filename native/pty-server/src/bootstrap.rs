@@ -63,8 +63,8 @@ mod tests {
     }
 }
 /// Windows command line for one payload. Rust's `Command` always sets
-/// `STARTF_USESTDHANDLES`; a real console image then deadlocks inside CreateProcess
-/// while it joins ConPTY. The bootstrap child therefore builds this line itself.
+/// `STARTF_USESTDHANDLES`. The bootstrap child builds this line and creates the
+/// process with the pseudoconsole attribute instead.
 #[cfg(any(windows, test))]
 pub(crate) fn windows_command_line(file: &str, args: &[String]) -> Vec<u16> {
     let mut out = Vec::new();
@@ -198,10 +198,10 @@ mod platform {
         job::Job,
         session::{SpawnFailure, SpawnRequest, Stop},
     };
-    use portable_pty::{Child, ChildKiller, CommandBuilder, ExitStatus, SlavePty};
+    use portable_pty::{Child, ChildKiller, ExitStatus};
     use std::{
         io, mem,
-        os::windows::io::RawHandle,
+        os::windows::io::{AsRawHandle, RawHandle},
         ptr,
         sync::{
             atomic::{AtomicU32, AtomicU64, Ordering},
@@ -217,6 +217,10 @@ mod platform {
     };
     const SIZE: usize = 256 * 1024;
     const REQUEST: usize = 1024;
+    /// Inherited pseudoconsole handle value, published before the anchor starts.
+    const CONSOLE_SLOT: usize = 40;
+    const PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE: usize = 0x0002_0016;
+    const PROC_THREAD_ATTRIBUTE_HANDLE_LIST: usize = 0x0002_0002;
     const BOOTSTRAP_ARG: &str = "--huhu-session-bootstrap";
     fn wide(s: &str) -> Vec<u16> {
         s.encode_utf16().chain(Some(0)).collect()
@@ -364,6 +368,9 @@ mod platform {
         fn handle_word(&self) -> &AtomicU64 {
             unsafe { &*(self.view.add(8) as *const AtomicU64) }
         }
+        fn slot(&self, at: usize) -> &AtomicU64 {
+            unsafe { &*(self.view.add(at) as *const AtomicU64) }
+        }
         fn failure(&self, error: &io::Error) {
             self.word(24)
                 .store(error.raw_os_error().unwrap_or(1) as u32, Ordering::Relaxed);
@@ -453,7 +460,7 @@ mod platform {
         }
     }
     pub fn spawn(
-        slave: &dyn SlavePty,
+        console: &crate::conpty::Console,
         request: &SpawnRequest,
         id: u32,
         job: &Arc<Job>,
@@ -489,21 +496,50 @@ mod platform {
                 ptr::copy_nonoverlapping(body.as_ptr(), mapping.view.add(REQUEST), body.len());
             }
             mapping.word(32).store(body.len() as u32, Ordering::Release);
-            let mut command = CommandBuilder::new(std::env::current_exe()?);
-            command.args([BOOTSTRAP_ARG, &name, &gate_name]);
-            for (k, v) in &request.env {
-                command.env(k, v);
-            }
-            if let Some(cwd) = &request.cwd {
-                command.cwd(cwd);
-            }
-            Ok((mapping, gate, command))
+            let inherited = console.duplicate_inheritable()?;
+            mapping.slot(CONSOLE_SLOT).store(
+                inherited.as_raw_handle() as usize as u64,
+                Ordering::Release,
+            );
+            let executable = std::env::current_exe()?;
+            let executable = executable.to_str().ok_or_else(|| {
+                io::Error::other("Bootstrap executable path is not Unicode")
+            })?;
+            let mut command_line = super::windows_command_line(
+                executable,
+                &[
+                    BOOTSTRAP_ARG.to_string(),
+                    name.clone(),
+                    gate_name.clone(),
+                ],
+            );
+            let environment = super::windows_environment_block(std::env::vars(), &request.env);
+            let directory = request
+                .cwd
+                .as_ref()
+                .filter(|cwd| !cwd.is_empty())
+                .map(|cwd| wide(cwd));
+            let created = create_process(
+                &mut command_line,
+                environment.as_deref(),
+                directory.as_deref(),
+                None,
+                Some(inherited.as_raw_handle() as HANDLE),
+                true,
+            )?;
+            drop(inherited);
+            Ok((
+                mapping,
+                gate,
+                Running {
+                    handle: Handle(created.process),
+                    pid: created.pid,
+                },
+            ))
         })()
         .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
-        let (mapping, gate, command) = prepared;
-        let anchor = slave
-            .spawn_command(command)
-            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
+        let (mapping, gate, anchor) = prepared;
+        let anchor: Box<dyn Child + Send + Sync> = Box::new(anchor);
         let Some(raw) = anchor.as_raw_handle() else {
             return Err(reject(
                 anchor,
@@ -665,80 +701,213 @@ mod platform {
             Ok(ExitStatus::with_exit_code(code))
         }
     }
-    struct PayloadProcess {
+    struct Created {
         process: HANDLE,
-        thread: HANDLE,
         pid: u32,
     }
-    impl Drop for PayloadProcess {
+    struct AttributeList {
+        ptr: *mut u8,
+        layout: std::alloc::Layout,
+        ready: bool,
+    }
+    impl AttributeList {
+        fn new(count: u32) -> io::Result<Self> {
+            let mut bytes = 0usize;
+            unsafe {
+                InitializeProcThreadAttributeList(ptr::null_mut(), count, 0, &mut bytes);
+            }
+            if bytes == 0 || bytes > 64 * 1024 {
+                return Err(io::Error::other("Invalid attribute list size"));
+            }
+            let layout = std::alloc::Layout::from_size_align(bytes, 16).map_err(io::Error::other)?;
+            let allocated = unsafe { std::alloc::alloc(layout) };
+            if allocated.is_null() {
+                return Err(io::Error::other("Attribute list allocation failed"));
+            }
+            let ok = unsafe {
+                InitializeProcThreadAttributeList(allocated as _, count, 0, &mut bytes)
+            };
+            if ok == 0 {
+                unsafe { std::alloc::dealloc(allocated, layout) };
+                return Err(io::Error::last_os_error());
+            }
+            Ok(Self {
+                ptr: allocated,
+                layout,
+                ready: true,
+            })
+        }
+        fn set(&mut self, attribute: usize, value: *const core::ffi::c_void, size: usize) -> io::Result<()> {
+            let ok = unsafe {
+                UpdateProcThreadAttribute(
+                    self.ptr as _,
+                    0,
+                    attribute,
+                    value,
+                    size,
+                    ptr::null_mut(),
+                    ptr::null(),
+                )
+            };
+            if ok == 0 {
+                Err(io::Error::last_os_error())
+            } else {
+                Ok(())
+            }
+        }
+    }
+    impl Drop for AttributeList {
         fn drop(&mut self) {
-            unsafe {
-                if !self.thread.is_null() {
-                    CloseHandle(self.thread);
-                }
-                if !self.process.is_null() {
-                    CloseHandle(self.process);
-                }
+            if self.ready {
+                unsafe { DeleteProcThreadAttributeList(self.ptr as _) };
+            }
+            if !self.ptr.is_null() {
+                unsafe { std::alloc::dealloc(self.ptr, self.layout) };
             }
         }
     }
-    impl PayloadProcess {
-        fn resume(mut self) -> io::Result<Self> {
-            let previous = unsafe { ResumeThread(self.thread) };
-            let thread = self.thread;
-            self.thread = ptr::null_mut();
-            unsafe {
-                CloseHandle(thread);
-            }
-            if previous == u32::MAX {
-                let error = io::Error::last_os_error();
-                unsafe {
-                    TerminateProcess(self.process, 1);
-                }
-                return Err(error);
-            }
-            Ok(self)
-        }
-    }
-    /// Create the user program on this process's pseudoconsole.
-    ///
-    /// `STARTF_USESTDHANDLES` with `CONIN$`/`CONOUT$` deadlocks CreateProcess for a real
-    /// console image. Leave the standard handles unset so the payload attaches to the
-    /// console the anchor already owns. A missing image fails before that attachment.
-    /// The thread starts suspended so CreateProcess cannot wait on the payload, then
-    /// resumes before the parent is told the handle exists.
-    fn spawn_attached(
+    /// `console` attaches the new process to that pseudoconsole.
+    /// `inherit` is the only handle a detached anchor receives, so it can pass the
+    /// pseudoconsole on without itself becoming a console client.
+    fn create_process(
         command_line: &mut [u16],
         environment: Option<&[u16]>,
         directory: Option<&[u16]>,
-    ) -> io::Result<PayloadProcess> {
-        let mut startup: STARTUPINFOW = unsafe { mem::zeroed() };
-        startup.cb = mem::size_of::<STARTUPINFOW>() as u32;
+        console: Option<HANDLE>,
+        inherit: Option<HANDLE>,
+        detached: bool,
+    ) -> io::Result<Created> {
+        if console.is_none() && inherit.is_none() {
+            return Err(io::Error::other("Process spawn has no console attachment"));
+        }
+        let mut attributes = AttributeList::new(1)?;
+        let inherited = [inherit.unwrap_or(ptr::null_mut())];
+        if let Some(handle) = console {
+            attributes.set(
+                PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+                handle as *const _,
+                mem::size_of::<HANDLE>(),
+            )?;
+        } else {
+            attributes.set(
+                PROC_THREAD_ATTRIBUTE_HANDLE_LIST,
+                inherited.as_ptr() as *const _,
+                mem::size_of_val(&inherited),
+            )?;
+        }
+        let mut startup: STARTUPINFOEXW = unsafe { mem::zeroed() };
+        startup.StartupInfo.cb = mem::size_of::<STARTUPINFOEXW>() as u32;
+        startup.lpAttributeList = attributes.ptr as _;
+        if console.is_some() {
+            startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
+            startup.StartupInfo.hStdInput = INVALID_HANDLE_VALUE;
+            startup.StartupInfo.hStdOutput = INVALID_HANDLE_VALUE;
+            startup.StartupInfo.hStdError = INVALID_HANDLE_VALUE;
+        }
         let mut created: PROCESS_INFORMATION = unsafe { mem::zeroed() };
+        let mut flags = CREATE_UNICODE_ENVIRONMENT | EXTENDED_STARTUPINFO_PRESENT;
+        if detached {
+            flags |= DETACHED_PROCESS;
+        }
         let ok = unsafe {
             CreateProcessW(
                 ptr::null(),
                 command_line.as_mut_ptr(),
                 ptr::null(),
                 ptr::null(),
-                0,
-                CREATE_SUSPENDED | CREATE_UNICODE_ENVIRONMENT,
+                if inherit.is_some() { 1 } else { 0 },
+                flags,
                 environment
                     .map(|block| block.as_ptr() as *const _)
                     .unwrap_or(ptr::null()),
                 directory.map(|path| path.as_ptr()).unwrap_or(ptr::null()),
-                &startup,
+                &startup.StartupInfo,
                 &mut created,
             )
         };
         if ok == 0 {
             return Err(io::Error::last_os_error());
         }
-        Ok(PayloadProcess {
+        if !created.hThread.is_null() {
+            unsafe { CloseHandle(created.hThread) };
+        }
+        Ok(Created {
             process: created.hProcess,
-            thread: created.hThread,
             pid: created.dwProcessId,
         })
+    }
+    #[derive(Debug)]
+    struct Running {
+        handle: Handle,
+        pid: u32,
+    }
+    impl ChildKiller for Running {
+        fn kill(&mut self) -> io::Result<()> {
+            if unsafe { TerminateProcess(self.handle.0, 1) } == 0 {
+                Err(io::Error::last_os_error())
+            } else {
+                Ok(())
+            }
+        }
+        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
+            let mut duplicated = ptr::null_mut();
+            let ok = unsafe {
+                DuplicateHandle(
+                    GetCurrentProcess(),
+                    self.handle.0,
+                    GetCurrentProcess(),
+                    &mut duplicated,
+                    0,
+                    0,
+                    DUPLICATE_SAME_ACCESS,
+                )
+            };
+            if ok == 0 {
+                return Box::new(DeadKiller);
+            }
+            Box::new(Running {
+                handle: Handle(duplicated),
+                pid: self.pid,
+            })
+        }
+    }
+    #[derive(Debug)]
+    struct DeadKiller;
+    impl ChildKiller for DeadKiller {
+        fn kill(&mut self) -> io::Result<()> {
+            Err(io::Error::other("Anchor handle could not be duplicated"))
+        }
+        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
+            Box::new(DeadKiller)
+        }
+    }
+    impl Child for Running {
+        fn try_wait(&mut self) -> io::Result<Option<ExitStatus>> {
+            match unsafe { WaitForSingleObject(self.handle.0, 0) } {
+                WAIT_TIMEOUT => Ok(None),
+                WAIT_OBJECT_0 => process_status(self.handle.0).map(Some),
+                _ => Err(io::Error::last_os_error()),
+            }
+        }
+        fn wait(&mut self) -> io::Result<ExitStatus> {
+            if unsafe { WaitForSingleObject(self.handle.0, INFINITE) } != WAIT_OBJECT_0 {
+                return Err(io::Error::last_os_error());
+            }
+            process_status(self.handle.0)
+        }
+        fn process_id(&self) -> Option<u32> {
+            Some(self.pid)
+        }
+        fn as_raw_handle(&self) -> Option<RawHandle> {
+            Some(self.handle.0 as _)
+        }
+    }
+    fn process_status(handle: HANDLE) -> io::Result<ExitStatus> {
+        let mut code = 0;
+        if unsafe { GetExitCodeProcess(handle, &mut code) } == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        Ok(ExitStatus::with_exit_code(code))
     }
     fn run(args: &[String]) -> io::Result<()> {
         if args.len() != 4 {
@@ -769,12 +938,26 @@ mod platform {
                 .cwd
                 .filter(|cwd| !cwd.is_empty())
                 .map(|cwd| wide(&cwd));
-            let child = spawn_attached(
+            let console_bits = mapping.slot(CONSOLE_SLOT).load(Ordering::Acquire);
+            if console_bits == 0 || console_bits == u64::MAX {
+                return Err(io::Error::other("Pseudoconsole handle missing"));
+            }
+            let console = console_bits as usize as HANDLE;
+            struct CloseConsole(HANDLE);
+            impl Drop for CloseConsole {
+                fn drop(&mut self) {
+                    unsafe { CloseHandle(self.0) };
+                }
+            }
+            let _console = CloseConsole(console);
+            let child = create_process(
                 &mut command_line,
                 environment.as_deref(),
                 directory.as_deref(),
-            )?
-            .resume()?;
+                Some(console),
+                None,
+                false,
+            )?;
             mapping.word(20).store(1, Ordering::Release);
             mapping.word(4).store(child.pid, Ordering::Relaxed);
             mapping

@@ -22,8 +22,16 @@ const cookies: IdentityCookie[] = [
 ];
 async function fixture() {
 	const root = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'huhu-identity-flow-'))); cleanup.push(async () => fs.rm(root, { recursive: true, force: true }));
-	const protector = new TestBrowserProtector(), persistence = createBrowserPersistence({ root: path.join(root, 'owned'), protector });
-	cleanup.push(async () => persistence.dispose()); await persistence.initialize(); expect(persistence.readOnly).toBe(false);
+	const protector = new TestBrowserProtector();
+	let persistence: ReturnType<typeof createBrowserPersistence> | undefined;
+	for (let attempt = 0; attempt < 6; attempt++) {
+		const candidate = createBrowserPersistence({ root: path.join(root, attempt === 0 ? 'owned' : `owned-${attempt}`), protector });
+		await candidate.initialize();
+		if (!candidate.readOnly) { persistence = candidate; cleanup.push(async () => candidate.dispose()); break; }
+		await candidate.dispose();
+	}
+	if (!persistence) throw new Error('browser owner port stayed busy');
+	expect(persistence.readOnly).toBe(false);
 	const credentials = new DesktopCredentialStore({ directory: path.join(root, 'identities'), vaultId: 'synthetic-vault', deviceId: 'synthetic-device', protector, assertOwner: () => persistence.assertOwner() });
 	const source = new DesktopIdentitySourceReader({ temporaryDirectory: path.join(root, 'source-staging'), readerExecutable: async () => { throw new Error('no native reader needed'); }, recordCleanupFailure: async () => {} });
 	const sourceFile = path.join(root, 'authorized-cookies.json'); await fs.writeFile(sourceFile, JSON.stringify(cookies));
