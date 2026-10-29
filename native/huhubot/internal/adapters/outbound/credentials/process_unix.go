@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-func configureWorkerProcess(cmd *exec.Cmd) {
+func configureWorkerProcess(cmd *exec.Cmd) func() func() {
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Cancel = func() error {
 		if cmd.Process == nil {
@@ -21,4 +21,5 @@ func configureWorkerProcess(cmd *exec.Cmd) {
 		}
 		return err
 	}
+	return func() func() { return func() {} }
 }

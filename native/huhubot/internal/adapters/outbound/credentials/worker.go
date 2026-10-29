@@ -76,8 +76,19 @@ func (s *supervisor) execute(ctx context.Context, op byte, profile, ref string, 
 	cmd.Stdout = out
 	cmd.Stderr = stderr
 	cmd.WaitDelay = 100 * time.Millisecond
-	configureWorkerProcess(cmd)
-	if err = cmd.Run(); err != nil {
+	// Assign the job only after Start. Closing it before Wait would kill a
+	// successful worker when KILL_ON_JOB_CLOSE is set.
+	afterStart := configureWorkerProcess(cmd)
+	if err = cmd.Start(); err != nil {
+		if ctx.Err() != nil {
+			return nil, contextReason(ctx)
+		}
+		return nil, "PROVIDER_FAILED"
+	}
+	release := afterStart()
+	err = cmd.Wait()
+	release()
+	if err != nil {
 		if ctx.Err() != nil {
 			return nil, contextReason(ctx)
 		}

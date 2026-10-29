@@ -33,14 +33,19 @@ type Executor struct {
 	cancel       context.CancelFunc
 	wake         chan struct{}
 	slots        chan struct{}
-	done         chan struct{}
-	drained      chan struct{}
-	wg           sync.WaitGroup
-	once         sync.Once
-	startOnce    sync.Once
-	tooling      api.ExecutionTooling
-	runningMu    sync.Mutex
-	running      map[string]activeRun
+	// prepareGate keeps the scanner from starting another Claim while this
+	// worker still needs the single SQLite connection. It is released before
+	// the engine runs, so a child can be claimed while its parent is inside
+	// the engine. This is scheduling, not a longer stop timeout.
+	prepareGate chan struct{}
+	done        chan struct{}
+	drained     chan struct{}
+	wg          sync.WaitGroup
+	once        sync.Once
+	startOnce   sync.Once
+	tooling     api.ExecutionTooling
+	runningMu   sync.Mutex
+	running     map[string]activeRun
 }
 type activeRun struct {
 	claim  string
@@ -59,7 +64,7 @@ func New(ctx context.Context, repo Repository, engine api.Engine, access api.Con
 	if len(tooling) > 0 {
 		tools = tooling[0]
 	}
-	return &Executor{tooling: tools, running: map[string]activeRun{}, repo: repo, engine: engine, access: access, conversation: conversation, ctx: run, cancel: cancel, wake: make(chan struct{}, 1), slots: make(chan struct{}, WorkerCapacity), done: make(chan struct{}), drained: make(chan struct{})}, nil
+	return &Executor{tooling: tools, running: map[string]activeRun{}, repo: repo, engine: engine, access: access, conversation: conversation, ctx: run, cancel: cancel, wake: make(chan struct{}, 1), slots: make(chan struct{}, WorkerCapacity), prepareGate: make(chan struct{}, 1), done: make(chan struct{}), drained: make(chan struct{})}, nil
 }
 func (e *Executor) Wake() {
 	select {
@@ -81,8 +86,15 @@ func (e *Executor) scan() {
 			default:
 				goto wait
 			}
+			select {
+			case e.prepareGate <- struct{}{}:
+			case <-e.ctx.Done():
+				<-e.slots
+				return
+			}
 			work, err := e.repo.Claim(e.ctx)
 			if err != nil || work == nil {
+				<-e.prepareGate
 				<-e.slots
 				break
 			}
@@ -99,6 +111,8 @@ func (e *Executor) scan() {
 	}
 }
 func (e *Executor) execute(w Work) {
+	releasePrepare := sync.OnceFunc(func() { <-e.prepareGate })
+	defer releasePrepare()
 	ctx, cancel := context.WithTimeout(e.ctx, 2*time.Minute)
 	defer cancel()
 	defer func() { _ = e.repo.ProducerEnded(context.Background(), w); e.Wake() }()
@@ -306,8 +320,10 @@ func (e *Executor) execute(w Work) {
 		// A continuation reads its original sealed prefix from the checkpoint.
 		// Qualified later messages travel only in the persisted decision.
 		w.Input.Messages = nil
+		releasePrepare()
 		result, err = e.engine.Resume(ctx, api.EngineResumeInput{Input: w.Input, CheckpointRef: w.Continuation.Checkpoint.Ref, Checkpoint: w.Continuation.Checkpoint, Decision: decision}, sink)
 	} else {
+		releasePrepare()
 		result, err = e.engine.Run(ctx, w.Input, sink)
 	}
 	if e.ctx.Err() != nil {
