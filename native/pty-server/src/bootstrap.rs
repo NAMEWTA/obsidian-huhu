@@ -75,7 +75,7 @@ mod platform {
         fs::OpenOptions,
         io, mem,
         os::windows::io::{AsRawHandle, RawHandle},
-        process::{Command, Stdio},
+        process::Command,
         ptr,
         sync::{
             atomic::{AtomicU32, AtomicU64, Ordering},
@@ -87,7 +87,7 @@ mod platform {
     use windows_sys::Win32::{
         Foundation::*,
         Security::{Authorization::*, Cryptography::*, *},
-        System::{Memory::*, Threading::*},
+        System::{Console::*, Memory::*, Threading::*},
     };
     const SIZE: usize = 256 * 1024;
     const REQUEST: usize = 1024;
@@ -567,12 +567,36 @@ mod platform {
             if let Some(cwd) = request.cwd.filter(|c| !c.is_empty()) {
                 command.current_dir(cwd);
             }
-            let input = OpenOptions::new().read(true).write(true).open("CONIN$")?;
-            let output = OpenOptions::new().read(true).write(true).open("CONOUT$")?;
-            command
-                .stdin(Stdio::from(input))
-                .stdout(Stdio::from(output.try_clone()?))
-                .stderr(Stdio::from(output));
+            // Explicit STARTF_USESTDHANDLES on CONIN$/CONOUT$ deadlocks ConPTY while a real
+            // console program connects. Install the console handles as this process's standard
+            // handles and let CreateProcess duplicate them. A missing image still fails first.
+            let input = OpenOptions::new()
+                .read(true)
+                .open("CONIN$")
+                .or_else(|_| OpenOptions::new().read(true).write(true).open("CONIN$"))?;
+            let output = OpenOptions::new()
+                .write(true)
+                .open("CONOUT$")
+                .or_else(|_| OpenOptions::new().read(true).write(true).open("CONOUT$"))?;
+            let error_out = output.try_clone()?;
+            for handle in [
+                input.as_raw_handle(),
+                output.as_raw_handle(),
+                error_out.as_raw_handle(),
+            ] {
+                unsafe {
+                    SetHandleInformation(
+                        handle as _,
+                        HANDLE_FLAG_INHERIT,
+                        HANDLE_FLAG_INHERIT,
+                    );
+                }
+            }
+            unsafe {
+                SetStdHandle(STD_INPUT_HANDLE, input.as_raw_handle() as _);
+                SetStdHandle(STD_OUTPUT_HANDLE, output.as_raw_handle() as _);
+                SetStdHandle(STD_ERROR_HANDLE, error_out.as_raw_handle() as _);
+            }
             let mut child = command.spawn()?;
             mapping.word(20).store(1, Ordering::Release);
             mapping.word(4).store(child.id(), Ordering::Relaxed);

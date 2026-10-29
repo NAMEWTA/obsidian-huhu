@@ -852,6 +852,7 @@ fn take_console_handoffs(buffer: &mut Vec<u8>) -> Vec<&'static [u8]> {
     let mut replies = Vec::new();
     take(buffer, b"\x1b[6n", b"\x1b[1;1R", &mut replies);
     take(buffer, b"\x1b[?6n", b"\x1b[1;1R", &mut replies);
+    take(buffer, b"\x1b[5n", b"\x1b[0n", &mut replies);
     take(buffer, b"\x1b[0c", b"\x1b[?1;0c", &mut replies);
     take(buffer, b"\x1b[c", b"\x1b[?1;0c", &mut replies);
     replies
@@ -1398,11 +1399,17 @@ impl Sessions {
             Ok(child) => child,
             Err(error) => {
                 streams.startup.lock().unwrap().buffered.clear();
-                {
-                    let _gate = streams.output_gate.lock().unwrap();
-                    streams.flow.close();
-                }
+                // ClosePseudoConsole can emit a final cursor query. The reader must still be
+                // running to answer it; closing the flow first drops that query and stalls
+                // the next session behind the console host.
                 close_streams(&streams);
+                let deadline = Instant::now() + Duration::from_secs(2);
+                while !streams.drain.master_done.load(Ordering::SeqCst)
+                    && Instant::now() < deadline
+                {
+                    thread::sleep(Duration::from_millis(5));
+                }
+                streams.flow.close();
                 return Err(error);
             }
         };
@@ -1777,6 +1784,9 @@ mod tests {
             vec![b"\x1b[1;1R".as_slice()]
         );
         assert!(partial.is_empty());
+        let mut status = b"\x1b[5n".to_vec();
+        assert_eq!(take_console_handoffs(&mut status), vec![b"\x1b[0n".as_slice()]);
+        assert!(status.is_empty());
         let mut private = b"\x1b[?6nrest".to_vec();
         assert_eq!(
             take_console_handoffs(&mut private),
