@@ -2,6 +2,12 @@
 //!
 //! Speaks length-prefixed frames on stdin/stdout (see `frame.rs`); local control uses a private socket/pipe. Exits, ending
 //! every session, when its standard input closes.
+//!
+//! A console-subsystem image is attached to `cargo test`'s console before `main`, and
+//! `FreeConsole` did not let `cmd.exe` leave `CreateProcess` on the Windows runners.
+//! The Windows subsystem never attaches. The host and the tests pass pipes in, so the
+//! frame protocol is unchanged. Unit tests of this file keep a console.
+#![cfg_attr(all(windows, not(test)), windows_subsystem = "windows")]
 
 mod agent_data;
 #[cfg(any(windows, test))]

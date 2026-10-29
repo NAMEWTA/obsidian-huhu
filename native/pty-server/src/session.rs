@@ -1402,6 +1402,8 @@ impl Sessions {
         // before this call; otherwise an existing console program stays inside
         // CreateProcess on that console lock.
         let child_result = (|| {
+            #[cfg(windows)]
+            crate::bootstrap::detach_parent_console();
             let child = opened.slave.spawn_command(command).map_err(|error| {
                 #[cfg(windows)]
                 {

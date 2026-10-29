@@ -249,13 +249,12 @@ mod platform {
     const PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE: usize = 0x0002_0016;
     const PROC_THREAD_ATTRIBUTE_HANDLE_LIST: usize = 0x0002_0002;
     const BOOTSTRAP_ARG: &str = "--huhu-session-bootstrap";
-    /// The helper is a console-subsystem image. A console parent, including
-    /// `cargo test`, attaches it to that console. `CreateProcess` of a pseudoconsole
-    /// client then waits on the console lock, so an existing program such as
-    /// `cmd.exe` never returns. A missing image fails before that lock and is
-    /// already `program-rejected`. Standard handles are pipes by the time `main`
-    /// runs, so detaching leaves the frame protocol intact. `windowsHide` starts
-    /// the helper with no console; this call then fails and the process continues.
+    /// The helper is a Windows-subsystem image, so a console parent cannot attach
+    /// it. `CreateProcess` of a pseudoconsole client otherwise waits on that
+    /// console lock, and an existing program such as `cmd.exe` never returns. A
+    /// missing image fails before that lock and is already `program-rejected`.
+    /// This call still runs: standard handles are pipes by the time `main` runs,
+    /// so detaching leaves the frame protocol intact when a host did attach one.
     pub fn detach_parent_console() {
         unsafe { windows_sys::Win32::System::Console::FreeConsole() };
     }

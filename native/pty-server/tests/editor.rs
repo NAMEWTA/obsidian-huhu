@@ -233,35 +233,45 @@ sock.on('error',()=>{});setInterval(()=>{},1000);
             if let Some(path) = std::env::var_os("HUHU_TEST_NODE") {
                 return fs::canonicalize(path).expect("explicit HUHU_TEST_NODE must exist");
             }
-            let mut child = Command::new("node")
-                .args(["-p", "process.execPath"])
-                .env_clear()
-                .env("HOME", std::env::var_os("HOME").unwrap_or_default())
-                .env("PATH", std::env::var_os("PATH").unwrap_or_default())
-                .stdin(Stdio::null())
-                .stdout(Stdio::piped())
-                .stderr(Stdio::null())
-                .spawn()
-                .expect("Linux editor tests require Node");
-            let mut stdout = child.stdout.take().unwrap();
-            let (tx, rx) = mpsc::channel();
-            let reader = thread::spawn(move || {
-                let mut bytes = Vec::new();
-                let result = stdout
-                    .by_ref()
-                    .take(4097)
-                    .read_to_end(&mut bytes)
-                    .map(|_| bytes);
-                let _ = tx.send(result);
-            });
-            let output = rx.recv_timeout(Duration::from_secs(2));
-            if output.is_err() {
-                child.kill().unwrap();
+            let mut last = None;
+            for _ in 0..2 {
+                let mut child = Command::new("node")
+                    .args(["-p", "process.execPath"])
+                    .env_clear()
+                    .env("HOME", std::env::var_os("HOME").unwrap_or_default())
+                    .env("PATH", std::env::var_os("PATH").unwrap_or_default())
+                    .stdin(Stdio::null())
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::null())
+                    .spawn()
+                    .expect("Linux editor tests require Node");
+                let mut stdout = child.stdout.take().unwrap();
+                let (tx, rx) = mpsc::channel();
+                let reader = thread::spawn(move || {
+                    let mut bytes = Vec::new();
+                    let result = stdout
+                        .by_ref()
+                        .take(4097)
+                        .read_to_end(&mut bytes)
+                        .map(|_| bytes);
+                    let _ = tx.send(result);
+                });
+                let output = rx.recv_timeout(Duration::from_secs(2));
+                if output.is_err() {
+                    child.kill().unwrap();
+                }
+                let status = child.wait().unwrap();
+                reader.join().unwrap();
+                if let Ok(Ok(bytes)) = &output {
+                    if status.success() && bytes.len() <= 4096 {
+                        last = Some(bytes.clone());
+                        break;
+                    }
+                }
+                last = None;
             }
-            let status = child.wait().unwrap();
-            reader.join().unwrap();
-            let bytes = output.expect("bounded Node discovery").unwrap();
-            assert!(status.success() && bytes.len() <= 4096);
+            let bytes = last.expect("bounded Node discovery");
+            assert!(bytes.len() <= 4096);
             fs::canonicalize(std::str::from_utf8(&bytes).unwrap().trim()).unwrap()
         })
         .clone()

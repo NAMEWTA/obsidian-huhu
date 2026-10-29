@@ -311,7 +311,7 @@ mod windows {
     };
     use windows_sys::Win32::{
         Foundation::{CloseHandle, HANDLE},
-        System::{JobObjects::*, Threading::GetCurrentProcess},
+        System::JobObjects::*,
     };
     static HELPER_CONTAINED: AtomicBool = AtomicBool::new(false);
     #[derive(Debug)]
@@ -417,7 +417,11 @@ mod windows {
     }
     pub fn kill_children_with_helper() -> io::Result<HelperJob> {
         let job = Job::new()?;
-        job.assign(unsafe { GetCurrentProcess() })?;
+        // Do not put this process in the job. A kill-on-close job around the
+        // helper makes CreateProcess block while Windows starts a console
+        // client such as cmd.exe on a pseudoconsole. The child joins its
+        // session job after CreateProcess returns, and that handle closes
+        // with the helper.
         HELPER_CONTAINED.store(true, Ordering::SeqCst);
         Ok(HelperJob { _job: job })
     }

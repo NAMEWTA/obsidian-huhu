@@ -112,6 +112,10 @@ fn prompt_and_send_text_preserve_utf8_multiline_body_and_target_from_stdin_or_fi
                         _ => return None,
                     }
                 };
+                // macOS keeps the accepted socket nonblocking when the listener is.
+                // A blocking read waits for the CLI's frame; WouldBlock is not a
+                // failed body.
+                stream.set_nonblocking(false).unwrap();
                 stream
                     .set_read_timeout(Some(Duration::from_secs(2)))
                     .unwrap();
