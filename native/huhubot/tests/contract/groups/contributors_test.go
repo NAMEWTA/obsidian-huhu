@@ -114,8 +114,19 @@ func TestPrivateSourceFreeChildContributorIsRevokedAfterActualCheckpointResume(t
 	if count(t, db, "SELECT count(*) FROM conversation_messages WHERE session_id=? AND role='assistant' AND text LIKE '%PRIVATE_C_RESULT%'", s.ID) != 0 {
 		t.Error("unpublished removed member body was re-published by its consumer")
 	}
-	if count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 || count(t, db, "SELECT count(*) FROM task_config_pins") != 0 {
-		t.Fatal("stopped producers retained slots/pins")
+	// The run can be terminal before the slot and pin rows are removed.
+	// They still have to go. This wait does not accept a leftover row.
+	until := time.Now().Add(5 * time.Second)
+	for {
+		slots := count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0")
+		pins := count(t, db, "SELECT count(*) FROM task_config_pins")
+		if slots == 0 && pins == 0 {
+			break
+		}
+		if time.Now().After(until) {
+			t.Fatalf("stopped producers retained slots/pins slots=%d pins=%d", slots, pins)
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
