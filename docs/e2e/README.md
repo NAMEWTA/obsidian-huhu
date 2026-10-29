@@ -93,3 +93,20 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | #14 | `feat/browser-phase2-issue-1` @ `9396254` | 18 | 都在 `dev` |
 | #4 | `feat/git-note-history-issue-2` @ `b9f3891` | 1 | 都在 `dev` |
 | #5 | `feat/independent-agent-browser-issue-1` @ `206abb5` | 5 | 都在 `dev` |
+
+## 本轮合并核对
+
+2026-10-29 07:53（台北）重新 `git fetch` 之后，除 `origin/NAMEWTA/terminal` 以外，每个远程分支的 tip 都已经是 `dev`（`31e5404`）的祖先。对 `origin/main` 以及 `feat/archives-definition-domain-3`、`feat/browser-phase2-issue-1`、`feat/git-note-history-issue-2`、`feat/independent-agent-browser-issue-1`、`fix/safe-notes-polish-20261028`、`NAMEWTA/1236`、`NAMEWTA/6`、`NAMEWTA/bot`、`refactor/task-domain-7` 执行 `git merge --no-edit`，结果都是 Already up to date。没有新的合并提交，也没有冲突要解。`origin/NAMEWTA/terminal`（`6016789`）按要求排除，不是 `dev` 的祖先。
+
+开放的 PR #4、#5、#10、#11、#12、#13、#14 的 head 都在上面这些分支里。PR #15 就是 `dev` 对 `main`，保持打开，没有合并，也没有关闭任何 issue 或 PR。`main` 没有被推送或改写。
+
+插件源码相对 `31e5404` 没有再改。随后在 Obsidian 1.14.5 的一次性库里重跑了关键功能。这次点测把首页模块关掉了：上一次把首页留在默认开启时，150 秒内工作台没有出现，当时首页模块仍停在激活中。下面六张是这次关掉首页后新截的，快速切换框已关掉。
+
+| 功能 | 截图 | 结果 |
+|---|---|---|
+| 任务 | [recheck-task.png](recheck-task.png) | 通过。新建并保存「合并后点测任务」，未完成计数为 1 |
+| 档案 | [recheck-archives.png](recheck-archives.png) | 通过。打开个人档案，侧栏有定义设计器、迁移与恢复、个人档案和企业档案，表格列是名称、别名、地区、电话、邮箱 |
+| 高亮 | [recheck-highlight.png](recheck-highlight.png) | 通过。正文「这是一段可以划词高亮的正文」被标黄，侧栏为高亮 (1)，卡片是同一句 |
+| 版本历史 | [recheck-versioning.png](recheck-versioning.png) | 通过。历史模式列出 `revise note` 和 `initial note` |
+| HuhuBot | [recheck-bot.png](recheck-bot.png) | 通过。本地 Runner 路径下状态为「就绪」，可见「选择一个 Bot 开始对话」，没有 `HUHUBOT_DOWNLOAD_FAILED` |
+| 浏览器 | [recheck-browser.png](recheck-browser.png) | 通过。安装钉死的运行包后进入浏览器工作台。页面写明系统凭据保护不可用，空间列表仍是空的「创建浏览器空间以开始使用」。受管页面和同页交接仍以前面的 [browser-managed-page.png](browser-managed-page.png)、[browser-handoff.png](browser-handoff.png) 为准 |
