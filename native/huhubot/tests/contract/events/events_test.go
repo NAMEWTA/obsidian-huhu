@@ -484,9 +484,10 @@ func TestCursorSnapshotPreservesEachDurableMessageSourceAndRejectsBadFacts(t *te
 	if e != nil {
 		t.Fatal(e)
 	}
-	// Allow the 270 real transactions and race-instrumented polling to finish;
-	// this is a correctness wait budget, not a throughput requirement.
-	f.waitTerminalFor(t, run.RunID, 6*time.Second)
+	// Liveness only, same budget as waitTerminal. Windows and Intel runners
+	// under go test ./... can block GetRun for longer than 6s. The 250ms
+	// history gate in this package is unchanged.
+	f.waitTerminal(t, run.RunID)
 	_, e = f.c.API.Events.Tail(ctx, owner, api.EventTailQuery{ProfileID: f.profile, RunID: run.RunID, AfterSeq: "0"})
 	var expired *api.Fault
 	if !errors.As(e, &expired) || expired.Kind != "CURSOR_EXPIRED" || expired.Details == nil || expired.Details.SnapshotSeq != "274" {

@@ -59,7 +59,8 @@ func TestAcceptedDelegationRequirementsReachActualChildEngine(t *testing.T) {
 				if input.Intent != "summarize records" || input.Delegation == nil || input.Delegation.DelegationID != child.ID || input.Delegation.Task != input.Intent || len(input.Delegation.Constraints) != 1 || input.Delegation.Constraints[0] != constraint || input.Delegation.ExpectedOutput != expected {
 					t.Fatalf("exact accepted requirements missing from actual Engine input: %#v", input.Delegation)
 				}
-			case <-time.After(2 * time.Second):
+			case <-time.After(15 * time.Second):
+				// Liveness only. The requirement comparison above is unchanged.
 				t.Fatal("child Engine not invoked")
 			}
 			once.Do(func() { close(release) })

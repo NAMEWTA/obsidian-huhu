@@ -100,8 +100,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
 	// 45m per package. The default 10m expires on macos-15-intel while the
 	// private-memory seventy-turn capacity test is still polling GetRun.
 	// That runner has 3 cores and `go test ./...` runs packages together.
-	// Assertions are unchanged.
-	if (args.length === 1 && args[0] === '--test') execFileSync('go', ['test', '-mod=readonly', '-timeout', '45m', './...'], { cwd: moduleDirectory, env: goEnvironment(targetFor(`${process.platform}-${process.arch}`)), stdio: 'inherit' });
+	// Windows runners do the same with every package at once, and a finished
+	// command is then reported as a timeout. One package at a time keeps the
+	// assertions and the 3s shutdown bound. Assertions are unchanged.
+	if (args.length === 1 && args[0] === '--test') {
+		const testArgs = ['test', '-mod=readonly', '-timeout', '45m'];
+		if (process.platform === 'win32') testArgs.push('-p', '1');
+		testArgs.push('./...');
+		execFileSync('go', testArgs, { cwd: moduleDirectory, env: goEnvironment(targetFor(`${process.platform}-${process.arch}`)), stdio: 'inherit' });
+	}
 	else if (args.length === 1 && args[0] === '--all') for (const target of targets) buildBot(target);
 	else {
 		assert.ok(args.length === 0 || (args.length === 2 && args[0] === '--target'), 'Usage: build-huhu-bot.mjs [--target <platform-arch> | --all | --test]');
