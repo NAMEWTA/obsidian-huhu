@@ -110,3 +110,64 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 版本历史 | [recheck-versioning.png](recheck-versioning.png) | 通过。历史模式列出 `revise note` 和 `initial note` |
 | HuhuBot | [recheck-bot.png](recheck-bot.png) | 通过。本地 Runner 路径下状态为「就绪」，可见「选择一个 Bot 开始对话」，没有 `HUHUBOT_DOWNLOAD_FAILED` |
 | 浏览器 | [recheck-browser.png](recheck-browser.png) | 通过。安装钉死的运行包后进入浏览器工作台。页面写明系统凭据保护不可用，空间列表仍是空的「创建浏览器空间以开始使用」。受管页面和同页交接仍以前面的 [browser-managed-page.png](browser-managed-page.png)、[browser-handoff.png](browser-handoff.png) 为准 |
+
+## 第二轮复测
+
+2026-10-29（台北）在 `dev` 上重测。实际使用的模型是 **grok-4.7 xhigh**。环境仍是 Obsidian 1.14.5 和一次性库。`pnpm run build` 通过，`pnpm run lint` 零警告通过。`pnpm run test:all` 通过：48 个脚本全部通过；其中 Vitest 为 **4301 passed、3 skipped、0 failed**。比上一轮多出的 1 条是首页 Cookie 恢复时限的回归测试。
+
+### 首页不再卡住工作台
+
+根因在 `NeteaseAccount.restore()`。首页启动时会读网易云 Cookie。这台环境没有可用的系统凭据服务，`cookies.get` 一直不返回，首页停在 loading，插件要等启动模块结束才赋值工作台。会话目录当时已经验证完成，所以不是会话创建本身。
+
+修复是桌面端这次可选恢复最多等 5 秒。超时后保持未登录，不弹通知，后到的 Cookie 不能登录。计时器用所属窗口。诊断、规格和决定在 `.agents/speculo/.speculo/specdev/changes/2026-10-29-home-cookie-restore-deadline/`。
+
+本轮把全部模块都打开。进度记录在 08:55（台北）仍看到 home 为 loading、工作台还没有；约一分钟内脚本已经打开看板、做完 20 次打开计时并创建了任务。随后强行退出再打开，任务还在，各模块开关仍是开启，页面错误钩子为空。[round2-home.png](round2-home.png) 是首页看板。[round2-restart.png](round2-restart.png) 是重启后的「第二轮任务」。
+
+### 工作台打开耗时
+
+20 次都是：先留下一篇 Markdown，关掉本窗口的工作台叶子，再打开首页。样本（毫秒）：132.2、31.5、31.5、30、29.7、29.7、32.6、34.8、31.4、42、37、49、35.1、48.8、58.8、39.7、36.4、43.2、36.3、47.4。
+
+按从小到大排序后，p95 取第 `ceil(0.95 × 20)` 个，是 **58.8 ms**。中位 36.3 ms，最小 29.7 ms，最大 132.2 ms。见 [round2-perf.png](round2-perf.png)。
+
+这只是工作台打开耗时。Issue #1 写的撤销确认 p95 ≤ 300 ms、输入到新画面 p95 ≤ 250 ms 这次没有采样。
+
+### 验收对照
+
+| 验收项 | 结果 | 截图 |
+|---|---|---|
+| 全部模块开启后工作台出现，首页为 active | 通过。browser、home、task、comments、navigator、archives、agent、icons、notifications、automations、versioning 为 active；safe、huhubot 按需 idle。错误钩子为空 | [round2-home.png](round2-home.png) |
+| 任务创建 | 通过。「第二轮任务」，未完成 1 | [round2-task.png](round2-task.png) |
+| 停用再启用任务模块 | 通过。关闭后是「此功能已关闭，原有数据仍然保留」，重新打开后任务还在 | [round2-task-off.png](round2-task-off.png) |
+| 重启后任务和模块开关还在 | 通过。磁盘上的 `huhu/任务/tasks.json` 有这条任务，界面也能看到。home、task、archives、comments、versioning、browser、safe、huhubot 仍为开启 | [round2-restart.png](round2-restart.png) |
+| #7 F20–F22 迟到成功 | 本轮只再次看到关闭模块后的提示。入队后改参数、卸载后拒绝迟到成功仍只在 `src/modules/task/services/boundary.test.ts` | [round2-task-off.png](round2-task-off.png) |
+| #3 个人档案列表 | 通过。定义设计器、迁移与恢复、个人档案、企业档案；列是名称、别名、地区、电话、邮箱 | [round2-archives.png](round2-archives.png) |
+| #3 定义设计器 | 通过 | [round2-archives-designer.png](round2-archives-designer.png) |
+| #3 关系类型 | 通过。设计器里新建「关系类型」，可见源端、目标端和两端类型 | [round2-archives-relation.png](round2-archives-relation.png) |
+| #3 迁移与恢复 | 通过。只读预检、迁移可处理档案、持久操作记录。没有在界面里注入故障再跑一遍迁移 | [round2-archives-migration.png](round2-archives-migration.png) |
+| #3 新建档案表单 | 通过。打开通用「新建档案」，字段按个人档案渲染，并带值的存在状态。名称框当时是「未存储」，脚本没有把名称写进去 | [round2-archives-form.png](round2-archives-form.png) |
+| #3 P0–P1 文件协议里不能在界面上逐项点的规则 | 由改写后的黄金测试锁定，不是这次新点出来的页面 | 无新截图 |
+| #3 P5 | 未做。正文：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」CSV 导入、Lookup/Rollup、局部图谱、项目集成都没有实现 | 无 |
+| #6 划词高亮 | 通过。侧栏高亮 (1)，卡片是划中的句子 | [round2-highlight.png](round2-highlight.png) |
+| #6 搜索 | 通过。搜索框里是「划词」，卡片还在 | [round2-highlight-search.png](round2-highlight-search.png)、[round2-highlight-bulk.png](round2-highlight-bulk.png) |
+| #6 按颜色筛选 | 本轮没有证明。给下拉框赋值后，截图里仍是「全部颜色」。上一轮的 [highlights-filter.png](highlights-filter.png) 仍是黄色筛选的证据 | [round2-highlight-filter.png](round2-highlight-filter.png) |
+| #6 批量 | 通过。已选 1 条，可见全选、四色、标签、归档、删除 | [round2-highlight-bulk.png](round2-highlight-bulk.png) |
+| #6 自定义颜色 | 通过。设置里增加了「琥珀」 | [round2-highlight-color.png](round2-highlight-color.png) |
+| #6 导出 Markdown | 本轮没有证明。菜单点击后没有出现导出通知，库里也没有新的导出文件。上一轮的 [highlights-export.png](highlights-export.png) 仍是那次导出的证据 | 无新的成功截图 |
+| #6 P2 | 未做。正文把 PDF、EPUB 和可选 AI 排除在首版之外 | 无 |
+| #2 历史列表 | 通过。`revise note` 与 `initial note` | [round2-versioning.png](round2-versioning.png) |
+| #2 左右对照 | 通过。同一文件左右两栏 | [round2-versioning-side.png](round2-versioning-side.png) |
+| #2 上下对照 | 通过。上下两栏 | [round2-versioning-stacked.png](round2-versioning-stacked.png) |
+| #2 行内对照 | 本轮点了「行内」并保存了截图，但画面仍像左右两栏，不能当成已经切到行内。上一轮的 [versioning-inline.png](versioning-inline.png) 仍是行内对照的证据 | [round2-versioning-inline.png](round2-versioning-inline.png) |
+| #2 恢复向导 | 本轮没有打开。笔记侧栏的历史页在 20 秒内没有列出 `revise note`，`leaf.setState` 也不是这个叶子上的函数。版本管理页里的两次提交和左右、上下对照是本轮打开的。上一轮的 [versioning-restore.png](versioning-restore.png) 仍是恢复向导的证据 | 无新的成功截图 |
+| 保险箱 | 通过。主密码创建后进入空库，可见搜索、新增条目、立即锁定 | [round2-safe.png](round2-safe.png) |
+| HuhuBot | 通过。本地 Runner 下状态为「就绪」，没有 `HUHUBOT_DOWNLOAD_FAILED` | [round2-bot.png](round2-bot.png) |
+| #1 系统凭据不可用 | 通过界面提示。文案是「系统凭据保护不可用，创建新空间需明确选择临时存储。」这台环境没有系统钥匙串，不能验证持久凭据库 | [round2-browser-credentials.png](round2-browser-credentials.png) |
+| #1 遮挡点击 | 通过。`pageAction` 返回 `browser_element_obscured`，横幅是「该元素被挡住了。点击已被拒绝，页面没有因此改变。」 | [round2-browser-occluded.png](round2-browser-occluded.png) |
+| #1 页外按钮 | 通过。页面变成「页外已点击」 | [round2-browser-outside.png](round2-browser-outside.png) |
+| #1 跨域 iframe | 调用返回 ok，节点的 frame 与页面 frame 不同。截图里框内文字仍像「框内未点击」，本轮不能把这次点击写成已经改变了框内状态。上一轮的 [browser-click-inside.png](browser-click-inside.png) 仍是点中框内按钮的证据 | [round2-browser-inside.png](round2-browser-inside.png) |
+| #1 同页交接 | 通过。空间先处于暂停，点「交回 Agent」后控制权变为 Agent，再点「转交给另一个 Agent」。对话框标题是「授权同页 Agent 交接」，含目标 Agent ID、外部 Run ID、Attempt ID。对话框后面还开着快速切换，不影响对话框本身 | [round2-browser-handoff.png](round2-browser-handoff.png) |
+| #1 弹出窗口 | 通过了一部分。弹出窗口里是甲笔记，主窗口里是乙笔记，侧栏卡片只有乙。弹出窗口自己没有批注侧栏，甲只停留在选区，没有变成另一张卡片。上一轮的 [comments-window-a.png](comments-window-a.png)、[comments-window-b.png](comments-window-b.png) 仍是两侧各自有卡片的证据 | [round2-popout-a.png](round2-popout-a.png)、[round2-popout-b.png](round2-popout-b.png) |
+| 输入法组字 | CDP `Input.imeSetComposition` 把「你好」写进了笔记，并被标成高亮。见 [round2-ime.png](round2-ime.png)。这不是系统候选窗。上一轮 `ibus` / `libpinyin` 没有走出候选框，这次没有再把系统候选窗跑通 | [round2-ime.png](round2-ime.png) |
+| Windows / macOS 浏览器运行包 | 未验证。这台机器只有钉死的 Linux x64 运行包 | 无 |
+
+控制台：全部模块就绪时和重启后再打开任务时，页面上的 `console.error` / 未处理拒绝钩子都是空的。Obsidian 自己的日志里只有测试配置文件不存在的 ENOENT，没有插件报错。
