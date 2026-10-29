@@ -9,7 +9,7 @@ import { t } from '../../../shared/i18n';
 import type { ModuleContext } from '../../../app/contracts/module';
 import { SettingsStore } from '../../../shared/settings/store';
 import { initializeDevice, deviceId } from '../../../host/obsidian/storage/device-id';
-import { createDesktopSpacePorts } from '../platform/desktop/spaces/ports';
+import { freeWriterPorts } from '../platform/desktop/spaces/free-writer-port.fixture';
 import type { NativeEvents, NativeSpawnOptions } from '../../../shared/native/host';
 import { NativeHost } from '../../../host/desktop/native/host';
 import { agentSettings } from '../settings';
@@ -197,11 +197,17 @@ async function fixture(prepare?: () => Promise<void>) {
 		services: { peek: () => undefined, watch: () => () => {} },
 		contributions: { collect: async () => [] },
 	} as unknown as ModuleContext;
-	const controller = new AgentController(context, settings, {
-		prepare,
-		confirm: async () => false,
-		selectSpace: async () => choice,
-	});
+	const controller = new AgentController(
+		context,
+		settings,
+		{
+			prepare,
+			confirm: async () => false,
+			selectSpace: async () => choice,
+		},
+		undefined,
+		freeWriterPorts(),
+	);
 	await controller.workspace.persistence.ready;
 	return {
 		controller,

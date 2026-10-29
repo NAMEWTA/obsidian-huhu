@@ -10,6 +10,7 @@ import type { ModuleContext } from '../../../app/contracts/module';
 import { SettingsStore } from '../../../shared/settings/store';
 import { initializeDevice, deviceId } from '../../../host/obsidian/storage/device-id';
 import { createDesktopSpacePorts } from '../platform/desktop/spaces/ports';
+import { freeWriterPorts } from '../platform/desktop/spaces/free-writer-port.fixture';
 import type { NativeEvents, NativeSpawnOptions } from '../../../shared/native/host';
 import { NativeHost } from '../../../host/desktop/native/host';
 import { agentSettings } from '../settings';
@@ -197,11 +198,18 @@ async function fixture(prepare?: () => Promise<void>) {
 		services: { peek: () => undefined, watch: () => () => {} },
 		contributions: { collect: async () => [] },
 	} as unknown as ModuleContext;
-	const controller = new AgentController(context, settings, {
-		prepare,
-		confirm: async () => false,
-		selectSpace: async () => choice,
-	});
+	const writerPort = freeWriterPorts();
+	const controller = new AgentController(
+		context,
+		settings,
+		{
+			prepare,
+			confirm: async () => false,
+			selectSpace: async () => choice,
+		},
+		undefined,
+		writerPort,
+	);
 	await controller.workspace.persistence.ready;
 	return {
 		controller,
@@ -216,6 +224,7 @@ async function fixture(prepare?: () => Promise<void>) {
 		adapter,
 		files,
 		root,
+		writerPort,
 		native,
 		events: () => nativeEvents,
 		holdNativeStop: () => {
@@ -257,6 +266,7 @@ for (const lateFailure of [false, true])
 				vaultId: 'fixture-probe',
 				deviceId: deviceId(f.app),
 				win: f.win,
+				writerPort: f.writerPort,
 			});
 			let browser: Awaited<ReturnType<NativeHost['acquire']>> | undefined;
 			const messages = Reflect.get(Notice, 'messages') as string[],

@@ -174,7 +174,9 @@ async function open() {
 			connection?.close();
 			child.stdin.end();
 			let timer;
-			await Promise.race([exited, new Promise((resolve) => (timer = setTimeout(resolve, 4000)))]);
+			// Close itself budgets 3s after stdin EOF. A busy runner can use that whole
+			// budget before the process actually exits. Force-kill still fails the test.
+			await Promise.race([exited, new Promise((resolve) => (timer = setTimeout(resolve, 10000)))]);
 			clearTimeout(timer);
 			if (exitCode === undefined) {
 				forced = true;

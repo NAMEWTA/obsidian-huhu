@@ -42,6 +42,7 @@ import { SpaceService, type SessionAdmission } from './spaces/space-service';
 import type { SessionRecord } from './spaces/records';
 import { ManagedLaunchError, managedFailure, normalizeManagedFailure } from './launch/managed-errors';
 import { createDesktopSpacePorts } from '../platform/desktop/spaces/ports';
+import type { WriterPortProvider } from '../platform/desktop/spaces/writer-owner';
 import type { SpaceChooser } from '../core/space/ports';
 import { SpaceError } from '../core/space/errors';
 import { spaceErrorMessage } from './spaces/messages';
@@ -187,6 +188,8 @@ export class AgentController {
 		readonly settings: SettingsHandle<TerminalSettings>,
 		private readonly dialogs: ControllerDialogs,
 		sharedWorkspace?: import('../../../app/contracts/shared-workspace').SharedWorkspaceOwner,
+		/** Tests pass an OS-assigned port. Production omits this and keeps the hashed vault lock. */
+		writerPort?: WriterPortProvider,
 	) {
 		const app = context.app;
 		const win = app.workspace.containerEl.win;
@@ -243,6 +246,7 @@ export class AgentController {
 			vaultId: identity.vaultId,
 			deviceId: identity.deviceId,
 			win,
+			...(writerPort ? { writerPort } : {}),
 		});
 		const shared = sharedWorkspace ?? context.sharedWorkspace;
 		if (shared) {

@@ -62,6 +62,134 @@ mod tests {
         assert!(assign_and_release(|| Ok::<_, &str>(()), || false, || Ok(())).is_ok());
     }
 }
+/// Windows command line for one payload. Rust's `Command` always sets
+/// `STARTF_USESTDHANDLES`; a real console image then deadlocks inside CreateProcess
+/// while it joins ConPTY. The bootstrap child therefore builds this line itself.
+#[cfg(any(windows, test))]
+pub(crate) fn windows_command_line(file: &str, args: &[String]) -> Vec<u16> {
+    let mut out = Vec::new();
+    append_windows_argument(&mut out, file);
+    for arg in args {
+        out.push(u16::from(b' '));
+        append_windows_argument(&mut out, arg);
+    }
+    out.push(0);
+    out
+}
+#[cfg(any(windows, test))]
+fn append_windows_argument(out: &mut Vec<u16>, arg: &str) {
+    let quote = arg.is_empty()
+        || arg
+            .chars()
+            .any(|c| matches!(c, ' ' | '\t' | '\n' | '\r' | '"'));
+    if !quote {
+        out.extend(arg.encode_utf16());
+        return;
+    }
+    out.push(u16::from(b'"'));
+    let mut backslashes = 0u32;
+    for c in arg.chars() {
+        match c {
+            '\\' => backslashes += 1,
+            '"' => {
+                for _ in 0..(backslashes * 2 + 1) {
+                    out.push(u16::from(b'\\'));
+                }
+                out.push(u16::from(b'"'));
+                backslashes = 0;
+            }
+            _ => {
+                for _ in 0..backslashes {
+                    out.push(u16::from(b'\\'));
+                }
+                backslashes = 0;
+                let mut buf = [0u16; 2];
+                for unit in c.encode_utf16(&mut buf) {
+                    out.push(*unit);
+                }
+            }
+        }
+    }
+    for _ in 0..(backslashes * 2) {
+        out.push(u16::from(b'\\'));
+    }
+    out.push(u16::from(b'"'));
+}
+/// `None` inherits the parent environment. Overrides replace keys without regard to case.
+#[cfg(any(windows, test))]
+pub(crate) fn windows_environment_block(
+    base: impl IntoIterator<Item = (String, String)>,
+    overrides: &std::collections::HashMap<String, String>,
+) -> Option<Vec<u16>> {
+    if overrides.is_empty() {
+        return None;
+    }
+    let mut entries: Vec<(String, String)> = base.into_iter().collect();
+    for (key, value) in overrides {
+        if key.is_empty() || key.contains('=') || key.contains('\0') || value.contains('\0') {
+            continue;
+        }
+        if let Some(slot) = entries
+            .iter_mut()
+            .find(|(existing, _)| existing.eq_ignore_ascii_case(key))
+        {
+            slot.0.clone_from(key);
+            slot.1.clone_from(value);
+        } else {
+            entries.push((key.clone(), value.clone()));
+        }
+    }
+    entries.sort_by(|left, right| {
+        left.0
+            .to_ascii_lowercase()
+            .cmp(&right.0.to_ascii_lowercase())
+    });
+    let mut block = Vec::new();
+    for (key, value) in entries {
+        block.extend(format!("{key}={value}").encode_utf16());
+        block.push(0);
+    }
+    block.push(0);
+    Some(block)
+}
+#[cfg(test)]
+mod command_line_tests {
+    use super::{windows_command_line, windows_environment_block};
+    use std::collections::HashMap;
+    fn text(units: &[u16]) -> String {
+        String::from_utf16_lossy(units)
+    }
+    #[test]
+    fn plain_arguments_stay_unquoted_and_special_ones_are_escaped() {
+        assert_eq!(
+            text(&windows_command_line(
+                "cmd.exe",
+                &["/D".into(), "/C".into(), "exit 7".into()]
+            )),
+            "cmd.exe /D /C \"exit 7\"\0"
+        );
+        assert_eq!(
+            text(&windows_command_line(
+                "C:\\Program Files\\shell.exe",
+                &[String::new(), "a\"b".into(), "c\\".into(), "c \\".into()]
+            )),
+            "\"C:\\Program Files\\shell.exe\" \"\" \"a\\\"b\" c\\ \"c \\\\\"\0"
+        );
+    }
+    #[test]
+    fn environment_overrides_replace_case_insensitively_and_empty_means_inherit() {
+        assert!(windows_environment_block([("PATH".into(), "a".into())], &HashMap::new()).is_none());
+        let mut overrides = HashMap::new();
+        overrides.insert("Path".into(), "b".into());
+        overrides.insert("HUHU".into(), "1".into());
+        let block = windows_environment_block(
+            [("PATH".into(), "a".into()), ("Z".into(), "z".into())],
+            &overrides,
+        )
+        .unwrap();
+        assert_eq!(text(&block), "HUHU=1\0Path=b\0Z=z\0\0");
+    }
+}
 #[cfg(windows)]
 pub use platform::{run_if_requested, spawn};
 #[cfg(windows)]
@@ -72,10 +200,8 @@ mod platform {
     };
     use portable_pty::{Child, ChildKiller, CommandBuilder, ExitStatus, SlavePty};
     use std::{
-        fs::OpenOptions,
         io, mem,
-        os::windows::io::{AsRawHandle, RawHandle},
-        process::Command,
+        os::windows::io::RawHandle,
         ptr,
         sync::{
             atomic::{AtomicU32, AtomicU64, Ordering},
@@ -87,7 +213,7 @@ mod platform {
     use windows_sys::Win32::{
         Foundation::*,
         Security::{Authorization::*, Cryptography::*, *},
-        System::{Console::*, Memory::*, Threading::*},
+        System::{Memory::*, Threading::*},
     };
     const SIZE: usize = 256 * 1024;
     const REQUEST: usize = 1024;
@@ -539,6 +665,81 @@ mod platform {
             Ok(ExitStatus::with_exit_code(code))
         }
     }
+    struct PayloadProcess {
+        process: HANDLE,
+        thread: HANDLE,
+        pid: u32,
+    }
+    impl Drop for PayloadProcess {
+        fn drop(&mut self) {
+            unsafe {
+                if !self.thread.is_null() {
+                    CloseHandle(self.thread);
+                }
+                if !self.process.is_null() {
+                    CloseHandle(self.process);
+                }
+            }
+        }
+    }
+    impl PayloadProcess {
+        fn resume(mut self) -> io::Result<Self> {
+            let previous = unsafe { ResumeThread(self.thread) };
+            let thread = self.thread;
+            self.thread = ptr::null_mut();
+            unsafe {
+                CloseHandle(thread);
+            }
+            if previous == u32::MAX {
+                let error = io::Error::last_os_error();
+                unsafe {
+                    TerminateProcess(self.process, 1);
+                }
+                return Err(error);
+            }
+            Ok(self)
+        }
+    }
+    /// Create the user program on this process's pseudoconsole.
+    ///
+    /// `STARTF_USESTDHANDLES` with `CONIN$`/`CONOUT$` deadlocks CreateProcess for a real
+    /// console image. Leave the standard handles unset so the payload attaches to the
+    /// console the anchor already owns. A missing image fails before that attachment.
+    /// The thread starts suspended so CreateProcess cannot wait on the payload, then
+    /// resumes before the parent is told the handle exists.
+    fn spawn_attached(
+        command_line: &mut [u16],
+        environment: Option<&[u16]>,
+        directory: Option<&[u16]>,
+    ) -> io::Result<PayloadProcess> {
+        let mut startup: STARTUPINFOW = unsafe { mem::zeroed() };
+        startup.cb = mem::size_of::<STARTUPINFOW>() as u32;
+        let mut created: PROCESS_INFORMATION = unsafe { mem::zeroed() };
+        let ok = unsafe {
+            CreateProcessW(
+                ptr::null(),
+                command_line.as_mut_ptr(),
+                ptr::null(),
+                ptr::null(),
+                0,
+                CREATE_SUSPENDED | CREATE_UNICODE_ENVIRONMENT,
+                environment
+                    .map(|block| block.as_ptr() as *const _)
+                    .unwrap_or(ptr::null()),
+                directory.map(|path| path.as_ptr()).unwrap_or(ptr::null()),
+                &startup,
+                &mut created,
+            )
+        };
+        if ok == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        Ok(PayloadProcess {
+            process: created.hProcess,
+            thread: created.hThread,
+            pid: created.dwProcessId,
+        })
+    }
     fn run(args: &[String]) -> io::Result<()> {
         if args.len() != 4 {
             return Err(io::Error::other("Invalid bootstrap arguments"));
@@ -562,57 +763,37 @@ mod platform {
                 std::slice::from_raw_parts(mapping.view.add(REQUEST), n)
             })
             .map_err(io::Error::other)?;
-            let mut command = Command::new(&request.file);
-            command.args(&request.args).envs(&request.env);
-            if let Some(cwd) = request.cwd.filter(|c| !c.is_empty()) {
-                command.current_dir(cwd);
-            }
-            // Explicit STARTF_USESTDHANDLES on CONIN$/CONOUT$ deadlocks ConPTY while a real
-            // console program connects. Install the console handles as this process's standard
-            // handles and let CreateProcess duplicate them. A missing image still fails first.
-            let input = OpenOptions::new()
-                .read(true)
-                .open("CONIN$")
-                .or_else(|_| OpenOptions::new().read(true).write(true).open("CONIN$"))?;
-            let output = OpenOptions::new()
-                .write(true)
-                .open("CONOUT$")
-                .or_else(|_| OpenOptions::new().read(true).write(true).open("CONOUT$"))?;
-            let error_out = output.try_clone()?;
-            for handle in [
-                input.as_raw_handle(),
-                output.as_raw_handle(),
-                error_out.as_raw_handle(),
-            ] {
-                unsafe {
-                    SetHandleInformation(
-                        handle as _,
-                        HANDLE_FLAG_INHERIT,
-                        HANDLE_FLAG_INHERIT,
-                    );
-                }
-            }
-            unsafe {
-                SetStdHandle(STD_INPUT_HANDLE, input.as_raw_handle() as _);
-                SetStdHandle(STD_OUTPUT_HANDLE, output.as_raw_handle() as _);
-                SetStdHandle(STD_ERROR_HANDLE, error_out.as_raw_handle() as _);
-            }
-            let mut child = command.spawn()?;
+            let mut command_line = super::windows_command_line(&request.file, &request.args);
+            let environment = super::windows_environment_block(std::env::vars(), &request.env);
+            let directory = request
+                .cwd
+                .filter(|cwd| !cwd.is_empty())
+                .map(|cwd| wide(&cwd));
+            let child = spawn_attached(
+                &mut command_line,
+                environment.as_deref(),
+                directory.as_deref(),
+            )?
+            .resume()?;
             mapping.word(20).store(1, Ordering::Release);
-            mapping.word(4).store(child.id(), Ordering::Relaxed);
-            mapping.handle_word().store(
-                AsRawHandle::as_raw_handle(&child) as usize as u64,
-                Ordering::Release,
-            );
+            mapping.word(4).store(child.pid, Ordering::Relaxed);
+            mapping
+                .handle_word()
+                .store(child.process as usize as u64, Ordering::Release);
             mapping.word(0).store(1, Ordering::Release);
             let deadline = Instant::now() + Duration::from_secs(4);
             while mapping.word(0).load(Ordering::Acquire) != 2 {
                 if Instant::now() >= deadline {
+                    unsafe {
+                        TerminateProcess(child.process, 1);
+                    }
                     return Err(io::Error::other("Payload handle was not captured"));
                 }
                 thread::sleep(Duration::from_millis(5));
             }
-            let _ = child.wait()?;
+            if unsafe { WaitForSingleObject(child.process, INFINITE) } != WAIT_OBJECT_0 {
+                return Err(io::Error::last_os_error());
+            }
             Ok(())
         })();
         if let Err(error) = &result {

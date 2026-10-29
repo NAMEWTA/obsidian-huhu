@@ -100,8 +100,20 @@ describe('real cross-process Space writer', () => {
 	}, 20000);
 
 	test.each(['inspect', 'idle'])('%s has no IPC/controller keepalive or inherited listener work', async mode => {
-		const child = start(await vault(), 'logical', mode);
-		expect((await child.ready).type).toBe(mode === 'inspect' ? 'inspected' : 'held');
-		expect(await child.exit).toEqual({ code: 0, signal: null });
+		// Parallel suites can hash another vault onto this port. That rejection is the lock
+		// working; try a new directory until one hold can prove the process still exits.
+		let last: Reply | undefined;
+		for (let attempt = 0; attempt < 4; attempt++) {
+			const child = start(await vault(), 'logical', mode);
+			last = await child.ready;
+			if (last.type === 'failed' && last.code === 'OWNER_CONFLICT' && last.reason === 'port-in-use') {
+				expect(await child.exit).toEqual({ code: 1, signal: null });
+				continue;
+			}
+			expect(last.type).toBe(mode === 'inspect' ? 'inspected' : 'held');
+			expect(await child.exit).toEqual({ code: 0, signal: null });
+			return;
+		}
+		throw new Error(`writer port stayed busy: ${JSON.stringify(last)}`);
 	}, 10000);
 });

@@ -231,5 +231,5 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 这台机器不能验证的项：Windows ConPTY 的真实界面、macOS 伪终端、系统输入法在终端里的组字、已安装的 CLI 智能体（这次没有配置 Codex / Claude 等可执行文件）、以及从 GitHub 下载已发布辅助程序。那些仍要在对应系统上看。CI 里没有 Obsidian。
 
-合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。ConPTY 在程序创建前发出的光标查询改由辅助程序本地回答，不作为子进程输出。失败结果仍必须是 `program-rejected` / `none`，同一个会话号随后仍要能跑起来。这次点测没有因此重跑。
+合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。ConPTY 在程序创建前发出的光标查询改由辅助程序本地回答，不作为子进程输出。失败结果仍必须是 `program-rejected` / `none`。随后同一个会话号启动 `cmd.exe` 时，Rust `Command` 仍会带上 `STARTF_USESTDHANDLES`，真正的控制台程序在创建过程中卡住，2 秒内没有任何帧。引导进程改为不设置标准句柄的 `CreateProcessW`，让载荷挂到锚点已经连上的伪控制台。同一个会话号仍要跑起来并得到退出码 7。这次点测没有因此重跑。
 

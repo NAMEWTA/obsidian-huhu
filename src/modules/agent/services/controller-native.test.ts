@@ -7,6 +7,7 @@ import type { ModuleContext } from '../../../app/contracts/module';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import { initializeTestDevice } from '../../../../test/fixtures/vault-storage';
 import { normalizeTerminalSettings, type TerminalSettings } from '../core/terminal/settings';
+import { freeWriterPorts } from '../platform/desktop/spaces/free-writer-port.fixture';
 import { AgentController } from './controller';
 import createAgentModule from '../module';
 import { AGENT_WORKBENCH, AGENT_USAGE, NATIVE_HELPER_SQLITE } from '../api';
@@ -41,7 +42,7 @@ test('an enabled unused Agent leaves Provider discovery and login-shell probing 
 	const settings = { get: () => value, subscribe: () => () => {}, update: async () => {} } as unknown as SettingsHandle<TerminalSettings>;
 	const context = { app, manifest: { version: '0.0.1' }, native: { acquire: async () => { throw new Error('unused native capability'); } }, lifetime: { register: (fn: () => void) => cleanups.push(fn) }, settings: { bind: () => settings }, services: { peek: () => undefined, watch: () => () => {} }, shell: { refresh: () => {} } } as unknown as ModuleContext;
 	const before = native.probes;
-	const controller = new AgentController(context, settings, { confirm: async () => false });
+	const controller = new AgentController(context, settings, { confirm: async () => false }, undefined, freeWriterPorts());
 	try {
 		await controller.workspace.persistence.ready;
 		expect(scheduled).toEqual([]);

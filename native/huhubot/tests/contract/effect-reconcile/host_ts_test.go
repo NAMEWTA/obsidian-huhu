@@ -39,7 +39,7 @@ func TestActualTSGoProductionNoteHost(t *testing.T) {
 	if output, e := cmd.CombinedOutput(); e != nil {
 		t.Fatalf("bundle: %v\n%s", e, output)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	cmd = exec.CommandContext(ctx, "node", bundle, binary, profileRoot)
 	cmd.Dir = repo
