@@ -20,13 +20,13 @@ use windows_sys::Win32::{
     System::{
         Console::{
             ClosePseudoConsole, CreatePseudoConsole, ResizePseudoConsole, COORD, HPCON,
-            PSEUDOCONSOLE_INHERIT_CURSOR,
         },
         Pipes::CreatePipe,
     },
 };
 
-/// Documented ConPTY flags alongside PSEUDOCONSOLE_INHERIT_CURSOR.
+/// ConPTY flags. INHERIT_CURSOR is omitted: with the helper's standard handles
+/// redirected, that flag waits on a parent console and CreateProcess does not return.
 const PSEUDOCONSOLE_RESIZE_QUIRK: u32 = 0x2;
 const PSEUDOCONSOLE_WIN32_INPUT_MODE: u32 = 0x4;
 
@@ -124,7 +124,7 @@ pub fn open(cols: u16, rows: u16) -> io::Result<Opened> {
             },
             input.read.as_raw_handle() as HANDLE,
             output.write.as_raw_handle() as HANDLE,
-            PSEUDOCONSOLE_INHERIT_CURSOR | PSEUDOCONSOLE_RESIZE_QUIRK | PSEUDOCONSOLE_WIN32_INPUT_MODE,
+            PSEUDOCONSOLE_RESIZE_QUIRK | PSEUDOCONSOLE_WIN32_INPUT_MODE,
             &mut hpcon,
         )
     };
