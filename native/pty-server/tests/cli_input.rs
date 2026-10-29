@@ -11,10 +11,23 @@ use std::{
 struct InputFixture(PathBuf);
 impl InputFixture {
     fn new() -> Self {
-        let root = std::env::temp_dir().join(format!(
+        let name = format!(
             "hcli-{}",
             &uuid::Uuid::new_v4().simple().to_string()[..16]
-        ));
+        );
+        // runtime_root ignores XDG_RUNTIME_DIR at 50 bytes or more so the control
+        // socket stays inside the listen budget. macOS temp directories exceed that.
+        #[cfg(unix)]
+        let root = {
+            let under_temp = std::env::temp_dir().join(&name);
+            if under_temp.as_os_str().len() < 50 {
+                under_temp
+            } else {
+                PathBuf::from("/tmp").join(name)
+            }
+        };
+        #[cfg(not(unix))]
+        let root = std::env::temp_dir().join(name);
         fs::create_dir(&root).unwrap();
         #[cfg(unix)]
         {
@@ -59,14 +72,21 @@ fn prompt_and_send_text_preserve_utf8_multiline_body_and_target_from_stdin_or_fi
     for group_command in [["agent", "prompt"], ["terminal", "send-text"]] {
         for source in ["--stdin", "--file"] {
             let fixture = InputFixture::new();
-            let runtime = fixture
-                .0
-                .join(format!("huhu-ctl-{}", unsafe { libc::geteuid() }));
+            let runtime_name = format!("huhu-ctl-{}", unsafe { libc::geteuid() });
+            let runtime = fixture.0.join(&runtime_name);
             fs::create_dir(&runtime).unwrap();
             fs::set_permissions(&runtime, fs::Permissions::from_mode(0o700)).unwrap();
             let locators = runtime.join("locators");
             fs::create_dir(&locators).unwrap();
             fs::set_permissions(&locators, fs::Permissions::from_mode(0o700)).unwrap();
+            // The caller path may cross a directory symlink (`/tmp` on macOS, or this
+            // alias). The private-root check has to follow it back to the real locator.
+            let alias_path = PathBuf::from(format!(
+                "/tmp/hcli-link-{}",
+                &uuid::Uuid::new_v4().simple().to_string()[..16]
+            ));
+            std::os::unix::fs::symlink(&fixture.0, &alias_path).unwrap();
+            let _alias = Alias(alias_path.clone());
             let socket_path = runtime.join("fixture.sock");
             let listener = UnixListener::bind(&socket_path).unwrap();
             fs::set_permissions(&socket_path, fs::Permissions::from_mode(0o600)).unwrap();
@@ -77,6 +97,7 @@ fn prompt_and_send_text_preserve_utf8_multiline_body_and_target_from_stdin_or_fi
             let locator = locators.join("fixture.json");
             fs::write(&locator, serde_json::to_vec(&serde_json::json!({"protocolVersion":1,"controlId":"fixture","token":"a".repeat(64),"endpoint":socket_path,"scope":scope})).unwrap()).unwrap();
             fs::set_permissions(&locator, fs::Permissions::from_mode(0o600)).unwrap();
+            let locator = alias_path.join(&runtime_name).join("locators").join("fixture.json");
             let server = thread::spawn(move || -> Option<Value> {
                 let deadline = Instant::now() + Duration::from_secs(2);
                 let mut stream = loop {
@@ -171,6 +192,14 @@ fn prompt_and_send_text_preserve_utf8_multiline_body_and_target_from_stdin_or_fi
                 serde_json::json!({"instanceId":"i","sessionId":"session-B","runtimeId":"runtime-B"})
             );
         }
+    }
+}
+#[cfg(unix)]
+struct Alias(PathBuf);
+#[cfg(unix)]
+impl Drop for Alias {
+    fn drop(&mut self) {
+        let _ = fs::remove_file(&self.0);
     }
 }
 impl Drop for InputFixture {

@@ -51,10 +51,21 @@ pub fn validate_scope(scope: &Value) -> Result<(), ProtocolError> {
     }
     Ok(())
 }
+fn locator_is_inside(path: &Path, expected: &Path) -> bool {
+    if path.parent() == Some(expected) {
+        return true;
+    }
+    // A missing file stays a connection failure. macOS canonicalizes `/tmp` to
+    // `/private/tmp` and `/var` to `/private/var`, so an explicit locator may
+    // still use the path the caller wrote.
+    fs::canonicalize(path)
+        .ok()
+        .is_some_and(|canonical| canonical.parent() == Some(expected))
+}
 fn read_captured(path: &Path) -> Result<(Value, os::Identity), ProtocolError> {
     let expected =
         root().map_err(|_| failure("SOURCE_UNAVAILABLE", "Private locator root unavailable"))?;
-    if path.parent() != Some(expected.as_path())
+    if !locator_is_inside(path, expected.as_path())
         || path
             .file_name()
             .is_none_or(|s| s.len() > w::LOCATOR_NAME_BYTES)

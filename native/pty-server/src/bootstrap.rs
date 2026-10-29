@@ -223,7 +223,7 @@ pub fn spawn_failure_code(message: &str) -> &'static str {
     }
 }
 #[cfg(windows)]
-pub use platform::{contain, run_if_requested};
+pub use platform::{contain, detach_parent_console, run_if_requested};
 #[cfg(windows)]
 mod platform {
     use crate::{
@@ -249,6 +249,16 @@ mod platform {
     const PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE: usize = 0x0002_0016;
     const PROC_THREAD_ATTRIBUTE_HANDLE_LIST: usize = 0x0002_0002;
     const BOOTSTRAP_ARG: &str = "--huhu-session-bootstrap";
+    /// The helper is a console-subsystem image. A console parent, including
+    /// `cargo test`, attaches it to that console. `CreateProcess` of a pseudoconsole
+    /// client then waits on the console lock, so an existing program such as
+    /// `cmd.exe` never returns. A missing image fails before that lock and is
+    /// already `program-rejected`. Standard handles are pipes by the time `main`
+    /// runs, so detaching leaves the frame protocol intact. `windowsHide` starts
+    /// the helper with no console; this call then fails and the process continues.
+    pub fn detach_parent_console() {
+        unsafe { windows_sys::Win32::System::Console::FreeConsole() };
+    }
     fn wide(s: &str) -> Vec<u16> {
         s.encode_utf16().chain(Some(0)).collect()
     }

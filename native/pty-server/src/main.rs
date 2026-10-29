@@ -351,8 +351,12 @@ fn metrics_file(path: String, value: Value) {
 
 fn main() {
     #[cfg(windows)]
-    if bootstrap::run_if_requested() {
-        return;
+    {
+        // Before the bootstrap child or any session calls CreateProcess.
+        bootstrap::detach_parent_console();
+        if bootstrap::run_if_requested() {
+            return;
+        }
     }
     // Do this before channels, threads, PTYs or history databases are created.
     if let Err(error) = inherited_fds::close_inherited_fds() {

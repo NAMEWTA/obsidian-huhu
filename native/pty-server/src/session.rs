@@ -1398,8 +1398,9 @@ impl Sessions {
         });
         // portable-pty resolves the executable and passes it as lpApplicationName.
         // A missing image fails inside CreateProcess with no process. Those os errors
-        // stay program-rejected/none. A hand-rolled CreateProcess left cmd.exe inside
-        // the console connect on CI, so the payload is created from this slave instead.
+        // stay program-rejected/none. The helper detaches from the parent console
+        // before this call; otherwise an existing console program stays inside
+        // CreateProcess on that console lock.
         let child_result = (|| {
             let child = opened.slave.spawn_command(command).map_err(|error| {
                 #[cfg(windows)]
