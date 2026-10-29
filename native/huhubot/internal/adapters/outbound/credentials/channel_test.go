@@ -212,13 +212,15 @@ func TestPrivateChannelClosesAtNinthInFlightAndWaitsForWorkers(t *testing.T) {
 		}
 	}
 	sendPrivate(t, c, 3, f.profileID, testRef, "", MaxInFlight+1, nil)
+	// Liveness only. The ninth request is still rejected; reaping the eight
+	// blocked workers can miss a 1s slice when this package shares a runner.
 	select {
 	case err := <-done:
 		if err == nil {
 			t.Fatal("ninth in-flight accepted")
 		}
 		done <- err
-	case <-time.After(time.Second):
+	case <-time.After(5 * time.Second):
 		t.Fatal("channel did not cancel/reap active operations")
 	}
 }

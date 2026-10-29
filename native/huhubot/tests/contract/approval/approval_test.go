@@ -195,7 +195,11 @@ func waitApproval(t *testing.T, f *fixture) api.Approval {
 }
 func waitRun(t *testing.T, f *fixture, id, status string) api.Run {
 	t.Helper()
-	until := time.Now().Add(3 * time.Second)
+	return waitRunWithin(t, f, id, status, 3*time.Second)
+}
+func waitRunWithin(t *testing.T, f *fixture, id, status string, budget time.Duration) api.Run {
+	t.Helper()
+	until := time.Now().Add(budget)
 	for {
 		r, e := f.core.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: f.command.ProfileID, ID: id})
 		if e != nil {
@@ -255,8 +259,12 @@ func TestPublicApprovalDecisionResumesSameRunAndReleasesOnce(t *testing.T) {
 				return api.EngineResult{Status: "finished", Text: "decision " + i.Decision.Status}, nil
 			}}
 			lifetime := time.Minute
+			settle := 3 * time.Second
 			if decision == "expired" {
-				lifetime = 60 * time.Millisecond
+				// Longer than waitApproval's 3s poll, so a busy runner still
+				// observes waiting_approval before the real lifetime elapses.
+				lifetime = 8 * time.Second
+				settle = lifetime + 5*time.Second
 			}
 			f := open(t, engine, lifetime)
 			receipt, e := f.core.API.Conversation.StartRun(ctx, owner, f.command)
@@ -284,7 +292,7 @@ func TestPublicApprovalDecisionResumesSameRunAndReleasesOnce(t *testing.T) {
 					t.Fatal("decision intent replay", again, e)
 				}
 			}
-			run := waitRun(t, f, receipt.RunID, "succeeded")
+			run := waitRunWithin(t, f, receipt.RunID, "succeeded", settle)
 			select {
 			case in := <-resumed:
 				if in.Input.RunID != receipt.RunID || in.Decision.EffectID != a.EffectID {
