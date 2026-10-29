@@ -1,0 +1,252 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-agent-workbench-refactor",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "serial",
+  "max_parallel_tickets": 1,
+  "input_digest": "366fa1921e89bd86ed19699b56972cb013adf7b6e60e926adbb6e278a1540626",
+  "goal_contract_digest": "a617d583b09a360eb59d74a0b7efa68519173534f3b8385ca90759fe31074bf2",
+  "contract_digests": {
+    "T-01": "440c9d1aaa64f4d1bb9c6ead6226769fcc4742f30866d366a1f4a319014d8ed7",
+    "T-02": "af255d0bb12abce3368c2f916948f1600eee445b2260611cd3fd257a03ea4b3d",
+    "T-03": "992a6aa27b3b4ef8e9cea709dc61077c183a2baef031baee68f5b916da2a262c",
+    "T-04": "29f1c2ae284308fb4e5d9f1996d62d4d56fbc0c6e25334b2aaa6271cc9725a55",
+    "T-05": "f755308052e1fbc4a6a3b602eb83e24f251f4a62acba1b2193df8e0990cd5f49",
+    "T-06": "fc27c69d8a817155b0354ebc62bef59961bbfe5aa32b7453a84b9d5e19546a20",
+    "T-07": "a5f788e777583f29cecd5aa4df44c91de3b8e8df74c37467bc10689833b8cda8",
+    "T-08": "44c1d79e37e1424796abab1abd456176748fcbf475605ab1fb2828a83f7c0db5",
+    "T-09": "d69045a4ed66820193a69cf2e51237b9e3632000aa303abc1ad2edd2f06cd134",
+    "T-10": "91d01a83c2daeb2bbaafecdb4153c64353645b0bfbc43d6def0185adaa9e47fd",
+    "T-11": "87aa7de920312c09c374bc76a0978551c9c2264bcf76e4648ac7361fec21d24e",
+    "T-12": "c1606a81e80d652d33b8034d9faa66e694561437eceb8ac2bb10a4c020b5416c",
+    "T-13": "f543f8d2fb3405ae2f1fa3c107cdc51d42390e65bc45ac63c1def4b417d311c8",
+    "T-14": "6a472ffa52cbb19df74f671e1dac877c38fb970762ddcfd90e8b9f7e6940c26c",
+    "T-15": "dfa896856b815b6b2621788759ff6cf56d1b4bde84b0e4f692b45a9e5e9c9912",
+    "T-16": "0c3b75ede75941e6199f1624d7522d1b395088186ac32dc1b926f09b97e3cdbd",
+    "T-17": "4a6f387b64cce8aa5533259b522a419c895be9142817732789b5f82a1e10d771",
+    "T-18": "c3251c2fba4c9c3ff7ecb0e37ea35a78f6113a437e77183364309df8f1149c71"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-04",
+    "T-05",
+    "T-06",
+    "T-07",
+    "T-08",
+    "T-09",
+    "T-10",
+    "T-11",
+    "T-12",
+    "T-13",
+    "T-14",
+    "T-15",
+    "T-16",
+    "T-17",
+    "T-18"
+  ],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "goal-plan.md: ready_for_execution must match status"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    }
+  ],
+  "validation_errors": [
+    {
+      "id": "T-01",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-02",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-03",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-04",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-05",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-06",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-07",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-08",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-09",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-10",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-11",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-12",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-13",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-14",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-15",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-16",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-17",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    },
+    {
+      "id": "T-18",
+      "message": "goal-plan.md: ready_for_execution must match status"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

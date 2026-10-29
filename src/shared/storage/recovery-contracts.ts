@@ -1,4 +1,5 @@
 import type { TextStorage } from './ports';
+import type { StorageTimers } from './timers';
 
 /**
  * Pure protocol for a cross-owner, restart-safe file replacement (LOG-029, contracts §6).
@@ -18,6 +19,8 @@ export interface RecoveryStorage extends TextStorage {
 
 export type RecoveryErrorCode =
 	| 'BUSY'
+	| 'TIMEOUT'
+	| 'CANCELLED'
 	| 'QUIESCE_FAILED'
 	| 'DRAIN_FAILED'
 	| 'PATH_NOT_OWNED'
@@ -121,10 +124,16 @@ export interface RecoveryAccess {
 	readonly storage: RecoveryStorage;
 	/** Whether an owner with this id is registered (a module that is off has none, and its files are handled offline). */
 	has(ownerId: string): boolean;
-	/** Resolves when no operation is in flight; rejects while an unrecoverable hold is active. */
+	/** Resolves when this host has settled; rejects while a shared adapter tail or unrecoverable hold remains active. */
 	settled(): Promise<void>;
 }
 export interface RecoveryRunOptions {
+	/** Cancels only before replacement starts. A late underlying wait stays isolated from subsequent recoveries. */
+	readonly signal?: AbortSignal;
+	/** Entire pre-commit budget in milliseconds (default 30 seconds, at most 2 minutes). Commit/adoption must finish. */
+	readonly preCommitTimeoutMs?: number;
+	/** Defaults to the timers registered by the app host. Non-host callers inject their own clock; missing timers refuse before quiesce. */
+	readonly timers?: StorageTimers;
 	readonly operation: string;
 	/** Runs after all owners are quiet; `read` returns exact current bytes (null when missing). `copies` are saved unchanged. */
 	readonly stage: (

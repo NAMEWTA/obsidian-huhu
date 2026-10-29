@@ -2,23 +2,24 @@
 schema_version: 8
 artifact: goal-plan
 change: 2026-10-25-agent-workbench-refactor
-status: in_progress
+status: completed
 modes: ["migration", "high-assurance", "reference-conformance"]
 orchestration: lead-directed
 lead: codex:/root
 integration_attempt_limit: 3
 ticket_execution: serial
-ready_for_execution: true
+ready_for_execution: false
 ---
 
 # Goal Plan：HUHU 终端 Agent 工作台
 
 - **本轮模式：** run；用户已授权完整实施和代码验收，真实端到端由用户进行（LOG-027、Spec §11）。
-- **计划修订：** GP-039；来源 Tickets Map `plan_revision: 40`。实际派单同时冻结 Goal/Map/Ticket 的内容摘要，不能只比较修订标签。
+- **计划修订：** GP-047；来源 Tickets Map `plan_revision: 43`。实际派单同时冻结 Goal/Map/Ticket 的内容摘要，不能只比较修订标签。
 - **用户总控入口：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md</Path>；**行为：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md</Path>；**视觉：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md</Path>。
 - **局部交付：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/</Path>；**实施证据目录：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/</Path>。
 - **本轮规划证据：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/goal-plan-review.md</Path>；该记录不作为任何产品 Gate 的关闭证据。
 
+<a id="goal-outcome-contract"></a>
 ## 1. Outcome and Authority
 
 ### Outcome
@@ -52,6 +53,7 @@ ready_for_execution: true
 
 规划观察基线为 `66083cdb9f7f31a4bcbd3e380c6c7f64f2e74e93`，当前分支 main，已有 AGENTS.md/.gitignore 修改及 SpecDev 未跟踪文档。详见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/goal-plan-baseline.json</Path>；这是规划时的只读观察，实际实施上下文仍在首次 I 时由 README 唯一记录。
 
+<a id="goal-execution-contract"></a>
 ## 2. Execution Graph
 
 ### DAG and Critical Path
@@ -104,6 +106,7 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | T-17 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/17-cli-delivery.md</Path> | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-17.md</Path> |
 | T-18 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/18-platform-acceptance.md</Path> | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-18.md</Path> |
 
+<a id="goal-gates-contract"></a>
 ## 3. Gates and Completion Evidence
 
 ### Overall Definition of Done
@@ -144,6 +147,7 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | 研究先行与 R-01–05 / K-01–07 | 每张命中陌生能力的票；T-17 汇总来源 | 官方源码/许可/manifest/Issue 与本项目复现；V-11 | reference-notes + 原票采用/不采用理由；不把公开 Issue 当已确认本项目缺陷 |
 
 <a id="execution-protocol"></a>
+<a id="goal-protocol-contract"></a>
 ## 4. Execution and Integration Protocol
 
 **执行入口：** 用户现已授权，Lead 与实现者调用 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>，按 Map → 命中的 dev/ui 等项目 Skill → 当前 Ticket 回读并实际执行绑定。I 负责单票实现、独立双轴审查和验证；本 Goal 拥有跨票 Gate。
@@ -208,6 +212,7 @@ reviewer 不参与修复；发现交回实现者处理，随后重冻并复审�
 
 最终整体审查保存在 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-review.md</Path>，跨票 Gate 验收引用原票/整体证据；不创建第二份 Agent 状态账本或空完成文件。纯 plan 的自查记录与这些未来实现证据分开。
 
+<a id="goal-recovery-contract"></a>
 ## 5. Constraints, Risk and Recovery
 
 ### Non-negotiable Constraints
@@ -250,7 +255,9 @@ Expand（T-01–13 保留原适配与隔离新格式）→ 消费者迁移/观�
 
 ### Current Status
 
-run持续；T01–10代码交付及独立两轴完成，G01/G02代码部分closed，G03–06 open。T10 已以 `evidence/T-10.md` 关闭，068 的 agentTool state round-trip 修复、Root post-build 与 r8 独立双轴均已回读通过。T11 stage1 已形成 metadata-only/lazy-preview 部分交付，但 `evidence/T-11.md` 记录的 standards/specification 双轴均为 request-changes：legacy provenance、非 available source status、Space owner/CLI wiring 及 SQLite F1/F2/F3 未闭合；T11 writer 已停止，T12 继续阻塞。T13 已按 Map revision 38 / GP-037 完成共享 owner、Agent 借用、Browser 独立工作台路由与状态回写的代码阶段；078/079/080/081 已留存实现、修复与独立审查，081 最终标准轴与规范轴均通过。T13 仍未关闭，真实宿主恢复、app unload/re-enable 和用户指定 E2E 保持待验收。真实 Obsidian/Provider/OS IME/五平台仍由用户验收。
+2026-10-29当前代码交付完成，18票均done且执行记录verified。37路径合并回退已恢复、必要根产物已重建，全部确认反例及最终审查残留关闭。最终456产品路径/20规范来源的整体Astra/high标准轴和规范轴均pass（sessions/20261029T021146Z/012-final-overall/REPORT.md；013/014独立支持），Lead已回读真实交回、源停写与同源产物。适用build/types、全量4889 tests/513 files、原生及CLI/helper实进程、静态/包体/受控Chrome均通过，42测试和4文件跳过不算通过。docs总检查11条在final-review明确保留：6个另change旧锚点+5条原始报告CSS selector解析误报。
+
+G-01至G-06代码门全部closed；真实Obsidian/Provider/原生审批/OS IME/五平台与负载仍按Spec11交用户，未冒称实机通过。当前没有产品writer、未关闭finding或用户新增决定；没有提交、推送、升版本、发布或归档。最终权威输入、原始报告、精确命令和跳过/失败原件均见evidence/final-review.md。
 
 ### G-01 代码关闭回执
 
@@ -258,7 +265,7 @@ run持续；T01–10代码交付及独立两轴完成，G01/G02代码部分close
 
 ### Pending Decisions and Blockers
 
-已有实现授权与模型分工，无需再次确认。上一轮只读审查的四项发现按 LOG-028 处置；用户已明确旧业务必须绑定Space，原入口先选择（LOG-030）；T-02/T-14/T-15承接，T-01不受影响。未来平台环境缺项仅保留人工待验收，不阻塞代码交付。
+本轮代码交付无待答决定或阻塞。真实宿主、Provider、五平台、负载与输入法按已确认分工由用户执行，清单见docs/agent-workbench-acceptance.md；当前完成结论不扩展为实机支持承诺。
 
 ### Resume Protocol
 
@@ -337,3 +344,24 @@ T13 与 T11 已按 GP040 完成代码交付与独立双轴审查并置 done（ev
 ### GP042 进度（2026-10-28）
 
 T12、T14 已完成代码交付与独立双轴审查并置 done（evidence/T-12.md、T-14.md）。跨票 bundle 预算：拆出 Pi editor codec、native-extensions 懒加载、Pi artifact profiles 以 brotli 资产随包，outputBytes 与 agent activation 未调高即回到预算内；startup/browser 按 evidence/bundle-budget-attribution-GP041.json、home/automations 按 evidence/T-14-budget-attribution.json 以最小 KiB 上限调整；独立审查 sessions/20261027T-claude/106-bundle-review 两轴 pass，后续补漏 test/native 导入。待办：T-02 writer-port 哈希冲突导致的测试偶发失败（S-L6）在 T15 后单独处理。T15 实施中。
+
+
+### GP044 接续当前合并候选与最终修复（2026-10-29）
+
+Lead恢复为当前Codex原生宿主，复用原current工作区。输入HEAD78102da与旧123有39个产品摘要漂移，已由evidence/final-merge-recovery.json明确恢复来源；初始全量514文件28失败、types/lint/build入口断裂。三个Astra/high新reviewer均双轴request-changes，原始报告保存在sessions/20261029T021146Z/001..003。同范围修复由新Sol/xhigh writer处理，三个writer非冲突，同一T-18活动窗口；原reviewer不参与实现，修后新快照复核。37源文件恢复由Lead执行，main.js/styles.css在源停写后重建，正式Evidence与整体验收仍Lead独占。新增反例覆盖历史完整身份、CLI输入和Hook崩溃恢复、备份白名单/完整性/冻结/排空，不改变Spec/DESIGN。真实端到端继续由用户负责。G-06保持开放；未提交、推送、发布或归档。
+
+
+### GP047 最终代码Gate关闭回执（2026-10-29）
+
+Lead沿change-completion回读真实当前工作副本、18票、原Evidence和最终整体两轴。输入ad85880384c79e07d781e6b18ac4fa97a9585bce88009432d825b4f295c476e7；HEAD仍78102da，交付为完整未提交工作副本，不虚构commit。旧GP044恢复时和前两轮失败保留在final-review及原始TASK/REPORT，未重置历史。
+
+| Gate | 当前代码关闭依据 |
+|---|---|
+| G-01 | T01–04原有效资源/运行证据与最终全范围生命周期、Hook内核租约/崩溃恢复复核；真实宿主退出仍人工待验。 |
+| G-02 | T05–09屏幕/顺序输入/取消/控制/布局原证据，最终CLI协议/正文/容量/截止与真实helper实进程验证，当前build/全量及独立两轴。 |
+| G-03 | T10–14被动邮箱/精确历史来源/neverStarted/Browser及消费者证据，013真实stdio碰撞/恢复与生产消费者反例重验。 |
+| G-04 | T15–16迁移/包往返/权限/排空/取消/重载晚写与预检原型副作用正式回归，014独立公开入口与进程重启边界实验，原历史样本证据保留。 |
+| G-05 | T17同源资产/协议/帮助/schema/Skill/许可及五目标配置，Linux release helper/CLI smoke和生成/notice检查；未执行远程CI或发布。 |
+| G-06 | T18全局4889通过/42跳过、生产/测试类型与构建、全部适用检查、受控Chrome44px/焦点/主题/局部正文，012整体两轴pass；18执行记录verified与最终产物/源一致。 |
+
+上述仅关闭按Spec11约定的代码门，不将任何未运行的真实平台、Provider或性能场景写成passed。README Outcome由Lead据这些实际完成门更新为completed，change留在原目录，未归档。

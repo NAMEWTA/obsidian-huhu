@@ -48,6 +48,7 @@ const space = (id: string, name: string, archived = false) => ({ id, name, archi
 
 interface State {
 	rows: HistoryRow[];
+	terminalRows?: HistoryRow[];
 	loading: boolean;
 	error: string;
 	warnings: string[];
@@ -217,4 +218,51 @@ test('Export is offered for available rows and hidden for rows whose source is u
 	menu = await open('gone');
 	expect(within(menu).queryByRole('menuitem', { name: t('agent.historyUI.export') })).toBeNull();
 	expect(within(menu).getByRole('menuitem', { name: t('agent.historyUI.copyResume') })).toBeTruthy();
+});
+
+test('a partial native body reaches the row as an incomplete prefix, never as latest turns', async () => {
+	const { HistoryStore } = await import('../../services/history-store');
+	const source = row('partial', 'ref-a');
+	const history = {
+		hasScanned: true, meta: () => ({}), scan: async () => [],
+		query: async () => ({ rows: [source], total: 1, revision: 1 }),
+		read: async () => ({ ...source, usage: { ...usage, partial: true }, text: '## user\nBeginning of a long conversation' }),
+	} as unknown as import('../../platform/history/service').NativeHistory;
+	const store = new HistoryStore(() => history, () => '/vault');
+	try {
+		await store.refresh(false);
+		await store.preview('partial');
+		fixture({ rows: store.store.getState().rows });
+		await userEvent.setup().click(document.querySelector('[data-history-row="partial"] button[aria-expanded]')!);
+		expect(screen.getByText(t('agent.historyUI.bodyPartial'))).toBeTruthy();
+		expect(screen.getByRole('heading', { name: t('agent.historyUI.previewTurns') })).toBeTruthy();
+		expect(screen.queryByRole('heading', { name: t('agent.historyUI.latest') })).toBeNull();
+	} finally { store.dispose(); }
+});
+
+test('the time filter limits results by modification time', async () => {
+	vi.useFakeTimers({ now: new Date('2026-10-29T12:00:00Z'), toFake: ['Date'] });
+	try {
+		fixture({ rows: [row('recent', 'ref-a', { modifiedAtMs: Date.now() - 86400000 }), row('old', 'ref-b', { modifiedAtMs: Date.now() - 30 * 86400000 })] });
+		const user = userEvent.setup();
+		await user.click(screen.getByRole('button', { name: t('agent.historyUI.view') }));
+		await user.click(screen.getByRole('menuitemcheckbox', { name: t('agent.historyUI.time.week') }));
+		expect(shown()).toEqual(['recent']);
+	} finally { vi.useRealTimers(); }
+});
+
+test('ordinary terminal metadata is opt-in, keeps Space filtering and has no continue action', async () => {
+	const shell = { ...row('terminal'), kind: 'shell', agentId: 'shell', spaceId: 'a', title: 'Build terminal', previewState: 'unavailable' } as HistoryRow;
+	const f = fixture({ rows: [row('agent', 'ref-a')], terminalRows: [shell] });
+	const user = userEvent.setup();
+	expect(shown()).toEqual(['agent']);
+	await user.click(screen.getByRole('button', { name: t('agent.historyUI.view') }));
+	await user.click(screen.getByRole('menuitemcheckbox', { name: t('agent.historyUI.includeTerminals') }));
+	await user.keyboard('{Escape}');
+	expect(shown()).toEqual(['agent', 'terminal']);
+	await user.click(document.querySelector('[data-history-row="terminal"] button[aria-expanded]')!);
+	const terminal = document.querySelector<HTMLElement>('[data-history-row="terminal"]')!;
+	expect(within(terminal).getByText(t('agent.historyUI.terminalMetadata'))).toBeTruthy();
+	expect(within(terminal).queryByRole('button', { name: t('agent.historyResume.continue') })).toBeNull();
+	expect(f.historyStore.preview).not.toHaveBeenCalled();
 });

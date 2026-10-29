@@ -1,7 +1,7 @@
 ---
 schema_version: 3
 plan_contract_version: 1
-plan_revision: 40
+plan_revision: 43
 requested_deliverables: [{"name":"代码交付覆盖并交接人工验收的 OS/架构组合","count":5}]
 deliverable_policy: "用户未指定 Ticket 数量；按 64 项 AC 和真实接缝拆为 18 票。五平台来自 Q8/AC-063；用户本轮接手真实 E2E，Agent 交付代码/构建配置及人工步骤，不以交叉编译声称实机通过。"
 artifact: tickets-map
@@ -273,3 +273,18 @@ T09追加唯一Root路径vitest.config.ts，总57路径；证据与精确r2分�
 GP035/Map36：在T09实际完成、G02代码关闭后，将T10原持久owner和生产Inbox方案落实为A17/B19/U14/Root4共54条精确路径。022/033/038/040准备只作为工程依据，不作为实现通过；分阶段DoR与实际派遣才解锁产品写入。T11–18继续等待各自上游与DoR。
 
 T13 scope revision 38：保留 SpaceService 的唯一 writer 语义，由 app 通过 Agent module 的懒入口创建跨 Agent 生命周期共享 owner；不复制 writer，不由 Browser 自建缓存。Agent 关闭只 drain runtime，app unload 才 dispose owner；Browser 直接消费共享 browser port。
+
+
+### GP044 / Map41 最终整体审查恢复
+
+三个独立整体报告均request-changes；本轮保持仅T-18最终集成窗口活动，补正其授权路径承接原Spec内跨票修复。新源writer按sessions/20261029T021146Z/004..006分配非冲突写集，Lead先恢复37个被合并覆盖的源/文档/测试文件（精确源1f98811，另2个根产物后续重建），不重放迁移/Provider或恢复旧会话。T-01..17旧验收的受影响结论由最终Evidence补审，不拿旧pass关闭G-06。
+
+
+### GP045 / Map42 接缝与就近回归范围补正
+
+保持同一T-18最终修复窗口和004..006实际source owner不变。004的生产CLI路径笔误澄清为native/pty-server/src/control/cli.rs；006明确追加三个既有recovery fixture测试路径以注入真实有界timer。Lead实际承担canonical CLI-local正文metadata、严格generator/生成物、中英控制Skill及协议正反例，stdin/file不进入wire params。所有新增路径归T-18共享Lead owner并保留实际任务分配；不变更Spec/DESIGN/产品范围。最终整合使用此revision，旧TASK按其实际GP044/Map41输入保留，不改写派遣历史。
+
+
+### GP046 / Map43 候选2独立反例窄修
+
+007–009全部原始报告已正式交回，候选2完整build/门禁/4873测试已通过但整体仍request-changes：原型污染、重载旧writer覆盖、legacy adopt伪终止、同key来源正文混挂、history portal命中区、M12文档六根因。保持同一T-18窗口，仅010负责历史三项与局部CSS/模型，011负责备份危险key与跨包装/模块重载隔离；Root负责M12和Chrome命中区真实验证、产物。新增路径只服务这些已证实原合同缺口；不改变Spec/DESIGN或新建服务/持久平台。旧报告不覆盖，相关字节/消费者未失效的原生F1–F5与其他检查可复用。

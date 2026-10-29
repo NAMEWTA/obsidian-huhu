@@ -220,3 +220,22 @@ test('without the shared workspace owner, pages are unavailable instead of reach
 		await f.dispose();
 	}
 });
+
+
+test('a rejected shared layout open disposes the newly allocated Browser page', async () => {
+	let allocated = '';
+	const sharedWorkspace = {
+		browser: {
+			open: async (tab: { pageId: string }) => { allocated = tab.pageId; throw new Error('recovery-busy'); },
+			close: async () => {}, list: () => [], activate: () => {}, update: () => {}, subscribe: () => () => {},
+		}, ready: Promise.resolve(), spaces: {}, workspaceStore: {}, dispose: async () => {},
+	} as ModuleContext['sharedWorkspace'];
+	const f = await fixture('confirmed', sharedWorkspace);
+	try {
+		const opener = f.instance.services?.find(([key]) => key === BROWSER_OPEN)?.[1] as { open(request: { url: string }): Promise<string> };
+		await expect(opener.open({ url: 'https://example.com' })).rejects.toThrow('recovery-busy');
+		expect(allocated).not.toBe('');
+		expect(f.browser.getPage(allocated)).toBeUndefined();
+		expect(f.starts).toBe(0);
+	} finally { await f.dispose(); }
+});

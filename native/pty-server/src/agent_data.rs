@@ -1,6 +1,6 @@
 //! Native history stays read-only. Expensive parsing runs on worker threads, outside the PTY readers.
 //! Formats checked against stablyai/orca 27b823f (MIT, Lovecast Inc.).
-use rusqlite::{params, Connection, OpenFlags};
+use rusqlite::{params, Connection, OpenFlags, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::{
@@ -75,22 +75,42 @@ struct Session {
 pub(crate) struct OwnedSession {
     agent_id: String,
     session_id: String,
+    #[serde(default)]
+    account_key: String,
+    #[serde(default)]
+    device_id: String,
+    #[serde(default)]
+    transcript_path: String,
+    #[serde(default)]
+    source_ref: String,
 }
 /// Which sessions a scan may index: everything of an account, or (vault) sessions whose
 /// cwd is inside the vault plus sessions a Space owns.
 struct Scope<'a> {
     account: bool,
     owned: &'a [OwnedSession],
+    device_id: &'a str,
 }
 impl Scope<'_> {
-    fn admits(&self, vault: &Path, agent_id: &str, session_id: &str, cwd: &str) -> bool {
-        self.account || inside(vault, cwd) || owned_by_space(self.owned, agent_id, session_id)
+    fn admits(&self, vault: &Path, session: &Session) -> bool {
+        self.account
+            || inside(vault, &session.cwd)
+            || owned_by_space(self.owned, self.device_id, session)
     }
 }
-fn owned_by_space(owned: &[OwnedSession], agent_id: &str, session_id: &str) -> bool {
-    owned
-        .iter()
-        .any(|row| row.agent_id == agent_id && row.session_id == session_id)
+fn owned_by_space(owned: &[OwnedSession], device_id: &str, session: &Session) -> bool {
+    !device_id.is_empty()
+        && owned.iter().any(|row| {
+            row.agent_id == session.agent_id
+                && row.session_id == session.session_id
+                && !row.account_key.is_empty()
+                && row.account_key == session.account_key
+                && row.device_id == device_id
+                && !row.transcript_path.is_empty()
+                && row.transcript_path == session.transcript_path
+                && !row.source_ref.is_empty()
+                && row.source_ref == session.source_ref
+        })
 }
 #[derive(Clone, Serialize, Deserialize, Debug)]
 struct HistorySource {
@@ -110,6 +130,8 @@ struct Root {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct Request {
     vault: String,
+    #[serde(default)]
+    device_id: String,
     index: String,
     #[serde(default)]
     roots: Vec<Root>,
@@ -134,6 +156,8 @@ pub(crate) struct Request {
     system_roots: Vec<String>,
     #[serde(default)]
     owned_sessions: Vec<OwnedSession>,
+    #[serde(default)]
+    expected_source: Option<OwnedSession>,
 }
 #[cfg(test)]
 thread_local! {static READ_BUDGET_HOOK:std::cell::RefCell<Option<Box<dyn FnOnce()>>>=std::cell::RefCell::new(None);}
@@ -198,11 +222,13 @@ pub(crate) fn execute(
     if operation == "scan" {
         let mut warnings = Warnings::new();
         let mut pending = Vec::new();
+        let mut conflicts = HashSet::new();
         let mut statuses: Vec<StatusUpdate> = Vec::new();
         let account = request.scope == "account";
         let scope = Scope {
             account,
             owned: &request.owned_sessions,
+            device_id: &request.device_id,
         };
         sweep_stale_snapshots();
         for root in &request.roots {
@@ -258,7 +284,7 @@ pub(crate) fn execute(
                     &mut statuses,
                     &mut warnings,
                 )?;
-                flush_if_ready(&mut db, &mut pending, cancel)?;
+                flush_if_ready(&mut db, &mut pending, cancel, &mut conflicts)?;
                 reconcile_root(
                     &db,
                     root,
@@ -317,7 +343,7 @@ pub(crate) fn execute(
                     Ok(Some(session)) => {
                         fresh.insert(source.clone(), session.key.clone());
                         pending.push((session, stamp));
-                        flush_if_ready(&mut db, &mut pending, cancel)?;
+                        flush_if_ready(&mut db, &mut pending, cancel, &mut conflicts)?;
                     }
                     Ok(None) => {}
                     Err(error) => {
@@ -338,7 +364,12 @@ pub(crate) fn execute(
                 &mut statuses,
             )?;
         }
-        flush(&mut db, &mut pending, cancel)?;
+        flush(&mut db, &mut pending, cancel, &mut conflicts)?;
+        statuses.extend(
+            conflicts
+                .into_iter()
+                .map(|key| (key, "changed", "identity-collision".into())),
+        );
         apply_statuses(&mut db, &statuses, cancel)?;
         if !account {
             purge_inadmissible(&mut db, request, &vault, cancel)?;
@@ -380,6 +411,7 @@ pub(crate) fn execute(
             &request.system_bases,
             &request.system_roots,
             &request.owned_sessions,
+            &request.device_id,
         ) {
             // An available row whose source vanished (or became unreadable) since the last
             // scan is reported precisely, but only when the row itself still passes
@@ -392,6 +424,7 @@ pub(crate) fn execute(
                     &request.system_bases,
                     &request.system_roots,
                     &request.owned_sessions,
+                    &request.device_id,
                     false,
                 )
             {
@@ -401,6 +434,11 @@ pub(crate) fn execute(
                 }
             }
             return Err("session outside vault".into());
+        }
+        if request.expected_source.as_ref().is_some_and(|expected| {
+            !owned_by_space(std::slice::from_ref(expected), &request.device_id, &session)
+        }) {
+            return Err("history source changed; refresh required".into());
         }
         // A persisted non-available row keeps its metadata and reports its status; it
         // never carries a body.
@@ -476,6 +514,7 @@ pub(crate) fn execute(
             let scope = Scope {
                 account: true,
                 owned: &request.owned_sessions,
+                device_id: &request.device_id,
             };
             if session.agent_id == "opencode" {
                 let wanted = session.session_id.clone();
@@ -539,6 +578,7 @@ pub(crate) fn execute(
             &request.system_bases,
             &request.system_roots,
             &request.owned_sessions,
+            &request.device_id,
         ) {
             return Err("session outside vault".into());
         }
@@ -662,7 +702,43 @@ fn tighten_private_modes(parent: &Path, index: &Path) {
         }
     }
 }
+#[cfg(test)]
 fn save(db: &Connection, row: &Session, stamp: &str) -> rusqlite::Result<usize> {
+    write_row(db, row, stamp)
+}
+/// A shared opaque key must never transfer an existing source's annotations to another locator.
+fn save_in_scan(
+    db: &Connection,
+    row: &Session,
+    stamp: &str,
+    conflicts: &mut HashSet<String>,
+) -> rusqlite::Result<usize> {
+    let stored: Option<(String, String)> = db
+        .query_row(
+            "SELECT summary,stamp FROM history WHERE key=?1",
+            params![row.key],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .optional()?;
+    if let Some((summary, original_stamp)) = stored {
+        let mut original: Session =
+            serde_json::from_str(&summary).map_err(|_| rusqlite::Error::InvalidQuery)?;
+        let same = original.agent_id == row.agent_id
+            && original.account_key == row.account_key
+            && original.session_id == row.session_id
+            && original.transcript_path == row.transcript_path
+            && (original.source_ref.is_empty() || original.source_ref == row.source_ref);
+        if !same {
+            conflicts.insert(row.key.clone());
+            original.source_status = "changed".into();
+            original.source_reason = "identity-collision".into();
+            original.text.clear();
+            return write_row(db, &original, &original_stamp);
+        }
+    }
+    write_row(db, row, stamp)
+}
+fn write_row(db: &Connection, row: &Session, stamp: &str) -> rusqlite::Result<usize> {
     let mut summary = serde_json::to_value(row).unwrap();
     summary.as_object_mut().unwrap().remove("text");
     db.execute(
@@ -761,9 +837,10 @@ fn flush_if_ready(
     db: &mut Connection,
     pending: &mut Vec<(Session, String)>,
     cancel: &AtomicBool,
+    conflicts: &mut HashSet<String>,
 ) -> Result<(), String> {
     if pending.len() >= 32 {
-        flush(db, pending, cancel)?;
+        flush(db, pending, cancel, conflicts)?;
     }
     Ok(())
 }
@@ -771,6 +848,7 @@ fn flush(
     db: &mut Connection,
     pending: &mut Vec<(Session, String)>,
     cancel: &AtomicBool,
+    conflicts: &mut HashSet<String>,
 ) -> Result<(), String> {
     check_cancel(cancel)?;
     if pending.is_empty() {
@@ -779,7 +857,7 @@ fn flush(
     let tx = db.transaction().map_err(|e| e.to_string())?;
     for (row, stamp) in pending.iter() {
         check_cancel(cancel)?;
-        save(&tx, row, stamp).map_err(|e| e.to_string())?;
+        save_in_scan(&tx, row, stamp, conflicts).map_err(|e| e.to_string())?;
     }
     tx.execute("UPDATE history_revision SET revision=revision+1", [])
         .map_err(|e| e.to_string())?;
@@ -840,6 +918,7 @@ fn query(
                     &request.system_bases,
                     &request.system_roots,
                     &request.owned_sessions,
+                    &request.device_id,
                 )
             }) {
                 allowed_bytes = allowed_bytes.saturating_add(key.len() + 8);
@@ -999,6 +1078,7 @@ fn session_allowed(
     bases: &[String],
     roots: &[String],
     owned: &[OwnedSession],
+    device_id: &str,
 ) -> bool {
     // Only rows written with an explicit source status carry verifiable provenance; legacy
     // rows (empty status) are refused until a scan rewrites them.
@@ -1007,7 +1087,7 @@ fn session_allowed(
         "missing" | "changed" | "unsupported" | "permission-denied" => false,
         _ => return false,
     };
-    session_admitted(vault, session, scope, bases, roots, owned, live)
+    session_admitted(vault, session, scope, bases, roots, owned, device_id, live)
 }
 /// Admission with an explicit liveness requirement. `live=false` checks provenance, link
 /// confinement and scope only, never that the sources currently exist.
@@ -1019,11 +1099,12 @@ fn session_admitted(
     bases: &[String],
     roots: &[String],
     owned: &[OwnedSession],
+    device_id: &str,
     live: bool,
 ) -> bool {
     let scoped = scope == "account"
         || inside(vault, &session.cwd)
-        || owned_by_space(owned, &session.agent_id, &session.session_id);
+        || owned_by_space(owned, device_id, session);
     if let Some(base) = &session.system_base {
         // A system session is the user's own provider history. It is trusted only inside the
         // directory the caller names now, and a working directory still scopes the vault view.
@@ -1785,16 +1866,25 @@ fn cached_row(db: &Connection, source: &str, stamp: &str, root: &Root) -> bool {
 const DRIFT_REASON: &str = "source changed since it was indexed";
 const DRIFT_LOST: &str = "source identity can no longer be verified";
 /// The file fingerprint part of a stamp. An OpenCode scan appends `|o:<digest of the Space
-/// owned OpenCode ids>` so a changed owned set re-reads an otherwise unchanged database;
+/// owned OpenCode identities>` so a changed owned set re-reads an otherwise unchanged database;
 /// drift detection ignores that suffix.
 fn base_stamp(stamp: &str) -> &str {
     stamp.split('|').next().unwrap_or(stamp)
 }
 fn owned_digest(owned: &[OwnedSession], agent_id: &str) -> String {
-    let mut ids: Vec<&str> = owned
+    let mut ids: Vec<String> = owned
         .iter()
         .filter(|row| row.agent_id == agent_id)
-        .map(|row| row.session_id.as_str())
+        .map(|row| {
+            serde_json::to_string(&(
+                &row.session_id,
+                &row.account_key,
+                &row.device_id,
+                &row.transcript_path,
+                &row.source_ref,
+            ))
+            .unwrap()
+        })
         .collect();
     ids.sort_unstable();
     ids.dedup();
@@ -1932,14 +2022,14 @@ fn index_text_source(
     let Some(head) = parse_metadata(path, root, vault, modified, cancel, true)? else {
         return Ok(None);
     };
-    if !scope.admits(vault, &head.agent_id, &head.session_id, &head.cwd) {
+    if !scope.admits(vault, &head) {
         return Ok(None);
     }
     let Some(mut full) = parse_with_body(path, root, vault, modified, cancel, true, true)? else {
         return Ok(None);
     };
     // The full parse is authoritative for the stored row: admit with that cwd/id too.
-    if !scope.admits(vault, &full.agent_id, &full.session_id, &full.cwd) {
+    if !scope.admits(vault, &full) {
         return Ok(None);
     }
     full.text.clear();
@@ -1987,6 +2077,7 @@ fn purge_inadmissible(
                     &bases,
                     &roots,
                     &request.owned_sessions,
+                    &request.device_id,
                     false,
                 )
             });
@@ -2346,9 +2437,6 @@ fn read_snapshot(
         if only.is_some_and(|wanted| wanted != id) {
             continue;
         }
-        if !scope.admits(vault, "opencode", &id, &cwd) {
-            continue;
-        }
         let mut s = Session {
             key: serde_json::to_string(&("opencode", &root.account_key, &id)).unwrap(),
             agent_id: "opencode".into(),
@@ -2367,6 +2455,9 @@ fn read_snapshot(
             source_ref: format!("{}#{}", source_ref(root, path), id),
             ..Default::default()
         };
+        if !scope.admits(vault, &s) {
+            continue;
+        }
         let mut messages = db
             .prepare(
                 "SELECT data,time_created FROM message WHERE session_id=?1 ORDER BY time_created",
@@ -2430,6 +2521,7 @@ fn opencode(
     let scope = Scope {
         account: include_outside,
         owned: &[],
+        device_id: "",
     };
     opencode_with(path, root, vault, cancel, &scope, true, None).map_err(|e| e.to_string())
 }
@@ -2528,6 +2620,7 @@ mod tests {
     fn request(root: &Path, sources: Vec<Root>) -> Request {
         Request {
             vault: root.to_string_lossy().into(),
+            device_id: "test-device".into(),
             index: root
                 .join(".huhu/terminal-agent/test/index.sqlite")
                 .to_string_lossy()
@@ -2543,6 +2636,7 @@ mod tests {
             system_bases: Vec::new(),
             system_roots: Vec::new(),
             owned_sessions: Vec::new(),
+            expected_source: None,
         }
     }
     /// A base row with verifiable provenance (a managed account transcript that exists), for
@@ -3048,6 +3142,7 @@ mod tests {
             &Scope {
                 account: false,
                 owned: &[],
+                device_id: "",
             },
             false,
             None,
@@ -3071,6 +3166,7 @@ mod tests {
             &Scope {
                 account: false,
                 owned: &[],
+                device_id: "",
             },
             false,
             None,
@@ -3101,6 +3197,7 @@ mod tests {
                 &Scope {
                     account: false,
                     owned: &[],
+                    device_id: "",
                 },
                 false,
                 None,
@@ -3847,6 +3944,152 @@ mod tests {
         assert_eq!(status_of(&page, "new"), "available");
     }
     #[test]
+    fn a_selected_source_mismatch_is_rejected_before_reading_the_body() {
+        let vault = Temp::new();
+        let dir = vault.0.join(".huhu/agents/test/codex");
+        fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("a.jsonl");
+        fs::write(&file, codex_row("same", &vault.0)).unwrap();
+        let root = Root {
+            agent_id: "codex".into(),
+            account_key: "acct".into(),
+            path: dir.to_string_lossy().into(),
+            system_base: None,
+        };
+        let mut scan = request(&vault.0, vec![root]);
+        scan.scope = "vault".into();
+        let cancel = AtomicBool::new(false);
+        execute("scan", &scan, &cancel).unwrap();
+        let row = execute("query", &scan, &cancel).unwrap()["rows"][0].clone();
+        let read: Request = serde_json::from_value(json!({"vault":scan.vault,"index":scan.index,"scope":"vault","deviceId":"test-device","key":row["key"],"expectedSource":{"agentId":"codex","accountKey":"acct","sessionId":"same","deviceId":"test-device","transcriptPath":file,"sourceRef":"different-source"}})).unwrap();
+        let reached = std::rc::Rc::new(std::cell::Cell::new(false));
+        let observed = reached.clone();
+        READ_BUDGET_HOOK
+            .with(|hook| *hook.borrow_mut() = Some(Box::new(move || observed.set(true))));
+        let result = execute("read", &read, &cancel);
+        READ_BUDGET_HOOK.with(|hook| {
+            hook.borrow_mut().take();
+        });
+        assert!(
+            result.is_err(),
+            "a stale source selection cannot read another row"
+        );
+        assert!(
+            !reached.get(),
+            "expected source must be checked before body access"
+        );
+    }
+    #[test]
+    fn duplicate_locators_keep_the_original_source_and_annotations_but_refuse_bodies() {
+        let vault = Temp::new();
+        let dir = vault.0.join(".huhu/agents/test/codex");
+        fs::create_dir_all(&dir).unwrap();
+        let a = dir.join("a.jsonl");
+        let b = dir.join("b.jsonl");
+        let body = |text: &str| {
+            format!(
+                "{}{}\n",
+                codex_row("same", &vault.0),
+                json!({"type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":text}]}})
+            )
+        };
+        fs::write(&a, body("A body")).unwrap();
+        let root = Root {
+            agent_id: "codex".into(),
+            account_key: "acct".into(),
+            path: dir.to_string_lossy().into(),
+            system_base: None,
+        };
+        let source_a = source_ref(&root, &a);
+        let mut req = request(&vault.0, vec![root]);
+        req.scope = "vault".into();
+        let cancel = AtomicBool::new(false);
+        execute("scan", &req, &cancel).unwrap();
+        let initial = execute("query", &req, &cancel).unwrap();
+        req.key = initial["rows"][0]["key"].as_str().unwrap().into();
+        req.metadata.insert(
+            req.key.clone(),
+            json!({"title":"My A annotation","favorite":true}),
+        );
+        fs::write(&b, body("B body")).unwrap();
+        File::options()
+            .write(true)
+            .open(&b)
+            .unwrap()
+            .set_modified(fs::metadata(&a).unwrap().modified().unwrap())
+            .unwrap();
+        execute("scan", &req, &cancel).unwrap();
+        let page = execute("query", &req, &cancel).unwrap();
+        assert_eq!(page["total"], 1);
+        assert_eq!(
+            page["rows"][0]["sourceRef"], source_a,
+            "an opaque key must not transfer annotations to another locator"
+        );
+        assert_eq!(page["rows"][0]["sourceStatus"], "changed");
+        assert_eq!(page["rows"][0]["sourceReason"], "identity-collision");
+        let read = execute("read", &req, &cancel).unwrap();
+        assert_eq!(read["sourceStatus"], "changed");
+        assert_eq!(read["text"], "");
+        // Repeated scans with both sources keep the conflict visible, regardless of traversal order.
+        execute("scan", &req, &cancel).unwrap();
+        assert_eq!(
+            execute("query", &req, &cancel).unwrap()["rows"][0]["sourceStatus"],
+            "changed"
+        );
+        fs::remove_file(&b).unwrap();
+        execute("scan", &req, &cancel).unwrap();
+        let restored = execute("query", &req, &cancel).unwrap();
+        assert_eq!(restored["rows"][0]["sourceRef"], source_a);
+        assert_eq!(restored["rows"][0]["sourceStatus"], "available");
+        let read = execute("read", &req, &cancel).unwrap();
+        assert!(read["text"].as_str().unwrap().contains("A body"));
+        assert!(!read["text"].as_str().unwrap().contains("B body"));
+    }
+    #[test]
+    fn owned_history_requires_exact_account_source_and_device() {
+        let vault = Temp::new();
+        let outside = Temp::new();
+        let mut roots = Vec::new();
+        for account in ["a", "b"] {
+            let dir = vault.0.join(format!(".huhu/agents/test/{account}"));
+            fs::create_dir_all(&dir).unwrap();
+            fs::write(dir.join("same.jsonl"), codex_row("same", &outside.0)).unwrap();
+            roots.push(Root {
+                agent_id: "codex".into(),
+                account_key: account.into(),
+                path: dir.to_string_lossy().into(),
+                system_base: None,
+            });
+        }
+        let path = Path::new(&roots[0].path).join("same.jsonl");
+        let owned = json!({"agentId":"codex","sessionId":"same","accountKey":"a","deviceId":"test-device","transcriptPath":path,"sourceRef":source_ref(&roots[0], &path)});
+        let mut req = request(&vault.0, roots);
+        req.scope = "vault".into();
+        req.owned_sessions = serde_json::from_value(json!([owned])).unwrap();
+        let cancel = AtomicBool::new(false);
+        execute("scan", &req, &cancel).unwrap();
+        let page = execute("query", &req, &cancel).unwrap();
+        assert_eq!(
+            page["total"], 1,
+            "another account must not inherit admission"
+        );
+        assert_eq!(page["rows"][0]["accountKey"], "a");
+        req.key = serde_json::to_string(&("codex", "b", "same")).unwrap();
+        assert!(execute("read", &req, &cancel).is_err());
+        // A complete identity with the wrong locator cannot authorize this source either.
+        req.owned_sessions = serde_json::from_value(json!([{"agentId":"codex","sessionId":"same","accountKey":"a","deviceId":"test-device","transcriptPath":path,"sourceRef":"wrong-source"}])).unwrap();
+        assert_eq!(execute("query", &req, &cancel).unwrap()["total"], 0);
+        req.owned_sessions = serde_json::from_value(json!([{"agentId":"codex","sessionId":"same","accountKey":"a","deviceId":"another-device","transcriptPath":path,"sourceRef":format!("codex:a:{}",path.to_string_lossy())}])).unwrap();
+        assert_eq!(execute("query", &req, &cancel).unwrap()["total"], 0);
+        req.owned_sessions =
+            serde_json::from_value(json!([{"agentId":"codex","sessionId":"same"}])).unwrap();
+        assert_eq!(
+            execute("query", &req, &cancel).unwrap()["total"],
+            0,
+            "legacy partial identities cannot expand access"
+        );
+    }
+    #[test]
     fn vault_projection_admits_space_owned_out_of_vault_sessions_and_purges_the_rest() {
         let vault = Temp::new();
         let outside = Temp::new();
@@ -3897,7 +4140,8 @@ mod tests {
         let payload = json!({
             "vault": req.vault, "index": req.index, "scope": "vault",
             "roots": [{"agentId":"codex","path":dir,"accountKey":"acct"}],
-            "ownedSessions": [{"agentId":"codex","sessionId":"bound"}],
+            "deviceId":"test-device",
+            "ownedSessions": [{"agentId":"codex","sessionId":"bound","accountKey":"acct","deviceId":"test-device","transcriptPath":dir.join("bound.jsonl"),"sourceRef":format!("codex:acct:{}",dir.join("bound.jsonl").to_string_lossy())}],
         });
         let mut owned: Request = serde_json::from_value(payload).unwrap();
         assert_eq!(owned.owned_sessions.len(), 1);
@@ -3945,6 +4189,10 @@ mod tests {
         req.owned_sessions = vec![OwnedSession {
             agent_id: "opencode".into(),
             session_id: "foreign".into(),
+            account_key: "acct".into(),
+            device_id: "test-device".into(),
+            transcript_path: file.to_string_lossy().into(),
+            source_ref: format!("opencode:acct:{}#foreign", file.to_string_lossy()),
         }];
         execute("scan", &req, &cancel).unwrap();
         assert_eq!(before, listing(&dir));
@@ -4345,7 +4593,13 @@ mod tests {
             cwd: temp.0.to_string_lossy().into(),
             ..synthetic(&temp.0)
         };
-        flush(&mut writer, &mut vec![(row.clone(), "one".into())], &cancel).unwrap();
+        flush(
+            &mut writer,
+            &mut vec![(row.clone(), "one".into())],
+            &cancel,
+            &mut HashSet::new(),
+        )
+        .unwrap();
         let tx = writer
             .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)
             .unwrap();

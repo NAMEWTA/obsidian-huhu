@@ -1,0 +1,1467 @@
+{
+  "generated_at": "2026-10-25T03:07:51.514Z",
+  "network_mode": "offline",
+  "external_requests": [],
+  "checks": [
+    {
+      "case": "candidate-a-1440",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-a-1440",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-a-390",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-b-1440",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-b-390",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-c-1440",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "candidate-c-390",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:default"
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:default"
+    },
+    {
+      "case": "final-1440",
+      "check": "background creation leaves current terminal displayed",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:background"
+    },
+    {
+      "case": "final-1440",
+      "check": "detach keeps session in list",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:detached"
+    },
+    {
+      "case": "final-1440",
+      "check": "reattach same session",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "split ratio changes",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "split direction changes",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "explicit cross-Space target",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:cross-space"
+    },
+    {
+      "case": "final-1440",
+      "check": "submitted ack",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:input-submitted"
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:waiting"
+    },
+    {
+      "case": "final-1440",
+      "check": "wait matched",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:matched"
+    },
+    {
+      "case": "final-1440",
+      "check": "cancel leaves target running",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:wait-cancelled"
+    },
+    {
+      "case": "final-1440",
+      "check": "stop confirmation identifies cross-Space target",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:stop-confirmation"
+    },
+    {
+      "case": "final-1440",
+      "check": "cancel stop preserves running",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:stop-cancelled"
+    },
+    {
+      "case": "final-1440",
+      "check": "explicit stop shown",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:stopped"
+    },
+    {
+      "case": "final-1440",
+      "check": "timeout observed",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:timeout"
+    },
+    {
+      "case": "final-1440",
+      "check": "retry waits without resend",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:retried"
+    },
+    {
+      "case": "final-1440",
+      "check": "ordinary prompt blocked by native approval",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:blocked"
+    },
+    {
+      "case": "final-1440",
+      "check": "human approves in native terminal",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:approved"
+    },
+    {
+      "case": "final-1440",
+      "check": "human rejection preserves session",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:denied"
+    },
+    {
+      "case": "final-1440",
+      "check": "unread passive message",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:unread"
+    },
+    {
+      "case": "final-1440",
+      "check": "read differs from ack",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:read"
+    },
+    {
+      "case": "final-1440",
+      "check": "explicit ack",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:acknowledged"
+    },
+    {
+      "case": "final-1440",
+      "check": "passive send does not start run",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-003:notification-sent"
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:default"
+    },
+    {
+      "case": "final-1440",
+      "check": "history loading",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:loading"
+    },
+    {
+      "case": "final-1440",
+      "check": "history empty search",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:empty"
+    },
+    {
+      "case": "final-1440",
+      "check": "partial failure retains records",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:partial-error"
+    },
+    {
+      "case": "final-1440",
+      "check": "missing source cannot resume",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:missing-source"
+    },
+    {
+      "case": "final-1440",
+      "check": "native preview",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:preview"
+    },
+    {
+      "case": "final-1440",
+      "check": "annotation survives leaving preview",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "resume explicit confirmation",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:resume-confirmation"
+    },
+    {
+      "case": "final-1440",
+      "check": "cancel resume starts nothing",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:resume-cancelled"
+    },
+    {
+      "case": "final-1440",
+      "check": "resume opened terminal",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-002:resumed"
+    },
+    {
+      "case": "final-1440",
+      "check": "duplicate native resume locates existing terminal",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "empty Space",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:empty"
+    },
+    {
+      "case": "final-1440",
+      "check": "no Space",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:no-spaces"
+    },
+    {
+      "case": "final-1440",
+      "check": "web without Space",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-004:no-spaces"
+    },
+    {
+      "case": "final-1440",
+      "check": "external directory requires explicit selection authorization",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "authorized external Space created",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "connecting",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:loading"
+    },
+    {
+      "case": "final-1440",
+      "check": "disconnected state is honest",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:disconnected"
+    },
+    {
+      "case": "final-1440",
+      "check": "restart does not autostart",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:restored"
+    },
+    {
+      "case": "final-1440",
+      "check": "long name remains within viewport",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-001:long-text"
+    },
+    {
+      "case": "final-1440",
+      "check": "shared web tab",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-004:default"
+    },
+    {
+      "case": "final-1440",
+      "check": "Agent disabled leaves web open",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-004:agent-disabled"
+    },
+    {
+      "case": "final-1440",
+      "check": "backup omissions explained",
+      "value": true
+    },
+    {
+      "case": "final-1440",
+      "check": "observed state",
+      "value": "PAGE-004:data-summary"
+    },
+    {
+      "case": "final-390",
+      "check": "real terminal panes rendered",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "default has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "Ctrl+K opens and focuses command search",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "command search filters actual session",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "dialog focus remains trapped",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "Escape closes palette",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "keyboard focus visible",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "split attaches explicit third target while retaining focus",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "cross-Space stable target shown",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "send acknowledges input only",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "wait observes state",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "screen identifies correct cross-Space target",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "history preview read-only",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "long Chinese and mixed text has no document overflow",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "long list title ellipsizes when visible",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "light theme rendered",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "200 percent CSS zoom has no document horizontal overflow",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "space navigation remains operable at 200 percent zoom",
+      "value": true
+    },
+    {
+      "case": "final-390",
+      "check": "reduced motion has no animations or transitions",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "three real candidate entries",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "comparison fits viewport",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "comparison links keyboard accessible",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "comparison readable at 200 percent",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "comparison reduced motion",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "comparison screenshot",
+      "value": "evidence/comparison-1440.png"
+    },
+    {
+      "case": "comparison-390",
+      "check": "three real candidate entries",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "comparison fits viewport",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "comparison links keyboard accessible",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "comparison readable at 200 percent",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "comparison reduced motion",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "comparison screenshot",
+      "value": "evidence/comparison-390.png"
+    },
+    {
+      "case": "supplemental",
+      "check": "no console errors",
+      "value": true
+    },
+    {
+      "case": "comparison-1440",
+      "check": "adoption status update rechecked: normal, focus, 200% zoom, links, screenshot",
+      "value": true
+    },
+    {
+      "case": "comparison-390",
+      "check": "adoption status update rechecked: normal, focus, 200% zoom, links, screenshot",
+      "value": true
+    }
+  ],
+  "recheck": {
+    "reason": "comparison/index.html adoption status text only; final and candidate runtime assets unchanged since the complete eight-case pass",
+    "previous_prototype_digest": "5118df7b24f6f1bf048fe051b09769771b1b92cfd3642645cac0a919cc7256c8",
+    "current_prototype_digest": "b8bcf55791eabb1d620c990e2aaaad49f7ccec9ab6a0f557e65ba3baa12fe1af"
+  }
+}

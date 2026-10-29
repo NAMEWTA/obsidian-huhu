@@ -1,0 +1,57 @@
+[
+  {
+    "name": "goal-plan-validation",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+      "--repo",
+      ".",
+      "--stage",
+      "goal-plan",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor"
+    ],
+    "exit": 126,
+    "seconds": 217.73,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/goal-plan-validation-attempt1.log"
+  },
+  {
+    "name": "completion-validation",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+      "--repo",
+      ".",
+      "--stage",
+      "complete",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor"
+    ],
+    "exit": 126,
+    "seconds": 220.6,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/completion-validation-attempt1.log"
+  },
+  {
+    "name": "ticket-control",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/ticket-control.mjs",
+      "--map",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "--repo",
+      "."
+    ],
+    "exit": 126,
+    "seconds": 218.38,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/ticket-control-attempt1.json"
+  },
+  {
+    "name": "docs-bookkeeping",
+    "command": [
+      "pnpm",
+      "run",
+      "test:docs"
+    ],
+    "exit": 126,
+    "seconds": 1.47,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/docs-bookkeeping.log"
+  }
+]

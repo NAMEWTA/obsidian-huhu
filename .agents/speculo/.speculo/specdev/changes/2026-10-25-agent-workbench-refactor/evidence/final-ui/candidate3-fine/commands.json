@@ -1,0 +1,180 @@
+[
+  {
+    "file": "/usr/bin/google-chrome",
+    "args": [
+      "--headless=new",
+      "--blink-settings=primaryPointerType=4,availablePointerTypes=4,primaryHoverType=2,availableHoverTypes=2",
+      "--no-sandbox",
+      "--disable-background-networking",
+      "--disable-component-update",
+      "--disable-sync",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--remote-debugging-address=127.0.0.1",
+      "--remote-debugging-port=0",
+      "--window-size=1200,1000",
+      "--user-data-dir=/tmp/huhu-t09-production-ui-candidate3-fine-20261029/profile",
+      "http://127.0.0.1:36029/"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal/",
+    "utc": "2026-10-29T04:12:57.484Z",
+    "env": {
+      "HOME": "/tmp/huhu-t09-production-ui-candidate3-fine-20261029/chrome-home",
+      "XDG_CONFIG_HOME": "/tmp/huhu-t09-production-ui-candidate3-fine-20261029/chrome-config",
+      "XDG_CACHE_HOME": "/tmp/huhu-t09-production-ui-candidate3-fine-20261029/chrome-cache",
+      "TMPDIR": "/tmp/huhu-t09-production-ui-candidate3-fine-20261029/chrome-tmp"
+    }
+  },
+  {
+    "click": "[...document.querySelectorAll('button')].find(e=>e.getAttribute('aria-label')===coordinationProbe.label(\"agent.coordination.title\"))",
+    "x": 310,
+    "y": 46,
+    "rect": {
+      "x": 288,
+      "y": 24,
+      "width": 44,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"tooltip-trigger\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] fo",
+    "target": "<button data-slot=\"tooltip-trigger\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] fo"
+  },
+  {
+    "click": "[...document.querySelectorAll('button')].find(e=>e.getAttribute('aria-label')===coordinationProbe.label(\"agent.history\"))",
+    "x": 406,
+    "y": 46,
+    "rect": {
+      "x": 384,
+      "y": 24,
+      "width": 44,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"tooltip-trigger\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] fo",
+    "target": "<button data-slot=\"tooltip-trigger\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] fo"
+  },
+  {
+    "click": "document.querySelector('[data-history-row=\"fixture-history\"] button')",
+    "x": 216.31057929992676,
+    "y": 259.15753173828125,
+    "rect": {
+      "x": 21.859895706176758,
+      "y": 237.44223022460938,
+      "width": 388.9013671875,
+      "height": 43.43060302734375
+    },
+    "hit": "<span class=\"block truncate text-[11px] text-muted-foreground\">/fixture · fixture · 10/29/2026</span>",
+    "target": "<button type=\"button\" class=\"flex min-w-0 flex-1 items-start gap-2 text-left\" aria-expanded=\"false\"><span role=\"img\" aria-label=\"codex\"><svg fill=\"currentColor\" fill-rule=\"evenodd\" height=\"14\" width=\"14\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.205 8.658v-2.26c0-.19.072-.33"
+  },
+  {
+    "click": "[...document.querySelectorAll('button')].find(e=>e.getAttribute('aria-label')===coordinationProbe.label(\"agent.historyUI.view\"))",
+    "x": 439,
+    "y": 195,
+    "rect": {
+      "x": 417,
+      "y": 173,
+      "width": 44,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"dropdown-menu-trigger\" data-hit-control=\"true\" data-variant=\"ghost\" data-size=\"icon-xs\" class=\"inline-flex shrink-0 items-center justify-center gap-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-vi",
+    "target": "<button data-slot=\"dropdown-menu-trigger\" data-hit-control=\"true\" data-variant=\"ghost\" data-size=\"icon-xs\" class=\"inline-flex shrink-0 items-center justify-center gap-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-vi"
+  },
+  {
+    "click": "document.querySelector('[data-history-row=\"fixture-history\"] button[aria-haspopup=\"menu\"]')",
+    "x": 439,
+    "y": 256,
+    "rect": {
+      "x": 417,
+      "y": 234,
+      "width": 44,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"dropdown-menu-trigger\" data-hit-control=\"true\" data-variant=\"ghost\" data-size=\"icon-xs\" class=\"inline-flex shrink-0 items-center justify-center gap-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-vi",
+    "target": "<button data-slot=\"dropdown-menu-trigger\" data-hit-control=\"true\" data-variant=\"ghost\" data-size=\"icon-xs\" class=\"inline-flex shrink-0 items-center justify-center gap-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-vi"
+  },
+  {
+    "click": "([...document.querySelectorAll('[data-history-row=\"fixture-history\"] button')].find(e=>e.textContent.trim()===coordinationProbe.label('agent.historyResume.continue')))",
+    "x": 48.0078125,
+    "y": 733.1875,
+    "rect": {
+      "x": 21,
+      "y": 711.1875,
+      "width": 54.015625,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"button\" data-hit-control=\"true\" data-variant=\"secondary\" data-size=\"xs\" class=\"inline-flex shrink-0 items-center justify-center cursor-pointer font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible",
+    "target": "<button data-slot=\"button\" data-hit-control=\"true\" data-variant=\"secondary\" data-size=\"xs\" class=\"inline-flex shrink-0 items-center justify-center cursor-pointer font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible"
+  },
+  {
+    "click": "([...document.querySelectorAll('[role=\"alertdialog\"] button')].find(e=>e.textContent===coordinationProbe.label('common.cancel')))",
+    "x": 240,
+    "y": 572,
+    "rect": {
+      "x": 41,
+      "y": 550,
+      "width": 398,
+      "height": 44
+    },
+    "hit": "<button type=\"button\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none d",
+    "target": "<button type=\"button\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none d"
+  },
+  {
+    "click": "[...document.querySelectorAll('button')].find(e=>e.getAttribute('aria-label')===coordinationProbe.label(\"agent.workspace.toggleSidebar\"))",
+    "x": 26,
+    "y": 46,
+    "rect": {
+      "x": 4,
+      "y": 24,
+      "width": 44,
+      "height": 44
+    },
+    "hit": "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visib",
+    "target": "<button data-slot=\"button\" data-variant=\"ghost\" data-size=\"icon-sm\" class=\"inline-flex shrink-0 items-center justify-center gap-2 rounded-md cursor-pointer text-sm font-medium whitespace-nowrap transition-[transform,opacity] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visib"
+  },
+  {
+    "pointerDrag": "document.querySelector('[data-terminal-layout] [data-panel-resize-handle-id]')",
+    "point": {
+      "x": 608.75,
+      "y": 686.25
+    },
+    "dx": 0,
+    "dy": -60
+  },
+  {
+    "pointerDrag": "document.querySelector('[data-workspace-layout] > [data-panel-group] > [data-panel-resize-handle-id]')",
+    "point": {
+      "x": 886,
+      "y": 534
+    },
+    "dx": 60,
+    "dy": 0
+  },
+  {
+    "pointerDrag": "document.querySelector('[data-group-strip] [role=tab]')",
+    "point": {
+      "x": 442,
+      "y": 85.5
+    },
+    "dx": 751.21875,
+    "dy": 448.5
+  },
+  {
+    "file": "/usr/bin/google-chrome",
+    "args": [
+      "--headless=new",
+      "--blink-settings=primaryPointerType=4,availablePointerTypes=4,primaryHoverType=2,availableHoverTypes=2",
+      "--no-sandbox",
+      "--disable-background-networking",
+      "--disable-component-update",
+      "--disable-sync",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--remote-debugging-address=127.0.0.1",
+      "--remote-debugging-port=0",
+      "--window-size=1200,1000",
+      "--user-data-dir=/tmp/huhu-t09-production-ui-candidate3-fine-20261029/zoom-profile",
+      "http://127.0.0.1:36029/"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal/",
+    "utc": "2026-10-29T04:13:17.573Z",
+    "browserZoom": 2
+  }
+]

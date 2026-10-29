@@ -24,17 +24,10 @@ export function resumeSettings(store: SettingsStore): void {
 
 /**
  * Strict drain of what was admitted before the hold: writes now and rejects on any failed write (a status of `error`
- * is not success). The hold is lifted only for this flush and restored in `finally`.
+ * is not success). Mutation admission remains closed throughout the asynchronous flush.
  */
 export async function drainSettings(store: SettingsStore): Promise<void> {
-	const s = internals(store);
-	const was = s.held;
-	s.held = false;
-	try {
-		await store.flush();
-	} finally {
-		s.held = was;
-	}
+	await store.drainPending();
 	if (store.status === 'error') throw new Error('Settings write failed');
 }
 

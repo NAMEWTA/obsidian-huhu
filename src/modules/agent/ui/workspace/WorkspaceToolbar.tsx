@@ -35,7 +35,7 @@ async function collectInboxPages(inbox: Pick<InboxService, 'listMessages'>, targ
 	return rows;
 }
 
-export function WorkspaceToolbar({ inboxUnread, onOpenTool }: { inboxUnread?: number; onOpenTool?: (tool: 'control' | 'inbox') => void } = {}) {
+export function WorkspaceToolbar({ inboxUnread }: { inboxUnread?: number } = {}) {
 	const { controller, chrome } = useWorkspaceUI(),
 		t = useT();
 	const state = useStore(controller.spaces.store);
@@ -116,7 +116,6 @@ export function WorkspaceToolbar({ inboxUnread, onOpenTool }: { inboxUnread?: nu
 										const state = chrome.view?.getState();
 										if (state?.control && state.agentTool === 'control') chrome.view?.setState({ control: false, history: false });
 										else chrome.view?.setState({ control: true, history: false, agentTool: 'control' });
-										onOpenTool?.('control');
 									}}
 							>
 								<SlidersHorizontal className="size-4" />
@@ -133,7 +132,6 @@ export function WorkspaceToolbar({ inboxUnread, onOpenTool }: { inboxUnread?: nu
 								aria-pressed={!!chrome.view?.getState().control && !chrome.view?.getState().history && chrome.view?.getState().agentTool === 'inbox'}
 								onClick={() => {
 									chrome.view?.setState({ control: true, history: false, agentTool: 'inbox' });
-									onOpenTool?.('inbox');
 								}}
 							>
 								<Bell className="size-4" />

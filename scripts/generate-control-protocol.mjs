@@ -179,8 +179,24 @@ for (const [name, message] of Object.entries(descriptor.messages)) {
 		throw new Error('Invalid message class');
 }
 for (const operation of Object.values(descriptor.operations)) {
-	exact(operation, ['params', 'target', 'transport', 'available', 'description', 'readOnly'], 'operation');
+	exact(operation, ['params', 'target', 'transport', 'available', 'description', 'readOnly', 'cli'], 'operation');
 	check(operation.params);
+	if (operation.cli !== undefined) {
+		exact(operation.cli, ['textInput'], 'CLI');
+		const input = operation.cli.textInput;
+		exact(input, ['parameter', 'sources', 'maxUtf8Bytes'], 'CLI text input');
+		const parameter = operation.params.properties?.[input.parameter];
+		if (
+			input.parameter !== 'text' ||
+			parameter?.type !== 'string' ||
+			!operation.params.required.includes(input.parameter) ||
+			JSON.stringify(input.sources) !== JSON.stringify(['text', 'stdin', 'file']) ||
+			!Number.isSafeInteger(input.maxUtf8Bytes) ||
+			input.maxUtf8Bytes <= 0 ||
+			input.maxUtf8Bytes !== parameter.maxUtf8Bytes
+		)
+			throw new Error('Invalid CLI text input');
+	}
 	if (
 		!['ordinary', 'query', 'stop'].includes(operation.transport) ||
 		typeof operation.available !== 'boolean' ||
@@ -315,7 +331,7 @@ const tsSource = [
 		';',
 	'export interface ControlSchema { readonly oneOf?: readonly ControlSchema[]; readonly ref?: string; readonly const?: string | number | boolean; readonly enum?: readonly string[]; readonly type?: string; readonly minLength?: number; readonly maxLength?: number; readonly maxUtf8Bytes?: number; readonly pattern?: string; readonly minimum?: number; readonly maximum?: number; readonly properties?: Readonly<Record<string, ControlSchema>>; readonly required?: readonly string[]; readonly additionalProperties?: false }',
 	'export interface EditorDescriptor { readonly version: 1; readonly purpose: "huhu-editor"; readonly capability: "editorTransactions"; readonly env: typeof EDITOR_CAPABILITY_ENV; readonly limits: typeof EDITOR_LIMITS; readonly binary: typeof EDITOR_BINARY; readonly messages: Readonly<Record<EditorMessageType,{readonly schema:ControlSchema;readonly directions:readonly EditorDirection[];readonly budget:"metadata"|"receipt"|"lifecycle"}>> }',
-	'export interface ControlOperationDescriptor { readonly params: ControlSchema; readonly target: readonly string[]; readonly transport: "ordinary" | "query" | "stop"; readonly available: boolean; readonly readOnly: boolean; readonly description: string }',
+	'export interface ControlOperationDescriptor { readonly params: ControlSchema; readonly target: readonly string[]; readonly transport: "ordinary" | "query" | "stop"; readonly available: boolean; readonly readOnly: boolean; readonly description: string; readonly cli?: { readonly textInput: { readonly parameter: "text"; readonly sources: readonly ["text", "stdin", "file"]; readonly maxUtf8Bytes: number } } }',
 	'export interface ControlDescriptor { readonly descriptorVersion: number; readonly protocolVersion: number; readonly helperProtocol: number; readonly capability: Readonly<{localControl: 1}>; readonly limits: typeof CONTROL_LIMITS; readonly errorExits: typeof CONTROL_ERROR_EXITS; readonly phases: readonly string[]; readonly effects: readonly string[]; readonly env: typeof CONTROL_ENV; readonly editor: EditorDescriptor; readonly schemas: Readonly<Record<string,ControlSchema>>; readonly messages: Readonly<Record<ControlMessageType,{readonly schema:ControlSchema;readonly budget:string}>>; readonly operations: Readonly<Record<ControlOperation,ControlOperationDescriptor>> }',
 	'function freeze<T>(value: T): T { if (value && typeof value === "object") { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }',
 	'let cached: ControlDescriptor | undefined;',

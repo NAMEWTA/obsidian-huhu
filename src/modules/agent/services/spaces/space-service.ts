@@ -20,6 +20,7 @@ import type { DirectoryPort, SpaceChooser, WriterLease, WriterOwnerPort } from '
 import { emptyWorkspace, type WorkspaceState } from '../../core/workspace/model';
 import {
 	emptyRecords,
+	isNeverStartedImport,
 	isWorkbenchRecords,
 	validActivityHint,
 	type SessionRecord,
@@ -617,6 +618,7 @@ export class SpaceService {
 					accountKey: captured.accountKey,
 					deviceId: captured.deviceId,
 					importedAt: Date.now(),
+					neverStarted: true,
 				},
 			};
 			records.sessions[session.id] = session;
@@ -780,10 +782,11 @@ export class SpaceService {
 					throw new SpaceError('TARGET_NOT_FOUND', 'missing-session');
 				if (existing.archived) throw new SpaceError('SOURCE_UNAVAILABLE', 'archived-session');
 				// An explicitly imported native conversation has no earlier attempt; its first continue is a new generation.
-				if (existing.lastAttempt ? existing.lastAttempt.state === 'unconfirmed' : !existing.nativeImport)
+				if (existing.lastAttempt ? existing.lastAttempt.state === 'unconfirmed' : !isNeverStartedImport(existing))
 					throw new SpaceError('EFFECT_UNKNOWN', 'attempt-unconfirmed');
 				return (records.sessions[existingSessionId] = {
 					...existing,
+					nativeImport: existing.nativeImport ? { ...existing.nativeImport, neverStarted: undefined } : undefined,
 					nativeSessionId: input.nativeSessionId,
 					transcriptPath: input.transcriptPath,
 					lastAttempt,
@@ -1298,7 +1301,7 @@ export class SpaceService {
 				for (const member of held.plan.members) {
 					const record = records.sessions[member.sessionId]!;
 					// A pre-marker legacy record has no proof of the old process outcome.
-					if (!record.lastAttempt?.termination || !terminationConfirmed(record.lastAttempt.termination))
+					if (record.lastAttempt ? !record.lastAttempt.termination || !terminationConfirmed(record.lastAttempt.termination) : !isNeverStartedImport(record))
 						throw new SpaceError('EFFECT_UNKNOWN', 'attempt-unconfirmed');
 				}
 				if (held.plan.scope.kind === 'session') {

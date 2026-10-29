@@ -94,17 +94,27 @@ export async function createSharedWorkspaceOwner(
 	const unregister = registered?.unregister;
 	const selected = () => spaces.store.getState().records.selectedSpaceId;
 	const snapshot = () => workspaceStore.readLayoutNow?.(selected())?.view ?? workspaceStore.store.getState();
-	// Queued fire-and-forget edits; explicit close waits for them so it sees a tab that was opened a moment ago.
-	let pendingEdits: Promise<unknown> = Promise.resolve();
-	const edit = (transform: (state: WorkspaceState) => WorkspaceState) => {
-		if (workspaceStore.editLayout) {
-			const queued = workspaceStore.editLayout(selected(), transform).catch(report);
-			pendingEdits = pendingEdits.then(() => queued);
-		} else workspaceStore.updateLayout?.(transform);
+	let pendingEdits: Promise<void> = Promise.resolve();
+	const edit = (transform: (state: WorkspaceState) => WorkspaceState): Promise<void> => {
+		const spaceId = selected();
+		const queued = pendingEdits.then(async () => {
+			if (!workspaceStore.editLayout) {
+				workspaceStore.updateLayout?.(transform);
+				return;
+			}
+			const result = await workspaceStore.editLayout(spaceId, transform);
+			if (result.error !== undefined)
+				throw result.error instanceof Error ? result.error : new Error(t('agent.browser.editFailed'), { cause: result.error });
+			if (result.effect === 'partial' || result.effect === 'unknown')
+				throw new Error(t('agent.browser.editIncomplete', { effect: result.effect }));
+		});
+		pendingEdits = queued.catch(() => {});
+		return queued;
 	};
 	const browser: SharedBrowserPort = {
 		async open(tab, options) {
 			await Promise.all([spaces.ready, workspaceStore.ready]);
+			await pendingEdits;
 			const state = snapshot();
 			const found = options?.reuse
 				? Object.values(state.tabs).find(
@@ -113,11 +123,11 @@ export async function createSharedWorkspaceOwner(
 					)
 				: undefined;
 			if (found?.kind === 'browser') {
-				edit((value) => ops.activateTab(value, found.id));
+				await edit((value) => ops.activateTab(value, found.id));
 				return found.pageId;
 			}
 			const value: BrowserTabData = { kind: 'browser', ...tab };
-			edit((current) => ops.openTab(current, undefined, value));
+			await edit((current) => ops.openTab(current, undefined, value));
 			return value.pageId;
 		},
 		async close(pageId) {
@@ -150,16 +160,16 @@ export async function createSharedWorkspaceOwner(
 			const tab = Object.values(snapshot().tabs).find(
 				(value) => value.kind === 'browser' && value.pageId === pageId,
 			);
-			if (tab) edit((current) => ops.activateTab(current, tab.id));
+			if (tab) void edit((current) => ops.activateTab(current, tab.id)).catch(report);
 		},
 		update(pageId, state) {
-			edit((current) => {
+			void edit((current) => {
 				const tab = Object.values(current.tabs).find(
 					(value) => value.kind === 'browser' && value.pageId === pageId,
 				);
 				if (!tab || tab.kind !== 'browser') return current;
 				return { ...current, tabs: { ...current.tabs, [tab.id]: { ...tab, ...state } } };
-			});
+			}).catch(report);
 		},
 		subscribe(listener) {
 			const offStore = workspaceStore.store.subscribe(listener);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { registerMessages } from '../../../../shared/i18n/index';
 import { Button } from '../../../../ui/components/button';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
@@ -257,6 +257,7 @@ export function BackupSection({ load }: { load: () => Promise<BackupActions | un
 function Ready({ actions }: { actions: BackupActions }) {
 	const t = useT();
 	const ids = { file: useId(), adopt: useId(), archives: useId(), missing: useId() };
+	const active = useRef<AbortController | undefined>(undefined);
 	const [busy, setBusy] = useState<'export' | 'read' | 'check' | 'import' | undefined>();
 	const [exported, setExported] = useState<{ path: string; view: PackageView }>();
 	const [pkg, setPkg] = useState<{ text: string; view: PackageView }>();
@@ -280,24 +281,27 @@ function Ready({ actions }: { actions: BackupActions }) {
 	});
 	const run = async <T,>(
 		what: NonNullable<typeof busy>,
-		work: () => Promise<T>,
+		work: (signal: AbortSignal) => Promise<T>,
 		retry: () => void,
 	): Promise<T | undefined> => {
+		const controller = new AbortController();
+		active.current = controller;
 		setBusy(what);
 		setFailure(undefined);
 		try {
-			return await work();
+			return await work(controller.signal);
 		} catch (error) {
 			setFailure({ error, retry });
 			return undefined;
 		} finally {
+			active.current = undefined;
 			setBusy(undefined);
 		}
 	};
 
 	const doExport = () => {
 		setDone(undefined);
-		void run('export', () => actions.exportPackage(), doExport).then((result) => result && setExported(result));
+		void run('export', (signal) => actions.exportPackage(signal), doExport).then((result) => result && setExported(result));
 	};
 	const doCheck = (next = options()) =>
 		void run(
@@ -306,7 +310,7 @@ function Ready({ actions }: { actions: BackupActions }) {
 			() => doCheck(next),
 		).then((result) => result && setPlan(result));
 	const doImport = () => {
-		void run('import', () => actions.runImport(pkg!.text, options()), doImport).then((result) => {
+		void run('import', (signal) => actions.runImport(pkg!.text, options(), signal), doImport).then((result) => {
 			if (result) setDone({ status: result.status, changed: result.changed });
 			refreshReport();
 		});
@@ -348,6 +352,11 @@ function Ready({ actions }: { actions: BackupActions }) {
 
 	return (
 		<>
+			{(busy === 'export' || busy === 'import') && (
+				<Button size="sm" variant="outline" onClick={() => active.current?.abort()}>
+					{t('agent.backup.cancel')}
+				</Button>
+			)}
 			<div className="space-y-2">
 				<h3 className="text-sm font-medium">{t('agent.backup.export.title')}</h3>
 				<Button size="sm" variant="outline" disabled={!!busy} onClick={doExport}>

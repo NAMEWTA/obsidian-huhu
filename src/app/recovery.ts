@@ -17,7 +17,8 @@ import {
 	type RecoveryRunOptions,
 	type RecoveryStorage,
 } from '../shared/storage/recovery-contracts';
-import { RecoveryGate, recoverPending, runRecoveryTransaction } from '../shared/storage/recovery-transaction';
+import { storageWriteQueue } from '../shared/storage/write-queue';
+import { RecoveryGate, assertRecoveryIdle, recoverPending, runRecoveryTransaction } from '../shared/storage/recovery-transaction';
 
 /** The two settings files; must match `loadSettingsRuntime` in settings/runtime.ts. */
 export const SETTINGS_VAULT_FILE = '.huhu/config/settings.json';
@@ -53,6 +54,7 @@ export class RecoveryHost implements RecoveryAccess {
 		try {
 			return await recoverPending(this.storage);
 		} catch (error) {
+			if (error instanceof RecoveryError && error.code === 'RECOVERY_PENDING') throw error;
 			const held =
 				error instanceof RecoveryError
 					? error
@@ -66,6 +68,7 @@ export class RecoveryHost implements RecoveryAccess {
 	async settled(): Promise<void> {
 		await this.running.catch(() => undefined);
 		this.gate.assertOpen();
+		assertRecoveryIdle(this.storage);
 	}
 
 	/** Runs one transaction across the named registered owners (all registered owners when omitted). Operations are serialized. */
@@ -96,7 +99,7 @@ export class RecoveryHost implements RecoveryAccess {
 export function recoveryStorage(app: App): RecoveryStorage {
 	const base = privateVaultStorage(app);
 	const adapter = app.vault.adapter;
-	return {
+	const storage: RecoveryStorage = {
 		exists: (path) => base.exists(path),
 		read: (path) => base.read(path),
 		write: (path, content) => base.write(path, content),
@@ -113,6 +116,9 @@ export function recoveryStorage(app: App): RecoveryStorage {
 			return { files: listed.files, folders: listed.folders };
 		},
 	};
+	// The adapter survives module reload; all wrappers must share its write/recovery isolation carrier.
+	Object.defineProperty(storage, Symbol.for('huhu.storage.write-queue'), { value: storageWriteQueue(base) });
+	return storage;
 }
 export function createRecoveryHost(app: App): RecoveryHost {
 	return new RecoveryHost(recoveryStorage(app));

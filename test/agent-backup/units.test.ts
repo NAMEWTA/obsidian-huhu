@@ -127,6 +127,59 @@ describe('portable agent settings', () => {
 	});
 });
 
+describe('effective permission (L5)', () => {
+	test('inherit cannot raise an agent to YOLO through a global YOLO', () => {
+		const target = {
+			agents: {
+				globalPermissionMode: 'yolo',
+				yoloAcknowledged: false,
+				agents: { codex: { permissionMode: 'manual' } },
+			},
+		};
+		const merged = mergePortableAgentSettings(target, {
+			agents: { agents: { codex: { permissionMode: 'inherit' } } },
+		});
+		expect((merged.agent.agents as any).agents.codex.permissionMode).toBe('manual');
+		expect(merged.permissionRaisesSkipped).toBe(1);
+		// Lowering through inherit is fine.
+		const lowered = mergePortableAgentSettings(
+			{ agents: { globalPermissionMode: 'manual', agents: { codex: { permissionMode: 'yolo' } } } },
+			{ agents: { agents: { codex: { permissionMode: 'inherit' } } } },
+		);
+		expect((lowered.agent.agents as any).agents.codex.permissionMode).toBe('inherit');
+		expect(lowered.permissionRaisesSkipped).toBe(0);
+	});
+});
+
+describe('manifest hygiene (L9, L3)', () => {
+	test('unknown note codes are refused', async () => {
+		const pkg = await buildPackage({ ...input(), notes: [] });
+		const raw = JSON.parse(serializePackage(pkg));
+		raw.manifest.notes = [{ code: 'run-this' }];
+		await expect(parsePackage(JSON.stringify(raw))).rejects.toMatchObject({ code: 'invalid-structure' });
+	});
+	test('records are empty only when nothing at all is stored', () => {
+		const base = {
+			spaces: {},
+			sessions: {},
+			grants: {},
+			layouts: {},
+			historyOwners: {},
+			sharedLayout: { version: 1, tabs: {}, groups: [], closedTabs: [] },
+		};
+		expect(isEmptyDocument('records', JSON.stringify(base))).toBe(true);
+		for (const change of [
+			{ grants: { g: {} } },
+			{ historyOwners: { a: 's' } },
+			{ selectedSpaceId: 's' },
+			{ layouts: { s: {} } },
+			{ sharedLayout: { version: 1, tabs: { t: {} }, groups: [], closedTabs: [] } },
+			{ sharedLayout: { version: 1, tabs: {}, groups: [{}], closedTabs: [] } },
+		])
+			expect(isEmptyDocument('records', JSON.stringify({ ...base, ...change }))).toBe(false);
+	});
+});
+
 describe('restore transforms', () => {
 	const runtime = JSON.stringify({
 		definitions: [{ id: 'd', deviceId: 'dev-a' }],
@@ -243,4 +296,31 @@ describe('restore transforms', () => {
 		).toBe(0);
 		expect(() => validateStats('{"version":2}')).toThrow(InvalidSection);
 	});
+});
+
+test('portable dictionaries consume only own fields and never retain inherited provider or account aliases', () => {
+	const inheritedRow = Object.create({ enabled: true, permissionMode: 'yolo', accountId: 'inherited-account' }) as Record<string, unknown>;
+	const agents = Object.assign(Object.create({ globalPermissionMode: 'yolo' }) as Record<string, unknown>, { agents: { codex: inheritedRow } });
+	const raw = Object.assign(Object.create({ fontSize: 30, permissionMode: 'yolo' }) as Record<string, unknown>, {
+		agents,
+		enabled: Object.create({ codex: false }), usageAnalytics: Object.create({ codex: false }),
+		accounts: Object.create({ codex: ['inherited-account'] }),
+		accountLabels: { codex: Object.create({ inherited: 'inherited label' }) },
+		quickCommands: [Object.assign(Object.create({ content: 'inherited command', agentId: 'codex' }), { id: 'owned', name: 'Owned' })],
+	});
+	const portable = portableAgentSettings(raw);
+	expect(Object.hasOwn(portable, 'fontSize')).toBe(false);
+	expect(Object.hasOwn(portable, 'permissionMode')).toBe(false);
+	expect(portable).toMatchObject({ enabled: {}, usageAnalytics: {}, accounts: {}, accountLabels: { codex: {} },
+		quickCommands: [{ id: 'owned', name: 'Owned' }], agents: { agents: { codex: {} } } });
+	expect(JSON.stringify(portable)).not.toContain('inherited');
+	const target = { agents: { globalPermissionMode: 'manual', agents: { codex: { permissionMode: 'manual', accountId: 'mine' } } } };
+	const merged = mergePortableAgentSettings(target, raw);
+	expect(merged.agent).toMatchObject(target);
+	expect(merged.permissionRaisesSkipped).toBe(0);
+	expect(Object.hasOwn(inheritedRow, 'enabled')).toBe(false);
+	const reserved = JSON.parse('{"agents":{"agents":{"__proto__":{"enabled":true},"constructor":{"enabled":false},"prototype":{"enabled":true}}}}');
+	const safe = mergePortableAgentSettings({}, reserved).agent.agents as { agents: Record<string, unknown> };
+	expect(Object.getPrototypeOf(safe.agents)).toBeNull();
+	for (const key of ['__proto__', 'constructor', 'prototype']) expect(Object.hasOwn(safe.agents, key)).toBe(true);
 });

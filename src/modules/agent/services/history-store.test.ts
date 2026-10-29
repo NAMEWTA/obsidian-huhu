@@ -378,5 +378,50 @@ test('L-11: a truncated body keeps the native message count', async () => {
 	}));
 	await f.store.refresh();
 	await f.store.preview('big');
-	expect(f.store.store.getState().rows[0]).toMatchObject({ messageCount: 40, model: 'm', createdAt: 5 });
+	expect(f.store.store.getState().rows[0]).toMatchObject({ messageCount: 40, model: 'm', createdAt: 5, previewPartial: true });
+});
+
+test('ordinary terminal history is metadata-only and never reads a transcript', async () => {
+	const read = vi.fn();
+	const history = { hasScanned: true, scan: async () => [], query: async () => ({ rows: [], total: 0, revision: 1 }), meta: () => ({}), read } as unknown as NativeHistory;
+	const store = new HistoryStore(() => history, () => '/vault', 'vault', undefined, () => [
+		{ sessionId: 'shell-session', spaceId: 'space', title: 'Build terminal', cwd: '/vault/project', createdAt: 10, archived: false },
+	]);
+	try {
+		await store.refresh(false);
+		expect(store.store.getState().rows).toEqual([]);
+		expect(store.store.getState().terminalRows).toMatchObject([{ kind: 'shell', sessionId: 'shell-session', spaceId: 'space', title: 'Build terminal', cwd: '/vault/project', createdAt: 10 }]);
+		await store.preview(store.store.getState().terminalRows[0]!.key);
+		expect(read).not.toHaveBeenCalled();
+	} finally { store.dispose(); }
+});
+
+test('same-time locator changes invalidate a cached body without reassigning its annotations', async () => {
+	const a = summary('same', { title: 'A', transcriptPath: '/a.jsonl', sourceRef: 'source-a' });
+	let current = a;
+	const history = {
+		hasScanned: true, meta: () => ({ title: 'My annotation' }),
+		query: async () => ({ rows: [current], total: 1, revision: 1 }),
+		read: async () => ({ ...current, text: '## user\nA body' }),
+	} as unknown as NativeHistory;
+	const store = new HistoryStore(() => history, () => '/v');
+	try {
+		await store.refresh(false);
+		await store.preview('same');
+		expect(store.store.getState().rows[0]?.firstPrompt).toBe('A body');
+		current = { ...a, title: 'B', transcriptPath: '/b.jsonl', sourceRef: 'source-b' };
+		await store.refresh(false);
+		expect(store.store.getState().rows[0]).toMatchObject({ sourceRef: 'source-a', sourceStatus: 'changed', previewState: 'unavailable', firstPrompt: '', turns: [], metadata: { title: 'My annotation' } });
+	} finally { store.dispose(); }
+});
+
+test('a body returned from another exact locator is never published under the selected row', async () => {
+	const a = summary('same', { transcriptPath: '/a.jsonl', sourceRef: 'source-a' });
+	const f = vaultStore([a], async () => ({ ...a, transcriptPath: '/b.jsonl', sourceRef: 'source-b', text: '## user\nPrivate B body' }));
+	try {
+		await f.store.refresh(false);
+		await f.store.preview('same');
+		expect(f.store.store.getState().rows[0]).toMatchObject({ sourceRef: 'source-a', sourceStatus: 'changed', previewState: 'unavailable', firstPrompt: '', turns: [] });
+		expect(JSON.stringify(f.store.store.getState())).not.toContain('Private B body');
+	} finally { f.store.dispose(); }
 });

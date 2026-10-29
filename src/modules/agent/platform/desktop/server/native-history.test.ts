@@ -152,7 +152,7 @@ test('history requests cancelled while awaiting a client never execute the nativ
 			const service = { historyClient: async () => { entered(); await gate; return client; } } as unknown as HistoryClientSource;
 			const history = new NativeHistory(app, service, () => normalizeAgentSettings({}));
 			const abort = new AbortController();
-			const pending = operation === 'query' ? history.query('', 0, abort.signal) : operation === 'scan' ? history.scan(abort.signal) : history.read({ key: 'fixture' } as import('./agent-data-client.ts').NativeSessionSummary, abort.signal);
+			const pending = operation === 'query' ? history.query('', 0, abort.signal) : operation === 'scan' ? history.scan(abort.signal) : history.read({ key: 'fixture', agentId: 'codex', accountKey: '{}', sessionId: 's', transcriptPath: '/selected/a', sourceRef: 'source-a' } as import('./agent-data-client.ts').NativeSessionSummary, abort.signal);
 			const rejected = assert.rejects(pending, /cancelled/);
 			await atClient;
 			abort.abort(); release(); await rejected;
@@ -170,19 +170,21 @@ test('owned HUHU sessions are sent on every scan, query and read, and a changed 
 		const app = { loadLocalStorage: () => '11111111-1111-4111-8111-111111111111', vault: { adapter: { getBasePath: () => fixture, exists: async (name: string) => files.has(name), read: async (name: string) => files.get(name), write: async (name: string, body: string) => { files.set(name, body); }, mkdir: async () => {} } } } as unknown as App;
 		await initializeTestDevice(app);
 		const seen: Array<{ op: string; owned: unknown }> = [];
-		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async (op: string, payload: { ownedSessions?: unknown }) => { seen.push({ op, owned: payload.ownedSessions }); return op === 'scan' ? { warnings: [], revision: 1 } : op === 'query' ? page : { key: 'k', text: '' }; } };
-		let owned = [{ agentId: 'codex', sessionId: 'b' }, { agentId: 'codex', sessionId: 'a' }, { agentId: 'codex', sessionId: 'a' }];
+		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async (op: string, payload: { ownedSessions?: unknown; key?: string; expectedSource?: Record<string, unknown> }) => { seen.push({ op, owned: payload.ownedSessions }); return op === 'scan' ? { warnings: [], revision: 1 } : op === 'query' ? page : { ...payload.expectedSource, key: payload.key, text: '' }; } };
+		const binding = (agentId: string, sessionId: string) => ({ agentId, sessionId, accountId: '', deviceId: deviceId(app), transcriptPath: path.join(fixture, `${sessionId}.jsonl`) });
+		let owned = [binding('codex', 'b'), binding('codex', 'a'), binding('codex', 'a')];
 		const history = new NativeHistory(app, { historyClient: async () => client } as unknown as HistoryClientSource, () => normalizeAgentSettings({}), () => ({}), 'vault', () => owned);
 		try {
 			assert.equal(history.stale, true);
 			await history.scan();
 			assert.equal(history.stale, false);
 			await history.query();
-			await history.read({ key: 'k' } as import('./agent-data-client.ts').NativeSessionSummary);
-			const expected = [{ agentId: 'codex', sessionId: 'a' }, { agentId: 'codex', sessionId: 'b' }];
+			await history.read({ key: 'k', agentId: 'codex', accountKey: '{}', sessionId: 's', transcriptPath: '/selected/a', sourceRef: 'selected-source' } as import('./agent-data-client.ts').NativeSessionSummary);
+			const accountKey = JSON.stringify(await accountEnv(getAgent('codex'), '', fixture, deviceId(app)));
+			const expected = ['a', 'b'].map((id) => { const { accountId: _accountId, ...value } = binding('codex', id); return { ...value, accountKey, sourceRef: `codex:${accountKey}:${value.transcriptPath}` }; });
 			assert.deepEqual(seen.map((row) => row.op), ['scan', 'query', 'read']);
 			for (const row of seen) assert.deepEqual(row.owned, expected, row.op);
-			owned = [...owned, { agentId: 'claude-code', sessionId: 'c' }];
+			owned = [...owned, binding('claude-code', 'c')];
 			assert.equal(history.stale, true);
 			await history.scan();
 			assert.equal(history.stale, false);
@@ -211,8 +213,11 @@ test('export refuses unavailable sources and marks truncated bodies', async () =
 		let reads = 0;
 		const client = { isConnected: () => true, connectionRevision: 1, subscribeConnection: () => () => {}, request: async () => { reads++; return reply; } };
 		const history = new NativeHistory(app, { historyClient: async () => client } as unknown as HistoryClientSource, () => normalizeAgentSettings({}), () => ({}), 'vault');
-		const row = { key: 'k', agentId: 'codex', sessionId: 's', title: 'T', usage: {}, sourceStatus: 'available' } as unknown as import('./agent-data-client.ts').NativeSessionSummary;
+		const row: import('./agent-data-client.ts').NativeSessionSummary = { key: 'k', agentId: 'codex', accountKey: '{}', sessionId: 's', title: 'T', cwd: fixture, transcriptPath: '/selected/a.jsonl', sourceRef: 'source-a', modifiedAtMs: 1, usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null, known: false }, sourceStatus: 'available' };
 		try {
+			reply = { ...row, transcriptPath: '/other/b.jsonl', sourceRef: 'source-b', text: 'Wrong B body' };
+			await assert.rejects(history.export(row), /来源已变化|Source changed/);
+			assert.equal(created.size, 0);
 			for (const status of ['changed', 'missing', 'permission-denied'] as const) {
 				reply = { ...row, text: '', sourceStatus: status };
 				await assert.rejects(history.export(row), (error: Error) => error.message === t('agent.exportReadFailed', { message: t(`agent.historyUI.source.${status}`) }));

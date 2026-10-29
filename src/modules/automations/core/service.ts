@@ -5,7 +5,7 @@ import {
 	automationRuntimePath,
 	isAutomationDefinitionPath,
 } from '../api';
-import type { RecoveryOwner } from '../../../shared/storage/recovery-contracts';
+import { RecoveryError, type RecoveryOwner } from '../../../shared/storage/recovery-contracts';
 import { PRECHECK_TIMEOUT_MS, type PrecheckRunner } from './precheck';
 import { isDefinition } from '../../../shared/automation/metadata';
 import {
@@ -84,6 +84,11 @@ export class AutomationService {
 	private ownedActions = new Map<string, { handle: AutomationActionHandle; abort: AbortController }>();
 	/** Recovery hold: every state change fails visibly until `resumeWrites` (no silent drop). */
 	private recoveryHold = false;
+	/** Completions that reached `publish` while held: their result is real, so the notice is sent after the hold. */
+	private deferredPublish: Array<{ run: AutomationRun; definition: AutomationDefinition }> = [];
+	/** Notices being sent right now (the completion -> reserve -> deliver chain). */
+	private publishing = 0;
+	private definitionOperations = 0;
 	constructor(
 		storage: TextStorage,
 		path: string,
@@ -154,20 +159,31 @@ export class AutomationService {
 	}
 	/** Close admission for a backup/restore operation. Nothing is stopped; see `recoveryBusy`. */
 	quiesceWrites(): void {
+		if (this.definitionOperations)
+			throw new RecoveryError('BUSY', 'automation-recovery-busy', { busy: [`definitions:${this.definitionOperations}`] });
 		this.recoveryHold = true;
 	}
 	resumeWrites(): void {
 		this.recoveryHold = false;
+		for (const { run, definition } of this.deferredPublish.splice(0)) {
+			// After an adoption the run may be gone or already be history; the file is the truth.
+			const row = this.state.runs.find((item) => item.id === run.id);
+			if (row && !isActiveRun(row)) void this.publish(row, definition).catch(console.error);
+		}
 	}
 	/** Work that blocks a recovery operation; the user stops it, it is never stopped here. */
 	recoveryBusy(): string[] {
 		const busy = this.state.runs.filter(isActiveRun).map((run) => run.title);
 		if (this.launches.size) busy.push(`launches:${this.launches.size}`);
 		for (const id of this.ownedActions.keys()) busy.push(`action:${id}`);
+		if (this.definitionOperations) busy.push(`definitions:${this.definitionOperations}`);
+		if (this.publishing) busy.push(`publish:${this.publishing}`);
 		return busy;
 	}
 	/** Strict drain: every queued transition is awaited and a failed persist rejects. */
 	async drainWrites(): Promise<void> {
+		if (this.definitionOperations)
+			throw new RecoveryError('BUSY', 'automation-recovery-busy', { busy: [`definitions:${this.definitionOperations}`] });
 		await this.transitions;
 		await this.writes;
 		await this.store.flush();
@@ -251,60 +267,66 @@ export class AutomationService {
 	}
 	async save(d: AutomationDefinition): Promise<void> {
 		this.requireExecution();
-		if (d.removedAction) throw new AutomationError('removedAction');
-		if (!this.loaded) throw new AutomationError('failedLoad');
-		if (!validDefinition(d)) throw new AutomationError('invalid');
-		this.verifyAction(d);
-		const unavailable = actionAvailability(
-			d.action.kind,
-			d.schedule.kind === 'manual' ? 'manual' : 'scheduled',
-			this.options.desktop !== false,
-		);
-		if (unavailable) throw new Error(t(unavailable));
-		const old = this.definitions.find((item) => item.id === d.id);
-		if (old && old.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
-		const changed =
-			!old ||
-			JSON.stringify(old.schedule) !== JSON.stringify(d.schedule) ||
-			JSON.stringify(old.action) !== JSON.stringify(d.action) ||
-			JSON.stringify(old.precheck) !== JSON.stringify(d.precheck);
-		const next = { ...d, revision: old ? old.revision + (changed ? 1 : 0) : 1, updatedAt: Date.now() };
-		if (!next.source && this.options.definitions) {
-			await this.options.definitions.save(next);
-			await this.refresh();
-		}
-		if (next.source) {
-			await this.sources.save(next);
-			if (this.refreshing) await this.refreshing;
-			await this.refresh();
-		}
-		await this.commit((state) => {
-			if (old && changed && JSON.stringify(old.schedule) === JSON.stringify(next.schedule)) {
-				const cursor = state.cursors[`${old.id}:${old.revision}`];
-				if (cursor !== undefined) state.cursors[`${next.id}:${next.revision}`] = cursor;
+		this.definitionOperations++;
+		try {
+			if (d.removedAction) throw new AutomationError('removedAction');
+			if (!this.loaded) throw new AutomationError('failedLoad');
+			if (!validDefinition(d)) throw new AutomationError('invalid');
+			this.verifyAction(d);
+			const unavailable = actionAvailability(
+				d.action.kind,
+				d.schedule.kind === 'manual' ? 'manual' : 'scheduled',
+				this.options.desktop !== false,
+			);
+			if (unavailable) throw new Error(t(unavailable));
+			const old = this.definitions.find((item) => item.id === d.id);
+			if (old && old.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
+			const changed =
+				!old ||
+				JSON.stringify(old.schedule) !== JSON.stringify(d.schedule) ||
+				JSON.stringify(old.action) !== JSON.stringify(d.action) ||
+				JSON.stringify(old.precheck) !== JSON.stringify(d.precheck);
+			const next = { ...d, revision: old ? old.revision + (changed ? 1 : 0) : 1, updatedAt: Date.now() };
+			if (!next.source && this.options.definitions) {
+				await this.options.definitions.save(next);
+				await this.refresh();
 			}
-			if (!next.source && !this.options.definitions) {
-				const index = state.definitions.findIndex((item) => item.id === next.id);
-				if (index < 0) state.definitions.push(next);
-				else state.definitions[index] = next;
+			if (next.source) {
+				await this.sources.save(next);
+				if (this.refreshing) await this.refreshing;
+				await this.refresh();
 			}
-		});
+			await this.commit((state) => {
+				if (old && changed && JSON.stringify(old.schedule) === JSON.stringify(next.schedule)) {
+					const cursor = state.cursors[`${old.id}:${old.revision}`];
+					if (cursor !== undefined) state.cursors[`${next.id}:${next.revision}`] = cursor;
+				}
+				if (!next.source && !this.options.definitions) {
+					const index = state.definitions.findIndex((item) => item.id === next.id);
+					if (index < 0) state.definitions.push(next);
+					else state.definitions[index] = next;
+				}
+			});
+		} finally { this.definitionOperations--; }
 	}
 	async remove(d: AutomationDefinition): Promise<void> {
 		this.requireExecution();
-		if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
-		if (this.state.runs.some((r) => r.automationId === d.id && isActiveRun(r)))
-			throw new AutomationError('stopFirst');
-		if (d.source) {
-			await this.sources.remove(d);
-			await this.refresh();
-		} else if (this.options.definitions) {
-			await this.options.definitions.remove(d);
-			await this.refresh();
-		}
-		await this.commit((state) => {
-			state.definitions = state.definitions.filter((item) => item.id !== d.id);
-		});
+		this.definitionOperations++;
+		try {
+			if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
+			if (this.state.runs.some((r) => r.automationId === d.id && isActiveRun(r)))
+				throw new AutomationError('stopFirst');
+			if (d.source) {
+				await this.sources.remove(d);
+				await this.refresh();
+			} else if (this.options.definitions) {
+				await this.options.definitions.remove(d);
+				await this.refresh();
+			}
+			await this.commit((state) => {
+				state.definitions = state.definitions.filter((item) => item.id !== d.id);
+			});
+		} finally { this.definitionOperations--; }
 	}
 	async clearHistory(): Promise<void> {
 		this.requireExecution();
@@ -357,7 +379,15 @@ export class AutomationService {
 		const recorded = this.state.runs.find((row) => row.id === original.id);
 		if (!recorded || !canRetryCalendarDelivery(recorded) || !recorded.definition)
 			return Promise.reject(new AutomationError('calendarRetryUnavailable'));
-		const launch = this.execute(recorded.definition, recorded.trigger, recorded.scheduledFor, Date.now(), undefined, undefined, recorded);
+		const launch = this.execute(
+			recorded.definition,
+			recorded.trigger,
+			recorded.scheduledFor,
+			Date.now(),
+			undefined,
+			undefined,
+			recorded,
+		);
 		this.launches.add(launch);
 		void launch.finally(() => this.launches.delete(launch)).catch(() => {});
 		return launch;
@@ -466,8 +496,13 @@ export class AutomationService {
 		if (unavailable) throw new Error(t(unavailable));
 		if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
 		if (!retry && trigger === 'scheduled' && d.action.kind === 'create-task' && d.action.target === 'calendar') {
-			const recorded = this.state.runs.find((row) => row.automationId === d.id && row.revision === d.revision &&
-				row.trigger === 'scheduled' && row.scheduledFor === at);
+			const recorded = this.state.runs.find(
+				(row) =>
+					row.automationId === d.id &&
+					row.revision === d.revision &&
+					row.trigger === 'scheduled' &&
+					row.scheduledFor === at,
+			);
 			if (recorded) return recorded;
 		}
 		const active = this.state.runs.find((r) => r.automationId === d.id && isActiveRun(r));
@@ -830,8 +865,18 @@ export class AutomationService {
 	}
 	private async publish(run: AutomationRun, definition: AutomationDefinition): Promise<void> {
 		if (!this.executionEnabled || run.notificationAttempted || this.state.restored?.[run.id]) return;
-		await this.notify(run, definition);
-		await this.updateRun(run, { notificationAttempted: true }, true);
+		if (this.recoveryHold) {
+			// A completion that lands during a backup/restore is kept, not dropped: it is published at `resumeWrites`.
+			this.deferredPublish.push({ run, definition });
+			return;
+		}
+		this.publishing++;
+		try {
+			await this.notify(run, definition);
+			await this.updateRun(run, { notificationAttempted: true }, true);
+		} finally {
+			this.publishing--;
+		}
 	}
 	private updateRun(run: AutomationRun, patch: Partial<AutomationRun>, terminal = false): Promise<void> {
 		return this.commit((state) => {
@@ -927,6 +972,11 @@ export function automationRecoveryOwners(service: AutomationService, deviceId: s
 			preflight: async () => ({ busy: service.recoveryBusy() }),
 			...gate,
 		},
-		{ id: AUTOMATION_DEFINITIONS_OWNER, owns: isAutomationDefinitionPath, preflight: async () => ({ busy: [] }), ...gate },
+		{
+			id: AUTOMATION_DEFINITIONS_OWNER,
+			owns: isAutomationDefinitionPath,
+			preflight: async () => ({ busy: service.recoveryBusy() }),
+			...gate,
+		},
 	];
 }

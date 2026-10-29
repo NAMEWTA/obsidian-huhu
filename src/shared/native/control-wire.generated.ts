@@ -749,6 +749,13 @@ export interface ControlOperationDescriptor {
 	readonly available: boolean;
 	readonly readOnly: boolean;
 	readonly description: string;
+	readonly cli?: {
+		readonly textInput: {
+			readonly parameter: 'text';
+			readonly sources: readonly ['text', 'stdin', 'file'];
+			readonly maxUtf8Bytes: number;
+		};
+	};
 }
 export interface ControlDescriptor {
 	readonly descriptorVersion: number;
@@ -1820,7 +1827,7 @@ export function controlDescriptor(): ControlDescriptor {
 			'terminal.send-text': {
 				params: {
 					type: 'object',
-					properties: { text: { type: 'string', minLength: 1, maxLength: 262144 } },
+					properties: { text: { type: 'string', minLength: 1, maxLength: 262144, maxUtf8Bytes: 262144 } },
 					required: ['text'],
 					additionalProperties: false,
 				},
@@ -1829,6 +1836,7 @@ export function controlDescriptor(): ControlDescriptor {
 				available: true,
 				description: 'terminal.send-text',
 				readOnly: false,
+				cli: { textInput: { parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 262144 } },
 			},
 			'terminal.send-keys': {
 				params: {
@@ -1847,7 +1855,7 @@ export function controlDescriptor(): ControlDescriptor {
 				params: {
 					type: 'object',
 					properties: {
-						text: { type: 'string', minLength: 1, maxLength: 262144 },
+						text: { type: 'string', minLength: 1, maxLength: 262144, maxUtf8Bytes: 262144 },
 						wait: { ref: 'waitState' },
 					},
 					required: ['text'],
@@ -1858,6 +1866,7 @@ export function controlDescriptor(): ControlDescriptor {
 				available: true,
 				description: 'agent.prompt',
 				readOnly: false,
+				cli: { textInput: { parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 262144 } },
 			},
 			'agent.wait': {
 				params: {
@@ -1955,6 +1964,7 @@ export function controlDescriptor(): ControlDescriptor {
 				available: true,
 				description: 'message.send',
 				readOnly: false,
+				cli: { textInput: { parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 16384 } },
 			},
 			'inbox.list': {
 				params: {

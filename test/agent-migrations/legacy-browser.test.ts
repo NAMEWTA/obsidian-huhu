@@ -1,10 +1,14 @@
-import { expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useStorageTimers, type StorageTimers } from '../../src/shared/storage/timers';
 import { SpaceService } from '../../src/modules/agent/services/spaces/space-service';
 import { createSpaceWorkspaceStore } from '../../src/modules/agent/services/workspace-store';
 import { emptyRecords } from '../../src/modules/agent/services/spaces/records';
 import { runLegacyMigration } from '../../src/modules/agent/services/migrations/legacy-workbench';
 import { PATHS, ROOT, VAULT, deps, legacyVault } from './fixtures';
 import type { FaultStorage } from './fault-storage';
+
+beforeEach(() => useStorageTimers(globalThis as unknown as StorageTimers));
+afterEach(() => useStorageTimers(undefined));
 
 const clock = { setTimeout: () => 1, clearTimeout: () => {} } as unknown as Pick<Window, 'setTimeout' | 'clearTimeout'>;
 function open(storage: FaultStorage) {

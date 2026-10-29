@@ -1,3 +1,12 @@
+/** Complete provenance required to admit a HUHU-owned source outside this Vault. */
+export interface OwnedHistorySession {
+	readonly agentId: string;
+	readonly sessionId: string;
+	readonly accountKey: string;
+	readonly deviceId: string;
+	readonly transcriptPath: string;
+	readonly sourceRef: string;
+}
 export type NativeUsage = import('../../../../../shared/automation/types').AgentUsage;
 export interface NativeSessionSummary {
 	key: string;

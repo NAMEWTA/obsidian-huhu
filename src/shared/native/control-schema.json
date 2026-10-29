@@ -2010,7 +2010,8 @@
 					"text": {
 						"type": "string",
 						"minLength": 1,
-						"maxLength": 262144
+						"maxLength": 262144,
+						"maxUtf8Bytes": 262144
 					}
 				},
 				"required": [
@@ -2025,7 +2026,18 @@
 			"transport": "ordinary",
 			"available": true,
 			"description": "terminal.send-text",
-			"readOnly": false
+			"readOnly": false,
+			"cli": {
+				"textInput": {
+					"parameter": "text",
+					"sources": [
+						"text",
+						"stdin",
+						"file"
+					],
+					"maxUtf8Bytes": 262144
+				}
+			}
 		},
 		"terminal.send-keys": {
 			"params": {
@@ -2058,7 +2070,8 @@
 					"text": {
 						"type": "string",
 						"minLength": 1,
-						"maxLength": 262144
+						"maxLength": 262144,
+						"maxUtf8Bytes": 262144
 					},
 					"wait": {
 						"ref": "waitState"
@@ -2076,7 +2089,18 @@
 			"transport": "ordinary",
 			"available": true,
 			"description": "agent.prompt",
-			"readOnly": false
+			"readOnly": false,
+			"cli": {
+				"textInput": {
+					"parameter": "text",
+					"sources": [
+						"text",
+						"stdin",
+						"file"
+					],
+					"maxUtf8Bytes": 262144
+				}
+			}
 		},
 		"agent.wait": {
 			"params": {
@@ -2257,7 +2281,18 @@
 			"transport": "ordinary",
 			"available": true,
 			"description": "message.send",
-			"readOnly": false
+			"readOnly": false,
+			"cli": {
+				"textInput": {
+					"parameter": "text",
+					"sources": [
+						"text",
+						"stdin",
+						"file"
+					],
+					"maxUtf8Bytes": 16384
+				}
+			}
 		},
 		"inbox.list": {
 			"params": {

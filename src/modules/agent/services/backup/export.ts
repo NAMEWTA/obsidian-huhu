@@ -1,5 +1,5 @@
 import { ensureDirectory } from '../../../../shared/storage/durable-state';
-import type { RecoveryAccess, RecoveryStorage } from '../../../../shared/storage/recovery-contracts';
+import type { RecoveryAccess, RecoveryRunOptions, RecoveryStorage } from '../../../../shared/storage/recovery-contracts';
 import { AUTOMATION_DEFINITIONS_ROOT } from '../../../../shared/storage/vault-layout';
 import {
 	DEVICE_ID,
@@ -32,7 +32,7 @@ import {
 import { isWorkbenchRecords } from '../spaces/records';
 import { toBackupError } from './owners';
 
-export interface BackupEnv {
+export interface BackupEnv extends Pick<RecoveryRunOptions, 'signal' | 'preCommitTimeoutMs'> {
 	readonly recovery: RecoveryAccess;
 	readonly storage: RecoveryStorage;
 	/** This device. */
@@ -49,7 +49,7 @@ const base = (path: string) => path.slice(path.lastIndexOf('/') + 1);
 
 /** Every device id that has stored HUHU data, plus this one. Needs a listing capability; otherwise only this device. */
 async function discoverDevices(
-	storage: RecoveryStorage,
+	storage: Pick<RecoveryStorage, 'list'>,
 	current: string,
 ): Promise<{ devices: string[]; enumerated: boolean }> {
 	const found = new Set<string>([current]);
@@ -61,7 +61,8 @@ async function discoverDevices(
 		}
 	for (const file of (await storage.list(DEVICE_SETTINGS_DIRECTORY)).files) {
 		const name = base(file);
-		if (name.endsWith('.json') && DEVICE_ID.test(name.slice(0, -5))) found.add(name.slice(0, -5));
+		const device = /^(.*)\.json(?:\.backup)?$/.exec(name)?.[1];
+		if (device && DEVICE_ID.test(device)) found.add(device);
 	}
 	return { devices: [...found].sort(), enumerated: true };
 }
@@ -155,14 +156,37 @@ export async function exportBackup(env: BackupEnv): Promise<ExportResult> {
 	try {
 		await env.recovery.run({
 			operation: 'backup-export',
-			stage: async (read) => {
-				const { devices, enumerated } = await discoverDevices(env.storage, env.device);
+			signal: env.signal,
+			preCommitTimeoutMs: env.preCommitTimeoutMs,
+			stage: async (readCurrent) => {
+				const observed = new Map<string, string | null>();
+				const read = async (path: string) => {
+					const raw = await readCurrent(path);
+					if (observed.has(path) && observed.get(path) !== raw) throw new BackupError('source-drift', { path });
+					observed.set(path, raw);
+					return raw;
+				};
+				const listings = new Map<string, string>();
+				const listingKey = (listing: { readonly files: readonly string[]; readonly folders: readonly string[] }) =>
+					JSON.stringify([[...listing.files].sort(), [...listing.folders].sort()]);
+				const list = env.storage.list ? async (path: string) => {
+					const listing = await env.storage.list!(path);
+					const key = listingKey(listing);
+					if (listings.has(path) && listings.get(path) !== key) throw new BackupError('source-drift', { path });
+					listings.set(path, key);
+					return listing;
+				} : undefined;
+				const { devices, enumerated } = await discoverDevices({ list }, env.device);
 				const notes: ManifestNote[] = enumerated ? [] : [{ code: 'other-devices-not-enumerated' }];
 				const collected: Collected[] = [];
 				for (const device of devices) {
 					for (const section of DEVICE_SECTIONS as readonly Exclude<SectionKind, 'automation-definition'>[]) {
-						const path = sectionPath(section, device);
-						const raw = await read(path);
+						let path = sectionPath(section, device);
+						let raw = await read(path);
+						if (raw === null) {
+							path += '.backup';
+							raw = await read(path);
+						}
 						if (raw === null) {
 							if (device === env.device) notes.push({ code: 'section-absent', section, device });
 							continue;
@@ -174,12 +198,14 @@ export async function exportBackup(env: BackupEnv): Promise<ExportResult> {
 						else if (device === env.device) notes.push({ code: 'section-absent', section, device });
 					}
 				}
-				const definitions = await collectDefinitions(env, read, notes);
+				const definitions = await collectDefinitions(env, list, read, notes);
 				collected.push(...definitions);
-				// Second read: a writer outside this process (another window or device) must not slip a change in.
-				for (const item of collected)
-					if ((await read(item.path)) !== item.raw)
-						throw new BackupError('source-drift', { path: item.path });
+				// Missing paths and directory membership are part of the snapshot too: a second read of only
+				// existing files would miss a collection created by another process during the export.
+				for (const [path, raw] of observed)
+					if ((await readCurrent(path)) !== raw) throw new BackupError('source-drift', { path });
+				for (const [path, key] of listings)
+					if (listingKey(await env.storage.list!(path)) !== key) throw new BackupError('source-drift', { path });
 				const input: PackageInput = {
 					createdAt: (env.now ?? Date.now)(),
 					source: { vaultName: env.vaultName, device: env.device, devices },
@@ -205,17 +231,18 @@ export async function exportBackup(env: BackupEnv): Promise<ExportResult> {
 }
 
 async function collectDefinitions(
-	env: BackupEnv,
+	env: Pick<BackupEnv, 'device' | 'recovery'>,
+	list: RecoveryStorage['list'],
 	read: (path: string) => Promise<string | null>,
 	notes: ManifestNote[],
 ): Promise<Collected[]> {
-	if (!env.storage.list) throw new BackupError('source-unavailable', { section: 'automation-definition' });
+	if (!list) throw new BackupError('source-unavailable', { section: 'automation-definition' });
 	const out: Collected[] = [];
 	let extra = 0;
 	const via = env.recovery.has(OWNER.definitions) ? 'live' : 'offline';
-	const listing = await env.storage.list(AUTOMATION_DEFINITIONS_ROOT);
+	const listing = await list(AUTOMATION_DEFINITIONS_ROOT);
 	for (const folder of [...listing.folders].sort()) {
-		const files = (await env.storage.list(folder)).files;
+		const files = (await list(folder)).files;
 		const path = `${folder}/操作.md`;
 		extra += files.filter((file) => file !== path).length;
 		if (!files.includes(path)) continue;

@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { mkdir, mkdtemp, realpath, rm, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -14,6 +14,7 @@ const target = path.join(process.cwd(), 'native/pty-server/target/debug');
 const exe = process.platform === 'win32' ? '.exe' : '';
 const helper = path.join(target, `huhu-pty${exe}`), cli = path.join(target, `huhu${exe}`);
 const errorExits = schema.errorExits as Record<string, number>;
+const fileBody = 'A multiline prompt\n中文正文\n';
 const placeholders: Record<string, string> = { 'space-id': 'space-1', 'session-id': 'session-1', 'runtime-id': 'runtime-1', 'message-id': 'message-1', 'provider-id': 'pi' };
 
 /** Every `huhu ...` line of every fenced sh block, with an optional ` < file` stdin redirect split off. */
@@ -36,6 +37,7 @@ type Outcome = { ok: true } | { code: string };
 async function withWorkbench<T>(use: (run: (example: { argv: string[]; stdin?: string }, outcome: Outcome) => Promise<{ status: number | null; receipt: Record<string, any>; forwarded: Array<{ operation: string; params: Record<string, unknown> }> }>) => Promise<T>): Promise<T> {
 	const root = await mkdtemp(path.join(tmpdir(), 'huhu-skill-')), runtime = path.join(root, 'runtime');
 	await mkdir(runtime, { mode: 0o700 });
+	await writeFile(path.join(root, 'prompt.txt'), fileBody);
 	const canonicalPath = await realpath(root), identity = await stat(root, { bigint: true });
 	const scope: ControlScope = { vaultId: 'skill-vault', deviceId: 'skill-device', instanceId: crypto.randomUUID(), rootPath: root, root: { canonicalPath, dev: String(identity.dev), ino: String(identity.ino) } };
 	const host = new NativeHost(events => PtyHelper.start(helper, events, globalThis as unknown as Window, { HOME: root, XDG_RUNTIME_DIR: runtime }));
@@ -59,7 +61,7 @@ async function withWorkbench<T>(use: (run: (example: { argv: string[]; stdin?: s
 	const env = { ...process.env, HOME: root, XDG_RUNTIME_DIR: runtime, [CONTROL_ENV.instance]: scope.instanceId, [CONTROL_ENV.vault]: scope.vaultId, [CONTROL_ENV.locator]: registration.route.locator };
 	const run = (example: { argv: string[]; stdin?: string }, next: Outcome) => new Promise<any>((resolve, reject) => {
 		outcome = next; forwarded.length = 0;
-		const child = spawn(cli, example.argv, { env, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+		const child = spawn(cli, example.argv, { cwd: root, env, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
 		let stdout = '';
 		child.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString('utf8'); });
 		child.on('error', reject);
@@ -114,13 +116,18 @@ describe('the packaged HUHU control Skill', () => {
 				expect(forwarded.map(f => f.operation), example.line).toEqual([receipt.operation]);
 				expect(receipt.operation, example.line).toBe(words === 'capabilities' ? 'capabilities' : words);
 				if (example.stdin !== undefined) expect(forwarded[0]!.params.text, 'a 16 KiB stdin body arrives intact').toBe('b'.repeat(16 * 1024));
+				if (example.argv.includes('--file')) {
+					expect(forwarded[0]!.params.text).toBe(fileBody);
+					expect(forwarded[0]!.params).not.toHaveProperty('file');
+					expect(forwarded[0]!.params).not.toHaveProperty('stdin');
+				}
 			}
 		});
 	}, 120_000);
 
 	it('wait is not success, blocked needs a human, a timeout never resends and an unknown effect is queried not retried', async () => {
 		const submitted = examples(await loadControlSkill('en')).filter(e => e.argv.includes('prompt') || e.argv.includes('wait'));
-		expect(submitted.map(e => e.argv[2])).toEqual(['prompt', 'wait']);
+		expect(submitted.map(e => e.argv[2])).toEqual(['prompt', 'wait', 'prompt']);
 		await withWorkbench(async run => {
 			for (const example of submitted) {
 				// A read-only observation cannot have an unknown input effect, so only the prompt can lose its receipt.

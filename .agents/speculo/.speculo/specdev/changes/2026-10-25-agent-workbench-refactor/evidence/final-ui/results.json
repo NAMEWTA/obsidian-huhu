@@ -1,0 +1,90 @@
+[
+  {
+    "name": "panels",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-final-20261029"
+    ],
+    "exit": 0,
+    "seconds": 22.82,
+    "styles_sha256": "a2fa403761ee87f9f5ab879e060abc67f31f1592e358432dac7df868a50715b3"
+  },
+  {
+    "name": "inbox",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-final-inbox-20261029",
+      "--inbox"
+    ],
+    "exit": 0,
+    "seconds": 26.52,
+    "styles_sha256": "a2fa403761ee87f9f5ab879e060abc67f31f1592e358432dac7df868a50715b3"
+  },
+  {
+    "name": "coordination",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-coordination.mjs",
+      "/tmp/huhu-final-coordination-20261029"
+    ],
+    "exit": 0,
+    "seconds": 8.07,
+    "styles_sha256": "a2fa403761ee87f9f5ab879e060abc67f31f1592e358432dac7df868a50715b3"
+  },
+  {
+    "name": "panels-final",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-final-v2-20261029"
+    ],
+    "exit": 0,
+    "seconds": 19.91,
+    "styles_sha256": "a2fa403761ee87f9f5ab879e060abc67f31f1592e358432dac7df868a50715b3"
+  },
+  {
+    "name": "inbox-final",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-final-inbox-v2-20261029",
+      "--inbox"
+    ],
+    "exit": 0,
+    "seconds": 20.81,
+    "styles_sha256": "a2fa403761ee87f9f5ab879e060abc67f31f1592e358432dac7df868a50715b3"
+  },
+  {
+    "name": "history-hit-red",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-history-hit-red-20261029"
+    ],
+    "exit": 126,
+    "harness_exit": 1,
+    "evidence": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-ui/history-hit-red",
+    "observed": "Targeted real fine-pointer geometry/hit assertions fail with previous candidate stylesheet; history buttons24/32/36, confirmation/menu below44. Earlier general assertions remain recorded; no real Obsidian claim."
+  },
+  {
+    "name": "history-pointer-fixture",
+    "exit": 126,
+    "harness_exit": 1,
+    "evidence": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-ui/history-pointer-fixture",
+    "observed": "All four actual44 layout/hit/nonoverlap checks passed, but new explicit fine-pointer assertion failed: headless default advertises no pointer. Fixture now configures Blink desktop pointer capabilities; no product assertion removed."
+  },
+  {
+    "name": "candidate3-fine",
+    "command": [
+      "node",
+      "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+      "/tmp/huhu-t09-production-ui-candidate3-fine-20261029"
+    ],
+    "exit": 0,
+    "harness_exit": 0,
+    "evidence": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-ui/candidate3-fine",
+    "observed": "Production history/filter/row menu/confirmation44 layout targets, 5-point elementFromPoint hits, nonoverlap; Blink fine-pointer capability explicitly asserted; native keyboard Tab/Escape/default cancel and partial visibility pass. Headless fixture port scenario, real Obsidian/Provider not executed."
+  }
+]

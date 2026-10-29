@@ -39,7 +39,7 @@ const run = (id: string, patch: Partial<AutomationRun> = {}): AutomationRun => (
 	...patch,
 });
 
-function fixture(initial?: unknown) {
+function fixture(initial?: unknown, sourceRepository = sources) {
 	const files = new Map<string, string>();
 	if (initial) files.set('runtime.json', JSON.stringify(initial));
 	let failWrites = false;
@@ -57,7 +57,7 @@ function fixture(initial?: unknown) {
 	const notify = vi.fn(async () => {});
 	const definitions = { list: vi.fn(async () => []), save: vi.fn(async () => {}), remove: vi.fn(async () => {}) };
 	const make = () =>
-		new AutomationService(storage, 'runtime.json', 'device', sources, () => undefined, notify, true, {
+		new AutomationService(storage, 'runtime.json', 'device', sourceRepository, () => undefined, notify, true, {
 			definitions,
 		});
 	return {
@@ -177,5 +177,89 @@ describe('automation recovery owner', () => {
 		const service = f.make();
 		await service.load();
 		expect(Object.keys(JSON.parse(f.files.get('runtime.json')!).restored ?? {})).toEqual(['r100']);
+	});
+
+	test('a completion that reaches publish while held is kept and sent after the hold, once', async () => {
+		const f = fixture(state([]));
+		const service = f.make();
+		await service.load();
+		const finished = run('done-1', { status: 'failed' });
+		service.state.runs.push(finished);
+		const publish = (service as unknown as { publish(r: AutomationRun, d: unknown): Promise<void> }).publish.bind(
+			service,
+		);
+		service.quiesceWrites();
+		await publish(finished, finished.definition);
+		expect(f.notify).not.toHaveBeenCalled();
+		service.resumeWrites();
+		await vi.waitFor(() => expect(f.notify).toHaveBeenCalledTimes(1));
+	});
+
+	test('a deferred notice for a run a restore replaced is not sent', async () => {
+		const f = fixture(state([]));
+		const service = f.make();
+		await service.load();
+		const finished = run('gone', { status: 'failed' });
+		service.state.runs.push(finished);
+		const publish = (service as unknown as { publish(r: AutomationRun, d: unknown): Promise<void> }).publish.bind(
+			service,
+		);
+		service.quiesceWrites();
+		await publish(finished, finished.definition);
+		service.state.runs = [];
+		service.resumeWrites();
+		await Promise.resolve();
+		expect(f.notify).not.toHaveBeenCalled();
+	});
+
+	test('a notice being sent counts as busy work', async () => {
+		let release!: () => void;
+		const f = fixture(state([]));
+		f.notify.mockImplementation(() => new Promise<void>((resolve) => (release = resolve)));
+		const service = f.make();
+		await service.load();
+		const finished = run('slow', { status: 'failed' });
+		service.state.runs.push(finished);
+		const publish = (service as unknown as { publish(r: AutomationRun, d: unknown): Promise<void> }).publish.bind(
+			service,
+		);
+		const pending = publish(finished, finished.definition);
+		await vi.waitFor(() => expect(service.recoveryBusy()).toEqual(['publish:1']));
+		release();
+		await pending;
+		expect(service.recoveryBusy()).toEqual([]);
+	});
+});
+
+
+describe('admitted definition operations', () => {
+	test.each(['save', 'remove', 'source-save', 'source-remove'] as const)('%s is BUSY until its whole accepted operation completes', async (kind) => {
+		let enter!: () => void, finish!: () => void;
+		const ready = new Promise<void>((resolve) => { enter = resolve; });
+		const barrier = new Promise<void>((resolve) => { finish = resolve; });
+		let written = false;
+		const persist = async () => { enter(); await barrier; written = true; };
+		const repository = { ...sources, save: persist, remove: persist };
+		const f = fixture(state([]), repository);
+		f.definitions.save.mockImplementation(persist);
+		f.definitions.remove.mockImplementation(persist);
+		const service = f.make();
+		await service.load();
+		const definition = { ...run('fixture').definition!, action: { kind: 'notify' as const, body: 'hello' },
+			...(kind.startsWith('source-') ? { source: { kind: 'widget' as const, path: 'A.md', id: 'button' } } : {}) };
+		const pending = kind.endsWith('remove') ? service.remove(definition) : service.save(definition);
+		await ready;
+		try {
+			const owners = automationRecoveryOwners(service, 'device');
+			for (const owner of owners) expect((await owner.preflight()).busy).toContain('definitions:1');
+			expect(written).toBe(false);
+			expect(() => service.quiesceWrites()).toThrow(expect.objectContaining({ code: 'BUSY' }));
+		} finally { service.resumeWrites(); finish(); await pending; }
+		expect(written).toBe(true);
+		expect(service.recoveryBusy()).toEqual([]);
+		service.quiesceWrites();
+		await service.drainWrites();
+		service.resumeWrites();
+		await service.shutdown();
 	});
 });

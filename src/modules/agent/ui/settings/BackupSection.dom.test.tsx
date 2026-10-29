@@ -260,3 +260,21 @@ test('the Chinese dictionary has exactly the English keys and the same placehold
 	show(async () => actions());
 	return screen.findByRole('button', { name: '导出备份' });
 });
+
+
+test('a pending export has a keyboard-accessible cancel control and reports the cancellation', async () => {
+	let signal: AbortSignal | undefined;
+	const exportPackage: BackupActions['exportPackage'] = (next) => new Promise((_resolve, reject) => {
+		signal = next;
+		next?.addEventListener('abort', () => reject(new BackupError('cancelled')), { once: true });
+	});
+	show(async () => actions({ exportPackage }));
+	fireEvent.click(await screen.findByRole('button', { name: 'Export a backup' }));
+	const cancel = await screen.findByRole('button', { name: 'Cancel pending operation' });
+	cancel.focus();
+	expect(document.activeElement).toBe(cancel);
+	fireEvent.click(cancel);
+	expect(signal?.aborted).toBe(true);
+	expect((await screen.findByRole('alert')).textContent).toContain('(cancelled)');
+	expect(screen.queryByRole('button', { name: 'Cancel pending operation' })).toBeNull();
+});

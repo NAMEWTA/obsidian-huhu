@@ -44,6 +44,7 @@ import type { TerminalSessions } from './terminal/sessions';
 import { sessionState } from './terminal/status';
 import type { WorkspaceStore } from './workspace-store';
 import type { SpaceService, SessionAdmission } from './spaces/space-service';
+import { isNeverStartedImport } from './spaces/records';
 import type {
 	ActivityCompletionHint,
 	ManagedSeenRequest,
@@ -689,9 +690,9 @@ export class WorkspaceService {
 					!['launch-pending', 'connected'].includes(runtime.phase) ||
 					runtime.stop?.outcome === 'confirmed'
 						? (() => {
-								// An explicitly imported native conversation never ran under HUHU: it is an ended,
-								// resumable session. Sessions HUHU launched keep the evidence-based rule below.
-								const imported = !record.lastAttempt && !!record.nativeImport && !!record.agentId;
+								// Only a fresh metadata-only import proves there was no HUHU attempt.
+								// Adopted provenance leaves an older unknown runtime history unknown.
+								const imported = isNeverStartedImport(record) && !!record.agentId;
 								const confirmed =
 									!!record.lastAttempt?.termination &&
 									terminationConfirmed(record.lastAttempt.termination);
@@ -1504,7 +1505,8 @@ export class WorkspaceService {
 							};
 						} else {
 							const record = this.spaces!.store.getState().records.sessions[member.sessionId]!;
-							let evidence = record.lastAttempt?.termination;
+							const neverStartedImport = isNeverStartedImport(record);
+							let evidence = neverStartedImport ? notStarted() : record.lastAttempt?.termination;
 							if (!evidence && member.runtimeId && this.spaces!.admittedThisActivation(member.runtimeId))
 								evidence = notStarted();
 							row = {
@@ -1512,7 +1514,7 @@ export class WorkspaceService {
 								status: evidence && terminationConfirmed(evidence) ? 'not-running' : 'incomplete',
 								effect: evidence && terminationConfirmed(evidence) ? 'completed' : 'unknown',
 								termination: evidence,
-								persisted: false,
+								persisted: neverStartedImport,
 							};
 							rows.set(member.sessionId, row);
 							if (evidence && member.runtimeId) {

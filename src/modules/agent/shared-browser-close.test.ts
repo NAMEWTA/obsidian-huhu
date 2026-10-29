@@ -23,6 +23,7 @@ vi.mock('./services/workspace-store', () => ({
 	}),
 }));
 vi.mock('./core/workspace/ops', () => ({
+	activateTab: (state: typeof layout) => state,
 	closeTab: (state: typeof layout, id: string) => {
 		const { [id]: _removed, ...tabs } = state.tabs;
 		return { ...state, tabs };
@@ -92,4 +93,28 @@ test('close removes every record that shares the page id', async () => {
 	const owner = await createSharedWorkspaceOwner(app, vi.fn());
 	await owner.browser.close('dup');
 	expect(Object.keys(layout.tabs)).toEqual(['c']);
+});
+
+
+test('opening propagates structured recovery and persistence failures', async () => {
+	layout = { tabs: {} };
+	editLayout.mockReset();
+	const owner = await createSharedWorkspaceOwner(app, vi.fn());
+	const tab = { id: 'new', pageId: 'page', title: '', url: 'https://example.com', profileId: 'default', zoom: 1, createdAt: 0 };
+	for (const message of ['recovery-busy', 'save-failed']) {
+		editLayout.mockResolvedValueOnce({ effect: 'none', error: new Error(message) });
+		await expect(owner.browser.open(tab)).rejects.toThrow(message);
+	}
+});
+
+
+test('reuse activation also propagates partial and unknown layout outcomes', async () => {
+	layout = { tabs: { existing: { id: 'existing', kind: 'browser', pageId: 'existing-page', url: 'https://example.com', profileId: 'default' } } } as typeof layout;
+	editLayout.mockReset();
+	const owner = await createSharedWorkspaceOwner(app, vi.fn());
+	const tab = { id: 'new', pageId: 'unused-page', title: '', url: 'https://example.com', profileId: 'default', zoom: 1, createdAt: 0 };
+	for (const effect of ['partial', 'unknown']) {
+		editLayout.mockResolvedValueOnce({ effect });
+		await expect(owner.browser.open(tab, { reuse: true })).rejects.toThrow(effect);
+	}
 });

@@ -1,4 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
+import { useStorageTimers, type StorageTimers } from '../../../../shared/storage/timers';
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
 import { FaultStorage } from '../../../../../test/agent-migrations/fault-storage';
 import { RecoveryHost } from '../../../../app/recovery';
 import { recoverPending } from '../../../../shared/storage/recovery-transaction';
@@ -195,3 +196,7 @@ describe('live SpaceService as a recovery owner', () => {
 		expect([...outcomes].sort()).toEqual(['new', 'old']);
 	});
 });
+
+// Supply the same timer dependency that the app host registers before recovery starts.
+beforeEach(() => useStorageTimers(globalThis as unknown as StorageTimers));
+afterEach(() => useStorageTimers(undefined));

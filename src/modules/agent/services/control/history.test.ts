@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { CONTROL_LIMITS } from '../../../../shared/native/control-wire';
+import { CONTROL_LIMITS, ControlProtocolError } from '../../../../shared/native/control-wire';
 import { HistoryCommands } from './history';
 import type { NativeHistory } from '../../platform/history/service';
 import type { NativeSessionSummary } from '../../platform/desktop/server/agent-data-client';
@@ -231,4 +231,33 @@ test('P-5: a stale index is brought current once before listing', async () => {
 	prepare.mockClear();
 	await fresh.commands.list({ spaceId: 'space-a' });
 	expect(prepare).not.toHaveBeenCalled();
+});
+
+
+test('read cancellation preserves its control classification', async () => {
+	const { commands } = make({
+		rows: [row('a', 'space-a')],
+		read: async () => { throw new ControlProtocolError('cancelled', 'WAIT_CANCELLED'); },
+	});
+	await expect(commands.preview({ spaceId: 'space-a', key: 'a' })).rejects.toMatchObject({ code: 'WAIT_CANCELLED' });
+});
+
+
+test('an abort during the body read remains cancellation even for an unclassified native error', async () => {
+	const abort = new AbortController();
+	const { commands } = make({ rows: [row('a', 'space-a')], read: async () => { abort.abort(); throw new Error('cancelled'); } });
+	await expect(commands.preview({ spaceId: 'space-a', key: 'a' }, abort.signal)).rejects.toMatchObject({ code: 'WAIT_CANCELLED' });
+});
+
+test('a native body cap remains visible in the public history preview', async () => {
+	const { commands } = make({ rows: [row('a', 'space-a')], read: async (value) => ({ ...value, text: 'prefix', usage: { ...usage, partial: true } }) });
+	await expect(commands.preview({ spaceId: 'space-a', key: 'a' })).resolves.toMatchObject({ status: 'partial', text: 'prefix', reason: 'source-capacity' });
+});
+
+test('control preview rejects a different source body even when its opaque key matches', async () => {
+	const a = row('same', 'space-a', { transcriptPath: '/a.jsonl', sourceRef: 'source-a' });
+	const { commands } = make({ rows: [a], read: async () => ({ ...a, transcriptPath: '/b.jsonl', sourceRef: 'source-b', text: 'B body' }) });
+	const preview = await commands.preview({ spaceId: 'space-a', key: 'same', sourceRef: 'source-a' });
+	expect(preview).toMatchObject({ status: 'unavailable', sourceStatus: 'changed', text: '' });
+	expect(JSON.stringify(preview)).not.toContain('B body');
 });

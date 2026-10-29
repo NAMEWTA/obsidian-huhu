@@ -10,6 +10,62 @@ import * as editorCodec from '../../src/shared/native/control-wire-editor-codec.
 import { runInNewContext } from 'node:vm';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
+test('CLI body sources are discoverable and bounded without becoming wire parameters', () => {
+	const descriptor = controlDescriptor();
+	for (const [name, maxUtf8Bytes] of [
+		['message.send', 16 * 1024],
+		['agent.prompt', 256 * 1024],
+		['terminal.send-text', 256 * 1024],
+	] as const) {
+		expect(descriptor.operations[name]).toMatchObject({
+			cli: { textInput: { parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes } },
+		});
+		for (const source of [{ stdin: true }, { file: '/tmp/private-body.txt' }])
+			expect(() =>
+				parseControlRequest(
+					new TextEncoder().encode(
+						JSON.stringify({
+							protocolVersion: 1,
+							requestId: 'local-body',
+							operation: name,
+							target: { sessionId: 'session', runtimeId: 'runtime' },
+							params: {
+								...(name === 'message.send' ? { message: 'message' } : {}),
+								text: 'body',
+								...source,
+							},
+						}),
+					),
+				),
+			).toThrow();
+	}
+});
+
+test('the generator refuses CLI body metadata that weakens bounds or invents a local source', () => {
+	const script = path.join(root, 'scripts/generate-control-protocol.mjs');
+	const dir = mkdtempSync(path.join(tmpdir(), 'huhu-control-body-'));
+	try {
+		for (const textInput of [
+			{ parameter: 'text', sources: ['text', 'stdin', 'url'], maxUtf8Bytes: 16384 },
+			{ parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 0 },
+			{ parameter: 'text', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 16385 },
+			{ parameter: 'missing', sources: ['text', 'stdin', 'file'], maxUtf8Bytes: 16384 },
+		]) {
+			const descriptor = JSON.parse(
+				readFileSync(path.join(root, 'src/shared/native/control-schema.json'), 'utf8'),
+			);
+			descriptor.operations['message.send'].cli = { textInput };
+			const file = path.join(dir, 'invalid.json');
+			writeFileSync(file, JSON.stringify(descriptor));
+			expect(() =>
+				execFileSync(process.execPath, [script, '--schema', file, '--out-dir', dir], { stdio: 'pipe' }),
+			).toThrow();
+		}
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
 test('the Pane grammar advertises the installed original owner handlers and its positive CLI DTO fixtures use canonical pagination and bounds', () => {
 	const d = controlDescriptor();
 	for (const [name, operation] of Object.entries(d.operations))

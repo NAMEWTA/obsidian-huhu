@@ -6,6 +6,7 @@ export const messages = {
 		'agent.backup.intro':
 			'A backup is one file with your HUHU workbench records, history notes, usage totals, automation results, notifications and portable agent settings. Native conversation text, logins, secrets and caches are never included.',
 		'agent.backup.loading': 'Preparing…',
+		'agent.backup.cancel': 'Cancel pending operation',
 		'agent.backup.unavailable': 'Backup and restore need the desktop app with the HUHU workbench running.',
 		'agent.backup.loadFailed': 'Backup could not be prepared: {message}',
 
@@ -30,7 +31,7 @@ export const messages = {
 		'agent.backup.import.run': 'Import now',
 		'agent.backup.import.running': 'Importing…',
 		'agent.backup.import.ready':
-			'Nothing conflicts. Importing replaces only empty collections and merges portable settings; nothing is started.',
+			'Nothing conflicts. Importing fills empty collections and replaces the matching portable settings (a recovery copy is kept); nothing is started.',
 		'agent.backup.import.unchanged': 'This vault already holds everything the file contains.',
 		'agent.backup.import.done': 'Imported. {count} files were replaced; nothing was started or sent.',
 		'agent.backup.import.steps': '{done} of {total} steps finished',
@@ -78,7 +79,7 @@ export const messages = {
 
 		'agent.backup.action.create': 'will be created',
 		'agent.backup.action.replace-empty': 'replaces an empty collection',
-		'agent.backup.action.merge': 'portable settings merged into yours',
+		'agent.backup.action.merge': 'portable settings replace the matching ones in yours (recovery copy kept)',
 		'agent.backup.action.unchanged': 'already identical',
 		'agent.backup.action.archive': 'kept as an archive of another device',
 		'agent.backup.outcome': '{section}: {action}',
@@ -89,7 +90,7 @@ export const messages = {
 			'The device {device} is this device; it cannot also be restored as an archive.',
 		'agent.backup.problem.section-invalid': 'The file’s {section} is not valid ({subject}). Nothing was changed.',
 		'agent.backup.problem.identity-collision':
-			'This vault already has different data in {subject}. HUHU never merges or overwrites it. Leave that collection out, or move the existing data away.',
+			'This vault already has different data in {subject}. HUHU never merges or overwrites it. Move the existing data away, then check again.',
 		'agent.backup.problem.definition-collision':
 			'An automation named “{subject}” already exists with different content.',
 		'agent.backup.problem.records-needs-desktop': 'Spaces can only be restored in the desktop app.',
@@ -114,6 +115,10 @@ export const messages = {
 		'agent.backup.warning.other-device-settings-skipped':
 			'Settings of device {subject} are not restored (they belong to that machine).',
 
+		'agent.backup.warning.step-file-changed':
+			'{subject} was changed after this import wrote it. It was left exactly as it is.',
+		'agent.backup.warning.step-file-missing':
+			'{subject} was removed after this import wrote it. It was not created again.',
 		'agent.backup.failure.title': 'The backup action did not finish',
 		'agent.backup.failure.code': 'Reason: {message} ({code})',
 		'agent.backup.failure.retry': 'Try again',
@@ -122,6 +127,8 @@ export const messages = {
 		'agent.backup.failure.resume':
 			'Finished steps stay finished. Running the same import again continues after them.',
 
+		'agent.backup.error.timeout': 'Saving took too long. Nothing was replaced in this step. Wait for pending saves to finish before trying again.',
+		'agent.backup.error.cancelled': 'Cancelled before this step replaced any data. Pending saves may still be finishing.',
 		'agent.backup.error.busy': 'Stop the running work first: {busy}.',
 		'agent.backup.error.quiesce-failed': 'Part of HUHU could not pause for the operation.',
 		'agent.backup.error.drain-failed': 'Part of HUHU could not finish saving ({owner}); nothing was changed.',
@@ -134,7 +141,7 @@ export const messages = {
 		'agent.backup.error.write-failed': 'The disk refused a write. The previous data was restored.',
 		'agent.backup.error.adopt-failed': 'The change was saved but HUHU could not reload it. Restart Obsidian.',
 		'agent.backup.error.recovery-pending':
-			'An earlier change is still being finished. Restart Obsidian, then try again.',
+			'An earlier operation is still finishing. Wait for it to settle, or restart Obsidian before trying again.',
 		'agent.backup.error.unrecoverable': 'HUHU stopped to protect your data. Restart Obsidian.',
 		'agent.backup.error.partial-import': 'The import stopped after {done} of {total} steps.',
 		'agent.backup.error.unexpected': 'Something unexpected happened.',
@@ -158,6 +165,7 @@ export const messages = {
 		'agent.backup.report.none': 'No import has been run in this vault.',
 	},
 	zh: {
+		'agent.backup.cancel': '取消等待中的操作',
 		'agent.manage.tab.backup': '备份',
 		'agent.backup.heading': '业务数据备份与恢复',
 		'agent.backup.intro':
@@ -185,7 +193,8 @@ export const messages = {
 		'agent.backup.import.checking': '正在检查…',
 		'agent.backup.import.run': '立即导入',
 		'agent.backup.import.running': '正在导入…',
-		'agent.backup.import.ready': '没有冲突。导入只会替换空的数据集并合并可携带设置，不会启动任何东西。',
+		'agent.backup.import.ready':
+			'没有冲突。导入只会填充空的数据集，并替换同名的可携带设置（保留恢复副本），不会启动任何东西。',
 		'agent.backup.import.unchanged': '本仓库已包含文件中的全部内容。',
 		'agent.backup.import.done': '导入完成，共替换 {count} 个文件；没有启动或发送任何东西。',
 		'agent.backup.import.steps': '已完成 {done} / {total} 步',
@@ -232,7 +241,7 @@ export const messages = {
 
 		'agent.backup.action.create': '将新建',
 		'agent.backup.action.replace-empty': '替换空的数据集',
-		'agent.backup.action.merge': '可携带设置合并到你的设置',
+		'agent.backup.action.merge': '可携带设置会替换你设置中的同名项（保留恢复副本）',
 		'agent.backup.action.unchanged': '已完全一致',
 		'agent.backup.action.archive': '作为其他设备的归档保留',
 		'agent.backup.outcome': '{section}：{action}',
@@ -242,7 +251,7 @@ export const messages = {
 		'agent.backup.problem.device-collision': '设备 {device} 就是本设备，不能同时恢复为归档。',
 		'agent.backup.problem.section-invalid': '文件中的“{section}”无效（{subject}）。未做任何更改。',
 		'agent.backup.problem.identity-collision':
-			'本仓库的 {subject} 已有不同的数据。HUHU 不会合并或覆盖。请不导入该数据集，或先移走现有数据。',
+			'本仓库的 {subject} 已有不同的数据。HUHU 不会合并或覆盖。请先移走现有数据，再重新检查。',
 		'agent.backup.problem.definition-collision': '已存在内容不同的自动化“{subject}”。',
 		'agent.backup.problem.records-needs-desktop': '空间只能在桌面版中恢复。',
 		'agent.backup.problem.directory-missing':
@@ -262,6 +271,8 @@ export const messages = {
 		'agent.backup.warning.settings-damaged-replaced': '本机的设置文件无法读取，将被替换；旧内容保留在恢复副本中。',
 		'agent.backup.warning.other-device-settings-skipped': '设备 {subject} 的设置不会恢复（它属于那台机器）。',
 
+		'agent.backup.warning.step-file-changed': '{subject} 在本次导入写入后被改动过，已保持现状不动。',
+		'agent.backup.warning.step-file-missing': '{subject} 在本次导入写入后被删除，不会重新创建。',
 		'agent.backup.failure.title': '备份操作未完成',
 		'agent.backup.failure.code': '原因：{message}（{code}）',
 		'agent.backup.failure.retry': '重试',
@@ -269,6 +280,8 @@ export const messages = {
 			'每个被替换的文件都在 .huhu/recovery/transaction/ 有已校验的副本。如果 HUHU 提示重启，请重启 Obsidian：下次启动会完成或撤销该更改。',
 		'agent.backup.failure.resume': '已完成的步骤保持完成；再次运行同一导入会从中断处继续。',
 
+		'agent.backup.error.timeout': '等待保存超时，本步骤未替换数据。请等已有保存完成后再重试。',
+		'agent.backup.error.cancelled': '已在本步骤替换数据前取消，已有保存可能仍在收束。',
 		'agent.backup.error.busy': '请先停止正在运行的工作：{busy}。',
 		'agent.backup.error.quiesce-failed': 'HUHU 的某个部分无法暂停以进行此操作。',
 		'agent.backup.error.drain-failed': 'HUHU 的某个部分未能完成保存（{owner}），未做任何更改。',
@@ -279,7 +292,7 @@ export const messages = {
 		'agent.backup.error.package-invalid': '这个文件不是可用的备份。',
 		'agent.backup.error.write-failed': '磁盘拒绝了一次写入，已恢复原有数据。',
 		'agent.backup.error.adopt-failed': '更改已保存，但 HUHU 无法重新加载。请重启 Obsidian。',
-		'agent.backup.error.recovery-pending': '上一次更改仍在完成中。请重启 Obsidian 后再试。',
+		'agent.backup.error.recovery-pending': '上一次操作仍在收束，请稍候，或重启 Obsidian 后再试。',
 		'agent.backup.error.unrecoverable': 'HUHU 为保护数据已停止。请重启 Obsidian。',
 		'agent.backup.error.partial-import': '导入在第 {done} / {total} 步后停止。',
 		'agent.backup.error.unexpected': '发生了意外情况。',

@@ -505,3 +505,38 @@ test('an imported native Session with no prior attempt presents as ended and res
 		expect(f.workspace.getManaged({ spaceId: f.space.id, sessionId: plain.record.id })).toMatchObject({ restore: { state: 'unconfirmed', canRequestContinue: false } });
 	} finally { await f.cleanup(); }
 });
+
+test('adopting an exact source into a legacy unknown Session never proves not-started', async () => {
+	const { NativeResumeService } = await import('./launch/native-resume');
+	const f = await fixture();
+	try {
+		const admission = await f.spaces.prepareSession(f.space.id, { kind: 'agent', agentId: 'codex', accountId: '', title: 'Legacy agent' });
+		const saved = JSON.parse(await f.storage.read(f.spaces.path));
+		delete saved.sessions[admission.record.id].lastAttempt;
+		saved.sessions[admission.record.id].nativeSessionId = 'native';
+		saved.sessions[admission.record.id].transcriptPath = '/fixture/native.jsonl';
+		await f.storage.write(f.spaces.path, JSON.stringify(saved));
+		await f.spaces.reloadFromDisk();
+		const resume = new NativeResumeService({
+			deviceId: 'fixture', instanceId: 'adopt-test', vaultId: 'fixture', spaces: f.spaces,
+			samePath: async (a, b) => a === b, canonicalPath: async (value) => value,
+			managed: () => undefined, subscribeManaged: () => () => {}, attach: async () => {}, verify: async () => {},
+			launch: async () => { throw new Error('unexpected launch'); },
+			occupancy: {} as import('./launch/native-resume').NativeResumePorts['occupancy'],
+		});
+		try {
+			const result = await resume.importSource({ spaceId: f.space.id, row: {
+				key: 'legacy', agentId: 'codex', accountKey: '{}', sessionId: 'native', cwd: '/fixture', title: 'Legacy agent',
+				transcriptPath: '/fixture/native.jsonl', sourceRef: 'codex:{}:/fixture/native.jsonl', sourceStatus: 'available', modifiedAtMs: 1,
+				usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null, known: false },
+			} });
+			expect(result.created).toBe(false);
+		} finally { await resume.dispose(); }
+		await f.spaces.reloadFromDisk();
+		const target = { spaceId: f.space.id, sessionId: admission.record.id };
+		expect(await f.workspace.archiveManaged(await f.workspace.previewArchive({ kind: 'session', ...target }))).toMatchObject({ status: 'incomplete' });
+		expect(f.workspace.getManaged(target)?.restore).toMatchObject({ state: 'unconfirmed', canRequestContinue: false });
+		await expect(f.spaces.prepareSession(f.space.id, admission.record, admission.record.id)).rejects.toMatchObject({ code: 'EFFECT_UNKNOWN' });
+		expect(f.spawn).not.toHaveBeenCalled();
+	} finally { await f.cleanup(); }
+});

@@ -1,0 +1,1455 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-agent-workbench-refactor",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "serial",
+  "max_parallel_tickets": 1,
+  "input_digest": "f71daeb7eb4c0f830389badc84e3548502592453d9f7a1075ee5046ced48a350",
+  "goal_contract_digest": "a0a177b0034221efad3c2f10802d485bc2c774bae7a71a9bfa14594a85e7cd4b",
+  "contract_digests": {
+    "T-01": "7eb282c121a19e13229eb2349d7177257315fc9eea808e13017cdaadd8c22e21",
+    "T-02": "6659a24c1bf946ef8e43ca34ead0266ea7c7d0f2192ad88d20d8225eebf60604",
+    "T-03": "54ce8a0de328e9f49fe095f12b9e52b4c4659ebba3edc307f0cabfe0deeef7d4",
+    "T-04": "e678e9402993157a8085d532185a9d2a167bb72c496207e480c03e1e5a9fc9d2",
+    "T-05": "46e1732118b8c457b548c381034a3cec96a9120469ef0e234b7c32935e9d7de6",
+    "T-06": "7aadddce0446c34e6b69252c37b2d7ca3b4be041adf8238de691e66fb700718b",
+    "T-07": "c729729743b014f5d3de55d55a7d890e2a72f69a89442695a8e9b401169f7650",
+    "T-08": "8402e10e3829bbf100fafc92249725c407a94784a28ca176994d1f927bdc7743",
+    "T-09": "a438fb5d3ff56d36ad0a690a46cbb3d0aafe1da9ce4b1e556a63290c558fa9a8",
+    "T-10": "f2318d5438d3daa1830104916ab46c9b248ed67292cd0ced87ea739f48ab13af",
+    "T-11": "cce1f05c9285eef0f8ec9b65b5cc082eb98399691722bb22ed93bbbd75198873",
+    "T-12": "cfb1a43dea261ea200834960702d9b810b28e5879921a78f507344bc17e80f8c",
+    "T-13": "012c59a0834fe5cce24e96b9c202ec80ed42541d36d90441aa7589f02c4f9971",
+    "T-14": "a268d7daa79d32d5a08e58e73b9b8a501be61fa9e47eb898807c94cdfecae0fa",
+    "T-15": "53c30fac33025dd87d7727d755a7022ae334371d99f95ae5ae2d8ccfaf520b0f",
+    "T-16": "579d0c85569fe41f43a7fd937ef2483c18462bada160e2a0744d122a1df6f17c",
+    "T-17": "a22896b25e16b4210881e687ad558ef604ea8e0a5c042f332af9c13eb73bedf5",
+    "T-18": "1d51730595140889bb2f5c7f0f89b4f8ee3fe1d6c2f3c14d6e019614983ccda5"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [
+    "T-01",
+    "T-02",
+    "T-03",
+    "T-04",
+    "T-05",
+    "T-06",
+    "T-07",
+    "T-08",
+    "T-09",
+    "T-10",
+    "T-11",
+    "T-12",
+    "T-13",
+    "T-14",
+    "T-15",
+    "T-16",
+    "T-17"
+  ],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "T-11: invalid workspace verification",
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "evidence/T-11.md: AC-033 requires passed Method/Source/Observed evidence",
+        "evidence/T-11.md: AC-034 requires passed Method/Source/Observed evidence",
+        "evidence/T-11.md: AC-035 requires passed Method/Source/Observed evidence",
+        "evidence/T-11.md: AC-036 requires passed Method/Source/Observed evidence",
+        "evidence/T-11.md: AC-061 requires passed Method/Source/Observed evidence",
+        "evidence/T-11.md: missing '## 7. Integration Verification'",
+        "evidence/T-11.md: missing '## 8. 偏差与决策'",
+        "evidence/T-11.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-11.md: Workspace Verification must name change-workspace",
+        "T-11: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "12-native-resume.md: Skill execution evidence: expected one '## Skill Execution Records'",
+        "evidence/T-12.md: expected one '## Acceptance Verification'",
+        "evidence/T-12.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-12.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-12.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-12.md: missing '## 5. Workspace Verification'",
+        "evidence/T-12.md: missing '## 6. 双轴审查'",
+        "evidence/T-12.md: missing '## 7. Integration Verification'",
+        "evidence/T-12.md: missing '## 8. 偏差与决策'",
+        "evidence/T-12.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-12.md: Workspace Verification must name change-workspace",
+        "T-12: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "T-13: invalid workspace verification",
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "13-independent-browser.md: Skill execution evidence: ## Skill Execution Records requires one complete JSON code block",
+        "evidence/T-13.md: AC-041 requires passed Method/Source/Observed evidence",
+        "evidence/T-13.md: AC-061 requires passed Method/Source/Observed evidence",
+        "evidence/T-13.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-13.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-13.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-13.md: missing '## 5. Workspace Verification'",
+        "evidence/T-13.md: missing '## 6. 双轴审查'",
+        "evidence/T-13.md: missing '## 7. Integration Verification'",
+        "evidence/T-13.md: missing '## 8. 偏差与决策'",
+        "evidence/T-13.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-13.md: Workspace Verification must name change-workspace",
+        "T-13: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "14-consumer-compatibility.md: Skill execution evidence: expected one '## Skill Execution Records'",
+        "evidence/T-14.md: expected one '## Acceptance Verification'",
+        "evidence/T-14.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-14.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-14.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-14.md: missing '## 5. Workspace Verification'",
+        "evidence/T-14.md: missing '## 6. 双轴审查'",
+        "evidence/T-14.md: missing '## 7. Integration Verification'",
+        "evidence/T-14.md: missing '## 8. 偏差与决策'",
+        "evidence/T-14.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-14.md: Workspace Verification must name change-workspace",
+        "T-14: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "15-data-migration.md: Skill execution evidence: expected one '## Skill Execution Records'",
+        "evidence/T-15.md: expected one '## Acceptance Verification'",
+        "evidence/T-15.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-15.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-15.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-15.md: missing '## 5. Workspace Verification'",
+        "evidence/T-15.md: missing '## 6. 双轴审查'",
+        "evidence/T-15.md: missing '## 7. Integration Verification'",
+        "evidence/T-15.md: missing '## 8. 偏差与决策'",
+        "evidence/T-15.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-15.md: Workspace Verification must name change-workspace",
+        "T-15: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "16-backup-restore.md: Skill execution evidence: expected one '## Skill Execution Records'",
+        "evidence/T-16.md: expected one '## Acceptance Verification'",
+        "evidence/T-16.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-16.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-16.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-16.md: missing '## 5. Workspace Verification'",
+        "evidence/T-16.md: missing '## 6. 双轴审查'",
+        "evidence/T-16.md: missing '## 7. Integration Verification'",
+        "evidence/T-16.md: missing '## 8. 偏差与决策'",
+        "evidence/T-16.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-16.md: Workspace Verification must name change-workspace",
+        "T-16: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "17-cli-delivery.md: Skill execution evidence: expected one '## Skill Execution Records'",
+        "evidence/T-17.md: expected one '## Acceptance Verification'",
+        "evidence/T-17.md: missing '## 2. Lead Dispatch And Candidate Return'",
+        "evidence/T-17.md: missing '## 3. 修改范围与路径所有权'",
+        "evidence/T-17.md: missing '## 4. 验收与合同映射'",
+        "evidence/T-17.md: missing '## 5. Workspace Verification'",
+        "evidence/T-17.md: missing '## 6. 双轴审查'",
+        "evidence/T-17.md: missing '## 7. Integration Verification'",
+        "evidence/T-17.md: missing '## 8. 偏差与决策'",
+        "evidence/T-17.md: missing '## 9. 残余风险与交付定位'",
+        "evidence/T-17.md: Workspace Verification must name change-workspace",
+        "T-17: status is done but no verified Ticket execution exists"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist",
+        "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-17"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "code": "change-contract-invalid",
+      "scope": "change",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "code": "execution-record-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "T-11: invalid workspace verification"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: AC-033 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: AC-034 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: AC-035 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: AC-036 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: AC-061 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "evidence/T-11.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-11",
+      "artifact": "evidence/T-11.md",
+      "message": "T-11: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "ticket/12-native-resume.md",
+      "message": "12-native-resume.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "evidence/T-12.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-12",
+      "artifact": "evidence/T-12.md",
+      "message": "T-12: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "execution-record-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "T-13: invalid workspace verification"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "ticket/13-independent-browser.md",
+      "message": "13-independent-browser.md: Skill execution evidence: ## Skill Execution Records requires one complete JSON code block"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: AC-041 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: AC-061 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "evidence/T-13.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-13",
+      "artifact": "evidence/T-13.md",
+      "message": "T-13: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "ticket/14-consumer-compatibility.md",
+      "message": "14-consumer-compatibility.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "evidence/T-14.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-14",
+      "artifact": "evidence/T-14.md",
+      "message": "T-14: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "ticket/15-data-migration.md",
+      "message": "15-data-migration.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "evidence/T-15.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-15",
+      "artifact": "evidence/T-15.md",
+      "message": "T-15: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "ticket/16-backup-restore.md",
+      "message": "16-backup-restore.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "evidence/T-16.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-16",
+      "artifact": "evidence/T-16.md",
+      "message": "T-16: status is done but no verified Ticket execution exists"
+    },
+    {
+      "code": "ticket-contract-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "ticket/17-cli-delivery.md",
+      "message": "17-cli-delivery.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "evidence/T-17.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "code": "ticket-evidence-invalid",
+      "scope": "ticket",
+      "change": "2026-10-25-agent-workbench-refactor",
+      "ticket": "T-17",
+      "artifact": "evidence/T-17.md",
+      "message": "T-17: status is done but no verified Ticket execution exists"
+    }
+  ],
+  "validation_errors": [
+    {
+      "id": "T-01",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-01",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-02",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-02",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-03",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-03",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-04",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-04",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-05",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-05",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-06",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-06",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-07",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-07",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-08",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-08",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-09",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-09",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-10",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-10",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: invalid workspace verification"
+    },
+    {
+      "id": "T-11",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-11",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: AC-033 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: AC-034 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: AC-035 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: AC-036 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: AC-061 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-11",
+      "message": "evidence/T-11.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-11",
+      "message": "T-11: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-12",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-12",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-12",
+      "message": "12-native-resume.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-12",
+      "message": "evidence/T-12.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-12",
+      "message": "T-12: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-13",
+      "message": "T-13: invalid workspace verification"
+    },
+    {
+      "id": "T-13",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-13",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-13",
+      "message": "13-independent-browser.md: Skill execution evidence: ## Skill Execution Records requires one complete JSON code block"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: AC-041 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: AC-061 requires passed Method/Source/Observed evidence"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-13",
+      "message": "evidence/T-13.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-13",
+      "message": "T-13: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-14",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-14",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-14",
+      "message": "14-consumer-compatibility.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-14",
+      "message": "evidence/T-14.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-14",
+      "message": "T-14: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-15",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-15",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-15",
+      "message": "15-data-migration.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-15",
+      "message": "evidence/T-15.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-15",
+      "message": "T-15: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-16",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-16",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-16",
+      "message": "16-backup-restore.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-16",
+      "message": "evidence/T-16.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-16",
+      "message": "T-16: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-17",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-17",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    },
+    {
+      "id": "T-17",
+      "message": "17-cli-delivery.md: Skill execution evidence: expected one '## Skill Execution Records'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: expected one '## Acceptance Verification'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 2. Lead Dispatch And Candidate Return'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 3. 修改范围与路径所有权'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 4. 验收与合同映射'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 5. Workspace Verification'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 6. 双轴审查'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 7. Integration Verification'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 8. 偏差与决策'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: missing '## 9. 残余风险与交付定位'"
+    },
+    {
+      "id": "T-17",
+      "message": "evidence/T-17.md: Workspace Verification must name change-workspace"
+    },
+    {
+      "id": "T-17",
+      "message": "T-17: status is done but no verified Ticket execution exists"
+    },
+    {
+      "id": "T-18",
+      "message": "prototypes/UI-001: path-unsafe: /home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/evidence/browser.json: required path does not exist"
+    },
+    {
+      "id": "T-18",
+      "message": "12-native-resume.md: completed UI Ticket needs Design Conformance evidence bound to DESIGN and acceptance IDs"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

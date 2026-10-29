@@ -6,6 +6,7 @@ import type {
 	NativeSession,
 	NativeSessionSummary,
 } from '../../platform/desktop/server/agent-data-client';
+import { sameHistorySource, HistorySourceChangedError } from '../../platform/history/source-identity';
 import type { NativeHistory } from '../../platform/history/service';
 import { NativeResumeError, type ImportResult, type OpenResult, type ResumeResult } from '../launch/native-resume';
 import type { NativeResumeService } from '../launch/native-resume';
@@ -292,18 +293,22 @@ export class HistoryCommands {
 		let value: NativeSession;
 		try {
 			value = await history.read(row, signal);
+			if (!sameHistorySource(row, value)) throw new HistorySourceChangedError();
 		} catch (error) {
+			if (signal?.aborted || (error instanceof Error && (error.name === 'AbortError' || ('code' in error && error.code === 'WAIT_CANCELLED'))))
+				throw new ControlProtocolError(t('agent.coordination.observationCancelled'), 'WAIT_CANCELLED');
 			return {
 				row: view,
 				text: '',
 				status: 'unavailable',
 				diagnostic: clip(error instanceof Error ? error.message : String(error), 256),
+				...(error instanceof HistorySourceChangedError ? { sourceStatus: 'changed' as const, sourceReason: error.message } : {}),
 			};
 		}
 		// The helper re-verifies the source at read time and may report a status instead of a body.
 		if (value.sourceStatus && value.sourceStatus !== 'available')
 			return this.unavailable(this.view({ ...row, ...value }, spaceId), value);
-		return this.fit(view, value.text);
+		return this.fit(view, value.text, !!value.usage?.partial);
 	}
 	private unavailable(view: HistoryRowView, source: NativeSessionSummary): HistoryPreviewResult {
 		return {
@@ -315,12 +320,12 @@ export class HistoryCommands {
 		};
 	}
 	/** The verified body is cut to the response budget, with an explicit partial status instead of a capacity failure. */
-	private fit(row: HistoryRowView, text: string): HistoryPreviewResult {
+	private fit(row: HistoryRowView, text: string, sourcePartial = false): HistoryPreviewResult {
 		const make = (body: string, partial: boolean): HistoryPreviewResult => ({
 			row,
 			text: body,
-			status: partial ? 'partial' : 'available',
-			...(partial ? { reason: 'response-capacity' } : {}),
+			status: sourcePartial || partial ? 'partial' : 'available',
+			...(sourcePartial ? { reason: 'source-capacity' } : partial ? { reason: 'response-capacity' } : {}),
 		});
 		if (bytes(make(text, false)) <= DATA_BUDGET) return make(text, false);
 		let low = 0,

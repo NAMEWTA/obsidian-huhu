@@ -1,0 +1,4929 @@
+[
+  {
+    "name": "viewport-1440",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "7f239e34a7df24e098956246837f02889f35b46da5a1e488288057ef679bc8df"
+  },
+  {
+    "name": "viewport-1200",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1200,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1200,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1200,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1200,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1200,
+        "height": 1000,
+        "expectedWidth": 1200,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1195,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1199,
+            "bottom": 13,
+            "left": 1195
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1197,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1200,
+      "height": 1000,
+      "expectedWidth": 1200,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "3d5d9741c694eba1925a2a1464278e0936cef1b344d2694cf225df1cfe663aae"
+  },
+  {
+    "name": "viewport-800",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 800,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 800,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 800,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 800,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 800,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 800,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 800,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 800,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 800,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 800,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 800,
+        "height": 1000,
+        "expectedWidth": 800,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 795,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 799,
+            "bottom": 13,
+            "left": 795
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 797,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 800,
+      "height": 1000,
+      "expectedWidth": 800,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "f4ac69308fd90602136ab4e253c6ef0f38ca05cce08b0a80b1fa0e1011150400"
+  },
+  {
+    "name": "viewport-390",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 390,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 390,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 390,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 390,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 390,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 390,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 390,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 390,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 390,
+        "height": 1000,
+        "expectedWidth": 390,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 385,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 389,
+            "bottom": 13,
+            "left": 385
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 387,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 390,
+      "height": 1000,
+      "expectedWidth": 390,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "3d609d2e8d775169bf490ffb79329748d683c421dfb8cfc644fe8e2e6cd08b4c"
+  },
+  {
+    "name": "viewport-480",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "17fe29839a4d07e0657df9fb039cfbe4d63bc72b0b9f8b0d2ee5ecc3bb7542f4"
+  },
+  {
+    "name": "viewport-599",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 599,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 599,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 599,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 599,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 599,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 599,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 599,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 599,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 599,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 599,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 599,
+        "height": 1000,
+        "expectedWidth": 599,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 594,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 598,
+            "bottom": 13,
+            "left": 594
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 596,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 599,
+      "height": 1000,
+      "expectedWidth": 599,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "6c04ed0cac220e205ca5ef244cbad50c451c07c92e4fd3f95f302260673fbae1"
+  },
+  {
+    "name": "viewport-600",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 600,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 600,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 600,
+        "height": 1000,
+        "expectedWidth": 600,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 595,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 599,
+            "bottom": 13,
+            "left": 595
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 597,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 600,
+      "height": 1000,
+      "expectedWidth": 600,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "7d99b23e17e06ea994d0224d774e88981b1e26761c38131949bf37838baf3df8"
+  },
+  {
+    "name": "viewport-959",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 959,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 959,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 959,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 959,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 959,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 959,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 959,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 959,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 959,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 959,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 959,
+        "height": 1000,
+        "expectedWidth": 959,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 954,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 958,
+            "bottom": 13,
+            "left": 954
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 956,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 959,
+      "height": 1000,
+      "expectedWidth": 959,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "e98decbcf7cfd09522cd2341adb7bd52d25c4ac3025bb4592845fe6e08557f4a"
+  },
+  {
+    "name": "viewport-960",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 960,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 960,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 960,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 960,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 960,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 960,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 960,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 960,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 960,
+        "height": 1000,
+        "expectedWidth": 960,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 955,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 959,
+            "bottom": 13,
+            "left": 955
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 957,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 960,
+      "height": 1000,
+      "expectedWidth": 960,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "d0e1263d2a4ffa8d16db732cc7b49e7dbb85bcf060f91a0fe5b740766a35e0e2"
+  },
+  {
+    "name": "wide-control-light",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 844,
+      "panelClientHeight": 844,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 844,
+      "panelClientHeight": 844,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "de1dca98025f1f8248b42e7b28bea0693dd249c9d27b932efc618c1a2c025c42"
+  },
+  {
+    "name": "wide-control-dark",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 844,
+      "panelClientHeight": 844,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 844,
+      "panelClientHeight": 844,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "e938d83f0d64ccffb86dcea64f8a5bfcef83adb4fa0e7c41df689fe7123073fa"
+  },
+  {
+    "name": "narrow-control-dark",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 836,
+      "panelClientHeight": 753,
+      "active": {
+        "tag": "BUTTON",
+        "id": "_r_4t_-condition",
+        "label": null,
+        "text": "已结束"
+      },
+      "dialog": {
+        "x": 8,
+        "y": 100,
+        "width": 464,
+        "height": 800,
+        "top": 100,
+        "right": 472,
+        "bottom": 900,
+        "left": 8
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 836,
+      "panelClientHeight": 753,
+      "active": {
+        "tag": "BUTTON",
+        "id": "_r_4t_-condition",
+        "label": null,
+        "text": "已结束"
+      },
+      "dialog": {
+        "x": 8,
+        "y": 100,
+        "width": 464,
+        "height": 800,
+        "top": 100,
+        "right": 472,
+        "bottom": 900,
+        "left": 8
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "2573e94be097f639e5e15453a9e8d672292154deacf101e4b7b241f33c8d02c9"
+  },
+  {
+    "name": "narrow-history-light",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "只读历史 · 正文已截断/fixture · fixture · 10/29/2026"
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "只读历史 · 正文已截断/fixture · fixture · 10/29/2026"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "1fcf7673fbff7c353407bf46190bfa31e041bd5adfcef3616243d5272aa5b336"
+  },
+  {
+    "name": "narrow-history-dark",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "只读历史 · 正文已截断/fixture · fixture · 10/29/2026"
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "只读历史 · 正文已截断/fixture · fixture · 10/29/2026"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "a5ac7444b6c3d98ff70de8d6b2ed1ef171e6d89d63cfb5db13b68ca515a9fc7b"
+  },
+  {
+    "name": "narrow-history-confirm",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "取消"
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": null,
+        "text": "取消"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "eb537fcd19e8abe40f86f45bdd7a44d390d40f408c05a7e89220822080be3fd2"
+  },
+  {
+    "name": "narrow-space-sheet",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 480,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "NAV",
+        "id": "",
+        "label": "工作台导航",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 480,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 480,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "NAV",
+        "id": "",
+        "label": "工作台导航",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 480,
+        "height": 1000,
+        "expectedWidth": 480,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 475,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 479,
+            "bottom": 13,
+            "left": 475
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 477,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 480,
+      "height": 1000,
+      "expectedWidth": 480,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "ba3876796a5e71f6d546481ebfe85338ce529ee028708a2ff138c1caf59801a8"
+  },
+  {
+    "name": "pointer-layout",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "1c801ee9edb708c4706d0d8cd98d2019a13510f2410befad3f44b08ab0065ed3"
+  },
+  {
+    "name": "reduced-motion",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "05a3a2dc84223a227d2c1d36d20e070dbc6e3246e72e30f4f1bf5e8dd4212015"
+  },
+  {
+    "name": "state-empty",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间Space A · 同名长空间与完整身份 · docs / tools / terminalSpace B · 同名目录查找智能体看板用量统计会话Space A · 同名长空间与完整身份 · docs / tools / terminal10e7f9ec-9efd-4308-92b4-a62eb267f58c快捷命令此空间为空新建终端，"
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间Space A · 同名长空间与完整身份 · docs / tools / terminalSpace B · 同名目录查找智能体看板用量统计会话Space A · 同名长空间与完整身份 · docs / tools / terminal10e7f9ec-9efd-4308-92b4-a62eb267f58c快捷命令此空间为空新建终端，"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "4c6f4071734a222967a2de009bb003600d25c835d8c4663597ca684c21d52b04"
+  },
+  {
+    "name": "state-noSpace",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间尚未选择空间查找智能体看板用量统计会话尚未选择空间快捷命令尚未选择空间先新建或选择空间，再启动终端与智能体。现在也可以打开网页。新建空间\n    To pick up a draggable item, press the space bar.\n    While dragging, use the arrow keys to move"
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间尚未选择空间查找智能体看板用量统计会话尚未选择空间快捷命令尚未选择空间先新建或选择空间，再启动终端与智能体。现在也可以打开网页。新建空间\n    To pick up a draggable item, press the space bar.\n    While dragging, use the arrow keys to move"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "5bdcc9303513e5dc4fa7d826d9017a78c712e58380c81ad632ae90dd964e18c4"
+  },
+  {
+    "name": "state-loading",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间正在加载空间…查找智能体看板用量统计会话正在加载空间…快捷命令正在加载空间…先新建或选择空间，再启动终端与智能体。现在也可以打开网页。\n    To pick up a draggable item, press the space bar.\n    While dragging, use the arrow keys to move "
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间正在加载空间…查找智能体看板用量统计会话正在加载空间…快捷命令正在加载空间…先新建或选择空间，再启动终端与智能体。现在也可以打开网页。\n    To pick up a draggable item, press the space bar.\n    While dragging, use the arrow keys to move "
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "8a5ba922c23d0c2883d5cbe10f84824471ccf8235512417da0566995bc840ecb"
+  },
+  {
+    "name": "state-error",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间尚未选择空间空间数据保存或回读失败，请检查目录权限与剩余空间。查找智能体看板用量统计会话空间数据不可用快捷命令空间数据不可用空间数据保存或回读失败，请检查目录权限与剩余空间。新建空间\n    To pick up a draggable item, press the space bar.\n    While dragging, use"
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间尚未选择空间空间数据保存或回读失败，请检查目录权限与剩余空间。查找智能体看板用量统计会话空间数据不可用快捷命令空间数据不可用空间数据保存或回读失败，请检查目录权限与剩余空间。新建空间\n    To pick up a draggable item, press the space bar.\n    While dragging, use"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "405b75136d386e6e2dac3a7dbf0454796f8152637753a337af1fac5887b19d56"
+  },
+  {
+    "name": "state-disconnected",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "54e56b8ac2fdf4cbb0b6d05e346560170395d61b5ee7235bf83d0b85c7453f4b"
+  },
+  {
+    "name": "state-stopped",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "text": ""
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "62302c1aa2f616537f65f4bc818a3897f19419bbf8ebcdd9156a52f5c60f50d1"
+  },
+  {
+    "name": "state-restored",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1440,
+        "clientHeight": 1000,
+        "scale": 1,
+        "zoom": 1
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "before": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间Space A · 同名长空间与完整身份 · docs / tools / terminalSpace B · 同名目录查找智能体看板用量统计会话Pi已恢复记录 · 未运行Pi · pi · Space A · 同名长空间与完整身份 · docs / tools / terminal · 1af76863-5057-4f04-8365-"
+      }
+    },
+    "after": {
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "devicePixelRatio": 1,
+      "visualHeight": 1000,
+      "visualWidth": 1440,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "label": null,
+        "text": "Outside fixture focusAI Agent空间Space A · 同名长空间与完整身份 · docs / tools / terminalSpace B · 同名目录查找智能体看板用量统计会话Pi已恢复记录 · 未运行Pi · pi · Space A · 同名长空间与完整身份 · docs / tools / terminal · 1af76863-5057-4f04-8365-"
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1440,
+        "height": 1000,
+        "expectedWidth": 1440,
+        "expectedHeight": 1000,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 3,
+            "y": 7,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 1435,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 1439,
+            "bottom": 13,
+            "left": 1435
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1437,
+            "y": 7,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1440,
+      "height": 1000,
+      "expectedWidth": 1440,
+      "expectedHeight": 1000,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "0f4e901d63155fdc24a348ff173a29ab2c21fa8c38cef282fc0ef541c4076723"
+  },
+  {
+    "name": "zoom-200-light-top",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857,
+        "scale": 1,
+        "zoom": 2
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 857
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428.5,
+        "scale": 1,
+        "zoom": 2
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 428
+      }
+    },
+    "before": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "after": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1200,
+        "height": 857,
+        "expectedWidth": 1200,
+        "expectedHeight": 857,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 6,
+            "y": 14,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 595,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 599,
+            "bottom": 13,
+            "left": 595
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1194,
+            "y": 14,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1200,
+      "height": 857,
+      "expectedWidth": 1200,
+      "expectedHeight": 857,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "5aad2e3d7187bf4fb42f8af30f8d2d479dcc80de8b77dff2099fccc8f181146c"
+  },
+  {
+    "name": "zoom-200-light-bottom",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857,
+        "scale": 1,
+        "zoom": 2
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 857
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428.5,
+        "scale": 1,
+        "zoom": 2
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 428
+      }
+    },
+    "before": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 481.5,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "after": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 481.5,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1200,
+        "height": 857,
+        "expectedWidth": 1200,
+        "expectedHeight": 857,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 6,
+            "y": 14,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 595,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 599,
+            "bottom": 13,
+            "left": 595
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1194,
+            "y": 14,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1200,
+      "height": 857,
+      "expectedWidth": 1200,
+      "expectedHeight": 857,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "68c3f8b37350346df095e8d22ca89bbce64a4b36d68e87353b34ffcc140ffb3a"
+  },
+  {
+    "name": "zoom-200-dark-top",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857,
+        "scale": 1,
+        "zoom": 2
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 857
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428.5,
+        "scale": 1,
+        "zoom": 2
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 428
+      }
+    },
+    "before": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "after": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 0,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1200,
+        "height": 857,
+        "expectedWidth": 1200,
+        "expectedHeight": 857,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 6,
+            "y": 14,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 595,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 599,
+            "bottom": 13,
+            "left": 595
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1194,
+            "y": 14,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1200,
+      "height": 857,
+      "expectedWidth": 1200,
+      "expectedHeight": 857,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "135eb25900f853ded7301cac30214373c7b00c5b316c14d84cbb8c3d78ce723b"
+  },
+  {
+    "name": "zoom-200-dark-bottom",
+    "params": {
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false
+    },
+    "layout": {
+      "layoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857
+      },
+      "visualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 1200,
+        "clientHeight": 857,
+        "scale": 1,
+        "zoom": 2
+      },
+      "contentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 857
+      },
+      "cssLayoutViewport": {
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428
+      },
+      "cssVisualViewport": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "pageX": 0,
+        "pageY": 0,
+        "clientWidth": 600,
+        "clientHeight": 428.5,
+        "scale": 1,
+        "zoom": 2
+      },
+      "cssContentSize": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 428
+      }
+    },
+    "before": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 481.5,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "after": {
+      "innerWidth": 600,
+      "innerHeight": 428,
+      "devicePixelRatio": 2,
+      "visualHeight": 428.5,
+      "visualWidth": 600,
+      "visualScale": 1,
+      "scrollX": 0,
+      "scrollY": 0,
+      "panelScrollTop": 481.5,
+      "panelScrollHeight": 820,
+      "panelClientHeight": 339,
+      "active": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "关闭终端控制",
+        "text": ""
+      },
+      "dialog": {
+        "x": 8,
+        "y": 21.42578125,
+        "width": 584,
+        "height": 385.6484375,
+        "top": 21.42578125,
+        "right": 592,
+        "bottom": 407.07421875,
+        "left": 8
+      }
+    },
+    "calibration": {
+      "dimensions": {
+        "width": 1200,
+        "height": 857,
+        "expectedWidth": 1200,
+        "expectedHeight": 857,
+        "ok": true
+      },
+      "boundaries": [
+        {
+          "index": 0,
+          "color": "rgb(239, 17, 37)",
+          "rect": {
+            "x": 1,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 5,
+            "bottom": 13,
+            "left": 1
+          },
+          "rgb": [
+            239,
+            17,
+            37
+          ],
+          "pixel": {
+            "x": 6,
+            "y": 14,
+            "actual": [
+              239,
+              17,
+              37
+            ]
+          },
+          "ok": true
+        },
+        {
+          "index": 1,
+          "color": "rgb(19, 239, 83)",
+          "rect": {
+            "x": 595,
+            "y": 1,
+            "width": 4,
+            "height": 12,
+            "top": 1,
+            "right": 599,
+            "bottom": 13,
+            "left": 595
+          },
+          "rgb": [
+            19,
+            239,
+            83
+          ],
+          "pixel": {
+            "x": 1194,
+            "y": 14,
+            "actual": [
+              19,
+              239,
+              83
+            ]
+          },
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "dimensions": {
+      "width": 1200,
+      "height": 857,
+      "expectedWidth": 1200,
+      "expectedHeight": 857,
+      "ok": true
+    },
+    "stable": true,
+    "sha256": "44b7e74b7f2a296caf70b6c2f4c0c8b43b9e67d77a735c96834db0e4927975fe"
+  }
+]

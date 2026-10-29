@@ -6,6 +6,8 @@ use super::{
 use serde_json::{json, Map, Value};
 use std::collections::{HashMap, HashSet};
 use std::io::Read;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::time::{Duration, Instant};
 #[derive(Debug)]
 pub struct Parsed {
     pub request: Value,
@@ -15,6 +17,72 @@ fn invalid() -> ProtocolError {
     ProtocolError {
         code: "INVALID_ARGUMENT",
         message: "Invalid CLI command or parameter",
+    }
+}
+fn accepts_body(operation: &str) -> bool {
+    codec::descriptor()["operations"][operation]["cli"]["textInput"].is_object()
+}
+
+fn read_body(
+    file: Option<String>,
+    limit: usize,
+    deadline: Instant,
+    cancel: &AtomicBool,
+) -> Result<Vec<u8>, ProtocolError> {
+    let (sender, receiver) = std::sync::mpsc::sync_channel(1);
+    std::thread::Builder::new()
+        .name("huhu-cli-input".into())
+        .spawn(move || {
+            let mut bytes = Vec::new();
+            let result = if let Some(path) = file {
+                std::fs::File::open(path)
+                    .and_then(|input| input.take(limit as u64 + 1).read_to_end(&mut bytes))
+                    .map_err(|_| ProtocolError {
+                        code: "SOURCE_UNAVAILABLE",
+                        message: "Body file is unavailable",
+                    })
+            } else {
+                std::io::stdin()
+                    .lock()
+                    .take(limit as u64 + 1)
+                    .read_to_end(&mut bytes)
+                    .map_err(|_| ProtocolError {
+                        code: "INPUT_NOT_READY",
+                        message: "Unable to read body stdin",
+                    })
+            };
+            let _ = sender.send(result.map(|_| bytes));
+        })
+        .map_err(|_| ProtocolError {
+            code: "SOURCE_UNAVAILABLE",
+            message: "Input reader unavailable",
+        })?;
+    // OS reads can block on an open pipe (including a --file FIFO). Only this
+    // independent CLI process owns the bounded worker; main exits the process
+    // on cancellation/deadline, without waiting for upstream EOF or opening IPC.
+    loop {
+        if cancel.load(Ordering::Acquire) {
+            return Err(ProtocolError {
+                code: "WAIT_CANCELLED",
+                message: "Local input cancelled",
+            });
+        }
+        if Instant::now() >= deadline {
+            return Err(ProtocolError {
+                code: "WAIT_TIMEOUT",
+                message: "Local input deadline exceeded",
+            });
+        }
+        match receiver.recv_timeout(Duration::from_millis(2)) {
+            Ok(result) => return result,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
+            Err(_) => {
+                return Err(ProtocolError {
+                    code: "INPUT_NOT_READY",
+                    message: "Input reader ended",
+                })
+            }
+        }
     }
 }
 fn flag_name(key: &str) -> String {
@@ -50,6 +118,13 @@ fn cli_operation(args: &[String]) -> &'static str {
         "inbox.read"
     } else if args.windows(2).any(|words| words == ["inbox", "ack"]) {
         "inbox.ack"
+    } else if args.windows(2).any(|words| words == ["agent", "prompt"]) {
+        "agent.prompt"
+    } else if args
+        .windows(2)
+        .any(|words| words == ["terminal", "send-text"])
+    {
+        "terminal.send-text"
     } else {
         "help"
     }
@@ -95,11 +170,8 @@ pub fn parse(args: &[String], env: &HashMap<String, String>) -> Result<Parsed, P
         if let Some(flag) = token.strip_prefix("--") {
             flags.push(token.clone());
             let name = flag.split('=').next().unwrap();
-            let cli_message_stdin = name == "stdin";
-            if !flag.contains('=')
-                && name != "json"
-                && !boolean_flags.contains(name)
-                && !cli_message_stdin
+            let cli_stdin = name == "stdin";
+            if !flag.contains('=') && name != "json" && !boolean_flags.contains(name) && !cli_stdin
             {
                 at += 1;
                 let value = args
@@ -167,7 +239,7 @@ pub fn parse(args: &[String], env: &HashMap<String, String>) -> Result<Parsed, P
             param
         };
         let boolean = param.is_some_and(|(_, schema)| schema["type"] == "boolean")
-            || (op == "message.send" && key == "stdin");
+            || (accepts_body(&op) && key == "stdin");
         let text = if let Some(v) = inline {
             Some(v)
         } else if boolean {
@@ -192,14 +264,14 @@ pub fn parse(args: &[String], env: &HashMap<String, String>) -> Result<Parsed, P
                     .parse::<u64>()
                     .map_err(|_| invalid())?,
             ));
-        } else if op == "message.send" && key == "stdin" {
+        } else if accepts_body(&op) && key == "stdin" {
             let value = match text {
                 None | Some("true") => true,
                 Some("false") => false,
                 _ => return Err(invalid()),
             };
             params.insert("stdin".into(), Value::Bool(value));
-        } else if op == "message.send" && key == "file" {
+        } else if accepts_body(&op) && key == "file" {
             params.insert(
                 "file".into(),
                 Value::String(text.ok_or_else(invalid)?.to_owned()),
@@ -313,18 +385,13 @@ pub fn parse(args: &[String], env: &HashMap<String, String>) -> Result<Parsed, P
             message: "Choose an explicit recipient Session",
         });
     }
-    if op == "message.send" {
-        let has_message = params.contains_key("message");
+    if accepts_body(&op) {
         let has_text = params.contains_key("text");
         let has_stdin = params.get("stdin").is_some_and(|v| v == &Value::Bool(true));
         let has_file = params.contains_key("file");
         if (has_stdin && has_file) || (has_text && (has_stdin || has_file)) {
             return Err(invalid());
         }
-        // The business message ID is generated by run() immediately before
-        // local input/IPC.  parse() therefore permits the input source to be
-        // missing so that this post-generation local failure still exposes it.
-        let _ = (has_message, has_text);
     }
     if pane_operation
         && (target.values().any(|value| {
@@ -354,9 +421,24 @@ pub fn parse(args: &[String], env: &HashMap<String, String>) -> Result<Parsed, P
     // The CLI-local stdin/file forms are completed by run() after it has
     // generated the message identity.  All other operations, and fully
     // populated wire requests, use the canonical strict validator here.
+    let local_body =
+        accepts_body(&op) && (params.contains_key("stdin") || params.contains_key("file"));
     let incomplete_message =
         op == "message.send" && (!params.contains_key("message") || !params.contains_key("text"));
-    if !incomplete_message {
+    if local_body {
+        let mut wire_request = request.clone();
+        let wire_params = wire_request["params"].as_object_mut().unwrap();
+        wire_params.remove("stdin");
+        wire_params.remove("file");
+        wire_params.insert("text".into(), Value::String("body".into()));
+        if op == "message.send" {
+            wire_params
+                .entry("message")
+                .or_insert(Value::String("pending".into()));
+            wire_params.remove("references"); // Decoded from CLI JSON after allocating the message identity.
+        }
+        codec::check_request(&wire_request)?;
+    } else if !incomplete_message {
         codec::check_request(&request)?;
     }
     Ok(Parsed {
@@ -443,7 +525,13 @@ pub fn run(args: &[String]) -> i32 {
                             .as_object()
                             .unwrap()
                             .keys()
-                            .map(|key| format!("--{}", flag_name(key))),
+                            .map(|key| {
+                                if key == "text" && accepts_body(name) {
+                                    "(--text TEXT | --stdin | --file PATH)".to_owned()
+                                } else {
+                                    format!("--{}", flag_name(key))
+                                }
+                            }),
                     )
                     .collect::<Vec<_>>()
                     .join(" ");
@@ -485,6 +573,9 @@ pub fn run(args: &[String]) -> i32 {
         return 5;
     }
     let mut request = parsed.request;
+    let input_timeout_ms = request["timeoutMs"]
+        .as_u64()
+        .unwrap_or(w::DEFAULT_TIMEOUT_MS as u64);
     let mut message_id = None;
     if operation == "message.send" {
         // Generate the durable business identity before reading stdin/files or
@@ -506,10 +597,18 @@ pub fn run(args: &[String]) -> i32 {
             },
         };
         message_id = Some(id.clone());
+        request["params"]
+            .as_object_mut()
+            .expect("CLI params object")
+            .insert("message".into(), Value::String(id));
+    }
+    if accepts_body(&operation) {
+        let body_limit = descriptor["operations"][&operation]["cli"]["textInput"]["maxUtf8Bytes"]
+            .as_u64()
+            .expect("generated CLI body byte limit") as usize;
         let params = request["params"]
             .as_object_mut()
             .expect("CLI params object");
-        params.insert("message".into(), Value::String(id));
         let stdin = params
             .remove("stdin")
             .is_some_and(|v| v == Value::Bool(true));
@@ -527,55 +626,34 @@ pub fn run(args: &[String]) -> i32 {
             return w::error_exit("INVALID_ARGUMENT");
         }
         if stdin || file.is_some() {
-            let bytes = if stdin {
-                let mut bytes = Vec::new();
-                let input = std::io::stdin().lock();
-                if input
-                    .take(w::MESSAGE_BODY_BYTES as u64 + 1)
-                    .read_to_end(&mut bytes)
-                    .is_err()
-                {
-                    let response = super::client::failure(
-                        &request,
-                        "INPUT_NOT_READY",
-                        "Unable to read message stdin",
-                        "none",
-                    );
-                    print_result(&response, parsed.json, message_id.as_deref());
-                    return w::error_exit("INPUT_NOT_READY");
-                }
-                bytes
-            } else {
-                let path = file.as_deref().unwrap();
-                if path.as_bytes().len() > w::REQUEST_BYTES {
-                    let response = super::client::failure(
-                        &request,
-                        "CAPACITY_EXCEEDED",
-                        "Message file path exceeds control capacity",
-                        "none",
-                    );
-                    print_result(&response, parsed.json, message_id.as_deref());
-                    return w::error_exit("CAPACITY_EXCEEDED");
-                }
-                match std::fs::read(path) {
-                    Ok(bytes) => bytes,
-                    Err(_) => {
-                        let response = super::client::failure(
-                            &request,
-                            "SOURCE_UNAVAILABLE",
-                            "Message file is unavailable",
-                            "none",
-                        );
-                        print_result(&response, parsed.json, message_id.as_deref());
-                        return w::error_exit("SOURCE_UNAVAILABLE");
-                    }
-                }
-            };
-            if bytes.len() > w::MESSAGE_BODY_BYTES {
+            if file
+                .as_ref()
+                .is_some_and(|path| path.len() > w::REQUEST_BYTES)
+            {
                 let response = super::client::failure(
                     &request,
                     "CAPACITY_EXCEEDED",
-                    "Message body exceeds the 16KiB UTF-8 limit",
+                    "Body file path exceeds control capacity",
+                    "none",
+                );
+                print_result(&response, parsed.json, message_id.as_deref());
+                return w::error_exit("CAPACITY_EXCEEDED");
+            }
+            let deadline = Instant::now() + Duration::from_millis(input_timeout_ms);
+            let bytes = match read_body(file, body_limit, deadline, &cancel) {
+                Ok(bytes) => bytes,
+                Err(error) => {
+                    let response =
+                        super::client::failure(&request, error.code, error.message, "none");
+                    print_result(&response, parsed.json, message_id.as_deref());
+                    return w::error_exit(error.code);
+                }
+            };
+            if bytes.len() > body_limit {
+                let response = super::client::failure(
+                    &request,
+                    "CAPACITY_EXCEEDED",
+                    "Body exceeds the UTF-8 input limit",
                     "none",
                 );
                 print_result(&response, parsed.json, message_id.as_deref());
@@ -587,7 +665,7 @@ pub fn run(args: &[String]) -> i32 {
                     let response = super::client::failure(
                         &request,
                         "INVALID_ARGUMENT",
-                        "Message body must be non-empty UTF-8",
+                        "Body must be non-empty UTF-8",
                         "none",
                     );
                     print_result(&response, parsed.json, message_id.as_deref());
@@ -600,7 +678,7 @@ pub fn run(args: &[String]) -> i32 {
             let response = super::client::failure(
                 &request,
                 "INPUT_NOT_READY",
-                "message send requires --stdin, --file, or --text",
+                "Choose one body source: --text, --stdin, or --file",
                 "none",
             );
             print_result(&response, parsed.json, message_id.as_deref());
@@ -609,17 +687,22 @@ pub fn run(args: &[String]) -> i32 {
         if params
             .get("text")
             .and_then(Value::as_str)
-            .is_some_and(|text| text.is_empty() || text.as_bytes().len() > w::MESSAGE_BODY_BYTES)
+            .is_some_and(|text| text.is_empty() || text.len() > body_limit)
         {
             let response = super::client::failure(
                 &request,
                 "CAPACITY_EXCEEDED",
-                "Message body exceeds the 16KiB UTF-8 limit",
+                "Body exceeds the UTF-8 input limit",
                 "none",
             );
             print_result(&response, parsed.json, message_id.as_deref());
             return w::error_exit("CAPACITY_EXCEEDED");
         }
+    }
+    if operation == "message.send" {
+        let params = request["params"]
+            .as_object_mut()
+            .expect("CLI params object");
         if !params.contains_key("source") {
             params.insert("source".into(), Value::String("cli".into()));
         }
@@ -662,6 +745,19 @@ pub fn run(args: &[String]) -> i32 {
             print_result(&response, parsed.json, message_id.as_deref());
             return w::error_exit(error.code);
         }
+    }
+    if accepts_body(&operation) {
+        if let Err(error) = codec::check_request(&request) {
+            let response = super::client::failure(&request, error.code, error.message, "none");
+            print_result(&response, parsed.json, message_id.as_deref());
+            return w::error_exit(error.code);
+        }
+    }
+    if cancel.load(Ordering::Acquire) {
+        let response =
+            super::client::failure(&request, "WAIT_CANCELLED", "Local input cancelled", "none");
+        print_result(&response, parsed.json, message_id.as_deref());
+        return w::error_exit("WAIT_CANCELLED");
     }
     if request["requestId"] == "huhu" {
         match super::ipc::platform::nonce() {

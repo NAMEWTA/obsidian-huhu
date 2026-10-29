@@ -1,5 +1,6 @@
 import { setTimeout as setPoolTimeout } from 'node:timers';
 import { SPOOL_GUARD } from './spool-guard';
+import { readerLease } from './reader-lease';
 
 /** Fixed physical limits shared by every publisher and both AutomationHooks instances. */
 export const HOOK_SPOOL_LIMITS = Object.freeze({
@@ -17,6 +18,7 @@ export const HOOK_SPOOL_LIMITS = Object.freeze({
 	largeBatch: 1,
 	idleMs: 300,
 	metadataBytes: 256 * 1024,
+	retainedGenerations: 32,
 });
 
 /** Internal protocol only. A publication is one physical raw event, not an activity DTO. */
@@ -120,6 +122,7 @@ export class HookSpool {
 	private readerOpening?: Promise<void>;
 	private readerClosing?: Promise<void>;
 	private readerRetiring?: { owner: string; dev: bigint; ino: bigint; claimRemoved: boolean };
+	private lease?: Awaited<ReturnType<typeof readerLease>>;
 	private finished: (NonNullable<ScopeState['close']> & { settled: () => void })[] = [];
 	private retiringScopes = 0;
 	private constructor(
@@ -127,13 +130,20 @@ export class HookSpool {
 		private path: NodePath,
 		readonly root: string,
 		private sync: SyncFs,
+		private physicalRoot: string,
 	) {}
 	static async open(fs: Fs, path: NodePath, root: string, sync: SyncFs): Promise<HookSpool> {
+		const physicalRoot = root;
+		// Legacy nonce-only claims cannot establish death. Keep them isolated,
+		// while all current readers share a kernel lease on this physical root.
+		root = path.join(physicalRoot, 'generations-v2', nonce());
+		await assertPath(fs, path, root);
+		await fs.mkdir(root, { recursive: true, mode: 0o700 });
 		for (const name of ['scopes', 'collectors', 'small', 'large']) {
 			await assertPath(fs, path, path.join(root, name));
 			await fs.mkdir(path.join(root, name), { recursive: true, mode: 0o700 });
 		}
-		return new HookSpool(fs, path, root, sync);
+		return new HookSpool(fs, path, root, sync, physicalRoot);
 	}
 	async prepare(
 		receive: (event: SpoolEvent) => void,
@@ -187,13 +197,26 @@ export class HookSpool {
 			if (!this.scopes.size && !this.preparing) {
 				if (this.reading) await this.reading;
 				await this.releaseReader();
+				await this.removeUnusedGeneration();
 			}
+		}
+	}
+	private async removeUnusedGeneration(): Promise<void> {
+		if (this.readerNonce || this.readerRetiring || this.retiringScopes) return;
+		try {
+			await this.fs.access(this.path.join(this.root, 'reader'));
+		} catch (error) {
+			if (code(error) !== 'ENOENT') throw error;
+			// A rejected contender has never published this unique path.
+			await assertPath(this.fs, this.path, this.root);
+			await this.fs.rm(this.root, { recursive: true, force: true });
 		}
 	}
 	private async acquireReader(): Promise<void> {
 		if (this.readerClosing) await this.readerClosing;
 		if (this.readerRetiring) await this.releaseReader();
 		if (this.readerNonce) {
+			this.lease?.assertHeld();
 			const owned = JSON.parse(await this.read(this.path.join(this.root, 'reader', 'claim.json'), 256)) as {
 				nonce: string;
 			};
@@ -202,6 +225,15 @@ export class HookSpool {
 		}
 		if (this.readerOpening) return this.readerOpening;
 		const opening = (async () => {
+			await assertPath(this.fs, this.path, this.physicalRoot);
+			const physical = await this.fs.lstat(this.physicalRoot, { bigint: true });
+			this.lease ??= await readerLease(this.physicalRoot, physical.dev, physical.ino);
+			this.lease.assertHeld();
+			await this.recoverGenerations();
+			for (const name of ['', 'scopes', 'collectors', 'small', 'large']) {
+				await assertPath(this.fs, this.path, this.path.join(this.root, name));
+				await this.fs.mkdir(this.path.join(this.root, name), { recursive: true, mode: 0o700 });
+			}
 			const dir = this.path.join(this.root, 'reader'),
 				owner = nonce();
 			await assertPath(this.fs, this.path, dir);
@@ -229,9 +261,29 @@ export class HookSpool {
 			if (this.readerOpening === opening) this.readerOpening = undefined;
 		}
 	}
+	private async recoverGenerations(): Promise<void> {
+		const parent = this.path.dirname(this.root);
+		await assertPath(this.fs, this.path, parent);
+		const entries = await this.fs.opendir(parent);
+		let retained = 0;
+		for await (const entry of entries) {
+			if (++retained > HOOK_SPOOL_LIMITS.retainedGenerations) throw new Error('hookRecoveryCapacity');
+			if (entry.name === this.path.basename(this.root)) continue;
+			if (!/^[\da-f-]{36}$/.test(entry.name) || !entry.isDirectory() || entry.isSymbolicLink())
+				throw new Error('hookRecoveryInvalid');
+			this.lease!.assertHeld();
+			// Names are never reused: a late publisher can only retain/write its
+			// retired generation, never a newly admitted scope's physical slots.
+			await this.fs.rm(this.path.join(parent, entry.name), { recursive: true, force: true });
+		}
+	}
 	private async releaseReader(): Promise<void> {
 		if (this.readerClosing) return this.readerClosing;
-		if (!this.readerRetiring && (!this.readerNonce || this.scopes.size || this.preparing || this.reading)) return;
+		if (!this.readerRetiring && (this.scopes.size || this.preparing || this.reading)) return;
+		if (!this.readerRetiring && !this.readerNonce) {
+			if (this.lease) { await this.lease.close(); this.lease = undefined; }
+			return;
+		}
 		const owner = this.readerNonce,
 			dir = this.path.join(this.root, 'reader');
 		const closing = (async () => {
@@ -258,6 +310,7 @@ export class HookSpool {
 			}
 			await this.fs.rmdir(dir);
 			this.readerRetiring = undefined;
+			if (this.lease) { await this.lease.close(); this.lease = undefined; }
 		})();
 		this.readerClosing = closing;
 		try {
@@ -354,6 +407,7 @@ export class HookSpool {
 		for (let i = 0; i < states.length; i++) {
 			const state = states[(start + i) % states.length]!;
 			try {
+				this.lease!.assertHeld();
 				await assertPath(this.fs, this.path, state.dir);
 				if (!state.active)
 					await this.fs.unlink(this.path.join(state.dir, 'active.json')).catch((error) => {
@@ -518,6 +572,7 @@ export class HookSpool {
 					throw new Error('hookEventInvalid');
 				if (state.active) {
 					try {
+						this.lease!.assertHeld();
 						state.receive(event);
 					} catch {
 						this.report(state, 'hookConsumerFailed');

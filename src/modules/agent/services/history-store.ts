@@ -1,19 +1,32 @@
 import { createStore } from 'zustand/vanilla';
 import { t } from '../../../shared/i18n';
 import { transcriptDetails, type HistoryDetails } from '../core/history/details';
+import { sameHistorySource, HistorySourceChangedError } from '../platform/history/source-identity';
 import type { NativeHistory, HistoryMetadata } from '../platform/history/service';
 import type { HistoryFence, NativeSessionSummary } from '../platform/desktop/server/agent-data-client';
 export type HistoryRow = NativeSessionSummary &
 	HistoryDetails & {
+		kind?: 'agent' | 'shell';
 		metadata: HistoryMetadata;
 		inVault: boolean;
 		/** Legacy consumers may construct a row before the first lazy-preview state is assigned. */
 		previewState?: 'idle' | 'loading' | 'ready' | 'unavailable';
 		readError?: string;
+		/** The returned body is an incomplete prefix, so its last turn is not the latest native turn. */
+		previewPartial?: boolean;
 	};
+export interface TerminalHistoryMetadata {
+	readonly sessionId: string;
+	readonly spaceId: string;
+	readonly title: string;
+	readonly cwd: string;
+	readonly createdAt: number;
+	readonly archived?: boolean;
+}
 export class HistoryStore {
-	readonly store = createStore<{ rows: HistoryRow[]; loading: boolean; error: string; warnings: string[] }>(() => ({
+	readonly store = createStore<{ rows: HistoryRow[]; terminalRows: HistoryRow[]; loading: boolean; error: string; warnings: string[] }>(() => ({
 		rows: [],
+		terminalRows: [],
 		loading: false,
 		error: '',
 		warnings: [],
@@ -29,9 +42,19 @@ export class HistoryStore {
 		private readonly bindOwner?: (
 			rows: readonly NativeSessionSummary[],
 		) => Promise<string[] | void> | string[] | void,
+		private readonly terminals: () => readonly TerminalHistoryMetadata[] = () => [],
 	) {}
+	private terminalRows(): HistoryRow[] {
+		return this.terminals().map((session) => ({
+			key: `shell:${session.sessionId}`, kind: 'shell', agentId: 'shell', accountKey: '', sessionId: session.sessionId,
+			spaceId: session.spaceId, title: session.title, cwd: session.cwd, transcriptPath: '', modifiedAtMs: session.createdAt,
+			usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: null, known: false },
+			...transcriptDetails(''), createdAt: session.createdAt, metadata: { archived: session.archived }, inVault: true, previewState: 'unavailable',
+		}));
+	}
 	refresh(scan = true): Promise<void> {
 		if (this.abort.signal.aborted) return Promise.resolve();
+		this.store.setState({ terminalRows: this.terminalRows() });
 		if (this.pending) return this.pending;
 		this.store.setState({ loading: true, error: '' });
 		const generation = ++this.generation;
@@ -52,8 +75,13 @@ export class HistoryStore {
 				// The vault projection is native-admitted (vault cwd or HUHU-owned); every listed row belongs to it.
 				const previous = new Map(this.store.getState().rows.map((row) => [row.key, row]));
 				// Listing is metadata-only. A row already previewed keeps its state while its source is unchanged.
-				const enriched: HistoryRow[] = rows.map((row) => {
+				const enriched: HistoryRow[] = rows.map((row): HistoryRow => {
 					const kept = previous.get(row.key);
+					if (kept && !sameHistorySource(kept, row)) return {
+						...kept, sourceStatus: 'changed', sourceReason: t('agent.historyUI.source.changed'),
+						previewState: 'unavailable', readError: t('agent.historyUI.source.changed'),
+						firstPrompt: '', turns: [], previewPartial: undefined,
+					};
 					const reuse =
 						kept &&
 						kept.previewState !== 'idle' &&
@@ -69,6 +97,7 @@ export class HistoryStore {
 									firstPrompt: kept.firstPrompt,
 									turns: kept.turns,
 									messageCount: kept.messageCount,
+									previewPartial: kept.previewPartial,
 								}
 							: {
 									...transcriptDetails(''),
@@ -109,7 +138,7 @@ export class HistoryStore {
 		const existing = this.previewing.get(key);
 		if (existing) return existing;
 		const row = this.store.getState().rows.find((item) => item.key === key);
-		if (!row || row.previewState === 'ready') return Promise.resolve();
+		if (!row || row.kind === 'shell' || row.previewState === 'ready') return Promise.resolve();
 		// A metadata-only row (source missing/changed/denied) has no body to read; keep its annotations and show the status.
 		if (row.sourceStatus && row.sourceStatus !== 'available') {
 			const readError = t(`agent.historyUI.source.${row.sourceStatus}`);
@@ -128,6 +157,7 @@ export class HistoryStore {
 			try {
 				const history = this.history();
 				const full = await history.read(row, this.abort.signal);
+				if (!sameHistorySource(row, full)) throw new HistorySourceChangedError();
 				// The helper re-verifies the source at read time; a non-available result carries no body to show.
 				if (full.sourceStatus && full.sourceStatus !== 'available') {
 					if (generation === this.generation && !this.abort.signal.aborted)
@@ -161,6 +191,7 @@ export class HistoryStore {
 										createdAt: details.createdAt ?? item.createdAt,
 										messageCount: full.usage?.partial ? item.messageCount : details.messageCount,
 										previewState: 'ready' as const,
+										previewPartial: !!full.usage?.partial,
 										readError: undefined,
 									}
 								: item,
@@ -171,7 +202,7 @@ export class HistoryStore {
 					this.store.setState((state) => ({
 						rows: state.rows.map((item) =>
 							item.key === key
-								? { ...item, previewState: 'unavailable' as const, readError: String(error) }
+								? { ...item, previewState: 'unavailable' as const, readError: String(error), ...(error instanceof HistorySourceChangedError ? { sourceStatus: 'changed' as const, sourceReason: error.message, firstPrompt: '', turns: [], previewPartial: undefined } : {}) }
 								: item,
 						),
 					}));

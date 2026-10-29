@@ -212,3 +212,28 @@ test('an imported Session with no earlier attempt can be prepared for its first 
 	expect(await service.resolveSpaceCwd(a.id)).toBe('/same-cwd');
 	await service.dispose();
 });
+
+test('fresh-import proof survives restart but is consumed before the first launch and cannot revive on recovery', async () => {
+	const f = fixture();
+	const first = f.make('first');
+	const space = await first.create({ name: 'Imported' });
+	const { session } = await first.importHistorySession({ spaceId: space.id, sourceRef: 'source', accountKey: '{}', deviceId: 'd', agentId: 'codex', accountId: '', nativeSessionId: 'native', transcriptPath: '/native.jsonl', title: 'Imported' });
+	expect(session.nativeImport?.neverStarted).toBe(true);
+	await first.dispose();
+	const second = f.make('second');
+	try {
+		await second.ready;
+		const restored = second.store.getState().records.sessions[session.id]!;
+		expect(restored.nativeImport?.neverStarted).toBe(true);
+		const admitted = await second.prepareSession(space.id, restored, session.id);
+		expect(admitted.record.nativeImport?.neverStarted).toBeUndefined();
+		const saved = JSON.parse(f.files.get(second.path)!);
+		expect(saved.sessions[session.id].nativeImport.neverStarted).toBeUndefined();
+		delete saved.sessions[session.id].lastAttempt;
+		f.files.set(second.path, JSON.stringify(saved));
+		await second.reloadFromDisk();
+		const permit = await second.acquireArchive(await second.inspectArchive({ kind: 'session', spaceId: space.id, sessionId: session.id }));
+		try { await expect(second.commitArchive(permit)).rejects.toMatchObject({ code: 'EFFECT_UNKNOWN' }); }
+		finally { second.releaseArchive(permit); }
+	} finally { await second.dispose(); }
+});

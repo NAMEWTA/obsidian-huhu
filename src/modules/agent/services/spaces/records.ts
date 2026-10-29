@@ -21,6 +21,8 @@ export interface NativeImportEvidence {
 	readonly accountKey: string;
 	readonly deviceId: string;
 	readonly importedAt: number;
+	/** Written only when this import creates the Session; cleared atomically at its first launch admission. */
+	readonly neverStarted?: true;
 }
 export interface SessionRecord {
 	readonly id: string;
@@ -38,6 +40,10 @@ export interface SessionRecord {
 	readonly completionHint?: ActivityCompletionHint;
 	/** Present when the Session was created from, or adopted, a native history source by an explicit import. */
 	readonly nativeImport?: NativeImportEvidence;
+}
+/** Provenance adoption cannot supply this proof for an older Session with unknown runtime history. */
+export function isNeverStartedImport(record: Pick<SessionRecord, 'nativeImport' | 'lastAttempt'>): boolean {
+	return !record.lastAttempt && record.nativeImport?.neverStarted === true;
 }
 export interface WorkbenchRecords {
 	version: 2;
@@ -89,14 +95,15 @@ const sessionFields = new Set([
 	'completionHint',
 	'nativeImport',
 ]);
-const importFields = new Set(['sourceRef', 'accountKey', 'deviceId', 'importedAt']);
-function nativeImport(v: unknown): boolean {
+const importFields = new Set(['sourceRef', 'accountKey', 'deviceId', 'importedAt', 'neverStarted']);
+function nativeImport(v: unknown): v is NativeImportEvidence {
 	return (
 		object(v) &&
 		text(v.sourceRef) &&
 		text(v.accountKey) &&
 		text(v.deviceId) &&
 		stamp(v.importedAt) &&
+		(v.neverStarted === undefined || v.neverStarted === true) &&
 		Object.keys(v).every((key) => importFields.has(key))
 	);
 }
@@ -191,7 +198,7 @@ export function isWorkbenchRecords(v: unknown): v is WorkbenchRecords {
 				(s.archived === undefined || typeof s.archived === 'boolean') &&
 				(s.lastAttempt === undefined || attempt(s.lastAttempt)) &&
 				(s.completionHint === undefined || validActivityHint(s.completionHint)) &&
-				(s.nativeImport === undefined || nativeImport(s.nativeImport)) &&
+				(s.nativeImport === undefined || (nativeImport(s.nativeImport) && (!s.nativeImport.neverStarted || s.lastAttempt === undefined))) &&
 				Object.keys(s).every((key) => sessionFields.has(key)),
 		)
 	)

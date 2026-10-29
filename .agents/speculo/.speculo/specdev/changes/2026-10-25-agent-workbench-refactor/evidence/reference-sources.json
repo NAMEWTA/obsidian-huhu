@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "owner_work": "specdev/tickets",
+  "checked_on": "2026-10-25",
+  "activity_window": [
+    "2024-10-25",
+    "2026-10-25"
+  ],
+  "method": "GitHub 官方仓库/API、固定提交许可/manifest/源码及官方文档；只读研究，未运行参考产品，未引入外部代码。",
+  "repositories": [
+    {
+      "id": "R-01",
+      "repository": "herdrdev/herdr",
+      "url": "https://github.com/herdrdev/herdr",
+      "archived": false,
+      "pushed_at": "2026-10-23T21:54:15Z",
+      "latest_commit": {
+        "sha": "5608de0608918aba2f9d501e7793b984a0ca9cfa",
+        "date": "2026-10-23T21:54:08Z",
+        "url": "https://github.com/herdrdev/herdr/commit/5608de0608918aba2f9d501e7793b984a0ca9cfa"
+      },
+      "release": {
+        "tag_name": "v0.9.5",
+        "html_url": "https://github.com/herdrdev/herdr/releases/tag/v0.9.5",
+        "published_at": "2026-10-14T16:07:28Z",
+        "prerelease": false,
+        "draft": false
+      },
+      "pinned": {
+        "ref": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+        "sha": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+        "date": "2026-10-14T15:56:41Z"
+      },
+      "github_license_classification": "Apache-2.0",
+      "files_read": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/herdrdev/herdr/2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01/LICENSE",
+          "sha256_utf8": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "read_ok": true
+        },
+        {
+          "path": "Cargo.toml",
+          "url": "https://raw.githubusercontent.com/herdrdev/herdr/2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01/Cargo.toml",
+          "sha256_utf8": "ba95df35ac75cf91fb3c91daa62e58da1b23c7a0cc120c825524a1f4830b300a",
+          "read_ok": true
+        }
+      ],
+      "activity_basis": "latest commit",
+      "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+    },
+    {
+      "id": "R-02",
+      "repository": "wavetermdev/waveterm",
+      "url": "https://github.com/wavetermdev/waveterm",
+      "archived": false,
+      "pushed_at": "2026-10-17T14:59:42Z",
+      "latest_commit": null,
+      "release": {
+        "tag_name": "v0.14.5",
+        "html_url": "https://github.com/wavetermdev/waveterm/releases/tag/v0.14.5",
+        "published_at": "2026-04-16T16:01:54Z",
+        "prerelease": false,
+        "draft": false
+      },
+      "pinned": {
+        "ref": "v0.14.5",
+        "sha": "97e560027f494d20fed347b2d6b72b6bcb3e50e0",
+        "date": "2026-04-16T15:33:19Z"
+      },
+      "github_license_classification": "Apache-2.0",
+      "files_read": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/wavetermdev/waveterm/97e560027f494d20fed347b2d6b72b6bcb3e50e0/LICENSE",
+          "sha256_utf8": "2961c11688c782253260f3094ef85163871b9bcef1cfc21f8e0650170c736828",
+          "read_ok": true
+        },
+        {
+          "path": "package.json",
+          "url": "https://raw.githubusercontent.com/wavetermdev/waveterm/97e560027f494d20fed347b2d6b72b6bcb3e50e0/package.json",
+          "sha256_utf8": "751628107e914a35b3b3b2a3e1df29f3f78e55000e876003bf085092d34e50fb",
+          "read_ok": true
+        },
+        {
+          "path": "go.mod",
+          "url": "https://raw.githubusercontent.com/wavetermdev/waveterm/97e560027f494d20fed347b2d6b72b6bcb3e50e0/go.mod",
+          "sha256_utf8": "bd8a310fa177a32408e98b52bcfb265d2ff9a8d55f1e57a967d55696834610c7",
+          "read_ok": true
+        }
+      ],
+      "activity_basis": "release + pinned commit",
+      "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+    },
+    {
+      "id": "R-03",
+      "repository": "tmux/tmux",
+      "url": "https://github.com/tmux/tmux",
+      "archived": false,
+      "pushed_at": "2026-10-24T07:47:32Z",
+      "latest_commit": {
+        "sha": "acee541d6ec53127ee34488a281e0b205890ef91",
+        "date": "2026-10-24T07:47:32Z",
+        "url": "https://github.com/tmux/tmux/commit/acee541d6ec53127ee34488a281e0b205890ef91"
+      },
+      "release": {
+        "tag_name": "3.8",
+        "html_url": "https://github.com/tmux/tmux/releases/tag/3.8",
+        "published_at": "2026-09-09T12:55:58Z",
+        "prerelease": false,
+        "draft": false
+      },
+      "pinned": {
+        "ref": "3.8",
+        "sha": "7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53",
+        "date": "2026-10-08T07:13:43Z"
+      },
+      "github_license_classification": "ISC",
+      "files_read": [
+        {
+          "path": "COPYING",
+          "url": "https://raw.githubusercontent.com/tmux/tmux/7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53/COPYING",
+          "sha256_utf8": "2116115d46eeb1e736acfa562eed14fe6c34760794bc5b484642fe694adde0fd",
+          "read_ok": true
+        },
+        {
+          "path": "README",
+          "url": "https://raw.githubusercontent.com/tmux/tmux/7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53/README",
+          "sha256_utf8": "9fb75e6c7f10c25b73e41b8214336d0dc2acfbe4c99984514ccaf7327192d53e",
+          "read_ok": true
+        }
+      ],
+      "activity_basis": "latest commit",
+      "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+    },
+    {
+      "id": "R-04",
+      "repository": "xtermjs/xterm.js",
+      "url": "https://github.com/xtermjs/xterm.js",
+      "archived": false,
+      "pushed_at": "2026-10-13T17:49:36Z",
+      "latest_commit": {
+        "sha": "991857a1b1cacf06f9531ba74a6e927a7a6398bb",
+        "date": "2026-10-13T17:49:35Z",
+        "url": "https://github.com/xtermjs/xterm.js/commit/991857a1b1cacf06f9531ba74a6e927a7a6398bb"
+      },
+      "release": {
+        "tag_name": "6.0.0",
+        "html_url": "https://github.com/xtermjs/xterm.js/releases/tag/6.0.0",
+        "published_at": "2025-12-22T13:59:51Z",
+        "prerelease": false,
+        "draft": false
+      },
+      "pinned": {
+        "ref": "6.0.0",
+        "sha": "f447274f430fd22513f6adbf9862d19524471c04",
+        "date": "2025-12-22T13:48:49Z"
+      },
+      "github_license_classification": "MIT",
+      "files_read": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/xtermjs/xterm.js/f447274f430fd22513f6adbf9862d19524471c04/LICENSE",
+          "sha256_utf8": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+          "read_ok": true
+        },
+        {
+          "path": "package.json",
+          "url": "https://raw.githubusercontent.com/xtermjs/xterm.js/f447274f430fd22513f6adbf9862d19524471c04/package.json",
+          "sha256_utf8": "5553a8477486641d8169ad5c9cfc1d942a5bf78fcfebce64a26baed6d972c337",
+          "read_ok": true
+        }
+      ],
+      "activity_basis": "latest commit",
+      "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+    },
+    {
+      "id": "R-05",
+      "repository": "wezterm/wezterm",
+      "url": "https://github.com/wezterm/wezterm",
+      "archived": false,
+      "pushed_at": "2026-10-19T05:16:10Z",
+      "latest_commit": {
+        "sha": "e2a98e1b8af156988ad0ac778658ac27b60a55fb",
+        "date": "2026-10-10T07:39:11Z",
+        "url": "https://github.com/wezterm/wezterm/commit/e2a98e1b8af156988ad0ac778658ac27b60a55fb"
+      },
+      "release": {
+        "tag_name": "20240203-110809-5046fc22",
+        "html_url": "https://github.com/wezterm/wezterm/releases/tag/20240203-110809-5046fc22",
+        "published_at": "2024-02-03T18:32:26Z",
+        "prerelease": false,
+        "draft": false
+      },
+      "pinned": {
+        "ref": "e2a98e1b8af156988ad0ac778658ac27b60a55fb",
+        "sha": "e2a98e1b8af156988ad0ac778658ac27b60a55fb",
+        "date": "2026-10-10T07:39:11Z"
+      },
+      "github_license_classification": "NOASSERTION",
+      "files_read": [
+        {
+          "path": "LICENSE.md",
+          "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/LICENSE.md",
+          "sha256_utf8": "37db33bbbd7348969eda397b89a16f252d56c1ca7481b6ccaf56ccdcbab5dcca",
+          "read_ok": true
+        },
+        {
+          "path": "pty/Cargo.toml",
+          "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/pty/Cargo.toml",
+          "sha256_utf8": "61669bdd040320fddf328af8443d509c4aa796a6782bdbc74cc01ce55c6c21be",
+          "read_ok": true
+        }
+      ],
+      "activity_basis": "latest commit",
+      "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+    }
+  ],
+  "issues": [
+    {
+      "html_url": "https://github.com/xtermjs/xterm.js/issues/6063",
+      "number": 6063,
+      "title": "`Buffer.resize` can leave viewport rows with no live `BufferLine` when growing rows with `ybase > 0` (6.0.0) — uncaught TypeErrors in `lineFeed` and `_eraseInBufferLine`",
+      "state": "open",
+      "created_at": "2026-07-23T19:55:31Z",
+      "updated_at": "2026-09-18T22:55:17Z",
+      "closed_at": null
+    },
+    {
+      "html_url": "https://github.com/wezterm/wezterm/issues/4784",
+      "number": 4784,
+      "title": "[Windows] using portable_pty causes terminal to be cleared while trying to stream to stdout",
+      "state": "closed",
+      "created_at": "2024-01-12T22:42:16Z",
+      "updated_at": "2024-06-05T03:07:56Z",
+      "closed_at": "2024-05-05T21:17:25Z"
+    }
+  ],
+  "additional_primary_sources": [
+    "https://github.com/tmux/tmux/wiki/Control-Mode",
+    "https://xtermjs.org/docs/guides/flowcontrol/"
+  ],
+  "interpretation": "未归档且窗口内有实际维护提交或正式发布为本轮活动证据；不是长期维护保证。WezTerm release 不在窗口，以 commit 为准。Wave latest commit 请求失败，已用成功读取的官方 release/固定 commit 验证活动；不伪造缺失字段。"
+}

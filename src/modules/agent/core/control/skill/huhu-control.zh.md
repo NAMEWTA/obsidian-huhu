@@ -37,14 +37,17 @@ huhu --json session get --session <session-id>
 
 ## 长文本走 stdin
 
-最多 16 KiB 的消息正文在本地从 stdin 或文件读取，shell 引号不会破坏它。
+`--text`、`--stdin`、`--file` 必须三选一。CLI 在本地读取正文：`message send` 最多接受 16 KiB UTF-8，`agent prompt` 和 `terminal send-text` 最多接受 256 KiB。文件路径和 stdin 标志不会转发给工作台。
+完整请求也须满足 `capabilities` 公布的帧容量，编码和目标字段同样占用容量。
 
 ```sh
 huhu --json message send --to-session <session-id> --stdin < body.txt
+huhu --json agent prompt --session <session-id> --runtime <runtime-id> --file prompt.txt
 huhu --json inbox list --session <session-id>
 ```
 
 退出码 2 且 `CAPACITY_EXCEEDED` 表示正文过大：请缩短，不要悄悄拆分。
+`--timeout-ms` 也限制等待本地正文的时间。提交前超时（退出码 6）或 Ctrl-C（退出码 130）不会发送输入；下一步操作前仍须回读回执的 `effect`。
 
 ## 仅在被要求时停止
 

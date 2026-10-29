@@ -84,6 +84,7 @@ async function browserFixture() {
 	const scene = new URL(location.href).searchParams.get('scene') ?? 'default';
 	registerMessages(messages);
 	registerMessages(uiMessages);
+	registerMessages(commonMessages);
 	setLanguage('zh');
 	Object.defineProperties(HTMLElement.prototype, {
 		win: {
@@ -418,6 +419,7 @@ async function browserFixture() {
 		usageStore: { observeWindow: () => () => {} },
 		historyStore: {
 			refresh: async () => {},
+			preview: async () => {},
 			store: createStore(() => ({ rows: [], loading: false, error: '', warnings: [] })),
 		},
 		vaultPath: () => '/fixture',
@@ -596,6 +598,19 @@ async function browserFixture() {
 					close: e.querySelector('[data-pane-close]')?.getBoundingClientRect().toJSON(),
 					title: e.querySelector('[data-pane-title]')?.title,
 				})),
+				targets: [...document.querySelectorAll('.huhu-workspace-toolbar button,[data-pane-header] button,[data-group-strip] button,.huhu-workspace-tab-close')]
+					.map((e) => {
+						const r = e.getBoundingClientRect(),
+							strip = e.closest('[data-group-strip]')?.getBoundingClientRect();
+						return {
+							name: e.getAttribute('aria-label') || e.getAttribute('data-pane-title') !== null && 'pane-title' || e.textContent.trim().slice(0, 20),
+							width: r.width,
+							height: r.height,
+							hidden: r.width === 0 || getComputedStyle(e).visibility === 'hidden',
+							escapes: strip ? r.top < strip.top - 0.5 || r.bottom > strip.bottom + 0.5 : false,
+						};
+					})
+					.filter((target) => !target.hidden),
 				groups: [...document.querySelectorAll('[data-panel-group]')].map((e) => ({
 					direction: e.getAttribute('data-panel-group-direction'),
 					rect: e.getBoundingClientRect().toJSON(),
@@ -609,8 +624,45 @@ async function browserFixture() {
 			leaf.style.width = width + 'px';
 			await this.stableGeometry();
 		},
+		hitTargets(selector) {
+			const root = document.querySelector(selector);
+			if (!root) throw Error('Missing hit-target surface: ' + selector);
+			const elements = [...root.querySelectorAll('button,input:not([type=hidden]),textarea,select,[role=menuitem],[role=menuitemcheckbox],[role=menuitemradio]')]
+				.filter((element) => {
+					const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
+					return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden';
+				});
+			return elements.map((element) => {
+				const rect = element.getBoundingClientRect();
+				const points = [[0, 0], [-21, 0], [21, 0], [0, -21], [0, 21]].map(([dx, dy]) => ({
+					x: rect.x + rect.width / 2 + dx, y: rect.y + rect.height / 2 + dy,
+				}));
+				const visible = points.every(({ x, y }) => x >= 0 && x < innerWidth && y >= 0 && y < innerHeight)
+					&& element.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
+				return {
+					name: element.getAttribute('aria-label') || element.textContent.trim().slice(0, 30) || element.tagName,
+					width: rect.width, height: rect.height, sampled: visible,
+					hits: !visible || points.every(({ x, y }) => element.contains(document.elementFromPoint(x, y))),
+					overlaps: elements.some((other) => {
+						if (other === element || element.contains(other) || other.contains(element)) return false;
+						const otherRect = other.getBoundingClientRect();
+						return Math.min(rect.right, otherRect.right) - Math.max(rect.left, otherRect.left) > 0.5
+							&& Math.min(rect.bottom, otherRect.bottom) - Math.max(rect.top, otherRect.top) > 0.5;
+					}),
+				};
+			});
+		},
 		control(open) {
 			view.setState({ control: open, history: false });
+		},
+		historySample() {
+			controller.historyStore.store.setState({ rows: [{
+				key: 'fixture-history', agentId: 'codex', sessionId: 'fixture-native', accountKey: '{}',
+				cwd: '/fixture', title: '只读历史 · 正文已截断', transcriptPath: '/fixture/source.jsonl',
+				modifiedAtMs: Date.now(), createdAt: Date.now(), model: 'fixture', messageCount: 12,
+				metadata: {}, previewState: 'ready', previewPartial: true, sourceStatus: 'available',
+				firstPrompt: '验证有界正文与取消继续。', turns: [{ role: 'assistant', text: '这是有界读取到的部分内容。' }],
+			}] });
 		},
 		async selectSpace(index) {
 			await workspace.selectSpace(this.spaces[index].id);
@@ -759,7 +811,7 @@ function connect(url) {
 	});
 }
 try {
-	const imports = `import React from 'react';import {Scope} from 'obsidian';import {ShellRoot} from './src/shell/ShellRoot';import {normalizeWorkbenchState} from './src/shell/navigation-state';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';import {createStore} from 'zustand/vanilla';import {AgentWorkspace} from './src/modules/agent/ui/AgentWorkspacePage';import {HuhuProviders} from './src/ui/react/providers';import {SpaceService} from './src/modules/agent/services/spaces/space-service';import {WorkspaceService} from './src/modules/agent/services/workspace-service';import {createSpaceWorkspaceStore} from './src/modules/agent/services/workspace-store';import {createWorkspaceView} from './src/modules/agent/services/workspace-view';import {TerminalSessions} from './src/modules/agent/services/terminal/sessions';import {normalizeTerminalSettings} from './src/modules/agent/core/terminal/settings';import {captureForegroundIntent} from './src/modules/agent/services/launch/foreground-intent';import {ControlCommands} from './src/modules/agent/services/control/commands';import {ControlRouter} from './src/modules/agent/services/control/router';import {captureControlExecutionContext,observeControlPreparation} from './src/modules/agent/services/control/terminal-coordination';import {InboxService} from './src/modules/agent/services/inbox/service';import {InboxPresentation} from './src/modules/agent/services/inbox/presentation';import {NATIVE_INPUT_LIMITS} from './src/shared/native/input';import {registerMessages,setLanguage,t} from './src/shared/i18n';import {messages} from './src/modules/agent/i18n';import {messages as uiMessages} from './src/shared/i18n/lazy/ui';`;
+	const imports = `import React from 'react';import {Scope} from 'obsidian';import {ShellRoot} from './src/shell/ShellRoot';import {normalizeWorkbenchState} from './src/shell/navigation-state';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';import {createStore} from 'zustand/vanilla';import {AgentWorkspace} from './src/modules/agent/ui/AgentWorkspacePage';import {HuhuProviders} from './src/ui/react/providers';import {SpaceService} from './src/modules/agent/services/spaces/space-service';import {WorkspaceService} from './src/modules/agent/services/workspace-service';import {createSpaceWorkspaceStore} from './src/modules/agent/services/workspace-store';import {createWorkspaceView} from './src/modules/agent/services/workspace-view';import {TerminalSessions} from './src/modules/agent/services/terminal/sessions';import {normalizeTerminalSettings} from './src/modules/agent/core/terminal/settings';import {captureForegroundIntent} from './src/modules/agent/services/launch/foreground-intent';import {ControlCommands} from './src/modules/agent/services/control/commands';import {ControlRouter} from './src/modules/agent/services/control/router';import {captureControlExecutionContext,observeControlPreparation} from './src/modules/agent/services/control/terminal-coordination';import {InboxService} from './src/modules/agent/services/inbox/service';import {InboxPresentation} from './src/modules/agent/services/inbox/presentation';import {NATIVE_INPUT_LIMITS} from './src/shared/native/input';import {registerMessages,setLanguage,t} from './src/shared/i18n';import {messages} from './src/modules/agent/i18n';import {messages as uiMessages} from './src/shared/i18n/lazy/ui';import {messages as commonMessages} from './src/shared/i18n/lazy/common';`;
 	const entry =
 		imports +
 		'\n(' +
@@ -771,6 +823,9 @@ try {
 		stdin: { contents: entry, resolveDir: repo, sourcefile: 'coordination-fixture-entry.js' },
 		bundle: true,
 		external: ['node:*'],
+		// Desktop-only modules (for example native-resume occupancy) reference Node at import time; the browser fixture
+		// never calls them, so any use fails loudly instead of failing the whole bundle.
+		banner: { js: "var require=id=>new Proxy({},{get:(_t,name)=>name==='__esModule'?false:()=>{throw Error('Node boundary '+id+'.'+String(name)+' is not available in the browser fixture')}});" },
 		platform: 'browser',
 		format: 'iife',
 		target: 'chrome120',
@@ -789,7 +844,7 @@ try {
 					builder.onLoad({ filter: /.*/, namespace: 'boundary' }, (args) => ({
 						contents:
 							args.path === 'obsidian'
-								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{handlers=[];register(_modifiers,_key,callback){this.handlers.push(callback);}};export class TFile{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
+								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{handlers=[];register(_modifiers,_key,callback){this.handlers.push(callback);}};export class TFile{};export class FileSystemAdapter{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
 								: `export const droppedFilePath=()=>undefined;export const openPath=async()=>{};export const resolveReference=async()=>null;export const vaultFilePath=(vault,p)=>vault+'/'+p;`,
 					}));
 					builder.onLoad({ filter: /\.(ts|tsx|mjs|js|json|svg|md)$/ }, async (input) => {
@@ -908,6 +963,9 @@ try {
 		const chrome = process.env.HUHU_CHROME || '/usr/bin/google-chrome',
 			args = [
 				'--headless=new',
+				// Headless has no physical pointer. Configure Blink's desktop input capabilities and assert them below.
+				// https://grafana.com/docs/k6/latest/using-k6-browser/options/ (headless blink-settings)
+				'--blink-settings=primaryPointerType=4,availablePointerTypes=4,primaryHoverType=2,availableHoverTypes=2',
 				'--no-sandbox',
 				'--disable-background-networking',
 				'--disable-component-update',
@@ -1092,6 +1150,10 @@ try {
 				'viewport ' + width + ' keeps layout and close targets',
 				`(()=>{const g=coordinationProbe.geometry(),narrow=document.querySelector('[data-agent-workspace]').getBoundingClientRect().width<600;return !g.overflow&&g.toolbar.height>=44&&g.headers.length>=3&&g.headers.every(h=>h.rect.height>=(narrow?44:34)&&h.close.width>=(narrow?44:32)&&h.close.height>=(narrow?44:32));})()`,
 			);
+			await check(
+				'viewport ' + width + ' toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip',
+				`(()=>{const g=coordinationProbe.geometry(),narrow=document.querySelector('[data-agent-workspace]').getBoundingClientRect().width<600,min=narrow?43.9:31.9;return g.targets.length>=3&&g.targets.every(t=>t.width>=min&&t.height>=min&&!t.escapes)})()`,
+			);
 			await screenshot('viewport-' + width);
 		}
 		await check(
@@ -1149,6 +1211,55 @@ try {
 			'Dialog Escape returns to the actual toolbar trigger',
 			`document.activeElement?.getAttribute('aria-label')===coordinationProbe.label('agent.coordination.title')`,
 		);
+		await evaluate('coordinationProbe.historySample()');
+		await check('narrow history is tested with a fine pointer', `matchMedia('(pointer: fine)').matches&&!matchMedia('(pointer: coarse)').matches`);
+		await click(aria('agent.history'));
+		await wait(`!!document.querySelector('[data-agent-history-dialog]')`);
+		await click(`document.querySelector('[data-history-row="fixture-history"] button')`);
+		await wait(`document.querySelector('[data-history-row="fixture-history"]').textContent.includes(coordinationProbe.label('agent.historyUI.bodyPartial'))`);
+		await check('history shows bounded-body coverage instead of claiming complete latest turns', `document.querySelector('[data-history-row="fixture-history"]').textContent.includes(coordinationProbe.label('agent.historyUI.previewTurns'))`);
+		const checkHistoryTargets = async (name, selector) => {
+			await evaluate('coordinationProbe.stableGeometry()');
+			await json(name + '-hit-targets.json', await evaluate(`coordinationProbe.hitTargets(${JSON.stringify(selector)})`));
+			await check(name + ' uses 44 pixel nonoverlapping layout targets and fine-pointer hit areas',
+				`(()=>{const targets=coordinationProbe.hitTargets(${JSON.stringify(selector)});return targets.length>0&&targets.some(t=>t.sampled)&&targets.every(t=>t.width>=43.9&&t.height>=43.9&&t.hits&&!t.overlaps)})()`);
+		};
+		await checkHistoryTargets('narrow-history', '[data-agent-history-dialog]');
+		await click(aria('agent.historyUI.view'));
+		await wait(`!!document.querySelector('[data-agent-history-filter-menu]')`);
+		await checkHistoryTargets('narrow-history-filter', '[data-agent-history-filter-menu]');
+		await screenshot('narrow-history-filter');
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await wait(`!document.querySelector('[data-agent-history-filter-menu]')`);
+		await click(`document.querySelector('[data-history-row="fixture-history"] button[aria-haspopup="menu"]')`);
+		await wait(`!!document.querySelector('[data-agent-history-row-menu]')`);
+		await checkHistoryTargets('narrow-history-row-menu', '[data-agent-history-row-menu]');
+		await screenshot('narrow-history-row-menu');
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await wait(`!document.querySelector('[data-agent-history-row-menu]')`);
+		for (const theme of ['light', 'dark']) {
+			await evaluate(`document.body.className='theme-${theme}'`);
+			await screenshot('narrow-history-' + theme);
+		}
+		await click(`([...document.querySelectorAll('[data-history-row="fixture-history"] button')].find(e=>e.textContent.trim()===coordinationProbe.label('agent.historyResume.continue')))`);
+		await wait(`!!document.querySelector('[role="alertdialog"]')`);
+		await check('history uses the production common cancel dictionary', `coordinationProbe.label('common.cancel')==='取消'`);
+		await check('history continuation defaults to cancel inside the production confirmation', `document.activeElement?.textContent===coordinationProbe.label('common.cancel')`);
+		await checkHistoryTargets('narrow-history-confirm', '[role="alertdialog"]');
+		await screenshot('narrow-history-confirm');
+		await click(`([...document.querySelectorAll('[role="alertdialog"] button')].find(e=>e.textContent===coordinationProbe.label('common.cancel')))`);
+		await wait(`!document.querySelector('[role="alertdialog"]')`);
+		for (let i = 0; i < 8; i++) {
+			await connection.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+			await connection.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+		}
+		await check('history native Tab stays in the narrow production Dialog', `!!document.activeElement?.closest('[data-agent-history-dialog]')`);
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await connection.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+		await wait(`!document.querySelector('[data-agent-history-dialog]')`);
+		await check('history Escape returns to its toolbar trigger', `document.activeElement?.getAttribute('aria-label')===coordinationProbe.label('agent.history')`);
 		await click(aria('agent.workspace.toggleSidebar'));
 		await wait(`!!document.querySelector('[role=dialog]')`);
 		await screenshot('narrow-space-sheet');

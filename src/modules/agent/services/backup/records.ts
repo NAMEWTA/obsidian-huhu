@@ -1,6 +1,6 @@
 import type { DirectoryPort } from '../../core/space/ports';
 import type { DirectoryGrant, PhysicalDirectory, SpaceRecord, VaultBinding } from '../../core/space/model';
-import { InvalidSection, rewriteDeviceId } from '../../core/backup/transforms';
+import { InvalidSection } from '../../core/backup/transforms';
 import { validateInboxDocument } from '../../core/inbox/model';
 import { isWorkbenchRecords, type WorkbenchRecords } from '../spaces/records';
 
@@ -47,7 +47,6 @@ export async function rebaseRecords(text: string, context: RebaseContext): Promi
 	const records = structuredClone(raw);
 	const { target } = context;
 	const sourceVault = records.vaultId;
-	const sourceDevice = records.deviceId;
 	const missing: SpaceNote[] = [];
 	const reauthorize: SpaceNote[] = [];
 	const spaces: Record<string, SpaceRecord> = {};
@@ -91,7 +90,6 @@ export async function rebaseRecords(text: string, context: RebaseContext): Promi
 		grants,
 	};
 	if (sourceVault !== target.vaultId) rebaseVaultReferences(next, sourceVault, target.vaultId);
-	rewriteDeviceId(next.sessions, sourceDevice, target.deviceId);
 	if (next.inbox !== undefined && !validateInboxDocument(next.inbox, { vaultId: target.vaultId }))
 		throw new InvalidSection('records:inbox-invalid');
 	if (!isWorkbenchRecords(next)) throw new InvalidSection('records:rebased-invalid');

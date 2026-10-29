@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest';
+import { useStorageTimers, type StorageTimers } from '../../src/shared/storage/timers';
+import { beforeEach, afterEach, describe, expect, test } from 'vitest';
 import { RecoveryError } from '../../src/shared/storage/recovery-contracts';
 import { RecoveryGate } from '../../src/shared/storage/recovery-transaction';
 import { readJournal, recoverPending, sha256 } from '../../src/shared/storage/recovery-transaction';
@@ -405,3 +406,7 @@ describe('review round 4', () => {
 		}
 	});
 });
+
+// Supply the same timer dependency that the app host registers before recovery starts.
+beforeEach(() => useStorageTimers(globalThis as unknown as StorageTimers));
+afterEach(() => useStorageTimers(undefined));

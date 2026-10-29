@@ -1,3 +1,5 @@
+import { storageRecoveryState } from './write-queue';
+import { storageTimers, type StorageTimers } from './timers';
 import { ensureDirectory } from './durable-state';
 import {
 	JOURNAL_SLOTS,
@@ -12,6 +14,7 @@ import {
 	type RecoveryOwner,
 	type RecoveryPhase,
 	type RecoveryResult,
+	type RecoveryRunOptions,
 	type RecoveryStorage,
 	type StagedWrite,
 } from './recovery-contracts';
@@ -153,7 +156,18 @@ async function rollForward(storage: RecoveryStorage, journal: RecoveryJournal): 
  * version; committed goes fully forward. Repeating it is a no-op once the journal is terminal.
  * Unrecoverable states reject with `UNRECOVERABLE`; the caller keeps its gate held and shows the report.
  */
-export async function recoverPending(storage: RecoveryStorage): Promise<RecoveryOutcome> {
+export function recoverPending(storage: RecoveryStorage): Promise<RecoveryOutcome> {
+	const state = storageRecoveryState(storage);
+	if (state.lease) return Promise.reject(new RecoveryError('RECOVERY_PENDING', 'earlier-operation-unsettled'));
+	const result = Promise.resolve().then(() => recoverPendingNow(storage)).finally(() => {
+		if (state.lease === lease) delete state.lease;
+	});
+	const lease = result.then(() => undefined, () => undefined);
+	state.lease = lease;
+	return result;
+}
+
+async function recoverPendingNow(storage: RecoveryStorage): Promise<RecoveryOutcome> {
 	const journal = await readJournal(storage);
 	if (!journal || TERMINAL_PHASES.includes(journal.phase)) return { status: 'none' };
 	if (journal.phase === 'committed') {
@@ -164,7 +178,7 @@ export async function recoverPending(storage: RecoveryStorage): Promise<Recovery
 	return { status: 'rolled-back', operationId: journal.operationId };
 }
 
-export interface RecoveryTransactionOptions {
+export interface RecoveryTransactionOptions extends Pick<RecoveryRunOptions, 'signal' | 'preCommitTimeoutMs' | 'timers'> {
 	readonly storage: RecoveryStorage;
 	/** Every participating owner; all of them are quiesced and drained before the common snapshot. */
 	readonly owners: readonly RecoveryOwner[];
@@ -180,54 +194,139 @@ export interface RecoveryTransactionOptions {
 	readonly newId?: () => string;
 	readonly now?: () => number;
 }
-export async function runRecoveryTransaction(options: RecoveryTransactionOptions): Promise<RecoveryResult> {
+/** Startup/loading must use the same adapter-carried admission gate as transactions. */
+export function assertRecoveryIdle(storage: RecoveryStorage): void {
+	if (storageRecoveryState(storage).lease)
+		throw new RecoveryError('RECOVERY_PENDING', 'earlier-operation-unsettled');
+}
+
+class PreCommitWait {
+	readonly pending = new Set<Promise<unknown>>();
+	readonly quiescing = new Map<RecoveryOwner, Promise<unknown>>();
+	failure?: RecoveryError;
+	retainLease = false;
+	private finished = false;
+	private reject!: (error: RecoveryError) => void;
+	readonly interrupted = new Promise<never>((_resolve, reject) => { this.reject = reject; });
+	private readonly timer: number;
+	private readonly abort = () => this.fail(new RecoveryError('CANCELLED'));
+	constructor(private readonly options: RecoveryTransactionOptions, private readonly timers: StorageTimers) {
+		const requested = options.preCommitTimeoutMs ?? 30_000;
+		const timeout = Number.isFinite(requested) ? Math.min(120_000, Math.max(1, requested)) : 30_000;
+		this.timer = this.timers.setTimeout(() => this.fail(new RecoveryError('TIMEOUT')), timeout);
+		void this.interrupted.catch(() => {});
+		options.signal?.addEventListener('abort', this.abort, { once: true });
+		if (options.signal?.aborted) this.abort();
+	}
+	private fail(error: RecoveryError): void {
+		if (this.finished || this.failure) return;
+		this.failure = error;
+		this.dispose();
+		this.reject(error);
+	}
+	check(): void { if (this.failure) throw this.failure; }
+	async wait<T>(work: () => Promise<T>, quiescing?: RecoveryOwner): Promise<T> {
+		this.check();
+		const pending = Promise.resolve().then(() => { this.check(); return work(); });
+		this.pending.add(pending);
+		if (quiescing) this.quiescing.set(quiescing, pending);
+		void pending.finally(() => {
+			this.pending.delete(pending);
+			if (quiescing) this.quiescing.delete(quiescing);
+		}).catch(() => {});
+		const value = await Promise.race([pending, this.interrupted]);
+		this.check();
+		return value;
+	}
+	/** The first replacement is the point of no cancellation: journal recovery owns subsequent failures. */
+	commit(): void { this.check(); this.dispose(); }
+	dispose(): void {
+		this.finished = true;
+		this.timers.clearTimeout(this.timer);
+		this.options.signal?.removeEventListener('abort', this.abort);
+	}
+	async settled(): Promise<void> { await Promise.allSettled([...this.pending]); }
+}
+
+export function runRecoveryTransaction(options: RecoveryTransactionOptions): Promise<RecoveryResult> {
+	const state = storageRecoveryState(options.storage);
+	if (state.lease) return Promise.reject(new RecoveryError('RECOVERY_PENDING', 'earlier-operation-unsettled'));
+	const timers = options.timers ?? storageTimers();
+	if (!timers) return Promise.reject(new RecoveryError('QUIESCE_FAILED', 'recovery-timers-unavailable'));
+	const budget = new PreCommitWait(options, timers);
+	const operation = Promise.resolve().then(() => executeRecoveryTransaction(options, budget));
+	const lease = operation.then(() => undefined, () => undefined).then(() => budget.settled()).finally(() => {
+		budget.dispose();
+		if (!budget.retainLease && state.lease === lease) delete state.lease;
+	});
+	state.lease = lease;
+	// Normal completion includes lease cleanup. Cancellation still returns promptly while its actual tail stays isolated.
+	const completed = operation.then(async (result) => { await lease; return result; }, async (error: unknown) => {
+		if (!budget.failure) await lease;
+		throw error;
+	});
+	return Promise.race([completed, budget.interrupted]);
+}
+
+async function executeRecoveryTransaction(options: RecoveryTransactionOptions, budget: PreCommitWait): Promise<RecoveryResult> {
 	const { storage, owners } = options;
 	const now = options.now ?? Date.now;
 	const operationId = (options.newId ?? (() => crypto.randomUUID()))();
 	if (!/^[A-Za-z0-9_-]{1,80}$/.test(operationId)) throw new RecoveryError('PATH_INVALID', 'operation-id');
-	const pending = await readJournal(storage);
+	const pending = await budget.wait(() => readJournal(storage));
 	if (pending && !TERMINAL_PHASES.includes(pending.phase))
 		throw new RecoveryError('RECOVERY_PENDING', 'pending-journal', { operationId: pending.operationId });
 	options.gate?.assertOpen();
 	// 1. Preflight: nothing is stopped for the user.
 	const busy: string[] = [];
-	for (const owner of owners) busy.push(...(await owner.preflight()).busy);
+	for (const owner of owners) busy.push(...(await budget.wait(() => owner.preflight())).busy);
 	if (busy.length) throw new RecoveryError('BUSY', 'busy', { busy });
 	// 2. Quiesce every owner, then strict-drain every owner, before anything is read.
 	const quiet: RecoveryOwner[] = [];
 	let keepClosed = false;
+	let prepared: RecoveryJournal | undefined;
+	let committing = false;
 	/** Hold the gate (start-up stops), keep every owner closed; the next start converges from the journal. */
 	const closeFailed = (reason: string, cause: unknown) => {
 		keepClosed = true;
+		budget.retainLease = true;
 		const error = new RecoveryError('UNRECOVERABLE', reason, { operationId }, { cause });
 		options.gate?.hold(error);
 		return error;
 	};
 	const releaseAll = async () => {
 		const failures: unknown[] = [];
-		for (const owner of quiet.splice(0)) await owner.release(operationId).catch((e: unknown) => failures.push(e));
+		const releases = quiet.splice(0).map(async (owner) => {
+			// A late quiesce can close admission after a release. Wait for that particular close before reopening it.
+			await budget.quiescing.get(owner)?.catch(() => undefined);
+			await owner.release(operationId).catch((e: unknown) => failures.push(e));
+		});
+		await Promise.all(releases);
 		return failures;
 	};
 	try {
 		for (const owner of owners) {
 			try {
-				await owner.quiesce(operationId);
+				await budget.wait(() => owner.quiesce(operationId), owner);
 				quiet.push(owner);
 			} catch (cause) {
 				quiet.push(owner);
+				if (budget.failure) throw budget.failure;
+				if (cause instanceof RecoveryError && cause.code === 'BUSY') throw cause;
 				throw new RecoveryError('QUIESCE_FAILED', owner.id, { owner: owner.id }, { cause });
 			}
 		}
 		for (const owner of owners) {
 			try {
-				await owner.drain(operationId);
+				await budget.wait(() => owner.drain(operationId));
 			} catch (cause) {
+				if (budget.failure) throw budget.failure;
 				throw new RecoveryError('DRAIN_FAILED', owner.id, { owner: owner.id }, { cause });
 			}
 		}
 		// 3. Common snapshot + staging.
-		const read = (path: string) => readOrNull(storage, path);
-		const staged = await options.stage(read);
+		const read = (path: string) => budget.wait(() => readOrNull(storage, path));
+		const staged = await budget.wait(() => options.stage(read));
 		const writes = new Map<string, string | null>();
 		for (const w of staged.writes) {
 			if (writes.has(w.path)) throw new RecoveryError('STAGE_INVALID', 'duplicate-path', { path: w.path });
@@ -283,8 +382,8 @@ export async function runRecoveryTransaction(options: RecoveryTransactionOptions
 			return { operationId, changed: [], copied: [], noop: true };
 		// 4. Verified recovery copies, then the journal; only then any target is touched.
 		for (const [index, entry] of entries.entries()) {
-			if (entry.oldCopy) await writeVerified(storage, entry.oldCopy, olds[index]!);
-			if (entry.newCopy) await writeVerified(storage, entry.newCopy, news[index]!);
+			if (entry.oldCopy) await budget.wait(() => writeVerified(storage, entry.oldCopy!, olds[index]!));
+			if (entry.newCopy) await budget.wait(() => writeVerified(storage, entry.newCopy!, news[index]!));
 		}
 		const lastSeq = pending?.seq ?? 0;
 		let journal: RecoveryJournal = {
@@ -296,7 +395,8 @@ export async function runRecoveryTransaction(options: RecoveryTransactionOptions
 			entries,
 			createdAt: now(),
 		};
-		await writeJournal(storage, journal);
+		prepared = journal;
+		await budget.wait(() => writeJournal(storage, journal));
 		// Source drift between the snapshot and the first replacement aborts without writing.
 		for (const [index, entry] of entries.entries()) {
 			if ((await digestOf(await read(entry.path))) !== entry.oldDigest) {
@@ -305,6 +405,8 @@ export async function runRecoveryTransaction(options: RecoveryTransactionOptions
 			}
 		}
 		// 5. Replace.
+		budget.commit();
+		committing = true;
 		journal = advance(journal, 'committing');
 		// A `committing` write that lands and then fails (read-back EBUSY/EPERM) would make the next start roll back
 		// unconditionally: owners must stay closed and start-up must stop, exactly as after the first replacement.
@@ -359,6 +461,24 @@ export async function runRecoveryTransaction(options: RecoveryTransactionOptions
 		};
 	} finally {
 		// Owners stay closed after a failed adoption: only a restart (journal recovery) may reopen them.
-		if (!keepClosed && !options.gate?.held) await releaseAll();
+		const delayed = budget.failure && budget.pending.size ? [...quiet] : [];
+		if (!keepClosed && !options.gate?.held) {
+			const failures = await releaseAll();
+			if (budget.failure && failures.length) closeFailed('cancelled-release-failed', new AggregateError(failures));
+		}
+		if (delayed.length) {
+			await budget.settled();
+			// A late drain can change its own admission state after our first release (for example pausing hints).
+			// Its idempotent final release is inside the lease, so the next recovery cannot overlap that tail.
+			const releases = await Promise.allSettled(delayed.map((owner) => owner.release(operationId)));
+			const failures = releases.filter((result) => result.status === 'rejected').map((result) => result.reason as unknown);
+			if (failures.length) closeFailed('cancelled-release-failed', new AggregateError(failures));
+		}
+		if (budget.failure && prepared && !committing) {
+			// No target was touched. A prepared journal write may land after cancellation; retire it only after it settles.
+			await budget.settled();
+			try { await writeJournal(storage, advance(prepared, 'rolled-back')); }
+			catch (cause) { closeFailed('cancelled-journal-cleanup-failed', cause); }
+		}
 	}
 }

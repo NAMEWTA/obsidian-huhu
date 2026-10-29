@@ -6,7 +6,7 @@ import { inspectPackage, packageView, preflightImport, readImportReport, runImpo
 /** What the settings page can do. Every method either returns data for the page or rejects with a `BackupError`. */
 export interface BackupActions {
 	/** Exports a consistent package into the vault and returns where it is and what it contains. */
-	exportPackage(): Promise<{ path: string; view: PackageView }>;
+	exportPackage(signal?: AbortSignal): Promise<{ path: string; view: PackageView }>;
 	/** Verifies a package (version, structure, every digest) and describes it. Touches no data. */
 	inspect(text: string): Promise<PackageView>;
 	/** Everything the import would do on this device, decided before any valid data is touched. */
@@ -14,6 +14,7 @@ export interface BackupActions {
 	runImport(
 		text: string,
 		options: ImportOptions,
+		signal?: AbortSignal,
 	): Promise<{ status: 'done' | 'unchanged'; changed: number; report: ImportReport }>;
 	lastReport(): Promise<ImportReport | undefined>;
 	/** This device's id, for the page to preselect the matching source device. */
@@ -30,15 +31,15 @@ export function createBackupActions(env: ImportEnv): BackupActions {
 	};
 	return {
 		device: env.device,
-		exportPackage: async () => {
-			const { pkg, text } = await exportBackup(env);
+		exportPackage: async (signal) => {
+			const { pkg, text } = await exportBackup({ ...env, signal });
 			const path = await saveExport(env.storage, text, (env.now ?? Date.now)());
 			return { path, view: packageView(pkg) };
 		},
 		inspect: async (text) => (await open(text)).view,
 		preflight: async (text, options) => preflightImport((await open(text)).pkg, options, env),
-		runImport: async (text, options) => {
-			const result = await runImport((await open(text)).pkg, options, env);
+		runImport: async (text, options, signal) => {
+			const result = await runImport((await open(text)).pkg, options, { ...env, signal });
 			return {
 				status: result.status,
 				changed: result.status === 'done' ? result.changed.length : 0,

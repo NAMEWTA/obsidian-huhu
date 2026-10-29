@@ -1,6 +1,6 @@
 # 工作台本机 CLI
 
-`huhu` 通过当前用户可访问的 Unix socket 或 Windows named pipe 操作当前 HUHU 工作台。CLI 不会自动启用 Agent 模块、启动 helper 或下载程序；首次使用先在 Obsidian 打开工作台。此处描述本地构建的协议 v1，正式资产安装与 PATH 管理由后续交付完成。
+`huhu` 通过当前用户可访问的 Unix socket 或 Windows named pipe 操作当前 HUHU 工作台。CLI 不会自动启用 Agent 模块、启动 helper 或下载程序；首次使用先在 Obsidian 打开工作台。此处描述协议 v1；发布资产与兼容规则见“发布资产与兼容”，HUHU 只在自己启动的终端环境里注入 `PATH` 与 `HUHU_CLI`（见“终端里如何找到 huhu”），不修改用户的 Shell 配置、全局 PATH 或账号技能目录。
 
 ## 身份与目标
 
@@ -116,10 +116,16 @@ huhu --json inbox ack --message <message-id>
 
 ```sh
 huhu --json agent prompt --session <session-id> --runtime <runtime-id> --text '完整任务正文' --wait done
+huhu --json agent prompt --session <session-id> --runtime <runtime-id> --file <path> --wait done
 huhu --json agent wait --session <session-id> --runtime <runtime-id> --state done
 huhu --json terminal send-text --session <session-id> --runtime <runtime-id> --text '只粘贴材料'
+huhu --json terminal send-text --session <session-id> --runtime <runtime-id> --stdin
 huhu --json terminal send-keys --session <session-id> --runtime <runtime-id> --keys 'Enter'
 ```
+
+`agent prompt`、`terminal send-text` 和 `message send` 都必须在 `--text <text>`、`--stdin`、`--file <path>` 中选择一种正文来源，不能组合。stdin/file 在本地读取非空 UTF-8，保留多行和末尾换行；读取最多正文预算加 1 字节，文件路径不会交给宿主。通知预算为 16384 字节，prompt/send-text 为 262144 字节；最终完整请求仍须符合 32768 字节 JSON 帧限制，转义后的正文和目标身份也占该帧预算，超限以 `CAPACITY_EXCEEDED` 在 IPC 前拒绝。
+
+`--timeout-ms` 也限制本地正文读入，默认 30000 毫秒；完成读入后，请求观察另用相同的超时预算。上游管道未关闭或正文文件是等待写入的 FIFO 时，本地超时返回 `WAIT_TIMEOUT`/6，Ctrl-C 返回 `WAIT_CANCELLED`/130，均为 `effect: none`，不连接目标、不发送正文。通知的失败回执保留读入前分配的 `messageId`。
 
 普通 `agent prompt` 首版仅支持 Linux、经过完整文件校验的官方 Pi 1.4.0 / Jiti 2.7.0 与 regular TUI。用户必须已有 `-ne` 或 `--no-extensions`，且唯一显式扩展是当前 HUHU 生产扩展；启动参数不会被改写，也不会替用户关闭其他扩展。默认模式仍须在运行时核验原始 regular TUI 与默认编辑器。全屏、其他版本、其他 Provider、未认证连接或不能确认的编辑器状态保留人工终端操作。
 
@@ -153,6 +159,36 @@ CLI 超时、Ctrl-C 或断线只撤销这次观察，不停止已经接纳的业
 
 运行请求 whole UTF8 JSON 上限 32768 字节，响应 49152 字节，深度 32、节点 8192；内部 wrapper 单列，不能扩大外部限制。屏幕读取分页绑定同一快照与 runtime，cursor 过期后明确重同步；不会静默截断身份或漏过正文。离线 schema 独立上限 1MiB。入口最多 8 个连接、16 个未结算请求；取消观察后的未结算业务和慢客户端仍占原额度。达到容量会准确拒绝，不能承诺恶意同账号占满入口时仍有无条件停止时延。
 
+## 发布资产与兼容
+
+每个版本的 Release 为五个平台（Windows x64、macOS x64/arm64、Linux x64/arm64）各发布两个原生程序，同一次 `terminal-build` 构建：
+
+| 资产 | 内容 |
+|---|---|
+| `huhu-pty-<平台>-<架构>[.exe]` + `.sha256` | 终端 helper |
+| `huhu-<平台>-<架构>[.exe]` + `.sha256` + `.compat.json` | 本机控制 CLI 与兼容记录 |
+
+`.compat.json` 由 CI 对刚构建的二进制运行 `--json version` 生成，字段为 `schema`、`asset`、`cliProtocol`、`helperProtocol` 与该二进制的 `sha256`，不由人手写。`verify-release-artifacts` 要求十个程序、全部校验值、五份兼容记录恰好齐全；记录必须指向自己的资产与摘要，并且协议主版本等于 `control-schema.json` 的 `protocolVersion`（当前 1），配对的 helper 协议等于其 `helperProtocol`（当前 3）。
+
+插件侧 `ensureCli` 沿用 helper 的下载管线：先取正式摘要，再取兼容记录，**在下载可执行文件之前**核对摘要一致、CLI 协议主版本与 helper 协议；任一不符以 `incompatible` 拒绝；Release 没有发布该 CLI（`.sha256` 或兼容记录返回 HTTP 404，例如旧版 Release 只有 helper）或记录无效，则以 `compatMissing` 拒绝（“此版本没有发布命令行工具”），都不写入也不执行。网络错误、超时和 5xx 不属于这种事实，只算 `downloadFailed`，可稍后重试。通过后的兼容事实随受保护回执保存，离线复用与同机再次使用都会重新核对；被改动的文件、缺失回执不被信任。旧版 helper 搭配新版 CLI（或相反）因 helper 协议不同而被拒绝，已验证的 helper 不受影响。诊断结果只返回状态码（`ready`、`unsupported`、`offlineMissing`、`incompatible`、`compatMissing`、`checksumMissing`、`checksumMismatch`、`downloadFailed`、`unavailable`），不依赖本地化文案。
+
+构建机验证：`node scripts/verify-pty-helper.mjs <huhu-pty> <huhu>` 在 helper 握手之外检查 CLI 版本与协议配对、`schema` 与规范 schema 逐字一致、`help` 列出每个操作与参数、16 KiB stdin 正文通过本地容量检查而 16 KiB + 1 字节以 `CAPACITY_EXCEEDED`（退出码 2）拒绝，以及错误类别与退出码一致。这些命令只在本机平台运行；其余平台由 CI 的各自矩阵项运行，本地结果不代表它们通过。
+
+## 终端里如何找到 `huhu`
+
+HUHU 通过与 helper 相同的懒加载路径调用 `ensureCli`（下载、摘要、回执和离线规则相同），通过后把已验证文件暴露为 `.huhu/helpers/<device>/<平台-架构>/<版本>/bin/huhu[.exe]`。暴露时与 `ensureCli` 验证所用的摘要比对：已有副本不符则修复，新副本先对该摘要校验再替换，验证之后被改动的字节不会被暴露。就绪后在终端环境中：
+
+- 把这个 `bin` 目录放在 `PATH`（Windows 为 `Path`）最前面；
+- 设置 `HUHU_CLI` 为该文件的绝对路径。
+
+路由变量（`HUHU_INSTANCE_ID`、`HUHU_VAULT_ID`、`HUHU_SPACE_ID`、`HUHU_STABLE_SESSION_ID`、`HUHU_SESSION_ID`、`HUHU_CONTROL_LOCATOR`）仍由控制环境注入。工具未就绪（协议不匹配、缺少兼容记录、离线且未安装、校验失败、下载失败）时什么都不加：终端照常打开，不会经 HUHU 到达未验证的二进制，并按状态和版本只弹一次本地化提示（含下一步）。设置里的“终端组件 / 命令行工具”行可随时检查并显示同样的状态与下一步。不写用户的 Shell 配置，也不改全局 PATH。
+
+**启动从不等待安装。** 终端或运行时启动最多等待约 300 毫秒的本地已校验检查（可随启动取消）；下载、取兼容记录等网络工作在后台继续，只有之后启动的终端才获得 `huhu`，因此第一次使用时最先打开的终端可能还没有该命令。未就绪的结果（拒绝、离线缺失、下载失败）在本次模块运行期间被记住，后续终端不再等待也不再重试；设置里的“检查工具”是显式重试，成功后恢复。开发时可用 `HUHU_CLI_BINARY`（与 `HUHU_PTY_BINARY` 同理）指向自己构建的 `huhu`：它跳过发布摘要与兼容记录，仅用于本地开发，不应在发行环境设置。
+
+## 随插件打包的 Skill
+
+`src/modules/agent/core/control/skill/huhu-control.{en,zh}.md` 是随插件打包、按需懒加载的 HUHU 控制 Skill（`loadControlSkill`）。它只在用户明确要求操作 HUHU 终端或智能体时触发。技能页刷新时，HUHU 只把它写到自己的 `.huhu/skills/huhu-control/`（按界面语言，内容不变则不重写）作为一个可选来源；只有用户在技能页对某个智能体点击启用，才会走既有的复制流程写入该智能体的技能目录，不会静默写入任何账号目录。内容强调：`wait` 只是观察，`done` 不等于任务成功；`blocked`/`permission`/`AGENT_BLOCKED` 需要人；等待超时（退出码 6）不重发；`EFFECT_UNKNOWN`（退出码 8）先查询；长正文走 `--stdin`。`test/release/control-skill.test.ts` 把其中每一条示例命令连同占位符替换，交给真实 `huhu` 与真实 helper/宿主传输逐条执行，并核对退出码与 canonical schema 一致、命令只转发一次。
+
 ## 本地代码验证与平台边界
 
 先构建并测试两个 native binary，再给 Node 的必需黑盒提供准确路径：
@@ -166,4 +202,4 @@ pnpm exec vitest run src/modules/agent/services/control/control-native.test.ts s
 
 必需黑盒缺任一 binary 时失败并说明前置命令，不会 skip 记为通过。`scripts/obsidian-acceptance/agent-workbench-control.mjs` 仅作真实输入预检、CLI 进程与证据装配；业务断言由生产 TS 服务测试拥有。
 
-同用户 IPC 不是恶意同账户进程的沙箱。Unix 权限与身份核对、Windows 当前用户/SYSTEM ACL 和仅本机 pipe 的代码检查，不替代真实多用户及高低权限验收。真实 Obsidian、Provider 和 Windows x64、macOS x64/arm64、Linux x64/arm64 主链仍由用户验收；本环境的代码与进程测试不宣称五平台实机通过。
+同用户 IPC 不是恶意同账户进程的沙箱。Unix 权限与身份核对、Windows 当前用户/SYSTEM ACL 和仅本机 pipe 的代码检查，不替代真实多用户及高低权限验收。真实 Obsidian、Provider 和 Windows x64、macOS x64/arm64、Linux x64/arm64 主链仍由用户验收；本环境的代码与进程测试不宣称五平台实机通过。逐平台的人工清单见《[工作台五平台人工验收清单](agent-workbench-acceptance.md)》。

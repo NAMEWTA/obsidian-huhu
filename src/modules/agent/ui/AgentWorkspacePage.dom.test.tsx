@@ -46,6 +46,7 @@ function fixture(
 		workspace,
 		spaces: { store: createStore(() => ({ records: { spaces: {}, selectedSpaceId: undefined }, loading: false })) },
 		sessions: { get: () => undefined },
+		historyStore: { store: createStore(() => ({ rows: [], loading: false, error: '', warnings: [] })), refresh: async () => {} },
 		usageStore: { observeWindow: () => () => {} },
 		app: { keymap: { pushScope: vi.fn(), popScope: vi.fn() } },
 	} as unknown as AgentController;
@@ -264,4 +265,44 @@ test('the workbench keeps its Space identity and navigation tools above an empty
 	expect(within(toolbar).getByRole('button', { name: t('agent.history') })).toBeTruthy();
 	expect(within(toolbar).getByRole('button', { name: t('agent.workspace.pageMenu') })).toBeTruthy();
 	f.unmount();
+});
+
+test('the real toolbar and parent page toggle the control tool closed on a second click', async () => {
+	const f = fixture(undefined, document, createWorkspaceView({ agentControl: false }));
+	const user = userEvent.setup();
+	const control = screen.getByRole('button', { name: t('agent.coordination.title') });
+	await user.click(control);
+	expect(f.view.getState().control).toBe(true);
+	await user.click(control);
+	expect(f.view.getState().control).toBe(false);
+	expect(control.getAttribute('aria-pressed')).toBe('false');
+});
+
+
+test('narrow history traps Tab, closes with Escape, and returns focus to its toolbar trigger', async () => {
+	const previous = Object.getOwnPropertyDescriptor(window, 'ResizeObserver');
+	const focused = vi.spyOn(document, 'hasFocus').mockReturnValue(true);
+	class NarrowObserver {
+		constructor(private notify: ResizeObserverCallback) {}
+		observe() { this.notify([{ contentRect: { width: 480 } } as ResizeObserverEntry], this as unknown as ResizeObserver); }
+		disconnect() {}
+		unobserve() {}
+	}
+	Object.defineProperty(window, 'ResizeObserver', { configurable: true, value: NarrowObserver });
+	const f = fixture(undefined, document, createWorkspaceView({ agentControl: false }));
+	try {
+		const user = userEvent.setup();
+		const trigger = screen.getByRole('button', { name: t('agent.history') });
+		await user.click(trigger);
+		const dialog = await screen.findByRole('dialog', { name: t('agent.historyUI.title') });
+		for (let index = 0; index < 8; index++) { await user.tab(); expect(dialog.contains(document.activeElement)).toBe(true); }
+		await user.keyboard('{Escape}');
+		await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+		expect(f.view.getState().history).toBe(false);
+		expect(document.activeElement).toBe(trigger);
+	} finally {
+		f.unmount(); focused.mockRestore();
+		if (previous) Object.defineProperty(window, 'ResizeObserver', previous);
+		else Reflect.deleteProperty(window, 'ResizeObserver');
+	}
 });

@@ -2,7 +2,7 @@ import { captureControlExecutionContext, observeControlPreparation } from './con
 import type { ActivityWaitBaseline } from '../core/control/terminal-coordination';
 import type { ControlRequest, ControlProgress } from '../../../shared/native/control-wire';
 import { BROWSER_HOST } from '../../browser/api';
-import { NativeControlError, type NativeLease } from '../../../shared/native/host';
+import { NativeControlError, type NativeCliState, type NativeLease } from '../../../shared/native/host';
 import type { ControlEnvironment, RoutedEnvironment } from '../platform/desktop/control/environment';
 import type { ControlRouter } from './control/router';
 import { Notice, Platform, type App } from 'obsidian';
@@ -219,7 +219,11 @@ export class AgentController {
 			routeEnvironment: (ref, lease) => this.routeControlEnvironment(ref, lease),
 			prepare: () => this.prepare(),
 			platform: Platform.isWin ? 'win32' : Platform.isMacOS ? 'darwin' : 'linux',
-			environment: () => terminalEnvironment(),
+			environment: async (signal) => {
+				const base = await terminalEnvironment();
+				// Installing the tool is never waited on beyond a short local check; see CliEnvironment.
+				return (await this.cliEnvironment()).apply(base, signal);
+			},
 			home: userHome,
 			settings: () => this.settings.get(),
 			colors: () => this.themeColors(),
@@ -419,45 +423,53 @@ export class AgentController {
 			() => this.vaultPath() ?? '',
 			'vault',
 			(rows) => this.bindHistoryOwners(rows),
+			() => {
+				const records = this.spaces.store.getState().records;
+				return Object.values(records.sessions).flatMap((session) => {
+					if (session.kind !== 'shell') return [];
+					const directory = records.spaces[session.spaceId]?.directory;
+					const cwd = directory?.kind === 'vault' ? directory.target.canonicalPath : directory ? records.grants[directory.grantId]?.target.canonicalPath ?? '' : '';
+					return [{ sessionId: session.id, spaceId: session.spaceId, title: session.title, cwd, createdAt: session.createdAt, archived: session.archived }];
+				});
+			},
 		);
 		this.historyStore = this.workspaceHistoryStore;
 		this.workspaceUsage = new WorkspaceUsageStore(this.workspaceHistoryStore, this.settings);
 	}
-	/** HUHU-launched sessions with a native identity, including those of archived Spaces. */
-	private ownedSessions(): Array<{ agentId: string; sessionId: string }> {
-		return Object.values(this.spaces.store.getState().records.sessions).flatMap((session) =>
-			session.agentId && session.nativeSessionId
-				? [{ agentId: session.agentId, sessionId: session.nativeSessionId }]
-				: [],
-		);
+	private historyOwnerBinding(session: SessionRecord): import('../platform/history/service').HistoryOwnerBinding | undefined {
+		if (!session.agentId || !session.nativeSessionId || !session.transcriptPath) return undefined;
+		return {
+			agentId: session.agentId,
+			sessionId: session.nativeSessionId,
+			accountId: session.accountId ?? '',
+			deviceId: session.nativeImport?.deviceId ?? deviceId(this.app),
+			transcriptPath: session.transcriptPath,
+			...(session.nativeImport ? { accountKey: session.nativeImport.accountKey, sourceRef: session.nativeImport.sourceRef } : {}),
+		};
 	}
-	/**
-	 * Attribute native rows to the Space whose HUHU session produced them (agent + native id, and the same
-	 * canonical transcript path when the record kept one). Never inferred from cwd. A bad row is skipped and
-	 * reported; it can never fail the refresh.
-	 */
+	/** Missing transcript/account provenance never expands the Vault projection. */
+	private ownedSessions(): import('../platform/history/service').HistoryOwnerBinding[] {
+		return Object.values(this.spaces.store.getState().records.sessions).flatMap((session) => {
+			const binding = this.historyOwnerBinding(session);
+			return binding ? [binding] : [];
+		});
+	}
 	private async bindHistoryOwners(rows: readonly NativeSessionSummary[]): Promise<string[]> {
-		const records = this.spaces.store.getState().records;
 		const byIdentity = new Map<string, SessionRecord[]>();
-		for (const session of Object.values(records.sessions)) {
+		for (const session of Object.values(this.spaces.store.getState().records.sessions)) {
 			if (!session.agentId || !session.nativeSessionId) continue;
 			const key = JSON.stringify([session.agentId, session.nativeSessionId]);
 			byIdentity.set(key, [...(byIdentity.get(key) ?? []), session]);
 		}
 		const entries: Array<{ sourceRef: string; spaceId: string }> = [];
 		const diagnostics: string[] = [];
+		const owns = await this.workspaceHistoryService().ownerMatcher();
 		for (const row of rows) {
 			if (!row.sourceRef || this.spaces.historySpaceFor(row.sourceRef)) continue;
-			const candidates = byIdentity.get(JSON.stringify([row.agentId, row.sessionId]));
-			if (!candidates) continue;
 			const owners = new Set<string>();
-			for (const session of candidates) {
-				try {
-					if (!session.transcriptPath || (await samePath(session.transcriptPath, row.transcriptPath)))
-						owners.add(session.spaceId);
-				} catch {
-					diagnostics.push('history-path-unreadable');
-				}
+			for (const session of byIdentity.get(JSON.stringify([row.agentId, row.sessionId])) ?? []) {
+				const binding = this.historyOwnerBinding(session);
+				if (binding && owns(row, binding)) owners.add(session.spaceId);
 			}
 			if (owners.size === 1) entries.push({ sourceRef: row.sourceRef, spaceId: [...owners][0]! });
 			else if (owners.size > 1) diagnostics.push('history-owner-ambiguous');
@@ -941,6 +953,26 @@ export class AgentController {
 	async prepareWorkbench(): Promise<void> {
 		await this.prepare();
 		await (await this.ensureControl()).environment.prepare();
+	}
+
+	private cliProvider?: Promise<import('../platform/desktop/control/cli-environment').CliEnvironment>;
+	private cliEnvironment() {
+		return (this.cliProvider ??= import('../platform/desktop/control/cli-environment').then(
+			({ CliEnvironment, CLI_LAUNCH_WAIT_MS }) => new CliEnvironment(async () => this.context.native.cli?.(), CLI_LAUNCH_WAIT_MS, this.app.workspace.containerEl.win),
+		));
+	}
+
+	/** State of the `huhu` command-line tool for the settings page; no notice, the page explains it itself. */
+	async checkCli(): Promise<NativeCliState> {
+		const found = (await this.context.native.cli?.({ notify: false })) ?? {
+			state: 'unavailable' as const,
+			reason: 'unsupported-host',
+			text: '',
+		};
+		// A host that could not even load reports no text; the page must still answer the click.
+		const state = found.text ? found : { ...found, text: t('agent.settings.cliUnavailable') };
+		(await this.cliEnvironment()).remember(state);
+		return state;
 	}
 
 	/** Install or verify the helper and start it; resolves to its version. */

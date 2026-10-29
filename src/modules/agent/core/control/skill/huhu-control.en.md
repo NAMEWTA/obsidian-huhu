@@ -37,14 +37,17 @@ huhu --json session get --session <session-id>
 
 ## Long text goes through stdin
 
-A message body of up to 16 KiB is read locally from stdin or a file, so shell quoting cannot corrupt it.
+Use exactly one of `--text`, `--stdin` or `--file`. The CLI reads the body locally: `message send` accepts up to 16 KiB of UTF-8, while `agent prompt` and `terminal send-text` accept up to 256 KiB. File paths and stdin flags are never forwarded to the workbench.
+The complete request must also fit the frame limit reported by `capabilities`; encoding and target fields count toward that limit.
 
 ```sh
 huhu --json message send --to-session <session-id> --stdin < body.txt
+huhu --json agent prompt --session <session-id> --runtime <runtime-id> --file prompt.txt
 huhu --json inbox list --session <session-id>
 ```
 
 Exit 2 with `CAPACITY_EXCEEDED` means the body is too large: shorten it, do not split it silently.
+`--timeout-ms` also bounds waiting for the local body. A timeout (exit 6) or Ctrl-C (exit 130) before submission sends no input; read the receipt's `effect` before deciding what to do next.
 
 ## Stop only when asked
 

@@ -793,3 +793,51 @@ test('a history/resume ControlProtocolError message reaches the response with it
 		await f.close();
 	}
 });
+
+test.each(['import', 'resume', 'open'] as const)('history %s envelopes carry their resulting identities', async (action) => {
+	const f = await fixture();
+	let router: ControlRouter | undefined;
+	try {
+		const space = await f.spaces.create({ name: 'A' });
+		const imported = await f.spaces.importHistorySession({ spaceId: space.id, sourceRef: 'ref', accountKey: '{}', deviceId: 'd', agentId: 'codex', accountId: '', nativeSessionId: 'native', title: 'Imported' });
+		const sessionId = imported.session.id;
+		const scope = await f.spaces.getControlScope(), reg = registration();
+		const history = {
+			importSource: async () => ({ spaceId: space.id, sessionId, created: false }),
+			resumeSource: async () => ({ mode: 'resumed', spaceId: space.id, sessionId, runtimeId: 'result-runtime' }),
+			openSession: async () => ({ spaceId: space.id, sessionId, runtimeId: 'result-runtime', attached: true }),
+		} as unknown as HistoryCommands;
+		router = new ControlRouter(new ControlCommands(f.spaces, f.workspace, f.sessions, undefined, history));
+		router.forward(call({ protocolVersion: 1, requestId: `${action}-ok`, operation: `history.${action}`, target: { spaceId: space.id, ...(action === 'open' ? { sessionId } : {}) }, params: { source: 'ref' } }), reg.value, scope);
+		await vi.waitFor(() => expect(reg.responses).toHaveLength(1));
+		expect(reg.responses[0]).toMatchObject({ ok: true, target: { spaceId: space.id, sessionId, ...(action === 'import' ? {} : { runtimeId: 'result-runtime' }) } });
+	} finally { await router?.close(); await f.close(); }
+});
+
+test.each(['session', 'space'] as const)('a never-started explicit import can be archived by %s without launching', async (kind) => {
+	const f = await fixture();
+	try {
+		const space = await f.spaces.create({ name: 'A' });
+		const imported = await f.spaces.importHistorySession({ spaceId: space.id, sourceRef: 'ref', accountKey: '{}', deviceId: 'd', agentId: 'codex', accountId: '', nativeSessionId: 'native', title: 'Imported' });
+		const plan = await f.workspace.previewArchive(kind === 'session' ? { kind, spaceId: space.id, sessionId: imported.session.id } : { kind, spaceId: space.id });
+		const result = await f.workspace.archiveManaged(plan);
+		expect(result.status).toBe('archived');
+		expect(f.spawn).not.toHaveBeenCalled();
+		expect(f.requestStop).not.toHaveBeenCalled();
+	} finally { await f.close(); }
+});
+
+test('a legacy record without attempt or explicit import evidence still cannot be archived', async () => {
+	const f = await fixture();
+	try {
+		const space = await f.spaces.create({ name: 'A' });
+		const admission = await f.spaces.prepareSession(space.id, { kind: 'shell', title: 'Legacy terminal' });
+		const saved = JSON.parse(await f.storage.read(f.spaces.path));
+		delete saved.sessions[admission.record.id].lastAttempt;
+		await f.storage.write(f.spaces.path, JSON.stringify(saved));
+		await f.spaces.reloadFromDisk();
+		const plan = await f.workspace.previewArchive({ kind: 'session', spaceId: space.id, sessionId: admission.record.id });
+		expect(await f.workspace.archiveManaged(plan)).toMatchObject({ status: 'incomplete', rows: [{ persisted: false, status: 'incomplete' }] });
+		expect(f.spawn).not.toHaveBeenCalled();
+	} finally { await f.close(); }
+});

@@ -1,3 +1,4 @@
+import { sameHistorySource, HistorySourceChangedError } from './source-identity';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
 import { EXPORTS_ROOT } from '../../../../shared/storage/vault-layout';
 import { deviceId as getDeviceId } from '../../../../host/obsidian/storage/device-id';
@@ -21,6 +22,7 @@ import type {
 	NativeSession,
 	NativeSessionSummary,
 	NativeUsage,
+	OwnedHistorySession,
 } from '../desktop/server/agent-data-client';
 export interface HistoryMetadata {
 	title?: string;
@@ -29,6 +31,16 @@ export interface HistoryMetadata {
 	archived?: boolean;
 	/** Persisted sourceRef owner is maintained by SpaceService; this field is reserved for projections. */
 	spaceId?: string;
+}
+/** A durable HUHU binding. Incomplete legacy sources never confer out-of-vault read access. */
+export interface HistoryOwnerBinding {
+	readonly agentId: string;
+	readonly sessionId: string;
+	readonly accountId: string;
+	readonly deviceId: string;
+	readonly transcriptPath: string;
+	readonly accountKey?: string;
+	readonly sourceRef?: string;
 }
 interface SharedRead<T> {
 	promise: Promise<T>;
@@ -44,13 +56,16 @@ function systemBases(roots: ReadonlyArray<{ systemBase?: string }>): string[] {
 function systemRoots(roots: ReadonlyArray<{ path: string; systemBase?: string }>): string[] {
 	return [...new Set(roots.flatMap((root) => (root.systemBase ? [root.path] : [])))];
 }
+function historyCancelled(): Error & { code: 'WAIT_CANCELLED' } {
+	return Object.assign(new Error('History request cancelled'), { name: 'AbortError', code: 'WAIT_CANCELLED' as const });
+}
 function checkCancelled(signal?: AbortSignal): void {
-	if (signal?.aborted) throw new Error('History request cancelled');
+	if (signal?.aborted) throw historyCancelled();
 }
 function consume<T>(read: SharedRead<T>, signal?: AbortSignal): Promise<T> {
 	if (signal?.aborted) {
 		if (!read.settled && !read.consumers) read.abort.abort();
-		return Promise.reject(new Error('History request cancelled'));
+		return Promise.reject(historyCancelled());
 	}
 	read.consumers++;
 	return new Promise<T>((resolve, reject) => {
@@ -65,7 +80,7 @@ function consume<T>(read: SharedRead<T>, signal?: AbortSignal): Promise<T> {
 		const cancel = () => {
 			if (!finish()) return;
 			if (!read.settled && !read.consumers) read.abort.abort();
-			reject(new Error('History request cancelled'));
+			reject(historyCancelled());
 		};
 		signal?.addEventListener('abort', cancel, { once: true });
 		void read.promise.then(
@@ -129,7 +144,7 @@ export class NativeHistory {
 		/** The vault projection is the only history scope; the account-wide index is gone. */
 		_scope: 'vault' = 'vault',
 		/** HUHU-launched sessions whose history belongs to the vault projection even when their cwd is outside it. */
-		private readonly owned: () => ReadonlyArray<{ agentId: string; sessionId: string }> = () => [],
+		private readonly owned: () => readonly HistoryOwnerBinding[] = () => [],
 	) {
 		const device = getDeviceId(app);
 		const storage = privateVaultStorage(app);
@@ -157,7 +172,7 @@ export class NativeHistory {
 	}
 	/** True before the first scan of this helper connection, or after the owned-session set changed since the last scan. */
 	get stale(): boolean {
-		return !this.scanned || this.scannedOwned !== JSON.stringify(this.ownedSessions());
+		return !this.scanned || this.scannedOwned !== JSON.stringify(this.owned());
 	}
 	get metadataRevision(): number {
 		return this.metadataVersion;
@@ -273,6 +288,7 @@ export class NativeHistory {
 		const device = getDeviceId(this.app);
 		return {
 			vault,
+			deviceId: device,
 			index: path.join(
 				vault,
 				'.huhu',
@@ -283,14 +299,31 @@ export class NativeHistory {
 		};
 	}
 
-	/** Deterministic, de-duplicated provenance list the helper uses to admit owned out-of-vault sessions. */
-	private ownedSessions(): Array<{ agentId: string; sessionId: string }> {
-		const seen = new Map<string, { agentId: string; sessionId: string }>();
-		for (const { agentId, sessionId } of this.owned())
-			if (agentId && sessionId) seen.set(JSON.stringify([agentId, sessionId]), { agentId, sessionId });
-		return [...seen.values()].sort((a, b) =>
-			(a.agentId + '\0' + a.sessionId).localeCompare(b.agentId + '\0' + b.sessionId),
-		);
+	/** Resolve each binding against the currently configured account namespace before native admission. */
+	private async ownedSessions(): Promise<OwnedHistorySession[]> {
+		const scope = await this.scanScope();
+		const seen = new Map<string, OwnedHistorySession>();
+		for (const binding of this.owned()) {
+			const resolved = this.resolveOwner(binding, scope);
+			if (resolved) seen.set(JSON.stringify(resolved), resolved);
+		}
+		return [...seen.values()].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+	}
+	private resolveOwner(binding: HistoryOwnerBinding, scope: Awaited<ReturnType<NativeHistory['loadScanScope']>>): OwnedHistorySession | undefined {
+		if (!binding.agentId || !binding.sessionId || !binding.transcriptPath || binding.deviceId !== scope.deviceId) return undefined;
+		const root = scope.roots.find((row) => row.agentId === binding.agentId && row.accountId === binding.accountId);
+		if (!root || (binding.accountKey && binding.accountKey !== root.accountKey)) return undefined;
+		const sourceRef = `${binding.agentId}:${root.accountKey}:${binding.transcriptPath}${binding.agentId === 'opencode' ? `#${binding.sessionId}` : ''}`;
+		if (binding.sourceRef && binding.sourceRef !== sourceRef) return undefined;
+		return { agentId: binding.agentId, sessionId: binding.sessionId, accountKey: root.accountKey, deviceId: binding.deviceId, transcriptPath: binding.transcriptPath, sourceRef };
+	}
+	/** Capture one configured provenance scope for a whole owner-binding pass. */
+	async ownerMatcher(): Promise<(row: NativeSessionSummary, binding: HistoryOwnerBinding) => boolean> {
+		const scope = await this.scanScope();
+		return (row, binding) => {
+			const owner = this.resolveOwner(binding, scope);
+			return !!owner && row.agentId === owner.agentId && row.sessionId === owner.sessionId && row.accountKey === owner.accountKey && row.transcriptPath === owner.transcriptPath && row.sourceRef === owner.sourceRef;
+		};
 	}
 
 	private scanScope() {
@@ -329,6 +362,7 @@ export class NativeHistory {
 						agentId: agent.id,
 						path: source,
 						accountKey: JSON.stringify(keyEnv),
+						accountId: name,
 						...(system ? { systemBase: historyBase(agent.id, paths) } : {}),
 					});
 					const references = system ? [] : await legacyReferences(scope.vault, device, agent.id);
@@ -350,8 +384,8 @@ export class NativeHistory {
 	}
 	async scan(signal?: AbortSignal): Promise<string[]> {
 		this.active();
-		if (signal?.aborted) throw new Error('History request cancelled');
-		const scope = { ...(await this.scanScope()), ownedSessions: this.ownedSessions() };
+		if (signal?.aborted) throw historyCancelled();
+		const scope = { ...(await this.scanScope()), ownedSessions: await this.ownedSessions() };
 		checkCancelled(signal);
 		const key = JSON.stringify(scope);
 		if (!this.scanRead || this.scanRead.key !== key || this.scanRead.read.abort.signal.aborted) {
@@ -366,7 +400,7 @@ export class NativeHistory {
 				);
 				this.indexVersion = result.revision;
 				this.scanned = true;
-				this.scannedOwned = JSON.stringify(scope.ownedSessions);
+				this.scannedOwned = JSON.stringify(this.owned());
 				this.changed();
 				return [...scope.warnings, ...result.warnings];
 			});
@@ -393,13 +427,13 @@ export class NativeHistory {
 	): Promise<HistoryPage> {
 		this.active();
 		await this.loaded;
-		if (signal?.aborted) throw new Error('History request cancelled');
+		if (signal?.aborted) throw historyCancelled();
 		const scope = await this.scanScope();
 		checkCancelled(signal);
 		const client = await this.service.historyClient();
 		checkCancelled(signal);
 		this.observeClient(client);
-		const ownedSessions = this.ownedSessions();
+		const ownedSessions = await this.ownedSessions();
 		const key = JSON.stringify([
 			scope,
 			ownedSessions,
@@ -418,6 +452,7 @@ export class NativeHistory {
 					'query',
 					{
 						vault: scope.vault,
+						deviceId: scope.deviceId,
 						index: scope.index,
 						query,
 						offset,
@@ -449,6 +484,9 @@ export class NativeHistory {
 	}
 	async read(session: NativeSessionSummary, signal?: AbortSignal): Promise<NativeSession> {
 		this.active();
+		checkCancelled(signal);
+		session = Object.freeze({ ...session });
+		if (!sameHistorySource(session, session)) throw new HistorySourceChangedError();
 		const scope = await this.scope(),
 			systemBase = systemBases((await this.scanScope()).roots);
 		checkCancelled(signal);
@@ -457,18 +495,24 @@ export class NativeHistory {
 				const client = await this.service.historyClient();
 				checkCancelled(sharedSignal);
 				this.active();
-				return client.request<NativeSession>(
+				const value = await client.request<NativeSession>(
 					'read',
 					{
 						...scope,
 						key: session.key,
+						expectedSource: {
+							agentId: session.agentId, accountKey: session.accountKey, sessionId: session.sessionId,
+							deviceId: scope.deviceId, transcriptPath: session.transcriptPath, sourceRef: session.sourceRef,
+						},
 						scope: 'vault',
 						systemBases: systemBase,
 						systemRoots: systemRoots((await this.scanScope()).roots),
-						ownedSessions: this.ownedSessions(),
+						ownedSessions: await this.ownedSessions(),
 					},
 					sharedSignal,
 				);
+				if (!sameHistorySource(session, value)) throw new HistorySourceChangedError();
+				return value;
 			}),
 			signal,
 		);
@@ -477,6 +521,7 @@ export class NativeHistory {
 		return readHistoryDetails(session, (await this.scope()).vault, getDeviceId(this.app), text, signal);
 	}
 	async export(session: NativeSessionSummary): Promise<ContentFile> {
+		session = Object.freeze({ ...session });
 		let full: NativeSession;
 		const unreadable = (status: string) =>
 			new Error(t('agent.exportReadFailed', { message: t(`agent.historyUI.source.${status}`) }));

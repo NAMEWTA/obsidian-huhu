@@ -3,6 +3,8 @@ import type { BackupManifest, SectionKind } from './format';
 /** Stable machine-readable outcomes. The UI maps each code to a localized sentence; no message text lives here. */
 export type BackupErrorCode =
 	| 'busy'
+	| 'timeout'
+	| 'cancelled'
 	| 'quiesce-failed'
 	| 'drain-failed'
 	| 'source-invalid'
@@ -55,7 +57,9 @@ export type WarningCode =
 	| 'automations-disabled'
 	| 'runs-demoted'
 	| 'settings-damaged-replaced'
-	| 'other-device-settings-skipped';
+	| 'other-device-settings-skipped'
+	| 'step-file-changed'
+	| 'step-file-missing';
 export interface Warning {
 	readonly code: WarningCode;
 	readonly subject?: string;

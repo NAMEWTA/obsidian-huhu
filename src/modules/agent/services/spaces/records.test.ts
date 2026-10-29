@@ -98,3 +98,18 @@ test('optional inbox is validated as its own bounded subdocument and old records
 	value.inbox = { ...value.inbox, messages: [{ ...value.inbox.messages[0]!, references: [{ kind: 'vault-file', vaultId: 'v', path: '../escape' }] }] };
 	expect(isWorkbenchRecords(value)).toBe(false);
 });
+
+test('fresh-import proof is an explicit optional literal and never inferred from provenance alone', () => {
+	for (const neverStarted of [undefined, true, false, 'true']) {
+		const value = records();
+		Object.assign(value.sessions.session!, { nativeImport: { sourceRef: 'source', accountKey: '{}', deviceId: 'd', importedAt: 1, ...(neverStarted === undefined ? {} : { neverStarted }) } });
+		expect(isWorkbenchRecords(value)).toBe(neverStarted === undefined || neverStarted === true);
+	}
+});
+
+
+test('a stored launch attempt cannot coexist with a never-started import claim', () => {
+	const value = records();
+	Object.assign(value.sessions.session!, { nativeImport: { sourceRef: 'source', accountKey: '{}', deviceId: 'd', importedAt: 1, neverStarted: true }, lastAttempt: { runtimeId: 'r', acceptedAt: 2, state: 'unconfirmed' } });
+	expect(isWorkbenchRecords(value)).toBe(false);
+});

@@ -49,6 +49,10 @@ export function toBackupError(error: unknown): BackupError {
 	if (error instanceof RecoveryError) {
 		const detail = { ...error.detail, recoveryCode: error.code };
 		switch (error.code) {
+			case 'TIMEOUT':
+				return new BackupError('timeout', detail, { cause: error });
+			case 'CANCELLED':
+				return new BackupError('cancelled', detail, { cause: error });
 			case 'BUSY':
 				return new BackupError('busy', detail, { cause: error });
 			case 'QUIESCE_FAILED':

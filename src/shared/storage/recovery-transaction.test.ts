@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest';
+import { useStorageTimers, type StorageTimers } from './timers';
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
 import { FaultStorage } from '../../../test/agent-migrations/fault-storage';
 import { RecoveryError, isRecoveryJournal, type RecoveryOwner } from './recovery-contracts';
 import { RecoveryGate, readJournal, recoverPending, runRecoveryTransaction } from './recovery-transaction';
@@ -409,4 +410,138 @@ describe('every journal slot write that lands and then throws (M-3)', () => {
 		).rejects.toMatchObject({ code: 'STAGE_INVALID' });
 		expect(storage.mutations).toBe(0);
 	});
+});
+
+
+describe('bounded pre-commit recovery', () => {
+	test('a timed-out drain reopens owners but isolates its late writer from a new restore', async () => {
+		vi.useFakeTimers();
+		const storage = seed(), log: string[] = [];
+		let enter!: () => void, finish!: () => void;
+		const ready = new Promise<void>((resolve) => { enter = resolve; });
+		const barrier = new Promise<void>((resolve) => { finish = resolve; });
+		let open = true;
+		const slow = owner(log, {
+			quiesce: async () => { open = false; },
+			drain: async () => { enter(); await barrier; storage.files.set(TARGETS[0], 'late-old-writer'); open = false; },
+			release: async () => { log.push('release'); open = true; },
+		});
+		let outcome = 'pending', stages = 0;
+		const operation = runRecoveryTransaction({ storage, owners: [slow], operation: 'bounded', newId: () => 'bounded',
+			preCommitTimeoutMs: 20, timers: globalThis as unknown as import('./timers').StorageTimers, stage: async () => { stages++; return { writes: [{ path: TARGETS[0], content: 'restored' }] }; },
+		}).then(() => { outcome = 'done'; }, (error: unknown) => { outcome = (error as RecoveryError).code; });
+		await ready;
+		try {
+			await vi.advanceTimersByTimeAsync(20);
+			expect(outcome).toBe('TIMEOUT');
+			expect(log).toContain('release');
+			expect(open).toBe(true);
+			expect(stages).toBe(0);
+			await expect(run(storage)).rejects.toMatchObject({ code: 'RECOVERY_PENDING' });
+			expect(storage.snapshot(TARGETS)).toEqual(OLD);
+		} finally { finish(); await operation; await vi.advanceTimersByTimeAsync(0); vi.useRealTimers(); }
+		expect(storage.files.get(TARGETS[0])).toBe('late-old-writer');
+		expect(open).toBe(true);
+		expect(log.some((item) => item.startsWith('adopt'))).toBe(false);
+		await run(storage);
+		expect(storage.snapshot(TARGETS)).toEqual(NEW);
+	});
+});
+
+
+test('a drain that never settles can be cancelled without staging and keeps later restores isolated', async () => {
+	const storage = seed(), log: string[] = [];
+	const abort = new AbortController();
+	let enter!: () => void;
+	const ready = new Promise<void>((resolve) => { enter = resolve; });
+	const never = owner(log, { drain: () => { enter(); return new Promise<void>(() => {}); } });
+	let staged = false;
+	const pending = runRecoveryTransaction({ storage, owners: [never], operation: 'never', signal: abort.signal,
+		stage: async () => { staged = true; return { writes: [] }; },
+	});
+	await ready;
+	abort.abort();
+	await expect(pending).rejects.toMatchObject({ code: 'CANCELLED' });
+	await Promise.resolve();
+	expect(staged).toBe(false);
+	expect(log).toContain('release');
+	expect(storage.snapshot(TARGETS)).toEqual(OLD);
+	await expect(run(storage)).rejects.toMatchObject({ code: 'RECOVERY_PENDING' });
+});
+
+test.each(['quiesce', 'stage'] as const)('cancelling a late %s never reaches staging replacements or adoption', async (phase) => {
+	const storage = seed(), log: string[] = [];
+	const abort = new AbortController();
+	let enter!: () => void, finish!: () => void;
+	const ready = new Promise<void>((resolve) => { enter = resolve; });
+	const barrier = new Promise<void>((resolve) => { finish = resolve; });
+	const slow = async () => { enter(); await barrier; };
+	let stageCalls = 0;
+	const pending = runRecoveryTransaction({ storage, owners: [owner(log, phase === 'quiesce' ? { quiesce: slow } : {})],
+		operation: phase, signal: abort.signal,
+		stage: async () => { stageCalls++; if (phase === 'stage') await slow(); return { writes: [{ path: TARGETS[0], content: 'wrong' }] }; },
+	});
+	await ready;
+	abort.abort();
+	await expect(pending).rejects.toMatchObject({ code: 'CANCELLED' });
+	await expect(run(storage)).rejects.toMatchObject({ code: 'RECOVERY_PENDING' });
+	finish();
+	await vi.waitFor(() => expect(log).toContain('release'));
+	await vi.waitFor(async () => { const result = await run(storage); expect(result.changed).toEqual([...TARGETS]); });
+	expect(stageCalls).toBe(phase === 'stage' ? 1 : 0);
+	expect(log.some((item) => item.startsWith('adopt'))).toBe(false);
+});
+
+
+test('cancellation while a prepared journal is delayed retires the late journal before admitting another restore', async () => {
+	const storage = seed(), log: string[] = [];
+	const write = storage.write.bind(storage), abort = new AbortController();
+	let enter!: () => void, finish!: () => void;
+	const ready = new Promise<void>((resolve) => { enter = resolve; });
+	const barrier = new Promise<void>((resolve) => { finish = resolve; });
+	storage.write = async (path, text) => {
+		if (path.includes('/journal.') && JSON.parse(text).phase === 'prepared') { enter(); await barrier; }
+		await write(path, text);
+	};
+	const pending = runRecoveryTransaction({ storage, owners: [owner(log)], operation: 'prepared', signal: abort.signal,
+		newId: () => 'prepared', stage: async () => ({ writes: [{ path: TARGETS[0], content: 'cancelled-new' }] }),
+	});
+	await ready;
+	abort.abort();
+	await expect(pending).rejects.toMatchObject({ code: 'CANCELLED' });
+	await expect(run(storage)).rejects.toMatchObject({ code: 'RECOVERY_PENDING' });
+	finish();
+	await vi.waitFor(async () => { expect((await readJournal(storage))?.phase).toBe('rolled-back'); });
+	expect(storage.snapshot(TARGETS)).toEqual(OLD);
+	expect(log.some((item) => item.startsWith('adopt'))).toBe(false);
+	await run(storage);
+	expect(storage.snapshot(TARGETS)).toEqual(NEW);
+});
+
+test('a cancellation after replacement starts allows the atomic commit and adoption to finish', async () => {
+	const storage = seed(), abort = new AbortController(), log: string[] = [];
+	storage.afterWrite = (path) => { if (path === TARGETS[0]) abort.abort(); };
+	const result = await runRecoveryTransaction({ storage, owners: [owner(log)], operation: 'commit', signal: abort.signal,
+		stage: async () => ({ writes: TARGETS.map((path) => ({ path, content: NEW[path] })) }),
+	});
+	expect(abort.signal.aborted).toBe(true);
+	expect(result.changed).toEqual([...TARGETS]);
+	expect(storage.snapshot(TARGETS)).toEqual(NEW);
+	expect(log).toContain('adopt:3');
+	expect((await readJournal(storage))?.phase).toBe('done');
+});
+
+// Supply the same timer dependency that the app host registers before recovery starts.
+beforeEach(() => useStorageTimers(globalThis as unknown as StorageTimers));
+afterEach(() => useStorageTimers(undefined));
+
+
+test('without a host clock recovery refuses before quiescing or writing any owner', async () => {
+	const storage = seed(), log: string[] = [];
+	useStorageTimers(undefined);
+	try {
+		await expect(run(storage, [owner(log)])).rejects.toMatchObject({ code: 'QUIESCE_FAILED', message: 'recovery-timers-unavailable' });
+		expect(log).toEqual([]);
+		expect(storage.mutations).toBe(0);
+	} finally { useStorageTimers(globalThis as unknown as StorageTimers); }
 });

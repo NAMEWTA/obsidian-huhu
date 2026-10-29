@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest';
+import { useStorageTimers, type StorageTimers } from '../shared/storage/timers';
+import { beforeEach, afterEach, describe, expect, test } from 'vitest';
 import { FaultStorage } from '../../test/agent-migrations/fault-storage';
 import { JsonStore } from '../shared/json-store';
 import { defineSettings, f } from '../shared/settings/schema';
@@ -253,4 +254,31 @@ describe('settings owner over a damaged file (T-15 N-3)', () => {
 		expect(storage.files.get('.huhu/recovery/transaction/n3/old-0.txt')).toBe('{"namespaces": [');
 		expect(calls).toEqual(['quiesce', 'drain', 'adopt', 'release']);
 	});
+});
+
+// Supply the same timer dependency that the app host registers before recovery starts.
+beforeEach(() => useStorageTimers(globalThis as unknown as StorageTimers));
+afterEach(() => useStorageTimers(undefined));
+
+test('settled waits for a normal admitted transaction through final release', async () => {
+	const host = new RecoveryHost(new FaultStorage());
+	let enter!: () => void, finish!: () => void;
+	const ready = new Promise<void>((resolve) => { enter = resolve; });
+	const barrier = new Promise<void>((resolve) => { finish = resolve; });
+	host.register({ ...noop('normal', '.huhu/normal/'), release: async () => { enter(); await barrier; } });
+	const operation = host.run({ operation: 'normal', stage: async () => ({ writes: [] }) });
+	await ready;
+	const loaded = host.settled();
+	finish();
+	await operation;
+	await expect(loaded).resolves.toBeUndefined();
+});
+
+test('settled preserves an unrecoverable journal error while the stable isolation marker is retained', async () => {
+	const disk = new FaultStorage(), host = new RecoveryHost(disk);
+	host.register(noop('file', '.huhu/data/'));
+	let journals = 0;
+	disk.failWrite = (path) => path.includes('/journal.') && ++journals === 3;
+	await expect(host.run({ operation: 'journal-failure', stage: async () => ({ writes: [{ path: '.huhu/data/file', content: 'new' }] }) })).rejects.toMatchObject({ code: 'UNRECOVERABLE' });
+	await expect(host.settled()).rejects.toMatchObject({ code: 'UNRECOVERABLE' });
 });

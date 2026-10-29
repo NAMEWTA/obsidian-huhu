@@ -191,7 +191,8 @@ export class ControlRouter {
 					this.remember(error);
 				}
 			});
-			if (request.operation.startsWith('pane.')) target = prepared!.target;
+			if (!confirmed && (request.operation.startsWith('pane.') || request.operation.startsWith('history.')))
+				target = prepared!.target;
 			if (!confirmed && inputKind && result.effect === 'completed') {
 				const receipt = inputReceipt(result.data);
 				if (receipt?.kind !== inputKind)

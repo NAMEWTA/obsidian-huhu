@@ -54,6 +54,7 @@ export function AgentWorkspace({
 	const root = useRef<HTMLDivElement>(null);
 	const [narrowControl, setNarrowControl] = useState(false);
 	const [inboxUnread, setInboxUnread] = useState<number | undefined>();
+	const historyReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
 	const controlReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
 	useEffect(() => {
 		const element = root.current;
@@ -97,6 +98,7 @@ export function AgentWorkspace({
 		const blur = () => {
 			if (returnFocus.current) returnFocus.current.blurred = true;
 			if (controlReturn.current) controlReturn.current.blurred = true;
+			if (historyReturn.current) historyReturn.current.blurred = true;
 		};
 		win?.addEventListener('blur', blur);
 		return () => win?.removeEventListener('blur', blur);
@@ -217,7 +219,7 @@ export function AgentWorkspace({
 				data-agent-workspace=""
 				ref={root}
 			>
-				<WorkspaceToolbar inboxUnread={inboxUnread} onOpenTool={(tool) => viewStore.setState({ control: true, history: false, agentTool: tool })} />
+				<WorkspaceToolbar inboxUnread={inboxUnread} />
 				<div className="@container relative flex min-h-0 flex-1">
 					<div
 						className="relative min-w-0 flex-1"
@@ -248,7 +250,25 @@ export function AgentWorkspace({
 							</VisibilityContext>
 						</div>
 					</div>
-					{page.history && (
+					{page.history && visible && (narrowControl ? (
+						<Dialog open onOpenChange={(open) => { if (!open) viewStore.setState({ history: false }); }}>
+							<DialogContent showCloseButton={false} className="h-[min(90dvh,800px)] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0" data-agent-history-dialog="" data-history-narrow=""
+								onOpenAutoFocus={() => {
+									const origin = doc.activeElement;
+									if (origin && typeof (origin as HTMLElement).focus === 'function') historyReturn.current = { origin: origin as HTMLElement, target: focusTarget(), blurred: false };
+								}}
+								onCloseAutoFocus={(event) => {
+									event.preventDefault();
+									const captured = historyReturn.current;
+									historyReturn.current = undefined;
+									if (captured && !captured.blurred && alive.current && captured.origin.isConnected && doc.hasFocus() && captured.target === focusTarget() && interactive.current && !doc.querySelector('[role=alertdialog][data-state=open]')) captured.origin.focus();
+								}}>
+								<DialogTitle className="sr-only">{t('agent.historyUI.title')}</DialogTitle>
+								<DialogDescription className="sr-only">{t('agent.historyUI.search')}</DialogDescription>
+								<SessionHistoryPanel controller={controller} close={() => viewStore.setState({ history: false })} narrow />
+							</DialogContent>
+						</Dialog>
+					) : (
 						<>
 							<div
 								role="separator"
@@ -301,7 +321,7 @@ export function AgentWorkspace({
 								/>
 							</div>
 						</>
-					)}
+					))}
 					{page.control &&
 						!page.history &&
 						visible &&
