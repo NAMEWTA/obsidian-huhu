@@ -1,8 +1,11 @@
 name: Highlights validation
 
 on:
+  # dev is unfiltered. This pull request changes more than 3000 files, and GitHub
+  # only matches a path filter against the first 3000, so the filtered pull_request
+  # event never starts. A dev push still has to run this check.
   push:
-    branches: ["NAMEWTA/6"]
+    branches: ["NAMEWTA/6", "dev"]
   pull_request:
     paths:
       - "src/modules/comments/**"

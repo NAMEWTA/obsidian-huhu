@@ -179,6 +179,19 @@ mod command_line_tests {
         );
     }
     #[test]
+    fn missing_image_os_errors_are_program_rejected_and_other_failures_are_not() {
+        for marker in ["(os error 2)", "(os error 3)", "(os error 123)", "(os error 161)", "(os error 193)", "(os error 206)", "(os error 267)"] {
+            assert_eq!(
+                super::spawn_failure_code(&format!("CreateProcessW failed: The system cannot find the file specified. {marker}")),
+                "program-rejected"
+            );
+        }
+        assert_eq!(
+            super::spawn_failure_code("CreateProcessW failed: Access is denied. (os error 5)"),
+            "pty-unavailable"
+        );
+    }
+    #[test]
     fn environment_overrides_replace_case_insensitively_and_empty_means_inherit() {
         assert!(windows_environment_block([("PATH".into(), "a".into())], &HashMap::new()).is_none());
         let mut overrides = HashMap::new();
@@ -192,23 +205,35 @@ mod command_line_tests {
         assert_eq!(text(&block), "HUHU=1\0Path=b\0Z=z\0\0");
     }
 }
+/// CreateProcess reports these before a process exists. The effect is none.
+pub fn spawn_failure_code(message: &str) -> &'static str {
+    const MARKERS: &[&str] = &[
+        "(os error 2)",
+        "(os error 3)",
+        "(os error 123)",
+        "(os error 161)",
+        "(os error 193)",
+        "(os error 206)",
+        "(os error 267)",
+    ];
+    if MARKERS.iter().any(|marker| message.contains(marker)) {
+        "program-rejected"
+    } else {
+        "pty-unavailable"
+    }
+}
 #[cfg(windows)]
-pub use platform::{run_if_requested, spawn};
+pub use platform::{contain, run_if_requested};
 #[cfg(windows)]
 mod platform {
     use crate::{
         job::Job,
-        session::{SpawnFailure, SpawnRequest, Stop},
+        session::{SpawnFailure, SpawnRequest},
     };
-    use portable_pty::{Child, ChildKiller, ExitStatus};
+    use portable_pty::Child;
     use std::{
-        io, mem,
-        os::windows::io::RawHandle,
-        ptr,
-        sync::{
-            atomic::{AtomicU32, AtomicU64, Ordering},
-            Arc, Mutex,
-        },
+        io, mem, ptr,
+        sync::atomic::{AtomicU32, AtomicU64, Ordering},
         thread,
         time::{Duration, Instant},
     };
@@ -396,59 +421,21 @@ mod platform {
         }
         Ok(h)
     }
-    pub fn spawn(
-        console: &crate::conpty::Console,
-        request: &SpawnRequest,
-        _id: u32,
-        job: &Arc<Job>,
-        stop: &Arc<Mutex<Stop>>,
-    ) -> Result<Box<dyn Child + Send + Sync>, SpawnFailure> {
-        if stop.lock().unwrap().at.is_some() {
-            return Err(SpawnFailure::before_spawn(
-                "program-rejected",
-                "session cancelled before spawn",
-            ));
-        }
-        // The pseudoconsole handle cannot be duplicated: DuplicateHandle returns
-        // ERROR_INVALID_HANDLE. This process owns it and is not a console client.
-        // The session job is applied after CreateProcess. Putting it in
-        // PROC_THREAD_ATTRIBUTE_JOB_LIST kept a real console program inside CreateProcess.
-        let hpcon = console
-            .raw()
-            .map_err(|error| SpawnFailure::before_spawn("pty-unavailable", error))?;
-        let mut command_line = super::windows_command_line(&request.file, &request.args);
-        let environment = super::windows_environment_block(std::env::vars(), &request.env);
-        let directory = request
-            .cwd
-            .as_ref()
-            .filter(|cwd| !cwd.is_empty())
-            .map(|cwd| wide(cwd));
-        let created = match create_payload(
-            &mut command_line,
-            environment.as_deref(),
-            directory.as_deref(),
-            hpcon as HANDLE,
-        ) {
-            Ok(created) => created,
-            Err(error) => {
-                return Err(SpawnFailure::before_spawn(
-                    if missing_program(&error) {
-                        "program-rejected"
-                    } else {
-                        "pty-unavailable"
-                    },
-                    error,
-                ));
-            }
+    pub fn contain(child: &mut dyn Child, job: &Job) -> Result<(), SpawnFailure> {
+        let Some(raw) = child.as_raw_handle() else {
+            let _ = child.kill();
+            return Err(SpawnFailure {
+                code: "pty-unavailable",
+                effect: "unknown",
+                message: "Payload handle is missing".into(),
+            });
         };
-        let handle = Handle(created.process);
-        if let Err(error) = job.assign(handle.0) {
+        let handle = raw as HANDLE;
+        if let Err(error) = job.assign(handle) {
             // A process that has already exited cannot join the job. Its handle
             // still carries the exit code, and nothing remains to leak.
-            if !process_has_exited(handle.0) {
-                unsafe {
-                    TerminateProcess(handle.0, 1);
-                }
+            if !process_has_exited(handle) {
+                let _ = child.kill();
                 return Err(SpawnFailure {
                     code: "pty-unavailable",
                     effect: "unknown",
@@ -456,131 +443,12 @@ mod platform {
                 });
             }
         }
-        if unsafe { GetProcessId(handle.0) } != created.pid {
-            unsafe {
-                TerminateProcess(handle.0, 1);
-            }
-            return Err(SpawnFailure {
-                code: "pty-unavailable",
-                effect: "unknown",
-                message: "Payload handle identity mismatch".into(),
-            });
-        }
-        Ok(Box::new(Payload {
-            handle,
-            job: job.clone(),
-            pid: created.pid,
-        }))
-    }
-    fn missing_program(error: &io::Error) -> bool {
-        // CreateProcess reports these before a process exists. The effect is none.
-        matches!(error.raw_os_error(), Some(2 | 3 | 123 | 161 | 193 | 206 | 267))
+        Ok(())
     }
     fn process_has_exited(handle: HANDLE) -> bool {
         let mut code = 0;
         let ok = unsafe { GetExitCodeProcess(handle, &mut code) };
         ok != 0 && code != 259
-    }
-    fn create_payload(
-        command_line: &mut [u16],
-        environment: Option<&[u16]>,
-        directory: Option<&[u16]>,
-        console: HANDLE,
-    ) -> io::Result<Created> {
-        let mut attributes = AttributeList::new(1)?;
-        attributes.set(
-            PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
-            console as *const _,
-            mem::size_of::<HANDLE>(),
-        )?;
-        let mut startup: STARTUPINFOEXW = unsafe { mem::zeroed() };
-        startup.StartupInfo.cb = mem::size_of::<STARTUPINFOEXW>() as u32;
-        startup.lpAttributeList = attributes.ptr as _;
-        startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
-        startup.StartupInfo.hStdInput = INVALID_HANDLE_VALUE;
-        startup.StartupInfo.hStdOutput = INVALID_HANDLE_VALUE;
-        startup.StartupInfo.hStdError = INVALID_HANDLE_VALUE;
-        let mut created: PROCESS_INFORMATION = unsafe { mem::zeroed() };
-        let ok = unsafe {
-            CreateProcessW(
-                ptr::null(),
-                command_line.as_mut_ptr(),
-                ptr::null(),
-                ptr::null(),
-                0,
-                CREATE_UNICODE_ENVIRONMENT | EXTENDED_STARTUPINFO_PRESENT,
-                environment
-                    .map(|block| block.as_ptr() as *const _)
-                    .unwrap_or(ptr::null()),
-                directory.map(|path| path.as_ptr()).unwrap_or(ptr::null()),
-                &startup.StartupInfo,
-                &mut created,
-            )
-        };
-        if ok == 0 {
-            return Err(io::Error::last_os_error());
-        }
-        if !created.hThread.is_null() {
-            unsafe { CloseHandle(created.hThread) };
-        }
-        Ok(Created {
-            process: created.hProcess,
-            pid: created.dwProcessId,
-        })
-    }
-    #[derive(Debug)]
-    struct Payload {
-        handle: Handle,
-        job: Arc<Job>,
-        pid: u32,
-    }
-    impl ChildKiller for Payload {
-        fn kill(&mut self) -> io::Result<()> {
-            self.job.terminate()
-        }
-        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
-            Box::new(JobKiller(self.job.clone()))
-        }
-    }
-    #[derive(Debug)]
-    struct JobKiller(Arc<Job>);
-    impl ChildKiller for JobKiller {
-        fn kill(&mut self) -> io::Result<()> {
-            self.0.terminate()
-        }
-        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
-            Box::new(Self(self.0.clone()))
-        }
-    }
-    impl Child for Payload {
-        fn try_wait(&mut self) -> io::Result<Option<ExitStatus>> {
-            match unsafe { WaitForSingleObject(self.handle.0, 0) } {
-                WAIT_TIMEOUT => Ok(None),
-                WAIT_OBJECT_0 => self.status().map(Some),
-                _ => Err(io::Error::last_os_error()),
-            }
-        }
-        fn wait(&mut self) -> io::Result<ExitStatus> {
-            if unsafe { WaitForSingleObject(self.handle.0, INFINITE) } != WAIT_OBJECT_0 {
-                return Err(io::Error::last_os_error());
-            }
-            self.status()
-        }
-        fn process_id(&self) -> Option<u32> {
-            Some(self.pid)
-        }
-        fn as_raw_handle(&self) -> Option<RawHandle> {
-            Some(self.handle.0 as _)
-        }
-    }
-    impl Payload {
-        fn status(&self) -> io::Result<ExitStatus> {
-            let mut code = 0;
-            if unsafe { GetExitCodeProcess(self.handle.0, &mut code) } == 0 {
-                return Err(io::Error::last_os_error());
-            }
-            Ok(ExitStatus::with_exit_code(code))
-        }
     }
     struct Created {
         process: HANDLE,

@@ -3,6 +3,11 @@ name: Build terminal helper
 on:
   workflow_call:
   workflow_dispatch:
+  # Push to dev has no path filter. This pull request changes more than 3000 files,
+  # and GitHub only matches a path filter against the first 3000, so the filtered
+  # pull_request event never starts. A dev push still has to build every target.
+  push:
+    branches: [dev]
   pull_request:
     paths: ['native/pty-server/**', 'scripts/verify-pty-helper.mjs', 'scripts/verify-release-artifacts.mjs', 'src/shared/native/control-schema.json', '.github/workflows/terminal-build.yml']
 

@@ -1,8 +1,6 @@
 //! Pseudo-terminal sessions; root exit and bounded cleanup are separate evidence.
 use crate::{editor, frame, job};
-use portable_pty::{MasterPty, PtySize};
-#[cfg(unix)]
-use portable_pty::{native_pty_system, CommandBuilder};
+use portable_pty::{native_pty_system, CommandBuilder, MasterPty, PtySize};
 use serde_json::{json, Value};
 use std::{
     collections::HashMap,
@@ -976,31 +974,16 @@ fn write_inputs(
 }
 struct OpenedPty {
     master: Box<dyn MasterPty + Send>,
-    #[cfg(unix)]
     slave: Box<dyn portable_pty::SlavePty + Send>,
-    #[cfg(windows)]
-    console: crate::conpty::Console,
 }
 fn open_session_pty(cols: u16, rows: u16) -> Result<OpenedPty, SpawnFailure> {
-    #[cfg(unix)]
-    {
-        let pair = native_pty_system()
-            .openpty(size(cols, rows))
-            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
-        Ok(OpenedPty {
-            master: pair.master,
-            slave: pair.slave,
-        })
-    }
-    #[cfg(windows)]
-    {
-        let opened = crate::conpty::open(cols, rows)
-            .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
-        Ok(OpenedPty {
-            master: opened.master,
-            console: opened.console,
-        })
-    }
+    let pair = native_pty_system()
+        .openpty(size(cols, rows))
+        .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
+    Ok(OpenedPty {
+        master: pair.master,
+        slave: pair.slave,
+    })
 }
 fn size(cols: u16, rows: u16) -> PtySize {
     PtySize {
@@ -1259,21 +1242,18 @@ impl Sessions {
         } else {
             None
         };
+        let mut command = CommandBuilder::new(&request.file);
+        command.args(&request.args);
+        if let Some(cwd) = request.cwd.as_ref().filter(|s| !s.is_empty()) {
+            command.cwd(cwd);
+        }
+        for (key, value) in &request.env {
+            command.env(key, value);
+        }
         #[cfg(unix)]
-        let command = {
-            let mut command = CommandBuilder::new(&request.file);
-            command.args(&request.args);
-            if let Some(cwd) = request.cwd.as_ref().filter(|s| !s.is_empty()) {
-                command.cwd(cwd);
-            }
-            for (key, value) in &request.env {
-                command.env(key, value);
-            }
-            if let Some(binding) = &enrolled {
-                command.env("HUHU_EDITOR_CAPABILITY_FILE", binding.cap_path());
-            }
-            command
-        };
+        if let Some(binding) = &enrolled {
+            command.env("HUHU_EDITOR_CAPABILITY_FILE", binding.cap_path());
+        }
         if self.closing.load(Ordering::SeqCst) || stop.lock().unwrap().at.is_some() {
             return Err(SpawnFailure::before_spawn(
                 "program-rejected",
@@ -1416,20 +1396,32 @@ impl Sessions {
             }
             drop(owned);
         });
-        let child_result = {
-            #[cfg(unix)]
-            {
-                opened
-                    .slave
-                    .spawn_command(command)
-                    .map_err(|e| SpawnFailure::before_spawn("program-rejected", e))
-            }
+        // portable-pty resolves the executable and passes it as lpApplicationName.
+        // A missing image fails inside CreateProcess with no process. Those os errors
+        // stay program-rejected/none. A hand-rolled CreateProcess left cmd.exe inside
+        // the console connect on CI, so the payload is created from this slave instead.
+        let child_result = (|| {
+            let child = opened.slave.spawn_command(command).map_err(|error| {
+                #[cfg(windows)]
+                {
+                    SpawnFailure::before_spawn(
+                        crate::bootstrap::spawn_failure_code(&error.to_string()),
+                        error,
+                    )
+                }
+                #[cfg(unix)]
+                {
+                    SpawnFailure::before_spawn("program-rejected", error)
+                }
+            })?;
             #[cfg(windows)]
-            {
-                crate::bootstrap::spawn(&opened.console, &request, id, &scope.job, &stop)
-            }
-        };
-        #[cfg(unix)]
+            let child = {
+                let mut child = child;
+                crate::bootstrap::contain(&mut *child, &scope.job)?;
+                child
+            };
+            Ok(child)
+        })();
         drop(opened.slave);
         let mut child = match child_result {
             Ok(child) => child,

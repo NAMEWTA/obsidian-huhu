@@ -11,15 +11,11 @@ on:
       - 'tsconfig.browser-worker.json'
       - 'browser-worker.cjs*'
       - '.github/workflows/browser-runtime-build.yml'
+  # No path filter. GitHub only matches paths against the first 3000 files, and
+  # this pull request is larger than that, so a filtered event never starts.
+  # main and dev therefore run the gate on every push.
   push:
-    branches: ['main']
-    paths:
-      - 'native/browser-runtime/**'
-      - 'src/modules/browser/**'
-      - 'scripts/*browser-runtime*'
-      - 'tsconfig.browser-worker.json'
-      - 'browser-worker.cjs*'
-      - '.github/workflows/browser-runtime-build.yml'
+    branches: ['main', 'dev']
 
 permissions:
   contents: read

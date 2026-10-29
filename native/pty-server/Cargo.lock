@@ -196,7 +196,6 @@ dependencies = [
 name = "huhu-pty"
 version = "0.0.1"
 dependencies = [
- "anyhow",
  "ctrlc",
  "interprocess",
  "libc",
