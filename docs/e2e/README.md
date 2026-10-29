@@ -231,5 +231,5 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 这台机器不能验证的项：Windows ConPTY 的真实界面、macOS 伪终端、系统输入法在终端里的组字、已安装的 CLI 智能体（这次没有配置 Codex / Claude 等可执行文件）、以及从 GitHub 下载已发布辅助程序。那些仍要在对应系统上看。CI 里没有 Obsidian。
 
-合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。ConPTY 在程序创建前发出的光标查询改由辅助程序本地回答，不作为子进程输出。失败结果仍必须是 `program-rejected` / `none`。随后同一个会话号启动 `cmd.exe` 时，2 秒内仍然没有任何帧：锚点自己已经连着伪控制台，再从它里面创建真正的控制台程序会在 `CreateProcess` 里卡住，挂起线程也避不开。现在锚点以分离进程启动，只继承伪控制台句柄；载荷用 `PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE` 接到同一台伪控制台，标准句柄设成无效值，避免再继承被重定向的输入输出。缺失程序仍在创建失败时确认没有副作用。同一个会话号仍要跑起来并得到退出码 7。这次点测没有因此重跑。
+合入后的 Windows `check:native` 里，缺失程序曾经在约 4 秒后变成 `unconfirmed` / `unknown`。ConPTY 在程序创建前发出的光标查询改由辅助程序本地回答，不作为子进程输出。失败结果仍必须是 `program-rejected` / `none`。随后同一个会话号启动 `cmd.exe` 时，2 秒内仍然没有任何帧：锚点自己已经连着伪控制台，再从它里面创建真正的控制台程序会在 `CreateProcess` 里卡住，挂起线程也避不开。现在锚点以分离进程启动。它继承的标准句柄是 `NUL`，并且和伪控制台句柄一起放进继承列表；只放伪控制台句柄时，父进程仍可继承的标准输入输出会让 `CreateProcess` 直接失败，缺失程序还没机会变成 `program-rejected`。载荷用 `PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE` 接到同一台伪控制台，标准句柄设成无效值，避免再继承被重定向的输入输出。缺失程序仍在创建失败时确认没有副作用。同一个会话号仍要跑起来并得到退出码 7。这次点测没有因此重跑。
 

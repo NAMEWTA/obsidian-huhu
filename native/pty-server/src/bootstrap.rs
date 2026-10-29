@@ -213,6 +213,9 @@ mod platform {
     use windows_sys::Win32::{
         Foundation::*,
         Security::{Authorization::*, Cryptography::*, *},
+        Storage::FileSystem::{
+            CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, FILE_SHARE_WRITE, OPEN_EXISTING,
+        },
         System::{Memory::*, Threading::*},
     };
     const SIZE: usize = 256 * 1024;
@@ -497,6 +500,12 @@ mod platform {
             }
             mapping.word(32).store(body.len() as u32, Ordering::Release);
             let inherited = console.duplicate_inheritable()?;
+            // The helper's own standard handles are inheritable. A handle list that
+            // omits them makes CreateProcess fail before the anchor exists, which
+            // would look like the pseudoconsole itself is unavailable.
+            let nul_in = inheritable_nul()?;
+            let nul_out = inheritable_nul()?;
+            let nul_err = inheritable_nul()?;
             mapping.slot(CONSOLE_SLOT).store(
                 inherited.as_raw_handle() as usize as u64,
                 Ordering::Release,
@@ -524,10 +533,14 @@ mod platform {
                 environment.as_deref(),
                 directory.as_deref(),
                 None,
-                Some(inherited.as_raw_handle() as HANDLE),
+                &[inherited.as_raw_handle() as HANDLE],
+                Some([nul_in.0, nul_out.0, nul_err.0]),
                 true,
             )?;
             drop(inherited);
+            drop(nul_in);
+            drop(nul_out);
+            drop(nul_err);
             Ok((
                 mapping,
                 gate,
@@ -767,21 +780,33 @@ mod platform {
         }
     }
     /// `console` attaches the new process to that pseudoconsole.
-    /// `inherit` is the only handle a detached anchor receives, so it can pass the
-    /// pseudoconsole on without itself becoming a console client.
+    /// `inherit` lists the only extra handles a detached anchor receives, so it can
+    /// pass the pseudoconsole on without itself becoming a console client.
+    /// `stdio`, when set, is included in that same list. Leaving the parent's
+    /// inheritable standard handles out of the list makes CreateProcess fail.
     fn create_process(
         command_line: &mut [u16],
         environment: Option<&[u16]>,
         directory: Option<&[u16]>,
         console: Option<HANDLE>,
-        inherit: Option<HANDLE>,
+        inherit: &[HANDLE],
+        stdio: Option<[HANDLE; 3]>,
         detached: bool,
     ) -> io::Result<Created> {
-        if console.is_none() && inherit.is_none() {
+        if console.is_some() && !inherit.is_empty() {
+            return Err(io::Error::other(
+                "Pseudoconsole spawn cannot also inherit handles",
+            ));
+        }
+        if console.is_none() && inherit.is_empty() {
             return Err(io::Error::other("Process spawn has no console attachment"));
         }
+        let mut listed = Vec::with_capacity(inherit.len() + 3);
+        if let Some(handles) = stdio {
+            listed.extend_from_slice(&handles);
+        }
+        listed.extend_from_slice(inherit);
         let mut attributes = AttributeList::new(1)?;
-        let inherited = [inherit.unwrap_or(ptr::null_mut())];
         if let Some(handle) = console {
             attributes.set(
                 PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
@@ -791,14 +816,19 @@ mod platform {
         } else {
             attributes.set(
                 PROC_THREAD_ATTRIBUTE_HANDLE_LIST,
-                inherited.as_ptr() as *const _,
-                mem::size_of_val(&inherited),
+                listed.as_ptr() as *const _,
+                mem::size_of::<HANDLE>() * listed.len(),
             )?;
         }
         let mut startup: STARTUPINFOEXW = unsafe { mem::zeroed() };
         startup.StartupInfo.cb = mem::size_of::<STARTUPINFOEXW>() as u32;
         startup.lpAttributeList = attributes.ptr as _;
-        if console.is_some() {
+        if let Some(handles) = stdio {
+            startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
+            startup.StartupInfo.hStdInput = handles[0];
+            startup.StartupInfo.hStdOutput = handles[1];
+            startup.StartupInfo.hStdError = handles[2];
+        } else if console.is_some() {
             startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
             startup.StartupInfo.hStdInput = INVALID_HANDLE_VALUE;
             startup.StartupInfo.hStdOutput = INVALID_HANDLE_VALUE;
@@ -815,7 +845,7 @@ mod platform {
                 command_line.as_mut_ptr(),
                 ptr::null(),
                 ptr::null(),
-                if inherit.is_some() { 1 } else { 0 },
+                if console.is_some() { 0 } else { 1 },
                 flags,
                 environment
                     .map(|block| block.as_ptr() as *const _)
@@ -902,6 +932,26 @@ mod platform {
             Some(self.handle.0 as _)
         }
     }
+    fn inheritable_nul() -> io::Result<Handle> {
+        let mut attributes: SECURITY_ATTRIBUTES = unsafe { mem::zeroed() };
+        attributes.nLength = mem::size_of::<SECURITY_ATTRIBUTES>() as u32;
+        attributes.bInheritHandle = 1;
+        let handle = unsafe {
+            CreateFileW(
+                wide("NUL").as_ptr(),
+                GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                &attributes,
+                OPEN_EXISTING,
+                FILE_ATTRIBUTE_NORMAL,
+                ptr::null_mut(),
+            )
+        };
+        if handle.is_null() || handle == INVALID_HANDLE_VALUE {
+            return Err(io::Error::last_os_error());
+        }
+        Ok(Handle(handle))
+    }
     fn process_status(handle: HANDLE) -> io::Result<ExitStatus> {
         let mut code = 0;
         if unsafe { GetExitCodeProcess(handle, &mut code) } == 0 {
@@ -955,6 +1005,7 @@ mod platform {
                 environment.as_deref(),
                 directory.as_deref(),
                 Some(console),
+                &[],
                 None,
                 false,
             )?;

@@ -272,7 +272,8 @@ fn missing_program_has_no_child_evidence_and_does_not_consume_the_session_id() {
     assert_eq!(failure["type"], "spawn-failed");
     assert_eq!(
         failure["failure"],
-        serde_json::json!({ "code": "program-rejected", "effect": "none" })
+        serde_json::json!({ "code": "program-rejected", "effect": "none" }),
+        "spawn-failed body: {failure}"
     );
 
     #[cfg(unix)]

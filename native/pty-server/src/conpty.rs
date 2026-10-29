@@ -3,7 +3,9 @@
 //! The pseudoconsole handle is duplicated into the detached bootstrap process and
 //! attached with PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE. Creating a console program
 //! from a process that is already attached to the same console deadlocks inside
-//! CreateProcess, including when the thread is created suspended.
+//! CreateProcess, including when the thread is created suspended. The bootstrap
+//! process itself is not a console client: its standard handles are NUL, and those
+//! handles travel in the same inherit list as the pseudoconsole.
 use portable_pty::{MasterPty, PtySize};
 use std::{
     fs::File,
