@@ -33,8 +33,8 @@ var errProtocol = errors.New("CREDENTIAL_CHANNEL_REJECTED")
 
 func readRequest(r io.Reader) (request, error) {
 	var header [8]byte
-	if _, err := io.ReadFull(r, header[:4]); err != nil {
-		if err == io.EOF {
+	if err := readFullWaiting(r, header[:4]); err != nil {
+		if errors.Is(err, io.EOF) {
 			return request{}, io.EOF
 		}
 		return request{}, errProtocol
@@ -43,7 +43,7 @@ func readRequest(r io.Reader) (request, error) {
 	if n < 4 || n > MaxBodyBytes {
 		return request{}, errProtocol
 	}
-	if _, err := io.ReadFull(r, header[4:]); err != nil {
+	if err := readFullWaiting(r, header[4:]); err != nil {
 		return request{}, errProtocol
 	}
 	ml := int(binary.BigEndian.Uint16(header[6:]))
@@ -52,7 +52,7 @@ func readRequest(r io.Reader) (request, error) {
 		return request{}, errProtocol
 	}
 	body := make([]byte, n-4)
-	if _, err := io.ReadFull(r, body); err != nil {
+	if err := readFullWaiting(r, body); err != nil {
 		wipe(body)
 		return request{}, errProtocol
 	}

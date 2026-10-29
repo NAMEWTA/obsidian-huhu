@@ -5,12 +5,18 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"io"
 	"sync"
 	"time"
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 )
+
+// errWouldBlock is a transient empty read. A nonblocking fifo can surface it
+// before the parent has written a frame; it is not a rejected channel.
+var errWouldBlock = errors.New("credential channel read would block")
+var errNotFile = errors.New("not a pollable file")
 
 type receipt struct {
 	Version       int    `json:"version"`
@@ -34,10 +40,28 @@ type channel struct {
 }
 
 func (c *channel) close() { c.once.Do(func() { c.cancel(); _ = c.r.Close(); _ = c.w.Close() }) }
+func readFullWaiting(r io.Reader, buf []byte) error {
+	for {
+		_, err := io.ReadFull(r, buf)
+		if err == nil || errors.Is(err, io.EOF) || !wouldBlock(err) {
+			return err
+		}
+		if err = waitReadable(r); err != nil {
+			return err
+		}
+	}
+}
+func waitReadable(r io.Reader) error {
+	if err := waitFile(r); err != errNotFile {
+		return err
+	}
+	time.Sleep(time.Millisecond)
+	return nil
+}
 func (c *channel) read() (request, error) {
 	var first [1]byte
-	if _, err := io.ReadFull(c.r, first[:]); err != nil {
-		if err == io.EOF {
+	if err := readFullWaiting(c.r, first[:]); err != nil {
+		if errors.Is(err, io.EOF) {
 			return request{}, io.EOF
 		}
 		return request{}, errProtocol
@@ -89,7 +113,7 @@ func ServeChannel(parent context.Context, r io.ReadCloser, w io.WriteCloser, pro
 	for {
 		q, err := c.read()
 		if err != nil {
-			if err == io.EOF || ctx.Err() != nil {
+			if errors.Is(err, io.EOF) || ctx.Err() != nil {
 				return nil
 			}
 			return errProtocol

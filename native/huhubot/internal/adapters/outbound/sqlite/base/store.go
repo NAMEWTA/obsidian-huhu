@@ -20,13 +20,17 @@ type Store struct{ db *sql.DB }
 // sqliteDSN builds a file URI SQLite will open on every supported OS.
 // url.URL treats a Windows drive path as a host (file://C:/...), and a raw
 // backslash is percent-encoded, so the driver never reaches the database.
-// An absolute drive path needs the empty-host form file:///C:/...
+// This module's SQLite is the Wasm build, which is not compiled with
+// SQLITE_OS_WIN, so file:///C:/... stays "/C:/..." and misses the drive.
+// The opaque form file:C:/... is the path the VFS opens. Unix stays file:///.
 func sqliteDSN(path string) string {
 	slash := strings.ReplaceAll(path, `\`, "/")
-	if len(slash) >= 2 && slash[0] != '/' && slash[1] == ':' {
-		slash = "/" + slash
+	var u url.URL
+	if len(slash) >= 2 && slash[1] == ':' && ((slash[0] >= 'A' && slash[0] <= 'Z') || (slash[0] >= 'a' && slash[0] <= 'z')) {
+		u = url.URL{Scheme: "file", Opaque: (&url.URL{Path: slash}).EscapedPath()}
+	} else {
+		u = url.URL{Scheme: "file", Path: slash}
 	}
-	u := url.URL{Scheme: "file", Path: slash}
 	q := u.Query()
 	q.Add("_pragma", "busy_timeout(150)")
 	q.Add("_pragma", "foreign_keys(1)")

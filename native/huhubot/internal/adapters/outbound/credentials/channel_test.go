@@ -74,6 +74,41 @@ func helloPrivate(t *testing.T, c net.Conn, profile string) {
 		t.Fatal(r)
 	}
 }
+
+type onceBlock struct {
+	io.ReadCloser
+	n int
+}
+
+func (o *onceBlock) Read(p []byte) (int, error) {
+	if o.n == 0 {
+		o.n++
+		return 0, errWouldBlock
+	}
+	return o.ReadCloser.Read(p)
+}
+
+func TestPrivateChannelWaitsThroughTransientRead(t *testing.T) {
+	f := newCredentialFixture(t)
+	server, client := net.Pipe()
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- ServeChannel(ctx, &onceBlock{ReadCloser: server}, server, f.profileID, f.r) }()
+	t.Cleanup(func() {
+		cancel()
+		_ = client.Close()
+		select {
+		case <-done:
+		case <-time.After(5 * time.Second):
+			t.Error("private channel did not finish cleanup")
+		}
+	})
+	if err := client.SetDeadline(time.Now().Add(6 * time.Second)); err != nil {
+		t.Fatal(err)
+	}
+	helloPrivate(t, client, f.profileID)
+}
+
 func TestPrivateChannelRegistrationStatusDeleteAndEOF(t *testing.T) {
 	f := newCredentialFixture(t)
 	c, done := channelFixture(t, f)

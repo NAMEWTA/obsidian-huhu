@@ -3,6 +3,7 @@
 package credentials
 
 import (
+	"errors"
 	"io"
 	"os"
 	"unsafe"
@@ -70,3 +71,6 @@ func OpenManagedChannel() (io.ReadCloser, io.WriteCloser, error) {
 	}
 	return r, w, nil
 }
+
+func wouldBlock(err error) bool { return errors.Is(err, errWouldBlock) }
+func waitFile(io.Reader) error  { return errNotFile }
