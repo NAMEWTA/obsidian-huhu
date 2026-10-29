@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-26T05:42:33.659874+00:00",
+  "tool": "collaboration.spawn_agent",
+  "returned_task_name": "/root/implement_t08_profile",
+  "requested_model": "gpt-6.1-sol",
+  "requested_reasoning_effort": "xhigh",
+  "fork_turns": "none",
+  "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/003-t08-artifact-profile/TASK.md",
+  "task_sha256": "c96c0c4c2e344cf9f3735175791a88c7596e5bea4bc3b2056f79cb52eea38274",
+  "input": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-profile-input.json",
+  "input_sha256": "a44ab3b8bc2ffc9b2c3b33a197b35b61a827a750b31a19eca76413e38bb4d7f1",
+  "dispatch_validation": {
+    "command": [
+      "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--stage",
+      "dispatch",
+      "--repo",
+      ".",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor",
+      "--session",
+      "20261026T045732Z",
+      "--task",
+      "003-t08-artifact-profile"
+    ],
+    "actual_exit": 0,
+    "errors": [],
+    "warnings": []
+  },
+  "unlocked_paths": [
+    "src/modules/agent/platform/desktop/agents/program-identity.ts",
+    "src/modules/agent/platform/desktop/agents/program-identity.test.ts",
+    "src/modules/agent/platform/desktop/agents/pi-artifact-profiles.json"
+  ],
+  "boundary": "A001 eight paths stopped and accepted as stage candidate. C002 remains sole canonical/shared writer; only actual recipe subtype is accepted. B/native remainder and A launcher/UI still locked."
+}

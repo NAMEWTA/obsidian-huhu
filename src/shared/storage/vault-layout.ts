@@ -62,6 +62,11 @@ export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMA
 /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */
 export const DEFAULT_DASHBOARD_FILE = '.huhu/dashboards/dashboard';
 
+export function agentWorkbenchPath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/terminal-agent/${deviceId}/workbench-v2.json`;
+}
+
 export function isVisibleHuhuPath(path: string): boolean {
 	return path === HUHU_VISIBLE_ROOT || path.startsWith(HUHU_VISIBLE_ROOT + '/');
 }

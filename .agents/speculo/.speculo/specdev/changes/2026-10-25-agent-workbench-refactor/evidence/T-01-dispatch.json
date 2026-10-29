@@ -1,0 +1,57 @@
+{
+  "task": "T-01 implementation",
+  "actual_agent": "/root/implement_t01",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "baaabd4bc676c2cc969c5d29a2dc90bd49172e2d71dc3c7de2c01153271c34c6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "80484ed6c2f8bc2a2d6bd2399c559f67cf5eb3d3290d1bc916cd1f35b5c1b5f1"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "aa1f7390cd66200bb646e148c3c96f1154aeacc29e4843d8c85b79769fb8e5a0"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/01-native-owner.md",
+      "sha256": "aff7d0d08e62b008259c75f9c1a183d209eb26645dc0d44c4d6905490c7d8d73"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "1893986ea54ba5e312a8b7ac1aa6043fd68299e1e65aab3b9cbd0527da6b44ba"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "873ca93dbe45b1e515044fb8eac055380bde343d4cff1e6437d14cc9943f9e69"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ]
+}

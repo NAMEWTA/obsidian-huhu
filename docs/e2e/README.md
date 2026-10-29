@@ -199,3 +199,35 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 控制台：全部模块就绪时和重启后再打开任务时，页面上的 `console.error` / 未处理拒绝钩子都是空的。Obsidian 自己的日志里只有测试配置文件不存在的 ENOENT，没有插件报错。补测这次没有再改源码，也没有新的插件报错需要记。
 
+## terminal 合入
+
+2026-10-29 16:38–16:41（台北）把 `origin/NAMEWTA/terminal` 的 `f3b7730` 合入当时的 `dev` `2670608`。该分支只读：没有向它推送，没有改它，没有删它。`main` 没有动。冲突按两边的意图留下，不改技术栈。
+
+| 冲突 | 处理 |
+|---|---|
+| 浏览器 | 留下 dev 的独立运行时：`BROWSER_WORKSPACE`、`BROWSER_OPEN`、`native/browser-runtime`。terminal 的 `BrowserEngine` / `BROWSER_HOST` / `host.ts` 不再当生产浏览器。新开的智能体标签只保存 Space 和 Page。旧布局里没有浏览器 Space 的网页标签仍保留 `pageId`、`url`、`profileId` 和 `zoom`，升级后还找得到 |
+| 终端工作台 | 留下 terminal 的 Space、PTY、CLI、收件箱、备份和 `.huhu/terminal-agent/.../workbench-v2.json`。`native/pty-server` 自合并基线后只在该分支上有改动，整份进入 dev |
+| huhubot | 不在冲突文件里。dev 上已有的 Windows `file:C:/` 数据库地址、预检空普查确认、CLI 通道 EAGAIN 修复仍在 |
+| 工作台功能 | 留下 dev 的 task、huhubot、versioning、revision-review。去掉重复的 `browser` 键。不恢复旧的 `sync` 功能名 |
+| 依赖与忽略 | `@xterm/xterm` 保持 `^6.0.0`，保留 `ajv` 与 `ajv-formats`。`.gitignore` 同时忽略浏览器运行时构建产物和 terminal 的证据目录 |
+| 测试与文案 | 词典、导航断言、自动化 `spaceId` 取并集。关闭终端视图不确认、不拆运行时；停止仍走 `end()`。Cookie 读取熬过终端清理的断言改挂到 `cookie-survives-cleanup.test.ts`，不断言变弱 |
+| 产物 | `main.js`、`styles.css` 按合入后的源码重写。main.js 实测 8251339 字节，上限 8058 KiB；agent 激活 1384588 字节，上限 1353 KiB。styles.css 1436333 字节，仍低于 1408 KiB。第三方声明按 pty-server 与 browser-runtime 两份依赖重写 |
+
+更细的记录在 specdev 的 LOG-078。
+
+点测用一次性库，脚本是 `scripts/obsidian-acceptance/terminal-merge.mjs`。Obsidian 1.14.5，可执行文件 `/tmp/obsidian-root/opt/Obsidian/obsidian`。辅助程序是这次源码 `cargo build --release --locked` 得到的 `/tmp/pty-release/release/huhu-pty`，通过 `HUHU_PTY_BINARY` 交给插件，没有下载已发布的附件。界面语言是中文。同时打开了首页、任务、智能体、浏览器、档案、自动化、通知、版本管理、保险箱和 Bot。机器是 Linux x64。
+
+| 步骤 | 结果 | 截图 |
+|---|---|---|
+| 打开终端 | 通过。图标轨进入 AI Agent，空状态是「尚未选择空间」 | [terminal-merge-empty.png](terminal-merge-empty.png) |
+| 新建空间 | 通过。点「新建空间」，名称「合并验收」，保存后可选「新建终端」 | [terminal-merge-space.png](terminal-merge-space.png) |
+| 输入并看到输出 | 通过。点「新建终端」得到 bash。在终端里输入 `echo HUHU_TERMINAL_MERGE_OK` 并回车，下一行是 `HUHU_TERMINAL_MERGE_OK` | [terminal-merge-output.png](terminal-merge-output.png) |
+| 第二个会话 | 通过。点「新建标签」再点「新建终端」。两个 bash 标签、侧栏两张会话卡。第二个输入 `echo HUHU_TERMINAL_SECOND`，输出是 `HUHU_TERMINAL_SECOND` | [terminal-merge-two.png](terminal-merge-two.png) |
+| 关闭再打开 | 通过。点标签上的「关闭标签」，画面只剩一个终端。点「查找」，从最近关闭里打开刚才那一个。两个输出都还在 | [terminal-merge-closed.png](terminal-merge-closed.png)、[terminal-merge-reopened.png](terminal-merge-reopened.png) |
+| 和其他模块并存 | 通过。点「任务待办」，再点「首页」，再回到 AI Agent。两个会话的输出都还在 | [terminal-merge-task.png](terminal-merge-task.png)、[terminal-merge-coexist.png](terminal-merge-coexist.png) |
+| 控制台 | 通过。页面上的 `console.error` 和未处理拒绝都是空的。Obsidian 日志只有测试配置文件不存在的 ENOENT | 无 |
+
+新建标签的菜单由指针按下打开，因为这个按钮只在 `pointerdown` 时切换。其余点击是鼠标按下和松开。命令通过聚焦终端输入区后插入文字并按回车。
+
+这台机器不能验证的项：Windows ConPTY、macOS 伪终端、系统输入法在终端里的组字、已安装的 CLI 智能体（这次没有配置 Codex / Claude 等可执行文件）、以及从 GitHub 下载已发布辅助程序。那些仍要在对应系统上看。CI 里没有 Obsidian。
+

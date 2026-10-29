@@ -162,6 +162,7 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			Object.assign(homeServices, owned);
 			homeServices.acquireDispatch = () => Promise.resolve(context.services.peek(AGENT_DISPATCH));
 			homeServices.agents = () => context.services.peek(AGENT_DIRECTORY)?.list() ?? [];
+			homeServices.spaces = () => context.services.peek(AGENT_DIRECTORY)?.spaces() ?? [];
 			homeServices.sessions = () => context.services.peek(AGENT_SESSIONS);
 			homeServices.skills = () => context.services.peek(AGENT_SKILLS);
 			homeServices.skillCatalog = () => context.services.peek(AGENT_SKILL_CATALOG);

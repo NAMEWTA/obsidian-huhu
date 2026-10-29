@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-26T05:45:35.061769+00:00",
+  "B15_baseline": [
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "96cd8255ce6dcfbb046750d41a9746a646559d72c4737c27a625a53ce9530b36"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "f1c4f034bf567b936c1642e3fb4b7054e50f81491c413a2f65ced85a552eb107"
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "sha256": "e0f792e962d4ae4c61eb9f1920af354c5779477ace3c14972cf07e1d0323adc5"
+    },
+    {
+      "path": "src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "e4567c686d0b1ed8bc118c4c04454bfa6f2a0d2b56251f981b451bb3e77feb59"
+    },
+    {
+      "path": "src/host/desktop/native/helper-control.test.ts",
+      "sha256": "729defa1b85eefc1dfa0b143c3d7b9ee020e2cd62fd33cbd2aa39d17c8cdad01"
+    },
+    {
+      "path": "src/host/desktop/native/host-control.test.ts",
+      "sha256": "1b9000aa60bb19646524c6040c0a6e619417d2a5120703476f717e5552ff003d"
+    },
+    {
+      "path": "src/host/desktop/native/host-control.integration.test.ts",
+      "sha256": "0b934ce860fe0eba90ce606dfe404a9cfd99ede7e42f73d8f7faf7d5313849cc"
+    },
+    {
+      "path": "src/host/desktop/native/helper-editor.test.ts",
+      "sha256": null
+    },
+    {
+      "path": "src/host/desktop/native/host-editor.integration.test.ts",
+      "sha256": null
+    },
+    {
+      "path": "src/shared/native/lazy-host.test.ts",
+      "sha256": "d40a9be14c351d4ea19cedb8fa1926c3a82cb2eade1d32f7638962d36a01f990"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "sha256": "ea204539ccd9f450c596e04039ee379e79e58a979aacd754534610ce91d08b8b"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+      "sha256": "54d1e3b76fb59938ffa6bff5f5b6855c72f83bf4ac55f76cefa8a3121b44e18e"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "sha256": "f1687e9992843acbb2ed28e6c20634ea51e0d60a68a5a1a636f1a60591cfb804"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+      "sha256": "bdfa4a53f210d391d2dc7cbd57c55e43f88c6b13ff9312083401377aa4c3b849"
+    },
+    {
+      "path": "scripts/verify-pi-editor.mjs",
+      "sha256": null
+    }
+  ],
+  "producer_report": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-b-producer-proof-report.md",
+    "sha256": "737b5487f8132a2ce11d31a59d0aa9421287130e824bb6dd4ea58079ae7d7f9e"
+  },
+  "scope": "Read-only official full CLI entry + controlled loopback provider fixture; no T08 product source writes and no claim of new editor channel/real provider."
+}

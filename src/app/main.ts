@@ -1,8 +1,19 @@
+import type { NativeHostAccess } from '../shared/native/host';
+import type { NativeHostOwner } from '../shared/native/lazy-host';
 import { Component, Notice, Platform, Plugin, type Command } from 'obsidian';
 import { productGates, visibleProducts, type SettingsProduct } from './settings/nav';
 import { composeWorkbench } from './workbench/compose-workbench';
 import type { WorkbenchTarget } from './contracts/workbench';
-import type { CommandAccess, EditorAccess, ModuleId, ModuleInstance, ModuleManifest, ModuleState, ServiceAccess, ShellAccess } from './contracts/module';
+import type {
+	CommandAccess,
+	EditorAccess,
+	ModuleId,
+	ModuleInstance,
+	ModuleManifest,
+	ModuleState,
+	ServiceAccess,
+	ShellAccess,
+} from './contracts/module';
 import type { Extension } from '@codemirror/state';
 import type { MarkdownPostProcessor } from 'obsidian';
 import { switchModule } from './settings/module-switch';
@@ -30,6 +41,8 @@ import { BROWSER_OPEN, type BrowserOpenRequest } from '../modules/browser/api';
 import { desktopMachineIdentity, initializeDevice, vaultIdentity } from '../host/obsidian/storage/device-id';
 import type { ContentFiles } from '../host/obsidian/storage/content-files';
 import { EditorContextService } from './editor-panel/context';
+import type { SharedWorkspaceOwner } from './contracts/shared-workspace';
+import type { RecoveryHost } from './recovery';
 
 /**
  * Composition root. Module code is created by the module registry from `MANIFESTS`; this class keeps the
@@ -42,11 +55,41 @@ export default class DashboardPlugin extends Plugin {
 		return registerLocalizedCommand(this, command, (native) => super.addCommand(native));
 	}
 
+	private nativeHost?: Promise<NativeHostOwner>;
+	private nativeClosed = false;
+	private readonly native: NativeHostAccess = {
+		acquire: async (capability, events, signal) => {
+			signal?.throwIfAborted();
+			if (this.nativeClosed) throw new Error('The native host is closed');
+			this.nativeHost ??= import('./native').then(({ createAppNativeHost }) =>
+				createAppNativeHost(this.app, this.manifest, this.runtime.store),
+			);
+			const host = await this.nativeHost;
+			if (this.nativeClosed) throw new Error('The native host is closed');
+			return host.acquire(capability, events, signal);
+		},
+	};
 	private runtime!: SettingsRuntime;
+	/** Restart-safe replacement protocol; modules (T-15 agent, T-16 backup) register their file owners here. */
+	recovery!: RecoveryHost;
 	private registry!: ModuleRegistry;
 	private workbench?: ReturnType<typeof composeWorkbench>;
 	private settingsTab!: HuhuSettingTab;
 	private readonly settingsWrites = settingsWriter();
+	private sharedWorkspace?: SharedWorkspaceOwner;
+	private sharedWorkspaceLoading?: Promise<SharedWorkspaceOwner>;
+	private ensureSharedWorkspace = async (): Promise<SharedWorkspaceOwner> => {
+		if (!Platform.isDesktopApp) throw new Error('Shared workspace requires desktop');
+		this.sharedWorkspaceLoading ??= import('../modules/agent/module')
+			.then(({ createSharedWorkspaceOwner }) =>
+				createSharedWorkspaceOwner(this.app, (error) => console.error('[HUHU workspace]', error), this.recovery),
+			)
+			.then((owner) => {
+				this.sharedWorkspace = owner;
+				return owner;
+			});
+		return this.sharedWorkspaceLoading;
+	};
 	/** Editor extensions and reading post-processors added by active modules (see `EditorAccess`). */
 	private readonly editorExtensions: Extension[] = [];
 	private readonly postProcessors = new Set<MarkdownPostProcessor>();
@@ -59,21 +102,32 @@ export default class DashboardPlugin extends Plugin {
 		await initializeDevice(this.app, {
 			machineIdentity: desktopMachineIdentity,
 			label: t('storage.defaultDevice'),
-			chooseDevice: async devices => (await import('./device-choice')).chooseVaultDevice(this.app, devices),
+			chooseDevice: async (devices) => (await import('./device-choice')).chooseVaultDevice(this.app, devices),
 		});
-		try { this.managedContent = (await import('../host/obsidian/storage/content-files')).contentFiles(this.app); await this.managedContent.refresh(); }
-		catch (error) { new Notice(t('content.indexFailed'), 0); throw error; }
+		try {
+			this.managedContent = (await import('../host/obsidian/storage/content-files')).contentFiles(this.app);
+			await this.managedContent.refresh();
+		} catch (error) {
+			new Notice(t('content.indexFailed'), 0);
+			throw error;
+		}
+		this.recovery = await (await import('./recovery-start')).startRecovery(this.app);
 		await this.loadSettings();
+		await (await import('./recovery-start')).afterSettings(this.app, this.recovery, this.runtime.store);
 		new ThemeRuntime(this.runtime.theme).attach(this);
 		const adapter = this.app.vault.adapter as { getBasePath?: () => string };
 		setDiagnosticRoots({ vault: typeof adapter.getBasePath === 'function' ? adapter.getBasePath() : undefined });
-		this.register(onLanguageChanged(() => {
-			this.rewriteDeferredLeafTitles();
-			const documents = new Set<Document>([document]);
-			this.app.workspace.iterateAllLeaves((leaf) => { documents.add(leaf.view.containerEl.ownerDocument); });
-			if (this.settingsTab?.containerEl) documents.add(this.settingsTab.containerEl.ownerDocument);
-			for (const owner of documents) refreshLocalizedDom(owner.body);
-		}));
+		this.register(
+			onLanguageChanged(() => {
+				this.rewriteDeferredLeafTitles();
+				const documents = new Set<Document>([document]);
+				this.app.workspace.iterateAllLeaves((leaf) => {
+					documents.add(leaf.view.containerEl.ownerDocument);
+				});
+				if (this.settingsTab?.containerEl) documents.add(this.settingsTab.containerEl.ownerDocument);
+				for (const owner of documents) refreshLocalizedDom(owner.body);
+			}),
+		);
 		// registerView can restore leaves after onLayoutReady, especially for hosts that load asynchronously.
 		this.registerEvent(this.app.workspace.on('layout-change', () => this.rewriteDeferredLeafTitles()));
 		this.registerView(COMMENTS_VIEW_TYPE, (leaf) => new CommentsLeaf(leaf, this));
@@ -87,14 +141,21 @@ export default class DashboardPlugin extends Plugin {
 				const shell: ShellAccess = {
 					open: (target, ownerWindow, state) => this.openWorkbench(target, ownerWindow, state),
 					refresh: () => this.workbench?.refresh(),
-					openFocus: (target, state, ownerWindow) => this.workbench?.openFocus(target, state, ownerWindow) ?? Promise.reject(new Error(t('workbench.notReady'))),
+					openFocus: (target, state, ownerWindow) =>
+						this.workbench?.openFocus(target, state, ownerWindow) ??
+						Promise.reject(new Error(t('workbench.notReady'))),
 					savedPages: (feature) => this.workbench?.savedPages(feature) ?? [],
-					activateResource: (feature, id) => this.workbench?.activateResource(feature, id) ?? Promise.resolve(false),
+					activateResource: (feature, id) =>
+						this.workbench?.activateResource(feature, id) ?? Promise.resolve(false),
 					closeResource: (feature, id) => this.workbench?.closeResource(feature, id) ?? Promise.resolve(),
 				};
 				const commands: CommandAccess = {
 					add: (command) => {
-						const registered = registerLocalizedCommand({ manifest: this.manifest, register: (cleanup) => lifetime.register(cleanup) }, command, (native) => super.addCommand(native));
+						const registered = registerLocalizedCommand(
+							{ manifest: this.manifest, register: (cleanup) => lifetime.register(cleanup) },
+							command,
+							(native) => super.addCommand(native),
+						);
 						lifetime.register(() => this.removeCommand(command.id));
 						return registered;
 					},
@@ -114,12 +175,34 @@ export default class DashboardPlugin extends Plugin {
 						lifetime.register(() => this.postProcessors.delete(processor));
 					},
 				};
-				return { id: manifest.id, app: this.app, manifest: this.manifest, env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone }, lifetime, settings: this.runtime.store, services, contributions, shell, commands, editor, documents: this.documents };
+				return {
+					id: manifest.id,
+					app: this.app,
+					manifest: this.manifest,
+					env: { desktop: Platform.isDesktopApp, mobile: Platform.isMobile, phone: Platform.isPhone },
+					lifetime,
+					settings: this.runtime.store,
+					services,
+					sharedWorkspace: this.sharedWorkspace,
+					ensureSharedWorkspace: this.ensureSharedWorkspace,
+					recovery: this.recovery,
+					native: this.native,
+					contributions,
+					shell,
+					commands,
+					editor,
+					documents: this.documents,
+				};
 			},
 			releaseContext: (context) => this.removeChild(context.lifetime),
 			report: (id, phase, error) => {
 				console.error(`[HUHU ${id}] ${phase} failed`, error);
-				if (phase === 'activate') new Notice(t('modules.failed', { module: t(MANIFESTS.find((manifest) => manifest.id === id)?.titleKey ?? id) }));
+				if (phase === 'activate')
+					new Notice(
+						t('modules.failed', {
+							module: t(MANIFESTS.find((manifest) => manifest.id === id)?.titleKey ?? id),
+						}),
+					);
 			},
 		});
 		// One mutable extension array and one post-processor for all modules, so turning a module off removes its editor features.
@@ -135,12 +218,30 @@ export default class DashboardPlugin extends Plugin {
 		this.addSettingTab(this.settingsTab);
 		this.workbench = composeWorkbench(this);
 		const files = this.managedContent;
-		this.register(files.bindOpen((path, ownerWindow, focusId) => this.openWorkbench({ feature: 'content', resourceId: path, focusId }, ownerWindow)));
-		this.register(files.watch(window, error => { console.error('[HUHU content]', error); new Notice(t('content.indexFailed')); }));
+		this.register(
+			files.bindOpen((path, ownerWindow, focusId) =>
+				this.openWorkbench({ feature: 'content', resourceId: path, focusId }, ownerWindow),
+			),
+		);
+		this.register(
+			files.watch(window, (error) => {
+				console.error('[HUHU content]', error);
+				new Notice(t('content.indexFailed'));
+			}),
+		);
 		this.register(files.subscribe(() => this.workbench?.refresh()));
 		const links = await import('../host/obsidian/storage/content-links');
-		this.registerMarkdownPostProcessor((element, context) => links.renderContentLinks(this.app, element, context.sourcePath));
-		this.registerDomEvent(this.app.workspace.containerEl, 'click', event => { links.handleContentLink(this.app, event); }, true);
+		this.registerMarkdownPostProcessor((element, context) =>
+			links.renderContentLinks(this.app, element, context.sourcePath),
+		);
+		this.registerDomEvent(
+			this.app.workspace.containerEl,
+			'click',
+			(event) => {
+				links.handleContentLink(this.app, event);
+			},
+			true,
+		);
 		this.register(this.runtime.store.onPersisted(() => this.workbench?.refresh()));
 		this.app.workspace.onLayoutReady(() => {
 			this.rewriteDeferredLeafTitles();
@@ -162,6 +263,13 @@ export default class DashboardPlugin extends Plugin {
 	onunload(): void {
 		this.workbench?.dispose();
 		this.registry?.disposeNow();
+		void this.sharedWorkspaceLoading
+			?.then((owner) => owner.dispose())
+			.catch((error) => console.error('[HUHU workspace]', error));
+		this.nativeClosed = true;
+		void this.nativeHost
+			?.then((host) => host.dispose())
+			.catch((error: unknown) => console.error('[HUHU native]', error));
 		void this.runtime?.store.dispose().catch((error: unknown) => console.error('[HUHU settings]', error));
 	}
 
@@ -177,16 +285,27 @@ export default class DashboardPlugin extends Plugin {
 		return this.runtime.ns.app;
 	}
 	/** Current vault and device identifiers, used by diagnostics and acceptance probes. */
-	get storageIdentity() { return vaultIdentity(this.app); }
+	get storageIdentity() {
+		return vaultIdentity(this.app);
+	}
 
 	/** A settings namespace bound by the app or an active module (diagnostics and acceptance checks). */
 	settingsNamespace(name: string) {
 		return this.runtime.store.handleOf<Record<string, unknown>>(name);
 	}
 
-	readonly changeLanguage = languageUpdater(async (language) => {
-		await this.runtime.ns.app.update((draft) => { draft.language = language; }, { persist: 'immediate' });
-	}, setLanguage, this.settingsWrites);
+	readonly changeLanguage = languageUpdater(
+		async (language) => {
+			await this.runtime.ns.app.update(
+				(draft) => {
+					draft.language = language;
+				},
+				{ persist: 'immediate' },
+			);
+		},
+		setLanguage,
+		this.settingsWrites,
+	);
 
 	// ---- Modules ----------------------------------------------------------------------------------------
 
@@ -255,8 +374,12 @@ export default class DashboardPlugin extends Plugin {
 
 	/** Open a product's settings in the workbench settings page. */
 	openSettings(product: SettingsProduct = 'home'): void {
-		const available = visibleProducts(productGates((id) => this.moduleEnabled(id))).includes(product) ? product : 'home';
-		void this.openWorkbenchSettings(available === 'home' ? 'general' : available).catch((error: unknown) => console.error('[HUHU settings]', error));
+		const available = visibleProducts(productGates((id) => this.moduleEnabled(id))).includes(product)
+			? product
+			: 'home';
+		void this.openWorkbenchSettings(available === 'home' ? 'general' : available).catch((error: unknown) =>
+			console.error('[HUHU settings]', error),
+		);
 	}
 
 	/** Open HUHU settings inside the workbench (General, or a product's page). */
@@ -303,7 +426,9 @@ export default class DashboardPlugin extends Plugin {
 	/** Switch to the next global theme preset. */
 	cycleThemePreset(): Promise<void> {
 		return this.runtime.theme.update((draft) => {
-			draft.preset = CYCLE_THEME_PRESETS[(CYCLE_THEME_PRESETS.indexOf(draft.preset) + 1) % CYCLE_THEME_PRESETS.length] ?? 'default';
+			draft.preset =
+				CYCLE_THEME_PRESETS[(CYCLE_THEME_PRESETS.indexOf(draft.preset) + 1) % CYCLE_THEME_PRESETS.length] ??
+				'default';
 		});
 	}
 
@@ -318,9 +443,15 @@ export default class DashboardPlugin extends Plugin {
 		};
 		for (const [type, pairs] of Object.entries(byType)) {
 			const title = pairs[0]![language];
-			retitleDeferredLeaves(this.app.workspace.getLeavesOfType(type), pairs, language, (leaf) => {
-				refreshLeafTitle(this.app, leaf);
-			}, { type, title });
+			retitleDeferredLeaves(
+				this.app.workspace.getLeavesOfType(type),
+				pairs,
+				language,
+				(leaf) => {
+					refreshLeafTitle(this.app, leaf);
+				},
+				{ type, title },
+			);
 		}
 	}
 
@@ -333,6 +464,8 @@ export default class DashboardPlugin extends Plugin {
 
 	private async markIntroSeen(): Promise<void> {
 		if (this.runtime.ns.app.get().introSeen) return;
-		await this.runtime.ns.app.update((draft) => { draft.introSeen = true; });
+		await this.runtime.ns.app.update((draft) => {
+			draft.introSeen = true;
+		});
 	}
 }

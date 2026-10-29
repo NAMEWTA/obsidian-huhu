@@ -1,0 +1,79 @@
+{
+  "kind": "frozen intermediate Linux combination candidate; not final native acceptance",
+  "observed_at": "2026-10-25T10:15:53.187823+00:00",
+  "binary": {
+    "path": "/tmp/huhu-t04-c-linux-candidate-20261025T101553Z",
+    "bytes": 22911832,
+    "sha256": "b3a2049edabc03ddfabb8a111aae4686b3eb21cce18a15ccd7625919b4f09724"
+  },
+  "source": [
+    {
+      "path": "native/pty-server/src/main.rs",
+      "bytes": 6624,
+      "sha256": "3f16b75ac3d7c8c929f757191f3b328571f79e9d1e1a84ff0f863f68d4494c95"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "bytes": 28906,
+      "sha256": "f690fe344708a4225244c8f047b186b881a5371f7a86ec2c394bb3cc5c12db0b"
+    },
+    {
+      "path": "native/pty-server/src/job.rs",
+      "bytes": 13805,
+      "sha256": "0fd724da18a12658c99a734c64f3d84a46e04ba08e6c7244d64ef24c32146d23"
+    },
+    {
+      "path": "native/pty-server/src/bootstrap.rs",
+      "bytes": 15663,
+      "sha256": "e5bc10cb77a95b05e0876ba281e48f40fbcec3e0e35b27198027b1013bc789b2"
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "bytes": 876,
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c"
+    },
+    {
+      "path": "native/pty-server/tests/session_tree.rs",
+      "bytes": 9804,
+      "sha256": "413fff48457730d963aa5ea3ff65c3844872828170590f76b315c801ce838255"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--manifest-path",
+        "native/pty-server/Cargo.toml",
+        "job::unix::tests",
+        "--",
+        "--nocapture"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T10:15:02.318699+00:00",
+      "finished_at": "2026-10-25T10:15:03.540507+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-c-known-observation-green.log",
+      "output_sha256": "3f6e91f78f24f8f6c7f31dad776d7dec3fd9b5670f7282c6f7ab603610d07b39"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--manifest-path",
+        "native/pty-server/Cargo.toml",
+        "--test",
+        "session_tree",
+        "owned_tree_stop",
+        "--",
+        "--nocapture"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T10:15:08.800996+00:00",
+      "finished_at": "2026-10-25T10:15:13.329368+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-c-linux-candidate-tree.log",
+      "output_sha256": "88147d6dae1a6ac41feadaded79ed97e17ed52330f61af70795780c3aa06925a"
+    }
+  ]
+}

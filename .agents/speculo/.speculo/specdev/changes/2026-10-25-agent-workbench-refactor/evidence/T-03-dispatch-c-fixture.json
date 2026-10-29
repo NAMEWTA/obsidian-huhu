@@ -1,0 +1,66 @@
+{
+  "task": "T-03 C precise lazy activation fixture repair",
+  "actual_agent": "/root/implement_t01",
+  "dispatch_tool": "collaboration.followup_task",
+  "goal_revision": "GP-013",
+  "map_revision": 14,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "write_allocation": [
+    "src/modules/agent/services/controller-native.test.ts"
+  ],
+  "source_before_sha256": "a2a903d106a039608755faa52ec0bfdbe600001997a1a311b7ec71ab12d98855",
+  "source_before_provenance": "T-03-prior-delivery.json and A stopped manifest protected_files; Root read actual file and failing output before dispatch",
+  "frozen_inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "5352dd1f725d047cff4647596f5fffb01536ab2f3ce551d84546e05e82e9c2bb"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "87f0dc5f5ce2121cf5dfc54423f3e5355569864f558e21cc920b5cf9980b6702"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "0bb55ce0ea9b47bc8356cc819275e9de7810738aeda1892d66d013ada99ad6da"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/LOG.md",
+      "sha256": "dde3b4c2c7c462e256b521837adbc447e77c175ddd12147b2176d961e83cfa87"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-prior-delivery.json",
+      "sha256": "b57a08d1e94984ece70f83e94b467e20a3c73f65c9dd6631683dfb58d739122c"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04"
+    },
+    {
+      "path": "/tmp/huhu-t03-root-integration.log",
+      "sha256": "28a465f18ad01f7b0edba8a21164786ca2ea0d9bef25f4e8a489bfb52f639875"
+    }
+  ],
+  "production_writers": "A/B stopped; C original native integration source remains stopped",
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal records"
+  ],
+  "failure": "2 old fixtures lack valid vault path; preserve dormant discovery/account/native zero-effect assertions and real Space/Controller assembly",
+  "validation": "goal-plan 0 errors,5 known serialized-frontier warnings; /tmp/huhu-t03-scope-revision.json",
+  "forbidden": "No production/schema/dependency/native/Git/permanent knowledge/other ticket writes"
+}

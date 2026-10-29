@@ -1,0 +1,127 @@
+{
+  "observed_at": "2026-10-25T11:11:37.801182+00:00",
+  "verified_by": "codex:/root",
+  "reviewer": "codex:/root/review_t04",
+  "actual_dispatch": "collaboration.spawn_agent; T-04-review-dispatch-round1.json",
+  "actual_return": "Reviewer message and final return received; standards/specification request-changes; final SHA verified",
+  "report_sha256": "2fd68b12ef9d8954fdfe60425235ea60502b41caca66aa8d60cb09f76e2d6772",
+  "input_sha256": "6b88551127001cc9d60ee42794f8d450adeaa2d6cbe900de6daed1d36d129516",
+  "scope_files": 57,
+  "sources": 30,
+  "findings": [
+    "F1 High: live captured descendants ignored by business stop/force",
+    "F2 Medium: unbounded persistence observation blocks archive/shutdown",
+    "F3 Medium: quiesce does not fence late legacy spawn/adopt"
+  ],
+  "root_read": "Full final report (body + appended delivery audit), four probe source/config/logs, receipt manifest, special/source restoration/reuse audits; no production probe rerun",
+  "limitations": "F1/F2 original numeric tool chunk fields unavailable after reviewer compaction; child126 comes from actual reviewer tool observation and preserved failure logs, not a new Root execution. No fabricated timing.",
+  "originals": [
+    {
+      "source": "/tmp/huhu-t04-review-probe-records.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-probe-records.json",
+      "sha256": "d76145cf45d347f3df0c957c0c8b73914f0f0b3d9f7656d0effd1adfb7276ccb"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-probe.test.ts",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-probe.test.ts",
+      "sha256": "40216cda2d5af72861354c5f5e918208bcd08c8cc0c6bcb9c2710fc3ef1ebf6d"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-vitest.config.mjs",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-vitest.config.mjs",
+      "sha256": "ca1804c01f17082a33ac9d8f276bad30b8d1a40eae3e16ad158a2ac266d6c4d7"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-probe.log",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-probe.log",
+      "sha256": "28d5a61d4a376ba6727d4cb747d47e2d43221a24bf22e8714decfeed37d78342"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-bounds.test.ts",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-bounds.test.ts",
+      "sha256": "680c78fff581391ce51ba32b25154c8ab2f1e7f40c5be2e8f925d1e4a42a161d"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-bounds.config.mjs",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-bounds.config.mjs",
+      "sha256": "6997955f9230f66f19b6c34e5c77aa22894557cf6df2c99319a59cc27dfb11d7"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-bounds.log",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-bounds.log",
+      "sha256": "29423ec42d827834e8b481108f661c528a0177f2a34e3de7d48caa0e3e849f00"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce.test.ts",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce.test.ts",
+      "sha256": "ba23e4c6dfea2a442502d7715a404aec227e64305df58a7928d96104c0eb3df9"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce.config.mjs",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce.config.mjs",
+      "sha256": "a3e911a6d6c04de7b50052303b3f38f8c805043fea66fa4b702801d242dad5e9"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce.log",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce.log",
+      "sha256": "9d96ba54e3344c1404eeddb8eb2d60b8ee4769e06205881789a088a4ace022a8"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce-legacy.test.ts",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce-legacy.test.ts",
+      "sha256": "3edfed96ec3dcb66bdaca18ad5be8f35694162198385a246311194b0bc2b8f1b"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce-legacy.config.mjs",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce-legacy.config.mjs",
+      "sha256": "73a4056afdf2b23c34f23eb070d2ec74ce9cf5b777ba98f8118f4b7955ac2a9f"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-quiesce-legacy.log",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-quiesce-legacy.log",
+      "sha256": "aff5510c83563cf3a1dc79dde585137f001d480d7ccf2b02e201f9c83b1239ec"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-freeze-start.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-freeze-start.json",
+      "sha256": "ee097893d27e5125ff1d144fa07fdae6892722b6142c56ca1c5230bbaf54d009"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-freeze-end.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-freeze-end.json",
+      "sha256": "5fe6d5850b08219f3663f45ccbd76f9ebca9069b0aecbc4da613d7cb2ff3d8da"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-freeze.mjs",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-freeze.mjs",
+      "sha256": "dfaf587a56cf4296e7c383c4142fdc60aeb3ea264460c3fef66c30d91378e5c8"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-increment.diff",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-increment.diff",
+      "sha256": "2908dce8d26b14cdfb575c1be971d1a337415c955edb1eac25e96f5ac80236d0"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-special-audit.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-special-audit.json",
+      "sha256": "18ecc41ff451a23e12b807a9bd874780a27e2c44650b8c7c324b74b40d6cbc56"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-reused-evidence-audit.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-reused-evidence-audit.json",
+      "sha256": "f9a041b7553a7f9c55a1695d66fb42df59f68f6df6ba93218eddd7f92e58e9e2"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-freeze-delivery.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-freeze-delivery.json",
+      "sha256": "8fd231d01ae39571567fd2c0ed45d873e7d1d066b5fdbdff1f5b2cfa45cd5681"
+    },
+    {
+      "source": "/tmp/huhu-t04-review-restored-source-audit.json",
+      "saved": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-logs/huhu-t04-review-restored-source-audit.json",
+      "sha256": "dfbeb4392436091bd7c001d610f472ae2d0ed3d128cc5bb1ebcdd9d38828fa5c"
+    }
+  ],
+  "round1_snapshot": "/tmp/huhu-t04-round1-source-snapshot",
+  "product_writers": "STOPPED; A and C read-only proposals only; no repair unlocked"
+}

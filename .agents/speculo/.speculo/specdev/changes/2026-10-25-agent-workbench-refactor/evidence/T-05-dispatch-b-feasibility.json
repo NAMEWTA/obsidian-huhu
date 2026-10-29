@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-10-25T12:24:55.490045+00:00",
+  "task": "T05 readonly executable view feasibility while actual screen API pending",
+  "actual_agent": "/root/prepare_t05_screen",
+  "tool": "collaboration.followup_task",
+  "actual_result": "returned successfully with empty result body",
+  "scope": "Read repository/dependencies only; temporary executable fixtures/reports under /tmp. No production B writing authorized.",
+  "inputs_observed_after_dispatch": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-view-adapter-contract-proposal.md",
+      "sha256": "15dc59e19e3aaaed96226c1d499a04238cc0df7e58375600af38d5ca05275438"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-view-adapter-source-observation.json",
+      "sha256": "fdf32bf5d68601b5ca947c1521c02be7c5e74d1579f74ec5222c788f531f9fb5"
+    },
+    {
+      "path": "package.json",
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "004818ad2aaab47043b39d4e545dd77f8be62fd1544f2eecfbaa5285c088285a"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/package.json",
+      "sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f"
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/package.json",
+      "sha256": "9724dbe0ba2a52235ed3959e3b88ae32819f163c15af34680160e2c15f43e7d9"
+    }
+  ],
+  "checks": [
+    "Real Chrome dual-buffer OSC8 registration/owned marker disposal",
+    "Actual Search cache invalidation without fake LF",
+    "2026 repeated same-token updates do not reset browser timeout",
+    "Mouse unchanged does not clear selection; cursor/scroll IME textarea event bridge"
+  ],
+  "return": "/tmp/huhu-t05-view-feasibility.md and actual source/check/log manifest; distinguish feasibility from production acceptance"
+}

@@ -1,0 +1,52 @@
+{
+  "project": "wezterm/wezterm",
+  "activity": {
+    "commit": "c8c592d19298cb68b8370f4e151f1591333b7f4a",
+    "commitDate": "2026-09-12T08:55:12Z",
+    "primaryURL": "https://github.com/wezterm/wezterm/commit/c8c592d19298cb68b8370f4e151f1591333b7f4a"
+  },
+  "license": "MIT",
+  "sources": [
+    {
+      "primaryURL": "https://raw.githubusercontent.com/wezterm/wezterm/c8c592d19298cb68b8370f4e151f1591333b7f4a/pty/src/lib.rs",
+      "local": "/tmp/huhu-t03-repair-upstream-0.txt",
+      "sha256": "75f5c92e7236450e6faa4ae6df70ae8cdcce03710e45c454b311f53581f7e42b"
+    },
+    {
+      "primaryURL": "https://raw.githubusercontent.com/wezterm/wezterm/c8c592d19298cb68b8370f4e151f1591333b7f4a/pty/src/unix.rs",
+      "local": "/tmp/huhu-t03-repair-upstream-1.txt",
+      "sha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3"
+    },
+    {
+      "primaryURL": "https://raw.githubusercontent.com/wezterm/wezterm/c8c592d19298cb68b8370f4e151f1591333b7f4a/pty/src/win/conpty.rs",
+      "local": "/tmp/huhu-t03-repair-upstream-2.txt",
+      "sha256": "f7e9e10707da22f2e7e00acd690eabd9dcb8e03f6844785a0bedb7c3f749d731"
+    },
+    {
+      "primaryURL": "https://raw.githubusercontent.com/wezterm/wezterm/c8c592d19298cb68b8370f4e151f1591333b7f4a/LICENSE.md",
+      "local": "/tmp/huhu-t03-repair-upstream-3.txt",
+      "sha256": "37db33bbbd7348969eda397b89a16f252d56c1ca7481b6ccaf56ccdcbab5dcca"
+    }
+  ],
+  "difference": "HUHU keeps framed stdio and the existing dependency. It acquires master reader/writer before invoking spawn_command, so returned initialization errors prove no child was requested. Generic program-rejected denotes native spawn rejection, not an errno inferred from text. No copied implementation or new dependency.",
+  "locked_dependency": {
+    "name": "portable-pty",
+    "version": "0.9.0",
+    "vcs_commit": "f8921727a11b9f8b073e8c24821d72fd41283500",
+    "primaryURL": "https://github.com/wezterm/wezterm/tree/f8921727a11b9f8b073e8c24821d72fd41283500/pty",
+    "local_sources": [
+      {
+        "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/unix.rs",
+        "sha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3"
+      },
+      {
+        "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/conpty.rs",
+        "sha256": "8af0d7654aad62aaa67685b7b8550bc638b732360f7de1357cc5b0a35bc47ca1"
+      },
+      {
+        "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/psuedocon.rs",
+        "sha256": "297d0622d7b0401708f1ce3b92076632dd5a0c188b4a8d09b2f4891190b0e392"
+      }
+    ]
+  }
+}

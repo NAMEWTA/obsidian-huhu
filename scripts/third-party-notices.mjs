@@ -1,5 +1,5 @@
 // Generate THIRD-PARTY-NOTICES.md: the license of every npm package bundled into main.js (from the esbuild
-// metafile) and of every crate linked into the huhu-pty helper (from `cargo metadata`, dev-dependencies
+// metafile) and of every crate linked into the huhu-pty helper or huhu CLI (from `cargo metadata`, dev-dependencies
 // excluded). SPDX alternatives select permissive terms; every provided notice is retained.
 // Usage: node scripts/third-party-notices.mjs --write | --check
 import { execFileSync } from 'node:child_process';

@@ -1,0 +1,121 @@
+{
+  "task": "T06 API candidate ONLY; not a freeze or implementation",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observations": [
+    {
+      "path": "/tmp/huhu-t06-state-contract-proposal.md",
+      "bytes": 24481,
+      "sha256": "ae2aa21432a20e7d893b9d777dac6897edcfe1aa85307a819b24f2fd550fc153",
+      "observed_utc": "2026-10-25T16:04:56.779856+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "/tmp/huhu-t06-hooks-contract-proposal.md",
+      "bytes": 10567,
+      "sha256": "21d96133eae44d3d6a0300bba0a4d79882f8d04f8c749012140fefce17c03076",
+      "observed_utc": "2026-10-25T16:04:56.779906+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "/tmp/huhu-t06-ui-after-t05-readonly.md",
+      "bytes": 10032,
+      "sha256": "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a",
+      "observed_utc": "2026-10-25T16:04:56.779934+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytes": 6060,
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "observed_utc": "2026-10-25T16:04:56.779968+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytes": 29735,
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "observed_utc": "2026-10-25T16:04:56.780020+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytes": 28690,
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "observed_utc": "2026-10-25T16:04:56.780072+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytes": 56587,
+      "sha256": "9dce3d419810f2e9d2aa50f8e3447351d45d2e41f906b7081b63a480827f884a",
+      "observed_utc": "2026-10-25T16:04:56.780130+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "bytes": 5673,
+      "sha256": "46bf4dadae3af5c985ca60dbda3c15d3acabb062aa3eff68d0bd535e52c4c944",
+      "observed_utc": "2026-10-25T16:04:56.780159+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "bytes": 23621,
+      "sha256": "172a40e6185394da0c2106f23c592d6c6925448f925de3f74eee8db6469f3cd5",
+      "observed_utc": "2026-10-25T16:04:56.780194+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytes": 23176,
+      "sha256": "0f500b21596a56374801ca3733d1af81feb6d23ecde4c912031210035ef2014f",
+      "observed_utc": "2026-10-25T16:04:56.780229+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 19628,
+      "sha256": "d037ddeb15d892e0fa2a847a5eeaf87609007c29a213d99cdb40286bc1bc41ee",
+      "observed_utc": "2026-10-25T16:04:56.780275+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "bytes": 19900,
+      "sha256": "63d8d3c10cfe32ac29b99b5b03adfe187d254eda93a59cf1fad5d22f146961d5",
+      "observed_utc": "2026-10-25T16:04:56.780308+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "bytes": 10565,
+      "sha256": "f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a",
+      "observed_utc": "2026-10-25T16:04:56.780332+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "bytes": 14545,
+      "sha256": "07f60e9b4b2f73978a76b9239d19c1c02b580210433566bd49b53657ee62ef3b",
+      "observed_utc": "2026-10-25T16:04:56.780358+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/workspace-context.tsx",
+      "bytes": 813,
+      "sha256": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc",
+      "observed_utc": "2026-10-25T16:04:56.780374+00:00",
+      "scope": "candidate/actual API and relevant excerpts only; no test execution"
+    }
+  ],
+  "report": {
+    "path": "/tmp/huhu-t06-activity-api-candidate.md",
+    "sha256": "b3e651be176897777127fb09ce186ff9b644ef82345f0a557322fdc8026b61ac"
+  },
+  "commands": "read-only cat/sed/rg and /tmp document writes only; no compile/test/build/helper/Provider/cargo/Git",
+  "checked_utc": "2026-10-25T16:04:56.780427+00:00",
+  "drift_check": {
+    "checked_utc": "2026-10-25T16:05:57.476180+00:00",
+    "changes": []
+  }
+}

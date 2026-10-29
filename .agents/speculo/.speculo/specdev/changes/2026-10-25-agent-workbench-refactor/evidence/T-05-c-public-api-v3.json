@@ -1,0 +1,41 @@
+{
+  "utc": "2026-10-25T13:32:36.995158+00:00",
+  "public_delta": "optional outputAbandon1 / abandonOutput(sid):void. Local initiation only, distinct from parse ACK and scope cleanup. Strict output-abandon control fixture. Other signatures unchanged.",
+  "files": [
+    {
+      "path": "src/shared/native/input.ts",
+      "sha256": "a0d43792eeac8e9d63c4c76a74f9a942c465d04fe399480487abdeb99344cc76",
+      "bytes": 6462
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "ce18d7119e7f61bc07bbd66a3a46fcf32ed4250c45d7d0a101238b27c9c10104",
+      "bytes": 4591
+    },
+    {
+      "path": "src/shared/native/input.test.ts",
+      "sha256": "a02dc8548c0a09bb65521384e7e277c708a912b011c556af7868dfd87ae18d4c",
+      "bytes": 1268
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "fb154b05c36061409ddddc9aa993fe402085431f31690f7a9574a97a15d11bc5",
+      "bytes": 8840
+    },
+    {
+      "path": "src/shared/native/frames.test.ts",
+      "sha256": "f652c767b3e1c84e0190577b83e9729f56410b9389f6b660bcd9559c62d9ee6d",
+      "bytes": 2020
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "024c82450792985dd7e79b11154973a3884cb63f5a3e4d8ae2a19c3db39eb6f3",
+      "bytes": 10994
+    },
+    {
+      "path": "test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4",
+      "bytes": 16982
+    }
+  ]
+}

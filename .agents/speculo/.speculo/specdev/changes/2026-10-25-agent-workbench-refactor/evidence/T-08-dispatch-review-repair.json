@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-10-26T10:37:00.054550+00:00",
+  "goal_revision": "GP-028",
+  "map_revision": 29,
+  "allocation": "evidence/T-08-write-allocation-r2.json",
+  "allocation_sha256": "67d681e94e1b0eea0fa7fb9329884cbedb790edd68c10071f97bd5ae9404a105",
+  "input_sha256": "8cc4b042e38f9627d38fd8512912233c12cb74fa34c3197c1afc9990569dcbd9",
+  "dispatches": [
+    {
+      "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/014-t08-helper-retirement-repair/TASK.md",
+      "task_sha256": "1a6d01e547c8e9ed6e471c396a3785564878953b4a5af2524216b28a0276ba17",
+      "tool": "collaboration.followup_task",
+      "target": "/root/prepare_t08_full_cli",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_provenance": "Existing user-selected Sol/xhigh native identity retained by followup",
+      "actual_return": "empty successful tool response",
+      "dispatch_validation": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/review-repair-plan/014-t08-helper-retirement-repair-dispatch.json",
+      "dispatch_validation_sha256": "801fdd40ec8b7a25cd3de6b8992524fa3449aba2f7f1a312d85ede4535a7808c"
+    },
+    {
+      "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/015-t08-ui-receipt-state-repair/TASK.md",
+      "task_sha256": "296aff7036288bbd3c3004f8baf19328b948d0a25b5937bcec4f5082c9c2dcd6",
+      "tool": "collaboration.followup_task",
+      "target": "/root/implement_t08_profile",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_provenance": "Existing user-selected Sol/xhigh native identity retained by followup",
+      "actual_return": "empty successful tool response",
+      "dispatch_validation": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/review-repair-plan/015-t08-ui-receipt-state-repair-dispatch.json",
+      "dispatch_validation_sha256": "03938e271fa4ecc5c4dfc151782a1e65805f9a69fd46cba5716720054e4954ab"
+    }
+  ],
+  "still_stopped": [
+    "C33",
+    "All product paths not explicitly unlocked in014/015",
+    "Root generated artifacts until implementation writers stop"
+  ],
+  "preflight": "Actual tickets/goal-plan/ticket-control all0/no drift; original5 future-ticket owned-path warnings remain under serial policy."
+}

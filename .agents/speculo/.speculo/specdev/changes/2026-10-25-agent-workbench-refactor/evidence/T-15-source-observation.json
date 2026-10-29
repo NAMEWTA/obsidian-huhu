@@ -1,0 +1,766 @@
+{
+  "schema_version": 1,
+  "task": "T-15 READ-ONLY PREFLIGHT",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch_and_base": "Root-declared NAMEWTA/terminal / 33c21e098ef3188cbab5a09f3e0a01fadb787715; Git not run",
+  "plan": "GP014 / Map15",
+  "observed_at_utc": "2026-10-25T09:04:05.465818+00:00",
+  "source_mutation": false,
+  "tests_build_native_provider_helper_vault_mutation": "NOT RUN",
+  "scope_note": "Shared T15/T16 owner research inventory. T03A is active on AC005 repair; observations are not its frozen baseline or code review. T04/T10/T11/T13/T14 final schema must be reread at dispatch.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "bytes": 19768,
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "bytes": 6155,
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11452,
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "bytes": 8182,
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "bytes": 9072,
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "bytes": 4304,
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31587,
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/15-data-migration.md",
+      "bytes": 22204,
+      "sha256": "2827744d333de616b29eabb58e089aba95b115dc0aff310685ea840aec3837b7",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/16-backup-restore.md",
+      "bytes": 22238,
+      "sha256": "dcbe9bcf28956e196a4cca5f88618c53b7a605cb2064fa919afd94a51a438457",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/LOG.md",
+      "bytes": 77677,
+      "sha256": "96d7e80015c25153e34dcdaf1e4521ce2a3b023c516f5438ba68e0cba65359bc",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/backup-owner-analysis.md",
+      "bytes": 22574,
+      "sha256": "d19baf7a84b100c310940944a31808801522434fb71fa9f4d9a57a14fdd60933",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-10-preflight.md",
+      "bytes": 8286,
+      "sha256": "40b38d5abaf1879bea34632f4c42ef0810fdd09d2333a996b36798a25cd4bfb4",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-14-preflight.md",
+      "bytes": 11858,
+      "sha256": "8d72e0ac112991ccfd0036a646b609d25cf785b00d79e0a1f7510558c3109d10",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/json-store.ts",
+      "bytes": 5587,
+      "sha256": "74fef079c0f2bac8654081986b142455a1c2f6fbd0674f0c49f0b258e8052e53",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/json-store.test.ts",
+      "bytes": 10214,
+      "sha256": "fac8ba2567d9348c6fa12b6afc5461d53ccfdd2554a9f0623689c39c8340d8d4",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/ports.ts",
+      "bytes": 433,
+      "sha256": "942367985344944bc335866e1cf975f3ec773a3f94e167bae882e5682b2a0eeb",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/write-queue.ts",
+      "bytes": 2215,
+      "sha256": "0d30c9db993783ac08e4d10e051a9a95c5bef1d41bbdb6403efb220a878fc820",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/durable-state.ts",
+      "bytes": 5898,
+      "sha256": "8290293c71375d51470fde230d824ef97b4b5247d1a0bd6b4f1add886240ce59",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "bytes": 5554,
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/document-collection.ts",
+      "bytes": 2125,
+      "sha256": "d3d1290328134dce3014c704a2800215282ae3b8ce8359eaebe51ce1aa6435f9",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/storage/vault-identity.test.ts",
+      "bytes": 4472,
+      "sha256": "c7f43f0a59078cff75e46a3cc0a62ae01a7cd9bc8fc4a99f68592d1f50f0cb80",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/settings/store.ts",
+      "bytes": 9684,
+      "sha256": "601d81251b507141e2b36754afafdbca1df5075ad4f1a486392d7c99e997ab1a",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/settings/store.test.ts",
+      "bytes": 6199,
+      "sha256": "1edcd58c721b316fc743048bca2584a307707b8044db7742a14d7f023455ad74",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/settings/schema.ts",
+      "bytes": 4733,
+      "sha256": "c19c0f321798578cb0f8c2241d85f1a1f55ef446e5db409ff2c8c481b514a832",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/agent-dispatch.ts",
+      "bytes": 1341,
+      "sha256": "767cb7e31c1bfc2989527733f026970a92b2ed8ac8af7db217e52a562546dc2c",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/shared/automation/types.ts",
+      "bytes": 6461,
+      "sha256": "db04681586bc150c81eb9d16114575f74cb331ecb98d85ced2f242e11429045f",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/app/main.ts",
+      "bytes": 16610,
+      "sha256": "3bcd26ae09610f8589a47c0b83a9107bebfad417381200f1af621de28d262c22",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/app/settings/runtime.ts",
+      "bytes": 4227,
+      "sha256": "2af532c066fbf5966d1df4d71efb61b76743ec0c39d70b616ebc8cd5340b3760",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/app/settings/runtime.test.ts",
+      "bytes": 5199,
+      "sha256": "76b9f321da68c1d1bd82ac59b704e0d324c9f5b532fe0320c5dca35088812bf3",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/host/obsidian/storage/private-storage.ts",
+      "bytes": 707,
+      "sha256": "4c280b6728b1b7a6bd06bd961c09f7d8e5223b42fee956e8e1fb74b331a6296e",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/host/obsidian/storage/content-files.ts",
+      "bytes": 25075,
+      "sha256": "630b4100e450e926df20532e68d8a1be4f10f950a9d5f777c1035ef12f0f1767",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/host/obsidian/storage/document-collection.ts",
+      "bytes": 5546,
+      "sha256": "f5042fecc4b79886a90f71f555d5343aafd7e00eb4e07eaed1ec085720c298e4",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/host/desktop/vault-storage.ts",
+      "bytes": 1035,
+      "sha256": "df8072ad024609be785baaf7410891ed056ac7aa40995cba9f90a8f1edfb8f40",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/host/desktop/huhu-paths.ts",
+      "bytes": 2042,
+      "sha256": "73edf198b6181715d32e66026a156fe37d078c4bf1f5bd49542a80811ee7e12a",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "bytes": 8407,
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "bytes": 8995,
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": true
+    },
+    {
+      "path": "src/modules/agent/settings.ts",
+      "bytes": 491,
+      "sha256": "8f545e93cdaaaf4272b7cfb2448fca21f2c2981ed369ed3fb028293d76b2a913",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "bytes": 8742,
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/launch/types.ts",
+      "bytes": 1346,
+      "sha256": "0beab97c9e21f390d5d32327443021ceaffcda34a27a526d2a3315651c5435b0",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "bytes": 1234,
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "bytes": 1063,
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "bytes": 2415,
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "bytes": 15857,
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "bytes": 44420,
+      "sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": true
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "bytes": 7204,
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.test.ts",
+      "bytes": 5463,
+      "sha256": "e3496393f98156f13f4fb245eb389ec86709826b22793ccc5efa40e54aad1a4f",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store-spaces.test.ts",
+      "bytes": 9405,
+      "sha256": "fd027b5386fe38f01cd03269c6498c96412f0d54c8049e814c5f1c76ac0cce8b",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "bytes": 30296,
+      "sha256": "7e167e2a1cf50e42da195101b60569bf07858b860d8565aa7a58b598c6bbce05",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "bytes": 16158,
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+      "bytes": 5333,
+      "sha256": "6e2c7e521f2c8b7c02650b5888596e98de082df80a7a0a883b95d6ff1dc0c887",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "bytes": 4239,
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/history-store.ts",
+      "bytes": 3985,
+      "sha256": "d8a183ed24392bdec83aed87e43576e6d7ec07978449559b0a24f9bf52e9872d",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/history-store.test.ts",
+      "bytes": 3870,
+      "sha256": "5e27e7313ac5c594725b9f4fba244337c2b3cd03c658576577c0b2f364b8d823",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/history/service.ts",
+      "bytes": 15293,
+      "sha256": "1e886367e21cbe155c03f05b257fb48750f3b5b9fdc9cad375059129d7372202",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "bytes": 22946,
+      "sha256": "499dba720ad4b5a357bb79b0605044199a9bc110cc5173ab3f12ce4c60d8b2fc",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.test.ts",
+      "bytes": 3668,
+      "sha256": "38cf10656a008f97766c0dd8ea30f1832a5f10756715d16888784ddf86a23152",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "bytes": 8270,
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/stats-store.ts",
+      "bytes": 1230,
+      "sha256": "d495d12edc1fc12853fb36e38ce2581070f9e78f36d004ee249f6eccf8ac7f28",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/stats-service.ts",
+      "bytes": 3870,
+      "sha256": "a9578b390466178ba42b0042bee6202c91b61eb51a0b08ddd31b10ec2475f491",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/stats-service.test.ts",
+      "bytes": 3468,
+      "sha256": "69d5b518c051037a1cf15e2fe1ec2da130baac41d00862a7c3e7266ef01f7e30",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.ts",
+      "bytes": 1078,
+      "sha256": "d8d031de96d45e020110e00d0bbed27a56e011b8fbee2350ceaeeb3cd4ec28c1",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/legacy-accounts.ts",
+      "bytes": 9478,
+      "sha256": "dbfe3f7e72b641be00914f8cee66a5d1cf9b505bc3bcb735b6921f0f9746de75",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/legacy-accounts.test.ts",
+      "bytes": 4332,
+      "sha256": "bfade8d60fb812e5fdded93f66b6ad1200a33371608f54420d6e80385681b176",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/legacy-references.ts",
+      "bytes": 3561,
+      "sha256": "d100bce4feb800b98f316959f17bbea11de20064c3e5ae3f1d38e51a4aff8823",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/ui/settings-page.tsx",
+      "bytes": 4340,
+      "sha256": "2a68ddaedbf3489b6025d33b4c94280a4b21a23c3f3b03c8ca9499a180ad6caf",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/settings.ts",
+      "bytes": 5089,
+      "sha256": "06b785a4560fcd8f65871f2c2d64b3b775aa8f107a6e138e889c53181d108236",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/core/board/types/model.ts",
+      "bytes": 37461,
+      "sha256": "bfbf5a12624300d87e1d4e7e4e66845798d03157244ced4c9c889450508d9919",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/core/board/parser/parse.ts",
+      "bytes": 18472,
+      "sha256": "243cd8a3d2389a5d6fe9d5370a03f772c3579c445d69b3dfe6071e79d4a93f63",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/core/board/parser/generate-default-markdown.ts",
+      "bytes": 6489,
+      "sha256": "faa70c3da3faa39cea7a18d044547b38ae40a110cb4c3bd645c3621eccd774aa",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/services/skill-shortcuts.ts",
+      "bytes": 3087,
+      "sha256": "8018302d2a3850b90507c7bcb46ddf79b7c4a0cb8195c4ff59a573766c694edc",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/services/board-store.ts",
+      "bytes": 26866,
+      "sha256": "0e420c823eb99d709c9443260628e582658d48ebb317a6e5112f4c88cf4a1389",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/services/board-backups.ts",
+      "bytes": 7930,
+      "sha256": "f43af0658816308f9a70e3df4b1d9f09fd195a3656e82509780c212fa70344c5",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/home/services/board-backups.test.ts",
+      "bytes": 6589,
+      "sha256": "bb50c7a5aae0947cd40a54e65fa583e70d8bcd2104fc4f0fd0a8f57fe04ebe1d",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/safe/platform/desktop/actions.ts",
+      "bytes": 6531,
+      "sha256": "b0fe294e8abfa81c29e08a545b3414779943d8f0b85500cf455d0bc22bce2215",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/api.ts",
+      "bytes": 4858,
+      "sha256": "75483b3102c08fcdfb28d6407d833507c21fc7d2a1aab86c59683fce91aa56e4",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/module.ts",
+      "bytes": 8019,
+      "sha256": "0f19c44067f9e6d271eca2f790af7dd7e03e313e93c9db10734ce59e6ebee98f",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/services/runtime.ts",
+      "bytes": 11146,
+      "sha256": "c48383f13a424d590361dd87cdcaf85db9f2f205fbaee676fd8d52a77531ecbe",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/core/service.ts",
+      "bytes": 30425,
+      "sha256": "80c4698376ad3398777fa60af6a457cbb50389595aa2d91b4f11cea0399f5890",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/core/documents.ts",
+      "bytes": 4097,
+      "sha256": "21c73ae1d7523012e850a4882bedbe87bb869961f7c585482951c599ce346387",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/core/documents.test.ts",
+      "bytes": 2719,
+      "sha256": "d8f9423e515e0454cf8941b7eac00e113aed86388a402e69c5406935d64ce80e",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/platform/definitions.ts",
+      "bytes": 1950,
+      "sha256": "f44132575f38ab252674b5c5a7abf7c4d47562b39a761793dec0663216c5c1a7",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/platform/definitions.test.ts",
+      "bytes": 3335,
+      "sha256": "5af9720e2048528f76bdd6f1ad6691a8daa2f36f1d8e5d50e66f6a88dfef1d15",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/core/invocations.test.ts",
+      "bytes": 7180,
+      "sha256": "8c499f03f36929004499541be28a548d2ae0157c9c0418ad60b0b06c219730ad",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/automations/automation.test.ts",
+      "bytes": 39124,
+      "sha256": "c7e395d4a9668a56774cdfc1c8fc0da424ee75a5cf051e01e4f0088717b39eeb",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/notifications/api.ts",
+      "bytes": 1787,
+      "sha256": "d54784fd945cf78f57057925d77249232b919f270123985308c86c9c19f53f88",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/notifications/module.ts",
+      "bytes": 2133,
+      "sha256": "c78c7a5f021eca4f40ccc95a46f96f7da020ebced86b72463927977142244f2c",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/notifications/core/service.ts",
+      "bytes": 6209,
+      "sha256": "3b8ddd63e0a866482516c3c8fa143e31ccd1d94a012e1e9b2eb8b2db780aeedd",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/notifications/core/service.test.ts",
+      "bytes": 5266,
+      "sha256": "84b2d9f1c267162d7cb691e54db7154fec638f3c2f6de542951bc79f5f0bb024",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "bytes": 7898,
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "docs/data.md",
+      "bytes": 22771,
+      "sha256": "f1b8c4808f44d67eee5564e29682a4bb5f67c9bf3dbb152aa485e8f63f7d5bf5",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "test/golden/user-formats.test.ts",
+      "bytes": 18557,
+      "sha256": "6c95a7bd84a3f65047aa0724becbcc1956673422422180611112fa42fe34bba7",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "package.json",
+      "bytes": 13445,
+      "sha256": "8a0ec223a318cd4deca6177496edf227b89d136cc31319a57b653e61f438f4ce",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/skill-manager.ts",
+      "bytes": 4773,
+      "sha256": "02d4469e00062f6b2c97f4ff4f872cee517b8b16cf7076766bbf53447017d5f8",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/skills/host-ops.ts",
+      "bytes": 1437,
+      "sha256": "f3c4e1335ac3b9de37552c947ee64eb0d08aa7318b2bb39d94cebacb4f1014bd",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/skills/skill-fs.ts",
+      "bytes": 9290,
+      "sha256": "106f0b41f5b405ed5f93ebefed4ce5685c2e8fbb8e13d34e1241c08000c1af1d",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": false
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytes": 37279,
+      "sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae",
+      "coverage": "task-targeted source excerpt/search, prior unchanged rule reuse, or full-file hash observation; not executable evidence",
+      "mutable_predecessor": true
+    }
+  ],
+  "planned_not_current": [
+    "src/shared/storage/recovery-contracts.ts",
+    "src/shared/storage/recovery-transaction.ts",
+    "src/app/recovery.ts",
+    "src/shell/shared-workspace/**",
+    "src/modules/agent/core/migrations/**",
+    "src/modules/agent/services/migrations/**",
+    "src/modules/agent/core/backup/**",
+    "src/modules/agent/services/backup/**",
+    "Session mailbox final persistence schema"
+  ]
+}

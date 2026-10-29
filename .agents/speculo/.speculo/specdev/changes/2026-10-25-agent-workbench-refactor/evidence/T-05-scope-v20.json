@@ -1,0 +1,41 @@
+{
+  "ticket": "T-05",
+  "at": "2026-10-25T14:50:50.872705+00:00",
+  "revision": "GP-019 / Map20",
+  "actual_authorization": "Root send_message to /root/prepare_t03 after reading original test and red log; same approved T05 native drain lifecycle integration scope",
+  "added_path": "<Path>src/modules/agent/services/workspace-service-stop-native.test.ts</Path>",
+  "writer": "codex:/root/prepare_t03",
+  "before": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "5d2914175905e724573542863ec286ccecf5d2873d6fa57f6335fd2a388cc73c",
+      "copy": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/scope-v19/goal-plan.md"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "53dc0ab5d173b11811cb4fe848d19aa6408f52cf72553c9be54dc6c1be8aaf23",
+      "copy": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/scope-v19/tickets-map.md"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "500af48360e0195627dd6935e7046141f6ee56536b13fe748be17773053db2aa",
+      "copy": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/scope-v19/ticket/05-screen-stream.md"
+    }
+  ],
+  "after": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3"
+    }
+  ],
+  "acceptance_unchanged": true,
+  "attempts": 0
+}

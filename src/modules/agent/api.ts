@@ -52,8 +52,16 @@ export interface AgentDirectoryEntry {
 	enabled: boolean;
 	installed: boolean;
 }
+/** An active Space as other modules list it for a choice. The stable id is what they store. */
+export interface AgentSpaceInfo {
+	id: string;
+	name: string;
+	directoryLabel: string;
+}
 export interface AgentDirectory {
 	list(): readonly AgentDirectoryEntry[];
+	/** Active Spaces a legacy entry can bind to. Read-only; choosing at run time uses the existing Space chooser. */
+	spaces(): readonly AgentSpaceInfo[];
 }
 export const AGENT_DIRECTORY = serviceKey<AgentDirectory>('agent', 'directory');
 
@@ -116,7 +124,13 @@ export interface AgentPromptRequest {
 	prompt: string;
 	purpose: string;
 	agentId?: AgentId;
-	/** Defaults to the vault root. Every supplied cwd must resolve within it. */
+	/**
+	 * The Space the one-shot run belongs to (stable id). Required: the run fails with `spaceRequired` before any
+	 * process starts when it is missing, and with `spaceUnavailable` when the Space is deleted, archived or no
+	 * longer authorizes its directory. It is never derived from `cwd` or from what is on screen.
+	 */
+	spaceId: string;
+	/** Defaults to the Space directory. Every supplied cwd must resolve within the Space directory and the vault. */
 	cwd?: string;
 	timeoutMs?: number;
 	signal?: AbortSignal;
@@ -156,7 +170,15 @@ export const AGENT_RUN_CONTEXTS = contributionPoint<AgentRunContextProvider>('ag
 
 /** Deliver once through the shared journal. Fresh starts the selected CLI; existing only pastes. */
 export interface AgentDispatch {
-	dispatch(request: AgentDispatchRequest, options?: { signal?: AbortSignal }): Promise<AgentDispatchReceipt>;
+	/**
+	 * A `fresh` request carries its Space in `destination.spaceId`. Without one, `interactive: true` lets the user
+	 * pick from the existing Space chooser before the invocation exists (cancel starts nothing and is receipted
+	 * `cancelled`); a non-interactive caller is rejected with `spaceRequired`.
+	 */
+	dispatch(
+		request: AgentDispatchRequest,
+		options?: { signal?: AbortSignal; interactive?: boolean },
+	): Promise<AgentDispatchReceipt>;
 }
 
 export const AGENT_DISPATCH = serviceKey<AgentDispatch>('agent', 'dispatch');
@@ -172,13 +194,29 @@ export interface AgentQuickCommandInfo {
 	scope: 'global' | 'vault';
 	/** The agent an `agent` command starts. */
 	agentId?: AgentId;
+	/** The Space a vault command is saved against; absent means the user chooses each time. */
+	spaceId?: string;
 }
 /** The agent module's saved terminal quick commands (service `agent.quick-commands`). */
 export interface AgentQuickCommands {
 	list(): readonly AgentQuickCommandInfo[];
 	/** Run `listener` when the saved commands change; returns the unsubscribe function. */
 	subscribe(listener: () => void): () => void;
-	/** Open a terminal or agent session and type the command into it. Rejects when the command no longer exists. */
-	run(id: string): Promise<void>;
+	/**
+	 * Open a terminal or agent session inside a Space and type the command into it. Rejects when the command no longer
+	 * exists. A saved or passed Space is used as is (an unavailable one rejects, it is never replaced); with none, the
+	 * existing Space chooser opens and cancelling starts nothing.
+	 */
+	run(id: string, options?: { spaceId?: string }): Promise<void>;
 }
 export const AGENT_QUICK_COMMANDS = serviceKey<AgentQuickCommands>('agent', 'quick-commands');
+
+/** Read-only SQLite access for user-initiated browser Cookie snapshot imports. */
+export type NativeHelperSqlite = import('../../shared/native/host').NativeCookieReader;
+export const NATIVE_HELPER_SQLITE = serviceKey<NativeHelperSqlite>('agent', 'native-helper-sqlite');
+
+/** The terminal sessions grouped with a browser page (service `agent.browser-tabs`); page open/close lives in the shared workspace. */
+export interface AgentBrowserTabs {
+	sessionOrder(pageId: string): string[];
+}
+export const AGENT_BROWSER_TABS = serviceKey<AgentBrowserTabs>('agent', 'browser-tabs');

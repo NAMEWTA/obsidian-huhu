@@ -1,0 +1,22 @@
+[
+  {
+    "path": "main.js",
+    "bytes": 6901204,
+    "sha256": "a72d40e40ae28c2172dcc8a814556e0216b8dfd62d1b0f3114c52baa5bd0aee7"
+  },
+  {
+    "path": "styles.css",
+    "bytes": 1424352,
+    "sha256": "57a6acaa99fa876c00c38a843ed51554ccf03a83f623e6bd1e3e6421a4f7e8c8"
+  },
+  {
+    "path": "native/pty-server/target/release/huhu-pty",
+    "bytes": 3661648,
+    "sha256": "58e22cd75bf65784a902b33bc3cefe0d421c9f345487cd13c76f3c162b9129a1"
+  },
+  {
+    "path": "native/pty-server/target/release/huhu",
+    "bytes": 778256,
+    "sha256": "992b3f69e71424ebf74d26b76cff1998bd6df3c9a3a7677985cfa18edf543c65"
+  }
+]

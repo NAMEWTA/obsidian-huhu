@@ -1,0 +1,19 @@
+{
+  "changed_product_paths_since_initial_full_review": [
+    "docs/agent-workbench-cli.md",
+    "main.js",
+    "scripts/bundle-budget.json",
+    "src/app/workbench/agent-contribution.test.ts",
+    "src/app/workbench/compose-workbench.ts",
+    "src/host/desktop/native/helper-editor.test.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/host-editor.integration.test.ts",
+    "src/modules/agent/ui/control/TerminalControlPanel.dom.test.tsx",
+    "src/modules/agent/ui/control/TerminalControlPanel.tsx"
+  ],
+  "native_C33_unchanged": true,
+  "styles_unchanged": true,
+  "package_lock_and_configs_unchanged": true,
+  "reused": "C native 131/TS122/generated/Windows cross, unchanged CSS/i18n/notices, unchanged artifact profile and prior unaffected business cases; no claim of rerunning these. A final27+20 and B105 are original source-specific commands. Root rebuild/lint/native5/Chrome15 and source verification cover final merged affected input.",
+  "authority_change": "After checks, Ticket acceptance boxes were marked and stable anchors added for review; this is administrative evidence, not a production source change."
+}

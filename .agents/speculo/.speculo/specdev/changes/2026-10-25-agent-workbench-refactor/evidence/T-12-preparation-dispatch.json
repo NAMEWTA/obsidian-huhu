@@ -1,0 +1,32 @@
+{
+  "utc": "2026-10-26T15:23:06.582832+00:00",
+  "actual_tool": "collaboration.followup_task",
+  "actual_target": "/root/prepare_t08_full_cli",
+  "actual_result": {},
+  "model_inherited": "gpt-6.1-sol",
+  "reasoning_effort_inherited": "xhigh",
+  "task": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/027-t12-resume-preparation/TASK.md",
+    "sha256": "38029ef714d5117e336f415a053bf34aa89b7f4afeaf9c983208a14be0cd8a56",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-12-preparation-logs/38029ef714d5117e336f415a053bf34aa89b7f4afeaf9c983208a14be0cd8a56.raw"
+  },
+  "pre_dispatch": {
+    "actual_tool": "exec_command",
+    "chunk_id": "e7f90f",
+    "exit_code": 0,
+    "stdout": {
+      "errors": [],
+      "warnings": [],
+      "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+    },
+    "timing": "Actual direct tool result, no separate runner start/end UTC receipt claimed."
+  },
+  "product_write_authorized": false,
+  "baseline": "evidence/T-08-root-recovery1-integration3-final-input.json",
+  "baseline_sha256": "cb246dc43e682997184ad5d51eb04968e83b497e1dd6e689e0d8ccda1c892c2c",
+  "allowed_outputs": [
+    "027 REPORT",
+    "new /tmp/huhu-t12-resume-preparation-*"
+  ],
+  "pending": "Actual readonly preparation report/return; no implementation or acceptance inferred"
+}

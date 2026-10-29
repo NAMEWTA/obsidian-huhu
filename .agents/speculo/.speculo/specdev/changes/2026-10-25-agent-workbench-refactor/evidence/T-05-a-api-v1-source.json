@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-25T12:46:42.741166+00:00",
+  "state": "public signatures/DTO/keys held for Root inspection; internal implementation continues",
+  "files": [
+    {
+      "path": "src/modules/agent/core/terminal/frames-screen.ts",
+      "sha256": "d90e551417eb530f57edbffbb2ee0478be0b34d1b96ef7200c7d62c0d20b13fa",
+      "bytes": 8987,
+      "copy": "/tmp/huhu-t05-a-api-source/src/modules/agent/core/terminal/frames-screen.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "57de119133175f9ddb0acd94391d4b02ff82cd3ff6c218afa1eb19d37efd91ac",
+      "bytes": 23528,
+      "copy": "/tmp/huhu-t05-a-api-source/src/modules/agent/services/terminal/session.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen.ts",
+      "sha256": "d1ed16e31234bc11d06087365e07e5a4eea09bcb37c34998cc735b94fa53d6f8",
+      "bytes": 19975,
+      "copy": "/tmp/huhu-t05-a-api-source/src/modules/agent/services/terminal/session-screen.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen-xterm.ts",
+      "sha256": "9d08daf234b2c88ba3e2c6806a153321cf9b2eb60365f7ce1db13b8c4540a3cf",
+      "bytes": 14359,
+      "copy": "/tmp/huhu-t05-a-api-source/src/modules/agent/services/terminal/session-screen-xterm.ts"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "1e13acf34bbb020e39258c484511953531ac08d44242d91aec35ecf14b3049a8",
+      "bytes": 67634,
+      "copy": "/tmp/huhu-t05-a-api-source/src/modules/agent/i18n.ts"
+    }
+  ],
+  "scope": "T05 A; no Root/B freeze implied",
+  "checks": [
+    "/tmp/huhu-t05-a-screen-red.json",
+    "/tmp/huhu-t05-a-api-behavior.json",
+    "/tmp/huhu-t05-a-command-budget-red.json",
+    "/tmp/huhu-t05-a-command-budget-green.json",
+    "/tmp/huhu-t05-a-api-types-ready.json"
+  ]
+}

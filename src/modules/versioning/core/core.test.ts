@@ -272,7 +272,7 @@ test('a failed `git add` is a local index failure, never a remote refusal', () =
 });
 
 test('HUHU private data is excluded through a managed, idempotent block that leaves user rules alone', () => {
-	for (const private_ of ['browser', 'terminal-agent', 'agents', 'helpers', 'cache'])
+	for (const private_ of ['browser', 'terminal-agent', 'agents', 'helpers', 'cache', 'exports'])
 		assert.ok(HUHU_EXCLUDE_PATTERNS.includes(`**/.huhu/${private_}/`), private_);
 	// Per-device automation runs are private; the definitions folder is re-included so it syncs.
 	assert.ok(

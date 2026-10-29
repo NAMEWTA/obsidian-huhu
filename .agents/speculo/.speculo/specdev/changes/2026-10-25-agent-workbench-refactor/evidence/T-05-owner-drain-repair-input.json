@@ -1,0 +1,511 @@
+{
+  "utc": "2026-10-25T18:37:27.864153+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-019",
+  "map_revision": 20,
+  "integration_cycle": "fast-exit repair; current attempts1; next Root integration2; prior histories unchanged",
+  "allowed_files": [
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "5aab983c1851863081753a337f9561f13ab3ffb0a5e91b4d7fe72683be298040",
+      "bytes": 19978,
+      "before": "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/host.ts"
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "sha256": "5e9429bba4d755e138ca28dd83742541aec7392f1fe318c9ac25bf5fee0bdd9c",
+      "bytes": 27546,
+      "before": "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/host.test.ts"
+    },
+    {
+      "path": "src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "a04a18510d0cec3119c4a85c1bfeb7d5aa819bf9f88c9de06627b14108eb0d30",
+      "bytes": 35554,
+      "before": "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/helper-stream.test.ts"
+    }
+  ],
+  "contracts": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-packet.md",
+      "sha256": "82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round2-settlement-contract.md",
+      "sha256": "0f7707283c415a4a428107f1f8bc2e6e0c4c7228ccaf233af486c15784b9340d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round2-reserve-settlement-contract.md",
+      "sha256": "8618af912ca12e75923c3e2c99cc73c143bca0a4f4839d8233b891ad85e3a403"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ],
+  "prior_root_input": {
+    "path": "/tmp/huhu-t05-root-repair-inputs-v5.json",
+    "sha256": "35759b8979bcd139a0a71f7796103dc485807b15d774d13ccf8d55b027eb477f",
+    "files_checked": 1948
+  },
+  "probe_record": {
+    "path": "/tmp/huhu-t05-missing-executable-c-probe.json",
+    "bytes": 645,
+    "sha256": "680c4ac68b22f44cce22fa7fcc79d35b10fa22c77edf0dfe5066189e9d6ba6e2"
+  },
+  "probe_log": {
+    "path": "/tmp/huhu-t05-missing-executable-c-probe.log",
+    "bytes": 16814,
+    "sha256": "5c57c6de6536ed757971de865ae5053c9842f256b6d474ae004125f1ef9c9b4a"
+  },
+  "immutable_helper": {
+    "path": "/tmp/huhu-t05-repair-r2-c-linux-final-20261025T180555Z",
+    "bytes": 26357552,
+    "sha256": "68364efe0e253ed9662814f596a904680476e918d2c4fd86207b9c0849417e91",
+    "mode": "0555"
+  },
+  "copies": {
+    "/tmp/huhu-t05-missing-executable-c-source-observation.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/199f54799b9747523d9b691ae38f08aaf988b0e9f610d7f03c1ac342ad49dee7.raw",
+      "sha256": "199f54799b9747523d9b691ae38f08aaf988b0e9f610d7f03c1ac342ad49dee7",
+      "bytes": 9349
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/680c4ac68b22f44cce22fa7fcc79d35b10fa22c77edf0dfe5066189e9d6ba6e2.raw",
+      "sha256": "680c4ac68b22f44cce22fa7fcc79d35b10fa22c77edf0dfe5066189e9d6ba6e2",
+      "bytes": 645
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe.log": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5c57c6de6536ed757971de865ae5053c9842f256b6d474ae004125f1ef9c9b4a.raw",
+      "sha256": "5c57c6de6536ed757971de865ae5053c9842f256b6d474ae004125f1ef9c9b4a",
+      "bytes": 16814
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/bed773d195c4a28a7b924ca2d8d63c7e1c6b159a91266f1ec5aff68d69b34d25.raw",
+      "sha256": "bed773d195c4a28a7b924ca2d8d63c7e1c6b159a91266f1ec5aff68d69b34d25",
+      "bytes": 10745
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/3624a7e76df2e35e73efc856ca41295757f68b3443bb6f7634da4b559db4a2d0.raw",
+      "sha256": "3624a7e76df2e35e73efc856ca41295757f68b3443bb6f7634da4b559db4a2d0",
+      "bytes": 7370
+    },
+    "/tmp/huhu-t05-missing-executable-c-original.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472.raw",
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "bytes": 3049
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe.diff": {
+      "path": "T-05-logs/owner-drain-discovery/objects/9be833f0a5dd821ffd31ffbc07089f45787b78dd7400d6d19617cba816c61a1d.raw",
+      "sha256": "9be833f0a5dd821ffd31ffbc07089f45787b78dd7400d6d19617cba816c61a1d",
+      "bytes": 7631
+    },
+    "/tmp/huhu-t05-missing-executable-c.config.mjs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/4b209dd1c55cd79aa7742d3add0b580f2392a912a048d7d71e5ecfe4461438b6.raw",
+      "sha256": "4b209dd1c55cd79aa7742d3add0b580f2392a912a048d7d71e5ecfe4461438b6",
+      "bytes": 329
+    },
+    "/tmp/huhu-t05-missing-executable-c-events.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/89ac853fea62b4c3b437f757ef8883a1c0de83855af26d9862b7b10e4088ae08.raw",
+      "sha256": "89ac853fea62b4c3b437f757ef8883a1c0de83855af26d9862b7b10e4088ae08",
+      "bytes": 26604
+    },
+    "/tmp/huhu-t05-fast-exit-c-source.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ef3b5f854d4a9a039feb4cfbb8ba55669786742de5a99dfba3c01dc28ccf1898.raw",
+      "sha256": "ef3b5f854d4a9a039feb4cfbb8ba55669786742de5a99dfba3c01dc28ccf1898",
+      "bytes": 9093
+    },
+    "/tmp/huhu-t05-missing-executable-c-report.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/3c5b3ccf6137b39d3f6291350029b1c7805c92862f399c3f264441f0323c1027.raw",
+      "sha256": "3c5b3ccf6137b39d3f6291350029b1c7805c92862f399c3f264441f0323c1027",
+      "bytes": 5151
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/helper-stream.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/a04a18510d0cec3119c4a85c1bfeb7d5aa819bf9f88c9de06627b14108eb0d30.raw",
+      "sha256": "a04a18510d0cec3119c4a85c1bfeb7d5aa819bf9f88c9de06627b14108eb0d30",
+      "bytes": 35554
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/helper.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f.raw",
+      "sha256": "c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f",
+      "bytes": 37744
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/host-stream.integration.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4.raw",
+      "sha256": "080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4",
+      "bytes": 17495
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/host.integration.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1.raw",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1",
+      "bytes": 3070
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/host.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5e9429bba4d755e138ca28dd83742541aec7392f1fe318c9ac25bf5fee0bdd9c.raw",
+      "sha256": "5e9429bba4d755e138ca28dd83742541aec7392f1fe318c9ac25bf5fee0bdd9c",
+      "bytes": 27546
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/host/desktop/native/host.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5aab983c1851863081753a337f9561f13ab3ffb0a5e91b4d7fe72683be298040.raw",
+      "sha256": "5aab983c1851863081753a337f9561f13ab3ffb0a5e91b4d7fe72683be298040",
+      "bytes": 19978
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/core/terminal/frames-screen.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca.raw",
+      "sha256": "4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca",
+      "bytes": 9254
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/i18n.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/1414aae6262fedb5439761d175a90edd402c9cc7b8dd4424a0004e85744ff677.raw",
+      "sha256": "1414aae6262fedb5439761d175a90edd402c9cc7b8dd4424a0004e85744ff677",
+      "bytes": 68604
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/agent-runtime.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/11c40ffff6faf120673040ee872e895947e85abc910c3fe95bba1d58b90550c4.raw",
+      "sha256": "11c40ffff6faf120673040ee872e895947e85abc910c3fe95bba1d58b90550c4",
+      "bytes": 9247
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/agent-runtime.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113.raw",
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "bytes": 23866
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/controller.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81.raw",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/prompt-runner.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/b788f02000e2817d72cbb0a472551b1a3356026bd8d5f641fe207218442a38b8.raw",
+      "sha256": "b788f02000e2817d72cbb0a472551b1a3356026bd8d5f641fe207218442a38b8",
+      "bytes": 10317
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/prompt-runner.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/8f63a7718bb26756e1d798ed06845701cff482a6dd7b9aecd777c0c9c5df9f13.raw",
+      "sha256": "8f63a7718bb26756e1d798ed06845701cff482a6dd7b9aecd777c0c9c5df9f13",
+      "bytes": 8944
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session-resize.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ea77ef127bcba572af254bdaf961aa9ca6f18b9fbc0377d550b4ed89c169c8a8.raw",
+      "sha256": "ea77ef127bcba572af254bdaf961aa9ca6f18b9fbc0377d550b4ed89c169c8a8",
+      "bytes": 11961
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session-screen-native.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/23989877ce902fc81628243cfdfa122e70e1577192d127f173137ad28d2c1441.raw",
+      "sha256": "23989877ce902fc81628243cfdfa122e70e1577192d127f173137ad28d2c1441",
+      "bytes": 10432
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session-screen-xterm.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/eab2f190a69d625e30bac6221d408866e92c2ed4a3af6cfd0ef4e37637a947e0.raw",
+      "sha256": "eab2f190a69d625e30bac6221d408866e92c2ed4a3af6cfd0ef4e37637a947e0",
+      "bytes": 17166
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session-screen.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/bc79627c3f21dc13fe701c3b5ac97fd8dd222c41623d0f1b6cb8b5dd250f21df.raw",
+      "sha256": "bc79627c3f21dc13fe701c3b5ac97fd8dd222c41623d0f1b6cb8b5dd250f21df",
+      "bytes": 25741
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session-screen.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/0734d80b132e03ace1a176ff62cddf0739000f3ed939ee72b1c30a71961faa78.raw",
+      "sha256": "0734d80b132e03ace1a176ff62cddf0739000f3ed939ee72b1c30a71961faa78",
+      "bytes": 41014
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/c95f9fd4c88e6ec2efaed9070594c667c656c3f8310ed6d9b45d9f6f8edde838.raw",
+      "sha256": "c95f9fd4c88e6ec2efaed9070594c667c656c3f8310ed6d9b45d9f6f8edde838",
+      "bytes": 10959
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/session.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/bf33cf739e7c4c9cf58549a5847db6354cdfa6363815bd435a776a931202a32c.raw",
+      "sha256": "bf33cf739e7c4c9cf58549a5847db6354cdfa6363815bd435a776a931202a32c",
+      "bytes": 32665
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/sessions.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2.raw",
+      "sha256": "9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2",
+      "bytes": 28839
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/workspace-service-stop-native.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/69b4aa80c8e1d2f6f22ed64fcf4d919459eea58b228dd86fca31c0d0fa9fc814.raw",
+      "sha256": "69b4aa80c8e1d2f6f22ed64fcf4d919459eea58b228dd86fca31c0d0fa9fc814",
+      "bytes": 15508
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/ui/terminal/terminal-presentation.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a.raw",
+      "sha256": "f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a",
+      "bytes": 10565
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/ui/terminal/terminal-scheduling.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/cde18f0c85e0f8d1ab1cf83bd6a07b25841da702cd44b3da8537c2ece8dc7c2c.raw",
+      "sha256": "cde18f0c85e0f8d1ab1cf83bd6a07b25841da702cd44b3da8537c2ece8dc7c2c",
+      "bytes": 9267
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/ui/terminal/terminal-screen-xterm.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a.raw",
+      "sha256": "f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a",
+      "bytes": 23678
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/ui/terminal/terminal-view.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5bd0a7545b4b564fda870b26be5b3b9e8a11580f1df83e9fccd0142ad7c209de.raw",
+      "sha256": "5bd0a7545b4b564fda870b26be5b3b9e8a11580f1df83e9fccd0142ad7c209de",
+      "bytes": 20005
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/shared/native/frames.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2.raw",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2",
+      "bytes": 3741
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/shared/native/frames.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d.raw",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d",
+      "bytes": 9119
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/shared/native/host.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8.raw",
+      "sha256": "6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8",
+      "bytes": 5279
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/shared/native/input.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76.raw",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76",
+      "bytes": 1281
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/shared/native/input.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/b0aa914c51a85f9b452c49aba7353a1a98358ce0e6e9bd678a56652ceffbef7e.raw",
+      "sha256": "b0aa914c51a85f9b452c49aba7353a1a98358ce0e6e9bd678a56652ceffbef7e",
+      "bytes": 7532
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/external/tmp/huhu-t05-missing-executable-c.config.mjs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/4b209dd1c55cd79aa7742d3add0b580f2392a912a048d7d71e5ecfe4461438b6.raw",
+      "sha256": "4b209dd1c55cd79aa7742d3add0b580f2392a912a048d7d71e5ecfe4461438b6",
+      "bytes": 329
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/external/tmp/huhu-check-runner.py": {
+      "path": "T-05-logs/owner-drain-discovery/objects/1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c.raw",
+      "sha256": "1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c",
+      "bytes": 1121
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/external/tmp/huhu-t05-missing-executable-c-run.py": {
+      "path": "T-05-logs/owner-drain-discovery/objects/40b500e6fad31bc28eb81b9f70bd7084b884b2e6a5c18ada5aa5b6fec318266d.raw",
+      "sha256": "40b500e6fad31bc28eb81b9f70bd7084b884b2e6a5c18ada5aa5b6fec318266d",
+      "bytes": 2615
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/outbox.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72.raw",
+      "sha256": "affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72",
+      "bytes": 35018
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/session.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/2ab702a053f23d87fea554242072dc95ee2c06f03f93e100b22f3ec2b8aeb8ce.raw",
+      "sha256": "2ab702a053f23d87fea554242072dc95ee2c06f03f93e100b22f3ec2b8aeb8ce",
+      "bytes": 82726
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/main.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6.raw",
+      "sha256": "7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6",
+      "bytes": 14457
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/frame.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/797d26e00813cb66a71df01b7172933ab3fc9480f7e299bdd8037ea6045883d9.raw",
+      "sha256": "797d26e00813cb66a71df01b7172933ab3fc9480f7e299bdd8037ea6045883d9",
+      "bytes": 14498
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/tests/stdio.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/b0489fa16f312db28238bfd633c33639cd52781abd9b0f597b1700d6b0f2b8b4.raw",
+      "sha256": "b0489fa16f312db28238bfd633c33639cd52781abd9b0f597b1700d6b0f2b8b4",
+      "bytes": 13428
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/test/fixtures/native/terminal-input-admission-v1.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/9ab2930d79584231afb4f1f51f26c5294db75c77c21d99c279ddb6399e0c3dbc.raw",
+      "sha256": "9ab2930d79584231afb4f1f51f26c5294db75c77c21d99c279ddb6399e0c3dbc",
+      "bytes": 18056
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/Cargo.toml": {
+      "path": "T-05-logs/owner-drain-discovery/objects/4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c.raw",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c",
+      "bytes": 876
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/Cargo.lock": {
+      "path": "T-05-logs/owner-drain-discovery/objects/52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52.raw",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "bytes": 17755
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/job.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83.raw",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "bytes": 15567
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/bootstrap.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8.raw",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8",
+      "bytes": 22732
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/inherited_fds.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d.raw",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "bytes": 1244
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/cookies.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e.raw",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e",
+      "bytes": 6334
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/data.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067.raw",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067",
+      "bytes": 5272
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/native/pty-server/src/agent_data.rs": {
+      "path": "T-05-logs/owner-drain-discovery/objects/47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf.raw",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf",
+      "bytes": 88523
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/services/terminal/sessions.e2e.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472.raw",
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "bytes": 3049
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/src/modules/agent/platform/desktop/pty/helper.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4.raw",
+      "sha256": "235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4",
+      "bytes": 164
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/external/tmp/huhu-t05-root-repair-inputs-v5.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/35759b8979bcd139a0a71f7796103dc485807b15d774d13ccf8d55b027eb477f.raw",
+      "sha256": "35759b8979bcd139a0a71f7796103dc485807b15d774d13ccf8d55b027eb477f",
+      "bytes": 389424
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/external/tmp/huhu-t05-missing-executable-c-original.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472.raw",
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "bytes": 3049
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/vitest.config.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415.raw",
+      "sha256": "4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415",
+      "bytes": 2599
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/tsconfig.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb.raw",
+      "sha256": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb",
+      "bytes": 784
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/tsconfig.test.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b.raw",
+      "sha256": "e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b",
+      "bytes": 310
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/package.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c.raw",
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c",
+      "bytes": 13443
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/eslint.config.mts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/9128aeaecb755328ac4aaffbc4aad91db5f10fb8db4c85b0fa62e1bf331d30d5.raw",
+      "sha256": "9128aeaecb755328ac4aaffbc4aad91db5f10fb8db4c85b0fa62e1bf331d30d5",
+      "bytes": 3344
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-packet.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e.raw",
+      "sha256": "82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e",
+      "bytes": 3574
+    },
+    "/tmp/huhu-t05-missing-executable-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-input.json": {
+      "path": "T-05-logs/owner-drain-discovery/objects/959d36f484044019e5f1156c27eb121539c34025b1c2c6874b4e78b1e42eaf0d.raw",
+      "sha256": "959d36f484044019e5f1156c27eb121539c34025b1c2c6874b4e78b1e42eaf0d",
+      "bytes": 21238
+    },
+    "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/host.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5aab983c1851863081753a337f9561f13ab3ffb0a5e91b4d7fe72683be298040.raw",
+      "sha256": "5aab983c1851863081753a337f9561f13ab3ffb0a5e91b4d7fe72683be298040",
+      "bytes": 19978
+    },
+    "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/host.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/5e9429bba4d755e138ca28dd83742541aec7392f1fe318c9ac25bf5fee0bdd9c.raw",
+      "sha256": "5e9429bba4d755e138ca28dd83742541aec7392f1fe318c9ac25bf5fee0bdd9c",
+      "bytes": 27546
+    },
+    "/tmp/huhu-t05-owner-drain-before/src/host/desktop/native/helper-stream.test.ts": {
+      "path": "T-05-logs/owner-drain-discovery/objects/a04a18510d0cec3119c4a85c1bfeb7d5aa819bf9f88c9de06627b14108eb0d30.raw",
+      "sha256": "a04a18510d0cec3119c4a85c1bfeb7d5aa819bf9f88c9de06627b14108eb0d30",
+      "bytes": 35554
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247.raw",
+      "sha256": "e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247",
+      "bytes": 38004
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e.raw",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e",
+      "bytes": 31828
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3.raw",
+      "sha256": "849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3",
+      "bytes": 25566
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618.raw",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397.raw",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-packet.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e.raw",
+      "sha256": "82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e",
+      "bytes": 3574
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round2-settlement-contract.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/0f7707283c415a4a428107f1f8bc2e6e0c4c7228ccaf233af486c15784b9340d.raw",
+      "sha256": "0f7707283c415a4a428107f1f8bc2e6e0c4c7228ccaf233af486c15784b9340d",
+      "bytes": 2477
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round2-reserve-settlement-contract.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/8618af912ca12e75923c3e2c99cc73c143bca0a4f4839d8233b891ad85e3a403.raw",
+      "sha256": "8618af912ca12e75923c3e2c99cc73c143bca0a4f4839d8233b891ad85e3a403",
+      "bytes": 2109
+    },
+    ".agents/skills/dev/SKILL.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6.raw",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873
+    },
+    ".agents/skills/dev/references/testing.md": {
+      "path": "T-05-logs/owner-drain-discovery/objects/bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103.raw",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452
+    }
+  },
+  "errors": [],
+  "scope": "Exactly three Host/test paths after actual followup; all other source/native/target/generated STOP",
+  "root_observation": "Read actual probe, report, receipt and key complete event chain; independently traced Sessions parallel releases and Host every(released) shutdown. Report lines corrected to Host476/Helper901; no original rewritten."
+}

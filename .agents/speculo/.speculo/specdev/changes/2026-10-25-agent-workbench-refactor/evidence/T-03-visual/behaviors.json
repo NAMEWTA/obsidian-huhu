@@ -1,0 +1,36 @@
+[
+  {
+    "case": "Chrome name Enter/Tab/Escape",
+    "passed": true
+  },
+  {
+    "case": "Chrome late background result keeps external focus",
+    "passed": true
+  },
+  {
+    "case": "Chrome late result after actual target/window blur",
+    "passed": true
+  },
+  {
+    "case": "Chrome 320x360 End reveals final action",
+    "passed": true,
+    "text": "Agent settings…",
+    "top": 319,
+    "bottom": 351
+  },
+  {
+    "case": "Chrome attached original actions retained",
+    "passed": true,
+    "labels": [
+      "Rename",
+      "Split to the right",
+      "Split below",
+      "Copy session ID",
+      "Copy current folder path",
+      "Show folder in file manager",
+      "Attach note or archive…",
+      "End session",
+      "Close view"
+    ]
+  }
+]

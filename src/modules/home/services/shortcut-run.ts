@@ -80,11 +80,12 @@ export async function runShortcut(button: ShortcutButton, ports: ShortcutPorts):
 						title: button.label || button.agentId!,
 						source: { kind: 'widget', path: ports.boardPath, id: 'shortcuts' },
 						agentId: button.agentId!,
-						destination: { kind: 'fresh', cwd: '' },
+						// The saved Space, or none: the agent module then opens its Space chooser and cancelling starts nothing.
+						destination: { kind: 'fresh', cwd: '', ...(button.spaceId ? { spaceId: button.spaceId } : {}) },
 						finalPrompt: button.prompt!,
 						files: [],
 					},
-					{ signal: ports.signal },
+					{ signal: ports.signal, interactive: true },
 				);
 				if (!alive()) return;
 				ports.notify(

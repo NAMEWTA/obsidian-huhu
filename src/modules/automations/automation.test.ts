@@ -184,7 +184,7 @@ test('shutdown waits for an in-flight agent start and stops only its returned te
 		service = f.make();
 	await service.load();
 	const d = definition({
-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
 	});
 	await service.save(d);
 	const run = service.run(d);
@@ -220,7 +220,7 @@ test('failed shutdown persistence or stop stays disabled and retries without los
 		service = f.make();
 	await service.load();
 	const d = definition({
-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
 	});
 	await service.save(d);
 	await service.run(d);
@@ -315,7 +315,7 @@ test('active agents do not overlap; a slow agent startup does not hold reminders
 		service = f.make();
 	await service.load();
 	const d = definition({
-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
 	});
 	await service.save(d);
 	await service.save(definition({ id: 'reminder' }));
@@ -369,7 +369,7 @@ test('restart marks unconfirmed runs interrupted rather than executing them agai
 	await service.load();
 	await service.save(
 		definition({
-			action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+			action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
 		}),
 	);
 	await service.tick(2000);
@@ -931,7 +931,7 @@ test('an agent handle arriving during failed cancellation persistence remains ow
 		service = f.make();
 	await service.load();
 	const d = definition({
-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
 	});
 	await service.save(d);
 	const run = service.run(d);
@@ -1037,4 +1037,25 @@ test('anniversary reminders use the singular English year only for a difference 
 	} finally {
 		setLanguage('zh');
 	}
+});
+
+test('an unbound fresh agent action fails with spaceRequired and never reaches the runtime', async () => {
+	const start = (() => { const calls: unknown[] = []; return Object.assign(async () => { calls.push(1); throw new Error('must not start'); }, { calls }); })();
+	const agent: AgentRuntimePort = {
+		listAgents: () => [],
+		listSessions: async () => [],
+		start: start as unknown as AgentRuntimePort['start'],
+		stop: async () => {},
+		open: async () => {},
+	};
+	const service = fixture(agent).make();
+	await service.load();
+	const d = definition({
+		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
+	});
+	const run = await service.run(d);
+	assert.equal(run?.status, 'failed');
+	assert.equal(run?.errorCode, 'spaceRequired');
+	assert.equal(start.calls.length, 0);
+	await service.shutdown();
 });

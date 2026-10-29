@@ -1,3 +1,5 @@
+import { NativeHost } from '../../../../host/desktop/native/host';
+import { PtyHelper } from '../../platform/desktop/pty/helper';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { test } from 'vitest';
@@ -6,25 +8,25 @@ import { TerminalSessions } from './sessions';
 import type { TerminalSession } from './session';
 
 // Built by `cargo build` in native/pty-server; CI builds it before running the tests.
-const binary = ['release', 'debug'].map((profile) => `native/pty-server/target/${profile}/huhu-pty`).find((file) => existsSync(file));
+const requestedBinary = process.env.HUHU_TEST_PTY_BINARY;
+if (requestedBinary !== undefined && !existsSync(requestedBinary)) throw new Error(`HUHU_TEST_PTY_BINARY does not exist: ${requestedBinary}`);
+const binary = requestedBinary ?? ['release', 'debug'].map((profile) => `native/pty-server/target/${profile}/huhu-pty`).find((file) => existsSync(file));
 
 function manager() {
 	const win = globalThis as unknown as Window;
 	return new TerminalSessions({
-		app: { workspace: { containerEl: { win } } } as never,
+		native: new NativeHost(events => PtyHelper.start(binary!, events, win, {})),
 		environment: async () => ({}),
-		version: 'test',
 		platform: process.platform,
 		settings: () => normalizeTerminalSettings({}),
 		colors: () => ({ foreground: '#ffffff', background: '#000000', cursor: '#ffffff' }),
-		binary: () => Promise.resolve(binary!),
 	});
 }
 
 function until(session: TerminalSession, predicate: (text: string) => boolean, timeout = 10_000): Promise<string> {
 	return new Promise((resolve, reject) => {
 		let text = '';
-		const timer = setTimeout(() => reject(new Error(`timed out: ${JSON.stringify(text.slice(-200))}`)), timeout);
+		const timer = setTimeout(() => { off(); reject(new Error(`timed out: ${JSON.stringify(text.slice(-200))}`)); }, timeout);
 		const off = session.subscribe((chunk) => {
 			text += chunk;
 			if (predicate(text)) {
@@ -47,15 +49,16 @@ test.skipIf(!binary || process.platform === 'win32')('sessions run on the real h
 		const text = await until(session, (output) => output.includes('got:hello:'));
 		assert.match(text, /30 100/);
 		assert.ok(text.includes(`got:hello:${session.id}`));
-		await new Promise<void>((resolve) => {
-			const check = () => (session.connection === 'exited' ? resolve() : setTimeout(check, 20));
-			check();
-		});
+		const deadline = Date.now() + 10_000;
+		while (sessions.get(session.id)?.connection !== 'exited') {
+			assert.ok(Date.now() < deadline, 'timed out waiting for natural exit');
+			await new Promise(resolve => setTimeout(resolve, 20));
+		}
 		assert.equal(session.exitCode, 4);
 		const missing = await sessions.create({ kind: 'shell', title: 'missing', file: '/huhu/no/such/program', args: [], cwd: process.cwd() });
 		assert.equal(missing.connection, 'failed');
 		await assert.rejects(sessions.historyClient().request('query', { vault: 3 }), /invalid type|expected/i);
 	} finally {
-		sessions.dispose();
+		await sessions.dispose();
 	}
 }, 30_000);

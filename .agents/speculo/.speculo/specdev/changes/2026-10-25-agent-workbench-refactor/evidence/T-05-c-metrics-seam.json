@@ -1,0 +1,8 @@
+{
+  "ticket": "T-05",
+  "recorded_at": "2026-10-25T13:00:22.455393+00:00",
+  "tool": "collaboration.send_message",
+  "target": "/root/implement_t01",
+  "decision": "Allow C explicit test-only HUHU_PTY_STREAM_METRICS in fixture-owned temporary directory for bounded shutdown snapshot of actual production budget counters. Default no I/O; no wire/public API; no symlink or unrelated overwrite; measurement failure cannot block business output/exit. Existing C write scope only.",
+  "state": "authorized and message actually sent; implementation/measurements pending, not validated"
+}

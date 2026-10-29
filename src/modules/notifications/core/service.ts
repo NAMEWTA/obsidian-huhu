@@ -1,4 +1,11 @@
-import type { NotificationChannelId, NotificationInbox, NotificationRecord, NotificationRequest } from '../api';
+import {
+	NOTIFICATIONS_RECOVERY_OWNER,
+	type NotificationChannelId,
+	type NotificationInbox,
+	type NotificationRecord,
+	type NotificationRequest,
+} from '../api';
+import type { RecoveryOwner } from '../../../shared/storage/recovery-contracts';
 import { automationOutcome } from '../../../shared/automation/errors';
 import { t } from '../../../shared/i18n/index';
 import { JsonStore } from '../../../shared/json-store';
@@ -33,6 +40,11 @@ export class NotificationService implements NotificationInbox {
 	private stopped = false;
 	private sealed = false;
 	private loaded = false;
+	/** Recovery hold (contracts section 6): every mutation fails visibly until `resumeWrites`. */
+	private held = false;
+	private inflight = 0;
+	/** Delivery failures the system reported while held; applied after the hold so none is silently dropped. */
+	private deferred: Array<{ id: string; channel: NotificationChannelId }> = [];
 	constructor(
 		storage: TextStorage,
 		path: string,
@@ -73,6 +85,7 @@ export class NotificationService implements NotificationInbox {
 	}
 	private enqueue(operation: () => Promise<void>): Promise<void> {
 		if (this.sealed) return Promise.reject(new Error('Notification service is shutting down'));
+		if (this.held) return Promise.reject(new Error('notifications-recovery-busy'));
 		const result = this.tail.then(() => {
 			if (!this.loaded) throw new Error(t('automation.failedLoad'));
 			return operation();
@@ -93,40 +106,49 @@ export class NotificationService implements NotificationInbox {
 
 	send(request: NotificationRequest): Promise<void> {
 		return this.enqueue(async () => {
-			if (this.state.receipts[request.id]) return;
-			const row: NotificationRecord = {
-				...request,
-				channels: [...new Set(request.channels)],
-				createdAt: Date.now(),
-				read: false,
-				deliveries: {},
-			};
-			// Reserve every channel before any external side effect. A crash after
-			// submission is reported as unknown, never retried as a duplicate notice.
-			for (const channel of row.channels) row.deliveries[channel] = 'pending';
-			await this.commit((state) => {
-				state.records.push(row);
-				state.receipts[row.id] = { ...row.deliveries };
-			});
-			for (const channel of row.channels) {
-				let status: 'sent' | 'failed' | 'unknown' = 'unknown';
-				if (!this.stopped) {
-					try {
-						if (!this.available(channel)) throw new Error(t('automation.channelUnavailable'));
-						await this.deliveryAdapter.send(channel, row, {
-							open: () => this.open(row),
-							failed: () => {
-								void this.enqueue(() => this.delivery(row.id, channel, 'failed')).catch(console.error);
-							},
-						});
-						status = 'sent';
-					} catch {
-						status = 'failed';
-					}
-				}
-				await this.delivery(row.id, channel, status);
+			this.inflight++;
+			try {
+				await this.sendNow(request);
+			} finally {
+				this.inflight--;
 			}
 		});
+	}
+	private async sendNow(request: NotificationRequest): Promise<void> {
+		if (this.state.receipts[request.id]) return;
+		const row: NotificationRecord = {
+			...request,
+			channels: [...new Set(request.channels)],
+			createdAt: Date.now(),
+			read: false,
+			deliveries: {},
+		};
+		// Reserve every channel before any external side effect. A crash after
+		// submission is reported as unknown, never retried as a duplicate notice.
+		for (const channel of row.channels) row.deliveries[channel] = 'pending';
+		await this.commit((state) => {
+			state.records.push(row);
+			state.receipts[row.id] = { ...row.deliveries };
+		});
+		for (const channel of row.channels) {
+			let status: 'sent' | 'failed' | 'unknown' = 'unknown';
+			if (!this.stopped) {
+				try {
+					if (!this.available(channel)) throw new Error(t('automation.channelUnavailable'));
+					await this.deliveryAdapter.send(channel, row, {
+						open: () => this.open(row),
+						failed: () => {
+							if (this.held) this.deferred.push({ id: row.id, channel });
+							else void this.enqueue(() => this.delivery(row.id, channel, 'failed')).catch(console.error);
+						},
+					});
+					status = 'sent';
+				} catch {
+					status = 'failed';
+				}
+			}
+			await this.delivery(row.id, channel, status);
+		}
 	}
 	private delivery(id: string, channel: NotificationChannelId, status: 'sent' | 'failed' | 'unknown'): Promise<void> {
 		return this.commit((state) => {
@@ -157,6 +179,33 @@ export class NotificationService implements NotificationInbox {
 		return this.canOpenRecord?.(record) ?? Promise.resolve(!!(record.source || record.target));
 	}
 	refreshOpeners(): void { this.emit(); }
+	/** Close admission for a recovery operation. Already queued work is finished by `drainWrites`. */
+	quiesceWrites(): void {
+		this.held = true;
+	}
+	/** Reopen admission and apply delivery failures that arrived while held (only for receipts that still exist). */
+	resumeWrites(): void {
+		this.held = false;
+		const late = this.deferred.splice(0);
+		for (const { id, channel } of late)
+			void this.enqueue(async () => {
+				if (this.state.receipts[id]) await this.delivery(id, channel, 'failed');
+			}).catch(console.error);
+	}
+	/** Sends that are reserved but not finished: the operation is refused instead of racing the delivery. */
+	busyWork(): string[] {
+		return this.inflight > 0 ? [`notifications:${this.inflight}`] : [];
+	}
+	/** Strict: rejects when any admitted write failed (the swallowing tail is not evidence of success). */
+	async drainWrites(): Promise<void> {
+		await this.tail;
+		await this.store.flush();
+	}
+	/** Re-read the file after a recovery replaced it. Sends nothing: reading never delivers. */
+	async adoptFromDisk(): Promise<void> {
+		await this.tail;
+		await this.load();
+	}
 	dispose(): void {
 		void this.shutdown().catch(console.error);
 	}
@@ -168,4 +217,17 @@ export class NotificationService implements NotificationInbox {
 		await this.tail;
 		await this.store.flush();
 	}
+}
+
+/** The inbox file as a recovery owner: records, read state and delivery receipts (tombstones) travel together. */
+export function notificationsRecoveryOwner(service: NotificationService, path: string): RecoveryOwner {
+	return {
+		id: NOTIFICATIONS_RECOVERY_OWNER,
+		owns: (candidate) => candidate === path,
+		preflight: async () => ({ busy: service.busyWork() }),
+		quiesce: async () => service.quiesceWrites(),
+		drain: () => service.drainWrites(),
+		adopt: () => service.adoptFromDisk(),
+		release: async () => service.resumeWrites(),
+	};
 }

@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-26T14:07:55.355204+00:00",
+  "recovery_cycle": 1,
+  "attempt": 2,
+  "before": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/scripts/bundle-budget.json",
+    "sha256": "db25ef70fb11050ec4d44f8f830040c76dfce977231b55835ac3a0fac8f4f8fc",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/db25ef70fb11050ec4d44f8f830040c76dfce977231b55835ac3a0fac8f4f8fc.raw",
+    "bytes": 2540
+  },
+  "after": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/scripts/bundle-budget.json",
+    "sha256": "8dfce686accf050cde383516d5a834550fe5f90f64f10d24fca3d790ae54a4a0",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/8dfce686accf050cde383516d5a834550fe5f90f64f10d24fca3d790ae54a4a0.raw",
+    "bytes": 2946
+  },
+  "changed_limits": {
+    "outputBytes": [
+      6667264,
+      6670336
+    ]
+  },
+  "measured": {
+    "main": 6669680,
+    "eager": 123533,
+    "agent_activation": 1314666
+  },
+  "reason": "Actual F6 source contribution; only exceeded output limit raised to minimal KiB ceiling. No dependency changes.",
+  "attribution": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-budget-attribution-r4.json",
+    "sha256": "1290a79f964e129953b6da1efe967de72af21bcd0eb61dc229c088fb10a66c1d",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/1290a79f964e129953b6da1efe967de72af21bcd0eb61dc229c088fb10a66c1d.raw",
+    "bytes": 1314706
+  }
+}

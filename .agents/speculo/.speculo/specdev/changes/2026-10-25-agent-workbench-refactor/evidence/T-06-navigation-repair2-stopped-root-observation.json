@@ -1,0 +1,37 @@
+{
+  "utc": "2026-10-25T21:38:07.836548+00:00",
+  "actual_SOURCE_STOPPED_messages": [
+    "/root/prepare_t03 navigation-repair2; only tmp handoff remains",
+    "/root/prepare_t05_screen navigation-script2",
+    "/root/implement_t01 C14 unchanged/read-only stopped"
+  ],
+  "source_manifests": [
+    {
+      "path": "/tmp/huhu-t06-a-navigation-repair2-source.json",
+      "sha256": "bc8d8f403193f9f49808ac5a92b6ea07f97e1fbf2b33a9c3c9e9269238029ad1"
+    },
+    {
+      "path": "/tmp/huhu-t06-b-navigation-script2-source.json",
+      "sha256": "b522bc4f91a930d6efbc70ea0d3389c93a0c1c44f5081c9c2dbecc53b5286c85"
+    }
+  ],
+  "changed_since_candidate2": [
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-activity.mjs",
+      "before": "c40866f20d2c7cd06de49e161080a1ad137214449c1bab6296a034dfb85823e0",
+      "after": "d62c1b94f48aa79316dac46268e912452ede2c06c4f9bbc77c26bda3df178248"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-activity.test.ts",
+      "before": "8db49eb7e0c7b399ade731e61bc54ed0349ef0c21936aabdcf136668961b900c",
+      "after": "48afe6d97278f89b6c94be130d03de41f36f2c6465a1b16fe513ffa202d37973"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "before": "ed09e24141c92770385602a1024592f4c8c5f52140e1b7368c07787fbe84dfa7",
+      "after": "427253a5b2ad62f9818c02a232969d8d9960e4431dc114852485677a29212bd3"
+    }
+  ],
+  "next": "Root candidate3 source freeze/build; this observation is not acceptance",
+  "attempts_before_command": 2
+}

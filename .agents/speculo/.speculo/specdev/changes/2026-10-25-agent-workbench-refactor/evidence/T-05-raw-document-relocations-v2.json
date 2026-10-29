@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-10-25T15:34:21.048782+00:00",
+  "previous_manifest": "T-05-raw-document-relocations.json",
+  "reason": "Remaining historical README snapshot is also raw captured input, not a maintained guide; preserve original bytes and historical audit references via relocation.",
+  "entries": [
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/scope-map18-README.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/scope-map18-README.md.raw",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec",
+      "bytes": 5714
+    }
+  ]
+}

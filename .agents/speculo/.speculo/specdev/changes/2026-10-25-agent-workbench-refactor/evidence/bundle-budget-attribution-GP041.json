@@ -1,0 +1,88 @@
+{
+  "note": "Post-fix (GP-041/104 A+B applied) production metafile, bytesInOutput per input; deltaFromCommittedHead is from sessions/20261027T-claude/100-bundle-analysis/REPORT.md (HEAD main.js baseline). No new startup/browser dependency or module entered either closure; both growths are small feature code with no behaviour-preserving lazy split.",
+  "measured": {
+    "startupEvaluatedBytes": 124918,
+    "browserActivationBytes": 104246,
+    "outputBytesAfterFix": 6749303
+  },
+  "limits": {
+    "eagerBytes": 124928,
+    "browserActivation": 104448
+  },
+  "startupEvaluated": [
+    {
+      "path": "src/app/main.ts",
+      "bytesInOutput": 8163,
+      "deltaFromCommittedHead": 1055,
+      "ticket": "T-01/T-02"
+    },
+    {
+      "path": "src/app/workbench/compose-workbench.ts",
+      "bytesInOutput": 12199,
+      "deltaFromCommittedHead": 629,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "bytesInOutput": 1492,
+      "deltaFromCommittedHead": 146,
+      "ticket": "T-09"
+    },
+    {
+      "path": "src/host/obsidian/storage/device-id.ts",
+      "bytesInOutput": 970,
+      "deltaFromCommittedHead": 120,
+      "ticket": "T-01/T-02"
+    },
+    {
+      "path": "src/host/obsidian/storage/private-storage.ts",
+      "bytesInOutput": 418,
+      "deltaFromCommittedHead": 72,
+      "ticket": "T-01/T-02"
+    },
+    {
+      "path": "src/app/contracts/workbench.ts",
+      "bytesInOutput": 600,
+      "deltaFromCommittedHead": 28,
+      "ticket": "T-01/T-02"
+    }
+  ],
+  "browserActivation": [
+    {
+      "path": "src/shared/native/cookies.ts",
+      "bytesInOutput": 805,
+      "deltaFromCommittedHead": 805,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/modules/browser/module.ts",
+      "bytesInOutput": 2742,
+      "deltaFromCommittedHead": 764,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/modules/browser/services/host.ts",
+      "bytesInOutput": 11151,
+      "deltaFromCommittedHead": 197,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/host/desktop/browser-session-migration.ts",
+      "bytesInOutput": 9063,
+      "deltaFromCommittedHead": 21,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/host/desktop/private-mode.ts",
+      "bytesInOutput": 3882,
+      "deltaFromCommittedHead": 5,
+      "ticket": "T-13"
+    },
+    {
+      "path": "src/host/desktop/huhu-paths.ts",
+      "bytesInOutput": 539,
+      "deltaFromCommittedHead": 4,
+      "ticket": "T-13"
+    }
+  ]
+}

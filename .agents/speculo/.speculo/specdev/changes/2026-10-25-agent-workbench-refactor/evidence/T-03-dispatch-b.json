@@ -1,0 +1,101 @@
+{
+  "task": "T-03 implementation B / GUI",
+  "actual_agent": "/root/prepare_t02",
+  "dispatch_tool": "collaboration.followup_task",
+  "recorded_at": "2026-10-25T07:44:36.296810+00:00",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "Existing actual agent handle inherits original explicitly requested model/effort",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-012",
+  "map_revision": 13,
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "343bb8730ddb652b6795912a9a73ceebe8429176981291b6097166be0a6a8d60"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "258a9c362844398b56dfdac79b4f931b1d2db17661d058db8c310d78a77aebd5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-api-frozen.md",
+      "sha256": "0742ec1ee8954a2897724063e615c6aa913f780ecb8874b8c8937908ea8a8be2"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-ui-preflight.md",
+      "sha256": "d9203f0b5b8ac024cca1ba4a4228d8f5886b49866fe3cff52c65e7fd76e83223"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-prior-delivery.json",
+      "sha256": "b57a08d1e94984ece70f83e94b467e20a3c73f65c9dd6631683dfb58d739122c"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3"
+    }
+  ],
+  "prerequisite": "T-02 done; T-03 A real DTO/public methods/en-zh keys landed and Root verified; A remains active only in nonoverlapping source paths",
+  "write_allocation": [
+    "src/modules/agent/ui/create/**",
+    "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+    "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx"
+  ],
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "formal change records"
+  ],
+  "not_unlocked": [
+    "services/core/i18n/shared UI/CSS source/TabStrip/workspace fixtures/other modules/docs/native/platform",
+    "scripts/bundle-budget.json",
+    "dependencies"
+  ],
+  "checks": "Scoped DOM and scoped lint only; coordinate project typechecks; no full scans/build while A writes. Root owns final generation and global checks.",
+  "real_e2e": "User-owned; local actual production-component harness is not real Obsidian/Provider E2E",
+  "forbidden": "commit/push/PR/release/archive/permanent knowledge writes/dependency changes/other change edits"
+}

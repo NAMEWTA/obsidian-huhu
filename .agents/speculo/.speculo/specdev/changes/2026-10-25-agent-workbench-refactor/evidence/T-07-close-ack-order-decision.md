@@ -1,0 +1,7 @@
+# T07 关闭终态先于 ACK 可见
+
+依据C实际ipc-capacity-close-v1反例：原资源与call已收束且unregistered帧被Host收到，core.current仍等待2ms轮询而误拒立即重注册。原失败由C交接保存，Root尚未把修复声明为通过。
+
+在原listener/token/locator与全部business/call/socket责任真实收束、固定unregistered ACK permit已取得且成功排入原有序Outbox后，native可先清core.current/结束旧runtime。ACK自身编码帧/物理write责任仍由原独立permit持有至结算，不能因清current提前返额；最多2个固定注册帧及FIFO/controlId隔离不变。编码、保留或排队失败不宣称已通知；writer故障沿helper失败/EOF语义。
+
+Host未收到ACK仍保持closing/unknown/BUSY；只有实际ACK及本地call/frame结算满足原条件才允许下代。此为终态在对外通知前提交的实现顺序澄清，不改变wire、A公开端口或外部关闭承诺。必需反例为慢ACK/满固定槽、ACK写失败、收到ACK立即注册、Browser共享owner继续；不用sleep掩盖错误。

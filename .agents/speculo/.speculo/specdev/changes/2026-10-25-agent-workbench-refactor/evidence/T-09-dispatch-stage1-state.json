@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-26T16:00:54.560086+00:00",
+  "before": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09.md",
+    "sha256": "a7040a33a50008715e9f64cebd00048d034d7aea29b745ac7c0f66f4c6341e10",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/a7040a33a50008715e9f64cebd00048d034d7aea29b745ac7c0f66f4c6341e10.raw"
+  },
+  "after": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09.md",
+    "sha256": "a46865c685619d15c70d5e09108e0f114a574a8fecd72f1f1fe41dc0839ad30a",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/a46865c685619d15c70d5e09108e0f114a574a8fecd72f1f1fe41dc0839ad30a.raw"
+  },
+  "dispatch": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-dispatch-stage1.json",
+    "sha256": "06adeaba29d2b761bf5fb68f2e7f04ace181c4f4d9308a028ff39b53d7bba920",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/06adeaba29d2b761bf5fb68f2e7f04ace181c4f4d9308a028ff39b53d7bba920.raw"
+  }
+}

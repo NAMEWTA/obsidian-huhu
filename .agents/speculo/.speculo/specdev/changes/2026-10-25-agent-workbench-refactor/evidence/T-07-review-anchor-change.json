@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-26T03:14:25.275702+00:00",
+  "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/07-local-cli.md",
+  "before_snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-ticket-before-review-anchors.raw",
+  "before_sha256": "5469f02c4f6b277b6976067282b54d233b1dae3676883ade658fd4d000374e5a",
+  "after_sha256": "9d81eb7480ab6eac3d385f68269b85d9fd9929f1961d5e680575ad38525d341b",
+  "anchors": {
+    "目标与来源": "purpose",
+    "行为与范围": "scope",
+    "开源参考与实施前核验": "research",
+    "有序执行路线": "route",
+    "验收标准": "acceptance",
+    "验证方法": "verification",
+    "执行约束": "constraints",
+    "未决事项与风险": "risks",
+    "GP025 / Map26 实施接缝": "t07-engineering"
+  },
+  "original_bytes_recovered_exactly_by_removing_insertions": true,
+  "purpose": "Stable contract sections for independent review; no product or contract semantics changed. Performed after original C3 implementation and validation stopped."
+}

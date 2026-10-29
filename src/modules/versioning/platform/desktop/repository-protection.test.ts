@@ -3,10 +3,14 @@ import { mkdtemp, mkdir, readFile, readdir, rm, writeFile, realpath } from 'node
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
+import type { TextStorage } from '../../../../shared/storage/ports';
 import { desktopGitHost } from './host';
 import { locateRepo } from './locate';
 import { createGitRunner } from './git-runner';
 const roots: string[] = [];
+// protectRepository never uses the device store. The default vault storage would start a background `.huhu` repair walk
+// that outlives the test, hits the removed temp root and logs after the worker has closed, so use an inert store.
+const inertStorage: TextStorage = { exists: async () => false, read: async () => '', write: async () => {}, mkdir: async () => {} };
 afterEach(async () => {
 	vi.unstubAllEnvs();
 	for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true });
@@ -54,7 +58,7 @@ test('managed ignores preserve custom rules, user data, local files and the exac
  await writeFile(path.join(root, '.host-config/plugins/huhu/data.json'), 'legacy private settings');
  await mkdir(path.join(root, '.host-config/plugins/other'), { recursive: true });
  await writeFile(path.join(root, '.host-config/plugins/other/data.json'), 'other plugin settings');
- const host = desktopGitHost(root, 'device', undefined, '.host-config');
+ const host = desktopGitHost(root, 'device', inertStorage, '.host-config');
 	const result = await host.protectRepository!('git', root);
 	expect(result.removed).toEqual(['.DS_Store']);
 	expect(await readFile(path.join(root, '.DS_Store'), 'utf8')).toBe('working value');
@@ -78,7 +82,7 @@ test('an occupied index or cancelled lifetime never removes staged files', async
  const root = await fixture(); git(root, 'init', '-q');
  await writeFile(path.join(root, '.DS_Store'), 'staged value'); git(root, 'add', '.DS_Store');
  const original = await readFile(path.join(root, '.git/index'));
- const host = desktopGitHost(root, 'device');
+ const host = desktopGitHost(root, 'device', inertStorage);
  const abort = new AbortController(); abort.abort();
  await expect(host.protectRepository!('git', root, abort.signal)).rejects.toThrow('cancelled');
  await writeFile(path.join(root, '.git/index.lock'), 'owned elsewhere');

@@ -1,0 +1,1692 @@
+[
+  {
+    "scene": "sidebar",
+    "state": "loading",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-loading-800-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\n\nLoading Spaces…\n\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New tab",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "save-error",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-save-error-480-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已连接\n\nstable\n\n停止会话\n归档会话\n\n清理未核实\n\n54b959ba-d7b1-41d8-83b6-4460dae45b84 · stable · r\n\n根进程：根进程已退出 · 清理：清理未核实 · 输出：输出未核实\n\n空间数据保存或回读失败，请检查目录权限与剩余空间。\n\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "archive-result",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-archive-result-320-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nA very long terminal name to verify truncation, state and accessible actions\n\nConnected\n\nstable\n\nStop session\nArchive session\n\nNot archived. Some sessions have unverified cleanup or unsaved results.\n\naace2859-72cb-401e-9231-cd660b9cf5b3 · stable · r\n\nCleanup incomplete\n\nRoot: Root exited · cleanup: Cleanup not verified · output: Output not verified\n\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New Space",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Current project",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "Rename Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive Space: Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Open terminal: A very long terminal name to verify truncation, state and accessible actions",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "Stop session",
+        "width": 107.46875,
+        "height": 44,
+        "hitWidth": 107.46875,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive session",
+        "width": 126.328125,
+        "height": 44,
+        "hitWidth": 126.328125,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "normal",
+    "width": 1200,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-normal-1200-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nA very long terminal name to verify truncation, state and accessible actions\n\nConnected\n\nstable\n\nStop session\nArchive session\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Current project",
+        "width": 192,
+        "height": 36,
+        "hitWidth": 192,
+        "hitHeight": 36
+      },
+      {
+        "name": "Rename Current project",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Archive Space: Current project",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New tab",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: A very long terminal name to verify truncation, state and accessible actions",
+        "width": 248,
+        "height": 32,
+        "hitWidth": 248,
+        "hitHeight": 32
+      },
+      {
+        "name": "Stop session",
+        "width": 107.46875,
+        "height": 32,
+        "hitWidth": 107.46875,
+        "hitHeight": 32
+      },
+      {
+        "name": "Archive session",
+        "width": 126.328125,
+        "height": 32,
+        "hitWidth": 126.328125,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "empty",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-empty-320-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "stopping",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-stopping-800-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已连接\n\nstable\n\n正在停止…\n\n根进程：根进程已退出 · 清理：清理未核实 · 输出：输出未核实\n\n停止会话\n强制停止\n查询停止结果\n归档会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "当前项目空间",
+        "width": 192,
+        "height": 36,
+        "hitWidth": 192,
+        "hitHeight": 36
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建标签",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 32,
+        "hitWidth": 248,
+        "hitHeight": 32
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      },
+      {
+        "name": "强制停止",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      },
+      {
+        "name": "查询停止结果",
+        "width": 108,
+        "height": 32,
+        "hitWidth": 108,
+        "hitHeight": 32
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "root-exit",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-root-exit-480-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nA very long terminal name to verify truncation, state and accessible actions\n\nDisconnected\n\nstable\n\nCleanup not verified\n\nRoot: Root exited · cleanup: Cleanup pending · output: Output not verified\n\nStop session\nForce stop\nCheck stop result\nArchive session\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New Space",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Current project",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "Rename Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive Space: Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Open terminal: A very long terminal name to verify truncation, state and accessible actions",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "Stop session",
+        "width": 107.46875,
+        "height": 44,
+        "hitWidth": 107.46875,
+        "hitHeight": 44
+      },
+      {
+        "name": "Force stop",
+        "width": 92.96875,
+        "height": 44,
+        "hitWidth": 92.96875,
+        "hitHeight": 44
+      },
+      {
+        "name": "Check stop result",
+        "width": 139.015625,
+        "height": 44,
+        "hitWidth": 139.015625,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive session",
+        "width": 126.328125,
+        "height": 44,
+        "hitWidth": 126.328125,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "partial",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-partial-320-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已断开\n\nstable\n\n清理未完成\n\n根进程：根进程已退出 · 清理：清理未完成 · 输出：输出已截断\n\n停止会话\n强制停止\n查询停止结果\n归档会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "强制停止",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "查询停止结果",
+        "width": 108,
+        "height": 44,
+        "hitWidth": 108,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "unknown",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "zh",
+    "file": "sidebar-unknown-800-theme-dark-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已断开\n\nstable\n\n清理未核实\n\n根进程：根进程已退出 · 清理：清理未核实 · 输出：输出未核实\n\n停止会话\n强制停止\n查询停止结果\n归档会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "当前项目空间",
+        "width": 192,
+        "height": 36,
+        "hitWidth": 192,
+        "hitHeight": 36
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "新建标签",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 32,
+        "hitWidth": 248,
+        "hitHeight": 32
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      },
+      {
+        "name": "强制停止",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      },
+      {
+        "name": "查询停止结果",
+        "width": 108,
+        "height": 32,
+        "hitWidth": 108,
+        "hitHeight": 32
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 32,
+        "hitWidth": 80,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "stopped",
+    "width": 960,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "en",
+    "file": "sidebar-stopped-960-theme-light-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nA very long terminal name to verify truncation, state and accessible actions\n\nDisconnected\n\nstable\n\nStopped · cleanup confirmed\n\nRoot: Root exited · cleanup: Cleanup confirmed · output: Output drained\n\nStop session\nCheck stop result\nArchive session\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Current project",
+        "width": 192,
+        "height": 36,
+        "hitWidth": 192,
+        "hitHeight": 36
+      },
+      {
+        "name": "Rename Current project",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Archive Space: Current project",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 32,
+        "hitWidth": 264,
+        "hitHeight": 32
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "New tab",
+        "width": 32,
+        "height": 32,
+        "hitWidth": 32,
+        "hitHeight": 32
+      },
+      {
+        "name": "Open terminal: A very long terminal name to verify truncation, state and accessible actions",
+        "width": 248,
+        "height": 32,
+        "hitWidth": 248,
+        "hitHeight": 32
+      },
+      {
+        "name": "Stop session",
+        "width": 107.46875,
+        "height": 32,
+        "hitWidth": 107.46875,
+        "hitHeight": 32
+      },
+      {
+        "name": "Check stop result",
+        "width": 139.015625,
+        "height": 32,
+        "hitWidth": 139.015625,
+        "hitHeight": 32
+      },
+      {
+        "name": "Archive session",
+        "width": 126.328125,
+        "height": 32,
+        "hitWidth": 126.328125,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "unconfirmed",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "zh",
+    "file": "sidebar-unconfirmed-320-theme-dark-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已恢复记录 · 未运行\n\nstable\n\n上次运行的清理未核实，暂不能再次启动。\n\n归档会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "confirmation",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-confirmation-320-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已连接\n\nstable\n\n停止会话\n归档会话\nOther target\n停止会话\n\n停止 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压 · Codex · 当前项目空间？其受管进程将结束。\neb327f58-247e-4b0c-9486-be2c51979a1c · stable · r\n\n取消\n停止会话",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "取消",
+        "width": 238,
+        "height": 44,
+        "hitWidth": 238,
+        "hitHeight": 44
+      },
+      {
+        "name": "停止会话",
+        "width": 238,
+        "height": 44,
+        "hitWidth": 238,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "archive-confirmation",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "sidebar-archive-confirmation-480-theme-dark-en.png",
+    "body": "AI Agent\nSpaces\nCurrent project\nFind\nAgent dashboard\nUsage statistics\nSESSIONS\nA very long terminal name to verify truncation, state and accessible actions\n\nConnected\n\nstable\n\nStop session\nArchive session\nOther target\nArchive session\n\nArchive A very long terminal name to verify truncation, state and accessible actions · Codex · Current project? Stop and verify cleanup for 1 sessions first.\nbf2d42a8-1d0d-46d6-bd25-a495a6523946\nA very long terminal name to verify truncation, state and accessible actions · codex · bf2d42a8-1d0d-46d6-bd25-a495a6523946 · stable · r\n\nCancel\nArchive session",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "Toggle sessions sidebar",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New Space",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Current project",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "Rename Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive Space: Current project",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Find",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Agent dashboard",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Usage statistics",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "Filter sessions",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "New tab",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "Open terminal: A very long terminal name to verify truncation, state and accessible actions",
+        "width": 248,
+        "height": 44,
+        "hitWidth": 248,
+        "hitHeight": 44
+      },
+      {
+        "name": "Stop session",
+        "width": 107.46875,
+        "height": 44,
+        "hitWidth": 107.46875,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive session",
+        "width": 126.328125,
+        "height": 44,
+        "hitWidth": 126.328125,
+        "hitHeight": 44
+      },
+      {
+        "name": "Cancel",
+        "width": 398,
+        "height": 44,
+        "hitWidth": 398,
+        "hitHeight": 44
+      },
+      {
+        "name": "Archive session",
+        "width": 398,
+        "height": 44,
+        "hitWidth": 398,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "sidebar",
+    "state": "archive-long",
+    "width": 320,
+    "height": 360,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "sidebar-archive-long-320-theme-light-zh.png",
+    "body": "AI Agent\n空间\n当前项目空间\n查找\n智能体看板\n用量统计\n会话\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n\n已连接\n\nstable\n\n停止会话\n归档会话\nOther target\n归档会话\n\n归档 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压 · Codex · 当前项目空间？将先停止并核实 20 个会话的清理结果。\n2270d46d-3174-481f-97aa-d1f7087d087f\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-0 · runtime-original-0\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-1 · runtime-original-1\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-2 · runtime-original-2\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-3 · runtime-original-3\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-4 · runtime-original-4\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-5 · runtime-original-5\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-6 · runtime-original-6\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-7 · runtime-original-7\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-8 · runtime-original-8\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-9 · runtime-original-9\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-10 · runtime-original-10\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-11 · runtime-original-11\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-12 · runtime-original-12\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-13 · runtime-original-13\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-14 · runtime-original-14\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-15 · runtime-original-15\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-16 · runtime-original-16\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-17 · runtime-original-17\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-18 · runtime-original-18\n2270d46d-3174-481f-97aa-d1f7087d087f · stable-19 · runtime-original-19\n\n取消\n归档会话",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "切换会话侧栏",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "当前项目空间",
+        "width": 168,
+        "height": 44,
+        "hitWidth": 168,
+        "hitHeight": 44
+      },
+      {
+        "name": "重命名 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档 Space: 当前项目空间",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "查找",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "智能体看板",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "用量统计",
+        "width": 264,
+        "height": 44,
+        "hitWidth": 264,
+        "hitHeight": 44
+      },
+      {
+        "name": "筛选会话",
+        "width": 24,
+        "height": 24,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "新建标签",
+        "width": 44,
+        "height": 44,
+        "hitWidth": 44,
+        "hitHeight": 44
+      },
+      {
+        "name": "打开终端: 一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压",
+        "width": 233,
+        "height": 44,
+        "hitWidth": 233,
+        "hitHeight": 44
+      },
+      {
+        "name": "停止会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 80,
+        "height": 44,
+        "hitWidth": 80,
+        "hitHeight": 44
+      },
+      {
+        "name": "取消",
+        "width": 223,
+        "height": 44,
+        "hitWidth": 223,
+        "hitHeight": 44
+      },
+      {
+        "name": "归档会话",
+        "width": 223,
+        "height": 44,
+        "hitWidth": 223,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "stopping",
+    "width": 960,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "terminal-stopping-960-theme-dark-en.png",
+    "body": "The process keeps running. Reopen it from the session list.\n\nStopping…\n\nRoot: Root exited · cleanup: Cleanup not verified · output: Output not verified\n\nCheck stop result\n$ printf \"fixture screen\\n\"\nfixture screen\n$\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "Check stop result",
+        "width": 139.015625,
+        "height": 32,
+        "hitWidth": 139.015625,
+        "hitHeight": 32
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "root-exit",
+    "width": 480,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "terminal-root-exit-480-theme-light-zh.png",
+    "body": "清理未核实\n\n根进程：根进程已退出 · 清理：等待清理 · 输出：输出未核实\n\n查询停止结果\n$ printf \"fixture screen\\n\"\nfixture screen\n$\n已断开\n关闭\n重启会话\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "查询停止结果",
+        "width": 108,
+        "height": 44,
+        "hitWidth": 108,
+        "hitHeight": 44
+      },
+      {
+        "name": "关闭",
+        "width": 70,
+        "height": 44,
+        "hitWidth": 70,
+        "hitHeight": 44
+      },
+      {
+        "name": "重启会话",
+        "width": 98,
+        "height": 44,
+        "hitWidth": 98,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "partial",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "terminal-partial-320-theme-dark-en.png",
+    "body": "Cleanup incomplete\n\nRoot: Root exited · cleanup: Cleanup incomplete · output: Output truncated\n\nCheck stop result\n$ printf \"fixture screen\\n\"\nfixture screen\n$\nDisconnected\nClose\nRestart session\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "Check stop result",
+        "width": 139.015625,
+        "height": 44,
+        "hitWidth": 139.015625,
+        "hitHeight": 44
+      },
+      {
+        "name": "Close",
+        "width": 78.4375,
+        "height": 44,
+        "hitWidth": 78.4375,
+        "hitHeight": 44
+      },
+      {
+        "name": "Restart session",
+        "width": 142.515625,
+        "height": 44,
+        "hitWidth": 142.515625,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "unconfirmed",
+    "width": 320,
+    "height": 720,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "terminal-unconfirmed-320-theme-light-zh.png",
+    "body": "上次运行的清理未核实，暂不能再次启动。\n\n已恢复记录 · 未运行\n\n一个很长的终端名称用来检查省略、状态与操作按钮不会互相挤压\n/fixture-vault\n\n重启会话\n关闭\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": true,
+    "controls": [
+      {
+        "name": "重启会话",
+        "width": 104,
+        "height": 44,
+        "hitWidth": 104,
+        "hitHeight": 44
+      },
+      {
+        "name": "关闭",
+        "width": 60,
+        "height": 44,
+        "hitWidth": 60,
+        "hitHeight": 44
+      }
+    ],
+    "small": []
+  },
+  {
+    "scene": "terminal",
+    "state": "restored",
+    "width": 800,
+    "height": 720,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "terminal-restored-800-theme-dark-en.png",
+    "body": "Previous runtime ended. Continue or restart explicitly.\n\nRestored record · not running\n\nA very long terminal name to verify truncation, state and accessible actions\n/fixture-vault\n\nRestart session\nClose\nOther target",
+    "overflow": false,
+    "dialogOverflow": false,
+    "coarse": false,
+    "controls": [
+      {
+        "name": "Restart session",
+        "width": 148.515625,
+        "height": 36,
+        "hitWidth": 148.515625,
+        "hitHeight": 36
+      },
+      {
+        "name": "Close",
+        "width": 68.4375,
+        "height": 36,
+        "hitWidth": 68.4375,
+        "hitHeight": 36
+      }
+    ],
+    "small": []
+  }
+]

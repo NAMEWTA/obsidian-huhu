@@ -1,0 +1,83 @@
+{
+  "observed_at": "2026-10-25T11:45:24.841Z",
+  "before_snapshot": "/tmp/huhu-t04-round1-source-snapshot",
+  "prior_output_matches_round1": true,
+  "output_before": 6147898,
+  "output_after": 6150214,
+  "output_delta": 2316,
+  "agent_before": 1066150,
+  "agent_after": 1068460,
+  "agent_delta": 2310,
+  "navigator_before": 202878,
+  "navigator_after": 202878,
+  "overlay_paths": [
+    "main.js",
+    "src/modules/agent/services/controller-managed-runtimes.test.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+    "src/modules/agent/services/spaces/space-service.ts",
+    "src/modules/agent/services/terminal/clock.ts",
+    "src/modules/agent/services/terminal/sessions-space.test.ts",
+    "src/modules/agent/services/terminal/sessions.ts",
+    "src/modules/agent/services/workspace-service-stop-native.test.ts",
+    "src/modules/agent/services/workspace-service-stop.test.ts",
+    "src/modules/agent/services/workspace-service.ts"
+  ],
+  "source_hashes": [
+    {
+      "path": "main.js",
+      "before": "ec42eb1eedba309df6badebef921da79365c04938544f43a9b66ff12a2b27171",
+      "after": "17878487ad74fbf66f827168c3f39fa64a419cb4cda4d5bacccea1228fdade61"
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "before": "7aff7c1bd554d09f706c9e0e3d2cd93e3bc09463d947c4510095938349d44963",
+      "after": "bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "before": "1207b19bd828dfb90a1f3cb1ce68602db123750b4b65c0d89275e9c92b607c66",
+      "after": "1645905e8e0ccef0c75451d6a29192a7154d8938f8a78f64e6d1a25080f03709"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+      "before": "afd85ce623a4300f561707f008fce955fe866ee80eaef162f773b7e606807e7f",
+      "after": "a0f8d6d468592ff763afb789f0892eae1c94e0e4f0c9657a487299f686a333ac"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "before": "f04d30a206782996c448aec8b7f7a5cf8501a730f54b7f51bce2e713aa17515a",
+      "after": "172a40e6185394da0c2106f23c592d6c6925448f925de3f74eee8db6469f3cd5"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/clock.ts",
+      "before": "f67ca8cdd9b19733183dc4dcc40f9b724345ee5d3e335d314c04c3ec38713b18",
+      "after": "3b5e817cc0d2b160f70a4a228eac8b7ae1d15fb054a9558575731778813dc198"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "before": "c426e4c687c39a9ba1a1585a899997611babc869dcaa4707890cfaaec926afc7",
+      "after": "92dd3088a4736cfbb4a9bd2e839bb8ca49c585b00963742dc25f1cd760163cc5"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "before": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998",
+      "after": "421fe822d75bb0e737740aaf93374b1f22dd90d4ac23d9b9f95d7af7344e50bf"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop-native.test.ts",
+      "before": "c39e4ee735ea1bd9b525e10781c65f9d1c3ecfc8a55b913e7240f2600200e562",
+      "after": "af1a485623527fbef9062d1afc529bbaffb785de815572d219af67c0e61ca226"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop.test.ts",
+      "before": "881aba4bef24aec8e44be6b45d2f8eb0021936da88d70650873437b5517d6f7a",
+      "after": "3bd0b83c978ad9ea263d3bf2ca04ecb9ba9b27d9b19449804c4d5e6dc10ba1e8"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "before": "28b54dbb8ec02e7114fd789886e1a58847f9f4afd889a25a4fdc710318187ab5",
+      "after": "9dce3d419810f2e9d2aa50f8e3447351d45d2e41f906b7081b63a480827f884a"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-26T15:54:34.180030+00:00",
+  "before": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/09-workbench-panels.md",
+    "sha256": "1cf04a951ef8d17e2e28bfe6f5eb0beb6b72721808b9bb8c4e2016caff6d744b",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/1cf04a951ef8d17e2e28bfe6f5eb0beb6b72721808b9bb8c4e2016caff6d744b.raw"
+  },
+  "after": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/09-workbench-panels.md",
+    "sha256": "3c31acbd2f6bfd868bf1a9e97c3160138b6e77f9b07a81c0c3c5bdf9210b25fd",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/3c31acbd2f6bfd868bf1a9e97c3160138b6e77f9b07a81c0c3c5bdf9210b25fd.raw"
+  },
+  "actual_checks": [
+    {
+      "path": "/tmp/huhu-t09-root-preflight-tickets.json",
+      "sha256": "163a4eaf3bbaf85ce2c5a595dd990748903f462d4dd4b04f2ccd2206f556a6b5",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/163a4eaf3bbaf85ce2c5a595dd990748903f462d4dd4b04f2ccd2206f556a6b5.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-tickets.log",
+      "sha256": "9aa1ea1a5b315dc3a042f9f1d7fd455750590ea2b24f3495637dfa5a2d54d40b",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/9aa1ea1a5b315dc3a042f9f1d7fd455750590ea2b24f3495637dfa5a2d54d40b.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-goal.json",
+      "sha256": "e1e35f107755603398ab1f25b00b33a199088c90650bf29cd531881f7535af32",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/e1e35f107755603398ab1f25b00b33a199088c90650bf29cd531881f7535af32.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-goal.log",
+      "sha256": "9aa1ea1a5b315dc3a042f9f1d7fd455750590ea2b24f3495637dfa5a2d54d40b",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/9aa1ea1a5b315dc3a042f9f1d7fd455750590ea2b24f3495637dfa5a2d54d40b.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-control.json",
+      "sha256": "f7d7b4a807f541edb36c90eb4e374bcb881505299bdf55651564d286c6b6021d",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/f7d7b4a807f541edb36c90eb4e374bcb881505299bdf55651564d286c6b6021d.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-control.log",
+      "sha256": "a9d18f3a12be1531856f9c103a3c82f41642d29ff981a3cdd7736daa36b9a0bc",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/a9d18f3a12be1531856f9c103a3c82f41642d29ff981a3cdd7736daa36b9a0bc.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-dor.json",
+      "sha256": "5253e41f79daa14ecb79e03161de0382a842a1bcf2389dae1d07ca8c6c348683",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/5253e41f79daa14ecb79e03161de0382a842a1bcf2389dae1d07ca8c6c348683.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-dor.log",
+      "sha256": "ba80da55216c69ca34ed851c626953017abc7a6416e5b29809f96d60446af8b2",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/ba80da55216c69ca34ed851c626953017abc7a6416e5b29809f96d60446af8b2.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-dor2.json",
+      "sha256": "179a7db48dff48aa3c5382c3e09e8ec76d91e30866a265e1164e280f21388b0a",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/179a7db48dff48aa3c5382c3e09e8ec76d91e30866a265e1164e280f21388b0a.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight-dor2.log",
+      "sha256": "666ceb3cb02c6aad180ce7c5f78e558519731ac0da3d2cd2c26aab6c4f736162",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/preflight-format/objects/666ceb3cb02c6aad180ce7c5f78e558519731ac0da3d2cd2c26aab6c4f736162.raw"
+    }
+  ],
+  "reason": "Move explicit engineering anchor inside its heading so Ready unresolved-questions section stays exactly 无。; no scope, public contract, design or product change.",
+  "original_DoR_failure": "git status capture exceeded Node default maxBuffer; retained then captured within64MiB, actual DoR2 passed."
+}

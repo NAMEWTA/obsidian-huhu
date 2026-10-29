@@ -1,3 +1,4 @@
+import type { NativeHostAccess } from '../../shared/native/host';
 import type { ComponentType } from 'react';
 import type { App, Command, Component, MarkdownPostProcessor, PluginManifest } from 'obsidian';
 import type { Extension } from '@codemirror/state';
@@ -5,6 +6,8 @@ import type { SettingsStore } from '../../shared/settings/store';
 import type { PageCreate } from './workbench-host';
 import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from './workbench';
 import type { EditorContextAccess } from './editor-context';
+import type { SharedWorkspaceOwner } from './shared-workspace';
+import type { RecoveryAccess } from '../../shared/storage/recovery-contracts';
 
 /** Feature modules shipped in HUHU. */
 export type ModuleId =
@@ -151,6 +154,13 @@ export interface ModuleContext {
 	readonly lifetime: Component;
 	readonly settings: SettingsStore;
 	readonly services: ServiceAccess;
+	/** Existing owner when a harness provides one; production obtains it lazily through ensureSharedWorkspace. */
+	readonly sharedWorkspace?: SharedWorkspaceOwner;
+	readonly ensureSharedWorkspace?: () => Promise<SharedWorkspaceOwner>;
+	/** Restart-safe replacement protocol: register the module's real file owners. Absent only in harnesses. */
+	readonly recovery?: RecoveryAccess;
+	/** Shared native capabilities; first acquisition loads the desktop implementation. */
+	readonly native: NativeHostAccess;
 	readonly contributions: ContributionAccess;
 	readonly shell: ShellAccess;
 	readonly commands: CommandAccess;

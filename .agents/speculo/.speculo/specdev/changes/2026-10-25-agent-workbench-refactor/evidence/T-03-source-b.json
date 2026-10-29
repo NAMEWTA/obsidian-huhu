@@ -1,0 +1,65 @@
+{
+  "ticket": "T-03 B GUI",
+  "owner": "codex:/root/prepare_t02",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "source_writes_stopped": true,
+  "stopped_at": "2026-10-25T08:21:58.310925+00:00",
+  "note": "Only actual B source/test writes; A services/core/i18n, T-01/T-02 prerequisites, docs, main/styles/budget excluded. No Git changes.",
+  "files": [
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.dom.test.tsx",
+      "bytes": 5912,
+      "sha256": "b4b5d608b80943e52b402a0d3b15e014bae9d7cc0a00b14f3bebd2e894ec2687",
+      "before_sha256": null
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "bytes": 4164,
+      "sha256": "c9805aa517ebdd1835f19f3021fc33235bde23cf0243dc948042167d3116ffb0",
+      "before_sha256": "b51cdbcd9c5103b804ec1601c5856d3985524ae71ac72eb8c054921174e6eae9"
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.dom.test.tsx",
+      "bytes": 8788,
+      "sha256": "065f2d81a4a7110bb44dac70e2cd515fa4e57e1d419bde2e6760b86b5c874406",
+      "before_sha256": "7ed668915e7ff052b8e1b904b5a6e58d07b9e639f0a062827df9d0d69a098735"
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "bytes": 12490,
+      "sha256": "a23321b680603e3efd0f6f75740fa28ed7b0e6ae6c89d7e6374568cb9b1bfba1",
+      "before_sha256": "9a070017f6272694033f120c0750cdb2b844205cd2fccd9ca7aa5483f5be99b2"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "bytes": 8726,
+      "sha256": "8b260226e290c7aa1bb973fa30a48a90ccf608d2616ed81aaf58e6c5cc798e4f",
+      "before_sha256": "10b9a809885db1a52ce51e5fe002b2695ea2522026f8c81bc2a4fe80c7519235"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytes": 19226,
+      "sha256": "d8486da50c46e19a8ac6b6b8dcb8b5a02489ff2146042e62580fdeb761828f39",
+      "before_sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 8431,
+      "sha256": "7a2302e35d414269bd1deaeb5d44fa7116fc0e764e132b048303027d95a3aef8",
+      "before_sha256": "83c4396b94611b006490f9ad80eb1b2edb5d57f86da1b2deb1a28ff9a3d9023f"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 17382,
+      "sha256": "fc530751695b834a3081aec8f3fcac12d17b0f387e96905813f9c9106d4e45a6",
+      "before_sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f"
+    }
+  ],
+  "revision": 2,
+  "previous_manifest_sha256": "fe3786f539577444bc867c5d3959fc5151b0a92451e53e93f40b72e7b224c5c9",
+  "repair_touched": [
+    "src/modules/agent/ui/create/NewTabMenu.dom.test.tsx",
+    "src/modules/agent/ui/create/Omnibox.tsx"
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "scope": "Read-only incremental T-05 preflight after frozen T-04 candidate; not T-05 implementation or acceptance",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "reported_branch": "NAMEWTA/terminal",
+  "reported_base_head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "t04_review_input_reported_by_root": "6b88551127001cc9d60ee42794f8d450adeaa2d6cbe900de6daed1d36d129516",
+  "t04_state_reported_by_root": "57 files frozen; independent review in progress; no done/acceptance inferred",
+  "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+  "prior_observation_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-source-observation.json",
+  "prior_observation_sha256": "147ab5ba2b97a401f01bba4176752b01e195229ae10dd7d8115ce2d66367066a",
+  "comparison_counts": {
+    "prior_sources": 29,
+    "changed": 12,
+    "unchanged": 17
+  },
+  "operations": "File reads, SHA-256 comparison, and writes to the two named /tmp artifacts only. No tests, lint, build, helper, target, Git, network research, production or formal-state writes.",
+  "limitations": [
+    "Hashes describe this observation, not a new frozen implementation baseline.",
+    "Not all compared files were reread in full; changed hot paths and relevant contracts were inspected; unchanged references reused.",
+    "K-03 not reproduced in this task; no prior actual HUHU reproduction supplied by the reviewed preflight."
+  ],
+  "sources": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "bytes": 16854,
+      "sha256": "0befe4d829122ff34476866765844e620e2974e85690e1aea2168b070e822952",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "0befe4d829122ff34476866765844e620e2974e85690e1aea2168b070e822952",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytes": 15892,
+      "sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "483203afdcb172c92e934bd2db6c95ef180fdc703f1e53eea4a9f9da2277072b",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytes": 25192,
+      "sha256": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "94069dfd409b84eb96314d0fa827e9fcf01e3a6a0e9ea2c913c4cc0f1f61d323",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "bytes": 5979,
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "bytes": 15353,
+      "sha256": "1624981d8036026b02350507f376279a1af225f35c769494f7a78a2b66357356",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "1624981d8036026b02350507f376279a1af225f35c769494f7a78a2b66357356",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "bytes": 4539,
+      "sha256": "c8b2623e10adb94535d26f83647cfb998846612fbda51c193808f47c33d0b6fc",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "c8b2623e10adb94535d26f83647cfb998846612fbda51c193808f47c33d0b6fc",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/stable-terminal-fit.ts",
+      "bytes": 1695,
+      "sha256": "d0196ed9f9ea16256bf950f74f7e5f143538f7775887c41b156c596316fda6ca",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "d0196ed9f9ea16256bf950f74f7e5f143538f7775887c41b156c596316fda6ca",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-scheduling.test.ts",
+      "bytes": 6678,
+      "sha256": "8e8bc24f84e626dc4fd6aa54c0aff278b93d8b994974815e3295aececc0109aa",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "8e8bc24f84e626dc4fd6aa54c0aff278b93d8b994974815e3295aececc0109aa",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/hidden-renderer-retention.ts",
+      "bytes": 738,
+      "sha256": "183418dbf9e4fae1cf47931ada09ffa0054f962a0dbe3cf4c7fa94895742937c",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "183418dbf9e4fae1cf47931ada09ffa0054f962a0dbe3cf4c7fa94895742937c",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 18878,
+      "sha256": "aeab120959e66cc22c8ce453e44bc2d57e37893d0a07fd535f632e982feb772b",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 9144,
+      "sha256": "600aa330dac48149275644c91c8c30ee90d4a7b8d88ae572faed78696b3dae42",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "83c4396b94611b006490f9ad80eb1b2edb5d57f86da1b2deb1a28ff9a3d9023f",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames.ts",
+      "bytes": 50,
+      "sha256": "be51d2bf292a253c08f97ce426cf1ff5f1b89b8d10e540d382b43840ccdbbb8f",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "be51d2bf292a253c08f97ce426cf1ff5f1b89b8d10e540d382b43840ccdbbb8f",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/terminal-core.test.ts",
+      "bytes": 7218,
+      "sha256": "3403fd74537b8e05643d04f48d3dcde113e9c68094ea509ce2e9d4bedbf86d8a",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "3403fd74537b8e05643d04f48d3dcde113e9c68094ea509ce2e9d4bedbf86d8a",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "bytes": 8742,
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "bytes": 2905,
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "bytes": 3480,
+      "sha256": "2e39c4f4c74b4c371b59ed16b76c60759ab90e19d232f58dc72d5744e7977eeb",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "bytes": 13023,
+      "sha256": "d1c4b479b595fd3d18efd9a642ab1e4b34ca5840ac25bb7bdde386e147c1c36b",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "bytes": 11031,
+      "sha256": "99c83f27f65ebc6203dda1f4f937f5159369cea656a31e63ba77c7beddd58167",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "bytes": 33398,
+      "sha256": "2589a3cbb077115653d8b080ed621a22aa8ca5d232f342ef35389f68927c0dfb",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "e66231fc943fc37e2db244bec8fd67111a7a97cb986cf43fc06f532c0db8c928",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "bytes": 4115,
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "bytes": 7582,
+      "sha256": "ede0ebd60a46dd859772c028d9d6679be484edff10e4cd9146416bee82148f8b",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "cc4080ae15d34684f9216710f916b21bd8f5e9530c668b149837640a428cb1fe",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "bytes": 11081,
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "821862321ebd753a2216d743ee0ba91e97ad2626e36e99a7e1e7677d83859049",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "bytes": 3049,
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "b65aed981f4756a913579043c9992d92585cd9b748e48b2bbc86969c06957c9f",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "src/host/desktop/native/host.integration.test.ts",
+      "bytes": 2667,
+      "sha256": "332ea053f34bc93d24f2f2d2dae05dd467b5c6ec1323098c4218aa15e06ea7f0",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "d47756c71903e37437832a9afa51b2769bb797e064a09060c9347ab5a170e9b5",
+      "changed_since_prior_preflight": true
+    },
+    {
+      "path": "scripts/verify-pty-helper.mjs",
+      "bytes": 5143,
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 299613,
+      "sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00",
+      "prior_sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "changed_since_prior_preflight": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-preflight.md",
+      "bytes": 17923,
+      "sha256": "c43e6573160d2e0c7dbaadc0e1d91216a92ccdd8c88a109fa0cc0cb2e0876acd",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-source-observation.json",
+      "bytes": 7886,
+      "sha256": "147ab5ba2b97a401f01bba4176752b01e195229ae10dd7d8115ce2d66367066a",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "bytes": 5135,
+      "sha256": "d5bc6bbcd4df5a48a766225b241898ca402cefee81dc0ee14ee67ee436f0400c",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytes": 6060,
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/SKILL.md",
+      "bytes": 3757,
+      "sha256": "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "observed_at_utc": "2026-10-25T11:02:21.505602+00:00"
+    }
+  ]
+}

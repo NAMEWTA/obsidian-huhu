@@ -1,0 +1,505 @@
+{
+  "schema_version": 1,
+  "task": "T-18 READ-ONLY PREFLIGHT",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch_base_head": "Root-declared NAMEWTA/terminal / 33c21e098ef3188cbab5a09f3e0a01fadb787715; no Git run",
+  "plan": "GP014 / Map15",
+  "observed_at_utc": "2026-10-25T09:09:58.949467+00:00",
+  "source_mutation": false,
+  "tests_build_lint_helper_provider_host_git": "NOT RUN",
+  "warning": "T03 repair is SOURCE STOPPED while Root integrates; no candidate/review freeze is claimed. Future T07/T13–16 public schema/CLI/owners are not current APIs. Source hashes are time observations and must be reread at dispatch.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "bytes": 19768,
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11452,
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "bytes": 6155,
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/dev/references/build-and-release.md",
+      "bytes": 7578,
+      "sha256": "44a6c8f5697effc90ed3b944de0bbb279dd07e0d294bbf34deb70bfd7bf5c114",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "bytes": 8182,
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "bytes": 9072,
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "bytes": 4304,
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31587,
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/17-cli-delivery.md",
+      "bytes": 14628,
+      "sha256": "f5fc0cc690acd0801b9fea8dd309d202d307f260937f59df1e88eca307f1d87d",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/18-platform-acceptance.md",
+      "bytes": 17300,
+      "sha256": "43be68dfad288df6f66fca0d9c20c991abef3fa7cd12dd7207f93688bf125739",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "bytes": 37041,
+      "sha256": "4c436b6cd26199851c1d9b42a4190bd301b4328b59f282e27aab5396ade15332",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/LOG.md",
+      "bytes": 77677,
+      "sha256": "96d7e80015c25153e34dcdaf1e4521ce2a3b023c516f5438ba68e0cba65359bc",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-preflight.md",
+      "bytes": 39375,
+      "sha256": "3f2f585d819b0a76dc82b3bc62b32abbc0140c29cf618b4e03b52744fb3b5033",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".github/workflows/terminal-build.yml",
+      "bytes": 2341,
+      "sha256": "7b593b6c975888e6dc0907bd3b406538f01a382e8a614954999b48f832695448",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 3695,
+      "sha256": "77292fb27602281f9cce14fbae6d7ab8eaf7de53db30ae6178bdecb58dd40dc1",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": ".github/workflows/lint.yml",
+      "bytes": 1409,
+      "sha256": "dda83047a2c1aaedd12fca49c8358b8acaf5c4c99f258086cc0a86f04f40d4db",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "package.json",
+      "bytes": 13445,
+      "sha256": "8a0ec223a318cd4deca6177496edf227b89d136cc31319a57b653e61f438f4ce",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 299613,
+      "sha256": "114f1ce8ebcbedaa2ac5834ab14575584bea6bf37dc44221b3617d7e657985fb",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "bytes": 790,
+      "sha256": "e0559a4673c6d3b1c0e45de3d10b057dd8248205b7baa1d2d70b7d808d695a9d",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "native/pty-server/Cargo.lock",
+      "bytes": 17755,
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "bytes": 5284,
+      "sha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/verify-release-artifacts.mjs",
+      "bytes": 5594,
+      "sha256": "dceb39b542f7f614a115c96d303ed81e204370fd185c6f56583255f5fe2980a7",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/verify-pty-helper.mjs",
+      "bytes": 5143,
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/third-party-notices.mjs",
+      "bytes": 5949,
+      "sha256": "85b7ee0cc3d5ec12538bc215aa4cf60e46fbf53b08d3796f4906026a90c50f81",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/license-texts.mjs",
+      "bytes": 5094,
+      "sha256": "ab81bacdabf6468ae97406b20f554957674e6e357f060265fe690c9060cd6bf0",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/license-texts.test.mjs",
+      "bytes": 2543,
+      "sha256": "79e4efcda779826d63889565559701442e4cb343e0977e20416abe3890653b69",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/run-all-tests.mjs",
+      "bytes": 752,
+      "sha256": "df3baa98b43cc3f68ff59b1fe55965f9ee6910bfd6fa2dd27498f304f782eae3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "test/release/release-artifacts.test.ts",
+      "bytes": 4470,
+      "sha256": "d0dc6d0be40076de60492a51b191600d7204e79824f6af1259996a3dfb13db0a",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "test/release/workflow-gates.test.ts",
+      "bytes": 2711,
+      "sha256": "886a5434613638e35b5025d474a0b3f6a59260bfb60d3584ca8219f25a000b62",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/host/desktop/native/binary.ts",
+      "bytes": 10076,
+      "sha256": "e62dddb3c655cb6317de7503d255ee235c01994a2a21700a9f68bcd4f5d83934",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/host/desktop/native/runtime.ts",
+      "bytes": 1452,
+      "sha256": "4ceeb76d3316d37e4e14109672f47316f87ec4d4eca9015a124344fb00f068d3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/host/desktop/native/runtime.test.ts",
+      "bytes": 1570,
+      "sha256": "5b5b11a5fa92461ed6dd40f058227c168c33cf60274a644eed4c6462deeab9e8",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "bytes": 9398,
+      "sha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/host/desktop/native/helper.test.ts",
+      "bytes": 2232,
+      "sha256": "a7249f29a2a87465cbcce2b381113ad468444fc28b12680c298b5d179bc0b3d6",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "bytes": 2905,
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/binary.ts",
+      "bytes": 59,
+      "sha256": "a2d28d36e08ac7c2fc78577fd8f999d343d5f4d9f4d7c4c63cc71849ab15cc57",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/binary.test.ts",
+      "bytes": 11558,
+      "sha256": "bede263e7ea6ca6b3117a332cda5089daea970c5ac9dd13e83f20a7f7ba5ab29",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/binary-download.test.ts",
+      "bytes": 2195,
+      "sha256": "139cac61bf1338f44be31dcd86c67f999deaa07979b305f07c506db3004338e3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/services/skill-manager.ts",
+      "bytes": 4773,
+      "sha256": "02d4469e00062f6b2c97f4ff4f872cee517b8b16cf7076766bbf53447017d5f8",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/skills/skill-fs.ts",
+      "bytes": 9290,
+      "sha256": "106f0b41f5b405ed5f93ebefed4ce5685c2e8fbb8e13d34e1241c08000c1af1d",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/skills/skill-fs.test.ts",
+      "bytes": 7868,
+      "sha256": "a8e413b0056d5d0c7af1de04f9ea5e8c7e934f4deacb7b9312093daef9a336c3",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "bytes": 2829,
+      "sha256": "2e7299a20195ba9f4cc26d937836921aae3d72bd6685bf8862b22035eaf32542",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "src/app/native.ts",
+      "bytes": 1189,
+      "sha256": "e9ce6c355dd7a6ec143413ecfea2ff54d3b8bffa16adadbd9ef4eaf842d7004d",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "vitest.config.ts",
+      "bytes": 2599,
+      "sha256": "4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 244,
+      "sha256": "ecb829cbfb589532b8617b50e283b9891ce105e5bdd06ee87cfb41ce16dc49c6",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "versions.json",
+      "bytes": 24,
+      "sha256": "c5ad95ecdd1e80cab4089829bcba706023005780e4b6897d9fdd0d717b5f876f",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 665,
+      "sha256": "cdd759f956f1fc8505e477b3526cae29544262e4d7ed03a69dea935d3c6dab9b",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 4904,
+      "sha256": "43369f3ef81016293f7fe28cab1933c8059b4742c542f1681420216592e2e913",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "NOTICE",
+      "bytes": 19489,
+      "sha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.md",
+      "bytes": 742239,
+      "sha256": "cbc739cf07e15ee4cbce83c1a5316758908897bb14c57292718ad84ec5f50dc6",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "docs/third-party/orca-terminal-workbench.md",
+      "bytes": 19690,
+      "sha256": "f5818de50db20dbfa58c6ed66698a2e1a7f638d0270e1c0ec9389c550cebeec7",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "docs/references.md",
+      "bytes": 2166,
+      "sha256": "981739438eac7008fc3eab9cd186d44526f868dda8691f37139556f4bbd47cf0",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/fresh-vault.mjs",
+      "bytes": 7323,
+      "sha256": "2a169a1970bfe4c9e285e4368ee0d7e87fed7ea211671700cf5306418adf2120",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/terminal-reliability.mjs",
+      "bytes": 11510,
+      "sha256": "1426328ffe01f1b4bd71b12eee1df872df0a9823505a1857dfb53f1d760a0ce2",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/workbench-probe.mjs",
+      "bytes": 10414,
+      "sha256": "f301b7cd8fe3c7ac1ad0d79814be2d0244b2f10d64f6cde086fa7c6c8d946092",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/release-vault-install.mjs",
+      "bytes": 6889,
+      "sha256": "40c562301194803189f9030f60d7247305eaa1118d8b6deae2804fdef1728f6e",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/agent-page-tabs.mjs",
+      "bytes": 20819,
+      "sha256": "3b27af2dde1c787366ad9bec995867f158697f8eec612246ea62eae39871515b",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/workbench-window-owner.mjs",
+      "bytes": 6152,
+      "sha256": "d955108edc0ef37c66ca48da398ccd8ef3c8fa39d4524c0a192d3f85b90a4aed",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/p3-shell.mjs",
+      "bytes": 25762,
+      "sha256": "0a43223d062fd1bf28ae0bba1aa24a0fb3903a2b62e2a52fc8d09ac6c588f776",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/browser-control.mjs",
+      "bytes": 2779,
+      "sha256": "24a07ba4f2c1e16af2610e81d45cff0c4a46031b65f359ed726ee555b4be716b",
+      "coverage": "full read, relevant excerpt/search, prior unchanged rule reuse, or hash observation; not an execution result"
+    }
+  ],
+  "map_primary_owner_observation": {
+    "AC-001": "T-02",
+    "AC-002": "T-10",
+    "AC-003": "T-02",
+    "AC-004": "T-07",
+    "AC-005": "T-03",
+    "AC-006": "T-07",
+    "AC-007": "T-06",
+    "AC-008": "T-03",
+    "AC-009": "T-09",
+    "AC-010": "T-07",
+    "AC-011": "T-07",
+    "AC-012": "T-07",
+    "AC-013": "T-08",
+    "AC-014": "T-08",
+    "AC-015": "T-08",
+    "AC-016": "T-08",
+    "AC-017": "T-08",
+    "AC-018": "T-08",
+    "AC-019": "T-17",
+    "AC-020": "T-06",
+    "AC-021": "T-08",
+    "AC-022": "T-06",
+    "AC-023": "T-10",
+    "AC-024": "T-10",
+    "AC-025": "T-10",
+    "AC-026": "T-03",
+    "AC-027": "T-04",
+    "AC-028": "T-04",
+    "AC-029": "T-04",
+    "AC-030": "T-08",
+    "AC-031": "T-05",
+    "AC-032": "T-05",
+    "AC-033": "T-11",
+    "AC-034": "T-11",
+    "AC-035": "T-11",
+    "AC-036": "T-11",
+    "AC-037": "T-12",
+    "AC-038": "T-12",
+    "AC-039": "T-12",
+    "AC-040": "T-12",
+    "AC-041": "T-13",
+    "AC-042": "T-14",
+    "AC-043": "T-14",
+    "AC-044": "T-14",
+    "AC-045": "T-14",
+    "AC-046": "T-10",
+    "AC-047": "T-15",
+    "AC-048": "T-15",
+    "AC-049": "T-15",
+    "AC-050": "T-16",
+    "AC-051": "T-16",
+    "AC-052": "T-07",
+    "AC-053": "T-02",
+    "AC-054": "T-05",
+    "AC-055": "T-07",
+    "AC-056": "T-04",
+    "AC-057": "T-01",
+    "AC-058": "T-04",
+    "AC-059": "T-01",
+    "AC-060": "T-04",
+    "AC-061": "T-18",
+    "AC-062": "T-17",
+    "AC-063": "T-18",
+    "AC-064": "T-17"
+  },
+  "map_rows_observed": 64,
+  "planned_currently_absent": [
+    "native/pty-server/src/bin/huhu.rs",
+    "docs/agent-workbench-cli.md",
+    "scripts/obsidian-acceptance/agent-workbench-*.mjs"
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-25-agent-workbench-refactor",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "serial",
+  "max_parallel_tickets": 1,
+  "input_digest": "879d414b0a35bbe64b25b2e25630e75aafa70f629ea753648cc07371c2f67cb9",
+  "goal_contract_digest": "aa440bb9bc7b90aa1a712f69ae6b6b7aba36e32d2421f4ad1c57e9eef6a8706f",
+  "contract_digests": {
+    "T-01": "048649a5a6c39c2a23bb884d15aabf4dd7e313b643aa8496eaf1c381bbd95bfc",
+    "T-02": "944f110a71325e6d53558b3e1729e64c45d264f1d12f2de7a30ee8d0f56ba60d",
+    "T-03": "cb4fa8ea444358100cc4019ac8d4290b51f9a90d6708842a71d4bedb96226fb5",
+    "T-04": "5a592574281c5646c9b19726957fc82b0f4dfb10207361d035b9af3e89b459c8",
+    "T-05": "cc17b6893efd1bc2f16b78875230acac5af4e0c273f15084c9e1fc00574f029a",
+    "T-06": "4d0a66114460cb5d05fbe39d8ef161b4c94843eca1f9075c2494b93292848fe1",
+    "T-07": "77ae35986b9f01934f49cbdaacfc4c0d5ec2b7979a8d7e666bdad5ec2c88648f",
+    "T-08": "d143eda4629786ee3adc425efba0ff361d8be50d7dbb44648a43e9cac4bc2656",
+    "T-09": "cc04410a10a8f7e2e1ed2a9d27bbe2e4926a71abef8c007e2170f01ba466c1db",
+    "T-10": "124fb89141bd46baadfcbf740d82b3844392c991b61f6a1001b6a5491dc1a1f1",
+    "T-11": "71054f926790a1454b184a4074c6e9ef2425e65623bfecb7646e3b85c2d854df",
+    "T-12": "364dade83c65da858710c5e932cc38612e5cb27cd6db1800abb9216b68a9260f",
+    "T-13": "872649137845b39ebdceb403da0d85cb3162bc958b6fe569d7c61daff75c6598",
+    "T-14": "37d8fdeadd94a33019a0c9aa251da247eebc6035dcd668f2e9ed850fbee6e98b",
+    "T-15": "a13aae87e304279df4f59c704e9a21f8ab76daf4bbb274eb8751a087474ad284",
+    "T-16": "3b40c775b82251f33b32301e4449a2ae17ea3f20ac435765179126879e5c5ddc",
+    "T-17": "38a926067c1b15fe31167ce2ea87b7814e34a502ac59cf8ffc417e92056b5681",
+    "T-18": "ab770734c1aefd5f9c79024995e41af89cebb477e582f292289d0646287ce7db"
+  },
+  "frontier": [
+    "T-04"
+  ],
+  "deferred": [],
+  "in_flight": [],
+  "done": [
+    "T-01",
+    "T-02",
+    "T-03"
+  ],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-05",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "blocked dependency closure: T-07"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-11",
+        "blocked dependency closure: T-11"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-12",
+        "dependency not successfully satisfied: T-13",
+        "dependency not successfully satisfied: T-10",
+        "blocked dependency closure: T-12",
+        "blocked dependency closure: T-13",
+        "blocked dependency closure: T-10"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-16",
+        "blocked dependency closure: T-16"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-17"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [],
+  "validation_errors": [],
+  "errors": [],
+  "warnings": [
+    "concurrent Ready Tickets T-10/T-11 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-10/T-12 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-10/T-13 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-11/T-13 share owned paths; an explicit owner or serialization is required",
+    "concurrent Ready Tickets T-12/T-13 share owned paths; an explicit owner or serialization is required"
+  ],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

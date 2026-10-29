@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-26T04:58:40.438638+00:00",
+  "goal_revision": "GP026",
+  "map_revision": 27,
+  "ticket": "T-08",
+  "native_calls_observed_by_root": [
+    {
+      "role": "A",
+      "actual_agent": "/root/implement_t08_business",
+      "actual_tool": "spawn_agent",
+      "task": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/001-t08-business-stage1/TASK.md",
+      "task_sha256": "c8b433ff808b19424f18d27707db18d0870f0852155f2c10f5f85ba95b086350",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_source": "explicit spawn override",
+      "dispatch_structure_check": {
+        "command": [
+          "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+          ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+          "--stage",
+          "dispatch",
+          "--repo",
+          ".",
+          "--scope-root",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor",
+          "--session",
+          "20261026T045732Z",
+          "--task",
+          "001-t08-business-stage1"
+        ],
+        "exit_code": 0,
+        "errors": [],
+        "warnings": []
+      }
+    },
+    {
+      "role": "C",
+      "actual_agent": "/root/implement_t01",
+      "actual_tool": "followup_task",
+      "task": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/002-t08-protocol-stage1/TASK.md",
+      "task_sha256": "1c775cbdeb57cbbe4ec70e6410ce808a6be3b98c402d0e354ba81d7660815fdf",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_source": "existing actual implementation agent; Goal user model assignment retained",
+      "dispatch_structure_check": {
+        "command": [
+          "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+          ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+          "--stage",
+          "dispatch",
+          "--repo",
+          ".",
+          "--scope-root",
+          ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor",
+          "--session",
+          "20261026T045732Z",
+          "--task",
+          "002-t08-protocol-stage1"
+        ],
+        "exit_code": 0,
+        "errors": [],
+        "warnings": []
+      }
+    }
+  ],
+  "B": "SOURCE STOPPED; no implementation dispatch yet",
+  "scope": "Only each frozen TASK stage paths; source type readback required before dependent stages.",
+  "input": "evidence/T-08-dispatch-input.json",
+  "input_sha256": "7b2096e05c302df7519f8a80e13925399f19fb7071e2b3420884e65239ad2137"
+}

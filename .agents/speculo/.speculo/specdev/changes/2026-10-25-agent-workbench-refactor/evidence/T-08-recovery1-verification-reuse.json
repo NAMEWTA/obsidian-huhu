@@ -1,0 +1,25 @@
+{
+  "changed_product_paths_since_integration3": [
+    "native/pty-server/src/control/unix.rs",
+    "native/pty-server/src/control/windows.rs",
+    "native/pty-server/src/editor.rs",
+    "native/pty-server/src/main.rs",
+    "native/pty-server/src/session.rs",
+    "native/pty-server/tests/editor.rs"
+  ],
+  "unchanged_product_count": 2066,
+  "unchanged_TS_UI_main_styles_budgets_dependencies": true,
+  "reused": [
+    "i3 production/test type checks, plugin build, lint, architecture and Promise checks",
+    "i3 real Chrome15, UI source/capture/cleanup evidence and bundle attribution",
+    "A/B unchanged business/unit/DOM regressions and protocol/generated checks"
+  ],
+  "invalidated": [
+    "Old native shutdown/EOF cleanup conclusions and old native pair consumer results do not close F5."
+  ],
+  "replaced_by": [
+    "017 final native142, new pair producer, Windows cross-check, real normal EOF12",
+    "Root current 3 files/5 integration tests with complete official Pi CLI and production business/control/Host/helper sources"
+  ],
+  "real_provider_or_obsidian": false
+}

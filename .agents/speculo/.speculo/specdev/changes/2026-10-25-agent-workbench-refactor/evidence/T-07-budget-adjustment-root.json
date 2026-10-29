@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-26T03:14:57.895136+00:00",
+  "before": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-budget-before-integration2.raw",
+    "sha256": "c14d00e982b22c80cef12a2337e9c4c5e8d277c954998948ac56360cb4579b1a"
+  },
+  "after": {
+    "path": "scripts/bundle-budget.json",
+    "sha256": "2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23"
+  },
+  "attribution": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-budget-attribution.json",
+    "sha256": "9ba81543ce148c9c8e92c8f4eccfae5e4ed65f27ab488c115fca4c216a86980f"
+  },
+  "actual_output_bytes": 6379974,
+  "actual_agent_activation_bytes": 1181377,
+  "new_output_budget": 6380544,
+  "new_agent_budget": 1181696,
+  "root_readback": "Actual prior artifact and activation exactly reproduced, actual current build SHA matches; eager bytes and input paths identical. Only measured output/Agent budgets and reasons changed. First old-budget failure preserved; not itself a final pass."
+}

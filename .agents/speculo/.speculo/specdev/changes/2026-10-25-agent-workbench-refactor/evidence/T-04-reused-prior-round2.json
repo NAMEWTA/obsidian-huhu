@@ -1,0 +1,296 @@
+{
+  "prior": "T-04-prior-delivery.json",
+  "observed_at": "2026-10-25T11:47:07.135Z",
+  "files": [
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "6a8fa9b6709459f4a78ce13aac2ea2ca59450f9d6c071b6cbe183cebe905ff77",
+      "bytes": 4153
+    },
+    {
+      "path": "docs/data.md",
+      "sha256": "f1b8c4808f44d67eee5564e29682a4bb5f67c9bf3dbb152aa485e8f63f7d5bf5",
+      "bytes": 22771
+    },
+    {
+      "path": "scripts/module-strings.ts",
+      "sha256": "12b88d8724abf38b180cf87139124565ae696ea708575d5a6facb3b372fe8e50",
+      "bytes": 1841
+    },
+    {
+      "path": "src/app/contracts/module.ts",
+      "sha256": "c23485d4b2380bb33828d4bf87cd49e091555134ad5d82867fd03098fa6049fb",
+      "bytes": 6999
+    },
+    {
+      "path": "src/app/main.ts",
+      "sha256": "3bcd26ae09610f8589a47c0b83a9107bebfad417381200f1af621de28d262c22",
+      "bytes": 16610
+    },
+    {
+      "path": "src/app/native.ts",
+      "sha256": "e9ce6c355dd7a6ec143413ecfea2ff54d3b8bffa16adadbd9ef4eaf842d7004d",
+      "bytes": 1189
+    },
+    {
+      "path": "src/host/desktop/native/binary.ts",
+      "sha256": "e62dddb3c655cb6317de7503d255ee235c01994a2a21700a9f68bcd4f5d83934",
+      "bytes": 10076
+    },
+    {
+      "path": "src/host/desktop/native/runtime.test.ts",
+      "sha256": "5b5b11a5fa92461ed6dd40f058227c168c33cf60274a644eed4c6462deeab9e8",
+      "bytes": 1570
+    },
+    {
+      "path": "src/host/desktop/native/runtime.ts",
+      "sha256": "4ceeb76d3316d37e4e14109672f47316f87ec4d4eca9015a124344fb00f068d3",
+      "bytes": 1452
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "bytes": 1234
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+      "bytes": 1063
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames.ts",
+      "sha256": "be51d2bf292a253c08f97ce426cf1ff5f1b89b8d10e540d382b43840ccdbbb8f",
+      "bytes": 50
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "bytes": 15857
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/binary.ts",
+      "sha256": "a2d28d36e08ac7c2fc78577fd8f999d343d5f4d9f4d7c4c63cc71849ab15cc57",
+      "bytes": 59
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/helper-environment.test.ts",
+      "sha256": "16dd6d3895607945259d0e7958cb123c787e773cdadafb223588aee0247ab1ba",
+      "bytes": 2362
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/helper.ts",
+      "sha256": "235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4",
+      "bytes": 164
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/server/cookie-client.ts",
+      "sha256": "f05f44df1069f4b02e2351eddbbaf4d01ce0f84867711a93811dd7cdff3151e7",
+      "bytes": 91
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/directories.test.ts",
+      "sha256": "3e4b0301893c34c77c70f5d6cc92a7236442989d9beddd8a80743a6c55c7c9a3",
+      "bytes": 10069
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/directories.ts",
+      "sha256": "c63ebc8f31b41d37310e3c47ca5091d81ff35ac57cef41822980f1fd78174873",
+      "bytes": 5978
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.test.ts",
+      "sha256": "547f0ebd837ca8b8ea7712743ef2a374a52a8e9d059568170ecdb23efe8d7a62",
+      "bytes": 3626
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.ts",
+      "sha256": "d8d031de96d45e020110e00d0bbed27a56e011b8fbee2350ceaeeb3cd4ec28c1",
+      "bytes": 1078
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.fixture.ts",
+      "sha256": "3e645015a9e25a3ded6a7c97e8f986e24cb5052028d93a870c678f9038cb5245",
+      "bytes": 1265
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.test.ts",
+      "sha256": "c91ca8db247011440b6ee5f02755eb8621147509e87bcbc71249ce9b8ce18619",
+      "bytes": 6473
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.ts",
+      "sha256": "00dfd986d0ce4ea30d66b0752e799fd2783c41ffa9b4034bc37c0025a81332e7",
+      "bytes": 3952
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-process.test.ts",
+      "sha256": "fbe98d21b68b447834a055da5b58f3694dfc7f889f1dd9cbc7c4bc0d6c272b4c",
+      "bytes": 5611
+    },
+    {
+      "path": "src/modules/agent/services/controller-native.test.ts",
+      "sha256": "ddf2520976892701993331afa7650c6cdbc317106f1e897fab23565d84b9bb54",
+      "bytes": 5449
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.dom.test.tsx",
+      "sha256": "7839cfa1b0c1a68e4af673104fc70fea83fdbf0d820d28eccec34dc94b9c1814",
+      "bytes": 1788
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "sha256": "120eaad70791037fd82d619728362ae41c70408de43b9bba745c021c32b33481",
+      "bytes": 1857
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher-space.test.ts",
+      "sha256": "f34d40831d9ed0bed14a09ac63e9c0b9d5ca806e32c3f297539b5fbcdfa1cf28",
+      "bytes": 7381
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "bytes": 6819
+    },
+    {
+      "path": "src/modules/agent/services/spaces/layout-merge.ts",
+      "sha256": "06baad04a1741894e8d5dec412fbdd284768391e944a0a727475dd7f87942af1",
+      "bytes": 2418
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+      "sha256": "6e2c7e521f2c8b7c02650b5888596e98de082df80a7a0a883b95d6ff1dc0c887",
+      "bytes": 5333
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.test.ts",
+      "sha256": "249ec1a373317bc8b8d6e71d67ce527f086fe96910053202b85b5f73ba8d6774",
+      "bytes": 9334
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store-spaces.test.ts",
+      "sha256": "fd027b5386fe38f01cd03269c6498c96412f0d54c8049e814c5f1c76ac0cce8b",
+      "bytes": 9405
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "bytes": 7204
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.dom.test.tsx",
+      "sha256": "b4b5d608b80943e52b402a0d3b15e014bae9d7cc0a00b14f3bebd2e894ec2687",
+      "bytes": 5912
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "sha256": "c9805aa517ebdd1835f19f3021fc33235bde23cf0243dc948042167d3116ffb0",
+      "bytes": 4164
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.dom.test.tsx",
+      "sha256": "065f2d81a4a7110bb44dac70e2cd515fa4e57e1d419bde2e6760b86b5c874406",
+      "bytes": 8788
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "sha256": "a23321b680603e3efd0f6f75740fa28ed7b0e6ae6c89d7e6374568cb9b1bfba1",
+      "bytes": 12490
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceEmptyState.tsx",
+      "sha256": "9734d3964a4f718301cf9d9cefb35d18ed30c51444c10a96bc0a4ee134fac388",
+      "bytes": 1981
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceForm.dom.test.tsx",
+      "sha256": "ef536b41d7af0dc718dd421570e6bf606a6838af81e76adb6119f59d066c6b6e",
+      "bytes": 9302
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceForm.tsx",
+      "sha256": "0a4ddba94c3e8a0de45ee58a72e76f71e77b1b1f0143610b27255717b2c3dec9",
+      "bytes": 4192
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpacePicker.tsx",
+      "sha256": "bdefb334c060049394abfa8a19fa1a9fbba247d1bc58c03d502098e10f26389c",
+      "bytes": 2044
+    },
+    {
+      "path": "src/modules/agent/ui/create/space-errors.ts",
+      "sha256": "9ca2dbb4c37e03decfd5d9c0d474238be743fa5dc80e0f52cb7763a26d06784c",
+      "bytes": 68
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+      "sha256": "e8c3c3a6d112725c32a1c20bf69b883501f18308f2d55546430dcca620f824c6",
+      "bytes": 6235
+    },
+    {
+      "path": "src/modules/browser/module.ts",
+      "sha256": "82e494d025a8c0bb2612864a5d1d4a7bbc1fa060629b637476c82b28872b77dc",
+      "bytes": 3728
+    },
+    {
+      "path": "src/modules/browser/services/host.ts",
+      "sha256": "96f01340af9206390a168391a6f8abaab8c43ac3f8c81dfdda3152733e223b60",
+      "bytes": 19470
+    },
+    {
+      "path": "src/shared/i18n/lazy/native.ts",
+      "sha256": "30582ee95e003c664db3998f3f9728b2edc3bd7280e12b891398790c33ff1b6b",
+      "bytes": 2575
+    },
+    {
+      "path": "src/shared/native/abort.ts",
+      "sha256": "eeaf64fa3d619bf36b9e7aabaebc739e5598f456bb070e5158b6c290a6193711",
+      "bytes": 600
+    },
+    {
+      "path": "src/shared/native/cookies.ts",
+      "sha256": "f1bf22a532da8df23916e719929f61ffd37f12221ce25f7b3ec31f155fba3ad9",
+      "bytes": 1001
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905
+    },
+    {
+      "path": "src/shared/native/lazy-host.test.ts",
+      "sha256": "da0eb81941aec6758cd6110cd0f470ef04da6c811327edf711ec836215ecf468",
+      "bytes": 1233
+    },
+    {
+      "path": "src/shared/native/lazy-host.ts",
+      "sha256": "28cbc6242e0f4dde3181d5aaade49ff9d23c33ecba9386c261df552748962bd1",
+      "bytes": 936
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "bytes": 5554
+    }
+  ]
+}

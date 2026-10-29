@@ -1,0 +1,432 @@
+{
+  "observed_at": "2026-10-25T15:33:57.704721+00:00",
+  "reason": "Raw source snapshot Markdown must not masquerade as current maintained guides in copied partial docs trees; original bytes unchanged, original /tmp captures and historical audit hashes remain unchanged. Resolve historical preserved paths through this relocation table.",
+  "entries": [
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-api-behavior-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-api-behavior-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-api-types-ready-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-api-types-ready-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-command-budget-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-command-budget-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-command-budget-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-command-budget-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-screen-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-api-v1/huhu-t05-a-screen-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/final-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/final-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-affected-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-affected-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-behavior-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-behavior-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-freeze-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-freeze-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-ready-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-ready-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-api-types-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-b-integration-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-b-integration-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-b-integration-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-b-integration-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-before-format-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-before-format-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-budgets-geometry-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-budgets-geometry-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-closure-format-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-closure-format-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-closure-types-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-closure-types-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-command-budget-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-command-budget-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-command-budget-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-command-budget-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-csi-subparam-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-csi-subparam-red-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-exit-order-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-exit-order-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-exit-order-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-exit-order-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-format-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-format-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-lint-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-lint-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-production-lint-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-production-lint-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-types-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-types-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-unit-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-unit-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-unit-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-final-unit-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-format-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-format-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-formatted-lint-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-formatted-lint-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-formatted-types-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-formatted-types-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-account-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-account-green-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-exit-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-exit-green-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-resource-closure-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-resource-closure-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-watermark-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-legacy-watermark-red-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-green-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-red-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-red-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-link-admission-red-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-lint-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-lint-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-fixture-format-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-fixture-format-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-final-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-final-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-first-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-stable-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-pressure-stable-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-t04-regression-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-t04-regression-green-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-t04-regression-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-native-t04-regression-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-prompt-atomic-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-prompt-atomic-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-prompt-atomic-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-prompt-atomic-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-read-bound-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-read-bound-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-read-bound-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-read-bound-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-rep-combining-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-rep-combining-green-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-rep-combining-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-rep-combining-red-source/docs/agent-workbench.md.raw",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-v3-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-reuse-atomic-v3-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v3-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v3-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v4-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-scoped-types-v4-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-tests-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-tests-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-v2-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-v2-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-v3-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-closure-v3-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-first-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-first-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-internal-types-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-internal-types-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-lifecycle-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-lifecycle-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-resource-first-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-screen-resource-first-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-types-current-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/a-production/huhu-t05-a-types-current-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-b-integration-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-b-integration-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-read-bound-green-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-read-bound-green-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    },
+    {
+      "previous_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-read-bound-red-source/docs/agent-workbench.md",
+      "current_preserved_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/midfixes/huhu-t05-a-read-bound-red-source/docs/agent-workbench.md.raw",
+      "sha256": "49f225722d013053f80bec84c4be8c64a06ba1e64e466979a71e5945e0b96abb",
+      "bytes": 30429
+    }
+  ]
+}

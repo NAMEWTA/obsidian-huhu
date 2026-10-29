@@ -1,6 +1,6 @@
 import { BrowserTabView } from '../browser/BrowserTabView';
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-group/TabGroupSplitNodeTree.tsx, TabGroupPanel.tsx
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import { DndContext, PointerSensor, useSensor, useSensors, pointerWithin, rectIntersection } from '@dnd-kit/core';
 import { Panel, PanelGroup, PanelResizeHandle, type ImperativePanelGroupHandle } from 'react-resizable-panels';
 import { useStore } from 'zustand';
@@ -18,16 +18,19 @@ import { TerminalTabView } from '../terminal/TerminalTabView';
 import { HiddenRendererRetention } from '../terminal/hidden-renderer-retention';
 import { DropZones } from './DropZones';
 import { useWorkspaceUI } from './workspace-context';
+import { SpaceEmptyState } from '../create/SpaceEmptyState';
 function Tree({
 	node,
 	path,
 	dragging,
 	retention,
+	narrow,
 }: {
 	node: GroupLayoutNode;
 	path: number[];
 	dragging: boolean;
 	retention: HiddenRendererRetention;
+	narrow: boolean;
 }) {
 	const { controller } = useWorkspaceUI(),
 		workspace = controller.workspace,
@@ -35,6 +38,16 @@ function Tree({
 		visible = useVisible(),
 		t = useT();
 	const panel = useRef<ImperativePanelGroupHandle>(null);
+	const resizing = useRef(false);
+	useLayoutEffect(() => {
+		resizing.current = false;
+	}, [narrow]);
+	useLayoutEffect(() => {
+		if (node.kind !== 'split' || !panel.current) return;
+		const current = panel.current.getLayout();
+		if (node.sizes.some((size, index) => Math.abs(size - (current[index] ?? 0)) > 0.1))
+			panel.current.setLayout(node.sizes);
+	}, [node, narrow]);
 	if (node.kind === 'group') {
 		const group = state.groups.find((g) => g.id === node.groupId);
 		if (!group) return null;
@@ -83,9 +96,10 @@ function Tree({
 	return (
 		<PanelGroup
 			ref={panel}
-			direction={node.direction === 'row' ? 'horizontal' : 'vertical'}
+			direction={!narrow && node.direction === 'row' ? 'horizontal' : 'vertical'}
 			onLayout={(sizes) => {
-				if (sizes.some((n, i) => Math.abs(n - (node.sizes[i] ?? 0)) > 0.1)) workspace.resize(path, sizes);
+				if (resizing.current && sizes.some((n, i) => Math.abs(n - (node.sizes[i] ?? 0)) > 0.1))
+					workspace.resize(path, sizes);
 			}}
 		>
 			{node.children.map((child, i) => (
@@ -93,13 +107,40 @@ function Tree({
 					{i > 0 && (
 						<PanelResizeHandle
 							className="huhu-agent-resize w-px bg-border data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full hover:bg-ring"
+							onDragging={(value) => {
+								resizing.current = value;
+							}}
+							onKeyDownCapture={(event) => {
+								if (
+									!event.nativeEvent.isComposing &&
+									['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(
+										event.key,
+									)
+								)
+									resizing.current = true;
+							}}
+							onKeyUp={() => {
+								resizing.current = false;
+							}}
+							onBlur={() => {
+								resizing.current = false;
+							}}
 							onDoubleClick={() =>
-								panel.current?.setLayout(node.children.map(() => 100 / node.children.length))
+								workspace.resize(
+									path,
+									node.children.map(() => 100 / node.children.length),
+								)
 							}
 						/>
 					)}
 					<Panel minSize={15} defaultSize={node.sizes[i]}>
-						<Tree node={child} path={[...path, i]} dragging={dragging} retention={retention} />
+						<Tree
+							node={child}
+							path={[...path, i]}
+							dragging={dragging}
+							retention={retention}
+							narrow={narrow}
+						/>
 					</Panel>
 				</Fragment>
 			))}
@@ -107,12 +148,28 @@ function Tree({
 	);
 }
 export function WorkspaceLayout() {
-	const t=useT();
+	const t = useT();
 	const { controller } = useWorkspaceUI(),
 		workspace = controller.workspace,
 		state = useStore(workspace.store);
 	const [dragging, setDragging] = useState(false),
 		[retention] = useState(() => new HiddenRendererRetention(2));
+	const root = useRef<HTMLDivElement>(null),
+		[narrow, setNarrow] = useState(false);
+	useLayoutEffect(() => {
+		const el = root.current;
+		if (!el) return;
+		const update = () => {
+			const width = el.getBoundingClientRect().width;
+			if (width > 0) setNarrow(width < 600);
+		};
+		const observer = new (
+			el.ownerDocument.defaultView as Window & { ResizeObserver: typeof ResizeObserver }
+		).ResizeObserver(update);
+		observer.observe(el);
+		update();
+		return () => observer.disconnect();
+	}, []);
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 	return (
 		<DndContext
@@ -139,27 +196,31 @@ export function WorkspaceLayout() {
 					});
 			}}
 		>
-			<div className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
+			<div ref={root} data-workspace-layout="" className="flex h-full min-h-0 min-w-0 flex-1 overflow-hidden">
 				{state.layout ? (
-					<Tree node={state.layout} path={[]} dragging={dragging} retention={retention} />
+					<Tree node={state.layout} path={[]} dragging={dragging} retention={retention} narrow={narrow} />
 				) : (
 					<div className="flex h-full w-full min-w-0 flex-col">
 						<TabStrip group={{ id: 'empty', tabIds: [], recentTabIds: [] }} />
-						<EmptyState
-							className="flex-1"
-							icon={<TerminalSquare />}
-							title={t('agent.workspace.empty')}
-							description={t('agent.workspace.emptyHint')}
-							action={
-								<Button
-									onClick={() => {
-										void workspace.newTerminal().catch((error) => workspace.report(error));
-									}}
-								>
-									{t('agent.workspace.newTerminal')}
-								</Button>
-							}
-						/>
+						{controller.spaces ? (
+							<SpaceEmptyState spaces={controller.spaces} workspace={workspace} />
+						) : (
+							<EmptyState
+								className="flex-1"
+								icon={<TerminalSquare />}
+								title={t('agent.workspace.empty')}
+								description={t('agent.workspace.emptyHint')}
+								action={
+									<Button
+										onClick={() => {
+											void workspace.newTerminal().catch((error) => workspace.report(error));
+										}}
+									>
+										{t('agent.workspace.newTerminal')}
+									</Button>
+								}
+							/>
+						)}
 					</div>
 				)}
 			</div>

@@ -25,6 +25,9 @@ test('restoration accepts known sections and excludes unrelated or secret fields
 		normalizeTarget({ feature: 'contacts', section: 'person', resourceId: 'stable-id', token: 'secret', dom: {} }),
 		{ feature: 'contacts', section: 'person', resourceId: 'stable-id' },
 	);
+	assert.deepEqual(normalizeTarget({ feature: 'not-a-feature', section: 'history', resourceId: '\u0000bad' }), {
+		feature: 'dashboard',
+	});
 	assert.deepEqual(normalizeTarget({ feature: 'browser', section: 'history', resourceId: '\u0000bad' }), {
 		feature: 'browser',
 	});

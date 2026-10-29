@@ -5,6 +5,10 @@ import type { ShellChoice } from '../terminal/settings';
 export type AgentState = 'working' | 'waiting' | 'permission' | 'done' | 'idle' | 'failed' | 'interrupted' | 'unknown';
 export type TabColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'gray';
 export interface ResumeInfo {
+	/** Display identity, independent of the runtime leaf key. Missing legacy IDs are projected without writing. */
+	paneId?: string;
+	spaceId?: string;
+	persistentSessionId?: string;
 	customTitle?: string;
 	nativeSessionId?: string;
 	cwd: string;
@@ -36,9 +40,17 @@ export interface TerminalTabData extends TabBase {
 }
 export interface BrowserTabData extends TabBase {
 	kind: 'browser';
-	/** A presentation reference; the browser module owns the Space and Page lifecycle. */
-	spaceId: string;
+	/**
+	 * Independent browser Space. Absent on a legacy layout tab, which still carries its own address.
+	 * New tabs persist only this id plus `pageId`; the browser module owns the page.
+	 */
+	spaceId?: string;
 	pageId: string;
+	/** Legacy layout address. New Space/Page refs do not persist a URL. */
+	url?: string;
+	faviconUrl?: string;
+	profileId?: string;
+	zoom?: number;
 }
 /** The pages the workspace can hold as stable tabs next to sessions and browser tabs. */
 export const PAGE_KINDS = ['board', 'usage'] as const;

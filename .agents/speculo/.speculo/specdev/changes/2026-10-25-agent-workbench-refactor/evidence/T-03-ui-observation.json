@@ -1,0 +1,114 @@
+{
+  "role": "T-03 future B UI, readonly preflight; not implementation authorization",
+  "observed_at": "2026-10-25T07:27:30.203845+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "repository_writes": false,
+  "tests_or_build_run": false,
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-api-proposal.md",
+      "bytes": 27210,
+      "sha256": "698f0ff72e86562d07b502dc85ce1a0561e1dd745f8442085afea81ea40aaa8d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "bytes": 18027,
+      "sha256": "dbdf0c05167acb300d004dd09df771184a46c2b735eda9b89fb32a8ee90e1ca1"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval.md",
+      "bytes": 2509,
+      "sha256": "5c84504ba7fb6911c8a5789953125d867c2d69db342d83e174585ec4d939bde3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31587,
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "bytes": 9072,
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "bytes": 8182,
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "bytes": 4304,
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7"
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "bytes": 10588,
+      "sha256": "9a070017f6272694033f120c0750cdb2b844205cd2fccd9ca7aa5483f5be99b2"
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "bytes": 2345,
+      "sha256": "b51cdbcd9c5103b804ec1601c5856d3985524ae71ac72eb8c054921174e6eae9"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytes": 14861,
+      "sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 16080,
+      "sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f"
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.dom.test.tsx",
+      "bytes": 4137,
+      "sha256": "7ed668915e7ff052b8e1b904b5a6e58d07b9e639f0a062827df9d0d69a098735"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "bytes": 2860,
+      "sha256": "10b9a809885db1a52ce51e5fe002b2695ea2522026f8c81bc2a4fe80c7519235"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 4461,
+      "sha256": "83c4396b94611b006490f9ad80eb1b2edb5d57f86da1b2deb1a28ff9a3d9023f"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/page-tabs.fixture.tsx",
+      "bytes": 2098,
+      "sha256": "17a757b3960cc321e4d0981233318ef69916d83393a809fe6375e10b92199b4e"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+      "bytes": 6235,
+      "sha256": "e8c3c3a6d112725c32a1c20bf69b883501f18308f2d55546430dcca620f824c6"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/workspace-context.tsx",
+      "bytes": 813,
+      "sha256": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc"
+    },
+    {
+      "path": "src/modules/agent/ui/tabs/TabStrip.tsx",
+      "bytes": 6812,
+      "sha256": "26ce5746045842fbe6c179a020b6726e92d54db41b25d95beb8b78901831c771"
+    }
+  ]
+}

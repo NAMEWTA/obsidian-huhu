@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-25T12:40:35.265540Z",
+  "state": "READ-ONLY SOURCE STOPPED",
+  "report": {
+    "path": "/tmp/huhu-t05-view-feasibility.md",
+    "bytes": 9361,
+    "sha256": "2e2dc093e798551c2334e906e6c3b1bb9e28d395b620025345cc09002d950505"
+  },
+  "sources": {
+    "path": "/tmp/huhu-t05-view-feasibility-source-observation.json",
+    "bytes": 10812,
+    "sha256": "8eff9f0b470c5e309c524b06452d60d95eeb62950ebe94c84f7fc9e05d80a30d"
+  },
+  "checks": {
+    "path": "/tmp/huhu-t05-view-feasibility-checks.json",
+    "bytes": 12729,
+    "sha256": "19744b4100538b9c6edded78e8a242a50a8985de8b551b8cf656a4722d9fc427"
+  },
+  "runs": [
+    {
+      "run": "run01",
+      "archived_directory": "/tmp/huhu-t05-view-feasibility-run01",
+      "launch_path_at_execution": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+      "archived_after_execution": true,
+      "utc_started": "2026-10-25T12:29:37.612Z",
+      "utc_finished": "2026-10-25T12:29:39.569Z",
+      "commands": [
+        {
+          "executable": "/usr/bin/google-chrome",
+          "args": [
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-background-networking",
+            "--disable-component-update",
+            "--disable-sync",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=0",
+            "--window-size=1100,1500",
+            "--user-data-dir=/tmp/huhu-t05-view-feasibility-fixture/profile",
+            "http://127.0.0.1:36167/"
+          ],
+          "utc": "2026-10-25T12:29:37.615Z"
+        }
+      ],
+      "node_exit_observed": null,
+      "chrome_exit_observed": {
+        "code": 0,
+        "signal": null,
+        "utc": "2026-10-25T12:29:39.628Z"
+      },
+      "tool_reported_exit": 126,
+      "driver_requested_result_exit": 1,
+      "browser_version": {
+        "Browser": "Chrome/153.0.8010.47",
+        "Protocol-Version": "1.3",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "V8-Version": "15.3.76.12",
+        "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:38723/devtools/browser/03e8b637-841c-4c11-bd11-9dbb488ccf19"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/index.html",
+          "bytes": 528,
+          "sha256": "4722b8ed1e3559f9cd041d9c729c3d361f4b8be85711e68f483a983660e7687d"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/fixture.js",
+          "bytes": 14458,
+          "sha256": "04deb28dbd17a2198ad335723f572b56003dded7f3f8b8312870eb9bdbc2f03e"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/driver.cjs",
+          "bytes": 4869,
+          "sha256": "1d45754cc53aa081e33d26b4dfa096ffd33f2701e845b1594169d7b8ceffdab2"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/checks.ndjson",
+          "bytes": 2817,
+          "sha256": "bf991c9bb666cd8c237ac426b904df44f73f9c4f5c3c400b1e5580e5054527b9"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/results.json",
+          "bytes": 5172,
+          "sha256": "68bf28e946c9fae5487860e8ce64d1aee33de6bd7f2a5f8e5a96cb25b2844113"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/logmanifest.json",
+          "bytes": 2795,
+          "sha256": "bba94f3d4e583a3f6ad057dd36b43b635f36884e13793907dc010b802bd648a6"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/chrome.stderr.log",
+          "bytes": 98,
+          "sha256": "0d69f68ced4d69df498478a627ac31e21233fc2e0d2406f7c0a2b03c3a84a7d6"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/chrome-exit.json",
+          "bytes": 58,
+          "sha256": "64629f65208b8583a1eb2f3f9d9e8968f06167b89d3fde1a33ac51c9b051415e"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run01/fixture.png",
+          "bytes": 346321,
+          "sha256": "5c8185b5097827dcfb11c5825742cdaf96831ba873952c558c3b7c06024d46b4"
+        }
+      ]
+    },
+    {
+      "run": "run02",
+      "archived_directory": "/tmp/huhu-t05-view-feasibility-run02",
+      "launch_path_at_execution": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+      "archived_after_execution": true,
+      "utc_started": "2026-10-25T12:31:21.860Z",
+      "utc_finished": "2026-10-25T12:31:23.928Z",
+      "commands": [
+        {
+          "executable": "/usr/bin/google-chrome",
+          "args": [
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-background-networking",
+            "--disable-component-update",
+            "--disable-sync",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=0",
+            "--window-size=1100,1500",
+            "--user-data-dir=/tmp/huhu-t05-view-feasibility-fixture/profile",
+            "http://127.0.0.1:43615/"
+          ],
+          "utc": "2026-10-25T12:31:21.862Z"
+        }
+      ],
+      "node_exit_observed": {
+        "code": 1,
+        "utc": "2026-10-25T12:31:24.005Z"
+      },
+      "chrome_exit_observed": {
+        "code": 0,
+        "signal": null,
+        "utc": "2026-10-25T12:31:23.988Z"
+      },
+      "tool_reported_exit": 126,
+      "driver_requested_result_exit": 1,
+      "browser_version": {
+        "Browser": "Chrome/153.0.8010.47",
+        "Protocol-Version": "1.3",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "V8-Version": "15.3.76.12",
+        "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:39077/devtools/browser/a9c3cb8b-4151-4aac-8ec2-02009ea6cb9c"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/index.html",
+          "bytes": 528,
+          "sha256": "4722b8ed1e3559f9cd041d9c729c3d361f4b8be85711e68f483a983660e7687d"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/fixture.js",
+          "bytes": 14926,
+          "sha256": "33d9c56b9f99282606cebe3a100e46743776d508ffd64f98a9d8160a7226ed08"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/driver.cjs",
+          "bytes": 5022,
+          "sha256": "422b114ff7d9b39f2151348447ae98935ab121917b536bedaef8f641cb93d05c"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/checks.ndjson",
+          "bytes": 3460,
+          "sha256": "00b5c1fb16419a2506503fc0290013e0052c55cbdabc60770c13788e8c3bf000"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/results.json",
+          "bytes": 5815,
+          "sha256": "0b140a2e90d772f9eb7bf3d95bbc0dc3f1b407f7f30aceeae07b3fca447c1c94"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/logmanifest.json",
+          "bytes": 2795,
+          "sha256": "a39dfc5684fea41cade183423791ca93a2b5d614b112a0ffb8871e1f366e2746"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/chrome.stderr.log",
+          "bytes": 98,
+          "sha256": "a9f2a75c61b3d63c41b0726111a4f44d77f43d0015840867da0649699f554ef2"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/chrome-exit.json",
+          "bytes": 58,
+          "sha256": "3dd762810d8753010c1ace36a38ce785ef5efdfe5173ebaca41c67dd61db62b9"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/node-exit.json",
+          "bytes": 44,
+          "sha256": "15ab27ecea311030995cf86f36566c36154d05c9512c9b00b75fbaef6a43b4c6"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run02/fixture.png",
+          "bytes": 385875,
+          "sha256": "b9d63a36063eccf23523f6d3beff28998f76b618155852fe2f0d7f388a933e62"
+        }
+      ]
+    },
+    {
+      "run": "run03",
+      "archived_directory": "/tmp/huhu-t05-view-feasibility-run03",
+      "launch_path_at_execution": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+      "archived_after_execution": true,
+      "utc_started": "2026-10-25T12:32:25.528Z",
+      "utc_finished": "2026-10-25T12:32:27.580Z",
+      "commands": [
+        {
+          "executable": "/usr/bin/google-chrome",
+          "args": [
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-background-networking",
+            "--disable-component-update",
+            "--disable-sync",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=0",
+            "--window-size=1100,1500",
+            "--user-data-dir=/tmp/huhu-t05-view-feasibility-fixture/profile",
+            "http://127.0.0.1:37915/"
+          ],
+          "utc": "2026-10-25T12:32:25.531Z"
+        }
+      ],
+      "node_exit_observed": {
+        "code": 0,
+        "utc": "2026-10-25T12:32:27.665Z"
+      },
+      "chrome_exit_observed": {
+        "code": 0,
+        "signal": null,
+        "utc": "2026-10-25T12:32:27.657Z"
+      },
+      "tool_reported_exit": 0,
+      "driver_requested_result_exit": 0,
+      "browser_version": {
+        "Browser": "Chrome/153.0.8010.47",
+        "Protocol-Version": "1.3",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "V8-Version": "15.3.76.12",
+        "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:35883/devtools/browser/c97ca129-8dd5-4b8e-badf-b81178b02a13"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/index.html",
+          "bytes": 528,
+          "sha256": "4722b8ed1e3559f9cd041d9c729c3d361f4b8be85711e68f483a983660e7687d"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/fixture.js",
+          "bytes": 14932,
+          "sha256": "5147525ddc4af0edfc025d20648765113a62c3eea09fbe4cae52e660ad55c9b7"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/driver.cjs",
+          "bytes": 5022,
+          "sha256": "422b114ff7d9b39f2151348447ae98935ab121917b536bedaef8f641cb93d05c"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/checks.ndjson",
+          "bytes": 2706,
+          "sha256": "383847d263c33fcde366546e87a03876568c41f9bb5078acb9d3111f6402c912"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/results.json",
+          "bytes": 5152,
+          "sha256": "e482204b64394ba4d01b6ed09733730a14b4d2c8e8d51b8d8521d999709423e1"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/logmanifest.json",
+          "bytes": 2795,
+          "sha256": "c719fc1e8913afeae617bfbf408c7b900ebc451f518c9706abd867fea70af216"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/chrome.stderr.log",
+          "bytes": 98,
+          "sha256": "43cd2e368d4197884047043c6b23b509ba377001811175ddd9566f7df086d096"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/chrome-exit.json",
+          "bytes": 58,
+          "sha256": "bdaf5c8771a8371b6b0386eef7162fb1f48c7f2272f4561693f32444a36af273"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/node-exit.json",
+          "bytes": 44,
+          "sha256": "0cda25ae397de067b74c5d09f3b5b509c0131c12789bb8965766799315404cb9"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run03/fixture.png",
+          "bytes": 341294,
+          "sha256": "88170759932e6ac1011afd550a3131a33a40747ac6a865f593be47ec99f08ffe"
+        }
+      ]
+    },
+    {
+      "run": "run04-baseline",
+      "archived_directory": "/tmp/huhu-t05-view-feasibility-run04-baseline",
+      "launch_path_at_execution": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+      "archived_after_execution": true,
+      "utc_started": "2026-10-25T12:35:27.669Z",
+      "utc_finished": "2026-10-25T12:35:28.845Z",
+      "commands": [
+        {
+          "executable": "/usr/bin/google-chrome",
+          "args": [
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-background-networking",
+            "--disable-component-update",
+            "--disable-sync",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=0",
+            "--window-size=1100,1500",
+            "--user-data-dir=/tmp/huhu-t05-view-feasibility-fixture/profile",
+            "http://127.0.0.1:44847/"
+          ],
+          "utc": "2026-10-25T12:35:27.672Z"
+        }
+      ],
+      "node_exit_observed": {
+        "code": 0,
+        "utc": "2026-10-25T12:35:28.918Z"
+      },
+      "chrome_exit_observed": {
+        "code": 0,
+        "signal": null,
+        "utc": "2026-10-25T12:35:28.905Z"
+      },
+      "tool_reported_exit": 0,
+      "driver_requested_result_exit": 0,
+      "browser_version": {
+        "Browser": "Chrome/153.0.8010.47",
+        "Protocol-Version": "1.3",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "V8-Version": "15.3.76.12",
+        "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:38415/devtools/browser/7d88f0eb-9ed7-458f-b28e-e0f61381335e"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/index.html",
+          "bytes": 528,
+          "sha256": "4722b8ed1e3559f9cd041d9c729c3d361f4b8be85711e68f483a983660e7687d"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/fixture.js",
+          "bytes": 19161,
+          "sha256": "8335ad26b12c43a3a5e564bc4be5f7bff72408748d9ca1010a440d30506337e8"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/driver.cjs",
+          "bytes": 5816,
+          "sha256": "4b2bd6b3bc47c29c65745001eec43f1100d75114eb284132b2bd10c02fb8a568"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/checks.ndjson",
+          "bytes": 2537,
+          "sha256": "972123306e65ad61e88132efbdc6eb9912d6414dc035b087f8b746e28f37a1ab"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/results.json",
+          "bytes": 7320,
+          "sha256": "6c916c85d291be6995121be071a44a03a018dc2e6d1474feae58ec9800998007"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/logmanifest.json",
+          "bytes": 2795,
+          "sha256": "a6009fb2d2cf3d4adbbc230814a1037fe106fe63ee23e38bf264c2c8684d58ba"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/chrome.stderr.log",
+          "bytes": 98,
+          "sha256": "e92e4ec985e96b29946fa4b29e7b9854706f8aba61a2a5fae0c9c04d21c18f7f"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/chrome-exit.json",
+          "bytes": 58,
+          "sha256": "a8d57eefa91465b51d8e31d44d09d33e584bb3130bd69041d8cb87665f3d2a21"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/node-exit.json",
+          "bytes": 44,
+          "sha256": "964d09d598939fe5cbceea4e1feb82cf5f94a45e2b929947cc96916f23cd542e"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-run04-baseline/fixture.png",
+          "bytes": 383861,
+          "sha256": "4387a6aeef89e3867983a433a3d5a12e570afe886cea7207f92af889493cce85"
+        }
+      ]
+    },
+    {
+      "run": "run05-osc8-strengthened",
+      "archived_directory": "/tmp/huhu-t05-view-feasibility-fixture",
+      "launch_path_at_execution": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+      "archived_after_execution": false,
+      "utc_started": "2026-10-25T12:37:11.418Z",
+      "utc_finished": "2026-10-25T12:37:12.007Z",
+      "commands": [
+        {
+          "executable": "/usr/bin/google-chrome",
+          "args": [
+            "--headless=new",
+            "--no-sandbox",
+            "--disable-background-networking",
+            "--disable-component-update",
+            "--disable-sync",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--remote-debugging-address=127.0.0.1",
+            "--remote-debugging-port=0",
+            "--window-size=1100,1500",
+            "--user-data-dir=/tmp/huhu-t05-view-feasibility-fixture/profile",
+            "http://127.0.0.1:44463/"
+          ],
+          "utc": "2026-10-25T12:37:11.422Z"
+        }
+      ],
+      "node_exit_observed": {
+        "code": 0,
+        "utc": "2026-10-25T12:37:12.090Z"
+      },
+      "chrome_exit_observed": {
+        "code": 0,
+        "signal": null,
+        "utc": "2026-10-25T12:37:12.078Z"
+      },
+      "tool_reported_exit": 0,
+      "driver_requested_result_exit": 0,
+      "browser_version": {
+        "Browser": "Chrome/153.0.8010.47",
+        "Protocol-Version": "1.3",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+        "V8-Version": "15.3.76.12",
+        "WebKit-Version": "537.36 (@73934a44f61e6b3878d1943064c141a5a820f5f7)",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:41807/devtools/browser/e6c2ec8e-b1f1-49da-aad4-c6ecca63b26a"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/index.html",
+          "bytes": 528,
+          "sha256": "4722b8ed1e3559f9cd041d9c729c3d361f4b8be85711e68f483a983660e7687d"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/fixture.js",
+          "bytes": 15199,
+          "sha256": "9c11646bb8a94ef7b231ee9876cb9a00a5bb9228e70e71d4e203758cdef52545"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/driver.cjs",
+          "bytes": 5022,
+          "sha256": "422b114ff7d9b39f2151348447ae98935ab121917b536bedaef8f641cb93d05c"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/checks.ndjson",
+          "bytes": 533,
+          "sha256": "487690fd706146bc3f4920e90682614dea10eb72d8ea81378789c6026a1a0e2e"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/results.json",
+          "bytes": 1111,
+          "sha256": "d1f1cd0c813777a042b61305b80616f26b8e02c4d216b82b4f0d4bbaf7c82575"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/logmanifest.json",
+          "bytes": 2795,
+          "sha256": "85b4ade551bce6e169a72804c881157536ed6cb10d4b8bbab81187f6d5e3ffd5"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/chrome.stderr.log",
+          "bytes": 98,
+          "sha256": "15cd829f6656a5e931d73e049ae97823565a90c415017bf7cee91229cc5566fb"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/chrome-exit.json",
+          "bytes": 58,
+          "sha256": "64e59e90ee930538f89ea16cdf4677e589b6718a054f7d586188f668039731c2"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/node-exit.json",
+          "bytes": 44,
+          "sha256": "2087c4bbb13efb1ee6832f8e1b25d220d83fc71e9a01230f5410ed0a783a8ac5"
+        },
+        {
+          "path": "/tmp/huhu-t05-view-feasibility-fixture/fixture.png",
+          "bytes": 90006,
+          "sha256": "3ff434abe9ad4ae9aec5f7a93d41489a14cd079c1c41561d13a99618fc721e12"
+        }
+      ]
+    }
+  ],
+  "new_writes_scope": "/tmp only; isolated Chrome test profile/logs/fixtures",
+  "process_cleanup": "Each completed run records Chrome exit; no helper/PTY/Provider process launched.",
+  "final_run_exit_codes": {
+    "run03": {
+      "node": 0,
+      "chrome": 0,
+      "tool": 0
+    },
+    "run04-baseline": {
+      "node": 0,
+      "chrome": 0,
+      "tool": 0
+    },
+    "run05-osc8-strengthened": {
+      "node": 0,
+      "chrome": 0,
+      "tool": 0
+    }
+  },
+  "not_production_acceptance": true
+}

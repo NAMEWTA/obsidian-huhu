@@ -17,11 +17,15 @@ import {
 	AlertDialogCancel,
 	AlertDialogAction,
 } from '../../../ui/components/alert-dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../../ui/components/dialog';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
+import { TerminalControlPanel } from './control/TerminalControlPanel';
 import type { AgentController } from '../services/controller';
 import { type WorkspaceCommand } from '../core/workspace/shortcuts';
 import { AgentSidebar } from './sidebar/AgentSidebar';
 import { WorkspaceLayout } from './workspace/WorkspaceLayout';
+import { WorkspaceToolbar } from './workspace/WorkspaceToolbar';
+import { WorkspaceTools, type WorkspaceTool } from './workspace/WorkspaceTools';
 import { WorkspaceUIContext } from './workspace/workspace-context';
 import { bindWorkspaceKeyboard } from './workspace/keyboard-scope';
 import { createWorkspaceView, type WorkspaceViewStore } from '../services/workspace-view';
@@ -48,6 +52,27 @@ export function AgentWorkspace({
 		page = useStore(viewStore);
 	const select = (id: string) => workspace.activate(id);
 	const root = useRef<HTMLDivElement>(null);
+	const [narrowControl, setNarrowControl] = useState(false);
+	const [inboxUnread, setInboxUnread] = useState<number | undefined>();
+	const historyReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
+	const controlReturn = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
+	useEffect(() => {
+		const element = root.current;
+		if (!element) return;
+		const update = () => {
+			const width = element.getBoundingClientRect().width;
+			if (width > 0) setNarrowControl(width < 600);
+		};
+		const Observer = (doc.defaultView as Window & { ResizeObserver: typeof ResizeObserver }).ResizeObserver;
+		const observer = new Observer((entries) => {
+			const width = entries[0]?.contentRect.width ?? 0;
+			if (width > 0) setNarrowControl(width < 600);
+			else update();
+		});
+		observer.observe(element);
+		update();
+		return () => observer.disconnect();
+	}, [doc]);
 	const [menu, setMenu] = useState<string>(),
 		[confirmation, setConfirmation] = useState<{
 			message: string;
@@ -56,6 +81,28 @@ export function AgentWorkspace({
 			resolve: (yes: boolean) => void;
 		}>();
 	const confirmationRef = useRef(confirmation);
+	const returnFocus = useRef<{ origin: HTMLElement; target: string; blurred: boolean } | undefined>(undefined);
+	const focusTarget = () => {
+		const current = workspace.store.getState();
+		return JSON.stringify([
+			controller.spaces?.store.getState().records.selectedSpaceId,
+			current.activeGroupId,
+			current.groups.map((group) => {
+				const tab = current.tabs[group.activeTabId ?? ''];
+				return [group.id, group.activeTabId, tab?.kind === 'terminal' ? tab.focusedSessionId : undefined];
+			}),
+		]);
+	};
+	useEffect(() => {
+		const win = doc.defaultView;
+		const blur = () => {
+			if (returnFocus.current) returnFocus.current.blurred = true;
+			if (controlReturn.current) controlReturn.current.blurred = true;
+			if (historyReturn.current) historyReturn.current.blurred = true;
+		};
+		win?.addEventListener('blur', blur);
+		return () => win?.removeEventListener('blur', blur);
+	}, [doc]);
 	const [wasVisible, setWasVisible] = useState(visible);
 	if (wasVisible !== visible) {
 		setWasVisible(visible);
@@ -87,6 +134,8 @@ export function AgentWorkspace({
 		if (!visible) {
 			confirmationRef.current?.resolve(false);
 			confirmationRef.current = undefined;
+			returnFocus.current = undefined;
+			controlReturn.current = undefined;
 		}
 	}, [visible, viewStore]);
 	useEffect(() => {
@@ -103,6 +152,18 @@ export function AgentWorkspace({
 				return;
 			}
 			confirmationRef.current?.resolve(false);
+			const active = doc.activeElement as HTMLElement | null;
+			const menu = active?.closest('[role=menu]');
+			const trigger = menu?.id
+				? [...doc.querySelectorAll<HTMLElement>('[aria-controls]')].find(
+						(element) => element.getAttribute('aria-controls') === menu.id,
+					)
+				: undefined;
+			const origin = trigger ?? active;
+			returnFocus.current =
+				origin && typeof origin.focus === 'function'
+					? { origin, target: focusTarget(), blurred: false }
+					: undefined;
 			const next = { message, ...options, resolve };
 			confirmationRef.current = next;
 			setConfirmation(next);
@@ -154,6 +215,7 @@ export function AgentWorkspace({
 				data-agent-workspace=""
 				ref={root}
 			>
+				<WorkspaceToolbar inboxUnread={inboxUnread} />
 				<div className="@container relative flex min-h-0 flex-1">
 					<div
 						className="relative min-w-0 flex-1"
@@ -184,7 +246,25 @@ export function AgentWorkspace({
 							</VisibilityContext>
 						</div>
 					</div>
-					{page.history && (
+					{page.history && visible && (narrowControl ? (
+						<Dialog open onOpenChange={(open) => { if (!open) viewStore.setState({ history: false }); }}>
+							<DialogContent showCloseButton={false} className="h-[min(90dvh,800px)] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0" data-agent-history-dialog="" data-history-narrow=""
+								onOpenAutoFocus={() => {
+									const origin = doc.activeElement;
+									if (origin && typeof (origin as HTMLElement).focus === 'function') historyReturn.current = { origin: origin as HTMLElement, target: focusTarget(), blurred: false };
+								}}
+								onCloseAutoFocus={(event) => {
+									event.preventDefault();
+									const captured = historyReturn.current;
+									historyReturn.current = undefined;
+									if (captured && !captured.blurred && alive.current && captured.origin.isConnected && doc.hasFocus() && captured.target === focusTarget() && interactive.current && !doc.querySelector('[role=alertdialog][data-state=open]')) captured.origin.focus();
+								}}>
+								<DialogTitle className="sr-only">{t('agent.historyUI.title')}</DialogTitle>
+								<DialogDescription className="sr-only">{t('agent.historyUI.search')}</DialogDescription>
+								<SessionHistoryPanel controller={controller} close={() => viewStore.setState({ history: false })} narrow />
+							</DialogContent>
+						</Dialog>
+					) : (
 						<>
 							<div
 								role="separator"
@@ -237,7 +317,80 @@ export function AgentWorkspace({
 								/>
 							</div>
 						</>
-					)}
+					))}
+					{page.control &&
+						!page.history &&
+						visible &&
+						(narrowControl ? (
+							<Dialog
+								open
+								onOpenChange={(open) => {
+									if (!open) viewStore.setState({ control: false });
+								}}
+							>
+								<DialogContent
+									showCloseButton={false}
+									className="h-[min(90dvh,800px)] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0"
+									data-agent-control-dialog=""
+									onOpenAutoFocus={() => {
+										const origin = doc.activeElement;
+										if (
+											origin instanceof
+											(doc.defaultView as Window & { HTMLElement: typeof HTMLElement })
+												.HTMLElement
+										)
+											controlReturn.current = { origin, target: focusTarget(), blurred: false };
+									}}
+									onCloseAutoFocus={(event) => {
+										event.preventDefault();
+										const captured = controlReturn.current;
+										controlReturn.current = undefined;
+										if (
+											!captured ||
+											captured.blurred ||
+											!alive.current ||
+											!interactive.current ||
+											!doc.hasFocus() ||
+											captured.target !== focusTarget() ||
+											!captured.origin.isConnected ||
+											doc.querySelector('[role=alertdialog][data-state=open]')
+										)
+											return;
+										captured.origin.focus();
+									}}
+								>
+									<DialogTitle className="sr-only">{page.agentTool === 'inbox' ? t('agent.inbox.title') : t('agent.coordination.title')}</DialogTitle>
+									<DialogDescription className="sr-only">
+										{t('agent.coordination.doneMeaning')}
+									</DialogDescription>
+									{page.agentTool === 'control' ? <TerminalControlPanel
+										controller={controller}
+										confirm={confirm}
+										compact
+										close={() => viewStore.setState({ control: false })}
+									/> : <WorkspaceTools
+										controller={controller}
+										confirm={confirm}
+										compact
+										selected={page.agentTool}
+										onSelectedChange={(tool: WorkspaceTool) => viewStore.setState({ control: true, history: false, agentTool: tool })}
+										onUnreadCount={setInboxUnread}
+										close={() => viewStore.setState({ control: false })}
+									/>}
+								</DialogContent>
+							</Dialog>
+						) : (
+							<aside className="min-h-0 w-[312px] max-w-full shrink-0 border-l border-border">
+								<WorkspaceTools
+									controller={controller}
+									confirm={confirm}
+									selected={page.agentTool}
+									onSelectedChange={(tool: WorkspaceTool) => viewStore.setState({ control: true, history: false, agentTool: tool })}
+									onUnreadCount={setInboxUnread}
+									close={() => viewStore.setState({ control: false })}
+								/>
+							</aside>
+						))}
 				</div>
 				{page.jump && visible && (
 					<JumpPalette
@@ -256,9 +409,39 @@ export function AgentWorkspace({
 					if (!open) finish(false);
 				}}
 			>
-				<AlertDialogContent>
+				<AlertDialogContent
+					className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
+					onCloseAutoFocus={(event) => {
+						event.preventDefault();
+						const captured = returnFocus.current;
+						returnFocus.current = undefined;
+						if (
+							!captured ||
+							captured.blurred ||
+							!alive.current ||
+							!interactive.current ||
+							!doc.hasFocus() ||
+							captured.target !== focusTarget()
+						)
+							return;
+						const { origin } = captured,
+							active = doc.activeElement;
+						if (
+							origin.ownerDocument !== doc ||
+							!origin.isConnected ||
+							origin.closest('[hidden],[inert]') ||
+							!origin.checkVisibility()
+						)
+							return;
+						if (doc.querySelector('[role=alertdialog][data-state=open]')) return;
+						if (active !== doc.body && active !== origin && !active?.closest('[role=alertdialog]')) return;
+						origin.focus();
+					}}
+				>
 					<AlertDialogTitle>{confirmation?.title ?? t('agent.confirmTitle')}</AlertDialogTitle>
-					<AlertDialogDescription>{confirmation?.message}</AlertDialogDescription>
+					<AlertDialogDescription className="whitespace-pre-line break-words">
+						{confirmation?.message}
+					</AlertDialogDescription>
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={() => finish(false)}>{t('common.cancel')}</AlertDialogCancel>
 						<AlertDialogAction
@@ -305,7 +488,8 @@ export class AgentWorkspacePage extends ReactSurface {
 		const workspace = this.controller?.workspace;
 		const section = target.section;
 		this.view.setState({
-			...(section === 'history' ? { history: true } : {}),
+			...(section === 'history' ? { history: true, control: false } : {}),
+			...(section === 'control' ? { control: true, history: false } : {}),
 			...(section === 'jump' ? { jump: true } : {}),
 		});
 		if (workspace) {
@@ -337,8 +521,10 @@ export const createAgentPage =
 		return {
 			surface: page,
 			getState: () => ({
+				agentControl: page.view.getState().control,
 				agentHistory: page.view.getState().history,
 				agentHistoryWidth: page.view.getState().historyWidth,
+				agentTool: page.view.getState().agentTool,
 			}),
 			getTarget: () => page.getTarget(),
 			navigate: async (next) => page.show(next),

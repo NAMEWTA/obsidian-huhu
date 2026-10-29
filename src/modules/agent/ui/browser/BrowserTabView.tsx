@@ -62,7 +62,7 @@ export function BrowserTabView({ tab, active }: { tab: BrowserTabData; active: b
 			if (!live) return;
 			setViewer(null);
 			setError('');
-			if (!host) return;
+			if (!host || !tab.spaceId) return;
 			try {
 				const node = await host.renderViewer({ spaceId: tab.spaceId, pageId: tab.pageId });
 				if (live) setViewer(node as ReactNode);

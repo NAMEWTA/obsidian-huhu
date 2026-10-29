@@ -1,6 +1,7 @@
 import type {
 	AgentDispatch,
 	AgentDirectoryEntry,
+	AgentSpaceInfo,
 	AgentSessionsPort,
 	AgentQuickCommands,
 	AgentSkillCatalog,
@@ -41,6 +42,8 @@ export const homeServices: {
 	watchWidgets?: (listener: () => void) => () => void;
 	acquireDispatch?: () => Promise<AgentDispatch | undefined>;
 	agents?: () => readonly AgentDirectoryEntry[];
+	/** Active Spaces a button can be saved against; empty while the agent module is off. */
+	spaces?: () => readonly AgentSpaceInfo[];
 	sessions?: () => AgentSessionsPort | undefined;
 	skills?: () => AgentSkills | undefined;
 	skillCatalog?: () => AgentSkillCatalog | undefined;

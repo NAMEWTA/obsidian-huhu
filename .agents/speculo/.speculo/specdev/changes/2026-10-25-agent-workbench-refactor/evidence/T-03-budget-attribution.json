@@ -1,0 +1,83 @@
+{
+  "outputBytes": 6106030,
+  "stylesBytes": 1421645,
+  "dependencyFilesUnchanged": true,
+  "round1OutputBytes": 6104991,
+  "totalDeltaFromRound1": 1039,
+  "note": "bytesInOutput是当前贡献；只有存在前轮同文件贡献时列delta。全局压缩/名字变化可影响其他输入，不能把此表和当成精确总代码增量。",
+  "implementedFiles": [
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "bytesInOutput": 57195,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "bytesInOutput": 22660,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytesInOutput": 20138,
+      "deltaFromRound1": 176
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytesInOutput": 11474,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytesInOutput": 9413,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytesInOutput": 8041,
+      "deltaFromRound1": 53
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytesInOutput": 7505,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "bytesInOutput": 6930,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "bytesInOutput": 4932
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "bytesInOutput": 2868,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/services/launch/managed-errors.ts",
+      "bytesInOutput": 2392,
+      "deltaFromRound1": 339
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "bytesInOutput": 2139,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "bytesInOutput": 701,
+      "deltaFromRound1": 0
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "bytesInOutput": 99
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytesInOutput": 0,
+      "deltaFromRound1": 0
+    }
+  ]
+}

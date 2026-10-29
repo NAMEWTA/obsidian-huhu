@@ -1,0 +1,64 @@
+{
+  "recorded_utc": "2026-10-26T16:30:07.606291+00:00",
+  "task": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/031-t09-production-ui/TASK.md",
+    "sha256": "e82d96b02c0c4bc1bb3860f2551c3efcf3bb859eb033d876a11a882c526b116d",
+    "bytes": 9261,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/e82d96b02c0c4bc1bb3860f2551c3efcf3bb859eb033d876a11a882c526b116d.raw"
+  },
+  "target": "codex:/root/prepare_t13_browser",
+  "native_tool": "collaboration.followup_task",
+  "actual_dispatch": "success; tool returned without error or additional payload",
+  "model": "inherited gpt-6.1-sol / xhigh from actual 030 spawn; no independent introspection claim",
+  "authorized_product_paths": [
+    "src/modules/agent/ui/AgentWorkspacePage.tsx",
+    "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+    "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+    "src/modules/agent/ui/workspace/WorkspaceLayout.dom.test.tsx",
+    "src/modules/agent/ui/workspace/WorkspaceToolbar.tsx",
+    "src/modules/agent/ui/workspace/WorkspaceToolbar.dom.test.tsx",
+    "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+    "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+    "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+    "src/modules/agent/ui/sidebar/SpaceNavigation.dom.test.tsx",
+    "src/modules/agent/ui/tabs/TabStrip.tsx",
+    "src/modules/agent/ui/tabs/WorkspaceTab.tsx",
+    "src/modules/agent/ui/control/TerminalControlPanel.tsx",
+    "src/modules/agent/ui/control/TerminalControlPanel.dom.test.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+    "src/modules/agent/i18n.ts",
+    "src/modules/agent/styles/agent.css",
+    "scripts/obsidian-acceptance/agent-workbench-panels.mjs",
+    "docs/agent-workbench.md"
+  ],
+  "api_checkpoint": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-ui-api-checkpoint.json",
+    "sha256": "0cc074f84f4f629ee2ed0b1e5ee6c800fbfb83ae1681283ba76f0d1da3da3971",
+    "bytes": 169823,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/0cc074f84f4f629ee2ed0b1e5ee6c800fbfb83ae1681283ba76f0d1da3da3971.raw"
+  },
+  "dispatch_check": {
+    "path": "/tmp/huhu-t09-root-ui-dispatch.json",
+    "sha256": "4a01fdfc09a3067733b5c66952bb5e4b62d68e967f0e651e94369f64522e9413",
+    "bytes": 2031,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/4a01fdfc09a3067733b5c66952bb5e4b62d68e967f0e651e94369f64522e9413.raw"
+  },
+  "dispatch_raw": {
+    "path": "/tmp/huhu-t09-root-ui-dispatch.log",
+    "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "bytes": 200,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463.raw"
+  },
+  "selected_input_manifest": {
+    "path": "/tmp/huhu-t09-root-ui-dispatch-inputs.json",
+    "sha256": "e4c6516d10fbcd8c88ca158a25cd9193dcb10c2cca87afd3d92473de48e90fe6",
+    "bytes": 19461,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-ui-dispatch/objects/e4c6516d10fbcd8c88ca158a25cd9193dcb10c2cca87afd3d92473de48e90fe6.raw"
+  },
+  "limits": [
+    "A14 and B stage1 10 remain independently owned; B adapter8 still locked.",
+    "U starts real production UI and scoped DOM; CSS generation and Chrome resource window remain coordinated by Root.",
+    "No final T09 integration pass or AC completion is inferred."
+  ]
+}

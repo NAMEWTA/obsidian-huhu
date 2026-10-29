@@ -1,0 +1,32 @@
+{
+  "observedAtUtc": "2026-10-25T09:40:09.406669+00:00",
+  "publicContractFrozen": true,
+  "exports": "host.ts reexports TerminationEvidence/RootEvidence/TerminationReason/NativeTerminationNotice and NATIVE_TERMINATION_TIMEOUT_MS=8000/NATIVE_TERMINATION_OBSERVE_MS=10000; NativeEvents.termination?; NativeConnection.terminalTermination?:1/requestStop?; NativeReleaseError(outcomes). termination.ts exports parseTerminationEvidence/parseTerminationNotice/terminationConfirmed",
+  "files": [
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "f1521198d3e5574a544594437f3356c5cb07c3f4185e2693fd85f45ff7012764",
+      "bytes": 3324
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "sha256": "50ed2146bac2f128456115d941d5e3b1f2876cfed2fdf1664d5672acf45b4c82",
+      "bytes": 4973
+    },
+    {
+      "path": "src/shared/native/termination.test.ts",
+      "sha256": "75f88b02ad5714e47a884a3f16c4a4254260b68bf51f427c4bf71e9a53864c38",
+      "bytes": 407
+    },
+    {
+      "path": "test/fixtures/native/terminal-termination-v1.json",
+      "sha256": "a731089f6357979d8208f128e72fab6cd659b89a34e7edea3817ebd55da245d7",
+      "bytes": 20061
+    }
+  ]
+}

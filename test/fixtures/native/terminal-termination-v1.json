@@ -1,0 +1,1020 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "requested",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "root-exited-before-remaining-scope",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": "unix-session",
+            "remainingKnown": 1
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "unix-confirmed",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "windows-confirmed",
+      "context": {
+        "sid": 9,
+        "platform": "win32",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "windows-job",
+            "remainingKnown": 0
+          },
+          "output": "truncated"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "known-escape",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "partial",
+            "scope": "unix-session",
+            "remainingKnown": 1,
+            "reason": "escaped-member"
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "explicit-wait-confirmed-status-unavailable",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "wait-failed",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "unknown",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "unknown",
+            "scope": "unix-session",
+            "remainingKnown": null,
+            "reason": "wait-failed"
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "legacy-root-only",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "unknown",
+            "scope": "root-only",
+            "remainingKnown": null,
+            "reason": "legacy-helper"
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "not-started",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "not-started",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "not-started",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "missing-evidence",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "sequence": 1
+      },
+      "valid": false
+    },
+    {
+      "name": "numeric-exit-only",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "exit",
+        "sid": 9,
+        "code": 0,
+        "signal": null
+      },
+      "valid": false
+    },
+    {
+      "name": "legacy-no-fields",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {},
+      "valid": false
+    },
+    {
+      "name": "wrong-version",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 2,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "wrong-sid",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 10,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "zero-sequence",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 0,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "fractional-sequence",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 1.5,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "stale-sequence",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 2,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "unnegotiated-capability",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": null
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "unknown-platform",
+      "context": {
+        "sid": 9,
+        "platform": "future",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "wrong-platform-scope",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "windows-job",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "root-only-cannot-confirm",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "root-only",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "running-cannot-confirm",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "unknown-cannot-confirm",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "unknown",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "positive-residual-cannot-confirm",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 1
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "negative-count",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": -1
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "fractional-count",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0.2
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "null-count-cannot-confirm",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "not-started-scope-needs-not-started-root",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "not-started",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "not-started-root-needs-not-started-scope",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "not-started",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "confirmed-with-deadline-contradiction",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "exited",
+            "code": 7,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "confirmed",
+            "scope": "unix-session",
+            "remainingKnown": 0,
+            "reason": "deadline"
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "running-with-code",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": 0,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "reject-array-root.state",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": [
+              "running"
+            ],
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "reject-array-cleanup.state",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": [
+              "pending"
+            ],
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "reject-array-cleanup.scope",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": [
+              "unix-session"
+            ],
+            "remainingKnown": null
+          },
+          "output": "drained"
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "reject-array-output",
+      "context": {
+        "sid": 9,
+        "platform": "linux",
+        "lastSequence": 0,
+        "capability": 1
+      },
+      "wire": {
+        "type": "terminal-termination",
+        "version": 1,
+        "sid": 9,
+        "requestId": "stop-fixture",
+        "sequence": 2,
+        "evidence": {
+          "root": {
+            "state": "running",
+            "code": null,
+            "signal": null
+          },
+          "cleanup": {
+            "state": "pending",
+            "scope": "unix-session",
+            "remainingKnown": null
+          },
+          "output": [
+            "drained"
+          ]
+        }
+      },
+      "valid": false
+    }
+  ]
+}

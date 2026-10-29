@@ -87,6 +87,8 @@
 
 `agent-browser-v2.mjs <新根目录> <完整运行包>` 验证真实 Obsidian、utilityProcess 和受管 Chromium 的组合：独立 Space、只读查看、接管及旧权限失效、宿主焦点/剪贴板、身份预检、文件授权和跨窗口查看。探针记录插件、Worker 和运行包摘要；只引用对应构建实际通过的断言。其文件选择器结果由夹具提供，不证明操作系统原生文件对话框；经宿主文本框插入中文也不等于验证系统输入法的完整组字流程。独立 Chromium 探针保留浏览器沙箱，宿主探针对 Obsidian 自身沙箱的测试环境设置需另行说明。
 
+`terminal-merge.mjs <新根目录>` 在一次性库里点开终端：新建空间、本地 `HUHU_PTY_BINARY` 启动 shell、输入命令、第二个会话、关闭再打开，以及切到任务和首页后会话仍在。它不下载已发布辅助程序，也不代替 Windows / macOS 终端验收。
+
 ```sh
 pnpm run build
 cargo build --release --manifest-path native/pty-server/Cargo.toml

@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "purpose": "T03 same-author repair STD01/02 SPEC01/02",
+  "owner": "codex:/root/prepare_t03",
+  "goal_revision": "GP-014",
+  "map_revision": 15,
+  "attempt": 3,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "before": [
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "850631a44ab60af16be9c6541e9783f4e6bc398eb064ea2b1e8d4da06d3d4c21"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "sha256": "af9062760e386193fb4bc5da238cfd486b7fb53a5fc9c85ed211ee637171a368"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "sha256": "b65aed981f4756a913579043c9992d92585cd9b748e48b2bbc86969c06957c9f"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "a8086a18170d9586302266d9816c471844a15c9574f00da479124590f3e99f68"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "sha256": "12e665e37585a4611481218b65ce03624ae79d6ed034775ba652190a498e2c77"
+    },
+    {
+      "path": "src/modules/agent/services/launch/managed-errors.ts",
+      "sha256": "33fda3ea77c3cbd9c17e70fdc4c190ec457b72c14007a9fc1261bc5732df82ae"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1"
+    },
+    {
+      "path": "src/host/desktop/native/helper.test.ts",
+      "sha256": null
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "e66231fc943fc37e2db244bec8fd67111a7a97cb986cf43fc06f532c0db8c928"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "cc4080ae15d34684f9216710f916b21bd8f5e9530c668b149837640a428cb1fe"
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "sha256": "821862321ebd753a2216d743ee0ba91e97ad2626e36e99a7e1e7677d83859049"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-launch-failures.test.ts",
+      "sha256": null
+    }
+  ],
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "4c436b6cd26199851c1d9b42a4190bd301b4328b59f282e27aab5396ade15332"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "c2b6a11ef4fb76b9b3681804c60fd23434d9c5fd21f28cbc49acc52e941362e3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-review-round1.md",
+      "sha256": "d7e1ca9055ada9558b305af51041eed0136d0c4ead7bee48d4bc2a9efe740aa6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-source-a-round1.json",
+      "sha256": "a8c2bacd78a0b91096e224c9241712d4fd6757cd555264f4f4d03e4ac2aa1f84"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ],
+  "report": "/tmp/huhu-t03-a-repair-handoff.md",
+  "source": "/tmp/huhu-t03-a-repair-source.json",
+  "checks": "/tmp/huhu-t03-a-repair-checks.json",
+  "prohibited": "B UI/C tests/SpaceService/workspace-store/host.ts other than helper/shared APIs/job.rs/deps/production assets/formal C/Git; native wire changes only structural spawn rejection evidence",
+  "required": "formal red→green both production defects, actual newly built helper missing Shell, unknown/legacy replies remain conservative, early exit preserved, shell choice all attachments/restart/readback, source stopped and exact logs",
+  "prepared_at": "2026-10-25T08:49:43.151043+00:00",
+  "actual_tool": "collaboration.followup_task",
+  "actual_handle": "/root/prepare_t03",
+  "dispatched": true
+}

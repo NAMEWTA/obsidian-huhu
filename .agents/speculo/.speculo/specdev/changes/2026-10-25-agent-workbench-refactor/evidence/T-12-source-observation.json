@@ -1,0 +1,513 @@
+{
+  "task": "T-12 read-only engineering preflight",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "dispatchedHead": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "planContext": "GP-013 / Map revision 14",
+  "observationsOnly": true,
+  "sourceStatus": "Root reported T-03 source STOPPED and independent review in progress. This manifest is a time-point observation, not a candidate freeze or acceptance. Formal artifacts may change under Root.",
+  "captureSemantics": "Each timestamp is the UTC byte-hash observation time. Earlier semantic reads were section/symbol reads, not immutable snapshots. No earlier read timestamp or absent pre-read hash is invented.",
+  "executedChecks": [],
+  "notRun": [
+    "tests",
+    "typecheck",
+    "lint",
+    "build",
+    "helper",
+    "Provider",
+    "Obsidian",
+    "native executable"
+  ],
+  "repositoryWrites": [],
+  "files": [
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observedAtUtc": "2026-10-25T08:49:37.141405+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "observedAtUtc": "2026-10-25T08:49:37.141446+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "observedAtUtc": "2026-10-25T08:49:37.141518+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/skills/dev/references/obsidian-api.md",
+      "sha256": "9fac8f21f8d4806331176cc8bf62cd1ffff94aaec3b58ba5a6c06bf348479417",
+      "bytes": 8356,
+      "observedAtUtc": "2026-10-25T08:49:37.141559+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "observedAtUtc": "2026-10-25T08:49:37.141600+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "observedAtUtc": "2026-10-25T08:49:37.141629+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "bytes": 9072,
+      "observedAtUtc": "2026-10-25T08:49:37.141666+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "bytes": 4304,
+      "observedAtUtc": "2026-10-25T08:49:37.141696+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "bytes": 8182,
+      "observedAtUtc": "2026-10-25T08:49:37.141724+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235,
+      "observedAtUtc": "2026-10-25T08:49:37.141746+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100,
+      "observedAtUtc": "2026-10-25T08:49:37.141776+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observedAtUtc": "2026-10-25T08:49:37.141818+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval.md",
+      "sha256": "5c84504ba7fb6911c8a5789953125d867c2d69db342d83e174585ec4d939bde3",
+      "bytes": 2509,
+      "observedAtUtc": "2026-10-25T08:49:37.141852+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/design-system.md",
+      "sha256": "150813a6e37c1426db13a01fb5da75ded9ac36dd816d6a319c616cfc5902faeb",
+      "bytes": 75268,
+      "observedAtUtc": "2026-10-25T08:49:37.141916+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/final/index.html",
+      "sha256": "c44923a86fb41e3818b4d292bff6d2618bdeb3a87d46812a391aa368510903da",
+      "bytes": 3520,
+      "observedAtUtc": "2026-10-25T08:49:37.141938+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573,
+      "observedAtUtc": "2026-10-25T08:49:37.141964+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observedAtUtc": "2026-10-25T08:49:37.142014+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/11-vault-history.md",
+      "sha256": "a81eadf21ca3c4cab2df82584ab5280274377b980368c9a35f34f51efc52de39",
+      "bytes": 16729,
+      "observedAtUtc": "2026-10-25T08:49:37.142041+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/12-native-resume.md",
+      "sha256": "520717316d3f910519322e15f49e8a40302278a0e8fc8c9e5924fe1ff4162285",
+      "bytes": 16853,
+      "observedAtUtc": "2026-10-25T08:49:37.142071+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1",
+      "bytes": 31587,
+      "observedAtUtc": "2026-10-25T08:49:37.142106+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "observedAtUtc": "2026-10-25T08:49:37.142126+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "observedAtUtc": "2026-10-25T08:49:37.142153+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278,
+      "observedAtUtc": "2026-10-25T08:49:37.142172+00:00",
+      "readScope": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": "native/pty-server/src/agent_data.rs",
+      "sha256": "12a184efb05a83ffdfee1eee70aefbd0a6e12921a86813cd05f7994a8e0f6080",
+      "bytes": 83199,
+      "observedAtUtc": "2026-10-25T08:49:37.142235+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "bytes": 4190,
+      "observedAtUtc": "2026-10-25T08:49:37.142252+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407,
+      "observedAtUtc": "2026-10-25T08:49:37.142282+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/core/history/details.ts",
+      "sha256": "99de1bbf4ac0e5f6bbdc1046d1b4c2c4e3aaf5d369cc0b9070f5012ea1bf6bf4",
+      "bytes": 4329,
+      "observedAtUtc": "2026-10-25T08:49:37.142301+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/core/history/types.ts",
+      "sha256": "8d4244c0e30c4abed931e4cba52878bc6e6c1c4d32aae9c0be604601410c5edb",
+      "bytes": 842,
+      "observedAtUtc": "2026-10-25T08:49:37.142319+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "bytes": 1234,
+      "observedAtUtc": "2026-10-25T08:49:37.142336+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415,
+      "observedAtUtc": "2026-10-25T08:49:37.142353+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/account-permissions.test.ts",
+      "sha256": "77335025b3283451b28766c1482ecfe6dc108610d5b0ef054c17dc62a45eacd3",
+      "bytes": 1916,
+      "observedAtUtc": "2026-10-25T08:49:37.142371+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.test.ts",
+      "sha256": "28dec264f3f4efdc267bd1d1bf93f76b06b18c2500536467fdd36dcb3a75b641",
+      "bytes": 7293,
+      "observedAtUtc": "2026-10-25T08:49:37.142391+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "bytes": 8135,
+      "observedAtUtc": "2026-10-25T08:49:37.142412+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/legacy-accounts.test.ts",
+      "sha256": "bfade8d60fb812e5fdded93f66b6ad1200a33371608f54420d6e80385681b176",
+      "bytes": 4332,
+      "observedAtUtc": "2026-10-25T08:49:37.142432+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-account.test.ts",
+      "sha256": "6995ad38a10f291d338b3cd171bda9a180528c75813efa88e436110c09261ce6",
+      "bytes": 5250,
+      "observedAtUtc": "2026-10-25T08:49:37.142451+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-homes.ts",
+      "sha256": "710a54b145c0d53529577bf4a747101acd78f0dd339ca85a1d1818d3018803a7",
+      "bytes": 5093,
+      "observedAtUtc": "2026-10-25T08:49:37.142471+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/transcript.test.ts",
+      "sha256": "b897f2fd1e47a7026f9714d069f0056d6ec02ab8205ac60861aea9f043fd27f9",
+      "bytes": 1283,
+      "observedAtUtc": "2026-10-25T08:49:37.142488+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/transcript.ts",
+      "sha256": "e2818e9af3f8d44f3c5be24ad92251848f472a147ae95f696420d325861d022a",
+      "bytes": 3007,
+      "observedAtUtc": "2026-10-25T08:49:37.142505+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/usage-cache.test.ts",
+      "sha256": "f505af96aa353472bbc8745d5deee18af650c18a04b03b6aa9920b59c8b7eb16",
+      "bytes": 1439,
+      "observedAtUtc": "2026-10-25T08:49:37.142522+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/usage-scope.test.ts",
+      "sha256": "392a21aca5fe5ff36f2446b574fd344a38d52e35d03e2ec0af8a2e52243d949c",
+      "bytes": 3634,
+      "observedAtUtc": "2026-10-25T08:49:37.142540+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/usage.test.ts",
+      "sha256": "c685ccf82052c69b1f3e0ce0154f999d5723d87e82b6060bb3528c261d93a81b",
+      "bytes": 1040,
+      "observedAtUtc": "2026-10-25T08:49:37.142561+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/canonical-cwd.ts",
+      "sha256": "c9b8a9e4d90b436b77188462f1dfd8c8821c1ee6b2d1bf8ca863d3cfa6740e14",
+      "bytes": 790,
+      "observedAtUtc": "2026-10-25T08:49:37.142579+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/details.ts",
+      "sha256": "7acf66a8bb1bff15b19b83ef550c4767e192eee072328325e6f46030a52ff292",
+      "bytes": 1935,
+      "observedAtUtc": "2026-10-25T08:49:37.142597+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/resume-command.test.ts",
+      "sha256": "c9104faf7c58e5af45e9065b349f5640d60f46010ae4ca067a221dbd27e34349",
+      "bytes": 1585,
+      "observedAtUtc": "2026-10-25T08:49:37.142616+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/resume-command.ts",
+      "sha256": "914f4af83752d032cf21a1adc89e470be39cdfc4151f88a778d54bcaa8138c3a",
+      "bytes": 1096,
+      "observedAtUtc": "2026-10-25T08:49:37.142634+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/scan.test.ts",
+      "sha256": "33b347c30e3e8070b084f130898b9bf53daa25804566fbbd5f2eb03e16d9d78f",
+      "bytes": 4878,
+      "observedAtUtc": "2026-10-25T08:49:37.142657+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/scan.ts",
+      "sha256": "0ca8252a3a83a11ed7c7c5a8d68365dc29c3ab8722375bbaaaf69ac6a70692ab",
+      "bytes": 11478,
+      "observedAtUtc": "2026-10-25T08:49:37.142681+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/scope.test.ts",
+      "sha256": "5c170ecfbbadd0a3992f0f83feb88abb4877d79f0163210f6471342d5ceb52d4",
+      "bytes": 3040,
+      "observedAtUtc": "2026-10-25T08:49:37.142697+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/history/scope.ts",
+      "sha256": "8748c1677508263f1480f5926ace7d0e221c824dd728811b5966f92fbbec1102",
+      "bytes": 3559,
+      "observedAtUtc": "2026-10-25T08:49:37.142716+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/server/agent-data-client.ts",
+      "sha256": "2ef370d1842e7695a27bef7f25ea5dae5c8b3311d5817c1bb5ca9b4050521cce",
+      "bytes": 1170,
+      "observedAtUtc": "2026-10-25T08:49:37.142732+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/server/native-history.test.ts",
+      "sha256": "9490a6c18d4b79d47171fed9c988efd4a8dd37f57890a7852625578ab893c7f3",
+      "bytes": 12418,
+      "observedAtUtc": "2026-10-25T08:49:37.142755+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.ts",
+      "sha256": "d8d031de96d45e020110e00d0bbed27a56e011b8fbee2350ceaeeb3cd4ec28c1",
+      "bytes": 1078,
+      "observedAtUtc": "2026-10-25T08:49:37.142771+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.ts",
+      "sha256": "00dfd986d0ce4ea30d66b0752e799fd2783c41ffa9b4034bc37c0025a81332e7",
+      "bytes": 3952,
+      "observedAtUtc": "2026-10-25T08:49:37.142788+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/platform/history/service.ts",
+      "sha256": "1e886367e21cbe155c03f05b257fb48750f3b5b9fdc9cad375059129d7372202",
+      "bytes": 15293,
+      "observedAtUtc": "2026-10-25T08:49:37.142812+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "bytes": 44420,
+      "observedAtUtc": "2026-10-25T08:49:37.142853+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/history-store.test.ts",
+      "sha256": "5e27e7313ac5c594725b9f4fba244337c2b3cd03c658576577c0b2f364b8d823",
+      "bytes": 3870,
+      "observedAtUtc": "2026-10-25T08:49:37.142869+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/history-store.ts",
+      "sha256": "d8a183ed24392bdec83aed87e43576e6d7ec07978449559b0a24f9bf52e9872d",
+      "bytes": 3985,
+      "observedAtUtc": "2026-10-25T08:49:37.142886+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher-space.test.ts",
+      "sha256": "f34d40831d9ed0bed14a09ac63e9c0b9d5ca806e32c3f297539b5fbcdfa1cf28",
+      "bytes": 7381,
+      "observedAtUtc": "2026-10-25T08:49:37.142905+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "bytes": 6819,
+      "observedAtUtc": "2026-10-25T08:49:37.142923+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "bytes": 4239,
+      "observedAtUtc": "2026-10-25T08:49:37.142941+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "bytes": 16158,
+      "observedAtUtc": "2026-10-25T08:49:37.142965+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "bytes": 15635,
+      "observedAtUtc": "2026-10-25T08:49:37.142988+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "850631a44ab60af16be9c6541e9783f4e6bc398eb064ea2b1e8d4da06d3d4c21",
+      "bytes": 16394,
+      "observedAtUtc": "2026-10-25T08:49:37.143011+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/usage-store.ts",
+      "sha256": "117449f5a14b92b39938ad63b84ded1507c8acec70d556f798056d5817a57214",
+      "bytes": 5664,
+      "observedAtUtc": "2026-10-25T08:49:37.143029+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.test.ts",
+      "sha256": "9e5c99cead94f79a79e39cd932886b319eb7f5f64c3ae6ca8d3a8243f23d0514",
+      "bytes": 9766,
+      "observedAtUtc": "2026-10-25T08:49:37.143049+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "a8086a18170d9586302266d9816c471844a15c9574f00da479124590f3e99f68",
+      "bytes": 36965,
+      "observedAtUtc": "2026-10-25T08:49:37.143083+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-usage-store.ts",
+      "sha256": "c808143a61c9d8cf95578360660e0baa10a14ca6ec04a89291c53d7179db1f59",
+      "bytes": 3190,
+      "observedAtUtc": "2026-10-25T08:49:37.143099+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c",
+      "bytes": 12540,
+      "observedAtUtc": "2026-10-25T08:49:37.143121+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    },
+    {
+      "path": "src/modules/agent/ui/history/SessionHistoryPanel.tsx",
+      "sha256": "894b45e230f13452704ed7efe5f18bab8428cd0f607f0f8c1b8a772beaff021a",
+      "bytes": 14963,
+      "observedAtUtc": "2026-10-25T08:49:37.143144+00:00",
+      "readScope": "whole file or targeted source sections/symbol matches; digest covers complete file"
+    }
+  ],
+  "absentObservation": [
+    {
+      "path": "src/modules/agent/platform/desktop/native-reference",
+      "exists": false,
+      "note": "Ticket proposed implementation directory; not assumed to exist or supply a production interface."
+    }
+  ]
+}

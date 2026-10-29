@@ -1,4 +1,11 @@
 import { AutomationError, automationFailure } from '../../../shared/automation/errors';
+import {
+	AUTOMATION_DEFINITIONS_OWNER,
+	AUTOMATION_RUNTIME_OWNER,
+	automationRuntimePath,
+	isAutomationDefinitionPath,
+} from '../api';
+import { RecoveryError, type RecoveryOwner } from '../../../shared/storage/recovery-contracts';
 import { PRECHECK_TIMEOUT_MS, type PrecheckRunner } from './precheck';
 import { isDefinition } from '../../../shared/automation/metadata';
 import {
@@ -29,6 +36,12 @@ export interface AutomationState {
 	definitions: AutomationDefinition[];
 	runs: AutomationRun[];
 	cursors: Record<string, number>;
+	/**
+	 * Runs brought in by a backup restore (contracts section 6). Their result is a historical fact: a restart never
+	 * publishes a notification for them, and `from` keeps the status they had in the source before they were shown
+	 * as non-active. Written only by the restore, never by a normal run.
+	 */
+	restored?: Record<string, { at: number; from?: AutomationRun['status'] }>;
 }
 export function validDefinition(value: unknown): value is AutomationDefinition {
 	if (!isDefinition(value)) return false;
@@ -69,6 +82,13 @@ export class AutomationService {
 	private pendingMaterials = new Map<string, AbortController>();
 	private pendingActions = new Map<string, AbortController>();
 	private ownedActions = new Map<string, { handle: AutomationActionHandle; abort: AbortController }>();
+	/** Recovery hold: every state change fails visibly until `resumeWrites` (no silent drop). */
+	private recoveryHold = false;
+	/** Completions that reached `publish` while held: their result is real, so the notice is sent after the hold. */
+	private deferredPublish: Array<{ run: AutomationRun; definition: AutomationDefinition }> = [];
+	/** Notices being sent right now (the completion -> reserve -> deliver chain). */
+	private publishing = 0;
+	private definitionOperations = 0;
 	constructor(
 		storage: TextStorage,
 		path: string,
@@ -135,6 +155,51 @@ export class AutomationService {
 	}
 	private requireExecution(): void {
 		if (!this.executionEnabled) throw new AutomationError('moduleOff');
+		if (this.recoveryHold) throw new Error('automation-recovery-busy');
+	}
+	/** Close admission for a backup/restore operation. Nothing is stopped; see `recoveryBusy`. */
+	quiesceWrites(): void {
+		if (this.definitionOperations)
+			throw new RecoveryError('BUSY', 'automation-recovery-busy', { busy: [`definitions:${this.definitionOperations}`] });
+		this.recoveryHold = true;
+	}
+	resumeWrites(): void {
+		this.recoveryHold = false;
+		for (const { run, definition } of this.deferredPublish.splice(0)) {
+			// After an adoption the run may be gone or already be history; the file is the truth.
+			const row = this.state.runs.find((item) => item.id === run.id);
+			if (row && !isActiveRun(row)) void this.publish(row, definition).catch(console.error);
+		}
+	}
+	/** Work that blocks a recovery operation; the user stops it, it is never stopped here. */
+	recoveryBusy(): string[] {
+		const busy = this.state.runs.filter(isActiveRun).map((run) => run.title);
+		if (this.launches.size) busy.push(`launches:${this.launches.size}`);
+		for (const id of this.ownedActions.keys()) busy.push(`action:${id}`);
+		if (this.definitionOperations) busy.push(`definitions:${this.definitionOperations}`);
+		if (this.publishing) busy.push(`publish:${this.publishing}`);
+		return busy;
+	}
+	/** Strict drain: every queued transition is awaited and a failed persist rejects. */
+	async drainWrites(): Promise<void> {
+		if (this.definitionOperations)
+			throw new RecoveryError('BUSY', 'automation-recovery-busy', { busy: [`definitions:${this.definitionOperations}`] });
+		await this.transitions;
+		await this.writes;
+		await this.store.flush();
+	}
+	/**
+	 * Adopt the file after a restore replaced it. Unlike `load` this interrupts nothing, commits nothing and
+	 * publishes no notification, so reading imported history can never cause a side effect.
+	 */
+	async adoptFromDisk(): Promise<void> {
+		const state = await this.store.load({ definitions: [], runs: [], cursors: {} });
+		this.state = state;
+		this.saved = structuredClone(state);
+		this.loaded = true;
+		this.loadError = '';
+		await this.refresh();
+		this.emit();
 	}
 	async load(): Promise<void> {
 		try {
@@ -202,60 +267,66 @@ export class AutomationService {
 	}
 	async save(d: AutomationDefinition): Promise<void> {
 		this.requireExecution();
-		if (d.removedAction) throw new AutomationError('removedAction');
-		if (!this.loaded) throw new AutomationError('failedLoad');
-		if (!validDefinition(d)) throw new AutomationError('invalid');
-		this.verifyAction(d);
-		const unavailable = actionAvailability(
-			d.action.kind,
-			d.schedule.kind === 'manual' ? 'manual' : 'scheduled',
-			this.options.desktop !== false,
-		);
-		if (unavailable) throw new Error(t(unavailable));
-		const old = this.definitions.find((item) => item.id === d.id);
-		if (old && old.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
-		const changed =
-			!old ||
-			JSON.stringify(old.schedule) !== JSON.stringify(d.schedule) ||
-			JSON.stringify(old.action) !== JSON.stringify(d.action) ||
-			JSON.stringify(old.precheck) !== JSON.stringify(d.precheck);
-		const next = { ...d, revision: old ? old.revision + (changed ? 1 : 0) : 1, updatedAt: Date.now() };
-		if (!next.source && this.options.definitions) {
-			await this.options.definitions.save(next);
-			await this.refresh();
-		}
-		if (next.source) {
-			await this.sources.save(next);
-			if (this.refreshing) await this.refreshing;
-			await this.refresh();
-		}
-		await this.commit((state) => {
-			if (old && changed && JSON.stringify(old.schedule) === JSON.stringify(next.schedule)) {
-				const cursor = state.cursors[`${old.id}:${old.revision}`];
-				if (cursor !== undefined) state.cursors[`${next.id}:${next.revision}`] = cursor;
+		this.definitionOperations++;
+		try {
+			if (d.removedAction) throw new AutomationError('removedAction');
+			if (!this.loaded) throw new AutomationError('failedLoad');
+			if (!validDefinition(d)) throw new AutomationError('invalid');
+			this.verifyAction(d);
+			const unavailable = actionAvailability(
+				d.action.kind,
+				d.schedule.kind === 'manual' ? 'manual' : 'scheduled',
+				this.options.desktop !== false,
+			);
+			if (unavailable) throw new Error(t(unavailable));
+			const old = this.definitions.find((item) => item.id === d.id);
+			if (old && old.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
+			const changed =
+				!old ||
+				JSON.stringify(old.schedule) !== JSON.stringify(d.schedule) ||
+				JSON.stringify(old.action) !== JSON.stringify(d.action) ||
+				JSON.stringify(old.precheck) !== JSON.stringify(d.precheck);
+			const next = { ...d, revision: old ? old.revision + (changed ? 1 : 0) : 1, updatedAt: Date.now() };
+			if (!next.source && this.options.definitions) {
+				await this.options.definitions.save(next);
+				await this.refresh();
 			}
-			if (!next.source && !this.options.definitions) {
-				const index = state.definitions.findIndex((item) => item.id === next.id);
-				if (index < 0) state.definitions.push(next);
-				else state.definitions[index] = next;
+			if (next.source) {
+				await this.sources.save(next);
+				if (this.refreshing) await this.refreshing;
+				await this.refresh();
 			}
-		});
+			await this.commit((state) => {
+				if (old && changed && JSON.stringify(old.schedule) === JSON.stringify(next.schedule)) {
+					const cursor = state.cursors[`${old.id}:${old.revision}`];
+					if (cursor !== undefined) state.cursors[`${next.id}:${next.revision}`] = cursor;
+				}
+				if (!next.source && !this.options.definitions) {
+					const index = state.definitions.findIndex((item) => item.id === next.id);
+					if (index < 0) state.definitions.push(next);
+					else state.definitions[index] = next;
+				}
+			});
+		} finally { this.definitionOperations--; }
 	}
 	async remove(d: AutomationDefinition): Promise<void> {
 		this.requireExecution();
-		if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
-		if (this.state.runs.some((r) => r.automationId === d.id && isActiveRun(r)))
-			throw new AutomationError('stopFirst');
-		if (d.source) {
-			await this.sources.remove(d);
-			await this.refresh();
-		} else if (this.options.definitions) {
-			await this.options.definitions.remove(d);
-			await this.refresh();
-		}
-		await this.commit((state) => {
-			state.definitions = state.definitions.filter((item) => item.id !== d.id);
-		});
+		this.definitionOperations++;
+		try {
+			if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
+			if (this.state.runs.some((r) => r.automationId === d.id && isActiveRun(r)))
+				throw new AutomationError('stopFirst');
+			if (d.source) {
+				await this.sources.remove(d);
+				await this.refresh();
+			} else if (this.options.definitions) {
+				await this.options.definitions.remove(d);
+				await this.refresh();
+			}
+			await this.commit((state) => {
+				state.definitions = state.definitions.filter((item) => item.id !== d.id);
+			});
+		} finally { this.definitionOperations--; }
 	}
 	async clearHistory(): Promise<void> {
 		this.requireExecution();
@@ -266,7 +337,7 @@ export class AutomationService {
 	}
 
 	async tick(now = Date.now()): Promise<void> {
-		if (!this.loaded || !this.executionEnabled || this.evaluating) return;
+		if (!this.loaded || !this.executionEnabled || this.recoveryHold || this.evaluating) return;
 		this.evaluating = true;
 		try {
 			await this.refresh();
@@ -359,6 +430,9 @@ export class AutomationService {
 				return Promise.resolve(rejected('invocationConflict', recorded.id));
 			return Promise.resolve(recorded.invocation.receipt ?? rejected(recorded.status, recorded.id));
 		}
+		// Only a NEW invocation needs a Space. An exact repeat of an older accepted request was answered above.
+		if (snapshot.destination.kind === 'fresh' && !snapshot.destination.spaceId)
+			return Promise.resolve(rejected('spaceRequired'));
 		const now = Date.now();
 		const definition: AutomationDefinition = {
 			id: `invocation:${snapshot.invocationId}`,
@@ -373,6 +447,7 @@ export class AutomationService {
 				cwd: snapshot.destination.kind === 'fresh' ? snapshot.destination.cwd : '',
 				prompt: material,
 				sessionMode: 'fresh',
+				...(snapshot.destination.kind === 'fresh' ? { spaceId: snapshot.destination.spaceId } : {}),
 			},
 			source: snapshot.source,
 			channels: ['in-app'],
@@ -487,6 +562,14 @@ export class AutomationService {
 				});
 				return run;
 			}
+			// Before any user precheck command runs: a terminal action with no bound Space is a configuration problem.
+			// The run is recorded as failed (`spaceRequired`) and notified; nothing starts and nothing is retried blindly.
+			if (
+				(d.action.kind === 'agent' || d.action.kind === 'script') &&
+				!d.action.spaceId &&
+				invocation?.destination.kind !== 'existing'
+			)
+				throw new AutomationError('spaceRequired');
 			if (
 				!active &&
 				!(!retry && trigger === 'scheduled' && now - at > d.graceMinutes * 60_000 + 120_000) &&
@@ -499,9 +582,16 @@ export class AutomationService {
 					await this.updateRun(run, {
 						timeline: [...(run.timeline ?? []), { phase: 'precheck', at: Date.now() }],
 					});
+					// A Space-bound action starts in its Space-bound directory; its precheck runs in that same place.
+					const precheckCwd =
+						(d.action.kind === 'agent' || d.action.kind === 'script') && this.agent()?.boundCwd
+							? await this.agent()!.boundCwd!(d.action.spaceId, d.action.cwd)
+							: 'cwd' in d.action
+								? d.action.cwd
+								: undefined;
 					const result = await this.options.precheck({
 						precheck: d.precheck,
-						cwd: 'cwd' in d.action ? d.action.cwd : undefined,
+						cwd: precheckCwd,
 						signal: abort.signal,
 						timeoutMs: PRECHECK_TIMEOUT_MS,
 					});
@@ -774,9 +864,19 @@ export class AutomationService {
 		else if (run.terminalId) await this.agent()?.open(run.terminalId);
 	}
 	private async publish(run: AutomationRun, definition: AutomationDefinition): Promise<void> {
-		if (!this.executionEnabled || run.notificationAttempted) return;
-		await this.notify(run, definition);
-		await this.updateRun(run, { notificationAttempted: true }, true);
+		if (!this.executionEnabled || run.notificationAttempted || this.state.restored?.[run.id]) return;
+		if (this.recoveryHold) {
+			// A completion that lands during a backup/restore is kept, not dropped: it is published at `resumeWrites`.
+			this.deferredPublish.push({ run, definition });
+			return;
+		}
+		this.publishing++;
+		try {
+			await this.notify(run, definition);
+			await this.updateRun(run, { notificationAttempted: true }, true);
+		} finally {
+			this.publishing--;
+		}
 	}
 	private updateRun(run: AutomationRun, patch: Partial<AutomationRun>, terminal = false): Promise<void> {
 		return this.commit((state) => {
@@ -791,6 +891,7 @@ export class AutomationService {
 	/** Serialize state transitions; publish only after successful persistence. */
 	private saved?: AutomationState;
 	private commit(change: (state: AutomationState) => void): Promise<void> {
+		if (this.recoveryHold) return Promise.reject(new Error('automation-recovery-busy'));
 		const operation = this.writes.then(async () => {
 			let next = structuredClone(this.state);
 			change(next);
@@ -805,6 +906,11 @@ export class AutomationService {
 					return n <= 100;
 				})
 				.reverse();
+			if (next.restored) {
+				const ids = new Set(next.runs.map((row) => row.id));
+				for (const id of Object.keys(next.restored)) if (!ids.has(id)) delete next.restored[id];
+				if (!Object.keys(next.restored).length) delete next.restored;
+			}
 			// Preserve references held by live completion handlers and callers.
 			const live = new Map([...next.runs, ...this.state.runs].map((row) => [row.id, row]));
 			next = await this.store.commit({ base: this.saved ?? this.state, value: next });
@@ -845,4 +951,32 @@ export class AutomationService {
 		});
 		await this.store.flush();
 	}
+}
+
+/**
+ * The two files this module really writes, as recovery owners: run history/invocations/results (one device file)
+ * and the Markdown definition documents. Active runs are listed as busy, never stopped; adoption reads and sends nothing.
+ */
+export function automationRecoveryOwners(service: AutomationService, deviceId: string): RecoveryOwner[] {
+	const runtimePath = automationRuntimePath(deviceId);
+	const gate = {
+		quiesce: async () => service.quiesceWrites(),
+		drain: () => service.drainWrites(),
+		adopt: () => service.adoptFromDisk(),
+		release: async () => service.resumeWrites(),
+	};
+	return [
+		{
+			id: AUTOMATION_RUNTIME_OWNER,
+			owns: (path) => path === runtimePath,
+			preflight: async () => ({ busy: service.recoveryBusy() }),
+			...gate,
+		},
+		{
+			id: AUTOMATION_DEFINITIONS_OWNER,
+			owns: isAutomationDefinitionPath,
+			preflight: async () => ({ busy: service.recoveryBusy() }),
+			...gate,
+		},
+	];
 }

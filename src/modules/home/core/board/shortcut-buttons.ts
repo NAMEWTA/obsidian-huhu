@@ -16,9 +16,18 @@ export interface ShortcutButton {
 	/** `agent` only: the agent to start and the prompt it receives. */
 	agentId?: string;
 	prompt?: string;
+	/**
+	 * `agent` only: the Space the agent starts in. Absent means the Space chooser opens when the button is pressed;
+	 * it is never taken from the visible page or from a lone Space. A stale id is reported, not replaced.
+	 */
+	spaceId?: string;
 }
 
-const text = (value: unknown): string => (typeof value === 'string' ? value : '');
+export const isStr = (value: unknown): value is string => typeof value === 'string';
+export const text = (value: unknown) => (isStr(value) ? value : '');
+
+/** A stored Space id, or nothing: an old or malformed entry stays unbound and is never given a guess. */
+export const spaceField = (value: unknown) => (value && isStr(value) ? { spaceId: value } : {});
 
 /** Keep well-formed buttons in order; entries with a missing id, an unknown type or a repeated id are dropped. */
 export function readShortcutButtons(value: unknown): ShortcutButton[] {
@@ -38,7 +47,9 @@ export function readShortcutButtons(value: unknown): ShortcutButton[] {
 			icon: text(row.icon) || 'zap',
 			type,
 			target: text(row.target),
-			...(type === 'agent' ? { agentId: text(row.agentId), prompt: text(row.prompt) } : {}),
+			...(type === 'agent'
+				? { agentId: text(row.agentId), prompt: text(row.prompt), ...spaceField(row.spaceId) }
+				: {}),
 		});
 	}
 	return result;

@@ -1,0 +1,92 @@
+[
+  {
+    "command": [
+      "pnpm",
+      "run",
+      "build"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:19:07.685925+00:00",
+    "finished_at": "2026-10-25T07:19:55.950023+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t02-root-layout-build.log",
+    "output_sha256": "b9f814ec3f5b12cd4a1d24d410ad0fd1d3b0f3a1a72cfe2f6221325bdd249daf",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-build.log"
+  },
+  {
+    "command": [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:19:07.665164+00:00",
+    "finished_at": "2026-10-25T07:20:28.102198+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t02-root-layout-lint.log",
+    "output_sha256": "960f1eb37ac4d28430af9bef2c98f32333254854ffde619330f53d373ce0f632",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-lint.log"
+  },
+  {
+    "command": [
+      "pnpm",
+      "test:architecture"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:19:14.431387+00:00",
+    "finished_at": "2026-10-25T07:19:30.325986+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t02-root-layout-architecture.log",
+    "output_sha256": "787004ab4ddf0296d92e71c0237862ebcfe63218a822d76261a205b82f6a97d2",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-architecture.log"
+  },
+  {
+    "command": [
+      "pnpm",
+      "test:promise-callbacks"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:20:44.119695+00:00",
+    "finished_at": "2026-10-25T07:20:49.765743+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t02-root-layout-promise-callbacks.log",
+    "output_sha256": "46ad46247718e7227ceba05283dcbff1a0357d667d20ad959f33d4f9534c88fc",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-promise-callbacks.log"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      "/tmp/huhu-t02-root-layout-bundle-analysis.json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:20:21.130287+00:00",
+    "finished_at": "2026-10-25T07:20:22.039042+00:00",
+    "exit_code": 126,
+    "output": "/tmp/huhu-t02-root-layout-bundle-initial.log",
+    "output_sha256": "8e06001944e494a4e12cb530f3660ef6d28fb942126273095a7c27e79762768c",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-bundle-initial.log"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      "/tmp/huhu-t02-root-layout-bundle-final-analysis.json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T07:20:48.930396+00:00",
+    "finished_at": "2026-10-25T07:20:49.818248+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t02-root-layout-bundle-final.log",
+    "output_sha256": "14b941f5f9c00d89fe6f74c44458ada6ae01ff79fbb967d3a92be198c4d57935",
+    "saved_output": "evidence/T-02-logs/huhu-t02-root-layout-bundle-final.log"
+  }
+]

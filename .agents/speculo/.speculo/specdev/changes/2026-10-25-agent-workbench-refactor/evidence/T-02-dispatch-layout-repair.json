@@ -1,0 +1,105 @@
+{
+  "task": "T-02 second integration cycle: layout bridge repair",
+  "actual_agent": "/root/prepare_t02",
+  "dispatch_tool": "collaboration.followup_task",
+  "dispatch_observation": "Root实际followup_task在reviewer明确停审后发送；此前仅只读分析。原writer已回报开始红灯/最小修复。",
+  "model_inherited": "gpt-6.1-sol",
+  "reasoning_effort_inherited": "xhigh",
+  "recorded_at": "2026-10-25T07:09:45.244927+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "plan_revision": "GP-012 / Map13",
+  "review_checkpoint_input_sha256": "48497f9ed2f152160f58af21073bb0dc5b96c1ebf245372c75264adbf6ba2b96",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "343bb8730ddb652b6795912a9a73ceebe8429176981291b6097166be0a6a8d60"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/02-space-identities.md",
+      "sha256": "927489334c12489b7ba7fd0fc23881b59693b2c7f1cb6f9639fcda7dacb201bd"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-01.md",
+      "sha256": "214d84c6102cc255457cd447590e9a302b268b1c50c76f54313d7c20fedf2eb3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-review-input-round2.md",
+      "sha256": "c1cfc97ca75acacbd7d3a05cea711f0a45f21051a6c2b80da2ac8e3de305e61c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-review-round2.md",
+      "sha256": "75813e95f58a6693b299806db354f18d0d1481f153e6d10559b4f25ed2e65902"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-layout-repair-plan.md",
+      "sha256": "af13f03ae1297a334e9416ad7a0afd3c6e09361ebb54bb89b94ff2e82cf8f06a"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ],
+  "write_allocation": [
+    "src/modules/agent/services/spaces/**",
+    "src/modules/agent/services/workspace-service*.ts",
+    "src/modules/agent/services/workspace-store*.ts"
+  ],
+  "forbidden": [
+    "B desktop/spaces",
+    "core contracts",
+    "UI",
+    "i18n",
+    "docs",
+    "native/shared source",
+    "main.js",
+    "styles.css",
+    "budget",
+    "formal change records",
+    "Git mutations"
+  ],
+  "new_evidence": "原selection primary暂挂→late attach→select adopt→append→openPage+flush数据丢失；源码probe与stdout保留",
+  "material_change": "从单服务队列append扩展至bridge immutable base、draft/ack协调和local dirty/in-flight save矩阵；原3次尝试和两轮request-changes保留",
+  "acceptance": "先红后绿；三份独立原probe重建；同ID/反向顺序/dirty/在途save/真正冲突/无变化通知；不回退scope/future/EIO/needsRecovery/owner；停写交接全A v3 manifest及exact commands/log SHA",
+  "root_only": [
+    "generated artifacts",
+    "budget",
+    "formal records",
+    "full integration",
+    "independent review dispatch"
+  ],
+  "prerequisite": "T-02 remains in_progress; T-03 implementation remains locked"
+}

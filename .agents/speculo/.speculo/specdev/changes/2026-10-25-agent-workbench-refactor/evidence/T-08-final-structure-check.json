@@ -1,0 +1,45 @@
+{
+  "utc": "2026-10-26T16:00:54.560377+00:00",
+  "ticket": "T-08",
+  "status": "done",
+  "meaning": "T08 done evidence and T09 formal plan structure validated before any T09 product dispatch; all earlier format failures retained.",
+  "checks": [
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-tickets.json",
+      "sha256": "7d962ec179798ea93006bf911a3d2a1df6ee660c8944b5ff7c4c7f65b3de1bac",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/7d962ec179798ea93006bf911a3d2a1df6ee660c8944b5ff7c4c7f65b3de1bac.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-tickets.log",
+      "sha256": "5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-goal.json",
+      "sha256": "72edf1d205086bf89f7ee988fe32f8e2c0f8c3bc51739a395a7c8621ec0cff83",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/72edf1d205086bf89f7ee988fe32f8e2c0f8c3bc51739a395a7c8621ec0cff83.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-goal.log",
+      "sha256": "5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-control.json",
+      "sha256": "41e172baa1c2888610f45218ce508ebf14aa4a7a79ce89143bce151103b8753e",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/41e172baa1c2888610f45218ce508ebf14aa4a7a79ce89143bce151103b8753e.raw"
+    },
+    {
+      "path": "/tmp/huhu-t09-root-preflight2-control.log",
+      "sha256": "755ab2923547efeb31b07b98446a8a4d6813f57dd4591bca6fe08d3f0e9f19c4",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/755ab2923547efeb31b07b98446a8a4d6813f57dd4591bca6fe08d3f0e9f19c4.raw"
+    }
+  ],
+  "source": {
+    "path": "/tmp/huhu-t09-root-preflight2-inputs.json",
+    "sha256": "8ff20f35bc7e8be7a2f734cb4bdaae47467fbec2740ff42895672d314fee3725",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/8ff20f35bc7e8be7a2f734cb4bdaae47467fbec2740ff42895672d314fee3725.raw"
+  },
+  "product_validation_reused": "T08 original Root integration3 and independent R5; no product code change from format fixes",
+  "errors": []
+}

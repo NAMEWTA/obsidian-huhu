@@ -1,0 +1,360 @@
+{
+  "audited_at": "2026-10-25T12:02:00.579154+00:00",
+  "by": "codex:/root",
+  "actual_return": "collaboration message and FINAL_ANSWER from /root/review_t04_round2 received before this audit",
+  "report_sha256": "dbd36b006845a4267eee7aac9fa8142e42839b9a2ed288d17f5ef1cc717fe28f",
+  "report_listed_hashes": [
+    {
+      "path": "/tmp/huhu-t04-review2-freeze-start.json",
+      "sha256": "e35023bcb99f6d505a75a2f61cfc615dc4ef7c8c6d6529ab9cc449621ca5fbeb"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-freeze-end.json",
+      "sha256": "f986c5127f81d6aa8b31c8c17a7b9a23f2e8297d67602c53620e3cd393fa1d4a"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-original-probes.log",
+      "sha256": "32417512c4eaa644bd95a07bced8c790651445e6b1fac46ef915454c6855ef8d"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-repair-suite.log",
+      "sha256": "63802a6783109eeefc1093bdf3ff27f7f76ccee23d7dde6df1d04c20ad398d84"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-audit.json",
+      "sha256": "f4233fa8ac151024add61bbdb25d9113f08d7ba350f433c78afa3a07641b6c41"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-bc-reuse.json",
+      "sha256": "29ff095feea4cd037eb4321a697d86193420f2002776252653910a5f9bcc4c53"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-prior-reuse.json",
+      "sha256": "6f40e7719a39f778db9adc608520e7768221a28185ab1868c6ca886adc951b22"
+    },
+    {
+      "path": "/tmp/huhu-t04-review2-freeze-delivery.json",
+      "sha256": "88995e975b6dd85fe5a22ee1dd5280f4a3839d8d05fc1d8391d44a7683a6e005"
+    }
+  ],
+  "actual_command_records": [
+    {
+      "record": "/tmp/huhu-t04-review2-original-probes.json",
+      "record_sha256": "f8162f0f706307a592eab1da9a2355ee2b4775043454dec42f8118ddfed1677e",
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "/tmp/huhu-t04-review2-vitest.config.mjs"
+      ],
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-review2-original-probes.log",
+      "output_sha256": "32417512c4eaa644bd95a07bced8c790651445e6b1fac46ef915454c6855ef8d"
+    },
+    {
+      "record": "/tmp/huhu-t04-review2-repair-suite.json",
+      "record_sha256": "03f842327e6d916aeb0d5fa4f662e42ae1996f399868c9a04dd70f078347c10a",
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+        "src/modules/agent/services/terminal/sessions-space.test.ts",
+        "--reporter=verbose"
+      ],
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-review2-repair-suite.log",
+      "output_sha256": "63802a6783109eeefc1093bdf3ff27f7f76ccee23d7dde6df1d04c20ad398d84"
+    },
+    {
+      "record": "/tmp/huhu-t04-review2-audit-run.json",
+      "record_sha256": "2ef24bcf3274591314b5a03aabfa12d6323b2ec1050e9ac07ef2e36f8f74f477",
+      "command": [
+        "python3",
+        "/tmp/huhu-t04-review2-audit.py"
+      ],
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-review2-audit-run.log",
+      "output_sha256": "77cbbe6472c32cfa258f6856ea0fa9516658c452c7e017c8ae6d08196c4da74d"
+    }
+  ],
+  "reviewer_delivery_freeze": {
+    "time": "2026-10-25T11:55:09.077Z",
+    "input": "22acab5546bc320876cbf8030e00f2fe8e8234d84e0d647f8a639fbe16e9fa00",
+    "scopeMatch": true,
+    "sources": [
+      {
+        "locator": "AGENTS.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/SKILL.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/ui/SKILL.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/architecture.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/testing.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/licensing.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/module-authoring.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/settings-and-i18n.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/obsidian-api.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/dev/references/build-and-release.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/ui/references/design-system.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/ui/references/shell.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/skills/ui/references/motion-a11y.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/design-system.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#purpose",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#scope",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#research",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#route",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#acceptance",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#verification",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md#constraints",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-runtime-proposal.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-design.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-api-record-view.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-repair-plan-a.md",
+        "match": true
+      },
+      {
+        "locator": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md#execution-protocol",
+        "match": true
+      }
+    ],
+    "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "index": "10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1"
+  },
+  "preserved_originals": [
+    {
+      "original": "/tmp/huhu-t04-review2-audit-run.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-audit-run.json",
+      "bytes": 397,
+      "sha256": "2ef24bcf3274591314b5a03aabfa12d6323b2ec1050e9ac07ef2e36f8f74f477"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-audit-run.log",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-audit-run.log",
+      "bytes": 1395,
+      "sha256": "77cbbe6472c32cfa258f6856ea0fa9516658c452c7e017c8ae6d08196c4da74d"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-audit.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-audit.json",
+      "bytes": 16669,
+      "sha256": "f4233fa8ac151024add61bbdb25d9113f08d7ba350f433c78afa3a07641b6c41"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-audit.py",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-audit.py",
+      "bytes": 2055,
+      "sha256": "1f19c5f53df17c57a179dd62b1a5361d12359bf92bf073ba2377512ec004dcc5"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-bc-reuse.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-bc-reuse.json",
+      "bytes": 35086,
+      "sha256": "29ff095feea4cd037eb4321a697d86193420f2002776252653910a5f9bcc4c53"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-before",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-before",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-bounds.test.ts",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-bounds.test.ts",
+      "bytes": 7282,
+      "sha256": "680c78fff581391ce51ba32b25154c8ab2f1e7f40c5be2e8f925d1e4a42a161d"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-freeze-delivery.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-freeze-delivery.json",
+      "bytes": 4417,
+      "sha256": "88995e975b6dd85fe5a22ee1dd5280f4a3839d8d05fc1d8391d44a7683a6e005"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-freeze-end.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-freeze-end.json",
+      "bytes": 4417,
+      "sha256": "f986c5127f81d6aa8b31c8c17a7b9a23f2e8297d67602c53620e3cd393fa1d4a"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-freeze-start.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-freeze-start.json",
+      "bytes": 4417,
+      "sha256": "e35023bcb99f6d505a75a2f61cfc615dc4ef7c8c6d6529ab9cc449621ca5fbeb"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-freeze.mjs",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-freeze.mjs",
+      "bytes": 1993,
+      "sha256": "d38d55aa386b8f5c85679983d0f16fa9e2763635005a5c0d6e6306c579f56d87"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-increment.diff",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-increment.diff",
+      "bytes": 433626,
+      "sha256": "e7b64df3dbb240a860c80c670c4cbd22f72d33bcb2473fad2e88a5fd049ead53"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-original-probes.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-original-probes.json",
+      "bytes": 546,
+      "sha256": "f8162f0f706307a592eab1da9a2355ee2b4775043454dec42f8118ddfed1677e"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-original-probes.log",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-original-probes.log",
+      "bytes": 207,
+      "sha256": "32417512c4eaa644bd95a07bced8c790651445e6b1fac46ef915454c6855ef8d"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-prior-reuse.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-prior-reuse.json",
+      "bytes": 9725,
+      "sha256": "6f40e7719a39f778db9adc608520e7768221a28185ab1868c6ca886adc951b22"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-probe.test.ts",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-probe.test.ts",
+      "bytes": 3645,
+      "sha256": "b248c2e5d582eeb89d68de6d43cd77d8cb5d5e38f848fd8619425c7d36cde43b"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-quiesce-legacy.test.ts",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-quiesce-legacy.test.ts",
+      "bytes": 1657,
+      "sha256": "3edfed96ec3dcb66bdaca18ad5be8f35694162198385a246311194b0bc2b8f1b"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-quiesce.test.ts",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-quiesce.test.ts",
+      "bytes": 1623,
+      "sha256": "ba23e4c6dfea2a442502d7715a404aec227e64305df58a7928d96104c0eb3df9"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-repair-suite.json",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-repair-suite.json",
+      "bytes": 852,
+      "sha256": "03f842327e6d916aeb0d5fa4f662e42ae1996f399868c9a04dd70f078347c10a"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-repair-suite.log",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-repair-suite.log",
+      "bytes": 13088,
+      "sha256": "63802a6783109eeefc1093bdf3ff27f7f76ccee23d7dde6df1d04c20ad398d84"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-repair.diff",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-repair.diff",
+      "bytes": 76531,
+      "sha256": "865c2f82e363524b95a4ec0f4a064337eed6068d60f13c405ed167f5d9fd8eeb"
+    },
+    {
+      "original": "/tmp/huhu-t04-review2-vitest.config.mjs",
+      "saved": "evidence/T-04-logs/huhu-t04-review2-vitest.config.mjs",
+      "bytes": 412,
+      "sha256": "6352db580083d52880785051b6b9e1b2bd60f807d5499ccc5aa9ed9277540964"
+    }
+  ],
+  "read_scope": "Root全文回读原report、两实际测试record/log和finalfreeze；其余原件逐SHA保存，不宣称逐行人工阅读全部引用或重跑产品测试。",
+  "result": "verified"
+}

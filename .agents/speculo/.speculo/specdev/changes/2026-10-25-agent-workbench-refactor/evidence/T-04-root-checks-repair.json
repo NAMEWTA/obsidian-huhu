@@ -1,0 +1,174 @@
+{
+  "observedAt": "2026-10-25T11:47:06.304510+00:00",
+  "attempt": 3,
+  "checks": [
+    {
+      "command": [
+        "pnpm",
+        "test:architecture"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:43:47.880038+00:00",
+      "finished_at": "2026-10-25T11:43:59.253566+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-architecture.log",
+      "output_sha256": "2ca9b5b8a9653329207d524e14b03aed6cb796ee30d83cfce47ca13a30e22da4",
+      "record_file": "/tmp/huhu-t04-root-repair-architecture.json",
+      "record_sha256": "cf573cb5d463c18cb22dbf759b2d3014c572dc410fbf40a6391de8e79e3409a9"
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/huhu-t04-root-repair-budget-attribution.mjs"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:45:23.448732+00:00",
+      "finished_at": "2026-10-25T11:45:24.868999+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-budget-attribution.log",
+      "output_sha256": "c424c2ac71bce28f80464c687ea3e1dc77331fa0c5610020bf5f8f2b4cb3d523",
+      "record_file": "/tmp/huhu-t04-root-repair-budget-attribution.json",
+      "record_sha256": "9d595ce8fe7cd0d2832b18a057846702ed37dfedbc8d255269f97d387b3e0936"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:41:05.448373+00:00",
+      "finished_at": "2026-10-25T11:41:50.034224+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-build.log",
+      "output_sha256": "aeb89d82a9f4e95b2e05bf7a9b6761ddc2db09bc4ead0447859613e9c9d3487e",
+      "record_file": "/tmp/huhu-t04-root-repair-build.json",
+      "record_sha256": "e73022248d4ecbded5fe234fcb243466079c3c69498fafd589b374d6c1a0e1de"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/check-bundle.mjs",
+        "--budget",
+        "scripts/bundle-budget.json",
+        "--enforce",
+        "--json",
+        "/tmp/huhu-t04-root-repair-bundle-final-data.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:46:26.440109+00:00",
+      "finished_at": "2026-10-25T11:46:27.289427+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-bundle-final.log",
+      "output_sha256": "b1e3cc1dc0529ebf0a71e7f7a987f9fce2046ba83349cc22ce394dc76996cf6d",
+      "record_file": "/tmp/huhu-t04-root-repair-bundle-final.json",
+      "record_sha256": "09394354d304bfbed7b84228b9fbafa29e4f8b20b0c100ede5dc90ad8f815ed7"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/check-bundle.mjs",
+        "--budget",
+        "scripts/bundle-budget.json",
+        "--json",
+        "/tmp/huhu-t04-root-repair-bundle-data.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:44:05.910744+00:00",
+      "finished_at": "2026-10-25T11:44:06.741379+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-bundle-measure.log",
+      "output_sha256": "239f9c61bdcd83a5827deae999cf79e04ef1de6e5f388d6fd74e2a6bf69a6e6b",
+      "record_file": "/tmp/huhu-t04-root-repair-bundle-measure.json",
+      "record_sha256": "690be2b3d5e8ccecce5dadf68750f3f385d1153c248a2c563d44851078eee44a"
+    },
+    {
+      "command": [
+        "pnpm",
+        "test:docs"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:44:05.077225+00:00",
+      "finished_at": "2026-10-25T11:44:05.860951+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-root-repair-docs.log",
+      "output_sha256": "ec6b8b9ca6cc95f0f97690916eb689bc842d42878d4fa69813f18398f2a556ce",
+      "record_file": "/tmp/huhu-t04-root-repair-docs.json",
+      "record_sha256": "544bc9be50d0bdbc77f9cb7b1d5c83673a3837b7efae94af07657b1858a7d140"
+    },
+    {
+      "command": [
+        "env",
+        "HUHU_TEST_PTY_BINARY=/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/agent/services/terminal",
+        "src/modules/agent/services/spaces",
+        "src/modules/agent/services/launch",
+        "src/modules/agent/services/agent-runtime.test.ts",
+        "src/modules/agent/services/prompt-runner.test.ts",
+        "src/modules/agent/services/workspace-service-launch-failures.test.ts",
+        "src/modules/agent/services/workspace-service-native.test.ts",
+        "src/modules/agent/services/workspace-service-spaces.test.ts",
+        "src/modules/agent/services/workspace-service-stop-native.test.ts",
+        "src/modules/agent/services/workspace-service-stop.test.ts",
+        "src/modules/agent/services/workspace-service.test.ts",
+        "src/modules/agent/services/workspace-store.test.ts",
+        "src/modules/agent/services/workspace-store-spaces.test.ts",
+        "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "src/modules/agent/services/controller-native.test.ts",
+        "src/modules/agent/services/controller-space.test.ts",
+        "src/modules/agent/module.test.ts",
+        "src/modules/browser/module.test.ts",
+        "src/modules/browser/services/host.test.ts",
+        "src/host/desktop/native",
+        "src/shared/native",
+        "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+        "src/modules/agent/ui/sidebar/SpaceNavigation.dom.test.tsx",
+        "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+        "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+        "src/modules/agent/ui/create/SpaceForm.dom.test.tsx"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:42:22.002222+00:00",
+      "finished_at": "2026-10-25T11:42:33.931755+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-integration.log",
+      "output_sha256": "b0a34b3e78fe547c688dd8d29129a4517fcc281178a80b826eea4a7c1ce87f74",
+      "record_file": "/tmp/huhu-t04-root-repair-integration.json",
+      "record_sha256": "1b892aca698e4a359dfb1db48183c2979a759f43668295a738493110edf0d60a"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:42:33.980620+00:00",
+      "finished_at": "2026-10-25T11:43:47.819939+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-lint.log",
+      "output_sha256": "960f1eb37ac4d28430af9bef2c98f32333254854ffde619330f53d373ce0f632",
+      "record_file": "/tmp/huhu-t04-root-repair-lint.json",
+      "record_sha256": "ec83c35612733a083d928a671f9c27e8933d3b0ce68db377abf2632f8c867a0d"
+    },
+    {
+      "command": [
+        "pnpm",
+        "test:promise-callbacks"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T11:43:59.308739+00:00",
+      "finished_at": "2026-10-25T11:44:05.022022+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-root-repair-promise.log",
+      "output_sha256": "46ad46247718e7227ceba05283dcbff1a0357d667d20ad959f33d4f9534c88fc",
+      "record_file": "/tmp/huhu-t04-root-repair-promise.json",
+      "record_sha256": "49d0958fc6c7dbc2ff1f4e78c72b85b8b95b13a10ac1496f689a909b82eea266"
+    }
+  ],
+  "limits": "docs exit126 retains exactly the six unrelated Bot missing anchors. Native Rust, B visuals, i18n/CSS originals reused where source unchanged; full build includes styles consistency. Real host/Provider/platform E2E user-owned."
+}

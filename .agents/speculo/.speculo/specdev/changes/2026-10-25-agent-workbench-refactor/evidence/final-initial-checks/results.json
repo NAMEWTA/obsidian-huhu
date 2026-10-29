@@ -1,0 +1,129 @@
+[
+  {
+    "name": "types",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-noEmit",
+      "-skipLibCheck"
+    ],
+    "exit": 126,
+    "seconds": 29.09,
+    "log": "/tmp/huhu-final-checks-20261029/types.log"
+  },
+  {
+    "name": "test-types",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-skipLibCheck",
+      "-p",
+      "tsconfig.test.json"
+    ],
+    "exit": 126,
+    "seconds": 29.17,
+    "log": "/tmp/huhu-final-checks-20261029/test-types.log"
+  },
+  {
+    "name": "vitest",
+    "command": [
+      "pnpm",
+      "test"
+    ],
+    "exit": 126,
+    "seconds": 387.62,
+    "log": "/tmp/huhu-final-checks-20261029/vitest.log"
+  },
+  {
+    "name": "lint",
+    "command": [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    "exit": 126,
+    "seconds": 122.02,
+    "log": "/tmp/huhu-final-checks-20261029/lint.log"
+  },
+  {
+    "name": "css",
+    "command": [
+      "pnpm",
+      "run",
+      "lint:css"
+    ],
+    "exit": 0,
+    "seconds": 3.12,
+    "log": "/tmp/huhu-final-checks-20261029/css.log"
+  },
+  {
+    "name": "architecture",
+    "command": [
+      "pnpm",
+      "run",
+      "test:architecture"
+    ],
+    "exit": 0,
+    "seconds": 13.43,
+    "log": "/tmp/huhu-final-checks-20261029/architecture.log"
+  },
+  {
+    "name": "i18n",
+    "command": [
+      "pnpm",
+      "run",
+      "test:i18n"
+    ],
+    "exit": 0,
+    "seconds": 1.98,
+    "log": "/tmp/huhu-final-checks-20261029/i18n.log"
+  },
+  {
+    "name": "docs",
+    "command": [
+      "pnpm",
+      "run",
+      "test:docs"
+    ],
+    "exit": 126,
+    "seconds": 1.61,
+    "log": "/tmp/huhu-final-checks-20261029/docs.log"
+  },
+  {
+    "name": "styles",
+    "command": [
+      "node",
+      "scripts/build-styles.mjs",
+      "--check"
+    ],
+    "exit": 126,
+    "seconds": 0.11,
+    "log": "/tmp/huhu-final-checks-20261029/styles.log"
+  },
+  {
+    "name": "bundle",
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce"
+    ],
+    "exit": 126,
+    "seconds": 1.81,
+    "log": "/tmp/huhu-final-checks-20261029/bundle.log"
+  },
+  {
+    "name": "native",
+    "command": [
+      "pnpm",
+      "run",
+      "check:native"
+    ],
+    "exit": 0,
+    "seconds": 42.43,
+    "log": "/tmp/huhu-final-checks-20261029/native.log"
+  }
+]

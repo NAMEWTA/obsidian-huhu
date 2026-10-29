@@ -1,0 +1,141 @@
+{
+  "utc": "2026-10-26T03:21:42.140Z",
+  "actual_comparator_sha256": "eea269b71b47eb4dfc8eec5882772fe3093eb31440f2b97edfca21646148dcd1",
+  "helper_sha256": "da407b3353494716967f15a8dbf2c46e5414cf0ab9c48dd934268321122f7df5",
+  "report_sha256": "736ec7451dfc9029617e4254e028db4eff6c00e996670feda5a19ba94f4b3b41",
+  "policy": "Only own-file line numbers, hashes and numeric matches emitted; reference source is never included in the result.",
+  "rows": [
+    {
+      "ours": "native/pty-server/src/main.rs",
+      "ours_sha256": "fef39cf684298c53cf4d96aa573dbdf03d00749548f6a9cc2c76eb72033135c9",
+      "mode": "raw",
+      "share": 0.017,
+      "token_run": 53,
+      "own_start_line": 314,
+      "own_end_line": 320,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/app/custom_commands.rs",
+      "reference_sha256": "24464ba302da017aa2237a5b43f449987f7e67ef3dca9be5aa4b1959b9b07b14"
+    },
+    {
+      "ours": "native/pty-server/tests/control.rs",
+      "ours_sha256": "d0516d5aba94c485472d2e58f2b5c71b46a3cf3d4665c5a92d7b0b8c3c4286d0",
+      "mode": "raw",
+      "share": 0.003,
+      "token_run": 43,
+      "own_start_line": 189,
+      "own_end_line": 194,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/tests/remote_attach.rs",
+      "reference_sha256": "473978d341614a4a1ca7fbeca2bd6d858ee2be0ca2059d22ba5d5ea98281b4c9"
+    },
+    {
+      "ours": "native/pty-server/src/outbox.rs",
+      "ours_sha256": "770d9af1bdf46b3240b8b2e5501cae4185fb66991ceff81ce33840eaaa1f8375",
+      "mode": "raw",
+      "share": 0.002,
+      "token_run": 47,
+      "own_start_line": 742,
+      "own_end_line": 750,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/windows/clipboard_image.rs",
+      "reference_sha256": "841d001ee89f188e748a46fe143a45b414929429d4140e557c40b0f9aaa8e61b"
+    },
+    {
+      "ours": "src/shared/native/control-wire.ts",
+      "ours_sha256": "0c31fe02271d5759fc26975e5580fd41258bf093af0cf425fe1af015795393bd",
+      "mode": "raw",
+      "share": 0.002,
+      "token_run": 44,
+      "own_start_line": 39,
+      "own_end_line": 39,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/src/renderer/src/lib/monaco-languages/register-jsonl.ts",
+      "reference_sha256": "38ba53db2377cbd93e8cb3db4b1ca99855838006e032b249ed4a351025d7d2ca"
+    },
+    {
+      "ours": "src/modules/agent/i18n.ts",
+      "ours_sha256": "34a7560d41a287063568e223fc0602f07995baac523bd5d701cbd7175844cb26",
+      "mode": "normalized",
+      "share": 0.333,
+      "token_run": 2453,
+      "own_start_line": 3,
+      "own_end_line": 653,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/cloud/apps/relay-ops/src/pre-drain-sample.test.ts",
+      "reference_sha256": "56670657bcd0f19d7af3183044bb959b526af758a064c245ab57a50a01e636ab"
+    },
+    {
+      "ours": "src/modules/agent/services/control/paging.test.ts",
+      "ours_sha256": "fa84f33c53e9ed18e3da41ba2195000e1f8273dc470345e8d06c42e70b170a8a",
+      "mode": "normalized",
+      "share": 0.042,
+      "token_run": 39,
+      "own_start_line": 18,
+      "own_end_line": 28,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/cloud/apps/relay/src/regional-host-drain-app.test.ts",
+      "reference_sha256": "4e609c4d9e0d12bac50d5d87015cf0e58460ba1859f8ab577361e0b6096c19e6"
+    },
+    {
+      "ours": "src/modules/agent/services/terminal/sessions-control.test.ts",
+      "ours_sha256": "d4048b72ef764c6009be60657a42f6c7ca4f3232acda3c0e97844ef98f6d1b22",
+      "mode": "normalized",
+      "share": 0.032,
+      "token_run": 45,
+      "own_start_line": 163,
+      "own_end_line": 170,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/src/renderer/src/store/slices/ui-page-navigation.test.ts",
+      "reference_sha256": "2e50e619d601297cc23526eab67ddb36118d491f58aac33c76c44d5df78773c8"
+    },
+    {
+      "ours": "native/pty-server/src/control/unix.rs",
+      "ours_sha256": "945b90a4a9ef80298b4aab06dc35ef78ab1fa88c13a9d6ab069d36703446a84b",
+      "mode": "normalized",
+      "share": 0.026,
+      "token_run": 50,
+      "own_start_line": 67,
+      "own_end_line": 69,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/unix_common.rs",
+      "reference_sha256": "2440a9bb9b4791b0d4238a134331ff1a04d4c1acbe525cb4286bb83cefdb2b22"
+    },
+    {
+      "ours": "src/shared/native/control-wire.generated.ts",
+      "ours_sha256": "a8fcec3c09c799f332c490c8909da6b162d7d3066c49f900e59658a06fc46697",
+      "mode": "normalized",
+      "share": 0.022,
+      "token_run": 109,
+      "own_start_line": 12,
+      "own_end_line": 39,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/cloud/dev/scripts/relay-recovery-wave-gate.mjs",
+      "reference_sha256": "63ef892f2c7625f77656f962142722aea36c02345442a0da6005b5aa8d9e19b2"
+    },
+    {
+      "ours": "src/modules/agent/platform/desktop/control/environment.test.ts",
+      "ours_sha256": "17a9b0a1b523727160bfc4d8f81e0c758afff883e427f724794c1727a592e84f",
+      "mode": "normalized",
+      "share": 0.021,
+      "token_run": 29,
+      "own_start_line": 62,
+      "own_end_line": 68,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/cloud/apps/relay/src/relay-observability.test.ts",
+      "reference_sha256": "1d91de4d3ef4b7a69ef413276d6aeb8e241f665c18d4073d6020b958f190efb4"
+    },
+    {
+      "ours": "src/host/desktop/native/host-control.integration.test.ts",
+      "ours_sha256": "0b934ce860fe0eba90ce606dfe404a9cfd99ede7e42f73d8f7faf7d5313849cc",
+      "mode": "normalized",
+      "share": 0.019,
+      "token_run": 27,
+      "own_start_line": 26,
+      "own_end_line": 26,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/src/renderer/src/lib/ephemeral-vm-worktree-creation.ts",
+      "reference_sha256": "2f77dd97626b607892a4025d4a8946ac55520a67bdea2fb0691fab3e2d126b96"
+    },
+    {
+      "ours": "native/pty-server/src/control/wire_generated.rs",
+      "ours_sha256": "4d5aadb843993c6364c48ae2c034675c54a41917d2e7113fe83c0d6cbe7039d7",
+      "mode": "normalized",
+      "share": 0.014,
+      "token_run": 218,
+      "own_start_line": 5,
+      "own_end_line": 32,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/crates/ghostty-vt/src/bindings.rs",
+      "reference_sha256": "ff8cf5ea1963049df0acd6406d526ad4cbd6fc8a7f00aa03bd926ca74d0475be"
+    }
+  ]
+}

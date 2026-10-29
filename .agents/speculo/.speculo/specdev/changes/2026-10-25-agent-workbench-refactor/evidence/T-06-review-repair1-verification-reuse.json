@@ -1,0 +1,122 @@
+{
+  "utc": "2026-10-25T23:52:55.423874+00:00",
+  "prior": "T-06-recovery1-verification-reuse.json",
+  "current_manifest_sha256": "212829383f674428167f8d6550326c8999db133a44cf19887a3cb5fe6a056e21",
+  "new_affected_verification": "T-06-recovery1-integration2-root-audit.json: 47 files / 526 tests, build, lint, architecture, Promise, Chrome11 all passed; no source drift.",
+  "i18n": {
+    "original_check": "/tmp/huhu-t06-root-integration3-i18n.json",
+    "transitive_input_equivalence": "T-06-recovery1-verification-reuse.json plus actual current AST equivalence execution in T-06-recovery1-integration2-final-root-audit.json",
+    "current_result": {
+      "utc": "2026-10-25T23:51:59.381Z",
+      "purpose": "Input-equivalence audit for the actual integration3 i18n result; no new i18n execution claimed.",
+      "prior_receipt": "/tmp/huhu-t06-root-integration3-i18n.json",
+      "prior_manifest_sha256": "cf5c8bf99242d046364505646542e8ffcf734a369c9cf8a07acbe9f9015dbcc4",
+      "final_manifest_sha256": "212829383f674428167f8d6550326c8999db133a44cf19887a3cb5fe6a056e21",
+      "unchanged_production_source_count": 1233,
+      "changed_production_sources": [
+        {
+          "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+          "before": "653c0898fc34dc0dfc9dc4921facc3ab12556f135557596502a4d7ab8a92f338",
+          "after": "9b8146b8955ad18eced070a583a3d8ec53bb338f9676c7a274d3d0530ca14a4b",
+          "literal_references": []
+        },
+        {
+          "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+          "before": "8f51bf3ecb4b3df0c302791de324af76faeca3753338e85e8bec45436b40073c",
+          "after": "f1687e9992843acbb2ed28e6c20634ea51e0d60a68a5a1a636f1a60591cfb804",
+          "literal_references": [
+            "agent.accountScopeMismatch",
+            "agent.hooks.systemSkipped"
+          ]
+        },
+        {
+          "path": "src/modules/agent/services/terminal/session.ts",
+          "before": "ead990b339b2e957072f07922542a4131c8f645b8b46c7242f38745ade624da7",
+          "after": "19a9900f5a4dd49c497bec9e2eed3a402bd190c0c407ceb84accded66030f1a9",
+          "literal_references": [
+            "agent.activityEvidence.capacity",
+            "agent.managed.disconnected",
+            "agent.managed.effectUnknown",
+            "agent.screen.inputClosed",
+            "agent.screen.inputNone",
+            "agent.screen.inputUnknown",
+            "agent.screen.inputUnsupported",
+            "agent.screen.resourceLimit",
+            "agent.screen.retentionRejected",
+            "agent.screen.retentionRejected",
+            "agent.screen.sizeRejected",
+            "agent.screen.sizeRejected",
+            "agent.screen.unavailable",
+            "agent.screen.unavailable",
+            "agent.screen.unavailable",
+            "agent.screen.unavailable",
+            "agent.screen.unavailable"
+          ]
+        }
+      ],
+      "interpretation": "All dictionary bytes and verifier/config inputs unchanged. Changed production TS sources have the same literal key multiset using the actual verifier AST extraction semantics. Tests are excluded by the actual verifier. This preserves the prior 31 dictionaries / 4701 keys result."
+    },
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/review-repair1-reuse/objects/6028d51d705aa55faa70d5dcfc858d0e10849ab84ae56a700aba08e1b6ff0da2.raw",
+    "sha256": "6028d51d705aa55faa70d5dcfc858d0e10849ab84ae56a700aba08e1b6ff0da2"
+  },
+  "docs": {
+    "checked_unchanged_input_paths": [
+      ".agents/skills/dev/SKILL.md",
+      ".agents/skills/dev/references/architecture.md",
+      ".agents/skills/dev/references/licensing.md",
+      ".agents/skills/dev/references/obsidian-api.md",
+      ".agents/skills/dev/references/settings-and-i18n.md",
+      ".agents/skills/dev/references/testing.md",
+      ".agents/skills/ui/SKILL.md",
+      ".agents/skills/ui/references/design-system.md",
+      ".agents/skills/ui/references/motion-a11y.md",
+      ".agents/skills/ui/references/shell.md",
+      "AGENTS.md",
+      "docs/README.md",
+      "docs/agent-workbench.md",
+      "docs/appearance.md",
+      "docs/architecture.md",
+      "docs/automation.md",
+      "docs/browser.md",
+      "docs/comments.md",
+      "docs/contacts.md",
+      "docs/dashboard.md",
+      "docs/data.md",
+      "docs/design-system.md",
+      "docs/development.md",
+      "docs/icons.md",
+      "docs/navigator.md",
+      "docs/privacy.md",
+      "docs/references.md",
+      "docs/safe.md",
+      "docs/settings.md",
+      "docs/sync.md",
+      "docs/third-party/apex-dashboard.md",
+      "docs/third-party/github-theme.md",
+      "docs/third-party/licenses/headless-tree-MIT.txt",
+      "docs/third-party/licenses/obsidian-plugin-skill-MIT.txt",
+      "docs/third-party/licenses/react-remove-scroll-bar-MIT.txt",
+      "docs/third-party/licenses/react-resizable-panels-MIT.txt",
+      "docs/third-party/licenses/sources.json",
+      "docs/third-party/licenses/winapi-gnu-MIT.txt",
+      "docs/third-party/margin-comments-LICENSE.txt",
+      "docs/third-party/margin-comments.md",
+      "docs/third-party/notebook-navigator.md",
+      "docs/third-party/orca-LICENSE.txt",
+      "docs/third-party/orca-terminal-workbench.md",
+      "docs/third-party/skills-manager.md",
+      "docs/third-party/suliworld.md",
+      "docs/workbench.md",
+      "package.json",
+      "pnpm-lock.yaml",
+      "scripts/verify-docs.mjs"
+    ],
+    "changed": [],
+    "result": "Retain actual prior exit1 for six unrelated pre-existing Bot anchor errors; no new docs execution and no all-pass claim. Seven-path source repair has no docs/path/link change.",
+    "prior": "T-06-recovery1-verification-reuse.json"
+  },
+  "limits": [
+    "Only verified unchanged input/risk conclusions reused; current activity, lifecycle, hook and UI behavior was re-run.",
+    "Real Obsidian/Provider/five-platform E2E remains user-owned and unexecuted."
+  ]
+}

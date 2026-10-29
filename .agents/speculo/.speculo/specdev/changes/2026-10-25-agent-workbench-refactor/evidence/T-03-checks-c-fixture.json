@@ -1,0 +1,100 @@
+{
+  "task": "T-03 narrow fixture",
+  "checks": [
+    {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "unit",
+        "--reporter",
+        "verbose",
+        "src/modules/agent/services/controller-native.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:29:05.619983+00:00",
+      "finished_at": "2026-10-25T08:29:07.260726+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t03-c-fixture-red.log",
+      "output_sha256": "8f2cdc795936071aa986f58200d9f70ff01fe4b1220ee065ac82326d52ea8774",
+      "meaning": "original single-file reproduction: 2 failures, DIRECTORY_NOT_AUTHORIZED:invalid-directory"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--project",
+        "unit",
+        "--reporter",
+        "verbose",
+        "src/modules/agent/services/controller-native.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:30:21.230976+00:00",
+      "finished_at": "2026-10-25T08:30:22.899103+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t03-c-fixture-green.log",
+      "output_sha256": "40f0aebdc7032d4aa926bab54da0c982f246517ddc596fd7c37a57f456d2f74c",
+      "meaning": "after sole fixture edit: 2 passed, no skip"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "-p",
+        "/tmp/huhu-t03-c-fixture-tsconfig.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:30:34.343150+00:00",
+      "finished_at": "2026-10-25T08:30:39.115093+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t03-c-fixture-types.log",
+      "output_sha256": "d59699802df93bda3fb19085bf4b7b52aee3bff8e33e9cfcbbf33ce07962e32b",
+      "meaning": "initial scoped config omitted existing Electron ambient declarations; failed, not a pass"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "-p",
+        "/tmp/huhu-t03-c-fixture-tsconfig.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T08:30:57.413584+00:00",
+      "finished_at": "2026-10-25T08:31:02.148714+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t03-c-fixture-types-green.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "meaning": "scoped type closure with existing src/types declarations: passed"
+    }
+  ],
+  "rootFailureLog": {
+    "path": "/tmp/huhu-t03-root-integration.log",
+    "sha256": "28a465f18ad01f7b0edba8a21164786ca2ea0d9bef25f4e8a489bfb52f639875",
+    "reusedFor": "original 16-file integration context, not rerun by C"
+  },
+  "finalScopedConfig": {
+    "path": "/tmp/huhu-t03-c-fixture-tsconfig.json",
+    "sha256": "351d935f33bda2352c848fca8724d801a935c0d07893d08cfd9a06606d92e69f"
+  },
+  "notRun": [
+    "build",
+    "full lint",
+    "full repository tsc",
+    "other tests",
+    "helper",
+    "Provider",
+    "Obsidian",
+    "Git"
+  ],
+  "finalTestCounts": {
+    "passed": 2,
+    "skipped": 0
+  }
+}

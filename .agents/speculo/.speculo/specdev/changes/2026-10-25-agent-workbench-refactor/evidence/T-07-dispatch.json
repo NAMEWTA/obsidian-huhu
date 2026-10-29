@@ -1,0 +1,131 @@
+{
+  "recorded_at": "2026-10-26T00:29:50.354637+00:00",
+  "lead": "codex:/root",
+  "plan": "GP-022",
+  "map_revision": 23,
+  "input": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-dispatch-input.json",
+  "input_sha256": "e17db6458c9506033a60d63f116866999ba1dbcae606f8f5a28876effe9b0fe2",
+  "dor_audit": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-dor-root-audit.json",
+  "dor_audit_sha256": "b56dca39e4d6bd92bbc5bd3f2647a57e9a48f9b0f76a31d06e47db7e80c46742",
+  "dispatches": {
+    "A": {
+      "agent": "codex:/root/prepare_t03",
+      "method": "collaboration.followup_task",
+      "actual_tool_return": "successful empty return received; not a completion report",
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "model_basis": "A/C original assigned implementation identity; B actual spawn override fork none this turn",
+      "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-task-a.md",
+      "task_sha256": "23bed39251b6a888ae0cf9c2f3191be2e2c4867075ec6e026071dc4aa4933a44",
+      "active_write_paths": [
+        "src/modules/agent/core/control/context.ts",
+        "src/modules/agent/services/spaces/space-service.ts",
+        "src/modules/agent/services/spaces/space-service-control.test.ts",
+        "src/modules/agent/services/workspace-service.ts",
+        "src/modules/agent/services/workspace-service-control.test.ts",
+        "src/modules/agent/services/terminal/sessions.ts",
+        "src/modules/agent/services/terminal/sessions-control.test.ts"
+      ],
+      "deferred_paths": [
+        "src/modules/agent/services/control/router.ts",
+        "src/modules/agent/services/control/commands.ts",
+        "src/modules/agent/services/control/paging.ts",
+        "src/modules/agent/platform/desktop/control/environment.ts",
+        "src/modules/agent/services/controller.ts",
+        "src/modules/agent/module.ts",
+        "src/modules/agent/i18n.ts",
+        "src/modules/agent/services/control/router.test.ts",
+        "src/modules/agent/services/control/commands.test.ts",
+        "src/modules/agent/services/control/paging.test.ts",
+        "src/modules/agent/services/control/router-foreground.dom.test.tsx",
+        "src/modules/agent/services/control/control-native.test.ts",
+        "src/modules/agent/platform/desktop/control/environment.test.ts",
+        "src/modules/agent/services/controller-control.test.ts",
+        "src/modules/agent/module.test.ts"
+      ]
+    },
+    "C": {
+      "agent": "codex:/root/implement_t01",
+      "method": "collaboration.followup_task",
+      "actual_tool_return": "successful empty return received; not a completion report",
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "model_basis": "A/C original assigned implementation identity; B actual spawn override fork none this turn",
+      "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-task-c.md",
+      "task_sha256": "4cc2b41e8239532e06fcaae2df119cff24c4ae85a76d97e3a61cb7fa08b283eb",
+      "active_write_paths": [
+        "src/shared/native/control-schema.json",
+        "scripts/generate-control-protocol.mjs",
+        "src/shared/native/control-wire.generated.ts",
+        "src/shared/native/control-wire.ts",
+        "src/shared/native/control-wire.test.ts",
+        "test/fixtures/native/control-v1.json",
+        "test/native/control-protocol.test.ts",
+        "native/pty-server/src/lib.rs",
+        "native/pty-server/src/bin/huhu.rs",
+        "native/pty-server/src/main.rs",
+        "native/pty-server/src/outbox.rs",
+        "native/pty-server/Cargo.toml",
+        "native/pty-server/Cargo.lock",
+        "native/pty-server/src/control/mod.rs",
+        "native/pty-server/src/control/wire_generated.rs",
+        "native/pty-server/src/control/codec.rs",
+        "native/pty-server/src/control/cli.rs",
+        "native/pty-server/src/control/client.rs",
+        "native/pty-server/src/control/broker.rs",
+        "native/pty-server/src/control/ipc.rs",
+        "native/pty-server/src/control/unix.rs",
+        "native/pty-server/src/control/windows.rs",
+        "native/pty-server/src/control/locator.rs",
+        "native/pty-server/tests/control_protocol.rs",
+        "native/pty-server/tests/control.rs",
+        "native/pty-server/tests/control_outbox.rs",
+        "scripts/third-party-notices.mjs"
+      ],
+      "deferred_paths": []
+    },
+    "B": {
+      "agent": "codex:/root/implement_t07_host",
+      "method": "collaboration.followup_task",
+      "actual_tool_return": "successful empty return received; not a completion report",
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "model_basis": "A/C original assigned implementation identity; B actual spawn override fork none this turn",
+      "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-task-b.md",
+      "task_sha256": "e70267f24c29512c8f7d046f23538265f68e4270ccd5d58fbdec21e59c1c3205",
+      "active_write_paths": [
+        "src/shared/native/frames.ts",
+        "src/shared/native/frames.test.ts"
+      ],
+      "deferred_paths": [
+        "src/shared/native/host.ts",
+        "src/shared/native/lazy-host.test.ts",
+        "src/host/desktop/native/host.ts",
+        "src/host/desktop/native/helper.ts",
+        "src/host/desktop/native/helper-control.test.ts",
+        "src/host/desktop/native/host-control.test.ts",
+        "src/host/desktop/native/host-control.integration.test.ts",
+        "scripts/obsidian-acceptance/agent-workbench-control.mjs",
+        "docs/agent-workbench-cli.md",
+        ".github/workflows/lint.yml"
+      ]
+    }
+  },
+  "root_scope": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "integration_attempts": 0,
+  "notes": [
+    "three actual followup calls completed before this record",
+    "B2 is independent framing primitive; C syntax consumption and B other10 remain locked",
+    "A first7 independent seams only; other15 wait actual C/B handoff",
+    "no product acceptance or binary build inferred"
+  ],
+  "record_correction": {
+    "prior_raw": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/dispatch-planning/objects/dd2738be11cd775b10cbee8a0d1f3efb3cc19431de0cdc143425bc1e12450705.raw",
+    "reason": "Root initial audit used wrong numeric index for test paths (environment instead of sessions); corrected to exact seven names already in actual task/message. Actual granted scope unchanged."
+  }
+}

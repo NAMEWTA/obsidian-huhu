@@ -1,0 +1,260 @@
+{
+  "utc": "2026-10-25T15:36:40.689Z",
+  "sources": [
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-screen.mjs",
+      "bytes": 41333,
+      "sha256": "835f051b38a723ea9531d2778b1d7cffb7471d1f6b1180b343e1ca2ef0dd3c54"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/lib/xterm.mjs",
+      "bytes": 344970,
+      "sha256": "b336ec65a086c056d4804b3d4c2347da5663d3f23c3f25be866467bd8857ad59"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/lib/addon-search.mjs",
+      "bytes": 39031,
+      "sha256": "3ea90162233f867b938cd29b8ad98f589643436bbb5445bd11b825dc99ff0c04"
+    },
+    {
+      "path": "src/shared/i18n/workbench.ts",
+      "bytes": 7056,
+      "sha256": "bf770d64beea7d2de0f79ebe1df7f4bfd7e6596d432a75a3a2e660a32ebd190d"
+    },
+    {
+      "path": "src/shared/i18n/appearance.ts",
+      "bytes": 239,
+      "sha256": "aa1afaba19a2d4da0abf674c35f9be845f87f3372d36b45979e049d1bd97e3d4"
+    },
+    {
+      "path": "src/shared/i18n/browser.ts",
+      "bytes": 443,
+      "sha256": "948df433ddf9a1da26bc374886c64e6687f32d4c2a8b631bb0dc79b0fee5a069"
+    },
+    {
+      "path": "src/shared/i18n/automation.ts",
+      "bytes": 633,
+      "sha256": "0e3407ed9b3aefd2ea8d67d6bbf29060fefdbbe5e71d09bbfa7f4c7e2ef39af2"
+    },
+    {
+      "path": "src/shared/i18n/contacts.ts",
+      "bytes": 411,
+      "sha256": "fa684a49b0c578ffba72981a00e3237ae49442eeea5e02579e96fe1040f4ef09"
+    },
+    {
+      "path": "src/shared/i18n/default-dashboard-content.ts",
+      "bytes": 254,
+      "sha256": "39c2824346c0e3f6a76a7e2fc4ca49994d6db0f070c4186522ae2dbe8cfb4ab4"
+    },
+    {
+      "path": "src/shared/i18n/editor.ts",
+      "bytes": 1110,
+      "sha256": "a4b9c103367338bb7a7731e19c893bb47bb292f550abbb86ab2edb896b602a96"
+    },
+    {
+      "path": "src/shared/i18n/iconic.ts",
+      "bytes": 733,
+      "sha256": "639588cb91da9dd6d69e26367cdf02aceb5c9c982c8166d2c03e2db81e05ba8d"
+    },
+    {
+      "path": "src/shared/i18n/main.ts",
+      "bytes": 2484,
+      "sha256": "eb4ec8bf21d27bae49d82ffd158f6514cf969fdf78f4b804d72ebe68325e1a24"
+    },
+    {
+      "path": "src/shared/i18n/huhu.ts",
+      "bytes": 9791,
+      "sha256": "7958b31dda61c83b51467b3f16dc5325e3b36587609ba8474019530893192774"
+    },
+    {
+      "path": "src/shared/i18n/settings.ts",
+      "bytes": 765,
+      "sha256": "dcbf355a75f36f29aca13211ce1c4a0065624e32efd2f8837c400e032cb4acbc"
+    },
+    {
+      "path": "src/shared/i18n/workspace-switcher.ts",
+      "bytes": 405,
+      "sha256": "d33f690e3fbb717e1bebd654d96d7d96064f1119dc934976274c8cdf30de7efa"
+    },
+    {
+      "path": "src/shared/i18n/runtime.ts",
+      "bytes": 2585,
+      "sha256": "61438d715ce8e119c5a5cad6ad8027a08f1fba288d16a1777fed650d76d80a09"
+    },
+    {
+      "path": "src/shared/i18n/index.ts",
+      "bytes": 143,
+      "sha256": "5a9b81155bc73bcc9f11e166f5131c70ef341b4c480df31bedc3f18ba41a4c69"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+addon-serialize@0.14.0/node_modules/@xterm/addon-serialize/lib/addon-serialize.mjs",
+      "bytes": 16338,
+      "sha256": "6c93dff90bef3b7aac8664fa4c1cb4026bf4b701f3014a1fb88edde943dab906"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+headless@6.0.0/node_modules/@xterm/headless/lib-headless/xterm-headless.js",
+      "bytes": 182672,
+      "sha256": "17a90b650cf6b77cce2b98c4063884d43545e4ce177a54b76ccfc906f1aacaed"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/keyboard.ts",
+      "bytes": 8751,
+      "sha256": "56c7311b677789a02e74325c539e6347e2ef2c5abbec74ed801e83bb2e96191a"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/paste.ts",
+      "bytes": 1368,
+      "sha256": "5683739172f010d69a7ac4c4159c226a7bc31c14fc9e4911cc3a71cfd33988e5"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/shell-marks.ts",
+      "bytes": 3981,
+      "sha256": "971c6271e83d626582e0de695ce4da94283358c97835bc022116c57b0d18303e"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/frames-screen.ts",
+      "bytes": 9254,
+      "sha256": "4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca"
+    },
+    {
+      "path": "src/shared/native/input.ts",
+      "bytes": 6687,
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2"
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "bytes": 5135,
+      "sha256": "d5bc6bbcd4df5a48a766225b241898ca402cefee81dc0ee14ee67ee436f0400c"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "bytes": 4658,
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen-xterm.ts",
+      "bytes": 16790,
+      "sha256": "7b07bd87c3778ed7e8d5f41de3b1ec92f2246f51a9bfeac5313aa5f7f7ef52db"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen.ts",
+      "bytes": 40933,
+      "sha256": "9215431e5ce37a067e4e6b5a9609528b60e96ee08a348ec85a52e17bc11d5014"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytes": 29735,
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-screen-xterm.ts",
+      "bytes": 23678,
+      "sha256": "f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "bytes": 10565,
+      "sha256": "f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+addon-fit@0.11.0/node_modules/@xterm/addon-fit/lib/addon-fit.mjs",
+      "bytes": 1967,
+      "sha256": "2d87e1bddc73be9111de8beee5370c3bb7aac9c94e18e6f245f02ca741ef1769"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+addon-web-links@0.12.0/node_modules/@xterm/addon-web-links/lib/addon-web-links.mjs",
+      "bytes": 3148,
+      "sha256": "cce9cc1905c4d369dfa70ef0ed1eea12700754818a6c480d1fd94895dddd1a25"
+    },
+    {
+      "path": "node_modules/.pnpm/@xterm+addon-webgl@0.19.0/node_modules/@xterm/addon-webgl/lib/addon-webgl.mjs",
+      "bytes": 126558,
+      "sha256": "5ac2cbbb8a861ba99176eda0ee91f10c08de32d091e3488edf699ad111131ebb"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/shortcuts.ts",
+      "bytes": 1210,
+      "sha256": "4da1d6133932045c0ed6a5b36e4ce697e74560af119a4e6c9b9952fbf0a7f746"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/links.ts",
+      "bytes": 1655,
+      "sha256": "ee729ba660ef439aee6ba995c2fe57c77713bd18c95d0fb8329a8bfaf0d93d65"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/stable-terminal-fit.ts",
+      "bytes": 1695,
+      "sha256": "d0196ed9f9ea16256bf950f74f7e5f143538f7775887c41b156c596316fda6ca"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "bytes": 19900,
+      "sha256": "63d8d3c10cfe32ac29b99b5b03adfe187d254eda93a59cf1fad5d22f146961d5"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/hidden-renderer-retention.ts",
+      "bytes": 738,
+      "sha256": "183418dbf9e4fae1cf47931ada09ffa0054f962a0dbe3cf4c7fa94895742937c"
+    },
+    {
+      "path": "src/modules/agent/core/launch/catalog.ts",
+      "bytes": 5137,
+      "sha256": "f81a413eecb90392d46020e1348895a180ebf3ae0db712d46819ca444dc3a35d"
+    },
+    {
+      "path": "src/modules/agent/core/launch/defaults.ts",
+      "bytes": 1699,
+      "sha256": "2a2d5014243b6ac8fe4f36bdcbf43be667b34297d5f2699ab0cd1209bdc16d90"
+    },
+    {
+      "path": "src/shared/agent-prompt.ts",
+      "bytes": 1604,
+      "sha256": "ec72a6a0aaef8cd86e322933329d677d2d72cfd79497726a6c6b146a5b2a64c1"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "bytes": 8742,
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "bytes": 67872,
+      "sha256": "bafd8f794de31e791865d86549bccf51d91355290b4e60be67061c81f65aff68"
+    },
+    {
+      "path": "package.json",
+      "bytes": 13443,
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 299611,
+      "sha256": "004818ad2aaab47043b39d4e545dd77f8be62fd1544f2eecfbaa5285c088285a"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/css/xterm.css",
+      "bytes": 7112,
+      "sha256": "854a7c0fb70e8b1a083c16797ab827299fb18744f5ad34f227b48337e33293c6"
+    },
+    {
+      "path": "src/modules/agent/styles/agent.css",
+      "bytes": 917,
+      "sha256": "c8c0e5432890742ea04c78a3edcfbb673293b20a858ac4dfd1750c19e23ad70e"
+    }
+  ],
+  "boundaries": [
+    "Obsidian platform/Notice/TFile",
+    "desktop file open/drop/resolve only"
+  ],
+  "productionNotStubbed": [
+    "TerminalSession",
+    "headless model",
+    "screen stream",
+    "TerminalPresentation",
+    "XtermScreenTarget",
+    "TerminalView",
+    "xterm",
+    "SearchAddon",
+    "FitAddon"
+  ]
+}

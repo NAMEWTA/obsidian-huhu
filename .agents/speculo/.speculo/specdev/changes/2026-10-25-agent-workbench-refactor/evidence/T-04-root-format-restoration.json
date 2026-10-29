@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-10-25T10:38:13.589932+00:00",
+  "files": [
+    {
+      "path": "native/pty-server/src/cookies.rs",
+      "sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39",
+      "matches_fixed_base": true
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "matches_fixed_base": true
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "matches_fixed_base": true
+    },
+    {
+      "path": "native/pty-server/src/inherited_fds.rs",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "matches_fixed_base": true
+    }
+  ],
+  "incident_sha256": "0ad652d44430b2d676a6f8c35ceb76f11709b9421f6206b95931da94e9e0d57c",
+  "decision": "Exact four unrelated formatting edits restored to proven fixed-base bytes. No delivered code change in these paths."
+}

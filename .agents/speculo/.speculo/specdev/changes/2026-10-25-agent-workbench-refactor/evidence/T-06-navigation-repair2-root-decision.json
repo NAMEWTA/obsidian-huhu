@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-25T21:29:47.351067+00:00",
+  "integration_candidate": 2,
+  "observed_source_manifest": {
+    "path": "/tmp/huhu-t06-root-artifacts3-inputs.json",
+    "sha256": "d108e498cb47dbc4ad843ab7dcc81b8c30b2c75489f31829c741d10784a21923"
+  },
+  "actual_browser_pair": "T-06-chrome-v2-root-capture.json",
+  "both_runs": "9/10; N/N+1 and readonly pass, navigation fails; no unhandled or source drift",
+  "packet_conclusion": "Adding CR text produces trusted keypress and click and reaches real attach; insufficient to obtain exact target focus, so not a complete diagnosis of original symptom.",
+  "remaining_observation": "Second attach returns attached focused:false; companion terminal focuses; launch fixture has no foreground callback.",
+  "hypothesis_not_yet_proven": "selectSpace mounts stored focused companion, terminal automatic focus reenters focusSession, incrementing presentationRevision before cross-space attach guard resumes.",
+  "authorized_A_paths": [
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "ed09e24141c92770385602a1024592f4c8c5f52140e1b7368c07787fbe84dfa7",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/a-stopped/objects/ed09e24141c92770385602a1024592f4c8c5f52140e1b7368c07787fbe84dfa7.raw"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-activity.test.ts",
+      "sha256": "8db49eb7e0c7b399ade731e61bc54ed0349ef0c21936aabdcf136668961b900c",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root-integration2/objects/8db49eb7e0c7b399ade731e61bc54ed0349ef0c21936aabdcf136668961b900c.raw"
+    }
+  ],
+  "actual_dispatch": [
+    {
+      "target": "/root/prepare_t03",
+      "tool": "collaboration.followup_task",
+      "returned": "success, empty body",
+      "scope": "Only two A paths; establish real service red before causal minimal repair; preserve user foreground supersession."
+    },
+    {
+      "target": "/root/prepare_t05_screen",
+      "tool": "collaboration.followup_task",
+      "returned": "success, empty body",
+      "scope": "Readonly UI/fixture causal diagnosis; no source writes or Chrome."
+    }
+  ],
+  "constraints": [
+    "No UI fallback focus.",
+    "No removal of foreground/revision fencing.",
+    "All other product source remains STOPPED.",
+    "No global checks while A writes.",
+    "Third integration candidate not yet frozen or executed."
+  ]
+}

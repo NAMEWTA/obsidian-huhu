@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "record": "/tmp/huhu-t04-c-browser-red.json",
+      "record_sha256": "e843372ecfb5ae99f5b828a7d8ab60c4b3bd39a9185e5f12141585bba94c82d9",
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "src/modules/browser/module.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T10:46:35.803435+00:00",
+      "finished_at": "2026-10-25T10:46:37.105330+00:00",
+      "exit_code": 126,
+      "output": "/tmp/huhu-t04-c-browser-red.log",
+      "output_sha256": "6e1a514409d1f5e9dcc02486e4c8210b36c3c7626cab76cf5caea050c2644d16"
+    },
+    {
+      "record": "/tmp/huhu-t04-c-browser-green.json",
+      "record_sha256": "92db08884c2061fb0a634330b8123415b57c810bc3c5889ad977c6eda3aa0e01",
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "src/modules/browser/module.test.ts"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T10:47:36.157397+00:00",
+      "finished_at": "2026-10-25T10:47:37.359980+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-c-browser-green.log",
+      "output_sha256": "285abe61564697c60329e34f5590526286cb2826f46090c6787ec55b2197b078"
+    },
+    {
+      "record": "/tmp/huhu-t04-c-browser-types.json",
+      "record_sha256": "98bacd50aaa9b90bc81bd7f21209d8707b4f655283fefea4e14ea64da6f33387",
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--skipLibCheck",
+        "--project",
+        "/tmp/huhu-t04-c-browser-tsconfig.json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+      "started_at": "2026-10-25T10:47:54.158353+00:00",
+      "finished_at": "2026-10-25T10:47:57.695595+00:00",
+      "exit_code": 0,
+      "output": "/tmp/huhu-t04-c-browser-types.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

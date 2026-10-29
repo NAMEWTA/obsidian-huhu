@@ -1,0 +1,100 @@
+[
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces/directories.test.ts",
+    "exit": 126,
+    "stdout_stderr": "/tmp/huhu-t02-b-directories-red.log",
+    "sha256": "7ffb4a08d2bc2033983764257ddf59e1f10d8038c5283991cb7b9d899bdea822",
+    "interpretation": "Expected red: implementation import absent"
+  },
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces/directories.test.ts",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-directories-green.log",
+    "sha256": "1082ed8ad23ccf306adc829ae9fadd0ed81b2f42eb834f10619a8cc7b3a7bff7",
+    "interpretation": "6 tests passed"
+  },
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces/writer-owner.test.ts",
+    "exit": 126,
+    "stdout_stderr": "/tmp/huhu-t02-b-owner-red.log",
+    "sha256": "ace1bba108257d5a1177b125b670b5f2946f96f276d8501a1213b2d46b32abaf",
+    "interpretation": "Expected red: implementation import absent"
+  },
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces/writer-owner.test.ts",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-owner-green.log",
+    "sha256": "2972f9371b5403c109a28bf138ce37733da669f19ad6ae1a7628cc7a7739ca9e",
+    "interpretation": "7 tests passed"
+  },
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces/writer-process.test.ts",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-process-first.log",
+    "sha256": "3c85c73633383752b07770dee108f36585a9d850961178cba4c75ffba151d161",
+    "interpretation": "4 real child-process tests passed"
+  },
+  {
+    "command": "pnpm exec vitest run src/modules/agent/platform/desktop/spaces",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-targeted-first.log",
+    "sha256": "5075e6d15bc5dd1dc1268080eeaa3b058dce677d517fc10f81b9d98242ca1e43",
+    "interpretation": "19 tests passed"
+  },
+  {
+    "command": "pnpm exec tsc -noEmit -skipLibCheck",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-types-first.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "interpretation": "Whole production typecheck passed at its captured input"
+  },
+  {
+    "command": "pnpm exec eslint src/modules/agent/platform/desktop/spaces/directories.ts src/modules/agent/platform/desktop/spaces/writer-owner.ts src/modules/agent/platform/desktop/spaces/ports.ts src/modules/agent/platform/desktop/spaces/writer-owner.fixture.ts --max-warnings 0",
+    "exit": 126,
+    "stdout_stderr": "/tmp/huhu-t02-b-lint-first.log",
+    "sha256": "7a6c6735546e8a22ea2093450a868a70b0266efa85d7cc9a69c24b70cdbb68e1",
+    "interpretation": "Real lint failure: unknown Promise rejection. Fixed; not passed"
+  },
+  {
+    "command": "pnpm exec tsc -skipLibCheck -p tsconfig.test.json",
+    "exit": 126,
+    "stdout_stderr": "/tmp/huhu-t02-b-test-types-first.log",
+    "sha256": "4d098f676844d4217ce099fa9cf218197d2757c39c23142b58671f3c820a7aa7",
+    "interpretation": "Failed in two A-owned tests; reported to A; not passed"
+  },
+  {
+    "command": "node node_modules/eslint/bin/eslint.js src/modules/agent/platform/desktop/spaces/directories.ts src/modules/agent/platform/desktop/spaces/writer-owner.ts src/modules/agent/platform/desktop/spaces/ports.ts src/modules/agent/platform/desktop/spaces/writer-owner.fixture.ts --max-warnings 0",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-lint-green.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "interpretation": "Final B production files; zero errors/warnings"
+  },
+  {
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/platform/desktop/spaces/writer-process.test.ts --reporter=verbose --disableConsoleIntercept",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-process-verbose.log",
+    "sha256": "51bb93a50d4ccc26bc97b332ee2c21e2d1a7d860f386894e1927abb79f9b84ce",
+    "interpretation": "4 tests, actual runtime and child exits logged"
+  },
+  {
+    "command": "node node_modules/vitest/vitest.mjs run src/modules/agent/platform/desktop/spaces --reporter=verbose --disableConsoleIntercept",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-targeted-final.log",
+    "sha256": "1793d72a9807193a1cecf58e8ebf3d51f41324a60d6703e4b092956e2dc7e098",
+    "interpretation": "Final 22 tests passed, no skips"
+  },
+  {
+    "command": "node node_modules/typescript/bin/tsc -skipLibCheck -p /tmp/huhu-t02-b-tsconfig.json",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-types-scoped.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "interpretation": "Final complete B source/tests/fixture typecheck"
+  },
+  {
+    "command": "node scripts/verify-architecture.mjs",
+    "exit": 0,
+    "stdout_stderr": "/tmp/huhu-t02-b-architecture.log",
+    "sha256": "f9ae43e733a1aadd68cf2f65ac440cf947512a07d54ebfca53a37eedba842d65",
+    "interpretation": "1219 modules, no violations at captured input"
+  }
+]

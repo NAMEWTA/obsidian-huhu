@@ -1,0 +1,14 @@
+{
+  "restored_at_utc": "2026-10-25T10:44:52.563351+00:00",
+  "path": "native/pty-server/Cargo.lock",
+  "before_sha256": "95dc808bd7e40a5659f4fae5b1b76bd1f2ad700750078c4750250c234f8ea3ed",
+  "restored_sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+  "authorization": "Root explicit 2026-10-25: restore fixed33c21e original after independent tomllib semantic equivalence audit",
+  "producer_original_kept": "/tmp/huhu-t04-c-final-binary.json",
+  "original_frozen_helper_untouched": "/tmp/huhu-t04-c-linux-final-20261025T103906Z",
+  "equivalence_audit": "/tmp/huhu-t04-root-lock-audit.json",
+  "drift_snapshot": "/tmp/huhu-t04-c-lock-current95.lock",
+  "drift_diff": "/tmp/huhu-t04-c-lock-order.diff",
+  "locked_probe_after_sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+  "locked_probe_record": "/tmp/huhu-t04-c-lock-probe-locked-test.json"
+}

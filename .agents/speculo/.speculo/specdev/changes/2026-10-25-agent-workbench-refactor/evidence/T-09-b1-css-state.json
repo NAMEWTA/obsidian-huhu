@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-26T17:05:15.550504+00:00",
+  "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09.md",
+  "before": {
+    "sha256": "6730aa014eae089c1a522701a9f025c3270eea5a70ee4f165fe2f99dd282f101",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-b1-and-css/objects/6730aa014eae089c1a522701a9f025c3270eea5a70ee4f165fe2f99dd282f101.raw"
+  },
+  "after": {
+    "sha256": "cdec016efdfc03e866bd55ea9137340e48b795ef92efb5c4c9482a886074911e",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/root-b1-and-css/objects/cdec016efdfc03e866bd55ea9137340e48b795ef92efb5c4c9482a886074911e.raw"
+  },
+  "status": "in_progress",
+  "attempts": 0,
+  "validation": "historical receipts linked; no product rerun"
+}

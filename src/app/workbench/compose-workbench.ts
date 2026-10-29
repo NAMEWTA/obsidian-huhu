@@ -163,7 +163,7 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 				supported: Platform.isDesktopApp,
 				ready: !!plugin.services.peek(AGENT_WORKBENCH),
 			}),
-			stateKeys: ['agentHistory', 'agentHistoryWidth'],
+			stateKeys: ['agentControl', 'agentHistory', 'agentHistoryWidth', 'agentTool'],
 			create: modulePage('agent', 'terminal'),
 		},
 		{

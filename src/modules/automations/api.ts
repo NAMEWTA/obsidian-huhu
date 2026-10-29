@@ -9,6 +9,7 @@ import type {
 } from '../../shared/automation/types';
 import type { AutomationPrefill } from './core/api';
 import type { AgentDispatchRequest, AgentDispatchReceipt } from '../../shared/agent-dispatch';
+import { AUTOMATION_DEFINITIONS_ROOT } from '../../shared/storage/vault-layout';
 
 /**
  * A product that keeps automation definitions inside its own documents (board widgets and cards, archive
@@ -78,3 +79,27 @@ export interface AutomationSchedule {
 	wallTime(stamp: string, timezone: string): number;
 }
 export const AUTOMATION_SCHEDULE = serviceKey<AutomationSchedule>('automations', 'schedule');
+
+/** Recovery owners of this module: run history/invocations/results (one device file) and the Markdown definition documents. */
+export const AUTOMATION_RUNTIME_OWNER = 'automations-runtime';
+export const AUTOMATION_DEFINITIONS_OWNER = 'automations-definitions';
+export function automationRuntimePath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/automation/${deviceId}/runtime.json`;
+}
+/** Exactly `<definitions root>/<one folder>/操作.md`: the only file shape the definitions repository writes. */
+export function isAutomationDefinitionPath(path: string): boolean {
+	const prefix = `${AUTOMATION_DEFINITIONS_ROOT}/`;
+	if (!path.startsWith(prefix)) return false;
+	const parts = path.slice(prefix.length).split('/');
+	return (
+		parts.length === 2 && parts[0]!.length > 0 && parts[0] !== '.' && parts[0] !== '..' && parts[1] === '操作.md'
+	);
+}
+
+/**
+ * Whether a definition document would be read back by this module's own repository codec (frontmatter, action registry,
+ * schedule, `isDefinition`): the reason when it would not, so a restore can refuse before writing it. Loaded lazily.
+ */
+export const checkAutomationDocument = async (path: string, text: string): Promise<string | undefined> =>
+	(await import('./core/documents')).checkAutomationDocument(path, text);

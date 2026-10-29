@@ -23,7 +23,9 @@ Bot 由 `native/huhubot` 的独立 Go module 与 `src/modules/huhubot` 的桌面
 
 插件先注册清单、设置与叶子，再按开关激活模块。模块状态区分关闭、不支持、待加载、加载中、运行、释放和失败；单模块失败不阻止其他模块。模块订阅、任务、监听器和进程在 dispose 时释放。服务的 acquire 返回租约，peek 不激活模块，watch 跟踪可用性。
 
-注册工作台、批注和导航器三种叶子。产品页面通过模块贡献挂入工作台；浏览器有独立工作台入口，智能体内也可持有浏览器查看标签，二者不新增宿主叶子类型。智能体的终端、看板和统计仍由自己的标签布局管理。详见[工作台](workbench.md)。
+桌面原生终端 helper 由 app 的惰性 NativeHost 管理，纯端口与帧协议位于 `shared/native`。Agent 的 PTY 与历史租用该 helper；浏览器运行时是独立的 `native/browser-runtime`，不经这个 helper 读写 Cookie。Agent 激活只装配自有状态，账号准备、CLI 检测与登录 Shell 探测在明确使用页面、设置或执行能力时进行。
+
+注册工作台、批注和导航器三种叶子。产品页面通过模块贡献挂入工作台；浏览器有独立工作台入口，智能体内也可持有同一页面的查看标签，二者不新增宿主叶子类型。智能体的终端、看板和统计仍由自己的标签布局管理。详见[工作台](workbench.md)。
 
 ## 状态与数据
 
@@ -39,7 +41,7 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 
 - home 管理看板、小组件与记录；task 独立拥有任务、关联、时间、重复实例与公开工具。看板和日历只消费 task API，周期笔记经 navigator API 访问。
 - task 使用可见 `huhu/任务/tasks.json` 原子保存任务、系列、历史和幂等回执；不扫描旧复选框，不依赖 Home 启停。详见[任务领域设计](task-domain.md)。
-- agent 管理 CLI/PTY、账号、技能、标签及工作空间用量；browser 独立管理网页运行状态，通过 `BROWSER_WORKSPACE` 和 `BROWSER_OPEN` 提供工作区与打开能力。
+- agent 管理 CLI/PTY、Space、账号、技能、标签及工作空间用量；browser 独立管理网页运行状态，通过 `BROWSER_WORKSPACE` 和 `BROWSER_OPEN` 提供工作区与打开能力。智能体标签只保存 Space/Page 引用，不拥有浏览器进程。
 - huhubot 管理个人 Bot 工作台；SQLite 是业务权威，TS 的草稿、分页和事件投影保存在模块服务，不能经 JSON store 改写 Profile。原生安装、秘密登记和用户明确选择的 portable 文件操作留在 desktop 适配层。
 - automations 拥有定义、计划、预检、设备归属和投递记录；其他模块经 composer 服务创建操作。
 - comments 不改写笔记正文；safe 使用独立认证密文仓库，不执行自动明文合并或备份回退。

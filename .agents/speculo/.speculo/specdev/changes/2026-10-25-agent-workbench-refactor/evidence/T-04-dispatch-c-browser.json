@@ -1,0 +1,51 @@
+{
+  "ticket": "T-04",
+  "task": "Browser module cleanup fixture closure",
+  "goal_revision": "GP-017",
+  "map_revision": 18,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "owner": "codex:/root/implement_t01",
+  "model": "gpt-6.1-sol",
+  "effort": "xhigh",
+  "writable_paths": [
+    "src/modules/browser/module.test.ts"
+  ],
+  "all_other_product_sources": "STOPPED",
+  "failure_record": "/tmp/huhu-t04-root-integration.json",
+  "failure_log_sha256": "9f1d5c0ae264abf54d413db7653d7ad240d10b3701794b3f5404ca95627b5a0e",
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "33b9a10bedf85dc0ec5f66794d3aa1334f3f4e7cf6572d7a9eaabdb99b985717"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "89a723a42217fd7fef7f9c927b09367b602b65c0fca6df6cb0ae91e30d2bb8d5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "b42456e70b8a15390f933f2821d180374daa8881e80ac3b5211bdc09aeda3879"
+    },
+    {
+      "path": "src/modules/browser/module.test.ts",
+      "sha256": "9a1247a66a237c850e10533fc39bf426150b2e5bbfdb5541ef9c364bc36acb36"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "d1c4b479b595fd3d18efd9a642ab1e4b34ca5840ac25bb7bdde386e147c1c36b"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998"
+    }
+  ],
+  "constraints": "Only fixture/consumer assertion adaptation. Keep real module/BrowserEngine/TerminalSessions path and lazy/one-helper/Cookie-survival asserts. Cover confirmed termination and legacy numeric-only truthful rejection separately. No production relaxation, no account data, no Cargo or binaries edits. Return raw checks+source hash, then SOURCE STOPPED.",
+  "created_at": "2026-10-25T10:45:57.231836+00:00",
+  "actual_dispatch": {
+    "tool": "collaboration.followup_task",
+    "target": "/root/implement_t01",
+    "result": "tool completed successfully",
+    "observed_at": "2026-10-25T10:47:30.307617+00:00"
+  }
+}

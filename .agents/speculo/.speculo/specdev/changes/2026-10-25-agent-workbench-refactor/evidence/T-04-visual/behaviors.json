@@ -1,0 +1,85 @@
+[
+  {
+    "case": "320x360 long archive keyboard reaches visible footer",
+    "text": "归档会话",
+    "top": 223,
+    "bottom": 267,
+    "height": 360
+  },
+  {
+    "case": "Actual AgentWorkspace confirmation Escape cancels with zero effects and restores original trigger",
+    "effects": [],
+    "dialog": false,
+    "focus": true
+  },
+  {
+    "case": "Actual confirmation retains original Space/Session/runtime after rename",
+    "actions": [
+      [
+        "stop",
+        {
+          "spaceId": "cdbe3af2-5da6-4a54-a273-7fa358dec165",
+          "sessionId": "stable",
+          "runtimeId": "r"
+        },
+        false
+      ]
+    ]
+  },
+  {
+    "case": "Actual archive confirmation submits original preview",
+    "actions": [
+      [
+        "preview",
+        {
+          "kind": "session",
+          "spaceId": "d36a11da-84b1-43f7-b0ac-0a22405e7d70",
+          "sessionId": "stable"
+        }
+      ],
+      [
+        "archive",
+        {
+          "scope": {
+            "kind": "session",
+            "spaceId": "d36a11da-84b1-43f7-b0ac-0a22405e7d70",
+            "sessionId": "stable"
+          },
+          "members": [
+            {
+              "spaceId": "d36a11da-84b1-43f7-b0ac-0a22405e7d70",
+              "sessionId": "stable",
+              "runtimeId": "r"
+            }
+          ],
+          "fingerprint": "fixed-preview"
+        }
+      ]
+    ]
+  },
+  {
+    "case": "Hiding actual AgentWorkspace cancels pending confirmation with zero effects"
+  },
+  {
+    "case": "Actual Chrome target blur prevents confirmation focus restoration"
+  },
+  {
+    "case": "Actual iframe document owns production confirmation portal, Escape-equivalent cancel and origin focus"
+  },
+  {
+    "case": "Restored record button only requests read-only record view",
+    "actions": [
+      [
+        "open-record",
+        {
+          "spaceId": "3179a57d-d979-4238-9656-b118814d6526",
+          "sessionId": "stable"
+        }
+      ]
+    ]
+  },
+  {
+    "case": "Unconfirmed recovery retains visible record and blocks restart",
+    "blocked": true
+  }
+]

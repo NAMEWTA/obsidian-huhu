@@ -1,0 +1,358 @@
+{
+  "ticket": "T-04",
+  "owner": "/root/prepare_t03",
+  "state": "SOURCE STOPPED",
+  "observed_at": "2026-10-25T10:29:44.992586+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/terminal",
+  "dispatch_file": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-dispatch-a.json",
+  "dispatch_sha256": "db6116b670c75fdd284e1bda70980a63d92f4cc37b974b49917016ef4d59b105",
+  "packet_goal_revision": "GP-015",
+  "packet_map_revision": 16,
+  "latest_root_coordination": "Root reported GP-016/Map17 for B additional focus paths; A allocation unchanged.",
+  "source_snapshot": "/tmp/huhu-t04-a-final-source",
+  "files": [
+    {
+      "path": "docs/agent-workbench.md",
+      "sha256": "003688e3182ffcbed685140b195fc73993b969f425dccf9255f51f2a5a74ad52",
+      "bytes": 29989,
+      "status": "modified",
+      "before_sha256": "bb4d7172bb015daf29e1e5fd588460647ecc54ccfe12ebe4eae2309426eefc85",
+      "role": "documentation",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/docs/agent-workbench.md"
+    },
+    {
+      "path": "src/modules/agent/core/space/errors.ts",
+      "sha256": "d23415cafb588ada8764fac41790fa05e9f768148de163e0fe58b0b57a548a0b",
+      "bytes": 781,
+      "status": "modified",
+      "before_sha256": "8159653372f3b24851644c4933b3a251584ae75faddd670bb385c9d78898062e",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/core/space/errors.ts"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "bytes": 6060,
+      "status": "modified",
+      "before_sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/core/workspace/managed-runtime.ts"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "223a12cb6b915ddc4f486074b8c38f2d5b00e2f1d3067799b195cce42b280ef8",
+      "bytes": 65783,
+      "status": "modified",
+      "before_sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/i18n.ts"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.test.ts",
+      "sha256": "b917878b1c27c8934c82f60a6c40b5e9539e1f8bb180cc568678455bbbe59177",
+      "bytes": 5124,
+      "status": "modified",
+      "before_sha256": "38cf10656a008f97766c0dd8ea30f1832a5f10756715d16888784ddf86a23152",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/agent-runtime.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "sha256": "4df5489210382cc52e9276f96746f11a3757f27d9cde47acc6d58b78094a6c9c",
+      "bytes": 23052,
+      "status": "modified",
+      "before_sha256": "499dba720ad4b5a357bb79b0605044199a9bc110cc5173ab3f12ce4c60d8b2fc",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/agent-runtime.ts"
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "sha256": "7aff7c1bd554d09f706c9e0e3d2cd93e3bc09463d947c4510095938349d44963",
+      "bytes": 9632,
+      "status": "modified",
+      "before_sha256": "ca65d7be8b595319e2b5662bd5ad4c1b0dcf97df72e2828857a8116cf8aae145",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/controller-managed-runtimes.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/controller-space.test.ts",
+      "sha256": "afc1ef1c4da6f45ca96b17d259cd8dcb111953c22447b616b12211955f4f489e",
+      "bytes": 3065,
+      "status": "modified",
+      "before_sha256": "6907184d4b3842bb2d6233d727267c1c572e84034c7c502967746f68bf15759a",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/controller-space.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "1207b19bd828dfb90a1f3cb1ce68602db123750b4b65c0d89275e9c92b607c66",
+      "bytes": 44841,
+      "status": "modified",
+      "before_sha256": "505401fc89a1e901b5f14def44fb9e394599088d52c04af858c5253632e5be04",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/controller.ts"
+    },
+    {
+      "path": "src/modules/agent/services/launch/managed-errors.ts",
+      "sha256": "fa472a8ca5f2bf3c43fd6379da804621b2073a478679fab5b6789daf7c480a07",
+      "bytes": 3842,
+      "status": "modified",
+      "before_sha256": "cb465822dcdb86f066102eadf614350c0e451af28a91b2cbee72ab31aebf7c5a",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/launch/managed-errors.ts"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/messages.ts",
+      "sha256": "bc2b4a37fc955128198d49710bf665b31872bbf5964a6e2e8842a04c8326da33",
+      "bytes": 1183,
+      "status": "modified",
+      "before_sha256": "bc1fe43f7f31b0c89a946e224d110d12fd45d71d4471eb915a2dfd573fd48c83",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/spaces/messages.ts"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.test.ts",
+      "sha256": "44236f8a398d8acc53fad9f5a0bb94766a29c12a0f2b85f70413fbfc6730fb95",
+      "bytes": 2248,
+      "status": "modified",
+      "before_sha256": "e4c81015e5caf71cf80b608553d44ccd1997479d78f481b705b2a2e8836342ad",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/spaces/records.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "46bf4dadae3af5c985ca60dbda3c15d3acabb062aa3eff68d0bd535e52c4c944",
+      "bytes": 5673,
+      "status": "modified",
+      "before_sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/spaces/records.ts"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+      "sha256": "afd85ce623a4300f561707f008fce955fe866ee80eaef162f773b7e606807e7f",
+      "bytes": 4501,
+      "status": "new",
+      "before_sha256": null,
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/spaces/space-service-lifecycle.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "f04d30a206782996c448aec8b7f7a5cf8501a730f54b7f51bce2e713aa17515a",
+      "bytes": 23354,
+      "status": "modified",
+      "before_sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/spaces/space-service.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/clock.ts",
+      "sha256": "f67ca8cdd9b19733183dc4dcc40f9b724345ee5d3e335d314c04c3ec38713b18",
+      "bytes": 649,
+      "status": "new",
+      "before_sha256": null,
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/clock.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "bytes": 15892,
+      "status": "modified",
+      "before_sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/session.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
+      "sha256": "db65040d334382e42dd0e7a90ef4ebeff7f22f518d97a20f3e3323b6bd0e3b19",
+      "bytes": 6274,
+      "status": "modified",
+      "before_sha256": "59106c02234f0f3325711e863ee84b4fd4e658b1f62335ab2f9705360391e6d2",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/sessions-cancellation.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "sha256": "c426e4c687c39a9ba1a1585a899997611babc869dcaa4707890cfaaec926afc7",
+      "bytes": 9353,
+      "status": "modified",
+      "before_sha256": "af9062760e386193fb4bc5da238cfd486b7fb53a5fc9c85ed211ee637171a368",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/sessions-space.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.e2e.test.ts",
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "bytes": 3049,
+      "status": "modified",
+      "before_sha256": "2e7299a20195ba9f4cc26d937836921aae3d72bd6685bf8862b22035eaf32542",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/sessions.e2e.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "120bcb0746a47a92cd6059d239e1487a579836a1a539ac146ce067ea40d1b998",
+      "bytes": 25192,
+      "status": "modified",
+      "before_sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/terminal/sessions.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-launch-failures.test.ts",
+      "sha256": "489c0834665bacab2f558c6dc097f7a54885f465a5bd1d94e505a6f0e5741eb2",
+      "bytes": 7093,
+      "status": "modified",
+      "before_sha256": "36592650e7077eaf820b2c70ba1b4597bc3a7dec1f8e69267febf0e3b782616f",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service-launch-failures.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-native.test.ts",
+      "sha256": "d62249e965166e00d11e1f88cb13d60d1e81836ffd9cc639fe0fcc2bcef381bc",
+      "bytes": 13064,
+      "status": "modified",
+      "before_sha256": "dec2134b65b65037ae1ef8d8472f89cf17543c74d8370dc4e1686ccabe88f77b",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service-native.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "sha256": "0c628f4082ae59019ce7fb225a87ea01df9bf0fa536e0bd6d44c380c08884aca",
+      "bytes": 31016,
+      "status": "modified",
+      "before_sha256": "7e167e2a1cf50e42da195101b60569bf07858b860d8565aa7a58b598c6bbce05",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service-spaces.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop-native.test.ts",
+      "sha256": "c39e4ee735ea1bd9b525e10781c65f9d1c3ecfc8a55b913e7240f2600200e562",
+      "bytes": 9454,
+      "status": "new",
+      "before_sha256": null,
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service-stop-native.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-stop.test.ts",
+      "sha256": "881aba4bef24aec8e44be6b45d2f8eb0021936da88d70650873437b5517d6f7a",
+      "bytes": 28353,
+      "status": "new",
+      "before_sha256": null,
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service-stop.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.test.ts",
+      "sha256": "2d622a5ecdb1c62ac6bf61688b0e68d2f7f3c8202b5c45f3b22fa8c26593b665",
+      "bytes": 9797,
+      "status": "modified",
+      "before_sha256": "9e5c99cead94f79a79e39cd932886b319eb7f5f64c3ae6ca8d3a8243f23d0514",
+      "role": "test",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service.test.ts"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "28b54dbb8ec02e7114fd789886e1a58847f9f4afd889a25a4fdc710318187ab5",
+      "bytes": 55619,
+      "status": "modified",
+      "before_sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae",
+      "role": "production",
+      "snapshot_file": "/tmp/huhu-t04-a-final-source/src/modules/agent/services/workspace-service.ts"
+    }
+  ],
+  "unchanged_allocated_files": [
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "bytes": 15857
+    },
+    {
+      "path": "src/modules/agent/module.test.ts",
+      "sha256": "2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17",
+      "bytes": 1972
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995
+    },
+    {
+      "path": "src/modules/agent/services/controller-native.test.ts",
+      "sha256": "ddf2520976892701993331afa7650c6cdbc317106f1e897fab23565d84b9bb54",
+      "bytes": 5449
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher-space.test.ts",
+      "sha256": "f34d40831d9ed0bed14a09ac63e9c0b9d5ca806e32c3f297539b5fbcdfa1cf28",
+      "bytes": 7381
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "bytes": 6819
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712",
+      "bytes": 8270
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+      "bytes": 7898
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+      "sha256": "6e2c7e521f2c8b7c02650b5888596e98de082df80a7a0a883b95d6ff1dc0c887",
+      "bytes": 5333
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.test.ts",
+      "sha256": "249ec1a373317bc8b8d6e71d67ce527f086fe96910053202b85b5f73ba8d6774",
+      "bytes": 9334
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "bytes": 5979
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store-spaces.test.ts",
+      "sha256": "fd027b5386fe38f01cd03269c6498c96412f0d54c8049e814c5f1c76ac0cce8b",
+      "bytes": 9405
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.test.ts",
+      "sha256": "e3496393f98156f13f4fb245eb389ec86709826b22793ccc5efa40e54aad1a4f",
+      "bytes": 5463
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "bytes": 7204
+    }
+  ],
+  "native_binary": {
+    "path": "/tmp/huhu-t04-c-linux-candidate-20261025T101553Z",
+    "sha256": "b3a2049edabc03ddfabb8a111aae4686b3eb21cce18a15ccd7625919b4f09724",
+    "bytes": 22911832,
+    "owner": "C; Root authorized frozen Linux intermediate candidate; no A target/cargo writes"
+  },
+  "ownership": "Only actual A changes listed. No B UI/C native/shared/Rust/formal/Git/assets writes. Existing native test binary overrides authorized by Root message."
+}

@@ -1,0 +1,77 @@
+{
+  "utc": "2026-10-26T05:02:44.021428+00:00",
+  "sources": [
+    {
+      "path": "src/shared/native/control-schema.json",
+      "sha256": "08d4425c4283ff391605ae42e1813a8957007da3238ed4a5b199a76c7494cc8c",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/08d4425c4283ff391605ae42e1813a8957007da3238ed4a5b199a76c7494cc8c.raw",
+      "bytes": 33692
+    },
+    {
+      "path": "src/shared/native/control-wire.generated.ts",
+      "sha256": "7e9003e29e3d53362db24e05f1d9390aa6bf109aeb64052577979f9e48aa4a35",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/7e9003e29e3d53362db24e05f1d9390aa6bf109aeb64052577979f9e48aa4a35.raw",
+      "bytes": 40700
+    },
+    {
+      "path": "scripts/generate-control-protocol.mjs",
+      "sha256": "021cd3eed99d194e8f84b05c55fa6af4c216456e537f1cb1468331b5cee47186",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/021cd3eed99d194e8f84b05c55fa6af4c216456e537f1cb1468331b5cee47186.raw",
+      "bytes": 12737
+    },
+    {
+      "path": "native/pty-server/src/control/wire_generated.rs",
+      "sha256": "b787a72dd9caf0688492f70004c26162e7a892116895dd5bc632b5624dbbc4a8",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/b787a72dd9caf0688492f70004c26162e7a892116895dd5bc632b5624dbbc4a8.raw",
+      "bytes": 25327
+    }
+  ],
+  "actual_checks": [
+    {
+      "phase": "red",
+      "receipt": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-red.json",
+        "sha256": "49d98a982ed1cb6fa2460caa6659f77eb123247edebc03c196cfb0f17e716cec",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/49d98a982ed1cb6fa2460caa6659f77eb123247edebc03c196cfb0f17e716cec.raw",
+        "bytes": 778
+      },
+      "log": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-red.log",
+        "sha256": "7a7bee45c7a5db7d8e61c544522db4c6795ab54b5949c3dffa3e9a14c472a5bc",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/7a7bee45c7a5db7d8e61c544522db4c6795ab54b5949c3dffa3e9a14c472a5bc.raw",
+        "bytes": 2179
+      },
+      "frozen_inputs": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-red-inputs.json",
+        "sha256": "4f8cc8fb73a5f58c9fc896d1f42f075ce1732fe9e8cac0a2ef0701fd8fd7dc9e",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/4f8cc8fb73a5f58c9fc896d1f42f075ce1732fe9e8cac0a2ef0701fd8fd7dc9e.raw",
+        "bytes": 20213
+      },
+      "exit_code": 1
+    },
+    {
+      "phase": "green",
+      "receipt": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-green.json",
+        "sha256": "268fb1def0c3f2e194e302cf12828159b7f8e7280c6034b839262baaecb9d0cf",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/268fb1def0c3f2e194e302cf12828159b7f8e7280c6034b839262baaecb9d0cf.raw",
+        "bytes": 782
+      },
+      "log": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-green.log",
+        "sha256": "2af27dadd1e50bbca29f0060a0ed4f2b3ebec35d5cec94f492d4af94a709975a",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/2af27dadd1e50bbca29f0060a0ed4f2b3ebec35d5cec94f492d4af94a709975a.raw",
+        "bytes": 233
+      },
+      "frozen_inputs": {
+        "path": "/tmp/huhu-t08-c-stage1-readonly-green-inputs.json",
+        "sha256": "f3825238aa7a30bca8e4d7fecf7b0631efa4c8280e553e1f94ba52595e3ac8bb",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/readonly-slice/objects/f3825238aa7a30bca8e4d7fecf7b0631efa4c8280e553e1f94ba52595e3ac8bb.raw",
+        "bytes": 20341
+      },
+      "exit_code": 0
+    }
+  ],
+  "readback": "Root read the explicit operation flags, single finite wait enum, generated exports and actual 2 red / 2 green logs. A may consume CONTROL_WAIT_STATES/ControlWaitState; C may continue additive editor generation. 55 filtered tests were not run; no whole-ticket or native pass inferred.",
+  "scope": "Subset interface agreement only; generated files will change additively in the same C stage. Final candidate/test evidence still required."
+}

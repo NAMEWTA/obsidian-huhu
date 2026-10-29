@@ -1,11 +1,14 @@
 // Exercise a built terminal helper over its standard streams: handshake, a session with input, output
 // and exit code, flow control without acknowledgements, and ending every session when stdin closes.
-// Usage: node scripts/verify-pty-helper.mjs <path-to-huhu-pty[.exe]>
+// With a second argument it also exercises the `huhu` control CLI built from the same package: version/protocol pairing
+// with the helper, schema and help generated from control-schema.json, stdin bodies and language-independent exit codes.
+// Usage: node scripts/verify-pty-helper.mjs <path-to-huhu-pty[.exe]> [<path-to-huhu[.exe]>]
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 
-const binary = process.argv[2];
+const binary = process.argv[2], cliBinary = process.argv[3];
 assert.ok(binary, 'Pass the helper binary path');
 const windows = process.platform === 'win32';
 
@@ -102,5 +105,42 @@ await until(() => (helper.state.bytes.get(2) ?? 0) > paused, 'resumes after ackn
 helper.child.stdin.end();
 await until(() => helper.child.exitCode !== null || helper.child.signalCode !== null, 'helper exit');
 assert.equal(helper.child.exitCode, 0);
+
+if (cliBinary) {
+	const canonical = JSON.parse(readFileSync(new URL('../src/shared/native/control-schema.json', import.meta.url), 'utf8'));
+	// Route hints and the locator are removed so the run cannot reach a real workbench.
+	const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('HUHU_')));
+	const run = (args, input) => spawnSync(cliBinary, args, { env, input, encoding: 'utf8', windowsHide: true, timeout: 20_000, maxBuffer: 4 * 1024 * 1024 });
+	const version = run(['--json', 'version']);
+	assert.equal(version.status, 0, 'version exits 0');
+	const receipt = JSON.parse(version.stdout);
+	assert.equal(receipt.ok, true);
+	assert.equal(receipt.protocolVersion, canonical.protocolVersion, 'CLI protocol major equals the canonical schema');
+	assert.equal(receipt.data.helperProtocol, hello.protocol, 'CLI pairs with the helper protocol it was built with');
+	assert.equal(receipt.data.helperProtocol, canonical.helperProtocol);
+	assert.equal(receipt.data.version, hello.version, 'helper and CLI come from one build');
+	const schema = run(['schema']);
+	assert.equal(schema.status, 0);
+	assert.deepEqual(JSON.parse(schema.stdout), canonical, 'schema output is the canonical control schema');
+	const help = run(['help']);
+	assert.equal(help.status, 0);
+	for (const [name, operation] of Object.entries(canonical.operations)) {
+		assert.ok(help.stdout.split('\n').some((line) => line.startsWith(`${name} `)), `help lists ${name}`);
+		for (const key of Object.keys(operation.params.properties ?? {})) assert.ok(help.stdout.includes(`--${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`), `help lists --${key} of ${name}`);
+	}
+	// Error classes are machine fields and exit codes, never message text.
+	const body = (bytes) => 'x'.repeat(bytes);
+	const send = (bytes) => run(['--json', 'message', 'send', '--to-session', 'S', '--stdin'], body(bytes));
+	const accepted = send(16 * 1024);
+	assert.notEqual(JSON.parse(accepted.stdout).error?.code, 'CAPACITY_EXCEEDED', 'a 16 KiB stdin body passes local capacity checks');
+	assert.equal(accepted.status, canonical.errorExits[JSON.parse(accepted.stdout).error.code], 'exit code follows the error class');
+	const oversized = send(16 * 1024 + 1);
+	assert.equal(JSON.parse(oversized.stdout).error.code, 'CAPACITY_EXCEEDED');
+	assert.equal(oversized.status, canonical.errorExits.CAPACITY_EXCEEDED);
+	const unknown = run(['--json', 'terminal', 'teleport']);
+	assert.equal(JSON.parse(unknown.stdout).error.code, 'INVALID_ARGUMENT');
+	assert.equal(unknown.status, canonical.errorExits.INVALID_ARGUMENT);
+	console.log(`control CLI verified (${receipt.data.version}, protocol ${receipt.protocolVersion})`);
+}
 
 console.log(`terminal helper verified (${hello.platform}, ${hello.version})`);

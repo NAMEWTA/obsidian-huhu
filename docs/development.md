@@ -31,7 +31,7 @@ Linux 的 Go 凭证合同测试还需要 `dbus-daemon` 与支持 `sqlite3` 的 `
 
 manifest、package、versions、CHANGELOG 和 native crate 使用当前版本。首次版本为 0.0.1，标签不带 v，正式发布不带预览后缀。
 
-发布入口仅为 `.github/workflows/release.yml`。先推送 main 并通过检查，再推送版本标签；同一提交需通过 Linux Node 22/24、Windows Node 24 检查、五平台终端 helper、Linux 浏览器运行时与 Bot Runner 构建。CI 核对提交产物、浏览器运行包和 Bot 目标。
+发布入口仅为 `.github/workflows/release.yml`。先推送 main 并通过检查，再推送版本标签；同一提交需通过 Linux Node 22/24、Windows Node 24 检查、五平台终端 helper 与 `huhu` CLI（每个平台的 CLI 附 `.sha256` 与由所构建二进制生成的 `.compat.json`）、Linux 浏览器运行时与 Bot Runner 构建。CI 核对提交产物、浏览器运行包、Bot 目标、原生校验和与兼容记录。
 
 发布后从新仓库 Release 安装并验证下载；不得回退旧仓库的 helper。真实账号、移动设备或没有宿主可用的平台没有实测时，交付说明应保留该边界。
 

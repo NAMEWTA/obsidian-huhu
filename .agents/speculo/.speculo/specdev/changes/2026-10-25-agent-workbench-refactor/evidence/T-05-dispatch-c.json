@@ -1,0 +1,397 @@
+{
+  "ticket": "T-05",
+  "goal_revision": "GP-018",
+  "map_revision": 19,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "scope_state": "prepared_K03_accepted_actual_dispatch_required",
+  "task": "T-05 C native bounded transport and correlated whole-input admission",
+  "write_allocation": [
+    "src/shared/native/host.ts",
+    "src/shared/native/frames.ts",
+    "src/shared/native/frames.test.ts",
+    "src/shared/native/input.ts",
+    "src/shared/native/input.test.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/helper.test.ts",
+    "src/host/desktop/native/helper-stream.test.ts",
+    "src/host/desktop/native/host.ts",
+    "src/host/desktop/native/host.test.ts",
+    "src/host/desktop/native/host.integration.test.ts",
+    "src/host/desktop/native/host-stream.integration.test.ts",
+    "native/pty-server/src/session.rs",
+    "native/pty-server/src/frame.rs",
+    "native/pty-server/src/main.rs",
+    "native/pty-server/src/outbox.rs",
+    "native/pty-server/src/data.rs",
+    "native/pty-server/src/cookies.rs",
+    "native/pty-server/src/agent_data.rs",
+    "native/pty-server/tests/**",
+    "test/fixtures/native/terminal-input-admission-v1.json",
+    "scripts/verify-pty-helper.mjs"
+  ],
+  "scope_constraints": [
+    "先落TS真实纯类型/codec与唯一Rust+TS fixture，Root核读后A接线；不直接让A/B依报告猜接口。",
+    "采用protocol3 optional inputAdmission1与strict positive limits，frame4 input-part、frame5 parser-reply，旧termination1保持；双方声明才启用。",
+    "begin预留整笔bytes/userFIFO/resultslot；完整parts+commit才queued，claim与cancel同一线性化点，written仅PTY写完，响应丢失或部分写unknown不自动重放。",
+    "每SID/input/resize共享FIFO，resize仅连续尾部coalesce并回superseded；parser reply独立有界保留而不宣称可抢占阻塞OS write。",
+    "Node.write(false)该frame已提交，不重发；下一frame等drain且inflight/encodedbuffer/decoder/pending请求和op都有byte/count/timeout限额。",
+    "全helper公平有界outbox+control reserve，完整每SID output→drained/truncated→numeric exit屏障；native stop/ACK/main/monitor不能被userwriter或慢stdout队列锁住。",
+    "响应producer预留worker/bytes，构造大Cookie/history前拒绝；成功shape/完整结果不变，超限准确error不静默少行截正文。不要引入bulk wire、第二manager、daemon或新依赖。",
+    "只修改获分配Rust文件，不cargo fmt --all造成旧格式越界；Cargo.toml/lock/job/bootstrap只读。cargo/target唯一你，生成immutable新helper给Root，其后A仅用该副本，不覆盖T04 ce263f副本。",
+    "先允许选择保守有限provisional profile用于实测，最终定值/实际峰值/控制延时须原始数据；不可把未测绝对数当性能承诺。",
+    "SOURCE STOPPED后Root统一build/lint/global，C scopedtests/cargo/verify/crosscheck可独占lane执行；全局architecture与Promise严禁重叠。"
+  ],
+  "actual_agent": "/root/implement_t01",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_source": "existing actual handle; Goal section4 original requested model",
+  "prepared_at": "2026-10-25T12:21:43.235420+00:00",
+  "authorization": "User all18 implementation/Agent Team/code acceptance, Goal LOG027; no commit/push/release/archive.",
+  "dependency_receipt": "T04 done; G01 code closed; T05 K03 accepted with source/log audit; exact current pins verified exit0.",
+  "directions": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+  "first_handoff": "Actual source signatures/DTOs plus fixture schema and hashes, test/negative evidence and provisional finite limits. Do not substitute report text for actual compilable types. Root reads and freezes before other owner consumers.",
+  "subdelegation": "No nested agents. Only this owner writes allocated source. Root owns formal records/artifacts/budgets/dependency files.",
+  "read_only_contracts": [
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+    "AGENTS.md",
+    ".agents/speculo/.speculo/workspace.json",
+    ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+    ".agents/skills/dev/SKILL.md",
+    ".agents/skills/ui/SKILL.md",
+    ".agents/skills/dev/references/testing.md",
+    ".agents/skills/dev/references/licensing.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-handoff.md",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-root-audit.json",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-exact-pin.json",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-prior-delivery.json",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "source_snapshot": "/tmp/huhu-t05-implementation-start-source",
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "53dc0ab5d173b11811cb4fe848d19aa6408f52cf72553c9be54dc6c1be8aaf23",
+      "bytes": 31828
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "5d2914175905e724573542863ec286ccecf5d2873d6fa57f6335fd2a388cc73c",
+      "bytes": 37972
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "500af48360e0195627dd6935e7046141f6ee56536b13fe748be17773053db2aa",
+      "bytes": 25075
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "3a5582e9ab1d51e12f9e1198612577183513d23c12a9c45105cde10d3ca5673b",
+      "bytes": 5714
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "bytes": 4971
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-implementation-directions.md",
+      "sha256": "b8186317fb276e87603c37704297dc971e30931a8d7b11c177680c3d774a4dd8",
+      "bytes": 6474
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-handoff.md",
+      "sha256": "12f9703242ea2b4dd5db7f7eb1bc0c02ac6fa439c43cf2a34c72c0cfff4bfece",
+      "bytes": 5213
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-k03-root-audit.json",
+      "sha256": "11e769a27a553a7f1b1cdda4296b348e61af477a1d7004a1b702512a0046ee9a",
+      "bytes": 31003
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-exact-pin.json",
+      "sha256": "656d86018c9b6ea195aa1c019bbe8a6852f70da026345b573b94c0dbf292822a",
+      "bytes": 1210
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-prior-delivery.json",
+      "sha256": "6d602b723c2e8f2218dccac2141ec213491d90efc23a8a8abbf0e80a8bbd262f",
+      "bytes": 20875
+    },
+    {
+      "path": "package.json",
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c",
+      "bytes": 13443
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "004818ad2aaab47043b39d4e545dd77f8be62fd1544f2eecfbaa5285c088285a",
+      "bytes": 299611
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-native-contract-proposal.md",
+      "sha256": "187cea36a018e6de361f2a83de68eac5051d4113fb5da40e07581a5645408770",
+      "bytes": 20530
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-native-after-t04-plan.md",
+      "sha256": "f827084d32895744febb13c08f454a8e34fa360f3e7447ba76ad92ef59486204",
+      "bytes": 12559
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c",
+      "bytes": 876
+    },
+    {
+      "path": "native/pty-server/Cargo.lock",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "bytes": 17755
+    },
+    {
+      "path": "native/pty-server/src/job.rs",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "bytes": 15567
+    },
+    {
+      "path": "native/pty-server/src/bootstrap.rs",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8",
+      "bytes": 22732
+    }
+  ],
+  "source_baseline": [
+    {
+      "path": "src/shared/native/frames.test.ts",
+      "exists": false
+    },
+    {
+      "path": "src/shared/native/input.ts",
+      "exists": false
+    },
+    {
+      "path": "src/shared/native/input.test.ts",
+      "exists": false
+    },
+    {
+      "path": "src/host/desktop/native/helper-stream.test.ts",
+      "exists": false
+    },
+    {
+      "path": "src/host/desktop/native/host-stream.integration.test.ts",
+      "exists": false
+    },
+    {
+      "path": "native/pty-server/src/outbox.rs",
+      "exists": false
+    },
+    {
+      "path": "test/fixtures/native/terminal-input-admission-v1.json",
+      "exists": false
+    },
+    {
+      "path": "native/pty-server/src/agent_data.rs",
+      "exists": true,
+      "bytes": 83199,
+      "sha256": "12a184efb05a83ffdfee1eee70aefbd0a6e12921a86813cd05f7994a8e0f6080"
+    },
+    {
+      "path": "native/pty-server/src/cookies.rs",
+      "exists": true,
+      "bytes": 4199,
+      "sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39"
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "exists": true,
+      "bytes": 4190,
+      "sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f"
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "exists": true,
+      "bytes": 4115,
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "exists": true,
+      "bytes": 7582,
+      "sha256": "ede0ebd60a46dd859772c028d9d6679be484edff10e4cd9146416bee82148f8b"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "exists": true,
+      "bytes": 33398,
+      "sha256": "2589a3cbb077115653d8b080ed621a22aa8ca5d232f342ef35389f68927c0dfb"
+    },
+    {
+      "path": "native/pty-server/tests/inherited_fds.rs",
+      "exists": true,
+      "bytes": 2376,
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "path": "native/pty-server/tests/session_tree.rs",
+      "exists": true,
+      "bytes": 12650,
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "exists": true,
+      "bytes": 11081,
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    },
+    {
+      "path": "scripts/verify-pty-helper.mjs",
+      "exists": true,
+      "bytes": 5143,
+      "sha256": "728164f4df30b8045f44a396782119edccecda48a2a9801982a3402c697316a1"
+    },
+    {
+      "path": "src/host/desktop/native/helper.test.ts",
+      "exists": true,
+      "bytes": 4555,
+      "sha256": "b077bccb0f4a5e4196c59bc5dd1415662b13fedb6b50d054236f7cb377004ae3"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "exists": true,
+      "bytes": 11031,
+      "sha256": "99c83f27f65ebc6203dda1f4f937f5159369cea656a31e63ba77c7beddd58167"
+    },
+    {
+      "path": "src/host/desktop/native/host.integration.test.ts",
+      "exists": true,
+      "bytes": 2667,
+      "sha256": "332ea053f34bc93d24f2f2d2dae05dd467b5c6ec1323098c4218aa15e06ea7f0"
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "exists": true,
+      "bytes": 14370,
+      "sha256": "f9b95d00ff970d26704fbdcc585fb934b212972aedc8f53b83e0d6601f348598"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "exists": true,
+      "bytes": 13023,
+      "sha256": "d1c4b479b595fd3d18efd9a642ab1e4b34ca5840ac25bb7bdde386e147c1c36b"
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "exists": true,
+      "bytes": 2905,
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "exists": true,
+      "bytes": 3480,
+      "sha256": "2e39c4f4c74b4c371b59ed16b76c60759ab90e19d232f58dc72d5744e7977eeb"
+    },
+    {
+      "path": "native/pty-server/tests/inherited_fds.rs",
+      "exists": true,
+      "bytes": 2376,
+      "sha256": "16a56ada2a841487466da391e6c46d8b9344fb9482766b64f79d5be149fb4590"
+    },
+    {
+      "path": "native/pty-server/tests/session_tree.rs",
+      "exists": true,
+      "bytes": 12650,
+      "sha256": "67bdb60890d6ec0691550eacf64fb63cb01dc695979adf29fbee1e7656d3f6dd"
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "exists": true,
+      "bytes": 11081,
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a"
+    }
+  ],
+  "checks": [
+    "Write meaningful behavior/negative tests before production behavior and preserve actual first-red source/log/command/UTC/exit; all final checks zero skip.",
+    "Scoped unit/native checks only while writers active. Root owns full build/lint/architecture/Promise/bundle serial after all SOURCE STOPPED.",
+    "Record exact actual argv/cwd/environment/source hashes/raw log/exit and clean up only own processes.",
+    "Return handoff + source manifest + command/check manifest in /tmp; include residual gaps and explicit SOURCE STOPPED. No formal records edits.",
+    "Strict wire framing and Rust/TS shared fixture, whole admission before bytes/claim/cancel, write(false)/drain once, reply/user pressure isolation, FIFO resize, exact legacy unsupported, bounded producer/worker/outbox and cleanup ordering.",
+    "Own sole cargo/target lane, use --locked and preserve current Cargo.lock bytes; cargo unit/integration plus Windows cross check when touched. Preserve original red byte snapshots.",
+    "Build unique immutable Linux helper path with chmod555 and SHA and exact producer metadata before giving A/Root. Never overwrite any T04 immutable helper.",
+    "Real PTY pressure sample with fixed machine/workload/rate, measured perqueue/aggregate bytes/peaks and second session controls; report OS-blocking physical limits accurately."
+  ],
+  "stop_conditions": [
+    "Undeclared source path/dependency or higher-impact behavior gap: report exact missing path/contract to Root, stop only affected branch.",
+    "Private adapter uncertain bound or shape cannot be proven: preserve precise counterexample and proposed minimum gap, do not reset authority/drop raw/claim complete.",
+    "No user decisions missing for declared implementation; do not ask user to reauthorize current work."
+  ],
+  "actual_tool_receipt": {
+    "tool": "collaboration.followup_task",
+    "target": "/root/implement_t01",
+    "result": "returned successfully with empty result body",
+    "recorded_at": "2026-10-25T12:22:43.020337+00:00",
+    "prepared_packet_sha256": "f78a6ac82b51f630c8b8134eead86031d6c8e07e59d26e92ec8d55dd442f9dd2",
+    "stage": "T05 production source write allocation now dispatched; API handoff first"
+  }
+}

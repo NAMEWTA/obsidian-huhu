@@ -1,0 +1,59 @@
+[
+  {
+    "name": "goal-plan-validation",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+      "--repo",
+      ".",
+      "--stage",
+      "goal-plan",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor"
+    ],
+    "exit": 0,
+    "seconds": 218.99,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/goal-plan-validation.log"
+  },
+  {
+    "name": "completion-validation",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+      "--repo",
+      ".",
+      "--stage",
+      "complete",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor"
+    ],
+    "exit": 0,
+    "seconds": 222.63,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/completion-validation.log"
+  },
+  {
+    "name": "ticket-control",
+    "command": [
+      "node",
+      ".agents/speculo/workflows/specdev/common/tools/ticket-control.mjs",
+      "--map",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "--repo",
+      "."
+    ],
+    "exit": 0,
+    "seconds": 219.21,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/ticket-control.json"
+  },
+  {
+    "name": "docs-bookkeeping",
+    "command": [
+      "pnpm",
+      "run",
+      "test:docs"
+    ],
+    "exit": 126,
+    "seconds": 1.47,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/docs-bookkeeping.log",
+    "reused": true,
+    "reason": "Only completed Goal admission flag changed; documentation link input unchanged"
+  }
+]

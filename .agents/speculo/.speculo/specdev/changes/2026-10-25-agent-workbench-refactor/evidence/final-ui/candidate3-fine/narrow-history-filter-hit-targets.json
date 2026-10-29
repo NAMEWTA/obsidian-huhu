@@ -1,0 +1,202 @@
+[
+  {
+    "name": "全选",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "清除",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Claude Code",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Codex",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Grok",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "OpenCode",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Gemini CLI",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Pi",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "全部 Space",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Space A · 同名长空间与完整身份 · docs / ",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "Space B · 同名目录",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "未归属",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "全部时间",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "过去 24 小时",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "过去 7 天",
+    "width": 204,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "过去 30 天",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "最近更新",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "创建时间",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "不分组",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "按智能体分组",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "按目录分组",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "包含普通终端元数据",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "隐藏空会话",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "显示已归档会话",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "重置",
+    "width": 204,
+    "height": 44,
+    "sampled": false,
+    "hits": true,
+    "overlaps": false
+  }
+]

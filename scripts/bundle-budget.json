@@ -1,8 +1,8 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 7387136,
+  "outputBytes": 8251392,
   "stylesBytes": 1441792,
-  "eagerBytes": 133120,
+  "eagerBytes": 135168,
   "forbiddenEagerAreas": [
     "npm:lunar-typescript",
     "npm:chart.js",
@@ -14,21 +14,21 @@
   ],
   "moduleActivationBytes": {
     "home": 493568,
-    "agent": 996352,
+    "agent": 1385472,
     "icons": 158720,
     "browser": 316416,
     "archives": 337920,
-    "automations": 217088,
-    "notifications": 20480,
+    "automations": 220160,
+    "notifications": 21504,
     "comments": 130048,
     "navigator": 203776,
     "safe": 68608,
-    "task": 166912,
+    "task": 167936,
     "versioning": 195584,
     "huhubot": 557056
   },
-  "outputBudgetReason": "2026-10-29 重新生成 THIRD-PARTY-NOTICES 后，main.js 横幅纳入已进入包体但清单缺失的 ajv、ajv-formats、fast-deep-equal、fast-uri 与 json-schema-traverse。实测 main.js 7386570 字节。上限按 KiB 向上取整为 7214 KiB。",
-  "eagerBudgetReason": "2026-10-28 实测启动闭包 132294 字节，包含高亮入口、任务清单与 Bot 注册表元数据。页面、Runner 和浏览器运行时仍懒加载，React/Radix 未进入启动闭包。上限 130 KiB。",
-  "stylesBudgetReason": "2026-10-28 实测 styles.css 1433457 字节，覆盖保险箱、高亮、浏览器与 Bot 的作用域样式。上限保持 1408 KiB。",
-  "moduleActivationBudgetReason": "2026-10-28 实测并按 KiB 向上取整：agent 995871、comments 129300。其余模块未超过既有上限。versioning 取代 sync，huhubot 为新增激活闭包。"
+  "outputBudgetReason": "2026-10-29 合入 NAMEWTA/terminal 后重新构建。实测 main.js 8251339 字节。增长来自终端工作台的 Space、会话、收件箱和备份，以及旧网页标签在读盘时保留地址。启动闭包仍不含 xterm、React 或 Radix。上限按 KiB 向上取整为 8058 KiB。",
+  "eagerBudgetReason": "2026-10-29 合入后实测启动闭包 135082 字节、111 个输入，含高亮入口、任务清单、Bot 注册表和终端模块的清单元数据。页面、Runner、xterm 和浏览器运行时仍懒加载。上限 132 KiB。",
+  "stylesBudgetReason": "2026-10-29 按合入后的 27 个样式源重写 styles.css，实测 1436333 字节，仍低于 1408 KiB 上限。",
+  "moduleActivationBudgetReason": "2026-10-29 合入终端工作台后实测并按 KiB 向上取整：agent 1384588（Space、PTY、收件箱、备份，以及旧网页标签保留地址）、automations 219910、notifications 21285、task 166930。其余模块未超过既有上限。浏览器仍是独立运行时，不回到 PTY helper。"
 }

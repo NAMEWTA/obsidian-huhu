@@ -96,10 +96,9 @@ Go Runner 的 `internal/domain` 与 `internal/application` 只依赖内层与标
 
 ## 工作台
 
-只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`browser`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`versioning`、`revision-review`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 是独立工作台功能，自己拥有 Space、Page 和运行进程；智能体标签只是可选查看入口。批注使用右侧栏视图，记录使用看板弹窗，不贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
+只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`task`、`terminal`、`browser`、`huhubot`、`contacts`、`automations`、`notifications`、`icons`、`versioning`、`revision-review`、`safe`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`；`task` 属于 `task`；`huhubot` 属于 `huhubot`；`versioning` 与 `revision-review` 属于 `versioning`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 是独立工作台功能，自己拥有 Space、Page 和运行进程；智能体标签只保存 Space 与 Page 引用，不拥有浏览器进程。批注使用右侧栏视图，记录使用看板弹窗，不贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
 
 浏览器通过 `BROWSER_WORKSPACE`、`BROWSER_OPEN` 暴露工作区与打开能力，通过 `BROWSER_MATERIAL_CONSUMERS` 收集已经启用的可选材料接收方。不要从 browser 导入 Agent 的内部代码、借用 PTY SQLite helper，或从 UI 直接访问 CDP。独立 Worker 与 Rust 监督进程使用私有管道；每个 Space 绑定自己的 Chromium 用户目录、运行实例与控制代次。帧查看者不自动取得控制，跨窗口迁移只迁移查看界面。生产运行时仅开放 Linux x64，其他平台返回不支持。
-只有一个工作台视图（`app/workbench/workbench-leaf.ts` 里的 `WORKBENCH_VIEW_TYPE`）。叶子保存自己的状态，打开时加载 shell 表面。`app/workbench/compose-workbench.ts` 声明图标轨条目（功能、图标、面板、可用性），并通过 `plugin.activateModule(id)` 和 `ModuleInstance.pages` 把每个功能对应到模块页面。功能及其所属模块是 `app/contracts/workbench.ts` 里的 `WORKBENCH_FEATURES` / `FEATURE_MODULES`。目标功能列表为 `dashboard`、`terminal`、`huhubot`、`contacts`、`safe`、`automations`、`notifications`、`icons`、`sync`、`content`、`settings`。`terminal` 属于 `agent`，显示名称为「智能体」；`contacts` 属于 `archives`。`safe` 为桌面保险箱，按「设置 → 保险箱」的锁定规则（默认 20 分钟未操作；切换页面、关闭页面可选）锁定，退出 Obsidian 一定锁定，且不保存敏感页面状态。`browser` 保留为引擎模块，通过 `BROWSER_HOST` 给智能体标签提供能力；批注使用右侧栏视图，记录使用看板弹窗，不再贡献独立工作台功能。shell 的 `chrome`、可选侧栏和状态栏行为见 [ui shell 参考](../../ui/references/shell.md)。
 
 另外有两种侧栏视图，都在 `main.ts` 启动时注册，使保存的叶子能恢复；对应模块关闭时显示「开启模块」的提示，模块启动后切换为模块的 React 面板：
 
@@ -149,10 +148,9 @@ Bot Runner 的 Profile 是另一个明确库外边界：`internal/runtime/profil
 | 设置（本机） | `.huhu/config/devices/<device-id>.json` | app |
 | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
 | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
-| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/页面标签，以及浏览器 Space/Page 引用；不拥有浏览器运行资料） | agent |
+| 智能体空间与布局 | `.huhu/terminal-agent/<device-id>/workbench-v2.json`（Space/持久 Session、目录授权、按 Space 分开的布局；浏览器标签只保存 Space/Page 引用） | agent |
 | Bot 宿主回执与索引 | `.huhu/huhubot/`，设备/Profile 隔离；不是业务数据库 | huhubot 的 HostReceiptStore，复用 privateVaultStorage |
 | Bot 回执认证键 | Obsidian App 本机存储，独立于 Vault JSON；完整路径、键归属及失败边界见[数据正文](../../../../docs/data.md#bot-宿主回执与本机认证键) | huhubot 的 ReceiptAuthority；宿主持有持久化 |
-| 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
 | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
 | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |
 | 智能体历史与缓存 | `.huhu/terminal-agent/<device-id>/history.json`、`automation-sessions.json`、可重建的 `index.sqlite` | agent |

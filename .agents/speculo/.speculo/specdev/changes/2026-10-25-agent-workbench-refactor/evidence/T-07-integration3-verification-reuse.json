@@ -1,0 +1,116 @@
+{
+  "utc": "2026-10-26T04:07:59.178722+00:00",
+  "current_manifest": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-root-integration3-final-input.json",
+    "sha256": "924cf7daa793a7998d5f6c7a1132ce5d3d661afafa391bda15d55ed7c0dc923e"
+  },
+  "prior_manifest": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-root-integration2-final-input.json",
+    "sha256": "0d8885283ce3dd932dc0085bd44ca8a7f0d93e5817b27b4634dfc7df0265c26a"
+  },
+  "current_product_delta_since_i2": [
+    {
+      "path": "native/pty-server/src/bin/huhu.rs",
+      "before": "5f481ed128e016257b6abda1f5aaa0921d52ee8c3d0abbfa793cd6c9695c7520",
+      "after": "52bd29643f3824c84703884d0bdf847fbb2613e8196447404aaa8fe7ac70efd3"
+    },
+    {
+      "path": "native/pty-server/src/control/broker.rs",
+      "before": "58f54533b984730cdf4a2db325da0a78c20749eb1a4abdbe1b23e297a8e3078e",
+      "after": "4734de38e47208b04b7d31dc774b63a8367f2109d3aa16aaaf6f9a57fdfac7b6"
+    },
+    {
+      "path": "native/pty-server/src/control/client.rs",
+      "before": "cef33cfdf795708237b277285f548835384ef826a0dfe35ec6b22e54e41d0971",
+      "after": "cbea7f5c856c08426d6036442590a9e11db3bab4c71b16c367b3c23516cfe643"
+    },
+    {
+      "path": "native/pty-server/src/control/locator.rs",
+      "before": "9dc1a2a8636027eddead22510f5ce5a55c06f78ff5c7eb0bf1e23e4faf297927",
+      "after": "cd348ca9a4d621b93381e458916044010397ad78383f6a8dbf9938da5e2a629f"
+    },
+    {
+      "path": "native/pty-server/tests/control.rs",
+      "before": "d0516d5aba94c485472d2e58f2b5c71b46a3cf3d4665c5a92d7b0b8c3c4286d0",
+      "after": "1c5e38de1922eb70807ad0cb722adbd891a30b5d0746f7827ccde270def69282"
+    }
+  ],
+  "unchanged_product_count": 2024,
+  "reused": [
+    {
+      "source": "T-07-integration2-verification-reuse.json",
+      "scope": "i1 production lint/architecture/i18n/generated checks and 554 passing regression cases; i2 repaired controller activity fixture 18 targeted tests/typecheck/format. Entire affected JS/config/lock inputs unchanged. This is not a new full555 green run."
+    },
+    {
+      "source": "T-07-integration2-build-root-audit.json",
+      "scope": "Actual build, notices --check, bundle and Promise checks remain valid: TS/CSS, generator, dependencies, lockfiles, main.js/styles.css/notices/budget unchanged. Native five-path repair is not embedded in main.js."
+    },
+    {
+      "source": "T-07-integration2-similarity-root-audit.json + T-07-similarity-readback.json",
+      "scope": "Unchanged code and reference inventory reused; five changed Rust files receive a new numeric comparison and own-side readback."
+    }
+  ],
+  "new_checks": [
+    {
+      "source": "T-07-c-review-r1-repair-root-audit.json",
+      "scope": "Current full native111/0ignored, Windows crosscheck, scoped rustfmt, same-source immutable dual binaries and helper verify; all exit0. Original red and full fmt exit1 preserved."
+    },
+    {
+      "receipt": {
+        "command": [
+          "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--no-cache",
+          "--no-fsModuleCache",
+          "--configLoader",
+          "runner",
+          "--no-file-parallelism",
+          "src/modules/agent/services/control/control-native.test.ts",
+          "src/host/desktop/native/host-control.integration.test.ts",
+          "test/native/control-protocol.test.ts"
+        ],
+        "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+        "started_at": "2026-10-26T04:06:08.078103+00:00",
+        "source_manifest": "/tmp/huhu-t07-root-integration3-final-inputs.json",
+        "source_manifest_sha256": "924cf7daa793a7998d5f6c7a1132ce5d3d661afafa391bda15d55ed7c0dc923e",
+        "environment": {
+          "HUHU_TEST_PTY_BINARY": "/tmp/huhu-t07-c-review-r1-linux-final-20261026T035611Z/huhu-pty",
+          "HUHU_TEST_CONTROL_BINARY": "/tmp/huhu-t07-c-review-r1-linux-final-20261026T035611Z/huhu",
+          "HUHU_TEST_HOOK_EVIDENCE": null,
+          "HUHU_CHROME": null,
+          "PATH": "/home/wta/.local/bin:/home/wta/.volta/bin:/home/wta/.cargo/bin:/home/wta/go/bin:/home/wta/.local/opt/go/current/bin:/home/wta/.sdkman/candidates/maven/current/bin:/home/wta/.sdkman/candidates/java/current/bin:/home/wta/.local/bin:/usr/local/go/bin:/home/wta/.volta/tools/image/packages/@openai/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/wta/.codex/tmp/arg0-linux/codex-arg0nzJdbI:/home/wta/.volta/tools/image/npm/12.2.0/bin:/home/wta/.volta/tools/image/node/26.11.1/bin:/home/wta/.orca/cli/bin:/home/wta/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+          "RUSTFLAGS": null,
+          "CARGO_TARGET_DIR": null
+        },
+        "native_binaries": {
+          "HUHU_TEST_PTY_BINARY": {
+            "path": "/tmp/huhu-t07-c-review-r1-linux-final-20261026T035611Z/huhu-pty",
+            "bytes": 29758424,
+            "mode": "0o555",
+            "sha256": "d5bca2651893ac7a6337af1ed68587c876206d034c1f8ddea9c7d98c2ae22ba4"
+          },
+          "HUHU_TEST_CONTROL_BINARY": {
+            "path": "/tmp/huhu-t07-c-review-r1-linux-final-20261026T035611Z/huhu",
+            "bytes": 13966464,
+            "mode": "0o555",
+            "sha256": "74a7941aab96e71602a9a573ea1c3315331464d08acfd2b1177957783f544f1e"
+          }
+        },
+        "finished_at": "2026-10-26T04:06:10.323632+00:00",
+        "exit_code": 0,
+        "output": "/tmp/huhu-t07-root-i3-required-native.log",
+        "output_sha256": "1a202e695fad416943bca9f73ac5da5a484e7cfe6fa88772589269957bd1db38",
+        "source_drift_after_command": []
+      },
+      "scope": "Required real CLI→broker→Host→production TS service path plus transport/protocol: three files four tests, all pass, zero skips, current new immutable dual binaries."
+    }
+  ],
+  "known_nonpassing": [
+    "Original six unrelated Bot docs anchors; no new docs-check claim.",
+    "Full cargo fmt exit1 on unchanged generated wire and two HEAD-existing inherited_fds files; seven repair paths pass scoped rustfmt.",
+    "True Obsidian/Provider/five-platform E2E remains user acceptance, not run."
+  ],
+  "independent_review": "R1 request-changes retained; R2 current candidate pending",
+  "errors": []
+}

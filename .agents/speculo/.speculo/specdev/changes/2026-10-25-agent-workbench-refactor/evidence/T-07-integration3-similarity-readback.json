@@ -1,0 +1,100 @@
+{
+  "utc": "2026-10-26T04:10:20.485996+00:00",
+  "actual_run": "T-07-integration3-root-audit.json",
+  "scope": "Only five changed Rust files against the same frozen33627 reference inputs; unchanged original55 comparable files retain i2 evidence.",
+  "artifacts": [
+    {
+      "original": "/tmp/huhu-t07-root-i3-similarity-results.json",
+      "sha256": "c183606a2d6c99d6321689de894dc87ed577292346bb6aa2783a0c0a234cd8a2",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/integration3/objects/c183606a2d6c99d6321689de894dc87ed577292346bb6aa2783a0c0a234cd8a2.raw"
+    },
+    {
+      "original": "/tmp/huhu-t07-root-i3-similarity-own-locations.json",
+      "sha256": "8e5bde41b34c57a6e4a53d9d3456e041b0b2b43056c02694f738dbedc62e034e",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/integration3/objects/8e5bde41b34c57a6e4a53d9d3456e041b0b2b43056c02694f738dbedc62e034e.raw"
+    },
+    {
+      "original": "/tmp/huhu-t07-root-similarity-locations-i3.mjs",
+      "sha256": "1fd70dfd550ba7f90f4faed5f332212f1f3e43fbebdec2ae464ffa1034a08fa6",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/integration3/objects/1fd70dfd550ba7f90f4faed5f332212f1f3e43fbebdec2ae464ffa1034a08fa6.raw"
+    }
+  ],
+  "own_readback": [
+    {
+      "ours": "native/pty-server/tests/control.rs",
+      "ours_sha256": "1c5e38de1922eb70807ad0cb722adbd891a30b5d0746f7827ccde270def69282",
+      "mode": "raw",
+      "share": 0.002,
+      "token_run": 43,
+      "own_start_line": 189,
+      "own_end_line": 194,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/tests/remote_attach.rs",
+      "reference_sha256": "473978d341614a4a1ca7fbeca2bd6d858ee2be0ca2059d22ba5d5ea98281b4c9",
+      "assessment": "Existing child wait, reader join and temporary-directory cleanup; unchanged from i2. Standard Rust process/test cleanup, raw43 tokens share0.002."
+    },
+    {
+      "ours": "native/pty-server/src/bin/huhu.rs",
+      "ours_sha256": "52bd29643f3824c84703884d0bdf847fbb2613e8196447404aaa8fe7ac70efd3",
+      "mode": "normalized",
+      "share": 0.063,
+      "token_run": 25,
+      "own_start_line": 10,
+      "own_end_line": 12,
+      "reference_path": "/tmp/huhu-orca-reference-464bd5a/stablyai-orca-464bd5a/src/renderer/src/components/sidebar/SetupScriptPromptCard.tsx",
+      "reference_sha256": "f10c89c76c57c1e689c03a423b76b03aeb02e0850000853f83419fdcc77e4cba",
+      "assessment": "Two saturating counter assignments and capacity condition in this repair; normalized-only25-token syntax, no shared identifier/text structure."
+    },
+    {
+      "ours": "native/pty-server/src/control/client.rs",
+      "ours_sha256": "cbea7f5c856c08426d6036442590a9e11db3bab4c71b16c367b3c23516cfe643",
+      "mode": "normalized",
+      "share": 0.012,
+      "token_run": 39,
+      "own_start_line": 250,
+      "own_end_line": 253,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/api/server.rs",
+      "reference_sha256": "3555e07db3dc9d6a1a08a198b3d9276ff2f1f8fb0d4c32d7d2c78a8c5310b3a6",
+      "assessment": "Three error/effect/target assertions after parser validation in the new boundary unit test; generic test shape, normalized-only39 tokens."
+    },
+    {
+      "ours": "native/pty-server/src/control/locator.rs",
+      "ours_sha256": "cd348ca9a4d621b93381e458916044010397ad78383f6a8dbf9938da5e2a629f",
+      "mode": "normalized",
+      "share": 0.011,
+      "token_run": 32,
+      "own_start_line": 134,
+      "own_end_line": 136,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/client/endpoint/catalog.rs",
+      "reference_sha256": "11c126b535e4a21e030288713f8da7bd2dcf8e0d4a2cc854b7001dd45f98c948",
+      "assessment": "Existing Result match for create-new locator with AlreadyExists recovery; unchanged code, standard filesystem pattern."
+    },
+    {
+      "ours": "native/pty-server/tests/control.rs",
+      "ours_sha256": "1c5e38de1922eb70807ad0cb722adbd891a30b5d0746f7827ccde270def69282",
+      "mode": "normalized",
+      "share": 0.009,
+      "token_run": 49,
+      "own_start_line": 758,
+      "own_end_line": 761,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/platform/unix_image_files.rs",
+      "reference_sha256": "7e60c22a4f4c0ac6965086b15fcfbbdebba2a87ce7a7d46bae72f05e99c0bc27",
+      "assessment": "Existing rename/write/symlink negative fixture; unchanged from i2, standard library setup calls."
+    },
+    {
+      "ours": "native/pty-server/src/control/broker.rs",
+      "ours_sha256": "4734de38e47208b04b7d31dc774b63a8367f2109d3aa16aaaf6f9a57fdfac7b6",
+      "mode": "normalized",
+      "share": 0.006,
+      "token_run": 52,
+      "own_start_line": 276,
+      "own_end_line": 287,
+      "reference_path": "/tmp/huhu-herdr-reference-lKa8rI0L/repo/src/server/autodetect.rs",
+      "reference_sha256": "9a9c453a4d056850712663cdb6ba5803971ae1f808f1fb5946a38a60bac55934",
+      "assessment": "Existing nonblocking I/O WouldBlock/Interrupted match and error return; unchanged from i2, standard transport retry pattern."
+    }
+  ],
+  "max_raw_share": 0.005,
+  "policy": "Only numeric/hash/reference-path data and own source read; no GPL reference source in model context or copied into product. Similarity is a screening signal, not proof of provenance.",
+  "result": "No concerning adapted implementation found in this repair; original source and license trace retained.",
+  "errors": []
+}
