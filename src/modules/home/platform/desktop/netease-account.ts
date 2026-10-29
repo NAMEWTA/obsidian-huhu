@@ -58,9 +58,11 @@ export class NeteaseAccount {
 	private readonly abort = new AbortController();
 	private cancelLogin: (() => void) | null = null;
 	private disposed = false;
+	/** Bumped when a restore attempt is abandoned, so a late cookie read cannot sign the account in. */
+	private restoreGeneration = 0;
 	loggedIn = false;
 	error = '';
-	constructor(private readonly app: App) {}
+	constructor(private readonly app: App, private readonly restoreDeadlineMs = 5_000) {}
 
 	private async getSession(interactive = false): Promise<Session> {
 		if (this.disposed) throw new Error('browser_session_closed');
@@ -73,22 +75,42 @@ export class NeteaseAccount {
 	}
 
 	async cookie(): Promise<string> {
+		const generation = this.restoreGeneration;
 		const cookies = await (await this.getSession()).cookies.get({ url: ORIGIN });
-		if (this.disposed) throw new Error('browser_session_closed');
+		if (this.disposed || generation !== this.restoreGeneration) throw new Error('browser_session_closed');
 		const header = musicCookieHeader(cookies);
 		this.loggedIn = /(?:^|; )MUSIC_U=/.test(header);
 		return this.loggedIn ? header : '';
 	}
 
+	/**
+	 * Best-effort login restore. The native cookie store can wait forever when the OS secret
+	 * service never answers, and that wait used to keep the home module in `loading`, so the
+	 * workbench never appeared. A deadline leaves the account signed out and lets startup continue.
+	 */
 	async restore(): Promise<void> {
 		if (Platform.isMobile) return;
+		const generation = this.restoreGeneration;
+		const timers = this.app.workspace.containerEl.win;
+		let timer: number | undefined;
 		try {
-			await this.cookie();
+			await new Promise<void>((resolve, reject) => {
+				timer = timers.setTimeout(() => reject(new Error('browser_session_timeout')), this.restoreDeadlineMs);
+				void this.cookie().then(() => resolve(), reject);
+			});
+			if (this.disposed || generation !== this.restoreGeneration) this.loggedIn = false;
 		} catch (error) {
+			this.restoreGeneration += 1;
 			if (this.disposed) return;
 			this.loggedIn = false;
+			if (error instanceof Error && error.message === 'browser_session_timeout') {
+				this.error = 'browser_session_timeout';
+				return;
+			}
 			this.error = error instanceof Error ? error.message : 'browser_session_unavailable';
 			new Notice(t(`web.${this.error.startsWith('browser_session_') ? this.error : 'browser_session_unavailable'}`));
+		} finally {
+			if (timer !== undefined) timers.clearTimeout(timer);
 		}
 	}
 
