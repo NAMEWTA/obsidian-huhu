@@ -129,7 +129,7 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 按从小到大排序后，p95 取第 `ceil(0.95 × 20)` 个，是 **58.8 ms**。中位 36.3 ms，最小 29.7 ms，最大 132.2 ms。见 [round2-perf.png](round2-perf.png)。
 
-这只是工作台打开耗时。Issue #1 写的撤销确认 p95 ≤ 300 ms、输入到新画面 p95 ≤ 250 ms 这次没有采样。
+这只是工作台打开耗时。撤销确认和输入到新画面的 20 次采样在下面的补测里，两项 p95 都低于预算。
 
 ### 验收对照
 
@@ -139,35 +139,63 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 | 任务创建 | 通过。「第二轮任务」，未完成 1 | [round2-task.png](round2-task.png) |
 | 停用再启用任务模块 | 通过。关闭后是「此功能已关闭，原有数据仍然保留」，重新打开后任务还在 | [round2-task-off.png](round2-task-off.png) |
 | 重启后任务和模块开关还在 | 通过。磁盘上的 `huhu/任务/tasks.json` 有这条任务，界面也能看到。home、task、archives、comments、versioning、browser、safe、huhubot 仍为开启 | [round2-restart.png](round2-restart.png) |
-| #7 F20–F22 迟到成功 | 本轮只再次看到关闭模块后的提示。入队后改参数、卸载后拒绝迟到成功仍只在 `src/modules/task/services/boundary.test.ts` | [round2-task-off.png](round2-task-off.png) |
+| #7 F20–F22 迟到成功 | 补测已在真实 Obsidian 进程里复现。入队后改标题仍保存「入队前的标题」；卸载任务模块后，被挡住的搜索返回 `unavailable`。工作台没有能按住资源查询的按钮，所以这一步是进程内复现，单测仍在 `boundary.test.ts` | [round2f-task-f20.png](round2f-task-f20.png)、[round2f-task-f20-closed.png](round2f-task-f20-closed.png) |
 | #3 个人档案列表 | 通过。定义设计器、迁移与恢复、个人档案、企业档案；列是名称、别名、地区、电话、邮箱 | [round2-archives.png](round2-archives.png) |
 | #3 定义设计器 | 通过 | [round2-archives-designer.png](round2-archives-designer.png) |
 | #3 关系类型 | 通过。设计器里新建「关系类型」，可见源端、目标端和两端类型 | [round2-archives-relation.png](round2-archives-relation.png) |
-| #3 迁移与恢复 | 通过。只读预检、迁移可处理档案、持久操作记录。没有在界面里注入故障再跑一遍迁移 | [round2-archives-migration.png](round2-archives-migration.png) |
-| #3 新建档案表单 | 通过。打开通用「新建档案」，字段按个人档案渲染，并带值的存在状态。名称框当时是「未存储」，脚本没有把名称写进去 | [round2-archives-form.png](round2-archives-form.png) |
+| #3 迁移与恢复 | 通过。只读预检后向旧档追加「故障注入」再迁移，页面报「操作已停止，草稿仍保留。 write-conflict」，旧档仍是 `huhu-type: person` | [round2f-archives-preflight.png](round2f-archives-preflight.png)、[round2f-archives-migration-fault.png](round2f-archives-migration-fault.png) |
+| #3 新建档案表单 | 通过。名称写入「第二轮档案」并保存，文件落在 `huhu/档案/个人档案/第二轮档案-e53614e4-9bfc-46d0-96c3-dd9f761c9bcd/基本信息.md` | [round2f-archives-form.png](round2f-archives-form.png)、[round2f-archives-saved.png](round2f-archives-saved.png) |
 | #3 P0–P1 文件协议里不能在界面上逐项点的规则 | 由改写后的黄金测试锁定，不是这次新点出来的页面 | 无新截图 |
 | #3 P5 | 未做。正文：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」CSV 导入、Lookup/Rollup、局部图谱、项目集成都没有实现 | 无 |
 | #6 划词高亮 | 通过。侧栏高亮 (1)，卡片是划中的句子 | [round2-highlight.png](round2-highlight.png) |
 | #6 搜索 | 通过。搜索框里是「划词」，卡片还在 | [round2-highlight-search.png](round2-highlight-search.png)、[round2-highlight-bulk.png](round2-highlight-bulk.png) |
-| #6 按颜色筛选 | 本轮没有证明。给下拉框赋值后，截图里仍是「全部颜色」。上一轮的 [highlights-filter.png](highlights-filter.png) 仍是黄色筛选的证据 | [round2-highlight-filter.png](round2-highlight-filter.png) |
+| #6 按颜色筛选 | 通过。点击「按颜色筛选」后按向下键和回车，选中值是 `yellow`、标签是「黄色」。侧栏只剩黄色句子 | [round2f-highlight-filter.png](round2f-highlight-filter.png) |
 | #6 批量 | 通过。已选 1 条，可见全选、四色、标签、归档、删除 | [round2-highlight-bulk.png](round2-highlight-bulk.png) |
 | #6 自定义颜色 | 通过。设置里增加了「琥珀」 | [round2-highlight-color.png](round2-highlight-color.png) |
-| #6 导出 Markdown | 本轮没有证明。菜单点击后没有出现导出通知，库里也没有新的导出文件。上一轮的 [highlights-export.png](highlights-export.png) 仍是那次导出的证据 | 无新的成功截图 |
+| #6 导出 Markdown | 通过。通知写着已导出到 `huhu/导出/高亮/highlights-2026-10-29T02-18-47-939Z.md`。文件含黄色句子和 `Color: yellow`，不含蓝色句子，打开后内容一致 | [round2f-highlight-export-notice.png](round2f-highlight-export-notice.png)、[round2f-highlight-export-file.png](round2f-highlight-export-file.png) |
 | #6 P2 | 未做。正文把 PDF、EPUB 和可选 AI 排除在首版之外 | 无 |
 | #2 历史列表 | 通过。`revise note` 与 `initial note` | [round2-versioning.png](round2-versioning.png) |
 | #2 左右对照 | 通过。同一文件左右两栏 | [round2-versioning-side.png](round2-versioning-side.png) |
 | #2 上下对照 | 通过。上下两栏 | [round2-versioning-stacked.png](round2-versioning-stacked.png) |
-| #2 行内对照 | 本轮点了「行内」并保存了截图，但画面仍像左右两栏，不能当成已经切到行内。上一轮的 [versioning-inline.png](versioning-inline.png) 仍是行内对照的证据 | [round2-versioning-inline.png](round2-versioning-inline.png) |
-| #2 恢复向导 | 本轮没有打开。笔记侧栏的历史页在 20 秒内没有列出 `revise note`，`leaf.setState` 也不是这个叶子上的函数。版本管理页里的两次提交和左右、上下对照是本轮打开的。上一轮的 [versioning-restore.png](versioning-restore.png) 仍是恢复向导的证据 | 无新的成功截图 |
+| #2 行内对照 | 通过。`.huhu-versioning-diff` 的 `data-layout` 为 `unified`，行内单选为选中，对照区只有一个编辑器，新增行以行内绿底显示 | [round2f-versioning-inline.png](round2f-versioning-inline.png) |
+| #2 恢复向导 | 通过。历史列出 `revise note` 与 `initial note`。确认「恢复此版本？」后，`共同笔记.md` 不再含蓝色句子，页面为「已恢复」；撤销后蓝色句子回到文件，页面为「已撤销恢复」 | [round2f-versioning-history.png](round2f-versioning-history.png)、[round2f-versioning-restore.png](round2f-versioning-restore.png)、[round2f-versioning-restored.png](round2f-versioning-restored.png)、[round2f-versioning-undo.png](round2f-versioning-undo.png) |
 | 保险箱 | 通过。主密码创建后进入空库，可见搜索、新增条目、立即锁定 | [round2-safe.png](round2-safe.png) |
 | HuhuBot | 通过。本地 Runner 下状态为「就绪」，没有 `HUHUBOT_DOWNLOAD_FAILED` | [round2-bot.png](round2-bot.png) |
 | #1 系统凭据不可用 | 通过界面提示。文案是「系统凭据保护不可用，创建新空间需明确选择临时存储。」这台环境没有系统钥匙串，不能验证持久凭据库 | [round2-browser-credentials.png](round2-browser-credentials.png) |
 | #1 遮挡点击 | 通过。`pageAction` 返回 `browser_element_obscured`，横幅是「该元素被挡住了。点击已被拒绝，页面没有因此改变。」 | [round2-browser-occluded.png](round2-browser-occluded.png) |
 | #1 页外按钮 | 通过。页面变成「页外已点击」 | [round2-browser-outside.png](round2-browser-outside.png) |
-| #1 跨域 iframe | 调用返回 ok，节点的 frame 与页面 frame 不同。截图里框内文字仍像「框内未点击」，本轮不能把这次点击写成已经改变了框内状态。上一轮的 [browser-click-inside.png](browser-click-inside.png) 仍是点中框内按钮的证据 | [round2-browser-inside.png](round2-browser-inside.png) |
+| #1 跨域 iframe | 通过。点击框内按钮后，框内变成绿色「框内已点击」，外层镜像同步，页外状态仍是「页外未点击」 | [round2f-browser-inside.png](round2f-browser-inside.png)、[round2f-browser-inside-page.png](round2f-browser-inside-page.png) |
 | #1 同页交接 | 通过。空间先处于暂停，点「交回 Agent」后控制权变为 Agent，再点「转交给另一个 Agent」。对话框标题是「授权同页 Agent 交接」，含目标 Agent ID、外部 Run ID、Attempt ID。对话框后面还开着快速切换，不影响对话框本身 | [round2-browser-handoff.png](round2-browser-handoff.png) |
-| #1 弹出窗口 | 通过了一部分。弹出窗口里是甲笔记，主窗口里是乙笔记，侧栏卡片只有乙。弹出窗口自己没有批注侧栏，甲只停留在选区，没有变成另一张卡片。上一轮的 [comments-window-a.png](comments-window-a.png)、[comments-window-b.png](comments-window-b.png) 仍是两侧各自有卡片的证据 | [round2-popout-a.png](round2-popout-a.png)、[round2-popout-b.png](round2-popout-b.png) |
-| 输入法组字 | CDP `Input.imeSetComposition` 把「你好」写进了笔记，并被标成高亮。见 [round2-ime.png](round2-ime.png)。这不是系统候选窗。上一轮 `ibus` / `libpinyin` 没有走出候选框，这次没有再把系统候选窗跑通 | [round2-ime.png](round2-ime.png) |
-| Windows / macOS 浏览器运行包 | 未验证。这台机器只有钉死的 Linux x64 运行包 | 无 |
+| #1 弹出窗口 | 通过。主窗口和弹出窗口打开同一篇 `共同笔记.md`，两侧都有黄、蓝两张卡片。主窗口先选中时弹出窗口还不是「已选 1 条」，弹出窗口自己选中后也显示「已选 1 条」 | [round2f-popout-main.png](round2f-popout-main.png)、[round2f-popout-window.png](round2f-popout-window.png) |
+| 输入法组字 | Obsidian 编辑器没有出现系统候选窗。同一套 IBus 在独立 GTK 输入框里可以弹出候选。见补测 | [round2f-ime-candidates.png](round2f-ime-candidates.png)、[round2f-ime-gtk-candidates.png](round2f-ime-gtk-candidates.png) |
+| Windows / macOS 浏览器运行包 | 未验证。这台机器只有钉死的 Linux x64 运行包。系统钥匙串同样无法在本机验证 | 无 |
 
-控制台：全部模块就绪时和重启后再打开任务时，页面上的 `console.error` / 未处理拒绝钩子都是空的。Obsidian 自己的日志里只有测试配置文件不存在的 ENOENT，没有插件报错。
+### 补测原先未验证的项
+
+2026-10-29 10:18（台北）在同一台 Obsidian 1.14.5 一次性库里补测。实际模型仍是 **grok-4.7 xhigh**。机器是 Linux x64、4 核 Xeon、约 16003 MiB。浏览器空间用的是钉死的 Linux 运行包。这次没有改插件源码，所以没有新的修复提交。
+
+性能各采 20 次。p95 是从小到大排序后的第 `ceil(0.95 × 20)` 个。撤销确认量的是 `runtime.setControl(undefined)` 返回撤销应答的耗时；输入到新画面量的是人工点击开始，到带上这次输入序号的画面出现。
+
+| 指标 | n | 中位数 | p95 | 最大值 | 预算 | 结果 |
+|---|---|---|---|---|---|---|
+| 撤销确认 | 20 | 3.4 ms | 5.8 ms | 7.8 ms | ≤ 300 ms | 达标 |
+| 输入到新画面 | 20 | 42.9 ms | 44.5 ms | 53.2 ms | ≤ 250 ms | 达标 |
+
+输入画面见 [round2f-browser-perf.png](round2f-browser-perf.png)，页面文字是「已输入 20」。
+
+| 补测项 | 结果 | 截图 |
+|---|---|---|
+| 高亮按颜色筛选 | 通过。真实下拉：点开「按颜色筛选」，向下键再回车。选中值 `yellow`，显示「黄色」，侧栏只留黄色卡片 | [round2f-highlight-filter.png](round2f-highlight-filter.png) |
+| 高亮导出 Markdown | 通过。右上角通知给出 `huhu/导出/高亮/highlights-2026-10-29T02-18-47-939Z.md`。打开后是黄色句子和 `Color: yellow` | [round2f-highlight-export-notice.png](round2f-highlight-export-notice.png)、[round2f-highlight-export-file.png](round2f-highlight-export-file.png) |
+| 行内对照 | 通过。`data-layout="unified"`，一个编辑器 | [round2f-versioning-inline.png](round2f-versioning-inline.png) |
+| 笔记历史恢复向导 | 通过。先有 `initial note` 和 `revise note`。[round2f-versioning-history.png](round2f-versioning-history.png) 是列表。[round2f-versioning-restore.png](round2f-versioning-restore.png) 是「恢复此版本？」。确认后文件去掉蓝色句子，状态为「已恢复」。对照区右侧仍是恢复前的固定快照，并提示来源笔记已变。[round2f-versioning-undo.png](round2f-versioning-undo.png) 是「已撤销恢复」，文件里蓝色句子回到原处 | 见左 |
+| 弹出窗口两侧批注 | 通过。两侧路径都是 `共同笔记.md`。主窗口选中时弹出窗口尚未显示「已选 1 条」，弹出窗口自己选中后才显示 | [round2f-popout-main.png](round2f-popout-main.png)、[round2f-popout-window.png](round2f-popout-window.png) |
+| 跨域 iframe | 通过。框内绿色区域写着「框内已点击」，页外仍是「页外未点击」 | [round2f-browser-inside.png](round2f-browser-inside.png)、[round2f-browser-inside-page.png](round2f-browser-inside-page.png) |
+| #7 F20–F22 | 通过（进程内）。`tasks.execute` 返回前把命令改成别的标题，保存下来的仍是「入队前的标题」，不存在 `task:changed-after-queue`。随后挡住档案 `list`，调用 `task.resources.search`，在它返回前 `setModuleEnabled('task', false)`。结果是 `{ok:false, error:{code:'unavailable', message:'Task repository is not ready'}}`。关闭页见截图。重新打开后标题仍是入队前的标题。工作台没有按钮能按住这次查询，所以界面上只能看到关闭页和入队前标题；单测 `src/modules/task/services/boundary.test.ts` 保留 | [round2f-task-f20-closed.png](round2f-task-f20-closed.png)、[round2f-task-f20.png](round2f-task-f20.png) |
+| #3 新建并保存 | 通过。名称「第二轮档案」写入后保存，记录页标题和名称字段都是这个名字 | [round2f-archives-form.png](round2f-archives-form.png)、[round2f-archives-saved.png](round2f-archives-saved.png) |
+| #3 迁移故障 | 通过。只读预检后向 `huhu/档案/个人档案/故障样本/基本信息.md` 追加「故障注入」，再点「准备并迁移」。红色提示是「操作已停止，草稿仍保留。 write-conflict」。旧档仍含 `huhu-type: person` 和「故障注入」 | [round2f-archives-preflight.png](round2f-archives-preflight.png)、[round2f-archives-migration-fault.png](round2f-archives-migration-fault.png) |
+| 系统输入法候选窗 | 未在 Obsidian 里出现。IBus 1.5.29、`libpinyin` 已安装，本机没有 fcitx。配置是 `ibus-daemon -drx`（保留面板）、`ibus engine` 显示 `libpinyin`、`GTK_IM_MODULE=ibus`、`XMODIFIERS=@im=ibus`、`IBUS_ENABLE_SYNC_MODE=1`，并把 IBus 地址文件放进 Obsidian 的 `XDG_CONFIG_HOME`。`ibus engine libpinyin` 退出码是 1，标准错误为空，查询结果仍是 `libpinyin`。Xvfb 上有 xfwm4。焦点在「输入法.md」时用 xdotool 发送 `n i h a o`，笔记仍是「# 输入法」，`ibus-ui-gtk3` 保持 10×10，没有候选窗。[round2f-ime-candidates.png](round2f-ime-candidates.png)、[round2f-ime-committed.png](round2f-ime-committed.png)。同一画面上另开的 GTK 输入框也没有收到按键，见 [round2f-ime-gtk.png](round2f-ime-gtk.png)。独立画面 `:122` 上，同样的 IBus 和 xfwm4 让 GTK 输入框出现候选「你好 / 1.你好 2.你好吗」，见 [round2f-ime-gtk-candidates.png](round2f-ime-gtk-candidates.png)。Electron 没有把这次按键交给 IBus | 见左 |
+| Windows、macOS 运行包和系统钥匙串 | 未验证。本机没有这两份运行包，也没有系统钥匙串。界面仍提示系统凭据保护不可用 | 无 |
+
+控制台：全部模块就绪时和重启后再打开任务时，页面上的 `console.error` / 未处理拒绝钩子都是空的。Obsidian 自己的日志里只有测试配置文件不存在的 ENOENT，没有插件报错。补测这次没有再改源码，也没有新的插件报错需要记。
+
