@@ -803,6 +803,10 @@ struct Pending {
 pub struct SpawnTicket {
     pending: Pending,
 }
+struct StartupBytes {
+    live: bool,
+    buffered: Vec<u8>,
+}
 struct Streams {
     master: Arc<Mutex<Option<Box<dyn MasterPty + Send>>>>,
     flow: Arc<Flow>,
@@ -810,6 +814,8 @@ struct Streams {
     close_started: AtomicBool,
     truncated: Arc<AtomicBool>,
     output_gate: Mutex<()>,
+    /// Bytes read before the child exists. Success flushes them once; failure drops them.
+    startup: Mutex<StartupBytes>,
 }
 struct Session {
     io: Arc<Streams>,
@@ -1228,6 +1234,10 @@ impl Sessions {
             close_started: AtomicBool::new(false),
             truncated: ticket.pending.truncated.clone(),
             output_gate: Mutex::new(()),
+            startup: Mutex::new(StartupBytes {
+                live: false,
+                buffered: Vec::new(),
+            }),
         });
         *ticket.pending.input.master.lock().unwrap() = Some(Arc::downgrade(&streams.master));
         // ConPTY can require a parser/device reply before the gated bootstrap itself starts.
@@ -1265,6 +1275,20 @@ impl Sessions {
                             read_io.truncated.store(true, Ordering::SeqCst);
                             continue;
                         }
+                        {
+                            let mut startup = read_io.startup.lock().unwrap();
+                            if !startup.live {
+                                // ConPTY can emit a device reply before CreateProcess.
+                                // A missing program must not publish that as child output.
+                                if startup.buffered.len().saturating_add(n) > 64 * 1024 {
+                                    startup.buffered.clear();
+                                    read_io.truncated.store(true, Ordering::SeqCst);
+                                } else {
+                                    startup.buffered.extend_from_slice(&buffer[..n]);
+                                }
+                                continue;
+                            }
+                        }
                         read_io.flow.sent(n as u64);
                         if out
                             .output(
@@ -1300,6 +1324,7 @@ impl Sessions {
         let mut child = match child_result {
             Ok(child) => child,
             Err(error) => {
+                streams.startup.lock().unwrap().buffered.clear();
                 {
                     let _gate = streams.output_gate.lock().unwrap();
                     streams.flow.close();
@@ -1308,6 +1333,22 @@ impl Sessions {
                 return Err(error);
             }
         };
+        let prelude = {
+            let mut startup = streams.startup.lock().unwrap();
+            startup.live = true;
+            std::mem::take(&mut startup.buffered)
+        };
+        if !prelude.is_empty() {
+            streams.flow.sent(prelude.len() as u64);
+            if self
+                .out
+                .output(id, &prelude, || streams.flow.closed(), &streams.output_gate)
+                .is_err()
+            {
+                streams.flow.acknowledged(prelude.len() as u64);
+                streams.truncated.store(true, Ordering::SeqCst);
+            }
+        }
         ticket.pending.input.ready();
         let pid = child.process_id();
         if let Some(binding) = &enrolled {

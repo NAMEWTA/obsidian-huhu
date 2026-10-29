@@ -15,5 +15,6 @@ export async function musicVaultFixture(): Promise<{ app: App; dispose(): Promis
 	});
 	const app = { vault: { adapter, getName: () => 'unit-music' }, workspace: { containerEl: { win: { require: runtimeRequire, setTimeout, clearTimeout } } }, loadLocalStorage: () => null, saveLocalStorage: () => {} } as unknown as App;
 	await initializeDevice(app, { machineIdentity: async () => 'music-test-machine', label: 'test', chooseDevice: async () => ({ label: 'test' }) });
-	return { app, dispose: () => rm(root, { recursive: true, force: true }) };
+	// A late cookie read can still create a profile file while this tree is removed.
+	return { app, dispose: () => rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 20 }) };
 }
