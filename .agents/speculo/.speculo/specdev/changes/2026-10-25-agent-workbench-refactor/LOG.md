@@ -776,3 +776,4 @@ T18 独立审查 121 指出两处 DESIGN 偏差。Lead 按 DESIGN 权威收敛�
 - 词典、自动化动作的 `spaceId`、导航测试和模块上下文字段取并集。定时任务去重留 dev 的更宽条件（凡 `create-task`，不只日历）。关闭终端视图不确认、不拆除运行时；停止仍走 `end()`。
 - `main.js` 与 `styles.css` 按合入后的源码重新生成，不手改冲突块。包体按实测最小 KiB 上调：main.js 8251339 字节，上限 8058 KiB；agent 激活 1384588 字节，上限 1353 KiB。styles.css 1436333 字节，仍低于原 1408 KiB。第三方声明按 pty-server 与 browser-runtime 两份 crate 图重写。
 - 真实 Obsidian 点测和当时的检查结果写在 `docs/e2e/README.md` 的「terminal 合入」。Windows ConPTY、macOS 与系统输入法不在这台 Linux x64 上验证。
+- 合入后的 Actions 里，控制技能的 `cargo build` 跑在测试临时家目录下，rustup 因此找不到默认工具链。构建子进程改回宿主上已存在的 `RUSTUP_HOME` / `CARGO_HOME`（没有环境变量时用原来家目录里的 `.rustup` 和 `.cargo`），示例断言不变。Windows CLI 夹具清空环境后把 `LOCALAPPDATA` 指到夹具目录，缺失定位器仍必须是 `CONNECTION_UNAVAILABLE`（退出码 4）。GUI 容量最后一格的等待从默认 5 秒改为 20 秒，容量和重新打开的断言不变。

@@ -29,6 +29,14 @@ impl InputFixture {
     fn command_for(&self, words: [&str; 2]) -> Command {
         let mut command = Command::new(env!("CARGO_BIN_EXE_huhu"));
         command.env_clear().env("XDG_RUNTIME_DIR", &self.0);
+        // Windows resolves the private locator root from LOCALAPPDATA. Clearing
+        // the environment removes it, and a missing root is SOURCE_UNAVAILABLE
+        // (exit 5). The fixture is that root, as XDG_RUNTIME_DIR is on Unix, so
+        // a missing locator stays CONNECTION_UNAVAILABLE (exit 4).
+        #[cfg(windows)]
+        {
+            command.env("LOCALAPPDATA", &self.0);
+        }
         command.args(["--json", words[0], words[1], "--session", "target"]);
         if words[0] != "message" {
             command.args(["--runtime", "runtime"]);

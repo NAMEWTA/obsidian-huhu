@@ -366,6 +366,7 @@ test('GUI capacity full split refuses before Session preparation or spawn and pr
 	} finally { await f.dispose(); }
 });
 
+// Liveness only. On the shared CI runner this case was killed at the 5s default (reported 5410ms) while the other capacity cases in this file finished under 3s. The capacity and reopen assertions are unchanged.
 test('GUI capacity last split slot is legal and reopen retains its closed record until capacity is freed', async () => {
 	const f = await fixture();
 	try {
@@ -388,7 +389,7 @@ test('GUI capacity last split slot is legal and reopen retains its closed record
 		expect(f.workspace.store.getState().closedTabs.some(tab => tab.id === attached.pane!.tabId)).toBe(false);
 		expect(f.spawn).toHaveBeenCalledTimes(4);
 	} finally { await f.dispose(); }
-});
+}, 20_000);
 
 test.each(['current', 'other-space'] as const)('GUI capacity direct attach checks %s owner without losing duplicate attach', async location => {
 	const f = await fixture();

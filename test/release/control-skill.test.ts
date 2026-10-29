@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { mkdir, mkdtemp, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -79,8 +80,19 @@ async function withWorkbench<T>(use: (run: (example: { argv: string[]; stdin?: s
 	}
 }
 
+/** Toolchain roots from before isolate-home replaced HOME. A missing ~/.rustup is left unset so a baked-in rustup home stays in charge. */
+function cargoEnv(): NodeJS.ProcessEnv {
+	const host = globalThis as { __huhuHostHome?: string; __huhuHostCargoHome?: string; __huhuHostRustupHome?: string };
+	const env: NodeJS.ProcessEnv = { ...process.env };
+	const rustup = host.__huhuHostRustupHome ?? (host.__huhuHostHome ? path.join(host.__huhuHostHome, '.rustup') : undefined);
+	const cargoHome = host.__huhuHostCargoHome ?? (host.__huhuHostHome ? path.join(host.__huhuHostHome, '.cargo') : undefined);
+	if (rustup && existsSync(rustup)) env.RUSTUP_HOME = rustup;
+	if (cargoHome && existsSync(cargoHome)) env.CARGO_HOME = cargoHome;
+	return env;
+}
+
 beforeAll(() => {
-	const built = spawnSync('cargo', ['build', '--locked', '--manifest-path', manifest, '--bin', 'huhu', '--bin', 'huhu-pty'], { encoding: 'utf8' });
+	const built = spawnSync('cargo', ['build', '--locked', '--manifest-path', manifest, '--bin', 'huhu', '--bin', 'huhu-pty'], { encoding: 'utf8', env: cargoEnv() });
 	expect(built.status, built.stderr).toBe(0);
 }, 600_000);
 
