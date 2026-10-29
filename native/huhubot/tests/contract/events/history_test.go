@@ -24,7 +24,10 @@ func (o *observedConversation) History(ctx context.Context, id api.RequestIdenti
 }
 func (f *fixture) waitTerminal(t *testing.T, run string) {
 	t.Helper()
-	f.waitTerminalFor(t, run, 3*time.Second)
+	// Liveness only. go test ./... on a 3-core intel runner can leave a trivial
+	// engine run queued behind other packages for longer than 3s. The public
+	// history gate below remains 250ms.
+	f.waitTerminalFor(t, run, 30*time.Second)
 }
 func (f *fixture) waitTerminalFor(t *testing.T, run string, budget time.Duration) {
 	t.Helper()

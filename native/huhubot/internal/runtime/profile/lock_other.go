@@ -16,6 +16,10 @@ func lockDatabase(*os.File) (func() error, error) {
 
 func protectNew(string, bool) error { return nil }
 
+func createPublicationFile(string) (*os.File, error) {
+	return nil, api.Denied("UNSUPPORTED_OS_INSTANCE_LOCK")
+}
+
 func claimable(string) bool { return false }
 
 func verifySingleLink(*os.File) error { return api.Denied("UNSUPPORTED_OS_INSTANCE_LOCK") }

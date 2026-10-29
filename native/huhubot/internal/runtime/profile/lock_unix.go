@@ -21,6 +21,10 @@ func verifyPrivate(_ string, info os.FileInfo, _ bool) error {
 }
 func protectNew(string, bool) error { return nil }
 
+func createPublicationFile(dir string) (*os.File, error) {
+	return os.CreateTemp(dir, ".profile-init-")
+}
+
 // A Unix mode of 0777 is not claimable. Tightening it would hide a directory
 // this process did not create as private storage.
 func claimable(string) bool { return false }

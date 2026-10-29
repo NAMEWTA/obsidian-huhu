@@ -202,7 +202,7 @@ func openLockedDatabase(name string) (*os.File, bool, func() error, error) {
 	} else if !os.IsNotExist(err) {
 		return nil, false, nil, err
 	}
-	temp, err := os.CreateTemp(filepath.Dir(name), ".profile-init-")
+	temp, err := createPublicationFile(filepath.Dir(name))
 	if err != nil {
 		return nil, false, nil, err
 	}
@@ -218,6 +218,15 @@ func openLockedDatabase(name string) (*os.File, bool, func() error, error) {
 		return nil, false, nil, err
 	}
 	if err = os.Link(tempName, name); err == nil {
+		// The temporary name is a second hard link until it is removed. Windows
+		// refuses DeleteFile on a handle opened without FILE_SHARE_DELETE, and
+		// a discarded Remove error leaves NumberOfLinks at 2.
+		if err = os.Remove(tempName); err != nil {
+			_ = unlock()
+			_ = temp.Close()
+			_ = os.Remove(name)
+			return nil, false, nil, err
+		}
 		return temp, true, unlock, nil
 	}
 	_ = unlock()

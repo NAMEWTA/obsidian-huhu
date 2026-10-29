@@ -46,6 +46,41 @@ func TestEnsurePrivateClaimsCurrentWindowsOwner(t *testing.T) {
 	}
 }
 
+func TestPublicationDropsTemporaryHardlink(t *testing.T) {
+	dir := t.TempDir()
+	name := filepath.Join(dir, "profile.db")
+	f, isNew, unlock, err := openLockedDatabase(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	defer unlock()
+	if !isNew {
+		t.Fatal("expected a new database")
+	}
+	if _, err = os.Lstat(f.Name()); !os.IsNotExist(err) {
+		t.Fatalf("temporary publication name still exists: %s %v", f.Name(), err)
+	}
+	if err = verifySingleLink(f); err != nil {
+		t.Fatal(err)
+	}
+	alias := filepath.Join(dir, "alias.db")
+	if err = os.Link(name, alias); err != nil {
+		t.Fatal(err)
+	}
+	err = verifySingleLink(f)
+	var fault *api.Fault
+	if !errors.As(err, &fault) || fault.Reason != "PROFILE_DB_HARDLINK_UNSAFE" {
+		t.Fatal(err)
+	}
+	if err = os.Remove(alias); err != nil {
+		t.Fatal(err)
+	}
+	if err = verifySingleLink(f); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestLockDatabaseRejectsSecondOpen(t *testing.T) {
 	f, err := os.CreateTemp(t.TempDir(), "profile-lock")
 	if err != nil {

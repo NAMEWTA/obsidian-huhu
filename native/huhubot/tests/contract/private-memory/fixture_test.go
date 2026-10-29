@@ -141,7 +141,9 @@ func (f *memoryFixture) start(session api.Session, intent string) api.RunReceipt
 }
 func (f *memoryFixture) wait(runID string, wanted ...string) api.Run {
 	f.t.Helper()
-	ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+	// Liveness only. Seventy ordinary turns under go test ./... on a 3-core
+	// intel runner can exceed 7s without changing the provenance assertions.
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	ticker := time.NewTicker(5 * time.Millisecond)
 	defer ticker.Stop()
@@ -170,7 +172,7 @@ func receiveInput(t *testing.T, inputs <-chan api.EngineInput) api.EngineInput {
 	select {
 	case in := <-inputs:
 		return in
-	case <-time.After(7 * time.Second):
+	case <-time.After(30 * time.Second):
 		t.Fatal("real Executor did not enter Engine")
 		return api.EngineInput{}
 	}

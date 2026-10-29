@@ -50,6 +50,12 @@ func (b *observedBody) Read(p []byte) (int, error) {
 		if !timer.Stop() {
 			<-idleDone
 		}
+		// Bytes that arrive after the caller cancels are not a completed
+		// observation. Engine.Stop waits for a body that already finished;
+		// that path has parsed its usage before this context is canceled.
+		if b.ctx.Err() != nil {
+			return 0, fault("MODEL_CANCELED")
+		}
 		b.total += n
 		if b.total > b.limits.ResponseBytes {
 			b.problem = "MODEL_RESPONSE_LIMIT"
