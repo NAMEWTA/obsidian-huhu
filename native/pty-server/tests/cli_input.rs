@@ -15,8 +15,8 @@ impl InputFixture {
             "hcli-{}",
             &uuid::Uuid::new_v4().simple().to_string()[..16]
         );
-        // runtime_root ignores XDG_RUNTIME_DIR at 50 bytes or more so the control
-        // socket stays inside the listen budget. macOS temp directories exceed that.
+        // The helper listens only when the canonical socket path is at most 100
+        // bytes. macOS temp directories exceed that, so the fixture stays on `/tmp`.
         #[cfg(unix)]
         let root = {
             let under_temp = std::env::temp_dir().join(&name);

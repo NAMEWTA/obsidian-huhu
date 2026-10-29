@@ -38,14 +38,39 @@ pub fn directory(path: &Path) -> io::Result<()> {
     }
     private_directory(path)
 }
+/// `listen` rejects a socket path above 100 bytes. macOS canonicalizes `/tmp`
+/// to `/private/tmp` and `/var` to `/private/var`, so the raw directory length
+/// is not the limit that matters.
+fn socket_fits(canonical_root: &Path) -> bool {
+    canonical_root
+        .join(format!("s{}", "0".repeat(32)))
+        .as_os_str()
+        .len()
+        <= 100
+}
+fn rooted(base: &Path) -> io::Result<PathBuf> {
+    let name = format!("huhu-ctl-{}", unsafe { libc::geteuid() });
+    let canonical = fs::canonicalize(base)?.join(&name);
+    if !socket_fits(&canonical) {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "control socket path too long",
+        ));
+    }
+    directory(&canonical)?;
+    fs::canonicalize(&canonical)
+}
 pub fn runtime_root() -> io::Result<PathBuf> {
-    let base = std::env::var_os("XDG_RUNTIME_DIR")
-        .map(PathBuf::from)
-        .filter(|p| p.is_absolute() && p.as_os_str().len() < 50 && private_directory(p).is_ok())
-        .unwrap_or_else(|| PathBuf::from("/tmp"));
-    let root = base.join(format!("huhu-ctl-{}", unsafe { libc::geteuid() }));
-    directory(&root)?;
-    fs::canonicalize(root)
+    if let Some(base) = std::env::var_os("XDG_RUNTIME_DIR").map(PathBuf::from) {
+        if base.is_absolute() && private_directory(&base).is_ok() {
+            match rooted(&base) {
+                Ok(root) => return Ok(root),
+                Err(error) if error.kind() == io::ErrorKind::InvalidInput => {}
+                Err(error) => return Err(error),
+            }
+        }
+    }
+    rooted(Path::new("/tmp"))
 }
 pub fn open_new(path: &Path) -> io::Result<File> {
     OpenOptions::new()
@@ -235,5 +260,23 @@ pub fn editor_peer_pid(stream: &Stream) -> io::Result<u32> {
     {
         let _ = stream;
         Err(io::ErrorKind::Unsupported.into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::socket_fits;
+    use std::path::Path;
+
+    #[test]
+    fn private_prefix_can_push_a_runtime_root_past_the_socket_cap() {
+        let expanded = Path::new(
+            "/private/var/folders/aa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/T/h7-0123456789abcdef/huhu-ctl-501",
+        );
+        assert!(expanded.as_os_str().len() > 66);
+        assert!(!socket_fits(expanded));
+        assert!(socket_fits(Path::new(
+            "/private/tmp/h7-0123456789abcdef/huhu-ctl-501"
+        )));
     }
 }

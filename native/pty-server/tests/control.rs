@@ -280,6 +280,17 @@ mod process {
                 "h7-{}",
                 &uuid::Uuid::new_v4().simple().to_string()[..16]
             ));
+            // A long temp directory canonicalizes past the 100-byte socket cap
+            // (`/var` to `/private/var`). The helper then cannot listen there.
+            #[cfg(unix)]
+            let root = if root.as_os_str().len() < 40 {
+                root
+            } else {
+                PathBuf::from(format!(
+                    "/tmp/h7-{}",
+                    &uuid::Uuid::new_v4().simple().to_string()[..16]
+                ))
+            };
             fs::create_dir(&root).unwrap();
             fs::set_permissions(&root, fs::Permissions::from_mode(0o700)).unwrap();
             let vault = root.join("vault");
