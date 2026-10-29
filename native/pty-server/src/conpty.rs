@@ -25,10 +25,9 @@ use windows_sys::Win32::{
     },
 };
 
-/// ConPTY flags. INHERIT_CURSOR is omitted: with the helper's standard handles
-/// redirected, that flag waits on a parent console and CreateProcess does not return.
-const PSEUDOCONSOLE_RESIZE_QUIRK: u32 = 0x2;
-const PSEUDOCONSOLE_WIN32_INPUT_MODE: u32 = 0x4;
+/// Startup flags stay off. INHERIT_CURSOR waits on the parent console, and the
+/// other documented flags still left cmd.exe inside CreateProcess on CI.
+const PIPE_BUFFER: u32 = 64 * 1024;
 
 struct ConsoleState {
     hpcon: Mutex<HPCON>,
@@ -101,7 +100,7 @@ fn anon_pipe() -> io::Result<PipeEnds> {
     attributes.bInheritHandle = 0;
     let mut read = ptr::null_mut();
     let mut write = ptr::null_mut();
-    if unsafe { CreatePipe(&mut read, &mut write, &attributes, 0) } == 0 {
+    if unsafe { CreatePipe(&mut read, &mut write, &attributes, PIPE_BUFFER) } == 0 {
         return Err(io::Error::last_os_error());
     }
     Ok(PipeEnds {
@@ -124,7 +123,7 @@ pub fn open(cols: u16, rows: u16) -> io::Result<Opened> {
             },
             input.read.as_raw_handle() as HANDLE,
             output.write.as_raw_handle() as HANDLE,
-            PSEUDOCONSOLE_RESIZE_QUIRK | PSEUDOCONSOLE_WIN32_INPUT_MODE,
+            0,
             &mut hpcon,
         )
     };
