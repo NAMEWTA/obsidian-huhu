@@ -373,7 +373,8 @@ fn negotiated_reply_settlement_follows_numeric_exit_and_the_final_ingress_marker
         }
     }
     drop(input);
-    let deadline = Instant::now() + Duration::from_secs(3);
+    // stdin EOF still waits up to 5s for the writer to flush before the process exits.
+    let deadline = Instant::now() + Duration::from_secs(8);
     loop {
         if let Some(status) = child.try_wait().unwrap() {
             assert!(status.success());

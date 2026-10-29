@@ -164,8 +164,16 @@ func TestQueuedQuestionRevocationDoesNotStarveIndependentRoot(t *testing.T) {
 				if questionCalls.Load() != 0 || count(t, d, "SELECT count(*) FROM task_config_pins WHERE run_id=?", qrun) != 0 || count(t, d, "SELECT count(*) FROM collaboration_result_deliveries WHERE child_run_id=? AND status='failed' AND text=''", qrun) != 1 {
 					t.Fatal("revoked question entered Engine, leaked pin, or lost body-free parent result")
 				}
-			} else if questionCalls.Load() != 1 {
-				t.Fatal("authorized question did not execute exactly once")
+			} else {
+				// Slot drain does not include this queued question. On a slow
+				// runner the independent Engine can enter before the question does.
+				deadline := time.Now().Add(5 * time.Second)
+				for questionCalls.Load() == 0 && time.Now().Before(deadline) {
+					time.Sleep(5 * time.Millisecond)
+				}
+				if questionCalls.Load() != 1 {
+					t.Fatalf("authorized question did not execute exactly once: %d", questionCalls.Load())
+				}
 			}
 			wait(t, c, independent.RunID, "succeeded")
 			rootOnce.Do(func() { close(endRoot) })

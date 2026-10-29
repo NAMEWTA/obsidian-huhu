@@ -23,14 +23,16 @@ type Store struct{ db *sql.DB }
 // This module's SQLite is the Wasm build, which is not compiled with
 // SQLITE_OS_WIN, so file:///C:/... stays "/C:/..." and misses the drive.
 // The opaque form file:C:/... is the path the VFS opens. Unix stays file:///.
-func sqliteDSN(path string) string {
+func sqliteFileURL(path string) url.URL {
 	slash := strings.ReplaceAll(path, `\`, "/")
-	var u url.URL
 	if len(slash) >= 2 && slash[1] == ':' && ((slash[0] >= 'A' && slash[0] <= 'Z') || (slash[0] >= 'a' && slash[0] <= 'z')) {
-		u = url.URL{Scheme: "file", Opaque: (&url.URL{Path: slash}).EscapedPath()}
-	} else {
-		u = url.URL{Scheme: "file", Path: slash}
+		return url.URL{Scheme: "file", Opaque: (&url.URL{Path: slash}).EscapedPath()}
 	}
+	return url.URL{Scheme: "file", Path: slash}
+}
+
+func sqliteDSN(path string) string {
+	u := sqliteFileURL(path)
 	q := u.Query()
 	q.Add("_pragma", "busy_timeout(150)")
 	q.Add("_pragma", "foreign_keys(1)")

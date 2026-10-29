@@ -277,7 +277,7 @@ func TestProposalWriterDeadlineAndCanceledReaderReleaseFence(t *testing.T) {
 	if err = f.store.WithDelivery(context.Background(), f.owner, subjects, func(ctx context.Context) error {
 		deadline, ok := ctx.Deadline()
 		if !ok || time.Until(deadline) > grants.DeliveryLifetime {
-			return errors.New("global 250ms permit lost")
+			return errors.New("global delivery permit lost")
 		}
 		return nil
 	}); err != nil {
@@ -290,14 +290,22 @@ func TestProposalFamilyUsesTheExistingEightHundredSubjectBudget(t *testing.T) {
 	calls, writes := 0, 0
 	f.store.SetGlobalProposalReader(proposalDeadlineFunc(func(_ context.Context, _ *sql.Tx, _ api.RequestIdentity, _ string, ids []string) (time.Time, error) {
 		calls++
-		if len(ids) != app.MaxDeliveryRuns { return time.Time{}, errors.New("proposal batch was truncated") }
+		if len(ids) != app.MaxDeliveryRuns {
+			return time.Time{}, errors.New("proposal batch was truncated")
+		}
 		return time.Now().Add(time.Second), nil
 	}))
 	subjects := make([]api.DeliverySubject, app.MaxDeliveryRuns)
-	for i := range subjects { subjects[i] = api.DeliverySubject{Kind: "memory_proposal", ID: "proposal:budget-" + strconv.Itoa(i)} }
+	for i := range subjects {
+		subjects[i] = api.DeliverySubject{Kind: "memory_proposal", ID: "proposal:budget-" + strconv.Itoa(i)}
+	}
 	service := app.New(f.store)
 	write := func(context.Context) error { writes++; return nil }
-	if err := service.WithDelivery(context.Background(), f.owner, subjects, write); err != nil || calls != 1 || writes != 1 { t.Fatal("legal proposal subject budget", calls, writes, err) }
+	if err := service.WithDelivery(context.Background(), f.owner, subjects, write); err != nil || calls != 1 || writes != 1 {
+		t.Fatal("legal proposal subject budget", calls, writes, err)
+	}
 	subjects = append(subjects, api.DeliverySubject{Kind: "memory_proposal", ID: "proposal:overflow"})
-	if err := service.WithDelivery(context.Background(), f.owner, subjects, write); err == nil || calls != 1 || writes != 1 { t.Fatal("proposal family escaped the shared subject budget", calls, writes, err) }
+	if err := service.WithDelivery(context.Background(), f.owner, subjects, write); err == nil || calls != 1 || writes != 1 {
+		t.Fatal("proposal family escaped the shared subject budget", calls, writes, err)
+	}
 }

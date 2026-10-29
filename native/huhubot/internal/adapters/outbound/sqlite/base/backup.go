@@ -10,7 +10,6 @@ import (
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile"
 	"io"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -59,7 +58,14 @@ func backup(ctx context.Context, db *sql.DB, h *profile.Handle, version int, com
 		return e
 	}
 	path := filepath.Join(dir, "profile.sqlite3")
-	if _, e = db.ExecContext(ctx, "VACUUM INTO '"+strings.ReplaceAll(path, "'", "''")+"'"); e != nil {
+	// VACUUM INTO takes a filename. The Wasm build has no Windows VFS, so a
+	// drive path must be the same opaque file:C:/ form that opens the live database.
+	target := path
+	if runtime.GOOS == "windows" {
+		file := sqliteFileURL(path)
+		target = file.String()
+	}
+	if _, e = db.ExecContext(ctx, "VACUUM INTO '"+strings.ReplaceAll(target, "'", "''")+"'"); e != nil {
 		return e
 	}
 	if e = os.Chmod(path, 0600); e != nil {
@@ -77,7 +83,7 @@ func backup(ctx context.Context, db *sql.DB, h *profile.Handle, version int, com
 	if ce != nil {
 		return ce
 	}
-	u := url.URL{Scheme: "file", Path: path}
+	u := sqliteFileURL(path)
 	q := u.Query()
 	q.Set("mode", "ro")
 	q.Set("immutable", "1")

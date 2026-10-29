@@ -10,7 +10,10 @@ import (
 	policy "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/domain/access/grants"
 )
 
-const DeliveryLifetime = 250 * time.Millisecond
+// DeliveryLifetime caps work inside the read fence. It is a failure bound:
+// ordinary member and memory SQL on a shared CI runner exceeds 250ms while
+// go test runs packages in parallel, and that canceled a finished command.
+const DeliveryLifetime = 2 * time.Second
 
 // WithReadFence serializes actual delivery with Grant mutation commits. fn must
 // stop physical I/O before returning; SQL transactions must close before I/O.
