@@ -16,12 +16,6 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-var (
-	kernel32               = windows.NewLazySystemDLL("kernel32.dll")
-	procFindFirstFileNameW = kernel32.NewProc("FindFirstFileNameW")
-	procFindNextFileNameW  = kernel32.NewProc("FindNextFileNameW")
-)
-
 func currentSID() (*windows.SID, error) {
 	u, err := windows.GetCurrentProcessToken().GetTokenUser()
 	if err != nil {
@@ -230,113 +224,56 @@ func createPublicationFile(dir string) (*os.File, error) {
 	return nil, fmt.Errorf("profile publication file unavailable")
 }
 
-// NTFS counts an 8.3 short name in NumberOfLinks, so a normal file on a volume
-// with short-name generation reports 2. Enumerated names still show one link,
-// or the long name plus that same-directory short name. Any other name is a
-// hard link that would share SQLite WAL/SHM.
-func verifySingleLink(f *os.File) error {
-	dos, err := finalDOSPath(f)
+// The publication handle is opened on the temporary name. That name is removed
+// while the handle is still open, so later path queries must use the published
+// path. The kernel mutex is independent of this handle.
+func retargetPublication(temp *os.File, published string) (*os.File, error) {
+	live, err := os.OpenFile(published, os.O_RDWR, 0)
 	if err != nil {
+		return nil, err
+	}
+	_ = temp.Close()
+	return live, nil
+}
+
+// NTFS counts a generated 8.3 alias in NumberOfLinks. profile.sqlite3 does not
+// fit 8.3, so a normal new file on a short-name volume reports 2 even though
+// FindFirstFile shows one entry. A second real hard link makes that count 3
+// or more when the alias exists, and leaves the opened name's short form
+// unchanged when it does not. Link-name enumeration is not used here: the
+// Windows runner rejected it for every new database
+// (PROFILE_DB_IDENTITY_UNAVAILABLE) after the temporary name was removed.
+func verifySingleLink(f *os.File) error {
+	var info windows.ByHandleFileInformation
+	if err := windows.GetFileInformationByHandle(windows.Handle(f.Fd()), &info); err != nil {
 		return api.Denied("PROFILE_DB_IDENTITY_UNAVAILABLE")
 	}
-	names, err := fileLinkNames(dos)
-	if err != nil || len(names) == 0 {
-		return api.Denied("PROFILE_DB_IDENTITY_UNAVAILABLE")
-	}
-	if len(names) == 1 {
+	switch info.NumberOfLinks {
+	case 1:
 		return nil
-	}
-	if len(names) == 2 && sameShortPath(dos, names[0], names[1]) {
-		return nil
+	case 2:
+		if shortNameAccountsForExtraLink(f) {
+			return nil
+		}
 	}
 	return api.Denied("PROFILE_DB_HARDLINK_UNSAFE")
 }
 
-func finalDOSPath(f *os.File) (string, error) {
-	size := uint32(1024)
-	for {
-		buf := make([]uint16, size)
-		n, err := windows.GetFinalPathNameByHandle(windows.Handle(f.Fd()), &buf[0], size, 0)
-		if err != nil {
-			return "", err
-		}
-		if n < size {
-			return windows.UTF16ToString(buf[:n]), nil
-		}
-		size = n + 1
+func shortNameAccountsForExtraLink(f *os.File) bool {
+	long := f.Name()
+	if _, err := os.Lstat(long); err != nil {
+		return false
 	}
-}
-
-func fileLinkNames(path string) ([]string, error) {
-	pathPtr, err := windows.UTF16PtrFromString(path)
+	short, err := shortPath(long)
 	if err != nil {
-		return nil, err
+		return false
 	}
-	size := uint32(1024)
-	var handle windows.Handle
-	var first []uint16
-	for {
-		buf := make([]uint16, size)
-		length := size
-		r, _, callErr := procFindFirstFileNameW.Call(uintptr(unsafe.Pointer(pathPtr)), 0, uintptr(unsafe.Pointer(&length)), uintptr(unsafe.Pointer(&buf[0])))
-		handle = windows.Handle(r)
-		if handle != windows.InvalidHandle {
-			if length == 0 || length > uint32(len(buf)) {
-				_ = windows.FindClose(handle)
-				return nil, fmt.Errorf("profile link name length %d", length)
-			}
-			first = append([]uint16(nil), buf[:length]...)
-			break
-		}
-		if !errors.Is(callErr, windows.ERROR_MORE_DATA) || length <= size {
-			return nil, callErr
-		}
-		size = length
-	}
-	defer windows.FindClose(handle)
-	names := []string{windows.UTF16ToString(first)}
-	for {
-		buf := make([]uint16, size)
-		length := size
-		r, _, callErr := procFindNextFileNameW.Call(uintptr(handle), uintptr(unsafe.Pointer(&length)), uintptr(unsafe.Pointer(&buf[0])))
-		if r == 0 {
-			if errors.Is(callErr, windows.ERROR_HANDLE_EOF) {
-				return names, nil
-			}
-			if errors.Is(callErr, windows.ERROR_MORE_DATA) && length > size {
-				size = length
-				continue
-			}
-			return nil, callErr
-		}
-		if length == 0 || length > uint32(len(buf)) {
-			return nil, fmt.Errorf("profile link name length %d", length)
-		}
-		names = append(names, windows.UTF16ToString(buf[:length]))
-	}
+	longBase := strings.ToLower(filepath.Base(long))
+	shortBase := strings.ToLower(filepath.Base(short))
+	return longBase != "" && shortBase != "" && longBase != shortBase
 }
 
-func sameShortPath(dos, left, right string) bool {
-	a, aErr := shortKey(absLink(dos, left))
-	b, bErr := shortKey(absLink(dos, right))
-	return aErr == nil && bErr == nil && a != "" && a == b
-}
-
-func absLink(dos, link string) string {
-	if strings.HasPrefix(link, `\\`) || (len(link) >= 2 && link[1] == ':') {
-		return link
-	}
-	volume := dos
-	if strings.HasPrefix(volume, `\\?\`) {
-		volume = volume[len(`\\?\`):]
-	}
-	if len(volume) >= 2 && volume[1] == ':' {
-		return volume[:2] + link
-	}
-	return link
-}
-
-func shortKey(path string) (string, error) {
+func shortPath(path string) (string, error) {
 	pathPtr, err := windows.UTF16PtrFromString(path)
 	if err != nil {
 		return "", err
@@ -348,8 +285,13 @@ func shortKey(path string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		if n < size {
-			return strings.ToLower(windows.UTF16ToString(buf[:n])), nil
+		// A short buffer returns the required size, including the null, and the
+		// syscall wrapper reports no error because the result is non-zero.
+		if n > 0 && n < size {
+			return windows.UTF16ToString(buf[:n]), nil
+		}
+		if n <= size {
+			return "", fmt.Errorf("profile short path unavailable")
 		}
 		size = n + 1
 	}

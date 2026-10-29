@@ -97,7 +97,11 @@ export function buildBot(target, { project = root, version, revision, directory 
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
 	const args = process.argv.slice(2);
-	if (args.length === 1 && args[0] === '--test') execFileSync('go', ['test', '-mod=readonly', './...'], { cwd: moduleDirectory, env: goEnvironment(targetFor(`${process.platform}-${process.arch}`)), stdio: 'inherit' });
+	// 45m per package. The default 10m expires on macos-15-intel while the
+	// private-memory seventy-turn capacity test is still polling GetRun.
+	// That runner has 3 cores and `go test ./...` runs packages together.
+	// Assertions are unchanged.
+	if (args.length === 1 && args[0] === '--test') execFileSync('go', ['test', '-mod=readonly', '-timeout', '45m', './...'], { cwd: moduleDirectory, env: goEnvironment(targetFor(`${process.platform}-${process.arch}`)), stdio: 'inherit' });
 	else if (args.length === 1 && args[0] === '--all') for (const target of targets) buildBot(target);
 	else {
 		assert.ok(args.length === 0 || (args.length === 2 && args[0] === '--target'), 'Usage: build-huhu-bot.mjs [--target <platform-arch> | --all | --test]');

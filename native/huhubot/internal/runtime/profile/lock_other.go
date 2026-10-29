@@ -20,6 +20,10 @@ func createPublicationFile(string) (*os.File, error) {
 	return nil, api.Denied("UNSUPPORTED_OS_INSTANCE_LOCK")
 }
 
+func retargetPublication(temp *os.File, _ string) (*os.File, error) {
+	return temp, nil
+}
+
 func claimable(string) bool { return false }
 
 func verifySingleLink(*os.File) error { return api.Denied("UNSUPPORTED_OS_INSTANCE_LOCK") }

@@ -48,7 +48,9 @@ func TestEnsurePrivateClaimsCurrentWindowsOwner(t *testing.T) {
 
 func TestPublicationDropsTemporaryHardlink(t *testing.T) {
 	dir := t.TempDir()
-	name := filepath.Join(dir, "profile.db")
+	// profile.sqlite3 does not fit 8.3. On a Windows volume that still
+	// generates short names, that alias must not be reported as a hard link.
+	name := filepath.Join(dir, "profile.sqlite3")
 	f, isNew, unlock, err := openLockedDatabase(name)
 	if err != nil {
 		t.Fatal(err)
@@ -58,8 +60,16 @@ func TestPublicationDropsTemporaryHardlink(t *testing.T) {
 	if !isNew {
 		t.Fatal("expected a new database")
 	}
-	if _, err = os.Lstat(f.Name()); !os.IsNotExist(err) {
-		t.Fatalf("temporary publication name still exists: %s %v", f.Name(), err)
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].Name() != "profile.sqlite3" {
+		got := make([]string, len(entries))
+		for i, entry := range entries {
+			got[i] = entry.Name()
+		}
+		t.Fatalf("temporary publication name still exists: %v", got)
 	}
 	if err = verifySingleLink(f); err != nil {
 		t.Fatal(err)

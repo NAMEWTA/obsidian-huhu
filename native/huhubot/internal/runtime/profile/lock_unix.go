@@ -25,6 +25,10 @@ func createPublicationFile(dir string) (*os.File, error) {
 	return os.CreateTemp(dir, ".profile-init-")
 }
 
+func retargetPublication(temp *os.File, _ string) (*os.File, error) {
+	return temp, nil
+}
+
 // A Unix mode of 0777 is not claimable. Tightening it would hide a directory
 // this process did not create as private storage.
 func claimable(string) bool { return false }

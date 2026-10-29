@@ -60,7 +60,12 @@ func pendingServer(t *testing.T, f *fixture) (net.Conn, *observedEvents) {
 	observed := &observedEvents{EventsAPI: f.c.API.Events, loaded: make(chan struct{})}
 	f.c.API.Events = observed
 	client, server := net.Pipe()
-	if e := client.SetDeadline(time.Now().Add(3 * time.Second)); e != nil {
+	// Liveness for this pipe only. ReadFrame reports a deadline as
+	// TRUNCATED_FRAME. The 100-message source History response on a 3-core
+	// intel runner under go test ./... exceeds 3s. The 250ms authorization
+	// gate stays in the history test; slow-consumer tests still compare
+	// against stdio.WriteTimeout.
+	if e := client.SetDeadline(time.Now().Add(30 * time.Second)); e != nil {
 		t.Fatal(e)
 	}
 	output := &blockedOutput{Conn: server, blocked: make(chan struct{})}

@@ -220,14 +220,23 @@ func openLockedDatabase(name string) (*os.File, bool, func() error, error) {
 	if err = os.Link(tempName, name); err == nil {
 		// The temporary name is a second hard link until it is removed. Windows
 		// refuses DeleteFile on a handle opened without FILE_SHARE_DELETE, and
-		// a discarded Remove error leaves NumberOfLinks at 2.
+		// a discarded Remove error leaves NumberOfLinks at 2. The returned
+		// handle is then the published path; the removed temporary name cannot
+		// answer a later path query.
 		if err = os.Remove(tempName); err != nil {
 			_ = unlock()
 			_ = temp.Close()
 			_ = os.Remove(name)
 			return nil, false, nil, err
 		}
-		return temp, true, unlock, nil
+		published, err := retargetPublication(temp, name)
+		if err != nil {
+			_ = unlock()
+			_ = temp.Close()
+			_ = os.Remove(name)
+			return nil, false, nil, err
+		}
+		return published, true, unlock, nil
 	}
 	_ = unlock()
 	_ = temp.Close()
