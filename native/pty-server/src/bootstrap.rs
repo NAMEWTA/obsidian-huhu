@@ -257,7 +257,7 @@ mod platform {
         }
         Ok(h)
     }
-    fn cleanup(anchor: Box<dyn Child + Send + Sync>, job: &Job, _mapping: &Mapping) -> bool {
+    fn cleanup(anchor: Box<dyn Child + Send + Sync>, job: &Job, mapping: &Mapping) -> bool {
         let _ = job.terminate();
         // Assignment failure still leaves only our trusted gated anchor. Terminate that captured
         // handle too: an empty Session Job cannot reap a process that was never assigned to it.
@@ -280,7 +280,29 @@ mod platform {
             }
             thread::sleep(Duration::from_millis(10));
         }
-        false
+        // No payload was published. A console host pulled into this job is not the user program;
+        // it stays until the pseudoconsole closes, which the caller does on this failure path.
+        let no_payload = mapping.word(20).load(Ordering::Acquire) == 0;
+        let hosts_only = matches!(job.process_ids(), Ok(ids)
+            if !ids.is_empty() && ids.iter().copied().all(is_console_host));
+        exited && no_payload && hosts_only
+    }
+    fn is_console_host(pid: u32) -> bool {
+        let handle = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid) };
+        if handle.is_null() {
+            return false;
+        }
+        let handle = Handle(handle);
+        let mut name = [0u16; 512];
+        let mut len = name.len() as u32;
+        if unsafe {
+            QueryFullProcessImageNameW(handle.0, PROCESS_NAME_WIN32, name.as_mut_ptr(), &mut len)
+        } == 0
+        {
+            return false;
+        }
+        let name = String::from_utf16_lossy(&name[..len as usize]).to_ascii_lowercase();
+        name.ends_with("\\conhost.exe") || name.ends_with("\\openconsole.exe")
     }
     fn reject(
         anchor: Box<dyn Child + Send + Sync>,
@@ -440,16 +462,24 @@ mod platform {
                     );
                     return Err(reject(anchor, job, &mapping, none, error));
                 }
-                _ => {}
-            }
-            if stop.lock().unwrap().at.is_some() || Instant::now() >= deadline {
-                return Err(reject(
-                    anchor,
-                    job,
-                    &mapping,
-                    false,
-                    "Bootstrap launch interrupted or timed out",
-                ));
+                _ => {
+                    if stop.lock().unwrap().at.is_some() || Instant::now() >= deadline {
+                        let status = mapping.word(0).load(Ordering::Acquire);
+                        if status == 1 || status == 3 {
+                            continue;
+                        }
+                        // Word 20 is published only after the payload process exists.
+                        // A confirmed empty job is then program-rejected, not an unknown effect.
+                        let none = mapping.word(20).load(Ordering::Acquire) == 0;
+                        return Err(reject(
+                            anchor,
+                            job,
+                            &mapping,
+                            none,
+                            "Bootstrap launch interrupted or timed out",
+                        ));
+                    }
+                }
             }
             thread::sleep(Duration::from_millis(5));
         }

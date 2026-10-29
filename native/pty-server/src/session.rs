@@ -211,6 +211,8 @@ impl UserAction {
 struct InputState {
     queue: std::collections::VecDeque<UserAction>,
     replies: std::collections::VecDeque<Vec<u8>>,
+    /// Host answers for the console, written before any user-visible reply.
+    handoffs: std::collections::VecDeque<Vec<u8>>,
     bytes: usize,
     count: usize,
     reply_bytes: usize,
@@ -236,6 +238,8 @@ struct InputQueue {
 enum ClaimedInput {
     User(UserAction),
     Reply(Vec<u8>),
+    /// Console handshake. Never becomes a client frame, even when the write fails.
+    Handoff(Vec<u8>),
 }
 impl InputQueue {
     fn new(sid: u32, out: Outbox, budget: Arc<Mutex<InputBudget>>) -> Option<Arc<Self>> {
@@ -247,6 +251,7 @@ impl InputQueue {
             state: Mutex::new(InputState {
                 queue: Default::default(),
                 replies: Default::default(),
+                handoffs: Default::default(),
                 bytes: 0,
                 count: 0,
                 reply_bytes: 0,
@@ -612,6 +617,20 @@ impl InputQueue {
         self.changed.notify_all();
         Ok(())
     }
+    /// Queue a console handshake. Failure stays silent: this is not a user reply.
+    fn console_reply(&self, bytes: &[u8]) -> bool {
+        if bytes.is_empty() || bytes.len() > 32 {
+            return false;
+        }
+        let mut state = self.state.lock().unwrap();
+        if state.ended || state.closed || state.handoffs.len() >= 8 {
+            return false;
+        }
+        state.handoffs.push_back(bytes.to_vec());
+        drop(state);
+        self.changed.notify_all();
+        true
+    }
     fn ready(&self) {
         self.state.lock().unwrap().user_ready = true;
         self.changed.notify_all();
@@ -619,6 +638,9 @@ impl InputQueue {
     fn claim(&self) -> Option<ClaimedInput> {
         loop {
             let mut s = self.state.lock().unwrap();
+            if let Some(bytes) = s.handoffs.pop_front() {
+                return Some(ClaimedInput::Handoff(bytes));
+            }
             if let Some(bytes) = s.replies.pop_front() {
                 return Some(ClaimedInput::Reply(bytes));
             }
@@ -667,6 +689,10 @@ impl InputQueue {
     }
     fn completed(&self, action: ClaimedInput, ok: bool) {
         let (bytes, reply, op, kind) = match &action {
+            ClaimedInput::Handoff(_) => {
+                drop(action);
+                return;
+            }
             ClaimedInput::Reply(bytes) => (bytes.len(), true, None, "input-state"),
             ClaimedInput::User(action) => (action.bytes(), false, action.op(), action.kind()),
         };
@@ -708,6 +734,7 @@ impl InputQueue {
         let mut s = self.state.lock().unwrap();
         s.closed = true;
         s.ended |= ended;
+        s.handoffs.clear();
         while let Some(action) = s.queue.pop_front() {
             if let UserAction::Editor(v) = &action {
                 v.reject("closed");
@@ -807,6 +834,28 @@ struct StartupBytes {
     live: bool,
     buffered: Vec<u8>,
 }
+/// ConPTY can ask for the cursor and device attributes before the real program exists.
+/// Answer locally and drop the query so it is neither user output nor a second reply.
+#[cfg(any(windows, test))]
+fn take_console_handoffs(buffer: &mut Vec<u8>) -> Vec<&'static [u8]> {
+    fn take(
+        buffer: &mut Vec<u8>,
+        needle: &[u8],
+        reply: &'static [u8],
+        out: &mut Vec<&'static [u8]>,
+    ) {
+        while let Some(at) = buffer.windows(needle.len()).position(|window| window == needle) {
+            buffer.drain(at..at + needle.len());
+            out.push(reply);
+        }
+    }
+    let mut replies = Vec::new();
+    take(buffer, b"\x1b[6n", b"\x1b[1;1R", &mut replies);
+    take(buffer, b"\x1b[?6n", b"\x1b[1;1R", &mut replies);
+    take(buffer, b"\x1b[0c", b"\x1b[?1;0c", &mut replies);
+    take(buffer, b"\x1b[c", b"\x1b[?1;0c", &mut replies);
+    replies
+}
 struct Streams {
     master: Arc<Mutex<Option<Box<dyn MasterPty + Send>>>>,
     flow: Arc<Flow>,
@@ -894,6 +943,7 @@ fn write_inputs(
             continue;
         }
         let input = owned.resource.as_mut().unwrap();
+        let handoff = matches!(action, ClaimedInput::Handoff(_));
         let ok = match &action {
             ClaimedInput::User(UserAction::Write(value)) => {
                 write_captured(&mut **input, &value.data, || {
@@ -903,6 +953,9 @@ fn write_inputs(
             ClaimedInput::Reply(bytes) => write_captured(&mut **input, bytes, || {
                 input_queue.state.lock().unwrap().ended
             }),
+            ClaimedInput::Handoff(bytes) => write_captured(&mut **input, bytes, || {
+                input_queue.state.lock().unwrap().closed
+            }),
             ClaimedInput::User(UserAction::Editor(_)) => unreachable!(),
             ClaimedInput::User(UserAction::Resize(_, size)) => input_master
                 .lock()
@@ -911,7 +964,7 @@ fn write_inputs(
                 .is_some_and(|master| master.resize(*size).is_ok()),
         };
         input_queue.completed(action, ok);
-        if !ok {
+        if !ok && !handoff {
             input_queue.close(true);
             break;
         }
@@ -1248,6 +1301,7 @@ impl Sessions {
         thread::spawn(move || write_inputs(input, input_queue, input_master, writer_done));
         let read_io = streams.clone();
         let out = self.out.clone();
+        let startup_input = ticket.pending.input.clone();
         thread::spawn(move || {
             let reserve = ReaderReserve::new(read_io.flow.budget.clone());
             let mut owned = CompleteAfterDrop::new(
@@ -1275,19 +1329,38 @@ impl Sessions {
                             read_io.truncated.store(true, Ordering::SeqCst);
                             continue;
                         }
-                        {
+                        let held = {
                             let mut startup = read_io.startup.lock().unwrap();
-                            if !startup.live {
-                                // ConPTY can emit a device reply before CreateProcess.
-                                // A missing program must not publish that as child output.
-                                if startup.buffered.len().saturating_add(n) > 64 * 1024 {
+                            if startup.live {
+                                None
+                            } else {
+                                // ConPTY can emit a device query before CreateProcess.
+                                // Hold it so a missing program is not published as child output.
+                                // Answer the query or the console host waits out the launch.
+                                let replies = if startup.buffered.len().saturating_add(n) > 64 * 1024
+                                {
                                     startup.buffered.clear();
                                     read_io.truncated.store(true, Ordering::SeqCst);
+                                    Vec::new()
                                 } else {
                                     startup.buffered.extend_from_slice(&buffer[..n]);
-                                }
-                                continue;
+                                    #[cfg(windows)]
+                                    {
+                                        take_console_handoffs(&mut startup.buffered)
+                                    }
+                                    #[cfg(not(windows))]
+                                    {
+                                        Vec::new()
+                                    }
+                                };
+                                Some(replies)
                             }
+                        };
+                        if let Some(replies) = held {
+                            for reply in replies {
+                                let _ = startup_input.console_reply(reply);
+                            }
+                            continue;
                         }
                         read_io.flow.sent(n as u64);
                         if out
@@ -1681,6 +1754,38 @@ mod tests {
             InputQueue::new(7, tx.into(), Arc::new(Mutex::new(InputBudget::default()))).unwrap();
         queue.ready();
         (queue, rx)
+    }
+    #[test]
+    fn console_handoff_queries_are_answered_and_removed_from_startup_bytes() {
+        let mut buffer = b"abc\x1b[6n\x1b[?25h\x1b[0c\x1b[c".to_vec();
+        let replies = take_console_handoffs(&mut buffer);
+        assert_eq!(buffer, b"abc\x1b[?25h");
+        assert_eq!(
+            replies,
+            vec![
+                b"\x1b[1;1R".as_slice(),
+                b"\x1b[?1;0c".as_slice(),
+                b"\x1b[?1;0c".as_slice()
+            ]
+        );
+        let mut partial = b"\x1b[6".to_vec();
+        assert!(take_console_handoffs(&mut partial).is_empty());
+        assert_eq!(partial, b"\x1b[6");
+        partial.extend_from_slice(b"n");
+        assert_eq!(
+            take_console_handoffs(&mut partial),
+            vec![b"\x1b[1;1R".as_slice()]
+        );
+        assert!(partial.is_empty());
+        let mut private = b"\x1b[?6nrest".to_vec();
+        assert_eq!(
+            take_console_handoffs(&mut private),
+            vec![b"\x1b[1;1R".as_slice()]
+        );
+        assert_eq!(private, b"rest");
+        let (queue, rx) = queue_fixture();
+        assert!(queue.console_reply(b"\x1b[1;1R"));
+        assert!(rx.try_recv().is_err(), "a console handoff is not a client frame");
     }
     #[test]
     fn unowned_reserve_rejection_is_distinct_from_duplicate_closing_and_pending_io() {

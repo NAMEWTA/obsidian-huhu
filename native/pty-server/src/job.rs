@@ -364,6 +364,36 @@ mod windows {
                 Ok(())
             }
         }
+        pub fn process_ids(&self) -> io::Result<Vec<u32>> {
+            #[repr(C)]
+            struct ProcessIdList {
+                assigned: u32,
+                count: u32,
+                ids: [usize; 32],
+            }
+            let mut list = ProcessIdList {
+                assigned: 0,
+                count: 0,
+                ids: [0; 32],
+            };
+            if unsafe {
+                QueryInformationJobObject(
+                    self.0,
+                    JobObjectBasicProcessIdList,
+                    &mut list as *mut _ as _,
+                    mem::size_of_val(&list) as u32,
+                    ptr::null_mut(),
+                )
+            } == 0
+            {
+                return Err(io::Error::last_os_error());
+            }
+            let count = list.count as usize;
+            if list.assigned as usize != count || count > list.ids.len() {
+                return Err(io::Error::other("job process list is incomplete"));
+            }
+            Ok(list.ids[..count].iter().map(|id| *id as u32).collect())
+        }
         pub fn active(&self) -> io::Result<usize> {
             let mut info: JOBOBJECT_BASIC_ACCOUNTING_INFORMATION = unsafe { mem::zeroed() };
             if unsafe {
