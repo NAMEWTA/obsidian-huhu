@@ -9,7 +9,6 @@ import {
 	type ImportReport,
 	type PackageView,
 	type PlanView,
-	type Warning,
 } from '../../core/backup/model';
 import { IMPORT_PROGRESS_PATH, IMPORT_REPORT_PATH } from '../../core/backup/paths';
 import type { VaultBinding } from '../../core/space/model';
@@ -86,111 +85,50 @@ export function planView(plan: ImportPlan): PlanView {
  * unchanged data. Read-only, and repeated under the recovery lock right before the write.
  */
 export async function preflightImport(pkg: BackupPackage, options: ImportOptions, env: ImportEnv): Promise<PlanView> {
-	const { plan, lists, notes } = await resolvePlan(pkg, options, env);
-	const view = planView(plan);
-	// A resumed import keeps the lists of its first run: the finished steps are skipped here and cannot rebuild them.
-	return lists
-		? { ...view, ...lists, warnings: [...lists.warnings, ...notes] }
-		: { ...view, warnings: [...view.warnings, ...notes] };
+	const progress = await readProgress(env, pkg, options);
+	const settled = new Set(progress.flatMap((step) => Object.keys(step.written)));
+	return planView(
+		await planImport(
+			pkg,
+			options,
+			contextFor(
+				env,
+				(path) => readOrNull(env.storage, path),
+				(p) => settled.has(p),
+			),
+		),
+	);
 }
 
-interface Step {
-	readonly key: string;
-	readonly written: Readonly<Record<string, string>>;
-	readonly notes: Warning[];
-}
-type Lists = Pick<ImportReport, 'disabledAutomations' | 'reauthorize' | 'warnings'>;
-/** Durable resume state: which steps of which import finished, the digest of every file each one wrote, and the lists of the first run. */
+/** Durable resume state: which steps of which import finished, and the digest of every file each one wrote. */
 interface Progress {
 	readonly format: 1;
 	readonly packageDigest: string;
 	readonly options: string;
 	readonly steps: ReadonlyArray<{ readonly key: string; readonly written: Readonly<Record<string, string>> }>;
-	readonly lists?: Lists;
 }
-const optionsKey = (o: ImportOptions, device: string): string =>
+const optionsKey = (o: ImportOptions): string =>
 	JSON.stringify([
-		device,
 		o.adoptDevice ?? '',
 		[...(o.includeDevices ?? [])].sort(),
 		[...(o.skipSections ?? [])].sort(),
 		o.archiveMissingDirectories === true,
 	]);
-/**
- * The finished steps of this very import (same package, options and target device); anything else is ignored.
- * A recorded step is trusted only while every file it wrote still exists: a missing file means the record cannot be
- * believed and the step runs again (nothing is there to overwrite). A file that exists but differs from the recorded
- * digest was changed by someone since: it is kept exactly as it is and reported, never written over.
- */
-async function loadProgress(
-	env: Pick<ImportEnv, 'storage' | 'device'>,
+/** The finished steps of this very import (same package and options); anything else is ignored, never trusted. */
+async function readProgress(
+	env: Pick<ImportEnv, 'storage'>,
 	pkg: BackupPackage,
 	options: ImportOptions,
-): Promise<{ steps: Step[]; lists?: Lists }> {
-	const none = { steps: [] };
+): Promise<Progress['steps']> {
 	try {
 		const text = await readOrNull(env.storage, IMPORT_PROGRESS_PATH);
-		if (!text) return none;
+		if (!text) return [];
 		const value = JSON.parse(text) as Progress;
-		if (
-			value.format !== 1 ||
-			value.packageDigest !== pkg.digest ||
-			value.options !== optionsKey(options, env.device)
-		)
-			return none;
-		const steps: Array<Step> = [];
-		for (const step of value.steps) {
-			const paths = Object.keys(step.written ?? {});
-			if (!paths.length) continue;
-			const notes: Warning[] = [];
-			let present = 0;
-			for (const path of paths) {
-				const content = await readOrNull(env.storage, path);
-				if (content === null) notes.push({ code: 'step-file-missing', subject: path });
-				else {
-					present++;
-					if ((await sha256(content)) !== step.written[path])
-						notes.push({ code: 'step-file-changed', subject: path });
-				}
-			}
-			// A step none of whose files exists cannot be believed (a forged or stale record): it runs again. When only
-			// some are gone the person removed them after the import; that is kept and reported, never undone.
-			if (present) steps.push({ ...step, notes });
-		}
-		return steps.length ? { steps, lists: value.lists } : none;
+		return value.format === 1 && value.packageDigest === pkg.digest && value.options === optionsKey(options)
+			? value.steps
+			: [];
 	} catch {
-		return none;
-	}
-}
-
-/**
- * The plan with the recorded steps settled. A recorded step counts only if it names exactly the paths the plan gives that
- * step; otherwise it is dropped and the plan is made again without it. Existing files of a trusted step are never
- * written (changed ones are reported), and files of it that are gone are reported as removed, not recreated.
- */
-async function resolvePlan(pkg: BackupPackage, options: ImportOptions, env: ImportEnv) {
-	const progress = await loadProgress(env, pkg, options);
-	let steps = [...progress.steps];
-	const read = (path: string) => readOrNull(env.storage, path);
-	for (;;) {
-		const settled = new Set(steps.flatMap((step) => Object.keys(step.written)));
-		const plan = await planImport(
-			pkg,
-			options,
-			contextFor(env, read, (path) => settled.has(path)),
-		);
-		const good = steps.filter((step) => {
-			const mine = plan.writes.filter((write) => write.group === step.key).map((write) => write.path);
-			return mine.length > 0 && mine.sort().join('\n') === Object.keys(step.written).sort().join('\n');
-		});
-		if (good.length === steps.length)
-			return {
-				plan,
-				steps,
-				lists: steps.length ? progress.lists : undefined,
-				notes: steps.flatMap((step) => step.notes),
-			};
-		steps = good;
+		return [];
 	}
 }
 
@@ -212,23 +150,19 @@ async function saveReport(env: ImportEnv, report: ImportReport): Promise<void> {
  * written after each step tells the page where it stopped.
  */
 export async function runImport(pkg: BackupPackage, options: ImportOptions, env: ImportEnv): Promise<ImportOutcome> {
-	const resolved = await resolvePlan(pkg, options, env);
-	const first = resolved.plan;
-	const steps = resolved.steps.map(({ key, written }) => ({ key, written }));
+	const recorded = await readProgress(env, pkg, options);
+	const steps = recorded.map((step) => ({ ...step }));
 	// Paths a finished step wrote are the import's own past work: a later live edit of them is not a conflict.
 	const settled = new Set(steps.flatMap((step) => Object.keys(step.written)));
-	const recorded = { lists: resolved.lists, notes: resolved.notes };
+	const read = (path: string) => readOrNull(env.storage, path);
+	const first = await planImport(
+		pkg,
+		options,
+		contextFor(env, read, (path) => settled.has(path)),
+	);
 	if (first.problems.length) throw new BackupError('preflight-failed', { problems: first.problems });
 	const now = (env.now ?? Date.now)();
 	const done = new Set(steps.map((step) => step.key).filter((key) => first.batches.includes(key)));
-	// Lists come from the run that planned every step; a resume cannot rebuild them from the steps it skips.
-	const lists: Lists = recorded.lists
-		? { ...recorded.lists, warnings: [...recorded.lists.warnings, ...recorded.notes] }
-		: {
-				disabledAutomations: first.disabledAutomations,
-				reauthorize: first.reauthorize,
-				warnings: [...first.warnings, ...recorded.notes],
-			};
 	const report = (status: ImportReport['status'], errorCode?: string): ImportReport => ({
 		format: 1,
 		packageDigest: pkg.digest,
@@ -236,16 +170,12 @@ export async function runImport(pkg: BackupPackage, options: ImportOptions, env:
 		status,
 		batches: first.batches.map((key) => ({ key, status: done.has(key) ? 'done' : 'pending' })),
 		...(errorCode ? { errorCode } : {}),
-		...lists,
+		disabledAutomations: first.disabledAutomations,
+		reauthorize: first.reauthorize,
+		warnings: first.warnings,
 	});
 	const saveProgress = async () => {
-		const progress: Progress = {
-			format: 1,
-			packageDigest: pkg.digest,
-			options: optionsKey(options, env.device),
-			steps,
-			lists,
-		};
+		const progress: Progress = { format: 1, packageDigest: pkg.digest, options: optionsKey(options), steps };
 		try {
 			await ensureDirectory(env.storage, IMPORT_PROGRESS_PATH.split('/').slice(0, -1).join('/'));
 			await env.storage.write(IMPORT_PROGRESS_PATH, JSON.stringify(progress));
@@ -255,27 +185,8 @@ export async function runImport(pkg: BackupPackage, options: ImportOptions, env:
 	};
 	if (first.writes.every((write) => write.unchanged)) {
 		for (const key of first.batches) done.add(key);
-		// The last report always says how this import ended, never a stale `partial` from an earlier attempt.
-		// Its lists stay those of the import that did the work; this retry only confirms the outcome.
-		const prior = await readImportReport(env);
-		const final = report('done');
-		const kept: ImportReport =
-			prior?.packageDigest === pkg.digest
-				? {
-						...final,
-						disabledAutomations: prior.disabledAutomations,
-						reauthorize: prior.reauthorize,
-						warnings: [
-							...prior.warnings.filter(
-								(w) => w.code !== 'step-file-changed' && w.code !== 'step-file-missing',
-							),
-							...recorded.notes,
-						],
-					}
-				: final;
-		await saveReport(env, kept);
 		await finish(env);
-		return { status: 'unchanged', report: kept };
+		return { status: 'unchanged', report: report('done') };
 	}
 	const changed: string[] = [];
 	for (const key of first.batches) {

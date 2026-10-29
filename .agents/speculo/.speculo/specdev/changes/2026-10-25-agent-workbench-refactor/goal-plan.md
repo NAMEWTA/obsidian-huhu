@@ -337,7 +337,3 @@ T13 与 T11 已按 GP040 完成代码交付与独立双轴审查并置 done（ev
 ### GP042 进度（2026-10-28）
 
 T12、T14 已完成代码交付与独立双轴审查并置 done（evidence/T-12.md、T-14.md）。跨票 bundle 预算：拆出 Pi editor codec、native-extensions 懒加载、Pi artifact profiles 以 brotli 资产随包，outputBytes 与 agent activation 未调高即回到预算内；startup/browser 按 evidence/bundle-budget-attribution-GP041.json、home/automations 按 evidence/T-14-budget-attribution.json 以最小 KiB 上限调整；独立审查 sessions/20261027T-claude/106-bundle-review 两轴 pass，后续补漏 test/native 导入。待办：T-02 writer-port 哈希冲突导致的测试偶发失败（S-L6）在 T15 后单独处理。T15 实施中。
-
-### GP043 T15 关闭与 T17 提前派遣（2026-10-28）
-
-T15 已完成并置 done（evidence/T-15.md）。T16 处于独立复审期间，T17 写集（CI/原生 CLI 资产/notices/Skill/CLI 文档）与 T16 不重叠，Lead 提前派遣 T17 实施以并行；若 T16 复审要求触及 T17 写集，先停 T17 相关分支再处理。串行策略的放宽仅限此不重叠写集。

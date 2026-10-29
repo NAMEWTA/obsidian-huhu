@@ -13,9 +13,9 @@ export const RELEASE_BASE = 'https://github.com/NAMEWTA/obsidian-huhu/releases/d
 const DIGEST_LIMIT = 4096;
 const REQUEST_TIMEOUT = 60_000;
 const STAMP = 'huhu-pty.json';
-const installations = new Map<string, Promise<VerifiedAsset>>();
+const installations = new Map<string, Promise<string>>();
 
-export type BinaryErrorCode = 'unsupported' | 'offlineMissing' | 'http' | 'network' | 'redirects' | 'timeout' | 'tooLarge' | 'checksumMissing' | 'checksumMismatch' | 'inUse' | 'incompatible' | 'compatMissing';
+export type BinaryErrorCode = 'unsupported' | 'offlineMissing' | 'http' | 'network' | 'redirects' | 'timeout' | 'tooLarge' | 'checksumMissing' | 'checksumMismatch' | 'inUse';
 
 export class BinaryError extends Error {
 	constructor(readonly code: BinaryErrorCode, message: string, readonly detail?: { status?: number; url?: string; version?: string }) {
@@ -75,43 +75,14 @@ interface Stamp {
 	version: string;
 	sha256: string;
 	source: 'release' | 'development';
-	/** Compatibility facts accepted before the file was first trusted; sealed with the digest. */
-	detail?: string;
 }
 
-/** One kind of published native executable that shares the download, digest and receipt pipeline. */
-export interface AssetSpec {
-	/** Machine-readable key; separate kinds never share an installation operation. */
-	kind: string;
-	/** Name used in user-visible failures. */
-	label: string;
-	/** Sealed receipt file inside the version directory. */
-	stamp: string;
-	/** Environment variable naming a developer-built file to use instead of the release. */
-	localEnv: string;
-	assetName(platform: string, arch: string): string | null;
-	/** Error code for an HTTP 404 on the digest file: a release that simply publishes no such asset. */
-	absentCode?: BinaryErrorCode;
-	/** Online, after the digest is known and before the executable is fetched. Returns detail kept in the receipt. */
-	vet?(context: { base: string; name: string; digest: string; fetch: (url: string, limit: number) => Promise<Buffer> }): Promise<string | undefined>;
-	/** Every reuse of a receipt-verified file, online or offline; throw to refuse execution. */
-	accept?(detail: string | undefined, source: 'release' | 'development'): void;
-}
-
-const HELPER_SPEC: AssetSpec = {
-	kind: 'helper',
-	label: 'terminal helper',
-	stamp: STAMP,
-	localEnv: 'HUHU_PTY_BINARY',
-	assetName,
-};
-
-function readStamp(dir: string, stampFile: string, receipt?: ProtectedReceipt): Stamp | null {
+function readStamp(dir: string, receipt?: ProtectedReceipt): Stamp | null {
 	try {
-		const envelope = JSON.parse(fs.readFileSync(path.join(dir, stampFile), 'utf8')) as { proof?: unknown };
+		const envelope = JSON.parse(fs.readFileSync(path.join(dir, STAMP), 'utf8')) as { proof?: unknown };
 		if (!receipt || typeof envelope.proof !== 'string') return null;
 		const value = JSON.parse(receipt.open(envelope.proof)) as Partial<Stamp>;
-		return typeof value.context === 'string' && typeof value.version === 'string' && typeof value.sha256 === 'string' && (value.source === 'release' || value.source === 'development') && (value.detail === undefined || typeof value.detail === 'string') ? { context: value.context, version: value.version, sha256: value.sha256, source: value.source, detail: value.detail } : null;
+		return typeof value.context === 'string' && typeof value.version === 'string' && typeof value.sha256 === 'string' && (value.source === 'release' || value.source === 'development') ? { context: value.context, version: value.version, sha256: value.sha256, source: value.source } : null;
 	} catch {
 		return null;
 	}
@@ -137,55 +108,39 @@ export interface InstallOptions {
  * matches the digest published for this plugin version. Offline use requires a verified receipt;
  * each version has its own path so an upgrade never replaces a running older executable.
  */
-export function ensureHelper(options: InstallOptions): Promise<string> {
-	return ensureAsset(options, HELPER_SPEC);
-}
-
-/** A verified executable and the digest it was verified against (so a later copy can be checked against the same value). */
-export interface VerifiedAsset { file: string; sha256: string }
-
-/** The shared pipeline behind every published executable (helper, command-line tool). */
-export async function ensureAsset(options: InstallOptions, spec: AssetSpec): Promise<string> {
-	return (await ensureVerifiedAsset(options, spec)).file;
-}
-
-export async function ensureVerifiedAsset(options: InstallOptions, spec: AssetSpec): Promise<VerifiedAsset> {
+export async function ensureHelper(options: InstallOptions): Promise<string> {
 	const root = await absoluteHuhuPath(options.vault, `.huhu/helpers/${options.device}`);
-	const key = JSON.stringify([spec.kind, root, options.version, options.platform ?? process.platform, options.arch ?? process.arch]);
-	const operation = (installations.get(key) ?? Promise.resolve()).catch(() => {}).then(() => installAsset(options, spec));
+	const key = JSON.stringify([root, options.version, options.platform ?? process.platform, options.arch ?? process.arch]);
+	const operation = (installations.get(key) ?? Promise.resolve()).catch(() => {}).then(() => installHelper(options));
 	installations.set(key, operation);
 	try { return await operation; } finally { if (installations.get(key) === operation) installations.delete(key); }
 }
 
-async function installAsset(options: InstallOptions, spec: AssetSpec): Promise<VerifiedAsset> {
-	const local = process.env[spec.localEnv];
+async function installHelper(options: InstallOptions): Promise<string> {
+	const local = process.env.HUHU_PTY_BINARY;
 	const platform = options.platform ?? process.platform, arch = options.arch ?? process.arch;
-	const name = spec.assetName(platform, arch);
-	if (!name) throw new BinaryError('unsupported', `No ${spec.label} is published for this platform`);
-	if (!/^\d+\.\d+\.\d+(?:-[a-z\d.-]+)?$/i.test(options.version)) throw new BinaryError('unsupported', `Invalid ${spec.label} version`);
+	const name = assetName(platform, arch);
+	if (!name) throw new BinaryError('unsupported', 'No terminal helper is published for this platform');
+	if (!/^\d+\.\d+\.\d+(?:-[a-z\d.-]+)?$/i.test(options.version)) throw new BinaryError('unsupported', 'Invalid terminal helper version');
 	await secureOwnedDirectory(options.vault, `.huhu/helpers/${options.device}`);
 	const relative = `.huhu/helpers/${options.device}/${platform}-${arch}/${options.version}`;
 	const dir = await absoluteHuhuPath(options.vault, relative), file = await absoluteHuhuPath(options.vault, relative + '/' + name);
-	await absoluteHuhuPath(options.vault, relative + '/' + spec.stamp);
+	await absoluteHuhuPath(options.vault, relative + '/' + STAMP);
 	const localBytes = local ? fs.readFileSync(local) : undefined, source = localBytes ? 'development' : 'release';
 	const localDigest = localBytes ? createHash('sha256').update(localBytes).digest('hex') : undefined;
 	const exists = fs.existsSync(file);
 	const context = JSON.stringify([dir, name]);
-	const stamp = readStamp(dir, spec.stamp, options.receipt);
+	const stamp = readStamp(dir, options.receipt);
 	const verified = exists && stamp?.context === context && stamp.version === options.version && stamp.source === source && sha256(file) === stamp.sha256 && (!localDigest || stamp.sha256 === localDigest);
-	const ready = (sha256: string): VerifiedAsset => {
+	const ready = () => {
 		if (process.platform !== 'win32') fs.chmodSync(file, 0o700);
-		return { file, sha256 };
+		return file;
 	};
 	if (options.offline) {
-		if (!verified) throw new BinaryError('offlineMissing', `Offline mode requires a verified ${spec.label} for this version`);
-		spec.accept?.(stamp?.detail, source);
-		return ready(stamp.sha256);
+		if (!verified) throw new BinaryError('offlineMissing', 'Offline mode requires a verified terminal helper for this version');
+		return ready();
 	}
-	if (verified) {
-		spec.accept?.(stamp?.detail, source);
-		return ready(stamp.sha256);
-	}
+	if (verified) return ready();
 
 	const fetch = async (url: string, limit: number) => {
 		try { return await (options.fetch ?? downloadHelperBytes)(url, limit); }
@@ -198,38 +153,26 @@ async function installAsset(options: InstallOptions, spec: AssetSpec): Promise<V
 	};
 	const base = `${RELEASE_BASE}/${encodeURIComponent(options.version)}/${name}`;
 	options.progress?.('downloading');
-	const published = async () => {
-		try { return parseDigest((await fetch(`${base}.sha256`, DIGEST_LIMIT)).toString('utf8')); }
-		catch (error) {
-			// A release without this asset is a fact about the release, not a transient failure.
-			if (spec.absentCode && error instanceof BinaryError && error.code === 'http' && error.detail?.status === 404)
-				throw new BinaryError(spec.absentCode, `This release publishes no ${spec.label}`, { ...error.detail, version: options.version });
-			throw error;
-		}
-	};
-	const digest = localDigest ?? await published();
-	if (!digest) throw new BinaryError('checksumMissing', `The published ${spec.label} checksum is missing or invalid`);
-	// Compatibility is judged from published facts before any executable is written, let alone run.
-	const detail = localDigest ? undefined : await spec.vet?.({ base, name, digest, fetch });
-	spec.accept?.(detail, source);
+	const digest = localDigest ?? parseDigest((await fetch(`${base}.sha256`, DIGEST_LIMIT)).toString('utf8'));
+	if (!digest) throw new BinaryError('checksumMissing', 'The published terminal helper checksum is missing or invalid');
 	await nativeVaultStorage(options.vault).mkdir(relative);
 	await absoluteHuhuPath(options.vault, relative + '/' + name);
 	const remember = async () => {
-		await absoluteHuhuPath(options.vault, relative + '/' + spec.stamp);
-		const proof = options.receipt?.seal(JSON.stringify({ context, version: options.version, sha256: digest, source, detail }));
-		fs.writeFileSync(path.join(dir, spec.stamp), JSON.stringify({ proof: proof ?? null }), { mode: 0o600 });
+		await absoluteHuhuPath(options.vault, relative + '/' + STAMP);
+		const proof = options.receipt?.seal(JSON.stringify({ context, version: options.version, sha256: digest, source }));
+		fs.writeFileSync(path.join(dir, STAMP), JSON.stringify({ proof: proof ?? null }), { mode: 0o600 });
 	};
 	// A matching file placed by hand (same release) is accepted without downloading again.
 	if (exists && sha256(file) === digest) {
 		await remember();
-		return ready(digest);
+		return ready();
 	}
 	const retained = await absoluteHuhuPath(options.vault, `.huhu/helpers/${options.device}/legacy-plugin/files/${name}`);
 	const retainedBytes = !localBytes && fs.existsSync(retained) && fs.lstatSync(retained).isFile() && fs.statSync(retained).size <= 256 * 1024 * 1024 ? fs.readFileSync(retained) : undefined;
 	// Legacy stamps are not execution proofs. Reuse the retained bytes only after the official digest matches.
 	const bytes = localBytes ?? (retainedBytes && createHash('sha256').update(retainedBytes).digest('hex') === digest ? retainedBytes : await fetch(base, 256 * 1024 * 1024));
 	options.progress?.('verifying');
-	if (createHash('sha256').update(bytes).digest('hex') !== digest) throw new BinaryError('checksumMismatch', `The downloaded ${spec.label} does not match its checksum; the previous file was kept`);
+	if (createHash('sha256').update(bytes).digest('hex') !== digest) throw new BinaryError('checksumMismatch', 'The downloaded terminal helper does not match its checksum; the previous file was kept');
 	await absoluteHuhuPath(options.vault, relative + '/' + name);
 	const temporary = `${file}.download-${crypto.randomUUID()}`;
 	fs.writeFileSync(temporary, bytes, { mode: 0o700, flag: 'wx' });
@@ -237,8 +180,8 @@ async function installAsset(options: InstallOptions, spec: AssetSpec): Promise<V
 		fs.renameSync(temporary, file);
 	} catch (error) {
 		fs.rmSync(temporary, { force: true });
-		throw new BinaryError('inUse', `The ${spec.label} could not be replaced: ${error instanceof Error ? error.message : String(error)}`);
+		throw new BinaryError('inUse', `The terminal helper could not be replaced: ${error instanceof Error ? error.message : String(error)}`);
 	}
 	await remember();
-	return ready(digest);
+	return ready();
 }

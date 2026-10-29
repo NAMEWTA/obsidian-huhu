@@ -53,7 +53,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 						<Button
 							variant="ghost"
 							size="icon-xs"
-							className="mx-0.5 my-auto"
+							className="mx-0.5 my-auto min-h-8 min-w-8"
 							aria-label={t('agent.workspace.scrollLeft')}
 							data-tab-scroll="left"
 							onClick={() => ref.current?.scrollBy({ left: -180 })}
@@ -99,7 +99,7 @@ export function TabStrip({ group }: { group: TabGroup }) {
 						<Button
 							variant="ghost"
 							size="icon-xs"
-							className="mx-0.5 my-auto"
+							className="mx-0.5 my-auto min-h-8 min-w-8"
 							aria-label={t('agent.workspace.scrollRight')}
 							data-tab-scroll="right"
 							onClick={() => ref.current?.scrollBy({ left: 180 })}

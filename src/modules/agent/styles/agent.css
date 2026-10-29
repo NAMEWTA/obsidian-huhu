@@ -22,14 +22,13 @@
 .huhu-ui [data-agent-workspace] { container: agent-workspace / inline-size; }
 .huhu-ui .huhu-agent-pane-header button { min-height: 32px; }
 .huhu-ui [data-group-strip] button { min-height: 32px; min-width: 32px; }
-/* The shared hit-size :is() rule is (0,3,1); three root classes make these rules (0,4,1)+ so source order cannot bring a 32px target back. Controls that still carry a fixed Tailwind min-size utility (ID-level) must drop it. */
 @container agent-workspace (width < 600px) {
-	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-toolbar button,
-	.huhu-ui.huhu-ui.huhu-ui .huhu-agent-pane-header button,
-	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-tab-close,
-	.huhu-ui.huhu-ui.huhu-ui [data-group-strip] button { min-width: 44px; min-height: 44px; }
-	.huhu-ui.huhu-ui.huhu-ui .huhu-agent-pane-header { min-height: 44px; }
-	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-background { display: none; }
+	.huhu-ui .huhu-workspace-toolbar button,
+	.huhu-ui .huhu-agent-pane-header button,
+	.huhu-ui .huhu-workspace-tab-close,
+	.huhu-ui [data-group-strip] button { min-width: 44px; min-height: 44px; }
+	.huhu-ui .huhu-agent-pane-header { min-height: 44px; }
+	.huhu-ui .huhu-workspace-background { display: none; }
 }
 @container agent-workspace (width < 480px) {
 	.huhu-ui .huhu-agent-pane-focus { display: none; }

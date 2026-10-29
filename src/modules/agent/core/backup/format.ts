@@ -56,12 +56,6 @@ export interface ManifestEntry {
 	/** Whether a live owner or the offline reader produced the entry. */
 	readonly via: 'live' | 'offline';
 }
-export const NOTE_CODES: readonly ManifestNote['code'][] = [
-	'definition-extra-files',
-	'other-devices-not-enumerated',
-	'section-absent',
-	'settings-fields-omitted',
-];
 export interface ManifestNote {
 	readonly code:
 		'definition-extra-files' | 'other-devices-not-enumerated' | 'section-absent' | 'settings-fields-omitted';
@@ -263,7 +257,7 @@ export async function parsePackage(text: string): Promise<BackupPackage> {
 	const sourceValue = source as BackupSource;
 	const devices = [...new Set(sourceValue.devices)];
 	const notes = (rawManifest.notes as unknown[]).map((note): ManifestNote => {
-		if (!isObject(note) || !NOTE_CODES.includes(note.code as ManifestNote['code'])) return invalid('note');
+		if (!isObject(note) || typeof note.code !== 'string') return invalid('note');
 		return note as unknown as ManifestNote;
 	});
 	const base = {

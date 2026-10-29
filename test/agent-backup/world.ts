@@ -3,14 +3,7 @@ import { RecoveryHost, SETTINGS_VAULT_FILE, settingsDeviceFile, settingsOwner } 
 import { JsonStore } from '../../src/shared/json-store';
 import { SettingsStore, type SettingsFile } from '../../src/shared/settings/store';
 import type { RecoveryOwner } from '../../src/shared/storage/recovery-contracts';
-import type {
-	AgentRuntimePort,
-	AutomationDefinition,
-	AutomationRun,
-	AutomationSourcePort,
-} from '../../src/shared/automation/types';
-import { parseDocumentValue } from '../../src/shared/storage/document-repository';
-import { automationDocuments } from '../../src/modules/automations/core/documents';
+import type { AgentRuntimePort, AutomationRun, AutomationSourcePort } from '../../src/shared/automation/types';
 import { agentSettings } from '../../src/modules/agent/settings';
 import { AutomationService, automationRecoveryOwners } from '../../src/modules/automations/core/service';
 import { notificationsRecoveryOwner, NotificationService } from '../../src/modules/notifications/core/service';
@@ -248,19 +241,10 @@ export class World {
 				},
 				this.options.automationsExecute !== false,
 				{
-					// The real repository codec reads the documents the import wrote (no canned list).
 					definitions: {
 						list: async () => {
 							this.definitionsListed++;
-							const found: AutomationDefinition[] = [];
-							for (const folder of (await storage.list('.huhu/automation/definitions')).folders) {
-								const path = `${folder}/操作.md`;
-								if (!storage.files.has(path)) continue;
-								const value = parseDocumentValue(storage.files.get(path)!);
-								const id = String(value.properties['huhu-id']);
-								found.push(...automationDocuments.decode([{ ...value, id, path }]).definitions);
-							}
-							return found;
+							return [];
 						},
 						save: async () => {},
 						remove: async () => {},

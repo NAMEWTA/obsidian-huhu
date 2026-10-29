@@ -84,10 +84,6 @@ export class AutomationService {
 	private ownedActions = new Map<string, { handle: AutomationActionHandle; abort: AbortController }>();
 	/** Recovery hold: every state change fails visibly until `resumeWrites` (no silent drop). */
 	private recoveryHold = false;
-	/** Completions that reached `publish` while held: their result is real, so the notice is sent after the hold. */
-	private deferredPublish: Array<{ run: AutomationRun; definition: AutomationDefinition }> = [];
-	/** Notices being sent right now (the completion -> reserve -> deliver chain). */
-	private publishing = 0;
 	constructor(
 		storage: TextStorage,
 		path: string,
@@ -162,18 +158,12 @@ export class AutomationService {
 	}
 	resumeWrites(): void {
 		this.recoveryHold = false;
-		for (const { run, definition } of this.deferredPublish.splice(0)) {
-			// After an adoption the run may be gone or already be history; the file is the truth.
-			const row = this.state.runs.find((item) => item.id === run.id);
-			if (row && !isActiveRun(row)) void this.publish(row, definition).catch(console.error);
-		}
 	}
 	/** Work that blocks a recovery operation; the user stops it, it is never stopped here. */
 	recoveryBusy(): string[] {
 		const busy = this.state.runs.filter(isActiveRun).map((run) => run.title);
 		if (this.launches.size) busy.push(`launches:${this.launches.size}`);
 		for (const id of this.ownedActions.keys()) busy.push(`action:${id}`);
-		if (this.publishing) busy.push(`publish:${this.publishing}`);
 		return busy;
 	}
 	/** Strict drain: every queued transition is awaited and a failed persist rejects. */
@@ -367,15 +357,7 @@ export class AutomationService {
 		const recorded = this.state.runs.find((row) => row.id === original.id);
 		if (!recorded || !canRetryCalendarDelivery(recorded) || !recorded.definition)
 			return Promise.reject(new AutomationError('calendarRetryUnavailable'));
-		const launch = this.execute(
-			recorded.definition,
-			recorded.trigger,
-			recorded.scheduledFor,
-			Date.now(),
-			undefined,
-			undefined,
-			recorded,
-		);
+		const launch = this.execute(recorded.definition, recorded.trigger, recorded.scheduledFor, Date.now(), undefined, undefined, recorded);
 		this.launches.add(launch);
 		void launch.finally(() => this.launches.delete(launch)).catch(() => {});
 		return launch;
@@ -484,13 +466,8 @@ export class AutomationService {
 		if (unavailable) throw new Error(t(unavailable));
 		if (d.deviceId !== this.deviceId) throw new AutomationError('otherDevice');
 		if (!retry && trigger === 'scheduled' && d.action.kind === 'create-task' && d.action.target === 'calendar') {
-			const recorded = this.state.runs.find(
-				(row) =>
-					row.automationId === d.id &&
-					row.revision === d.revision &&
-					row.trigger === 'scheduled' &&
-					row.scheduledFor === at,
-			);
+			const recorded = this.state.runs.find((row) => row.automationId === d.id && row.revision === d.revision &&
+				row.trigger === 'scheduled' && row.scheduledFor === at);
 			if (recorded) return recorded;
 		}
 		const active = this.state.runs.find((r) => r.automationId === d.id && isActiveRun(r));
@@ -853,18 +830,8 @@ export class AutomationService {
 	}
 	private async publish(run: AutomationRun, definition: AutomationDefinition): Promise<void> {
 		if (!this.executionEnabled || run.notificationAttempted || this.state.restored?.[run.id]) return;
-		if (this.recoveryHold) {
-			// A completion that lands during a backup/restore is kept, not dropped: it is published at `resumeWrites`.
-			this.deferredPublish.push({ run, definition });
-			return;
-		}
-		this.publishing++;
-		try {
-			await this.notify(run, definition);
-			await this.updateRun(run, { notificationAttempted: true }, true);
-		} finally {
-			this.publishing--;
-		}
+		await this.notify(run, definition);
+		await this.updateRun(run, { notificationAttempted: true }, true);
 	}
 	private updateRun(run: AutomationRun, patch: Partial<AutomationRun>, terminal = false): Promise<void> {
 		return this.commit((state) => {
@@ -960,11 +927,6 @@ export function automationRecoveryOwners(service: AutomationService, deviceId: s
 			preflight: async () => ({ busy: service.recoveryBusy() }),
 			...gate,
 		},
-		{
-			id: AUTOMATION_DEFINITIONS_OWNER,
-			owns: isAutomationDefinitionPath,
-			preflight: async () => ({ busy: [] }),
-			...gate,
-		},
+		{ id: AUTOMATION_DEFINITIONS_OWNER, owns: isAutomationDefinitionPath, preflight: async () => ({ busy: [] }), ...gate },
 	];
 }

@@ -2,7 +2,7 @@ import { captureControlExecutionContext, observeControlPreparation } from './con
 import type { ActivityWaitBaseline } from '../core/control/terminal-coordination';
 import type { ControlRequest, ControlProgress } from '../../../shared/native/control-wire';
 import { BROWSER_HOST } from '../../browser/api';
-import { NativeControlError, type NativeCliState, type NativeLease } from '../../../shared/native/host';
+import { NativeControlError, type NativeLease } from '../../../shared/native/host';
 import type { ControlEnvironment, RoutedEnvironment } from '../platform/desktop/control/environment';
 import type { ControlRouter } from './control/router';
 import { Notice, Platform, type App } from 'obsidian';
@@ -219,11 +219,7 @@ export class AgentController {
 			routeEnvironment: (ref, lease) => this.routeControlEnvironment(ref, lease),
 			prepare: () => this.prepare(),
 			platform: Platform.isWin ? 'win32' : Platform.isMacOS ? 'darwin' : 'linux',
-			environment: async (signal) => {
-				const base = await terminalEnvironment();
-				// Installing the tool is never waited on beyond a short local check; see CliEnvironment.
-				return (await this.cliEnvironment()).apply(base, signal);
-			},
+			environment: () => terminalEnvironment(),
 			home: userHome,
 			settings: () => this.settings.get(),
 			colors: () => this.themeColors(),
@@ -945,26 +941,6 @@ export class AgentController {
 	async prepareWorkbench(): Promise<void> {
 		await this.prepare();
 		await (await this.ensureControl()).environment.prepare();
-	}
-
-	private cliProvider?: Promise<import('../platform/desktop/control/cli-environment').CliEnvironment>;
-	private cliEnvironment() {
-		return (this.cliProvider ??= import('../platform/desktop/control/cli-environment').then(
-			({ CliEnvironment, CLI_LAUNCH_WAIT_MS }) => new CliEnvironment(async () => this.context.native.cli?.(), CLI_LAUNCH_WAIT_MS, this.app.workspace.containerEl.win),
-		));
-	}
-
-	/** State of the `huhu` command-line tool for the settings page; no notice, the page explains it itself. */
-	async checkCli(): Promise<NativeCliState> {
-		const found = (await this.context.native.cli?.({ notify: false })) ?? {
-			state: 'unavailable' as const,
-			reason: 'unsupported-host',
-			text: '',
-		};
-		// A host that could not even load reports no text; the page must still answer the click.
-		const state = found.text ? found : { ...found, text: t('agent.settings.cliUnavailable') };
-		(await this.cliEnvironment()).remember(state);
-		return state;
 	}
 
 	/** Install or verify the helper and start it; resolves to its version. */

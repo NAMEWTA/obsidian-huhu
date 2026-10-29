@@ -55,9 +55,7 @@ export type WarningCode =
 	| 'automations-disabled'
 	| 'runs-demoted'
 	| 'settings-damaged-replaced'
-	| 'other-device-settings-skipped'
-	| 'step-file-changed'
-	| 'step-file-missing';
+	| 'other-device-settings-skipped';
 export interface Warning {
 	readonly code: WarningCode;
 	readonly subject?: string;

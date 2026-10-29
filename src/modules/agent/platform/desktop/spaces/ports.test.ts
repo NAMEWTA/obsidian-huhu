@@ -2,7 +2,6 @@ import { mkdtemp, mkdir, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import * as path from 'node:path';
 import { afterEach, expect, test, vi } from 'vitest';
-import { freeWriterPorts } from './free-writer-port.fixture';
 import { createDesktopSpacePorts } from './ports';
 
 const roots: string[] = [];
@@ -22,7 +21,7 @@ test('factory lazily uses only its owner window native directory chooser, and re
 	const owner = {};
 	const showOpenDialog = vi.fn(async () => ({ canceled: false, filePaths: [selectedPath] }));
 	const require = vi.fn(() => ({ getCurrentWindow: () => owner, dialog: { showOpenDialog } }));
-	const ports = createDesktopSpacePorts({ vaultRoot, vaultId: 'vault', deviceId: 'device', win: { require } as unknown as Window, writerPort: freeWriterPorts() });
+	const ports = createDesktopSpacePorts({ vaultRoot, vaultId: 'vault', deviceId: 'device', win: { require } as unknown as Window });
 	expect(require).not.toHaveBeenCalled();
 	const vault = await ports.directories.inspectVault();
 	expect(require).not.toHaveBeenCalled();

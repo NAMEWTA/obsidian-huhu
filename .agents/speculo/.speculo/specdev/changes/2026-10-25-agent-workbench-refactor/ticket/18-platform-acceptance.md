@@ -10,7 +10,7 @@ design_ref: {"revision":1,"digest":"f469273375c51a11e09ce1479d84b6e83d6949f08905
 change: "2026-10-25-agent-workbench-refactor"
 id: "T-18"
 title: "五平台代码覆盖、全页面代码验收与人工交接"
-status: "done"
+status: "ready"
 kind: "operations"
 planning_depth: "deep"
 planning_depth_reason: "正式支持矩阵与重构汇合，必须汇总固定输入上的真实宿主/Provider/恢复证据，交叉编译不够。"

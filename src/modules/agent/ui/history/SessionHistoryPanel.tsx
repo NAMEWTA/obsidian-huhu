@@ -6,16 +6,6 @@ import { Copy, ListFilter, MoreHorizontal, Play, RefreshCw, Search, X } from 'lu
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from '../../../../ui/components/alert-dialog';
-import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
@@ -72,6 +62,7 @@ function SessionRow({
 		[confirming, setConfirming] = useState(false),
 		continueRef = useRef<HTMLButtonElement>(null),
 		toggleRef = useRef<HTMLButtonElement>(null),
+		restoreFocus = useRef(false),
 		[notice, setNotice] = useState<{ tone: 'error' | 'info'; text: string } | undefined>();
 	// Continue and import share one in-flight guard, so a double click can never start two operations.
 	const act = async (kind: 'import' | 'resume', work: () => Promise<string | undefined>) => {
@@ -101,6 +92,16 @@ function SessionRow({
 			return t(result.created ? 'agent.historyResume.imported' : 'agent.historyResume.alreadyImported');
 		});
 	const continueBlocked = !!row.sourceStatus && row.sourceStatus !== 'available';
+	// Cancel and Escape give focus back to the control that opened the confirmation.
+	const cancelConfirm = () => {
+		restoreFocus.current = true;
+		setConfirming(false);
+	};
+	useEffect(() => {
+		if (confirming || !restoreFocus.current) return;
+		restoreFocus.current = false;
+		(continueRef.current ?? toggleRef.current)?.focus();
+	}, [confirming]);
 	// A refresh may reset a row's preview; an expanded row reloads it instead of claiming there is no body.
 	useEffect(() => {
 		if (expanded && row.previewState === 'idle') void controller.historyStore.preview(row.key);
@@ -290,32 +291,36 @@ function SessionRow({
 								{t('agent.historyResume.unassignedNote')}
 							</p>
 						)}
-						<AlertDialog open={confirming} onOpenChange={(open) => { if (!open) setConfirming(false); }}>
-							<AlertDialogContent
-								onCloseAutoFocus={(event) => {
-									// Cancel and Escape give focus back to the control that opened the confirmation.
-									event.preventDefault();
-									(continueRef.current ?? toggleRef.current)?.focus();
+						{confirming && (
+							<div
+								role="group"
+								aria-label={t('agent.historyResume.confirmTitle')}
+								className="space-y-2 rounded-md border border-border/70 bg-foreground/[0.04] p-2.5 text-xs"
+								onKeyDown={(event) => {
+									if (event.key === 'Escape') {
+										event.stopPropagation();
+										cancelConfirm();
+									}
 								}}
 							>
-								<AlertDialogHeader>
-									<AlertDialogTitle>{t('agent.historyResume.confirmTitle')}</AlertDialogTitle>
-									<AlertDialogDescription className="break-words">
-										{t('agent.historyResume.confirmBody', {
-											provider: getAgent(row.agentId as AgentId).title,
-											cwd: row.cwd,
-										})}
-										{!assigned && ` ${t('agent.historyResume.confirmUnassigned')}`}
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-									<AlertDialogAction onClick={() => void doResume()}>
+								<p className="font-semibold text-foreground">{t('agent.historyResume.confirmTitle')}</p>
+								<p className="break-words text-muted-foreground">
+									{t('agent.historyResume.confirmBody', {
+										provider: getAgent(row.agentId as AgentId).title,
+										cwd: row.cwd,
+									})}
+									{!assigned && ` ${t('agent.historyResume.confirmUnassigned')}`}
+								</p>
+								<div className="flex gap-1">
+									<Button variant="secondary" size="xs" autoFocus onClick={() => void doResume()}>
 										{t('agent.historyResume.confirmAction')}
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+									</Button>
+									<Button variant="ghost" size="xs" onClick={cancelConfirm}>
+										{t('common.cancel')}
+									</Button>
+								</div>
+							</div>
+						)}
 						{busy !== 'idle' && (
 							<p role="status" className="text-xs text-muted-foreground">
 								{t(busy === 'resume' ? 'agent.historyResume.working' : 'agent.historyResume.importing')}

@@ -1394,10 +1394,6 @@ try {
 	const bundled = await build({
 		stdin: { contents: entry, resolveDir: root, sourcefile: 'activity-probe-entry.js' },
 		bundle: true,
-		external: ['node:*'],
-		// Desktop-only modules reference Node at import time; the browser fixture never calls them, so any use fails loudly
-		// instead of failing the whole bundle.
-		banner: { js: "var require=id=>new Proxy({},{get:(_t,name)=>name==='__esModule'?false:()=>{throw Error('Node boundary '+id+'.'+String(name)+' is not available in the browser fixture')}});" },
 		platform: 'browser',
 		format: 'iife',
 		target: 'chrome120',
@@ -1416,7 +1412,7 @@ try {
 					builder.onLoad({ filter: /.*/, namespace: 'boundary' }, (args) => ({
 						contents:
 							args.path === 'obsidian'
-								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(message){window.notices??=[];window.notices.push(message)}};export class TFile{};export class FileSystemAdapter{};export class TFolder{};export class Component{};export class FuzzySuggestModal{constructor(app){this.app=app}open(){throw Error('Obsidian material picker is outside this fixture')}};export class Menu{};export const normalizePath=path=>path;export const setIcon=(element,name)=>element.setAttribute('data-obsidian-icon',name);export const requestUrl=()=>{throw Error('Provider network is outside this fixture')};`
+								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(message){window.notices??=[];window.notices.push(message)}};export class TFile{};export class TFolder{};export class Component{};export class FuzzySuggestModal{constructor(app){this.app=app}open(){throw Error('Obsidian material picker is outside this fixture')}};export class Menu{};export const normalizePath=path=>path;export const setIcon=(element,name)=>element.setAttribute('data-obsidian-icon',name);export const requestUrl=()=>{throw Error('Provider network is outside this fixture')};`
 								: 'export const droppedFilePath=()=>undefined;export const openPath=async()=>{};export const resolveReference=async()=>null;export const vaultFilePath=(vault,path)=>vault+"/"+path;',
 					}));
 				},

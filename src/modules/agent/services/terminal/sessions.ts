@@ -36,7 +36,7 @@ export interface TerminalHost {
 	clock?: LifecycleClock;
 	prepare?(): Promise<void>;
 	/** Variables added to the real user environment for helper and shell processes (login-shell PATH on a desktop-icon launch). */
-	environment(signal?: AbortSignal): Promise<Record<string, string>>;
+	environment(): Promise<Record<string, string>>;
 	/** Real user home, used when no environment names one. */
 	home?(): string;
 	/** `process.platform` of the desktop app. */
@@ -453,7 +453,7 @@ export class TerminalSessions {
 		if (!lease) throw new Error('The native helper is disconnected');
 		if (entry?.stop) throw new ManagedLaunchError(managedFailure('SOURCE_UNAVAILABLE', 'attempt-cancelled'));
 		const controlRoute = request.runtime ? await this.host.routeEnvironment?.(request.runtime, lease) : undefined;
-		const environment = await this.host.environment(request.signal);
+		const environment = await this.host.environment();
 		request.signal?.throwIfAborted();
 		if (this.disposed || this.closing) throw new Error('The terminal module is off');
 		const settings = this.host.settings();

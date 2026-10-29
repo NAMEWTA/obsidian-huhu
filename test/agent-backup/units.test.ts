@@ -127,59 +127,6 @@ describe('portable agent settings', () => {
 	});
 });
 
-describe('effective permission (L5)', () => {
-	test('inherit cannot raise an agent to YOLO through a global YOLO', () => {
-		const target = {
-			agents: {
-				globalPermissionMode: 'yolo',
-				yoloAcknowledged: false,
-				agents: { codex: { permissionMode: 'manual' } },
-			},
-		};
-		const merged = mergePortableAgentSettings(target, {
-			agents: { agents: { codex: { permissionMode: 'inherit' } } },
-		});
-		expect((merged.agent.agents as any).agents.codex.permissionMode).toBe('manual');
-		expect(merged.permissionRaisesSkipped).toBe(1);
-		// Lowering through inherit is fine.
-		const lowered = mergePortableAgentSettings(
-			{ agents: { globalPermissionMode: 'manual', agents: { codex: { permissionMode: 'yolo' } } } },
-			{ agents: { agents: { codex: { permissionMode: 'inherit' } } } },
-		);
-		expect((lowered.agent.agents as any).agents.codex.permissionMode).toBe('inherit');
-		expect(lowered.permissionRaisesSkipped).toBe(0);
-	});
-});
-
-describe('manifest hygiene (L9, L3)', () => {
-	test('unknown note codes are refused', async () => {
-		const pkg = await buildPackage({ ...input(), notes: [] });
-		const raw = JSON.parse(serializePackage(pkg));
-		raw.manifest.notes = [{ code: 'run-this' }];
-		await expect(parsePackage(JSON.stringify(raw))).rejects.toMatchObject({ code: 'invalid-structure' });
-	});
-	test('records are empty only when nothing at all is stored', () => {
-		const base = {
-			spaces: {},
-			sessions: {},
-			grants: {},
-			layouts: {},
-			historyOwners: {},
-			sharedLayout: { version: 1, tabs: {}, groups: [], closedTabs: [] },
-		};
-		expect(isEmptyDocument('records', JSON.stringify(base))).toBe(true);
-		for (const change of [
-			{ grants: { g: {} } },
-			{ historyOwners: { a: 's' } },
-			{ selectedSpaceId: 's' },
-			{ layouts: { s: {} } },
-			{ sharedLayout: { version: 1, tabs: { t: {} }, groups: [], closedTabs: [] } },
-			{ sharedLayout: { version: 1, tabs: {}, groups: [{}], closedTabs: [] } },
-		])
-			expect(isEmptyDocument('records', JSON.stringify({ ...base, ...change }))).toBe(false);
-	});
-});
-
 describe('restore transforms', () => {
 	const runtime = JSON.stringify({
 		definitions: [{ id: 'd', deviceId: 'dev-a' }],

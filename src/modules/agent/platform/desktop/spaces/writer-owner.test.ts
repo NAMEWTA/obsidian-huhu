@@ -4,7 +4,6 @@ import * as path from 'node:path';
 import { createConnection, createServer, type Server } from 'node:net';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createDirectoryPort } from './directories';
-import { freeWriterPorts } from './free-writer-port.fixture';
 import { createWriterOwner, writerPort } from './writer-owner';
 
 const roots: string[] = [];
@@ -23,9 +22,8 @@ async function fixture() {
 	const server = createServer();
 	servers.push(server);
 	const listener = vi.fn(() => server);
-	const ports = freeWriterPorts();
-	const owners = createWriterOwner(directories, listener, ports);
-	return { vaultRoot, directories, vault, server, listener, owners, ports };
+	const owners = createWriterOwner(directories, listener);
+	return { vaultRoot, directories, vault, server, listener, owners };
 }
 
 describe('Space writer OS lease', () => {
@@ -38,31 +36,30 @@ describe('Space writer OS lease', () => {
 	});
 
 	test('inspection creates no listener; acquisition awaits real listening; close is idempotent and awaits kernel release', async () => {
-		const { directories, vault, server, listener, owners, ports } = await fixture();
+		const { directories, vault, server, listener, owners } = await fixture();
 		await directories.inspectVault();
 		expect(listener).not.toHaveBeenCalled();
 		const lease = await owners.acquire(vault, 'instance-a');
 		leases.push(lease);
 		expect(server.listening).toBe(true);
 		expect(lease.instanceId).toBe('instance-a');
-		expect(lease.port).toBe(await ports(vault.deviceId, vault.root));
+		expect(lease.port).toBe(writerPort(vault.deviceId, vault.root));
 		await expect(lease.assertHeld()).resolves.toBeUndefined();
 		const closed = lease.close();
 		expect(lease.close()).toBe(closed);
 		await closed;
 		expect(lease.lost.aborted).toBe(false);
 		await expect(lease.assertHeld()).rejects.toMatchObject({ code: 'OWNER_CONFLICT', reason: 'lease-closed' });
-		const second = await createWriterOwner(directories, undefined, ports).acquire(vault, 'instance-b');
+		const second = await createWriterOwner(directories).acquire(vault, 'instance-b');
 		leases.push(second);
 		expect(second.port).toBe(lease.port);
 	});
 
 	test('an occupied port is a conflict with no alternate listener or fallback', async () => {
-		const { vault, server, owners, listener, ports } = await fixture();
+		const { vault, server, owners, listener } = await fixture();
 		const blocker = createServer();
 		servers.push(blocker);
-		const blockerPort = await ports(vault.deviceId, vault.root);
-		await new Promise<void>(resolve => blocker.listen({ host: '127.0.0.1', port: blockerPort, exclusive: true }, resolve));
+		await new Promise<void>(resolve => blocker.listen({ host: '127.0.0.1', port: writerPort(vault.deviceId, vault.root), exclusive: true }, resolve));
 		await expect(owners.acquire(vault, 'instance')).rejects.toMatchObject({ code: 'OWNER_CONFLICT', reason: 'port-in-use' });
 		expect(listener).toHaveBeenCalledOnce();
 		expect(server.listening).toBe(false);
@@ -116,7 +113,7 @@ describe('Space writer OS lease', () => {
 	});
 
 	test('physical Vault replacement rejects the held lease without reopening or transferring its port', async () => {
-		const { vaultRoot, vault, owners, server, listener, ports } = await fixture();
+		const { vaultRoot, vault, owners, server, listener } = await fixture();
 		const lease = await owners.acquire(vault, 'instance');
 		leases.push(lease);
 		const previous = `${vaultRoot}-previous`;
@@ -126,6 +123,6 @@ describe('Space writer OS lease', () => {
 		await expect(lease.assertHeld()).rejects.toMatchObject({ code: 'SCOPE_MISMATCH', reason: 'vault-changed' });
 		expect(server.listening).toBe(true);
 		expect(listener).toHaveBeenCalledOnce();
-		expect(lease.port).toBe(await ports(vault.deviceId, vault.root));
+		expect(lease.port).toBe(writerPort(vault.deviceId, vault.root));
 	});
 });

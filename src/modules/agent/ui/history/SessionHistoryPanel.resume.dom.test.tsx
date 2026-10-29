@@ -78,17 +78,18 @@ test('continue asks for confirmation naming the directory; cancel starts nothing
 	const user = userEvent.setup();
 	const card = await open(user, 'owned');
 	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.continue') }));
-	const group = screen.getByRole('alertdialog', { name: t('agent.historyResume.confirmTitle') });
+	const group = within(card).getByRole('group', { name: t('agent.historyResume.confirmTitle') });
 	expect(group.textContent).toContain('/work/project');
-	// The dialog traps focus (the safe Cancel button first), so the flow works by keyboard alone.
-	expect(group.contains(document.activeElement)).toBe(true);
-	expect(document.activeElement).toBe(within(group).getByRole('button', { name: t('common.cancel') }));
+	// The confirm button takes focus so the flow works by keyboard alone.
+	expect(document.activeElement).toBe(
+		within(group).getByRole('button', { name: t('agent.historyResume.confirmAction') }),
+	);
 	await user.click(within(group).getByRole('button', { name: t('common.cancel') }));
-	expect(screen.queryByRole('alertdialog')).toBeNull();
+	expect(within(card).queryByRole('group')).toBeNull();
 	expect(f.resume).not.toHaveBeenCalled();
 	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.continue') }));
 	await user.keyboard('{Escape}');
-	expect(screen.queryByRole('alertdialog')).toBeNull();
+	expect(within(card).queryByRole('group')).toBeNull();
 	expect(f.resume).not.toHaveBeenCalled();
 });
 
@@ -99,7 +100,7 @@ test('confirming shows a loading state, ignores a second activation, then report
 	const user = userEvent.setup();
 	const card = await open(user, 'owned');
 	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.continue') }));
-	await user.click(screen.getByRole('button', { name: t('agent.historyResume.confirmAction') }));
+	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.confirmAction') }));
 	expect(within(card).getByRole('status').textContent).toBe(t('agent.historyResume.working'));
 	const button = within(card).getByRole('button', { name: t('agent.historyResume.continue') }) as HTMLButtonElement;
 	expect(button.disabled).toBe(true);
@@ -115,7 +116,7 @@ test('a conflict or refusal is an explicit alert that can be dismissed, and the 
 	const user = userEvent.setup();
 	const card = await open(user, 'owned');
 	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.continue') }));
-	await user.click(screen.getByRole('button', { name: t('agent.historyResume.confirmAction') }));
+	await user.click(within(card).getByRole('button', { name: t('agent.historyResume.confirmAction') }));
 	const alert = await within(card).findByRole('alert', {}, { timeout: 2000 });
 	expect(alert.textContent).toContain(t('agent.historyResume.error.occupied'));
 	await user.click(within(alert).getByRole('button', { name: t('agent.historyResume.dismiss') }));
@@ -153,7 +154,7 @@ test('L5: cancel and Escape return focus to Continue, and the row menu cannot st
 	const card = await open(user, 'owned');
 	const trigger = within(card).getByRole('button', { name: t('agent.historyResume.continue') });
 	await user.click(trigger);
-	await user.click(screen.getByRole('button', { name: t('common.cancel') }));
+	await user.click(within(card).getByRole('button', { name: t('common.cancel') }));
 	expect(document.activeElement).toBe(trigger);
 	await user.click(trigger);
 	await user.keyboard('{Escape}');

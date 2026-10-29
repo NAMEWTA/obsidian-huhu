@@ -208,26 +208,17 @@ export function isEmptyDocument(
 					isObject(value.receipts) &&
 					Object.keys(value.receipts).length === 0
 				);
-			case 'records': {
-				// Everything the records hold is data: a Space-less web layout, a directory grant, a history owner or a
-				// selection counts the same as a Space.
-				const none = (v: unknown) => !v || (isObject(v) && Object.keys(v).length === 0);
-				const layout = value && isObject(value) ? value.sharedLayout : undefined;
+			case 'records':
 				return (
 					isObject(value) &&
-					none(value.spaces) &&
-					none(value.sessions) &&
-					none(value.grants) &&
-					none(value.layouts) &&
-					none(value.historyOwners) &&
-					value.selectedSpaceId === undefined &&
-					(!isObject(layout) ||
-						(none(layout.tabs) && (!Array.isArray(layout.groups) || layout.groups.length === 0))) &&
+					isObject(value.spaces) &&
+					Object.keys(value.spaces).length === 0 &&
+					isObject(value.sessions) &&
+					Object.keys(value.sessions).length === 0 &&
 					(!isObject(value.inbox) ||
 						!Array.isArray(value.inbox.messages) ||
 						value.inbox.messages.length === 0)
 				);
-			}
 		}
 	} catch {
 		return false;

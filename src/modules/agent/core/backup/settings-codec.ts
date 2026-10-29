@@ -113,10 +113,6 @@ export function mergePortableAgentSettings(target: unknown, portable: unknown): 
 		}
 		return next;
 	};
-	// The mode an agent really runs with: its own setting, or the global one when it inherits.
-	const effective = (own: unknown, global: unknown) =>
-		own === 'manual' || own === 'yolo' ? own : (global ?? 'manual');
-	const beforeGlobal = isObject(base.agents) ? base.agents.globalPermissionMode : undefined;
 	for (const key of Object.keys(incoming)) {
 		if (key === 'agents') continue;
 		base[key] = key === 'permissionMode' ? guard(base[key] ?? 'manual', incoming[key]) : incoming[key];
@@ -133,14 +129,9 @@ export function mergePortableAgentSettings(target: unknown, portable: unknown): 
 			for (const [id, row] of Object.entries(group.agents)) {
 				if (!isObject(row)) continue;
 				const existing: Json = isObject(rows[id]) ? rows[id] : {};
-				const before = effective(existing.permissionMode, beforeGlobal);
-				const previous = existing.permissionMode;
-				for (const key of AGENT_ENTRY) if (key in row) existing[key] = row[key];
-				// Compare what the agent will really run with, so `inherit` cannot be a way around the rule.
-				if (rank(effective(existing.permissionMode, current.globalPermissionMode)) > rank(before)) {
-					skipped++;
-					if (previous === undefined) delete existing.permissionMode;
-					else existing.permissionMode = previous;
+				for (const key of AGENT_ENTRY) {
+					if (!(key in row)) continue;
+					existing[key] = key === 'permissionMode' ? guard(existing[key] ?? 'inherit', row[key]) : row[key];
 				}
 				rows[id] = existing;
 			}

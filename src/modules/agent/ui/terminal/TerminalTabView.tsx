@@ -538,7 +538,7 @@ export function TerminalHost({
 				<button
 					type="button"
 					data-pane-title=""
-					className="min-w-0 flex-1 truncate text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					className="min-h-8 min-w-0 flex-1 truncate text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 					title={`${info?.customTitle || session?.title || tab.title}\n${info?.spaceId ?? ''}\n${info?.persistentSessionId ?? sessionId}\n${sessionId}\n${paneId ?? info?.paneId ?? ''}`}
 					onClick={() => workspace.focusSession(sessionId)}
 				>
