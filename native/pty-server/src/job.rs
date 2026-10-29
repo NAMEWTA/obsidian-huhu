@@ -347,6 +347,9 @@ mod windows {
             }
             Ok(job)
         }
+        pub fn as_raw(&self) -> HANDLE {
+            self.0
+        }
         pub fn assign(&self, process: HANDLE) -> io::Result<()> {
             if unsafe { AssignProcessToJobObject(self.0, process) } == 0 {
                 return Err(io::Error::last_os_error());
@@ -364,6 +367,7 @@ mod windows {
                 Ok(())
             }
         }
+        #[allow(dead_code)]
         pub fn process_ids(&self) -> io::Result<Vec<u32>> {
             #[repr(C)]
             struct ProcessIdList {

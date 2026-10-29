@@ -1,11 +1,10 @@
 //! Windows ConPTY owned by this helper.
 //!
-//! The pseudoconsole handle is duplicated into the detached bootstrap process and
-//! attached with PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE. Creating a console program
-//! from a process that is already attached to the same console deadlocks inside
-//! CreateProcess, including when the thread is created suspended. The bootstrap
-//! process itself is not a console client: its standard handles are NUL, and those
-//! handles travel in the same inherit list as the pseudoconsole.
+//! The helper that called CreatePseudoConsole also creates the payload. Duplicating
+//! the pseudoconsole handle fails with ERROR_INVALID_HANDLE, and creating a console
+//! program from a process already attached to that console deadlocks inside
+//! CreateProcess. The payload therefore gets PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
+//! from this process, which is not itself a console client.
 use portable_pty::{MasterPty, PtySize};
 use std::{
     fs::File,
@@ -16,7 +15,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 use windows_sys::Win32::{
-    Foundation::{DuplicateHandle, DUPLICATE_SAME_ACCESS, HANDLE, S_OK},
+    Foundation::{HANDLE, S_OK},
     Security::SECURITY_ATTRIBUTES,
     System::{
         Console::{
@@ -24,7 +23,6 @@ use windows_sys::Win32::{
             PSEUDOCONSOLE_INHERIT_CURSOR,
         },
         Pipes::CreatePipe,
-        Threading::GetCurrentProcess,
     },
 };
 
@@ -58,28 +56,13 @@ impl Console {
             }),
         }
     }
-    /// Inheritable duplicate. The numeric value is what the child receives.
-    pub fn duplicate_inheritable(&self) -> io::Result<OwnedHandle> {
+    pub fn raw(&self) -> io::Result<HPCON> {
         let hpcon = *self.state.hpcon.lock().unwrap();
         if hpcon == 0 {
-            return Err(io::Error::other("Pseudoconsole is closed"));
+            Err(io::Error::other("Pseudoconsole is closed"))
+        } else {
+            Ok(hpcon)
         }
-        let mut duplicated = ptr::null_mut();
-        let ok = unsafe {
-            DuplicateHandle(
-                GetCurrentProcess(),
-                hpcon as HANDLE,
-                GetCurrentProcess(),
-                &mut duplicated,
-                0,
-                1,
-                DUPLICATE_SAME_ACCESS,
-            )
-        };
-        if ok == 0 || duplicated.is_null() {
-            return Err(io::Error::last_os_error());
-        }
-        Ok(unsafe { OwnedHandle::from_raw_handle(duplicated as _) })
     }
     pub fn resize(&self, cols: u16, rows: u16) -> io::Result<()> {
         let hpcon = *self.state.hpcon.lock().unwrap();

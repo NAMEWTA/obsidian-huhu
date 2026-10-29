@@ -1,5 +1,6 @@
 //! Trusted bootstrap control for the existing helper executable and ConPTY.
 #[cfg(any(windows, test))]
+#[cfg_attr(not(test), allow(dead_code))]
 #[derive(Debug)]
 enum GateError<E> {
     Assign(E),
@@ -7,6 +8,7 @@ enum GateError<E> {
     Release(E),
 }
 #[cfg(any(windows, test))]
+#[cfg_attr(not(test), allow(dead_code))]
 fn assign_and_release<E>(
     assign: impl FnOnce() -> Result<(), E>,
     cancelled: impl FnOnce() -> bool,
@@ -63,8 +65,8 @@ mod tests {
     }
 }
 /// Windows command line for one payload. Rust's `Command` always sets
-/// `STARTF_USESTDHANDLES`. The bootstrap child builds this line and creates the
-/// process with the pseudoconsole attribute instead.
+/// `STARTF_USESTDHANDLES`. The helper creates the process itself, with the
+/// pseudoconsole attribute and the session job, instead of inheriting a console.
 #[cfg(any(windows, test))]
 pub(crate) fn windows_command_line(file: &str, args: &[String]) -> Vec<u16> {
     let mut out = Vec::new();
@@ -201,7 +203,7 @@ mod platform {
     use portable_pty::{Child, ChildKiller, ExitStatus};
     use std::{
         io, mem,
-        os::windows::io::{AsRawHandle, RawHandle},
+        os::windows::io::RawHandle,
         ptr,
         sync::{
             atomic::{AtomicU32, AtomicU64, Ordering},
@@ -212,11 +214,8 @@ mod platform {
     };
     use windows_sys::Win32::{
         Foundation::*,
-        Security::{Authorization::*, Cryptography::*, *},
-        Storage::FileSystem::{
-            CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, FILE_SHARE_WRITE, OPEN_EXISTING,
-        },
-        System::{Memory::*, Threading::*},
+        Security::{Authorization::*, *},
+        System::{JobObjects::IsProcessInJob, Memory::*, Threading::*},
     };
     const SIZE: usize = 256 * 1024;
     const REQUEST: usize = 1024;
@@ -239,6 +238,7 @@ mod platform {
             }
         }
     }
+    #[cfg_attr(not(test), allow(dead_code))]
     struct Security(PSECURITY_DESCRIPTOR);
     impl Drop for Security {
         fn drop(&mut self) {
@@ -247,6 +247,7 @@ mod platform {
             }
         }
     }
+    #[cfg_attr(not(test), allow(dead_code))]
     impl Security {
         fn user() -> io::Result<Self> {
             let mut token = ptr::null_mut();
@@ -336,6 +337,7 @@ mod platform {
                 view: view.Value as _,
             })
         }
+        #[cfg_attr(not(test), allow(dead_code))]
         fn create(name: &str, security: &Security) -> io::Result<Self> {
             let attrs = security.attributes();
             let h = unsafe {
@@ -380,6 +382,7 @@ mod platform {
             self.word(0).store(3, Ordering::Release);
         }
     }
+    #[cfg_attr(not(test), allow(dead_code))]
     fn event(name: &str, security: &Security) -> io::Result<Handle> {
         let attrs = security.attributes();
         let h = unsafe { CreateEventW(&attrs, 1, 0, wide(name).as_ptr()) };
@@ -393,276 +396,140 @@ mod platform {
         }
         Ok(h)
     }
-    fn cleanup(anchor: Box<dyn Child + Send + Sync>, job: &Job, mapping: &Mapping) -> bool {
-        let _ = job.terminate();
-        // Assignment failure still leaves only our trusted gated anchor. Terminate that captured
-        // handle too: an empty Session Job cannot reap a process that was never assigned to it.
-        let exited = anchor.as_raw_handle().is_some_and(|raw| {
-            let handle = raw as HANDLE;
-            if unsafe { WaitForSingleObject(handle, 0) } != WAIT_OBJECT_0 {
-                unsafe {
-                    TerminateProcess(handle, 1);
-                }
-            }
-            (unsafe { WaitForSingleObject(handle, 1500) }) == WAIT_OBJECT_0
-        });
-        drop(anchor);
-        // The mapped value belongs to the anchor process, not the helper. Only the helper
-        // duplicates it after observing readiness; cancellation can never leak a foreign transfer.
-        let deadline = Instant::now() + Duration::from_millis(500);
-        while Instant::now() < deadline {
-            if matches!(job.active(), Ok(0)) {
-                return exited;
-            }
-            thread::sleep(Duration::from_millis(10));
-        }
-        // No payload was published. A console host pulled into this job is not the user program;
-        // it stays until the pseudoconsole closes, which the caller does on this failure path.
-        let no_payload = mapping.word(20).load(Ordering::Acquire) == 0;
-        let hosts_only = matches!(job.process_ids(), Ok(ids)
-            if !ids.is_empty() && ids.iter().copied().all(is_console_host));
-        exited && no_payload && hosts_only
-    }
-    fn is_console_host(pid: u32) -> bool {
-        let handle = unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid) };
-        if handle.is_null() {
-            return false;
-        }
-        let handle = Handle(handle);
-        let mut name = [0u16; 512];
-        let mut len = name.len() as u32;
-        if unsafe {
-            QueryFullProcessImageNameW(handle.0, PROCESS_NAME_WIN32, name.as_mut_ptr(), &mut len)
-        } == 0
-        {
-            return false;
-        }
-        let name = String::from_utf16_lossy(&name[..len as usize]).to_ascii_lowercase();
-        name.ends_with("\\conhost.exe") || name.ends_with("\\openconsole.exe")
-    }
-    fn reject(
-        anchor: Box<dyn Child + Send + Sync>,
-        job: &Job,
-        mapping: &Mapping,
-        known_none: bool,
-        message: impl std::fmt::Display,
-    ) -> SpawnFailure {
-        let confirmed = cleanup(anchor, job, mapping);
-        SpawnFailure {
-            code: if known_none && confirmed {
-                "program-rejected"
-            } else {
-                "unconfirmed"
-            },
-            effect: if known_none && confirmed {
-                "none"
-            } else {
-                "unknown"
-            },
-            message: message.to_string(),
-        }
-    }
     pub fn spawn(
         console: &crate::conpty::Console,
         request: &SpawnRequest,
-        id: u32,
+        _id: u32,
         job: &Arc<Job>,
         stop: &Arc<Mutex<Stop>>,
     ) -> Result<Box<dyn Child + Send + Sync>, SpawnFailure> {
-        let prepared = (|| -> io::Result<_> {
-            let mut nonce = [0u8; 16];
-            if unsafe {
-                BCryptGenRandom(
-                    ptr::null_mut(),
-                    nonce.as_mut_ptr(),
-                    nonce.len() as u32,
-                    BCRYPT_USE_SYSTEM_PREFERRED_RNG,
-                )
-            } < 0
-            {
-                return Err(io::Error::other("Bootstrap random source failed"));
-            }
-            let name = format!(
-                "Local\\huhu-{}-{id}-{}",
-                std::process::id(),
-                nonce.iter().map(|b| format!("{b:02x}")).collect::<String>()
-            );
-            let security = Security::user()?;
-            let mapping = Mapping::create(&name, &security)?;
-            let gate_name = format!("{name}-gate");
-            let gate = event(&gate_name, &security)?;
-            let body = serde_json::to_vec(request).map_err(io::Error::other)?;
-            if body.len() > SIZE - REQUEST {
-                return Err(io::Error::other("Bootstrap request is too large"));
-            }
-            unsafe {
-                ptr::copy_nonoverlapping(body.as_ptr(), mapping.view.add(REQUEST), body.len());
-            }
-            mapping.word(32).store(body.len() as u32, Ordering::Release);
-            let inherited = console.duplicate_inheritable()?;
-            // The helper's own standard handles are inheritable. A handle list that
-            // omits them makes CreateProcess fail before the anchor exists, which
-            // would look like the pseudoconsole itself is unavailable.
-            let nul_in = inheritable_nul()?;
-            let nul_out = inheritable_nul()?;
-            let nul_err = inheritable_nul()?;
-            mapping.slot(CONSOLE_SLOT).store(
-                inherited.as_raw_handle() as usize as u64,
-                Ordering::Release,
-            );
-            let executable = std::env::current_exe()?;
-            let executable = executable.to_str().ok_or_else(|| {
-                io::Error::other("Bootstrap executable path is not Unicode")
-            })?;
-            let mut command_line = super::windows_command_line(
-                executable,
-                &[
-                    BOOTSTRAP_ARG.to_string(),
-                    name.clone(),
-                    gate_name.clone(),
-                ],
-            );
-            let environment = super::windows_environment_block(std::env::vars(), &request.env);
-            let directory = request
-                .cwd
-                .as_ref()
-                .filter(|cwd| !cwd.is_empty())
-                .map(|cwd| wide(cwd));
-            let created = create_process(
-                &mut command_line,
-                environment.as_deref(),
-                directory.as_deref(),
-                None,
-                &[inherited.as_raw_handle() as HANDLE],
-                Some([nul_in.0, nul_out.0, nul_err.0]),
-                true,
-            )?;
-            drop(inherited);
-            drop(nul_in);
-            drop(nul_out);
-            drop(nul_err);
-            Ok((
-                mapping,
-                gate,
-                Running {
-                    handle: Handle(created.process),
-                    pid: created.pid,
-                },
-            ))
-        })()
-        .map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
-        let (mapping, gate, anchor) = prepared;
-        let anchor: Box<dyn Child + Send + Sync> = Box::new(anchor);
-        let Some(raw) = anchor.as_raw_handle() else {
-            return Err(reject(
-                anchor,
-                job,
-                &mapping,
-                true,
-                "Bootstrap handle missing",
+        if stop.lock().unwrap().at.is_some() {
+            return Err(SpawnFailure::before_spawn(
+                "program-rejected",
+                "session cancelled before spawn",
             ));
-        };
-        if let Err(error) = super::assign_and_release(
-            || job.assign(raw as _),
-            || stop.lock().unwrap().at.is_some(),
-            || {
-                if unsafe { SetEvent(gate.0) } != 0 {
-                    Ok(())
-                } else {
-                    Err(io::Error::last_os_error())
-                }
-            },
+        }
+        // The pseudoconsole handle cannot be duplicated: DuplicateHandle returns
+        // ERROR_INVALID_HANDLE. This process owns it and is not a console client,
+        // so CreateProcess here does not deadlock the way it does from an attached one.
+        let hpcon = console
+            .raw()
+            .map_err(|error| SpawnFailure::before_spawn("pty-unavailable", error))?;
+        let mut command_line = super::windows_command_line(&request.file, &request.args);
+        let environment = super::windows_environment_block(std::env::vars(), &request.env);
+        let directory = request
+            .cwd
+            .as_ref()
+            .filter(|cwd| !cwd.is_empty())
+            .map(|cwd| wide(cwd));
+        let created = match create_in_job(
+            &mut command_line,
+            environment.as_deref(),
+            directory.as_deref(),
+            hpcon as HANDLE,
+            job.as_raw(),
         ) {
-            return Err(reject(anchor, job, &mapping, true, format!("{error:?}")));
-        }
-        let deadline = Instant::now() + Duration::from_secs(4);
-        loop {
-            match mapping.word(0).load(Ordering::Acquire) {
-                1 => {
-                    let local = mapping.handle_word().load(Ordering::Acquire) as usize as HANDLE;
-                    let mut duplicate = ptr::null_mut();
-                    if unsafe {
-                        DuplicateHandle(
-                            raw as HANDLE,
-                            local,
-                            GetCurrentProcess(),
-                            &mut duplicate,
-                            0,
-                            0,
-                            DUPLICATE_SAME_ACCESS,
-                        )
-                    } == 0
-                    {
-                        return Err(reject(
-                            anchor,
-                            job,
-                            &mapping,
-                            false,
-                            io::Error::last_os_error(),
-                        ));
-                    }
-                    let handle = duplicate;
-                    let pid = mapping.word(4).load(Ordering::Acquire);
-                    if handle.is_null() {
-                        return Err(reject(
-                            anchor,
-                            job,
-                            &mapping,
-                            false,
-                            "Payload handle missing",
-                        ));
-                    }
-                    let handle = Handle(handle);
-                    if unsafe { GetProcessId(handle.0) } != pid {
-                        return Err(reject(
-                            anchor,
-                            job,
-                            &mapping,
-                            false,
-                            "Payload handle identity mismatch",
-                        ));
-                    }
-                    mapping.word(0).store(2, Ordering::Release);
-                    return Ok(Box::new(Payload {
-                        handle,
-                        _anchor: anchor,
-                        job: job.clone(),
-                        pid,
-                    }));
-                }
-                3 => {
-                    let none = mapping.word(20).load(Ordering::Acquire) == 0;
-                    let error = io::Error::from_raw_os_error(
-                        mapping.word(24).load(Ordering::Acquire) as i32,
-                    );
-                    return Err(reject(anchor, job, &mapping, none, error));
-                }
-                _ => {
-                    if stop.lock().unwrap().at.is_some() || Instant::now() >= deadline {
-                        let status = mapping.word(0).load(Ordering::Acquire);
-                        if status == 1 || status == 3 {
-                            continue;
-                        }
-                        // Word 20 is published only after the payload process exists.
-                        // A confirmed empty job is then program-rejected, not an unknown effect.
-                        let none = mapping.word(20).load(Ordering::Acquire) == 0;
-                        return Err(reject(
-                            anchor,
-                            job,
-                            &mapping,
-                            none,
-                            "Bootstrap launch interrupted or timed out",
-                        ));
-                    }
-                }
+            Ok(created) => created,
+            Err(error) => {
+                return Err(SpawnFailure::before_spawn(
+                    if missing_program(&error) {
+                        "program-rejected"
+                    } else {
+                        "pty-unavailable"
+                    },
+                    error,
+                ));
             }
-            thread::sleep(Duration::from_millis(5));
+        };
+        let handle = Handle(created.process);
+        let mut belongs = 0;
+        if unsafe { IsProcessInJob(handle.0, job.as_raw(), &mut belongs) } == 0 || belongs == 0 {
+            unsafe {
+                TerminateProcess(handle.0, 1);
+            }
+            return Err(SpawnFailure {
+                code: "pty-unavailable",
+                effect: "unknown",
+                message: "Payload was not assigned to the session job".into(),
+            });
         }
+        if unsafe { GetProcessId(handle.0) } != created.pid {
+            unsafe {
+                TerminateProcess(handle.0, 1);
+            }
+            return Err(SpawnFailure {
+                code: "pty-unavailable",
+                effect: "unknown",
+                message: "Payload handle identity mismatch".into(),
+            });
+        }
+        Ok(Box::new(Payload {
+            handle,
+            job: job.clone(),
+            pid: created.pid,
+        }))
+    }
+    fn missing_program(error: &io::Error) -> bool {
+        // CreateProcess reports these before a process exists. The effect is none.
+        matches!(error.raw_os_error(), Some(2 | 3 | 123 | 161 | 193 | 206 | 267))
+    }
+    fn create_in_job(
+        command_line: &mut [u16],
+        environment: Option<&[u16]>,
+        directory: Option<&[u16]>,
+        console: HANDLE,
+        job: HANDLE,
+    ) -> io::Result<Created> {
+        let mut attributes = AttributeList::new(2)?;
+        attributes.set(
+            PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+            console as *const _,
+            mem::size_of::<HANDLE>(),
+        )?;
+        let jobs = [job];
+        attributes.set(
+            PROC_THREAD_ATTRIBUTE_JOB_LIST as usize,
+            jobs.as_ptr() as *const _,
+            mem::size_of_val(&jobs),
+        )?;
+        let mut startup: STARTUPINFOEXW = unsafe { mem::zeroed() };
+        startup.StartupInfo.cb = mem::size_of::<STARTUPINFOEXW>() as u32;
+        startup.lpAttributeList = attributes.ptr as _;
+        startup.StartupInfo.dwFlags = STARTF_USESTDHANDLES;
+        startup.StartupInfo.hStdInput = INVALID_HANDLE_VALUE;
+        startup.StartupInfo.hStdOutput = INVALID_HANDLE_VALUE;
+        startup.StartupInfo.hStdError = INVALID_HANDLE_VALUE;
+        let mut created: PROCESS_INFORMATION = unsafe { mem::zeroed() };
+        let ok = unsafe {
+            CreateProcessW(
+                ptr::null(),
+                command_line.as_mut_ptr(),
+                ptr::null(),
+                ptr::null(),
+                0,
+                CREATE_UNICODE_ENVIRONMENT | EXTENDED_STARTUPINFO_PRESENT,
+                environment
+                    .map(|block| block.as_ptr() as *const _)
+                    .unwrap_or(ptr::null()),
+                directory.map(|path| path.as_ptr()).unwrap_or(ptr::null()),
+                &startup.StartupInfo,
+                &mut created,
+            )
+        };
+        if ok == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        if !created.hThread.is_null() {
+            unsafe { CloseHandle(created.hThread) };
+        }
+        Ok(Created {
+            process: created.hProcess,
+            pid: created.dwProcessId,
+        })
     }
     #[derive(Debug)]
     struct Payload {
         handle: Handle,
-        _anchor: Box<dyn Child + Send + Sync>,
         job: Arc<Job>,
         pid: u32,
     }
@@ -865,99 +732,6 @@ mod platform {
             process: created.hProcess,
             pid: created.dwProcessId,
         })
-    }
-    #[derive(Debug)]
-    struct Running {
-        handle: Handle,
-        pid: u32,
-    }
-    impl ChildKiller for Running {
-        fn kill(&mut self) -> io::Result<()> {
-            if unsafe { TerminateProcess(self.handle.0, 1) } == 0 {
-                Err(io::Error::last_os_error())
-            } else {
-                Ok(())
-            }
-        }
-        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
-            let mut duplicated = ptr::null_mut();
-            let ok = unsafe {
-                DuplicateHandle(
-                    GetCurrentProcess(),
-                    self.handle.0,
-                    GetCurrentProcess(),
-                    &mut duplicated,
-                    0,
-                    0,
-                    DUPLICATE_SAME_ACCESS,
-                )
-            };
-            if ok == 0 {
-                return Box::new(DeadKiller);
-            }
-            Box::new(Running {
-                handle: Handle(duplicated),
-                pid: self.pid,
-            })
-        }
-    }
-    #[derive(Debug)]
-    struct DeadKiller;
-    impl ChildKiller for DeadKiller {
-        fn kill(&mut self) -> io::Result<()> {
-            Err(io::Error::other("Anchor handle could not be duplicated"))
-        }
-        fn clone_killer(&self) -> Box<dyn ChildKiller + Send + Sync> {
-            Box::new(DeadKiller)
-        }
-    }
-    impl Child for Running {
-        fn try_wait(&mut self) -> io::Result<Option<ExitStatus>> {
-            match unsafe { WaitForSingleObject(self.handle.0, 0) } {
-                WAIT_TIMEOUT => Ok(None),
-                WAIT_OBJECT_0 => process_status(self.handle.0).map(Some),
-                _ => Err(io::Error::last_os_error()),
-            }
-        }
-        fn wait(&mut self) -> io::Result<ExitStatus> {
-            if unsafe { WaitForSingleObject(self.handle.0, INFINITE) } != WAIT_OBJECT_0 {
-                return Err(io::Error::last_os_error());
-            }
-            process_status(self.handle.0)
-        }
-        fn process_id(&self) -> Option<u32> {
-            Some(self.pid)
-        }
-        fn as_raw_handle(&self) -> Option<RawHandle> {
-            Some(self.handle.0 as _)
-        }
-    }
-    fn inheritable_nul() -> io::Result<Handle> {
-        let mut attributes: SECURITY_ATTRIBUTES = unsafe { mem::zeroed() };
-        attributes.nLength = mem::size_of::<SECURITY_ATTRIBUTES>() as u32;
-        attributes.bInheritHandle = 1;
-        let handle = unsafe {
-            CreateFileW(
-                wide("NUL").as_ptr(),
-                GENERIC_READ | GENERIC_WRITE,
-                FILE_SHARE_READ | FILE_SHARE_WRITE,
-                &attributes,
-                OPEN_EXISTING,
-                FILE_ATTRIBUTE_NORMAL,
-                ptr::null_mut(),
-            )
-        };
-        if handle.is_null() || handle == INVALID_HANDLE_VALUE {
-            return Err(io::Error::last_os_error());
-        }
-        Ok(Handle(handle))
-    }
-    fn process_status(handle: HANDLE) -> io::Result<ExitStatus> {
-        let mut code = 0;
-        if unsafe { GetExitCodeProcess(handle, &mut code) } == 0 {
-            return Err(io::Error::last_os_error());
-        }
-        Ok(ExitStatus::with_exit_code(code))
     }
     fn run(args: &[String]) -> io::Result<()> {
         if args.len() != 4 {
