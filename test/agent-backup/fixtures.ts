@@ -1,4 +1,7 @@
 import { emptyRecords, type WorkbenchRecords } from '../../src/modules/agent/services/spaces/records';
+import { stringify } from 'yaml';
+import { automationDocuments } from '../../src/modules/automations/core/documents';
+import type { AutomationDefinition } from '../../src/shared/automation/types';
 import { openTab } from '../../src/modules/agent/core/workspace/ops';
 import type { BrowserTabData } from '../../src/modules/agent/core/workspace/model';
 import { automationRuntimePath } from '../../src/modules/automations/api';
@@ -219,22 +222,27 @@ export const INBOX = JSON.stringify({
 	},
 });
 
+/** A definition document written the way the automations repository writes it (its own codec, not a hand-made file). */
 export function definitionDocument(id: string, name: string, device: string, enabled = true): string {
-	return [
-		'---',
-		'huhu-type: automation',
-		`huhu-id: ${id}`,
-		`name: ${name}`,
-		`enabled: ${enabled}`,
-		`deviceId: ${device}`,
-		'revision: 1',
-		'action: notify',
-		'schedule: manual',
-		'---',
-		'',
-		`Body of ${name}`,
-		'',
-	].join('\n');
+	const definition: AutomationDefinition = {
+		id,
+		name,
+		enabled,
+		deviceId: device,
+		revision: 1,
+		schedule: { kind: 'manual' },
+		action: { kind: 'notify', body: `Body of ${name}` },
+		channels: ['in-app'],
+		notifyOn: 'always',
+		graceMinutes: 0,
+		createdAt: 1,
+		updatedAt: 2,
+	};
+	const [document] = automationDocuments.encode({ definitions: [definition] });
+	let text = `---\n${stringify(document!.properties)}---\n`;
+	for (const [section, content] of Object.entries(document!.sections ?? {}))
+		text += `\n<!-- huhu:${section} -->\n${content}\n<!-- /huhu:${section} -->\n`;
+	return text;
 }
 export const definitionFolder = (name: string, id: string) => `.huhu/automation/definitions/${name}-${id.slice(-8)}`;
 

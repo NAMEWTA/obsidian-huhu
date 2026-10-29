@@ -112,26 +112,14 @@ export function isAutomationDefinitionPath(path: string): boolean {
 	const prefix = `${AUTOMATION_DEFINITIONS_ROOT}/`;
 	if (!path.startsWith(prefix)) return false;
 	const parts = path.slice(prefix.length).split('/');
-	return parts.length === 2 && parts[0]!.length > 0 && parts[0] !== '.' && parts[0] !== '..' && parts[1] === '操作.md';
+	return (
+		parts.length === 2 && parts[0]!.length > 0 && parts[0] !== '.' && parts[0] !== '..' && parts[1] === '操作.md'
+	);
 }
 
 /**
- * Whether a definition document would be read back by this module's own repository (the same codec the module uses:
- * frontmatter, action registry, schedule and `isDefinition`). Returns the reason when it would not, so a restore can
- * refuse before writing a document that would break the module on its next read. Loaded lazily.
+ * Whether a definition document would be read back by this module's own repository codec (frontmatter, action registry,
+ * schedule, `isDefinition`): the reason when it would not, so a restore can refuse before writing it. Loaded lazily.
  */
-export async function checkAutomationDocument(path: string, text: string): Promise<string | undefined> {
-	const [{ automationDocuments }, { parseDocumentValue }] = await Promise.all([
-		import('./core/documents'),
-		import('../../shared/storage/document-repository'),
-	]);
-	try {
-		const value = parseDocumentValue(text);
-		const id = value.properties['huhu-id'];
-		if (typeof id !== 'string' || !id) return 'no-id';
-		const decoded = automationDocuments.decode([{ ...value, id, path }]);
-		return decoded.definitions.length === 1 ? undefined : 'not-a-definition';
-	} catch (error) {
-		return error instanceof Error ? error.message.slice(0, 80) : 'unreadable';
-	}
-}
+export const checkAutomationDocument = async (path: string, text: string): Promise<string | undefined> =>
+	(await import('./core/documents')).checkAutomationDocument(path, text);

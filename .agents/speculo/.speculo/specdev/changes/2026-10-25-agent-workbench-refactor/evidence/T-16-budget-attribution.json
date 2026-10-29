@@ -49,5 +49,33 @@
       "cause": "hold, deferred failures, busyWork, drainWrites, adoptFromDisk, notificationsRecoveryOwner, module registration"
     }
   },
-  "eager": "unchanged within limit (122.8 KB measured, limit 125952); agent activation 1331.4 KB within 1370112"
+  "eager": "unchanged within limit (122.8 KB measured, limit 125952); agent activation 1331.4 KB within 1370112",
+  "round3": {
+    "mainJs": 6862410,
+    "previousLimit": 6859776,
+    "newLimit": 6862848,
+    "cause": "progress record + step scoping (import.ts/plan.ts), checkAutomationDocument in automations core/documents.ts (lazy via api stub), sidecar backups, effective permission compare, publish deferral in automations service, sync exclude pattern",
+    "automationsActivation": {
+      "measured": 220121,
+      "limit": 220160,
+      "growth": "~711B from deferredPublish/publishing in core/service.ts and the codec check in core/documents.ts"
+    },
+    "note": "Post-round-2 per-input sizes were not retained; delta measured on totals only."
+  },
+  "round4": {
+    "status": "raised",
+    "mainJs": 6863706,
+    "previousLimit": 6862848,
+    "newLimit": 6863872,
+    "note": "Measured with concurrent non-T-16 (T-17) edits in the same worktree, so the 858B is not purely T-16; T-16 part: progress lists, recorded-digest verification, step-file-changed string pair."
+  },
+  "round5": {
+    "status": "over-not-raised",
+    "mainJs": 6879559,
+    "limit": 6863872,
+    "overBy": 15687,
+    "t16InputsTotalNow": 65256,
+    "t16InputsTotalRound2": 60982,
+    "note": "Concurrent T-17 work adds the bulk of the overshoot. T-16 own growth since Round 2 is about +4.3KB across new inputs (65256 vs 60982: plan/import/transforms/messages), of which Round 5 is roughly 1KB (resolvePlan with step verification, step-file-missing string pair). Limit not raised."
+  }
 }

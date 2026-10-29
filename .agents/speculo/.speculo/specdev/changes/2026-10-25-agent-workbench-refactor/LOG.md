@@ -753,3 +753,13 @@ C真实原生反例发现unregistered已被Host收到、core.current尚待2ms轮
 ## LOG-075 — 编排接替与模型切换（2026-10-27）
 
 用户原话：“请你根据 plan spec map 继续完成，你作为编排和验收，实现可以派遣subagent sonnet 5.5，真实的端到端的验收 用户自己进行。” Claude Code 会话接替 Lead；实现改用 Sonnet 5.5，独立 review 用新 Opus 5.5 子代理。接续点：T01–T10 done；T13 代码阶段 081 双轴 pass，显式关闭清理增量未测；T11 082 接线中断（commands.ts 7 处类型错误）。T11 OpenCode 安全来源按 GP040 快照副本方案恢复。无提交/推送/发布。
+
+
+## LOG-076 — 用户提交与 bundle 预算合并（2026-10-29）
+
+工作区出现用户本人于 2026-10-28 22:56 创建的提交 `2073711 feat(agent): 完成终端工作台重构`（非 Lead/子代理执行）；此后改动以该提交为基线继续，Lead 不推送、不改写历史。Lead 合并 T16 round5 与 T17 round2 的懒加载增长，将 outputBytes 设为最小 KiB 上限 6,880,256（归因见 T-16/T-17 budget attribution）。
+
+
+## LOG-077 — T18 审查后的设计符合性决定（2026-10-29）
+
+T18 独立审查 121 指出两处 DESIGN 偏差。Lead 按 DESIGN 权威收敛实现、不改设计：T12 历史“继续”确认由行内改为确认对话框（AlertDialog，焦点与 Escape 合同保持）；会话状态点在所有分组下提供非颜色区分（每状态独立形状 + 标签/aria-label），满足 AC-061“状态非仅颜色”。同时修正 <600px 全部工作台控件 ≥44×44（不依赖源顺序）、清单 M-12/M-17 与 writer-port 说明；stylesBytes 以最小 KiB 上限调整并归因。另修复 sync 测试因私有存储修复遍历未结算导致的 vitest teardown 未处理错误（测试侧注入惰性存储，生产不变）。

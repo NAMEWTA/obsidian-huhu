@@ -7,6 +7,7 @@ import { afterEach, expect, test } from 'vitest';
 import { GitError } from '../../core/errors';
 import { withManagedExcludes } from '../../core/excludes';
 import { GitRepo } from '../../core/repo';
+import type { TextStorage } from '../../../../shared/storage/ports';
 import { desktopGitHost } from './host';
 import { createGitRunner } from './git-runner';
 
@@ -42,6 +43,15 @@ function repository() {
 	return root;
 }
 
+// This test only needs the host's path and text editing. The default vault storage starts a background repair walk of
+// `.huhu` that outlives the test, hits the removed temp root and logs after the worker has closed, so use an inert store.
+const inertStorage: TextStorage = {
+	exists: async () => false,
+	read: async () => '',
+	write: async () => {},
+	mkdir: async () => {},
+};
+
 // An unreadable file makes `git add` fail for a non-root user; as root every file is readable, so the failing half is skipped.
 const unreadable = typeof process.getuid === 'function' && process.getuid() !== 0;
 
@@ -56,7 +66,7 @@ test('managed excludes keep private runtime data out of `git add`, and an unread
 			expect((error as GitError).kind).toBe('index-failed');
 			expect((error as GitError).raw).toContain('Cookies');
 		}
-		const host = desktopGitHost(root, 'dev');
+		const host = desktopGitHost(root, 'dev', inertStorage);
 		const file = host.resolve(root, (await repo.git(['rev-parse', '--git-path', 'info/exclude'])).stdout.trim());
 		assert.equal(await host.editText(file, (text) => withManagedExcludes(text)), true);
 		assert.equal(await host.editText(file, (text) => withManagedExcludes(text)), false, 'second pass changes nothing');

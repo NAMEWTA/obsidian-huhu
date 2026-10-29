@@ -12,3 +12,10 @@ If you need any other path, STOP that branch and report precisely.
 ## Checks
 tsc (test config), vitest on new/touched tests, `pnpm run lint`, `pnpm test:architecture`, `pnpm run test:i18n`, `pnpm run check:notices`, `cargo test --locked --manifest-path native/pty-server/Cargo.toml` if native touched, and the ticket's 验证方法 commands that can run locally.
 REPORT: CHG/sessions/20261027T-claude/107-t17-cli-delivery/REPORT.md (if the write is refused, return the full report in your reply; end with SOURCE STOPPED).
+
+## Lead notes at dispatch
+- T-16 is under read-only review concurrently; do not touch T-16 files (src/modules/agent/{core,services}/backup/**, test/agent-backup/**, automations/notifications backup code, src/app/recovery*, src/shared/storage/recovery-*, src/shared/i18n/lazy/backup.ts, src/modules/sync/core/excludes.ts, scripts/bundle-budget.json).
+- Bundle budgets: keep any new plugin-side code lazy; if a raise is needed, STOP and report numbers (scripts/bundle-budget.json is Lead-approved only).
+- CLI: the T-07 `huhu` binary is built from native/pty-server (target/debug/huhu); control schema src/shared/native/control-schema.json + scripts/generate-control-protocol.mjs; T-11/T-12 added history list/preview/open/resume/import/--unassigned.
+- If REPORT write is refused, return the full report in your reply.
+- docs/agent-workbench.md is held by T-16 right now: do NOT edit it; put any proposed text for it in your REPORT (Lead will apply/hand back after T-16 closes).

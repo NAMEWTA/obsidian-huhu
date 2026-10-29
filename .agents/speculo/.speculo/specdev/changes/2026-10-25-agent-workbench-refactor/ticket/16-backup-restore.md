@@ -10,7 +10,7 @@ design_ref: {"revision":1,"digest":"f469273375c51a11e09ce1479d84b6e83d6949f08905
 change: "2026-10-25-agent-workbench-refactor"
 id: "T-16"
 title: "HUHU 业务备份、导入预检与恢复"
-status: "ready"
+status: "done"
 kind: "feature"
 planning_depth: "deep"
 planning_depth_reason: "导入会改变业务记录，涉及版本/摘要/身份碰撞和可恢复切换，不能只实现导出按钮。"

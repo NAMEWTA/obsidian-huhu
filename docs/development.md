@@ -24,7 +24,7 @@
 
 manifest、package、versions、CHANGELOG 和 native crate 使用当前版本。首次版本为 0.0.1，标签不带 v，正式发布不带预览后缀。
 
-发布入口仅为 `.github/workflows/release.yml`。先推送 main 并通过检查，再推送版本标签；同一提交需通过 Linux Node 22/24、Windows Node 24 检查与五平台 helper 构建。CI 核对提交产物、插件清单、版本、原生 stdio 和 SHA-256，生成来源证明，再发布插件、huhu-<版本>.zip、五平台 huhu-pty、许可和校验文件。
+发布入口仅为 `.github/workflows/release.yml`。先推送 main 并通过检查，再推送版本标签；同一提交需通过 Linux Node 22/24、Windows Node 24 检查与五平台 helper 与 `huhu` CLI 构建（每个平台的 CLI 附 `.sha256` 与由所构建二进制生成的 `.compat.json`）。CI 核对提交产物、插件清单、版本、原生 stdio 和 SHA-256，生成来源证明，再发布插件、huhu-<版本>.zip、五平台 huhu-pty 与 huhu、兼容记录、许可和校验文件。
 
 发布后从新仓库 Release 安装并验证下载；不得回退旧仓库的 helper。真实账号、移动设备或没有宿主可用的平台没有实测时，交付说明应保留该边界。
 

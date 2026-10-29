@@ -459,6 +459,19 @@ async function browserFixture() {
 					width: element.getBoundingClientRect().width,
 					height: element.getBoundingClientRect().height,
 				})),
+				targets: [...document.querySelectorAll('.huhu-workspace-toolbar button,[data-pane-header] button,[data-group-strip] button,.huhu-workspace-tab-close')]
+					.map((e) => {
+						const r = e.getBoundingClientRect(),
+							strip = e.closest('[data-group-strip]')?.getBoundingClientRect();
+						return {
+							name: e.getAttribute('aria-label') || e.getAttribute('data-pane-title') !== null && 'pane-title' || e.textContent.trim().slice(0, 20),
+							width: r.width,
+							height: r.height,
+							hidden: r.width === 0 || getComputedStyle(e).visibility === 'hidden',
+							escapes: strip ? r.top < strip.top - 0.5 || r.bottom > strip.bottom + 0.5 : false,
+						};
+					})
+					.filter((target) => !target.hidden),
 				toggle: [...document.querySelectorAll('button')]
 					.filter((element) => element.getAttribute('aria-label') === t('agent.coordination.title'))
 					.map((element) => ({
@@ -654,6 +667,9 @@ try {
 		stdin: { contents: entry, resolveDir: repo, sourcefile: 'coordination-fixture-entry.js' },
 		bundle: true,
 		external: ['node:*'],
+		// Desktop-only modules reference Node at import time; the browser fixture never calls them, so any use fails loudly
+		// instead of failing the whole bundle.
+		banner: { js: "var require=id=>new Proxy({},{get:(_t,name)=>name==='__esModule'?false:()=>{throw Error('Node boundary '+id+'.'+String(name)+' is not available in the browser fixture')}});" },
 		platform: 'browser',
 		format: 'iife',
 		target: 'chrome120',
@@ -672,7 +688,7 @@ try {
 					builder.onLoad({ filter: /.*/, namespace: 'boundary' }, (args) => ({
 						contents:
 							args.path === 'obsidian'
-								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{register(){}};export class TFile{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
+								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{register(){}};export class TFile{};export class FileSystemAdapter{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
 								: `export const droppedFilePath=()=>undefined;export const openPath=async()=>{};export const resolveReference=async()=>null;export const vaultFilePath=(vault,p)=>vault+'/'+p;`,
 					}));
 					builder.onLoad({ filter: /\.(ts|tsx|mjs|js|json)$/ }, async (input) => {
@@ -1008,6 +1024,10 @@ try {
 		await check(
 			'narrow controls at least 44 by 44',
 			`coordinationProbe.geometry().controls.every(c=>c.width>=43.9&&c.height>=43.9)&&coordinationProbe.geometry().toggle.every(c=>c.width>=43.9&&c.height>=43.9)`,
+		);
+		await check(
+			'narrow toolbar, pane-title, tab-strip and quick-command targets are at least 44 by 44 and stay inside the strip',
+			`coordinationProbe.geometry().targets.length>=2&&coordinationProbe.geometry().targets.every(t=>t.width>=43.9&&t.height>=43.9&&!t.escapes)`,
 		);
 		await screenshot('narrow-dark');
 		await evaluate("document.body.className='theme-light'");

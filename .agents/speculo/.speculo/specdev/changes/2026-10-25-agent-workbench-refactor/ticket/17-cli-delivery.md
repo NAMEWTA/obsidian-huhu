@@ -10,7 +10,7 @@ design_ref: null
 change: "2026-10-25-agent-workbench-refactor"
 id: "T-17"
 title: "CLI 资产、配套 Skill 与交付一致性"
-status: "ready"
+status: "done"
 kind: "feature"
 planning_depth: "deep"
 planning_depth_reason: "新增 CLI 二进制及帮助/Skill 公开面，涉及发布资产可信性、版本兼容与来源许可。"

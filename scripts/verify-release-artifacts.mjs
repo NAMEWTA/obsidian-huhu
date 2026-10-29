@@ -1,6 +1,6 @@
 // Release checks, run by .github/workflows/release.yml and usable locally:
 //   node scripts/verify-release-artifacts.mjs <version>                         versions, compatibility entry, changelog
-//   node scripts/verify-release-artifacts.mjs <version> <terminal-dir>          + the five huhu-pty binaries and checksums
+//   node scripts/verify-release-artifacts.mjs <version> <terminal-dir>          + the five huhu-pty and five huhu binaries, checksums, CLI compatibility records
 //   node scripts/verify-release-artifacts.mjs <version> --plugin <dir>          + main.js, manifest.json, styles.css (and zip)
 //   node scripts/verify-release-artifacts.mjs <version> --sums <dir>            write SHA256SUMS.txt for every file in <dir>
 import assert from 'node:assert/strict';
@@ -13,6 +13,13 @@ import { normalizeBuildText } from './build-text-resources.mjs';
 export const terminalAssets = [
 	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
 ].map((target) => `huhu-pty-${target}`);
+
+/** The local control CLI, built and published next to the helper for the same five platforms. */
+export const cliAssets = [
+	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
+].map((target) => `huhu-${target}`);
+
+const schemaPath = path.join(import.meta.dirname, '..', 'src/shared/native/control-schema.json');
 
 export const pluginAssets = ['main.js', 'manifest.json', 'styles.css'];
 
@@ -32,14 +39,32 @@ export function verifyVersions(root, tag) {
 	return manifest;
 }
 
-/** The five helper binaries match their published checksums. */
+/**
+ * The five helper and five CLI binaries match their published checksums, and every CLI carries a compatibility record
+ * that names the protocol majors of the canonical control schema and the digest of that very binary.
+ */
 export function verifyTerminalAssets(artifacts) {
-	const expected = terminalAssets.flatMap((name) => [name, `${name}.sha256`]).sort();
-	assert.deepEqual(readdirSync(artifacts).sort(), expected, 'Release requires exactly five binaries and their checksums');
-	for (const name of terminalAssets) {
+	const compatName = (name) => `${name}.compat.json`;
+	const expected = [
+		...terminalAssets.flatMap((name) => [name, `${name}.sha256`]),
+		...cliAssets.flatMap((name) => [name, `${name}.sha256`, compatName(name)]),
+	].sort();
+	assert.deepEqual(readdirSync(artifacts).sort(), expected, 'Release requires exactly five helpers, five CLIs, their checksums and CLI compatibility records');
+	for (const name of [...terminalAssets, ...cliAssets]) {
 		const bytes = readFileSync(path.join(artifacts, name));
 		assert.ok(bytes.length, `${name} must not be empty`);
 		assert.equal(readFileSync(path.join(artifacts, `${name}.sha256`), 'utf8').trim(), `${sha256(bytes)}  ${name}`, `${name} checksum mismatch`);
+	}
+	const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
+	for (const name of cliAssets) {
+		let compat;
+		try { compat = JSON.parse(readFileSync(path.join(artifacts, compatName(name)), 'utf8')); } catch { assert.fail(`${compatName(name)} must be valid JSON`); }
+		assert.deepEqual(Object.keys(compat).sort(), ['asset', 'cliProtocol', 'helperProtocol', 'schema', 'sha256'], `${compatName(name)} has unexpected fields`);
+		assert.equal(compat.schema, 1, `${compatName(name)} schema`);
+		assert.equal(compat.asset, name, `${compatName(name)} must name its own asset`);
+		assert.equal(compat.sha256, sha256(readFileSync(path.join(artifacts, name))), `${compatName(name)} must describe the published binary`);
+		assert.equal(compat.cliProtocol, schema.protocolVersion, `${compatName(name)} CLI protocol major must match the control schema`);
+		assert.equal(compat.helperProtocol, schema.helperProtocol, `${compatName(name)} helper protocol must match the control schema`);
 	}
 }
 

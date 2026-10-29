@@ -222,6 +222,18 @@ describe('export to an empty vault, with live owners on both sides', () => {
 		expect(target.automations!.state.runs).toHaveLength(4);
 		expect(target.adopted.sort()).toEqual(['agent-automation-sessions', 'agent-history', 'agent-workspace-stats']);
 		expect(target.definitionsListed).toBeGreaterThan(1);
+		// The automations module's own codec reads every restored document back, disabled and bound to this device.
+		const decoded = await (
+			target.automations as unknown as {
+				options: {
+					definitions: { list(): Promise<Array<{ id: string; enabled: boolean; deviceId: string }>> };
+				};
+			}
+		).options.definitions.list();
+		expect(decoded.map((d) => [d.id, d.enabled, d.deviceId]).sort()).toEqual([
+			['auto-00000000', false, DST.deviceId],
+			['auto-00000001', false, DST.deviceId],
+		]);
 		expect(target.counters).toEqual({ notified: [], delivered: [], started: 0, stopped: 0, scans: 0 });
 		await target.close();
 

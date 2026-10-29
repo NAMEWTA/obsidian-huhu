@@ -30,7 +30,7 @@ export const messages = {
 		'agent.backup.import.run': 'Import now',
 		'agent.backup.import.running': 'Importing…',
 		'agent.backup.import.ready':
-			'Nothing conflicts. Importing replaces only empty collections and merges portable settings; nothing is started.',
+			'Nothing conflicts. Importing fills empty collections and replaces the matching portable settings (a recovery copy is kept); nothing is started.',
 		'agent.backup.import.unchanged': 'This vault already holds everything the file contains.',
 		'agent.backup.import.done': 'Imported. {count} files were replaced; nothing was started or sent.',
 		'agent.backup.import.steps': '{done} of {total} steps finished',
@@ -78,7 +78,7 @@ export const messages = {
 
 		'agent.backup.action.create': 'will be created',
 		'agent.backup.action.replace-empty': 'replaces an empty collection',
-		'agent.backup.action.merge': 'portable settings merged into yours',
+		'agent.backup.action.merge': 'portable settings replace the matching ones in yours (recovery copy kept)',
 		'agent.backup.action.unchanged': 'already identical',
 		'agent.backup.action.archive': 'kept as an archive of another device',
 		'agent.backup.outcome': '{section}: {action}',
@@ -89,7 +89,7 @@ export const messages = {
 			'The device {device} is this device; it cannot also be restored as an archive.',
 		'agent.backup.problem.section-invalid': 'The file’s {section} is not valid ({subject}). Nothing was changed.',
 		'agent.backup.problem.identity-collision':
-			'This vault already has different data in {subject}. HUHU never merges or overwrites it. Leave that collection out, or move the existing data away.',
+			'This vault already has different data in {subject}. HUHU never merges or overwrites it. Move the existing data away, then check again.',
 		'agent.backup.problem.definition-collision':
 			'An automation named “{subject}” already exists with different content.',
 		'agent.backup.problem.records-needs-desktop': 'Spaces can only be restored in the desktop app.',
@@ -114,6 +114,10 @@ export const messages = {
 		'agent.backup.warning.other-device-settings-skipped':
 			'Settings of device {subject} are not restored (they belong to that machine).',
 
+		'agent.backup.warning.step-file-changed':
+			'{subject} was changed after this import wrote it. It was left exactly as it is.',
+		'agent.backup.warning.step-file-missing':
+			'{subject} was removed after this import wrote it. It was not created again.',
 		'agent.backup.failure.title': 'The backup action did not finish',
 		'agent.backup.failure.code': 'Reason: {message} ({code})',
 		'agent.backup.failure.retry': 'Try again',
@@ -185,7 +189,8 @@ export const messages = {
 		'agent.backup.import.checking': '正在检查…',
 		'agent.backup.import.run': '立即导入',
 		'agent.backup.import.running': '正在导入…',
-		'agent.backup.import.ready': '没有冲突。导入只会替换空的数据集并合并可携带设置，不会启动任何东西。',
+		'agent.backup.import.ready':
+			'没有冲突。导入只会填充空的数据集，并替换同名的可携带设置（保留恢复副本），不会启动任何东西。',
 		'agent.backup.import.unchanged': '本仓库已包含文件中的全部内容。',
 		'agent.backup.import.done': '导入完成，共替换 {count} 个文件；没有启动或发送任何东西。',
 		'agent.backup.import.steps': '已完成 {done} / {total} 步',
@@ -232,7 +237,7 @@ export const messages = {
 
 		'agent.backup.action.create': '将新建',
 		'agent.backup.action.replace-empty': '替换空的数据集',
-		'agent.backup.action.merge': '可携带设置合并到你的设置',
+		'agent.backup.action.merge': '可携带设置会替换你设置中的同名项（保留恢复副本）',
 		'agent.backup.action.unchanged': '已完全一致',
 		'agent.backup.action.archive': '作为其他设备的归档保留',
 		'agent.backup.outcome': '{section}：{action}',
@@ -242,7 +247,7 @@ export const messages = {
 		'agent.backup.problem.device-collision': '设备 {device} 就是本设备，不能同时恢复为归档。',
 		'agent.backup.problem.section-invalid': '文件中的“{section}”无效（{subject}）。未做任何更改。',
 		'agent.backup.problem.identity-collision':
-			'本仓库的 {subject} 已有不同的数据。HUHU 不会合并或覆盖。请不导入该数据集，或先移走现有数据。',
+			'本仓库的 {subject} 已有不同的数据。HUHU 不会合并或覆盖。请先移走现有数据，再重新检查。',
 		'agent.backup.problem.definition-collision': '已存在内容不同的自动化“{subject}”。',
 		'agent.backup.problem.records-needs-desktop': '空间只能在桌面版中恢复。',
 		'agent.backup.problem.directory-missing':
@@ -262,6 +267,8 @@ export const messages = {
 		'agent.backup.warning.settings-damaged-replaced': '本机的设置文件无法读取，将被替换；旧内容保留在恢复副本中。',
 		'agent.backup.warning.other-device-settings-skipped': '设备 {subject} 的设置不会恢复（它属于那台机器）。',
 
+		'agent.backup.warning.step-file-changed': '{subject} 在本次导入写入后被改动过，已保持现状不动。',
+		'agent.backup.warning.step-file-missing': '{subject} 在本次导入写入后被删除，不会重新创建。',
 		'agent.backup.failure.title': '备份操作未完成',
 		'agent.backup.failure.code': '原因：{message}（{code}）',
 		'agent.backup.failure.retry': '重试',

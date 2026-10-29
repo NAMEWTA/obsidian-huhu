@@ -596,6 +596,19 @@ async function browserFixture() {
 					close: e.querySelector('[data-pane-close]')?.getBoundingClientRect().toJSON(),
 					title: e.querySelector('[data-pane-title]')?.title,
 				})),
+				targets: [...document.querySelectorAll('.huhu-workspace-toolbar button,[data-pane-header] button,[data-group-strip] button,.huhu-workspace-tab-close')]
+					.map((e) => {
+						const r = e.getBoundingClientRect(),
+							strip = e.closest('[data-group-strip]')?.getBoundingClientRect();
+						return {
+							name: e.getAttribute('aria-label') || e.getAttribute('data-pane-title') !== null && 'pane-title' || e.textContent.trim().slice(0, 20),
+							width: r.width,
+							height: r.height,
+							hidden: r.width === 0 || getComputedStyle(e).visibility === 'hidden',
+							escapes: strip ? r.top < strip.top - 0.5 || r.bottom > strip.bottom + 0.5 : false,
+						};
+					})
+					.filter((target) => !target.hidden),
 				groups: [...document.querySelectorAll('[data-panel-group]')].map((e) => ({
 					direction: e.getAttribute('data-panel-group-direction'),
 					rect: e.getBoundingClientRect().toJSON(),
@@ -771,6 +784,9 @@ try {
 		stdin: { contents: entry, resolveDir: repo, sourcefile: 'coordination-fixture-entry.js' },
 		bundle: true,
 		external: ['node:*'],
+		// Desktop-only modules (for example native-resume occupancy) reference Node at import time; the browser fixture
+		// never calls them, so any use fails loudly instead of failing the whole bundle.
+		banner: { js: "var require=id=>new Proxy({},{get:(_t,name)=>name==='__esModule'?false:()=>{throw Error('Node boundary '+id+'.'+String(name)+' is not available in the browser fixture')}});" },
 		platform: 'browser',
 		format: 'iife',
 		target: 'chrome120',
@@ -789,7 +805,7 @@ try {
 					builder.onLoad({ filter: /.*/, namespace: 'boundary' }, (args) => ({
 						contents:
 							args.path === 'obsidian'
-								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{handlers=[];register(_modifiers,_key,callback){this.handlers.push(callback);}};export class TFile{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
+								? `export const Platform={isWin:false,isMacOS:false,isMobile:false,isDesktopApp:true};export class Notice{constructor(value){window.hostNotices??=[];window.hostNotices.push(value)}};export class Scope{handlers=[];register(_modifiers,_key,callback){this.handlers.push(callback);}};export class TFile{};export class FileSystemAdapter{};export class TFolder{};export class Component{};export class FuzzySuggestModal{};export class Menu{};export const normalizePath=p=>p;export const setIcon=(element,name)=>element.setAttribute('data-host-icon',name);export const requestUrl=()=>{throw Error('Network outside fixture')};`
 								: `export const droppedFilePath=()=>undefined;export const openPath=async()=>{};export const resolveReference=async()=>null;export const vaultFilePath=(vault,p)=>vault+'/'+p;`,
 					}));
 					builder.onLoad({ filter: /\.(ts|tsx|mjs|js|json|svg|md)$/ }, async (input) => {
@@ -1091,6 +1107,10 @@ try {
 			await check(
 				'viewport ' + width + ' keeps layout and close targets',
 				`(()=>{const g=coordinationProbe.geometry(),narrow=document.querySelector('[data-agent-workspace]').getBoundingClientRect().width<600;return !g.overflow&&g.toolbar.height>=44&&g.headers.length>=3&&g.headers.every(h=>h.rect.height>=(narrow?44:34)&&h.close.width>=(narrow?44:32)&&h.close.height>=(narrow?44:32));})()`,
+			);
+			await check(
+				'viewport ' + width + ' toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip',
+				`(()=>{const g=coordinationProbe.geometry(),narrow=document.querySelector('[data-agent-workspace]').getBoundingClientRect().width<600,min=narrow?43.9:31.9;return g.targets.length>=3&&g.targets.every(t=>t.width>=min&&t.height>=min&&!t.escapes)})()`,
 			);
 			await screenshot('viewport-' + width);
 		}

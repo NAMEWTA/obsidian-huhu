@@ -1903,6 +1903,10 @@
     min-height: calc(var(--spacing) * 0);
   }
 
+.min-h-7:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    min-height: calc(var(--spacing) * 7);
+  }
+
 .min-h-8:is(.huhu-ui, .huhu-ui *):not(#\#) {
     min-height: calc(var(--spacing) * 8);
   }
@@ -4306,6 +4310,16 @@
 @supports (color: color-mix(in lab, red, red)) {
     .border-destructive\/40:is(.huhu-ui, .huhu-ui *):not(#\#) {
       border-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+    }
+  }
+
+.border-destructive\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    border-color: var(--destructive);
+  }
+
+@supports (color: color-mix(in lab, red, red)) {
+    .border-destructive\/50:is(.huhu-ui, .huhu-ui *):not(#\#) {
+      border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
     }
   }
 
@@ -6980,6 +6994,10 @@
     .text-sidebar-foreground\/60:is(.huhu-ui, .huhu-ui *):not(#\#) {
       color: color-mix(in oklab, var(--sidebar-foreground) 60%, transparent);
     }
+  }
+
+.text-status-error:is(.huhu-ui, .huhu-ui *):not(#\#) {
+    color: var(--status-error);
   }
 
 .text-status-info:is(.huhu-ui, .huhu-ui *):not(#\#) {
@@ -21841,13 +21859,14 @@ body.huhu-theme-line-height {
 .huhu-ui [data-agent-workspace] { container: agent-workspace / inline-size; }
 .huhu-ui .huhu-agent-pane-header button { min-height: 32px; }
 .huhu-ui [data-group-strip] button { min-height: 32px; min-width: 32px; }
+/* The shared hit-size :is() rule is (0,3,1); three root classes make these rules (0,4,1)+ so source order cannot bring a 32px target back. Controls that still carry a fixed Tailwind min-size utility (ID-level) must drop it. */
 @container agent-workspace (width < 600px) {
-	.huhu-ui .huhu-workspace-toolbar button,
-	.huhu-ui .huhu-agent-pane-header button,
-	.huhu-ui .huhu-workspace-tab-close,
-	.huhu-ui [data-group-strip] button { min-width: 44px; min-height: 44px; }
-	.huhu-ui .huhu-agent-pane-header { min-height: 44px; }
-	.huhu-ui .huhu-workspace-background { display: none; }
+	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-toolbar button,
+	.huhu-ui.huhu-ui.huhu-ui .huhu-agent-pane-header button,
+	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-tab-close,
+	.huhu-ui.huhu-ui.huhu-ui [data-group-strip] button { min-width: 44px; min-height: 44px; }
+	.huhu-ui.huhu-ui.huhu-ui .huhu-agent-pane-header { min-height: 44px; }
+	.huhu-ui.huhu-ui.huhu-ui .huhu-workspace-background { display: none; }
 }
 @container agent-workspace (width < 480px) {
 	.huhu-ui .huhu-agent-pane-focus { display: none; }

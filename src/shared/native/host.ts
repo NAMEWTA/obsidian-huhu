@@ -230,9 +230,28 @@ export interface NativeLease {
 	release(): Promise<void>;
 }
 
+/**
+ * State of the verified `huhu` command-line tool. Never an exception: a terminal still opens without it, and the state
+ * is what a notice or settings row explains. `text` is already localized by the owner of the native dictionary.
+ */
+export type NativeCliState =
+	| { readonly state: 'ready'; readonly path: string; readonly directory: string; readonly text: string }
+	| {
+			readonly state:
+				| 'unsupported' | 'offlineMissing' | 'incompatible' | 'compatMissing' | 'checksumMissing'
+				| 'checksumMismatch' | 'downloadFailed' | 'unavailable';
+			readonly reason: string;
+			readonly text: string;
+	  };
+
 /** Acquisition is lazy and abortable. Each lease belongs to one consumer and one helper generation. */
 export interface NativeHostAccess {
 	acquire(capability: NativeCapability, events?: Partial<NativeEvents>, signal?: AbortSignal): Promise<NativeLease>;
+	/**
+	 * Install/verify the command-line tool through the same pipeline as the helper. `notify: false` is for a place that
+	 * shows the state itself (settings); otherwise a failure raises one localized notice per state and version.
+	 */
+	cli?(options?: { readonly notify?: boolean }): Promise<NativeCliState>;
 }
 
 export interface NativeCookieReader {

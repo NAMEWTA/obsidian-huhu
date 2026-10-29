@@ -10,6 +10,7 @@
 | apex-dashboard | [布局、格式与实现对应](third-party/apex-dashboard.md) |
 | Margin Comments | [批注映射](third-party/margin-comments.md)、[原 MIT 许可](third-party/margin-comments-LICENSE.txt) |
 | Notebook Navigator | [公开行为参考边界](third-party/notebook-navigator.md)，不包含其 GPL 源码或样式 |
+| 工作台 CLI 与交付 | [来源与许可登记](third-party/agent-workbench-cli.md)：只借鉴公开机制，未复制或改编第三方源码 |
 | skills-manager | [发现、复制与界面对应](third-party/skills-manager.md) |
 | SuliWorld / GitHub Theme | [SuliWorld](third-party/suliworld.md)、[GitHub](third-party/github-theme.md)，字体另循 OFL |
 | Iconic、obsidian-git、shadcn/ui、cc-switch 等 | [NOTICE](../NOTICE)与源码头中的固定来源 |

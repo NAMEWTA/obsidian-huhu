@@ -32,7 +32,7 @@ export function QuickCommandsButton({ controller, groupId }: { controller: Agent
 	};
 	return (
 		<>
-			<div className="my-auto flex h-7 shrink-0 items-center rounded-md text-muted-foreground @max-[20rem]/strip:hidden">
+			<div className="my-auto flex min-h-7 shrink-0 items-center rounded-md text-muted-foreground @max-[20rem]/strip:hidden">
 				{/* In a narrow tab strip the label goes (the button keeps its name for assistive tech and the tooltip); in a very narrow one the whole control makes room for the tabs. */}
 				<Tooltip>
 					<TooltipTrigger asChild>

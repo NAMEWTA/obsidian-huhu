@@ -23,6 +23,8 @@ export const HUHU_EXCLUDE_PATTERNS: readonly string[] = [
 	'!**/.huhu/automation/definitions/',
 	'**/.huhu/cache/',
 	'**/.huhu/recovery/',
+	// Exported business backups hold readable private data (inbox bodies, run results); they are never committed.
+	'**/.huhu/exports/',
 	'**/.huhu/migrations/',
 	'**/.huhu/**/*.lock',
 	'**/.huhu/**/*.tmp',

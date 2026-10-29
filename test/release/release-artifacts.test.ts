@@ -67,15 +67,44 @@ describe('release assets', () => {
 		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/complete NOTICE/);
 	});
 
-	it('checks each helper binary against its checksum file', () => {
+	/** The ten native assets of a release (helpers and CLIs), written the way terminal-build packages them. */
+	function terminalDir(mutate?: (dir: string, cli: string[]) => void) {
 		const dir = scratch();
-		for (const name of terminalAssets) {
+		const schema = JSON.parse(readFileSync(path.join(root, 'src/shared/native/control-schema.json'), 'utf8')) as { protocolVersion: number; helperProtocol: number };
+		const cli = terminalAssets.map((name) => name.replace('huhu-pty-', 'huhu-'));
+		for (const name of [...terminalAssets, ...cli]) {
 			writeFileSync(path.join(dir, name), name);
 			writeFileSync(path.join(dir, `${name}.sha256`), `${sha256(name)}  ${name}\n`);
 		}
-		expect(() => verifyTerminalAssets(dir)).not.toThrow();
-		writeFileSync(path.join(dir, terminalAssets[0]!), 'tampered');
-		expect(() => verifyTerminalAssets(dir)).toThrow(/checksum mismatch/);
+		for (const name of cli) writeFileSync(path.join(dir, `${name}.compat.json`), JSON.stringify({ schema: 1, asset: name, cliProtocol: schema.protocolVersion, helperProtocol: schema.helperProtocol, sha256: sha256(name) }));
+		mutate?.(dir, cli);
+		return dir;
+	}
+
+	it('checks each helper and CLI binary against its checksum file', () => {
+		expect(() => verifyTerminalAssets(terminalDir())).not.toThrow();
+		expect(() => verifyTerminalAssets(terminalDir((dir) => writeFileSync(path.join(dir, terminalAssets[0]!), 'tampered')))).toThrow(/checksum mismatch/);
+		expect(() => verifyTerminalAssets(terminalDir((dir, cli) => writeFileSync(path.join(dir, cli[2]!), 'tampered')))).toThrow(/checksum mismatch/);
+	});
+
+	it('requires all ten native assets and rejects a missing CLI or stray file', () => {
+		expect(() => verifyTerminalAssets(terminalDir((dir, cli) => rmSync(path.join(dir, cli[0]!))))).toThrow(/exactly five helpers, five CLIs/);
+		expect(() => verifyTerminalAssets(terminalDir((dir, cli) => rmSync(path.join(dir, `${cli[1]}.compat.json`))))).toThrow(/exactly five helpers, five CLIs/);
+		expect(() => verifyTerminalAssets(terminalDir((dir) => writeFileSync(path.join(dir, 'huhu-extra'), 'x')))).toThrow(/exactly five helpers/);
+	});
+
+	it('rejects a CLI compatibility record for another binary, protocol major or helper protocol', () => {
+		const rewrite = (change: (compat: Record<string, unknown>) => void) => terminalDir((dir, cli) => {
+			const file = path.join(dir, `${cli[3]}.compat.json`), compat = JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown>;
+			change(compat);
+			writeFileSync(file, JSON.stringify(compat));
+		});
+		expect(() => verifyTerminalAssets(rewrite((c) => { c.cliProtocol = 2; }))).toThrow(/CLI protocol major/);
+		expect(() => verifyTerminalAssets(rewrite((c) => { c.helperProtocol = 99; }))).toThrow(/helper protocol/);
+		expect(() => verifyTerminalAssets(rewrite((c) => { c.sha256 = sha256('another build'); }))).toThrow(/describe the published binary/);
+		expect(() => verifyTerminalAssets(rewrite((c) => { c.asset = 'huhu-linux-x64'; }))).toThrow(/name its own asset/);
+		expect(() => verifyTerminalAssets(rewrite((c) => { c.extra = true; }))).toThrow(/unexpected fields/);
+		expect(() => verifyTerminalAssets(terminalDir((dir, cli) => writeFileSync(path.join(dir, `${cli[0]}.compat.json`), '{oops')))).toThrow(/valid JSON/);
 	});
 
 	it('writes sha256sum lines for every file, sorted, without listing itself', () => {

@@ -77,10 +77,10 @@ jobs:
                   RELEASE_TAG: ${{ github.ref_name }}
               run: node scripts/verify-release-artifacts.mjs "$RELEASE_TAG" terminal-artifacts
 
-            - name: Exercise packaged Linux helper
+            - name: Exercise packaged Linux helper and control CLI
               run: |
-                  chmod +x terminal-artifacts/huhu-pty-linux-x64
-                  node scripts/verify-pty-helper.mjs terminal-artifacts/huhu-pty-linux-x64
+                  chmod +x terminal-artifacts/huhu-pty-linux-x64 terminal-artifacts/huhu-linux-x64
+                  node scripts/verify-pty-helper.mjs terminal-artifacts/huhu-pty-linux-x64 terminal-artifacts/huhu-linux-x64
 
             - name: Checksums for every asset
               env:

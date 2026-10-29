@@ -17,3 +17,10 @@ REPORT: CHG/sessions/20261027T-claude/108-t18-platform-acceptance/REPORT.md (if 
 - T-02 writer lease port is a deterministic hash of device + directory identity (writer-owner.ts writerPort, range 16384–65535). If an unrelated local process holds that port, Space writes fail closed with OWNER_CONFLICT:port-in-use for that vault. Tests now use injectable free ports (sessions/20261027T-claude/113-writer-port-flake). Document symptom + workaround (free the port / restart) in the user hand-off; production semantics unchanged.
 - Observed load flakes: pty/binary.test.ts 5 s timeout and hook-spool rmdir ENOENT unhandled error under full parallel vitest (both pass alone). Investigate and fix if test-only (timeouts/cleanup races) — tests/fixtures are in your write set only if listed; otherwise report.
 - Remaining controller-managed-runtimes.test.ts, ports.test.ts, writer-owner.test.ts still use hashed ports (same flake exposure); switch to freeWriterPorts() if in write set, else report.
+
+## Lead notes at dispatch (after T-01..T-17 done)
+- All upstream evidence: CHG/evidence/T-01.md … T-17.md (T-11..T-17 have §/tables with review report SHAs and AC JSON). Aggregate the 64-AC matrix from those (AC → ticket → tests/evidence → passed-code | user-owned-not-run), plus NFRs and DESIGN four pages.
+- You MAY write CHG/evidence/T-18-ac-matrix.md and CHG/evidence/T-18-manual-checklists.md (or docs/agent-workbench-acceptance.md for the user-facing checklist) — these are added to your write set.
+- Bundle budgets are tight (output 6,881,280): any new plugin code must stay test-only/lazy; STOP and report numbers if over; do not edit bundle-budget.json.
+- No remote actions; only Linux x64 executes here.
+- If REPORT write is refused, return the full report in your reply.
