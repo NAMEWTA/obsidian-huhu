@@ -24,6 +24,7 @@ func TestPublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritan
 	afterRemove := make(chan struct{})
 	afterForget := make(chan struct{})
 	firstDispatch := make(chan error, 1)
+	heldBeforeForget := make(chan struct{}, 1)
 	finished := make(chan error, 1)
 	var removeOnce, forgetOnce sync.Once
 	var callbacks atomic.Int32
@@ -71,6 +72,10 @@ func TestPublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritan
 			if e != nil {
 				return e
 			}
+			// Reserve rechecks access. Forget must not overlap that check:
+			// the pre-forget reservation is held, then Forget runs, then
+			// Dispatch has to observe MEMORY_FORGOTTEN.
+			heldBeforeForget <- struct{}{}
 			select {
 			case <-afterForget:
 			case <-call.Done():
@@ -174,6 +179,13 @@ func TestPublishedMemoryAncestorsKeepRealNamespaceWithoutPrivateLibraryInheritan
 		}
 	case <-time.After(5 * time.Second):
 		t.Fatal("C did not dispatch after author removal")
+	}
+	select {
+	case <-heldBeforeForget:
+	case e := <-finished:
+		t.Fatal(e)
+	case <-time.After(5 * time.Second):
+		t.Fatal("C did not hold the pre-forget attempt")
 	}
 	if _, e = core.API.Memory.Forget(ctx, owner, api.MemoryForget{CommandMeta: meta(t, core, "forget-B", item.Revision), Namespace: ns, ID: item.ID}); e != nil {
 		t.Fatal(e)

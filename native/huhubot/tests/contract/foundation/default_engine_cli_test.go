@@ -138,6 +138,11 @@ func testDefaultProtocolCLI(t *testing.T, protocol string) {
 	var once sync.Once
 	var waitErr error
 	wait := func() error { once.Do(func() { waitErr = cmd.Wait() }); return waitErr }
+	t.Cleanup(func() {
+		if t.Failed() {
+			t.Logf("default CLI wait=%v stderr=%s", wait(), stderr.String())
+		}
+	})
 	// Register before any RPC assertion. Every fatal path closes all pipes,
 	// cancels the actual process and performs precisely the same real Wait.
 	t.Cleanup(func() {

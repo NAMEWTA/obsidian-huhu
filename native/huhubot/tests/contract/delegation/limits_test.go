@@ -155,12 +155,15 @@ func TestPersistentDepthTotalChildrenAndQuestionWakeBounds(t *testing.T) {
 				text = "depth-0"
 			}
 			r := start(t, c, session(t, c, a), text)
+			// Liveness only. Thirty-two child delegations under a parallel
+			// `go test ./...` on a shared runner can pass 5s before the
+			// limit call returns. The persisted-count assertion below stays.
 			select {
 			case e := <-checked:
 				if e != nil {
 					t.Fatal(e)
 				}
-			case <-time.After(5 * time.Second):
+			case <-time.After(30 * time.Second):
 				t.Fatal("limit not exercised")
 			}
 			wait(t, c, r.RunID, "succeeded")

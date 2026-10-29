@@ -11,10 +11,28 @@ import (
 	_ "github.com/ncruces/go-sqlite3/driver"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
 type Store struct{ db *sql.DB }
+
+// sqliteDSN builds a file URI SQLite will open on every supported OS.
+// url.URL treats a Windows drive path as a host (file://C:/...), and a raw
+// backslash is percent-encoded, so the driver never reaches the database.
+// An absolute drive path needs the empty-host form file:///C:/...
+func sqliteDSN(path string) string {
+	slash := strings.ReplaceAll(path, `\`, "/")
+	if len(slash) >= 2 && slash[0] != '/' && slash[1] == ':' {
+		slash = "/" + slash
+	}
+	u := url.URL{Scheme: "file", Path: slash}
+	q := u.Query()
+	q.Add("_pragma", "busy_timeout(150)")
+	q.Add("_pragma", "foreign_keys(1)")
+	u.RawQuery = q.Encode()
+	return u.String()
+}
 
 func failure(kind, reason string) error                           { return &api.Fault{Kind: kind, Reason: reason} }
 func Open(ctx context.Context, h *profile.Handle) (*Store, error) { return OpenWithBackup(ctx, h, nil) }
@@ -26,12 +44,7 @@ func OpenWithBackup(ctx context.Context, h *profile.Handle, complete CompleteBac
 	if !h.New && info.Size() == 0 {
 		return nil, failure("CONFLICT", "PROFILE_DB_EMPTY")
 	}
-	u := url.URL{Scheme: "file", Path: h.DatabasePath}
-	q := u.Query()
-	q.Add("_pragma", "busy_timeout(150)")
-	q.Add("_pragma", "foreign_keys(1)")
-	u.RawQuery = q.Encode()
-	db, err := sql.Open("sqlite3", u.String())
+	db, err := sql.Open("sqlite3", sqliteDSN(h.DatabasePath))
 	if err != nil {
 		return nil, failure("CONFLICT", "PROFILE_DB_OPEN_FAILED")
 	}

@@ -201,9 +201,11 @@ func runWaitingSupplement(t *testing.T, mode string) {
 	case <-time.After(5 * time.Second):
 		t.Fatal("root did not delegate")
 	}
+	// Liveness only. On macos-15-intel the invalid supplement was still
+	// waiting_children when 8s expired; the failed-state assertions stay.
 	waitRun := func(runID, state string) {
 		t.Helper()
-		deadline := time.Now().Add(8 * time.Second)
+		deadline := time.Now().Add(30 * time.Second)
 		for {
 			r, e := core.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: status.Profile.ProfileID, ID: runID})
 			if e != nil {
@@ -222,7 +224,7 @@ func runWaitingSupplement(t *testing.T, mode string) {
 	if corrupt {
 		select {
 		case <-leafEntered:
-		case <-time.After(8 * time.Second):
+		case <-time.After(30 * time.Second):
 			t.Fatal("leaf did not enter Engine before invalid waiting supplement")
 		}
 	}
@@ -248,7 +250,7 @@ func runWaitingSupplement(t *testing.T, mode string) {
 	leafOnce.Do(func() { close(leafRelease) })
 	if mode == "revoke" {
 		var state, reason string
-		deadline := time.Now().Add(8 * time.Second)
+		deadline := time.Now().Add(30 * time.Second)
 		for {
 			if err := db.QueryRow("SELECT status,reason FROM execution_runs WHERE run_id=?", delegation.ChildRunID).Scan(&state, &reason); err != nil {
 				t.Fatal(err)
@@ -304,7 +306,7 @@ func runWaitingSupplement(t *testing.T, mode string) {
 	var in api.EngineResumeInput
 	select {
 	case in = <-resumed:
-	case <-time.After(8 * time.Second):
+	case <-time.After(30 * time.Second):
 		t.Fatal("same middle Run did not resume")
 	}
 	if in.Input.RunID != delegation.ChildRunID || len(in.Input.Messages) != 0 || in.Input.ShortTerm == nil || in.Input.ShortTerm.BindingDigest == "" || len(in.Decision.Children) != 1 || in.Decision.Children[0].Text != "leaf done" || in.Decision.ResumeInbox == nil || len(in.Decision.ResumeInbox.Messages) != 1 {
