@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -31,40 +31,43 @@ walk(root);
 
 // Local scratch files (for example `temp/`) are git-ignored and never part of the documentation inventory.
 // A pipe never reliably delivers EOF to Git for Windows; a real file handle does.
-const inventory = path.join(os.tmpdir(), `.huhu-git-check-ignore-${process.pid}`);
-fs.writeFileSync(inventory, Buffer.from(files.join('\0') + '\0'));
-const inventoryFd = fs.openSync(inventory, 'r');
-let ignored;
-try {
-	ignored = await new Promise((resolve, reject) => {
-		const child = spawn('git', ['check-ignore', '-z', '--stdin'], {
-			cwd: root,
-			stdio: [inventoryFd, 'pipe', 'pipe'],
-			windowsHide: true,
+// One batched query per question: a Git process per path costs tens of milliseconds on Windows.
+let ignoreQueries = 0;
+async function gitIgnored(paths) {
+	if (paths.length === 0) return new Set();
+	const inventory = path.join(os.tmpdir(), `.huhu-git-check-ignore-${process.pid}-${ignoreQueries++}`);
+	fs.writeFileSync(inventory, Buffer.from(paths.join('\0') + '\0'));
+	const inventoryFd = fs.openSync(inventory, 'r');
+	try {
+		const { status, stdout } = await new Promise((resolve, reject) => {
+			const child = spawn('git', ['check-ignore', '-z', '--stdin'], {
+				cwd: root,
+				stdio: [inventoryFd, 'pipe', 'pipe'],
+				windowsHide: true,
+			});
+			let stdout = '';
+			let stderr = '';
+			const timer = setTimeout(() => {
+				child.kill();
+				reject(new Error('git check-ignore timed out'));
+			}, 10_000);
+			child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
+			child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
+			child.on('error', (error) => { clearTimeout(timer); reject(error); });
+			child.on('close', (status) => {
+				clearTimeout(timer);
+				if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
+				else resolve({ status, stdout });
+			});
 		});
-		let stdout = '';
-		let stderr = '';
-		const timer = setTimeout(() => {
-			child.kill();
-			reject(new Error('git check-ignore timed out'));
-		}, 10_000);
-		child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
-		child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
-		child.on('error', (error) => { clearTimeout(timer); reject(error); });
-		child.on('close', (status) => {
-			clearTimeout(timer);
-			if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
-			else resolve({ status, stdout });
-		});
-	});
-} finally {
-	fs.closeSync(inventoryFd);
-	fs.rmSync(inventory, { force: true });
+		return new Set(status === 0 ? stdout.split('\0').filter(Boolean).map(posix) : []);
+	} finally {
+		fs.closeSync(inventoryFd);
+		fs.rmSync(inventory, { force: true });
+	}
 }
-if (ignored.status === 0) {
-	const skip = new Set(ignored.stdout.split('\0').filter(Boolean).map(posix));
-	files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
-}
+const skip = await gitIgnored(files);
+files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
 
 const counts = new Map();
 for (const file of files) {
@@ -195,8 +198,9 @@ function checkTarget(fromFile, raw) {
 		if (missing && !vaultExample) {
 			// Session evidence logs are gitignored on purpose. A link to them is a local
 			// pointer, not a repository document that this gate can require to exist.
-			if (spawnSync('git', ['check-ignore', '-q', '--', relative], { cwd: root, windowsHide: true }).status === 0) return;
-			failures.push(`${fromFile}: missing local link ${target}`);
+			// Paths outside the repository cannot be ignored by it and fail outright.
+			const inside = !relative.startsWith('..') && !path.isAbsolute(relative);
+			failures.push(inside ? { unlessIgnored: relative, text: `${fromFile}: missing local link ${target}` } : `${fromFile}: missing local link ${target}`);
 			return;
 		}
 		if (missing) return;
@@ -220,6 +224,14 @@ for (const [file, body] of bodies) {
 		if (!destination) failures.push(`${file}: unresolved reference link [${match[1]}][${match[2]}]`);
 		else checkTarget(file, destination);
 	}
+}
+
+{
+	const pending = failures.filter((failure) => typeof failure !== 'string');
+	const ignoredLinks = await gitIgnored([...new Set(pending.map((failure) => failure.unlessIgnored))]);
+	const resolved = failures.flatMap((failure) =>
+		typeof failure === 'string' ? [failure] : ignoredLinks.has(failure.unlessIgnored) ? [] : [failure.text]);
+	failures.splice(0, failures.length, ...resolved);
 }
 
 function readSource(directory, into) {
