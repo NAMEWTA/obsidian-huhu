@@ -7,9 +7,11 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -187,8 +189,8 @@ func waitApproval(t *testing.T, f *fixture) api.Approval {
 			return page.Items[0]
 		}
 		if time.Now().After(until) {
-			r, _ := f.core.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: f.command.ProfileID, ID: "not-yet-known"})
-			t.Fatalf("approval not published %#v", r)
+			// Failure-only evidence: the previous GetRun of a placeholder id always printed an empty Run.
+			t.Fatalf("approval not published within 3s; runs: %s\n%s", f.runStates(), projectStacks())
 		}
 		time.Sleep(5 * time.Millisecond)
 	}
@@ -493,4 +495,45 @@ func TestApprovalPaginationContinuesPastRevokedPrefix(t *testing.T) {
 	if len(visible) != 1 || visible[0].ID != wanted {
 		t.Fatalf("readable approval behind revoked prefix became unreachable: %#v", visible)
 	}
+}
+
+// runStates reads each Run's status and last event through a separate read-only
+// handle, so it reports even when the Core's only connection is held.
+func (f *fixture) runStates() string {
+	db, e := sql.Open("sqlite3", "file:"+filepath.ToSlash(filepath.Join(f.locator, "profile.sqlite3"))+"?mode=ro&_pragma=busy_timeout(500)")
+	if e != nil {
+		return e.Error()
+	}
+	defer func() { _ = db.Close() }()
+	rows, e := db.Query("SELECT r.run_id, r.status, COALESCE((SELECT event_type FROM execution_events v WHERE v.run_id=r.run_id ORDER BY seq DESC LIMIT 1),'') FROM execution_runs r ORDER BY r.rowid")
+	if e != nil {
+		return e.Error()
+	}
+	defer func() { _ = rows.Close() }()
+	var out bytes.Buffer
+	for rows.Next() {
+		var id, status, last string
+		if e = rows.Scan(&id, &status, &last); e != nil {
+			return e.Error()
+		}
+		fmt.Fprintf(&out, "%s=%s(last %s) ", id, status, last)
+	}
+	if e = rows.Err(); e != nil {
+		out.WriteString(e.Error())
+	}
+	return out.String()
+}
+
+// projectStacks keeps only goroutines with this module's frames, bounded.
+func projectStacks() string {
+	buf := make([]byte, 8<<20)
+	buf = buf[:runtime.Stack(buf, true)]
+	var out bytes.Buffer
+	for _, g := range bytes.Split(buf, []byte("\n\n")) {
+		if bytes.Contains(g, []byte("obsidian-huhu/native/huhubot/internal")) && out.Len() < 256<<10 {
+			out.Write(g)
+			out.WriteString("\n\n")
+		}
+	}
+	return out.String()
 }
