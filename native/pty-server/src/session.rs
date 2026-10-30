@@ -960,11 +960,13 @@ enum ReadEnd {
     Eof,
     Failed,
 }
-/// After the first bytes, keep draining the PTY into the same chunk for up to
-/// `PTY_COALESCE` (or until the chunk is full). A line-at-a-time producer then
-/// arrives as one frame per window, as it did with the former fixed 5 ms sleep,
-/// while the kernel buffer is still emptied as soon as it is readable, so a
-/// producer blocked on macOS's small PTY buffer is not throttled by the window.
+/// After a small first read, keep draining the PTY into the same chunk for up to
+/// `PTY_COALESCE` or until it holds `PTY_COALESCE_BYTES`. A line-at-a-time producer
+/// then arrives as one frame per window, as it did with the former fixed 5 ms sleep,
+/// while the kernel buffer is still emptied as soon as it is readable, so a producer
+/// blocked on macOS's small PTY buffer is not throttled by the window. A read that is
+/// already that large is forwarded as is and a coalesced chunk never grows past the
+/// limit, so a flood keeps its kernel-sized frames.
 #[cfg(unix)]
 fn coalesce(
     reader: &mut dyn std::io::Read,
@@ -974,9 +976,11 @@ fn coalesce(
     closed: impl Fn() -> bool,
 ) -> (usize, Option<ReadEnd>) {
     const PTY_COALESCE: Duration = Duration::from_millis(5);
+    const PTY_COALESCE_BYTES: usize = 2048;
     let until = Instant::now() + PTY_COALESCE;
-    while filled < buffer.len() && !closed() {
-        match reader.read(&mut buffer[filled..]) {
+    let limit = PTY_COALESCE_BYTES.min(buffer.len());
+    while filled < limit && !closed() {
+        match reader.read(&mut buffer[filled..limit]) {
             Ok(0) => return (filled, Some(ReadEnd::Eof)),
             Ok(n) => filled += n,
             Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
