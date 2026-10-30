@@ -369,6 +369,13 @@ func OpenWithOptions(ctx context.Context, root, locator string, options Options)
 // An accepted shutdown acknowledgment means stop was requested, not drained.
 func (c *Core) RequestStop() error {
 	c.once.Do(func() {
+		// Cancel the Executor before closing the gates its workers depend on.
+		// models.Stop cancels in-flight model calls and the admission gates fail
+		// new dispatches; a worker whose Engine returns because of either must
+		// already observe Executor cancellation, or it finalizes a shutdown
+		// interruption as a terminal run failure instead of leaving the run for
+		// restart recovery.
+		c.executor.Stop()
 		c.memory.StopAdmission()
 		c.stopAdmission()
 		c.executions.StopAdmission()
@@ -383,7 +390,6 @@ func (c *Core) RequestStop() error {
 		}
 		c.tooling.StopInspections()
 		c.diagPhase("request-stop")
-		c.executor.Stop()
 		go c.drain()
 	})
 	return c.stopErr
