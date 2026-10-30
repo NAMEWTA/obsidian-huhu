@@ -1228,7 +1228,8 @@ mod process {
             .unwrap()
             .file_type()
             .is_symlink());
-        fs::remove_file(&path).unwrap();
+        // Restore in one rename: removing the symlink first left a moment with no
+        // locator at all, which the closing helper correctly treats as already gone.
         fs::rename(&original, &path).unwrap();
         h.next("control-unregistered");
         assert!(!path.exists());
