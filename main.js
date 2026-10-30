@@ -5131,7 +5131,9 @@ function hookCode(error) { return error && error.code; }
 ${w3t}
 function hookClaim(parent, count) {
  hookPath(parent);
- for (let i = 0; i < count; i++) { const target = path.join(parent, String(i)); try { fs.mkdirSync(target, { mode: 0o700 }); return target; } catch (error) { if (hookCode(error) !== 'EEXIST') throw error; } }
+ let denied, used;
+ for (let i=0;i<count;i++) { const target=path.join(parent, String(i));try { fs.mkdirSync(target, { mode: 0o700 });return target;} catch (error) { if (hookCode(error)==='EPERM'&&process.platform==='win32') denied=error;else if (hookCode(error)!=='EEXIST') throw error;else used=1;} }
+ if (denied&&!used) throw denied;
  throw Error('hookCapacity');
 }
 function hookFault(reason) {
@@ -5171,14 +5173,14 @@ function hookTicket() {
 
 function hookJsonBytes(value, max, depth = 0) {
  let total = 0;
- function add(n) { total += n; if (total > max) throw Error('hookPublicationTooLarge'); }
- function string(text) { add(2); for (let i = 0; i < text.length; i++) { const c = text.charCodeAt(i); if (c === 34 || c === 92 || c === 8 || c === 9 || c === 10 || c === 12 || c === 13) add(2); else if (c < 32) add(6); else if (c < 128) add(1); else if (c < 2048) add(2); else if (c >= 0xd800 && c <= 0xdbff && i + 1 < text.length && text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff) { add(4); i++; } else if (c >= 0xd800 && c <= 0xdfff) add(6); else add(3); } }
+ function add(n) { total+=n; if (total>max) throw Error('hookPublicationTooLarge'); }
+ function string(text) { add(2); for (let i = 0; i<text.length; i++) { const c = text.charCodeAt(i); if (c===34||c===92||c===8||c===9||c===10||c===12||c===13) add(2); else if (c<32) add(6); else if (c<128) add(1); else if (c<2048) add(2); else if (c>=0xd800&&c<=0xdbff&&i + 1<text.length&&text.charCodeAt(i + 1)>=0xdc00&&text.charCodeAt(i + 1)<=0xdfff) { add(4); i++; } else if (c>=0xd800&&c<=0xdfff) add(6); else add(3); } }
  function visit(item, level) {
-  if (level > 8) throw Error('hookPayloadInvalid');
-  if (item === null) return add(4); if (typeof item === 'string') return string(item); if (typeof item === 'number' && Number.isFinite(item)) return add(String(item).length); if (typeof item === 'boolean') return add(item ? 4 : 5);
-  if (!item || typeof item !== 'object' || Array.isArray(item) || Object.getPrototypeOf(item) !== Object.prototype) throw Error('hookPayloadInvalid');
-  const keys = Object.keys(item); if (keys.length > 32 || Object.prototype.hasOwnProperty.call(item, 'toJSON')) throw Error('hookPayloadInvalid'); add(2); let first = true;
-  for (const key of keys) { const descriptor = Object.getOwnPropertyDescriptor(item, key); if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, 'value')) throw Error('hookPayloadInvalid'); if (!first) add(1); first = false; string(key); add(1); visit(descriptor.value, level + 1); }
+  if (level>8) throw Error('hookPayloadInvalid');
+  if (item===null) return add(4); if (typeof item==='string') return string(item); if (typeof item==='number'&&Number.isFinite(item)) return add(String(item).length); if (typeof item==='boolean') return add(item ? 4 : 5);
+  if (!item||typeof item!=='object'||Array.isArray(item)||Object.getPrototypeOf(item)!==Object.prototype) throw Error('hookPayloadInvalid');
+  const keys = Object.keys(item); if (keys.length>32||Object.prototype.hasOwnProperty.call(item, 'toJSON')) throw Error('hookPayloadInvalid'); add(2); let first = true;
+  for (const key of keys) { const descriptor = Object.getOwnPropertyDescriptor(item, key); if (!descriptor||!Object.prototype.hasOwnProperty.call(descriptor, 'value')) throw Error('hookPayloadInvalid'); if (!first) add(1); first = false; string(key); add(1); visit(descriptor.value, level + 1); }
  }
  visit(value, depth); return total;
 }
