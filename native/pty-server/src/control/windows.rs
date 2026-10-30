@@ -319,14 +319,54 @@ pub fn physical(path: &Path) -> io::Result<(String, String, String)> {
     ))
 }
 pub struct Stream(DuplexPipeStream<pipe_mode::Bytes>);
+// Both ends run in PIPE_NOWAIT mode. There an empty pipe makes ReadFile fail with ERROR_NO_DATA,
+// which std maps to BrokenPipe and interprocess then reports as EOF (Ok(0)), so "no data yet" was
+// indistinguishable from "peer closed". Ask the pipe how many bytes are buffered first: none while
+// connected is WouldBlock; a closed peer is EOF only once everything it wrote has been read.
 impl io::Read for Stream {
     fn read(&mut self, b: &mut [u8]) -> io::Result<usize> {
-        io::Read::read(&mut self.0, b)
+        if b.is_empty() {
+            return Ok(0);
+        }
+        let mut available = 0u32;
+        if unsafe {
+            windows_sys::Win32::System::Pipes::PeekNamedPipe(
+                self.0.as_raw_handle(),
+                ptr::null_mut(),
+                0,
+                ptr::null_mut(),
+                &mut available,
+                ptr::null_mut(),
+            )
+        } == 0
+        {
+            let error = io::Error::last_os_error();
+            return match error.raw_os_error() {
+                Some(code)
+                    if code == ERROR_BROKEN_PIPE as i32
+                        || code == ERROR_PIPE_NOT_CONNECTED as i32
+                        || code == ERROR_NO_DATA as i32 =>
+                {
+                    Ok(0)
+                }
+                _ => Err(error),
+            };
+        }
+        if available == 0 {
+            return Err(io::ErrorKind::WouldBlock.into());
+        }
+        let n = b.len().min(available as usize);
+        io::Read::read(&mut self.0, &mut b[..n])
     }
 }
 impl io::Write for Stream {
+    // A PIPE_NOWAIT byte pipe whose buffer is full "succeeds" having written nothing; that is
+    // backpressure, not a closed peer.
     fn write(&mut self, b: &[u8]) -> io::Result<usize> {
-        io::Write::write(&mut self.0, b)
+        match io::Write::write(&mut self.0, b)? {
+            0 if !b.is_empty() => Err(io::ErrorKind::WouldBlock.into()),
+            n => Ok(n),
+        }
     }
     fn flush(&mut self) -> io::Result<()> {
         Ok(())
@@ -400,6 +440,50 @@ mod tests {
         drop(file);
         remove_identity(&file_path, &id).unwrap();
         fs::remove_dir(&path).unwrap();
+    }
+    #[test]
+    fn nonblocking_pipe_distinguishes_no_data_yet_from_a_closed_peer() {
+        use std::io::{Read, Write};
+        let endpoint = endpoint(Path::new(""), &nonce().unwrap());
+        let listener = listen(&endpoint).unwrap();
+        let mut client = connect(&endpoint).unwrap();
+        let mut server = loop {
+            match listener.accept() {
+                Ok(v) => break v,
+                Err(e) if e.kind() == io::ErrorKind::WouldBlock => {
+                    std::thread::sleep(std::time::Duration::from_millis(2))
+                }
+                Err(e) => panic!("{e}"),
+            }
+        };
+        let mut buf = [0u8; 16];
+        // Connected and empty in both directions: not EOF.
+        assert_eq!(
+            server.read(&mut buf).unwrap_err().kind(),
+            io::ErrorKind::WouldBlock
+        );
+        assert_eq!(
+            client.read(&mut buf).unwrap_err().kind(),
+            io::ErrorKind::WouldBlock
+        );
+        assert_eq!(client.write(b"auth").unwrap(), 4);
+        assert_eq!(server.read(&mut buf).unwrap(), 4);
+        assert_eq!(&buf[..4], b"auth");
+        assert_eq!(server.write(b"reply").unwrap(), 5);
+        drop(server);
+        // Bytes written before the peer closed are still delivered, then EOF.
+        let mut got = Vec::new();
+        loop {
+            match client.read(&mut buf) {
+                Ok(0) => break,
+                Ok(n) => got.extend_from_slice(&buf[..n]),
+                Err(e) if e.kind() == io::ErrorKind::WouldBlock => {
+                    std::thread::sleep(std::time::Duration::from_millis(2))
+                }
+                Err(e) => panic!("{e}"),
+            }
+        }
+        assert_eq!(got, b"reply");
     }
 }
 
