@@ -472,7 +472,7 @@ func (s *Store) AppendEvent(ctx context.Context, w executorapp.Work, event api.E
 	if event.Type == "text-delta" {
 		event.Type = "text.delta"
 	}
-	return s.Base.WithinTx(ctx, func(tx *sql.Tx) error {
+	return s.Base.WithinObservationTx(ctx, func(tx *sql.Tx) error {
 		if s.recovery != nil {
 			if e := s.recovery.CheckInTx(ctx, tx, w.Run.ID); e != nil {
 				return e

@@ -4,6 +4,7 @@ package base
 import (
 	"context"
 	"database/sql"
+	"database/sql/driver"
 	"fmt"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
@@ -228,6 +229,23 @@ func (s *Store) Database() *sql.DB { return s.db }
 // on Windows runners that stalled shutdown past its bound. Ending through the
 // deferred Rollback instead returns the healthy connection to the pool.
 func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
+	return s.withinTx(ctx, false, work)
+}
+
+// WithinObservationTx is WithinTx for a streamed Engine observation (a text or
+// tool delta). Its commit is ordered and survives a process crash like any
+// other, but it does not wait for its own WAL fsync: the Profile runs in WAL
+// mode, so the next ordinary (synchronous=FULL) commit — at the latest the
+// Run's lifecycle or terminal fact — makes every earlier frame durable too.
+// Only trailing observations of a Run that has no later durable fact can be
+// lost to a power failure; lifecycle, effect, approval and grant facts never
+// use this path. A Run streaming hundreds of deltas otherwise paid one full
+// FlushFileBuffers per delta, which on Windows took seconds.
+func (s *Store) WithinObservationTx(ctx context.Context, work func(*sql.Tx) error) error {
+	return s.withinTx(ctx, true, work)
+}
+
+func (s *Store) withinTx(ctx context.Context, observation bool, work func(*sql.Tx) error) error {
 	conn, err := s.db.Conn(ctx)
 	if err != nil {
 		if ctx.Err() != nil {
@@ -238,6 +256,19 @@ func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
 	defer func() { _ = conn.Close() }()
 	if err = ctx.Err(); err != nil {
 		return err
+	}
+	if observation {
+		if _, err = conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=NORMAL"); err != nil {
+			return err
+		}
+		// Runs after the transaction ends and before the connection returns to
+		// the pool. A connection that cannot be restored to FULL is discarded
+		// rather than handed to an ordinary commit.
+		defer func() {
+			if _, e := conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=FULL"); e != nil {
+				_ = conn.Raw(func(any) error { return driver.ErrBadConn })
+			}
+		}()
 	}
 	tx, err := conn.BeginTx(context.WithoutCancel(ctx), nil)
 	if err != nil {
