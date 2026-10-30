@@ -67,6 +67,7 @@ func openWithOptions(t *testing.T, options bootstrap.Options) *fixture {
 	}
 	t.Cleanup(func() {
 		if e := c.Close(); e != nil {
+			logProjectStacks(t)
 			t.Error(e)
 		}
 	})

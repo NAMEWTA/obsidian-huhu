@@ -36,6 +36,7 @@ func (f *fixture) waitTerminalFor(t *testing.T, run string, budget time.Duration
 	for {
 		r, e := f.c.API.Conversation.GetRun(bounded, owner, api.IDQuery{ProfileID: f.profile, ID: run})
 		if e != nil {
+			logProjectStacks(t)
 			t.Fatal(e)
 		}
 		if r.Status == "succeeded" || r.Status == "failed" {
@@ -45,6 +46,7 @@ func (f *fixture) waitTerminalFor(t *testing.T, run string, budget time.Duration
 		select {
 		case <-bounded.Done():
 			timer.Stop()
+			logProjectStacks(t)
 			t.Fatal("Run did not finish")
 		case <-timer.C:
 		}
