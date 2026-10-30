@@ -15,21 +15,30 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
 type Store struct {
 	db      *sql.DB
 	walPath string
+	// restartAt is the WAL size that triggers the next truncating checkpoint;
+	// zero means walRestartBytes. A checkpoint blocked by a reader moves it one
+	// step further, so later commits do not each wait on the busy handler.
+	restartAt       atomic.Int64
+	restartAttempts atomic.Int64
 }
 
 // walRestartBytes is the dirty WAL size at which a commit, after it has
 // released its write lock, tries a truncating checkpoint. The checkpoint is
 // not inside the transaction, so the Windows VFS uses the busy timeout
-// instead of an infinite pending-lock wait. 256KiB stays under the request
-// deadlines on a slow volume; smaller frames such as a deletion canary stay
-// in the WAL until EraseWAL.
-const walRestartBytes int64 = 256 * 1024
+// instead of an infinite pending-lock wait. It equals SQLite's default
+// autocheckpoint (1000 pages of 4 KiB): every checkpoint flushes the WAL and
+// the database file, and on Windows those two flushes, not the copied bytes,
+// dominate its cost. 256 KiB ran 284 checkpoints in one delegation contract
+// and made it miss its setup budget on the Windows Runner. Smaller frames
+// such as a deletion canary stay in the WAL until EraseWAL.
+const walRestartBytes int64 = 1000 * 4096
 
 // sqliteDSN builds a file URI SQLite will open on every supported OS.
 // url.URL treats a Windows drive path as a host (file://C:/...), and a raw
@@ -274,7 +283,7 @@ func (s *Store) ReadMetadata(ctx context.Context) (api.ProfileMetadata, error) {
 
 // Close makes every commit durable without a checkpoint (ADR-027). NORMAL
 // commits are already written to the WAL; only the WAL file still needs a
-// flush, and commits keep it near walRestartBytes, so this is bounded. The
+// flush, and commits keep it near walRestartBytes (4 MiB), so this is bounded. The
 // next open replays the WAL. A checkpoint here would also copy and flush
 // database pages inside the 3s stop budget.
 func (s *Store) Close() error {
@@ -391,9 +400,17 @@ func (s *Store) withinTx(ctx context.Context, durable bool, work func(*sql.Tx) e
 // RESERVED. A pinned reader makes TRUNCATE return within busy_timeout; the
 // commit itself has already succeeded.
 func (s *Store) restartWALIfLarge(conn *sql.Conn) {
+	threshold := max(s.restartAt.Load(), walRestartBytes)
 	info, err := os.Stat(s.walPath)
-	if err != nil || info.Size() < walRestartBytes {
+	if err != nil || info.Size() < threshold {
 		return
 	}
-	_, _ = conn.ExecContext(context.Background(), "PRAGMA wal_checkpoint(TRUNCATE)")
+	s.restartAttempts.Add(1)
+	var busy, frames, checkpointed int
+	err = conn.QueryRowContext(context.Background(), "PRAGMA wal_checkpoint(TRUNCATE)").Scan(&busy, &frames, &checkpointed)
+	if err == nil && busy == 0 {
+		s.restartAt.Store(0)
+		return
+	}
+	s.restartAt.Store(info.Size() + walRestartBytes)
 }

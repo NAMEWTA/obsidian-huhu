@@ -170,3 +170,99 @@ func TestCloseFlushesTheWALWithoutCheckpointing(t *testing.T) {
 		t.Fatalf("Close checkpointed or truncated the WAL: %v -> %v %v", before.Size(), after, e)
 	}
 }
+
+// The truncating checkpoint runs about once per walRestartBytes of WAL. A
+// reader that pins the WAL does not make every following commit wait on the
+// busy handler again, and the checkpoint resumes once the reader is gone.
+func TestWALRestartIsPacedBySizeAndBackedOffByAPinnedReader(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "profile.sqlite3")
+	if e := os.WriteFile(path, nil, 0600); e != nil {
+		t.Fatal(e)
+	}
+	s, e := Open(ctx, &profile.Handle{DatabasePath: path, New: true})
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer s.Close()
+	payload := bytes.Repeat([]byte("x"), 3500)
+	n := 0
+	write := func(rows int) {
+		t.Helper()
+		if e := s.WithinTx(ctx, func(tx *sql.Tx) error {
+			if _, err := tx.ExecContext(ctx, "CREATE TABLE IF NOT EXISTS wal_pace(n INTEGER PRIMARY KEY, b BLOB)"); err != nil {
+				return err
+			}
+			for range rows {
+				n++
+				if _, err := tx.ExecContext(ctx, "INSERT INTO wal_pace(n, b) VALUES(?, ?)", n, payload); err != nil {
+					return err
+				}
+			}
+			return nil
+		}); e != nil {
+			t.Fatal(e)
+		}
+	}
+	walSize := func() int64 {
+		info, err := os.Stat(path + "-wal")
+		if err != nil {
+			t.Fatal(err)
+		}
+		return info.Size()
+	}
+	// About 400 KiB per commit: the old 256 KiB threshold checkpointed after
+	// every one of these.
+	for range 8 {
+		write(100)
+	}
+	if got := s.restartAttempts.Load(); got != 0 {
+		t.Fatalf("%d checkpoints for %d WAL bytes, want none below %d", got, walSize(), walRestartBytes)
+	}
+	untilAttempt := func(want int64) {
+		t.Helper()
+		for i := 0; s.restartAttempts.Load() < want; i++ {
+			if i > 100 {
+				t.Fatalf("no checkpoint was tried at %d WAL bytes", walSize())
+			}
+			write(100)
+		}
+	}
+	untilAttempt(1)
+	if got := s.restartAttempts.Load(); got != 1 || walSize() != 0 {
+		t.Fatalf("attempts=%d wal=%d after crossing the threshold, want one truncating checkpoint", got, walSize())
+	}
+
+	reader, e := sql.Open("sqlite3", "file:"+path+"?_pragma=busy_timeout(500)")
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer reader.Close()
+	readTx, e := reader.BeginTx(ctx, &sql.TxOptions{ReadOnly: true})
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer readTx.Rollback()
+	var rows int
+	if e = readTx.QueryRowContext(ctx, "SELECT count(*) FROM wal_pace").Scan(&rows); e != nil {
+		t.Fatal(e)
+	}
+	untilAttempt(2)
+	blocked := s.restartAttempts.Load()
+	if blocked != 2 || walSize() < walRestartBytes {
+		t.Fatalf("attempts=%d wal=%d, want one checkpoint blocked by the pinned reader", blocked, walSize())
+	}
+	for range 20 {
+		write(1)
+	}
+	if got := s.restartAttempts.Load(); got != blocked {
+		t.Fatalf("%d small commits after a pinned checkpoint retried it %d times", 20, got-blocked)
+	}
+	if e = readTx.Rollback(); e != nil {
+		t.Fatal(e)
+	}
+	untilAttempt(blocked + 1)
+	if walSize() != 0 {
+		t.Fatalf("WAL stayed at %d bytes after the reader released it", walSize())
+	}
+}

@@ -819,3 +819,4 @@ T18 独立审查 121 指出两处 DESIGN 偏差。Lead 按 DESIGN 权威收敛�
 - 删除 198fb00 的临时关停诊断（`internal/bootstrap/diag_stop_tmp.go` 及 `core.go` 中全部 `diagPhase`/`diagTimeout` 调用）；`core.go` 与诊断前相比只剩 e3af8f9 的关停顺序修复。`go test ./...` 全部通过。
 - 恢复 ADR-027 的正常关闭持久性：836eeeb（另一云端代理提交）关闭了 checkpoint-on-close，使正常关闭不再刷盘最后一个屏障之后的 NORMAL 提交。`Store.Close` 现在先对 `-wal` 文件 fsync 再关闭句柄（不做检查点、不复制数据库页；提交在 WAL 超过 256 KiB 时 TRUNCATE，故通常有界），下次打开由 WAL 重放。新增 `TestCloseFlushesTheWALWithoutCheckpointing`（去掉修复即失败）。
 - 补记 836eeeb（另一云端代理提交）的 Profile 检查点语义与 9d18720 的关闭刷盘：huhu-bot-architecture 的 ADR-027、spec NFR-005/DEC-001、LOG-133。
+- Profile WAL 检查点节奏：836eeeb（另一云端代理提交）的 256 KiB 阈值使检查点频繁约 16 倍，且读者钉住 WAL 时每次提交都重试并等待 busy_timeout，导致 Windows 上委派合同超出 90 秒准备预算。阈值改为 SQLite 默认的 1000 页（4 MiB），阻挡后等 WAL 再增长一个阈值才重试；新增 `TestWALRestartIsPacedBySizeAndBackedOffByAPinnedReader`；ADR-027、NFR-005、LOG-133 同步。

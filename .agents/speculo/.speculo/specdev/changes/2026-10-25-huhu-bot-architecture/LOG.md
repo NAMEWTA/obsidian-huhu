@@ -1467,6 +1467,7 @@ Root共同Go r3实际1/Wait198.577880238秒，428输入零漂移；精确逐项�
 - **问题：** Windows 上的 SQLite 自动检查点运行在唯一的 Profile 连接内：WAL 超过 1000 页时，下一次提交会同步复制并刷盘。`sqlite3_close` 还会对整段脏 WAL 做检查点。两者都可能超出 3 秒关停预算和请求截止时间。
 - **结论（836eeeb）：** 每个池连接设 `wal_autocheckpoint=0` 与 `DBCONFIG_NO_CKPT_ON_CLOSE`，并在 WAL 模式下重设 `synchronous=NORMAL`。COMMIT 后若 `-wal` 不小于 256 KiB，执行一次 `PRAGMA wal_checkpoint(TRUNCATE)`；读者快照阻挡时不报错，下次提交再试。屏障提交仍为 FULL。`EraseWAL` 不变。
 - **修正（9d18720）：** 836eeeb 去掉关闭检查点后，正常关闭不再刷盘最后一个屏障之后的 NORMAL 提交，弱于 ADR-027 原文的“正常关闭刷盘全部提交”。`Store.Close` 改为先 fsync `-wal` 文件再关闭：不复制数据库页，大小通常受 256 KiB 阈值约束，下次打开由 WAL 重放。
-- **验证：** `TestCommitAndCloseDoNotCheckpointTheProfile`（836eeeb），`TestCloseFlushesTheWALWithoutCheckpointing`（去掉修复即失败），`TestDurableTxRaisesOnlyItsOwnCommit` 与 `TestExternalActionCommitsAreDurableBarriers` 不改断言。
+- **修正（检查点节奏）：** 836eeeb 的 256 KiB 阈值使检查点比原来 SQLite 默认（约 4 MiB 一次）频繁约 16 倍。本机 `TestWaitingParentBeyondOnePageReclaimsReadyResultAndRevisitsEarlierWaiters` 一个用例就有 284 次 TRUNCATE 检查点，每次都刷盘 WAL 与数据库文件。WAL 被读者快照钉住时，此后每次提交都重试并等待 `busy_timeout`。891a5f4 那一轮 Windows Node 作业中，该用例 104 秒后报 “target leaf was not publicly delegated”，超出 90 秒准备预算（836eeeb 之前同包在 Windows 上通常 5–48 秒）。阈值改为 4 MiB；检查点被阻挡时，WAL 再增长一个阈值后才重试。
+- **验证：** `TestWALRestartIsPacedBySizeAndBackedOffByAPinnedReader`（恢复 256 KiB 或每次重试都会失败），`TestCommitAndCloseDoNotCheckpointTheProfile`（836eeeb），`TestCloseFlushesTheWALWithoutCheckpointing`（去掉修复即失败），`TestDurableTxRaisesOnlyItsOwnCommit` 与 `TestExternalActionCommitsAreDurableBarriers` 不改断言。
 - **约束或不变量：** 进程崩溃不丢已提交事务；断电最坏丢失最近一个屏障/检查点之后的提交（ADR-027 不变）；正常关闭后全部提交已落盘。提交与关闭路径不做无界检查点。
 - **影响工件：** ADR-027、spec NFR-005 与 DEC-001、`sqlite/base/store.go`、`base/checkpoint_test.go`。
