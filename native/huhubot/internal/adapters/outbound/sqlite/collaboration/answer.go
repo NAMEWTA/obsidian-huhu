@@ -51,7 +51,7 @@ func (s *Store) answerInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdenti
 	if e = s.access.CheckInTx(ctx, tx, id, input, []string{"read", "send", "deliver"}); e != nil {
 		return out, e
 	}
-	out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: sender.agent.ID, ToAgentID: target.AgentID, Text: c.Text, Kind: "reply", Status: "answered", DelegationID: delegation, QuestionID: c.QuestionID, WorkThreadID: thread, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano)}
+	out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: sender.agent.ID, ToAgentID: target.AgentID, Text: c.Text, Kind: "reply", Status: "answered", DelegationID: delegation, QuestionID: c.QuestionID, WorkThreadID: thread, CreatedAt: time.Now().UTC().Format(api.TimestampLayout)}
 	_, e = tx.ExecContext(ctx, "INSERT INTO collaboration_messages(message_id,root_run_id,from_run_id,to_run_id,work_thread_id,from_agent_id,to_agent_id,principal_id,delegation_id,question_id,kind,status,text,source_json,derived_json,intent_id,input_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,'reply','answered',?,?,?,?,?,?)", out.ID, root, from, to, thread, out.FromAgentID, out.ToAgentID, id.PrincipalID(), delegation, c.QuestionID, c.Text, encode(sender.input.Sources), encode(sender.derived), c.IdempotencyKey, hashText(c.Text), out.CreatedAt)
 	if e != nil {
 		return out, e

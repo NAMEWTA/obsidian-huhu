@@ -141,7 +141,7 @@ func (s *Store) StartRun(ctx context.Context, id api.RequestIdentity, c api.RunS
 			return e
 		}
 		recipientJSON, _ := json.Marshal(input.Recipient)
-		_, e = tx.ExecContext(ctx, "INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at) VALUES(?,?,?,?,?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,?,'','','','',1,?)", runID, session.ID, id.PrincipalID(), userMessage, string(recipientJSON), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, snap.Token, c.Intent, jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), c.RetryOfRunID, time.Now().UTC().Format(time.RFC3339Nano))
+		_, e = tx.ExecContext(ctx, "INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at) VALUES(?,?,?,?,?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,?,'','','','',1,?)", runID, session.ID, id.PrincipalID(), userMessage, string(recipientJSON), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, snap.Token, c.Intent, jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), c.RetryOfRunID, time.Now().UTC().Format(api.TimestampLayout))
 		if e != nil {
 			return e
 		}
@@ -185,7 +185,7 @@ func (s *Store) StartRun(ctx context.Context, id api.RequestIdentity, c api.RunS
 		if n != 1 {
 			return conv.Fault("CONFLICT", "REVISION_CONFLICT")
 		}
-		if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", runID, time.Now().UTC().Format(time.RFC3339Nano), "{\"userMessageId\":\""+userMessage+"\"}"); e != nil {
+		if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", runID, time.Now().UTC().Format(api.TimestampLayout), "{\"userMessageId\":\""+userMessage+"\"}"); e != nil {
 			return e
 		}
 		out = api.RunReceipt{Receipt: api.Receipt{CommandID: c.CommandID, ReceiptID: api.NewID("receipt:"), Revision: "1"}, RunID: runID, Status: "accepted"}
@@ -385,7 +385,7 @@ func AddEventInTx(ctx context.Context, tx *sql.Tx, runID, eventType string, body
 	if e = tx.QueryRowContext(ctx, "UPDATE execution_runs SET event_seq=event_seq+1 WHERE run_id=? AND event_seq<9223372036854775807 RETURNING event_seq", runID).Scan(&seq); e != nil {
 		return e
 	}
-	_, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,?,?,?,?)", runID, seq, eventType, time.Now().UTC().Format(time.RFC3339Nano), string(b))
+	_, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,?,?,?,?)", runID, seq, eventType, time.Now().UTC().Format(api.TimestampLayout), string(b))
 	return e
 }
 func next(v string) string { n, _ := strconv.ParseInt(v, 10, 64); return strconv.FormatInt(n+1, 10) }

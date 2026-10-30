@@ -156,7 +156,7 @@ func (s *Store) Publish(ctx context.Context, x api.ToolExecution, token string, 
 			return e
 		}
 		id := api.NewID("approval:")
-		if _, e = tx.ExecContext(ctx, "INSERT INTO access_approvals VALUES(?,?,?,?,1,?,'pending',?)", id, effectID, x.Run.ID, x.Identity.PrincipalID(), expires.UTC().Format(time.RFC3339Nano), a.Ref); e != nil {
+		if _, e = tx.ExecContext(ctx, "INSERT INTO access_approvals VALUES(?,?,?,?,1,?,'pending',?)", id, effectID, x.Run.ID, x.Identity.PrincipalID(), expires.UTC().Format(api.TimestampLayout), a.Ref); e != nil {
 			return e
 		}
 		if _, e = tx.ExecContext(ctx, "UPDATE execution_effects SET state='awaiting_approval' WHERE effect_id=?", effectID); e != nil {

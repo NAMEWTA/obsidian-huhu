@@ -298,7 +298,7 @@ func (p *Package) Seal() error {
 		p.PackageID = newID("package:")
 	}
 	if p.CreatedAt == "" {
-		p.CreatedAt = time.Now().UTC().Format(time.RFC3339Nano)
+		p.CreatedAt = time.Now().UTC().Format(api.TimestampLayout)
 	}
 	if err := p.validateShape(); err != nil {
 		return err
@@ -539,7 +539,7 @@ func Import(ctx context.Context, plan ImportPlan, sink Sink) (Receipt, error) {
 		}
 		return ""
 	}
-	r := Receipt{ReceiptID: newID("portable-receipt:"), ProfileID: plan.Preview.TargetProfile, PackageHash: plan.Package.PackageHash, ImportedAt: time.Now().UTC().Format(time.RFC3339Nano)}
+	r := Receipt{ReceiptID: newID("portable-receipt:"), ProfileID: plan.Preview.TargetProfile, PackageHash: plan.Package.PackageHash, ImportedAt: time.Now().UTC().Format(api.TimestampLayout)}
 	for _, a := range plan.Package.Agents {
 		if resolutions[a.ID] == "skip" {
 			continue

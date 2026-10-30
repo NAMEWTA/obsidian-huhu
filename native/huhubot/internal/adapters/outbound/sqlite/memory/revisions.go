@@ -133,7 +133,7 @@ func insertRevision(ctx context.Context, tx *sql.Tx, n namespace, item api.Memor
 		return invalidState()
 	}
 	b := item.Body
-	if _, err := tx.ExecContext(ctx, "INSERT INTO memory_revisions(revision_id,item_id,ordinal,content_hash,provenance,creator_kind,creator_agent_id,job_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", item.RevisionID, item.ID, ordinal, b.Hash, b.Provenance, b.CreatorKind, b.CreatorAgentID, b.JobID, encode(b.SourceRefs), encode(b.SourceScopes), encode(b.Derived), time.Now().UTC().Format(time.RFC3339Nano)); err != nil {
+	if _, err := tx.ExecContext(ctx, "INSERT INTO memory_revisions(revision_id,item_id,ordinal,content_hash,provenance,creator_kind,creator_agent_id,job_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", item.RevisionID, item.ID, ordinal, b.Hash, b.Provenance, b.CreatorKind, b.CreatorAgentID, b.JobID, encode(b.SourceRefs), encode(b.SourceScopes), encode(b.Derived), time.Now().UTC().Format(api.TimestampLayout)); err != nil {
 		return err
 	}
 	if _, err := tx.ExecContext(ctx, "INSERT INTO memory_revision_bodies(revision_id,text) VALUES(?,?)", item.RevisionID, b.Text); err != nil {

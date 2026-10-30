@@ -301,7 +301,7 @@ func MessageInTx(ctx context.Context, tx *sql.Tx, sessionID, runID, role, text, 
 	if _, e := tx.ExecContext(ctx, "UPDATE conversation_sessions SET message_seq=message_seq+1 WHERE session_id=? AND message_seq<9223372036854775807", sessionID); e != nil {
 		return "", e
 	}
-	_, e := tx.ExecContext(ctx, "INSERT INTO conversation_messages(message_id,run_id,session_id,seq,role,text,created_at,agent_id,source_json,partial,supersedes_message_id) SELECT ?,?,session_id,message_seq,?,?,?,?,?,?,? FROM conversation_sessions WHERE session_id=?", id, runID, role, text, time.Now().UTC().Format(time.RFC3339Nano), agent, string(source), partial, supersedes, sessionID)
+	_, e := tx.ExecContext(ctx, "INSERT INTO conversation_messages(message_id,run_id,session_id,seq,role,text,created_at,agent_id,source_json,partial,supersedes_message_id) SELECT ?,?,session_id,message_seq,?,?,?,?,?,?,? FROM conversation_sessions WHERE session_id=?", id, runID, role, text, time.Now().UTC().Format(api.TimestampLayout), agent, string(source), partial, supersedes, sessionID)
 	return id, e
 }
 func (s *Store) History(ctx context.Context, id api.RequestIdentity, q api.HistoryQuery) (directapp.HistoryPage, error) {

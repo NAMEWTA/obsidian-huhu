@@ -473,7 +473,7 @@ func (t *transaction) PutSession(ctx context.Context, s contract.Session) (strin
 			id = appapi.NewID("message:")
 		}
 		if m.CreatedAt == "" {
-			m.CreatedAt = time.Now().UTC().Format(time.RFC3339Nano)
+			m.CreatedAt = time.Now().UTC().Format(appapi.TimestampLayout)
 		}
 		if _, err := t.tx.ExecContext(ctx, "INSERT INTO conversation_messages(message_id,run_id,session_id,seq,role,text,created_at,agent_id,source_json,partial,supersedes_message_id,attachments_json) VALUES(?,?,?, ?,?,?,?,?,'[]',0,'','null')", id, "portable:"+s.ID, s.ID, seq, m.Role, m.Text, m.CreatedAt, m.AgentID); err != nil {
 			return "", err
@@ -553,7 +553,7 @@ func (t *transaction) PutMemory(ctx context.Context, m contract.Memory) (string,
 			return "", err
 		}
 	}
-	if _, err = t.tx.ExecContext(ctx, "INSERT INTO memory_revisions(revision_id,item_id,ordinal,content_hash,provenance,creator_kind,creator_agent_id,job_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?, ?,?,'user','','',?,'[]','[]',?)", revisionID, m.ID, ordinal, hash, m.Provenance, string(sourceJSON), time.Now().UTC().Format(time.RFC3339Nano)); err != nil {
+	if _, err = t.tx.ExecContext(ctx, "INSERT INTO memory_revisions(revision_id,item_id,ordinal,content_hash,provenance,creator_kind,creator_agent_id,job_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?, ?,?,'user','','',?,'[]','[]',?)", revisionID, m.ID, ordinal, hash, m.Provenance, string(sourceJSON), time.Now().UTC().Format(appapi.TimestampLayout)); err != nil {
 		return "", err
 	}
 	if _, err = t.tx.ExecContext(ctx, "INSERT INTO memory_revision_bodies(revision_id,text) VALUES(?,?)", revisionID, m.Text); err != nil {

@@ -89,7 +89,7 @@ func (s *Store) Get(ctx context.Context, id api.RequestIdentity, q api.IDQuery) 
 		after.status.State = next
 		after.status.Reason = reason
 		after.status.TreeRevision = after.revision
-		after.status.CheckedAt = time.Now().UTC().Format(time.RFC3339Nano)
+		after.status.CheckedAt = time.Now().UTC().Format(api.TimestampLayout)
 		_, e = tx.ExecContext(ctx, "UPDATE execution_recovery_trees SET generation=?,state=?,tree_revision=?,affected_run_ids_json=?,reason=?,checked_at=? WHERE root_run_id=?", after.status.Generation, next, after.revision, encoded(after.status.AffectedRunIDs), reason, after.status.CheckedAt, after.status.RootRunID)
 		out = after.status
 		return e

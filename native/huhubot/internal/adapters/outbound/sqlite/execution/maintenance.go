@@ -113,7 +113,7 @@ func (s *Store) NewMaintenanceInTx(ctx context.Context, tx *sql.Tx, id api.Reque
 	if pin != "" {
 		legacy = pin
 	}
-	now := time.Now().UTC().Format(time.RFC3339Nano)
+	now := time.Now().UTC().Format(api.TimestampLayout)
 	_, e = tx.ExecContext(ctx, `INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at,root_run_id,parent_run_id,work_thread_id,task_config_id,derived_json,budget_root_run_id) VALUES(?,?,?,'',?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,'','','','','',1,?,?,'',?,?,?,?)`, runID, in.SessionID, id.PrincipalID(), jsonArray(in.Recipient), cfg.Agent.ID, cfg.Agent.PersonaRevision, cfg.Agent.ModelBindingRevision, legacy, admission.Intent, jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), now, runID, threadID, cfg.ID, jsonArray(derived), runID)
 	if e != nil {
 		return out, e

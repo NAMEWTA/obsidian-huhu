@@ -406,7 +406,7 @@ func (b *bound) Reserve(ctx context.Context, q api.AttemptRequest) (api.AttemptR
 			return e
 		}
 		out = api.AttemptReservation{ID: api.NewID("attempt:"), RunID: r.ID, RootRunID: root, Revision: "1"}
-		_, e = tx.ExecContext(ctx, "INSERT INTO model_attempts(attempt_id,run_id,root_run_id,account_id,logical_call_id,request_hash,retry_of_attempt_id,purpose,claim_token,cancel_epoch,config_json,recipient_json,provenance_json,reserved_tokens,state,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,'reserved',?)", out.ID, r.ID, root, account, q.LogicalCallID, hash, q.RetryOfAttemptID, q.Purpose, b.e.ClaimToken, cancel, encode(b.e.Config), encode(access.Recipient), encode(access), amount, time.Now().UTC().Format(time.RFC3339Nano))
+		_, e = tx.ExecContext(ctx, "INSERT INTO model_attempts(attempt_id,run_id,root_run_id,account_id,logical_call_id,request_hash,retry_of_attempt_id,purpose,claim_token,cancel_epoch,config_json,recipient_json,provenance_json,reserved_tokens,state,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,'reserved',?)", out.ID, r.ID, root, account, q.LogicalCallID, hash, q.RetryOfAttemptID, q.Purpose, b.e.ClaimToken, cancel, encode(b.e.Config), encode(access.Recipient), encode(access), amount, time.Now().UTC().Format(api.TimestampLayout))
 		return e
 	})
 	return out, err

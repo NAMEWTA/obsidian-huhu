@@ -138,7 +138,7 @@ func (s *Store) Send(ctx context.Context, id api.RequestIdentity, c api.MessageC
 				return e
 			}
 		}
-		out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: a.agent.ID, ToAgentID: target.ID, Text: c.Text, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano), Kind: c.Kind, Status: "delivered", DelegationID: delegationID, WorkThreadID: thread}
+		out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: a.agent.ID, ToAgentID: target.ID, Text: c.Text, CreatedAt: time.Now().UTC().Format(api.TimestampLayout), Kind: c.Kind, Status: "delivered", DelegationID: delegationID, WorkThreadID: thread}
 		if c.Kind == "question" {
 			out.QuestionID = out.ID
 			if e = s.AddWaitInTx(ctx, tx, a.run.ID, toRun, out.ID); e != nil {
@@ -236,7 +236,7 @@ func (s *Store) Reply(ctx context.Context, id api.RequestIdentity, c api.ReplyCo
 		if e = s.checkReplyTargetInTx(ctx, tx, id, c.ProfileID, targetRun, sender); e != nil {
 			return e
 		}
-		out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: fromAgent, ToAgentID: toAgent, Text: c.Text, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano), Kind: "reply", Status: "delivered", DelegationID: d.ID, QuestionID: c.QuestionID, WorkThreadID: thread}
+		out = api.AgentMessage{ID: api.NewID("agent-message:"), FromAgentID: fromAgent, ToAgentID: toAgent, Text: c.Text, CreatedAt: time.Now().UTC().Format(api.TimestampLayout), Kind: "reply", Status: "delivered", DelegationID: d.ID, QuestionID: c.QuestionID, WorkThreadID: thread}
 		if c.QuestionID != "" {
 			out.Status = "answered"
 			if _, e = tx.ExecContext(ctx, "UPDATE collaboration_messages SET status='answered',revision=revision+1 WHERE message_id=? AND status='delivered'", c.QuestionID); e != nil {

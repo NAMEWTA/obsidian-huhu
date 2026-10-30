@@ -136,7 +136,7 @@ func (s *Store) NewChildInTx(ctx context.Context, tx *sql.Tx, id api.RequestIden
 	}
 	parentScope, _ := json.Marshal(in.ParentScope)
 	derived, _ := json.Marshal(c.Derived)
-	_, e = tx.ExecContext(ctx, "INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at,root_run_id,parent_run_id,work_thread_id,task_config_id,parent_scope_json,derived_json) VALUES(?,?,?,'',?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,'','','','','',1,?,?,?,?,?,?,?)", c.ChildRunID, parent.SessionID, id.PrincipalID(), jsonArray(in.Recipient), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, legacy, c.Task, jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), time.Now().UTC().Format(time.RFC3339Nano), rootID, parentID, c.WorkThreadID, snap.ID, string(parentScope), string(derived))
+	_, e = tx.ExecContext(ctx, "INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at,root_run_id,parent_run_id,work_thread_id,task_config_id,parent_scope_json,derived_json) VALUES(?,?,?,'',?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,'','','','','',1,?,?,?,?,?,?,?)", c.ChildRunID, parent.SessionID, id.PrincipalID(), jsonArray(in.Recipient), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, legacy, c.Task, jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), jsonArray(in.Sources), jsonArray(in.Scopes), jsonArray(in.GrantIDs), time.Now().UTC().Format(api.TimestampLayout), rootID, parentID, c.WorkThreadID, snap.ID, string(parentScope), string(derived))
 	if e != nil {
 		return out, e
 	}
@@ -188,7 +188,7 @@ func (s *Store) NewChildInTx(ctx context.Context, tx *sql.Tx, id api.RequestIden
 	}
 	// A new Run starts at head 1 and must own that accepted event. Appending
 	// would advance the head to 2 without ever creating the required seq 1.
-	if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", c.ChildRunID, time.Now().UTC().Format(time.RFC3339Nano), jsonArray(map[string]string{"parentRunId": parentID, "rootRunId": rootID})); e != nil {
+	if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", c.ChildRunID, time.Now().UTC().Format(api.TimestampLayout), jsonArray(map[string]string{"parentRunId": parentID, "rootRunId": rootID})); e != nil {
 		return out, e
 	}
 	out, _, _, _, e = readRun(ctx, tx, c.ChildRunID)

@@ -82,7 +82,7 @@ func (s *Store) followupInTx(ctx context.Context, tx *sql.Tx, id api.RequestIden
 		return out, e
 	}
 	d := api.Delegation{ID: api.NewID("delegation:"), Revision: "1", ParentRunID: from, ChildRunID: child.ID, RootRunID: child.RootRunID, RequesterAgentID: fromAgent, ExecutorAgentID: child.AgentID, WorkThreadID: old.WorkThreadID, TargetAgentID: old.TargetAgentID, Status: child.Status}
-	now := time.Now().UTC().Format(time.RFC3339Nano)
+	now := time.Now().UTC().Format(api.TimestampLayout)
 	if _, e = tx.ExecContext(ctx, "INSERT INTO collaboration_delegations(delegation_id,root_run_id,parent_run_id,child_run_id,work_thread_id,requester_agent_id,executor_agent_id,target_agent_id,principal_id,intent_id,input_hash,constraints_json,expected_output,context_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,'[]','','{}',?)", d.ID, d.RootRunID, d.ParentRunID, d.ChildRunID, d.WorkThreadID, d.RequesterAgentID, d.ExecutorAgentID, d.TargetAgentID, id.PrincipalID(), c.IdempotencyKey, hashText(c.Text), now); e != nil {
 		return out, e
 	}

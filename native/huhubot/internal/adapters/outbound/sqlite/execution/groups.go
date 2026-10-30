@@ -89,7 +89,7 @@ func (s *Store) NewGroupRootInTx(ctx context.Context, tx *sql.Tx, id api.Request
 	}
 	group := api.GroupBinding{SessionID: session.ID, Members: []api.GroupMemberIdentity{}}
 	binding, _ := json.Marshal(group)
-	_, e = tx.ExecContext(ctx, `INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at,root_run_id,parent_run_id,work_thread_id,budget_root_run_id,execution_role,admission_kind,group_binding_json) VALUES(?,?,?,?,'{}','',0,0,'waiting_children',1,?,'[]','[]','[]','[]','[]','[]',?,'','CHILDREN_ACTIVE','','',1,?,?,'',?,?,'orchestration','user_root',?)`, runID, session.ID, id.PrincipalID(), user, c.Intent, c.RetryOfRunID, time.Now().UTC().Format(time.RFC3339Nano), runID, session.ID, runID, string(binding))
+	_, e = tx.ExecContext(ctx, `INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at,root_run_id,parent_run_id,work_thread_id,budget_root_run_id,execution_role,admission_kind,group_binding_json) VALUES(?,?,?,?,'{}','',0,0,'waiting_children',1,?,'[]','[]','[]','[]','[]','[]',?,'','CHILDREN_ACTIVE','','',1,?,?,'',?,?,'orchestration','user_root',?)`, runID, session.ID, id.PrincipalID(), user, c.Intent, c.RetryOfRunID, time.Now().UTC().Format(api.TimestampLayout), runID, session.ID, runID, string(binding))
 	if e != nil {
 		return out, e
 	}
@@ -105,7 +105,7 @@ func (s *Store) NewGroupRootInTx(ctx context.Context, tx *sql.Tx, id api.Request
 			return out, e
 		}
 	}
-	if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", runID, time.Now().UTC().Format(time.RFC3339Nano), jsonArray(map[string]string{"userMessageId": user})); e != nil {
+	if _, e = tx.ExecContext(ctx, "INSERT INTO execution_events VALUES(?,1,'accepted',?,?)", runID, time.Now().UTC().Format(api.TimestampLayout), jsonArray(map[string]string{"userMessageId": user})); e != nil {
 		return out, e
 	}
 	if e = AddEventInTx(ctx, tx, runID, "waiting_children", map[string]string{"status": "waiting_children"}); e != nil {

@@ -119,7 +119,7 @@ func (a *API) DeletePreview(ctx context.Context, id api.RequestIdentity, req api
 	if plan.UnknownEffects > 0 {
 		categories = append(categories, api.DeletionCategory{Kind: "unknown-effects", Count: plan.UnknownEffects, Retained: false, Reason: "EFFECT_RECONCILIATION_REQUIRED"})
 	}
-	return api.DeletionPreview{Token: plan.Token, Revision: strconv.FormatUint(plan.Revision, 10), ExpiresAt: plan.ExpiresAt.UTC().Format(time.RFC3339Nano), Categories: categories}, nil
+	return api.DeletionPreview{Token: plan.Token, Revision: strconv.FormatUint(plan.Revision, 10), ExpiresAt: plan.ExpiresAt.UTC().Format(api.TimestampLayout), Categories: categories}, nil
 }
 
 func (a *API) Delete(ctx context.Context, id api.RequestIdentity, cmd api.ProfileDeleteCommand) (api.Receipt, error) {

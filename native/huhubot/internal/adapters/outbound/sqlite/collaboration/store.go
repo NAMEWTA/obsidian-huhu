@@ -424,7 +424,7 @@ func (s *Store) admitInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdentit
 			return e
 		}
 		out = api.Delegation{ID: delegationID, Revision: "1", ParentRunID: a.run.ID, ChildRunID: child.ID, RootRunID: child.RootRunID, RequesterAgentID: a.agent.ID, ExecutorAgentID: child.AgentID, WorkThreadID: thread, TargetAgentID: c.Target.AgentID, Status: child.Status}
-		now := time.Now().UTC().Format(time.RFC3339Nano)
+		now := time.Now().UTC().Format(api.TimestampLayout)
 		if _, e = tx.ExecContext(ctx, "INSERT INTO collaboration_threads VALUES(?,?,?,?,?,?)", thread, out.RootRunID, a.run.SessionID, id.PrincipalID(), child.AgentID, now); e != nil {
 			return e
 		}
@@ -657,7 +657,7 @@ func (s *Store) ProposeCreate(ctx context.Context, id api.RequestIdentity, c api
 			return e
 		}
 		out = api.AgentProposal{ProposalID: api.NewID("proposal:"), Draft: c.Draft, PreviewHash: hashText(encode(c.Draft)), Revision: "1"}
-		_, e = tx.ExecContext(ctx, "INSERT INTO collaboration_proposals(proposal_id,profile_id,principal_id,run_id,draft_json,preview_hash,state,expires_at,created_at) VALUES(?,?,?,?,?,?,'pending',?,?)", out.ProposalID, c.ProfileID, id.PrincipalID(), a.run.ID, encode(c.Draft), out.PreviewHash, time.Now().Add(15*time.Minute).UTC().Format(time.RFC3339Nano), time.Now().UTC().Format(time.RFC3339Nano))
+		_, e = tx.ExecContext(ctx, "INSERT INTO collaboration_proposals(proposal_id,profile_id,principal_id,run_id,draft_json,preview_hash,state,expires_at,created_at) VALUES(?,?,?,?,?,?,'pending',?,?)", out.ProposalID, c.ProfileID, id.PrincipalID(), a.run.ID, encode(c.Draft), out.PreviewHash, time.Now().Add(15*time.Minute).UTC().Format(api.TimestampLayout), time.Now().UTC().Format(api.TimestampLayout))
 		if e != nil {
 			return e
 		}

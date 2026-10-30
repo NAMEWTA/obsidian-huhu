@@ -93,7 +93,7 @@ func (s *Store) Preview(ctx context.Context, req app.PreviewRequest) (domain.Pla
 				return err
 			}
 			out = domain.Plan{Token: pendingToken, ProfileID: m.profile, CommandEpoch: m.epoch, Revision: m.revision, NextEpoch: m.epoch + 1, Selection: selection, ExpiresAt: s.now().UTC().Add(ttl)}
-			_, e := tx.ExecContext(ctx, "UPDATE purge_previews SET expires_at=?,command_epoch=?,revision=?,selection_json=? WHERE token=?", out.ExpiresAt.Format(time.RFC3339Nano), m.epoch, m.revision, string(mustJSON(selection)), pendingToken)
+			_, e := tx.ExecContext(ctx, "UPDATE purge_previews SET expires_at=?,command_epoch=?,revision=?,selection_json=? WHERE token=?", out.ExpiresAt.Format(api.TimestampLayout), m.epoch, m.revision, string(mustJSON(selection)), pendingToken)
 			return e
 		}
 		if !errors.Is(pendingErr, sql.ErrNoRows) {
@@ -119,7 +119,7 @@ func (s *Store) Preview(ctx context.Context, req app.PreviewRequest) (domain.Pla
 		if !ok {
 			return fault("CONFLICT", "PURGE_SCHEMA_UNAVAILABLE")
 		}
-		_, err = tx.ExecContext(ctx, "INSERT INTO purge_previews(token,profile_id,command_epoch,revision,selection_json,unknown_effects,expires_at,state,created_at) VALUES(?,?,?,?,?,?,?,?,?)", out.Token, out.ProfileID, m.epoch, m.revision, string(mustJSON(out.Selection)), unknown, out.ExpiresAt.Format(time.RFC3339Nano), "pending", s.now().UTC().Format(time.RFC3339Nano))
+		_, err = tx.ExecContext(ctx, "INSERT INTO purge_previews(token,profile_id,command_epoch,revision,selection_json,unknown_effects,expires_at,state,created_at) VALUES(?,?,?,?,?,?,?,?,?)", out.Token, out.ProfileID, m.epoch, m.revision, string(mustJSON(out.Selection)), unknown, out.ExpiresAt.Format(api.TimestampLayout), "pending", s.now().UTC().Format(api.TimestampLayout))
 		return err
 	})
 	return out, err

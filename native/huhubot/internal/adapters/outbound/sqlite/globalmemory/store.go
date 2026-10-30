@@ -99,7 +99,7 @@ func (s *Store) insert(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, 
 	_, err = tx.ExecContext(ctx, `INSERT INTO memory_global_proposals
  (proposal_id,profile_id,principal_id,namespace_id,actor_kind,actor_run_id,actor_subject_id,operation,target_item_id,target_revision,target_revision_id,target_body_hash,catalog_revision,scope_kind,scope_id,frozen_json,preview_json,preview_hash,expires_at,state,revision,decided_receipt_key,created_at)
  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-		proposal.ID, meta.ProfileID, id.PrincipalID(), namespace, f.Actor.Kind, f.Actor.RunID, f.Actor.SubjectID, f.Operation, targetID(f), targetRevisionInt(f), targetRevisionID(f), targetHash(f), catalog, f.Scope.Kind, f.Scope.ID, string(frozen), string(preview), proposal.PreviewHash, proposal.ExpiresAt, proposal.State, 1, "", s.now().UTC().Format(time.RFC3339Nano))
+		proposal.ID, meta.ProfileID, id.PrincipalID(), namespace, f.Actor.Kind, f.Actor.RunID, f.Actor.SubjectID, f.Operation, targetID(f), targetRevisionInt(f), targetRevisionID(f), targetHash(f), catalog, f.Scope.Kind, f.Scope.ID, string(frozen), string(preview), proposal.PreviewHash, proposal.ExpiresAt, proposal.State, 1, "", s.now().UTC().Format(api.TimestampLayout))
 	if err != nil {
 		return err
 	}
@@ -177,7 +177,7 @@ func (s *Store) ProposeOwner(ctx context.Context, id api.RequestIdentity, q api.
 		if err != nil || found {
 			return err
 		}
-		expires := s.now().UTC().Add(10 * time.Minute).Format(time.RFC3339Nano)
+		expires := s.now().UTC().Add(10 * time.Minute).Format(api.TimestampLayout)
 		proposal := proposalFromFrozen(api.NewID("proposal:"), "1", expires, "pending", proposalHash(f, expires), f)
 		out = proposal
 		return s.insert(ctx, tx, id, q.CommandMeta, "memory.proposeGlobal", hash, f, proposal)
@@ -214,7 +214,7 @@ func (s *Store) ProposeTool(ctx context.Context, x api.ToolExecution, callID str
 			}
 			return err
 		}
-		expires := s.now().UTC().Add(10 * time.Minute).Format(time.RFC3339Nano)
+		expires := s.now().UTC().Add(10 * time.Minute).Format(api.TimestampLayout)
 		proposal = proposalFromFrozen(api.NewID("proposal:"), "1", expires, "pending", proposalHash(f, expires), f)
 		if err = s.insert(ctx, tx, idFromTool(x), meta, "memory.proposeGlobal.tool", hash, f, proposal); err != nil {
 			return err

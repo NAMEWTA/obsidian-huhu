@@ -389,7 +389,7 @@ func (s *Store) SealInTx(ctx context.Context, tx *sql.Tx, e api.ToolExecution, p
 		memoryHash = plan.Memory.BindingDigest
 		job = plan.Memory.JobID
 	}
-	if _, err = tx.ExecContext(ctx, "INSERT INTO memory_run_contexts(run_id,namespace_id,policy_version,sealed,short_term_json,short_term_digest,memory_json,memory_digest,job_id,created_at) VALUES(?,?,?,1,?,?,?,?,?,?)", r.Run.ID, r.Namespace.ID, r.Policy, shortJSON, shortHash, memoryJSON, memoryHash, job, time.Now().UTC().Format(time.RFC3339Nano)); err != nil {
+	if _, err = tx.ExecContext(ctx, "INSERT INTO memory_run_contexts(run_id,namespace_id,policy_version,sealed,short_term_json,short_term_digest,memory_json,memory_digest,job_id,created_at) VALUES(?,?,?,1,?,?,?,?,?,?)", r.Run.ID, r.Namespace.ID, r.Policy, shortJSON, shortHash, memoryJSON, memoryHash, job, time.Now().UTC().Format(api.TimestampLayout)); err != nil {
 		return plan, err
 	}
 	if err = s.sealEntries(ctx, tx, e.Identity, r, plan); err != nil {

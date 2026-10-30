@@ -103,7 +103,7 @@ func (h *HostService) Attach(_ context.Context, i RequestIdentity, c HostAttachC
 			h.lease.WorkspaceID != c.WorkspaceID || !slices.Equal(h.lease.Capabilities, c.Capabilities) || !h.now().Before(parseTime(h.lease.ExpiresAt)) {
 			return HostLease{}, Denied("HOST_LEASE_CHANGED")
 		}
-		h.lease.ExpiresAt = h.now().UTC().Add(5 * time.Minute).Format(time.RFC3339Nano)
+		h.lease.ExpiresAt = h.now().UTC().Add(5 * time.Minute).Format(TimestampLayout)
 		return cloneLease(h.lease), nil
 	}
 	if h.remote != nil && h.owner != i.ConnectionID() && h.now().Before(parseTime(h.lease.ExpiresAt)) {
@@ -113,7 +113,7 @@ func (h *HostService) Attach(_ context.Context, i RequestIdentity, c HostAttachC
 		return HostLease{}, &Fault{Kind: "RESOURCE_LIMIT", Reason: "HOST_EPOCH_EXHAUSTED"}
 	}
 	h.epoch++
-	h.lease = HostLease{HostConnectionID: i.ConnectionID(), LeaseEpoch: strconv.FormatUint(h.epoch, 10), LeaseID: NewID("lease:"), WorkspaceID: c.WorkspaceID, Capabilities: append([]string(nil), c.Capabilities...), ExpiresAt: h.now().UTC().Add(5 * time.Minute).Format(time.RFC3339Nano)}
+	h.lease = HostLease{HostConnectionID: i.ConnectionID(), LeaseEpoch: strconv.FormatUint(h.epoch, 10), LeaseID: NewID("lease:"), WorkspaceID: c.WorkspaceID, Capabilities: append([]string(nil), c.Capabilities...), ExpiresAt: h.now().UTC().Add(5 * time.Minute).Format(TimestampLayout)}
 	h.owner = i.ConnectionID()
 	h.remote = r
 	return cloneLease(h.lease), nil

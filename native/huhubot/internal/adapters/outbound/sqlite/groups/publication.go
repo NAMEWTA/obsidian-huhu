@@ -98,7 +98,7 @@ func (s *Store) PublishInTx(ctx context.Context, tx *sql.Tx, run string, result 
 		}
 		message, seq = m, n
 	}
-	if _, e = tx.ExecContext(ctx, "INSERT INTO group_publications(child_run_id,session_id,message_id,public_seq,status,created_at) VALUES(?,?,?,?,?,?)", run, session, message, seq, status, time.Now().UTC().Format(time.RFC3339Nano)); e != nil {
+	if _, e = tx.ExecContext(ctx, "INSERT INTO group_publications(child_run_id,session_id,message_id,public_seq,status,created_at) VALUES(?,?,?,?,?,?)", run, session, message, seq, status, time.Now().UTC().Format(api.TimestampLayout)); e != nil {
 		return e
 	}
 	if message != nil {

@@ -165,7 +165,7 @@ func OpenWithBackup(ctx context.Context, h *profile.Handle, complete CompleteBac
 				return nil, failure("CONFLICT", "PROFILE_MIGRATION_FAILED")
 			}
 			if m.Version == 1 {
-				_, e = tx.ExecContext(ctx, "INSERT INTO profile_metadata(singleton,profile_id,command_epoch,revision,created_at) VALUES(1,?,1,1,?)", api.NewID("profile:"), time.Now().UTC().Format(time.RFC3339Nano))
+				_, e = tx.ExecContext(ctx, "INSERT INTO profile_metadata(singleton,profile_id,command_epoch,revision,created_at) VALUES(1,?,1,1,?)", api.NewID("profile:"), time.Now().UTC().Format(api.TimestampLayout))
 				if e != nil {
 					return nil, failure("CONFLICT", "PROFILE_MIGRATION_FAILED")
 				}

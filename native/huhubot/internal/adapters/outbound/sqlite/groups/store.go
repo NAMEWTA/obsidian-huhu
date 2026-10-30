@@ -151,7 +151,7 @@ func (s *Store) StartRun(ctx context.Context, id api.RequestIdentity, c api.RunS
 				return e
 			}
 			targetRuns = append(targetRuns, child.ID)
-			now := time.Now().UTC().Format(time.RFC3339Nano)
+			now := time.Now().UTC().Format(api.TimestampLayout)
 			if _, e = tx.ExecContext(ctx, "INSERT INTO collaboration_threads VALUES(?,?,?,?,?,?)", thread, root.ID, session.ID, id.PrincipalID(), child.AgentID, now); e != nil {
 				return e
 			}

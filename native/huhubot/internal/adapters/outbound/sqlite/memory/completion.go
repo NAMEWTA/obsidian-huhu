@@ -156,7 +156,7 @@ func (s *Store) RecordCompletionInTx(ctx context.Context, tx *sql.Tx, completion
 	if !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
-	now, completionID, jobID := time.Now().UTC().Format(time.RFC3339Nano), api.NewID("memory-completion:"), api.NewID("memory-job:")
+	now, completionID, jobID := time.Now().UTC().Format(api.TimestampLayout), api.NewID("memory-completion:"), api.NewID("memory-job:")
 	if _, err = tx.ExecContext(ctx, "INSERT INTO memory_completion_outbox(completion_id,namespace_id,source_run_id,source_kind,source_id,source_revision,source_hash,source_namespace,source_work_thread_id,scope_kind,scope_id,rule_version,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", completionID, r.Namespace.ID, r.Run.ID, source.Ref.Kind, source.Ref.ID, source.Ref.Revision, source.Ref.Hash, source.Ref.Namespace, source.Ref.WorkThreadID, scope.Kind, scope.ID, maintenanceRule, now); err != nil {
 		return err
 	}

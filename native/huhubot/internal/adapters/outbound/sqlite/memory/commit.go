@@ -281,7 +281,7 @@ func storeCandidate(ctx context.Context, tx *sql.Tx, j maintenanceJob, ordinal i
 	if p.Target != nil {
 		targetRevision = p.Expected.Revision
 	}
-	_, err := tx.ExecContext(ctx, "INSERT INTO memory_candidates(candidate_id,namespace_id,job_id,ordinal,generation,scope_kind,scope_id,operation,target_item_id,target_revision,target_revision_id,target_pinned,reason,content_hash,provenance,creator_kind,creator_agent_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", id, j.Namespace.ID, j.ID, ordinal, j.Generation, j.Scope.Kind, j.Scope.ID, p.Draft.Operation, p.Draft.TargetItemID, targetRevision, p.Expected.RevisionID, p.Expected.Pinned, p.Reason, p.Body.Hash, p.Body.Provenance, p.Body.CreatorKind, p.Body.CreatorAgentID, encode(p.Body.SourceRefs), encode(p.Body.SourceScopes), encode(p.Body.Derived), time.Now().UTC().Format(time.RFC3339Nano))
+	_, err := tx.ExecContext(ctx, "INSERT INTO memory_candidates(candidate_id,namespace_id,job_id,ordinal,generation,scope_kind,scope_id,operation,target_item_id,target_revision,target_revision_id,target_pinned,reason,content_hash,provenance,creator_kind,creator_agent_id,source_json,scope_json,derived_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", id, j.Namespace.ID, j.ID, ordinal, j.Generation, j.Scope.Kind, j.Scope.ID, p.Draft.Operation, p.Draft.TargetItemID, targetRevision, p.Expected.RevisionID, p.Expected.Pinned, p.Reason, p.Body.Hash, p.Body.Provenance, p.Body.CreatorKind, p.Body.CreatorAgentID, encode(p.Body.SourceRefs), encode(p.Body.SourceScopes), encode(p.Body.Derived), time.Now().UTC().Format(api.TimestampLayout))
 	if err != nil {
 		return "", err
 	}

@@ -485,8 +485,8 @@ func (s *Store) Preview(ctx context.Context, id api.RequestIdentity, q api.IDQue
 			}
 			usage = app.UsageDigest(u) + ":" + clock
 		}
-		preview = api.DeletionPreview{Token: api.NewID("preview:"), Revision: a.Revision, ExpiresAt: now.Add(5 * time.Minute).UTC().Format(time.RFC3339Nano), Categories: append(categories, api.DeletionCategory{Kind: "configuration-snapshots", Count: pins, Retained: pins > 0})}
-		if _, e = tx.ExecContext(ctx, "DELETE FROM agent_deletion_previews WHERE expires_at<=?", now.UTC().Format(time.RFC3339Nano)); e != nil {
+		preview = api.DeletionPreview{Token: api.NewID("preview:"), Revision: a.Revision, ExpiresAt: now.Add(5 * time.Minute).UTC().Format(api.TimestampLayout), Categories: append(categories, api.DeletionCategory{Kind: "configuration-snapshots", Count: pins, Retained: pins > 0})}
+		if _, e = tx.ExecContext(ctx, "DELETE FROM agent_deletion_previews WHERE expires_at<=?", now.UTC().Format(api.TimestampLayout)); e != nil {
 			return e
 		}
 		if _, e = tx.ExecContext(ctx, "DELETE FROM agent_deletion_previews WHERE agent_id=? AND principal_id=?", q.ID, id.PrincipalID()); e != nil {
@@ -655,7 +655,7 @@ func (s *Store) PinTaskInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdent
 	if temporary != nil {
 		agentID = ""
 	}
-	_, e = tx.ExecContext(ctx, "INSERT INTO task_config_snapshots VALUES(?,?,?,?,?,?,?,?,?,?,'active',?)", out.ID, profileID, id.PrincipalID(), out.SubjectID, out.SponsorAgentID, agentID, out.Agent.PersonaRevision, out.Agent.ModelBindingRevision, ref, string(body), time.Now().UTC().Format(time.RFC3339Nano))
+	_, e = tx.ExecContext(ctx, "INSERT INTO task_config_snapshots VALUES(?,?,?,?,?,?,?,?,?,?,'active',?)", out.ID, profileID, id.PrincipalID(), out.SubjectID, out.SponsorAgentID, agentID, out.Agent.PersonaRevision, out.Agent.ModelBindingRevision, ref, string(body), time.Now().UTC().Format(api.TimestampLayout))
 	return out, legacy, e
 }
 func (s *Store) ReadTaskInTx(ctx context.Context, tx *sql.Tx, runID, snapshotID string) (api.TaskConfigSnapshot, error) {
@@ -756,6 +756,6 @@ func (s *Store) CloneTaskInTx(ctx context.Context, tx *sql.Tx, id api.RequestIde
 	if e != nil {
 		return out, e
 	}
-	_, e = tx.ExecContext(ctx, "INSERT INTO task_config_snapshots VALUES(?,?,?,?,?,?,?,?,?,?,'active',?)", out.ID, profileID, id.PrincipalID(), out.SubjectID, out.SponsorAgentID, agentID, out.Agent.PersonaRevision, out.Agent.ModelBindingRevision, ref, string(encoded), time.Now().UTC().Format(time.RFC3339Nano))
+	_, e = tx.ExecContext(ctx, "INSERT INTO task_config_snapshots VALUES(?,?,?,?,?,?,?,?,?,?,'active',?)", out.ID, profileID, id.PrincipalID(), out.SubjectID, out.SponsorAgentID, agentID, out.Agent.PersonaRevision, out.Agent.ModelBindingRevision, ref, string(encoded), time.Now().UTC().Format(api.TimestampLayout))
 	return out, e
 }

@@ -117,7 +117,7 @@ func (s *Sessions) Preview(ctx context.Context, id api.RequestIdentity, q api.ID
 		var pendingToken string
 		pendingErr := tx.QueryRowContext(ctx, "SELECT token FROM session_deletions WHERE profile_id=? AND principal_id=? AND session_id=? AND state='pending'", q.ProfileID, id.PrincipalID(), q.ID).Scan(&pendingToken)
 		if pendingErr == nil {
-			out = api.DeletionPreview{Token: pendingToken, Revision: m.Revision, ExpiresAt: s.store.now().UTC().Add(10 * time.Minute).Format(time.RFC3339Nano), Categories: []api.DeletionCategory{{Kind: "session-cleanup", Count: 1, Retained: true, Reason: "SESSION_CLEANUP_REQUIRED"}}}
+			out = api.DeletionPreview{Token: pendingToken, Revision: m.Revision, ExpiresAt: s.store.now().UTC().Add(10 * time.Minute).Format(api.TimestampLayout), Categories: []api.DeletionCategory{{Kind: "session-cleanup", Count: 1, Retained: true, Reason: "SESSION_CLEANUP_REQUIRED"}}}
 			return nil
 		}
 		if !errors.Is(pendingErr, sql.ErrNoRows) {
@@ -128,7 +128,7 @@ func (s *Sessions) Preview(ctx context.Context, id api.RequestIdentity, q api.ID
 		if e != nil {
 			return e
 		}
-		out = api.DeletionPreview{Token: purge.NewToken(), Revision: p.SessionRevision, ExpiresAt: s.store.now().UTC().Add(10 * time.Minute).Format(time.RFC3339Nano), Categories: []api.DeletionCategory{{Kind: "session-body", Count: 1}}}
+		out = api.DeletionPreview{Token: purge.NewToken(), Revision: p.SessionRevision, ExpiresAt: s.store.now().UTC().Add(10 * time.Minute).Format(api.TimestampLayout), Categories: []api.DeletionCategory{{Kind: "session-body", Count: 1}}}
 		if unknown > 0 {
 			out.Categories = append(out.Categories, api.DeletionCategory{Kind: "unknown-effects", Count: unknown, Retained: true, Reason: "EFFECT_RECONCILIATION_REQUIRED"})
 		}
@@ -137,7 +137,7 @@ func (s *Sessions) Preview(ctx context.Context, id api.RequestIdentity, q api.ID
 				out.Categories = append(out.Categories, api.DeletionCategory{Kind: "memory:" + item.ID, Count: 1, Reason: "OPTIONAL_RETENTION"})
 			}
 		}
-		_, e = tx.ExecContext(ctx, "INSERT INTO purge_previews(token,profile_id,command_epoch,revision,selection_json,unknown_effects,expires_at,state,created_at) VALUES(?,?,?,?,?,?,?,'pending',?)", out.Token, q.ProfileID, m.CommandEpoch, m.Revision, string(mustJSON(p)), unknown, out.ExpiresAt, s.store.now().UTC().Format(time.RFC3339Nano))
+		_, e = tx.ExecContext(ctx, "INSERT INTO purge_previews(token,profile_id,command_epoch,revision,selection_json,unknown_effects,expires_at,state,created_at) VALUES(?,?,?,?,?,?,?,'pending',?)", out.Token, q.ProfileID, m.CommandEpoch, m.Revision, string(mustJSON(p)), unknown, out.ExpiresAt, s.store.now().UTC().Format(api.TimestampLayout))
 		return e
 	})
 	return

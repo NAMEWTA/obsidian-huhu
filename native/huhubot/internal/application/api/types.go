@@ -159,3 +159,10 @@ type Facade struct {
 	Profile       ProfileAPI
 	Data          SessionDataAPI
 }
+
+// TimestampLayout is how every persisted and exchanged instant is written.
+// time.RFC3339Nano drops trailing fractional zeros, so its strings do not sort
+// in time order ("…05.5Z" sorts after "…05.55Z"). SQL orders and compares
+// these columns as text (claim order, pages, expiry), so the fraction always
+// has nine digits. time.Parse(time.RFC3339Nano, …) reads both forms.
+const TimestampLayout = "2006-01-02T15:04:05.000000000Z07:00"
