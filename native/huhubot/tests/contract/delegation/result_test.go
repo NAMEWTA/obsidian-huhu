@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
@@ -53,10 +52,7 @@ func TestParentResultDeduplicatesSharedHistoryAndTerminatesOversizedResult(t *te
 			if oversize {
 				status = "failed"
 			}
-			// Thirty-two children each durable-commit under the default claim cap.
-			// Windows FlushFileBuffers on a busy runner exceeds the ordinary 8s
-			// poll; the required status and lineage counts stay the same.
-			final := waitWithin(t, c, r.RunID, status, 20*time.Second)
+			final := wait(t, c, r.RunID, status)
 			if oversize && final.Reason != "RESULT_CONTEXT_LIMIT" {
 				t.Fatalf("oversize did not terminate safely %#v", final)
 			}
