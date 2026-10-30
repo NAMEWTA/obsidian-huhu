@@ -1,6 +1,8 @@
 /** Current project guides are Chinese; the root README is bilingual. Workflow/fixture owners retain their language. */
 export function documentationKind(rel) {
 	if (rel === 'NOTICE' || rel === 'THIRD-PARTY-NOTICES.md' || rel.endsWith('/NOTICE.txt')) return 'license';
+	// Vendored crates keep their upstream license text verbatim beside the patched source.
+	if (/^native\/[^/]+\/third_party\/[^/]+\/LICENSE(?:-[A-Z0-9]+)?\.md$/.test(rel)) return 'license';
 	if (rel.startsWith('docs/')) return 'user-doc';
 	if (/^native\/(?:pty-server|browser-runtime)\/README\.md$/.test(rel)) return 'native-doc';
 	if (/^(README|CHANGELOG|SECURITY)(\.ZH)?\.md$/.test(rel)) return 'root-entry';

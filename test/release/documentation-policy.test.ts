@@ -36,6 +36,8 @@ test('native package READMEs have project documentation ownership without classi
 	expect(documentationKind('native/pty-server/README.md')).toBe('native-doc');
 	expect(documentationKind('docs/browser-runtime.md')).toBe('user-doc');
 	expect(documentationKind('native/browser-runtime/src/README.md')).toBe('');
+	expect(documentationKind('native/pty-server/third_party/portable-pty/LICENSE.md')).toBe('license');
+	expect(documentationKind('native/pty-server/third_party/portable-pty/README.md')).toBe('');
 });
 
 // GitHub section links remove punctuation, including the ideographic comma U+3001.
