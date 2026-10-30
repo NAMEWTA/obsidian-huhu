@@ -17,6 +17,7 @@ export const HOOK_SPOOL_LIMITS = Object.freeze({
 	smallBatch: 16,
 	largeBatch: 1,
 	idleMs: 300,
+	readerConcurrency: 4,
 	metadataBytes: 256 * 1024,
 	retainedGenerations: 32,
 });
@@ -60,6 +61,9 @@ interface ScopeState {
 const pools = new Map<string, Promise<HookSpool>>();
 const nonce = () => crypto.randomUUID();
 const code = (error: unknown) => (error as NodeJS.ErrnoException)?.code;
+const ignoreMissing = (error: unknown): void => {
+	if (code(error) !== 'ENOENT') throw error;
+};
 
 /** One reader for the canonical physical pool; the filesystem slots also bind external processes. */
 export async function hookSpool(win: Window, root: string): Promise<HookSpool> {
@@ -89,7 +93,7 @@ async function assertPath(fs: Fs, path: NodePath, file: string, trustedRoot?: st
 		try {
 			if ((await fs.lstat(cursor)).isSymbolicLink()) throw new Error('hookSpoolSymlink');
 		} catch (error) {
-			if (code(error) !== 'ENOENT') throw error;
+			ignoreMissing(error);
 		}
 		const parent = path.dirname(cursor);
 		if (parent === cursor) break;
@@ -212,7 +216,7 @@ export class HookSpool {
 		try {
 			await this.fs.access(this.path.join(this.root, 'reader'));
 		} catch (error) {
-			if (code(error) !== 'ENOENT') throw error;
+			ignoreMissing(error);
 			// A rejected contender has never published this unique path.
 			await assertPath(this.fs, this.path, this.root);
 			await this.fs.rm(this.root, { recursive: true, force: true });
@@ -420,19 +424,33 @@ export class HookSpool {
 			return;
 		}
 		const start = this.cursor++ % states.length;
-		let small = 0,
-			large = 0,
-			backlog = false,
-			retried = false;
-		for (let i = 0; i < states.length; i++) {
-			const state = states[(start + i) % states.length]!;
-			try {
-				this.lease!.assertHeld();
-				await assertPath(this.fs, this.path, state.dir, this.root);
-				if (!state.active)
-					await this.fs.unlink(this.path.join(state.dir, 'active.json')).catch((error) => {
-						if (code(error) !== 'ENOENT') throw error;
-					});
+		const budget = { small: 0, large: 0, backlog: false, retried: false };
+		// Scopes are independent, so a round visits up to readerConcurrency of them at once; each scope
+		// stays sequential, keeping its own order. Strictly serial rounds made a 32-scope drain cost
+		// thousands of back-to-back filesystem round trips, which on Windows took seconds.
+		let next = 0;
+		const worker = async (): Promise<void> => {
+			while (next < states.length) await this.roundScope(states[(start + next++) % states.length]!, idle, budget);
+		};
+		await Promise.all(Array.from({ length: Math.min(HOOK_SPOOL_LIMITS.readerConcurrency, states.length) }, worker));
+		if (
+			budget.backlog &&
+			![...this.scopes.values()].every((s) => !s.active && Date.now() >= (s.close?.deadline ?? 0))
+		)
+			this.continueImmediately = true;
+	}
+	private async roundScope(
+		state: ScopeState,
+		idle: boolean,
+		budget: { small: number; large: number; backlog: boolean; retried: boolean },
+	): Promise<void> {
+		try {
+			this.lease!.assertHeld();
+			await assertPath(this.fs, this.path, state.dir, this.root);
+			if (!state.active) await this.fs.unlink(this.path.join(state.dir, 'active.json')).catch(ignoreMissing);
+			// One listing tells whether a fault was published; probing fault.json each round cost an
+			// open (plus its ancestor checks) per scope even though faults are rare.
+			if ((await this.list(state.dir)).includes('fault.json'))
 				try {
 					const fault = await this.read(this.path.join(state.dir, 'fault.json'), 512, this.root);
 					if (fault !== state.fault) {
@@ -440,59 +458,54 @@ export class HookSpool {
 						this.report(state, 'hookPublicationFailed');
 					}
 				} catch (error) {
-					if (code(error) !== 'ENOENT') throw error;
+					ignoreMissing(error);
 				}
-				let taken = false;
-				const kinds =
-					state.nextKind === 'small' ? (['small', 'large'] as const) : (['large', 'small'] as const);
-				for (const kind of kinds) {
-					// One directory listing per kind instead of probing every slot: each probe is a separate
-					// filesystem round trip, which on Windows made a full round over many scopes take seconds.
-					const slots = kind === 'small' ? HOOK_SPOOL_LIMITS.smallPerScope : HOOK_SPOOL_LIMITS.largePerScope;
-					let entries: string[] = [];
+			let taken = false;
+			const kinds = state.nextKind === 'small' ? (['small', 'large'] as const) : (['large', 'small'] as const);
+			for (const kind of kinds) {
+				const limit = kind === 'small' ? HOOK_SPOOL_LIMITS.smallBatch : HOOK_SPOOL_LIMITS.largeBatch;
+				if (taken || budget[kind] >= limit) continue;
+				// One directory listing per kind instead of probing every slot: each probe is a separate
+				// filesystem round trip, which on Windows made a full round over many scopes take seconds.
+				const slots = kind === 'small' ? HOOK_SPOOL_LIMITS.smallPerScope : HOOK_SPOOL_LIMITS.largePerScope;
+				const present = new Set(await this.list(this.path.join(state.dir, kind)));
+				const names: string[] = [];
+				for (let n = 0; n < slots; n++) if (present.has(String(n))) names.push(String(n));
+				for (const name of names) {
+					if (!/^\d+$/.test(name) || Number(name) >= (kind === 'small' ? 8 : 2))
+						throw new Error('hookReferenceInvalid');
+					// Concurrent scopes share the round budget: reserve before awaiting, release if unused.
+					if (budget[kind] >= limit) break;
+					const key = kind + '/' + name,
+						tombstone = (state.failures.get(key) ?? 0) >= 3;
+					if (tombstone && (!idle || budget.retried)) continue;
+					if (tombstone) budget.retried = true;
+					budget[kind]++;
+					// A productive round starts the next one at once: publishers are active, and
+					// waiting idleMs after every event capped a 32-scope drain at one batch per idle.
+					let consumed = false;
 					try {
-						entries = await this.fs.readdir(this.path.join(state.dir, kind));
-					} catch (error) {
-						if (code(error) !== 'ENOENT') throw error;
+						consumed = await this.consume(state, kind, name, this.root);
+					} finally {
+						if (!consumed) budget[kind]--;
 					}
-					const present = new Set(entries);
-					const names: string[] = [];
-					for (let n = 0; n < slots; n++) if (present.has(String(n))) names.push(String(n));
-
-					if (
-						taken ||
-						(kind === 'small'
-							? small >= HOOK_SPOOL_LIMITS.smallBatch
-							: large >= HOOK_SPOOL_LIMITS.largeBatch)
-					)
-						continue;
-					for (const name of names) {
-						if (!/^\d+$/.test(name) || Number(name) >= (kind === 'small' ? 8 : 2))
-							throw new Error('hookReferenceInvalid');
-						const key = kind + '/' + name,
-							tombstone = (state.failures.get(key) ?? 0) >= 3;
-						if (tombstone && (!idle || retried)) continue;
-						if (tombstone) retried = true;
-						// A productive round starts the next one at once: publishers are active, and
-						// waiting idleMs after every event capped a 32-scope drain at one batch per idle.
-						if (await this.consume(state, kind, name, this.root)) {
-							backlog = taken = true;
-							state.nextKind = kind === 'small' ? 'large' : 'small';
-							if (kind === 'small') small++;
-							else large++;
-							break;
-						}
+					if (consumed) {
+						budget.backlog = taken = true;
+						state.nextKind = kind === 'small' ? 'large' : 'small';
+						break;
 					}
 				}
-				if (!state.active) await this.finishClose(state);
-			} catch (error) {
-				this.report(state, 'hookSpoolReadFailed');
-				if (state.close && Date.now() >= state.close.deadline)
-					state.close.reject(new Error('hookCleanupIncomplete', { cause: error }));
 			}
+			if (!state.active) await this.finishClose(state);
+		} catch (error) {
+			this.report(state, 'hookSpoolReadFailed');
+			if (state.close && Date.now() >= state.close.deadline)
+				state.close.reject(new Error('hookCleanupIncomplete', { cause: error }));
 		}
-		if (backlog && ![...this.scopes.values()].every((s) => !s.active && Date.now() >= (s.close?.deadline ?? 0)))
-			this.continueImmediately = true;
+	}
+	/** A missing directory lists as empty; any other failure propagates. */
+	private list(dir: string): Promise<string[]> {
+		return this.fs.readdir(dir).catch((error) => (ignoreMissing(error), []));
 	}
 	private async read(file: string, limit: number, trustedRoot?: string): Promise<string> {
 		await assertPath(this.fs, this.path, file, trustedRoot);
@@ -558,13 +571,13 @@ export class HookSpool {
 			try {
 				await this.fs.rename(ready, consuming);
 			} catch (error) {
-				if (code(error) !== 'ENOENT') throw error;
+				ignoreMissing(error);
 				if (state.active) return false;
 				try {
 					await this.fs.access(this.path.join(state.dir, 'ingress'));
 					return false;
 				} catch (missing) {
-					if (code(missing) !== 'ENOENT') throw missing;
+					ignoreMissing(missing);
 				}
 			}
 			state.retiring.set(key, ref); // Consume fence is captured before either consumer can have effects.
@@ -603,16 +616,10 @@ export class HookSpool {
 		try {
 			if (!ref.globalDeleted) {
 				for (const suffix of ['.pending', '.ready', '.consuming'])
-					await this.fs.unlink(this.path.join(global, ref.nonce + suffix)).catch((error) => {
-						if (code(error) !== 'ENOENT') throw error;
-					});
+					await this.fs.unlink(this.path.join(global, ref.nonce + suffix)).catch(ignoreMissing);
 				// A failed reference unlink retains both slots. Never delete a reused global slot on retry.
-				await this.fs.unlink(this.path.join(refDir, 'ref.json')).catch((error) => {
-					if (code(error) !== 'ENOENT') throw error;
-				});
-				await this.fs.unlink(this.path.join(global, 'claim.json')).catch((error) => {
-					if (code(error) !== 'ENOENT') throw error;
-				});
+				await this.fs.unlink(this.path.join(refDir, 'ref.json')).catch(ignoreMissing);
+				await this.fs.unlink(this.path.join(global, 'claim.json')).catch(ignoreMissing);
 				await this.fs.rmdir(global);
 				ref.globalDeleted = true;
 			}
@@ -633,7 +640,7 @@ export class HookSpool {
 			if (Date.now() >= state.close!.deadline) state.close!.reject(new Error('hookIngressOrphan'));
 			return;
 		} catch (error) {
-			if (code(error) !== 'ENOENT') throw error;
+			ignoreMissing(error);
 		}
 		for (const kind of ['small', 'large'])
 			for (
@@ -649,13 +656,10 @@ export class HookSpool {
 						);
 					return;
 				} catch (error) {
-					if (code(error) !== 'ENOENT') throw error;
+					ignoreMissing(error);
 				}
 			}
-		for (const file of ['fault.json'])
-			await this.fs.unlink(this.path.join(state.dir, file)).catch((error) => {
-				if (code(error) !== 'ENOENT') throw error;
-			});
+		await this.fs.unlink(this.path.join(state.dir, 'fault.json')).catch(ignoreMissing);
 		for (const kind of ['small', 'large'])
 			if (!state.removedDirs.has(kind)) {
 				await this.fs.rmdir(this.path.join(state.dir, kind));
