@@ -1459,3 +1459,14 @@ Root共同Go r3实际1/Wait198.577880238秒，428输入零漂移；精确逐项�
 - **约束或不变量：** 断电最坏丢失最近若干次提交；Claim 丢失的 Run 退回 queued 自动重跑，且此时无已出站模型请求或已派发效果；已返回的 accepted 可能需以幂等 key 重试。进程崩溃语义不变。
 - **后续：** 新增屏障点（新的外部动作）必须加入 `TestExternalActionCommitsAreDurableBarriers`。
 - **替代/被替代：** 修订 ADR-006 的断电持久部分；替代 798e1ba 的观察提交路径。
+
+## LOG-133 — 2026-10-30 — Profile 检查点语义（补记 836eeeb）
+
+- **设计树节点：** D-106 的持久性部分（ADR-027 修订）
+- **来源：** 提交 836eeeb 由另一个云端代理（Cursor Agent，任务 bc-375b446a，已取消归档）直接推送到 dev，当时没有更新 ADR/SPEC/LOG。用户（Ying）决定保留它并补文档。本条如实补记，并记录 9d18720 对关闭持久性的修正。
+- **问题：** Windows 上的 SQLite 自动检查点运行在唯一的 Profile 连接内：WAL 超过 1000 页时，下一次提交会同步复制并刷盘。`sqlite3_close` 还会对整段脏 WAL 做检查点。两者都可能超出 3 秒关停预算和请求截止时间。
+- **结论（836eeeb）：** 每个池连接设 `wal_autocheckpoint=0` 与 `DBCONFIG_NO_CKPT_ON_CLOSE`，并在 WAL 模式下重设 `synchronous=NORMAL`。COMMIT 后若 `-wal` 不小于 256 KiB，执行一次 `PRAGMA wal_checkpoint(TRUNCATE)`；读者快照阻挡时不报错，下次提交再试。屏障提交仍为 FULL。`EraseWAL` 不变。
+- **修正（9d18720）：** 836eeeb 去掉关闭检查点后，正常关闭不再刷盘最后一个屏障之后的 NORMAL 提交，弱于 ADR-027 原文的“正常关闭刷盘全部提交”。`Store.Close` 改为先 fsync `-wal` 文件再关闭：不复制数据库页，大小通常受 256 KiB 阈值约束，下次打开由 WAL 重放。
+- **验证：** `TestCommitAndCloseDoNotCheckpointTheProfile`（836eeeb），`TestCloseFlushesTheWALWithoutCheckpointing`（去掉修复即失败），`TestDurableTxRaisesOnlyItsOwnCommit` 与 `TestExternalActionCommitsAreDurableBarriers` 不改断言。
+- **约束或不变量：** 进程崩溃不丢已提交事务；断电最坏丢失最近一个屏障/检查点之后的提交（ADR-027 不变）；正常关闭后全部提交已落盘。提交与关闭路径不做无界检查点。
+- **影响工件：** ADR-027、spec NFR-005 与 DEC-001、`sqlite/base/store.go`、`base/checkpoint_test.go`。

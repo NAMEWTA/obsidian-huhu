@@ -486,12 +486,14 @@ T-01/08/09/10 比较并锁定依赖，T-11–15 用既定合同验证协作/记�
 ## ADR-027: Profile 数据库 WAL + synchronous=NORMAL，外部动作前设持久屏障
 
 **Status:** accepted
-**Source:** LOG-132；用户 2026-10-30 拍板“方案 B”
+**Source:** LOG-132；用户 2026-10-30 拍板“方案 B”；检查点语义见 LOG-133
 **Supersedes:** ADR-006 中“accepted 表示持久受理”的断电部分（原子性、单 UoW 与进程崩溃语义不变）
 
 ### Decision
 
-Profile 数据库保持 WAL，连接级 `synchronous` 由 FULL 改为 NORMAL：普通 `WithinTx` 提交原子、有序、进程崩溃后仍在，但不各自刷盘。紧接外部非幂等动作之前的提交改用 `WithinDurableTx`：仅这一次提交以 FULL 提交（随后恢复 NORMAL，恢复失败则丢弃连接），WAL 刷盘覆盖整个文件，此前所有 NORMAL 提交一并落盘。屏障点：模型请求出站前的 attempt `dispatched`（含额度扣记）、Host 效果的 `ClaimDispatch`（`dispatching`）、凭据目录 `Reserve`（写 OS 密钥存储之前）与 `BeginDelete`（删除之前）、Profile 清除 `BeginCleanup`、Session 删除 `Delete`（外部清理之前）。迁移仍在默认 FULL 下完成后才切换；正常关闭的最后检查点会刷盘全部提交。798e1ba 的“观察提交”专用路径因此并入普通提交并删除。
+Profile 数据库保持 WAL，连接级 `synchronous` 由 FULL 改为 NORMAL：普通 `WithinTx` 提交原子、有序、进程崩溃后仍在，但不各自刷盘。紧接外部非幂等动作之前的提交改用 `WithinDurableTx`：仅这一次提交以 FULL 提交（随后恢复 NORMAL，恢复失败则丢弃连接），WAL 刷盘覆盖整个文件，此前所有 NORMAL 提交一并落盘。屏障点：模型请求出站前的 attempt `dispatched`（含额度扣记）、Host 效果的 `ClaimDispatch`（`dispatching`）、凭据目录 `Reserve`（写 OS 密钥存储之前）与 `BeginDelete`（删除之前）、Profile 清除 `BeginCleanup`、Session 删除 `Delete`（外部清理之前）。迁移仍在默认 FULL 下完成后才切换。正常关闭先对 `-wal` 文件 fsync 再关闭句柄，因此全部已提交事务落盘，下次打开由 WAL 重放；关闭路径不做检查点。798e1ba 的“观察提交”专用路径因此并入普通提交并删除。
+
+**检查点语义（LOG-133；836eeeb 由另一个云端代理提交，用户决定保留并补文档）：** 每个池连接设 `wal_autocheckpoint=0` 与 `DBCONFIG_NO_CKPT_ON_CLOSE`，并在 WAL 模式下重设 `synchronous=NORMAL`。提交本身不再触发自动检查点。`WithinTx`/`WithinDurableTx` 的 COMMIT 返回后，若 `-wal` 不小于 256 KiB，在同一连接上执行一次 `PRAGMA wal_checkpoint(TRUNCATE)`；有读者持有快照时，这次检查点不完整也不报错，WAL 留待下次提交重试。屏障提交仍为 FULL，仍刷盘整个 WAL。关闭不做无界检查点，只 fsync WAL 文件（大小通常不超过 256 KiB 阈值，有快照阻挡时可更大，但不复制数据库页）。`EraseWAL` 仍以 TRUNCATE 检查点物理清除旧帧，失败时报 `PROFILE_DB_CLEANUP_PENDING`。崩溃与断电语义与上文相同。
 
 ### Context / Trade-off / Consequences
 
@@ -507,4 +509,4 @@ Windows Runner 上每次 FULL 提交一次 `FlushFileBuffers`（约 20–50ms）
 
 ### Verification / Migration
 
-`TestDurableTxRaisesOnlyItsOwnCommit` 断言 WAL、普通提交为 NORMAL、屏障提交为 FULL、其后（包括屏障失败后）恢复 NORMAL。`TestExternalActionCommitsAreDurableBarriers` 解析源文件，断言上述六个屏障点各自只用 `WithinDurableTx`。既有恢复、效果账本、幂等与委派合同测试不改断言。无数据迁移：`synchronous` 是连接级设置，旧 Profile 下次打开即生效。
+`TestDurableTxRaisesOnlyItsOwnCommit` 断言 WAL、普通提交为 NORMAL、屏障提交为 FULL、其后（包括屏障失败后）恢复 NORMAL。`TestExternalActionCommitsAreDurableBarriers` 解析源文件，断言上述六个屏障点各自只用 `WithinDurableTx`。既有恢复、效果账本、幂等与委派合同测试不改断言。`TestCommitAndCloseDoNotCheckpointTheProfile`（836eeeb）断言 `wal_autocheckpoint=0` 与 NO_CKPT_ON_CLOSE 生效，以及有读者快照时提交与关闭仍返回。`TestCloseFlushesTheWALWithoutCheckpointing` 断言 Close 在句柄关闭前 fsync 了 Profile 的 WAL，且没有截断它。无数据迁移：`synchronous` 是连接级设置，旧 Profile 下次打开即生效。

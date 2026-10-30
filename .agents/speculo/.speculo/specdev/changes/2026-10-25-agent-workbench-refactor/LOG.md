@@ -818,3 +818,4 @@ T18 独立审查 121 指出两处 DESIGN 偏差。Lead 按 DESIGN 权威收敛�
 - 撤销 891a5f4 对 `documentation-checker.test.ts` 的放宽（用例超时 90 s、每次子进程 20 s），恢复 vitest 默认 5 s，保留 `windowsHide`。真正的慢由上一条批量查询解决，并按 `vitest.config.ts` 既有约定（真实 Git 仓库与子进程密集用例在 Windows 上争用进程启动）移入串行 `native-integration` 项目；断言不变。
 - 删除 198fb00 的临时关停诊断（`internal/bootstrap/diag_stop_tmp.go` 及 `core.go` 中全部 `diagPhase`/`diagTimeout` 调用）；`core.go` 与诊断前相比只剩 e3af8f9 的关停顺序修复。`go test ./...` 全部通过。
 - 恢复 ADR-027 的正常关闭持久性：836eeeb（另一云端代理提交）关闭了 checkpoint-on-close，使正常关闭不再刷盘最后一个屏障之后的 NORMAL 提交。`Store.Close` 现在先对 `-wal` 文件 fsync 再关闭句柄（不做检查点、不复制数据库页；提交在 WAL 超过 256 KiB 时 TRUNCATE，故通常有界），下次打开由 WAL 重放。新增 `TestCloseFlushesTheWALWithoutCheckpointing`（去掉修复即失败）。
+- 补记 836eeeb（另一云端代理提交）的 Profile 检查点语义与 9d18720 的关闭刷盘：huhu-bot-architecture 的 ADR-027、spec NFR-005/DEC-001、LOG-133。
