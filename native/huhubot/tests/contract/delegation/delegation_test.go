@@ -93,7 +93,11 @@ func start(t *testing.T, c *bootstrap.Core, s api.Session, text string) api.RunR
 }
 func wait(t *testing.T, c *bootstrap.Core, id, status string) api.Run {
 	t.Helper()
-	deadline := time.Now().Add(8 * time.Second)
+	return waitWithin(t, c, id, status, 8*time.Second)
+}
+func waitWithin(t *testing.T, c *bootstrap.Core, id, status string, budget time.Duration) api.Run {
+	t.Helper()
+	deadline := time.Now().Add(budget)
 	for {
 		r, e := c.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: meta(t, c, "q", "").ProfileID, ID: id})
 		if e != nil {
