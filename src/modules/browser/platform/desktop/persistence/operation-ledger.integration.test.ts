@@ -30,10 +30,15 @@ async function root() {
 	// before any ticket/effect exists, so an unrelated local listener cannot flake the fixture.
 	for (let attempt = 0; attempt < 32; attempt++) {
 		const value = await fs.mkdtemp(path.join(tmpdir(), 'huhu-ledger-')); roots.push(value);
-		const canonical = await fs.realpath(value), port = 49152 + createHash('sha256').update(process.platform === 'win32' ? canonical.toLowerCase() : canonical).digest().readUInt16BE(0) % 16384;
-		const probe = createServer();
-		const available = await new Promise<boolean>((resolve, reject) => { probe.once('error', error => (error as NodeJS.ErrnoException).code === 'EADDRINUSE' ? resolve(false) : reject(error)); probe.listen({ host: '127.0.0.1', port, exclusive: true }, () => resolve(true)); });
-		if (available) { await new Promise<void>(resolve => probe.close(() => resolve())); return canonical; }
+		// Same candidate order as production: a Windows-reserved port (EACCES) moves to the next one.
+		const canonical = await fs.realpath(value), ports = createHash('sha256').update(process.platform === 'win32' ? canonical.toLowerCase() : canonical).digest();
+		let available: boolean | null = null;
+		for (let offset = 0; available === null && offset < 32; offset += 2) {
+			const probe = createServer(), port = 49152 + ports.readUInt16BE(offset) % 16384;
+			available = await new Promise<boolean | null>((resolve, reject) => { probe.once('error', error => { const code = (error as NodeJS.ErrnoException).code; return code === 'EADDRINUSE' ? resolve(false) : code === 'EACCES' ? resolve(null) : reject(error); }); probe.listen({ host: '127.0.0.1', port, exclusive: true }, () => resolve(true)); });
+			if (available) await new Promise<void>(resolve => probe.close(() => resolve()));
+		}
+		if (available) return canonical;
 	}
 	throw Error('no free fixture owner namespace');
 }

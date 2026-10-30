@@ -1,7 +1,8 @@
 import { promises as fs } from 'node:fs';
+import { Server } from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TestBrowserProtector } from '../../../../../../test/fixtures/browser-protector';
 import { DesktopBrowserPersistence } from './browser-persistence';
 
@@ -9,6 +10,20 @@ const roots: string[] = [], stores: DesktopBrowserPersistence[] = [];
 afterEach(async () => { await Promise.all(stores.splice(0).map((store) => store.dispose())); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
 async function setup() { const root = await fs.mkdtemp(path.join(tmpdir(), 'huhu-storage-')); roots.push(root); const protector = new TestBrowserProtector(); const store = new DesktopBrowserPersistence({ root, protector }); stores.push(store); await store.initialize(); return { root, protector, store }; }
 describe('exclusive browser persistence', () => {
+	it('skips a Windows-reserved owner port (EACCES) and every instance meets on the same next port', async () => {
+		const listen = Server.prototype.listen, attempted: number[] = []; let reserved: number | undefined;
+		const spy = vi.spyOn(Server.prototype, 'listen').mockImplementation(function (this: Server, ...args: unknown[]) {
+			const port = (args[0] as { port: number }).port; attempted.push(port); reserved ??= port;
+			if (port === reserved) { process.nextTick(() => this.emit('error', Object.assign(new Error(`listen EACCES: permission denied 127.0.0.1:${port}`), { code: 'EACCES' }))); return this; }
+			return (listen as (...a: unknown[]) => Server).apply(this, args);
+		});
+		try {
+			const { root, protector, store } = await setup();
+			expect(store.readOnly).toBe(false); expect(attempted).toHaveLength(2); expect(attempted[1]).not.toBe(reserved);
+			const other = new DesktopBrowserPersistence({ root, protector }); stores.push(other); await other.initialize();
+			expect(attempted.slice(2)).toEqual(attempted.slice(0, 2)); expect(other.readOnly).toBe(true);
+		} finally { spy.mockRestore(); }
+	});
 	it('retains encrypted records, stable owner identity and keyed digests across restart', async () => {
 		const { root, protector, store } = await setup(); const ownerId = store.ownerId, digest = await store.digest('request-private'); await store.write('catalog', { label: 'private-url', secret: 'cookie-value' });
 		expect(await store.keys('cat')).toEqual(['catalog']); const filename = path.join(root, 'records', `${Buffer.from('catalog').toString('hex')}.sealed`); expect(await fs.readFile(filename, 'utf8')).not.toContain('private-url');

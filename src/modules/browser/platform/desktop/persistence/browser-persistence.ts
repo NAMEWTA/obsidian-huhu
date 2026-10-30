@@ -43,12 +43,18 @@ export class DesktopBrowserPersistence implements BrowserPersistence {
 		this.root = path.join(await fs.realpath(ancestor), ...suffix);
 		const canonical = process.platform === 'win32' ? this.root.toLowerCase() : this.root;
 		this.ownerIdentity = createHash('sha256').update(`huhu-browser-owner-v2:${canonical}`).digest('hex');
-		const port = 49152 + (createHash('sha256').update(canonical).digest().readUInt16BE(0) % 16384);
+		// Windows reserves dynamic port ranges (EACCES). Every instance skips the
+		// same reserved candidates of this digest, so they still meet on one port.
+		const ports = createHash('sha256').update(canonical).digest();
 		const server = createServer((socket) => socket.destroy());
-		this.owner = await new Promise<Server | undefined>((resolve, reject) => {
-			server.once('error', (error) => (error as NodeJS.ErrnoException).code === 'EADDRINUSE' ? resolve(undefined) : reject(error));
-			server.listen({ host: '127.0.0.1', port, exclusive: true }, () => { server.unref(); resolve(server); });
-		});
+		for (let offset = 0; ; offset += 2) {
+			const owner = await new Promise<Server | undefined | null>((resolve, reject) => {
+				const failed = (error: NodeJS.ErrnoException) => error.code === 'EADDRINUSE' ? resolve(undefined) : error.code === 'EACCES' && offset < 30 ? resolve(null) : reject(error);
+				server.once('error', failed);
+				server.listen({ host: '127.0.0.1', port: 49152 + (ports.readUInt16BE(offset) % 16384), exclusive: true }, () => { server.off('error', failed); server.unref(); resolve(server); });
+			});
+			if (owner !== null) { this.owner = owner; break; }
+		}
 		this.initialized = true;
 		if (!this.owner) return;
 		try {
