@@ -315,13 +315,17 @@ fn dispatch(
 }
 
 /// Explicit fixture-only, best effort, create-new metrics. No default I/O or protocol surface.
-fn metrics_file(path: String, value: Value) {
+/// Writes the diagnostic metrics file on a helper thread. The returned receiver
+/// completes when it is written or abandoned; the caller waits for it inside the
+/// existing bounded final flush, so a slow volume neither stalls shutdown nor
+/// leaves the file half-written (it is renamed into place only when complete).
+fn metrics_file(path: String, value: Value) -> Option<mpsc::Receiver<()>> {
     if path.len() > 4096 {
-        return;
+        return None;
     }
     let bytes = match serde_json::to_vec(&value) {
         Ok(bytes) if bytes.len() <= 4096 => bytes,
-        _ => return,
+        _ => return None,
     };
     let (done, finished) = mpsc::channel();
     thread::spawn(move || {
@@ -345,14 +349,25 @@ fn metrics_file(path: String, value: Value) {
                 options.mode(0o600);
             }
             use std::io::Write;
-            let mut file = options.open(path)?;
-            file.write_all(&bytes)
+            if std::fs::symlink_metadata(path).is_ok() {
+                return Ok(());
+            }
+            let mut partial = path.as_os_str().to_owned();
+            partial.push(format!(".{}.partial", std::process::id()));
+            let partial = std::path::PathBuf::from(partial);
+            let written = options
+                .open(&partial)
+                .and_then(|mut file| file.write_all(&bytes))
+                .and_then(|()| std::fs::rename(&partial, path));
+            if written.is_err() {
+                let _ = std::fs::remove_file(&partial);
+            }
+            written
         };
         let _ = write();
         let _ = done.send(());
     });
-    // A failed/slow measurement cannot stall shutdown; this is inside the existing final flush stage.
-    let _ = finished.recv_timeout(std::time::Duration::from_millis(50));
+    Some(finished)
 }
 
 fn main() {
@@ -437,9 +452,10 @@ fn main() {
             }
         }
     }
+    let mut metrics_written = None;
     if let Ok(path) = std::env::var("HUHU_PTY_STREAM_METRICS") {
         if let (Some(sessions), Some(outbox)) = (sessions.metrics(), out.metrics()) {
-            metrics_file(
+            metrics_written = metrics_file(
                 path,
                 json!({"version":1,"phase":"stdin-eof","sessions":sessions,"outbox":outbox,"control":broker.metrics()}),
             );
@@ -460,8 +476,47 @@ fn main() {
         let _ = writer.join();
         let _ = done.send(());
     });
+    let flushed_by = std::time::Instant::now() + std::time::Duration::from_secs(5);
     let _ = finished.recv_timeout(std::time::Duration::from_secs(5));
+    // The diagnostic metrics share the same final flush bound.
+    if let Some(metrics) = metrics_written {
+        let _ =
+            metrics.recv_timeout(flushed_by.saturating_duration_since(std::time::Instant::now()));
+    }
     std::process::exit(if shutdown.is_ok() { 0 } else { 1 });
+}
+
+#[cfg(test)]
+mod metrics_file_tests {
+    use super::*;
+
+    #[test]
+    fn metrics_are_renamed_into_place_complete_and_reported_when_written() {
+        let dir = std::env::temp_dir().join(format!("huhu-metrics-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("metrics.json");
+        let written = metrics_file(path.to_string_lossy().into_owned(), json!({"version":1}))
+            .expect("a bounded value is written");
+        written
+            .recv_timeout(std::time::Duration::from_secs(5))
+            .unwrap();
+        let value: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        assert_eq!(value, json!({"version":1}));
+        let names: Vec<_> = std::fs::read_dir(&dir)
+            .unwrap()
+            .map(|entry| entry.unwrap().file_name())
+            .collect();
+        assert_eq!(names, vec![std::ffi::OsString::from("metrics.json")]);
+        // An existing file is never replaced.
+        metrics_file(path.to_string_lossy().into_owned(), json!({"version":2}))
+            .unwrap()
+            .recv_timeout(std::time::Duration::from_secs(5))
+            .unwrap();
+        let value: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        assert_eq!(value, json!({"version":1}));
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 }
 
 #[cfg(test)]
