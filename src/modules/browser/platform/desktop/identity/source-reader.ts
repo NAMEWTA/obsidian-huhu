@@ -89,12 +89,14 @@ export class DesktopIdentitySourceReader {
 	}
 }
 async function fixedText(file: string, maximum: number): Promise<{ text: string; sha256: string }> {
-	const stat = await fs.lstat(file);
-	if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size > maximum) throw new IdentityError(stat.size > maximum ? 'too_large' : 'source_unavailable');
+	// BigInt from the first stat on: NTFS file IDs are 64-bit, and a Number `ino` above 2^53 would never equal the
+	// handle's exact value, so an unchanged file read as `source_changed`.
+	const stat = await fs.lstat(file, { bigint: true });
+	if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== BigInt(1) || stat.size > BigInt(maximum)) throw new IdentityError(stat.size > BigInt(maximum) ? 'too_large' : 'source_unavailable');
 	const handle = await fs.open(file, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0));
 	try {
 		const before = await handle.stat({ bigint: true });
-		if (!before.isFile() || before.size > BigInt(maximum) || before.ino !== BigInt(stat.ino) || before.dev !== BigInt(stat.dev)) throw new IdentityError('source_changed');
+		if (!before.isFile() || before.size > BigInt(maximum) || before.ino !== stat.ino || before.dev !== stat.dev) throw new IdentityError('source_changed');
 		const bytes = Buffer.alloc(Number(before.size)); let offset = 0;
 		try {
 			while (offset < bytes.length) { const result = await handle.read(bytes, offset, bytes.length - offset, offset); if (!result.bytesRead) throw new IdentityError('source_changed'); offset += result.bytesRead; }
