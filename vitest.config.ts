@@ -26,7 +26,10 @@ const iconicStubTests = ['src/app/settings/setting-definitions.test.ts', 'src/mo
 // Real Git repositories and Chrome contend for subprocess startup and disk IO on Windows runners.
 // Run these suites one at a time after the parallel in-process tests, preserving their existing deadlines.
 // The documentation checker runs the real CLI 26 times against a real Git repository (26 Node and 26 Git processes).
-const nativeIntegrationTests = ['test/release/documentation-checker.test.ts', 'test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
+// hook-spool's 32-scope case starts 96 real publisher processes (32 at once). In the parallel unit
+// project they starved CPU-bound neighbours on 4-core Windows runners (agent-backup took 5 s instead
+// of ~0.4 s) and were starved in turn; its bounds are unchanged, only the placement is serial.
+const nativeIntegrationTests = ['test/release/documentation-checker.test.ts', 'src/modules/agent/platform/desktop/hooks/hook-spool.test.ts', 'test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
 
 // These HUHU tests build and launch the real Go runner. Keeping them in a
 // single-worker project avoids three cold Go toolchain builds competing for
