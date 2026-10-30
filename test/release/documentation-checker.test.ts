@@ -16,7 +16,6 @@ test('documentation checks use ownership and links, not directory names, and res
 			cwd: root,
 			encoding: 'utf8',
 			windowsHide: true,
-			timeout: 20_000,
 		});
 	try {
 		expect(spawnSync('git', ['init', '--quiet'], { cwd: root, windowsHide: true }).status).toBe(0);
@@ -148,4 +147,4 @@ test('documentation checks use ownership and links, not directory names, and res
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}
-}, 90_000);
+});
