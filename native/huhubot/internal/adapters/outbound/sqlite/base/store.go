@@ -9,14 +9,26 @@ import (
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile"
-	_ "github.com/ncruces/go-sqlite3/driver"
+	"github.com/ncruces/go-sqlite3"
+	sqlitedriver "github.com/ncruces/go-sqlite3/driver"
 	"net/url"
 	"os"
 	"strings"
 	"time"
 )
 
-type Store struct{ db *sql.DB }
+type Store struct {
+	db      *sql.DB
+	walPath string
+}
+
+// walRestartBytes is the dirty WAL size at which a commit, after it has
+// released its write lock, tries a truncating checkpoint. The checkpoint is
+// not inside the transaction, so the Windows VFS uses the busy timeout
+// instead of an infinite pending-lock wait. 256KiB stays under the request
+// deadlines on a slow volume; smaller frames such as a deletion canary stay
+// in the WAL until EraseWAL.
+const walRestartBytes int64 = 256 * 1024
 
 // sqliteDSN builds a file URI SQLite will open on every supported OS.
 // url.URL treats a Windows drive path as a host (file://C:/...), and a raw
@@ -51,7 +63,7 @@ func OpenWithBackup(ctx context.Context, h *profile.Handle, complete CompleteBac
 	if !h.New && info.Size() == 0 {
 		return nil, failure("CONFLICT", "PROFILE_DB_EMPTY")
 	}
-	db, err := sql.Open("sqlite3", sqliteDSN(h.DatabasePath))
+	db, err := openProfileDB(sqliteDSN(h.DatabasePath))
 	if err != nil {
 		return nil, failure("CONFLICT", "PROFILE_DB_OPEN_FAILED")
 	}
@@ -199,12 +211,53 @@ func OpenWithBackup(ctx context.Context, h *profile.Handle, complete CompleteBac
 	if _, err = db.ExecContext(ctx, "PRAGMA synchronous=NORMAL"); err != nil {
 		return nil, failure("CONFLICT", "PROFILE_DURABILITY_UNAVAILABLE")
 	}
-	s := &Store{db: db}
+	// SQLite's default autocheckpoint (1000 pages) runs inside COMMIT. On
+	// Windows the VFS upgrades a RESERVED connection to PENDING with an
+	// infinite LockFileEx, ignoring busy_timeout. A second connection's
+	// snapshot pins that commit until the caller gives up: Close reports
+	// EXECUTOR_STOP_TIMEOUT, and GetRun or a HAP request dies on its own
+	// deadline. The same flush on the last sqlite3_close occupies the 3s
+	// stop. Checkpointing stays off both paths. The WAL remains for crash
+	// replay (ADR-027); EraseWAL still truncates when a deletion must drop
+	// private frames. Once the WAL file passes walRestartBytes, the next
+	// commit restarts it only after the write lock is released.
+	if _, err = db.ExecContext(ctx, "PRAGMA wal_autocheckpoint=0"); err != nil {
+		return nil, failure("CONFLICT", "PROFILE_DURABILITY_UNAVAILABLE")
+	}
+	s := &Store{db: db, walPath: h.DatabasePath + "-wal"}
 	if _, err = s.ReadMetadata(ctx); err != nil {
 		return nil, err
 	}
 	ok = true
 	return s, nil
+}
+
+// openProfileDB turns checkpoint-on-close off for every pooled connection.
+// sqlite3_close of the last handle otherwise flushes the whole dirty WAL on
+// the caller that is already inside the 3s stop budget.
+func openProfileDB(dsn string) (*sql.DB, error) {
+	return sqlitedriver.Open(dsn, func(c *sqlite3.Conn) error {
+		if _, err := c.Config(sqlite3.DBCONFIG_NO_CKPT_ON_CLOSE, true); err != nil {
+			return err
+		}
+		if err := c.WALAutoCheckpoint(0); err != nil {
+			return err
+		}
+		// journal_mode=WAL persists in the file. synchronous does not. A handle
+		// discarded after ErrBadConn must not fall back to FULL, which fsyncs
+		// every commit. A brand-new file is still a rollback journal at this
+		// point; leaving that synchronous at the default keeps the migration
+		// commit durable.
+		stmt, _, err := c.Prepare(`PRAGMA journal_mode`)
+		if err != nil {
+			return err
+		}
+		defer stmt.Close()
+		if stmt.Step() && stmt.ColumnText(0) == "wal" {
+			return c.Exec(`PRAGMA synchronous=NORMAL`)
+		}
+		return nil
+	})
 }
 func (s *Store) ReadMetadata(ctx context.Context) (api.ProfileMetadata, error) {
 	var p api.ProfileMetadata
@@ -234,10 +287,10 @@ func (s *Store) Database() *sql.DB { return s.db }
 // The caller context bounds waiting for the shared connection and every
 // statement, but it is deliberately not the transaction context: database/sql
 // discards the connection of a transaction whose context ends (Tx.awaitDone).
-// With one pooled connection that closes the Profile's last SQLite handle,
-// which runs a full WAL checkpoint plus fsync while every other caller waits;
-// on Windows runners that stalled shutdown past its bound. Ending through the
-// deferred Rollback instead returns the healthy connection to the pool.
+// With one pooled connection that drops the Profile's last SQLite handle
+// while every other caller waits. Ending through the deferred Rollback
+// instead returns the healthy connection to the pool. Checkpoint-on-close is
+// disabled separately so that discard is not also a full WAL flush.
 func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
 	return s.withinTx(ctx, false, work)
 }
@@ -301,5 +354,17 @@ func (s *Store) withinTx(ctx context.Context, durable bool, work func(*sql.Tx) e
 		}
 		return err
 	}
+	s.restartWALIfLarge(conn)
 	return nil
+}
+
+// restartWALIfLarge runs only after COMMIT, when this connection is no longer
+// RESERVED. A pinned reader makes TRUNCATE return within busy_timeout; the
+// commit itself has already succeeded.
+func (s *Store) restartWALIfLarge(conn *sql.Conn) {
+	info, err := os.Stat(s.walPath)
+	if err != nil || info.Size() < walRestartBytes {
+		return
+	}
+	_, _ = conn.ExecContext(context.Background(), "PRAGMA wal_checkpoint(TRUNCATE)")
 }
