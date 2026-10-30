@@ -814,6 +814,20 @@ test('Pi enrollment requires one actual explicit HUHU extension after official a
 	expect(accepted(['--no-extensions', '--extension', 'pi/extensions/huhu-status.ts'], extension, isolated)).toBe(true);
 });
 
+test('Pi extension argument accepts only the drive colon of a native Windows path, never a specifier', async () => {
+	const { piEditorArgumentGate } = await import('./pi-editor-gate');
+	const win = 'D:\\isolated\\pi\\extensions\\huhu-status.ts';
+	const gate = (value: string, paths: typeof path.win32 | typeof path.posix, extension: string, cwd: string) =>
+		piEditorArgumentGate(['-ne', '-e', value], extension, cwd, paths);
+	expect(gate(win, path.win32, win, 'D:\\isolated')).toBe(true);
+	expect(gate('pi\\extensions\\huhu-status.ts', path.win32, win, 'D:\\isolated')).toBe(true);
+	for (const value of ['npm:huhu-status', 'git:github.com/x/y', 'https://x/huhu-status.ts', 'D:\\isolated\\pi:x\\huhu-status.ts', 'D:huhu-status.ts', 'file:///D:/isolated/pi/extensions/huhu-status.ts'])
+		expect(gate(value, path.win32, win, 'D:\\isolated'), value).toBe(false);
+	// A drive-shaped value is not absolute on POSIX and stays rejected there.
+	expect(gate('C:/isolated/pi/extensions/huhu-status.ts', path.posix, '/isolated/pi/extensions/huhu-status.ts', '/isolated')).toBe(false);
+	expect(gate('npm:huhu-status', path.posix, '/isolated/pi/extensions/huhu-status.ts', '/isolated')).toBe(false);
+});
+
 test('Pi editor installation facts read only the exact existing production extension under the frozen agent home', async () => {
 	const api = await import('./automation-hooks');
 	expect(typeof api.installedPiEditorExtension).toBe('function');

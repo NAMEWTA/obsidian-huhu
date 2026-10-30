@@ -83,7 +83,10 @@ export function piEditorArgumentGate(
 				!value ||
 				++extensions !== 1 ||
 				value.startsWith('~') ||
-				value.includes(':') ||
+				// No URL/package specifier (npm:, git:, https:). The only colon allowed is the drive of
+				// a Windows absolute path, and only where this platform itself treats it as absolute.
+				(value.includes(':') &&
+					!(/^[A-Za-z]:[\\/]/.test(value) && !value.includes(':', 2) && paths.isAbsolute(value))) ||
 				paths.resolve(cwd, value) !== extension
 			)
 				return false;
