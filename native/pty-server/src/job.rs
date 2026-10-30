@@ -127,7 +127,22 @@ mod unix {
     }
     impl Scope {
         pub fn capture(pid: Option<u32>) -> Self {
-            let root = pid.and_then(|p| member(p as i32).ok().flatten());
+            // A root that exits at once (`sh -c 'exit 7'`) gives up its controlling tty
+            // in do_exit before it becomes a zombie. Read during that window it looks like
+            // a live member without a tty, and the whole session stayed unverified, so its
+            // cleanup was never confirmed. Re-read briefly until it is either a live member
+            // with its tty or a zombie; any other observation still stays unverified.
+            let deadline = std::time::Instant::now() + std::time::Duration::from_millis(100);
+            let root = pid.and_then(|p| loop {
+                let now = member(p as i32).ok().flatten();
+                if now.as_ref().is_some_and(|m| m.alive && m.tty == 0)
+                    && std::time::Instant::now() < deadline
+                {
+                    std::thread::sleep(std::time::Duration::from_millis(1));
+                    continue;
+                }
+                break now;
+            });
             let valid = root
                 .as_ref()
                 .is_some_and(|m| m.sid == m.pid && m.group == m.pid && (m.tty != 0 || !m.alive));
