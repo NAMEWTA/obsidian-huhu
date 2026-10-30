@@ -184,13 +184,24 @@ pub fn listen(endpoint: &str) -> io::Result<Listener> {
             "control socket path too long",
         ));
     }
-    let inner = ListenerOptions::new()
-        .name(path.as_path().to_fs_name::<GenericFilePath>()?)
-        .nonblocking(ListenerNonblockingMode::Both)
-        .reclaim_name(false)
-        .try_overwrite(false)
-        .mode(0o600)
-        .create_sync()?;
+    let options = || -> io::Result<ListenerOptions<'_>> {
+        Ok(ListenerOptions::new()
+            .name(path.as_path().to_fs_name::<GenericFilePath>()?)
+            .nonblocking(ListenerNonblockingMode::Both)
+            .reclaim_name(false)
+            .try_overwrite(false))
+    };
+    // interprocess sets the mode with `fchmod` on the unbound socket. macOS
+    // rejects that with EINVAL, reported as `Unsupported` before `bind`, so no
+    // name exists yet. Only then is the parent re-checked as a 0700 directory
+    // owned by this user, and the socket is narrowed to 0600 right after `bind`.
+    let inner = match options()?.mode(0o600).create_sync() {
+        Err(error) if error.kind() == io::ErrorKind::Unsupported => {
+            private_directory(path.parent().unwrap_or(Path::new("/")))?;
+            options()?.create_sync()?
+        }
+        other => other?,
+    };
     let m = fs::symlink_metadata(&path)?;
     fs::set_permissions(&path, fs::Permissions::from_mode(0o600))?;
     Ok(Listener {
