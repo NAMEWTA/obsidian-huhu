@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { beforeEach, expect, it, vi } from 'vitest';
 import type { App } from 'obsidian';
 import type { BotClient } from '../../../api';
@@ -82,7 +83,8 @@ it('resolves the vault-relative plugin directory and verifies the executable bef
 	expect(mocks.verify).toHaveBeenCalled();
 	expect(mocks.launch.mock.calls[0]?.[0]).toMatchObject({
 		binary: '/verified/runner',
-		cwd: '/vault/.obsidian/plugins/huhu',
+		// The launch cwd is the native path of the vault plugin directory (D:\vault\... on Windows).
+		cwd: resolve('/vault', '.obsidian/plugins/huhu'),
 	});
 });
 
