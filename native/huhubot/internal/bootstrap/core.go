@@ -390,6 +390,7 @@ func (c *Core) RequestStop() error {
 func (c *Core) drain() {
 	// A transient SQL failure cannot reopen this process's admission gates or
 	// consume the sole shutdown attempt. Keep ownership while publishing Stop.
+	c.drainStage("recovery.Stop")
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		err := c.recovery.Stop(ctx)
@@ -399,10 +400,15 @@ func (c *Core) drain() {
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
+	c.drainStage("executor.Done")
 	<-c.executor.Done()
+	c.drainStage("tooling.InspectionsDone")
 	<-c.tooling.InspectionsDone()
+	c.drainStage("assistants.ProbeDone")
 	<-c.assistants.ProbeDone()
+	c.drainStage("memory.Done")
 	<-c.memory.Done()
+	c.drainStage("policy.PendingProducers")
 	// The trusted Engine may have returned while an actual HTTP producer is
 	// still draining. Its original bound Settle continues to use this database.
 	for {
@@ -414,12 +420,15 @@ func (c *Core) drain() {
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
+	c.drainStage("models.Done")
 	if c.models != nil {
 		<-c.models.Done()
 	}
+	c.drainStage("tooling.Collect")
 	gcCtx, gcCancel := context.WithTimeout(context.Background(), time.Second)
 	_, _ = c.tooling.Collect(gcCtx)
 	gcCancel()
+	c.drainStage("close stores")
 	c.closeErr = c.stopErr
 	if c.models != nil {
 		if err := c.models.Close(); c.closeErr == nil {
@@ -453,6 +462,7 @@ func (c *Core) Close() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	if e := c.WaitClosed(ctx); e == context.DeadlineExceeded {
+		c.reportCloseTimeout()
 		return &api.Fault{Kind: "RECOVERY_BLOCKED", Reason: "EXECUTOR_STOP_TIMEOUT"}
 	} else {
 		return e

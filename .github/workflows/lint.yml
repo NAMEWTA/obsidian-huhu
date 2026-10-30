@@ -59,6 +59,9 @@ jobs:
                   python3 -c 'import sqlite3'
                   pnpm exec esbuild --version
             - run: pnpm run check:huhu-bot
+              # TEMPORARY: dump the drain stage and goroutines when Core.Close times out.
+              env:
+                  HUHU_BOT_CLOSE_DIAG: ${{ runner.os == 'Windows' && '1' || '' }}
             - run: pnpm run build:huhu-bot
             - name: Exercise the native Bot Runner
               shell: bash
