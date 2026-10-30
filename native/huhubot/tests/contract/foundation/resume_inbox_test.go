@@ -191,7 +191,7 @@ func runWaitingSupplement(t *testing.T, mode string) {
 	if mode == "revoke" {
 		refs, grants = []api.SourceSnapshot{source}, []string{entryGrant.ID}
 	}
-	_, err = core.API.Conversation.StartRun(ctx, owner, api.RunStart{CommandMeta: meta("start", session.Revision), SessionID: session.ID, Intent: "root", SourceRefs: refs, GrantIDs: grants})
+	rootRun, err := core.API.Conversation.StartRun(ctx, owner, api.RunStart{CommandMeta: meta("start", session.Revision), SessionID: session.ID, Intent: "root", SourceRefs: refs, GrantIDs: grants})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -344,6 +344,11 @@ func runWaitingSupplement(t *testing.T, mode string) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		// The root sends its delegation before it publishes its own checkpoint and
+		// suspends. A stop before that suspension lands interrupts the root with no
+		// continuation, and the whole tree is then correctly blocked (CHECKPOINT_MISSING,
+		// seen on macos-15-intel). This contract is about the middle's saved decision.
+		waitRun(rootRun.RunID, "waiting_children")
 		if err := core.RequestStop(); err != nil {
 			t.Fatal(err)
 		}
