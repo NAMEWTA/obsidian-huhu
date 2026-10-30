@@ -33,15 +33,18 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-      - name: Test and build
-        shell: bash
-        run: |
-          cargo test --locked --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
-          cargo build --locked --release --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
+      # The Linux editor tests run a real Node app. Name the exact interpreter so they
+      # do not depend on discovering `node` on PATH within 2s while cargo is busy.
       - uses: actions/setup-node@v5
         with:
           node-version: 24.x
           package-manager-cache: false
+      - name: Test and build
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then export HUHU_TEST_NODE="$(command -v node)"; fi
+          cargo test --locked --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
+          cargo build --locked --release --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
       - name: Exercise the helper over stdio and the control CLI (protocol pairing, schema/help, stdin, exit codes)
         run: node scripts/verify-pty-helper.mjs native/pty-server/target/${{ matrix.target }}/release/huhu-pty${{ matrix.ext }} native/pty-server/target/${{ matrix.target }}/release/huhu${{ matrix.ext }}
       - name: Package binaries, checksums and CLI compatibility record
