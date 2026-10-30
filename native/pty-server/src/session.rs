@@ -102,6 +102,14 @@ impl Flow {
         s.1 = true;
         self.changed.notify_all();
     }
+    /// Once the stdin loop has ended (EOF or `shutdown`) no acknowledgement is read.
+    /// Release the credit the client cannot return, without claiming truncation.
+    fn forget(&self) {
+        let mut s = self.state.lock().unwrap();
+        self.budget.lock().unwrap().credit -= s.0;
+        s.0 = 0;
+        self.changed.notify_all();
+    }
     fn outstanding(&self) -> u64 {
         self.state.lock().unwrap().0
     }
@@ -857,28 +865,6 @@ fn take_console_handoffs(buffer: &mut Vec<u8>) -> Vec<&'static [u8]> {
     take(buffer, b"\x1b[c", b"\x1b[?1;0c", &mut replies);
     replies
 }
-/// TEMPORARY Windows CI diagnostic: append spawn stages to `HUHU_PTY_TRACE`.
-#[cfg(windows)]
-pub(crate) fn diag(stage: impl std::fmt::Display) {
-    use std::io::Write as _;
-    use std::sync::OnceLock;
-    static START: OnceLock<Instant> = OnceLock::new();
-    let Some(path) = std::env::var_os("HUHU_PTY_TRACE") else {
-        return;
-    };
-    let start = *START.get_or_init(Instant::now);
-    if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
-        let _ = writeln!(
-            file,
-            "{:>7}ms {:?} {stage}",
-            start.elapsed().as_millis(),
-            thread::current().id()
-        );
-    }
-}
-#[cfg(not(windows))]
-#[allow(dead_code)]
-pub(crate) fn diag(_stage: impl std::fmt::Display) {}
 struct Streams {
     master: Arc<Mutex<Option<Box<dyn MasterPty + Send>>>>,
     flow: Arc<Flow>,
@@ -936,16 +922,16 @@ fn readiness_handle(master: &dyn MasterPty) -> Option<std::os::fd::OwnedFd> {
     let copy = unsafe { libc::fcntl(fd, libc::F_DUPFD_CLOEXEC, 0) };
     (copy >= 0).then(|| unsafe { std::os::fd::OwnedFd::from_raw_fd(copy) })
 }
-/// Wait up to 5 ms for output. `select` also works for terminals on macOS, where
-/// `poll` does not. Without a usable descriptor this is the previous fixed sleep.
+/// Wait up to `wait` for output. `select` also works for terminals on macOS, where
+/// `poll` does not. Without a usable descriptor this is a fixed sleep.
 #[cfg(unix)]
-fn wait_readable(handle: Option<&std::os::fd::OwnedFd>) {
+fn wait_readable(handle: Option<&std::os::fd::OwnedFd>, wait: Duration) {
     use std::os::fd::AsRawFd;
     let Some(fd) = handle
         .map(|handle| handle.as_raw_fd())
         .filter(|fd| (*fd as usize) < libc::FD_SETSIZE as usize)
     else {
-        thread::sleep(Duration::from_millis(5));
+        thread::sleep(wait);
         return;
     };
     unsafe {
@@ -954,7 +940,7 @@ fn wait_readable(handle: Option<&std::os::fd::OwnedFd>) {
         libc::FD_SET(fd, &mut read);
         let mut timeout = libc::timeval {
             tv_sec: 0,
-            tv_usec: 5_000,
+            tv_usec: wait.as_micros().min(999_999) as libc::suseconds_t,
         };
         if libc::select(
             fd + 1,
@@ -964,9 +950,47 @@ fn wait_readable(handle: Option<&std::os::fd::OwnedFd>) {
             &mut timeout,
         ) < 0
         {
-            thread::sleep(Duration::from_millis(5));
+            thread::sleep(wait);
         }
     }
+}
+/// How a coalesced read ended besides running out of immediately available output.
+#[cfg(unix)]
+enum ReadEnd {
+    Eof,
+    Failed,
+}
+/// After the first bytes, keep draining the PTY into the same chunk for up to
+/// `PTY_COALESCE` (or until the chunk is full). A line-at-a-time producer then
+/// arrives as one frame per window, as it did with the former fixed 5 ms sleep,
+/// while the kernel buffer is still emptied as soon as it is readable, so a
+/// producer blocked on macOS's small PTY buffer is not throttled by the window.
+#[cfg(unix)]
+fn coalesce(
+    reader: &mut dyn std::io::Read,
+    buffer: &mut [u8],
+    mut filled: usize,
+    readiness: Option<&std::os::fd::OwnedFd>,
+    closed: impl Fn() -> bool,
+) -> (usize, Option<ReadEnd>) {
+    const PTY_COALESCE: Duration = Duration::from_millis(5);
+    let until = Instant::now() + PTY_COALESCE;
+    while filled < buffer.len() && !closed() {
+        match reader.read(&mut buffer[filled..]) {
+            Ok(0) => return (filled, Some(ReadEnd::Eof)),
+            Ok(n) => filled += n,
+            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {}
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                let now = Instant::now();
+                if now >= until {
+                    break;
+                }
+                wait_readable(readiness, until - now);
+            }
+            Err(_) => return (filled, Some(ReadEnd::Failed)),
+        }
+    }
+    (filled, None)
 }
 fn write_captured(writer: &mut dyn Write, bytes: &[u8], cancelled: impl Fn() -> bool) -> bool {
     #[cfg(windows)]
@@ -1028,9 +1052,6 @@ fn write_inputs(
                 .as_ref()
                 .is_some_and(|master| master.resize(*size).is_ok()),
         };
-        if handoff {
-            diag(format_args!("handoff written {ok}"));
-        }
         input_queue.completed(action, ok);
         if !ok && !handoff {
             input_queue.close(true);
@@ -1269,9 +1290,7 @@ impl Sessions {
         ticket: SpawnTicket,
     ) -> Result<Option<u32>, SpawnFailure> {
         let stop = ticket.pending.stop;
-        diag(format_args!("sid {id} spawn {:?} {:?}", request.file, request.args));
         let opened = open_session_pty(request.cols, request.rows)?;
-        diag(format_args!("sid {id} openpty"));
         if request
             .cwd
             .as_ref()
@@ -1396,14 +1415,29 @@ impl Sessions {
                 (reader, vec![0u8; READ_CHUNK], reserve, readiness),
                 read_io.drain.reader_done.clone(),
             );
-            while read_io.flow.wait_for_credit() {
+            #[cfg(unix)]
+            let mut ended: Option<ReadEnd> = None;
+            loop {
+                // A coalesced read that already met EOF or an error ends after its bytes.
+                #[cfg(unix)]
+                match ended.take() {
+                    Some(ReadEnd::Eof) => break,
+                    Some(ReadEnd::Failed) => {
+                        read_io.truncated.store(true, Ordering::SeqCst);
+                        break;
+                    }
+                    None => {}
+                }
+                if !read_io.flow.wait_for_credit() {
+                    break;
+                }
                 let (reader, buffer, _, _readiness) = owned.resource.as_mut().unwrap();
                 match reader.read(buffer) {
                     Ok(0) => break,
                     Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                         #[cfg(unix)]
-                        wait_readable(_readiness.as_ref());
+                        wait_readable(_readiness.as_ref(), Duration::from_millis(5));
                         #[cfg(windows)]
                         thread::sleep(Duration::from_millis(5));
                         continue;
@@ -1413,10 +1447,14 @@ impl Sessions {
                         break;
                     }
                     Ok(n) => {
-                        diag(format_args!(
-                            "sid {id} read {n} {:?}",
-                            String::from_utf8_lossy(&buffer[..n.min(160)])
-                        ));
+                        #[cfg(unix)]
+                        let n = {
+                            let closed = || read_io.flow.closed();
+                            let (n, end) =
+                                coalesce(&mut **reader, buffer, n, _readiness.as_ref(), closed);
+                            ended = end;
+                            n
+                        };
                         if read_io.flow.closed() {
                             break;
                         }
@@ -1481,16 +1519,10 @@ impl Sessions {
         // stay program-rejected/none. The helper detaches from the parent console
         // before this call; otherwise an existing console program stays inside
         // CreateProcess on that console lock.
-        let child_result = (|| -> Result<_, SpawnFailure> {
+        let child_result = (|| {
             #[cfg(windows)]
             crate::bootstrap::detach_parent_console();
-            diag(format_args!("sid {id} spawn_command begin"));
-            let spawned = opened.slave.spawn_command(command);
-            diag(format_args!(
-                "sid {id} spawn_command end {:?}",
-                spawned.as_ref().map(|child| child.process_id()).map_err(|e| e.to_string())
-            ));
-            let child = spawned.map_err(|error| {
+            let child = opened.slave.spawn_command(command).map_err(|error| {
                 #[cfg(windows)]
                 {
                     SpawnFailure::before_spawn(
@@ -1507,7 +1539,6 @@ impl Sessions {
             let child = {
                 let mut child = child;
                 crate::bootstrap::contain(&mut *child, &scope.job)?;
-                diag(format_args!("sid {id} contained"));
                 child
             };
             Ok(child)
@@ -1527,11 +1558,6 @@ impl Sessions {
                 {
                     thread::sleep(Duration::from_millis(5));
                 }
-                diag(format_args!(
-                    "sid {id} failed {} master_done {}",
-                    error.message,
-                    streams.drain.master_done.load(Ordering::SeqCst)
-                ));
                 streams.flow.close();
                 return Err(error);
             }
@@ -1554,7 +1580,6 @@ impl Sessions {
         }
         ticket.pending.input.ready();
         let pid = child.process_id();
-        diag(format_args!("sid {id} ready pid {pid:?} prelude {}", prelude.len()));
         if let Some(binding) = &enrolled {
             if pid.and_then(|pid| binding.capture(pid).ok()).is_none() {
                 binding.close("closed");
@@ -1871,6 +1896,15 @@ impl Sessions {
             self.end(id, false);
         }
         while Instant::now() < deadline {
+            // Output written after the fence is never acknowledged either.
+            let sessions: Vec<_> = self.live.lock().unwrap().values().cloned().collect();
+            for session in sessions {
+                session.io.flow.forget();
+            }
+            let pending: Vec<_> = self.pending.lock().unwrap().values().cloned().collect();
+            for pending in pending {
+                pending.flow.forget();
+            }
             if self.live.lock().unwrap().is_empty() && self.pending.lock().unwrap().is_empty() {
                 break;
             }
