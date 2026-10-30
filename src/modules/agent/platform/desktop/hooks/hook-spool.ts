@@ -674,9 +674,9 @@ export class HookSpool {
 
 /** Shared generated implementation: command hooks and native extensions use the same physical protocol. */
 export const HOOK_PUBLISHER_SCRIPT = `
-const hookLimits = ${JSON.stringify(HOOK_SPOOL_LIMITS)};
-const root = process.env.HUHU_HOOK_ROOT;
-function hookCode(error) { return error && error.code; }
+const hookLimits=${JSON.stringify(HOOK_SPOOL_LIMITS)};
+const root=process.env.HUHU_HOOK_ROOT;
+function hookCode(error) { return error&&error.code;}
 ${SPOOL_GUARD}
 function hookClaim(parent, count) {
  hookPath(parent);
@@ -687,72 +687,72 @@ function hookClaim(parent, count) {
 }
 function hookFault(reason) {
  try {
-  hookGuard(); const file = path.join(dir, 'fault.json'); hookPath(file);
-  const handle = fs.openSync(file, fs.constants.O_WRONLY | fs.constants.O_CREAT | (fs.constants.O_NOFOLLOW || 0), 0o600);
+  hookGuard();const file=path.join(dir, 'fault.json');hookPath(file);
+  const handle=fs.openSync(file, fs.constants.O_WRONLY | fs.constants.O_CREAT | (fs.constants.O_NOFOLLOW||0), 0o600);
   try {
    if (!fs.fstatSync(handle).isFile()) throw Error('hookMetadataInvalid');
    fs.ftruncateSync(handle, 0);
-   fs.writeFileSync(handle, JSON.stringify({ nonce: crypto.randomUUID(), reason: typeof reason === 'string' && /^[a-zA-Z0-9]{1,64}$/.test(reason) ? reason : 'hookPublicationFailed' }));
-  } finally { fs.closeSync(handle); }
+   fs.writeFileSync(handle, JSON.stringify({ nonce: crypto.randomUUID(), reason: typeof reason==='string'&&/^[a-zA-Z0-9]{1,64}$/.test(reason)?reason:'hookPublicationFailed' }));
+  } finally { fs.closeSync(handle);}
  } catch {}
 }
 function hookIngress() {
- let ingress, collector; const owner = crypto.randomUUID();
- hookGuard(); const candidate = path.join(dir, 'ingress'); fs.mkdirSync(candidate, { mode: 0o700 }); ingress = candidate;
- try { fs.writeFileSync(path.join(ingress, 'claim.json'), JSON.stringify({ nonce: owner }), { flag: 'wx', mode: 0o600 }); }
- catch (error) { fs.rmSync(ingress, { recursive: true, force: true }); throw error; }
- let released = false;
+ let ingress, collector;const owner=crypto.randomUUID();
+ hookGuard();const candidate=path.join(dir, 'ingress');fs.mkdirSync(candidate, { mode: 0o700 });ingress=candidate;
+ try { fs.writeFileSync(path.join(ingress, 'claim.json'), JSON.stringify({ nonce: owner }), { flag: 'wx', mode: 0o600 });}
+ catch (error) { fs.rmSync(ingress, { recursive: true, force: true });throw error;}
+ let released=false;
  return {
   collect() {
-   if (released) throw Error('hookScopeClosed'); if (collector) return true; hookGuard();
-   try { collector = hookClaim(path.join(root, 'collectors'), hookLimits.collectors); }
-   catch (error) { if (error.message === 'hookCapacity') return false; throw error; }
-   try { fs.writeFileSync(path.join(collector, 'claim.json'), JSON.stringify({ nonce: owner, scope: path.basename(dir), token }), { flag: 'wx', mode: 0o600 }); hookGuard(); return true; }
-   catch (error) { fs.rmSync(collector, { recursive: true, force: true }); collector = undefined; throw error; }
+   if (released) throw Error('hookScopeClosed');if (collector) return true;hookGuard();
+   try { collector=hookClaim(path.join(root, 'collectors'), hookLimits.collectors);}
+   catch (error) { if (error.message==='hookCapacity') return false;throw error;}
+   try { fs.writeFileSync(path.join(collector, 'claim.json'), JSON.stringify({ nonce: owner, scope: path.basename(dir), token }), { flag: 'wx', mode: 0o600 });hookGuard();return true;}
+   catch (error) { fs.rmSync(collector, { recursive: true, force: true });collector=undefined;throw error;}
   },
   release() {
-   if (released) return; released = true;
-   for (const target of [collector, ingress]) { if (!target) continue; const value = hookMetadata(path.join(target, 'claim.json'), 512); if (value.nonce !== owner) throw Error('hookClaimChanged'); fs.unlinkSync(path.join(target, 'claim.json')); fs.rmdirSync(target); }
+   if (released) return;released=true;
+   for (const target of [collector, ingress]) { if (!target) continue;const value=hookMetadata(path.join(target, 'claim.json'), 512);if (value.nonce!==owner) throw Error('hookClaimChanged');fs.unlinkSync(path.join(target, 'claim.json'));fs.rmdirSync(target);}
   }
  };
 }
 function hookTicket() {
- const ticket = hookIngress(); try { if (!ticket.collect()) throw Error('hookCapacity'); return () => ticket.release(); } catch (error) { ticket.release(); throw error; }
+ const ticket=hookIngress();try { if (!ticket.collect()) throw Error('hookCapacity');return () => ticket.release();} catch (error) { ticket.release();throw error;}
 }
 
-function hookJsonBytes(value, max, depth = 0) {
- let total = 0;
- function add(n) { total+=n; if (total>max) throw Error('hookPublicationTooLarge'); }
- function string(text) { add(2); for (let i = 0; i<text.length; i++) { const c = text.charCodeAt(i); if (c===34||c===92||c===8||c===9||c===10||c===12||c===13) add(2); else if (c<32) add(6); else if (c<128) add(1); else if (c<2048) add(2); else if (c>=0xd800&&c<=0xdbff&&i + 1<text.length&&text.charCodeAt(i + 1)>=0xdc00&&text.charCodeAt(i + 1)<=0xdfff) { add(4); i++; } else if (c>=0xd800&&c<=0xdfff) add(6); else add(3); } }
+function hookJsonBytes(value, max, depth=0) {
+ let total=0;
+ function add(n) { total+=n;if (total>max) throw Error('hookPublicationTooLarge');}
+ function string(text) { add(2);for (let i=0;i<text.length;i++) { const c=text.charCodeAt(i);if (c===34||c===92||c===8||c===9||c===10||c===12||c===13) add(2);else if (c<32) add(6);else if (c<128) add(1);else if (c<2048) add(2);else if (c>=0xd800&&c<=0xdbff&&i + 1<text.length&&text.charCodeAt(i + 1)>=0xdc00&&text.charCodeAt(i + 1)<=0xdfff) { add(4);i++;} else if (c>=0xd800&&c<=0xdfff) add(6);else add(3);} }
  function visit(item, level) {
   if (level>8) throw Error('hookPayloadInvalid');
-  if (item===null) return add(4); if (typeof item==='string') return string(item); if (typeof item==='number'&&Number.isFinite(item)) return add(String(item).length); if (typeof item==='boolean') return add(item ? 4 : 5);
+  if (item===null) return add(4);if (typeof item==='string') return string(item);if (typeof item==='number'&&Number.isFinite(item)) return add(String(item).length);if (typeof item==='boolean') return add(item?4:5);
   if (!item||typeof item!=='object'||Array.isArray(item)||Object.getPrototypeOf(item)!==Object.prototype) throw Error('hookPayloadInvalid');
-  const keys = Object.keys(item); if (keys.length>32||Object.prototype.hasOwnProperty.call(item, 'toJSON')) throw Error('hookPayloadInvalid'); add(2); let first = true;
-  for (const key of keys) { const descriptor = Object.getOwnPropertyDescriptor(item, key); if (!descriptor||!Object.prototype.hasOwnProperty.call(descriptor, 'value')) throw Error('hookPayloadInvalid'); if (!first) add(1); first = false; string(key); add(1); visit(descriptor.value, level + 1); }
+  const keys=Object.keys(item);if (keys.length>32||Object.prototype.hasOwnProperty.call(item, 'toJSON')) throw Error('hookPayloadInvalid');add(2);let first=true;
+  for (const key of keys) { const descriptor=Object.getOwnPropertyDescriptor(item, key);if (!descriptor||!Object.prototype.hasOwnProperty.call(descriptor, 'value')) throw Error('hookPayloadInvalid');if (!first) add(1);first=false;string(key);add(1);visit(descriptor.value, level + 1);}
  }
- visit(value, depth); return total;
+ visit(value, depth);return total;
 }
 function hookPublish(event, data, source, provider) {
- hookGuard(); const publication = crypto.randomUUID();
- const envelope = { token, event, at: Date.now(), data, delivery: publication }; if (source) envelope.source = source; if (provider) envelope.provider = provider;
- const bytes = hookJsonBytes(envelope, hookLimits.largeBytes), kind = bytes <= hookLimits.smallBytes ? 'small' : 'large';
- let local, global, committed = false;
+ hookGuard();const publication=crypto.randomUUID();
+ const envelope={ token, event, at: Date.now(), data, delivery: publication };if (source) envelope.source=source;if (provider) envelope.provider=provider;
+ const bytes=hookJsonBytes(envelope, hookLimits.largeBytes), kind=bytes<=hookLimits.smallBytes?'small':'large';
+ let local, global, committed=false;
  try {
-  local = hookClaim(path.join(dir, kind), kind === 'small' ? hookLimits.smallPerScope : hookLimits.largePerScope);
-  global = hookClaim(path.join(root, kind), kind === 'small' ? hookLimits.smallGlobal : hookLimits.largeGlobal);
-  const metadata = { token, nonce: publication, scope: path.basename(dir), local: path.basename(local) };
+  local=hookClaim(path.join(dir, kind), kind==='small'?hookLimits.smallPerScope:hookLimits.largePerScope);
+  global=hookClaim(path.join(root, kind), kind==='small'?hookLimits.smallGlobal:hookLimits.largeGlobal);
+  const metadata={ token, nonce: publication, scope: path.basename(dir), local: path.basename(local) };
   fs.writeFileSync(path.join(global, 'claim.json'), JSON.stringify(metadata), { flag: 'wx', mode: 0o600 });
   fs.writeFileSync(path.join(local, 'ref.json'), JSON.stringify({ token, nonce: publication, slot: Number(path.basename(global)) }), { flag: 'wx', mode: 0o600 });
-  hookGuard(); const body = JSON.stringify(envelope);
-  if (Buffer.byteLength(body) !== bytes) throw Error('hookEncodingChanged');
+  hookGuard();const body=JSON.stringify(envelope);
+  if (Buffer.byteLength(body)!==bytes) throw Error('hookEncodingChanged');
   fs.writeFileSync(path.join(global, publication + '.pending'), body, { flag: 'wx', mode: 0o600 });
-  hookGuard(); fs.renameSync(path.join(global, publication + '.pending'), path.join(global, publication + '.ready')); committed = true;
+  hookGuard();fs.renameSync(path.join(global, publication + '.pending'), path.join(global, publication + '.ready'));committed=true;
  } finally {
-  if (!committed) { if (global) fs.rmSync(global, { recursive: true, force: true }); if (local) fs.rmSync(local, { recursive: true, force: true }); }
+  if (!committed) { if (global) fs.rmSync(global, { recursive: true, force: true });if (local) fs.rmSync(local, { recursive: true, force: true });}
  }
 }
 function post(event, data, source) {
- let release, prepared; try { release = hookTicket(); prepared = typeof data === 'function' ? data() : data; hookPublish(event, prepared, source); return true; } catch (error) { hookFault(error.message); return false; } finally { prepared = undefined; if (release) { try { release(); } catch (error) { hookFault(error.message); } } }
+ let release, prepared;try { release=hookTicket();prepared=typeof data==='function'?data():data;hookPublish(event, prepared, source);return true;} catch (error) { hookFault(error.message);return false;} finally { prepared=undefined;if (release) { try { release();} catch (error) { hookFault(error.message);} } }
 }
 `;
