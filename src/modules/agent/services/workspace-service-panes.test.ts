@@ -20,7 +20,7 @@ async function fixture() {
 		owners: { acquire: async () => ({ instanceId: 'pane-tests', port: 12345, lost: new AbortController().signal, assertHeld: async () => {}, close: async () => {} }) } });
 	let events!: NativeEvents, sequence = 0;
 	const exit = (sid: number) => {
-		events.termination?.(sid, { version: 1, sequence: ++sequence, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: 'unix-session', remainingKnown: 0 }, output: 'drained' } });
+		events.termination?.(sid, { version: 1, sequence: ++sequence, evidence: { root: { state: 'exited', code: 0, signal: null }, cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 }, output: 'drained' } });
 		events.exit(sid, 0, null);
 	};
 	const spawn = vi.fn(async () => 42), stop = vi.fn(exit), input = vi.fn();

@@ -764,7 +764,7 @@ async function focusHostFixture() {
 				sequence: ++sequence,
 				evidence: {
 					root: { state: 'exited', code: 0, signal: null },
-					cleanup: { state: 'confirmed', scope: 'unix-session', remainingKnown: 0 },
+					cleanup: { state: 'confirmed', scope: process.platform === 'win32' ? 'windows-job' : 'unix-session', remainingKnown: 0 },
 					output: 'drained',
 				},
 			});

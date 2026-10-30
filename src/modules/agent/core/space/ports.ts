@@ -9,6 +9,8 @@ export interface DirectoryPort {
 	bindVaultDirectory(vault: VaultBinding, relativePath: string): Promise<VaultDirectoryBinding>;
 	chooseExternalDirectory(vault: VaultBinding, signal?: AbortSignal): Promise<ExternalDirectoryChoice | undefined>;
 	resolveDirectory(vault: VaultBinding, directory: SpaceDirectory, grant: DirectoryGrant | undefined): Promise<ResolvedDirectory>;
+	/** The real spelling of an existing absolute path (symlinks, Windows 8.3 short names), else the path unchanged. */
+	canonicalPath?(selectedPath: string): Promise<string>;
 }
 
 export interface WriterLease {

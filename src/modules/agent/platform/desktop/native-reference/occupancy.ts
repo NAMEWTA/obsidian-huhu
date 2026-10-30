@@ -115,12 +115,13 @@ export function defaultOccupancyDirectory(
 ): string {
 	if (platform === 'win32')
 		return path.win32.join(env.LOCALAPPDATA || path.win32.join(home, 'AppData', 'Local'), 'HUHU', 'native-refs');
-	if (platform === 'darwin') return path.join(home, 'Library', 'Application Support', 'HUHU', 'native-refs');
+	// The directory follows the target platform's rules, not the host's separators.
+	if (platform === 'darwin') return path.posix.join(home, 'Library', 'Application Support', 'HUHU', 'native-refs');
 	const state =
-		env.XDG_STATE_HOME && path.isAbsolute(env.XDG_STATE_HOME)
+		env.XDG_STATE_HOME && path.posix.isAbsolute(env.XDG_STATE_HOME)
 			? env.XDG_STATE_HOME
-			: path.join(home, '.local', 'state');
-	return path.join(state, 'huhu', 'native-refs');
+			: path.posix.join(home, '.local', 'state');
+	return path.posix.join(state, 'huhu', 'native-refs');
 }
 /** Canonical spelling of a provider-store path: symlinks resolved, case folded where the filesystem is. */
 export async function canonicalStorePath(file: string): Promise<string> {

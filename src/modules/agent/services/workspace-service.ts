@@ -859,10 +859,16 @@ export class WorkspaceService {
 			if (request.cwd) {
 				const spaceCwd = await this.spaces.resolveSpaceCwd(space.id);
 				// The Space directory's own spelling tells the path flavour; no process or window global is needed.
+				// The Space directory is in its real spelling; compare the request in the same spelling (a symlinked
+				// or Windows 8.3 short-name path to a folder inside the Space is still inside it).
+				const [requested, vaultRoot] = await Promise.all([
+					this.spaces.canonicalPath(request.cwd),
+					request.cwdScope?.vaultRoot ? this.spaces.canonicalPath(request.cwdScope.vaultRoot) : '',
+				]);
 				startCwd = spaceBoundCwd(
 					spaceCwd,
-					request.cwd,
-					request.cwdScope?.vaultRoot ?? '',
+					requested,
+					vaultRoot,
 					request.cwdScope?.platform ?? (/^(?:[A-Za-z]:|\\\\)/.test(spaceCwd) ? 'win32' : 'linux'),
 				);
 				if (!startCwd) throw new SpaceError('DIRECTORY_NOT_AUTHORIZED', 'cwd-outside-space');

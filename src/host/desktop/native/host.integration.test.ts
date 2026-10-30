@@ -39,7 +39,9 @@ test.skipIf(!binary)(
 			helper = await PtyHelper.start(binary!, events, globalThis as unknown as Window, {});
 			return helper;
 		});
-		const agent = await host.acquire('pty');
+		// Like every production lease, the owner acknowledges the terminal bytes it receives; a Windows ConPTY always
+		// writes startup sequences, and unacknowledged output would correctly keep release waiting.
+		const agent: NativeLease = await host.acquire('pty', { output: (sid, bytes) => agent.value.acknowledge(sid, bytes.byteLength) });
 		const sid = agent.allocateSessionId();
 		let locked = true;
 		try {

@@ -633,6 +633,10 @@ export class SpaceService {
 		const space = this.resolve({ spaceId });
 		return (await this.options.directories.resolveDirectory(this.vault, space.directory, this.grant(space))).cwd;
 	}
+	/** A requested path in the same real spelling `resolveSpaceCwd` returns, so the two can be compared. */
+	async canonicalPath(selectedPath: string): Promise<string> {
+		return (await this.options.directories.canonicalPath?.(selectedPath)) ?? selectedPath;
+	}
 	resolve(target?: { spaceId?: string; name?: string }): SpaceRecord {
 		if (!target?.spaceId && !target?.name) throw new SpaceError('TARGET_REQUIRED', 'space-required');
 		const records = this.store.getState().records;

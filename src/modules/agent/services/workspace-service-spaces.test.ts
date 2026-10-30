@@ -3,7 +3,7 @@ import { fork } from 'node:child_process';
 import { once } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
-import { mkdtemp, readFile, writeFile, mkdir, access, rm, rename } from 'node:fs/promises';
+import { mkdtemp, readFile, realpath, writeFile, mkdir, access, rm, rename } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, test, vi } from 'vitest';
@@ -185,7 +185,7 @@ test('real desktop owner + JsonStore + WorkspaceService preserve independent Spa
 		expect(info.spaceId).toBe(a.id);
 		expect(info.persistentSessionId).not.toBe(first);
 		expect(f.spaces.store.getState().records.sessions[info.persistentSessionId!]?.spaceId).toBe(a.id);
-		expect(f.spawn.mock.calls[0]?.[1]).toMatchObject({ cwd: f.root });
+		expect(f.spawn.mock.calls[0]?.[1]).toMatchObject({ cwd: await realpath(f.root) });
 		await f.workspace.selectSpace(b.id);
 		await f.workspace.newTerminal({ spaceId: b.id });
 		await f.workspace.persistence.flush();
@@ -536,7 +536,7 @@ test('a quick-command directory is honoured inside the chosen Space and refused 
 		const space = await f.spaces.create({ name: 'Inner', relativePath: 'inner' });
 		const inside = await f.workspace.createManagedInteractive({ kind: 'shell', spaceId: space.id, cwd: join(f.root, 'inner', 'deeper') });
 		expect(inside.status).toBe('created');
-		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(join(f.root, 'inner', 'deeper'));
+		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(await realpath(join(f.root, 'inner', 'deeper')));
 		const sessionsBefore = Object.keys(JSON.parse(await readFile(join(f.root, f.spaces.path), 'utf8')).sessions).length;
 		const spawned = f.spawn.mock.calls.length;
 		const outside = await f.workspace.createManagedInteractive({ kind: 'shell', spaceId: space.id, cwd: join(f.root, 'other') });
@@ -546,11 +546,11 @@ test('a quick-command directory is honoured inside the chosen Space and refused 
 		// A command saved with the whole-vault path keeps working in any Space: it starts in the Space directory.
 		const whole = await f.workspace.createManagedInteractive({ kind: 'shell', spaceId: space.id, cwd: f.root, cwdScope: { vaultRoot: f.root, platform: process.platform } });
 		expect(whole.status).toBe('created');
-		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(join(f.root, 'inner'));
+		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(await realpath(join(f.root, 'inner')));
 		// No saved directory: the Space directory itself.
 		const plain = await f.workspace.createManagedInteractive({ kind: 'shell', spaceId: space.id });
 		expect(plain.status).toBe('created');
-		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(join(f.root, 'inner'));
+		expect(f.spawn.mock.calls.at(-1)?.[1].cwd).toBe(await realpath(join(f.root, 'inner')));
 	} finally {
 		await f.cleanup();
 	}

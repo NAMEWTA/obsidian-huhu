@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { mkdtemp, mkdir, readdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, realpath, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { expect, test, vi } from 'vitest';
@@ -796,8 +796,10 @@ test('Pi enrollment requires one actual explicit HUHU extension after official a
 	const api = await import('./automation-hooks');
 	expect(typeof api.piEditorArgumentsSupported).toBe('function');
 	const accepted = api.piEditorArgumentsSupported;
-	const extension = '/isolated/pi/extensions/huhu-status.ts';
-	expect(accepted(['-ne', '-e', extension, '--offline', '--model', 'local'], extension, '/isolated')).toBe(true);
+	// Host-native absolute paths: on Windows `/isolated` resolves onto the current drive.
+	const isolated = path.resolve('/isolated');
+	const extension = path.join(isolated, 'pi', 'extensions', 'huhu-status.ts');
+	expect(accepted(['-ne', '-e', extension, '--offline', '--model', 'local'], extension, isolated)).toBe(true);
 	for (const args of [
 		['--model', '-ne', '-e', extension],
 		['--', '-ne', '-e', extension],
@@ -808,8 +810,8 @@ test('Pi enrollment requires one actual explicit HUHU extension after official a
 		['-ne', '-e', extension, '--print', 'task'],
 		['-ne', '-e', extension, '--tui-mode', 'fullscreen'],
 		['-ne', '-e'],
-	]) expect(accepted(args, extension, '/isolated')).toBe(false);
-	expect(accepted(['--no-extensions', '--extension', 'pi/extensions/huhu-status.ts'], extension, '/isolated')).toBe(true);
+	]) expect(accepted(args, extension, isolated)).toBe(false);
+	expect(accepted(['--no-extensions', '--extension', 'pi/extensions/huhu-status.ts'], extension, isolated)).toBe(true);
 });
 
 test('Pi editor installation facts read only the exact existing production extension under the frozen agent home', async () => {
@@ -824,7 +826,8 @@ test('Pi editor installation facts read only the exact existing production exten
 		expect(await api.installedPiEditorExtension({ PI_CODING_AGENT_DIR: root }, { deadline: performance.now() + 2000 })).toBeUndefined();
 		const { PI_EXTENSION } = await import('./native-extensions');
 		await writeFile(target, PI_EXTENSION);
-		expect(await api.installedPiEditorExtension({ PI_CODING_AGENT_DIR: root }, { deadline: performance.now() + 2000 })).toBe(target);
+		// The fact is the canonical path (Windows temp may be spelled with an 8.3 short name).
+		expect(await api.installedPiEditorExtension({ PI_CODING_AGENT_DIR: root }, { deadline: performance.now() + 2000 })).toBe(await realpath(target));
 		expect(await api.installedPiEditorExtension({}, { deadline: performance.now() + 2000 })).toBeUndefined();
 		expect(await readFile(target, 'utf8')).toBe(PI_EXTENSION);
 	} finally { await rm(root, { recursive: true, force: true }); }

@@ -13,6 +13,16 @@ export async function canonicalVaultCwd(vault: string, cwd: string): Promise<str
 	return target;
 }
 
+/** The real spelling of an existing path (resolving symlinks and Windows 8.3 short names), else the path as given. */
+export async function realPathOr(value: string): Promise<string> {
+	const fs = window.require('node:fs/promises') as typeof import('node:fs/promises');
+	try {
+		return await fs.realpath(value);
+	} catch {
+		return value;
+	}
+}
+
 /** Compare two filesystem spellings of one file (symlinked roots, trailing separators, case on Windows). */
 export async function samePath(left: string, right: string): Promise<boolean> {
 	if (left === right) return true;

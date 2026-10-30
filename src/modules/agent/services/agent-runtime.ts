@@ -8,7 +8,7 @@ import { AutomationHooks, type NativeHookEvent } from '../platform/desktop/hooks
 import { accountEnv, restoredAccountReference } from '../platform/desktop/agents/accounts';
 import { resolveCli } from '../platform/desktop/agents/resolver';
 import { runtimeProcess } from '../platform/desktop/agents/runtime-process';
-import { canonicalVaultCwd } from '../platform/desktop/history/canonical-cwd';
+import { canonicalVaultCwd, realPathOr } from '../platform/desktop/history/canonical-cwd';
 import { checkAccountTranscript } from '../platform/desktop/agents/transcript';
 import { accountArgs } from '../platform/desktop/agents/account-args';
 import { isCwdInsideVault } from '../platform/desktop/history/scope';
@@ -779,9 +779,12 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 				throw new AutomationError('cwdInvalid');
 			}
 		}
-		const cwd = spaceBoundCwd(spaceCwd, canonical, root, runtimeProcess().platform);
+		// The requested directory is compared in its real spelling, so the Space directory must be too (a symlinked
+		// or Windows 8.3 short-name temp root would otherwise never contain its own real subdirectories).
+		const spaceRoot = canonical ? await realPathOr(spaceCwd) : spaceCwd;
+		const cwd = spaceBoundCwd(spaceRoot, canonical, root, runtimeProcess().platform);
 		if (!cwd) throw new AutomationError('cwdInvalid');
-		return cwd;
+		return cwd === spaceRoot ? spaceCwd : cwd;
 	}
 	private async admit(request: BusinessAdmissionRequest, signal?: AbortSignal): Promise<BusinessAdmission> {
 		try {

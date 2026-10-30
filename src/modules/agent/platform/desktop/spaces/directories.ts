@@ -97,6 +97,14 @@ export function createDirectoryPort(options: DirectoryOptions): DirectoryPort {
 			await assertVault(vault);
 			return Object.freeze({ selectedPath, target, vaultRoot: vault.root, deviceId });
 		}),
+		canonicalPath: async (selectedPath) => {
+			if (!path.isAbsolute(selectedPath) || selectedPath.includes('\0')) return selectedPath;
+			try {
+				return await realpath(selectedPath);
+			} catch {
+				return selectedPath;
+			}
+		},
 		resolveDirectory: async (vault, directory, grant) => {
 			await assertVault(vault);
 			if (directory.kind === 'vault') {

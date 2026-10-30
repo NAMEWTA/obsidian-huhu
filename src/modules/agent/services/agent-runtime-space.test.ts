@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { realpath } from 'node:fs/promises';
 import type { App } from 'obsidian';
 import { expect, test, vi } from 'vitest';
 import { AutomationError } from '../../../shared/automation/errors';
@@ -179,7 +180,7 @@ test('a directory outside the Space is refused, never moved; the vault-root defa
 		});
 		expect(f.create.mock.calls.map((call) => (call[0] as unknown as { cwd: string }).cwd)).toEqual([
 			`${f.root}/inside`,
-			`${f.root}/inside/deeper`,
+			await realpath(`${f.root}/inside/deeper`),
 		]);
 	} finally {
 		await f.close();

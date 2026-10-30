@@ -426,19 +426,18 @@ export class HookSpool {
 				const kinds =
 					state.nextKind === 'small' ? (['small', 'large'] as const) : (['large', 'small'] as const);
 				for (const kind of kinds) {
-					const names: string[] = [];
-					for (
-						let n = 0;
-						n < (kind === 'small' ? HOOK_SPOOL_LIMITS.smallPerScope : HOOK_SPOOL_LIMITS.largePerScope);
-						n++
-					) {
-						try {
-							await this.fs.access(this.path.join(state.dir, kind, String(n)));
-							names.push(String(n));
-						} catch (error) {
-							if (code(error) !== 'ENOENT') throw error;
-						}
+					// One directory listing per kind instead of probing every slot: each probe is a separate
+					// filesystem round trip, which on Windows made a full round over many scopes take seconds.
+					const slots = kind === 'small' ? HOOK_SPOOL_LIMITS.smallPerScope : HOOK_SPOOL_LIMITS.largePerScope;
+					let entries: string[] = [];
+					try {
+						entries = await this.fs.readdir(this.path.join(state.dir, kind));
+					} catch (error) {
+						if (code(error) !== 'ENOENT') throw error;
 					}
+					const present = new Set(entries);
+					const names: string[] = [];
+					for (let n = 0; n < slots; n++) if (present.has(String(n))) names.push(String(n));
 
 					if (
 						taken ||

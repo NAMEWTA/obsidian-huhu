@@ -70,7 +70,8 @@ for (const language of ['en', 'zh'] as const) test(`the command-line tool is exp
 		expect(ready.path.endsWith(join('0.0.1', 'bin', 'huhu'))).toBe(true);
 		expect(ready.directory).toBe(join(ready.path, '..'));
 		expect(createHash('sha256').update(readFileSync(ready.path)).digest('hex')).toBe(createHash('sha256').update('cli-binary').digest('hex'));
-		expect(statSync(ready.path).mode & 0o111).not.toBe(0);
+		// The execute bit is a POSIX host permission (exposeCli sets 0700 there); a Windows host has no such bit.
+		if (process.platform !== 'win32') expect(statSync(ready.path).mode & 0o111).not.toBe(0);
 		// Offline reuse: no network, still verified, and a replaced exposed file is repaired from the verified asset.
 		const offline = make(async () => { throw new Error('network is off'); }, true);
 		writeFileSync(ready.path, 'tampered');

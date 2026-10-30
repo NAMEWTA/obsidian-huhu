@@ -7,7 +7,30 @@ import type { NativeEditorLaunch, NativeLease } from '../../../shared/native/hos
 import { NativeShutdownError } from '../../../shared/native/host';
 import { PtyHelper } from './helper';
 
-test.each([false, true])('real Host retains EOF cleanup result (replaced endpoint: %s) and a confirmed failed generation can be explicitly replaced', async replace => {
+// Editor transactions need the helper's Linux foreground ownership (`foreground::supported()`); elsewhere the helper
+// never advertises them and an editor launch must fail closed, which the last test proves on those platforms.
+const editorPlatform = process.platform === 'linux';
+const editorTest = test.skipIf(!editorPlatform);
+
+test.runIf(!editorPlatform)('without native editor support the real helper does not advertise editor transactions and an editor launch starts nothing', async () => {
+ const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-editor-none-'));
+ const entry = join(root, 'never.cjs'), marker = join(root, 'started');
+ await writeFile(entry, `require('node:fs').writeFileSync(${JSON.stringify(marker)}, 'started');`);
+ const helper = await PtyHelper.start(bins.helper.path, { output() {}, exit() {}, closed() {} }, globalThis as unknown as Window, { HOME: root, XDG_RUNTIME_DIR: root });
+ try {
+  expect(helper.editorTransactions).toBeUndefined();
+  const launch: NativeEditorLaunch = { identity: { runtimeId: 'unsupported' }, provider: 'pi', recipe: { version: 1, profileId: 'controlled-node-test', artifactDigest: 'a'.repeat(64), executable: await identity(process.execPath), entry: await identity(entry) } };
+  await expect(helper.spawnSession(1, { file: process.execPath, args: [entry], cwd: root, env: {}, cols: 80, rows: 24, editor: launch })).rejects.toThrow('Native editor transactions are unavailable');
+  expect(helper.editorBinding(1)).toBeUndefined();
+  await new Promise(resolve => setTimeout(resolve, 200));
+  await expect(stat(marker)).rejects.toMatchObject({ code: 'ENOENT' });
+ } finally {
+  await helper.dispose();
+  await rm(root, { recursive: true, force: true });
+ }
+});
+
+editorTest.each([false, true])('real Host retains EOF cleanup result (replaced endpoint: %s) and a confirmed failed generation can be explicitly replaced', async replace => {
  const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-shutdown-'));
  const runtime = process.env.HUHU_TEST_EDITOR_RUNTIME_DIR ?? root, entry = join(root, 'endpoint.cjs');
  await writeFile(entry, "const fs=require('node:fs');const cap=JSON.parse(fs.readFileSync(process.env.HUHU_EDITOR_CAPABILITY_FILE));fs.writeFileSync('endpoint',cap.endpoint);process.exit(0);");
@@ -59,7 +82,7 @@ const bounded = async <T>(promise: Promise<T>, label: string): Promise<T> => {
  finally { clearTimeout(timer); }
 };
 
-test('real native rejection before app enrollment closes the pending local handle only at its final reply fence', async () => {
+editorTest('real native rejection before app enrollment closes the pending local handle only at its final reply fence', async () => {
  const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-editor-reject-'));
  const entry = join(root, 'controlled.cjs');
  await writeFile(entry, 'setInterval(()=>{},1000)');
@@ -109,7 +132,7 @@ async function until(check: () => Promise<boolean>, label: string) {
  while (!(await check())) { if (performance.now() >= end) throw Error(label); await new Promise(resolve => setTimeout(resolve, 5)); }
 }
 
-test('real Host/helper keep unknown dispatch charged while another SID, replies, ACK, cookies and stop stay live', async () => {
+editorTest('real Host/helper keep unknown dispatch charged while another SID, replies, ACK, cookies and stop stay live', async () => {
  const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-editor-lifetime-')), entry = join(root, 'controlled.mjs');
  await writeFile(entry, controlledApp); await writeFile(join(root, 'hold'), '');
  const launch: NativeEditorLaunch = { identity: { runtimeId: 'controlled-runtime' }, provider: 'pi', recipe: {
@@ -147,7 +170,7 @@ test('real Host/helper keep unknown dispatch charged while another SID, replies,
  } finally { await owner.release();await sibling.release();await browser.release();await host.dispose();await rm(root, { recursive: true, force: true }); }
 }, 20000);
 
-test('ordinary terminal fences retain a late editor close and the same real helper retires every original binding', async () => {
+editorTest('ordinary terminal fences retain a late editor close and the same real helper retires every original binding', async () => {
  const bins = await requireControlTestBinaries(), root = await mkdtemp(join(tmpdir(), 'huhu-editor-late-close-'));
  const entry = join(root, 'late-close.cjs');
  await writeFile(entry, `const fs=require('node:fs');const path=process.env.HUHU_EDITOR_CAPABILITY_FILE;fs.renameSync(path,path+'.original');fs.writeFileSync(path,'own-test-sentinel',{mode:0o600});fs.writeFileSync('cap-path-'+process.env.FIXTURE_ID,path);process.exit(0);`);
