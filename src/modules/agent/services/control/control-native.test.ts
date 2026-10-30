@@ -50,6 +50,25 @@ async function bounded<T>(value: Promise<T>, label: string, ms = 12000): Promise
 		clearTimeout(timer);
 	}
 }
+function windowsControlEnv(): Record<string, string> {
+	if (process.platform !== 'win32') return {};
+	const inherited: Record<string, string> = {};
+	for (const key of [
+		'LOCALAPPDATA',
+		'APPDATA',
+		'SystemRoot',
+		'SYSTEMROOT',
+		'WINDIR',
+		'PATHEXT',
+		'TEMP',
+		'TMP',
+		'COMSPEC',
+	]) {
+		const value = process.env[key];
+		if (value) inherited[key] = value;
+	}
+	return inherited;
+}
 function gone(pid: number): boolean {
 	try {
 		process.kill(pid, 0);
@@ -78,7 +97,7 @@ test('required real CLI routes background create/read/rename/stop through the pr
 		vaultId: 'control-fixture-vault',
 		deviceId: 'control-fixture-device',
 		win: { require: createRequire(import.meta.url) } as Window,
-			writerPort: freeWriterPorts()
+		writerPort: freeWriterPorts(),
 	});
 	let holdWrite: Promise<void> | undefined,
 		releaseWrite: (() => void) | undefined,
@@ -187,7 +206,17 @@ test('required real CLI routes background create/read/rename/stop through the pr
 		route: Readonly<Record<string, string>>,
 	): Promise<{ exit: number | null; value: ControlResponse; stderr: string }> => {
 		const child = spawn(cliBinary, [...args, '--json', '--timeout-ms', '10000'], {
-			env: { HOME: home, USERPROFILE: home, XDG_RUNTIME_DIR: root, PATH: process.env.PATH ?? '', ...route },
+			// The helper inherits this process, so its locator root is LOCALAPPDATA.
+			// Unix already passes XDG_RUNTIME_DIR; a cleared Windows environment makes
+			// every command SOURCE_UNAVAILABLE (exit 5) before it reaches the broker.
+			env: {
+				HOME: home,
+				USERPROFILE: home,
+				XDG_RUNTIME_DIR: root,
+				PATH: process.env.PATH ?? '',
+				...windowsControlEnv(),
+				...route,
+			},
 			stdio: ['ignore', 'pipe', 'pipe'],
 		});
 		cliProcesses.add(child);

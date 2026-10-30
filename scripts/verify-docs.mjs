@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { documentationKind as classify, referenceLinkBody, withoutCodeSpans } from './documentation-policy.mjs';
 
@@ -29,22 +30,37 @@ function walk(directory) {
 walk(root);
 
 // Local scratch files (for example `temp/`) are git-ignored and never part of the documentation inventory.
-// Keep stdin asynchronous: Node 24's synchronous child-process pipe can wait
-// indefinitely for git to observe EOF on this null-delimited inventory.
-const ignored = await new Promise((resolve, reject) => {
-	const child = spawn('git', ['check-ignore', '-z', '--stdin'], { cwd: root });
-	let stdout = '';
-	let stderr = '';
-	child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
-	child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
-	child.on('error', reject);
-	child.on('close', (status) => {
-		if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
-		else resolve({ status, stdout });
+// A pipe never reliably delivers EOF to Git for Windows; a real file handle does.
+const inventory = path.join(os.tmpdir(), `.huhu-git-check-ignore-${process.pid}`);
+fs.writeFileSync(inventory, Buffer.from(files.join('\0') + '\0'));
+const inventoryFd = fs.openSync(inventory, 'r');
+let ignored;
+try {
+	ignored = await new Promise((resolve, reject) => {
+		const child = spawn('git', ['check-ignore', '-z', '--stdin'], {
+			cwd: root,
+			stdio: [inventoryFd, 'pipe', 'pipe'],
+			windowsHide: true,
+		});
+		let stdout = '';
+		let stderr = '';
+		const timer = setTimeout(() => {
+			child.kill();
+			reject(new Error('git check-ignore timed out'));
+		}, 10_000);
+		child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
+		child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
+		child.on('error', (error) => { clearTimeout(timer); reject(error); });
+		child.on('close', (status) => {
+			clearTimeout(timer);
+			if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
+			else resolve({ status, stdout });
+		});
 	});
-	child.stdin.on('error', reject);
-	child.stdin.end(files.join('\0') + '\0');
-});
+} finally {
+	fs.closeSync(inventoryFd);
+	fs.rmSync(inventory, { force: true });
+}
 if (ignored.status === 0) {
 	const skip = new Set(ignored.stdout.split('\0').filter(Boolean).map(posix));
 	files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
@@ -179,7 +195,7 @@ function checkTarget(fromFile, raw) {
 		if (missing && !vaultExample) {
 			// Session evidence logs are gitignored on purpose. A link to them is a local
 			// pointer, not a repository document that this gate can require to exist.
-			if (spawnSync('git', ['check-ignore', '-q', '--', relative], { cwd: root }).status === 0) return;
+			if (spawnSync('git', ['check-ignore', '-q', '--', relative], { cwd: root, windowsHide: true }).status === 0) return;
 			failures.push(`${fromFile}: missing local link ${target}`);
 			return;
 		}

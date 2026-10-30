@@ -19,7 +19,7 @@ async function publish(
 	data: unknown = {},
 	event = 'SessionStart',
 ): Promise<void> {
-	const child = spawn(process.execPath, [script, event], { env: { ...process.env, ...env } });
+	const child = spawn(process.execPath, [script, event], { env: { ...process.env, ...env }, windowsHide: true });
 	const exited = new Promise<void>((resolve, reject) => {
 		child.once('error', reject);
 		child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`hook exit ${code}`))));

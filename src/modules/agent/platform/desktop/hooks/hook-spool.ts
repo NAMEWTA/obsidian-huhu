@@ -78,9 +78,14 @@ export async function hookSpool(win: Window, root: string): Promise<HookSpool> {
 	}
 	return pool;
 }
-async function assertPath(fs: Fs, path: NodePath, file: string): Promise<void> {
+async function assertPath(fs: Fs, path: NodePath, file: string, trustedRoot?: string): Promise<void> {
 	let cursor = path.resolve(file);
+	const stop = trustedRoot ? path.resolve(trustedRoot) : undefined;
 	for (;;) {
+		// Ancestors at and above the spool root are checked once per round. Re-walking
+		// them for every file made a 32-scope drain miss its bound on Windows.
+		if (stop && (cursor === stop || (process.platform === 'win32' && cursor.toLowerCase() === stop.toLowerCase())))
+			return;
 		try {
 			if ((await fs.lstat(cursor)).isSymbolicLink()) throw new Error('hookSpoolSymlink');
 		} catch (error) {
@@ -125,6 +130,7 @@ export class HookSpool {
 	private lease?: Awaited<ReturnType<typeof readerLease>>;
 	private finished: (NonNullable<ScopeState['close']> & { settled: () => void })[] = [];
 	private retiringScopes = 0;
+	private continueImmediately = false;
 	private constructor(
 		private fs: Fs,
 		private path: NodePath,
@@ -281,7 +287,10 @@ export class HookSpool {
 		if (this.readerClosing) return this.readerClosing;
 		if (!this.readerRetiring && (this.scopes.size || this.preparing || this.reading)) return;
 		if (!this.readerRetiring && !this.readerNonce) {
-			if (this.lease) { await this.lease.close(); this.lease = undefined; }
+			if (this.lease) {
+				await this.lease.close();
+				this.lease = undefined;
+			}
 			return;
 		}
 		const owner = this.readerNonce,
@@ -310,7 +319,10 @@ export class HookSpool {
 			}
 			await this.fs.rmdir(dir);
 			this.readerRetiring = undefined;
-			if (this.lease) { await this.lease.close(); this.lease = undefined; }
+			if (this.lease) {
+				await this.lease.close();
+				this.lease = undefined;
+			}
 		})();
 		this.readerClosing = closing;
 		try {
@@ -382,8 +394,10 @@ export class HookSpool {
 			this.reading = this.round(delay > 0).finally(async () => {
 				this.reading = undefined;
 				await this.settleFinished();
+				const immediate = this.continueImmediately;
+				this.continueImmediately = false;
 				if (this.scopes.size || this.finished.length || this.readerRetiring)
-					this.schedule(HOOK_SPOOL_LIMITS.idleMs);
+					this.schedule(immediate ? 0 : HOOK_SPOOL_LIMITS.idleMs);
 			});
 		}, delay);
 	}
@@ -399,6 +413,12 @@ export class HookSpool {
 	private async round(idle: boolean): Promise<void> {
 		const states = [...this.scopes.values()];
 		if (!states.length) return;
+		try {
+			await assertPath(this.fs, this.path, this.root);
+		} catch {
+			for (const state of states) this.report(state, 'hookSpoolReadFailed');
+			return;
+		}
 		const start = this.cursor++ % states.length;
 		let small = 0,
 			large = 0,
@@ -408,13 +428,13 @@ export class HookSpool {
 			const state = states[(start + i) % states.length]!;
 			try {
 				this.lease!.assertHeld();
-				await assertPath(this.fs, this.path, state.dir);
+				await assertPath(this.fs, this.path, state.dir, this.root);
 				if (!state.active)
 					await this.fs.unlink(this.path.join(state.dir, 'active.json')).catch((error) => {
 						if (code(error) !== 'ENOENT') throw error;
 					});
 				try {
-					const fault = await this.read(this.path.join(state.dir, 'fault.json'), 512);
+					const fault = await this.read(this.path.join(state.dir, 'fault.json'), 512, this.root);
 					if (fault !== state.fault) {
 						state.fault = fault;
 						this.report(state, 'hookPublicationFailed');
@@ -455,7 +475,7 @@ export class HookSpool {
 							tombstone = (state.failures.get(key) ?? 0) >= 3;
 						if (tombstone && (!idle || retried)) continue;
 						if (tombstone) retried = true;
-						const did = await this.consume(state, kind, name);
+						const did = await this.consume(state, kind, name, this.root);
 						if (
 							did &&
 							names.some((other) => other !== name && (state.failures.get(kind + '/' + other) ?? 0) < 3)
@@ -477,15 +497,11 @@ export class HookSpool {
 					state.close.reject(new Error('hookCleanupIncomplete', { cause: error }));
 			}
 		}
-		if (backlog && ![...this.scopes.values()].every((s) => !s.active && Date.now() >= (s.close?.deadline ?? 0))) {
-			this.timer = setPoolTimeout(() => {
-				this.timer = undefined;
-				this.schedule(0);
-			}, 0);
-		}
+		if (backlog && ![...this.scopes.values()].every((s) => !s.active && Date.now() >= (s.close?.deadline ?? 0)))
+			this.continueImmediately = true;
 	}
-	private async read(file: string, limit: number): Promise<string> {
-		await assertPath(this.fs, this.path, file);
+	private async read(file: string, limit: number, trustedRoot?: string): Promise<string> {
+		await assertPath(this.fs, this.path, file, trustedRoot);
 		const handle = await this.fs.open(file, this.fs.constants.O_RDONLY | (this.fs.constants.O_NOFOLLOW ?? 0));
 		try {
 			if (!(await handle.stat()).isFile()) throw new Error('hookFileInvalid');
@@ -502,13 +518,18 @@ export class HookSpool {
 			await handle.close();
 		}
 	}
-	private async consume(state: ScopeState, kind: 'small' | 'large', local: string): Promise<boolean> {
+	private async consume(
+		state: ScopeState,
+		kind: 'small' | 'large',
+		local: string,
+		trustedRoot?: string,
+	): Promise<boolean> {
 		const key = kind + '/' + local,
 			refDir = this.path.join(state.dir, kind, local);
 		let ref = state.retiring.get(key);
 		if (!ref) {
 			try {
-				ref = JSON.parse(await this.read(this.path.join(refDir, 'ref.json'), 512)) as Retiring;
+				ref = JSON.parse(await this.read(this.path.join(refDir, 'ref.json'), 512, trustedRoot)) as Retiring;
 			} catch (error) {
 				if (code(error) === 'ENOENT') return false;
 				throw error;
@@ -523,7 +544,7 @@ export class HookSpool {
 			)
 				throw new Error('hookReferenceInvalid');
 			const global = this.path.join(this.root, kind, String(ref.slot));
-			const owner = JSON.parse(await this.read(this.path.join(global, 'claim.json'), 512)) as {
+			const owner = JSON.parse(await this.read(this.path.join(global, 'claim.json'), 512, trustedRoot)) as {
 				token: string;
 				nonce: string;
 				scope: string;
@@ -556,6 +577,7 @@ export class HookSpool {
 					await this.read(
 						consuming,
 						kind === 'small' ? HOOK_SPOOL_LIMITS.smallBytes : HOOK_SPOOL_LIMITS.largeBytes,
+						trustedRoot,
 					),
 				) as SpoolEvent & { token: string };
 				if (

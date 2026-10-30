@@ -14,7 +14,7 @@
   ],
   "moduleActivationBytes": {
     "home": 493568,
-    "agent": 1385472,
+    "agent": 1386496,
     "icons": 158720,
     "browser": 316416,
     "archives": 337920,
@@ -30,5 +30,5 @@
   "outputBudgetReason": "2026-10-29 合入 NAMEWTA/terminal 后重新构建。实测 main.js 8251339 字节。增长来自终端工作台的 Space、会话、收件箱和备份，以及旧网页标签在读盘时保留地址。启动闭包仍不含 xterm、React 或 Radix。上限按 KiB 向上取整为 8058 KiB。",
   "eagerBudgetReason": "2026-10-29 合入后实测启动闭包 135082 字节、111 个输入，含高亮入口、任务清单、Bot 注册表和终端模块的清单元数据。页面、Runner、xterm 和浏览器运行时仍懒加载。上限 132 KiB。",
   "stylesBudgetReason": "2026-10-29 按合入后的 27 个样式源重写 styles.css，实测 1436333 字节，仍低于 1408 KiB 上限。",
-  "moduleActivationBudgetReason": "2026-10-29 合入终端工作台后实测并按 KiB 向上取整：agent 1384588（Space、PTY、收件箱、备份，以及旧网页标签保留地址）、automations 219910、notifications 21285、task 166930。其余模块未超过既有上限。浏览器仍是独立运行时，不回到 PTY helper。"
+  "moduleActivationBudgetReason": "2026-10-29 合入终端工作台后实测并按 KiB 向上取整：agent 1384588（Space、PTY、收件箱、备份，以及旧网页标签保留地址）、automations 219910、notifications 21285、task 166930。其余模块未超过既有上限。浏览器仍是独立运行时，不回到 PTY helper。2026-10-30 钩子池每轮只把私有根以上的祖先检查做一次，agent 实测 1385488，上限按 KiB 向上取整为 1354 KiB。"
 }

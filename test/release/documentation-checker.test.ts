@@ -12,9 +12,14 @@ test('documentation checks use ownership and links, not directory names, and res
 		writeFileSync(target, text);
 	};
 	const run = () =>
-		spawnSync(process.execPath, [path.resolve('scripts/verify-docs.mjs')], { cwd: root, encoding: 'utf8' });
+		spawnSync(process.execPath, [path.resolve('scripts/verify-docs.mjs')], {
+			cwd: root,
+			encoding: 'utf8',
+			windowsHide: true,
+			timeout: 20_000,
+		});
 	try {
-		expect(spawnSync('git', ['init', '--quiet'], { cwd: root }).status).toBe(0);
+		expect(spawnSync('git', ['init', '--quiet'], { cwd: root, windowsHide: true }).status).toBe(0);
 		const state = '.agents/speculo/.speculo/specdev';
 		const files: Record<string, string> = {
 			'.gitignore': 'temp/\n',
@@ -143,4 +148,4 @@ test('documentation checks use ownership and links, not directory names, and res
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}
-});
+}, 90_000);
