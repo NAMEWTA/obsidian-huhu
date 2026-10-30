@@ -205,7 +205,7 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			vaultId: 'stop-fixture',
 			deviceId: 'stop-fixture',
 			win: { require: createRequire(import.meta.url) } as Window,
-			writerPort: freeWriterPorts()
+			writerPort: freeWriterPorts(),
 		});
 		const storage: TextStorage = {
 			exists: async (p) => {
@@ -322,11 +322,18 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			await until(() => gone(shellPid!), 'Shell exit');
 			expect(otherSession.running).toBe(true);
 			expect(gone(otherSession.pid!)).toBe(false);
+			const readyBefore = otherSession.text().split('HUHU_STOP_READY').length;
 			otherSession.input('survives\r');
 			await until(
 				() => otherSession.text().includes('HUHU_CONTROL:survives'),
 				'unrelated Session still accepts input/output',
-			);
+			).catch((error: Error) => {
+				// Failure-only evidence: did output keep flowing (input lost) or stall (output path)?
+				const tail = otherSession.text();
+				throw new Error(
+					`${error.message}; running=${otherSession.running} readyLines ${readyBefore}->${tail.split('HUHU_STOP_READY').length}; tail=${JSON.stringify(tail.slice(-400))}`,
+				);
+			});
 			const plan = await workspace.previewArchive({ kind: 'space', spaceId: space.id });
 			expect(await bounded(workspace.archiveManaged(plan), 'archive')).toMatchObject({
 				status: 'archived',
