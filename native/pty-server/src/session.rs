@@ -926,6 +926,48 @@ fn nonblocking_master(master: &dyn MasterPty) -> Result<(), SpawnFailure> {
     }
     Ok(())
 }
+/// A private duplicate of the nonblocking master, used only to wait for readability.
+/// macOS hands out a PTY's output in small pieces; a fixed sleep after each empty
+/// read capped a flood at tens of KiB per second. The duplicate closes with the reader.
+#[cfg(unix)]
+fn readiness_handle(master: &dyn MasterPty) -> Option<std::os::fd::OwnedFd> {
+    use std::os::fd::FromRawFd;
+    let fd = master.as_raw_fd()?;
+    let copy = unsafe { libc::fcntl(fd, libc::F_DUPFD_CLOEXEC, 0) };
+    (copy >= 0).then(|| unsafe { std::os::fd::OwnedFd::from_raw_fd(copy) })
+}
+/// Wait up to 5 ms for output. `select` also works for terminals on macOS, where
+/// `poll` does not. Without a usable descriptor this is the previous fixed sleep.
+#[cfg(unix)]
+fn wait_readable(handle: Option<&std::os::fd::OwnedFd>) {
+    use std::os::fd::AsRawFd;
+    let Some(fd) = handle
+        .map(|handle| handle.as_raw_fd())
+        .filter(|fd| (*fd as usize) < libc::FD_SETSIZE as usize)
+    else {
+        thread::sleep(Duration::from_millis(5));
+        return;
+    };
+    unsafe {
+        let mut read: libc::fd_set = std::mem::zeroed();
+        libc::FD_ZERO(&mut read);
+        libc::FD_SET(fd, &mut read);
+        let mut timeout = libc::timeval {
+            tv_sec: 0,
+            tv_usec: 5_000,
+        };
+        if libc::select(
+            fd + 1,
+            &mut read,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            &mut timeout,
+        ) < 0
+        {
+            thread::sleep(Duration::from_millis(5));
+        }
+    }
+}
 fn write_captured(writer: &mut dyn Write, bytes: &[u8], cancelled: impl Fn() -> bool) -> bool {
     #[cfg(windows)]
     {
@@ -1292,6 +1334,10 @@ impl Sessions {
             job::Scope::new().map_err(|e| SpawnFailure::before_spawn("pty-unavailable", e))?;
         #[cfg(unix)]
         nonblocking_master(&*opened.master)?;
+        #[cfg(unix)]
+        let readiness = readiness_handle(&*opened.master);
+        #[cfg(windows)]
+        let readiness = ();
         let (reader, input, ()) = prepare_before_spawn(
             || {
                 opened
@@ -1347,15 +1393,18 @@ impl Sessions {
         thread::spawn(move || {
             let reserve = ReaderReserve::new(read_io.flow.budget.clone());
             let mut owned = CompleteAfterDrop::new(
-                (reader, vec![0u8; READ_CHUNK], reserve),
+                (reader, vec![0u8; READ_CHUNK], reserve, readiness),
                 read_io.drain.reader_done.clone(),
             );
             while read_io.flow.wait_for_credit() {
-                let (reader, buffer, _) = owned.resource.as_mut().unwrap();
+                let (reader, buffer, _, _readiness) = owned.resource.as_mut().unwrap();
                 match reader.read(buffer) {
                     Ok(0) => break,
                     Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
                     Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
+                        #[cfg(unix)]
+                        wait_readable(_readiness.as_ref());
+                        #[cfg(windows)]
                         thread::sleep(Duration::from_millis(5));
                         continue;
                     }
