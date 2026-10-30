@@ -344,7 +344,13 @@ test('32 scopes accept three ordered short events each through the shared bounde
 					await publish(script, scope.env, { session_id: `${id}:${event}` });
 			}),
 		);
-		await wait(() => received.size === 96, 1800);
+		const drained = Date.now();
+		// Failure-only evidence; the 1.8 s bound itself is unchanged.
+		await wait(() => received.size === 96, 1800).catch((error: Error) => {
+			throw new Error(
+				`${error.message}: received ${received.size}/96 ${Date.now() - drained} ms after the last publisher`,
+			);
+		});
 		assert.deepEqual(errors, []);
 		assert.equal(peakScopes, 32);
 		assert.ok(peakCollectors > 0 && peakCollectors <= 4);

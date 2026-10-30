@@ -464,10 +464,8 @@ export class HookSpool {
 						(kind === 'small'
 							? small >= HOOK_SPOOL_LIMITS.smallBatch
 							: large >= HOOK_SPOOL_LIMITS.largeBatch)
-					) {
-						if (names.some((name) => (state.failures.get(kind + '/' + name) ?? 0) < 3)) backlog = true;
+					)
 						continue;
-					}
 					for (const name of names) {
 						if (!/^\d+$/.test(name) || Number(name) >= (kind === 'small' ? 8 : 2))
 							throw new Error('hookReferenceInvalid');
@@ -475,14 +473,10 @@ export class HookSpool {
 							tombstone = (state.failures.get(key) ?? 0) >= 3;
 						if (tombstone && (!idle || retried)) continue;
 						if (tombstone) retried = true;
-						const did = await this.consume(state, kind, name, this.root);
-						if (
-							did &&
-							names.some((other) => other !== name && (state.failures.get(kind + '/' + other) ?? 0) < 3)
-						)
-							backlog = true;
-						if (did) {
-							taken = true;
+						// A productive round starts the next one at once: publishers are active, and
+						// waiting idleMs after every event capped a 32-scope drain at one batch per idle.
+						if (await this.consume(state, kind, name, this.root)) {
+							backlog = taken = true;
 							state.nextKind = kind === 'small' ? 'large' : 'small';
 							if (kind === 'small') small++;
 							else large++;
