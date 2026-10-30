@@ -382,6 +382,7 @@ func (c *Core) RequestStop() error {
 			service.MarkStopping()
 		}
 		c.tooling.StopInspections()
+		c.diagPhase("request-stop")
 		c.executor.Stop()
 		go c.drain()
 	})
@@ -399,10 +400,13 @@ func (c *Core) drain() {
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
+	c.diagPhase("recovery-stop")
 	<-c.executor.Done()
+	c.diagPhase("executor-done")
 	<-c.tooling.InspectionsDone()
 	<-c.assistants.ProbeDone()
 	<-c.memory.Done()
+	c.diagPhase("memory-done")
 	// The trusted Engine may have returned while an actual HTTP producer is
 	// still draining. Its original bound Settle continues to use this database.
 	for {
@@ -414,12 +418,15 @@ func (c *Core) drain() {
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
+	c.diagPhase("producers-done")
 	if c.models != nil {
 		<-c.models.Done()
 	}
+	c.diagPhase("models-done")
 	gcCtx, gcCancel := context.WithTimeout(context.Background(), time.Second)
 	_, _ = c.tooling.Collect(gcCtx)
 	gcCancel()
+	c.diagPhase("collect-done")
 	c.closeErr = c.stopErr
 	if c.models != nil {
 		if err := c.models.Close(); c.closeErr == nil {
@@ -429,9 +436,11 @@ func (c *Core) drain() {
 	if err := c.provider.Close(); c.closeErr == nil {
 		c.closeErr = err
 	}
+	c.diagPhase("store-close-begin")
 	if err := c.store.Close(); c.closeErr == nil {
 		c.closeErr = err
 	}
+	c.diagPhase("store-close-end")
 	if err := c.profile.Close(); c.closeErr == nil {
 		c.closeErr = err
 	}
@@ -453,6 +462,7 @@ func (c *Core) Close() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	if e := c.WaitClosed(ctx); e == context.DeadlineExceeded {
+		c.diagTimeout()
 		return &api.Fault{Kind: "RECOVERY_BLOCKED", Reason: "EXECUTOR_STOP_TIMEOUT"}
 	} else {
 		return e
