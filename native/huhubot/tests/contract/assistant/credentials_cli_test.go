@@ -59,7 +59,10 @@ func TestCredentialWorkerExitsWithoutParentSupervisor(t *testing.T) {
 			if err := os.Mkdir(home, 0700); err != nil {
 				t.Fatal(err)
 			}
-			ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
+			// The 6s reap deadline is armed after Start, on the same clock as the
+			// 4s independence bound below; a slow first launch of a freshly built
+			// executable must not be charged to the worker.
+			ctx, cancel := context.WithCancel(context.Background())
 			cmd := exec.CommandContext(ctx, binaryPath, "--credential-worker=stdio-v1")
 			cmd.Env = []string{"HOME=" + home, "USERPROFILE=" + home, "XDG_STATE_HOME=" + filepath.Join(root, "state"), "LOCALAPPDATA=" + filepath.Join(root, "local")}
 			if v := os.Getenv("SystemRoot"); v != "" {
@@ -78,6 +81,8 @@ func TestCredentialWorkerExitsWithoutParentSupervisor(t *testing.T) {
 				t.Fatal(err)
 			}
 			started := time.Now()
+			reap := time.AfterFunc(6*time.Second, cancel)
+			defer reap.Stop()
 			done := make(chan error, 1)
 			waited := false
 			go func() { done <- cmd.Wait() }()
