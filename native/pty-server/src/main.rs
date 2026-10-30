@@ -501,6 +501,15 @@ mod metrics_file_tests {
         written
             .recv_timeout(std::time::Duration::from_secs(5))
             .unwrap();
+        // macOS' temp dir lives under the /var -> /private/var symlink; such paths are refused.
+        let symlinked = dir
+            .ancestors()
+            .any(|dir| std::fs::symlink_metadata(dir).is_ok_and(|m| m.file_type().is_symlink()));
+        if symlinked {
+            assert_eq!(std::fs::read_dir(&dir).unwrap().count(), 0);
+            std::fs::remove_dir_all(&dir).unwrap();
+            return;
+        }
         let value: Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
         assert_eq!(value, json!({"version":1}));
         let names: Vec<_> = std::fs::read_dir(&dir)
