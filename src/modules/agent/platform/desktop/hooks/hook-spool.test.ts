@@ -35,6 +35,45 @@ async function wait(check: () => boolean, ms = 1200): Promise<void> {
 	}
 }
 
+test('a reference the publisher is still writing is retried, not reported as a read failure', async () => {
+	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-partial-'));
+	const empty = path.join(directory, 'empty');
+	await fs.writeFile(empty, '');
+	let partial = true;
+	// The publisher creates ref.json with flag 'wx' and only then writes it; a reader can
+	// open it in between and see no bytes (a window that is wide on Windows).
+	const files = {
+		...fs,
+		open: async (file: Parameters<typeof fs.open>[0], ...rest: unknown[]) => {
+			if (partial && /[\\/]ref\.json$/.test(String(file))) {
+				partial = false;
+				return (fs.open as (...a: unknown[]) => ReturnType<typeof fs.open>)(empty, ...rest);
+			}
+			return (fs.open as (...a: unknown[]) => ReturnType<typeof fs.open>)(file, ...rest);
+		},
+	};
+	const pool = await hookSpool(windowFor(files), path.join(directory, 'resource-v1'));
+	const errors: string[] = [];
+	let received = 0;
+	const scope = await pool.prepare(
+		() => received++,
+		(reason) => errors.push(reason),
+	);
+	try {
+		const script = path.join(directory, 'publisher.cjs');
+		await fs.writeFile(script, HOOK_SCRIPT);
+		await publish(script, scope.env);
+		await wait(() => received === 1, 3000);
+		assert.equal(partial, false, 'the incomplete reference was observed');
+		assert.deepEqual(errors, []);
+		await scope.close();
+		assert.deepEqual(errors, []);
+	} finally {
+		await scope.close().catch(() => {});
+		await fs.rm(directory, { recursive: true, force: true });
+	}
+});
+
 test('a consumed publication is not replayed and its slot recovers after reference unlink failure', async () => {
 	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-tombstone-'));
 	let fail = true;

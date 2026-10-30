@@ -525,7 +525,9 @@ export class HookSpool {
 			try {
 				ref = JSON.parse(await this.read(this.path.join(refDir, 'ref.json'), 512, trustedRoot)) as Retiring;
 			} catch (error) {
-				if (code(error) === 'ENOENT') return false;
+				// The publisher creates ref.json, then writes it: while its scope is live an
+				// unparsable reference is unfinished, not failed. A closing scope still reports it.
+				if (code(error) === 'ENOENT' || (state.active && error instanceof SyntaxError)) return false;
 				throw error;
 			}
 			if (
