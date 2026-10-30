@@ -64,7 +64,16 @@ func TestRealRunnerShutdownWithParentPipeOpenAndEOFReopen(t *testing.T) {
 		wait := func() error { waitOnce.Do(func() { waitErr = cmd.Wait() }); return waitErr }
 		// Register immediately after Start: a fatal hello/read assertion must
 		// still stop and reap the actual child, under the original deadline.
-		t.Cleanup(func() { _ = stdin.Close(); cancel(); _ = wait() })
+		started, round := time.Now(), iteration
+		t.Cleanup(func() {
+			_ = stdin.Close()
+			cancel()
+			err := wait()
+			// Failure-only evidence: which start ended early, how and when.
+			if t.Failed() {
+				t.Logf("iteration %d: exit %v after %s, stderr %q", round, err, time.Since(started), stderr.String())
+			}
+		})
 		readwrite := struct {
 			io.Reader
 			io.Writer
