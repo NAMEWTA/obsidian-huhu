@@ -135,13 +135,19 @@ async function open() {
 		closed = new Set();
 	const exited = new Promise((resolve) => {
 		child.once('error', () => resolve(-1));
-		child.once('close', (code) => {
+		child.once('close', (code, signal) => {
 			exitCode = code;
-			for (const fn of closed) fn(Error('EOF'));
+			// Failure-only evidence: which exit path the production child took.
+			const detail = `EOF (child exit=${code} signal=${signal} stderr=${JSON.stringify(stderrHead)})`;
+			for (const fn of closed) fn(Error(detail));
 			resolve(code);
 		});
 	});
-	child.stderr.on('data', (b) => (stderrBytes += b.length));
+	let stderrHead = '';
+	child.stderr.on('data', (b) => {
+		stderrBytes += b.length;
+		if (stderrHead.length < 2048) stderrHead += String(b).slice(0, 2048 - stderrHead.length);
+	});
 	child.stdin.on('error', () => {});
 	child.stdout.on('data', (b) => listeners.forEach((fn) => fn(new Uint8Array(b))));
 	const transport = {

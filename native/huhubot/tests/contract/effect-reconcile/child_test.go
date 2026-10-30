@@ -61,8 +61,13 @@ func TestNoteEffectChild(t *testing.T) {
 	server := stdio.New(os.Stdin, os.Stdout, core.API, id)
 	e = server.Run(context.Background())
 	closeErr := core.Close()
-	if e != nil || closeErr != nil {
-		os.Exit(1)
+	// Distinct codes say which path ended the child when the TS side sees EOF;
+	// 1 stays the stdio Windows output's fail-stop.
+	if e != nil {
+		os.Exit(4)
+	}
+	if closeErr != nil {
+		os.Exit(5)
 	}
 	// testing's PASS footer is not part of HAP.
 	os.Exit(0)
