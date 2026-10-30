@@ -219,8 +219,27 @@ func (s *Store) Database() *sql.DB { return s.db }
 
 // WithinTx performs a short SQL unit of work. Callers must not perform network,
 // Host, model or human waits inside the callback.
+//
+// The caller context bounds waiting for the shared connection and every
+// statement, but it is deliberately not the transaction context: database/sql
+// discards the connection of a transaction whose context ends (Tx.awaitDone).
+// With one pooled connection that closes the Profile's last SQLite handle,
+// which runs a full WAL checkpoint plus fsync while every other caller waits;
+// on Windows runners that stalled shutdown past its bound. Ending through the
+// deferred Rollback instead returns the healthy connection to the pool.
 func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
-	tx, err := s.db.BeginTx(ctx, nil)
+	conn, err := s.db.Conn(ctx)
+	if err != nil {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+		return err
+	}
+	defer func() { _ = conn.Close() }()
+	if err = ctx.Err(); err != nil {
+		return err
+	}
+	tx, err := conn.BeginTx(context.WithoutCancel(ctx), nil)
 	if err != nil {
 		if ctx.Err() != nil {
 			return ctx.Err()

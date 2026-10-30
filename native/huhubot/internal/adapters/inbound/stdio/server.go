@@ -9,6 +9,7 @@ import (
 	"io"
 	"reflect"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	inbound "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/hap"
@@ -56,6 +57,7 @@ type Server struct {
 	closed       chan struct{}
 	once         sync.Once
 	workers      sync.WaitGroup
+	inflight     atomic.Int32 // dispatched workers whose reply is not yet written
 	slots        chan struct{}
 	initErr      error
 }
@@ -484,6 +486,7 @@ func (s *Server) Run(ctx context.Context) error {
 			continue
 		}
 		s.workers.Add(1)
+		s.inflight.Add(1)
 		go func(reqs []wire.Envelope, isBatch bool) {
 			defer s.workers.Done()
 			defer func() { <-s.slots }()
@@ -496,15 +499,24 @@ func (s *Server) Run(ctx context.Context) error {
 			if isBatch {
 				payload = replies
 			}
-			if s.write(payload) != nil {
-				s.Close()
-				return
-			}
-			if s.router.App.Service.Stopping() {
+			written := s.write(payload) == nil
+			// An earlier reply can finish after service.shutdown was admitted. Closing
+			// then would drop the shutdown acknowledgement still being written. While
+			// stopping, only the shutdown request or the last in-flight reply closes.
+			last := s.inflight.Add(-1) == 0
+			if !written || s.router.App.Service.Stopping() && (last || containsShutdown(reqs)) {
 				s.Close()
 			}
 		}(requests, batch)
 	}
+}
+func containsShutdown(es []wire.Envelope) bool {
+	for _, e := range es {
+		if e.Method == "service.shutdown" {
+			return true
+		}
+	}
+	return false
 }
 func containsHello(es []wire.Envelope) bool {
 	for _, e := range es {
