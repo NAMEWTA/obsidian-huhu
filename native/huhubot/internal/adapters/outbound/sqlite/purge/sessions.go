@@ -142,8 +142,10 @@ func (s *Sessions) Preview(ctx context.Context, id api.RequestIdentity, q api.ID
 	})
 	return
 }
+
+// Delete is the durability barrier (ADR-027) before external Session cleanup.
 func (s *Sessions) Delete(ctx context.Context, id api.RequestIdentity, q api.SessionDelete) (out api.Receipt, err error) {
-	err = s.store.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	err = s.store.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		var saved, savedState, savedHash, savedRetention string
 		e := tx.QueryRowContext(ctx, "SELECT receipt_json,state,request_hash,retention_json FROM session_deletions WHERE token=? AND profile_id=? AND principal_id=? AND session_id=?", q.PreviewToken, q.ProfileID, id.PrincipalID(), q.ID).Scan(&saved, &savedState, &savedHash, &savedRetention)
 		if e == nil {

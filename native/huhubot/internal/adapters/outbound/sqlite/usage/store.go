@@ -415,7 +415,10 @@ func (b *bound) Dispatch(ctx context.Context, res api.AttemptReservation, fn fun
 	if fn == nil {
 		return api.Invalid("ATTEMPT_DISPATCH_REQUIRED")
 	}
-	err := b.s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	// Durability barrier (ADR-027): the dispatched attempt and its charge are
+	// flushed before the request can leave, so a power failure cannot forget an
+	// outbound model call that may have been sent.
+	err := b.s.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		r, in, e := b.s.current(ctx, tx, b.e)
 		if e != nil {
 			return e

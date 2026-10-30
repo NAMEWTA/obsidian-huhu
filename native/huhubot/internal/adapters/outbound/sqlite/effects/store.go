@@ -195,8 +195,13 @@ func (s *Store) ContinuationEffect(ctx context.Context, x api.ToolExecution, c a
 	})
 	return out, e
 }
+
+// ClaimDispatch is the durability barrier (ADR-027) before a Host effect: the
+// dispatching state is flushed before the Host may act, so after a power
+// failure recovery still sees the effect as unresolved (dispatching or
+// unknown_outcome) and never re-dispatches it as if it had not happened.
 func (s *Store) ClaimDispatch(ctx context.Context, x api.ToolExecution, effect broker.Effect) error {
-	return s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	return s.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		in, e := s.check(ctx, tx, x)
 		if e != nil {
 			return e

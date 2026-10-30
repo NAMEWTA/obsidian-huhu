@@ -96,7 +96,7 @@ P1 不承诺跨进程 stdio attach。Go 领域对象、HAP DTO 和 React ViewMod
 
 ## ADR-006: 原子受理和终结
 
-**Status:** accepted
+**Status:** accepted；断电持久部分由 ADR-027 修订
 **Source:** LOG-006；SRC-001 §7、8、12.4；用户本轮提交并要求提炼的完整设计
 **Supersedes:** none
 
@@ -481,3 +481,30 @@ Bot 页面接入 HUHU 现有工作台，左侧列持久 Bot 和群聊；临时 s
 ### Verification / Migration
 
 T-01/08/09/10 比较并锁定依赖，T-11–15 用既定合同验证协作/记忆，T-02/20/27 验证凭证/平台，T-27 更新实际分发许可声明。新的陌生点在写代码前补来源和限制；只有直接改编才记录源码对应与署名，不把纯学习写成已包含第三方代码。全部票与责任见 <Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md</Path>；本决策不授权实现或发布。
+
+
+## ADR-027: Profile 数据库 WAL + synchronous=NORMAL，外部动作前设持久屏障
+
+**Status:** accepted
+**Source:** LOG-132；用户 2026-10-30 拍板“方案 B”
+**Supersedes:** ADR-006 中“accepted 表示持久受理”的断电部分（原子性、单 UoW 与进程崩溃语义不变）
+
+### Decision
+
+Profile 数据库保持 WAL，连接级 `synchronous` 由 FULL 改为 NORMAL：普通 `WithinTx` 提交原子、有序、进程崩溃后仍在，但不各自刷盘。紧接外部非幂等动作之前的提交改用 `WithinDurableTx`：仅这一次提交以 FULL 提交（随后恢复 NORMAL，恢复失败则丢弃连接），WAL 刷盘覆盖整个文件，此前所有 NORMAL 提交一并落盘。屏障点：模型请求出站前的 attempt `dispatched`（含额度扣记）、Host 效果的 `ClaimDispatch`（`dispatching`）、凭据目录 `Reserve`（写 OS 密钥存储之前）与 `BeginDelete`（删除之前）、Profile 清除 `BeginCleanup`、Session 删除 `Delete`（外部清理之前）。迁移仍在默认 FULL 下完成后才切换；正常关闭的最后检查点会刷盘全部提交。798e1ba 的“观察提交”专用路径因此并入普通提交并删除。
+
+### Context / Trade-off / Consequences
+
+Windows Runner 上每次 FULL 提交一次 `FlushFileBuffers`（约 20–50ms）。一个 Run 的生命周期就有 Claim、PrepareAndMarkRunning、Finalize、ProducerEnded 四次写提交；32 个子任务的委派共 184 次写提交，串行在唯一连接上，超过 10 秒。NORMAL 下这些只写入 WAL；SQLite 保证 WAL+NORMAL 不会损坏，也不会乱序。
+
+断电（或 OS 崩溃）时最坏丢失最后一个屏障/检查点之后的若干次提交，数据库回到更早的一致状态：
+- 丢失 Claim 等生命周期推进时，Run 退回 queued，重启后由执行器自动重新领取并重跑。屏障保证此时没有已出站的模型请求或已派发的效果。
+- 已有屏障（模型请求或效果已派发）的 Run 至少停在 running/dispatching，按 ADR-022/007 走 interrupted、unresolved 与用户继续，不会被当作未发生而盲目重跑。
+- 进程内已返回给客户端的 accepted 回执、消息、终态或事件可能丢失；客户端以原幂等 key 重试会重新受理。界面可能短暂显示过此后被回退的状态。
+- 凭据目录行先于密钥落盘，不会留下目录不知道的密钥；删除先落 `deleting=1`。
+
+进程崩溃（含强杀）语义与 FULL 相同，不丢已提交事务。
+
+### Verification / Migration
+
+`TestDurableTxRaisesOnlyItsOwnCommit` 断言 WAL、普通提交为 NORMAL、屏障提交为 FULL、其后（包括屏障失败后）恢复 NORMAL。`TestExternalActionCommitsAreDurableBarriers` 解析源文件，断言上述六个屏障点各自只用 `WithinDurableTx`。既有恢复、效果账本、幂等与委派合同测试不改断言。无数据迁移：`synchronous` 是连接级设置，旧 Profile 下次打开即生效。

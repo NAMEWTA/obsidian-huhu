@@ -271,7 +271,9 @@ func (s *Store) BeginCleanup(ctx context.Context, req app.ExecuteRequest) (refs 
 	if len(req.RetainMemoryIDs) > 0 {
 		return nil, api.Invalid("PROFILE_RETENTION_NOT_SUPPORTED")
 	}
-	err = s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	// Durability barrier (ADR-027): the failed/stopping cleanup fence is flushed
+	// before any external erasure starts.
+	err = s.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		m, e := readMetadata(ctx, tx)
 		if e != nil {
 			return e

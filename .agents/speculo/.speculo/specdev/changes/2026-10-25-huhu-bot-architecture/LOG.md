@@ -1442,3 +1442,20 @@ Root共同Go r3实际1/Wait198.577880238秒，428输入零漂移；精确逐项�
 159独立重算2141文件/59来源，两轴pass、G1/G2关闭；Root全文/10工件/来源bytes模式、实际return0及当前检查回读后接纳。状态结构首次漏填E2E Owner字段，已仅补Owner:/root；原失败输出保留，r2实际0/Wait27.764秒、28票/14执行/14AC记录通过。T14及13维护票代码责任完成，G3尚未整体完成，用户真实Provider/Obsidian/目标OS后验。
 
 158只读49来源/5工件与return0已接纳，两个Root范围细化：保留未知AllowedTools既有配置契约，新增proposal工具真实准入链；owner stdio能力不绑定managed凭证标志。保存T14真实2141文件zip基线。Map40/Goal39激活T15并重开T01唯一纯合同窗口，160先由原owner实施；后续Memory/安全/运行/协议/TS按真实接口和原owner开窗，不以准备签通过，不结束完整28票55AC Goal。
+
+
+## LOG-132 — 2026-10-30 — Profile 持久性改为 WAL + NORMAL 与外部动作屏障
+
+- **设计树节点：** D-106（原子受理和终结）的持久性部分
+- **轮次与依赖：** 实施期 CI 证据 / ADR-006、ADR-007、ADR-022
+- **状态：** confirmed（用户拍板方案 B）
+- **问题：** Windows Runner 上每次 synchronous=FULL 提交一次 FlushFileBuffers，委派 32 个子任务的合同测试（184 次写提交串行于单连接）超过 10 秒等待；798e1ba 只放宽了流式观察提交。
+- **事实与来源：** 本机计数：该用例 494 个事务、184 次写提交（Claim/PrepareAndMarkRunning/Finalize/ProducerEnded 各约 36，Delegate 32）；本机 1.05 秒，Windows 10.38 秒仍 waiting_children；同包本机约 11 秒、Windows 46 秒。ProducerEnded 释放父任务子名额，不能并入 Finalize。
+- **选项：** A 仅把调度类提交改为 NORMAL；B 整个 Profile 改 WAL+NORMAL；C 不改。
+- **推荐：** A（改动面小）；用户选择 B。
+- **结论：** 采用 B 并加屏障：普通提交 NORMAL；模型 attempt dispatched、效果 ClaimDispatch、凭据 Reserve/BeginDelete、Profile BeginCleanup、Session Delete 用 `WithinDurableTx`（单次 FULL）。删除观察提交专用路径。
+- **原因：** WAL+NORMAL 不损坏、不乱序；FULL 刷盘覆盖整个 WAL 文件，屏障把此前提交一并落盘，因此外部动作之前的顺序与幂等事实在断电后仍成立。
+- **影响工件：** ADR-027、spec NFR-005 与 DEC-001、`sqlite/base/store.go` 及六个屏障点、`base/durability_test.go`（替代 `observation_test.go`）。
+- **约束或不变量：** 断电最坏丢失最近若干次提交；Claim 丢失的 Run 退回 queued 自动重跑，且此时无已出站模型请求或已派发效果；已返回的 accepted 可能需以幂等 key 重试。进程崩溃语义不变。
+- **后续：** 新增屏障点（新的外部动作）必须加入 `TestExternalActionCommitsAreDurableBarriers`。
+- **替代/被替代：** 修订 ADR-006 的断电持久部分；替代 798e1ba 的观察提交路径。

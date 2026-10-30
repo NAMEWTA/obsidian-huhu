@@ -191,7 +191,12 @@ func OpenWithBackup(ctx context.Context, h *profile.Handle, complete CompleteBac
 	if err = db.QueryRowContext(ctx, "PRAGMA journal_mode=WAL").Scan(&journal); err != nil || journal != "wal" {
 		return nil, failure("CONFLICT", "PROFILE_WAL_UNAVAILABLE")
 	}
-	if _, err = db.ExecContext(ctx, "PRAGMA synchronous=FULL"); err != nil {
+	// WAL + NORMAL (ADR-027): every commit is atomic, ordered and survives a
+	// process crash; it is not fsynced on its own. A power failure can lose only
+	// a suffix of recent commits, never reorder or tear them. Commits that
+	// precede an external action use WithinDurableTx, which makes them and every
+	// earlier frame durable before that action starts.
+	if _, err = db.ExecContext(ctx, "PRAGMA synchronous=NORMAL"); err != nil {
 		return nil, failure("CONFLICT", "PROFILE_DURABILITY_UNAVAILABLE")
 	}
 	s := &Store{db: db}
@@ -221,6 +226,11 @@ func (s *Store) Database() *sql.DB { return s.db }
 // WithinTx performs a short SQL unit of work. Callers must not perform network,
 // Host, model or human waits inside the callback.
 //
+// The Profile runs WAL with synchronous=NORMAL: the commit is atomic, ordered
+// and crash-safe, but a power failure may lose it together with the commits
+// that followed it (ADR-027). A commit whose result an external, non-idempotent
+// action relies on must use WithinDurableTx instead.
+//
 // The caller context bounds waiting for the shared connection and every
 // statement, but it is deliberately not the transaction context: database/sql
 // discards the connection of a transaction whose context ends (Tx.awaitDone).
@@ -232,20 +242,20 @@ func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {
 	return s.withinTx(ctx, false, work)
 }
 
-// WithinObservationTx is WithinTx for a streamed Engine observation (a text or
-// tool delta). Its commit is ordered and survives a process crash like any
-// other, but it does not wait for its own WAL fsync: the Profile runs in WAL
-// mode, so the next ordinary (synchronous=FULL) commit — at the latest the
-// Run's lifecycle or terminal fact — makes every earlier frame durable too.
-// Only trailing observations of a Run that has no later durable fact can be
-// lost to a power failure; lifecycle, effect, approval and grant facts never
-// use this path. A Run streaming hundreds of deltas otherwise paid one full
-// FlushFileBuffers per delta, which on Windows took seconds.
-func (s *Store) WithinObservationTx(ctx context.Context, work func(*sql.Tx) error) error {
+// WithinDurableTx is WithinTx whose commit is a durability barrier: it runs
+// with synchronous=FULL, so the commit returns only after the WAL is flushed.
+// A WAL flush covers the whole file, so every earlier NORMAL commit becomes
+// durable too. Use it for the commit that immediately precedes an external,
+// non-idempotent action (a model request, a Host effect, a credential store
+// write or delete, a Profile cleanup), so that after a power failure the
+// ledger never forgets an action that may have happened. The level is
+// restored to NORMAL before the connection returns to the pool; a connection
+// that cannot be restored is discarded.
+func (s *Store) WithinDurableTx(ctx context.Context, work func(*sql.Tx) error) error {
 	return s.withinTx(ctx, true, work)
 }
 
-func (s *Store) withinTx(ctx context.Context, observation bool, work func(*sql.Tx) error) error {
+func (s *Store) withinTx(ctx context.Context, durable bool, work func(*sql.Tx) error) error {
 	conn, err := s.db.Conn(ctx)
 	if err != nil {
 		if ctx.Err() != nil {
@@ -257,15 +267,16 @@ func (s *Store) withinTx(ctx context.Context, observation bool, work func(*sql.T
 	if err = ctx.Err(); err != nil {
 		return err
 	}
-	if observation {
-		if _, err = conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=NORMAL"); err != nil {
+	if durable {
+		if _, err = conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=FULL"); err != nil {
+			_ = conn.Raw(func(any) error { return driver.ErrBadConn })
 			return err
 		}
 		// Runs after the transaction ends and before the connection returns to
-		// the pool. A connection that cannot be restored to FULL is discarded
-		// rather than handed to an ordinary commit.
+		// the pool. A connection that cannot be restored to NORMAL is discarded
+		// so the pool's level stays the documented default.
 		defer func() {
-			if _, e := conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=FULL"); e != nil {
+			if _, e := conn.ExecContext(context.WithoutCancel(ctx), "PRAGMA synchronous=NORMAL"); e != nil {
 				_ = conn.Raw(func(any) error { return driver.ErrBadConn })
 			}
 		}()
@@ -281,8 +292,9 @@ func (s *Store) withinTx(ctx context.Context, observation bool, work func(*sql.T
 	if err = work(tx); err != nil {
 		return err
 	}
-	// A commit that returned nil is durable. Preferring ctx.Err() here reported
-	// success as CATALOG_UNAVAILABLE when the caller deadline elapsed during commit.
+	// A commit that returned nil has happened (and is flushed for
+	// WithinDurableTx). Preferring ctx.Err() here reported success as
+	// CATALOG_UNAVAILABLE when the caller deadline elapsed during commit.
 	if err = tx.Commit(); err != nil {
 		if ctx.Err() != nil {
 			return ctx.Err()

@@ -59,7 +59,9 @@ func (s *Store) Reserve(ctx context.Context, profileID, ref, mode string) error 
 	if mode != "protected" && mode != "session-memory" {
 		return api.Invalid("REGISTRATION_FAILED")
 	}
-	return s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	// Durability barrier (ADR-027): the catalog row is flushed before the
+	// secret reaches the OS store, so no stored secret is left unreferenced.
+	return s.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		p, e := metadata(ctx, tx)
 		if e != nil {
 			return e
@@ -111,7 +113,8 @@ func (s *Store) Update(ctx context.Context, profileID, ref string, st api.Creden
 }
 func (s *Store) BeginDelete(ctx context.Context, profileID, ref string) (api.CredentialMetadata, error) {
 	var m api.CredentialMetadata
-	e := s.base.WithinTx(ctx, func(tx *sql.Tx) error {
+	// Durability barrier (ADR-027): deleting=1 is flushed before the OS delete.
+	e := s.base.WithinDurableTx(ctx, func(tx *sql.Tx) error {
 		var e error
 		m, e = credential(ctx, tx, profileID, ref)
 		if e != nil {
