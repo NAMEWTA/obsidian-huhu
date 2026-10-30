@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
 	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
@@ -270,7 +271,35 @@ func (s *Store) ReadMetadata(ctx context.Context) (api.ProfileMetadata, error) {
 	}
 	return p, nil
 }
-func (s *Store) Close() error { return s.db.Close() }
+
+// Close makes every commit durable without a checkpoint (ADR-027). NORMAL
+// commits are already written to the WAL; only the WAL file still needs a
+// flush, and commits keep it near walRestartBytes, so this is bounded. The
+// next open replays the WAL. A checkpoint here would also copy and flush
+// database pages inside the 3s stop budget.
+func (s *Store) Close() error {
+	syncErr := syncWAL(s.walPath)
+	if err := s.db.Close(); err != nil {
+		return err
+	}
+	return syncErr
+}
+
+// syncWAL is a variable only so the test can observe the call order.
+var syncWAL = func(path string) error {
+	f, err := os.OpenFile(path, os.O_RDWR, 0)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if err = f.Sync(); err != nil {
+		_ = f.Close()
+		return err
+	}
+	return f.Close()
+}
 
 // Database is an adapter-only composition seam. Application ports never return
 // SQL handles; all contexts share this same bounded connection and Profile.

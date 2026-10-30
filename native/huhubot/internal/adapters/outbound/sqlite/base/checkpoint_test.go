@@ -125,3 +125,48 @@ func TestCommitAndCloseDoNotCheckpointTheProfile(t *testing.T) {
 		t.Fatalf("Close flushed the dirty WAL and took %s", elapsed)
 	}
 }
+
+// Close flushes the WAL before the handle goes away, so a clean shutdown keeps
+// every commit across power loss (ADR-027) without running a checkpoint.
+func TestCloseFlushesTheWALWithoutCheckpointing(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "profile.sqlite3")
+	if e := os.WriteFile(path, nil, 0600); e != nil {
+		t.Fatal(e)
+	}
+	s, e := Open(ctx, &profile.Handle{DatabasePath: path, New: true})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = s.WithinTx(ctx, func(tx *sql.Tx) error {
+		_, err := tx.ExecContext(ctx, "UPDATE profile_metadata SET revision=revision+1 WHERE singleton=1")
+		return err
+	}); e != nil {
+		t.Fatal(e)
+	}
+	before, e := os.Stat(path + "-wal")
+	if e != nil || before.Size() == 0 {
+		t.Fatal("commit did not reach the WAL", e)
+	}
+	original := syncWAL
+	defer func() { syncWAL = original }()
+	var synced []string
+	syncWAL = func(p string) error {
+		// The Profile handle is still open: the flush precedes Close.
+		if err := s.Database().PingContext(ctx); err != nil {
+			t.Error("WAL flushed after the Profile handle closed", err)
+		}
+		synced = append(synced, p)
+		return original(p)
+	}
+	if e = s.Close(); e != nil {
+		t.Fatal(e)
+	}
+	if len(synced) != 1 || synced[0] != path+"-wal" {
+		t.Fatalf("Close flushed %v, want exactly the Profile WAL", synced)
+	}
+	after, e := os.Stat(path + "-wal")
+	if e != nil || after.Size() < before.Size() {
+		t.Fatalf("Close checkpointed or truncated the WAL: %v -> %v %v", before.Size(), after, e)
+	}
+}
