@@ -58,6 +58,27 @@ function start() {
 	return { child, state, send };
 }
 
+// Failure-only evidence: the helper's descendant processes with their CPU time, threads and
+// wait reasons, so a timeout shows whether a session program is running, blocked or never started.
+function processReport() {
+	const root = helper.child.pid;
+	if (!root) return 'helper pid unavailable';
+	const script = windows
+		? `$all = Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,Name,CommandLine,KernelModeTime,UserModeTime,ThreadCount,WorkingSetSize,CreationDate
+$ids = @(${root}); $seen = @{}; $out = @()
+while ($ids.Count) { $next = @(); foreach ($id in $ids) { foreach ($p in $all | Where-Object { $_.ParentProcessId -eq $id -and -not $seen[$_.ProcessId] }) { $seen[$p.ProcessId] = 1; $next += $p.ProcessId; $out += $p } }; $ids = $next }
+$all | Where-Object { $_.ProcessId -eq ${root} } | ForEach-Object { $out = @($_) + $out }
+foreach ($p in $out) {
+  $threads = (Get-Process -Id $p.ProcessId -ErrorAction SilentlyContinue).Threads | ForEach-Object { "$($_.Id):$($_.ThreadState)/$($_.WaitReason)" }
+  "pid=$($p.ProcessId) ppid=$($p.ParentProcessId) name=$($p.Name) cpu100ns=$($p.KernelModeTime + $p.UserModeTime) threads=$($p.ThreadCount) ws=$($p.WorkingSetSize) created=$($p.CreationDate) cmd=$($p.CommandLine) states=$($threads -join ',')"
+}`
+		: `ps -e -o pid=,ppid=,pgid=,sid=,tty=,stat=,time=,wchan:24=,args= | awk -v r=${root} '{p[$1]=$2; l[$1]=$0} END {k[r]=1; do {c=0; for (i in p) if (!(i in k) && (p[i] in k)) {k[i]=1; c=1}} while (c); for (i in k) print l[i]}'`;
+	const result = windows
+		? spawnSync('powershell.exe', ['-NoProfile', '-Command', script], { encoding: 'utf8', timeout: 20_000, windowsHide: true })
+		: spawnSync('/bin/sh', ['-c', script], { encoding: 'utf8', timeout: 20_000 });
+	return `${result.stdout ?? ''}${result.stderr ? `\nstderr: ${result.stderr}` : ''}${result.error ? `\nerror: ${result.error.message}` : ''}`.trim();
+}
+
 async function until(predicate, label, timeout = 15_000) {
 	const end = Date.now() + timeout;
 	while (Date.now() < end) {
@@ -65,7 +86,9 @@ async function until(predicate, label, timeout = 15_000) {
 		if (value) return value;
 		await delay(25);
 	}
-	throw new Error(`Timed out: ${label}; messages=${JSON.stringify(helper.state.messages)}; output=${JSON.stringify([...helper.state.output].map(([sid, text]) => [sid, text.slice(-500)]))}`);
+	let processes;
+	try { processes = processReport(); } catch (error) { processes = `process report failed: ${error.message}`; }
+	throw new Error(`Timed out: ${label}; messages=${JSON.stringify(helper.state.messages)}; output=${JSON.stringify([...helper.state.output].map(([sid, text]) => [sid, text.slice(-500)]))}; processes=\n${processes}`);
 }
 
 const helper = start();
