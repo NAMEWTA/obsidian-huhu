@@ -392,7 +392,11 @@ test('32 scopes accept three ordered short events each through the shared bounde
 					if (!received.has(`${id}:${event}`)) missing.push(`${id}:${event}`);
 			const left: string[] = [];
 			try {
-				for (const scope of await fs.readdir(path.join(pool.root, 'scopes')))
+				for (const scope of await fs.readdir(path.join(pool.root, 'scopes'))) {
+					const fault = await fs
+						.readFile(path.join(pool.root, 'scopes', scope, 'fault.json'), 'utf8')
+						.catch(() => '');
+					if (fault) left.push(`${scope}/fault.json:${fault.slice(0, 200)}`);
 					for (const kind of ['small', 'large'])
 						for (const slot of await fs
 							.readdir(path.join(pool.root, 'scopes', scope, kind))
@@ -400,6 +404,7 @@ test('32 scopes accept three ordered short events each through the shared bounde
 							left.push(
 								`${scope}/${kind}/${slot}:${(await fs.readdir(path.join(pool.root, 'scopes', scope, kind, slot)).catch((cause: Error) => [String(cause)])).join('+')}`,
 							);
+				}
 				for (const kind of ['small', 'large'])
 					for (const slot of await fs.readdir(path.join(pool.root, kind)).catch(() => []))
 						left.push(
