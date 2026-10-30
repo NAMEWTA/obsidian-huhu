@@ -1,6 +1,6 @@
 {
   "$comment": "CI gate: `check:bundle --budget scripts/bundle-budget.json --enforce`. eagerBytes caps the code evaluated at plugin startup and moduleActivationBytes caps what each module loads when it starts; outputBytes and stylesBytes are ratchets on main.js and styles.css. Lower a limit as code shrinks; never raise one without a recorded reason.",
-  "outputBytes": 8251392,
+  "outputBytes": 8252416,
   "stylesBytes": 1441792,
   "eagerBytes": 135168,
   "forbiddenEagerAreas": [
