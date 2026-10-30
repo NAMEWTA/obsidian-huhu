@@ -385,9 +385,31 @@ test('32 scopes accept three ordered short events each through the shared bounde
 		);
 		const drained = Date.now();
 		// Failure-only evidence; the 1.8 s bound itself is unchanged.
-		await wait(() => received.size === 96, 1800).catch((error: Error) => {
+		await wait(() => received.size === 96, 1800).catch(async (error: Error) => {
+			const missing: string[] = [];
+			for (let id = 0; id < 32; id++)
+				for (let event = 0; event < 3; event++)
+					if (!received.has(`${id}:${event}`)) missing.push(`${id}:${event}`);
+			const left: string[] = [];
+			try {
+				for (const scope of await fs.readdir(path.join(pool.root, 'scopes')))
+					for (const kind of ['small', 'large'])
+						for (const slot of await fs
+							.readdir(path.join(pool.root, 'scopes', scope, kind))
+							.catch(() => []))
+							left.push(
+								`${scope}/${kind}/${slot}:${(await fs.readdir(path.join(pool.root, 'scopes', scope, kind, slot)).catch((cause: Error) => [String(cause)])).join('+')}`,
+							);
+				for (const kind of ['small', 'large'])
+					for (const slot of await fs.readdir(path.join(pool.root, kind)).catch(() => []))
+						left.push(
+							`${kind}/${slot}:${(await fs.readdir(path.join(pool.root, kind, slot)).catch((cause: Error) => [String(cause)])).join('+')}`,
+						);
+			} catch (cause) {
+				left.push(String(cause));
+			}
 			throw new Error(
-				`${error.message}: received ${received.size}/96 ${Date.now() - drained} ms after the last publisher`,
+				`${error.message}: received ${received.size}/96 ${Date.now() - drained} ms after the last publisher; missing ${missing.join(',')}; errors ${JSON.stringify(errors)}; left ${JSON.stringify(left.slice(0, 40))}`,
 			);
 		});
 		assert.deepEqual(errors, []);
