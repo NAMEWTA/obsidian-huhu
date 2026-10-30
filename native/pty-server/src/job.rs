@@ -178,16 +178,22 @@ mod unix {
                     lookup(known.pid).map_err(|_| "scope-unverified")?,
                 );
             }
-            let root_active = checked
+            // The leader holds the session tty only while it is alive and still has it. In
+            // do_exit the leader disassociates first (session_clear_tty clears the tty of every
+            // member, the leader included) and only then becomes a zombie. Read in that window,
+            // the leader and its members look alive with tty 0; that is the session ending,
+            // not a member escaping, and counting them as escaped kept the scope unconfirmed
+            // until the stop budget expired.
+            let root_holds_tty = checked
                 .get(&self.sid)
                 .and_then(|now| now.as_ref())
                 .is_some_and(|now| {
-                    self.known
-                        .get(&self.sid)
-                        .is_some_and(|old| now.birth == old.birth && now.alive)
+                    self.known.get(&self.sid).is_some_and(|old| {
+                        now.birth == old.birth && now.alive && now.tty == self.tty
+                    })
                 });
             // Session-leader exit clears the controlling tty for surviving jobs; SID membership persists.
-            let tty_owned = |tty: u64| tty == self.tty || !root_active && tty == 0;
+            let tty_owned = |tty: u64| tty == self.tty || !root_holds_tty && tty == 0;
             for known in self.known.values() {
                 if let Some(now) = checked
                     .get(&known.pid)
@@ -302,6 +308,45 @@ mod unix {
                     .unwrap_err(),
                 "scope-unverified"
             );
+        }
+        fn row(pid: i32, tty: u64, alive: bool) -> Member {
+            Member {
+                pid,
+                sid: 42,
+                group: 42,
+                tty,
+                birth: if pid == 42 { 999 } else { 1000 + pid as u64 },
+                alive,
+            }
+        }
+        fn with_member(mut s: Scope) -> Scope {
+            s.known.insert(43, row(43, 123, true));
+            s
+        }
+        #[test]
+        fn exiting_leader_clearing_the_session_tty_is_not_an_escape() {
+            // Leader in do_exit after session_clear_tty, before it is a zombie.
+            let all = vec![row(42, 0, true), row(43, 0, true)];
+            let lookup = |pid: i32| Ok(all.iter().find(|m| m.pid == pid).cloned());
+            let mut s = with_member(scope());
+            let owned = s.observe_members_from(all.clone(), lookup).unwrap();
+            assert_eq!(owned.len(), 2, "both stay in scope and are still counted");
+            assert!(!s.escaped);
+            // Then both are reaped: the scope is confirmed empty.
+            assert!(s
+                .observe_members_from(vec![], |_| Ok(None))
+                .unwrap()
+                .is_empty());
+            assert!(!s.escaped);
+        }
+        #[test]
+        fn member_dropping_the_tty_while_the_leader_holds_it_still_escapes() {
+            let all = vec![row(42, 123, true), row(43, 0, true)];
+            let lookup = |pid: i32| Ok(all.iter().find(|m| m.pid == pid).cloned());
+            let mut s = with_member(scope());
+            let owned = s.observe_members_from(all.clone(), lookup).unwrap();
+            assert_eq!(owned.len(), 1);
+            assert!(s.escaped);
         }
         #[test]
         fn confirmed_disappearance_remains_a_zero_scope() {
