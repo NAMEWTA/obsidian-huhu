@@ -1627,6 +1627,14 @@ impl Sessions {
                 }
                 let observed = session.scope.lock().unwrap().observe();
                 let confirmed = root_state == "exited" && matches!(observed, Ok(0));
+                // A pseudoconsole stays open after its last client exits: the output pipe
+                // reaches EOF only after ClosePseudoConsole, which also flushes the final
+                // screen bytes. Close it as soon as the session job is empty so the reader
+                // drains to EOF instead of waiting out DRAIN and reporting truncation.
+                #[cfg(windows)]
+                if confirmed && !numeric {
+                    close_master(&session);
+                }
                 let output = if session.io.drain.reader_done.load(Ordering::SeqCst) {
                     if session.io.truncated.load(Ordering::SeqCst) {
                         "truncated"
