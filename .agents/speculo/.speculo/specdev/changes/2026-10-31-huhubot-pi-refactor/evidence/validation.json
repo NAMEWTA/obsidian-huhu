@@ -1,0 +1,184 @@
+{
+  "checked_at": "2026-10-31T12:38:57.473102+00:00",
+  "kind": "supplementary-document-validation",
+  "not_equivalent_to": "official SpecDev validators, independent review, full checkout build, Obsidian/Pi integration or GitHub PR",
+  "summary": {
+    "passed": 11,
+    "failed": 0
+  },
+  "results": [
+    {
+      "test": "all authored YAML/JSON parse",
+      "status": "passed",
+      "detail": {
+        "yaml_frontmatter_files": 31
+      }
+    },
+    {
+      "test": "source: normalized snapshot hash, 22 sections, 28 original acceptance rows",
+      "status": "passed",
+      "detail": {
+        "sections": 22,
+        "original_acceptance_rows": 28,
+        "sha256": "056f0a002c4b155a59344de0abbedc52014eea84b859a38c2bd2bca317da7fae",
+        "semantics": "local normalized transcription"
+      }
+    },
+    {
+      "test": "coverage: 24 draft tickets cover 28 ACs, no implementation readiness",
+      "status": "passed",
+      "detail": {
+        "ticket_count": 24,
+        "contracts": 28,
+        "executable_tickets": 0
+      }
+    },
+    {
+      "test": "dependency DAG: complete and acyclic",
+      "status": "passed",
+      "detail": {
+        "waves": [
+          [
+            "T-01",
+            "T-02",
+            "T-03"
+          ],
+          [
+            "T-04"
+          ],
+          [
+            "T-05"
+          ],
+          [
+            "T-06"
+          ],
+          [
+            "T-07"
+          ],
+          [
+            "T-08",
+            "T-10",
+            "T-11"
+          ],
+          [
+            "T-09",
+            "T-12",
+            "T-13",
+            "T-18"
+          ],
+          [
+            "T-14",
+            "T-15",
+            "T-19",
+            "T-20"
+          ],
+          [
+            "T-16",
+            "T-21"
+          ],
+          [
+            "T-17"
+          ],
+          [
+            "T-22"
+          ],
+          [
+            "T-23"
+          ],
+          [
+            "T-24"
+          ]
+        ],
+        "cycle": false,
+        "parallel_safety": "not inferred; shared resource claims require serialized owners"
+      }
+    },
+    {
+      "test": "ticket path contracts and shared-resource declarations",
+      "status": "passed",
+      "detail": "path wrappers and explicit shared ownership present; planned paths not claimed to already exist"
+    },
+    {
+      "test": "frontmatter: expected known enums/version/authority boundary checks",
+      "status": "passed",
+      "detail": "draft/blocked retained; no user approval, implementation or remote-write receipt invented"
+    },
+    {
+      "test": "design tree structural checks: decisions and open conditions",
+      "status": "passed",
+      "detail": {
+        "nodes": 12,
+        "consensus": false
+      }
+    },
+    {
+      "test": "internal artifact navigation uses Path; current referenced files exist",
+      "status": "passed",
+      "detail": {
+        "broken_current_references": 0,
+        "unexecuted_future_evidence": [
+          "evidence/T-01.md",
+          "evidence/T-02.md",
+          "evidence/T-03.md",
+          "evidence/T-04.md",
+          "evidence/T-05.md",
+          "evidence/T-06.md",
+          "evidence/T-07.md",
+          "evidence/T-08.md",
+          "evidence/T-09.md",
+          "evidence/T-10.md",
+          "evidence/T-11.md",
+          "evidence/T-12.md",
+          "evidence/T-13.md",
+          "evidence/T-14.md",
+          "evidence/T-15.md",
+          "evidence/T-16.md",
+          "evidence/T-17.md",
+          "evidence/T-18.md",
+          "evidence/T-19.md",
+          "evidence/T-20.md",
+          "evidence/T-21.md",
+          "evidence/T-22.md",
+          "evidence/T-23.md",
+          "evidence/T-24.md",
+          "prototypes/LOGIC-001/"
+        ]
+      }
+    },
+    {
+      "test": "prototype source blocks exactly match all seven materialized resources",
+      "status": "passed",
+      "detail": {
+        "byte_equivalent_named_blocks": 7
+      }
+    },
+    {
+      "test": "prototype digest and browser evidence correspond to final source bytes",
+      "status": "passed",
+      "detail": {
+        "source_set_integrity": true,
+        "final_browser_checks": 98,
+        "candidate_checks": 6,
+        "official_digest_gate": "not-run"
+      }
+    },
+    {
+      "test": "delivery scope: new change only, no fonts/runtime assets, no false completion",
+      "status": "passed",
+      "detail": {
+        "package_files_before_report_write": 87,
+        "all_paths_under_new_change": true,
+        "production_edits": 0,
+        "pr_created": false
+      }
+    }
+  ],
+  "known_gates": [
+    "New UI approval pending",
+    "Official work validators and semantic digest not run",
+    "Complete active/archive canonical-locator dedup pending",
+    "Required project-skill reference hash bindings pending before Ready",
+    "P0 installed-host and four-platform release not run",
+    "No GitHub write action; requested PR not created"
+  ]
+}

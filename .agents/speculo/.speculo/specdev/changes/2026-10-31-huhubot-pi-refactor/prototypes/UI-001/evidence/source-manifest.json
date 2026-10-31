@@ -1,0 +1,35 @@
+{
+  "algorithm": "SHA256 of UTF-8 canonical JSON list of sorted {path,sha256}, keys sorted, separators comma/colon, no whitespace",
+  "prototype_source_set_digest": "a6d236fb41ba8d5f5df4c37da6894ad44ca5d45c11f48183a653cfe1dd7accda",
+  "files": [
+    {
+      "path": "comparison/index.html",
+      "sha256": "15ba884f6744d72f710dc2b6c580dd686c2688914c6248003b095770a5f6d8d7"
+    },
+    {
+      "path": "comparison/variants/candidate-a.html",
+      "sha256": "f44ecd0d5c5c554be050dcdd48b652516818f7e261b7c13195a882bba44aa34e"
+    },
+    {
+      "path": "comparison/variants/candidate-b.html",
+      "sha256": "9a68debd497e61d4d94d2a5761cace80f6226450d9e3542133a3bdf88dc8ac1b"
+    },
+    {
+      "path": "comparison/variants/candidate-c.html",
+      "sha256": "1aa2fc6abe498a7e2c3b641ea8caf3d22f0c294116aa1f600420525ce2fad6a4"
+    },
+    {
+      "path": "final/app.js",
+      "sha256": "f8dd0493fef121a6b13ddfb1d7d4eec2357b6cf76930496eb3c71581eea85baa"
+    },
+    {
+      "path": "final/index.html",
+      "sha256": "1e8e77dccaa1c1457cb36aef9150d6057e9c5cfe47a9cdec49a2df972492e8f5"
+    },
+    {
+      "path": "final/styles.css",
+      "sha256": "a61068a3398e1d51ff2003d299d71f70f6161204f07d14955e572056f9526cd8"
+    }
+  ],
+  "official_semantic_digest": "not-run"
+}

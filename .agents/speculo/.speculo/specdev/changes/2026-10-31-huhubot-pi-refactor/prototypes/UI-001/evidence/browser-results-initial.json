@@ -1,0 +1,805 @@
+{
+  "checked_at": "2026-10-31T12:29:05.540743+00:00",
+  "kind": "prototype-browser-evidence",
+  "load_method": "Playwright set_content of exact HTML with local CSS/JS inlined; file:// navigation blocked by container administrator policy",
+  "browser": "144.0.7559.96",
+  "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "node_available": "v22.16.0; not sufficient evidence for Pi >=22.19.0",
+  "inputs": {
+    "styles.css": "266d25d5405048bbaaa61268dd50f82ad588cc61969bd1bd8b414fd920e83cca",
+    "app.js": "12e6aea62f2a0d967e1307ca18528e64406675a6937d947cb10c0725e1ef4048",
+    "index.html": "66628e24e60e8cbdca0ae8b76cd65e37af92d1c51626065439255e2bc852aaf3"
+  },
+  "summary": {
+    "passed": 95,
+    "failed": 3
+  },
+  "results": [
+    {
+      "test": "approval: explicit preview -> single simulated receipt; cannot reapprove",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "approval: rejection has no receipt and retains source/draft",
+      "status": "failed",
+      "error": "assertion failed"
+    },
+    {
+      "test": "approval: source revision invalidation -> new preview",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "effects: unknown cannot execute again; reconciliation does not fabricate success",
+      "status": "failed",
+      "error": "Locator.is_disabled: Error: strict mode violation: locator(\"[data-action=\\\"approve\\\"]\") resolved to 2 elements:\n    1) <button disabled type=\"button\" class=\"btn primary\" data-action=\"approve\">再次批准</button> aka get_by_role(\"button\", name=\"再次批准\")\n    2) <button type=\"button\" class=\"btn primary\" data-action=\"approve\">批准一次（模拟）</button> aka get_by_text(\"批准一次（模拟）\")\n\nCall log:\n  - waiting for locator(\"[data-action=\\\"approve\\\"]\")\n"
+    },
+    {
+      "test": "composer: attach preserves input and does not submit",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "composer: synthetic IME composing Enter does not send",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "composer: ordinary Enter sends the selected simulated steer mode",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "composer: user HTML stays text",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "dialog: Escape closes and returns focus to the unchanged trigger",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "tabs: arrows/End select relationship views with roving focus",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "collaboration: pending child blocks root acceptance; reviewed submission can pass",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "collaboration: cancel-tree acknowledgement does not claim rollback",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "sessions: Pi history branch selection is separate from execution ancestry",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "memory: candidate -> confirm -> edit revision -> forget tombstone",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "memory: learning pause does not delete sessions",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "MCP: explicit confirmation and separate identity; UI-only toggle",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "model: unconfigured blocks send, not history/service display",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "Browser: visible fill, preview, single simulated Page effect receipt",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "Automations: duplicate occurrence yields one logical mock run",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "recovery: control fail-closed vs rebuildable index, old data untouched",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "states: failed preserves draft; read-only blocks new approval; unknown persists",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "layout 1440px / light / chat",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / runs",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / memory",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / bots",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / settings",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / browser",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / automation",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / light / data",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / chat",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / runs",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / memory",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / bots",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / settings",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / browser",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / automation",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 1440px / dark / data",
+      "status": "passed",
+      "detail": {
+        "w": 1440,
+        "scroll": 1440,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / chat",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / runs",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / memory",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / bots",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / settings",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / browser",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / automation",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / light / data",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / chat",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / runs",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / memory",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / bots",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / settings",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / browser",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / automation",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 960px / dark / data",
+      "status": "passed",
+      "detail": {
+        "w": 960,
+        "scroll": 960,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / chat",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / runs",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / memory",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / bots",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / settings",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / browser",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / automation",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / light / data",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / chat",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / runs",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / memory",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / bots",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / settings",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / browser",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / automation",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 760px / dark / data",
+      "status": "passed",
+      "detail": {
+        "w": 760,
+        "scroll": 760,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / chat",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / runs",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / memory",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / bots",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / settings",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / browser",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / automation",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / light / data",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / chat",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / runs",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / approvals",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / memory",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / bots",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / settings",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / browser",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / automation",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "layout 420px / dark / data",
+      "status": "passed",
+      "detail": {
+        "w": 420,
+        "scroll": 420,
+        "h1": 1
+      }
+    },
+    {
+      "test": "narrow: dialog navigation opens all workspace views",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "container: narrow Obsidian pane uses container, not only viewport breakpoint",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "reduced motion: transitions disabled",
+      "status": "failed",
+      "error": "0.12s, 0.12s, 0.12s"
+    },
+    {
+      "test": "runtime: no JavaScript page errors",
+      "status": "passed",
+      "detail": null
+    },
+    {
+      "test": "offline: no network requests from the prototype",
+      "status": "passed",
+      "detail": null
+    }
+  ],
+  "page_errors": [],
+  "network_requests": [],
+  "limitations": [
+    "Synthetic composition event only; real OS IME not tested",
+    "No screen-reader manual certification",
+    "Not Obsidian/Electron/utilityProcess/Pi/SQLite/MCP/Browser integration evidence",
+    "No user visual approval; no real parent prototype pixel comparison"
+  ]
+}

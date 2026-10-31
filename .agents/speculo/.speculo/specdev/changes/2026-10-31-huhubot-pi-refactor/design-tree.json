@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-31-huhubot-pi-refactor",
+  "status": "active",
+  "round": 1,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "唯一 Pi harness；不保留旧 Bot 兼容路径",
+      "question": "唯一 Pi harness；不保留旧 Bot 兼容路径？",
+      "depends_on": [],
+      "recommendation": "直接依赖精确 Pi SDK；HUHU 拥有业务 policy 与交付，Pi 拥有模型工具循环、会话、分支和压缩。",
+      "status": "answered",
+      "round": 1,
+      "answer": "直接依赖精确 Pi SDK；HUHU 拥有业务 policy 与交付，Pi 拥有模型工具循环、会话、分支和压缩。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "独立模块与宿主/运行侧分离",
+      "question": "独立模块与宿主/运行侧分离？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "保留 src/modules/huhubot；core 纯 TS；UI 发命令，runtime 拥有 state；Host Executor 持有业务 API 和 live leases。",
+      "status": "answered",
+      "round": 1,
+      "answer": "保留 src/modules/huhubot；core 纯 TS；UI 发命令，runtime 拥有 state；Host Executor 持有业务 API 和 live leases。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "utilityProcess 为带硬门禁的首选",
+      "question": "utilityProcess 为带硬门禁的首选？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "只在 P0 真实插件安装目录证明主进程/app-ready/Node/ABI/资源闭包后采用。",
+      "status": "open",
+      "round": null,
+      "answer": null,
+      "log_ref": null
+    },
+    {
+      "id": "D-004",
+      "title": "四类存储权威与效果对账",
+      "question": "四类存储权威与效果对账？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "Pi JSONL 是 transcript；state.sqlite 是控制与确认事实；outbox 导出审计；index 可重建。",
+      "status": "answered",
+      "round": 1,
+      "answer": "Pi JSONL 是 transcript；state.sqlite 是控制与确认事实；outbox 导出审计；index 可重建。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "第一条写工具前完整安全链",
+      "question": "第一条写工具前完整安全链？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "单一 Gateway，授权交集、recipient、审批 hash、预算、幂等、live lease/source revision，Host 最后拒绝。",
+      "status": "answered",
+      "round": 1,
+      "answer": "单一 Gateway，授权交集、recipient、审批 hash、预算、幂等、live lease/source revision，Host 最后拒绝。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-006",
+      "title": "树、运行与通信分离",
+      "question": "树、运行与通信分离？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "entry ancestry / run lineage / mailbox links / composer queue 独立模型。",
+      "status": "answered",
+      "round": 1,
+      "answer": "entry ancestry / run lineage / mailbox links / composer queue 独立模型。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-007",
+      "title": "事实记忆优先，向量不做真相",
+      "question": "事实记忆优先，向量不做真相？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "事实+标签+FTS5，自动抽取待确认，来源/权限/tombstone；向量仅后续派生。",
+      "status": "answered",
+      "round": 1,
+      "answer": "事实+标签+FTS5，自动抽取待确认，来源/权限/tombstone；向量仅后续派生。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-008",
+      "title": "复用 DESIGN-0002，不产生新品牌体系",
+      "question": "复用 DESIGN-0002，不产生新品牌体系？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "继承 A 行内主操作、B 设置分组、C 等宽标识；复用语义色、圆角、密度和 shared controls。",
+      "status": "answered",
+      "round": 1,
+      "answer": "继承 A 行内主操作、B 设置分组、C 等宽标识；复用语义色、圆角、密度和 shared controls。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-009",
+      "title": "MCP 只有一套 client owner；版本先核实",
+      "question": "MCP 只有一套 client owner；版本先核实？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "先验证 Pi MCP 全链 policy coverage；满足则复用，否则官方 SDK 单适配器；Server 默认关闭，标准 transport 单一选型。",
+      "status": "open",
+      "round": null,
+      "answer": null,
+      "log_ref": null
+    },
+    {
+      "id": "D-010",
+      "title": "无自动旧数据迁移与删除",
+      "question": "无自动旧数据迁移与删除？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "新格式独立本地根；旧数据默认不动；显式清理有预览、范围与确认；备份可恢复。",
+      "status": "answered",
+      "round": 1,
+      "answer": "新格式独立本地根；旧数据默认不动；显式清理有预览、范围与确认；备份可恢复。",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-011",
+      "title": "本轮只规划与原型，不隐含实施",
+      "question": "本轮只规划与原型，不隐含实施？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "生成全部规划票和 plan-only Goal；本轮 PR 只提交 change 内 docs/prototype，不关闭 Epic。",
+      "status": "answered",
+      "round": 1,
+      "answer": "生成全部规划票和 plan-only Goal；本轮 PR 只提交 change 内 docs/prototype，不关闭 Epic。",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-012",
+      "title": "新 Bot 原型意图确认",
+      "question": "是否确认本次新原型的信息架构与关键交互？",
+      "depends_on": [
+        "D-008"
+      ],
+      "recommendation": "评审 DESIGN.md 及 UI-001 后，按实际 digest 明确确认或给出修改。",
+      "status": "open",
+      "round": null,
+      "answer": null,
+      "log_ref": null
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "checked_at": "2026-10-31T12:36:02.131166+00:00",
+  "load_method": "local HTML with referenced local CSS/JS inlined via set_content",
+  "summary": {
+    "passed": 6,
+    "failed": 0
+  },
+  "results": [
+    {
+      "candidate": "a",
+      "width": 1440,
+      "status": "passed",
+      "difference": "default context/inspector",
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "candidate": "a",
+      "width": 420,
+      "status": "passed",
+      "difference": "default context/inspector",
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "candidate": "b",
+      "width": 1440,
+      "status": "passed",
+      "difference": "inspector initially hidden",
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "candidate": "b",
+      "width": 420,
+      "status": "passed",
+      "difference": "inspector initially hidden",
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "candidate": "c",
+      "width": 1440,
+      "status": "passed",
+      "difference": "approval appears before explanation",
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "candidate": "c",
+      "width": 420,
+      "status": "passed",
+      "difference": "approval appears before explanation",
+      "overflow": false,
+      "page_errors": []
+    }
+  ],
+  "approval": "not user-approved; formal check-preview not run"
+}

@@ -1,0 +1,409 @@
+[
+  {
+    "id": "AC-001",
+    "source_id": "A01",
+    "title": "启停与平台边界",
+    "precondition": "启用/禁用桌面及移动端入口",
+    "action": "启动插件，不打开 Bot 页面",
+    "outcome": "仅启用桌面加载服务；移动端/禁用不装载 Pi/native；模型未配置不阻塞宿主",
+    "seam": "module loader / installed-host",
+    "tickets": [
+      "T-01",
+      "T-04",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-002",
+    "source_id": "A02",
+    "title": "页面与多窗口",
+    "precondition": "同一服务正在执行",
+    "action": "反复打开/关闭/弹出/重挂载页面",
+    "outcome": "不重复进程/订阅、不终止运行；每个 portal 使用 ownerDocument；卸载后资源归零",
+    "seam": "lifecycle / real Obsidian",
+    "tickets": [
+      "T-04",
+      "T-22",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-003",
+    "source_id": "A03",
+    "title": "Pi 原生会话分支",
+    "precondition": "官方 SDK 创建含兄弟分支会话",
+    "action": "new/resume/fork/select 并续写",
+    "outcome": "仅原生 Pi JSONL；上下文按所选 ancestry/compaction，兄弟分支不混入",
+    "seam": "SDK persisted fixtures",
+    "tickets": [
+      "T-01",
+      "T-05",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-004",
+    "source_id": "A04",
+    "title": "串行与代际",
+    "precondition": "同一物理 session 两个请求及旧 owner",
+    "action": "同时 send 并投递旧 generation 结果",
+    "outcome": "会话串行；迟到 writer/receipt 不能改变新 owner 状态",
+    "seam": "session queue / generation fence",
+    "tickets": [
+      "T-04",
+      "T-05",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-005",
+    "source_id": "A05",
+    "title": "多 Bot 隔离",
+    "precondition": "两个 Bot/会话不同模型凭据和工具",
+    "action": "并发运行并切换配置",
+    "outcome": "配置/secret/tool snapshot 不串扰，受全局配额限制",
+    "seam": "attempt snapshot / provider canary",
+    "tickets": [
+      "T-05",
+      "T-11",
+      "T-15",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-006",
+    "source_id": "A06",
+    "title": "损坏与恢复",
+    "precondition": "Pi 尾半行、坏 index、不可读 state 三种夹具",
+    "action": "启动恢复/查询/申请写工具",
+    "outcome": "分别隔离/降级；可重建 index；state 失效副作用关闭，不能伪恢复授权",
+    "seam": "storage / recovery",
+    "tickets": [
+      "T-06",
+      "T-13",
+      "T-14",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-007",
+    "source_id": "A07",
+    "title": "工具无旁路",
+    "precondition": "不批准 shell/extension/MCP旁路",
+    "action": "尝试 builtin、codemode、tool-search、恶意扩展入口",
+    "outcome": "所有实际执行均经 Gateway，未批准的通路不可达；不能只隐藏UI",
+    "seam": "real SDK tool dispatch",
+    "tickets": [
+      "T-07",
+      "T-12",
+      "T-20",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-008",
+    "source_id": "A08",
+    "title": "参数/路径/结果边界",
+    "precondition": "错误schema、超大返回、符号链接与越界来源",
+    "action": "调用各内部/外部工具",
+    "outcome": "调用前拒绝或显式裁剪，不泄漏隐藏状态/凭据，保留有权来源",
+    "seam": "schema / host executor",
+    "tickets": [
+      "T-07",
+      "T-09",
+      "T-10",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-009",
+    "source_id": "A09",
+    "title": "批准失效",
+    "precondition": "已预览并批准一个 intent",
+    "action": "改变参数/来源/provider/revision、超期或撤销",
+    "outcome": "旧批准不可消费；重新预览/申请，不隐式继续",
+    "seam": "approval CAS / owner checks",
+    "tickets": [
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-18",
+      "T-21",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-010",
+    "source_id": "A10",
+    "title": "编辑冲突",
+    "precondition": "目标笔记有未保存编辑或 revision 变化",
+    "action": "确认写入",
+    "outcome": "不 fs 覆盖；保留人工编辑及草稿，显示冲突并重做预览",
+    "seam": "Obsidian document API",
+    "tickets": [
+      "T-08",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-011",
+    "source_id": "A11",
+    "title": "重复与未知效果",
+    "precondition": "写命令重复/超时/Host已写后崩溃",
+    "action": "重发相同 key、重启或取消",
+    "outcome": "重放 receipt 或 unknown_effect；无自动重复外部写，部分成功逐项可见",
+    "seam": "state transaction / effect owner",
+    "tickets": [
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-14",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-012",
+    "source_id": "A12",
+    "title": "取消与撤销",
+    "precondition": "运行树含等待、工具与已确认效果",
+    "action": "cancelTree/禁用依赖/卸载插件",
+    "outcome": "传播并确认终止或 interrupted/unknown；旧 lease 不再执行；已有效果不假撤回",
+    "seam": "lifetime / cancellation",
+    "tickets": [
+      "T-04",
+      "T-08",
+      "T-14",
+      "T-16",
+      "T-19",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-013",
+    "source_id": "A13",
+    "title": "根预算",
+    "precondition": "多个孩子/重试/摘要/压缩争同一根账户",
+    "action": "并发 reserve、usage缺失与结算",
+    "outcome": "原子根额度，所有费用来源入账；unknown不为零；不另拿完整预算",
+    "seam": "budget ledger / Pi hooks",
+    "tickets": [
+      "T-05",
+      "T-07",
+      "T-15",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-014",
+    "source_id": "A14",
+    "title": "身份与临时执行",
+    "precondition": "已有持久 Bot 和临时子 Agent",
+    "action": "创建委派/结束/重试",
+    "outcome": "临时配置快照可追溯，不污染永久身份；membership不自动授权",
+    "seam": "profile / delegation",
+    "tickets": [
+      "T-11",
+      "T-15",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-015",
+    "source_id": "A15",
+    "title": "嵌套与等待活性",
+    "precondition": "并发槽2、深度2、总attempt16候选夹具",
+    "action": "父等子、子再委派、额度耗尽和重试",
+    "outcome": "父释放容量仍保session owner；无死锁/无限递归/绕额度",
+    "seam": "scheduler / root quotas",
+    "tickets": [
+      "T-15",
+      "T-16",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-016",
+    "source_id": "A16",
+    "title": "通信与根审查",
+    "precondition": "同一envelope重投递、终结目标、已提交产物",
+    "action": "send/consume/submit/review",
+    "outcome": "投递消费执行验收分别记录；幂等且不能由child成功伪造root成功",
+    "seam": "mailbox / review CAS",
+    "tickets": [
+      "T-16",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-017",
+    "source_id": "A17",
+    "title": "三种关系",
+    "precondition": "真实Pi entries/run lineage/mailbox引用",
+    "action": "切换树图、查看节点、拖动布局",
+    "outcome": "关系分离；每个节点可回读；拖线/拖动不改历史parent",
+    "seam": "projection / UI",
+    "tickets": [
+      "T-17",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-018",
+    "source_id": "A18",
+    "title": "资源更新",
+    "precondition": "活跃attempt的Skill/MCP版本快照",
+    "action": "修改Skill、server身份或schema并重连",
+    "outcome": "变更可见、权限重验、活跃描述稳定，下一安全边界生效",
+    "seam": "resource loader / MCP catalog",
+    "tickets": [
+      "T-12",
+      "T-20",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-019",
+    "source_id": "A19",
+    "title": "事实与忘记",
+    "precondition": "中英混合事实、来源与权限范围",
+    "action": "查询、确认、编辑、忘记、撤销源",
+    "outcome": "来源回链；跨scope无泄漏；清除索引缓存且不自动重学",
+    "seam": "FTS / memory tombstone",
+    "tickets": [
+      "T-13",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-020",
+    "source_id": "A20",
+    "title": "接收方与凭据",
+    "precondition": "provider fallback/远程embedding/不同auth profile",
+    "action": "发送受限来源并扫描日志导出",
+    "outcome": "接收方重新授权/预算有效；secret不进JSONL/settings/error/export",
+    "seam": "model/credentials/security",
+    "tickets": [
+      "T-07",
+      "T-10",
+      "T-11",
+      "T-13",
+      "T-20",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-021",
+    "source_id": "A21",
+    "title": "Browser同Page",
+    "precondition": "用户在#38 Space已登录并打开Page",
+    "action": "授权Bot读填并批准提交",
+    "outcome": "同一真实会话与可见页面，无影子Chromium/Cookie复制；导航撤销有效",
+    "seam": "Browser public API / host E2E",
+    "tickets": [
+      "T-02",
+      "T-18",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-022",
+    "source_id": "A22",
+    "title": "自动化逻辑唯一",
+    "precondition": "一个existing automation occurrence重复投递",
+    "action": "启动Bot并发送通知，模拟宿主关闭错过触发",
+    "outcome": "只一个逻辑工作；通知回链；不出现第二scheduler或全天候承诺",
+    "seam": "automation action / idempotency",
+    "tickets": [
+      "T-19",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-023",
+    "source_id": "A23",
+    "title": "外部MCP",
+    "precondition": "标准客户端、未授权主体、恶意Origin",
+    "action": "外部读取与批准写、越权与协议协商",
+    "outcome": "真实互操作；拒绝越权/Origin/身份缺失；外部不继承内部无限权限",
+    "seam": "MCP SDK / transport / Gateway",
+    "tickets": [
+      "T-02",
+      "T-20",
+      "T-21",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-024",
+    "source_id": "A24",
+    "title": "背压与重连",
+    "precondition": "慢消费者、游标过期、断线",
+    "action": "丢delta、gap、重连snapshot/resume",
+    "outcome": "可合并delta；关键事件可查询恢复无声丢失为失败；不重复业务效果",
+    "seam": "durable event / IPC",
+    "tickets": [
+      "T-06",
+      "T-19",
+      "T-21",
+      "T-22",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-025",
+    "source_id": "A25",
+    "title": "规模与资源",
+    "precondition": "10k消息/500执行节点/页面循环夹具",
+    "action": "测量加载、流式、图操作、关闭和监听器",
+    "outcome": "虚拟化/聚合有效；无持续泄漏；记录指定机器p50/p95/RSS/CPU与预算",
+    "seam": "perf harness / installed host",
+    "tickets": [
+      "T-17",
+      "T-22",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-026",
+    "source_id": "A26",
+    "title": "设计与无障碍",
+    "precondition": "DESIGN-0002与本次确认的DESIGN",
+    "action": "深浅/窄容器/IME/键盘/读屏/reduced-motion/portal",
+    "outcome": "规则统一；操作可达、焦点正确；原型证据不替代宿主证据",
+    "seam": "UI + manual assistive tech",
+    "tickets": [
+      "T-03",
+      "T-17",
+      "T-22",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-027",
+    "source_id": "A27",
+    "title": "真实发行",
+    "precondition": "四平台干净插件安装，不提供系统Node/npm",
+    "action": "冷启动、SDK/SQLite/native/WASM资源装载",
+    "outcome": "支持矩阵证据齐全；无开发目录依赖；license/资源正确",
+    "seam": "package / signed host",
+    "tickets": [
+      "T-01",
+      "T-24"
+    ]
+  },
+  {
+    "id": "AC-028",
+    "source_id": "A28",
+    "title": "旧链路删除",
+    "precondition": "完成Bot替换且存有旧用户文件",
+    "action": "检查生产import/build/release闭包及非Bot回归",
+    "outcome": "无Go/Eino/HAP Bot fallback；agent/PTY/Browser等保留；旧数据未自动清空",
+    "seam": "static closure / regression",
+    "tickets": [
+      "T-02",
+      "T-14",
+      "T-23",
+      "T-24"
+    ]
+  }
+]

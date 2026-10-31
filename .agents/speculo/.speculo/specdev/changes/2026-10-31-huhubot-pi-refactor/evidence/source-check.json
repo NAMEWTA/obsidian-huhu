@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-10-31T12:32:46.841546+00:00",
+  "repository": "NAMEWTA/obsidian-huhu",
+  "branch": "dev",
+  "initial_sha": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "final_read_sha": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "branch_drift": false,
+  "issue_number": 39,
+  "initial_updated_at": "2026-10-31T10:38:34Z",
+  "final_updated_at": "2026-10-31T10:38:34Z",
+  "comments": [],
+  "issue_metadata_drift": false,
+  "source_hash_semantics": "local normalized transcription, not a raw transport byte-equivalence claim",
+  "connector_receipts": [
+    "GitHub.fetch branches/dev; response/turn57",
+    "GitHub.fetch_issue_comments; response/turn59",
+    "GitHub.fetch_issue; response/turn60"
+  ],
+  "writes": [],
+  "pr_created": false,
+  "pr_url": null,
+  "source_set_final_dedup": "not-run against full archives/permanent facts",
+  "config": {
+    "read": true,
+    "git_blob_sha": "299ecb11ab6845582bafb0184846884322c535fd",
+    "schema_version": 1,
+    "language": "zh-CN",
+    "root_override": null,
+    "confirm_before_external_write": true,
+    "ticket_execution_limit": "not specified in this config"
+  }
+}
