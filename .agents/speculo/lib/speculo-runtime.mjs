@@ -7664,7 +7664,7 @@ function retainedAssets(registry) {
 }
 
 // src/coordination.ts
-var ORCHESTRATION_MODES = ["lead", "orca", "herdr", "cli"];
+var ORCHESTRATION_MODES = ["host", "orca", "herdr", "cli"];
 function object(value) {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
@@ -7673,23 +7673,30 @@ function exact(value, keys) {
 }
 function choice(value) {
   if (!object(value)) throw new Error("coordination-policy-conflict: choice must be an object");
-  exact(value, ["mode", "selection", "tool", "model", "guide", "fallback"]);
+  exact(value, ["mode", "selection", "tool", "model", "guide", "interaction", "fallback"]);
   if (!ORCHESTRATION_MODES.includes(value.mode)) throw new Error("coordination-policy-conflict: unknown orchestration mode");
-  if (value.selection !== void 0 && !["required", "preferred"].includes(String(value.selection))) throw new Error("coordination-policy-conflict: invalid selection");
+  if (value.selection !== void 0 && (typeof value.selection !== "string" || !["required", "preferred"].includes(value.selection))) throw new Error("coordination-policy-conflict: invalid selection");
   for (const key of ["tool", "model", "guide"]) if (value[key] !== void 0 && (typeof value[key] !== "string" || !value[key].trim())) throw new Error(`coordination-policy-conflict: invalid ${key}`);
+  if (value.interaction !== void 0 && (value.mode !== "cli" || typeof value.interaction !== "string" || !["headless", "interactive"].includes(value.interaction))) throw new Error("coordination-policy-conflict: invalid CLI interaction");
   if (value.fallback !== void 0 && (!Array.isArray(value.fallback) || new Set(value.fallback).size !== value.fallback.length || value.fallback.some((m) => !ORCHESTRATION_MODES.includes(m)))) throw new Error("coordination-policy-conflict: invalid fallback");
   if (value.selection === "required" && Array.isArray(value.fallback) && value.fallback.length) throw new Error("coordination-policy-conflict: required choice cannot allow fallback");
 }
 function validateProjectCoordination(value, catalog, inactive = []) {
   if (!object(value)) throw new Error("coordination-policy-conflict: project facts must be an object");
-  exact(value, ["schema_version", "defaults", "rules"]);
-  if (value.schema_version !== 1 || !Array.isArray(value.rules)) throw new Error("coordination-policy-conflict: expected schema 1 and rules");
+  exact(value, ["schema_version", "defaults", "rules", "allowed_modes"]);
+  if (value.allowed_modes !== void 0 && (!Array.isArray(value.allowed_modes) || !value.allowed_modes.length || new Set(value.allowed_modes).size !== value.allowed_modes.length || value.allowed_modes.some((mode) => !ORCHESTRATION_MODES.includes(mode)))) throw new Error("coordination-policy-conflict: invalid allowed_modes");
+  if (value.schema_version !== 2 || !Array.isArray(value.rules)) throw new Error("coordination-policy-conflict: expected schema 2 and rules; preserve older configuration and establish a new v2 configuration explicitly");
   choice(value.defaults);
+  const withinLimits = (selected) => {
+    if (selected.selection === "required" && Array.isArray(value.allowed_modes) && !value.allowed_modes.includes(selected.mode)) throw new Error("coordination-policy-conflict: required choice outside allowed_modes");
+  };
+  withinLimits(value.defaults);
   const seen = /* @__PURE__ */ new Set();
   for (const rule of value.rules) {
     if (!object(rule)) throw new Error("coordination-policy-conflict: invalid rule");
     exact(rule, ["work_id", "stage", "choice"]);
     choice(rule.choice);
+    withinLimits(rule.choice);
     const asset = [...catalog.assets, ...inactive].find((a) => a.kind === "work-skill" && a.id === rule.work_id);
     if (!asset || rule.stage !== void 0 && (typeof rule.stage !== "string" || !asset.stages.includes(rule.stage))) throw new Error("coordination-policy-conflict: unknown Work or stage");
     const key = `${rule.work_id}:${rule.stage ?? "*"}`;
@@ -7807,12 +7814,18 @@ function resolveWorkContextSync(input) {
 async function resolveWorkContext(input) {
   return resolveWorkContextSync(input);
 }
-function assertChangeName(name) {
+function assertChangeNameAt(name, path) {
   const m = /^(\d{4})-(\d{2})-(\d{2})-[a-z0-9]+(?:-[a-z0-9]+)*$/.exec(name);
-  if (!m) fail("identity-conflict", name, "expected YYYY-MM-DD-lowercase-topic");
+  if (!m) fail("identity-conflict", path, "expected YYYY-MM-DD-lowercase-topic");
   const year = Number(m[1]), month = Number(m[2]), day = Number(m[3]);
   const days = [31, year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  if (year < 1 || month < 1 || month > 12 || day < 1 || day > days[month - 1]) fail("identity-conflict", name, "date is not a real calendar date");
+  if (year < 1 || month < 1 || month > 12 || day < 1 || day > days[month - 1]) fail("identity-conflict", path, "date is not a real calendar date");
+}
+function assertChangeName(name) {
+  assertChangeNameAt(name, name);
+}
+function isHistoricalArchiveMonth(name) {
+  return /^(?!0000)\d{4}-(?:0[1-9]|1[0-2])$/.test(name);
 }
 function markdownBodyLines(text, path = "README.md") {
   if (text.includes("\0")) fail("outcome-invalid", path, "invalid text encoding");
@@ -7891,6 +7904,12 @@ function specdevRoot(context) {
 }
 function allLocations(root) {
   const locations = [];
+  const seen = /* @__PURE__ */ new Map();
+  function reserve(name, path) {
+    const previous = seen.get(name);
+    if (previous) fail("identity-conflict", path, `duplicate identity also at ${previous}`);
+    seen.set(name, path);
+  }
   function scan(portable, kind) {
     const dir = safeWorkPathSync(root, portable, { type: "directory" });
     if (!exists2(dir)) return;
@@ -7898,19 +7917,29 @@ function allLocations(root) {
       if (kind === "active" && entry.name === "archive") continue;
       const target = join4(dir, entry.name);
       if (!/^\d{4}-/.test(entry.name)) continue;
-      assertChangeName(entry.name);
+      if (kind === "archive" && isHistoricalArchiveMonth(entry.name)) {
+        const month = safeWorkPathSync(root, relative2(root, target).split(sep2).join("/"), { mustExist: true, type: "directory" });
+        for (const child of readdirSync2(month, { withFileTypes: true })) {
+          if (!child.isDirectory() && !child.isSymbolicLink()) continue;
+          try {
+            assertChangeName(child.name);
+          } catch (error) {
+            if (error instanceof ArtifactError && error.code === "identity-conflict") continue;
+            throw error;
+          }
+          const historical = safeWorkPathSync(root, relative2(root, join4(month, child.name)).split(sep2).join("/"), { mustExist: true, type: "directory" });
+          reserve(child.name, historical);
+        }
+        continue;
+      }
+      assertChangeNameAt(entry.name, target);
       safeWorkPathSync(root, relative2(root, target).split(sep2).join("/"), { mustExist: true, type: "directory" });
+      reserve(entry.name, target);
       locations.push({ name: entry.name, root: target, kind });
     }
   }
   scan("changes", "active");
   scan("changes/archive", "archive");
-  const seen = /* @__PURE__ */ new Map();
-  for (const location of locations) {
-    const previous = seen.get(location.name);
-    if (previous) fail("identity-conflict", location.root, `duplicate identity also at ${previous.root}`);
-    seen.set(location.name, location);
-  }
   return locations;
 }
 function discoverChangesSync(context, options = {}) {

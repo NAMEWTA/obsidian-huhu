@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
-  "package_version": "2.1.12",
+  "package_version": "2.1.16",
   "files": [
     {
       "path": ".speculo/AGENTS.md",
-      "bytes": 3904,
-      "sha256": "86b3e7a0b507a79fb40b679307ae045d36ccf894967e5f82c3f45dbd279e902c",
+      "bytes": 4114,
+      "sha256": "42d25858e401cd44604a26e434b1ef8d2f67bf8c82cd79b5d96e418e43c75768",
       "mode": 436,
       "owner": "core",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/baselines/config.json",
@@ -18,7 +18,7 @@
       "mode": 436,
       "owner": "core/config",
       "kind": "baseline",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/baselines/workflows/specdev/config.json",
@@ -27,7 +27,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "baseline",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/commands/.gitkeep",
@@ -36,7 +36,7 @@
       "mode": 436,
       "owner": "core/runtime-seed",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/README.md",
@@ -45,7 +45,7 @@
       "mode": 436,
       "owner": "core",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/refresh-contract.json",
@@ -54,34 +54,34 @@
       "mode": 436,
       "owner": "core",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": ".speculo/workspace.json",
       "bytes": 458,
-      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "sha256": "2f8fa31c243de5be9e347631c52769d652301b3c729d533146a5da0651cbde99",
       "mode": 436,
       "owner": "core",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "catalog.json",
-      "bytes": 10470,
-      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10502,
+      "sha256": "74684c7497a23afb411add18f73c9a61753d5cc22e8f550e77f691ac49adc71e",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/coordination-init/COMMAND.md",
-      "bytes": 2207,
-      "sha256": "ce11e7c761cc540ef3cfb520c29c62de7f7ac977984f0b4e3604a73ab739f48e",
+      "bytes": 2407,
+      "sha256": "e715c65f28519a71086400ae32ced9a5e7d64cc543b959c1fccc539aa14b26bc",
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/agents/openai.yaml",
@@ -90,7 +90,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/assets/request-template.json",
@@ -99,7 +99,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/COMMAND.md",
@@ -108,7 +108,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/references/operation-contract.md",
@@ -117,7 +117,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/references/recovery-contract.md",
@@ -126,7 +126,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/references/rewrite-contract.md",
@@ -135,7 +135,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/references/submodule-contract.md",
@@ -144,7 +144,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-history-squash/scripts/git-history-squash.mjs",
@@ -153,7 +153,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-repository-audit/COMMAND.md",
@@ -162,7 +162,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/git-repository-audit/references/procedure.md",
@@ -171,7 +171,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/handoff/COMMAND.md",
@@ -180,25 +180,25 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/handoff/examples/consume-handoff.mjs",
-      "bytes": 4816,
-      "sha256": "80da0234b0542ac58998fda234a80c7fb6997412dcfa032d7571fab5c67506f1",
+      "bytes": 4732,
+      "sha256": "882aa6448f33354e793716880cc03d9d2918a99f1142d2a42358f4c1f25c5733",
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/handoff/examples/README.md",
-      "bytes": 3026,
-      "sha256": "7e3115154a6e37d558ca49b351afcd18136ff2df25e31a781938a5638d2d535e",
+      "bytes": 3025,
+      "sha256": "cec8a09eb0e62452b77e7b17ae36598d2e0082029e0f8a60fb263ad193c3e97a",
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/manifest.json",
@@ -207,7 +207,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/assets/agents-template.md",
@@ -216,7 +216,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/assets/report-template.md",
@@ -225,7 +225,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/assets/state-template.json",
@@ -234,7 +234,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/assets/workflow-scope-template.json",
@@ -243,7 +243,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/COMMAND.md",
@@ -252,7 +252,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/agents-contract.md",
@@ -261,7 +261,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/changelog-contract.md",
@@ -270,7 +270,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/git-state-contract.md",
@@ -279,7 +279,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/handbook-discovery.md",
@@ -288,7 +288,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/operation-contract.md",
@@ -297,7 +297,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/readme-contract.md",
@@ -306,7 +306,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/workflow-maintenance.md",
@@ -315,7 +315,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/project-maintenance/references/workflow-scope-contract.md",
@@ -324,7 +324,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/source-code-zip/COMMAND.md",
@@ -333,7 +333,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/source-code-zip/references/cli-reference.md",
@@ -342,7 +342,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/source-code-zip/scripts/zip_source_code.cjs",
@@ -351,7 +351,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/speculo-feedback/COMMAND.md",
@@ -360,7 +360,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/status/COMMAND.md",
@@ -369,7 +369,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/upstream-assess/COMMAND.md",
@@ -378,7 +378,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/upstream-assess/references/report-contract.md",
@@ -387,7 +387,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/upstream-assess/references/repository-contract.md",
@@ -396,7 +396,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/upstream-assess/references/state-schema.md",
@@ -405,7 +405,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "commands/upstream-assess/scripts/upstream-sync.mjs",
@@ -414,7 +414,7 @@
       "mode": 436,
       "owner": "core/commands",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "lib/contract-validators.cjs",
@@ -423,7 +423,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "lib/design-validators.mjs",
@@ -432,16 +432,16 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "lib/speculo-runtime.mjs",
-      "bytes": 311803,
-      "sha256": "759202e70632bd134f65558de4a09469de975e95615ca91278855600ede8bc83",
+      "bytes": 313825,
+      "sha256": "e21465fd6339b7f7633c663d100877d841c5e3145615c83cd2ae9a2f299d5b8d",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/change-scope/change-contract.md",
@@ -450,7 +450,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/contracts/capability-profile.schema.json",
@@ -459,7 +459,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/contracts/README.md",
@@ -468,151 +468,142 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/coordination-contract.md",
-      "bytes": 9116,
-      "sha256": "736563f49903256de7367383dae2cc2f55112f2b592e066e9684253960775ed4",
+      "bytes": 7490,
+      "sha256": "73277c6ae0e37fe57211d5cc147e3f415a56fe27ed0526016ca0fa8917917ffc",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/exchange/external-web.md",
-      "bytes": 10101,
-      "sha256": "1626460a633270f084171a4a870432e0ebba85edcbb385fac98dd6fa8c37e730",
+      "bytes": 6941,
+      "sha256": "dff4c75e2d81c75d115622c6b56836dbc5173f7abf7433fb8f25140adaeb506c",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/exchange/source-package.md",
-      "bytes": 13126,
-      "sha256": "3f60ec8c16da1a1d3d59b9b030e863ed54a999497626c8a81b031a20ca63ba3c",
+      "bytes": 4873,
+      "sha256": "44b380d72d1237764cd4d918bc822d77496a8fda2e16576216488cd65390c880",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/initialization.md",
-      "bytes": 4037,
-      "sha256": "6ab0d71bad5155c70f8acd6d29d208c468a04ad3ad42a947447e40631aab1a98",
+      "bytes": 4467,
+      "sha256": "9668f3060b28266be863396c983aec11a965c58609636e52d1b4ece74aa77fb1",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/modes/cli.md",
-      "bytes": 2881,
-      "sha256": "f1fdb986bd75bcfa221c7d77f95cc397ea7593c5a18d245f25a601f9d94fdc55",
+      "bytes": 3186,
+      "sha256": "097399b22b2bcea65b618fbf07ce975a8a9e7214f8cf4b24f0427103b18c6ab3",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/modes/herdr.md",
-      "bytes": 4932,
-      "sha256": "ed5959e6b7a7f50e81a5086af7b1c4dd0bea4ad1ae6e77327cd28dc69d690a12",
+      "bytes": 4978,
+      "sha256": "d647be0d5e781dc86f7a01175f12be16d690b86a30cd0c1383dbb05a697f20ca",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/modes/orca.md",
-      "bytes": 7338,
-      "sha256": "69462c6804671231a0c2b531a4e414ded683e62bbe60edc8b4303251920986fd",
+      "bytes": 7456,
+      "sha256": "26a13023463eafeb0f658eb0594b7b12b8ba374e64c2002826eccd03ff282ca8",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/project-facts.example.json",
       "bytes": 75,
-      "sha256": "0793a50001fa0414f5e5097da1c3e8320712096cb3b018640a703ee131232919",
+      "sha256": "5042f222ee8645c334ae9275f79532fdc491556f6485ea62e8f9a16025ce7f33",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/project-facts.schema.json",
-      "bytes": 2252,
-      "sha256": "fc7d0ea8861a8ba533444707408c7dc3d91bac955d3f1a324666faa8e9e85b12",
+      "bytes": 3138,
+      "sha256": "45feb6bb98110475abaf3523b2ecba4cdf11cdcb5733d2e0a5ee024bbf0b09d6",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/report-template.md",
-      "bytes": 852,
-      "sha256": "cde0444acefb7de12cda86ca1e2fe3881403276c5e23fdf3cdeef580c56ad6c5",
+      "bytes": 924,
+      "sha256": "f4e19b60b6c5719af5aedc62839aa7a02986d54ee350eb97e5afff50bde4d415",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/result-and-recovery.md",
-      "bytes": 5277,
-      "sha256": "c90797e7d63f0035cc8c9560e793699aeb13f5aeddbaa84e07d51693b0f6520f",
+      "bytes": 5463,
+      "sha256": "58f4d6a41015ecb3f90139ccf82f908022a3470429213d30df3d48762be6df02",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/scripts/validate-dispatch.mjs",
-      "bytes": 8137,
-      "sha256": "e04a5afcaf8494d10cf0f0e5843126203872a1dd6fe887e1fdcbf8564440a4f3",
+      "bytes": 10160,
+      "sha256": "14f88a34107267b7324e6314cbc8e6cde8d872f23283122afa53700541891c0e",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/session-files.md",
-      "bytes": 10818,
-      "sha256": "e72bdb0ebe8f14e9fecf2a24cfb368919248600dbc3cfcfe1a1652a050b8f707",
+      "bytes": 11826,
+      "sha256": "5c59e966e11b9ee3970024cd567c1830d04c80686335f9a8b6785c65ed21ac4d",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
-    },
-    {
-      "path": "references/coordination/session-locator.schema.json",
-      "bytes": 290,
-      "sha256": "b9e12c4f19aff4374e56c0af7a6b5f22cc94d16517df5830397d43ca0a33fdba",
-      "mode": 436,
-      "owner": "core/assets",
-      "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/task-brief.md",
-      "bytes": 3389,
-      "sha256": "88604786dd1df119894c2bdeebca5da2d48c5319db979c6d5f3605e18477297f",
+      "bytes": 3560,
+      "sha256": "2da065f5581c227cc8439d2ab253438b70b970dd9540aa72348148d339ddd13d",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/coordination/task-template.md",
-      "bytes": 1688,
-      "sha256": "371716ba3f92c74a6ff491fbd366bbf9286200cdb1005b76f052e1c65dd42cd1",
+      "bytes": 1661,
+      "sha256": "45f854082969cf8a0c19f73ddb356cf154e9d64bb0d3628688365ed5e6776f6b",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/handoff/domain-context.md",
@@ -621,25 +612,25 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/handoff/handoff-contract.md",
-      "bytes": 7567,
-      "sha256": "5492873530e1875c617c2bbfa3d095dd68557618460d1d7f875a556cbcc962ea",
+      "bytes": 6583,
+      "sha256": "0374a46bb24a69c4fb9a60698c4c25562e01dcc02d8e6855454a0b9b0697415d",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/handoff/handoff-template.md",
-      "bytes": 1376,
-      "sha256": "bf2f5fe0bfcc71b5562bdafdada7425e85bd2a71c7751b048b03814e1d161adf",
+      "bytes": 1415,
+      "sha256": "cdfbe20d70cceea55e0291815331b363458d13ccdc5fca1d882053c2240d3276",
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/research-and-reuse/research-contract.md",
@@ -648,7 +639,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/retrospective/references/friction-taxonomy.md",
@@ -657,7 +648,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/retrospective/references/issue-drafting-sop.md",
@@ -666,7 +657,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/retrospective/retrospective-contract.md",
@@ -675,7 +666,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/GLOSSARY.md",
@@ -684,7 +675,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/references/authoring-principles.md",
@@ -693,7 +684,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/references/current-facts-docs.md",
@@ -702,7 +693,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/references/document-contract.md",
@@ -711,7 +702,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/references/project-skill-maintenance.md",
@@ -720,7 +711,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "references/writing-for-agents/writing-contract.md",
@@ -729,7 +720,7 @@
       "mode": 436,
       "owner": "core/assets",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/README.md",
@@ -738,16 +729,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/activation-and-memory.md",
-      "bytes": 3748,
-      "sha256": "b34d897be251fb30e501e7328010a252c8279d5506cc61c75ebec441a8b39071",
+      "bytes": 3887,
+      "sha256": "cb8d23b8a336dd3eb89829548ea304c30c9c5e1c47ffc94344a67cf700a94564",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/adr-format.md",
@@ -756,7 +747,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/agent-experience.md",
@@ -765,34 +756,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/artifact-contract.md",
-      "bytes": 15246,
-      "sha256": "c8c5ae0b3a32b7e41c89a03b2f59546293c793211bc9fdd0e9bc8ab10d01480a",
+      "bytes": 15761,
+      "sha256": "52d732a1d0615339d2f8f803bb95df8968d04ff463a9e4edb07d8f6c4e6d760f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/change-completion.md",
-      "bytes": 8159,
-      "sha256": "adab0ff9301b40002b11f148a2e647a4c6a07a61fcba242401bd225ccf5cc87e",
+      "bytes": 8297,
+      "sha256": "0d315bcbbabb259834c3fa9c13306fe0039c0da9b809a2ec4cbd83bcdf752e0a",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/code-commenting-rule.md",
-      "bytes": 1589,
-      "sha256": "ed82371e5a6d2302511f4aefc82e96b1a12885a05c9cf04f59f320e2cd9f648a",
+      "bytes": 1111,
+      "sha256": "d736694422214487954593389f27b5777d0fdf65c44026111784f453e7be2c5c",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/codebase-design.md",
@@ -801,7 +792,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/context-format.md",
@@ -810,16 +801,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/coordination.md",
-      "bytes": 3548,
-      "sha256": "ce7cd04dc3388e17835d5cddb5ab412a2335067b638ac33fa8b027f7fb8608db",
+      "bytes": 3921,
+      "sha256": "b0e37f76a8c1983845a643e26cd7fb1a045a9dcfbb079bfbe85e369422633842",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/deployment-handoff.md",
@@ -828,7 +819,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/design-contract.md",
@@ -837,7 +828,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/design-it-twice.md",
@@ -846,7 +837,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/design-portability.md",
@@ -855,7 +846,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/deviation-control.md",
@@ -864,7 +855,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/documentation-standard.md",
@@ -873,7 +864,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/domain-modeling.md",
@@ -882,7 +873,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/domain-runtime.md",
@@ -891,7 +882,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/engineering-evidence.md",
@@ -900,34 +891,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/error-handling.md",
-      "bytes": 4077,
-      "sha256": "e6e86a0d34dad87e299563120101011e40f3de223bf11e85f8a82ad06e428059",
+      "bytes": 4018,
+      "sha256": "758f728fa2a041020858100410b6b0e0d8056df542bc8d7242cfd5c135ecf2f6",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/evidence-and-verification.md",
-      "bytes": 5890,
-      "sha256": "045da40d47b523d6c62f4d9c14eae14e3b63f20f1b9bd886d40401d632533eb1",
+      "bytes": 6064,
+      "sha256": "e8e5a07f7a929a85280f1425ffc50c60aeb7f613a4e023350c9920de378dd188",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/execution-policy.md",
-      "bytes": 5528,
-      "sha256": "3b7b7998bbcedc4dcb48d13751da125e53309ae66220ca782744f999f7610476",
+      "bytes": 6005,
+      "sha256": "fd75d22fc8f0589dffa70f85526251427966403eaf0936bd71af9e203a7418a9",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/github-operations.md",
@@ -936,25 +927,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/operating-governance.md",
-      "bytes": 4061,
-      "sha256": "07e161b2dd64f76a119a49f9a128adbe0f3fa793e7cc8cd60d7a7c622b1b25ec",
+      "bytes": 4093,
+      "sha256": "88619ac579274d9a55789ea153f360831457bf395818a33170b82fcb2008b475",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/parent-implementation-orchestration.md",
-      "bytes": 2960,
-      "sha256": "0c4b3f2b981e74df9b06560309831f7ce033f4233384bdc4336762cd5a239ac6",
+      "bytes": 3203,
+      "sha256": "25f99fea6b5a5868ad0173f19fca0f20ca1e0a40b12d4445397c6246db64029c",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/path-ownership.md",
@@ -963,16 +954,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/path-reference-contract.md",
-      "bytes": 7664,
-      "sha256": "7b68df9a1ede061bdcdaa6127540f7486c973892d86acb8f06b2340b9f4c3566",
+      "bytes": 7779,
+      "sha256": "6bd0a4b400f0621ff09526a1ca3be210d41228437356bc970c7e45a459f99fd4",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/planning-principles.md",
@@ -981,16 +972,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/readiness-and-depth.md",
-      "bytes": 3234,
-      "sha256": "0e14150d62a542a69caa6c184cfde30c02b34f21338e806946a32fb1723e21ac",
+      "bytes": 3438,
+      "sha256": "f24ef1738fc7903d7107ba9dcd3c9c509268096be5fb3dc2cf5514bc6382bdec",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/request-classification.md",
@@ -999,16 +990,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/skill-invocation.md",
-      "bytes": 3048,
-      "sha256": "4bd2d64a6fab378dea044b07bd07198d8c359517eda9b3d4401450ca170047bc",
+      "bytes": 3334,
+      "sha256": "be929e14ed9a2ac1ee6c29d9d54138ad0c83f77b0a2c6a180f61e95c1abdaf1d",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/test-reliability.md",
@@ -1017,7 +1008,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/workflow-routing.md",
@@ -1026,16 +1017,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/rules/workflow-state-and-lifecycle.md",
-      "bytes": 6026,
-      "sha256": "91f42a8cd62f65d47dffa50bdf9e34af85554020c8e494aa25e68ef6089ecf36",
+      "bytes": 6336,
+      "sha256": "f151d2253f622dd4059bc3f0d0b8de282624038136f3d955055ae7526ce893d3",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/capture.schema.json",
@@ -1044,7 +1035,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/change-design.schema.json",
@@ -1053,16 +1044,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/code-review.schema.json",
-      "bytes": 1234,
-      "sha256": "453a0b41bfa89fdc2cff64e5193f50ff6ffdb2827d30a8e285f995732ee2f0f2",
+      "bytes": 1887,
+      "sha256": "313beb9e7890e116bb9b9d111ff89be9e477b9641ef913c10e0968665c4c2bf5",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/config.schema.json",
@@ -1071,7 +1062,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/delivery-run.schema.json",
@@ -1080,7 +1071,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/delivery.schema.json",
@@ -1089,7 +1080,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/design-tree.schema.json",
@@ -1098,7 +1089,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/diagnosis.schema.json",
@@ -1107,7 +1098,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/execution-context.schema.json",
@@ -1116,7 +1107,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/execution-record.schema.json",
@@ -1125,7 +1116,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/goal-plan.schema.json",
@@ -1134,7 +1125,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/goal-tickets-map.schema.json",
@@ -1143,7 +1134,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/implementation-map.schema.json",
@@ -1152,7 +1143,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/implementation-plan.schema.json",
@@ -1161,7 +1152,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/initiative.schema.json",
@@ -1170,7 +1161,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/logic-prototype.schema.json",
@@ -1179,7 +1170,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/project-design.schema.json",
@@ -1188,7 +1179,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/prototype-browser-evidence.schema.json",
@@ -1197,7 +1188,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/publish.schema.json",
@@ -1206,7 +1197,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/pull-request.schema.json",
@@ -1215,7 +1206,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/retro-approval.schema.json",
@@ -1224,7 +1215,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/retro-archive.schema.json",
@@ -1233,7 +1224,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/retro-execution.schema.json",
@@ -1242,7 +1233,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/retro-upgrade.schema.json",
@@ -1251,7 +1242,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/retrospective.schema.json",
@@ -1260,7 +1251,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/source.schema.json",
@@ -1269,7 +1260,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/spec.schema.json",
@@ -1278,16 +1269,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/ticket.schema.json",
-      "bytes": 7105,
-      "sha256": "511839c1fa33e9259e965c0a3e49cd6a967e545d4c68138d6561dee8453d002f",
+      "bytes": 7626,
+      "sha256": "87e84166301146b9ae48fadf70a2acedbc553149adef502926690d8d9b34e99e",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/tickets-map.schema.json",
@@ -1296,7 +1287,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/triage.schema.json",
@@ -1305,7 +1296,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/schemas/wayfinder-ticket.schema.json",
@@ -1314,7 +1305,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/fowler-smells.md",
@@ -1323,34 +1314,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/result-reuse.md",
-      "bytes": 1824,
-      "sha256": "73fef9141887c72e3f1cabb47574ce946727b8a01c90b2d6637b7465d6ffe67f",
+      "bytes": 1964,
+      "sha256": "7f28d47be9b381364cc79f3ba17c6d22a6b5be0f62767ab8f68f3ceda06445a1",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/review-evidence.md",
-      "bytes": 4983,
-      "sha256": "e81d124de9795aaa2e5175b5adfc89ee861d782c37244f75ba3575bb6738808f",
+      "bytes": 5262,
+      "sha256": "38e1c4ff2a635c60a319109d988515e5ee9f23c10f92ceab6a8060a2cf3199df",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/reviewer-contracts.md",
-      "bytes": 3004,
-      "sha256": "e9cff72349827a2c40463f3818fd6a34d8a8703a3672f32e45289d10506da567",
+      "bytes": 3209,
+      "sha256": "d15d1dd07d9a431402895763ef1fce2b8e0e6f63bc7d6a5a362db44129c54a04",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/risk-review.md",
@@ -1359,7 +1350,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/source-discovery.md",
@@ -1368,25 +1359,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/references/working-tree-review.md",
-      "bytes": 2165,
-      "sha256": "f24a2d7eedb4ea76d4b416e8bfebc88eb13fe534590ff622e259b72063ab2e4d",
+      "bytes": 2200,
+      "sha256": "10cd4cc1753df4480122f75a959e9faf2cba52052bcccfc83588d905d2194b9d",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/code-review/SKILL.md",
-      "bytes": 5198,
-      "sha256": "845d9c8d1dcaf383a0bf32dd4f7057ddef4ba963c55f8f3f57f34ed6695f55d3",
+      "bytes": 5412,
+      "sha256": "555ca13b195fc4d7fb3afe957ddc0311e06f8fc9abd3c15318f0f306eee517c2",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/dev-worktree/references/create.md",
@@ -1395,43 +1386,43 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/dev-worktree/references/finalize.md",
-      "bytes": 1693,
-      "sha256": "7338407714f2a58421ba3c37832ca913516637056000a4fac155d5390b7182f1",
+      "bytes": 1904,
+      "sha256": "234392743ecf1a9db988bf433b2e64b4da73dbd165ad89b9b46013bd3683d1e5",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/dev-worktree/SKILL.md",
-      "bytes": 2403,
-      "sha256": "f3cc7f49b54d0553ad105dc4714528765498f8662e63838b16c3f38146e090c5",
+      "bytes": 2415,
+      "sha256": "ff17137aad1d4675b064cb0b513bd3a80f34109e813e6fe7cef9c7be64508cfd",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/plan-quality-review/references/checklist.md",
-      "bytes": 2098,
-      "sha256": "58a31826c2272cb2524dc699f920969ec88601ef4d35d3b17f2f749353876683",
+      "bytes": 2394,
+      "sha256": "aa70a760402f3c26ca7a9f1f71e21c51337e8e7508e300ec19ced661b520451a",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/plan-quality-review/SKILL.md",
-      "bytes": 935,
-      "sha256": "cca61e097dd6fa81edffd739974553ffc56ecd2e75f396e077541e00365d7e54",
+      "bytes": 1047,
+      "sha256": "d2551613d0b28de2788ec9d17c2beed36315ad0d66d826fee4b7edb31d867fc2",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/skills/research/SKILL.md",
@@ -1440,7 +1431,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/change-artifacts.mjs",
@@ -1449,7 +1440,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/delivery-artifacts.mjs",
@@ -1458,7 +1449,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/design-artifacts.mjs",
@@ -1467,7 +1458,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/engineering-evidence.mjs",
@@ -1476,16 +1467,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/execution-context.mjs",
-      "bytes": 10083,
-      "sha256": "f91214823bbed0e26ef8b175ff057f1350e99601c77fabceef4d52b9550d02bd",
+      "bytes": 10096,
+      "sha256": "5444a4ad14a38357ad769b165bbc7c1a0d35867e994c9f3f2f00116f894e6662",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/execution-validation.mjs",
@@ -1494,7 +1485,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/github-transport.mjs",
@@ -1503,16 +1494,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/plan-contract.mjs",
-      "bytes": 29577,
-      "sha256": "b1a26e1b3e214b661f097bf7029e936d268f4d5f100eec3d2e9ab27b536b1705",
+      "bytes": 30444,
+      "sha256": "a58de260d85396ea7ad6b8e2052d9b0ee15537613a14446f40a08f065ad28c53",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/publish-design.mjs",
@@ -1521,25 +1512,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/README.md",
-      "bytes": 13390,
-      "sha256": "7cc1fa2631e73032003c9eecbeb6759d9ffdef624fe58adbc8e64aadbfb31246",
+      "bytes": 14703,
+      "sha256": "de26aa4754eed6281c04d16fe17170d2315415a62169279ede56847de086e59f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/review-evidence.mjs",
-      "bytes": 9964,
-      "sha256": "6b8497a8ecf932c6805d7f97d215f4e82b918341071787042143384864b97a9c",
+      "bytes": 15584,
+      "sha256": "bfd171db15986d543c0255913189b2a6ee3cdd7e28a90199ab02f9ea62308183",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/review-scope.mjs",
@@ -1548,7 +1539,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/tests/engineering.test.mjs",
@@ -1557,7 +1548,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/tests/review-evidence.test.mjs",
@@ -1566,16 +1557,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/tests/review-fixture.mjs",
-      "bytes": 3357,
-      "sha256": "a3c7ae33bffd8bc52ebdf0c17e34ac421bf95c52f90b5d11d6c30c3cdd3ad6a1",
+      "bytes": 4217,
+      "sha256": "ccdd779052d2aeb86235ed9ab33a4d69fcd927d89e953e8d505eccf1e8c99601",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
+    },
+    {
+      "path": "workflows/specdev/common/tools/tests/review-policy.test.mjs",
+      "bytes": 11328,
+      "sha256": "fca9c61a52fc0eac6b11c109ba09060ecd2d0cbb288ce1262bdbf1ea9fcd08d6",
+      "mode": 436,
+      "owner": "workflow/specdev",
+      "kind": "static",
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/tests/review-source-files.test.mjs",
@@ -1584,7 +1584,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/tests/review-working-tree.test.mjs",
@@ -1593,16 +1593,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/ticket-control.mjs",
-      "bytes": 16745,
-      "sha256": "4399fb3a7ccf29fdaafdc1ce62e6c0e5f317eaa53f9bd361f97b0af1ec984457",
+      "bytes": 18967,
+      "sha256": "fdc93b8524435b6544cdbac7dcb8dd5d155d0a9049ca3a9eb1d1c535bf0f66ea",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/validate-retro.mjs",
@@ -1611,16 +1611,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/validate-specdev.mjs",
-      "bytes": 135972,
-      "sha256": "38d210cc3728d33319921c21e2074b480afee0ed4bdaa6a316bb45553062d3d4",
+      "bytes": 136141,
+      "sha256": "04637ccb634bbff2628ac4193acae0571d9af245e781c2487b6374d375e45184",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/common/tools/validation-diagnostics.mjs",
@@ -1629,7 +1629,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/manifest.json",
@@ -1638,7 +1638,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/runtime-contract.json",
@@ -1647,7 +1647,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "contract",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/SKILL.md",
@@ -1656,7 +1656,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/assets/archive-plan-template.md",
@@ -1665,7 +1665,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/assets/cleanup-candidate-template.md",
@@ -1674,7 +1674,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/assets/consolidation-plan-template.md",
@@ -1683,7 +1683,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/archive-receipt-contract.md",
@@ -1692,7 +1692,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/archive-rules.md",
@@ -1701,7 +1701,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/cleanup-rules.md",
@@ -1710,7 +1710,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/consolidation-interview.md",
@@ -1719,7 +1719,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/consolidation-rules.md",
@@ -1728,7 +1728,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/design-knowledge-gateway.md",
@@ -1737,7 +1737,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/knowledge-graduation.md",
@@ -1746,7 +1746,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/operation-contract.md",
@@ -1755,7 +1755,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/retro-archive.md",
@@ -1764,7 +1764,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/references/retro-knowledge.md",
@@ -1773,7 +1773,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-a-archive-and-consolidate/SKILL.md",
@@ -1782,34 +1782,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-c-code-review/assets/code-review-template.md",
-      "bytes": 2293,
-      "sha256": "ba17c13f19a7469f29d5da5562a58c47abacf703c855124467a0712ed741a9e9",
+      "bytes": 2470,
+      "sha256": "588c9558e0ec5eb8f0beec33b07496e21d8dd084ce0d4f524e31a28030202aad",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-c-code-review/references/source-files-review.md",
-      "bytes": 1867,
-      "sha256": "13ccb51df7513de764b7585085a558514f8822bf4465c25fd1dc201513189232",
+      "bytes": 1949,
+      "sha256": "f2451ac258f3802bd6206d04b48d3df5cb94ef2362e71d1f9a1ddf7ca0e0257e",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-c-code-review/SKILL.md",
-      "bytes": 5457,
-      "sha256": "dfd3c559ee0d52710b7c19b66d5182330a1b15b08b45c487c0d472b93cec1275",
+      "bytes": 5705,
+      "sha256": "1624defd9a31b36bab95e6c8379b72cb1f327a83f5866bf747e091c99d8a627c",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/close-comment-template.md",
@@ -1818,7 +1818,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/delivery-run-template.md",
@@ -1827,7 +1827,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/delivery-template.md",
@@ -1836,7 +1836,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/issue-body-template.md",
@@ -1845,7 +1845,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/pr-record-template.md",
@@ -1854,7 +1854,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/assets/publish-template.md",
@@ -1863,7 +1863,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/ci-security-protocol.md",
@@ -1872,7 +1872,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/pr-delivery-protocol.md",
@@ -1881,7 +1881,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/public-projection.md",
@@ -1890,7 +1890,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/publish-protocol.md",
@@ -1899,7 +1899,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/reconcile-protocol.md",
@@ -1908,7 +1908,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/release-authentication.md",
@@ -1917,7 +1917,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/release-notes-injection.md",
@@ -1926,7 +1926,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/release-preflight.md",
@@ -1935,7 +1935,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/release-protocol.md",
@@ -1944,7 +1944,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/release-recovery.md",
@@ -1953,7 +1953,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/references/workflow-yaml-reference.md",
@@ -1962,7 +1962,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/scripts/publish-status.mjs",
@@ -1971,7 +1971,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-delivery/SKILL.md",
@@ -1980,7 +1980,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/assets/diagnosis-template.md",
@@ -1989,7 +1989,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/references/captured-evidence-forensics.md",
@@ -1998,7 +1998,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/references/feedback-loop.md",
@@ -2007,7 +2007,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/references/hypothesis-and-instrumentation.md",
@@ -2016,7 +2016,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/references/incident-evidence.md",
@@ -2025,7 +2025,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/scripts/hitl-loop.template.sh",
@@ -2034,7 +2034,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-d-diagnose-bugs/SKILL.md",
@@ -2043,7 +2043,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/assets/design-tree-template.json",
@@ -2052,16 +2052,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/references/grilling-protocol.md",
       "bytes": 2719,
-      "sha256": "e587f5d038f2dedfa7305e64242682d841144a9eafc1fa9b2c5f39107842363d",
+      "sha256": "12b991cf8f9fe86bad7c5289c646ec2de104e0c604101a10cce0df4572782ccc",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/references/interview-procedure.md",
@@ -2070,7 +2070,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/references/log-format.md",
@@ -2079,7 +2079,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/references/stakeholder-questionnaire.md",
@@ -2088,7 +2088,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-g-grill-with-docs/SKILL.md",
@@ -2097,25 +2097,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/assets/evidence-template.md",
-      "bytes": 11074,
-      "sha256": "f5c75b21f1b23b702980b84c04754bd64a5450e9b504df3cff0d760b60e191ee",
+      "bytes": 11320,
+      "sha256": "9900d0ed4b2eb1da7949301da0bb05b995e7a8a650b3f67b09553ab98e8d26c4",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/documentation-procedure.md",
-      "bytes": 2968,
-      "sha256": "ff8daa85afb8fed688610c1c5a45827d07d053626eea7e79171b9faa58253222",
+      "bytes": 3115,
+      "sha256": "800b17874ffaa3b88029ae4836648fa390a08603efb1d84853eb471899319167",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/execution-preflight.md",
@@ -2124,25 +2124,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/implementation-procedure.md",
-      "bytes": 15814,
-      "sha256": "092f50520ddfaf2f9c833d63416e2db2c7ce874a5ffb877a0f5dddc4ba748297",
+      "bytes": 16388,
+      "sha256": "76ba76a8fb272716dd600ab09700cde2cb3964444eb00f1b73b2f4e2d157e93b",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/merge-conflict-protocol.md",
-      "bytes": 1032,
-      "sha256": "ad4e64e58ccb427b58ba00f4e14864922c1455e73269a2fa9ad0c92470335993",
+      "bytes": 1215,
+      "sha256": "7c0004c47ae604952841e47bc9a02e5e7f78cd8fa5700e8916649d657206b532",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/tdd-mocking.md",
@@ -2151,7 +2151,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/tdd-rules.md",
@@ -2160,7 +2160,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/references/tdd-test-design.md",
@@ -2169,16 +2169,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-implement/SKILL.md",
-      "bytes": 4971,
-      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "bytes": 5318,
+      "sha256": "fc15f79470538e4ab671bcf980d6648d92e44b1c22efd375eef771f941cff55d",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/assets/change-readme-template.md",
@@ -2187,7 +2187,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/assets/config-template.json",
@@ -2196,7 +2196,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/assets/domain-layout-template.md",
@@ -2205,7 +2205,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/assets/tracking-template.md",
@@ -2214,7 +2214,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/references/change-record-examples.md",
@@ -2223,16 +2223,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/references/first-setup.md",
-      "bytes": 2023,
-      "sha256": "7e0ad5521a753ae33e23f958f382e5fc41468c198be1c136572ee0b4a7c65e99",
+      "bytes": 2137,
+      "sha256": "6f43bbe484bae0d3eeb009304f263d8dea0839ec1c279820d3a27f1838c74665",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-i-init-setup/SKILL.md",
@@ -2241,7 +2241,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-l-learn/references/learning-change.md",
@@ -2250,43 +2250,43 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-l-learn/references/lesson-format.md",
-      "bytes": 4364,
-      "sha256": "cb946f67befef6b61782ba40f9581dbc0c82131a48acdfa63827d979f136deb6",
+      "bytes": 4890,
+      "sha256": "10b40550739f69787104eda204abe9f74e9853d7330cb9e6b6bbd4899e9de997",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-l-learn/SKILL.md",
-      "bytes": 4396,
-      "sha256": "b174aa51f1e28ae50c4604fa6f751d5124396c02d988025e9baa11cc8a0b2dd2",
+      "bytes": 4050,
+      "sha256": "ce2bde37ce2cef01aac487d3e7043efddd40d4bf6cb9b214a97a9793e7af0e98",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/assets/goal-plan-template.md",
-      "bytes": 7714,
-      "sha256": "fbf0807e2005e8020b536c4ff6305aaa3a4a8b3528cae785ef6bf207ff97c6bc",
+      "bytes": 7727,
+      "sha256": "0c29c364fdc0a3d77487b77ad30590f5f9923b789657b70726f76f5fa8ef20b8",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/assets/implementation-evidence-template.md",
-      "bytes": 2041,
-      "sha256": "63a056da1719ce48344e3a4cb17ca7902a35528770dfd49fcdb9fb3be255e931",
+      "bytes": 2302,
+      "sha256": "e264942bb13259052be340826c928db3c99a20fa088ff87131794540664ce790",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/assets/implementation-map-template.md",
@@ -2295,34 +2295,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/assets/implementation-plan-template.md",
-      "bytes": 2892,
-      "sha256": "12ba17b543c54577d8f23d5d998e18c637cc1e63e5830338c2a608618afc0580",
+      "bytes": 2899,
+      "sha256": "922fa8144b3eea44ddfa10fc585e5f41ec82014dd1f6a4560c821e28281eec63",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/assets/lightweight-goal-plan-template.md",
-      "bytes": 1210,
-      "sha256": "9f2136e30eb0316ef268caec36a52b81935a8cd80f7436530b27572551f0b9e8",
+      "bytes": 1434,
+      "sha256": "bf702a851458cc4e2a1622f1f38be7a9f6c8c01d9ad0ed2bddb8e60e4e161cc0",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/completion-control.md",
-      "bytes": 3804,
-      "sha256": "e6a6ff97df3e60cc9e1f0ec46fd69a63232b9431f8958b906f307a1b513ae3e3",
+      "bytes": 4248,
+      "sha256": "0d8912ac2f6bd1202130c0ef1c7cd7a4bace093c8ff7dc8bc4dcb324c6fdc630",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/goal-lifecycle.md",
@@ -2331,7 +2331,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/goal-tickets-map-template.md",
@@ -2340,34 +2340,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/lead-orchestration.md",
-      "bytes": 2572,
-      "sha256": "0884ff51ad309a750807005fcefdffff58ede281a60d73c051f11394b536dcee",
+      "bytes": 2759,
+      "sha256": "ed9b7e8c7037cb848940c5b91804fc63e49381a138ddf75a51abee794d70bf5a",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/map-control.md",
-      "bytes": 3326,
-      "sha256": "e232873cbe360604d0baaa70f2ed4c46498fdee542f281ad17ad2d408ceec17d",
+      "bytes": 3659,
+      "sha256": "aa2e28cd50c9dee5141e6d17bb066b8b030501d11cf111201cf025d81a414b63",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/multi-change-plan.md",
-      "bytes": 11009,
-      "sha256": "26db9a491e9ffa4d17477781b7633469df886579b33888047872101da7a7f026",
+      "bytes": 12111,
+      "sha256": "c5db8d9bd042fa2d6f8fd416814a7078021f871dc94fe348deb96e06fb72068f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/multi-conflict-and-drift.md",
@@ -2376,52 +2376,52 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/multi-execution-loop.md",
-      "bytes": 2463,
-      "sha256": "4b9f613e1b0dba98d81fd6feb1f6e44c9a395072ee95be5ced5168574f33b3c8",
+      "bytes": 3069,
+      "sha256": "262205b72115390a034c1bde32b090e7f764c08fa62be1301527c256280042ed",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/multi-input-readiness.md",
-      "bytes": 2003,
-      "sha256": "1d3a151734cdb68cdb6213fc59ad62b8f291dfcb945551424ded31b7ce279e28",
+      "bytes": 2873,
+      "sha256": "cb928f047b3ac1379727a1c67607b28faf876da556b56ecd1f921ca1270b61f7",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/multi-super-dag.md",
-      "bytes": 1881,
-      "sha256": "bc7df2c3676b34e2e4f81ddee40dee72a388448e4890ff2719fb20b336f2aeca",
+      "bytes": 2579,
+      "sha256": "d7384862ae8b47f493cefb3eae2b67bc3ff7c815cc0af6b8077881a8c3171959",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/orchestration-protocol.md",
-      "bytes": 2467,
-      "sha256": "a43ff072a7dd5c4da78b24b1c63e3c8e13e1dd532b7f08c766e3794034987ce3",
+      "bytes": 2840,
+      "sha256": "25558a68916eca0f02e4a7102dfa639e43788914f34f9dace4c97fe09e48ca28",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/planning-modes.md",
-      "bytes": 5973,
-      "sha256": "a06c890eceb81f5ead5b85ab6b3977d15b9b2d421f212e87e46d409e26e9f914",
+      "bytes": 6196,
+      "sha256": "8dd7655afbb60e24a2f9ce2dcd8087204d09bcc0a15a909a1d700b3e4125c941",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/replan-and-recovery.md",
@@ -2430,34 +2430,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/representative-ticket.md",
-      "bytes": 2017,
-      "sha256": "2e75614d1b6daa1414814fe3f5138a3801e7067d10db7bdab2c80aea6797fa44",
+      "bytes": 2319,
+      "sha256": "c0113ed61bcf5b688077df4f370331eace948cb7d8d178737d9f376c0c046099",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/references/single-change-plan.md",
-      "bytes": 10955,
-      "sha256": "959def90403e000f38deb6e171b004a8b31d06c5cd86cba5551a02b448c1c79b",
+      "bytes": 11136,
+      "sha256": "0f4fc5d5f3b71d79d2a5f6b3faab73244a8ff78f466e040190c75bf4a42df894",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-goal-plan/SKILL.md",
-      "bytes": 7589,
-      "sha256": "73887766badc12ea04f0ca83618811d3455a7acab1e8fca35448f1fcc49a08bc",
+      "bytes": 8133,
+      "sha256": "96677c9c51ccaa1fba39a3d90da4553b9140d0642473c30bac39d7647ffc3c42",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/assets/change-design-template.md",
@@ -2466,7 +2466,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/assets/design-package.schema.json",
@@ -2475,7 +2475,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/assets/design-system-template.md",
@@ -2484,7 +2484,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/assets/logic-template.md",
@@ -2493,7 +2493,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/assets/project-design-template.md",
@@ -2502,7 +2502,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/catalog.json",
@@ -2511,7 +2511,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/catalog.schema.json",
@@ -2520,7 +2520,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/color-and-theme.md",
@@ -2529,16 +2529,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/composition.md",
-      "bytes": 4099,
-      "sha256": "672de554d8aaf65453fd2b8a461e647a821bd2fd2110ed6b914b186ec7abbc97",
+      "bytes": 4736,
+      "sha256": "06d64e66e91de3b04c494c82550b94e2842e8272acb201e28046dbb1da64cbf4",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/foundations.md",
@@ -2547,7 +2547,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/gallery.html",
@@ -2556,7 +2556,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/gallery.js",
@@ -2565,7 +2565,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/INDEX.md",
@@ -2574,7 +2574,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/interaction-patterns.md",
@@ -2583,7 +2583,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/product-pattern-index.md",
@@ -2592,7 +2592,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-provenance.md",
@@ -2601,16 +2601,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
-    },
-    {
-      "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/.gitignore",
-      "bytes": 32,
-      "sha256": "b75c124a428acc599b3df9199ff9a7561fd3e8f4cfa798ac2e2abbe52deab91b",
-      "mode": 436,
-      "owner": "workflow/specdev",
-      "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/data/extended-projects.json",
@@ -2619,7 +2610,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/data/projects.json",
@@ -2628,7 +2619,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/METHODOLOGY.md",
@@ -2637,7 +2628,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/README.md",
@@ -2646,7 +2637,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/reference/design-tokens.css",
@@ -2655,7 +2646,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/reference/USAGE.md",
@@ -2664,7 +2655,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/report/OPEN_SOURCE_UI_RESEARCH_2026.md",
@@ -2673,7 +2664,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/claude-code-modern-clients.md",
@@ -2682,7 +2673,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/creative-ai-communication.md",
@@ -2691,7 +2682,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/data-dev-tools.md",
@@ -2700,7 +2691,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/personal-multiplatform-apps.md",
@@ -2709,7 +2700,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/productivity-collaboration.md",
@@ -2718,7 +2709,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/PROJECT_TEMPLATE.md",
@@ -2727,7 +2718,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/research/README.md",
@@ -2736,16 +2727,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
-    },
-    {
-      "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/.gitignore",
-      "bytes": 47,
-      "sha256": "a1b9b3aabbabe90958f5b13afee01981b529713cc1a54d5109e4ba88c5b0c77f",
-      "mode": 436,
-      "owner": "workflow/specdev",
-      "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/01-dense-ide.html",
@@ -2754,7 +2736,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/02-monochrome-console.html",
@@ -2763,7 +2745,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/03-soft-personal-ai.html",
@@ -2772,7 +2754,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/04-responsive-web.html",
@@ -2781,7 +2763,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/05-mobile-supervisor.html",
@@ -2790,7 +2772,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/06-cross-platform-workspace.html",
@@ -2799,7 +2781,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/07-local-first-content.html",
@@ -2808,7 +2790,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/08-media-first.html",
@@ -2817,7 +2799,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/assets/ATTRIBUTION.md",
@@ -2826,7 +2808,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/assets/landscape.jpg",
@@ -2835,7 +2817,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/assets/lucide.js",
@@ -2844,7 +2826,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/assets/mountain.jpg",
@@ -2853,7 +2835,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/assets/workspace.jpg",
@@ -2862,7 +2844,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/index.html",
@@ -2871,7 +2853,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/package-lock.json",
@@ -2880,7 +2862,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/package.json",
@@ -2889,7 +2871,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/README.md",
@@ -2898,7 +2880,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/screenshots/index-desktop.png",
@@ -2907,7 +2889,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/scripts/gallery.js",
@@ -2916,7 +2898,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/styles/base.css",
@@ -2925,7 +2907,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/styles/pages.css",
@@ -2934,7 +2916,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/research-snapshot/ui-gallery/tests/gallery.spec.js",
@@ -2943,7 +2925,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/responsive-and-platforms.md",
@@ -2952,7 +2934,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/style-index.md",
@@ -2961,7 +2943,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/assets/prototypes.css",
@@ -2970,7 +2952,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/assets/prototypes.js",
@@ -2979,7 +2961,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/brand-editorial.html",
@@ -2988,16 +2970,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/brand-editorial.md",
-      "bytes": 1866,
-      "sha256": "25fbe99cdfccb01491f14d7f44f8ab4d7b4273d98e2c5f23189796b3dc4e980c",
+      "bytes": 1489,
+      "sha256": "cdbd1d40ac06ef7af00eed55b666c1ac73209758952ef406baea841fc72a4e9c",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/commerce-service.html",
@@ -3006,34 +2988,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/commerce-service.md",
-      "bytes": 1866,
-      "sha256": "4e9dec4e4b49b8f666c054f51bfd15b17c32f9068838e90f5a949ba74d6bbe76",
+      "bytes": 1489,
+      "sha256": "474da21fcfb495af97c5f908475223d263e6afb8b4bb9a01ab07f60c0b1ddd8c",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/cross-platform-workspace.md",
-      "bytes": 1847,
-      "sha256": "d0b206f9ece49d3fedf3d5a9876c7e84e0b990b2db6f34a9a3ecedb309dc93a8",
+      "bytes": 1470,
+      "sha256": "83415bee4b3fbb285e5fcd43af0787476013b4b8c667a1f8045c72f378907f21",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/dense-ide.md",
-      "bytes": 1842,
-      "sha256": "1112b047760e859deb6cb950a106376445a5f5714078b1c701fbcaff922e8a96",
+      "bytes": 1465,
+      "sha256": "5929cd87a2e50ccf698ad409cfa5ed78695a9d1b5bd518bdc5480156ffaf1d98",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/enterprise-data.html",
@@ -3042,25 +3024,25 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/enterprise-data.md",
-      "bytes": 1847,
-      "sha256": "ba7899e25066dab07cbf3b4d416d3882774101c0cbdacbd1a22016066f4597c5",
+      "bytes": 1470,
+      "sha256": "16cb7c5ce30e0f16dce7dc7ab3a09399b99d614572d1b945a1f08a4897557e81",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/local-first-content.md",
-      "bytes": 1779,
-      "sha256": "be14c19190018c579cade13affb4e50a024875e51cc45917a0c5cedd34c39504",
+      "bytes": 1402,
+      "sha256": "e4a5ddbc13af5006045cbccd08ac0f74335c40d42104c53af8ec73f1e42d7840",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/marketing-conversion.html",
@@ -3069,61 +3051,61 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/marketing-conversion.md",
-      "bytes": 1911,
-      "sha256": "ed17d6e4980ff6300e11e6f852c7ec54c41888cfac53b54ba62ebf86dd03887f",
+      "bytes": 1534,
+      "sha256": "296d2b211ff2f3d6e88aee54d86f794ed08f99af36b9510e41e7d41bd5bf4c27",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/media-first.md",
-      "bytes": 1780,
-      "sha256": "ec96e7b2e1a87fc44b3a8d8a6929d0b2b1e4a197a6c180eee519f482c9684529",
+      "bytes": 1403,
+      "sha256": "5787c7a9a39d0db1a97045da3d55a48c0ee69478208aea52ab3f732e89db1a82",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/mobile-supervisor.md",
-      "bytes": 1755,
-      "sha256": "104cb9717e25f1e94a2dab3f8ea0f9d9b64f345d797bacb6098ac54108e15a11",
+      "bytes": 1378,
+      "sha256": "28bb06658d2f2a6f780a76d4dd349ce799239806bc454eee25bf64b8870ed806",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/monochrome-console.md",
-      "bytes": 1821,
-      "sha256": "0467978d5b371feaac9538035f6e05fc6dec3433c351b51cfd5dfbe8d7b0d824",
+      "bytes": 1444,
+      "sha256": "49cf1943cf6cc9aa32d307f7dd6fb8ef244889ae972f231fad4417bed6c37c04",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/responsive-web.md",
-      "bytes": 1838,
-      "sha256": "d554f3b68dc77a9d739bf2bdde719679df1667435bea7b179e33fa30b2698a74",
+      "bytes": 1461,
+      "sha256": "41caf2c874a0f7628ee5f57a1cb32964ac395948b0c5d157c41dcbb1e2b20679",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/templates/soft-personal-ai.md",
-      "bytes": 1780,
-      "sha256": "b227856fa2251ce83ef27f4ac6558920789026a1a771cd84815ed5c5d6e9981c",
+      "bytes": 1403,
+      "sha256": "75ecda2a98832d45fc4c355f7e6bb438375ef5ddd423ee57f837efc718e0541d",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/airbnb/DESIGN.md",
@@ -3132,7 +3114,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/apple/DESIGN.md",
@@ -3141,7 +3123,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/figma/DESIGN.md",
@@ -3150,7 +3132,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/ibm/DESIGN.md",
@@ -3159,7 +3141,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/LICENSE",
@@ -3168,7 +3150,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/linear/DESIGN.md",
@@ -3177,7 +3159,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/mintlify/DESIGN.md",
@@ -3186,7 +3168,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/notion/DESIGN.md",
@@ -3195,7 +3177,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/provenance.json",
@@ -3204,7 +3186,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/README.md",
@@ -3213,7 +3195,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/spotify/DESIGN.md",
@@ -3222,7 +3204,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/stripe/DESIGN.md",
@@ -3231,7 +3213,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/upstream/awesome-design-md/vercel/DESIGN.md",
@@ -3240,7 +3222,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/airbnb.md",
@@ -3249,7 +3231,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/apple.md",
@@ -3258,7 +3240,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/figma.md",
@@ -3267,7 +3249,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/ibm.md",
@@ -3276,7 +3258,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/linear.md",
@@ -3285,7 +3267,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/mintlify.md",
@@ -3294,7 +3276,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/notion.md",
@@ -3303,7 +3285,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/spotify.md",
@@ -3312,7 +3294,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/stripe.md",
@@ -3321,7 +3303,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/design-library/visual-references/vercel.md",
@@ -3330,7 +3312,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/references/detect-existing-style.md",
@@ -3339,7 +3321,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/references/generate-design-package.md",
@@ -3348,7 +3330,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/references/logic-protocol.md",
@@ -3357,7 +3339,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/references/project-preview-protocol.md",
@@ -3366,7 +3348,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/references/style-selection-protocol.md",
@@ -3375,7 +3357,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/scripts/materialize-prototype.mjs",
@@ -3384,7 +3366,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/scripts/validate-design-package.mjs",
@@ -3393,7 +3375,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-p-prototype/SKILL.md",
@@ -3402,7 +3384,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/assets/retro-template.md",
@@ -3411,7 +3393,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/assets/upgrade-plan-template.md",
@@ -3420,16 +3402,16 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/references/development-retrospective.md",
-      "bytes": 5990,
-      "sha256": "1a663f5f777adae9395ecb2e581d56f0456e0c77e3fe13526dc0dff87b9b3a3c",
+      "bytes": 5996,
+      "sha256": "79759bcb6f99f3f4bfd420b3f318b3075918e0d984b98a3a738e3d18253dd86f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/references/records.md",
@@ -3438,7 +3420,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/references/session-provenance.md",
@@ -3447,7 +3429,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/references/skill-upgrade.md",
@@ -3456,7 +3438,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/scripts/session-evidence.mjs",
@@ -3465,7 +3447,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-retro/SKILL.md",
@@ -3474,7 +3456,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/assets/architecture-review-template.md",
@@ -3483,7 +3465,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/references/performance-review.md",
@@ -3492,7 +3474,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/references/proposal-to-ticket.md",
@@ -3501,7 +3483,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/references/review-rubric.md",
@@ -3510,7 +3492,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/references/selected-design.md",
@@ -3519,7 +3501,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-r-review-architecture/SKILL.md",
@@ -3528,7 +3510,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-s-spec/assets/spec-template.md",
@@ -3537,7 +3519,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-s-spec/references/spec-readiness.md",
@@ -3546,34 +3528,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-s-spec/SKILL.md",
-      "bytes": 5953,
-      "sha256": "b989ffc2af65b080d6c64d5a1e427e68e76194b13e9f01cafc073e9ab3350c57",
+      "bytes": 6076,
+      "sha256": "15b4abf57235dd2ac7c6f145643b9651467f7d946ab2316fe5c9902bcb7f12fa",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/assets/ticket-template.md",
-      "bytes": 3174,
-      "sha256": "060b9f3aa45be2a14094ad5f75580309bc21df198ede5ef83c7ff4ffda4ebc9b",
+      "bytes": 3142,
+      "sha256": "318c7549f7061972f5758159fbba27bf4999d567a3b358eb0a7cee89c8d0cff2",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/assets/tickets-map-template.md",
-      "bytes": 7338,
-      "sha256": "08319ebb57c6e5f00d3cf292fdfaaa109e1197a913a7739009d3f760e7132738",
+      "bytes": 6954,
+      "sha256": "de055e501e657951de8b391e6c66807b5a5f671763d18b9c7143aa6909f46316",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/references/decomposition-rules.md",
@@ -3582,34 +3564,34 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/references/planning-procedure.md",
-      "bytes": 13620,
-      "sha256": "ceda09e1c479347a6801a451c9cab06392555af1fda097b80f42e11010de5dce",
+      "bytes": 13211,
+      "sha256": "848dece7d9725d8175c23a02632757c2430a903b7b9933ea6ad5517cb94154ba",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/references/ticket-readiness.md",
-      "bytes": 3777,
-      "sha256": "932b0614c1c2b57f94a165461d6e89ee269efd0bb3ce54d467d2b37374db6e54",
+      "bytes": 3682,
+      "sha256": "c99fd5381858d4e06e9f6454a229f4b7401801a4a3e06206a260f9aef6e35681",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-tickets/SKILL.md",
-      "bytes": 6361,
-      "sha256": "d52f22d795f28879151fe7838486279e63eef02fd799c41c908664460425d344",
+      "bytes": 6711,
+      "sha256": "b8ce99f14e6f31224d407ab6a7348725e7e561c841bf2d3bea0df90ff1b50a8f",
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/assets/capture-template.md",
@@ -3618,7 +3600,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/assets/issue-record-template.md",
@@ -3627,7 +3609,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/assets/source-template.md",
@@ -3636,7 +3618,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/assets/triage-template.md",
@@ -3645,7 +3627,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/references/capture-protocol.md",
@@ -3654,7 +3636,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/references/intake-protocol.md",
@@ -3663,7 +3645,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/references/issue-pr-policy.md",
@@ -3672,7 +3654,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/references/queue-protocol.md",
@@ -3681,7 +3663,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/scripts/capture-status.mjs",
@@ -3690,7 +3672,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-t-triage/SKILL.md",
@@ -3699,7 +3681,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/assets/investigation-ticket-template.md",
@@ -3708,7 +3690,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/assets/solution-comment-template.md",
@@ -3717,7 +3699,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/assets/wayfinder-map-template.md",
@@ -3726,7 +3708,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/references/initiative-discovery.md",
@@ -3735,7 +3717,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/references/initiative-template.json",
@@ -3744,7 +3726,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/references/local-tracker-contract.md",
@@ -3753,7 +3735,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/references/map-traversal.md",
@@ -3762,7 +3744,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     },
     {
       "path": "workflows/specdev/specdev-w-wayfinder/SKILL.md",
@@ -3771,7 +3753,7 @@
       "mode": 436,
       "owner": "workflow/specdev",
       "kind": "static",
-      "package_version": "2.1.12"
+      "package_version": "2.1.16"
     }
   ]
 }

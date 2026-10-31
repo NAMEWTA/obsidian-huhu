@@ -6,7 +6,7 @@
       "kind": "command",
       "name": "speculo-coordination-init",
       "entry": "commands/coordination-init/COMMAND.md",
-      "description": "Explicitly initialize or update the project's default agent coordination method for every workflow.",
+      "description": "Explicitly initialize or update the project's optional agent coordination preference for every workflow.",
       "stages": []
     },
     {
@@ -97,7 +97,7 @@
       "name": "specdev-c-code-review",
       "domain": "specdev",
       "entry": "workflows/specdev/specdev-c-code-review/SKILL.md",
-      "description": "按用户指定文件或 PR、单 commit、区间、基线冻结真实审查范围，派遣未参与实现的 Agent 执行标准轴与规范轴审查；有效空差异诚实返回，不实施修复或发布。",
+      "description": "按用户指定文件或 PR、单 commit、区间、基线冻结真实审查范围，按风险决定主 Agent 直接审查或真正独立 reviewer，分别执行标准轴与规范轴；有效空差异诚实返回，不实施修复或发布。",
       "stages": [
         "review"
       ]
@@ -126,7 +126,7 @@
       "name": "specdev-p-goal-plan",
       "domain": "specdev",
       "entry": "workflows/specdev/specdev-p-goal-plan/SKILL.md",
-      "description": "为简单目标、单个已拆票 change 或多个 Ready change 规划、执行或恢复 Goal；只在用户要求目标计划、交付编排或已有 map 需推进时使用，不代替需求探索和 Ticket 编写。",
+      "description": "为简单目标、单个已拆票 change 或多个 change 规划、执行或恢复 Goal；只在用户要求目标计划、交付编排或已有 map 需推进时使用，不代替需求探索和 Ticket 编写。",
       "stages": [
         "plan",
         "run",
@@ -218,7 +218,7 @@
       "name": "specdev-t-tickets",
       "domain": "specdev",
       "entry": "workflows/specdev/specdev-t-tickets/SKILL.md",
-      "description": "将已澄清的 Spec 或等价获批计划拆为可验收的实施 Ticket，并绑定真实项目 Skill；不用于探索未知需求或执行代码。",
+      "description": "将已澄清的 Spec 或等价获批计划拆为可验收的实施 Ticket，并绑定必需项目方法；不用于探索未知需求或执行代码。",
       "stages": []
     },
     {
