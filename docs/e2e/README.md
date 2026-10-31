@@ -119,7 +119,7 @@ Bot 的空 `binaryPath` 会向 `https://github.com/NAMEWTA/obsidian-huhu/release
 
 根因在 `NeteaseAccount.restore()`。首页启动时会读网易云 Cookie。这台环境没有可用的系统凭据服务，`cookies.get` 一直不返回，首页停在 loading，插件要等启动模块结束才赋值工作台。会话目录当时已经验证完成，所以不是会话创建本身。
 
-修复是桌面端这次可选恢复最多等 5 秒。超时后保持未登录，不弹通知，后到的 Cookie 不能登录。计时器用所属窗口。诊断、规格和决定在 `.agents/speculo/.speculo/specdev/changes/2026-10-29-home-cookie-restore-deadline/`。
+修复是桌面端这次可选恢复最多等 5 秒。超时后保持未登录，不弹通知，后到的 Cookie 不能登录。计时器用所属窗口。诊断、规格和决定在 `.agents/speculo/.speculo/specdev/changes/archive/2026-10-29-home-cookie-restore-deadline/`。
 
 本轮把全部模块都打开。进度记录在 08:55（台北）仍看到 home 为 loading、工作台还没有；约一分钟内脚本已经打开看板、做完 20 次打开计时并创建了任务。随后强行退出再打开，任务还在，各模块开关仍是开启，页面错误钩子为空。[round2-home.png](round2-home.png) 是首页看板。[round2-restart.png](round2-restart.png) 是重启后的「第二轮任务」。
 

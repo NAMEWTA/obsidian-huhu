@@ -67,3 +67,7 @@ ReactSurface 每个页面一个根，关闭时卸载；Portal 与 sonner 使用�
 ## 验证与产物
 
 类型、架构、国际化、DOM、黄金样本、安全回归和真实宿主分层验证。正式代码及资源变更后重建产物并验证可复现，平台验收不相互冒充。命令和发布门禁见[开发发布](development.md)，选择表见[测试参考](../.agents/skills/dev/references/testing.md)。
+
+## 决策与领域术语
+
+长期取舍从 [ADR 索引](../.agents/speculo/.speculo/specdev/adr/INDEX.md)进入，项目术语从 [context 索引](../.agents/speculo/.speculo/specdev/context/INDEX.md)进入。已采纳合同与当前实现分别判断，历史来源和未验收项保留在各条目链接的归档 change 中。

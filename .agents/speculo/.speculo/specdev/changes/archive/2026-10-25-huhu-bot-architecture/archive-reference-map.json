@@ -1,0 +1,3045 @@
+{
+  "note": "历史正文未改；外部相对路径因归档层级变化时按此映射回读；既有缺件不是本轮修复对象。Path协议中的稳定change ID由消费者在active/archive唯一解析。",
+  "relocated_references": [
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "../../../../../../../../../src/modules/huhubot/core/protocol/method-validation.ts",
+      "resolved_project_path": "src/modules/huhubot/core/protocol/method-validation.ts"
+    },
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "../../../../../../../../../src/modules/huhubot/core/protocol/memory-validation.test.ts",
+      "resolved_project_path": "src/modules/huhubot/core/protocol/memory-validation.test.ts"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/internal/application/api/memory.go",
+      "resolved_project_path": "native/huhubot/internal/application/api/memory.go"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/internal/application/api/memory_manifest_test.go",
+      "resolved_project_path": "native/huhubot/internal/application/api/memory_manifest_test.go"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "../../../../../../../../../src/modules/huhubot/platform/obsidian/sources/sources.ts",
+      "resolved_project_path": "src/modules/huhubot/platform/obsidian/sources/sources.ts"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/tests/contract/recovery/testdata/schema8/manifest.json",
+      "resolved_project_path": "native/huhubot/tests/contract/recovery/testdata/schema8/manifest.json"
+    }
+  ],
+  "preexisting_missing_references": [
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/01-old-shape-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/03-initial-contract-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/05-pure-contract-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/06-router-and-bindings.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/07-pure-binding-fixture-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/09-final-go-shapes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/10-ts-shape-contract.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/12-independent-python.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/13-canonical-encoding-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/14-canonical-encoding-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/19-working-budget-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/125-memory-foundation-contract/REPORT.md",
+      "locator": "logs/20-final-affected-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/130-memory-common-engine/REPORT.md",
+      "locator": "logs/14-toolchain-stdout.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/01-checkpoint-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/02-utf8-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/01-checkpoint-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/02-utf8-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/03-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/098-chat-review/REPORT.md",
+      "locator": "logs/04-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/091-recovery-review-r2/REPORT.md",
+      "locator": "logs/02-independent-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/091-recovery-review-r2/REPORT.md",
+      "locator": "logs/03-independent-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/079-groups-r2-review/REPORT.md",
+      "locator": "logs/page-replay-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/079-groups-r2-review/REPORT.md",
+      "locator": "logs/page-replay-final-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/079-groups-r2-review/REPORT.md",
+      "locator": "logs/old-store-negative.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/079-groups-r2-review/REPORT.md",
+      "locator": "logs/negative-command-cwd-error.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/114-metadata-probe-expectation/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/tests/contract/assistant/probe_http_test.go:73"
+    },
+    {
+      "file": "sessions/20261025T043239Z/114-metadata-probe-expectation/REPORT.md",
+      "locator": "logs/02-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/114-metadata-probe-expectation/REPORT.md",
+      "locator": "logs/05-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "../080-recovery-core/logs/24-risk-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/01-groups-late-history.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/02-groups-both-history.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/04-events-original.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/05-events-observed.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/07-guard-equivalence.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/08-events-joined-guard.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/085-recovery-race-diagnosis/REPORT.md",
+      "locator": "logs/10-events-joined-observed.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "logs/02-memory-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "logs/03-memory-first-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "logs/05-memory-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/127-memory-ts-validation/REPORT.md",
+      "locator": "logs/11-final-protocol-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/096-default-model-fixture/REPORT.md",
+      "locator": "logs/03-single-test.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/01-fixed-dependencies.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/02-selected-modules.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/03-module-graph.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/04-real-import-tidy.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/06-real-cmd-deps.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/07-real-cmd-build.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/10-foundation-target-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/15-probe-join-counterfactual-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/16-current-lifecycle-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/093-engine-foundation/REPORT.md",
+      "locator": "logs/17-final-real-import-tidy.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/122-hap-default-expectation/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/tests/contract/assistant/hap_test.go:58"
+    },
+    {
+      "file": "sessions/20261025T043239Z/122-hap-default-expectation/REPORT.md",
+      "locator": "../../../evidence/T-02-logs/hap-default-after-three-protocols-r1.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/122-hap-default-expectation/REPORT.md",
+      "locator": "logs/02-observation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/122-hap-default-expectation/REPORT.md",
+      "locator": "logs/04-assistant-package.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/094-engine-policy/REPORT.md",
+      "locator": "logs/03-selector-counterfactual-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/094-engine-policy/REPORT.md",
+      "locator": "logs/04-assistant-policy-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/094-engine-policy/REPORT.md",
+      "locator": "logs/06-metadata-http.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/094-engine-policy/REPORT.md",
+      "locator": "logs/08-budget-http.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/input-after-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/normal-suites.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/race-suites.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/ts-consumers.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/migration-old-v5.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/queue-revocation-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/queue-revocation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/queue-revocation-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/delegation-boundaries.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/toolchain.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/059-notes-collaboration-review/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "../070-notes-collaboration-r2-review/logs/impact-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "../070-notes-collaboration-r2-review/logs/slots-observed-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "../070-notes-collaboration-r2-review/logs/slots-forced-schedule.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "logs/11-final-target-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "logs/04-target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "logs/08-package-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "logs/09-package-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/071-delegation-wait-repair/REPORT.md",
+      "locator": "logs/03-target-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/suites.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/max-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/source-two-page-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/source-two-page-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/large-actual-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/provenance-cursor-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/ts-suites.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/046-events-approval-review/REPORT.md",
+      "locator": "logs/provenance-cursor.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/133-memory-component-review/REPORT.md",
+      "locator": "logs/03-api-boundary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/133-memory-component-review/REPORT.md",
+      "locator": "logs/05-hap-boundary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/133-memory-component-review/REPORT.md",
+      "locator": "logs/10-ts-budget-controls.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "node-syntax.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "red-ready-owned-stop.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "green-ready-owned-stop.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "docs-before.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "docs-after.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "final-freeze-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/058-host-receipt-docs-cleanup/REPORT.md",
+      "locator": "return-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/116-responses-review-anchors/REPORT.md",
+      "locator": "logs/01-anchor-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/116-responses-review-anchors/REPORT.md",
+      "locator": "logs/02-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "preflight.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "red-managed-excludes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "green-directed-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "directed-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "final-freeze-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "lint-with-ignored-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/051-host-receipt-root/REPORT.md",
+      "locator": "return-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/101-recovery-intent-foundation/REPORT.md",
+      "locator": "logs/04-single-case.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/02-assembly-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/05-assembly-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/08b-private-contributor-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/09-private-contributor-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/14-failed-draft-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/15-publication-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/16-group-reply-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/17-group-reply-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/18b-question-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/19c-question-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/21-membership-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/22-membership-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/20-deliver-counterfactual-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/08a-fixture-compile.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/10-private-closure-compile.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/12-task-getters-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/12c-task-getters-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/18-question-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/19b-question-diagnostic.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/23-ts-go-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/24-ts-go-second.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/25-temporary-pagination-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "../073-groups-core/logs/20-joint-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/28-single-batch-scope-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "logs/29-scope-group-controls-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "../073-groups-core/logs/26-joint-normal-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "../073-groups-core/logs/27-joint-race-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/074-groups-domain/REPORT.md",
+      "locator": "../073-groups-core/logs/28-joint-vet-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/03-fixed-sdk-lock.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/07-real-import-tidy.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/10-broker-target.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/11-foundation-target.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/12-assistant-old-expectation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/18-default-recovery.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/22-default-recovery.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/108-responses-foundation/REPORT.md",
+      "locator": "logs/23-construction-overlay.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/056-data-maintenance-preflight/REPORT.md",
+      "locator": "read-excerpts.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/040-chat-access-rereview/REPORT.md",
+      "locator": "raw-probes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+      "locator": "logs/02-gzip-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+      "locator": "logs/03-gzip-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+      "locator": "logs/04-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+      "locator": "logs/05-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+      "locator": "logs/11-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/083-recovery-review/REPORT.md",
+      "locator": "logs/05-starvation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/01-chat-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/02-chat-progress.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/03-affected-go.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/04-all-go.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/05-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/06-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/07-schema-pinned.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/07-schema.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/08-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/026-chat-implementation/REPORT.md",
+      "locator": "logs/09-generator-reproducible.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "logs/01-api-closure.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "logs/03-manifest-old-entry-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "logs/05-manifest-api-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "logs/06-api-test-closure.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/132-memory-manifest-binding/REPORT.md",
+      "locator": "logs/07-api-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/062-native-fixture-lint/REPORT.md",
+      "locator": "../../../evidence/T-07-logs/lead-lint-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/062-native-fixture-lint/REPORT.md",
+      "locator": "final-freeze-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/062-native-fixture-lint/REPORT.md",
+      "locator": "return-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/095-engine-notices/REPORT.md",
+      "locator": "logs/06-node-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/095-engine-notices/REPORT.md",
+      "locator": "logs/09-node-green-attempt.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/095-engine-notices/REPORT.md",
+      "locator": "logs/13-docs.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "upstream-source-chain.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "binary-notice-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "red-missing-mit.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "green-license-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "tooling-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "notices-write.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "notices-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "build-all.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "native-smoke.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "binary-notice-probe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "license-tests-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/022-translated-license-repair/REPORT.md",
+      "locator": "tooling-tests-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/104-responses-report-format/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/probes"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/02-permanent-identity-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/03-permanent-identity-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/04-targeted-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/08-source-probe-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/09-range-probe-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/06-production-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/07-test-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/10-local-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/11-ts-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/038-source-identity-repair/REPORT.md",
+      "locator": "logs/15-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/111-responses-notices/REPORT.md",
+      "locator": "logs/03-node-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/111-responses-notices/REPORT.md",
+      "locator": "logs/04-node-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/111-responses-notices/REPORT.md",
+      "locator": "logs/11-docs.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/111-responses-notices/REPORT.md",
+      "locator": "logs/14-diff-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/110-model-probe-expectation/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/tests/contract/assistant/model_test.go:98"
+    },
+    {
+      "file": "sessions/20261025T043239Z/110-model-probe-expectation/REPORT.md",
+      "locator": "../108-responses-foundation/logs/12-assistant-old-expectation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/110-model-probe-expectation/REPORT.md",
+      "locator": "logs/03-targets.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/01-generation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/04-generation-negative.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/02-close-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/03-close-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/05-resume-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/06-stop-fault.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/07-checkpoint-negative.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/08-stage-settlement-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/09-stage-settlement-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/10-stage-settlement-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/13-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/18-r2-affected-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/22-unavailable-control-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/24-risk-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/30-final-generation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/31-final-schema-validation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/32-final-schema-validation-venv.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/37-final-python-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/38-final-go-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/080-recovery-core/REPORT.md",
+      "locator": "logs/39-final-ts-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/068-shared-review-repair/REPORT.md",
+      "locator": "logs/01-compile.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/068-shared-review-repair/REPORT.md",
+      "locator": "logs/02-claim-faults.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/068-shared-review-repair/REPORT.md",
+      "locator": "../069-collaboration-review-repair/logs/11-eight-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/068-shared-review-repair/REPORT.md",
+      "locator": "../069-collaboration-review-repair/logs/12-five-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/068-shared-review-repair/REPORT.md",
+      "locator": "../069-collaboration-review-repair/logs/13-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/02-gzip-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/03-gzip-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/04-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/05-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/08-return-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/112-responses-review/REPORT.md",
+      "locator": "logs/08-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/154-context-alias-wire/REPORT.md",
+      "locator": "logs/03-alias-ts-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/154-context-alias-wire/REPORT.md",
+      "locator": "logs/04-alias-ts-red-stable.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/154-context-alias-wire/REPORT.md",
+      "locator": "logs/08-alias-ts-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/014-foundation-rereview/REPORT.md",
+      "locator": "raw-probes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/103-doc-checker-maintenance/REPORT.md",
+      "locator": "logs/01-targeted-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/103-doc-checker-maintenance/REPORT.md",
+      "locator": "logs/02-targeted-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/103-doc-checker-maintenance/REPORT.md",
+      "locator": "logs/03-docs-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/103-doc-checker-maintenance/REPORT.md",
+      "locator": "logs/05-diff-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/02-0-dependency.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/02-1-dependency.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/02-2-dependency.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/04-default-anthropic.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/05-existing-foundation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/06-legacy-chat-cp.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/07-responses-cp.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/14-new-foundation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/15-third-factory.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/119-anthropic-foundation/REPORT.md",
+      "locator": "logs/16-registry.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "logs/03-old-permanent-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "../088-recovery-claim-repair/logs/12-joint-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "../088-recovery-claim-repair/logs/13-joint-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "logs/08-parent-observe-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "logs/14-parent-normal-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/090-recovery-parent-repair/REPORT.md",
+      "locator": "logs/15-parent-race-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/13-actual-ts-go-approval-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/14-actual-ts-go-approval-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/01-facade-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/02-facade-behavior-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/03-facade-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/05-events-boundaries-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/04-late-ledger-recovery-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/06-actual-queue.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/07-actual-os-pipe.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/08-actual-os-pipe-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/09-actual-ts-go-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/10-actual-ts-go-private.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/13-actual-ts-go-approval-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/14-actual-ts-go-approval-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/11-history-provenance.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/12-history-scope-old-behavior-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/16-access-history-scope-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/15-max-delivery-subjects.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/17-gap-before-retention-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/18-gap-before-retention-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/19-all-go.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/19-bigint-fixture-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/23-cache-provenance-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/26-batch-provenance-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/28-max-batch-deadline-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/29-max-batch-deadline-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/30-batch-single-equivalence.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "logs/20-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/22-joint-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/26-events-race-isolated.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/28-events-race-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/33-affected-race-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/38-affected-r5.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/39-affected-race-r5.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/043-events-implementation/REPORT.md",
+      "locator": "../042-approval-implementation/logs/40-vet-r5.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/05-old-ts-bundle.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/07-large-old-ts-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/02-source-two-normal-original.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/03-source-two-race-original-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/04-provenance-original-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/08-source-two-normal-original-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/09-source-two-race-original-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/10-provenance-original-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/06-old-ts-probe-build.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/07-large-old-ts-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/11-access-events-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/12-access-events-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/14-source-eight-hundred-race-after-json-reuse.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/15-final-access-events-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/16-final-access-events-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/17-final-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/048-source-delivery-repair/REPORT.md",
+      "locator": "logs/19-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/075-groups-client/REPORT.md",
+      "locator": "logs/35-final-ts-consumers.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/075-groups-client/REPORT.md",
+      "locator": "logs/23-managed-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/075-groups-client/REPORT.md",
+      "locator": "logs/24-managed-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/075-groups-client/REPORT.md",
+      "locator": "logs/28-controlled-startup.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "asset-build-info.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "fixed-upstream-licenses.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "final-license-audit.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "red-unreviewed-runtime.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "tooling-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "fixed-upstream-licenses.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "ci-prerequisite-validation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "notices-write.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "notices-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "build-all.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "asset-build-info.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "native-smoke.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "docs-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "license-tests-initial.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "license-audit-probe-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "ci-prerequisite-inventory.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "final-freeze-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/025-assistant-engineering/REPORT.md",
+      "locator": "return-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/02-three-old-input-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/04-three-findings-and-adjacent-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/06-three-findings-and-adjacent-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/07-queue-parent-outcome-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "../068-shared-review-repair/logs/02-claim-faults.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/11-eight-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/12-five-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/069-collaboration-review-repair/REPORT.md",
+      "locator": "logs/13-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/001-prototype-validation/REPORT.md",
+      "locator": "../../../prototypes/UI-001/evidence/validation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/061-ts-limit-fixture/REPORT.md",
+      "locator": "logs/01-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/061-ts-limit-fixture/REPORT.md",
+      "locator": "logs/03-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/113-docs-link-semantics/REPORT.md",
+      "locator": "logs/01-targeted-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/113-docs-link-semantics/REPORT.md",
+      "locator": "logs/02-targeted-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/113-docs-link-semantics/REPORT.md",
+      "locator": "logs/03-docs.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/113-docs-link-semantics/REPORT.md",
+      "locator": "logs/05-diff-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/100-chat-review-repair/REPORT.md",
+      "locator": "logs/02-target-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/100-chat-review-repair/REPORT.md",
+      "locator": "logs/03-target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/02-node-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/03-node-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/09-locked-helper-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/10-locked-helper-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/19-notices-write.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/20-notices-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/16-all-tools.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/21-docs.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/120-anthropic-notices/REPORT.md",
+      "locator": "logs/24-diff-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/01-closed-pages-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/02-ready-slot-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/03-fair-claims-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/04-parent-stop-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/05-transaction-boundaries-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/07-target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/12-joint-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "../090-recovery-parent-repair/logs/03-old-permanent-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/13-joint-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/16-setup-diagnostic-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/19-setup-scan-control-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/24-fixture-normal-generation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/27-old-progress-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/28-fixture-target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/29-final-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/30-final-go-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/34-return-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/088-recovery-claim-repair/REPORT.md",
+      "locator": "logs/35-return-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/01-protocol-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/03-client-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/06-assistant-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/02-protocol-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/04-client-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/07-client-wrapper-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/14-credentials-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/16-foundation-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/17-foundation-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/05-tsc-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/17-foundation-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/18-production-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/19-test-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/20-lint-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/13-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/21-go-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/021-assistant-client/REPORT.md",
+      "locator": "logs/22-validate-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/impact-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/slots-observed-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/slots-forced-schedule.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/original059.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/impact-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/adjacent-probes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/slots-observed-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/slots-forced-schedule.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/070-notes-collaboration-r2-review/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/unit-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/tsc-production.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/tsc-test.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/validate-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/shared-invalid-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/005-foundation-client/REPORT.md",
+      "locator": "logs/unit-old-reason-failure.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/01-compile.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/02-v8-inflight-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/03-v8-inflight-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/04-tree-migration-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/05-qualification-producer-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/05-qualification-producer-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/06-source-budget-migration-ts.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/07-source-compatible-manual-resume.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/09-ts-current-member-reanchor.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "../080-recovery-core/logs/13-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/12-events-original-reproduction.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/13-events-diagnostic-interleavings.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/14-events-controlled-before.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/14-events-controlled-during.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "logs/17-events-fixture-order-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/081-recovery-domain/REPORT.md",
+      "locator": "../080-recovery-core/logs/18-r2-affected-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/035-chat-access-review/REPORT.md",
+      "locator": "raw-probes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/original-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/original-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/original-large.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/contracts-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/contracts-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/policy-differential-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/ts-suites.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/050-events-approval-rereview/REPORT.md",
+      "locator": "logs/toolchain.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "../../../../../../../../../native/huhubot/internal/adapters/outbound/credentials/channel_test.go:170"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "../../../evidence/T-14-logs/lead-memory-regression-r3-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/03-observe-original.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/04-observe-bounded.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/08-target-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/09-package-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/10-target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/07-final-go-version.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/157-credential-channel-barrier/REPORT.md",
+      "locator": "logs/07-final-go-list.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/003-prototype-repair-verification/REPORT.md",
+      "locator": "../../../prototypes/UI-001/evidence/repair-1/validation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/006-prototype-final-verification/REPORT.md",
+      "locator": "../../../prototypes/UI-001/evidence/repair-2/validation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/30-final-targeted-suite.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/31-final-tests-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/32-final-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/33-final-production-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/27-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/34-final-probe-bundle.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/36-existing-consumers.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/01-source-target-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/02-source-target-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/07-production-tsc-protocol.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/19-tests-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/20-own-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/22-own-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/09-protocol-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/12-host-service-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/15-effect-fingerprint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/16-effect-fingerprint-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/054-note-effects-client/REPORT.md",
+      "locator": "logs/29-prepare-version-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/009-tooling-lint/REPORT.md",
+      "locator": "lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/03-real-original-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/05-original-probe-build.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/06-real-original-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/01-unit-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/04-unit-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/07-production-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/08-test-tsc.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/09-local-lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/10-ts-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "logs/11-targeted-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/049-event-page-repair/REPORT.md",
+      "locator": "../048-source-delivery-repair/logs/07-large-old-ts-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/02-original-review-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/03-permanent-page-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/05b-permanent-page-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/08-four-page-controls-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/05-permanent-page-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/06-page-fault-union-controls.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/11-affected-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/12-affected-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/13-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/15-preparation-old-input-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/17-cleanup-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/078-groups-pagination-repair/REPORT.md",
+      "locator": "logs/18-cleanup-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "../019-assistant-implementation/evidence/08-worker-deadline-probe-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "logs/01-independent-worker-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "logs/02-independent-worker-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "logs/03-affected-regression.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "logs/04-affected-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/029-credential-worker-repair/REPORT.md",
+      "locator": "logs/05-affected-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/lease-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/lease-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/unit-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/tsc-production.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/tsc-test.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/017-foundation-lease-repair/REPORT.md",
+      "locator": "logs/validate-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+      "locator": "logs/02-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+      "locator": "logs/05-normal-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+      "locator": "logs/06-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+      "locator": "logs/07-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/102-chat-repair-review/REPORT.md",
+      "locator": "logs/08-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/020-credential-provider/REPORT.md",
+      "locator": "logs/final-targeted.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/020-credential-provider/REPORT.md",
+      "locator": "logs/final-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/020-credential-provider/REPORT.md",
+      "locator": "logs/final-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/020-credential-provider/REPORT.md",
+      "locator": "logs/final-cross.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/020-credential-provider/REPORT.md",
+      "locator": "logs/red-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/089-recovery-parent-diagnosis/REPORT.md",
+      "locator": "logs/02-parent-original-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/page-omission.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/page-omission-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/page-omission-state.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/page-count-control.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/union-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/union-sql-rollback.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/toolchain.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/077-groups-review/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/01-original-probe-red-observation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/02-facade-regression-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/03-facade-regression-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/04-original-input-acceptance-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/05-access-full.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/06-access-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/039-grant-idempotency-repair/REPORT.md",
+      "locator": "logs/07-access-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/15-final-access.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/14-go-ts-unicode-pagination.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/15-final-access.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/01-policy-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/02-policy-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/03-facade-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/04-facade-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/08-actual-go-ts-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/09-actual-go-ts-diagnostic.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/10-actual-go-ts-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/11-actual-go-ts-current.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/12-endpoint-history-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/13-go-ts-model-history-search.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/14-go-ts-unicode-pagination.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/15-final-access.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/16-final-access-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/17-final-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/18-final-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/19-freeze-diff-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/027-access-implementation/REPORT.md",
+      "locator": "logs/20-joint-snapshot-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/139-memory-component-rereview/REPORT.md",
+      "locator": "logs/07-independent-go.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/139-memory-component-rereview/REPORT.md",
+      "locator": "logs/06-independent-go.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/136-memory-ts-review-repair/REPORT.md",
+      "locator": "logs/03-review-repair-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/136-memory-ts-review-repair/REPORT.md",
+      "locator": "logs/05-review-repair-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/008-foundation-review/REPORT.md",
+      "locator": "raw-probes.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/01-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/02-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/03-first-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/04-tool-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/06-tool-candidate.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/07-tool-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/08-settlement-cp-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/09-settlement-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/10-settlement-cp-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/11-matrix-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/12-restart-http.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/13-model-unavailable-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/14-matrix-second.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/15-delegated-requirements-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/16-matrix-third.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/17-cancel-bounds-current.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/18-question-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/19-matrix-complete.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/21-normal-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/22-targeted-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/092-engine-chat/REPORT.md",
+      "locator": "logs/23-tool-identity.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/02-coordinate-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/04-probe-build-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/05-coordinate-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/06-coordinate-maximum.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/03-generate.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/07-foundation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/08-ts-schema.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/09-python-schema.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/10-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/11-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/037-source-coordinate-repair/REPORT.md",
+      "locator": "logs/12-generator.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/39-canceled-results-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/40-canceled-hook-only-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/45-reply-source-wait-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/46-reply-source-wait-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/47-reply-slot-final-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/49-agent-answer-source-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/01-facade-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/03-threads-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/07-typed-nested-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/29-proof-and-settlement.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/11-cp-wait-r1.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/12-cp-wait-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/28-child-reclaim-proposal-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/15-terminal-reply-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/19-sourced-followup-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/08-budget-attempt-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/31-late-slot-two-root.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/16-post-reserve-fence.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/21-late-producer-r1.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/23-late-producer-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/30-unsettled-parent-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/31-late-slot-two-root.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/22-crash-attempts.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/24-real-limits-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/26-admission-fault-r1.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/28-child-reclaim-proposal-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/29-proof-and-settlement.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/36-canonical-accounting.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/33-root-limit-snapshot.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/34-bounded-parent-result.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/42-canceled-final-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/45-reply-source-wait-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/46-reply-source-wait-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/47-reply-slot-final-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/49-agent-answer-source-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/50-delegation-answer-final-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/51-delegation-answer-final-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/32-own-final-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/35-own-final-ordinary-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/35-race-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/43-affected-normal-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/44-affected-race-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/45-delivery-reader-normal-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/45-delivery-reader-race-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "../052-note-effects-go/logs/46-vet-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/50-delegation-answer-final-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/053-collaboration-policy/REPORT.md",
+      "locator": "logs/51-delegation-answer-final-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/33-all-go-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/35-race-r3.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/43-affected-normal-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/44-affected-race-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/45-delivery-reader-normal-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/45-delivery-reader-race-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "logs/46-vet-r4.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "../053-collaboration-policy/logs/49-agent-answer-source-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "../053-collaboration-policy/logs/50-delegation-answer-final-ordinary.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/052-note-effects-go/REPORT.md",
+      "locator": "../053-collaboration-policy/logs/51-delegation-answer-final-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/128-memory-access-budget/first-slice.md",
+      "locator": "logs/02-minimal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/128-memory-access-budget/first-slice.md",
+      "locator": "logs/03-minimal-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/131-memory-ts-catalog-revision/REPORT.md",
+      "locator": "logs/03-catalog-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/131-memory-ts-catalog-revision/REPORT.md",
+      "locator": "logs/05-catalog-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/097-responses-preparation/REPORT.md",
+      "locator": "logs/read-excerpts.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/097-responses-preparation/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/negative-checkpoint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/negative-pin.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/toolchain.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/target-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/target-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/forced-parents-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/input-start.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/input-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/072-notes-collaboration-r3-review/REPORT.md",
+      "locator": "logs/return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/105-anthropic-preparation/REPORT.md",
+      "locator": "logs/read-excerpts.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/01-original-replay-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/02-original-replay-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/13-original-replay-isolated-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/14-final-isolated-dbus.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/08-final-dbus-cleanup.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/09-final-dbus-cleanup-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/11-disconnect-fixture-diagnostic.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/11-preexisting-process-observation.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/14-final-isolated-dbus.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/15-final-isolated-dbus-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/17-current-regression.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/18-current-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/16-final-vet.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/06-final-cross.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/07-module-graph.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/032-credential-result-repair/REPORT.md",
+      "locator": "logs/20-freeze-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/01-capture-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/03-routing-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/04-routing-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/06-lifecycle-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/08-host-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/16-source-race-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/17-source-race-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/20-unicode-boundary-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/25-vault-error-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/19-full-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/31-full-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/26-ts-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/29-production-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/30-test-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/27-lint-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/18-architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/10-probe-syntax.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/28-probe-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/028-host-sources/REPORT.md",
+      "locator": "logs/32-validate-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/runtime-red-complete.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/runtime-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/runtime-green-initial.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/runtime-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/startup-reason-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/ordinary-invalid-fixture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/unit-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/tsc-production.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/tsc-test.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/lint.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/architecture.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/012-foundation-client-repair/REPORT.md",
+      "locator": "logs/validate-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/02-groups-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/03-groups-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/05-events-normal-poll.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/06-events-race-poll.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/07-events-race-after-emits.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/12-two-package-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/086-recovery-fixture-repair/REPORT.md",
+      "locator": "logs/13-two-package-race.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/01-codec-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/02-protocol-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/18-local-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/12-real-runner.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/19-production-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/20-test-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/21-lint-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/22-architecture-final.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/044-event-client/REPORT.md",
+      "locator": "logs/26-return.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/01-migration-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/02-foundation-assistant-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/04-first-proof-counterfactual-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/05-batch-union-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/11-effect-owner-probe-red.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/15-effect-owner-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/10-effect-owner-probe-fixture-first.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/14-effect-owner-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/20-joint-normal.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "../074-groups-domain/logs/28-single-batch-scope-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "../074-groups-domain/logs/29-scope-group-controls-green.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/26-joint-normal-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/27-joint-race-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/073-groups-core/REPORT.md",
+      "locator": "logs/28-joint-vet-r2.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "install.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "runtime-package-paths.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "tooling-tests.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "notices-write.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "notices-check.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "build-all.log"
+    },
+    {
+      "file": "sessions/20261025T043239Z/013-validator-dependencies/REPORT.md",
+      "locator": "native-smoke.log"
+    }
+  ]
+}

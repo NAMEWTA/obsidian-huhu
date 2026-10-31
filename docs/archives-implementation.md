@@ -49,7 +49,7 @@ v2 使用新的外层 `huhu-type: archive-record/archive-relation`，与仅识�
 
 P5 的 CSV 导入、Lookup/Rollup、局部关系图和深入 Home 项目执行整合不纳入这次 P0–P4 范围。Archives 只拥有主资料与关系，不接管 Home 的任务、里程碑、日志与进度。
 
-Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导入、Lookup／Rollup、局部图谱和项目集成」。分阶段路线写明：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」因此本次合入不实现 P5。依据保存在 `.agents/speculo/.speculo/specdev/changes/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md`。
+Issue #3 正文把 P5 明确放在首轮之外。清单项是「P5：完善导入、Lookup／Rollup、局部图谱和项目集成」。分阶段路线写明：「P0 至 P4 组成第一轮可正式使用的重构。P5 可以按需求分批交付。关系图、复杂计算和导入不应抢在稳定身份、文件协议和迁移能力之前。」因此本次合入不实现 P5。依据保存在 `.agents/speculo/.speculo/specdev/changes/archive/2026-10-26-unified-browser-versioning-archives/sources/issue-3-body.md`。
 
 ### 黄金样本改写到通用协议
 
