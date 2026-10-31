@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "task": "124-ui-consumer-preflight",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_client",
+  "nativeAckReceived": true,
+  "taskSha256": "7e130743b0330162e0be8e986155887c0eb03c5cd61ac2a9e57fca40ff36a912",
+  "dispatchValidationExit": 0,
+  "validationToolChunk": "135b30",
+  "scope": "read-only preparation;own report only;no product commands or product writes;no ticket activation",
+  "actualGoWindow": "121 reviewer only"
+}

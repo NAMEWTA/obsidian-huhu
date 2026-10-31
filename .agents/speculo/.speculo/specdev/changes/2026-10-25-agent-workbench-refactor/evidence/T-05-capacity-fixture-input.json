@@ -1,0 +1,439 @@
+{
+  "observed_at": "2026-10-25T18:54:38.127752+00:00",
+  "purpose": "Freeze one-file test-setup correction; no production defect root cause claimed",
+  "current_manifest": "/tmp/huhu-t05-root-repair-inputs-v7.json",
+  "current_manifest_sha256": "242efe09855962e461c15987e1a6e3f8df5ca0209587418af2840ab20e8eba5c",
+  "current_checked": 1948,
+  "allowed_path": "src/host/desktop/native/host-stream.integration.test.ts",
+  "before_sha256": "080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4",
+  "probe": {
+    "command": [
+      "env",
+      "HUHU_TEST_PTY_BINARY=/tmp/huhu-t05-repair-r2-c-linux-final-20261025T180555Z",
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "--config",
+      "/tmp/huhu-t05-capacity-fill-c.config.mjs",
+      "--disableConsoleIntercept",
+      "--reporter",
+      "verbose"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "started_at": "2026-10-25T18:51:14.006147+00:00",
+    "finished_at": "2026-10-25T18:51:15.555021+00:00",
+    "exit_code": 0,
+    "output": "/tmp/huhu-t05-capacity-fill-c-probe.log",
+    "output_sha256": "bf0f226f960129df63735b0acc7b90d3c0c62dbd6fae5e52722aeff3b5436d1d"
+  },
+  "probe_inputs": 66,
+  "facts": [
+    "Original combination failed 32-filler readiness before target request; no full original wire trace.",
+    "Single diagnostic did not reproduce: 32 fillers actually spawned, SID1 capacity rejection, 32 exits and helper exit0.",
+    "Final trace nested spawnFailures arrays retain mutable references; timing claims use immediately serialized original console lines and individual wire events.",
+    "Only prepare fixture using actual spawned acknowledgements within one original 4s deadline; all target assertions remain."
+  ],
+  "copies": {
+    "/tmp/huhu-t05-root-repair-inputs-v7.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/242efe09855962e461c15987e1a6e3f8df5ca0209587418af2840ab20e8eba5c.raw",
+      "sha256": "242efe09855962e461c15987e1a6e3f8df5ca0209587418af2840ab20e8eba5c",
+      "bytes": 389424
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/a9784f0c969aee961a97a24f1c14f35bd4c62853dd988e82d2283d28571b3feb.raw",
+      "sha256": "a9784f0c969aee961a97a24f1c14f35bd4c62853dd988e82d2283d28571b3feb",
+      "bytes": 633
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe.log": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/bf0f226f960129df63735b0acc7b90d3c0c62dbd6fae5e52722aeff3b5436d1d.raw",
+      "sha256": "bf0f226f960129df63735b0acc7b90d3c0c62dbd6fae5e52722aeff3b5436d1d",
+      "bytes": 70281
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/63471a22bdc63bf5504347194700f97c4e8014fd1b0c93343def650c3f3ec62b.raw",
+      "sha256": "63471a22bdc63bf5504347194700f97c4e8014fd1b0c93343def650c3f3ec62b",
+      "bytes": 12087
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/0b8b84d4fbee8dcd033834ee9cb6c56206d78fcf80b0f7827181ad916057b5d0.raw",
+      "sha256": "0b8b84d4fbee8dcd033834ee9cb6c56206d78fcf80b0f7827181ad916057b5d0",
+      "bytes": 7216
+    },
+    "/tmp/huhu-t05-capacity-fill-c-original-full.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4.raw",
+      "sha256": "080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4",
+      "bytes": 17495
+    },
+    "/tmp/huhu-t05-capacity-fill-c-original-case.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/a6263a8fda1ac48a8bd26f2c46202ef45bd5420dbfb8ef1c4a91f71ad408886d.raw",
+      "sha256": "a6263a8fda1ac48a8bd26f2c46202ef45bd5420dbfb8ef1c4a91f71ad408886d",
+      "bytes": 4522
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe.diff": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/36e9b049b9b8cf9c667f7afafc34cf6bf24f9f4b76d5628f0de58f1e86a519b7.raw",
+      "sha256": "36e9b049b9b8cf9c667f7afafc34cf6bf24f9f4b76d5628f0de58f1e86a519b7",
+      "bytes": 5639
+    },
+    "/tmp/huhu-t05-capacity-fill-c-events.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/a2b95d414964f855bcffee28584bfff94002a4edcfa8f2ba2be5f59bf7d806c2.raw",
+      "sha256": "a2b95d414964f855bcffee28584bfff94002a4edcfa8f2ba2be5f59bf7d806c2",
+      "bytes": 117120
+    },
+    "/tmp/huhu-t05-capacity-fill-c-run.py": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ae50e4b429ba53fec0c301f0516109e38a60533f59a4907af3137fcf7749a9a8.raw",
+      "sha256": "ae50e4b429ba53fec0c301f0516109e38a60533f59a4907af3137fcf7749a9a8",
+      "bytes": 3034
+    },
+    "/tmp/huhu-t05-capacity-fill-c.config.mjs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/8f25403b48bb470ae53701bef6fcaee32f028048cb129ea6109a3d4f28394517.raw",
+      "sha256": "8f25403b48bb470ae53701bef6fcaee32f028048cb129ea6109a3d4f28394517",
+      "bytes": 324
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/helper-stream.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/e4567c686d0b1ed8bc118c4c04454bfa6f2a0d2b56251f981b451bb3e77feb59.raw",
+      "sha256": "e4567c686d0b1ed8bc118c4c04454bfa6f2a0d2b56251f981b451bb3e77feb59",
+      "bytes": 37651
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/helper.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f.raw",
+      "sha256": "c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f",
+      "bytes": 37744
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/host-stream.integration.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4.raw",
+      "sha256": "080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4",
+      "bytes": 17495
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/host.integration.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1.raw",
+      "sha256": "c254468ddb4f96c6cc7ebf810aa0b9eb4cdd2c3277e62599eb899dc2e99aa1a1",
+      "bytes": 3070
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/host.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/e0f792e962d4ae4c61eb9f1920af354c5779477ace3c14972cf07e1d0323adc5.raw",
+      "sha256": "e0f792e962d4ae4c61eb9f1920af354c5779477ace3c14972cf07e1d0323adc5",
+      "bytes": 30812
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/host/desktop/native/host.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/e462570d0166cdf3546e712962c12fe9b3218d5b026fa7b3433d7cac0469ad7f.raw",
+      "sha256": "e462570d0166cdf3546e712962c12fe9b3218d5b026fa7b3433d7cac0469ad7f",
+      "bytes": 20202
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/core/terminal/frames-screen.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca.raw",
+      "sha256": "4552be61db26db039820d21b3fd79903cd3573793f8d9b553f79bcdd26158aca",
+      "bytes": 9254
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/i18n.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/1414aae6262fedb5439761d175a90edd402c9cc7b8dd4424a0004e85744ff677.raw",
+      "sha256": "1414aae6262fedb5439761d175a90edd402c9cc7b8dd4424a0004e85744ff677",
+      "bytes": 68604
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/agent-runtime.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/11c40ffff6faf120673040ee872e895947e85abc910c3fe95bba1d58b90550c4.raw",
+      "sha256": "11c40ffff6faf120673040ee872e895947e85abc910c3fe95bba1d58b90550c4",
+      "bytes": 9247
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/agent-runtime.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113.raw",
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "bytes": 23866
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/controller.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81.raw",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/prompt-runner.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/b788f02000e2817d72cbb0a472551b1a3356026bd8d5f641fe207218442a38b8.raw",
+      "sha256": "b788f02000e2817d72cbb0a472551b1a3356026bd8d5f641fe207218442a38b8",
+      "bytes": 10317
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/prompt-runner.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/8f63a7718bb26756e1d798ed06845701cff482a6dd7b9aecd777c0c9c5df9f13.raw",
+      "sha256": "8f63a7718bb26756e1d798ed06845701cff482a6dd7b9aecd777c0c9c5df9f13",
+      "bytes": 8944
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session-resize.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ea77ef127bcba572af254bdaf961aa9ca6f18b9fbc0377d550b4ed89c169c8a8.raw",
+      "sha256": "ea77ef127bcba572af254bdaf961aa9ca6f18b9fbc0377d550b4ed89c169c8a8",
+      "bytes": 11961
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session-screen-native.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/23989877ce902fc81628243cfdfa122e70e1577192d127f173137ad28d2c1441.raw",
+      "sha256": "23989877ce902fc81628243cfdfa122e70e1577192d127f173137ad28d2c1441",
+      "bytes": 10432
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session-screen-xterm.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/eab2f190a69d625e30bac6221d408866e92c2ed4a3af6cfd0ef4e37637a947e0.raw",
+      "sha256": "eab2f190a69d625e30bac6221d408866e92c2ed4a3af6cfd0ef4e37637a947e0",
+      "bytes": 17166
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session-screen.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/bc79627c3f21dc13fe701c3b5ac97fd8dd222c41623d0f1b6cb8b5dd250f21df.raw",
+      "sha256": "bc79627c3f21dc13fe701c3b5ac97fd8dd222c41623d0f1b6cb8b5dd250f21df",
+      "bytes": 25741
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session-screen.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/0734d80b132e03ace1a176ff62cddf0739000f3ed939ee72b1c30a71961faa78.raw",
+      "sha256": "0734d80b132e03ace1a176ff62cddf0739000f3ed939ee72b1c30a71961faa78",
+      "bytes": 41014
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/c95f9fd4c88e6ec2efaed9070594c667c656c3f8310ed6d9b45d9f6f8edde838.raw",
+      "sha256": "c95f9fd4c88e6ec2efaed9070594c667c656c3f8310ed6d9b45d9f6f8edde838",
+      "bytes": 10959
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/session.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/bf33cf739e7c4c9cf58549a5847db6354cdfa6363815bd435a776a931202a32c.raw",
+      "sha256": "bf33cf739e7c4c9cf58549a5847db6354cdfa6363815bd435a776a931202a32c",
+      "bytes": 32665
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/sessions.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2.raw",
+      "sha256": "9e42b92768610265e71712cfead996bb65c0169acab9116b45a8c5fa0e7800f2",
+      "bytes": 28839
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/workspace-service-stop-native.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/69b4aa80c8e1d2f6f22ed64fcf4d919459eea58b228dd86fca31c0d0fa9fc814.raw",
+      "sha256": "69b4aa80c8e1d2f6f22ed64fcf4d919459eea58b228dd86fca31c0d0fa9fc814",
+      "bytes": 15508
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/ui/terminal/terminal-presentation.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a.raw",
+      "sha256": "f0ca1b94064d3adaf94b51dfaa71913dbb2ee6d46b86813c085c6c3d053dc17a",
+      "bytes": 10565
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/ui/terminal/terminal-scheduling.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/cde18f0c85e0f8d1ab1cf83bd6a07b25841da702cd44b3da8537c2ece8dc7c2c.raw",
+      "sha256": "cde18f0c85e0f8d1ab1cf83bd6a07b25841da702cd44b3da8537c2ece8dc7c2c",
+      "bytes": 9267
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/ui/terminal/terminal-screen-xterm.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a.raw",
+      "sha256": "f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a",
+      "bytes": 23678
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/ui/terminal/terminal-view.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/5bd0a7545b4b564fda870b26be5b3b9e8a11580f1df83e9fccd0142ad7c209de.raw",
+      "sha256": "5bd0a7545b4b564fda870b26be5b3b9e8a11580f1df83e9fccd0142ad7c209de",
+      "bytes": 20005
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/shared/native/frames.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2.raw",
+      "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2",
+      "bytes": 3741
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/shared/native/frames.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d.raw",
+      "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d",
+      "bytes": 9119
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/shared/native/host.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8.raw",
+      "sha256": "6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8",
+      "bytes": 5279
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/shared/native/input.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76.raw",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76",
+      "bytes": 1281
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/shared/native/input.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/b0aa914c51a85f9b452c49aba7353a1a98358ce0e6e9bd678a56652ceffbef7e.raw",
+      "sha256": "b0aa914c51a85f9b452c49aba7353a1a98358ce0e6e9bd678a56652ceffbef7e",
+      "bytes": 7532
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-capacity-fill-c.config.mjs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/8f25403b48bb470ae53701bef6fcaee32f028048cb129ea6109a3d4f28394517.raw",
+      "sha256": "8f25403b48bb470ae53701bef6fcaee32f028048cb129ea6109a3d4f28394517",
+      "bytes": 324
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-capacity-fill-c-probe.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/0b8b84d4fbee8dcd033834ee9cb6c56206d78fcf80b0f7827181ad916057b5d0.raw",
+      "sha256": "0b8b84d4fbee8dcd033834ee9cb6c56206d78fcf80b0f7827181ad916057b5d0",
+      "bytes": 7216
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-capacity-fill-c-original-full.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4.raw",
+      "sha256": "080a8bfa74cd6995f000c3a5cded19094131a7208fee63ef038a1119d16d88a4",
+      "bytes": 17495
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-capacity-fill-c-original-case.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/a6263a8fda1ac48a8bd26f2c46202ef45bd5420dbfb8ef1c4a91f71ad408886d.raw",
+      "sha256": "a6263a8fda1ac48a8bd26f2c46202ef45bd5420dbfb8ef1c4a91f71ad408886d",
+      "bytes": 4522
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-root-repair-inputs-v7.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/242efe09855962e461c15987e1a6e3f8df5ca0209587418af2840ab20e8eba5c.raw",
+      "sha256": "242efe09855962e461c15987e1a6e3f8df5ca0209587418af2840ab20e8eba5c",
+      "bytes": 389424
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-check-runner.py": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c.raw",
+      "sha256": "1afb0febf4a3dc7d2a830568b132d491ca136f52218d38bb08611acd32ea5a5c",
+      "bytes": 1121
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/external/tmp/huhu-t05-capacity-fill-c-run.py": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ae50e4b429ba53fec0c301f0516109e38a60533f59a4907af3137fcf7749a9a8.raw",
+      "sha256": "ae50e4b429ba53fec0c301f0516109e38a60533f59a4907af3137fcf7749a9a8",
+      "bytes": 3034
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/outbox.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72.raw",
+      "sha256": "affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72",
+      "bytes": 35018
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/session.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/2ab702a053f23d87fea554242072dc95ee2c06f03f93e100b22f3ec2b8aeb8ce.raw",
+      "sha256": "2ab702a053f23d87fea554242072dc95ee2c06f03f93e100b22f3ec2b8aeb8ce",
+      "bytes": 82726
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/main.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6.raw",
+      "sha256": "7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6",
+      "bytes": 14457
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/frame.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/797d26e00813cb66a71df01b7172933ab3fc9480f7e299bdd8037ea6045883d9.raw",
+      "sha256": "797d26e00813cb66a71df01b7172933ab3fc9480f7e299bdd8037ea6045883d9",
+      "bytes": 14498
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/tests/stdio.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/b0489fa16f312db28238bfd633c33639cd52781abd9b0f597b1700d6b0f2b8b4.raw",
+      "sha256": "b0489fa16f312db28238bfd633c33639cd52781abd9b0f597b1700d6b0f2b8b4",
+      "bytes": 13428
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/test/fixtures/native/terminal-input-admission-v1.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/9ab2930d79584231afb4f1f51f26c5294db75c77c21d99c279ddb6399e0c3dbc.raw",
+      "sha256": "9ab2930d79584231afb4f1f51f26c5294db75c77c21d99c279ddb6399e0c3dbc",
+      "bytes": 18056
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/Cargo.toml": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c.raw",
+      "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c",
+      "bytes": 876
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/Cargo.lock": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52.raw",
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "bytes": 17755
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/job.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83.raw",
+      "sha256": "3c74f8bc5996afca7744e47e9dae7434cd500f9c33d857dacb351cc414d1ab83",
+      "bytes": 15567
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/bootstrap.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8.raw",
+      "sha256": "8b58d4e00d498779ac201e4ec109bb6e2af8bcce5f417a29742ad5d9fb6bbda8",
+      "bytes": 22732
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/inherited_fds.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d.raw",
+      "sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "bytes": 1244
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/cookies.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e.raw",
+      "sha256": "1ab4e6975429cc55638a6d93d13dbd66811352809f1239a70bb7a96b55f6418e",
+      "bytes": 6334
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/data.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067.raw",
+      "sha256": "ae6d50713540baa5f407694f00fc8e50ed6ed8c7a3c2cac2debf9f243e2c1067",
+      "bytes": 5272
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/native/pty-server/src/agent_data.rs": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf.raw",
+      "sha256": "47f49ee0dbb1b408bd124edbeca42e6c4d48ceb5058798e2ed1cfda2b74054bf",
+      "bytes": 88523
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/services/terminal/sessions.e2e.test.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472.raw",
+      "sha256": "ef0b1ddfdd238e8dd53d0cd29739919ed49d264ea4cbfb528cfb636e98058472",
+      "bytes": 3049
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/src/modules/agent/platform/desktop/pty/helper.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4.raw",
+      "sha256": "235694630fac82f9985b0de64650cec1fa90e79bb37bff1492eb594c91cd4be4",
+      "bytes": 164
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/scripts/isolate-home.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/c769653fb1e1a9f30f0a950ef6e77626ca8ea71b07e0e53238bf5d43d93f39c5.raw",
+      "sha256": "c769653fb1e1a9f30f0a950ef6e77626ca8ea71b07e0e53238bf5d43d93f39c5",
+      "bytes": 768
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/scripts/module-strings.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/12b88d8724abf38b180cf87139124565ae696ea708575d5a6facb3b372fe8e50.raw",
+      "sha256": "12b88d8724abf38b180cf87139124565ae696ea708575d5a6facb3b372fe8e50",
+      "bytes": 1841
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/scripts/obsidian-stub.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/571d634cef54543bff95984a3191286f6f70c6c5dc189781c156ce1f729bc61a.raw",
+      "sha256": "571d634cef54543bff95984a3191286f6f70c6c5dc189781c156ce1f729bc61a",
+      "bytes": 12941
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-owner-drain-repair-packet.md": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/f6f14a70b332605138255856bf1c556a68fb0f4ae44825cfb1fb4d8014de2640.raw",
+      "sha256": "f6f14a70b332605138255856bf1c556a68fb0f4ae44825cfb1fb4d8014de2640",
+      "bytes": 3851
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-owner-drain-repair-input.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/807d37d36537dbb387b7044cc239f604202968fec8627142de32368106321b66.raw",
+      "sha256": "807d37d36537dbb387b7044cc239f604202968fec8627142de32368106321b66",
+      "bytes": 32319
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/vitest.config.ts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415.raw",
+      "sha256": "4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415",
+      "bytes": 2599
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/tsconfig.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb.raw",
+      "sha256": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb",
+      "bytes": 784
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/tsconfig.test.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b.raw",
+      "sha256": "e33d0281f075764fcc3b5175d7d38d7c561037bf1cdce59eab2cd340cf05676b",
+      "bytes": 310
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/package.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c.raw",
+      "sha256": "b565ad251e76906f63cb5d11821c7f91d2011b6e92392b39a15f2b6be4df958c",
+      "bytes": 13443
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/eslint.config.mts": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/9128aeaecb755328ac4aaffbc4aad91db5f10fb8db4c85b0fa62e1bf331d30d5.raw",
+      "sha256": "9128aeaecb755328ac4aaffbc4aad91db5f10fb8db4c85b0fa62e1bf331d30d5",
+      "bytes": 3344
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-packet.md": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e.raw",
+      "sha256": "82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e",
+      "bytes": 3574
+    },
+    "/tmp/huhu-t05-capacity-fill-c-probe-inputs/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-fast-exit-repair-input.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/959d36f484044019e5f1156c27eb121539c34025b1c2c6874b4e78b1e42eaf0d.raw",
+      "sha256": "959d36f484044019e5f1156c27eb121539c34025b1c2c6874b4e78b1e42eaf0d",
+      "bytes": 21238
+    },
+    "/tmp/huhu-t05-root-repair-tests-v4.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/90190fb219c85651c52ef2f3d04eaa8a475f45ae498cc9e4642e1cc23b6a9106.raw",
+      "sha256": "90190fb219c85651c52ef2f3d04eaa8a475f45ae498cc9e4642e1cc23b6a9106",
+      "bytes": 1621
+    },
+    "/tmp/huhu-t05-root-repair-tests-v4.log": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/ef6baf794cde29da3dcbffbfd618e1d47fbbc5da866ecd70d7ae8ec25d583ca4.raw",
+      "sha256": "ef6baf794cde29da3dcbffbfd618e1d47fbbc5da866ecd70d7ae8ec25d583ca4",
+      "bytes": 44860
+    },
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-owner-drain-root-attempt2-audit.json": {
+      "path": "T-05-logs/capacity-fill-discovery/objects/0fb61d2cea96960f079221307db8b747a5e96a63f21be48a7e35a5639f391848.raw",
+      "sha256": "0fb61d2cea96960f079221307db8b747a5e96a63f21be48a7e35a5639f391848",
+      "bytes": 1345667
+    }
+  },
+  "errors": []
+}

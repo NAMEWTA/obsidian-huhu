@@ -1,0 +1,416 @@
+package lead_groups_migration_test
+
+import (
+	"context"
+	"crypto/sha256"
+	"database/sql"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net/url"
+	"os"
+	"path/filepath"
+	"reflect"
+	"sort"
+	"strings"
+	"testing"
+
+	blob "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/blob/store"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/base"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/effects"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/migrations"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/runtime/profile"
+	_ "github.com/ncruces/go-sqlite3/driver"
+)
+
+const oldManifestHash = "33638a60e3e0619eb4f4f6c6e9e5f251d0ee4f5e132a993eb2bc90202caf1dae"
+
+type fixture struct {
+	SchemaVersion int               `json:"schemaVersion"`
+	Files         map[string]string `json:"files"`
+}
+type tableImage struct {
+	Columns []string
+	Rows    []string
+}
+
+func sha(b []byte) string { v := sha256.Sum256(b); return hex.EncodeToString(v[:]) }
+func read(t *testing.T, p string) []byte {
+	t.Helper()
+	b, e := os.ReadFile(p)
+	if e != nil {
+		t.Fatal(e)
+	}
+	return b
+}
+func clone(t *testing.T) (string, string, fixture) {
+	t.Helper()
+	from := os.Getenv("LEAD_GROUPS_V7_FIXTURE")
+	if from == "" {
+		t.Fatal("LEAD_GROUPS_V7_FIXTURE is required")
+	}
+	b := read(t, filepath.Join(from, "manifest.json"))
+	if sha(b) != oldManifestHash {
+		t.Fatal("historical v7 fixture manifest drift")
+	}
+	var f fixture
+	if e := json.Unmarshal(b, &f); e != nil {
+		t.Fatal(e)
+	}
+	if f.SchemaVersion != 7 || len(f.Files) != 6 {
+		t.Fatal("not original DB + five CP fixture")
+	}
+	root := filepath.Join(t.TempDir(), "profiles")
+	locator := filepath.Join(root, "one")
+	for name, expected := range f.Files {
+		if name != "profile.sqlite3" && (!strings.HasPrefix(name, "checkpoints/") || filepath.Clean(name) != name) {
+			t.Fatal("unexpected path", name)
+		}
+		body := read(t, filepath.Join(from, "one", name))
+		if sha(body) != expected {
+			t.Fatal("historical input drift", name)
+		}
+		target := filepath.Join(locator, name)
+		if e := os.MkdirAll(filepath.Dir(target), 0700); e != nil {
+			t.Fatal(e)
+		}
+		if e := os.WriteFile(target, body, 0600); e != nil {
+			t.Fatal(e)
+		}
+	}
+	return root, locator, f
+}
+func openDB(t *testing.T, p string, readonly bool) *sql.DB {
+	t.Helper()
+	u := url.URL{Scheme: "file", Path: p}
+	q := u.Query()
+	if readonly {
+		q.Set("mode", "ro")
+		q.Set("immutable", "1")
+	}
+	u.RawQuery = q.Encode()
+	db, e := sql.Open("sqlite3", u.String())
+	if e != nil {
+		t.Fatal(e)
+	}
+	db.SetMaxOpenConns(1)
+	return db
+}
+func number(t *testing.T, db *sql.DB, query string) int {
+	t.Helper()
+	var n int
+	if e := db.QueryRow(query).Scan(&n); e != nil {
+		t.Fatal(e)
+	}
+	return n
+}
+func quote(s string) string { return `"` + strings.ReplaceAll(s, `"`, `""`) + `"` }
+func imageTables(t *testing.T, db *sql.DB, original map[string]tableImage) map[string]tableImage {
+	t.Helper()
+	out := map[string]tableImage{}
+	if original == nil {
+		rows, e := db.Query("SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+		if e != nil {
+			t.Fatal(e)
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var name string
+			if e = rows.Scan(&name); e != nil {
+				t.Fatal(e)
+			}
+			out[name] = tableImage{}
+		}
+		if e = rows.Err(); e != nil {
+			t.Fatal(e)
+		}
+		if e = rows.Close(); e != nil {
+			t.Fatal(e)
+		}
+	} else {
+		for name, v := range original {
+			out[name] = tableImage{Columns: v.Columns}
+		}
+	}
+	for name, v := range out {
+		columns := "*"
+		if len(v.Columns) > 0 {
+			quoted := make([]string, len(v.Columns))
+			for i, c := range v.Columns {
+				quoted[i] = quote(c)
+			}
+			columns = strings.Join(quoted, ",")
+		}
+		rows, e := db.Query("SELECT " + columns + " FROM " + quote(name))
+		if e != nil {
+			t.Fatal(e)
+		}
+		defer rows.Close()
+		v.Columns, e = rows.Columns()
+		if e != nil {
+			t.Fatal(e)
+		}
+		v.Rows = []string{}
+		for rows.Next() {
+			values := make([]any, len(v.Columns))
+			dest := make([]any, len(values))
+			for i := range values {
+				dest[i] = &values[i]
+			}
+			if e = rows.Scan(dest...); e != nil {
+				t.Fatal(e)
+			}
+			b, e := json.Marshal(values)
+			if e != nil {
+				t.Fatal(e)
+			}
+			v.Rows = append(v.Rows, string(b))
+		}
+		if e = rows.Err(); e != nil {
+			t.Fatal(e)
+		}
+		if e = rows.Close(); e != nil {
+			t.Fatal(e)
+		}
+		sort.Strings(v.Rows)
+		out[name] = v
+	}
+	return out
+}
+func fullBackup(locator string) base.CompleteBackup {
+	return func(ctx context.Context, db *sql.DB, dir string) ([]base.BackupBlob, error) {
+		store, e := blob.ReadOnlySource(locator)
+		if e != nil {
+			return nil, e
+		}
+		return effects.CompleteMigrationBackup(ctx, db, store, dir)
+	}
+}
+func oldState(t *testing.T, locator string) map[string]tableImage {
+	t.Helper()
+	db := openDB(t, filepath.Join(locator, "profile.sqlite3"), true)
+	defer db.Close()
+	if number(t, db, "PRAGMA user_version") != 7 {
+		t.Fatal("fixture is not schema7")
+	}
+	if number(t, db, "SELECT count(*) FROM execution_runs") != 5 || number(t, db, "SELECT count(*) FROM conversation_messages") != 10 || number(t, db, "SELECT count(*) FROM execution_checkpoints") != 5 {
+		t.Fatal("fixture counts changed")
+	}
+	return imageTables(t, db, nil)
+}
+func assertState(t *testing.T, db *sql.DB, before map[string]tableImage) {
+	t.Helper()
+	after := imageTables(t, db, before)
+	for name, expected := range before {
+		if !reflect.DeepEqual(expected, after[name]) {
+			t.Fatalf("old persisted rows changed in %s\nbefore=%#v\nafter=%#v", name, expected, after[name])
+		}
+	}
+}
+
+func TestLeadRealV7RebuildPreservesEveryOldRowAndCompleteRecoverySet(t *testing.T) {
+	ctx := context.Background()
+	root, locator, f := clone(t)
+	before := oldState(t, locator)
+	h, e := profile.Acquire(root, locator)
+	if e != nil {
+		t.Fatal(e)
+	}
+	s, e := base.OpenWithBackup(ctx, h, fullBackup(locator))
+	if e != nil {
+		_ = h.Close()
+		t.Fatal(e)
+	}
+	closed := false
+	t.Cleanup(func() {
+		if !closed {
+			_ = s.Close()
+			_ = h.Close()
+		}
+	})
+	if migrations.CurrentVersion <= 7 || number(t, s.Database(), "PRAGMA user_version") != migrations.CurrentVersion {
+		t.Fatal("013 migration did not run")
+	}
+	assertState(t, s.Database(), before)
+	if number(t, s.Database(), "PRAGMA foreign_keys") != 1 {
+		t.Fatal("Store returned with FK disabled")
+	}
+	if number(t, s.Database(), "SELECT count(*) FROM pragma_foreign_key_check") != 0 {
+		t.Fatal("migration left broken foreign keys")
+	}
+	var integrity string
+	if e = s.Database().QueryRow("PRAGMA integrity_check").Scan(&integrity); e != nil || integrity != "ok" {
+		t.Fatal(integrity, e)
+	}
+	if _, e = s.Database().Exec("UPDATE conversation_messages SET session_id='session:lead-missing' WHERE message_id=(SELECT message_id FROM conversation_messages LIMIT 1)"); e == nil {
+		t.Fatal("operational Store accepted an orphan after migration")
+	}
+	assertState(t, s.Database(), before)
+	matches, e := filepath.Glob(filepath.Join(locator, ".migration-v7-*", "manifest.json"))
+	if e != nil || len(matches) != 1 {
+		t.Fatalf("backup manifests=%v err=%v", matches, e)
+	}
+	var manifest base.BackupManifest
+	if e = json.Unmarshal(read(t, matches[0]), &manifest); e != nil {
+		t.Fatal(e)
+	}
+	if manifest.SchemaVersion != 7 || manifest.Format != "huhu-migration-recovery-v1" || len(manifest.Blobs) != 5 {
+		t.Fatalf("incomplete backup %#v", manifest)
+	}
+	savedRoot := filepath.Dir(matches[0])
+	savedDB := read(t, filepath.Join(savedRoot, manifest.Database.Path))
+	if int64(len(savedDB)) != manifest.Database.Size || "sha256:"+sha(savedDB) != manifest.Database.SHA256 {
+		t.Fatal("backup DB hash")
+	}
+	bdb := openDB(t, filepath.Join(savedRoot, manifest.Database.Path), true)
+	if number(t, bdb, "PRAGMA user_version") != 7 {
+		_ = bdb.Close()
+		t.Fatal("backup contains upgraded schema")
+	}
+	assertState(t, bdb, before)
+	if e = bdb.Close(); e != nil {
+		t.Fatal(e)
+	}
+	restoredRoot := filepath.Join(t.TempDir(), "restore-profiles")
+	restored := filepath.Join(restoredRoot, "one")
+	if e = os.MkdirAll(filepath.Join(restored, "checkpoints"), 0700); e != nil {
+		t.Fatal(e)
+	}
+	if e = os.WriteFile(filepath.Join(restored, "profile.sqlite3"), savedDB, 0600); e != nil {
+		t.Fatal(e)
+	}
+	seen := map[string]bool{}
+	for _, cp := range manifest.Blobs {
+		if seen[cp.Path] || f.Files[cp.Path] == "" {
+			t.Fatal("duplicate or foreign CP", cp.Path)
+		}
+		seen[cp.Path] = true
+		body := read(t, filepath.Join(savedRoot, cp.Path))
+		if sha(body) != f.Files[cp.Path] || "sha256:"+sha(body) != cp.SHA256 || int64(len(body)) != cp.Size {
+			t.Fatal("CP is not original full envelope", cp.Path)
+		}
+		live, le := os.Stat(filepath.Join(locator, cp.Path))
+		saved, se := os.Stat(filepath.Join(savedRoot, cp.Path))
+		if le != nil || se != nil || os.SameFile(live, saved) {
+			t.Fatal("backup must be independent", le, se)
+		}
+		if e = os.WriteFile(filepath.Join(restored, cp.Path), body, 0600); e != nil {
+			t.Fatal(e)
+		}
+	}
+	if e = s.Close(); e != nil {
+		t.Fatal(e)
+	}
+	if e = h.Close(); e != nil {
+		t.Fatal(e)
+	}
+	closed = true
+	store, e := blob.New(restored)
+	if e != nil {
+		t.Fatal(e)
+	}
+	for _, cp := range manifest.Blobs {
+		r, e := store.Open(ctx, cp.Artifact)
+		if e != nil {
+			t.Fatal(e)
+		}
+		body, re := io.ReadAll(r)
+		ce := r.Close()
+		if re != nil || ce != nil || int64(len(body)) != cp.Artifact.Size {
+			t.Fatal("restored CP cannot be read", re, ce)
+		}
+	}
+	core, e := bootstrap.OpenWithOptions(ctx, restoredRoot, restored, bootstrap.Options{ExecutorPaused: true})
+	if e != nil {
+		t.Fatal(e)
+	}
+	status, se := core.API.Service.Status(ctx, api.NewConnectionIdentity("lead-v7", "lead-owner", false))
+	ce := core.Close()
+	if se != nil || ce != nil || status.Profile.ProfileID != manifest.ProfileID {
+		t.Fatal("real bootstrap restore", se, ce, status.Profile)
+	}
+	checkDB := openDB(t, filepath.Join(restored, "profile.sqlite3"), true)
+	defer checkDB.Close()
+	assertState(t, checkDB, before)
+	t.Logf("schema7 -> %d: %d old tables exactly retained; 5 real CP envelopes independently backed up, fully read and restored via bootstrap; operational FK on", migrations.CurrentVersion, len(before))
+}
+
+func TestLeadV7MissingCheckpointStopsBeforeTableRebuild(t *testing.T) {
+	root, locator, f := clone(t)
+	before := oldState(t, locator)
+	var selected string
+	for name := range f.Files {
+		if strings.HasPrefix(name, "checkpoints/") && (selected == "" || name < selected) {
+			selected = name
+		}
+	}
+	if e := os.Remove(filepath.Join(locator, selected)); e != nil {
+		t.Fatal(e)
+	}
+	core, e := bootstrap.OpenWithOptions(context.Background(), root, locator, bootstrap.Options{ExecutorPaused: true})
+	if core != nil {
+		_ = core.Close()
+		t.Fatal("missing CP yielded usable Core")
+	}
+	var fault *api.Fault
+	if !errors.As(e, &fault) || fault.Reason != "PROFILE_BACKUP_FAILED" {
+		t.Fatal("expected backup rejection", e)
+	}
+	db := openDB(t, filepath.Join(locator, "profile.sqlite3"), true)
+	defer db.Close()
+	if number(t, db, "PRAGMA user_version") != 7 {
+		t.Fatal("backup failure still migrated")
+	}
+	assertState(t, db, before)
+	t.Log("missing original CP blocked upgrade; old schema and all old rows unchanged")
+}
+
+func TestLeadV7InvalidExistingRelationStopsBeforeTableRebuild(t *testing.T) {
+	ctx := context.Background()
+	root, locator, _ := clone(t)
+	db := openDB(t, filepath.Join(locator, "profile.sqlite3"), false)
+	if _, e := db.Exec("PRAGMA foreign_keys=OFF; UPDATE conversation_messages SET session_id='session:lead-invalid-fixture' WHERE message_id=(SELECT message_id FROM conversation_messages ORDER BY message_id LIMIT 1)"); e != nil {
+		_ = db.Close()
+		t.Fatal(e)
+	}
+	before := imageTables(t, db, nil)
+	if number(t, db, "SELECT count(*) FROM pragma_foreign_key_check") != 1 {
+		_ = db.Close()
+		t.Fatal("fault fixture needs exactly one FK violation")
+	}
+	if e := db.Close(); e != nil {
+		t.Fatal(e)
+	}
+	h, e := profile.Acquire(root, locator)
+	if e != nil {
+		t.Fatal(e)
+	}
+	s, e := base.OpenWithBackup(ctx, h, fullBackup(locator))
+	if s != nil {
+		_ = s.Close()
+		_ = h.Close()
+		t.Fatal("bad FK yielded usable Store")
+	}
+	if ce := h.Close(); ce != nil {
+		t.Fatal(ce)
+	}
+	var fault *api.Fault
+	if !errors.As(e, &fault) || fault.Reason != "PROFILE_BACKUP_FAILED" {
+		t.Fatal("expected full-backup integrity rejection before migration", e)
+	}
+	db = openDB(t, filepath.Join(locator, "profile.sqlite3"), true)
+	defer db.Close()
+	if number(t, db, "PRAGMA user_version") != 7 {
+		t.Fatal("backup integrity rejection advanced schema")
+	}
+	assertState(t, db, before)
+	var sqlText string
+	if e = db.QueryRow("SELECT sql FROM sqlite_schema WHERE type='table' AND name='conversation_sessions'").Scan(&sqlText); e != nil || !strings.Contains(sqlText, "kind='direct'") {
+		t.Fatal("failed migration left rebuilt session schema", sqlText, e)
+	}
+	t.Log(fmt.Sprintf("invalid old relation rejected by complete-backup preflight with %s, no table rebuild or version advance", fault.Reason))
+}

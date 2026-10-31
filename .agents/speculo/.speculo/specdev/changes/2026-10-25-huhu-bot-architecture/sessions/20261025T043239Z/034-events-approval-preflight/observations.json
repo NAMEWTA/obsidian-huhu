@@ -1,0 +1,1713 @@
+{
+  "observedAt": "2026-10-25T09:00:56.856803+00:00",
+  "task": "034-events-approval-preflight",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "einoOrigin": {
+    "Version": "v0.9.22",
+    "Time": "2026-10-19T10:03:00Z",
+    "Origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino",
+      "Hash": "0a5ca53b9d3bf7b661dccc863465ec568a421eea",
+      "Ref": "refs/tags/v0.9.22"
+    }
+  },
+  "scope": "Read-only source inspection; only this task report/log written. No runtime probe, product test, dependency installation, model/Vault/keyring access, or background processes.",
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "bytes": 5499,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "bytes": 7961,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+      "bytes": 20543,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "bytes": 11911,
+      "observations": []
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+      "bytes": 6884,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "sha256": "10107d72818eece37b7681005d043140fe658fafd211a6df1609ae1ebae11b7a",
+      "bytes": 6651,
+      "observations": [
+        {
+          "start": 40,
+          "end": 43,
+          "lines": [
+            "40: \tdb.SetMaxIdleConns(1)",
+            "41: \tok := false",
+            "42: \tdefer func() {",
+            "43: \t\tif !ok {"
+          ]
+        },
+        {
+          "start": 158,
+          "end": 180,
+          "lines": [
+            "158: ",
+            "159: // Database is an adapter-only composition seam. Application ports never return",
+            "160: // SQL handles; all contexts share this same bounded connection and Profile.",
+            "161: func (s *Store) Database() *sql.DB { return s.db }",
+            "162: ",
+            "163: // WithinTx performs a short SQL unit of work. Callers must not perform network,",
+            "164: // Host, model or human waits inside the callback.",
+            "165: func (s *Store) WithinTx(ctx context.Context, work func(*sql.Tx) error) error {",
+            "166: \ttx, err := s.db.BeginTx(ctx, nil)",
+            "167: \tif err != nil {",
+            "168: \t\tif ctx.Err() != nil {",
+            "169: \t\t\treturn ctx.Err()",
+            "170: \t\t}",
+            "171: \t\treturn err",
+            "172: \t}",
+            "173: \tdefer func() { _ = tx.Rollback() }()",
+            "174: \tif err = work(tx); err != nil {",
+            "175: \t\treturn err",
+            "176: \t}",
+            "177: \terr = tx.Commit()",
+            "178: \tif ctx.Err() != nil {",
+            "179: \t\treturn ctx.Err()",
+            "180: \t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "sha256": "5ef7af07fdfcf9994a1648ea09e77688a911c2e727a25349deec8885d1f9dcf6",
+      "bytes": 771,
+      "observations": [
+        {
+          "start": 12,
+          "end": 30,
+          "lines": [
+            "12: //go:embed 003-conversation-run.sql",
+            "13: var Conversation string",
+            "14: ",
+            "15: //go:embed 005-grants.sql",
+            "16: var Grants string",
+            "17: ",
+            "18: const CurrentVersion = 4",
+            "19: ",
+            "20: // ApplicationID is the SQLite application_id \"HUHU\".",
+            "21: const ApplicationID = 0x48554855",
+            "22: ",
+            "23: // Ordered is updated by the migration owner when accepting a later ticket.",
+            "24: // Version numbers must be contiguous; old SQL remains immutable.",
+            "25: type Migration struct {",
+            "26: \tVersion int",
+            "27: \tSQL     string",
+            "28: }",
+            "29: ",
+            "30: var Ordered = []Migration{{Version: 1, SQL: Core}, {Version: 2, SQL: Assistant}, {Version: 3, SQL: Conversation}, {Version: 4, SQL: Grants}}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql",
+      "sha256": "ffdd2a1b6b5b5c3d92fb360a77563e21ebe2b3373e87a9f90783945111409d1c",
+      "bytes": 2430,
+      "observations": [
+        {
+          "start": 32,
+          "end": 68,
+          "lines": [
+            "32: CREATE TABLE execution_runs (",
+            "33:  run_id TEXT PRIMARY KEY,",
+            "34:  session_id TEXT NOT NULL REFERENCES conversation_sessions(session_id),",
+            "35:  principal_id TEXT NOT NULL,",
+            "36:  user_message_id TEXT NOT NULL,",
+            "37:  recipient_json TEXT NOT NULL,",
+            "38:  agent_id TEXT NOT NULL,",
+            "39:  persona_revision INTEGER NOT NULL,",
+            "40:  model_revision INTEGER NOT NULL,",
+            "41:  pin_token TEXT UNIQUE REFERENCES config_snapshot_pins(token) ON DELETE SET NULL,",
+            "42:  status TEXT NOT NULL,",
+            "43:  revision INTEGER NOT NULL CHECK(revision>0),",
+            "44:  intent TEXT NOT NULL,",
+            "45:  source_json TEXT NOT NULL,",
+            "46:  scope_json TEXT NOT NULL,",
+            "47:  grants_json TEXT NOT NULL,",
+            "48:  effective_source_json TEXT NOT NULL,",
+            "49:  effective_scope_json TEXT NOT NULL,",
+            "50:  effective_grants_json TEXT NOT NULL,",
+            "51:  retry_of_run_id TEXT NOT NULL,",
+            "52:  claim_token TEXT NOT NULL,",
+            "53:  reason TEXT NOT NULL,",
+            "54:  usage_json TEXT NOT NULL,",
+            "55:  checkpoint_ref TEXT NOT NULL,",
+            "56:  event_seq INTEGER NOT NULL CHECK(event_seq>0),",
+            "57:  created_at TEXT NOT NULL",
+            "58: ) STRICT;",
+            "59: CREATE UNIQUE INDEX execution_one_active_root ON execution_runs(session_id) WHERE status NOT IN('succeeded','failed','canceled');",
+            "60: CREATE INDEX execution_scan ON execution_runs(status,created_at,run_id);",
+            "61: CREATE TABLE execution_events (",
+            "62:  run_id TEXT NOT NULL REFERENCES execution_runs(run_id),",
+            "63:  seq INTEGER NOT NULL CHECK(seq>0),",
+            "64:  event_type TEXT NOT NULL,",
+            "65:  created_at TEXT NOT NULL,",
+            "66:  body_json TEXT NOT NULL,",
+            "67:  PRIMARY KEY(run_id,seq)",
+            "68: ) STRICT;"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql",
+      "sha256": "e7958f23e0f8b4247e9faaa8653f7f4fd3664ca64feb5eba908b05fe5bc75a0b",
+      "bytes": 763,
+      "observations": [
+        {
+          "start": 1,
+          "end": 21,
+          "lines": [
+            "1: CREATE TABLE access_grants (",
+            "2:  grant_id TEXT PRIMARY KEY,",
+            "3:  profile_id TEXT NOT NULL,",
+            "4:  principal_id TEXT NOT NULL,",
+            "5:  workspace_id TEXT NOT NULL,",
+            "6:  scope TEXT NOT NULL CHECK(scope IN('source','folder','vault')),",
+            "7:  resource_id TEXT NOT NULL,",
+            "8:  operations_json TEXT NOT NULL,",
+            "9:  recipients_json TEXT NOT NULL,",
+            "10:  session_id TEXT NOT NULL,",
+            "11:  task_id TEXT NOT NULL,",
+            "12:  state TEXT NOT NULL CHECK(state IN('active','revoked')),",
+            "13:  revision INTEGER NOT NULL CHECK(revision>0),",
+            "14:  expires_at TEXT NOT NULL",
+            "15: ) STRICT;",
+            "16: CREATE INDEX access_grants_subject ON access_grants(profile_id,principal_id,grant_id);",
+            "17: CREATE TABLE access_grants_clock (",
+            "18:  singleton INTEGER PRIMARY KEY CHECK(singleton=1),",
+            "19:  revision INTEGER NOT NULL CHECK(revision>0)",
+            "20: ) STRICT;",
+            "21: INSERT INTO access_grants_clock VALUES(1,1);"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go",
+      "sha256": "bebef956e995657740dbe7082398c1f7e266024ff780a30c7bc8d36019fe25c3",
+      "bytes": 10754,
+      "observations": [
+        {
+          "start": 17,
+          "end": 25,
+          "lines": [
+            "17: type AccessGuard interface {",
+            "18: \tAuthorizeInTx(context.Context, *sql.Tx, api.RequestIdentity, api.RunAccessInput) error",
+            "19: \tCheckInTx(context.Context, *sql.Tx, api.RequestIdentity, api.RunAccessInput, []string) error",
+            "20: }",
+            "21: type Store struct {",
+            "22: \t*conv.Store",
+            "23: \tconfig *assistantstore.Store",
+            "24: \taccess AccessGuard",
+            "25: }"
+          ]
+        },
+        {
+          "start": 114,
+          "end": 140,
+          "lines": [
+            "114: \t\t_, e = tx.ExecContext(ctx, \"INSERT INTO execution_runs(run_id,session_id,principal_id,user_message_id,recipient_json,agent_id,persona_revision,model_revision,pin_token,status,revision,intent,source_json,scope_json,grants_json,effective_source_json,effective_scope_json,effective_grants_json,retry_of_run_id,claim_token,reason,usage_json,checkpoint_ref,event_seq,created_at) VALUES(?,?,?,?,?,?,?,?,?,'accepted',1,?,?,?,?,?,?,?,?,'','','','',1,?)\", runID, session.ID, id.PrincipalID(), userMessage, string(recipientJSON), snap.Agent.ID, snap.Agent.PersonaRevision, snap.Agent.ModelBindingRevision, snap.Token, c.Intent, jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), jsonArray(c.SourceRefs), jsonArray(c.SourceScopes), jsonArray(c.GrantIDs), c.RetryOfRunID, time.Now().UTC().Format(time.RFC3339Nano))",
+            "115: \t\tif e != nil {",
+            "116: \t\t\treturn e",
+            "117: \t\t}",
+            "118: \t\tif s.access == nil && (len(c.SourceRefs)+len(c.SourceScopes) > 0) {",
+            "119: \t\t\treturn api.Denied(\"ACCESS_NOT_ASSEMBLED\")",
+            "120: \t\t}",
+            "121: \t\tif s.access != nil {",
+            "122: \t\t\tif e = s.access.AuthorizeInTx(ctx, tx, id, input); e != nil {",
+            "123: \t\t\t\treturn e",
+            "124: \t\t\t}",
+            "125: \t\t}",
+            "126: \t\tresult, e := tx.ExecContext(ctx, \"UPDATE conversation_sessions SET active_run_id=?,revision=revision+1 WHERE session_id=? AND active_run_id IS NULL AND revision=? AND revision<9223372036854775807\", runID, session.ID, c.ExpectedRevision)",
+            "127: \t\tif e != nil {",
+            "128: \t\t\treturn e",
+            "129: \t\t}",
+            "130: \t\tn, _ := result.RowsAffected()",
+            "131: \t\tif n != 1 {",
+            "132: \t\t\treturn conv.Fault(\"CONFLICT\", \"REVISION_CONFLICT\")",
+            "133: \t\t}",
+            "134: \t\tif _, e = tx.ExecContext(ctx, \"INSERT INTO execution_events VALUES(?,1,'accepted',?,?)\", runID, time.Now().UTC().Format(time.RFC3339Nano), \"{\\\"userMessageId\\\":\\\"\"+userMessage+\"\\\"}\"); e != nil {",
+            "135: \t\t\treturn e",
+            "136: \t\t}",
+            "137: \t\tout = api.RunReceipt{Receipt: api.Receipt{CommandID: c.CommandID, ReceiptID: api.NewID(\"receipt:\"), Revision: \"1\"}, RunID: runID, Status: \"accepted\"}",
+            "138: \t\tif e = conv.Bump(ctx, tx); e != nil {",
+            "139: \t\t\treturn e",
+            "140: \t\t}"
+          ]
+        },
+        {
+          "start": 145,
+          "end": 194,
+          "lines": [
+            "145: func readRun(ctx context.Context, tx *sql.Tx, id string) (api.Run, api.RunAccessInput, string, string, error) {",
+            "146: \tvar r api.Run",
+            "147: \tvar input api.RunAccessInput",
+            "148: \tvar principal, pin, recipientJSON, sources, scopes, grants, usage string",
+            "149: \tvar nullable sql.NullString",
+            "150: \te := tx.QueryRowContext(ctx, \"SELECT r.run_id,r.session_id,r.status,CAST(r.revision AS TEXT),r.agent_id,CAST(r.persona_revision AS TEXT),CAST(r.model_revision AS TEXT),r.reason,r.usage_json,r.principal_id,r.pin_token,r.recipient_json,r.effective_source_json,r.effective_scope_json,r.effective_grants_json,s.profile_id,r.retry_of_run_id FROM execution_runs r JOIN conversation_sessions s ON s.session_id=r.session_id WHERE r.run_id=?\", id).Scan(&r.ID, &r.SessionID, &r.Status, &r.Revision, &r.AgentID, &r.PersonaRevision, &r.ModelBindingRevision, &r.Reason, &usage, &principal, &nullable, &recipientJSON, &sources, &scopes, &grants, &input.ProfileID, &r.RetryOfRunID)",
+            "151: \tif errors.Is(e, sql.ErrNoRows) {",
+            "152: \t\treturn r, input, \"\", \"\", conv.Fault(\"NOT_FOUND\", \"RUN_NOT_FOUND\")",
+            "153: \t}",
+            "154: \tif e != nil {",
+            "155: \t\treturn r, input, \"\", \"\", e",
+            "156: \t}",
+            "157: \tif nullable.Valid {",
+            "158: \t\tpin = nullable.String",
+            "159: \t}",
+            "160: \tr.RootRunID = r.ID",
+            "161: \tinput.SessionID = r.SessionID",
+            "162: \tinput.TaskID = r.ID",
+            "163: \tif json.Unmarshal([]byte(recipientJSON), &input.Recipient) != nil || json.Unmarshal([]byte(sources), &input.Sources) != nil || json.Unmarshal([]byte(scopes), &input.Scopes) != nil || json.Unmarshal([]byte(grants), &input.GrantIDs) != nil {",
+            "164: \t\treturn r, input, \"\", \"\", conv.Fault(\"CONFLICT\", \"RUN_CONTEXT_INVALID\")",
+            "165: \t}",
+            "166: \tif usage != \"\" {",
+            "167: \t\tr.Usage = &api.RunUsage{}",
+            "168: \t\tif json.Unmarshal([]byte(usage), r.Usage) != nil {",
+            "169: \t\t\treturn r, input, \"\", \"\", conv.Fault(\"CONFLICT\", \"RUN_USAGE_INVALID\")",
+            "170: \t\t}",
+            "171: \t}",
+            "172: \treturn r, input, principal, pin, nil",
+            "173: }",
+            "174: func (s *Store) GetRun(ctx context.Context, id api.RequestIdentity, q api.IDQuery) (api.Run, api.RunAccessInput, error) {",
+            "175: \tvar r api.Run",
+            "176: \tvar input api.RunAccessInput",
+            "177: \te := s.Base.WithinTx(ctx, func(tx *sql.Tx) error {",
+            "178: \t\tif _, e := conv.Metadata(ctx, tx, q.ProfileID); e != nil {",
+            "179: \t\t\treturn e",
+            "180: \t\t}",
+            "181: \t\tvar e error",
+            "182: \t\tvar principal string",
+            "183: \t\tr, input, principal, _, e = readRun(ctx, tx, q.ID)",
+            "184: \t\tif e != nil {",
+            "185: \t\t\treturn e",
+            "186: \t\t}",
+            "187: \t\tif principal != id.PrincipalID() {",
+            "188: \t\t\treturn api.Denied(\"SESSION_READ_DENIED\")",
+            "189: \t\t}",
+            "190: \t\t_, e = conv.ReadSession(ctx, tx, id, q.ProfileID, r.SessionID)",
+            "191: \t\treturn e",
+            "192: \t})",
+            "193: \treturn r, input, e",
+            "194: }"
+          ]
+        },
+        {
+          "start": 243,
+          "end": 256,
+          "lines": [
+            "243: func AddEventInTx(ctx context.Context, tx *sql.Tx, runID, eventType string, body any) error {",
+            "244: \tb, e := json.Marshal(body)",
+            "245: \tif e != nil {",
+            "246: \t\treturn e",
+            "247: \t}",
+            "248: \tvar seq int64",
+            "249: \tif e = tx.QueryRowContext(ctx, \"UPDATE execution_runs SET event_seq=event_seq+1 WHERE run_id=? AND event_seq<9223372036854775807 RETURNING event_seq\", runID).Scan(&seq); e != nil {",
+            "250: \t\treturn e",
+            "251: \t}",
+            "252: \t_, e = tx.ExecContext(ctx, \"INSERT INTO execution_events VALUES(?,?,?,?,?)\", runID, seq, eventType, time.Now().UTC().Format(time.RFC3339Nano), string(b))",
+            "253: \treturn e",
+            "254: }",
+            "255: func next(v string) string { n, _ := strconv.ParseInt(v, 10, 64); return strconv.FormatInt(n+1, 10) }",
+            "256: "
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "sha256": "67cae93fbab8b8f08181f44420adcbb824e9157753d57fa18092232535d8d7f4",
+      "bytes": 7726,
+      "observations": [
+        {
+          "start": 15,
+          "end": 44,
+          "lines": [
+            "15: func (s *Store) Recover(ctx context.Context) error {",
+            "16: \treturn s.Base.WithinTx(ctx, func(tx *sql.Tx) error {",
+            "17: \t\trows, e := tx.QueryContext(ctx, \"SELECT run_id FROM execution_runs WHERE status IN('preparing','running')\")",
+            "18: \t\tif e != nil {",
+            "19: \t\t\treturn e",
+            "20: \t\t}",
+            "21: \t\tids := []string{}",
+            "22: \t\tfor rows.Next() {",
+            "23: \t\t\tvar id string",
+            "24: \t\t\tif e = rows.Scan(&id); e != nil {",
+            "25: \t\t\t\t_ = rows.Close()",
+            "26: \t\t\t\treturn e",
+            "27: \t\t\t}",
+            "28: \t\t\tids = append(ids, id)",
+            "29: \t\t}",
+            "30: \t\te = rows.Err()",
+            "31: \t\t_ = rows.Close()",
+            "32: \t\tif e != nil {",
+            "33: \t\t\treturn e",
+            "34: \t\t}",
+            "35: \t\tfor _, id := range ids {",
+            "36: \t\t\tif _, e = tx.ExecContext(ctx, \"UPDATE execution_runs SET status='interrupted',revision=revision+1,claim_token='',reason='PROCESS_INTERRUPTED' WHERE run_id=? AND status IN('preparing','running')\", id); e != nil {",
+            "37: \t\t\t\treturn e",
+            "38: \t\t\t}",
+            "39: \t\t\tif e = AddEventInTx(ctx, tx, id, \"interrupted\", map[string]string{\"reason\": \"PROCESS_INTERRUPTED\"}); e != nil {",
+            "40: \t\t\t\treturn e",
+            "41: \t\t\t}",
+            "42: \t\t}",
+            "43: \t\treturn nil",
+            "44: \t})"
+          ]
+        },
+        {
+          "start": 126,
+          "end": 133,
+          "lines": [
+            "126: func (s *Store) Finalize(ctx context.Context, w executorapp.Work, result api.EngineResult) error {",
+            "127: \tstate, ok := runstate.ResultState(result.Status)",
+            "128: \tif !ok || len(result.Text) > 131072 || len(result.Reason) > 128 || (result.Status == \"suspended\" && result.CheckpointRef == \"\") {",
+            "129: \t\tresult = api.EngineResult{Status: \"failed\", Reason: \"INVALID_ENGINE_RESULT\"}",
+            "130: \t\tstate = \"failed\"",
+            "131: \t}",
+            "132: \t// Missing or malformed counters remain unknown; a measured zero is \"0\".",
+            "133: \tif result.Usage.InputTokens != \"\" && !validUsage(result.Usage.InputTokens) {"
+          ]
+        },
+        {
+          "start": 150,
+          "end": 202,
+          "lines": [
+            "150: \t\tif token != w.ClaimToken || (oldState != \"preparing\" && oldState != \"running\") {",
+            "151: \t\t\treturn conv.Fault(\"CONFLICT\", \"RUN_CLAIM_CHANGED\")",
+            "152: \t\t}",
+            "153: \t\tif s.access != nil {",
+            "154: \t\t\tif e := s.access.CheckInTx(ctx, tx, w.Identity, w.Access, []string{\"read\", \"send\"}); e != nil {",
+            "155: \t\t\t\tvar fault *api.Fault",
+            "156: \t\t\t\tif !errors.As(e, &fault) || (fault.Kind != \"CAPABILITY_DENIED\" && fault.Kind != \"MODEL_UNAVAILABLE\" && fault.Kind != \"HOST_UNAVAILABLE\" && fault.Kind != \"SOURCE_CHANGED\") {",
+            "157: \t\t\t\t\treturn e",
+            "158: \t\t\t\t}",
+            "159: \t\t\t\tresult.Status = \"failed\"",
+            "160: \t\t\t\tresult.Reason = \"ACCESS_REVOKED\"",
+            "161: \t\t\t\tresult.Text = \"\"",
+            "162: \t\t\t\tresult.Partial = false",
+            "163: \t\t\t\tstate = \"failed\"",
+            "164: \t\t\t}",
+            "165: \t\t}",
+            "166: \t\tmessageID := \"\"",
+            "167: \t\tif result.Status == \"finished\" || result.Partial && result.Text != \"\" {",
+            "168: \t\t\tvar e error",
+            "169: \t\t\tmessageID, e = conv.MessageInTx(ctx, tx, w.Run.SessionID, w.Run.ID, \"assistant\", result.Text, w.Run.AgentID, w.Access.Sources, result.Partial, \"\")",
+            "170: \t\t\tif e != nil {",
+            "171: \t\t\t\treturn e",
+            "172: \t\t\t}",
+            "173: \t\t}",
+            "174: \t\tusage := []byte{}",
+            "175: \t\tif measured != nil {",
+            "176: \t\t\tusage, _ = json.Marshal(measured)",
+            "177: \t\t}",
+            "178: \t\tif _, e := tx.ExecContext(ctx, \"UPDATE execution_runs SET status=?,revision=revision+1,reason=?,usage_json=?,checkpoint_ref=? WHERE run_id=? AND claim_token=?\", state, result.Reason, string(usage), result.CheckpointRef, w.Run.ID, w.ClaimToken); e != nil {",
+            "179: \t\t\treturn e",
+            "180: \t\t}",
+            "181: \t\tif e := AddEventInTx(ctx, tx, w.Run.ID, state, map[string]any{\"status\": state, \"reason\": result.Reason, \"messageId\": messageID, \"usage\": measured}); e != nil {",
+            "182: \t\t\treturn e",
+            "183: \t\t}",
+            "184: \t\tif runstate.Terminal(state) {",
+            "185: \t\t\tif _, e := tx.ExecContext(ctx, \"UPDATE conversation_sessions SET active_run_id=NULL,revision=revision+1 WHERE session_id=? AND active_run_id=?\", w.Run.SessionID, w.Run.ID); e != nil {",
+            "186: \t\t\t\treturn e",
+            "187: \t\t\t}",
+            "188: \t\t\tvar pin sql.NullString",
+            "189: \t\t\tif e := tx.QueryRowContext(ctx, \"SELECT pin_token FROM execution_runs WHERE run_id=?\", w.Run.ID).Scan(&pin); e != nil {",
+            "190: \t\t\t\treturn e",
+            "191: \t\t\t}",
+            "192: \t\t\tif pin.Valid {",
+            "193: \t\t\t\tif e := s.config.ReleaseInTx(ctx, tx, pin.String); e != nil {",
+            "194: \t\t\t\t\treturn e",
+            "195: \t\t\t\t}",
+            "196: \t\t\t}",
+            "197: \t\t}",
+            "198: \t\treturn conv.Bump(ctx, tx)",
+            "199: \t})",
+            "200: }",
+            "201: ",
+            "202: var _ executorapp.Repository = (*Store)(nil)"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "sha256": "0da1ac8c1c9408418cf81e7fed702531e5ed2f9138b3850a318693573c031b10",
+      "bytes": 602,
+      "observations": [
+        {
+          "start": 1,
+          "end": 21,
+          "lines": [
+            "1: package executor",
+            "2: ",
+            "3: import (",
+            "4: \t\"context\"",
+            "5: \t\"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api\"",
+            "6: )",
+            "7: ",
+            "8: type Work struct {",
+            "9: \tRun                       api.Run",
+            "10: \tClaimToken, UserMessageID string",
+            "11: \tInput                     api.EngineInput",
+            "12: \tAccess                    api.RunAccessInput",
+            "13: \tIdentity                  api.RequestIdentity",
+            "14: }",
+            "15: type Repository interface {",
+            "16: \tRecover(context.Context) error",
+            "17: \tClaim(context.Context) (*Work, error)",
+            "18: \tMarkRunning(context.Context, Work) error",
+            "19: \tAppendEvent(context.Context, Work, api.EngineEvent) error",
+            "20: \tFinalize(context.Context, Work, api.EngineResult) error",
+            "21: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "sha256": "28694830d8ef57a16c4613d1590f357debcadcf3943b29d5cf93d1cc49b29406",
+      "bytes": 5648,
+      "observations": [
+        {
+          "start": 35,
+          "end": 43,
+          "lines": [
+            "35: func New(ctx context.Context, repo Repository, engine api.Engine, access api.ContextAccess, conversation api.ConversationAPI) (*Executor, error) {",
+            "36: \tif e := repo.Recover(ctx); e != nil {",
+            "37: \t\treturn nil, e",
+            "38: \t}",
+            "39: \tif engine == nil {",
+            "40: \t\tengine = UnavailableEngine{}",
+            "41: \t}",
+            "42: \trun, cancel := context.WithCancel(context.Background())",
+            "43: \treturn &Executor{repo: repo, engine: engine, access: access, conversation: conversation, ctx: run, cancel: cancel, wake: make(chan struct{}, 1), slots: make(chan struct{}, 2), done: make(chan struct{})}, nil"
+          ]
+        },
+        {
+          "start": 157,
+          "end": 180,
+          "lines": [
+            "157: \t}",
+            "158: \tresult, err := e.engine.Run(ctx, w.Input, func(event api.EngineEvent) error {",
+            "159: \t\tif ctx.Err() != nil {",
+            "160: \t\t\treturn ctx.Err()",
+            "161: \t\t}",
+            "162: \t\treturn e.repo.AppendEvent(ctx, w, event)",
+            "163: \t})",
+            "164: \tif e.ctx.Err() != nil {",
+            "165: \t\treturn",
+            "166: \t}",
+            "167: \tif err != nil {",
+            "168: \t\treason := \"MODEL_EXECUTION_FAILED\"",
+            "169: \t\tif fault, ok := err.(*api.Fault); ok {",
+            "170: \t\t\tswitch fault.Reason {",
+            "171: \t\t\tcase \"ADAPTER_NOT_ASSEMBLED\", \"CREDENTIAL_MISSING\", \"MODEL_DRAFT_INCOMPLETE\":",
+            "172: \t\t\t\treason = fault.Reason",
+            "173: \t\t\t}",
+            "174: \t\t}",
+            "175: \t\tresult = api.EngineResult{Status: \"failed\", Reason: reason, Text: result.Text, Partial: result.Partial, Usage: result.Usage}",
+            "176: \t}",
+            "177: \t_ = e.repo.Finalize(context.Background(), w, result)",
+            "178: }",
+            "179: ",
+            "180: // Engine implementations must return on cancellation. An uncooperative future"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/domain/execution/run/state.go",
+      "sha256": "f53c513860f43352fa9940ea8e931860e71be59c390bd98ecf1edd2f23eb7ece",
+      "bytes": 341,
+      "observations": [
+        {
+          "start": 1,
+          "end": 16,
+          "lines": [
+            "1: package run",
+            "2: ",
+            "3: func Terminal(state string) bool {",
+            "4: \treturn state == \"succeeded\" || state == \"failed\" || state == \"canceled\"",
+            "5: }",
+            "6: func ResultState(result string) (string, bool) {",
+            "7: \tswitch result {",
+            "8: \tcase \"finished\":",
+            "9: \t\treturn \"succeeded\", true",
+            "10: \tcase \"failed\":",
+            "11: \t\treturn \"failed\", true",
+            "12: \tcase \"suspended\":",
+            "13: \t\treturn \"blocked\", true",
+            "14: \t}",
+            "15: \treturn \"\", false",
+            "16: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "sha256": "4aa513a902449310298429e9e4e94fd05b007e969d60311b05058af92a008c5e",
+      "bytes": 5087,
+      "observations": [
+        {
+          "start": 97,
+          "end": 129,
+          "lines": [
+            "97: type ConversationAPI interface {",
+            "98: \tCreateSession(context.Context, RequestIdentity, SessionCreate) (Session, error)",
+            "99: \tListSessions(context.Context, RequestIdentity, PageQuery) (SessionPage, error)",
+            "100: \tGetSession(context.Context, RequestIdentity, IDQuery) (Session, error)",
+            "101: \tHistory(context.Context, RequestIdentity, HistoryQuery) (MessagePage, error)",
+            "102: \tModelHistory(context.Context, RequestIdentity, HistoryQuery, RunAccessInput) (ModelHistory, error)",
+            "103: \tArchive(context.Context, RequestIdentity, SessionArchive) (Session, error)",
+            "104: \tStartRun(context.Context, RequestIdentity, RunStart) (RunReceipt, error)",
+            "105: \tGetRun(context.Context, RequestIdentity, IDQuery) (Run, error)",
+            "106: }",
+            "107: ",
+            "108: // Engine messages are HUHU values, never SDK events or public CP bytes.",
+            "109: type EngineInput struct {",
+            "110: \tRunID, SessionID, Intent string",
+            "111: \tAgent                    Agent",
+            "112: \tHistory                  []VisibleMessage",
+            "113: \tContext                  PreparedContext",
+            "114: }",
+            "115: type EngineResumeInput struct {",
+            "116: \tInput         EngineInput",
+            "117: \tCheckpointRef string",
+            "118: }",
+            "119: type EngineEvent struct{ Type, Text string }",
+            "120: type EngineResult struct {",
+            "121: \tStatus, Text, Reason string",
+            "122: \tPartial              bool",
+            "123: \tUsage                RunUsage",
+            "124: \tCheckpointRef        string",
+            "125: }",
+            "126: type Engine interface {",
+            "127: \tRun(context.Context, EngineInput, func(EngineEvent) error) (EngineResult, error)",
+            "128: \tResume(context.Context, EngineResumeInput, func(EngineEvent) error) (EngineResult, error)",
+            "129: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "sha256": "c69bfdf50e94a90bebf0341ba5848b50a97ae57b1a9a5182b57acd02ad890d3d",
+      "bytes": 6302,
+      "observations": [
+        {
+          "start": 135,
+          "end": 161,
+          "lines": [
+            "135: type RunAccessInput struct {",
+            "136: \tProfileID, SessionID, TaskID string",
+            "137: \tRecipient                    GrantRecipient",
+            "138: \tSources                      []SourceSnapshot",
+            "139: \tScopes                       []SourceScope",
+            "140: \tGrantIDs                     []string",
+            "141: \tParentScope                  *AccessScope",
+            "142: }",
+            "143: type PreparedSource struct {",
+            "144: \tSource SourceSnapshot",
+            "145: \tText   string",
+            "146: }",
+            "147: type PreparedContext struct{ Sources []PreparedSource }",
+            "148: type ContextRecord struct {",
+            "149: \tID, Text string",
+            "150: \tSources  []SourceSnapshot",
+            "151: \tScopes   []SourceScope",
+            "152: \tGrantIDs []string",
+            "153: }",
+            "154: type ContextAccess interface {",
+            "155: \tAuthorizeAdmission(context.Context, RequestIdentity, RunAccessInput) error",
+            "156: \tPrepareContext(context.Context, RequestIdentity, RunAccessInput) (PreparedContext, error)",
+            "157: \tAuthorizeRead(context.Context, RequestIdentity, RunAccessInput) error",
+            "158: \tFilterHistory(context.Context, RequestIdentity, RunAccessInput, []ContextRecord) ([]ContextRecord, error)",
+            "159: \tFilterModelHistory(context.Context, RequestIdentity, RunAccessInput, []ContextRecord) ([]ContextRecord, error)",
+            "160: \tSearch(context.Context, RequestIdentity, RunAccessInput, string, int, ...string) (HostSearchResult, error)",
+            "161: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "sha256": "17c24b97f6be06cc05f48275bd820ffbcda4b8f7f4bbeed64d7dbd18bc0ff46f",
+      "bytes": 3620,
+      "observations": [
+        {
+          "start": 11,
+          "end": 18,
+          "lines": [
+            "11: type Fault struct {",
+            "12: \tKind, Reason string",
+            "13: \tRetryable    bool",
+            "14: }",
+            "15: ",
+            "16: func (e *Fault) Error() string    { return e.Kind + \": \" + e.Reason }",
+            "17: func Denied(reason string) error  { return &Fault{Kind: \"CAPABILITY_DENIED\", Reason: reason} }",
+            "18: func Invalid(reason string) error { return &Fault{Kind: \"INVALID_ARGUMENT\", Reason: reason} }"
+          ]
+        },
+        {
+          "start": 103,
+          "end": 106,
+          "lines": [
+            "103: \tGrants       GrantsAPI",
+            "104: \tContext      ContextAccess",
+            "105: \tConversation ConversationAPI",
+            "106: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "sha256": "a5b20b3f257f43b52f13dfbacf1b38a5265b0ff0e3a47e8bc95a75308433cf13",
+      "bytes": 5974,
+      "observations": [
+        {
+          "start": 16,
+          "end": 41,
+          "lines": [
+            "16: func (s *Store) Check(ctx context.Context, id api.RequestIdentity, in api.RunAccessInput, ops []string) error {",
+            "17: \treturn s.base.WithinTx(ctx, func(tx *sql.Tx) error { return s.CheckInTx(ctx, tx, id, in, ops) })",
+            "18: }",
+            "19: ",
+            "20: // AuthorizeInTx shares the Run admission transaction. It performs only local",
+            "21: // metadata reads; no Host, model, provider or nested transaction is entered.",
+            "22: func (s *Store) AuthorizeInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, in api.RunAccessInput) error {",
+            "23: \treturn s.CheckInTx(ctx, tx, id, in, []string{\"read\", \"send\"})",
+            "24: }",
+            "25: func (s *Store) CheckInTx(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, in api.RunAccessInput, ops []string) error {",
+            "26: \tif !id.Valid() {",
+            "27: \t\treturn api.Denied(\"IDENTITY_REQUIRED\")",
+            "28: \t}",
+            "29: \tif e := access.Validate(in); e != nil {",
+            "30: \t\treturn e",
+            "31: \t}",
+            "32: \tif _, e := metadata(ctx, tx, in.ProfileID); e != nil {",
+            "33: \t\treturn e",
+            "34: \t}",
+            "35: \tif len(in.Sources)+len(in.Scopes) == 0 {",
+            "36: \t\treturn nil",
+            "37: \t}",
+            "38: \tif e := runRecipient(ctx, tx, id, in, ops); e != nil {",
+            "39: \t\treturn e",
+            "40: \t}",
+            "41: \tif len(in.GrantIDs) == 0 {"
+          ]
+        },
+        {
+          "start": 125,
+          "end": 169,
+          "lines": [
+            "125: func runRecipient(ctx context.Context, tx *sql.Tx, id api.RequestIdentity, in api.RunAccessInput, ops []string) error {",
+            "126: \tvar principal, profile, session, agent, model, body, status string",
+            "127: \tvar pin sql.NullString",
+            "128: \te := tx.QueryRowContext(ctx, \"SELECT r.principal_id,s.profile_id,r.session_id,r.agent_id,CAST(r.model_revision AS TEXT),r.recipient_json,r.status,r.pin_token FROM execution_runs r JOIN conversation_sessions s ON s.session_id=r.session_id WHERE r.run_id=?\", in.TaskID).Scan(&principal, &profile, &session, &agent, &model, &body, &status, &pin)",
+            "129: \tif errors.Is(e, sql.ErrNoRows) {",
+            "130: \t\treturn recipient(ctx, tx, in.Recipient)",
+            "131: \t}",
+            "132: \tif e != nil {",
+            "133: \t\treturn e",
+            "134: \t}",
+            "135: \tif principal != id.PrincipalID() || profile != in.ProfileID || session != in.SessionID {",
+            "136: \t\treturn api.Denied(\"RUN_SCOPE_MISMATCH\")",
+            "137: \t}",
+            "138: \tvar fixed api.GrantRecipient",
+            "139: \tif json.Unmarshal([]byte(body), &fixed) != nil {",
+            "140: \t\treturn fault(\"CONFLICT\", \"RUN_RECIPIENT_INVALID\")",
+            "141: \t}",
+            "142: \tif !reflect.DeepEqual(fixed, in.Recipient) || agent != fixed.AgentID || model != fixed.ModelBindingRevision {",
+            "143: \t\treturn api.Denied(\"RECIPIENT_CHANGED\")",
+            "144: \t}",
+            "145: \treadOnly := true",
+            "146: \tfor _, op := range ops {",
+            "147: \t\tif op != \"read\" {",
+            "148: \t\t\treadOnly = false",
+            "149: \t\t}",
+            "150: \t}",
+            "151: \tif readOnly {",
+            "152: \t\treturn nil",
+            "153: \t}",
+            "154: \tif status == \"succeeded\" || status == \"failed\" || status == \"canceled\" {",
+            "155: \t\treturn api.Denied(\"RUN_NOT_ACTIVE\")",
+            "156: \t}",
+            "157: \tif !pin.Valid {",
+            "158: \t\treturn api.Denied(\"RUN_CONFIG_NOT_PINNED\")",
+            "159: \t}",
+            "160: \tvar count int",
+            "161: \te = tx.QueryRowContext(ctx, \"SELECT count(*) FROM execution_runs r JOIN config_snapshot_pins p ON p.token=r.pin_token AND p.agent_id=r.agent_id AND p.model_revision=r.model_revision AND p.persona_revision=r.persona_revision WHERE r.run_id=? AND r.pin_token=?\", in.TaskID, pin.String).Scan(&count)",
+            "162: \tif e != nil {",
+            "163: \t\treturn e",
+            "164: \t}",
+            "165: \tif count != 1 {",
+            "166: \t\treturn api.Denied(\"RUN_CONFIG_NOT_PINNED\")",
+            "167: \t}",
+            "168: \treturn nil",
+            "169: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/store.go",
+      "sha256": "33ce4c0e7dd36a57f06219bb6aa4b9605981b4295a66934b1140a78354b3b8ba",
+      "bytes": 8399,
+      "observations": [
+        {
+          "start": 150,
+          "end": 166,
+          "lines": [
+            "150: \t\t\t}",
+            "151: \t\t\tout.Receipt = api.Receipt{CommandID: m.Meta.CommandID, ReceiptID: api.NewID(\"receipt:\"), Revision: strconv.FormatInt(rev+1, 10)}",
+            "152: \t\tdefault:",
+            "153: \t\t\treturn api.Invalid(\"UNKNOWN_GRANT_MUTATION\")",
+            "154: \t\t}",
+            "155: \t\tif _, e = tx.ExecContext(ctx, \"UPDATE access_grants_clock SET revision=revision+1 WHERE singleton=1 AND revision<9223372036854775807\"); e != nil {",
+            "156: \t\t\treturn e",
+            "157: \t\t}",
+            "158: \t\tif _, e = tx.ExecContext(ctx, \"UPDATE profile_metadata SET revision=revision+1 WHERE singleton=1 AND revision<9223372036854775807\"); e != nil {",
+            "159: \t\t\treturn e",
+            "160: \t\t}",
+            "161: \t\tb, e := json.Marshal(out)",
+            "162: \t\tif e != nil {",
+            "163: \t\t\treturn e",
+            "164: \t\t}",
+            "165: \t\t_, e = tx.ExecContext(ctx, \"INSERT INTO command_receipts VALUES(?,?,?,?,?,?,?)\", p.ProfileID, m.Identity.PrincipalID(), m.Kind, m.Meta.IdempotencyKey, m.InputHash, \"\", string(b))",
+            "166: \t\treturn e"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "sha256": "7a07e13a6c2f3e4626cb688b64c7fb24708e0203fff7a2853e2ab796e6850509",
+      "bytes": 12652,
+      "observations": [
+        {
+          "start": 139,
+          "end": 148,
+          "lines": [
+            "139: func (s *Service) AuthorizeAdmission(ctx context.Context, id api.RequestIdentity, in api.RunAccessInput) error {",
+            "140: \tif e := s.repo.Check(ctx, id, in, []string{\"read\", \"send\"}); e != nil {",
+            "141: \t\treturn e",
+            "142: \t}",
+            "143: \treturn s.lease(ctx, in)",
+            "144: }",
+            "145: func (s *Service) AuthorizeRead(ctx context.Context, id api.RequestIdentity, in api.RunAccessInput) error {",
+            "146: \treturn s.repo.Check(ctx, id, in, []string{\"read\"})",
+            "147: }",
+            "148: func (s *Service) lease(ctx context.Context, in api.RunAccessInput) error {"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "b3694ea7c527fae0cd8c55b3a5d6f849e205ee270dc3a666ba04e8150d6c2ba3",
+      "bytes": 4154,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "sha256": "87ddaefc8b50518e61c0e52291cc1862d4efcfe31606992534dd8b42287af07f",
+      "bytes": 12611,
+      "observations": [
+        {
+          "start": 18,
+          "end": 53,
+          "lines": [
+            "18: const MaxInFlight = 32",
+            "19: const RemoteTimeout = 30 * time.Second",
+            "20: ",
+            "21: // All response paths share this one writer budget, including pre-hello errors.",
+            "22: const WriteTimeout = time.Second",
+            "23: const MaxQueuedFrames = 32",
+            "24: const MaxQueuedBytes = 2 * (wire.MaxFrameBytes + 4)",
+            "25: ",
+            "26: type writeJob struct {",
+            "27: \tframe []byte",
+            "28: \tdone  chan error",
+            "29: }",
+            "30: ",
+            "31: type reply struct {",
+            "32: \tenv wire.Envelope",
+            "33: \terr error",
+            "34: }",
+            "35: type Server struct {",
+            "36: \tinput        io.ReadCloser",
+            "37: \toutput       io.WriteCloser",
+            "38: \trouter       *inbound.Router",
+            "39: \twriteMu      sync.Mutex",
+            "40: \twriteQueue   chan writeJob",
+            "41: \tqueuedBytes  int",
+            "42: \tqueuedFrames int",
+            "43: \tpendingMu    sync.Mutex",
+            "44: \tpending      map[string]chan reply",
+            "45: \tactiveMu     sync.Mutex",
+            "46: \tactive       map[string]bool",
+            "47: \tclosed       chan struct{}",
+            "48: \tonce         sync.Once",
+            "49: \tworkers      sync.WaitGroup",
+            "50: \tslots        chan struct{}",
+            "51: }",
+            "52: ",
+            "53: func New(input io.ReadCloser, output io.WriteCloser, app *api.Facade, id api.RequestIdentity) *Server {"
+          ]
+        },
+        {
+          "start": 75,
+          "end": 139,
+          "lines": [
+            "75: func (s *Server) write(p any) error {",
+            "76: \tvar encoded bytes.Buffer",
+            "77: \tif err := wire.WriteFrame(&encoded, p); err != nil {",
+            "78: \t\treturn err",
+            "79: \t}",
+            "80: \tjob := writeJob{frame: encoded.Bytes(), done: make(chan error, 1)}",
+            "81: \ts.writeMu.Lock()",
+            "82: \tselect {",
+            "83: \tcase <-s.closed:",
+            "84: \t\ts.writeMu.Unlock()",
+            "85: \t\treturn io.EOF",
+            "86: \tdefault:",
+            "87: \t}",
+            "88: \tif s.queuedBytes+len(job.frame) > MaxQueuedBytes || s.queuedFrames >= MaxQueuedFrames {",
+            "89: \t\ts.writeMu.Unlock()",
+            "90: \t\ts.Close()",
+            "91: \t\treturn &wire.ProtocolError{Reason: \"STREAM_SLOW_CONSUMER\"}",
+            "92: \t}",
+            "93: \tselect {",
+            "94: \tcase s.writeQueue <- job:",
+            "95: \t\ts.queuedBytes += len(job.frame)",
+            "96: \t\ts.queuedFrames++",
+            "97: \t\ts.writeMu.Unlock()",
+            "98: \tdefault:",
+            "99: \t\ts.writeMu.Unlock()",
+            "100: \t\ts.Close()",
+            "101: \t\treturn &wire.ProtocolError{Reason: \"STREAM_SLOW_CONSUMER\"}",
+            "102: \t}",
+            "103: \ttimer := time.NewTimer(WriteTimeout)",
+            "104: \tdefer timer.Stop()",
+            "105: \tselect {",
+            "106: \tcase err := <-job.done:",
+            "107: \t\treturn err",
+            "108: \tcase <-s.closed:",
+            "109: \t\treturn io.EOF",
+            "110: \tcase <-timer.C:",
+            "111: \t\ts.Close()",
+            "112: \t\treturn &wire.ProtocolError{Reason: \"STREAM_SLOW_CONSUMER\"}",
+            "113: \t}",
+            "114: }",
+            "115: func (s *Server) writer() {",
+            "116: \tfor {",
+            "117: \t\tvar job writeJob",
+            "118: \t\tselect {",
+            "119: \t\tcase <-s.closed:",
+            "120: \t\t\treturn",
+            "121: \t\tcase job = <-s.writeQueue:",
+            "122: \t\t}",
+            "123: \t\tselect {",
+            "124: \t\tcase <-s.closed:",
+            "125: \t\t\treturn",
+            "126: \t\tdefault:",
+            "127: \t\t}",
+            "128: \t\t_, err := io.Copy(s.output, bytes.NewReader(job.frame))",
+            "129: \t\ts.writeMu.Lock()",
+            "130: \t\ts.queuedBytes -= len(job.frame)",
+            "131: \t\ts.queuedFrames--",
+            "132: \t\ts.writeMu.Unlock()",
+            "133: \t\tjob.done <- err",
+            "134: \t\tif err != nil {",
+            "135: \t\t\ts.Close()",
+            "136: \t\t\treturn",
+            "137: \t\t}",
+            "138: \t}",
+            "139: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "sha256": "9f8c60311f79fa8f4062936504444327974e7f90b6d003b962ac0154fbc53716",
+      "bytes": 7771,
+      "observations": [
+        {
+          "start": 31,
+          "end": 46,
+          "lines": [
+            "31: func (r *Router) Ready() bool                             { return r.ready.Load() }",
+            "32: func Failure(id *string, code int, kind, reason string, retryable bool) Response {",
+            "33: \treturn Response{JSONRPC: \"2.0\", ID: id, Error: &wire.RPCError{Code: code, Message: \"Request rejected\", Data: wire.ErrorData{Kind: kind, Reason: reason, Retryable: retryable, CorrelationID: api.NewID(\"correlation:\")}}}",
+            "34: }",
+            "35: func FromError(id *string, err error) Response {",
+            "36: \tvar f *api.Fault",
+            "37: \tif errors.As(err, &f) {",
+            "38: \t\tcode := -32000",
+            "39: \t\tif f.Kind == \"INVALID_ARGUMENT\" {",
+            "40: \t\t\tcode = -32602",
+            "41: \t\t}",
+            "42: \t\treturn Failure(id, code, f.Kind, f.Reason, f.Retryable)",
+            "43: \t}",
+            "44: \tif errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {",
+            "45: \t\treturn Failure(id, -32000, \"HOST_UNAVAILABLE\", \"REQUEST_CANCELED\", true)",
+            "46: \t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/conversation.go",
+      "sha256": "eb76976407caf0260ff95a75731475ad43975b4ff4fb9043e7308a36fcd73db4",
+      "bytes": 1514,
+      "observations": [
+        {
+          "start": 1,
+          "end": 37,
+          "lines": [
+            "1: package hap",
+            "2: ",
+            "3: import (",
+            "4: \t\"context\"",
+            "5: \twire \"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/protocol/hap\"",
+            "6: )",
+            "7: ",
+            "8: var conversationMethods = []string{\"sessions.create\", \"sessions.list\", \"sessions.get\", \"sessions.history\", \"sessions.archive\", \"runs.start\", \"runs.get\"}",
+            "9: var grantsMethods = []string{\"grants.create\", \"grants.list\", \"grants.revoke\"}",
+            "10: ",
+            "11: func (r *Router) conversation(ctx context.Context, e wire.Envelope) (Response, bool) {",
+            "12: \tc := r.App.Conversation",
+            "13: \tif c == nil {",
+            "14: \t\treturn Response{}, false",
+            "15: \t}",
+            "16: \tswitch e.Method {",
+            "17: \tcase \"sessions.create\":",
+            "18: \t\treturn handle(ctx, e, r.Identity, c.CreateSession), true",
+            "19: \tcase \"sessions.list\":",
+            "20: \t\treturn handle(ctx, e, r.Identity, c.ListSessions), true",
+            "21: \tcase \"sessions.get\":",
+            "22: \t\treturn handle(ctx, e, r.Identity, c.GetSession), true",
+            "23: \tcase \"sessions.history\":",
+            "24: \t\treturn handle(ctx, e, r.Identity, c.History), true",
+            "25: \tcase \"sessions.archive\":",
+            "26: \t\treturn handle(ctx, e, r.Identity, c.Archive), true",
+            "27: \tcase \"runs.start\":",
+            "28: \t\treturn handle(ctx, e, r.Identity, c.StartRun), true",
+            "29: \tcase \"runs.get\":",
+            "30: \t\treturn handle(ctx, e, r.Identity, c.GetRun), true",
+            "31: \t}",
+            "32: \treturn Response{}, false",
+            "33: }",
+            "34: func (r *Router) grants(ctx context.Context, e wire.Envelope) (Response, bool) {",
+            "35: \tg := r.App.Grants",
+            "36: \tif g == nil {",
+            "37: \t\treturn Response{}, false"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/frame.go",
+      "sha256": "fef2ad8ef5f65d9fcd0a9e17437b7cb60ee9f0f44075984c89d6372a5dce528d",
+      "bytes": 6418,
+      "observations": [
+        {
+          "start": 20,
+          "end": 36,
+          "lines": [
+            "20: const MaxFrameBytes = 1048576",
+            "21: const MaxBatchItems = 8",
+            "22: const MaxIdentifierBytes = 128",
+            "23: const JSONKind byte = 1",
+            "24: ",
+            "25: type ErrorData struct {",
+            "26: \tKind          string `json:\"kind\"`",
+            "27: \tReason        string `json:\"reason\"`",
+            "28: \tRetryable     bool   `json:\"retryable\"`",
+            "29: \tCorrelationID string `json:\"correlationId\"`",
+            "30: }",
+            "31: type RPCError struct {",
+            "32: \tCode    int       `json:\"code\"`",
+            "33: \tMessage string    `json:\"message\"`",
+            "34: \tData    ErrorData `json:\"data\"`",
+            "35: }",
+            "36: type Envelope struct {"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "sha256": "8bc03dfb02ecf1177cc2c2e35447bce60ffde979a2c3b73d16e302e1c0f5d05f",
+      "bytes": 17798,
+      "observations": [
+        {
+          "start": 25,
+          "end": 32,
+          "lines": [
+            "25: export interface BotErrorData {",
+            "26: \tkind: BotErrorKind;",
+            "27: \treason: string;",
+            "28: \tretryable: boolean;",
+            "29: \tcorrelationId: string;",
+            "30: }",
+            "31: export interface CallOptions {",
+            "32: \tsignal?: AbortSignal;"
+          ]
+        },
+        {
+          "start": 210,
+          "end": 218,
+          "lines": [
+            "210: export interface RunEvent {",
+            "211: \trunId: string;",
+            "212: \tseq: Decimal;",
+            "213: \ttype: string;",
+            "214: \tcreatedAt: string;",
+            "215: \ttext?: string;",
+            "216: \tsourceRefs?: SourceRef[];",
+            "217: }",
+            "218: export interface RunReceipt extends Receipt {"
+          ]
+        },
+        {
+          "start": 272,
+          "end": 280,
+          "lines": [
+            "272: export interface Approval {",
+            "273: \tid: string;",
+            "274: \trevision: Decimal;",
+            "275: \trunId: string;",
+            "276: \tpreview: string;",
+            "277: \texpiresAt: string;",
+            "278: \tstatus: 'pending' | 'approved' | 'rejected' | 'expired';",
+            "279: }",
+            "280: export interface MemoryItem {"
+          ]
+        },
+        {
+          "start": 428,
+          "end": 431,
+          "lines": [
+            "428: \t'runs.subscribe': {",
+            "429: \t\tparams: { profileId: string; runId: string; afterSeq?: Decimal; limit?: number };",
+            "430: \t\tresult: { subscriptionId: string; events: RunEvent[]; nextSeq: Decimal };",
+            "431: \t};"
+          ]
+        },
+        {
+          "start": 477,
+          "end": 483,
+          "lines": [
+            "477: \t'approvals.list': { params: PageQuery; result: Page<Approval> };",
+            "478: \t'approvals.get': { params: IdQuery; result: Approval };",
+            "479: \t'approvals.resolve': {",
+            "480: \t\tparams: CommandMeta & { id: string; decision: 'approve' | 'reject'; previewHash: string };",
+            "481: \t\tresult: Approval;",
+            "482: \t};",
+            "483: \t'memory.list': { params: PageQuery & { ownerId?: string; scope?: MemoryItem['scope'] }; result: Page<MemoryItem> };"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/connection.ts",
+      "sha256": "e0f2754ca0ba2cc788eb4f14168acc6b521ad0d4c44e68d557ecc174b5d82ee7",
+      "bytes": 18395,
+      "observations": [
+        {
+          "start": 247,
+          "end": 264,
+          "lines": [
+            "247: \tprivate message(message: HapMessage): void {",
+            "248: \t\tif ('method' in message) {",
+            "249: \t\t\tif (message.id === undefined) return;",
+            "250: \t\t\tif (!message.id.startsWith('s:')) throw new HapProtocolError('WRONG_ID_DIRECTION');",
+            "251: \t\t\tif (this.seenServerIds.has(message.id)) throw new HapProtocolError('DUPLICATE_SERVER_ID');",
+            "252: \t\t\tif (this.seenServerIds.size >= 4096) throw new HapProtocolError('SERVER_ID_LIMIT');",
+            "253: \t\t\tthis.seenServerIds.add(message.id);",
+            "254: \t\t\tvoid this.handleHost(message);",
+            "255: \t\t\treturn;",
+            "256: \t\t}",
+            "257: \t\tif (message.id === null) throw new HapProtocolError('PEER_PROTOCOL_ERROR');",
+            "258: \t\tif (!message.id.startsWith('c:')) throw new HapProtocolError('WRONG_ID_DIRECTION');",
+            "259: \t\tconst pending = this.pending.get(message.id);",
+            "260: \t\tif (!pending) return;",
+            "261: \t\tthis.pending.delete(message.id);",
+            "262: \t\tpending.cleanup();",
+            "263: \t\tif (message.error) pending.reject(new BotRpcError(message.error.code, message.error.data as BotErrorData));",
+            "264: \t\telse {"
+          ]
+        },
+        {
+          "start": 425,
+          "end": 449,
+          "lines": [
+            "425: \t\ttry {",
+            "426: \t\t\tthis.decoder.finish();",
+            "427: \t\t} catch (error) {",
+            "428: \t\t\treason = error instanceof Error ? error : reason;",
+            "429: \t\t}",
+            "430: \t\tthis.connectionState = 'closed';",
+            "431: \t\tfor (const pending of this.pending.values()) {",
+            "432: \t\t\tpending.cleanup();",
+            "433: \t\t\tpending.reject(reason);",
+            "434: \t\t}",
+            "435: \t\tthis.pending.clear();",
+            "436: \t\tfor (const controller of this.reverse.values()) controller.abort();",
+            "437: \t\tthis.reverse.clear();",
+            "438: \t\tthis.reads.clear();",
+            "439: \t\tthis.seenServerIds.clear();",
+            "440: \t\tthis.hostLease = undefined;",
+            "441: \t\ttry { this.host?.leaseChanged?.(undefined); } catch { /* A Host callback cannot prevent transport cleanup. */ }",
+            "442: \t\tthis.host = undefined;",
+            "443: \t\tfor (const unsubscribe of this.unsubscribe) unsubscribe();",
+            "444: \t\tthis.transport.close();",
+            "445: \t}",
+            "446: ",
+            "447: \tclose(): void {",
+            "448: \t\tthis.finish(new HapProtocolError('CONNECTION_CLOSED'));",
+            "449: \t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/codec.ts",
+      "sha256": "3a4fbe15b8acf58b5ac7bd5c19e06a6d2940d2d0b6a8a282d25ed4e061aa3491",
+      "bytes": 6750,
+      "observations": [
+        {
+          "start": 86,
+          "end": 111,
+          "lines": [
+            "86: \t\tif ('error' in value) {",
+            "87: \t\t\tconst error = value.error;",
+            "88: \t\t\tif (",
+            "89: \t\t\t\t!record(error) ||",
+            "90: \t\t\t\t!record(error.data) ||",
+            "91: \t\t\t\t!error.data.kind ||",
+            "92: \t\t\t\t!error.data.reason ||",
+            "93: \t\t\t\t!error.data.correlationId",
+            "94: \t\t\t)",
+            "95: \t\t\t\tthrow new HapProtocolError('INVALID_ENVELOPE');",
+            "96: \t\t\tif (",
+            "97: \t\t\t\tObject.keys(error).some((key) => !['code', 'message', 'data'].includes(key)) ||",
+            "98: \t\t\t\tObject.keys(error.data).some((key) => !['kind', 'reason', 'retryable', 'correlationId'].includes(key))",
+            "99: \t\t\t)",
+            "100: \t\t\t\tthrow new HapProtocolError('INVALID_ENVELOPE');",
+            "101: \t\t\tif (",
+            "102: \t\t\t\t!Number.isInteger(error.code) ||",
+            "103: \t\t\t\ttypeof error.message !== 'string' ||",
+            "104: \t\t\t\ttypeof error.data.kind !== 'string' ||",
+            "105: \t\t\t\t!ERROR_KINDS.has(error.data.kind) ||",
+            "106: \t\t\t\ttypeof error.data.reason !== 'string' ||",
+            "107: \t\t\t\ttypeof error.data.retryable !== 'boolean' ||",
+            "108: \t\t\t\ttypeof error.data.correlationId !== 'string'",
+            "109: \t\t\t)",
+            "110: \t\t\t\tthrow new HapProtocolError('INVALID_ERROR');",
+            "111: \t\t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/method-validation.ts",
+      "sha256": "e80da43218863838df5fee5997cd8a419bf783731f4869a67bd22a6500be6bc2",
+      "bytes": 1877,
+      "observations": []
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "sha256": "99c47f8c6f2b5e12860e8c71111e74bd8fa77d63b747c034c8965b89625e2ba8",
+      "bytes": 189723,
+      "observations": []
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "sha256": "7d1a4ffacea612d51658371fc09fe03dcabc21bdb21bec56b3c2acce9a79bae4",
+      "bytes": 15940,
+      "observations": []
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+      "bytes": 499,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "sha256": "bed39fa20d1af79220191e5d18e1a055cac2fb3532a89f062a85727fe4f62bc3",
+      "bytes": 29281,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md",
+      "sha256": "b821bbe34c363a14e73b88b4e67842fd6cc5d71935b251fd24bd284ed76ac94f",
+      "bytes": 38245,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "bytes": 51066,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "bytes": 24422,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md",
+      "sha256": "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6",
+      "bytes": 16925,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/04-durable-events.md",
+      "sha256": "91ea55b4c01dcd32d62a3c2e1338b2538624e17444f814ca05518843e9443d23",
+      "bytes": 11550,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/06-approval-broker.md",
+      "sha256": "81243b8a9849a5ecb3575d3a85b6332c3f7a90d2c89e31de8d28043be712c3c9",
+      "bytes": 12456,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/events-approval-preflight.md",
+      "sha256": "88f9ef68a550624d2f97f0ae96bfdd9fe5779c6f690bf2c5a1a0b1fcf6096b6b",
+      "bytes": 4522,
+      "observations": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/engine-port-preflight.md",
+      "sha256": "1f6e46ac6ee6d6ffc44912a91f35ab3a2b7bc8e7023bf6972fdb28212d389aa2",
+      "bytes": 2349,
+      "observations": []
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/internal/core/interrupt.go",
+      "sha256": "c20623db38a3809db79b84ec083616ff9ce9fe51dd451497573ed50da7fbebdb",
+      "bytes": 10506,
+      "observations": [
+        {
+          "start": 31,
+          "end": 34,
+          "lines": [
+            "31: type CheckPointStore interface {",
+            "32: \tGet(ctx context.Context, checkPointID string) ([]byte, bool, error)",
+            "33: \tSet(ctx context.Context, checkPointID string, checkPoint []byte) error",
+            "34: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/runner.go",
+      "sha256": "68667d6e57a496a0374517b30f2b637846a517e7f370e21c56439842a50b24b6",
+      "bytes": 12584,
+      "observations": [
+        {
+          "start": 310,
+          "end": 343,
+          "lines": [
+            "310: \t\tif event.Action != nil && event.Action.internalInterrupted != nil {",
+            "311: \t\t\tif interruptSignal != nil {",
+            "312: \t\t\t\tpanic(\"multiple interrupt actions should not happen in Runner\")",
+            "313: \t\t\t}",
+            "314: \t\t\tinterruptSignal = event.Action.internalInterrupted",
+            "315: \t\t\tinterruptContexts := core.ToInterruptContexts(interruptSignal, allowedAddressSegmentTypes)",
+            "316: \t\t\tevent = &TypedAgentEvent[M]{",
+            "317: \t\t\t\tAgentName: event.AgentName,",
+            "318: \t\t\t\tRunPath:   event.RunPath,",
+            "319: \t\t\t\tOutput:    event.Output,",
+            "320: \t\t\t\tAction: &AgentAction{",
+            "321: \t\t\t\t\tInterrupted: &InterruptInfo{",
+            "322: \t\t\t\t\t\tData:              event.Action.Interrupted.Data,",
+            "323: \t\t\t\t\t\tInterruptContexts: interruptContexts,",
+            "324: \t\t\t\t\t},",
+            "325: \t\t\t\t\tinternalInterrupted: interruptSignal,",
+            "326: \t\t\t\t},",
+            "327: \t\t\t}",
+            "328: \t\t\tlegacyData = event.Action.Interrupted.Data",
+            "329: ",
+            "330: \t\t\tif checkPointID != nil {",
+            "331: \t\t\t\terr := runnerSaveCheckPointImpl(enableStreaming, store, ctx, *checkPointID, &InterruptInfo{",
+            "332: \t\t\t\t\tData: legacyData,",
+            "333: \t\t\t\t}, interruptSignal)",
+            "334: \t\t\t\tif err != nil {",
+            "335: \t\t\t\t\tgen.Send(&TypedAgentEvent[M]{Err: fmt.Errorf(\"failed to save checkpoint: %w\", err)})",
+            "336: \t\t\t\t}",
+            "337: \t\t\t}",
+            "338: \t\t}",
+            "339: ",
+            "340: \t\tgen.Send(event)",
+            "341: \t}",
+            "342: }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/interrupt.go",
+      "sha256": "8218ed7f1b916ee5d05f1f11e49bb4f93301d06f362d2913d878da9635f89703",
+      "bytes": 16273,
+      "observations": [
+        {
+          "start": 290,
+          "end": 324,
+          "lines": [
+            "290: func runnerSaveCheckPointImpl(",
+            "291: \tenableStreaming bool,",
+            "292: \tstore CheckPointStore,",
+            "293: \tctx context.Context,",
+            "294: \tkey string,",
+            "295: \tinfo *InterruptInfo,",
+            "296: \tis *core.InterruptSignal,",
+            "297: ) error {",
+            "298: \tif store == nil {",
+            "299: \t\treturn nil",
+            "300: \t}",
+            "301: ",
+            "302: \trunCtx := getRunCtx(ctx)",
+            "303: ",
+            "304: \tid2Addr, id2State := core.SignalToPersistenceMaps(is)",
+            "305: \tinfo, infoDataStateID := compactRunnerCheckpointInfoData(info, is)",
+            "306: ",
+            "307: \tbuf := &bytes.Buffer{}",
+            "308: \terr := gob.NewEncoder(buf).Encode(&serialization{",
+            "309: \t\tRunCtx:                    runCtx,",
+            "310: \t\tInfo:                      info,",
+            "311: \t\tInfoDataSourceInterruptID: infoDataStateID,",
+            "312: \t\tInterruptID2Address:       id2Addr,",
+            "313: \t\tInterruptID2State:         id2State,",
+            "314: \t\tEnableStreaming:           enableStreaming,",
+            "315: \t})",
+            "316: \tif err != nil {",
+            "317: \t\treturn fmt.Errorf(\"failed to encode checkpoint: %w\", err)",
+            "318: \t}",
+            "319: \treturn store.Set(ctx, key, buf.Bytes())",
+            "320: }",
+            "321: ",
+            "322: func compactRunnerCheckpointInfoData(info *InterruptInfo, is *core.InterruptSignal) (*InterruptInfo, string) {",
+            "323: \tif info == nil || is == nil || is.ID == \"\" {",
+            "324: \t\treturn info, \"\""
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/compose/checkpoint.go",
+      "sha256": "503045562c7e9c2af94faac90e878adf200e31b6d3c58a766f99d9a8b76516ad",
+      "bytes": 15086,
+      "observations": [
+        {
+          "start": 75,
+          "end": 90,
+          "lines": [
+            "75: func WithCheckPointID(checkPointID string) Option {",
+            "76: \treturn Option{",
+            "77: \t\tcheckPointID: &checkPointID,",
+            "78: \t}",
+            "79: }",
+            "80: ",
+            "81: // WithWriteToCheckPointID specifies a different checkpoint ID to write to.",
+            "82: // If not provided, the checkpoint ID from WithCheckPointID will be used for writing.",
+            "83: // This is useful for scenarios where you want to load from an existed checkpoint",
+            "84: // but save the progress to a new, separate checkpoint.",
+            "85: func WithWriteToCheckPointID(checkPointID string) Option {",
+            "86: \treturn Option{",
+            "87: \t\twriteToCheckPointID: &checkPointID,",
+            "88: \t}",
+            "89: }",
+            "90: "
+          ]
+        },
+        {
+          "start": 217,
+          "end": 250,
+          "lines": [
+            "217: \tdata, existed, err := c.store.Get(ctx, id)",
+            "218: \tif err != nil || existed == false {",
+            "219: \t\treturn nil, existed, err",
+            "220: \t}",
+            "221: ",
+            "222: \tcp := &checkpoint{}",
+            "223: \terr = c.serializer.Unmarshal(data, cp)",
+            "224: \tif err != nil {",
+            "225: \t\treturn nil, false, err",
+            "226: \t}",
+            "227: ",
+            "228: \treturn cp, true, nil",
+            "229: }",
+            "230: ",
+            "231: func (c *checkPointer) set(ctx context.Context, id string, cp *checkpoint) error {",
+            "232: \tnormalizeCheckpointTypedNilInputs(cp)",
+            "233: ",
+            "234: \tdata, err := c.serializer.Marshal(cp)",
+            "235: \tif err != nil {",
+            "236: \t\treturn err",
+            "237: \t}",
+            "238: ",
+            "239: \treturn c.store.Set(ctx, id, data)",
+            "240: }",
+            "241: ",
+            "242: func normalizeCheckpointTypedNilInputs(cp *checkpoint) {",
+            "243: \tif cp == nil {",
+            "244: \t\treturn",
+            "245: \t}",
+            "246: \tfor key, input := range cp.Inputs {",
+            "247: \t\tif isTypedNil(input) {",
+            "248: \t\t\tcp.Inputs[key] = nil",
+            "249: \t\t}",
+            "250: \t}"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/compose/tool_node.go",
+      "sha256": "9ad538059f4ecc81137dbb045829d95792dfdf3fa3905b322f4152d4b6c131bd",
+      "bytes": 51026,
+      "observations": [
+        {
+          "start": 210,
+          "end": 213,
+          "lines": [
+            "210: \t// ExecuteSequentially determines whether tool calls should be executed sequentially (in order) or in parallel.",
+            "211: \t// When set to true, tool calls will be executed one after another in the order they appear in the input message.",
+            "212: \t// When set to false (default), tool calls will be executed in parallel.",
+            "213: \tExecuteSequentially bool"
+          ]
+        },
+        {
+          "start": 1079,
+          "end": 1125,
+          "lines": [
+            "1079: func sequentialRunToolCall(ctx context.Context,",
+            "1080: \trun func(ctx2 context.Context, callTask *toolCallTask, opts ...tool.Option),",
+            "1081: \ttasks []toolCallTask, opts ...tool.Option) {",
+            "1082: ",
+            "1083: \tfor i := range tasks {",
+            "1084: \t\tif tasks[i].executed {",
+            "1085: \t\t\tcontinue",
+            "1086: \t\t}",
+            "1087: \t\trun(ctx, &tasks[i], opts...)",
+            "1088: \t}",
+            "1089: }",
+            "1090: ",
+            "1091: func parallelRunToolCall(ctx context.Context,",
+            "1092: \trun func(ctx2 context.Context, callTask *toolCallTask, opts ...tool.Option),",
+            "1093: \ttasks []toolCallTask, opts ...tool.Option) {",
+            "1094: ",
+            "1095: \tif len(tasks) == 1 {",
+            "1096: \t\trun(ctx, &tasks[0], opts...)",
+            "1097: \t\treturn",
+            "1098: \t}",
+            "1099: ",
+            "1100: \tvar wg sync.WaitGroup",
+            "1101: \tfor i := 1; i < len(tasks); i++ {",
+            "1102: \t\tif tasks[i].executed {",
+            "1103: \t\t\tcontinue",
+            "1104: \t\t}",
+            "1105: \t\twg.Add(1)",
+            "1106: \t\tgo func(ctx_ context.Context, t *toolCallTask, opts ...tool.Option) {",
+            "1107: \t\t\tdefer wg.Done()",
+            "1108: \t\t\tdefer func() {",
+            "1109: \t\t\t\tpanicErr := recover()",
+            "1110: \t\t\t\tif panicErr != nil {",
+            "1111: \t\t\t\t\tt.err = safe.NewPanicErr(panicErr, debug.Stack())",
+            "1112: \t\t\t\t}",
+            "1113: \t\t\t}()",
+            "1114: \t\t\trun(ctx_, t, opts...)",
+            "1115: \t\t}(ctx, &tasks[i], opts...)",
+            "1116: \t}",
+            "1117: ",
+            "1118: \tif !tasks[0].executed {",
+            "1119: \t\trun(ctx, &tasks[0], opts...)",
+            "1120: \t}",
+            "1121: ",
+            "1122: \twg.Wait()",
+            "1123: }",
+            "1124: ",
+            "1125: // buildTupleFromOpts rebuilds a toolsTuple when call options override tools or aliases."
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/components/tool/interrupt.go",
+      "sha256": "5939a961e46f474230dcb4cd06591fcbda450704d938c4cecb2098cb6e2dbba4",
+      "bytes": 6192,
+      "observations": [
+        {
+          "start": 44,
+          "end": 45,
+          "lines": [
+            "44: func Interrupt(ctx context.Context, info any) error {",
+            "45: \tis, err := core.Interrupt(ctx, info, nil, nil)"
+          ]
+        },
+        {
+          "start": 71,
+          "end": 72,
+          "lines": [
+            "71: func StatefulInterrupt(ctx context.Context, info any, state any) error {",
+            "72: \tis, err := core.Interrupt(ctx, info, state, nil)"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/interface.go",
+      "sha256": "f606714ff55255c411699efbbc8f40950e238aee18b8550947b1a43269dc0517",
+      "bytes": 18052,
+      "observations": [
+        {
+          "start": 453,
+          "end": 491,
+          "lines": [
+            "453: type TypedAgent[M MessageType] interface {",
+            "454: \tName(ctx context.Context) string",
+            "455: \tDescription(ctx context.Context) string",
+            "456: ",
+            "457: \t// Run runs the agent.",
+            "458: \t// The returned AgentEvent within the AsyncIterator must be safe to modify.",
+            "459: \t// If the returned AgentEvent within the AsyncIterator contains MessageStream,",
+            "460: \t// the MessageStream MUST be exclusive and safe to be received directly.",
+            "461: \t// NOTE: it's recommended to use SetAutomaticClose() on the MessageStream of AgentEvents emitted by AsyncIterator,",
+            "462: \t// so that even the events are not processed, the MessageStream can still be closed.",
+            "463: \tRun(ctx context.Context, input *TypedAgentInput[M], options ...AgentRunOption) *AsyncIterator[*TypedAgentEvent[M]]",
+            "464: }",
+            "465: ",
+            "466: //go:generate  mockgen -destination ../internal/mock/adk/Agent_mock.go --package adk github.com/cloudwego/eino/adk Agent,ResumableAgent",
+            "467: type Agent = TypedAgent[*schema.Message]",
+            "468: ",
+            "469: // OnSubAgents is the interface for agents that support sub-agent registration and transfer.",
+            "470: //",
+            "471: // NOT RECOMMENDED: Agent transfer with full context sharing between agents has not proven",
+            "472: // to be more effective empirically. Consider using ChatModelAgent with AgentTool",
+            "473: // or DeepAgent instead for most multi-agent scenarios.",
+            "474: type OnSubAgents interface {",
+            "475: \tOnSetSubAgents(ctx context.Context, subAgents []Agent) error",
+            "476: \tOnSetAsSubAgent(ctx context.Context, parent Agent) error",
+            "477: ",
+            "478: \tOnDisallowTransferToParent(ctx context.Context) error",
+            "479: }",
+            "480: ",
+            "481: type TypedResumableAgent[M MessageType] interface {",
+            "482: \tTypedAgent[M]",
+            "483: ",
+            "484: \tResume(ctx context.Context, info *ResumeInfo, opts ...AgentRunOption) *AsyncIterator[*TypedAgentEvent[M]]",
+            "485: }",
+            "486: ",
+            "487: type ResumableAgent = TypedResumableAgent[*schema.Message]",
+            "488: ",
+            "489: func concatMessageStream[M MessageType](stream *schema.StreamReader[M]) (M, error) {",
+            "490: \tvar zero M",
+            "491: \tswitch s := any(stream).(type) {"
+          ]
+        }
+      ]
+    }
+  ],
+  "readCorrections": [
+    "Initial guessed hap/stdio/server.go -> actual adapters/inbound/stdio/server.go",
+    "Initial guessed services/connection.ts -> actual core/protocol/connection.ts",
+    "Initial licenses.md -> actual licensing.md",
+    "Initial ARCH.md -> actual ARCHITECTURE.md",
+    "contracts/hap/v0.1/api.ts does not exist; actual shared TS is src/modules/huhubot/api.ts",
+    "No current tests/contract/conversation directory; not used as a validation claim"
+  ],
+  "officialURLs": [
+    "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/adk/runner.go",
+    "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/adk/interrupt.go",
+    "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/compose/tool_node.go",
+    "https://github.com/cloudwego/eino/blob/0a5ca53b9d3bf7b661dccc863465ec568a421eea/compose/checkpoint.go",
+    "https://github.com/cloudwego/eino-ext/blob/eee37f63ff9548c5eaec48fc157863339f8eda07/components/model/openai/chatmodel.go",
+    "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/server/src/work/queue.ts"
+  ],
+  "returnValidation": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "034-events-approval-preflight",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "finalReadback": {
+    "sourceFilesChangedSinceObservation": [
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md"
+    ],
+    "reportSha256": "b322ac16d7f68aff30260f656fadf402fd3f2335fc4d357a30625554aee12691",
+    "reportLines": 186,
+    "processes": "All synchronous read/hash/validation commands completed; no probe, background process, or child agent was started for 034.",
+    "goalDriftNote": "Read back after source drift: still Goal revision 9 and Map 10; only parallel goal-plan content changed, not written by this research task."
+  }
+}

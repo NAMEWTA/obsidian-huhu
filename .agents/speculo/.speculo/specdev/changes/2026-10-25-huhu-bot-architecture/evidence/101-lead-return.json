@@ -1,0 +1,62 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T03:00:35.522242+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "reportSha256": "df1473c97402d7c7980cccc525fad425d5c1df12afc52dcf08e0325f8d3d44e5",
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "productionAndTargetedLogsRead": true,
+  "authorFinalHandoffSHA256": "63c3870cefa8e4e7bdbdb55906e7b6c47df5e1f70783f78365b202a3c2bcf79c",
+  "artifactSnapshot": {
+    "REPORT.md": "df1473c97402d7c7980cccc525fad425d5c1df12afc52dcf08e0325f8d3d44e5",
+    "TASK.md": "0cdc93b4ba142bb4be1d0362eaed1a76b92b0b2c3d4f2ae4e6b3fe0af54a3e2d",
+    "logs/00-before-0-recovery.go.txt": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5",
+    "logs/00-before-1-recovery.go.txt": "19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f",
+    "logs/00-before-2-recovery.go.txt": "e26c4401ceaed66bd1c3e86b5f872389fb98e97f840781ba223b8179d5cbaea3",
+    "logs/00-input-and-production-before.json": "8a79b8d8b3c427d786bb19eb33699bb22e27321a422c887ddac80d440eb2fbc8",
+    "logs/01-production-interface-stable.json": "45b6fcffb09ddc790a8c8a79076192bb5a49ac63f7c654d986b3b3b83f04cf46",
+    "logs/01-three-production.patch": "2bf31d72aafd6d9afc0329772d2eaa3f44cd80d6460f4f5fde6358d5aaa6deba",
+    "logs/02-own-before-checks.json": "ad7f257ac218f9bfc1b844d8335ad660dda1b0b51311d7b21242b4196f6d004b",
+    "logs/03-single-case-input.json": "f03b1886a82872c05d1e4ed97287a7745157c51f4defbf5f4351299ac09f1c8c",
+    "logs/04-single-case-result.json": "bd1973d089f67bfb985de7912828bfb9d7ca6f495dd91c361affe4fc05992e93",
+    "logs/04-single-case.log": "d8137173058bcb19062d60ea9597de4da06e0f97a01b4252a273bdd5b5a3734e",
+    "logs/05-final-own.patch": "a4b17a95feb37f0b081d094fbdc8d5c53cb5f360dd7a4a8cb3849a236d35f034",
+    "logs/05-own-final-source.json": "7c2d2b684fce5a922c4a50df791b84fb780777b26319cc172069127991ada68a",
+    "logs/06-final-readback.json": "d6751b9d2b770b744a9f0fd6fa3b644b0e2c8661a2b31cd4dcbb8afe463781ff",
+    "logs/07-return-result.json": "d1c32ca9a7f7ef9186a2ed42db498da495268cb826461d5ddf4cb1b3e064af8d",
+    "logs/07-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/08-final-handoff.json": "63c3870cefa8e4e7bdbdb55906e7b6c47df5e1f70783f78365b202a3c2bcf79c"
+  },
+  "artifactDrift": [],
+  "ownFiles": {
+    "native/huhubot/internal/application/api/recovery.go": "a20bc1d0eb926b1b4f474a81b794c9668b5833a6cdc4d15f00688f977fd13e7f",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go": "1e0bf54b3b2eef209185def12b8e5e56c7c7f84ba23063111beb7c8f8a9131d3",
+    "native/huhubot/internal/application/tooling/broker/recovery.go": "e47187c30b84ed91b29151550eb89c27cf6019f77c786ed86b680e7d919edee6",
+    "native/huhubot/tests/contract/foundation/recovery_intent_test.go": "bd54d25073c961979fc05f4c705b40df6b596ec682ab588206b7bcee52608e6a"
+  },
+  "ownSourceDrift": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "101-recovery-intent-foundation",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.05632165400311351,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "returnExit": 0,
+  "disposition": "Candidate and factual evidence accepted; final independent axes and joint ticket gate pending. No user现场 acceptance claimed."
+}

@@ -1,0 +1,308 @@
+{
+  "scope": "combined Go production/tests/SQL/module + HAP contracts/generator/validator + public API (no dist artifacts)",
+  "algorithm": "sha256(path NUL sha256 LF), sorted path",
+  "treeHash": "e5576532c92a1c77b1d832735476db018bb655d8ebcd71178dbaf0a4a8ecca06",
+  "predecessorTreeHash": "9ecff88e1dc64396b6303830845d55006942eed99da22b595c89811123449ea6",
+  "changes": [
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "before": "c0925f47ab8f7d59dbf701ec64c17e5340ac96408fe514411471795d1fdb367e",
+      "after": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/credentials_cli_test.go",
+      "before": "bce56c11b458a3a843f6509af602eadc657dd1563f48ab6e85bfee6ab84300e3",
+      "after": "d1899ff4260a0286803e31f980745e8d6143d2cd4d32fa0eb007e7dfed931404"
+    }
+  ],
+  "files": [
+    {
+      "path": "contracts/hap/v0.1/fixtures/golden.json",
+      "sha256": "65a0682aa6cb286376593c27051321d4a06ee230186f6764f96178bf380fdf70"
+    },
+    {
+      "path": "contracts/hap/v0.1/fixtures/methods.json",
+      "sha256": "acf2cf6ec5f2c9b419a5d3b538d1ab02af1438123ba3de56759048b17f8538bb"
+    },
+    {
+      "path": "contracts/hap/v0.1/generate.mjs",
+      "sha256": "240fb0a2d85ba7f328541dc80b9ab3f6e8655d846e5e42c3e3866ac6886aed07"
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "sha256": "68122afcc113b2407c6037101ff8a677dac099a44f75cac9290b50a9c3dc77d5"
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "sha256": "ba9c50e3f602db52e66319c0e114c2dc57e373bdddeee418437ff4904252591c"
+    },
+    {
+      "path": "contracts/hap/v0.1/validate.py",
+      "sha256": "87ddaf21cd8251eecb49df9c91b767e3a03022067fb2244c79ce6a26be800eed"
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "sha256": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f"
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b"
+    },
+    {
+      "path": "native/huhubot/go.sum",
+      "sha256": "2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/assistant.go",
+      "sha256": "8568ec702b9918fcdf7bee25acb93cc356658564ef0817f5c8e1c3ff768652fe"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "sha256": "96a5a773bde7f5c44d1739fd35c128f11b73a5a2089861c293313925a6169a39"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "sha256": "2b464b895cc61980625ee5d4a2aa480e33a39bd55ad843e894a236aa56a76dd6"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/channel.go",
+      "sha256": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/channel_other.go",
+      "sha256": "7f47a68925c14d9144c363d435041bad83149ccea8a200b36c211322c5031780"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/channel_test.go",
+      "sha256": "0a8cf1d4aacb441526c3a0fded788d100702ebe7ac0909b5431193b84faea85d"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/channel_unix.go",
+      "sha256": "5505fe3bc3b789fd6288e7f34231717131ea28e0f7b59315a27088e667dc7764"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/channel_windows.go",
+      "sha256": "0896d74104f753f6244bc8c711638c00250e89798299cbe9331d4c2be99b70fe"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/crt.go",
+      "sha256": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/frame.go",
+      "sha256": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/frame_test.go",
+      "sha256": "7fc475e4003d9b1bcdf73b33ea45cd727cf987f392d3fb3b0b9e692406d6df29"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/keyring_darwin.go",
+      "sha256": "f48c8bb42efa7ed0d0cbe9991b70c526fac2515a0ea0c8739d6575a48c57b4aa"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/keyring_linux.go",
+      "sha256": "df07a322a3edb11ea49fccbe73974b248b1de2db4942a3f7e6fcf45227c162bf"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/keyring_linux_test.go",
+      "sha256": "a5e7a163ef22d17fcb498bc5bd66888ecb049299b3599cba381f61b4d3164d1d"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/keyring_other.go",
+      "sha256": "21173bb5ba6d41da3ee15ea182f7ec9b60caf7c1c603d1e883351011e13936f4"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/keyring_windows.go",
+      "sha256": "bce3a89762504d9ab01660ea8766c8f1ed651feecb24178d20c824bbb959bcb0"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/process_other.go",
+      "sha256": "dac2b7495cfc538a31671fd38d89cd34f25d36373d54e48a58c3030f43459acc"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/process_unix.go",
+      "sha256": "fca241eeda6c1631cf29811050b2b5ef66a3b13f33c786ebe31fe5395050dc1d"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider_test.go",
+      "sha256": "4ce336abd46a93fbba1ec4b475493e6d5fd213782414d0cd464e966cf8671028"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/security.go",
+      "sha256": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/worker.go",
+      "sha256": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/worker_test.go",
+      "sha256": "9ddd7e8cc3f7c646ecc64ba0bd4f4dab39794b3cde9cc1ff09b45a7a6c23807f"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/credentials.go",
+      "sha256": "a562ab890f58d5054b79c308368acee0180ff8e5030ce263af5face79abb7387"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "sha256": "675e5231a9d0b29f440499147117164cfff816111a12dc404a770e7435dbba62"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "sha256": "5818707e5e3dc5465b334cc43a931b74c2bf99af8445a9f1f5e8554641fa6e1b"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/001-core.sql",
+      "sha256": "5dd9728627f37f1af5f6940f387015060c0d17d193a549a190d4fef9c6bbb656"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql",
+      "sha256": "4f180ffdc1aa064bb7695c34a7abfb6b96f2224a17d024c6d78312716e3bf293"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "sha256": "67560d89a60a6f1cfb0976cbe5ac5c5c23168b8124f47d4cdfdffeefbefa7a33"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "sha256": "a485028f7d7c269070e60fa79392df40ae4c3726e39e0fd48b2ed3ded10f1326"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/service.go",
+      "sha256": "82f4d494953ce2e8420069b9f3f945decfff38e81788ce4fe5e897aecd879568"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "sha256": "5664f2beae8c5b5cce75e34596f613cf36975a2ec3442e3d4ec7fb4717b027a0"
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/ports.go",
+      "sha256": "bef21a2209fd6dfd8683e3f59fdd9ca7d7d1c9f8356c34dd6bece02cad797590"
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "sha256": "abf454e81d64e10e9282388d03ebcded23f5746b0a4a870dd57750218453ff84"
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "ba617667556b3c4c2d5a9e7bb198a3147a2079892799bec4d203a6463843d36b"
+    },
+    {
+      "path": "native/huhubot/internal/domain/assistant/validation.go",
+      "sha256": "03b7a74338fac394f11d6928bf43244b67b82110ca259d915f8a5170cdb146dd"
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/frame.go",
+      "sha256": "fef2ad8ef5f65d9fcd0a9e17437b7cb60ee9f0f44075984c89d6372a5dce528d"
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/methods_generated.go",
+      "sha256": "d92ce2dfc549718ce43abd400ea4b58a6e0fe9e9df4f89c746b4f714732d25e7"
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/schema.go",
+      "sha256": "5219f0ed0c87c5615aa77d21b8366795ff00814fa0db21843d4c47a26356729a"
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/schema_generated.json",
+      "sha256": "ba9c50e3f602db52e66319c0e114c2dc57e373bdddeee418437ff4904252591c"
+    },
+    {
+      "path": "native/huhubot/internal/protocol/hap/types.go",
+      "sha256": "28213a354655ceca77d31d41e7afa9c04ce6b8b24b3a64baf0233e0fc12fbe36"
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/lock_other.go",
+      "sha256": "f9627b753c42c99331caf684491a4eee9547e0d0105b555b22686dedbe183e39"
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/lock_unix.go",
+      "sha256": "d91e05a47377154306333cbe70834ad40ab4febc374d7f36b717764f02a5deaa"
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/lock_windows.go",
+      "sha256": "faf923dc1876f6760ba500daea22017c7c4068e4d68d226c66fc8fcc09542c4a"
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/profile.go",
+      "sha256": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/assistant_test.go",
+      "sha256": "145ad86818e0020cfcc5df385efa0589c859615a1a8824f7c473ea0c47a32ce8"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/commands_test.go",
+      "sha256": "906522427003d017673dce043be29382a53896a3fa80232eec7dfde3754b8f57"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/credentials_cli_test.go",
+      "sha256": "d1899ff4260a0286803e31f980745e8d6143d2cd4d32fa0eb007e7dfed931404"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/credentials_cli_unix_test.go",
+      "sha256": "7bff5b210ac806574b8da04e8dca0b0deac5833e439ba3a5f33841e8ccc03ed3"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/deletion_test.go",
+      "sha256": "f7eba1ef525af43fb5939990e11ff0f76d9625f1e08d59c4e7f42768dc762d43"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/hap_test.go",
+      "sha256": "7ea55761a5efae8349efc558f48ad2349228b4a3a03efab1416bcbe586ee2f70"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/lifecycle_test.go",
+      "sha256": "795f75b6d33fdfd7115630e195d4ff48df433d5108a7fbb371681863852e9b36"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/migration_test.go",
+      "sha256": "5bb3fe588834f11da58e89b0f9dc2fdf16d34932fa3c71676c3fee217c8cec51"
+    },
+    {
+      "path": "native/huhubot/tests/contract/assistant/model_test.go",
+      "sha256": "51e6aed207df9b94dfe72103448bd713a74ca6c46f5145c6b15a8fd2d9438d02"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/duplex_test.go",
+      "sha256": "618cbc03ca47b9b9f952e8e34996e28a1d705719b2dc514a7a10328027ec4602"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/fixtures_test.go",
+      "sha256": "dffc845c427ec627930bd8e464764dee070513093fe92db59d729d79a2cb2057"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/frame_test.go",
+      "sha256": "65b5781e1deead430d615c013190f359c5ced77433a733d09ee8aa380a826255"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/profile_test.go",
+      "sha256": "c22128a5af2e14dfcea829ca4151092726320cb586ad829f0e21e3b39bd213ec"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/repair_test.go",
+      "sha256": "6294f11fd7ab1f8c70c3cdef7d348b2fe757d6ddb3ca65e0f7fd02604839e097"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/runner_test.go",
+      "sha256": "7ef545aaf0cda5eb9c0d1c594cfa72c62a6abc8363c8bcdef08f46dbb57dfdbd"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/unicode_test.go",
+      "sha256": "5f7d6040fd655b1c961a045ee827c1aba1496d964d927b3bb430b865df9cb3ff"
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "sha256": "2b5b39827d03cfa273d349502b6f7db863e1f3300199df55b107b89a4b58d83f"
+    }
+  ]
+}

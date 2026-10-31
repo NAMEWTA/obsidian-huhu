@@ -1,10 +1,15 @@
 import { locateAnchor, createAnchor } from './anchor';
-import type { CommentFileDoc, CommentIndex, CommentMessage, CommentThread, NewCommentInput } from './model';
+import type { CommentFileDoc, CommentIndex, CommentMessage, CommentThread, NewCommentInput, NewHighlightInput } from './model';
+import { SAFE_HEX } from './highlight-colors';
+import { DocumentMutationError, type AnnotationUndo, type DocumentChange } from '../../../shared/storage/document-mutation';
+import { textEdits } from '../../../shared/storage/text-edits';
+import { anchorCheckpoint, applyRestoredAnchors, type AnchorCheckpoint } from './restore-anchors';
 
 const ROOT = '.huhu/editor/comments';
 const INDEX_PATH = `${ROOT}/index.json`;
 const FILES_DIR = `${ROOT}/files`;
 const PENDING_PATH = `${ROOT}/pending.json`;
+const BACKUP_DIR = '.huhu/editor/comments-backups';
 
 interface CommentWrite {
 	index: CommentIndex;
@@ -16,6 +21,7 @@ const DEFAULT_DEBOUNCE_MS = 300;
 
 export interface CommentFs {
 	read(path: string): Promise<string>;
+	list?(path: string): Promise<{ files: string[]; folders: string[] }>;
 	write(path: string, data: string): Promise<void>;
 	remove(path: string): Promise<void>;
 	exists(path: string): Promise<boolean>;
@@ -61,7 +67,7 @@ async function sha16(path: string): Promise<string> {
 }
 
 function emptyIndex(): CommentIndex {
-	return { version: 2, files: {} };
+	return { version: 3, files: {} };
 }
 
 function asRecord(raw: unknown): Record<string, unknown> | null {
@@ -75,7 +81,7 @@ function normalizeMessage(raw: unknown): CommentMessage | null {
 	return { id: rec['id'], text: rec['text'], createdAt: rec['createdAt'], author: rec['author'], ...(typeof rec['editedAt'] === 'string' ? { editedAt: rec['editedAt'] } : {}) };
 }
 
-function normalizeThread(raw: unknown): CommentThread | null {
+function normalizeThread(raw: unknown, version: 2 | 3): CommentThread | null {
 	const rec = asRecord(raw);
 	if (!rec || typeof rec['id'] !== 'string' || (rec['kind'] !== 'line' && rec['kind'] !== 'range')) return null;
 	const status = rec['status'];
@@ -83,18 +89,36 @@ function normalizeThread(raw: unknown): CommentThread | null {
 	const anchor = asRecord(rec['anchor']);
 	if (!anchor || anchor['kind'] !== rec['kind']) return null;
 	for (const key of ['text', 'textHash', 'before', 'after']) if (typeof anchor[key] !== 'string') return null;
+	if (anchor['documentHash'] !== undefined && (typeof anchor['documentHash'] !== 'string' || !/^[a-f0-9]{16}$/.test(anchor['documentHash']))) return null;
 	for (const key of ['start', 'end', 'lineHint']) if (typeof anchor[key] !== 'number' || !Number.isInteger(anchor[key]) || anchor[key] < 0) return null;
 	if ((anchor['end'] as number) < (anchor['start'] as number) || (anchor['lineHint'] as number) < 1) return null;
-	if (!Array.isArray(rec['messages']) || !rec['messages'].length) return null;
+	if (!Array.isArray(rec['messages']) || (version === 2 && !rec['messages'].length)) return null;
+	if (version === 3 && !rec['messages'].length && rec['kind'] === 'range' && typeof rec['color'] !== 'string') return null;
 	const messages = rec['messages'].map(normalizeMessage);
 	if (messages.some(message => message === null) || typeof rec['createdAt'] !== 'string' || typeof rec['updatedAt'] !== 'string') return null;
-	return { id: rec['id'], kind: rec['kind'], status, anchor: anchor as unknown as CommentThread['anchor'], messages: messages as CommentMessage[], createdAt: rec['createdAt'], updatedAt: rec['updatedAt'] };
+	const color = rec['color'];
+	if (color !== undefined && (typeof color !== 'string' || !/^(yellow|pink|blue|green|legacy|custom-[a-z0-9]{6,16})$/i.test(color))) return null;
+	const colorHex = rec['colorHex'];
+	if (colorHex !== undefined && (typeof colorHex !== 'string' || !SAFE_HEX.test(colorHex))) return null;
+	const note = rec['note'];
+	if (note !== undefined && typeof note !== 'string') return null;
+	const tags = rec['tags'];
+	if (tags !== undefined && (!Array.isArray(tags) || tags.some(tag => typeof tag !== 'string'))) return null;
+	for (const key of ['pinnedAt', 'archivedAt'] as const) if (rec[key] !== undefined && typeof rec[key] !== 'string') return null;
+	return { id: rec['id'], kind: rec['kind'], status, anchor: anchor as unknown as CommentThread['anchor'],
+		messages: messages as CommentMessage[], createdAt: rec['createdAt'], updatedAt: rec['updatedAt'],
+		...(typeof color === 'string' ? { color: color as CommentThread['color'] } : {}),
+		...(typeof colorHex === 'string' ? { colorHex } : {}),
+		...(typeof note === 'string' ? { note } : {}),
+		...(Array.isArray(tags) ? { tags: [...new Set(tags.map(tag => (tag as string).trim()).filter(Boolean))] } : {}),
+		...(typeof rec['pinnedAt'] === 'string' ? { pinnedAt: rec['pinnedAt'] } : {}),
+		...(typeof rec['archivedAt'] === 'string' ? { archivedAt: rec['archivedAt'] } : {}) };
 }
 
 function normalizeFile(raw: unknown, path: string): CommentThread[] {
 	const rec = asRecord(raw);
-	if (!rec || rec['version'] !== 2 || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
-	const threads = rec['threads'].map(normalizeThread);
+	if (!rec || (rec['version'] !== 2 && rec['version'] !== 3) || !Array.isArray(rec['threads']) || typeof rec['path'] !== 'string' || (path && rec['path'] !== path)) throw new Error('Invalid comment sidecar');
+	const threads = rec['threads'].map(item => normalizeThread(item, rec['version'] as 2 | 3));
 	if (threads.some(thread => thread === null)) throw new Error('Invalid comment thread');
 	return threads as CommentThread[];
 }
@@ -103,7 +127,8 @@ function normalizeIndex(raw: unknown): CommentIndex {
 	const out = emptyIndex();
 	const rec = asRecord(raw);
 	const files = rec ? asRecord(rec['files']) : null;
-	if (!files || rec?.['version'] !== 2) throw new Error('Invalid comment index');
+	if (!files || (rec?.['version'] !== 2 && rec?.['version'] !== 3)) throw new Error('Invalid comment index');
+	if (rec['version'] === 2) (out as { version: 2 | 3 }).version = 2;
 	for (const [path, value] of Object.entries(files)) {
 		const entry = asRecord(value);
 		if (!entry || typeof entry['hash'] !== 'string' || !/^[a-f0-9]{16}$/.test(entry['hash']))
@@ -150,6 +175,8 @@ export class CommentStore {
 	private readonly legacyPaths = new Set<string>();
 	private readonly damagedPaths = new Set<string>();
 	private closing: Promise<void> | null = null;
+	private readonly documentChanges = new Map<string, { change: DocumentChange; before: AnchorCheckpoint; observed: string; revisions: Map<string, string>; undo?: AnnotationUndo }>();
+	private readonly restoredDocuments = new Map<string, { before: string; after: string; beforeAnchors: AnchorCheckpoint; afterAnchors: AnchorCheckpoint }>();
 
 	constructor(
 		private readonly fs: CommentFs,
@@ -208,6 +235,7 @@ export class CommentStore {
 	add(path: string, input: NewCommentInput): Promise<CommentThread> {
 		return this.enqueue(async () => {
 			const threads = await this.readThreads(path);
+			if (this.documentChanges.get(path)?.change.kind === 'remove') throw new DocumentMutationError('changed', path);
 			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
 			const now = nowIso();
 			const thread: CommentThread = {
@@ -220,10 +248,65 @@ export class CommentStore {
 				updatedAt: now,
 			};
 			threads.push(thread);
+			const pending = this.documentChanges.get(path);
+			pending?.revisions.set(thread.id, pending.observed);
 			this.reconciled.add(path);
 			this.markDirty(path);
 			this.emit();
 			return thread;
+		});
+	}
+
+	/** Create immediately without requiring a note or a discussion message. */
+	highlight(path: string, input: NewHighlightInput): Promise<CommentThread> {
+		return this.enqueue(async () => {
+			if (input.anchor.kind !== 'range' || !input.anchor.text) throw new Error('A highlight requires selected text');
+			const threads = await this.readThreads(path);
+			if (this.legacyPaths.size) throw new Error('Legacy comments are read-only');
+			const existing = threads.find(t => t.kind === 'range' && t.status !== 'orphaned'
+				&& t.anchor.start === input.anchor.start && t.anchor.end === input.anchor.end
+				&& t.anchor.text === input.anchor.text);
+			const now = nowIso();
+			const thread = existing ?? { id: nid('c'), kind: 'range' as const, status: 'open' as const,
+				anchor: structuredClone(input.anchor), messages: [], note: '', createdAt: now, updatedAt: now };
+			thread.color = input.color;
+			if (input.colorHex && SAFE_HEX.test(input.colorHex)) thread.colorHex = input.colorHex;
+			else delete thread.colorHex;
+			thread.updatedAt = now;
+			if (!existing) threads.push(thread);
+			this.markDirty(path); this.emit();
+			return thread;
+		});
+	}
+	setHighlightColor(id: string, color: NewHighlightInput['color'], hex?: string): Promise<void> {
+		return this.enqueue(async () => {
+			const found = await this.locate(id);
+			if (!found || found.thread.kind !== 'range') throw new Error('Highlight not found');
+			found.thread.color = color;
+			if (hex && SAFE_HEX.test(hex)) found.thread.colorHex = hex;
+			else delete found.thread.colorHex;
+			found.thread.updatedAt = nowIso(); this.markDirty(found.path); this.emit();
+		});
+	}
+	setNote(id: string, note: string): Promise<void> {
+		return this.mutateThread(id, thread => { thread.note = note; });
+	}
+	setTags(id: string, tags: readonly string[]): Promise<void> {
+		return this.mutateThread(id, thread => {
+			thread.tags = [...new Set(tags.map(tag => tag.trim()).filter(Boolean))].slice(0, 32);
+		});
+	}
+	setPinned(id: string, pinned: boolean): Promise<void> {
+		return this.mutateThread(id, thread => { if (pinned) thread.pinnedAt = nowIso(); else delete thread.pinnedAt; });
+	}
+	setArchived(id: string, archived: boolean): Promise<void> {
+		return this.mutateThread(id, thread => { if (archived) thread.archivedAt = nowIso(); else delete thread.archivedAt; });
+	}
+	private mutateThread(id: string, fn: (thread: CommentThread) => void): Promise<void> {
+		return this.enqueue(async () => {
+			const found = await this.locate(id);
+			if (!found) throw new Error('Highlight not found');
+			fn(found.thread); found.thread.updatedAt = nowIso(); this.markDirty(found.path); this.emit();
 		});
 	}
 
@@ -267,6 +350,8 @@ export class CommentStore {
 			found.thread.kind = anchor.kind;
 			found.thread.status = 'open';
 			found.thread.updatedAt = nowIso();
+			const pending = this.documentChanges.get(found.path);
+			pending?.revisions.set(id, pending.observed);
 			this.markDirty(found.path);
 			this.emit();
 		});
@@ -319,6 +404,12 @@ export class CommentStore {
 	 */
 	applyChanges(path: string | null, mapper: PosMapper, doc: string, before: string): void {
 		if (this.closed || !path || !this.reconciled.has(path)) return;
+		const pending = this.documentChanges.get(path);
+		if (pending) {
+			// Preserve the same monotonic broadcast rule while the ordinary mapper is suspended.
+			if (pending.observed === before) pending.observed = doc;
+			return;
+		}
 		const current = this.documents.get(path);
 		// Obsidian broadcasts one revision to every view of a file. A second view
 		// must not map shared offsets again; an older broadcast must not rewind them.
@@ -326,6 +417,12 @@ export class CommentStore {
 		this.documents.set(path, doc);
 		const threads = this.cache.get(path);
 		if (!threads || threads.length === 0) return;
+		const restored = this.restoredDocuments.get(path);
+		if (restored && ((before === restored.after && doc === restored.before) || (before === restored.before && doc === restored.after))) {
+			const inverse = doc === restored.before;
+			if (applyRestoredAnchors(path, threads, doc, textEdits(before, doc), { before: inverse ? restored.beforeAnchors : restored.afterAnchors, expected: inverse ? restored.afterAnchors : restored.beforeAnchors })) { this.markDirty(path); this.emit(); }
+			return;
+		}
 		let changed = false;
 		for (const thread of threads) {
 			if (thread.status === 'orphaned') continue;
@@ -346,12 +443,15 @@ export class CommentStore {
 				changed = true;
 				continue;
 			}
+			const nextAnchor = createAnchor(doc, start, end, thread.kind);
 			if (start === thread.anchor.start && end === thread.anchor.end && exact === thread.anchor.text) {
+				if (thread.anchor.documentHash !== nextAnchor.documentHash) {
+					thread.anchor = nextAnchor;
+					changed = true;
+				}
 				continue;
 			}
-			thread.anchor.start = start;
-			thread.anchor.end = end;
-			thread.anchor = createAnchor(doc, start, end, thread.kind);
+			thread.anchor = nextAnchor;
 			thread.updatedAt = nowIso();
 			changed = true;
 		}
@@ -362,8 +462,10 @@ export class CommentStore {
 
 	/** Relocate open threads against `doc`. Failures become `orphaned` and are not guessed. */
 	reconcile(path: string, doc: string): void {
+		if (this.documentChanges.has(path)) return;
 		const revision = this.documents.get(path);
 		void this.enqueue(async () => {
+			if (this.documentChanges.has(path)) return;
 			const threads = await this.readThreads(path);
 			if (this.documents.get(path) !== revision || revision === doc) return;
 			let changed = false;
@@ -376,8 +478,9 @@ export class CommentStore {
 					changed = true;
 					continue;
 				}
-				if (thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== doc.slice(located.start, located.end)) {
-					thread.anchor = createAnchor(doc, located.start, located.end, thread.kind);
+				const nextAnchor = createAnchor(doc, located.start, located.end, thread.kind);
+				if (thread.anchor.documentHash !== nextAnchor.documentHash || thread.anchor.start !== located.start || thread.anchor.end !== located.end || thread.anchor.text !== nextAnchor.text) {
+					thread.anchor = nextAnchor;
 					changed = true;
 				}
 			}
@@ -390,10 +493,70 @@ export class CommentStore {
 		});
 	}
 
+	/** Suspend the ordinary editor mapper before the restore transaction can be dispatched. */
+	prepareDocumentChange(change: DocumentChange, undo?: AnnotationUndo): Promise<AnchorCheckpoint> {
+		return this.enqueue(async () => {
+			if (this.closed) throw new Error('Comment store is closed');
+			if (this.documentChanges.has(change.path)) throw new Error('Comment document change is already pending');
+			const threads = await this.readThreads(change.path);
+			if (this.closed) throw new Error('Comment store is closed');
+			if (change.kind === 'remove' && threads.length) throw new DocumentMutationError('changed', change.path);
+			if (this.documents.get(change.path) !== change.before) {
+				if (applyRestoredAnchors(change.path, threads, change.before, [])) this.markDirty(change.path);
+				this.documents.set(change.path, change.before); this.reconciled.add(change.path);
+			}
+			const before = anchorCheckpoint(change.path, threads);
+			this.documentChanges.set(change.path, { change, before, observed: change.before, revisions: new Map(), undo });
+			return structuredClone(before);
+		});
+	}
+
+	private finishDocumentChange(path: string, actual: string, remember: boolean): AnchorCheckpoint {
+		const pending = this.documentChanges.get(path);
+		if (!pending) return anchorCheckpoint(path, this.cache.get(path) ?? []);
+		const threads = this.cache.get(path) ?? [];
+		const edits = textEdits(pending.change.before, actual);
+		let changed = false;
+		for (const thread of threads) {
+			const revision = pending.revisions.get(thread.id);
+			if (applyRestoredAnchors(path, [thread], actual, revision === undefined ? edits : textEdits(revision, actual), revision === undefined && remember ? pending.undo : undefined)) changed = true;
+		}
+		this.documentChanges.delete(path); this.documents.set(path, actual); this.reconciled.add(path);
+		// A user reanchor made during the operation must never become eligible for its inverse snapshot.
+		const after = anchorCheckpoint(path, threads.filter(thread => !pending.revisions.has(thread.id)));
+		if (remember) {
+			this.restoredDocuments.set(path, { before: pending.change.before, after: actual, beforeAnchors: pending.before, afterAnchors: after });
+			if (this.restoredDocuments.size > 8) this.restoredDocuments.delete(this.restoredDocuments.keys().next().value!);
+		}
+		if (changed) this.markDirty(path);
+		this.emit(); return after;
+	}
+
+	commitDocumentChange(operationId: string, actualText: string): Promise<AnchorCheckpoint> {
+		return this.enqueue(async () => {
+			const entry = [...this.documentChanges].find(([, pending]) => pending.change.operationId === operationId);
+			if (!entry) throw new Error('Comment document change is no longer active');
+			if (actualText !== entry[1].change.after) throw new Error('Comment document changed before restore commit');
+			const result = this.finishDocumentChange(entry[0], actualText, true);
+			await this.writeDirty(); return result;
+		});
+	}
+
+	abortDocumentChange(operationId: string, actualText?: string): Promise<void> {
+		return this.enqueue(async () => {
+			const entry = [...this.documentChanges].find(([, pending]) => pending.change.operationId === operationId);
+			if (entry) this.finishDocumentChange(entry[0], actualText ?? entry[1].observed, false);
+			await this.writeDirty();
+		}, true);
+	}
+
 	renamePath(oldPath: string, newPath: string): Promise<void> {
 		return this.enqueue(async () => {
 			if (oldPath === newPath) return;
 			const threads = await this.readThreads(oldPath);
+			const pending = this.documentChanges.get(oldPath);
+			if (pending) this.finishDocumentChange(oldPath, pending.observed, false);
+			this.restoredDocuments.delete(oldPath);
 			this.cache.delete(oldPath);
 			this.cache.set(newPath, threads);
 			if (this.reconciled.delete(oldPath)) this.reconciled.add(newPath);
@@ -420,6 +583,8 @@ export class CommentStore {
 			const index = await this.readIndex();
 			const prev = index.files[path];
 			delete index.files[path];
+			if (this.documentChanges.get(path)?.change.kind !== 'remove') this.documentChanges.delete(path);
+			this.restoredDocuments.delete(path);
 			this.cache.delete(path);
 			this.reconciled.delete(path);
 			this.documents.delete(path);
@@ -441,6 +606,7 @@ export class CommentStore {
 
 	/** Seal synchronously, then drain accepted work. A failed drain remains retryable. */
 	close(): Promise<void> {
+		for (const [path, pending] of this.documentChanges) this.finishDocumentChange(path, pending.observed, pending.observed === pending.change.after);
 		this.closed = true;
 		this.dispose();
 		if (this.closing) return this.closing;
@@ -525,26 +691,88 @@ export class CommentStore {
 		this.emit();
 	}
 
+	/** Copy every known sidecar byte before the v2 -> v3 conversion. Backups live outside the active root. */
+	private async backupV2(indexRaw: unknown): Promise<void> {
+		const snapshot = asRecord(indexRaw);
+		const indexed = asRecord(snapshot?.['files']);
+		const entries = new Set<string>([INDEX_PATH]);
+		if (await this.fs.exists(PENDING_PATH)) entries.add(PENDING_PATH);
+		if (indexed) for (const meta of Object.values(indexed)) {
+			const hash = asRecord(meta)?.['hash'];
+			if (typeof hash === 'string' && /^[a-f0-9]{16}$/.test(hash)) entries.add(filePath(hash));
+		}
+		if (this.fs.list) {
+			const folders = [ROOT];
+			while (folders.length) {
+				const folder = folders.pop()!;
+				const children = await this.fs.list(folder);
+				for (const path of children.files) if (path.startsWith(ROOT + '/')) entries.add(path);
+				for (const path of children.folders) if (path.startsWith(ROOT + '/') && folders.length < 10000) folders.push(path);
+			}
+		}
+		const stamp = nowIso().replace(/[^0-9]/g, '').slice(0, 14);
+		const destination = `${BACKUP_DIR}/v2-${stamp}-${nid('b')}`;
+		const originals = [...entries].sort();
+		for (const source of originals) {
+			if (!await this.fs.exists(source)) throw new Error('Missing v2 sidecar during backup: ' + source);
+			const raw = await this.fs.read(source);
+			const target = `${destination}/${source.slice(ROOT.length + 1)}`;
+			await this.fs.write(target, raw);
+			if (await this.fs.read(target) !== raw) throw new Error('Backup verification failed: ' + source);
+		}
+		await this.fs.write(`${destination}/backup-manifest.json`, JSON.stringify({
+			from: 2, to: 3, source: ROOT, files: originals.map(path => path.slice(ROOT.length + 1)),
+		}, null, 2));
+	}
+	/** v2 persists a compulsory discussion; v3 makes the discussion optional. */
+	private async migrateV2(index: CommentIndex): Promise<CommentIndex> {
+		const files: Record<string, string> = {};
+		for (const [path, entry] of Object.entries(index.files)) {
+			const stored = filePath(entry.hash);
+			const raw = await this.readDocument(stored);
+			const threads = normalizeFile(raw, path).map(thread => ({
+				...thread, ...(thread.kind === 'range' ? { color: thread.color ?? ('legacy' as const) } : {}),
+			}));
+			files[stored] = JSON.stringify({ version: 3, path, threads } satisfies CommentFileDoc, null, 2);
+		}
+		const next: CommentIndex = { version: 3, files: index.files };
+		const write: CommentWrite = { index: next, files, remove: [] };
+		await this.fs.write(PENDING_PATH, JSON.stringify(write));
+		await this.persist(write);
+		return next;
+	}
 	private async readIndex(): Promise<CommentIndex> {
 		if (this.index) return this.index;
-		if (await this.fs.exists(PENDING_PATH)) {
-			const raw = await this.readDocument(PENDING_PATH) as CommentWrite | null;
-			if (raw && asRecord(raw.index)?.['version'] === 1) {
+		// A backup is durable before any legacy pending intent can replay.
+		const original = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
+		const pendingContent = await this.fs.exists(PENDING_PATH) ? await this.readDocument(PENDING_PATH) as CommentWrite | null : null;
+		const pendingV2 = asRecord(pendingContent)?.['index'];
+		if (asRecord(original)?.['version'] === 2 || asRecord(pendingV2)?.['version'] === 2)
+			await this.backupV2(original ?? pendingV2);
+		if (pendingContent) {
+			if (asRecord(pendingContent.index)?.['version'] === 1) {
 				this.legacyData = true;
 				this.legacyPaths.add(PENDING_PATH);
-			} else if (raw) {
+			} else {
 				try {
-					normalizeIndex(raw.index);
-					if (!raw.files || !Array.isArray(raw.remove) || [...Object.keys(raw.files), ...raw.remove].some(path => !/^\.huhu\/editor\/comments\/files\/[a-f0-9]{16}\.json$/.test(path))) throw new Error('Invalid pending comment write');
-					for (const body of Object.values(raw.files)) normalizeFile(JSON.parse(body), '');
+					normalizeIndex(pendingContent.index);
+					if (!pendingContent.files || !Array.isArray(pendingContent.remove) ||
+						[...Object.keys(pendingContent.files), ...pendingContent.remove].some(path => !path.startsWith(FILES_DIR + '/') || !/^[a-f0-9]{16}\.json$/.test(path.slice(FILES_DIR.length + 1))))
+						throw new Error('Invalid pending comment write');
+					for (const body of Object.values(pendingContent.files)) normalizeFile(JSON.parse(body), '');
 				} catch (error) { await this.quarantine(PENDING_PATH); throw error; }
-				await this.persist(raw);
+				await this.persist(pendingContent);
 			}
 		}
 		if (this.damagedPaths.has(INDEX_PATH)) throw new Error('Comment index was set aside');
 		const raw = await this.fs.exists(INDEX_PATH) ? await this.readDocument(INDEX_PATH) : null;
-		try { this.index = raw === null ? emptyIndex() : normalizeIndex(raw); }
-		catch (error) { await this.quarantine(INDEX_PATH); throw error; }
+		try {
+			const loaded = raw === null ? emptyIndex() : normalizeIndex(raw);
+			this.index = (loaded as { version: 2 | 3 }).version === 2 ? await this.migrateV2(loaded) : loaded;
+		} catch (error) {
+			if (raw && (asRecord(raw)?.['version'] !== 2 || !asRecord(asRecord(raw)?.['files'])) && !this.damagedPaths.has(INDEX_PATH)) await this.quarantine(INDEX_PATH);
+			throw error;
+		}
 		return this.index;
 	}
 
@@ -607,7 +835,7 @@ export class CommentStore {
 						total: threads.length,
 						updatedAt: nowIso(),
 					};
-					const body: CommentFileDoc = { version: 2, path, threads };
+					const body: CommentFileDoc = { version: 3, path, threads };
 					files[filePath(hash)] = JSON.stringify(body, null, 2);
 				}
 				const referenced = new Set(Object.values(index.files).map((entry) => filePath(entry.hash)));

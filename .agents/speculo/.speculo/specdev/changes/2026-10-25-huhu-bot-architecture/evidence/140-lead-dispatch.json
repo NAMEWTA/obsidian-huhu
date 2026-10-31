@@ -1,0 +1,15 @@
+{
+  "observer": "native:/root",
+  "task": "140-memory-runtime-recovery",
+  "taskSHA256": "dfff677cc1070cdcd5493a0c633b798fb637c143de8d736f8ab2b82f5683caf8",
+  "delegate": "native:/root/foundation_api_repair",
+  "actualModel": "gpt-6-sol/xhigh retainedfrom137",
+  "actualDispatch": "collaboration.followup_task plus nativeACK",
+  "dispatchValidator": {
+    "actualExit": 0,
+    "tool": "b44bb1"
+  },
+  "recovery": "134-lead-capacity-recovery.json",
+  "initialWindow": "SOURCEONLY runtime tests;139 purecomponent input/generationheld;126 domain source-only",
+  "formalOwnerStill": "/root"
+}

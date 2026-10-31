@@ -1,0 +1,25 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T05:53:21.642471+00:00",
+  "firstCommand": "node /tmp/huhu-freeze-responses-r1.mjs 1",
+  "toolChunk": "6528d9",
+  "outerExit": 126,
+  "error": "ArtifactError closure-evidence-missing: ticket/09-engine-responses.md expected one explicit acceptance anchor",
+  "classification": "Root review-freeze source locator preparation failure, no product command or review attempt",
+  "partialFormalWrite": false,
+  "correction": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/09-engine-responses.md",
+      "before": "71b95a07fde76ee883e0372fd8df9951b4377e48760f32b3cd062ed3bcdf6eba",
+      "after": "cb2548f75dce142f23aaec50c29a075670a4d248487411865cf69855185c2a04",
+      "onlyExplicitLocatorAnchorsAdded": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/27-build-platform-notices.md",
+      "before": "0bef8a4f1f27de091d1922002968632954323c94cb9c1cbff71ae57c309fe169",
+      "after": "399ada503e4e58e43dbbbfc23bf6cf551b6ddf533c86a793ea39669688bce948",
+      "onlyExplicitLocatorAnchorsAdded": true
+    }
+  ],
+  "boundary": "Behavior/AC bytes preserved exactly after stripping added anchors; source fragment freeze will use real current locators. Historical author input hashes remain their actual pre-anchor snapshots."
+}

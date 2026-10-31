@@ -6,10 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/components
 import { SettingsPage } from './SettingsPage';
 import { buildSettingsIndex, resetSettingsIndex, searchSettings } from './settings-search-index';
 
-vi.mock('../nav', () => ({ PRODUCT_MODULES: { terminal: 'agent', sync: 'sync' } }));
+vi.mock('../nav', () => ({ PRODUCT_MODULES: { terminal: 'agent', versioning: 'versioning' } }));
 const CATEGORIES = [
 	{ id: 'terminal', label: 'Agents' },
-	{ id: 'sync', label: 'Git sync' },
+	{ id: 'versioning', label: 'Git sync' },
 	{ id: 'about', label: 'About' },
 ];
 vi.mock('../../workbench/settings-categories', () => ({ settingsCategories: () => CATEGORIES }));
@@ -39,12 +39,12 @@ function SyncPageContent() {
 
 const SETTINGS = {};
 function fakePlugin() {
-	const pages: Record<string, () => Promise<(props: { resourceId?: string }) => React.JSX.Element>> = { agent: async () => AgentPage, sync: async () => SyncPageContent };
+	const pages: Record<string, () => Promise<(props: { resourceId?: string }) => React.JSX.Element>> = { agent: async () => AgentPage, versioning: async () => SyncPageContent };
 	return {
 		app: { workspace: { containerEl: { doc: document } } },
 		moduleInstance: (id: string) => ({ settingsPage: pages[id] }),
 		onModuleChanged: () => () => {},
-		moduleManifests: () => [{ id: 'agent' }, { id: 'sync' }],
+		moduleManifests: () => [{ id: 'agent' }, { id: 'versioning' }],
 		moduleState: () => 'active',
 		appSettings: { subscribe: () => () => {}, get: () => SETTINGS },
 	} as unknown as Parameters<typeof SettingsPage>[0]['plugin'];
@@ -73,7 +73,7 @@ test('a search matches label, description and category across all tabs and targe
 	expect(usage.map((item) => item.label)).toEqual(['Show usage', 'Show usage', 'Refresh interval']);
 	expect(usage[1]?.target).toMatchObject({ feature: 'settings', section: 'terminal', resourceId: 'usage' });
 	expect(usage[1]?.detail).toBe('Agents › Usage · Quota in the status bar');
-	expect((await searchSettings(plugin, CATEGORIES, 'template commits')).map((item) => item.target?.section)).toEqual(['sync']);
+	expect((await searchSettings(plugin, CATEGORIES, 'template commits')).map((item) => item.target?.section)).toEqual(['versioning']);
 	expect((await searchSettings(plugin, CATEGORIES, 'git sync')).map((item) => item.label)).toEqual(['Commit message']);
 	expect(await searchSettings(plugin, CATEGORIES, 'nothing matches this')).toEqual([]);
 });

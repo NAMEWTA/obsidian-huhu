@@ -1,0 +1,11 @@
+{
+  "observer": "native:/root",
+  "knownPriorReturn": "128 completed narrowtest repair only; full128 incomplete; 18sourcecheckpoint e173a1e6c7ce747ed008c40e60ef5d19729396c301120b9830330f9db944a234",
+  "newContinuationResult": "Selected model is at capacity beforeACK or new artifacts",
+  "interruptPreviousStatus": "errored samecapacity",
+  "rootVerified18SourceDrift": [],
+  "successor": "138-memory-access-recovery",
+  "replacement": "gpt-6-sol/xhigh",
+  "scope": "original128; source-onlytests now, no productchecks or productionwrites untilRootGo release",
+  "businessAttemptsReset": false
+}

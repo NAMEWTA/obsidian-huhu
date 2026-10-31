@@ -1,6 +1,6 @@
-import { ItemView, type WorkspaceLeaf } from 'obsidian';
+import { ItemView, type WorkspaceLeaf, type ViewStateResult } from 'obsidian';
 import type { ServiceAccess } from '../contracts/module';
-import { COMMENTS_PANEL } from '../../modules/comments/api';
+import type { EditorContextAccess } from '../contracts/editor-context';
 import { t } from '../../shared/i18n';
 import { onLeafLanguageChanged } from '../../host/obsidian/workspace-title';
 
@@ -13,8 +13,9 @@ export const COMMENTS_VIEW_TYPE = 'huhu-comments-view';
 export class CommentsLeaf extends ItemView {
 	private unmount: (() => void) | null = null;
 	private generation = 0;
+	private tab: 'comments' | 'history' = 'comments';
 
-	constructor(leaf: WorkspaceLeaf, private readonly host: { services: ServiceAccess; openWorkbenchSettings(category?: string): Promise<void> }) {
+	constructor(leaf: WorkspaceLeaf, private readonly host: { services: ServiceAccess; documents: EditorContextAccess; openWorkbenchSettings(category?: string): Promise<void> }) {
 		super(leaf);
 		this.navigation = false;
 	}
@@ -25,15 +26,20 @@ export class CommentsLeaf extends ItemView {
 		return t('editor.viewTitle');
 	}
 	getIcon(): string {
-		return 'message-square-text';
+		return 'highlighter';
 	}
 	onOpen(): Promise<void> {
-		this.register(this.host.services.watch(COMMENTS_PANEL, () => this.draw()));
 		this.register(onLeafLanguageChanged(this.app, this.leaf, () => {
-			if (!this.host.services.peek(COMMENTS_PANEL)) this.draw();
+			this.draw();
 		}));
 		this.draw();
 		return Promise.resolve();
+	}
+	getState(): Record<string, unknown> { return { tab: this.tab }; }
+	setState(state: { tab?: unknown }, result: ViewStateResult): Promise<void> {
+		this.tab = state.tab === 'history' ? 'history' : 'comments';
+		this.draw();
+		return super.setState(state, result);
 	}
 	onClose(): Promise<void> {
 		this.clear();
@@ -47,15 +53,10 @@ export class CommentsLeaf extends ItemView {
 	}
 	private draw(): void {
 		this.clear();
-		const panel = this.host.services.peek(COMMENTS_PANEL);
-		if (panel) {
-			this.unmount = panel.mount(this.contentEl);
-			return;
-		}
 		const generation = this.generation;
-		void import('./CommentsEmptyState').then(({ mountCommentsEmptyState }) => {
+		void import('../editor-panel/panel-host').then(({ mountEditorPanelHost }) => {
 			if (generation !== this.generation) return;
-			this.unmount = mountCommentsEmptyState(this.contentEl, () => { void this.host.openWorkbenchSettings('general'); });
-		}).catch((error: unknown) => console.error('[HUHU] Comments empty state failed', error));
+			this.unmount = mountEditorPanelHost({ container: this.contentEl, services: this.host.services, documents: this.host.documents, initialTab: this.tab, select: tab => { this.tab = tab; }, openSettings: () => { void this.host.openWorkbenchSettings('general'); } });
+		}).catch((error: unknown) => console.error('[HUHU] Editor panel failed', error));
 	}
 }

@@ -1,0 +1,60 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "42bd065764abfd1c3302a59b25958aae1c54e59d6e029ab4e02353fef6fa9db6",
+  "manifestSHA256": "ec7ea19d75a7b793dcdaeff1dd8e983cdd1873b98746e7a12de709eefc94276b",
+  "sources": 30,
+  "artifacts": 58,
+  "sourceAndArtifactDrift": [],
+  "rootReturn": {
+    "exitCode": 0,
+    "seconds": 0.07176283100125147,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "boundary": "Scope candidate accepted; whole T14 regression/independent review pending; Root complete Go regression is running.",
+  "batch2": [
+    {
+      "stage": "batch2-atomic-ancestry-initial",
+      "exitCode": 0,
+      "actualWaitSeconds": 2.1066663739984506,
+      "inputFileCount": 393,
+      "inputSHA256": "cadf811840e09a8b1ae2a88072ef3e57639bacd9bbc1866c837b022056312f8a",
+      "passedTopLevel": [
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody",
+        "TestPrivateMemoryCompleteConsumptionClosureHasAnExact128ReferenceBoundary",
+        "TestPrivateMemoryStatementAndCommitFaultsRollbackReceiptAndAllWrites",
+        "TestMaintenanceStatementAndCommitFaultsRollbackTheWholeCandidateBatch"
+      ],
+      "passedSubtests": [
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/bad-json",
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/null-json",
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/missing-relation",
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/missing-ancestor",
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/cycle",
+        "TestPrivateMemoryRejectsBrokenCompleteAncestryWithoutReturningBody/contradictory-identity",
+        "TestPrivateMemoryStatementAndCommitFaultsRollbackReceiptAndAllWrites/statement",
+        "TestPrivateMemoryStatementAndCommitFaultsRollbackReceiptAndAllWrites/commit",
+        "TestMaintenanceStatementAndCommitFaultsRollbackTheWholeCandidateBatch/statement",
+        "TestMaintenanceStatementAndCommitFaultsRollbackTheWholeCandidateBatch/commit"
+      ]
+    },
+    {
+      "stage": "batch2-lifecycle-origin-initial",
+      "exitCode": 0,
+      "actualWaitSeconds": 1.365551080001751,
+      "inputFileCount": 393,
+      "inputSHA256": "cadf811840e09a8b1ae2a88072ef3e57639bacd9bbc1866c837b022056312f8a",
+      "passedTopLevel": [
+        "TestForgottenStableOriginRejectsOldGenerationAndARealNewJob",
+        "TestUnboundMemoryAdmissionRechecksCurrentEligibilityWithoutCreatingRuns",
+        "TestMemoryStopAdmissionCancelsCallsButDoneWaitsForTheirActualReturn",
+        "TestMemoryRecoveryWatermarkTracksOnlyThisTreesActualFacts"
+      ],
+      "passedSubtests": [
+        "TestMemoryRecoveryWatermarkTracksOnlyThisTreesActualFacts/ordinary-tree",
+        "TestMemoryRecoveryWatermarkTracksOnlyThisTreesActualFacts/maintenance-settings"
+      ]
+    }
+  ]
+}

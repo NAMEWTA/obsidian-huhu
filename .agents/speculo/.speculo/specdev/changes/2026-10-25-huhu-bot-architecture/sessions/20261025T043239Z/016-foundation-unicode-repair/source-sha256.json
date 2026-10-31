@@ -1,0 +1,48 @@
+{
+  "session": "20261025T043239Z",
+  "task": "016-foundation-unicode-repair",
+  "author": "/root/foundation_go",
+  "requested_model": "gpt-6.1-sol/xhigh (original Lead dispatch; continuation)",
+  "base": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "changed": [
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "sha256": "ddf3fa37de66e09ba5ca056aa449e8a6569691e4ec1958957549445f3703038b"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/service.go",
+      "sha256": "82f4d494953ce2e8420069b9f3f945decfff38e81788ce4fe5e897aecd879568"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/unicode_test.go",
+      "sha256": "5f7d6040fd655b1c961a045ee827c1aba1496d964d927b3bb430b865df9cb3ff"
+    }
+  ],
+  "protected_unchanged": [
+    {
+      "path": "native/huhubot/internal/protocol/hap/frame.go",
+      "sha256": "fef2ad8ef5f65d9fcd0a9e17437b7cb60ee9f0f44075984c89d6372a5dce528d",
+      "matches_011": true
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "sha256": "af806e4eadef208b717552a95edb0d62a10db5f4a12a987e3088c4368fb2683b",
+      "matches_011": true
+    },
+    {
+      "path": "contracts/hap/v0.1/generate.mjs",
+      "sha256": "b6dfe22a826ac26c3ff11add3d0e7e558e7ee613e4d71dc54406a48319d3e06d",
+      "matches_011": true
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "sha256": "25a59108c56bfdb488a13d32a7c23d20d5901ce83009cc527d24f58649e92895",
+      "matches_011": true
+    },
+    {
+      "path": "native/huhubot/go.sum",
+      "sha256": "6069deb819b9c19723efadac8b36e41de846adcd4e6064cd689960d844ecb7ce",
+      "matches_011": true
+    }
+  ]
+}

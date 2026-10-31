@@ -1,0 +1,35 @@
+{
+  "ticket": "T-05",
+  "round": 1,
+  "mode": "native",
+  "actual_tool": "collaboration.spawn_agent",
+  "actual_handle": "codex:/root/review_t05",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "fork_turns": "none",
+  "dispatch_return": {
+    "task_name": "/root/review_t05"
+  },
+  "observed_at": "2026-10-25T15:53:26.508548+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base_head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-019",
+  "map_revision": 20,
+  "input": "evidence/T-05-review-input.md",
+  "input_sha256": "6762a4fcbfd16b026571c5d94731fd98d8d1325d3d7d9cfcad2e44268d7047ad",
+  "scope_sha256": "8713b69cba7a7d222d8eaad101f0e41eaa7c3af76b3745258e95f3ebc7b820f5",
+  "files": 48,
+  "sources": 43,
+  "reused_prior": 95,
+  "implementation_owners": [
+    "codex:/root/prepare_t03",
+    "codex:/root/prepare_t05_screen",
+    "codex:/root/implement_t01",
+    "codex:/root"
+  ],
+  "reviewer_independent": true,
+  "writer_state": "all repository product writers stopped; C /tmp-only deterministic diagnosis and A /tmp-only T06 contract candidate allowed",
+  "output_requested": "/tmp/huhu-t05-review-round1.md",
+  "limits": "Exact frozen scope, independent standards/specification, no repo edits or recursive agents, no real-user E2E claim",
+  "known_failure_disclosed": "attempt2 primary may have been overwritten by finally; unchanged production attempt3 passes but original root cause unconfirmed; /tmp Outbox ordering experiment pending"
+}

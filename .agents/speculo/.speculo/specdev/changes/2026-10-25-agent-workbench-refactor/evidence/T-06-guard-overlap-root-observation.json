@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-25T21:42:55.189136+00:00",
+  "observed_failure": {
+    "record": "/tmp/huhu-t06-root-integration3-architecture.json",
+    "sha256": "1a9c60f13bc2ed22e3b1ea2e36b46b4bf3f3e7c29357f66df7a2238b8ffd91d2",
+    "log_sha256": "a464b18b0183907cee841fbd3642f60fdfdb3c04bc069d6f649278759370691a",
+    "message": "src/promise-regression-P0QRz9/callbacks.ts: unknown source zone"
+  },
+  "actual_overlap": {
+    "promise": "2026-10-25T21:41:54.484002 to21:41:59.548319Z",
+    "architecture": "2026-10-25T21:41:54.478897 to21:42:04.707228Z"
+  },
+  "mechanism": "Root mistakenly ran scans concurrently. verify-promise-callbacks.mjs line5 creates src/promise-regression-* fixture and line22 removes it in finally; architecture scans src during that window. No such fixture remains and all manifest inputs unchanged.",
+  "producer": {
+    "path": "scripts/verify-promise-callbacks.mjs",
+    "sha256": "4898d83ccdd2bdb55b929d264724bb26f769bd62e188c6c8d4b5f610382d264a"
+  },
+  "recovery": "Promise completed; run architecture alone on same fixed candidate. This is changed tool scheduling, not production repair or a fresh full integration attempt.",
+  "pending_recheck": "/tmp/huhu-t06-root-integration3-architecture-serial.json"
+}

@@ -1,0 +1,46 @@
+{
+  "observedAt": "2026-10-25T11:47:43.102057+00:00",
+  "ticket": "T-04",
+  "round": 2,
+  "mode": "native",
+  "status": "actually-dispatched",
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "fork_turns": "none",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "input": "evidence/T-04-review-input.md",
+  "input_sha256": "22acab5546bc320876cbf8030e00f2fe8e8234d84e0d647f8a639fbe16e9fa00",
+  "scope_sha256": "3a1bc71da37777eace0e2ea55ada36d64903cd36e370d282c82be57a65756890",
+  "files": 57,
+  "sources": 31,
+  "reused_prior": 58,
+  "snapshot": "/tmp/huhu-t04-round2-source-snapshot",
+  "implementation_owners": [
+    "codex:/root/prepare_t03",
+    "codex:/root/prepare_t02",
+    "codex:/root/implement_t01",
+    "codex:/root"
+  ],
+  "writer_state": "all source and generated artifact writers stopped",
+  "goal_revision": "GP-017",
+  "map_revision": 18,
+  "output_requested": "/tmp/huhu-t04-review-round2.md",
+  "limits": "Independent standards/specification review; no edits, build, cargo or recursive agents. Original round1 probes preserved; new read-only tests may write only /tmp and clean own resources.",
+  "actual_tool": "collaboration.spawn_agent",
+  "actual_handle": "codex:/root/review_t04_round2",
+  "dispatch_return": {
+    "task_name": "/root/review_t04_round2"
+  },
+  "receipt_recorded_at": "2026-10-25T11:48:32.887201+00:00",
+  "actual_return": {
+    "received_by": "codex:/root",
+    "recorded_at": "2026-10-25T12:02:00.579154+00:00",
+    "reviewer": "codex:/root/review_t04_round2",
+    "tool_channel": "collaboration MESSAGE and FINAL_ANSWER",
+    "standards": "pass",
+    "specification": "pass",
+    "report": "evidence/T-04-review-round2.md",
+    "report_sha256": "dbd36b006845a4267eee7aac9fa8142e42839b9a2ed288d17f5ef1cc717fe28f",
+    "source_stopped": true
+  }
+}

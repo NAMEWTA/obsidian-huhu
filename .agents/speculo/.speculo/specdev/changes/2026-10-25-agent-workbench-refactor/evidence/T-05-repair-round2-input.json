@@ -1,0 +1,177 @@
+{
+  "ticket": "T-05",
+  "repair_round": 2,
+  "cycle": "repair-round1",
+  "observed_at": "2026-10-25T17:32:10.706736+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/terminal",
+  "goal_revision": "GP-019",
+  "map_revision": 20,
+  "original_attempts": 3,
+  "current_repair_attempts": 2,
+  "next_integration_attempt": 3,
+  "limit": 3,
+  "review_input_sha256": "be9cc7f307e0651cc0eb009862a93a337fd89b93dfd6251102dfacbec07ac96c",
+  "review_scope_drift": [],
+  "writers": {
+    "codex:/root/implement_t01": [
+      "native/pty-server/src/outbox.rs",
+      "native/pty-server/src/session.rs",
+      "native/pty-server/src/main.rs",
+      "native/pty-server/src/frame.rs",
+      "native/pty-server/tests/stdio.rs",
+      "src/shared/native/input.ts",
+      "src/shared/native/input.test.ts",
+      "src/shared/native/host.ts",
+      "src/host/desktop/native/helper.ts",
+      "src/host/desktop/native/helper-stream.test.ts",
+      "src/host/desktop/native/host.ts",
+      "src/host/desktop/native/host.test.ts",
+      "src/host/desktop/native/host-stream.integration.test.ts",
+      "test/fixtures/native/terminal-input-admission-v1.json"
+    ]
+  },
+  "other_writers": "SOURCE STOPPED",
+  "source_snapshot": "/tmp/huhu-t05-repair-r2-c-before",
+  "files": [
+    {
+      "path": "native/pty-server/src/outbox.rs",
+      "sha256": "814d89ad05a0d1562c0ad141cb1828ac84351bca92271e7f6459ce8c08af7198",
+      "bytes": 30655
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "9876602a429d3012150ac0e17b5c3a8b7a6bf3212f0aa15b16a906c55b8436d2",
+      "bytes": 74920
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "712f5979f5ee544a1252a8f697f0ea7ddf0c403f3b41b93cd27918e47711f5e5",
+      "bytes": 12284
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "445d49729af9dd861d30292a3e5f3a904506dae60f0e5d7c60682c47d9a5ca1c",
+      "bytes": 14406
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a",
+      "bytes": 11081
+    },
+    {
+      "path": "src/shared/native/input.ts",
+      "sha256": "72cf9a2571a26aa397838e17ec94e0b847ec72c56f0c8528f0596b012b26b7a5",
+      "bytes": 7432
+    },
+    {
+      "path": "src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76",
+      "bytes": 1281
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "edf4e9a6bdab714258fc761cde4b4d160f5587f97ba2bc5e5ff2341448729e96",
+      "bytes": 5120
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "215d39329f312209b1904e3a6e7cfb96d49e9d73240a24ed3b47c499818c030a",
+      "bytes": 34923
+    },
+    {
+      "path": "src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "e6e5bab8e065385bdac9575dc7809240fef543682f06ce86725a9702c6e0fd04",
+      "bytes": 19419
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "d47e979a59c6a255080a95dcb75613baa23c80747de66d75784c98798d5d32cb",
+      "bytes": 17632
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "sha256": "be9abc39c47d865e173e5404270735c3531a625203473bfefb18e5329f1c6176",
+      "bytes": 19415
+    },
+    {
+      "path": "src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "4ffc789e690b5cef575345715e1420f7c72529b282e7a0c1caf12bb4d3c40a7d",
+      "bytes": 14510
+    },
+    {
+      "path": "test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "4d1163fdcc5e44181c876c2f7606bb60f52343d6eb0a7ad307d741a69078cff5",
+      "bytes": 16754
+    }
+  ],
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247",
+      "bytes": 38004
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e",
+      "bytes": 31828
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3",
+      "bytes": 25566
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04.md",
+      "sha256": "beabe78ca673beaba2bf0e884d0fa04dc24016efba980c0690f360b47fabdf28",
+      "bytes": 33612
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round1-packet.md",
+      "sha256": "6f9e0ef5e31b0da34e072ea35a14904b0e3e5e0c095c402d308912ffaa54aece",
+      "bytes": 8386
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-repair-round2-packet.md",
+      "sha256": "542241f2a4edef86f6f6f00c9175edfd658f97c45388ffaf09ef4f73d0f58a52",
+      "bytes": 4564
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-review-round2.md",
+      "sha256": "7bebb705e65be69b02d7cd509371ba657e9eba52c65b82f3ffd5353cc0fc249f",
+      "bytes": 20208
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-review-round2-root-audit.json",
+      "sha256": "43917faf2209caad985f44629b15bd8f579d430a577056f7542d27840700ffed",
+      "bytes": 23478
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488
+    }
+  ],
+  "authorization": "Original user all-18 Agent Team implementation/code-level acceptance; same T05 scope. No new external actions."
+}

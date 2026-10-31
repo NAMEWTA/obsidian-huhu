@@ -1,0 +1,516 @@
+[
+  {
+    "name": "css-build",
+    "command": [
+      "pnpm",
+      "run",
+      "build:css"
+    ],
+    "exit": 0,
+    "seconds": 1.45,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/css-build.log"
+  },
+  {
+    "name": "build",
+    "command": [
+      "pnpm",
+      "run",
+      "build"
+    ],
+    "exit": 126,
+    "seconds": 34.69,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-attempt1.log"
+  },
+  {
+    "name": "build",
+    "command": [
+      "pnpm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 38.88,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-before-final.log"
+  },
+  {
+    "name": "native-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--manifest-path",
+      "native/pty-server/Cargo.toml"
+    ],
+    "exit": 0,
+    "seconds": 22.09,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/native-build.log"
+  },
+  {
+    "name": "bundle",
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle.json"
+    ],
+    "exit": 126,
+    "seconds": 0.68,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle-before-final.log"
+  },
+  {
+    "name": "vitest",
+    "command": [
+      "pnpm",
+      "test"
+    ],
+    "exit": 126,
+    "seconds": 302.81,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/vitest-before-final.log"
+  },
+  {
+    "name": "lint",
+    "command": [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    "exit": 0,
+    "seconds": 91.01,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/lint.log"
+  },
+  {
+    "name": "css",
+    "command": [
+      "pnpm",
+      "run",
+      "lint:css"
+    ],
+    "exit": 0,
+    "seconds": 0.92,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/css.log"
+  },
+  {
+    "name": "architecture",
+    "command": [
+      "pnpm",
+      "run",
+      "test:architecture"
+    ],
+    "exit": 0,
+    "seconds": 13.1,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/architecture.log"
+  },
+  {
+    "name": "i18n",
+    "command": [
+      "pnpm",
+      "run",
+      "test:i18n"
+    ],
+    "exit": 0,
+    "seconds": 2.48,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/i18n.log"
+  },
+  {
+    "name": "promises",
+    "command": [
+      "pnpm",
+      "run",
+      "test:promise-callbacks"
+    ],
+    "exit": 0,
+    "seconds": 7.05,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/promises.log"
+  },
+  {
+    "name": "safety",
+    "command": [
+      "pnpm",
+      "run",
+      "test:safety-regressions"
+    ],
+    "exit": 0,
+    "seconds": 8.16,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/safety.log"
+  },
+  {
+    "name": "build-text",
+    "command": [
+      "pnpm",
+      "run",
+      "test:build-text"
+    ],
+    "exit": 0,
+    "seconds": 0.71,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-text.log"
+  },
+  {
+    "name": "workbench-entry",
+    "command": [
+      "pnpm",
+      "run",
+      "test:workbench-entry"
+    ],
+    "exit": 0,
+    "seconds": 0.66,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/workbench-entry.log"
+  },
+  {
+    "name": "workbench-lifecycle",
+    "command": [
+      "pnpm",
+      "run",
+      "test:workbench-lifecycle"
+    ],
+    "exit": 0,
+    "seconds": 0.82,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/workbench-lifecycle.log"
+  },
+  {
+    "name": "protocol",
+    "command": [
+      "node",
+      "scripts/generate-control-protocol.mjs",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.41,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/protocol.log"
+  },
+  {
+    "name": "notices",
+    "command": [
+      "pnpm",
+      "run",
+      "check:notices"
+    ],
+    "exit": 0,
+    "seconds": 4.03,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/notices.log"
+  },
+  {
+    "name": "docs",
+    "command": [
+      "pnpm",
+      "run",
+      "test:docs"
+    ],
+    "exit": 126,
+    "seconds": 1.43,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/docs.log"
+  },
+  {
+    "name": "native",
+    "command": [
+      "pnpm",
+      "run",
+      "check:native"
+    ],
+    "exit": 0,
+    "seconds": 44.72,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/native.log"
+  },
+  {
+    "name": "build",
+    "command": [
+      "pnpm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 40.83,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build.log"
+  },
+  {
+    "name": "bundle",
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle.json"
+    ],
+    "exit": 0,
+    "seconds": 0.73,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle.log"
+  },
+  {
+    "name": "helper-smoke",
+    "command": [
+      "node",
+      "scripts/verify-pty-helper.mjs",
+      "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/target/release/huhu-pty",
+      "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/target/release/huhu"
+    ],
+    "exit": 0,
+    "seconds": 10.92,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/helper-smoke.log"
+  },
+  {
+    "name": "vitest",
+    "command": [
+      "pnpm",
+      "test"
+    ],
+    "exit": 0,
+    "seconds": 331.35,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/vitest.log"
+  },
+  {
+    "name": "build-css",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "build:css"
+    ],
+    "exit": 0,
+    "seconds": 1.15,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-css-candidate3.log"
+  },
+  {
+    "name": "native-build",
+    "candidate": 3,
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--manifest-path",
+      "native/pty-server/Cargo.toml"
+    ],
+    "exit": 0,
+    "seconds": 18.99,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/native-build-candidate3.log"
+  },
+  {
+    "name": "build",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 47.41,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-candidate3.log"
+  },
+  {
+    "name": "bundle",
+    "candidate": 3,
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle-candidate3.json"
+    ],
+    "exit": 126,
+    "seconds": 1.05,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle-candidate3.log"
+  },
+  {
+    "name": "native",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "check:native"
+    ],
+    "exit": 0,
+    "seconds": 39.61,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/native-candidate3.log"
+  },
+  {
+    "name": "helper-smoke",
+    "candidate": 3,
+    "command": [
+      "node",
+      "scripts/verify-pty-helper.mjs",
+      "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/target/release/huhu-pty",
+      "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/target/release/huhu"
+    ],
+    "exit": 0,
+    "seconds": 10.97,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/helper-smoke-candidate3.log"
+  },
+  {
+    "name": "lint",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    "exit": 0,
+    "seconds": 79.71,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/lint-candidate3.log"
+  },
+  {
+    "name": "css",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "lint:css"
+    ],
+    "exit": 0,
+    "seconds": 0.75,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/css-candidate3.log"
+  },
+  {
+    "name": "architecture",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:architecture"
+    ],
+    "exit": 0,
+    "seconds": 10.67,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/architecture-candidate3.log"
+  },
+  {
+    "name": "i18n",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:i18n"
+    ],
+    "exit": 0,
+    "seconds": 1.64,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/i18n-candidate3.log"
+  },
+  {
+    "name": "promises",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:promise-callbacks"
+    ],
+    "exit": 0,
+    "seconds": 4.8,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/promises-candidate3.log"
+  },
+  {
+    "name": "bundle",
+    "candidate": 3,
+    "command": [
+      "node",
+      "scripts/check-bundle.mjs",
+      "--budget",
+      "scripts/bundle-budget.json",
+      "--enforce",
+      "--json",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle-candidate3-final.json"
+    ],
+    "exit": 0,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/bundle-candidate3-final.log",
+    "observed": "Minimal KiB ceilings raised only after complete same-builder input attribution; startup/styles/other modules unchanged"
+  },
+  {
+    "name": "safety",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:safety-regressions"
+    ],
+    "exit": 0,
+    "seconds": 5.98,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/safety-candidate3.log"
+  },
+  {
+    "name": "build-text",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:build-text"
+    ],
+    "exit": 0,
+    "seconds": 0.62,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/build-text-candidate3.log"
+  },
+  {
+    "name": "workbench-entry",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:workbench-entry"
+    ],
+    "exit": 0,
+    "seconds": 0.52,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/workbench-entry-candidate3.log"
+  },
+  {
+    "name": "workbench-lifecycle",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:workbench-lifecycle"
+    ],
+    "exit": 0,
+    "seconds": 0.54,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/workbench-lifecycle-candidate3.log"
+  },
+  {
+    "name": "protocol",
+    "candidate": 3,
+    "command": [
+      "node",
+      "scripts/generate-control-protocol.mjs",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.31,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/protocol-candidate3.log"
+  },
+  {
+    "name": "notices",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "check:notices"
+    ],
+    "exit": 0,
+    "seconds": 1.1,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/notices-candidate3.log"
+  },
+  {
+    "name": "docs",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "run",
+      "test:docs"
+    ],
+    "exit": 126,
+    "seconds": 1.49,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/docs-candidate3.log"
+  },
+  {
+    "name": "vitest",
+    "candidate": 3,
+    "command": [
+      "pnpm",
+      "test"
+    ],
+    "exit": 0,
+    "seconds": 286.89,
+    "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-checks/vitest-candidate3.log"
+  }
+]

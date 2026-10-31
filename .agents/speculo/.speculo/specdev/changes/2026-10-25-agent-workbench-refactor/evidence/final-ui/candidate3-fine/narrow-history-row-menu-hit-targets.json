@@ -1,0 +1,90 @@
+[
+  {
+    "name": "继续",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "导入到 Space…",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "复制恢复命令",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "复制会话 ID",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "复制日志路径",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "打开日志",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "在文件管理器中显示日志",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "打开工作目录",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "导出为笔记",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "收藏",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "归档",
+    "width": 166,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  }
+]

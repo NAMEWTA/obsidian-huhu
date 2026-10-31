@@ -19,8 +19,12 @@
 		"src/modules/comments/styles/comments.css",
 		"node_modules/@xterm/xterm/css/xterm.css",
 		"src/modules/agent/styles/agent.css",
+		"src/modules/huhubot/styles/agent.css",
+		"src/modules/huhubot/styles/tasks.css",
+		"src/modules/huhubot/styles/data.css",
 		"src/modules/icons/styles/host-icons.css",
-		"src/modules/sync/styles/host-conflicts.css",
+		"src/modules/versioning/styles/host-conflicts.css",
+		"src/modules/versioning/styles/diff.css",
 		"src/modules/browser/styles/browser.css",
 		"src/shell/styles/host.css"
 	]

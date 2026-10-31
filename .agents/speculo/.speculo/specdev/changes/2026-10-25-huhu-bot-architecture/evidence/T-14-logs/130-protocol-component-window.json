@@ -1,0 +1,29 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:55:32.405520+00:00",
+  "task": "130-memory-common-engine",
+  "basis": "Map35 same TASK, unchanged writer/resources, explicitly approved additional read-only driver dependency closure",
+  "staticManifestSHA256": "6202fae6f8905b8c6211e24f774d5af354352630b269ff4fbc85c38b543840d4",
+  "verifiedInputs": 44,
+  "rootInputDrift": [],
+  "toolChunk": "a78459",
+  "allowedLocalPackageDirectories": [
+    "anthropic",
+    "chat",
+    "common",
+    "common/protocolcontext",
+    "httpcall",
+    "responses",
+    "api"
+  ],
+  "rules": "actual precise child-package go list must equal static local closure/noError/embed/drift before tests; sole Go tester; no Core/SQL or production driver writes",
+  "overlay": {
+    "archiveSHA256": "4287b37ae37584455e327096c718f4a65443c871cb0cc3f2cadee9598524642e",
+    "engineSHA256": "b906da361ba1e543c1b1abdfc1fec567d1af1116ab01506ef8070a3bc23d4773",
+    "checkpointSHA256": "291168afac790301af8186be202fb13990b41acfe57e207986d2d0411d387c0a",
+    "rootComparedToActualInitialRed": true,
+    "scope": "only those two original changed files, other old production unchanged/new files no init; captureO_EXCL self logs; no original fixtures/golden writes"
+  },
+  "nativeACK": true,
+  "notYetAccepted": "actual new tests/overlay results not yet read"
+}

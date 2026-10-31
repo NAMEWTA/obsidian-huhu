@@ -1,0 +1,1 @@
+ok  	github.com/NAMEWTA/obsidian-huhu/native/huhubot/tests/contract/portable	0.004s

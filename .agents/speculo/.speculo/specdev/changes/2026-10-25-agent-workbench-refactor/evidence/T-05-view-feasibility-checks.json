@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-25T12:40:35.255099Z",
+  "temporary_fixture_only": true,
+  "checks": [
+    {
+      "run": "run03",
+      "classification": "temporary_fixture_probe",
+      "raw_result": {
+        "name": "published-package-private-shape-real-dom",
+        "ok": true,
+        "utc": "2026-10-25T12:32:25.969Z",
+        "durationMs": 29.400000005960464,
+        "detail": {
+          "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+          "canvas": 0,
+          "dimensions": {
+            "width": 8.45,
+            "height": 19
+          },
+          "core": [
+            [
+              "_oscLinkService",
+              "object"
+            ],
+            [
+              "_onCursorMove",
+              "object"
+            ],
+            [
+              "_onScroll",
+              "object"
+            ],
+            [
+              "_onWriteParsed",
+              "object"
+            ],
+            [
+              "_syncTextArea",
+              "function"
+            ]
+          ],
+          "searchGlobal": "function"
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "positive_plus_negative_control",
+      "raw_result": {
+        "name": "search-real-cache-invalidation-without-fake-linefeed",
+        "ok": true,
+        "utc": "2026-10-25T12:32:26.037Z",
+        "durationMs": 9.800000011920929,
+        "detail": {
+          "cacheBefore": "ALPHA",
+          "staleFind": false,
+          "freshFind": true,
+          "oldFind": false,
+          "lineFeedsEmitted": 0
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "positive_plus_negative_control",
+      "raw_result": {
+        "name": "fake-linefeed-negative-control-windows-wrap-mutation",
+        "ok": true,
+        "utc": "2026-10-25T12:32:26.050Z",
+        "durationMs": 5.300000011920929,
+        "detail": {
+          "fakeLfChangedWrapped": true,
+          "onWriteParsedPreservedWrapped": true
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "positive_plus_negative_control",
+      "raw_result": {
+        "name": "2026-same-token-does-not-reopen-or-restart-local-timeout",
+        "ok": true,
+        "utc": "2026-10-25T12:32:26.060Z",
+        "durationMs": 1173.7999999821186,
+        "detail": {
+          "timer1": 12,
+          "timer2": 12,
+          "timer3": 12,
+          "elapsedAtExpiryMs": 1141.5,
+          "expired": true,
+          "afterSameTokenResync": false,
+          "newEnableStartedTimer": true,
+          "disableFlushed": true
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "positive_plus_negative_control",
+      "raw_result": {
+        "name": "mouse-protocol-unchanged-keeps-selection-with-negative-control",
+        "ok": true,
+        "utc": "2026-10-25T12:32:27.238Z",
+        "durationMs": 5.300000011920929,
+        "detail": {
+          "before": "select",
+          "afterSameProtocolGuard": "select",
+          "afterUnsafeRepeatedSetter": "",
+          "selectionEnabled": false
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "temporary_fixture_probe",
+      "raw_result": {
+        "name": "cursor-event-bridge-textarea-width-position-and-composition-guard",
+        "ok": true,
+        "utc": "2026-10-25T12:32:27.246Z",
+        "durationMs": 73.7000000178814,
+        "detail": {
+          "cell": {
+            "width": 8.45,
+            "height": 19
+          },
+          "actual": {
+            "left": 25.35,
+            "top": 38,
+            "width": 16.9,
+            "height": 19
+          },
+          "compositionGuard": true,
+          "postComposition": {
+            "left": "42.25px",
+            "top": "19px"
+          },
+          "trustedOsIme": false
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run03",
+      "classification": "temporary_fixture_probe",
+      "raw_result": {
+        "name": "scroll-event-bridge-scrollbar-selection-and-textarea-probe",
+        "ok": true,
+        "utc": "2026-10-25T12:32:27.322Z",
+        "durationMs": 36.69999998807907,
+        "detail": {
+          "ybase": 2,
+          "y": 0,
+          "ydisp": 0,
+          "viewportRow": 2,
+          "cellHeight": 19,
+          "expectedVisibleTop": 38,
+          "actualTop": 0,
+          "stockTextareaMatchesVisibleCursor": false
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run04-baseline",
+      "classification": "baseline_comparison",
+      "raw_result": {
+        "name": "stock-versus-projected-scroll-ime-input-baseline",
+        "ok": true,
+        "utc": "2026-10-25T12:35:28.135Z",
+        "durationMs": 518.8000000119209,
+        "detail": {
+          "bottom": {
+            "stock": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 2,
+              "visibleRow": 0,
+              "expectedVisibleTop": 0,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            },
+            "projected": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 2,
+              "visibleRow": 0,
+              "expectedVisibleTop": 0,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            }
+          },
+          "scrolled": {
+            "stock": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 0,
+              "visibleRow": 2,
+              "expectedVisibleTop": 38,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            },
+            "projected": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 0,
+              "visibleRow": 2,
+              "expectedVisibleTop": 38,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            }
+          },
+          "composing": {
+            "stock": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 0,
+              "visibleRow": 2,
+              "expectedVisibleTop": 38,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": true,
+              "cellHeight": 19
+            },
+            "projected": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 0,
+              "visibleRow": 2,
+              "expectedVisibleTop": 38,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": true,
+              "cellHeight": 19
+            }
+          },
+          "afterInput": {
+            "stock": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 2,
+              "visibleRow": 0,
+              "expectedVisibleTop": 0,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            },
+            "projected": {
+              "ybase": 2,
+              "y": 0,
+              "x": 1,
+              "ydisp": 2,
+              "visibleRow": 0,
+              "expectedVisibleTop": 0,
+              "textareaTop": 0,
+              "compositionTop": 0,
+              "isComposing": false,
+              "cellHeight": 19
+            }
+          },
+          "sameScroll": true,
+          "sameCompose": true,
+          "sameInput": true,
+          "trace": {
+            "stock": [
+              {
+                "type": "compositionstart",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "compositionupdate",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "beforeinput",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "input",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "compositionupdate",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "beforeinput",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "input",
+                "trusted": true,
+                "data": null
+              },
+              {
+                "type": "compositionend",
+                "trusted": false,
+                "data": ""
+              },
+              {
+                "type": "onData",
+                "data": "a"
+              },
+              {
+                "type": "keyup",
+                "trusted": true,
+                "key": "a"
+              }
+            ],
+            "projected": [
+              {
+                "type": "compositionstart",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "compositionupdate",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "beforeinput",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "input",
+                "trusted": true,
+                "data": "中"
+              },
+              {
+                "type": "compositionupdate",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "beforeinput",
+                "trusted": true,
+                "data": ""
+              },
+              {
+                "type": "input",
+                "trusted": true,
+                "data": null
+              },
+              {
+                "type": "compositionend",
+                "trusted": false,
+                "data": ""
+              },
+              {
+                "type": "onData",
+                "data": "a"
+              },
+              {
+                "type": "keyup",
+                "trusted": true,
+                "key": "a"
+              }
+            ]
+          },
+          "trustScope": "CDP Chromium input/IME simulation; not operating-system IME"
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run05-osc8-strengthened",
+      "classification": "temporary_fixture_probe",
+      "raw_result": {
+        "name": "osc8-two-buffers-registration-context-clone-and-switch-trim",
+        "ok": true,
+        "utc": "2026-10-25T12:37:11.829Z",
+        "durationMs": 37.5,
+        "detail": {
+          "ids": {
+            "normal": 1,
+            "alt": 2
+          },
+          "noSharing": true,
+          "sourceStable": true,
+          "activeRestoredAfterException": true,
+          "registrySize": 0,
+          "unownedMarkerRetained": true
+        }
+      },
+      "production_acceptance": false
+    },
+    {
+      "run": "run05-osc8-strengthened",
+      "classification": "temporary_fixture_probe",
+      "raw_result": {
+        "name": "osc8-resize-reset-dispose-require-owned-reconciliation",
+        "ok": true,
+        "utc": "2026-10-25T12:37:11.870Z",
+        "durationMs": 8.800000011920929,
+        "detail": {
+          "entryAfterStockResize": true,
+          "reconciliationRequired": true,
+          "registrySizeAfterOwnedCleanup": 0
+        }
+      },
+      "production_acceptance": false
+    }
+  ],
+  "historical_failures_preserved": [
+    "run01",
+    "run02"
+  ],
+  "known_limitations": [
+    {
+      "type": "stock_xterm_baseline",
+      "detail": "With ybase2/y0/ydisp0, textarea/composition top0 versus visible cursor expected38; stock and projected identical; first trusted key scrolls both to bottom."
+    },
+    {
+      "type": "registry_lifecycle",
+      "detail": "stock resize pop retains an OSC8 link entry; adapter-owned marker reconciliation required and explicitly tested."
+    }
+  ],
+  "not_tested": [
+    "production A/B DTO or wiring",
+    "Obsidian",
+    "PTY/helper",
+    "K03",
+    "OS IME candidate window",
+    "WebGL",
+    "real pointer drag/column selection",
+    "full scrollbar layout",
+    "screen reader",
+    "bounded stress"
+  ],
+  "test_count": 10
+}

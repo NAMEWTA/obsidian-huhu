@@ -1,0 +1,73 @@
+{
+  "recorded_after_tool_returns_utc": "2026-10-26T16:00:54.557165+00:00",
+  "goal_revision": "GP-033",
+  "map_revision": 34,
+  "ticket": "T-09",
+  "status": "actual-native-followups-sent",
+  "source": {
+    "path": "/tmp/huhu-t09-root-stage1-dispatch-inputs.json",
+    "sha256": "70e278961d106c4eb8119b81ec8763b2f80452f8dd72000cc89e52681deccbf0",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/70e278961d106c4eb8119b81ec8763b2f80452f8dd72000cc89e52681deccbf0.raw"
+  },
+  "original_product_baseline": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-dispatch-input.json",
+    "sha256": "aec8e02b821c7ea7869e0c153e213acc655fb60e1e9347cd78919577462acfc8",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/aec8e02b821c7ea7869e0c153e213acc655fb60e1e9347cd78919577462acfc8.raw"
+  },
+  "entries": [
+    {
+      "task": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/028-t09-layout-owner/TASK.md",
+        "sha256": "71c58c4e9d0ca56b606ace29777920f42dd21384235cc65294f4414af9256c44",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/71c58c4e9d0ca56b606ace29777920f42dd21384235cc65294f4414af9256c44.raw"
+      },
+      "agent": "/root/implement_t08_profile",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_source": "Existing user-specified agent identity retained by native followup; no override.",
+      "tool": "collaboration.followup_task",
+      "actual_tool_return": {},
+      "dispatch_check": {
+        "path": "/tmp/huhu-t09-root-dispatch-028.json",
+        "sha256": "619f9ffa4a1ec5c5a8cbe8bb7da41204df8d663ecec27853890adea08dede668",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/619f9ffa4a1ec5c5a8cbe8bb7da41204df8d663ecec27853890adea08dede668.raw"
+      },
+      "dispatch_raw": {
+        "path": "/tmp/huhu-t09-root-dispatch-028.log",
+        "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463.raw"
+      }
+    },
+    {
+      "task": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/029-t09-pane-protocol-stage1/TASK.md",
+        "sha256": "bfa00bc04c080587054c66bd1b37a4bcfbc42f3dfb4c3a50914d65d2c4dd6747",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/bfa00bc04c080587054c66bd1b37a4bcfbc42f3dfb4c3a50914d65d2c4dd6747.raw"
+      },
+      "agent": "/root/prepare_t08_full_cli",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "model_source": "Existing user-specified agent identity retained by native followup; no override.",
+      "tool": "collaboration.followup_task",
+      "actual_tool_return": {},
+      "dispatch_check": {
+        "path": "/tmp/huhu-t09-root-dispatch-029.json",
+        "sha256": "32b4063b3ad7dd4198bb28f49fbed6a36a56564c32ced37eee6bd2be015627b5",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/32b4063b3ad7dd4198bb28f49fbed6a36a56564c32ced37eee6bd2be015627b5.raw"
+      },
+      "dispatch_raw": {
+        "path": "/tmp/huhu-t09-root-dispatch-029.log",
+        "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-09-logs/stage1-dispatch/objects/6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463.raw"
+      }
+    }
+  ],
+  "unlocked": {
+    "A": 14,
+    "B_stage1": 10,
+    "U": 0,
+    "Root_product": 0
+  },
+  "gates": "B other8 and U locked until real A API handoff; full Root build after source STOPPED",
+  "errors": []
+}

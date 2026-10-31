@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 8,
+  "origin": "Accepted pre-T16 production Facade/Executor, real children CP Resume then actual process SIGKILL/Wait; no SQL state edits or bootstrap recovery",
+  "rawRoot": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/crashed",
+  "rawFiles": {
+    "one/checkpoints/9c2ef5e4e297b0e997372334d3364e7b.cp": "540a97247c20030b40440bde321648436f07aa9bc0ad307ca8a0d1328d08ee5b",
+    "one/profile.sqlite3": "48e6407e50f2999eee14692ddb426cb634992b881066f9a07b119b6fc611c924",
+    "one/profile.sqlite3-shm": "8c6ca12f6f1a08dac22a39e0287571950ad896de357bc112a09d9758fbd5a21b",
+    "one/profile.sqlite3-wal": "426911ba9642c2ccb59bd8172d72c79f67f4f7cfeb2d99397616e2aab507a77e"
+  },
+  "root": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/normalized",
+  "files": {
+    "one/checkpoints/9c2ef5e4e297b0e997372334d3364e7b.cp": "540a97247c20030b40440bde321648436f07aa9bc0ad307ca8a0d1328d08ee5b",
+    "one/profile.sqlite3": "d9d37ec06d672646f52c390f5766fb9ede41a515ffa0f6e472fd33a57e839388"
+  },
+  "tableHashes": {
+    "access_approvals": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "access_delegation_grants": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "access_grants": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "access_grants_clock": {
+      "rows": 1,
+      "sha256": "d3c7a044dddfcd8d163dbcfa08fe738d4f36ecd757bf79a5a835e0310b9900af"
+    },
+    "agent_deletion_previews": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "agents": {
+      "rows": 4,
+      "sha256": "89a365dcee1d3fb8197a093345850aa7e6e15093197339d94623276aa718cf47"
+    },
+    "assistant_identity_tombstones": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "assistant_usage_clock": {
+      "rows": 1,
+      "sha256": "cf6ea3fd56ae0f681e38cb247a299d39b92596d347a3820015fab2afc5ac0822"
+    },
+    "collaboration_delegations": {
+      "rows": 2,
+      "sha256": "ad7eb53e411b56ff76e908a5518125076db0d78cfc0de219004402aeb4b03ea4"
+    },
+    "collaboration_lineage": {
+      "rows": 3,
+      "sha256": "8f33601dc01a4e6aaaefb43673eee804f76aa8abc43b50247b3c386477781ff8"
+    },
+    "collaboration_messages": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "collaboration_parent_results": {
+      "rows": 2,
+      "sha256": "cd20bc772bc6579ac7bcc5bcc6dff1e278e48c1ea68a772f1f1ec0f78aca8da7"
+    },
+    "collaboration_policy_roots": {
+      "rows": 1,
+      "sha256": "bdd0f09edfe726822144d23253571850cfd3677498e22b1a821fab7c13d8b23a"
+    },
+    "collaboration_proposals": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "collaboration_result_deliveries": {
+      "rows": 1,
+      "sha256": "b63660e5b17ac4c6dfd3798a4732e070a7ee26e9e00e176afee1dea58de9d812"
+    },
+    "collaboration_threads": {
+      "rows": 2,
+      "sha256": "1bd00e734e61fac785b0dea3d48295b437f945616068bed10ba448b80360a1d9"
+    },
+    "collaboration_wait_edges": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "command_receipts": {
+      "rows": 7,
+      "sha256": "0dcfaefa66567bbe94953df0e23762e94cccc3e3728c54168c002ed708ab4212"
+    },
+    "config_snapshot_pins": {
+      "rows": 1,
+      "sha256": "01da680f170b2543e32318c4c98fdd7d90a79746edb475d0f30ffb17887a5ebf"
+    },
+    "conversation_members": {
+      "rows": 3,
+      "sha256": "429a9c603eb90bfc39747b8f067c5878932221e189e90883f91d2016ec6a1ea8"
+    },
+    "conversation_messages": {
+      "rows": 1,
+      "sha256": "54bb4d46189738a4e9917fb36ee3fd1f85ab43893c8c0be56a298e1d2cd6f3aa"
+    },
+    "conversation_sessions": {
+      "rows": 1,
+      "sha256": "ed06157e7c255d8155a9d2db9b686eead3bd515b1c7b48832d5523a5e6814f30"
+    },
+    "credential_metadata": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "execution_checkpoints": {
+      "rows": 1,
+      "sha256": "7940b0681a6de12b9a5585ee34f5ee55a038a5f5658f6fc85a927d5cf135e04a"
+    },
+    "execution_continuations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "execution_effects": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "execution_events": {
+      "rows": 15,
+      "sha256": "058b2461a81e0717391f226af174510e8824658b4b02eb33d70bf7b61f6c600a"
+    },
+    "execution_runs": {
+      "rows": 3,
+      "sha256": "97d7555014969c2a42102086d0f596a3de01a58c607ac90f550c8825be16c9ef"
+    },
+    "group_publications": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "model_attempts": {
+      "rows": 1,
+      "sha256": "56628606ab1c5d9c2c349e003f4727c9174b060b7d4a90b19da6336b99bf8755"
+    },
+    "model_binding_revisions": {
+      "rows": 2,
+      "sha256": "c1a7201c70e238f41b5d877da05ce16a5f2ca06ffc41a1646ad2cdcafaf07370"
+    },
+    "model_budget_accounts": {
+      "rows": 2,
+      "sha256": "d0f47a7689c7c6f95efb4b498aae232b5c6344e0720ff793801ef403cabd230d"
+    },
+    "model_budget_policy": {
+      "rows": 1,
+      "sha256": "56af484fa0daf7b62358b523ff54a46bcea484015be217609aa9c3dac1f418dc"
+    },
+    "persona_revisions": {
+      "rows": 4,
+      "sha256": "ceb45d9eb112ba4ac0bb4068835f8fd960ad075a1d21ee2de10a4c14987f061b"
+    },
+    "profile_metadata": {
+      "rows": 1,
+      "sha256": "5b7822e801417a6c399d4cf2b6072ebbda4f67ddba133abfc640ddd6e17c8fee"
+    },
+    "task_config_pins": {
+      "rows": 1,
+      "sha256": "d094bd381dffcb33a2cc2173ff0f41efd7d34eeab6b43e26f222d11dd2d67756"
+    },
+    "task_config_snapshots": {
+      "rows": 2,
+      "sha256": "8fa6799ffe43f1ccee3aeab2efd2666d2a791f42e804997b8c160417ebbf9aa9"
+    }
+  },
+  "runStates": [
+    [
+      "running",
+      1
+    ],
+    [
+      "succeeded",
+      1
+    ],
+    [
+      "waiting_children",
+      1
+    ]
+  ],
+  "actualResume": {
+    "agentIds": [
+      "agent:a55d791369c001f99a9bfba200cd611f",
+      "agent:b86d87a849b3e026c22462f61ff8a635",
+      "agent:f30828d515715f379dc57be704349fbd"
+    ],
+    "checkpoint": {
+      "Ref": "cp:9c2ef5e4e297b0e997372334d3364e7b",
+      "Digest": "sha256:0ef7adc82c0f6493c4906fd96d3744e2706c70c80b183c0d3d1870443807e7df",
+      "Size": 64,
+      "RunID": "run:9c02ef6707f30b7b6fa44f3de86439b1",
+      "AttemptID": "claim:6b2060dbb3f1c36b2b74de6b0249d605",
+      "Metadata": {
+        "EngineVersion": "huhu-engine-v1",
+        "FormatVersion": "1",
+        "DefinitionDigest": "sha256:cacb22aac127f2090a232eab3fd12ebc4d8bc76544aacbfab805fb5cbe52e167"
+      }
+    },
+    "config": {
+      "id": "snapshot:7443bb5930416a2a0436b853d1d5c04e",
+      "subjectId": "agent:b86d87a849b3e026c22462f61ff8a635",
+      "kind": "agent",
+      "agent": {
+        "id": "agent:b86d87a849b3e026c22462f61ff8a635",
+        "name": "lead-old-B",
+        "description": "",
+        "persona": "private-lead-old-B",
+        "model": {
+          "modelId": "controlled",
+          "providerId": "fixture",
+          "endpoint": "http://127.0.0.1:1",
+          "capabilities": [
+            "text"
+          ],
+          "protocol": "openai-chat-completions",
+          "revision": "2",
+          "credentialStatus": {
+            "mode": "none",
+            "state": "missing",
+            "reason": "CREDENTIAL_MISSING"
+          }
+        },
+        "allowedTools": [
+          "agents.delegate"
+        ],
+        "allowedCollaborationTargets": [
+          "agent:f30828d515715f379dc57be704349fbd"
+        ],
+        "revision": "2",
+        "personaRevision": "2",
+        "modelBindingRevision": "2",
+        "enabled": true,
+        "isDefault": false
+      }
+    },
+    "group": {
+      "sessionId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a",
+      "members": [
+        {
+          "agentId": "agent:b86d87a849b3e026c22462f61ff8a635",
+          "incarnation": "1",
+          "historyRevision": "1"
+        },
+        {
+          "agentId": "agent:f30828d515715f379dc57be704349fbd",
+          "incarnation": "1",
+          "historyRevision": "1"
+        }
+      ]
+    },
+    "locator": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/crashed/one",
+    "modelRunId": "run:9c02ef6707f30b7b6fa44f3de86439b1",
+    "producer": "controlled Engine actually inside Resume after real Attempt.Dispatch, blocked until process kill; no network request",
+    "profileRoot": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/crashed",
+    "resumeDecision": {
+      "Children": [
+        {
+          "runId": "run:909eee7053a6d888d6e97254dc10cb90",
+          "status": "succeeded",
+          "text": "LEAD_V8_DURABLE_CHILD_RESULT",
+          "partial": false,
+          "effectsUnresolved": false,
+          "derived": [
+            {
+              "kind": "message",
+              "id": "message:d7f1ef6c0ae4203720cea51a013fe8c5",
+              "revision": "1",
+              "hash": "sha256:4e3e23afff097ac70219127c9ccb707c03fc1a98cf5ca921467c89c2155e3037",
+              "namespace": "session:5f6ad9071b94fdbcfcfb46d74b3f873a",
+              "workThreadId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a"
+            }
+          ]
+        }
+      ],
+      "Tasks": null,
+      "Status": "completed",
+      "EffectID": "",
+      "SuspensionToken": "",
+      "Reason": "",
+      "Receipt": null,
+      "Directory": null,
+      "Delegation": null,
+      "Message": null,
+      "Proposal": null
+    },
+    "rootRunId": "run:ff7aed82b93bdec766d6dd5bad61a321",
+    "sessionId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a"
+  },
+  "normalization": "SQLite WAL checkpoint only in independent copy; all logical tables unchanged; original crash files unchanged",
+  "sourceCodeInputSha256": "4ca01eae3681696306681ebd9e65c1136512e6df3cb9361111f46c82d22e1f11"
+}

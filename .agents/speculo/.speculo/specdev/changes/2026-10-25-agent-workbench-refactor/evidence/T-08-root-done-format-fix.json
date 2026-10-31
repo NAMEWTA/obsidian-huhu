@@ -1,0 +1,47 @@
+{
+  "utc": "2026-10-26T15:48:39.290079+00:00",
+  "before": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+    "sha256": "ed9b13043ce01e3114fafb69b089db9092872730964eaa5ef7f0ae2f9b5a8044",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/ed9b13043ce01e3114fafb69b089db9092872730964eaa5ef7f0ae2f9b5a8044.raw"
+  },
+  "after": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+    "sha256": "17a7d6f7db241003a8b6e156104905b5bc5758f7fecb8a49b4ada67171be3b89",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/17a7d6f7db241003a8b6e156104905b5bc5758f7fecb8a49b4ada67171be3b89.raw"
+  },
+  "failed_checks": [
+    {
+      "path": "/tmp/huhu-t08-root-done-tickets.json",
+      "sha256": "bbf4e455661fbfad5651801bee74cf1fd1d299271aff526e1158cac2fddc9937",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/bbf4e455661fbfad5651801bee74cf1fd1d299271aff526e1158cac2fddc9937.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-done-tickets.log",
+      "sha256": "4bde8989948e863df10f57094341716d0306dda23a6bb9554f39b5cf8ced0148",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/4bde8989948e863df10f57094341716d0306dda23a6bb9554f39b5cf8ced0148.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-done-goal.json",
+      "sha256": "e1b45e6c2187dabdcc8c8e95f357b1c1089a7eba636f695587f48e7d1e7d8446",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/e1b45e6c2187dabdcc8c8e95f357b1c1089a7eba636f695587f48e7d1e7d8446.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-done-goal.log",
+      "sha256": "4bde8989948e863df10f57094341716d0306dda23a6bb9554f39b5cf8ced0148",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/4bde8989948e863df10f57094341716d0306dda23a6bb9554f39b5cf8ced0148.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-done-control.json",
+      "sha256": "e3a65b2a328fadf7e2b22c2c9ecf2c51867ee67f0081f1b58d660e4837a9624b",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/e3a65b2a328fadf7e2b22c2c9ecf2c51867ee67f0081f1b58d660e4837a9624b.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-done-control.log",
+      "sha256": "fb94acc34f352a46b881b132e60c7ea22ca376c564aa89adad61940b24a8bb0a",
+      "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-done-format/fb94acc34f352a46b881b132e60c7ea22ca376c564aa89adad61940b24a8bb0a.raw"
+    }
+  ],
+  "reason": "Completed Evidence lacked eight required summary headings; actual underlying evidence already present. No product or review facts changed.",
+  "next": "Validate corrected completed evidence together with T09 formal map before any T09 product dispatch"
+}

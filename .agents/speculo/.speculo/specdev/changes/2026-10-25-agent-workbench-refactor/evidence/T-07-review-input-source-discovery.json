@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-26T03:24:24.759Z",
+  "original": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-review-input-round1.md",
+  "original_input_sha256": "3a4a40680e25c4ca46d4f796721e9a6be159dd7bdb33823c69e8b9f1ff3fbb13",
+  "target": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-review-input-round1-complete.md",
+  "input_sha256": "7e21cc86a21893389483888b0f263de1175c2a349d7524b83fec7dbba652a0c7",
+  "reason": "Source discovery found the pre-existing CLAUDE.md containing only @AGENTS.md; add it as an instruction source before actual reviewer dispatch. No repository instruction file was restored or modified.",
+  "scope_unchanged": true
+}

@@ -1,6 +1,6 @@
 // Release checks, run by .github/workflows/release.yml and usable locally:
 //   node scripts/verify-release-artifacts.mjs <version>                         versions, compatibility entry, changelog
-//   node scripts/verify-release-artifacts.mjs <version> <terminal-dir>          + the five huhu-pty binaries and checksums
+//   node scripts/verify-release-artifacts.mjs <version> <terminal-dir>          + the five huhu-pty and five huhu binaries, checksums, CLI compatibility records
 //   node scripts/verify-release-artifacts.mjs <version> --plugin <dir>          + main.js, manifest.json, styles.css (and zip)
 //   node scripts/verify-release-artifacts.mjs <version> --sums <dir>            write SHA256SUMS.txt for every file in <dir>
 import assert from 'node:assert/strict';
@@ -9,12 +9,21 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { normalizeBuildText } from './build-text-resources.mjs';
+import { sourceTreeHash, verifyBotAssets } from './build-huhu-bot.mjs';
+import { execFileSync } from 'node:child_process';
 
 export const terminalAssets = [
 	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
 ].map((target) => `huhu-pty-${target}`);
 
-export const pluginAssets = ['main.js', 'manifest.json', 'styles.css'];
+/** The local control CLI, built and published next to the helper for the same five platforms. */
+export const cliAssets = [
+	'linux-x64', 'linux-arm64', 'darwin-x64', 'darwin-arm64', 'win32-x64.exe',
+].map((target) => `huhu-${target}`);
+
+const schemaPath = path.join(import.meta.dirname, '..', 'src/shared/native/control-schema.json');
+
+export const pluginAssets = ['main.js', 'manifest.json', 'styles.css', 'browser-worker.cjs', 'browser-worker.cjs.sha256', 'browser-cli.cjs', 'browser-cli.cjs.sha256'];
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
@@ -32,14 +41,32 @@ export function verifyVersions(root, tag) {
 	return manifest;
 }
 
-/** The five helper binaries match their published checksums. */
+/**
+ * The five helper and five CLI binaries match their published checksums, and every CLI carries a compatibility record
+ * that names the protocol majors of the canonical control schema and the digest of that very binary.
+ */
 export function verifyTerminalAssets(artifacts) {
-	const expected = terminalAssets.flatMap((name) => [name, `${name}.sha256`]).sort();
-	assert.deepEqual(readdirSync(artifacts).sort(), expected, 'Release requires exactly five binaries and their checksums');
-	for (const name of terminalAssets) {
+	const compatName = (name) => `${name}.compat.json`;
+	const expected = [
+		...terminalAssets.flatMap((name) => [name, `${name}.sha256`]),
+		...cliAssets.flatMap((name) => [name, `${name}.sha256`, compatName(name)]),
+	].sort();
+	assert.deepEqual(readdirSync(artifacts).sort(), expected, 'Release requires exactly five helpers, five CLIs, their checksums and CLI compatibility records');
+	for (const name of [...terminalAssets, ...cliAssets]) {
 		const bytes = readFileSync(path.join(artifacts, name));
 		assert.ok(bytes.length, `${name} must not be empty`);
 		assert.equal(readFileSync(path.join(artifacts, `${name}.sha256`), 'utf8').trim(), `${sha256(bytes)}  ${name}`, `${name} checksum mismatch`);
+	}
+	const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
+	for (const name of cliAssets) {
+		let compat;
+		try { compat = JSON.parse(readFileSync(path.join(artifacts, compatName(name)), 'utf8')); } catch { assert.fail(`${compatName(name)} must be valid JSON`); }
+		assert.deepEqual(Object.keys(compat).sort(), ['asset', 'cliProtocol', 'helperProtocol', 'schema', 'sha256'], `${compatName(name)} has unexpected fields`);
+		assert.equal(compat.schema, 1, `${compatName(name)} schema`);
+		assert.equal(compat.asset, name, `${compatName(name)} must name its own asset`);
+		assert.equal(compat.sha256, sha256(readFileSync(path.join(artifacts, name))), `${compatName(name)} must describe the published binary`);
+		assert.equal(compat.cliProtocol, schema.protocolVersion, `${compatName(name)} CLI protocol major must match the control schema`);
+		assert.equal(compat.helperProtocol, schema.helperProtocol, `${compatName(name)} helper protocol must match the control schema`);
 	}
 }
 
@@ -59,6 +86,11 @@ export function verifyPluginAssets(root, tag, dir) {
 	assert.ok(!/sourceMappingURL=data:/.test(main), 'main.js must be a production build without an inline source map');
 	assert.equal(sha256(readFileSync(path.join(dir, 'main.js'))), sha256(readFileSync(path.join(root, 'main.js'))), 'main.js must be the committed bundle');
 	assert.equal(sha256(readFileSync(path.join(dir, 'styles.css'))), sha256(readFileSync(path.join(root, 'styles.css'))), 'styles.css must be the committed stylesheet');
+	for (const name of ['browser-worker.cjs', 'browser-cli.cjs']) {
+		const bytes = readFileSync(path.join(dir, name));
+		assert.equal(readFileSync(path.join(dir, `${name}.sha256`), 'utf8').trim(), `${sha256(bytes)}  ${name}`, `${name} checksum mismatch`);
+		assert.equal(sha256(bytes), sha256(readFileSync(path.join(root, name))), `${name} must be the committed entry point`);
+	}
 	const zip = `${manifest.id}-${tag}.zip`;
 	if (readdirSync(dir).includes(zip)) assert.ok(statSync(path.join(dir, zip)).size > 0, `${zip} must not be empty`);
 }
@@ -86,6 +118,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
 	} else if (rest[0] === '--sums') {
 		verifyVersions(root, tag);
 		console.log(`SHA256SUMS.txt: ${writeChecksums(rest[1]).length} files`);
+	} else if (rest[0] === '--bot') {
+		verifyVersions(root, tag);
+		verifyBotAssets(rest[1], tag, { sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(), sourceTreeHash: sourceTreeHash(root) });
+		console.log(`huhu-bot release assets for ${tag} verified`);
 	} else {
 		verifyReleaseArtifacts(root, tag, rest[0]);
 		console.log('Release versions and supplied assets verified');

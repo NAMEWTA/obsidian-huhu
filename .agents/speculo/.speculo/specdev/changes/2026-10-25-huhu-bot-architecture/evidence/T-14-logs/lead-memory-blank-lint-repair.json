@@ -1,0 +1,56 @@
+{
+  "observer": "native:/root",
+  "owner": "T01 Root",
+  "reason": "Full lint detected no-control-regex in the existing explicit Go whitespace character list; replace with equivalent Unicode White_Space property, no rule disable",
+  "before": "evidence/T-14-logs/lead-memory-blank-lint-before.ts.txt",
+  "afterSHA256": "3a3df3d382823db09d80685c3fa9d2c9bcd879a0e6664fac6c50bac29249fc90",
+  "commands": [
+    {
+      "label": "whitespace",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "const before=/^[\\u0009-\\u000d\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]*$/;const after=/^\\p{White_Space}*$/u;let count=0;for(let n=0;n<=0x10ffff;n++){const s=String.fromCodePoint(n);if(before.test(s)!==after.test(s))throw Error('Whitespace mismatch at '+n);count++;}if(!before.test('')||!after.test(''))throw Error('Empty mismatch');console.log(JSON.stringify({codePointsCompared:count,mismatches:0,emptyMatches:true}));"
+      ],
+      "exitCode": 0,
+      "seconds": 0.0907857909987797,
+      "waited": true,
+      "log": "evidence/T-14-logs/lead-memory-blank-whitespace.log",
+      "logSHA256": "23ff90024893954f466fa43b4d874374177625ed99389dc06dad9cc53f6a001e"
+    },
+    {
+      "label": "eslint",
+      "command": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/modules/huhubot/core/protocol/method-validation.ts",
+        "--max-warnings",
+        "0"
+      ],
+      "exitCode": 0,
+      "seconds": 4.911655887000961,
+      "waited": true,
+      "log": "evidence/T-14-logs/lead-memory-blank-eslint.log",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "vitest",
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/huhubot/core/protocol/memory-validation.test.ts"
+      ],
+      "exitCode": 0,
+      "seconds": 3.54169802099932,
+      "waited": true,
+      "log": "evidence/T-14-logs/lead-memory-blank-vitest.log",
+      "logSHA256": "7ccf97d0ba7ca0579bbbfebdf6898c2ed257c1f44cf5c0c8b6a1f0fb1d3cff14"
+    }
+  ],
+  "complete": true,
+  "boundary": "Current TS candidate changed;139 old component input stays historical, final review must include this one-line change"
+}

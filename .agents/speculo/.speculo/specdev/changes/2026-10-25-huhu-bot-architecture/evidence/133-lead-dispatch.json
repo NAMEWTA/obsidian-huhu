@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:54:07.936697+00:00",
+  "task": "133-memory-component-review",
+  "taskSha256": "207e524a9a4993f6c9eef50ee5a040abaaebf8fda1b43b34b0f80623fb716541",
+  "owner": "native:/root/recovery_review",
+  "nativeTool": "collaboration.followup_task",
+  "mapRevision": 37,
+  "goalRevision": 36,
+  "dispatchValidation": {
+    "actualExit": 0,
+    "chunk": "044019"
+  },
+  "inputSha256": "6619727eaa9258e3fd26820b22c9dc82fed23b9cc59d4748f2979022276b0c2d",
+  "scope": "31 authored pure component files+actual readonly closure; all writers stopped on selected inputs",
+  "window": "sole component Go checker after actual import closure;Core/SQL excluded"
+}

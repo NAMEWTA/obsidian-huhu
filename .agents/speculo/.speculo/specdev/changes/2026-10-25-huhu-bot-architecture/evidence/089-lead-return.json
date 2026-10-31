@@ -1,0 +1,51 @@
+{
+  "task": "089-recovery-parent-diagnosis",
+  "checkedAt": "2026-10-25T23:33:26.889866+00:00",
+  "reportSha256": "abf2fb2d24d1dd20305b306ca092436abdff5f2cbddd7782272dfbd1065abe29",
+  "taskSha256": "2e9091856bcee6d69d21d497c3cd9365c5c0b49f0fc0e564cc6120c28569706e",
+  "manifestSha256": "f995519cc291d180ac5bab729f1fa2bc5794d32ad1677efc3449dbaeb6c1b452",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullEffectiveProbeAndRawLogRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "sourceFileCount": 280,
+  "sourceTreeHash": "f9853dac6bedee5433f1811b665057fa6c93bee7291e6b1eb2c62eed44584a69",
+  "originalSnapshotDrift": [],
+  "executedSnapshotDrift": [],
+  "artifactsVerified": {
+    "REPORT.md": "abf2fb2d24d1dd20305b306ca092436abdff5f2cbddd7782272dfbd1065abe29",
+    "TASK.md": "2e9091856bcee6d69d21d497c3cd9365c5c0b49f0fc0e564cc6120c28569706e",
+    "logs/00-input.json": "7bc06816b25d77542ca871c7a9b66637b388ab8160b0abff35d3f908357d4c3b",
+    "logs/01-parent-probe.go.txt": "9d578468a9a1b8fa72c076ba13865e7bd68756095f41115468ceaadb9c0b2c7e",
+    "logs/02-parent-original-red.log": "42b2463cde7d9b01eb77b42bfd8779912bc0597f1720c8de86cefa2c9627cab6",
+    "logs/03-parent-original-result.json": "d838a0ce91d50d9beac732386df677e4b18ad8389d208ef9bad97949d39f4895",
+    "logs/04-source-readback-and-wait.json": "f68e4c22827ceebc67872cae267ae7780dd51fbc93f8d919994d522294c59db2",
+    "logs/05-return.json": "fd8ee4a7344f75324e09c831190d73923ddf2d499ae3c4f7ed0c3243de5f0c67"
+  },
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "actualProductFailure": {
+    "command": [
+      "go",
+      "test",
+      "./tests/contract/recovery",
+      "-run",
+      "^TestDiagnosis089WaitingParentBeyondFirstPage$",
+      "-count=1",
+      "-v",
+      "-timeout=120s"
+    ],
+    "cwd": "/tmp/huhu-diagnosis089-ts0w8kxj/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "CGO_ENABLED": "0"
+    },
+    "probeSHA256": "9d578468a9a1b8fa72c076ba13865e7bd68756095f41115468ceaadb9c0b2c7e",
+    "exit": 1,
+    "wallSeconds": 7.796,
+    "waited": true
+  },
+  "disposition": "Accept actual fixed-input diagnosis: 128 publicly admitted roots produce 129 waiting parents, target rank129 ready after public child cancel is hidden by fixed128 prefix. Only public cancel of unrelated front root releases same target without additional Engine. Formal T12 repair required; no T16/G1 pass. Bounded1.525s observation is not a throughput SLA or standalone infinite-wait proof."
+}

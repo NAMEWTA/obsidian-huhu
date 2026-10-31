@@ -155,6 +155,7 @@ export class BoardStore {
 		const changed = () => {
 			if (this.visible && !this.disposed) this.state.setState((s) => ({ widgetRevision: s.widgetRevision + 1 }));
 		};
+		if (homeServices.watchArchives) this.cleanup.push(homeServices.watchArchives(changed));
 		for (const service of [homeServices.habit, homeServices.expense, homeServices.pomodoro, homeServices.reading])
 			if (service) this.cleanup.push(service.subscribe(changed));
 		if (homeServices.pomodoro) this.cleanup.push(homeServices.pomodoro.subscribeTick(changed));
@@ -190,10 +191,16 @@ export class BoardStore {
 			.sort((a, b) => a.basename.length - b.basename.length)
 			.slice(0, 8);
 	}
+	isRecentDocument(path: string): boolean {
+		return isRecentUserDocument(path, {
+			...this.host.settings,
+			classifyArchive: (value) => homeServices.archives?.()?.classify(value),
+		});
+	}
 	recentFiles(): ContentFile[] {
 		return this.state
 			.getState()
-			.files.filter((file) => isRecentUserDocument(file.path, this.host.settings))
+			.files.filter((file) => this.isRecentDocument(file.path))
 			.slice(0, 10);
 	}
 	/**

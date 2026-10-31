@@ -1,0 +1,187 @@
+{
+  "task": "160-global-memory-api",
+  "status": "completed",
+  "scope": "pure Go API contract only; T15 integration remains open",
+  "sourceFilesChanged": [
+    {
+      "path": "native/huhubot/internal/application/api/memory.go",
+      "sha256": "499326850af53bda4ae37aea308df821dc9a07d1527789f40a9767e4f80c65d5",
+      "bytes": 25612,
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "sha256": "aa08e831c3595bbe2b844536b5aad7a48f315b1a8e68d4d4a35eb70a48822e99",
+      "bytes": 4727,
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/global_memory.go",
+      "sha256": "930fb900ffb4ecf906c4d7b74a1074cee69797a0246abbd2483427642be83784",
+      "bytes": 3880,
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/global_memory_test.go",
+      "sha256": "b22c0a738f0fa1aa05f48618ddab3dd5366a67448709aff0fc84aca489abf18d",
+      "bytes": 5590,
+      "mode": "0o664"
+    }
+  ],
+  "sourceDriftAfterFreeze": [],
+  "fixedGoInputs": "logs/03-input.json",
+  "redReceipt": "logs/02-red.receipt.json",
+  "greenReceipts": [
+    "logs/04-green-focused.receipt.json",
+    "logs/05-api-all.receipt.json"
+  ],
+  "returnValidation": "logs/return.json",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "treeSHA256": "340971f22b46a1153c81a7761d497b9de6fe5fc79ed041bb8210d0478fd2ffc7",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "f8e03ff7e24ffe2fb5cb6feacd24f675756f01e9105b7b5bafe4afc923c2b429",
+      "bytes": 3471,
+      "mode": "0o664"
+    },
+    {
+      "path": "TASK.md",
+      "sha256": "0cc729b246507b15ea9706b28b30b91c7b4bb6ec206b5f9fff747183c1dcfad0",
+      "bytes": 5010,
+      "mode": "0o664"
+    },
+    {
+      "path": "contract.md",
+      "sha256": "7cd75c9bfc3c87a8486de059c5b23ef8706017f8b22828aceaa90afa7b792510",
+      "bytes": 10407,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/00-version.receipt.json",
+      "sha256": "48855130503aa6f80c40a52c3ec19f781faec3530ad0764f39b44b224c43d7da",
+      "bytes": 710,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/00-version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/00-version.stdout",
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b",
+      "bytes": 33,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-list.receipt.json",
+      "sha256": "2129c7ba1fb3d55370f0fcc4c8370f89b2291f294d6f1cba4b1b43a3273b665c",
+      "bytes": 761,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-list.stdout",
+      "sha256": "353f1d2d13b39962716b721d3d919fc63c893cc89826698fc7b303e00705a1a1",
+      "bytes": 12465,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-red.receipt.json",
+      "sha256": "90c61bc7455791487c645e4ba648f1df14c462db985b034bad19c2da3d19ff3f",
+      "bytes": 310,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-red.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-red.stdout",
+      "sha256": "c485711502e3a8919b9213df66705c23101d603c3387f2e4cc9ce9362075d0e3",
+      "bytes": 2069,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-input-first.error",
+      "sha256": "0abdc755f6eb0ea6651100eccaba39088ad6821035bd3a8f11cdb785e4575751",
+      "bytes": 191,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-input.json",
+      "sha256": "a3622fab21972638a06cc8fb7eddd691a52314ab9527e2de51430024d88b6aaf",
+      "bytes": 5197,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-list.stdout",
+      "sha256": "1e668a8e3235dc254f17f203d1a6898432b0fe19aaaea4eb58ad571da7a4c08c",
+      "bytes": 12769,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-green-focused.receipt.json",
+      "sha256": "c85e360c712e67d15908df8f455dd0628b8443b494aee3d7959a2c68702656a8",
+      "bytes": 516,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-green-focused.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-green-focused.stdout",
+      "sha256": "11bdb435b10bfef452f1f05fbc0efd87e1b59fa69d1c8c9e3cf133e0bda59e97",
+      "bytes": 3320,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-api-all.receipt.json",
+      "sha256": "24a96c16779a93defc851429bb323e70fe3d06c7252daf8f7ef0eef37ea678de",
+      "bytes": 458,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-api-all.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-api-all.stdout",
+      "sha256": "9faf8e4dcdaad45c0f90a8ae5c50475ff961389beee2ee5389452298665e2e8e",
+      "bytes": 85,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-freeze.json",
+      "sha256": "4e245cd576e257d16034ef05a4274b782341d9a87424225699667257f9c9e037",
+      "bytes": 1055,
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/return.json",
+      "sha256": "61d4370a35fd7fa651f6fb1ad957d5b76664db66d9f9693d20ed9b8105afc848",
+      "bytes": 652,
+      "mode": "0o664"
+    }
+  ]
+}

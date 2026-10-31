@@ -1,0 +1,25 @@
+{
+  "before": {
+    "path": "scripts/bundle-budget.json",
+    "sha256": "2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23",
+    "bytes": 2371,
+    "mode": "0o600",
+    "symlink": null,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-build/objects/2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23.raw"
+  },
+  "after": {
+    "path": "scripts/bundle-budget.json",
+    "sha256": "04613fca64aaff3c5d2f32c43b0c8a77a538c54880747895c487093e24971674",
+    "bytes": 2250,
+    "mode": "0o600",
+    "symlink": null,
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-build/objects/04613fca64aaff3c5d2f32c43b0c8a77a538c54880747895c487093e24971674.raw"
+  },
+  "measured": {
+    "main": 6666993,
+    "styles": 1422357,
+    "eager": 123518,
+    "agent": 1314518
+  },
+  "reason": "Same-scope measured additions, no dependency/lazy boundary bypass; minimal KiB limits."
+}

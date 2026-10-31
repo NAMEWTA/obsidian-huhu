@@ -1,0 +1,108 @@
+{
+  "task": "T-03 implementation A",
+  "actual_agent": "/root/prepare_t03",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "Existing actual agent handle inherits original explicitly requested model/effort",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-012",
+  "map_revision": 13,
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "343bb8730ddb652b6795912a9a73ceebe8429176981291b6097166be0a6a8d60"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "a1dca7b87c8e5ccd21807e79e3dd70c2280bb0433cc2af75e36ef6381a78bd06"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02.md",
+      "sha256": "be25abb353881903e8d46afc42805d6107ffbc7f92635442224cb7292226733e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-review-input.md",
+      "sha256": "dce7b03caf05fc5b3792909047fe4934740b569ff812cd3111495e00c9710862"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-review-round3.md",
+      "sha256": "9c955824e83a21a69073d1eed7e14a3dd4edbfca38d5236c87efd3e55096dc4a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-api-proposal.md",
+      "sha256": "698f0ff72e86562d07b502dc85ce1a0561e1dd745f8442085afea81ea40aaa8d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-ui-preflight.md",
+      "sha256": "d9203f0b5b8ac024cca1ba4a4228d8f5886b49866fe3cff52c65e7fd76e83223"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-prior-delivery.json",
+      "sha256": "b57a08d1e94984ece70f83e94b467e20a3c73f65c9dd6631683dfb58d739122c"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    }
+  ],
+  "prerequisite": "T-02 done; round3 both axes pass; Root current-scope independent review errors=[]; Goal structure 0 errors; ticket-control frontier=[T-03]",
+  "write_allocation": [
+    "src/modules/agent/core/workspace/**",
+    "src/modules/agent/services/terminal/**",
+    "src/modules/agent/services/launch/**",
+    "src/modules/agent/services/workspace-service*.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/services/controller-managed-runtimes.test.ts",
+    "src/modules/agent/i18n.ts",
+    "docs/agent-workbench.md"
+  ],
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "formal change records"
+  ],
+  "currently_not_unlocked": [
+    "Rust",
+    "B UI",
+    "scripts/bundle-budget.json",
+    "SpaceService/core-space/workspace-store/NativeHost/shared/native/platform"
+  ],
+  "first_delivery": "Freeze pure DTO + real service public methods + en/zh keys; Root subsequently dispatches B UI",
+  "real_e2e": "User-owned; no real user vault/provider/platform operations",
+  "forbidden": "commit/push/PR/release/archive/permanent knowledge writes/dependency changes/other change edits"
+}

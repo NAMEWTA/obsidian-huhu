@@ -2,9 +2,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Copy, ListFilter, MoreHorizontal, Play, RefreshCw, Search, X } from 'lucide-react';
+import { Copy, ListFilter, MoreHorizontal, Play, RefreshCw, Search, SquareTerminal, X } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '../../../../ui/components/alert-dialog';
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -14,32 +24,140 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 } from '../../../../ui/components/dropdown-menu';
-import { SegmentedControl } from '../../../../ui/components/huhu/SettingsFormControls';
 import { AgentIcon } from '../../../../ui/components/huhu/AgentIcon';
 import { useT } from '../../../../ui/react/hooks';
 import { useOwnerDocument, useVisible } from '../../../../ui/react/contexts';
-import { AGENT_CATALOG } from '../../core/launch/catalog';
+import { AGENT_CATALOG, getAgent } from '../../core/launch/catalog';
+import type { AgentId } from '../../core/launch/types';
 import type { AgentController } from '../../services/controller';
 import type { HistoryRow } from '../../services/history-store';
+import { historyActionMessage } from '../../services/launch/native-resume';
 import { shortPath } from '../sidebar/AgentSidebar';
+export const SPACE_ALL = '*';
+export const SPACE_NONE = '';
+/** Owner is the durable Space binding; a row whose owner Space no longer exists counts as unassigned. */
+export function matchesSpace(
+	owner: string | undefined,
+	spaces: Readonly<Record<string, unknown>>,
+	filter: string,
+): boolean {
+	const effective = owner && Object.hasOwn(spaces, owner) ? owner : SPACE_NONE;
+	return filter === SPACE_ALL || filter === effective;
+}
 export const HISTORY_DRAG = 'application/x-huhu-history-session';
-function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentController }) {
+function accountName(accountKey: string, system: string): string {
+	try {
+		const env: unknown = JSON.parse(accountKey);
+		const name = env && typeof env === 'object' ? (env as Record<string, unknown>).HUHU_ACCOUNT_NAME : undefined;
+		return typeof name === 'string' && name ? name : system;
+	} catch {
+		return system;
+	}
+}
+function TerminalHistoryRow({ row, spaceLabel }: { row: HistoryRow; spaceLabel: string }) {
+	const t = useT();
+	const [expanded, setExpanded] = useState(false);
+	return <article className="border-b border-sidebar-border/60" data-history-row={row.key}>
+		<button type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)} className="flex w-full min-w-0 items-start gap-2 px-2.5 py-2 text-left hover:bg-sidebar-accent/50">
+			<SquareTerminal className="size-3.5 shrink-0" aria-hidden="true" />
+			<span className="min-w-0 flex-1"><span className="block truncate text-[12px] font-medium">{row.title}</span><span className="block truncate text-[11px] text-muted-foreground">{spaceLabel} · {new Date(row.modifiedAtMs).toLocaleDateString()}</span></span>
+		</button>
+		{expanded && <div className="space-y-2 border-t border-sidebar-border/70 p-3 text-xs text-muted-foreground">
+			<p>{t('agent.historyUI.terminalMetadata')}</p><p className="break-words">{row.cwd}</p><p className="break-all">{row.sessionId}</p>
+		</div>}
+	</article>;
+}
+function SessionRow({
+	row,
+	controller,
+	spaceLabel,
+	assigned,
+	narrow,
+}: {
+	row: HistoryRow;
+	controller: AgentController;
+	spaceLabel: string;
+	assigned: boolean;
+	narrow: boolean;
+}) {
 	const t = useT(),
 		doc = useOwnerDocument(),
-		[expanded, setExpanded] = useState(false);
+		[expanded, setExpanded] = useState(false),
+		[busy, setBusy] = useState<'idle' | 'import' | 'resume'>('idle'),
+		[confirming, setConfirming] = useState(false),
+		continueRef = useRef<HTMLButtonElement>(null),
+		toggleRef = useRef<HTMLButtonElement>(null),
+		[notice, setNotice] = useState<{ tone: 'error' | 'info'; text: string } | undefined>();
+	// Continue and import share one in-flight guard, so a double click can never start two operations.
+	const act = async (kind: 'import' | 'resume', work: () => Promise<string | undefined>) => {
+		if (busy !== 'idle') return;
+		setBusy(kind);
+		setNotice(undefined);
+		try {
+			const text = await work();
+			if (text) setNotice({ tone: 'info', text });
+		} catch (error) {
+			setNotice({ tone: 'error', text: historyActionMessage(error) });
+		} finally {
+			setBusy('idle');
+		}
+	};
+	const doResume = () => {
+		setConfirming(false);
+		return act('resume', async () => {
+			const result = await controller.resume(row);
+			return result ? t(`agent.historyResume.${result.mode}`) : undefined;
+		});
+	};
+	const doImport = () =>
+		act('import', async () => {
+			const result = await controller.importHistory(row);
+			if (!result) return undefined;
+			return t(result.created ? 'agent.historyResume.imported' : 'agent.historyResume.alreadyImported');
+		});
+	const continueBlocked = !!row.sourceStatus && row.sourceStatus !== 'available';
+	// A refresh may reset a row's preview; an expanded row reloads it instead of claiming there is no body.
+	useEffect(() => {
+		if (expanded && row.previewState === 'idle') void controller.historyStore.preview(row.key);
+	}, [controller, expanded, row.key, row.previewState]);
 	const run = (p: Promise<unknown>) => {
 		void p.catch((e) => controller.workspace.report(e));
 	};
 	const copy = (text: string) => run(doc.defaultView!.navigator.clipboard.writeText(text));
 	const actions = [
-		{ label: t('agent.historyUI.resume'), run: () => run(controller.resume(row)) },
+		{
+			label: t('agent.historyResume.continue'),
+			disabled: continueBlocked,
+			run: () => {
+				setExpanded(true);
+				setConfirming(true);
+			},
+		},
+		...(assigned
+			? []
+			: [
+					{
+						label: t('agent.historyResume.import'),
+						run: () => {
+							setExpanded(true);
+							void doImport();
+						},
+					},
+				]),
 		{ label: t('agent.historyUI.copyResume'), run: () => run(controller.resumeCommand(row).then(copy)) },
 		{ label: t('agent.copyId'), run: () => copy(row.sessionId) },
 		{ label: t('agent.historyUI.copyLog'), run: () => copy(row.transcriptPath) },
 		{ label: t('agent.historyUI.openLog'), run: () => run(controller.openHistoryPath(row, 'log')) },
 		{ label: t('agent.historyUI.revealLog'), run: () => run(controller.openHistoryPath(row, 'reveal')) },
 		{ label: t('agent.historyUI.openCwd'), run: () => run(controller.openHistoryPath(row, 'cwd')) },
-		{ label: t('agent.historyUI.export'), run: () => run(controller.history().export(row)) },
+		...(!row.sourceStatus || row.sourceStatus === 'available'
+			? [
+					{
+						label: t('agent.historyUI.export'),
+						run: () => run(controller.workspaceHistoryService().export(row)),
+					},
+				]
+			: []),
 		{
 			label: t(row.metadata.favorite ? 'agent.historyUI.unfavorite' : 'agent.historyUI.favorite'),
 			run: () => run(controller.historyStore.annotate(row.key, { favorite: !row.metadata.favorite })),
@@ -56,9 +174,9 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 					<MoreHorizontal className="size-3.5" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
+			<DropdownMenuContent align="end" data-agent-history-row-menu="" data-history-narrow={narrow ? '' : undefined}>
 				{actions.map((a) => (
-					<DropdownMenuItem key={a.label} onSelect={a.run}>
+					<DropdownMenuItem key={a.label} disabled={'disabled' in a && a.disabled} onSelect={a.run}>
 						{a.label}
 					</DropdownMenuItem>
 				))}
@@ -79,8 +197,13 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 				<button
 					type="button"
 					className="flex min-w-0 flex-1 items-start gap-2 text-left"
+					ref={toggleRef}
 					aria-expanded={expanded}
-					onClick={() => setExpanded(!expanded)}
+					onClick={() => {
+						const next = !expanded;
+						setExpanded(next);
+						if (next) void controller.historyStore.preview(row.key);
+					}}
 				>
 					<AgentIcon agent={row.agentId} size={14} />
 					<span className="min-w-0 flex-1">
@@ -91,6 +214,9 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 						<span className="block truncate text-[11px] text-muted-foreground">
 							{shortPath(row.cwd)} · {row.model || t('agent.stats.unknown')} ·{' '}
 							{new Date(row.modifiedAtMs).toLocaleDateString()}
+							{row.sourceStatus && row.sourceStatus !== 'available'
+								? ` · ${t(`agent.historyUI.source.${row.sourceStatus}`)}`
+								: ''}
 						</span>
 					</span>
 				</button>
@@ -100,12 +226,29 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 				<div className="border-t border-sidebar-border/70 bg-background/30">
 					<div className="space-y-3 p-3">
 						<div className="space-y-1 text-[11px] text-muted-foreground">
+							<dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5">
+								<dt>{t('agent.historyUI.detail.provider')}</dt>
+								<dd className="min-w-0 break-words text-foreground/90">
+									{getAgent(row.agentId as AgentId).title}
+								</dd>
+								<dt>{t('agent.historyUI.detail.account')}</dt>
+								<dd className="min-w-0 break-words text-foreground/90">
+									{accountName(row.accountKey, t('agent.historyUI.account.system'))}
+								</dd>
+								<dt>{t('agent.historyUI.detail.space')}</dt>
+								<dd className="min-w-0 break-words text-foreground/90">{spaceLabel}</dd>
+								<dt>{t('agent.historyUI.detail.source')}</dt>
+								<dd className="min-w-0 break-words text-foreground/90">
+									{t(`agent.historyUI.source.${row.sourceStatus ?? 'unknown'}`)}
+								</dd>
+							</dl>
 							<p className="break-all">{row.cwd}</p>
 							<p>
 								{row.model || t('agent.stats.unknown')} ·{' '}
 								{t('agent.historyUI.messages', { count: row.messageCount })}
 							</p>
 						</div>
+						{row.sourceReason === 'identity-collision' && <p role="status" className="text-xs text-muted-foreground">{t('agent.historyUI.sourceCollision')}</p>}
 						<Input
 							aria-label={t('agent.rename')}
 							defaultValue={row.metadata.title || row.title}
@@ -128,12 +271,17 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 								</Button>
 							</div>
 							<p className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-md border border-border/70 bg-foreground/[0.04] px-2.5 py-2 text-xs">
-								{row.firstPrompt || t('agent.historyUI.noPreview')}
+								{row.previewState === 'loading'
+									? t('agent.historyUI.loading')
+									: row.previewState === 'unavailable'
+										? row.readError || t('agent.historyUI.noPreview')
+										: row.firstPrompt || t('agent.historyUI.noPreview')}
 							</p>
 						</section>
+						{row.previewPartial && <p role="status" className="text-xs text-muted-foreground">{t('agent.historyUI.bodyPartial')}</p>}
 						<section className="space-y-1.5">
 							<h4 className="text-[11px] font-semibold uppercase text-muted-foreground">
-								{t('agent.historyUI.latest')}
+								{t(row.previewPartial ? 'agent.historyUI.previewTurns' : 'agent.historyUI.latest')}
 							</h4>
 							{row.turns.slice(-5).map((turn, index) => (
 								<div
@@ -149,17 +297,101 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 								</div>
 							))}
 						</section>
-						{row.readError && (
+						{row.readError && row.previewState !== 'unavailable' && (
 							<p role="alert" className="text-xs text-destructive">
 								{row.readError}
 							</p>
 						)}
+						{!assigned && (
+							<p className="text-[11px] text-muted-foreground">
+								{t('agent.historyResume.unassignedNote')}
+							</p>
+						)}
+						<AlertDialog open={confirming} onOpenChange={(open) => { if (!open) setConfirming(false); }}>
+							<AlertDialogContent data-agent-history-confirm="" data-history-narrow={narrow ? '' : undefined}
+								onCloseAutoFocus={(event) => {
+									// Cancel and Escape give focus back to the control that opened the confirmation.
+									event.preventDefault();
+									(continueRef.current ?? toggleRef.current)?.focus();
+								}}
+							>
+								<AlertDialogHeader>
+									<AlertDialogTitle>{t('agent.historyResume.confirmTitle')}</AlertDialogTitle>
+									<AlertDialogDescription className="break-words">
+										{t('agent.historyResume.confirmBody', {
+											provider: getAgent(row.agentId as AgentId).title,
+											cwd: row.cwd,
+										})}
+										{!assigned && ` ${t('agent.historyResume.confirmUnassigned')}`}
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+									<AlertDialogAction onClick={() => void doResume()}>
+										{t('agent.historyResume.confirmAction')}
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+						{busy !== 'idle' && (
+							<p role="status" className="text-xs text-muted-foreground">
+								{t(busy === 'resume' ? 'agent.historyResume.working' : 'agent.historyResume.importing')}
+							</p>
+						)}
+						{notice && (
+							<div
+								role={notice.tone === 'error' ? 'alert' : 'status'}
+								className={
+									notice.tone === 'error'
+										? 'flex items-start gap-2 text-xs text-destructive'
+										: 'flex items-start gap-2 text-xs text-muted-foreground'
+								}
+							>
+								<span className="min-w-0 flex-1 break-words">
+									{notice.tone === 'error' && (
+										<strong className="mr-1 font-semibold">
+											{t('agent.historyResume.failedTitle')}.
+										</strong>
+									)}
+									{notice.text}
+								</span>
+								<Button variant="ghost" size="xs" onClick={() => setNotice(undefined)}>
+									{t('agent.historyResume.dismiss')}
+								</Button>
+							</div>
+						)}
 						<div className="flex flex-wrap items-center gap-1">
-							<Button variant="secondary" size="xs" onClick={() => run(controller.resume(row))}>
+							<Button
+								variant="secondary"
+								size="xs"
+								ref={continueRef}
+								disabled={busy !== 'idle' || continueBlocked}
+								title={
+									continueBlocked
+										? t(`agent.historyUI.source.${row.sourceStatus!}`)
+										: t('agent.historyResume.continueHint')
+								}
+								onClick={() => setConfirming(true)}
+							>
 								<Play className="size-3.5" />
-								{t('agent.historyUI.resume')}
+								{t('agent.historyResume.continue')}
 							</Button>
-							<Button variant="ghost" size="xs" onClick={() => run(controller.resumeCommand(row).then(copy))}>
+							{!assigned && (
+								<Button
+									variant="ghost"
+									size="xs"
+									disabled={busy !== 'idle'}
+									title={t('agent.historyResume.importHint')}
+									onClick={() => void doImport()}
+								>
+									{t('agent.historyResume.import')}
+								</Button>
+							)}
+							<Button
+								variant="ghost"
+								size="xs"
+								onClick={() => run(controller.resumeCommand(row).then(copy))}
+							>
 								{t('agent.historyUI.copyResume')}
 							</Button>
 						</div>
@@ -169,31 +401,46 @@ function SessionRow({ row, controller }: { row: HistoryRow; controller: AgentCon
 		</article>
 	);
 }
-export function SessionHistoryPanel({ controller, close }: { controller: AgentController; close: () => void }) {
+export function SessionHistoryPanel({ controller, close, narrow = false }: { controller: AgentController; close: () => void; narrow?: boolean }) {
 	'use no memo';
 	const t = useT(),
 		state = useStore(controller.historyStore.store),
 		visible = useVisible(),
 		scroll = useRef<HTMLDivElement>(null);
 	const [query, setQuery] = useState(''),
-		[scope, setScope] = useState<'vault' | 'all'>('vault'),
 		[agents, setAgents] = useState(AGENT_CATALOG.map((a) => a.id as string)),
 		[group, setGroup] = useState<'none' | 'agent' | 'cwd'>('none'),
 		[sort, setSort] = useState<'updated' | 'created'>('updated'),
+		[timeFilter, setTimeFilter] = useState<'all' | 'day' | 'week' | 'month'>('all'),
 		[hideEmpty, setHideEmpty] = useState(false),
-		[archived, setArchived] = useState(false);
+		[includeTerminals, setIncludeTerminals] = useState(false),
+		[archived, setArchived] = useState(false),
+		[spaceFilter, setSpaceFilter] = useState<string>(SPACE_ALL),
+		spaceRecords = useStore(controller.spaces.store, (state) => state.records.spaces),
+		owners = useStore(controller.spaces.store, (state) => state.records.historyOwners),
+		terminalSessions = useStore(controller.spaces.store, (state) => state.records.sessions);
+	const spaceList = useMemo(() => Object.values(spaceRecords).filter((space) => !space.archived), [spaceRecords]);
+	const archivedSpaces = useMemo(() => Object.values(spaceRecords).filter((space) => space.archived), [spaceRecords]);
+	const spaceLabelFor = (owner: string | undefined) => {
+		const space = owner ? spaceRecords[owner] : undefined;
+		if (!space) return t('agent.historyUI.space.unassigned');
+		return space.archived ? t('agent.historyUI.space.archivedName', { name: space.name }) : space.name;
+	};
+	const failed = state.warnings.filter((warning) => !warning.startsWith('history-owner:'));
 	useEffect(() => {
 		if (visible) void controller.historyStore.refresh(false);
-	}, [controller, visible]);
+	}, [controller, visible, terminalSessions]);
+	const allRows = useMemo(() => [...state.rows, ...(state.terminalRows ?? [])], [state.rows, state.terminalRows]);
 	const filtered = useMemo(
 		() =>
-			state.rows
+			allRows
 				.filter(
 					(row) =>
-						agents.includes(row.agentId) &&
+						(row.kind === 'shell' ? includeTerminals : agents.includes(row.agentId)) &&
+						(timeFilter === 'all' || row.modifiedAtMs >= Date.now() - ({ day: 1, week: 7, month: 30 }[timeFilter] * 86400000)) &&
 						(!row.metadata.archived || archived) &&
-						(!hideEmpty || row.messageCount > 0) &&
-						(scope === 'all' || row.inVault) &&
+						(row.kind === 'shell' || !hideEmpty || row.messageCount > 0) &&
+						matchesSpace(row.kind === 'shell' ? row.spaceId : row.sourceRef ? owners?.[row.sourceRef] : undefined, spaceRecords, spaceFilter) &&
 						[
 							row.metadata.title,
 							row.title,
@@ -209,14 +456,14 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 				.sort((a, b) =>
 					sort === 'created' ? (b.createdAt ?? 0) - (a.createdAt ?? 0) : b.modifiedAtMs - a.modifiedAtMs,
 				),
-		[state.rows, agents, archived, hideEmpty, scope, query, sort],
+		[allRows, agents, archived, hideEmpty, includeTerminals, query, sort, timeFilter, spaceFilter, owners, spaceRecords],
 	);
 	const rows = useMemo(() => {
 		const groups = new Map<string, HistoryRow[]>();
 		for (const row of filtered) {
 			const key =
 				group === 'agent'
-					? AGENT_CATALOG.find((a) => a.id === row.agentId)?.title || row.agentId
+					? row.kind === 'shell' ? t('agent.workspace.bucket.terminal') : AGENT_CATALOG.find((a) => a.id === row.agentId)?.title || row.agentId
 					: group === 'cwd'
 						? row.cwd
 						: '';
@@ -228,7 +475,7 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 			...(key ? [{ key: `group:${key}`, label: key }] : []),
 			...items.map((row) => ({ key: row.key, row })),
 		]);
-	}, [filtered, group]);
+	}, [filtered, group, t]);
 	const virtual = useVirtualizer({
 		count: rows.length,
 		getScrollElement: () => scroll.current,
@@ -237,13 +484,16 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 		overscan: 8,
 	});
 	return (
-		<aside className="@container/ai-vault flex h-full min-h-0 flex-col bg-sidebar" aria-label={t('agent.history')}>
+		<aside data-agent-history-panel="" data-history-narrow={narrow ? '' : undefined}
+			className="@container/ai-vault flex h-full min-h-0 flex-col bg-sidebar"
+			aria-label={t('agent.historyUI.title')}
+		>
 			<div className="shrink-0 border-b border-sidebar-border px-2.5 py-2">
 				<div className="flex items-center gap-1.5">
 					<div className="min-w-0 flex-1">
-						<h3 className="truncate text-xs font-semibold text-foreground">{t('agent.history')}</h3>
+						<h3 className="truncate text-xs font-semibold text-foreground">{t('agent.historyUI.title')}</h3>
 						<p className="truncate text-[11px] text-muted-foreground">
-							{t('agent.historyUI.count', { shown: filtered.length, total: state.rows.length })}
+							{t('agent.historyUI.count', { shown: filtered.length, total: allRows.length })}
 						</p>
 					</div>
 					<Button
@@ -278,7 +528,7 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 								<ListFilter className="size-3" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-56">
+						<DropdownMenuContent align="end" className="w-56" data-agent-history-filter-menu="" data-history-narrow={narrow ? '' : undefined}>
 							<DropdownMenuLabel>{t('agent.historyUI.agents')}</DropdownMenuLabel>
 							<DropdownMenuItem
 								onSelect={(e) => {
@@ -309,6 +559,42 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 								</DropdownMenuCheckboxItem>
 							))}
 							<DropdownMenuSeparator />
+							<DropdownMenuLabel>{t('agent.historyUI.space.label')}</DropdownMenuLabel>
+							{[
+								{ id: SPACE_ALL, label: t('agent.historyUI.space.all') },
+								...spaceList.map((space) => ({ id: space.id, label: space.name })),
+								{ id: SPACE_NONE, label: t('agent.historyUI.space.unassigned') },
+							].map((item) => (
+								<DropdownMenuCheckboxItem
+									key={item.id}
+									checked={spaceFilter === item.id}
+									onCheckedChange={() => setSpaceFilter(item.id)}
+								>
+									{item.label}
+								</DropdownMenuCheckboxItem>
+							))}
+							{archivedSpaces.length > 0 && (
+								<>
+									<DropdownMenuLabel>{t('agent.historyUI.space.archivedGroup')}</DropdownMenuLabel>
+									{archivedSpaces.map((space) => (
+										<DropdownMenuCheckboxItem
+											key={space.id}
+											checked={spaceFilter === space.id}
+											onCheckedChange={() => setSpaceFilter(space.id)}
+										>
+											{space.name}
+										</DropdownMenuCheckboxItem>
+									))}
+								</>
+							)}
+							<DropdownMenuSeparator />
+							<DropdownMenuLabel>{t('agent.historyUI.time.label')}</DropdownMenuLabel>
+							{(['all', 'day', 'week', 'month'] as const).map((value) => (
+								<DropdownMenuCheckboxItem key={value} checked={timeFilter === value} onCheckedChange={() => setTimeFilter(value)}>
+									{t(`agent.historyUI.time.${value}`)}
+								</DropdownMenuCheckboxItem>
+							))}
+							<DropdownMenuSeparator />
 							{(['updated', 'created'] as const).map((value) => (
 								<DropdownMenuCheckboxItem
 									key={value}
@@ -329,6 +615,9 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 								</DropdownMenuCheckboxItem>
 							))}
 							<DropdownMenuSeparator />
+							<DropdownMenuCheckboxItem checked={includeTerminals} onCheckedChange={setIncludeTerminals}>
+								{t('agent.historyUI.includeTerminals')}
+							</DropdownMenuCheckboxItem>
 							<DropdownMenuCheckboxItem checked={hideEmpty} onCheckedChange={setHideEmpty}>
 								{t('agent.historyUI.hideEmpty')}
 							</DropdownMenuCheckboxItem>
@@ -341,8 +630,11 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 									setAgents(AGENT_CATALOG.map((a) => a.id));
 									setGroup('none');
 									setSort('updated');
+									setTimeFilter('all');
 									setHideEmpty(false);
+									setIncludeTerminals(false);
 									setArchived(false);
+									setSpaceFilter(SPACE_ALL);
 								}}
 							>
 								{t('agent.manage.reset')}
@@ -350,30 +642,33 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
-				<div className="mt-2">
-					<SegmentedControl
-						value={scope}
-						onChange={setScope}
-						ariaLabel={t('agent.quick.scope')}
-						size="sm"
-						equalWidth
-						options={[
-							{ value: 'vault', label: t('agent.quick.vault') },
-							{ value: 'all', label: t('agent.historyUI.allScope') },
-						]}
-					/>
-				</div>
 			</div>
 			{state.error && (
-				<p role="alert" className="p-3 text-xs text-destructive">
-					{state.error}
-				</p>
+				<div role="alert" className="flex items-center gap-2 p-3 text-xs text-destructive">
+					<span className="min-w-0 flex-1 break-words">{state.error}</span>
+					<Button variant="ghost" size="xs" onClick={() => void controller.historyStore.refresh()}>
+						{t('agent.historyUI.retry')}
+					</Button>
+				</div>
 			)}
-			{state.warnings.map((w) => (
-				<p key={w} className="p-2 text-xs text-muted-foreground">
-					{w}
-				</p>
-			))}
+			{failed.length > 0 && (
+				<div role="status" className="space-y-1 p-2 text-xs text-muted-foreground">
+					<div className="flex items-center gap-2">
+						<span className="min-w-0 flex-1">{t('agent.historyUI.partial', { count: failed.length })}</span>
+						<Button variant="ghost" size="xs" onClick={() => void controller.historyStore.refresh()}>
+							{t('agent.historyUI.retry')}
+						</Button>
+					</div>
+					<details>
+						<summary className="cursor-pointer">{t('agent.historyUI.partialDetails')}</summary>
+						<ul className="mt-1 max-h-24 overflow-auto break-words">
+							{failed.slice(0, 20).map((warning) => (
+								<li key={warning}>{warning}</li>
+							))}
+						</ul>
+					</details>
+				</div>
+			)}
 			<div ref={scroll} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
 				<div className="relative w-full" style={{ height: virtual.getTotalSize() }}>
 					{virtual.getVirtualItems().map((item) => {
@@ -386,8 +681,20 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 								className="absolute left-0 top-0 w-full"
 								style={{ transform: `translateY(${item.start}px)` }}
 							>
-								{'row' in row ? (
-									<SessionRow row={row.row} controller={controller} />
+								{'row' in row ? (row.row.kind === 'shell' ? <TerminalHistoryRow row={row.row} spaceLabel={spaceLabelFor(row.row.spaceId)} /> :
+									<SessionRow
+										narrow={narrow}
+										row={row.row}
+										controller={controller}
+										spaceLabel={spaceLabelFor(
+											row.row.sourceRef ? owners?.[row.row.sourceRef] : undefined,
+										)}
+										assigned={
+											!!row.row.sourceRef &&
+											!!owners?.[row.row.sourceRef] &&
+											Object.hasOwn(spaceRecords, owners[row.row.sourceRef]!)
+										}
+									/>
 								) : (
 									<h4 className="flex h-8 items-center border-y border-sidebar-border bg-sidebar-accent/60 px-3 text-xs font-semibold">
 										{row.label}
@@ -397,8 +704,20 @@ export function SessionHistoryPanel({ controller, close }: { controller: AgentCo
 						);
 					})}
 				</div>
+				{!rows.length && state.loading && (
+					<p role="status" className="p-6 text-center text-xs text-muted-foreground">
+						{t('agent.historyUI.loading')}
+					</p>
+				)}
 				{!rows.length && !state.loading && (
-					<p className="p-6 text-center text-xs text-muted-foreground">{t('agent.historyUI.empty')}</p>
+					<div className="space-y-2 p-6 text-center text-xs text-muted-foreground">
+						<p>{t('agent.historyUI.empty')}</p>
+						{query && (
+							<Button variant="secondary" size="xs" onClick={() => setQuery('')}>
+								{t('agent.historyUI.clearSearch')}
+							</Button>
+						)}
+					</div>
 				)}
 			</div>
 		</aside>

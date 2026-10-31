@@ -38,6 +38,8 @@ export default tseslint.config(
 	// Desktop folders are the only place Node and Electron are allowed (architecture rule R5, enforced by
 	// scripts/verify-architecture.mjs); they are reached only on desktop.
 	{ files: ["src/**/desktop/**/*.ts"], languageOptions: { globals: globals.node }, rules: { "obsidianmd/no-nodejs-modules": "off" } },
+	// This separately bundled Node.js 22+ CLI has no Window; native globalThis.fetch is its HTTP transport.
+	{ files: ["src/modules/browser/platform/desktop/cli.ts"], rules: { "obsidianmd/no-global-this": "off" } },
 	// This guest shim intercepts legacy copy/cut to block OS clipboard writes and restores the original method.
 	// It does not use execCommand to acquire content; modern Clipboard methods supply the bounded payload.
 	{ files: ["src/modules/browser/platform/desktop/provider-copy.ts"], rules: { "@typescript-eslint/no-deprecated": "off" } },
@@ -66,7 +68,15 @@ export default tseslint.config(
 		"version-bump.mjs",
 		"versions.json",
 		"main.js",
+		"browser-worker.cjs",
+		"browser-cli.cjs",
 		"scripts/**",
+		// HAP generation is a Node build tool, like scripts/**, outside the plugin TypeScript project.
+		"contracts/hap/v0.1/generate.mjs",
+		// Go contract tests bundle these Node/Obsidian boundary fixtures with test-only __REPO__ substitution.
+		// Like scripts/** and test/**, they are outside the plugin TS project; their production src imports stay linted.
+		"native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs",
+		"native/huhubot/tests/contract/effect-reconcile/obsidian-fixture.mjs",
 		"**/*.test.ts",
 		"**/*.test.tsx",
 		"test/**",

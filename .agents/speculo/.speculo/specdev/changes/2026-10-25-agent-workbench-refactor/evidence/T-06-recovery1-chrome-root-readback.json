@@ -1,0 +1,151 @@
+{
+  "utc": "2026-10-25T23:00:16.084423+00:00",
+  "observed_by": "codex:/root",
+  "result_sha256": "9f7863044e270587647e564bd5c4139b43688199c270ba4dabe44a11e0f85bbe",
+  "capture": "T-06-recovery1-chrome-root-capture.json",
+  "checks": [
+    {
+      "name": "all-Vault-historical-blocked-keyboard-navigation-exact-existing-split",
+      "ok": true
+    },
+    {
+      "name": "trusted-key-through-production-TabView-and-original-terminal",
+      "ok": true
+    },
+    {
+      "name": "narrow-production-attention-entry-remains-readable-and-operable",
+      "ok": true
+    },
+    {
+      "name": "actual-browser-document-blur-does-not-acknowledge",
+      "ok": true
+    },
+    {
+      "name": "resumed-current-document-paints-before-acknowledging",
+      "ok": true
+    },
+    {
+      "name": "actual-public-render-captured-N-preserves-N-plus-one",
+      "ok": true
+    },
+    {
+      "name": "hidden-offscreen-noncurrent-leaf-two-observers-and-dispose",
+      "ok": true
+    },
+    {
+      "name": "controlled-storage-failure-remains-visible-and-explicit-retry-only",
+      "ok": true
+    },
+    {
+      "name": "explicit-save-retry-repaints-without-input-replay",
+      "ok": true
+    },
+    {
+      "name": "readonly-original-hint-React-presentation-zero-spawn",
+      "ok": true
+    },
+    {
+      "name": "activity-and-seen-do-not-transfer-explicit-size-owner",
+      "ok": true
+    }
+  ],
+  "geometry": {
+    "owner": {
+      "lease": {
+        "runtimeId": "terminal-df0cbf53-55f1-45dd-b656-10d4dbcd879d",
+        "viewId": "terminal-view-8",
+        "leaseId": "1"
+      },
+      "revision": 2,
+      "visible": true,
+      "focused": true
+    },
+    "accepted_calls": [
+      5,
+      6,
+      7
+    ],
+    "rows": [
+      38,
+      37,
+      38
+    ],
+    "primary_heights": [
+      684,
+      668,
+      684
+    ],
+    "follower_rejected": {
+      "status": "rejected",
+      "reason": "not-owner"
+    },
+    "public_follower_transfer": {
+      "status": "accepted",
+      "at": {
+        "runtimeId": "terminal-df0cbf53-55f1-45dd-b656-10d4dbcd879d",
+        "contentSequence": 10
+      },
+      "geometry": {
+        "cols": 101,
+        "rows": 38
+      },
+      "native": "unsupported"
+    },
+    "checker_detected": "owner-changed",
+    "probe_entries": 43,
+    "controlled_timing": "Original seen delegate held until actual hint fit; finally released. Real follower ownership transfer is checker negative."
+  },
+  "keyboard": {
+    "actual_original_sid_input": [
+      {
+        "sid": 1,
+        "data": "\u001bOA"
+      }
+    ],
+    "enter_packet": "complete; actual native Chrome events, including native button click"
+  },
+  "visual": [
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-focused-blocked.png",
+      "sha256": "d89b407154e3dde19d72eeead43afcc0ce4c83fd1f3d78cd5a10b7d852171fb2",
+      "root_visually_read": true
+    },
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-geometry.png",
+      "sha256": "e0df9cc20c3e872fec7827cc987a04015804a37f0f65ce1c227de073465f2ac4",
+      "root_visually_read": true
+    },
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-narrow.png",
+      "sha256": "ab07494613289aae4996c1403d80125db5fe036323cf8a0ebe58ea58556c7fe2",
+      "root_visually_read": true
+    },
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-pending.png",
+      "sha256": "bb5dc0546ffdde23a272a9dd065e1b3fc542be7e5c05688b72e13276903ebada",
+      "root_visually_read": true
+    },
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-readonly-original-hint.png",
+      "sha256": "621a5b2b4396b56c9d8aea67575f4823383912d8172bedfa163066922716bffb",
+      "root_visually_read": true
+    },
+    {
+      "path": "/tmp/huhu-t06-root-recovery1-chrome/pane-save-error.png",
+      "sha256": "7963b1dd4b40d645ed9f2e4f045dfbf27cb7d485c9c2bed39e0a5b6f8c0472d9",
+      "root_visually_read": true
+    }
+  ],
+  "visual_notes": [
+    "Six actual PNGs read. Pending/attention entry keyboard focus ring and narrow 800px layout remain readable; original split selected.",
+    "Save failure explains failure and exposes Retry; readonly shows original runtime completion and explicit restart/close.",
+    "Controlled native boundary reports unsupported size confirmation; these component snapshots do not prove actual PTY contents, Obsidian theme/host appearance or Provider approval. No new visual layout or styles changed in recovery1."
+  ],
+  "limitations": [
+    "Obsidian leaf and Native/Provider/TextStorage boundaries are controlled. Real DOM/document blur, IntersectionObserver, xterm rendering and trusted Chrome keyboard events are exercised.",
+    "Native resize observations are calls through the controlled native boundary and model acceptance; native result unsupported is retained, not relabeled as OS acknowledgement.",
+    "User owns real Obsidian/Provider/five-platform E2E."
+  ],
+  "unhandled": [],
+  "source_drift": []
+}

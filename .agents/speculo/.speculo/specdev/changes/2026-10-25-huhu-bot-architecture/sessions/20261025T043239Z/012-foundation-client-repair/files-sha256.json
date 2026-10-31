@@ -1,0 +1,8 @@
+{
+  "src/modules/huhubot/core/protocol/connection.ts": "13f2b42d66d0898b7d68d491e92c7993fbef90fbd652551d912d1bd3759749f6",
+  "src/modules/huhubot/core/protocol/connection.test.ts": "2c54bb54389c4ef3c8283cac260b65389cbb67c60f2f1bf94eca9e641c98e44b",
+  "src/modules/huhubot/core/protocol/method-validation.ts": "994ff43abcd13cabc4afdae08a0a2c88dd2f68e89f9d23e5d4d9cdda254f9ef6",
+  "src/modules/huhubot/core/protocol/method-validation.test.ts": "fb31fbb5a4e02dc4272c3d00b85ae9ce6cb97151e6ae73adb7ccdf8f19438f3d",
+  "src/modules/huhubot/platform/desktop/transport/managed.ts": "2e8df04b2b330300b27a833caa2e47f91655f7ec20bd15290557bcf1ddd60a47",
+  "src/modules/huhubot/platform/desktop/transport/runner.test.ts": "b605c9f7893ea9b49bd54a126704cd7558281fa661808d5f0cfdb9d27ce7a165"
+}

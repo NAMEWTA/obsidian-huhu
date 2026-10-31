@@ -1,0 +1,12 @@
+--- frozen/wait_test.go
++++ external-forced-parents/wait_test.go
+@@ -213,6 +213,9 @@
+ 					return api.EngineResult{}, e
+ 				}
+ 				if i.Intent == "parent-child" {
++					if schedule == "batch-admission" {
++						select { case <-parentsAdmitted: case <-c.Done(): return api.EngineResult{}, c.Err() }
++					}
+ 					v, e := i.Tools.Invoke(c, api.ToolCall{ID: "nested", Name: "agents.delegate", Delegate: &api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: target}, Task: "leaf", Constraints: []string{}}})
+ 					if e != nil {
+ 						return api.EngineResult{}, e

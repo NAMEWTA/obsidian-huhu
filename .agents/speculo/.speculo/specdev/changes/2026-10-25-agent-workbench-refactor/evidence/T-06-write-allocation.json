@@ -1,0 +1,81 @@
+{
+  "state": "GP020/Map21 T06 exact owner allocation; implementation requires formal DoR success and actual dispatch",
+  "basis": [
+    "T-06-activity-api-candidate-v2.md",
+    "T-06-hook-resource-profile.md",
+    "T-06-ui-presentation-seam.md",
+    "T-06-contract-reconciliation.md",
+    "T-06-browser-acceptance-proposal.json"
+  ],
+  "required_before_use": "Read accepted T05 evidence, pass formal DoR, freeze current input, then actual native dispatch",
+  "A": [
+    "src/modules/agent/core/workspace/managed-runtime.ts",
+    "src/modules/agent/services/terminal/session.ts",
+    "src/modules/agent/services/terminal/session.test.ts",
+    "src/modules/agent/services/terminal/status.ts",
+    "src/modules/agent/services/terminal/status.test.ts",
+    "src/modules/agent/services/terminal/sessions.ts",
+    "src/modules/agent/services/terminal/sessions-activity.test.ts",
+    "src/modules/agent/services/workspace-service.ts",
+    "src/modules/agent/services/workspace-service-activity.test.ts",
+    "src/modules/agent/services/workspace-service-spaces.test.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/services/controller-activity.test.ts",
+    "src/modules/agent/services/agent-runtime.ts",
+    "src/modules/agent/services/agent-runtime.test.ts",
+    "src/modules/agent/services/spaces/records.ts",
+    "src/modules/agent/services/spaces/records.test.ts",
+    "src/modules/agent/services/spaces/space-service.ts",
+    "src/modules/agent/services/spaces/space-service.test.ts",
+    "src/modules/agent/i18n.ts",
+    "docs/agent-workbench.md"
+  ],
+  "B": [
+    "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+    "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+    "src/modules/agent/ui/terminal/terminal-view.ts",
+    "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+    "scripts/obsidian-acceptance/agent-workbench-activity.mjs"
+  ],
+  "C": [
+    "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+    "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+    "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+    "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+    "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+    "src/modules/agent/platform/desktop/hooks/event-payload.test.ts",
+    "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+    "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+    "src/modules/agent/platform/desktop/hooks/system-hooks.test.ts",
+    "src/modules/agent/platform/desktop/hooks/remove-status-hooks.test.ts",
+    "src/modules/agent/platform/desktop/hooks/hook-spool.ts",
+    "src/modules/agent/platform/desktop/hooks/hook-spool.test.ts",
+    "src/modules/agent/platform/desktop/agents/accounts.ts",
+    "src/modules/agent/platform/desktop/agents/accounts.test.ts"
+  ],
+  "Root": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json"
+  ],
+  "constraints": [
+    "A first freezes actual pure DTO/API and required i18n; C and B consume those actual bytes",
+    "A/C may then implement only their disjoint assigned paths; cross-owner signature changes return to Root",
+    "One prepared Hook scope per runtime, shared raw-answer and summary publication, no double legacy activity counting",
+    "8 cumulative source/registration lifetime slots; closed fences retained through scope/runtime settlement",
+    "Strict same-binding/epoch/registration blockId and explicit completion adapter semantics",
+    "B captures N at React commit and confirms actual visible public onRender; A independently checks identity/layout/visibility registry",
+    "Bounded B render/seen observers and A actual persistence queue; timeout is observation only",
+    "No native/shared/Rust, dependency, AgentWorkspacePage, workspace-view, control host or foreground implementation in T06",
+    "No global check or generation from A/B/C; Root runs global gates sequentially after relevant writers stop",
+    "Real Obsidian/Provider/platform E2E remains user-owned and unrun"
+  ],
+  "actual_owners": {
+    "A": "codex:/root/prepare_t03",
+    "B": "codex:/root/prepare_t05_screen",
+    "C": "codex:/root/implement_t01",
+    "Root": "codex:/root"
+  }
+}

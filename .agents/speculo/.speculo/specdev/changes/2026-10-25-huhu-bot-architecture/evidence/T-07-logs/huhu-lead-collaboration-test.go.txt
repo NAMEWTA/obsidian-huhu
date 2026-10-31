@@ -1,0 +1,395 @@
+package lead_collaboration_test
+
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+	_ "github.com/ncruces/go-sqlite3/driver"
+)
+
+type leadEngine struct {
+	run func(context.Context, api.EngineInput) (api.EngineResult, error)
+}
+
+func (e leadEngine) Run(ctx context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	return e.run(ctx, in)
+}
+func (leadEngine) Resume(context.Context, api.EngineResumeInput, func(api.EngineEvent) error) (api.EngineResult, error) {
+	return api.EngineResult{}, fmt.Errorf("unexpected model resume; application must project completed children")
+}
+
+func TestLeadSharedExecutorNestedTemporaryIsolationAndActualAttemptBudget(t *testing.T) {
+	ctx := context.Background()
+	user := api.NewConnectionIdentity("lead-collaboration", "lead-user", false)
+	root := filepath.Join(t.TempDir(), "profiles")
+	if e := os.Mkdir(root, 0700); e != nil {
+		t.Fatal(e)
+	}
+	locator := filepath.Join(root, "one")
+	var callbacks atomic.Int64
+	var rootModelCalls atomic.Int64
+	var observed = make(chan api.EngineInput, 8)
+	var engineErrors = make(chan error, 8)
+	gate := make(chan struct{})
+	var release sync.Once
+	defer release.Do(func() { close(gate) })
+	var existingID string
+	model := api.ModelBindingDraft{ProviderID: "lead-fixture", Protocol: "openai-chat-completions", ModelID: "fixture", Endpoint: "https://fixture.invalid/v1", Capabilities: []string{}}
+	attempt := func(ctx context.Context, in api.EngineInput, logical, knowledge string) error {
+		if in.Attempts == nil {
+			return fmt.Errorf("production executor did not bind model attempt port")
+		}
+		purpose := "main"
+		if in.Lineage.ParentRunID != "" {
+			purpose = "child"
+		}
+		reservation, e := in.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: logical, InputEstimate: "5", OutputBound: "10", Purpose: purpose})
+		if e != nil {
+			return e
+		}
+		if e = in.Attempts.Dispatch(ctx, reservation, func(context.Context) error { callbacks.Add(1); return nil }); e != nil {
+			return e
+		}
+		_, e = in.Attempts.Settle(ctx, reservation, api.AttemptObservation{Knowledge: knowledge, InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+		return e
+	}
+	engine := leadEngine{run: func(ctx context.Context, in api.EngineInput) (api.EngineResult, error) {
+		fail := func(e error) (api.EngineResult, error) {
+			select {
+			case engineErrors <- e:
+			default:
+			}
+			return api.EngineResult{}, e
+		}
+		knowledge := "known"
+		if in.Intent == "lead-temp-2" {
+			knowledge = "unknown"
+		}
+		if e := attempt(ctx, in, "initial", knowledge); e != nil {
+			return fail(e)
+		}
+		if in.Intent == "seed-private-b" {
+			return api.EngineResult{Status: "finished", Text: "PRIVATE_B_TRANSCRIPT_SENTINEL"}, nil
+		}
+		if in.Intent == "lead-parent" {
+			rootModelCalls.Add(1)
+			if _, e := in.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: "forged-maintenance", InputEstimate: "5", OutputBound: "10", Purpose: "maintenance"}); e == nil {
+				return fail(fmt.Errorf("ordinary run switched into configured maintenance account"))
+			}
+			directory, e := in.Tools.Invoke(ctx, api.ToolCall{ID: "directory", Name: "agents.discover", Discover: &api.DiscoverQuery{PageQuery: api.PageQuery{Limit: 100}}})
+			if e != nil {
+				return fail(e)
+			}
+			if directory.Directory == nil || len(directory.Directory.Items) != 1 || directory.Directory.Items[0].ID != existingID {
+				return fail(fmt.Errorf("unexpected authorized directory %#v", directory.Directory))
+			}
+			encoded, _ := json.Marshal(directory.Directory)
+			if strings.Contains(string(encoded), "PRIVATE_B_") {
+				return fail(fmt.Errorf("directory leaked private fields"))
+			}
+			notice, e := in.Tools.Invoke(ctx, api.ToolCall{ID: "notice", Name: "agents.message", Message: &api.MessageCommand{Kind: "notify", TargetAgentID: existingID, Text: "notification only", SourceRefs: []api.SourceSnapshot{}}})
+			if e != nil || notice.Message == nil {
+				return fail(fmt.Errorf("notify %v %#v", e, notice))
+			}
+			command := api.DelegateCommand{Target: api.DelegationTarget{Kind: "existing", AgentID: existingID}, Task: "lead-child-existing", ExpectedOutput: "one result", Constraints: []string{}, Context: api.ContextEnvelope{MessageIDs: []string{}, SourceRefs: []api.SourceSnapshot{}, Excerpts: []api.ContextExcerpt{}}}
+			first, e := in.Tools.Invoke(ctx, api.ToolCall{ID: "same-intent", Name: "agents.delegate", Delegate: &command})
+			if e != nil {
+				return fail(e)
+			}
+			duplicate, e := in.Tools.Invoke(ctx, api.ToolCall{ID: "same-intent", Name: "agents.delegate", Delegate: &command})
+			if e != nil {
+				return fail(e)
+			}
+			if first.Delegation == nil || duplicate.Delegation == nil || first.Delegation.ID != duplicate.Delegation.ID || first.Delegation.ChildRunID != duplicate.Delegation.ChildRunID {
+				return fail(fmt.Errorf("duplicate tool intent created another child"))
+			}
+			temporary := api.AgentDraft{Name: "Lead temporary one", Description: "task identity", Persona: "temporary persona", Model: &model, AllowedTools: []string{"agents.delegate"}, AllowedCollaborationTargets: []string{}}
+			command.Target = api.DelegationTarget{Kind: "temporary", Draft: &temporary}
+			command.Task = "lead-temp-1"
+			if _, e = in.Tools.Invoke(ctx, api.ToolCall{ID: "temporary", Name: "agents.delegate", Delegate: &command}); e != nil {
+				return fail(e)
+			}
+			if e = attempt(ctx, in, "after-tools", "known"); e != nil {
+				return fail(e)
+			}
+			return api.EngineResult{Status: "finished", Text: "parent local result"}, nil
+		}
+		if len(in.History) != 0 {
+			return fail(fmt.Errorf("isolated child inherited private history: %d", len(in.History)))
+		}
+		for _, message := range in.History {
+			if strings.Contains(message.Text, "PRIVATE_B_TRANSCRIPT_SENTINEL") {
+				return fail(fmt.Errorf("private B transcript reached child"))
+			}
+		}
+		observed <- in
+		if in.Intent == "lead-temp-1" {
+			temporary := api.AgentDraft{Name: "Lead temporary two", Description: "nested isolated task", Persona: "nested temporary", Model: &model, AllowedTools: []string{}, AllowedCollaborationTargets: []string{}}
+			command := api.DelegateCommand{Target: api.DelegationTarget{Kind: "temporary", Draft: &temporary}, Task: "lead-temp-2", ExpectedOutput: "nested result", Constraints: []string{}, Context: api.ContextEnvelope{MessageIDs: []string{}, SourceRefs: []api.SourceSnapshot{}, Excerpts: []api.ContextExcerpt{}}}
+			if _, e := in.Tools.Invoke(ctx, api.ToolCall{ID: "nested", Name: "agents.delegate", Delegate: &command}); e != nil {
+				return fail(e)
+			}
+			return api.EngineResult{Status: "finished", Text: "temporary local result"}, nil
+		}
+		if in.Intent != "lead-child-existing" && in.Intent != "lead-temp-2" {
+			return fail(fmt.Errorf("unexpected engine work %q", in.Intent))
+		}
+		select {
+		case <-gate:
+		case <-ctx.Done():
+			return fail(ctx.Err())
+		}
+		return api.EngineResult{Status: "finished", Text: "isolated result: " + in.Intent}, nil
+	}}
+	core, e := bootstrap.OpenWithOptions(ctx, root, locator, bootstrap.Options{Engine: engine})
+	if e != nil {
+		t.Fatal(e)
+	}
+	t.Cleanup(func() {
+		release.Do(func() { close(gate) })
+		if e := core.Close(); e != nil {
+			t.Error(e)
+		}
+	})
+	status, e := core.API.Service.Status(ctx, user)
+	if e != nil {
+		t.Fatal(e)
+	}
+	p := status.Profile
+	serial := 0
+	meta := func(revision string) api.CommandMeta {
+		serial++
+		key := fmt.Sprintf("lead-command-%d", serial)
+		return api.CommandMeta{CommandID: key, IdempotencyKey: key, ProfileID: p.ProfileID, CommandEpoch: p.CommandEpoch, ExpectedRevision: revision}
+	}
+	initialBudget, e := core.API.Collaboration.Budget(ctx, user, api.BudgetQuery{ProfileID: p.ProfileID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if initialBudget.Policy != (api.BudgetPolicy{RootTokenLimit: "0", ProfileTokenLimit: "0", MaintenanceTokenLimit: "0"}) {
+		t.Fatalf("public default budget must be canonical zero: %#v", initialBudget.Policy)
+	}
+	wantLimits := api.ExecutionLimits{MaxDepth: 3, MaxChildren: 32, RootChildren: 4, ProfileChildren: 8, MaxWakes: 8}
+	if initialBudget.Limits != wantLimits {
+		t.Fatalf("public effective limits %#v", initialBudget.Limits)
+	}
+	configuredPolicy := api.BudgetPolicy{RootTokenLimit: "1000", ProfileTokenLimit: "10000", MaintenanceTokenLimit: "1000"}
+	configured, e := core.API.Collaboration.ConfigureBudget(ctx, user, api.BudgetConfigure{CommandMeta: meta(initialBudget.Revision), Policy: configuredPolicy})
+	if e != nil || configured.Revision == initialBudget.Revision || configured.Policy != configuredPolicy {
+		t.Fatalf("public budget configuration %#v %v", configured, e)
+	}
+	if _, e := core.API.Collaboration.ConfigureBudget(ctx, user, api.BudgetConfigure{CommandMeta: meta(initialBudget.Revision), Policy: api.BudgetPolicy{RootTokenLimit: "1", ProfileTokenLimit: "1", MaintenanceTokenLimit: "0"}}); e == nil {
+		t.Fatal("stale public budget CAS accepted")
+	} else {
+		var fault *api.Fault
+		if !errors.As(e, &fault) || fault.Kind != "CONFLICT" || fault.Reason != "REVISION_CONFLICT" {
+			t.Fatalf("stale revision failed for an unrelated reason: %v", e)
+		}
+	}
+	worker, e := core.API.Assistant.Create(ctx, user, api.AgentCreate{CommandMeta: meta(""), Draft: api.AgentDraft{Name: "B", Description: "public summary", Persona: "PRIVATE_B_PERSONA_SENTINEL", Model: &model}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	existingID = worker.ID
+	parent, e := core.API.Assistant.Create(ctx, user, api.AgentCreate{CommandMeta: meta(""), Draft: api.AgentDraft{Name: "Lead parent", Description: "parent", Persona: "parent", Model: &model, AllowedTools: []string{"agents.discover", "agents.message", "agents.delegate", "tasks.get", "tasks.list"}, AllowedCollaborationTargets: []string{worker.ID}}})
+	if e != nil {
+		t.Fatal(e)
+	}
+	start := func(agent, intent string) api.RunReceipt {
+		session, e := core.API.Conversation.CreateSession(ctx, user, api.SessionCreate{CommandMeta: meta(""), Kind: "direct", MemberIDs: []string{agent}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		r, e := core.API.Conversation.StartRun(ctx, user, api.RunStart{CommandMeta: meta(session.Revision), SessionID: session.ID, Intent: intent, SourceRefs: []api.SourceSnapshot{}})
+		if e != nil {
+			t.Fatal(e)
+		}
+		return r
+	}
+	wait := func(id, want string) api.Run {
+		deadline := time.Now().Add(5 * time.Second)
+		for {
+			r, e := core.API.Conversation.GetRun(ctx, user, api.IDQuery{ProfileID: p.ProfileID, ID: id})
+			if e != nil {
+				t.Fatal(e)
+			}
+			if r.Status == want {
+				return r
+			}
+			if r.Status == "failed" || time.Now().After(deadline) {
+				select {
+				case detail := <-engineErrors:
+					t.Fatalf("want %s got %#v; %v", want, r, detail)
+				default:
+					t.Fatalf("want %s got %#v", want, r)
+				}
+			}
+			time.Sleep(5 * time.Millisecond)
+		}
+	}
+	seed := start(worker.ID, "seed-private-b")
+	wait(seed.RunID, "succeeded")
+	before, e := core.API.Assistant.List(ctx, user, api.PageQuery{ProfileID: p.ProfileID, Limit: 100})
+	if e != nil {
+		t.Fatal(e)
+	}
+	accepted := start(parent.ID, "lead-parent")
+	seen := map[string]api.EngineInput{}
+	deadline := time.NewTimer(5 * time.Second)
+	defer deadline.Stop()
+	for len(seen) < 3 {
+		select {
+		case in := <-observed:
+			seen[in.Intent] = in
+		case err := <-engineErrors:
+			t.Fatal(err)
+		case <-deadline.C:
+			t.Fatalf("only %d children reached the actual shared engine", len(seen))
+		}
+	}
+	wait(accepted.RunID, "waiting_children")
+	threads := map[string]bool{}
+	for name, in := range seen {
+		if in.Lineage.RootRunID != accepted.RunID || in.Lineage.ParentRunID == "" || in.Lineage.WorkThreadID == "" || threads[in.Lineage.WorkThreadID] {
+			t.Fatalf("invalid independent lineage %s %#v", name, in.Lineage)
+		}
+		threads[in.Lineage.WorkThreadID] = true
+		if strings.HasPrefix(name, "lead-temp") && (in.Config.Kind != "temporary" || in.Config.SponsorAgentID != parent.ID || in.Agent.ID == parent.ID || in.Agent.ID == worker.ID) {
+			t.Fatalf("temporary identity/Sponsor %s %#v", name, in.Config)
+		}
+	}
+	if seen["lead-temp-2"].Lineage.ParentRunID != seen["lead-temp-1"].RunID {
+		t.Fatal("nested temporary is not a child of its actual temporary parent")
+	}
+	page, e := core.API.Collaboration.ListTasks(ctx, user, api.DelegationQuery{PageQuery: api.PageQuery{ProfileID: p.ProfileID, Limit: 100}, RunID: accepted.RunID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if len(page.Items) != 3 {
+		t.Fatalf("duplicate intent/notify changed child count: %#v", page)
+	}
+	var canceledTask api.Delegation
+	for _, task := range page.Items {
+		if task.ChildRunID == seen["lead-child-existing"].RunID {
+			canceledTask = task
+		}
+	}
+	if canceledTask.ID == "" {
+		t.Fatal("actual existing child was absent from public task page")
+	}
+	foreignSource := api.SourceSnapshot{ResourceID: "source:outside-task", Kind: "note", WorkspaceID: "workspace:outside", OriginClientID: "client:outside", OriginViewID: "view:outside", HostConnectionID: "host:outside", HostLeaseID: "lease:outside", HostLeaseEpoch: "1", Revision: "1", Hash: "sha256:" + strings.Repeat("0", 64), ScopeResourceIDs: []string{}}
+	if _, e = core.API.Messages.Reply(ctx, user, api.ReplyCommand{CommandMeta: meta(canceledTask.Revision), DelegationID: canceledTask.ID, Text: "must not lose supplied provenance", SourceRefs: []api.SourceSnapshot{foreignSource}}); e == nil {
+		t.Fatal("user reply silently accepted a source outside the task")
+	} else {
+		var fault *api.Fault
+		if !errors.As(e, &fault) || fault.Kind != "CAPABILITY_DENIED" || fault.Reason != "PARENT_SCOPE_EXCEEDED" {
+			t.Fatalf("out-of-scope reply failed for an unrelated reason: %v", e)
+		}
+	}
+	supplementCommand := api.ReplyCommand{CommandMeta: meta(canceledTask.Revision), DelegationID: canceledTask.ID, Text: "user supplement while parent waits", SourceRefs: []api.SourceSnapshot{}}
+	supplement, e := core.API.Messages.Reply(ctx, user, supplementCommand)
+	if e != nil || supplement.DelegationID != canceledTask.ID || supplement.Status != "delivered" {
+		t.Fatalf("user could not supplement the active child while its parent waits: %#v %v", supplement, e)
+	}
+	supplementAgain, e := core.API.Messages.Reply(ctx, user, supplementCommand)
+	if e != nil || supplementAgain.ID != supplement.ID {
+		t.Fatalf("reply retry did not retain original message: %#v %v", supplementAgain, e)
+	}
+	canceledTask, e = core.API.Collaboration.GetTask(ctx, user, api.IDQuery{ProfileID: p.ProfileID, ID: canceledTask.ID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	cancelCommand := api.TaskCancel{CommandMeta: meta(canceledTask.Revision), ID: canceledTask.ID, Scope: "subtree"}
+	canceled, e := core.API.Collaboration.CancelTask(ctx, user, cancelCommand)
+	if e != nil || canceled.Status != "canceled" || canceled.Result == nil || canceled.Result.Status != "canceled" || canceled.Result.Text != "" {
+		t.Fatalf("public child cancellation omitted its durable body-free outcome: %#v %v", canceled, e)
+	}
+	canceledAgain, e := core.API.Collaboration.CancelTask(ctx, user, cancelCommand)
+	if e != nil || canceledAgain.ChildRunID != canceled.ChildRunID || canceledAgain.Revision != canceled.Revision {
+		t.Fatalf("duplicate cancel changed the original task: %#v %v", canceledAgain, e)
+	}
+	release.Do(func() { close(gate) })
+	finished := wait(accepted.RunID, "succeeded")
+	if finished.Reason != "CHILD_PARTIAL_FAILURE" {
+		t.Fatalf("parent hid canceled sibling: %#v", finished)
+	}
+	publicHistory, e := core.API.Conversation.History(ctx, user, api.HistoryQuery{PageQuery: api.PageQuery{ProfileID: p.ProfileID, Limit: 100}, SessionID: finished.SessionID})
+	if e != nil {
+		t.Fatal(e)
+	}
+	foundPartial := false
+	for _, message := range publicHistory.Items {
+		if message.Role == "assistant" && strings.Contains(message.Text, "parent local result") {
+			foundPartial = message.Partial
+		}
+	}
+	if !foundPartial {
+		t.Fatalf("public parent message lost partial-result marker: %#v", publicHistory)
+	}
+	encodedRun, e := json.Marshal(finished)
+	if e != nil {
+		t.Fatal(e)
+	}
+	var runProjection struct {
+		Limits *api.ExecutionLimits `json:"limits"`
+	}
+	if e = json.Unmarshal(encodedRun, &runProjection); e != nil || runProjection.Limits == nil || *runProjection.Limits != wantLimits {
+		t.Fatalf("public durable root limits %#v %v", runProjection, e)
+	}
+	if rootModelCalls.Load() != 1 || callbacks.Load() != 6 {
+		t.Fatalf("extra model work: root=%d actual callbacks=%d", rootModelCalls.Load(), callbacks.Load())
+	}
+	after, e := core.API.Assistant.List(ctx, user, api.PageQuery{ProfileID: p.ProfileID, Limit: 100})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if len(before.Items) != len(after.Items) {
+		t.Fatal("temporary execution created a persistent directory Bot")
+	}
+	for _, task := range page.Items {
+		current, e := core.API.Collaboration.GetTask(ctx, user, api.IDQuery{ProfileID: p.ProfileID, ID: task.ID})
+		if e != nil {
+			t.Fatal(e)
+		}
+		wantStatus := "succeeded"
+		if task.ID == canceledTask.ID {
+			wantStatus = "canceled"
+		}
+		if current.Status != wantStatus || current.Result == nil || current.Result.Status != wantStatus {
+			t.Fatalf("durable child result %#v", current)
+		}
+	}
+	db, e := sql.Open("sqlite3", filepath.Join(locator, "profile.sqlite3"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer db.Close()
+	var count, charged, unknown, inflight int
+	if e = db.QueryRow("SELECT count(*),sum(charged_tokens),sum(CASE WHEN knowledge='unknown' THEN 1 ELSE 0 END),sum(CASE WHEN state<>'settled' OR producer_ended<>1 THEN 1 ELSE 0 END) FROM model_attempts WHERE root_run_id=?", accepted.RunID).Scan(&count, &charged, &unknown, &inflight); e != nil {
+		t.Fatal(e)
+	}
+	var validReplies, invalidReplies int
+	if e = db.QueryRow("SELECT sum(CASE WHEN text=? THEN 1 ELSE 0 END),sum(CASE WHEN text=? THEN 1 ELSE 0 END) FROM collaboration_messages WHERE root_run_id=?", "user supplement while parent waits", "must not lose supplied provenance", accepted.RunID).Scan(&validReplies, &invalidReplies); e != nil || validReplies != 1 || invalidReplies != 0 {
+		t.Fatalf("public reply persistence valid=%d invalid=%d err=%v", validReplies, invalidReplies, e)
+	}
+	if count != 5 || charged != 35 || unknown != 1 || inflight != 0 {
+		t.Fatalf("actual root ledger count=%d charged=%d unknown=%d inflight=%d", count, charged, unknown, inflight)
+	}
+	publicAccount, e := core.API.Collaboration.Budget(ctx, user, api.BudgetQuery{ProfileID: p.ProfileID, RunID: accepted.RunID})
+	if e != nil || publicAccount.RootRunID != accepted.RunID || publicAccount.AccountID != "root:"+accepted.RunID || publicAccount.RootTokenLimit != "1000" || publicAccount.ReservedTokens != "0" || publicAccount.ChargedTokens != "35" || publicAccount.Knowledge != "unknown" || publicAccount.Limits != wantLimits {
+		t.Fatalf("public owned-root budget differs from persisted actual attempts: %#v %v", publicAccount, e)
+	}
+	t.Logf("public persistent budget configuration/CAS and effective 3/32/4/8/8; shared Executor: 3 independent children including temporary->temporary; 1 root engine invocation; 5 actual root attempts; unknown charged 15; waiting parent accepts one idempotent user supplement and rejects out-of-scope refs without persistence; canceled sibling preserves body-free outcome and partial parent result; persistent Bots unchanged")
+}

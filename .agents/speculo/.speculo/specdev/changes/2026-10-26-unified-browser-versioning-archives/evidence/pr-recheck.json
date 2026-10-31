@@ -1,0 +1,24 @@
+[
+  {
+    "number": 4,
+    "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "head_sha": "b9f389101a178eaba99566ec805a2b44d5e2e01e",
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "head_unchanged": true,
+    "body_unchanged": true,
+    "rechecked_at": "2026-10-26T08:29:32.635Z"
+  },
+  {
+    "number": 5,
+    "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "head_sha": "206abb5182e55bdce820895c2e71eaafdc97b4e0",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head_unchanged": true,
+    "body_unchanged": true,
+    "rechecked_at": "2026-10-26T08:29:32.678Z"
+  }
+]

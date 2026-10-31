@@ -1,0 +1,21 @@
+{
+  "observer": "native:/root",
+  "status": "accepted-author-candidate",
+  "reportSHA256": "873778144bb3e105b76f5e6a9128f582bb63f8dbe1c05a8c4a619fe7ea4cdc91",
+  "manifestSHA256": "4e3c0b502e952312185471ee2a328bfdcddb5bbb027a24933f44d85b0332851c",
+  "sourceFiles": 18,
+  "artifacts": 8,
+  "drift": [],
+  "deltaFromPrior128": [
+    "native/huhubot/tests/contract/access/memory_facts_test.go",
+    "native/huhubot/tests/contract/collaboration-policy/memory_consumption_test.go"
+  ],
+  "productionChangedIn138": false,
+  "rootReturn": {
+    "exitCode": 0,
+    "seconds": 0.0723275959971943,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n"
+  },
+  "boundary": "Two bounded consumer tests already accepted; full T14 checks and 141 physical delivery remain pending"
+}

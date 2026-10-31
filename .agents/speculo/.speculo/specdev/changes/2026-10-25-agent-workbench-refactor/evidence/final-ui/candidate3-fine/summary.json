@@ -1,0 +1,263 @@
+{
+  "started": "2026-10-29T04:12:56.754Z",
+  "finished": "2026-10-29T04:13:20.829Z",
+  "exit": 0,
+  "checks": [
+    {
+      "name": "actual production terminal hosts and independent background session exist",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 1440 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 1440 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 1200 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 1200 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 800 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 800 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 390 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 390 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 480 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 480 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 599 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 599 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 600 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 600 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 959 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 959 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 960 keeps layout and close targets",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "viewport 960 toolbar, pane, tab-strip and quick-command targets meet the size rule without leaving the strip",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "responsive projection never mutates persistent direction ratios or pane identities",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "wide control outer box stays 312 pixels",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow native Tab focus stays in the production Dialog",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "Dialog Escape returns to the actual toolbar trigger",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow history is tested with a fine pointer",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "history shows bounded-body coverage instead of claiming complete latest turns",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow-history uses 44 pixel nonoverlapping layout targets and fine-pointer hit areas",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow-history-filter uses 44 pixel nonoverlapping layout targets and fine-pointer hit areas",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow-history-row-menu uses 44 pixel nonoverlapping layout targets and fine-pointer hit areas",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "history uses the production common cancel dictionary",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "history continuation defaults to cancel inside the production confirmation",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "narrow-history-confirm uses 44 pixel nonoverlapping layout targets and fine-pointer hit areas",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "history native Tab stays in the narrow production Dialog",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "history Escape returns to its toolbar trigger",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "external original-owner ratio updates the production panel",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "real pointer pane resize writes the same owner tree",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "real pointer group resize writes original group sizes",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "real tab drag is read back from the original groups",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "closing the last pane detaches while the original runtime remains running",
+      "ok": true,
+      "actual": {
+        "runtime": "terminal-e1a48906-961e-4671-bac8-89b25c606e67",
+        "running": true,
+        "view": "detached"
+      }
+    },
+    {
+      "name": "reduced motion is an actual browser media match",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state empty retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state noSpace retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state loading retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state error retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state disconnected retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state stopped retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "state restored retains a usable viewport without unhandled errors",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "restored layout does not start an old runtime",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "real browser zoom is 200 percent with reflow",
+      "ok": true,
+      "actual": true
+    },
+    {
+      "name": "200 percent production controls reflow without outer overflow",
+      "ok": true,
+      "actual": true
+    }
+  ],
+  "drift": [],
+  "prepareOnly": false,
+  "cleanup": {
+    "browsersClosed": true,
+    "serverClosed": true,
+    "errors": []
+  }
+}

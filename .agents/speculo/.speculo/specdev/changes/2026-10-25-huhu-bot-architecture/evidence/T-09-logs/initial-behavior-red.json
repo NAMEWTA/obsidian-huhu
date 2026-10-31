@@ -1,0 +1,42 @@
+{
+  "observer": "native:/root",
+  "fullTestAndLogRead": true,
+  "result": {
+    "command": [
+      "go",
+      "test",
+      "./tests/contract/engine/responses",
+      "-run",
+      "^TestDefaultResponsesPersistsTextAndSettledUsage$",
+      "-count=1",
+      "-timeout=45s",
+      "-json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "CGO_ENABLED": "0",
+      "GOFLAGS": "-mod=readonly"
+    },
+    "startedAt": "2026-10-26T03:40:38.323956+00:00",
+    "finishedAt": "2026-10-26T03:40:39.132910+00:00",
+    "elapsedSeconds": 0.8089582360116765,
+    "exitCode": 1,
+    "waitCompleted": true,
+    "inputSHA256": "146def64f574ebad7c28d53245ba0ce622b02ffc52cf5d0ba4d55fdb205c4732",
+    "frozenFileCount": 319,
+    "changedInputs": [],
+    "addedInputs": [],
+    "stdout": "initial-red.stdout.jsonl",
+    "stderr": "initial-red.stderr.log",
+    "behaviorRedObserved": true
+  },
+  "inputFilesChecked": 319,
+  "currentOldInputDrift": [],
+  "resultSha256": "4e034ca27172b157fc4d925b32cd7b412f73d529087a1e78756f015e0f6f72b2",
+  "stdoutSha256": "a2068ae561d47a5f2ab174ffc2dfc7858884b9006b4b3ffce3cc01fb50dd2b8e",
+  "classification": "Expected actual behavior gap: existing default Core initializes and compiles; accepted Run fails ADAPTER_NOT_ASSEMBLED with HTTP0, not a compiler failure. New behavior still pending.",
+  "window": "109 released after real Wait; 107 now solely captures old Chat CP before production edits."
+}

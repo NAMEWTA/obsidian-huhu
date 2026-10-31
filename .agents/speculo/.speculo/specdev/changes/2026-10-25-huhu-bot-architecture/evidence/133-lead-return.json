@@ -1,0 +1,53 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T13:45:39.602173+00:00",
+  "task": "133-memory-component-review",
+  "reviewer": "native:/root/recovery_review",
+  "nativeReturn": "MESSAGE+FINAL,all processesWaited,all source/report stopped",
+  "inputSha256": "6619727eaa9258e3fd26820b22c9dc82fed23b9cc59d4748f2979022276b0c2d",
+  "fullReportReadChunk": "bed5d9",
+  "reportSha256": "875f1e58db2e2e0ad14e044db3f21361eecf35b7b0c7e91609060d91a8381179",
+  "manifestSha256": "8e28e8782105cb5dee2f1deb66abc71f8f52cb6b91ea952361282dea49766b9b",
+  "artifacts": 47,
+  "reviewFiles": 1719,
+  "drift": [],
+  "standards": "request-changes",
+  "specification": "request-changes",
+  "findings": [
+    {
+      "id": "F-133-01",
+      "severity": "P2",
+      "disposition": "accepted; pure typed output encoding-before validation consistency, not proven normal-user source authorization bypass",
+      "owner": "foundation_go;TS hostLeaseEpoch subcase foundation_client"
+    },
+    {
+      "id": "F-133-02",
+      "severity": "P2",
+      "disposition": "accepted; remove extra percontextentry240KiB bound, keep wholecontext256KiB and actual object/page limits",
+      "owner": "foundation_client"
+    }
+  ],
+  "checks": [
+    {
+      "path": "sessions/20261025T043239Z/133-memory-component-review/logs/03-api-boundary.json",
+      "actualExit": 1,
+      "waitSeconds": 0.36780562800049665
+    },
+    {
+      "path": "sessions/20261025T043239Z/133-memory-component-review/logs/05-hap-boundary.json",
+      "actualExit": 1,
+      "waitSeconds": 0.7496930109991808
+    },
+    {
+      "path": "sessions/20261025T043239Z/133-memory-component-review/logs/10-ts-budget-controls.json",
+      "actualExit": 126,
+      "waitSeconds": 3.8094826670021575
+    }
+  ],
+  "rootReturnValidation": {
+    "actualExit": 0,
+    "chunk": "5524fd"
+  },
+  "next": "new original-owner135/136 precise repair packets after128 soleGo narrowtest window ends; no change to133 old outcome",
+  "boundary": "component review only;T14 integration and fullGoal remain active"
+}

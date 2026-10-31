@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-26-highlight-first",
+  "status": "active",
+  "round": 2,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "首版范围",
+      "question": "完整 Spec 和原型以 P0 首个可交付版本为准，还是纳入 P1 摘录库管理？",
+      "depends_on": [],
+      "recommendation": "推荐 P0 为验收合同，P1 保留明确后续边界；现有筛选/排序能力不回退。",
+      "status": "answered",
+      "round": 1,
+      "answer": "P0 与 P1 一起纳入本次完整 Spec/UI，不将 P1 延后；P2 仍按来源不在本次 Markdown 升级范围。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-002",
+      "title": "阅读模式创建",
+      "question": "首版是否允许在阅读模式划词直接新建高亮？",
+      "depends_on": [],
+      "recommendation": "推荐允许：源码/实时预览/阅读模式一致的四色入口；阅读 DOM 无法唯一映射时拒绝本次创建并说明。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不新增阅读模式划词创建；已有阅读模式批注查看与管理保留兼容，不以本次升级扩展阅读能力。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-003",
+      "title": "重复与重叠高亮",
+      "question": "同一范围再次划词及不同范围相交时怎样处理？",
+      "depends_on": [],
+      "recommendation": "推荐同范围复用原卡并换色；相交/嵌套保留独立卡，当前卡优先显示底色，否则最近创建优先，并以数量入口切换全部关联卡。",
+      "status": "answered",
+      "round": 1,
+      "answer": "采用推荐：同范围复用并换色；交叠/嵌套独立卡，当前卡优先主色，否则最近创建优先；提供重叠数量切换。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-004",
+      "title": "原生高亮互操作",
+      "question": "P1 的原生 ==文字== / mark 互操作是否只做可选识别，还是包含显式纳入 HUHU 卡片？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "推荐默认关闭可选识别；开启后可预览原生高亮并手动纳入 HUHU，保留原文、不重复计数，原生原文删除/修改后只更新锚点有效性，不双向写回语法。",
+      "status": "open",
+      "round": 2,
+      "answer": null,
+      "log_ref": null
+    },
+    {
+      "id": "D-005",
+      "title": "完整管理与数据升级共识",
+      "question": "是否接受 MODEL-DESIGN.md 的唯一推荐：笔记与讨论分开；添加笔记取消保留已建高亮；归档仅管理卡片；带校验备份和日志恢复的 v3 升级；单一侧栏承载全库管理？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "推荐接受上述合同；旧消息/作者/ID 保留，v2 未记录的解决状态不臆造；删除需确认，失败保持可恢复且不误报成功。",
+      "status": "open",
+      "round": 2,
+      "answer": null,
+      "log_ref": null
+    }
+  ]
+}

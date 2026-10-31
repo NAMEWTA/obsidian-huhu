@@ -1,0 +1,29 @@
+{
+  "utc": "2026-10-26T15:39:13.286892+00:00",
+  "reason": "Explicit anchor missing in completion evidence; no product change",
+  "before": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+    "sha256": "9da518032be395df05cba0d506c1e048188abdc05cd48fa5c5e010801a342bd0",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/9da518032be395df05cba0d506c1e048188abdc05cd48fa5c5e010801a342bd0.raw"
+  },
+  "after": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+    "sha256": "11ae1ccded80722ce6c882452f89b711947ffc03d98ebdf9955eb7e120d78300",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/11ae1ccded80722ce6c882452f89b711947ffc03d98ebdf9955eb7e120d78300.raw"
+  },
+  "failed_command": {
+    "path": "/tmp/huhu-t08-root-r5-implement.json",
+    "sha256": "1440db4dfc72a47ee37ec9a35e177d3cf3da44c14ac0e5aa7e973a393024ca02",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/1440db4dfc72a47ee37ec9a35e177d3cf3da44c14ac0e5aa7e973a393024ca02.raw"
+  },
+  "failed_log": {
+    "path": "/tmp/huhu-t08-root-r5-implement.log",
+    "sha256": "e4867d8f9c3edbdf4851e8dec0c0c44dbae1db757396c1fae78eadef0baef8b4",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/e4867d8f9c3edbdf4851e8dec0c0c44dbae1db757396c1fae78eadef0baef8b4.raw"
+  },
+  "frozen_inputs": {
+    "path": "/tmp/huhu-t08-root-r5-completion-inputs.json",
+    "sha256": "6e4afea8afda1b2f8c770045aa928ec310ca40c336a716a4e13382572ba57fc1",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/r5-completion/6e4afea8afda1b2f8c770045aa928ec310ca40c336a716a4e13382572ba57fc1.raw"
+  }
+}

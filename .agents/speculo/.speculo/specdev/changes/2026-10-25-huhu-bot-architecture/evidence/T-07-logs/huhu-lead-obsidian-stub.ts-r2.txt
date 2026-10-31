@@ -1,0 +1,10 @@
+// Runtime markers and path normalization only. Actual Vault operations are
+// controlled by the Lead's in-memory host; this is not an Obsidian acceptance.
+export class TFile {}
+export class TFolder {}
+export class MarkdownView {}
+export class FileSystemAdapter {}
+export const Platform = { isDesktopApp: false, isMobileApp: false };
+export function normalizePath(path: string): string {
+	return path.replace(/\\/g, '/').replace(/\/+/g, '/').replace(/^\/+|\/+$/g, '');
+}

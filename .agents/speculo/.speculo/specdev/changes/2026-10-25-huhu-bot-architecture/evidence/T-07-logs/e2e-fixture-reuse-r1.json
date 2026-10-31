@@ -1,0 +1,17 @@
+{
+  "verified": true,
+  "verifiedBy": "native:/root",
+  "path": "src/modules/huhubot/core/protocol/connection.test.ts",
+  "before": "076061553362706c5e95c8d84746cd2bfba9fb49562c173c560685987a27bd41",
+  "after": "ff589efd4ef674fa748f358a1d94544e75c7690ef4b40654b4d238b3dd3a17aa",
+  "reportSha256": "60cc406e7531db6bbe8e695a24b191405f0cf44654d57be4ea1988f325708964",
+  "report": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/061-ts-limit-fixture/REPORT.md",
+  "sourceResult": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-note-e2e-r2.json",
+  "sourceResultSha256": "7958ea9a6af46bfa612b324601cf3be66390d1c80296c317bd9cac27dbb65aa2",
+  "filesCompared": 2024,
+  "changesSinceE2E": [
+    "src/modules/huhubot/core/protocol/connection.test.ts"
+  ],
+  "productionChanges": [],
+  "reason": "Exact one-line test fixture update only; all real runtime, contracts, integration probes and their inputs are byte-identical. Reuse actual earlier E2E commands without claiming they reran after the test-only edit."
+}

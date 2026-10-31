@@ -1,0 +1,33 @@
+{
+  "observer": "native:/root",
+  "task": "110-model-probe-expectation",
+  "nativeMessageAndFinalReceived": true,
+  "reportReadInFull": true,
+  "rawTargetLogRead": true,
+  "reportSHA256": "5ea26f3893dbd3f41456e37f930bc45fab04eb8fa29b5ab829e669f40cb80780",
+  "handoffSHA256": "82d8d4aa10fc5bbf36731f7b2237b00fef6c0408358aebe3fccc7cd169b5cb76",
+  "artifactsVerified": 14,
+  "ownedFilesVerified": 1,
+  "currentHashDrift": [],
+  "singleAssertionChangeVerified": true,
+  "rootReturnValidation": {
+    "exitCode": 0,
+    "errors": [],
+    "warnings": [],
+    "actualWait": true,
+    "toolChunk": "6977a5"
+  },
+  "productCheck": {
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 1.283851877989946,
+    "sourceCount": 312,
+    "sourceTreeSHA256": "844506d2738775c8214b4c0ab8db3af915a9152ccc594f02019592cd0c94076d",
+    "sourceDrift": []
+  },
+  "acceptedScope": "过期模型探测错误预期维护；正式T02/T09共同门保持pending，等待最终独立审查",
+  "productionFilesWritten": [],
+  "ownFiles": {
+    "native/huhubot/tests/contract/assistant/model_test.go": "e06c1fe8ca597cd0ef2f04d3727054247d0f15d871bbaa58d8622b6bde92b6b4"
+  }
+}

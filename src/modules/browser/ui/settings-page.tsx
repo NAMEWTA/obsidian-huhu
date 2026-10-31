@@ -1,5 +1,4 @@
-import type { BrowserEngine } from '../services/host';
-/** The settings route loads its React implementation on demand. */
-export async function browserSettingsPage(host: BrowserEngine) {
- return (await import('./settings/BrowserSettings')).browserSettingsPage(host);
+import type { BrowserWorkspace } from '../api';
+export async function browserSettingsPage(api: BrowserWorkspace, openWorkspace: () => Promise<void>) {
+	return (await import('./settings/BrowserSettings')).browserSettingsPage(api, openWorkspace);
 }

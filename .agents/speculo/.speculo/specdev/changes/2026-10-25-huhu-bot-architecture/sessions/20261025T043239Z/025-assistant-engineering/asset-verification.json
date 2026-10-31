@@ -1,0 +1,81 @@
+{
+  "command": "verifyBotAssets(native/huhubot/dist, manifest.version, current sourceTreeHash/sourceRevision)",
+  "exit_code": 0,
+  "metadata": [
+    {
+      "formatVersion": 1,
+      "asset": "huhu-bot-linux-x64",
+      "platform": "linux",
+      "arch": "x64",
+      "goos": "linux",
+      "goarch": "amd64",
+      "version": "0.0.1",
+      "toolchain": "go1.26.10",
+      "protocolVersion": "0.1",
+      "schemaVersion": 1,
+      "sha256": "d4510b02adacfe69d3ec534c1a596ba35696ae813147a34321a9b03a0754216e",
+      "sourceRevision": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+      "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d"
+    },
+    {
+      "formatVersion": 1,
+      "asset": "huhu-bot-linux-arm64",
+      "platform": "linux",
+      "arch": "arm64",
+      "goos": "linux",
+      "goarch": "arm64",
+      "version": "0.0.1",
+      "toolchain": "go1.26.10",
+      "protocolVersion": "0.1",
+      "schemaVersion": 1,
+      "sha256": "b90affeec6abaf2d14c3f0bdd29f697cddcad6f22778cd302824a21c36b2ea6e",
+      "sourceRevision": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+      "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d"
+    },
+    {
+      "formatVersion": 1,
+      "asset": "huhu-bot-darwin-x64",
+      "platform": "darwin",
+      "arch": "x64",
+      "goos": "darwin",
+      "goarch": "amd64",
+      "version": "0.0.1",
+      "toolchain": "go1.26.10",
+      "protocolVersion": "0.1",
+      "schemaVersion": 1,
+      "sha256": "2bd702f3a6018595f70235ea5ddb0075529ed38e75b233ab601f3b0ab10944fc",
+      "sourceRevision": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+      "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d"
+    },
+    {
+      "formatVersion": 1,
+      "asset": "huhu-bot-darwin-arm64",
+      "platform": "darwin",
+      "arch": "arm64",
+      "goos": "darwin",
+      "goarch": "arm64",
+      "version": "0.0.1",
+      "toolchain": "go1.26.10",
+      "protocolVersion": "0.1",
+      "schemaVersion": 1,
+      "sha256": "508e32d61b2ac17bece6250ac198887e625295b24c149c25c3f6bb618efbc692",
+      "sourceRevision": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+      "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d"
+    },
+    {
+      "formatVersion": 1,
+      "asset": "huhu-bot-win32-x64.exe",
+      "platform": "win32",
+      "arch": "x64",
+      "goos": "windows",
+      "goarch": "amd64",
+      "version": "0.0.1",
+      "toolchain": "go1.26.10",
+      "protocolVersion": "0.1",
+      "schemaVersion": 1,
+      "sha256": "8e702107f64814268dfeb2f5643b213f8ad78822fe8d25e76185f48a016ca0a7",
+      "sourceRevision": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+      "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d"
+    }
+  ]
+}

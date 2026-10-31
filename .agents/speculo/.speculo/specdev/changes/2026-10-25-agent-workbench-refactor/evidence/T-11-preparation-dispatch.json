@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-26T14:23:49.289548+00:00",
+  "task": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/024-t11-history-preparation/TASK.md",
+    "sha256": "6b706ce58c0be6311e30bdf5b407a45d5116c86792f4b34d7600c075aba0d28b",
+    "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-11-preparation-logs/6b706ce58c0be6311e30bdf5b407a45d5116c86792f4b34d7600c075aba0d28b.raw"
+  },
+  "dispatch_validation": {
+    "actual_tool": "exec_command",
+    "chunk_id": "884a36",
+    "exit_code": 0,
+    "errors": [],
+    "warnings": [],
+    "argv": [
+      "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--stage",
+      "dispatch",
+      "--repo",
+      ".",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor",
+      "--session",
+      "20261026T045732Z",
+      "--task",
+      "024-t11-history-preparation"
+    ]
+  },
+  "actual_dispatch": {
+    "tool": "collaboration.followup_task",
+    "target": "/root/prepare_t08_full_cli",
+    "result": "successful empty result",
+    "configuration": "retained original gpt-6.1-sol/xhigh"
+  },
+  "scope": "readonly preparation; only024 REPORT and new tmp evidence writable; no T11 implementation"
+}

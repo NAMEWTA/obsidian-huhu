@@ -82,12 +82,22 @@ export function openPage(
 	if (existing) {
 		const resourced = request.page === 'usage' && request.resourceId !== undefined;
 		const next: PageTabData = { ...existing, ...(resourced ? { resourceId: request.resourceId } : {}) };
-		const base = JSON.stringify(next) === JSON.stringify(existing) ? state : { ...state, tabs: { ...state.tabs, [existing.id]: next } };
+		const base =
+			JSON.stringify(next) === JSON.stringify(existing)
+				? state
+				: { ...state, tabs: { ...state.tabs, [existing.id]: next } };
 		return { state: activateTab(base, existing.id), tabId: existing.id };
 	}
 	const id = pageTabId(request.page);
 	if (state.tabs[id]) return undefined;
-	const tab: PageTabData = { kind: 'page', id, page: request.page, title: '', resourceId: request.resourceId, createdAt: request.createdAt };
+	const tab: PageTabData = {
+		kind: 'page',
+		id,
+		page: request.page,
+		title: '',
+		resourceId: request.resourceId,
+		createdAt: request.createdAt,
+	};
 	return { state: openTab(state, groupId, tab), tabId: id };
 }
 function prune(node: GroupLayoutNode | undefined, ids: Set<string>): GroupLayoutNode | undefined {
@@ -242,6 +252,10 @@ function resumeInfo(value: unknown): ResumeInfo {
 	const v = record(value);
 	return {
 		cwd: text(v.cwd),
+		// Preserve explicit invalid identity as invalid; it must never turn into a legacy alias.
+		...(v.paneId === undefined ? {} : { paneId: typeof v.paneId === 'string' ? v.paneId : '' }),
+		spaceId: text(v.spaceId) || undefined,
+		persistentSessionId: text(v.persistentSessionId) || undefined,
 		customTitle: text(v.customTitle).slice(0, 200) || undefined,
 		nativeSessionId: text(v.nativeSessionId) || undefined,
 		transcriptPath: text(v.transcriptPath) || undefined,
@@ -286,16 +300,24 @@ export function normalizeWorkspace(raw: unknown): WorkspaceState {
 			continue;
 		}
 		if (tab.kind === 'browser') {
+			const spaceId = text(tab.spaceId),
+				pageId = text(tab.pageId);
+			if (spaceId && pageId && spaceId.length <= 180 && pageId.length <= 180) {
+				state.tabs[id] = { ...base, kind: 'browser', spaceId, pageId };
+				continue;
+			}
+			// A pre-Space workbench tab keeps the address on the row. A bare page id is not an address.
+			const url = text(tab.url);
+			if (!pageId || pageId.length > 180 || (!url && !text(tab.profileId) && typeof tab.zoom !== 'number')) continue;
+			const favicon = text(tab.faviconUrl);
 			state.tabs[id] = {
 				...base,
 				kind: 'browser',
-				pageId: text(tab.pageId),
-				url: text(tab.url),
+				pageId,
+				url,
 				profileId: text(tab.profileId) || 'default',
-				zoom:
-					typeof tab.zoom === 'number' && Number.isFinite(tab.zoom)
-						? Math.min(3, Math.max(0.25, tab.zoom))
-						: 1,
+				zoom: typeof tab.zoom === 'number' && Number.isFinite(tab.zoom) ? Math.min(3, Math.max(0.25, tab.zoom)) : 1,
+				...(favicon ? { faviconUrl: favicon } : {}),
 			};
 			continue;
 		}

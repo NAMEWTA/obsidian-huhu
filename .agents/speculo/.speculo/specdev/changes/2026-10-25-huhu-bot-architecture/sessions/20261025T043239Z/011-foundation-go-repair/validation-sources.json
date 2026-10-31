@@ -1,0 +1,21 @@
+{
+  "jsonschema": {
+    "version": "v6.0.3",
+    "release_time_go_proxy": "2026-06-28T17:38:00Z",
+    "commit": "b0fc661f4939578bc429f408c18202573dbafcc4",
+    "source": "https://github.com/santhosh-tekuri/jsonschema/tree/b0fc661f4939578bc429f408c18202573dbafcc4",
+    "license": "Apache-2.0",
+    "license_sha256": "c8858a5a76440bbca484e134cf7df46385d090dd18b2c58e650f939258802e5b",
+    "go_sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+    "runtime_transitive_added": "golang.org/x/text v0.42.0 (BSD-3-Clause)",
+    "upstream_test_only": "github.com/dlclark/regexp2 v1.11.0; excluded from actual runtime-deps.jsonl"
+  },
+  "sqlite_primary": "https://www.sqlite.org/howtocorrupt.html",
+  "schema_api_docs": "https://pkg.go.dev/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+  "assertions": [
+    "DefaultDraft2020",
+    "AssertFormat",
+    "embedded resource only; no external loader",
+    "schema copy byte-for-byte checked against public contract"
+  ]
+}

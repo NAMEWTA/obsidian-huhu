@@ -1,0 +1,14 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:01:25.888926+00:00",
+  "task": "113-docs-link-semantics",
+  "taskSha256": "b19019746ac99aa1741fb111705fffc420cdb5c497749558399bf0f298309385",
+  "rootDispatchToolChunk": "842ec1",
+  "exitCode": 0,
+  "errors": [],
+  "warnings": [],
+  "nativeFollowupAndACKReceived": true,
+  "owner": "native:/root/build_integration",
+  "goWindowGranted": false,
+  "scope": "原T27已登记四checker/policy路径；106/110冻结材料保持，Root只修T06两个历史锚点。"
+}

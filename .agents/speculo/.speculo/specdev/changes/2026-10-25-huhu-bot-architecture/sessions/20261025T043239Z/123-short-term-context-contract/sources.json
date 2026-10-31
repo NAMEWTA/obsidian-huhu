@@ -1,0 +1,293 @@
+{
+  "capturedAt": "2026-10-26T09:08:43.104451+00:00",
+  "files": [
+    {
+      "id": "S01",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "readScope": "99-136,238-242",
+      "role": "产品短期/授权/AC-018权威"
+    },
+    {
+      "id": "S02",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "readScope": "429-449",
+      "role": "ADR-024隔离/摘要不等于事实"
+    },
+    {
+      "id": "S03",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/DESIGN.md",
+      "sha256": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+      "readScope": "32-40,130-134",
+      "role": "BOT-MEMORY实际本轮读取消费者"
+    },
+    {
+      "id": "S04",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md",
+      "sha256": "02714047454cffcb461cf4daa07623818e19ce71cb4e65e4ab894849a6fca6d6",
+      "readScope": "行为/有序步骤/验收/验证/ownership",
+      "role": "上下文构建压缩正式义务"
+    },
+    {
+      "id": "S05",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/interface-contract.md",
+      "sha256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+      "readScope": "1-420",
+      "role": "已接纳长期路线；只补Prepare和context只读增量"
+    },
+    {
+      "id": "S06",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/099-memory-preparation/interfaces-and-owners.md",
+      "sha256": "b25967d834947752fba88022a3b1a98bb8047edf0a91cbac6c08a5e9172224ca",
+      "readScope": "1-36,39-69",
+      "role": "短期优先选择/工作摘要，旧建议以115为准"
+    },
+    {
+      "id": "S07",
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "sha256": "e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a",
+      "readScope": "full",
+      "role": "EngineInput/History/Run/UI纯类型边界"
+    },
+    {
+      "id": "S08",
+      "path": "native/huhubot/internal/application/api/collaboration.go",
+      "sha256": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e",
+      "readScope": "18-45,129-158",
+      "role": "稳定Derived/namespace/AgentMessage"
+    },
+    {
+      "id": "S09",
+      "path": "native/huhubot/internal/application/api/delegation_input.go",
+      "sha256": "c8ea8100fd3f93dcd79d1dedcc8c9e2265f21c570329e33cb4b50ec5e928e347",
+      "readScope": "full",
+      "role": "材料化Task和要求独立旧预算"
+    },
+    {
+      "id": "S10",
+      "path": "native/huhubot/internal/application/api/recovery.go",
+      "sha256": "a20bc1d0eb926b1b4f474a81b794c9668b5833a6cdc4d15f00688f977fd13e7f",
+      "readScope": "full",
+      "role": "pure Inspector/ExecutionPosition"
+    },
+    {
+      "id": "S11",
+      "path": "native/huhubot/internal/application/api/access.go",
+      "sha256": "5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b",
+      "readScope": "153-167",
+      "role": "ContextAccess接口"
+    },
+    {
+      "id": "S12",
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "sha256": "8cf2e56c9269742fa83c18722a1229c9f55ae3c85a6e78a713cab0bc199beb4d",
+      "readScope": "full",
+      "role": "唯一Work/Repository"
+    },
+    {
+      "id": "S13",
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "sha256": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef",
+      "readScope": "105-285",
+      "role": "Prepare/ModelHistory/去重/同MarkRunning/Resume实际消费"
+    },
+    {
+      "id": "S14",
+      "path": "native/huhubot/internal/application/conversation/direct/service.go",
+      "sha256": "521c962a89709286e8398f288e10394f18cc99b1334e15f27e64f9ca5d477d48",
+      "readScope": "178-282",
+      "role": "当前整消息选择/目标read-send/Derived"
+    },
+    {
+      "id": "S15",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/conversation/store.go",
+      "sha256": "d49e8e245dcfa81e7a3548df4c2d141a90d761e0c7801c3d9120e297096d314d",
+      "readScope": "304-410",
+      "role": "真实history keyset/page/DB来源"
+    },
+    {
+      "id": "S16",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/groups/history.go",
+      "sha256": "482286dd7911092dfecdcefa4f010718840d610e27b671d823383f1558fce6b6",
+      "readScope": "full",
+      "role": "群none/range/current audience/attachments"
+    },
+    {
+      "id": "S17",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/groups/context.go",
+      "sha256": "5ed7630119f48004426910108e001d1bf52e58b8d6fec6d48d9fe850bd1909ba",
+      "readScope": "55-78 search",
+      "role": "成员实际scope定位"
+    },
+    {
+      "id": "S18",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/delegation.go",
+      "sha256": "d740d8d29a8e82880356d526b7ce37d1660f067ff9796afbf801b65b4b81d567",
+      "readScope": "full",
+      "role": "真实Run→accepted要求reader"
+    },
+    {
+      "id": "S19",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/messages.go",
+      "sha256": "871ebacadfbcbdad82fbdc15a4cb14d793f5759faadea0564193782bdc95548a",
+      "readScope": "full",
+      "role": "to_run_id inbox/实际来源consume/旧界限"
+    },
+    {
+      "id": "S20",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go",
+      "sha256": "4ecbc1dc8f83a9107d5d2c37d1fdeb897b5b2d30d2fcfea728ee0ec5460de623",
+      "readScope": "135,186 search",
+      "role": "真实accepted intent/原用户ID/core scanner"
+    },
+    {
+      "id": "S21",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "sha256": "93bfe1b9715e0b160b3155b76e057c825d57d21dc13595bc663cd52b57128a31",
+      "readScope": "279-405",
+      "role": "Claim actual Messages/Derived/MarkRunning UoW"
+    },
+    {
+      "id": "S22",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "sha256": "1e0bf54b3b2eef209185def12b8e5e56c7c7f84ba23063111beb7c8f8a9131d3",
+      "readScope": "24-88,120-140",
+      "role": "同Tx accepted Intent/config/position"
+    },
+    {
+      "id": "S23",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+      "sha256": "99ec6d1c48d2f8422be954f2c7f8ed8f7f70cacc22bda56db2af27e2be0730e1",
+      "readScope": "431,520 search",
+      "role": "实际context_json/结果关系定位"
+    },
+    {
+      "id": "S24",
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "sha256": "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de",
+      "readScope": "1-201,215-295",
+      "role": "Source固定身份/lease/Prep/FilterModelHistory"
+    },
+    {
+      "id": "S25",
+      "path": "native/huhubot/internal/application/tooling/broker/recovery.go",
+      "sha256": "e91e94e47fdd64df51a4175ece9c89d8deada09e3e6ae31e32ea72f66934e9b6",
+      "readScope": "1-90",
+      "role": "Broker metadata和pure Inspector透传"
+    },
+    {
+      "id": "S26",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/recovery/snapshot.go",
+      "sha256": "4343bf672ddfa00d26a9910b9ce2ed598be1d370e6560b33314c12503aac58c6",
+      "readScope": "160-200",
+      "role": "原检查/两阶段资格边界"
+    },
+    {
+      "id": "S27",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/engine.go",
+      "sha256": "b906da361ba1e543c1b1abdfc1fec567d1af1116ab01506ef8070a3bc23d4773",
+      "readScope": "17-30,75-190",
+      "role": "当前模型排序/请求上界/legacy Run-Resume"
+    },
+    {
+      "id": "S28",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go",
+      "sha256": "291168afac790301af8186be202fb13990b41acfe57e207986d2d0411d387c0a",
+      "readScope": "1-120,210-308,404 search",
+      "role": "exact Chat v1/v2/Intent绑定/Inspector"
+    },
+    {
+      "id": "S29",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "sha256": "3897535ff94f2450c166c3e2a34bfc9dad6d0ce9cc494e64462d490c832f2699",
+      "readScope": "full",
+      "role": "当前schema9/连续版本规则"
+    },
+    {
+      "id": "S30",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql",
+      "sha256": "2f06a87748f79e1405e63655a0b00364bf5391ee95ab1b7a764767ff34b5886d",
+      "readScope": "44-61 search",
+      "role": "现delegation context引用列"
+    },
+    {
+      "id": "S31",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql",
+      "sha256": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e",
+      "readScope": "1-85",
+      "role": "消息身份/预算/旧回填"
+    },
+    {
+      "id": "S32",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/TASK.md",
+      "sha256": "0d5a31b887bee74418acbc682dde1cc5bbc11f8932395a32fce0100f56d53fbb",
+      "readScope": "full",
+      "role": "本次只读授权"
+    },
+    {
+      "id": "S33",
+      "path": "AGENTS.md",
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "readScope": "user supplied current/full",
+      "role": "项目权限与完成边界"
+    },
+    {
+      "id": "S34",
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "readScope": "full",
+      "role": "能力根"
+    },
+    {
+      "id": "S35",
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "readScope": "full",
+      "role": "选择已授权I准备能力"
+    },
+    {
+      "id": "S36",
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "readScope": "full",
+      "role": "runtime/只读不授权"
+    },
+    {
+      "id": "S37",
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "readScope": "full/reused",
+      "role": "开发边界"
+    },
+    {
+      "id": "S38",
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "readScope": "full/reused",
+      "role": "只读准备/原owner/证据"
+    },
+    {
+      "id": "S39",
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/sources.json",
+      "sha256": "0944bcb0d9504643f472a34f6fe95ed84fdd2feca1fcac3bfe7f98b389e8f49c",
+      "readScope": "fingerprint/55 source byte comparison only",
+      "role": "115既有来源身份复用边界"
+    },
+    {
+      "id": "S40",
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "cfcf4316660a2ef463f93ce0400dcfca94bd57370eb8c1602fd249f7f8f0a94a",
+      "readScope": "fingerprint only, not new implementation review",
+      "role": "115唯一已知119第三driver差量"
+    }
+  ],
+  "count": 40,
+  "treeSHA256": "065d99fe176de1bde51c5b12ac52fa5d1719fbb3b3157874c3ce1be26d7e7ab8",
+  "treeAlgorithm": "sha256 compact UTF8 sorted path/SHA JSON map",
+  "scope": "Only text source/authority fingerprints; readScope is actual relevant excerpt, not full code review. No DB/Go/Node product/network execution.",
+  "accepted115ContractSHA256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+  "rootBaseline": "Map30/Goal29; Root121 final T10 code gate acknowledged during123; no new product drift from123 starting input",
+  "allNewContractsAndConsumers": "candidate/not-run",
+  "accepted115Recheck": "logs/00-115-source-recheck.json"
+}

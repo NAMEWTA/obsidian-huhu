@@ -1,0 +1,16 @@
+{
+  "inputSha256": "63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98",
+  "files": 257,
+  "sources": 65,
+  "source": "evidence/T-07.md#review-input-notes-r1",
+  "reports": {
+    "052-note-effects-go": "766ff1f9f76f2680babbbea0e7a715742f94d28382f0408d565a90674fbd024c",
+    "053-collaboration-policy": "94258ec9f317f1e56b4b8edfdaf5a3b3637a3a1c8a37dd380aef48d2bd8c3b83",
+    "054-note-effects-client": "17e14cb04a74d9b3ed1efb3e2d698941721c2f2d94caa8da8143d355e581ab70",
+    "058-host-receipt-docs-cleanup": "3f509a4f2a5c148deddc62224a182408edee962f3b6163a183f73546ba8b9bb7"
+  },
+  "leadProbe": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-note-e2e-r2.json",
+  "plugin": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-checks-r3.json",
+  "fixtureOnlyE2EReuse": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/e2e-fixture-reuse-r1.json",
+  "fixtureReportSha256": "60cc406e7531db6bbe8e695a24b191405f0cf44654d57be4ea1988f325708964"
+}

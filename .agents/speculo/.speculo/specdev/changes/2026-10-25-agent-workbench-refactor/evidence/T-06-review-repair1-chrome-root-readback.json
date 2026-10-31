@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-25T23:50:21.446423+00:00",
+  "source": "T-06-review-repair1-chrome-root-capture.json",
+  "results_sha256": "a4281324abff2b6034d85c235c3609c67749ae0faf1b4d50e1850195f3cbbf18",
+  "checks": 11,
+  "trace_events": 420,
+  "visual_files": [
+    "pane-pending.png",
+    "pane-focused-blocked.png",
+    "pane-geometry.png",
+    "pane-save-error.png",
+    "pane-narrow.png",
+    "pane-readonly-original-hint.png"
+  ],
+  "readback": [
+    "Root viewed all six current PNGs. Sidebar attention and 800px narrow entry remain readable; save failure and Retry remain explicit; readonly screen retains previous runtime and stop evidence.",
+    "Read actual check details: navigation uses exact original tuple with no new spawn/input; trusted up-arrow reaches original SID; hidden document does not acknowledge. Captured completion N does not mark N+1 seen; visible later render advances the separate seen marker.",
+    "Activity and seen leave the captured resize owner/lease intact, while actual accepted geometry follows original model. Result captures controlled native unsupported-size limitation; blank panes do not prove Provider content rendering."
+  ],
+  "no_new_style_change": true,
+  "limitations": "Local real Chrome with production components/services and controlled Obsidian/native/provider/Map TextStorage boundaries. Storage rejection is not real disk I/O. No real Obsidian, Provider, OS foreground or OS IME acceptance; blank terminal panes without Provider output do not prove terminal content correctness.",
+  "unhandled": []
+}

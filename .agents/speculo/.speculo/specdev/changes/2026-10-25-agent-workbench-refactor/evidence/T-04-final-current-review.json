@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-25T12:02:18.760Z",
+  "by": "codex:/root",
+  "options": {
+    "repoRoot": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "sourceRoot": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "requirePassed": true,
+    "expectedHead": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "expectedBase": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "requiredImplementers": [
+      "codex:/root/prepare_t03",
+      "codex:/root/prepare_t02",
+      "codex:/root/implement_t01",
+      "codex:/root"
+    ],
+    "requiredSpecifications": [
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md"
+    ],
+    "checkCurrent": true,
+    "requireDelivery": true
+  },
+  "errors": []
+}

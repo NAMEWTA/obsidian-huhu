@@ -1,0 +1,2 @@
+$ node scripts/verify-i18n.mjs
+I18N: 31 dictionaries, 4977 keys, matching placeholders and literal references.

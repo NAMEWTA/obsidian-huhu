@@ -1,0 +1,28 @@
+{
+  "state": "prepared-unexecuted",
+  "files": {
+    "huhu-lead-memory-management.ts": "900bddf08ba5e87504f2f9bf695780f461ed804c397c74c4ffaf64fff438cd11",
+    "huhu-lead-memory-management.py": "3c1f5184a338bbc6f05d4b4000a9ee4bd56fb943b7023821e86cb96639c21051",
+    "huhu-lead-memory-model.ts": "d7dd625b9a547d5a90075a833c1b97e096d604c7b3da353adf319fdd07c939ed",
+    "huhu-lead-memory-model.py": "02d3b76ba6d2bc341e311f3cf2ec5c2a78187d0ff886cadb91b2c5d8724fa502"
+  },
+  "preparationChecks": {
+    "pythonSyntax": {
+      "actualExit": 0,
+      "toolChunk": "3ceeaf"
+    },
+    "initialEsbuild": {
+      "actualExit": 0,
+      "toolChunk": "b47f63",
+      "beforeStrictTypeFixes": true
+    },
+    "modelProbeTypes": {
+      "actualExit": 0,
+      "toolChunk": "3e5a5a",
+      "evidence": "evidence/T-14-logs/lead-memory-probe-types-r2.json",
+      "laterChange": "Anthropic synthetic usage now supplies explicit zero cache counts; same untyped HTTP object shape, not executed yet"
+    }
+  },
+  "mustWait": "Joint Core/Memory/grants/usage/Engine/schema capability source freeze before native build and CLI execution",
+  "coverage": "Management plus separate3protocol model/context/auto-maintenance/account/reopen harnesses; not T14 complete by preparation"
+}

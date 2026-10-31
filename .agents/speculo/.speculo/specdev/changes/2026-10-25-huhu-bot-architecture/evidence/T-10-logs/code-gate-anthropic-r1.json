@@ -1,0 +1,47 @@
+{
+  "observer": "native:/root",
+  "acceptedAt": "2026-10-26T09:06:59.538160+00:00",
+  "result": "passed",
+  "gate": "G2 code-level",
+  "tickets": [
+    "T-01",
+    "T-02",
+    "T-08",
+    "T-10"
+  ],
+  "input": "evidence/T-10.md#review-input-anthropic-r1",
+  "inputSha256": "2a649a6cf8959681c6dc87f5dc59151f3895c8c7938eab5e98e9ab36a2c2c1b4",
+  "reviewer": "native:/root/recovery_review",
+  "reviewReport": "sessions/20261025T043239Z/121-anthropic-review/REPORT.md",
+  "reviewReportSha256": "66b0dcdeca0a4ddc1d4453cd272e3f79b42e150b2f666e1241730e6141adad18",
+  "rootReceipts": [
+    "evidence/117-lead-return.json",
+    "evidence/118-lead-return.json",
+    "evidence/119-lead-return.json",
+    "evidence/120-lead-return.json",
+    "evidence/122-lead-return.json",
+    "evidence/121-lead-return.json"
+  ],
+  "rootE2E": "evidence/T-10-logs/lead-anthropic-e2e-r1.json",
+  "rootE2ESha256": "07e0366453353286288f107a856db90f354cfdb55368fe696f61635e057825b1",
+  "e2eReuseProof": "evidence/T-10-logs/lead-anthropic-e2e-r1-reuse-after122.json",
+  "e2eReuseProofSha256": "2dff3a092750293698c0e0766404b9c0a432d6d4dbd691bbbb5f20d038f58330",
+  "validation": {
+    "path": "evidence/T-10-logs/closure-validation-r1.json",
+    "sha256": "cda0f53b5e22e370e47801aed6c3f2d42e0d94cb930f862abe594f04e88a5ead",
+    "actualExit": 0,
+    "waited": true,
+    "errors": [],
+    "plans": 28,
+    "jointRecords": 4,
+    "acceptanceRecords": 4,
+    "toolChunk": "f0fd99"
+  },
+  "reviewAttempts": 1,
+  "priorFailuresPreserved": true,
+  "previousProtocolGates": [
+    "evidence/T-08-logs/code-gate-chat-r2.json",
+    "evidence/T-09-logs/code-gate-responses-r1.json"
+  ],
+  "boundary": "三协议各自代码责任及G2代码门成立；T27仍部分接纳，28票55AC Goal继续。真实Provider/Obsidian/目标OS user-owned/not-run；没有提交推送发布归档。"
+}

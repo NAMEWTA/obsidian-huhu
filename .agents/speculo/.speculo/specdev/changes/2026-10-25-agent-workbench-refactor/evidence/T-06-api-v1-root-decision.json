@@ -1,0 +1,58 @@
+{
+  "utc": "2026-10-25T19:51:38.489307+00:00",
+  "ticket": "T-06",
+  "status": "C API consumption and B source implementation actually dispatched; internal behavior still in progress",
+  "capture": {
+    "path": "T-06-api-v1-root-capture.json",
+    "sha256": "db9a359b5441456c2d253a3cfcd494d535b0503e97219365c5603343cd7c942e"
+  },
+  "readback": [
+    "C frozen core DTO full file and Session/i18n incremental diff read; exact report SHA matched.",
+    "B frozen Workspace/TerminalSessions/SpaceService/records changes read with original bytes retained and normalized-format comparison aids. Public types and all keys read.",
+    "Original03-14 logs read; 04 atomic3 pass/12 filtered,06 hints1 pass/9 filtered,11 production composition1 pass,14 postformat scoped production types exit0/no drift.",
+    "Early atomic/history/provider allowlist issues have scoped regression assertions. Remaining lifecycle/capacity/paint/Chrome/full integration are pending."
+  ],
+  "actual_tool_actions": [
+    {
+      "tool": "collaboration.send_message",
+      "target": "/root/implement_t01",
+      "action": "Unlock consumption of actual C-facing API v1 within C14 and confirm runtimeHookRoot plus only prepared.env hook fields",
+      "return": "normal empty tool return; not completion"
+    },
+    {
+      "tool": "collaboration.followup_task",
+      "target": "/root/prepare_t05_screen",
+      "action": "Start B7 implementation using actual B-facing API v1, original model identity and frozen task contract",
+      "return": "normal empty tool return; not completion"
+    }
+  ],
+  "review_aids": {
+    "/tmp/huhu-t06-b-api-v1-semantic-diff-workspace-service.ts.diff": {
+      "path": "T-06-logs/api-v1/objects/215a68470b9cb2e8c2ea67b3f548f0228e660227160d8db01f3854e49e89b53c.raw",
+      "sha256": "215a68470b9cb2e8c2ea67b3f548f0228e660227160d8db01f3854e49e89b53c"
+    },
+    "/tmp/huhu-t06-b-api-v1-semantic-diff-sessions.ts.diff": {
+      "path": "T-06-logs/api-v1/objects/7cb4ee68cb3956e08130c4c180f8c9e2a92553bd394415e5d723dad274e39371.raw",
+      "sha256": "7cb4ee68cb3956e08130c4c180f8c9e2a92553bd394415e5d723dad274e39371"
+    },
+    "/tmp/huhu-t06-b-api-v1-semantic-diff-space-service.ts.diff": {
+      "path": "T-06-logs/api-v1/objects/5672c83adc650dc6027b57ca9b08b341b886705ffa6968af232255c103861be0.raw",
+      "sha256": "5672c83adc650dc6027b57ca9b08b341b886705ffa6968af232255c103861be0"
+    },
+    "/tmp/huhu-t06-b-api-v1-semantic-diff-records.ts.diff": {
+      "path": "T-06-logs/api-v1/objects/e527ce81515d5ac3ba152631c42edb7d1c8817df8129a05129ec09aea25c6a7e.raw",
+      "sha256": "e527ce81515d5ac3ba152631c42edb7d1c8817df8129a05129ec09aea25c6a7e"
+    }
+  },
+  "evidence_before": {
+    "path": "T-06-logs/api-v1/objects/081be29b2d6222ca57a1318399dfde580ace8557f84241662a363cec2a4717a2.raw",
+    "sha256": "081be29b2d6222ca57a1318399dfde580ace8557f84241662a363cec2a4717a2"
+  },
+  "pending": [
+    "A/C/B final source handoffs and STOPPED",
+    "Root integration checks/build/controlled Chrome",
+    "Independent standard/spec review",
+    "Real Obsidian/Provider/platform E2E remains user-owned"
+  ],
+  "integration_attempts": 0
+}

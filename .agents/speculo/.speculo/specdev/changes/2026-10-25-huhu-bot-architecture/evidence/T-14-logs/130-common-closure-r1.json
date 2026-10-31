@@ -1,0 +1,98 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:25:54.331675+00:00",
+  "mapRevision": 35,
+  "command": [
+    "go",
+    "list",
+    "-deps",
+    "-test",
+    "-json",
+    "./internal/adapters/outbound/eino/common"
+  ],
+  "actualExit": 0,
+  "waited": true,
+  "seconds": 0.12875335700300639,
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "go1.26.10",
+    "GOWORK": "off",
+    "GOEXPERIMENT": "",
+    "GOFLAGS": "-mod=readonly",
+    "CGO_ENABLED": "0"
+  },
+  "totalPackages": 362,
+  "localPackages": [
+    {
+      "path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api",
+      "dir": "native/huhubot/internal/application/api",
+      "errors": null,
+      "embeds": [],
+      "forTest": null
+    },
+    {
+      "path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common",
+      "dir": "native/huhubot/internal/adapters/outbound/eino/common",
+      "errors": null,
+      "embeds": [],
+      "forTest": null
+    },
+    {
+      "path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/chat",
+      "dir": "native/huhubot/internal/adapters/outbound/eino/chat",
+      "errors": null,
+      "embeds": [],
+      "forTest": null
+    },
+    {
+      "path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common_test [github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common.test]",
+      "dir": "native/huhubot/internal/adapters/outbound/eino/common",
+      "errors": null,
+      "embeds": [],
+      "forTest": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common"
+    },
+    {
+      "path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/eino/common.test",
+      "dir": "native/huhubot/internal/adapters/outbound/eino/common",
+      "errors": null,
+      "embeds": [],
+      "forTest": null
+    }
+  ],
+  "unexpectedLocalPackages": [],
+  "files": {
+    "native/huhubot/go.mod": "943f91b31c7f9ea341c3779a4bd9bfd0a4a51f658e20a0d4f5def0a5f287a668",
+    "native/huhubot/go.sum": "bbb9c65d33563690674169c8091f00a445a9e503d5bc639c9081945e7c6587e8",
+    "native/huhubot/internal/adapters/outbound/eino/chat/body.go": "bb00b4933ca8641f120b4728bfc035b0efe3828fdd0486c630b3de728b20c100",
+    "native/huhubot/internal/adapters/outbound/eino/chat/driver.go": "e23a84e382f10292ca3bb7680c012eb1e63a4ab6573c7a33e9b7b206271cc4a6",
+    "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go": "291168afac790301af8186be202fb13990b41acfe57e207986d2d0411d387c0a",
+    "native/huhubot/internal/adapters/outbound/eino/common/context_consumer_test.go": "f752bbc5c54cba408cca7909deaecf50ea7058c43ea3c899a33c729592167c8d",
+    "native/huhubot/internal/adapters/outbound/eino/common/engine.go": "b906da361ba1e543c1b1abdfc1fec567d1af1116ab01506ef8070a3bc23d4773",
+    "native/huhubot/internal/adapters/outbound/eino/common/protocol.go": "31bc1acce212f8c918711702af1693beedfbc878d47a3d6ddf8514c5ae1ecbe2",
+    "native/huhubot/internal/adapters/outbound/eino/common/registry.go": "8a9a50e6d716a2bff84bdfb33835903545c33fce13ed09dad024383d23486db1",
+    "native/huhubot/internal/adapters/outbound/eino/common/tools.go": "172e86eacdac9dd9882127780fb0745d7865335a2eaaac9973bd071a446680f5",
+    "native/huhubot/internal/application/api/access.go": "5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b",
+    "native/huhubot/internal/application/api/approvals.go": "d5da1e50f41f79cc58d2c4b9da3177695a2b7604d3e731d03a690f7de779fcc8",
+    "native/huhubot/internal/application/api/assistant.go": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74",
+    "native/huhubot/internal/application/api/attempts.go": "100af5f4f77c709e1cc1b318fe8abe7dfca1d754637a9a1b0690964ac84e67e4",
+    "native/huhubot/internal/application/api/collaboration.go": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e",
+    "native/huhubot/internal/application/api/context.go": "dc8403b6abb23b74d49e8b7230385464f31964c35b8c06b0e3ff68fad6f3cb69",
+    "native/huhubot/internal/application/api/conversation.go": "fa5f729c9271fd98c25c8478a8600e1d1bf574bcee7995c92748a634290c628d",
+    "native/huhubot/internal/application/api/credentials.go": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+    "native/huhubot/internal/application/api/delegation_input.go": "c8ea8100fd3f93dcd79d1dedcc8c9e2265f21c570329e33cb4b50ec5e928e347",
+    "native/huhubot/internal/application/api/events.go": "668d504fb2cfb5787eab30bc1ccb9fafbf75ffc5d851288f51719362cce91a83",
+    "native/huhubot/internal/application/api/groups.go": "7866a756e6078fa338c5913ffa7eda6dfc1ee6c3b8e53aff4a4492e3d7f8f145",
+    "native/huhubot/internal/application/api/host_read.go": "7c4a48b0cb05d35516f9223a4a3120598801f2c3aef8660288960754756e3018",
+    "native/huhubot/internal/application/api/memory.go": "7cd35c57182251403d1314d8ae7d56f342613b7c63955d6311ab1a24e381f8ec",
+    "native/huhubot/internal/application/api/note_write.go": "8fdad6050aa4250d9830b0237e46d653f1e40dd3e8bbccbab175873d21de546f",
+    "native/huhubot/internal/application/api/recovery.go": "1d8c08bf37d9a50256ba70c17689a8bab662ccf80000a32c5104ab4c8015650c",
+    "native/huhubot/internal/application/api/service.go": "b298869e7b1c0d67fff6d01a9f3b9dfd9d62f6bb9a7087dc9dc688a24de417b4",
+    "native/huhubot/internal/application/api/task_config_hash.go": "fb04ac98412b953703145247fbec30dbf1cd172bb18bba17edbf03d89b3a6c69",
+    "native/huhubot/internal/application/api/tooling.go": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+    "native/huhubot/internal/application/api/types.go": "cb7c99f9f9754ecfa326fbf8cd4169164418fb1c7ac0c50f383a0b51368f0621"
+  },
+  "staticManifestMissingActual": [],
+  "sourceDrift": [],
+  "errors": [],
+  "stdoutSha256": "5ebed05094793588263d49edff5c9e090bd24f025c90d78a4b4b2bce36a2c705",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

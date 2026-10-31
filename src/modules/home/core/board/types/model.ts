@@ -7,13 +7,6 @@ import type { AppearancePreset } from '../appearance-preset';
 import type { BoardGrid } from '../grid';
 import type { ShortcutButton } from '../shortcut-buttons';
 
-/** Fixed destination override for calendar-added tasks. */
-export interface CalendarTaskTarget {
-	kind: 'file' | 'folder' | 'task';
-	path: string;
-	template?: string;
-}
-
 export interface DashboardSettings {
 	/** Canonical persisted workspace registry (apex-style indices). */
 	workspaces: { files: string[]; names: string[]; active: number };
@@ -55,19 +48,8 @@ export interface DashboardSettings {
 	skillWidgetButtons: SkillShortcut[];
 	/** Buttons of the Shortcuts widget. */
 	shortcutButtons: ShortcutButton[];
-	/** Folders whose tasks are excluded from the calendar widget/section. */
-	calendarExcludeFolders: string[];
-	/** Active task filter in the full-screen calendar modal ('all' default).
-	    Persisted memory only — the sidebar widget stays unfiltered. */
+	/** Calendar presentation filter; task data belongs to the task domain. */
 	calendarTaskFilter: CalendarTaskFilter;
-	/** Where calendar-added tasks land in the day's daily note: right below
-	    frontmatter ('start') or at the bottom ('end'). */
-	calendarTaskInsertPosition: 'start' | 'end';
-	/** Optional fixed destination for calendar-added tasks: a specific file
-	    (task inserted per calendarTaskInsertPosition) or a folder (one note
-	    per day, named YYYY-MM-DD, created on first task). Unset = the clicked
-	    day's own daily note (created in the core Daily Notes folder when missing). */
-	calendarTaskTarget?: CalendarTaskTarget;
 	/** Currency symbol shown before amounts in the expense widget/stats (e.g. ¥, $). */
 	expenseCurrency: string;
 	/** Vault folder whose images the album rotates through ('' = unset). */
@@ -243,9 +225,7 @@ export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings = {
 	pomodoroMiniPanelEnabled: true,
 	skillWidgetButtons: [],
 	shortcutButtons: [],
-	calendarExcludeFolders: [],
 	calendarTaskFilter: 'all',
-	calendarTaskInsertPosition: 'start',
 	expenseCurrency: '¥',
 	widgetAlbumFolder: '',
 	widgetAlbumIntervalSec: 8,
@@ -893,7 +873,8 @@ export interface SkillShortcut {
 	promptTemplate: string;
 	inputPlaceholder?: string;
 	directSend: boolean;
-	destination: { kind: 'fresh'; cwd: string } | { kind: 'existing'; sessionId: string };
+	/** `fresh.spaceId`: the Space a new session starts in. Absent means the Space chooser opens on every press. */
+	destination: { kind: 'fresh'; cwd: string; spaceId?: string } | { kind: 'existing'; sessionId: string };
 }
 
 export interface DashboardData {

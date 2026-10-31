@@ -1,0 +1,80 @@
+{
+  "task": "T-02 implementation A",
+  "actual_agent": "/root/prepare_t02",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6ca73ecb5032045d079c18b70826994695e7cfc415e8f8285e88c50f0fb16c58"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "945991465d75b8c45a42057b6aaa7ec3dcedf0f3a2c9bc0ee707679d43629a3e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/02-space-identities.md",
+      "sha256": "15ceea4ea8246b649262aa3276a51cd35dc5d26abc59040f4b7d98f602fa5503"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "4a211a361b2a153074a6fe5e3eed9a9a3efb8f0f32012b2f2b2d8321248bd3cc"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-01.md",
+      "sha256": "214d84c6102cc255457cd447590e9a302b268b1c50c76f54313d7c20fedf2eb3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-preflight.md",
+      "sha256": "1c1d74826fc0d971b0e1b7966036819b2622bec8e07809a8cace4c1bcf826aab"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-02-ports-draft.md",
+      "sha256": "22612095c31d745e1c7dde46bb6299a9b48be3b3dfcd2e63a7d666826ae801d5"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "f9ae1496c12ed18be88ade5baafd0a6aca5ebec3a025d0bb522f2bd3698c661f"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103"
+    }
+  ],
+  "write_allocation": "T-02 writable_paths except platform/desktop/spaces/**, main.js, styles.css, scripts/bundle-budget.json and formal change records; core/space/model.ts, ports.ts, errors.ts first then freeze",
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal change records"
+  ],
+  "prerequisite": "T-01 done, final independent review both axes pass, goal-plan 0 errors; real E2E user-owned"
+}

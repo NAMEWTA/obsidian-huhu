@@ -1,0 +1,22 @@
+{
+  "task": "084-module-runtime-seams",
+  "checkedAt": "2026-10-25T21:54:49.543138+00:00",
+  "reportSha256": "e53d8622245a2f4e21d464bf09c748a5bef6f8bc784bc56bc700e03bab673677",
+  "taskSha256": "1aa88247aae813ac10438212b5aa8b58af0e4f98583698c5e6f44628ac8ba849",
+  "manifestSha256": "5c280ec8d9b9448415e86c36cf43979be61a24a725f4b770e103feee69fa6e32",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullInterfacesAndObservationsRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "sourceFilesVerified": 65,
+  "old082OwnFilesVerified": 9,
+  "drift": [],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "disposition": "Accept read-only preparation only; future T20 GroupClient target reanchor and stable BOT_CLIENT publication seams remain unimplemented",
+  "ticketActivated": false,
+  "productChecksRun": false,
+  "readbackNote": "Initial local comparison mistook expected/actual objects for scalar hashes and failed before writes; corrected actual schema gives no source drift."
+}

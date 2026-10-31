@@ -1,14 +1,12 @@
 import { contentFiles, type ContentFile } from '../../../../host/obsidian/storage/content-files';
 import { dashboardFilePath } from '../../../../shared/storage/dashboard-paths';
-import { canReceiveTask } from '../../core/board/card-kind';
 import { AutomationError } from '../../../../shared/automation/errors';
 import type { App } from 'obsidian';
 import { anniversaryOccurrence, parseAnniversaryDate } from '../../core/anniversaries/calendar';
 import { resolveWidgetLabel } from '../../core/board/default-widget-label';
 import { parse as parseDashboard, serialize as serializeDashboard } from '../../core/board/parser/index';
 import type { DashboardSettings } from '../../core/board/types/index';
-import { readTaskMeta, TASK_META_REGEX, taskMetaSuffix } from '../../../../shared/automation/metadata';
-import type { AutomationAction, AutomationDefinition, SourceRef } from '../../../../shared/automation/types';
+import type { AutomationDefinition, SourceRef } from '../../../../shared/automation/types';
 import { t } from '../../../../shared/i18n/index';
 import type { PipelineConfig } from '../../core/board/types/model';
 import type { PipelineAutomationSource, PipelineScope } from '../pipeline/automation';
@@ -80,14 +78,6 @@ export class DashboardAutomationSource {
 				}
 				const offset = result.length;
 				const raw = await contentFiles(this.app).read(file);
-				// Task lines that carry an automation block become definitions.
-				for (const line of raw.split('\n')) {
-					if (!/^\s*- \[ \]/.test(line)) continue;
-					const meta = readTaskMeta(line);
-					if (!meta.id || !meta.automation || meta.cancelled) continue;
-					const source: SourceRef = { kind: 'dashboard', path: file.path, id: meta.id };
-					result.push({ ...meta.automation, source });
-				}
 				const configs = parseDashboard(raw).columns.flatMap((column) =>
 					column.sectionType === 'pipeline' && column.pipelineConfig ? [column.pipelineConfig] : [],
 				);
@@ -215,74 +205,6 @@ export class DashboardAutomationSource {
 			await this.saveSettings();
 			return;
 		}
-		const file = this.files().find((f) => f.path === dashboardFilePath(source.path));
-		if (!file) throw new AutomationError('sourceMissing');
-		await contentFiles(this.app).process(file.path, (raw) => {
-			if (raw === null) throw new AutomationError('sourceMissing');
-			let found = false;
-			const next = raw
-				.split('\n')
-				.map((line) => {
-					const meta = readTaskMeta(line);
-					if (meta.id !== source.id) return line;
-					if (found) throw new AutomationError('sourceMissing');
-					found = true;
-					const text = line.replace(TASK_META_REGEX, '').replace(/\s*⏰\s*\d{4}-\d\d-\d\d\s+\d\d:\d\d/, '');
-					return text + taskMetaSuffix({ ...meta, automation: remove ? undefined : definition });
-				})
-				.join('\n');
-			if (!found) throw new AutomationError('sourceMissing');
-			return next;
-		});
-	}
-	async targets(): Promise<Array<{ path: string; cardId: string; title: string }>> {
-		await contentFiles(this.app).refresh();
-		const result: Array<{ path: string; cardId: string; title: string }> = [];
-		for (const file of this.files()) {
-			const data = parseDashboard(await contentFiles(this.app).read(file));
-			const counts = new Map<string, number>();
-			for (const column of data.columns)
-				for (const card of column.cards) counts.set(card.id, (counts.get(card.id) ?? 0) + 1);
-			for (const column of data.columns)
-				for (const card of column.cards)
-					if (counts.get(card.id) === 1 && canReceiveTask(column, card))
-						result.push({
-							path: file.path,
-							cardId: card.id,
-							title: `${file.basename} / ${column.name} / ${card.title}`,
-						});
-		}
-		return result;
-	}
-	async createTask(action: Extract<AutomationAction, { kind: 'create-task' }>, runId: string): Promise<void> {
-		if (action.target === 'calendar') throw new AutomationError('taskTargetInvalid');
-		await contentFiles(this.app).refresh();
-		const file = this.files().find((f) => f.path === dashboardFilePath(action.path));
-		if (!file) throw new AutomationError('sourceMissing');
-		await contentFiles(this.app).process(file.path, (raw) => {
-			if (raw === null) throw new AutomationError('sourceMissing');
-			if (raw.split('\n').some((line) => readTaskMeta(line).runId === runId)) return raw;
-			const data = parseDashboard(raw);
-			const matches = data.columns
-				.flatMap((column) => column.cards.map((card) => ({ column, card })))
-				.filter((entry) => entry.card.id === action.cardId);
-			const target = matches.length === 1 ? matches[0] : undefined;
-			if (!target) throw new AutomationError('sourceMissing');
-			if (!canReceiveTask(target.column, target.card)) throw new AutomationError('taskTargetInvalid');
-			const card = target.card;
-			card.tasks.unshift({ text: action.text, checked: false, id: crypto.randomUUID(), runId });
-			return serializeDashboard(data);
-		});
-	}
-	async calendarTargets(): Promise<
-		Array<{ path: string; title: string; storage: { kind: 'daily' | 'file' | 'folder' | 'task'; path?: string } }>
-	> {
-		await contentFiles(this.app).refresh();
-		const target = this.settings().calendarTaskTarget;
-		return this.files().map((file) => ({
-			path: file.path,
-			title: file.basename,
-			storage: target ? { kind: target.kind, path: target.path } : { kind: 'daily' as const },
-		}));
+		throw new AutomationError('sourceMissing');
 	}
 }

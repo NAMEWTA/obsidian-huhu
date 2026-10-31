@@ -63,18 +63,22 @@ export function isDefinition(value: unknown): value is AutomationDefinition {
 	if (action.kind === 'obsidian-command') return typeof action.command === 'string' && !!action.command;
 	if (action.kind === 'notify') return typeof action.body === 'string';
 	if (action.kind === 'create-task') {
-		if (typeof action.text !== 'string' || typeof action.path !== 'string') return false;
-		if (action.target === 'calendar')
-			return (
-				action.cardId === undefined &&
-				(action.time === undefined ||
-					(typeof action.time === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(action.time))) &&
-				(action.reminderTime === undefined ||
-					(typeof action.reminderTime === 'string' &&
-						/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(action.reminderTime)))
-			);
-		return (action.target === undefined || action.target === 'board-card') && typeof action.cardId === 'string';
+		if (
+			Object.keys(action).some((key) => !['kind', 'text', 'timezone', 'date', 'time', 'reminderAt'].includes(key))
+		)
+			return false;
+		return (
+			typeof action.text === 'string' &&
+			typeof action.timezone === 'string' &&
+			!!action.timezone &&
+			(action.date === undefined ||
+				(typeof action.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(action.date))) &&
+			(action.time === undefined ||
+				(typeof action.time === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(action.time))) &&
+			(action.reminderAt === undefined || Number.isSafeInteger(action.reminderAt))
+		);
 	}
+
 	if (
 		action.kind !== 'agent' ||
 		typeof action.agentId !== 'string' ||

@@ -1,0 +1,34 @@
+{
+  "changed_product_paths_since_recovery1_attempt1": [
+    "main.js",
+    "scripts/bundle-budget.json",
+    "src/host/desktop/native/helper-control.test.ts",
+    "src/host/desktop/native/helper-editor.test.ts",
+    "src/host/desktop/native/helper-stream.test.ts",
+    "src/host/desktop/native/helper.test.ts",
+    "src/host/desktop/native/helper.ts",
+    "src/host/desktop/native/host-control.test.ts",
+    "src/host/desktop/native/host-editor.integration.test.ts",
+    "src/host/desktop/native/host.test.ts",
+    "src/host/desktop/native/host.ts",
+    "src/shared/native/host.ts"
+  ],
+  "unchanged_product_count": 2060,
+  "unchanged_native_UI_styles_dependencies": true,
+  "reused": [
+    "017 final native142, Linux producer and Windows GNU compile; native files and immutable pair unchanged",
+    "i3 controlled real Chrome15 and UI component/style evidence; visual and interaction source files unchanged, no claim that old UI tests prove new shutdown errors",
+    "Unchanged A/C business unit/DOM/protocol tests; their previous exact source scopes remain unchanged"
+  ],
+  "invalidated": [
+    "Previous Helper/final Host successful shutdown conclusions do not close F6.",
+    "Prior main build and budget measurements superseded by actual current build/attribution."
+  ],
+  "replaced_by": [
+    "023 current 8 files/127 helper/Host tests plus actual typed failure proof",
+    "Root actual build, full lint, architecture, Promise and enforced bundle",
+    "Root existing consumer44 plus previously skipped artifact7, covering51 unique tests",
+    "Root actual 3 files/7 integration tests, complete official Pi CLI against controlled loopback SSE, and current F1/F6 resource traces"
+  ],
+  "real_provider_or_obsidian": false
+}

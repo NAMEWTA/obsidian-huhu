@@ -1,0 +1,30 @@
+{
+  "changed_products_since_accepted_R4": [
+    "main.js",
+    "scripts/bundle-budget.json",
+    "src/host/desktop/native/host.integration.test.ts",
+    "src/shared/native/cookies.test.ts",
+    "src/shared/native/cookies.ts"
+  ],
+  "product_paths_checked": 2073,
+  "unchanged_products": 2068,
+  "reused": [
+    "023 Host/Helper lifecycle127 and R4 forced/unconfirmed/late process probes: production lifecycle sources unchanged",
+    "Root recovery1 attempt2 F1/F6 integration3files7, official complete Pi CLI/control chain and51 unique consumers: all involved source except separately rerun Cookie consumer unchanged",
+    "017 native142, immutable Linux pair and Windows GNU compile: Rust/Cargo/tool sources unchanged",
+    "i3 Chrome15, production UI/DOM/i18n/styles/notices: no corresponding source or CSS change",
+    "Architecture and Promise checks: cookies.ts retains the same type imports and all new request/release operations are awaited; no new module edge or floating callback"
+  ],
+  "invalidated": [
+    "Original nativeCookieReader dual-failure result and old artifact/budget measurements"
+  ],
+  "replaced_by": [
+    "025 actual target reds, final14 unit/native tests and types/lint",
+    "Root current build/full lint/enforced bundle and22 unique Cookie/Browser/native cases"
+  ],
+  "limitations": [
+    "The selected stream file ran one affected case and intentionally left3 unrelated cases unselected.",
+    "No new official Pi/Chrome/native142 execution is claimed.",
+    "Root test manifest captures repository inputs; actual Vitest compilation45-source observation is the accepted025 observation, not a newly instrumented Root compilation."
+  ]
+}

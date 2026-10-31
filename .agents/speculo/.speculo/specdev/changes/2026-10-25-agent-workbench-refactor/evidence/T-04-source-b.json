@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "task": "T-04 B UI",
+  "status": "SOURCE STOPPED",
+  "stopped_at_utc": "2026-10-25T10:19:12.490217+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "scope": "GP016/Map17; initial B packet and exact Page focus supplement",
+  "source_files": [
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+      "bytes": 8364,
+      "sha256": "2b46272e18a19f7bc971dfc517510ad5ec59d745ef90fd89b630c5f834625645",
+      "baseline_sha256": "7b0d025c658348dd3d763fa5ff7501381b894cadd365336645c8b8daccc90eed",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "bytes": 14545,
+      "sha256": "07f60e9b4b2f73978a76b9239d19c1c02b580210433566bd49b53657ee62ef3b",
+      "baseline_sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "bytes": 17326,
+      "sha256": "fcc42139af562b582faf3dd88f38c11580f7aa1136f131ccead83458d8a19a02",
+      "baseline_sha256": "8b260226e290c7aa1bb973fa30a48a90ccf608d2616ed81aaf58e6c5cc798e4f",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytes": 23176,
+      "sha256": "0f500b21596a56374801ca3733d1af81feb6d23ecde4c912031210035ef2014f",
+      "baseline_sha256": "d8486da50c46e19a8ac6b6b8dcb8b5a02489ff2146042e62580fdeb761828f39",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.dom.test.tsx",
+      "bytes": 4656,
+      "sha256": "1137fc1383297c9d13529e049a86e8d4bc45c01b91eb44aeb405508c57485378",
+      "baseline_sha256": null,
+      "change": "new"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "bytes": 4781,
+      "sha256": "59347afe0120b5b8391668feb9884a6dcc6fe19e2c0a17373f04c25a9d7aa10c",
+      "baseline_sha256": "9cfb58d9798b82c59b29bfedabdfb1fa816d64eb9ad9ee9fe5afd9071ef4ddaa",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/managed-lifecycle.tsx",
+      "bytes": 8390,
+      "sha256": "dbae64ac0ace3368f2968259d92edd701154e6ff47779d8b028043048f3d8a8d",
+      "baseline_sha256": null,
+      "change": "new"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 9144,
+      "sha256": "600aa330dac48149275644c91c8c30ee90d4a7b8d88ae572faed78696b3dae42",
+      "baseline_sha256": "7a2302e35d414269bd1deaeb5d44fa7116fc0e764e132b048303027d95a3aef8",
+      "change": "modified"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 18878,
+      "sha256": "aeab120959e66cc22c8ce453e44bc2d57e37893d0a07fd535f632e982feb772b",
+      "baseline_sha256": "fc530751695b834a3081aec8f3fcac12d17b0f387e96905813f9c9106d4e45a6",
+      "change": "modified"
+    }
+  ],
+  "unchanged_conditional_paths": [
+    "src/modules/agent/ui/terminal/confirm.tsx",
+    "src/modules/agent/ui/terminal/confirm.dom.test.tsx (not created)"
+  ],
+  "not_written": "services/core/i18n/shared UI/CSS source/create/TabStrip/platform/native/docs/deps/Git/formal C/main.js/styles.css/budget"
+}

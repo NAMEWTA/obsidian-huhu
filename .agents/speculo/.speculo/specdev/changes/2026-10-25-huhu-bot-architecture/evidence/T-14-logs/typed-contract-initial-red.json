@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T09:37:16.079841+00:00",
+  "task": "125-memory-foundation-contract",
+  "observation": "valid contract behavior red accepted; old schema rejects typed namespace list and actual Run context get, no compilation failure",
+  "inputSha256": "4cdd65a0d3b662cbe7b487dd0d6ceef1b37f5f5a467e3b88d36559ebc47317ad",
+  "sourceCount": 399,
+  "matchedG2SourceHashes": 398,
+  "newTestHashes": {
+    "native/huhubot/tests/contract/foundation/memory_contract_test.go": "b708d7a8c1944123fa948c8e94ce133d3f24cffe4ed9d6ef1a639d037156dec6"
+  },
+  "actualExit": 1,
+  "actualWaitSeconds": 1.7944302300002164,
+  "rootLogReadToolChunk": "576a35",
+  "rootTestReadToolChunk": "03d89d",
+  "rawLogSha256": "eb63dee9d908cb662d3166024d68777902c67729b629dcb4e592662c808a9b4d",
+  "resultSha256": "334449aa58da416082632ff00d1df16d705258f7a03b0d2b1110a3d98e6c9a87",
+  "boundary": "首个契约红，不是T14实现或125最终通过；产品编写继续。"
+}

@@ -1,0 +1,112 @@
+{
+	"k": 25,
+	"window": 20,
+	"minimum": 0,
+	"ours": [
+		"/tmp/huhu-t06-root-review-repair1-similarity-source"
+	],
+	"theirs": [
+		"stablyai-orca-464bd5a",
+		"huhu-herdr-reference-lKa8rI0L"
+	],
+	"results": [
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/services/terminal/sessions-activity.test.ts",
+			"tokens": 2804,
+			"raw": {
+				"share": 0.004,
+				"match": "src/shared/agent-session-journal-schemas.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.009,
+				"match": "src/main/codex/codex-structured-prompt-ownership.test.ts",
+				"run": 32
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+			"tokens": 2956,
+			"raw": {
+				"share": 0.004,
+				"match": "src/main/ipc/dropped-path-resolution.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.004,
+				"match": "repo/scripts/docs/preview.mjs",
+				"run": 29
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+			"tokens": 3248,
+			"raw": {
+				"share": 0.003,
+				"match": "src/main/window/main-window-updater-headless-serve.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.011,
+				"match": "cloud/apps/relay/src/app.ts",
+				"run": 41
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+			"tokens": 7197,
+			"raw": {
+				"share": 0.002,
+				"match": "src/renderer/src/store/slices/worktrees-terminal-reference-origins.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.005,
+				"match": "src/renderer/src/components/automations/AutomationSchedulePicker.render.test.tsx",
+				"run": 39
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/services/terminal/session.test.ts",
+			"tokens": 7976,
+			"raw": {
+				"share": 0.001,
+				"match": "src/main/runtime/orchestration/structured-worker-direct-mailbox-target.test.ts",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.006,
+				"match": "src/main/codex/codex-structured-prompt-ownership.test.ts",
+				"run": 32
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/services/terminal/session.ts",
+			"tokens": 11419,
+			"raw": {
+				"share": 0.001,
+				"match": "repo/src/client/input/windows_vti.rs",
+				"run": 25
+			},
+			"normalized": {
+				"share": 0.002,
+				"match": "src/renderer/src/components/sidebar/worktree-list/viewport/hard-scroll-up.ts",
+				"run": 34
+			}
+		},
+		{
+			"file": "../../../../../../tmp/huhu-t06-root-review-repair1-similarity-source/src/modules/agent/core/workspace/managed-runtime.ts",
+			"tokens": 3310,
+			"raw": {
+				"share": 0,
+				"match": null,
+				"run": 0
+			},
+			"normalized": {
+				"share": 0.003,
+				"match": "mobile/src/mobile-web-shell/bridge/bridge-route-update.ts",
+				"run": 36
+			}
+		}
+	]
+}

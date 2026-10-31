@@ -2,7 +2,7 @@
 schema_version: 3
 plan_contract_version: 1
 skill_scan: "2026-10-25: scanned .agents/skills/*/SKILL.md and AGENTS.md; evidence/skill-scan.json; dev applies, ui by actual interface scope; no dedicated Go skill"
-skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6","phase":"implement","operation":"隔离上下文与 Bot 自动私有记忆：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3","when":"实施本票对应职责或验证触发时"}]}]
+skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293","phase":"implement","operation":"隔离上下文与 Bot 自动私有记忆：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14","when":"实施本票对应职责或验证触发时"}]}]
 resource_claims: ["huhu-bot:private-memory","huhu-bot:sqlite-schema","huhu-bot:provenance-and-revocation"]
 artifact: "ticket"
 ui_change: false
@@ -10,7 +10,7 @@ design_ref: null
 change: "2026-10-25-huhu-bot-architecture"
 id: "T-14"
 title: "隔离上下文与 Bot 自动私有记忆"
-status: "ready"
+status: "in_progress"
 kind: "feature"
 planning_depth: "deep"
 planning_depth_reason: "跨进程、持久化、权限或并发不变量需要故障窗口及恢复证据"
@@ -18,7 +18,7 @@ ready: true
 risk: "high"
 blocked_by: ["T-03","T-05","T-08","T-11","T-12"]
 contract_ids: ["AC-018","AC-019","AC-021","AC-022"]
-owner: "unassigned"
+owner: "/root"
 expected_changes: ["<Path>native/huhubot/internal/domain/memory/private/**</Path>","<Path>native/huhubot/internal/application/memory/context/**</Path>","<Path>native/huhubot/internal/application/memory/private/**</Path>","<Path>native/huhubot/internal/application/memory/maintenance/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/memory/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/014-memory.sql</Path>","<Path>native/huhubot/tests/contract/private-memory/**</Path>"]
 writable_paths: ["<Path>native/huhubot/internal/domain/memory/private/**</Path>","<Path>native/huhubot/internal/application/memory/context/**</Path>","<Path>native/huhubot/internal/application/memory/private/**</Path>","<Path>native/huhubot/internal/application/memory/maintenance/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/memory/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/014-memory.sql</Path>","<Path>native/huhubot/tests/contract/private-memory/**</Path>"]
 read_only_paths: ["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path>","<Path>AGENTS.md</Path>","<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>"]
@@ -41,6 +41,8 @@ shared_path_owners: ["<Path>contracts/hap/v0.1/**</Path> => T-01","<Path>native/
 
 **开源参考：** [REF-03 liliMozi/openhanako](https://github.com/liliMozi/openhanako/tree/9a6cabf8c513db5edc6cf8179a538c9075885c6e)；[REF-04 CopilotKit/OpenBot](https://github.com/CopilotKit/OpenBot/tree/46642d6c91daa663bccff673595f4e12a419a496)；[REF-05 Fei2411/DeepSeek-Bot](https://github.com/Fei2411/DeepSeek-Bot/tree/1bebe826f74e9a72cabafd3b80602b05af867b38)。具体文件、许可、依赖与已知限制见 <Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path> 对应 REF。遇到本票未覆盖的陌生点，实施前先按该文件的检索流程补比较，在本票 Evidence 记录采用/拒绝理由，再写代码；不从未经核验的示例直接复制。
 
+<a id="behavior-scope"></a>
+
 ## 行为与范围
 
 IN：上下文构建/压缩、私有/临时命名空间、来源修订、自动作业、暂停/额度、pin/correct/forget、召回过滤。REUSE：同一 Engine/授权/usage。OUT：自动全局写、群级独立长期库、全库索引。
@@ -52,6 +54,8 @@ IN：上下文构建/压缩、私有/临时命名空间、来源修订、自动�
 3. 自动条目分观察/推断并记录 provenance/revision；expectedRevision 防覆盖，人工固定项冲突变候选。
 4. forget/correct 原子失效召回/索引并提升作业代数，迟到结果不得复活；撤权/删除来源通过共同失效合同传播。
 
+<a id="acceptance"></a>
+
 ## 验收标准
 
 - [ ] AC-018（本票主责）：不跨线程/Agent 混入私聊；摘要不无依据成为长期事实。
@@ -60,6 +64,8 @@ IN：上下文构建/压缩、私有/临时命名空间、来源修订、自动�
 - [ ] AC-022（本票接缝；总主责 T-05）：在读取/外发前拒绝或过滤，不借 B 更大权限，不直接读另一 Bot 私有库。
 
 复合 AC 的完整通过还需 Map 标出的其他接缝 Evidence；本票不得把局部通过记为整个 AC 或整个 change 完成。
+
+<a id="verification-method"></a>
 
 ## 验证方法
 
@@ -95,3 +101,24 @@ IN：上下文构建/压缩、私有/临时命名空间、来源修订、自动�
 ### 未决问题
 
 无。
+
+## 当前交付验收口径（LOG-051）
+
+用户最新 Goal 要求本轮全面实现并在代码层面总验收，真实操作自行进行。此票的行为、权限、数据与故障合同保持；代码实现、适用自动化验证和独立代码审查是本轮完成/下游开工条件。真实 Provider、Obsidian 交互和用户目标 OS 操作另列 user-owned / not-run，不冒充原 AC 的现场验收通过，也不阻塞独立代码工作。
+
+
+## Map31 当前记忆窗口
+
+本轮从已接纳G2代码基线继续，精确范围和原owner见<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14-logs/memory-window-map31.md</Path>。115与123接纳为实施合同，未运行的新消费者不算通过；全部历史验收保留，正式开工以实际TASK/原生派遣为准。
+
+### Map35 共同Engine资源实例说明
+
+在 <Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14-logs/common-component-window-map35.md</Path> 的实际import闭包确认与冻结条件下，130可独占common/chat/api组件Go检查，126/129只写闭包外源；扩大到Core/SQL或跨语言时重新统一冻结。本条不转移公共API、driver或迁移owner，不修改产品验收合同。
+
+### Map36 纯manifest校验资源窗口
+
+<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14-logs/manifest-helper-window-map36.md</Path>限定132原API owner只写memory.go及同包新回归，先证实纯api实际闭包再单独检查。126/128保持原source-only写集，wire/schema/fixtures冻结；不把metadata校验当作读取授权。
+
+### Map37 历史与运行消费者窗口
+
+<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-14-logs/history-runtime-window-map37.md</Path>定义原direct/Run/Core/generator owner的134后继写集及128窄资格端口。133组件冻结路径只读；generation和默认Core检查继续Root串行。

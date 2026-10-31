@@ -14,8 +14,9 @@ export function settingsCategories(plugin: DashboardPlugin): Array<{ id: string;
 		iconic: { labelKey: 'modules.iconic', icon: 'images' },
 		contacts: { labelKey: 'contacts.title', icon: 'contact-round' },
 		automation: { labelKey: 'automation.title', icon: 'workflow' },
-		sync: { labelKey: 'workbench.sync', icon: 'git-branch' },
+		versioning: { labelKey: 'workbench.sync', icon: 'git-branch' },
 		safe: { labelKey: 'workbench.safe', icon: 'vault' },
+		huhubot: { labelKey: 'settings.productHuhuBot', icon: 'bot' },
 	};
 	return [
 		{ id: 'general', label: t('settings.tabGeneral'), icon: 'settings' },

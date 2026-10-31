@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-26T02:36:44.823293+00:00",
+  "kind": "Root tool-output observation; not a product check or integration attempt",
+  "actual_command": [
+    "python3",
+    "/tmp/huhu-t07-root-freeze-inputs.py",
+    "integration1",
+    "/tmp/huhu-t07-c-linux-final-20261026T021652Z/huhu-pty",
+    "/tmp/huhu-t07-c-linux-final-20261026T021652Z/huhu",
+    "/tmp/huhu-t07-c-linux-final-20261026T021652Z-producer.json",
+    "/tmp/huhu-t07-root-integration-plan.json",
+    "/tmp/huhu-t07-root-regression-scope-draft.json"
+  ],
+  "actual_exit_code": 1,
+  "observed_failure": {
+    "path": "/tmp/huhu-t07-root-freeze-inputs.py",
+    "before": "04f4a338fd4a769524b8b1a0280927e214ee24c93a92c13f1b1bb3751322047f",
+    "after": "7d045bf3e267e084dd23352e8ac75b5a093d15fd20eea52238025725cb0d711f",
+    "reason": "The initial mixed source/tool inventory contains this external /tmp preparation script. Ownership comparison mistakenly treated it as a repository product path."
+  },
+  "runner_before_fix": "/tmp/huhu-t07-root-freeze-inputs-before-external-filter.py",
+  "runner_sha256": "7d045bf3e267e084dd23352e8ac75b5a093d15fd20eea52238025725cb0d711f",
+  "disposition": "Filter only external absolute paths from repository ownership comparison; retain them in actual command input snapshots. No repository product drift was reported."
+}

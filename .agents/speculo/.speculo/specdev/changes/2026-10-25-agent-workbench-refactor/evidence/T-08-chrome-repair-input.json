@@ -1,0 +1,206 @@
+{
+  "utc": "2026-10-26T09:27:32.382283+00:00",
+  "goal_revision": "GP-027",
+  "map_revision": 28,
+  "files": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/scripts/obsidian-acceptance/agent-workbench-coordination.mjs",
+      "sha256": "6e8f32a220621cf89ac6ea6cc6cedd6cdefda3e1fd2d7edaa11fa759af603cc0",
+      "bytes": 38022,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/6e8f32a220621cf89ac6ea6cc6cedd6cdefda3e1fd2d7edaa11fa759af603cc0.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "sha256": "9b5da986ee78149cca84ffc678338b674fdee977e3b64ae6a367c740e446159b",
+      "bytes": 17986,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/9b5da986ee78149cca84ffc678338b674fdee977e3b64ae6a367c740e446159b.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/control/TerminalControlPanel.tsx",
+      "sha256": "5c4ad611d523d442c30ba3dc16ac00b6eb10faddac9199340429c1a15e8c435b",
+      "bytes": 19564,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/5c4ad611d523d442c30ba3dc16ac00b6eb10faddac9199340429c1a15e8c435b.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/ui/components/dialog.tsx",
+      "sha256": "c8d9d480ec64a1dfa2d4d2ceab671cc37b53b2a5d250c43d48775cd2ab664437",
+      "bytes": 6681,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/c8d9d480ec64a1dfa2d4d2ceab671cc37b53b2a5d250c43d48775cd2ab664437.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/styles.css",
+      "sha256": "3d4fa2753b0a899dc74d520029929d1de4c11ea2de023d750433e7f934df2e4d",
+      "bytes": 1422357,
+      "mode": "0o600",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/3d4fa2753b0a899dc74d520029929d1de4c11ea2de023d750433e7f934df2e4d.raw"
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/sessions/20261026T045732Z/008-t08-business-launch-ui/REPORT.md",
+      "sha256": "2c79f85bcccc41da29d342e2ae428c2da3d90b0f8a66444a0c23060f39202e23",
+      "bytes": 15008,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/2c79f85bcccc41da29d342e2ae428c2da3d90b0f8a66444a0c23060f39202e23.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome.json",
+      "sha256": "b18132e42981254614e2014683f7bbf24438ea7014173adb1d04d68206dec977",
+      "bytes": 1839,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/b18132e42981254614e2014683f7bbf24438ea7014173adb1d04d68206dec977.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome.log",
+      "sha256": "e9d0e9b3b6f013837bb2931a117fc6c707c3c7e9337463b9d5e56a2fd2a6a3b9",
+      "bytes": 68,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/e9d0e9b3b6f013837bb2931a117fc6c707c3c7e9337463b9d5e56a2fd2a6a3b9.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-a-stage2-20261026T070746Z/a32-stopped.json",
+      "sha256": "681497944a255b2dc86004beac0fd91497511f12bb53510c1c3ad0bc29a20839",
+      "bytes": 18138,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/681497944a255b2dc86004beac0fd91497511f12bb53510c1c3ad0bc29a20839.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-a-stage2-20261026T070746Z/source-stopped.json",
+      "sha256": "d106a27e04c6a4a8c20aec698b525b126082a4f17b2d5dd2b1b7a34c7b18e653",
+      "bytes": 12314,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/d106a27e04c6a4a8c20aec698b525b126082a4f17b2d5dd2b1b7a34c7b18e653.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/zoom-geometry.json",
+      "sha256": "7ece1587f86236ba0d86f47e48c7d973188ef75a6723a70ee6bbb3d19907ca96",
+      "bytes": 1512,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/7ece1587f86236ba0d86f47e48c7d973188ef75a6723a70ee6bbb3d19907ca96.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/commands.json",
+      "sha256": "f290dd1006935b0a201c0c426719e37f592598c2c7c03f677cb66278b0232662",
+      "bytes": 9170,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/f290dd1006935b0a201c0c426719e37f592598c2c7c03f677cb66278b0232662.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/result.json",
+      "sha256": "750a3a10553a99d1ab89e60bac67e5722558536751173af10177e4d5c471d13b",
+      "bytes": 7045,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/750a3a10553a99d1ab89e60bac67e5722558536751173af10177e4d5c471d13b.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/summary.json",
+      "sha256": "fa870e4e106fb4a9011c321fa2d83de7c73c1e7c93f48606ef50c9c988ca504d",
+      "bytes": 1675,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/fa870e4e106fb4a9011c321fa2d83de7c73c1e7c93f48606ef50c9c988ca504d.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/zoom-200-light.png",
+      "sha256": "64ddac2c3f109527a2e18ad0ab83fd0df70f4c57ef3dcfe785444721748cd629",
+      "bytes": 51170,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/64ddac2c3f109527a2e18ad0ab83fd0df70f4c57ef3dcfe785444721748cd629.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/normal-result.json",
+      "sha256": "993acaa1c562b8a5587e819a3e3b241af9375cb9d12b40e5a73748bb6c04237e",
+      "bytes": 5111,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/993acaa1c562b8a5587e819a3e3b241af9375cb9d12b40e5a73748bb6c04237e.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/wide-light.png",
+      "sha256": "41c90521bd554c8cb0e992c53d530d35e2c4ebc0989b338f98fe7e93b4f7b88f",
+      "bytes": 73614,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/41c90521bd554c8cb0e992c53d530d35e2c4ebc0989b338f98fe7e93b4f7b88f.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/zoom-mechanism.json",
+      "sha256": "4cc2fee1ae2e0ce2ccc51389986cebae40c1f79c285f20e4f7627cf70a4a40a7",
+      "bytes": 400,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/4cc2fee1ae2e0ce2ccc51389986cebae40c1f79c285f20e4f7627cf70a4a40a7.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/cdp-events.json",
+      "sha256": "f31298c33fae0ac433f44cc32ebec116b75d778776d7bb7b0ae24a6b99926c1c",
+      "bytes": 9346,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/f31298c33fae0ac433f44cc32ebec116b75d778776d7bb7b0ae24a6b99926c1c.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/narrow-dark.png",
+      "sha256": "f2b25eff23d342c15619361adf611c80d90921156b94dccdc352e83684ab4453",
+      "bytes": 51286,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/f2b25eff23d342c15619361adf611c80d90921156b94dccdc352e83684ab4453.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/keyboard-packet.json",
+      "sha256": "b27ef7d4090c18cddf40ac5c29b166ae636de4a5b16e3b72c56a770c9e1362ba",
+      "bytes": 281,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/b27ef7d4090c18cddf40ac5c29b166ae636de4a5b16e3b72c56a770c9e1362ba.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/narrow-geometry.json",
+      "sha256": "5ba58877f76c4af865515f9e9c0f10f0b3b32bb9af47b3dba590cb2b7c5f716a",
+      "bytes": 1681,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/5ba58877f76c4af865515f9e9c0f10f0b3b32bb9af47b3dba590cb2b7c5f716a.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/source.json",
+      "sha256": "1b34a013566607c2e64b186158f9744eaacb7f948363037ad80a2e06e23492f1",
+      "bytes": 3204282,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/1b34a013566607c2e64b186158f9744eaacb7f948363037ad80a2e06e23492f1.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/zoom-200-dark.png",
+      "sha256": "3aace9dc444e65258cdb50f058056c18b092f0ae52608c8fb8ca10401bd72b3c",
+      "bytes": 50118,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/3aace9dc444e65258cdb50f058056c18b092f0ae52608c8fb8ca10401bd72b3c.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/wide-dark.png",
+      "sha256": "c9f729aed4db247da7e94b57f79a19bfcbf4f317a7b7d9af95465fd5d22b7eb6",
+      "bytes": 75427,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/c9f729aed4db247da7e94b57f79a19bfcbf4f317a7b7d9af95465fd5d22b7eb6.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/source-after.json",
+      "sha256": "b1c628d3359eaab0d572df78bf69849f27a650426185490623709b7ec6271e95",
+      "bytes": 55,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/b1c628d3359eaab0d572df78bf69849f27a650426185490623709b7ec6271e95.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/narrow-light.png",
+      "sha256": "99ad3b59eafad1281b29abc4c2ac9795237e152eede42732abbd67e48692353b",
+      "bytes": 45265,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/99ad3b59eafad1281b29abc4c2ac9795237e152eede42732abbd67e48692353b.raw"
+    },
+    {
+      "path": "/tmp/huhu-t08-root-chrome-20261026T092450Z/zoom-metrics.json",
+      "sha256": "1dec0e9f1b2aede9c404b34b9a8677984e1e2bb1e7abfb191b306e5791281082",
+      "bytes": 261,
+      "mode": "0o664",
+      "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/chrome-repair-input/objects/1dec0e9f1b2aede9c404b34b9a8677984e1e2bb1e7abfb191b306e5791281082.raw"
+    }
+  ],
+  "prebuild_manifest": "T-08-root-prebuild-input.json",
+  "failure": "Root actual Chrome exit1, 12/14 checks pass; width and compact geometry failed. 200 percent capture has cropped horizontal content despite viewport geometry checks passing.",
+  "scope": "One acceptance-script repair, no production layout/style changes without new evidence and Root decision. Prior A32 STOP remains for 31 other paths."
+}

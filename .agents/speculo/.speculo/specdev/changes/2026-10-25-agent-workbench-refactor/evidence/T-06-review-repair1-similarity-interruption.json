@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-25T23:50:55.301279+00:00",
+  "actual_tool_session": 21400,
+  "actual_tool_exit": 143,
+  "observation": "Unified exec returned exit143; no Root child receipt or scan results were produced; actual log exists and is empty. Do not interpret this as similarity pass or measured code failure. Termination source not established.",
+  "input_manifest": "/tmp/huhu-t06-root-review-repair1-similarity-inputs-v2.json",
+  "raw_log": "/tmp/huhu-t06-root-review-repair1-similarity-v2.log",
+  "raw_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "next": "Same frozen source/reference input, independently recorded process lifetime and original output; previous attempt files retained."
+}

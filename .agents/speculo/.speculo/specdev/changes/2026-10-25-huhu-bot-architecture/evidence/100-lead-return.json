@@ -1,0 +1,45 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T03:00:35.458780+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "reportSha256": "1b6908c8ac0983a7139503ff63fb3f4314adb837b63b349fc1c60e17deb8b632",
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "productionAndTargetedLogsRead": true,
+  "manifestSHA256": "d4872c17988332cf4fae869b54bdc88053ba993cc9a12b76e4ec2b19c0c92dd6",
+  "artifactsChecked": 30,
+  "artifactDrift": [],
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go": "c4abed58b0a9d9278ef1bbf72a841a6b0470a3d510c6088eaf8ef514d5f2c431",
+    "native/huhubot/internal/adapters/outbound/eino/common/engine.go": "84762d74262fa956ff164400609a0deb0c6761ea8ca824ebfda18442d6b7fbea",
+    "native/huhubot/internal/adapters/outbound/eino/chat/body.go": "bb00b4933ca8641f120b4728bfc035b0efe3828fdd0486c630b3de728b20c100",
+    "native/huhubot/tests/contract/engine/chat/checkpoint_test.go": "f0923a8a0b39b8af3e4df1f0d209150f2de38f23aba5d2bdec9d0932b8b877ba",
+    "native/huhubot/tests/contract/engine/chat/review_intent_test.go": "b20f0a7f6a96d5552384ce0345d6962dfe852ff239db60699b04751c34791713",
+    "native/huhubot/tests/contract/engine/chat/review_utf8_test.go": "b2979fff5e83f2ab32678176f71bf1233920dd86baa461f23d275655d98ec994"
+  },
+  "ownSourceDrift": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "100-chat-review-repair",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.06219887899351306,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "returnExit": 0,
+  "disposition": "Candidate and factual evidence accepted; final independent axes and joint ticket gate pending. No user现场 acceptance claimed."
+}

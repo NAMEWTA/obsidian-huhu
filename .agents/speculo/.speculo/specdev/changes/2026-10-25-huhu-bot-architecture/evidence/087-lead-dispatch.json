@@ -1,0 +1,24 @@
+{
+  "task": "087-engine-adapter-preparation",
+  "recordedAt": "2026-10-25T22:22:24.724898+00:00",
+  "nativeTool": "collaboration.spawn_agent",
+  "nativeTarget": "/root/engine_adapter",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "requestedModel": "gpt-6.1-sol",
+  "requestedEffort": "xhigh",
+  "toolReturnedTask": "/root/engine_adapter",
+  "taskSha256": "7aeba54d93d368b612be6e489f7714b6c35c3f62858bbe1ca93e1776501d7418",
+  "mapRevision": 21,
+  "goalRevision": 20,
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "errors": [],
+    "warnings": []
+  },
+  "scope": "Read-only current Engine/credential/budget/checkpoint seams and local protocol test plan; T08 not activated; no product/heavy checks",
+  "nativeAckAt": "2026-10-25T22:24:33.873218+00:00",
+  "structureOnlyNodeExplicitlyAllowed": true,
+  "scopeClarification": "No Node refers to product/test/build work; required read-only validate-dispatch return is authorized and does not occupy heavy verification resource."
+}

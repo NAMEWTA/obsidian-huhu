@@ -8,7 +8,8 @@ sources:
   - USER-DECISION:以Herdr为主要参照增强现有终端并控制复杂度
   - USER-DECISION:Q1-Q10及明确激活S与P的请求
   - CHANGE:ADR-001至ADR-009
-  - CHANGE:LOG-001至LOG-026
+  - CHANGE:LOG-001至LOG-030
+  - USER-DECISION:按plan-spec-map实施并由Agent完成代码验收真实端到端由用户进行
   - USER-DECISION:形成GoalPlan并允许AgentTeam及指定实现review模型分工
   - USER-DECISION:激活T形成最终票据并全面对齐change文档
   - USER-DECISION:陌生功能先检索近两年活跃且许可明确的同类GitHub项目
@@ -36,7 +37,7 @@ HUHU 用户需要在 Obsidian 内组织多个真实终端和 Agent：创建工�
 - 视觉与具体交互由 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md</Path> 负责。用户已明确采用 UI-001/final 的 A 方案，并授权发布 6 条公共设计基线及完成 P/S 封板。项目基线 DESIGN-0001 已发布，精确设计引用见 §7；Ready 表示合同可供下游使用，产品实现仍须按本 Spec 验收。
 - <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/LOG.md</Path> 保存历史与用户原话。设计树保存问题及答复，不是第二份行为合同；其中旧题面/推荐不覆盖最终答复。
 - `inputs/` 原方案是逐字节保全的历史输入。其“明确决策”、旧错误码、类型、SQL 表和实施阶段均不能直接用作当前施工合同；处置映射见 §10。原文不改写，历史角色见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/inputs/README.md</Path>。
-- 本轮源码基线仍是上列 HUHU commit；相关生产路径无未提交差异。已有 `AGENTS.md` / `.gitignore` 改动不属本次写集。Herdr 原研究在 LOG-013；T 补充的开源活动/许可/机制与问题比较见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md</Path>。这些是固定版本只读研究，不是跨平台运行报告。
+- 规划源码基线为上列 HUHU commit；本轮实际执行基线与工作副本以 README Execution Context 为准，无关文件不属写集。Herdr 原研究在 LOG-013；T 补充的开源活动/许可/机制与问题比较见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md</Path>。这些是固定版本只读研究，不是跨平台运行报告。
 
 ### 1.2 用户故事
 
@@ -188,7 +189,7 @@ CLI 需要版本化机器输出、稳定可解析错误分类、stderr 人类诊
 
 创建持久记录成功后才允许关联外部启动；持久化失败不先启动不可追踪的新进程。进程创建与记录写入不是一个原子事务：启动中断或关闭竞争通过运行身份核实、清理，不能伪造“全部回滚”。同一物理 Vault 同设备的并发写入只有一个活动 owner；第二个实例明确冲突，不覆盖 endpoint 或覆盖新记录。文件系统/同步冲突保留两份有效输入并报告，不用空默认值覆盖损坏文件。
 
-导出提供版本化包与清单，包含 HUHU 实际存在的完整业务数据、布局、通知、标注、结果及来源引用；明确列出原生全文、登录凭证、正在运行的进程和可重建缓存等未包含项。导入先预检版本、摘要、身份碰撞、路径和来源，显示范围后原子切换可用版本或保留原状；不会自动启动 Agent，库外目录在目标机器重新核对授权。导出不创造当前不存在的 Run/Outbox 数据。
+导出提供版本化包与清单，包含 HUHU 实际存在的完整业务数据、布局、通知、标注、结果及来源引用；明确列出原生全文、登录凭证、正在运行的进程和可重建缓存等未包含项。导入先预检版本、摘要、身份碰撞、路径和来源，显示范围后原子切换可用版本或保留原状；不会自动启动 Agent，库外目录在目标机器重新核对授权。导出不创造当前不存在的 Run/Outbox 数据。完整性覆盖当前 Vault 已存的工作台相关设备数据、已有自动化定义/运行/调用结果及通知记录和去重回执，范围与源设备清单明确。源设备身份不替换目标设备，导入空目标或同摘要幂等重试；不同内容碰撞先拒绝。存在活动工作或无法安全冻结的 writer 时明确 BUSY，不自动停止；成功导入及后续重启都不重放任务、通知或启动 Agent，导入定义的自动执行待用户明确恢复。设置携带可移植意图，结构化 env/凭据不随包导出，目录与权限确认在目标重新核对。跨 owner 工程接缝见 implementation-contracts §6。
 
 迁移遵循：停止旧 writer → 一致恢复副本 → 转换到新版本暂存 → 计数/身份/引用校验 → 切换单一 writer。保留旧 group/tab 布局；无 Space 的旧记录放入明确命名的导入空间；同 cwd 不合并。无法归属 Vault 的旧 account 索引/标注进入迁移报告与保留副本，不混入新 Drawer，也不静默丢弃。迁移按来源摘要可重入，失败不会重复导入。新版已有新数据后回滚需先停写与备份，旧程序不得写新格式；程序回滚不等于新数据已逆向转换。
 
@@ -203,6 +204,8 @@ PTY/runtime 的 owner 独立于 React、Pane 和 Space 可见性。共享 helper
 关闭先停止接纳、取消未开始启动/等待、拒绝新输入，保留输出与退出事件处理直至确认或有限清理预算耗尽。迟到 spawn 仍须按准确身份清理。Host 崩溃通知各 owner，各自显示失联/查询失败；恢复 helper 不自动重放旧输入。
 
 ### 3.10 兼容与懒加载
+
+用户在 LOG-030 明确选择“必须绑定 Space，旧入口先要求用户选择”。所有受管 Shell/Agent 和现有一次性业务运行都必须在启动前得到当前 Vault 的明确有效 Space ID，不保留无 Space 的业务运行例外。旧交互入口无绑定时先选 Space（无 Space 时先创建；取消不启动），已保存有效绑定可复用；后台自动化没有有效绑定则报告需要配置且不启动，不以 cwd、同名、仅剩一个 Space 或当时界面焦点推断归属。选择在接纳请求前冻结到请求/定义/会话，异步执行中切换界面不改变目标；已绑定目标失效须重新选择，不能自动改到另一 Space。旧结果、原生答案、取消和 invocation 去重保证仍保持，新增目标字段纳入请求身份核对。
 
 | 消费者/旧能力 | 必须保持的外部行为 |
 |---|---|
@@ -289,7 +292,7 @@ PTY/runtime 的 owner 独立于 React、Pane 和 Space 可见性。共享 helper
 
 ## 5. 验证策略
 
-每个 AC 表中的多接缝共同提供必要证据。下面命令是后续实现的真实入口/先例，本次文档工作没有执行产品验收。缺失的新 CLI、Space、邮箱和迁移能力明确为待建设接缝，不把旧测试名称当作已覆盖新行为。
+每个 AC 表中的多接缝共同提供必要证据。下面命令是实现使用的真实入口/先例，实际代码证据由本轮原票 Evidence 提供，真实端到端分工见 §11。缺失的新 CLI、Space、邮箱和迁移能力明确为待建设接缝，不把旧测试名称当作已覆盖新行为。
 
 | 接缝 | 层级 / 入口与触发 | 覆盖合同 | 现有先例或命令 | Evidence 类型 |
 |---|---|---|---|---|
@@ -306,7 +309,7 @@ PTY/runtime 的 owner 独立于 React、Pane 和 Space 可见性。共享 helper
 | V-11 | 构建、协议/帮助、发行与来源核查 | AC-019、062、064 | `pnpm run build`、`pnpm run lint`、`pnpm test:architecture`、`pnpm test:i18n`、`pnpm test:docs`、`pnpm run check:notices`；新 CLI Schema/Skill 一致性待建设 | 实际退出码、生成物差异、兼容与来源声明 |
 | V-12 | P 离线 UI 原型真实浏览器 | AC-061 的设计意图；辅助其他 UI AC | 当前 change 的 DESIGN 与 `prototypes/UI-001`；P 的物化/预览验证工具 | 1440/390、主题/键盘/缩放/状态截图；不能替代 V-08/V-10 |
 
-选择规则以 <Path>.agents/skills/dev/references/testing.md</Path> 为准。生产 TS/TSX 修改才要求相应构建/lint；本次只运行文档与原型检查。没有真实 Provider 或五平台环境时，验收项保持待验证，不能用模拟状态动画或 CI 交叉编译代替。
+选择规则以 <Path>.agents/skills/dev/references/testing.md</Path> 为准。生产 TS/TSX 修改才要求相应构建/lint；本轮按 §11 执行代码检查。真实 Provider 与五平台验收由用户执行，未运行项保持待验证，不能用模拟状态动画或 CI 交叉编译代替。
 
 ## 6. 约束、非功能要求与风险
 
@@ -361,7 +364,7 @@ PTY/runtime 的 owner 独立于 React、Pane 和 Space 可见性。共享 helper
 
 README 只导航与记录整体 Outcome；Spec 管外部行为；CONTEXT 管名词；ADR 管已采纳取舍；DESIGN 管已选择的视觉/交互；原型包管可运行源码/证据；implementation-contracts 管从 Spec 派生的跨票工程约定，Ticket 管本票交付且 Map 只导航；goal-plan 管跨票 Gate/Wave、团队与模型分工、调度和恢复；reference-notes 管研究证据；LOG 与输入只解释出处。后续资料时间较新但没有用户确认或没有对应事实，不能自动覆盖这些 owner。
 
-本次保留原始输入字节与用户原答复。旧待答状态、旧实施阶段和推演仅作为历史，必须与下表处置一起阅读。产品实现前需要同步维护项目 `docs/agent-workbench.md`、`docs/data.md` 及受影响消费者文档；它们目前说明旧实现，不在这次纯规格/设计/票据工作中改成新功能已交付。T-01–18 已按实际改动分配对应文档维护，原型的历史验证记录仍只表示当时结果。
+本次保留原始输入字节与用户原答复。旧待答状态、旧实施阶段和推演仅作为历史，必须与下表处置一起阅读。产品实现前需要同步维护项目 `docs/agent-workbench.md`、`docs/data.md` 及受影响消费者文档；它们目前说明旧实现，随本轮对应生产切片更新，尚未实现的能力不提前写成已交付。T-01–18 已按实际改动分配对应文档维护，原型的历史验证记录仍只表示当时结果。
 
 ## 10. 原始方案处置映射
 
@@ -433,3 +436,10 @@ README 只导航与记录整体 Outcome；Spec 管外部行为；CONTEXT 管名�
 | T32 CLI/Skill 不匹配 | AC-019、064 |
 
 原文附录 A 的任务类型、附录 B 的 `run submit` 与幂等任务示例、§16 的结构化 Provider/事务库实施顺序均由上述新合同替代。原文性能数字是历史建议。原文“仅同 Space”、Agent 自建协作者权限推演和未来独立 Chat 不再是当前限制。代码路径与研究证据保留在 LOG，不因此宣称已实现。
+
+
+## 11. 本轮实施与验收分工（LOG-027）
+
+用户明确授权按现有 plan/spec/map 实施，并指定“最后的整体验收代码层面即可，真实的端到端的验收用户自己进行”。本轮 Agent 完成全部生产实现、故障/竞态与兼容自动化、类型/架构/样式/构建检查、逐票及整体独立双轴代码审查；真实 Obsidian、真实 Provider、人类原生审批、五平台实机主链由用户执行。这个最新分工优先于此前要求 Lead 运行真实 E2E 的文字。
+
+64 项 AC、五种正式平台和 DESIGN 行为范围保持；自动化证据只说明被测接缝，不冒充真实宿主/Provider/五平台通过。本轮 Ticket 的 done 和 Goal 的 completed 指代码交付完成，须将人工场景、候选版本、步骤和预期结果交给用户，并明确各项未执行。产品实机验收与正式支持声明仍待用户结果，不能写成已通过。各票的自动化验收应在该能力实际产生的切片完成，跨票组合在最终生产者补齐，具体分工见 Map §4。

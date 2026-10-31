@@ -1,0 +1,141 @@
+{
+  "task": "T-04 implementation B / stop, archive and recovery UI",
+  "actual_agent": "/root/prepare_t02",
+  "dispatch_tool": "collaboration.followup_task",
+  "prepared_at": "2026-10-25T09:50:20.667018+00:00",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "Existing actual handle inherits original user-requested model/effort",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-015",
+  "map_revision": 16,
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "020776efcff1410f3d85ec0d98fa9d6fee0860118b772f1de2fec1dddceaf5e6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "71bf6c23c1c6e4ee64492a1a8d5e0c9212b6aa7e63fa72ba7d33f9bd8472f34d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "0ba184acfcccce67a6b49374b219904c6a500e0136df271a9705f8cf131f6b2f"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03.md",
+      "sha256": "07d5e6adcdde1624028fedc9bf9b0b449100ebfb0a169ddf6fa771a7c3468525"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-prior-delivery.json",
+      "sha256": "ee88a521ee4a88730afc84f00fd55bb1cea75a94c588e6a47df0fe8452cf874a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-api-frozen.md",
+      "sha256": "230cbdf3866532c95c796a6b9ca72598bd2cb189c129b021b7a5684df11d46fd"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-business-api-observation.json",
+      "sha256": "8b6ccf292efbac4ceec597903718740885c8c8e7f12a8cdee6b89bd25522091d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-ui-preflight.md",
+      "sha256": "f0c7bf8f71e0a8a0c6b204b6a063f26e3eee42cddfdc7fd6f964dc480db692f8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-public-api-v2.json",
+      "sha256": "9ae52d4a434b39c88af1c0ed0c603eefb791cfe067c936e88e8dd26565669af0"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "682ae35d1b9ef73146ad4fcf29791ceff05a5b7870f6fd575b7cfa3384d83911"
+    }
+  ],
+  "prerequisite": "T-03 done; A actual DTO/four public methods/en-zh keys landed and Root readback confirmed; A internals and C native remain active in nonoverlapping write paths",
+  "write_allocation": [
+    "src/modules/agent/ui/sidebar/**",
+    "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+    "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+    "src/modules/agent/ui/terminal/confirm.tsx",
+    "src/modules/agent/ui/terminal/confirm.dom.test.tsx"
+  ],
+  "conditional_paths": "confirm.tsx and confirm.dom.test.tsx only if actual independent-root behavior is changed; prefer existing in-page ConfirmFn with title/action. AgentWorkspacePage/workspace-context not unlocked: report concrete need first.",
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal change records"
+  ],
+  "not_unlocked": [
+    "services/core/i18n/shared UI/CSS source/TabStrip/create/other modules/docs/native/platform/dependencies"
+  ],
+  "checks": "Scoped DOM, scoped lint and isolated real Chrome production-component harness; no global scans/build/native/helper processes. Clone T03 harness to T04 /tmp path; retain raw failure/pass logs, screenshots and input SHAs. Root performs final generation/global checks after all source writers stop.",
+  "contracts": [
+    "Freeze exact Space/Session/runtime or original ArchivePlan before confirmation; cancel/ESC/hide/unmount zero stop/archive/spawn; no automatic changed-scope retry",
+    "Keep close view detach-only and all existing menus/Browser/page/material/split/search behavior",
+    "Use snapshots and structured results; persistently show partial/unknown/per-row failure with exact target; only confirmed and persisted stop, or archived result, is success",
+    "unknown/disconnected/restored unconfirmed cannot blind continue; canRequestContinue permits explicit request only, not direct spawn",
+    "Origin document/portal/focus visible and guarded; sync duplicate-submit guard; old completion never closes new UI or steals focus",
+    "All user text t() with A-owned en/zh keys; request missing strings from A through Root rather than modify dictionary"
+  ],
+  "design": {
+    "revision": 1,
+    "digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+    "pages": [
+      "PAGE-001",
+      "PAGE-003",
+      "PAGE-004"
+    ],
+    "scope": "Local stop/archive/recovery states only, no T09 redesign/T13 browser/T16 backup"
+  },
+  "returns": [
+    "/tmp/huhu-t04-b-handoff.md",
+    "/tmp/huhu-t04-b-source.json",
+    "/tmp/huhu-t04-b-checks.json",
+    "/tmp/huhu-t04-b-visual/"
+  ],
+  "real_e2e": "User-owned real Obsidian/Provider/five-platform; fixture-backed Chrome verifies production UI only",
+  "forbidden": "unassigned files/Git/PR/remote writes/release/archive/permanent knowledge/dependency changes/other change/node_modules",
+  "dispatched": true,
+  "actual_tool": "collaboration.followup_task",
+  "actual_handle": "/root/prepare_t02",
+  "dispatch_receipt_observed_at": "2026-10-25T09:50:50.746938+00:00"
+}

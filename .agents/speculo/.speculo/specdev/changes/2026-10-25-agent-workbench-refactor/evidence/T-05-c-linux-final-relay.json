@@ -1,0 +1,9 @@
+{
+  "recorded_at": "2026-10-25T15:09:42.057837+00:00",
+  "tool": "collaboration.send_message",
+  "target": "/root/prepare_t03",
+  "observed": "Root actually sent final immutable helper path/SHA after audit; A subsequent message acknowledged ebbf binary. This record is later than actual tool action.",
+  "binary": "/tmp/huhu-t05-c-linux-final-20261025T145617Z",
+  "sha256": "ebbf169532e29e5eaeb706a1ec286b8d13285d2b1b0a2da1160c28df2dbbf0a6",
+  "audit": "T-05-c-linux-final-root-audit.json"
+}

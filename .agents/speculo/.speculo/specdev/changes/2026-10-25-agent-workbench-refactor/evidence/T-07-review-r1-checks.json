@@ -1,0 +1,139 @@
+{
+  "reviewer": "codex:/root/review_t07_r1",
+  "utc": "2026-10-26T03:35:20.390927+00:00",
+  "input_sha256": "7e21cc86a21893389483888b0f263de1175c2a349d7524b83fec7dbba652a0c7",
+  "results": {
+    "standards": "request-changes",
+    "specification": "request-changes"
+  },
+  "unique_findings": 3,
+  "sources_modified": false,
+  "source_stopped": true,
+  "verification": [
+    {
+      "name": "frozen-input-before",
+      "command": [
+        "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+        "/tmp/huhu-t07-review-r1-verify.mjs"
+      ],
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r1-freeze-before.json"
+    },
+    {
+      "name": "cli-boundary-probes-first-recording-attempt",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r1-cli-probe.py"
+      ],
+      "exit": 1,
+      "reason": "Probe evidence JSON serialization rejected bytes argv; product binaries ran; only /tmp recorder subsequently adjusted."
+    },
+    {
+      "name": "cli-boundary-probes",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r1-cli-probe.py"
+      ],
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r1-cli-probe.json",
+      "meaning": "counterexamples recorded, not product pass"
+    },
+    {
+      "name": "timeout-probe",
+      "command": [
+        "python3",
+        "/tmp/huhu-t07-review-r1-timeout-probe.py"
+      ],
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r1-timeout-probe.json",
+      "meaning": "counterexample recorded; synthetic Host protocol fixture, not business E2E"
+    },
+    {
+      "name": "required-existing-production-loop",
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r1-regression.json",
+      "files": 3,
+      "passed": 4,
+      "skipped": 0
+    },
+    {
+      "name": "frozen-input-after",
+      "command": [
+        "/home/wta/.volta/tools/image/node/26.11.1/bin/node",
+        "/tmp/huhu-t07-review-r1-verify.mjs"
+      ],
+      "exit": 0,
+      "receipt": "/tmp/huhu-t07-review-r1-freeze.json"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/huhu-t07-review-r1-task.md",
+      "bytes": 11015,
+      "sha256": "1e299005f9d3d150daf10648565cfbb3b6a7b9187cc64619dcfe54a62e3f0888"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-verify.mjs",
+      "bytes": 1681,
+      "sha256": "69cc8ff74d82ce15fa93220f883e49169e5071fbb31b6d0afd1c0856717a14f2"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-freeze-before.json",
+      "bytes": 550,
+      "sha256": "64d3da982d6e97dc5544450d8b6381fdc9e5b7932d4269b1b1a66a1f761608fe"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-freeze.json",
+      "bytes": 550,
+      "sha256": "551b997e243528a5962276d716354057b74f17cdd893085f502fa6c8c73d601d"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-cli-probe.py",
+      "bytes": 2221,
+      "sha256": "f4aa8a594f92ca9da2516cd16483891e9f46efb934a95bcea1f7e5cc1f2d5b79"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-cli-probe.json",
+      "bytes": 33874,
+      "sha256": "33a6f3e42065fa77fde08906947ddc5b242c3ef1fd9a8b8005c4110ab4a891d3"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-timeout-probe.py",
+      "bytes": 2952,
+      "sha256": "086c42a143ee7f8b53f11f9756ac9caebb53bf906df2a4ecc293c761b837b2d8"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-timeout-probe.json",
+      "bytes": 2894,
+      "sha256": "327680db8dc7b0a85ad35596a55c80cbb8a3d33d3139a1517b294430dd4add1f"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-run-regression.py",
+      "bytes": 1143,
+      "sha256": "fd3e14e2285f4ac79357d20ae0868b861c4af480f68b369c2f4f8c2593dc08d4"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-regression.json",
+      "bytes": 563,
+      "sha256": "71ccae4fc2624d830e16fc1d218d72b886d099616ca651cace831d403e0274b9"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-regression.log",
+      "bytes": 218,
+      "sha256": "e629b60e9176619dc5464f1a6d45a6463adc2dafdc99246adb27b5472784d5a0"
+    },
+    {
+      "path": "/tmp/huhu-t07-review-r1-report.md",
+      "bytes": 15217,
+      "sha256": "2cefc3c1766cfc7bbb9c5cd11500fee6887e50975a3f7d0f3656f11dac563a7b"
+    }
+  ],
+  "limitations": [
+    "No product/official artifact writes",
+    "No actual Provider/Obsidian/user Vault/five-platform E2E",
+    "No new Rust compilation; used frozen final binaries",
+    "No new full555 green claim; original554pass+targeted18pass reused",
+    "No GPL source read",
+    "No delegation"
+  ]
+}

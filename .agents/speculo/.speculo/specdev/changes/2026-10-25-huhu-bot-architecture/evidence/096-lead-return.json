@@ -1,0 +1,32 @@
+{
+  "observer": "native:/root",
+  "reportSHA256": "436e6a18f8264c535558cdbd664da8fc01d599209b48e089c45f1cb0a4bf88fb",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportAndPatchAndRawLogRead": true,
+  "ownFiles": {
+    "native/huhubot/tests/contract/chat/workflow_test.go": "d1b559bf42090e6b7ad138cf6af8dad08e042203a683675003eda8b221390378"
+  },
+  "sourceDrift": [],
+  "missingLinks": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "096-default-model-fixture",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "precise one-test maintenance candidate received; T03 joins T08 final independent review/code gate; production unchanged"
+}

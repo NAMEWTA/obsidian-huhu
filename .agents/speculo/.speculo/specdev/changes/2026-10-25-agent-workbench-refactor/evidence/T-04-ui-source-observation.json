@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "task": "T-04 UI READ-ONLY PREFLIGHT",
+  "observed_at_utc": "2026-10-25T09:30:02.547871+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "map_revision_observed": 15,
+  "source_mutation": false,
+  "tests_build_lint_browser_native_helper_provider_git": "NOT RUN",
+  "public_interface": "Await A frozen T04 DTO/methods/en-zh keys; T03 current DTO is observation, not a proposed T04 signature",
+  "warning": "Root formalizes T04 scope/interfaces concurrently. Hashes are point-in-time observations, not candidate freeze. T03 is done per Root; no independent review performed.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/SKILL.md",
+      "bytes": 3757,
+      "sha256": "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "bytes": 6488,
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11452,
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/dev/references/obsidian-api.md",
+      "bytes": 8356,
+      "sha256": "9fac8f21f8d4806331176cc8bf62cd1ffff94aaec3b58ba5a6c06bf348479417",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "bytes": 4304,
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "bytes": 9072,
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "bytes": 8182,
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31587,
+      "sha256": "65f7f6601734b1bf0604625da6641ec419321bee946adbcada55dc09165a72e1",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "bytes": 17143,
+      "sha256": "360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "bytes": 15100,
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "bytes": 1234,
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytes": 4182,
+      "sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytes": 37279,
+      "sha256": "d14a343f11667849790364ae699ef04327b1c9c853671edd7a4556a074d88aae",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "bytes": 16158,
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytes": 16536,
+      "sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "bytes": 3959,
+      "sha256": "9cfb58d9798b82c59b29bfedabdfb1fa816d64eb9ad9ee9fe5afd9071ef4ddaa",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytes": 19226,
+      "sha256": "d8486da50c46e19a8ac6b6b8dcb8b5a02489ff2146042e62580fdeb761828f39",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "bytes": 8726,
+      "sha256": "8b260226e290c7aa1bb973fa30a48a90ccf608d2616ed81aaf58e6c5cc798e4f",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytes": 17382,
+      "sha256": "fc530751695b834a3081aec8f3fcac12d17b0f387e96905813f9c9106d4e45a6",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "bytes": 8431,
+      "sha256": "7a2302e35d414269bd1deaeb5d44fa7116fc0e764e132b048303027d95a3aef8",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/confirm.tsx",
+      "bytes": 3337,
+      "sha256": "5cfde3b4d065a365dbc01436f02dbd87bb33f1471c09b117b6f84179523b2ee2",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/workspace-context.tsx",
+      "bytes": 813,
+      "sha256": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "bytes": 12540,
+      "sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+      "bytes": 5634,
+      "sha256": "7b0d025c658348dd3d763fa5ff7501381b894cadd365336645c8b8daccc90eed",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/ui/components/huhu/ConfirmDialog.tsx",
+      "bytes": 2019,
+      "sha256": "8e0ff38d944093df71fe306be8b328a3db30eca332d73cae7f1981d52198ac56",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/ui/components/alert-dialog.tsx",
+      "bytes": 3919,
+      "sha256": "e1d63d9e3827eb1b1e8c580d67f5c386a058dc3a6427a1482ac964594793d8f9",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "bytes": 61533,
+      "sha256": "9c559aa6711bdaf2473df4c9ac4b657b82662e28dde3d9bf5a8c4a3ea0776ee3",
+      "observation": "read relevant source/rules or SHA-only context; not a check result"
+    },
+    {
+      "path": "/tmp/huhu-t03-b-visual.mjs",
+      "bytes": 21455,
+      "sha256": "ab6dc2bdf0823e8dae6b879d151a2068b51c6f82ec06e8f30472fa1e09057675",
+      "observation": "static read only; harness not executed"
+    },
+    {
+      "path": "/tmp/huhu-t03-ui-handoff.md",
+      "bytes": 6075,
+      "sha256": "c189bbb34c6d769fad4464cb339fc500acd0267ab6eb4a7f74c7f2d69343ea55",
+      "observation": "static read only; harness not executed"
+    }
+  ],
+  "proposed_absent_tests": [
+    "src/modules/agent/ui/sidebar/SpaceNavigation.dom.test.tsx",
+    "src/modules/agent/ui/terminal/confirm.dom.test.tsx"
+  ]
+}

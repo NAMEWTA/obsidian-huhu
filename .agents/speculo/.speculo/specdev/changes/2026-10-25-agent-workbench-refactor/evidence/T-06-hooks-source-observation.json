@@ -1,0 +1,1291 @@
+{
+  "started_at": "2026-10-25T15:09:47.608235+00:00",
+  "scope": "read-only T06 hook/detection/launch contract proposal; not implementation or acceptance",
+  "observations": [
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "utc": "2026-10-25T15:09:47.608460+00:00",
+      "lines": [
+        1,
+        15
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "utc": "2026-10-25T15:09:47.608544+00:00",
+      "lines": [
+        1,
+        243
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235,
+      "utc": "2026-10-25T15:09:47.608576+00:00",
+      "lines": [
+        1,
+        19
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "utc": "2026-10-25T15:09:47.608641+00:00",
+      "lines": [
+        1,
+        79
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e",
+      "bytes": 31828,
+      "utc": "2026-10-25T15:09:47.608819+00:00",
+      "lines": [
+        1,
+        140
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "sha256": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "bytes": 16717,
+      "utc": "2026-10-25T15:09:47.608885+00:00",
+      "lines": [
+        1,
+        103
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-ui-after-t05-readonly.md",
+      "sha256": "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a",
+      "bytes": 10032,
+      "utc": "2026-10-25T15:09:47.608983+00:00",
+      "lines": [
+        1,
+        68
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "bytes": 12306,
+      "utc": "2026-10-25T15:10:25.133308+00:00",
+      "lines": [
+        1,
+        276
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "bytes": 1027,
+      "utc": "2026-10-25T15:10:25.133414+00:00",
+      "lines": [
+        1,
+        20
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/hook-entries.ts",
+      "sha256": "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282",
+      "bytes": 2178,
+      "utc": "2026-10-25T15:10:25.133442+00:00",
+      "lines": [
+        1,
+        48
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190,
+      "utc": "2026-10-25T15:10:25.133469+00:00",
+      "lines": [
+        1,
+        23
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/detection/probe.ts",
+      "sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "bytes": 558,
+      "utc": "2026-10-25T15:10:25.133493+00:00",
+      "lines": [
+        1,
+        12
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/detection/merge.ts",
+      "sha256": "0f78b190634b7ae5c07061fbf7643d189da48b7149b35eab92898ae9b68b0ce3",
+      "bytes": 1881,
+      "utc": "2026-10-25T15:10:25.133518+00:00",
+      "lines": [
+        1,
+        46
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "bytes": 6819,
+      "utc": "2026-10-25T15:10:40.547240+00:00",
+      "lines": [
+        1,
+        184
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "sha256": "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714",
+      "bytes": 4250,
+      "utc": "2026-10-25T15:10:40.547361+00:00",
+      "lines": [
+        1,
+        80
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/launch/types.ts",
+      "sha256": "0beab97c9e21f390d5d32327443021ceaffcda34a27a526d2a3315651c5435b0",
+      "bytes": 1346,
+      "utc": "2026-10-25T15:10:40.547413+00:00",
+      "lines": [
+        1,
+        50
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/launch/catalog.ts",
+      "sha256": "f81a413eecb90392d46020e1348895a180ebf3ae0db712d46819ca444dc3a35d",
+      "bytes": 5137,
+      "utc": "2026-10-25T15:10:40.547448+00:00",
+      "lines": [
+        1,
+        164
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743,
+      "utc": "2026-10-25T15:12:12.729230+00:00",
+      "lines": [
+        166,
+        205
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743,
+      "utc": "2026-10-25T15:12:12.729577+00:00",
+      "lines": [
+        868,
+        940
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "bytes": 28690,
+      "utc": "2026-10-25T15:12:12.729736+00:00",
+      "lines": [
+        30,
+        113
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "bytes": 28690,
+      "utc": "2026-10-25T15:12:12.729841+00:00",
+      "lines": [
+        220,
+        250
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "bytes": 28690,
+      "utc": "2026-10-25T15:12:12.729952+00:00",
+      "lines": [
+        482,
+        548
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "bytes": 29735,
+      "utc": "2026-10-25T15:12:12.730089+00:00",
+      "lines": [
+        115,
+        220
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "bytes": 29735,
+      "utc": "2026-10-25T15:12:12.730228+00:00",
+      "lines": [
+        415,
+        450
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/runtime-environment.ts",
+      "sha256": "6478d91123fb48c2011209bd986ada3852a816ec07b25fe313c818a97b807f27",
+      "bytes": 859,
+      "utc": "2026-10-25T15:12:12.730304+00:00",
+      "lines": [
+        1,
+        15
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "bytes": 6060,
+      "utc": "2026-10-25T15:12:12.730363+00:00",
+      "lines": [
+        1,
+        91
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "bytes": 29735,
+      "utc": "2026-10-25T15:12:41.709628+00:00",
+      "lines": [
+        600,
+        635
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "bytes": 23866,
+      "utc": "2026-10-25T15:12:41.709757+00:00",
+      "lines": [
+        170,
+        245
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "bytes": 23866,
+      "utc": "2026-10-25T15:12:41.709849+00:00",
+      "lines": [
+        475,
+        525
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "sha256": "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff",
+      "bytes": 651,
+      "utc": "2026-10-25T15:12:41.709897+00:00",
+      "lines": [
+        1,
+        13
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+      "sha256": "1aa5f2f2ea3f8baac9136b42e0b89afd5b81e008b74686e2a7503566d839fedc",
+      "bytes": 3268,
+      "utc": "2026-10-25T15:12:41.709921+00:00",
+      "lines": [
+        1,
+        53
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+      "sha256": "503c7c10a1d661196b984ef08b9e506157e6522e2c65a325107641f672633a7a",
+      "bytes": 4245,
+      "utc": "2026-10-25T15:12:41.709970+00:00",
+      "lines": [
+        1,
+        97
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "utc": "2026-10-25T15:12:41.710194+00:00",
+      "lines": [
+        111,
+        135
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "utc": "2026-10-25T15:12:41.710416+00:00",
+      "lines": [
+        228,
+        250
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "utc": "2026-10-25T15:12:41.710503+00:00",
+      "lines": [
+        1,
+        68
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573,
+      "utc": "2026-10-25T15:12:41.710587+00:00",
+      "lines": [
+        25,
+        58
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-preflight.md",
+      "sha256": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "bytes": 9271,
+      "utc": "2026-10-25T15:12:41.710645+00:00",
+      "lines": [
+        1,
+        62
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "bytes": 21448,
+      "utc": "2026-10-25T15:13:31.936378+00:00",
+      "lines": [
+        1,
+        80
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "bytes": 21448,
+      "utc": "2026-10-25T15:13:31.936610+00:00",
+      "lines": [
+        279,
+        345
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "bytes": 8135,
+      "utc": "2026-10-25T15:13:31.936725+00:00",
+      "lines": [
+        30,
+        90
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-homes.ts",
+      "sha256": "710a54b145c0d53529577bf4a747101acd78f0dd339ca85a1d1818d3018803a7",
+      "bytes": 5093,
+      "utc": "2026-10-25T15:13:31.936775+00:00",
+      "lines": [
+        1,
+        90
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "bytes": 5554,
+      "utc": "2026-10-25T15:13:31.936838+00:00",
+      "lines": [
+        1,
+        100
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.test.ts",
+      "sha256": "b01a3a2c19978c602053b3096fb0d5857619de3bfaa57b72688d4632f6c58635",
+      "bytes": 24605,
+      "utc": "2026-10-25T15:15:59.793667+00:00",
+      "matched_lines": [
+        34,
+        72,
+        92,
+        112,
+        143,
+        162,
+        249,
+        315,
+        346,
+        364
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.test.ts",
+      "sha256": "063bfe987e633b6ec9be3f40df99aabae0b17f79a9a9c11d0d28979722e19206",
+      "bytes": 3679,
+      "utc": "2026-10-25T15:15:59.793772+00:00",
+      "matched_lines": [
+        31,
+        39,
+        49
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-account.test.ts",
+      "sha256": "6995ad38a10f291d338b3cd171bda9a180528c75813efa88e436110c09261ce6",
+      "bytes": 5250,
+      "utc": "2026-10-25T15:15:59.793858+00:00",
+      "matched_lines": [
+        19,
+        41
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.test.ts",
+      "sha256": "28dec264f3f4efdc267bd1d1bf93f76b06b18c2500536467fdd36dcb3a75b641",
+      "bytes": 7293,
+      "utc": "2026-10-25T15:15:59.793970+00:00",
+      "matched_lines": [
+        10,
+        21,
+        36,
+        47,
+        55,
+        73,
+        89
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.test.ts",
+      "sha256": "e095009403a7c51f331b9626c042a376d01bb399e11cddd49b767c4edf91976f",
+      "bytes": 1061,
+      "utc": "2026-10-25T15:15:59.794002+00:00",
+      "matched_lines": [
+        4
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278,
+      "utc": "2026-10-25T15:15:59.794037+00:00",
+      "lines": [
+        1,
+        82
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "utc": "2026-10-25T15:15:59.794141+00:00",
+      "lines": [
+        1,
+        100
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.ts",
+      "sha256": "a4dc83f347ed4aa4aa271e6624cb744295225d1368d49052193851071d765da0",
+      "bytes": 1776,
+      "utc": "2026-10-25T15:15:59.794165+00:00",
+      "lines": [
+        1,
+        46
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "bytes": 8135,
+      "utc": "2026-10-25T15:15:59.794192+00:00",
+      "lines": [
+        1,
+        30
+      ],
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "bytes": 29735,
+      "utc": "2026-10-25T15:15:59.794292+00:00",
+      "lines": [
+        32,
+        60
+      ],
+      "active_writer": true
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4",
+      "bytes": 4658,
+      "utc": "2026-10-25T15:17:34.924520+00:00",
+      "read_mode": "scoped search only",
+      "pattern": "foreground|tcgetpgrp|tpgid|processInfo|process-info|foregroundPid",
+      "matches": 0,
+      "active_writer": false
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a",
+      "bytes": 33255,
+      "utc": "2026-10-25T15:17:34.924616+00:00",
+      "read_mode": "scoped search only",
+      "pattern": "foreground|tcgetpgrp|tpgid|processInfo|process-info|foregroundPid",
+      "matches": 0,
+      "active_writer": false
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560",
+      "bytes": 12215,
+      "utc": "2026-10-25T15:17:34.924658+00:00",
+      "read_mode": "scoped search only",
+      "pattern": "foreground|tcgetpgrp|tpgid|processInfo|process-info|foregroundPid",
+      "matches": 0,
+      "active_writer": false
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41",
+      "bytes": 69575,
+      "utc": "2026-10-25T15:17:34.924764+00:00",
+      "read_mode": "scoped search only",
+      "pattern": "foreground|tcgetpgrp|tpgid|processInfo|process-info|foregroundPid",
+      "matches": 0,
+      "active_writer": false
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/resolver.ts",
+      "sha256": "0f709905aacf7207de66fa77492fd04d78733b96e8a441bc109c114f777b3b50",
+      "bytes": 2328,
+      "utc": "2026-10-25T15:21:27.401085+00:00",
+      "lines": [
+        1,
+        61
+      ],
+      "active_writer": false
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-source-observation.json",
+      "sha256": "72280ca7d0e27e94cd0f05d94e738b113b28b11155a942441365de3087b260b9",
+      "bytes": 7709,
+      "utc": "2026-10-25T15:21:27.401153+00:00",
+      "lines": [
+        1,
+        185
+      ],
+      "active_writer": false
+    }
+  ],
+  "sources": [
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7873,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "observed_at_utc": "2026-10-25T15:21:27.401373+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "bytes": 19768,
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "observed_at_utc": "2026-10-25T15:21:27.401477+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "observed_at_utc": "2026-10-25T15:21:27.401506+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-preflight.md",
+      "bytes": 9271,
+      "sha256": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "observed_at_utc": "2026-10-25T15:21:27.401535+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-source-observation.json",
+      "bytes": 7709,
+      "sha256": "72280ca7d0e27e94cd0f05d94e738b113b28b11155a942441365de3087b260b9",
+      "observed_at_utc": "2026-10-25T15:21:27.401557+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "72280ca7d0e27e94cd0f05d94e738b113b28b11155a942441365de3087b260b9"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-ui-after-t05-readonly.md",
+      "bytes": 10032,
+      "sha256": "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a",
+      "observed_at_utc": "2026-10-25T15:21:27.401583+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "bytes": 17046,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "observed_at_utc": "2026-10-25T15:21:27.401610+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "bytes": 13573,
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "observed_at_utc": "2026-10-25T15:21:27.401636+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "bytes": 55822,
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "observed_at_utc": "2026-10-25T15:21:27.401702+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "bytes": 16717,
+      "sha256": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "observed_at_utc": "2026-10-25T15:21:27.401728+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "bytes": 31828,
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e",
+      "observed_at_utc": "2026-10-25T15:21:27.401766+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "observed_at_utc": "2026-10-25T15:21:27.401784+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "observed_at_utc": "2026-10-25T15:21:27.401803+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 5278,
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "observed_at_utc": "2026-10-25T15:21:27.401819+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "bytes": 12215,
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560",
+      "observed_at_utc": "2026-10-25T15:21:27.401841+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "bytes": 69575,
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41",
+      "observed_at_utc": "2026-10-25T15:21:27.401895+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "bytes": 33255,
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a",
+      "observed_at_utc": "2026-10-25T15:21:27.401941+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/detection/merge.ts",
+      "bytes": 1881,
+      "sha256": "0f78b190634b7ae5c07061fbf7643d189da48b7149b35eab92898ae9b68b0ce3",
+      "observed_at_utc": "2026-10-25T15:21:27.401959+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "0f78b190634b7ae5c07061fbf7643d189da48b7149b35eab92898ae9b68b0ce3"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/launch/catalog.ts",
+      "bytes": 5137,
+      "sha256": "f81a413eecb90392d46020e1348895a180ebf3ae0db712d46819ca444dc3a35d",
+      "observed_at_utc": "2026-10-25T15:21:27.401979+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "f81a413eecb90392d46020e1348895a180ebf3ae0db712d46819ca444dc3a35d"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.test.ts",
+      "bytes": 1061,
+      "sha256": "e095009403a7c51f331b9626c042a376d01bb399e11cddd49b767c4edf91976f",
+      "observed_at_utc": "2026-10-25T15:21:27.401994+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "e095009403a7c51f331b9626c042a376d01bb399e11cddd49b767c4edf91976f"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/launch/flags.ts",
+      "bytes": 1776,
+      "sha256": "a4dc83f347ed4aa4aa271e6624cb744295225d1368d49052193851071d765da0",
+      "observed_at_utc": "2026-10-25T15:21:27.402010+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "a4dc83f347ed4aa4aa271e6624cb744295225d1368d49052193851071d765da0"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/launch/types.ts",
+      "bytes": 1346,
+      "sha256": "0beab97c9e21f390d5d32327443021ceaffcda34a27a526d2a3315651c5435b0",
+      "observed_at_utc": "2026-10-25T15:21:27.402026+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "0beab97c9e21f390d5d32327443021ceaffcda34a27a526d2a3315651c5435b0"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytes": 6060,
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "observed_at_utc": "2026-10-25T15:21:27.402047+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.test.ts",
+      "bytes": 7293,
+      "sha256": "28dec264f3f4efdc267bd1d1bf93f76b06b18c2500536467fdd36dcb3a75b641",
+      "observed_at_utc": "2026-10-25T15:21:27.402068+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "28dec264f3f4efdc267bd1d1bf93f76b06b18c2500536467fdd36dcb3a75b641"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/accounts.ts",
+      "bytes": 8135,
+      "sha256": "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda",
+      "observed_at_utc": "2026-10-25T15:21:27.402085+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "4b4d2273dd823ac110bfdea4916d8c74b5e1a46ce4ac006184967284fd7c2dda"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/resolver.ts",
+      "bytes": 2328,
+      "sha256": "0f709905aacf7207de66fa77492fd04d78733b96e8a441bc109c114f777b3b50",
+      "observed_at_utc": "2026-10-25T15:21:27.402099+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "0f709905aacf7207de66fa77492fd04d78733b96e8a441bc109c114f777b3b50"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-account.test.ts",
+      "bytes": 5250,
+      "sha256": "6995ad38a10f291d338b3cd171bda9a180528c75813efa88e436110c09261ce6",
+      "observed_at_utc": "2026-10-25T15:21:27.402115+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "6995ad38a10f291d338b3cd171bda9a180528c75813efa88e436110c09261ce6"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/agents/system-homes.ts",
+      "bytes": 5093,
+      "sha256": "710a54b145c0d53529577bf4a747101acd78f0dd339ca85a1d1818d3018803a7",
+      "observed_at_utc": "2026-10-25T15:21:27.402132+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "710a54b145c0d53529577bf4a747101acd78f0dd339ca85a1d1818d3018803a7"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/detection/probe.ts",
+      "bytes": 558,
+      "sha256": "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7",
+      "observed_at_utc": "2026-10-25T15:21:27.402146+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "785fa289cb981a0f3e7573e687ac610146ccaa19ff3bfcf3e32dfdde4c4359b7"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.test.ts",
+      "bytes": 3268,
+      "sha256": "1aa5f2f2ea3f8baac9136b42e0b89afd5b81e008b74686e2a7503566d839fedc",
+      "observed_at_utc": "2026-10-25T15:21:27.402162+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "1aa5f2f2ea3f8baac9136b42e0b89afd5b81e008b74686e2a7503566d839fedc"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/automation-hooks.ts",
+      "bytes": 12306,
+      "sha256": "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20",
+      "observed_at_utc": "2026-10-25T15:21:27.402184+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "b503d0028b4b5f7f883eb1cb8873ee9bda1fff79fc9a898d8afadc482b9f3f20"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.test.ts",
+      "bytes": 3679,
+      "sha256": "063bfe987e633b6ec9be3f40df99aabae0b17f79a9a9c11d0d28979722e19206",
+      "observed_at_utc": "2026-10-25T15:21:27.402199+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "063bfe987e633b6ec9be3f40df99aabae0b17f79a9a9c11d0d28979722e19206"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/event-payload.ts",
+      "bytes": 1027,
+      "sha256": "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d",
+      "observed_at_utc": "2026-10-25T15:21:27.402212+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "2ec1fc3ddfcd34d39625ce44c1839e371dd1ac38267889b5fed947fa4cc57c9d"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/hook-entries.ts",
+      "bytes": 2178,
+      "sha256": "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282",
+      "observed_at_utc": "2026-10-25T15:21:27.402227+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "29b57b30b670bc9631f31dc5efeadafa0cf9907d84cc377221fa88b410248282"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.test.ts",
+      "bytes": 4245,
+      "sha256": "503c7c10a1d661196b984ef08b9e506157e6522e2c65a325107641f672633a7a",
+      "observed_at_utc": "2026-10-25T15:21:27.402243+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "503c7c10a1d661196b984ef08b9e506157e6522e2c65a325107641f672633a7a"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/native-extensions.ts",
+      "bytes": 4250,
+      "sha256": "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714",
+      "observed_at_utc": "2026-10-25T15:21:27.402277+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "284b4244419a560f0f2c08d905cab6fb31cfef528f85673d3d5f7a53fbca2714"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "bytes": 651,
+      "sha256": "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff",
+      "observed_at_utc": "2026-10-25T15:21:27.402297+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "33d68446fe707730dbe0b1938135cbb60574b0413871fca4cc80d78ded99b3ff"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.test.ts",
+      "bytes": 24605,
+      "sha256": "b01a3a2c19978c602053b3096fb0d5857619de3bfaa57b72688d4632f6c58635",
+      "observed_at_utc": "2026-10-25T15:21:27.402462+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "b01a3a2c19978c602053b3096fb0d5857619de3bfaa57b72688d4632f6c58635"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/system-hooks.ts",
+      "bytes": 21448,
+      "sha256": "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b",
+      "observed_at_utc": "2026-10-25T15:21:27.402495+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "dd4d6f33c7667749df93afabaad682425f6b9bdaf43b1a1b38fca39d45b2718b"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/pty/runtime-environment.ts",
+      "bytes": 859,
+      "sha256": "6478d91123fb48c2011209bd986ada3852a816ec07b25fe313c818a97b807f27",
+      "observed_at_utc": "2026-10-25T15:21:27.402511+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "6478d91123fb48c2011209bd986ada3852a816ec07b25fe313c818a97b807f27"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "bytes": 23866,
+      "sha256": "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113",
+      "observed_at_utc": "2026-10-25T15:21:27.402543+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "285225bb4ea081dccbd4931184e0dd49a7cd0db5f38a08709c40542f3377d113"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "bytes": 47743,
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "observed_at_utc": "2026-10-25T15:21:27.402593+00:00",
+      "active_writer": true,
+      "observed_sha256s": [
+        "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "point-in-time observation only; A may still edit"
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "bytes": 6819,
+      "sha256": "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275",
+      "observed_at_utc": "2026-10-25T15:21:27.402613+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "80eaadf346cca9f3c39565ea6d53789010b511eeb904a7f6ef115143d43ec275"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytes": 29735,
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "observed_at_utc": "2026-10-25T15:21:27.402649+00:00",
+      "active_writer": true,
+      "observed_sha256s": [
+        "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "point-in-time observation only; A may still edit"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytes": 28690,
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "observed_at_utc": "2026-10-25T15:21:27.402688+00:00",
+      "active_writer": true,
+      "observed_sha256s": [
+        "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "point-in-time observation only; A may still edit"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "bytes": 1190,
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "observed_at_utc": "2026-10-25T15:21:27.402706+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "bytes": 4658,
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4",
+      "observed_at_utc": "2026-10-25T15:21:27.402725+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "bytes": 5554,
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "observed_at_utc": "2026-10-25T15:21:27.402748+00:00",
+      "active_writer": false,
+      "observed_sha256s": [
+        "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55"
+      ],
+      "changed_during_reads": false,
+      "drift_since_last_read": false,
+      "note": "source observation, no runtime verification"
+    }
+  ],
+  "finished_at": "2026-10-25T15:21:27.402751+00:00",
+  "commands_not_run": [
+    "tests",
+    "build",
+    "lint",
+    "cargo",
+    "helper",
+    "Provider",
+    "user Obsidian"
+  ],
+  "external_research": "No new mechanism adopted; reused fixed R-01/K-01/K-02 and prior HUHU adapters. No current Provider/version certification, OS foreground probe or new external capability claim.",
+  "state": "READ-ONLY SOURCE STOPPED; only /tmp report and observation written; repository and T05 cargo/target unchanged"
+}

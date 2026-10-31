@@ -13,7 +13,7 @@ export function memoryFs(): CommentFs & { files: Map<string, string> } {
 	return { files, read: async path => { if (!files.has(path)) throw new Error('ENOENT'); return files.get(path)!; }, write: async (path, body) => { files.set(path, body); }, remove: async path => { files.delete(path); }, exists: async path => files.has(path) };
 }
 test('sidecar queue, partial writes, concurrent changes and activation handoff', async () => { await verifyCommentStorage(); await verifyCommentHandoff(); });
-test('v2 round trip, author ownership, edit/reply/delete/restore, rename and deletion', async () => {
+test('v3 round trip, author ownership, edit/reply/delete/restore, rename and deletion', async () => {
 	const fs = memoryFs(), store = new CommentStore(fs, { timers, debounceMs: 1e6 });
 	const source = 'alpha\nbeta';
 	const thread = await store.add('a.md', { anchor: createAnchor(source, 0, 0), text: 'root', author: 'Alice' });
@@ -21,9 +21,9 @@ test('v2 round trip, author ownership, edit/reply/delete/restore, rename and del
 	await store.editMessage(thread.id, thread.messages[0]!.id, 'edited', 'Alice');
 	await store.reply(thread.id, 'reply', 'Bob'); await store.flush();
 	const index = JSON.parse(fs.files.get('.huhu/editor/comments/index.json')!);
-	expect(index.version).toBe(2); expect(index.files['a.md'].hash).toMatch(/^[a-f0-9]{16}$/);
+	expect(index.version).toBe(3); expect(index.files['a.md'].hash).toMatch(/^[a-f0-9]{16}$/);
 	const body = JSON.parse(fs.files.get(`.huhu/editor/comments/files/${index.files['a.md'].hash}.json`)!);
-	expect(body.version).toBe(2); expect(body.threads[0]).toMatchObject({ kind: 'line', anchor: { text: 'alpha', lineHint: 1 }, messages: [{ author: 'Alice', text: 'edited', editedAt: expect.any(String) }, { author: 'Bob', text: 'reply' }] });
+	expect(body.version).toBe(3); expect(body.threads[0]).toMatchObject({ kind: 'line', anchor: { text: 'alpha', lineHint: 1 }, messages: [{ author: 'Alice', text: 'edited', editedAt: expect.any(String) }, { author: 'Bob', text: 'reply' }] });
 	const removed = await store.removeReply(thread.id, thread.messages[1]!.id); expect(thread.messages).toHaveLength(1); await store.restoreReply(thread.id, removed!);
 	await store.resolve(thread.id); await store.reopen(thread.id); await store.renamePath('a.md', 'moved/a.md');
 	expect((await store.listFiles()).map(file => file.path)).toEqual(['moved/a.md']);

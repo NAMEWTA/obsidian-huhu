@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import { documentationKind as classify, referenceLinkBody } from './documentation-policy.mjs';
+import { documentationKind as classify, referenceLinkBody, withoutCodeSpans } from './documentation-policy.mjs';
 
 const root = process.cwd();
 const failures = [];
@@ -29,26 +30,44 @@ function walk(directory) {
 walk(root);
 
 // Local scratch files (for example `temp/`) are git-ignored and never part of the documentation inventory.
-// Keep stdin asynchronous: Node 24's synchronous child-process pipe can wait
-// indefinitely for git to observe EOF on this null-delimited inventory.
-const ignored = await new Promise((resolve, reject) => {
-	const child = spawn('git', ['check-ignore', '-z', '--stdin'], { cwd: root });
-	let stdout = '';
-	let stderr = '';
-	child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
-	child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
-	child.on('error', reject);
-	child.on('close', (status) => {
-		if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
-		else resolve({ status, stdout });
-	});
-	child.stdin.on('error', reject);
-	child.stdin.end(files.join('\0') + '\0');
-});
-if (ignored.status === 0) {
-	const skip = new Set(ignored.stdout.split('\0').filter(Boolean).map(posix));
-	files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
+// A pipe never reliably delivers EOF to Git for Windows; a real file handle does.
+// One batched query per question: a Git process per path costs tens of milliseconds on Windows.
+let ignoreQueries = 0;
+async function gitIgnored(paths) {
+	if (paths.length === 0) return new Set();
+	const inventory = path.join(os.tmpdir(), `.huhu-git-check-ignore-${process.pid}-${ignoreQueries++}`);
+	fs.writeFileSync(inventory, Buffer.from(paths.join('\0') + '\0'));
+	const inventoryFd = fs.openSync(inventory, 'r');
+	try {
+		const { status, stdout } = await new Promise((resolve, reject) => {
+			const child = spawn('git', ['check-ignore', '-z', '--stdin'], {
+				cwd: root,
+				stdio: [inventoryFd, 'pipe', 'pipe'],
+				windowsHide: true,
+			});
+			let stdout = '';
+			let stderr = '';
+			const timer = setTimeout(() => {
+				child.kill();
+				reject(new Error('git check-ignore timed out'));
+			}, 10_000);
+			child.stdout.setEncoding('utf8').on('data', (data) => { stdout += data; });
+			child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });
+			child.on('error', (error) => { clearTimeout(timer); reject(error); });
+			child.on('close', (status) => {
+				clearTimeout(timer);
+				if (status !== 0 && status !== 1) reject(new Error(`git check-ignore failed (${status}): ${stderr}`));
+				else resolve({ status, stdout });
+			});
+		});
+		return new Set(status === 0 ? stdout.split('\0').filter(Boolean).map(posix) : []);
+	} finally {
+		fs.closeSync(inventoryFd);
+		fs.rmSync(inventory, { force: true });
+	}
 }
+const skip = await gitIgnored(files);
+files.splice(0, files.length, ...files.filter((file) => !skip.has(file)));
 
 const counts = new Map();
 for (const file of files) {
@@ -70,7 +89,7 @@ for (const required of [
 
 // Speculo tooling contains owner-specific Path tags and templates; validate it
 // with the owning package checker, not the project-guide link rules below.
-const strict = new Set(['user-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
+const strict = new Set(['user-doc', 'native-doc', 'root-entry', 'skill', 'specdev', 'specdev-change', 'source-template', 'agent-handbook']);
 let links = 0;
 let external = 0;
 const headings = new Map();
@@ -84,6 +103,8 @@ function fenceBody(text) {
 		if (marker) {
 			if (!fence) fence = marker[1][0];
 			else if (marker[1][0] === fence) fence = '';
+			// Omitted fences remain block boundaries for subsequent inline-code scanning.
+			kept.push('');
 			continue;
 		}
 		if (!fence) kept.push(line);
@@ -91,6 +112,7 @@ function fenceBody(text) {
 	return { unclosed: Boolean(fence), body: kept.join('\n') };
 }
 
+// GitHub strips CJK punctuation such as 、 from generated heading anchors.
 function githubSlug(text) {
 	const plain = text
 		.replace(/`([^`]*)`/g, '$1')
@@ -100,7 +122,7 @@ function githubSlug(text) {
 	return plain
 		.toLowerCase()
 		.replace(/[\u0000-\u001f]/g, '')
-		.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+		.replace(/[\u2000-\u206F\u2E00-\u2E7F\u3000-\u303F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
 		.replace(/\s/g, '-');
 }
 
@@ -139,7 +161,7 @@ function checkTarget(fromFile, raw) {
 	const title = target.match(/\s+(?:"[^"]*"|'[^']*'|\([^)]*\))\s*$/);
 	if (title) target = target.slice(0, title.index).trim();
 	if (!target) return;
-	if (/^[a-z][a-z\d+.-]*:/i.test(target) || target.startsWith('//')) {
+	if ((/^[a-z][a-z\d+.-]*:/i.test(target) && !path.isAbsolute(target)) || target.startsWith('//')) {
 		external += 1;
 		return;
 	}
@@ -150,9 +172,22 @@ function checkTarget(fromFile, raw) {
 		try { fragment = decodeURIComponent(target.slice(hash + 1)); }
 		catch { failures.push(`${fromFile}: bad link fragment ${target}`); return; }
 	}
-	const resolved = destination
+	let resolved = destination
 		? path.resolve(root, path.dirname(fromFile), destination)
 		: path.resolve(root, fromFile);
+	// Editors accept file:line targets. A real file of that exact name wins; otherwise the line suffix is navigation.
+	if (!fs.existsSync(resolved)) {
+		const location = /^(.+):([1-9]\d*)$/.exec(destination);
+		if (location && Number.isSafeInteger(Number(location[2]))) {
+			const source = path.isAbsolute(location[1])
+				? path.resolve(location[1])
+				: path.resolve(root, path.dirname(fromFile), location[1]);
+			if (fs.existsSync(source) && fs.statSync(source).isFile()) {
+				const actual = path.relative(fs.realpathSync(root), fs.realpathSync(source));
+				if (!actual.startsWith('..') && !path.isAbsolute(actual)) resolved = source;
+			}
+		}
+	}
 	const relative = posix(path.relative(root, resolved));
 	if (destination) {
 		links += 1;
@@ -161,7 +196,11 @@ function checkTarget(fromFile, raw) {
 		// Those paths exist in a user vault, not in this repository.
 		const vaultExample = fromFile.startsWith('src/modules/archives/core/persist/format-guide');
 		if (missing && !vaultExample) {
-			failures.push(`${fromFile}: missing local link ${target}`);
+			// Session evidence logs are gitignored on purpose. A link to them is a local
+			// pointer, not a repository document that this gate can require to exist.
+			// Paths outside the repository cannot be ignored by it and fail outright.
+			const inside = !relative.startsWith('..') && !path.isAbsolute(relative);
+			failures.push(inside ? { unlessIgnored: relative, text: `${fromFile}: missing local link ${target}` } : `${fromFile}: missing local link ${target}`);
 			return;
 		}
 		if (missing) return;
@@ -170,20 +209,29 @@ function checkTarget(fromFile, raw) {
 }
 
 for (const [file, body] of bodies) {
+	const linkBody = withoutCodeSpans(body);
 	const definitions = new Map();
-	for (const line of body.split('\n')) {
+	for (const line of linkBody.split('\n')) {
 		const defined = line.match(/^ {0,3}\[([^\]\n]+)\]:[ \t]+(\S+)(?:[ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^)\n]*\)))?\s*$/);
 		if (!defined) continue;
 		definitions.set(labelKey(defined[1]), defined[2].replace(/^<|>$/g, ''));
 	}
 	for (const destination of definitions.values()) checkTarget(file, destination);
-	for (const match of body.matchAll(/!?\[[^\]\n]*\]\(([^)\n]+)\)/g)) checkTarget(file, match[1]);
-	for (const match of referenceLinkBody(file, body).matchAll(/!?\[([^\]\n]*)\]\[([^\]\n]*)\]/g)) {
+	for (const match of linkBody.matchAll(/!?\[[^\]\n]*\]\(([^)\n]+)\)/g)) checkTarget(file, match[1]);
+	for (const match of referenceLinkBody(file, linkBody).matchAll(/!?\[([^\]\n]*)\]\[([^\]\n]*)\]/g)) {
 		const key = labelKey(match[2] || match[1]);
 		const destination = definitions.get(key);
 		if (!destination) failures.push(`${file}: unresolved reference link [${match[1]}][${match[2]}]`);
 		else checkTarget(file, destination);
 	}
+}
+
+{
+	const pending = failures.filter((failure) => typeof failure !== 'string');
+	const ignoredLinks = await gitIgnored([...new Set(pending.map((failure) => failure.unlessIgnored))]);
+	const resolved = failures.flatMap((failure) =>
+		typeof failure === 'string' ? [failure] : ignoredLinks.has(failure.unlessIgnored) ? [] : [failure.text]);
+	failures.splice(0, failures.length, ...resolved);
 }
 
 function readSource(directory, into) {

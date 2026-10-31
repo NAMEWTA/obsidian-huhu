@@ -1,0 +1,23 @@
+{
+  "task": "071-delegation-wait-repair",
+  "recordedAt": "2026-10-25T17:57:43.627204+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/credential_provider",
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledgementReceived": true,
+  "taskSha256": "37e001c07ea5a6f71281f92ea4b63b05d2f7fd59b8b0a7967f5196c33dd30fe0",
+  "dispatchExit": 0,
+  "dispatchErrors": [],
+  "dispatchWarnings": [],
+  "failedReviewReportSha256": "7a5044ad9a4a22ec79b343216582a39a811e807dd8dd5821cc622865854deb07",
+  "allowedRepositoryWrites": [
+    "native/huhubot/tests/contract/delegation/wait_test.go"
+  ],
+  "reviewerProcessesWaited": true,
+  "exclusiveHeavyOwner": "/root/credential_provider",
+  "attemptsPreserved": 2,
+  "candidate3": "not frozen",
+  "T13": "not activated",
+  "nativeAcknowledgementRecordedAt": "2026-10-25T18:02:11.989719+00:00",
+  "nativeAcknowledgementObserved": "Original owner reports full read of070 failure/forced and isolated probes, exact265 input SHA verification, and test-local two-interleaving plan; heavy window remains071."
+}

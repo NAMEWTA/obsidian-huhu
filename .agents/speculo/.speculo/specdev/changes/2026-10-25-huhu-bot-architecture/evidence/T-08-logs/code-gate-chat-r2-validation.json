@@ -1,0 +1,181 @@
+{
+  "observer": "native:/root",
+  "command": "node /tmp/huhu-validate-chat-code-gate.mjs",
+  "map": [],
+  "plans": [
+    {
+      "id": "T-01",
+      "errors": []
+    },
+    {
+      "id": "T-02",
+      "errors": []
+    },
+    {
+      "id": "T-03",
+      "errors": []
+    },
+    {
+      "id": "T-04",
+      "errors": []
+    },
+    {
+      "id": "T-05",
+      "errors": []
+    },
+    {
+      "id": "T-06",
+      "errors": []
+    },
+    {
+      "id": "T-07",
+      "errors": []
+    },
+    {
+      "id": "T-08",
+      "errors": []
+    },
+    {
+      "id": "T-09",
+      "errors": []
+    },
+    {
+      "id": "T-10",
+      "errors": []
+    },
+    {
+      "id": "T-11",
+      "errors": []
+    },
+    {
+      "id": "T-12",
+      "errors": []
+    },
+    {
+      "id": "T-13",
+      "errors": []
+    },
+    {
+      "id": "T-14",
+      "errors": []
+    },
+    {
+      "id": "T-15",
+      "errors": []
+    },
+    {
+      "id": "T-16",
+      "errors": []
+    },
+    {
+      "id": "T-17",
+      "errors": []
+    },
+    {
+      "id": "T-18",
+      "errors": []
+    },
+    {
+      "id": "T-19",
+      "errors": []
+    },
+    {
+      "id": "T-20",
+      "errors": []
+    },
+    {
+      "id": "T-21",
+      "errors": []
+    },
+    {
+      "id": "T-22",
+      "errors": []
+    },
+    {
+      "id": "T-23",
+      "errors": []
+    },
+    {
+      "id": "T-24",
+      "errors": []
+    },
+    {
+      "id": "T-25",
+      "errors": []
+    },
+    {
+      "id": "T-26",
+      "errors": []
+    },
+    {
+      "id": "T-27",
+      "errors": []
+    },
+    {
+      "id": "T-28",
+      "errors": []
+    }
+  ],
+  "executions": [
+    {
+      "id": "T-01",
+      "checkCurrent": false,
+      "errors": []
+    },
+    {
+      "id": "T-02",
+      "checkCurrent": false,
+      "errors": []
+    },
+    {
+      "id": "T-03",
+      "checkCurrent": false,
+      "errors": []
+    },
+    {
+      "id": "T-06",
+      "checkCurrent": false,
+      "errors": []
+    },
+    {
+      "id": "T-08",
+      "checkCurrent": true,
+      "errors": []
+    },
+    {
+      "id": "T-12",
+      "checkCurrent": false,
+      "errors": []
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "T-01",
+      "errors": []
+    },
+    {
+      "id": "T-02",
+      "errors": []
+    },
+    {
+      "id": "T-03",
+      "errors": []
+    },
+    {
+      "id": "T-06",
+      "errors": []
+    },
+    {
+      "id": "T-08",
+      "errors": []
+    },
+    {
+      "id": "T-12",
+      "errors": []
+    }
+  ],
+  "cycle": null,
+  "note": "The six records share exactly one formal review input. Full current scope/source rehash runs once on T08; all six original axis reports/receipts and per-ticket records are independently structurally validated.",
+  "seconds": 24.214,
+  "result": "passed"
+}

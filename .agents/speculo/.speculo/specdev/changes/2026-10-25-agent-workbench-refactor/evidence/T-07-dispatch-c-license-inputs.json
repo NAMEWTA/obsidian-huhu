@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-26T03:08:05.603134+00:00",
+  "target": "/root/implement_t01",
+  "tool": "collaboration.followup_task",
+  "actual_tool_returned": true,
+  "task": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-task-c-license-inputs.md",
+  "sha256": "a74cdb02d1ffca7849bd002af64128405394f928a48343046a2e73ccdddd4b64",
+  "validation": "T-07-license-validation-root-audit.json",
+  "validation_sha256": "6b750b8e2361f97b8ece814a1e68af0bd33bec6e2205785cbd63793c8e3e5286",
+  "unlocked_paths": [
+    "docs/third-party/licenses/objc2-historical-MIT.txt",
+    "docs/third-party/licenses/dispatch2-original-MIT.txt",
+    "docs/third-party/licenses/sources.json"
+  ],
+  "all_other_product_writers": "SOURCE STOPPED",
+  "scope": "C3 only; original C27 and native build products remain stopped"
+}

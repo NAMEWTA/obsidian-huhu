@@ -1,0 +1,410 @@
+{
+  "task": "T-09 strict read-only preflight",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+  "notAFrozenSnapshot": true,
+  "hashMeaning": "Current file bytes at final observation; active T-03 files may change and are not reviewed or frozen by this report. Partial reads are represented by whole-file hashes. No claim that active files stayed unchanged throughout earlier reads.",
+  "notRun": [
+    "tests",
+    "build",
+    "lint",
+    "Obsidian",
+    "helper",
+    "Provider",
+    "git mutation"
+  ],
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/09-workbench-panels.md",
+      "sha256": "b27797c6285820494ff1085e3391fe0fff9862175f5297ef10c793f9b955feec",
+      "bytes": 17535,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval.md",
+      "sha256": "5c84504ba7fb6911c8a5789953125d867c2d69db342d83e174585ec4d939bde3",
+      "bytes": 2509,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/approval-ui.md",
+      "sha256": "52c66941bf56c287e0c572d1b3dc1793250c444f984f55f2b9ebf6212a6aa74b",
+      "bytes": 1847,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/design-system.md",
+      "sha256": "150813a6e37c1426db13a01fb5da75ded9ac36dd816d6a319c616cfc5902faeb",
+      "bytes": 75268,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "previously read rules reused; current digest observed"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "bytes": 8182,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "bytes": 9072,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "bytes": 4304,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "sha256": "3ee917ed96c126f862ad20c4563e31fce5610188d2df25d5078a63e042d7635c",
+      "bytes": 12540,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+      "sha256": "7b0d025c658348dd3d763fa5ff7501381b894cadd365336645c8b8daccc90eed",
+      "bytes": 5634,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workbench-page.ts",
+      "sha256": "751037119f3ebca079299914d5221efb44024d59a33f8e6ac4d0e5031d90dea0",
+      "bytes": 118,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+      "sha256": "e8c3c3a6d112725c32a1c20bf69b883501f18308f2d55546430dcca620f824c6",
+      "bytes": 6235,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.dom.test.tsx",
+      "sha256": "25226aa777d29c261e92937a145c0cb74aee1d136de9055b1e80622704e864a9",
+      "bytes": 3147,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/workspace-context.tsx",
+      "sha256": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc",
+      "bytes": 813,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/page-tabs.fixture.tsx",
+      "sha256": "17a757b3960cc321e4d0981233318ef69916d83393a809fe6375e10b92199b4e",
+      "bytes": 2098,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/keyboard-scope.ts",
+      "sha256": "e0f264bf4a1c872ac92f5d6239a0dbda0fba6183168986c8fdf7c8a4cbb727d8",
+      "bytes": 2185,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/keyboard-scope.dom.test.tsx",
+      "sha256": "636f3ca7fc853eb4efd51f8d51db8e9d0fc2fdad5ed5e82907cf1261b996e6cb",
+      "bytes": 2307,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a",
+      "bytes": 14861,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "sha256": "10b9a809885db1a52ce51e5fe002b2695ea2522026f8c81bc2a4fe80c7519235",
+      "bytes": 2860,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "sha256": "9cfb58d9798b82c59b29bfedabdfb1fa816d64eb9ad9ee9fe5afd9071ef4ddaa",
+      "bytes": 3959,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/tabs/TabStrip.tsx",
+      "sha256": "26ce5746045842fbe6c179a020b6726e92d54db41b25d95beb8b78901831c771",
+      "bytes": 6812,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/tabs/WorkspaceTab.tsx",
+      "sha256": "95a7e2b68336a917f748865547415a3626ae70685054588b86bc29dfcf398c8e",
+      "bytes": 8460,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "sha256": "5a6e005dd77ff978f0daf1ba49742d10ab0ace4e4e31a85b18d2ffa4434ed53f",
+      "bytes": 16080,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.dom.test.tsx",
+      "sha256": "83c4396b94611b006490f9ad80eb1b2edb5d57f86da1b2deb1a28ff9a3d9023f",
+      "bytes": 4461,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/jump/JumpPalette.tsx",
+      "sha256": "e40c5ab8caa786f9d61aaa9bf9c981698e1b624f07e85f18eea62c374e7e12be",
+      "bytes": 6099,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "sha256": "7947005f6a8d58a4a2d23ba4d6481b060850e8116602dbe99819f95bdf302320",
+      "bytes": 4011,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/browser/BrowserTabView.tsx",
+      "sha256": "a8941e791cb369c05301afba2c770bd36d2b83078a3f06a26251e4ccb7eb9d63",
+      "bytes": 4229,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/browser/BrowserTabView.dom.test.tsx",
+      "sha256": "a58ced9acc9a0b1e8a079327f9d572c38444c1d46a0c9472c98ab80216a0da04",
+      "bytes": 2545,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/ui/pages/PageTabView.tsx",
+      "sha256": "8d498e03f42010100bea08f993f23389037b5e5866a2b5e3ebaf6b2ae66ae7c1",
+      "bytes": 1082,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/shortcuts.ts",
+      "sha256": "4da1d6133932045c0ed6a5b36e4ce697e74560af119a4e6c9b9952fbf0a7f746",
+      "bytes": 1210,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/layout.ts",
+      "sha256": "b9b31b4c7af67d04b4b2843df1973d7eaf8ba6fe6ba811322e8a33ede8ea6994",
+      "bytes": 4654,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "3bf3785e029a87f0d9b5342fc8fc9a1ba2b9df07691c83c01927f5ee365ab10f",
+      "bytes": 35670,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-view.ts",
+      "sha256": "8be12da06de9320a0c093def10ca0a0992af396465682411b4b7f580d36c9437",
+      "bytes": 671,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "a068573adbc8912dd64f1945a5d15b166639e34b841c689859fcb256bbba48fa",
+      "bytes": 40346,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": true,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/app/contracts/workbench.ts",
+      "sha256": "76f0afef332869e70a54097729a8e0f84163073a2c277c0d41aa13c30e907f9a",
+      "bytes": 6960,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "src/app/contracts/workbench-host.ts",
+      "sha256": "245dbf1bc373a1e9a8f7a79d84581060c22bdc09b1824763efd0bf1dc83d738d",
+      "bytes": 4598,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "scripts/obsidian-acceptance/agent-page-tabs.mjs",
+      "sha256": "3b27af2dde1c787366ad9bec995867f158697f8eec612246ea62eae39871515b",
+      "bytes": 20819,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "/tmp/huhu-t07-preflight.md",
+      "sha256": "3f2f585d819b0a76dc82b3bc62b32abbc0140c29cf618b4e03b52744fb3b5033",
+      "bytes": 39375,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    },
+    {
+      "path": "/tmp/huhu-t08-preflight.md",
+      "sha256": "4ee06c42b8c69f368cb1fd5762bb72b58b7cf7d631484ce9a4dbb64af1c8b5bb",
+      "bytes": 6955,
+      "observedAtUtc": "2026-10-25T07:50:32.391597+00:00",
+      "activeT03Writable": false,
+      "readMode": "current-task targeted read"
+    }
+  ]
+}

@@ -1,20 +1,20 @@
 # HUHU 终端 Agent 工作台：规格、设计、票据与目标计划
 
-Outcome: active
+Outcome: completed
 
 ## Ownership
 
 Owner: codex:/root
 Work: specdev/goal-plan
-Evidence: evidence/goal-plan-review.md
+Evidence: evidence/run-start.md
 
 ## 当前交付与权威
 
-用户确认以 Herdr 为主要参照增强现有 HUHU 终端，允许省略不需要的复杂功能。G 的决定闭合至 Q10；S/P 已封板，A 方案已采用，6 条共享设计规则已发布为 DESIGN-0001。T 已形成完整实施 Ticket，并纳入“陌生功能先研究近两年活跃、许可明确的同类开源项目”规则。本轮进一步形成单 change 的 Goal Plan，明确 Agent Team、实现使用 gpt-6.1-sol/xhigh、独立 review 使用 gpt-6-astra/high 的默认安排。产品尚未实施，change 的 Outcome 仍为 active。
+HUHU终端Agent工作台的本轮代码交付已完成，保留原18票、64项AC与批准A方案的权威。当前完整未提交工作副本已重建main.js/styles.css，最终独立标准轴、规范轴均通过；[最终审查与验收](evidence/final-review.md)保存输入、原始报告、失败/修复回路和实际验证。真实Obsidian、Provider、人工审批、输入法、五平台与负载按Spec §11由用户验收，当前完成结论不宣称这些实机结果成立。
 
 | 文件 | 唯一职责 |
 |---|---|
-| [goal-plan.md](goal-plan.md) | GP-001；5 个 Wave、执行入口与 6 个产品验收 Gate；拥有跨票调度、Agent Team、模型分工、集成与恢复。plan 已形成，尚未进入 run |
+| [goal-plan.md](goal-plan.md) | GP-047；拥有跨票Gate关闭、Agent Team、模型分工、整合与恢复，代码Goal已完成，真实端到端由用户验收 |
 | [tickets-map.md](tickets-map.md) / [ticket/](ticket/) | 18 张完整票的导航、真实依赖、64 项 AC 覆盖、项目 Skill 路由和共享写入约定；票级状态从原票回读 |
 | [spec.md](spec.md) | 当前外部行为与验收合同：11 个故事、64 项 AC、12 个验证接缝；ready_for_tickets 为 true |
 | [implementation-contracts.md](implementation-contracts.md) | 跨票 owner、计划 CLI v1、机器回执/退出码、能力与数据切换约定；尚未发行 |
@@ -22,7 +22,7 @@ Evidence: evidence/goal-plan-review.md
 | [DESIGN.md](DESIGN.md) | approved revision 1；已采用 A 的视觉/交互权威，绑定 DESIGN-0001 与完整原型摘要 |
 | [原型包](prototypes/UI-001/design-system.md) / [已采用预览 A](prototypes/UI-001/final/index.html) | ready；3 个候选、40 个页面状态、完整离线源码与浏览器证据；终端/数据为模拟 |
 | [项目设计基线](../../design/DESIGN.md) / [版本索引](../../design/INDEX.md) | DESIGN-0001；DS-001–006 已经 A 网关发布，本轮不再改动 |
-| [ADR.md](ADR.md) / [CONTEXT.md](CONTEXT.md) | 已采纳架构取舍 / 当前术语；accepted 不等于已实现 |
+| [ADR.md](ADR.md) / [CONTEXT.md](CONTEXT.md) | 已采纳架构取舍 / 当前术语；实施完成依据仍由Ticket与最终审查提供 |
 | [LOG.md](LOG.md) / [design-tree.json](design-tree.json) / [原始输入说明](inputs/README.md) | 原始来源、用户原话、闭合访谈节点及输入；历史推演不能覆盖现行合同 |
 | [Goal 规划审查](evidence/goal-plan-review.md) / [票据规划审查](evidence/tickets-review.md) | 分别保存本轮 Goal 规划与此前 T 规划的真实验证；不冒充实施 Evidence |
 
@@ -36,14 +36,30 @@ HUHU 源码探索基线 `66083cdb9f7f31a4bcbd3e380c6c7f64f2e74e93`。Herdr 继�
 
 ## 查看与继续
 
-从 Tickets Map 完整阅读后，再进入适用项目 Skill 与单票。实现时使用同一 change-workspace；当前仅进行文档规划，尚未创建或声称存在 Execution Context、实施分支和产品验收记录。首次 I 运行再一次性记录真实 base/head、工作副本摘要、配置和环境。
+代码完成依据从[最终整体审查](evidence/final-review.md)与[Goal Gate关闭回执](goal-plan.md)进入；单票状态和Evidence由[Tickets Map](tickets-map.md)导航，不在README复制第二份进度。人工验收场景见 <Path>docs/agent-workbench-acceptance.md</Path>，真实执行结果由用户后续提供。未请求提交、推送、升版本、发布或归档，产物与源码保留在当前工作区。
 
-18 票的正式编排已在 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md</Path> 形成。采用跨票串行、同票可调用 Agent Team：实现默认 `gpt-6.1-sol` / `xhigh`，独立 review 默认 `gpt-6-astra` / `high`；公共入口与产物由唯一 Lead 整合，reviewer 未参与被审范围实现。模型安排直接沿用本轮用户要求，不逐票重问。
+<a id="execution-context"></a>
+## Execution Context
 
-本轮模式是 plan，尚未实际派遣团队或开始实现；后续明确 run 后由 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path> 逐票承接，并按真实依赖/Gate 持续推进。首次 I 再记录唯一 Execution Context。计划不代表 CLI 已发行、产品 AC 已通过或五平台已验收；用户没有要求提交、推送或产品发布。
+```json
+{
+  "schema_version": 1,
+  "change": "2026-10-25-agent-workbench-refactor",
+  "workspace_policy": "current",
+  "workspace_ref": "current",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "owner": "codex:/root",
+  "ticket_execution": "serial"
+}
+```
+
+2026-10-25 启动时 HEAD 与 base 相同，工作副本干净。授权来源为用户本轮目标及 LOG-027；实际执行者、固定候选和命令结果只在对应 Ticket Evidence 记录。恢复时核对实际 Git 与活跃 writer，不新建工作区。
 
 ## 验证与边界
 
-本轮 Goal 结构、模型安排与对齐检查见 [goal-plan-review.md](evidence/goal-plan-review.md)，此前 T 的完整研究/票据审查见 [tickets-review.md](evidence/tickets-review.md)；原型浏览器证据及限制见 [原型验证记录](prototypes/UI-001/evidence/validation.md)。未失效的设计与浏览器证据沿用并核对摘要，真实 PTY/Provider、人工审批、迁移、性能和五平台运行按各 Ticket 验收。
+[最终检查记录](evidence/final-checks/results.json)保留实际命令、退出码和全部历史失败；候选3的构建（含生产/测试类型）、全量测试、Rust、CLI/helper实进程、lint及适用架构/i18n/Promise/安全/包体/生成/许可检查通过。全量为513文件通过、4跳过，4889测试通过、42跳过，跳过不记通过。[受控Chrome](evidence/final-ui/results.json)验证生产组件与fixture端口下的布局、44px实际命中、焦点/取消与局部正文提示，不替代真实Obsidian/Provider。
 
-写入范围仅为本 change 的规划与说明；永久设计基线、其他 change、生产源码及已有 `AGENTS.md` / `.gitignore` 改动保持原状。纯文档工作不要求构建插件；所有未来实施验证命令都标明为待运行，不能当作本轮通过记录。
+全局文档检查exit126保留11条：另一change六处既有断链，以及010原始REPORT中的CSS selector五条解析误报；原始报告未改写，未新增产品文档断链，不冒称全局docs绿色。不可恢复journal/cleanup失败后的保留门禁需完整重启Obsidian；仅重开插件不会解除，普通取消且cleanup成功则尾部结束后可继续。详细实证和未运行边界见最终报告。
+
+最终冻结范围456产品路径/20规范来源，基线33c21e0，当前HEAD仍78102da。18票均done且实际执行记录verified，所有writer停源；源码、必要文档与产物一致。[产物摘要](evidence/final-checks/artifacts-candidate3.json)及[不可变审查输入](evidence/final-review-candidate3-input.md#review-input)可回读。change留在原目录，永久知识和其他change未改。

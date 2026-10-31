@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-25T19:22:47.403702+00:00",
+  "final_exit": 0,
+  "errors": 0,
+  "warnings": 5,
+  "warning_disposition": "Existing T10/T11/T12/T13 shared paths remain serialized by Goal; not concurrent implementation authorization",
+  "original_failure_preserved": true,
+  "records": [
+    {
+      "original": "/tmp/huhu-t05-final-implement-validation.json",
+      "path": "T-05-logs/final-schema/e21e8393c6d2f00a27889bcaad8143bf2362e84370bdc526083b739947d2f6ee.raw",
+      "sha256": "e21e8393c6d2f00a27889bcaad8143bf2362e84370bdc526083b739947d2f6ee"
+    },
+    {
+      "original": "/tmp/huhu-t05-final-implement-validation.log",
+      "path": "T-05-logs/final-schema/a04c57bc17b724ae2543244485e6678cbe1a32730035fa6ac7d849a7c61dbcbd.raw",
+      "sha256": "a04c57bc17b724ae2543244485e6678cbe1a32730035fa6ac7d849a7c61dbcbd"
+    },
+    {
+      "original": "/tmp/huhu-t05-final-implement-validation-v2.json",
+      "path": "T-05-logs/final-schema/9fc6b6eeff412feabf6f4e7c9aefb85855a773bba2bf1422440bc99a1c25d347.raw",
+      "sha256": "9fc6b6eeff412feabf6f4e7c9aefb85855a773bba2bf1422440bc99a1c25d347"
+    },
+    {
+      "original": "/tmp/huhu-t05-final-implement-validation-v2.log",
+      "path": "T-05-logs/final-schema/5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76.raw",
+      "sha256": "5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76"
+    }
+  ]
+}

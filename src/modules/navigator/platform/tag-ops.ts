@@ -1,10 +1,10 @@
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
 import { TFile, type App } from 'obsidian';
-import { cleanTag, hashText, mapTagList, rewriteTagsAt, type TagMapper, type TagPosition } from '../core/tag-edit';
+import { cleanTag, hashText, mapTagList, type TagMapper } from '../core/tag-edit';
 import { plainEqual } from '../core/plain-yaml';
 import { readProperties, splitNote } from './frontmatter';
 
-const TAG_KEYS = ['tags', 'tag'] as const;
+const TAG_KEYS = ['tags'] as const;
 type TagKey = (typeof TAG_KEYS)[number];
 /** A property as it stood: whether the key exists at all (a key may exist with a null value) and its value. */
 interface PropertyState { present: boolean; value?: unknown }
@@ -19,7 +19,7 @@ export interface TagEditRecord {
 	path: string;
 	/** The text after the frontmatter: before the edit, and a hash of what the edit left. */
 	body?: { before: string; afterHash: string };
-	/** The `tags` / `tag` properties before and after, each with whether the key existed and its exact value. */
+	/** The `tags` properties before and after, each with whether the key existed and its exact value. */
 	frontmatter?: { before: TagProperties; after: TagProperties };
 }
 
@@ -48,37 +48,12 @@ const stateOf = (frontmatter: Record<string, unknown>, key: string): PropertySta
 const sameState = (a: PropertyState, b: PropertyState) => a.present === b.present && (!a.present || plainEqual(a.value, b.value));
 
 function frontmatterTagList(value: unknown): string[] | undefined {
-	if (Array.isArray(value)) return value.map(String);
+	if (Array.isArray(value)) return value.every(item => typeof item === 'string') ? value : undefined;
 	if (typeof value === 'string') return value.split(/[,\s]+/).filter(Boolean);
 	return undefined;
 }
 
-interface CachedTags { tag: string; position: { start: { offset: number }; end: { offset: number } } }
-
-/** The inline tags Obsidian found in the note, as positions; undefined when the cache is known to be older than the file. */
-function cachedTagPositions(app: App, file: TFile): TagPosition[] | undefined {
-	const entry = (app.metadataCache as unknown as { fileCache?: Record<string, { mtime?: number; size?: number } | undefined> }).fileCache?.[file.path];
-	// When the host exposes when the cache was made, it must be the file's current state.
-	if (entry && typeof entry.mtime === 'number' && file.stat && (entry.mtime !== file.stat.mtime || (typeof entry.size === 'number' && entry.size !== file.stat.size))) return undefined;
-	const tags = (app.metadataCache.getFileCache(file)?.tags ?? []) as CachedTags[];
-	return tags.map((item) => ({ tag: item.tag, start: item.position.start.offset, end: item.position.end.offset }));
-}
-
-/** Change the inline tags of one note in a single atomic write, at the positions Obsidian reports. */
-async function editBody(app: App, file: TFile, mapper: TagMapper): Promise<{ status: 'stale' } | { status: 'done'; record?: NonNullable<TagEditRecord['body']> }> {
-	let result: { status: 'stale' } | { status: 'done'; record?: NonNullable<TagEditRecord['body']> } = { status: 'done' };
-	await app.vault.process(file, (data) => {
-		const positions = cachedTagPositions(app, file);
-		const rewrite = positions ? rewriteTagsAt(data, positions, mapper) : undefined;
-		if (!rewrite || rewrite.stale) { result = { status: 'stale' }; return data; }
-		if (!rewrite.changed) return data;
-		result = { status: 'done', record: { before: splitNote(data).body, afterHash: hashText(splitNote(rewrite.text).body) } };
-		return rewrite.text;
-	});
-	return result;
-}
-
-/** Change the `tags` / `tag` properties through Obsidian's own frontmatter writer; returns the before/after values when something changed. */
+/** Change the `tags` properties through Obsidian's own frontmatter writer; returns the before/after values when something changed. */
 async function editProperties(app: App, file: TFile, mapper: TagMapper): Promise<NonNullable<TagEditRecord['frontmatter']> | undefined> {
 	let record: NonNullable<TagEditRecord['frontmatter']> | undefined;
 	// Only Obsidian's own reading of the frontmatter decides whether the note has tag properties (any spelling of the key).
@@ -103,14 +78,13 @@ async function editProperties(app: App, file: TFile, mapper: TagMapper): Promise
 }
 
 /**
- * Apply a tag mapping to the inline tags (at Obsidian's reported positions) and the frontmatter tags of notes.
+ * Apply a tag mapping only to the frontmatter `tags` property; never rewrite inline hashes.
  * Records are collected note by note and returned even when a write fails, so whatever was written can be undone.
  */
 export async function editTags(app: App, files: readonly TFile[], mapper: TagMapper, options: TagEditOptions = {}): Promise<TagEditResult> {
 	const records: TagEditRecord[] = [];
 	const skipped: string[] = [];
 	const unreadable: string[] = [];
-	const wait = options.wait ?? ((ms: number) => new Promise<void>((resolve) => { window.setTimeout(resolve, ms); }));
 	for (const file of files) {
 		if (file.extension !== 'md') continue;
 		if (options.shouldStop?.()) break;
@@ -118,13 +92,6 @@ export async function editTags(app: App, files: readonly TFile[], mapper: TagMap
 		try {
 			// A note whose properties cannot be read back safely is not touched at all, inline tags included.
 			if (!readProperties(await app.vault.read(file))) { unreadable.push(file.path); continue; }
-			let body = await editBody(app, file, mapper);
-			for (let attempt = 0; body.status === 'stale' && attempt < (options.retries ?? 8); attempt++) {
-				await wait(200);
-				body = await editBody(app, file, mapper);
-			}
-			if (body.status === 'stale') { skipped.push(file.path); continue; }
-			if (body.record) { record.body = body.record; records.push(record); }
 			const frontmatter = await editProperties(app, file, mapper);
 			if (frontmatter) {
 				record.frontmatter = frontmatter;
@@ -201,5 +168,5 @@ export async function undoTagEdit(app: App, records: readonly TagEditRecord[]): 
 	return { restored, skipped, remaining };
 }
 
-/** Remove every tag (frontmatter and inline) from notes. */
+/** Remove every `tags` property label, leaving note bodies and other properties unchanged. */
 export const clearTags = (app: App, files: readonly TFile[], options?: TagEditOptions): Promise<TagEditResult> => editTags(app, files, () => null, options);

@@ -1,9 +1,9 @@
 ---
 schema_version: 3
 plan_contract_version: 1
-plan_revision: 2
-requested_deliverables: [{"name":"正式版独立验收的 OS/架构组合","count":5}]
-deliverable_policy: "用户未指定 Ticket 数量；按 64 项 AC 和真实接缝拆为 18 票。五平台来自已确认 Q8/AC-063，不能以票数或交叉编译代替实际交付证据。"
+plan_revision: 43
+requested_deliverables: [{"name":"代码交付覆盖并交接人工验收的 OS/架构组合","count":5}]
+deliverable_policy: "用户未指定 Ticket 数量；按 64 项 AC 和真实接缝拆为 18 票。五平台来自 Q8/AC-063；用户本轮接手真实 E2E，Agent 交付代码/构建配置及人工步骤，不以交叉编译声称实机通过。"
 artifact: tickets-map
 change: 2026-10-25-agent-workbench-refactor
 status: ready
@@ -21,7 +21,7 @@ status: ready
 
 交付现有 HUHU 内的 Herdr 式终端组织与控制：真实 PTY/Agent、Space、独立后台运行、同 Vault 明确寻址、CLI 输入/等待/读屏、面板控制、被动邮箱、原生人工审批、当前 Vault 历史及精确继续。保留现有六种 CLI 入口、账号与自动化原生结果合同、共享网页体验。以已采用 A 为生产 UI 的依据；不扩展为 Run/Outbox、独立 Chat、业务 DB 或远程守护服务。
 
-**执行入口：** 用户后续授权实现后，Lead 与实际执行者调用 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>，再按当前输入实际调用项目 Skill。I 拥有固定快照、独立双轴审查、验证与实施 Evidence。本次 T 只发布计划与对齐文档，不自动实施、提交、推送或发版。
+**执行入口：** 用户已授权实现，Lead 与实际执行者调用 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>，再按当前输入实际调用项目 Skill。I 拥有固定快照、独立双轴审查、验证与实施 Evidence。本轮进入 run；无提交、推送或发版授权。
 
 ### 总体实施背景
 
@@ -38,7 +38,7 @@ T-01 是有独立停用隔离价值的 prefactor。T-02–09 逐步形成空 Spa
 | Applies To | Project Skill | Trigger / Scope | Read Timing | Purpose |
 |---|---|---|---|---|
 | ALL | <Path>.agents/skills/dev/SKILL.md</Path> | TypeScript/Rust、模块装配、持久化、兼容、测试、资产/CI 或技术文档 | Map 后、Ticket 前；implement/verify 实际调用 | 维护模块边界、懒加载、数据归属、许可及适用验证 |
-| T-02, T-03, T-04, T-05, T-06, T-08, T-09, T-10, T-11, T-12, T-13, T-15, T-16, T-18 | <Path>.agents/skills/ui/SKILL.md</Path> | 本票负责 UI 交互/状态、共享视图、设计验收或截图 | Map 后、Ticket 前；implement/verify 实际调用 | 按已批准 DESIGN、现有组件及无障碍规则实施和验收 |
+| T-02, T-03, T-04, T-05, T-06, T-08, T-09, T-10, T-11, T-12, T-13, T-14, T-15, T-16, T-18 | <Path>.agents/skills/ui/SKILL.md</Path> | 本票负责 UI 交互/状态、共享视图、设计验收或截图 | Map 后、Ticket 前；implement/verify 实际调用 | 按已批准 DESIGN、现有组件及无障碍规则实施和验收 |
 
 ## 2. 执行清单
 
@@ -64,6 +64,12 @@ T-01 是有独立停用隔离价值的 prefactor。T-02–09 逐步形成空 Spa
 | T-18 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/18-platform-acceptance.md</Path>：五平台真实主链与全页面验收 | 同一候选源码/资产在 Windows x64、macOS x64/arm64、Linux x64/arm64 各有实际主链证据，四个页面的生产交互与已批准 A 一致。 依赖与汇合见 §3。 |
 
 本表只导航实际 Ticket 和静态合同。状态、Ready、执行 owner、深度、风险及写集从各 Ticket frontmatter 回读，实际 workspace 与完成结果从本票 Evidence 回读；Map 不缓存进度。`status: ready` 只表示 Map 合同就绪。
+
+T13 scope revision 38：为实现同一 v2 layout/Space writer 跨 Agent disable 的共享 owner，T13 现扩展到 app/shell shared-workspace provider、ModuleContext 注入、AgentController/WorkspaceStore/WorkspaceService 生命周期适配、Browser/Agent renderer 接线及对应测试。该修订保持 AC-041 的行为合同，不允许 Browser 自建第二 writer 或以 `peek` 冒充独立运行。
+
+T11 recovery scope revision 39：恢复 T11 blocked 阶段，扩展到 ControlCommands/controller 的生产接线、canonical history operation schema/generated wire、持久 sourceRef→Space owner 所需的 Space/Workbench records 与 native history DTO，以及安全来源状态的 native fixtures/tests。OpenCode/SQLite 只在已证明的安全 source gate 下读取；不能用路径复核、NOFOLLOW 或事后拒绝冒充 F1/F2/F3 关闭，无法安全打开时必须持久化明确 unavailable/unsupported 状态并保留来源元数据。
+
+T13 scope revision 40：补齐 Browser resource page 的显式关闭合同。共享持久 tab 只有用户明确关闭资源时才删除；Workbench unload/Agent disable 只释放渲染 surface。Shell page binding/close path 与 Browser contribution tests 纳入本票写集，避免只移除 UI entry 而遗留 shared tab。
 
 ## 3. 依赖 DAG
 
@@ -98,16 +104,16 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 
 ## 4. 合同覆盖矩阵
 
-下表给每项 AC 一个主要完成责任；GUI 各票另外承担自身 `design_ref` 内的 AC-061 局部一致性，T-18 负责四页整体生产验收。不能因局部 UI 已通过而跳过真实运行证据。64 项均有 owner，无 deferred/uncovered。
+下表给每项 AC 一个主要完成责任；GUI 各票另外承担自身 `design_ref` 内的 AC-061 局部一致性，T-18 负责四页整体生产验收。不能因局部 UI 已通过而跳过真实运行证据。64 项均有最终代码验收 owner，无 uncovered。早期切片必须完成本地生产能力与自动化，依赖后继能力的组合验证归最终生产者，不形成前票等待后票的循环。
 
 | Contract ID | 覆盖 Ticket | 验证接缝 | 状态 | 说明 |
 |---|---|---|---|---|
 | AC-001 | T-02 | V-01、V-08 | covered | 记录存在；无 PTY/Agent；可重命名且 ID 不变 |
-| AC-002 | T-02 | V-01、V-02 | covered | ID、布局、邮箱与归属独立；不按目录合并 |
+| AC-002 | T-10 | V-01、V-02 | covered | ID、布局、邮箱与归属独立；不按目录合并 |
 | AC-003 | T-02 | V-01、V-04 | covered | 使用该目录，历史仍归当前 Vault/Space；目录被替换/撤销时拒绝 |
-| AC-004 | T-02 | V-01、V-02、V-08 | covered | GUI 引导选择；CLI 给缺目标/歧义结果；不猜 Space |
+| AC-004 | T-07 | V-01、V-02、V-08 | covered | GUI 引导选择；CLI 给缺目标/歧义结果；不猜 Space |
 | AC-005 | T-03 | V-03、V-08、V-10 | covered | 账号/程序配置保留；缺程序或缺能力可解释；实际 CLI TUI 可操作 |
-| AC-006 | T-03 | V-02、V-03、V-08 | covered | B 无可见 Pane 也运行/可查；不抢 A 焦点 |
+| AC-006 | T-07 | V-02、V-03、V-08 | covered | B 无可见 Pane 也运行/可查；不抢 A 焦点 |
 | AC-007 | T-06 | V-03、V-06 | covered | 能力按证据更新；不支持时显示未知且保留原始终端控制 |
 | AC-008 | T-03 | V-01、V-02、V-08 | covered | 附加原 runtime；不启动第二个进程 |
 | AC-009 | T-09 | V-01、V-02、V-08 | covered | 两端查询一致；目标稳定；不改变 Session 的 Space 归属 |
@@ -122,7 +128,7 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 | AC-018 | T-08 | V-02、V-06 | covered | 输出有界，身份/截断/位置准确；不主动滚动 TUI 或把屏幕称为完整答案 |
 | AC-019 | T-17 | V-02、V-11 | covered | 命令与发行版本一致；stdin 长正文可用；错误分类不依赖中文文案 |
 | AC-020 | T-06 | V-03、V-08、V-10 | covered | 在 HUHU 定位原终端；用户能批准或拒绝并继续该会话 |
-| AC-021 | T-06 | V-02、V-03、V-08 | covered | 不自动放行、不换后端重放；未知准确显示；失败留查看入口 |
+| AC-021 | T-08 | V-02、V-03、V-08 | covered | 不自动放行、不换后端重放；未知准确显示；失败留查看入口 |
 | AC-022 | T-06 | V-04、V-07、V-08 | covered | 保留选择与首次确认；不无声升级权限 |
 | AC-023 | T-10 | V-01、V-02、V-07 | covered | 持久通知与未读可见；无 PTY 输入/模型启动 |
 | AC-024 | T-10 | V-01、V-02 | covered | 读取与确认分开；ack 重复无额外副作用；分页稳定 |
@@ -147,7 +153,7 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 | AC-043 | T-14 | V-03、V-05 | covered | 原生完整答案及原失败语义保留；不以屏幕文本冒充答案 |
 | AC-044 | T-14 | V-05、V-08 | covered | 原服务消费者可用；existing 投递仍只粘贴；只读不启动模型 |
 | AC-045 | T-14 | V-05 | covered | 轻量技能继续可用；无 Node/PTY/桌面控制器加载 |
-| AC-046 | T-02 | V-01、V-07 | covered | 不返回成功；不先启动关联新进程；保留旧数据和诊断 |
+| AC-046 | T-10 | V-01、V-07 | covered | 不返回成功；不先启动关联新进程；保留旧数据和诊断 |
 | AC-047 | T-15 | V-04、V-05、V-07 | covered | 导入空间、身份与旧布局可核对；敏感源和原生日志保持 |
 | AC-048 | T-15 | V-07 | covered | 保留源与恢复副本；不默认空对象覆盖；不重复导入 |
 | AC-049 | T-15 | V-07 | covered | 先保全新版；不允许旧 writer 写新格式；限制清晰 |
@@ -167,13 +173,25 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 | AC-063 | T-18 | V-10 | covered | 每组合有实际端到端证据；缺项不宣称正式通过 |
 | AC-064 | T-17 | V-11 | covered | 用户文案 en/zh；旧示例被替换；改编来源许可可追踪；无 GPL 终端代码 |
 
+### 跨票组合验收
+
+| 合同 | 先行切片必须完成 | 最终组合 owner 与接缝 |
+|---|---|---|
+| AC-002 | T-02：独立 Space ID、布局与持久归属 | T-10：同 cwd 多 Space 邮箱/查询隔离，引用 T-02 原证据 |
+| AC-004 | T-02：GUI 引导和公共精确目标解析 | T-07：CLI 缺目标/同名歧义黑盒结果 |
+| AC-006 | T-03：后台创建/查询且不改变焦点 | T-07：CLI 创建无 Pane 的 B 并查询原归属 |
+| AC-021 | T-06：状态、未知、待处理定位与不自动审批 | T-08：CLI 输入拒绝、不换后端重放 |
+| AC-046 | T-02：元数据提交失败不启动、保留旧数据 | T-10：通知提交/ack失败与完整持久化故障组合 |
+
+这些先行贡献仍是本票必须完成的切片检查，但不单独宣称整个 AC 已通过；原票 contract_ids 只包含其主要代码完成责任与已绑定的局部 UI AC-061。最终 owner 必须回读前序有效证据并运行新增组合，不以删除场景来关闭票据。所有真实 E2E 按 Spec §11 留给用户。
+
 七项横切要求没有退出计划：NFR-001 → T-05/07/08/10/11/18；NFR-002 → T-04/12/18；NFR-003 → T-02/07/11/12/15/16/17；NFR-004 → T-01/03/13/14/17；NFR-005 → 所有 UI 票与 T-18；NFR-006 → T-06/07/08/18；NFR-007 → 所有参考/依赖使用票及 T-17/18。五个正式组合由 AC-063/T-18 逐项计数，不把 Codex/Claude 两种真实 CLI 与五个平台相乘虚构通过记录。
 
 ## 5. 并行与路径所有权
 
 本节保留 T 的共享路径分析；正式票据调度和 Agent Team 分工由 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md</Path> §4 / Execution Policy Source 拥有。T-10/T-11/T-13 在行为 DAG 上可同时具备前置，公共 controller/API/UI 入口、i18n、docs 与生成物仍有共享写集；所有票声明 `huhu:integration-entrypoints` 与 `huhu:generated-artifacts` 互斥资源，Agent Team 不能绕过这些真实冲突。
 
-唯一共享整合 owner 为 **`lead:agent-workbench-integration`**（角色，实际执行人由 I 在原记录分配）。每张 Ticket 的 `shared_paths` / `shared_path_owners` 列出其受托共享写入；Lead 在当前票的集成窗口修改并记录 Evidence，其他执行者只改非共享部分，独立 reviewer 只读。这个角色不是新增 Ticket，也不是由任意实现者共同写入口；单执行者执行时仍按票顺序记录。Git index、全局验证与构建串行。未来要并行，必须先重划写集/资源并重新检查，不能删真实资源锁换取绿色调度。
+唯一共享整合 owner 为 **`lead:agent-workbench-integration`**（角色，实际执行人由 I 在原记录分配）。每张 Ticket 的 `shared_paths` / `shared_path_owners` 列出其受托共享写入；Lead 在当前票 Evidence 分配唯一实际源文件 writer；可整票委托一位实现者，Lead 不同时改源文件。main.js/styles.css 由 Lead 独占生成。独立 reviewer 只读。这个角色不是新增 Ticket，也不是由任意实现者共同写入口；单执行者执行时仍按票顺序记录。Git index、全局验证与构建串行。未来要并行，必须先重划写集/资源并重新检查，不能删真实资源锁换取绿色调度。
 
 | 候选 | 可能交集 | 真实依赖 | 当前处理 |
 |---|---|---|---|
@@ -183,11 +201,11 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 | T-12 / T-10 或 T-13 | controller/consumer 接线与产物 | 仅 T-11 阻塞 T-12 | 仍按同一资源互斥执行 |
 | 其他前后票 | helper、controller、workspace、API、schema、生成物等 | §3 的实际合同依赖 | 前置完成且证据回读后才接手；旧 owner 不留后台 writer |
 
-所有执行复用 README 的唯一 change-workspace。当前只有文档规划；I 开始时记录一次实际 base/head、工作副本摘要和 workspace，不预写不存在的分支/worktree。票据调度、Agent 数量与 workspace 是不同维度。用户已要求计划内允许 Agent Team；具体模型、共享写入及独立 review 规则统一见 Goal，plan 阶段不派遣，不从团队协作推导额外 worktree。
+所有执行复用 README 的唯一 change-workspace。当前已按用户授权进入 run，真实 base/head 与 workspace 见 README Execution Context。票据调度、Agent 数量与 workspace 是不同维度。用户已要求计划内允许 Agent Team；具体模型、共享写入及独立 review 规则统一见 Goal，plan 阶段不派遣，不从团队协作推导额外 worktree。
 
 ## 6. Gate、Wave 与集成点
 
-正式编排已经写入 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md</Path>。下表只导航原 Goal；Gate 状态、关闭证据、动态派单和恢复不在 Map 再维护一份。各票仍须独立完成自己的 E2E，不延迟到最后才补。
+正式编排已经写入 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md</Path>。下表只导航原 Goal；Gate 状态、关闭证据、动态派单和恢复不在 Map 再维护一份。各票完成当前切片的自动化验收，真实 E2E 按 Spec §11 交给用户；跨票组合由最终生产者补齐代码验证。
 
 | 导航 | 原 Goal 位置 |
 |---|---|
@@ -198,7 +216,15 @@ T-14 → T-15 → T-16 → T-17 → T-18  ←───────────�
 | 迁移、模型不可用、共享 writer、证据漂移与重复失败恢复 | §5 Constraints, Risk and Recovery |
 | 当前 Gate、继续条件与恢复 | §6 Progress and Decisions；Execution Policy Source |
 
-Goal Plan GP-001 以本 Map revision 2 为输入；本轮仅形成 plan，后续获得实现指令再进入 run，由 I 承接原票。当前不生成实际 Agent 会话或实施完成记录。
+Goal Plan GP-021 以本 Map revision 22 为输入；用户已授权 run，由 I 逐票承接。实际派遣与结果只记原 Evidence。
+
+备份的跨 owner 范围、活动处理、公开停写/快照/恢复接缝及写集已在公共实施合同 §6 与 T-15/T-16 绑定；原 automation run/invocation 和通知回执保留，无新增 Run 平台。
+
+T-05当前真实闭包补集见LOG-058与原Ticket：单headless状态投影、整笔输入准入和全helper有界输出；新增路径按A/B/C唯一owner派单。K03先复现，依赖仅条件精确pin现版本，未默认升级/patch。
+
+T-06精确写集及活动/Hook/呈现接缝按原Ticket和evidence/T-06-dispatch-packet.md执行；跨owner消费以实际源码接口回读为准，Root独占产物，T-07/08仍保留原依赖。 GP021以evidence/T-06-recovery1-packet.md修复真实显示意图接缝并替换已被反证的几何计数代理；新增3个A路径，总47路径，原失败和attempts3保留，新周期另记。
+
+用户已明确所有旧业务运行必须绑定Space（LOG-030）；T-02提供生产选择接缝，T-14完成旧交互/后台消费者与配置迁移，T-15保留未绑定的旧定义状态。
 
 ## 7. 横切契约与风险
 
@@ -208,7 +234,7 @@ Goal Plan GP-001 以本 Map revision 2 为输入；本轮仅形成 plan，后续
 4. **副作用与兼容。** 输入回执不等于模型任务成功；wait 超时/取消不等于 stop，效果未知先查，不自动重发。原生完整答案/执行期限/取消及自动化 invocation 账本保持；screen read 不能替代原结果服务。
 5. **数据与恢复。** 单 writer、先保存身份再启动；迁移/导入暂存核对后切换。保留无法归属旧来源及有效副本；备份不包含原生全文/凭证/活动进程，不能以空会话冒充恢复。测试只在隔离 Vault/账号/数据副本进行。
 6. **运行与观察。** 同一 headless 权威解析、单设备回复、运行代次与快照水位；有限缓存/可取消等待/stop 不被慢客户端堵住。原始性能数字未被采纳，实施须固定样本测量并发布有限默认值。
-7. **证据。** 离线原型、单测、native 测试、真实 Provider、真实 Obsidian 和五平台证据分别记录。未提供环境时标 required 待验收；不以 skip、交叉编译或旧截图宣称通过。T-18 不能替前面票补造本应已有的实现证据。
+7. **证据。** 离线原型、单测、native 测试、真实 Provider、真实 Obsidian 和五平台证据分别记录。真实环境按用户分工保留待用户验收；不以 skip、交叉编译或旧截图宣称通过。T-18 不能替前面票补造本应已有的实现证据。
 
 ## 8. 维护规则
 
@@ -222,4 +248,43 @@ Goal Plan GP-001 以本 Map revision 2 为输入；本轮仅形成 plan，后续
 
 执行总控见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md</Path>。获实现授权后，先以 `ticket-control.mjs --map` 只读检查实际票级状态、依赖和资源，再由原 I/Goal owner 推进；工具本身不改代码。首个可调度工作必须以前置和资源检查当时的结果为准，不能因所有计划 `ready` 就跳过依赖。
 
-中断后从 README 的 Execution Context（实施时才创建）、本票 Evidence 和真实文件回读。未闭合迁移先查原恢复记录，不抢 writer、不默认重放 prompt；共享资源冲突只暂停受影响票。授权/公共行为/许可/身份冲突回原 owner 解决，不用 mock 消除 required 缺口。全部票完成后仍需核对整体合同、五个实际平台数量与正式 Gate，不能以 18 个 done 代替产品验收；提交、推送与发版需已有明确授权。
+中断后从 README 的 Execution Context（实施时才创建）、本票 Evidence 和真实文件回读。未闭合迁移先查原恢复记录，不抢 writer、不默认重放 prompt；共享资源冲突只暂停受影响票。授权/公共行为/许可/身份冲突回原 owner 解决，不用 mock 消除 required 缺口。全部票完成后仍需核对整体代码合同、五平台代码/构建配置与人工清单及本轮 Gate，不能以 18 个 done 宣称实机验收通过；提交、推送与发版需已有明确授权。
+
+GP026/Map27依T07真实最终交付及T08已核producer研究，把T08精确写集补为A32/B15/C33/Root4共84路径；唯一owner、分阶段接口和验收见原Ticket与evidence/T-08-engineering-packet.md。跨票仍serial，生成协议归C唯一writer，插件根产物归Root。未解锁阶段保持只读。
+
+GP027/Map28仅补T08现有取消测试的Obsidian解析别名路径，Root作为唯一writer；A32/B15/C33不变，总写集为85。原任务仍限定原分配，未改变依赖、验收、Skill或任何生产行为；按T08 Evidence记录夹具失败、最小修复与复验。
+
+GP028/Map29按011真实独立审查为T08补终端贡献的stateKeys及就近app回归两路径，A34/B15/C33/Root5共87。先同步本票/Map/Goal与精确分配，再派窄修；C33保持STOP。F1–F4均为当前T08合同的修复，不改变Spec、DESIGN、依赖或模型分工；原审核输入与原件保留。
+
+GP029/Map30保持T08总87路径及上层合同；016确认旧F1–F4关闭后新F5要求有界native服务结束/安全socket回收。原attempts3停止点保留，恢复周期1写集及真实owner见T-08-recovery1-packet.md与allocation-r3；先校验再派遣，T09不提前写入。
+
+GP030/Map31沿T08恢复周期1修019唯一F6，完整87路径不增。当前10路径唯一owner及ROOT生成窗口见T-08-write-allocation-r4.json、T-08-shutdown-result-packet.md；native Rust/其它源停写。本周期第一次整合与R3失败保留，下一整合计2。T09只读准备不解锁产品。
+
+GP031/Map32仅补020实际暴露的helper.test.ts正常退出替身到T08同owner；总88路径、修复11路径，023 continuation前全STOP。新路径原始字节已在T08起点快照，补Node实际close事件且保持原风险断言；不改Spec/设计/计数。
+
+GP032/Map33按021完整R4真实F7为T08补共享Cookie原读取/清理双失败消费者三路径，A34/B16/C36/Root5共91；025原Sol/xhigh唯一修复owner，所有其他产品STOP。外部合同/设计/依赖不变，T09未解锁。
+
+GP033/Map34在T08实际done及R5独立通过后，把T09准备收敛为A14/B18/U20/Root4共56精确路径。T09依原SpaceWorkspaceStore单writer维护兼容Pane身份与GUI/CLI布局，不新增数据owner；前阶段协议子集和后续UI按真实接口交接。T10–18仍待各自依赖/DoR，不提前写产品。
+
+### GP034 DOM测试真实依赖入口
+
+T09追加唯一Root路径vitest.config.ts，总57路径；证据与精确r2分配见原票。031临时真实browser入口恢复原PanelGroup ARIA/键盘行为，正式配置需按原开发规则核验。A/B/U写集、依赖顺序、Spec/DESIGN、用户Space规则与真实E2E责任均不变；不重开已完成票或将夹具通过作为产品验收。
+
+GP035/Map36：在T09实际完成、G02代码关闭后，将T10原持久owner和生产Inbox方案落实为A17/B19/U14/Root4共54条精确路径。022/033/038/040准备只作为工程依据，不作为实现通过；分阶段DoR与实际派遣才解锁产品写入。T11–18继续等待各自上游与DoR。
+
+T13 scope revision 38：保留 SpaceService 的唯一 writer 语义，由 app 通过 Agent module 的懒入口创建跨 Agent 生命周期共享 owner；不复制 writer，不由 Browser 自建缓存。Agent 关闭只 drain runtime，app unload 才 dispose owner；Browser 直接消费共享 browser port。
+
+
+### GP044 / Map41 最终整体审查恢复
+
+三个独立整体报告均request-changes；本轮保持仅T-18最终集成窗口活动，补正其授权路径承接原Spec内跨票修复。新源writer按sessions/20261029T021146Z/004..006分配非冲突写集，Lead先恢复37个被合并覆盖的源/文档/测试文件（精确源1f98811，另2个根产物后续重建），不重放迁移/Provider或恢复旧会话。T-01..17旧验收的受影响结论由最终Evidence补审，不拿旧pass关闭G-06。
+
+
+### GP045 / Map42 接缝与就近回归范围补正
+
+保持同一T-18最终修复窗口和004..006实际source owner不变。004的生产CLI路径笔误澄清为native/pty-server/src/control/cli.rs；006明确追加三个既有recovery fixture测试路径以注入真实有界timer。Lead实际承担canonical CLI-local正文metadata、严格generator/生成物、中英控制Skill及协议正反例，stdin/file不进入wire params。所有新增路径归T-18共享Lead owner并保留实际任务分配；不变更Spec/DESIGN/产品范围。最终整合使用此revision，旧TASK按其实际GP044/Map41输入保留，不改写派遣历史。
+
+
+### GP046 / Map43 候选2独立反例窄修
+
+007–009全部原始报告已正式交回，候选2完整build/门禁/4873测试已通过但整体仍request-changes：原型污染、重载旧writer覆盖、legacy adopt伪终止、同key来源正文混挂、history portal命中区、M12文档六根因。保持同一T-18窗口，仅010负责历史三项与局部CSS/模型，011负责备份危险key与跨包装/模块重载隔离；Root负责M12和Chrome命中区真实验证、产物。新增路径只服务这些已证实原合同缺口；不改变Spec/DESIGN或新建服务/持久平台。旧报告不覆盖，相关字节/消费者未失效的原生F1–F5与其他检查可复用。

@@ -1,0 +1,253 @@
+{
+  "note": "Round 3 (T-15). Per-input bytesInOutput from the production metafile (same method as check-bundle.mjs, in-memory build, main.js untouched). The post-T-14 per-input metafile was not retained, so 'before' is exact only for inputs T-15 created (0). For edited inputs 'before' is null and only 'after' is recorded, except where an ablation (removing the T-15 lines and rebuilding) measured the delta, stated as 'ablatedDelta'. Other inputs differ from committed HEAD because of earlier tickets and are not attributed here. Post-T-14 totals come from the T-14 evidence and the Lead's within-limits run: startup 124889.",
+  "startup": {
+    "baseline": 124889,
+    "measuredBytes": 125214,
+    "previousLimit": 124928,
+    "newLimit": 125952,
+    "raised": true,
+    "t15Inputs": [
+      {
+        "path": "src/app/main.ts",
+        "before": null,
+        "after": 8401,
+        "ablatedDelta": 240,
+        "what": "two import('./recovery-start') call sites, ModuleContext.recovery field, argument to createSharedWorkspaceOwner"
+      },
+      {
+        "path": "src/shared/settings/store.ts",
+        "before": null,
+        "after": 3643,
+        "ablatedDelta": 45,
+        "what": "private held flag checked once in schedule()"
+      }
+    ],
+    "unattributed": 40,
+    "disposition": "All other recovery code (transaction, contracts, host, settings recovery, legacy import) is reachable only through import() from recovery-start and is not startup code. Round 1 had 134337B; the move behind recovery-start removed 9.1KB. No forbidden startup area entered."
+  },
+  "modules": {
+    "agent": {
+      "measuredBytes": 1362605,
+      "limit": 1370112,
+      "raised": false,
+      "disposition": "Not raised. Migration dictionary moved to src/shared/i18n/lazy/migration.ts (registered by the report page, the pre-start import and the recovery notice) and all migration/recovery wiring sits behind services/migrations/entry.ts, whose imports are one import() deeper than module.ts, so they count as deferred, not activation. Round 2 had 1381802B."
+    }
+  },
+  "output": {
+    "measuredBytes": 6789098,
+    "previousLimit": 6758400,
+    "newLimit": 6789120,
+    "raised": true,
+    "t15NewInputs": [
+      {
+        "path": "src/shared/storage/recovery-contracts.ts",
+        "before": 0,
+        "after": 1139,
+        "delta": 1139
+      },
+      {
+        "path": "src/shared/storage/recovery-transaction.ts",
+        "before": 0,
+        "after": 5252,
+        "delta": 5252
+      },
+      {
+        "path": "src/shared/settings/settings-recovery.ts",
+        "before": 0,
+        "after": 861,
+        "delta": 861
+      },
+      {
+        "path": "src/app/recovery.ts",
+        "before": 0,
+        "after": 1477,
+        "delta": 1477
+      },
+      {
+        "path": "src/app/recovery-start.ts",
+        "before": 0,
+        "after": 1057,
+        "delta": 1057
+      },
+      {
+        "path": "src/modules/agent/core/migrations/legacy-layout.ts",
+        "before": 0,
+        "after": 1922,
+        "delta": 1922
+      },
+      {
+        "path": "src/modules/agent/services/migrations/legacy-workbench.ts",
+        "before": 0,
+        "after": 5980,
+        "delta": 5980
+      },
+      {
+        "path": "src/modules/agent/services/migrations/agent-owners.ts",
+        "before": 0,
+        "after": 1651,
+        "delta": 1651
+      },
+      {
+        "path": "src/modules/agent/services/migrations/desktop-startup.ts",
+        "before": 0,
+        "after": 425,
+        "delta": 425
+      },
+      {
+        "path": "src/modules/agent/services/migrations/entry.ts",
+        "before": 0,
+        "after": 1428,
+        "delta": 1428
+      },
+      {
+        "path": "src/modules/agent/ui/settings/LegacyImportSection.tsx",
+        "before": 0,
+        "after": 1695,
+        "delta": 1695
+      },
+      {
+        "path": "src/shared/i18n/lazy/migration.ts",
+        "before": 0,
+        "after": 3608,
+        "delta": 3608
+      }
+    ],
+    "t15NewInputsTotal": 26495,
+    "t15EditedInputs": [
+      {
+        "path": "src/app/main.ts",
+        "before": null,
+        "after": 8401,
+        "what": "recovery hooks"
+      },
+      {
+        "path": "src/shared/settings/store.ts",
+        "before": null,
+        "after": 3643,
+        "what": "held flag"
+      },
+      {
+        "path": "src/modules/agent/services/spaces/space-service.ts",
+        "before": null,
+        "after": 32475,
+        "what": "quiesceWrites/resumeWrites/drainWrites/reloadFromDisk, readPersisted split, hint pause"
+      },
+      {
+        "path": "src/modules/agent/services/workspace-store.ts",
+        "before": null,
+        "after": 6360,
+        "what": "LegacyWriterRefused, holdEdits/resumeEdits/drainEdits/reloadFromSpaces"
+      },
+      {
+        "path": "src/modules/agent/services/stats-service.ts",
+        "before": null,
+        "after": 2926,
+        "what": "quiesce/drain/reload with deferred counts"
+      },
+      {
+        "path": "src/modules/agent/platform/history/service.ts",
+        "before": null,
+        "after": 8615,
+        "what": "quiesce/drain/reload"
+      },
+      {
+        "path": "src/modules/agent/services/agent-runtime.ts",
+        "before": null,
+        "after": 15204,
+        "what": "registry quiesce/drain/reload"
+      },
+      {
+        "path": "src/modules/agent/module.ts",
+        "before": null,
+        "after": 6065,
+        "what": "shared-owner registration and thin entry calls"
+      },
+      {
+        "path": "src/modules/agent/ui/settings-page.tsx",
+        "before": null,
+        "after": 2069,
+        "what": "Legacy import tab"
+      }
+    ],
+    "disposition": "The new inputs listed are exact T-15 additions (none of them is startup code). Edited-input growth (strict drain/reload methods and tab) is T-15 but its per-input before is not retained; ablation of one block (module.ts live-owner registration) measured 391B in Round 2. The remainder of the 30.7KB overshoot over the previous limit is the sum of these new and edited inputs; no dependency was added."
+  },
+  "round4": {
+    "note": "Review-111 fixes (M-1, M-2, L-1..L-6). All lazy; per-input 'after' from the production metafile; Round 3 'after' values above are the comparison (same inputs where listed there; inputs new in Round 4 had no Round 3 entry).",
+    "output": {
+      "measuredBytes": 6793937,
+      "previousLimit": 6789120,
+      "newLimit": 6794240,
+      "delta": 4817
+    },
+    "eagerBytes": 125216,
+    "agentActivation": 1362605,
+    "inputsAfter": {
+      "src/shared/storage/recovery-contracts.ts": 1218,
+      "src/shared/storage/recovery-transaction.ts": 5698,
+      "src/modules/agent/services/migrations/legacy-workbench.ts": 6616,
+      "src/modules/agent/services/migrations/desktop-startup.ts": 655,
+      "src/shared/i18n/lazy/migration.ts": 6287,
+      "src/modules/agent/services/migrations/entry.ts": 1428,
+      "src/modules/agent/ui/settings/LegacyImportSection.tsx": 2153,
+      "src/app/recovery.ts": 1784
+    },
+    "round3After": {
+      "src/shared/storage/recovery-contracts.ts": 1139,
+      "src/shared/storage/recovery-transaction.ts": 5252,
+      "src/shared/settings/settings-recovery.ts": 861,
+      "src/app/recovery.ts": 1477,
+      "src/app/recovery-start.ts": 1057,
+      "src/modules/agent/core/migrations/legacy-layout.ts": 1922,
+      "src/modules/agent/services/migrations/legacy-workbench.ts": 5980,
+      "src/modules/agent/services/migrations/agent-owners.ts": 1651,
+      "src/modules/agent/services/migrations/desktop-startup.ts": 425,
+      "src/modules/agent/services/migrations/entry.ts": 1428,
+      "src/modules/agent/ui/settings/LegacyImportSection.tsx": 1695,
+      "src/shared/i18n/lazy/migration.ts": 3608
+    },
+    "changes": [
+      "recovery-transaction.ts: keepClosed/closeFailed on post-replace journal failure, rolling-back 'from', validate hook call",
+      "recovery-contracts.ts: entry/copy path validation, 'from', validate type",
+      "legacy-workbench.ts: persisted problem status, inspect with problems, backup import for missing primary",
+      "desktop-startup.ts: records refusal/busy/failure",
+      "lazy/migration.ts: problem and re-import strings (en/zh)",
+      "LegacyImportSection.tsx: Problem view",
+      "app/recovery.ts: remove symlink check, settings validate"
+    ]
+  },
+  "round5": {
+    "note": "Re-review-112 fixes (M-3, N-1, N-2). Lazy code. Per-input 'after' from the production metafile. Round 4 measured 6793937 B; the +425 B since then is T-15 (recovery-transaction, migration dictionary) plus any bytes from the concurrent writer-port test seam (spaces/ports.ts, writer-owner.ts, session 113), which was edited in parallel and is not separable here; those two inputs' current sizes are listed for transparency, their Round 4 sizes were not recorded.",
+    "output": {
+      "measuredBytes": 6794362,
+      "previousLimit": 6794240,
+      "newLimit": 6795264,
+      "deltaVsRound4": 425
+    },
+    "inputsAfter": {
+      "src/shared/storage/recovery-contracts.ts": 1218,
+      "src/shared/storage/recovery-transaction.ts": 5835,
+      "src/modules/agent/services/migrations/legacy-workbench.ts": 6616,
+      "src/modules/agent/platform/desktop/spaces/writer-owner.ts": 1795,
+      "src/modules/agent/platform/desktop/spaces/ports.ts": 375,
+      "src/modules/agent/services/migrations/desktop-startup.ts": 655,
+      "src/shared/i18n/lazy/migration.ts": 6545,
+      "src/modules/agent/services/migrations/entry.ts": 1428,
+      "src/modules/agent/ui/settings/LegacyImportSection.tsx": 2153,
+      "src/app/recovery.ts": 1784
+    },
+    "round4After": {
+      "src/shared/storage/recovery-contracts.ts": 1218,
+      "src/shared/storage/recovery-transaction.ts": 5698,
+      "src/modules/agent/services/migrations/legacy-workbench.ts": 6616,
+      "src/modules/agent/services/migrations/desktop-startup.ts": 655,
+      "src/shared/i18n/lazy/migration.ts": 6287,
+      "src/modules/agent/services/migrations/entry.ts": 1428,
+      "src/modules/agent/ui/settings/LegacyImportSection.tsx": 2153,
+      "src/app/recovery.ts": 1784
+    },
+    "changes": [
+      "recovery-transaction.ts: closeFailed on committing journal write failure; reject >64 entries with STAGE_INVALID",
+      "lazy/migration.ts: blocked notice rewritten (en/zh)"
+    ]
+  }
+}

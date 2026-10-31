@@ -1,0 +1,6 @@
+
+  .../../../../tmp/huhu-bot-review-20261028/ts-admission-accepted.mjs  1.1mb ⚠️
+
+⚡ Done in 52ms
+{"case":"lost direct session receipt","committedSessions":1,"keys":["4f812b0c-a2b3-474d-94db-39e49a92c35b","4f812b0c-a2b3-474d-94db-39e49a92c35b"]}
+{"case":"middle effect on reopened task","subscribe":[{"afterSeq":"0","limit":128},{"afterSeq":"128","limit":128},{"afterSeq":"256","limit":128},{"afterSeq":"384","limit":128}],"effectCalls":["effect-middle"],"effects":[{"id":"effect-middle","status":"committed"}]}

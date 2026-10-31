@@ -1,0 +1,33 @@
+$ node --test scripts/huhu-bot-build.test.mjs scripts/huhu-bot-notices.test.mjs
+✔ strict target union includes all five Bot targets with metadata and checksums (9.628757ms)
+✔ CLI rejects unsupported targets and missing target values before invoking Go (294.067928ms)
+✔ rejects checksum, target, schema, protocol, version and toolchain mismatches (27.389151ms)
+✔ all targets must use the same exact source inputs (11.093148ms)
+✔ pins Go build environment regardless of inherited flags (1.182798ms)
+✔ source digest is stable across Windows text checkout and ignores output binaries (3.267157ms)
+✔ native smoke uses a fresh OS managed root and no inherited credentials (1.33404ms)
+✔ Go import parser handles aliases, raw literals, comments and blocks (0.947016ms)
+✔ architecture rejects actual SQL, SDK, HAP, Obsidian and inbound outbound imports (2.901966ms)
+✔ architecture accepts production domain/application dependency direction and refuses empty inspection (1.038367ms)
+✔ parses concatenated pretty-printed go list JSON, including escaped braces (10.577156ms)
+✔ uses only the non-test compiled union, excluding standard/main and unconsumed modules (2.620639ms)
+✔ fails on unreviewed/restricted modules, lock mismatch, replacement or incomplete graph (6.051016ms)
+✔ missing or invalid complete license text cannot produce a passing notice (5.766445ms)
+✔ reviewed validator modules require their precise runtime versions and checksums (23.475658ms)
+✔ credential runtime reviews accept only locked versions and the reviewed compiled adapters (0.956785ms)
+✔ embedded metaschema and CLDR notices survive alongside the module root license (16.31985ms)
+✔ missing, altered, unpinned and restrictive supplemental notices fail closed (9.125292ms)
+✔ linked wasm libc/TLSF translation retains the complete fixed upstream MIT notice (5.35717ms)
+✔ translated runtime fails on missing or altered MIT text and unknown source/version (5.467778ms)
+✔ the consumed SDK and mixed-license modules require their exact reviewed versions (6.773571ms)
+✔ each official SDK retains its own vendored Go JSON BSD obligation alongside its root license (23.505637ms)
+✔ the EinoExt submodule missing its license uses only the fixed reviewed root original (8.037051ms)
+✔ runtime embedded notices retain every reviewed full text and reject changed inputs (36.970111ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 516.394078

@@ -1,0 +1,157 @@
+{
+  "task": "T-04 implementation A business runtime owner",
+  "actual_agent": "/root/prepare_t03",
+  "dispatch_tool": "collaboration.followup_task",
+  "model_requested": "gpt-6.1-sol",
+  "reasoning_effort_requested": "xhigh",
+  "model_source": "Existing actual handle inherits user-requested model/effort",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "branch": "NAMEWTA/terminal",
+  "base_sha": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "goal_revision": "GP-015",
+  "map_revision": 16,
+  "prepared_at": "2026-10-25T09:38:37.074296+00:00",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "020776efcff1410f3d85ec0d98fa9d6fee0860118b772f1de2fec1dddceaf5e6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "71bf6c23c1c6e4ee64492a1a8d5e0c9212b6aa7e63fa72ba7d33f9bd8472f34d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "sha256": "0ba184acfcccce67a6b49374b219904c6a500e0136df271a9705f8cf131f6b2f"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/README.md",
+      "sha256": "9037a24941091a2c8a5484ed6e1225cff4665161a10e8af2c619ab6dbddf46ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03.md",
+      "sha256": "07d5e6adcdde1624028fedc9bf9b0b449100ebfb0a169ddf6fa771a7c3468525"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-review-input.md",
+      "sha256": "fdf604588b123b7343491e31ceeff0b4c90cd8040e93cd4d92611810abfd29b9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-review-round2.md",
+      "sha256": "e0b837bfdcc9a84c072e995aa9bda03ac257959441ce437b85136a374c5bde32"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-final-current-review-after-format.json",
+      "sha256": "f93d6a121f04851d405508d23f3af4b3767347a3e896b41bb9aa95b2754d9e22"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-prior-delivery.json",
+      "sha256": "ee88a521ee4a88730afc84f00fd55bb1cea75a94c588e6a47df0fe8452cf874a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-frontier.json",
+      "sha256": "af32a37712f9f2cb6c4dd7c83424c15777e147e932e73117fb486e3f87ce6b26"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-native-design.md",
+      "sha256": "fac5017e35a2f25b17ae8bb35193c1cd713ff7510f7667b98666f6b15c3bd6b5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-runtime-proposal.md",
+      "sha256": "9307a35ade6d9b00639111dcad090299befc19f6049080fd6436887fd0ae78ee"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-ui-preflight.md",
+      "sha256": "f0c7bf8f71e0a8a0c6b204b6a063f26e3eee42cddfdc7fd6f964dc480db692f8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04-dispatch-c.json",
+      "sha256": "5689c4388e410a72d4bbdbf3e3c05fb78b75e442e430c991141d2b8694821989"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    }
+  ],
+  "write_allocation": [
+    "src/modules/agent/services/terminal/**",
+    "src/modules/agent/services/workspace-service*.ts",
+    "src/modules/agent/services/controller.ts",
+    "src/modules/agent/module*.ts",
+    "src/modules/agent/i18n.ts",
+    "docs/agent-workbench.md",
+    "src/modules/agent/core/workspace/managed-runtime.ts",
+    "src/modules/agent/core/workspace/model.ts",
+    "src/modules/agent/core/workspace/ops.ts",
+    "src/modules/agent/core/space/errors.ts",
+    "src/modules/agent/services/spaces/records.ts",
+    "src/modules/agent/services/spaces/records.test.ts",
+    "src/modules/agent/services/spaces/space-service.ts",
+    "src/modules/agent/services/spaces/space-service.test.ts",
+    "src/modules/agent/services/spaces/space-service-recovery.test.ts",
+    "src/modules/agent/services/spaces/space-service-lifecycle.test.ts",
+    "src/modules/agent/services/spaces/messages.ts",
+    "src/modules/agent/services/workspace-store.ts",
+    "src/modules/agent/services/workspace-store.test.ts",
+    "src/modules/agent/services/workspace-store-spaces.test.ts",
+    "src/modules/agent/services/controller-stop-recovery.test.ts",
+    "src/modules/agent/services/controller-managed-runtimes.test.ts",
+    "src/modules/agent/services/controller-space.test.ts",
+    "src/modules/agent/services/controller-native.test.ts",
+    "src/modules/agent/services/launch/managed-errors.ts",
+    "src/modules/agent/services/launch/launcher.ts",
+    "src/modules/agent/services/launch/launcher-space.test.ts",
+    "src/modules/agent/services/agent-runtime.ts",
+    "src/modules/agent/services/agent-runtime.test.ts",
+    "src/modules/agent/services/prompt-runner.ts",
+    "src/modules/agent/services/prompt-runner.test.ts"
+  ],
+  "root_only": [
+    "main.js",
+    "styles.css",
+    "scripts/bundle-budget.json",
+    "formal change records"
+  ],
+  "other_owners": {
+    "C": "all shared/native + desktop native + Rust + sole fixture; no A writes",
+    "B": "UI not yet unlocked; will consume actual frozen A API/keys"
+  },
+  "contract": "Root accepts final T-04-runtime-proposal §2–5. Native protocol types/fixture owned C; A waits for Root verified C contract before imports/integration. Independently implement pre-spawn durable admission/checkpoint and archive scope gate; then exact 4 public methods and en/zh keys freeze before B unlock.",
+  "conditional_paths": "workspace-store/model/ops only recovery/archive layout and strict drain; agent-runtime/prompt-runner only existing stop/cancel/wait integration, no T14 config migration; module only closing admission.",
+  "checks": "Scoped TS red-green and scoped types/lint with raw record; C alone owns cargo/debug binary. No real helper tests until Root binary handoff. No global build/lint/architecture/promise while writers active. Root final serial checks after stopped.",
+  "returns": [
+    "/tmp/huhu-t04-a-handoff.md",
+    "/tmp/huhu-t04-a-source.json",
+    "/tmp/huhu-t04-a-checks.json"
+  ],
+  "real_e2e": "User-owned actual Obsidian/Provider/five-platform; local production seams/isolated fixtures only",
+  "forbidden": "unassigned files/Git/PR/remote writes/release/archive/permanent knowledge/dependency changes/UI/native/other change/registry/node_modules",
+  "actual_tool": "collaboration.followup_task",
+  "actual_handle": "/root/prepare_t03",
+  "dispatched": true,
+  "dispatch_receipt_observed_at": "2026-10-25T09:39:43.875176+00:00"
+}

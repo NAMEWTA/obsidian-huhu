@@ -23,6 +23,23 @@ test('destroy while the owned download directory is pending cannot attach a late
 	} finally { resume(); pause.enter = undefined; pause.wait = undefined; account.destroy(); await fixture.dispose(); }
 });
 
+test('a cookie read that never returns does not keep startup waiting or accept a late login', async () => {
+	const fixture = await musicVaultFixture(), account = new NeteaseAccount(fixture.app, 40);
+	const get = localSession.cookies.get;
+	let release: (value: { name: string; value: string }[]) => void = () => {};
+	localSession.cookies.get = () => new Promise((resolve) => { release = resolve; });
+	try {
+		const started = Date.now();
+		await account.restore();
+		expect(Date.now() - started).toBeLessThan(1_000);
+		expect(account.loggedIn).toBe(false);
+		expect(account.error).toBe('browser_session_timeout');
+		release([{ name: 'MUSIC_U', value: 'fixture' }]);
+		await new Promise((resolve) => setTimeout(resolve, 20));
+		expect(account.loggedIn).toBe(false);
+	} finally { localSession.cookies.get = get; account.destroy(); await fixture.dispose(); }
+});
+
 test('destroy during the native cookie read cannot publish a late logged-in state', async () => {
 	const fixture = await musicVaultFixture(), account = new NeteaseAccount(fixture.app), get = localSession.cookies.get;
 	let entered!: () => void, resume!: () => void;

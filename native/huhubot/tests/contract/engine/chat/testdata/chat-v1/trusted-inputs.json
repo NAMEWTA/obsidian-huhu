@@ -1,0 +1,316 @@
+{
+  "Input": {
+    "Messages": [],
+    "Delegation": null,
+    "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+    "SessionID": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+    "Intent": "one intention",
+    "Agent": {
+      "id": "agent:cec47c25d639d1193f1489bbb1f65ead",
+      "name": "protocol",
+      "description": "",
+      "persona": "Keep literal {\"sample\":{\"x\":1}}.",
+      "model": {
+        "modelId": "fixture-model",
+        "providerId": "fixture",
+        "endpoint": "http://127.0.0.1:42999/v1",
+        "credentialRef": "credential:11111111111111111111111111111111",
+        "capabilities": [],
+        "protocol": "openai-chat-completions",
+        "revision": "1",
+        "credentialStatus": {
+          "mode": "session-memory",
+          "state": "available"
+        }
+      },
+      "allowedTools": [
+        "note.write"
+      ],
+      "revision": "1",
+      "personaRevision": "1",
+      "modelBindingRevision": "1",
+      "enabled": true,
+      "isDefault": false
+    },
+    "History": null,
+    "Context": {
+      "Sources": []
+    },
+    "Tools": null,
+    "Checkpoints": null,
+    "Attempts": null,
+    "Config": {
+      "id": "config:fd338582825a97c30816538af7fd7a62",
+      "subjectId": "agent:cec47c25d639d1193f1489bbb1f65ead",
+      "kind": "agent",
+      "agent": {
+        "id": "agent:cec47c25d639d1193f1489bbb1f65ead",
+        "name": "protocol",
+        "description": "",
+        "persona": "Keep literal {\"sample\":{\"x\":1}}.",
+        "model": {
+          "modelId": "fixture-model",
+          "providerId": "fixture",
+          "endpoint": "http://127.0.0.1:42999/v1",
+          "credentialRef": "credential:11111111111111111111111111111111",
+          "capabilities": [],
+          "protocol": "openai-chat-completions",
+          "revision": "1",
+          "credentialStatus": {
+            "mode": "session-memory",
+            "state": "available"
+          }
+        },
+        "allowedTools": [
+          "note.write"
+        ],
+        "revision": "1",
+        "personaRevision": "1",
+        "modelBindingRevision": "1",
+        "enabled": true,
+        "isDefault": false
+      }
+    },
+    "Lineage": {
+      "Group": null,
+      "BudgetRootRunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "DelegationID": "",
+      "RootRunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "ParentRunID": "",
+      "WorkThreadID": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+      "ConfigSnapshotID": "config:fd338582825a97c30816538af7fd7a62",
+      "SubjectID": "agent:cec47c25d639d1193f1489bbb1f65ead",
+      "SubjectKind": "agent",
+      "SponsorAgentID": "",
+      "CancelGeneration": "0",
+      "Derived": [
+        {
+          "kind": "message",
+          "id": "message:9b5c71b8688d9d2428abd29c4df25bda",
+          "revision": "1",
+          "hash": "sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c",
+          "namespace": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+          "workThreadId": "session:c403fe1e0eca8ee3ec01e0384321dde0"
+        }
+      ]
+    }
+  },
+  "Resume": {
+    "Input": {
+      "Messages": [],
+      "Delegation": null,
+      "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "SessionID": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+      "Intent": "one intention",
+      "Agent": {
+        "id": "agent:cec47c25d639d1193f1489bbb1f65ead",
+        "name": "protocol",
+        "description": "",
+        "persona": "Keep literal {\"sample\":{\"x\":1}}.",
+        "model": {
+          "modelId": "fixture-model",
+          "providerId": "fixture",
+          "endpoint": "http://127.0.0.1:42999/v1",
+          "credentialRef": "credential:11111111111111111111111111111111",
+          "capabilities": [],
+          "protocol": "openai-chat-completions",
+          "revision": "1",
+          "credentialStatus": {
+            "mode": "session-memory",
+            "state": "available"
+          }
+        },
+        "allowedTools": [
+          "note.write"
+        ],
+        "revision": "1",
+        "personaRevision": "1",
+        "modelBindingRevision": "1",
+        "enabled": true,
+        "isDefault": false
+      },
+      "History": null,
+      "Context": {
+        "Sources": []
+      },
+      "Tools": null,
+      "Checkpoints": null,
+      "Attempts": null,
+      "Config": {
+        "id": "config:fd338582825a97c30816538af7fd7a62",
+        "subjectId": "agent:cec47c25d639d1193f1489bbb1f65ead",
+        "kind": "agent",
+        "agent": {
+          "id": "agent:cec47c25d639d1193f1489bbb1f65ead",
+          "name": "protocol",
+          "description": "",
+          "persona": "Keep literal {\"sample\":{\"x\":1}}.",
+          "model": {
+            "modelId": "fixture-model",
+            "providerId": "fixture",
+            "endpoint": "http://127.0.0.1:42999/v1",
+            "credentialRef": "credential:11111111111111111111111111111111",
+            "capabilities": [],
+            "protocol": "openai-chat-completions",
+            "revision": "1",
+            "credentialStatus": {
+              "mode": "session-memory",
+              "state": "available"
+            }
+          },
+          "allowedTools": [
+            "note.write"
+          ],
+          "revision": "1",
+          "personaRevision": "1",
+          "modelBindingRevision": "1",
+          "enabled": true,
+          "isDefault": false
+        }
+      },
+      "Lineage": {
+        "Group": null,
+        "BudgetRootRunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+        "DelegationID": "",
+        "RootRunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+        "ParentRunID": "",
+        "WorkThreadID": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+        "ConfigSnapshotID": "config:fd338582825a97c30816538af7fd7a62",
+        "SubjectID": "agent:cec47c25d639d1193f1489bbb1f65ead",
+        "SubjectKind": "agent",
+        "SponsorAgentID": "",
+        "CancelGeneration": "0",
+        "Derived": [
+          {
+            "kind": "message",
+            "id": "message:9b5c71b8688d9d2428abd29c4df25bda",
+            "revision": "1",
+            "hash": "sha256:fbc21fa0187fa86069d0c5773e5216b9e7a4f3924c5fa7db0e1440f4d728da6c",
+            "namespace": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+            "workThreadId": "session:c403fe1e0eca8ee3ec01e0384321dde0"
+          }
+        ]
+      }
+    },
+    "CheckpointRef": "cp:60168fecd1a8ff1c9e3cf10dba96c0ab",
+    "Checkpoint": {
+      "Ref": "cp:60168fecd1a8ff1c9e3cf10dba96c0ab",
+      "Digest": "sha256:7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631",
+      "Size": 2768,
+      "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "AttemptID": "claim:9c7e3a4d372bc486ba9cd43cfcb9ab8d",
+      "Metadata": {
+        "EngineVersion": "huhu-eino-0.9.22-chat-bridge-v1",
+        "FormatVersion": "1",
+        "DefinitionDigest": "sha256:fd17ed589820aaeabe7a25b34c3984fcfd491bec6e56021dddd45a7d11c398b0"
+      }
+    },
+    "Decision": {
+      "Children": null,
+      "Tasks": null,
+      "Status": "denied",
+      "EffectID": "effect:900767c15391533b4e6eb7c33063b4f8",
+      "SuspensionToken": "",
+      "Reason": "APPROVAL_REJECTED",
+      "Receipt": null,
+      "Directory": null,
+      "Delegation": null,
+      "Message": null,
+      "Proposal": null
+    }
+  },
+  "Inspection": {
+    "Run": {
+      "id": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "sessionId": "session:c403fe1e0eca8ee3ec01e0384321dde0",
+      "status": "",
+      "revision": "",
+      "agentId": "",
+      "personaRevision": "",
+      "modelBindingRevision": ""
+    },
+    "Intent": "one intention",
+    "Config": {
+      "id": "config:fd338582825a97c30816538af7fd7a62",
+      "subjectId": "agent:cec47c25d639d1193f1489bbb1f65ead",
+      "kind": "agent",
+      "agent": {
+        "id": "agent:cec47c25d639d1193f1489bbb1f65ead",
+        "name": "protocol",
+        "description": "",
+        "persona": "Keep literal {\"sample\":{\"x\":1}}.",
+        "model": {
+          "modelId": "fixture-model",
+          "providerId": "fixture",
+          "endpoint": "http://127.0.0.1:42999/v1",
+          "credentialRef": "credential:11111111111111111111111111111111",
+          "capabilities": [],
+          "protocol": "openai-chat-completions",
+          "revision": "1",
+          "credentialStatus": {
+            "mode": "session-memory",
+            "state": "available"
+          }
+        },
+        "allowedTools": [
+          "note.write"
+        ],
+        "revision": "1",
+        "personaRevision": "1",
+        "modelBindingRevision": "1",
+        "enabled": true,
+        "isDefault": false
+      }
+    },
+    "Position": {
+      "Phase": "continuation",
+      "Continuation": {
+        "Kind": "",
+        "Children": null,
+        "ApprovalID": "",
+        "EffectID": "effect:900767c15391533b4e6eb7c33063b4f8",
+        "Decision": "",
+        "Generation": "",
+        "Checkpoint": {
+          "Ref": "cp:60168fecd1a8ff1c9e3cf10dba96c0ab",
+          "Digest": "sha256:7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631",
+          "Size": 2768,
+          "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+          "AttemptID": "claim:9c7e3a4d372bc486ba9cd43cfcb9ab8d",
+          "Metadata": {
+            "EngineVersion": "huhu-eino-0.9.22-chat-bridge-v1",
+            "FormatVersion": "1",
+            "DefinitionDigest": "sha256:fd17ed589820aaeabe7a25b34c3984fcfd491bec6e56021dddd45a7d11c398b0"
+          }
+        }
+      },
+      "Decision": null,
+      "CompletedResult": null
+    },
+    "Checkpoint": {
+      "Ref": "cp:60168fecd1a8ff1c9e3cf10dba96c0ab",
+      "Digest": "sha256:7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631",
+      "Size": 2768,
+      "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+      "AttemptID": "claim:9c7e3a4d372bc486ba9cd43cfcb9ab8d",
+      "Metadata": {
+        "EngineVersion": "huhu-eino-0.9.22-chat-bridge-v1",
+        "FormatVersion": "1",
+        "DefinitionDigest": "sha256:fd17ed589820aaeabe7a25b34c3984fcfd491bec6e56021dddd45a7d11c398b0"
+      }
+    },
+    "Reader": null
+  },
+  "Artifact": {
+    "Ref": "cp:60168fecd1a8ff1c9e3cf10dba96c0ab",
+    "Digest": "sha256:7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631",
+    "Size": 2768,
+    "RunID": "run:df092d51c638ec307eeec6b2fb21b33d",
+    "AttemptID": "claim:9c7e3a4d372bc486ba9cd43cfcb9ab8d",
+    "Metadata": {
+      "EngineVersion": "huhu-eino-0.9.22-chat-bridge-v1",
+      "FormatVersion": "1",
+      "DefinitionDigest": "sha256:fd17ed589820aaeabe7a25b34c3984fcfd491bec6e56021dddd45a7d11c398b0"
+    }
+  }
+}

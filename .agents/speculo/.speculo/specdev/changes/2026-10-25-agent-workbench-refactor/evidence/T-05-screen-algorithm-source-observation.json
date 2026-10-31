@@ -1,0 +1,710 @@
+{
+  "schema_version": 1,
+  "task": "T-05 read-only screen algorithm research",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "created_utc": "2026-10-25T11:37:45.451762Z",
+  "report": {
+    "path": "/tmp/huhu-t05-screen-algorithm-proposal.md",
+    "sha256": "7c73c94c45bae6b3b2d77953539f66fe5bc133fec7f4df42bb13a2be7fc32d4d",
+    "bytes": 31303
+  },
+  "state": "READ-ONLY SOURCE STOPPED",
+  "source_observation_not_frozen_snapshot": true,
+  "concurrent_work": "T-04 active; no claim that T-04 or T-05 is accepted or stable beyond observed bytes",
+  "source_count": 55,
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278,
+      "observed_utc": "2026-10-25T11:37:45.444039Z",
+      "mtime_utc": "2026-10-25T04:29:01.168531Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "observed_utc": "2026-10-25T11:37:45.444167Z",
+      "mtime_utc": "2026-10-25T04:29:01.132091Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "observed_utc": "2026-10-25T11:37:45.444244Z",
+      "mtime_utc": "2026-10-25T04:29:01.132091Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235,
+      "observed_utc": "2026-10-25T11:37:45.444329Z",
+      "mtime_utc": "2026-10-25T04:29:01.094422Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/skills/specdev-i-implement/SKILL.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/specdev-i-implement/SKILL.md",
+      "sha256": "cb0824735ef93c42b059047183073885fc9d931c31492da18182b1b7d933744c",
+      "bytes": 792,
+      "observed_utc": "2026-10-25T11:37:45.444432Z",
+      "mtime_utc": "2026-10-25T04:29:01.092170Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "bytes": 4971,
+      "observed_utc": "2026-10-25T11:37:45.444507Z",
+      "mtime_utc": "2026-10-25T04:29:01.149504Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observed_utc": "2026-10-25T11:37:45.444600Z",
+      "mtime_utc": "2026-10-25T04:29:01.089509Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "observed_utc": "2026-10-25T11:37:45.444742Z",
+      "mtime_utc": "2026-10-25T04:29:01.090171Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "0befe4d829122ff34476866765844e620e2974e85690e1aea2168b070e822952",
+      "bytes": 16854,
+      "observed_utc": "2026-10-25T11:37:45.444832Z",
+      "mtime_utc": "2026-10-25T06:20:11.667120Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-preflight.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-preflight.md",
+      "sha256": "c43e6573160d2e0c7dbaadc0e1d91216a92ccdd8c88a109fa0cc0cb2e0876acd",
+      "bytes": 17923,
+      "observed_utc": "2026-10-25T11:37:45.444930Z",
+      "mtime_utc": "2026-10-25T06:52:19.468009Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-after-t04-preflight.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-after-t04-preflight.md",
+      "sha256": "c7b7c91803b24a28a2878008ed80874ff1d6b8828ac4a81c109de4c83fcdee74",
+      "bytes": 17205,
+      "observed_utc": "2026-10-25T11:37:45.445015Z",
+      "mtime_utc": "2026-10-25T11:03:27.740208Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8",
+      "bytes": 13573,
+      "observed_utc": "2026-10-25T11:37:45.445099Z",
+      "mtime_utc": "2026-10-25T04:29:01.119171Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/reference-sources.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/reference-sources.json",
+      "sha256": "250c050c05c69cbb53b81ac58cfb47f24fada1cf3a6266e5f403abf65bc4865b",
+      "bytes": 9827,
+      "observed_utc": "2026-10-25T11:37:45.445164Z",
+      "mtime_utc": "2026-10-25T04:29:01.097616Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observed_utc": "2026-10-25T11:37:45.445272Z",
+      "mtime_utc": "2026-10-25T05:11:26.797777Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observed_utc": "2026-10-25T11:37:45.445382Z",
+      "mtime_utc": "2026-10-25T05:11:26.798215Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/terminal/session.ts",
+      "sha256": "b12a8b22b0c6371523cfbca8934b2ebddcb59bd9a24525c4620a42fe257163fa",
+      "bytes": 15892,
+      "observed_utc": "2026-10-25T11:37:45.445465Z",
+      "mtime_utc": "2026-10-25T09:58:16.983733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/terminal/session.test.ts",
+      "sha256": "eaa3321c19ee9477cc2b2e595551403f22a7b74e0d49b2cc13506e60ad98e22d",
+      "bytes": 5979,
+      "observed_utc": "2026-10-25T11:37:45.445551Z",
+      "mtime_utc": "2026-10-25T04:29:01.229173Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/terminal/terminal-view.ts",
+      "sha256": "1624981d8036026b02350507f376279a1af225f35c769494f7a78a2b66357356",
+      "bytes": 15353,
+      "observed_utc": "2026-10-25T11:37:45.445630Z",
+      "mtime_utc": "2026-10-25T04:29:01.233173Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/terminal/terminal-presentation.ts",
+      "sha256": "c8b2623e10adb94535d26f83647cfb998846612fbda51c193808f47c33d0b6fc",
+      "bytes": 4539,
+      "observed_utc": "2026-10-25T11:37:45.445712Z",
+      "mtime_utc": "2026-10-25T04:29:01.232965Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/stable-terminal-fit.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/terminal/stable-terminal-fit.ts",
+      "sha256": "d0196ed9f9ea16256bf950f74f7e5f143538f7775887c41b156c596316fda6ca",
+      "bytes": 1695,
+      "observed_utc": "2026-10-25T11:37:45.445789Z",
+      "mtime_utc": "2026-10-25T04:29:01.232965Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-scheduling.test.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/ui/terminal/terminal-scheduling.test.ts",
+      "sha256": "8e8bc24f84e626dc4fd6aa54c0aff278b93d8b994974815e3295aececc0109aa",
+      "bytes": 6678,
+      "observed_utc": "2026-10-25T11:37:45.445868Z",
+      "mtime_utc": "2026-10-25T04:29:01.233173Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/keyboard.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/core/terminal/keyboard.ts",
+      "sha256": "56c7311b677789a02e74325c539e6347e2ef2c5abbec74ed801e83bb2e96191a",
+      "bytes": 8751,
+      "observed_utc": "2026-10-25T11:37:45.445962Z",
+      "mtime_utc": "2026-10-25T04:29:01.222173Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/headless/package.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+headless@6.0.0/node_modules/@xterm/headless/package.json",
+      "sha256": "6c39530ee759998113bd8bcc306d1b725c0b1d5b0cdc04e071f6945a5f5edf1a",
+      "bytes": 614,
+      "observed_utc": "2026-10-25T11:37:45.446146Z",
+      "mtime_utc": "2026-10-24T08:21:01.881725Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/headless/typings/xterm-headless.d.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+headless@6.0.0/node_modules/@xterm/headless/typings/xterm-headless.d.ts",
+      "sha256": "d157ac3b7ddd0c72fb522631860ebd8b12009a55c1fd8f4730c72c244f6b9640",
+      "bytes": 44998,
+      "observed_utc": "2026-10-25T11:37:45.446412Z",
+      "mtime_utc": "2026-10-24T08:21:01.883725Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/headless/lib-headless/xterm-headless.js",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+headless@6.0.0/node_modules/@xterm/headless/lib-headless/xterm-headless.js",
+      "sha256": "17a90b650cf6b77cce2b98c4063884d43545e4ce177a54b76ccfc906f1aacaed",
+      "bytes": 182672,
+      "observed_utc": "2026-10-25T11:37:45.446688Z",
+      "mtime_utc": "2026-10-24T08:21:01.881725Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/package.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/package.json",
+      "sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f",
+      "bytes": 4348,
+      "observed_utc": "2026-10-25T11:37:45.446973Z",
+      "mtime_utc": "2026-10-24T08:21:02.313733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/LICENSE",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/LICENSE",
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "bytes": 1261,
+      "observed_utc": "2026-10-25T11:37:45.447106Z",
+      "mtime_utc": "2026-10-24T08:21:02.312733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/typings/xterm.d.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/typings/xterm.d.ts",
+      "sha256": "99028aeff2d441798b242790750ee385ba621b460db5a7e2341ae1cab7f3e2af",
+      "bytes": 65031,
+      "observed_utc": "2026-10-25T11:37:45.447324Z",
+      "mtime_utc": "2026-10-24T08:21:02.334733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/addon-serialize/package.json",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-serialize@0.14.0/node_modules/@xterm/addon-serialize/package.json",
+      "sha256": "48b1c275c67f141828765fbf188457c430827c333dba069fe4520cbedb729763",
+      "bytes": 1247,
+      "observed_utc": "2026-10-25T11:37:45.447534Z",
+      "mtime_utc": "2026-10-24T08:21:01.687722Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/addon-serialize/typings/addon-serialize.d.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-serialize@0.14.0/node_modules/@xterm/addon-serialize/typings/addon-serialize.d.ts",
+      "sha256": "ab358d5241c4c8f64d333e182189c97cbc5e581610c817b2284aaf0386e99ac5",
+      "bytes": 3616,
+      "observed_utc": "2026-10-25T11:37:45.447662Z",
+      "mtime_utc": "2026-10-24T08:21:01.687722Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/addon-serialize/src/SerializeAddon.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-serialize@0.14.0/node_modules/@xterm/addon-serialize/src/SerializeAddon.ts",
+      "sha256": "a1ed69d294d0e013aafb4e70c9a9a66c36550a410946eddb03a47d66b92a0405",
+      "bytes": 26119,
+      "observed_utc": "2026-10-25T11:37:45.447829Z",
+      "mtime_utc": "2026-10-24T08:21:01.688722Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/parser/EscapeSequenceParser.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/parser/EscapeSequenceParser.ts",
+      "sha256": "c50c159ec6fb209a1be4f1fb4266c84865e4460d8b82f54e3d429b760386e4ef",
+      "bytes": 36277,
+      "observed_utc": "2026-10-25T11:37:45.448068Z",
+      "mtime_utc": "2026-10-24T08:21:02.326733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/input/WriteBuffer.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/input/WriteBuffer.ts",
+      "sha256": "c1c7726e5271fd37f254768a3a21323c1edc2a9bef52a55800dc20652285910f",
+      "bytes": 10080,
+      "observed_utc": "2026-10-25T11:37:45.448298Z",
+      "mtime_utc": "2026-10-24T08:21:02.334733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/InputHandler.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/InputHandler.ts",
+      "sha256": "b03afd5d38dd708440699e81135f1735626d55ffdf24621fbd54cfbc41320925",
+      "bytes": 148730,
+      "observed_utc": "2026-10-25T11:37:45.448550Z",
+      "mtime_utc": "2026-10-24T08:21:02.327734Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/public/BufferApiView.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/public/BufferApiView.ts",
+      "sha256": "a9ba835e5341db760bca7b72f48177866cf1b6d85cda61af85980bf812fb0752",
+      "bytes": 1194,
+      "observed_utc": "2026-10-25T11:37:45.448791Z",
+      "mtime_utc": "2026-10-24T08:21:02.320733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/public/BufferLineApiView.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/public/BufferLineApiView.ts",
+      "sha256": "4dc83ce5428bd7ec52f9ae2dda2e82327ff7d30f485059d9de928f01fa9d7043",
+      "bytes": 1005,
+      "observed_utc": "2026-10-25T11:37:45.448907Z",
+      "mtime_utc": "2026-10-24T08:21:02.321733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/public/BufferNamespaceApi.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/public/BufferNamespaceApi.ts",
+      "sha256": "c1c4a7498d66a96b684f17e0a0d415885bc5482aae518873c50aed140800e01d",
+      "bytes": 1486,
+      "observed_utc": "2026-10-25T11:37:45.449012Z",
+      "mtime_utc": "2026-10-24T08:21:02.321733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/CoreTerminal.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/CoreTerminal.ts",
+      "sha256": "538d1740cb2c1e1d1af7b58aac3518dba5c29ea83b4dad60b41a05333b7ca749",
+      "bytes": 12640,
+      "observed_utc": "2026-10-25T11:37:45.449112Z",
+      "mtime_utc": "2026-10-24T08:21:02.325733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/Types.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/Types.ts",
+      "sha256": "ad4fc729fa168148668992a00c80b8fa21a04061b5ce34a6a817c5c143319bec",
+      "bytes": 17824,
+      "observed_utc": "2026-10-25T11:37:45.449228Z",
+      "mtime_utc": "2026-10-24T08:21:02.333734Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/CircularList.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/CircularList.ts",
+      "sha256": "fe28dbff8abae1fd7ff1b3cd04a813a4fccc6501c8b03184ada7130732d0f19b",
+      "bytes": 7499,
+      "observed_utc": "2026-10-25T11:37:45.449414Z",
+      "mtime_utc": "2026-10-24T08:21:02.324733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/Buffer.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/Buffer.ts",
+      "sha256": "7d48cc12cf3c32b9cac1b6f6cfcee01215a1edb66e0dab48ceb3f87d9c25b422",
+      "bytes": 24364,
+      "observed_utc": "2026-10-25T11:37:45.449522Z",
+      "mtime_utc": "2026-10-24T08:21:02.320733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/BufferSet.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/BufferSet.ts",
+      "sha256": "65876e87f6b8e6e71b90c953a380a48f8689cee3d4467ae91e04ce88ec0f1bd2",
+      "bytes": 4151,
+      "observed_utc": "2026-10-25T11:37:45.449637Z",
+      "mtime_utc": "2026-10-24T08:21:02.323733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/BufferLine.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/BufferLine.ts",
+      "sha256": "e4b521b257c499f89c75d995bff9c14ae0d4fac21abece2f592e36d57be033d5",
+      "bytes": 20223,
+      "observed_utc": "2026-10-25T11:37:45.449753Z",
+      "mtime_utc": "2026-10-24T08:21:02.320733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/CellData.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/CellData.ts",
+      "sha256": "c0a4157340ecb1b7e627e00080f3f8238b6f2b75b879e88d0d96c9c72a7d15df",
+      "bytes": 3310,
+      "observed_utc": "2026-10-25T11:37:45.449890Z",
+      "mtime_utc": "2026-10-24T08:21:02.323733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/buffer/AttributeData.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/buffer/AttributeData.ts",
+      "sha256": "3dae22272066c4d816177c9461fe0e0bb1070fc3870d5bb593f19123d832d16f",
+      "bytes": 7626,
+      "observed_utc": "2026-10-25T11:37:45.449993Z",
+      "mtime_utc": "2026-10-24T08:21:02.320733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/services/CoreService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/services/CoreService.ts",
+      "sha256": "c6320a5a42790887b6806326fb4b8949d45bf58cb2e1526797d40c87ebe696e3",
+      "bytes": 3267,
+      "observed_utc": "2026-10-25T11:37:45.450094Z",
+      "mtime_utc": "2026-10-24T08:21:02.325733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/services/CoreMouseService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/services/CoreMouseService.ts",
+      "sha256": "c3a954480ca827ee939e7dd6c3e99dda5d3b145ccfecc6598302070dc80bdab8",
+      "bytes": 11517,
+      "observed_utc": "2026-10-25T11:37:45.450197Z",
+      "mtime_utc": "2026-10-24T08:21:02.325733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/services/BufferService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/services/BufferService.ts",
+      "sha256": "e582ba560e619978b1e0befec2c5da2d321554ec348ebf8e3441cc7fe9de12ae",
+      "bytes": 5472,
+      "observed_utc": "2026-10-25T11:37:45.450316Z",
+      "mtime_utc": "2026-10-24T08:21:02.323733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/common/services/OscLinkService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/common/services/OscLinkService.ts",
+      "sha256": "559eae342ee18934af8e1e22f6f03425f229b71a0161eb6de304863f4e2ebcda",
+      "bytes": 3530,
+      "observed_utc": "2026-10-25T11:37:45.450411Z",
+      "mtime_utc": "2026-10-24T08:21:02.329733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/public/Terminal.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/public/Terminal.ts",
+      "sha256": "8a84fca4931f36414091e744189e7ccae667fae499e3d2c340e847f8c4114d29",
+      "bytes": 10339,
+      "observed_utc": "2026-10-25T11:37:45.450504Z",
+      "mtime_utc": "2026-10-24T08:21:02.332733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/CoreBrowserTerminal.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/CoreBrowserTerminal.ts",
+      "sha256": "15c1149d38db18e9aa2c4a896e6c69c5cc40fb73a3fa01bb0602828cae3210a1",
+      "bytes": 52916,
+      "observed_utc": "2026-10-25T11:37:45.450621Z",
+      "mtime_utc": "2026-10-24T08:21:02.324733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/OscLinkProvider.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/OscLinkProvider.ts",
+      "sha256": "43f52cd9b945b4e9001a48c68f4b5de492d9579609e5f2800dbd7ce8a0f5a470",
+      "bytes": 4188,
+      "observed_utc": "2026-10-25T11:37:45.451049Z",
+      "mtime_utc": "2026-10-24T08:21:02.329733Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/xterm/src/browser/services/RenderService.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+xterm@6.0.0/node_modules/@xterm/xterm/src/browser/services/RenderService.ts",
+      "sha256": "c2c30de3a383d7d848b20a1789f6c54aa28f93ec979d5f8665a31d256f0630a4",
+      "bytes": 13356,
+      "observed_utc": "2026-10-25T11:37:45.451165Z",
+      "mtime_utc": "2026-10-24T08:21:02.330734Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/src/SearchAddon.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/src/SearchAddon.ts",
+      "sha256": "3b100893e2de186d304cf3cb4552c6367dc705d4f60a5125ce93f3ee82922ddb",
+      "bytes": 8894,
+      "observed_utc": "2026-10-25T11:37:45.451359Z",
+      "mtime_utc": "2026-10-24T08:21:01.899726Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    },
+    {
+      "path": "node_modules/@xterm/addon-search/src/SearchLineCache.ts",
+      "resolved_path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/node_modules/.pnpm/@xterm+addon-search@0.16.0/node_modules/@xterm/addon-search/src/SearchLineCache.ts",
+      "sha256": "20cd1205c3146834ad556c5ec0a5bd829a33f5817a7cdc2e9c8c85cfdeedacac",
+      "bytes": 4040,
+      "observed_utc": "2026-10-25T11:37:45.451472Z",
+      "mtime_utc": "2026-10-24T08:21:01.899726Z",
+      "stable_during_fingerprint": true,
+      "content_scope": "task-relevant source ranges / declarations / search matches; fingerprint covers entire file"
+    }
+  ],
+  "external_references": {
+    "new_network_requests": false,
+    "new_external_projects": false,
+    "reused_evidence_path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/reference-sources.json",
+    "reused_checked_on": "2026-10-25",
+    "activity_window": [
+      "2024-10-25",
+      "2026-10-25"
+    ],
+    "repositories": [
+      {
+        "id": "R-03",
+        "repository": "tmux/tmux",
+        "url": "https://github.com/tmux/tmux",
+        "archived": false,
+        "pushed_at": "2026-10-24T07:47:32Z",
+        "latest_commit": {
+          "sha": "acee541d6ec53127ee34488a281e0b205890ef91",
+          "date": "2026-10-24T07:47:32Z",
+          "url": "https://github.com/tmux/tmux/commit/acee541d6ec53127ee34488a281e0b205890ef91"
+        },
+        "release": {
+          "tag_name": "3.8",
+          "html_url": "https://github.com/tmux/tmux/releases/tag/3.8",
+          "published_at": "2026-09-09T12:55:58Z",
+          "prerelease": false,
+          "draft": false
+        },
+        "pinned": {
+          "ref": "3.8",
+          "sha": "7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53",
+          "date": "2026-10-08T07:13:43Z"
+        },
+        "github_license_classification": "ISC",
+        "files_read": [
+          {
+            "path": "COPYING",
+            "url": "https://raw.githubusercontent.com/tmux/tmux/7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53/COPYING",
+            "sha256_utf8": "2116115d46eeb1e736acfa562eed14fe6c34760794bc5b484642fe694adde0fd",
+            "read_ok": true
+          },
+          {
+            "path": "README",
+            "url": "https://raw.githubusercontent.com/tmux/tmux/7f2a35ad3321f9ba57a1062ca73b1f3ff26aca53/README",
+            "sha256_utf8": "9fb75e6c7f10c25b73e41b8214336d0dc2acfbe4c99984514ccaf7327192d53e",
+            "read_ok": true
+          }
+        ],
+        "activity_basis": "latest commit",
+        "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+      },
+      {
+        "id": "R-04",
+        "repository": "xtermjs/xterm.js",
+        "url": "https://github.com/xtermjs/xterm.js",
+        "archived": false,
+        "pushed_at": "2026-10-13T17:49:36Z",
+        "latest_commit": {
+          "sha": "991857a1b1cacf06f9531ba74a6e927a7a6398bb",
+          "date": "2026-10-13T17:49:35Z",
+          "url": "https://github.com/xtermjs/xterm.js/commit/991857a1b1cacf06f9531ba74a6e927a7a6398bb"
+        },
+        "release": {
+          "tag_name": "6.0.0",
+          "html_url": "https://github.com/xtermjs/xterm.js/releases/tag/6.0.0",
+          "published_at": "2025-12-22T13:59:51Z",
+          "prerelease": false,
+          "draft": false
+        },
+        "pinned": {
+          "ref": "6.0.0",
+          "sha": "f447274f430fd22513f6adbf9862d19524471c04",
+          "date": "2025-12-22T13:48:49Z"
+        },
+        "github_license_classification": "MIT",
+        "files_read": [
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/xtermjs/xterm.js/f447274f430fd22513f6adbf9862d19524471c04/LICENSE",
+            "sha256_utf8": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+            "read_ok": true
+          },
+          {
+            "path": "package.json",
+            "url": "https://raw.githubusercontent.com/xtermjs/xterm.js/f447274f430fd22513f6adbf9862d19524471c04/package.json",
+            "sha256_utf8": "5553a8477486641d8169ad5c9cfc1d942a5bf78fcfebce64a26baed6d972c337",
+            "read_ok": true
+          }
+        ],
+        "activity_basis": "latest commit",
+        "note": "分类不代替实际许可文本；逐文件结论见 reference-notes.md。"
+      }
+    ],
+    "additional_primary_sources": [
+      "https://github.com/tmux/tmux/wiki/Control-Mode",
+      "https://xtermjs.org/docs/guides/flowcontrol/"
+    ],
+    "issues": [
+      {
+        "html_url": "https://github.com/xtermjs/xterm.js/issues/6063",
+        "number": 6063,
+        "title": "`Buffer.resize` can leave viewport rows with no live `BufferLine` when growing rows with `ybase > 0` (6.0.0) — uncaught TypeErrors in `lineFeed` and `_eraseInBufferLine`",
+        "state": "open",
+        "created_at": "2026-07-23T19:55:31Z",
+        "updated_at": "2026-09-18T22:55:17Z",
+        "closed_at": null
+      }
+    ],
+    "license_inspected_this_task": {
+      "local_path": "node_modules/@xterm/xterm/LICENSE",
+      "license": "MIT",
+      "source_commit": "f447274f430fd22513f6adbf9862d19524471c04"
+    },
+    "note": "Activity and remote issue status copied from already recorded official-source evidence; not freshly reverified online. New implementation observations are from installed xterm package source at the same pinned commit."
+  },
+  "executed": [
+    "read-only filesystem source/catalog/skill reads",
+    "read-only source search",
+    "source fingerprints",
+    "write /tmp report and this observation JSON"
+  ],
+  "not_executed": [
+    "K-03 reproduction",
+    "tests including Vitest",
+    "lint",
+    "build/generated artifacts",
+    "helper/PTY/Provider",
+    "cargo/native build",
+    "host UI/E2E",
+    "source edits",
+    "node_modules edits",
+    "formal change evidence/status/locks edits",
+    "git commit/push",
+    "API/threshold freeze"
+  ],
+  "assertions": {
+    "no_test_pass_claim": true,
+    "no_acceptance_prepopulation": true,
+    "no_dependency_change": true,
+    "no_repository_write_by_this_task": true,
+    "no_subagents_spawned": true,
+    "initial_no_private_parser_preference_not_user_spec_requirement": true
+  }
+}

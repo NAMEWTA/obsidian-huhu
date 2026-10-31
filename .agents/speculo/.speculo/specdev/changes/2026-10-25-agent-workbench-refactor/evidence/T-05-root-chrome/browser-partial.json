@@ -1,0 +1,402 @@
+{
+  "checks": [
+    {
+      "name": "incomplete-CSI-UTF8-OSC-DCS-join-two-production-targets-and-one-reply",
+      "ok": true,
+      "detail": {
+        "replies": [
+          "\u001bP1$r0m\u001b\\",
+          "\u001b[1;18R"
+        ],
+        "marks": [
+          {
+            "runtimeId": "browser-1",
+            "contentSequence": 8
+          },
+          {
+            "runtimeId": "browser-1",
+            "contentSequence": 8
+          }
+        ],
+        "frames": [
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch",
+          "patch",
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch",
+          "patch",
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch",
+          "patch",
+          "snapshot-begin",
+          "snapshot-links",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch"
+        ]
+      },
+      "durationMs": 190.2000000178814
+    },
+    {
+      "name": "structure-reflow-alt-reset-clear-savedcursor-charset",
+      "ok": true,
+      "detail": {
+        "result": {
+          "status": "accepted",
+          "at": {
+            "runtimeId": "browser-2",
+            "contentSequence": 6
+          },
+          "geometry": {
+            "cols": 12,
+            "rows": 3
+          },
+          "native": "unsupported"
+        },
+        "sizes": [
+          {
+            "cols": 12,
+            "rows": 3
+          }
+        ],
+        "geometry": [
+          12,
+          3
+        ]
+      },
+      "durationMs": 92.7999999821186
+    },
+    {
+      "name": "OSC8-two-buffer-owned-markers-resize-trim-reset-dispose",
+      "ok": true,
+      "detail": {
+        "registryAfterDispose": 0,
+        "foreignAfterDispose": true
+      },
+      "durationMs": 81.09999999403954
+    },
+    {
+      "name": "real-Search-cache-selection-local-scroll-no-fake-LF-extended-colors",
+      "ok": true,
+      "detail": {
+        "lf": 0,
+        "scroll": 0,
+        "colors": [
+          66051,
+          263430
+        ],
+        "selectionPreserved": true
+      },
+      "durationMs": 68.90000000596046
+    },
+    {
+      "name": "cursor-blink-12h-l-DECSCUSR-override-zero-restores-view-defaults",
+      "ok": true,
+      "detail": [
+        {
+          "raw": "\u001b[?12l",
+          "target": {
+            "style": "underline",
+            "blink": false
+          },
+          "baseline": {
+            "style": "underline",
+            "blink": false
+          }
+        },
+        {
+          "raw": "\u001b[?12h",
+          "target": {
+            "style": "underline",
+            "blink": true
+          },
+          "baseline": {
+            "style": "underline",
+            "blink": true
+          }
+        },
+        {
+          "raw": "\u001b[5 q",
+          "target": {
+            "style": "bar",
+            "blink": true
+          },
+          "baseline": {
+            "style": "bar",
+            "blink": true
+          }
+        },
+        {
+          "raw": "\u001b[6 q",
+          "target": {
+            "style": "bar",
+            "blink": false
+          },
+          "baseline": {
+            "style": "bar",
+            "blink": false
+          }
+        },
+        {
+          "raw": "\u001b[0 q",
+          "target": {
+            "style": "underline",
+            "blink": true
+          },
+          "baseline": {
+            "style": "underline",
+            "blink": true
+          }
+        },
+        {
+          "raw": "\u001b[?12l",
+          "target": {
+            "style": "underline",
+            "blink": false
+          },
+          "baseline": {
+            "style": "underline",
+            "blink": false
+          }
+        },
+        {
+          "raw": "\u001b[2 q",
+          "target": {
+            "style": "block",
+            "blink": false
+          },
+          "baseline": {
+            "style": "block",
+            "blink": false
+          }
+        },
+        {
+          "raw": "\u001b[0 q",
+          "target": {
+            "style": "underline",
+            "blink": false
+          },
+          "baseline": {
+            "style": "underline",
+            "blink": false
+          }
+        }
+      ],
+      "durationMs": 297
+    },
+    {
+      "name": "2026-real-render-timeout-same-token-and-resync",
+      "ok": true,
+      "detail": {
+        "first": 76,
+        "second": 76,
+        "sameTokenResyncExpired": true
+      },
+      "durationMs": 1298.800000011921
+    },
+    {
+      "name": "actual-Session-observer-gap-fault-restores-once-from-snapshot",
+      "ok": true,
+      "detail": {
+        "injected": true,
+        "frames": [
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch",
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "patch"
+        ]
+      },
+      "durationMs": 15.100000023841858
+    },
+    {
+      "name": "actual-Session-parts-assembly-gap-finite-resync-and-slow-observer",
+      "ok": true,
+      "detail": {
+        "frames": 145,
+        "partFrames": 63,
+        "slowFrames": [
+          "snapshot-begin",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-row",
+          "snapshot-end",
+          "resync-required"
+        ],
+        "usage": {
+          "modelCells": 4000,
+          "modelBytes": 67424,
+          "combiningUnits": 0,
+          "maxCellUnits": 0,
+          "parserUnits": 0,
+          "links": 0,
+          "linkUnits": 0,
+          "markers": 0,
+          "status": "ok",
+          "pendingRawBytes": 0,
+          "projectionBytes": 390468,
+          "snapshotBytes": 390088,
+          "journalBytes": 305165,
+          "observerBytes": 0,
+          "observers": 1,
+          "readTokens": 2
+        }
+      },
+      "durationMs": 202
+    },
+    {
+      "name": "production-bootstrap-late-failure-releases-lease-observer-renderer-and-listeners",
+      "ok": true,
+      "detail": {
+        "registered": 1,
+        "released": 1,
+        "disconnected": 1,
+        "observers": 0
+      },
+      "durationMs": 31.900000005960464
+    },
+    {
+      "name": "production-TerminalView-explicit-focus-size-owner-hidden-blur-dispose",
+      "ok": true,
+      "detail": {
+        "sizes": [
+          {
+            "cols": 44,
+            "rows": 8
+          },
+          {
+            "cols": 61,
+            "rows": 8
+          },
+          {
+            "cols": 44,
+            "rows": 8
+          }
+        ],
+        "explicitOnly": true
+      },
+      "durationMs": 332.90000000596046
+    },
+    {
+      "name": "production-target-cursor-composition-guard-and-stock-scrolled-IME-limitation",
+      "ok": true,
+      "detail": {
+        "projected": [
+          "8.45px",
+          "0px"
+        ],
+        "baseline": [
+          "8.45px",
+          "0px"
+        ],
+        "limitation": "Stock xterm does not include ybase-ydisp in textarea top; CDP is not a real OS IME."
+      },
+      "durationMs": 133.30000001192093
+    }
+  ],
+  "errors": []
+}

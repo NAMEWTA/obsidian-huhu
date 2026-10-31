@@ -1,3 +1,4 @@
+import { ARCHIVES_QUERY } from '../archives/api';
 import { closeRssStore } from './platform/rss/rss-store';
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { deviceId } from '../../host/obsidian/storage/device-id';
@@ -11,9 +12,9 @@ import {
 	AGENT_QUICK_COMMANDS,
 } from '../agent/api';
 import { NAVIGATOR_LISTS, NAVIGATOR_PERIODIC } from '../navigator/api';
-import { AUTOMATIONS, AUTOMATION_SOURCES, AUTOMATION_SCHEDULE, type AutomationSource } from '../automations/api';
-import { HOME_CALENDAR, HOME_TASKS, HOME_WIDGETS, HOME_WORKBENCH, type HomeWorkbench } from './api';
-import { createCalendarService, type OwnedCalendarService } from './services/calendar-service';
+import { AUTOMATIONS, AUTOMATION_SOURCES, type AutomationSource } from '../automations/api';
+import { HOME_WIDGETS, HOME_WORKBENCH, type HomeWorkbench } from './api';
+import { TASK_CALENDAR, TASK_VIEWS } from '../task/api';
 import { indexWidgetProviders } from './core/board/widget-registry';
 import { builtinHomeWidgets } from './contrib/widgets';
 import { dashboardAutomationSource } from './contrib/automation-source';
@@ -72,15 +73,11 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 	let ui: { closeModals: (app: typeof context.app) => void; teardown: (app: typeof context.app) => void } | undefined;
 	let automationSource: AutomationSource | undefined;
 	let workbench: HomeWorkbench | undefined;
-	let calendar: OwnedCalendarService | undefined;
 	let owned: typeof homeServices = {};
 	return {
 		/** Read after `activate()`. */
 		get services() {
-			return [
-				...(workbench ? [[HOME_WORKBENCH, workbench] as const] : []),
-				...(calendar ? [[HOME_CALENDAR, calendar] as const, [HOME_TASKS, calendar] as const] : []),
-			];
+			return [...(workbench ? [[HOME_WORKBENCH, workbench] as const] : [])];
 		},
 		get contributions() {
 			const contribution = [HOME_WIDGETS, widgets] as const;
@@ -91,28 +88,34 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 		},
 		settingsPage: async () => (await import('./ui/settings-page')).homeSettingsPage(host),
 		async activate() {
-			calendar = createCalendarService({
-				app,
-				deviceId: deviceId(app),
-				remove: async ({ task, owner }) => {
-					if (calendar) (await import('./ui/tasks/task-remove-page')).removeTaskDialog(owner, task, calendar);
-				},
-				settings: () => host.settings,
-				journal: () => context.services.peek(NAVIGATOR_PERIODIC),
-				schedule: () => context.services.peek(AUTOMATION_SCHEDULE),
-				edit: async (request) => {
-					if (calendar)
-						await (
-							await import('./ui/tasks/task-dialog-page')
-						).editTask(request, calendar, host.automationComposer);
-				},
-				writeFilter: async (filter) => {
-					host.settings = { ...host.settings, calendarTaskFilter: filter };
-					await host.saveSettings();
-				},
-			});
-			homeServices.calendar = calendar;
-			context.lifetime.register(() => calendar?.dispose());
+			// A non-owning projection; task survives Home being disabled or the last board closing.
+			homeServices.calendar = context.services.peek(TASK_CALENDAR);
+			homeServices.taskViews = context.services.peek(TASK_VIEWS);
+			context.lifetime.register(
+				context.services.watch(TASK_CALENDAR, (calendar) => {
+					homeServices.calendar = calendar;
+					host.refreshAllDashboards();
+				}),
+			);
+			context.lifetime.register(
+				context.services.watch(TASK_VIEWS, (views) => {
+					homeServices.taskViews = views;
+					host.refreshAllDashboards();
+				}),
+			);
+			homeServices.archives = () => context.services.peek(ARCHIVES_QUERY);
+			homeServices.watchArchives = (listener) => {
+				let inner = context.services.peek(ARCHIVES_QUERY)?.subscribe(listener);
+				const stop = context.services.watch(ARCHIVES_QUERY, (archives) => {
+					inner?.();
+					inner = archives?.subscribe(listener);
+					listener();
+				});
+				return () => {
+					inner?.();
+					stop();
+				};
+			};
 			homeServices.periodic = () => context.services.peek(NAVIGATOR_PERIODIC);
 			homeServices.watchPeriodic = (listener) => {
 				let inner = context.services.peek(NAVIGATOR_PERIODIC)?.subscribe(listener);
@@ -126,9 +129,6 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 					stop();
 				};
 			};
-			context.lifetime.register(
-				context.settings.bind('home', homeSettings).subscribe(() => calendar?.invalidate()),
-			);
 			// Board UI helpers that must run on dispose (synchronously) and the workbench panel load now.
 			const [{ closeDashboardPanelModals }, { teardownBasenameIndex }, { closeRecordDialogs }] =
 				await Promise.all([
@@ -162,6 +162,7 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			Object.assign(homeServices, owned);
 			homeServices.acquireDispatch = () => Promise.resolve(context.services.peek(AGENT_DISPATCH));
 			homeServices.agents = () => context.services.peek(AGENT_DIRECTORY)?.list() ?? [];
+			homeServices.spaces = () => context.services.peek(AGENT_DIRECTORY)?.spaces() ?? [];
 			homeServices.sessions = () => context.services.peek(AGENT_SESSIONS);
 			homeServices.skills = () => context.services.peek(AGENT_SKILLS);
 			homeServices.skillCatalog = () => context.services.peek(AGENT_SKILL_CATALOG);
@@ -267,8 +268,6 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 				app,
 				settings: () => host.settings,
 				deviceId: deviceId(app),
-				calendar,
-				schedule: () => context.services.peek(AUTOMATION_SCHEDULE),
 				saveSettings: () => host.saveSettings(),
 				shell: context.shell,
 				registerEvent: (ref) => context.lifetime.registerEvent(ref),
@@ -312,8 +311,6 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			host.boards = undefined;
 			host.closeOverlays = undefined;
 			workbench = undefined;
-			calendar?.dispose();
-			calendar = undefined;
 			listeners.clear();
 			const { mediaTags, habit, expense, pomodoro, reading, music } = owned;
 			owned = {};

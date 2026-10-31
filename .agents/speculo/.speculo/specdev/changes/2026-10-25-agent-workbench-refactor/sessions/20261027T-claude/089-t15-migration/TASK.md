@@ -1,0 +1,20 @@
+# 089 — T-15: one-shot legacy migration with stop-writer, recovery copy, journal, single-writer cutover
+Ticket: CHG/ticket/15-data-migration.md (ACs ["AC-047","AC-048","AC-049","AC-061"]). Read the WHOLE ticket body, including "有序执行路线", "真实 owner 与恢复闭环（LOG-029）" and 验证方法. Read common rules: ../COMMON.md.
+Contracts: CHG/implementation-contracts.md §6 (owner whitelist, BUSY/bounded gate, strict drain, common snapshot, staging/recovery copy/journal, pre-start recovery, memory+settings namespace baseline reload, no side effects after import/restart). Owner analysis: CHG/evidence/backup-owner-analysis.md. Upstream evidence: CHG/evidence/T-02.md, T-10.md, T-11.md, T-12.md, T-13.md, T-14.md and REPORTs under CHG/sessions/20261027T-claude/.
+Deliver per ticket route 1–4: legacy workspace.json v1 etc. → staged new formats; layouts without Space go to an "Import Space · Legacy workbench" (localized), same cwd NOT merged; unattributable account index/annotations kept as copy + report; re-entrant by source digest; interruption at every journal/replace/adopt phase recoverable by a new instance; old writer refused after cutover; rollback guidance. Provide the public owner-registration protocol T-16 will reuse. New tests in test/agent-migrations and recovery tests.
+## Rules
+Do not call existing error-swallowing flush or normal load/publish/invoke paths to perform recovery. Do not auto-bind legacy unbound automation/shortcut definitions to a Space (LOG-030): keep "unbound" and prompt. Never move credentials or native logs. Never overwrite valid data with a default empty object. Isolated test vaults only — never touch a real user vault.
+
+## Write set (from ticket frontmatter; main.js/styles.css are Lead-only)
+src/modules/agent/core/migrations/** src/modules/agent/platform/desktop/migrations/** src/modules/agent/services/migrations/** src/modules/agent/services/workspace-store*.ts src/modules/agent/services/history-store*.ts src/modules/agent/ui/settings/** src/modules/agent/ui/settings-page.tsx src/modules/agent/i18n.ts src/modules/agent/module.ts src/shell/shared-workspace/** test/agent-migrations/** docs/data.md docs/agent-workbench.md src/shared/storage/recovery-contracts.ts src/shared/storage/recovery-contracts.test.ts src/shared/storage/recovery-transaction.ts src/shared/storage/recovery-transaction.test.ts src/app/recovery.ts src/app/recovery.test.ts src/app/main.ts src/app/settings/runtime.ts src/app/settings/runtime.test.ts src/shared/settings/store.ts src/shared/settings/store.test.ts src/modules/agent/api.ts src/modules/agent/platform/history/service.ts src/modules/agent/platform/history/service.test.ts src/modules/agent/services/agent-runtime.ts src/modules/agent/services/agent-runtime.test.ts src/modules/agent/services/stats-service.ts src/modules/agent/services/stats-service.test.ts src/modules/agent/platform/stats-store.ts src/modules/agent/platform/stats-store.test.ts 
+If you need any other path, STOP that branch and report precisely.
+
+## Checks
+tsc (test config), vitest on all new/touched tests and the ticket's listed suites, eslint+prettier on touched files, `pnpm test:architecture`, `pnpm run test:i18n`; golden tests if formats change.
+
+REPORT: CHG/sessions/20261027T-claude/089-t15-migration/REPORT.md
+
+## Lead notes at dispatch (after T-11..T-14)
+- Final data owners: Space records (records.ts: spaces, sessions, historyOwners, nativeImport), workspace layouts (workspace-store), mailbox/inbox (T-10), history annotations history.json + workspace-index.sqlite (rebuildable cache; account index.sqlite retired — may exist in old vaults: report it, never migrate content from it), quick commands/settings (spaceId), automation definitions (frontmatter spaceId), Home boards (shortcut/skill spaceId), browser shared workspace records (T-13). Native occupancy locks live outside the vault (not migrated). Read evidence T-11..T-14 for exact store paths.
+- Legacy unbound automation/shortcut definitions stay unbound (LOG-030) — no auto-binding.
+- Native debug binaries current; run integration with HUHU_TEST_* env. If REPORT write is refused, return the full report in your reply.

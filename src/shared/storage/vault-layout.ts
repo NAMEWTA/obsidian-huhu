@@ -22,9 +22,19 @@ export const JOURNAL_ROOT = `${HUHU_VISIBLE_ROOT}/日志`;
 export const INBOX_ROOT = `${HUHU_VISIBLE_ROOT}/收件箱`;
 export const TASK_ARCHIVE_PATH = `${HUHU_VISIBLE_ROOT}/待办/已完成.md`;
 export const TASKS_PATH = `${HUHU_VISIBLE_ROOT}/待办/待办.md`;
+/** Canonical task-domain state; legacy board checkboxes are not a data source. */
+export const TASK_STORE_PATH = `${HUHU_VISIBLE_ROOT}/任务/tasks.json`;
 export const PROJECTS_ROOT = `${HUHU_VISIBLE_ROOT}/项目管理`;
 /** `<root>/个人档案/<姓名>/基本信息.md`, `<root>/企业档案/<名称>/基本信息.md`. */
 export const ARCHIVES_ROOT = `${HUHU_VISIBLE_ROOT}/档案`;
+/** Portable archive protocol, definitions, relations and recovery evidence. */
+export const ARCHIVE_PATHS = {
+	collection: '档案集合.md',
+	definitions: '档案定义',
+	relations: '关联记录',
+	migrations: '迁移记录',
+} as const;
+export const ARCHIVES_DRAFT_ROOT = '.huhu/archives/drafts';
 export const EXPENSE_ROOT = `${HUHU_VISIBLE_ROOT}/记账`;
 export const HABIT_ROOT = `${HUHU_VISIBLE_ROOT}/习惯`;
 export const POMODORO_ROOT = `${HUHU_VISIBLE_ROOT}/番茄钟`;
@@ -38,12 +48,24 @@ export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/导出`;
 
 /** Hidden Markdown documents HUHU owns (listed and edited through the managed-file index). */
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
+/** Per-device managed Chromium, encrypted identities and operation records. */
+export const BROWSER_ROOT = '.huhu/browser';
+/** User-selected material copies for Agent inputs; excluded from Git. */
+export const BROWSER_MATERIALS_ROOT = '.huhu/browser-materials';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
+export const VERSIONING_RECOVERY_ROOT = '.huhu/recovery/versioning';
+/** Host-local minimal receipts; the Bot business database remains in its OS Profile root. */
+export const HUHUBOT_RUNTIME_ROOT = '.huhu/huhubot';
 export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';
 export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];
 /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */
 export const DEFAULT_DASHBOARD_FILE = '.huhu/dashboards/dashboard';
+
+export function agentWorkbenchPath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/terminal-agent/${deviceId}/workbench-v2.json`;
+}
 
 export function isVisibleHuhuPath(path: string): boolean {
 	return path === HUHU_VISIBLE_ROOT || path.startsWith(HUHU_VISIBLE_ROOT + '/');

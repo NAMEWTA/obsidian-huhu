@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-10-25T10:30:48.353714+00:00",
+  "cause": "Early rustfmt on main.rs recursively formatted child modules; later commands use skip_children=true",
+  "files": [
+    {
+      "path": "native/pty-server/src/cookies.rs",
+      "matches_formatted_HEAD_exactly": true,
+      "current_sha256": "5d47e2d53cf56c3c8f4669368864c9f5a1d8992f8f493d94c174a396d51a8701",
+      "HEAD_sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39",
+      "HEAD_snapshot": "/tmp/huhu-t04-c-before-format-cookies.rs",
+      "drift_snapshot": "/tmp/huhu-t04-c-format-drift-cookies.rs",
+      "diff": "/tmp/huhu-t04-c-format-cookies.rs.diff",
+      "restored_sha256": "cf13ff8df8cdbf006139cb6e9c3f65ba0aca483dc67e963e9c19cfd8e74b6d39",
+      "restored_at": "2026-10-25T10:32:25.483040+00:00"
+    },
+    {
+      "path": "native/pty-server/src/data.rs",
+      "matches_formatted_HEAD_exactly": true,
+      "current_sha256": "02fb8183ab04516ef04987250973285c93cc31b39bcb798728a3aef1b1d058b3",
+      "HEAD_sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "HEAD_snapshot": "/tmp/huhu-t04-c-before-format-data.rs",
+      "drift_snapshot": "/tmp/huhu-t04-c-format-drift-data.rs",
+      "diff": "/tmp/huhu-t04-c-format-data.rs.diff",
+      "restored_sha256": "22f48fd2b4b64e1e42769f44ca013ffd035ef82810b0bea9722fe3ba4abfa60f",
+      "restored_at": "2026-10-25T10:32:25.483650+00:00"
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "matches_formatted_HEAD_exactly": true,
+      "current_sha256": "c80cba440ad417aa67df44d04546313dd8618c0d1560507fd3d4fc8aac7f09f5",
+      "HEAD_sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "HEAD_snapshot": "/tmp/huhu-t04-c-before-format-frame.rs",
+      "drift_snapshot": "/tmp/huhu-t04-c-format-drift-frame.rs",
+      "diff": "/tmp/huhu-t04-c-format-frame.rs.diff",
+      "restored_sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "restored_at": "2026-10-25T10:32:25.484019+00:00"
+    },
+    {
+      "path": "native/pty-server/src/inherited_fds.rs",
+      "matches_formatted_HEAD_exactly": true,
+      "current_sha256": "68c0e4968fa271b733be51ece8308ed9e72ecc82e94045597087f9a533e032a8",
+      "HEAD_sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "HEAD_snapshot": "/tmp/huhu-t04-c-before-format-inherited_fds.rs",
+      "drift_snapshot": "/tmp/huhu-t04-c-format-drift-inherited_fds.rs",
+      "diff": "/tmp/huhu-t04-c-format-inherited_fds.rs.diff",
+      "restored_sha256": "8eafc5e10e36d54e587df0f0269110ce4890af956463949e49d1fa894bf4bc2d",
+      "restored_at": "2026-10-25T10:32:25.484380+00:00"
+    }
+  ],
+  "root_verified_authorization": "/tmp/huhu-t04-root-format-audit.json; Root confirmed these four paths were clean at T04 start and authorized exact fixed33c21e restoration"
+}

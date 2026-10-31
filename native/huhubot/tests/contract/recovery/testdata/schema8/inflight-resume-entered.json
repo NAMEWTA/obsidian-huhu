@@ -1,0 +1,108 @@
+{
+  "agentIds": [
+    "agent:a55d791369c001f99a9bfba200cd611f",
+    "agent:b86d87a849b3e026c22462f61ff8a635",
+    "agent:f30828d515715f379dc57be704349fbd"
+  ],
+  "checkpoint": {
+    "Ref": "cp:9c2ef5e4e297b0e997372334d3364e7b",
+    "Digest": "sha256:0ef7adc82c0f6493c4906fd96d3744e2706c70c80b183c0d3d1870443807e7df",
+    "Size": 64,
+    "RunID": "run:9c02ef6707f30b7b6fa44f3de86439b1",
+    "AttemptID": "claim:6b2060dbb3f1c36b2b74de6b0249d605",
+    "Metadata": {
+      "EngineVersion": "huhu-engine-v1",
+      "FormatVersion": "1",
+      "DefinitionDigest": "sha256:cacb22aac127f2090a232eab3fd12ebc4d8bc76544aacbfab805fb5cbe52e167"
+    }
+  },
+  "config": {
+    "id": "snapshot:7443bb5930416a2a0436b853d1d5c04e",
+    "subjectId": "agent:b86d87a849b3e026c22462f61ff8a635",
+    "kind": "agent",
+    "agent": {
+      "id": "agent:b86d87a849b3e026c22462f61ff8a635",
+      "name": "lead-old-B",
+      "description": "",
+      "persona": "private-lead-old-B",
+      "model": {
+        "modelId": "controlled",
+        "providerId": "fixture",
+        "endpoint": "http://127.0.0.1:1",
+        "capabilities": [
+          "text"
+        ],
+        "protocol": "openai-chat-completions",
+        "revision": "2",
+        "credentialStatus": {
+          "mode": "none",
+          "state": "missing",
+          "reason": "CREDENTIAL_MISSING"
+        }
+      },
+      "allowedTools": [
+        "agents.delegate"
+      ],
+      "allowedCollaborationTargets": [
+        "agent:f30828d515715f379dc57be704349fbd"
+      ],
+      "revision": "2",
+      "personaRevision": "2",
+      "modelBindingRevision": "2",
+      "enabled": true,
+      "isDefault": false
+    }
+  },
+  "group": {
+    "sessionId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a",
+    "members": [
+      {
+        "agentId": "agent:b86d87a849b3e026c22462f61ff8a635",
+        "incarnation": "1",
+        "historyRevision": "1"
+      },
+      {
+        "agentId": "agent:f30828d515715f379dc57be704349fbd",
+        "incarnation": "1",
+        "historyRevision": "1"
+      }
+    ]
+  },
+  "locator": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/crashed/one",
+  "modelRunId": "run:9c02ef6707f30b7b6fa44f3de86439b1",
+  "producer": "controlled Engine actually inside Resume after real Attempt.Dispatch, blocked until process kill; no network request",
+  "profileRoot": "/tmp/huhu-lead-v8-crash-fixture-wvh7xyaw/crashed",
+  "resumeDecision": {
+    "Children": [
+      {
+        "runId": "run:909eee7053a6d888d6e97254dc10cb90",
+        "status": "succeeded",
+        "text": "LEAD_V8_DURABLE_CHILD_RESULT",
+        "partial": false,
+        "effectsUnresolved": false,
+        "derived": [
+          {
+            "kind": "message",
+            "id": "message:d7f1ef6c0ae4203720cea51a013fe8c5",
+            "revision": "1",
+            "hash": "sha256:4e3e23afff097ac70219127c9ccb707c03fc1a98cf5ca921467c89c2155e3037",
+            "namespace": "session:5f6ad9071b94fdbcfcfb46d74b3f873a",
+            "workThreadId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a"
+          }
+        ]
+      }
+    ],
+    "Tasks": null,
+    "Status": "completed",
+    "EffectID": "",
+    "SuspensionToken": "",
+    "Reason": "",
+    "Receipt": null,
+    "Directory": null,
+    "Delegation": null,
+    "Message": null,
+    "Proposal": null
+  },
+  "rootRunId": "run:ff7aed82b93bdec766d6dd5bad61a321",
+  "sessionId": "session:5f6ad9071b94fdbcfcfb46d74b3f873a"
+}

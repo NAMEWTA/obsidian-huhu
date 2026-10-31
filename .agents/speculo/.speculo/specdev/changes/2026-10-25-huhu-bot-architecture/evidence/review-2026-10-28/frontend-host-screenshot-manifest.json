@@ -1,0 +1,491 @@
+{
+  "integrationSha256": "880935fe725a49937c8c26eca5e93b34a1fb868a6518fb6ae8510549bc662d88",
+  "artifacts": {
+    "mainSha256": "44c4daa30901a8fd7dda12d58764bda0c5049d7213c4842e054ddfa7a99c3216",
+    "stylesSha256": "7e2852172ffb40ea2d59ce25bb6a2f4fe39ab65d3a2f880033a7428c6e2e3355",
+    "runnerSha256": "4702fe5b8b9bbe75bd856f804d34f153ed034d94412cb53eec71be387a5db7e6"
+  },
+  "images": [
+    {
+      "screenshot": "bot-chat-1440-theme-light.png",
+      "sha256": "dbbd96bfb4852faf0cf82f26131afadf13306aa2fdc79c22aca3b5eea820a229",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-1440-theme-light.png",
+      "sha256": "e4971cce4d8f7f22190e496ec8ee2b07ba72896480837fd3a4ea3b224ac307f8",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-1440-theme-light.png",
+      "sha256": "1da37804719324aa11931ee5a9f6e79b38fcd0512ab5ea02fa3ca8ae0b5fd97e",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-1440-theme-light.png",
+      "sha256": "f91ac641e3aa4b294e19c9b3d8eb98d74a44dba72bf193f541092f49f4c94f23",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-1440-theme-light.png",
+      "sha256": "eb7eff4c58546ed8aab7b32b7c78883cd925c7c5b775f0410872cbdc1457cc3b",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-1440-theme-light.png",
+      "sha256": "ae6b184e6d401f5bfd88544d0dda3030d85b85f4bfb3aa2581ef642a65482db7",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-1440-theme-light.png",
+      "sha256": "2b0df14662ccad2f2cbb8dc2a379fad62a44145f938ccdceb114fdfed8893fdc",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-1440-theme-light.png",
+      "sha256": "fcfb6820ce2f22b8eb65af8bfa40cd56e5daeddbfe734db8d484d1235fa712c9",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-1440-theme-light.png",
+      "sha256": "3e2698fe569b46173f1282632cf64f2f1ccbecdddaeaea6e32e1280ab82378de",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-1440-theme-light.png",
+      "sha256": "d8a56b90f04c7e511bcce7c7e5447c0266e74828381bff7356114700a3a3b146",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-chat-800-theme-light.png",
+      "sha256": "d6cd9d2ab518e881bb08a3427067d5e3f70954a0bc2c2dad35fe2becf41290a1",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-800-theme-light.png",
+      "sha256": "7018d3cbe62f073a41a0bdeaba34b16ad5c00b73d48ea24efe2aaf5b1f28a251",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-800-theme-light.png",
+      "sha256": "a468359185200dfab1ccc4b04f94c36d9a610779b8489b1b8f482d5c7e8a7096",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-800-theme-light.png",
+      "sha256": "e7c5375fe56cf5b748f89e63368fd575a8d42d15a7b35d9153b854ad57c38564",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-800-theme-light.png",
+      "sha256": "b6c9de01717214d84c3d1b680ed3be10eafb3fffdea5b550597f1b25e1d700db",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-800-theme-light.png",
+      "sha256": "603b3995cf5b6aaffaa60f6952024b3196845af1e0e4b43b2faadcd9ba6a0842",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-800-theme-light.png",
+      "sha256": "ba3bf4fdaa8a415a604983aad70b8bbb765e9262ad5db9e72f6b8611e65e532e",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-800-theme-light.png",
+      "sha256": "57f785828bd46db4c4b5ae9f647e52a082471b89b30b56db21bfdd11a109873b",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-800-theme-light.png",
+      "sha256": "0a117fa44a11d3973c8a3ba9966c7d74f368c59c0235963be67ec4b565d1ce8f",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-800-theme-light.png",
+      "sha256": "3d75d69a2089e7ac02fe6211d43c8c51f9472432a55947f31a70c0f981b312ef",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-chat-390-theme-light.png",
+      "sha256": "e1f238639d94f97e67803706f3e7b71c8682a868895c448a84bb54852d5236f1",
+      "page": "chat",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-390-theme-light.png",
+      "sha256": "479e3664642d88fbf3ef05f2e32e8cd690057f475a72853938137dc993cb20b4",
+      "page": "agents",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-390-theme-light.png",
+      "sha256": "8c83b6ef733e4f4990b5f8df02887dec7f69c9a929a9acb0b49fd950fdb4ca5f",
+      "page": "groups",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-390-theme-light.png",
+      "sha256": "a392dc3c46903fd279002bc9a8567696a7af59b8bacd1b48d9ae1b7a518415c1",
+      "page": "memory",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-390-theme-light.png",
+      "sha256": "7ec27738b7b9208b51d14b341ba54f27c974fc1b6f3a76d1e76666bbc1956794",
+      "page": "tasks",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-390-theme-light.png",
+      "sha256": "4284fcfe72f7d0206ea216ac960d2acb3c5346f457263aed651880f4f1fe73d0",
+      "page": "access",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-390-theme-light.png",
+      "sha256": "d5d5070d4ef12b18af9bdf2aae68c10ff86d4aa193a1bc2890f0a2660593089a",
+      "page": "approvals",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-390-theme-light.png",
+      "sha256": "018f98343a15d147037b4b285c50ad1f6fa16843c043e7d60093182d8ac4a274",
+      "page": "data",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-390-theme-light.png",
+      "sha256": "0925708036c7f40a43f8e899b2522096659a2fdbf3751ec099e4210b4d3b6038",
+      "page": "settings",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-390-theme-light.png",
+      "sha256": "e30fc57e75b039ab600e387f8231b2fca9efed7247bf896b6257a4314ed534ce",
+      "page": "settings-budget",
+      "theme": "theme-light",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-chat-1440-theme-dark.png",
+      "sha256": "674ce404947038ee816840a7af5632002862bfb39d0f43767215b4cd8d390626",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-1440-theme-dark.png",
+      "sha256": "ea57ec24d8ba4a1bdfc45bf25279682edd0329bf3a11cf75e038791088073a3f",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-1440-theme-dark.png",
+      "sha256": "76e974e7a7f7f63ab71739e8b4da31e7ef298e2ac2f1ee7ae5a0722e33e1cae0",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-1440-theme-dark.png",
+      "sha256": "c1ed7615daa3c9b7d406be8dfcb801d709df24329b5c11442c9a982e974b4314",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-1440-theme-dark.png",
+      "sha256": "4183758c35ca274a845188ccd49f7afe6e7644fdb20f28710e416eb483f8fe26",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-1440-theme-dark.png",
+      "sha256": "5799d3441b966c4870b10c78f6fe5a715e8881a27da35b316acd8f1a3cddba14",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-1440-theme-dark.png",
+      "sha256": "b4c18b4d1382d0567385d8a0dec7d53be7e67c623fff913fdaee7ac4222cf2bc",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-1440-theme-dark.png",
+      "sha256": "dcf424a1e64a9efd4f3a57ad6c29e5644700476cca2a9ed886f5e277bcffd32a",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-1440-theme-dark.png",
+      "sha256": "344037fa91367accb9d6d1327b0cf597b4931665170951fc2998ecf4cec21bd7",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-1440-theme-dark.png",
+      "sha256": "957c0b504fc0c807790e0f2ae02c57f26ec16d39c1c63d9d706d9dac8837411b",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 1440,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-chat-800-theme-dark.png",
+      "sha256": "d764b99a7a961a8265e2ec2b8abb0a854abdb72cf7cfdacd6abe04a550fe5664",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-800-theme-dark.png",
+      "sha256": "ca11c432fc7af3bfac7d7394c62baab468907f17d534823f52ef3692fc20c6e6",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-800-theme-dark.png",
+      "sha256": "c6b4df562f443e2759cc09d82e36a062f9e88ebc2f4d6a948e7e549e13b88986",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-800-theme-dark.png",
+      "sha256": "019a11c2094856d8c14f3e2d1d98f271a1f3b83280e84458b7b5c96741a73f99",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-800-theme-dark.png",
+      "sha256": "95f912acd785ee41471251b43f0e61a0595d384496c983a75c55a156772ff796",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-800-theme-dark.png",
+      "sha256": "1fb462905853aa45e8e6e6a97ef994f17b572bb23f7dbc82409271a335b6d4bf",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-800-theme-dark.png",
+      "sha256": "07cce947d330fe3dab004a9a4066454209bacbeb3ac02a720acae055e7936650",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-800-theme-dark.png",
+      "sha256": "a5b2d74a1193e9652c3e811a85cecedd5d967039f1689400a107a5f275625ff1",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-800-theme-dark.png",
+      "sha256": "3edd2710b2a115aa259bedc7c1c011a1ad92898418b78e7b4e788199ba59e2ad",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-800-theme-dark.png",
+      "sha256": "b846d39ce3e2ee3e94c54388a24c85eb96da4ea6d9bdce3c50ac6ab12b26e71e",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 800,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-chat-390-theme-dark.png",
+      "sha256": "f6661bc943946b239883eaf12b58a9e16eaabd4c64c558cfebe003dfc5efe5c7",
+      "page": "chat",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-agents-390-theme-dark.png",
+      "sha256": "f3266f177f3781001d9c02ab1d6816bf703c0446ffa7aa074e494fc535caca6e",
+      "page": "agents",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-groups-390-theme-dark.png",
+      "sha256": "7d354f58bee560589786f6c486f19d96160ed4548f193fde684dbdf11f165524",
+      "page": "groups",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-memory-390-theme-dark.png",
+      "sha256": "aff623683921b19f45fbb56564a2b1ac3c73d2fbc13310af92f36c4373d462b3",
+      "page": "memory",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-tasks-390-theme-dark.png",
+      "sha256": "0c7452b1f017cba8aff7a91bea4d6594d3f2a337acfe85d80a816fa7c2cbccf2",
+      "page": "tasks",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-access-390-theme-dark.png",
+      "sha256": "68a3343f557da5c41fc94893eea10d28713526331e97182c1090951fc0c42917",
+      "page": "access",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-approvals-390-theme-dark.png",
+      "sha256": "de8a251f5e0ed300ef56d7cf11c692cb12ef9d93e3121ce2b71be33a2a53671d",
+      "page": "approvals",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-data-390-theme-dark.png",
+      "sha256": "dec8da9867fb3e286b4f727531c5e78241e64a9ad969f4beeb829153756b081a",
+      "page": "data",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-390-theme-dark.png",
+      "sha256": "a01cc6830934782086aa0af19b26d1f28879cfa842e68c763e93cbba14c02c33",
+      "page": "settings",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    },
+    {
+      "screenshot": "bot-settings-budget-390-theme-dark.png",
+      "sha256": "cf6bc23b776185a0439f151d3473329c75d5dddef359888ec8eac6ca11a901b6",
+      "page": "settings-budget",
+      "theme": "theme-dark",
+      "viewportWidth": 390,
+      "manualReview": "read full screenshot; no observed clipping, label/control overlap or invisible selection state in this recorded view"
+    }
+  ],
+  "scopeNote": "60 actual rendered views manually read; regular vertical scroll and native text-input horizontal scrolling are allowed; tasks/approvals show empty state, no Provider execution."
+}

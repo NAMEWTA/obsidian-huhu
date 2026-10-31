@@ -28,7 +28,6 @@ export function TabLeadingIcon({ tab, sidebar = false }: { tab: WorkspaceTab; si
 					state={tab.state}
 					label={t(`agent.workspace.state.${tab.state}`)}
 					size={sidebar ? 'md' : 'sm'}
-					sidebar={sidebar}
 				/>
 			)}
 			{tab.kind === 'terminal' && tab.unread && !['working', 'waiting', 'permission'].includes(tab.state) && (

@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "owner": "native:/root/memory_access_repair",
+  "task": "138-memory-access-recovery",
+  "taskSHA256": "5f8262f2e3ad4db908a8a169e6d3d313e1b328a0daa915b406e4ab6f4e447381",
+  "actualDispatch": "collaboration.spawn_agent /root/memory_access_repair; nativeACK received",
+  "model": "gpt-6-sol",
+  "reasoningEffort": "xhigh",
+  "validator": {
+    "stage": "dispatch",
+    "actualExit": 0,
+    "tool": "dde5a3"
+  },
+  "scope": "same128consumer responsibility, source-onlytestsnow; businessattemptnotreset; T05formalownerRoot",
+  "predecessor": "128-lead-capacity-continuation.json",
+  "window": "noGo/Node/DB/build/generation;137pureGo,126Store source-only"
+}

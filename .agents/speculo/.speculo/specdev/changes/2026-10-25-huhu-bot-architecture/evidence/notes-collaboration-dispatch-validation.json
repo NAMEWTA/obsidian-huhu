@@ -1,0 +1,23 @@
+[
+  {
+    "task": "052-note-effects-go",
+    "exit": 0,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": "",
+    "taskSha256": "a1fc5331ebfdf9d72df61e22589e316735820a9fa267b4adeddcccf312ce74bc"
+  },
+  {
+    "task": "053-collaboration-policy",
+    "exit": 0,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": "",
+    "taskSha256": "9b7c72791ef97bc086fdf12a68bc5b1d3df99a2f48698c8d62913b912352d327"
+  },
+  {
+    "task": "054-note-effects-client",
+    "exit": 0,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": "",
+    "taskSha256": "9b1f909b305253d952955ad1add97e5f57066b4d59e16cd4d4351e4513e2f308"
+  }
+]

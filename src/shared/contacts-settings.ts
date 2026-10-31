@@ -5,11 +5,15 @@ export interface ContactsSettings {
 	rootFolder: string;
 	maxColumns: 5 | 6;
 	/** The layout last chosen for each kind. Absent until the user picks one; new pages start from it. */
-	layouts: Partial<Record<'person' | 'company', 'list' | 'card'>>;
+	layouts: Partial<Record<string, 'list' | 'card'>>;
 }
 /** A visible vault folder, like the periodic notes' `日志`: `huhu/档案/个人档案/<姓名>/基本信息.md`. */
 export const DEFAULT_CONTACTS_ROOT = ARCHIVES_ROOT;
-export const DEFAULT_CONTACTS_SETTINGS: ContactsSettings = { rootFolder: DEFAULT_CONTACTS_ROOT, maxColumns: 6, layouts: {} };
+export const DEFAULT_CONTACTS_SETTINGS: ContactsSettings = {
+	rootFolder: DEFAULT_CONTACTS_ROOT,
+	maxColumns: 6,
+	layouts: {},
+};
 
 /**
  * A typed folder as a vault-relative path: backslashes become `/`, a leading `/` or `./` and trailing `/` go away.
@@ -33,7 +37,13 @@ export function normalizeContactsSettings(raw: unknown): ContactsSettings {
 	const root = typeof value.rootFolder === 'string' ? normalizeVaultFolder(value.rootFolder) : '';
 	const given = value.layouts && typeof value.layouts === 'object' ? (value.layouts as Record<string, unknown>) : {};
 	const layouts: ContactsSettings['layouts'] = {};
-	for (const kind of ['person', 'company'] as const)
+	for (const kind of Object.keys(given)
+		.slice(0, 200)
+		.filter(
+			(kind) =>
+				/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,127}$/.test(kind) &&
+				!['constructor', 'prototype', '__proto__'].includes(kind),
+		))
 		if (given[kind] === 'list' || given[kind] === 'card') layouts[kind] = given[kind];
 	return {
 		rootFolder: root || DEFAULT_CONTACTS_SETTINGS.rootFolder,

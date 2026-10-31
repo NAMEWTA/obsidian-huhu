@@ -1,0 +1,9 @@
+{
+  "ticket": "T-05",
+  "at": "2026-10-25T13:19:26.438707+00:00",
+  "decision": "Use internal NativeHost Running output/ACK accounting and failedNone drain ownership; do not add proposed waitSessionDrained API. Native spawn-failed is serialized behind accepted SID raw after output gate closes; retiring slots cover actual reader/writer/master destruction and credit. Typed none remains zero user-spawn fact, separate from output drain.",
+  "actual_tool": "collaboration.send_message",
+  "target": "/root/implement_t01",
+  "state": "accepted minimum implementation direction; source and tests pending",
+  "open_combination": "A model resource-limit quarantines unparsed raw without ACK; C credit-held retiring slot needs accurate truncated/unknown abandonment or documented retained ownership. Both owners explicitly notified; no fabricated ACK/complete allowed."
+}

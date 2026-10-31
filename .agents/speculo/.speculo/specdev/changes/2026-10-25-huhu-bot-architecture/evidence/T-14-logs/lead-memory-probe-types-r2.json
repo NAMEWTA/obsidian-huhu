@@ -1,0 +1,18 @@
+{
+  "command": [
+    "node",
+    "--input-type=module"
+  ],
+  "actualExit": 0,
+  "waited": true,
+  "seconds": 1.6922089830004552,
+  "script": "evidence/T-14-logs/lead-memory-probe-typecheck-r2.mjs",
+  "probeSHA256": "2353a8227ae84e58b732a2e9304468d1768d7148c51637a512513b1e8d53d58a",
+  "previousFailure": {
+    "toolChunk": "56d313",
+    "actualExit": 126,
+    "diagnostics": 10,
+    "kind": "preparation only;3 upstream Obsidian d.ts checked without usual skipLibCheck,7 strict Root script types. Own args/indices/socket cleanup corrected; use usual skipLibCheck, no product source changed."
+  },
+  "boundary": "Types only. Default CLI/SQL/model probes are prepared but unexecuted."
+}

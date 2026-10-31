@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
+import { runInNewContext } from 'node:vm';
+import { setTimeout as delay } from 'node:timers/promises';
+const source = readFileSync('scripts/obsidian-acceptance/fresh-vault.mjs', 'utf8');
+const begin = source.indexOf('\tconst stop = async () => {');
+const end = source.indexOf('\tconst shot = async ', begin);
+assert.ok(begin >= 0 && end > begin);
+const actualStop = source.slice(begin, end);
+assert.ok(actualStop.includes('deadline = setTimeout(resolve, 20000)'), 'keep the real 20-second grace');
+const child = spawn(process.execPath, ['-e', "process.on('SIGTERM',()=>{});setInterval(()=>{},1000);process.send({ready:true})"], { env: {}, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+let observed = false, closeObserved = false;
+const exited = once(child, 'exit').then(result => { observed = true; return result; });
+const closed = once(child, 'close').then(result => { closeObserved = true; return result; });
+const safeguard = setTimeout(() => child.kill('SIGKILL'), 30000);
+try {
+  const [ready] = await once(child, 'message', { signal: AbortSignal.timeout(5000) });
+  assert.equal(ready.ready, true);
+  assert.equal(child.kill('SIGTERM'), true);
+  await delay(50);
+  assert.equal(observed, false, 'ready owned child must ignore SIGTERM');
+  const session = { app: child, exited, connection: { evaluate: async () => true, close() {} } };
+  const stop = runInNewContext(`(() => { ${actualStop}; return stop; })()`, { session, setTimeout, clearTimeout });
+  const started = performance.now();
+  console.log(JSON.stringify({ probe: 'exact current stop closure; ready owned Node child ignores SIGTERM; fake CDP quit does nothing', sourceSHA256: createHash('sha256').update(source).digest('hex'), realObsidianRun: false }));
+  await stop();
+  console.log(JSON.stringify({ elapsedMs: performance.now() - started, exitObservedWhenStopResolved: observed, childExitCode: child.exitCode, childSignal: child.signalCode, sessionReleased: session.app === undefined }));
+  assert.ok(observed, 'stop resolved before its owned child exit was observed');
+  assert.equal(child.signalCode, 'SIGKILL');
+  assert.equal(session.app, undefined);
+} finally {
+  clearTimeout(safeguard);
+  if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+  await exited;
+  await closed;
+  console.log(JSON.stringify({ finalWaitObserved: observed, closeObserved, ownedChildReaped: true }));
+}

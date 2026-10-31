@@ -1,0 +1,38 @@
+{
+  "task": "085-recovery-race-diagnosis",
+  "recordedAt": "2026-10-25T22:01:45.288354+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "nativeTarget": "/root/credential_provider",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "taskSha256": "50180901d439c96f201af03120ee6843d975cd5267e6bf7bf8ed3897fe094fb6",
+  "mapRevision": 20,
+  "goalRevision": 19,
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "errors": [],
+    "warnings": []
+  },
+  "scope": "Read-only diagnosis of actual group History and event second-StartRun race failures; external fixed-input diagnostic only after explicit heavy-window release",
+  "heavyWindowGranted": true,
+  "productWritesAuthorized": false,
+  "ackAt": "2026-10-25T22:02:49.815846+00:00",
+  "nativeAck": "Actual owner read TASK and explicitly confirmed production/test/081-report readonly and no Go/Node until Root releases current080 window.",
+  "rootLineNumberCorrection": {
+    "at": "2026-10-25T22:04:04.953004+00:00",
+    "nativeCorrectionSent": true,
+    "originalError": "Root misaligned an unnumbered snippet and incorrectly called events_test.go:487 the second StartRun error",
+    "actualObserved": "nl on unchanged SHA75aa64dfb41bb510f9949802b75716fea5d4e4447979355c09c7ef5466d59cf4 shows487=f.waitTerminal; helper history_test.go25 t.Helper,27 independent3s bounded,30 GetRun(bounded),32 t.Fatal",
+    "implication": "Capture actual bounded context and Run state; outer Background does not exclude deadline interruption. No causality conclusion from elapsed time alone."
+  },
+  "heavyWindow": {
+    "grantedAt": "2026-10-25T22:08:02.271784+00:00",
+    "nativeGrantSent": true,
+    "owner": "native:/root/credential_provider",
+    "rootNoActiveProductsOrChecks": true,
+    "080ReleasedAfterActualWait": true,
+    "actualPriorResult": "sessions/20261025T043239Z/080-recovery-core/logs/24-risk-race-result.json",
+    "scope": "Sequential two group controlled interleavings and original events-race deadline/state diagnostic; external probes only"
+  }
+}

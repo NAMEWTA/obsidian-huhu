@@ -1,0 +1,24 @@
+{
+  "errors": [],
+  "writableConflicts": [
+    [
+      "T-01",
+      "T-02",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/002-assistant.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-03",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/003-conversation-run.sql</Path>"
+    ],
+    [
+      "T-01",
+      "T-05",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/*.go</Path>",
+      "<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/005-grants.sql</Path>"
+    ]
+  ],
+  "observed": "T03/T05 shared paths remain read-only to consumer Ticket; actual TASK delegates original owners in disjoint Go/TS maintenance sets. Migration registry only026; body003/005 and fixture-db026/027 distinct. No product dependency edge removed."
+}

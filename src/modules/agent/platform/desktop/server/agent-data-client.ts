@@ -1,3 +1,12 @@
+/** Complete provenance required to admit a HUHU-owned source outside this Vault. */
+export interface OwnedHistorySession {
+	readonly agentId: string;
+	readonly sessionId: string;
+	readonly accountKey: string;
+	readonly deviceId: string;
+	readonly transcriptPath: string;
+	readonly sourceRef: string;
+}
 export type NativeUsage = import('../../../../../shared/automation/types').AgentUsage;
 export interface NativeSessionSummary {
 	key: string;
@@ -9,6 +18,16 @@ export interface NativeSessionSummary {
 	transcriptPath: string;
 	modifiedAtMs: number;
 	usage: NativeUsage;
+	/** Admission state is explicit; missing/unsupported sources are never represented as an empty body. */
+	sourceStatus?: 'available' | 'missing' | 'changed' | 'unsupported' | 'permission-denied' | 'unknown';
+	sourceRef?: string;
+	/** Scan-time metadata the helper stores without the body; preview details may refine them. */
+	model?: string | null;
+	messageCount?: number;
+	createdAtMs?: number | null;
+	/** Why `sourceStatus` is not `available`, as reported by the helper. Metadata only; never a path or body. */
+	sourceReason?: string;
+	spaceId?: string;
 }
 export interface NativeSession extends NativeSessionSummary {
 	text: string;
@@ -20,9 +39,18 @@ export interface HistoryPage {
 	revision: number;
 }
 
+export interface HistoryFence {
+	/** Native index revision captured by the first page. A later page must use the same revision. */
+	readonly revision: number;
+}
+
 /** Native history requests served by the terminal helper (scan, query, read; cancelled by aborting). */
 export interface HistoryClient {
-	request<T>(operation: 'scan' | 'query' | 'read', payload: Record<string, unknown>, signal?: AbortSignal): Promise<T>;
+	request<T>(
+		operation: 'scan' | 'query' | 'read',
+		payload: Record<string, unknown>,
+		signal?: AbortSignal,
+	): Promise<T>;
 	isConnected(): boolean;
 	/** Changes whenever the helper process starts or stops; cached results from older revisions are stale. */
 	readonly connectionRevision: number;

@@ -1,0 +1,336 @@
+{
+  "task": "080-recovery-core",
+  "checkedAt": "2026-10-25T22:44:25.557492+00:00",
+  "reportSha256": "4bae16ff612c08b4dd83f1c70718b5d54653d0fc933e5166a519de7e400a70c5",
+  "taskSha256": "9821a81f3c44d4a158cd1d2da483f374f093d12a0f213aa43516df59a37a4522",
+  "manifestSha256": "c1c24beab62695062feb83f0c6389161147ac651b2254e9e657faadfc9962260",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "ownFiles": {
+    "contracts/hap/v0.1/fixtures/golden.json": "458a7a49654f29a29f95fffac4044b10496aa9f84e46bce758c67305811bf0f0",
+    "contracts/hap/v0.1/fixtures/methods.json": "befae0dd58481587fbb02c0d35141115b9bf154b44a08f759f71dc8226cd503e",
+    "contracts/hap/v0.1/generate.mjs": "7499c603ed15eb2b899913a9e745ba9929e75906d244f7af46b21addc264cfe4",
+    "contracts/hap/v0.1/methods.json": "d110ecaca8f535c69c81d9ec39f2815ae82eb8c6f97dabe57074ba5246f2465b",
+    "contracts/hap/v0.1/schema.json": "a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534",
+    "contracts/hap/v0.1/validate.py": "38a96921af8e9dfd53854850b2987481c717712298cbed0d84e904ba9c0451a9",
+    "native/huhubot/cmd/huhubot/main.go": "965c5467d0f66312d8387b45a3db0fe761e21994f84a38351bc8cb911f260e8c",
+    "native/huhubot/internal/adapters/inbound/hap/assistant.go": "243a1539a5c8f05cd832d1e346748beb5dc7015f8b892449802b4036e1562ec2",
+    "native/huhubot/internal/adapters/inbound/hap/conversation.go": "929dc5a317fd4f37b8979561fdec01e31617e47f54e3a6bddaef8c4745df92f0",
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/continuations.go": "5c3cc7c05fe023eb8736d58be3da3ab339a44aa00d8c1d43934cfb87d486fc6f",
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/recovery.go": "a25ac4916b1e175f161c3b1916556f2a2fcbcb0fc95ec88ad3ff303dcc1c8191",
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go": "64eeb3d50a564371798e51113e1f4f62baf071e043b60159f6f742b480966951",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go": "ab4284e09e60c3bf0f3577e4da52747acdca3140a856c4015cc760afdf6aabb6",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go": "e27d13089880686b86361965a903c952437a561f22aed3b9846fa3d34a347aed",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/groups.go": "752164959714c352d4d34f0361ab671ce0ad0b63d5e5cf2fd175e5d8e6d1e409",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go": "19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go": "ff34f63a7dd6ffc4cf7afc126f67faa5a1950401d843dd01238867c2b9022c78",
+    "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go": "3897535ff94f2450c166c3e2a34bfc9dad6d0ce9cc494e64462d490c832f2699",
+    "native/huhubot/internal/application/api/conversation.go": "e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a",
+    "native/huhubot/internal/application/api/recovery.go": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5",
+    "native/huhubot/internal/application/api/service.go": "b298869e7b1c0d67fff6d01a9f3b9dfd9d62f6bb9a7087dc9dc688a24de417b4",
+    "native/huhubot/internal/application/api/types.go": "3a8019d4638b666e8e81506781a8bc0f6795287ed5363811c36d72b9ca4ceaf9",
+    "native/huhubot/internal/application/execution/executor/executor.go": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef",
+    "native/huhubot/internal/application/execution/executor/ports.go": "8cf2e56c9269742fa83c18722a1229c9f55ae3c85a6e78a713cab0bc199beb4d",
+    "native/huhubot/internal/application/tooling/broker/recovery.go": "e26c4401ceaed66bd1c3e86b5f872389fb98e97f840781ba223b8179d5cbaea3",
+    "native/huhubot/internal/application/tooling/broker/service.go": "ef31c9b2428794b0079c0811235df443a8c76d531f45847e1d70b5e72780b4d1",
+    "native/huhubot/internal/bootstrap/core.go": "a114c9297befbe0c61aee5dd86d6d5a36e8bff481d8aa6acbe6341f907820a67",
+    "native/huhubot/internal/protocol/hap/methods_generated.go": "3c16c7311f730d69cf00f59b6d6b5c1d1d54758cc7b1085c475e5be538f81a59",
+    "native/huhubot/internal/protocol/hap/schema_generated.json": "a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534",
+    "native/huhubot/tests/contract/approval/checkpoint_inspection_test.go": "6644fa8df06730daff43a6273e849c011f94f8530cd1d8e94eeb70e6fbe79b1f",
+    "native/huhubot/tests/contract/foundation/duplex_test.go": "483606abb8cec287694100c1446f88aa5b10204f45c74734b5b90fd3c3737187",
+    "native/huhubot/tests/contract/foundation/groups_migration_test.go": "48a4b30e90211136d2620ab87c381943986180442c0e815be7f4a42bf418676d",
+    "native/huhubot/tests/contract/foundation/recovery_lifecycle_test.go": "a17f45dec91fc3289094383b0f9225f50892803b75c3801c391c4c823ed9ae83",
+    "native/huhubot/tests/contract/foundation/runner_test.go": "c1f8bc0132506f5ccb4eee1b9a41158a19ccaa36eb4a4facf202aab2197af342",
+    "src/modules/huhubot/api.ts": "ff921139bdd82f2c6e2b83892fc499489ccef93183e7f827fe6709ec4697a401"
+  },
+  "ownFilesVerified": 35,
+  "sourceFilesVerified": 377,
+  "fixtureFilesVerified": 9,
+  "sourceDrift": [],
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "waitScope": "Current final window top-level checks all actually waited. First failed normal nested CLI historical Wait remains unestablished; no retroactive claim. See080 logs15/40/43.",
+  "finalChecks": [
+    {
+      "resultFile": "14-normal-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "./...",
+        "-count=1",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10"
+      },
+      "exitCode": 1,
+      "allProcessesWaited": true,
+      "wallSeconds": 93.80321931198705,
+      "jointTreeSha256": "68b4115aeba1d786ebab562699f01b37ace1d47f64da75dc4aad56d3fc01b52a",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true,
+      "waitScopeCorrection": "Only actual top-level go test Wait is attested. Nested failed CLI Wait remains unestablished; see 15."
+    },
+    {
+      "resultFile": "19-r2-affected-normal-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "./tests/contract/events",
+        "./tests/contract/foundation",
+        "-count=1",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10"
+      },
+      "exitCode": 1,
+      "harnessProcessWaited": true,
+      "wallSeconds": 27.07988877198659,
+      "jointTreeSha256": "6de04fa6e5cb3b1897105fda4f34d26e482ce093911a68a24452a63203046b08",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "23-unavailable-control-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "./tests/contract/foundation",
+        "-run",
+        "^(TestHelloGateNotificationsSchemaAndOwner|TestRecoveryCapabilitiesFollowActualFacade)$",
+        "-count=1",
+        "-v"
+      ],
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10"
+      },
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.8850308039982338,
+      "jointTreeSha256": "02eb94d9c8f4f6caeb2ca378554ad2f9f39c6b65847e7801be622787f0803dea",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "24-risk-race-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "./tests/contract/groups",
+        "./tests/contract/access",
+        "./tests/contract/events",
+        "./tests/contract/delegation",
+        "./tests/contract/collaboration-policy",
+        "./tests/contract/chat",
+        "./tests/contract/approval",
+        "./tests/contract/effect-reconcile",
+        "./tests/contract/foundation",
+        "./tests/contract/assistant",
+        "./tests/contract/recovery",
+        "-count=1",
+        "-v"
+      ],
+      "cwd": "native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "1"
+      },
+      "exitCode": 1,
+      "harnessProcessWaited": true,
+      "wallSeconds": 563.2452928299899,
+      "jointTreeSha256": "02eb94d9c8f4f6caeb2ca378554ad2f9f39c6b65847e7801be622787f0803dea",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "29-final-vet-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "go",
+        "vet",
+        "-mod=readonly",
+        "./..."
+      ],
+      "cwd": "native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "CGO_ENABLED": "1"
+      },
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.6625670159992296,
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "30-final-generation-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "node",
+        "contracts/hap/v0.1/generate.mjs"
+      ],
+      "cwd": ".",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10"
+      },
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.8861259799741674,
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "31-final-schema-validation-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "python3",
+        "contracts/hap/v0.1/validate.py"
+      ],
+      "cwd": ".",
+      "environment": {},
+      "exitCode": 1,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.0398086890054401,
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "32-final-schema-validation-venv-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "/tmp/huhubot-contract-validator/bin/python",
+        "contracts/hap/v0.1/validate.py"
+      ],
+      "cwd": ".",
+      "environment": {},
+      "exitCode": 1,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.7361772090080194,
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "37-final-python-green-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "/tmp/huhubot-contract-validator/bin/python",
+        "contracts/hap/v0.1/validate.py"
+      ],
+      "cwd": ".",
+      "environment": {},
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.6802888399979565,
+      "jointTreeSha256": "9ef3b363489583b9b1a5332a02e5041dba06b9bd3972b23ce3ad8bb7f96dd718",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "38-final-go-architecture-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "pnpm",
+        "test:huhu-bot-architecture"
+      ],
+      "cwd": ".",
+      "environment": {},
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 0.4255975210107863,
+      "jointTreeSha256": "9ef3b363489583b9b1a5332a02e5041dba06b9bd3972b23ce3ad8bb7f96dd718",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "39-final-ts-architecture-result.json",
+      "executor": "080 /root/foundation_go",
+      "command": [
+        "pnpm",
+        "test:architecture"
+      ],
+      "cwd": ".",
+      "environment": {},
+      "exitCode": 0,
+      "harnessProcessWaited": true,
+      "wallSeconds": 10.378916984016541,
+      "jointTreeSha256": "9ef3b363489583b9b1a5332a02e5041dba06b9bd3972b23ce3ad8bb7f96dd718",
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "../086-recovery-fixture-repair/logs/14-check-results.json",
+      "executor": "086 /root/credential_provider; owner results read by 080 and Root",
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "label": "12-two-package-normal",
+      "command": [
+        "go",
+        "-C",
+        "native/huhubot",
+        "test",
+        "-p",
+        "1",
+        "-mod=readonly",
+        "./tests/contract/groups",
+        "./tests/contract/events",
+        "-count=1",
+        "-v"
+      ],
+      "exit": 0,
+      "seconds": 22.00789767099195,
+      "waited": true,
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    },
+    {
+      "resultFile": "../086-recovery-fixture-repair/logs/14-check-results.json",
+      "executor": "086 /root/credential_provider; owner results read by 080 and Root",
+      "jointTreeSha256": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+      "label": "13-two-package-race",
+      "command": [
+        "go",
+        "-C",
+        "native/huhubot",
+        "test",
+        "-p",
+        "1",
+        "-mod=readonly",
+        "-race",
+        "./tests/contract/groups",
+        "./tests/contract/events",
+        "-count=1",
+        "-v"
+      ],
+      "exit": 0,
+      "seconds": 261.7583334329829,
+      "waited": true,
+      "sourceDrift": [],
+      "topLevelWaitConfirmed": true
+    }
+  ],
+  "disposition": "Accept original-owner T01/T03/T06 recovery candidate plus only Python verifier maintenance. Prior failures preserved;086 three tests supersede historical fixture hashes. Root E2E/build/lint and independent review pending."
+}

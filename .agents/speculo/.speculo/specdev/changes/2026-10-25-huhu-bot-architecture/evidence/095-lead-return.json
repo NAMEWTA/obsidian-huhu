@@ -1,0 +1,64 @@
+{
+  "observer": "native:/root",
+  "reportSHA256": "2a2955a7bcdbba7f805bc1e0cc4d00319185dcabf9291f97e0810c2b705eaffa",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportAndOwnedScriptDocPatchRead": true,
+  "manifestSHA256": "754dbff88bd34ff434ed4781f6304bc8d47a108b953f1116fa121564c1435d66",
+  "ownFiles": {
+    "THIRD-PARTY-NOTICES.md": "04dce87bb9fdb48553ca7e93cd6cf98c27bdb2dcaf73d0ff46da03c9291fa9df",
+    "docs/references.md": "c21b67fc2cf54d152881f47f0f17da8bc6620acfced06614cf00b0581080e981",
+    "docs/third-party/huhu-bot.md": "55f165f177cb850950421239febf39e499be49d54ae95a7e21bfba888123920a",
+    "docs/third-party/licenses/go/Apache-2.0-full.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/eino-ext-openai-v0.1.13-LICENSE-APACHE.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-1-MIT.txt": "27d3a94ff600a1f100136f7743777284c8dccf707606ab07a2e20d032996cb15",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-2-MIT.txt": "bb1458854751422ecfac21563c365bf09d8e3a0838db75ba815c14395cbadb57",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-3-MIT.txt": "7c886985b97808b0ddcda7bcb747fb39b3026dd2d50cd4b3d557c37b629722d2",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-4-MIT.txt": "c00b4b59c25a4054fe88a51dd32fc1e4f223f93cf77855ecdb74ebad574b2215",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-5-MIT.txt": "eeecad0dc7d079ac0151c13c7b3cba4f56732c33471f36969f9298ac2e81cbee",
+    "docs/third-party/licenses/go/logrus-v1.9.3-atexit-MIT.txt": "017f4e6ccc2a628990502e0394691722427f258cd9264246e328c74fb82d7931",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-Drachennest.txt": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-eisel_lemire.txt": "cc3a949197f7f066770ae05ced2a2e1dfebb850f5a7587f085dd314bdbbce5c0",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang-asm.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-simdjson.txt": "1c351ddfc2b959867290106301ba287d0525071630896709f74b3c3a621b0586",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-yyjson.txt": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+    "docs/third-party/licenses/go/sources.json": "46f03a5717956c944bf32e08193b22a6ee24e11f260b79c995348728baf0e5f9",
+    "scripts/huhu-bot-notices.mjs": "52f3d6c4b0ca020131d247ac80c524b5813c0e0b02659e37057112f754088ba9",
+    "scripts/huhu-bot-notices.test.mjs": "6317f6d88cc3738bfaacbceffbcea3f9c26c8b4c59879e22e3169e67f067da11"
+  },
+  "sourceDrift": [],
+  "missingLinks": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "095-engine-notices",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "verifiedFacts": {
+    "thirdPartyModuleUnion": 40,
+    "goRuntimeAndModules": 41,
+    "nodeToolTests": 26,
+    "noticesWriteAndCheck": 0,
+    "NOTICEChanged": false
+  },
+  "remaining": [
+    "Root joint Chat independent review/code gate",
+    "T27 final all-feature production asset/license gate",
+    "docs original six source anchors plus newly introduced claim-fairness README classification"
+  ],
+  "disposition": "local license-maintenance candidate received, not T27 completion"
+}

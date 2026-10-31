@@ -1,43 +1,65 @@
 /** Strings of the automations module, registered when the module loads. */
 export const messages = {
 	en: {
+		'automation.taskDomain': 'Task domain',
+		'automation.taskDomainHelp':
+			'Creates a task in the independent task domain. The automation trigger, creation time and task deadline are separate.',
+		'automation.taskDueDate': 'Task due date',
+		'automation.taskDueDateHelp': 'Leave blank to use the admitted run date in the task time zone.',
+		'automation.taskRunDate': 'Admitted run date',
+		'automation.invalidTimezone': 'Enter a valid IANA time zone.',
 		'automation.taskDestination': 'Task destination',
 		'automation.calendarTarget': 'Calendar task',
-		'automation.calendarSharedStorage': 'Uses the current calendar storage and source settings shared by dashboards. No to-do card is required.',
+		'automation.calendarSharedStorage':
+			'Uses the current calendar storage and source settings shared by dashboards. No to-do card is required.',
 		'automation.calendarStorage.daily': 'Periodic daily note in the Navigator journal folder',
 		'automation.calendarStorage.file': 'Existing task file',
 		'automation.calendarStorage.folder': 'One daily task file in this folder',
 		'automation.calendarStorage.task': 'One note per task in this folder',
-		'automation.calendarDateHelp': 'The task belongs to the planned execution date in {timezone}, even after a short delay. Execution time and catch-up rules remain in Timing; they do not create a reminder.',
+		'automation.calendarDateHelp':
+			'The task belongs to the planned execution date in {timezone}, even after a short delay. Execution time and catch-up rules remain in Timing; they do not create a reminder.',
 		'automation.calendarTaskTime': 'Task time (optional)',
 		'automation.calendarTaskTimeHelp': 'Leave empty for an all-day task.',
 		'automation.calendarReminderTime': 'Reminder time (optional)',
 		'automation.calendarReminderTimeHelp': 'A separate reminder on the task date; leave empty for no reminder.',
 		'automation.loadingTaskTargets': 'Loading destinations…',
-		'automation.noCalendarTargets': 'No registered dashboards are available. Enable Dashboards and create or register a board first.',
+		'automation.noCalendarTargets':
+			'No registered dashboards are available. Enable Dashboards and create or register a board first.',
 		'automation.calendarInvalidTime': 'Enter a valid 24-hour time (HH:mm).',
-		'automation.calendarInvalidInput': 'Check the calendar task text, date and time. Task text cannot contain date fields such as [due:: …] or dated 📅/🛫/🛬/⏳/✅/⏰ markers. Use the schedule, task time and reminder settings.',
-		'automation.calendarInvalidTarget': 'The calendar destination is invalid or changed. Check its storage settings.',
-		'automation.calendarSourceExcluded': 'The destination is excluded from calendar sources. Update the source settings before retrying.',
-		'automation.calendarPeriodDisabled': 'Daily notes are disabled. Enable them or select another calendar storage destination.',
-		'automation.calendarPeriodicUnavailable': 'Periodic notes are unavailable. Enable Navigator or select another calendar storage destination.',
+		'automation.calendarInvalidInput': 'Check the task title, due date, time zone and independent reminder time.',
+		'automation.calendarInvalidTarget':
+			'The calendar destination is invalid or changed. Check its storage settings.',
+		'automation.calendarSourceExcluded':
+			'The destination is excluded from calendar sources. Update the source settings before retrying.',
+		'automation.calendarPeriodDisabled':
+			'Daily notes are disabled. Enable them or select another calendar storage destination.',
+		'automation.calendarPeriodicUnavailable':
+			'Periodic notes are unavailable. Enable Navigator or select another calendar storage destination.',
 		'automation.calendarTemplateMissing': 'The configured calendar template was not found.',
-		'automation.calendarTemplateInputRequired': 'The template needs user input and cannot run unattended. Configure answers or use a noninteractive template.',
-		'automation.calendarTemplateEngineUnavailable': 'The configured template engine cannot create this note unattended.',
-		'automation.calendarTemplateInvalid': 'The calendar template could not be prepared. No empty replacement note was created.',
-		'automation.calendarConflict': 'The destination changed during delivery. Review the source and retry this delivery.',
-		'automation.calendarSourceChanged': 'The saved task cannot be located reliably. Its source or task identity may have changed.',
+		'automation.calendarTemplateInputRequired':
+			'The template needs user input and cannot run unattended. Configure answers or use a noninteractive template.',
+		'automation.calendarTemplateEngineUnavailable':
+			'The configured template engine cannot create this note unattended.',
+		'automation.calendarTemplateInvalid':
+			'The calendar template could not be prepared. No empty replacement note was created.',
+		'automation.calendarConflict':
+			'The destination changed during delivery. Review the source and retry this delivery.',
+		'automation.calendarSourceChanged':
+			'The saved task cannot be located reliably. Its source or task identity may have changed.',
 		'automation.calendarWriteFailed': 'The calendar task could not be written: {detail}',
-		'automation.calendarUnavailable': 'The calendar service is unavailable. Enable Dashboards and retry.',
+		'automation.calendarUnavailable': 'The task domain is unavailable. Enable Tasks and retry.',
 		'automation.calendarCreated': 'Created a task for {date} in {path}.',
-		'automation.calendarAlreadyExists': 'This delivery already created its task for {date} in {path}; no duplicate was added.',
-		'automation.calendarWrittenPendingRefresh': 'The task for {date} is saved in {path}, but the calendar needs refreshing. Do not create it again.',
+		'automation.calendarAlreadyExists':
+			'This delivery already created its task for {date} in {path}; no duplicate was added.',
+		'automation.calendarWrittenPendingRefresh':
+			'The task for {date} is saved in {path}, but the calendar needs refreshing. Do not create it again.',
 		'automation.calendarRetry': 'Retry this delivery',
 		'automation.calendarRetryUnavailable': 'This run is not an available calendar delivery retry.',
 		'automation.calendarReceipt': 'Calendar delivery',
 		'automation.calendarOwnershipDate': 'Task date: {date} · {timezone}',
 		'automation.calendarOpenSource': 'Open saved task',
-		'automation.calendarRetryHelp': 'Retries keep the original planned date and destination. Running the automation from its task page creates a new delivery.',
+		'automation.calendarRetryHelp':
+			'Retries keep the original planned date and destination. Running the automation from its task page creates a new delivery.',
 		'automation.content': 'Content',
 		'automation.url': 'Web address',
 		'automation.urlHelp': 'Opens in the HUHU browser when run by hand; http and https only.',
@@ -159,8 +181,22 @@ export const messages = {
 		'workbench.noRuns': 'No matching runs',
 		'workbench.previous': 'Previous',
 		'workbench.next': 'Next',
+		'automation.space': 'Space',
+		'automation.spaceHelp': 'Runs in this Space\u2019s directory.',
+		'automation.spaceUnavailableOption': 'Unavailable Space',
+		'automation.noSpaces': 'No Space yet. Create one in Agent first.',
+		'automation.spaceRequired': 'Choose a Space first. Nothing was started.',
+		'automation.spaceUnavailable': 'The Space is gone or no longer authorized. Choose again. Nothing was started.',
+		'automation.spaceSaveFailed': 'Could not record the session; nothing was started.',
+		'automation.spaceTarget': 'Space: {name}',
 	},
 	zh: {
+		'automation.taskDomain': '任务领域',
+		'automation.taskDomainHelp': '在独立任务领域创建任务。自动化触发时间、实际创建时间和任务截止时间分别保存。',
+		'automation.taskDueDate': '事项截止日期',
+		'automation.taskDueDateHelp': '留空时使用本次投递计划日期（按任务时区），不是实际执行日期。',
+		'automation.taskRunDate': '本次投递计划日期',
+		'automation.invalidTimezone': '请输入有效的 IANA 时区。',
 		'automation.taskDestination': '待办投递目标',
 		'automation.calendarTarget': '日历待办',
 		'automation.calendarSharedStorage': '使用各看板当前共用的日历存放与来源设置，无需选择普通待办卡片。',
@@ -168,7 +204,8 @@ export const messages = {
 		'automation.calendarStorage.file': '已有待办文件',
 		'automation.calendarStorage.folder': '此文件夹中每天一个待办文件',
 		'automation.calendarStorage.task': '此文件夹中每条待办一篇笔记',
-		'automation.calendarDateHelp': '待办归属于本次计划触发在 {timezone} 对应的日期，短暂延迟不会改变归属日。执行时间与补执行规则在“时间”中设置，不会自动生成提醒。',
+		'automation.calendarDateHelp':
+			'待办归属于本次计划触发在 {timezone} 对应的日期，短暂延迟不会改变归属日。执行时间与补执行规则在“时间”中设置，不会自动生成提醒。',
 		'automation.calendarTaskTime': '待办时间（可选）',
 		'automation.calendarTaskTimeHelp': '留空表示全天待办。',
 		'automation.calendarReminderTime': '提醒时间（可选）',
@@ -176,7 +213,8 @@ export const messages = {
 		'automation.loadingTaskTargets': '正在读取投递目标…',
 		'automation.noCalendarTargets': '暂无可用的已注册看板，请开启看板模块并创建或登记看板。',
 		'automation.calendarInvalidTime': '请输入有效的 24 小时时间（HH:mm）。',
-		'automation.calendarInvalidInput': '请检查日历待办的内容、日期和时间。内容不能包含 [due:: …] 等日期字段，或附带日期的 📅/🛫/🛬/⏳/✅/⏰ 标记；请通过计划日期、待办时间和提醒设置填写。',
+		'automation.calendarInvalidInput':
+			'请检查日历待办的内容、日期和时间。内容不能包含 [due:: …] 等日期字段，或附带日期的 📅/🛫/🛬/⏳/✅/⏰ 标记；请通过计划日期、待办时间和提醒设置填写。',
 		'automation.calendarInvalidTarget': '日历投递目标无效或已变化，请检查存放设置。',
 		'automation.calendarSourceExcluded': '存放位置被日历来源排除，请先调整来源设置再重试。',
 		'automation.calendarPeriodDisabled': '周期日记已关闭，请开启日记或选择其他日历存放位置。',
@@ -191,7 +229,8 @@ export const messages = {
 		'automation.calendarUnavailable': '日历服务不可用，请开启看板模块后重试。',
 		'automation.calendarCreated': '已在 {path} 创建归属于 {date} 的待办。',
 		'automation.calendarAlreadyExists': '本次投递已在 {path} 创建归属于 {date} 的待办，没有重复新增。',
-		'automation.calendarWrittenPendingRefresh': '归属于 {date} 的待办已保存到 {path}，日历显示尚待刷新，请勿再次新建。',
+		'automation.calendarWrittenPendingRefresh':
+			'归属于 {date} 的待办已保存到 {path}，日历显示尚待刷新，请勿再次新建。',
 		'automation.calendarRetry': '重试本次投递',
 		'automation.calendarRetryUnavailable': '这条运行记录当前不能重试日历投递。',
 		'automation.calendarReceipt': '日历待办投递',
@@ -314,5 +353,13 @@ export const messages = {
 		'workbench.noRuns': '没有匹配的运行记录',
 		'workbench.previous': '上一页',
 		'workbench.next': '下一页',
+		'automation.space': '空间',
+		'automation.spaceHelp': '在该空间的目录中运行。',
+		'automation.spaceUnavailableOption': '空间不可用',
+		'automation.noSpaces': '还没有空间，请先在智能体中创建。',
+		'automation.spaceRequired': '请先选择空间。未启动任何内容。',
+		'automation.spaceUnavailable': '空间已不可用，请重新选择。未启动任何内容。',
+		'automation.spaceSaveFailed': '无法记录会话，未启动任何内容。',
+		'automation.spaceTarget': '空间：{name}',
 	},
 };

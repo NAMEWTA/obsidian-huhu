@@ -1,0 +1,58 @@
+{
+  "observer": "native:/root",
+  "nativeMessageAndFinalReceived": true,
+  "fullFinalReportInterfacesAndMatrixRead": true,
+  "reportSHA256": "6ad279907190c0d63b4681aba3c898008d617034f9100927bba6bd3dbe1d9813",
+  "manifestSHA256": "16f38ba5bacb51244a136ab9c9da7b44a5bea6e460587607f2e021d9ebcaf166",
+  "artifactsChecked": 9,
+  "artifactDrift": [],
+  "sourceSnapshotCount": 54,
+  "recordedAuthorizedLaterSourceChanges": [
+    {
+      "id": "C06",
+      "path": "native/huhubot/internal/application/api/recovery.go",
+      "readSHA256": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5",
+      "currentSHA256": "a20bc1d0eb926b1b4f474a81b794c9668b5833a6cdc4d15f00688f977fd13e7f"
+    },
+    {
+      "id": "C14",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "readSHA256": "19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f",
+      "currentSHA256": "1e0bf54b3b2eef209185def12b8e5e56c7c7f84ba23063111beb7c8f8a9131d3"
+    },
+    {
+      "id": "C32",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/engine.go",
+      "readSHA256": "40bc23f7c0a719a9d51d2b71a3bd97df9ba62b3bf2e7ec949fc5033e3b398d7f",
+      "currentSHA256": "84762d74262fa956ff164400609a0deb0c6761ea8ca824ebfda18442d6b7fbea"
+    },
+    {
+      "id": "C33",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go",
+      "readSHA256": "696db729f33be0e69bfc243bbf15e86c1bf9a65c675061f4b8ee71c5c509ab62",
+      "currentSHA256": "c4abed58b0a9d9278ef1bbf72a841a6b0470a3d510c6088eaf8ef514d5f2c431"
+    }
+  ],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "099-memory-preparation",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.11529297800734639,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "Accepted read-only preparation; all 18 matrices unrun, no T14/T15 activation. Current 100/101 Intent maintenance requires final API re-read at future activation. Default maintenance enabled setting remains an implementation decision, not a source fact or new product approval gate."
+}

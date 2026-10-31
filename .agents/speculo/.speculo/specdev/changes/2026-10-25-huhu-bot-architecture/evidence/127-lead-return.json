@@ -1,0 +1,34 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:18:45.563454+00:00",
+  "task": "127-memory-ts-validation",
+  "nativeReturn": "MESSAGE + FINAL received; source and processes stopped",
+  "reportSha256": "a7279197827b5963c301ca4a81a72081e1d2e55f01eed76a9027a3206329730b",
+  "artifactManifestSha256": "64edaab2409db60f5e23230f17d37bf02dfff2471a685f9dfb7a1fca7e5cbf4f",
+  "sourceManifestSha256": "f0ae3add24c7a5842ee9ff23f8c11e98ad25782140881be7ee9248946d39b5b3",
+  "rootReadback": {
+    "artifactsVerified": 29,
+    "sourcesVerified": 1647,
+    "drift": [],
+    "chunk": "4cee36",
+    "returnValidatorActualExit": 0
+  },
+  "testsReadback": {
+    "unit": "4 files / 73 tests, actual0, Wait, 2.8785016536712646s",
+    "productionTypes": "actual0, Wait, 14.008460283279419s",
+    "testTypes": "actual0, Wait, 18.035249710083008s",
+    "historicalFailures": "02 behavior red11; 03/05 fixture failures; 09 test typing failure preserved"
+  },
+  "assessment": "Two-file candidate and actual checks received; code closure pending new Root finding, not T01/T14 completion.",
+  "finding": {
+    "id": "memory-page-namespace-revision",
+    "proof": "evidence/T-14-logs/127-namespace-revision-red.json",
+    "probe": "evidence/T-14-logs/127-namespace-revision-probe.mjs",
+    "probeSHA256": "7037ac760b20e40eb0831c8fd72bdba56121faf2e0fff42dda09ffdf2ce4c8a8",
+    "actual": "0, MaxInt64+1, and20-digit revision wrongly accepted; 1 andMaxInt64 positive controls accepted",
+    "followupTask": "131-memory-ts-catalog-revision",
+    "dispatch": "not yet dispatched; waiting available Agent Team slot"
+  },
+  "noGoOrMixedCheck": true,
+  "notValidated": "Whole plugin build/lint, actual Core/Memory integration, real Provider/Obsidian/target OS"
+}

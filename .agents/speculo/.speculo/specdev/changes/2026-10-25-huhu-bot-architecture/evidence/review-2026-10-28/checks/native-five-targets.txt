@@ -1,0 +1,5 @@
+Built huhu-bot-linux-x64 (go1.26.10, HAP 0.1, schema 1)
+Built huhu-bot-linux-arm64 (go1.26.10, HAP 0.1, schema 1)
+Built huhu-bot-darwin-x64 (go1.26.10, HAP 0.1, schema 1)
+Built huhu-bot-darwin-arm64 (go1.26.10, HAP 0.1, schema 1)
+Built huhu-bot-win32-x64.exe (go1.26.10, HAP 0.1, schema 1)

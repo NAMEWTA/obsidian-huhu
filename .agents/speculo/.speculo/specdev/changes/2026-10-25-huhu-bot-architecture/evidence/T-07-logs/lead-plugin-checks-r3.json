@@ -1,0 +1,75 @@
+{
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "reports": {
+    "052-note-effects-go": "766ff1f9f76f2680babbbea0e7a715742f94d28382f0408d565a90674fbd024c",
+    "053-collaboration-policy": "94258ec9f317f1e56b4b8edfdaf5a3b3637a3a1c8a37dd380aef48d2bd8c3b83",
+    "054-note-effects-client": "17e14cb04a74d9b3ed1efb3e2d698941721c2f2d94caa8da8143d355e581ab70",
+    "058-host-receipt-docs-cleanup": "3f509a4f2a5c148deddc62224a182408edee962f3b6163a183f73546ba8b9bb7"
+  },
+  "maintenanceReport": {
+    "task": "062-native-fixture-lint",
+    "sha256": "988ceaac84155d6e9d720dc8d89cc699873672cb97ed7ba9cc38313881077d77"
+  },
+  "inputManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-input-r3.json",
+  "filesChecked": 1867,
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/modules/huhubot/core/protocol/connection.test.ts",
+        "src/modules/huhubot/core/protocol/codec.test.ts",
+        "src/modules/huhubot/core/protocol/method-validation.test.ts",
+        "src/modules/huhubot/core/protocol/task-config-hash.test.ts",
+        "src/modules/huhubot/platform/obsidian/sources/sources.test.ts",
+        "src/modules/huhubot/platform/obsidian/note-effects",
+        "src/modules/huhubot/services/host-write",
+        "src/modules/huhubot/services/host-read",
+        "src/modules/huhubot/services/events/event-client.test.ts",
+        "src/modules/huhubot/core/events/reducer.test.ts",
+        "src/modules/huhubot/services/assistant-client.test.ts"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-current-ts-consumers-r2.log",
+      "exit": 0,
+      "seconds": 2.816,
+      "reusedFrom": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-checks-r2.json"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-build-r2.log",
+      "exit": 0,
+      "seconds": 38.506,
+      "reusedFrom": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-checks-r2.json"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "log": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-lint-r3.log",
+      "exit": 0,
+      "seconds": 66.667
+    }
+  ],
+  "reuse": {
+    "sourceResultSha256": "1c627438ab6f136a6b9655749f1b6cfba7a489a40ac9d8dcd67badd36dcad662",
+    "changedInputs": [
+      "eslint.config.mts"
+    ],
+    "reason": "Only the two native fixture lint scope entries changed. TypeScript tests, compiler/bundler inputs and outputs are identical; reuse the actual151/build pass, rerun the failed lint."
+  },
+  "complete": true,
+  "drift": [],
+  "outputs": {
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+  },
+  "processes": "The actual lint subprocess exited and was waited; reused earlier commands have their own actual Wait receipts"
+}

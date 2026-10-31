@@ -1,0 +1,19 @@
+{
+  "command": [
+    "go",
+    "test",
+    "-mod=readonly",
+    "-overlay=/tmp/huhu-lead-recovery-drain-diagnostic-overlay.json",
+    "./tests/contract/groups",
+    "-run",
+    "^TestLeadRecoveryCloseRetainsLockUntilDetachedProducerEnds$",
+    "-count=1",
+    "-timeout=25s",
+    "-v"
+  ],
+  "exit": 1,
+  "seconds": 3.67,
+  "waited": true,
+  "scope": "External overlay only adds actual SQL readback before original failed assertion; product and frozen r1 source unchanged",
+  "overlaySha256": "3e023b1dad17855689850ff131dea2d626bec1a89e54f88cfd8f9e6647356eb8"
+}

@@ -1,0 +1,146 @@
+{
+  "utc": "2026-10-25T23:05:42.229685+00:00",
+  "result": {
+    "original": "/tmp/huhu-t06-root-recovery1-similarity-full-results.json",
+    "sha256": "f0524c25c96c617d19cc959d38e8a347419dd2a2306dfc844afc86e6ea4b01d9",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-final-readback/objects/f0524c25c96c617d19cc959d38e8a347419dd2a2306dfc844afc86e6ea4b01d9.raw",
+    "bytes": 14985
+  },
+  "receipt": {
+    "original": "/tmp/huhu-t06-root-recovery1-similarity-full.json",
+    "sha256": "384f2ff23cfef82a983258a1637ecc9d42c50f5e43db416a7bb175d7247cad5d",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-final-readback/objects/384f2ff23cfef82a983258a1637ecc9d42c50f5e43db416a7bb175d7247cad5d.raw",
+    "bytes": 1893
+  },
+  "log": {
+    "original": "/tmp/huhu-t06-root-recovery1-similarity-full.log",
+    "sha256": "8423287998d5b70d2ce5382b6424fb7b252c2fbdc87664cdcf1381ecb099a5d0",
+    "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-final-readback/objects/8423287998d5b70d2ce5382b6424fb7b252c2fbdc87664cdcf1381ecb099a5d0.raw",
+    "bytes": 8305
+  },
+  "input_manifest_sha256": "9d2e609dd12532a0aef0c2978fc669ee4765b98795dc799a685dfbb5b4c9659c",
+  "input_audit": "T-06-recovery1-similarity-full-root-audit.json",
+  "files_compared": 39,
+  "reference_files": 33627,
+  "rows_reported": 38,
+  "maximum_raw_share": 0.006,
+  "maximum_raw_run": 36,
+  "raw_threshold_findings": [],
+  "normalized_top": [
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/i18n.ts",
+      "tokens": 4889,
+      "raw": {
+        "share": 0.002,
+        "match": "src/main/ipc/worktree-git-common-watch.test.ts",
+        "run": 25
+      },
+      "normalized": {
+        "share": 0.333,
+        "match": "cloud/apps/relay-ops/src/pre-drain-sample.test.ts",
+        "run": 2437
+      }
+    },
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/services/terminal/status.test.ts",
+      "tokens": 296,
+      "raw": {
+        "share": 0,
+        "match": null,
+        "run": 0
+      },
+      "normalized": {
+        "share": 0.08,
+        "match": "cloud/apps/relay/src/public-assignment-admission.test.ts",
+        "run": 43
+      }
+    },
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/services/terminal/status.ts",
+      "tokens": 290,
+      "raw": {
+        "share": 0,
+        "match": null,
+        "run": 0
+      },
+      "normalized": {
+        "share": 0.037,
+        "match": "src/renderer/src/components/settings/EphemeralVmRuntimesSection.tsx",
+        "run": 25
+      }
+    },
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/services/spaces/records.ts",
+      "tokens": 1821,
+      "raw": {
+        "share": 0.006,
+        "match": "src/main/browser/browser-network-tunnel-stream-lifecycle.ts",
+        "run": 25
+      },
+      "normalized": {
+        "share": 0.033,
+        "match": "src/main/ipc/dashboard-payload-validation.ts",
+        "run": 34
+      }
+    },
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/services/spaces/records.test.ts",
+      "tokens": 763,
+      "raw": {
+        "share": 0,
+        "match": null,
+        "run": 0
+      },
+      "normalized": {
+        "share": 0.031,
+        "match": "mobile/src/tasks/task-item-comment-reply-schema.test.ts",
+        "run": 40
+      }
+    },
+    {
+      "file": "../../../../../../tmp/huhu-t06-root-recovery1-similarity-full-source/src/modules/agent/services/launch/foreground-intent.ts",
+      "tokens": 559,
+      "raw": {
+        "share": 0,
+        "match": null,
+        "run": 0
+      },
+      "normalized": {
+        "share": 0.023,
+        "match": "src/main/runtime/browser-host-lease-reconnect.ts",
+        "run": 26
+      }
+    }
+  ],
+  "manual_readback": [
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "observation": "Root read the HUHU en/zh activity evidence dictionaries and actual scanner tokenization. Dictionary entries repeatedly normalize to LIT : LIT; unchanged bilingual dictionary bytes explain the structural 0.333 normalized / 2437-token ranking. Raw match is 0.002 / 25. No reference code opened; this is a structural explanation, not proof of provenance."
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.test.ts",
+      "observation": "Root read the whole short native-source/loss/stop/zero-exit test. Common import, constructor, try/finally, expect and method-call shapes normalize heavily in 296 tokens (0.080 / 43); raw match is zero. The scenario and identifiers are HUHU-specific."
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "observation": "Root read the whole 290-token status projection. Repeated guarded return and state inclusion shapes; normalized 0.037 / 25, raw zero."
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "observation": "Root read HUHU Session/Space schema and validation predicates. Repeated optional field/type/schema guards; normalized 0.033 / 34, raw maximum 0.006 / 25."
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.test.ts",
+      "observation": "Root read all durable-attempt and completion-hint validation cases. Table-driven invalid/valid records and expect shapes; normalized 0.031 / 40, raw zero."
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "observation": "Root read all original-leaf, document/window, connected-container, consumed/released checks and listener cleanup; normalized 0.023 / 26, raw zero."
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/hooks/spool-guard.ts",
+      "observation": "Scanner counts the exported generated-JS template as one literal, so the TS wrapper is below k=25 and has no numeric row. Root manually read the complete HUHU path/symlink/active-token/size-bounded metadata guard. This payload is not internally token-scanned by this tool; no unqualified numeric coverage of template contents is claimed."
+    }
+  ],
+  "boundary": "Only HUHU source and numeric/path output read. GPL reference source was not opened. Similarity is a heuristic report, not a copyright/provenance proof. No dependency/reference code copied."
+}

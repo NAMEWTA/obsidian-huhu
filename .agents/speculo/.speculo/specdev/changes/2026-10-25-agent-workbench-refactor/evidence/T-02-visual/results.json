@@ -1,0 +1,273 @@
+[
+  {
+    "state": "normal",
+    "width": 1200,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "normal-1200-theme-dark-en.png",
+    "pointerCoarse": false,
+    "body": "Spaces\nA long project Space name to check navigation truncation\nAnother Space\nThis Space is empty\n\nCreate a terminal or choose an Agent from the new tab menu.\n\nNew terminal\nNew browser tab",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "A long project Space name to check navigation truncation",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "Rename A long project Space name to check navigation truncation",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "Another Space",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "Rename Another Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "New terminal",
+        "width": 122.109375,
+        "height": 36
+      },
+      {
+        "name": "New browser tab",
+        "width": 147.0625,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "normal",
+    "width": 800,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "normal-800-theme-light-zh.png",
+    "pointerCoarse": false,
+    "body": "空间\n一个名称很长的空间用于检查侧栏中的省略与完整身份显示\nAnother Space\n此空间为空\n\n新建终端，或从新标签菜单选择智能体。\n\n新建终端\n新建浏览器标签",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "一个名称很长的空间用于检查侧栏中的省略与完整身份显示",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "重命名 一个名称很长的空间用于检查侧栏中的省略与完整身份显示",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "Another Space",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "重命名 Another Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "新建终端",
+        "width": 88,
+        "height": 36
+      },
+      {
+        "name": "新建浏览器标签",
+        "width": 132,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "empty",
+    "width": 480,
+    "theme": "theme-dark",
+    "lang": "zh",
+    "file": "empty-480-theme-dark-zh.png",
+    "pointerCoarse": false,
+    "body": "空间\n一个名称很长的空间用于检查侧栏中的省略与完整身份显示\nAnother Space\n此空间为空\n\n新建终端，或从新标签菜单选择智能体。\n\n新建终端\n新建浏览器标签",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "一个名称很长的空间用于检查侧栏中的省略与完整身份显示",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "重命名 一个名称很长的空间用于检查侧栏中的省略与完整身份显示",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "Another Space",
+        "width": 179,
+        "height": 36
+      },
+      {
+        "name": "重命名 Another Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "新建终端",
+        "width": 88,
+        "height": 36
+      },
+      {
+        "name": "新建浏览器标签",
+        "width": 132,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "no-spaces",
+    "width": 480,
+    "theme": "theme-light",
+    "lang": "en",
+    "file": "no-spaces-480-theme-light-en.png",
+    "pointerCoarse": false,
+    "body": "Spaces\n\nNo Space selected\n\nNo Space selected\n\nCreate or select a Space to start terminals and Agents. You can open a webpage now.\n\nNew Space\nNew browser tab",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "New Space",
+        "width": 104.9375,
+        "height": 36
+      },
+      {
+        "name": "New browser tab",
+        "width": 147.0625,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "loading",
+    "width": 800,
+    "theme": "theme-dark",
+    "lang": "en",
+    "file": "loading-800-theme-dark-en.png",
+    "pointerCoarse": false,
+    "body": "Spaces\n\nLoading Spaces…\n\nLoading Spaces…\n\nCreate or select a Space to start terminals and Agents. You can open a webpage now.\n\nNew browser tab",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "New Space",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "New browser tab",
+        "width": 147.0625,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "error",
+    "width": 800,
+    "theme": "theme-light",
+    "lang": "zh",
+    "file": "error-800-theme-light-zh.png",
+    "pointerCoarse": false,
+    "body": "空间\n\n尚未选择空间\n\n空间数据保存或回读失败，请检查目录权限与剩余空间。\n\n空间数据不可用\n\n空间数据保存或回读失败，请检查目录权限与剩余空间。\n\n新建空间\n新建浏览器标签",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "新建空间",
+        "width": 32,
+        "height": 32
+      },
+      {
+        "name": "新建空间",
+        "width": 88,
+        "height": 36
+      },
+      {
+        "name": "新建浏览器标签",
+        "width": 132,
+        "height": 36
+      }
+    ],
+    "dialogs": 0
+  },
+  {
+    "state": "form",
+    "width": 480,
+    "theme": "theme-dark",
+    "lang": "zh",
+    "file": "form-480-theme-dark-zh.png",
+    "pointerCoarse": true,
+    "body": "空间\n\n尚未选择空间\n\n尚未选择空间\n\n先新建或选择空间，再启动终端与智能体。现在也可以打开网页。\n\n新建空间\n新建浏览器标签\n新建空间\n\n先保存空空间。只有你明确启动时才运行终端或智能体。\n\n空间名称\n当前库内目录\n选择库外目录…\n取消\n保存\n关闭",
+    "overflow": false,
+    "buttons": [
+      {
+        "name": "新建空间",
+        "width": 44,
+        "height": 44
+      },
+      {
+        "name": "新建空间",
+        "width": 88,
+        "height": 44
+      },
+      {
+        "name": "新建浏览器标签",
+        "width": 132,
+        "height": 44
+      },
+      {
+        "name": "选择库外目录…",
+        "width": 132,
+        "height": 44
+      },
+      {
+        "name": "取消",
+        "width": 430,
+        "height": 44
+      },
+      {
+        "name": "保存",
+        "width": 430,
+        "height": 44
+      },
+      {
+        "name": "关闭",
+        "width": 44,
+        "height": 44
+      }
+    ],
+    "dialogs": 1
+  }
+]

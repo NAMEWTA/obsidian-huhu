@@ -1,0 +1,50 @@
+{
+  "observer": "native:/root",
+  "actualResultAndLogRead": true,
+  "captureTestRead": true,
+  "result": {
+    "command": [
+      "go",
+      "test",
+      "./tests/contract/engine/chat",
+      "-run",
+      "^TestCaptureLegacyChatCompatibilitySample$",
+      "-count=1",
+      "-v"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9914693500031717,
+    "actual_wait": true,
+    "input_tree_sha256": "a519e4951c5bf0d9eb1a0c09cad0b18dc8837613b5db7a4977c52ff88aabf7ed",
+    "source_drift": [],
+    "classification": "actual old Chat producer capture succeeded",
+    "previous_failure": "01 fixture selected first lexical checkpoint while inspecting second approval; 02 selects exact Run checkpoint_ref and uses actual denied/APPROVAL_REJECTED decision",
+    "samples": [
+      {
+        "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/checkpoint.json",
+        "bytes": 2768,
+        "sha256": "7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631"
+      },
+      {
+        "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-initial.json",
+        "bytes": 885,
+        "sha256": "42ccf0a340b4bce499cb077b4677ae5d57b3e1a817cfe10a23fe59ce41579a6c"
+      },
+      {
+        "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/request-resumed.json",
+        "bytes": 1910,
+        "sha256": "e2d79e9fc4a57045f25e2031760794b856487023f2da28dbd385b4e1eac0b843"
+      },
+      {
+        "path": "native/huhubot/tests/contract/engine/chat/testdata/chat-v1/trusted-inputs.json",
+        "bytes": 10500,
+        "sha256": "8b2d0b5bc5ac85d7a2b684afe58929aa6075b6a218427cd4976d6786b75e6859"
+      }
+    ],
+    "completed_at": "2026-10-26T03:44:35.388102+00:00"
+  },
+  "sampleDrift": [],
+  "resultSha256": "63deb84d7da10e9d1334c7a678197b6b51475a39e0effdeb70030933b8d9b67d",
+  "classification": "Accepted actual pre-interface Chat CP sample; first lexical-ref fixture mismatch preserved, no production repair. Post-change Inspector/Resume byte/digest compatibility still pending.",
+  "window": "107 returned actual Go window; three disjoint production writers may now implement, all Go/tidy checks require separate Root freeze."
+}

@@ -1,0 +1,59 @@
+{
+  "outputBytes": 6104991,
+  "stylesBytes": 1421645,
+  "dependencyFilesUnchanged": true,
+  "implementedFiles": [
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "bytesInOutput": 57195
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "bytesInOutput": 22660
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "bytesInOutput": 19962
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "bytesInOutput": 11474
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "bytesInOutput": 9413
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "bytesInOutput": 7988
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "bytesInOutput": 7505
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "bytesInOutput": 6930
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "bytesInOutput": 2868
+    },
+    {
+      "path": "src/modules/agent/ui/create/NewTabMenu.tsx",
+      "bytesInOutput": 2139
+    },
+    {
+      "path": "src/modules/agent/services/launch/managed-errors.ts",
+      "bytesInOutput": 2053
+    },
+    {
+      "path": "src/modules/agent/services/launch/foreground-intent.ts",
+      "bytesInOutput": 701
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "bytesInOutput": 0
+    }
+  ]
+}

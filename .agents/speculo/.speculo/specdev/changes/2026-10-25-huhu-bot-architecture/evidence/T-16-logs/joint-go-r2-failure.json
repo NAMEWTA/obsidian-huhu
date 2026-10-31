@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-10-25T21:56:05.210928+00:00",
+  "actualResult": {
+    "command": [
+      "go",
+      "test",
+      "-mod=readonly",
+      "-p",
+      "1",
+      "./tests/contract/events",
+      "./tests/contract/foundation",
+      "-count=1",
+      "-v"
+    ],
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10"
+    },
+    "exitCode": 1,
+    "harnessProcessWaited": true,
+    "wallSeconds": 27.07988877198659,
+    "jointTreeSha256": "6de04fa6e5cb3b1897105fda4f34d26e482ce093911a68a24452a63203046b08",
+    "sourceDrift": []
+  },
+  "rawLog": "sessions/20261025T043239Z/080-recovery-core/logs/18-r2-affected-normal.log",
+  "rawLogSha256": "f89e325f8b6bad3295683873ecacf320d66a09a1f9847a271a50894cc7e0bb22",
+  "failure": "TestHelloGateNotificationsSchemaAndOwner: duplex_test.go:121 still uses newly implemented runs.resume as METHOD_NOT_AVAILABLE negative control",
+  "rootReadback": "Read actual failure context and source lines 89-129; no product mutation. Existing assembled/absent recovery capability tests must remain.",
+  "ownerAuthorization": "Original 080 duplex_test.go scope only: use actual still-unimplemented method for negative control; preserve assertions, validate single case then continue unchanged matrix",
+  "candidateAccepted": false
+}

@@ -1,0 +1,92 @@
+{
+  "note": "Round 5 (T-14 Space binding). Per-input bytesInOutput from the production metafile (same method as check-bundle.mjs). 'before' is the committed HEAD build, and only inputs this ticket edited are listed. Other inputs in the same closures also differ from committed HEAD (yaml, react-grid-layout, ...); those come from earlier tickets, are not attributed to T-14 and are not covered by this file. The previous limits had some headroom, so the T-14 rows below need not equal the overage over the previous limit; the new limits are the minimum 1KiB ceilings for the measured sizes. No new startup or forbidden dependency entered any closure.",
+  "startup": {
+    "measuredBytes": 124889,
+    "limit": 124928,
+    "raised": false,
+    "t14Inputs": [
+      {
+        "path": "src/modules/home/core/board/shortcut-buttons.ts",
+        "before": 727,
+        "after": 794,
+        "delta": 67
+      },
+      {
+        "path": "src/modules/home/core/board/skill-shortcuts.ts",
+        "before": 942,
+        "after": 847,
+        "delta": -95
+      }
+    ],
+    "disposition": "Space-id parsing kept in the two eager board parsers but shared (spaceField/isStr/text helpers); repeated typeof checks folded into isStr so the net is below the previous limit. eagerBytes NOT raised.",
+    "beforeRound5": {
+      "measuredBytes": 125026,
+      "note": "Lead-reported failing value before the Round 5 trim"
+    },
+    "committedHeadFiles": "before = committed HEAD bytesInOutput as reported by the Lead (727, 942)"
+  },
+  "modules": {
+    "home": {
+      "measuredBytes": 492871,
+      "previousLimit": 492544,
+      "newLimit": 493568,
+      "t14Inputs": [
+        {
+          "path": "src/modules/home/i18n.ts",
+          "before": 146763,
+          "after": 146995,
+          "delta": 232
+        },
+        {
+          "path": "src/modules/home/module.ts",
+          "before": 5639,
+          "after": 5687,
+          "delta": 48
+        }
+      ]
+    },
+    "automations": {
+      "measuredBytes": 218093,
+      "previousLimit": 217088,
+      "newLimit": 218112,
+      "t14Inputs": [
+        {
+          "path": "src/modules/automations/core/actions/agent.ts",
+          "before": 1586,
+          "after": 1804,
+          "delta": 218
+        },
+        {
+          "path": "src/modules/automations/core/actions/script.ts",
+          "before": 661,
+          "after": 733,
+          "delta": 72
+        },
+        {
+          "path": "src/modules/automations/core/documents.ts",
+          "before": 1973,
+          "after": 1983,
+          "delta": 10
+        },
+        {
+          "path": "src/modules/automations/core/service.ts",
+          "before": 16663,
+          "after": 17106,
+          "delta": 443
+        },
+        {
+          "path": "src/modules/automations/i18n.ts",
+          "before": 19106,
+          "after": 20123,
+          "delta": 1017
+        },
+        {
+          "path": "src/shared/agent-dispatch.ts",
+          "before": 315,
+          "after": 377,
+          "delta": 62
+        }
+      ]
+    }
+  }
+}

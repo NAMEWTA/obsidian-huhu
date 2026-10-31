@@ -9,10 +9,10 @@ const payload: SafePayload = makePayload([createEntry({
 	title: 'private-title-marker',
 	url: 'https://private-url-marker.test',
 	notes: 'private-entry-note-marker',
-	icon: null,
+	icon: null, tags: ['private-tag-marker'],
 	credentials: [
-		{ id: 'aaaaaaaa-1111-4111-8111-111111111111', username: ' private-account-marker ', password: '  private-secret-marker\n🔑 ', notes: 'private-notes-marker 中文备注' },
-		{ id: 'bbbbbbbb-1111-4111-8111-111111111111', username: 'second-account-marker', password: 'second-secret-marker', notes: '' },
+		{ id: 'aaaaaaaa-1111-4111-8111-111111111111', username: ' private-account-marker ', password: '  private-secret-marker\n🔑 ', notes: 'private-notes-marker 中文备注', phone: '+12345678', email: 'private-email-marker', relations: [] },
+		{ id: 'bbbbbbbb-1111-4111-8111-111111111111', username: 'second-account-marker', password: 'second-secret-marker', notes: '', phone: '', email: '', relations: [] },
 	],
 }, '11111111-1111-4111-8111-111111111111', Date.parse('2026-10-21T00:00:00.000Z'))]);
 
@@ -36,7 +36,7 @@ describe('safe Web Crypto format', () => {
 		expect(opened.key.algorithm).toMatchObject({ name: 'AES-GCM', length: 256 });
 		await expect(crypto.subtle.exportKey('raw', opened.key)).rejects.toThrow();
 		await expect(crypto.subtle.exportKey('raw', created.key)).rejects.toThrow();
-		for (const marker of ['private-title-marker', 'private-url-marker', 'private-entry-note-marker', 'private-account-marker', 'private-secret-marker', 'private-notes-marker', 'second-account-marker', 'second-secret-marker', payload.entries[0]!.id, payload.entries[0]!.credentials[0]!.id, payload.entries[0]!.createdAt]) {
+		for (const marker of ['private-email-marker', '+12345678', 'private-tag-marker', 'private-title-marker', 'private-url-marker', 'private-entry-note-marker', 'private-account-marker', 'private-secret-marker', 'private-notes-marker', 'second-account-marker', 'second-secret-marker', payload.entries[0]!.id, payload.entries[0]!.credentials[0]!.id, payload.entries[0]!.createdAt]) {
 			expect(created.raw).not.toContain(marker);
 		}
 		expect(parseEnvelope(created.raw)).toEqual(created.envelope);

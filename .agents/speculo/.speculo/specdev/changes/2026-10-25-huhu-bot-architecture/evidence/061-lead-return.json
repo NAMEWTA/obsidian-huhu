@@ -1,0 +1,32 @@
+{
+  "task": "061-ts-limit-fixture",
+  "checkedAt": "2026-10-25T16:24:19.231203+00:00",
+  "reportSha256": "60cc406e7531db6bbe8e695a24b191405f0cf44654d57be4ea1988f325708964",
+  "checkedFiles": {
+    "src/modules/huhubot/core/protocol/connection.test.ts": "ff589efd4ef674fa748f358a1d94544e75c7690ef4b40654b4d238b3dd3a17aa",
+    "src/modules/huhubot/core/protocol/connection.ts": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+    "src/modules/huhubot/api.ts": "40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c",
+    "contracts/hap/v0.1/schema.json": "4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/054-note-effects-client/REPORT.md": "17e14cb04a74d9b3ed1efb3e2d698941721c2f2d94caa8da8143d355e581ab70",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-current-ts-consumers-r1.log": "fce0fcb7a842627506356eba52f5fb5091511aeaf7318b874245c291a64a38d4"
+  },
+  "checkedArtifacts": {
+    "REPORT.md": "60cc406e7531db6bbe8e695a24b191405f0cf44654d57be4ea1988f325708964",
+    "TASK.md": "4028d2780d1eaec63716f345e2b7573b2391aa4decb9ad35c0a9994af1335ba8",
+    "logs/00-inputs.json": "448416cb40fc54cddd626a7dc51ef21adb60a7278c96f0fdb8d00d60e8a1bdb5",
+    "logs/01-red.json": "7c8d0fa11fb21d4f777885cf1aa6542c45ca3076a47289f5736cc31c3cd9f4ac",
+    "logs/01-red.log": "78212c0fb9453b4e7088d218d7c517e63dbc0d812176742886dd907feecc8613",
+    "logs/02-fixture.diff": "b97aa63d0d753c95bb3921a5bc5e41c1842ff81d6b3967676c29d8ea18ccc08f",
+    "logs/03-green.json": "d86c88d536ee668351a4be68e8592f933145b69cd6614dad0337b970310397eb",
+    "logs/03-green.log": "c804f925e4cfa9411b533ffc130b15811a50232be8c2d2432f76620e8a8acade",
+    "logs/04-final-inputs.json": "9f59215caed9eeef2363977ad6ffe746959343ce27736d2e468f29297f175831",
+    "logs/05-return.json": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/connection.test.before.ts": "076061553362706c5e95c8d84746cd2bfba9fb49562c173c560685987a27bd41"
+  },
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "disposition": "single test fixture maintenance accepted; production unchanged; current whole TS/build/lint pending"
+}

@@ -1,0 +1,871 @@
+{
+  "task": "066-recovery-current-seams",
+  "scope": "Read-only source observations, not frozen product acceptance",
+  "observations": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/16-cancel-recovery.md",
+      "readAt": "2026-10-25T16:45:22.565797+00:00",
+      "bytes": 12381,
+      "sha256": "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c",
+      "lineCount": 100,
+      "ranges": [
+        [
+          1,
+          100
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "readAt": "2026-10-25T16:45:22.566045+00:00",
+      "bytes": 34846,
+      "sha256": "5da257b5ca617c680f821ff4be462e2445ff2bc882a1e53541f0b61aecf1c116",
+      "lineCount": 288,
+      "ranges": [
+        [
+          1,
+          30
+        ],
+        [
+          186,
+          206
+        ],
+        [
+          267,
+          286
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "readAt": "2026-10-25T16:45:22.566311+00:00",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "lineCount": 338,
+      "ranges": [
+        [
+          91,
+          101
+        ],
+        [
+          128,
+          142
+        ],
+        [
+          158,
+          168
+        ],
+        [
+          188,
+          192
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "readAt": "2026-10-25T16:45:44.867392+00:00",
+      "bytes": 7852,
+      "sha256": "6bdb535eee5bec0091458a7fbd036b93b99cc40d9380f6a9bb71a1e010ea16c8",
+      "lineCount": 186,
+      "ranges": [
+        [
+          1,
+          186
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "readAt": "2026-10-25T16:45:44.867568+00:00",
+      "bytes": 13572,
+      "sha256": "1b98934ecc2b6550cd678271eb9a7006a843f8e7be3cee26f2b454e11ee9d7b7",
+      "lineCount": 396,
+      "ranges": [
+        [
+          1,
+          185
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/recover.go",
+      "readAt": "2026-10-25T16:45:44.867662+00:00",
+      "bytes": 2026,
+      "sha256": "a04354d4e37378848d966e296bd2049f20cec5f18db1249ab7de906e3779f144",
+      "lineCount": 58,
+      "ranges": [
+        [
+          1,
+          58
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "readAt": "2026-10-25T16:45:59.415837+00:00",
+      "bytes": 10148,
+      "sha256": "e6a57e473824df8837d7fe5ad81254ea7671d1fd38183859d7436e79b1238c6e",
+      "lineCount": 320,
+      "ranges": [
+        [
+          15,
+          127
+        ],
+        [
+          200,
+          322
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "readAt": "2026-10-25T16:45:59.415927+00:00",
+      "bytes": 783,
+      "sha256": "9c488ac1c1f031f78a991b2c7db7172c0749cbe934014f44cbe0db0be05f0f72",
+      "lineCount": 25,
+      "ranges": [
+        [
+          1,
+          25
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "readAt": "2026-10-25T16:45:59.416007+00:00",
+      "bytes": 24135,
+      "sha256": "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096",
+      "lineCount": 601,
+      "ranges": [
+        [
+          110,
+          175
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/continuations.go",
+      "readAt": "2026-10-25T16:46:10.878814+00:00",
+      "bytes": 3334,
+      "sha256": "3d46458adf948b601186240c5737e4303f8e224ab04e309eab8c870d5120eb93",
+      "lineCount": 92,
+      "ranges": [
+        [
+          1,
+          92
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/canceled.go",
+      "readAt": "2026-10-25T16:46:10.878883+00:00",
+      "bytes": 1823,
+      "sha256": "38a2b8a71e817ad70452ba0fd35e9e86567547f20774b4b174938103f3e386b3",
+      "lineCount": 48,
+      "ranges": [
+        [
+          1,
+          48
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go",
+      "readAt": "2026-10-25T16:46:10.878960+00:00",
+      "bytes": 14748,
+      "sha256": "035532b341a2c5482de03964d14093c7b34055172ffff1dcab0237932f14fa82",
+      "lineCount": 344,
+      "ranges": [
+        [
+          17,
+          107
+        ],
+        [
+          108,
+          184
+        ],
+        [
+          235,
+          317
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go",
+      "readAt": "2026-10-25T16:46:10.879048+00:00",
+      "bytes": 6382,
+      "sha256": "fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f",
+      "lineCount": 166,
+      "ranges": [
+        [
+          91,
+          167
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readAt": "2026-10-25T16:46:31.129425+00:00",
+      "bytes": 13834,
+      "sha256": "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628",
+      "lineCount": 371,
+      "ranges": [
+        [
+          19,
+          47
+        ],
+        [
+          78,
+          151
+        ],
+        [
+          217,
+          292
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "readAt": "2026-10-25T16:46:31.129526+00:00",
+      "bytes": 4202,
+      "sha256": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+      "lineCount": 112,
+      "ranges": [
+        [
+          1,
+          112
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/approvals.go",
+      "readAt": "2026-10-25T16:46:31.129615+00:00",
+      "bytes": 12077,
+      "sha256": "87f6406c302e0dba8c7ebe3529e228f013816b99005de462d5509646f00df857",
+      "lineCount": 342,
+      "ranges": [
+        [
+          120,
+          200
+        ],
+        [
+          245,
+          342
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/reconcile/service.go",
+      "readAt": "2026-10-25T16:46:46.893772+00:00",
+      "bytes": 3540,
+      "sha256": "79ba17fbce9bc710a3e02c4dec11115a18415edb914e1b18a6484190216dd19b",
+      "lineCount": 86,
+      "ranges": [
+        [
+          1,
+          86
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/reconcile.go",
+      "readAt": "2026-10-25T16:46:46.893852+00:00",
+      "bytes": 5113,
+      "sha256": "a86bf8cbdacd821f670249c82ad3c8052e55923163819a1be721f0b17cb564b7",
+      "lineCount": 125,
+      "ranges": [
+        [
+          13,
+          99
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/blob/store/store.go",
+      "readAt": "2026-10-25T16:46:46.893924+00:00",
+      "bytes": 9063,
+      "sha256": "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53",
+      "lineCount": 326,
+      "ranges": [
+        [
+          161,
+          265
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go",
+      "readAt": "2026-10-25T16:46:46.893989+00:00",
+      "bytes": 13136,
+      "sha256": "09ee18106425b8f34e45649ddcf549e40241967c536e43a5fa80124f783d1013",
+      "lineCount": 299,
+      "ranges": [
+        [
+          163,
+          218
+        ],
+        [
+          252,
+          274
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "readAt": "2026-10-25T16:46:59.139838+00:00",
+      "bytes": 3890,
+      "sha256": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f",
+      "lineCount": 100,
+      "ranges": [
+        [
+          1,
+          100
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/service.go",
+      "readAt": "2026-10-25T16:46:59.139918+00:00",
+      "bytes": 6122,
+      "sha256": "b6d5cfeee2479d380f8dc6b02c6bb2bd7c99aa4a4fe613d8b1f8f6e9d4ce7521",
+      "lineCount": 192,
+      "ranges": [
+        [
+          1,
+          192
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "readAt": "2026-10-25T16:46:59.140026+00:00",
+      "bytes": 18120,
+      "sha256": "2dc22f04cae58311585667231df592e96013e04710f9259ebcaae4d39bdde406",
+      "lineCount": 623,
+      "ranges": [
+        [
+          28,
+          145
+        ],
+        [
+          256,
+          325
+        ],
+        [
+          415,
+          443
+        ],
+        [
+          457,
+          544
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "readAt": "2026-10-25T16:46:59.140111+00:00",
+      "bytes": 9294,
+      "sha256": "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730",
+      "lineCount": 228,
+      "ranges": [
+        [
+          109,
+          133
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/credentials.go",
+      "readAt": "2026-10-25T16:47:37.782381+00:00",
+      "bytes": 5118,
+      "sha256": "e1f44f82c06847d03c69650c4cb576b8a154497ce8d5548448a49a8ac681b3e8",
+      "lineCount": 142,
+      "ranges": [
+        [
+          1,
+          36
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "readAt": "2026-10-25T16:47:37.782613+00:00",
+      "bytes": 26945,
+      "sha256": "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762",
+      "lineCount": 749,
+      "ranges": [
+        [
+          91,
+          120
+        ],
+        [
+          519,
+          546
+        ],
+        [
+          649,
+          676
+        ],
+        [
+          685,
+          745
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go",
+      "readAt": "2026-10-25T16:47:37.782740+00:00",
+      "bytes": 10373,
+      "sha256": "3b59709381c2aa72cd3c5294bfeeee5f28dab31a9e1aed9d3dd08d23f4bed352",
+      "lineCount": 217,
+      "ranges": [
+        [
+          144,
+          216
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readAt": "2026-10-25T16:47:37.783107+00:00",
+      "bytes": 13834,
+      "sha256": "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628",
+      "lineCount": 371,
+      "ranges": [
+        [
+          292,
+          310
+        ]
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/platform/desktop/transport/managed.ts",
+      "readAt": "2026-10-25T16:47:37.783250+00:00",
+      "bytes": 12068,
+      "sha256": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+      "lineCount": 350,
+      "ranges": [
+        [
+          1,
+          350
+        ]
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/connection.ts",
+      "readAt": "2026-10-25T16:47:37.783480+00:00",
+      "bytes": 23954,
+      "sha256": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+      "lineCount": 518,
+      "ranges": [
+        [
+          266,
+          274
+        ],
+        [
+          399,
+          430
+        ],
+        [
+          484,
+          518
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/045-group-recovery-preflight/REPORT.md",
+      "readAt": "2026-10-25T16:48:11.374241+00:00",
+      "bytes": 46223,
+      "sha256": "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf",
+      "lineCount": 226,
+      "ranges": [
+        [
+          1,
+          17
+        ],
+        [
+          66,
+          159
+        ],
+        [
+          193,
+          226
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/REPORT.md",
+      "readAt": "2026-10-25T16:48:11.374572+00:00",
+      "bytes": 42922,
+      "sha256": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956",
+      "lineCount": 229,
+      "ranges": [
+        [
+          33,
+          58
+        ],
+        [
+          113,
+          134
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/060-groups-current-seams/REPORT.md",
+      "readAt": "2026-10-25T16:48:11.374662+00:00",
+      "bytes": 8347,
+      "sha256": "8be43aba0b18b3663d35011aa78d8afccd44679ff4ba7016c304dbe6ccd76d7a",
+      "lineCount": 39,
+      "ranges": []
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+      "readAt": "2026-10-25T16:48:57.867130+00:00",
+      "bytes": 23759,
+      "sha256": "2f6cc2dfc5f99dc59544b621efdf52798fab9a184d667a60dfab9b68b843f4e5",
+      "lineCount": 644,
+      "ranges": [
+        [
+          476,
+          535
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "readAt": "2026-10-25T16:48:57.867270+00:00",
+      "bytes": 24135,
+      "sha256": "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096",
+      "lineCount": 601,
+      "ranges": [
+        [
+          385,
+          440
+        ],
+        [
+          441,
+          545
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "readAt": "2026-10-25T16:48:57.867353+00:00",
+      "bytes": 11233,
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+      "lineCount": 337,
+      "ranges": [
+        [
+          193,
+          226
+        ],
+        [
+          253,
+          293
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "readAt": "2026-10-25T16:48:57.867399+00:00",
+      "bytes": 1392,
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+      "lineCount": 34,
+      "ranges": [
+        [
+          1,
+          34
+        ]
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/platform/desktop/transport/managed.ts",
+      "readAt": "2026-10-25T16:48:57.867449+00:00",
+      "bytes": 12068,
+      "sha256": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+      "lineCount": 350,
+      "ranges": [
+        [
+          87,
+          121
+        ],
+        [
+          269,
+          303
+        ],
+        [
+          331,
+          350
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+      "readAt": "2026-10-25T16:49:36.933635+00:00",
+      "bytes": 23759,
+      "sha256": "2f6cc2dfc5f99dc59544b621efdf52798fab9a184d667a60dfab9b68b843f4e5",
+      "lineCount": 644,
+      "ranges": [
+        [
+          440,
+          478
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/006-approval-effect.sql",
+      "readAt": "2026-10-25T16:49:36.933706+00:00",
+      "bytes": 1989,
+      "sha256": "899266b772c17b7750039c5d8458a1740f79e9aecfb39b1a77b20acb8c6974af",
+      "lineCount": 46,
+      "ranges": [
+        [
+          1,
+          47
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql",
+      "readAt": "2026-10-25T16:49:36.933742+00:00",
+      "bytes": 4419,
+      "sha256": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e",
+      "lineCount": 108,
+      "ranges": [
+        [
+          30,
+          58
+        ],
+        [
+          84,
+          97
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "readAt": "2026-10-25T16:49:36.933780+00:00",
+      "bytes": 5839,
+      "sha256": "c197e34d577864b56f38a2d747eb2a7b0e2c5e12afc1d00c474d4dfb67160cf7",
+      "lineCount": 144,
+      "ranges": [
+        [
+          35,
+          68
+        ],
+        [
+          102,
+          144
+        ]
+      ]
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "readAt": "2026-10-25T16:49:36.933869+00:00",
+      "bytes": 23811,
+      "sha256": "40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c",
+      "lineCount": 835,
+      "ranges": [
+        [
+          665,
+          676
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readAt": "2026-10-25T16:49:36.933929+00:00",
+      "bytes": 13834,
+      "sha256": "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628",
+      "lineCount": 371,
+      "ranges": [
+        [
+          298,
+          310
+        ]
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "readAt": "2026-10-25T16:49:37.042635+00:00",
+      "bytes": 18068,
+      "sha256": "c22919d4cdcba42f61f43ebc4480aa627d394c3c394979c0d2323ef587734abd",
+      "lineCount": 722,
+      "selectors": [
+        "service.shutdown",
+        "runs.cancel",
+        "runs.resume",
+        "effects.reconcile"
+      ]
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "readAt": "2026-10-25T16:49:37.044712+00:00",
+      "bytes": 329222,
+      "sha256": "4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc",
+      "lineCount": 12501,
+      "selectors": [
+        "service.shutdown.params",
+        "runs.cancel.params",
+        "runs.resume.params",
+        "effects.reconcile.params"
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "readAt": "2026-10-25T16:50:03.695890+00:00",
+      "bytes": 9294,
+      "sha256": "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730",
+      "lineCount": 228,
+      "ranges": [
+        [
+          60,
+          100
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "readAt": "2026-10-25T16:50:03.695998+00:00",
+      "bytes": 13149,
+      "sha256": "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de",
+      "lineCount": 370,
+      "ranges": [
+        [
+          61,
+          105
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "readAt": "2026-10-25T16:50:03.696058+00:00",
+      "bytes": 9508,
+      "sha256": "cc7f2ad6782c1ca57322c7e308b5201b5fc686b70833443a5d425b0d10de19e9",
+      "lineCount": 262,
+      "ranges": [
+        [
+          25,
+          87
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "readAt": "2026-10-25T16:50:03.696162+00:00",
+      "bytes": 24135,
+      "sha256": "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096",
+      "lineCount": 601,
+      "ranges": [
+        [
+          213,
+          253
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "readAt": "2026-10-25T16:51:25.091523+00:00",
+      "bytes": 5949,
+      "sha256": "2fd8d65b777ec73348b411d0d4b8124a64548d6563e7f225c302754f6aa1fb26",
+      "lineCount": 162,
+      "ranges": [
+        [
+          132,
+          163
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/profile.go",
+      "readAt": "2026-10-25T16:51:25.091604+00:00",
+      "bytes": 6028,
+      "sha256": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f",
+      "lineCount": 235,
+      "ranges": [
+        [
+          149,
+          166
+        ]
+      ]
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "readAt": "2026-10-25T16:51:25.091649+00:00",
+      "bytes": 5454,
+      "sha256": "3d37be5a53549c3fdde687ec24bb397a4c24f4f41519640f8acc75a6708b0374",
+      "lineCount": 149,
+      "ranges": [
+        [
+          58,
+          67
+        ],
+        [
+          137,
+          158
+        ]
+      ]
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/16-cancel-recovery.md",
+      "readAt": "2026-10-25T16:51:25.091730+00:00",
+      "bytes": 12381,
+      "sha256": "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c",
+      "lineCount": 100,
+      "ranges": [
+        [
+          82,
+          100
+        ]
+      ]
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "readAt": "2026-10-25T16:51:25.091808+00:00",
+      "bytes": 7961,
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "lineCount": 79,
+      "ranges": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "readAt": "2026-10-25T16:51:25.091837+00:00",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "lineCount": 15,
+      "ranges": []
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "readAt": "2026-10-25T16:51:25.091878+00:00",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "lineCount": 243,
+      "ranges": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "readAt": "2026-10-25T16:51:25.091907+00:00",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "lineCount": 19,
+      "ranges": []
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/SKILL.md",
+      "readAt": "2026-10-25T16:51:25.091933+00:00",
+      "bytes": 3757,
+      "sha256": "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db",
+      "lineCount": 52,
+      "ranges": []
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/066-recovery-current-seams/TASK.md",
+      "readAt": "2026-10-25T16:51:25.091963+00:00",
+      "bytes": 3755,
+      "sha256": "3d74a978e44dde7c519d7acdd86f7c82d73a6da837dec35b7cb3af86d72a6f96",
+      "lineCount": 34,
+      "ranges": []
+    }
+  ]
+}

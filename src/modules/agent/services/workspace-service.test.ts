@@ -4,9 +4,10 @@ import { expect, test, vi } from 'vitest';
 import { emptyWorkspace } from '../core/workspace/model';
 import { TerminalSession } from './terminal/session';
 import type { TerminalSessions } from './terminal/sessions';
-import { WorkspaceService, type WorkspaceLaunchPort } from './workspace-service';
+import { WorkspaceService, type WorkspaceLaunchPort, type WorkspaceBrowserHost } from './workspace-service';
 import { sessionState } from './terminal/status';
-function fixture() {
+import type { BrowserSpace, BrowserWorkspaceState } from '../../browser/api';
+function fixture(browser?: WorkspaceBrowserHost) {
 	const map = new Map<string, TerminalSession>(),
 		listeners = new Set<() => void>();
 	let next = 0;
@@ -32,6 +33,7 @@ function fixture() {
 	const sessions = {
 		get: (id: string) => map.get(id),
 		focus: vi.fn(),
+		managedRef: () => undefined,
 		end: vi.fn((id: string) => map.get(id)?.exit(0, null)),
 		subscribe: (fn: () => void) => {
 			listeners.add(fn);
@@ -55,10 +57,10 @@ function fixture() {
 		account: () => 'work',
 		report: vi.fn(),
 	};
-	const service = new WorkspaceService(persistence, sessions, launch);
+	const service = new WorkspaceService(persistence, sessions, launch, () => browser);
 	return { service, sessions, persistence, launch, map, make, listeners };
 }
-test('close cancellation keeps all processes; acceptance removes all panes exactly once', async () => {
+test('closing a terminal view does not ask to stop or remove any pane runtime', async () => {
 	const f = fixture();
 	await f.service.newTerminal();
 	const tab = f.service.active!;
@@ -67,10 +69,11 @@ test('close cancellation keeps all processes; acceptance removes all panes exact
 	expect(f.map.size).toBe(2);
 	await f.service.close(tab.id, async () => false);
 	expect(f.map.size).toBe(2);
-	expect(f.service.active?.id).toBe(tab.id);
+	expect(f.service.active).toBeUndefined();
 	await f.service.close(tab.id, async () => true);
-	expect(f.map.size).toBe(0);
-	expect(f.sessions.remove).toHaveBeenCalledTimes(2);
+	expect(f.map.size).toBe(2);
+	expect(f.sessions.remove).not.toHaveBeenCalled();
+	expect(f.sessions.end).not.toHaveBeenCalled();
 	expect(f.service.store.getState().groups).toEqual([]);
 	await f.service.dispose();
 });
@@ -127,7 +130,7 @@ test('restore keeps the tab/group/pane layout and uses original account and nati
 	await f.service.dispose();
 	f.map.forEach((s) => s.dispose());
 });
-test('restoring a closed tab cancels the late attachment and kills its new process', async () => {
+test('closing a view during explicit restore leaves its late runtime in the background', async () => {
 	const f = fixture();
 	await f.service.newTerminal();
 	const tab = f.service.active!;
@@ -144,17 +147,94 @@ test('restoring a closed tab cancels the late attachment and kills its new proce
 	resolve(late);
 	await restoring;
 	expect(f.service.active).toBeUndefined();
-	expect(f.map.size).toBe(0);
+	expect(f.map.size).toBe(2);
+	expect(f.map.get(late.id)).toBe(late);
+	expect(late.running).toBe(true);
+	expect(f.sessions.remove).not.toHaveBeenCalled();
 	await f.service.dispose();
 });
 test('browser absent is explicit; module stop releases pending launches and persistence', async () => {
 	const f = fixture();
-	expect(() => f.service.newBrowser('https://example.com/')).toThrow(/browser|浏览器/i);
+	await expect(f.service.newBrowser('https://example.com/')).rejects.toThrow(/browser|浏览器/i);
 	await f.service.dispose();
 	expect(f.persistence.dispose).toHaveBeenCalledOnce();
 });
 
-test('a Hook update while a close confirmation is open does not ask twice', async () => {
+test('browser tabs reference independent Pages; duplicate/close/restore never own their native lifetime', async () => {
+	const space: BrowserSpace = {
+		id: 'space',
+		label: 'Task',
+		kind: 'task',
+		retention: 'persistent',
+		status: 'ready',
+		runtimeId: 'runtime',
+		createdAt: 1,
+		updatedAt: 1,
+		control: { mode: 'paused', epoch: 1 },
+		pages: [
+			{
+				id: 'page',
+				spaceId: 'space',
+				url: 'https://example.com',
+				title: 'Example',
+				documentId: 'document',
+				status: 'open',
+				zoom: 1,
+				viewportVersion: 1,
+			},
+		],
+	};
+	const state: BrowserWorkspaceState = {
+		ready: true,
+		readOnly: false,
+		availability: { state: 'ready' },
+		persistence: 'secure',
+		ephemeralConsent: false,
+		spaces: [space],
+		requests: [],
+		cleanupPending: 0,
+	};
+	const host = {
+		getState: () => state,
+		resolveInput: (value: string) => value,
+		createSpace: vi.fn(async () => space),
+		openPage: vi.fn(async () => space.pages[0]!),
+		closePage: vi.fn(),
+		stopSpace: vi.fn(),
+	};
+	const f = fixture(host);
+	const first = await f.service.newBrowser('https://example.com');
+	const second = await f.service.newBrowser(undefined, { spaceId: 'space', pageId: 'page' });
+	expect(host.createSpace).toHaveBeenCalledOnce();
+	expect(host.openPage).not.toHaveBeenCalled();
+	expect(f.service.store.getState().tabs[first!]).toMatchObject({
+		kind: 'browser',
+		spaceId: 'space',
+		pageId: 'page',
+	});
+	expect(f.service.store.getState().tabs[first!]).not.toHaveProperty('url');
+	await f.service.close(first!, async () => true);
+	expect(f.service.active?.id).toBe(second);
+	expect(host.closePage).not.toHaveBeenCalled();
+	expect(host.stopSpace).not.toHaveBeenCalled();
+	await f.service.dispose();
+	expect(host.stopSpace).not.toHaveBeenCalled();
+});
+
+test('Agent quick creation cannot implicitly consent to temporary browser storage', async () => {
+	const host = {
+		getState: () => ({ persistence: 'unavailable', spaces: [] }) as unknown as BrowserWorkspaceState,
+		resolveInput: (value: string) => value,
+		createSpace: vi.fn(),
+		openPage: vi.fn(),
+	};
+	const f = fixture(host);
+	await expect(f.service.newBrowser()).rejects.toThrow(/Space/);
+	expect(host.createSpace).not.toHaveBeenCalled();
+	await f.service.dispose();
+});
+
+test('Hook state changes do not turn close-view into a stop confirmation', async () => {
 	const f = fixture();
 	await f.service.newAgent('codex');
 	const tab = f.service.active!,
@@ -164,8 +244,9 @@ test('a Hook update while a close confirmation is open does not ask twice', asyn
 		return true;
 	});
 	await f.service.close(tab.id, confirm);
-	expect(confirm).toHaveBeenCalledOnce();
-	expect(f.map.size).toBe(0);
+	expect(confirm).not.toHaveBeenCalled();
+	expect(f.map.get(session.id)).toBe(session);
+	expect(session.running).toBe(true);
 	await f.service.dispose();
 });
 test('module shutdown ends a process that arrives after its pending launch', async () => {

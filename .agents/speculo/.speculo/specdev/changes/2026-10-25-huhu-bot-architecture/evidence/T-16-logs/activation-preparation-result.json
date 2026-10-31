@@ -1,0 +1,15 @@
+{
+  "mapRevision": 20,
+  "goalRevision": 19,
+  "log": 90,
+  "windowSha256": "3befb9dca2031f81a4e3a0e02577cc80115955d2ef8ee6fd191faa6bedbdca63",
+  "taskHashes": {
+    "080-recovery-core": "9821a81f3c44d4a158cd1d2da483f374f093d12a0f213aa43516df59a37a4522",
+    "081-recovery-domain": "21140cc642ba7aa89cf2a8c7fdbcf8a00837e7a7930c5749b4d2fea80d91ad43",
+    "082-recovery-client": "c826de0fd37e6fc8441a9ed0f904978f6e461f8435e8b183465c021cb8812d72"
+  },
+  "nativeDispatchSent": false,
+  "priorInput": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+  "priorReviewReport": "d61215836a08969b7d7d8162845bcb7e6126ca2df16326099a436a599691cd1b",
+  "boundary": "Formal scope prepared after accepted code gate; actual native dispatch and narrow plan checks still required."
+}

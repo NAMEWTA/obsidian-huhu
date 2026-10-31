@@ -1,0 +1,243 @@
+{
+  "ticket": "T-05",
+  "cycle": "repair-round1",
+  "observed_at": "2026-10-25T16:17:02.943319+00:00",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/terminal",
+  "goal_revision": "GP-019",
+  "map_revision": 20,
+  "source_baseline": {
+    "path": "/tmp/huhu-t05-root-inputs-v3.json",
+    "sha256": "3cb930ccd9e14bf8193fa1afb4fc1731bd713e2631ea3f36ba6cd7bd8ab088ec",
+    "current_1948_drift": []
+  },
+  "inputs": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+      "sha256": "e61b20a1a453f7cef63ed3030924e29038e0b6311c61d4ed20d3d6c0b5c5d247"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "e2f512f90b434f2a786f75c157881c0de6c657de8677082a423ffa6654cd100e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/05-screen-stream.md",
+      "sha256": "849dae49ee480577cfccb6fa61f716390bca1247d907e7c85b9402c5226b76d3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/reference-notes.md",
+      "sha256": "f54b94009192820a3f8a82ab24a62b6c36502443b77e30fbb2326aee2bd45fa8"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-04.md",
+      "sha256": "beabe78ca673beaba2bf0e884d0fa04dc24016efba980c0690f360b47fabdf28"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-review-round1.md",
+      "sha256": "d8b6a3956d16d092ab2d9b2f85da76aa53dfcf92d5c06fb3c56aee90f0998cc0"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff"
+    }
+  ],
+  "writers": {
+    "codex:/root/prepare_t03": [
+      "src/modules/agent/services/terminal/session.ts",
+      "src/modules/agent/services/terminal/session.test.ts",
+      "src/modules/agent/services/terminal/session-screen-xterm.ts",
+      "src/modules/agent/services/terminal/session-screen.ts",
+      "src/modules/agent/services/terminal/session-screen.test.ts",
+      "src/modules/agent/services/terminal/session-resize.test.ts",
+      "src/modules/agent/services/terminal/session-screen-native.test.ts",
+      "src/modules/agent/services/terminal/sessions.ts",
+      "src/modules/agent/i18n.ts",
+      "docs/agent-workbench.md"
+    ],
+    "codex:/root/prepare_t05_screen": [
+      "src/modules/agent/ui/terminal/terminal-screen-xterm.ts",
+      "src/modules/agent/ui/terminal/terminal-view.ts",
+      "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+      "scripts/obsidian-acceptance/agent-workbench-screen.mjs"
+    ],
+    "codex:/root/implement_t01": [
+      "native/pty-server/src/outbox.rs",
+      "native/pty-server/src/session.rs",
+      "native/pty-server/src/main.rs",
+      "native/pty-server/src/frame.rs",
+      "native/pty-server/tests/stdio.rs",
+      "src/shared/native/input.ts",
+      "src/shared/native/input.test.ts",
+      "src/shared/native/host.ts",
+      "src/host/desktop/native/helper.ts",
+      "src/host/desktop/native/helper-stream.test.ts",
+      "src/host/desktop/native/host.ts",
+      "src/host/desktop/native/host.test.ts",
+      "src/host/desktop/native/host-stream.integration.test.ts",
+      "test/fixtures/native/terminal-input-admission-v1.json"
+    ]
+  },
+  "files": [
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "9df161c43bb29686bfdd4c809b3d0552a4b6a8a6ac4a3d7bc678ad06c909bf17",
+      "bytes": 29735
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.test.ts",
+      "sha256": "39cf7cc56d61569ea7bddf520a3ee7cbbb1dedc2708df5479291cd7ba76d81e3",
+      "bytes": 6008
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen-xterm.ts",
+      "sha256": "7b07bd87c3778ed7e8d5f41de3b1ec92f2246f51a9bfeac5313aa5f7f7ef52db",
+      "bytes": 16790
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen.ts",
+      "sha256": "9215431e5ce37a067e4e6b5a9609528b60e96ee08a348ec85a52e17bc11d5014",
+      "bytes": 40933
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen.test.ts",
+      "sha256": "ab9d08e7804f6cac7013008b3b1c9046febe082b48da4e3d8aa2ad234cd9ad52",
+      "bytes": 23418
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-resize.test.ts",
+      "sha256": "1b4b8244e9f5283b34ed5f6250ef9bc41389aba1816f9c5e86459a71dc118d18",
+      "bytes": 6935
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session-screen-native.test.ts",
+      "sha256": "23989877ce902fc81628243cfdfa122e70e1577192d127f173137ad28d2c1441",
+      "bytes": 10432
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "892b58c4afad3ee70dfcfad64946c25d44490770d89034d392f2261fcc56cc88",
+      "bytes": 28690
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "bafd8f794de31e791865d86549bccf51d91355290b4e60be67061c81f65aff68",
+      "bytes": 67872
+    },
+    {
+      "path": "docs/agent-workbench.md",
+      "sha256": "c8bca8680fdf62e5bba6b23be6816ecc86e18e88c208ee952fc89286051cf8d8",
+      "bytes": 31369
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-screen-xterm.ts",
+      "sha256": "f9c56012405f83e051521d04390cb94d563da80e2edd77c8e59d5211325b752a",
+      "bytes": 23678
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-view.ts",
+      "sha256": "63d8d3c10cfe32ac29b99b5b03adfe187d254eda93a59cf1fad5d22f146961d5",
+      "bytes": 19900
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/terminal-screen-xterm.dom.test.tsx",
+      "sha256": "c1455cc493b302447cf3cd52b3f4ad0d6132acc5e5b28376407351509eb9106c",
+      "bytes": 11682
+    },
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-screen.mjs",
+      "sha256": "835f051b38a723ea9531d2778b1d7cffb7471d1f6b1180b343e1ca2ef0dd3c54",
+      "bytes": 41333
+    },
+    {
+      "path": "native/pty-server/src/outbox.rs",
+      "sha256": "3c6f8337a31d4ab9801016e2cd8999157d8c263d4893b42c927f0795e9e8f79e",
+      "bytes": 18333
+    },
+    {
+      "path": "native/pty-server/src/session.rs",
+      "sha256": "0b143f8e657ac1471eefb1f44f748c61b93be00fbf0a7f207c553ac97c4a3a41",
+      "bytes": 69575
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "sha256": "2fd7acfc8766502f7daf403ced3f59812a70559fb6cd063a5d363ce4aa15a560",
+      "bytes": 12215
+    },
+    {
+      "path": "native/pty-server/src/frame.rs",
+      "sha256": "b4fc6aa6725cd02963adf838cb2516fedcd53258d36ae8d23df0ce62f0de3e0c",
+      "bytes": 13702
+    },
+    {
+      "path": "native/pty-server/tests/stdio.rs",
+      "sha256": "da693b665b0050389913a3453b1a7322bb421172dac5d2ef62ea2bbd73500a2a",
+      "bytes": 11081
+    },
+    {
+      "path": "src/shared/native/input.ts",
+      "sha256": "dd1686f7c957b57bdf6bc4b2bf74b704fec30617017783e4589a6f47095b04d2",
+      "bytes": 6687
+    },
+    {
+      "path": "src/shared/native/input.test.ts",
+      "sha256": "360d62760487f4f331507378ba93186de45c8b21ca178519f22f862328a40f76",
+      "bytes": 1281
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "dc82bc43ffd1e16c753052b0b7c089835581292374b61906a51603cf94e03bd4",
+      "bytes": 4658
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "77b11aabb8482f09cac1e18605cef1ef297c604fe807438b1064439d1a1e590a",
+      "bytes": 33255
+    },
+    {
+      "path": "src/host/desktop/native/helper-stream.test.ts",
+      "sha256": "8818a972c5e2d33c496536223e2d27532d8288934a7f81547f2f27c086efd928",
+      "bytes": 14927
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "7b7fd55f6544627eb3afd6a8016e137410cceb5f010d09bdae5c74fb87bf6068",
+      "bytes": 17115
+    },
+    {
+      "path": "src/host/desktop/native/host.test.ts",
+      "sha256": "df3d1b052cb137020700260eee1d2d6173a3b40f81b727d28d30ff0e93911f97",
+      "bytes": 16364
+    },
+    {
+      "path": "src/host/desktop/native/host-stream.integration.test.ts",
+      "sha256": "4ffc789e690b5cef575345715e1420f7c72529b282e7a0c1caf12bb4d3c40a7d",
+      "bytes": 14510
+    },
+    {
+      "path": "test/fixtures/native/terminal-input-admission-v1.json",
+      "sha256": "1fc135b9bfb1f1dae559512e7d06367760ff187653aa3bba09cbd2374c33c4d4",
+      "bytes": 16982
+    }
+  ],
+  "original_attempts": 3,
+  "new_cycle_attempts": 0,
+  "limit": 3,
+  "reason": "Four newly independently demonstrated defects; deterministic scheduler, stock renderer, actual Session/View and reply-capacity consumer regressions replace blind repetition. Original failed attempts retained."
+}

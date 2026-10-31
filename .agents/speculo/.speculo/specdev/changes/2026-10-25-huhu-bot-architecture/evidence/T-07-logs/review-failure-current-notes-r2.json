@@ -1,0 +1,18 @@
+{
+  "reportHash": "7a5044ad9a4a22ec79b343216582a39a811e807dd8dd5821cc622865854deb07",
+  "inputSha256": "3edb78e691126e3377c2d1b00f286cc1b0524ba91bea4bbe5892f69033384e02",
+  "axes": {
+    "standards": "request-changes",
+    "specification": "request-changes"
+  },
+  "validation": {
+    "T-01": [],
+    "T-02": [],
+    "T-03": [],
+    "T-05": [],
+    "T-06": [],
+    "T-07": [],
+    "T-11": [],
+    "T-12": []
+  }
+}

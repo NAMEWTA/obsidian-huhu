@@ -1,0 +1,34 @@
+{
+  "observedAtUtc": "2026-10-25T09:40:09.406669+00:00",
+  "publicContractFrozen": true,
+  "exports": "host.ts reexports TerminationEvidence/RootEvidence/TerminationReason/NativeTerminationNotice and NATIVE_TERMINATION_TIMEOUT_MS=8000/NATIVE_TERMINATION_OBSERVE_MS=10000; NativeEvents.termination?; NativeConnection.terminalTermination?:1/requestStop?; NativeReleaseError(outcomes). termination.ts exports parseTerminationEvidence/parseTerminationNotice/terminationConfirmed; NativeConnection.reply?(sid,data) for captured parser replies through release drain",
+  "files": [
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "2e39c4f4c74b4c371b59ed16b76c60759ab90e19d232f58dc72d5744e7977eeb",
+      "bytes": 3480
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "sha256": "945723a552a262d284024f7789c73aff3c5a671568afd55a04964bd0ac03c687",
+      "bytes": 5085
+    },
+    {
+      "path": "src/shared/native/termination.test.ts",
+      "sha256": "c71410e533ddcf0fe734cb678d6dc6dbf4b5619300292e0599fe87655a57370e",
+      "bytes": 637
+    },
+    {
+      "path": "test/fixtures/native/terminal-termination-v1.json",
+      "sha256": "18194c49e178a4e1cb17f0f918cc655b4a545756e9729e6c3d1c26a61829a28a",
+      "bytes": 22923
+    }
+  ],
+  "note": "Root verified v3 actual 5 source SHA and strict codec unchanged, optional reply signature approved. Host implementation still under construction; timeout without numeric exit must remain incomplete and is not finally accepted. Original producer observation timestamp preserved as supplied; use leadVerifiedAtUtc for this current freeze.",
+  "leadVerifiedAtUtc": "2026-10-25T09:57:08.290113+00:00"
+}

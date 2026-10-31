@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-25T21:59:11.127948+00:00",
+  "additional_images_read": [
+    {
+      "path": "/tmp/huhu-t06-root-activity-chrome-v3/pane-narrow.png",
+      "sha256": "53208bfe3ef99279dcd1519b970fdcd1216cbd4567c129e63895e0aebf9e4ea8",
+      "method": "Root actual view_image output read"
+    },
+    {
+      "path": "/tmp/huhu-t06-root-activity-chrome-v3/pane-save-error.png",
+      "sha256": "ac42af43dda730f4ffed0a081444c5c6c1bc696c1ba0b67b8e7110aa508f064e",
+      "method": "Root actual view_image output read"
+    },
+    {
+      "path": "/tmp/huhu-t06-root-activity-chrome-v3/pane-pending.png",
+      "sha256": "783cba5130c58c3d9a61405602316af65ecacb430dff07b2a76b149c28e65782",
+      "method": "Root actual view_image output read"
+    }
+  ],
+  "prior_images_read": "focused-blocked and readonly-original-hint in T-06-chrome-v3-root-capture.json",
+  "observations": [
+    "Narrow800 attention entry, action labels and source facts remain readable; long identity uses ellipsis. Original terminal input separately proven by trustedArrowUp.",
+    "Controlled storage error is visible with actual Retry label. No physical disk failure claim.",
+    "Pending screenshot retains original exact target entry and visible keyboard focus ring."
+  ],
+  "limits": [
+    "Dark controlled production components only; real Obsidian and provider E2E assigned to user.",
+    "Native size unsupported text comes from legacy controlled resize port without submitResize."
+  ]
+}

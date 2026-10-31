@@ -1,0 +1,12 @@
+{
+  "observer": "native:/root",
+  "change": "prepared, not-yet-run Python harnesses now explicitly GOPROXY=off, matching fixed local toolchain contract",
+  "scripts": {
+    "huhu-lead-memory-model.py": "8d8ec7443cd3d542367bcc340d5e7eac506335115d64a71c738fe078df53b584",
+    "huhu-lead-memory-management.py": "98434943bee4079d6cb0939c9deba4d95d9cf4fbef44ab7d887bcedec93f80a4"
+  },
+  "syntax": "AST parse passed",
+  "productChecksRun": false,
+  "priorPreparedReceipt": "lead-memory-probes-prepared.json",
+  "execution": "still deferred until final relevant source writers/checkers freeze"
+}

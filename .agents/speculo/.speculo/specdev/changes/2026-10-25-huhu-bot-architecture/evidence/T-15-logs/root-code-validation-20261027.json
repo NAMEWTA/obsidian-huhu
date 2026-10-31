@@ -1,0 +1,96 @@
+{
+  "ticket": "T-15",
+  "observer": "native:/root",
+  "status": "code-validation-complete; real-acceptance-user-owned",
+  "sourceChanges": [
+    "native/huhubot/internal/adapters/outbound/sqlite/globalmemory/store.go",
+    "native/huhubot/internal/adapters/outbound/sqlite/globalmemory/store_test.go"
+  ],
+  "finalSourceSha256": {
+    "native/huhubot/internal/adapters/outbound/sqlite/globalmemory/store.go": "0a5d2c6c9f2b0056585826cecd17ba1dc313a974c7871f800d44b0b159105dd3",
+    "native/huhubot/internal/adapters/outbound/sqlite/globalmemory/store_test.go": "16a62b67f45f137a13030f3a2eac8918440e065ab6eae11329d9364714af9d60"
+  },
+  "commands": [
+    {
+      "command": "GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' GOFLAGS=-mod=readonly GOPROXY=off CGO_ENABLED=0 go test -count=1 ./cmd/... ./internal/...",
+      "cwd": "native/huhubot",
+      "exitCode": 0,
+      "waited": true
+    },
+    {
+      "command": "GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' GOFLAGS=-mod=readonly GOPROXY=off CGO_ENABLED=0 go test -count=1 ./internal/adapters/outbound/sqlite/globalmemory",
+      "cwd": "native/huhubot",
+      "exitCode": 0,
+      "waited": true,
+      "assertions": [
+        "expired proposal commits state=expired and revision=2",
+        "qualification Fault commits state=conflicted and revision=2",
+        "unknown error rolls back to state=pending and revision=1",
+        "terminal ProposalReader snapshots have matching state/revision and no body, including persisted preview_json"
+      ]
+    },
+    {
+      "command": "GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' GOFLAGS=-mod=readonly GOPROXY=off CGO_ENABLED=1 go test -race -count=1 ./internal/adapters/outbound/sqlite/globalmemory ./internal/adapters/outbound/eino/common ./internal/adapters/outbound/sqlite/events ./internal/adapters/inbound/hap ./internal/adapters/inbound/stdio",
+      "cwd": "native/huhubot",
+      "exitCode": 0,
+      "waited": true
+    },
+    {
+      "command": "GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' GOFLAGS=-mod=readonly GOPROXY=off CGO_ENABLED=0 go test -run '^$' -count=1 ./tests/contract/access ./tests/contract/events",
+      "cwd": "native/huhubot",
+      "exitCode": 0,
+      "waited": true,
+      "result": "T162 access/events contract tests compile"
+    },
+    {
+      "command": "pnpm exec vitest run src/modules/huhubot --reporter=dot",
+      "cwd": ".",
+      "exitCode": 0,
+      "waited": true,
+      "result": "26 files, 244 tests passed"
+    },
+    {
+      "command": "pnpm run lint",
+      "cwd": ".",
+      "exitCode": 0,
+      "waited": true
+    },
+    {
+      "command": "pnpm run build",
+      "cwd": ".",
+      "exitCode": 0,
+      "waited": true,
+      "result": "main.js rebuilt"
+    },
+    {
+      "command": "pnpm run test:huhu-bot-architecture",
+      "cwd": ".",
+      "exitCode": 0,
+      "waited": true
+    },
+    {
+      "command": "pnpm run test:huhu-bot-tooling",
+      "cwd": ".",
+      "exitCode": 0,
+      "waited": true
+    }
+  ],
+  "fullGoAttempt": {
+    "command": "GOTOOLCHAIN=local GOWORK=off GOEXPERIMENT='' GOFLAGS=-mod=readonly GOPROXY=off CGO_ENABLED=0 go test -count=1 ./...",
+    "cwd": "native/huhubot",
+    "exitCode": 1,
+    "waited": true,
+    "observedFailures": [
+      "contract packages requiring isolated D-Bus/service setup reported ServiceUnknown or protection outcomes",
+      "actual Go/TS Runner contract packages returned environment-dependent exit status 126 during cleanup",
+      "several actual Runner checks emitted the known sonic/ast toolchain warning on this environment"
+    ],
+    "productionPackageSubsetPassed": true
+  },
+  "realAcceptance": {
+    "provider": "not-run; user-owned",
+    "obsidian": "not-run; user-owned",
+    "targetOs": "not-run; user-owned"
+  },
+  "noCommitPushRelease": true
+}

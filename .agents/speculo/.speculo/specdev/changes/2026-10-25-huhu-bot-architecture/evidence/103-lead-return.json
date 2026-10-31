@@ -1,0 +1,46 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T03:00:35.579753+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "reportSha256": "67758d9869512ac89d3c3beede94442e2b190370c00536cc9222c14ffcda5b55",
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "productionAndTargetedLogsRead": true,
+  "manifestSHA256": "bdc0572f296bd356f8db383f4561002937d55732ca74418f474aeff84f11119f",
+  "artifactsChecked": 17,
+  "artifactDrift": [],
+  "protectedInputsChecked": 11,
+  "protectedDrift": [],
+  "docsGate": "pending two report display corrections in original097, new104 owns successor; original103 inner1/outer126 retained",
+  "ownFiles": {
+    "scripts/documentation-policy.mjs": "672f28f21f3b6151eee52e5dc52842d2ecb29325ced8b2702bee0d9c291aa0b8",
+    "scripts/verify-docs.mjs": "a521e1ec0e1126671ee4b2d019659aab1b649297602cc87b491c3a3fba8bfc6f",
+    "test/release/documentation-checker.test.ts": "1a2b2f8295769e9a33f1f634fdbccc0d806301c2fca74cc7f3a555d39cc293b5",
+    "test/release/documentation-policy.test.ts": "e8afd03604d6592f2dd807567034e9964ee9094866c22e39e7f39720f069e41e"
+  },
+  "ownSourceDrift": [],
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "103-doc-checker-maintenance",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.05586289701750502,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "returnExit": 0,
+  "disposition": "Candidate and factual evidence accepted; final independent axes and joint ticket gate pending. No user现场 acceptance claimed."
+}

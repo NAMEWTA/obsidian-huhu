@@ -1,0 +1,41 @@
+{
+  "api_signature_revision": 3,
+  "note": "Same public DTOs/reply API/8s native +10s observation; regex-free equivalent requestId validation for lint",
+  "files": [
+    {
+      "path": "src/shared/native/host.ts",
+      "bytes": 3480,
+      "sha256": "2e39c4f4c74b4c371b59ed16b76c60759ab90e19d232f58dc72d5744e7977eeb",
+      "snapshot": "/tmp/huhu-t04-c-source-snapshot/src/shared/native/host.ts",
+      "source_written": true
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "bytes": 2905,
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "snapshot": "/tmp/huhu-t04-c-source-snapshot/src/shared/native/frames.ts",
+      "source_written": false
+    },
+    {
+      "path": "src/shared/native/termination.ts",
+      "bytes": 5135,
+      "sha256": "d5bc6bbcd4df5a48a766225b241898ca402cefee81dc0ee14ee67ee436f0400c",
+      "snapshot": "/tmp/huhu-t04-c-source-snapshot/src/shared/native/termination.ts",
+      "source_written": true
+    },
+    {
+      "path": "src/shared/native/termination.test.ts",
+      "bytes": 637,
+      "sha256": "c71410e533ddcf0fe734cb678d6dc6dbf4b5619300292e0599fe87655a57370e",
+      "snapshot": "/tmp/huhu-t04-c-source-snapshot/src/shared/native/termination.test.ts",
+      "source_written": true
+    },
+    {
+      "path": "test/fixtures/native/terminal-termination-v1.json",
+      "bytes": 22923,
+      "sha256": "18194c49e178a4e1cb17f0f918cc655b4a545756e9729e6c3d1c26a61829a28a",
+      "snapshot": "/tmp/huhu-t04-c-source-snapshot/test/fixtures/native/terminal-termination-v1.json",
+      "source_written": true
+    }
+  ]
+}

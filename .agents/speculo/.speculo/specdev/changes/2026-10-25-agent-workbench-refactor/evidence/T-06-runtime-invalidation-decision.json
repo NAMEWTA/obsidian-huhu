@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-25T19:56:26.134797+00:00",
+  "state": "implementation decision communicated to A and C; behavior proof pending",
+  "origin": "Actual A collaboration message: runtime-level hook-error/source-mismatch currently closes whole binding and blocks later Shell Pi registrations; C consumer exposed the distinction.",
+  "contract_refs": [
+    {
+      "path": "T-06-dispatch-packet.md",
+      "sha256": "e23be48926a285b244d8b8f614a0ed5875f531fc171501abf8ea9c3fee1bee2b"
+    },
+    {
+      "path": "T-06-activity-api-candidate-v2.md",
+      "sha256": "92da6dc480c537f4a7bda7132efdf1d9e60b1c4b5ec57e1300c60a95b3379b92"
+    },
+    {
+      "path": "T-06-api-v1-root-decision.json",
+      "sha256": "513bc42e44f476b43672c667ece832f3489861114af3d9772cdfd639bcba5e79"
+    }
+  ],
+  "decision": [
+    "Only unattributed runtime-level hook-error and source-mismatch may retain scope admission with sticky runtime uncertainty; existing source current evidence is invalidated while historical facts remain.",
+    "Later valid registration can consume one of the original8 cumulative slots and preserve attributable source facts, but cannot restore aggregate current/clear or create a new completion.",
+    "Runtime uncertainty cannot be cleared by UUID rotation, source close, new delivery or freshness. Source-level fences remain captured and cannot resurrect.",
+    "stop-requested/runtime-ended/transport-lost/closed and whole-scope capacity keep synchronous permanent revocation; no implicit broadening of other reasons.",
+    "Public signatures/keys unchanged; A remains sole Session writer, C consumes."
+  ],
+  "required_scoped_proof": [
+    "Unattributed HookError followed by valid new Pi registration preserves new lastFact but aggregate unknown and no new completion.",
+    "Closing/rotating sources cannot clear uncertainty or wash8-slot cumulative count.",
+    "Actual stop still rejects all late observations/registrations."
+  ],
+  "actual_dispatch": [
+    "collaboration.send_message /root/prepare_t03: normal empty return",
+    "collaboration.send_message /root/implement_t01: normal empty return"
+  ],
+  "verification_status": "pending"
+}

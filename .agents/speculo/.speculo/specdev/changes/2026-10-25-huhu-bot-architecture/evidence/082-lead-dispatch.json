@@ -1,0 +1,29 @@
+{
+  "task": "082-recovery-client",
+  "recordedAt": "2026-10-25T20:52:17.995216+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "nativeTarget": "/root/foundation_client",
+  "nativeDispatchSucceeded": true,
+  "nativeAckReceived": true,
+  "taskSha256": "c826de0fd37e6fc8441a9ed0f904978f6e461f8435e8b183465c021cb8812d72",
+  "mapRevision": 20,
+  "goalRevision": 19,
+  "window": "evidence/T-16-logs/recovery-window-map20.md",
+  "windowSha256": "3befb9dca2031f81a4e3a0e02577cc80115955d2ef8ee6fd191faa6bedbdca63",
+  "priorAcceptedInput": "72a351ff35de4f24dfc5f459e92fb288c4d52207eadde7243591f14cad8571a7",
+  "priorAcceptedReport": "d61215836a08969b7d7d8162845bcb7e6126ca2df16326099a436a599691cd1b",
+  "structureValidation": {
+    "exit": 0,
+    "waited": true,
+    "errors": [],
+    "warnings": []
+  },
+  "scopeAudit": "evidence/T-16-logs/window-audit-map20.json",
+  "heavyWindowGranted": false,
+  "firstStep": "Read current code and jointly freeze real API/qualification/claim/dispatch/CP/shutdown contracts; clients wait for actual generated input.",
+  "nativeAck": {
+    "receivedAt": "2026-10-25T20:52:48.187853+00:00",
+    "taskHashMatched": true,
+    "observed": "Full TASK and Map20/Goal19 read; actual080/081 signatures/hash required before dependent consumers; no API/schema/GroupClient/Host/UI writes or Go heavy checks."
+  }
+}

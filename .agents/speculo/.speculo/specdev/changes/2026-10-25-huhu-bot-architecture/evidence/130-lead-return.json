@@ -1,0 +1,54 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:30:38.887923+00:00",
+  "task": "130-memory-common-engine",
+  "reportSha256": "d8c7734f8d1e083e316e472dfbf856f4def251334a296c71ff75d988d021fb5a",
+  "manifestSha256": "67d60d3e5abce2c45ea1f67f186e778f158f782028ca585be40026ec835d635e",
+  "artifactManifestSha256": "50b4cd9b22950419e66e2e31fd10ec7cde53a668a781dbf2e08ad587f2b1eedf",
+  "nativeReturn": "MESSAGE + FINAL; product source and processes stopped",
+  "rootReadback": {
+    "report": "ce5efe",
+    "artifacts": 108,
+    "ownedSources": 11,
+    "readonlySources": 58,
+    "drift": [],
+    "verificationChunk": "697a69",
+    "rawChecksChunk": "9d8696",
+    "legacyOverlayChunk": "a78459"
+  },
+  "checks": {
+    "rootInitialRed": "evidence/T-14-logs/130-common-initial-red-r1.json",
+    "common": "11 top-level normal / 4 race / vet actual0 and Wait",
+    "protocol": "13 scenarios across 3 real local HTTP SDKs normal/race/vet actual0 and Wait",
+    "legacyBytes": {
+      "chat": {
+        "bytes": 2768,
+        "sha256": "7536db3ef21941d7cef85597e850ef1ed96441fc43fe11c504f49803c5e3b631"
+      },
+      "responses": {
+        "bytes": 1908,
+        "sha256": "3776c26c4e4ac72b104df579a1c54cbd1f0065bb0abcfe375c5a82dc7b175c83"
+      },
+      "anthropic": {
+        "bytes": 1742,
+        "sha256": "13afe82ac0936a3921422443c630ab8247ba4cd1133f278846c9cb8f3546fa7c"
+      }
+    },
+    "returnValidation": {
+      "actualExit": 0,
+      "seconds": 0.0615994280015002,
+      "waited": true
+    }
+  },
+  "preservedFailures": [
+    "09 missing note_write fixture workspaceId/baseRevision",
+    "22 Anthropic fixture omitted explicit cache token zero fields"
+  ],
+  "acceptedScope": "130 component candidate only. Actual Engine/SDK context and bounded private maintenance behavior; no T08/T14 whole-gate conclusion.",
+  "unverified": [
+    "public StartRun/Core/SQL integration",
+    "persistent permission and budget consumers",
+    "independent component review",
+    "real Provider/Obsidian/target OS"
+  ]
+}

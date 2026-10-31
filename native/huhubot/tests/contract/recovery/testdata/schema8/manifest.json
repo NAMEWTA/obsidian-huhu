@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 8,
+  "source": "Root actual schema8 runtime products; terminal legacy_cp/groups and SIGKILL+Wait actual child Resume inflight; inflight normalized only via SQLite WAL checkpoint, full old table row hashes unchanged",
+  "rootTerminalManifestSha256": "2e1d9094ae073fa7c9b0d41186d1fdab5aaabcd13de3b117e80f2065cedd3cd4",
+  "rootInflightManifestSha256": "0731d0d996c123c73f462a56c540e103aa5e08a1facaa55abe3161c0b8767564",
+  "files": [
+    {
+      "path": "legacy_cp/one/checkpoints/177ceb2402c609246cf8b8e40f07bd02.cp",
+      "sha256": "01a5fb5520ddfe79e6d2cce37cd8d2a9ca6fabd0422d36edd7795612a4d275d9"
+    },
+    {
+      "path": "legacy_cp/one/checkpoints/1aeef47e7c17340dd4be0eb3a5d69aad.cp",
+      "sha256": "8dc07aba00242025372b2e1bbcc46e11fe843878a17b5d1c6b2980261b196a33"
+    },
+    {
+      "path": "legacy_cp/one/checkpoints/387bdb4e3badc53c4ec0a6837bbeefe3.cp",
+      "sha256": "250a9d407125728159c7a8687d8b883404104e6f89a954ba41cc5f3337cf4bf1"
+    },
+    {
+      "path": "legacy_cp/one/checkpoints/649059b13e0818a3c8145bd201f2db42.cp",
+      "sha256": "e9eb2e2253bbc9db2d5b9ea59405553c9735291c8cbd2b5d833f3c940b3521e7"
+    },
+    {
+      "path": "legacy_cp/one/checkpoints/6a82fd333831bbfe16008f3025c572f2.cp",
+      "sha256": "71a7a83a06d2cc15a46813249a9dfd2c9028146240143d1bb54c90373f47dc28"
+    },
+    {
+      "path": "legacy_cp/one/profile.sqlite3",
+      "sha256": "fd070d1ffb5aeb9d70efc6df6e1b8431032aa274140a4151f407bf4fe10d0dcc"
+    },
+    {
+      "path": "groups/one/profile.sqlite3",
+      "sha256": "4bf63d5f4a35943af452253be49db059def187ff2ad7239ca48a7aaa4b2f0dd5"
+    },
+    {
+      "path": "inflight/one/checkpoints/9c2ef5e4e297b0e997372334d3364e7b.cp",
+      "sha256": "540a97247c20030b40440bde321648436f07aa9bc0ad307ca8a0d1328d08ee5b"
+    },
+    {
+      "path": "inflight/one/profile.sqlite3",
+      "sha256": "d9d37ec06d672646f52c390f5766fb9ede41a515ffa0f6e472fd33a57e839388"
+    }
+  ]
+}

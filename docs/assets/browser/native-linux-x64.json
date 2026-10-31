@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "managed full Chromium starts with sandbox enabled and private CDP pipes"
+    },
+    {
+      "name": "fresh owned-default cookie seed preserves session, host and CHIPS state"
+    },
+    {
+      "name": "independent Space process/profile has no inherited cookies"
+    },
+    {
+      "name": "multiple Pages share only their own Runtime and permanently seal provisioning"
+    },
+    {
+      "name": "static watched Page refreshes real pixels after more than three idle seconds"
+    },
+    {
+      "name": "AX references support fill, append typing and native select"
+    },
+    {
+      "name": "stable hit-tested AX click and bounded wait reach real DOM"
+    },
+    {
+      "name": "independent native revoke ACK rejects an unmirrored stale Worker lease",
+      "elapsedMs": 0
+    },
+    {
+      "name": "125% zoom invalidates geometry and displayed CSS coordinate clicks hit the real target"
+    },
+    {
+      "name": "80% zoom emits fresh CSS/pixel metadata without reusing prior geometry"
+    },
+    {
+      "name": "trusted explicit DOM selection read works and native clipboard shortcuts are denied"
+    },
+    {
+      "name": "pending native prompt rebinding follows exact document, epoch and revision after takeover"
+    },
+    {
+      "name": "chooser cancellation uses captured revision; equal-epoch heartbeat does not churn requests"
+    },
+    {
+      "name": "real HTTP401 navigation always cancels auth and preserves denial notice across exact loader commit"
+    },
+    {
+      "name": "private download carries its originating controller and completes at owned path"
+    },
+    {
+      "name": "out-of-process iframe uses verified owner quad mapping and parent hit tests"
+    },
+    {
+      "name": "bounded structured screenshot returns actual encoded pixel dimensions"
+    },
+    {
+      "name": "tampered native PID receipt cannot authorize killing another process"
+    },
+    {
+      "name": "verified stop reaps owned Chrome groups and removes only authenticated live owner receipts"
+    }
+  ],
+  "helperSha256": "14bba059071adad5438f26ad8ca5a62f31a5bd6634b6ba9317d43a015ab2f810",
+  "chromiumVersion": "156.0.8078.47",
+  "sandboxDisabled": false
+}

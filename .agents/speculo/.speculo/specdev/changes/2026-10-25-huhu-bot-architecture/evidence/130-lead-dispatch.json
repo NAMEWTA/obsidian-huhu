@@ -1,0 +1,19 @@
+{
+  "observer": "native:/root",
+  "dispatchedAt": "2026-10-26T10:19:48.330603+00:00",
+  "task": "130-memory-common-engine",
+  "target": "native:/root/engine_adapter",
+  "taskSha256": "7c90a342a8f665ed793127edb8d46c539b1598e6e063f00a2b2dd6a9ce92ceb0",
+  "dispatchValidation": {
+    "actualExit": 0,
+    "toolChunk": "34d00f"
+  },
+  "mapValidation": {
+    "actualExit": 0,
+    "toolChunk": "f514ee",
+    "path": "evidence/map33-maintenance-validation.json"
+  },
+  "nativeFollowupSent": true,
+  "acknowledgement": "native MESSAGE received; finite read-only preparation, no product/test writes or Go/Node checks",
+  "productWindow": "not granted; 125 remains sole product check window"
+}

@@ -1,0 +1,1263 @@
+{
+  "utc": "2026-10-26T03:16:30.226288+00:00",
+  "ticket": "T-07",
+  "observed_head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "initial_working_copy": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-dispatch-input.json",
+    "sha256": "e17db6458c9506033a60d63f116866999ba1dbcae606f8f5a28876effe9b0fe2"
+  },
+  "final_manifest": {
+    "path": "/tmp/huhu-t07-root-integration2-final-inputs.json",
+    "sha256": "0d8885283ce3dd932dc0085bd44ca8a7f0d93e5817b27b4634dfc7df0265c26a"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/lint.yml",
+      "change": "modified",
+      "before": {
+        "path": ".github/workflows/lint.yml",
+        "sha256": "dda83047a2c1aaedd12fca49c8358b8acaf5c4c99f258086cc0a86f04f40d4db",
+        "bytes": 1409,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/dispatch-input/objects/dda83047a2c1aaedd12fca49c8358b8acaf5c4c99f258086cc0a86f04f40d4db.raw"
+      },
+      "after": {
+        "path": ".github/workflows/lint.yml",
+        "sha256": "1972c9207fe21726cda10a699dfca3ec893de8e2da8a74c59f8b078162f59844",
+        "bytes": 1726,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/1972c9207fe21726cda10a699dfca3ec893de8e2da8a74c59f8b078162f59844.raw"
+      }
+    },
+    {
+      "path": "THIRD-PARTY-NOTICES.md",
+      "change": "modified",
+      "before": {
+        "path": "THIRD-PARTY-NOTICES.md",
+        "sha256": "cbc739cf07e15ee4cbce83c1a5316758908897bb14c57292718ad84ec5f50dc6",
+        "bytes": 742239,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/dispatch-input/objects/cbc739cf07e15ee4cbce83c1a5316758908897bb14c57292718ad84ec5f50dc6.raw"
+      },
+      "after": {
+        "path": "THIRD-PARTY-NOTICES.md",
+        "sha256": "fbd0b28f589a716d82c6f53f72321cfd8f30b41ecbe22ec01d411c0bfdec776e",
+        "bytes": 785935,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration2-build/objects/fbd0b28f589a716d82c6f53f72321cfd8f30b41ecbe22ec01d411c0bfdec776e.raw"
+      }
+    },
+    {
+      "path": "docs/agent-workbench-cli.md",
+      "change": "added",
+      "before": {
+        "path": "docs/agent-workbench-cli.md",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "docs/agent-workbench-cli.md",
+        "sha256": "d2c92c25a13744a807c6036984b56c32d29139aaa0ad3eee20ae2676b81b2ce7",
+        "bytes": 5911,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/d2c92c25a13744a807c6036984b56c32d29139aaa0ad3eee20ae2676b81b2ce7.raw"
+      }
+    },
+    {
+      "path": "docs/third-party/licenses/dispatch2-original-MIT.txt",
+      "change": "added",
+      "before": {
+        "path": "docs/third-party/licenses/dispatch2-original-MIT.txt",
+        "missing": true,
+        "sha256": null
+      },
+      "after": {
+        "path": "docs/third-party/licenses/dispatch2-original-MIT.txt",
+        "sha256": "30fefc3a7d6a0041541858293bcbea2dde4caa4c0a5802f996a7f7e8c0085652",
+        "bytes": 1022,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/license-readonly/objects/30fefc3a7d6a0041541858293bcbea2dde4caa4c0a5802f996a7f7e8c0085652.raw"
+      }
+    },
+    {
+      "path": "docs/third-party/licenses/objc2-historical-MIT.txt",
+      "change": "added",
+      "before": {
+        "path": "docs/third-party/licenses/objc2-historical-MIT.txt",
+        "missing": true,
+        "sha256": null
+      },
+      "after": {
+        "path": "docs/third-party/licenses/objc2-historical-MIT.txt",
+        "sha256": "e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5",
+        "bytes": 1066,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/license-readonly/objects/e353f37b12aefbb9f9b29490e837cfee05d9bda70804b3562839a3285c1df1e5.raw"
+      }
+    },
+    {
+      "path": "docs/third-party/licenses/sources.json",
+      "change": "modified",
+      "before": {
+        "path": "docs/third-party/licenses/sources.json",
+        "sha256": "d0b9a9b75c4cac512a7e28c01bdc8b3fdd5674053e3c51fbf0a1cf87e4b41305",
+        "bytes": 2278,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/d0b9a9b75c4cac512a7e28c01bdc8b3fdd5674053e3c51fbf0a1cf87e4b41305.raw"
+      },
+      "after": {
+        "path": "docs/third-party/licenses/sources.json",
+        "sha256": "5470877eb972abd6e32ab9bce811bb231e933187069b217f9b15a45351099032",
+        "bytes": 5130,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration2-pre-notices/objects/5470877eb972abd6e32ab9bce811bb231e933187069b217f9b15a45351099032.raw"
+      }
+    },
+    {
+      "path": "main.js",
+      "change": "modified",
+      "before": {
+        "path": "main.js",
+        "sha256": "3e3aded6f8e81890ddc74ebd5f424248a827f1e17e0b5eafb3dea260aee3dde0",
+        "bytes": 6310559,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root-recovery1-integration2-artifacts1/objects/3e3aded6f8e81890ddc74ebd5f424248a827f1e17e0b5eafb3dea260aee3dde0.raw"
+      },
+      "after": {
+        "path": "main.js",
+        "sha256": "4360f8f35602080669e75a53bdf9f604cfde39e2719d7abffc69674a39d79417",
+        "bytes": 6379974,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration2-artifacts/objects/4360f8f35602080669e75a53bdf9f604cfde39e2719d7abffc69674a39d79417.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/Cargo.lock",
+      "change": "modified",
+      "before": {
+        "path": "native/pty-server/Cargo.lock",
+        "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+        "bytes": 17755,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52.raw"
+      },
+      "after": {
+        "path": "native/pty-server/Cargo.lock",
+        "sha256": "40aec75838b640748dec07421166079e6a18dcf26934f634da93959ac587b0b7",
+        "bytes": 20308,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/40aec75838b640748dec07421166079e6a18dcf26934f634da93959ac587b0b7.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/Cargo.toml",
+      "change": "modified",
+      "before": {
+        "path": "native/pty-server/Cargo.toml",
+        "sha256": "4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c",
+        "bytes": 876,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/4dd55ffe7cb9d45b97934650463e06a2d3872a4abb055c926386d03de562678c.raw"
+      },
+      "after": {
+        "path": "native/pty-server/Cargo.toml",
+        "sha256": "473db246213d6cc2f943c31151a1fef67c97f945d5dbb6aaf4544ff269ace0bc",
+        "bytes": 1055,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/473db246213d6cc2f943c31151a1fef67c97f945d5dbb6aaf4544ff269ace0bc.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/bin/huhu.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/bin/huhu.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/bin/huhu.rs",
+        "sha256": "5f481ed128e016257b6abda1f5aaa0921d52ee8c3d0abbfa793cd6c9695c7520",
+        "bytes": 911,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/5f481ed128e016257b6abda1f5aaa0921d52ee8c3d0abbfa793cd6c9695c7520.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/broker.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/broker.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/broker.rs",
+        "sha256": "58f54533b984730cdf4a2db325da0a78c20749eb1a4abdbe1b23e297a8e3078e",
+        "bytes": 24931,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/58f54533b984730cdf4a2db325da0a78c20749eb1a4abdbe1b23e297a8e3078e.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/cli.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/cli.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/cli.rs",
+        "sha256": "676025a9d39e3f754f6b2a7543cea6d366cf97a83933f793e0dbf20a5713ae32",
+        "bytes": 13506,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/676025a9d39e3f754f6b2a7543cea6d366cf97a83933f793e0dbf20a5713ae32.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/client.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/client.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/client.rs",
+        "sha256": "cef33cfdf795708237b277285f548835384ef826a0dfe35ec6b22e54e41d0971",
+        "bytes": 7057,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/cef33cfdf795708237b277285f548835384ef826a0dfe35ec6b22e54e41d0971.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/codec.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/codec.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/codec.rs",
+        "sha256": "27ef2fa2ed463ca91ba223ff33e0f417ac451aa0ad4d1d922f0937458df5b736",
+        "bytes": 17015,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/27ef2fa2ed463ca91ba223ff33e0f417ac451aa0ad4d1d922f0937458df5b736.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/ipc.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/ipc.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/ipc.rs",
+        "sha256": "eda2bbf33ab5fad075f86468ded632587022d96eb78bafc9a5a70b35ddbf854b",
+        "bytes": 4045,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/eda2bbf33ab5fad075f86468ded632587022d96eb78bafc9a5a70b35ddbf854b.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/locator.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/locator.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/locator.rs",
+        "sha256": "9dc1a2a8636027eddead22510f5ce5a55c06f78ff5c7eb0bf1e23e4faf297927",
+        "bytes": 8150,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/9dc1a2a8636027eddead22510f5ce5a55c06f78ff5c7eb0bf1e23e4faf297927.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/mod.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/mod.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/mod.rs",
+        "sha256": "e14cd8a6027a3c0a15e88851372b39e170ea6dbc003e2f2d223eb41f74ef86eb",
+        "bytes": 174,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/e14cd8a6027a3c0a15e88851372b39e170ea6dbc003e2f2d223eb41f74ef86eb.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/unix.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/unix.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/unix.rs",
+        "sha256": "945b90a4a9ef80298b4aab06dc35ef78ab1fa88c13a9d6ab069d36703446a84b",
+        "bytes": 6907,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/945b90a4a9ef80298b4aab06dc35ef78ab1fa88c13a9d6ab069d36703446a84b.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/windows.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/windows.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/windows.rs",
+        "sha256": "25ce54966f8d3925ee97b73f3b33f2319710777fdba65e6ea91e355efd3b42b6",
+        "bytes": 13032,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/25ce54966f8d3925ee97b73f3b33f2319710777fdba65e6ea91e355efd3b42b6.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/control/wire_generated.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/control/wire_generated.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/control/wire_generated.rs",
+        "sha256": "4d5aadb843993c6364c48ae2c034675c54a41917d2e7113fe83c0d6cbe7039d7",
+        "bytes": 24101,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire/objects/4d5aadb843993c6364c48ae2c034675c54a41917d2e7113fe83c0d6cbe7039d7.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/lib.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/src/lib.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/src/lib.rs",
+        "sha256": "9ab31f41fb08384a0167e25625f3386c73654116f654e24307eb1853bbd770c1",
+        "bytes": 82,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/9ab31f41fb08384a0167e25625f3386c73654116f654e24307eb1853bbd770c1.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/main.rs",
+      "change": "modified",
+      "before": {
+        "path": "native/pty-server/src/main.rs",
+        "sha256": "7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6",
+        "bytes": 14457,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/7002aef24b6d17a8e1a4fb60a8cf609bb6f532836ad5784722358bfc747463d6.raw"
+      },
+      "after": {
+        "path": "native/pty-server/src/main.rs",
+        "sha256": "fef39cf684298c53cf4d96aa573dbdf03d00749548f6a9cc2c76eb72033135c9",
+        "bytes": 16219,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/fef39cf684298c53cf4d96aa573dbdf03d00749548f6a9cc2c76eb72033135c9.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/src/outbox.rs",
+      "change": "modified",
+      "before": {
+        "path": "native/pty-server/src/outbox.rs",
+        "sha256": "affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72",
+        "bytes": 35018,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/affff645d827004c4b7d1cb2cc76b19821517759749dcc01b7e8f85ee99a1c72.raw"
+      },
+      "after": {
+        "path": "native/pty-server/src/outbox.rs",
+        "sha256": "770d9af1bdf46b3240b8b2e5501cae4185fb66991ceff81ce33840eaaa1f8375",
+        "bytes": 42197,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/770d9af1bdf46b3240b8b2e5501cae4185fb66991ceff81ce33840eaaa1f8375.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/tests/control.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/tests/control.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/tests/control.rs",
+        "sha256": "d0516d5aba94c485472d2e58f2b5c71b46a3cf3d4665c5a92d7b0b8c3c4286d0",
+        "bytes": 33927,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/d0516d5aba94c485472d2e58f2b5c71b46a3cf3d4665c5a92d7b0b8c3c4286d0.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/tests/control_outbox.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/tests/control_outbox.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/tests/control_outbox.rs",
+        "sha256": "f474f646ace395087f888af0af4f4e23581a465c38ae86c4cfed5891ae716874",
+        "bytes": 12343,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/f474f646ace395087f888af0af4f4e23581a465c38ae86c4cfed5891ae716874.raw"
+      }
+    },
+    {
+      "path": "native/pty-server/tests/control_protocol.rs",
+      "change": "added",
+      "before": {
+        "path": "native/pty-server/tests/control_protocol.rs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "native/pty-server/tests/control_protocol.rs",
+        "sha256": "18c272c00b940927e9ff3784a829787c2d6c62f89b515b5cc66d5773fe569aec",
+        "bytes": 1306,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/18c272c00b940927e9ff3784a829787c2d6c62f89b515b5cc66d5773fe569aec.raw"
+      }
+    },
+    {
+      "path": "scripts/bundle-budget.json",
+      "change": "modified",
+      "before": {
+        "path": "scripts/bundle-budget.json",
+        "sha256": "c14d00e982b22c80cef12a2337e9c4c5e8d277c954998948ac56360cb4579b1a",
+        "bytes": 2388,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root-recovery1-integration2-artifacts2/objects/c14d00e982b22c80cef12a2337e9c4c5e8d277c954998948ac56360cb4579b1a.raw"
+      },
+      "after": {
+        "path": "scripts/bundle-budget.json",
+        "sha256": "2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23",
+        "bytes": 2371,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration2-final/objects/2b99e558074443e06b8b7615fa3b2921c10298740b10b54fc383ea11ff6b7f23.raw"
+      }
+    },
+    {
+      "path": "scripts/generate-control-protocol.mjs",
+      "change": "added",
+      "before": {
+        "path": "scripts/generate-control-protocol.mjs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "scripts/generate-control-protocol.mjs",
+        "sha256": "8551c8e523953b25857c9abc01c82f9c4161304b378acd091f08e6c5ab2bb5e5",
+        "bytes": 12237,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/8551c8e523953b25857c9abc01c82f9c4161304b378acd091f08e6c5ab2bb5e5.raw"
+      }
+    },
+    {
+      "path": "scripts/obsidian-acceptance/agent-workbench-control.mjs",
+      "change": "added",
+      "before": {
+        "path": "scripts/obsidian-acceptance/agent-workbench-control.mjs",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "scripts/obsidian-acceptance/agent-workbench-control.mjs",
+        "sha256": "095fb8d6472f4ded668701fad1ff77b4bba1c658730af7d02324ec4ed9bfe8b1",
+        "bytes": 5502,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/095fb8d6472f4ded668701fad1ff77b4bba1c658730af7d02324ec4ed9bfe8b1.raw"
+      }
+    },
+    {
+      "path": "scripts/third-party-notices.mjs",
+      "change": "modified",
+      "before": {
+        "path": "scripts/third-party-notices.mjs",
+        "sha256": "85b7ee0cc3d5ec12538bc215aa4cf60e46fbf53b08d3796f4906026a90c50f81",
+        "bytes": 5949,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/85b7ee0cc3d5ec12538bc215aa4cf60e46fbf53b08d3796f4906026a90c50f81.raw"
+      },
+      "after": {
+        "path": "scripts/third-party-notices.mjs",
+        "sha256": "6d95a1f149ad3d9620cff8cb0d45e5d4ba73249750a3989257f7bab7a16ac890",
+        "bytes": 6002,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/native-checkpoint/objects/6d95a1f149ad3d9620cff8cb0d45e5d4ba73249750a3989257f7bab7a16ac890.raw"
+      }
+    },
+    {
+      "path": "src/host/desktop/native/helper-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/host/desktop/native/helper-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/host/desktop/native/helper-control.test.ts",
+        "sha256": "729defa1b85eefc1dfa0b143c3d7b9ee020e2cd62fd33cbd2aa39d17c8cdad01",
+        "bytes": 10453,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/729defa1b85eefc1dfa0b143c3d7b9ee020e2cd62fd33cbd2aa39d17c8cdad01.raw"
+      }
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/host/desktop/native/helper.ts",
+        "sha256": "c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f",
+        "bytes": 37744,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/c5a2daa7d7baa3b16da8d254cb523819efc5588b838b10bc189f51e2bbea502f.raw"
+      },
+      "after": {
+        "path": "src/host/desktop/native/helper.ts",
+        "sha256": "f1c4f034bf567b936c1642e3fb4b7054e50f81491c413a2f65ced85a552eb107",
+        "bytes": 44420,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/f1c4f034bf567b936c1642e3fb4b7054e50f81491c413a2f65ced85a552eb107.raw"
+      }
+    },
+    {
+      "path": "src/host/desktop/native/host-control.integration.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/host/desktop/native/host-control.integration.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/host/desktop/native/host-control.integration.test.ts",
+        "sha256": "0b934ce860fe0eba90ce606dfe404a9cfd99ede7e42f73d8f7faf7d5313849cc",
+        "bytes": 3013,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/0b934ce860fe0eba90ce606dfe404a9cfd99ede7e42f73d8f7faf7d5313849cc.raw"
+      }
+    },
+    {
+      "path": "src/host/desktop/native/host-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/host/desktop/native/host-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/host/desktop/native/host-control.test.ts",
+        "sha256": "1b9000aa60bb19646524c6040c0a6e619417d2a5120703476f717e5552ff003d",
+        "bytes": 17328,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/1b9000aa60bb19646524c6040c0a6e619417d2a5120703476f717e5552ff003d.raw"
+      }
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/host/desktop/native/host.ts",
+        "sha256": "e462570d0166cdf3546e712962c12fe9b3218d5b026fa7b3433d7cac0469ad7f",
+        "bytes": 20202,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/e462570d0166cdf3546e712962c12fe9b3218d5b026fa7b3433d7cac0469ad7f.raw"
+      },
+      "after": {
+        "path": "src/host/desktop/native/host.ts",
+        "sha256": "96cd8255ce6dcfbb046750d41a9746a646559d72c4737c27a625a53ce9530b36",
+        "bytes": 38377,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-final/objects/96cd8255ce6dcfbb046750d41a9746a646559d72c4737c27a625a53ce9530b36.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/core/control/context.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/core/control/context.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/core/control/context.ts",
+        "sha256": "3c337ac23abd9133e87344288e920470d9015f8703af44628058dc8acbe4883f",
+        "bytes": 982,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/fixture-supplement/objects/3c337ac23abd9133e87344288e920470d9015f8703af44628058dc8acbe4883f.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/i18n.ts",
+        "sha256": "5ffed2a0096b3917722bb5704eb10d01961402cc9c6e0920726adb250d462a2c",
+        "bytes": 73699,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/a-stopped/objects/5ffed2a0096b3917722bb5704eb10d01961402cc9c6e0920726adb250d462a2c.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/i18n.ts",
+        "sha256": "34a7560d41a287063568e223fc0602f07995baac523bd5d701cbd7175844cb26",
+        "bytes": 74244,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/34a7560d41a287063568e223fc0602f07995baac523bd5d701cbd7175844cb26.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/module.test.ts",
+      "change": "unchanged",
+      "before": {
+        "path": "src/modules/agent/module.test.ts",
+        "sha256": "2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17",
+        "bytes": 1972,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/module.test.ts",
+        "sha256": "2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17",
+        "bytes": 1972,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/module.ts",
+        "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+        "bytes": 8995,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/module.ts",
+        "sha256": "c3958c68839f5483e7294a79e4e3fb566d0732c638670fd0f030ee4ee9597b34",
+        "bytes": 10314,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/c3958c68839f5483e7294a79e4e3fb566d0732c638670fd0f030ee4ee9597b34.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/control/environment.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/platform/desktop/control/environment.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/platform/desktop/control/environment.test.ts",
+        "sha256": "17a9b0a1b523727160bfc4d8f81e0c758afff883e427f724794c1727a592e84f",
+        "bytes": 3989,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/17a9b0a1b523727160bfc4d8f81e0c758afff883e427f724794c1727a592e84f.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/control/environment.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/platform/desktop/control/environment.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/platform/desktop/control/environment.ts",
+        "sha256": "2d117447161c4d3f8558261b98055225a5b123a88dc66810f1227fd283dd02f6",
+        "bytes": 6509,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/2d117447161c4d3f8558261b98055225a5b123a88dc66810f1227fd283dd02f6.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/commands.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/commands.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/commands.test.ts",
+        "sha256": "e8373fb3a220235e213ff6b6671b45fb533bb76acfba84d4f5fc59d2a21de46a",
+        "bytes": 7504,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/e8373fb3a220235e213ff6b6671b45fb533bb76acfba84d4f5fc59d2a21de46a.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/commands.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/commands.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/commands.ts",
+        "sha256": "0296efba597cd025014ef2ad96c13c946de19a95edbabf2ba69194a54173b2d5",
+        "bytes": 15379,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/0296efba597cd025014ef2ad96c13c946de19a95edbabf2ba69194a54173b2d5.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/control-native.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/control-native.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/control-native.test.ts",
+        "sha256": "f8b62dd2440ef73fc02e23c536e1385f851861101c27f0d8b4d9585913d5092e",
+        "bytes": 14269,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/f8b62dd2440ef73fc02e23c536e1385f851861101c27f0d8b4d9585913d5092e.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/paging.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/paging.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/paging.test.ts",
+        "sha256": "fa84f33c53e9ed18e3da41ba2195000e1f8273dc470345e8d06c42e70b170a8a",
+        "bytes": 3132,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/fa84f33c53e9ed18e3da41ba2195000e1f8273dc470345e8d06c42e70b170a8a.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/paging.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/paging.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/paging.ts",
+        "sha256": "4241524eeef4946396af0b22914425d2314b44f0b6e1a789370afbc11591c680",
+        "bytes": 6822,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/4241524eeef4946396af0b22914425d2314b44f0b6e1a789370afbc11591c680.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/router-foreground.dom.test.tsx",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/router-foreground.dom.test.tsx",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/router-foreground.dom.test.tsx",
+        "sha256": "edada82390045a3ff32b4d13ff791a99cef2a0d9def59e4a42ed7d04608a6cf9",
+        "bytes": 7205,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/edada82390045a3ff32b4d13ff791a99cef2a0d9def59e4a42ed7d04608a6cf9.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/router.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/router.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/router.test.ts",
+        "sha256": "4fb3b7dc09bcd6b6e390493bf148c649ac8d540918daa40d75e60b44c8c62825",
+        "bytes": 12581,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/4fb3b7dc09bcd6b6e390493bf148c649ac8d540918daa40d75e60b44c8c62825.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/control/router.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/control/router.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/control/router.ts",
+        "sha256": "de65f7bcb6fe84dca02dd6bb3c2d4954c335345c221af127f25b5654e97f3734",
+        "bytes": 7647,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/de65f7bcb6fe84dca02dd6bb3c2d4954c335345c221af127f25b5654e97f3734.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/controller-activity.test.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/controller-activity.test.ts",
+        "sha256": "9b6d11dd5b2865f6c767e92e34a19b98778b6dcda85bfd1ea33dee8b56d48762",
+        "bytes": 9781,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/a-stopped/objects/9b6d11dd5b2865f6c767e92e34a19b98778b6dcda85bfd1ea33dee8b56d48762.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/controller-activity.test.ts",
+        "sha256": "43271d5d99797760e099291f79cb48c1bdeaba18ac2075223dcd1c008d4682ec",
+        "bytes": 10812,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/a-activity-fixture/objects/43271d5d99797760e099291f79cb48c1bdeaba18ac2075223dcd1c008d4682ec.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/controller-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/controller-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/controller-control.test.ts",
+        "sha256": "4617a99b5d7564bfa34dbf38b9b2f789ffb39ac1a8937db7311c65dac065b6c8",
+        "bytes": 13819,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/4617a99b5d7564bfa34dbf38b9b2f789ffb39ac1a8937db7311c65dac065b6c8.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "sha256": "bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a",
+        "bytes": 16645,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+        "sha256": "9b72118b98c8db98fcfded5ed652584330aae94cd6ab9df5f794784204970a69",
+        "bytes": 19077,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/9b72118b98c8db98fcfded5ed652584330aae94cd6ab9df5f794784204970a69.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/controller.ts",
+        "sha256": "7cafa43c279b6585dbf8dcb991d7b706f12b223f37304c5ae983bea4f84bd775",
+        "bytes": 47766,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-focus-api/objects/7cafa43c279b6585dbf8dcb991d7b706f12b223f37304c5ae983bea4f84bd775.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/controller.ts",
+        "sha256": "fbd2ebaa4bb0a160b07001ef075a210abfac62a5e761b406f209d94d66ef34cf",
+        "bytes": 52660,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/fbd2ebaa4bb0a160b07001ef075a210abfac62a5e761b406f209d94d66ef34cf.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/spaces/space-service-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/spaces/space-service-control.test.ts",
+        "sha256": "15bfaa2ef7955ea9ef581e4db58990a4edc79cf07902fc78102685a79a155167",
+        "bytes": 5319,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/15bfaa2ef7955ea9ef581e4db58990a4edc79cf07902fc78102685a79a155167.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/spaces/space-service.ts",
+        "sha256": "dc386283a1dd1593788fc328c7a89fea174c666ee62cce4523ee0a8b00ee7dc4",
+        "bytes": 31921,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/navigation-v2-root/dc386283a1dd1593788fc328c7a89fea174c666ee62cce4523ee0a8b00ee7dc4.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/spaces/space-service.ts",
+        "sha256": "97b9a09a7a08ed6abbc783f8a6b1ec58eb4c7b370e16a1cc68e5040a95c55dd3",
+        "bytes": 35390,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/fixture-supplement/objects/97b9a09a7a08ed6abbc783f8a6b1ec58eb4c7b370e16a1cc68e5040a95c55dd3.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/terminal/sessions-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/terminal/sessions-control.test.ts",
+        "sha256": "d4048b72ef764c6009be60657a42f6c7ca4f3232acda3c0e97844ef98f6d1b22",
+        "bytes": 6159,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/d4048b72ef764c6009be60657a42f6c7ca4f3232acda3c0e97844ef98f6d1b22.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/terminal/sessions.ts",
+        "sha256": "e3149af24858070b863bc74da7c06d0a200d66a396eed406d93662d01a5aa6ce",
+        "bytes": 31908,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/navigation-v2-root/e3149af24858070b863bc74da7c06d0a200d66a396eed406d93662d01a5aa6ce.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/terminal/sessions.ts",
+        "sha256": "241b5180cb90ce3e58934e449164cdadc9e2df1184338182e34f9bc6186c76c2",
+        "bytes": 32802,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/241b5180cb90ce3e58934e449164cdadc9e2df1184338182e34f9bc6186c76c2.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-control.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/modules/agent/services/workspace-service-control.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/modules/agent/services/workspace-service-control.test.ts",
+        "sha256": "34bcd534ba00b53c79d959080622dd32ea85440ef613c8635972d739f87842b0",
+        "bytes": 11342,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/a-api/objects/34bcd534ba00b53c79d959080622dd32ea85440ef613c8635972d739f87842b0.raw"
+      }
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/modules/agent/services/workspace-service.ts",
+        "sha256": "cbef3b77f843ba3b20c6bcc5d77250367e29618b7dc01bcf82863a0d280d6d0c",
+        "bytes": 73642,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/recovery1-a-stopped/objects/cbef3b77f843ba3b20c6bcc5d77250367e29618b7dc01bcf82863a0d280d6d0c.raw"
+      },
+      "after": {
+        "path": "src/modules/agent/services/workspace-service.ts",
+        "sha256": "4ac850819ab7454891471d625960e6fd600946a512c0973567d6cf5d95885070",
+        "bytes": 76630,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/a-api/objects/4ac850819ab7454891471d625960e6fd600946a512c0973567d6cf5d95885070.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/control-schema.json",
+      "change": "added",
+      "before": {
+        "path": "src/shared/native/control-schema.json",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/shared/native/control-schema.json",
+        "sha256": "2cbb5fc1cfb1b9f3c82b1a41bae8bbcf12ea84a1632b9700e89662f0ef6c14cd",
+        "bytes": 31529,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire/objects/2cbb5fc1cfb1b9f3c82b1a41bae8bbcf12ea84a1632b9700e89662f0ef6c14cd.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/control-wire.generated.ts",
+      "change": "added",
+      "before": {
+        "path": "src/shared/native/control-wire.generated.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/shared/native/control-wire.generated.ts",
+        "sha256": "a8fcec3c09c799f332c490c8909da6b162d7d3066c49f900e59658a06fc46697",
+        "bytes": 39405,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/root-integration1/objects/a8fcec3c09c799f332c490c8909da6b162d7d3066c49f900e59658a06fc46697.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/control-wire.test.ts",
+      "change": "added",
+      "before": {
+        "path": "src/shared/native/control-wire.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/shared/native/control-wire.test.ts",
+        "sha256": "27a4baf11177ff7d7792262e42ad1af179319eb959f64b4aee866d1beae7feb7",
+        "bytes": 5149,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/27a4baf11177ff7d7792262e42ad1af179319eb959f64b4aee866d1beae7feb7.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/control-wire.ts",
+      "change": "added",
+      "before": {
+        "path": "src/shared/native/control-wire.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "src/shared/native/control-wire.ts",
+        "sha256": "0c31fe02271d5759fc26975e5580fd41258bf093af0cf425fe1af015795393bd",
+        "bytes": 19857,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/0c31fe02271d5759fc26975e5580fd41258bf093af0cf425fe1af015795393bd.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/frames.test.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/shared/native/frames.test.ts",
+        "sha256": "ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2",
+        "bytes": 3741,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/ff486dc1b6bf53bf8dba9a68d161e381e5b6bbb737b48d0d261c37c378498df2.raw"
+      },
+      "after": {
+        "path": "src/shared/native/frames.test.ts",
+        "sha256": "0bd02cbd82ddcf9cb8ab7674e099af165769cae1d8d40d9ce97544238fad0e05",
+        "bytes": 9400,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-frames/objects/0bd02cbd82ddcf9cb8ab7674e099af165769cae1d8d40d9ce97544238fad0e05.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/frames.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/shared/native/frames.ts",
+        "sha256": "7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d",
+        "bytes": 9119,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/7a42753e092b92397739f321999426ed059afea92bd891f57dd8dd006d00aa4d.raw"
+      },
+      "after": {
+        "path": "src/shared/native/frames.ts",
+        "sha256": "dadce94761e46ab345fe21f7299ff323d7d868011c27cbf3afbef0e131c7f460",
+        "bytes": 9984,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/b-frames/objects/dadce94761e46ab345fe21f7299ff323d7d868011c27cbf3afbef0e131c7f460.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/shared/native/host.ts",
+        "sha256": "6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8",
+        "bytes": 5279,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/6d91d1cf49314e84e083070b5fe6e65a528c41a8acc86f25cf15d86eeb685ee8.raw"
+      },
+      "after": {
+        "path": "src/shared/native/host.ts",
+        "sha256": "5ebde6a5080e5f310d786b7404f1dba82c305bec2d7b54e563a457de2847c196",
+        "bytes": 8244,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/fixture-supplement/objects/5ebde6a5080e5f310d786b7404f1dba82c305bec2d7b54e563a457de2847c196.raw"
+      }
+    },
+    {
+      "path": "src/shared/native/lazy-host.test.ts",
+      "change": "modified",
+      "before": {
+        "path": "src/shared/native/lazy-host.test.ts",
+        "sha256": "da0eb81941aec6758cd6110cd0f470ef04da6c811327edf711ec836215ecf468",
+        "bytes": 1233,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-05-logs/owner-drain-root-attempt2/objects/da0eb81941aec6758cd6110cd0f470ef04da6c811327edf711ec836215ecf468.raw"
+      },
+      "after": {
+        "path": "src/shared/native/lazy-host.test.ts",
+        "sha256": "d40a9be14c351d4ea19cedb8fa1926c3a82cb2eade1d32f7638962d36a01f990",
+        "bytes": 2174,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/fixture-supplement/objects/d40a9be14c351d4ea19cedb8fa1926c3a82cb2eade1d32f7638962d36a01f990.raw"
+      }
+    },
+    {
+      "path": "styles.css",
+      "change": "unchanged",
+      "before": {
+        "path": "styles.css",
+        "sha256": "820605c3fffd20f0f6fda86be72846967daefd87738e0fd63edc49e4db345430",
+        "bytes": 1421846,
+        "mode": "0o600",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/dispatch-input/objects/820605c3fffd20f0f6fda86be72846967daefd87738e0fd63edc49e4db345430.raw"
+      },
+      "after": {
+        "path": "styles.css",
+        "sha256": "820605c3fffd20f0f6fda86be72846967daefd87738e0fd63edc49e4db345430",
+        "bytes": 1421846,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/dispatch-input/objects/820605c3fffd20f0f6fda86be72846967daefd87738e0fd63edc49e4db345430.raw"
+      }
+    },
+    {
+      "path": "test/fixtures/native/control-v1.json",
+      "change": "added",
+      "before": {
+        "path": "test/fixtures/native/control-v1.json",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "test/fixtures/native/control-v1.json",
+        "sha256": "bb8f9b539edd3c3dfd78823ff1f430dc7f487d5eafb2d1c98b6839dd6bdc2b65",
+        "bytes": 47024,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire-v2/objects/bb8f9b539edd3c3dfd78823ff1f430dc7f487d5eafb2d1c98b6839dd6bdc2b65.raw"
+      }
+    },
+    {
+      "path": "test/native/control-protocol.test.ts",
+      "change": "added",
+      "before": {
+        "path": "test/native/control-protocol.test.ts",
+        "sha256": null,
+        "missing": true
+      },
+      "after": {
+        "path": "test/native/control-protocol.test.ts",
+        "sha256": "31246e8cf7155305309e9f09f45fd6865c5176aecc23bf110eddf7792dd42293",
+        "bytes": 2451,
+        "mode": "0o600",
+        "symlink": null,
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-logs/c-wire/objects/31246e8cf7155305309e9f09f45fd6865c5176aecc23bf110eddf7792dd42293.raw"
+      }
+    }
+  ],
+  "delta": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-final-delivery.diff",
+    "sha256": "a8ab41e032380bb2e35352bfbe7a58ad58586652ac3b01fd05c159ee196b2321"
+  },
+  "outside_allocation_changes": [],
+  "scope_note": "Complete allocated files, including unchanged paths; only actual delta against original working-copy baseline belongs to T07. Prior T01–06 shared-file bytes are preserved in before snapshots. No commit or index mutation."
+}

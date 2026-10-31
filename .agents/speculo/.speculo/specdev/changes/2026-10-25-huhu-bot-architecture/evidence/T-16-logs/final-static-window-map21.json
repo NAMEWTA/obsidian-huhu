@@ -1,0 +1,57 @@
+{
+  "recordedAt": "2026-10-25T22:32:53.825361+00:00",
+  "nativeGrantTo080Sent": true,
+  "086ChecksActualComplete": {
+    "jointTree": "01c841f6c6eb51f180daacc2828703c83a12716044bfac272ecbb47360cd5f97",
+    "results": [
+      {
+        "label": "12-two-package-normal",
+        "command": [
+          "go",
+          "-C",
+          "native/huhubot",
+          "test",
+          "-p",
+          "1",
+          "-mod=readonly",
+          "./tests/contract/groups",
+          "./tests/contract/events",
+          "-count=1",
+          "-v"
+        ],
+        "exit": 0,
+        "seconds": 22.00789767099195,
+        "waited": true,
+        "sourceDrift": []
+      },
+      {
+        "label": "13-two-package-race",
+        "command": [
+          "go",
+          "-C",
+          "native/huhubot",
+          "test",
+          "-p",
+          "1",
+          "-mod=readonly",
+          "-race",
+          "./tests/contract/groups",
+          "./tests/contract/events",
+          "-count=1",
+          "-v"
+        ],
+        "exit": 0,
+        "seconds": 261.7583334329829,
+        "waited": true,
+        "sourceDrift": []
+      }
+    ]
+  },
+  "086ToldNoFurtherProductChecks": true,
+  "rootAnd087NoProductChecks": true,
+  "scope": "080 go vet; actualgenerator six-output hash equality plus144shape/276sample validation; HuhuBot and host architecture; final frozen manifests. No all-module/race/platform repeat.",
+  "pendingFinalAuthorReturns": [
+    "080",
+    "086"
+  ]
+}

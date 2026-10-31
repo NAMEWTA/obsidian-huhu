@@ -611,18 +611,15 @@ export default class IconicController {
 
 		if (filePath && !PLUGIN_TAB_TYPES.includes(tabType)) {
 			const fileId = typeof filePath === 'string' ? filePath : '';
-			const fileIcon = this.settings.fileIcons[fileId] ?? {};
-			const isMarkdown = tabType === 'markdown';
+			const fileIcon = this.getFileItem(fileId, unloading);
 			return {
 				id: fileId,
 				name: leaf.getDisplayText(),
 				category: 'file',
-				iconDefault:
-					isRoot && isMarkdown && !isStacked && !fileIcon.color && !this.settings.showAllFileIcons
-						? null
-						: leaf.view.getIcon(),
-				icon: unloading ? null : (fileIcon.icon ?? null),
-				color: unloading ? null : (fileIcon.color ?? null),
+				iconDefault: unloading ? leaf.view.getIcon() : fileIcon.iconDefault,
+				colorDefault: fileIcon.colorDefault,
+				icon: fileIcon.icon,
+				color: fileIcon.color,
 				isActive: isActive,
 				isRoot: isRoot,
 				isStacked: isStacked,

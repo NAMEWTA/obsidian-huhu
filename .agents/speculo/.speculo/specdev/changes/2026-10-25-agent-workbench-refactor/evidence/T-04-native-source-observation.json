@@ -1,0 +1,790 @@
+{
+  "observationsOnly": true,
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "context": "T-04 native tree stop read-only design; T-03 A active in native session/main; not frozen",
+  "files": [
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/Cargo.toml",
+      "observedAtUtc": "2026-10-25T09:00:37.736148+00:00",
+      "activeWriter": false,
+      "sha256": "e0559a4673c6d3b1c0e45de3d10b057dd8248205b7baa1d2d70b7d808d695a9d",
+      "bytes": 790,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/e0559a4673c6d3b1c0e45de3d10b057dd8248205b7baa1d2d70b7d808d695a9d-Cargo.toml",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295296+00:00",
+      "endSha256": "e0559a4673c6d3b1c0e45de3d10b057dd8248205b7baa1d2d70b7d808d695a9d",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/Cargo.lock",
+      "observedAtUtc": "2026-10-25T09:00:37.736269+00:00",
+      "activeWriter": false,
+      "sha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "bytes": 17755,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52-Cargo.lock",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295370+00:00",
+      "endSha256": "52fbd40b93902a8f3a8a4908de849d9c915720a1640478b7b01af23d34da7b52",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/session.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.736369+00:00",
+      "activeWriter": true,
+      "sha256": "960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5",
+      "bytes": 15183,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5-session.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295410+00:00",
+      "endSha256": "960ebfcb8c82e24615c976014f3e700b59067bbaaf351f97237e86d9f7a412c5",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/main.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.736445+00:00",
+      "activeWriter": true,
+      "sha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68",
+      "bytes": 5284,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68-main.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295435+00:00",
+      "endSha256": "10b515e8db61ffae365752ffd9646f31f2a0d304ea46cb248a5848c8e89fbd68",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/job.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.736498+00:00",
+      "activeWriter": false,
+      "sha256": "49c9fecfc1c9d5a931f3aebd4786f2791186b04ad614b3595e05959e4accd540",
+      "bytes": 1251,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/49c9fecfc1c9d5a931f3aebd4786f2791186b04ad614b3595e05959e4accd540-job.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295455+00:00",
+      "endSha256": "49c9fecfc1c9d5a931f3aebd4786f2791186b04ad614b3595e05959e4accd540",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/native/pty-server/src/frame.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.736542+00:00",
+      "activeWriter": false,
+      "sha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "bytes": 4115,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026-frame.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295481+00:00",
+      "endSha256": "317e1168793d25fdd7012271c717865b17b21df63f13d95630f1e18e06774026",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/host.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.736591+00:00",
+      "activeWriter": false,
+      "sha256": "54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d",
+      "bytes": 2486,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d-host.ts",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295505+00:00",
+      "endSha256": "54bd55c8db891afb3c2b23121d682a7928fee240df5605b973f0fe00b5a0542d",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/protocol.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.736744+00:00",
+      "activeWriter": false,
+      "exists": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/host/desktop/native/host.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.736769+00:00",
+      "activeWriter": false,
+      "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "bytes": 9005,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068-host.ts",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295561+00:00",
+      "endSha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/host/desktop/native/helper.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.736847+00:00",
+      "activeWriter": false,
+      "sha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc",
+      "bytes": 9398,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc-helper.ts",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295593+00:00",
+      "endSha256": "19c341eae58349ed74a7878a7ef9024d4a5f9cc1025d553c260a42f4ee612adc",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/terminal/sessions.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.736980+00:00",
+      "activeWriter": false,
+      "sha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "bytes": 16536,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3-sessions.ts",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295633+00:00",
+      "endSha256": "77496d601a2a657e92417daf105a4e1577c85403be5ca6ff6985459028cceca3",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/modules/agent/services/terminal/session.ts",
+      "observedAtUtc": "2026-10-25T09:00:37.737061+00:00",
+      "activeWriter": false,
+      "sha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "bytes": 15635,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7-session.ts",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295672+00:00",
+      "endSha256": "116ecfd8f6d2c6c534983c62f2ced06bbbb75a62bc279cb76b45d4d2bba174e7",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/04-stop-and-recovery.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737121+00:00",
+      "activeWriter": false,
+      "sha256": "360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e",
+      "bytes": 17143,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e-04-stop-and-recovery.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295715+00:00",
+      "endSha256": "360ef61854e36e5b27fc2d463aafdeedd571cdd96f72961270e54b6778e4a16e",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737205+00:00",
+      "activeWriter": false,
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397-implementation-contracts.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295756+00:00",
+      "endSha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/dev/SKILL.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737287+00:00",
+      "activeWriter": false,
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6-SKILL.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295830+00:00",
+      "endSha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/dev/references/licensing.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737355+00:00",
+      "activeWriter": false,
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3-licensing.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295880+00:00",
+      "endSha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/skills/dev/references/testing.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737408+00:00",
+      "activeWriter": false,
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103-testing.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295923+00:00",
+      "endSha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/lib.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737490+00:00",
+      "activeWriter": false,
+      "sha256": "8b1d45c520f17c8be2d51069bb6ed46a6fa612d0395bc55a5b6e0ef30cc1c004",
+      "bytes": 13378,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/8b1d45c520f17c8be2d51069bb6ed46a6fa612d0395bc55a5b6e0ef30cc1c004-lib.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.295969+00:00",
+      "endSha256": "8b1d45c520f17c8be2d51069bb6ed46a6fa612d0395bc55a5b6e0ef30cc1c004",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/cmdbuilder.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737558+00:00",
+      "activeWriter": false,
+      "sha256": "db95387276f7f5a2e6bfd27a0c21ad99090f5d29e3663ad0446becec86748283",
+      "bytes": 27397,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/db95387276f7f5a2e6bfd27a0c21ad99090f5d29e3663ad0446becec86748283-cmdbuilder.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296016+00:00",
+      "endSha256": "db95387276f7f5a2e6bfd27a0c21ad99090f5d29e3663ad0446becec86748283",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/unix.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737630+00:00",
+      "activeWriter": false,
+      "sha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3",
+      "bytes": 12978,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3-unix.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296054+00:00",
+      "endSha256": "14c85213b32074d71c8af334531fd027d6a0558dee830282620c88bab056c4b3",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/conpty.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737691+00:00",
+      "activeWriter": false,
+      "sha256": "8af0d7654aad62aaa67685b7b8550bc638b732360f7de1357cc5b0a35bc47ca1",
+      "bytes": 2984,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/8af0d7654aad62aaa67685b7b8550bc638b732360f7de1357cc5b0a35bc47ca1-conpty.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296086+00:00",
+      "endSha256": "8af0d7654aad62aaa67685b7b8550bc638b732360f7de1357cc5b0a35bc47ca1",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/psuedocon.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737741+00:00",
+      "activeWriter": false,
+      "sha256": "297d0622d7b0401708f1ce3b92076632dd5a0c188b4a8d09b2f4891190b0e392",
+      "bytes": 6033,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/297d0622d7b0401708f1ce3b92076632dd5a0c188b4a8d09b2f4891190b0e392-psuedocon.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296113+00:00",
+      "endSha256": "297d0622d7b0401708f1ce3b92076632dd5a0c188b4a8d09b2f4891190b0e392",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/mod.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737792+00:00",
+      "activeWriter": false,
+      "sha256": "c983e63d15800f73ac05105a69ec2b53fea482c066ea5559682bd024561f999a",
+      "bytes": 4398,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/c983e63d15800f73ac05105a69ec2b53fea482c066ea5559682bd024561f999a-mod.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296138+00:00",
+      "endSha256": "c983e63d15800f73ac05105a69ec2b53fea482c066ea5559682bd024561f999a",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/src/win/procthreadattr.rs",
+      "observedAtUtc": "2026-10-25T09:00:37.737838+00:00",
+      "activeWriter": false,
+      "sha256": "0483a5b43794181f02b20175ba15dc4e913663208d94e4a48aa9cc2cd77fdb1c",
+      "bytes": 2183,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/0483a5b43794181f02b20175ba15dc4e913663208d94e4a48aa9cc2cd77fdb1c-procthreadattr.rs",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296158+00:00",
+      "endSha256": "0483a5b43794181f02b20175ba15dc4e913663208d94e4a48aa9cc2cd77fdb1c",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/Cargo.toml",
+      "observedAtUtc": "2026-10-25T09:00:37.737879+00:00",
+      "activeWriter": false,
+      "sha256": "e1a7320efbb4b088352f5ac87c805e2ad96df571b994ac1397e6d6ffdf981c61",
+      "bytes": 2217,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/e1a7320efbb4b088352f5ac87c805e2ad96df571b994ac1397e6d6ffdf981c61-Cargo.toml",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296177+00:00",
+      "endSha256": "e1a7320efbb4b088352f5ac87c805e2ad96df571b994ac1397e6d6ffdf981c61",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/.cargo_vcs_info.json",
+      "observedAtUtc": "2026-10-25T09:00:37.737933+00:00",
+      "activeWriter": false,
+      "sha256": "9e35119709ea1a4caabfb2d7c6ceb7f707c08bbe8ffca08ccf2479dd0c220e7a",
+      "bytes": 97,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/9e35119709ea1a4caabfb2d7c6ceb7f707c08bbe8ffca08ccf2479dd0c220e7a-.cargo_vcs_info.json",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296195+00:00",
+      "endSha256": "9e35119709ea1a4caabfb2d7c6ceb7f707c08bbe8ffca08ccf2479dd0c220e7a",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-pty-0.9.0/LICENSE.md",
+      "observedAtUtc": "2026-10-25T09:00:37.737986+00:00",
+      "activeWriter": false,
+      "sha256": "191c46fcf52061382b1c51a70311eb9081381cc158e5899f3739473a9432185b",
+      "bytes": 1068,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/191c46fcf52061382b1c51a70311eb9081381cc158e5899f3739473a9432185b-LICENSE.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296213+00:00",
+      "endSha256": "191c46fcf52061382b1c51a70311eb9081381cc158e5899f3739473a9432185b",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/tmp/huhu-t04-preflight.md",
+      "observedAtUtc": "2026-10-25T09:00:37.738138+00:00",
+      "activeWriter": false,
+      "sha256": "e0138470c3eceb80841cc61da75b60dbcab91288aec8bd38759cbe3067a1c65b",
+      "bytes": 27920,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/e0138470c3eceb80841cc61da75b60dbcab91288aec8bd38759cbe3067a1c65b-huhu-t04-preflight.md",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296250+00:00",
+      "endSha256": "e0138470c3eceb80841cc61da75b60dbcab91288aec8bd38759cbe3067a1c65b",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/src/shared/native/frames.ts",
+      "sha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "bytes": 2905,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12-native-frames.ts",
+      "observedAtUtc": "2026-10-25T09:06:39.293210+00:00",
+      "readScope": "targeted symbols/header; SHA covers complete file",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296298+00:00",
+      "endSha256": "b359fe1e2002d50a405f68cceac1538a93d344a39cb645d300a5f91d9ac32e12",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.60.2/src/Windows/Win32/System/Threading/mod.rs",
+      "sha256": "b1480afae3e9f7a159ab216e39dc12802d0147cd2f90311f154255c8ce82389f",
+      "bytes": 104832,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/b1480afae3e9f7a159ab216e39dc12802d0147cd2f90311f154255c8ce82389f-Threading-mod.rs",
+      "observedAtUtc": "2026-10-25T09:06:39.293477+00:00",
+      "readScope": "targeted symbols/header; SHA covers complete file",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296405+00:00",
+      "endSha256": "b1480afae3e9f7a159ab216e39dc12802d0147cd2f90311f154255c8ce82389f",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.60.2/src/Windows/Win32/System/JobObjects/mod.rs",
+      "sha256": "c8445948eafde8bfd4c4d438f0f91f36fde034dba680d8633fd35f912768fdfe",
+      "bytes": 24407,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/c8445948eafde8bfd4c4d438f0f91f36fde034dba680d8633fd35f912768fdfe-JobObjects-mod.rs",
+      "observedAtUtc": "2026-10-25T09:06:39.293579+00:00",
+      "readScope": "targeted symbols/header; SHA covers complete file",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296445+00:00",
+      "endSha256": "c8445948eafde8bfd4c4d438f0f91f36fde034dba680d8633fd35f912768fdfe",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.60.2/src/Windows/Win32/System/Memory/mod.rs",
+      "sha256": "7e6337ec125f8658e1c4a32312e420cdb2d591a31ee9847c848fc858f2c382c0",
+      "bytes": 38749,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/7e6337ec125f8658e1c4a32312e420cdb2d591a31ee9847c848fc858f2c382c0-Memory-mod.rs",
+      "observedAtUtc": "2026-10-25T09:06:39.293704+00:00",
+      "readScope": "targeted symbols/header; SHA covers complete file",
+      "endObservedAtUtc": "2026-10-25T09:06:39.296492+00:00",
+      "endSha256": "7e6337ec125f8658e1c4a32312e420cdb2d591a31ee9847c848fc858f2c382c0",
+      "changedSinceSnapshot": false
+    },
+    {
+      "path": "/home/wta/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/windows-sys-0.60.2/src/Windows/Win32/Foundation/mod.rs",
+      "sha256": "d00a32c7755d7f5b5365b779de56869fef8b45edd992f366d1db2f5b3a004ed1",
+      "bytes": 767414,
+      "snapshot": "/tmp/huhu-t04-native-materials/source-snapshots/d00a32c7755d7f5b5365b779de56869fef8b45edd992f366d1db2f5b3a004ed1-Foundation-mod.rs",
+      "observedAtUtc": "2026-10-25T09:06:39.295124+00:00",
+      "readScope": "targeted symbols/header; SHA covers complete file",
+      "endObservedAtUtc": "2026-10-25T09:06:39.297425+00:00",
+      "endSha256": "d00a32c7755d7f5b5365b779de56869fef8b45edd992f366d1db2f5b3a004ed1",
+      "changedSinceSnapshot": false
+    }
+  ],
+  "repositoryWrites": [],
+  "executedChecks": [],
+  "initialCaptureSemantics": "Snapshot timestamps record this capture, not invented timestamps of preceding section reads. Active source semantic reads may span owner edits; snapshots supply exact current bytes for the report.",
+  "research": [
+    {
+      "url": "https://api.github.com/repos/alacritty/alacritty",
+      "file": "/tmp/huhu-t04-native-materials/alacritty-alacritty-repo.json",
+      "sha256": "284972c26b30db064ff0f22bfb49eff080e8ce9d922699661bfdb434339be2ec",
+      "bytes": 6441,
+      "observedAtUtc": "2026-10-25T08:56:17.646438+00:00",
+      "summary": {
+        "full_name": "alacritty/alacritty",
+        "archived": false,
+        "pushed_at": "2026-10-16T05:47:54Z",
+        "default_branch": "master",
+        "license": {
+          "key": "apache-2.0",
+          "name": "Apache License 2.0",
+          "spdx_id": "Apache-2.0",
+          "url": "https://api.github.com/licenses/apache-2.0",
+          "node_id": "MDc6TGljZW5zZTI="
+        }
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/alacritty/alacritty/commits?per_page=1",
+      "file": "/tmp/huhu-t04-native-materials/alacritty-alacritty-latest-commit.json",
+      "sha256": "d67a28ddd2d36ab625b9315379ce1c38563566f2ece43f53360fea6ec432c59d",
+      "bytes": 4424,
+      "observedAtUtc": "2026-10-25T08:56:18.702224+00:00",
+      "summary": {
+        "sha": "542147067dd016fc5f49120ef0ba605a98a4e3a7",
+        "date": "2026-10-16T05:47:54Z",
+        "html_url": "https://github.com/alacritty/alacritty/commit/542147067dd016fc5f49120ef0ba605a98a4e3a7"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/microsoft/terminal",
+      "file": "/tmp/huhu-t04-native-materials/microsoft-terminal-repo.json",
+      "sha256": "47ed62bc61c8a56b1bd20e6636a18ff21a1aa2f24ffd117b0298fb122dfc796c",
+      "bytes": 6635,
+      "observedAtUtc": "2026-10-25T08:56:19.539182+00:00",
+      "summary": {
+        "full_name": "microsoft/terminal",
+        "archived": false,
+        "pushed_at": "2026-10-24T03:04:32Z",
+        "default_branch": "main",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        }
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/microsoft/terminal/commits?per_page=1",
+      "file": "/tmp/huhu-t04-native-materials/microsoft-terminal-latest-commit.json",
+      "sha256": "9cd07a0e3e4c3f400d40feb73399052d9c1766b00343ae106febaa13f264f1b5",
+      "bytes": 4874,
+      "observedAtUtc": "2026-10-25T08:56:21.014037+00:00",
+      "summary": {
+        "sha": "98c8c795ebc2560af55e72beba3fa5fd31ceef64",
+        "date": "2026-10-23T11:25:45Z",
+        "html_url": "https://github.com/microsoft/terminal/commit/98c8c795ebc2560af55e72beba3fa5fd31ceef64"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/wezterm/wezterm",
+      "file": "/tmp/huhu-t04-native-materials/wezterm-wezterm-repo.json",
+      "sha256": "9af1e8e10a00169c11a63bccd9e180968ef8c1eac0137ed241e072c9ebf5fd11",
+      "bytes": 6178,
+      "observedAtUtc": "2026-10-25T08:56:21.802604+00:00",
+      "summary": {
+        "full_name": "wezterm/wezterm",
+        "archived": false,
+        "pushed_at": "2026-10-19T05:16:10Z",
+        "default_branch": "main",
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null,
+          "node_id": "MDc6TGljZW5zZTA="
+        }
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/wezterm/wezterm/commits?per_page=1",
+      "file": "/tmp/huhu-t04-native-materials/wezterm-wezterm-latest-commit.json",
+      "sha256": "899e8590899e8d59084d7bc6f7f76815c83f9a6dd4fe036c85f403395447df80",
+      "bytes": 3898,
+      "observedAtUtc": "2026-10-25T08:56:22.737270+00:00",
+      "summary": {
+        "sha": "e2a98e1b8af156988ad0ac778658ac27b60a55fb",
+        "date": "2026-10-10T07:39:11Z",
+        "html_url": "https://github.com/wezterm/wezterm/commit/e2a98e1b8af156988ad0ac778658ac27b60a55fb"
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alacritty/alacritty/542147067dd016fc5f49120ef0ba605a98a4e3a7/LICENSE-APACHE",
+      "file": "/tmp/huhu-t04-native-materials/alacritty.txt",
+      "sha256": "8884289e3969c089cd556c53fa1d3f51d86b29e52a8c1d660a55ce8292986910",
+      "bytes": 10843,
+      "observedAtUtc": "2026-10-25T08:57:12.605117+00:00"
+    },
+    {
+      "url": "https://api.github.com/repos/alacritty/alacritty/contents/alacritty_terminal/src/tty/windows?ref=542147067dd016fc5f49120ef0ba605a98a4e3a7",
+      "file": "/tmp/huhu-t04-native-materials/alacritty-tty-dir.txt",
+      "sha256": "a2c2843fa91a6063596aac25ecf7a2f54ef4026f721b782420db03c510145ae1",
+      "bytes": 4520,
+      "observedAtUtc": "2026-10-25T08:57:13.789818+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/microsoft/terminal/98c8c795ebc2560af55e72beba3fa5fd31ceef64/LICENSE",
+      "file": "/tmp/huhu-t04-native-materials/terminal-license.txt",
+      "sha256": "5d177f23ecfeb0ea8e050b6a5a16355e1ae9a0b286436ca8f83ed08b3795be6b",
+      "bytes": 1116,
+      "observedAtUtc": "2026-10-25T08:57:17.110358+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/microsoft/terminal/98c8c795ebc2560af55e72beba3fa5fd31ceef64/src/cascadia/TerminalConnection/ConptyConnection.cpp",
+      "file": "/tmp/huhu-t04-native-materials/terminal-conpty.txt",
+      "sha256": "09f84dcc9ca93d0b40673000c232e62864ad51c061a50ab558eac060c79396b1",
+      "bytes": 38409,
+      "observedAtUtc": "2026-10-25T08:57:18.064752+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/LICENSE.md",
+      "file": "/tmp/huhu-t04-native-materials/wezterm-license.txt",
+      "sha256": "37db33bbbd7348969eda397b89a16f252d56c1ca7481b6ccaf56ccdcbab5dcca",
+      "bytes": 1529,
+      "observedAtUtc": "2026-10-25T08:57:19.744950+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/pty/Cargo.toml",
+      "file": "/tmp/huhu-t04-native-materials/wezterm-pty-cargo.txt",
+      "sha256": "61669bdd040320fddf328af8443d509c4aa796a6782bdbc74cc01ce55c6c21be",
+      "bytes": 990,
+      "observedAtUtc": "2026-10-25T08:57:21.451773+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/pty/src/win/psuedocon.rs",
+      "error": "HTTP Error 404: Not Found",
+      "observedAtUtc": "2026-10-25T08:57:22.273137+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alacritty/alacritty/542147067dd016fc5f49120ef0ba605a98a4e3a7/alacritty_terminal/src/tty/windows/conpty.rs",
+      "file": "/tmp/huhu-t04-native-materials/alacritty-conpty.txt",
+      "sha256": "62abd7e72af144ae1f1c359538e18cceaa97741382efa94e001f397510eef416",
+      "bytes": 11193,
+      "observedAtUtc": "2026-10-25T08:59:02.798831+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/alacritty/alacritty/542147067dd016fc5f49120ef0ba605a98a4e3a7/alacritty_terminal/src/tty/windows/child.rs",
+      "file": "/tmp/huhu-t04-native-materials/alacritty-child.txt",
+      "sha256": "4782f173c639bff6891f474b068fee64b6e2ad411edabdf496bbfe6554ceb32e",
+      "bytes": 5483,
+      "observedAtUtc": "2026-10-25T08:59:03.481247+00:00"
+    },
+    {
+      "url": "https://api.github.com/repos/wezterm/wezterm/contents/pty/src/win?ref=e2a98e1b8af156988ad0ac778658ac27b60a55fb",
+      "file": "/tmp/huhu-t04-native-materials/wezterm-pty-tree.txt",
+      "sha256": "48ffd7d921fe4d60215d6121117f9648b77497c8290e26e567df9d28a4a82937",
+      "bytes": 3925,
+      "observedAtUtc": "2026-10-25T08:59:04.302310+00:00"
+    },
+    {
+      "label": "wezterm-pseudocon-current",
+      "url": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/pty/src/win/pseudocon.rs",
+      "requestedAtUtc": "2026-10-25T09:03:37.979746+00:00",
+      "finalUrl": "https://raw.githubusercontent.com/wezterm/wezterm/e2a98e1b8af156988ad0ac778658ac27b60a55fb/pty/src/win/pseudocon.rs",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/wezterm-pseudocon-current.rs",
+      "sha256": "cdbb6998c24b7ef525b3bd24bf0a86e7ecc304d633fd93e57feb3b0e8ff31c82",
+      "bytes": 6011,
+      "observedAtUtc": "2026-10-25T09:03:39.129517+00:00"
+    },
+    {
+      "label": "ms-job-assign",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-assignprocesstojobobject",
+      "requestedAtUtc": "2026-10-25T09:03:37.980444+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-assignprocesstojobobject",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-assign.html",
+      "sha256": "09ec0ab73eb49aefa8dfc5962b6c04898837a145d28150fcb2340f20ded4b70f",
+      "bytes": 58056,
+      "observedAtUtc": "2026-10-25T09:03:39.229290+00:00"
+    },
+    {
+      "label": "ms-job-nesting",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/nested-jobs",
+      "requestedAtUtc": "2026-10-25T09:03:37.980851+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/procthread/nested-jobs",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-nesting.html",
+      "sha256": "025d2c3908b90bcd5ac18c62e6d49fd74059e5a7a386e2a643a595441766c121",
+      "bytes": 55010,
+      "observedAtUtc": "2026-10-25T09:03:39.302398+00:00"
+    },
+    {
+      "label": "ms-job-terminate",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-terminatejobobject",
+      "requestedAtUtc": "2026-10-25T09:03:37.981169+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-terminatejobobject",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-terminate.html",
+      "sha256": "5c7ff60ad6dc169ba11b80ca9d0e9ef2fe23bcbd0f373234f2bfb69394fa6368",
+      "bytes": 53268,
+      "observedAtUtc": "2026-10-25T09:03:39.199376+00:00"
+    },
+    {
+      "label": "ms-job-query",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-queryinformationjobobject",
+      "requestedAtUtc": "2026-10-25T09:03:37.981990+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-queryinformationjobobject",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-query.html",
+      "sha256": "03eae595c764aba281a9eb135d38f0e5d8af32786ae73c5a1b6d811a6390afa9",
+      "bytes": 66460,
+      "observedAtUtc": "2026-10-25T09:03:38.960322+00:00"
+    },
+    {
+      "label": "ms-job-accounting",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information",
+      "requestedAtUtc": "2026-10-25T09:03:37.982918+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-accounting.html",
+      "sha256": "816488eb1193cea6136a45060dd43c3028ea0d84bb43103f500d19ca58c70494",
+      "bytes": 52750,
+      "observedAtUtc": "2026-10-25T09:03:39.233642+00:00"
+    },
+    {
+      "label": "ms-job-completion",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_associate_completion_port",
+      "requestedAtUtc": "2026-10-25T09:03:38.960372+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_associate_completion_port",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-job-completion.html",
+      "sha256": "96c921963dbd3b98f7cd4dd43a5d862abcb5b82e203a9e7a3e6ee1e663c43820",
+      "bytes": 58599,
+      "observedAtUtc": "2026-10-25T09:03:41.234516+00:00"
+    },
+    {
+      "label": "ms-createprocess",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw",
+      "requestedAtUtc": "2026-10-25T09:03:39.129571+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-createprocess.html",
+      "sha256": "766a40275b961e456c8a3f2987fb987c197513dcb5eb7b7eb668a4b8971bbf03",
+      "bytes": 76648,
+      "observedAtUtc": "2026-10-25T09:03:40.524856+00:00"
+    },
+    {
+      "label": "ms-attributes",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute",
+      "requestedAtUtc": "2026-10-25T09:03:39.199415+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-attributes.html",
+      "sha256": "7ab28f3dd938e185861b199b963348c9e736aca5126ec2b2cf9c60507e84c210",
+      "bytes": 85404,
+      "observedAtUtc": "2026-10-25T09:03:40.223074+00:00"
+    },
+    {
+      "label": "ms-joblist-order",
+      "url": "https://devblogs.microsoft.com/oldnewthing/20230209-00/?p=107812",
+      "requestedAtUtc": "2026-10-25T09:03:39.229343+00:00",
+      "finalUrl": "https://devblogs.microsoft.com/oldnewthing/20230209-00/?p=107812/",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-joblist-order.html",
+      "sha256": "2b10fb2e048e61249cc5a551e4356e5a1cca40c8ed3cda4fe99ac13fc51a78c4",
+      "bytes": 261509,
+      "observedAtUtc": "2026-10-25T09:03:41.605691+00:00"
+    },
+    {
+      "label": "ms-conpty-close",
+      "url": "https://learn.microsoft.com/en-us/windows/console/closepseudoconsole",
+      "requestedAtUtc": "2026-10-25T09:03:39.233684+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/console/closepseudoconsole",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-conpty-close.html",
+      "sha256": "b06cff9b10face88be2a556ccba7aa890333aa36cdf3b51e8dd8d67933e2e37e",
+      "bytes": 49482,
+      "observedAtUtc": "2026-10-25T09:03:41.394542+00:00"
+    },
+    {
+      "label": "ms-event",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw",
+      "requestedAtUtc": "2026-10-25T09:03:39.302461+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-createeventw",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-event.html",
+      "sha256": "9a876a45f0b35956ba6e60323ad6d3a3315e9d9cc81fb3db07fb31adb113e2a9",
+      "bytes": 60099,
+      "observedAtUtc": "2026-10-25T09:03:40.705852+00:00"
+    },
+    {
+      "label": "ms-duplicate",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle",
+      "requestedAtUtc": "2026-10-25T09:03:40.223107+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-duplicate.html",
+      "sha256": "422f1d50481eb607ad64694b0326464f819a1e32cb40e65d8cdd3da79f9d9f7b",
+      "bytes": 69064,
+      "observedAtUtc": "2026-10-25T09:03:41.510715+00:00"
+    },
+    {
+      "label": "ms-shared-memory",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory",
+      "requestedAtUtc": "2026-10-25T09:03:40.524890+00:00",
+      "finalUrl": "https://learn.microsoft.com/en-us/windows/win32/memory/creating-named-shared-memory",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/ms-shared-memory.html",
+      "sha256": "0c4ad8db20c04537b9154aa75b6651931b4ec0d700f7e837eac058fd91c96242",
+      "bytes": 52876,
+      "observedAtUtc": "2026-10-25T09:03:41.400800+00:00"
+    },
+    {
+      "label": "apple-kill",
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/kill.2.html",
+      "requestedAtUtc": "2026-10-25T09:03:40.705890+00:00",
+      "finalUrl": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/kill.2.html",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/apple-kill.html",
+      "sha256": "159d1f6746e3e1d27af41b5810f99ff4791e97de5601f1098754f344f7096261",
+      "bytes": 16018,
+      "observedAtUtc": "2026-10-25T09:03:43.763427+00:00"
+    },
+    {
+      "label": "apple-wait",
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/wait.2.html",
+      "requestedAtUtc": "2026-10-25T09:03:41.234577+00:00",
+      "finalUrl": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/wait.2.html",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/apple-wait.html",
+      "sha256": "ed34153fdc064b7ac9aaec1f675c8703054e5ef4e816ba8ce1d551e9f5b4ac93",
+      "bytes": 21579,
+      "observedAtUtc": "2026-10-25T09:03:41.975478+00:00"
+    },
+    {
+      "label": "apple-setsid",
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/setsid.2.html",
+      "requestedAtUtc": "2026-10-25T09:03:41.394576+00:00",
+      "finalUrl": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/setsid.2.html",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/apple-setsid.html",
+      "sha256": "937b54fb781e37140690fda177829fd168eb93954cd47301afe9afdf40c1d887",
+      "bytes": 13891,
+      "observedAtUtc": "2026-10-25T09:03:41.912629+00:00"
+    },
+    {
+      "label": "kernel-cgroupv2",
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "requestedAtUtc": "2026-10-25T09:03:41.400846+00:00",
+      "finalUrl": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/kernel-cgroupv2.html",
+      "sha256": "b478c1bae99899df476d6b4989cbb516f7ca93c5f009cdff64b802bbc24f3d4b",
+      "bytes": 172967,
+      "observedAtUtc": "2026-10-25T09:03:43.181081+00:00"
+    },
+    {
+      "label": "kernel-proc",
+      "url": "https://docs.kernel.org/filesystems/proc.html",
+      "requestedAtUtc": "2026-10-25T09:03:41.510753+00:00",
+      "finalUrl": "https://docs.kernel.org/filesystems/proc.html",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/kernel-proc.html",
+      "sha256": "f1c9cfc8d9779e8bb339e9b91761036caf71d3e5a6eb5dda5c1c34e98500b5db",
+      "bytes": 147701,
+      "observedAtUtc": "2026-10-25T09:03:42.320802+00:00"
+    },
+    {
+      "label": "alacritty-close-issue",
+      "url": "https://api.github.com/repos/alacritty/alacritty/pulls/3084",
+      "requestedAtUtc": "2026-10-25T09:03:41.605796+00:00",
+      "finalUrl": "https://api.github.com/repos/alacritty/alacritty/pulls/3084",
+      "status": 200,
+      "file": "/tmp/huhu-t04-native-materials/alacritty-close-issue.html",
+      "sha256": "11fda2dfd195fb830e741a2b09dd39c08b9ddb61c25fc31ca6e862c24dd06c85",
+      "bytes": 12172,
+      "observedAtUtc": "2026-10-25T09:03:42.800964+00:00"
+    },
+    {
+      "label": "apple-libproc-header",
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/libsyscall/wrappers/libproc/libproc.h",
+      "requestedAtUtc": "2026-10-25T09:03:41.912660+00:00",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "url": "https://api.github.com/repos/apple-oss-distributions/xnu/commits?per_page=1",
+      "file": "/tmp/huhu-t04-native-materials/apple-xnu-head.txt",
+      "sha256": "e8c108a8253ba0c03b8c86a00a5f57f3f526b7435bbc77b744e165efd2c5e9e8",
+      "bytes": 3731,
+      "observedAtUtc": "2026-10-25T09:06:04.630081+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/libsyscall/wrappers/libproc/libproc.h",
+      "file": "/tmp/huhu-t04-native-materials/apple-xnu-libproc-header.txt",
+      "sha256": "37c7629819a18c5ef10d19a9bea00eb7e0bd31e0b127ecd2ae108c74f47c39e2",
+      "bytes": 7580,
+      "observedAtUtc": "2026-10-25T09:06:05.253357+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/bsd/sys/proc_info.h",
+      "file": "/tmp/huhu-t04-native-materials/apple-xnu-procinfo-header.txt",
+      "sha256": "f898ba1f6acecf128f6bb960bf07c7029fdd936620e03b6206419834cf2941fa",
+      "bytes": 31682,
+      "observedAtUtc": "2026-10-25T09:06:06.009285+00:00"
+    }
+  ],
+  "researchCaptureUtc": "2026-10-25T09:06:39.297750+00:00",
+  "failedResearchNotes": [
+    "Open Group POSIX web requests returned 403; used Apple official man pages and Linux kernel documentation instead.",
+    "Initial WezTerm path psuedocon.rs at current commit returned 404; discovered/fetched corrected pseudocon.rs.",
+    "Initial Apple Libc paths returned 404; located official XNU libsyscall header and pinned its commit.",
+    "Microsoft Q&A search results were not used as normative guarantees."
+  ],
+  "readScope": "Targeted current source/registry sections and fixed upstream source/official documentation. No tests, cargo, target mutation or process execution.",
+  "deliveryNote": "Root subsequently reported T03 A source stopped and build/115 targeted tests passed; these external results are not this preflight checks or a re-freeze of the observed bytes. No additional source revalidation was run."
+}

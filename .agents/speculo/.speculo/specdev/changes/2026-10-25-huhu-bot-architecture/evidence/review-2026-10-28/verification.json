@@ -1,0 +1,239 @@
+{
+  "recordedAt": "2026-10-28T11:23:21.824Z",
+  "baseCommit": "23785924829c1db0847f9ae564b7b2f668cbfe25",
+  "branch": "NAMEWTA/bot",
+  "reviewMode": "source-files",
+  "environment": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-38-generic",
+    "arch": "x86_64",
+    "node": "26.11.1",
+    "pnpm": "11.1.3",
+    "go": "go1.26.10",
+    "GOWORK": "off",
+    "CGO_ENABLED": "0"
+  },
+  "reviews": {
+    "go": {
+      "files": 482,
+      "input": "final-go-input-delivery.json",
+      "canonicalSha256": "caac63f228eda48db11bf0b471396b69d2c3f664f0a7f4acdc5fa9d603de0349",
+      "standards": "pass",
+      "specification": "pass",
+      "report": "final-go-review.md",
+      "finalSourceDrift": 0,
+      "findings": []
+    },
+    "typescript": {
+      "files": 136,
+      "input": "final-ts-input-host-closure.json",
+      "canonicalSha256": "a79e0f7b56911cc2cb9aeffeb8ab3a4bae8e52b2b821fce2f656c7a10c890e15",
+      "status": "completed",
+      "finalSourceDrift": 0,
+      "standards": "pass",
+      "specification": "pass",
+      "findings": [],
+      "report": "final-ts-review.md"
+    }
+  },
+  "checks": [
+    {
+      "id": "go-all",
+      "command": "pnpm check:huhu-bot",
+      "exitCode": 0,
+      "evidence": "checks/go-all.txt"
+    },
+    {
+      "id": "native-build",
+      "command": "node scripts/build-huhu-bot.mjs --all",
+      "exitCode": 0,
+      "evidence": "checks/native-five-targets.txt"
+    },
+    {
+      "id": "native-smoke",
+      "command": "node scripts/verify-huhu-bot.mjs native/huhubot/dist/huhu-bot-linux-x64",
+      "exitCode": 0,
+      "evidence": "checks/native-smoke.txt"
+    },
+    {
+      "id": "go-architecture",
+      "command": "pnpm test:huhu-bot-architecture",
+      "exitCode": 0,
+      "evidence": "checks/go-architecture.txt"
+    },
+    {
+      "id": "native-tooling",
+      "command": "pnpm test:huhu-bot-tooling",
+      "exitCode": 0,
+      "evidence": "checks/native-tooling.txt"
+    },
+    {
+      "id": "notices",
+      "command": "node scripts/third-party-notices.mjs --check",
+      "exitCode": 0,
+      "evidence": "checks/notices.txt"
+    },
+    {
+      "id": "vitest-full",
+      "command": "GOCACHE=/home/wta/.cache/go-build pnpm exec vitest run --maxWorkers=4",
+      "exitCode": 0,
+      "evidence": "checks/vitest-full.txt",
+      "note": "Occurred before final local Memory/settings/visual delta; current affected scope is separately covered by bot-release.",
+      "passedFiles": 436,
+      "skippedFiles": 3,
+      "passedTests": 3681,
+      "skippedTests": 4
+    },
+    {
+      "id": "bot-release",
+      "command": "GOCACHE=/home/wta/.cache/go-build pnpm exec vitest run src/modules/huhubot test/release --maxWorkers=4",
+      "exitCode": 0,
+      "evidence": "checks/bot-release.txt",
+      "passedFiles": 55,
+      "passedTests": 374
+    },
+    {
+      "id": "build",
+      "command": "pnpm run build",
+      "exitCode": 0,
+      "evidence": "checks/build.txt"
+    },
+    {
+      "id": "lint",
+      "command": "pnpm run lint",
+      "exitCode": 0,
+      "evidence": "checks/lint.txt"
+    },
+    {
+      "id": "css-lint",
+      "command": "pnpm lint:css",
+      "exitCode": 0,
+      "evidence": "checks/css-lint.txt"
+    },
+    {
+      "id": "architecture",
+      "command": "pnpm test:architecture",
+      "exitCode": 0,
+      "evidence": "checks/architecture.txt"
+    },
+    {
+      "id": "i18n",
+      "command": "pnpm test:i18n",
+      "exitCode": 0,
+      "evidence": "checks/i18n.txt"
+    },
+    {
+      "id": "bundle",
+      "command": "pnpm check:bundle",
+      "exitCode": 0,
+      "evidence": "checks/bundle.txt"
+    },
+    {
+      "id": "callbacks",
+      "command": "pnpm test:promise-callbacks",
+      "exitCode": 0,
+      "evidence": "checks/callbacks.txt"
+    },
+    {
+      "id": "workbench-entry",
+      "command": "pnpm test:workbench-entry",
+      "exitCode": 0,
+      "evidence": "checks/workbench-entry.txt"
+    },
+    {
+      "id": "build-text",
+      "command": "pnpm test:build-text",
+      "exitCode": 0,
+      "evidence": "checks/build-text.txt"
+    },
+    {
+      "id": "docs",
+      "command": "pnpm test:docs",
+      "exitCode": 0,
+      "evidence": "checks/docs.txt",
+      "externalLinksFetched": false
+    }
+  ],
+  "previousFailedChecks": [
+    {
+      "evidence": "checks/vitest-full-first-failed.txt",
+      "reason": "EnvironmentTeardownError: Closing rpc while onUserConsoleLog pending"
+    },
+    {
+      "evidence": "checks/vitest-full-disk-failed.txt",
+      "reason": "Go compile caches exhausted temporary disk space (ENOSPC)"
+    },
+    {
+      "evidence": "checks/obsidian-data-header-failed.txt",
+      "reason": "Real 390px Data header inner overflow before final class fix"
+    }
+  ],
+  "artifacts": "artifacts.json",
+  "nativeAssets": "native-assets-current.json",
+  "mainSourceEquivalent": true,
+  "stylesSourceEquivalent": true,
+  "host": {
+    "exitCode": 0,
+    "evidence": "obsidian-results.json",
+    "console": "checks/obsidian.txt",
+    "renderedScenarios": 60,
+    "functionalWorkflows": 8,
+    "screenshots": 61,
+    "outerOverflow": 0,
+    "innerOverflow": 0,
+    "runtimeErrors": 0,
+    "hookErrors": 0,
+    "realProvider": false,
+    "leadVisuallyReviewed": [
+      "bot-chat-390-theme-light.png",
+      "bot-agents-390-theme-dark.png",
+      "bot-groups-390-theme-light.png",
+      "bot-memory-390-theme-dark.png",
+      "bot-data-390-theme-light.png",
+      "bot-settings-390-theme-light.png",
+      "bot-settings-budget-390-theme-dark.png",
+      "bot-data-1440-theme-dark.png"
+    ],
+    "command": "xvfb-run -a env HUHU_OBSIDIAN_EXECUTABLE=/opt/Obsidian/obsidian HUHU_BOT_BINARY=/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/dist/huhu-bot-linux-x64 node scripts/obsidian-acceptance/huhu-bot.mjs /tmp/huhu-bot-host-20261028-final-reviewed",
+    "implementerVisualReview": {
+      "report": "frontend-host-final-report.md",
+      "manifest": "frontend-host-screenshot-manifest.json",
+      "scenarios": 60,
+      "allRead": true
+    },
+    "fixtureProcessCleanupConfirmed": true,
+    "probeSource": {
+      "path": "scripts/obsidian-acceptance/huhu-bot.mjs",
+      "sha256": "c62e28bef934500f124e3cf02531298ecc5d69a98926df7d016bd11d626f4682",
+      "note": "Acceptance helper executed in real host; not part of the TS business source snapshot."
+    },
+    "independentRepresentativeReview": {
+      "reviewer": "native:/root/review_runtime",
+      "scenarios": 7,
+      "report": "final-ts-review.md"
+    }
+  },
+  "unverified": [
+    "Real provider model execution and streaming",
+    "OS file picker import/export interactions",
+    "User-owned notes write approval and unknown-effect recovery",
+    "Real mobile platform",
+    "Other supported OS/architectures on real machines",
+    "Full multi-leaf/window fault matrix",
+    "Real IME, 200% zoom, reduced-motion matrix",
+    "Whole-product p95 targets"
+  ],
+  "noCommitPushReleaseArchive": true,
+  "independentRawChecks": [
+    "checks/reviewer-go-round3-portable-targeted.txt",
+    "checks/reviewer-go-round3-ambiguous-overlay.txt",
+    "checks/reviewer-go-round3-frame-overlay.txt",
+    "checks/reviewer-ts-visual-consumers.txt",
+    "checks/reviewer-ts-visual-settings-overlay.txt",
+    "checks/reviewer-ts-accepted-memory-consumers.txt",
+    "checks/reviewer-ts-accepted-memory-wire.txt",
+    "checks/reviewer-ts-accepted-native-memory.txt",
+    "checks/reviewer-ts-accepted-original-overlays.txt",
+    "checks/reviewer-ts-accepted-admission.txt"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "reportSha256": "78ed3de83b397366443b76e82fb166814516032f941d485e8cdfbb6c3ba6db17",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "rootVerifiedAt": "2026-10-25T17:08:38.718Z",
+  "inputSha256": "63e74529e1059fcd86c814621dce91c22c9ad9440c47ba8ecc0f779978b74a98",
+  "currentInputFiles": 257,
+  "currentSources": 65,
+  "externalFrozenFilesVerified": 201,
+  "axes": {
+    "standards": "request-changes",
+    "specification": "request-changes"
+  },
+  "findings": [
+    "STD-01/SPEC-01 P1 pinned tool whitelist bypass",
+    "STD-02/SPEC-02 P2 revoked queued question starves unrelated roots",
+    "STD-03/SPEC-03 P2 delegated constraints and expected output absent from Engine input"
+  ],
+  "rawFailuresAndControlsRead": true,
+  "probesFullRead": true,
+  "reviewerStoppedAndHeavyWindowReleased": true,
+  "codeCandidateAccepted": false,
+  "userOwnedAcceptance": "real Provider / Obsidian / target OS not run"
+}

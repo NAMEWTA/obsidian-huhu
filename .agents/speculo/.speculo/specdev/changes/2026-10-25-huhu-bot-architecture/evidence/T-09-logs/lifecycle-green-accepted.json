@@ -1,0 +1,56 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:07:33.868068+00:00",
+  "result": {
+    "command": [
+      "go",
+      "test",
+      "./tests/contract/engine/responses",
+      "-run",
+      "^(TestRevokedSourceCannotEnterNextResponsesRequest|TestCanceledResponsesStreamRejectsLateToolsAndNextRunWorks|TestResponsesStopWaitsForActualBodyCloseAndDurableSettlement|TestResponsesSettlementFailureRetainsSameActualSQLiteAttemptAcrossStop)$",
+      "-count=1",
+      "-timeout=90s",
+      "-json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "CGO_ENABLED": "0",
+      "GOFLAGS": "-mod=readonly"
+    },
+    "startedAt": "2026-10-26T05:05:57.635858+00:00",
+    "finishedAt": "2026-10-26T05:05:59.658317+00:00",
+    "elapsedSeconds": 2.0224429680092726,
+    "exitCode": 0,
+    "waitCompleted": true,
+    "inputSHA256": "b66f7561a164690cdbea2267d7bcd3fe508c91de4729928e995db1529c737602",
+    "frozenFileCount": 331,
+    "changedInputs": [],
+    "addedInputs": [],
+    "stdout": "slice5-initial.stdout.jsonl",
+    "stderr": "slice5-initial.stderr.log"
+  },
+  "rawJSONLParsedInFull": true,
+  "passedTargets": [
+    "TestRevokedSourceCannotEnterNextResponsesRequest",
+    "TestCanceledResponsesStreamRejectsLateToolsAndNextRunWorks",
+    "TestResponsesStopWaitsForActualBodyCloseAndDurableSettlement",
+    "TestResponsesSettlementFailureRetainsSameActualSQLiteAttemptAcrossStop"
+  ],
+  "immutableArchiveFilesIndependentlyVerified": 331,
+  "archiveSha256": "92a923dc375ef3e37bad456d096a83d903c5376e617ae2797777a01e615a9f67",
+  "factoryPatchAndLifecycleConsumersRead": true,
+  "licenseEvidenceReuse": {
+    "111OriginalSourceSnapshot": "historical",
+    "currentProductionChanged": [
+      "native/huhubot/internal/adapters/outbound/eino/responses/driver.go"
+    ],
+    "onlyAddedImport": "net/http",
+    "alreadyPresentInAllFiveActualGraphs": true,
+    "unchangedModuleLocksBuildTagsAndEmbed": true,
+    "scope": "许可模块图/原文与生成通知复用；不声称111原选中文件摘要等于当前driver字节。"
+  },
+  "disposition": "四实际生命周期/当前授权目标绿；最终109 normal/race、Root E2E与独立审查待完成。"
+}

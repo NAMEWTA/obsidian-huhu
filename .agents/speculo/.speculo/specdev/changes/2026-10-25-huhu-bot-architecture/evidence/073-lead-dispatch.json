@@ -1,0 +1,51 @@
+{
+  "task": "073-groups-core",
+  "recordedAt": "2026-10-25T18:25:29.071239+00:00",
+  "nativeTool": "collaboration.followup_task",
+  "target": "/root/foundation_go",
+  "nativeDispatchSucceeded": true,
+  "nativeAcknowledgementReceived": true,
+  "taskSha256": "598f4d8b8dc564169706644c8c057e6f25ed3575175e90ef271cf8f53f1cd40e",
+  "dispatchExit": 0,
+  "dispatchErrors": [],
+  "dispatchWarnings": [],
+  "mapRevision": 17,
+  "goalRevision": 16,
+  "priorAcceptedReviewReportSha256": "24a786ff8175137c39d87d8db6d288fb0221a3ac175aca62bf608f6c7d155718",
+  "priorAcceptedCodeGate": "evidence/T-07-logs/code-gate-notes-r3.json",
+  "sharedContractFreeze": "pending actual owner agreement",
+  "heavyTestWindow": "not assigned; no parallel heavy matrix",
+  "boundary": "full code implementation, real model/Obsidian/target OS remains user-owned/not-run",
+  "nativeAcknowledgementRecordedAt": "2026-10-25T18:35:42.833804+00:00",
+  "acknowledgementEvidence": "Actual native MESSAGE received by Root: current contract/precise path request (073,074) or client projection/token slice status (075)",
+  "supplement": {
+    "mapRevision": 18,
+    "goalRevision": 17,
+    "path": "evidence/T-13-logs/map18-window-supplement.md",
+    "sha256": "72c1b348b2882ff239109d91208e1ec64b2c78e11d71c10bf519582350a5b705",
+    "nativeNoticeSent": true,
+    "nativeNoticeTool": "collaboration.send_message",
+    "nativeNoticeRecordedAt": "2026-10-25T18:36:28.382906+00:00"
+  },
+  "stdioSupplement": {
+    "mapRevision": 18,
+    "goalRevision": 17,
+    "path": "evidence/T-13-logs/stdio-delivery-supplement.md",
+    "sha256": "2d8bef95001a0dd895e83244a3b854ba6b4da441efd4800d3c15327953170816",
+    "nativeNoticeSent": true,
+    "nativeNoticeTool": "collaboration.send_message"
+  },
+  "effectOwnerSupplement": {
+    "mapRevision": 19,
+    "goalRevision": 18,
+    "path": "evidence/T-13-logs/effect-owner-reconciliation-supplement.md",
+    "sha256": "813ed67fc1c74e83f888339cb61019f5dd9bb60912aed6b73811f1ceee520d17",
+    "nativeNoticeSent": true,
+    "reason": "Actual author11 failure read by Root; original073 owner precise T06/T07 maintenance",
+    "nativeNoticeTool": "collaboration.send_message",
+    "nativeNoticeRecordedAt": "2026-10-25T19:29:33.237157+00:00",
+    "otherActiveWriterNotified": "credential_provider; same native tool success",
+    "nativeAcknowledgementReceived": true,
+    "acknowledgementEvidence": "Actual073 MESSAGE read supplement SHA and listed precise two-file implementation; actual15 effect green later returned. Final report/combined gate still pending."
+  }
+}

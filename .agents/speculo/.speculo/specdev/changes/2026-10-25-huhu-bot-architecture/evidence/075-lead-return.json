@@ -1,0 +1,265 @@
+{
+  "task": "075-groups-client",
+  "checkedAt": "2026-10-25T19:10:50.385027+00:00",
+  "reportSha256": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e",
+  "taskSha256": "07bfbe9585433bc5b8ead5bb81143d20e1a40b1bb6937f50837f8e964ab8c05d",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "ownManifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/075-groups-client/logs/37-final-inputs.json",
+  "ownManifestSha256": "aa29a3edf3a513d2f3bae083fbd915177a3df0affd587fce6e2f1c3dfd0341e6",
+  "ownFiles": {
+    "src/modules/huhubot/core/mentions/mentions.ts": "4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336",
+    "src/modules/huhubot/core/mentions/mentions.test.ts": "0d3c1fdeb3d11dc90fe7e8fb22400b04ad51b530e5f5853d8604fd2ea7013902",
+    "src/modules/huhubot/core/events/transcript.ts": "44223f4725cfeaaedaac4080a139d97db74a69619699abd3296778652d4dd428",
+    "src/modules/huhubot/core/events/transcript.test.ts": "214dc3ccc6c472e18b0d59b000b9cff858247f5b502bcc4a01a08dacdc3b08ff",
+    "src/modules/huhubot/services/events/event-client.ts": "1c4813afb2c8a5df25dbec9825c9c286d0d6d1d4892c2184a00aad62ecd1dae0",
+    "src/modules/huhubot/services/events/event-client.test.ts": "c99d437f6cd32a2377aa4b13f97118e68bd343919b12427b9909970893b5ce1c",
+    "src/modules/huhubot/services/groups/group-client.ts": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33",
+    "src/modules/huhubot/services/groups/group-client.test.ts": "5d1611366989bd90670c277b0ce46d3ab2a166508d364aa7bb8f675d82df123f",
+    "src/modules/huhubot/platform/desktop/transport/managed.ts": "f74ced41a9bf78c5d191ef2164ba7973018e76e8cefd992142a79be44714e989"
+  },
+  "readonlyInputs": {
+    "src/modules/huhubot/api.ts": "9cf6d25e4783e203bf47a475852bed436490da4892eaec86c1ba2b78739d4f34",
+    "contracts/hap/v0.1/schema.json": "d45693a3b4b2abbe635cf2f8b4655b63a4419458bb1e4854723f786a63ed1217",
+    "contracts/hap/v0.1/methods.json": "1a85dee850427b234f7795075b860051575977640768ccc18e0847463567ea1e",
+    "contracts/hap/v0.1/fixtures/methods.json": "02e5c1c306bbafc710fdb7c30c4989d805f5ddbdf08488d054a601212d28d59f",
+    "src/modules/huhubot/core/protocol/connection.ts": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+    "src/modules/huhubot/core/protocol/connection.test.ts": "ff589efd4ef674fa748f358a1d94544e75c7690ef4b40654b4d238b3dd3a17aa",
+    "src/modules/huhubot/core/protocol/codec.ts": "2891c56da79be31194204ede79108b48e63e3dcda016543ae40b8aba7118afa9",
+    "src/modules/huhubot/core/protocol/codec.test.ts": "7a89fa9b33c3bf1c29588600464cc7c60410f139e50c647ce1261431d428ff86",
+    "src/modules/huhubot/core/protocol/method-validation.ts": "db90d2096e7c1f65b78d10500b380d84934ee4b1cec2dd0b8a124d275feba9f8",
+    "src/modules/huhubot/core/protocol/method-validation.test.ts": "c8577f564da75e8d66571e9b82246bd68c7ac448b3d4664c9a7f3960dfcf90e4",
+    "src/modules/huhubot/core/events/reducer.ts": "756036a598c5e18e41fc5540c92c9c994f7d263183ccb6ad4c8dacd0c4d43301",
+    "src/modules/huhubot/core/events/reducer.test.ts": "3bd89d7088f95e666bfdbd24b2b81263940e39026887eb13b2e8fd19c18495fc",
+    "src/modules/huhubot/platform/desktop/transport/managed.test.ts": "06925ae30120bec53776bde4bbdb1ed2d786463943b7fdf4a53f9d497c72a043"
+  },
+  "ownAndReadonlyDrift": [],
+  "originalV7SourceUnchanged": true,
+  "checks": {
+    "checks": [
+      {
+        "log": "01-mentions-red.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "missing mentions module"
+      },
+      {
+        "log": "02-mentions-first.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "7 token tests"
+      },
+      {
+        "log": "03-transcript-red.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "missing transcript module"
+      },
+      {
+        "log": "04-pure-first.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "11 pure tests"
+      },
+      {
+        "log": "05-event-group-red.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "missing sessionChanged and conflicting proof check"
+      },
+      {
+        "log": "07-group-client-red.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "missing GroupClient"
+      },
+      {
+        "log": "08-group-client-first.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "incomplete fixture receiptId, not production validator defect"
+      },
+      {
+        "log": "09-tests-tsc-first.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "fixture receiptId type error"
+      },
+      {
+        "log": "18-all-ts-consumers.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "18 files /175 tests, historical 263 shared inputs"
+      },
+      {
+        "log": "23-managed-red.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "observer collected generic failure; underlying real CLI later proved PROFILE_BACKUP_FAILED, not migration FK reason"
+      },
+      {
+        "log": "24-managed-green.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "probe assumed real migration FK reason, actual backup precondition failed"
+      },
+      {
+        "log": "25-effective-proof-red.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "strict revision superset and unseen contributor invalidation missing"
+      },
+      {
+        "log": "26-effective-proof-first.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "old sibling-cache preservation assertions conflict with new contract"
+      },
+      {
+        "log": "27-effective-proof-green.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "45 tests including sole-schema 266 method samples"
+      },
+      {
+        "log": "28-controlled-startup.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "4 controlled-spawn observations; old/new finite allowlist + unknown stderr suppression"
+      },
+      {
+        "log": "29-proof-test-tsc.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "test assigned readonly BotClient.runs.get, fixed by constructing a mock on fixture creation"
+      },
+      {
+        "log": "30-current-groups-green.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "7 files/64 tests"
+      },
+      {
+        "log": "31-current-lint.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "5 production files, max warnings0"
+      },
+      {
+        "log": "32-final-production-tsc.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "pnpm exec tsc --noEmit --skipLibCheck"
+      },
+      {
+        "log": "33-final-test-tsc.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "pnpm exec tsc -skipLibCheck -p tsconfig.test.json"
+      },
+      {
+        "log": "34-final-architecture.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "1218 modules, no violations"
+      },
+      {
+        "log": "35-final-ts-consumers.log",
+        "exitCode": 0,
+        "waited": true,
+        "observation": "19 files /180 tests incl prior Host/notes/protocol/events and managed env checks"
+      },
+      {
+        "log": "39-all-owned-lint.log",
+        "exitCode": 126,
+        "waited": true,
+        "observation": "Explicit test files are ignored by existing ESLint config: four ignored-file warnings, zero code errors. Applicable production lint is log31 exit0."
+      }
+    ],
+    "realCLI": {
+      "binarySha256": "a70471a1024c445b2d559d39b0e6ffcb041ddb9d26043ab24addd9285a5564cb",
+      "buildExitCode": 0,
+      "launchReason": {
+        "kind": "CONFLICT",
+        "reason": "PROFILE_BACKUP_FAILED"
+      },
+      "stdoutBytes": 0,
+      "waited": true,
+      "original6FilesUnchanged": true,
+      "reason": "CompleteMigrationBackup performs global PRAGMA foreign_key_check before 013 migration; existing FK orphan fails the backup guard. No production backup guard was changed."
+    },
+    "notRun": [
+      "real Provider",
+      "real Obsidian",
+      "target Windows/macOS",
+      "full plugin build/lint (Lead-owned)",
+      "Go group cross-process matrix (074/Lead-owned)"
+    ]
+  },
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "writerBoundary": "Only 075 self-owned production/tests and report are stopped; 073/074 Go integration is still active. This receipt does not open the combined E2E window.",
+  "readback": "Root received actual native MESSAGE and FINAL, fully read final REPORT/manifest/check list, raw dynamic-proof red/current green, 180-test output, dual tsc/production lint/architecture, exact managed one-line diff and controlled-spawn observations. Real old-v7 FK orphan is honestly recorded as backup precondition rejection; optional explicit ignored-test lint remains a tool-selection failure. Every own/readonly hash and immutable original six-file fixture rechecked.",
+  "disposition": "Accept client slice for later combined fixed-input Root E2E/build/lint and independent review; T13 and full change remain incomplete.",
+  "observedArtifacts": {
+    "REPORT.md": "6f9c27445bff8aca0db60167f2f4b877dd4183cefe969ec1319e875d682b3b7e",
+    "TASK.md": "07bfbe9585433bc5b8ead5bb81143d20e1a40b1bb6937f50837f8e964ab8c05d",
+    "logs/00-start-inputs.json": "f458fb1db5b3eaadfedab7b6de7c5faed43d964ba802006293c1710c6bb0a2fa",
+    "logs/01-mentions-red.json": "60cda89a1a3c836cc17b81e0e761eb96e9afd818ced677da2c566171d5488b53",
+    "logs/01-mentions-red.log": "e4a9104e3801ba0a245428e89e5cef794f2579643143a2929e0b36c9c820b6a1",
+    "logs/02-mentions-first.log": "ca5ee02b531d0ca757918456b8fd1ac60d20c6ec3fa0aaa60ba4c05be0e3fc34",
+    "logs/03-transcript-red.json": "fd2bf1ca546ac70c9b1b8066433fd4cfd07269e7af3fc62a40f585492b414344",
+    "logs/03-transcript-red.log": "4e10e668bff9a021af3518fc9ba2374fb0cbc3acaf4b9819edbbd545014a3cdd",
+    "logs/04-pure-first.json": "e494a64786e67bec5fa9ead56b9b4ef3fce51ea622e9d322500d82ec024b6ef8",
+    "logs/04-pure-first.log": "08ea3cabd59eb8ac32feec3aff52a159e9beed58e3485f55c4566833ad6b79fc",
+    "logs/05-event-group-red.json": "7b2f4774dc41752f389f7e5ec5e697409c1a3b0214344e4e30a7d7dd3f7259f2",
+    "logs/05-event-group-red.log": "b6fd586cf854821a081e84f866e6a8e023b93775248ca424e1ccef05f6048802",
+    "logs/06-event-group-first.log": "8c6b357e495f7527a25cf5827502cfabe440046d120284d2b4c26cf2f7ebdb14",
+    "logs/07-group-client-red.json": "f77e0c56d67d4385c7b00dbe7f8f2f1aeaa4cfb4e7413d5766883bf3b5867292",
+    "logs/07-group-client-red.log": "28fd03227a2b651958edf992172425b75a9beb279281937f2367372549b0b612",
+    "logs/08-group-client-first.log": "ec04110d9ab2f20b055b7680f178a5a656e8a3737d3992cd7b353fa0bd421625",
+    "logs/09-tests-tsc-first.log": "490617f407657aa086bc709eec6f27c88975950a0983e311510f26675566de54",
+    "logs/10-groups-first-green.log": "05af52ac6548d1913edb499d1638d312842c50ab62493cf88815c86ce9d20daa",
+    "logs/11-groups-lifecycle.log": "3580d42c789e05b89999e82dff21e204c44969e797de34a5fec6afd521e3a0cb",
+    "logs/12-production-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/13-tests-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/14-targeted-lint-first.log": "71041ad2d4dac3014c585d9c0922e734d7842f94d74bb6cf44ded56b4db60244",
+    "logs/15-targeted-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/16-architecture.log": "40237391c75f565627f7b4c15fde691fdc4c735d74a640a225c823c20ef1ef89",
+    "logs/17-bounded-consumers.log": "c45fe6027435fd4bf2e4ba766acef5a2a58cbeb34eacb24973ea50ec49c58be2",
+    "logs/18-all-ts-consumers.log": "29267cc344abfbd8dcf6511504226366c6332df02b11bcc978eeca82d3dd2ff2",
+    "logs/19-final-test-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/20-final-production-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/21-final-targeted-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/22-managed-inputs.json": "217e2e03265b45ce925c770c1e540ab9d512a3f83dd9dacdd4cf62ffafc72ef3",
+    "logs/23-managed-red.log": "c0322e2e7ad40deb9da52fa23239e311bb1405f6f811433b83ade8a48e0ed98b",
+    "logs/24-managed-green.log": "0924774ec7a3a88ff578094ec304de170954ac2fa3225df663bc10ff8bb4fd90",
+    "logs/25-effective-proof-red.log": "0a4209f2e522903b436331e609bad6b6ef3e6cd3fde3240ad9078a22d6c77873",
+    "logs/26-effective-proof-first.log": "be16fd9e5cc872cd11a57fe3bf6f878b2ac29cc0f8c3d55ab689b675cb7b3a2c",
+    "logs/27-effective-proof-green.log": "d4396af7f2981a08e9c0025aebde0616bc2943ec6e43fc32cd5f4eef46ab62b3",
+    "logs/28-controlled-startup.json": "89f938a4ff01900b777e641742cbb939204ecfcb7d456272ca6e935aa9ea9a33",
+    "logs/28-controlled-startup.log": "23c479606d58e911aeab773da910316e88ee8720ff0fc5f14f7fb030ab5d2ef8",
+    "logs/29-proof-test-tsc.log": "10c0ad6c210ddccba8f6def7ce7a034e22acc6da18b64c15461003c969188751",
+    "logs/30-current-groups-green.log": "945de74eaa9a0d54d42058080629bcfcb329cc19ba262c745cbf3ef4bff89338",
+    "logs/31-current-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/32-final-production-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/33-final-test-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/34-final-architecture.log": "de1afbea1cc387cac10ce66280db8cbe380675e93d03aa13887ef4e974a43d44",
+    "logs/35-final-ts-consumers.log": "c419eeab2b3f9b16d771ad558cb234373a91aa72e0700162c418ae6c9bc27995",
+    "logs/36-checks.json": "2d2fc2fca955f5ec85f9e5c8cdd88d640963e22f1f6f8c2d1efb36734264492b",
+    "logs/37-final-inputs.json": "aa29a3edf3a513d2f3bae083fbd915177a3df0affd587fce6e2f1c3dfd0341e6",
+    "logs/38-managed-one-line.diff": "bbfb8fa0097a499a5e5b6d57771998ef7e5441931cb5fd3bfab0bc877de848a6",
+    "logs/39-all-owned-lint.log": "a8f75a560ec30c1bfac8f3277a11435a1c6e7b07e0d7250350ebfec783adb8d8",
+    "logs/40-start-input-comparison.json": "5adb4e20d25f44cd148533a985d7e8c8f8fd52eea7b93cba80c018ea9b7a73b9",
+    "logs/41-return.json": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/42-final-recheck.json": "618ed3dcc6116e79567a7dea53159d0022ddc583a69396c8ffe9efbb87bf2a9b",
+    "logs/controlled-startup-probe.mjs": "c4a13e52ad476ee53e8b9896f44db60d5ac9b478909a4f63954b389c3d26f5ab",
+    "logs/managed-startup-probe.mjs": "e1d056b732f59e556a4c179bb159612fc77bf798cb4b3b7dc926e943be29c88f",
+    "logs/managed.before.ts": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+    "logs/mention-commit.json": "1ae5765e72074bcff7d82dfd374a0967bad76dec021c88baf9c1cf484171d85c",
+    "logs/research-mentions.json": "b7667d67737b576735e856ca326cceb4e4ee82e00472b1693249b2d014ab781f"
+  }
+}

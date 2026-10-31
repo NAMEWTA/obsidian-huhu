@@ -1,0 +1,359 @@
+{
+  "schema_version": 2,
+  "scope": "2026-10-26-unified-browser-versioning-archives",
+  "mode": "read-only-analysis",
+  "authorization_checked": false,
+  "transaction_gateway_checked": false,
+  "ticket_execution": "auto",
+  "max_parallel_tickets": null,
+  "input_digest": "1eb67ff98205d602297f15f186ea6e8f65399b79e1a4345053a28a4874e79b4a",
+  "goal_contract_digest": "9aeb6befba9aa374fbc824cc4415644d05520a43774144a171c12385c42dbd50",
+  "contract_digests": {
+    "T-01": "bccb2260e7c572ebd01719e70a8b4cc41efec6e5f78520cca57183b302cb0ab0",
+    "T-02": "dda0a86198e53711a29105719da3c864bb1f7811ed65c86fe05087508ff469d1",
+    "T-03": "3466c87b8c3056973ea1ffd6a5ad96975c7fed624a4b794410ddf4e0245a6ceb",
+    "T-04": "b7b18775d41d4a4a7a1ea6cf7c10acfc649da3efd3f54de310aa958fda394b29",
+    "T-05": "01c1e979418beaa7b6881390de9ea62f33a7212e3738771639b2170bd71df61e",
+    "T-06": "2236f9c4a509b0e11ebd55723a94c0794b6ad4af2615eaf12239c33da2a74081",
+    "T-07": "8051a476993afaf6ae6cdde4bd5a791885a29e354f3ca5714835a8c5c17c15a2",
+    "T-08": "5882d56c7fe0f03515519fc1ed72585dcfd4132fdfefc59fb9c4982344bbc111",
+    "T-09": "b8fc2b7571a2940a3706bdb70b97e23d78290729633774a9b19a0382011e7933",
+    "T-10": "06014b8012a6dccfa6d5f8092e6a2f014d7f82e2c6b8bf246e750f06c0b36d49",
+    "T-11": "361b72805691985b37692d5848d245d220956c1b5dc27a2de986853f81d9c8e9",
+    "T-12": "b5748cdce77f1e6656b4b5f41fc790220fd141785b1253f4095ef08cf4b56d99",
+    "T-13": "b3497294d1ba44cf053ad4d49907226805e74f557554f370c6f78acaeee44a74",
+    "T-14": "0d6bc59435e1aebd344d171201eaec8d7c7f4f2da783622a9f4d2abc2c42bf7c",
+    "T-15": "854c37be37bea3c550cfcbcbbdada7ae848f32aa9525f5a55db685d10890e5e7",
+    "T-16": "8bc832fd8c30ef21831cd72bbd411952be335aa2b2a6844eb6d87699c2738c07",
+    "T-17": "9a389124775721d88117e2378c08ef1f6d65e3e4c73ee6b8a9f235a89989959f",
+    "T-18": "57eb223cbb05218f8fd1923a628e62ad85cee8b0b57639c38fec1dd9a8195c09",
+    "T-19": "7e59a45ea6386252d9659f269c330838f1c4c9392713db290c694d475438b1d1",
+    "T-20": "9bab9d6e94ff5f9b99f025198a36391912903a562b365ef5d941b39c3b1bb165",
+    "T-21": "7a04bf196c165e16468593cc3cf81a78bb9507d25bf82b6cdbcc374c764d6a75",
+    "T-22": "248c17c0511bc6cc6a1be8f765cfe2b571787a4241bb1e8f220113ea7e28faab",
+    "T-23": "0a1551c30d8902b301f614c71443e896ff3b78fb7676ce49c006cb75be50a930",
+    "T-24": "f0ae4f2b9c0781412863bf50c2adc1706462fa0eb85f30abb66724ac78f5eaf3",
+    "T-25": "df8fec8b9737a1ed41850bff0493240b60eac431a1e21751bbb2e1fce60a87b3",
+    "T-26": "e74acae5423dfe55d346668f39e235c90cfa2316eec678a76ba436555dbd3ef8",
+    "T-27": "48d8735fe0fd20dc943e65d4a31d688e99db9b41be9fa50ff3c3b6ed9309dba6",
+    "T-28": "c3201a00f66271b9955ba1383b703a9f82b6d2183d5ff2406dda45d7c3d6c77f",
+    "T-29": "e44dde2777239cb5d4d5879e505d884137bf605e7cd1dd0c8c53c36dce6eaaa5",
+    "T-30": "8a464d424179ee8482d15dd2a60b0647af80d822c06f81a08978c21254f2eaa6",
+    "T-31": "359edbd60228aead53947a727712e02d0230f713545a139adf6f56f82eb1f9ac",
+    "T-32": "92dcf0de665d0a8c830385379de6321ef6dcec7bad49531d6e1e09432ceae9a6"
+  },
+  "frontier": [],
+  "deferred": [],
+  "in_flight": [],
+  "done": [],
+  "cancelled": [],
+  "blocked": [
+    {
+      "id": "T-01",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned"
+      ]
+    },
+    {
+      "id": "T-02",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-03",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-02",
+        "blocked dependency closure: T-02"
+      ]
+    },
+    {
+      "id": "T-04",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-03",
+        "blocked dependency closure: T-03"
+      ]
+    },
+    {
+      "id": "T-05",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-04",
+        "blocked dependency closure: T-04"
+      ]
+    },
+    {
+      "id": "T-06",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-05",
+        "blocked dependency closure: T-05"
+      ]
+    },
+    {
+      "id": "T-07",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-06",
+        "blocked dependency closure: T-06"
+      ]
+    },
+    {
+      "id": "T-08",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-07",
+        "blocked dependency closure: T-07"
+      ]
+    },
+    {
+      "id": "T-09",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-08",
+        "blocked dependency closure: T-08"
+      ]
+    },
+    {
+      "id": "T-10",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-09",
+        "blocked dependency closure: T-09"
+      ]
+    },
+    {
+      "id": "T-11",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-10",
+        "blocked dependency closure: T-10"
+      ]
+    },
+    {
+      "id": "T-12",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-11",
+        "blocked dependency closure: T-11"
+      ]
+    },
+    {
+      "id": "T-13",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-14",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-13",
+        "blocked dependency closure: T-13"
+      ]
+    },
+    {
+      "id": "T-15",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-14",
+        "blocked dependency closure: T-14"
+      ]
+    },
+    {
+      "id": "T-16",
+      "reasons": [
+        "source Spec is not Ready",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-17",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-01",
+        "blocked dependency closure: T-01"
+      ]
+    },
+    {
+      "id": "T-18",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-17",
+        "blocked dependency closure: T-17"
+      ]
+    },
+    {
+      "id": "T-19",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-18",
+        "blocked dependency closure: T-18"
+      ]
+    },
+    {
+      "id": "T-20",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-19",
+        "blocked dependency closure: T-19"
+      ]
+    },
+    {
+      "id": "T-21",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-20",
+        "blocked dependency closure: T-20"
+      ]
+    },
+    {
+      "id": "T-22",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-21",
+        "blocked dependency closure: T-21"
+      ]
+    },
+    {
+      "id": "T-23",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-22",
+        "blocked dependency closure: T-22"
+      ]
+    },
+    {
+      "id": "T-24",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-23",
+        "dependency not successfully satisfied: T-15",
+        "blocked dependency closure: T-23",
+        "blocked dependency closure: T-15"
+      ]
+    },
+    {
+      "id": "T-25",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-24",
+        "blocked dependency closure: T-24"
+      ]
+    },
+    {
+      "id": "T-26",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-25",
+        "blocked dependency closure: T-25"
+      ]
+    },
+    {
+      "id": "T-27",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-15",
+        "dependency not successfully satisfied: T-26",
+        "blocked dependency closure: T-15",
+        "blocked dependency closure: T-26"
+      ]
+    },
+    {
+      "id": "T-28",
+      "reasons": [
+        "source Spec is not Ready",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-27",
+        "blocked dependency closure: T-27"
+      ]
+    },
+    {
+      "id": "T-29",
+      "reasons": [
+        "source Spec is not Ready",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-28",
+        "blocked dependency closure: T-28"
+      ]
+    },
+    {
+      "id": "T-30",
+      "reasons": [
+        "source Spec is not Ready",
+        "not Ready: draft",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-29",
+        "blocked dependency closure: T-29"
+      ]
+    },
+    {
+      "id": "T-31",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-12",
+        "blocked dependency closure: T-12"
+      ]
+    },
+    {
+      "id": "T-32",
+      "reasons": [
+        "source Spec is not Ready",
+        "implementation owner not assigned",
+        "dependency not successfully satisfied: T-16",
+        "dependency not successfully satisfied: T-27",
+        "dependency not successfully satisfied: T-30",
+        "dependency not successfully satisfied: T-31",
+        "blocked dependency closure: T-16",
+        "blocked dependency closure: T-27",
+        "blocked dependency closure: T-30",
+        "blocked dependency closure: T-31"
+      ]
+    }
+  ],
+  "invalidated": [],
+  "eligible_for_final_verification": false,
+  "diagnostics": [],
+  "validation_errors": [],
+  "errors": [],
+  "warnings": [],
+  "next": "Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything."
+}

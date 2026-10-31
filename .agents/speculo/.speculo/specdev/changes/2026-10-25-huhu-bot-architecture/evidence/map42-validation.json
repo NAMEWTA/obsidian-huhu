@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "waited": true,
+  "waitSeconds": 3.1468896369988215,
+  "stdout": "{\"result\":\"passed\",\"errors\":[],\"tickets\":28,\"executions\":15}\n",
+  "stderr": ""
+}

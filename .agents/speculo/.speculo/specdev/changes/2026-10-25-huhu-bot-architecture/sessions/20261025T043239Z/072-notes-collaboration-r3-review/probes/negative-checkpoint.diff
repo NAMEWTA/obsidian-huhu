@@ -1,0 +1,19 @@
+--- frozen/wait_test.go
++++ external-negative/wait_test.go
+@@ -217,7 +217,7 @@
+ 					if e != nil {
+ 						return api.EngineResult{}, e
+ 					}
+-					cp, e := i.Checkpoints.Publish(c, strings.NewReader("child-state"))
++					cp, e := i.Checkpoints.Publish(c, strings.NewReader("reviewer-wrong-checkpoint"))
+ 					if e != nil {
+ 						return api.EngineResult{}, e
+ 					}
+@@ -255,6 +255,7 @@
+ 					return api.EngineResult{}, closeErr
+ 				}
+ 				if string(body) != "child-state" || len(i.Decision.Children) != 1 || i.Decision.Children[0].Status != "succeeded" || i.Decision.Children[0].Text != "leaf" {
++					t.Logf("REVIEWER negative actual checkpoint body=%q", body)
+ 					return api.EngineResult{}, fmt.Errorf("wrong checkpoint/resumption %#v", i.Decision)
+ 				}
+ 				var related int

@@ -13,7 +13,9 @@ export function TerminalSettings({ controller }: { controller: AgentController }
 	const t = useT(),
 		settings = useAgentSettings(controller.settings),
 		[checking, setChecking] = useState(false),
-		[helper, setHelper] = useState('');
+		[helper, setHelper] = useState(''),
+		[cli, setCli] = useState(''),
+		[checkingCli, setCheckingCli] = useState(false);
 	const save = <K extends keyof Settings>(key: K, value: Settings[K]) => {
 		void controller.settings
 			.update((d) => {
@@ -166,6 +168,26 @@ export function TerminalSettings({ controller }: { controller: AgentController }
 							}}
 						>
 							{t('agent.settings.helperCheckButton')}
+						</Button>
+					}
+				/>
+				<SettingsRow
+					label={t('agent.settings.cliCheck')}
+					description={cli || t('agent.settings.cliCheckDesc')}
+					control={
+						<Button
+							variant="outline"
+							disabled={checkingCli}
+							onClick={() => {
+								setCheckingCli(true);
+								void controller
+									.checkCli()
+									.then((state) => setCli(state.text))
+									.catch((e) => controller.workspace.report(e))
+									.finally(() => setCheckingCli(false));
+							}}
+						>
+							{t('agent.settings.cliCheckButton')}
 						</Button>
 					}
 				/>

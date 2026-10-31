@@ -1,0 +1,26 @@
+{
+  "manifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/joint-source-r5.json",
+  "treeSha256": "c0950eccd0d2395833ef71a9b726b58cf3f5a1d53159985550a35df26f077b2e",
+  "snapshot": "/tmp/huhu-lead-events-approval-x_95g9wh",
+  "probeSha256": "844ddab2edef6c43a2007011df5c0b619e72390e485c63b1fa9308490a195062",
+  "commands": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-v",
+        "./tests/contract/approval",
+        "-run",
+        "^TestLeadDecisionReceiptStateAndEventAgreement$",
+        "-count=1"
+      ],
+      "cwd": "/tmp/huhu-lead-events-approval-x_95g9wh/native/huhubot",
+      "exit": 1,
+      "seconds": 4.25,
+      "log": "lead-facade-r1.log"
+    }
+  ],
+  "sourceDrift": [],
+  "processes": "All subprocess.run children exited and Wait completed; no product writer; fixtures close Core/DB and actual TS/Go children."
+}

@@ -1,6 +1,16 @@
-import type { AgentDispatch, AgentDirectoryEntry, AgentSessionsPort, AgentQuickCommands, AgentSkillCatalog, AgentSkills, AgentUsage } from '../../agent/api';
+import type {
+	AgentDispatch,
+	AgentDirectoryEntry,
+	AgentSpaceInfo,
+	AgentSessionsPort,
+	AgentQuickCommands,
+	AgentSkillCatalog,
+	AgentSkills,
+	AgentUsage,
+} from '../../agent/api';
 import type { NavigatorLists, NavigatorPeriodic } from '../../navigator/api';
-import type { CalendarService } from '../api';
+import type { ArchivesQuery } from '../../archives/api';
+import type { TaskCalendarService, TaskViews } from '../../task/api';
 import type { IndexedWidgets } from '../core/board/widget-registry';
 import type { ExpenseService } from '../platform/expense/expense-service';
 import type { HabitService } from '../platform/habit/habit-service';
@@ -15,7 +25,10 @@ import type { ReadingService } from '../platform/reading/reading-service';
  * The music player exists only off phones.
  */
 export const homeServices: {
-	calendar?: CalendarService;
+	calendar?: TaskCalendarService;
+	taskViews?: TaskViews;
+	archives?: () => ArchivesQuery | undefined;
+	watchArchives?: (listener: () => void) => () => void;
 	periodic?: () => NavigatorPeriodic | undefined;
 	watchPeriodic?: (listener: () => void) => () => void;
 	habit?: HabitService;
@@ -29,6 +42,8 @@ export const homeServices: {
 	watchWidgets?: (listener: () => void) => () => void;
 	acquireDispatch?: () => Promise<AgentDispatch | undefined>;
 	agents?: () => readonly AgentDirectoryEntry[];
+	/** Active Spaces a button can be saved against; empty while the agent module is off. */
+	spaces?: () => readonly AgentSpaceInfo[];
 	sessions?: () => AgentSessionsPort | undefined;
 	skills?: () => AgentSkills | undefined;
 	skillCatalog?: () => AgentSkillCatalog | undefined;

@@ -1,0 +1,9 @@
+{
+  "observer": "native:/root",
+  "task": "109-engine-responses",
+  "taskSha256": "dfb503dcf4be0322f63b946d1fbe7b1eb1b09821819de6153580978eb19fc86c",
+  "dispatchExit": 0,
+  "nativeTarget": "/root/foundation_research",
+  "nativeFollowupDispatched": true,
+  "initialStage": "sole Go window for first current default Responses behavioral red; no production writes"
+}

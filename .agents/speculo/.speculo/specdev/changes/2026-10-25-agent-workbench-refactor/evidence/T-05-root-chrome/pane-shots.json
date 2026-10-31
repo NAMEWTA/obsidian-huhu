@@ -1,0 +1,67 @@
+[
+  {
+    "name": "normal",
+    "file": "pane-normal.png",
+    "clip": {
+      "x": 20,
+      "y": 12,
+      "width": 1000,
+      "height": 205,
+      "scale": 1
+    },
+    "detail": {
+      "geometry": [
+        44,
+        9
+      ],
+      "sizes": [
+        {
+          "cols": 44,
+          "rows": 9
+        }
+      ],
+      "selection": true
+    },
+    "sha256": "e0d39bdd019d1b55984fa548a41a3df207697e3918fef0c74212272d1fc3bf9d"
+  },
+  {
+    "name": "input",
+    "file": "pane-input.png",
+    "clip": {
+      "x": 20,
+      "y": 12,
+      "width": 1000,
+      "height": 205,
+      "scale": 1
+    },
+    "detail": {
+      "diagnostic": {
+        "op": 8,
+        "state": "none",
+        "reason": "capacity",
+        "runtimeId": "browser-12"
+      },
+      "status": "The input was not sent: input capacity reached."
+    },
+    "sha256": "0e36afad0e7012d4aaa9aca93a8d55eb72eba273cb216d51e2517d4903f705bf"
+  },
+  {
+    "name": "resource",
+    "file": "pane-resource.png",
+    "clip": {
+      "x": 20,
+      "y": 12,
+      "width": 982,
+      "height": 162,
+      "scale": 1
+    },
+    "detail": {
+      "status": "The terminal reached its resource limit. Cleanup has been requested; unparsed output is not marked complete.",
+      "usage": "resource-limit",
+      "cleanup": [
+        "command-admission"
+      ]
+    },
+    "sha256": "73f20196d9422c6a538ffb9b4a7fe590bc567ac9d67b96e76f3deda6c29ac5f8"
+  }
+]

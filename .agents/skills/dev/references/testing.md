@@ -23,6 +23,8 @@
 | 门禁脚本 | 架构、i18n、文档、样式、Promise 回调、工作台入口、构建文本 | `pnpm test:architecture`、`test:i18n`、`test:docs`、`test:styles` 等 |
 | 以上全部 | 除自身外的每个 `test:*` 脚本 | `pnpm run test:all` |
 | Rust 辅助程序 | `native/pty-server/tests`、单元测试 | `pnpm run check:native`（`cargo test --locked`） |
+| 独立浏览器 Rust | `native/browser-runtime` 的单元测试 | `pnpm run check:browser-native`；真实 Chromium 另用 `accept:browser-native` |
+| Go Bot Runner | `native/huhubot/tests/contract`、包内测试 | `pnpm check:huhu-bot`；`pnpm build:huhu-bot` 后对本机二进制运行 `node scripts/verify-huhu-bot.mjs <binary>` |
 | 真实 Obsidian | `scripts/obsidian-acceptance/`（针对一次性库的 CDP） | 见下文 |
 
 ## Vitest
@@ -51,8 +53,10 @@
 | 档案 | `src/modules/archives/archives.test.ts`；索引、批量处理或性能变化加 `pnpm run accept:contacts-scale` |
 | 保险箱 | `src/modules/safe/` 下的模型、真实 WebCrypto、密文仓库、文件、会话与 DOM 测试；原生文件选择器、剪贴板、多窗口迁移、隐藏锁定和重启恢复补真实桌面宿主验收 |
 | 图标 | `src/modules/icons/iconic-port.test.ts` 中相关 Iconic 对照 |
-| Git 同步 | `src/modules/sync` 对应测试；Git 流程变化加 `test/sync/git-flow.test.ts`（临时远端） |
+| 版本管理 | `src/modules/versioning` 对应测试；Git 流程、历史和恢复暂停用 `test/sync/` 的真实临时仓库；笔记恢复补原生编辑器与多叶宿主验证 |
 | 终端模型、键盘、呈现 | `src/modules/agent/**` 中对应测试；原生辅助程序变化加 `pnpm run check:native` 和 `node scripts/verify-pty-helper.mjs <二进制>` |
+| 独立浏览器 | `src/modules/browser/{core,services,platform/desktop,ui}` 中对应测试；Worker 类型与产物用 `pnpm build:browser`，Rust 用 `pnpm check:browser-native`；协议、进程和输入隔离变化补真实 Chromium 及受影响的 Obsidian 宿主场景 |
+| Go Runner、HAP 或其工程脚本 | `pnpm check:huhu-bot`、`pnpm test:huhu-bot-architecture`、`pnpm test:huhu-bot-tooling`；构建后运行本机 stdio 冒烟；依赖变化重算完整 notices。TS 协议/客户端另跑对应 Vitest；Rust 检查不能代替 Go |
 | 升版本、发版文件 | `test/release/release-artifacts.test.ts` 和 `node scripts/verify-release-artifacts.mjs <version>`；实际发布遵守完整发行门禁 |
 | 文档或技能 | `pnpm test:docs` 及变更事实/链接核对；触发、权限或流程语义变化验证对应正常、近邻不触发和失败分支 |
 | SpecDev 合同 | `node .agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs --self-check`；状态工件变化再验证相关 change，不创建无关工件 |
@@ -60,6 +64,8 @@
 | 工作台、页面、设置界面、终端界面、浏览器 | 按下节视觉范围与宿主边界选择检查 |
 
 `test:docs` 检查项目文档的结构、链接与部分源码事实，不证明全部文档语义正确，也不要求创建 SpecDev 的可选知识目录或已退役状态索引。SpecDev 工件的生命周期/schema 由所属 `validate-specdev`、`validate-retro` 校验；工具包不在项目严格链接集合内，本次触及的引用仍须核对。
+
+浏览器的身份与文件测试应保留真实临时目录、完整 Cookie 语义、错 Run/租约、篡改和恢复失败场景；系统密钥桩只证明加密协议，不证明真实 OS 密钥链可用。根目录独占与 RPC 测试会监听本机回环地址，受限沙箱的 `listen EPERM` 是环境限制，不是测试通过，也不能用桩替换后声称实际监听通过。RPC 重点覆盖 Host/Origin/令牌/启动代次、连接隔离、重复请求、撤权后的结果脱敏与并发上限。
 
 ## UI 与宿主验证范围
 
@@ -75,7 +81,13 @@
 
 `scripts/obsidian-acceptance/` 里每个脚本都用 `fresh-vault.mjs` 创建一次性的库、配置目录和临时 HOME，用远程调试启动 Obsidian 并安装当前构建的插件；证据（JSON 和截图）写入 `<root>/evidence/`。每次运行都用新的根目录，它必须尚不存在。
 
-`workbench-probe.mjs` 是工作台的整体探针：三种宽度下的布局和溢出、图标轨上的每个页面、点击当前图标折叠侧栏、全部设置分类、模块开关增删图标轨条目、重启后回到上次的页面，以及没有未处理的原生错误。其余脚本各验证一个功能的宿主集成（看板网格与日历、评论、浏览器会话与访客页、同步克隆与自动暂存、导航器日志、智能体账号与标签、笔记移动与引用更新、溢出审计、主题矩阵等）；纯逻辑和组件交互由 Vitest 覆盖，不要为它们再写探针。DOM 改版后先跑受影响的脚本，选择器随界面一起更新，找不到元素时修脚本或删脚本，不留失效的验收。
+`versioning-history.mjs` 验证笔记历史在真实编辑器中的浏览、恢复、撤销、批注、多叶、Worker、重启与弹出窗口；只初始化一次性本地 Git 仓库，没有远端。传入尚不存在的绝对目录，沿用 `HUHU_OBSIDIAN_EXECUTABLE`、`HUHU_PLUGIN_SOURCE` 与 `HUHU_ACCEPTANCE_PORT`。
+
+`workbench-probe.mjs` 是工作台的整体探针：三种宽度下的布局和溢出、图标轨上的每个页面、点击当前图标折叠侧栏、全部设置分类、模块开关增删图标轨条目、重启后回到上次的页面，以及没有未处理的原生错误。其余脚本各验证一个功能的宿主集成（看板网格与日历、评论、独立浏览器、同步克隆与自动暂存、导航器日志、智能体账号与标签、笔记移动与引用更新、溢出审计、主题矩阵等）；纯逻辑和组件交互由 Vitest 覆盖，不要为它们再写探针。DOM 改版后先跑受影响的脚本，选择器随界面一起更新，找不到元素时修脚本或删脚本，不留失效的验收。
+
+`agent-browser-v2.mjs <新根目录> <完整运行包>` 验证真实 Obsidian、utilityProcess 和受管 Chromium 的组合：独立 Space、只读查看、接管及旧权限失效、宿主焦点/剪贴板、身份预检、文件授权和跨窗口查看。探针记录插件、Worker 和运行包摘要；只引用对应构建实际通过的断言。其文件选择器结果由夹具提供，不证明操作系统原生文件对话框；经宿主文本框插入中文也不等于验证系统输入法的完整组字流程。独立 Chromium 探针保留浏览器沙箱，宿主探针对 Obsidian 自身沙箱的测试环境设置需另行说明。
+
+`terminal-merge.mjs <新根目录>` 在一次性库里点开终端：新建空间、本地 `HUHU_PTY_BINARY` 启动 shell、输入命令、第二个会话、关闭再打开，以及切到任务和首页后会话仍在。它不下载已发布辅助程序，也不代替 Windows / macOS 终端验收。
 
 ```sh
 pnpm run build
@@ -85,6 +97,6 @@ HUHU_OBSIDIAN_EXECUTABLE=/opt/Obsidian/obsidian \
 xvfb-run -a -s "-screen 0 1600x1100x24" node scripts/obsidian-acceptance/workbench-probe.mjs /tmp/huhu-probe-<name>
 ```
 
-从仓库根目录运行。`HUHU_PTY_BINARY` 让插件使用本地辅助程序，而不下载 Release 附件。`HUHU_ACCEPTANCE_PORT` 改用别的调试端口，几个脚本才能并行；`HUHU_PLUGIN_SOURCE` 从另一个目录（含 `main.js`、`styles.css`、`manifest.json`）安装插件，不用工作区里的产物。个别脚本用环境变量指定根目录（`overflow-audit`、`agent-page-tabs`、`agent-skills-settings`、`p3-shell`、`status-bar`），脚本开头有写明。`terminal-reliability.mjs` 需要联网下载发布的辅助程序，`release-vault-install.mjs` 需要发布附件。`theme-matrix.mjs` 为主题样式在阅读、实时预览和源码模式下截图。你引用的证据要自己保留；临时目录会被清理。
+从仓库根目录运行。`HUHU_PTY_BINARY` 让插件使用本地终端辅助程序，而不下载 Release 附件。`HUHU_ACCEPTANCE_PORT` 改用别的调试端口，几个脚本才能并行；`HUHU_PLUGIN_SOURCE` 从另一个目录（含 `main.js`、`styles.css`、`manifest.json`）安装插件，不用工作区里的产物。浏览器探针另外接收完整运行包，Worker 必须匹配该插件构建的摘要，不能混用旧包。个别脚本用环境变量指定根目录（`overflow-audit`、`agent-page-tabs`、`agent-skills-settings`、`p3-shell`、`status-bar`），脚本开头有写明。`terminal-reliability.mjs` 需要联网下载发布的辅助程序，`release-vault-install.mjs` 需要发布附件。`theme-matrix.mjs` 为主题样式在阅读、实时预览和源码模式下截图。你引用的证据要自己保留；临时目录会被清理。
 
-CI 没有 Obsidian 运行环境；Windows 和 macOS 上的终端行为（ConPTY、输入法、CLI 智能体）在真实机器上检查，已验证和未验证的内容写入任务报告；永久验收记录只通过 SpecDev A 网关更新，不在普通实现中直接改写。
+CI 没有 Obsidian 运行环境；浏览器 CI 的 Linux x64 原生 Chromium 探针不代替真实宿主验收，也不证明其他平台支持。Windows 和 macOS 上的终端行为（ConPTY、输入法、CLI 智能体）在真实机器上检查，已验证和未验证的内容写入任务报告；永久验收记录只通过 SpecDev A 网关更新，不在普通实现中直接改写。

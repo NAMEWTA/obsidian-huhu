@@ -1,0 +1,37 @@
+{
+  "recorded_at": "2026-10-25T23:29:12.724331+00:00",
+  "lead": "codex:/root",
+  "goal_revision": "GP-021",
+  "map_revision": 22,
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "packet": "evidence/T-06-review-repair1-packet.md",
+  "preflight": "evidence/T-06-review-repair1-preflight-root-audit.json",
+  "frozen_preflight_input": "/tmp/huhu-t06-root-review-repair1-preflight-inputs.json",
+  "input_sha256": "6862390e65a643449710ed961ed4ae19bd4e7cd90e4a16fc9138e236c3778d59",
+  "actual_native_dispatches": [
+    {
+      "tool": "collaboration.followup_task",
+      "target": "/root/prepare_t03",
+      "inherited_requested_model": "gpt-6.1-sol",
+      "inherited_requested_reasoning_effort": "xhigh",
+      "scope": "A4; initial actual API slice then remaining regressions",
+      "tool_return": "success; empty response",
+      "result_pending": true
+    },
+    {
+      "tool": "collaboration.followup_task",
+      "target": "/root/implement_t01",
+      "inherited_requested_model": "gpt-6.1-sol",
+      "inherited_requested_reasoning_effort": "xhigh",
+      "scope": "C3; root fence first, observeOrdered consumer awaits Root actual API readback",
+      "tool_return": "success; empty response",
+      "result_pending": true
+    }
+  ],
+  "B": "read-only T07 exact seam preparation; all product paths stopped",
+  "reviewer": "round1 returned request-changes and SOURCE STOPPED; no repair participation",
+  "original_cycle_attempts": 3,
+  "recovery_cycle": 1,
+  "recovery_attempts": 1,
+  "limits": "No root builds/guards or artifacts from implementers; no commit/push/PR/release/archive; T07–18 product dependency stays locked."
+}

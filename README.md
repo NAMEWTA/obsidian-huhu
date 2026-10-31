@@ -20,15 +20,16 @@ On first terminal use, HUHU downloads `huhu-pty` from the same version's release
 
 | Feature | Current capabilities |
 |---|---|
+| [Tasks](docs/tasks.md) | Independent task workspace, note/archive relations, separate due/reminder times, overdue carry and versioned agent tools |
 | [Dashboard and records](docs/dashboard.md) | Resizable widget grids, calendar, tasks, inbox, clock/weather, habits, expenses, reading, pomodoro and analytics |
 | [Notes navigator](docs/navigator.md) | Folder/tag browsing, search, previews, calendar, templates and keyboard operations |
 | [Agents and terminals](docs/agent-workbench.md) | CLI sessions, tab groups, resume, quick commands, skills and current-workspace usage |
-| [Built-in browser](docs/browser.md) | Web tabs, profiles, Cookie import, downloads and material capture |
-| [Archives](docs/contacts.md) | People/company archives, relationships, material and linked notes |
+| [Independent Agent Browser](docs/browser.md) | Isolated personal/task spaces, observer and takeover views, verified identity import, scoped files and CLI/MCP; managed runtime currently Linux x64 |
+| [Archives](docs/contacts.md) | Custom archive types, forms, independent relationships, portable Markdown and recoverable migrations |
 | [Automations and notifications](docs/automation.md) | Manual/scheduled actions, prechecks, device ownership, run history and notifications |
-| [Comments](docs/comments.md) | Line/selection comments, anchors, hover threads and sidebar |
+| [Highlights](docs/comments.md) | Four-color non-intrusive Markdown highlights, searchable excerpt cards, notes, tags, comments and export |
 | [Icons and appearance](docs/appearance.md) | File/interface icons, themes, Markdown palettes and local fonts |
-| [Git sync](docs/sync.md) | Current-vault repository initialization, commit, pull, push, exclusions and conflicts |
+| [Versioning](docs/sync.md) | Compact Git workspace, note history, three diff layouts, checkpointed restore/undo, commit, pull and push |
 | [Encrypted safe](docs/safe.md) | Independent master password, encrypted records, locking, backup and authenticated recovery |
 
 Modules have independent switches. Git remotes, authentication and automatic schedules need separate configuration; CLI logins, weather and other external services have their own requirements. Maintained guides are in Chinese: [guide index](docs/README.md), [workbench](docs/workbench.md) and [settings](docs/settings.md).

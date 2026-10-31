@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-26T02:55:22.632116+00:00",
+  "tool": "collaboration.followup_task",
+  "target": "/root/prepare_t03",
+  "actual_tool_returned": true,
+  "task": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-07-task-a-activity-fixture-repair.md",
+  "task_sha256": "e211785a17b292921c5a73095d1105548d50b7652da86ce52b883698bbd9ceee",
+  "revision": "GP024/Map25",
+  "validation": "T-07-activity-fixture-validation-root-audit.json",
+  "validation_sha256": "4aa6ee53fed99a7334328e881b70f4981c31a839ec072c03de06ac3dffd561de",
+  "allowed_product_write": [
+    "src/modules/agent/services/controller-activity.test.ts"
+  ],
+  "other_sources_stopped": true,
+  "integration_attempts": 1
+}

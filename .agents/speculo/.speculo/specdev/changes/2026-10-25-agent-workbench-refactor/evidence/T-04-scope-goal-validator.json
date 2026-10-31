@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    ".agents/speculo/workflows/specdev/common/tools/validate-specdev.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+    "--stage",
+    "goal-plan",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor"
+  ],
+  "cwd": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "started_at": "2026-10-25T09:31:43.708302+00:00",
+  "finished_at": "2026-10-25T09:31:44.614836+00:00",
+  "exit_code": 0,
+  "output": "/tmp/huhu-t04-scope-goal-validator.log",
+  "output_sha256": "5628c104ba6f9ab4f923dd5c199c94f62e9433717012b97a428bdba7873caa76"
+}

@@ -1,0 +1,19 @@
+{
+  "task": "085-recovery-race-diagnosis",
+  "checkedAt": "2026-10-25T22:18:28.296687+00:00",
+  "reportSha256": "83dd81cc0712660aa746257cb79b0bbc1585b1eec79049787cdc5f355d846d47",
+  "taskSha256": "50180901d439c96f201af03120ee6843d975cd5267e6bf7bf8ed3897fe094fb6",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "returnExit": 0,
+  "returnErrors": [],
+  "returnWarnings": [],
+  "sourceFilesVerified": 377,
+  "sourceTree": "02eb94d9c8f4f6caeb2ca378554ad2f9f39c6b65847e7801be622787f0803dea",
+  "drift": [],
+  "allAuthorProcessesWaited": true,
+  "writersStopped": true,
+  "productionAndPermanentTestWrites": false,
+  "disposition": "Accept diagnosis only: group fixture incorrect exact-one Derived assertion proven by controlled order; events helper3s deadline interrupts observation while270 real events continue to seq274. Query candidate remains red; no production repair authorized.",
+  "rawReadback": "Root read original group/event diagnostic logs in prior continuation and joined-query semantic/red/progress logs this continuation; seven commands/actual Wait recorded. No real model/Obsidian/target OS acceptance."
+}

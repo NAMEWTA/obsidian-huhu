@@ -1,0 +1,55 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:45:42.303835+00:00",
+  "task": "132-memory-manifest-binding",
+  "reportSha256": "3b5b9a38479d81c4782476cb2f41526415f9418e6bc1af7782b3e27577810781",
+  "manifestSha256": "29ea4c2d3823479c8eb48e9895b2a71f4a2a895c42e77be3c74468193cd5ef37",
+  "ownFiles": {
+    "native/huhubot/internal/application/api/memory.go": "855d2374f3b77d90cee7a884046f3743d588b5399d7b9979fb7104b4ce528346",
+    "native/huhubot/internal/application/api/memory_manifest_test.go": "32f9f503355f7acbb66201f5cebdd6430e2c39f05682dfb71ed0d55a3b939c42"
+  },
+  "nativeReturn": "author MESSAGE says completed and all source/processes stopped; terminal FINAL reports selected model at capacity. Artifacts and actual command receipts verified independently; not treating model error as product failure or successful native final.",
+  "rootReadback": {
+    "fullReport": "94a453",
+    "code": "6bfa76",
+    "artifacts": 26,
+    "sourceInputs": 23,
+    "drift": []
+  },
+  "checks": [
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/01-api-closure-result.json",
+      "sha256": "205c4922891ef46180120686c93d45d9f3de7a344989cb1a26e697ec6f8b9b13"
+    },
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/03-manifest-old-entry-red-result.json",
+      "sha256": "10dec7679f01753a20a61c4bb7aa8044a67e5f85e13141f612ab9aa8713ac6b6"
+    },
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/05-manifest-api-green-result.json",
+      "sha256": "b58d9ce2380e08ec2709a49819132d5e2bd31e66a7db633e8b42857a70a7b9e8"
+    },
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/06-api-test-closure-result.json",
+      "sha256": "65b0fa8f5b6b7f4dcde43cce24a247f96ae2976509a0686acf87fc9681e532bf"
+    },
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/07-api-vet-result.json",
+      "sha256": "1a1030d6c80b168a4940829d13ccd1bd9c8ba1e1a3d15c5a5e0bc8d378de351a"
+    },
+    {
+      "path": "sessions/20261025T043239Z/132-memory-manifest-binding/logs/10-return-result.json",
+      "sha256": "248f14782b81e1719219d00acb3d810c015950b7d52d86034e00948cd6ec41ce"
+    }
+  ],
+  "rootReturnValidation": {
+    "actualExit": 0,
+    "chunk": "dd053a"
+  },
+  "acceptedScope": "pure body-free helper component candidate only;129 unfinished checkpoint carried forward to134",
+  "unverified": [
+    "independent review",
+    "Store/Grant actual consumer",
+    "default Core/SDK/SQLite joint integration"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "/tmp/huhu-validate-map40.mjs"
+  ],
+  "exitCode": 0,
+  "waited": true,
+  "waitSeconds": 4.141998066006636,
+  "stdout": "{\"result\":\"passed\",\"errors\":[],\"tickets\":28,\"executions\":15}\n",
+  "stderr": ""
+}

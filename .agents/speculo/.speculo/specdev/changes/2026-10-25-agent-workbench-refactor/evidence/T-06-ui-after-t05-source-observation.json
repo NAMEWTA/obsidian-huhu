@@ -1,0 +1,416 @@
+{
+  "schema_version": 1,
+  "task": "T06 UI after T05; strictly read-only preparation",
+  "agent": "/root/prepare_t05_screen",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observation_started_at_utc": "2026-10-25T14:41:24.242872+00:00",
+  "observation_finished_at_utc": "2026-10-25T14:43:42.050968+00:00",
+  "source_hash_scope": "SHA/bytes recorded after targeted source reads; repeated at report generation. No transactional runtime snapshot or execution validation claimed.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "bytes": 5278,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541168531288,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "a7cc886d44ccb3211b464853cac926b26eca8cdff81e3cce364fd084d47f8fa8",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541132090773,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541132090773,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541089508824,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541093621153,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-preflight.md",
+      "sha256": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "bytes": 9271,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792911687689804934,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "58a2bd08480dd2eb7ffede08436cab068bed8baf984283bbed3f9c06111b0f62",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/06-activity-and-approval.md",
+      "sha256": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "bytes": 16717,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792909211666518219,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "11a3692deee000f7062d64107ea2d086d1bfa02558b758d63397932e7c829760",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md",
+      "sha256": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "bytes": 15100,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541096170645,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "3066ec7de2155732fa5e1c9f3259d38e26d229305ffcf41eec61684944857de3",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792905086798215116,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792905086797777508,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "bytes": 6060,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792921498385345936,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "a543fc74b401d8eb5917286a2007db147442877bd6aeed38be3f3b39b66784fd",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/core/workspace/sidebar.ts",
+      "sha256": "992b0ad5aacaf68f7f32e9fc6225bd43f862f0c1301a55212c4f10f0ab7a2af5",
+      "bytes": 726,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541222915067,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "992b0ad5aacaf68f7f32e9fc6225bd43f862f0c1301a55212c4f10f0ab7a2af5",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "bytes": 15857,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792907678706351367,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "9dce3d419810f2e9d2aa50f8e3447351d45d2e41f906b7081b63a480827f884a",
+      "bytes": 56587,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792928335354979550,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "9dce3d419810f2e9d2aa50f8e3447351d45d2e41f906b7081b63a480827f884a",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/workspace-view.ts",
+      "sha256": "8be12da06de9320a0c093def10ca0a0992af396465682411b4b7f580d36c9437",
+      "bytes": 671,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541230173049,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "8be12da06de9320a0c093def10ca0a0992af396465682411b4b7f580d36c9437",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "bytes": 47743,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792938414167816809,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "e89f8ba7d85ff341e5d3acfde3d3383236f9c04af97dc77fa5f7249cef747a81",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "45b30f0f91a2084b16d731d939c161c2e6532ae9add34d1b590573531e462115",
+      "bytes": 27346,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792939083127819503,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "45b30f0f91a2084b16d731d939c161c2e6532ae9add34d1b590573531e462115",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "7312c15c138fb82d6a32d69757bd170a49756a172aca2fd6886891e1ce62f73a",
+      "bytes": 28531,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792938414550823682,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "7312c15c138fb82d6a32d69757bd170a49756a172aca2fd6886891e1ce62f73a",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/terminal/status.ts",
+      "sha256": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "bytes": 1190,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541229834729,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "24000f5543ab0d1e1c6438b541f7733f732aa8fe54362c6ec857f455eebadeeb",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "0f500b21596a56374801ca3733d1af81feb6d23ecde4c912031210035ef2014f",
+      "bytes": 23176,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792922952098974797,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "0f500b21596a56374801ca3733d1af81feb6d23ecde4c912031210035ef2014f",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.dom.test.tsx",
+      "sha256": "fcc42139af562b582faf3dd88f38c11580f7aa1136f131ccead83458d8a19a02",
+      "bytes": 17326,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792922932793223137,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "fcc42139af562b582faf3dd88f38c11580f7aa1136f131ccead83458d8a19a02",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "sha256": "59347afe0120b5b8391668feb9884a6dcc6fe19e2c0a17373f04c25a9d7aa10c",
+      "bytes": 4781,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792922627242498824,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "59347afe0120b5b8391668feb9884a6dcc6fe19e2c0a17373f04c25a9d7aa10c",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/managed-lifecycle.tsx",
+      "sha256": "dbae64ac0ace3368f2968259d92edd701154e6ff47779d8b028043048f3d8a8d",
+      "bytes": 8390,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792922766093887779,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "dbae64ac0ace3368f2968259d92edd701154e6ff47779d8b028043048f3d8a8d",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
+      "sha256": "07f60e9b4b2f73978a76b9239d19c1c02b580210433566bd49b53657ee62ef3b",
+      "bytes": 14545,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792923200194508774,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "07f60e9b4b2f73978a76b9239d19c1c02b580210433566bd49b53657ee62ef3b",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/AgentWorkspacePage.dom.test.tsx",
+      "sha256": "2b46272e18a19f7bc971dfc517510ad5ec59d745ef90fd89b630c5f834625645",
+      "bytes": 8364,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792923188410008913,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "2b46272e18a19f7bc971dfc517510ad5ec59d745ef90fd89b630c5f834625645",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/workspace-context.tsx",
+      "sha256": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc",
+      "bytes": 813,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792902541233835239,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "bdefb6de5de3043e2816b5ca26bcd519709b1418c1047c7a5bff83cf671708cc",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/ui/terminal/TerminalTabView.tsx",
+      "sha256": "d037ddeb15d892e0fa2a847a5eeaf87609007c29a213d99cdb40286bc1bc41ee",
+      "bytes": 19628,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792937957814628777,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "d037ddeb15d892e0fa2a847a5eeaf87609007c29a213d99cdb40286bc1bc41ee",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
+      "sha256": "bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a",
+      "bytes": 16645,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792928335353979532,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a",
+      "unchanged_between_hash_observations": true
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "bafd8f794de31e791865d86549bccf51d91355290b4e60be67061c81f65aff68",
+      "bytes": 67872,
+      "observed_at_utc": "2026-10-25T14:41:24.242872+00:00",
+      "mtime_ns": 1792938980693434157,
+      "kind": "source-or-authority",
+      "access": "read-only; targeted sections or text search",
+      "checked_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "sha256_at_final_check": "bafd8f794de31e791865d86549bccf51d91355290b4e60be67061c81f65aff68",
+      "unchanged_between_hash_observations": true
+    }
+  ],
+  "source_drift": [],
+  "absent_paths": [
+    {
+      "path": "src/modules/agent/ui/control",
+      "exists": false,
+      "observed_at_utc": "2026-10-25T14:43:42.050968+00:00",
+      "meaning": "ticket planned path, not an existing UI host"
+    }
+  ],
+  "actual_operations": [
+    "Read workspace/catalog and reuse applicable dev/ui rules",
+    "Read T06 preflight, ticket, approved DESIGN and relevant contract/spec sections",
+    "Read targeted current UI/workspace/runtime projection source with cat/sed/rg",
+    "Read existing test source only; no test execution",
+    "Hash sources and write two /tmp deliverables using Python stdlib"
+  ],
+  "command_kinds": [
+    {
+      "command": "cat / sed -n / rg -n (targeted repository reads)",
+      "result": "read-only source inspection; successful calls unless expected absent ui/control inventory"
+    },
+    {
+      "command": "rg --files src/modules/agent/ui/control",
+      "result": "path absent; inventory only, not a test failure"
+    },
+    {
+      "command": "python3 - (hash/UTC/report manifest)",
+      "result": "exit 0"
+    }
+  ],
+  "findings_not_reproduced": [
+    {
+      "id": "T06-UI-STATIC-PANE-FOCUS",
+      "source": "src/modules/agent/services/workspace-service.ts:505",
+      "description": "Existing-tab attach activates tab without changing focusedSessionId; exact pending pane not guaranteed by the inspected branch. Static source finding only."
+    }
+  ],
+  "not_executed": [
+    "No production implementation or repo/formal status writes",
+    "No tests, lint, typecheck, build, helper, cargo or acceptance scripts",
+    "No browser/Obsidian/OS UI/IME validation",
+    "No live Provider or approval/capability certification",
+    "No external research or dependency changes",
+    "No nested agent, commit, push, release or ticket admission"
+  ],
+  "authority": {
+    "ticket": "ready statically but blocked_by T05; Root has not admitted T06",
+    "design_revision": 1,
+    "design_digest": "f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab",
+    "prior_preflight": "evidence/T-06-preflight.md; existing Provider/license/activity research reused"
+  },
+  "report": {
+    "path": "/tmp/huhu-t06-ui-after-t05-readonly.md",
+    "sha256": "00fb009fdb744b9bc754ff2dea826d4df4c98809f975e1aed59adf6058848f2a",
+    "bytes": 10032
+  },
+  "status": "READ-ONLY SOURCE STOPPED"
+}

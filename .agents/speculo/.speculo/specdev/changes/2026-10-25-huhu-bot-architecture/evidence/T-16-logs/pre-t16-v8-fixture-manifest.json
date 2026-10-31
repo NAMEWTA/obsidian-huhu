@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 8,
+  "sourceCodeInputSha256": "4ca01eae3681696306681ebd9e65c1136512e6df3cb9361111f46c82d22e1f11",
+  "groupSource": "accepted Root production TS/HAP/Go/Host code E2E r3, two Runner processes both exited/Wait; original database copied byte-for-byte",
+  "groupSourceSha256": "4bf63d5f4a35943af452253be49db059def187ff2ad7239ca48a7aaa4b2f0dd5",
+  "profiles": {
+    "legacy_cp": {
+      "schemaVersion": 8,
+      "integrity": "ok",
+      "foreignKeys": [],
+      "runs": 5,
+      "checkpoints": 5,
+      "messages": 10,
+      "groups": 0
+    },
+    "groups": {
+      "schemaVersion": 8,
+      "integrity": "ok",
+      "foreignKeys": [],
+      "runs": 5,
+      "checkpoints": 0,
+      "messages": 5,
+      "groups": 1
+    }
+  },
+  "files": {
+    "legacy_cp/one/checkpoints/177ceb2402c609246cf8b8e40f07bd02.cp": "01a5fb5520ddfe79e6d2cce37cd8d2a9ca6fabd0422d36edd7795612a4d275d9",
+    "legacy_cp/one/checkpoints/1aeef47e7c17340dd4be0eb3a5d69aad.cp": "8dc07aba00242025372b2e1bbcc46e11fe843878a17b5d1c6b2980261b196a33",
+    "legacy_cp/one/checkpoints/387bdb4e3badc53c4ec0a6837bbeefe3.cp": "250a9d407125728159c7a8687d8b883404104e6f89a954ba41cc5f3337cf4bf1",
+    "legacy_cp/one/checkpoints/649059b13e0818a3c8145bd201f2db42.cp": "e9eb2e2253bbc9db2d5b9ea59405553c9735291c8cbd2b5d833f3c940b3521e7",
+    "legacy_cp/one/checkpoints/6a82fd333831bbfe16008f3025c572f2.cp": "71a7a83a06d2cc15a46813249a9dfd2c9028146240143d1bb54c90373f47dc28",
+    "legacy_cp/one/profile.sqlite3": "fd070d1ffb5aeb9d70efc6df6e1b8431032aa274140a4151f407bf4fe10d0dcc",
+    "groups/one/profile.sqlite3": "4bf63d5f4a35943af452253be49db059def187ff2ad7239ca48a7aaa4b2f0dd5"
+  }
+}

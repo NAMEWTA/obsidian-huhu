@@ -1,0 +1,70 @@
+{
+  "observer": "native:/root",
+  "capturedAt": "2026-10-26T05:15:51.957712+00:00",
+  "task": "113-docs-link-semantics",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "9517f1",
+  "rootReturnErrors": [],
+  "rootReturnWarnings": [],
+  "reportSha256": "4995c7b803c4a46cd484a3f9cb3d8299270856a8d7bf19f04b5c2c9f51a60baa",
+  "manifestSha256": "aa0a81908c9fa8e7dbadac7103617b9ba5dd389e726e6d1262d14e926a24440f",
+  "artifactsVerified": 17,
+  "sourceFilesVerified": 4,
+  "readOnlySourcesVerified": 13,
+  "acceptedChatBeforeFilesVerified": 4,
+  "currentHashDrift": [],
+  "ownFiles": {
+    "scripts/documentation-policy.mjs": "a3e17a356350d79e73c40fd6239def5d66c2dd86e6e22707d8737f005ac49803",
+    "scripts/verify-docs.mjs": "9b941c1f13c1ab236e1445b21016beb280d2a2c7121e9571c5e452a44ff8de3c",
+    "test/release/documentation-checker.test.ts": "817aaf9775e858255bc795ce1945442c242089bd17a961c6be2b97510ec4a648",
+    "test/release/documentation-policy.test.ts": "e750a6a1bf2eb6074fae79c86e294abf3ed5fea922d0ae3edeb258ace657dcf4"
+  },
+  "fullDiffAndRedGreenDocsLogsRead": true,
+  "actualChecks": {
+    "01-targeted-red": {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "test/release/documentation-checker.test.ts",
+        "test/release/documentation-policy.test.ts"
+      ],
+      "outerExit": 126,
+      "waited": true
+    },
+    "02-targeted-green": {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "test/release/documentation-checker.test.ts",
+        "test/release/documentation-policy.test.ts"
+      ],
+      "outerExit": 0,
+      "waited": true
+    },
+    "03-docs": {
+      "command": [
+        "pnpm",
+        "test:docs"
+      ],
+      "outerExit": 0,
+      "waited": true
+    }
+  },
+  "testsPassed": 7,
+  "docsObservation": {
+    "markdownFiles": 789,
+    "localLinks": 1754,
+    "externalLinks": 745,
+    "externalFetched": false,
+    "scope": "113 actual observation; later added reports and Map28 materials require their applicable link check, not asserted to be this same snapshot"
+  },
+  "disposition": "接收113四文件候选，冻结106/110与111原红未改；纳入112独立审查，T27/Goal不完成。"
+}

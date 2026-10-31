@@ -1,0 +1,34 @@
+{
+  "observer": "native:/root",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportAndBothProbesAndRawLogsRead": true,
+  "reportSHA256": "7635b2f095a2567411cdec65dfc81073bfd3a91dd172c504d4621f011ba8efed",
+  "inputSHA256": "5f30fe1c5e4d8a359dbafde9c7a651bef03fcd878fdf5b8e4b50ffdd8a8d12ae",
+  "filesChecked": 2032,
+  "inputDrift": [],
+  "artifactsChecked": 15,
+  "artifactDrift": [],
+  "artifactManifestSHA256": "23947aad7949ac12cc27f29333d172042d635fdbf3f4bc5a7da3a5b28c01ebee",
+  "return": {
+    "command": [
+      "node",
+      ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+      "--repo",
+      "/home/wta/orca/workspaces/obsidian-huhu/bot",
+      "--scope-root",
+      ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+      "--session",
+      "20261025T043239Z",
+      "--task",
+      "098-chat-review",
+      "--stage",
+      "return"
+    ],
+    "exitCode": 0,
+    "waited": true,
+    "seconds": 0.06389544799458236,
+    "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+    "stderr": ""
+  },
+  "disposition": "Received independent two-axis request-changes, two P2 confirmed; T08 not accepted; preserve Root r3 normal-path E2E and original review reds."
+}

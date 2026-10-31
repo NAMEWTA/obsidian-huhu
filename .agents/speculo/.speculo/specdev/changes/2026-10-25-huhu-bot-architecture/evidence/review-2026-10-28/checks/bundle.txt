@@ -1,0 +1,38 @@
+$ node scripts/check-bundle.mjs --budget scripts/bundle-budget.json --enforce
+main.js 6579.7 KB
+startup-evaluated 122.9 KB (108 inputs); lazy 6265.7 KB (3477 inputs)
+top startup areas:
+     43.0 KB  src/shared
+     42.1 KB  src/app
+     12.8 KB  src/modules/home/core
+      8.2 KB  src/theme
+      7.0 KB  src/host
+      2.7 KB  src/modules/home/settings.ts
+      1.2 KB  src/modules/browser/core
+      1.1 KB  src/modules/comments/settings.ts
+      0.4 KB  src/modules/agent/api.ts
+      0.3 KB  src/modules/agent/manifest.ts
+      0.3 KB  src/modules/automations/manifest.ts
+      0.3 KB  src/modules/home/manifest.ts
+      0.3 KB  src/modules/archives/manifest.ts
+      0.3 KB  src/modules/navigator/manifest.ts
+      0.3 KB  src/modules/notifications/manifest.ts
+      0.3 KB  src/modules/comments/manifest.ts
+      0.2 KB  src/modules/browser/manifest.ts
+      0.2 KB  src/modules/sync/manifest.ts
+      0.2 KB  src/modules/huhubot/manifest.ts
+      0.2 KB  src/modules/icons/manifest.ts
+module activation (+ deferred pages and import() targets):
+  agent           969.9 KB  (+ 1146.9 KB)
+  archives        171.7 KB  (+ 532.6 KB)
+  automations     211.2 KB  (+ 704.2 KB)
+  browser         100.1 KB  (+ 406.3 KB)
+  comments        108.2 KB  (+ 516.1 KB)
+  home            481.0 KB  (+ 2308.6 KB)
+  huhubot         534.3 KB  (+ 599.0 KB)
+  icons           154.7 KB  (+ 919.5 KB)
+  navigator       198.1 KB  (+ 866.9 KB)
+  notifications    19.9 KB  (+ 367.8 KB)
+  safe             58.7 KB  (+ 507.8 KB)
+  sync             95.3 KB  (+ 579.1 KB)
+budget: within limits

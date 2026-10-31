@@ -1,0 +1,261 @@
+{
+  "version": "huhu-note-effect-v1",
+  "cases": [
+    {
+      "name": "unicode-control",
+      "command": {
+        "profileId": "profile:one",
+        "commandEpoch": "1",
+        "leaseId": "lease:one",
+        "hostConnectionId": "host:one",
+        "leaseEpoch": "1",
+        "workspaceId": "vault",
+        "capability": "note.write",
+        "effectId": "effect:one",
+        "resource": {
+          "resourceId": "opaque:target",
+          "revision": "1"
+        },
+        "expectedRevision": "1",
+        "content": "正文😀<&  \n\t\u0000",
+        "preview": {
+          "binding": {
+            "deviceId": "设备😀<& ",
+            "profileId": "profile:one",
+            "commandEpoch": "1",
+            "workspaceId": "vault",
+            "originClientId": "client\nline",
+            "originViewId": "view ",
+            "leaseId": "lease:one",
+            "hostConnectionId": "host:one",
+            "leaseEpoch": "1",
+            "targetResourceId": "opaque:target",
+            "preparationId": "prepare:one",
+            "baseHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "contentHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "targetVersion": "1",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "target": {
+            "workspaceId": "vault",
+            "resourceId": "opaque:target",
+            "operation": "update",
+            "baseRevision": "1"
+          },
+          "tool": {
+            "name": "note.write",
+            "capability": "note.write",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "parametersHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "diff": "old -> exact",
+          "content": "正文😀<&  \n\t\u0000",
+          "sourceRefs": []
+        },
+        "runId": "run:one",
+        "approvalId": "approval:one",
+        "approvalRevision": "2",
+        "expiresAt": "2026-10-25T01:02:03.123456789Z",
+        "fingerprint": ""
+      },
+      "fingerprint": "sha256:e0ef8cff65022093ca9f10be8ff470b875aa9ffe01a55eb23712aca1835f5e68"
+    },
+    {
+      "name": "new-current-lease",
+      "command": {
+        "profileId": "profile:one",
+        "commandEpoch": "1",
+        "leaseId": "lease:second",
+        "hostConnectionId": "host:second",
+        "leaseEpoch": "2",
+        "workspaceId": "vault",
+        "capability": "note.write",
+        "effectId": "effect:one",
+        "resource": {
+          "resourceId": "opaque:target",
+          "revision": "1"
+        },
+        "expectedRevision": "1",
+        "content": "正文😀<&  \n\t\u0000",
+        "preview": {
+          "binding": {
+            "deviceId": "设备😀<& ",
+            "profileId": "profile:one",
+            "commandEpoch": "1",
+            "workspaceId": "vault",
+            "originClientId": "client\nline",
+            "originViewId": "view ",
+            "leaseId": "lease:one",
+            "hostConnectionId": "host:one",
+            "leaseEpoch": "1",
+            "targetResourceId": "opaque:target",
+            "preparationId": "prepare:one",
+            "baseHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "contentHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "targetVersion": "1",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "target": {
+            "workspaceId": "vault",
+            "resourceId": "opaque:target",
+            "operation": "update",
+            "baseRevision": "1"
+          },
+          "tool": {
+            "name": "note.write",
+            "capability": "note.write",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "parametersHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "diff": "old -> exact",
+          "content": "正文😀<&  \n\t\u0000",
+          "sourceRefs": []
+        },
+        "runId": "run:one",
+        "approvalId": "approval:one",
+        "approvalRevision": "2",
+        "expiresAt": "2026-10-25T01:02:03.123456789Z",
+        "fingerprint": ""
+      },
+      "fingerprint": "sha256:e0ef8cff65022093ca9f10be8ff470b875aa9ffe01a55eb23712aca1835f5e68"
+    },
+    {
+      "name": "content-changed",
+      "command": {
+        "profileId": "profile:one",
+        "commandEpoch": "1",
+        "leaseId": "lease:one",
+        "hostConnectionId": "host:one",
+        "leaseEpoch": "1",
+        "workspaceId": "vault",
+        "capability": "note.write",
+        "effectId": "effect:one",
+        "resource": {
+          "resourceId": "opaque:target",
+          "revision": "1"
+        },
+        "expectedRevision": "1",
+        "content": "正文😀<&  \n\t\u0000!",
+        "preview": {
+          "binding": {
+            "deviceId": "设备😀<& ",
+            "profileId": "profile:one",
+            "commandEpoch": "1",
+            "workspaceId": "vault",
+            "originClientId": "client\nline",
+            "originViewId": "view ",
+            "leaseId": "lease:one",
+            "hostConnectionId": "host:one",
+            "leaseEpoch": "1",
+            "targetResourceId": "opaque:target",
+            "preparationId": "prepare:one",
+            "baseHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "contentHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "targetVersion": "1",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "target": {
+            "workspaceId": "vault",
+            "resourceId": "opaque:target",
+            "operation": "update",
+            "baseRevision": "1"
+          },
+          "tool": {
+            "name": "note.write",
+            "capability": "note.write",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "parametersHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "diff": "old -> exact",
+          "content": "正文😀<&  \n\t\u0000",
+          "sourceRefs": []
+        },
+        "runId": "run:one",
+        "approvalId": "approval:one",
+        "approvalRevision": "2",
+        "expiresAt": "2026-10-25T01:02:03.123456789Z",
+        "fingerprint": ""
+      },
+      "fingerprint": "sha256:433ad2fec32ac70c6e54a3a99853073f5b2237c13e4eba7f0e3c985e10017777"
+    },
+    {
+      "name": "approval-changed",
+      "command": {
+        "profileId": "profile:one",
+        "commandEpoch": "1",
+        "leaseId": "lease:one",
+        "hostConnectionId": "host:one",
+        "leaseEpoch": "1",
+        "workspaceId": "vault",
+        "capability": "note.write",
+        "effectId": "effect:one",
+        "resource": {
+          "resourceId": "opaque:target",
+          "revision": "1"
+        },
+        "expectedRevision": "1",
+        "content": "正文😀<&  \n\t\u0000",
+        "preview": {
+          "binding": {
+            "deviceId": "设备😀<& ",
+            "profileId": "profile:one",
+            "commandEpoch": "1",
+            "workspaceId": "vault",
+            "originClientId": "client\nline",
+            "originViewId": "view ",
+            "leaseId": "lease:one",
+            "hostConnectionId": "host:one",
+            "leaseEpoch": "1",
+            "targetResourceId": "opaque:target",
+            "preparationId": "prepare:one",
+            "baseHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "contentHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+            "targetVersion": "1",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "target": {
+            "workspaceId": "vault",
+            "resourceId": "opaque:target",
+            "operation": "update",
+            "baseRevision": "1"
+          },
+          "tool": {
+            "name": "note.write",
+            "capability": "note.write",
+            "capabilityVersion": "1",
+            "implementationVersion": "1",
+            "policyVersion": "1"
+          },
+          "parametersHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "previewHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "diff": "old -> exact",
+          "content": "正文😀<&  \n\t\u0000",
+          "sourceRefs": []
+        },
+        "runId": "run:one",
+        "approvalId": "approval:one",
+        "approvalRevision": "3",
+        "expiresAt": "2026-10-25T01:02:03.123456789Z",
+        "fingerprint": ""
+      },
+      "fingerprint": "sha256:7e043538f7950bf7a7156eed05dbc3047b3ed6bf55ceb5814e9c146470352d4e"
+    }
+  ]
+}

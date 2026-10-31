@@ -4,3 +4,17 @@ test/golden/** text eol=lf
 # Generated release assets have identical bytes on every platform.
 styles.css text eol=lf
 THIRD-PARTY-NOTICES.md text eol=lf
+browser-worker.cjs text eol=lf
+browser-worker.cjs.sha256 text eol=lf
+browser-cli.cjs text eol=lf
+browser-cli.cjs.sha256 text eol=lf
+src/modules/browser/platform/desktop/runtime/*.generated.json text eol=lf
+
+# Generated control protocol sources: `generate-control-protocol.mjs --check` compares
+# these bytes, and the Rust file embeds the descriptor verbatim into the helper.
+src/shared/native/control-wire.generated.ts text eol=lf
+src/shared/native/control-wire-editor-codec.generated.ts text eol=lf
+native/pty-server/src/control/wire_generated.rs text eol=lf
+
+# The packaged control Skill is installed verbatim; its front matter and examples are LF.
+src/modules/agent/core/control/skill/*.md text eol=lf

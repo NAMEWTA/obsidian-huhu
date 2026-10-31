@@ -1,0 +1,691 @@
+{
+  "task": "T-14 consumer compatibility static preflight",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+  "notAFrozenSnapshot": true,
+  "hashMeaning": "Final observation of current bytes, not a frozen implementation or assertion that active sources stayed unchanged during reads. T-03 active-writable files are labelled. Future T-04 through T-13 APIs are not assumed.",
+  "notRun": [
+    "tests",
+    "build",
+    "lint",
+    "Obsidian",
+    "Provider",
+    "helper",
+    "CLI",
+    "git operations"
+  ],
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/14-consumer-compatibility.md",
+      "sha256": "80d15912481d1cf0e5a3ed149fad40a86644fad9d77b5d8c3bdbdf58f1170da4",
+      "bytes": 19521,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/dev/references/settings-and-i18n.md",
+      "sha256": "8ab588cba6ad602ab22e8f2ef4d89003331b7b26afb0af02721593af256c22c1",
+      "bytes": 5235,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/ui/SKILL.md",
+      "sha256": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "bytes": 6488,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/ui/references/shell.md",
+      "sha256": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "bytes": 8182,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/ui/references/design-system.md",
+      "sha256": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+      "bytes": 9072,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": ".agents/skills/ui/references/motion-a11y.md",
+      "sha256": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+      "bytes": 4304,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/api.ts",
+      "sha256": "c6530c00cd8afab3a17b105c0e4c0ab1ffe4c406f4e6f4572eba83fdb249fc09",
+      "bytes": 8407,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/manifest.ts",
+      "sha256": "7b9a92c13cde7a88d2d2caee0ef1f2862043d06ea6ffb6f5a096d9799f0a7d6b",
+      "bytes": 999,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/module.test.ts",
+      "sha256": "2c15a1a1786029e1edac4d6396f9d405f642a69acfd8bbb06d616e98aa17ee17",
+      "bytes": 1972,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/shared/agent-dispatch.ts",
+      "sha256": "767cb7e31c1bfc2989527733f026970a92b2ed8ac8af7db217e52a562546dc2c",
+      "bytes": 1341,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/shared/agent-prompt.ts",
+      "sha256": "ec72a6a0aaef8cd86e322933329d677d2d72cfd79497726a6c6b146a5b2a64c1",
+      "bytes": 1604,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/shared/automation/types.ts",
+      "sha256": "db04681586bc150c81eb9d16114575f74cb331ecb98d85ced2f242e11429045f",
+      "bytes": 6461,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/shared/automation/metadata.ts",
+      "sha256": "1110984056b94e7b05fb4f383871893609a646ea08c5a828a815d920d4ea9029",
+      "bytes": 5808,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/shared/automation/errors.ts",
+      "sha256": "724e61bd5edd6ced3421ac30b7d0af05d421bd97dfbeb07fe0938ef9a2533123",
+      "bytes": 1715,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-port.ts",
+      "sha256": "1db277a9ac54772719b6c2fc9e0ac55e41a6c21e014a86807a261ff7edbb274d",
+      "bytes": 2702,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-port.test.ts",
+      "sha256": "4f6dd0a68405b3d62963eac40e1373794c1de008b965e93862394fe51c67af91",
+      "bytes": 3763,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.ts",
+      "sha256": "588082628e0d24c33015217b9c1d056c0474b13212972e52ca2e17781bfd30dd",
+      "bytes": 7898,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/prompt-runner.test.ts",
+      "sha256": "c8b32d4c302b4bef0c5794de9a8fd9fa695d35a4280034a06eaf9ef72c773712",
+      "bytes": 8270,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/agent-runtime.ts",
+      "sha256": "499dba720ad4b5a357bb79b0605044199a9bc110cc5173ab3f12ce4c60d8b2fc",
+      "bytes": 22946,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/session-material.ts",
+      "sha256": "24c00ccf18035b84b0a9ee349d948ff25b5a0974a92873e61177533fc63a427d",
+      "bytes": 4742,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/session-material.test.ts",
+      "sha256": "67a335a0528ad130f4ff8fb9d40237a0b459f697429e7cd49238100a05a11709",
+      "bytes": 5029,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/quick-commands-port.ts",
+      "sha256": "49a13f44ac45a99d7f7a5240d967b10b304aeb175b197a15772f51a130f042d6",
+      "bytes": 1059,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/quick-commands-port.test.ts",
+      "sha256": "1a894759dcb871044940579ef2c4f606ab35b987e06a8b6b642369f650ec0af7",
+      "bytes": 2062,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/workbench.ts",
+      "sha256": "c247f4aba0b9a047bc54a57a2d36b71e557c91102514f6e91f98509f2233cb9b",
+      "bytes": 1111,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/skills.ts",
+      "sha256": "f70b0c80ff986e548e137d298a606bc851a56e66657ccdb3e0a2acd7b49d4048",
+      "bytes": 3341,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/skill-catalog.ts",
+      "sha256": "96ad3efa912fae7e4cf2f3b067957a01997a367136d93df445807ae1f3286b55",
+      "bytes": 2773,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "26ba7a1d2ca4778783ce77be5c81c77410d5b8e892ef1febac1227a5bfb17866",
+      "bytes": 44070,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "bytes": 16158,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+      "bytes": 1063,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "bytes": 8742,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpacePicker.tsx",
+      "sha256": "bdefb334c060049394abfa8a19fa1a9fbba247d1bc58c03d502098e10f26389c",
+      "bytes": 2044,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": true,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/ui/settings/QuickCommandsSection.tsx",
+      "sha256": "dffbe544508f5359435d00c555fa85bdc6f1b5e634524e13447f20e54939ea08",
+      "bytes": 2301,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/agent/ui/quick-commands/QuickCommandEditor.tsx",
+      "sha256": "7d3a903f5c7be0fc77b202ae17365e213bcaab0bcc7f1d8ee74abde075cb8ee4",
+      "bytes": 5037,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/api.ts",
+      "sha256": "75483b3102c08fcdfb28d6407d833507c21fc7d2a1aab86c59683fce91aa56e4",
+      "bytes": 4858,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/services/runtime.ts",
+      "sha256": "c48383f13a424d590361dd87cdcaf85db9f2f205fbaee676fd8d52a77531ecbe",
+      "bytes": 11146,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/service.ts",
+      "sha256": "80c4698376ad3398777fa60af6a457cbb50389595aa2d91b4f11cea0399f5890",
+      "bytes": 30425,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/api.ts",
+      "sha256": "336f123cf3e2101965f623ef95f154a7bdf162b6e2f039b9e408adb89ef255a4",
+      "bytes": 2254,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/documents.ts",
+      "sha256": "21c73ae1d7523012e850a4882bedbe87bb869961f7c585482951c599ce346387",
+      "bytes": 4097,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/precheck.ts",
+      "sha256": "677bbfe193a0c9beaa8b73a716fb853dccc9d9082639f097f20e48a2dae7cf61",
+      "bytes": 408,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/invocations.test.ts",
+      "sha256": "8c499f03f36929004499541be28a548d2ae0157c9c0418ad60b0b06c219730ad",
+      "bytes": 7180,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/actions/agent.ts",
+      "sha256": "719f1412d566e803410c7024e24c2a955511d340196ee36eb80ebf6659d45824",
+      "bytes": 3272,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/actions/script.ts",
+      "sha256": "ef3a5cfb09f2c9b7870bb1523dfed135d6b96ce3733004b8046c06881dc5cf91",
+      "bytes": 1159,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/actions/document.ts",
+      "sha256": "8846b4857e2c24745f382cf9cc33937139e6bf8e4de0b4217b4ce1dd512834ad",
+      "bytes": 1707,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/core/actions/definition.ts",
+      "sha256": "643c034596c925fd3278b621f49242caaa03e1d7b4bd6f8f4eb39ed5b730acdc",
+      "bytes": 5525,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/AutomationsPage.tsx",
+      "sha256": "6437ddb18bd7e33b0bb594ac20a29081b9141a0fc45405c912d59d02d9978d56",
+      "bytes": 12665,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/actions/agent.tsx",
+      "sha256": "5a490b8d77704530d3f1b6013289223ea37ed623fb5d68386444d537cc2e5315",
+      "bytes": 4596,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/actions/script.tsx",
+      "sha256": "3fff44e48f76a9d562eb1f1d6633d22effc5062fc6a1655ad4fd0df6b4398774",
+      "bytes": 1803,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/actions/types.ts",
+      "sha256": "6a7b8c8651c009cc6b8f2f0de591c2d03802c3712cdaed7cc4db1240b5c346b5",
+      "bytes": 2420,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/editor/draft.ts",
+      "sha256": "8cc4c7338fd9ce0162cfc6a6aaecfc95a916af7269ca1506c978b91d4461cacb",
+      "bytes": 3455,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/ui/panel-contract.ts",
+      "sha256": "6206c193de3d7ba4ff5805baddaeed061b4f8a3747b431da742079222a42e446",
+      "bytes": 1240,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/automations/platform/desktop/precheck.ts",
+      "sha256": "60388d1cfc820242e1173350b2f58186496d11c63951e5ed38398b450e94c4c8",
+      "bytes": 4837,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/module.ts",
+      "sha256": "9d446495659bbe23a4dca925b71e721b6460c8e2249cf25627b8f3f106bb8a72",
+      "bytes": 13416,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/services/shortcut-run.ts",
+      "sha256": "e1e611dc5594f6cf940e63c933a803dc113d689059937f30bc2b0756fc4f5f68",
+      "bytes": 4482,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/services/skill-shortcuts.ts",
+      "sha256": "8018302d2a3850b90507c7bcb46ddf79b7c4a0cb8195c4ff59a573766c694edc",
+      "bytes": 3087,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/services/skill-shortcuts.test.ts",
+      "sha256": "f0c42d619a9e52c57a00a7a227cb5ac72ccd00fce33e830837a0cd63e8576e2d",
+      "bytes": 3102,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/services/instances.ts",
+      "sha256": "aebcdc24af06f73646aaaab78a0d5842472db8ca062a628aa2322e5008cf4739",
+      "bytes": 2190,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/services/board-store.ts",
+      "sha256": "0e420c823eb99d709c9443260628e582658d48ebb317a6e5112f4c88cf4a1389",
+      "bytes": 26866,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/types/model.ts",
+      "sha256": "bfbf5a12624300d87e1d4e7e4e66845798d03157244ced4c9c889450508d9919",
+      "bytes": 37461,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/shortcut-buttons.ts",
+      "sha256": "3b485b1f905f96335d53fb6c234688c940fc7f87ccd008dbcd223ba5e18459ad",
+      "bytes": 2290,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/skill-shortcuts.ts",
+      "sha256": "e8d0f96bcde6d0fe6b6bbee3e48997eed7c4b55a35305d88763e28f681ffc53a",
+      "bytes": 1619,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/skill-shortcuts.test.ts",
+      "sha256": "b582aaf624e920fa5627e5bd6e794ddd197af55e76ce3231be2e48162b2d55b2",
+      "bytes": 1808,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/skill-prompt.ts",
+      "sha256": "c90cdf78f094676127c7e2803100e1045e1873ecccd7c99e3f462b63a36811be",
+      "bytes": 1235,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/settings.ts",
+      "sha256": "97539a61b2723f88a9e44a7667c5b2eed71ee89d84fa9a8528d89d3975be9297",
+      "bytes": 2755,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/board-codec.ts",
+      "sha256": "cec38f57f1d4dab19a4b8a21a45a00efd6891cec237a6bf42ff217b557b8af12",
+      "bytes": 2759,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/p1-config.ts",
+      "sha256": "70f71732a97cb00a5b783aa01d51714a30490029df8ea4dc19d45dc40cb945c7",
+      "bytes": 2788,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/parser/parse.ts",
+      "sha256": "243cd8a3d2389a5d6fe9d5370a03f772c3579c445d69b3dfe6071e79d4a93f63",
+      "bytes": 18472,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/parser/generate-default-markdown.ts",
+      "sha256": "faa70c3da3faa39cea7a18d044547b38ae40a110cb4c3bd645c3621eccd774aa",
+      "bytes": 6489,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/board/parser/preserve-document.ts",
+      "sha256": "d77a74378eff50d1390381eee5c54f084f4a056db1b7daf1361daa1561412661",
+      "bytes": 4044,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/core/pipeline/codec.ts",
+      "sha256": "b3f1542afefcd0e31d264bf99a7933378abb792beadc33cf4aa3eceab32619a2",
+      "bytes": 3150,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/widgets/ShortcutsWidget.tsx",
+      "sha256": "c4b2e6ed47914041e538427d61c6ea465913a76ab9355e8fb85a4b58f79d2d1e",
+      "bytes": 4261,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/widgets/ShortcutsConfig.tsx",
+      "sha256": "c31be371fee56ed6ee33c7a7fa8ee2cf6136f334ba023e5fe51d813a167febc8",
+      "bytes": 6464,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/widgets/SkillWidget.tsx",
+      "sha256": "f4e092295e78921c0f3e7de3de0770bbaa9166f54e7925b6a0762b005f65a3c3",
+      "bytes": 5486,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/quickbar/SkillList.tsx",
+      "sha256": "55edcd95a25d6c872095825e765ba35fd94652e5de8b14e35482f3b7306c3457",
+      "bytes": 3779,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/skills/SkillCard.tsx",
+      "sha256": "1f4a901630e49061dd35f2720dce5c21127e4876b27b3abeaf4cabe62676ddc5",
+      "bytes": 11795,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/sections/P1Section.tsx",
+      "sha256": "b5eb43c0641bd25dbaec1a6d530243eeffb4d36c0539c2375de5821ba9aefa18",
+      "bytes": 9586,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/home/ui/pipeline/PipelineConfig.tsx",
+      "sha256": "1e4d0e80a5ae3ed0aec0c4052ed841e1f5b654849a76b6542c0941cc0f2fda47",
+      "bytes": 6652,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/modules/browser/module.ts",
+      "sha256": "82e494d025a8c0bb2612864a5d1d4a7bbc1fa060629b637476c82b28872b77dc",
+      "bytes": 3728,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    },
+    {
+      "path": "src/app/workbench/compose-workbench.ts",
+      "sha256": "1d6d9c8174096646f5d2dda49f645bbc1f3a66b28018df697997cffb785e452e",
+      "bytes": 21918,
+      "observedAtUtc": "2026-10-25T07:58:59.333033+00:00",
+      "activeT03Writable": false,
+      "readScope": "targeted read/search; whole-file digest; unchanged dev/ui general rules reused where previously read"
+    }
+  ]
+}

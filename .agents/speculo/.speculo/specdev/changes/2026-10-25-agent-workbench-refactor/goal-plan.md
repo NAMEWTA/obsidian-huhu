@@ -2,7 +2,7 @@
 schema_version: 8
 artifact: goal-plan
 change: 2026-10-25-agent-workbench-refactor
-status: draft
+status: completed
 modes: ["migration", "high-assurance", "reference-conformance"]
 orchestration: lead-directed
 lead: codex:/root
@@ -13,23 +13,24 @@ ready_for_execution: false
 
 # Goal Plan：HUHU 终端 Agent 工作台
 
-- **本轮模式：** plan；规划已形成，产品实施尚未开始。`draft / ready_for_execution: false` 表示尚未获得 run 授权，不表示遗漏规划内容。
-- **计划修订：** GP-001；来源 Tickets Map `plan_revision: 2`。实际派单同时冻结 Goal/Map/Ticket 的内容摘要，不能只比较修订标签。
+- **本轮模式：** run；用户已授权完整实施和代码验收，真实端到端由用户进行（LOG-027、Spec §11）。
+- **计划修订：** GP-047；来源 Tickets Map `plan_revision: 43`。实际派单同时冻结 Goal/Map/Ticket 的内容摘要，不能只比较修订标签。
 - **用户总控入口：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md</Path>；**行为：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md</Path>；**视觉：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md</Path>。
 - **局部交付：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/</Path>；**实施证据目录：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/</Path>。
 - **本轮规划证据：** <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/goal-plan-review.md</Path>；该记录不作为任何产品 Gate 的关闭证据。
 
+<a id="goal-outcome-contract"></a>
 ## 1. Outcome and Authority
 
 ### Outcome
 
 在现有 Obsidian HUHU 工作台中交付以 Herdr 为主要参照的终端 Agent 能力：Space 组织、真实 Shell/Agent、独立后台运行、CLI 对同 Vault 明确目标的输入/等待/读屏与面板控制、被动邮箱、原生人工审批、本 Vault 历史与精确继续、独立网页承载和可靠数据恢复。界面落实用户采用的 A 方案，保留现有六种 CLI 入口、账号、技能与自动化的原生结果合同。首个正式版覆盖五种既定 OS/架构组合。
 
-本轮交付正式 Goal Plan 以及必要导航对齐。用户明确要求在计划内允许 Agent Team，并给出实现与 review 的模型分工；该安排保存在 §4，后续获得实现授权后直接沿用，不逐票重复询问已确定的分工。
+本轮交付全部生产实现、适用自动化/构建检查、独立代码审查和供用户执行的真实端到端验收清单。Agent Team 与 §4 模型安排直接沿用，不逐票重复询问。
 
 ### Success and False Completion
 
-成功是 64 项 AC、7 项 NFR、四个设计任务面、真实 Provider/宿主和五种平台证据共同成立；原有消费者与数据恢复不退化。所有未取消 Ticket 通过原 I 完成合同、整体独立双轴审查及 G-06 后，才可由 Lead 更新 README Outcome。
+本轮成功是全部实现覆盖 64 项 AC、7 项 NFR、四个设计任务面，自动化与构建通过，原有消费者和数据恢复不退化，全部未取消 Ticket 及整体独立双轴代码审查通过。真实 Provider/宿主及五平台验收由用户执行，未运行项明确交接；本轮完成不宣称这些实机证据成立。
 
 18 张票写完、Agent 报告完成、计划/代码静态校验通过、原型可点击、CI 编译成功、wait 返回 idle，均不能独立证明上述产品目标已完成。计划里的 `ready` 也不能替代实际依赖、权限、owner 和 Gate 检查。
 
@@ -41,7 +42,7 @@ ready_for_execution: false
 
 | 来源 | 唯一职责 | 使用与冲突处理 |
 |---|---|---|
-| 用户最近请求，记录于 LOG-025 | Goal 规划、允许 Agent Team、实现/review 模型默认组合 | 明确选择优先；不由工件文字推导新增执行授权 |
+| 用户最近请求，记录于 LOG-027 | 完整实施、Agent Team、代码验收与人工 E2E 分工 | 明确选择优先；不由工件文字推导新增执行授权 |
 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md</Path> | 外部行为、范围、64 AC、NFR 与验证接缝 | 工程路线不能覆盖用户行为；变化先回 S |
 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ADR.md</Path> / <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/CONTEXT.md</Path> | 已采纳架构决定与名词 | 已闭合 Q1–Q10 不重新猜；架构变化回原 G owner |
 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/DESIGN.md</Path> / <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/prototypes/UI-001/design-system.md</Path> | 获批 A、revision 1 / DESIGN-0001 与 UI-001 | 精确引用维持；设计变化回 P-prototype，不用改截图掩盖偏差 |
@@ -52,6 +53,7 @@ ready_for_execution: false
 
 规划观察基线为 `66083cdb9f7f31a4bcbd3e380c6c7f64f2e74e93`，当前分支 main，已有 AGENTS.md/.gitignore 修改及 SpecDev 未跟踪文档。详见 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/goal-plan-baseline.json</Path>；这是规划时的只读观察，实际实施上下文仍在首次 I 时由 README 唯一记录。
 
+<a id="goal-execution-contract"></a>
 ## 2. Execution Graph
 
 ### DAG and Critical Path
@@ -63,7 +65,7 @@ T-01 → T-02 → T-03 → T-04 → T-05 → T-06 → T-07 → T-08 → T-09
                                                            └→ T-13 ───────┘
 ```
 
-真实依赖以原票 `blocked_by` 为准。无工期估算时不声称已经算出时长关键路径；按依赖层数，T-09 后的 T-11→T-12 是最长分支，T-14 汇合 T-10/T-12/T-13。所有票的公共入口与生成物有语义资源冲突，本 Goal 选择 `serial`：一票完成实现、独立审查和适用验证后再开启下一票。
+真实依赖以原票 `blocked_by` 为准。Map §4 明确先行切片与最终 AC 组合 owner；逐票完成门只要求本票能产生的生产能力、自动化与审查，不要求先实现后继 CLI/邮箱。无工期估算时不声称已经算出时长关键路径；按依赖层数，T-09 后的 T-11→T-12 是最长分支，T-14 汇合 T-10/T-12/T-13。所有票的公共入口与生成物有语义资源冲突，本 Goal 选择 `serial`：一票完成实现、独立审查和适用验证后再开启下一票。
 
 W-03 的默认串行次序为 T-10 → T-11 → T-12 → T-13 → T-14。这是资源排序，不往 Ticket 里伪造互相阻塞的边；某分支发生局部阻塞时，可在确认其 writer 停止并释放资源后，选择其他真实依赖满足的分支。其余串行路径的前置失败自然阻塞后继。
 
@@ -104,30 +106,31 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | T-17 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/17-cli-delivery.md</Path> | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-17.md</Path> |
 | T-18 | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/18-platform-acceptance.md</Path> | <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-18.md</Path> |
 
+<a id="goal-gates-contract"></a>
 ## 3. Gates and Completion Evidence
 
 ### Overall Definition of Done
 
 1. 18 个局部交付按原合同真实完成；无需改动的票只能依据事实取消并重新核对覆盖，不能做空提交或写一份 Evidence 冒充实现。
-2. Spec 的 64 项 AC、全部 NFR 与 DESIGN 页面/状态有对应证据；当前没有获批延期项。所有 required E2E 已运行且通过，环境缺失不能改成 passed 或降低五平台范围。
+2. Spec 的 64 项 AC、全部 NFR 与 DESIGN 页面/状态有代码/自动化证据；跨票验收按 Map §4 收束。真实 E2E 已由用户明确接手，逐票标 not-required（Agent 执行范围）并保留人工场景为未运行，不记 passed。
 3. 全部新增和被改变的公开接口、CLI/schema/帮助/Skill、共享 owner、旧调用点、迁移/备份/回滚一致。源码、main.js/styles.css、必要 docs/i18n/来源声明与最终交付匹配。
 4. 每票独立 standards/specification 双轴通过；最终再覆盖从最初实施基线至最终候选的全部实际改动，报告位于 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-review.md</Path>，不得只审最后一票。审核发现修复后重冻输入并复核受影响轴。
-5. 五种组合分别有真实宿主/终端主链证据：Windows x64、macOS x64、macOS arm64、Linux x64、Linux arm64；整体至少覆盖 Codex 与 Claude Code 两种实际 CLI，记录版本与能力，现有其他四种入口按合同回归。跨平台构建不等同于此项。
+5. 五种组合分别交付代码/构建配置与人工验证步骤：Windows x64、macOS x64、macOS arm64、Linux x64、Linux arm64。用户真实主链至少覆盖 Codex 与 Claude Code；其他四种入口有兼容自动化。未在本环境运行的平台不得宣称构建或实机通过。
 6. Lead 核对最终工作副本、产物、证据和所有 writer，关闭适用 Gate 后更新 README Outcome。发布支持承诺以证据为准；实际提交、远程交付和发版仅在用户另有明确要求时属于完成条件。
 
 ### Gates
 
-每个 Gate 由 Lead 核验，模型/worker 自报不能关门。未来关闭时在本 Goal 的进度节保存关闭结论与原 Evidence 引用；详细命令、输入和原输出仍由对应 Evidence 拥有。
+每个 Gate 的代码部分由 Lead 核验，模型/worker 自报不能关门。下表原实机场景保留为用户的验收清单；按 Spec §11，它们不阻塞本轮代码交付，也不能由替身或静态检查冒充通过。未来关闭时在本 Goal 的进度节保存关闭结论与原 Evidence 引用；详细命令、输入和原输出仍由对应 Evidence 拥有。
 
-| Gate | 开启条件 | 不可替代的关闭证据 | 阻塞范围 | Owner / 授权 | 失败恢复 |
+| Gate | 开启条件 | 本地代码关闭证据与用户人工场景 | 阻塞范围 | Owner / 授权 | 失败恢复 |
 |---|---|---|---|---|---|
-| G-00 执行入口 | 用户后续明确要求 run；规划来源可回读 | 实现授权、真实 workspace/基线、Ticket/Skill 摘要、当前票 owner、无冲突 writer、当前票所需工具/测试环境；一次性记录 README Execution Context | 未授权时全实现关闭；未来平台局部缺项不阻塞无依赖的前序工作 | codex:/root；授权来自用户请求 | 只做已授权规划/诊断；保存缺项，不启动 implementation 或伪造执行记录 |
+| G-00 执行入口 | 用户已要求 run；LOG-027 可回读 | 实现授权、真实 workspace/基线、Ticket/Skill 摘要、当前票 owner、无冲突 writer、当前票所需工具/测试环境；一次性记录 README Execution Context | 未授权时全实现关闭；未来平台局部缺项不阻塞无依赖的前序工作 | codex:/root；授权来自用户请求 | 只做已授权规划/诊断；保存缺项，不启动 implementation 或伪造执行记录 |
 | G-01 运行隔离 | W-01 各票通过且输入未漂移 | T-01–04 原 Evidence：真实 PTY 后台/重附加、只关显示、显式 stop/归档/退出、迟到 spawn/Hook、共享 Cookie/helper owner；真实宿主证明 Agent 停用与重启规则 | W-02 及依赖闭包 | Lead；沿已授权隔离验证范围 | 保留旧适配；查询残留与 owner，先停止失败分支，不启动第二 writer 或自动重放 |
 | G-02 协作闭环 | G-01，W-02 通过 | T-05–09：屏幕水位/背压/设备回复一次，真实 A→B prompt/wait/read 与同 Vault 跨 Space，blocked 原生人工批准/拒绝，错误/效果未知，GUI/CLI 布局一致；命令和新能力真实可运行 | W-03 及后继 | Lead；原生审批由用户在 TUI 操作 | 状态不可靠降 unknown；超时先查，不重发；回退到可观察运行与稳定协议 |
 | G-03 消费者与来源 | G-02；邮箱、精确继续、独立网页及兼容迁移完成 | T-10–14：消息不启动模型；外库正文未摄入；精确 native reference 与占用；Agent-off/无 Space 网页与 Cookie 可用；原生完整答案、existing 只粘贴、移动端轻量入口；旧路由调用点归零 | T-15/16 与依赖后继 | Lead | 任一消费者退化先保留兼容层；来源异常隔离，不删自有标注或用屏幕文本替代结果 |
 | G-04 数据往返与恢复 | G-03；最终数据 owner 已固定 | T-15/16：旧样本摘要/计数/引用 dry-run、中断/损坏/重入、单 writer 切换、旧版回退保全新版、导入预检与往返；缺项清单、库外目录重新授权；真实宿主隔离副本演练 | T-17/18 与正式完成 | Lead；用户真实 Vault 的破坏性操作不在计划授权中 | 停写并保留新旧恢复副本，按原迁移记录恢复；不覆盖来源不明数据，不抢锁 |
 | G-05 发行输入一致 | G-04；T-17 通过 | helper/CLI 五平台匹配资产与摘要、协议 major 校验、真实 help/schema/Skill 示例、t() en/zh、逐文件来源许可及 notices；资产仅准备，未推送或发布 | T-18 正式候选验收 | Lead | 撤下错误候选，修正构建/兼容合同后重新冻结；不运行未知摘要资产 |
-| G-06 最终产品验收 | G-05；全部票 Evidence 可回读 | T-18 的五平台实机/宿主主链、A 四页全部适用状态、端到端负载与恢复；64 AC 汇总及最终独立双轴报告；每项记录候选/版本/环境/命令/实际结果 | Goal 完成与正式支持声明 | Lead；独立 reviewer 返回审查，Lead 关门 | 缺哪种平台/合同就保留哪项待验收；修复回原票，重验影响闭包，未失效证据不重复 |
+| G-06 最终代码验收与人工交接 | G-05；全部票 Evidence 可回读 | T-18 自动化/构建/设计代码核对，64 AC 汇总及最终独立双轴报告；五平台实机/宿主主链、A 四页真实状态和负载恢复整理为用户未运行清单；每项记录候选/版本/环境/命令/实际结果 | 本轮代码 Goal 完成；实机支持声明仍待用户验收 | Lead；独立 reviewer 返回审查，Lead 关门 | 缺哪种平台/合同就保留哪项待验收；修复回原票，重验影响闭包，未失效证据不重复 |
 
 ### Contract and Reference Coverage
 
@@ -140,12 +143,14 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | 通知、历史/精确继续、网页与消费者 | T-10–14 | V-01–08 的适用接缝，继续占用补 V-10 | 原票 Evidence；G-03 |
 | 迁移、备份、数据保全 | T-15–16 | V-04/05/07/08 | 原票 Evidence；G-04 |
 | 资产、CLI 文档/Skill、许可与五平台 | T-17–18 | V-02/03/06/08/09/10/11 | 原票与最终审查；G-05/G-06 |
-| 获批 A / DESIGN-0001 | 14 张 UI 票的原 design_ref；T-18 汇总 | V-08 与原 V-12 设计意图；实机补 V-10 | digest `f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab`；逐票 Design Conformance，G-06 |
+| 获批 A / DESIGN-0001 | 15 张 UI 票的原 design_ref；T-18 汇总 | V-08 与原 V-12 设计意图；实机补 V-10 | digest `f469273375c51a11e09ce1479d84b6e83d6949f089051ab22d7060ee0d3a5bab`；逐票 Design Conformance，G-06 |
 | 研究先行与 R-01–05 / K-01–07 | 每张命中陌生能力的票；T-17 汇总来源 | 官方源码/许可/manifest/Issue 与本项目复现；V-11 | reference-notes + 原票采用/不采用理由；不把公开 Issue 当已确认本项目缺陷 |
 
+<a id="execution-protocol"></a>
+<a id="goal-protocol-contract"></a>
 ## 4. Execution and Integration Protocol
 
-**执行入口：** 后续获实现授权后，Lead 与实现者调用 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>，按 Map → 命中的 dev/ui 等项目 Skill → 当前 Ticket 回读并实际执行绑定。I 负责单票实现、独立双轴审查和验证；本 Goal 拥有跨票 Gate。
+**执行入口：** 用户现已授权，Lead 与实现者调用 <Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>，按 Map → 命中的 dev/ui 等项目 Skill → 当前 Ticket 回读并实际执行绑定。I 负责单票实现、独立双轴审查和验证；本 Goal 拥有跨票 Gate。
 
 ### Lead Orchestration
 
@@ -157,7 +162,7 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | 独立 review | **`gpt-6-astra`**（用户所述 6 Astra） | **`high`** | 未参与本次被审范围的实现/修复；只读固定输入，分别返回 standards 与 specification 两轴结论 |
 | Lead、公共入口整合与 Gate 验收 | 原 Lead `codex:/root`，沿当前宿主 | 按实际会话记录 | 保持唯一状态/Evidence owner，核验工具返回和最终工作副本；若参与实现也列为 implementer |
 
-模型分工来自本次明确要求，覆盖流程中“未指定时执行期选择”的默认值；不是给每票预分配 Agent 身份，也不写成项目全局配置。本轮工具目录确实列出这两个模型及 effort，但 **尚未调用**。运行时再次检查实际可用性，并记录真正使用的 model/effort/工具句柄；不可用时保留受影响任务待处理并报告实际限制，不能用其他结果冒称已由指定模型完成。
+模型分工来自本次明确要求，覆盖流程中“未指定时执行期选择”的默认值；不是给每票预分配 Agent 身份，也不写成项目全局配置。本轮工具目录确实列出这两个模型及 effort，已在本轮通过原生协作工具开始调用。各票记录真正请求的 model/effort 与工具句柄；不可用时保留受影响任务待处理并报告实际限制，不能用其他结果冒称已由指定模型完成。
 
 宿主原生派遣若使用模型覆盖，按当前工具合同使用 `fork_turns: "none"`，由 Task Brief 提供完整且精简的输入；模型参数可分别采用 `{"model":"gpt-6.1-sol","reasoning_effort":"xhigh","fork_turns":"none"}` 与 `{"model":"gpt-6-astra","reasoning_effort":"high","fork_turns":"none"}`。这些是本轮已核验接口的计划参数，不是执行回执；具体任务名、agent ID、会话句柄只在真实派遣返回后记录。
 
@@ -168,14 +173,14 @@ Wave 是有出口的里程碑，不表示里面所有票同时启动，也不要
 | 当前宿主限制 | 本轮提供最多 4 个同时活动槽位，包含 Lead；这只是当次工具能力，恢复时重查，不当作项目永久人数规则或 review 专属上限 |
 | Read-only agents | review/research/test-observation 不额外占票据槽；仍服从宿主槽位、固定审查输入及真实工具能力，不要求填满 Agent 数 |
 | Integration attempts | 有效上限 3，来源为 execution-policy 的缺省；若后续实际 config 有更严格值取其值。相同 blocker 无新证据就停止重复，不等到次数耗尽才停 |
-| Shared owner | 沿原 Ticket 的 `lead:agent-workbench-integration`，实际角色由唯一 Lead 承担；当前票作为本次独占修改窗口的 owner Ticket，其他票只读 |
-| Dispatch | 执行期动态产生；计划不创建 worker 注册表、不预填真实身份、不为 plan 启动团队 |
+| Shared owner | 沿原 Ticket 的 `lead:agent-workbench-integration`，由 Lead 在原票 Evidence 分配唯一实际源文件 writer；生成物始终由 Lead 写入；当前票独占修改窗口，其他票只读 |
+| Dispatch | execution-time dynamic（执行期动态产生）；计划不创建 worker 注册表、不预填真实身份、不为 plan 启动团队 |
 
-共享文件和根产物始终只有一个实际 writer。其他实现者可对非共享路径直接写入；需要修改共享入口时把候选交给 Lead，由 Lead 在当前票写集内整合并计入实现者。不能把“Lead 最后解决冲突”当作多人同时写同一文件的许可。现有角色/票据边界不足时，先由原 owner 修订路径合同，不能仅因 Agent Team 可用就扩大写集。
+共享文件和根产物分别只有一个实际 writer。Lead 可把当前票全部源文件写集委托给一位实现者，自己不同时修改这些源文件；根产物仍由 Lead 独占构建。实际委托在原票 Evidence 与 Packet 中冻结。不能把“Lead 最后解决冲突”当作多人同时写同一文件的许可。现有角色/票据边界不足时，先由原 owner 修订路径合同，不能仅因 Agent Team 可用就扩大写集。
 
 ### Dispatch Packet and Review
 
-每次真实派遣按 <Path>{roots.references}/coordination/task-brief.md</Path> 提供：目标 Ticket/本次子任务；GP-001 与当前 Map revision/摘要；Spec、原设计和命中 Skill；已通过的依赖 Evidence；实际 change-workspace；冻结输入/上游 checkpoint；允许路径、共享 owner、禁写路径；适用检查、停止条件和返回位置。陌生能力研究要求和对应开源参考必须随输入提供。任务者不能靠猜测 Lead 的对话补合同，也不递归开启另一套 Goal。
+每次真实派遣按 <Path>{roots.references}/coordination/task-brief.md</Path> 提供：目标 Ticket/本次子任务；GP-035 与当前 Map revision/摘要；Spec、原设计和命中 Skill；已通过的依赖 Evidence；实际 change-workspace；冻结输入/上游 checkpoint；允许路径、共享 owner、禁写路径；适用检查、停止条件和返回位置。陌生能力研究要求和对应开源参考必须随输入提供。任务者不能靠猜测 Lead 的对话补合同，也不递归开启另一套 Goal。
 
 同票团队先明确每个子任务可观察交付和不重叠的写集，完成候选后由 Lead 整合。review 前停止当前被审范围的全部 writer，冻结实际 commit 或完整未提交快照；未经授权不为审查而创建提交。默认由一位新的 Astra reviewer 按 <Path>{roots.workflows}/specdev/common/skills/code-review/SKILL.md</Path> 完成两个轴，需要时可由不同独立 reviewer 分别审查。
 
@@ -183,7 +188,7 @@ reviewer 不参与修复；发现交回实现者处理，随后重冻并复审�
 
 ### Change Workspace and Verification
 
-工作区选择为 **current**，复用本仓库现有 checkout。首次 I 在 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/README.md</Path> 的 `Execution Context` 保存一次实际 workspace/base/head/owner/授权事实；本轮 plan 不创建该运行记录，也不新建分支/worktree。所有票、协作者、review 和修复使用同一工作区；五平台测试使用同一冻结交付输入的可追溯构建/一次性测试环境，不成为额外代码写入工作区。
+工作区选择为 **current**，复用本仓库现有 checkout。首次 I 在 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/README.md</Path> 的 `Execution Context` 保存一次实际 workspace/base/head/owner/授权事实；本轮已建立该运行记录，不新建分支/worktree。所有票、协作者、review 和修复使用同一工作区；五平台测试使用同一冻结交付输入的可追溯构建/一次性测试环境，不成为额外代码写入工作区。
 
 定向测试按原 dev testing 选择表；共享构建、main.js/styles.css、全局检查与 Git index 操作串行协调。未来存在 Git 授权才执行相应操作，脏工作区本身不是清空用户文件的理由。保留 AGENTS.md/.gitignore 与范围外 change，不将其混入本次交付。
 
@@ -193,8 +198,8 @@ reviewer 不参与修复；发现交回实现者处理，随后重冻并复审�
 |---|---|---|
 | 形成 Goal Plan、同步本 change 导航与规划检查 | 已授权 | 当前用户请求，纯文档范围 |
 | 将 Agent Team 和上述模型分工写入计划 | 已授权 | 本 change 后续实现/review 沿用；plan 阶段不实际派遣 |
-| Change workspace implementation / 修复 | 尚未授权启动 | 后续用户明确 run；无需重新确认已选 A、产品范围或模型默认组合 |
-| Change workspace verification | 本轮文档检查已授权；产品验收随 run | 实际 run 核对当前票所需环境/账号/一次性库；不隐式修改真实用户资料 |
+| Change workspace implementation / 修复 | 已授权 | LOG-027；无需重新确认已选 A、产品范围或模型默认组合 |
+| Change workspace verification | 代码、自动化、构建已授权 | 真实 E2E 由用户进行；不操作真实用户库/账号 |
 | Change worktree creation | 未请求 | current 已足够，不从协作推导额外工作区 |
 | Implementation commit / merge / parent update | 未请求 | 不作为本地实现完成的默认门；如请求则核对精确目标 |
 | Push / PR / remote merge / release | 未授权 | 本计划只准备可验证产物，不执行远程交付 |
@@ -207,6 +212,7 @@ reviewer 不参与修复；发现交回实现者处理，随后重冻并复审�
 
 最终整体审查保存在 <Path>{roots.state}/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/final-review.md</Path>，跨票 Gate 验收引用原票/整体证据；不创建第二份 Agent 状态账本或空完成文件。纯 plan 的自查记录与这些未来实现证据分开。
 
+<a id="goal-recovery-contract"></a>
 ## 5. Constraints, Risk and Recovery
 
 ### Non-negotiable Constraints
@@ -217,7 +223,7 @@ reviewer 不参与修复；发现交回实现者处理，随后重冻并复审�
 
 ### Verification Integrity
 
-每票都已声明 required E2E，不推迟到最终票统一补造；T-18 只汇总并补真实跨平台/集成风险。DOM/原型、native 测试、真实 Provider、真实 Obsidian 和五平台证据分别成立。编译、skip、Mock、截图动画、会话空闲均不能替代所需真实路径。性能先固定工作量和原始样本，具体限额按公共合同公开并回归，不复活原输入未验证数字。
+每票按 LOG-027 将真实 E2E 交给用户，Agent 必须及时完成本切片自动化与代码审查；T-18 汇总代码集成及人工跨平台风险清单。DOM/原型、native 测试、真实 Provider、真实 Obsidian 和五平台证据分别成立。编译、skip、Mock、截图动画、会话空闲均不能替代所需真实路径。性能先固定工作量和原始样本，具体限额按公共合同公开并回归，不复活原输入未验证数字。
 
 冻结输入漂移只使相关证据失效；最终审查覆盖全部交付与来源，变更配置/依赖/环境/Skill/设计时核对影响。不能删测试、放宽断言、吞掉错误、换来源数据或降低产品范围来制造通过。
 
@@ -236,7 +242,7 @@ Expand（T-01–13 保留原适配与隔离新格式）→ 消费者迁移/观�
 | 状态/Hook/TUI 变化 | blocked/unknown 被错判、原始输入有歧义 | T-06/08 回到 unknown 与原终端，核对版本/屏幕/原生事件，先查现状，不重发 |
 | helper/PTY/IPC 异常 | 残留进程、回入死锁、旧 runtime、慢客户端阻塞控制 | T-01/04/05/07 依据代次与 owner 定位，保留恢复记录，暂停新副作用，限额/取消/退出保证必须真实验证 |
 | 历史/迁移/恢复错误 | 无归属正文混入、占用冲突、计数/摘要不符、旧 writer 仍在 | T-11/12/15/16 停相应写入，保留旧有效版本与副本；不抢锁/覆盖原件 |
-| 五平台/真实 Provider 环境不齐 | 某 required 场景缺机器、账号或不能实际运行 | 阻塞相应票/平台证据与 G-06；可以继续尚未受影响的前序已授权工作，不能降低五平台数量 |
+| 五平台/真实 Provider 环境不齐 | 某 required 场景缺机器、账号或不能实际运行 | 真实平台证据留给用户；本轮完成代码/构建配置与人工步骤，不宣称五平台通过 |
 | 验证基线已有失败 | 当前全仓文档检查含另一 change 的六处旧锚点错误 | 保留归因和原输出；修复当前新引入问题，不静默改别的 change 或关闭检查；后续 run 重新判定受影响检查 |
 
 ### Deviation Control
@@ -249,11 +255,17 @@ Expand（T-01–13 保留原适配与隔离新格式）→ 消费者迁移/观�
 
 ### Current Status
 
-本轮 plan 已写入，尚未进入运行。G-00 等待用户后续实现指令；W-01 未开始，G-01–06 均未验收。此处只拥有跨票状态，单票 Ready/owner/进度从原 Ticket 和 Evidence 读取。未创建产品执行上下文、实际 Agent Team、实施/审查回执或产品通过记录。
+2026-10-29当前代码交付完成，18票均done且执行记录verified。37路径合并回退已恢复、必要根产物已重建，全部确认反例及最终审查残留关闭。最终456产品路径/20规范来源的整体Astra/high标准轴和规范轴均pass（sessions/20261029T021146Z/012-final-overall/REPORT.md；013/014独立支持），Lead已回读真实交回、源停写与同源产物。适用build/types、全量4889 tests/513 files、原生及CLI/helper实进程、静态/包体/受控Chrome均通过，42测试和4文件跳过不算通过。docs总检查11条在final-review明确保留：6个另change旧锚点+5条原始报告CSS selector解析误报。
+
+G-01至G-06代码门全部closed；真实Obsidian/Provider/原生审批/OS IME/五平台与负载仍按Spec11交用户，未冒称实机通过。当前没有产品writer、未关闭finding或用户新增决定；没有提交、推送、升版本、发布或归档。最终权威输入、原始报告、精确命令和跳过/失败原件均见evidence/final-review.md。
+
+### G-01 代码关闭回执
+
+2026-10-25T12:03:15.165332+00:00，Root核对T-01–04原Evidence、T-04最终57文件冻结与58前序未变文件。T-04第三次完整build/37文件262tests、lint/architecture/Promise/bundle均通过；真实Linux链覆盖后台、detach/同运行重附加、显式stop/force/归档、晚spawn与代次防护、reload零spawn及Browser Cookie共享owner。最终独立Astra/high两轴pass与current-review errors=[]。这些组合重新验证受T04改变的前序生命周期接缝，其他前序字节/证据按未失效范围复用。详见evidence/T-01.md至T-04.md、T-04-root-checks-repair.json、T-04-review-round2.md和T-04-final-current-review.json。G-01代码部分closed；真实宿主停用/退出重开、Provider与五平台仍未运行，不作为实机通过声明。W-02可在逐票DoR后开始，无新增用户决定。
 
 ### Pending Decisions and Blockers
 
-没有待答的产品范围、A 方案或模型分工问题。本次请求仅要求计划，缺少 run 授权是可见的执行前提，故 `ready_for_execution: false`；无需为了交付本计划额外询问。实际环境、owner、Skill 摘要和当前票依赖在 G-00/逐票派单时核验，五平台资源只在相应验收阶段成为局部阻塞，不一开始阻止所有准备工作。
+本轮代码交付无待答决定或阻塞。真实宿主、Provider、五平台、负载与输入法按已确认分工由用户执行，清单见docs/agent-workbench-acceptance.md；当前完成结论不扩展为实机支持承诺。
 
 ### Resume Protocol
 
@@ -272,13 +284,84 @@ Expand（T-01–13 保留原适配与隔离新格式）→ 消费者迁移/观�
 
 | 决定 | 可回读来源 | 本次处理 |
 |---|---|---|
-| 仅 plan 与 Agent Team 模型分工 | 本次用户请求；LOG-025 | 写入当前 Goal；未启动实现或派遣，不修改全局编排默认 |
+| run、Agent Team 与验收分工 | 本次用户请求；LOG-027 | 代码交付由 Agent 完成；真实 E2E 用户执行；模型沿 LOG-025 |
 | serial 与共享 owner | Map §5、全部原票 resource_claims/shared_path_owners、execution-policy | 跨票串行；同票允许非冲突团队，公共文件仍唯一实际 writer |
 | 不设项目固定票数/人数上限 | 用户未指定；项目 config 只有语言/外部写确认，coordination/project.json 不存在 | 不新增 max_parallel_tickets / concurrent_implementation_limit 或空配置；serial 的活动票语义依原协议 |
 | 当次最多 4 活动槽位（含 Lead） | 当前宿主 collaboration 工具说明 | 派遣时按实际工具容量核验；不固化为跨会话不变事实 |
 | integration_attempt_limit = 3 | <Path>{roots.workflows}/specdev/common/rules/execution-policy.md</Path> 缺省 | 只限制重复失败后的复盘；若后来发现更严格真实 config，按原义取共同上限 |
-| current 与一次性运行记录 | <Path>{roots.workflows}/specdev/common/rules/execution-policy.md</Path>；README | 规划只记录选择；首次 I 才建立唯一 Execution Context，不增建 worktree |
+| current 与一次性运行记录 | <Path>{roots.workflows}/specdev/common/rules/execution-policy.md</Path>；README | 已核验 current 并建立唯一 Execution Context，不增建 worktree |
 | 单票/最终独立 review | <Path>{roots.workflows}/specdev/common/rules/coordination.md</Path> 与 code-review Skill | 默认未参与实现的 Astra reviewer，两轴分别返回；Lead 不自审替代 |
 | 研究与许可、Git 边界 | AGENTS 与用户上一轮新增要求；Spec NFR-007 | 已有研究可回读，新陌生功能先比较；无默认提交/推送/发版 |
 
-运行前使用只读 `ticket-control.mjs --map`，再由已获授权的 I 执行；控制器不能替代真实授权或 Gate 验收。规划检查使用 `validate-specdev.mjs --stage goal-plan --repo .`；通过表示结构和绑定成立，不把 draft 提升为已获执行授权。
+运行前使用只读 `ticket-control.mjs --map`，再由已获授权的 I 执行；控制器不能替代真实授权或 Gate 验收。规划检查使用 `validate-specdev.mjs --stage goal-plan --repo .`；通过表示结构和绑定成立，结构检查不替代 LOG-027 的真实用户授权。
+
+### GP027 测试装配范围补正
+
+Map28仅给Root增加T08取消测试的独立esbuild别名修复路径，A32/B15/C33原任务及冻结输入仍对应其实际派遣GP026/Map27；当前总写集85。此局部测试装配变化不改变Spec、设计、票级依赖或模型分工，旧C33证据继续按其实际冻结切片有效，完整T08仍待整合与独立审查。
+
+### GP028 独立审查后的局部修复
+
+011完整审查两轴request-changes，Root已回读4项与真实反例。T08保持in_progress；Map29增加F3实际shell贡献与就近测试两路径，当前87路径分配在T08 Evidence。先更新范围、校验，再由原Sol/xhigh A/B按新TASK修F1–F4；A/B以外产品维持STOP，原Astra保持独立。下一次Root整合为第3次，原两次记录不重置；真实Obsidian/Provider/五平台仍由用户验收。T09只读准备已交，不提前实施。
+
+### GP029 T08原生关闭恢复周期1
+
+016两轴仍request-changes，但原F1–F4已独立关闭，仅新F5为正常helper EOF未等待editor线程安全unlink。Root在attempts3实际保存blocked检查点，按T-08-recovery1-packet.md调整生命周期和真实多代资源验证后恢复；新周期0、旧周期3及失败原件全保留。Map30总87路径不增，新TASK明确原C子集接管给既有Sol/xhigh，A/B其它源STOP，原Astra保持独立。所有Spec/DESIGN/Space/用户实机边界不变，后继票仍等待T08。
+
+### GP030 T08关闭结果传递窄修
+
+019完整R3唯一F6/P2由公开NativeHost最后release与host.dispose真实反例确认；017原生正常EOF修复通过，native源与新pair继续冻结。Root沿恢复周期1而非清零，r4明确把B组及原C的shared/native/host.ts共10路径交原Sol/xhigh，根产物由Root后续同源整合。准确区分进程已退出而清理失败、尚未确认退出；检查原错误与最后清理双失败、重复释放和后继明确acquire，不自动重放。新Packet不改外部产品/设计/Space合同。
+
+### GP031 真实关闭fixture续修
+
+020原owner按Root要求SOURCE STOPPED交非完成检查点；实际004证明既有helper.test.ts只emit exit，无法满足真实close/尾部诊断合同。正式新增这一个测试路径至同owner、保持原七项风险断言，023投递后继续原F6工作；不重复native构建、不把平台容量重试/旧fixture失败算Root整合或重置计数。
+
+### GP032 Cookie错误消费闭包
+
+R4两轴request-changes仅F7，真实native回包及公开reader证明原读取错误被新shutdown rejection覆盖。Root扩三路径并将025窄修给已结束022的原implement_t08_profile（Sol/xhigh）；原prepare_t08_full_cli当前024只读不并写。下一候选整合计本周期3，未重置旧历史；仍需完整91路径独立R5。
+
+### GP033 T09原布局owner与双向面板
+
+T08最终91路径/R5实际关闭后，前沿移到T09。018原dirty draft与兼容身份反例已取代旧load写ID建议；当前工程Packet在同owner内增加只读投影和按Space编辑/保存，56路径逐组单writer。先冻结真实A接口再接B/U，根产物仍由Root在源停止后生成；代码及独立审查全部完成后才关闭G02，不拿准备报告冒充面板交付。
+
+### GP034 DOM验证装配接缝
+
+原dom项目的react-resizable-panels解析落到3.0.6 server分支，真实布局effects不运行。031用实际browser入口完成原生ARIA/键盘最小正例；Root只补一个配置文件的范围并负责正式修改，原源码writer不并改该文件。当前分配57路径、原阶段TASK继续按各自边界执行；本变更不计产品集成attempt，不重置任何历史失败。全票最终同源检查及独立两轴须覆盖配置差异。
+
+### GP035 T10被动邮箱
+
+T09完整独立审查与集成结束后推进T10。采用原SpaceService持久顺序及fresh-primary核对，不引入Outbox或运行输入；生产Inbox复用原工具抽屉并保留未知操作观察。单writer和阶段接线见本票工程Packet。T10 已完成实现、068 UI state round-trip 修复、Root post-build/自动化检查、受控 Chrome Inbox 验收和 071 r8 独立双轴审查；代码部分归入 G03 的后继消费者闭包，真实宿主/Provider/IME/五平台仍保留用户验收。正式证据见 `evidence/T-10.md`，不提前关闭后继票或整体 Goal。
+
+### GP040 编排宿主与模型切换（2026-10-27）
+
+用户在新会话重设同一 Goal：Lead 由 Claude Code 会话 `claude:/root`（Opus 5.5）接替原 `codex:/root`，实现与同范围修复改派 **Sonnet 5.5** 子代理，独立 review 由未参与被审范围的新 Opus 5.5 子代理执行（用户未指定 reviewer 模型，取宿主默认）。原 Codex 会话只读，不恢复其 writer；中断的 082 T11 接线与 T13 显式关闭清理按当前工作副本接续。serial/单 writer/Lead 独占产物与证据、代码验收与用户 E2E 分工不变。
+
+T11 OpenCode 来源采用“快照副本读取”：只读复制 `*.db`/`-wal` 到临时目录后打开副本，源文件不产生 shm、不持锁、不经 SQLite 关闭源 fd，以此闭合 F1/F2/F3 并恢复基线已有的 OpenCode 历史；复制不一致或失败时该来源降级为可展示的非 available 状态。属 T11 合同内实现选择，不改 Spec/DESIGN。
+
+### GP041 进度（2026-10-28）
+
+T13 与 T11 已按 GP040 完成代码交付与独立双轴审查并置 done（evidence/T-13.md §7、T-11.md §8）。T11 账号级 `index.sqlite` 的最终处置移交 T14。遗留跨票项：`check:bundle` 四项超出既有预算（未调高），在 G-05 前单独处理；`test:docs` 失败为他 change 的六处旧锚点（既有风险，不改）。早期票留下的四个失败测试已由 092 修复。T12 实施中，依序 T14 → T15 → T16 → T17 → T18。
+
+### GP042 进度（2026-10-28）
+
+T12、T14 已完成代码交付与独立双轴审查并置 done（evidence/T-12.md、T-14.md）。跨票 bundle 预算：拆出 Pi editor codec、native-extensions 懒加载、Pi artifact profiles 以 brotli 资产随包，outputBytes 与 agent activation 未调高即回到预算内；startup/browser 按 evidence/bundle-budget-attribution-GP041.json、home/automations 按 evidence/T-14-budget-attribution.json 以最小 KiB 上限调整；独立审查 sessions/20261027T-claude/106-bundle-review 两轴 pass，后续补漏 test/native 导入。待办：T-02 writer-port 哈希冲突导致的测试偶发失败（S-L6）在 T15 后单独处理。T15 实施中。
+
+
+### GP044 接续当前合并候选与最终修复（2026-10-29）
+
+Lead恢复为当前Codex原生宿主，复用原current工作区。输入HEAD78102da与旧123有39个产品摘要漂移，已由evidence/final-merge-recovery.json明确恢复来源；初始全量514文件28失败、types/lint/build入口断裂。三个Astra/high新reviewer均双轴request-changes，原始报告保存在sessions/20261029T021146Z/001..003。同范围修复由新Sol/xhigh writer处理，三个writer非冲突，同一T-18活动窗口；原reviewer不参与实现，修后新快照复核。37源文件恢复由Lead执行，main.js/styles.css在源停写后重建，正式Evidence与整体验收仍Lead独占。新增反例覆盖历史完整身份、CLI输入和Hook崩溃恢复、备份白名单/完整性/冻结/排空，不改变Spec/DESIGN。真实端到端继续由用户负责。G-06保持开放；未提交、推送、发布或归档。
+
+
+### GP047 最终代码Gate关闭回执（2026-10-29）
+
+Lead沿change-completion回读真实当前工作副本、18票、原Evidence和最终整体两轴。输入ad85880384c79e07d781e6b18ac4fa97a9585bce88009432d825b4f295c476e7；HEAD仍78102da，交付为完整未提交工作副本，不虚构commit。旧GP044恢复时和前两轮失败保留在final-review及原始TASK/REPORT，未重置历史。
+
+| Gate | 当前代码关闭依据 |
+|---|---|
+| G-01 | T01–04原有效资源/运行证据与最终全范围生命周期、Hook内核租约/崩溃恢复复核；真实宿主退出仍人工待验。 |
+| G-02 | T05–09屏幕/顺序输入/取消/控制/布局原证据，最终CLI协议/正文/容量/截止与真实helper实进程验证，当前build/全量及独立两轴。 |
+| G-03 | T10–14被动邮箱/精确历史来源/neverStarted/Browser及消费者证据，013真实stdio碰撞/恢复与生产消费者反例重验。 |
+| G-04 | T15–16迁移/包往返/权限/排空/取消/重载晚写与预检原型副作用正式回归，014独立公开入口与进程重启边界实验，原历史样本证据保留。 |
+| G-05 | T17同源资产/协议/帮助/schema/Skill/许可及五目标配置，Linux release helper/CLI smoke和生成/notice检查；未执行远程CI或发布。 |
+| G-06 | T18全局4889通过/42跳过、生产/测试类型与构建、全部适用检查、受控Chrome44px/焦点/主题/局部正文，012整体两轴pass；18执行记录verified与最终产物/源一致。 |
+
+上述仅关闭按Spec11约定的代码门，不将任何未运行的真实平台、Provider或性能场景写成passed。README Outcome由Lead据这些实际完成门更新为completed，change留在原目录，未归档。

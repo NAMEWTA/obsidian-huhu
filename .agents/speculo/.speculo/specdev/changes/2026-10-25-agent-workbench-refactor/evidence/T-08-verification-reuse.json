@@ -1,0 +1,13 @@
+{
+  "current_manifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-root-final-input.json",
+  "current_sha256": "4f0cdfd3f76a7a67517042fe3a975f8ee307b4569db0c09eb86b091862ded181",
+  "delta_since_prebuild": [
+    "main.js",
+    "scripts/bundle-budget.json",
+    "scripts/obsidian-acceptance/agent-workbench-coordination.mjs",
+    "styles.css"
+  ],
+  "reused": "Build/types, full production lint, 284 business tests, 33 profile tests, B131, C122/native131 and final exact-bin CLI/Host4 remain tied to unchanged inputs. Only roots main/styles/budget generated and one non-imported acceptance script changed.",
+  "evidence": "Root integration1 audit contains actual build/main attribution/lint/new-bin tests and all global checks. ESLint ignores scripts/**; Tailwind scans only src and tsconfig.test excludes MJS. 010 has its own script syntax/runtime verification.",
+  "new_required": "Root final Chrome15 with current script and current styles; complete independent review still pending."
+}

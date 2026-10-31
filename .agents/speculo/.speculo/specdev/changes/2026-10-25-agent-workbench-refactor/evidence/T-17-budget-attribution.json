@@ -1,0 +1,35 @@
+{
+  "note": "Production metafile of the T-17 Round 2 tree (measured while T-16 edits were also present in the worktree, so mainJs includes T-16 growth). New inputs carry their full size; edited inputs carry only the after size (before sizes were not retained). All T-17 additions are lazy: nothing joins the eager startup set or any module activation set beyond the agent activation shown. The T-17 share of the overage over the 6863872 limit is about 14984B measured at the first Round 2 build (6878856).",
+  "mainJs": 6879559,
+  "previousLimit": 6863872,
+  "measuredOverLimit": 15687,
+  "t17FirstMeasure": 6878856,
+  "t17FirstOverage": 14984,
+  "suggestedLimit": 6880256,
+  "newInputs": {
+    "total": 9381,
+    "bytes": {
+      "src/host/desktop/native/binary-cli.ts": 3365,
+      "src/modules/agent/core/control/skill.ts": 167,
+      "src/modules/agent/core/control/skill/huhu-control.en.md": 2513,
+      "src/modules/agent/core/control/skill/huhu-control.zh.md": 2338,
+      "src/modules/agent/platform/desktop/skills/packaged.ts": 578,
+      "src/modules/agent/platform/desktop/control/cli-environment.ts": 420
+    }
+  },
+  "editedInputsAfter": {
+    "src/shared/i18n/lazy/native.ts": 5805,
+    "src/host/desktop/native/runtime.ts": 1519,
+    "src/host/desktop/native/binary.ts": 5263,
+    "src/modules/agent/services/controller.ts": 33372,
+    "src/modules/agent/ui/settings/TerminalSettings.tsx": 3600,
+    "src/modules/agent/i18n.ts": 95290,
+    "src/modules/agent/platform/desktop/skills/ops.ts": 1024,
+    "src/modules/agent/platform/desktop/skills/host-ops.ts": 501,
+    "src/shared/native/lazy-host.ts": 564
+  },
+  "eager": "unchanged within limit (125952)",
+  "agentActivationKB": 1336.4,
+  "lazyDictionaryGrowth": "src/shared/i18n/lazy/native.ts +40 lines (agent.cli.* en+zh)",
+  "keptDecisions": "Both Skill languages kept (Lead decision)."
+}

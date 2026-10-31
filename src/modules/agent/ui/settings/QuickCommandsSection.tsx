@@ -1,6 +1,7 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/terminal-quick-commands/TerminalQuickCommandDialog.tsx
 import { useState } from 'react';
 import { Button } from '../../../../ui/components/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../ui/components/select';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
 import { useT } from '../../../../ui/react/hooks';
 import type { QuickCommand } from '../../core/terminal/settings';
@@ -11,6 +12,17 @@ export function QuickCommandsSection({ controller }: { controller: AgentControll
 	const t = useT(),
 		settings = useAgentSettings(controller.settings),
 		[edit, setEdit] = useState<QuickCommand>();
+	const spaces = controller.spaceChoices();
+	// A vault command may be saved against one Space; absent means the Space chooser opens on every run.
+	const bind = (command: QuickCommand, value: string) =>
+		controller.settings
+			.update((d) => {
+				const target = d.quickCommands.find((item) => item.id === command.id);
+				if (!target) return;
+				if (value === '_ask') delete target.spaceId;
+				else target.spaceId = value;
+			})
+			.catch((e) => controller.workspace.report(e));
 	return (
 		<SettingsSection title={t('agent.quick.title')}>
 			<div className="divide-y divide-border/40">
@@ -20,6 +32,29 @@ export function QuickCommandsSection({ controller }: { controller: AgentControll
 							<p className="text-sm font-medium">{command.name}</p>
 							<p className="truncate font-mono text-xs text-muted-foreground">{command.content}</p>
 						</div>
+						{command.scope === 'vault' && (
+							<Select
+								value={command.spaceId ?? '_ask'}
+								onValueChange={(value) => void bind(command, value)}
+							>
+								<SelectTrigger aria-label={t('agent.quick.space')} className="h-7 w-44 text-xs">
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="_ask">{t('agent.quick.space.ask')}</SelectItem>
+									{command.spaceId && !spaces.some((space) => space.id === command.spaceId) && (
+										<SelectItem value={command.spaceId}>
+											{t('agent.quick.space.unavailable')}
+										</SelectItem>
+									)}
+									{spaces.map((space) => (
+										<SelectItem key={space.id} value={space.id}>
+											{space.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
 						<Button
 							variant="ghost"
 							size="xs"

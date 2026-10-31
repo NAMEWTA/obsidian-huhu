@@ -1,0 +1,28 @@
+{
+  "grantedAt": "2026-10-25T23:43:25.641520+00:00",
+  "holder": "native:/root/foundation_go",
+  "task": "088-recovery-claim-repair",
+  "reason": "090 actual permanent old-source red exit1/Wait10.375s accepted after full raw read, source unchanged; all writers stopped",
+  "ownerFiles": {
+    "native/huhubot/internal/adapters/outbound/sqlite/effects/continuations.go": "2deec7d98a29063ca834245a9758246ce891635173142c46ea28d14ada6f1237",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go": "1aeb39448764913dce32ab78f6d0169e0790e4da60041ab9977ba4d39e679d76",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go": "93bfe1b9715e0b160b3155b76e057c825d57d21dc13595bc663cd52b57128a31",
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go": "4ecbc1dc8f83a9107d5d2c37d1fdeb897b5b2d30d2fcfea728ee0ec5460de623",
+    "native/huhubot/tests/contract/approval/claim_fairness_test.go": "72c75167d0e75a7d18287dc093113ecfc626c90ae5e9dd3ca8a94dad26179b9c",
+    "native/huhubot/tests/contract/chat/claim_fairness_test.go": "59625d5be754b492e82d764d69169eef9deef315093b6bf6284f1612edff3781",
+    "native/huhubot/tests/contract/chat/claim_transaction_test.go": "74d284d41c20baaf860fe102ec24ed8d67656a7f3a790f2e56f06b36e750643f",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go": "8f5e2f60e82f84e76561e7bea57da185f01e083393f114857032530d2a2b8ed2",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go": "65c14df39912133c10437cb49d5a04e7621793f3dc2fb1f002992366565d9536",
+    "native/huhubot/tests/contract/collaboration-policy/parent_page_test.go": "b16d8bfe2b1956f60dd4c5effd7151e8935a7d37fd31c9acb18c2b2efc82afbe"
+  },
+  "sourceDrift": [],
+  "checks": [
+    "7 package normal: chat/approval/recovery/delegation/collaboration-policy/groups/effect-reconcile",
+    "5 package race: chat/approval/recovery/delegation/collaboration-policy, includes new regressions",
+    "affected adapter/application vet",
+    "Go architecture"
+  ],
+  "independentLeadChecks": "Not started; wait actual author full return and release",
+  "nativeGranted": true,
+  "productPassed": false
+}

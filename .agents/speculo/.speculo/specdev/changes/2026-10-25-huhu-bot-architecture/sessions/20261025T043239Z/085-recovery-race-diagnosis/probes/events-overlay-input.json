@@ -1,0 +1,31 @@
+{
+  "original": [
+    {
+      "path": "native/huhubot/tests/contract/events/history_test.go",
+      "sha256": "5e61949b538bb78088b2ddb199d2d619ed47027d98b158c359e2600185098cd6"
+    },
+    {
+      "path": "native/huhubot/tests/contract/events/ts_test.go",
+      "sha256": "b0e05a54592767f00531e082cbb8556ef300c9e830b20abe1939e76f556988f0"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "sha256": "22c50058a7556a013e83cd466f586703b6d9d5cba024061abce777dfb5994e06"
+    }
+  ],
+  "replacement": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-history.go.txt",
+      "sha256": "f977b328c8fc2ee4459e0ad7ce8b9655e2db19c167c7ec4254b3e182ff1fc6c1"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-engine.go.txt",
+      "sha256": "4acacb9bce11a53f4db1efc19bcef96d1fd2053a63c17fed05e95935c053deb5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-base.go.txt",
+      "sha256": "50ec2d164ed4004d9a552724475b3009a5ec835b90626d4eca21abc59d5583e4"
+    }
+  ],
+  "purpose": "Only error/context/progress logging. Original 3-second assertion still fails; any later success is post-failure incident observation, not a green result. No permanent file changes or timeout increase."
+}

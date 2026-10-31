@@ -1,0 +1,116 @@
+{
+  "observer": "native:/root",
+  "stage": "117 mixed block/tool positive slice accepted",
+  "testReadToolChunk": "1acd61",
+  "patchReadToolChunk": "d8a2ae",
+  "logsReadToolChunk": "3a57e7",
+  "verifiedFilesPerArchive": 341,
+  "inputSha256": "a4d8dec782839e1f27c4a3d98ad483a1d0bd95f9b5dcc241d377a986a2dc27d2",
+  "actualChecks": [
+    {
+      "label": "slice2-red",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^TestMixedBlocksKeepThinkingAndOriginalToolDecisions$",
+        "-count=1",
+        "-timeout=60s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T07:18:18.115333+00:00",
+      "finishedAt": "2026-10-26T07:18:19.337456+00:00",
+      "elapsedSeconds": 1.2221089410004424,
+      "exitCode": 1,
+      "waitCompleted": true,
+      "inputSHA256": "66a669200e1234c6131f094e4690061391717516f6caef8e2afe41dd7bea75be",
+      "frozenFileCount": 341,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice2-red.stdout.jsonl",
+      "stderr": "slice2-red.stderr.log"
+    },
+    {
+      "label": "slice2-green",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^TestMixedBlocksKeepThinkingAndOriginalToolDecisions$",
+        "-count=1",
+        "-timeout=60s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T07:22:33.649420+00:00",
+      "finishedAt": "2026-10-26T07:22:35.260346+00:00",
+      "elapsedSeconds": 1.610892683000202,
+      "exitCode": 0,
+      "waitCompleted": true,
+      "inputSHA256": "a4d8dec782839e1f27c4a3d98ad483a1d0bd95f9b5dcc241d377a986a2dc27d2",
+      "frozenFileCount": 341,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice2-green.stdout.jsonl",
+      "stderr": "slice2-green.stderr.log"
+    },
+    {
+      "label": "slice2-text-impact",
+      "command": [
+        "go",
+        "test",
+        "./tests/contract/engine/anthropic",
+        "-run",
+        "^TestDefaultAnthropicPersistsTextAndSettledUsage$",
+        "-count=1",
+        "-timeout=45s",
+        "-json"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "environment": {
+        "GOTOOLCHAIN": "go1.26.10",
+        "GOWORK": "off",
+        "GOEXPERIMENT": "",
+        "CGO_ENABLED": "0",
+        "GOFLAGS": "-mod=readonly"
+      },
+      "startedAt": "2026-10-26T07:22:46.268841+00:00",
+      "finishedAt": "2026-10-26T07:22:47.323871+00:00",
+      "elapsedSeconds": 1.0550093350002498,
+      "exitCode": 0,
+      "waitCompleted": true,
+      "inputSHA256": "a4d8dec782839e1f27c4a3d98ad483a1d0bd95f9b5dcc241d377a986a2dc27d2",
+      "frozenFileCount": 341,
+      "changedInputs": [],
+      "addedInputs": [],
+      "stdout": "slice2-text-impact.stdout.jsonl",
+      "stderr": "slice2-text-impact.stderr.log"
+    }
+  ],
+  "redToGreenChangedFiles": [
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/blocks.go",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/checkpoint.go",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/request.go"
+  ],
+  "patchSha256": "14c1d19632a0cc794bed22d87f099910a4b1145ad85501fd0e419b689a284a2e",
+  "goWindowReturned": true,
+  "observed": "defaultCore/realSDK; six orderedblocks including thinking+late signature/redacted/emptythinking; two originaltoolIDs approve1/reject1/HTTP2/writes1; full block replay and denied is_error; explicit poison-env isolation; repeated text preserved; cumulative/cache input19 output7",
+  "boundary": "positive slice only, faults/completeCP/permissions/lifecycle/Probe/race/RootE2E/independentreview still pending"
+}

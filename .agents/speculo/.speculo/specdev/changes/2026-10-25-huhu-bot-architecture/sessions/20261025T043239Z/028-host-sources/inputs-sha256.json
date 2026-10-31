@@ -1,0 +1,29 @@
+{
+  "recordedAt": "2026-10-25T08:48:10.015989+00:00",
+  "files": {
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    ".agents/skills/dev/references/architecture.md": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+    ".agents/skills/dev/references/build-and-release.md": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871",
+    ".agents/skills/dev/references/licensing.md": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+    ".agents/skills/dev/references/module-authoring.md": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b",
+    ".agents/skills/dev/references/obsidian-api.md": "9fac8f21f8d4806331176cc8bf62cd1ffff94aaec3b58ba5a6c06bf348479417",
+    ".agents/skills/dev/references/testing.md": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md": "1f3f14519e84bd3f33773a36519c8b6f94db8806d37983bdaea3205e143201f6",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/chat-access-preflight.md": "a5572c9b32d06e3ba6687a6e0d9cf5cc63e9828854b837341cba070fa42d753d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/goal-plan.md": "b821bbe34c363a14e73b88b4e67842fd6cc5d71935b251fd24bd284ed76ac94f",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/028-host-sources/TASK.md": "30ce427d8dd5ac3c4cafd332632c4fea5082200bca69d2d7007a8605d986e8c0",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/031-chat-access-preflight/REPORT.md": "5b4ec37374422c04e168a8777823083bd114ae9a48a04c7ef9ffeebc66668ffd",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/05-sources-grants-host.md": "b687d1bb4504141a59e5f6886e89fbc06bcd42fde07a6e2df7609ec468e50cec",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md": "bed39fa20d1af79220191e5d18e1a055cac2fb3532a89f062a85727fe4f62bc3",
+    "contracts/hap/v0.1/fixtures/golden.json": "65a0682aa6cb286376593c27051321d4a06ee230186f6764f96178bf380fdf70",
+    "contracts/hap/v0.1/fixtures/methods.json": "183e405f71e1bd0abb9bb13ad531fcb3e350145218176d7a2744412a2e64dd9a",
+    "contracts/hap/v0.1/schema.json": "99c47f8c6f2b5e12860e8c71111e74bd8fa77d63b747c034c8965b89625e2ba8",
+    "src/modules/huhubot/api.ts": "8bc03dfb02ecf1177cc2c2e35447bce60ffde979a2c3b73d16e302e1c0f5d05f",
+    "src/modules/huhubot/core/protocol/codec.ts": "3a4fbe15b8acf58b5ac7bd5c19e06a6d2940d2d0b6a8a282d25ed4e061aa3491",
+    "src/modules/huhubot/platform/desktop/transport/credentials-runner.test.ts": "522fc31bd96b846225805e19209a3a0624d15ea74d0353c4432d64a486c3fa31",
+    "src/modules/huhubot/platform/desktop/transport/runner.test.ts": "afe2a6c3a7fcd328847f9bff65d13d3be894fe1f00a243e1a9e764903b4a39eb"
+  }
+}

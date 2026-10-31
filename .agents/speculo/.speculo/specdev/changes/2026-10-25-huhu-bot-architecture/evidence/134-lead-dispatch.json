@@ -1,0 +1,17 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T12:54:07.936697+00:00",
+  "task": "134-memory-runtime-consumers",
+  "taskSha256": "5dd3d8f52504ff79236c5e4547882221d36e7698bf4ae7960e1831f32b009d96",
+  "owner": "native:/root/foundation_go",
+  "nativeTool": "collaboration.followup_task",
+  "mapRevision": 37,
+  "goalRevision": 36,
+  "dispatchValidation": {
+    "actualExit": 0,
+    "chunk": "7aa398"
+  },
+  "scope": "129 remaining implementation plus exact direct history/generator consumers",
+  "window": "source only;noGo/Node/generation",
+  "priorTaskDisposition": "129 stopped source checkpoint preserved, incomplete remaining work now134;132 accepted pure helper thenstopped"
+}

@@ -1,0 +1,11 @@
+# T07 A 原Controller测试夹具窄补充
+
+沿原T-07-task-a-routing.md，当前GP023/Map24。原A22授权持续，本次只增加 `src/modules/agent/services/controller-managed-runtimes.test.ts`，使A23、全票66路径。实际生效以Root随后followup_task为准；其他owner和公开接口不变。
+
+Root已回读实际被名称筛选的旧用例exit1（其余9项未执行），假transport缺localControl/注册协议而在原environment等待门之前失败。原件与1839输入保存于T-07-fixture-supplement-root-audit.json，SHA256 9261894eadb38ea12674c86a59e5934e8a21d437bd635b9da2f6f00396a74ac9。不能将该夹具失败冒称生产缺陷，也不能通过跳过生产control或删除原断言取得绿灯。
+
+补齐真实协议语义的测试transport注册、ACK/关闭和必要frame结算；保留全部原生命周期、停止、前景和持久化断言；整个旧文件应完整运行，最终0skip/无unhandled。A Controller边界按原实际NativeControlError保留准确错误分类，不能隐去不支持capability。其他潜在旧fixture只读并先交实际失败，不据此扩大授权。
+
+结构校验tickets、goal-plan、ticket-control三项已实际exit0/no drift，原回执审计SHA256 7674a5f07606aa811f5589bdab6fa374838ebc2c8e44920d3bd721361727e8cc。此为写集补充验证，Root候选整合attempts仍0，非整票验收。新增源当前SHA256 bde146c736600bf4dc19805be683a8ac99b993492a615bf3db028c528d8e455a 与原失败输入一致。
+
+保持原模型、workspace/HEAD33c21e0、TDD原件/输入漂移记录。最后将该文件与原A22合并为完整A23交接，不覆盖早期原件；SOURCE STOPPED后Root再作全局整合与独立审查。

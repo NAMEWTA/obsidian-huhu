@@ -1,0 +1,160 @@
+{
+  "observer": "native:/root",
+  "observedAt": "2026-10-26T08:34:13.464445+00:00",
+  "task": "117-engine-anthropic",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "returnExit": 0,
+  "rootReturnToolChunk": "941356",
+  "fullReportReadToolChunk": "148226",
+  "riskMatrixReadToolChunk": "24f6bc",
+  "manifestVerificationToolChunk": "201f61",
+  "reportSha256": "4c7491e6d1fcb9c926188a1718946b4d4e186538b5d76c2a36f0193463c1f8b8",
+  "manifestSha256": "54ff332f9fbc5fa0b56401f5d3089765a1464b51437eadca6ec2175b14167dbc",
+  "verifiedArtifacts": 88,
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/blocks.go": "9292a3110f362725691c39abf69190fd303fe27910d26659ea2746d223d41010",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/checkpoint.go": "984e6e25a1a0ed44a12e6f7b4644fc805965be7d9298467d9c57f94ba7ff1ce2",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/driver.go": "27bd9bbc69efb862cdf8aaed16c14ca3e655fcccc5e2874e7ac89e1b26003976",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/json.go": "01c2d696a0cf2ec4fdcf7346e2df04b4c6a7c7cd2e75cbd7bef79e11d4ddc668",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/request.go": "9812f01bd0ed94c26bd8ba0b5c9aac4381ca4130a7082d93d4b57cdfa39d82fd",
+    "native/huhubot/internal/adapters/outbound/eino/anthropic/usage.go": "7de6555e2c46d7a7e97fc61bc1d2d11200496bf750be0f2633c58fddd18a87a7",
+    "native/huhubot/tests/contract/engine/anthropic/checkpoint_test.go": "ff70ee2e31c33d1d709b40aa5976a52629cab2468cbbdf325dabd2bebe18092e",
+    "native/huhubot/tests/contract/engine/anthropic/current_gate_test.go": "137a809d5442b2a994be59794b3578977d68adfa4d6c8a228d93eb86948db148",
+    "native/huhubot/tests/contract/engine/anthropic/engine_test.go": "4b1ba53d2f068cf330a18e90f1cc6f5ec685f1f9f73c21b822e1dd9460cd4166",
+    "native/huhubot/tests/contract/engine/anthropic/faults_test.go": "1ebe93813c8991e381bed3d5c11bf881714cdc80a8ddeedf2d861401fdcfa351",
+    "native/huhubot/tests/contract/engine/anthropic/fixture_test.go": "98b5c3ae2644d2166823bec48e7f233f58ff3c45e6a0a10b92dca18f6fcab977",
+    "native/huhubot/tests/contract/engine/anthropic/lifecycle_test.go": "f6541a3c9bfaab49c11c7c588824a8d45131ed2db439d3b514f2d5e51fbbc7ef",
+    "native/huhubot/tests/contract/engine/anthropic/protocol_edges_test.go": "31c058cb9e75149fa62e371deec8ca55787fa88606c327f05201917b27dc6d95",
+    "native/huhubot/tests/contract/engine/anthropic/tools_test.go": "f99f72685ae1212311e5f9a0453499c0e2b2638f015a13dac04433ea9ff95525"
+  },
+  "ownTreeSha256": "0d62aa95e796fa4188e9f0fa6dfc8f0bf2a6f577852fd33860321f7e919a35b5",
+  "historicalArchivesVerified": [
+    {
+      "input": "final-normal-input.json",
+      "files": 347,
+      "inputSha256": "01d10895351e842d1c92bbc8d13d2d1b360fa4cd41e96d29de42f5b7f70c9345"
+    },
+    {
+      "input": "final-race-input.json",
+      "files": 347,
+      "inputSha256": "01d10895351e842d1c92bbc8d13d2d1b360fa4cd41e96d29de42f5b7f70c9345"
+    },
+    {
+      "input": "initial-red-input.json",
+      "files": 333,
+      "inputSha256": "c46809f55e4d121b6ebca2ffc3615b807afa0e56ea9d5660bcab280bd5a7d8f6"
+    },
+    {
+      "input": "slice2-green-input.json",
+      "files": 341,
+      "inputSha256": "a4d8dec782839e1f27c4a3d98ad483a1d0bd95f9b5dcc241d377a986a2dc27d2"
+    },
+    {
+      "input": "slice2-red-input.json",
+      "files": 341,
+      "inputSha256": "66a669200e1234c6131f094e4690061391717516f6caef8e2afe41dd7bea75be"
+    },
+    {
+      "input": "slice2-text-impact-input.json",
+      "files": 341,
+      "inputSha256": "a4d8dec782839e1f27c4a3d98ad483a1d0bd95f9b5dcc241d377a986a2dc27d2"
+    },
+    {
+      "input": "slice3-fixed-input.json",
+      "files": 343,
+      "inputSha256": "748d8c25db003df8a5bc009a6e4ebc3323dc7966bc18e786749a9ae92cb51f64"
+    },
+    {
+      "input": "slice3-initial-input.json",
+      "files": 343,
+      "inputSha256": "e0f34db3648f90a6ff897470188c61fa560c31037647efdf8fcb6c3f1fbf6c04"
+    },
+    {
+      "input": "slice4-initial-input.json",
+      "files": 344,
+      "inputSha256": "d38dd34c779357bb1c58396fd74aff4331fcd737a6f3e60ad5e952255d8ad168"
+    },
+    {
+      "input": "slice5-initial-input.json",
+      "files": 346,
+      "inputSha256": "3a167b86b8bb12d5fdf0dfdfdc918541f394d1fb8c988d854d779d1b3514540c"
+    },
+    {
+      "input": "slice6-initial-input.json",
+      "files": 347,
+      "inputSha256": "01d10895351e842d1c92bbc8d13d2d1b360fa4cd41e96d29de42f5b7f70c9345"
+    }
+  ],
+  "actualFinalNormal": {
+    "command": [
+      "go",
+      "test",
+      "./tests/contract/engine/anthropic",
+      "-count=1",
+      "-timeout=90s",
+      "-json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "CGO_ENABLED": "0",
+      "GOFLAGS": "-mod=readonly"
+    },
+    "startedAt": "2026-10-26T08:09:47.439511+00:00",
+    "finishedAt": "2026-10-26T08:09:52.443503+00:00",
+    "elapsedSeconds": 5.00397913300003,
+    "exitCode": 0,
+    "waitCompleted": true,
+    "inputSHA256": "01d10895351e842d1c92bbc8d13d2d1b360fa4cd41e96d29de42f5b7f70c9345",
+    "frozenFileCount": 347,
+    "changedInputs": [],
+    "addedInputs": [],
+    "stdout": "final-normal.stdout.jsonl",
+    "stderr": "final-normal.stderr.log"
+  },
+  "actualFinalRace": {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./tests/contract/engine/anthropic",
+      "-run",
+      "^(TestTwoCallCheckpointReopensAndResumesOriginalOpaqueDecisions|TestRevokedSourceCannotEnterNextAnthropicRequest|TestCanceledAnthropicStreamRejectsLateToolsAndNextRunWorks|TestAnthropicStopWaitsForActualBodyCloseAndDurableSettlement|TestAnthropicSettlementFailureRetainsSameActualSQLiteAttemptAcrossStop|TestAnthropicSDKHiddenResponsesRemainOwnedUntilOriginalClose)$",
+      "-count=1",
+      "-timeout=90s",
+      "-json"
+    ],
+    "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+    "environment": {
+      "GOTOOLCHAIN": "go1.26.10",
+      "GOWORK": "off",
+      "GOEXPERIMENT": "",
+      "CGO_ENABLED": "1",
+      "GOFLAGS": "-mod=readonly"
+    },
+    "startedAt": "2026-10-26T08:14:54.725755+00:00",
+    "finishedAt": "2026-10-26T08:15:27.362611+00:00",
+    "elapsedSeconds": 32.6368404370005,
+    "exitCode": 0,
+    "waitCompleted": true,
+    "inputSHA256": "01d10895351e842d1c92bbc8d13d2d1b360fa4cd41e96d29de42f5b7f70c9345",
+    "frozenFileCount": 347,
+    "changedInputs": [],
+    "addedInputs": [],
+    "stdout": "final-race.stdout.jsonl",
+    "stderr": "final-race.stderr.log"
+  },
+  "priorRootReadbacks": [
+    "initial-red-accepted.json",
+    "first-text-green-accepted.json",
+    "mixed-blocks-accepted.json",
+    "faults-slice-accepted.json"
+  ],
+  "disposition": "Accepted 14-file implementation candidate and scoped controls;121 independent review and joint code gate pending. No current full Goal/T27 completion.",
+  "boundary": "Final17top/98sub normal;6top/2sub race. Exact A01–A18 reuse/not-run limits preserved. Actual default missing credential retained; positive reopen uses explicit fake resolver/current metadata simulation. No real Provider/Obsidian/OS acceptance."
+}

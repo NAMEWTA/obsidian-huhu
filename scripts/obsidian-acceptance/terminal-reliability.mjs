@@ -7,6 +7,9 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { launchFreshVault } from './fresh-vault.mjs';
 
 assert.ok(!process.env.HUHU_PTY_BINARY, 'This acceptance must download the published helper');
+// Scope guard: this release-install drill is written for win32-x64 only (asset name, cmd shell, binaries directory).
+// It is not a five-platform check; the per-platform manual steps live in docs/agent-workbench-acceptance.md.
+assert.ok(process.platform === 'win32' && process.arch === 'x64', 'terminal-reliability.mjs only covers win32-x64; see docs/agent-workbench-acceptance.md for the other platforms');
 const runtime = await launchFreshVault({ root: process.argv[2], port: 9249,
 	// The host export is read-only; an owned fixture copy provides the download error seam.
 	files: { '.obsidian/plugins/huhu/main.js': 'window.huhuAcceptanceObsidian = {...require("obsidian")};\n' + (await fs.readFile('main.js', 'utf8')).replaceAll('require("obsidian")', 'window.huhuAcceptanceObsidian') },

@@ -1,0 +1,34 @@
+{
+  "main": {
+    "bytes": 6737602,
+    "sha256": "44c4daa30901a8fd7dda12d58764bda0c5049d7213c4842e054ddfa7a99c3216"
+  },
+  "styles": {
+    "bytes": 1427325,
+    "sha256": "7e2852172ffb40ea2d59ce25bb6a2f4fe39ab65d3a2f880033a7428c6e2e3355"
+  },
+  "sourceTreeHash": "059656e0eca6b33e5b958cf773bc42c93f5e6623cab372f9d6143ebf0bdf2716",
+  "assets": [
+    {
+      "asset": "huhu-bot-linux-x64",
+      "sha256": "4702fe5b8b9bbe75bd856f804d34f153ed034d94412cb53eec71be387a5db7e6"
+    },
+    {
+      "asset": "huhu-bot-linux-arm64",
+      "sha256": "b680d85268b8fffb1717e1023c0fa471436f583ef92c8ce9ca2e81b34c181756"
+    },
+    {
+      "asset": "huhu-bot-darwin-x64",
+      "sha256": "968b228139b2f0ca105b7e857c2920400a2d469430ab176805de84d13df22645"
+    },
+    {
+      "asset": "huhu-bot-darwin-arm64",
+      "sha256": "948892f9449a185d9f125217008d0aa7e4fcd29cabfdaba678462d72f446a8a2"
+    },
+    {
+      "asset": "huhu-bot-win32-x64.exe",
+      "sha256": "18799ef50d528303e2f3f942c98e28a5ba08c3da6468e83a12dc49c90d6ca3d4"
+    }
+  ],
+  "mainSourceEquivalent": true
+}

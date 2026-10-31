@@ -1,0 +1,174 @@
+{
+  "owner": "codex:/root/prepare_t02",
+  "ticket": "T-02 A",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "base": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "note": "Only files actually written by A; shared T-01 dirty prerequisite contents retained. B desktop/spaces and generated artifacts excluded.",
+  "files": [
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768
+    },
+    {
+      "path": "docs/data.md",
+      "sha256": "f1b8c4808f44d67eee5564e29682a4bb5f67c9bf3dbb152aa485e8f63f7d5bf5",
+      "bytes": 22771
+    },
+    {
+      "path": "src/modules/agent/core/space/errors.ts",
+      "sha256": "8159653372f3b24851644c4933b3a251584ae75faddd670bb385c9d78898062e",
+      "bytes": 683
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "bytes": 1234
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+      "bytes": 1063
+    },
+    {
+      "path": "src/modules/agent/core/workspace/model.ts",
+      "sha256": "a01440053e123ef09a85beb767732e5f3822b0084e25d0b1dfbd7a087757618a",
+      "bytes": 2415
+    },
+    {
+      "path": "src/modules/agent/core/workspace/ops.ts",
+      "sha256": "d7e191afac0e92a9374cf7fabc1e841a7995f4277071430749f028f34f3ac037",
+      "bytes": 15857
+    },
+    {
+      "path": "src/modules/agent/i18n.ts",
+      "sha256": "8525a772108fa99bdb8e641f55db55512602ef19764e0d1b49ea7c6c87a89259",
+      "bytes": 58239
+    },
+    {
+      "path": "src/modules/agent/module.ts",
+      "sha256": "e5a1b8717022742d6796d8063cdaeb96bb8582f4b5bfb6aca16d89b5d77aeb00",
+      "bytes": 8995
+    },
+    {
+      "path": "src/modules/agent/services/controller-space.test.ts",
+      "sha256": "6907184d4b3842bb2d6233d727267c1c572e84034c7c502967746f68bf15759a",
+      "bytes": 2970
+    },
+    {
+      "path": "src/modules/agent/services/controller.ts",
+      "sha256": "4aaeae21fe5c032d4df4944fd7c6e3502d09a01fda0be453374a83d7c9c48336",
+      "bytes": 38818
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher-space.test.ts",
+      "sha256": "b1193badddbda4d1b5cad93d2676c6764796bbf667968dbc63bfdce6fb51707b",
+      "bytes": 2643
+    },
+    {
+      "path": "src/modules/agent/services/launch/launcher.ts",
+      "sha256": "70ec678f407c442f7bdfd1f7f586b5c2541e8f40c0c7dc9c65c5de11f1b38dc3",
+      "bytes": 5526
+    },
+    {
+      "path": "src/modules/agent/services/spaces/messages.ts",
+      "sha256": "bc1fe43f7f31b0c89a946e224d110d12fd45d71d4471eb915a2dfd573fd48c83",
+      "bytes": 857
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.test.ts",
+      "sha256": "e4c81015e5caf71cf80b608553d44ccd1997479d78f481b705b2a2e8836342ad",
+      "bytes": 1131
+    },
+    {
+      "path": "src/modules/agent/services/spaces/records.ts",
+      "sha256": "1f6ac211a8ba2933532acb1fe70e124297e2f975952bc6c12f75a46fd1c795b3",
+      "bytes": 4239
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.test.ts",
+      "sha256": "249ec1a373317bc8b8d6e71d67ce527f086fe96910053202b85b5f73ba8d6774",
+      "bytes": 9334
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "8712c1981016dff663fb688cf69de038d053b11e1dbd6427f3cf064abdde2de7",
+      "bytes": 14562
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions-space.test.ts",
+      "sha256": "831a034d21eeee992822ef8d808f0a029962d780338b12fd6ebba5eb996e9eb8",
+      "bytes": 2860
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "94069dfd409b84eb96314d0fa827e9fcf01e3a6a0e9ea2c913c4cc0f1f61d323",
+      "bytes": 11773
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
+      "sha256": "3a0ba25a7a34f909150ce6c5f9d6622b919957cdabe0e3cd2458c8b55024e430",
+      "bytes": 11752
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "3a62ab673d88bc04e5ff7c5019aeae1cb2d0d256fbc4211e3e926a906f2e163f",
+      "bytes": 21851
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "sha256": "cd0eba9b220e237ea69f464eb80eefee729ce7e2440f41947674516dd59bc11a",
+      "bytes": 4230
+    },
+    {
+      "path": "src/modules/agent/ui/create/Omnibox.tsx",
+      "sha256": "9a070017f6272694033f120c0750cdb2b844205cd2fccd9ca7aa5483f5be99b2",
+      "bytes": 10588
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceEmptyState.tsx",
+      "sha256": "9734d3964a4f718301cf9d9cefb35d18ed30c51444c10a96bc0a4ee134fac388",
+      "bytes": 1981
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceForm.dom.test.tsx",
+      "sha256": "ef536b41d7af0dc718dd421570e6bf606a6838af81e76adb6119f59d066c6b6e",
+      "bytes": 9302
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpaceForm.tsx",
+      "sha256": "0a4ddba94c3e8a0de45ee58a72e76f71e77b1b1f0143610b27255717b2c3dec9",
+      "bytes": 4192
+    },
+    {
+      "path": "src/modules/agent/ui/create/SpacePicker.tsx",
+      "sha256": "bdefb334c060049394abfa8a19fa1a9fbba247d1bc58c03d502098e10f26389c",
+      "bytes": 2044
+    },
+    {
+      "path": "src/modules/agent/ui/create/space-errors.ts",
+      "sha256": "9ca2dbb4c37e03decfd5d9c0d474238be743fa5dc80e0f52cb7763a26d06784c",
+      "bytes": 68
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
+      "sha256": "29e6842a70efca313e8e5ca5f19682f464c20b062bb88e43700d964ee33b5a3a",
+      "bytes": 14861
+    },
+    {
+      "path": "src/modules/agent/ui/sidebar/SpaceNavigation.tsx",
+      "sha256": "9cfb58d9798b82c59b29bfedabdfb1fa816d64eb9ad9ee9fe5afd9071ef4ddaa",
+      "bytes": 3959
+    },
+    {
+      "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
+      "sha256": "e8c3c3a6d112725c32a1c20bf69b883501f18308f2d55546430dcca620f824c6",
+      "bytes": 6235
+    },
+    {
+      "path": "src/shared/storage/vault-layout.ts",
+      "sha256": "152ed5c79ac456e9752aec09adddc2ecaf0f1cc0ad7829f5e1a1907d2ed21f55",
+      "bytes": 5554
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { App } from 'obsidian';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
-import type { CalendarScope, CalendarSnapshot } from '../../api';
+import type { CalendarScope, CalendarSnapshot } from '../../../task/api';
 import type { VaultTask } from '../../platform/calendar/alltasks-scan';
 import { homeServices } from '../../services/instances';
 import type { NavigatorPeriodic, PeriodicNotePreview } from '../../../navigator/api';
@@ -19,19 +19,18 @@ const unavailable: CalendarSnapshot = {
 /** The board adapter adds file handles for its existing rich task rows, without rescanning or owning a second index. */
 export function useCalendarData(app: App, scope: CalendarScope = {}, enabled = true) {
 	const calendar = homeServices.calendar;
-	const boardPath = scope.boardPath,
-		filter = scope.filter ?? 'all',
+	const filter = scope.filter ?? 'all',
 		from = scope.from,
 		to = scope.to;
 	const subscribe = useCallback((listener: () => void) => calendar?.subscribe(listener) ?? (() => {}), [calendar]);
 	const read = useCallback(
-		() => calendar?.snapshot({ boardPath, filter, from, to }) ?? unavailable,
-		[calendar, boardPath, filter, from, to],
+		() => calendar?.snapshot({ filter, from, to }) ?? unavailable,
+		[calendar, filter, from, to],
 	);
 	const snapshot = useSyncExternalStore(subscribe, read);
 	useEffect(() => {
-		if (enabled) void calendar?.refresh({ boardPath, filter, from, to });
-	}, [calendar, boardPath, filter, from, to, enabled]);
+		if (enabled) void calendar?.refresh({ filter, from, to });
+	}, [calendar, filter, from, to, enabled]);
 	const byDay = useMemo(() => {
 		const map = new Map<string, VaultTask[]>();
 		const handles = new Map<string, VaultTask>();
@@ -52,7 +51,7 @@ export function useCalendarData(app: App, scope: CalendarScope = {}, enabled = t
 			);
 		return map;
 	}, [app, snapshot]);
-	return { calendar, snapshot, byDay, reload: () => calendar?.refresh({ boardPath, filter, from, to }) };
+	return { calendar, snapshot, byDay, reload: () => calendar?.refresh({ filter, from, to }) };
 }
 
 export function usePeriodicNotes() {

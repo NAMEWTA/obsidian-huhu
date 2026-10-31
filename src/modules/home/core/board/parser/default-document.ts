@@ -11,7 +11,6 @@ export function generateDefaultMarkdown(
 	> = DEFAULT_DASHBOARD_SETTINGS,
 ): string {
 	const memoName = t('renderer.typeMemo');
-	const todoName = t('renderer.typeTodo');
 	const projectsName = t('default.projectsName');
 
 	const board: DashboardData = {
@@ -22,69 +21,6 @@ export function generateDefaultMarkdown(
 				color: '#f59e0b',
 				sectionType: 'memo',
 				cards: [],
-			},
-			{
-				name: todoName,
-				color: '#6366f1',
-				sectionType: 'todo',
-				cards: [
-					{
-						id: 'demo-todo-1',
-						title: t('default.todoTitle1'),
-						type: 'task',
-						column: todoName,
-						body: '',
-						tasks: [
-							{ text: t('default.todo1'), checked: false },
-							{ text: t('default.todo2'), checked: false },
-							{ text: t('default.todo3'), checked: false },
-							{ text: t('default.todo4'), checked: false },
-						],
-						docs: [],
-						url: '',
-						wikiLink: '',
-						progress: -1,
-						streak: 0,
-						dueDate: '',
-						blockquote: '',
-						color: '',
-						coverImage: '',
-						width: 0,
-						size: 'M',
-						gridCols: 0,
-						gridRows: 0,
-						gridCol: 0,
-						gridRow: 0,
-					},
-					{
-						id: 'demo-todo-2',
-						title: t('default.todoTitle2'),
-						type: 'task',
-						column: todoName,
-						body: '',
-						tasks: [
-							{ text: t('default.guide1'), checked: false },
-							{ text: t('default.guide2'), checked: false },
-							{ text: t('default.guide3'), checked: false },
-							{ text: t('default.guide4'), checked: false },
-						],
-						docs: [],
-						url: '',
-						wikiLink: '',
-						progress: -1,
-						streak: 0,
-						dueDate: '',
-						blockquote: '',
-						color: '',
-						coverImage: '',
-						width: 0,
-						size: 'M',
-						gridCols: 0,
-						gridRows: 0,
-						gridCol: 0,
-						gridRow: 0,
-					},
-				],
 			},
 			{
 				name: projectsName,

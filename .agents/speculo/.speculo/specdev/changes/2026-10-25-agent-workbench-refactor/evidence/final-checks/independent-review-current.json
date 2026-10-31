@@ -1,0 +1,6 @@
+{
+  "command": "validateIndependentReview(root, evidence/final-review.md, {repoRoot, checkCurrent:true, requireDelivery:true, expectedBase:33c21e0, expectedHead:78102da})",
+  "errors": [],
+  "observed": "Actual imported canonical validator returned errors=[] after metadata reconciliation; production scope/source contracts unchanged",
+  "input_sha256": "ad85880384c79e07d781e6b18ac4fa97a9585bce88009432d825b4f295c476e7"
+}

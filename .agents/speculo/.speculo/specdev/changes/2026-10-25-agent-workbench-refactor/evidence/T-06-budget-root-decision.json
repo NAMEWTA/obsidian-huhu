@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-25T21:03:44.233241+00:00",
+  "actual_writer": "codex:/root",
+  "scope": "Root allocated scripts/bundle-budget.json only",
+  "source_before": "faf6c7b263505676548bb633986303aa5153cdb84f2429b13db4745c5e85c9fd",
+  "source_after": "335055403790308ccb28a3eea9f7861aa1dd42b5cb6f408a66db69588cf5c215",
+  "attribution": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-logs/root/huhu-t06-budget-attribution-data.json",
+  "attribution_sha256": "e141354349b4ac9375f4d566d45b4cf6db9ec4d921f9cc81e11f7d2923df95be",
+  "eager_input_set_equal": true,
+  "module_observations": {
+    "agent": {
+      "before": 1113712,
+      "after": 1166472,
+      "delta": 52760,
+      "input_set_equal": false
+    },
+    "archives": {
+      "before": 175626,
+      "after": 175626,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "automations": {
+      "before": 216069,
+      "after": 216069,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "browser": {
+      "before": 102935,
+      "after": 102935,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "comments": {
+      "before": 110764,
+      "after": 110764,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "home": {
+      "before": 492390,
+      "after": 492392,
+      "delta": 2,
+      "input_set_equal": true
+    },
+    "icons": {
+      "before": 158407,
+      "after": 158407,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "navigator": {
+      "before": 202878,
+      "after": 202534,
+      "delta": -344,
+      "input_set_equal": true
+    },
+    "notifications": {
+      "before": 20361,
+      "after": 20361,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "sync": {
+      "before": 97601,
+      "after": 97601,
+      "delta": 0,
+      "input_set_equal": true
+    },
+    "safe": {
+      "before": 60062,
+      "after": 60061,
+      "delta": -1,
+      "input_set_equal": true
+    }
+  },
+  "changed_limits": {
+    "outputBytes": 6300672,
+    "agent": 1167360
+  },
+  "gate": "Measurement only preceded adjustment; enforced final gate still pending."
+}

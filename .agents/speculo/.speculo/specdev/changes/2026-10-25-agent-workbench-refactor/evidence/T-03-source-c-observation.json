@@ -1,0 +1,193 @@
+{
+  "task": "T-03 C production-native integration test",
+  "workspace": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "baseHeadFromDispatch": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "observedAtUtc": "2026-10-25T08:08:29.127742+00:00",
+  "writerStoppedAtUtc": "2026-10-25T08:08:29.127742+00:00",
+  "onlyRepositoryWrite": "src/modules/agent/services/workspace-service-native.test.ts",
+  "notAFrozenProductionSnapshot": true,
+  "sourceBinding": "A/B source remained live during checks. These final observation hashes are not proof every imported file stayed unchanged throughout execution; Root must bind final frozen validation.",
+  "files": [
+    {
+      "path": "src/modules/agent/services/workspace-service-native.test.ts",
+      "sha256": "dec2134b65b65037ae1ef8d8472f89cf17543c74d8370dc4e1686ccabe88f77b",
+      "bytes": 12844,
+      "role": "sole owned new test; writer stopped"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-service.ts",
+      "sha256": "cadab1cc0ae7903297d67d07e7c98935b29e9f5e44eb54bf1406a4db7a07896c",
+      "bytes": 36795,
+      "role": "T-03 active implementation; final observation only, not frozen"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/sessions.ts",
+      "sha256": "96c09d047a4597e18b41f4a6befc8562672ae97b875095425e9a2014dc210a97",
+      "bytes": 16363,
+      "role": "T-03 active implementation; final observation only, not frozen"
+    },
+    {
+      "path": "src/modules/agent/services/terminal/session.ts",
+      "sha256": "d9ecbbeb83ba786feb8677a147e765803945a9b908a3aa843f556a96ad996a16",
+      "bytes": 15427,
+      "role": "T-03 active implementation; final observation only, not frozen"
+    },
+    {
+      "path": "src/modules/agent/core/workspace/managed-runtime.ts",
+      "sha256": "2a615a02a848afaaa5872dfcefd701fc607d6b2a26368aa1bcfcf61cf8027ee7",
+      "bytes": 4182,
+      "role": "T-03 active implementation; final observation only, not frozen"
+    },
+    {
+      "path": "src/modules/agent/services/spaces/space-service.ts",
+      "sha256": "1928d57ef2b763af6aad3fd113c4d1910759ae7cb291cd557814e0f2b08ff69b",
+      "bytes": 16158,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/services/workspace-store.ts",
+      "sha256": "ea30593109d884895bd0dc63fef4a257ee1b72059862a6947a833e5cc66fc307",
+      "bytes": 7204,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.ts",
+      "sha256": "d8d031de96d45e020110e00d0bbed27a56e011b8fbee2350ceaeeb3cd4ec28c1",
+      "bytes": 1078,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/directories.ts",
+      "sha256": "c63ebc8f31b41d37310e3c47ca5091d81ff35ac57cef41822980f1fd78174873",
+      "bytes": 5978,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.ts",
+      "sha256": "00dfd986d0ce4ea30d66b0752e799fd2783c41ffa9b4034bc37c0025a81332e7",
+      "bytes": 3952,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/core/space/ports.ts",
+      "sha256": "5bb0fb11e6dd8928f3adee6905824f2c1588ecf277d686dd07209b6c4fd4c5b1",
+      "bytes": 1063,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/core/space/model.ts",
+      "sha256": "867ef47ae8e7a9f6ea079dd6263e850af55bd3b43d94421cb6e12c5e8458132e",
+      "bytes": 1234,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/host/desktop/native/host.ts",
+      "sha256": "0255c0fb39186e2d6ca5e9cec6e3e0a74f8ad0bf7183462f6b5cedcaecc0b068",
+      "bytes": 9005,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/host/desktop/native/helper.ts",
+      "sha256": "1ee73cae6ec255f5cf91678b61b55f3de0b10d41e7fedc1eb0f482a08b17e8b1",
+      "bytes": 8653,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/shared/native/host.ts",
+      "sha256": "c764fc8f62a70450febd87c7f15df896266ea46fbea46559ac839fb32b757569",
+      "bytes": 2032,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": "src/modules/agent/core/terminal/settings.ts",
+      "sha256": "e043e495e9df1afc64689fab82459134c6f9baf4938456783134df78e4b4bd1c",
+      "bytes": 8742,
+      "role": "production predecessor observed, no write"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-03-api-frozen.md",
+      "sha256": "0742ec1ee8954a2897724063e615c6aa913f780ecb8874b8c8937908ea8a8be2",
+      "bytes": 4937,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/ticket/03-managed-runtimes.md",
+      "sha256": "258a9c362844398b56dfdac79b4f931b1d2db17661d058db8c310d78a77aebd5",
+      "bytes": 18219,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/tickets-map.md",
+      "sha256": "6f7f84a42d148b68d545c17608584938caba071fbd2a678781f137b68623d817",
+      "bytes": 31587,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/spec.md",
+      "sha256": "d204c7a0b3178a60ddeb291a8153f79cb8e3864427c5317b7660832182d12618",
+      "bytes": 55822,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/implementation-contracts.md",
+      "sha256": "f13ca8cf0ef1185065e7c6d4e537a787f50ac813678aec428e498c0a8f03e397",
+      "bytes": 17046,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6",
+      "bytes": 7873,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103",
+      "bytes": 11452,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "c8d02dad082e075be91fbbc33d669169756a617c7b598d56c4cd9e5954a26bf2",
+      "bytes": 19768,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "sha256": "27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3",
+      "bytes": 6155,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": "vitest.config.ts",
+      "sha256": "4e17d6b34910196722cdb1e0d4d6b6522105bedb3ad2b022ed38ea15bcd22415",
+      "bytes": 2599,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": "scripts/isolate-home.ts",
+      "sha256": "c769653fb1e1a9f30f0a950ef6e77626ca8ea71b07e0e53238bf5d43d93f39c5",
+      "bytes": 768,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": "src/types/global.d.ts",
+      "sha256": "89dc39f6a8c7dfcd71e9c1a84117f915bbfd00eb33eb15f4778abed60a2434b5",
+      "bytes": 873,
+      "role": "read-only contract/config or reused unchanged rule"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "ff9c946a35f7582b584890d90e12509de830f3f6a46230c45e1b92e2843949cb",
+      "bytes": 784,
+      "role": "read-only contract/config or reused unchanged rule"
+    }
+  ],
+  "helper": {
+    "path": "native/pty-server/target/debug/huhu-pty",
+    "sha256": "5f01f05d62625f4199eb3a61866bbbc94697536446dfe7972f4d74cb63aafe91",
+    "bytes": 21681960,
+    "role": "existing Linux debug helper; read/executed only"
+  },
+  "releaseHelperExists": false
+}

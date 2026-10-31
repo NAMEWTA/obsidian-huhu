@@ -1,0 +1,87 @@
+{
+  "task": "091-recovery-review-r2",
+  "acceptedAt": "2026-10-26T00:51:49.666446+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullEffectiveProbeAndRawLogRead": true,
+  "reportSha256": "5c78b49ff6b4b83669298f5f193e29b166d6da5f95e1eced617fe15c5e789109",
+  "taskSha256": "43fe0e29a000935a8cb462fd2237f3b82cf88abdee6cc3796a65e45be6353783",
+  "inputSha256": "a62e8c7de0b7ca0542f418e239344eb0ea2625f11d6f6e8ccc6872eb573db89a",
+  "returnExit": 0,
+  "returnOutput": {
+    "errors": [],
+    "warnings": [],
+    "caveat": "Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened."
+  },
+  "reviewerStopped": true,
+  "allOwnedProcessesWaited": true,
+  "axes": {
+    "standards": "pass",
+    "specification": "pass"
+  },
+  "currentInputVerification": {
+    "inputSha256": "a62e8c7de0b7ca0542f418e239344eb0ea2625f11d6f6e8ccc6872eb573db89a",
+    "files": 349,
+    "sources": 122,
+    "currentSourceAndScopeDrift": [],
+    "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+    "indexSha256": "10a283748f5edff250e8b5af2378b1c3d898beaf650c92826a5885b282a8ead1"
+  },
+  "externalOriginalFilesChecked": 292,
+  "externalSourceDrift": [],
+  "readbackCorrection": "首个Root只读核验脚本误把module-relative清单拼到副本根，路径检查失败；纠正为native/huhubot后实际逐项核验通过，未重跑产品检查或修改任何源。",
+  "probeSha256": "d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe",
+  "checks": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "./tests/contract/chat",
+        "-run",
+        "^TestReview091",
+        "-count=1",
+        "-timeout=45s",
+        "-v"
+      ],
+      "cwd": "/tmp/huhu-review091-orc789t5/native/huhubot",
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 2.501,
+      "probeSHA256": "d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-race",
+        "./tests/contract/chat",
+        "-run",
+        "^TestReview091",
+        "-count=1",
+        "-timeout=45s",
+        "-v"
+      ],
+      "cwd": "/tmp/huhu-review091-orc789t5/native/huhubot",
+      "actualExit": 0,
+      "waited": true,
+      "seconds": 6.597,
+      "probeSHA256": "d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe"
+    }
+  ],
+  "artifactHashes": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/00-probe-input.json": "679ae3c53eb1977de5778d4784c8a479583a914c35396761a4f0044849bfa1e6",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/01-independent-probe.go.txt": "d877c08c5f32f8f40aef2e28f040e8b9b0105e82ad6ff588d0a5936bae720cfe",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/02-independent-normal.json": "1988713c315868c9d6887ddf64082becbf9dd1bbabd8f34b325cd4f8cb51971c",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/02-independent-normal.log": "a8938b5eeab9e4e5d05a02d79421f53508d45a7c3f7eda152c02973fcfdd0b0c",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/03-independent-race.json": "6584df3d8723f824db0f4f0354b64d6fd9f82bd8d4c475cae2b2a674a923c770",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/03-independent-race.log": "59830d4aed07561948dd9910ef05a1cec0420d3ded18e1eb2913b13c256493d4",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/04-r1-r2-scope-comparison.json": "1fe43e0e8aa0ac0c47170d4f64d8bd97b4cf47c665d3118a7237baa286870077",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/05-final-input-process.json": "99401e925a572dfe72186b55035698a503190c5536f44ced8a9850545eff3a3f",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/06-return-result.json": "3412a52cb3307bf154c7c18ca836d69375b371fdbc8dda227bb3ac8eb7f425b7",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/logs/07-final-handoff.json": "8c27af65e186637034615b5dbb59312b269f113c1c459f098230e62d71fe0074"
+  },
+  "boundary": "Independent code review; no real Provider/Obsidian/target-OS acceptance",
+  "observed": "Root实际派遣与收到MESSAGE/FINAL，完整回读最终报告、独立探针/原始normal及race日志、真实Commit/context失败和same-store成功控制，亲自return0及349文件/122源复核。两轴pass仅当前八票职责，后续产品能力与用户现场验收未宣称完成。"
+}

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "writer": "/root/implement_t01",
+  "ticket": "T-02",
+  "role": "B desktop adapters",
+  "root": "/home/wta/orca/workspaces/obsidian-huhu/terminal",
+  "source_writes_stopped": true,
+  "files": [
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/directories.test.ts",
+      "bytes": 10069,
+      "sha256": "3e4b0301893c34c77c70f5d6cc92a7236442989d9beddd8a80743a6c55c7c9a3"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/directories.ts",
+      "bytes": 5978,
+      "sha256": "c63ebc8f31b41d37310e3c47ca5091d81ff35ac57cef41822980f1fd78174873"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.test.ts",
+      "bytes": 3626,
+      "sha256": "547f0ebd837ca8b8ea7712743ef2a374a52a8e9d059568170ecdb23efe8d7a62"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/ports.ts",
+      "bytes": 1078,
+      "sha256": "d8d031de96d45e020110e00d0bbed27a56e011b8fbee2350ceaeeb3cd4ec28c1"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.fixture.ts",
+      "bytes": 1265,
+      "sha256": "3e645015a9e25a3ded6a7c97e8f986e24cb5052028d93a870c678f9038cb5245"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.test.ts",
+      "bytes": 6473,
+      "sha256": "c91ca8db247011440b6ee5f02755eb8621147509e87bcbc71249ce9b8ce18619"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-owner.ts",
+      "bytes": 3952,
+      "sha256": "00dfd986d0ce4ea30d66b0752e799fd2783c41ffa9b4034bc37c0025a81332e7"
+    },
+    {
+      "path": "src/modules/agent/platform/desktop/spaces/writer-process.test.ts",
+      "bytes": 5611,
+      "sha256": "fbe98d21b68b447834a055da5b58f3694dfc7f889f1dd9cbc7c4bc0d6c272b4c"
+    }
+  ]
+}

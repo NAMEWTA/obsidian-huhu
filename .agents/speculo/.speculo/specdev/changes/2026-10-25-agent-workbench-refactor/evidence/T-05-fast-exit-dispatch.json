@@ -1,0 +1,15 @@
+{
+  "observed_at_utc": "2026-10-25T18:16:43.749344+00:00",
+  "tool": "collaboration.followup_task",
+  "target": "/root/implement_t01",
+  "result": "Tool returned without error; task delivered",
+  "identity": "Original gpt-6.1-sol / xhigh agent; no model switch",
+  "packet": "evidence/T-05-fast-exit-repair-packet.md",
+  "packet_sha256": "82001b7ffe6539682bbacdf78dc0f9292351d8fb043b17e9e59feb38080bc73e",
+  "input_sha256": "959d36f484044019e5f1156c27eb121539c34025b1c2c6874b4e78b1e42eaf0d",
+  "write_paths": 3,
+  "prior_cycle_attempts": 3,
+  "current_cycle_attempts": 0,
+  "other_product_writers": "STOPPED",
+  "preflight": "/tmp/huhu-t05-fast-exit-preflight.json"
+}

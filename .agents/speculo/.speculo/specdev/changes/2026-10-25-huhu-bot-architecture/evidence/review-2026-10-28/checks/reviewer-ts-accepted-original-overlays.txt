@@ -1,0 +1,18 @@
+
+ RUN  v5.0.3 /home/wta/orca/workspaces/obsidian-huhu/bot
+
+--------·------·stdout | src/modules/huhubot/ui/groups/GroupEditor.dom.test.tsx > review final unknown membership outcome clears private body refilled during the pending request
+review cached body after unknown membership outcome []
+
+·stdout | src/modules/huhubot/ui/data/DataPage.dom.test.tsx > review final Data-first close removes private body without a prior Chat owner binding
+review close handler count for Data-first open 1
+
+----·-------·
+
+ Test Files  4 passed (4)
+      Tests  5 passed | 25 skipped (30)
+   Start at  18:40:11
+   Duration  3.10s (transform 27%, environment 23%, import 21%, tests 16%, setup 13%)
+
+    Isolate  4 workers spawned · ~239ms startup each (spawn + environment, per file)
+             at least ~717ms faster with isolate: false — reuses workers across files instead of one per file

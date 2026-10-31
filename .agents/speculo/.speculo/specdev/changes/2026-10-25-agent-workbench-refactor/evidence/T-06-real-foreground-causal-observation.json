@@ -1,0 +1,291 @@
+{
+  "utc": "2026-10-25T22:03:26.540732+00:00",
+  "kind": "Root controlled production foreground causal observation, actual Chrome execution",
+  "inputs_sha256": "c3a08aa3c80ee582a7e122406573290ed920c048dfe7e1fd55ab60823ee82721",
+  "raw_capture": {
+    "path": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-06-real-foreground-observation1-root-capture.json",
+    "sha256": "b7e76fdf0a89a15be897cdced453b7e8c7123f9473c32a2391667a8b3d7f3fae"
+  },
+  "v3_navigation": [
+    {
+      "name": "all-Vault-historical-blocked-keyboard-navigation-exact-existing-split",
+      "ok": true,
+      "detail": {
+        "target": {
+          "spaceId": "5786d79c-8fca-493a-bf9d-285e0d967cc3",
+          "sessionId": "a302349f-7a5e-4511-adf7-9d80bd015960",
+          "runtimeId": "terminal-dcccbcb4-2911-4ae3-b13b-fb9b71ba4240"
+        },
+        "spawns": 2,
+        "inputs": 0,
+        "point": {
+          "x": 300,
+          "y": 78
+        }
+      }
+    },
+    {
+      "name": "trusted-key-through-production-TabView-and-original-terminal",
+      "ok": true,
+      "detail": {
+        "input": [
+          {
+            "sid": 1,
+            "data": "\u001bOA"
+          }
+        ]
+      }
+    }
+  ],
+  "foreground_navigation": {
+    "name": "all-Vault-historical-blocked-keyboard-navigation-exact-existing-split",
+    "ok": false,
+    "error": "Error: did not locate exact split runtime {\"deadline\":4866.199999988079,\"observedAt\":4891.4000000059605}",
+    "stack": "Error: did not locate exact split runtime {\"deadline\":4866.199999988079,\"observedAt\":4891.4000000059605}\n    at assert2 (http://127.0.0.1:45573/fixture.js:71809:25)\n    at until (http://127.0.0.1:45573/fixture.js:71815:9)\n    at async http://127.0.0.1:45573/fixture.js:72360:11\n    at async check (http://127.0.0.1:45573/fixture.js:71821:24)\n    at async Object.navigationDone (http://127.0.0.1:45573/fixture.js:72358:9)"
+  },
+  "chain": [
+    {
+      "index": 48,
+      "at": 688.2999999821186,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "capture",
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 53,
+      "at": 697.7999999821186,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "valid-return",
+      "returned": true,
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 54,
+      "at": 697.9000000059605,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "valid-return",
+      "returned": true,
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 62,
+      "at": 825.2999999821186,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "event",
+      "type": "focusin",
+      "target": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "ownerId": "pending-primary",
+        "runtimeId": "terminal-6b0c72be-0108-40db-b22a-4cdfe6814851"
+      },
+      "isTrusted": true,
+      "defaultPrevented": false,
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "ownerId": "pending-primary",
+        "runtimeId": "terminal-6b0c72be-0108-40db-b22a-4cdfe6814851"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 63,
+      "at": 831.0999999940395,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "valid-return",
+      "returned": false,
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "ownerId": "pending-primary",
+        "runtimeId": "terminal-6b0c72be-0108-40db-b22a-4cdfe6814851"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 64,
+      "at": 831.0999999940395,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "dispose-call",
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "ownerId": "pending-primary",
+        "runtimeId": "terminal-6b0c72be-0108-40db-b22a-4cdfe6814851"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 65,
+      "at": 831.1999999880791,
+      "kind": "real-foreground-probe",
+      "fixture": "pending",
+      "intentId": "pending:foreground:3",
+      "phase": "dispose-return",
+      "anchor": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "View original terminal: Needs manual approval",
+        "ownerId": "pending-primary",
+        "activitySessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c"
+      },
+      "capturedLeaf": "pending-primary",
+      "currentLeaf": "pending-primary",
+      "scopeElement": "pending-primary",
+      "fixtureClosed": false,
+      "documentURL": "http://127.0.0.1:45573/",
+      "windowMatchesDocument": true,
+      "activeElement": {
+        "tag": "TEXTAREA",
+        "id": "",
+        "label": "Terminal input",
+        "ownerId": "pending-primary",
+        "runtimeId": "terminal-6b0c72be-0108-40db-b22a-4cdfe6814851"
+      },
+      "docFocused": true,
+      "visibility": "visible"
+    },
+    {
+      "index": 66,
+      "at": 831.1999999880791,
+      "kind": "attach-result",
+      "fixture": "pending",
+      "result": {
+        "status": "attached",
+        "target": {
+          "spaceId": "deb91d85-f367-4240-9869-5781512d2bbb",
+          "sessionId": "b075546c-40aa-44fc-8739-aa47e9cdb40c",
+          "runtimeId": "terminal-1065a240-4428-4338-8854-5746ca0cc9af"
+        },
+        "tabId": "tab-4ace81de-fc65-4af4-a5f6-81a3c8592b4b",
+        "focused": false
+      }
+    }
+  ],
+  "finding": "The same production capture token is valid before Space selection; the restored companion textarea focusin is its sole observed revocation event; valid becomes false and exact target attach returns focused:false. Existing v3 fixture omitted this factory. Revision idempotence remains necessary but insufficient.",
+  "scope_limit": "Real production Workspace/React/xterm/capture functions under controlled native/storage/leaf host. Not real Obsidian/provider/OS foreground E2E.",
+  "recovery": "Preserve original cycle attempts3. A readonly minimal design and C separate geometry causal probe pending. No product write unlocked until Root revises exact Ticket/Map/ownership packet.",
+  "additional_observation": "Existing split lifecycle calls valid after dispose on setup intent2; do not change dispose semantics incidentally."
+}

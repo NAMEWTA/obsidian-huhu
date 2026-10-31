@@ -1,0 +1,430 @@
+{
+  "checkedAt": "2026-10-25T22:34:10.060014+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "headMatchesTask": true,
+  "sourceCount": 70,
+  "allMatch": true,
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5499,
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "bytes": 7961,
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "bytes": 11911,
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "bytes": 6884,
+      "sha256": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/skills/specdev-i-implement/SKILL.md",
+      "bytes": 792,
+      "sha256": "cb0824735ef93c42b059047183073885fc9d931c31492da18182b1b7d933744c",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "bytes": 4971,
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/references/coordination/coordination-contract.md",
+      "bytes": 9116,
+      "sha256": "736563f49903256de7367383dae2cc2f55112f2b592e066e9684253960775ed4",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/references/coordination/result-and-recovery.md",
+      "bytes": 5277,
+      "sha256": "c90797e7d63f0035cc8c9560e793699aeb13f5aeddbaa84e07d51693b0f6520f",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/references/coordination/session-files.md",
+      "bytes": 10818,
+      "sha256": "e72bdb0ebe8f14e9fecf2a24cfb368919248600dbc3cfcfe1a1652a050b8f707",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/references/coordination/report-template.md",
+      "bytes": 852,
+      "sha256": "cde0444acefb7de12cda86ca1e2fe3881403276c5e23fdf3cdeef580c56ad6c5",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/TASK.md",
+      "bytes": 3561,
+      "sha256": "7aeba54d93d368b612be6e489f7714b6c35c3f62858bbe1ca93e1776501d7418",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "bytes": 51066,
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/08-engine-chat-completions.md",
+      "bytes": 12198,
+      "sha256": "325ac54be3563285275f4700283e4252787a20bc1afd4718e8de5151dabd80e9",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/02-bot-model-credentials.md",
+      "bytes": 17431,
+      "sha256": "449d6057a01faa01a010453fc5d2471ea62166c400e965d11dd95961cd03d1bc",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/12-messages-limits-budget.md",
+      "bytes": 26176,
+      "sha256": "29e9f459f21e8f54e50af8288412268036b74e71989967d79adb810a175a0c3e",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "bytes": 37904,
+      "sha256": "89d2f65886bc2d8a47866f50cfab381e4190e833f3c3a08d3e1fd0c410559231",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/engine-port-preflight.md",
+      "bytes": 2349,
+      "sha256": "1f6e46ac6ee6d6ffc44912a91f35ab3a2b7bc8e7023bf6972fdb28212d389aa2",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/model-protocol-preflight.md",
+      "bytes": 2746,
+      "sha256": "72c9611b5d10809efd173045baaccc7782c6656f4ef6bd39faac169b5ead2723",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/REPORT.md",
+      "bytes": 42922,
+      "sha256": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/sources.json",
+      "bytes": 6438,
+      "sha256": "5df2631cd9f1daddc177da6cc867cbfdc1c4707591295fa26bb3ff9efd7e2c91",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/observations.json",
+      "bytes": 22271,
+      "sha256": "84ad540b3b6c27574cd87d4bc339e27430320b42181510d9f2a061aba856d337",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/return.json",
+      "bytes": 920,
+      "sha256": "30692e8845b4f5b486b242bca0c4c7394b380e6239a5c6c070c3d775a4121d3b",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/combined-probe/go.mod",
+      "bytes": 5105,
+      "sha256": "043859b73148e4c177dcd02905825fc1cf43b0b7f26a61b67acd856a434ce891",
+      "matchesObserved": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/combined-probe/go.sum",
+      "bytes": 34996,
+      "sha256": "2c24e701fb399c182fcddca5beab56ddfdd2cf0c0ad0277d46d864c230ce685e",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "bytes": 6752,
+      "sha256": "e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "bytes": 4202,
+      "sha256": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/attempts.go",
+      "bytes": 2954,
+      "sha256": "100af5f4f77c709e1cc1b318fe8abe7dfca1d754637a9a1b0690964ac84e67e4",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "bytes": 1392,
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "bytes": 5736,
+      "sha256": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/task_config_hash.go",
+      "bytes": 1102,
+      "sha256": "fb04ac98412b953703145247fbec30dbf1cd172bb18bba17edbf03d89b3a6c69",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/recovery.go",
+      "bytes": 2091,
+      "sha256": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/collaboration.go",
+      "bytes": 7224,
+      "sha256": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "bytes": 6665,
+      "sha256": "5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "bytes": 10578,
+      "sha256": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "bytes": 826,
+      "sha256": "8cf2e56c9269742fa83c18722a1229c9f55ae3c85a6e78a713cab0bc199beb4d",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "bytes": 12633,
+      "sha256": "b4f5bc6359a90013c3e19bd1cef9d046327e7777e9bf16cd888467db03bd2ab8",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "bytes": 14767,
+      "sha256": "ef31c9b2428794b0079c0811235df443a8c76d531f45847e1d70b5e72780b4d1",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/recovery.go",
+      "bytes": 3717,
+      "sha256": "e26c4401ceaed66bd1c3e86b5f872389fb98e97f840781ba223b8179d5cbaea3",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/collaboration-tools/service.go",
+      "bytes": 3711,
+      "sha256": "03a2fec6c8ddbdcdb9d064a40925e1268091824cd2bfa4fa741f6a5ed2468da7",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "bytes": 11493,
+      "sha256": "a114c9297befbe0c61aee5dd86d6d5a36e8bff481d8aa6acbe6341f907820a67",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "bytes": 20320,
+      "sha256": "e27d13089880686b86361965a903c952437a561f22aed3b9846fa3d34a347aed",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "bytes": 25706,
+      "sha256": "6600cf9abfae1cd463dccb8acbd86cb4e186bf0dacfcc06faf288a43d1e2d3a6",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go",
+      "bytes": 16022,
+      "sha256": "bd75ac37aeaaa5725e4a56f7d8a56062a17ba877fe1f5a95b25c49acd714f656",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/recovery_position.go",
+      "bytes": 5595,
+      "sha256": "a964222d54faa05e20a24044f0f198380f69859d25d0b14ddf4c4bd91f2bc910",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go",
+      "bytes": 14132,
+      "sha256": "64eeb3d50a564371798e51113e1f4f62baf071e043b60159f6f742b480966951",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "bytes": 9890,
+      "sha256": "ade097d0afe156fc3e2a33fb22798f537d5218aab3ab4c98a736105ae0c873b8",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/groups/context.go",
+      "bytes": 2205,
+      "sha256": "5ed7630119f48004426910108e001d1bf52e58b8d6fec6d48d9fe850bd1909ba",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "bytes": 8039,
+      "sha256": "22c50058a7556a013e83cd466f586703b6d9d5cba024061abce777dfb5994e06",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql",
+      "bytes": 4419,
+      "sha256": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "bytes": 11233,
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/blob/store/store.go",
+      "bytes": 9063,
+      "sha256": "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/domain/assistant/validation.go",
+      "bytes": 2317,
+      "sha256": "03b7a74338fac394f11d6928bf43244b67b82110ca259d915f8a5170cdb146dd",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/profile.go",
+      "bytes": 6028,
+      "sha256": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "bytes": 4058,
+      "sha256": "965c5467d0f66312d8387b45a3db0fe761e21994f84a38351bc8cb911f260e8c",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "bytes": 499,
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+      "matchesObserved": true
+    },
+    {
+      "path": "native/huhubot/go.sum",
+      "bytes": 2599,
+      "sha256": "2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/runner.go",
+      "bytes": 12584,
+      "sha256": "68667d6e57a496a0374517b30f2b637846a517e7f370e21c56439842a50b24b6",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/chatmodel.go",
+      "bytes": 60351,
+      "sha256": "674dc19ca9a41406d5fc68848355eb9199c39be8f3b4a2a01527e1dc41ce61a5",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/compose/tool_node.go",
+      "bytes": 51026,
+      "sha256": "9ad538059f4ecc81137dbb045829d95792dfdf3fa3905b322f4152d4b6c131bd",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/components/tool/interrupt.go",
+      "bytes": 6192,
+      "sha256": "5939a961e46f474230dcb4cd06591fcbda450704d938c4cecb2098cb6e2dbba4",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/schema/stream.go",
+      "bytes": 24609,
+      "sha256": "b7b154c587960d9db504dfc83bf95929dfc7aa4bf8ebd2a4ba3203b0c77a15a4",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/openai@v0.1.13/chatmodel.go",
+      "bytes": 10458,
+      "sha256": "62395a9fd31e2b35c463c78459b55e55df28cd632edb01bb9ccd5d26197ab5b7",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/libs/acl/openai@v0.1.18-0.20260924031408-10df7cac3f6d/chat_model.go",
+      "bytes": 42810,
+      "sha256": "403786db3b985926b5c9c6dc17c4abd6fda15b928887632e976856dfeffe2f52",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/client.go",
+      "bytes": 8620,
+      "sha256": "4d6ef78694b6154a0d916ab886d0c91ea4b8ca3eb10ff92e650d68af2578dca9",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/stream_reader.go",
+      "bytes": 2387,
+      "sha256": "96f819acac91e0c96d4f1a4a194d7da53ff8ad9eca02a06624696f5a3aa26ba9",
+      "matchesObserved": true
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/models.go",
+      "bytes": 2728,
+      "sha256": "a96bdaa80c09880c9022fd4f43d960524c4e90a6a24cdd51654b6e91bef495e4",
+      "matchesObserved": true
+    }
+  ],
+  "writeScope": "Only 087 task artifacts; no production, tests, formal state or old report writes by this worker."
+}

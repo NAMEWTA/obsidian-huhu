@@ -1,0 +1,151 @@
+{
+  "task": "155-context-busy-retry",
+  "status": "completed",
+  "outcome": "known rolled-back SQLite BUSY_SNAPSHOT retry and bounded terminal handling",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "treeSHA256": "7049f48b0d2f764b0283874b65d420e34a67714a140776a5fa7e2039dc484386",
+  "sourceFilesChanged": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/context.go",
+      "sha256": "bafbaa593d9fb66a5a36bc248f483b374638edb1447bcfe464fbe10bc853a44a",
+      "mode": "0o664",
+      "bytes": 8084
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/context_retry_test.go",
+      "sha256": "2f36c3187fb8927ba35fb69244cd88da5ae9329973991612dcb642bb05a0ebfb",
+      "mode": "0o664",
+      "bytes": 11211
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "sha256": "9fb78358cb5f5cca26d42b97ef82dc76fc4846a7fcfe25a9d14907129bd29196",
+      "mode": "0o600",
+      "bytes": 12222
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/resume_inbox_test.go",
+      "sha256": "b5f12b91a94bc246d0b1c1a03ab16f4e60b38caf3e0ede0fecf5c171a1756d81",
+      "mode": "0o664",
+      "bytes": 17657
+    }
+  ],
+  "fixedGoInputs": [
+    "logs/03-input-before.json",
+    "logs/06-input-before.json"
+  ],
+  "inputDrift": "logs/09-drift-audit.json",
+  "commandReceipts": "logs/10-command-receipts.json",
+  "returnValidation": "logs/12-return-receipt.json",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "c258dce4222e5e32e0a62c4bee14c240a893cf2550856c1ca8adece9626443f3",
+      "mode": "0o664",
+      "bytes": 4143
+    },
+    {
+      "path": "logs/02-list.json",
+      "sha256": "f39d5d0080548292f5f85e4cd98eef982fa640aea68d2fb050cd4bac90225917",
+      "mode": "0o664",
+      "bytes": 1643973
+    },
+    {
+      "path": "logs/02-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/03-input-before.json",
+      "sha256": "d33f0a11b85932756a76e086c136bbc7a86ffd5e111a1f670f84bb1092584199",
+      "mode": "0o664",
+      "bytes": 55246
+    },
+    {
+      "path": "logs/04-snapshot-first.jsonl",
+      "sha256": "00afd59565d355a06d6852e7b1c8fc5ea541498732da51991ee011be5d3f9ca9",
+      "mode": "0o664",
+      "bytes": 4213
+    },
+    {
+      "path": "logs/04-snapshot-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/05-invalid-first.jsonl",
+      "sha256": "207be225bff3d1a837c36b3222e08e8ceb0bd872693c71a6264538a3072e087e",
+      "mode": "0o664",
+      "bytes": 6023
+    },
+    {
+      "path": "logs/05-invalid-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/06-input-before.json",
+      "sha256": "1bff9aad3a97eaf6ca9e67b853f6942d6db1fb0ad76d7c598595b682a72cc49d",
+      "mode": "0o664",
+      "bytes": 55247
+    },
+    {
+      "path": "logs/07-snapshot-with-denial.jsonl",
+      "sha256": "32e2400e0fc19456da3ec39e308580393c0887b9824e85aa82c6bd98b46ccd51",
+      "mode": "0o664",
+      "bytes": 5262
+    },
+    {
+      "path": "logs/07-snapshot-with-denial.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/08-foundation-affected.jsonl",
+      "sha256": "1a38b93fd52566c23de4720d9527bbf34ccb0a296577bd0c25116f7c8f256134",
+      "mode": "0o664",
+      "bytes": 6026
+    },
+    {
+      "path": "logs/08-foundation-affected.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/09-drift-audit.json",
+      "sha256": "0a9d0551ebb100b2339738ac0213c0c2b182a281d09f17ace9e4d41715b6f8bf",
+      "mode": "0o664",
+      "bytes": 93
+    },
+    {
+      "path": "logs/10-command-receipts.json",
+      "sha256": "f7d7369ec2ce68ce0a4a5fa4cd0fc006c3b8a3a3ae1e94bc6dc6d2367c0ccf63",
+      "mode": "0o664",
+      "bytes": 3758
+    },
+    {
+      "path": "logs/11-return.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664",
+      "bytes": 0
+    },
+    {
+      "path": "logs/11-return.stdout",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664",
+      "bytes": 200
+    },
+    {
+      "path": "logs/12-return-receipt.json",
+      "sha256": "1c9830d66dd0f7ae9b036c3e54b1a5ef0566732e9fb6f7ece4219fedba404e20",
+      "mode": "0o664",
+      "bytes": 857
+    }
+  ],
+  "artifactCount": 18
+}

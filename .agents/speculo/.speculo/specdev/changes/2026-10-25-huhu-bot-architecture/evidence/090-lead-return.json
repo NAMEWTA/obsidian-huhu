@@ -1,0 +1,45 @@
+{
+  "task": "090-recovery-parent-repair",
+  "acceptedAt": "2026-10-26T00:14:28.283992+00:00",
+  "nativeMessageAndFinalReceived": true,
+  "fullReportRead": true,
+  "fullEffectiveProbeAndRawLogRead": true,
+  "reportSha256": "9c3b4fee48aff677dfb5bc7b5a2820b3ae9d8e1179d23221c7e3ec26a31a1052",
+  "taskSha256": "47f25b2295e6d00a61c2ebda5c81668db3f8ac8dc2f1abf948c04104b7056eee",
+  "returnExit": 0,
+  "returnOutput": {
+    "errors": [],
+    "warnings": []
+  },
+  "writersStopped": true,
+  "allAuthorProcessesWaited": true,
+  "ownFiles": {
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go": "8f5e2f60e82f84e76561e7bea57da185f01e083393f114857032530d2a2b8ed2",
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go": "65c14df39912133c10437cb49d5a04e7621793f3dc2fb1f002992366565d9536",
+    "native/huhubot/tests/contract/collaboration-policy/parent_page_test.go": "85abbca8ebe2e99536223d4e77cbf8a6d50010d6a9b3973fc9c4a960bf7c3a02"
+  },
+  "ownTreeHash": "a4f3236a1ca31ea7ca7fde24e436c32095ef696cafbb310b4d23c18295cdc627",
+  "ownDrift": [],
+  "artifactHashesChecked": 30,
+  "artifactDrift": [],
+  "jointFilesChecked": 381,
+  "jointSourceTreeSha256": "c2ca2c43d48ac50f3181109f7abd638d00ecaf97bd5b6732c80229946edc56c8",
+  "jointDrift": [],
+  "handoffSha256": "0156f5a0b975e7d5f36b28c747949c153e1239cbde0d395258b3e6686870c86b",
+  "observed": "Root实际收到MESSAGE与FINAL，完整回读最终REPORT、原产品红及只观测诊断、最小测试预算diff、最终14/15 normal/race原始输出和16/17/18，亲自return0并逐SHA核当前源/工件。只接纳090局部修复；全候选静态检查、Root E2E/独立复审仍待完成。",
+  "finalChecks": [
+    {
+      "name": "parent-normal",
+      "exit": 0,
+      "seconds": 4.159,
+      "waited": true
+    },
+    {
+      "name": "parent-race",
+      "exit": 0,
+      "seconds": 73.669,
+      "waited": true
+    }
+  ],
+  "boundary": "controlled Engine; real public Executor/SQLite/CP; no real Provider/Obsidian/target-OS acceptance"
+}

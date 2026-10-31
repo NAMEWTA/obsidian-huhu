@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "/tmp/huhu-validate-memory-closure.mjs",
+    "1"
+  ],
+  "exitCode": 126,
+  "waited": true,
+  "waitSeconds": 2.3698344560034457,
+  "stdout": "{\"result\":\"failed\",\"errors\":[\"T-01: required E2E needs observed passing evidence owned by the Lead\",\"T-02: required E2E needs observed passing evidence owned by the Lead\",\"T-03: required E2E needs observed passing evidence owned by the Lead\",\"T-04: required E2E needs observed passing evidence owned by the Lead\",\"T-05: required E2E needs observed passing evidence owned by the Lead\",\"T-06: required E2E needs observed passing evidence owned by the Lead\",\"T-08: required E2E needs observed passing evidence owned by the Lead\",\"T-09: required E2E needs observed passing evidence owned by the Lead\",\"T-10: required E2E needs observed passing evidence owned by the Lead\",\"T-11: required E2E needs observed passing evidence owned by the Lead\",\"T-12: required E2E needs observed passing evidence owned by the Lead\",\"T-13: required E2E needs observed passing evidence owned by the Lead\",\"T-14: required E2E needs observed passing evidence owned by the Lead\",\"T-16: required E2E needs observed passing evidence owned by the Lead\"],\"tickets\":28,\"executions\":14,\"acceptance\":14}\n",
+  "stderr": ""
+}

@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-26T15:14:06.178035+00:00",
+  "attempts": 3,
+  "recovery_cycle": 1,
+  "root_code_integration": "passed",
+  "independent_review": "pending",
+  "formal_changes": [
+    {
+      "before": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+        "sha256": "9095c8c0ffeb783a134f2ea27e2fd15efb752a59638e2f2101796e4343ee2a3f",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/9095c8c0ffeb783a134f2ea27e2fd15efb752a59638e2f2101796e4343ee2a3f.raw"
+      },
+      "after": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+        "sha256": "a0d210677757da32f9078791b67bf49e6412cd085496865c324a5fb025a649ae",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/a0d210677757da32f9078791b67bf49e6412cd085496865c324a5fb025a649ae.raw"
+      }
+    },
+    {
+      "before": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+        "sha256": "4ebc1868cc3c2ee55a2d8a4747f7f8e08a0cdeb56133088f90c05b0c73a0d80b",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/4ebc1868cc3c2ee55a2d8a4747f7f8e08a0cdeb56133088f90c05b0c73a0d80b.raw"
+      },
+      "after": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+        "sha256": "0c90d83cb72020b954e1f7a9d4ee28c7c6ca52e94cb8e1da289e60d4031be15c",
+        "snapshot": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration3/objects/0c90d83cb72020b954e1f7a9d4ee28c7c6ca52e94cb8e1da289e60d4031be15c.raw"
+      }
+    }
+  ]
+}

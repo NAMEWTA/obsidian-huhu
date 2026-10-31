@@ -4,9 +4,9 @@
 use std::io::{Read, Write};
 use std::os::unix::io::FromRawFd;
 use std::process::{Command, Stdio};
+use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
-use std::sync::mpsc;
 
 const F_GETFD: i32 = 1;
 const F_SETFD: i32 = 2;
@@ -48,10 +48,14 @@ fn closes_inherited_descriptors_and_still_speaks_stdio() {
         let read = file.read(&mut buf).map(|n| n).unwrap_or(usize::MAX);
         let _ = sender.send(read);
     });
-    let closed = receiver.recv_timeout(Duration::from_secs(5)).expect("descriptor probe");
+    let closed = receiver
+        .recv_timeout(Duration::from_secs(5))
+        .expect("descriptor probe");
     assert_eq!(closed, 0, "inherited write end stayed open");
     let mut stdin = child.stdin.take().expect("stdin");
-    stdin.write_all(&frame(r#"{"type":"hello","protocol":3}"#)).unwrap();
+    stdin
+        .write_all(&frame(r#"{"type":"hello","protocol":3}"#))
+        .unwrap();
     drop(stdin);
     let mut stdout = child.stdout.take().expect("stdout");
     let mut header = [0u8; 5];

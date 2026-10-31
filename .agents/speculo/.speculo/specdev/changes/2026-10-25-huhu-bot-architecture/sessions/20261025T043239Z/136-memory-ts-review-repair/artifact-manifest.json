@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-26T14:10:06.385090+00:00",
+  "files": {
+    "REPORT.md": "7e02bb3d4353f70970d192f7ebfbd67fcf532610ad62a28356ecd93f18530b1e",
+    "TASK.md": "b7ccfecd81709913253cb41f9f217b522d5f2a412e639b7ba8a542cdbac91ea9",
+    "logs/01-baseline-inputs.json": "22092819684f5ba9f071976ce0fbbd42df2a96b14860c5511ea3715035fe2ea3",
+    "logs/01-review-budget-observations.json": "eabfe821a004dd34c26ea6af4111ea577bd1a7a8a63ec6f86e2160e603308170",
+    "logs/02-red-inputs.json": "bfb5e2023772b4c1c42dd1315e1acdb86e4fcfa9012e91d76d6b53efd59fb43c",
+    "logs/03-review-repair-red.json": "469411e4951d4cc9dcd9a4e826eb2c8dc29f712b4317edfa7ed7627e493433d4",
+    "logs/03-review-repair-red.log": "d1d0f6cbd6092d57099fe5397f1d713a440991451b74aeb8de3be8d4ba4441b2",
+    "logs/04-final-check-inputs.json": "9b3bb67c3ba6473fdcdd3a751ade349a861ac7d586512ad9f6d17ceee31f051c",
+    "logs/05-review-repair-green.json": "736206e6e2b35bc7ba4f9aed00f23b657ecf849b76734cf0e1e7749a1d043aff",
+    "logs/05-review-repair-green.log": "83ed51b762495da84941a0c302694fefbe5831e0ea0331cbb9a4a70de48718c6",
+    "logs/06-test-types.json": "d6f73ae61db1d9c5b6dcf932fe9100940aafd2dd15aa5dc8c113603c5ca7a1e1",
+    "logs/06-test-types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/07-return.json": "a58f6f1617f5615d09e9ea0c0d2442a6ebbb5208f131f3c712d92d828cc77ded",
+    "logs/07-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/baseline/memory-validation.test.ts": "93a5ac2293deb6feefbc0224e5ba561ef59e5d77ef96da638ffb0be99a7782af",
+    "logs/baseline/method-validation.ts": "ee7b25aa3cba3e6a7a968b84691fe0cb741d2b8a05f696a2db627bc119e952b5",
+    "logs/memory-validation.test.diff": "ae3ccabbb704caae25cec7becf702fe7d5f9c70ebd5e5f2ebfdb0192710fec21",
+    "logs/method-validation.diff": "74173ffea883723ee4225eef383f2dfb18026ebfc80deda20893f28f069433d0",
+    "source-manifest.json": "34bdb94551673a6fbf432f062077af6238ea3feadb2c344b30b32abc6ad91021"
+  },
+  "artifactTreeSHA256": "d88ad193c0d59b88d427a64e84f9fe975c56883239d86a5023b5f9e19092a4c3",
+  "sourceInputDrift": [],
+  "sourceWritersStopped": true,
+  "allProcessesWaited": true,
+  "activeOwnedProcesses": 0
+}

@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root",
+  "previous": "r1actual all3protocols passed;15HTTP/15settled,6naturalCLIexits,SQLintegrityOK",
+  "extension": "r1 covered user-added recall and automaticCommit but didnot send a laterordinary request consuming newlyautomaticrevision. r2 adds exact nextactualSDK/context/persisteddependency proof after pausingfuturemaintenance. Allproductionunchanged; r1evidence preserved.",
+  "expected": {
+    "httpPerProtocol": 6,
+    "maintenancePerProtocol": 1,
+    "chargedProfile": 96,
+    "chargedMaintenance": 16,
+    "settledAttempts": 6,
+    "automaticRecallDependency": 1
+  },
+  "scriptSHAs": {
+    "huhu-lead-memory-model.ts": "d1fc89aa4db5634a16452c08afb0527ee0fa730f7969832eb936005c66e1502f",
+    "huhu-lead-memory-model.py": "8ea4b213bbd17f55e491bc832e356189be926f8f0daa043af3d17f68d9f14cd0"
+  },
+  "productCheck": "not-yet-run atpreparation"
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "刷新",
+    "width": 44,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "关闭",
+    "width": 44,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "搜索会话…",
+    "width": 372,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "会话历史视图选项",
+    "width": 44,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "只读历史 · 正文已截断/fixture · fixture",
+    "width": 394,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "会话操作",
+    "width": 44,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "重命名",
+    "width": 438,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "复制首条提示词",
+    "width": 44,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "继续",
+    "width": 54.015625,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "导入到 Space…",
+    "width": 97.671875,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  },
+  {
+    "name": "复制恢复命令",
+    "width": 88.015625,
+    "height": 44,
+    "sampled": true,
+    "hits": true,
+    "overlaps": false
+  }
+]

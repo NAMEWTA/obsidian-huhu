@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-26T14:14:38.790784+00:00",
+  "reason": "Actual Root combination complete; full independent review pending",
+  "updates": [
+    {
+      "before": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+        "sha256": "5ad92c34e608239112fcd8b976027134996f88d2028ff748ba2ea6efc1a6c40f",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/5ad92c34e608239112fcd8b976027134996f88d2028ff748ba2ea6efc1a6c40f.raw"
+      },
+      "after": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08.md",
+        "sha256": "31246004e70f8c5b1853d1b086b43e5818219635195d24df6ac358473acee9e1",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/31246004e70f8c5b1853d1b086b43e5818219635195d24df6ac358473acee9e1.raw"
+      }
+    },
+    {
+      "before": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+        "sha256": "ca34007444216f1e9e0e230846075b207d591e5ee9622144cd23b2cf4f2f91cb",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/ca34007444216f1e9e0e230846075b207d591e5ee9622144cd23b2cf4f2f91cb.raw"
+      },
+      "after": {
+        "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/goal-plan.md",
+        "sha256": "70dd240ecdf13e4f0542acc5e2f94ee6c579352f797bdf7b5c214eb6dd5ee305",
+        "snapshot": "/home/wta/orca/workspaces/obsidian-huhu/terminal/.agents/speculo/.speculo/specdev/changes/2026-10-25-agent-workbench-refactor/evidence/T-08-logs/root-recovery1-integration2/objects/70dd240ecdf13e4f0542acc5e2f94ee6c579352f797bdf7b5c214eb6dd5ee305.raw"
+      }
+    }
+  ]
+}

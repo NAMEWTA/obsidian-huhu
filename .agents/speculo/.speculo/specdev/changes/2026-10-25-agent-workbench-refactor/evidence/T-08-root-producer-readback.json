@@ -1,0 +1,63 @@
+{
+  "utc": "2026-10-26T05:08:07.304810+00:00",
+  "purpose": "Root targeted read-only source inspection to focus production tests; no new producer run or behavior acceptance.",
+  "sources": [
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/modes/interactive/components/custom-editor.js",
+      "sha256": "000b0056f2bf645537537468bdd6f6ee0c82e4110f5417c1c70c2e8fefc04f29",
+      "bytes": 5095
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/modes/interactive/components/custom-editor.d.ts",
+      "sha256": "cfbc0e5a58cedc2581742dce4c7978b37246918f6794f16a9fec699018709c25",
+      "bytes": 1409
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/modes/interactive/interactive-mode.js",
+      "sha256": "633000038a8a9c60111fc9b32481c4015285fe530685277068bc5ed74f77dafa",
+      "bytes": 281394
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/core/keybindings.js",
+      "sha256": "0b66630b3aff6497ae0066feed179a9cff554d4a245c91629e55bc911fcf2db6",
+      "bytes": 11803
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/core/extensions/types.d.ts",
+      "sha256": "c5038d9410cfb13f5be391f46f13de338bc46ab4c9a7d064f7b962c0dc4a807c",
+      "bytes": 82943
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/main.js",
+      "sha256": "08b91f9eb3adf9a5027c18732d1e4de70999bd15c445b65cb0ddd0cd68f2746b",
+      "bytes": 37894
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/cli/args.js",
+      "sha256": "231eca0304b149165a35b12730052586603f23208667e3a57355638017450175",
+      "bytes": 21760
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/dist/core/model-runtime.js",
+      "sha256": "44d8017928eff6721d5a56b4e71f98bcafb124f5aa6e7d3f016491e11fcf6461",
+      "bytes": 37037
+    },
+    {
+      "path": "/tmp/huhu-t08-b-producer-proof/artifact/package/docs/models.md",
+      "sha256": "c9914f5411db5ddd158b5391ec1da76c1f65788cfaea3a90e1e1555451b3d12e",
+      "bytes": 13992
+    }
+  ],
+  "observations": [
+    "CustomEditor handles extension/app actions before parent submit; submit key match alone is insufficient.",
+    "InteractiveMode sets the global keybinding manager to its actual manager; public resolved bindings can be inspected without private editor-field peeking.",
+    "Public onTerminalInput observes raw input; partial paste and deferred clipboard completion remain production proof obligations.",
+    "Right-click and clipboard actions write editor after await; empty current draft does not prove no pending action.",
+    "Official main has --offline and PI_OFFLINE for startup plus isolated agent directory; docs/models.md describes loopback compatible endpoints with literal dummy keys. A future real CLI/AgentSession fixture may use that boundary without a real Provider account."
+  ],
+  "limitations": [
+    "Selected ranges inspected, not whole-file semantic review.",
+    "Original bytes already captured in B full official artifact audit.",
+    "No production source changed and no new experiment run."
+  ]
+}

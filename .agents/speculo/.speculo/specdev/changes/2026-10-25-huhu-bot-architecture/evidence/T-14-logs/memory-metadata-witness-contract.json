@@ -1,0 +1,13 @@
+{
+  "observer": "native:/root",
+  "at": "2026-10-26T11:57:45.061186+00:00",
+  "contract": "adapter-only metadata Witness; no wire/API/scope change",
+  "owners": [
+    "126 private memory Reader",
+    "128 grants/current delivery"
+  ],
+  "attachment": "Zero Ref permitted only in sameTx re-read actual context_entry with persisted kind=attachment and representation=metadata; full original Run/Sources/Scopes/Grant/Group/current read/delivery fence remain. No emptyDerived and no authority to read/send original body from metadata.",
+  "intent": "Independent accepted user intent does not inherit wholeRun Memory/Derived taint. Real context principal/namespace/scope checked.",
+  "otherEntries": "All readable recent/inbox/summary/memory ancestry requires full nonzero Ref; no malformedJSON or missingproof downgrade.",
+  "nativeMessages": "Root confirmed to126/128; implementation and actual tests pending"
+}

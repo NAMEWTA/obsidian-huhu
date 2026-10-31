@@ -1,0 +1,42 @@
+{
+  "manifest": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/042-approval-implementation/logs/joint-source-r5.json",
+  "treeSha256": "c0950eccd0d2395833ef71a9b726b58cf3f5a1d53159985550a35df26f077b2e",
+  "snapshot": "/tmp/huhu-lead-events-approval-ao7y7vzh",
+  "probeSha256": "3da5893cb8d414a04ceac7b191be970937231c727e9b3cc50c6b40372d43a3ce",
+  "commands": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-v",
+        "./tests/contract/approval",
+        "-run",
+        "^TestLeadDecisionReceiptStateAndEventAgreement$",
+        "-count=1"
+      ],
+      "cwd": "/tmp/huhu-lead-events-approval-ao7y7vzh/native/huhubot",
+      "exit": 0,
+      "seconds": 1.311,
+      "log": "lead-facade-r2.log"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-mod=readonly",
+        "-v",
+        "./tests/contract/events",
+        "-run",
+        "^(TestActualTSClientConsumesDurableGoEventsSnapshotsAndLateFacts|TestActualOSPipeStopsBeforeExpiredPermitReturnsAndRevokeCommits|TestActualHistoryWriterAllowsMoreThanEightRunsAndRechecksQueuedMessageProvenance|TestMessageDeliveryUsesItsOwnPersistedSourceSubset)$",
+        "-count=1"
+      ],
+      "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+      "exit": 0,
+      "seconds": 5.04,
+      "log": "lead-events-r2.log"
+    }
+  ],
+  "sourceDrift": [],
+  "processes": "All subprocess.run children exited and Wait completed; no product writer; fixtures close Core/DB and actual TS/Go children."
+}

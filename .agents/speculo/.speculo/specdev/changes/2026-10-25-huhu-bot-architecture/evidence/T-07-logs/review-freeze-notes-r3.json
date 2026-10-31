@@ -1,0 +1,20 @@
+{
+  "inputSha256": "87f4067efd60dea5b08c6edeec20c648bc253827e2826cdc96569349b34f1fc2",
+  "files": 265,
+  "sources": 73,
+  "source": "evidence/T-07.md#review-input-notes-r3",
+  "reportSha256": "fa869f8e8263f4ef49d96702927ec0182e63cdcd64fc2cf6ac423829feea75a2",
+  "leadReuse": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-note-repair-r3-reuse.json",
+  "freshE2ECommandsRun": false,
+  "pluginReuse": {
+    "from": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-07-logs/lead-plugin-checks-r3.json",
+    "sha256": "fff03efb21d32253929f3dc11ad5a31e0df0e3c349cac3de8c977e5413533d11",
+    "inputFilesVerified": 1867,
+    "outputs": {
+      "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b"
+    }
+  },
+  "failedReview": "evidence/070-lead-return.json",
+  "attempts": 3
+}

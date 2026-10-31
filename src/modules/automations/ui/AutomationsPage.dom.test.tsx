@@ -11,11 +11,30 @@ import type { AutomationRun } from '../../../shared/automation/types';
 beforeEach(() => setLanguage('en'));
 import { definition, fixture } from './test-fixture';
 test('failed calendar history retries the original delivery and opens its receipt instead of launching a new manual task', async () => {
-	const original = { ...definition('Calendar'), action: { kind: 'create-task' as const, target: 'calendar' as const, path: 'Board.md', text: 'Review' } };
-	const failed: AutomationRun = { id: 'old-run', automationId: original.id, revision: 1, title: original.name,
-		definition: original, status: 'failed', trigger: 'scheduled', scheduledFor: 1000, startedAt: 1000, message: '',
-		taskDelivery: { effectKey: 'one-occurrence', date: '2026-10-23', timezone: 'Asia/Taipei', receipt: { id: 'task', path: 'Tasks.md', line: 4, date: '2026-10-23' } } };
-	const f = fixture([original], [failed]), user = userEvent.setup();
+	const original = {
+		...definition('Calendar'),
+		action: { kind: 'create-task' as const, text: 'Review', timezone: 'UTC' },
+	};
+	const failed: AutomationRun = {
+		id: 'old-run',
+		automationId: original.id,
+		revision: 1,
+		title: original.name,
+		definition: original,
+		status: 'failed',
+		trigger: 'scheduled',
+		scheduledFor: 1000,
+		startedAt: 1000,
+		message: '',
+		taskDelivery: {
+			effectKey: 'one-occurrence',
+			date: '2026-10-23',
+			timezone: 'Asia/Taipei',
+			receipt: { commandId: 'create', taskId: 'task:created', taskRevision: 1, committedAt: 1 },
+		},
+	};
+	const f = fixture([original], [failed]),
+		user = userEvent.setup();
 	f.service.retryRun = vi.fn(async () => ({ ...failed, id: 'retried-run' }));
 	f.host.openLink = vi.fn(async () => {});
 	f.host.openCalendarSource = vi.fn(async () => {});
@@ -103,7 +122,12 @@ test('source reminder keeps task identity and source-provided title through save
 	const source = { kind: 'dashboard' as const, path: 'Board.md', id: 'task-id' };
 	render(
 		<TestProviders>
-			<EditorView host={f.host} request={{ source, prefill: { name: 'Follow up' } }} onSaved={close} onClose={close} />
+			<EditorView
+				host={f.host}
+				request={{ source, prefill: { name: 'Follow up' } }}
+				onSaved={close}
+				onClose={close}
+			/>
 		</TestProviders>,
 	);
 	await userEvent.click(screen.getByRole('button', { name: 'Create' }));
@@ -124,6 +148,10 @@ test('agent availability is rechecked and stale choices/user content are never r
 	draft.name = 'Original';
 	if (draft.action.kind !== 'agent') throw Error('Expected agent');
 	draft.action.prompt = 'Original prompt';
+	// A new agent draft never starts with a guessed Space; saving needs the user's explicit choice.
+	expect(draft.action.spaceId).toBeUndefined();
+	expect(draftError(draft, agents, '/vault')).toBe(t('automation.spaceRequired'));
+	draft.action.spaceId = 'space-a';
 	expect(draftError(draft, agents, '/vault')).toBeUndefined();
 	agents[1]!.installed = false;
 	expect(draftError(draft, agents, '/vault')).toBe(t('automation.agentSelectionUnavailable'));
@@ -135,6 +163,7 @@ test('forbidden extras remain visible in the editor and prevent saving; draft is
 		close = vi.fn();
 	f.service.agent = () => ({
 		listAgents: () => [{ id: 'claude-code', title: 'Claude Code', enabled: true }],
+		listSpaces: () => [{ id: 'space-a', name: 'Alpha space', directoryLabel: '/vault' }],
 		listSessions: async () => [],
 		start: vi.fn(),
 		stop: vi.fn(),
@@ -147,6 +176,7 @@ test('forbidden extras remain visible in the editor and prevent saving; draft is
 		prompt: 'User prompt',
 		cwd: '/vault',
 		sessionMode: 'fresh',
+		spaceId: 'space-a',
 		extraArgs: '--dangerously-skip-permissions',
 	};
 	const { rerender } = render(
@@ -169,6 +199,71 @@ test('forbidden extras remain visible in the editor and prevent saving; draft is
 	cleanup();
 	f.view.dispose();
 	expect(f.listeners.size).toBe(0);
+});
+
+test('an old agent definition without a Space reads normally but cannot be saved until the user chooses one', async () => {
+	const f = fixture(),
+		close = vi.fn(),
+		user = userEvent.setup();
+	f.service.agent = () => ({
+		listAgents: () => [{ id: 'codex', title: 'Codex', enabled: true, installed: true }],
+		listSpaces: () => [
+			{ id: 'space-a', name: 'Alpha space', directoryLabel: '/vault/a' },
+			{ id: 'space-b', name: 'Beta space', directoryLabel: '/vault/b' },
+		],
+		listSessions: async () => [],
+		start: vi.fn(),
+		stop: vi.fn(),
+		open: vi.fn(),
+	});
+	const d = definition('Legacy');
+	d.action = { kind: 'agent', agentId: 'codex', prompt: 'Old prompt', cwd: '/vault', sessionMode: 'fresh' };
+	render(
+		<TestProviders>
+			<EditorView host={f.host} request={{ existing: d }} onSaved={close} onClose={close} />
+		</TestProviders>,
+	);
+	// Nothing is pre-selected even though two Spaces exist, and the problem is stated.
+	expect(screen.getByRole('combobox', { name: 'Space' }).textContent).toContain(t('automation.select'));
+	expect((screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement).disabled).toBe(true);
+	expect((screen.getByRole('textbox', { name: 'Prompt / content' }) as HTMLTextAreaElement).value).toBe('Old prompt');
+	await user.click(screen.getByRole('combobox', { name: 'Space' }));
+	await user.click(await screen.findByText('Beta space · /vault/b'));
+	expect((screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement).disabled).toBe(false);
+	await user.click(screen.getByRole('button', { name: 'Save' }));
+	await waitFor(() =>
+		expect(f.service.save).toHaveBeenCalledWith(
+			expect.objectContaining({ action: expect.objectContaining({ spaceId: 'space-b' }) }),
+		),
+	);
+	cleanup();
+	f.view.dispose();
+});
+test('a Space archived after it was chosen is shown as unavailable and blocks saving instead of switching Spaces', async () => {
+	const f = fixture(),
+		close = vi.fn();
+	f.service.agent = () => ({
+		listAgents: () => [{ id: 'codex', title: 'Codex', enabled: true, installed: true }],
+		listSpaces: () => [{ id: 'space-b', name: 'Beta space', directoryLabel: '/vault/b' }],
+		listSessions: async () => [],
+		start: vi.fn(),
+		stop: vi.fn(),
+		open: vi.fn(),
+	});
+	const d = definition('Bound');
+	d.action = { kind: 'agent', agentId: 'codex', prompt: 'P', cwd: '/vault', sessionMode: 'fresh', spaceId: 'space-gone' };
+	render(
+		<TestProviders>
+			<EditorView host={f.host} request={{ existing: d }} onSaved={close} onClose={close} />
+		</TestProviders>,
+	);
+	expect(screen.getByRole('combobox', { name: 'Space' }).textContent).toContain(t('automation.spaceUnavailableOption'));
+	expect(screen.getAllByText(t('automation.spaceUnavailable')).length).toBeGreaterThan(0);
+	await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+	await waitFor(() => expect(screen.getAllByText(t('automation.spaceUnavailable')).length).toBeGreaterThan(0));
+	expect(f.service.save).not.toHaveBeenCalled();
+	cleanup();
+	f.view.dispose();
 });
 
 test('disabled execution blocks every mutation while preserving readable definitions and history', async () => {
@@ -268,4 +363,18 @@ test('hiding the page with an open picker releases the picker layer; the editor 
 	await user.click(await screen.findByRole('button', { name: t('automation.discard') }));
 	expect(document.querySelector('[data-automation-editor]')).toBeNull();
 	f.view.dispose();
+});
+
+test('detail rows name the bound Space, hint when unset, and say unavailable when it is gone', async () => {
+	const { agentView, bindSpaceLookup } = await import('./actions/agent');
+	const action = { kind: 'agent' as const, agentId: 'codex', prompt: 'P', cwd: '/vault', sessionMode: 'fresh' as const };
+	const spaceRow = (spaceId?: string) =>
+		agentView.facts!({ ...action, ...(spaceId ? { spaceId } : {}) }).find((row) => row.label === t('automation.space'))?.value;
+	bindSpaceLookup(() => [{ id: 'space-a', name: 'Alpha space' }]);
+	expect(spaceRow('space-a')).toBe(t('automation.spaceTarget', { name: 'Alpha space' }));
+	expect(spaceRow()).toBe(t('automation.spaceRequired'));
+	expect(spaceRow('space-gone')).toBe(t('automation.spaceUnavailableOption'));
+	// Agent module off: the list is unknown, so the stored id is shown rather than claiming the Space is gone.
+	bindSpaceLookup(() => undefined);
+	expect(spaceRow('space-a')).toBe(t('automation.spaceTarget', { name: 'space-a' }));
 });

@@ -1,0 +1,110 @@
+# T10 实施工程合同
+
+GP035 / Map36；T09已真实done，G02代码部分closed。本合同采用022、033、038及040工程准备，并在T09最终代码上重新核对接缝；源快照与实际依赖审计见T-10-plan-materialization.json。Spec/DESIGN保持唯一外部行为和设计权威。本次只落实54条唯一写集，产品写入仍等待真实DoR及分阶段TASK；准备证据不冒称T10实现通过。真实宿主与五平台E2E继续由用户执行。
+
+## 路线与持久化
+
+采用原workbench-v2.json的可选独立版本邮箱子文档，唯一SpaceService实例、writer lease和原逻辑队列负责send/ack。纯记录/容量/来源引用类型放core/inbox，services/inbox只作薄facade/订阅；不再创建JsonStore、Outbox、业务数据库或可执行消息队列。
+
+旧记录缺邮箱字段时只读投影为空，查询不迁移。未知或畸形邮箱子文档不得因isWorkbenchRecords=false而偷偷回退旧backup并当空；在原decodeStored处区分准确拒绝。其余原记录恢复合同保留。新字段及样本由同一schema owner维护，T15/T16之后接实际版本，不能预先实现迁移或备份。
+
+原mutate在一个tail中排队并获得lease，但领域candidate当前从内存records起步；不能把磁盘首次load或发生unknown后的旧内存当最新持久基线。邮箱typed mutation需要原owner内明确的新鲜基线接缝，在原队列里完成目标归属/归档、ID唯一性、总容量、sequence分配、原signal/deadline/epoch复核，然后沿原commit及readback确认。保留WorkspaceStore真实dirty draft/remote reconcile，不直接覆盖UI草稿、不全局flush所有Space。
+
+022真实探针已证明：JsonStore.load可能写.corrupt；相同candidate的commit仍写backup/primary；primary成功后readback失败可留下真实消息；在物理队列外分配sequence可重复。因此query不用JsonStore.load；重复ack必须在同一逻辑队列的只读新鲜primary预检阶段判定，早于取得新permit、write-capable JsonStore初始化、恢复和commit。已验证primary证明已ack时返回already-acked/none；primary损坏或不可验证时明确source-unavailable/unknown，不为证明重复ack写.corrupt或采用backup冒充权威primary。取消检查同样必须早于任何可写初始化，等待后复核；真正需修改的操作沿原恢复owner，guard覆盖mkdir、corrupt、backup和primary的开始点。已开始I/O由原owner收束，不能虚称撤销。sequence只由同一原owner在队列内分配。
+
+## 消息身份与目标
+
+消息记录保存messageId、原{spaceId,sessionId}收件人、有限描述性source、正文、附件引用、单调安全整数sendSequence、createdAt及一次性ack。source不是调用者认证，仍以原IPC scope为准。公开write需要完整客户端消息ID；GUI点击发送前生成并保留，CLI可选--message，省略时在本地IPC前一次生成。不得将requestId当业务ID，详见同目录T-10-cli-message-identity-note.md的实际run()核验与失败回执要求。send重复ID无论正文是否相同均明确拒绝：使用现有错误大类和稳定message-id-exists细因、effect none、已知messageId与原目标；不得覆盖旧记录、改收件人或新建第二条，不转换为本次发送成功，不承诺exactly-once/自动重放。
+
+显式Session解析其原Space；同cwd不合并。停止/后台/detached/disconnected仍可接收，不能spawn/resume/attach/prompt或切焦点。归档Session/Space拒收新send，已有read/ack保留。已知messageId先解析原记录目标，不能套active runtime gate；显式hint不一致拒绝，当前界面不改收件人。模块停用准确unavailable，不能为投递启动模型。将来缺失目标保留原记录/正文和诊断，不用当前Session替代。
+
+所有等待后、实际接纳前重新核对原scope/Session归属/归档/容量和取消。并发send与归档进入同一原队列，取消等待的请求不得稍后偷偷提交。
+
+## 保存事实与未知核对
+
+写前确定拒绝为none。已经可能触及primary但尚未完成原commit验证的失败/取消为unknown；原owner负责收束在途写，不能回滚或自动重发。commit与读回确认后即记录已保存事实，后续观察取消、订阅或来源状态读取失败不得改称未写。消息回执是record-saved/ack-saved领域事实，不伪装adapter-applied/pty-written输入回执。owner以typed outcome先固定已保存事实，后续通知或来源状态失败附诊断并保留completed；不得把成功后观察错误抛回泛用PERSISTENCE_FAILED/unknown兜底。B在canonical统一phase或明确data字段；首次ack为ack-saved/completed，重复为already-acked/none。只在真实接线证明必要时扩Router保留机制。
+
+实现同SpaceService的真实零写持久核对接口：等待之前在途写结算，按原scope/epoch直接有界读取primary并完整验证，不取新permit、不load恢复、不写backup/corrupt/primary。未知写后旧缓存缺失不能返回权威not-found；必须显示freshness unknown并用该接口核对已知ID。成功核对只采用已验证读视图/订阅事实，不覆盖其它Space未保存布局；读失败继续unknown且保留正文/诊断。读取成功的not-found是该次快照事实，不能被包装成允许盲重发的保证。
+
+ack与read严格分开；重复ack不再次写文件、更新时间/序号/修订或广播。并发ack先后在原逻辑队列决定；冷启动后的已ack记录也不为返回already-acked触发无必要commit。查询、source状态核对和UI开闭均不隐式ack。
+
+## 有界内容与分页
+
+候选限额沿022建议：messageId≤128 UTF-8字节、source≤512B、正文≤16KiB、最多8个引用且单引用完整JSON≤1KiB、单完整记录≤24KiB；邮箱≤4096条且完整子文档≤4MiB。send接纳同时按单条和整库计算每条未确认消息的最坏有界ack增长预留；已ack按实际字节，未ack按可达最大确认形态计费，含JSON分隔符/转义和固定字段。ack元数据只允许有限固定字段，其最大编码成本由同一core常量和validator约束，不能让调用者传任意增长字段。最后一个合法send之后仍必须能逐条ack，不能依赖删除或临时放宽上限。实际常量/canonical/help/GUI统一在正式实施中固定；不截断正文/身份、不自动删除历史。sequence超安全整数或容量不足在写前拒绝，旧内容保留。
+
+字段上限不能代替原32768B请求和49152B完整响应上限。按实际JSON字节计入转义、scope/target、requestId、result/error和cursor；send接纳前检验正常回执与该记录最大ack形态read的可表达预算，read/list再测完整实际envelope。大字段导致单项不能表达准确capacity，不先写再失败。CLI本地stdin/file最多读取limit+1，UTF-8/互斥参数/容量错误在网络前结束；--file只供CLI读取正文，宿主不按该本机路径打开文件。
+
+list只输出明确标注的有界摘要，read才返回正文。第一页冻结recipient和highWaterSequence，后续读取lastSequence之后且不超过highWater的成员；append留给新刷新，ack不改变成员/排序或失效cursor。v1不做会被ack改成员的unread-only分页。沿原ControlPaging最多16个短寿命cursor/10秒资源池做窄扩展，不存正文快照；token保存原owner进程内generation。每次采用已验证邮箱快照都比较真实变化：旧ID/收件人/sequence/正文/来源引用不变，ack只允许首次追加且之后值不变，新消息sequence严格高于原high-water，nextSequence不回退时保持generation；删除、替换、重排、ack或序号回退、scope/owner变化使generation递增并失效旧页。不能按send/ack方法名推断变化兼容；新鲜primary已回退时即使当前调用send，也须先失效旧cursor。所有采用路径（正常提交、恢复、unknown后的零写核对、非邮箱提交采用完整records）共用该接缝；布局变化不失效邮箱cursor。freshness unknown先核对或明确unavailable，不能用旧缓存答权威后页。token只在原ControlPaging实例内存在，重建自然失效，因此不新增持久lineage或第二索引。
+
+## 附件与生产入口
+
+首版支持当前认证Vault下的真实vault-file引用。类型包含vaultId、规范相对path与有限可观察版本；在真实Vault来源adapter验证存在/类型/元数据，不读取或复制正文，不接受absolute/drive/.. /反斜杠/NUL等逃逸材料，不将Session cwd grant当文件授权。GUI复用真实Vault picker；CLI提交有限typed JSON引用，重复参数拒绝。
+
+send前失效引用准确拒绝，保存后引用缺失/变化则read保留消息及原引用，并显示unavailable/changed；显式打开再次验证才交Vault opener。外部任意文件首版明确不支持。SessionMaterial/notifications全局投递/PTY输入不参与邮箱；原素材attach仍只paste、不回车，本票不更改。
+
+CLI保持已计划message send --to-session ... (--stdin|--file)；to-session映射明确Session，和--session同时出现拒绝。message send/inbox list明确目标不补调用者默认Space；read/ack按消息原归属。CLI所有生成ID后的失败均保留业务ID：普通stderr和--json都须可取得messageId，包含本地后续错误、断链、超时、取消；不能只给内部response.data补值而普通输出不显示。补字段后重新检查最终完整JSON预算。四项availability只在真实handler、CLI、owner和生产消费者均闭合后启用。
+
+UI沿T09最终工具抽屉与T08的312px / <600 Dialog，稳定收件人可包含停止对象，不能复用仅connected runtime的selector。消息到达只更新计数，不自动开抽屉/切Space/抢焦点。主动读取、单独确认、发送unknown后的保留ID/正文/目标与核对动作分别可见；无自动重发。pending/unknown的messageId、正文、原目标和诊断保留在模块activation内有界状态或不会随抽屉重挂载丢失的上层owner；关闭抽屉、切历史或窄宽切换再开仍能核对。它只是展示/核对状态，不自动执行，不是Outbox，不把正文加入compose持久stateKeys，也不承诺崩溃后恢复未保存草稿。工具开闭字段如确需持久化则同步原workspace-view、compose stateKeys与真实贡献恢复测试。仅改必要布局，en/zh和原ownerDocument/focus返回保留。
+
+## 实施分组与验收待落点
+
+正式分配前按真实T09最终API列精确文件：A拥有core/inbox、records/SpaceService/typed facade和Vault来源adapter及原owner故障测试；B拥有canonical/共享生成物/CLI/薄commands及同一paging扩展、真实CLI→Host→SpaceService组合测试；U拥有生产邮箱组件、必要页面/工具贡献、i18n和Chrome脚本；Root独占正式状态/main/styles/预算/许可生成。controller装配必须分配唯一writer，不按方法并写；接口稳定后消费者开始。共享JsonStore、Host/helper/native存储协议、依赖锁默认只读，实际必要缺口先正式扩scope。
+
+必要自动化：原022四个失败机制在生产owner上重验；冷有效primary已ack、冷损坏primary+已ack backup、排队取消及初始化恢复读取期间取消均记录全部write/mkdir/事件/primary字节，不能先修复再声称零写；单条/整库填到最后合法send后全部首次ack成功、下一send准确capacity、重复ack零写且read完整可表达；primary回退后send不得继续旧分页generation；同cwd两个Space；停止对象收信无spawn/paste；归档/取消/晚写；primary后故障零写核对；未知/坏版本；重复并发ack零追加写；跨append/ack分页与完整envelope；Vault引用存在/失效/变化/越界；CLI生成/显式消息ID及普通/JSON输出断链unknown；GUI读不ack、明确确认、错误/空/加载/未读/跨Space和焦点返回，以及unknown后关闭/切换/重开仍可核对。保存原红/夹具失败，最终统一源码闭包、适用build/lint/架构/样式/预算、独立两轴。真实Obsidian/Provider/OS IME/五平台仍归用户，不把受控fixture称E2E已通过。
+
+
+## 原owner接缝与唯一装配
+
+Root已回读当前SpaceService.load/decodeStored/guardedStorage/mutate/inspect/acquireArchive/commitArchive及records验证器、ControlCommands/Router/Paging、真实CLI.parse/run/print_result、controller装配和原MaterialPicker。读取准备阶段T09候选不代表它已通过独立审查；036完整独立审查已确认指定分组丢失和全局Pane容量准入缺陷，039与042由原A owner修复；本次已采用T09完成后的实际源码，原红灯与评审结果仍保留。精确54路径见T-10-write-allocation.json，A17/B19/U14/Root4，不授予产品写入。
+
+### 原owner与记录边界
+
+A独占records/SpaceService、core/inbox、薄InboxService与Vault来源adapter、controller装配。SpaceService原逻辑tail继续是唯一持久顺序，不在InboxService另设业务writer。所有经过原owner采用完整records的入口都通知同一邮箱generation分类器；邮箱查询与冷重复ack的新鲜primary预检走该原逻辑顺序，但不取新writer permit、不触发JsonStore恢复。原load本身只读，可能用backup恢复内存；这不证明当前primary可作为权威邮箱核对，需单独标注freshness。
+
+原archiveGates在inspect/tail中接纳、终止等待在队列外、commitArchive最后持久。新send必须在同一顺序看见已接纳的匹配归档gate并准确拒绝，不能只检查records.archived晚标记；read/ack仍允许原已存消息，不复用要求活动runtime或启动目录授权的路径。普通停止/失联不关邮箱，模块结束按原owner/capture边界拒新操作。先前消息目标后来缺失时保留原记录和诊断，验证器不借此丢整份邮箱；不把它重定向到同名/当前Session。
+
+TextStorage是现有整段文本端口，不能把读取后size检查冒称底层流式有界读取。明确完整文档/邮箱字段的验证预算和来源端口限制，不为本票改共享JsonStore/TextStorage接口；对不可信/超限primary准确拒绝，不依赖读取全体正文后的无限递归验证。布局草稿仍属于SpaceWorkspaceStore，采纳磁盘records不得绕过其既有reconcile合并。
+
+### 业务回执与真实CLI
+
+原schema已有record-saved phase。B优先复用该phase并在data给明确messageId/原收件人/record-saved、ack-saved、already-acked业务事实；无需为了名称添加虚假的inputReceipt。若实际需要新增canonical字段/phase，由B单writer经原generator同步TS/Rust/fixtures。ControlCommands构造由A在controller统一接入一个InboxService实例；B只消费该真实实例，不自行new第二个服务或以默认成功端口让capability提前available。
+
+当前CLI只按schema解析参数，尚无stdin/file读取或to-session别名；其parse会对需要sessionId的操作继承HUHU_SESSION_ID。message.send和inbox.list的新明确目标合同必须专门阻止这个回退，read/ack依message查原目标，不带caller runtime约束。生成messageId需在输入/IPC动作前固定，所有此后的本地错误及普通stderr/JSON必须可取得它。现有requestId默认huhu仅parse占位，run会nonce替换；与业务ID独立。新增references为有界typed JSON，不能把宿主本机路径当附件。
+
+### GUI观察状态与附件
+
+038已确认control=false/history=true/visible=false和窄宽切换都会卸载控制内容。A的模块activation InboxService持有统一有界send/ack操作观察注册表，按真实leaf对象及presentation token隔离；UI组件只订阅。全activation最多32观察且JSON总量1MiB；有副作用的send/ack共用计数和字节预算，在首次可能写入之前预留slot、原身份/payload及最大结果编码，每个view至多一条物理in-flight。已结束但effect unknown与仍在结算的pending区分：unknown保留为待核对记录，用户可显式开始另一封新消息，不能自动重用旧ID/正文发送；不永久冻结整个发送入口。
+
+抽屉/历史/窄宽变化不会丢掉原messageId、正文、引用、原目标或诊断。leaf关闭仅detach观察，不删除pending/unknown；新页面可显式查看旧待核对记录并作零写核对，不自动填新草稿、不自动执行。容量满时拒绝接纳新发送，不以TTL、LRU、关闭或换Space淘汰未知记录。确认已保存或明确none的观察可显式收起；unknown持续保留原核对信息，不新增丢弃未知消息的入口。模块停用/崩溃不承诺未保存草稿持久。
+
+原PathPicker(items,kind=file,allowCreate=false)和vaultPathItems只枚举metadata，可由U复用；原MaterialPicker会读正文并attachMaterials，保持只读不用。A的Vault来源adapter掌握metadata验证/显式open，U只传已选择typed ref。版本只表明观察到的有限文件metadata，不声称内容digest或复制原文件；保存后changed/missing保留原引用及状态。
+
+viewStore/compose stateKeys最多保存工具开闭/当前tab；正文、messageId、目标和pending/unknown不能进入宿主序列化页面状态。原控制目标独立，消息到达/列表刷新/读取/ack均不自动打开工具或切焦点/Space。具体生产组件路径、恢复与多叶子DOM矩阵已由038交回；正式A API冻结后再解锁UI消费者。
+
+
+## 生产UI接线与未来验证
+
+038原报告与Root审计T-10-inbox-ui-plan-root-audit.json是本段真实接缝依据，不是已实施证据。A在原AgentController activation内创建一个InboxService、Vault metadata adapter及presentation子部件，controller只有A写。presentation以真实leaf对象作WeakMap隔离，每次真实PageCreate绑定本地token；强持有的有界send/ack观察记录不保存DOM引用。每条attempt另有本地身份，不能因为两次业务messageId相同覆盖旧未知结果，wire requestId仍只作相关性。原请求和typed outcome归A；UI卸载仅detach，不能把pending改none。模块关闭拒新准入、旧epoch隔离并让原在途writer收束，不能把内存销毁称磁盘回滚。
+
+待核对观察只在用户显式查看时展示原消息、原收件人与状态；新leaf不自动接管它的草稿或请求。真正仍未结算的pending防同view并发发送；已结束unknown释放in-flight门，允许用户明确开始另一封具有新messageId的新消息。显式核对等待原写结算，使用原完整{messageId,recipient,body,source,refs}比对fresh-primary；同ID而payload不同是冲突，不能据ID存在宣布这次已保存。fresh not-found仍是那次快照事实，禁止自动重发。ack未知同样保留原消息ID和动作诊断，只读核对ack字段，不调用第二次ack来探测。
+
+U保留workspace-view原control布尔为右工具开闭状态，新增选择枚举control|inbox；序列化只加agentTool。旧saved缺枚举默认control，非法值回退control，history优先；AgentWorkspacePage getState与compose-workbench stateKeys和真实contribution测试同步。正文、消息ID、目标、attempt、诊断与token不写宿主页面状态。WorkspaceTools是原312px aside或<600 Dialog内的Radix Tabs薄外框，完整嵌入原TerminalControlPanel和新InboxPanel；不复制终端输入/等待业务。Toolbar Bell显式打开inbox，原控制按钮选control，history关闭右工具，关闭保留所选工具。消息到达只更新已知当前Vault未确认数，未知数不能显示0；未确认消息数与待核对发送数分别标注。
+
+收件人源是原持久Space/Session元数据，包含停止/后台/detached对象，不能使用connected运行列表代替；当前Space与本Vault全部Space范围显式选择，同cwd/同名仍显示完整归属。来源缺失时仍保留原消息，read不ack，只有独立ack改变确认事实。工具切换/到达/read/ack不调用selectSpace、focus、attach、show、spawn、paste或prompt。Radix Tabs键盘和原Dialog ownerDocument/焦点返回条件继续；异步结果只更新文字，不能焦点跳转。200%页面缩放下长ID、Tabs、表单内部滚动及关闭/提交按钮可达。
+
+A来源落点为platform/vault/inbox-sources.ts。U复用原PathPicker和vaultPathItems metadata，不改共享normalizeVaultPath，它对输入的宽松归一化不能当wire安全校验。A先验证原typed路径和当前vaultId，再核TFile/有限stat；send与显式open前均重核。read元数据失败保留正文和原引用，已保存事实不能被覆盖；ack不因引用之后失效而失败。A同时维护docs/data.md，说明workbench-v2邮箱数据、来源引用与恢复边界；U维护工作台文档和全部en/zh键。
+
+正式实现顺序：A17实现原owner/core/facade/source/presentation；B可先在明确派遣后做10项独立协议/CLI候选并保持availability=false；A真实API与关键红绿被Root接收后，B余下handler/paging与U14开始消费；A controller唯一装配。Root不按方法与A并写。所有writer停止后Root统一生产构建、样式/预算/许可和代码整合，使用同一原生pair来源证明（native改变则重建），完整独立两轴后才完成。
+
+新增观察矩阵纳入原必要自动化：真实A facade/SpaceService加外部存储/宿主端口，击中primary已写但readback失败，再经原页面关闭/历史/窄宽重挂载/真实leaf关闭重开核对，发送调用保持一次；多leaf草稿/目标隔离，晚到结果只更新原attempt；32观察/1MiB拒绝边界保留所有unknown，明确新草稿生成新ID；当前Vault metadata列项/选择/发送不得读正文，显式open真实重核，已变/缺失引用仍可ack。原contribution→cleanPageState→view恢复验证agentTool白名单并剔除正文/目标/ID。生产Chrome复用原agent-workbench-panels.mjs新增inbox suite和真实A原owner，不复制浏览器runner；覆盖桌面/窄屏、亮暗、空/加载/错误、计数、read/ack、unknown重挂载/多Document/200%与reduced-motion，保持实际CSS/源码消费、校准/原PNG/资源清理。上述均是待实施验证，不作为已通过结果。
+
+
+## 040观察预算补充（不新增路径或持久队列）
+
+send和可能产生新确认写入的ack统一使用原A presentation的32条/1MiB观察池；不存在第二个无界ack map。准入时保留一次attempt身份、原消息ID/目标/动作，send还保留原正文/source/refs；按真实UTF-8 JSON预算计算，并为后续规范化结果/诊断预留最多4KiB。结果状态只存有限effect/业务phase/error code/reason与有限显示文本，不存任意Error、stack、循环对象或整份wire envelope。每次后续采用都经过同一有界normalizer；显示诊断文本可有限摘要，业务身份、原send正文/引用不得截断或被替换。最大合法结果形态须能放入所预留空间，不能待unknown返回后才拒绝登记。
+
+容量已满时，对新有副作用attempt准确capacity/none并且不调用writer、不淘汰任何旧unknown。只读fresh-primary已经证明的重复ack no-op不需要新观察slot；实现可在原owner的只读预检后、第一次可能副作用之前取得reservation，或者在池满时仅允许只读预检返回already-acked/none。不得为判断no-op触发恢复或写入，也不得在无reservation时继续第一次ack写。外部CLI按自身业务ID输出合同核对，GUI观察池不成为全Vault持久消息配额。
+
+ack unknown与send unknown一样跨抽屉、history、窄宽、真实leaf关闭保留；只有显式fresh-primary核对ack字段，不能自动再次ack。per-view in-flight门以原物理writer实际结算为准，UI超时/卸载或提前收到unknown不等于结算；旧epoch晚到结果只收束原attempt，不污染新视图/activation。明确none或确认已保存的观察可以显式收起；unknown不通过关闭/TTL/LRU回收。
+
+原A presentation/service和U InboxPanel DOM新增边界：32条send unknown后第一次ack在副作用前拒绝；此时已经ack消息仍可经零写fresh预检返回already-acked；ack unknown闭叶重开保留；单attempt合法最大payload+最大有限结果仍≤1MiB总预算，晚到最大诊断不突破容量。上述待真实实现红绿，040只读预审不是这些测试通过证据。

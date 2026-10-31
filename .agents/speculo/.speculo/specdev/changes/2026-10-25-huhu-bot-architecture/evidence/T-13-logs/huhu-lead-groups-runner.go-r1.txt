@@ -1,0 +1,113 @@
+package lead_groups_stdio_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/inbound/stdio"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+type observed struct {
+	Phase      string               `json:"phase"`
+	RunID      string               `json:"runId"`
+	AgentID    string               `json:"agentId"`
+	Name       string               `json:"name"`
+	Intent     string               `json:"intent"`
+	Lineage    api.ExecutionLineage `json:"lineage"`
+	History    []api.VisibleMessage `json:"history,omitempty"`
+	Context    api.PreparedContext  `json:"context"`
+	Delegation *api.DelegationInput `json:"delegation,omitempty"`
+}
+type groupEngine struct {
+	directory string
+	mu        sync.Mutex
+}
+
+func (e *groupEngine) record(phase string, in api.EngineInput) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	f, err := os.OpenFile(filepath.Join(e.directory, "observations.jsonl"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	err = json.NewEncoder(f).Encode(observed{Phase: phase, RunID: in.RunID, AgentID: in.Agent.ID, Name: in.Agent.Name, Intent: in.Intent, Lineage: in.Lineage, History: in.History, Context: in.Context, Delegation: in.Delegation})
+	ce := f.Close()
+	if err != nil {
+		return err
+	}
+	return ce
+}
+func (e *groupEngine) Run(ctx context.Context, in api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	if err := e.record("engine", in); err != nil {
+		return api.EngineResult{}, err
+	}
+	if in.Attempts == nil {
+		return api.EngineResult{}, fmt.Errorf("production model-attempt port missing")
+	}
+	purpose := "main"
+	if in.Lineage.ParentRunID != "" {
+		purpose = "child"
+	}
+	r, err := in.Attempts.Reserve(ctx, api.AttemptRequest{LogicalCallID: "lead-group-call", InputEstimate: "5", OutputBound: "10", Purpose: purpose})
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	if err = in.Attempts.Dispatch(ctx, r, func(context.Context) error { return e.record("physical", in) }); err != nil {
+		return api.EngineResult{}, err
+	}
+	_, err = in.Attempts.Settle(ctx, r, api.AttemptObservation{Knowledge: "known", InputTokens: "2", OutputTokens: "3", ProducerEnded: true})
+	if err != nil {
+		return api.EngineResult{}, err
+	}
+	if in.Agent.Name == "B" && strings.Contains(in.Intent, "held-source-batch") {
+		ticker := time.NewTicker(5 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			if _, err = os.Stat(filepath.Join(e.directory, "release-b")); err == nil {
+				break
+			} else if !os.IsNotExist(err) {
+				return api.EngineResult{}, err
+			}
+			select {
+			case <-ctx.Done():
+				return api.EngineResult{}, ctx.Err()
+			case <-ticker.C:
+			}
+		}
+	}
+	return api.EngineResult{Status: "finished", Text: "reply:" + in.Agent.Name}, nil
+}
+func (*groupEngine) Resume(context.Context, api.EngineResumeInput, func(api.EngineEvent) error) (api.EngineResult, error) {
+	return api.EngineResult{}, fmt.Errorf("unexpected model resume in group fixture")
+}
+func TestLeadGroupsStdioRunner(t *testing.T) {
+	root, control := os.Getenv("LEAD_GROUPS_PROFILES"), os.Getenv("LEAD_GROUPS_CONTROL")
+	if root == "" || control == "" {
+		t.Fatal("fixture paths required")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	core, err := bootstrap.OpenWithOptions(ctx, root, filepath.Join(root, "one"), bootstrap.Options{Engine: &groupEngine{directory: control}, Budget: api.BudgetPolicy{RootTokenLimit: "1000", ProfileTokenLimit: "10000", MaintenanceTokenLimit: "0"}})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	server := stdio.New(os.Stdin, os.Stdout, core.API, api.NewConnectionIdentity("lead-groups-stdio", "lead-owner", true))
+	err = server.Run(ctx)
+	server.Close()
+	ce := core.Close()
+	if err != nil || ce != nil {
+		fmt.Fprintln(os.Stderr, err, ce)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}

@@ -1,0 +1,11 @@
+{
+  "inputSha256": "a129b2b03c62625b541392a92321f9cf16d74383d2de85dbd3c3b44f92339371",
+  "files": 169,
+  "sources": 46,
+  "source": "evidence/T-06.md#review-input-r1",
+  "reports": {
+    "042-approval-implementation": "a118582e2853583ee70ccc9bb1b15892a906f36d0ef014c1e23d8285b5a6649a",
+    "043-events-implementation": "ab882b67de02a95376eef5f5a8850ce5c803fa30749faed070fb23fbb1ac2716",
+    "044-event-client": "4cd36310b4f01a6a9428475a93d9cdbcfa08bc51ce9c8f9de13c39a97ca51ab7"
+  }
+}

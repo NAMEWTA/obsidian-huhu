@@ -1,0 +1,22 @@
+{
+  "observer": "native:/root",
+  "reviewer": "native:/root/recovery_review",
+  "task": "139-memory-component-rereview",
+  "taskSHA256": "8388fc1b6668ac5745f685d42c63178187b0f77607349ac829a85efa0fc08110",
+  "actualDispatch": "collaboration.followup_task; nativeACK received",
+  "inputSHA256": "e23efa231e65cc212b9f7ebe5e2a5ed1ba3cb8a06530b3dc8c3d1ca1506f7e87",
+  "freeze": {
+    "files": 1722,
+    "primary": 33,
+    "sources": 38,
+    "baselineFiles": 1719,
+    "actualWait": "Root execsession81927 exit0 tool714ebf",
+    "archiveSHA256": "c56e01b3bdd44c748e300549fd069037ecf060fbd8d5302b20a3aaaeaacdf395"
+  },
+  "dispatchValidation": {
+    "actualExit": 0,
+    "tool": "2ec560"
+  },
+  "initialWindow": "read-only andNode; noGo until138actualWait/release",
+  "independence": "original133 reviewer no136/137implementation; allactualauthorsdeclared"
+}

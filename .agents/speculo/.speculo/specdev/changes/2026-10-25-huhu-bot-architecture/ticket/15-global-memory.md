@@ -2,7 +2,7 @@
 schema_version: 3
 plan_contract_version: 1
 skill_scan: "2026-10-25: scanned .agents/skills/*/SKILL.md and AGENTS.md; evidence/skill-scan.json; dev applies, ui by actual interface scope; no dedicated Go skill"
-skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"1003e1e151fe675ad778aeb42f1b1e8e432ca3d7d1b46265f96b7512a88815a6","phase":"implement","operation":"全局记忆提案与用户确认事务：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-15.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"3c6e68925449c4bf103a17e3b5d15ea149e217864b2dd7be3b32a0cc0ad743fd","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"bc37d64b9b3468a86df3348bd0400316bfb091186e7653d31e152d7f00363103","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"27969c1917d167c111fda6aabc90fc403232ee876aa8ed6daedea8b32fc0d9e3","when":"实施本票对应职责或验证触发时"}]}]
+skill_bindings: [{"id":"dev","path":"<Path>.agents/skills/dev/SKILL.md</Path>","sha256":"5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293","phase":"implement","operation":"全局记忆提案与用户确认事务：实现、边界与风险验证","inputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>"],"outputs":["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-15.md</Path>","适用命令回执与可回读实现快照"],"required":true,"on_failure":"block-ticket","references":[{"path":"<Path>.agents/skills/dev/references/architecture.md</Path>","sha256":"0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/testing.md</Path>","sha256":"1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b","when":"实施本票对应职责或验证触发时"},{"path":"<Path>.agents/skills/dev/references/licensing.md</Path>","sha256":"09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14","when":"实施本票对应职责或验证触发时"}]}]
 resource_claims: ["huhu-bot:global-memory","huhu-bot:sqlite-schema","huhu-bot:provenance-and-revocation"]
 artifact: "ticket"
 ui_change: false
@@ -10,7 +10,7 @@ design_ref: null
 change: "2026-10-25-huhu-bot-architecture"
 id: "T-15"
 title: "全局记忆提案与用户确认事务"
-status: "ready"
+status: "in_progress"
 kind: "feature"
 planning_depth: "deep"
 planning_depth_reason: "跨进程、持久化、权限或并发不变量需要故障窗口及恢复证据"
@@ -18,7 +18,7 @@ ready: true
 risk: "high"
 blocked_by: ["T-14"]
 contract_ids: ["AC-020","AC-022"]
-owner: "unassigned"
+owner: "/root"
 expected_changes: ["<Path>native/huhubot/internal/domain/memory/global/**</Path>","<Path>native/huhubot/internal/application/memory/global/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/globalmemory/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/015-global-memory.sql</Path>","<Path>native/huhubot/tests/contract/global-memory/**</Path>"]
 writable_paths: ["<Path>native/huhubot/internal/domain/memory/global/**</Path>","<Path>native/huhubot/internal/application/memory/global/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/globalmemory/**</Path>","<Path>native/huhubot/internal/adapters/outbound/sqlite/migrations/015-global-memory.sql</Path>","<Path>native/huhubot/tests/contract/global-memory/**</Path>"]
 read_only_paths: ["<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md</Path>","<Path>{roots.state}/specdev/changes/2026-10-25-huhu-bot-architecture/IMPLEMENTATION-REFERENCES.md</Path>","<Path>AGENTS.md</Path>","<Path>contracts/hap/v0.1/**</Path>","<Path>native/huhubot/internal/application/api/**</Path>","<Path>native/huhubot/internal/protocol/hap/**</Path>","<Path>native/huhubot/go.mod</Path>","<Path>native/huhubot/go.sum</Path>","<Path>src/modules/huhubot/api.ts</Path>"]
@@ -93,3 +93,7 @@ IN：proposal、预览内容/scope/targetRevision、确认/拒绝/过期/冲突�
 ### 未决问题
 
 无。
+
+## 当前交付验收口径（LOG-051）
+
+用户最新 Goal 要求本轮全面实现并在代码层面总验收，真实操作自行进行。此票的行为、权限、数据与故障合同保持；代码实现、适用自动化验证和独立代码审查是本轮完成/下游开工条件。真实 Provider、Obsidian 交互和用户目标 OS 操作另列 user-owned / not-run，不冒充原 AC 的现场验收通过，也不阻塞独立代码工作。
