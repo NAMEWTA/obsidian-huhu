@@ -1,0 +1,47 @@
+{
+  "recorded_at": "2026-10-31T05:19:23.625873+00:00",
+  "scope": "UI-001 批准、原型修复、A 设计意图发布及 14 张 UI 票绑定",
+  "browser": {
+    "checks_passed": 19,
+    "new_screenshots": 42,
+    "console_errors": [],
+    "source": "prototypes/UI-001/evidence/recheck.json"
+  },
+  "validation": {
+    "materialize_check": 0,
+    "design_check_preview": 0,
+    "design_check_ready": 0,
+    "specdev_prototype": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "specdev_tickets": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "specdev_goal_plan": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "ticket_control": {
+      "validation_errors": [],
+      "errors": [],
+      "warnings": [],
+      "eligible": []
+    },
+    "git_diff_check": 0
+  },
+  "ticket_state_snapshot": {
+    "draft": 4,
+    "ready": 34
+  },
+  "not_run": [
+    "插件生产构建及测试",
+    "真实 Obsidian、触屏与 IME",
+    "完整生产模块逐项验收"
+  ],
+  "scope_audit": "对比本次开始时的未跟踪 change 备份；生产 src、styles.css、main.js 与历史会话/报告未改动"
+}

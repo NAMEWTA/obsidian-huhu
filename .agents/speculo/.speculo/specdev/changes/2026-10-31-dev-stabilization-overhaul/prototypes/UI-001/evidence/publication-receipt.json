@@ -1,0 +1,24 @@
+{
+  "owner": "specdev/archive-and-consolidate",
+  "caller": "specdev/prototype",
+  "operation": "explicit-user-approved-intent",
+  "change": "2026-10-31-dev-stabilization-overhaul",
+  "authorization": "prototypes/UI-001/evidence/approval.md",
+  "authorization_sha256": "93923a3b35f010644d7b3085f946a44fb2da177460191928025fc829567a8582",
+  "exception": "用户批准在实施前发布设计意图；保持 active Outcome，未走 completed promotion",
+  "stock_tool_preflight": "prototypes/UI-001/evidence/publication-tool-preflight.json",
+  "revision": "DESIGN-0002",
+  "supersedes": "DESIGN-0001",
+  "expected_current_sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+  "candidate_sha256": "1aa986e5c576aef9e590e473695941c8ad7812570df100b7edfe2d21f421f9cb",
+  "design_digest": "ef5e5080f6c1a8f967397af72fca0050820b9ad4d9a4f57451be3a63ab55b2b1",
+  "checkpoints": [
+    "validated-authority-content-and-current",
+    "revision-written",
+    "current-published",
+    "index-written",
+    "readback-verified"
+  ],
+  "applied": true,
+  "recorded_at": "2026-10-31T05:16:14.194Z"
+}

@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-31-dev-stabilization-overhaul",
+  "status": "consensus",
+  "round": 4,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "Change 粒度",
+      "question": "#37 的 W0–W8 作为一个 change，还是先拆成多个 change？",
+      "depends_on": [],
+      "recommendation": "单 change，按 B0–B7 拆 Ticket，用 Goal Plan 编排，分批 PR。",
+      "status": "answered",
+      "round": 1,
+      "answer": "单 change 承载 #37 全部范围；按 B0–B7 拆票与分批 PR，早期 PR 不写自动关闭 #37 的关键词。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "兼容策略",
+      "question": "是否保留旧接口、旧格式、旧样式别名的兼容层？",
+      "depends_on": [],
+      "recommendation": "不保留兼容层，但 #37 §3.3 的保护语义不可破坏。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不保留永久兼容分支、双读双写、旧组件副本或历史别名；§3.3 保护语义保持不变。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "停止生命周期方向",
+      "question": "#28 是撤掉关闭刷盘，还是保留持久性并分阶段报告真实完成？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "保留持久性，区分四种完成事实，检查点移出业务调用成为有界维护。",
+      "status": "answered",
+      "round": 1,
+      "answer": "保留持久性与 ADR-027；扩展现有 RequestStop/Done/WaitClosed；检查点改为 adapter-owned 有界维护，不加第二条写连接。",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-004",
+      "title": "记忆依赖模型方向",
+      "question": "#29 写放大采用直接依赖图、共享不可变子图，还是只加缓存？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "直接图优先；共享子图需 W1.1 证据；只加缓存不算完成。",
+      "status": "answered",
+      "round": 1,
+      "answer": "优先版本绑定的规范化直接依赖图 + 条目引用；W1.1 证据不支持时才改共享子图；具体 schema 在 W1.1 决策记录后确定。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "技术栈与模块边界",
+      "question": "不兼容是否允许换技术栈或跨模块直改？",
+      "depends_on": [],
+      "recommendation": "保留现有技术栈与 api.ts 边界。",
+      "status": "answered",
+      "round": 1,
+      "answer": "保留 TS/React/Tailwind/Radix、Rust、Go/Eino/SQLite、HAP；模块只经 api.ts；不改插件 id、不重写终端/编辑器。",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-006",
+      "title": "证据与验收纪律",
+      "question": "什么构成验收证据？",
+      "depends_on": [],
+      "recommendation": "五类证据分开；缺平台保持未验收；不以重跑绿灯代替根因。",
+      "status": "answered",
+      "round": 1,
+      "answer": "采纳 #37 §1.3/§14/§15：五类证据区分，每个勾选附 PR/commit、环境、命令与结果。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-007",
+      "title": "UI 视觉方向与参考边界",
+      "question": "W6 的视觉语言与外部参考边界？",
+      "depends_on": [
+        "D-005"
+      ],
+      "recommendation": "圆润克制、单一 token 源、不加第二套运行时；Galaxy 固定版本精选改编，Radix/Primer 仅参考。",
+      "status": "answered",
+      "round": 1,
+      "answer": "采纳 #37 §10.1/§10.6 的方向与禁止项；所有复制/改编走 W8 来源登记。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-014",
+      "title": "可选初始化与启动关键路径",
+      "question": "#16 保留 5 秒恢复上限，还是让可选恢复完全退出启动关键路径？",
+      "depends_on": [],
+      "recommendation": "完全移出关键路径，保留迟到结果保护与窗口归属计时器。",
+      "status": "answered",
+      "round": 1,
+      "answer": "首页/工作台不等待任何可选账号、网络或凭据读取；后台恢复归模块 lifetime；替代永久 ADR-001 的提案待 A 提升。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-008",
+      "title": "默认可见目录名规范",
+      "question": "vault-layout.ts 明确把 huhu/ 下默认目录（日志、档案/个人档案、待办、记账等）定为中文，并注明是用户库结构而非界面文案；#37 W5.1 要求语言无关的固定规范。中文固定名本身不随界面语言变化。要保留中文固定名（只把显示名称本地化），还是换成固定的英文 ASCII 名（如 huhu/journal、huhu/archives/person）？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "新库改用固定的英文小写 ASCII 名（kebab-case），一张表定义在 vault-layout.ts 并写入 docs/data.md；界面显示名一律走 t()。理由：#19 的报告正是英文界面下看到中文目录；ASCII 路径在 Git、同步和命令行里更稳；改动集中在一处。",
+      "status": "answered",
+      "round": 2,
+      "answer": "采纳推荐：新库 HUHU 生成的默认目录与固定文件名改为固定英文小写 kebab-case，集中定义于 vault-layout.ts 并写入 docs/data.md；显示名经 t()。",
+      "log_ref": "LOG-009"
+    },
+    {
+      "id": "D-009",
+      "title": "已有库的旧默认目录",
+      "question": "若 D-008 改名：已存在旧中文默认目录的库，首次加载新版本时如何处理？",
+      "depends_on": [
+        "D-008"
+      ],
+      "recommendation": "一次性把检测到的旧默认目录写成设置里的显式路径（不移动、不删除文件），之后按用户自定义路径对待；不保留代码层中文别名。可另提供用户主动触发、带预览与备份的移动命令。",
+      "status": "answered",
+      "round": 3,
+      "answer": "用户选 C：不检测、不迁移、不读写旧中文默认目录；旧文件原样保留由用户自行处理。理由：尚未正式发布，按兼容问题处理。",
+      "log_ref": "LOG-014"
+    },
+    {
+      "id": "D-010",
+      "title": "Bot Profile 新 schema 切换方式",
+      "question": "W1 改依赖存储 schema 后，旧 Bot Profile 采用：A) 新建按 schema 版本隔离的新 Profile，旧 Profile 原样保留只读、不迁移；还是 B) 提供一次性、显式触发、先备份的迁移？",
+      "depends_on": [
+        "D-004"
+      ],
+      "recommendation": "A：新隔离 Profile，旧 Profile 不覆盖、不删除，首次启动明确告知旧数据位置与只读状态；不写迁移器。#37 §3.2 明确允许，且迁移器本身是一条需长期测试的兼容链。代价：旧会话与记忆在新 Profile 中不可见。",
+      "status": "answered",
+      "round": 2,
+      "answer": "采纳 A：按 schema 版本隔离的新 Profile；旧 Profile 只读保留，不覆盖、不删除、不迁移；首次启动告知位置。",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-011",
+      "title": "自动化通知名称语义",
+      "question": "自动化通知的主文案用运行时名称快照，还是始终显示当前名称？改名、删除、空名称时如何呈现？",
+      "depends_on": [],
+      "recommendation": "通知记录保存运行时名称快照作为主文案；详情按稳定 ID 解析当前自动化，已改名显示现名、已删除标注已删除，空名称用本地化的“未命名自动化”并保留可复制 ID。",
+      "status": "answered",
+      "round": 2,
+      "answer": "采纳推荐：运行时名称快照为主文案；详情按稳定 ID 解析现名/已删除；空名称用本地化“未命名自动化”并保留 ID。",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-012",
+      "title": "平台与实机验收的执行者和证据",
+      "question": "A16/A28/A31/A34/A35 等需要 Windows、macOS、系统骤停和真实 Obsidian 证据。哪些可由 GitHub Actions runner 提供，哪些必须由你在实机执行？缺条件时是否允许该 A 项保持未验收而其他批次继续合入 dev？",
+      "depends_on": [
+        "D-006"
+      ],
+      "recommendation": "Windows/macOS GitHub Actions runner 作为 A28/A31 进程级与 A16 采样证据；A34 的断电/内核崩溃只认你在 macOS 虚拟机骤停的实测，无条件则保持未验收；真实 Obsidian 的 A21/A25/A35 宿主验收由你执行，agent 提供脚本与清单。缺条件的 A 项保持未勾选，不阻塞其他批次合入 dev，但阻塞关闭 #37。",
+      "status": "answered",
+      "round": 2,
+      "answer": "采纳推荐并补充：全部真机验收由用户自行完成，agent 不执行不跟踪；agent 验证止于自动化测试与 GitHub Actions runner；真机项不挡其他批次合入，但挡关闭 #37。",
+      "log_ref": "LOG-012"
+    },
+    {
+      "id": "D-013",
+      "title": "全插件 UI 设计基线的产出与批准",
+      "question": "当前项目设计基线 DESIGN-0001 只覆盖 huhu.workbench；W6 要统一全插件。是否先经 P 原型产出本 change 的 DESIGN（W6.18 三个真实内容原型），批准后经 A 网关发布覆盖全插件的新设计 revision，再开始 B5/B6？",
+      "depends_on": [
+        "D-007"
+      ],
+      "recommendation": "是。B0 内完成 P 原型与 change DESIGN 批准；在此之前 Spec 的 UI 类 AC 保持未就绪，非 UI 批次（B1–B4 的逻辑部分）可先拆票实施。",
+      "status": "answered",
+      "round": 2,
+      "answer": "采纳：B0 经 P 原型产出 change DESIGN，批准后经 A 发布全插件设计 revision，再开始 B5/B6；之前 UI 类 AC 不 Ready。",
+      "log_ref": "LOG-013"
+    },
+    {
+      "id": "D-015",
+      "title": "审计冲突统一",
+      "question": "是否采纳十项审计建议，统一验证责任、写集、集成门和当前事实？",
+      "depends_on": [
+        "D-002",
+        "D-012",
+        "D-013"
+      ],
+      "recommendation": "采纳十项建议；保持生产实施未授权和真实证据边界。",
+      "status": "answered",
+      "round": 4,
+      "answer": "用户明确全部按建议处理；同批原子集成、Lead 共享写入、独立浏览器验证、EOF 诊断门、fixture 采样及发布例外按 LOG-017 落盘。",
+      "log_ref": "LOG-017"
+    },
+    {
+      "id": "D-016",
+      "title": "Browser 全面暂停",
+      "question": "本 change 是否继续浏览器相关开发和修复？",
+      "depends_on": [
+        "D-001",
+        "D-007"
+      ],
+      "recommendation": "暂停 Browser 及集成面，其他独立工作继续；以后由用户单独启动完整重构。",
+      "status": "answered",
+      "round": 4,
+      "answer": "用户要求完全暂停浏览器相关开发和修复。冻结模块、native runtime、Agent/Home/宿主集成、专用构建/资产及共享文件中的 Browser 分支；不能以全局 UI、清理或测试失败为由间接修改。详见 ADR-009、execution-boundaries。",
+      "log_ref": "LOG-018"
+    }
+  ]
+}

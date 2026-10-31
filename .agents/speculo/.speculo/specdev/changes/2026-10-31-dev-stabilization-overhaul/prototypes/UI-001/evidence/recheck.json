@@ -1,0 +1,997 @@
+{
+  "generated_at": "2026-10-31T05:15:05.292Z",
+  "checks": [
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 1440,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 1440,
+      "theme": "light",
+      "position": "static",
+      "bottom": 199,
+      "mainTop": 211,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 1440,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 1440,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 1440,
+      "theme": "dark",
+      "position": "static",
+      "bottom": 199,
+      "mainTop": 211,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 1440,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 390,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 390,
+      "theme": "light",
+      "position": "static",
+      "bottom": 319,
+      "mainTop": 331,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 390,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 390,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 390,
+      "theme": "dark",
+      "position": "static",
+      "bottom": 319,
+      "mainTop": 331,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 390,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 420,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 420,
+      "theme": "light",
+      "position": "static",
+      "bottom": 319,
+      "mainTop": 331,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 420,
+      "theme": "light",
+      "passed": true
+    },
+    {
+      "check": "six-page navigation with blocked anchors and URL writes",
+      "width": 420,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "toast occupies space above content at narrow container",
+      "width": 420,
+      "theme": "dark",
+      "position": "static",
+      "bottom": 319,
+      "mainTop": 331,
+      "overlap": false,
+      "overflow": false,
+      "passed": true
+    },
+    {
+      "check": "keyboard Enter navigation",
+      "width": 420,
+      "theme": "dark",
+      "passed": true
+    },
+    {
+      "check": "deep link and browser back/forward",
+      "passed": true
+    }
+  ],
+  "console_errors": [],
+  "cases": [
+    {
+      "id": "recheck-gallery-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-gallery-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-list-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-safe-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-home-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-bot-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-terminal-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-toast-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-gallery-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-list-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-safe-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-home-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-bot-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-terminal-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-toast-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    }
+  ],
+  "prototype_digest": "879ff0e8a5cfb47851e78f3a175003310a79a779058eed401782eec306f3e2c2"
+}

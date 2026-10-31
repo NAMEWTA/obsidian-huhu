@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI-001 候选比较 / Candidate comparison</title>
+<style>
+/* comparison harness. PREVIEW-ONLY palette. */
+:root { color-scheme: light; --bg: #fff; --sec: #f1f1ee; --line: #d6d6d1; --ctl: #86867f; --fg: #1f1f1d; --mut: #55554f; --acc: #1d6b64; --warn: #8a5300; --font: "Geist", system-ui, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }
+html[data-theme="dark"] { color-scheme: dark; --bg: #1c1c1a; --sec: #262624; --line: #3b3b38; --ctl: #8d8d86; --fg: #e9e9e5; --mut: #a9a9a2; --acc: #62bfb3; --warn: #f0b058; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--font); }
+.wrap { max-width: 1480px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 20px; margin: 0; } h2 { font-size: 16px; margin: 0 0 4px; } p { margin: 4px 0; }
+.mut { color: var(--mut); }
+button { font: inherit; color: inherit; min-height: 36px; padding: 0 12px; border: 1px solid var(--ctl); border-radius: 8px; background: var(--bg); cursor: pointer; transition: background-color 120ms ease; }
+button:hover, a.go:hover { background: var(--sec); }
+button[aria-pressed="true"] { background: var(--sec); border-color: var(--acc); }
+a:focus-visible, button:focus-visible, iframe:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+a { color: var(--acc); }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.bar h1 { margin-right: auto; }
+.rec { display: inline-block; padding: 0 8px; border: 1px solid var(--warn); color: var(--warn); border-radius: 6px; font-size: 12px; }
+.cols { display: grid; gap: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; }
+.col { min-width: 0; display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--line); padding-top: 8px; }
+.col.rc { border-top-color: var(--acc); }
+dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 12px; margin: 0; font-size: 13px; }
+dt { color: var(--mut); } dd { margin: 0; overflow-wrap: anywhere; }
+a.go { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--acc); border-radius: 8px; text-decoration: none; width: fit-content; }
+iframe { width: 100%; height: 560px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.fr { display: block; }
+@media (max-width: 1100px) { .cols { grid-template-columns: minmax(0, 1fr); } iframe { height: 520px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<main>
+  <div class="bar">
+    <h1 data-i18n="h">UI-001 候选比较</h1>
+    <button type="button" data-ctl="lang" data-v="zh" aria-pressed="true">中文</button>
+    <button type="button" data-ctl="lang" data-v="en" aria-pressed="false">English</button>
+    <button type="button" data-ctl="theme" data-v="light" aria-pressed="true" data-i18n="light">亮</button>
+    <button type="button" data-ctl="theme" data-v="dark" aria-pressed="false" data-i18n="dark">暗</button>
+    <a class="go" href="../final/index.html" data-i18n="final">打开推荐 final（完整评审包）</a>
+  </div>
+  <p class="mut" data-i18n="intro">三个候选使用同一任务与同一虚构数据；都在 #37 §10.1 “圆润、克制、内容优先的桌面工作台”之内，差异在结构与视觉语言。推荐只是待确认，不是批准。</p>
+  <div class="cols">
+    <section class="col rc" aria-labelledby="ha"><h2 id="ha">A · <span data-i18n="an">均衡圆润·列表+通知</span> <span class="rec" data-i18n="rec">推荐（待确认）</span></h2>
+      <dl><dt data-i18n="st">结构</dt><dd data-i18n="as">行内主操作簇 + 下方通知面板；容器 ≤480 时堆叠，主操作永远可见。</dd><dt data-i18n="vl">视觉</dt><dd data-i18n="av">控件 36px，圆角 8/12，细边框，单一青绿强调色。</dd><dt data-i18n="src">来源</dt><dd>cross-platform-workspace · notion · linear</dd><dt data-i18n="cost">迁移成本</dt><dd data-i18n="ac">低：最接近现有 shadcn 风格与 DESIGN-0001。</dd><dt data-i18n="risk">风险</dt><dd data-i18n="ar">窄容器 4 个操作需换行；需要验证 44px 触控。</dd></dl>
+      <a class="go" href="variants/candidate-a.html" data-i18n="open">打开候选</a>
+      <iframe class="fr" tabindex="-1" src="variants/candidate-a.html" title="candidate-a" loading="lazy"></iframe></section>
+    <section class="col" aria-labelledby="hb"><h2 id="hb">B · <span data-i18n="bn">柔和分组·展开式行</span></h2>
+      <dl><dt data-i18n="st">结构</dt><dd data-i18n="bs">行默认只显示名称与启停，运行/编辑收进展开区。</dd><dt data-i18n="vl">视觉</dt><dd data-i18n="bv">控件 40px，圆角 12/16，暖灰分组底，无边框层次。</dd><dt data-i18n="src">来源</dt><dd>soft-personal-ai · apple · figma</dd><dt data-i18n="cost">迁移成本</dt><dd data-i18n="bc">中高：行结构与大量页面密度都要重排。</dd><dt data-i18n="risk">风险</dt><dd data-i18n="br">运行/编辑多一步，违背“主操作始终可见”(AC-241)；密集列表效率低。</dd></dl>
+      <a class="go" href="variants/candidate-b.html" data-i18n="open">打开候选</a>
+      <iframe class="fr" tabindex="-1" src="variants/candidate-b.html" title="candidate-b" loading="lazy"></iframe></section>
+    <section class="col" aria-labelledby="hc"><h2 id="hc">C · <span data-i18n="cn">单色紧凑·表格+检查器</span></h2>
+      <dl><dt data-i18n="st">结构</dt><dd data-i18n="cs">真实表格 + 底部检查器；窄容器改为堆叠行。</dd><dt data-i18n="vl">视觉</dt><dd data-i18n="cv">控件 32px，圆角 4/6，单色强调，等宽标识符。</dd><dt data-i18n="src">来源</dt><dd>monochrome-console · vercel · ibm</dd><dt data-i18n="cost">迁移成本</dt><dd data-i18n="cc">中：表格语义好，但与 Obsidian 主题和圆润方向偏离。</dd><dt data-i18n="risk">风险</dt><dd data-i18n="cr">32px 命中区仅达桌面下限；偏“控制台”，不够圆润。</dd></dl>
+      <a class="go" href="variants/candidate-c.html" data-i18n="open">打开候选</a>
+      <iframe class="fr" tabindex="-1" src="variants/candidate-c.html" title="candidate-c" loading="lazy"></iframe></section>
+  </div>
+  <p class="mut" style="margin-top:16px" data-i18n="refs">参考来源仅作比例与交互参考，未下载、未复制代码：Galaxy（固定提交 adbd2add…，仅形态）、Radix Themes、Primer。</p>
+</main>
+</div>
+<script>
+(function () {
+  var D = {
+    zh: { h: 'UI-001 候选比较', light: '亮', dark: '暗', final: '打开推荐 final（完整评审包）', intro: '三个候选使用同一任务与同一虚构数据；都在 #37 §10.1 “圆润、克制、内容优先的桌面工作台”之内，差异在结构与视觉语言。推荐只是待确认，不是批准。', an: '均衡圆润·列表+通知', bn: '柔和分组·展开式行', cn: '单色紧凑·表格+检查器', rec: '推荐（待确认）', st: '结构', vl: '视觉', src: '来源', cost: '迁移成本', risk: '风险', open: '打开候选',
+      as: '行内主操作簇 + 下方通知面板；容器 ≤480 时堆叠，主操作永远可见。', av: '控件 36px，圆角 8/12，细边框，单一青绿强调色。', ac: '低：最接近现有 shadcn 风格与 DESIGN-0001。', ar: '窄容器 4 个操作需换行；需要验证 44px 触控。',
+      bs: '行默认只显示名称与启停，运行/编辑收进展开区。', bv: '控件 40px，圆角 12/16，暖灰分组底，无边框层次。', bc: '中高：行结构与大量页面密度都要重排。', br: '运行/编辑多一步，违背“主操作始终可见”(AC-241)；密集列表效率低。',
+      cs: '真实表格 + 底部检查器；窄容器改为堆叠行。', cv: '控件 32px，圆角 4/6，单色强调，等宽标识符。', cc: '中：表格语义好，但与 Obsidian 主题和圆润方向偏离。', cr: '32px 命中区仅达桌面下限；偏“控制台”，不够圆润。',
+      refs: '参考来源仅作比例与交互参考，未下载、未复制代码：Galaxy（固定提交 adbd2add…，仅形态）、Radix Themes、Primer。' },
+    en: { h: 'UI-001 candidate comparison', light: 'Light', dark: 'Dark', final: 'Open recommended final (full review package)', intro: 'Three candidates share one task and one fictional dataset; all stay inside #37 §10.1 (rounded, restrained, content-first desktop workbench). They differ in structure and visual language. The recommendation is pending, not approved.', an: 'Balanced rounded · list + notification', bn: 'Soft grouped · expandable rows', cn: 'Monochrome compact · table + inspector', rec: 'Recommended (pending)', st: 'Structure', vl: 'Visual', src: 'Sources', cost: 'Migration cost', risk: 'Risk', open: 'Open candidate',
+      as: 'Inline primary-action cluster + notification panel below; stacks at container <=480 and keeps primary actions visible.', av: 'Controls 36px, radii 8/12, hairline borders, one teal accent.', ac: 'Low: closest to the current shadcn-style set and DESIGN-0001.', ar: 'Four actions wrap in narrow containers; 44px touch must be verified.',
+      bs: 'Rows show only name and toggle; run/edit live in an expanded area.', bv: 'Controls 40px, radii 12/16, warm grouped surfaces, borderless layering.', bc: 'Medium-high: row structure and density of many pages must be redone.', br: 'Run/edit cost an extra step, against “primary actions always visible” (AC-241); weak for dense lists.',
+      cs: 'A real table + bottom inspector; stacked rows in narrow containers.', cv: 'Controls 32px, radii 4/6, monochrome accent, monospace identifiers.', cc: 'Medium: good table semantics, but departs from Obsidian themes and the rounded direction.', cr: '32px hit area only meets the desktop floor; reads as a console, not rounded.',
+      refs: 'Reference sources are used only for proportion and interaction, nothing downloaded or copied: Galaxy (pinned commit adbd2add…, shape only), Radix Themes, Primer.' }
+  };
+  var lang = 'zh', theme = 'light', q = new URLSearchParams(location.search);
+  if (q.get('lang') === 'en') lang = 'en'; if (q.get('theme') === 'dark') theme = 'dark';
+  function apply() {
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en'; document.documentElement.dataset.theme = theme;
+    document.querySelectorAll('[data-i18n]').forEach(function (e) { e.textContent = D[lang][e.dataset.i18n]; });
+    document.querySelectorAll('[data-ctl="lang"]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === lang)); });
+    document.querySelectorAll('[data-ctl="theme"]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === theme)); });
+    document.querySelectorAll('iframe').forEach(function (f) { try { var s = f.getAttribute('src').split('?')[0]; f.setAttribute('src', s + '?lang=' + lang + '&theme=' + theme); } catch (e) {} });
+  }
+  document.addEventListener('click', function (e) { var c = e.target.closest('[data-ctl]'); if (c) { if (c.dataset.ctl === 'lang') lang = c.dataset.v; else theme = c.dataset.v; apply(); } });
+  apply();
+})();
+</script>
+</body>
+</html>

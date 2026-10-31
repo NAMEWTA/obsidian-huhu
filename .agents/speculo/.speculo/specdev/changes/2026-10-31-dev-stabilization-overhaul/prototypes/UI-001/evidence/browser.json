@@ -1,0 +1,1885 @@
+{
+  "schema_version": 1,
+  "artifact": "prototype-browser-evidence",
+  "prototype_digest": "879ff0e8a5cfb47851e78f3a175003310a79a779058eed401782eec306f3e2c2",
+  "generated_at": "2026-10-31T05:15:05.292Z",
+  "provider": "google-chrome headless=new via DevTools protocol (scripted CDP driver)",
+  "inspected_files": [
+    "final/index.html",
+    "comparison/index.html",
+    "comparison/variants/candidate-a.html",
+    "comparison/variants/candidate-b.html",
+    "comparison/variants/candidate-c.html"
+  ],
+  "cases": [
+    {
+      "id": "final-gallery-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/gallery-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:default",
+        "UI-GALLERY:hover",
+        "UI-GALLERY:active",
+        "UI-GALLERY:busy",
+        "UI-GALLERY:focus-visible",
+        "UI-GALLERY:disabled",
+        "UI-GALLERY:error",
+        "UI-GALLERY:read-only",
+        "UI-GALLERY:selected",
+        "UI-GALLERY:indeterminate"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-gallery-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/gallery-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:default",
+        "UI-GALLERY:hover",
+        "UI-GALLERY:active",
+        "UI-GALLERY:busy",
+        "UI-GALLERY:focus-visible",
+        "UI-GALLERY:disabled",
+        "UI-GALLERY:error",
+        "UI-GALLERY:read-only",
+        "UI-GALLERY:selected",
+        "UI-GALLERY:indeterminate"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-list-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/list-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:wide",
+        "UI-LIST:container-600",
+        "UI-LIST:container-420",
+        "UI-LIST:long-name",
+        "UI-LIST:name-snapshot-notice",
+        "UI-LIST:empty",
+        "UI-LIST:loading",
+        "UI-LIST:no-results",
+        "UI-LIST:through-date",
+        "UI-LIST:error-keeps-input"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-list-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/list-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:wide",
+        "UI-LIST:container-600",
+        "UI-LIST:container-420",
+        "UI-LIST:long-name",
+        "UI-LIST:name-snapshot-notice",
+        "UI-LIST:empty",
+        "UI-LIST:loading",
+        "UI-LIST:no-results",
+        "UI-LIST:through-date",
+        "UI-LIST:error-keeps-input"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-safe-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/safe-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:locked",
+        "UI-SAFE:unlocked",
+        "UI-SAFE:long-notes",
+        "UI-SAFE:optional-fields",
+        "UI-SAFE:generate-copy",
+        "UI-SAFE:danger-confirm",
+        "UI-SAFE:unsaved-guard"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-safe-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/safe-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:locked",
+        "UI-SAFE:unlocked",
+        "UI-SAFE:long-notes",
+        "UI-SAFE:optional-fields",
+        "UI-SAFE:generate-copy",
+        "UI-SAFE:danger-confirm",
+        "UI-SAFE:unsaved-guard"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-home-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/home-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:weather-unconfigured",
+        "UI-HOME:weather-waiting",
+        "UI-HOME:weather-loading",
+        "UI-HOME:weather-cached-refreshing",
+        "UI-HOME:weather-success",
+        "UI-HOME:weather-offline",
+        "UI-HOME:weather-invalidated",
+        "UI-HOME:region-naming",
+        "UI-HOME:music-restoring"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-home-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/home-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:weather-unconfigured",
+        "UI-HOME:weather-waiting",
+        "UI-HOME:weather-loading",
+        "UI-HOME:weather-cached-refreshing",
+        "UI-HOME:weather-success",
+        "UI-HOME:weather-offline",
+        "UI-HOME:weather-invalidated",
+        "UI-HOME:region-naming",
+        "UI-HOME:music-restoring"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-bot-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/bot-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:approval-pending",
+        "UI-BOT:streaming",
+        "UI-BOT:approval-busy",
+        "UI-BOT:approved",
+        "UI-BOT:denied",
+        "UI-BOT:failed-retry",
+        "UI-BOT:uncertain",
+        "UI-BOT:composer-ime"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-bot-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/bot-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:approval-pending",
+        "UI-BOT:streaming",
+        "UI-BOT:approval-busy",
+        "UI-BOT:approved",
+        "UI-BOT:denied",
+        "UI-BOT:failed-retry",
+        "UI-BOT:uncertain",
+        "UI-BOT:composer-ime"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-terminal-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/terminal-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:normal",
+        "UI-TERMINAL:stopping",
+        "UI-TERMINAL:stop-unconfirmed",
+        "UI-TERMINAL:cleanup-failed",
+        "UI-TERMINAL:abnormal-exit",
+        "UI-TERMINAL:details-expanded"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-terminal-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/terminal-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:normal",
+        "UI-TERMINAL:stopping",
+        "UI-TERMINAL:stop-unconfirmed",
+        "UI-TERMINAL:cleanup-failed",
+        "UI-TERMINAL:abnormal-exit",
+        "UI-TERMINAL:details-expanded"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-gallery-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/gallery-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:default",
+        "UI-GALLERY:hover",
+        "UI-GALLERY:active",
+        "UI-GALLERY:busy",
+        "UI-GALLERY:focus-visible",
+        "UI-GALLERY:disabled",
+        "UI-GALLERY:error",
+        "UI-GALLERY:read-only",
+        "UI-GALLERY:selected",
+        "UI-GALLERY:indeterminate"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-gallery-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/gallery-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:default",
+        "UI-GALLERY:hover",
+        "UI-GALLERY:active",
+        "UI-GALLERY:busy",
+        "UI-GALLERY:focus-visible",
+        "UI-GALLERY:disabled",
+        "UI-GALLERY:error",
+        "UI-GALLERY:read-only",
+        "UI-GALLERY:selected",
+        "UI-GALLERY:indeterminate"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-list-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/list-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-600",
+        "UI-LIST:container-420",
+        "UI-LIST:long-name",
+        "UI-LIST:name-snapshot-notice",
+        "UI-LIST:empty",
+        "UI-LIST:loading",
+        "UI-LIST:no-results",
+        "UI-LIST:through-date",
+        "UI-LIST:error-keeps-input"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-list-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/list-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-600",
+        "UI-LIST:container-420",
+        "UI-LIST:long-name",
+        "UI-LIST:name-snapshot-notice",
+        "UI-LIST:empty",
+        "UI-LIST:loading",
+        "UI-LIST:no-results",
+        "UI-LIST:through-date",
+        "UI-LIST:error-keeps-input"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-safe-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/safe-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:locked",
+        "UI-SAFE:unlocked",
+        "UI-SAFE:long-notes",
+        "UI-SAFE:optional-fields",
+        "UI-SAFE:generate-copy",
+        "UI-SAFE:danger-confirm",
+        "UI-SAFE:unsaved-guard"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-safe-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/safe-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:locked",
+        "UI-SAFE:unlocked",
+        "UI-SAFE:long-notes",
+        "UI-SAFE:optional-fields",
+        "UI-SAFE:generate-copy",
+        "UI-SAFE:danger-confirm",
+        "UI-SAFE:unsaved-guard"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-home-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/home-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:weather-unconfigured",
+        "UI-HOME:weather-waiting",
+        "UI-HOME:weather-loading",
+        "UI-HOME:weather-cached-refreshing",
+        "UI-HOME:weather-success",
+        "UI-HOME:weather-offline",
+        "UI-HOME:weather-invalidated",
+        "UI-HOME:region-naming",
+        "UI-HOME:music-restoring"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-home-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/home-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:weather-unconfigured",
+        "UI-HOME:weather-waiting",
+        "UI-HOME:weather-loading",
+        "UI-HOME:weather-cached-refreshing",
+        "UI-HOME:weather-success",
+        "UI-HOME:weather-offline",
+        "UI-HOME:weather-invalidated",
+        "UI-HOME:region-naming",
+        "UI-HOME:music-restoring"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-bot-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/bot-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:approval-pending",
+        "UI-BOT:streaming",
+        "UI-BOT:approval-busy",
+        "UI-BOT:approved",
+        "UI-BOT:denied",
+        "UI-BOT:failed-retry",
+        "UI-BOT:uncertain",
+        "UI-BOT:composer-ime"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-bot-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/bot-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:approval-pending",
+        "UI-BOT:streaming",
+        "UI-BOT:approval-busy",
+        "UI-BOT:approved",
+        "UI-BOT:denied",
+        "UI-BOT:failed-retry",
+        "UI-BOT:uncertain",
+        "UI-BOT:composer-ime"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-terminal-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/terminal-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:normal",
+        "UI-TERMINAL:stopping",
+        "UI-TERMINAL:stop-unconfirmed",
+        "UI-TERMINAL:cleanup-failed",
+        "UI-TERMINAL:abnormal-exit",
+        "UI-TERMINAL:details-expanded"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "final-terminal-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/terminal-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:normal",
+        "UI-TERMINAL:stopping",
+        "UI-TERMINAL:stop-unconfirmed",
+        "UI-TERMINAL:cleanup-failed",
+        "UI-TERMINAL:abnormal-exit",
+        "UI-TERMINAL:details-expanded"
+      ],
+      "entry": "final/index.html"
+    },
+    {
+      "id": "candidate-a-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-a-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-a.html"
+    },
+    {
+      "id": "candidate-a-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-a-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-a.html"
+    },
+    {
+      "id": "candidate-a-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-a-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-a.html"
+    },
+    {
+      "id": "candidate-a-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-a-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-a.html"
+    },
+    {
+      "id": "candidate-b-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-b-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-b.html"
+    },
+    {
+      "id": "candidate-b-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-b-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-b.html"
+    },
+    {
+      "id": "candidate-b-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-b-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-b.html"
+    },
+    {
+      "id": "candidate-b-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-b-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-b.html"
+    },
+    {
+      "id": "candidate-c-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-c-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-c.html"
+    },
+    {
+      "id": "candidate-c-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/candidate-c-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-c.html"
+    },
+    {
+      "id": "candidate-c-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-c-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-c.html"
+    },
+    {
+      "id": "candidate-c-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/candidate-c-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "list",
+        "switch-toggle",
+        "run-busy",
+        "notification-snapshot"
+      ],
+      "entry": "comparison/variants/candidate-c.html"
+    },
+    {
+      "id": "index-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/index-1440-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "index",
+        "candidates-linked",
+        "final-linked"
+      ],
+      "entry": "comparison/index.html"
+    },
+    {
+      "id": "index-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/index-1440-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "index",
+        "candidates-linked",
+        "final-linked"
+      ],
+      "entry": "comparison/index.html"
+    },
+    {
+      "id": "index-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/index-390-light.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "index",
+        "candidates-linked",
+        "final-linked"
+      ],
+      "entry": "comparison/index.html"
+    },
+    {
+      "id": "index-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/index-390-dark.png",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "index",
+        "candidates-linked",
+        "final-linked"
+      ],
+      "entry": "comparison/index.html"
+    },
+    {
+      "id": "recheck-gallery-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-gallery-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-list-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-safe-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-home-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-bot-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-terminal-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-1440-light",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-toast-1440-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-gallery-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-list-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-safe-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-home-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-bot-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-terminal-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-1440-dark",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "evidence/screenshots/recheck-toast-1440-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-390-light",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-390-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-390-dark",
+      "width": 390,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-390-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-420-light",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-420-light.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    },
+    {
+      "id": "recheck-gallery-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-gallery-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-GALLERY:navigation"
+      ]
+    },
+    {
+      "id": "recheck-list-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-list-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:navigation"
+      ]
+    },
+    {
+      "id": "recheck-safe-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-safe-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-SAFE:navigation"
+      ]
+    },
+    {
+      "id": "recheck-home-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-home-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-HOME:navigation"
+      ]
+    },
+    {
+      "id": "recheck-bot-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-bot-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-BOT:navigation"
+      ]
+    },
+    {
+      "id": "recheck-terminal-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-terminal-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-TERMINAL:navigation"
+      ]
+    },
+    {
+      "id": "recheck-toast-420-dark",
+      "width": 420,
+      "height": 844,
+      "screenshot": "evidence/screenshots/recheck-toast-420-dark.png",
+      "entry": "final/index.html",
+      "checks": {
+        "rendered": true,
+        "no_overflow": true,
+        "keyboard": true,
+        "focus": true,
+        "long_text": true,
+        "zoom": true,
+        "reduced_motion": true,
+        "states": true
+      },
+      "states": [
+        "UI-LIST:container-420",
+        "UI-LIST:name-snapshot-notice"
+      ]
+    }
+  ],
+  "console_errors": [],
+  "offline": true,
+  "design_review": "evidence/design-review.md",
+  "technical_review": "evidence/technical-review.md",
+  "rechecked": true
+}

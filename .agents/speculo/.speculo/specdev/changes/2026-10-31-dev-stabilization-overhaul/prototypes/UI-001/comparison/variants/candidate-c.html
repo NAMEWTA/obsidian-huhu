@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>candidate-c · 单色紧凑 表格+检查器</title>
+<style>
+/* candidate-c: monochrome compact console. PREVIEW-ONLY fallbacks. */
+:root { color-scheme: light; --bg: #ffffff; --sec: #f4f4f2; --hover: #ebebe8; --line: #d8d8d3; --ctl: #80807a; --fg: #171715; --mut: #55554f; --acc: #171715; --onacc: #fff; --ok: #1a6e33; --bad: #b3261e; --r1: 6px; --r2: 8px; --h: 32px; --font: "Geist", system-ui, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace; }
+html[data-theme="dark"] { color-scheme: dark; --bg: #151514; --sec: #1d1d1b; --hover: #2a2a28; --line: #363633; --ctl: #8a8a84; --fg: #ecece8; --mut: #a7a7a0; --acc: #ecece8; --onacc: #151514; --ok: #6fcf8a; --bad: #ff8d84; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 13px/1.5 var(--font); }
+.wrap { container-type: inline-size; max-width: 1040px; margin: 0 auto; padding: 12px; }
+button { font: inherit; color: inherit; }
+.b { min-height: var(--h); min-width: 32px; padding: 0 10px; border: 1px solid var(--ctl); border-radius: var(--r1); background: var(--bg); cursor: pointer; font-size: 13px; transition: background-color 120ms ease; }
+.b:hover { background: var(--hover); }
+.b:focus-visible, [role=switch]:focus-visible, th:focus-visible, .scroll:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.b[aria-pressed="true"] { background: var(--acc); color: var(--onacc); }
+.b[aria-busy="true"] { opacity: .6; pointer-events: none; cursor: progress; }
+.bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.bar h1 { font: 600 14px/20px var(--font); margin: 0 auto 0 0; }
+.lead { color: var(--mut); margin: 8px 0; font-size: 12px; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r2); }
+table { width: 100%; border-collapse: collapse; }
+thead th { text-align: left; font-size: 12px; color: var(--mut); background: var(--sec); padding: 6px 10px; border-bottom: 1px solid var(--line); position: sticky; top: 0; }
+tbody th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; font-weight: 400; }
+tbody tr:hover { background: var(--sec); }
+tbody th { max-width: 340px; }
+.nm { display: block; font-weight: 600; overflow-wrap: anywhere; }
+code { font: 12px var(--mono); color: var(--mut); }
+.tag { font: 12px var(--mono); padding: 0 6px; border: 1px solid var(--line); border-radius: 4px; }
+.tag.ok { color: var(--ok); } .tag.bad { color: var(--bad); }
+.ac { white-space: nowrap; display: flex; gap: 4px; }
+[role=switch] { width: 32px; height: 18px; border-radius: 9px; border: 0; background: var(--ctl); position: relative; cursor: pointer; padding: 0; }
+[role=switch]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); transition: transform 120ms ease; }
+[role=switch][aria-checked="true"] { background: var(--acc); }
+[role=switch][aria-checked="true"]::after { transform: translateX(14px); }
+.insp { margin-top: 12px; border: 1px solid var(--line); border-radius: var(--r2); }
+.insp header { padding: 6px 10px; background: var(--sec); border-bottom: 1px solid var(--line); font-weight: 600; }
+.insp .in { padding: 8px 10px; display: grid; gap: 4px; font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.insp .in b { color: var(--mut); font-weight: 400; }
+@container (max-width: 560px) {
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table, tbody, tr, th, td { display: block; }
+  tr { padding: 8px 10px; border-bottom: 1px solid var(--line); display: grid; gap: 4px; }
+  tbody th, tbody td { border: 0; padding: 0; max-width: none; }
+  td.ac { padding-top: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<main>
+  <div class="bar">
+    <h1><span data-i18n="cand">候选</span> C · <span data-i18n="title">自动化</span></h1>
+    <button class="b" type="button" data-ctl="lang" data-v="zh" aria-pressed="true">中文</button>
+    <button class="b" type="button" data-ctl="lang" data-v="en" aria-pressed="false">English</button>
+    <button class="b" type="button" data-ctl="theme" data-v="light" aria-pressed="true" data-i18n="light">亮</button>
+    <button class="b" type="button" data-ctl="theme" data-v="dark" aria-pressed="false" data-i18n="dark">暗</button>
+  </div>
+  <p class="lead" data-i18n="sub">sub</p>
+  <h2 style="font-size:13px;margin:0 0 6px" data-i18n="title">自动化</h2>
+  <div class="scroll" tabindex="0" role="region" aria-label="automations">
+    <table>
+      <thead><tr><th scope="col" data-i18n="name">名称</th><th scope="col" data-i18n="trigger">触发</th><th scope="col" data-i18n="last">上次运行</th><th scope="col" data-i18n="state">状态</th><th scope="col" data-i18n="actions">操作</th></tr></thead>
+      <tbody>
+      <tr>
+        <th scope="row" data-label="name"><span class="nm" data-i18n="n1">n1</span><code>a1b2c3d4</code></th>
+        <td data-label="trigger" data-i18n="sched">sched</td>
+        <td data-label="last"><span class="tag ok" data-i18n="ok">ok</span> <span data-i18n="ago12">ago12</span></td>
+        <td data-label="state"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button></td>
+        <td data-label="actions" class="ac"><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button></td>
+      </tr>
+      <tr>
+        <th scope="row" data-label="name"><span class="nm" data-i18n="n2">n2</span><code>e5f6a7b8</code></th>
+        <td data-label="trigger" data-i18n="file">file</td>
+        <td data-label="last"><span class="tag bad" data-i18n="fail">fail</span> <span data-i18n="ago95">ago95</span></td>
+        <td data-label="state"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button></td>
+        <td data-label="actions" class="ac"><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button></td>
+      </tr>
+      <tr>
+        <th scope="row" data-label="name"><span class="nm" data-i18n="untitled">untitled</span><code>0a1b2c3d</code></th>
+        <td data-label="trigger" data-i18n="manual">manual</td>
+        <td data-label="last"><span class="tag ok" data-i18n="ok">ok</span> <span data-i18n="ago25">ago25</span></td>
+        <td data-label="state"><button class="sw" type="button" role="switch" aria-checked="false" data-switch data-i18n-aria="off"></button></td>
+        <td data-label="actions" class="ac"><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button></td>
+      </tr>
+      <tr>
+        <th scope="row" data-label="name"><span class="nm" data-i18n="n5">n5</span><code>4e5f6a7b</code></th>
+        <td data-label="trigger" data-i18n="sched">sched</td>
+        <td data-label="last"><span class="tag " data-i18n="never">never</span></td>
+        <td data-label="state"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button></td>
+        <td data-label="actions" class="ac"><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <aside class="insp" aria-labelledby="ic"><header id="ic" data-i18n="inspector">检查器</header>
+    <div class="in"><span data-i18n="notiMain">main</span><span><b data-i18n="notiSnap">快照</b> <span data-i18n="n1">n1</span></span><span><b data-i18n="notiNow">现名</b> <span data-i18n="notiNowV">现名</span></span><span><b data-i18n="notiId">ID</b> a1b2c3d4 <button class="b" type="button" data-i18n="copy">复制 ID</button></span><span data-i18n="notiNote">note</span></div></aside>
+  <p class="lead"><a href="../index.html" data-i18n="back" style="color:var(--fg)">返回比较页</a></p>
+</main>
+</div>
+<script src="../shared/fixture.js"></script>
+</body>
+</html>

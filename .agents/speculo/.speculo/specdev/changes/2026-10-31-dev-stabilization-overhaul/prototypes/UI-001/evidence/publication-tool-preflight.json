@@ -1,0 +1,19 @@
+{
+  "error": "design promotion requires completed change evidence",
+  "receipt": {
+    "owner": "specdev/archive-and-consolidate",
+    "mode": "promotion",
+    "applied": false,
+    "checkpoints": [],
+    "paths": {
+      "current": ".agents/speculo/.speculo/specdev/design/DESIGN.md",
+      "revision": ".agents/speculo/.speculo/specdev/design/revisions/DESIGN-0002.md",
+      "index": ".agents/speculo/.speculo/specdev/design/INDEX.md"
+    },
+    "recovery": "Read the original approval/report and actual current/revision; retry the identical operation only after resolving its blocker.",
+    "revision": "DESIGN-0002",
+    "candidate_sha256": "1aa986e5c576aef9e590e473695941c8ad7812570df100b7edfe2d21f421f9cb",
+    "design_digest": "ef5e5080f6c1a8f967397af72fca0050820b9ad4d9a4f57451be3a63ab55b2b1",
+    "operation": "4b202213fd0e1b989b1fb976acdf9f721dd7f4c18517c10a240fedfdc5616f9a"
+  }
+}

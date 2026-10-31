@@ -1,0 +1,14 @@
+{
+  "approved": true,
+  "source": "本会话用户：全部按你的推荐落盘",
+  "confirmed_at": "2026-10-31T05:14:27.748Z",
+  "candidate_sha256": "1aa986e5c576aef9e590e473695941c8ad7812570df100b7edfe2d21f421f9cb",
+  "current_sha256": "50f0d924ee393fddca02d4765bd2d7bb49ba70f5e9f3bbf08ac20456b1cd651f",
+  "locator_version": 2,
+  "record": {
+    "base": "change",
+    "change": "2026-10-31-dev-stabilization-overhaul",
+    "path": "prototypes/UI-001/evidence/approval.md",
+    "sha256": "93923a3b35f010644d7b3085f946a44fb2da177460191928025fc829567a8582"
+  }
+}
