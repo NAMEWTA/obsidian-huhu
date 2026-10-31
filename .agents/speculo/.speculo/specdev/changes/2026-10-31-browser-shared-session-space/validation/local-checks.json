@@ -1,0 +1,86 @@
+{
+  "artifact": "local-document-checks",
+  "official_specdev_validator": false,
+  "results": [
+    {
+      "name": "13 uniquely identified future draft tickets",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "No product execution claimed",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Spec is explicitly draft",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Pending UI confirmation is preserved",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "DAG resolves and has no cycle",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Every AC-001 to AC-040 has a ticket",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "All B01-B40 have individual acceptance sections",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "All F01-F12 are present",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Frozen Issue body hash matches normalized source",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Named prototype source blocks are byte-equivalent",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Prototype source file hashes match",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Three standalone candidates plus comparison entry",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "33 actual offline browser checks passed",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "No font files or production extensions outside prototypes",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "README and all key artifacts present",
+      "result": "passed",
+      "detail": ""
+    },
+    {
+      "name": "Remote receipt never fabricates PR",
+      "result": "passed",
+      "detail": ""
+    }
+  ]
+}

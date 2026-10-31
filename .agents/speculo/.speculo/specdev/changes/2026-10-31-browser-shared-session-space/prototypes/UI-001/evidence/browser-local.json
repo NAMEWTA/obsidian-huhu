@@ -1,0 +1,153 @@
+{
+  "artifact": "offline-prototype-browser-checks",
+  "tested_at": "2026-10-31",
+  "browser": "Chromium 144.0.7559.96",
+  "environment": "Linux container; exact local HTML/CSS/JS embedded into an in-memory page; file navigation policy disallowed file://; no policy changed",
+  "real_obsidian": false,
+  "host_F_B_tests": "NOT RUN",
+  "checks": [
+    {
+      "name": "Desktop layout has no document/frame overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Handoff, mock Agent input and reclaim retain draft and DOM identity",
+      "result": "passed"
+    },
+    {
+      "name": "Personal space denies mock Agent before explicit conversion",
+      "result": "passed"
+    },
+    {
+      "name": "Origin-scoped permission denial",
+      "result": "passed"
+    },
+    {
+      "name": "Material goes to mock input without sending",
+      "result": "passed"
+    },
+    {
+      "name": "Cleanup failure remains visible and blocks new handoff",
+      "result": "passed"
+    },
+    {
+      "name": "Unknown outcome requires takeover, no replay button",
+      "result": "passed"
+    },
+    {
+      "name": "Dangerous address is rejected, no real navigation",
+      "result": "passed"
+    },
+    {
+      "name": "Dialog initial focus, keyboard containment and Escape return",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: loading",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: offline",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: error",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: crashed",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: owner",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: unsupported",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: unknown",
+      "result": "passed"
+    },
+    {
+      "name": "Scenario renders: normal",
+      "result": "passed"
+    },
+    {
+      "name": "Distinct mock pages retain distinct drafts, handoff still same draft",
+      "result": "passed"
+    },
+    {
+      "name": "Explicit personal conversion keeps control human and survives space switch",
+      "result": "passed"
+    },
+    {
+      "name": "Failed download remains explicit, no read grant",
+      "result": "passed"
+    },
+    {
+      "name": "Crash recovery clears mock page memory only after explicit confirmation",
+      "result": "passed"
+    },
+    {
+      "name": "Cleanup retry ends in empty space, no disk operation",
+      "result": "passed"
+    },
+    {
+      "name": "HTTP mock navigation is explicitly labelled insecure",
+      "result": "passed"
+    },
+    {
+      "name": "420px no unintended overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Narrow navigation sheet switches space and closes",
+      "result": "passed"
+    },
+    {
+      "name": "Long English + 44px touch at 420px no overflow",
+      "result": "passed"
+    },
+    {
+      "name": "600px layout no overflow",
+      "result": "passed"
+    },
+    {
+      "name": "CSS zoom 200 percent no document overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Reduced motion removes transitions",
+      "result": "passed"
+    },
+    {
+      "name": "Standalone candidate a loads and no overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Standalone candidate b loads and no overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Standalone candidate c loads and no overflow",
+      "result": "passed"
+    },
+    {
+      "name": "Comparison links all resolve locally",
+      "result": "passed"
+    }
+  ],
+  "page_errors": [],
+  "unexpected_network": [],
+  "screenshots": [
+    "evidence/screenshots/zoom-200.png",
+    "evidence/screenshots/desktop-dark.png",
+    "evidence/screenshots/narrow-en-touch.png",
+    "evidence/screenshots/narrow-420.png",
+    "evidence/screenshots/cleanup-pending.png",
+    "evidence/screenshots/desktop-light.png",
+    "evidence/screenshots/desktop-agent.png"
+  ]
+}

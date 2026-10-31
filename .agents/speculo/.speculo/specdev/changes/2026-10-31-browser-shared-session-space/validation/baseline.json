@@ -1,0 +1,13 @@
+{
+  "repository": "NAMEWTA/obsidian-huhu",
+  "branch": "dev",
+  "commit": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "recheck_commit": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "design_revision": "DESIGN-0002",
+  "design_digest": "1aa986e5c576aef9e590e473695941c8ad7812570df100b7edfe2d21f421f9cb",
+  "issue": 38,
+  "issue_updated_at": "2026-10-31T05:58:32Z",
+  "issue_comments": 0,
+  "capture_date": "2026-10-31",
+  "local_workspace_kind": "artifact-only-not-repository-checkout"
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "artifact": "remote-delivery-receipt",
+  "repository": "NAMEWTA/obsidian-huhu",
+  "target_branch": "dev",
+  "read_baseline": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "final_dev_recheck": "974105b47e03c108df0f5e0c3fc9606fe4b79aee",
+  "rechecked_date": "2026-10-31",
+  "proposed_branch": "docs/browser-shared-session-space-38",
+  "remote_branch_created": false,
+  "remote_commit_created": false,
+  "pull_request_url": null,
+  "status": "blocked-tool-capability",
+  "reason": "GitHub connector exposes GET/read-only actions; no create branch/commit/PR action. Plugin search did not find an alternative write connector; connected browser has read-only tools. Container GitHub DNS resolution failed.",
+  "repository_permission_problem": false,
+  "issue_close_action": false,
+  "production_changes": false,
+  "artifact_scope": ".agents/speculo/.speculo/specdev/changes/2026-10-31-browser-shared-session-space"
+}

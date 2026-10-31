@@ -1,0 +1,43 @@
+{
+  "artifact": "prototype-file-integrity",
+  "algorithm": "SHA-256 over each exact UTF-8 file; manifest summary SHA-256 over compact sorted-key JSON of files",
+  "official_design_artifacts_digest": false,
+  "files": [
+    {
+      "path": "comparison/index.html",
+      "sha256": "12865448384846a236b8dd822ace84e06a80e18b4fb1dd8633254b31052bfe7f",
+      "bytes": 1673
+    },
+    {
+      "path": "comparison/variants/candidate-a.html",
+      "sha256": "393c9cfd434dcf76f8aa53a74b5582403f1764494d03a106f1ee1d4893077706",
+      "bytes": 13084
+    },
+    {
+      "path": "comparison/variants/candidate-b.html",
+      "sha256": "c74d34259156fe467b624c0ebfb51fbd6d689907494317d98fec24fe2278696b",
+      "bytes": 13084
+    },
+    {
+      "path": "comparison/variants/candidate-c.html",
+      "sha256": "e4dcc1d821a5202ff540d260d1419f9a05d55015248f4fdabf2e514ad2c3d6bb",
+      "bytes": 13084
+    },
+    {
+      "path": "final/app.js",
+      "sha256": "65075ec0f9691374d5afab34f4e9b7d94aa0a8de08873535fd72aec1dd8ba220",
+      "bytes": 30856
+    },
+    {
+      "path": "final/index.html",
+      "sha256": "801aa1da5abfe95a65a4b793c7d58fb3846c1aab16945f77ece2837c62d79899",
+      "bytes": 13060
+    },
+    {
+      "path": "final/styles.css",
+      "sha256": "9064378a3d946506b871f878852c3dba7501e125da4d0da82a881895d6dfae0f",
+      "bytes": 15122
+    }
+  ],
+  "manifest_sha256": "18f72f332b4d46bfa90c22cbfe6caddae080c96e141ba97ad12e9c10021087fc"
+}

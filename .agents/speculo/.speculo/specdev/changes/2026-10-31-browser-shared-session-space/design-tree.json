@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-31-browser-shared-session-space",
+  "status": "active",
+  "round": 1,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "目标与无兼容",
+      "question": "是否保留旧 Native 路径？",
+      "depends_on": [],
+      "recommendation": "完全替换；没有 Native fallback、双写或协议兼容。",
+      "status": "answered",
+      "round": 1,
+      "answer": "完全替换；没有 Native fallback、双写或协议兼容。 来源：Issue §1、§4 D01/D10、§17–18",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "共享边界",
+      "question": "同一个 Space 是否还要区分人/Agent profile？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "不区分。同一 Page 还必须是同一 live guest，不能只共享 Cookie。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不区分。同一 Page 还必须是同一 live guest，不能只共享 Cookie。 来源：Issue §2、§4 D02/D03",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "授权与个人 Space",
+      "question": "个人 Space 能否被自动观察？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "禁止全部 Agent 读写；可信 UI 显式转换并重新授权后才成为任务 Space。",
+      "status": "answered",
+      "round": 1,
+      "answer": "禁止全部 Agent 读写；可信 UI 显式转换并重新授权后才成为任务 Space。 来源：Issue §9–10、§23",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-004",
+      "title": "单写者和撤权",
+      "question": "接管是否可以等待普通动作队列？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "不可以；高优先级最终执行 fence，撤销读写及迟到结果，新代次交回。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不可以；高优先级最终执行 fence，撤销读写及迟到结果，新代次交回。 来源：Issue §10",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "副作用与结果",
+      "question": "超时是否自动重试点击？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "派发后不确定为 outcome-unknown，先观察/对账，不自动重放。",
+      "status": "answered",
+      "round": 1,
+      "answer": "派发后不确定为 outcome-unknown，先观察/对账，不自动重放。 来源：Issue §11.5",
+      "log_ref": "LOG-005"
+    },
+    {
+      "id": "D-006",
+      "title": "数据与清理",
+      "question": "不兼容是否自动迁移/删除旧数据？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "不读取/迁移旧数据，默认保留；Session 数据由 Electron 本机管理，清理明确确认与 tombstone。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不读取/迁移旧数据，默认保留；Session 数据由 Electron 本机管理，清理明确确认与 tombstone。 来源：Issue §8、§16、§18",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-007",
+      "title": "最小 Agent 能力",
+      "question": "是否暴露任意 evaluate/CDP？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "不暴露；结构化动作、短期元素引用、能力上限、诚实 frame 覆盖。",
+      "status": "answered",
+      "round": 1,
+      "answer": "不暴露；结构化动作、短期元素引用、能力上限、诚实 frame 覆盖。 来源：Issue §11–12",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-008",
+      "title": "宿主与跨平台",
+      "question": "是否无条件使用 webview？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "仅作为首选候选；F01–F12 实测后固定一个表面，不能以当前文档推定宿主支持。",
+      "status": "answered",
+      "round": 1,
+      "answer": "仅作为首选候选；F01–F12 实测后固定一个表面，不能以当前文档推定宿主支持。 来源：Issue §4–5",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-009",
+      "title": "集成所有权",
+      "question": "是否重写 Shell/Bot/终端？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "否；复用公开 API、模块服务撤销、材料贡献点、Go/HAP 边界。",
+      "status": "answered",
+      "round": 1,
+      "answer": "否；复用公开 API、模块服务撤销、材料贡献点、Go/HAP 边界。 来源：Issue §0.1、§3、§13",
+      "log_ref": "LOG-009"
+    },
+    {
+      "id": "D-010",
+      "title": "后置能力",
+      "question": "是否优先做 Cookie 导入与高级 MCP？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "否。Cookie 导入/系统浏览器提取/高级 MCP 后置，但既有 CLI 必须同步切换。",
+      "status": "answered",
+      "round": 1,
+      "answer": "否。Cookie 导入/系统浏览器提取/高级 MCP 后置，但既有 CLI 必须同步切换。 来源：Issue §14–15",
+      "log_ref": "LOG-010"
+    },
+    {
+      "id": "D-011",
+      "title": "视觉基线",
+      "question": "是否另创浏览器主题与胶囊控件？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "否；继承用户指定 UI-001 和 DESIGN-0002，圆角 6/8/12/14，全圆仅开关/单选。",
+      "status": "answered",
+      "round": 1,
+      "answer": "否；继承用户指定 UI-001 和 DESIGN-0002，圆角 6/8/12/14，全圆仅开关/单选。 来源：本轮用户来源 + DESIGN-0002",
+      "log_ref": "LOG-011"
+    },
+    {
+      "id": "D-012",
+      "title": "本次授权",
+      "question": "是否立即实施产品？",
+      "depends_on": [
+        "D-001"
+      ],
+      "recommendation": "否；只提交文档和离线原型，一个 PR，Refs #38，不关闭 Epic。",
+      "status": "answered",
+      "round": 1,
+      "answer": "否；只提交文档和离线原型，一个 PR，Refs #38，不关闭 Epic。 来源：sources/USER-001.md",
+      "log_ref": "LOG-012"
+    },
+    {
+      "id": "D-013",
+      "title": "浏览器原型集中确认",
+      "question": "是否接受推荐 A 布局及 DESIGN 中的浏览器交互增量？",
+      "depends_on": [
+        "D-011",
+        "D-012"
+      ],
+      "recommendation": "A：保留工作台完整上下文，控制状态靠近网页；B/C 只作同风格布局备选。",
+      "status": "open",
+      "round": null,
+      "answer": null,
+      "log_ref": null
+    }
+  ]
+}
