@@ -11,10 +11,11 @@ import { connect } from './cdp.mjs';
 
 /**
  * HUHU_ACCEPTANCE_PORT moves the CDP port; HUHU_PLUGIN_SOURCE installs a build from another directory than the checkout.
- * @param {{ root: string; files?: Record<string, string>; settings?: unknown; port?: number; pluginSource?: string }} options
+ * @param {{ root: string; files?: Record<string, string>; settings?: unknown; port?: number; pluginSource?: string; sandbox?: boolean; requireGracefulExit?: boolean }} options
  * `files` are vault-relative paths; `settings` is written to .huhu/config/settings.json.
+ * Security probes opt into sandbox=true; requireGracefulExit rejects forced/crashed restarts.
  */
-export async function launchFreshVault({ root, files = {}, settings, port = 9237, pluginSource = process.cwd() }) {
+export async function launchFreshVault({ root, files = {}, settings, port = 9237, pluginSource = process.cwd(), sandbox = false, requireGracefulExit = false }) {
 	const executable = process.env.HUHU_OBSIDIAN_EXECUTABLE;
 	assert.ok(executable && path.isAbsolute(executable), 'HUHU_OBSIDIAN_EXECUTABLE must be absolute');
 	assert.ok(path.isAbsolute(root) && path.parse(root).root !== root, 'root must be an absolute, non-root path');
@@ -48,7 +49,7 @@ export async function launchFreshVault({ root, files = {}, settings, port = 9237
 	const session = { connection: undefined, app: undefined, exited: undefined };
 	const start = async () => {
 		const log = openSync(path.join(evidence, 'application.log'), 'a');
-		const app = spawn(executable, ['--no-sandbox', '--disable-gpu', `--user-data-dir=${profile}`, `--remote-debugging-port=${port}`], { env, stdio: ['ignore', log, log] });
+		const app = spawn(executable, [...(sandbox ? [] : ['--no-sandbox']), '--disable-gpu', `--user-data-dir=${profile}`, `--remote-debugging-port=${port}`], { env, stdio: ['ignore', log, log] });
 		closeSync(log);
 		session.app = app;
 		session.exited = once(app, 'exit');
@@ -85,12 +86,16 @@ export async function launchFreshVault({ root, files = {}, settings, port = 9237
 		let deadline;
 		try { await Promise.race([exited, new Promise(resolve => { deadline = setTimeout(resolve, 20000); })]); }
 		finally { clearTimeout(deadline); }
-		if (app.exitCode === null) {
+		const forced = app.exitCode === null && app.signalCode === null;
+		if (forced) {
 			app.kill('SIGKILL');
 			await exited;
 		}
 		session.app = undefined;
 		session.connection = undefined;
+		if (requireGracefulExit && (forced || app.signalCode !== null || app.exitCode !== 0)) {
+			throw new Error('Obsidian did not exit cleanly; restart persistence is not verified');
+		}
 	};
 	const shot = async (name) => {
 		const { data } = await session.connection.send('Page.captureScreenshot', { format: 'png' });
