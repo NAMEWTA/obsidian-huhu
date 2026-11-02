@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import {
+	collectTags, renameEntryTag, validateNewRelations, MAX_ENTRY_TAGS, MAX_RELATIONS,
 	ICON_MAX_CHARS,
 	MAX_CREDENTIALS,
 	MAX_PAYLOAD_BYTES,
@@ -25,8 +26,8 @@ const now = Date.parse('2026-10-21T00:00:00.000Z');
 const id = '11111111-1111-4111-8111-111111111111';
 const otherId = '22222222-2222-4222-8222-222222222222';
 const credentialId = (n: number) => `c${n.toString(16).padStart(7, '0')}-1111-4111-8111-111111111111`;
-const credential = (n: number, extra: Partial<CredentialInput> = {}): CredentialInput => ({ id: credentialId(n), username: ` Alice${n}@example.test `, password: ' \t🔑é密碼\n ', notes: `备注 ${n}`, ...extra });
-const input: EntryInput = { title: '工作账号', url: 'https://github.com', notes: '工作 项目', icon: null, credentials: [credential(1)] };
+const credential = (n: number, extra: Partial<CredentialInput> = {}): CredentialInput => ({ id: credentialId(n), username: ` Alice${n}@example.test `, password: ' \t🔑é密碼\n ', notes: `备注 ${n}`, phone: '', email: '', relations: [], ...extra });
+const input: EntryInput = { title: '工作账号', url: 'https://github.com', notes: '工作 项目', icon: null, tags: [], credentials: [credential(1)] };
 /** A minimal valid PNG signature followed by padding: enough for the magic-byte check. */
 const png = (body = 'AAAA') => `data:image/png;base64,${btoa(String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00))}${body}`;
 
@@ -40,8 +41,8 @@ describe('safe records', () => {
 		expect(validateEntryInput({ ...input, title: '🔑'.repeat(SAFE_LIMITS.title) }).title.length).toBe(2 * SAFE_LIMITS.title);
 		expect(() => validateEntryInput({ ...input, title: '🔑'.repeat(SAFE_LIMITS.title + 1) })).toThrow('invalid-entry');
 		expect(validateEntryInput({ ...input, credentials: [credential(1, { username: ' ', password: ' ' })] }).credentials[0]!.password).toBe(' ');
-		expect(() => validateEntryInput({ ...input, credentials: [credential(1, { password: '' })] })).toThrow('invalid-entry');
-		expect(() => validateEntryInput({ ...input, credentials: [credential(1, { username: '' })] })).toThrow('invalid-entry');
+		expect(validateEntryInput({ ...input, credentials: [credential(1, { password: '' })] }).credentials[0]!.password).toBe('');
+		expect(validateEntryInput({ ...input, credentials: [credential(1, { username: '' })] }).credentials[0]!.username).toBe('');
 	});
 
 	test('an entry holds one to fifty accounts with unique ids', () => {
@@ -129,7 +130,7 @@ describe('safe records', () => {
 			makePayload([{ ...entry, credentials: [{ ...entry.credentials[0]!, futureField: 'x' }] } as never]),
 			makePayload([{ ...entry, credentials: [{ ...entry.credentials[0]!, updatedAt: 'nope' }] }]),
 			makePayload([{ ...entry, credentials: [] }]),
-			{ version: 3, entries: [] },
+			{ version: 4, entries: [] },
 			{ version: 2, entries: [], revision: 1 },
 			{ entries: [] },
 		]) expect(() => validatePayload(invalid)).toThrow('invalid-format');
@@ -140,4 +141,48 @@ describe('safe records', () => {
 		expect(new TextEncoder().encode(JSON.stringify(makePayload(entries))).byteLength).toBeGreaterThan(MAX_PAYLOAD_BYTES);
 		expect(() => validatePayload(makePayload(entries))).toThrow('too-large');
 	});
+});
+
+
+test('optional contact fields and labels round-trip exactly, are searchable, and tag filters intersect', () => {
+	const planned = createEntry({ ...input, tags: ['AI', 'Company'], credentials: [credential(1, {
+		username: '', password: '', phone: '+886 123 456', email: ' Work@Example.test ', notes: '',
+	})] }, id, now);
+	expect(validatePayload(makePayload([planned])).entries[0]).toEqual(planned);
+	expect(searchEntries([planned], '886 example AI')).toEqual([planned]);
+	expect(searchEntries([planned], '', false, ['ai', 'company'])).toEqual([planned]);
+	expect(searchEntries([planned], '', false, ['AI', 'Bank'])).toEqual([]);
+	expect(validateEntryInput({ ...input, credentials: [credential(1, { username: '', password: '', phone: '', email: '', notes: '' })] }).credentials).toHaveLength(1);
+	expect(() => validateEntryInput({ ...input, credentials: [credential(1, { phone: 'x'.repeat(SAFE_LIMITS.phone + 1) })] })).toThrow('invalid-entry');
+});
+
+test('tags are bounded, normalized labels; global rename merges case-insensitively and also updates trash', () => {
+	for (const tags of [['AI', 'ai'], [' spaced '], [''], ['a\nb'], Array.from({ length: MAX_ENTRY_TAGS + 1 }, (_, n) => `t${n}`)]) {
+		expect(() => validateEntryInput({ ...input, tags })).toThrow('invalid-entry');
+	}
+	const first = createEntry({ ...input, tags: ['AI', 'Work'] }, id, now);
+	const trash = deleteEntry(createEntry({ ...input, tags: ['ai'] }, otherId, now), now + 1);
+	const renamed = renameEntryTag([first, trash], 'aI', 'Work', now + 2);
+	expect(renamed.map(entry => entry.tags)).toEqual([['Work'], ['Work']]);
+	expect(renamed[1]!.deletedAt).toBe(trash.deletedAt);
+	expect(renamed[0]!.credentials).toEqual(first.credentials);
+	expect(first.tags).toEqual(['AI', 'Work']);
+	expect(collectTags(renameEntryTag(renamed, 'work', null, now + 3))).toEqual([]);
+});
+
+test('relations use stable account identities, reject self/duplicate/new missing targets, and retain old dangling links', () => {
+	const target = createEntry(input, otherId, now);
+	const link = { entryId: otherId, credentialId: target.credentials[0]!.id, kind: 'login' as const };
+	const source = createEntry({ ...input, credentials: [credential(2, { relations: [link] })] }, id, now);
+	expect(() => validateNewRelations([target], source)).not.toThrow();
+	expect(() => validateNewRelations([], source)).toThrow('invalid-relation');
+	expect(() => validateNewRelations([], source, source)).not.toThrow();
+	expect(() => validateEntryInput({ ...input, credentials: [credential(2, { relations: [link, link] })] })).toThrow('invalid-entry');
+	expect(() => validateEntryInput({ ...input, credentials: [credential(2, { relations: Array(MAX_RELATIONS + 1).fill(link) })] })).toThrow('invalid-entry');
+	const self = createEntry({ ...input, credentials: [credential(2, { relations: [{ ...link, entryId: id, credentialId: credentialId(2) }] })] }, id, now);
+	expect(() => validatePayload(makePayload([self]))).toThrow('invalid-format');
+	expect(() => validateNewRelations([], self)).toThrow('invalid-relation');
+	const snapshot = validateEntryInput(source);
+	snapshot.credentials[0]!.relations[0]!.kind = 'related';
+	expect(source.credentials[0]!.relations[0]!.kind).toBe('login');
 });

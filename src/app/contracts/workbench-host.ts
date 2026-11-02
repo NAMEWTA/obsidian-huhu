@@ -5,6 +5,8 @@ import type { NativeSurface, NativeSurfaceContext } from '../../ui/native-surfac
 export interface WorkbenchPageBinding {
 	surface: NativeSurface;
 	navigate(target: WorkbenchTarget, signal: AbortSignal): Promise<void>;
+	/** Removes the persisted resource when an explicit page close is requested; resolving `false` means the user declined and the page stays. */
+	closeResource?: () => Promise<boolean | void>;
 	getState?: () => Record<string, unknown>;
 	getTarget?: () => WorkbenchTarget;
 	restore?: (state: Record<string, unknown>) => Promise<void>;
@@ -35,6 +37,8 @@ export interface WorkbenchContribution {
 	resourcePages?: boolean;
 	/** Restrict automatic new-page ids and the tab strip to these sections. Other sections own their resource ids. */
 	resourceTabs?: (target: WorkbenchTarget) => boolean;
+	/** Removes a persisted resource when its page is restored but not currently mounted. */
+	closeResource?: (target: WorkbenchTarget) => Promise<boolean | void>;
 	navigationContext?: boolean;
 	releaseWhenHidden?: boolean;
 	/**

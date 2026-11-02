@@ -1,0 +1,58 @@
+--- before/docs/data.md
++++ after/docs/data.md
+@@ -43,7 +43,7 @@
+ | 笔记导航器预览缓存 | 浏览器的 IndexedDB 库 `huhu-navigator-<库 id>`，保存每篇笔记的预览文字和缩略图路径。它不在库目录里，可随时用“重建缓存”丢弃，不影响笔记 |
+ | 批注与锚点（v2） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；损坏副本在 `set-aside/` |
+ | 自动化运行、通知回执 | `.huhu/automation/<device-id>/`、`.huhu/notifications/<device-id>/` |
+-| Bot 宿主最小回执根 | `.huhu/huhubot/`，按设备身份及 Profile、effect 的安全键隔离；用于本机接收、完成和核查凭据，不是 Bot 业务数据库 |
++| Bot 宿主最小回执 | `.huhu/huhubot/` 下按设备和 Profile 隔离的回执及索引；认证键另由宿主本机存储持有，见[回执与本机认证键](#bot-宿主回执与本机认证键) |
+ | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
+ | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |
+ | 智能体标签布局与统计 | `.huhu/terminal-agent/<device-id>/workspace.json`、`workspace-stats.json` |
+@@ -71,11 +71,19 @@
+ 
+ 桌面 POSIX 路径以 `0700` 创建目录、`0600` 创建普通文件，helper 使用 `0700`。账号及 helper 私有目录在 Windows 通过 DACL 限定为当前用户与 SYSTEM；权限失败阻止交付进程。交付前检查当前子树并拒绝链接，迁移保留恢复来源。访问控制不等于加密，也不会阻止你同步文件。普通笔记保持原权限；移动端和非文件系统适配器的具体权限行为据实说明，不冒称已实测。
+ 
++## Bot 宿主回执与本机认证键
++
++宿主回执和索引位于 `.huhu/huhubot/<device SHA256>/host-receipts/<profile SHA256>/`。每个 effect 使用其 SHA-256 摘要作为 JSON 文件名，`index.json` 保存有界索引；原始身份不直接拼入路径。回执保存 effect/command 身份与调用指纹、必要目标定位、版本/hash、状态及核查证据，不保存完整笔记或对话正文、Checkpoint（CP）、Provider 凭证，也不复制 Approval、Run 或事件业务账本。Profile SQLite 仍是 Bot 业务权威。
++
++回执和索引使用 HMAC-SHA256 认证，32 字节随机键由 Obsidian App 的 `loadLocalStorage` / `saveLocalStorage` 保存，键名为 `huhu.huhubot.receipt-key.v1.<device SHA256>.<profile SHA256>`。这份按库、本机设备和 Profile 隔离的认证键不写入 Vault 回执文件，不经 HAP、日志、CP 或 portable 数据传输；它不是 Provider 的登录秘密。普通 Vault JSON 与宿主本机键分开保存，用于识别回执篡改，不提供对控制本机或其他恶意宿主插件的防护。
++
++只有认证有效、身份及调用指纹等绑定一致的 `completed` 回执才可确认原调用已提交（`committed`）。缺键、损坏、篡改或只有接收记录不能据此确认写入；核查只在可信目标的实际后置 hash 匹配时返回 `reconciled`，无法核查时保留 `unknown_outcome`，不会自动重放笔记写入。查询不创建或轮换认证键，也不写回执；坏的已有键不会被静默替换。单独复制 Vault 回执不能恢复另一台设备的认证资格或有效批准。
++
++未知效果的最小记录仍可能包含敏感元数据，不能当缓存任意删除。回执与认证键的清除、备份和恢复需遵从对应效果生命周期及数据能力；这里不提供尚未交付的统一清除、键导出或跨设备恢复操作。
++
+ ## 库之外的数据
+ 
+ Bot Runner 底座的 Profile 位于本机受管根，每份目录包含 `profile.sqlite3` 及 SQLite WAL/SHM。Linux 使用绝对 `$XDG_STATE_HOME/huhu/huhubot/profiles/`，缺省为 `~/.local/state/huhu/huhubot/profiles/`；macOS 为 `~/Library/Application Support/HUHU/huhubot/profiles/`，Windows 为 `%LOCALAPPDATA%/HUHU/huhubot/profiles/`。CLI 的 `--profile` 必须是受管根内的绝对目录，不接受库内任意数据库路径。Profile 根由 Runner 独立构造，数据库按文件身份互斥，关闭后才能重开；当前底座持久化身份、command epoch、修订与创建时间。不把数据库放进 vault 或由插件 JSON store 改写；这不是移动端或多设备同步的承诺。
+-
+-库内 `.huhu/huhubot/` 仅为宿主最小回执预留受管运行根，具体有界写入与核查由 Bot 宿主能力负责。回执可包含 effect/command 身份与调用指纹、必要目标定位、版本/hash、状态及核查证据，不保存完整笔记或对话正文、Checkpoint（CP）、凭证，也不复制 Approval、Run 或事件业务账本。Profile SQLite 仍是 Bot 业务权威；回执根不提供另一份业务库或可同步的有效批准。未知效果的最小记录仍可能包含敏感元数据，不能当缓存任意删除，核查与清除由对应效果生命周期处理。
+ 
+ 默认的“系统账号”不重定向 HOME、提供方数据根或 XDG/Windows 数据目录，CLI 沿用本机已有登录。HUHU 的运行事件保存在库内；开启状态 Hook 或自动化运行所需 Hook 时，会在 `~/.huhu/agent-hooks/` 保存共用脚本与备份，并修改真实提供方配置中的约定条目或扩展文件。它们不会随关库自动移除，具体范围和移除操作见[智能体工作台](agent-workbench.md#状态-hook)。
+ 
+--- before/.agents/skills/dev/references/architecture.md
++++ after/.agents/skills/dev/references/architecture.md
+@@ -141,6 +141,8 @@
+ | 设置（本机） | `.huhu/config/devices/<device-id>.json` | app |
+ | 快捷命令 | 设置命名空间 `agent.quickCommands` | agent |
+ | 设备 id | `.huhu/config/identity.json`，库内设备映射与宿主只读身份 | host |
++| Bot 宿主回执与索引 | `.huhu/huhubot/`，设备/Profile 隔离；不是业务数据库 | huhubot 的 HostReceiptStore，复用 privateVaultStorage |
++| Bot 回执认证键 | Obsidian App 本机存储，独立于 Vault JSON；完整路径、键归属及失败边界见[数据正文](../../../../docs/data.md#bot-宿主回执与本机认证键) | huhubot 的 ReceiptAuthority；宿主持有持久化 |
+ | 智能体工作区布局 | `.huhu/terminal-agent/<device-id>/workspace.json`（标签组、会话/浏览器/页面标签、浏览器地址） | agent |
+ | 智能体工作空间 token 索引 | `.huhu/terminal-agent/<device-id>/workspace-index.sqlite`（与账号历史 `index.sqlite` 分开） | agent |
+ | 智能体统计 | `.huhu/terminal-agent/<device-id>/workspace-stats.json`（工作空间计数） | agent |
+--- before/scripts/obsidian-acceptance/fresh-vault.mjs
++++ after/scripts/obsidian-acceptance/fresh-vault.mjs
+@@ -85,7 +85,10 @@
+ 		let deadline;
+ 		try { await Promise.race([exited, new Promise(resolve => { deadline = setTimeout(resolve, 20000); })]); }
+ 		finally { clearTimeout(deadline); }
+-		if (app.exitCode === null) app.kill('SIGKILL');
++		if (app.exitCode === null) {
++			app.kill('SIGKILL');
++			await exited;
++		}
+ 		session.app = undefined;
+ 		session.connection = undefined;
+ 	};

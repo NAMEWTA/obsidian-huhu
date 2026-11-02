@@ -1,0 +1,158 @@
+{
+  "methods.json": {
+    "service.shutdown": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/service.shutdown.params"
+      },
+      "result": {
+        "$ref": "#/$defs/service.shutdown.result"
+      }
+    },
+    "runs.cancel": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.cancel.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.cancel.result"
+      }
+    },
+    "runs.resume": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/runs.resume.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.resume.result"
+      }
+    },
+    "effects.reconcile": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/effects.reconcile.params"
+      },
+      "result": {
+        "$ref": "#/$defs/effects.reconcile.result"
+      }
+    }
+  },
+  "schema.json": {
+    "service.shutdown.params": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "runs.cancel.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "expectedRevision",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "runs.resume.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        },
+        "recoveryGeneration": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id",
+        "recoveryGeneration"
+      ],
+      "additionalProperties": false
+    },
+    "effects.reconcile.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "expectedRevision",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

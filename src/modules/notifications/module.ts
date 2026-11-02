@@ -1,8 +1,8 @@
 import type { ModuleContext, ModuleInstance } from '../../app/contracts/module';
 import { deviceId } from '../../host/obsidian/storage/device-id';
 import { privateVaultStorage } from '../../host/obsidian/storage/private-storage';
-import { NOTIFICATION_INBOX, NOTIFICATION_OPENERS, type NotificationRecord } from './api';
-import { NotificationService } from './core/service';
+import { NOTIFICATION_INBOX, NOTIFICATION_OPENERS, notificationInboxPath, type NotificationRecord } from './api';
+import { NotificationService, notificationsRecoveryOwner } from './core/service';
 import { createNotificationDelivery } from './platform/delivery';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
@@ -22,11 +22,16 @@ export default function createNotificationsModule(context: ModuleContext): Modul
 		const openers = await context.contributions.collect(NOTIFICATION_OPENERS, { activate: false });
 		await openers.find((item) => item.value.canOpen(record))?.value.open(record);
 	};
-	const inbox = new NotificationService(privateVaultStorage(context.app), `.huhu/notifications/${deviceId(context.app)}/inbox.json`, open, createNotificationDelivery(context.app), async record => {
+	const inbox = new NotificationService(privateVaultStorage(context.app), notificationInboxPath(deviceId(context.app)), open, createNotificationDelivery(context.app), async record => {
 		const openers = await context.contributions.collect(NOTIFICATION_OPENERS, { activate: false });
 		return openers.some(item => item.value.canOpen(record));
 	});
 	context.lifetime.register(context.contributions.watch(NOTIFICATION_OPENERS, () => inbox.refreshOpeners()));
+	// The inbox file takes part in cross-owner backup and restore; a module that is off has no owner and is handled offline.
+	if (context.recovery)
+		context.lifetime.register(
+			context.recovery.register(notificationsRecoveryOwner(inbox, notificationInboxPath(deviceId(context.app)))),
+		);
 	return {
 		services: [[NOTIFICATION_INBOX, inbox]],
 		pages: {

@@ -1,0 +1,62 @@
+{
+  "task": "055-memory-preflight",
+  "generatedAt": "2026-10-25T12:11:11.260661+00:00",
+  "scope": "Own research artifacts only; TASK.md is Root input and not rewritten; manifest excludes itself.",
+  "artifacts": [
+    {
+      "file": "REPORT.md",
+      "bytes": 14190,
+      "sha256": "ed0e397d334805c6d668d62166e3581cbb805f789f2cffbeecf8bb23e7b9987c"
+    },
+    {
+      "file": "command-observations.json",
+      "bytes": 993,
+      "sha256": "f5929876461f0726990d10f7094b0df63415c62b41f4ab84dc4bce27205c98f1"
+    },
+    {
+      "file": "fixed-reference-sources.json",
+      "bytes": 4689,
+      "sha256": "9f3ac28d1f342f0f023b65bfd211046ad4d68cf87396f03fbd476a4f2e1752a4"
+    },
+    {
+      "file": "interfaces-and-owners.md",
+      "bytes": 11502,
+      "sha256": "0dcfb868506cb566a9be3c6195c059eaaba00935c3e263dd520f2e8fa790f74b"
+    },
+    {
+      "file": "inventory.json",
+      "bytes": 8285,
+      "sha256": "c72d7ad09578f726004efbb408f9d5224385fe5e9fe0975dad1f229489ad6e7c"
+    },
+    {
+      "file": "observations.json",
+      "bytes": 12759,
+      "sha256": "41f4a8cd4ebe066924f9822667f0ac5921292f46624dc1656583f52f42e3d112"
+    },
+    {
+      "file": "read-excerpts.log",
+      "bytes": 156345,
+      "sha256": "965dc1db43df6e548cf2de687d512757bc88d9cd0c0f60db9a704890d1b177bc"
+    },
+    {
+      "file": "return.json",
+      "bytes": 807,
+      "sha256": "de25a048bdf8626ed40e717d3bb8443b94e3b9e30b67d9fe47cf020a2fa7215a"
+    },
+    {
+      "file": "return.log",
+      "bytes": 551,
+      "sha256": "af98160c7427cbb4f2849e89d849f68027f2c6d1ff9bab7c9c3a9914d6a19567"
+    },
+    {
+      "file": "source-recheck.json",
+      "bytes": 14338,
+      "sha256": "751fa57d8847d0e1dd01757f2c0987b118adef75702ae14f60a526a92c11b07e"
+    },
+    {
+      "file": "wire-memory-slice.json",
+      "bytes": 19244,
+      "sha256": "d7c71687191dce012930a118f374724c84bf26df908a4e1492a8d993d05c49e1"
+    }
+  ]
+}

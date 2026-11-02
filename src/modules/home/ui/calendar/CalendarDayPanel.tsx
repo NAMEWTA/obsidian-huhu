@@ -7,7 +7,7 @@ import { calendarDate } from '../../../../ui/components/huhu/calendar/CalendarMo
 import { t } from '../../../../shared/i18n';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
 import type { ContentFile } from '../../../../host/obsidian/storage/content-files';
-import type { CalendarSnapshot } from '../../api';
+import type { CalendarSnapshot } from '../../../task/api';
 import type { VaultTask } from '../../platform/calendar/alltasks-scan';
 import { homeServices } from '../../services/instances';
 import type { DashboardRenderContext } from '../renderer/render-context';
@@ -34,7 +34,7 @@ export function CalendarDayPanel(props: {
 }) {
 	const { periodic } = usePeriodicNotes();
 	const root = useRef<HTMLDivElement>(null);
-	const earlierLive = useCalendarData(props.app, { boardPath: props.boardPath, filter: 'all', to: props.iso });
+	const earlierLive = useCalendarData(props.app, { filter: 'all', to: props.iso });
 	const earlier = earlierLive.snapshot.tasks.flatMap((task) => {
 		const date = task.scheduled ?? task.due ?? task.start;
 		const file =
@@ -62,7 +62,7 @@ export function CalendarDayPanel(props: {
 					source: task.path,
 					time: task.scheduledTime ?? task.time,
 					reminder: task.reminder,
-					recurring: !!task.recurrence || !!task.seriesId,
+					recurring: !!task.seriesId,
 				}))}
 				status={props.status ?? (props.loaded ? 'ready' : 'loading')}
 				filtered={props.filtered}
@@ -73,7 +73,7 @@ export function CalendarDayPanel(props: {
 					source: task.path,
 					time: taskDayTime(task, props.iso),
 					reminder: task.reminder,
-					recurring: !!task.recurrence || !!task.seriesId,
+					recurring: !!task.seriesId,
 				}))}
 				note={note}
 				message={message}
@@ -110,7 +110,6 @@ export function CalendarDayPanel(props: {
 								const result = await homeServices.calendar!.createTask({
 									text,
 									date: props.iso,
-									interactive: true,
 								});
 								if ('code' in result) throw new Error(t(`calendarUnified.error.${result.code}`));
 								return true;
@@ -159,7 +158,7 @@ export function CalendarDayPanel(props: {
 						: undefined
 				}
 				onRetry={() => {
-					void homeServices.calendar?.refresh({ boardPath: props.boardPath });
+					void homeServices.calendar?.refresh({});
 				}}
 			/>
 		</div>

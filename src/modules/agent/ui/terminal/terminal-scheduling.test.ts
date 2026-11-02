@@ -3,116 +3,266 @@ import { test } from 'vitest';
 import { TerminalPresentation } from './terminal-presentation';
 import { StableTerminalFit, type TerminalGrid } from './stable-terminal-fit';
 import { HiddenRendererRetention } from './hidden-renderer-retention';
-
+import {
+	DEFAULT_SCREEN_PROFILE,
+	SCREEN_ENGINE,
+	type ScreenFrame,
+	type ScreenPatch,
+	type ScreenSnapshot,
+	type ScreenStream,
+} from '../../core/terminal/frames-screen';
 const settled = () => new Promise<void>((resolve) => setImmediate(resolve));
-
-function presentationFixture(budget = 100) {
-	let snapshot = 'snapshot';
-	const listeners = new Set<(text: string) => void>();
-	const parsed: (() => void)[] = [], log: string[] = [], errors: unknown[] = [];
-	const presentation = new TerminalPresentation({
-		subscribe(output) { output(snapshot); listeners.add(output); return () => listeners.delete(output); },
-		beforeReplay: () => log.push('before'), reset: () => log.push('reset'),
-		write(text, done) { log.push(text); parsed.push(done); },
-		afterReplay: () => log.push('restored'), error: (error) => errors.push(error),
-	}, budget);
+const at = { runtimeId: 'runtime', contentSequence: 1 };
+const state: ScreenSnapshot['state'] = {
+	applicationCursorKeys: false,
+	applicationKeypad: false,
+	bracketedPaste: false,
+	sendFocus: false,
+	mouseProtocol: 'NONE',
+	mouseEncoding: 'DEFAULT',
+	cursorHidden: false,
+	cursorInitialized: true,
+	synchronizedOutput: false,
+	lastSyncCommandId: 0,
+	colors: [],
+};
+const headers: ScreenSnapshot['buffers'] = [
+	{
+		name: 'normal',
+		length: 1,
+		baseY: 0,
+		cursorX: 0,
+		cursorY: 0,
+		rows: [
+			{
+				key: 'row',
+				isWrapped: false,
+				cells: Array.from({ length: 2 }, () => ({ content: 1 << 22, fg: 0, bg: 0, chars: '', width: 1 })),
+			},
+		],
+	},
+	{ name: 'alternate', length: 0, baseY: 0, cursorX: 0, cursorY: 0, rows: [] },
+];
+function frames(): ScreenFrame[] {
+	const header = {
+		version: 1 as const,
+		engine: SCREEN_ENGINE,
+		at,
+		geometry: { cols: 2, rows: 1 },
+		active: 'normal' as const,
+		state,
+		output: 'complete' as const,
+		buffers: headers.map(({ rows: _rows, ...h }) => h),
+	};
+	return [
+		{ kind: 'snapshot-begin', snapshotId: 'snapshot', header },
+		{
+			kind: 'snapshot-row',
+			snapshotId: 'snapshot',
+			buffer: 'normal',
+			index: 0,
+			key: 'row',
+			isWrapped: false,
+			start: 0,
+			cells: headers[0]!.rows[0]!.cells,
+		},
+		{ kind: 'snapshot-end', snapshotId: 'snapshot', at },
+	];
+}
+function patch(): ScreenPatch {
 	return {
-		presentation, listeners, log, errors, parsed,
-		setSnapshot: (text: string) => { snapshot = text; },
-		emit: (text: string) => { for (const output of listeners) output(text); },
-		async parse() { assert.ok(parsed.length); parsed.shift()!(); await settled(); },
+		kind: 'patch',
+		from: at,
+		to: { ...at, contentSequence: 2 },
+		geometry: { cols: 2, rows: 1 },
+		active: 'normal',
+		buffers: headers.map(({ rows: _rows, ...h }) => h),
+		state,
+		links: [],
+		output: 'complete',
+		operations: [],
+		effects: [],
+	};
+}
+function presentationFixture(initial = true, profile = DEFAULT_SCREEN_PROFILE) {
+	const log: string[] = [],
+		errors: unknown[] = [],
+		receipts: unknown[] = [],
+		statuses: string[] = [];
+	let listener: (frame: ScreenFrame) => void = () => {},
+		disposed = 0,
+		recoveries = 0;
+	const stream: ScreenStream = {
+		runtimeId: at.runtimeId,
+		applied: (mark) => receipts.push(mark),
+		dispose: () => {
+			disposed++;
+		},
+		resync: () => {
+			recoveries++;
+		},
+	};
+	const presentation = new TerminalPresentation(
+		{
+			open: (_, sink) => {
+				listener = sink;
+				if (initial) frames().forEach(sink);
+				return stream;
+			},
+			installSnapshot: () => log.push('snapshot'),
+			applyPatch: () => log.push('patch'),
+			error: (error) => errors.push(error),
+			status: (status) => statuses.push(status),
+		},
+		profile,
+	);
+	return {
+		presentation,
+		log,
+		errors,
+		receipts,
+		statuses,
+		emit: (frame: ScreenFrame) => listener(frame),
+		get disposed() {
+			return disposed;
+		},
+		get recoveries() {
+			return recoveries;
+		},
 	};
 }
 
-test('replay, live output and dependent actions wait for each public write callback', async () => {
+test('synchronous initial delivery acknowledges only after the stream exists and complete commit', async () => {
 	const f = presentationFixture();
 	f.presentation.setVisible(true);
-	f.emit('increment');
-	f.presentation.afterParsed(() => f.log.push('navigation'));
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot']);
-	await f.parse();
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot', 'restored', 'increment']);
-	await f.parse();
-	assert.equal(f.log.at(-1), 'navigation');
+	assert.deepEqual(f.log, ['snapshot']);
+	assert.deepEqual(f.receipts, []);
+	await settled();
+	assert.deepEqual(f.receipts, [at]);
+	f.emit(patch());
+	await settled();
+	assert.deepEqual(f.log, ['snapshot', 'patch']);
 	assert.deepEqual(f.errors, []);
 	f.presentation.dispose();
 });
-
-test('pausing during a pending write waits for it before resetting to the next snapshot', async () => {
+test('fragmented snapshots and patch parts commit atomically before dependent actions or receipts', async () => {
+	const f = presentationFixture(false);
+	f.presentation.setVisible(true);
+	const initial = frames();
+	f.emit(initial[0]!);
+	f.presentation.afterParsed(() => f.log.push('action'));
+	f.emit(initial[1]!);
+	assert.deepEqual(f.log, []);
+	f.emit(initial[2]!);
+	assert.deepEqual(f.log, ['snapshot', 'action']);
+	const { operations, effects, links, ...header } = patch();
+	f.emit({ kind: 'patch-part', patchId: 'p', index: 0, count: 2, header, operations, effects, links });
+	f.presentation.afterParsed(() => f.log.push('patch-action'));
+	assert.equal(f.log.at(-1), 'action');
+	f.emit({ kind: 'patch-part', patchId: 'p', index: 1, count: 2, header, operations, effects, links });
+	assert.deepEqual(f.log, ['snapshot', 'action', 'patch', 'patch-action']);
+	await settled();
+	assert.equal(f.receipts.length, 2);
+	f.presentation.dispose();
+});
+test('hide and disposal fence stale frame callbacks and deferred receipts', async () => {
 	const f = presentationFixture();
 	f.presentation.setVisible(true);
-	f.emit('obsolete delta');
 	f.presentation.setVisible(false);
-	assert.equal(f.listeners.size, 0);
-	f.setSnapshot('new snapshot');
-	f.presentation.setVisible(true);
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot']);
-	await f.parse();
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot', 'before', 'reset', 'new snapshot']);
-	await f.parse();
-	assert.equal(f.log.at(-1), 'restored');
-	assert.ok(!f.log.includes('obsolete delta'));
-	f.presentation.dispose();
-});
-
-test('visible overflow resets from a complete screen instead of slicing any escape sequence', async () => {
-	const f = presentationFixture(20);
-	f.presentation.setVisible(true);
-	f.setSnapshot('\x1b[31mcomplete screen\x1b[0m');
-	f.emit('\x1b]52;c;' + 'A'.repeat(40));
-	assert.equal(f.listeners.size, 0);
-	await f.parse();
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot', 'before', 'reset', '\x1b[31mcomplete screen\x1b[0m']);
-	await f.parse();
-	assert.equal(f.listeners.size, 1);
-	f.presentation.dispose();
-});
-
-test('an asynchronous initial snapshot precedes actions and is exempt from the delta budget', async () => {
-	let initial: ((text: string) => void) | undefined;
-	const log: string[] = [];
-	const presentation = new TerminalPresentation({
-		subscribe(output) { initial = output; return () => {}; },
-		beforeReplay: () => {}, reset: () => {},
-		write(text, done) { log.push(text); done(); }, afterReplay: () => {},
-		error: (error) => { throw error; },
-	}, 1);
-	presentation.setVisible(true);
-	presentation.afterParsed(() => log.push('action'));
+	f.emit(patch());
 	await settled();
-	assert.deepEqual(log, []);
-	initial!('large snapshot');
-	initial!('x');
+	assert.deepEqual(f.log, ['snapshot']);
+	assert.deepEqual(f.receipts, []);
+	assert.equal(f.disposed, 1);
+	f.presentation.setVisible(true);
+	f.presentation.dispose();
 	await settled();
-	assert.deepEqual(log, ['large snapshot', 'action', 'x']);
-	presentation.dispose();
+	assert.equal(f.disposed, 2);
+	assert.deepEqual(f.receipts, []);
 });
-
-test('disposing with a discarded xterm callback cancels subsequent writes and restores', async () => {
+test('a gap requests one finite resync and a repeated failure stops without a retry loop', async () => {
 	const f = presentationFixture();
 	f.presentation.setVisible(true);
-	f.emit('discarded');
-	f.presentation.dispose();
 	await settled();
-	assert.equal(f.listeners.size, 0);
-	assert.deepEqual(f.log, ['before', 'reset', 'snapshot']);
+	f.emit({ ...patch(), from: { ...at, contentSequence: 99 } });
+	await settled();
+	assert.equal(f.recoveries, 1);
+	assert.deepEqual(f.log, ['snapshot']);
+	f.emit({ kind: 'resync-required', at, reason: 'pressure' });
+	await settled();
+	assert.equal(f.recoveries, 1);
+	assert.equal(f.disposed, 1);
+	assert.equal(f.statuses.at(-1), 'unavailable');
+	f.presentation.dispose();
+});
+test('oversized snapshot headers and resource-limit cannot allocate rows or restart subscriptions', async () => {
+	const f = presentationFixture(false);
+	f.presentation.setVisible(true);
+	const initial = frames()[0]!;
+	if (initial.kind !== 'snapshot-begin') throw new Error('fixture');
+	f.emit({
+		...initial,
+		header: {
+			...initial.header,
+			buffers: [{ ...initial.header.buffers[0]!, length: Number.MAX_SAFE_INTEGER }, initial.header.buffers[1]!],
+		},
+	});
+	await settled();
+	assert.deepEqual(f.log, []);
+	assert.equal(f.disposed, 1);
+	assert.equal(f.recoveries, 0);
+	const g = presentationFixture();
+	g.presentation.setVisible(true);
+	g.emit({ kind: 'resync-required', at, reason: 'resource-limit' });
+	await settled();
+	assert.equal(g.statuses.at(-1), 'resource-limit');
+	assert.equal(g.recoveries, 0);
+	g.presentation.dispose();
+	f.presentation.dispose();
 });
 
 function windowFrames() {
 	let id = 0;
-	const frames = new Map<number, FrameRequestCallback>(), cancelled: number[] = [];
+	const frames = new Map<number, FrameRequestCallback>(),
+		cancelled: number[] = [];
 	const win = {
-		requestAnimationFrame(cb: FrameRequestCallback) { frames.set(++id, cb); return id; },
-		cancelAnimationFrame(frame: number) { cancelled.push(frame); frames.delete(frame); },
+		requestAnimationFrame(cb: FrameRequestCallback) {
+			frames.set(++id, cb);
+			return id;
+		},
+		cancelAnimationFrame(frame: number) {
+			cancelled.push(frame);
+			frames.delete(frame);
+		},
 	} as unknown as Window;
-	return { win, frames, cancelled, tick() { const queued = [...frames.values()]; frames.clear(); for (const frame of queued) frame(0); } };
+	return {
+		win,
+		frames,
+		cancelled,
+		tick() {
+			const queued = [...frames.values()];
+			frames.clear();
+			for (const frame of queued) frame(0);
+		},
+	};
 }
 
 test('fit coalesces requests, waits for two stable grids and avoids unchanged native resizes', () => {
-	const f = windowFrames(), applied: TerminalGrid[] = [];
-	let current = { cols: 80, rows: 24 }, proposed = { cols: 90, rows: 25 };
-	const fit = new StableTerminalFit({ propose: () => proposed, current: () => current, measurable: () => true, apply: (grid) => { applied.push(grid); current = grid; } });
-	fit.request(f.win); fit.request(f.win);
+	const f = windowFrames(),
+		applied: TerminalGrid[] = [];
+	let current = { cols: 80, rows: 24 },
+		proposed = { cols: 90, rows: 25 };
+	const fit = new StableTerminalFit({
+		propose: () => proposed,
+		current: () => current,
+		measurable: () => true,
+		apply: (grid) => {
+			applied.push(grid);
+			current = grid;
+		},
+	});
+	fit.request(f.win);
+	fit.request(f.win);
 	assert.equal(f.frames.size, 1);
 	f.tick();
 	assert.deepEqual(applied, []);
@@ -121,15 +271,23 @@ test('fit coalesces requests, waits for two stable grids and avoids unchanged na
 	assert.deepEqual(applied, []);
 	f.tick();
 	assert.deepEqual(applied, [{ cols: 92, rows: 26 }]);
-	fit.request(f.win); f.tick();
+	fit.request(f.win);
+	f.tick();
 	assert.equal(applied.length, 1);
 	assert.equal(f.frames.size, 0);
 });
 
 test('fit bounds an unstable layout to eight frames and cancels in its originating window', () => {
-	const first = windowFrames(), second = windowFrames(), applied: TerminalGrid[] = [];
+	const first = windowFrames(),
+		second = windowFrames(),
+		applied: TerminalGrid[] = [];
 	let samples = 0;
-	const fit = new StableTerminalFit({ propose: () => ({ cols: 90 + samples++, rows: 24 }), current: () => ({ cols: 80, rows: 24 }), measurable: () => true, apply: (grid) => applied.push(grid) });
+	const fit = new StableTerminalFit({
+		propose: () => ({ cols: 90 + samples++, rows: 24 }),
+		current: () => ({ cols: 80, rows: 24 }),
+		measurable: () => true,
+		apply: (grid) => applied.push(grid),
+	});
 	fit.request(first.win);
 	fit.request(second.win);
 	assert.equal(first.cancelled.length, 1);
@@ -138,13 +296,18 @@ test('fit bounds an unstable layout to eight frames and cancels in its originati
 	assert.equal(samples, 8);
 	assert.deepEqual(applied, [{ cols: 97, rows: 24 }]);
 	assert.equal(second.frames.size, 0);
-	fit.request(second.win); fit.cancel();
+	fit.request(second.win);
+	fit.cancel();
 	assert.equal(second.cancelled.length, 1);
 });
 
 test('hidden WebGL retention evicts the least recently hidden renderer with a budget of two', () => {
-	const retention = new HiddenRendererRetention(2), evicted: string[] = [];
-	const a = {}, b = {}, c = {}, d = {};
+	const retention = new HiddenRendererRetention(2),
+		evicted: string[] = [];
+	const a = {},
+		b = {},
+		c = {},
+		d = {};
 	retention.retain(a, () => evicted.push('a'));
 	retention.retain(b, () => evicted.push('b'));
 	retention.retain(a, () => evicted.push('a'));

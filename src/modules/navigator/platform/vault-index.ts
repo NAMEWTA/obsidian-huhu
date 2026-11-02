@@ -1,5 +1,5 @@
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
-import { getAllTags, TFile, TFolder, type App, type Component, type TAbstractFile } from 'obsidian';
+import { TFile, TFolder, type App, type Component, type TAbstractFile } from 'obsidian';
 import { FolderCounts } from '../core/folder-counts';
 import { parentFolder, ROOT_FOLDER, type NoteEntry } from '../core/types';
 
@@ -9,13 +9,20 @@ export function isListed(ext: string, showAllFiles: boolean): boolean {
 	return showAllFiles || NOTE_EXTENSIONS.has(ext.toLowerCase());
 }
 
-/** Tags of a note (frontmatter and inline) without '#', deduplicated. */
+/** Only the Markdown `tags` property belongs to Navigator; inline hashes are ordinary note content here. */
+export function propertyTags(value: unknown): string[] {
+	const raw = typeof value === 'string' ? value.split(/[,\s]+/) : Array.isArray(value) ? value : [];
+	const tags = new Map<string, string>();
+	for (const item of raw) {
+		if (typeof item !== 'string') continue;
+		const tag = item.trim().replace(/^#+/, '');
+		if (tag && !tags.has(tag.toLowerCase())) tags.set(tag.toLowerCase(), tag);
+	}
+	return [...tags.values()];
+}
+
 function tagsOf(app: App, file: TFile): string[] {
-	if (file.extension !== 'md') return [];
-	const cache = app.metadataCache.getFileCache(file);
-	const raw = cache ? getAllTags(cache) : null;
-	if (!raw?.length) return [];
-	return [...new Set(raw.map((tag) => tag.replace(/^#/, '')).filter(Boolean))];
+	return file.extension === 'md' ? propertyTags(app.metadataCache.getFileCache(file)?.frontmatter?.tags) : [];
 }
 
 const MAX_VALUE_LENGTH = 200;

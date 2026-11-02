@@ -1,0 +1,80 @@
+{
+  "owner": "host:codex/root",
+  "capturedAt": "2026-10-31T08:54:19.808Z",
+  "issue": {
+    "url": "https://github.com/NAMEWTA/obsidian-huhu/issues/41",
+    "title": "Windows Go 合同用例中子进程协议中途 EOF（effect-reconcile Host 合同 / Runner 关停）",
+    "note": "来源统一为 #41；本诊断对象随 huhubot 删除失去对象（T-07 已取消）"
+  },
+  "logs": [
+    {
+      "jobId": 124033596543,
+      "commit": "891a5f4138d5b2e08ce88ffa918828f1a2eaa482",
+      "textSha256": "e20484baacc9acd2d51ff0d5067fee34296a46f3a725e70e5246eba7c02b8ab5",
+      "lines": 606,
+      "characters": 47462,
+      "source": "https://github.com/NAMEWTA/obsidian-huhu/actions/runs/41047054534/job/124033596543",
+      "excerpt": "diagnostics/T-07/job-124033596543.log",
+      "capture": "GitHub connector decoded text; SHA256 UTF8 with original BOM/CRLF, not archive bytes",
+      "filter": "EOF/target names and +/- 8 preceding,18 following lines; one-based decoded source line offsets",
+      "sourceLines": [
+        "2026-10-30T11:17:50.8895849Z Microsoft Windows Server 2025",
+        "2026-10-30T11:17:50.8898052Z Image: windows-2025-vs2026",
+        "2026-10-30T11:17:50.8899963Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md",
+        "2026-10-30T11:18:05.5879106Z HEAD is now at 891a5f4 fix(agent): 修 Windows 上控制定位根、钩子池排空和文档检查卡住",
+        "2026-10-30T11:18:34.2202026Z Successfully set up Go version 1.26.10",
+        "2026-10-30T11:19:26.3993396Z go version go1.26.10 windows/amd64",
+        "2026-10-30T11:45:12.0526351Z Error: Command failed: go test -mod=readonly -timeout 45m -p 1 ./...",
+        "2026-10-30T11:45:12.0532062Z Node.js v24.22.1",
+        "2026-10-30T11:45:14.4532815Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ]
+    },
+    {
+      "jobId": 124038594633,
+      "commit": "16eb173f3d578b1c9095636565e50205148fdea7",
+      "textSha256": "bfb2253571f589e8c1d292aa2ad54b739e800897c9103f727d6d3e74d7b46553",
+      "lines": 612,
+      "characters": 47513,
+      "source": "https://github.com/NAMEWTA/obsidian-huhu/actions/runs/41048542384/job/124038594633",
+      "excerpt": "diagnostics/T-07/job-124038594633.log",
+      "capture": "GitHub connector decoded text; SHA256 UTF8 with original BOM/CRLF, not archive bytes",
+      "filter": "EOF/target names and +/- 8 preceding,18 following lines; one-based decoded source line offsets",
+      "sourceLines": [
+        "2026-10-30T11:30:23.5170303Z Microsoft Windows Server 2025",
+        "2026-10-30T11:30:23.5172971Z Image: windows-2025-vs2026",
+        "2026-10-30T11:30:23.5175059Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md",
+        "2026-10-30T11:30:38.3821246Z Updating files:  30% (2025/6681)",
+        "2026-10-30T11:30:40.1112052Z HEAD is now at 16eb173 chore(huhu-bot): 删除临时关停诊断",
+        "2026-10-30T11:31:07.3303340Z Successfully set up Go version 1.26.10",
+        "2026-10-30T11:31:32.3157898Z go version go1.26.10 windows/amd64",
+        "2026-10-30T11:50:33.2865702Z Error: Command failed: go test -mod=readonly -timeout 45m -p 1 ./...",
+        "2026-10-30T11:50:33.2873332Z Node.js v24.22.1",
+        "2026-10-30T11:50:35.9207060Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ]
+    },
+    {
+      "jobId": 124052899351,
+      "commit": "fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79",
+      "textSha256": "a9aeadf6d40580538d4fb6bc370d68fa53c0f1c04c1a5b2451fdde8a7abf1a34",
+      "lines": 576,
+      "characters": 45092,
+      "source": "https://github.com/NAMEWTA/obsidian-huhu/actions/runs/41052837862/job/124052899351",
+      "excerpt": "diagnostics/T-07/job-124052899351.log",
+      "capture": "GitHub connector decoded text; SHA256 UTF8 with original BOM/CRLF, not archive bytes",
+      "filter": "EOF/target names and +/- 8 preceding,18 following lines; one-based decoded source line offsets",
+      "sourceLines": [
+        "2026-10-30T12:06:15.1011794Z Microsoft Windows Server 2025",
+        "2026-10-30T12:06:15.1014483Z Image: windows-2025-vs2026",
+        "2026-10-30T12:06:15.1016542Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md",
+        "2026-10-30T12:06:29.8551320Z HEAD is now at fb430d1 效果对账 TS/Go Host 合同：EOF 失败时报告子进程退出路径",
+        "2026-10-30T12:06:37.9876927Z Successfully set up Go version 1.26.10",
+        "2026-10-30T12:07:03.6608067Z go version go1.26.10 windows/amd64",
+        "2026-10-30T12:23:50.6777870Z Error: Command failed: go test -mod=readonly -timeout 45m -p 1 ./...",
+        "2026-10-30T12:23:50.6788981Z Node.js v24.22.1",
+        "2026-10-30T12:23:53.3912849Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ]
+    }
+  ],
+  "rootCauseConfirmed": false,
+  "feedbackLoopReady": false
+}

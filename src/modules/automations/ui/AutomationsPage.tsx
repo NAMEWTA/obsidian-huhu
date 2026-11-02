@@ -1,5 +1,6 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/automations/AutomationsPage.tsx, AutomationsPageSurface.tsx
 import { useEffect, useMemo, useState } from 'react';
+import { bindSpaceLookup } from './actions/agent';
 import { useStore } from 'zustand';
 import { toast } from 'sonner';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
@@ -73,6 +74,8 @@ export function AutomationsPage({
 	const t = useT(),
 		visible = useVisible();
 	const ownerWindow = useOwnerWindow();
+	// Detail rows name the bound Space; they can only reach the list through this page (see `spaceFact`).
+	bindSpaceLookup(() => host.service.agent()?.listSpaces?.());
 	const { definitions, runs, loadError, executionEnabled } = useStore(host.store);
 	const [state, setState] = useState(initialState),
 		[refreshing, setRefreshing] = useState(false),

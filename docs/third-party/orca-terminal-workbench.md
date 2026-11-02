@@ -4,7 +4,7 @@ HUHU 改编了 [Orca](https://github.com/stablyai/orca)（stablyai/orca）的部
 
 每个改编的源文件都在头部注释里写明上游。下面的上游提交只用来标识代码取自何处，并不表示 HUHU 跟随 Orca 的最新版本。
 
-标题中的阶段编号用于回溯原重构的改编范围，不代表当前实施进度或验收结果。许可文件与署名保持原文；依赖声明的生成方式及未解决的核对局限见[参考映射与许可](../references.md)。
+标题中的固定提交用于标识来源。许可文件与署名保持原文；依赖声明的生成与核对方式见[参考映射与许可](../references.md)。
 
 | 上游 | 提交 |
 |---|---|
@@ -145,3 +145,7 @@ HUHU 使用自己的 Obsidian 叶子、主题令牌和 stdio 辅助进程（协�
 | 阶段 2 已署名的 `ui/*` 原语及设置／列表组合 | 档案列表和详情、通知收件箱、图标选择／规则／使用检查、内容搜索和编辑：替换旧 DOM 或 Preact 呈现；保留 HUHU 的数据格式、业务服务和功能，图标模型与匹配算法仍沿用 Iconic 移植。 |
 
 `ui/react/dialog.tsx` 是 HUHU 的外部命令适配器：弹窗进入所属窗口的 Portal，关闭、所属表面移除或窗口关闭时释放 React 根并恢复焦点。图标对话框与同步确认按需加载；模块激活不提前加载 React 弹窗代码。共享旧原语、旧 CSS 与 Preact 依赖已在收尾移除。
+
+## Tailwind 主题映射
+
+`src/ui/tailwind/index.css` 的语义变量映射参照 464bd5a 中 `src/renderer/src/assets/main.css` 的 `@theme inline`，并适配 HUHU / Obsidian 令牌与动效设置；固定来源及版权保留在文件头。此处不包含独立第二套主题。

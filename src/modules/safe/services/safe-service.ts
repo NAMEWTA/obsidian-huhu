@@ -4,7 +4,7 @@ import { normalizeWebUrl } from '../../../shared/web-url';
 import {
 	CLIPBOARD_CLEAR_MS, SafeError, createEntry, editEntry,
 	deleteEntry as moveToTrash, restoreEntry as restoreFromTrash, pruneExpiredTrash, makePayload,
-	validateEntryInput, validateMasterPassword, validatePayload,
+	validateEntryInput, validateMasterPassword, validatePayload, validateNewRelations, renameEntryTag, tagName,
 	type EntryInput, type SafeEntry, type SafeErrorCode, type SafePayload,
 } from '../core/model';
 import { emptyMergeSummary, mergeChangesAnything, mergeEntries, type MergeSummary } from '../core/merge';
@@ -15,6 +15,7 @@ import {
 	type CreatedContainer, type SafeEnvelope,
 } from '../platform/crypto';
 import type { SafeClipboard, SafeDesktopActions } from '../platform/desktop/actions';
+import { generatePassword } from '../platform/password';
 import { CipherRepository, SAFE_MAIN_PATH } from './cipher-repository';
 
 export interface SafeState {
@@ -290,14 +291,32 @@ export class SafeService {
 		this.idleTimer = this.options.timers.set(() => { this.checkDeadline(); }, Math.max(0, this.expiresAt - this.now()));
 	}
 
-	saveEntry(input: EntryInput, base?: SafeEntry): Promise<void> {
+	saveEntry(input: EntryInput, base?: SafeEntry, newEntryId?: string): Promise<void> {
 		const value = validateEntryInput(input);
-		const previous = base ? { ...base } : undefined;
+		const previous = base ? structuredClone(base) : undefined;
 		return this.mutate(entries => {
-			if (!previous) return makePayload([...entries, createEntry(value, crypto.randomUUID(), this.now())]);
+			if (!previous) {
+				const created = createEntry(value, newEntryId ?? crypto.randomUUID(), this.now());
+				validateNewRelations(entries, created);
+				return makePayload([...entries, created]);
+			}
 			const current = this.currentEntry(entries, previous);
-			return makePayload(entries.map(entry => entry.id === current.id ? editEntry(entry, value, this.now()) : entry));
+			const edited = editEntry(current, value, this.now());
+			validateNewRelations(entries, edited, current);
+			return makePayload(entries.map(entry => entry.id === current.id ? edited : entry));
 		});
+	}
+
+	generatePassword(): string {
+		this.assertOpen(this.generation());
+		this.touch();
+		return generatePassword();
+	}
+
+	renameTag(from: string, to: string | null): Promise<void> {
+		const name = tagName(from);
+		const replacement = to === null ? null : tagName(to);
+		return this.mutate(entries => makePayload(renameEntryTag(entries, name, replacement, this.now())));
 	}
 
 	trashEntry(base: SafeEntry): Promise<void> {

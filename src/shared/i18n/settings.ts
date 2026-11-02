@@ -7,6 +7,7 @@ export const messages = {
 		"settings.openWorkbenchSettingsButton": "Open settings",
 		"settings.tabGeneral": "General",
 		"settings.tabAbout": "About",
+		"settings.productHuhuBot": "Bot",
 	},
 	zh: {
 		'settings.componentGallery': '组件样板',
@@ -15,5 +16,6 @@ export const messages = {
 		"settings.openWorkbenchSettingsButton": "打开设置",
 		"settings.tabGeneral": "常规",
 		"settings.tabAbout": "关于",
+		"settings.productHuhuBot": "Bot",
 	},
 };

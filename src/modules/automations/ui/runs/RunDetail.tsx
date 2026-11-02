@@ -69,15 +69,33 @@ export function RunDetail({
 						</div>
 					))}
 				</div>
-				{run.taskDelivery && <section className="space-y-2 rounded-md border border-border/50 p-4">
-					<h3 className="m-0 text-sm font-medium">{t('automation.calendarReceipt')}</h3>
-					<p className="text-sm">{t('automation.calendarOwnershipDate', { date: run.taskDelivery.date, timezone: run.taskDelivery.timezone })}</p>
-					{run.taskDelivery.receipt && <div className="flex flex-wrap items-center gap-3">
-						<span className="break-words text-sm text-muted-foreground">{run.taskDelivery.receipt.path}</span>
-						{onSource && <Button size="sm" variant="outline" onClick={() => onSource(run)}><FileText className="size-4" />{t('automation.calendarOpenSource')}</Button>}
-					</div>}
-					{canRetryCalendarDelivery(run) && <p className="text-xs text-muted-foreground">{t('automation.calendarRetryHelp')}</p>}
-				</section>}
+				{run.taskDelivery && (
+					<section className="space-y-2 rounded-md border border-border/50 p-4">
+						<h3 className="m-0 text-sm font-medium">{t('automation.calendarReceipt')}</h3>
+						<p className="text-sm">
+							{t('automation.calendarOwnershipDate', {
+								date: run.taskDelivery.date,
+								timezone: run.taskDelivery.timezone,
+							})}
+						</p>
+						{run.taskDelivery.receipt && (
+							<div className="flex flex-wrap items-center gap-3">
+								<span className="break-words text-sm text-muted-foreground">
+									{run.taskDelivery.receipt.taskId}
+								</span>
+								{onSource && (
+									<Button size="sm" variant="outline" onClick={() => onSource(run)}>
+										<FileText className="size-4" />
+										{t('automation.calendarOpenSource')}
+									</Button>
+								)}
+							</div>
+						)}
+						{canRetryCalendarDelivery(run) && (
+							<p className="text-xs text-muted-foreground">{t('automation.calendarRetryHelp')}</p>
+						)}
+					</section>
+				)}
 				<section>
 					<h3 className="m-0 mb-3 text-sm font-medium">{t('automation.timeline')}</h3>
 					<ol className="flex flex-wrap gap-4">
@@ -128,8 +146,10 @@ export function RunDetail({
 					</div>
 					<pre className="max-h-96 overflow-auto rounded-md border border-border/50 bg-muted/20 p-4 font-mono text-xs whitespace-pre-wrap">
 						{run.output ||
-						(run.definition ? actionDefinition(run.definition.action.kind)?.notice?.(run.definition.action) : undefined) ||
-						'—'}
+							(run.definition
+								? actionDefinition(run.definition.action.kind)?.notice?.(run.definition.action)
+								: undefined) ||
+							'—'}
 					</pre>
 				</section>
 			</div>

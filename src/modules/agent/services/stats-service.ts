@@ -6,6 +6,9 @@ import type { TerminalSessions } from './terminal/sessions';
 export class StatsService {
 	readonly store = createStore<AgentStats>(() => emptyStats());
 	private disk;
+	private readonly openDisk: () => ReturnType<typeof statsStore>;
+	private quiesced = false;
+	private deferred: Array<{ agent: string; at: number; launched: number; workMs: number }> = [];
 	private baseline = emptyStats();
 	private seen = new Set<string>();
 	private working = new Map<string, { agent: string; at: number }>();
@@ -24,7 +27,8 @@ export class StatsService {
 		private report: (e: unknown) => void,
 		private contains?: (cwd: string) => Promise<boolean>,
 	) {
-		this.disk = statsStore(storage, device, !!contains);
+		this.openDisk = () => statsStore(storage, device, !!contains);
+		this.disk = this.openDisk();
 		this.ready = this.disk
 			.load(emptyStats())
 			.then((value) => {
@@ -83,6 +87,11 @@ export class StatsService {
 		}
 	}
 	private record(agent: string, at: number, launched: number, workMs: number) {
+		// While a recovery operation owns the files, counts are kept in memory and applied after it, never dropped.
+		if (this.quiesced) {
+			this.deferred.push({ agent, at, launched, workMs });
+			return;
+		}
 		this.store.setState(recordStats(this.store.getState(), agent, at, launched, workMs), true);
 		this.dirty = true;
 		if (this.timer !== undefined) this.clock.clearTimeout(this.timer);
@@ -105,6 +114,45 @@ export class StatsService {
 			}
 		});
 		return this.pending;
+	}
+	/** Recovery protocol: stop writing; later counts are held in memory until `resumeWrites`. */
+	quiesceWrites(): void {
+		this.quiesced = true;
+		if (this.timer !== undefined) this.clock.clearTimeout(this.timer);
+		this.timer = undefined;
+	}
+	resumeWrites(): void {
+		this.quiesced = false;
+		const held = this.deferred.splice(0);
+		for (const row of held) this.record(row.agent, row.at, row.launched, row.workMs);
+	}
+	/** Strict drain: unlike `flush`, a failed commit rejects instead of being reported and forgotten. */
+	async drain(): Promise<void> {
+		await this.ready;
+		await this.captures;
+		if (this.timer !== undefined) this.clock.clearTimeout(this.timer);
+		this.timer = undefined;
+		const run = this.pending.then(async () => {
+			if (!this.dirty) return;
+			this.dirty = false;
+			try {
+				this.baseline = await this.disk.commit({ base: this.baseline, value: this.store.getState() });
+			} catch (error) {
+				this.dirty = true;
+				throw error;
+			}
+		});
+		this.pending = run.catch(() => undefined);
+		await run;
+	}
+	/** Adopt the restored file: fresh JsonStore baseline and state; counts held during quiesce are re-applied on resume. */
+	async reloadFromDisk(): Promise<void> {
+		await this.drain();
+		const disk = this.openDisk();
+		const value = await disk.load(emptyStats());
+		this.disk = disk;
+		this.baseline = value;
+		this.store.setState(value, true);
 	}
 	async dispose() {
 		this.disposed = true;

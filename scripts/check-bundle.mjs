@@ -124,7 +124,8 @@ if (budgetPath) {
 	const styles = fs.statSync('styles.css').size;
 	if (budget.stylesBytes && styles > budget.stylesBytes) failures.push(`styles.css ${styles} > ${budget.stylesBytes}`);
 	for (const [id, limit] of Object.entries(budget.moduleActivationBytes ?? {})) {
-		const size = report.modules[id]?.activation ?? 0;
+		if (!report.modules[id]) { failures.push(`${id} is budgeted but missing from the module graph`); continue; }
+		const size = report.modules[id].activation;
 		if (size > limit) failures.push(`${id} activation ${size} > ${limit}`);
 	}
 	for (const name of budget.forbiddenEagerAreas ?? []) {

@@ -1,0 +1,9 @@
+{
+  "github.com/cloudwego/eino-ext/components/model/openai@v0.1.13": {
+    "license": "Apache-2.0",
+    "file": "eino-ext-openai-v0.1.13-LICENSE-APACHE.txt",
+    "sha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "source": "https://github.com/cloudwego/eino-ext/blob/0ebab92e14f26088411dbc440a1ebdc904ccd8a1/LICENSE-APACHE",
+    "note": "The versioned components/model/openai module omits the repository root license. The exact tag commit and its source headers identify Apache-2.0, Copyright 2024/2025 CloudWeGo Authors. This is the complete unchanged repository-root original."
+  }
+}

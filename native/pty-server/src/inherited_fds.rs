@@ -30,5 +30,6 @@ pub fn close_inherited_fds() -> std::io::Result<()> {
 }
 
 #[cfg(windows)]
-pub fn close_inherited_fds() -> std::io::Result<()> { Ok(()) }
-
+pub fn close_inherited_fds() -> std::io::Result<()> {
+    Ok(())
+}

@@ -3,7 +3,7 @@ import { readFileSync, realpathSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { basename, join, relative, resolve } from 'node:path';
 import * as runtime from '../../../../lib/speculo-runtime.mjs';
-import { validateIndependentReview } from './review-evidence.mjs';
+import { validateCompletionReview } from './review-evidence.mjs';
 
 export const EXECUTION_VERSION = 1;
 export const EXECUTION_CONTEXT = 'README.md#execution-context';
@@ -73,7 +73,7 @@ export function validateExecutionRecord(change, record, context, {repoRoot=null,
   try {
     const identity = record.ticket_id ? ['ticket_id'] : ['purpose','change'];
     const keys = ['schema_version',...identity,'workspace_context','implementation_owners','status','checkpoint','verification','attempts'];
-    if (record.schema_version !== EXECUTION_VERSION || keys.some(key=>!(key in record)) || Object.keys(record).some(key=>!keys.includes(key))) throw new Error('legacy or invalid execution record; explicit reconciliation required');
+    if (record.schema_version !== EXECUTION_VERSION || keys.some(key=>!(key in record)) || Object.keys(record).some(key=>!keys.includes(key))) throw new Error('invalid execution record: only schema_version: 1 and its declared fields are supported');
     if (record.ticket_id ? !/^T-\d{2,}$/.test(record.ticket_id) : record.purpose !== 'direct-spec' || record.change !== basename(change)) throw new Error('execution identity does not match this change');
     if (!context || record.workspace_context !== EXECUTION_CONTEXT) throw new Error('execution must reference the unique change Execution Context');
     if (!['active','review','verified','blocked','cancelled'].includes(record.status)) throw new Error('invalid execution status');
@@ -96,9 +96,10 @@ export function validateExecutionRecord(change, record, context, {repoRoot=null,
       }
       const artifact = `evidence/${record.ticket_id ?? 'direct-spec'}.md`;
       const source = readFileSync(runtime.safeWorkPathSync(change,artifact,{mustExist:true,type:'file'}),'utf8');
-      if (!source.split('\n').some(line=>line.trim() === `Input: ${record.checkpoint}`)) throw new Error('checkpoint must match the actual Independent Review input');
-      errors.push(...validateIndependentReview(change,artifact,{repoRoot,sourceRoot,requiredImplementers:record.implementation_owners,checkCurrent,requireDelivery:checkCurrent}));
+      if (!source.split('\n').some(line=>line.trim() === `Input: ${record.checkpoint}`)) throw new Error('checkpoint must match the actual Review input');
+      errors.push(...validateCompletionReview(change,artifact,{repoRoot,sourceRoot,ticketId:record.ticket_id,requiredImplementers:record.implementation_owners,checkCurrent,requireDelivery:checkCurrent}));
     }
   } catch(error) { errors.push(`${unit}: ${error.message}`); }
   return errors;
 }
+

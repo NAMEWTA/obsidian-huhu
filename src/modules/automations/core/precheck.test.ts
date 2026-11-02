@@ -114,7 +114,14 @@ test('unsafe precheck directories persist a localized failure without admitting 
 		throw new AutomationError('precheckDirectoryUnsafe');
 	});
 	const d = definition();
-	d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh' };
+	d.action = {
+		kind: 'agent',
+		agentId: 'codex',
+		cwd: '/vault',
+		prompt: 'Go',
+		sessionMode: 'fresh',
+		spaceId: 'space-a',
+	};
 	d.notifyOn = 'never';
 	const language = getLanguage();
 	try {
@@ -160,7 +167,14 @@ test.each(['stop', 'disable', 'shutdown'])(
 				}),
 		);
 		const d = definition();
-		d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh' };
+		d.action = {
+			kind: 'agent',
+			agentId: 'codex',
+			cwd: '/vault',
+			prompt: 'Go',
+			sessionMode: 'fresh',
+			spaceId: 'space-a',
+		};
 		const pending = f.service.run(d);
 		await ready;
 		if (mode === 'stop') await f.service.stop(f.service.state.runs[0]!);
@@ -182,6 +196,7 @@ test('save and execution both reject forbidden extras and reuse extras; allowed 
 		cwd: '/vault',
 		prompt: 'Go',
 		sessionMode: 'fresh',
+		spaceId: 'space-a',
 		extraArgs: '--dangerously-skip-permissions',
 	};
 	await expect(f.service.save(d)).rejects.toMatchObject({ code: 'extraArgsRejected' });
@@ -193,5 +208,18 @@ test('save and execution both reject forbidden extras and reuse extras; allowed 
 	await f.service.save(d);
 	await f.service.run(d);
 	expect(f.start.mock.calls[0]?.[0].extraArgs).toBe('--model test');
+	await f.service.shutdown();
+});
+
+test('an unbound fresh agent action fails with spaceRequired before its precheck or any start', async () => {
+	const check = vi.fn(async () => ({ exitCode: 0, timedOut: false, output: '' }));
+	const f = await fixture(check);
+	const d = definition();
+	d.precheck = { command: 'echo side-effect', shell: 'bash' };
+	d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh' };
+	const run = await f.service.run(d);
+	expect(run).toMatchObject({ status: 'failed', errorCode: 'spaceRequired' });
+	expect(check).not.toHaveBeenCalled();
+	expect(f.start).not.toHaveBeenCalled();
 	await f.service.shutdown();
 });

@@ -1,3 +1,4 @@
+import { messages as nativeStrings } from '../src/shared/i18n/lazy/native';
 // Tests and verify scripts render module code without loading module entries; give them every module's
 // strings and the dictionaries modules share (in the plugin each module registers them when it loads).
 import { messages as uiStrings } from '../src/shared/i18n/lazy/ui';
@@ -11,12 +12,37 @@ import { messages as home } from '../src/modules/home/i18n';
 import { messages as icons } from '../src/modules/icons/i18n';
 import { messages as navigator } from '../src/modules/navigator/i18n';
 import { messages as notifications } from '../src/modules/notifications/i18n';
-import { messages as sync } from '../src/modules/sync/i18n';
+import { messages as sync } from '../src/modules/versioning/i18n';
 import { messages as safe } from '../src/modules/safe/i18n';
+import { messages as huhubot } from '../src/modules/huhubot/i18n';
+import { messages as taskMessages } from '../src/modules/task/i18n';
 import { messages as automationStrings } from '../src/shared/i18n/lazy/automation';
 import { messages as browserStrings } from '../src/shared/i18n/lazy/browser';
 import { messages as commonStrings } from '../src/shared/i18n/lazy/common';
 import { messages as calendarStrings } from '../src/shared/i18n/lazy/calendar';
 import { messages as appearanceStrings } from '../src/shared/i18n/lazy/appearance';
 
-for (const messages of [uiStrings, calendarStrings, automationStrings, browserStrings, commonStrings, appearanceStrings, agent, archives, automations, browser, comments, home, icons, navigator, notifications, sync, safe]) registerMessages(messages);
+for (const messages of [
+	uiStrings,
+	calendarStrings,
+	automationStrings,
+	browserStrings,
+	commonStrings,
+	appearanceStrings,
+	agent,
+	archives,
+	automations,
+	browser,
+	comments,
+	home,
+	icons,
+	navigator,
+	notifications,
+	sync,
+	safe,
+	huhubot,
+	taskMessages,
+])
+	registerMessages(messages);
+
+registerMessages(nativeStrings);

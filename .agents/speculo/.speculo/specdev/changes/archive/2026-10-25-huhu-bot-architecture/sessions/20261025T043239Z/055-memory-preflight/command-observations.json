@@ -1,0 +1,25 @@
+{
+  "observedCommands": [
+    "rg --files / rg -n",
+    "sed -n",
+    "Python standard-library read/hash/JSON and writes only under this task",
+    "git rev-parse HEAD"
+  ],
+  "observedReadFailure": {
+    "description": "Summary recovery read attempted uppercase SPEC.md; actual file is spec.md. Python read batch aborted before any log write, then was repeated with discovered lowercase path.",
+    "exitCode": 1,
+    "recoveredReadExitCode": 0
+  },
+  "toolOutputLimits": "Some rg listings were console-truncated and used only for location; conclusion-bearing source ranges and memory JSON definitions were separately read and retained.",
+  "notRun": [
+    "product build/test/process",
+    "SQLite fixture/matrix",
+    "fake model callbacks",
+    "Provider or model request",
+    "Obsidian/Vault",
+    "real keyring or D-Bus",
+    "new network fetch",
+    "delegation"
+  ],
+  "processes": "Every command was synchronous and returned; no exec session ID or background process was created."
+}

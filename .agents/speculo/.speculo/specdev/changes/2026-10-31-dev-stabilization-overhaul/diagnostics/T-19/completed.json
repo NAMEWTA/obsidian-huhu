@@ -1,0 +1,74 @@
+{
+  "filter": "completed",
+  "stages": [
+    {
+      "event": "transaction-transform"
+    },
+    {
+      "event": "storage-commit"
+    },
+    {
+      "event": "publish",
+      "revision": 2,
+      "all": 1,
+      "items": [],
+      "domHasTitle": false
+    },
+    {
+      "event": "save-success",
+      "revision": 2,
+      "all": 1,
+      "items": [],
+      "domHasTitle": false
+    },
+    {
+      "event": "editor-close",
+      "revision": 2,
+      "all": 1,
+      "items": [],
+      "domHasTitle": false
+    },
+    {
+      "event": "transaction-transform"
+    },
+    {
+      "event": "storage-commit"
+    },
+    {
+      "event": "publish",
+      "revision": 3,
+      "all": 1,
+      "items": [
+        "task:978c0d5d-54f4-4dc9-93a8-e6b9aa904b52"
+      ],
+      "domHasTitle": false
+    },
+    {
+      "event": "transaction-transform"
+    },
+    {
+      "event": "storage-commit"
+    },
+    {
+      "event": "publish",
+      "revision": 4,
+      "all": 1,
+      "items": [],
+      "domHasTitle": true
+    },
+    {
+      "event": "transaction-transform"
+    },
+    {
+      "event": "storage-commit"
+    },
+    {
+      "event": "publish",
+      "revision": 5,
+      "all": 0,
+      "items": [],
+      "domHasTitle": false
+    }
+  ],
+  "result": "consistent in tested seam"
+}

@@ -1,6 +1,7 @@
 // React dashboard regression entry.
 import { runHomeReactChecks } from './run-home-react-checks';
 runHomeReactChecks([
+	'services/weather-store.test.ts',
 	'services/board-backups.test.ts',
 	'platform/dql/managed-pages.test.ts',
 	'platform/calendar/managed-tasks.test.ts',

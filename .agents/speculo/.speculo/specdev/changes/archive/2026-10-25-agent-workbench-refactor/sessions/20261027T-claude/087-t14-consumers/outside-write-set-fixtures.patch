@@ -1,0 +1,86 @@
+--- a/src/modules/automations/automation.test.ts
++++ b/src/modules/automations/automation.test.ts
+@@ -184,7 +184,7 @@
+ 		service = f.make();
+ 	await service.load();
+ 	const d = definition({
+-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
++		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
+ 	});
+ 	await service.save(d);
+ 	const run = service.run(d);
+@@ -220,7 +220,7 @@
+ 		service = f.make();
+ 	await service.load();
+ 	const d = definition({
+-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
++		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
+ 	});
+ 	await service.save(d);
+ 	await service.run(d);
+@@ -315,7 +315,7 @@
+ 		service = f.make();
+ 	await service.load();
+ 	const d = definition({
+-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
++		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
+ 	});
+ 	await service.save(d);
+ 	await service.save(definition({ id: 'reminder' }));
+@@ -369,7 +369,7 @@
+ 	await service.load();
+ 	await service.save(
+ 		definition({
+-			action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
++			action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
+ 		}),
+ 	);
+ 	await service.tick(2000);
+@@ -960,7 +960,7 @@
+ 		service = f.make();
+ 	await service.load();
+ 	const d = definition({
+-		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh' },
++		action: { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'test', sessionMode: 'fresh', spaceId: 'space-a' },
+ 	});
+ 	await service.save(d);
+ 	const run = service.run(d);
+--- a/src/modules/automations/core/precheck.test.ts
++++ b/src/modules/automations/core/precheck.test.ts
+@@ -114,7 +114,7 @@
+ 		throw new AutomationError('precheckDirectoryUnsafe');
+ 	});
+ 	const d = definition();
+-	d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh' };
++	d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh', spaceId: 'space-a' };
+ 	d.notifyOn = 'never';
+ 	const language = getLanguage();
+ 	try {
+@@ -160,7 +160,7 @@
+ 				}),
+ 		);
+ 		const d = definition();
+-		d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh' };
++		d.action = { kind: 'agent', agentId: 'codex', cwd: '/vault', prompt: 'Go', sessionMode: 'fresh', spaceId: 'space-a' };
+ 		const pending = f.service.run(d);
+ 		await ready;
+ 		if (mode === 'stop') await f.service.stop(f.service.state.runs[0]!);
+@@ -182,6 +182,7 @@
+ 		cwd: '/vault',
+ 		prompt: 'Go',
+ 		sessionMode: 'fresh',
++		spaceId: 'space-a',
+ 		extraArgs: '--dangerously-skip-permissions',
+ 	};
+ 	await expect(f.service.save(d)).rejects.toMatchObject({ code: 'extraArgsRejected' });
+--- a/src/modules/automations/core/actions/registry.test.ts
++++ b/src/modules/automations/core/actions/registry.test.ts
+@@ -55,7 +55,7 @@
+ });
+ test('agent checks: directory inside the vault, an available agent, no extra arguments on a reused session', () => {
+ 	const agent = actionDefinition('agent')!;
+-	const action = agent.create(defaults) as Extract<AutomationAction, { kind: 'agent' }>;
++	const action = { ...(agent.create(defaults) as Extract<AutomationAction, { kind: 'agent' }>), spaceId: 'space-a' };
+ 	const check = { cwd: '/vault', agents: [{ id: 'codex', title: 'Codex', enabled: true }], channels: ['in-app' as const] };
+ 	expect(agent.settingsError?.(action, check)).toBeUndefined();
+ 	expect(agent.settingsError?.({ ...action, cwd: '/elsewhere' }, check)).toBeTruthy();

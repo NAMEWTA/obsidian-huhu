@@ -1,0 +1,26 @@
+{
+  "task": "056-data-maintenance-preflight",
+  "argv": [
+    "node",
+    ".agents/speculo/references/coordination/scripts/validate-dispatch.mjs",
+    "--repo",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot",
+    "--scope-root",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture",
+    "--session",
+    "20261025T043239Z",
+    "--task",
+    "056-data-maintenance-preflight",
+    "--stage",
+    "return"
+  ],
+  "cwd": "/home/wta/orca/workspaces/obsidian-huhu/bot",
+  "startedAt": "2026-10-25T12:48:58.848746+00:00",
+  "finishedAt": "2026-10-25T12:48:58.922354+00:00",
+  "exitCode": 0,
+  "stdout": "{\n  \"errors\": [],\n  \"warnings\": [],\n  \"caveat\": \"Read-only structure checks do not authenticate tool identity, transcript content, authorization or completion; external histories are never opened.\"\n}\n",
+  "stderr": "",
+  "reportSha256": "f5a02bb40d40169dc858a98138af186efb0ef9d46c796608716620256c89047a",
+  "processExited": true,
+  "scope": "Structure-only return validation; not a product test or acceptance"
+}

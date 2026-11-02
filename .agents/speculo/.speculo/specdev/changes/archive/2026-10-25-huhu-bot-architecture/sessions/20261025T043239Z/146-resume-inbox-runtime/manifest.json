@@ -1,0 +1,249 @@
+{
+  "task": "146-resume-inbox-runtime",
+  "status": "completed",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "sourceFiles": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "beforeSHA256": "da53b09b33d7f7d6b6aadc5eb7744ca30d869bbd628eb51ade7b5320625f8ca0",
+      "sha256": "b06eab1dd9ea061d9cf794cbfc806c9533c4ab3389ea89d9c77e3867d79ff325",
+      "mode": "0o600",
+      "bytes": 25532
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "beforeSHA256": "6459fbf41a24e2a0a147de7516ca00e0888dec773566b787edb1b14f4b044675",
+      "sha256": "a801c788026db587545a9338c98e4b34faeb32494df01b5b1064f0d22462ce38",
+      "mode": "0o600",
+      "bytes": 13375
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/messages.go",
+      "beforeSHA256": "f59767eac9457ae045140257e671cf92a772e67c690d0147b7e2290a2c531998",
+      "sha256": "6098c4e955e6e96feca01c0e8cd61744dd184b7db5c98ec0465f24436bd9d0c1",
+      "mode": "0o600",
+      "bytes": 4725
+    },
+    {
+      "path": "native/huhubot/internal/application/api/resume_inbox.go",
+      "beforeSHA256": null,
+      "sha256": "964aea3ab27ae98d838468126c41eb3793fc10ca0cf6daa2fddd96f336df56c5",
+      "mode": "0o664",
+      "bytes": 3201
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "beforeSHA256": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+      "sha256": "a43cd597be685c916ce0f3a7acce09ee6cb06ec81de9dea454c4f477a5e9752c",
+      "mode": "0o600",
+      "bytes": 4411
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "beforeSHA256": "a3e1d7411bc2deb0730a094dbe560b24b1d5afba240baacb34fe015cbf951602",
+      "sha256": "584831cc180951f16e96c2ffecf04e2b1b8d5734c7f8da91834dfb5faf927bf1",
+      "mode": "0o600",
+      "bytes": 12149
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "beforeSHA256": "032c4a16f8ce7ba0e3b274f25342415595a8d3408a666ca1a2e59159d60caf66",
+      "sha256": "0459bca6e915bd09a1eb4129904b28029bef2603a4a9a4808e8407960b208e82",
+      "mode": "0o600",
+      "bytes": 1039
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/resume_inbox_test.go",
+      "beforeSHA256": null,
+      "sha256": "cfb205ae27d9abc7167a11a48c8836c789f6163cfcaff9b275c13d7782faae0b",
+      "mode": "0o664",
+      "bytes": 17389
+    }
+  ],
+  "sourceTreeSHA256": "275566d3ec4318b4309c835a10951e0f9539f96008bf65724f0109a04310fd08",
+  "fixedGoInput": "logs/15-final-five-input-before.json",
+  "fixedGoDrift": "logs/18-final-input-drift.json",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "b0d08c3251f48d0cc37c4062ad3b0f2e463434b5e26661eb2739eda7598e0f56",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-go-list.json",
+      "sha256": "e94fada15fded8d6db00c00e38e6f6bf38c19b5a8118ad53b2f514e2f32e086b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-input-before.json",
+      "sha256": "d42d229bc8ccb11d1414a3c93116b4f335cdfb760adb6eb24dcbb35c701fe543",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-first-targets.jsonl",
+      "sha256": "fe93709cf331bbf6e5794ba82a27eb0d2506523d2eb1c3bd27dde519859cfad1",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-first-targets.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-negative-input-before.json",
+      "sha256": "cb649356297d81a6cb34a0a9296b624501503489ee9536f7507e2b5d2c7ab23b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-negative-red.jsonl",
+      "sha256": "71d821e70e50c3fb252100009b5f6af345704d9bdce95f06fb700c9a6ea058c3",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-negative-red.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-negative-green-input-before.json",
+      "sha256": "b3786644e9a911cd71252e27efc5a5df7d5f8858573b50aef9fc49664b9f4fa8",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-negative-green.jsonl",
+      "sha256": "e42f0c88c7b06699000d3526c0234f778ea99ee7ffab5f2687bf6daa9008e2e1",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-negative-green.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-reopen-input-before.json",
+      "sha256": "b8bb2289ed2d99974527a703de9d498dc2bacccb8f4bd9cf8a306ad293145534",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-reopen-first.jsonl",
+      "sha256": "12298b7c8eedf00082034025f6c2058bf3c5515311d0c3bf6222277a1eb4f1eb",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-reopen-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-reopen-retry-input-before.json",
+      "sha256": "2e78935bc67a384ebb2fcf3fe04b5d5f2c660c8a3b34a8dfcf14e4c71bead6af",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/10-reopen-retry.jsonl",
+      "sha256": "a7c5b2a449c2b8f810584ad7cc79cde3fffb646aeac551471ea2ad4cc5855abe",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/10-reopen-retry.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-final-four.jsonl",
+      "sha256": "906c9366219b64fd9915c86215bfc750ba28800d87268e444c531ef63da5d0c2",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-final-four.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/12-revoke-input-before.json",
+      "sha256": "3f00dd5eb631343540e555e3dd5c389dfdc50185456992f7cfadeb176684815b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/13-revoke-first.jsonl",
+      "sha256": "c08971e03dfe533f7951f77897d9ace3202cd8ddd4174071db36a93dddbdcb4f",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/13-revoke-first.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/14-revoke-db-observation.jsonl",
+      "sha256": "7c2a4d5382f54f52d2911dbaa1a2bcefdbe29a9d1d969ca2bd8c2616a3b1cf94",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/14-revoke-db-observation.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/15-final-five-input-before.json",
+      "sha256": "d1ed7fed64f0052a273171ab36aed3e9d373f9c8f6ad46bfc75eb9d3419f694f",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/16-final-five.jsonl",
+      "sha256": "0b233116ace67c035baea51d33163fef50e2a1a550032c77f17619f53f763a1b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/16-final-five.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/17-final-source-checkpoint.json",
+      "sha256": "984bb25d04019873c51252e27ba0ca6336dc04e28c2a2d18ff21da9c0790d5d8",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/18-final-input-drift.json",
+      "sha256": "f489c1c96fb15d67bfac991e4d07e8249b351d56a9a0f27729f19f03825b3ac3",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/19-command-receipts.json",
+      "sha256": "db6e28536dc9595cc437c19ce294af0e1936cf1629641b930c97f3b0fb7a42f1",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/20-return-validation.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/20-return-validation.stdout",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/21-return-final.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/21-return-final.stdout",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/22-return-receipt.json",
+      "sha256": "7bfe6e7e8ad74cf18b8f163118629afc9c427feb116cbadd091525828476db2e",
+      "mode": "0o664"
+    },
+    {
+      "path": "resume-inbox-contract.md",
+      "sha256": "f667fe9208e3914bdf84849c68f0d7c24a2bcbc478c2a6a9c6c23c1d6ebd7968",
+      "mode": "0o664"
+    }
+  ],
+  "artifactTreeSHA256": "16ed8c11377b1a5a4a892f656d4975d6559cdd90e01b96f74ecc67435e69d0fd"
+}

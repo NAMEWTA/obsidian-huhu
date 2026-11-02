@@ -1,0 +1,18 @@
+{
+  "observer": "native:/root/recovery_review",
+  "task": "116-responses-review-anchors",
+  "kind": "display-only-successor",
+  "originalInputSHA256": "78900740ccb6b1f7e8bc7c76d71c68257428ed916d121a0a11328fec5b542074",
+  "productChecksRun": [],
+  "allCommandsWaited": true,
+  "files": {
+    "REPORT.md": "9a10ccb5dd0213c41da83cd428e3c63f5f30fb6dfa1e6260a9040cce1a575e9e",
+    "TASK.md": "a322559bb2d51b2ca921ce092361484be367bed0800c2b0c778987b5f9f02127",
+    "logs/00-original-fields.json": "793abe2faf2e62b65b2077448aa0eaa4371bcc48bae53c6088f8ba982218db70",
+    "logs/01-anchor-check.json": "c5617c7b5e4da6ada951e9bcdfe7fd8d286af32be5ab3924f3a7393f80d7ea7d",
+    "logs/01-anchor-check.log": "59ec0cd758b85ba659cb9839c4a60d021b1d0f494fa8038a59fd7f3872ec5132",
+    "logs/02-return.json": "e314788597e268f3a52238d75746400a1c32cc51da5e1cb133e2dc8fdbe8b442",
+    "logs/02-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/anchor-check.mjs": "20a01520027bf10524a9a74b91ca8ad017f055d03de9be3fb94aea11125e0fe8"
+  }
+}

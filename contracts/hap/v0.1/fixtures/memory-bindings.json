@@ -1,0 +1,162 @@
+{
+  "version": "1",
+  "algorithm": "Go json.Marshal ordered structs, UTF8, HTML/U2028/U2029 escaping; independently calculated Python hashes",
+  "cases": [
+    {
+      "name": "unicode",
+      "memory": {
+        "Version": "1",
+        "Mode": "recall",
+        "Namespace": {
+          "kind": "agent",
+          "id": "agent:a"
+        },
+        "JobID": "",
+        "JobGeneration": "",
+        "SettingsRevision": "",
+        "Entries": [
+          {
+            "Ref": {
+              "kind": "memory_revision",
+              "id": "revision:1",
+              "revision": "1",
+              "hash": "sha256:b1affb279279408c430d3863e60dd2290103d9551e243a385f0825aea202b865",
+              "namespace": "agent:a",
+              "workThreadId": "thread:1"
+            },
+            "Role": "memory",
+            "Text": "原文 é 👩‍💻"
+          }
+        ],
+        "Targets": [],
+        "BindingDigest": ""
+      },
+      "memoryBinding": "sha256:4090b2309ae749e1e9d4ba89e4a11ddce8b71e14d04ef6a95ac0e48924e6c4ad",
+      "shortTerm": {
+        "Version": "1",
+        "Namespace": {
+          "SubjectKind": "agent",
+          "SubjectID": "agent:a",
+          "SessionID": "session:1",
+          "WorkThreadID": "session:1"
+        },
+        "IntentHash": "sha256:4509efc5e8c576613545fadda47b635d24a178e34b31beb26b9d6c512b99daf4",
+        "Entries": [
+          {
+            "ID": "entry:1",
+            "OriginKind": "conversation_message",
+            "Ref": {
+              "kind": "message",
+              "id": "message:1",
+              "revision": "1",
+              "hash": "sha256:b1affb279279408c430d3863e60dd2290103d9551e243a385f0825aea202b865",
+              "namespace": "session:1",
+              "workThreadId": "session:1"
+            },
+            "Use": "recent",
+            "Role": "user",
+            "Representation": "full",
+            "Message": null,
+            "Partial": false,
+            "Spans": [
+              {
+                "start": 0,
+                "end": 22
+              }
+            ],
+            "Text": "原文 é 👩‍💻",
+            "TextHash": "sha256:b1affb279279408c430d3863e60dd2290103d9551e243a385f0825aea202b865"
+          }
+        ],
+        "Usage": {
+          "policyVersion": "extractive-v1",
+          "selected": 1,
+          "excerpted": 0,
+          "omittedAuthorized": 0,
+          "windowLimited": false
+        },
+        "BindingDigest": ""
+      },
+      "shortTermBinding": "sha256:d30361b1b8f379a7c793369a4c42de8169b4352951288de22217c5057e515180",
+      "original": "原文 é 👩‍💻"
+    },
+    {
+      "name": "html-control",
+      "memory": {
+        "Version": "1",
+        "Mode": "recall",
+        "Namespace": {
+          "kind": "agent",
+          "id": "agent:a"
+        },
+        "JobID": "",
+        "JobGeneration": "",
+        "SettingsRevision": "",
+        "Entries": [
+          {
+            "Ref": {
+              "kind": "memory_revision",
+              "id": "revision:1",
+              "revision": "1",
+              "hash": "sha256:8d30f7a14ae0eb304a543c1ceee1997423615cb497871afd19cdf4c1ddca2cd4",
+              "namespace": "agent:a",
+              "workThreadId": "thread:1"
+            },
+            "Role": "memory",
+            "Text": "<>&  \n"
+          }
+        ],
+        "Targets": [],
+        "BindingDigest": ""
+      },
+      "memoryBinding": "sha256:cc7395f5385a5896a3a778761e1655848cd2d87c7ddfe301857ce07dd2cf6c4b",
+      "shortTerm": {
+        "Version": "1",
+        "Namespace": {
+          "SubjectKind": "agent",
+          "SubjectID": "agent:a",
+          "SessionID": "session:1",
+          "WorkThreadID": "session:1"
+        },
+        "IntentHash": "sha256:4509efc5e8c576613545fadda47b635d24a178e34b31beb26b9d6c512b99daf4",
+        "Entries": [
+          {
+            "ID": "entry:1",
+            "OriginKind": "conversation_message",
+            "Ref": {
+              "kind": "message",
+              "id": "message:1",
+              "revision": "1",
+              "hash": "sha256:8d30f7a14ae0eb304a543c1ceee1997423615cb497871afd19cdf4c1ddca2cd4",
+              "namespace": "session:1",
+              "workThreadId": "session:1"
+            },
+            "Use": "recent",
+            "Role": "user",
+            "Representation": "full",
+            "Message": null,
+            "Partial": false,
+            "Spans": [
+              {
+                "start": 0,
+                "end": 10
+              }
+            ],
+            "Text": "<>&  \n",
+            "TextHash": "sha256:8d30f7a14ae0eb304a543c1ceee1997423615cb497871afd19cdf4c1ddca2cd4"
+          }
+        ],
+        "Usage": {
+          "policyVersion": "extractive-v1",
+          "selected": 1,
+          "excerpted": 0,
+          "omittedAuthorized": 0,
+          "windowLimited": false
+        },
+        "BindingDigest": ""
+      },
+      "shortTermBinding": "sha256:9524419ec753bf8712fcd0fb78bec5216a4f50be8e9ab8ec36a0d5f596b87502",
+      "original": "<>&  \n"
+    }
+  ]
+}

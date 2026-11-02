@@ -4,11 +4,11 @@
 
 1. 从当前任务入口追踪相关调用和生成器，列出现存能力、数量、工具、权限、验证及失败语义。不要默认整读仓库。
 2. 明确触发分支和近邻职责；入口保留每次必读步骤，只有分支规则、示例、flags 与模板下沉。需要审查结构与冗余时读 [编写原则](references/authoring-principles.md)，术语按需查 [GLOSSARY](GLOSSARY.md)。
-3. 按单一规则 owner 合并重复；删除无效/过期内容，保留不可丢失的证据、研究、许可与必要元数据。新增或改变的行为单列。
+3. 按单一规则 owner 合并重复；删除无效/过期内容，保留不可丢失的证据、研究、许可与必要元数据。采用外部材料或转写含引用内容时，读取 <Path>{roots.references}/research-and-reuse/research-contract.md</Path> 核对来源传递。新增或改变的行为单列。
 4. 修订调用方与生成器，按行为变化测试适用的正常、近邻不触发、缺失输入、失败与恢复；语法通过不代表实际宿主行为。
 5. 交付实际差异、验证和未验证项；评估重构时附全源字符统计。没有实际用量证据不声称 token 或额度节省。
 
-当前工程事实维护或明确基线请求直接读取 [局部事实方法](references/current-facts-docs.md)；它不包含 docs-sync 的全局/Git/state 编排。
+当前工程事实维护或明确基线请求直接读取 [局部事实方法](references/current-facts-docs.md)；它不包含 project-maintenance 的全局/Git/state 编排。
 
 明确要求根据项目事实或复盘经验创建、更新 `.agents/skills/` 时读取 [项目 Skill 维护](references/project-skill-maintenance.md)。它负责证据筛选、已有能力优先升级与缺失能力新增；具体方案、批准和记录归调用方，不因一次文档编辑自动迭代 Skills。
 

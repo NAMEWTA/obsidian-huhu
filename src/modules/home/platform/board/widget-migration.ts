@@ -2,7 +2,7 @@ import { mergeClockWeather } from '../../core/board/clock-weather';
 import { t } from '../../../../shared/i18n';
 import type { App } from 'obsidian';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
-import { huhuName } from '../../../../shared/storage/vault-layout';
+import { huhuName, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { inboxRoot } from '../vault/memo-files';
 import type { DashboardData, DashboardSettings, QuickAction } from '../../core/board/types/model';
 import { cardKind } from '../../core/board/card-kind';
@@ -82,7 +82,7 @@ export async function consolidateBoardWidgets(
 			if (card.type !== 'web' && cardKind(column.sectionType ?? column.name.toLowerCase(), card.type) !== 'memo')
 				continue;
 			const token = identity(`${path}:${card.id}`),
-				target = `${inboxRoot(settings)}/迁移-${token}-${huhuName(card.title)}.md`;
+				target = `${inboxRoot(settings)}/${VISIBLE_NAMES.imported}-${token}-${huhuName(card.title)}.md`;
 			const original = blocks?.[ci]?.[i];
 			const body = original ? `# ${original}` : `# ${card.title}\n${memoCardText(card)}\n`;
 			const { rewriteContentLinks } = await import('../../../../host/obsidian/storage/content-link-text');

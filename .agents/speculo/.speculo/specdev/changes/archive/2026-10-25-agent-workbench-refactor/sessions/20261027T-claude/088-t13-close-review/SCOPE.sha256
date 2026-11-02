@@ -1,0 +1,8 @@
+1e39db34a9ee6edbcfa0d914fa137614f19a162b23c7c542ae6bdea8c6da67d1  src/app/contracts/workbench-host.ts
+6a09520087ff8d23eae9b67160fbee66da4ef9197ee38df360642433adf78df8  src/shell/host/workbench-pages.ts
+5af38d96cad0640a392efac46f7a20912e90e78f9b316643c48d9c3836951706  src/shell/host/workbench-pages.dom.test.tsx
+6435711239619af5db42c3e114801b8c7ba8e6a9a34208182b0342cb9f2fc568  src/app/workbench/compose-workbench.ts
+2cd2b17e1836c214eaf004ff162880723b028ef07dacde5ca12923e67c750dc1  src/app/workbench/browser-contribution.test.ts
+548ca17864d8e883dfff37238b517914f461881da82b057281c2a3d398143d0d  src/modules/browser/ui/workbench-page.tsx
+d162e5ca5ca714d51a80c829dc8fa3cd055b29d10580d82537734ae3ed0ac8d4  src/modules/browser/services/host.ts
+d8f171f60263164adf1c59f57d7ab745704f65a3ef6750116fb0bf3f2ceb8bae  src/modules/browser/api.ts

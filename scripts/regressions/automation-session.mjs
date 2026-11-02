@@ -55,6 +55,17 @@ try {
 			request.prepare?.(session);
 			return session;
 		},
+		// Every business run belongs to one explicit Space: the host answers for it and saves its Session first.
+		spaces: {
+			cwd: async () => vault,
+			admit: async () => ({
+				cwd: vault,
+				runtime: { spaceId: 'space-a', sessionId: 'session-' + (launches + 1), runtimeId: 'runtime-' + (launches + 1) },
+				beforeSpawn: async () => {},
+				created: () => {},
+				abandon: () => {},
+			}),
+		},
 		remove: () => {},
 		open: async () => {},
 		shell: () => ({ file: '/bin/sh', args: [], title: 'sh' }),
@@ -96,6 +107,7 @@ try {
 		cwd: vault,
 		prompt: 'Synthetic prompt; never sent',
 		sessionMode: 'specific',
+		spaceId: 'space-a',
 		session,
 	};
 	const files = new Map();

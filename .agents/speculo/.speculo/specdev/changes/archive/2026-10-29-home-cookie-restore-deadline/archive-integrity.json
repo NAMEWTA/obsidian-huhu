@@ -1,0 +1,52 @@
+{
+  "entries": [
+    {
+      "path": "ADR.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "66fdbb5ddc67917f23d4befac869637d9ea55aa9b8e57e014208208321cf5471"
+    },
+    {
+      "path": "LOG.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "344b06c45fd5cedac20d353255c097e1a7b705156a805770937c5b092015cd7f"
+    },
+    {
+      "path": "README.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "cbfd3dda8fe9a4fa6ea2d91cc3511aebb6453a5fd26b09963aae6a5abe806b68"
+    },
+    {
+      "path": "archive-approval.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "f3956b415fb630a4b94470d73b54dc1792cfaa3d1b7390b47c852de2b30b6fb3"
+    },
+    {
+      "path": "archive-preflight.json",
+      "mode": 436,
+      "type": "file",
+      "sha256": "044d2c004ea7f36c3eb2b662ec3c23de152812f2421dff48e2e2eae9c0639a0f"
+    },
+    {
+      "path": "archive-reference-map.json",
+      "mode": 436,
+      "type": "file",
+      "sha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6"
+    },
+    {
+      "path": "diagnosis.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "6d31533402a6b033496c2bb0a5653dcc0de4bee6f7810f7d21e8be5585df3887"
+    },
+    {
+      "path": "spec.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "47093a580751ede5b10b435f62c95ed49c2f73f6ce1305f7f79558c01cd48b84"
+    }
+  ]
+}

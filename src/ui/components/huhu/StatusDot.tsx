@@ -1,5 +1,5 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/AgentStateDot.tsx
-import { CircleCheck, CircleDashed } from 'lucide-react';
+import { CircleCheck, CircleDashed, CirclePause, CircleX } from 'lucide-react';
 import { useT } from '../../react/hooks';
 import { cn } from '../../lib/utils';
 import { AgentQuestionIcon } from './AgentQuestionIcon';
@@ -12,14 +12,12 @@ export function StatusDot({
 	status,
 	label: suppliedLabel,
 	size = 'sm',
-	sidebar = false,
 	className,
 }: {
 	state?: State;
 	status?: AgentStatus;
 	label?: string;
 	size?: 'sm' | 'md';
-	sidebar?: boolean;
 	className?: string;
 }) {
 	const t = useT();
@@ -47,20 +45,14 @@ export function StatusDot({
 						<AgentQuestionIcon className={icon} />
 					) : state === 'unknown' ? (
 						<CircleDashed className={cn('text-status-warning', icon)} />
-					) : state === 'done' && !sidebar ? (
-						<CircleCheck className={cn('text-status-success', icon)} />
+					) : state === 'done' ? (
+						<CircleCheck className={cn('text-status-success', icon)} data-status-shape="done" />
+					) : state === 'failed' ? (
+						<CircleX className={cn('text-status-error', icon)} data-status-shape="failed" />
+					) : state === 'interrupted' ? (
+						<CirclePause className={cn('text-status-error', icon)} data-status-shape="interrupted" />
 					) : (
-						<span
-							className={cn(
-								'block rounded-full',
-								inner,
-								state === 'done'
-									? 'bg-status-success'
-									: state === 'failed' || state === 'interrupted'
-										? 'bg-status-error'
-										: 'bg-muted-foreground/50',
-							)}
-						/>
+						<span className={cn('block rounded-full bg-muted-foreground/50', inner)} data-status-shape="idle" />
 					)}
 				</span>
 			</TooltipTrigger>

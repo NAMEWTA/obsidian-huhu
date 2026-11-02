@@ -6,7 +6,7 @@
 
 - 相关导航器源文件头部保留 `Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.` 声明；文件头是来源说明，不能单独替代实现审查。
 - 相似度复核使用 [scripts/check-similarity.mjs](../../scripts/check-similarity.mjs)，必须显式提供 HUHU 源目录和已经准备好的参考检出目录。
-- HUHU 仍以 MIT 许可证分发，不引入 GPL 依赖。
+- HUHU 自有材料按 [HUHU Source Available License 1.0](../../LICENSE) 分发；行为参考不引入 GPL 运行依赖，也不改变第三方材料的原许可。
 
 在仓库根目录运行，例如将 `/path/to/notebook-navigator/src` 替换成实际参考检出的源码目录：
 
@@ -21,3 +21,7 @@ pnpm run check:similarity --ours src/modules/navigator --theirs /path/to/noteboo
 ## 日历对照版本
 
 本轮日历交互对照固定为 [ede7a1b06cdb282beb8767e8f18e209630f58d94](https://github.com/johansan/notebook-navigator/tree/ede7a1b06cdb282beb8767e8f18e209630f58d94)（3.4.3）：紧凑周窗口、完整月份、十二个月年面板、日期状态、预览、封面和周期菜单均为独立实现。HUHU 日期单击采用当日日程语义；任务仍按 HUHU 的来源和日期规则聚合，打开/创建周期笔记另设明确动作。共用展示位于 `src/ui/components/huhu/calendar/`，业务分别保留在 home 与 navigator。未复制上游源码或 CSS；真实 Obsidian 同屏视觉对照需在宿主验收中进行。
+
+## 许可核验
+
+2026-10-31 核对上述已采用的 3.4.3 提交：原路径为公开 `README.md` 与 [LICENSE](https://github.com/johansan/notebook-navigator/blob/ede7a1b06cdb282beb8767e8f18e209630f58d94/LICENSE)，许可为 GPL-3.0，版权行是 `Copyright (c) 2025 Johan Sanneblad`。使用性质为仅公开行为参考；当前对应位置为 `src/modules/navigator/` 与 `src/ui/components/huhu/calendar/`。此核验确认固定版本的许可文本，不代替源码相似度或宿主行为验收。

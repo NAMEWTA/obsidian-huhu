@@ -40,7 +40,7 @@ test('periods are switched and given templates per period, saved when a field lo
 	const week = document.querySelector<HTMLElement>('[data-period-rule="week"]')!;
 	// daily, weekly and monthly notes are on by default; the fixed path is shown for each
 	expect(t.settings.get().periods.week.enabled).toBe(true);
-	expect(week.textContent).toContain('Saved as huhu/日志/周记/gggg/gggg-Www.md');
+	expect(week.textContent).toContain('Saved as huhu/journal/weekly/gggg/gggg-www.md');
 	fireEvent.click(within(week).getByRole('switch', { name: 'Enable Weekly notes' }));
 	await waitFor(() => expect(t.settings.get().periods.week.enabled).toBe(false));
 	blur(within(week).getByRole('combobox', { name: 'Weekly notes: template' }), ' T/Meeting.md ');
@@ -61,14 +61,14 @@ test('the journal folder is a setting, repaired when unusable, and changes the s
 	blur(root, '/Notes/Journal/');
 	await waitFor(() => expect(t.settings.get().periodicRoot).toBe('Notes/Journal'));
 	const day = document.querySelector<HTMLElement>('[data-period-rule="day"]')!;
-	await waitFor(() => expect(day.textContent).toContain('Saved as Notes/Journal/日记/YYYY/MM/YYYY-MM-DD.md'));
+	await waitFor(() => expect(day.textContent).toContain('Saved as Notes/Journal/daily/YYYY/MM/YYYY-MM-DD.md'));
 	// A hidden folder is refused at the field: the setting keeps its value.
 	blur(root, '.huhu/journal');
 	await waitFor(() => expect(root.value).toBe('Notes/Journal'));
 	expect(t.settings.get().periodicRoot).toBe('Notes/Journal');
 	// Emptying the field falls back to the default folder.
 	blur(root, '   ');
-	await waitFor(() => expect(t.settings.get().periodicRoot).toBe('huhu/日志'));
+	await waitFor(() => expect(t.settings.get().periodicRoot).toBe('huhu/journal'));
 });
 
 test('the Daily notes core plugin is no longer a source', async () => {

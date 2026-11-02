@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-10-25T08:48:10.015559+00:00",
+  "files": {
+    "scripts/obsidian-acceptance/huhu-bot-sources.mjs": "4633b79ffecb8b44a8b4e02d38aab3c3ce1022fda73fc5d121e85b7406dfb3e8",
+    "src/modules/huhubot/core/protocol/connection.test.ts": "520bef8529004bc593bd68bad686a8e3277648b315e56ffab491eb81df9222bf",
+    "src/modules/huhubot/core/protocol/connection.ts": "e0f2754ca0ba2cc788eb4f14168acc6b521ad0d4c44e68d557ecc174b5d82ee7",
+    "src/modules/huhubot/core/protocol/method-validation.test.ts": "ac9aeeb7191cc8db8b5d0a920030d6dc27853a314d382c0eab9146c99f79822f",
+    "src/modules/huhubot/core/protocol/method-validation.ts": "e80da43218863838df5fee5997cd8a419bf783731f4869a67bd22a6500be6bc2",
+    "src/modules/huhubot/platform/obsidian/sources/port.ts": "e45d3962e55712c1045a0f6fdebd3bd6e719af8f8b1336951f50db6d36bb70f7",
+    "src/modules/huhubot/platform/obsidian/sources/sources.test.ts": "9ff7f1e96374af6066cd9d83ed9c0b13238266a8e2509dece2277f0f588a3630",
+    "src/modules/huhubot/platform/obsidian/sources/sources.ts": "c2c3435650ae964af11ed71ea6effff61a51e25f86449db29626528291fc54ab",
+    "src/modules/huhubot/services/host-read/host-read.test.ts": "401d66b535acfb14185f1ac6ce51d26f80a2642815c1037aa740a1e7c7e8bb83",
+    "src/modules/huhubot/services/host-read/host-read.ts": "660dd392315786e1e7c39bb828ddcd263b3e1731b5eadc20b2b2ef0f417196f0"
+  }
+}

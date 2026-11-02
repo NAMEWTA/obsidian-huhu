@@ -1,0 +1,612 @@
+{
+  "methods.json": {
+    "sessions.create": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.create.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.create.result"
+      }
+    },
+    "sessions.updateMembers": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/sessions.updateMembers.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.updateMembers.result"
+      }
+    },
+    "sessions.setCoordinator": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/sessions.setCoordinator.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.setCoordinator.result"
+      }
+    },
+    "runs.start": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.start.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.start.result"
+      }
+    }
+  },
+  "schema.json": {
+    "sessions.create.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "group"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "memberIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coordinatorId": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "kind",
+        "title",
+        "memberIds"
+      ],
+      "additionalProperties": false
+    },
+    "sessions.create.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "group"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "memberIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coordinatorId": {
+          "type": "string"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "title",
+        "memberIds",
+        "archived"
+      ],
+      "additionalProperties": false
+    },
+    "sessions.updateMembers.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        },
+        "memberIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "historyScope": {
+          "type": "object",
+          "properties": {
+            "afterMessageId": {
+              "type": "string"
+            },
+            "throughMessageId": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id",
+        "memberIds"
+      ],
+      "additionalProperties": false
+    },
+    "sessions.updateMembers.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "group"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "memberIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coordinatorId": {
+          "type": "string"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "title",
+        "memberIds",
+        "archived"
+      ],
+      "additionalProperties": false
+    },
+    "sessions.setCoordinator.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        },
+        "coordinatorId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id",
+        "coordinatorId"
+      ],
+      "additionalProperties": false
+    },
+    "sessions.setCoordinator.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "group"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "memberIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coordinatorId": {
+          "type": "string"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "title",
+        "memberIds",
+        "archived"
+      ],
+      "additionalProperties": false
+    },
+    "runs.start.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "note",
+                  "selection"
+                ]
+              },
+              "scopeResourceIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 32
+              },
+              "range": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1048576
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1048576
+                  }
+                },
+                "required": [
+                  "start",
+                  "end"
+                ],
+                "additionalProperties": false
+              },
+              "resourceId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              },
+              "originClientId": {
+                "type": "string"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "hostConnectionId": {
+                "type": "string"
+              },
+              "hostLeaseId": {
+                "type": "string"
+              },
+              "hostLeaseEpoch": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "scopeResourceIds",
+              "resourceId",
+              "workspaceId",
+              "originClientId",
+              "originViewId",
+              "hostConnectionId",
+              "hostLeaseId",
+              "hostLeaseEpoch",
+              "revision",
+              "hash"
+            ],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "selection"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "range"
+                  ]
+                }
+              }
+            ]
+          },
+          "maxItems": 32
+        },
+        "sourceScopes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "folder",
+                  "vault"
+                ]
+              },
+              "resourceId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              },
+              "originClientId": {
+                "type": "string"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "hostConnectionId": {
+                "type": "string"
+              },
+              "hostLeaseId": {
+                "type": "string"
+              },
+              "hostLeaseEpoch": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "resourceId",
+              "workspaceId",
+              "originClientId",
+              "originViewId",
+              "hostConnectionId",
+              "hostLeaseId",
+              "hostLeaseEpoch",
+              "revision",
+              "hash"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "grantIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supersedesMessageId": {
+          "type": "string"
+        },
+        "targetAgentIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "originClientId": {
+          "type": "string"
+        },
+        "originViewId": {
+          "type": "string"
+        },
+        "hostConnectionId": {
+          "type": "string"
+        },
+        "hostLeaseEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "retryOfRunId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "expectedRevision",
+        "sessionId",
+        "intent",
+        "sourceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "runs.start.result": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "failed",
+            "accepted",
+            "preparing",
+            "running",
+            "waiting_approval",
+            "waiting_children",
+            "interrupted",
+            "recovering",
+            "blocked",
+            "canceling",
+            "succeeded",
+            "canceled"
+          ]
+        },
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "runId",
+        "status",
+        "commandId",
+        "receiptId",
+        "revision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

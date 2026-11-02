@@ -1,6 +1,6 @@
 ---
 name: specdev-p-goal-plan
-description: "为简单目标、单个已拆票 change 或多个 Ready change 规划、执行或恢复 Goal；只在用户要求目标计划、交付编排或已有 map 需推进时使用，不代替需求探索和 Ticket 编写。"
+description: "为简单目标、单个已拆票 change 或多个 change 规划、执行或恢复 Goal；只在用户要求目标计划、交付编排或已有 map 需推进时使用，不代替需求探索和 Ticket 编写。"
 metadata:
   speculo-kind: work-skill
   speculo-id: specdev/goal-plan
@@ -14,9 +14,9 @@ metadata:
 
 ## 读取范围
 
-先读 `<Path>{roots.workflows}/specdev/common/rules/activation-and-memory.md</Path>`，定位用户指定的 change 或 map，再读 README Outcome、实际存在的计划和所选模式。有票时每次只展开实际进入 frontier 的 Ticket、直接依赖 Evidence、命中的项目 Skill、当前 Gate 与恢复证据；不默认通读所有 Ticket 或永久索引。
+先读 `<Path>{roots.workflows}/specdev/common/rules/activation-and-memory.md</Path>`，定位用户指定的 change 或 map，再读 README Outcome、实际存在的计划和所选模式。有票时每次只展开实际选入执行批次的 eligible Ticket、直接依赖 Evidence、命中的项目 Skill、当前 Gate 与恢复证据；不默认通读所有 Ticket 或永久索引。
 
-用户要求简单 Goal 且无需独立 Ticket 时，按 <Path>{roots.workflows}/specdev/specdev-p-goal-plan/assets/lightweight-goal-plan-template.md</Path> 的显式轻量形态，以原 goal-plan 清单负责进度与整体门，README 保留范围/AC/验证，README 只导航；不制造 Ticket/Map。发生真实并行、Deep 或跨 change 时切入完整模式并将迁出的清单改为导航。
+用户要求简单 Goal 且无需独立 Ticket 时，按 <Path>{roots.workflows}/specdev/specdev-p-goal-plan/assets/lightweight-goal-plan-template.md</Path> 的显式轻量形态，以原 goal-plan 清单负责进度与整体门，README 保留范围/AC/验证，README 只导航；不制造 Ticket/Map。需要持久依赖图、跨会话恢复、多写入 owner、共享资源协调或跨 Ticket/change 集成 Gate 时才切入完整模式并将迁出的清单改为导航；普通只读并行工具或无状态任务不触发升级。用户明确要求完整 Goal 时照办，Deep 风险仍需相应完整验收合同。
 
 ## 按意图选择模式与权威
 
@@ -32,17 +32,17 @@ metadata:
 
 有独立票的单 change 以 `<Path>{roots.state}/specdev/changes/{change}/tickets-map.md</Path>` 为用户总控入口；Ticket frontmatter 仍是单票状态、依赖、路径的权威，Goal Plan 拥有跨票 Gate、Wave 和授权引用。少量线性票不强制增加厚重计划。
 
-单 change 的 Map 结构就绪、Goal 全局执行门与逐票 DoR 分开判断。等待上游真实产物的未来票可保持 draft，并记录缺口和重审条件；独立 Ready 票仍可进入 frontier。具体门禁读取 `<Path>{roots.workflows}/specdev/specdev-p-goal-plan/references/planning-modes.md</Path>`。
+单 change 的 Map 结构就绪、Goal 全局执行门与逐票 DoR 分开判断。等待上游真实产物的未来票可保持 draft，并记录缺口和重审条件；独立 Ready 票仍可进入 eligible。具体门禁读取 `<Path>{roots.workflows}/specdev/specdev-p-goal-plan/references/planning-modes.md</Path>`。
 
 多 change 复用现有父 Implementation Map/Implementation Plan 和组合 DAG，不迁走活动状态。父 `<Path>{roots.state}/specdev/changes/{change}/tickets-map.md</Path>` 仅作无状态入口，模板为 `<Path>{roots.workflows}/specdev/specdev-p-goal-plan/references/goal-tickets-map-template.md</Path>`。父成员至少两个；只有一个 change 时使用单 change 模式。
 
 ## 执行底线
 
 - 先冻结 Outcome、权威来源、用户指定的交付数量、范围、Definition of Done 和失败停止条件；按风险确定 DAG/Gate/Wave，不用文档长度替代质量。
-- 固定 `lead-directed`，Lead 拥有状态和验收，不固定实现团队。ticket_execution 默认 auto；max_parallel_tickets 计量票据，显式 concurrent_implementation_limit 计量实现者；策略来源写 Execution Policy Source。派单读取 <Path>{roots.workflows}/specdev/specdev-p-goal-plan/references/lead-orchestration.md</Path>。
+- 固定 `lead-directed`，Lead 拥有状态和验收，不固定实现团队。票据切分、派遣通道与执行者分配分别决定，同一个 Agent 可连续执行多票；复用条件与逐票门遵循 <Path>{roots.workflows}/specdev/common/rules/execution-policy.md</Path>。ticket_execution 默认 auto；max_parallel_tickets 计量票据，显式 concurrent_implementation_limit 计量实现者；策略来源写 Execution Policy Source。派单读取 <Path>{roots.workflows}/specdev/specdev-p-goal-plan/references/lead-orchestration.md</Path>。
 - 保留 change 已选工作区，未指定复用 current；明确要求才创建一个 change worktree。串并行、派遣和审查不增建工作区，提交/合并按实际授权执行。
 - `plan` 只形成计划，缺少执行授权是计划中可见的待满足条件，不等于获准执行。运行前逐项核对真实授权；文档中的“已批准”不构成授权。
-- 当前票必须调用所绑定的真实 Skill，不能以“读过入口”替代；先读取 `<Path>{roots.workflows}/specdev/common/rules/skill-invocation.md</Path>`。缺失必需 Skill、引用或验收证据时阻塞本票及依赖它的分支。
+- 当前票必须调用必需绑定的真实 Skill；普通可选 Skill 可按需发现并记录实际使用，不能以“读过入口”替代；先读取 `<Path>{roots.workflows}/specdev/common/rules/skill-invocation.md</Path>`。缺失必需 Skill、引用或验收证据时阻塞本票及依赖它的分支。
 - 他人 owner、资源或事务冲突仅暂停受影响的依赖闭包；继续独立已授权工作，不抢占、解锁或覆盖他人内容。正式记忆仍只走原网关。
 - 调度调用 `<Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>`；调度器不代替实现、审核或授权。长期运行指可恢复，不承诺后台或无限运行。
 
@@ -64,8 +64,5 @@ node <Path>{roots.workflows}/specdev/common/tools/ticket-control.mjs</Path> --ma
 
 ## 编排与执行上下文
 
-进入实现或审查时读取 <Path>{roots.references}/coordination/coordination-contract.md</Path>；未明确指定时按当前宿主正常执行，App、CLI 等均可，subagent/agent team 属于宿主能力。明确指定 CLI 交互、Herdr 等方式时按选择执行并展开对应参考；编排与 current/worktree 独立，已有授权和选择直接复用。只读取所选工具的当前指南，不固定工具或模型。
+安排执行或审查前读取 <Path>{roots.workflows}/specdev/common/rules/coordination.md</Path>，绑定原 Goal/Map revision、依赖证据和写集。plan 只交付规划；已授权 run/resume 按合法 eligible 与实际资源约束持续执行，suggested_batch 只是建议，原 Lead 拥有正式状态、Evidence 与整体完成。
 
-`lead` 上下文维护原业务状态和 Evidence；`task` 上下文只处理 Lead 指定目标和阶段，执行同一方法并返回候选、findings、检查和未验证项，可直接写分配的计划、票据、Map 等业务文档；正式状态、审批与 Evidence 由原 owner 在验收后维护，不递归启动 Goal 或擅自跨 CLI 派单；宿主原生协作遵守原写集和共享资源 owner 约束。未曝光到宿主列表不影响读取真实入口。
-
-P 在已授权 run/resume 中完成当前实现、审查、验证和同范围修复后继续下一 Ready 任务，不逐票询问“继续”。只读分析或 plan 不执行。双轴审查必须由未参与本范围实现的 Agent 执行，默认派遣一位原生 subagent；已有编排选择沿用于 review，不能由实现者或参与实现的 Lead 自审替代。

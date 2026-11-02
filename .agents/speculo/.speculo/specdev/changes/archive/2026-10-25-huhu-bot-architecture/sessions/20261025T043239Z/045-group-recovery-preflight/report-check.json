@@ -1,0 +1,35 @@
+{
+  "readAt": "2026-10-25T10:45:05.371933+00:00",
+  "reportBytes": 46223,
+  "reportLines": 226,
+  "headings": [
+    "## 聚焦交接",
+    "## 产物与验证",
+    "## 问题与下一步"
+  ],
+  "metadataBeforeFirstH2": true,
+  "balancedCodeFences": true,
+  "uniqueSourceFiles": 65,
+  "changedSinceRead": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "observedAt": "2026-10-25T10:27:47.267851+00:00",
+      "observedSha256": "f1ebd324ddf2d74b137bda87384649261d3032a50891f89590b9a326d04513fa",
+      "recheckedAt": "2026-10-25T10:45:05.371933+00:00",
+      "currentSha256": "87b98a74915baef527ff1308e9bf09ea5050c1b52cf01a4f604674e223dd6bc7",
+      "changed": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/events/store.go",
+      "observedAt": "2026-10-25T10:28:21.007580+00:00",
+      "observedSha256": "56adddb22c3e76a5d14bfb5b2c907007acbd7362f1ac65bab038a28cb420d55d",
+      "recheckedAt": "2026-10-25T10:45:05.371933+00:00",
+      "currentSha256": "368e63cbf71e4e611113e783501ffe3fa523f8d1d47bac876e45477340738caf",
+      "changed": true
+    }
+  ],
+  "fullFileDecodedForStructuralChecks": true,
+  "finalCheckedAt": "2026-10-25T10:46:18.360895+00:00",
+  "finalReportSha256": "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf",
+  "returnValidatorExitCode": 0
+}

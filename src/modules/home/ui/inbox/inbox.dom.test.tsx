@@ -26,8 +26,8 @@ afterEach(async () => {
 	for (const store of stores.splice(0)) await store.dispose();
 });
 
-async function scene(initial: Record<string, string> = {}, memoSavePath = 'huhu/收件箱') {
-	setLanguage('zh');
+async function scene(initial: Record<string, string> = {}, memoSavePath = 'huhu/收件箱', language: 'en' | 'zh' = 'zh') {
+	setLanguage(language);
 	const vault = memoryVault({ [board]: generateDefaultMarkdown(), ...initial }, window);
 	await contentFiles(vault.app).refresh();
 	const host = {
@@ -54,7 +54,7 @@ test('the list is the files of the inbox folder, most recently modified first; d
 	const { vault, open } = await scene({
 		'huhu/收件箱/2026-09-02-0830-旧的.md': '',
 		'huhu/收件箱/2026-10-19-1405-买牛奶.md': '',
-		'huhu/收件箱/2026-10-20-闪念.md': '- 09:00 想法\n',
+		'huhu/收件箱/2026-10-20-captures.md': '- 09:00 想法\n',
 		'其他/2026-10-20-0900-无关.md': '',
 	});
 	expect(vault.contents.size).toBe(5);
@@ -102,7 +102,7 @@ test('New item opens a field at the top of the list: Enter creates the dated not
 	fireEvent.click(screen.getByRole('button', { name: t('home.inbox.new') }));
 	fireEvent.keyDown(screen.getByRole('textbox', { name: t('home.inbox.newLabel') }), { key: 'Enter' });
 	await waitFor(() => expect(open).toHaveBeenCalledTimes(2));
-	expect([...vault.contents.keys()].some((path) => new RegExp(`-${t('home.inbox.defaultTitle')}\\.md$`).test(path))).toBe(true);
+	expect([...vault.contents.keys()].some((path) => /-untitled\.md$/.test(path))).toBe(true);
 });
 
 test('a capture goes to the day file, clears the draft, says so and shows up in today\'s column and the count; the newest is on top', async () => {
@@ -115,7 +115,7 @@ test('a capture goes to the day file, clears the draft, says so and shows up in 
 	fireEvent.keyDown(box, { key: 'Enter', isComposing: true });
 	expect([...vault.contents.keys()].some((path) => path.endsWith('闪念.md'))).toBe(false);
 	fireEvent.keyDown(box, { key: 'Enter' });
-	const path = `huhu/收件箱/${day()}-闪念.md`;
+	const path = `huhu/收件箱/${day()}-captures.md`;
 	await waitFor(() => expect(vault.contents.get(path)).toMatch(/- \d{2}:\d{2} 第一条\n$/));
 	expect(vault.contents.get(path)!.startsWith(properties)).toBe(true);
 	await waitFor(() => expect(box.value).toBe(''));
@@ -134,7 +134,7 @@ test('a capture goes to the day file, clears the draft, says so and shows up in 
 });
 
 test('today\'s column reads the day file that is already there, and clicking an entry opens that file', async () => {
-	const path = `huhu/收件箱/${day()}-闪念.md`;
+	const path = `huhu/收件箱/${day()}-captures.md`;
 	const { open } = await scene({ [path]: `${properties}- 09:12 买牛奶\n- 10:30 第一行\n  第二行\n` });
 	await waitFor(() => expect(document.querySelector('[data-inbox-captures]')).toBeTruthy());
 	const today = document.querySelector('[data-inbox-captures]') as HTMLElement;
@@ -180,5 +180,18 @@ test('the inbox folder is the one in the board settings, for items and for the d
 	const { vault, store } = await scene({ 'Notes/Memos/2026-10-19-1405-别处.md': '' }, 'Notes/Memos');
 	expect(rows()).toHaveLength(1);
 	await store.capture('这里');
-	expect([...vault.contents.keys()].some((path) => path === `Notes/Memos/${day()}-闪念.md`)).toBe(true);
+	expect([...vault.contents.keys()].some((path) => path === `Notes/Memos/${day()}-captures.md`)).toBe(true);
+});
+
+test.each(['en','zh'] as const)('empty inbox title creates the same fixed default in %s', async (language) => {
+ const {vault,open}=await scene({}, DEFAULT_DASHBOARD_SETTINGS.memoSavePath, language);
+ fireEvent.click(screen.getByRole('button',{name:t('home.inbox.new')}));
+ const field=screen.getByRole('textbox',{name:t('home.inbox.newLabel')});
+ expect(field.getAttribute('placeholder')).toBe(t('home.inbox.newPlaceholder'));
+ fireEvent.keyDown(field,{key:'Enter'});
+ await waitFor(()=>expect(open).toHaveBeenCalledTimes(1));
+ const made=[...vault.contents.keys()].filter(path=>path.startsWith('huhu/inbox/'));
+ expect(made).toHaveLength(1);
+ expect(made[0]).toMatch(/^huhu\/inbox\/\d{4}-\d{2}-\d{2}-\d{4}-untitled\.md$/);
+ expect(open).toHaveBeenCalledWith(made[0]);
 });

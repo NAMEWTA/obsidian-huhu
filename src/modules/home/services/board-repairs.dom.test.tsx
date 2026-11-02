@@ -145,7 +145,7 @@ test('daily archive uses the configured journal template before removing complet
 	expect(vault.contents.get(board)).not.toContain('Finished');
 	expect(ensure).toHaveBeenCalledOnce();
 	expect(store.completedTasks('Todo')).toHaveLength(0);
-	expect([...vault.contents.keys()].some((path) => path.startsWith('huhu/日志/日记/'))).toBe(false);
+	expect([...vault.contents.keys()].some((path) => path.startsWith('huhu/journal/daily/'))).toBe(false);
 });
 function Memo({ store }: { store: BoardStore }) {
 	const data = useStore(store.state, (s) => s.data)!;
@@ -352,20 +352,20 @@ test('card save action routes exactly once, and real note creation keeps templat
 test('quick capture without a target note appends to the day file in the inbox folder, never under .huhu', async () => {
 	const { vault, store } = await fixture();
 	await store.capture('A passing thought');
-	const made = [...vault.contents.keys()].filter((path) => path.startsWith('huhu/收件箱/'));
+	const made = [...vault.contents.keys()].filter((path) => path.startsWith('huhu/inbox/'));
 	expect(made).toHaveLength(1);
-	expect(made[0]).toMatch(/^huhu\/收件箱\/\d{4}-\d{2}-\d{2}-闪念\.md$/);
+	expect(made[0]).toMatch(/^huhu\/inbox\/\d{4}-\d{2}-\d{2}-captures\.md$/);
 	// the first capture creates the file with the default properties
 	expect(vault.contents.get(made[0]!)).toMatch(/^---\n状态: 在用\ntags:\n {2}- \n---\n- \d{2}:\d{2} A passing thought\n$/);
 	await store.capture('Second thought');
 	// the same day: one file, two list items
-	expect([...vault.contents.keys()].filter((path) => path.startsWith('huhu/收件箱/'))).toEqual(made);
+	expect([...vault.contents.keys()].filter((path) => path.startsWith('huhu/inbox/'))).toEqual(made);
 	expect(vault.contents.get(made[0]!)).toMatch(
 		/^---\n状态: 在用\ntags:\n {2}- \n---\n- \d{2}:\d{2} A passing thought\n- \d{2}:\d{2} Second thought\n$/,
 	);
 	store.host.settings.memoSavePath = 'Inbox/Ideas';
 	await store.capture('Third thought');
-	expect([...vault.contents.keys()].some((path) => /^Inbox\/Ideas\/\d{4}-\d{2}-\d{2}-闪念\.md$/.test(path))).toBe(true);
+	expect([...vault.contents.keys()].some((path) => /^Inbox\/Ideas\/\d{4}-\d{2}-\d{2}-captures\.md$/.test(path))).toBe(true);
 	expect([...vault.contents.keys()].some((path) => path.startsWith('huhu/闪念'))).toBe(false);
 });
 test('a new note opens in a new tab with the editor of Obsidian, not in a dialog', async () => {

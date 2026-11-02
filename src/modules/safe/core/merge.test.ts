@@ -5,8 +5,8 @@ import { createEntry, type CredentialInput, type EntryInput, type SafeEntry } fr
 const t0 = Date.parse('2026-10-01T00:00:00.000Z');
 const entryId = (n: number) => `e${n.toString(16).padStart(7, '0')}-1111-4111-8111-111111111111`;
 const credentialId = (n: number) => `c${n.toString(16).padStart(7, '0')}-1111-4111-8111-111111111111`;
-const account = (n: number, username: string, password = `pw-${username}`, notes = ''): CredentialInput => ({ id: credentialId(n), username, password, notes });
-const base: EntryInput = { title: 'Apple', url: 'https://appleid.apple.com', notes: '', icon: null, credentials: [account(1, 'a@x.test')] };
+const account = (n: number, username: string, password = `pw-${username}`, notes = ''): CredentialInput => ({ id: credentialId(n), username, password, notes, phone: '', email: '', relations: [] });
+const base: EntryInput = { title: 'Apple', url: 'https://appleid.apple.com', notes: '', icon: null, tags: [], credentials: [account(1, 'a@x.test')] };
 const make = (n: number, input: Partial<EntryInput>, at = t0) => createEntry({ ...base, ...input }, entryId(n), at);
 let counter = 100;
 const context = (now = t0 + 10 * 86_400_000) => ({ now, newId: () => credentialId(++counter) });
@@ -44,7 +44,7 @@ describe('merge import', () => {
   test('the same username with another password keeps the more recently updated one, ties keep the current one', () => {
     const current = [make(1, { credentials: [account(1, 'a@x.test', 'old')] }, t0)];
     const newer = mergeEntries(current, [make(2, { credentials: [account(2, 'a@x.test', 'newer', 'n')] }, t0 + 1000)], context());
-    expect(newer.entries[0]!.credentials).toEqual([{ id: credentialId(1), username: 'a@x.test', password: 'newer', notes: 'n', updatedAt: new Date(t0 + 1000).toISOString() }]);
+    expect(newer.entries[0]!.credentials).toEqual([{ id: credentialId(1), username: 'a@x.test', password: 'newer', notes: 'n', phone: '', email: '', relations: [], updatedAt: new Date(t0 + 1000).toISOString() }]);
     expect(newer.summary).toMatchObject({ mergedEntries: 1, updatedCredentials: 1, skippedCredentials: 0 });
     const older = mergeEntries([make(1, { credentials: [account(1, 'a@x.test', 'kept')] }, t0 + 1000)], [make(2, { credentials: [account(2, 'a@x.test', 'older')] }, t0)], context());
     expect(older.entries[0]!.credentials[0]!.password).toBe('kept');
@@ -111,4 +111,30 @@ describe('merge import', () => {
     const ids = entries[0]!.credentials.map((c) => c.id);
     expect(new Set(ids).size).toBe(2);
   });
+});
+
+test('import remaps forward relations when entries merge and account ids collide, without mutating either input', () => {
+	const current = [make(1, { title: 'Target', credentials: [account(1, 'existing')] })];
+	const source = make(9, { title: 'Source', credentials: [{ ...account(9, ''), password: '', phone: '+123', email: 'source@test', relations: [{ entryId: entryId(2), credentialId: credentialId(1), kind: 'login' }] }], tags: ['AI'] });
+	const target = make(2, { title: 'Target', credentials: [account(1, 'other')], tags: ['Work'] });
+	const original = structuredClone({ current, source, target });
+	const merged = mergeEntries(current, [source, target], context());
+	const destination = merged.entries[0]!;
+	expect(destination.credentials).toHaveLength(2);
+	const edge = merged.entries[1]!.credentials[0]!.relations[0]!;
+	expect(edge).toEqual({ entryId: destination.id, credentialId: destination.credentials[1]!.id, kind: 'login' });
+	expect(destination.tags).toEqual(['Work']);
+	expect({ current, source, target }).toEqual(original);
+	expect(mergeEntries(merged.entries, [source, target], context()).entries).toEqual(merged.entries);
+});
+
+test('unnamed planned accounts do not collapse; repeated imports retain their stable ids and contacts', () => {
+	const a = { ...account(1, ''), password: '', phone: '', email: '' };
+	const b = { ...account(2, ''), password: '', phone: '+886', email: 'planned@test' };
+	const current = [make(1, { credentials: [a], tags: ['AI'] })];
+	const backup = [make(1, { credentials: [a, b], tags: ['Company'] })];
+	const merged = mergeEntries(current, backup, context());
+	expect(merged.entries[0]!.credentials).toHaveLength(2);
+	expect(merged.entries[0]!.tags).toEqual(['AI', 'Company']);
+	expect(mergeEntries(merged.entries, backup, context()).entries).toEqual(merged.entries);
 });

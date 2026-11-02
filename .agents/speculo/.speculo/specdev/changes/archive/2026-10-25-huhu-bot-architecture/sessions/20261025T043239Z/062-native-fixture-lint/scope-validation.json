@@ -1,0 +1,16 @@
+{
+  "command": "Node ESLint API isPathIgnored/calculateConfigForFile before-after; exact source-delta validation",
+  "exit_code": 0,
+  "ignored": {
+    "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs": true,
+    "native/huhubot/tests/contract/effect-reconcile/obsidian-fixture.mjs": true,
+    "src/modules/huhubot/core/protocol/connection.ts": false,
+    "src/modules/huhubot/services/host-write/obsidian-host.ts": false,
+    "native/huhubot/tests/contract/effect-reconcile/neighbor-fixture.mjs": false,
+    "native/huhubot/production-neighbor.mjs": false
+  },
+  "productionEffectiveConfigUnchanged": true,
+  "onlyTwoExactPathsAdded": true,
+  "scopeOnly": true,
+  "fullLintRun": false
+}

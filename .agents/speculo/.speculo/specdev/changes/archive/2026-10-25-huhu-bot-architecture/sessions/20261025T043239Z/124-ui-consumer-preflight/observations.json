@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-10-26T09:09:39.515185+00:00",
+  "kind": "read-only UI consumer preflight",
+  "commands": [
+    "cat workspace.json catalog.json TASK.md and scoped dev/ui/contract/design sources",
+    "rg --files / rg -n actual module, React, API and source symbols",
+    "sed/nl actual final HTML/CSS and app.js page render/action ranges, UI contracts and runtime lifecycle",
+    "Python standard library JSON availability/direction and 63 file SHA inventory / actual final directory SHA"
+  ],
+  "missingPathDiscovery": [
+    "23-task-approval-ui.md guessed path absent; actual 23-tasks-access-ui.md read",
+    "wc final/* reported assets is a directory; files inventoried separately"
+  ],
+  "rootDeclaredFrozenInput": "2a649a6cf8959681c6dc87f5dc59151f3895c8c7938eab5e98e9ab36a2c2c1b4",
+  "entireFrozenTreeVerified": false,
+  "methodAvailabilityCounts": {
+    "methodCount": 72,
+    "clientImplementedCount": 51,
+    "clientNotImplementedCount": 15,
+    "reverseCount": 6
+  },
+  "crossOwner123": "Actually read initial draft then owner-finalized §6 candidate SHA68333f68…; display parts ID+PartIndex/ContentHash/Source.Ref.Hash distinct; not generated/implemented; original reports untouched",
+  "allOwnedCommandsFinished": true,
+  "productsOrTestsOrBuildsRun": false,
+  "browserOrNetworkOrRunnerRun": false,
+  "productionOrPrototypeWrites": false,
+  "oldReportsOrFormalStateWrites": false,
+  "agentsSpawned": false,
+  "actualProviderObsidianTargetOS": "not-run / user-owned"
+}

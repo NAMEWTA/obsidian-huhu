@@ -1,3 +1,4 @@
+import { DesignScope } from '../../../ui/react/design-scope';
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/Settings.tsx
 import { useContext, useCallback, useState, useSyncExternalStore } from 'react';
 import { Platform } from 'obsidian';
@@ -68,86 +69,90 @@ export function GeneralSettings({
 					{error}
 				</p>
 			)}
-			<SettingsSection className={sectionClass} title={t('settings.homeGeneral')}>
-				{row(
-					'settings.language',
-					<SegmentedControl
-						value={settings.language}
-						ariaLabel={t('settings.language')}
-						onChange={(language) => run('language', () => plugin.changeLanguage(language))}
-						options={[
-							{ value: 'zh', label: t('settings.languageZh') },
-							{ value: 'en', label: t('settings.languageEn') },
-						]}
-					/>,
-					t('settings.languageDesc'),
-				)}
-				{settings.devGallery &&
-					row(
-						'settings.componentGallery',
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => navigate({ feature: 'settings', section: 'components' })}
-						>
-							{t('ui.open')}
-						</Button>,
-						t('shell.developmentMode'),
+			<DesignScope className="space-y-3 min-w-0 px-1 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:break-all [&_button]:h-auto">
+				<SettingsSection className={sectionClass} title={t('settings.homeGeneral')}>
+					{row(
+						'settings.language',
+						<SegmentedControl
+							value={settings.language}
+							ariaLabel={t('settings.language')}
+							onChange={(language) => run('language', () => plugin.changeLanguage(language))}
+							options={[
+								{ value: 'zh', label: t('settings.languageZh') },
+								{ value: 'en', label: t('settings.languageEn') },
+							]}
+						/>,
+						t('settings.languageDesc'),
 					)}
-				{row(
-					'content.title',
-					<Button variant="outline" size="sm" onClick={() => navigate({ feature: 'content' })}>
-						{t('content.browse')}
-					</Button>,
-					t('content.settingsHint'),
-				)}
-			</SettingsSection>
-			<SettingsSection className={sectionClass} title={t('shell.statusBar')}>
-				{STATUS_ITEMS.map((item) =>
-					toggle(
-						item.labelKey,
-						itemShown(settings.statusBar, item.id),
-						() =>
-							save(`status-${item.id}`, (draft) => {
-								draft.statusBar = withItemShown(draft.statusBar, item.id, !itemShown(draft.statusBar, item.id));
-							}),
-						undefined,
-						t('shell.showStatusItem', { item: t(item.labelKey) }),
-					),
-				)}
-				{row(
-					'shell.usageDisplay',
-					<SegmentedControl
-						value={settings.statusBar.usageDisplay}
-						ariaLabel={t('shell.usageDisplay')}
-						onChange={(value) =>
-							save('display', (draft) => {
-								draft.statusBar.usageDisplay = value;
-							})
-						}
-						options={[
-							{ value: 'used', label: t('shell.used') },
-							{ value: 'remaining', label: t('shell.remaining') },
-						]}
-					/>,
-				)}
-				{row(
-					'shell.usageMode',
-					<SegmentedControl
-						value={settings.statusBar.usageMode}
-						ariaLabel={t('shell.usageMode')}
-						onChange={(value) =>
-							save('mode', (draft) => {
-								draft.statusBar.usageMode = value;
-							})
-						}
-						options={[
-							{ value: 'verbose', label: t('shell.verbose') },
-							{ value: 'compact', label: t('shell.compact') },
-						]}
-					/>,
-				)}
-			</SettingsSection>
+					{settings.devGallery &&
+						row(
+							'settings.componentGallery',
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => navigate({ feature: 'settings', section: 'components' })}
+							>
+								{t('ui.open')}
+							</Button>,
+							t('shell.developmentMode'),
+						)}
+					{row(
+						'content.title',
+						<Button variant="outline" size="sm" onClick={() => navigate({ feature: 'content' })}>
+							{t('content.browse')}
+						</Button>,
+						t('content.settingsHint'),
+					)}
+				</SettingsSection>
+			</DesignScope>
+			<DesignScope className="space-y-3 min-w-0 px-1 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:break-all [&_button]:h-auto">
+				<SettingsSection className={sectionClass} title={t('shell.statusBar')}>
+					{STATUS_ITEMS.map((item) =>
+						toggle(
+							item.labelKey,
+							itemShown(settings.statusBar, item.id),
+							() =>
+								save(`status-${item.id}`, (draft) => {
+									draft.statusBar = withItemShown(draft.statusBar, item.id, !itemShown(draft.statusBar, item.id));
+								}),
+							undefined,
+							t('shell.showStatusItem', { item: t(item.labelKey) }),
+						),
+					)}
+					{row(
+						'shell.usageDisplay',
+						<SegmentedControl
+							value={settings.statusBar.usageDisplay}
+							ariaLabel={t('shell.usageDisplay')}
+							onChange={(value) =>
+								save('display', (draft) => {
+									draft.statusBar.usageDisplay = value;
+								})
+							}
+							options={[
+								{ value: 'used', label: t('shell.used') },
+								{ value: 'remaining', label: t('shell.remaining') },
+							]}
+						/>,
+					)}
+					{row(
+						'shell.usageMode',
+						<SegmentedControl
+							value={settings.statusBar.usageMode}
+							ariaLabel={t('shell.usageMode')}
+							onChange={(value) =>
+								save('mode', (draft) => {
+									draft.statusBar.usageMode = value;
+								})
+							}
+							options={[
+								{ value: 'verbose', label: t('shell.verbose') },
+								{ value: 'compact', label: t('shell.compact') },
+							]}
+						/>,
+					)}
+				</SettingsSection>
+			</DesignScope>
 			<SettingsSection className={sectionClass} title={t('settings.homeModules')}>
 				{plugin.moduleManifests().map((manifest) => (
 					<SearchableSetting

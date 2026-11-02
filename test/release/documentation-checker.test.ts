@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -12,9 +12,13 @@ test('documentation checks use ownership and links, not directory names, and res
 		writeFileSync(target, text);
 	};
 	const run = () =>
-		spawnSync(process.execPath, [path.resolve('scripts/verify-docs.mjs')], { cwd: root, encoding: 'utf8' });
+		spawnSync(process.execPath, [path.resolve('scripts/verify-docs.mjs')], {
+			cwd: root,
+			encoding: 'utf8',
+			windowsHide: true,
+		});
 	try {
-		expect(spawnSync('git', ['init', '--quiet'], { cwd: root }).status).toBe(0);
+		expect(spawnSync('git', ['init', '--quiet'], { cwd: root, windowsHide: true }).status).toBe(0);
 		const state = '.agents/speculo/.speculo/specdev';
 		const files: Record<string, string> = {
 			'.gitignore': 'temp/\n',
@@ -40,6 +44,51 @@ test('documentation checks use ownership and links, not directory names, and res
 		write('.agents/speculo/commands/example/COMMAND.md', '# Upstream template\n[Owner path](missing-owner-path.md)\n');
 		const baseline = run();
 		expect(baseline.status, baseline.stderr).toBe(0);
+
+		const archive = `${state}/changes/archive/2026-10-20-example`;
+		const archivedFile = `${archive}/README.md`;
+		const receiptFile = `${archive}/archive-receipt.md`;
+		const receipt = '## 对象移动结果\nChange: 2026-10-20-example\nSource: changes/2026-10-20-example\nTarget: changes/archive/2026-10-20-example\nResult: moved\n';
+		write(`${state}/design/target.md`, '# Valid\n');
+		write(archivedFile, '# 历史\n[目标](../../design/target.md#valid)\n');
+		expect(run().stderr).toContain('missing local link ../../design/target.md#valid');
+		for (const invalid of [receipt.replace('moved', 'planned'), receipt.replace('Source: changes/2026', 'Source: changes/../2026'), receipt.replace('Target: changes/archive/', 'Target: changes/other/'), receipt + 'Result: moved\n']) {
+			write(receiptFile, invalid);
+			expect(run().status, invalid).not.toBe(0);
+		}
+		write(receiptFile, receipt);
+		write(archivedFile, '# 历史\n[目标](../../design/target.md#valid) [源码](../../../../../../src/entry.ts:1)\n');
+		const moved = run();
+		expect(moved.status, moved.stderr).toBe(0);
+		write(`${state}/changes/2026-10-20-example/README.md`, '# Still active\n');
+		expect(run().stderr).toContain('missing local link ../../design/target.md#valid');
+		rmSync(path.join(root, state, 'changes/2026-10-20-example'), { recursive: true });
+		for (const target of ['../../design/missing.md', '../../design/target.md#missing', '../../../../../../src/entry.ts:0']) {
+			write(archivedFile, `# 历史\n[失效](${target})\n`);
+			expect(run().status, target).not.toBe(0);
+		}
+		write(archivedFile, '# 历史\n[目标](../../design/target.md#valid)\n');
+		write(`${state}/changes/design/target.md`, '# Current\n');
+		expect(run().stderr).toContain('missing heading anchor ../../design/target.md#valid');
+		rmSync(path.join(root, state, 'changes/design'), { recursive: true });
+		const escapedRoot = mkdtempSync(path.join(tmpdir(), 'huhu-archive-outside-'));
+		try {
+			const escapedFile = path.join(escapedRoot, 'escaped.md');
+			writeFileSync(escapedFile, '# Escaped\n');
+			symlinkSync(escapedFile, path.join(root, state, 'design/escape.md'));
+			write(archivedFile, '# 历史\n[越界](../../design/escape.md)\n');
+			expect(run().stderr).toContain('missing local link ../../design/escape.md');
+			write(archivedFile, `# 历史\n[越界](<${escapedFile}>)\n`);
+			expect(run().stderr).toContain('missing local link');
+		} finally {
+			rmSync(path.join(root, state, 'design/escape.md'), { force: true });
+			rmSync(escapedRoot, { recursive: true, force: true });
+		}
+		write(archivedFile, files[archivedFile]!);
+		write('contracts/hap/v0.1/shutdown.md', '# Contract\n[Broken](missing.md)\n');
+		expect(run().stderr).toContain('contracts/hap/v0.1/shutdown.md: missing local link missing.md');
+		write('contracts/hap/v0.1/shutdown.md', '# Contract\n[Valid](#contract)\n');
+		expect(run().status).toBe(0);
 		write(`${state}/changes/2026-10-21-docs/spec.md`, '# 文档规格\n[证据](missing.md)\n');
 		const missingEvidence = run();
 		expect(missingEvidence.status).not.toBe(0);
@@ -66,6 +115,80 @@ test('documentation checks use ownership and links, not directory names, and res
 		const rejected = run();
 		expect(rejected.status).not.toBe(0);
 		expect(rejected.stderr).toContain('missing local link missing.md');
+		write('docs/old/compatibility.md', '# 兼容说明\n[工作台](../workbench.md)\n');
+
+		const capturedInput = `${state}/changes/2026-10-21-docs/inputs/original.md`;
+		const punctuation = [
+			'## 9. 工具、审批与效果日志', '[工具](#9-工具审批与效果日志)',
+			'## 12. 数据、路径与迁移', '[数据](#12-数据路径与迁移)',
+			'## 14. 记忆、知识与可扩展能力', '[记忆](#14-记忆知识与可扩展能力)',
+			'## 15. 权限、凭证与运行治理', '[权限](#15-权限凭证与运行治理)',
+			'## 17. 验证、性能与发布门禁', '[验证](#17-验证性能与发布门禁)',
+			'## 19. 决议、未决验证与完成定义', '[决议](#19-决议未决验证与完成定义)',
+			'## 中文 Å_ß - key-value', '[字符](#中文-å_ß---key-value)',
+			'## 工具、审批', '## 工具审批', '[重复](#工具审批-1)',
+		].join('\n');
+		write(capturedInput, punctuation);
+		write('native/huhubot/tests/contract/chat/testdata/claim-fairness/README.md', '# Immutable test fixture\n');
+		const punctuationAndFixture = run();
+		expect(punctuationAndFixture.status, punctuationAndFixture.stderr).toBe(0);
+
+		write(capturedInput, `${punctuation}\n[坏锚点](#missing-anchor)\n`);
+		const badAnchor = run();
+		expect(badAnchor.status).not.toBe(0);
+		expect(badAnchor.stderr).toContain(`${capturedInput}: missing heading anchor #missing-anchor`);
+		write(capturedInput, punctuation);
+		write('native/huhubot/README.md', '# Unclassified production guide\n');
+		const unknownNative = run();
+		expect(unknownNative.status).not.toBe(0);
+		expect(unknownNative.stderr).toContain('unclassified markdown native/huhubot/README.md');
+		rmSync(path.join(root, 'native/huhubot/README.md'));
+
+		const inlineCode = `${punctuation}\nGo type \`[][2]string\`; \`[code](missing-code.md)\` [有效][kept]\n[kept]: #9-工具审批与效果日志\n`;
+		write(capturedInput, inlineCode);
+		const codeSpan = run();
+		write(capturedInput, punctuation);
+		const source = path.join(root, 'src/entry.ts');
+		write('docs/source-links.md', `# 源码\n[源码](<${source}:1>)\n`);
+		const sourceLine = run();
+		expect({ codeSpan: codeSpan.status, sourceLine: sourceLine.status }, `${codeSpan.stderr}\n${sourceLine.stderr}`).toEqual({ codeSpan: 0, sourceLine: 0 });
+
+		write(capturedInput, `${inlineCode}\n[真实坏链接](missing-adjacent.md)\n`);
+		const adjacent = run();
+		expect(adjacent.status).not.toBe(0);
+		expect(adjacent.stderr).toContain('missing local link missing-adjacent.md');
+		for (const body of ['`[真实](missing-delimiter.md)', '``[真实](missing-delimiter.md)`', '\\`[真实](missing-delimiter.md)\\`']) {
+			write(capturedInput, body);
+			const delimiter = run();
+			expect(delimiter.status).not.toBe(0);
+			expect(delimiter.stderr).toContain('missing local link missing-delimiter.md');
+		}
+		write(capturedInput, `${inlineCode}\n\n\`\`\`go\n[][2]string [围栏](missing-fenced.md)\n\`\`\`\n`);
+		write('src/literal.go:2', 'A real colon filename\n');
+		const literal = path.join(root, 'src/literal.go:2');
+		write('docs/source-links.md', `# 源码\n[源码](<${source}:1>) [冒号文件](<${literal}>) [外链](https://example.invalid/file.go:2) [邮件](mailto:example@example.invalid)\n`);
+		const legalLinks = run();
+		expect(legalLinks.status, legalLinks.stderr).toBe(0);
+		for (const target of [
+			`${source}:0`, `${source}:-1`, `${source}:1.5`, `${source}:bad`, `${source}:1:2`, `${source}:9007199254740992`,
+			`${path.join(root, 'src/missing.ts')}:1`, `${path.join(root, 'src')}:1`,
+		]) {
+			write('docs/source-links.md', `# 源码\n[无效](<${target}>)\n`);
+			const invalid = run();
+			expect(invalid.status, target).not.toBe(0);
+			expect(invalid.stderr).toContain('missing local link');
+		}
+		const outside = mkdtempSync(path.join(tmpdir(), 'huhu-doc-outside-'));
+		try {
+			const outsideSource = path.join(outside, 'external.ts');
+			writeFileSync(outsideSource, 'export {};\n');
+			write('docs/source-links.md', `# 源码\n[越界](<${outsideSource}:1>)\n`);
+			const escaped = run();
+			expect(escaped.status).not.toBe(0);
+			expect(escaped.stderr).toContain('missing local link');
+		} finally {
+			rmSync(outside, { recursive: true, force: true });
+		}
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}

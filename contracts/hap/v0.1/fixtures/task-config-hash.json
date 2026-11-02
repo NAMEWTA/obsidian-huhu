@@ -1,0 +1,228 @@
+{
+  "version": "huhu-task-config-v1",
+  "cases": [
+    {
+      "name": "unicode",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "note.write",
+            "tasks.get"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:dfdd9a4b0c41d4c3bc7700f80f5918f8c07eed00aedb4ce8304c313a4636c8a0"
+    },
+    {
+      "name": "tools-reversed",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "tasks.get",
+            "note.write"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:b51f431eae1974fa188cfa4372fc2f0eebeb67f44bf38969f0ba585ca24cee4b"
+    },
+    {
+      "name": "endpoint-trailing-slash",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "note.write",
+            "tasks.get"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1/",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:fc22fab415919d7542b996a110888a851d59a22f63455d538e3a9722c233f771"
+    },
+    {
+      "name": "credential-changed",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "note.write",
+            "tasks.get"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:ffffffffffffffffffffffffffffffff",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:5bb766518a471ddd91069acf849309a39cc7a99c07dc9669bef6bc2d2928dc09"
+    },
+    {
+      "name": "sponsor-changed",
+      "config": {
+        "sponsorAgentId": "agent:other",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "note.write",
+            "tasks.get"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:deefa7137b6ca47a217e496778060a5addb7cfccaf90438ec18cd6d5f006dc90"
+    },
+    {
+      "name": "no-model",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [
+            "note.write",
+            "tasks.get"
+          ],
+          "allowedCollaborationTargets": [
+            "agent:b",
+            "agent:c"
+          ]
+        }
+      },
+      "configurationHash": "sha256:d788afd2a563bbe28ce6ba9f7431f28cd5f9396231010b17be3a150e8198d03e"
+    },
+    {
+      "name": "omitted-lists",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:958abb0d9eb3d5b15385012935c2aad330d67445a73a9754173b140224cbd016"
+    },
+    {
+      "name": "empty-lists",
+      "config": {
+        "sponsorAgentId": "agent:sponsor",
+        "draft": {
+          "name": "临时😀<& ",
+          "description": "",
+          "persona": "精确\nJSON {\"x\":\"测\"} ",
+          "allowedTools": [],
+          "allowedCollaborationTargets": [],
+          "model": {
+            "modelId": "模型",
+            "providerId": "provider:p",
+            "protocol": "responses",
+            "endpoint": "https://example.invalid/v1",
+            "credentialRef": "credential:0123456789abcdef0123456789abcdef",
+            "capabilities": [
+              "tools",
+              "stream"
+            ]
+          }
+        }
+      },
+      "configurationHash": "sha256:958abb0d9eb3d5b15385012935c2aad330d67445a73a9754173b140224cbd016"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "session": "20261025T043239Z",
+  "task": "087-engine-adapter-preparation",
+  "status": "completed",
+  "writtenAt": "2026-10-25T22:34:33.619752+00:00",
+  "scope": "read-only T08 preparation; no T08 activation or implementation acceptance",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "mapRevision": 21,
+  "goalRevision": 20,
+  "taskSha256": "7aeba54d93d368b612be6e489f7714b6c35c3f62858bbe1ca93e1776501d7418",
+  "artifacts": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/REPORT.md",
+      "bytes": 38005,
+      "sha256": "595a39e40281ce264475161dfdebc34e6eda1f6cc1eac7e622e472cc8ef7e322"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/sources.json",
+      "bytes": 21188,
+      "sha256": "20c717e1254acbd0deb01b1c5d4896cf4a2090e3202524e705569a504b067400"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/source-recheck.json",
+      "bytes": 16961,
+      "sha256": "aedf90e42f15227a3862f1d5ff5e27b659e170bd5437090643d5431fa0a88a3d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/return.json",
+      "bytes": 930,
+      "sha256": "9074cf1fb4f92ccf8a152884c8bed55bfe7b0df7c6cf1399fcf4bc5e2c33a06a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/return.log",
+      "bytes": 212,
+      "sha256": "eeb177163df766c2f204159bc16cd4c169dead8a1c7a802cdb66709fb149cba1"
+    }
+  ],
+  "sourceCount": 70,
+  "allSourcesMatch": true,
+  "returnExitCode": 0,
+  "productionWrites": [],
+  "testRuns": [],
+  "delegations": [],
+  "liveCalls": [],
+  "ownedProcessesRemaining": [],
+  "stoppingPoint": "All owned commands exited synchronously; stop after complete manifest readback and return via native MESSAGE plus FINAL. Manifest excludes its own hash."
+}

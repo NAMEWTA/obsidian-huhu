@@ -49,8 +49,8 @@ test('production services write Apex JSON in the four content folders and leave 
 	});
 	await Promise.all([f.habit.flush(), f.expense.flush(), f.pomodoro.flush(), f.reading.flush()]);
 	const read = (path: string) => JSON.parse(f.vault.contents.get('huhu/' + path)!);
-	expect(read('习惯/habits.json')).toEqual({ version: 1, habits: [h], records: { '2026-10-14': [h.id] } });
-	expect(read('记账/expense.json')).toEqual({
+	expect(read('habits/habits.json')).toEqual({ version: 1, habits: [h], records: { '2026-10-14': [h.id] } });
+	expect(read('expenses/expense.json')).toEqual({
 		version: 1,
 		records: [
 			expect.objectContaining({
@@ -63,13 +63,13 @@ test('production services write Apex JSON in the four content folders and leave 
 		],
 		lastCategory: { expense: 'food' },
 	});
-	expect(read('番茄钟/pomodoro.json')).toEqual({
+	expect(read('pomodoro/pomodoro.json')).toEqual({
 		version: 2,
 		currentActivity: 'Writing',
 		tags: expect.any(Array),
 		sessions: [],
 	});
-	expect(read('阅读/reading.json')).toEqual({
+	expect(read('reading/reading.json')).toEqual({
 		activeBooks: [
 			{
 				title: 'Book',
@@ -92,7 +92,7 @@ test('production services write Apex JSON in the four content folders and leave 
 	expect(restored.reading.getActiveBooks()[0]?.title).toBe('Book');
 });
 test('unreadable Apex JSON is retained and unsaved changes are reported', async () => {
-	const path = 'huhu/记账/expense.json',
+	const path = 'huhu/expenses/expense.json',
 		f = await fixture({ [path]: '{broken' });
 	expect(f.expense.saveState.error).toBeTruthy();
 	f.expense.addRecord({ type: 'expense', amount: 10, category: 'food', date: '2026-10-14' });
@@ -101,7 +101,7 @@ test('unreadable Apex JSON is retained and unsaved changes are reported', async 
 	expect(f.expense.saveState.status).not.toBe('saved');
 });
 
-const expensePath = 'huhu/记账/expense.json';
+const expensePath = 'huhu/expenses/expense.json';
 const entry = (id: string, amount = 10) => ({ id, type: 'expense', amount, category: 'food', date: '2026-10-14', createdAt: 1 });
 const data = (records: ReturnType<typeof entry>[]) => JSON.stringify({ version: 1, records, lastCategory: {} });
 
@@ -162,10 +162,10 @@ test('all four JSON services observe external create, modify and delete through 
 	const f = await fixture();
 	const book = (title: string) => ({ title, author: '', coverUrl: '', isbn: '', source: 'manual', currentPage: 0, totalPages: 100, finished: false });
 	const cases = [
-		{ path: '习惯/habits.json', data: (name: string) => ({ version: 1, habits: [{ id: 'h', name, createdAt: '2026-10-14' }], records: {} }), current: () => f.habit.getHabits()[0]?.name, flush: () => f.habit.flush(), empty: undefined },
-		{ path: '记账/expense.json', data: (note: string) => ({ version: 1, records: [{ ...entry('e'), note }], lastCategory: {} }), current: () => f.expense.getRecords()[0]?.note, flush: () => f.expense.flush(), empty: undefined },
-		{ path: '番茄钟/pomodoro.json', data: (currentActivity: string) => ({ version: 2, currentActivity, tags: [], sessions: [] }), current: () => f.pomodoro.getActivity(), flush: () => f.pomodoro.flush(), empty: '' },
-		{ path: '阅读/reading.json', data: (title: string) => ({ activeBooks: [book(title)], sessions: [] }), current: () => f.reading.getActiveBooks()[0]?.title, flush: () => f.reading.flush(), empty: undefined },
+		{ path: 'habits/habits.json', data: (name: string) => ({ version: 1, habits: [{ id: 'h', name, createdAt: '2026-10-14' }], records: {} }), current: () => f.habit.getHabits()[0]?.name, flush: () => f.habit.flush(), empty: undefined },
+		{ path: 'expenses/expense.json', data: (note: string) => ({ version: 1, records: [{ ...entry('e'), note }], lastCategory: {} }), current: () => f.expense.getRecords()[0]?.note, flush: () => f.expense.flush(), empty: undefined },
+		{ path: 'pomodoro/pomodoro.json', data: (currentActivity: string) => ({ version: 2, currentActivity, tags: [], sessions: [] }), current: () => f.pomodoro.getActivity(), flush: () => f.pomodoro.flush(), empty: '' },
+		{ path: 'reading/reading.json', data: (title: string) => ({ activeBooks: [book(title)], sessions: [] }), current: () => f.reading.getActiveBooks()[0]?.title, flush: () => f.reading.flush(), empty: undefined },
 	];
 	for (const c of cases) {
 		const path = 'huhu/' + c.path;

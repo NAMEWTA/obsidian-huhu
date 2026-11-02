@@ -27,7 +27,7 @@ import type { MusicTrack } from '../src/modules/home/core/board/types/index';
 import { resetNetwork, calls, audioCalls, coverCalls } from './music-network-stub';
 import { musicVaultFixture } from './music-vault-fixture';
 import { runHomeReactChecks } from './run-home-react-checks';
-import { setCookies, windows, flushes, setFailLoad } from './music-electron-stub';
+import { setCookies, windows, flushes, setFailLoad, localSession } from './music-electron-stub';
 
 // Electron renderer timers, without a running Obsidian application.
 Object.assign(globalThis, { window: { setTimeout, clearTimeout } });
@@ -67,6 +67,45 @@ async function run(): Promise<void> {
 	const offline = new NeteaseAccount(fixture.app);
 	await assert.rejects(offline.login(), /LOAD_FAILED/); offline.destroy();
 	setFailLoad(false);
+
+	// Barriers make old restore results arrive after an explicit successful login.
+	for (const rejects of [false, true]) {
+		const racing = new NeteaseAccount(fixture.app), get = localSession.cookies.get;
+		let enter!: () => void, resolve!: (cookies: { name: string; value: string }[]) => void, reject!: (error: Error) => void;
+		const started = new Promise<void>(done => { enter = done; });
+		let first = true;
+		localSession.cookies.get = () => {
+			if (!first) return Promise.resolve([{ name: 'MUSIC_U', value: 'new-member' }]);
+			first = false; enter(); return new Promise((yes, no) => { resolve = yes; reject = no; });
+		};
+		try {
+			const restoring = racing.restore(); await started;
+			resetNetwork([{ code: 200, profile: { userId: 456 } }]);
+			await racing.login();
+			const notices = (Notice as unknown as { messages: string[] }).messages.length;
+			if (rejects) reject(new Error('old-credential-error'));
+			else resolve([]);
+			await restoring; await new Promise<void>(done => setImmediate(done));
+			assert.equal(racing.loggedIn, true, 'old restore cannot replace the newer login');
+			assert.equal(racing.error, '');
+			assert.equal((Notice as unknown as { messages: string[] }).messages.length, notices, 'obsolete errors stay silent');
+		} finally { localSession.cookies.get = get; racing.destroy(); }
+	}
+	for (const closeOwner of [false, true]) {
+		const racing = new NeteaseAccount(fixture.app), get = localSession.cookies.get;
+		let enter!: () => void, resolve!: (cookies: { name: string; value: string }[]) => void;
+		const started = new Promise<void>(done => { enter = done; });
+		localSession.cookies.get = () => { enter(); return new Promise(yes => { resolve = yes; }); };
+		try {
+			const loggingIn = racing.login(), rejected = assert.rejects(loggingIn, /CANCELLED/);
+			await started;
+			if (closeOwner) racing.destroy(); else windows.at(-1)!.close();
+			await rejected;
+			resolve([{ name: 'MUSIC_U', value: 'cancelled-member' }]);
+			await new Promise<void>(done => setImmediate(done));
+			assert.equal(racing.loggedIn, false, 'cancelled login cannot publish a late cookie');
+		} finally { localSession.cookies.get = get; racing.destroy(); }
+	}
 
 	resetNetwork([
 		{ data: [{ code: -110, url: null }] },
@@ -148,6 +187,7 @@ async function run(): Promise<void> {
 	setCookies([{ name: 'MUSIC_U', value: 'member' }]);
 	const svc = makeService();
 	await svc.load();
+	await svc.restoreAccount();
 	svc.addToPlaylist([track(1, 'flake'), track(2, 'next')]);
 	const audio = audios.at(-1)!;
 

@@ -1,0 +1,65 @@
+package groups_test
+import (
+ "context"
+ "encoding/json"
+ "fmt"
+ "strings"
+ "sync"
+ "sync/atomic"
+ "testing"
+ "time"
+ "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+ "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+func TestReviewerPageReplayQualificationAndActualRevocation(t *testing.T){
+ for _,mode:=range []string{"first-omit","first-returned","next-omit"}{t.Run(mode,func(t *testing.T){
+ var targets []string
+ made:=make(chan []api.Delegation,1);start:=make(chan struct{});pages:=make(chan api.DelegationPage,1);ack:=make(chan struct{});reserved:=make(chan struct{},1);release:=make(chan struct{});errs:=make(chan error,1)
+ var startOnce,releaseOnce,ackOnce sync.Once;var dispatch atomic.Int32
+ engine:=engineFunc(func(c context.Context,i api.EngineInput)(api.EngineResult,error){
+  if strings.HasPrefix(i.Intent,"replay-child"){return api.EngineResult{Status:"finished",Text:strings.Repeat("x",131072)},nil}
+  work:=func()(api.EngineResult,error){
+   children:=[]api.Delegation{};for n,id:=range targets{v,e:=i.Tools.Invoke(c,api.ToolCall{ID:fmt.Sprint("make",n),Name:"agents.delegate",Delegate:&api.DelegateCommand{Target:api.DelegationTarget{Kind:"existing",AgentID:id},Task:fmt.Sprint("replay-child",n),Constraints:[]string{}}});if e!=nil{return api.EngineResult{},e};children=append(children,*v.Delegation)};made<-children;<-start
+   query:=func(key,cursor string)(api.DelegationPage,error){v,e:=i.Tools.Invoke(c,api.ToolCall{ID:key,Name:"tasks.list",TaskList:&api.DelegationQuery{PageQuery:api.PageQuery{Limit:100,Cursor:cursor}}});if e!=nil{return api.DelegationPage{},e};pages<-*v.Tasks;<-ack;return *v.Tasks,nil}
+   first,e:=query("first","");if e!=nil{return api.EngineResult{},e}
+   if _,e=query("same-first","");e!=nil{return api.EngineResult{},e}
+   if mode=="next-omit"{if _,e=query("next",first.NextCursor);e!=nil{return api.EngineResult{},e};if _,e=query("old-first-again","");e!=nil{return api.EngineResult{},e}}
+   r,e:=i.Attempts.Reserve(c,api.AttemptRequest{LogicalCallID:"after-replay",InputEstimate:"1",OutputBound:"2"});if e!=nil{return api.EngineResult{},e};reserved<-struct{}{};<-release
+   e=i.Attempts.Dispatch(context.Background(),r,func(context.Context)error{dispatch.Add(1);return nil});if e!=nil{e=i.Attempts.AbortUnsent(context.Background(),r)}else{_,e=i.Attempts.Settle(context.Background(),r,api.AttemptObservation{Knowledge:"known",InputTokens:"1",OutputTokens:"1",ProducerEnded:true})}
+   return api.EngineResult{Status:"finished",Text:"only actually returned pages used"},e
+  };r,e:=work();if e!=nil{errs<-e};return r,e
+ })
+ c,loc:=open(t,bootstrap.Options{Engine:engine,Budget:api.BudgetPolicy{RootTokenLimit:"100",ProfileTokenLimit:"1000",MaintenanceTokenLimit:"0"}})
+ t.Cleanup(func(){startOnce.Do(func(){close(start)});ackOnce.Do(func(){close(ack)});releaseOnce.Do(func(){close(release)})})
+ a:=agent(t,c,"A",false);b:=agent(t,c,"B",true);members:=[]api.Agent{b};for n:=0;n<4;n++{v:=agent(t,c,fmt.Sprint("contributor",n),true);targets=append(targets,v.ID);members=append(members,v)};b=allow(t,c,b,[]string{"agents.delegate","tasks.list"},targets);members[0]=b;s:=group(t,c,a,members...);root:=send(t,c,s,"replay-parent",b.ID);db:=database(t,loc)
+ var admitted []api.Delegation;select{case admitted=<-made:case e:=<-errs:t.Fatal(e);case <-time.After(5*time.Second):t.Fatal("admission timeout")}
+ parent:=admitted[0].ParentRunID;for _,d:=range admitted{until:=time.Now().Add(5*time.Second);for{v,e:=c.API.Collaboration.GetTask(ctx,owner,api.IDQuery{ProfileID:meta(t,c,"q","").ProfileID,ID:d.ID});if e!=nil{t.Fatal(e)};if v.Result!=nil{if len(v.Result.Text)!=131072{t.Fatal("body size changed")};break};if time.Now().After(until){t.Fatal("child timeout")};time.Sleep(time.Millisecond)}}
+ before:=count(t,db,"SELECT revision FROM execution_runs WHERE run_id=?",parent);if count(t,db,"SELECT json_array_length(group_binding_json,'$.members') FROM execution_runs WHERE run_id=?",parent)!=1{t.Fatal("user getter mutated proof")}
+ startOnce.Do(func(){close(start)})
+ var first api.DelegationPage;var omitted api.Delegation;consumed:=map[string]api.Delegation{};seenFirst:=map[string]bool{};var firstEncoding string
+ stages:=2;if mode=="next-omit"{stages=4};previousRevision:=before
+ for stage:=0;stage<stages;stage++{
+  var page api.DelegationPage;select{case page=<-pages:case e:=<-errs:t.Fatal(e);case <-time.After(5*time.Second):t.Fatal("page timeout")}
+  raw,_:=json.Marshal(page);if len(raw)>524288{t.Fatal("page too large")}
+  if stage==0{first=page;firstEncoding=string(raw);for _,d:=range first.Items{seenFirst[d.ID]=true;if d.Result!=nil&&d.Result.Text!=""{consumed[d.ID]=d}};if len(consumed)!=3||first.NextCursor==""{t.Fatal("original byte boundary not exercised")};for _,d:=range admitted{if !seenFirst[d.ID]{omitted=d}};if omitted.ID==""{t.Fatal("no actual omitted admission")}}
+  if stage==1||stage==3{if string(raw)!=firstEncoding{t.Fatal("same snapshot page DTO changed on replay")}}
+  added:=0;if stage==2{if page.NextCursor!=""{t.Fatal("unexpected third page")};for _,d:=range page.Items{if seenFirst[d.ID]{t.Fatal("cursor duplicate")};seenFirst[d.ID]=true;if d.Result!=nil&&d.Result.Text!=""{consumed[d.ID]=d;added++}};if len(consumed)!=4||len(seenFirst)!=5||added!=1{t.Fatal("cross-page body/metadata omission")}}
+  var proofRaw string;if e:=db.QueryRow("SELECT group_binding_json FROM execution_runs WHERE run_id=?",parent).Scan(&proofRaw);e!=nil{t.Fatal(e)};var proof api.GroupBinding;if e:=json.Unmarshal([]byte(proofRaw),&proof);e!=nil{t.Fatal(e)}
+  if len(proof.Members)!=1+len(consumed){t.Fatalf("phantom/lost member at stage%d: %s",stage,proofRaw)}
+  for _,d:=range consumed{found:=false;for _,m:=range proof.Members{if m.AgentID==d.ExecutorAgentID&&m.Incarnation=="1"&&m.HistoryRevision=="1"{found=true}};if !found{t.Fatal("missing exact contributor tuple")}}
+  resultRefs:=count(t,db,"SELECT count(*) FROM execution_runs r,json_each(r.derived_json) d WHERE r.run_id=? AND json_extract(d.value,'$.kind')='task_result'",parent)
+  if resultRefs!=len(consumed){t.Fatalf("derived refs=%d want%d",resultRefs,len(consumed))}
+  revision:=count(t,db,"SELECT revision FROM execution_runs WHERE run_id=?",parent);want:=previousRevision;if stage==0{want=before+3}else if stage==2{want++};if revision!=want{t.Fatalf("stage%d revision=%d want%d",stage,revision,want)};previousRevision=revision
+  t.Logf("stage=%d pageBytes=%d actualBodies=%d proof=%s task_result_refs=%d revision=%d omittedAdmission=%s/%s",stage,len(raw),len(consumed),proofRaw,resultRefs,revision,omitted.ID,omitted.ExecutorAgentID)
+  ack<-struct{}{}
+ }
+ select{case <-reserved:case e:=<-errs:t.Fatal(e);case <-time.After(5*time.Second):t.Fatal("reservation timeout")}
+ removed:=omitted.ExecutorAgentID;if mode=="first-returned"{for _,d:=range first.Items{if d.Result!=nil&&d.Result.Text!=""{removed=d.ExecutorAgentID;break}}}
+ keep:=[]string{a.ID,b.ID};for _,id:=range targets{if id!=removed{keep=append(keep,id)}};update(t,c,getSession(t,c,s.ID),keep,api.GroupHistoryScope{Kind:"none"})
+ if mode=="first-omit"&&count(t,db,"SELECT count(*) FROM execution_runs WHERE run_id=? AND status='running'",parent)!=1{t.Error("unread removal canceled consumer")}
+ releaseOnce.Do(func(){close(release)});wait(t,c,root.RunID);if e:=c.Close();e!=nil{t.Fatal(e)}
+ want:=int32(0);if mode=="first-omit"{want=1};if dispatch.Load()!=want{t.Fatalf("actual Dispatch %d want%d",dispatch.Load(),want)}
+ if count(t,db,"SELECT count(*) FROM execution_runs WHERE child_slot<>0")!=0||count(t,db,"SELECT count(*) FROM task_config_pins")!=0{t.Fatal("cleanup incomplete")}
+ t.Logf("actually removed=%s mode=%s actual Background Dispatch=%d slots=0 pins=0",removed,mode,dispatch.Load())
+ })}
+}

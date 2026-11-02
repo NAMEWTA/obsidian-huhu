@@ -1,0 +1,22 @@
+{
+  "scope": "113 task/report/manifest/log artifacts; excludes self",
+  "files": {
+    "REPORT.md": "4995c7b803c4a46cd484a3f9cb3d8299270856a8d7bf19f04b5c2c9f51a60baa",
+    "TASK.md": "b19019746ac99aa1741fb111705fffc420cdb5c497749558399bf0f298309385",
+    "final-inputs.json": "b349c54b2ef810e23cd971197ec58b07a98cab950272d77d2e361705b4792b30",
+    "logs/00-before-inputs.json": "ce031f100efbc3f4fb9c9e2cf97d87784666112f4ae84e6e8b88b71a660c9fef",
+    "logs/01-targeted-red.json": "be0cf06e0d1c2b7aab54daa2aeb19e6ca843b972c465495742b309ae8667ad4b",
+    "logs/01-targeted-red.log": "f010e33e0b8887a9ef0fe80edb35c9b5f720c4fb97acb27f7e86e8b337b042b3",
+    "logs/02-targeted-green.json": "f88b8ff6c1d132d7f5e771a78aac7f45dc2dfa473c22d974b37f432144a78927",
+    "logs/02-targeted-green.log": "3794fc59228e5883e2e3bdfd2786399336577b66278c83f5c7372622dd55fe20",
+    "logs/03-docs.json": "93a411e809c51088fee9fc4d67882e39796fd8d03705c295ee9ba36835741010",
+    "logs/03-docs.log": "caae170d8e737d4fbdddd1c7a9e7fe53b03924887e415c75985dacb0227e70cc",
+    "logs/04-owned-change.patch": "b22fd10312444212e2bb7b7ea4a6b13a5d2f458955aa7d6fb786d4fbf33bca29",
+    "logs/05-diff-check.log": "055b5b1006a04bedc0fc90b3428fc69eb873c7410ac9ae86d35b71326251fa1e",
+    "logs/before/scripts__documentation-policy.mjs.txt": "672f28f21f3b6151eee52e5dc52842d2ecb29325ced8b2702bee0d9c291aa0b8",
+    "logs/before/scripts__verify-docs.mjs.txt": "a521e1ec0e1126671ee4b2d019659aab1b649297602cc87b491c3a3fba8bfc6f",
+    "logs/before/test__release__documentation-checker.test.ts.txt": "1a2b2f8295769e9a33f1f634fdbccc0d806301c2fca74cc7f3a555d39cc293b5",
+    "logs/before/test__release__documentation-policy.test.ts.txt": "e8afd03604d6592f2dd807567034e9964ee9094866c22e39e7f39720f069e41e",
+    "return-check.log": "d25864b1caf3f2f9b10b8563dc52f2a36098c70e4ef3be16a54ea912b15f412b"
+  }
+}

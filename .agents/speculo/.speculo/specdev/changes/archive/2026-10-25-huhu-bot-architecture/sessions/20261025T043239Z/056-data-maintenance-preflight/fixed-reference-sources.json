@@ -1,0 +1,158 @@
+{
+  "acceptedAudit": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/reference-audit.json",
+    "readAt": "2026-10-25T12:30:25.163421+00:00",
+    "bytes": 13282,
+    "sha256": "09ee51b9f0913dccfff25a682154576008356ba4fd2586d486c001057470cd7e",
+    "lineCount": 287,
+    "selection": "REF03 REF04 REF07 REF08 accepted activity/license evidence; no new GitHub search"
+  },
+  "repositories": [
+    {
+      "id": "REF-03",
+      "repo": "liliMozi/openhanako",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/liliMozi/openhanako",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T14:43:45Z",
+      "updated_at": "2026-10-25T01:24:35Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "head_commit_date": "2026-10-11T04:34:51Z",
+      "head_url": "https://github.com/liliMozi/openhanako/commit/9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "reference_sha": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/LICENSE",
+      "license_spdx": "Apache-2.0",
+      "license_sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/package.json",
+          "sha256": "ab11fe41746d438b21f09b27ee8c0d26f6e58f449e2aa68f0bc8d795d74a711b"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-04",
+      "repo": "CopilotKit/OpenBot",
+      "checked_on": "2026-10-25",
+      "errors": [],
+      "html_url": "https://github.com/CopilotKit/OpenBot",
+      "default_branch": "main",
+      "pushed_at": "2026-10-24T00:07:42Z",
+      "updated_at": "2026-10-25T03:33:17Z",
+      "archived": false,
+      "disabled": false,
+      "head_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "head_commit_date": "2026-10-24T00:07:00Z",
+      "head_url": "https://github.com/CopilotKit/OpenBot/commit/46642d6c91daa663bccff673595f4e12a419a496",
+      "reference_sha": "46642d6c91daa663bccff673595f4e12a419a496",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "6d35a6bb107ae508da34636387f6208e75a6938e797bc0d5bfa9489d2ca95bad",
+      "manifests": [
+        {
+          "path": "package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/package.json",
+          "sha256": "9095e43a5a4157c9c3df950e01749a4adb672f6b5bd077c655521afa43158aef"
+        },
+        {
+          "path": "server/package.json",
+          "url": "https://github.com/CopilotKit/OpenBot/blob/46642d6c91daa663bccff673595f4e12a419a496/server/package.json",
+          "sha256": "bd8be65505095a3267629254626fb77ff1e1d6243c6a9ced5c72d86d69e13ba1"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-07",
+      "repo": "mattn/go-sqlite3",
+      "checked_on": "2026-10-25",
+      "head_sha": "dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "reference_sha": "dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "head_commit_date": "2026-09-28T00:37:57Z",
+      "head_url": "https://github.com/mattn/go-sqlite3/commit/dbbe931904f2ee06546448fbe7cf7780f61bc110",
+      "errors": [],
+      "discovery": "git shallow clone after GitHub REST rate limit",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "afa48e5e64dc610298d80b010ae7a3450f61a79500a9f1d1697ff6dcbbfa1f72",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/go.mod",
+          "sha256": "4c08597e14c92d9ed25f1bd14a2242198f0e3011964e798018abceb2ccbe82bf"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/mattn/go-sqlite3/blob/dbbe931904f2ee06546448fbe7cf7780f61bc110/README.md",
+          "sha256": "873f802ba23f13ca483711708737a9d4912cc3e6a04f8b75b42c4168f9196324"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    },
+    {
+      "id": "REF-08",
+      "repo": "ncruces/go-sqlite3",
+      "checked_on": "2026-10-25",
+      "head_sha": "da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "reference_sha": "da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "head_commit_date": "2026-10-24T09:56:48+01:00",
+      "head_url": "https://github.com/ncruces/go-sqlite3/commit/da0ceb8b723e44c2dfde7b287286a2be4ded0016",
+      "errors": [],
+      "discovery": "git shallow clone after GitHub REST rate limit",
+      "license_path": "LICENSE",
+      "license_url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/LICENSE",
+      "license_spdx": "MIT",
+      "license_sha256": "8929c89a593807bf0c042272adc7301376a661050876bd702ebdd36cd7c55d2b",
+      "manifests": [
+        {
+          "path": "go.mod",
+          "url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/go.mod",
+          "sha256": "a46cef90f9ea3996cbcb0eb1345a8a6e6bcb0afd57526ea1edeb96f671c69230"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/ncruces/go-sqlite3/blob/da0ceb8b723e44c2dfde7b287286a2be4ded0016/README.md",
+          "sha256": "c59ec7a5125a3c2499031f0b53bd8dff01805996d34da7e4778dbe693737831c"
+        }
+      ],
+      "activity_window": "2024-10-25 through 2026-10-25",
+      "activity_verified": true
+    }
+  ],
+  "moduleProvenanceSource": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/download-modules.json",
+    "readAt": "2026-10-25T12:30:25.163700+00:00",
+    "bytes": 7417,
+    "sha256": "0fd3174b32d5a3c5ca444424c93b755838be210c9e01fafceb749f55167e1620",
+    "lineCount": 51,
+    "selection": "selected ncruces actual production v0.35.6 provenance"
+  },
+  "productionModule": {
+    "Path": "github.com/ncruces/go-sqlite3",
+    "Version": "v0.35.6",
+    "Info": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.info",
+    "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+    "Zip": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.zip",
+    "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+    "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+    "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8=",
+    "Origin": {
+      "VCS": "git",
+      "URL": "https://github.com/ncruces/go-sqlite3",
+      "Hash": "091633ebb62b0c78988d3e079149333b36337599",
+      "Ref": "refs/tags/v0.35.6"
+    }
+  },
+  "note": "Default-branch reference da0ceb... is not production tag 091633...; this task reads v0.35.6 locally. 002 prior backup/query-cancel probes are not rerun or evidence of backup cancellation/full Profile consistency."
+}

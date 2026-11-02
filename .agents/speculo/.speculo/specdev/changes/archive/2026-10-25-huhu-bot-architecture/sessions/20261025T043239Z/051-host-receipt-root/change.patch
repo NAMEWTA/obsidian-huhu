@@ -1,0 +1,96 @@
+--- before/src/shared/storage/vault-layout.ts
++++ after/src/shared/storage/vault-layout.ts
+@@ -40,6 +40,8 @@
+ export const DASHBOARDS_ROOT = '.huhu/dashboards';
+ export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
+ export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
++/** Host-local minimal receipts; the Bot business database remains in its OS Profile root. */
++export const HUHUBOT_RUNTIME_ROOT = '.huhu/huhubot';
+ export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';
+ export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];
+ /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */
+--- before/src/shared/storage/vault-layout.test.ts
++++ after/src/shared/storage/vault-layout.test.ts
+@@ -15,6 +15,7 @@
+ 	isVisibleHuhuPath,
+ 	huhuName,
+ 	HUHU_VISIBLE_ROOT,
++	HUHUBOT_RUNTIME_ROOT,
+ 	TASK_ARCHIVE_PATH,
+ } from './vault-layout';
+ 
+@@ -47,6 +48,14 @@
+ 	expect(() => dashboardPath('.git/x')).toThrow();
+ });
+ 
++test('Bot host receipts stay in the private runtime root and outside indexed documents', () => {
++	expect(HUHUBOT_RUNTIME_ROOT).toBe('.huhu/huhubot');
++	for (const path of [HUHUBOT_RUNTIME_ROOT, `${HUHUBOT_RUNTIME_ROOT}/device-a/host-receipts/profile-a/effect-a.json`, `${HUHUBOT_RUNTIME_ROOT}/device-b/host-receipts/profile-b/effect-b.md`]) {
++		expect(isVisibleHuhuPath(path)).toBe(false);
++		expect(isContentPath(path)).toBe(false);
++	}
++});
++
+ test('generated names never contain whitespace or characters a filesystem refuses', () => {
+ 	expect(huhuName('First article')).toBe('First-article');
+ 	expect(huhuName('  a\tb \n c  ')).toBe('a-b-c');
+--- before/src/modules/sync/core/excludes.ts
++++ after/src/modules/sync/core/excludes.ts
+@@ -1,3 +1,5 @@
++import { HUHUBOT_RUNTIME_ROOT } from '../../../shared/storage/vault-layout';
++
+ /** Managed ignore rules protect device state and credentials while retaining user content and shared definitions.
+  * Both .gitignore and the local info/exclude get an idempotent block; existing user rules stay intact.
+  * Already tracked matches are removed only from the index after backing up staged blobs and the original index.
+@@ -14,6 +16,7 @@
+ 	'**/.huhu/config/identity.json',
+ 	'**/.huhu/sync/',
+ 	'**/.huhu/notifications/',
++	`**/${HUHUBOT_RUNTIME_ROOT}/`,
+ 	'**/.huhu/browser/',
+ 	'**/.huhu/terminal-agent/',
+ 	'**/.huhu/agents/',
+--- before/src/modules/sync/platform/desktop/excludes.test.ts
++++ after/src/modules/sync/platform/desktop/excludes.test.ts
+@@ -36,6 +36,14 @@
+ 	writeFileSync(path.join(root, '.huhu/automation/definitions/weekly-1/操作.md'), '# definition');
+ 	mkdirSync(path.join(root, '.huhu/automation/dev/runs'), { recursive: true });
+ 	writeFileSync(path.join(root, '.huhu/automation/dev/runs/1.json'), '{}');
++	for (const relative of [
++		'.huhu/huhubot/device-a/host-receipts/profile-a/effect-a.json',
++		'nested-vault/.huhu/huhubot/device-b/host-receipts/profile-b/effect-b.json',
++	]) {
++		const receipt = path.join(root, relative);
++		mkdirSync(path.dirname(receipt), { recursive: true });
++		writeFileSync(receipt, '{"effectFingerprint":"fixture","status":"received"}');
++	}
+ 	mkdirSync(path.join(root, 'huhu/闪念/2026/10'), { recursive: true });
+ 	writeFileSync(path.join(root, 'huhu/闪念/2026/10/2026-10-21.md'), '- 16:54 idea');
+ 	writeFileSync(path.join(root, 'note.md'), 'hello');
+--- before/docs/data.md
++++ after/docs/data.md
+@@ -43,6 +43,7 @@
+ | 笔记导航器预览缓存 | 浏览器的 IndexedDB 库 `huhu-navigator-<库 id>`，保存每篇笔记的预览文字和缩略图路径。它不在库目录里，可随时用“重建缓存”丢弃，不影响笔记 |
+ | 批注与锚点（v2） | `.huhu/editor/comments/` 下的 `index.json`、`pending.json`、`files/<笔记路径 SHA-256 前 16 位>.json`；损坏副本在 `set-aside/` |
+ | 自动化运行、通知回执 | `.huhu/automation/<device-id>/`、`.huhu/notifications/<device-id>/` |
++| Bot 宿主最小回执根 | `.huhu/huhubot/`，按设备身份及 Profile、effect 的安全键隔离；用于本机接收、完成和核查凭据，不是 Bot 业务数据库 |
+ | 自动化待办投递快照 | 同一运行历史的 `taskDelivery` 保存 `effectKey`、计划归属日期、时区、解析后的目标快照 `target` 以及最终 `receipt`/结果。失败或中断重试复用原快照和键，新的手动执行产生新键；它不承诺跨设备同时写入的全局恰好一次 |
+ | 智能体派发快照 | 同一自动化 `runtime.json`，包含最终提示词、文件引用、来源、调用 ID 和交付回执 |
+ | 智能体标签布局与统计 | `.huhu/terminal-agent/<device-id>/workspace.json`、`workspace-stats.json` |
+@@ -74,6 +75,8 @@
+ 
+ Bot Runner 底座的 Profile 位于本机受管根，每份目录包含 `profile.sqlite3` 及 SQLite WAL/SHM。Linux 使用绝对 `$XDG_STATE_HOME/huhu/huhubot/profiles/`，缺省为 `~/.local/state/huhu/huhubot/profiles/`；macOS 为 `~/Library/Application Support/HUHU/huhubot/profiles/`，Windows 为 `%LOCALAPPDATA%/HUHU/huhubot/profiles/`。CLI 的 `--profile` 必须是受管根内的绝对目录，不接受库内任意数据库路径。Profile 根由 Runner 独立构造，数据库按文件身份互斥，关闭后才能重开；当前底座持久化身份、command epoch、修订与创建时间。不把数据库放进 vault 或由插件 JSON store 改写；这不是移动端或多设备同步的承诺。
+ 
++库内 `.huhu/huhubot/` 仅为宿主最小回执预留受管运行根，具体有界写入与核查由 Bot 宿主能力负责。回执可包含 effect/command 身份与调用指纹、必要目标定位、版本/hash、状态及核查证据，不保存完整笔记或对话正文、Checkpoint（CP）、凭证，也不复制 Approval、Run 或事件业务账本。Profile SQLite 仍是 Bot 业务权威；回执根不提供另一份业务库或可同步的有效批准。未知效果的最小记录仍可能包含敏感元数据，不能当缓存任意删除，核查与清除由对应效果生命周期处理。
++
+ 默认的“系统账号”不重定向 HOME、提供方数据根或 XDG/Windows 数据目录，CLI 沿用本机已有登录。HUHU 的运行事件保存在库内；开启状态 Hook 或自动化运行所需 Hook 时，会在 `~/.huhu/agent-hooks/` 保存共用脚本与备份，并修改真实提供方配置中的约定条目或扩展文件。它们不会随关库自动移除，具体范围和移除操作见[智能体工作台](agent-workbench.md#状态-hook)。
+ 
+ “托管账号”使用库内的 HOME、提供方配置目录、XDG/Windows 数据目录和临时目录，状态 Hook 与事件文件同属账号。浏览器 Cookie、站点数据、缓存、下载与抓取附件也进入库内设备/profile 或 artifacts 目录。库外 CLI homes 不自动搬迁；托管账号不回退到系统账号，也不复制系统登录。
+@@ -87,6 +90,7 @@
+ `.huhu/` 以点开头，**Obsidian Sync 不同步这类隐藏目录**；宿主配置目录是官方列出的例外，`.huhu/` 不属于它（见 [Obsidian 官方说明](https://obsidian.md/help/sync/settings) 的 Hidden files and folders）。所以 `.huhu/dashboards/` 中的看板和 `.huhu/automation/definitions/` 中的自动化操作，以及 `.huhu/` 下的其他 HUHU 专用数据（含加密的保险箱）不会经 Obsidian Sync 到达另一台设备；库内可见的 `huhu/` 下的日志、闪念、收件箱、档案、记账等记录和其他笔记不受这一排除规则影响。需要同步 HUHU 专用数据时，请使用并核对能同步隐藏目录的工具：Git、iCloud、Syncthing 等。桌面端可以使用 HUHU 的 [Git 同步](sync.md)，其私有数据排除范围见下文。
+ 
+ - `.huhu/config/settings.json` 由库的所有设备共用；`.huhu/config/devices/<device-id>.json` 和各模块的 `<device-id>` 目录只属于一台设备，按设备隔离。用 HUHU 的 Git 同步时，这些设备配置、身份映射、同步计时和通知状态不跟踪；浏览器会话、智能体账号与运行目录、缓存、恢复副本和锁文件等设备私有数据默认不提交（见[Git 同步](sync.md#默认不提交的-huhu-私有数据)）。
++- HUHU 的 Git 同步规则排除整个 `.huhu/huhubot/` 运行根，包括嵌套库中的同类路径；自动化定义与普通笔记仍按原规则处理。这项 Git 排除不配置或控制外部 Obsidian Sync、iCloud、Syncthing 或其他同步工具，使用者仍需核对各工具自己的同步范围。
+ - 自动化只在它所属的设备上运行，见[自动化与通知](automation.md#设备归属)。
+ - 使用共享 `JsonStore` 的设置和 JSON 数据在写入前做三方合并，并保留上一份有效内容为 `.backup`。保险箱是独立密文协议，不执行自动合并；图标、批注、内容移动和看板也有各自的恢复规则。同步工具产生的冲突副本仍需手动处理。
+ 

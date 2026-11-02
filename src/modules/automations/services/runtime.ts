@@ -2,7 +2,7 @@ import { FileSystemAdapter, Notice, Platform } from 'obsidian';
 import type { ModuleContext } from '../../../app/contracts/module';
 import { deviceId as getDeviceId } from '../../../host/obsidian/storage/device-id';
 import { privateVaultStorage } from '../../../host/obsidian/storage/private-storage';
-import { AutomationError, automationOutcome } from '../../../shared/automation/errors';
+import { AutomationError } from '../../../shared/automation/errors';
 import {
 	isActiveRun,
 	type AutomationDefinition,
@@ -11,12 +11,13 @@ import {
 } from '../../../shared/automation/types';
 import { t } from '../../../shared/i18n/index';
 import { AGENT_SESSIONS } from '../../agent/api';
-import { HOME_CALENDAR } from '../../home/api';
-import { deliverCalendarTask } from './calendar-delivery';
+import { TASKS } from '../../task/api';
+import { deliverTask } from './task-delivery';
 import type { NotificationOpener, NotificationRequest } from '../../notifications/api';
-import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_SOURCES, type AutomationSource } from '../api';
-import { actionAvailability, actionDefinition } from '../core/actions/registry';
-import { AutomationService } from '../core/service';
+import { AUTOMATION_AGENT_RUNTIME, AUTOMATION_SOURCES, automationRuntimePath, type AutomationSource } from '../api';
+import type { RecoveryOwner } from '../../../shared/storage/recovery-contracts';
+import { actionAvailability } from '../core/actions/registry';
+import { AutomationService, automationRecoveryOwners } from '../core/service';
 import { createActionHost, openNote } from './action-host';
 import { MarkdownAutomationDefinitions } from '../platform/definitions';
 import { createAutomationViewStore, type AutomationViewStore } from './view-store';
@@ -34,6 +35,8 @@ export interface AutomationRuntime {
 	runAction(id: string): Promise<void>;
 	stopAction(id: string): Promise<void>;
 	openAction(id: string): Promise<void>;
+	/** Backup/restore owners for the files this runtime really writes (run history and definition documents). */
+	readonly recoveryOwners: readonly RecoveryOwner[];
 	/** Stop admission and owned runs (`disabled`) or interrupt them (`unload`), then release storage. */
 	shutdown(reason: 'disabled' | 'unload'): Promise<void>;
 }
@@ -91,13 +94,7 @@ export async function createAutomationRuntime(
 				throw new AutomationError(source.kind === 'widget' ? 'widgetModuleDisabled' : 'sourceMissing');
 			await provider.open(source, ownerWindow);
 		},
-		createTask: async (action, runId, execution) => {
-			if (action.target === 'calendar')
-				return deliverCalendarTask(context.services.peek(HOME_CALENDAR), action, execution);
-			const provider = (await providers()).find((item) => item.createTask);
-			if (!provider?.createTask) throw new AutomationError('sourceMissing');
-			return provider.createTask(action, runId);
-		},
+		createTask: async (action, _runId, execution) => deliverTask(context.services.peek(TASKS), action, execution),
 	};
 	const openRuns = (resourceId?: string) =>
 		shell.open(
@@ -119,39 +116,38 @@ export async function createAutomationRuntime(
 	};
 	const service = new AutomationService(
 		privateVaultStorage(app),
-		`.huhu/automation/${deviceId}/runtime.json`,
+		automationRuntimePath(deviceId),
 		deviceId,
 		sources,
 		() => context.services.peek(AUTOMATION_AGENT_RUNTIME),
 		async (run, definition) => {
+			const snapshot = run.definition ?? definition;
 			if (
-				definition.notifyOn === 'never' ||
-				(definition.notifyOn === 'failure' && run.status !== 'failed' && run.status !== 'interrupted')
+				snapshot.notifyOn === 'never' ||
+				(snapshot.notifyOn === 'failure' && run.status !== 'failed' && run.status !== 'interrupted')
 			)
 				return;
-			if (definition.source) {
-				const provider = await owner(definition.source.kind);
-				if (provider?.canNotify && !(await provider.canNotify(definition))) return;
+			if (snapshot.source) {
+				const provider = await owner(snapshot.source.kind);
+				if (provider?.canNotify && !(await provider.canNotify(snapshot))) return;
 			}
 			// A reminder delivers its own text when it ran; every other outcome is reported as a result.
-			const notice = actionDefinition(definition.action.kind)?.notice?.(definition.action);
+			// Old runs without a definition snapshot must not borrow today's reminder text.
+			const action = run.definition?.action;
+			const notice = action?.kind === 'notify' ? action.body : undefined;
 			const plainNotice = notice !== undefined && run.status === 'succeeded';
 			await notify({
 				id: run.id,
-				title: definition.name,
-				body: plainNotice ? notice : automationOutcome(run),
-				presentation: plainNotice
-					? undefined
-					: {
-							kind: 'automation-run',
-							status: run.status,
-							message: run.message,
-							errorCode: run.errorCode,
-							errorParams: run.errorParams,
-						},
-				source: definition.source,
-				target: { runId: run.id, automationId: definition.id, terminalId: run.terminalId },
-				channels: definition.channels,
+				// The admitted definition/title is durable history, never today's definition name.
+				title: (run.definition?.name ?? run.title ?? '').trim() || t('automation.unnamedAutomation'),
+				// Free-form execution errors and parameters may contain credentials or prompts.
+				// Persist the safe delivery text; the inbox and toast read the same snapshot.
+				body: plainNotice
+					? `${t(`automation.${run.status}`)}${t('automation.colon')}${notice}`
+					: t(`automation.${run.status}`),
+				source: snapshot.source,
+				target: { runId: run.id, automationId: run.automationId, terminalId: run.terminalId },
+				channels: snapshot.channels,
 			});
 		},
 		true,
@@ -222,6 +218,7 @@ export async function createAutomationRuntime(
 	return {
 		service,
 		store: view.store,
+		recoveryOwners: automationRecoveryOwners(service, deviceId),
 		opener,
 		sources: providers,
 		retry,

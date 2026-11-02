@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "artifact": "design-tree",
+  "change": "2026-10-26-unified-browser-versioning-archives",
+  "status": "consensus",
+  "round": 2,
+  "nodes": [
+    {
+      "id": "D-001",
+      "title": "统一摄入与本地合并",
+      "question": "将三个 Issue、两个 PR 放在同一新 change，并合并到当前分支。",
+      "depends_on": [],
+      "recommendation": "按明确请求汇集三份来源，不拆成三个 change；只合并当前本地分支。",
+      "status": "answered",
+      "round": 1,
+      "answer": "按明确请求汇集三份来源，不拆成三个 change；只合并当前本地分支。",
+      "log_ref": "LOG-001"
+    },
+    {
+      "id": "D-002",
+      "title": "保留全部目标",
+      "question": "统一 change 的后续验收范围是什么？",
+      "depends_on": [],
+      "recommendation": "保留三份 Issue 完整目标，区分已交付、首阶段缺口、后续扩展；本轮只合并与规格整理。",
+      "status": "answered",
+      "round": 1,
+      "answer": "保留三份 Issue 完整目标，区分已交付、首阶段缺口、后续扩展；本轮只合并与规格整理。",
+      "log_ref": "LOG-002"
+    },
+    {
+      "id": "D-003",
+      "title": "采纳档案基础设计",
+      "question": "是否采纳 #3 的 v2 稳定身份、独立关系文件、可见定义/迁移事实、home 引用边界？",
+      "depends_on": [],
+      "recommendation": "采纳上述四项基础设计；保留迁移恢复和性能验证义务。",
+      "status": "answered",
+      "round": 1,
+      "answer": "采纳上述四项基础设计；保留迁移恢复和性能验证义务。",
+      "log_ref": "LOG-003"
+    },
+    {
+      "id": "D-004",
+      "title": "受管档案历史恢复",
+      "question": "通用档案能否直接由版本管理覆盖旧文件？",
+      "depends_on": [],
+      "recommendation": "由 archives 预检实体/关系/迁移状态；未知、不安全、未支持时只读比较并拒绝覆盖。",
+      "status": "answered",
+      "round": 1,
+      "answer": "由 archives 预检实体/关系/迁移状态；未知、不安全、未支持时只读比较并拒绝覆盖。",
+      "log_ref": "LOG-004"
+    },
+    {
+      "id": "D-005",
+      "title": "自动本地历史的默认政策",
+      "question": "自动本地历史如何启用、采集和保留？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "用户主动开启；普通笔记含未保存 buffer，排除隐藏与受管敏感内容；有变化时每 5 分钟及切换/重要操作采样并去重；默认 30 天、每库每设备 1 GiB，可配置；保护恢复/撤销引用，空间不足暂停新采集并提示。",
+      "status": "answered",
+      "round": 2,
+      "answer": "用户主动开启；普通笔记含未保存 buffer，排除隐藏与受管敏感内容；有变化时每 5 分钟及切换/重要操作采样并去重；默认 30 天、每库每设备 1 GiB，可配置；保护恢复/撤销引用，空间不足暂停新采集并提示。",
+      "log_ref": "LOG-006"
+    },
+    {
+      "id": "D-006",
+      "title": "浏览器目标平台矩阵",
+      "question": "完整交付必须覆盖哪些 OS/CPU 组合？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "Windows x64、macOS ARM64/x64、Linux x64；Windows/Linux ARM64 留作条件扩展并明确不支持。",
+      "status": "answered",
+      "round": 2,
+      "answer": "Windows x64、macOS ARM64/x64、Linux x64；Windows/Linux ARM64 留作条件扩展并明确不支持。",
+      "log_ref": "LOG-007"
+    },
+    {
+      "id": "D-007",
+      "title": "档案写入与原生未保存内容",
+      "question": "档案表单保存、删除、迁移遇原生编辑叶与磁盘不一致时怎么办？",
+      "depends_on": [
+        "D-003",
+        "D-004"
+      ],
+      "recommendation": "拒绝该结构化写入，保留表单草稿；用户先保存或解决差异后重试。多叶分歧亦拒绝；一致后沿用字段三方合并，不静默保存原生 buffer。",
+      "status": "answered",
+      "round": 2,
+      "answer": "拒绝该结构化写入，保留表单草稿；用户先保存或解决差异后重试。多叶分歧亦拒绝；一致后沿用字段三方合并，不静默保存原生 buffer。",
+      "log_ref": "LOG-008"
+    },
+    {
+      "id": "D-008",
+      "title": "浏览器第一方 localStorage 范围",
+      "question": "来源 FR-17 的扩展与第 12.5 节初版表述如何解释？",
+      "depends_on": [
+        "D-002"
+      ],
+      "recommendation": "Cookie/Identity 为必需主线；localStorage/IndexedDB 保持条件扩展，第一方 origin 是未来 localStorage 的首个支持边界。",
+      "status": "answered",
+      "round": 2,
+      "answer": "Cookie/Identity 为必需主线；localStorage/IndexedDB 保持条件扩展，第一方 origin 是未来 localStorage 的首个支持边界。",
+      "log_ref": "LOG-009"
+    }
+  ]
+}

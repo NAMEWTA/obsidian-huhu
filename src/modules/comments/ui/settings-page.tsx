@@ -1,5 +1,5 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { toast } from 'sonner';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { CommentsSettings } from '../settings';
@@ -8,6 +8,7 @@ import { SettingsRow, SettingsSwitchRow, ColorField } from '../../../ui/componen
 import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
 import { Choice } from '../../../ui/components/huhu/Choice';
 import { Input } from '../../../ui/components/input';
+import { Button } from '../../../ui/components/button';
 import { Slider } from '../../../ui/components/slider';
 
 export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>) {
@@ -17,6 +18,8 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 				(listener) => settings.subscribe(listener),
 				() => settings.get(),
 			);
+		const [newColorName, setNewColorName] = useState('');
+		const [newColorHex, setNewColorHex] = useState('#c0c0c0');
 		const save = <K extends keyof CommentsSettings>(key: K, next: CommentsSettings[K]) => {
 			void settings
 				.update((draft) => {
@@ -113,6 +116,30 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 						/>
 					}
 				/>
+				<SettingsRow label={t('editor.highlights.exportFolder')}
+					control={<Input aria-label={t('editor.highlights.exportFolder')} value={value.exportFolder}
+						onChange={event => save('exportFolder', event.target.value)} />} />
+				<div className="space-y-3 border-t border-border pt-3">
+					<div className="text-sm font-medium">{t('editor.highlights.customColors')}</div>
+					{value.customColors.map(color => <div key={color.id} className="flex flex-wrap items-center gap-2">
+						<span aria-hidden="true" className="size-5 shrink-0 rounded-full border border-border" style={{ backgroundColor: color.hex }} />
+						<span className="min-w-0 flex-1 text-xs">{color.name} ({color.hex})</span>
+						<Button type="button" size="xs" variant="ghost" aria-label={t('editor.highlights.deleteColor') + ': ' + color.name}
+							onClick={() => save('customColors', value.customColors.filter(item => item.id !== color.id))}>{t('editor.highlights.deleteColor')}</Button>
+					</div>)}
+					<div className="flex flex-wrap items-center gap-2">
+						<Input className="min-w-28 flex-1" value={newColorName} onChange={event => setNewColorName(event.target.value)}
+							aria-label={t('editor.highlights.colorName')} placeholder={t('editor.highlights.colorName')} />
+						<input aria-label={t('editor.highlights.colorValue')} className="h-9 w-12 cursor-pointer"
+							type="color" value={newColorHex} onChange={event => setNewColorHex(event.target.value)} />
+						<Button size="sm" variant="outline" disabled={!newColorName.trim() || value.customColors.length >= 32}
+							onClick={() => {
+								const id = ('custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)).slice(0, 23) as `custom-${string}`;
+								save('customColors', [...value.customColors, { id, name: newColorName.trim().slice(0, 60), hex: newColorHex }]);
+								setNewColorName('');
+							}}>{t('editor.highlights.addColor')}</Button>
+					</div>
+				</div>
 			</SettingsSection>
 		);
 	};

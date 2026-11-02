@@ -1,0 +1,762 @@
+{
+  "protocolVersion": "0.1",
+  "schemaVersion": 1,
+  "limits": {
+    "maxFrameBytes": 1048576,
+    "maxBatchItems": 8,
+    "maxIdentifierBytes": 128,
+    "jsonKind": 1
+  },
+  "methods": {
+    "protocol.hello": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/protocol.hello.params"
+      },
+      "result": {
+        "$ref": "#/$defs/protocol.hello.result"
+      }
+    },
+    "service.health": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/service.health.params"
+      },
+      "result": {
+        "$ref": "#/$defs/service.health.result"
+      }
+    },
+    "service.status": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/service.status.params"
+      },
+      "result": {
+        "$ref": "#/$defs/service.status.result"
+      }
+    },
+    "service.diagnostics": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/service.diagnostics.params"
+      },
+      "result": {
+        "$ref": "#/$defs/service.diagnostics.result"
+      }
+    },
+    "service.shutdown": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/service.shutdown.params"
+      },
+      "result": {
+        "$ref": "#/$defs/service.shutdown.result"
+      }
+    },
+    "agents.create": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.create.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.create.result"
+      }
+    },
+    "agents.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.list.result"
+      }
+    },
+    "agents.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.get.result"
+      }
+    },
+    "agents.update": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.update.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.update.result"
+      }
+    },
+    "agents.disable": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.disable.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.disable.result"
+      }
+    },
+    "agents.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.deletePreview.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.deletePreview.result"
+      }
+    },
+    "agents.delete": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/agents.delete.params"
+      },
+      "result": {
+        "$ref": "#/$defs/agents.delete.result"
+      }
+    },
+    "models.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/models.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/models.list.result"
+      }
+    },
+    "models.test": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/models.test.params"
+      },
+      "result": {
+        "$ref": "#/$defs/models.test.result"
+      }
+    },
+    "models.bind": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/models.bind.params"
+      },
+      "result": {
+        "$ref": "#/$defs/models.bind.result"
+      }
+    },
+    "sessions.create": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.create.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.create.result"
+      }
+    },
+    "sessions.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.list.result"
+      }
+    },
+    "sessions.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.get.result"
+      }
+    },
+    "sessions.history": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.history.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.history.result"
+      }
+    },
+    "sessions.archive": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.archive.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.archive.result"
+      }
+    },
+    "sessions.updateMembers": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.updateMembers.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.updateMembers.result"
+      }
+    },
+    "sessions.setCoordinator": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.setCoordinator.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.setCoordinator.result"
+      }
+    },
+    "sessions.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.deletePreview.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.deletePreview.result"
+      }
+    },
+    "sessions.delete": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/sessions.delete.params"
+      },
+      "result": {
+        "$ref": "#/$defs/sessions.delete.result"
+      }
+    },
+    "runs.start": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.start.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.start.result"
+      }
+    },
+    "runs.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.get.result"
+      }
+    },
+    "runs.subscribe": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.subscribe.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.subscribe.result"
+      }
+    },
+    "runs.cancel": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.cancel.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.cancel.result"
+      }
+    },
+    "runs.recovery": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.recovery.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.recovery.result"
+      }
+    },
+    "runs.resume": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/runs.resume.params"
+      },
+      "result": {
+        "$ref": "#/$defs/runs.resume.result"
+      }
+    },
+    "collaboration.budget": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.budget.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.budget.result"
+      }
+    },
+    "collaboration.configureBudget": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.configureBudget.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.configureBudget.result"
+      }
+    },
+    "collaboration.configurationHash": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.configurationHash.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.configurationHash.result"
+      }
+    },
+    "collaboration.discover": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.discover.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.discover.result"
+      }
+    },
+    "collaboration.message": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.message.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.message.result"
+      }
+    },
+    "collaboration.delegate": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.delegate.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.delegate.result"
+      }
+    },
+    "collaboration.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.get.result"
+      }
+    },
+    "collaboration.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.list.result"
+      }
+    },
+    "collaboration.reply": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.reply.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.reply.result"
+      }
+    },
+    "collaboration.cancel": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.cancel.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.cancel.result"
+      }
+    },
+    "collaboration.proposeCreate": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.proposeCreate.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.proposeCreate.result"
+      }
+    },
+    "collaboration.proposals": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.proposals.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.proposals.result"
+      }
+    },
+    "collaboration.confirmProposal": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.confirmProposal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.confirmProposal.result"
+      }
+    },
+    "collaboration.rejectProposal": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/collaboration.rejectProposal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/collaboration.rejectProposal.result"
+      }
+    },
+    "grants.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/grants.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/grants.list.result"
+      }
+    },
+    "grants.create": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/grants.create.params"
+      },
+      "result": {
+        "$ref": "#/$defs/grants.create.result"
+      }
+    },
+    "grants.revoke": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/grants.revoke.params"
+      },
+      "result": {
+        "$ref": "#/$defs/grants.revoke.result"
+      }
+    },
+    "approvals.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/approvals.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/approvals.list.result"
+      }
+    },
+    "approvals.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/approvals.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/approvals.get.result"
+      }
+    },
+    "approvals.resolve": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/approvals.resolve.params"
+      },
+      "result": {
+        "$ref": "#/$defs/approvals.resolve.result"
+      }
+    },
+    "memory.list": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.list.result"
+      }
+    },
+    "memory.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.get.result"
+      }
+    },
+    "memory.pin": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.pin.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.pin.result"
+      }
+    },
+    "memory.correct": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.correct.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.correct.result"
+      }
+    },
+    "memory.forget": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.forget.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.forget.result"
+      }
+    },
+    "memory.setAutoMaintenance": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.setAutoMaintenance.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.setAutoMaintenance.result"
+      }
+    },
+    "memory.proposeGlobal": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.proposeGlobal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.proposeGlobal.result"
+      }
+    },
+    "memory.resolveGlobal": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/memory.resolveGlobal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.resolveGlobal.result"
+      }
+    },
+    "profile.deletePreview": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/profile.deletePreview.params"
+      },
+      "result": {
+        "$ref": "#/$defs/profile.deletePreview.result"
+      }
+    },
+    "profile.delete": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/profile.delete.params"
+      },
+      "result": {
+        "$ref": "#/$defs/profile.delete.result"
+      }
+    },
+    "profile.status": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/profile.status.params"
+      },
+      "result": {
+        "$ref": "#/$defs/profile.status.result"
+      }
+    },
+    "portable.stage": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/portable.stage.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.stage.result"
+      }
+    },
+    "portable.export": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/portable.export.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.export.result"
+      }
+    },
+    "portable.importPreview": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/portable.importPreview.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.importPreview.result"
+      }
+    },
+    "portable.import": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/portable.import.params"
+      },
+      "result": {
+        "$ref": "#/$defs/portable.import.result"
+      }
+    },
+    "host.attach": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/host.attach.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.attach.result"
+      }
+    },
+    "host.detach": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/host.detach.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.detach.result"
+      }
+    },
+    "host.prepareWrite": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.prepareWrite.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.prepareWrite.result"
+      }
+    },
+    "host.checkWrite": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.checkWrite.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.checkWrite.result"
+      }
+    },
+    "effects.get": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/effects.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/effects.get.result"
+      }
+    },
+    "effects.reconcile": {
+      "direction": "client-to-server",
+      "implemented": true,
+      "params": {
+        "$ref": "#/$defs/effects.reconcile.params"
+      },
+      "result": {
+        "$ref": "#/$defs/effects.reconcile.result"
+      }
+    },
+    "host.invoke": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.invoke.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.invoke.result"
+      }
+    },
+    "host.queryReceipt": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.queryReceipt.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.queryReceipt.result"
+      }
+    },
+    "host.read": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.read.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.read.result"
+      }
+    },
+    "host.search": {
+      "direction": "server-to-client",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/host.search.params"
+      },
+      "result": {
+        "$ref": "#/$defs/host.search.result"
+      }
+    }
+  }
+}

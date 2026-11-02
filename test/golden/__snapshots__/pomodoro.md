@@ -1,4 +1,4 @@
-=== huhu/番茄钟/活动.md ===
+=== huhu/pomodoro/activities.md ===
 ---
 huhu-type: pomodoro-settings
 huhu-id: pomodoro-settings
@@ -10,7 +10,7 @@ tags:
     pinned: false
 ---
 
-=== huhu/番茄钟/记录/2026/2026-10-02.md ===
+=== huhu/pomodoro/records/2026/2026-10-02.md ===
 ---
 huhu-type: pomodoro-records
 huhu-id: pomodoro:2026-10-02

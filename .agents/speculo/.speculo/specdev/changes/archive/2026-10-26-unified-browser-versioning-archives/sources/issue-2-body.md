@@ -1,0 +1,607 @@
+## 目标与范围
+
+重构 HUHU 的 Git 模块，将仓库级 Git 工作区与单篇笔记历史整合为统一的版本管理能力，解决点击未提交更改、历史提交后导航与 Diff 嵌套膨胀的问题，并实现“笔记右侧历史栏 → 主编辑区左右 / 上下 / 行内比较 → 恢复与撤销”的完整流程。
+
+本提案允许对内部模块、组件、路由与设置进行不保留兼容层的重构；保留用户笔记、已有 Git 历史及必要恢复数据。本文为设计与实施需求，不代表功能已经实现。
+
+## 实施跟踪
+
+- [ ] A：领域模型、Versioning 公共 API、编辑器上下文与宿主协调契约。
+- [ ] B：紧凑 Git 工作区、稳定提交 / 文件导航、共享 Diff 工作区。
+- [ ] C：笔记右侧历史栏、中央比较会话、左右 / 上下 / 行内三种布局。
+- [ ] D：恢复前检查点、恢复当前笔记 / 新笔记、撤销、批注锚点与自动同步协调。
+- [ ] E：持续本地快照、任意版本比较、复杂重命名历史与精确按块恢复。
+- [ ] F：按需要扩展 Markdown 渲染对照、历史附件、blame 与批量恢复。
+
+A–D 为首个完整交付范围。具体职责、失败语义、实施顺序和验收条件以以下完整设计文档为准。
+
+---
+
+# 完整重构设计文档
+
+本方案将 HUHU 的 Git 同步模块重构为统一的版本管理能力：仓库工作区负责选择更改、提交和分支，笔记右侧栏负责选择单篇笔记的历史；两个入口共享版本读取、比较会话、差异渲染与恢复流程。主比较区始终独立于导航列表，历史浏览保持只读，恢复产生当前笔记的新内容并保留恢复前检查点。
+
+审查基线为 [NAMEWTA/obsidian-huhu 的 main 提交 33c21e098ef3188cbab5a09f3e0a01fadb787715](https://github.com/NAMEWTA/obsidian-huhu/commit/33c21e098ef3188cbab5a09f3e0a01fadb787715)，提交时间 2026 年 10 月 25 日 12:27（UTC+8）。仓库代码、项目设计规则及官方参考已核对；当前界面结论来自静态源码审查，实际 Obsidian 中的主题、窗口、保存传播与性能仍需在实施阶段验收。本文中的尺寸、性能预算、模块名称和阶段安排属于建议设计。
+
+# 一 核心决定
+
+1. 删除 Git 提交列表内部的详情展开结构，采用固定导航区与独立主比较区。
+2. 把 src/modules/sync 整体重构为 src/modules/versioning。同步调度成为模块内的一个子职责，历史查询不依赖自动同步开关。
+3. 将右侧编辑器面板泛化为 EditorPanelHost，提供“批注 / 历史”两个标签。
+4. 笔记历史打开中央的临时比较标签，保留原 MarkdownLeaf、未保存缓冲和原生撤销栈。
+5. 比较统一输入为两份不可变内容快照及比较意图，不再以 unified patch 字符串充当领域模型。
+6. 以 CodeMirror 6 为主：左右比较与行内比较复用成熟组件，上下双窗格使用独立适配器。
+7. 第一版的历史比较两侧只读，恢复、按块恢复、暂存等操作通过明确用例执行。
+8. “恢复为当前笔记”保持分支、HEAD 与暂存区的语义内容不变；提供“恢复为新笔记”和“撤销本次恢复”。
+9. 恢复前检查点属于首版必需能力；持续本地历史作为独立来源随后补齐。
+10. 全面重构允许移除旧组件、旧路由和旧设置兼容层，用户笔记与既有 Git 历史保留。
+
+# 二 当前实现的问题与可复用基础
+
+## 2.1 界面膨胀来自信息结构
+
+当前 SyncGraph 的提交行使用 h-6，常规基准下约 24px；ChangeList 文件行为 28px。继续压缩行高会降低可操作性，不能解决主要问题。
+
+真正的结构是：选中提交或未提交更改后，虚拟列表插入一个可变高详情行；详情内又放提交表单、文件树和 diff。文件树最高 520px，历史文件列表通常最高 288px，内部 diff 通常最高 320px。这样形成“提交图滚动、详情文件列表滚动、diff 滚动”的嵌套关系，并使后续提交位置随着展开不断变化。
+
+证据：[SyncGraph.tsx](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/ui/SyncGraph.tsx)、[ChangeList.tsx](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/ui/ChangeList.tsx)、[CommitDetail.tsx](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/ui/CommitDetail.tsx)。
+
+## 2.2 功能与状态缺口
+
+| 现有情况 | 对用户的影响 | 重构方向 |
+| --- | --- | --- |
+| Diff.tsx 仅用 pre 展示 patch，按 +、-、@@ 染色 | 难以阅读完整上下文，无法真正左右或上下比较 | 两份文档模型、行号、词级差异、跳转、折叠与滚动映射 |
+| 工作区文件行打开笔记，历史文件行在原处展开 diff | 同类对象的单击行为不一致 | 单击统一预览；“打开笔记”成为清楚的独立操作 |
+| 同路径的 diff effect 没有内容 generation 依赖 | 笔记已经变化，旧比较仍可能留在屏幕上 | 不可变快照或明确的失效重读 |
+| 请求失败被写成 diff 文本，或详情一直保持 null | 错误被误认为正文、无文件或持续加载 | loading、ready、empty、error、stale 分离 |
+| 大 patch 完整读取后才截到 200,000 个字符串字符 | 仍有前置内存和解析负担，用户不知道比较不完整 | 读取前检测大小、字节预算、完整性元数据 |
+| 历史文件列表使用 --no-renames | 难以可靠跨重命名查看笔记 | 每个版本保留 pathAtRevision 和重命名关系 |
+| 提交 diff 固定 first-parent | 合并提交的比较基准不明显 | 明示父提交，支持切换 parent |
+| API 只暴露工作台 title/status/subscribe | 笔记侧栏缺少可复用历史服务 | 公共版本查询、比较会话与恢复 API |
+| 当前 discard 为 git restore --worktree | 其语义是回到 index，不是任意历史版本 | 独立 Restore 用例 |
+
+相关证据：[Diff.tsx](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/ui/Diff.tsx)、[repo.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/core/repo.ts)、[git-runner.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/platform/desktop/git-runner.ts)、[api.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/api.ts)。
+
+当前点击历史提交只改变展开状态，没有执行 checkout；分支工具栏主要提供浏览过滤。未暂存 diff 的 index → 磁盘工作树基准本身也是正确的。需要补齐的是浏览结构、编辑缓冲区来源与状态一致性。
+
+## 2.3 应保留的基础
+
+现有 porcelain v2/NUL 状态解析、index/worktree 双侧状态、紧凑目录树、提交图算法、虚拟列表、参数数组执行 Git、进程超时与取消、路径校验、仓库定位、写队列和私有路径保护都具有保留价值。
+
+“彻底重构”主要针对职责边界和交互结构。已有正确的协议解析与安全约束可迁入新结构并保留测试。
+
+# 三 开源项目对标与取舍
+
+| 参考 | 已核实的能力 | 对 HUHU 的具体启发 |
+| --- | --- | --- |
+| [VS Code 历史与 Timeline](https://code.visualstudio.com/docs/sourcecontrol/history) | 仓库提交图与文件 Timeline 分离，支持比较两个文件版本；浏览提交与 checkout 是不同动作 | 两个入口、一套比较器；导航不承担正文渲染 |
+| [VS Code 暂存与比较](https://code.visualstudio.com/docs/sourcecontrol/staging-commits) | 区分 Changes 的 index → working file 与 Staged Changes 的 HEAD → index | 标题明确 A/B，支持一个文件同时出现在两个分组 |
+| [GitLens File History](https://help.gitkraken.com/gitlens/side-bar/) | 跟随或固定当前文件、切换历史基准、追踪重命名、查看其他分支 | 右侧历史默认跟随当前笔记，同时支持固定与选择基准 |
+| [Zed Git](https://zed.dev/docs/git) | tree/flat 文件布局、词级差异、文件历史；多个入口共用 split/unified 偏好 | 统一比较偏好、紧凑列表、连续键盘审阅 |
+| [Obsidian Git](https://github.com/Vinzent03/obsidian-git) | Source Control、History、Diff View 分离；并排 diff 与 hunk 操作 | 复用宿主编辑工作流；“打开文件”和“查看差异”分清 |
+| [Version History Diff](https://github.com/kometenstaub/obsidian-version-history-diff) | 汇集 Git、Sync、File Recovery 版本，支持版本预览与恢复 | 历史来源统一展示；其私有 API 依赖不作为 HUHU 的核心依赖 |
+| [Joplin 笔记历史](https://joplinapp.org/help/apps/note_history/) | 可选择历史版本，恢复会创建副本 | 把“恢复为新笔记”作为完整产品动作 |
+| [GitButler 操作历史](https://docs.gitbutler.com/features/timeline) | 大操作前保存包含未提交内容的状态快照 | 恢复前留检查点，并为恢复操作建立回执与撤销路径 |
+
+GitLens 的 [MIT 许可明确排除 plus 目录](https://github.com/gitkraken/vscode-gitlens/blob/main/LICENSE)；[GitButler 当前仓库说明](https://github.com/gitbutlerapp/gitbutler)采用 Fair Source。它们在本方案中主要作为交互与原理参考，不视为所有代码都可直接复制的宽松许可组件。Version History Diff 的 README 明示使用 Obsidian 私有 API，HUHU 应通过自身版本提供器与公开宿主 API 实现核心能力。
+
+# 四 Git 工作区的产品设计
+
+## 4.1 三种工作模式
+
+保留一个“Git”入口，内部划分“更改 / 历史 / 比较”三个模式。仓库、当前分支和同步状态放在简洁的顶部工具栏。
+
+| 模式 | 导航区 | 主工作区 |
+| --- | --- | --- |
+| 更改 | 冲突、已暂存、未暂存、未跟踪文件，树形与平铺可切换 | 所选文件的比较 |
+| 历史 | 紧凑提交图与所选提交的文件清单 | 所选历史文件的比较 |
+| 比较 | A/B 引用选择与变更文件清单 | 两个确定版本的比较 |
+
+历史模式的提交列表与文件列表是相邻、独立的导航区域，可上下分配高度；不把文件列表作为提交行的子树展开。窄导航区可使用“提交列表 → 所选提交的文件”的返回式导航。主 diff 的位置和大小保持稳定。
+
+主区域暂未选中文件时显示所选提交摘要、文件数和“选择文件查看差异”，不自动铺满所有文件的 diff。
+
+## 4.2 点击行为
+
+- 单击文件或按 Enter：在一个可复用的比较预览中显示差异。
+- 单击提交：选择提交，并更新文件清单；提交行高度不变。
+- 单击分支：改变浏览范围或比较端点；实际切换分支使用明确命名的独立菜单动作。
+- 双击或选择“固定比较”：把临时预览固定为独立标签。
+- “打开笔记”：激活当前工作树的文件，而不是历史虚拟文档。
+- 悬停与键盘聚焦均显示行操作；必要操作也在上下文菜单和命令中提供。
+- 目录单击只展开/收起，状态按钮不触发行选中或打开文件。
+
+保留最后选中文件，但切换到不包含该文件的提交时显示清楚的空选择，不在新提交标题下沿用旧 diff。
+
+## 4.3 未提交更改与提交区
+
+“未提交更改”表现为正常分组或导航项，下面按 Git 状态组织文件。已暂存与未暂存允许同时出现同一文件，必须带明确的分组含义。
+
+提交输入框放在导航区底部的可折叠提交区，只在更改模式出现。摘要默认为一行或紧凑两行；详细说明按需展开。按钮明确区分“提交已暂存”和“暂存全部后提交”，不因当前没有暂存内容而悄悄改变提交范围。
+
+同步错误、冲突或待确认恢复采用持续可见的状态条；正常状态保持低干扰。新架构继续复用宿主 Obsidian 状态栏，不新增工作台全局页脚。
+
+# 五 笔记历史右侧栏与主编辑区
+
+## 5.1 入口
+
+在原生笔记的菜单、标签上下文菜单和命令面板提供“查看版本历史”。命令可配置快捷键，避免默认占用宿主快捷键。
+
+打开后激活右侧编辑器面板的“历史”标签。旁边仍有“批注”标签，两者共享文档上下文，不共享业务状态。
+
+历史面板包含笔记标题、来源过滤、历史范围和固定按钮。默认展示当前分支中影响本笔记的提交，可选择其他引用或全部分支。列表按日期分组，每条版本显示摘要、时间和来源；作者、完整时间与 SHA 可在详情或提示中查看。
+
+## 5.2 点击历史版本
+
+1. 面板取得明确的来源窗口、笔记 leaf、文档 identity 和当前缓冲修订。
+2. 捕获当前笔记内容为不可变快照 B，包含尚未落盘的编辑。
+3. 读取选中版本 A 的历史正文。
+4. 在来源编辑组打开临时比较标签，主区域显示 A → B。
+5. 连续选择其他历史记录只更新 A；B 保持该次审阅的当前快照。
+6. 用户选择“刷新当前内容”时重新捕获 B。
+7. 返回笔记时激活原 MarkdownLeaf，恢复原光标、选区、滚动和模式。
+
+当原笔记被另一个窗口、自动保存或外部程序修改，提示“当前笔记已更新，可刷新比较”。固定比较内容避免阅读时基准悄悄变化。
+
+对笔记历史的默认问题是“这个旧版本与当前笔记有什么不同”。另提供“查看该次修改”“选为比较基准”“与选定版本比较”。这些动作具有不同的比较意图，不能仅更换标题而沿用同一查询。
+
+## 5.3 宿主集成选择
+
+现有 [WorkbenchHost](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/app/contracts/workbench-host.ts) 已有 openFocus、ownerWindow 和 chrome 机制。[工作台文档](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/docs/workbench.md)也说明了原生标签或分屏中的专注模式。
+
+建议新增不占工具轨的 revision-review contribution，owner 为 versioning；设置 chrome: none，并以 focus 模式打开，才会同时省去工作台工具轨与侧栏。仓库 Git 页保留标准 chrome。两者必须是独立 contribution，因为当前 chrome 是 feature 级静态属性。
+
+为 openFocus 增加返回句柄和预览复用能力，或在上层增加 EditorReviewHost：
+
+- 复用键：windowId + originLeafId + documentKey。
+- 句柄支持 updateComparison、pin、activate、close。
+- 原始笔记 leaf 保留，不能直接 setViewState 为 diff 类型。
+- 关闭来源 leaf 后，比较可继续作为只读快照；应用恢复必须重新解析目标并核验上下文。
+- 临时会话不跨重启假装恢复内存缓冲；固定的不可变 Git 端点可恢复，失效端点显示明确状态。
+
+## 5.4 文档上下文独立管理
+
+当前批注服务使用全局 state.path，不能直接成为新历史服务的“当前文件”。[active-file.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/comments/platform/active-file.ts) 和 [comments.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/comments/services/comments.ts)体现了此限制。
+
+由 app 层 EditorContextService 按窗口和面板实例维护最近活跃笔记。进入比较、侧栏获得焦点、弹出菜单均不应清空来源。切换到另一篇真实笔记时才更新未固定的面板。批注模块和版本模块分别接收同一个显式上下文。
+
+# 六 视觉规格与响应式
+
+尺寸以现有 [HUHU 设计系统](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/docs/design-system.md)为基线，以下是建议验收值。
+
+| 元素 | 建议规格 |
+| --- | --- |
+| 工作台工具轨 | 沿用 52px |
+| 标准页头 | 沿用 44px |
+| Git 导航侧栏 | 默认 280px，沿用 220–500px 调整范围 |
+| 笔记历史侧栏 | 初始建议 288px，优先使用 Obsidian 原生侧栏拖动能力；可用宽度不足时内容自适应 |
+| 提交与文件可交互行 | 默认至少 32px；触屏至少 44px |
+| 版本记录 | 约 48–56px，两行信息 |
+| 比较工具栏 | 36–40px，交互目标至少 32px |
+| UI 正文 | 13–14px；辅助信息 12px |
+| Diff 正文 | 默认继承编辑器字体与字号，不强制缩成日志小字 |
+| 图标 | 通常 14–16px，位于足够大的点击区内 |
+| 间距与分隔 | 4px 网格、弱化 1px 分隔、减少重复卡片边框与阴影 |
+| 变化提示 | 低饱和增删背景、较明确的词级标记、+/- 与文字语义共同表达 |
+| 上下文折叠 | 建议长未改动区默认折叠，保留约 3 行上下文，支持分段及全部展开 |
+
+紧凑度主要来自减少大标题、重复容器、空白和同时展示的信息，不通过降低可点击区域或正文可读性获得。
+
+工作台沿用容器宽度 960px 以上常驻导航、600–959px 侧栏覆盖、不足 600px 合并抽屉的规则。比较布局另根据“扣除两侧栏后的实际可用宽度”计算，不能只看浏览器窗口宽度。
+
+建议自动模式在 diff 区约 900px 以上采用左右对照，较窄时采用行内差异。上下对照是用户明确选择的独立模式。用户手动选择布局后，自动规则不覆盖其偏好；窗口不足时可收起侧栏或提示可切换布局。
+
+明暗主题、200% 缩放、中文长路径、长提交摘要和色觉差异均需验收。生产颜色从语义令牌派生；diff 增删令牌可以新增，但不在模块里写固定主题色。
+
+# 七 比较语义与功能规格
+
+## 7.1 所有入口使用统一端点模型
+
+| 用户意图 | A | B | 写操作能力 |
+| --- | --- | --- | --- |
+| 未暂存更改 | 暂存区 index | 磁盘工作树 | 暂存、丢弃未暂存部分 |
+| 已暂存更改 | HEAD；无 HEAD 时为空 | index | 取消暂存 |
+| 未跟踪文件 | 不存在 | 当前磁盘内容 | 跟踪文件 |
+| 查看提交修改 | 指定父提交；根提交为空 | 所选提交 | 默认只读 |
+| 笔记历史 | 历史版本及当时路径 | 当前编辑缓冲快照 | 恢复到当前、恢复副本 |
+| 任意两个历史版本 | 选定版本 A | 选定版本 B | 默认只读，可显式选择一侧恢复 |
+| 分支端点比较 | ref A 解析后的 tip | ref B 解析后的 tip | 默认只读 |
+| 分支新增修改 | merge-base(A,B) | B 的 tip | 默认只读 |
+| 本地检查点比较 | 所选检查点 | 当前编辑缓冲快照 | 恢复到当前、恢复副本 |
+
+Git 的 index、工作树与 HEAD 是不同对象；两点 diff 与 merge-base 比较也不同，依据 [Git diff 官方文档](https://git-scm.com/docs/git-diff)。仓库工作区如果显示磁盘内容，遇到未保存缓冲应额外标明“笔记还有未保存编辑”，不能把磁盘伪装成当前编辑器。
+
+合并提交默认以第一父提交作为基准并显示其身份，提供 parent 选择。新增和删除使用“该侧不存在”的占位，不用读取错误或空字符串冒充删除。
+
+## 7.2 三种显示布局
+
+- **左右对照**：旧版在左、新版在右；独立行号、相同变化块对齐；同步滚动可切换。
+- **上下对照**：旧版在上、新版在下；两个完整视图、可调整比例；采用对应块或行锚点同步，避免简单滚动百分比导致错位。
+- **行内差异**：一个视图内展示删除和新增，适合窄窗口和连续审阅。
+
+统一提供版本标签、交换两端、上一处/下一处差异、当前位置计数、折叠未变化段落、软换行和复制选中文本。比较语义不随视觉布局改变。
+
+## 7.3 Markdown 的特殊处理
+
+首版以 Markdown 源文本为权威。支持 frontmatter、列表、代码块、链接及中文的细粒度高亮；软换行作为显示偏好，不改写正文。中文不能仅靠空格分词，应考虑字符或 Intl.Segmenter 的分段结果。
+
+缩进、尾随双空格、YAML 层级和末尾换行都可能具有意义，默认不忽略全部空白。若开启忽略空白，它只影响展示，恢复操作仍基于原始内容与精确范围。
+
+阅读渲染对照可后续增加，但必须禁用会执行活动脚本或查询的扩展。历史图片和嵌入需要按该版本解析，无法获得对应资源时明确占位；使用当前附件不能宣称是完整历史还原。
+
+# 八 技术栈与 Diff 引擎
+
+保留 React 19、TypeScript、zustand/vanilla、现有 shadcn/Radix 组件、Tailwind、react-resizable-panels、@tanstack/react-virtual 和系统 Git CLI。主编辑器继续由 Obsidian 管理。新增 @codemirror/merge 作为比较组件，按需加载所需语言支持。
+
+选择 CM6 的原因是 HUHU 已使用宿主 CM6、字体和主题体系，避免为一个功能再承担 Monaco 的加载、主题和生命周期成本。Monaco 的成熟 diff 能力可以作为行为参考，不作为本项目默认新增运行时。
+
+[CodeMirror merge 源码](https://github.com/codemirror/merge/blob/main/src/mergeview.ts)明确把 MergeView 定义为左右双编辑器；orientation 仅取 a-b 或 b-a，表示两端顺序。unifiedMergeView 是行内差异，不等于上下双窗格。
+
+建议三种 adapter：
+
+| 适配器 | 实现方向 |
+| --- | --- |
+| SideBySideDiffView | @codemirror/merge MergeView |
+| UnifiedDiffView | unifiedMergeView |
+| StackedDiffView | 两个只读 EditorView、共享 DiffModel、变化装饰与行锚点滚动映射 |
+
+上下模式不通过 CSS 强行旋转 MergeView，因为对齐 spacer 和操作控件有并排假设。
+
+[DiffConfig 源码](https://github.com/codemirror/merge/blob/main/src/diff.ts)有 scanLimit、timeout 以及同步 override；[Chunk](https://github.com/codemirror/merge/blob/main/src/chunk.ts)可标记 precise。它没有可直接接收 Promise 的计算接口。可先在 Worker 计算不可变 A/B 的差异，再通过同步 cache override 交给组件。命中条件必须包含两端 contentHash 和算法选项；内部局部计算不能误用全量快照结果。
+
+第一版双侧只读，限制内部增量编辑引入的复杂性。粗略、超时或截断结果必须标记，按块恢复只能使用精确、完整并经目标校验的变化。
+
+CodeMirror merge 的 GitHub 仓库已迁往 code.haverbeke.berlin，归档不等于停止维护。实施时固定实际 npm 版本并验证 API，而不是把迁移前源码当作所有后续版本的保证。
+
+# 九 模块架构与职责
+
+保留仓库既有 core / services / platform / ui 约定，不引入第二套全项目架构框架。
+
+```mermaid
+flowchart TB
+  G["Git 工作区"] --> A["Versioning 公共 API"]
+  H["历史侧栏"] --> A
+  R["主编辑区比较页"] --> A
+  A --> Q["版本查询与比较会话"]
+  A --> W["恢复与写入协调"]
+  A --> S["同步调度"]
+  Q --> P["Git 与本地快照提供器"]
+  Q --> D["差异计算与渲染模型"]
+  W --> M["文档变更协调器"]
+  W --> C["检查点与恢复日志"]
+  S --> K["仓库操作协调器"]
+  W --> K
+  M --> E["Obsidian Editor 与 Vault"]
+```
+
+## 9.1 目录建议
+
+| 目录 | 主要内容 |
+| --- | --- |
+| src/modules/versioning/core/ | revision、snapshot、comparison、file-history、restore-plan、git-status、graph、path-policy |
+| src/modules/versioning/services/ | history-query、comparison-session、restore、checkpoint、repository-coordinator、cache-invalidation |
+| src/modules/versioning/services/sync/ | 自动提交/拉取/推送调度、暂停与恢复、状态报告 |
+| src/modules/versioning/platform/desktop/ | git-runner、git-object-reader、repository-locator、repository-protection |
+| src/modules/versioning/platform/obsidian/ | buffer-reader、history-provider 装配、恢复网关 |
+| src/modules/versioning/ui/workspace/ | GitWorkspace、CommitList、ChangedFiles、RepositoryToolbar、CommitComposer |
+| src/modules/versioning/ui/history/ | NoteHistoryPanel、HistoryEntry、SourceFilter |
+| src/modules/versioning/ui/diff/ | DiffWorkspace、三种 adapter、DiffToolbar、DiffStatus、HunkActions |
+| src/modules/versioning/ui/restore/ | RestoreDialog、RestoreReceipt、CheckpointRecovery |
+| src/modules/versioning/workers/ | diff.worker.ts 及纯计算协议 |
+| src/app/editor-panel/ | EditorPanelHost、EditorContextService、面板贡献点与生命周期 |
+| src/app/contracts/ | EditorContext、EditorPanelContribution、EditorReviewHost |
+| src/host/obsidian/ | DocumentMutationCoordinator 的宿主实现 |
+| src/modules/versioning/api.ts | 对外能力、数据类型及服务键 |
+
+文档变更协调器放在 host/app 的共用边界，可由版本恢复、受管内容写入和批注协作复用。业务模块只能经过 api.ts 或明确的宿主契约通信；版本模块不能直接导入批注 store。
+
+## 9.2 关键设计模式
+
+- **Provider/Adapter**：Git 提交、本地快照与缓冲区提供不同来源，但输出统一快照。
+- **查询与命令分离**：浏览和比较走只读路径；暂存、恢复和同步走明确写入用例，不需要另建分布式 CQRS 系统。
+- **比较会话**：固定端点、选择状态、生命周期及来源窗口，避免各组件各自维护一半状态。
+- **状态机与操作日志**：恢复用可核对的阶段和回执处理失败，而非一个布尔 loading。
+- **内容寻址缓存**：不可变 blob/hash 可复用；可变 index、磁盘和 buffer 必须带 generation。
+- **贡献点**：app 负责面板与宿主，comments 和 versioning 只贡献自身 UI 和动作。
+
+# 十 领域模型与公共契约
+
+下面是概念接口，最终实现需要补充品牌类型、错误码和实际宿主句柄。
+
+```typescript
+type RevisionRef =
+  | { kind: "commit"; repoId: string; worktreeId: string;
+      commitOid: string; pathAtRevision: string }
+  | { kind: "index"; repoId: string; worktreeId: string;
+      path: string; stage: 0 | 1 | 2 | 3; generation: number }
+  | { kind: "worktree"; repoId: string; worktreeId: string;
+      path: string; generation: number }
+  | { kind: "buffer"; documentKey: string; leafId: string;
+      generation: number }
+  | { kind: "checkpoint"; checkpointId: string }
+  | { kind: "absent" };
+
+interface TextSnapshot {
+  id: string;
+  source: RevisionRef;
+  contentHash: string;
+  text: string;
+  byteLength: number;
+  encoding: string;
+  eol: "lf" | "crlf" | "mixed";
+  hasBom: boolean;
+  hasFinalNewline: boolean;
+}
+
+interface ComparisonRequest {
+  intent: "unstaged" | "staged" | "commit-change"
+    | "note-history" | "revision-pair" | "branch-review";
+  left: RevisionRef;
+  right: RevisionRef;
+}
+
+type ResolvedEndpoint =
+  | { kind: "text"; snapshot: TextSnapshot }
+  | { kind: "absent" }
+  | { kind: "binary"; objectId: string; byteLength: number };
+
+interface ComparisonResult {
+  left: ResolvedEndpoint;
+  right: ResolvedEndpoint;
+  completeness: "full" | "limited";
+  precision: "exact" | "approximate";
+  hunks: readonly DiffHunk[];
+}
+
+interface RestorePlan {
+  id: string;
+  sourceSnapshotId: string;
+  targetDocumentKey: string;
+  targetPath: string;
+  expectedBufferGeneration?: number;
+  expectedBufferHash?: string;
+  expectedDiskHash: string | null;
+  expectedRepositoryGeneration?: number;
+  mode: "replace-current" | "create-copy" | "apply-hunks";
+  selectedHunkIds?: readonly string[];
+}
+```
+
+不存在、二进制、对象缺失和读取错误应是独立结果类型，不强行塞入 TextSnapshot。blobOid、内容 hash 与字符偏移用途不同，不能互相替代。
+
+公共 API 建议至少包含：
+
+- listRepositories、resolveReference、listCommits。
+- listFileHistory、resolveRevision、listChangedFiles。
+- captureEditorSnapshot、openComparison、refreshComparison、closeComparison。
+- prepareRestore、applyRestore、undoRestore。
+- stage、unstage、discardUnstaged 与明确的同步命令。
+- 按文档/仓库订阅变更，贯通 AbortSignal。
+
+UI 不拼 Git 命令，不调用 Node fs，不直接修改 Vault 或其它模块 store。
+
+# 十一 Git 历史与对象读取
+
+## 11.1 仓库身份和路径
+
+仓库 identity 应区分当前 vault、worktree 根、gitdir 与 common-dir。只接受授权的 vault 范围，不把上层目录 Git 仓库误作当前库。嵌套仓库或 worktree 在能力允许时显式选择，不能静默拿最近的父目录仓库。
+
+当前笔记路径与历史路径必须分别保存。重命名后查询历史版本使用 pathAtRevision，恢复默认写回当前路径，不顺便把笔记移回历史文件名。
+
+Git 的重命名推断不是永久笔记身份。删除后同名重建、复制、拆分、合并以及跨分支复杂历史不能仅靠同一路径串成一个实体；存在歧义时展示历史分段和来源，允许选择，不把推断当确定事实。[git log 官方文档](https://git-scm.com/docs/git-log)也限定了 --follow 的单文件追踪范围。
+
+## 11.2 读取策略
+
+- 提交列表分页绑定已解析的 tip OID，避免新提交到来后 offset 分页重复或跳过条目。
+- 历史文件列表输出结构化状态与重命名路径，采用 NUL 分隔解析。
+- 先解析 commit tree 中的路径得到 blob OID，再按 OID 读取内容。
+- 读取内容前获取对象类型和大小；只读取所选文件两侧，不预加载全部版本正文。
+- 引用标签可变，缓存内容使用解析后的不可变 OID。
+- 根提交使用 absent/empty-tree 语义，不硬编码 SHA-1 空树常量；对象格式由 Git 能力探测确定。
+- 合并提交保留父提交列表，比较请求指定所选 parent。
+- 批量对象读取采用明确分帧协议，字符串内容不能混入控制通道。
+
+Git 进程仍通过 spawn 参数数组执行；路径使用 literal pathspec，保留 -- 边界，避免 shell 字符串拼接。只读比较关闭不需要的外部 diff/textconv；使用避免可选 index 刷新的模式，使浏览不会产生额外仓库写入。
+
+## 11.3 编码和特殊文件
+
+原始 Git blob 与工作树文件可能受 .gitattributes 的换行、编码或过滤器影响，不能简单宣称“blob 字符串覆盖磁盘”总能还原相同工作树。[gitattributes 官方文档](https://git-scm.com/docs/gitattributes)说明了这些转换。
+
+首版可靠恢复范围应明确为可往返处理的普通 Markdown 文本。保留 EOL、BOM 和末尾换行信息；对未支持编码、LFS 指针、外部过滤器、符号链接、submodule 和二进制采用明确的只读/专用能力状态。图片可后续支持并排预览，不能把二进制按 UTF-8 切分。
+
+普通 Markdown 可使用文档恢复网关。业务模块管理的特殊 Markdown 需要其 owner 提供写入能力，不能绕过档案、看板等自身的约束。
+
+# 十二 恢复与撤销协议
+
+## 12.1 对用户的承诺
+
+“恢复为当前笔记”意味着：把所选历史正文作为当前笔记的新内容写入当前路径。已有提交保留，分支和 HEAD 不移动，真实暂存内容保持原状；不自动执行 commit 或 push。
+
+“恢复为新笔记”在当前目录创建唯一名称的新 Markdown，保留原笔记。历史附件与批注消息不隐式复制或回滚。当前选中版本不存在该文件时显示删除状态，删除当前文件必须是明确的独立动作。
+
+整仓库 reset、revert 和切换分支不属于此笔记恢复动作。
+
+## 12.2 必须拆开的现有调用路径
+
+当前 SyncService.run 在非 refresh 动作前会 ensureExcludes，可能写 .gitignore、info/exclude，甚至移除敏感路径的暂存跟踪。[sync-service.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/services/sync-service.ts)与 [repository-protection.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/sync/platform/desktop/repository-protection.ts)可见这一副作用。
+
+恢复不能直接复用该 wrapper。应抽出不夹带维护副作用的仓库操作协调器；保护初始化/修复成为独立职责，并在任何自动快照或敏感写入启用之前完成策略检查。
+
+## 12.3 阶段与失败语义
+
+| 阶段 | 行为 | 失败后 |
+| --- | --- | --- |
+| Prepare | 固定源版本，捕获目标 buffer/disk/index/HEAD 状态，生成预览 | 保留原笔记，显示错误 |
+| Confirm | 显示目标文件、源版本、改动范围、检查点与同步影响 | 取消不写正文 |
+| Checkpoint | 保存恢复前缓冲、必要磁盘基线、锚点协作信息与 pending journal | 检查点失败即禁止覆盖 |
+| Revalidate | 取得仓库/文档协调租约后重新核验异步期间所有基线 | 基线过期要求重新比较 |
+| Apply | 对已打开笔记应用一个最小编辑 transaction；关闭笔记走 Vault.process | 记录已完成阶段，不盲目重试覆写 |
+| Verify | 保存与读回校验，检查目标修订和实际 Git 状态 | 提示“写入状态待核对”，保留检查点 |
+| Receipt | 持久化 before/after hash、源版本、目标与结果 | 重启按日志核对，不重放用户操作 |
+| Undo | 仅在当前内容仍匹配 afterHash 时应用逆操作 | 已有新编辑时转比较/恢复副本 |
+
+Obsidian 的 [Editor](https://docs.obsidian.md/Plugins/Editor/Editor)、[Vault.process](https://docs.obsidian.md/Plugins/Vault) 和 [公开类型声明](https://github.com/obsidianmd/obsidian-api/blob/master/obsidian.d.ts)提供了编辑事务、文件 process 和 TextFileView.save。它们没有提供覆盖 Git、编辑器、其它插件和外部同步程序的全局事务。
+
+因此实现是“版本检查 + 插件内部协调 + 持久恢复日志 + 冲突保留”。不能宣称完全锁住外部进程，也不能虚构暂停全部 Obsidian 自动保存的 API。
+
+已打开笔记通过来源 Editor.transaction 应用最小变化，再使用该 MarkdownView 的公开保存路径并核验实际结果；关闭的普通笔记通过 Vault.process 在同步 callback 内检查 expected 内容。所有其它打开 leaf 和受管草稿参与冲突检查，存在不同未保存版本时优先让用户保留副本或解决冲突。
+
+同一笔记已部分暂存时，恢复保持暂存内容不变，因此可能出现 MM 状态。界面应说明“当前文件已恢复，暂存内容仍为此前版本”。
+
+## 12.4 自动同步协调
+
+恢复过程中禁止本插件同时对同一仓库运行自动提交、拉取或推送。恢复完成后保留持久的“待确认恢复”状态，暂停自动写同步，显示“已恢复，确认后继续自动同步”。用户可返回编辑、撤销、创建提交或明确继续既有同步计划。
+
+不设置短暂超时后静默恢复自动推送。其它程序的 Git 操作通过 generation 和状态核验发现；发现外部变化时不把它回滚成自己的旧状态。
+
+# 十三 批注协作
+
+现有 [comments/core/store.ts](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/src/modules/comments/core/store.ts)在 applyChanges 中把塌缩锚点标为 orphaned，而后续 reconcile 跳过 orphaned。因此整篇 setValue 后再 reconcile 不能可靠修复批注。
+
+需要把批注纳入恢复的文档变更协议：
+
+- diff 预览使用独立只读 CM 实例，不安装会写当前批注 store 的宿主扩展。
+- 恢复以一个事务应用最小文本变化，保留未变段落的位置。
+- 通过公开 api.ts 或宿主文档事件发送 prepare/commit/abort，携带 operationId、before、after 和位置映射。prepare 必须先保存锚点基线并协调常规编辑扩展；恢复期间，同一个 delta 只能由一条锚点更新路径处理。不能让普通 applyChanges 先把锚点置为 orphaned，再等待 commit 后 reconcile 补救。成功或失败后解除协调并按实际文档修订处理后续正常编辑。
+- 消失、重复或无法确定的引用标记为待重定位，不猜测绑定到相似段落。
+- 锚点处理去重，多个 leaf 收到同一文档修订只应用一次。
+- 撤销恢复时也校验和更新锚点；批注正文、作者和回复记录不回滚。
+
+这部分与用户提出的“类似批注的右侧栏”直接相关：共享视觉入口之外，正文恢复还必须保护已有批注语义。
+
+# 十四 本地历史与存储
+
+Git 只能提供已有提交，不能补回从未记录的编辑。界面将 Git 提交、本地快照和恢复检查点标为不同来源。
+
+首版包含恢复前检查点。下一阶段加入可配置的自动本地历史：在内容变化并达到时间间隔、切换笔记或完成重要操作时采样；按内容 hash 去重，不逐键保存，不为此自动提交用户分支。
+
+推荐存储：
+
+| 数据 | 建议归属 |
+| --- | --- |
+| Git 历史正文 | Git 对象数据库，只读复用 |
+| 可重建提交/路径索引 | 内存或设备级缓存 |
+| 恢复检查点与本地快照正文 | .huhu/recovery/versioning/{device-id}/objects/ |
+| 快照索引与恢复 journal | 同一设备恢复目录的独立子目录 |
+| 布局、筛选、上次选择 | 本设备有界 UI 设置 |
+| 普通笔记正文 | 原路径，仍由 Vault/Editor 管理 |
+
+第一阶段可采用内容寻址完整快照及小型索引；压缩、按字节配额和保留策略管理容量。完整快照避免每次恢复重放长 delta 链。快照与 journal 不当作可随意删除的缓存；清理应保留仍被未完成恢复引用的对象，采用可校验的两阶段回收。
+
+沿用现有恢复目录排除策略，并核对这些路径没有已经被跟踪。Git ignore 规则不会自动解除已有跟踪；若策略异常，先阻止敏感快照进入自动提交范围并显示可修复状态。恢复正文流程本身不趁机修改暂存区。
+
+本地笔记 identity 使用设备侧记录和 rename 事件维护，不在第一次查看历史时向所有笔记 YAML 注入 ID。跨设备复制、外部重命名和同名重建必须保留歧义信息。
+
+# 十五 性能 状态一致性与构建
+
+## 15.1 查询调度
+
+不可变 commit/blob 查询允许有限并发；index、工作树和 buffer 查询带 generation。写操作按仓库协调，并与文档写入遵守固定的租约获取顺序。
+
+所有请求贯通 AbortSignal。快速选择版本时取消旧读取并增加 requestGeneration，只有当前 session 的匹配结果可以提交。开始新请求时清楚显示 loading；保留旧结果则标记 stale，不能把旧正文放在新标题下冒充新结果。
+
+文件系统、refs、index、vault modify/rename/delete、编辑器变化与窗口重新激活都可以触发有节流的失效。隐藏面板暂停无意义轮询，切库和模块关闭释放进程、订阅、EditorView、Worker 与 Blob URL。
+
+## 15.2 建议预算
+
+以下为实施验收目标，不是当前实测值。
+
+| 场景 | 初始目标 |
+| --- | --- |
+| 缓存内切换常规笔记版本 | 选择反馈 100ms 内，比较就绪 p95 约 300ms 内 |
+| 首次读取本地常规笔记历史 | 在明确参考设备与仓库规模下 p95 约 1s 内 |
+| 主线程计算 | 大计算进入 Worker，避免连续超过 50ms 的任务 |
+| 普通精确比较 | 初始按每侧约 1MiB 或 20,000 行分级，再按测量校准 |
+| 较大文本 | 1–5MiB 降低语法/词级计算，展示进度和取消 |
+| 超过预算 | 明确提示大文件，提供受控加载或外部工具，禁止静默截断后恢复 |
+| 提交和文件导航 | 虚拟化列表；只挂载当前比较的一对编辑器 |
+| 多窗口 | 限制 Worker/读取并发，总缓存有字节上限 |
+
+长单行、中文、Emoji、CRLF、大量相同行、二进制和高变化率文本都应进入性能夹具，不能只用简单代码文件评估。
+
+## 15.3 构建事实与建议
+
+当前 [scripts/esbuild-options.mjs](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/scripts/esbuild-options.mjs)输出单个 CJS main.js，未配置 code splitting。动态 import 在此主要延迟求值，不等于自动生成小 chunk。CM state/view/language 等被 external，而 merge 尚未列入其中。
+
+建议 bundle @codemirror/merge 本身，继续复用宿主 CM 核心。Worker 用独立的浏览器构建步骤生成自包含源码，再嵌入延迟加载模块，由所属窗口以 Blob Worker 启动，维持当前三文件安装习惯。Worker 不能依赖宿主的 CJS require；其计算依赖必须独立打包。Blob Worker 的宿主策略、多窗口和销毁行为需实机验证，失败时受控降级而不是卡住主线程。
+
+当前 [bundle-budget.json](https://github.com/NAMEWTA/obsidian-huhu/blob/33c21e098ef3188cbab5a09f3e0a01fadb787715/scripts/bundle-budget.json)中 main.js 上限为 6,034,432 字节，sync 激活闭包上限为 98,304 字节。它们是现有门禁，不是本次实测。重命名模块必须同步调整预算 key 与检查逻辑，不能让旧 sync 项缺失后按零通过。新增 merge/Worker 的预算变化应有实测和明确理由。
+
+# 十六 空态 错误与能力边界
+
+| 状态 | 展示与行为 |
+| --- | --- |
+| 没有 Git 仓库 | 说明当前笔记尚无 Git 历史，已有本地快照仍可查看 |
+| Git 未安装或模块不支持 | 显示具体能力缺失，保留可用的本地历史能力 |
+| 未跟踪或从未提交 | 明确“尚无 Git 提交记录”，当前内容可与空版本比较 |
+| 查询失败 | 错误与重试，保留已核实的旧结果并标记过期 |
+| 没有差异 | 明确两端与比较条件，不能用相同状态代替读取失败 |
+| 历史对象缺失或浅克隆边界 | 指出不可用版本，补取历史是单独动作 |
+| 重命名 | 显示历史路径与当前路径 |
+| 来源分支发生移动 | 现有比较保持原 OID，提供更新来源 |
+| 笔记被删除 | 历史仍可查看，恢复走新建及同名冲突检查 |
+| 合并冲突 | 单独 conflict intent；普通双向历史恢复不能伪装成冲突解决 |
+| 二进制或不支持编码 | 类型说明与专用预览能力，禁止乱码比较 |
+| 检查点/正文保存失败 | 持续错误状态，保留可恢复内容，不能仅弹短 toast |
+| 来源窗口关闭或跨窗移动 | 重建所属窗口资源并重新绑定，不复用失效 DOM |
+| 模块停用 | 关闭对应动作，释放资源；用户内容与恢复记录保留 |
+
+响应式布局不代表移动端已支持原生 Git。首版 Git 能力保持桌面范围，平台能力通过 provider 声明。后续本地历史可独立扩展到其它平台。
+
+# 十七 实施顺序与验收
+
+## 17.1 分阶段交付
+
+| 阶段 | 交付范围 | 完成条件 |
+| --- | --- | --- |
+| A 契约与分层 | versioning 模块、RevisionRef、Snapshot、查询/写入边界、旧代码迁移 | 既有正确 Git 解析与保护测试继续通过；没有第二套 Git 后端 |
+| B 紧凑 Git 工作区 | 移除图内详情，重建文件导航、提交区和共享 diff | 选择提交不改变列表行高；正文独立；错误与加载正确 |
+| C 笔记历史与比较 | EditorPanelHost、来源上下文、临时 review tab、三种布局 | 未保存笔记浏览多个版本不被改写；跨窗不串笔记 |
+| D 恢复闭环 | 检查点、prepare/apply/verify/undo、批注协作、同步暂停 | 故障注入与竞态夹具通过；真实宿主保存及撤销可验证 |
+| E 完整历史体验 | 自动本地历史、任意版本对照、重命名分段、精确按块恢复 | 来源清楚，复杂路径与历史正确，存储保留策略可控 |
+| F 可选增强 | 阅读渲染对照、图片历史、blame、进一步批量审阅 | 不破坏核心比较语义与性能预算 |
+
+A–D 构成可交付的完整闭环。上下对照属于 C 的必需内容；不能拿行内差异替代用户要求。E 中的持续本地历史、精确按块恢复比单纯视觉润色更值得优先。
+
+## 17.2 代码处置
+
+- SyncGraph：保留图模型与虚拟化，删除 wip-detail/commit-detail 展开行。
+- ChangeList：拆成纯选择列表和独立动作，不嵌 diff。
+- CommitDetail：拆成紧凑摘要、文件查询和独立文件导航。
+- Diff.tsx：由完整 DiffWorkspace 替代。
+- SyncService：拆出查询、写入协调、保护维护和同步调度。
+- GitRepo：拆出状态查询、对象读取、历史追踪及命令适配。
+- comments-leaf：升级通用 EditorPanelHost。
+- comments 的全局活动路径：迁为宿主提供的每面板上下文。
+- Workbench contracts：注册 revision-review contribution 和 preview handle。
+- 预算、i18n、设置、模块注册、docs/sync 与现有 UI 测试同步更新。
+
+不保留旧展开式 UI 作为双轨；不维护旧私有 API 别名。已有用户笔记、附件、批注正文、Git objects 与恢复记录不因模块改名而删除。设置或 UI 缓存是否重置可按新模型决定，并明确展示。
+
+## 17.3 必须通过的行为验收
+
+1. 点击未提交更改、历史提交和分支过滤，导航行高度保持稳定，diff 不进入列表内部。
+2. 连续查看至少十个历史版本，原笔记 buffer、磁盘与 undo 栈不因浏览变化。
+3. 侧栏默认跟随本窗口笔记；固定后不跟随；diff 得到焦点不清空来源。
+4. 多窗口打开不同笔记不串状态，同笔记多个 leaf 不重复映射批注。
+5. 左右、上下、行内切换保持版本、选择和差异位置，手动偏好不被自动模式覆盖。
+6. index → 工作树、HEAD → index、历史 → 当前 buffer 的结果与标题一致。
+7. rename、delete/recreate、root commit、merge parent、未跟踪、MM、特殊路径和 SHA-256 仓库有语义夹具。
+8. 读取失败不显示成无历史；粗略或截断结果不可用于精确按块恢复。
+9. 预览后发生编辑或外部变化，旧 RestorePlan 被拒绝或重新准备。
+10. checkpoint、正文应用、保存、回执各阶段故障后可核对，不自动覆写后续新编辑。
+11. 恢复保留 HEAD 与 index 内容；自动同步按显式待确认策略处理。
+12. 有批注的笔记恢复与撤销后，未变段锚点保留，无法匹配的引用进入待定位。
+13. 亮暗主题、窄容器、200% 缩放、键盘、读屏与减少动效可用。
+14. 关闭页面、关窗、切库、禁用模块后无残留进程、订阅、Worker 与编辑器实例。
+15. 包体门禁与模块激活门禁仍真实生效，不能因模块重命名漏检。
+
+验证按风险分层：纯模型/协议单元测试、临时真实 Git 仓库集成测试、React/CM DOM 与布局检查、真实 Obsidian 的保存/多窗/批注验收。当前分析没有执行插件构建或实机测试；上述项目是实施的完成条件。
+
+# 十八 最终用户体验
+
+用户在 Git 中选择更改或提交时，左侧列表保持整洁，中央只显示当前要看的文件差异。用户在笔记里打开右侧“历史”时，能迅速选择旧版本，中央进入左右、上下或行内比较；返回后仍是原来的编辑位置。需要恢复时，先看清来源和目标，系统保存检查点，再把内容应用到当前笔记，并提供可信赖的撤销路径。
+
+版本读取、比较、恢复和同步共享基础能力，但每个动作都有清楚的含义。视觉简洁由稳定布局和信息层次实现，可靠性由明确的版本模型、宿主上下文和写入协议支撑。
+
+

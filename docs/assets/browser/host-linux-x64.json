@@ -1,0 +1,219 @@
+{
+  "build": {
+    "main": "924d1ce5dd8b3b32d147927ac71039b685b1de1c02d713cc730ecfe2b4c42688",
+    "styles": "8f85a0ac416ac46e1c8d65ff230cba9efbfcc2c7dd1acab69029890137f2eec1",
+    "worker": "62f09df67271d1218b39a3b99a3318f76a94a8e5bdfa815c31570fd977eca10b",
+    "runtimeManifest": "96505ecab0ad51e3e2dda4e3782c9635272191fe52365bb96719fbab63747d57",
+    "chromium": "156.0.8078.47",
+    "uid": 65534,
+    "nativePicker": "Fixture supplies picker result; OS dialog UI not tested",
+    "obsidianSandbox": false,
+    "chromiumSandbox": true
+  },
+  "results": [
+    {
+      "name": "plugin-copy-hash-matches-build",
+      "passed": true
+    },
+    {
+      "name": "browser-is-independent-with-agent-disabled",
+      "passed": true
+    },
+    {
+      "name": "managed-bundle-verified-and-ready",
+      "passed": true
+    },
+    {
+      "name": "identity-preflight-has-safe-counts-without-cookie-values",
+      "passed": true
+    },
+    {
+      "name": "native-ui-preflight-does-not-expose-cookie-secrets",
+      "passed": true
+    },
+    {
+      "name": "identity-seed-is-created-only-after-explicit-ui-commit",
+      "passed": true
+    },
+    {
+      "name": "seed-restored-before-task-ready",
+      "passed": true
+    },
+    {
+      "name": "separate-task-has-no-shared-cookie",
+      "passed": true
+    },
+    {
+      "name": "owned-chromium-processes-have-sandbox-and-private-pipe",
+      "passed": true
+    },
+    {
+      "name": "personal-space-refuses-agent-control",
+      "passed": true
+    },
+    {
+      "name": "real-semantic-observation",
+      "passed": true
+    },
+    {
+      "name": "retry-cleanup-preserves-active-ephemeral-space-and-lease",
+      "passed": true
+    },
+    {
+      "name": "connection-default-cannot-create-other-spaces",
+      "passed": true
+    },
+    {
+      "name": "agent-protocol-rejects-arbitrary-javascript",
+      "passed": true
+    },
+    {
+      "name": "agent-fills-real-page",
+      "passed": true
+    },
+    {
+      "name": "agent-preserves-real-obsidian-editor-focus-and-clipboard",
+      "passed": true
+    },
+    {
+      "name": "navigate-ledger-completes",
+      "passed": true
+    },
+    {
+      "name": "task-cookie-mutation-stays-isolated",
+      "passed": true
+    },
+    {
+      "name": "stale-observation-cannot-dispatch",
+      "passed": true,
+      "detail": "browser_stale_ref"
+    },
+    {
+      "name": "current-run-file-list-exposes-only-its-grant",
+      "passed": true
+    },
+    {
+      "name": "wrong-run-file-grant-is-denied-before-consumption",
+      "passed": true,
+      "detail": "file_scope_mismatch"
+    },
+    {
+      "name": "scoped-agent-file-reaches-real-chromium",
+      "passed": true
+    },
+    {
+      "name": "real-upload-change-is-visible",
+      "passed": true
+    },
+    {
+      "name": "real-upload-preserves-original-name-and-fixed-bytes",
+      "passed": true
+    },
+    {
+      "name": "opening-viewer-does-not-take-agent-control",
+      "passed": true
+    },
+    {
+      "name": "old-run-is-revoked-after-human-takeover",
+      "passed": true
+    },
+    {
+      "name": "zoom125-has-real-confirmed-frame-geometry",
+      "passed": true
+    },
+    {
+      "name": "zoom80-preserves-output-surface",
+      "passed": true
+    },
+    {
+      "name": "old-frame-is-refused-after-geometry-change",
+      "passed": true
+    },
+    {
+      "name": "static-page-gets-a-real-fresh-frame",
+      "passed": true
+    },
+    {
+      "name": "native-frame-click-and-chinese-text-reach-the-page",
+      "passed": true
+    },
+    {
+      "name": "rapid-canvas-keyboard-input-keeps-every-character",
+      "passed": true
+    },
+    {
+      "name": "native-prompt-reply-completes",
+      "passed": true
+    },
+    {
+      "name": "prompt-reply-reaches-real-page",
+      "passed": true
+    },
+    {
+      "name": "pending-native-chooser-does-not-prevent-control-release",
+      "passed": true
+    },
+    {
+      "name": "native-request-renews-revision-and-epoch",
+      "passed": true
+    },
+    {
+      "name": "stale-native-request-revision-is-rejected",
+      "passed": true
+    },
+    {
+      "name": "renewed-native-chooser-accepts-current-human-file-grant",
+      "passed": true
+    },
+    {
+      "name": "explicit-selection-reader-has-real-dom-selection",
+      "passed": true
+    },
+    {
+      "name": "clipboard-changes-only-after-explicit-copy",
+      "passed": true
+    },
+    {
+      "name": "http-auth-denial-is-visible-without-native-credential-prompt",
+      "passed": true
+    },
+    {
+      "name": "stop-reopen-keeps-page-id-and-replaces-runtime",
+      "passed": true
+    },
+    {
+      "name": "independent-opener-honors-explicit-page-target",
+      "passed": true
+    },
+    {
+      "name": "popout-adoption-releases-old-window-authority",
+      "passed": true
+    },
+    {
+      "name": "popout-gets-its-own-viewer-and-window-lease",
+      "passed": true
+    },
+    {
+      "name": "closing-popout-pauses-human-control-but-keeps-space-page",
+      "passed": true
+    },
+    {
+      "name": "module-off-removes-browser-service",
+      "passed": true
+    },
+    {
+      "name": "module-off-terminates-owned-chromium-processes",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "module-off-leaves-no-guest-webview",
+      "passed": true
+    },
+    {
+      "name": "no-unhandled-host-errors",
+      "passed": true,
+      "detail": []
+    }
+  ]
+}

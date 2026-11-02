@@ -1,0 +1,5 @@
+{
+  "note": "历史正文未改；外部相对路径因归档层级变化时按此映射回读；既有缺件不是本轮修复对象。Path协议中的稳定change ID由消费者在active/archive唯一解析。",
+  "relocated_references": [],
+  "preexisting_missing_references": []
+}

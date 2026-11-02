@@ -1,0 +1,92 @@
+{
+  "scope": "103 exact four script/test files; candidate repair, repository docs gate still pending external 097 documentation maintenance",
+  "taskSha256": "cbd0ddfd727a6e3d50f49777244cfa134e87d01697072706ef2538790aa452bd",
+  "fileCount": 4,
+  "treeSha256": "623806a7986f5fac750dd1b4f55169a1bc8fad8ce48cefffc5f3070a80b324f7",
+  "files": {
+    "scripts/documentation-policy.mjs": {
+      "beforeSha256": "5f82d8558ae46bfee1d3386681946436e1177e5e8140df31162e80741d84a8ab",
+      "afterSha256": "672f28f21f3b6151eee52e5dc52842d2ecb29325ced8b2702bee0d9c291aa0b8"
+    },
+    "scripts/verify-docs.mjs": {
+      "beforeSha256": "ed11543edd9476c1bf8ebd84e199113dcfce04e323fa5bc35fe2d79aea79e5e8",
+      "afterSha256": "a521e1ec0e1126671ee4b2d019659aab1b649297602cc87b491c3a3fba8bfc6f"
+    },
+    "test/release/documentation-checker.test.ts": {
+      "beforeSha256": "0efd624d58ad05d8e57687418c9924949df710804cc7ec06ddf90839a64a959f",
+      "afterSha256": "1a2b2f8295769e9a33f1f634fdbccc0d806301c2fca74cc7f3a555d39cc293b5"
+    },
+    "test/release/documentation-policy.test.ts": {
+      "beforeSha256": "9c902d0da318dfb74db1f948d6d699d39c97f0603dc21611486cb4910115291e",
+      "afterSha256": "e8afd03604d6592f2dd807567034e9964ee9094866c22e39e7f39720f069e41e"
+    }
+  },
+  "protectedReadOnly": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/inputs/HUHU-Bot_架构审核与工程设计规范_v1.1.md": {
+      "beforeSha256": "a85a57648a00942a44c3df89c52804d13d129e7e31262a73feb91ccc7f1516cc",
+      "afterSha256": "a85a57648a00942a44c3df89c52804d13d129e7e31262a73feb91ccc7f1516cc",
+      "unchanged": true
+    },
+    "native/huhubot/tests/contract/chat/testdata/claim-fairness/README.md": {
+      "beforeSha256": "782e2f77313c04449867ea64e56c3ccb022149e405b036271324c79c1b36b016",
+      "afterSha256": "782e2f77313c04449867ea64e56c3ccb022149e405b036271324c79c1b36b016",
+      "unchanged": true
+    },
+    "NOTICE": {
+      "beforeSha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+      "afterSha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+      "unchanged": true
+    },
+    "THIRD-PARTY-NOTICES.md": {
+      "beforeSha256": "04dce87bb9fdb48553ca7e93cd6cf98c27bdb2dcaf73d0ff46da03c9291fa9df",
+      "afterSha256": "04dce87bb9fdb48553ca7e93cd6cf98c27bdb2dcaf73d0ff46da03c9291fa9df",
+      "unchanged": true
+    },
+    "main.js": {
+      "beforeSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "afterSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "unchanged": true
+    },
+    "styles.css": {
+      "beforeSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "afterSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "unchanged": true
+    },
+    "native/huhubot/go.mod": {
+      "beforeSha256": "75386c4e53aa851394ed6fa7ae167c0822c530690e4e240b83ace65c97154814",
+      "afterSha256": "75386c4e53aa851394ed6fa7ae167c0822c530690e4e240b83ace65c97154814",
+      "unchanged": true
+    },
+    "native/huhubot/go.sum": {
+      "beforeSha256": "a5547b752487c8ab3e116b95f30d95f460ca58e3a7a0c6487a2a1272f89b3937",
+      "afterSha256": "a5547b752487c8ab3e116b95f30d95f460ca58e3a7a0c6487a2a1272f89b3937",
+      "unchanged": true
+    },
+    ".agents/skills/dev/SKILL.md": {
+      "beforeSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "afterSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "unchanged": true
+    },
+    "package.json": {
+      "beforeSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "afterSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "unchanged": true
+    },
+    "pnpm-lock.yaml": {
+      "beforeSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "afterSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "unchanged": true
+    }
+  },
+  "additionalReadOnlyFailureInputs": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/097-responses-preparation/REPORT.md": "625e300b7cc5a56af0800b692c20d706187b73fe056808065dd26fbcf1e73638",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/097-responses-preparation/logs/exploration-notes.md": "689ef80480afc688bee3c75e3597e7df427dee86534d02e1405830fd0d0b84ef"
+  },
+  "patchSha256": "efd2f3516abddcd1dbdd525da486fed2c149f8ab17a9fc2a7ae04f462ec48bd6",
+  "checks": {
+    "targetedVitest": "5/5, actual outer exit0/Wait",
+    "docs": "original seven findings gone; two 097 code-display findings; child1 / outer126/Wait",
+    "gitDiffCheck": "actual exit0/Wait"
+  },
+  "goBuildLintRun": false
+}

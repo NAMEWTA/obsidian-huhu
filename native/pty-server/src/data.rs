@@ -1,10 +1,16 @@
 //! Native history requests (scan, query, read, cancel) run on worker threads; one scan writes at a time.
 
-use crate::{agent_data, session::{control, Outbox}};
+use crate::{
+    agent_data,
+    session::{control, Outbox},
+};
 use serde_json::{json, Value};
 use std::{
     collections::HashMap,
-    sync::{atomic::{AtomicBool, Ordering}, Arc, Mutex},
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex,
+    },
     thread,
 };
 
@@ -16,8 +22,13 @@ pub struct History {
 }
 
 impl History {
-    pub fn new(out: Outbox) -> Self {
-        Self { out, jobs: Arc::new(Mutex::new(HashMap::new())), writer: Arc::new(Mutex::new(())) }
+    pub fn new(out: impl Into<Outbox>) -> Self {
+        let out = out.into();
+        Self {
+            out,
+            jobs: Arc::new(Mutex::new(HashMap::new())),
+            writer: Arc::new(Mutex::new(())),
+        }
     }
 
     pub fn handle(&self, operation: &str, request_id: String, payload: Value) {
@@ -28,18 +39,41 @@ impl History {
             return;
         }
         if !matches!(operation, "scan" | "query" | "read") {
-            control(&self.out, json!({ "type": "history-result", "rid": request_id, "error": format!("unknown history request {operation}") }));
+            control(
+                &self.out,
+                json!({ "type": "history-result", "rid": request_id, "error": format!("unknown history request {operation}") }),
+            );
             return;
         }
         let request: agent_data::Request = match serde_json::from_value(payload) {
             Ok(request) => request,
             Err(error) => {
-                control(&self.out, json!({ "type": "history-result", "rid": request_id, "error": error.to_string() }));
+                control(
+                    &self.out,
+                    json!({ "type": "history-result", "rid": request_id, "error": error.to_string() }),
+                );
                 return;
             }
         };
+        let Some(permit) = self.out.reserve_result() else {
+            control(
+                &self.out,
+                json!({"type":"history-result","rid":request_id,"error":"native result worker capacity exceeded"}),
+            );
+            return;
+        };
+        if self.jobs.lock().unwrap().contains_key(&request_id) {
+            control(
+                &self.out,
+                json!({"type":"history-result","rid":request_id,"error":"duplicate active request"}),
+            );
+            return;
+        }
         let cancel = Arc::new(AtomicBool::new(false));
-        self.jobs.lock().unwrap().insert(request_id.clone(), cancel.clone());
+        self.jobs
+            .lock()
+            .unwrap()
+            .insert(request_id.clone(), cancel.clone());
         let operation = operation.to_string();
         let this = self.clone();
         thread::spawn(move || {
@@ -53,9 +87,16 @@ impl History {
             this.jobs.lock().unwrap().remove(&request_id);
             let message = match result {
                 Ok(data) => json!({ "type": "history-result", "rid": request_id, "data": data }),
-                Err(error) => json!({ "type": "history-result", "rid": request_id, "error": error }),
+                Err(error) => {
+                    json!({ "type": "history-result", "rid": request_id, "error": error })
+                }
             };
-            control(&this.out, message);
+            if let Err(error) = permit.send(&message) {
+                control(
+                    &this.out,
+                    json!({"type":"history-result","rid":request_id,"error":error}),
+                );
+            }
         });
     }
 }
@@ -88,13 +129,18 @@ mod tests {
     fn a_cancelled_scan_waiting_for_the_writer_reports_cancellation() {
         let (tx, rx) = mpsc::channel();
         let history = History::new(tx);
-        let vault = std::env::temp_dir().join(format!("huhu-history-glue-{}", uuid::Uuid::new_v4()));
+        let vault =
+            std::env::temp_dir().join(format!("huhu-history-glue-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&vault).unwrap();
         let vault = std::fs::canonicalize(&vault).unwrap();
         let held = history.writer.clone();
         let guard = held.lock().unwrap();
         let index = vault.join(".huhu/terminal-agent/device/index.sqlite");
-        history.handle("scan", "s".into(), json!({ "vault": vault, "index": index }));
+        history.handle(
+            "scan",
+            "s".into(),
+            json!({ "vault": vault, "index": index }),
+        );
         std::thread::sleep(Duration::from_millis(100));
         history.handle("cancel", "s".into(), Value::Null);
         drop(guard);

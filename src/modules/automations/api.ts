@@ -8,8 +8,8 @@ import type {
 	ScheduleSpec,
 } from '../../shared/automation/types';
 import type { AutomationPrefill } from './core/api';
-import type { TaskDraft } from '../../shared/automation/task';
 import type { AgentDispatchRequest, AgentDispatchReceipt } from '../../shared/agent-dispatch';
+import { AUTOMATION_DEFINITIONS_ROOT } from '../../shared/storage/vault-layout';
 
 /**
  * A product that keeps automation definitions inside its own documents (board widgets and cards, archive
@@ -23,21 +23,9 @@ export interface AutomationSource {
 	/** Write the definition back into its document, or remove it (`remove`). */
 	save(definition: AutomationDefinition, remove?: boolean): Promise<void>;
 	open(source: SourceRef, ownerWindow?: Window): Promise<void>;
-	/** Boards only: the "create task" action. */
-	readonly createTask?: (action: Extract<AutomationAction, { kind: 'create-task' }>, runId: string) => Promise<void>;
-	/** Boards only: cards a "create task" action can target. */
-	readonly taskTargets?: () => Promise<Array<{ path: string; cardId: string; title: string }>>;
-	/** Registered boards, including boards without ordinary to-do cards. Calendar storage is shared. */
-	readonly calendarTargets?: () => Promise<AutomationCalendarTarget[]>;
 	/** Boards only: documents a definition can be pinned to as a quick action. */
 	readonly pinTargets?: () => string[];
 	readonly pin?: (path: string, definition: AutomationDefinition) => Promise<void>;
-}
-
-export interface AutomationCalendarTarget {
-	path: string;
-	title: string;
-	storage: { kind: 'daily' | 'file' | 'folder' | 'task'; path?: string };
 }
 
 /** Automations as other products see them: quick actions and opening the automation board. */
@@ -66,13 +54,6 @@ export const AUTOMATION_AGENT_RUNTIME = serviceKey<AgentRuntimePort>('agent', 'a
  * definition and tells the caller what was saved.
  */
 export interface AutomationComposer {
-	editTask?(request: {
-		owner: HTMLElement;
-		initial: TaskDraft;
-		repeating?: boolean;
-		save(draft: TaskDraft, following: boolean): Promise<boolean>;
-	}): Promise<void>;
-	/** Resolves to the saved definition, or to `undefined` when the dialog is closed without saving. */
 	open(request?: AutomationComposeRequest): Promise<AutomationDefinition | undefined>;
 }
 export interface AutomationComposeRequest {
@@ -98,3 +79,27 @@ export interface AutomationSchedule {
 	wallTime(stamp: string, timezone: string): number;
 }
 export const AUTOMATION_SCHEDULE = serviceKey<AutomationSchedule>('automations', 'schedule');
+
+/** Recovery owners of this module: run history/invocations/results (one device file) and the Markdown definition documents. */
+export const AUTOMATION_RUNTIME_OWNER = 'automations-runtime';
+export const AUTOMATION_DEFINITIONS_OWNER = 'automations-definitions';
+export function automationRuntimePath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/automation/${deviceId}/runtime.json`;
+}
+/** Exactly `<definitions root>/<one folder>/操作.md`: the only file shape the definitions repository writes. */
+export function isAutomationDefinitionPath(path: string): boolean {
+	const prefix = `${AUTOMATION_DEFINITIONS_ROOT}/`;
+	if (!path.startsWith(prefix)) return false;
+	const parts = path.slice(prefix.length).split('/');
+	return (
+		parts.length === 2 && parts[0]!.length > 0 && parts[0] !== '.' && parts[0] !== '..' && parts[1] === '操作.md'
+	);
+}
+
+/**
+ * Whether a definition document would be read back by this module's own repository codec (frontmatter, action registry,
+ * schedule, `isDefinition`): the reason when it would not, so a restore can refuse before writing it. Loaded lazily.
+ */
+export const checkAutomationDocument = async (path: string, text: string): Promise<string | undefined> =>
+	(await import('./core/documents')).checkAutomationDocument(path, text);

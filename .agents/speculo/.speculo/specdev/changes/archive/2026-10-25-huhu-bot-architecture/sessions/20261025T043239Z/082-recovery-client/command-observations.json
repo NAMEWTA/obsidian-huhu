@@ -1,0 +1,246 @@
+{
+  "capturedAt": "2026-10-25T21:26:43.576319+00:00",
+  "allOwnProcessesWaited": true,
+  "activeOwnProductProcesses": 0,
+  "activeOwnCheckProcesses": 0,
+  "checks": [
+    {
+      "log": "logs/01-target-reanchor-red.log",
+      "exitCode": 126,
+      "command": "vitest event-client.test.ts",
+      "observation": "Missing target reanchor, 30 existing tests pass",
+      "waited": true
+    },
+    {
+      "log": "logs/02-target-reanchor-first-green.log",
+      "exitCode": 0,
+      "command": "vitest event-client.test.ts",
+      "observation": "31 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/03-target-reanchor-boundaries.log",
+      "exitCode": 0,
+      "command": "vitest selected event/group/reducer/transcript tests",
+      "observation": "4 files / 53 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/04-event-production-tsc.log",
+      "exitCode": 0,
+      "command": "pnpm exec tsc --noEmit --skipLibCheck",
+      "observation": "Early stage; not final shared DTO validation",
+      "waited": true
+    },
+    {
+      "log": "logs/05-event-test-tsc.log",
+      "exitCode": 0,
+      "command": "pnpm exec tsc --skipLibCheck -p tsconfig.test.json",
+      "observation": "Early stage",
+      "waited": true
+    },
+    {
+      "log": "logs/06-event-lint.log",
+      "exitCode": 0,
+      "command": "eslint event-client.ts --max-warnings 0",
+      "observation": "Early stage",
+      "waited": true
+    },
+    {
+      "log": "logs/07-managed-child-close.log",
+      "exitCode": 0,
+      "command": "vitest managed.test.ts",
+      "observation": "3 tests; actual Linux controlled child; Wait complete",
+      "waited": true
+    },
+    {
+      "log": "logs/09-method-count-red.log",
+      "exitCode": 126,
+      "command": "vitest method-validation.test.ts",
+      "observation": "142 fixed cap fails with real 144 definitions",
+      "waited": true
+    },
+    {
+      "log": "logs/10-method-count-green.log",
+      "exitCode": 0,
+      "command": "vitest method-validation.test.ts",
+      "observation": "5 tests, strict cap144",
+      "waited": true
+    },
+    {
+      "log": "logs/11-recovery-proxy-red.log",
+      "exitCode": 126,
+      "command": "vitest connection.test.ts",
+      "observation": "42 existing tests pass; missing runs.recovery proxy fails",
+      "waited": true
+    },
+    {
+      "log": "logs/12-recovery-proxy-green.log",
+      "exitCode": 0,
+      "command": "vitest connection.test.ts method-validation.test.ts",
+      "observation": "48 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/13-recovery-consumer-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "New service does not yet exist",
+      "waited": true
+    },
+    {
+      "log": "logs/14-recovery-capability-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "1 test",
+      "waited": true
+    },
+    {
+      "log": "logs/15-qualified-resume-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Missing command view/resume implementation",
+      "waited": true
+    },
+    {
+      "log": "logs/16-qualified-resume-first-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "2 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/17-uncertain-command-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Replacement command was forwarded after uncertain timeout",
+      "waited": true
+    },
+    {
+      "log": "logs/18-uncertain-command-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "3 tests, exact original retry",
+      "waited": true
+    },
+    {
+      "log": "logs/19-controller-lifecycle-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Reversed inspect and disposed late read incorrectly resolve",
+      "waited": true
+    },
+    {
+      "log": "logs/20-controller-lifecycle-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "5 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/21-reconnect-receipt-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Projection error rejects accepted receipt; epoch query forwarded; test timed out waiting on forwarded query",
+      "waited": true
+    },
+    {
+      "log": "logs/22-reconnect-receipt-red-bounded.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Bounded peer denial explicitly proves epoch query leak; receipt error reproduced",
+      "waited": true
+    },
+    {
+      "log": "logs/23-reconnect-receipt-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "8 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/24-denied-qualification-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Denied query does not reanchor prior projection",
+      "waited": true
+    },
+    {
+      "log": "logs/25-denied-qualification-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "10 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/26-receipt-abort-race-red.log",
+      "exitCode": 126,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "Caller abort after receipt settlement changes accepted outcome",
+      "waited": true
+    },
+    {
+      "log": "logs/27-receipt-abort-race-green.log",
+      "exitCode": 0,
+      "command": "vitest recovery-client.test.ts",
+      "observation": "11 tests",
+      "waited": true
+    },
+    {
+      "log": "logs/28-production-tsc.log",
+      "exitCode": 0,
+      "command": "pnpm exec tsc --noEmit --skipLibCheck",
+      "observation": "Final TS source candidate",
+      "waited": true
+    },
+    {
+      "log": "logs/29-test-tsc.log",
+      "exitCode": 0,
+      "command": "pnpm exec tsc --skipLibCheck -p tsconfig.test.json",
+      "observation": "Final TS source candidate",
+      "waited": true
+    },
+    {
+      "log": "logs/30-lint.log",
+      "exitCode": 126,
+      "command": "eslint production and explicitly named test paths --max-warnings 0",
+      "observation": "Invocation includes globally ignored test files: 0 errors / 4 ignored-file warnings; no lint rule disabled",
+      "waited": true
+    },
+    {
+      "log": "logs/31-ts-closure.log",
+      "exitCode": 0,
+      "command": "pnpm exec vitest run (10 explicit affected test files)",
+      "observation": "128 tests; sole schema shared corpus276 included",
+      "waited": true
+    },
+    {
+      "log": "logs/32-architecture.log",
+      "exitCode": 0,
+      "command": "pnpm test:architecture",
+      "observation": "1219 modules / no violations",
+      "waited": true
+    },
+    {
+      "log": "logs/33-production-lint.log",
+      "exitCode": 0,
+      "command": "pnpm exec eslint recovery-client.ts event-client.ts connection.ts method-validation.ts --max-warnings 0",
+      "observation": "Production-only actual repo lint scope, zero warnings",
+      "waited": true
+    }
+  ],
+  "finalSuiteFiles": [
+    "src/modules/huhubot/core/protocol/codec.test.ts",
+    "src/modules/huhubot/core/protocol/connection.test.ts",
+    "src/modules/huhubot/core/protocol/method-validation.test.ts",
+    "src/modules/huhubot/core/protocol/task-config-hash.test.ts",
+    "src/modules/huhubot/core/events/reducer.test.ts",
+    "src/modules/huhubot/core/events/transcript.test.ts",
+    "src/modules/huhubot/services/events/event-client.test.ts",
+    "src/modules/huhubot/services/groups/group-client.test.ts",
+    "src/modules/huhubot/services/recovery/recovery-client.test.ts",
+    "src/modules/huhubot/platform/desktop/transport/managed.test.ts"
+  ],
+  "goBuildOrTestsRunBy082": false,
+  "actualProviderOrObsidianRun": false
+}

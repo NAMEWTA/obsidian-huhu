@@ -10,7 +10,7 @@ export function pathOf(state: EditorState): string | null { const path = state.f
 export function threadsOnLine(view: EditorView, env: CommentsEnv, first: number, last = first) {
 	const path = pathOf(view.state);
 	return (path ? env.service.store.threadsFor(path) : []).filter(thread => {
-		if (thread.status === 'orphaned' || (thread.status === 'resolved' && !env.service.settings().highlightResolved)) return false;
+		if (thread.status === 'orphaned' || (thread.status === 'resolved' && !env.service.settings().highlightResolved && !thread.color)) return false;
 		if (thread.anchor.start > view.state.doc.length) return false;
 		const line = view.state.doc.lineAt(thread.anchor.start).number;
 		return line >= first && line <= last;

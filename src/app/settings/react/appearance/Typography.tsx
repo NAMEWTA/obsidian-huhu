@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { useRef, useState } from 'react';
 import { Input } from '../../../../ui/components/input';
 import { Button } from '../../../../ui/components/button';
 import { Slider } from '../../../../ui/components/slider';
@@ -17,10 +16,11 @@ const FONT_SETS: Record<FontKind, readonly string[]> = { Interface: INTERFACE_FO
 const SAMPLE_VAR: Record<FontKind, string> = { Interface: '--font-interface', Text: '--font-text', Mono: '--font-monospace' };
 
 /** The free-text font list of a "Custom…" choice; commits on blur or Enter so every keystroke is not a rewrite. */
-function FamilyInput({ label, value, onCommit }: { label: string; value: string; onCommit: (value: string) => void }) {
+function FamilyInput({ label, value, onCommit }: { label: string; value: string; onCommit: (value: string) => Promise<void> }) {
 	const t = useT();
 	const [draft, setDraft] = useState(value);
 	const [seen, setSeen] = useState(value);
+	const submitted = useRef<string | undefined>(undefined);
 	// Follow the stored value when it changes from elsewhere (reset, import, another picker).
 	if (seen !== value) {
 		setSeen(value);
@@ -29,7 +29,12 @@ function FamilyInput({ label, value, onCommit }: { label: string; value: string;
 	const commit = () => {
 		const clean = normalizeFontFamily(draft);
 		setDraft(clean);
-		if (clean !== value) onCommit(clean);
+		if (clean !== value && submitted.current !== clean) {
+			submitted.current = clean;
+			void onCommit(clean).finally(() => {
+				if (submitted.current === clean) submitted.current = undefined;
+			});
+		}
 	};
 	return (
 		<Input
@@ -47,13 +52,13 @@ function FamilyInput({ label, value, onCommit }: { label: string; value: string;
 	);
 }
 
-function FontRow({ kind, handle, settings }: { kind: FontKind; handle: SettingsHandle<ThemeSettings>; settings: ThemeSettings }) {
+function FontRow({ kind, handle, settings, onError }: { kind: FontKind; handle: SettingsHandle<ThemeSettings>; settings: ThemeSettings; onError: () => void }) {
 	const t = useT();
 	const choiceKey = `font${kind}` as const;
 	const customKey = `font${kind}Custom` as const;
 	const value = settings[choiceKey];
 	const label = t(`appearance.font${kind}`);
-	const fail = () => toast.error(t('settings.writeFailed'));
+	const fail = onError;
 	const optionLabel = (id: string) => t(id === 'default' && kind === 'Interface' ? 'appearance.font.defaultInterface' : `appearance.font.${id}`);
 	return (
 		<SettingsRow
@@ -73,7 +78,7 @@ function FontRow({ kind, handle, settings }: { kind: FontKind; handle: SettingsH
 						<FamilyInput
 							label={t('appearance.fontCustomLabel', { font: label })}
 							value={settings[customKey]}
-							onCommit={(next) => void handle.update((draft) => { (draft as Record<string, unknown>)[customKey] = next; }).catch(fail)}
+							onCommit={(next) => handle.update((draft) => { (draft as Record<string, unknown>)[customKey] = next; }).catch(fail)}
 						/>
 					)}
 					<p className="text-sm leading-snug" style={{ fontFamily: `var(${SAMPLE_VAR[kind]})` }}>
@@ -95,7 +100,7 @@ function SliderRow({ label, description, value, min, max, step, format, onChange
 			label={label}
 			description={description}
 			control={
-				<div className="flex w-64 max-w-full items-center gap-3">
+				<div className="flex w-64 max-w-full flex-wrap items-center gap-3">
 					<Slider aria-label={label} min={min} max={max} step={step} value={[value || min]} onValueChange={(next) => onChange(next[0] ?? min)} />
 					<output className="w-12 shrink-0 text-right text-xs tabular-nums">{value ? format(value) : t('appearance.useDefault')}</output>
 					{value > 0 && (
@@ -110,15 +115,15 @@ function SliderRow({ label, description, value, min, max, step, format, onChange
 }
 
 /** Interface, reading and monospace fonts, note text size and line height. */
-export function Typography({ handle, settings }: { handle: SettingsHandle<ThemeSettings>; settings: ThemeSettings }) {
+export function Typography({ handle, settings, onError }: { handle: SettingsHandle<ThemeSettings>; settings: ThemeSettings; onError: () => void }) {
 	const t = useT();
-	const fail = () => toast.error(t('settings.writeFailed'));
+	const fail = onError;
 	const set = <K extends keyof ThemeSettings>(key: K, value: ThemeSettings[K]) =>
 		void handle.update((draft) => { draft[key] = value; }).catch(fail);
 	return (
 		<div className="space-y-1">
 			{(['Interface', 'Text', 'Mono'] as const).map((kind) => (
-				<FontRow key={kind} kind={kind} handle={handle} settings={settings} />
+				<FontRow key={kind} kind={kind} handle={handle} settings={settings} onError={onError} />
 			))}
 			<SliderRow
 				label={t('appearance.fontSize')}

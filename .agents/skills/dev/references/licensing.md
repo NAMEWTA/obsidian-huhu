@@ -12,7 +12,7 @@ HUHU 自有材料使用 HUHU Source Available License 1.0（`LICENSE`），非�
 | `NOTICE` | HUHU 改编的作品：apex-dashboard 与 obsidian-dashboard（MIT，看板设计）、Orca（MIT，含提交对应关系）、Margin Comments（MIT）、shadcn/ui（MIT）、Iconic（MIT-0）、obsidian-git（MIT，Git 同步）、skills-manager（MIT，技能管理）；只有英文 | 手写 |
 | `src/modules/icons/core/res/NOTICE.txt` | Lucide（ISC）、源自 Feather 的图标（MIT）、Unicode 数据和其他图标资源 | 手写；随横幅发布 |
 | `docs/third-party/orca-terminal-workbench.md`、`orca-LICENSE.txt` | 固定的 Orca 提交和改编内容；Orca 许可证原文 | 手写 |
-| `THIRD-PARTY-NOTICES.md` | 打包进 `main.js` 的 npm 包、内嵌 `styles.css` 的 CSS/字体、链接进 `huhu-pty` 的 crate；生成完整许可原文；缺失必须失败 | `pnpm run notices`；CI 运行 `check:notices` |
+| `THIRD-PARTY-NOTICES.md` | 打包进 `main.js` 的 npm 包、内嵌 `styles.css` 的 CSS/字体、链接进 `huhu-pty` 的 crate 与 `huhu-bot` 的 Go 运行时/模块；生成完整许可原文；缺失必须失败 | `pnpm run notices`；CI 运行 `check:notices` |
 | `src/ui/fonts/LICENSE.txt` | Geist / Geist Mono 的 SIL OFL 1.1 全文 | 随字体保留并纳入 notices |
 | `main.js` 横幅 | `LICENSE`、`NOTICE`、图标资源声明、Orca 许可证、打包依赖的许可证 | `scripts/esbuild-options.mjs` |
 
@@ -28,6 +28,7 @@ Release 附件包含 `LICENSE`、`NOTICE` 和 `THIRD-PARTY-NOTICES.md`。
 2. 尽量从需要它的模块里用懒加载 `import()`；用 `pnpm run check:bundle` 检查。
 3. 运行 `pnpm run notices`，保留重新生成的 `THIRD-PARTY-NOTICES.md` 并跑 `pnpm run check:notices`；用户授权提交时一起提交，不能手改生成文件。
 4. Rust crate 使用 `--locked` 构建，并重新运行 `pnpm run notices`。
+5. Go 依赖由 T-01 的 `go.mod` / `go.sum` owner 维护，构建只用固定工具链与 `-mod=readonly`。`scripts/huhu-bot-notices.mjs` 取五个拟发行目标真实 `go list -deps -json ./cmd/huhubot` 编译闭包并合并，排除未消费模块和测试依赖，核对模块版本与锁定摘要。新 runtime 依赖在该脚本登记精确版本及审阅过的许可；未知、限制性或缺完整 LICENSE/COPYING/NOTICE 都失败。缺失的发行文本可在 `docs/third-party/licenses/go/sources.json` 登记固定提交、文件和 SHA-256，本地保存原文；生成时不联网抓取。当前采用情况见[Bot 依赖说明](../../../../docs/third-party/huhu-bot.md)。
 
 React/React DOM、Radix、clsx、tailwind-merge、cmdk、sonner、zustand、dnd-kit、react-virtual、react-resizable-panels 为 MIT；lucide-react 为 ISC；`class-variance-authority` 为 Apache-2.0，需包含许可全文。Tailwind 与 `tw-animate-css` 的 MIT CSS 和 Geist 字体虽不经过 esbuild，也必须由生成器的 `Embedded in styles.css` 节统计，并参与许可校验；保留 Tailwind 产物的许可注释。
 

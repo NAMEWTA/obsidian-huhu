@@ -2,11 +2,15 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { DEFAULT_DASHBOARD_SETTINGS, type DashboardData, type WeatherData } from '../core/board/types/model';
 import type { HomeHost } from './home-host';
 
-const mocks = vi.hoisted(() => ({ fetch: vi.fn(), close: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+	fetch: vi.fn(),
+	close: vi.fn(),
+	read: vi.fn(async (): Promise<WeatherData | null> => null),
+}));
 vi.mock('../platform/widgets/weather-service', () => ({
 	fetchWeather: mocks.fetch,
 	geocodeCity: vi.fn(),
-	readWeatherCache: vi.fn(async () => null),
+	readWeatherCache: mocks.read,
 }));
 vi.mock('../platform/board/sync', () => ({
 	SyncEngine: class {
@@ -56,6 +60,11 @@ const weather = (temperature: number): WeatherData => ({
 let store: BoardStore;
 beforeEach(() => {
 	vi.clearAllMocks();
+	vi.stubGlobal('window', {
+		setTimeout: (run: () => void, ms: number) => setTimeout(run, ms),
+		clearTimeout: (id: ReturnType<typeof setTimeout>) => clearTimeout(id),
+	});
+	mocks.read.mockResolvedValue(null);
 	store = new BoardStore(
 		{
 			app: { vault: { adapter: {} } },
@@ -90,6 +99,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
 	await store.dispose();
+	vi.useRealTimers();
 });
 
 test('each weather instance has an independent request, failure and result', async () => {
@@ -142,8 +152,110 @@ test('responses and timer callbacks from a previous board generation cannot popu
 });
 
 test('a refresh failure retains the last successful forecast and exposes an error', async () => {
- mocks.fetch.mockResolvedValueOnce(weather(25)); await store.weather('a');
- mocks.fetch.mockRejectedValueOnce(new Error('offline')); await store.weather('a', true);
- expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'error', data: { temperature: 25, fetchedAt: 1 } });
- expect(store.state.getState().weatherByInstance.a?.error).not.toBe('');
+	mocks.fetch.mockResolvedValueOnce(weather(25));
+	await store.weather('a');
+	mocks.fetch.mockRejectedValueOnce(new Error('offline'));
+	await store.weather('a', true);
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({
+		status: 'error',
+		data: { temperature: 25, fetchedAt: 1 },
+	});
+	expect(store.state.getState().weatherByInstance.a?.error).not.toBe('');
+});
+
+test('a successful forecast is not gated by an unrelated held cache read', async () => {
+	vi.useFakeTimers();
+	mocks.read.mockReturnValue(new Promise(() => {}));
+	mocks.fetch.mockResolvedValue(weather(26));
+	let settled = false;
+	const request = store.weather('a').then(() => {
+		settled = true;
+	});
+	await vi.advanceTimersByTimeAsync(30_000);
+	expect(settled).toBe(true);
+	await request;
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'ready', data: { temperature: 26 } });
+});
+test('the whole request reaches a retryable terminal state even if a provider promise never settles', async () => {
+	vi.useFakeTimers();
+	mocks.fetch.mockReturnValue(new Promise(() => {}));
+	let settled = false;
+	const request = store.weather('a').then(() => {
+		settled = true;
+	});
+	await vi.advanceTimersByTimeAsync(30_000);
+	expect(settled).toBe(true);
+	await request;
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'error', retryable: true });
+});
+test('an explicitly unconfigured widget publishes an unconfigured state', async () => {
+	const data = structuredClone(store.state.getState().data) as DashboardData;
+	data.widgets![0]!.weather = null;
+	store.state.setState({ data });
+	await store.weather('a');
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'unconfigured', data: null });
+	expect(mocks.fetch).not.toHaveBeenCalled();
+});
+
+test('hide cancels a held request, retains an explicit waiting state and resumes without replacing the store', async () => {
+	vi.useFakeTimers();
+	const old = deferred();
+	mocks.fetch.mockReturnValueOnce(old.promise).mockResolvedValueOnce(weather(34));
+	const pending = store.weather('a');
+	store.setVisible(false);
+	await pending;
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'waiting', retryable: true });
+	store.setVisible(true);
+	await vi.advanceTimersByTimeAsync(0);
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'ready', data: { temperature: 34 } });
+	old.resolve(weather(-34));
+	await vi.advanceTimersByTimeAsync(0);
+	expect(store.state.getState().weatherByInstance.a?.data?.temperature).toBe(34);
+	expect(vi.getTimerCount()).toBe(0);
+});
+test('a retained old forecast exposes its timestamp and expiration during refresh and failure', async () => {
+	vi.useFakeTimers({ now: new Date('2026-10-31T12:00:00Z') });
+	mocks.fetch.mockResolvedValueOnce(weather(35));
+	await store.weather('a');
+	const held = deferred();
+	mocks.fetch.mockReturnValueOnce(held.promise);
+	const refresh = store.weather('a', true);
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({
+		status: 'refreshing',
+		fetchedAt: 1,
+		stale: true,
+		data: { temperature: 35 },
+	});
+	held.reject(new Error('offline'));
+	await refresh;
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({
+		status: 'error',
+		errorCode: 'network',
+		retryable: true,
+		stale: true,
+		fetchedAt: 1,
+	});
+});
+test('two live boards retain independent instance requests and disposal ignores late replies', async () => {
+	vi.useFakeTimers();
+	const other = new BoardStore(
+		{ ...store.host, app: { vault: { adapter: {} } } } as unknown as HomeHost,
+		'.huhu/dashboards/B',
+	);
+	other.state.setState({ data: structuredClone(store.state.getState().data) });
+	const first = deferred(),
+		second = deferred();
+	mocks.fetch.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise);
+	const a = store.weather('a'),
+		b = other.weather('a');
+	first.resolve(weather(36));
+	await a;
+	expect(other.state.getState().weatherByInstance.a?.status).toBe('loading');
+	await other.dispose();
+	await b;
+	second.resolve(weather(-36));
+	await vi.advanceTimersByTimeAsync(0);
+	expect(store.state.getState().weatherByInstance.a?.data?.temperature).toBe(36);
+	expect(other.state.getState().weatherByInstance.a?.data).toBeNull();
+	expect(vi.getTimerCount()).toBe(0);
 });

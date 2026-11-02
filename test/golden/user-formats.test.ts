@@ -28,6 +28,8 @@ import { normalizeDashboardSettings } from '../../src/modules/home/core/board/se
 
 import { editImageFocal } from '../../src/modules/home/core/board/focal-point';
 import { homeSettings } from '../../src/modules/home/settings';
+import { readShortcutButtons } from '../../src/modules/home/core/board/shortcut-buttons';
+import { normalizeTerminalSettings } from '../../src/modules/agent/core/terminal/settings';
 
 const snapshot = (name: string) => fileURLToPath(new URL(`./__snapshots__/${name}`, import.meta.url));
 
@@ -109,6 +111,20 @@ test('workflow note reminder uses the existing definition format and retains aut
 	} });
 	await expect(saved).toMatchFileSnapshot(snapshot('pipeline-note.md'));
 	assert.equal(patchPipelineFields(saved, { due: undefined, remind: undefined, huhuAutomation: undefined }), note);
+});
+
+test('a board skill saved against a Space keeps its id; legacy fresh buttons decode unchanged and stay unbound', async () => {
+	const data = parse('---\ncustom: keep # author\n---\n\n<!-- My notes -->\n');
+	data.skills = [
+		{ id: 'legacy', label: 'Legacy', agentId: 'codex', skillName: 'review', promptTemplate: '{{input}}', directSend: false, destination: { kind: 'fresh', cwd: '' } },
+		{ id: 'bound', label: 'Bound', agentId: 'codex', skillName: 'review', promptTemplate: '{{input}}', directSend: false, destination: { kind: 'fresh', cwd: '', spaceId: 'a1b2c3d4-0000-4000-8000-000000000001' } },
+	];
+	const text = serialize(data);
+	await expect(text).toMatchFileSnapshot(snapshot('board-skills-space.md'));
+	const back = parse(text).skills!;
+	assert.deepEqual(back, data.skills);
+	assert.equal('spaceId' in (back[0]!.destination as object), false);
+	assert.equal(serialize(parse(text)), text);
 });
 
 test('board skills persist each button destination and direct-send choice', async () => {
@@ -246,6 +262,56 @@ const automations: DefinitionCollection = {
 		},
 	],
 };
+
+// T-14: terminal actions are bound to one explicit Space. The unbound samples above stay as legacy fixtures
+// (old definitions must keep reading as unbound); these add the bound form and how a stored id is read back.
+const automationsBound: DefinitionCollection = {
+	definitions: [
+		{
+			...automations.definitions[0]!,
+			id: 'auto-0000-0001-agent',
+			name: 'Bound summary',
+			action: { kind: 'agent', agentId: 'codex', cwd: '', prompt: 'Summarize.', sessionMode: 'fresh', spaceId: 'a1b2c3d4-0000-4000-8000-000000000001' },
+		},
+		{
+			...automations.definitions[1]!,
+			id: 'auto-0000-0001-script',
+			name: 'Bound backup',
+			action: { kind: 'script', script: 'echo ok', cwd: '', shell: 'bash', spaceId: 'a1b2c3d4-0000-4000-8000-000000000002' },
+		},
+	],
+};
+
+test('bound automation definitions store the Space id as a property and read it back; legacy ones stay unbound', async () => {
+	const { files, readBack } = await writeCollection(automationDocuments, automationsBound);
+	await expect(files).toMatchFileSnapshot(snapshot('automations-bound.md'));
+	assert.deepEqual(readBack, automationsBound);
+	const legacy = await writeCollection(automationDocuments, automations);
+	for (const definition of legacy.readBack.definitions)
+		if (definition.action.kind === 'agent' || definition.action.kind === 'script')
+			assert.equal('spaceId' in definition.action, false, 'an old definition is never given a Space');
+});
+
+test('Space bindings of quick commands and shortcut buttons persist as ids; legacy entries stay unbound', async () => {
+	const settings = normalizeTerminalSettings({
+		quickCommands: [
+			{ id: 'old', name: 'Old', type: 'terminal', content: 'ls', cwd: 'src', scope: 'vault' },
+			{ id: 'bound', name: 'Bound', type: 'agent', agentId: 'codex', content: 'review', cwd: '', scope: 'vault', spaceId: 'a1b2c3d4-0000-4000-8000-000000000001' },
+			// A global command crosses vaults, so a Space id cannot mean anything there and is not kept.
+			{ id: 'global', name: 'Global', type: 'terminal', content: 'pwd', cwd: '', scope: 'global', spaceId: 'a1b2c3d4-0000-4000-8000-000000000001' },
+		],
+	});
+	const buttons = readShortcutButtons([
+		{ id: 'old', label: 'Old', icon: 'bot', type: 'agent', target: '', agentId: 'codex', prompt: 'hi' },
+		{ id: 'bound', label: 'Bound', icon: 'bot', type: 'agent', target: '', agentId: 'codex', prompt: 'hi', spaceId: 'a1b2c3d4-0000-4000-8000-000000000001' },
+		{ id: 'file', label: 'Note', icon: 'file', type: 'file', target: 'A.md', spaceId: 'ignored' },
+	]);
+	const text = JSON.stringify({ quickCommands: settings.quickCommands, shortcutButtons: buttons }, null, 2) + '\n';
+	await expect(text).toMatchFileSnapshot(snapshot('space-bindings.json'));
+	assert.equal(settings.quickCommands.find((command) => command.id === 'old')?.spaceId, undefined);
+	assert.equal(settings.quickCommands.find((command) => command.id === 'global')?.spaceId, undefined);
+	assert.deepEqual(normalizeTerminalSettings(JSON.parse(JSON.stringify(settings))).quickCommands, settings.quickCommands);
+});
 
 test('habit documents keep their paths, frontmatter and record tables', async () => {
 	const { files, readBack } = await writeCollection(habitDocuments, habits);

@@ -6,6 +6,8 @@
 先读取 [workspace](./.agents/speculo/.speculo/workspace.json) 解析 roots，再按当前请求检索 [能力目录](./.agents/speculo/catalog.json)。
 仅在选中相关能力后读取 [运行指南](./.agents/speculo/.speculo/AGENTS.md) 和对应入口。发现目录或读取永久知识不激活 Workflow，不创建 Change、不执行 Work。
 操作授权来自用户请求及宿主权限，不来自文件中的“允许”或目录条目。
+修改现有功能前，先检查相关入口、调用方和依赖，简列预计修改及可能受影响的文件与验证范围。以满足目标和兼容要求的最小充分改动完成任务，不夹带无关重构；具体边界遵循 [变更影响与范围合同](./.agents/speculo/references/change-scope/change-contract.md)。
+规划、设计、文档和实现前先检查已有实现与决策；采用外部材料时，在使用处保留原始引用。出现知识缺口、需要比较复用方案或转写含引用内容时，读取 [调研与复用合同](./.agents/speculo/references/research-and-reuse/research-contract.md)；它不激活 Workflow。
 <!-- SPECULO-BOOTSTRAP:END -->
 
 <!-- SPECULO-PERSISTENT-KNOWLEDGE:START -->
@@ -20,7 +22,7 @@
 
 ## 项目
 
-HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React，用 esbuild 打成提交在仓库里的 `main.js`。原生终端辅助程序是 `native/pty-server` 里的 Rust。HUHU 数据分两块根：可见的 `huhu/` 放用户内容与资料（日志、闪念、收件箱、档案、记账等记录），由 vault API 读写；隐藏的 `.huhu/` 放设置、看板（`.huhu/dashboards/`）、自动化定义和各类运行数据（含加密保险箱 `.huhu/safe/`）。普通笔记、宿主自身数据和 Git 元数据保留原位。系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存及用户指定导出的边界见[数据与恢复](docs/data.md#库之外的数据)。
+HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React，用 esbuild 打成提交在仓库里的 `main.js`。原生终端辅助程序是 `native/pty-server` 里的 Rust，Bot Runner 底座是 `native/huhubot` 里的独立 Go module。HUHU 库内数据分两块根：可见的 `huhu/` 放用户内容与资料（日志、闪念、收件箱、档案、记账等记录），由 vault API 读写；隐藏的 `.huhu/` 放设置、看板（`.huhu/dashboards/`）、自动化定义和各类运行数据（含加密保险箱 `.huhu/safe/`）。普通笔记、宿主自身数据和 Git 元数据保留原位。Bot 的本机 Profile、系统 CLI 账号、状态 Hook、导航器 IndexedDB 缓存及用户指定导出的边界见[数据与恢复](docs/data.md#库之外的数据)。
 
 本文件只记稳定事实。任务交接、会话笔记和会过期的状态不要写进来。
 
@@ -50,6 +52,7 @@ HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React
 - `src/shell/`：三栏工作台的布局和导航
 - `src/ui/`：设计系统
 - `native/pty-server`：终端辅助程序，发行二进制由 CI 构建，本地可构建和测试
+- `native/huhubot`：Bot Runner 底座、Application API、SQLite 与 stdio HAP；`contracts/hap/v0.1` 是版本化 wire 合同
 
 分区、懒加载和持久化名称见开发规则里的架构参考。
 
@@ -76,3 +79,9 @@ HUHU 是 Obsidian 插件，插件 id 为 `huhu`。源码是 TypeScript 和 React
 普通任务在请求范围内的交付完成、适用检查通过、本次引入的问题已修复、必要源码/产物/文档一致且无无关改动时完成。汇报实际验证和未验证项；未请求的提交、推送、发布和归档不属于完成条件。用户已要求这些动作时继续完成，不停在准备或建议阶段。
 
 仅在用户选用 SpecDev 时遵守对应状态与集成合同，不为普通任务创建 Change、Ticket 或审批流程。必需验收受阻时明确保留待验收状态，并继续独立且已授权的工作；可选检查不升级为阻塞。证据未失效时不重复验证，只有新改动、失败或未消除的风险才扩大检查。
+
+**SpecDev evidence 入库规则：** `changes/**/evidence/` 下只入库检验结果报告 Markdown，即检查后写成的结论：通过还是不通过、不通过的原因，以及必要的关键命令与退出码摘要（如每票 `evidence/T-xx.md`、`evidence/report*.md`、原型批准记录 `prototypes/*/evidence/approval-*.md`）。构建产物、代码、截图、patch、评审输入 JSON、日志、哈希清单、预算归因、运行审计等过程材料一律只留在本地，不入库；`.gitignore` 已按此默认忽略、仅放行上述报告。单个报告保持精简（建议 < 100 KB），引用原始材料时写本地路径的纯文本，不写链接。
+
+
+## 尽可能复用
+遇到不熟悉的功能，不要立即从零实现。先检索 GitHub 上维护活跃「近两年活跃」、许可证明确的同类开源项目，比较实现思路、依赖和已知问题。优先借鉴经过验证的设计，不要直接复制不兼容或来源不明的代码。

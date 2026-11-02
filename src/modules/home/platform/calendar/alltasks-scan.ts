@@ -496,6 +496,10 @@ export function matchesCalendarFilter(task: CalendarTask, filter: CalendarTaskFi
 		}
 		case 'open':
 			return !task.checked;
+		case 'completed':
+			return task.checked;
+		case 'overdue':
+			return !task.checked && !!task.due && task.due < todayIso;
 	}
 }
 

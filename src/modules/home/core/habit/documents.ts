@@ -1,4 +1,4 @@
-import { HABIT_ROOT } from '../../../../shared/storage/vault-layout';
+import { HABIT_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { requireFields, requireDailyRecords } from '../../../../shared/storage/document-validation';
 import {
 	collectionDocument as doc,
@@ -13,12 +13,14 @@ export const habitDocuments: DocumentCollectionCodec<HabitData> = {
 	empty: emptyData,
 	encode: (data) => [
 		...data.habits.map((habit) =>
-			doc(habit.id, `${root}/${documentName(habit.name)}-${habit.id.slice(-8)}/习惯.md`, 'habit', { ...habit }),
+			doc(habit.id,
+				`${root}/${documentName(habit.name)}-${habit.id.slice(-8)}/${VISIBLE_NAMES.habitFile}`, 'habit', { ...habit },
+			),
 		),
 		...Object.entries(data.records).map(([date, ids]) =>
 			doc(
 				`habit:${date}`,
-				`${root}/记录/${date.slice(0, 4)}/${date}.md`,
+				`${root}/${VISIBLE_NAMES.records}/${date.slice(0, 4)}/${date}.md`,
 				'habit-records',
 				{ date },
 				ids.map((id) => ({ id: `${date}:${id}`, habitId: id })),

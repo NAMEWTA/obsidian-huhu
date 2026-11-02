@@ -1,0 +1,835 @@
+{
+  "schema": {
+    "path": "contracts/hap/v0.1/schema.json",
+    "readAt": "2026-10-25T12:02:22.986149+00:00",
+    "sha256": "5a2d1c410dd4c5dbf811933d3938673205dc264055dd70b18a10688be232e863",
+    "bytes": 238576,
+    "lineCount": 9231,
+    "selection": "all $defs memory.*"
+  },
+  "methods": {
+    "path": "contracts/hap/v0.1/methods.json",
+    "readAt": "2026-10-25T12:02:22.988879+00:00",
+    "sha256": "17655ed40fa83ebe9a80e26d62652fabf5f66834873fbddd25d03b135254c216",
+    "bytes": 15935,
+    "lineCount": 642,
+    "selection": "all methods memory.*"
+  },
+  "definitions": {
+    "memory.list.params": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "cursor": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "private",
+            "global"
+          ]
+        }
+      },
+      "required": [
+        "profileId"
+      ],
+      "additionalProperties": false
+    },
+    "memory.list.result": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "ownerId": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "global"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "pinned": {
+                "type": "boolean"
+              },
+              "sourceRefs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "resourceId": {
+                      "type": "string"
+                    },
+                    "revision": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]*)$"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "hash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "originViewId": {
+                      "type": "string"
+                    },
+                    "workspaceId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "resourceId"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 32
+              },
+              "provenance": {
+                "type": "string",
+                "enum": [
+                  "user",
+                  "observation",
+                  "inference"
+                ]
+              },
+              "sessionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "revision",
+              "scope",
+              "text",
+              "pinned",
+              "sourceRefs"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "nextCursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "memory.get.params": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "profileId",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "memory.get.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "private",
+            "global"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resourceId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "user",
+            "observation",
+            "inference"
+          ]
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "scope",
+        "text",
+        "pinned",
+        "sourceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "memory.pin.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id",
+        "pinned"
+      ],
+      "additionalProperties": false
+    },
+    "memory.pin.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "private",
+            "global"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resourceId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "user",
+            "observation",
+            "inference"
+          ]
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "scope",
+        "text",
+        "pinned",
+        "sourceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "memory.correct.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "memory.correct.result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "private",
+            "global"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resourceId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "user",
+            "observation",
+            "inference"
+          ]
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "scope",
+        "text",
+        "pinned",
+        "sourceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "memory.forget.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "memory.forget.result": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "receiptId",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "memory.setAutoMaintenance.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "ownerId",
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "memory.setAutoMaintenance.result": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "receiptId",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "memory.proposeGlobal.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "create",
+            "update",
+            "delete"
+          ]
+        },
+        "sourceMemoryId": {
+          "type": "string"
+        },
+        "targetMemoryId": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]*)$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "originViewId": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "resourceId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32
+        },
+        "scope": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "operation",
+        "sourceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "memory.proposeGlobal.result": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposalId"
+      ],
+      "additionalProperties": false
+    },
+    "memory.resolveGlobal.params": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        },
+        "commandEpoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "expectedRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "proposalId": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "approve",
+            "reject"
+          ]
+        },
+        "previewHash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "commandId",
+        "idempotencyKey",
+        "profileId",
+        "commandEpoch",
+        "proposalId",
+        "decision",
+        "previewHash"
+      ],
+      "additionalProperties": false
+    },
+    "memory.resolveGlobal.result": {
+      "type": "object",
+      "properties": {
+        "commandId": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "commandId",
+        "receiptId",
+        "revision"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "registry": {
+    "memory.list": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.list.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.list.result"
+      }
+    },
+    "memory.get": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.get.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.get.result"
+      }
+    },
+    "memory.pin": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.pin.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.pin.result"
+      }
+    },
+    "memory.correct": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.correct.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.correct.result"
+      }
+    },
+    "memory.forget": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.forget.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.forget.result"
+      }
+    },
+    "memory.setAutoMaintenance": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.setAutoMaintenance.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.setAutoMaintenance.result"
+      }
+    },
+    "memory.proposeGlobal": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.proposeGlobal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.proposeGlobal.result"
+      }
+    },
+    "memory.resolveGlobal": {
+      "direction": "client-to-server",
+      "implemented": false,
+      "params": {
+        "$ref": "#/$defs/memory.resolveGlobal.params"
+      },
+      "result": {
+        "$ref": "#/$defs/memory.resolveGlobal.result"
+      }
+    }
+  }
+}

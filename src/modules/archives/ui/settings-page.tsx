@@ -4,7 +4,7 @@ import type { App } from 'obsidian';
 import { toast } from 'sonner';
 import { normalizeVaultFolder, type ContactsSettings } from '../../../shared/contacts-settings';
 import type { SettingsHandle } from '../../../shared/settings/store';
-import type { ContactsController } from '../platform/controller';
+import type { WriteQueue } from '../../../shared/storage/write-queue';
 import { confirm, ct, errorText } from './forms';
 import { useT } from '../../../ui/react/hooks';
 import { SettingsRow } from '../../../ui/components/huhu/SettingsRow';
@@ -14,7 +14,7 @@ import { VaultPathField } from '../../../ui/components/huhu/VaultPathField';
 import { Button } from '../../../ui/components/button';
 export function archivesSettingsPage(
 	app: App,
-	controller: ContactsController,
+	controller: { countFolder(root: string): Promise<number>; queue: WriteQueue; reload(): Promise<void> },
 	settings: SettingsHandle<ContactsSettings>,
 ) {
 	return function ArchivesSettingsPage() {

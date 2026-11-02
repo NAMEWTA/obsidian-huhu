@@ -1,7 +1,8 @@
 // Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: src/navigation.ts
 import { MarkdownView, TFile } from 'obsidian';
 import type { CommentThread } from '../core/model';
-import { createAnchor, selectionIsCommentable } from '../core/anchor';
+import { createAnchor, locateAnchor, selectionIsCommentable } from '../core/anchor';
+import { Notice } from 'obsidian';
 import { t } from '../../../shared/i18n';
 import type { CommentsEnv } from './env';
 
@@ -9,13 +10,17 @@ export async function jumpToComment(env: CommentsEnv, path: string, thread: Comm
 	const file = env.app.vault.getFileByPath(path);
 	if (!(file instanceof TFile)) return;
 	const leaf = env.app.workspace.getLeavesOfType('markdown').find(item => item.view instanceof MarkdownView && item.view.file?.path === path) ?? env.app.workspace.getLeaf(false);
-	await leaf.openFile(file, { state: { mode: 'source' } });
+	if (!(leaf.view instanceof MarkdownView) || leaf.view.file?.path !== path) await leaf.openFile(file, { state: { mode: 'source' } });
 	await env.app.workspace.revealLeaf(leaf);
 	if (!(leaf.view instanceof MarkdownView)) return;
 	const editor = leaf.view.editor;
-	const from = editor.offsetToPos(Math.min(thread.anchor.start, editor.getValue().length));
-	const to = editor.offsetToPos(Math.min(thread.anchor.end, editor.getValue().length));
-	editor.setSelection(from, to); editor.scrollIntoView({ from, to }, true); editor.focus();
+	if (thread.status === 'orphaned') { new Notice(t('editor.comments.orphanHint')); return; }
+	const located = locateAnchor(editor.getValue(), thread.anchor, env.service.settings().fuzzyThreshold);
+	if (!located) { new Notice(t('editor.comments.orphanHint')); return; }
+	const from = editor.offsetToPos(located.start);
+	const to = editor.offsetToPos(located.end);
+	// Preserve cursor/selection; CodeMirror scroll is sufficient to recover the source context.
+	editor.scrollIntoView({ from, to }, true);
 	const marks = leaf.view.containerEl.querySelectorAll<HTMLElement>('[data-comment-ids]');
 	for (const mark of marks) if (mark.dataset['commentIds']?.split(' ').includes(thread.id)) {
 		mark.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 600 });

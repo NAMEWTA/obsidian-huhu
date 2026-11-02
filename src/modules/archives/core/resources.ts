@@ -1,7 +1,10 @@
+import { ARCHIVE_PATHS } from '../../../shared/storage/vault-layout';
 import { ContactsError, type RecordKind } from './model';
 
-export const archiveEntryName = '基本信息.md';
-export const archiveCategories: Record<RecordKind, string> = { person: '个人档案', company: '企业档案' };
+export const archiveEntryName = ARCHIVE_PATHS.entry;
+export const archiveCategories: Record<RecordKind, string> = { person: ARCHIVE_PATHS.people,
+	company: ARCHIVE_PATHS.companies,
+};
 export function archiveLocation(root: string, path: string): { kind: RecordKind; folderPath: string } | null {
 	if (!path.startsWith(root + '/')) return null;
 	const parts = path.slice(root.length + 1).split('/');

@@ -84,3 +84,11 @@ it('removed browser workflow is a read-only tombstone and keeps its original doc
 	expect(decoded.definitions[0]?.removedAction).toEqual(document);
 	expect(automationDocuments.encode(decoded)).toEqual([document]);
 });
+
+it('punctuation-only automation names retain the hidden Chinese fallback', () => {
+ const [document] = automationDocuments.encode({definitions:[{
+  id:'automation-12345678',name:'...',enabled:false,deviceId:'device',revision:1,
+  schedule:{kind:'manual'},action:{kind:'notify',body:'Keep'},channels:['in-app'],notifyOn:'always',graceMinutes:0,createdAt:0,updatedAt:0,
+ }]});
+ expect(document?.path).toBe('.huhu/automation/definitions/未命名-12345678/操作.md');
+});

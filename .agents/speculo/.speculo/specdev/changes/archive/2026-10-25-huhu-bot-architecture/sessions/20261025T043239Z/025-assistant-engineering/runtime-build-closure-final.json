@@ -1,0 +1,622 @@
+{
+  "sourceTreeHash": "7630adba7c27836b0d1cdaf322a92f0679f022902ed996873b977e0207385f4d",
+  "closure": [
+    {
+      "target": "linux-x64",
+      "modules": [
+        {
+          "name": "github.com/godbus/dbus/v5",
+          "version": "v5.2.2",
+          "license": "BSD-2-Clause",
+          "dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3",
+          "version": "v0.35.6",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+          "version": "v6.3.35304",
+          "license": "MIT-0",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304"
+        },
+        {
+          "name": "github.com/ncruces/julianday",
+          "version": "v1.0.0",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0"
+        },
+        {
+          "name": "github.com/santhosh-tekuri/jsonschema/v6",
+          "version": "v6.0.3",
+          "license": "Apache-2.0",
+          "dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3"
+        },
+        {
+          "name": "golang.org/x/sys",
+          "version": "v0.48.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0"
+        },
+        {
+          "name": "golang.org/x/text",
+          "version": "v0.42.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0"
+        }
+      ],
+      "credentialPackages": [
+        {
+          "ImportPath": "github.com/godbus/dbus/v5",
+          "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+          "GoFiles": [
+            "auth.go",
+            "auth_anonymous.go",
+            "auth_default_other.go",
+            "auth_external.go",
+            "call.go",
+            "conn.go",
+            "conn_other.go",
+            "conn_unix.go",
+            "dbus.go",
+            "decoder.go",
+            "default_handler.go",
+            "doc.go",
+            "encoder.go",
+            "escape.go",
+            "export.go",
+            "match.go",
+            "message.go",
+            "object.go",
+            "sequence.go",
+            "sequential_handler.go",
+            "server_interfaces.go",
+            "sig.go",
+            "transport_generic.go",
+            "transport_nonce_tcp.go",
+            "transport_tcp.go",
+            "transport_unix.go",
+            "transport_unixcred_linux.go",
+            "variant.go",
+            "variant_lexer.go",
+            "variant_parser.go"
+          ],
+          "Module": {
+            "Path": "github.com/godbus/dbus/v5",
+            "Version": "v5.2.2",
+            "Time": "2025-12-29T17:12:48Z",
+            "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+            "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+            "GoVersion": "1.20",
+            "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+            "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+          },
+          "files": {
+            "auth.go": "e573b71b6cac15f5370acb97e173a09719c6ff45b2d668331a77e5ddeb5f7108",
+            "auth_anonymous.go": "3e950a69a6dcd638dc6dcdff21279bc4fe7522e76291f347a7b012128f31bfb9",
+            "auth_default_other.go": "241f4d4fe6e29cd3cb6a4a0669024790180383d90ded39f9186be271f663ba01",
+            "auth_external.go": "8998f9b4f916025eeb6f65cb696438d8ed1f6ca552588d53c88e24e8477174e3",
+            "call.go": "3262d2634a471ba5cdeeab1f7da1192bcbf2884978e2575dbba882845d657f12",
+            "conn.go": "c153bbf27b12f639dabbe3322a42a7c3736a23680b3f2ed0086905eda098df87",
+            "conn_other.go": "b93f86d727468d18ad9acf037b71048dc374e3df49650ec6944fbc391874fff7",
+            "conn_unix.go": "a09b454c6d9fe3ff207cb65d4c29a53f4fd2af59169a63a4b7b840883b5f0c6c",
+            "dbus.go": "b7146703a1f26c1faeee71efdf36a573b114ff548b3739e3049e4d818d7a709e",
+            "decoder.go": "685d1a896e5a8e78e7db087f8dfb6c1bcbaa88da102d6d96f808d1fccf5fa9ac",
+            "default_handler.go": "f5528c9ce07e83c48459a74fafc741ad5d4e3d81af72a620a709d0dce4cc8249",
+            "doc.go": "19ade5ad508e5cc1e1c8b5f59f477201b8d1ae836498e0bf7015fec5d5101c6d",
+            "encoder.go": "859d3ea653e014ee84521f14104ea658bf80bd103930f41b3d5cacfe5aeddb55",
+            "escape.go": "393ce3bccea55352653bc4ef83905099288c48bb5e53feb64e547836bf23ff46",
+            "export.go": "9ab663bdda646feb1a4cb45b778622b3f4d1606a6a14a1c54cd8d18b06b51416",
+            "match.go": "2192be3c911b41248585d6a7ebf3b76d6fc440df24c43acd21339c5924773128",
+            "message.go": "9e747d97bf41c99f79ddc508696d0dac9f61efce7d3e30ce51b11928c3e5788c",
+            "object.go": "97e74619a37fe0fdb7167075d341674e341627f174b28dde6edbec50a41af0be",
+            "sequence.go": "7955764f5a4a9c46590754fbd1fbe10a83a7d02322f0dc87f056673caeeda1e3",
+            "sequential_handler.go": "db4b48681827aedcf2ea61c1f8c083328d93a2a1960da1556853c4382b3627ab",
+            "server_interfaces.go": "dc3e6154b5901c8b978ef4d8751b64e794f93fe41129c575c0c77126c1582987",
+            "sig.go": "b7094e70f3ce8adb78ca51f43f11e9d90c737b8939c39245047ed1c473a5d8a4",
+            "transport_generic.go": "9fd9cb2f4ad9b96e364daef87f64db257565c0c91cdcfe2cac7c8b58a55c2fdd",
+            "transport_nonce_tcp.go": "5e243bdc099d3e72a90bcd4115ce2eb005129015df199ca610a89e08004f02da",
+            "transport_tcp.go": "07fbb65cbb990c0fca3ae610e1518cb633c8daa8386ed0ba511e5c09ea1bc4cf",
+            "transport_unix.go": "9bb67dbc366358493ee8d4786d0154e99ccd8f9b5c275e4a5c2ef8c6abc45371",
+            "transport_unixcred_linux.go": "50a6eb477d08a728185e399efdd5033a62bc1be8cec5fb23539ea3b528724ad2",
+            "variant.go": "2e6f2baa1b824a24337eee6551ab615da55fb7e469da2feb4f8cf4a4b86738c8",
+            "variant_lexer.go": "2355964904415cd3c8c9edd85b86f2d43617b84d1be500270a0af1ad98efa1b4",
+            "variant_parser.go": "777f5c5ef115fd7e59cbec088ff94fdd3b45c17b0ad4b5e012af91c0049f7b84"
+          }
+        },
+        {
+          "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+          "GoFiles": [
+            "channel.go",
+            "channel_unix.go",
+            "crt.go",
+            "frame.go",
+            "keyring_linux.go",
+            "process_unix.go",
+            "provider.go",
+            "secret_service_linux.go",
+            "security.go",
+            "worker.go"
+          ],
+          "Module": {
+            "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+            "Main": true,
+            "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+            "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+            "GoVersion": "1.26.0"
+          },
+          "files": {
+            "channel.go": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b",
+            "channel_unix.go": "5505fe3bc3b789fd6288e7f34231717131ea28e0f7b59315a27088e667dc7764",
+            "crt.go": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d",
+            "frame.go": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4",
+            "keyring_linux.go": "6c85c5095c54b7e48139d637d5fce1192c33812c9f2610fab450c513fb440892",
+            "process_unix.go": "fca241eeda6c1631cf29811050b2b5ef66a3b13f33c786ebe31fe5395050dc1d",
+            "provider.go": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+            "secret_service_linux.go": "eaf37195a1329ccef71c1255c9ae205701a97b54953ab6111ecda594726f9c21",
+            "security.go": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d",
+            "worker.go": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+          }
+        }
+      ]
+    },
+    {
+      "target": "linux-arm64",
+      "modules": [
+        {
+          "name": "github.com/godbus/dbus/v5",
+          "version": "v5.2.2",
+          "license": "BSD-2-Clause",
+          "dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3",
+          "version": "v0.35.6",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+          "version": "v6.3.35304",
+          "license": "MIT-0",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304"
+        },
+        {
+          "name": "github.com/ncruces/julianday",
+          "version": "v1.0.0",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0"
+        },
+        {
+          "name": "github.com/santhosh-tekuri/jsonschema/v6",
+          "version": "v6.0.3",
+          "license": "Apache-2.0",
+          "dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3"
+        },
+        {
+          "name": "golang.org/x/sys",
+          "version": "v0.48.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0"
+        },
+        {
+          "name": "golang.org/x/text",
+          "version": "v0.42.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0"
+        }
+      ],
+      "credentialPackages": [
+        {
+          "ImportPath": "github.com/godbus/dbus/v5",
+          "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+          "GoFiles": [
+            "auth.go",
+            "auth_anonymous.go",
+            "auth_default_other.go",
+            "auth_external.go",
+            "call.go",
+            "conn.go",
+            "conn_other.go",
+            "conn_unix.go",
+            "dbus.go",
+            "decoder.go",
+            "default_handler.go",
+            "doc.go",
+            "encoder.go",
+            "escape.go",
+            "export.go",
+            "match.go",
+            "message.go",
+            "object.go",
+            "sequence.go",
+            "sequential_handler.go",
+            "server_interfaces.go",
+            "sig.go",
+            "transport_generic.go",
+            "transport_nonce_tcp.go",
+            "transport_tcp.go",
+            "transport_unix.go",
+            "transport_unixcred_linux.go",
+            "variant.go",
+            "variant_lexer.go",
+            "variant_parser.go"
+          ],
+          "Module": {
+            "Path": "github.com/godbus/dbus/v5",
+            "Version": "v5.2.2",
+            "Time": "2025-12-29T17:12:48Z",
+            "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+            "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+            "GoVersion": "1.20",
+            "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+            "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+          },
+          "files": {
+            "auth.go": "e573b71b6cac15f5370acb97e173a09719c6ff45b2d668331a77e5ddeb5f7108",
+            "auth_anonymous.go": "3e950a69a6dcd638dc6dcdff21279bc4fe7522e76291f347a7b012128f31bfb9",
+            "auth_default_other.go": "241f4d4fe6e29cd3cb6a4a0669024790180383d90ded39f9186be271f663ba01",
+            "auth_external.go": "8998f9b4f916025eeb6f65cb696438d8ed1f6ca552588d53c88e24e8477174e3",
+            "call.go": "3262d2634a471ba5cdeeab1f7da1192bcbf2884978e2575dbba882845d657f12",
+            "conn.go": "c153bbf27b12f639dabbe3322a42a7c3736a23680b3f2ed0086905eda098df87",
+            "conn_other.go": "b93f86d727468d18ad9acf037b71048dc374e3df49650ec6944fbc391874fff7",
+            "conn_unix.go": "a09b454c6d9fe3ff207cb65d4c29a53f4fd2af59169a63a4b7b840883b5f0c6c",
+            "dbus.go": "b7146703a1f26c1faeee71efdf36a573b114ff548b3739e3049e4d818d7a709e",
+            "decoder.go": "685d1a896e5a8e78e7db087f8dfb6c1bcbaa88da102d6d96f808d1fccf5fa9ac",
+            "default_handler.go": "f5528c9ce07e83c48459a74fafc741ad5d4e3d81af72a620a709d0dce4cc8249",
+            "doc.go": "19ade5ad508e5cc1e1c8b5f59f477201b8d1ae836498e0bf7015fec5d5101c6d",
+            "encoder.go": "859d3ea653e014ee84521f14104ea658bf80bd103930f41b3d5cacfe5aeddb55",
+            "escape.go": "393ce3bccea55352653bc4ef83905099288c48bb5e53feb64e547836bf23ff46",
+            "export.go": "9ab663bdda646feb1a4cb45b778622b3f4d1606a6a14a1c54cd8d18b06b51416",
+            "match.go": "2192be3c911b41248585d6a7ebf3b76d6fc440df24c43acd21339c5924773128",
+            "message.go": "9e747d97bf41c99f79ddc508696d0dac9f61efce7d3e30ce51b11928c3e5788c",
+            "object.go": "97e74619a37fe0fdb7167075d341674e341627f174b28dde6edbec50a41af0be",
+            "sequence.go": "7955764f5a4a9c46590754fbd1fbe10a83a7d02322f0dc87f056673caeeda1e3",
+            "sequential_handler.go": "db4b48681827aedcf2ea61c1f8c083328d93a2a1960da1556853c4382b3627ab",
+            "server_interfaces.go": "dc3e6154b5901c8b978ef4d8751b64e794f93fe41129c575c0c77126c1582987",
+            "sig.go": "b7094e70f3ce8adb78ca51f43f11e9d90c737b8939c39245047ed1c473a5d8a4",
+            "transport_generic.go": "9fd9cb2f4ad9b96e364daef87f64db257565c0c91cdcfe2cac7c8b58a55c2fdd",
+            "transport_nonce_tcp.go": "5e243bdc099d3e72a90bcd4115ce2eb005129015df199ca610a89e08004f02da",
+            "transport_tcp.go": "07fbb65cbb990c0fca3ae610e1518cb633c8daa8386ed0ba511e5c09ea1bc4cf",
+            "transport_unix.go": "9bb67dbc366358493ee8d4786d0154e99ccd8f9b5c275e4a5c2ef8c6abc45371",
+            "transport_unixcred_linux.go": "50a6eb477d08a728185e399efdd5033a62bc1be8cec5fb23539ea3b528724ad2",
+            "variant.go": "2e6f2baa1b824a24337eee6551ab615da55fb7e469da2feb4f8cf4a4b86738c8",
+            "variant_lexer.go": "2355964904415cd3c8c9edd85b86f2d43617b84d1be500270a0af1ad98efa1b4",
+            "variant_parser.go": "777f5c5ef115fd7e59cbec088ff94fdd3b45c17b0ad4b5e012af91c0049f7b84"
+          }
+        },
+        {
+          "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+          "GoFiles": [
+            "channel.go",
+            "channel_unix.go",
+            "crt.go",
+            "frame.go",
+            "keyring_linux.go",
+            "process_unix.go",
+            "provider.go",
+            "secret_service_linux.go",
+            "security.go",
+            "worker.go"
+          ],
+          "Module": {
+            "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+            "Main": true,
+            "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+            "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+            "GoVersion": "1.26.0"
+          },
+          "files": {
+            "channel.go": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b",
+            "channel_unix.go": "5505fe3bc3b789fd6288e7f34231717131ea28e0f7b59315a27088e667dc7764",
+            "crt.go": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d",
+            "frame.go": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4",
+            "keyring_linux.go": "6c85c5095c54b7e48139d637d5fce1192c33812c9f2610fab450c513fb440892",
+            "process_unix.go": "fca241eeda6c1631cf29811050b2b5ef66a3b13f33c786ebe31fe5395050dc1d",
+            "provider.go": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+            "secret_service_linux.go": "eaf37195a1329ccef71c1255c9ae205701a97b54953ab6111ecda594726f9c21",
+            "security.go": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d",
+            "worker.go": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+          }
+        }
+      ]
+    },
+    {
+      "target": "darwin-x64",
+      "modules": [
+        {
+          "name": "github.com/ncruces/go-sqlite3",
+          "version": "v0.35.6",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+          "version": "v6.3.35304",
+          "license": "MIT-0",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304"
+        },
+        {
+          "name": "github.com/ncruces/julianday",
+          "version": "v1.0.0",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0"
+        },
+        {
+          "name": "github.com/santhosh-tekuri/jsonschema/v6",
+          "version": "v6.0.3",
+          "license": "Apache-2.0",
+          "dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3"
+        },
+        {
+          "name": "golang.org/x/sys",
+          "version": "v0.48.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0"
+        },
+        {
+          "name": "golang.org/x/text",
+          "version": "v0.42.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0"
+        }
+      ],
+      "credentialPackages": [
+        {
+          "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+          "GoFiles": [
+            "channel.go",
+            "channel_unix.go",
+            "crt.go",
+            "frame.go",
+            "keyring_darwin.go",
+            "process_unix.go",
+            "provider.go",
+            "security.go",
+            "worker.go"
+          ],
+          "Module": {
+            "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+            "Main": true,
+            "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+            "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+            "GoVersion": "1.26.0"
+          },
+          "files": {
+            "channel.go": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b",
+            "channel_unix.go": "5505fe3bc3b789fd6288e7f34231717131ea28e0f7b59315a27088e667dc7764",
+            "crt.go": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d",
+            "frame.go": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4",
+            "keyring_darwin.go": "f48c8bb42efa7ed0d0cbe9991b70c526fac2515a0ea0c8739d6575a48c57b4aa",
+            "process_unix.go": "fca241eeda6c1631cf29811050b2b5ef66a3b13f33c786ebe31fe5395050dc1d",
+            "provider.go": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+            "security.go": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d",
+            "worker.go": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+          }
+        }
+      ]
+    },
+    {
+      "target": "darwin-arm64",
+      "modules": [
+        {
+          "name": "github.com/ncruces/go-sqlite3",
+          "version": "v0.35.6",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+          "version": "v6.3.35304",
+          "license": "MIT-0",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304"
+        },
+        {
+          "name": "github.com/ncruces/julianday",
+          "version": "v1.0.0",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0"
+        },
+        {
+          "name": "github.com/santhosh-tekuri/jsonschema/v6",
+          "version": "v6.0.3",
+          "license": "Apache-2.0",
+          "dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3"
+        },
+        {
+          "name": "golang.org/x/sys",
+          "version": "v0.48.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0"
+        },
+        {
+          "name": "golang.org/x/text",
+          "version": "v0.42.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0"
+        }
+      ],
+      "credentialPackages": [
+        {
+          "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+          "GoFiles": [
+            "channel.go",
+            "channel_unix.go",
+            "crt.go",
+            "frame.go",
+            "keyring_darwin.go",
+            "process_unix.go",
+            "provider.go",
+            "security.go",
+            "worker.go"
+          ],
+          "Module": {
+            "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+            "Main": true,
+            "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+            "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+            "GoVersion": "1.26.0"
+          },
+          "files": {
+            "channel.go": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b",
+            "channel_unix.go": "5505fe3bc3b789fd6288e7f34231717131ea28e0f7b59315a27088e667dc7764",
+            "crt.go": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d",
+            "frame.go": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4",
+            "keyring_darwin.go": "f48c8bb42efa7ed0d0cbe9991b70c526fac2515a0ea0c8739d6575a48c57b4aa",
+            "process_unix.go": "fca241eeda6c1631cf29811050b2b5ef66a3b13f33c786ebe31fe5395050dc1d",
+            "provider.go": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+            "security.go": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d",
+            "worker.go": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+          }
+        }
+      ]
+    },
+    {
+      "target": "win32-x64",
+      "modules": [
+        {
+          "name": "github.com/danieljoos/wincred",
+          "version": "v1.2.3",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3",
+          "version": "v0.35.6",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6"
+        },
+        {
+          "name": "github.com/ncruces/go-sqlite3-wasm/v6",
+          "version": "v6.3.35304",
+          "license": "MIT-0",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304"
+        },
+        {
+          "name": "github.com/ncruces/julianday",
+          "version": "v1.0.0",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0"
+        },
+        {
+          "name": "github.com/santhosh-tekuri/jsonschema/v6",
+          "version": "v6.0.3",
+          "license": "Apache-2.0",
+          "dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3"
+        },
+        {
+          "name": "github.com/zalando/go-keyring",
+          "version": "v0.2.8",
+          "license": "MIT",
+          "dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8"
+        },
+        {
+          "name": "golang.org/x/sys",
+          "version": "v0.48.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0"
+        },
+        {
+          "name": "golang.org/x/text",
+          "version": "v0.42.0",
+          "license": "BSD-3-Clause",
+          "dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0"
+        }
+      ],
+      "credentialPackages": [
+        {
+          "ImportPath": "github.com/danieljoos/wincred",
+          "Dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3",
+          "GoFiles": [
+            "conversion.go",
+            "sys.go",
+            "types.go",
+            "wincred.go"
+          ],
+          "Module": {
+            "Path": "github.com/danieljoos/wincred",
+            "Version": "v1.2.3",
+            "Time": "2025-10-02T18:24:04Z",
+            "Indirect": true,
+            "Dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3",
+            "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/danieljoos/wincred/@v/v1.2.3.mod",
+            "GoVersion": "1.18",
+            "Sum": "h1:v7dZC2x32Ut3nEfRH+vhoZGvN72+dQ/snVXo/vMFLdQ=",
+            "GoModSum": "h1:6qqX0WNrS4RzPZ1tnroDzq9kY3fu1KwE7MRLQK4X0bs="
+          },
+          "files": {
+            "conversion.go": "b28435391982726478c4a90b636bd308b5aa142956caa1f14c4a9ae05e5a3a2b",
+            "sys.go": "05a658066c4412ed408161b9e48c6c56a68ee445b5514dba435d121d501f683b",
+            "types.go": "50639f3de8a6d2beb19d0a30c5fa05a68e462a192a0055a65b75372e0c879174",
+            "wincred.go": "b5d97d8ff8690a015c8c5e5a8287f8bc85ad361f58abb7f1805583f385785564"
+          }
+        },
+        {
+          "ImportPath": "github.com/zalando/go-keyring",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoFiles": [
+            "keyring.go",
+            "keyring_fallback.go",
+            "keyring_mock.go",
+            "keyring_windows.go"
+          ],
+          "Module": {
+            "Path": "github.com/zalando/go-keyring",
+            "Version": "v0.2.8",
+            "Time": "2026-03-23T12:00:09Z",
+            "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+            "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+            "GoVersion": "1.18",
+            "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+            "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+          },
+          "files": {
+            "keyring.go": "4a84f1a1eefb009a398a39e7950e3476991e79f80f39d8bd053c9ec322cadd7e",
+            "keyring_fallback.go": "422abfaeb1545ad8c3f08e02ab1de4924ad4d383e82955ba38e8896326bf39ca",
+            "keyring_mock.go": "020c1209ba9b6081f76426ef8f6cf3dbe8ff35ac713eb661667ffcbf77d452f5",
+            "keyring_windows.go": "62e221e8733fcbd506e0dcaea7a821975ec9d51e73d1b2b4603100a9005c5124"
+          }
+        },
+        {
+          "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+          "GoFiles": [
+            "channel.go",
+            "channel_windows.go",
+            "crt.go",
+            "frame.go",
+            "keyring_windows.go",
+            "process_other.go",
+            "provider.go",
+            "security.go",
+            "worker.go"
+          ],
+          "Module": {
+            "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+            "Main": true,
+            "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+            "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+            "GoVersion": "1.26.0"
+          },
+          "files": {
+            "channel.go": "7228675b7ae33de991357460e1fe43d4e0b0672f19b54e74f5bed6319fb57f2b",
+            "channel_windows.go": "0896d74104f753f6244bc8c711638c00250e89798299cbe9331d4c2be99b70fe",
+            "crt.go": "6e326467544168d31743eb173549e0e359e1e876ea0cf612e7b91738b7ac542d",
+            "frame.go": "f0d181c0ca0aad2c493f3829b457e0acb8c9c5274ebeb673b84b2dc744bb0fe4",
+            "keyring_windows.go": "bce3a89762504d9ab01660ea8766c8f1ed651feecb24178d20c824bbb959bcb0",
+            "process_other.go": "dac2b7495cfc538a31671fd38d89cd34f25d36373d54e48a58c3030f43459acc",
+            "provider.go": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+            "security.go": "04c890d6f7222057675e6ba50e392e0c85174f38a5f8b3d38e3169e0e801a32d",
+            "worker.go": "4715d95e8a60434a3d2adcf4221af40b0eda32857d5a21e71aeade929338a0a8"
+          }
+        }
+      ]
+    }
+  ]
+}

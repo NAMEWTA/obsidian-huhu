@@ -1,6 +1,9 @@
 /** Strings of the home module, registered when the module loads. */
 export const messages = {
 	en: {		'home.board.openFailed': 'Board could not be opened ({stage}): {path}',
+		'shortcuts.space': 'Space',
+		'shortcuts.space.ask': 'Ask when pressed',
+		'shortcuts.space.unavailable': 'Unavailable Space',
 		'home.board.invalidPath': 'invalid board reference',
 		'home.board.stage.path': 'path validation',
 		'home.board.stage.index': 'document index',
@@ -1609,6 +1612,9 @@ export const messages = {
 		'calendar.addTodo': 'Add a to-do',
 	},
 	zh: {		'home.board.openFailed': '无法打开看板（{stage}）：{path}',
+		'shortcuts.space': '空间',
+		'shortcuts.space.ask': '按下时询问',
+		'shortcuts.space.unavailable': '空间不可用',
 		'home.board.invalidPath': '看板路径无效',
 		'home.board.stage.path': '路径校验',
 		'home.board.stage.index': '文档索引',

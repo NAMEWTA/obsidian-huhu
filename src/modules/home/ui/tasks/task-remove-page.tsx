@@ -1,24 +1,32 @@
 import { useState } from 'react';
-import type { CalendarService, CalendarTask } from '../../api';
+import type { TaskCalendarService, CalendarTask } from '../../../task/api';
 import { openReactDialog } from '../../../../ui/react/dialog';
 import { Button } from '../../../../ui/components/button';
 import { Choice } from '../../../../ui/components/huhu/Choice';
 import { t } from '../../../../shared/i18n';
-export function removeTaskDialog(owner: HTMLElement, task: CalendarTask, calendar: CalendarService) {
+export function removeTaskDialog(owner: HTMLElement, task: CalendarTask, calendar: TaskCalendarService) {
 	const dialog = openReactDialog(owner, {
 		title: t('tasks.remove'),
 		content: (close) => <Remove task={task} calendar={calendar} close={close} />,
 	});
 	return dialog;
 }
-function Remove({ task, calendar, close }: { task: CalendarTask; calendar: CalendarService; close(this: void): void }) {
+function Remove({
+	task,
+	calendar,
+	close,
+}: {
+	task: CalendarTask;
+	calendar: TaskCalendarService;
+	close(this: void): void;
+}) {
 	const [following, setFollowing] = useState(false),
 		[busy, setBusy] = useState(false),
 		[error, setError] = useState('');
 	return (
 		<div className="grid gap-4">
 			<p className="m-0 text-sm">{task.text}</p>
-			{(task.recurrence || task.seriesId) && (
+			{task.seriesId && (
 				<Choice
 					label={t('tasks.applyTo')}
 					value={following ? 'following' : 'one'}

@@ -1,8 +1,8 @@
 /* Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: styles.css (editor and reading marks). */
 .huhu-comments-editor { --nd-comment-color: var(--interactive-accent); }
 .huhu-comment-hl {
-	background: color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 22%, transparent);
-	border-bottom: 1px solid color-mix(in srgb, var(--nd-comment-color, var(--interactive-accent)) 60%, transparent);
+	background: color-mix(in srgb, var(--huhu-highlight-color, var(--nd-comment-color, var(--interactive-accent))) 28%, transparent);
+	border-bottom: 1px solid color-mix(in srgb, var(--huhu-highlight-color, var(--nd-comment-color, var(--interactive-accent))) 70%, transparent);
 	cursor: pointer;
 }
 .huhu-comments-editor .huhu-comment-line { background: color-mix(in srgb, var(--nd-comment-color) 8%, transparent); }
@@ -38,3 +38,8 @@
 	.huhu-comments-editor .huhu-comment-marker::before { inset: -13px; }
 	.huhu-comment-reading-marker { min-width: 44px; min-height: 44px; }
 }
+
+/* Overlapping marks retain all associated card IDs; the popover lists each. */
+.huhu-comment-hl[data-highlight-count]:not([data-highlight-count="1"]) { border-bottom-style: dashed; }
+.huhu-comments-panel .huhu-highlight-color { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; border: 1px solid var(--background-modifier-border); }
+.huhu-comments-panel .huhu-highlight-card-note { overflow-wrap: anywhere; }

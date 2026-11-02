@@ -1,0 +1,77 @@
+name: Browser runtime Linux x64
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'native/browser-runtime/**'
+      - 'src/modules/browser/**'
+      - 'scripts/*browser-runtime*'
+      - 'tsconfig.browser-worker.json'
+      - 'browser-worker.cjs*'
+      - '.github/workflows/browser-runtime-build.yml'
+  # No path filter. GitHub only matches paths against the first 3000 files, and
+  # this pull request is larger than that, so a filtered event never starts.
+  # main and dev therefore run the gate on every push.
+  push:
+    branches: ['main', 'dev']
+
+permissions:
+  contents: read
+
+jobs:
+  linux-x64:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@1.90.0
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native/browser-runtime
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc -p tsconfig.browser-worker.json
+      - run: node scripts/build-browser-runtime.mjs
+      - run: git diff --exit-code -- browser-worker.cjs browser-worker.cjs.sha256 src/modules/browser/platform/desktop/runtime/main-source.generated.json src/modules/browser/platform/desktop/runtime/worker-digest.generated.json
+      - run: cargo test --locked --manifest-path native/browser-runtime/Cargo.toml
+      - run: cargo build --release --locked --manifest-path native/browser-runtime/Cargo.toml
+      - name: Prepare real Chromium sandbox on the disposable runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libgbm1 libasound2t64
+          # Ubuntu's generic AppArmor userns restriction otherwise prevents
+          # an unpacked CfT binary from creating its normal Linux sandbox.
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Fetch only the exact official Chrome archive and assemble complete bundle
+        run: node scripts/install-browser-runtime.mjs native/browser-runtime/target/release/huhu-browser-runtime "$RUNNER_TEMP/huhu-browser-runtime-linux-x64" "$RUNNER_TEMP/huhu-browser-cache"
+      - name: Native Chromium ownership, revocation and structured driver gates (sandbox ON)
+        run: node scripts/verify-browser-runtime-native.mjs "$RUNNER_TEMP/huhu-browser-runtime-linux-x64/huhu-browser-runtime" "$RUNNER_TEMP/huhu-browser-runtime-linux-x64/chromium/chrome" "$RUNNER_TEMP/huhu-browser-evidence"
+      - name: Verify complete bundle inventory and every digest
+        run: |
+          node --input-type=module -e "import {build} from 'esbuild';await build({entryPoints:['src/modules/browser/platform/desktop/runtime/assets.ts'],bundle:true,platform:'node',format:'cjs',outfile:process.env.RUNNER_TEMP+'/verify-browser-assets.cjs'});"
+          node --input-type=module -e "import {createRequire} from 'node:module';import {readFile} from 'node:fs/promises';const require=createRequire(import.meta.url),verify=require(process.env.RUNNER_TEMP+'/verify-browser-assets.cjs').verifyRuntimeAssets,digest=JSON.parse(await readFile('src/modules/browser/platform/desktop/runtime/worker-digest.generated.json','utf8')).sha256;await verify(process.env.RUNNER_TEMP+'/huhu-browser-runtime-linux-x64',digest);"
+      - name: Pack immutable runtime and original notices
+        run: tar -C "$RUNNER_TEMP/huhu-browser-runtime-linux-x64" -czf "$RUNNER_TEMP/huhu-browser-runtime-linux-x64.tar.gz" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: huhu-browser-runtime-linux-x64
+          path: ${{ runner.temp }}/huhu-browser-runtime-linux-x64.tar.gz
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-native-evidence-linux-x64
+          path: |
+            ${{ runner.temp }}/huhu-browser-evidence/result.json
+            ${{ runner.temp }}/huhu-browser-evidence/partial.json
+            ${{ runner.temp }}/huhu-browser-evidence/prompt-diagnostics.json
+          if-no-files-found: ignore
+          retention-days: 14

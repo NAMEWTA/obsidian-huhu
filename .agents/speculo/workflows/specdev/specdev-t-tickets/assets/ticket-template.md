@@ -1,8 +1,6 @@
 ---
 schema_version: 3
 plan_contract_version: 1
-skill_scan: unreviewed
-skill_bindings: []
 resource_claims: []
 artifact: ticket
 ui_change: false
@@ -31,11 +29,11 @@ shared_path_owners: []
 - **总体 Map：** `<Path>{roots.state}/specdev/changes/{change}/tickets-map.md</Path>`
 - **上游 Spec：** `<Path>{roots.state}/specdev/changes/{change}/spec.md</Path>`
 - **完成 Evidence：** `<Path>{roots.state}/specdev/changes/{change}/evidence/T-01.md</Path>`
-- **执行入口：** 获得实现授权后读取并执行 `<Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>`；按 Map → 适用项目 Skill → 当前 Ticket 读取输入。项目 Skill 调用不能替代 I 的实现、独立双轴审查及完成流程。
+- **执行入口：** 获得实现授权后读取并执行 `<Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>`；按 Map → 适用项目 Skill → 当前 Ticket 读取输入。项目 Skill 调用不能替代 I 的实现、风险适配的双轴审查及完成流程。
 
 ## 目标与来源
 
-<本票交付的可观察产出、为何需要，以及上游 AC/用户决定/诊断来源；只补充相关现状与差距。>
+<本票交付的可观察产出、为何需要，以及上游 AC/用户决定/诊断来源；只补充相关现状与差距。采用外部方案时保留相关研究条目定位、关键原始 URL、借鉴点与适配限制，供新上下文直接回读。>
 
 ## 行为与范围
 
@@ -71,3 +69,4 @@ shared_path_owners: []
 ### 未决问题
 
 无。
+

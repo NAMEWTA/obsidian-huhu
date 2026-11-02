@@ -5,7 +5,8 @@ import { dirname, join } from 'node:path';
 import { defaultFileIcon, defaultFolderIcon, defaultIconNames, fileExtension, lucideIconId } from './file-type-icons';
 
 /** lucide-react ships one module per icon name (aliases included), so a file existing means the name resolves. */
-const lucideReactIcons = join(dirname(createRequire(import.meta.url).resolve('lucide-react/package.json')), 'dist', 'esm', 'icons');
+const lucideReactIcons = join(dirname(createRequire(import.meta.url).resolve('lucide-react/package.json')), 'dist', 'esm', 'icons',
+);
 
 test('files map to type icons with theme color variables', () => {
 	expect(defaultFileIcon('notes/a.md')).toEqual({ icon: 'file-text', color: null });
@@ -38,19 +39,19 @@ test('unknown files, dotfiles and extensionless names fall back to the plain fil
 test('folders switch icons when open and special folders keep theirs', () => {
 	expect(defaultFolderIcon('Projects').icon).toBe('folder-closed');
 	expect(defaultFolderIcon('Projects', true).icon).toBe('folder-open');
-	expect(defaultFolderIcon('日志').icon).toBe('calendar-days');
-	expect(defaultFolderIcon('日志', true).icon).toBe('calendar-days');
-	expect(defaultFolderIcon('日志/日记').icon).toBe('calendar-1');
-	expect(defaultFolderIcon('日志/周记').icon).toBe('calendar-range');
-	expect(defaultFolderIcon('日志/月记').icon).toBe('calendar');
-	expect(defaultFolderIcon('日志/季记').icon).toBe('calendar-fold');
-	expect(defaultFolderIcon('日志/年记').icon).toBe('calendar-clock');
-	expect(defaultFolderIcon('日志/日记/2026').icon).toBe('folder-closed');
-	expect(defaultFolderIcon('其他/日志').icon).toBe('folder-closed');
-	expect(defaultFolderIcon('huhu/档案').icon).toBe('contact-round');
-	expect(defaultFolderIcon('huhu/档案/个人档案').icon).toBe('user');
-	expect(defaultFolderIcon('huhu/档案/企业档案').icon).toBe('building-2');
-	expect(defaultFolderIcon('个人档案').icon).toBe('folder-closed');
+	expect(defaultFolderIcon('journal').icon).toBe('calendar-days');
+	expect(defaultFolderIcon('journal', true).icon).toBe('calendar-days');
+	expect(defaultFolderIcon('journal/daily').icon).toBe('calendar-1');
+	expect(defaultFolderIcon('journal/weekly').icon).toBe('calendar-range');
+	expect(defaultFolderIcon('journal/monthly').icon).toBe('calendar');
+	expect(defaultFolderIcon('journal/quarterly').icon).toBe('calendar-fold');
+	expect(defaultFolderIcon('journal/yearly').icon).toBe('calendar-clock');
+	expect(defaultFolderIcon('journal/daily/2026').icon).toBe('folder-closed');
+	expect(defaultFolderIcon('其他/journal').icon).toBe('folder-closed');
+	expect(defaultFolderIcon('huhu/archives').icon).toBe('contact-round');
+	expect(defaultFolderIcon('huhu/archives/people').icon).toBe('user');
+	expect(defaultFolderIcon('huhu/archives/companies').icon).toBe('building-2');
+	expect(defaultFolderIcon('people').icon).toBe('folder-closed');
 	expect(defaultFolderIcon('notes/Attachments').icon).toBe('paperclip');
 	expect(defaultFolderIcon('notes/附件').icon).toBe('paperclip');
 	expect(defaultFolderIcon('Templates').icon).toBe('layout-template');
@@ -61,7 +62,7 @@ test('every icon name exists in lucide-react and Obsidian ids are prefixed once'
 	for (const name of defaultIconNames()) expect(existsSync(join(lucideReactIcons, `${name}.js`)), name).toBe(true);
 	expect(lucideIconId('file-text')).toBe('lucide-file-text');
 	expect(lucideIconId('lucide-file-text')).toBe('lucide-file-text');
-	for (const value of [defaultFileIcon('a.pdf'), defaultFolderIcon('日志')]) {
+	for (const value of [defaultFileIcon('a.pdf'), defaultFolderIcon('journal')]) {
 		if (value.color) expect(value.color).toMatch(/^var\(--color-[a-z]+\)$/);
 	}
 });

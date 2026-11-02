@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>candidate-a · 均衡圆润 列表+通知</title>
+<style>
+/* candidate-a: balanced rounded workbench. PREVIEW-ONLY fallbacks for Obsidian variables. */
+:root { color-scheme: light; --bg: #fff; --alt: #f8f8f6; --sec: #f1f1ee; --hover: #e9e9e5; --line: #deded9; --ctl: #86867f; --fg: #1f1f1d; --mut: #5b5b56; --acc: #1d6b64; --onacc: #fff; --ok: #1c7436; --bad: #b3261e; --warn: #8a5300; --r1: 8px; --r2: 12px; --h: 36px; --font: "Geist", system-ui, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }
+html[data-theme="dark"] { color-scheme: dark; --bg: #1c1c1a; --alt: #222220; --sec: #272725; --hover: #323230; --line: #3b3b38; --ctl: #8d8d86; --fg: #e9e9e5; --mut: #a9a9a2; --acc: #62bfb3; --onacc: #07201d; --ok: #6fcf8a; --bad: #ff8d84; --warn: #f0b058; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--sec); color: var(--fg); font: 14px/1.5 var(--font); }
+.shell { container-type: inline-size; max-width: 960px; margin: 0 auto; padding: 12px; }
+header.top { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 12px; }
+header.top h1 { font-size: 18px; margin: 0 auto 0 0; }
+.sub { color: var(--mut); font-size: 13px; margin: 0 0 12px; }
+button, input { font: inherit; color: inherit; }
+.b { min-height: var(--h); min-width: 32px; padding: 0 12px; border: 1px solid var(--ctl); border-radius: var(--r1); background: var(--bg); cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 120ms ease, border-color 120ms ease; }
+.b:hover { background: var(--hover); }
+.b:focus-visible, input:focus-visible, [role=switch]:focus-visible { outline: 3px solid var(--acc); outline-offset: 1px; }
+.b[aria-pressed="true"] { background: color-mix(in srgb, var(--acc) 14%, var(--bg)); border-color: var(--acc); }
+.b.p { background: var(--acc); border-color: var(--acc); color: var(--onacc); }
+.b[aria-busy="true"] { opacity: .6; cursor: progress; pointer-events: none; }
+.tools { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.tools input { flex: 1 1 140px; min-height: var(--h); padding: 0 12px; border: 1px solid var(--ctl); border-radius: var(--r1); background: var(--bg); }
+.panel { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r2); padding: 12px; }
+ul.rows { list-style: none; margin: 0; padding: 0; }
+li.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "n a" "m a"; gap: 2px 12px; padding: 12px 8px; border-top: 1px solid var(--line); align-items: center; }
+li.row:first-child { border-top: 0; }
+li.row:hover { background: var(--alt); }
+.nm { grid-area: n; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mt { grid-area: m; display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--mut); font-size: 12px; }
+.ac { grid-area: a; display: flex; gap: 4px; align-items: center; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); font-size: 12px; background: var(--sec); color: var(--fg); }
+.tag.ok { color: var(--ok); } .tag.bad { color: var(--bad); }
+.sw { width: 44px; height: 36px; border: 0; background: none; position: relative; cursor: pointer; padding: 0; }
+.sw::before { content: ""; position: absolute; left: 4px; top: 8px; width: 36px; height: 20px; border-radius: 10px; background: var(--ctl); transition: background-color 120ms ease; }
+.sw::after { content: ""; position: absolute; left: 6px; top: 10px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); transition: transform 120ms ease; }
+.sw[aria-checked="true"]::before { background: var(--acc); }
+.sw[aria-checked="true"]::after { transform: translateX(16px); }
+.noti { margin-top: 16px; }
+.noti h2 { font-size: 16px; margin: 0 0 8px; }
+.noti .card { border: 1px solid var(--line); border-left: 3px solid var(--acc); border-radius: var(--r1); padding: 12px; display: grid; gap: 4px; }
+dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 12px; margin: 8px 0 0; font-size: 13px; }
+dt { color: var(--mut); } dd { margin: 0; overflow-wrap: anywhere; }
+@container (max-width: 480px) { li.row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "n" "m" "a"; } .ac { flex-wrap: wrap; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="shell">
+<main>
+<header class="top">
+  <h1><span data-i18n="cand">候选</span> A · <span data-i18n="title">自动化</span></h1>
+  <button class="b" type="button" data-ctl="lang" data-v="zh" aria-pressed="true">中文</button>
+  <button class="b" type="button" data-ctl="lang" data-v="en" aria-pressed="false">English</button>
+  <button class="b" type="button" data-ctl="theme" data-v="light" aria-pressed="true" data-i18n="light">亮</button>
+  <button class="b" type="button" data-ctl="theme" data-v="dark" aria-pressed="false" data-i18n="dark">暗</button>
+</header>
+<p class="sub" data-i18n="sub">同一任务</p>
+<div class="tools">
+  <input type="search" data-i18n-ph="search" data-i18n-aria="search" placeholder="搜索自动化" aria-label="搜索自动化">
+  <button class="b" type="button" data-i18n="filter">筛选</button>
+  <button class="b p" type="button" data-i18n="add">新建</button>
+</div>
+<section class="panel" aria-labelledby="la">
+  <h2 id="la" style="font-size:14px;margin:0 0 4px;color:var(--mut)" data-i18n="title">自动化</h2>
+  <ul class="rows">
+    <li class="row"><div class="nm" data-i18n="n1">n1</div><div class="mt"><span data-i18n="sched">定时</span><span class="tag ok" data-i18n="ok">成功</span><span data-i18n="ago12">12</span></div>
+      <div class="ac"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button><button class="b" type="button" data-i18n-aria="more" aria-label="更多">…</button></div></li>
+    <li class="row"><div class="nm" data-i18n="n2">n2</div><div class="mt"><span data-i18n="file">文件变更</span><span class="tag bad" data-i18n="fail">失败</span><span data-i18n="ago95">2h</span></div>
+      <div class="ac"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button><button class="b" type="button" data-i18n-aria="more" aria-label="更多">…</button></div></li>
+    <li class="row"><div class="nm" data-i18n="untitled">未命名自动化</div><div class="mt"><span data-i18n="manual">手动</span><span class="tag ok" data-i18n="ok">成功</span><span data-i18n="ago25">25h</span></div>
+      <div class="ac"><button class="sw" type="button" role="switch" aria-checked="false" data-switch data-i18n-aria="off"></button><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button><button class="b" type="button" data-i18n-aria="more" aria-label="更多">…</button></div></li>
+    <li class="row"><div class="nm" data-i18n="n5">n5</div><div class="mt"><span data-i18n="sched">定时</span><span class="tag" data-i18n="never">从未运行</span></div>
+      <div class="ac"><button class="sw" type="button" role="switch" aria-checked="true" data-switch data-i18n-aria="on"></button><button class="b" type="button" data-run data-i18n="run">运行</button><button class="b" type="button" data-i18n="edit">编辑</button><button class="b" type="button" data-i18n-aria="more" aria-label="更多">…</button></div></li>
+  </ul>
+</section>
+<section class="noti" aria-labelledby="na">
+  <h2 id="na" data-i18n="notiH">通知</h2>
+  <div class="card"><strong data-i18n="notiMain">main</strong>
+    <dl><dt data-i18n="notiSnap">快照</dt><dd data-i18n="n1">n1</dd><dt data-i18n="notiNow">现名</dt><dd data-i18n="notiNowV">现名</dd><dt data-i18n="notiId">ID</dt><dd>a1b2c3d4 <button class="b" type="button" data-i18n="copy">复制 ID</button></dd></dl>
+    <span class="sub" style="margin:4px 0 0" data-i18n="notiNote">note</span></div>
+</section>
+<p class="sub" style="margin-top:16px"><a href="../index.html" data-i18n="back" style="color:var(--acc)">返回比较页</a></p>
+</main>
+</div>
+<script src="../shared/fixture.js"></script>
+</body>
+</html>

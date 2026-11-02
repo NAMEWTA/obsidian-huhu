@@ -24,6 +24,8 @@ test.each(['zh', 'en'] as const)('module switches retain saved state and recover
 	settings.modules.automations = true;
 	const view = render(<TestProviders><GeneralSettings plugin={plugin} navigate={vi.fn()} /></TestProviders>);
 	const toggle = screen.getByRole('switch', { name: t('automation.title') });
+	expect(toggle.closest('.huhu-design')).toBeNull();
+ expect(view.container.querySelectorAll('.huhu-design').length).toBe(2);
 	expect(toggle.getAttribute('aria-checked')).toBe('true');
 	fireEvent.click(toggle);
 	await screen.findByRole('alert');

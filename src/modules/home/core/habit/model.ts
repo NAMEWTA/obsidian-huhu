@@ -1,3 +1,4 @@
+import { VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 /** One check-in habit owned by the user. */
 export interface Habit {
 	id: string;
@@ -14,7 +15,7 @@ export interface HabitData {
 	records: Record<string, string[]>;
 }
 
-export const DATA_FILE = 'habits.json';
+export const DATA_FILE = VISIBLE_NAMES.json.habit;
 
 /** Shared with the widget so its validation Notice matches the service. */
 export const HABIT_MAX_NAME_LENGTH = 50;

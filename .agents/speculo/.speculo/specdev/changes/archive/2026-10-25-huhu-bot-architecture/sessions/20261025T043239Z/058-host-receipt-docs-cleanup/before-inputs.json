@@ -1,0 +1,37 @@
+{
+  "writable": {
+    "docs/data.md": "40b7d0ec872f915febb450fb50e8ff601d58efe92e866fa431fac36b1c04cb85",
+    ".agents/skills/dev/references/architecture.md": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+    "scripts/obsidian-acceptance/fresh-vault.mjs": "2a169a1970bfe4c9e285e4368ee0d7e87fed7ea211671700cf5306418adf2120"
+  },
+  "read_only": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/054-note-effects-client/REPORT.md": "17e14cb04a74d9b3ed1efb3e2d698941721c2f2d94caa8da8143d355e581ab70",
+    "src/modules/huhubot/platform/obsidian/note-effects/receipt-authority.ts": "c0e64459f242293caa78b74ba20e2060f79a9fe341ad7f1c2f9c5fdcdd0c5a0f",
+    "src/modules/huhubot/platform/obsidian/note-effects/receipt-store.ts": "6077ddab8e43838a054a9a538366d09533c366a396c83deef70ae5317fbcebf7",
+    "src/modules/huhubot/services/host-write/obsidian-host.ts": "dc7c3283e57c3c6636690b7fb46e579ed5038618a5049b8715e03ae81039bbad",
+    "src/modules/huhubot/platform/obsidian/note-effects/note-effects.ts": "a5fb43cc7bf19c8edc836c2c62f5e74ee1cc385d512f45d215862ed970001819"
+  },
+  "protected": {
+    "main.js": "d9d91103ba8885a76b2ed6f7eeb90fbff9f714ee92fe1d838e10783ffcdf4cb6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+    "THIRD-PARTY-NOTICES.md": "15b56ca45a571e43bd5f3c4bbf530987bcb3a6b61808c970b2ffe3173e1e1e8c",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    "native/huhubot/dist/huhu-bot-linux-arm64.sha256": "460f897b131d5cde4114ded83a7dd1c8efd72ae9a3899180bd9b24f00fa4d598",
+    "native/huhubot/dist/huhu-bot-darwin-arm64.json": "c10cd4d54c64b492e625d1021b4c0422461f752e16c8ed19b02ec22c02da2049",
+    "native/huhubot/dist/huhu-bot-linux-arm64.json": "453c0db4224e68c1e5e753a8c7bc1d27b8c0bf2aa67f9fb700bf55851c9b5cc9",
+    "native/huhubot/dist/huhu-bot-darwin-x64": "2bd702f3a6018595f70235ea5ddb0075529ed38e75b233ab601f3b0ab10944fc",
+    "native/huhubot/dist/huhu-bot-linux-x64.sha256": "43b6049ce33d4a7bdea09da0be61c56ffc2766546e046778c002e5084917479e",
+    "native/huhubot/dist/huhu-bot-linux-arm64": "b90affeec6abaf2d14c3f0bdd29f697cddcad6f22778cd302824a21c36b2ea6e",
+    "native/huhubot/dist/huhu-bot-linux-x64.json": "27a98a31300f849b485b1300e5566cad30d69b90e64b4a283b99a62848d3609a",
+    "native/huhubot/dist/huhu-bot-darwin-arm64": "508e32d61b2ac17bece6250ac198887e625295b24c149c25c3f6bb618efbc692",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe": "8e702107f64814268dfeb2f5643b213f8ad78822fe8d25e76185f48a016ca0a7",
+    "native/huhubot/dist/huhu-bot-linux-x64": "d4510b02adacfe69d3ec534c1a596ba35696ae813147a34321a9b03a0754216e",
+    "native/huhubot/dist/huhu-bot-darwin-x64.json": "108ce15945ad6c29f9a66ae0d36fdfb40964ec54c98f98fe68b17b84c196a0da",
+    "native/huhubot/dist/huhu-bot-darwin-x64.sha256": "76b171ecca621f09b3285ce2521c8aa6fd19709c33b958d923630b6e460693d2",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe.sha256": "b1f6c8921801d53ca70ed77437984a4d61626528a3cbabf0d1e53d345c50e482",
+    "native/huhubot/dist/huhu-bot-win32-x64.exe.json": "30f5e61b8dd400d982f19259742d831c6461954fb67bc676a08049a113dac4a2",
+    "native/huhubot/dist/huhu-bot-darwin-arm64.sha256": "7f19c8676edc42f2a5af10c11d2c6daa1cd0cd9cc7e98e86c5ddce07edb3e334"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "entries": [
+    {
+      "path": "ADR.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "acc271ff228fde8fb2c3eb0df2c738a4f2b5596c8cac5790866f1dff7f49ce50"
+    },
+    {
+      "path": "CONTEXT.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "c086496cb1cbfad736c6244a217fb61f2d2e5ddc6f4119f32dc54381dff227df"
+    },
+    {
+      "path": "LOG.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "55e40478879a29cbdfadde1d3299de70bcaa439bc82c18a2369ecaa11c62938b"
+    },
+    {
+      "path": "MODEL-DESIGN.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "e539f4d1ed3b092796687cec6ba49704e629126681ba1dc2279c4a0d7d2aad69"
+    },
+    {
+      "path": "README.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "b7a33b9df1aa71902d2ed5d4fa3ba3ff9e3e1537cbc51da41bd44afe9a1c8ea9"
+    },
+    {
+      "path": "archive-approval.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "9b2257be218a6cc3608f93e8400a5733a195e87b6a36870450bd663396ac0664"
+    },
+    {
+      "path": "archive-preflight.json",
+      "mode": 436,
+      "type": "file",
+      "sha256": "a7ef28209d4047fe16299bf1ec6e350b4000f408e3eb501fbb300f9635651c65"
+    },
+    {
+      "path": "archive-reference-map.json",
+      "mode": 436,
+      "type": "file",
+      "sha256": "bb256c97068889ac81e59f07471d8ee9b363cae5d6d5b8e4c3298e3c57a077b6"
+    },
+    {
+      "path": "design-tree.json",
+      "mode": 436,
+      "type": "file",
+      "sha256": "93980daf3f007b4c4921cc93352d251f4383dcdf72f7818eaeb9a4e8c1d8aaaf"
+    },
+    {
+      "path": "source.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "0e48a49584410ff4c1b98dc272f6f93e45f94e41953344917c5d10690db52bce"
+    },
+    {
+      "path": "triage.md",
+      "mode": 436,
+      "type": "file",
+      "sha256": "a78fce1b3ad408fb8e4a7d163ecb3307b561bd2368727c1d795c4d1f718a9462"
+    }
+  ]
+}

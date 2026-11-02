@@ -100,6 +100,8 @@ export class MusicService {
 	private volume = 0.8;
 	private mode: MusicRepeatMode = 'list';
 	private loaded = false;
+	private disposed = false;
+	private restoration?: Promise<void>;
 	private listeners = new Set<() => void>();
 	/** Consecutive failures to produce audible playback (VIP skip, CDN error,
 	    network fail). Reset by the 'playing' event. */
@@ -163,7 +165,16 @@ export class MusicService {
 		this.volume = typeof s.musicVolume === 'number' ? Math.min(1, Math.max(0, s.musicVolume)) : 0.8;
 		this.mode = s.musicRepeatMode ?? 'list';
 		this.audio.volume = this.volume;
-		await this.account.restore();
+	}
+
+	/** Owned by the Home module; optional credentials never gate local player readiness. */
+	restoreAccount(): Promise<void> {
+		if (this.disposed) return Promise.resolve();
+		return this.restoration ??= this.account.restore().then(() => {
+			if (!this.disposed && !this.plugin.app.workspace.containerEl.win.closed) this.notify();
+		}).catch(() => {
+			if (!this.disposed) console.error('[HUHU music] Account restoration notification failed');
+		});
 	}
 
 	// ===== Subscriptions =====
@@ -198,8 +209,10 @@ export class MusicService {
 		try {
 			await this.account.login();
 		} finally {
-			this.stopPlayback();
-			this.notify();
+			if (!this.disposed) {
+				this.stopPlayback();
+				this.notify();
+			}
 		}
 	}
 
@@ -208,7 +221,7 @@ export class MusicService {
 		try {
 			await this.account.logout();
 		} finally {
-			this.notify();
+			if (!this.disposed) this.notify();
 		}
 	}
 
@@ -511,6 +524,8 @@ export class MusicService {
 	}
 
 	destroy(): void {
+		if (this.disposed) return;
+		this.disposed = true;
 		this.playRevision += 1;
 		this.account.destroy();
 		if (this.persistTimer !== null) {

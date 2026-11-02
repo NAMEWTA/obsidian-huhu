@@ -1,8 +1,13 @@
 import type { App, TFile } from 'obsidian';
 import { nowMoment } from '../../host/obsidian/datetime';
 import { activateWindowLeaf, openNoteAt } from '../../host/obsidian/open-note';
-import { t } from '../../shared/i18n';
-import { datedName, isVisibleHuhuPath, HUHU_VISIBLE_ROOT, NEW_NOTE_ROOT } from '../../shared/storage/vault-layout';
+import {
+	VISIBLE_NAMES,
+	datedName,
+	isVisibleHuhuPath,
+	HUHU_VISIBLE_ROOT,
+	NEW_NOTE_ROOT,
+} from '../../shared/storage/vault-layout';
 
 /** The folder of a HUHU files selection: the folder itself, or the folder of a file; `huhu/` when it is outside. */
 export function selectedFolder(selected?: string): string {
@@ -25,7 +30,7 @@ export async function createHuhuNote(app: App, selected?: string): Promise<TFile
 		current = current ? `${current}/${part}` : part;
 		if (!app.vault.getAbstractFileByPath(current)) await app.vault.createFolder(current);
 	}
-	const base = datedName(t('content.newNoteName'), nowMoment());
+	const base = datedName(VISIBLE_NAMES.newNote, nowMoment());
 	let path = `${folder}/${base}.md`;
 	for (let n = 2; app.vault.getAbstractFileByPath(path); n++) path = `${folder}/${base}-${n}.md`;
 	return app.vault.create(path, '');
@@ -44,7 +49,8 @@ export async function openInNativeTab(app: App, path: string, fragment?: string,
 }
 
 /** Old file deep links open the original note; directory links keep the secondary content browser. */
-export async function openContentLocation(app: App, path?: string, signal?: AbortSignal, fragment?: string, owner?: Window): Promise<string> {
+export async function openContentLocation(app: App, path?: string, signal?: AbortSignal, fragment?: string, owner?: Window,
+): Promise<string> {
 	if (!path || !isVisibleHuhuPath(path) || signal?.aborted) return HUHU_VISIBLE_ROOT;
 	const entry = app.vault.getAbstractFileByPath(path);
 	if (!entry) {

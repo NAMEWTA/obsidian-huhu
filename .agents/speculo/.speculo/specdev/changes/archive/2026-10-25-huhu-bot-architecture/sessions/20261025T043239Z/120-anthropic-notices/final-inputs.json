@@ -1,0 +1,114 @@
+{
+  "scope": "120 five modified script/doc/notice files; old19 legal files and NOTICE unchanged; no Go source/locks/assets/checker/Skill writes",
+  "taskSha256": "8d94e74081b0164225e8dd312973d3a7d3b99dc315cba2c95bd082741401df1c",
+  "fileCount": 5,
+  "treeSha256": "732cf3025f61093bd77a2f6143f625adcc072b8d3350bd9afe81a0f8556d67ee",
+  "files": {
+    "THIRD-PARTY-NOTICES.md": {
+      "beforeSha256": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+      "afterSha256": "cf3b0333a62ded90409d411902abff42764d9c9f5d0315d592f385839d60ac7b"
+    },
+    "docs/references.md": {
+      "beforeSha256": "df0cbf3995778b84dadb6233991ca635c12ead3963007c9136c9cc9c313147fa",
+      "afterSha256": "e86fd61c0b7107f4fc144a9631f58c867120c29d11da306612e7f3d078aa83dd"
+    },
+    "docs/third-party/huhu-bot.md": {
+      "beforeSha256": "e25d6e6cdeca67af218ced2731632e7b22361cf691ba538602d6885cd26e759d",
+      "afterSha256": "98d9dad577e395bb24bab0528b3551ac730865962876b5e656d7f68ae5cbecba"
+    },
+    "scripts/huhu-bot-notices.mjs": {
+      "beforeSha256": "868e8dcf406c96e49704585c113db8baca4cd3ed766897fb76a097643f7f0685",
+      "afterSha256": "e2e55e4e828e73481a376d3a82c55fb5b7eb102f227dcdc9c840a025fd17ef91"
+    },
+    "scripts/huhu-bot-notices.test.mjs": {
+      "beforeSha256": "b75e0dd098cf75e319d16f1c70d269d642c6adfc8bce275e4590360693db95e8",
+      "afterSha256": "a8c02df02f5982796f44be53740739e6621cf579d99cb56d4242723a6d4901c7"
+    }
+  },
+  "NOTICEUnchangedSha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+  "oldLegalInputsUnchanged": {
+    "docs/third-party/licenses/go/Apache-2.0-full.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/cldr-32-unicode-license.txt": "6a6976a5da6ac21a6a001c685c057f4a6e619be11f5465371088ecd80c7fbe06",
+    "docs/third-party/licenses/go/eino-ext-openai-v0.1.13-LICENSE-APACHE.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/go-1.24rc1-BSD-3-Clause.txt": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-1-MIT.txt": "27d3a94ff600a1f100136f7743777284c8dccf707606ab07a2e20d032996cb15",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-2-MIT.txt": "bb1458854751422ecfac21563c365bf09d8e3a0838db75ba815c14395cbadb57",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-3-MIT.txt": "7c886985b97808b0ddcda7bcb747fb39b3026dd2d50cd4b3d557c37b629722d2",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-4-MIT.txt": "c00b4b59c25a4054fe88a51dd32fc1e4f223f93cf77855ecdb74ebad574b2215",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-5-MIT.txt": "eeecad0dc7d079ac0151c13c7b3cba4f56732c33471f36969f9298ac2e81cbee",
+    "docs/third-party/licenses/go/json-schema-spec-LICENSE.txt": "909b25a80d4945b21d3adb2fb17f90bf592e0274bdf117c069c088a8e44dc7b6",
+    "docs/third-party/licenses/go/logrus-v1.9.3-atexit-MIT.txt": "017f4e6ccc2a628990502e0394691722427f258cd9264246e328c74fb82d7931",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-Drachennest.txt": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-eisel_lemire.txt": "cc3a949197f7f066770ae05ced2a2e1dfebb850f5a7587f085dd314bdbbce5c0",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang-asm.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-simdjson.txt": "1c351ddfc2b959867290106301ba287d0525071630896709f74b3c3a621b0586",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-yyjson.txt": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+    "docs/third-party/licenses/go/sources.json": "46f03a5717956c944bf32e08193b22a6ee24e11f260b79c995348728baf0e5f9",
+    "docs/third-party/licenses/go/wasm2go-v0.4.15-MIT.txt": "13b7919ffbff20b54d133748a783ade8b3ecb1810144194aad70928070f2c0df"
+  },
+  "protectedReadOnly": {
+    "main.js": {
+      "beforeSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "afterSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "changeOwner": "unchanged"
+    },
+    "styles.css": {
+      "beforeSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "afterSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "changeOwner": "unchanged"
+    },
+    "native/huhubot/go.mod": {
+      "beforeSha256": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+      "afterSha256": "943f91b31c7f9ea341c3779a4bd9bfd0a4a51f658e20a0d4f5def0a5f287a668",
+      "changeOwner": "119 actual import/tidy; no120 write"
+    },
+    "native/huhubot/go.sum": {
+      "beforeSha256": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad",
+      "afterSha256": "bbb9c65d33563690674169c8091f00a445a9e503d5bc639c9081945e7c6587e8",
+      "changeOwner": "119 actual import/tidy; no120 write"
+    },
+    "package.json": {
+      "beforeSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "afterSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "changeOwner": "unchanged"
+    },
+    "pnpm-lock.yaml": {
+      "beforeSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "afterSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "changeOwner": "unchanged"
+    },
+    ".agents/skills/dev/SKILL.md": {
+      "beforeSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "afterSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "changeOwner": "unchanged"
+    },
+    "scripts/documentation-policy.mjs": {
+      "beforeSha256": "a3e17a356350d79e73c40fd6239def5d66c2dd86e6e22707d8737f005ac49803",
+      "afterSha256": "a3e17a356350d79e73c40fd6239def5d66c2dd86e6e22707d8737f005ac49803",
+      "changeOwner": "unchanged"
+    },
+    "scripts/verify-docs.mjs": {
+      "beforeSha256": "9b941c1f13c1ab236e1445b21016beb280d2a2c7121e9571c5e452a44ff8de3c",
+      "afterSha256": "9b941c1f13c1ab236e1445b21016beb280d2a2c7121e9571c5e452a44ff8de3c",
+      "changeOwner": "unchanged"
+    }
+  },
+  "locks": {
+    "go.mod": "943f91b31c7f9ea341c3779a4bd9bfd0a4a51f658e20a0d4f5def0a5f287a668",
+    "go.sum": "bbb9c65d33563690674169c8091f00a445a9e503d5bc639c9081945e7c6587e8"
+  },
+  "productionScope": "cmd/internal including embed data, excludes tests/testdata/dist and *_test.go; frozen-window observation",
+  "nonTestProductionInputCount": 173,
+  "windowProductionTreeSha256": "69d632c786cf504765b50df11d8e9f8a548e5422e54bcdaf354294c3a33b45ee",
+  "selectedCompiledFilesSha256": "cd9eed9158f1218bf3d573594ca9564aed2ee0a4578cc0e92cf7df5540d7140f",
+  "closureManifestSha256": "67119b919783a6b40b21140c982d5b43de9375f4812ceea3ed310e1a14702fd2",
+  "licenseSourcesSha256": "37c3bbab55e7ddfeea7596a97e85fafdcafb64edcc8a6f7bbe36c11c12add10c",
+  "thirdPartyUnion": 51,
+  "withGoRuntime": 52,
+  "legacyNoticeBodiesPreserved": 46,
+  "legacyJsonparserVersionTitleChangedOnly": true,
+  "nonGoNoticesUnchanged": true,
+  "lastToolTests": "16-all-tools 27/27 actual0/Wait; reused unchanged after Root instruction",
+  "docs": "21-docs actual0/Wait; 813 Markdown/1884 local/753 external no fetch"
+}

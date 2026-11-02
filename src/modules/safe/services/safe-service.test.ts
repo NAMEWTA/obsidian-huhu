@@ -18,10 +18,10 @@ const ownerWindow = {} as Window;
 const IDLE_LOCK_MS = DEFAULT_LOCK_POLICY.idleMs!;
 const credential = (n: number, extra: Partial<CredentialInput> = {}): CredentialInput => ({
 	id: `c${n.toString(16).padStart(7, '0')}-1111-4111-8111-111111111111`,
-	username: ' private-username-sentinel ', password: ' private-password-sentinel ', notes: 'private-notes-sentinel 工作', ...extra,
+	username: ' private-username-sentinel ', password: ' private-password-sentinel ', notes: 'private-notes-sentinel 工作', phone: '', email: '', relations: [], ...extra,
 });
 const input: EntryInput = {
-	title: 'private-title-sentinel', url: 'https://private-url-sentinel.test', notes: '', icon: null,
+	title: 'private-title-sentinel', url: 'https://private-url-sentinel.test', notes: '', icon: null, tags: [],
 	credentials: [credential(1)],
 };
 const secret = ' private-password-sentinel ';
@@ -780,5 +780,82 @@ describe('lock policy', () => {
 		stop();
 		policy.set({ lockOnClose: false });
 		expect(heard).toHaveBeenCalledTimes(1);
+	});
+});
+
+
+describe('contact, label, relation and generator boundaries', () => {
+	test('version 2 is authenticated, preserved byte-for-byte, upgraded once, and reopened as version 3', async () => {
+		const current = createEntry(input, 'e1111111-1111-4111-8111-111111111111', initialTime);
+		const { tags: _tags, ...entry } = current;
+		const legacy = { version: 2, entries: [{ ...entry, credentials: entry.credentials.map(({ phone: _p, email: _e, relations: _r, ...account }) => account) }] };
+		const created = await createContainer(master, makePayload([]));
+		const iv = crypto.getRandomValues(new Uint8Array(12));
+		const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, tagLength: 128,
+			additionalData: new TextEncoder().encode(JSON.stringify(['huhu-safe', 1, 'payload', created.envelope.safeId])),
+		}, created.key, new TextEncoder().encode(JSON.stringify(legacy)));
+		const raw = JSON.stringify({ ...created.envelope, payload: { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) } });
+		const { service, files } = await fixture(raw);
+		expect(service.store.getState()).toMatchObject({ upgraded: true, entries: [current] });
+		expect([...files.values].filter(([name]) => name.startsWith('preupgrade-')).map(([, value]) => value)).toEqual([raw]);
+		expect(await openContainer(files.values.get(MAIN)!, master)).toMatchObject({ upgradedFrom: null, payload: { version: 3, entries: [current] } });
+		const writes = files.publications.length;
+		service.lock(); await service.unlock(master);
+		expect(files.publications).toHaveLength(writes);
+	});
+
+	test('optional contacts, same-entry links and tags persist encrypted; dangling links remain explicit and new missing links are rejected', async () => {
+		const { service, files } = await fixture();
+		const id = 'e1111111-1111-4111-8111-111111111111';
+		const provider = credential(2, { username: '', password: '', phone: '+886-private', email: 'private-contact@example.test' });
+		const relation = { entryId: id, credentialId: provider.id, kind: 'login' as const };
+		const value = { ...input, tags: ['Private-tag'], credentials: [credential(1, { username: '', password: '', relations: [relation] }), provider] };
+		await service.saveEntry(value, undefined, id);
+		const entry = service.store.getState().entries[0]!;
+		for (const marker of ['Private-tag', '+886-private', 'private-contact@example.test', provider.id]) {
+			for (const raw of files.values.values()) expect(raw).not.toContain(marker);
+		}
+		service.lock(); expect(service.store.getState().entries).toEqual([]);
+		await service.unlock(master); expect(service.store.getState().entries).toEqual([entry]);
+		await service.saveEntry({ ...value, credentials: [value.credentials[0]!] }, entry);
+		const dangling = service.store.getState().entries[0]!;
+		expect(dangling.credentials[0]!.relations).toEqual([relation]);
+		await service.saveEntry({ ...dangling, notes: 'unrelated edit preserves missing link' }, dangling);
+		await expect(service.saveEntry({ ...input, credentials: [credential(4, { relations: [relation] })] })).rejects.toMatchObject({ code: 'invalid-relation' });
+		expect((await openContainer(files.values.get(MAIN)!, master)).payload.entries).toHaveLength(1);
+	});
+
+	test('target deletion while an editor is open refuses a newly introduced link without overwriting', async () => {
+		const { service, files } = await fixture();
+		await service.saveEntry(input);
+		const target = service.store.getState().entries[0]!;
+		await service.trashEntry(target);
+		const raw = files.values.get(MAIN);
+		await expect(service.saveEntry({ ...input, credentials: [credential(3, { relations: [{ entryId: target.id, credentialId: target.credentials[0]!.id, kind: 'related' }] })] })).rejects.toMatchObject({ code: 'invalid-relation' });
+		expect(files.values.get(MAIN)).toBe(raw);
+	});
+
+	test('global tag rename updates live and trashed entries, merges labels, and makes old editors stale', async () => {
+		const { service, files } = await fixture();
+		await service.saveEntry({ ...input, tags: ['AI', 'Work'] });
+		const stale = service.store.getState().entries[0]!;
+		await service.saveEntry({ ...input, tags: ['ai'] });
+		await service.trashEntry(service.store.getState().entries[1]!);
+		await service.renameTag('AI', 'Work');
+		expect(service.store.getState().entries.map(entry => entry.tags)).toEqual([['Work'], ['Work']]);
+		await expect(service.saveEntry(stale, stale)).rejects.toMatchObject({ code: 'stale-entry' });
+		await service.renameTag('work', null);
+		expect((await openContainer(files.values.get(MAIN)!, master)).payload.entries.map(entry => entry.tags)).toEqual([[], []]);
+	});
+
+	test('generation is memory-only and requires a live unlocked session, including suspended timers', async () => {
+		const { service, files, clock, clipboard } = await fixture();
+		const before = [...files.values];
+		expect(service.generatePassword()).toHaveLength(12);
+		expect([...files.values]).toEqual(before);
+		expect(clipboard.writes).toEqual([]);
+		clock.advance(IDLE_LOCK_MS, false);
+		expect(() => service.generatePassword()).toThrow('locked');
+		expect(service.store.getState().status).toBe('locked');
 	});
 });

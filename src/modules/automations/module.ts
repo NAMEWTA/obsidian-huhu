@@ -1,3 +1,4 @@
+import { TASK_VIEWS } from '../task/api';
 import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { contentFiles } from '../../host/obsidian/storage/content-files';
 import type { AppWithCommands } from '../../host/obsidian/obsidian-internal';
@@ -55,11 +56,6 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 			new Notice(request.title === request.body ? request.title : `${request.title}\n${request.body}`);
 	};
 
-	const taskTargets = async () =>
-		(await (await runtime?.sources())?.find((item) => item.taskTargets)?.taskTargets?.()) ?? [];
-	const calendarTargets = async () =>
-		(await (await runtime?.sources())?.find((item) => item.calendarTargets)?.calendarTargets?.()) ?? [];
-
 	/** What the list, the detail pages and the editor need; absent while the module is not running. */
 	// Typed where it is used (`ui/` is only reachable through import() from here), so the parameters are annotated.
 	const viewHost = () =>
@@ -78,9 +74,7 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 			},
 			openLink: (link: NoteLink) => openNote(app, link.path, link.line),
 			openCalendarSource: (delivery: AutomationTaskDelivery, owner?: Window) =>
-				openCalendarSource(app, delivery, owner),
-			taskTargets,
-			calendarTargets,
+				openCalendarSource(context.services.peek(TASK_VIEWS), delivery, owner),
 			paths: () => [
 				{ path: '/', kind: 'folder' as const },
 				...contentFiles(app)
@@ -103,10 +97,6 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 		};
 	/** The "New automation" dialog other modules open; it renders with the same host as the board page. */
 	const composer: AutomationComposer = {
-		editTask: async (request) => {
-			const { openTaskEditor } = await import('./ui/task-editor-page');
-			if (!stopped.signal.aborted) await openTaskEditor(request, stopped.signal);
-		},
 		open: async (request = {}) => {
 			const current = runtime;
 			if (!current?.service.executionEnabled) {
@@ -160,8 +150,9 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 		},
 	};
 	const invocations: AutomationInvocations = {
-		invoke: (request, options) => {
-			if (!runtime) return Promise.reject(new AutomationError('moduleOff'));
+		// Async so a refusal (module off, recovery hold) is always a rejected promise, never a synchronous throw.
+		invoke: async (request, options) => {
+			if (!runtime) throw new AutomationError('moduleOff');
 			return runtime.service.invokeAgent(request, options?.signal);
 		},
 		receipt: (id) => {
@@ -202,6 +193,8 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 				new Notice(t('automation.failedLoad'));
 				throw error;
 			}
+			for (const owner of runtime.recoveryOwners)
+				context.lifetime.register(context.recovery?.register(owner) ?? (() => undefined));
 			context.lifetime.register(
 				runtime.service.subscribe(() => {
 					for (const listener of [...listeners]) listener();

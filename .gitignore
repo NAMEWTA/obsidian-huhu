@@ -60,5 +60,17 @@ release-assets/
 terminal-artifacts/
 /evidence/
 /coverage/
-.agents/speculo/.speculo/specdev/changes/
-.agents/speculo/.speculo/specdev/archive/
+# Native browser build outputs
+native/browser-runtime/target/
+# Speculo session logs are local process evidence, not repository artifacts
+.agents/speculo/.speculo/specdev/changes/**/sessions/**/logs/
+
+# SpecDev evidence: only verification result reports (Markdown stating pass/fail and why) are tracked.
+# Everything else under evidence/ (review inputs, patches, logs, screenshots, build output, code,
+# hash manifests, budget attributions, run audits) stays local. See AGENTS.md "SpecDev evidence 入库规则".
+/.agents/speculo/.speculo/specdev/changes/**/evidence/**
+!/.agents/speculo/.speculo/specdev/changes/**/evidence/**/
+!/.agents/speculo/.speculo/specdev/changes/*/evidence/T-[0-9][0-9].md
+!/.agents/speculo/.speculo/specdev/changes/*/evidence/T-[0-9][0-9][0-9].md
+!/.agents/speculo/.speculo/specdev/changes/*/evidence/report*.md
+!/.agents/speculo/.speculo/specdev/changes/*/prototypes/*/evidence/approval-*.md

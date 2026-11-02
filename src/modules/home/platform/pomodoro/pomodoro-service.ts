@@ -1,4 +1,4 @@
-import { POMODORO_ROOT } from '../../../../shared/storage/vault-layout';
+import { POMODORO_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { RecordStorage } from '../record-storage';
 import { Notice, type App } from 'obsidian';
 import { PomodoroApplication } from '../../core/pomodoro/application';
@@ -14,7 +14,7 @@ export class PomodoroService extends PomodoroApplication {
 		if (this.focusDoc.visibilityState === 'visible') void this.syncFromDisk();
 	};
 	constructor(private readonly nativeHost: WidgetSettingsHost) {
-		const storage = new RecordStorage(nativeHost.app, `${POMODORO_ROOT}/pomodoro.json`);
+		const storage = new RecordStorage(nativeHost.app, `${POMODORO_ROOT}/${VISIBLE_NAMES.json.pomodoro}`);
 		const win = nativeHost.app.workspace.containerEl.win;
 		super(
 			{
@@ -30,7 +30,7 @@ export class PomodoroService extends PomodoroApplication {
 				clearInterval: (handle) => win.clearInterval(handle),
 			},
 			storage,
-			`${POMODORO_ROOT}/pomodoro.json`,
+			`${POMODORO_ROOT}/${VISIBLE_NAMES.json.pomodoro}`,
 		);
 		this.unsubscribe = storage.subscribeInvalidation(() => { void this.syncFromDisk(); });
 		this.focusDoc = win.document;

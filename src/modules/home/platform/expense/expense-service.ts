@@ -1,4 +1,4 @@
-import { EXPENSE_ROOT } from '../../../../shared/storage/vault-layout';
+import { EXPENSE_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { RecordStorage } from '../record-storage';
 import type { App } from 'obsidian';
 import { ExpenseApplication } from '../../core/expense/application';
@@ -11,7 +11,7 @@ export class ExpenseService extends ExpenseApplication {
 		if (this.focusDoc.visibilityState === 'visible') void this.syncFromDisk();
 	};
 	constructor(private plugin: WidgetSettingsHost) {
-		const storage = new RecordStorage(plugin.app, `${EXPENSE_ROOT}/expense.json`);
+		const storage = new RecordStorage(plugin.app, `${EXPENSE_ROOT}/${VISIBLE_NAMES.json.expense}`);
 		super(storage, EXPENSE_ROOT, () => plugin.settings.expenseCurrency);
 		this.unsubscribe = storage.subscribeInvalidation(() => { void this.syncFromDisk(); });
 		this.focusDoc = plugin.app.workspace.containerEl.ownerDocument;

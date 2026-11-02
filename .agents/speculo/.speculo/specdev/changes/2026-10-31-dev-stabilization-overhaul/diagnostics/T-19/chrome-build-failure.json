@@ -1,0 +1,10 @@
+{
+  "cases": [],
+  "errors": [
+    {
+      "message": "Error: Build failed with 5 errors:\nerror: radix-owner-document: @radix-ui/react-roving-focus/dist/index.mjs: expected 1 matched files, got 0; review entry paths/exports and the dependency graph\nerror: radix-owner-document: @radix-ui/react-menu/dist/index.mjs: expected 1 matched files, got 0; review entry paths/exports and the dependency graph\nerror: radix-owner-document: @radix-ui/react-focus-scope/dist/index.mjs: expected 2 matched files, got 1; review entry paths/exports and the dependency graph\nerror: radix-owner-document: @radix-ui/react-focus-guards/dist/index.mjs: expected 2 matched files, got 1; review entry paths/exports and the dependency graph\nerror: radix-owner-document: @radix-ui/react-dismissable-layer/dist/index.mjs: expected 2 matched files, got 1; review entry paths/exports and the dependency graph"
+    }
+  ],
+  "inputs": [],
+  "status": "failed"
+}

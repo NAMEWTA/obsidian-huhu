@@ -1,3 +1,4 @@
+import { runHomeReactChecks } from './run-home-react-checks';
 import { strict as assert } from 'node:assert';
 import { mapMetNoCode } from '../src/modules/home/platform/widgets/weather-service';
 
@@ -87,3 +88,5 @@ assert.equal(mapMetNoCode('clearskyish_day'), 3);
 assert.equal(mapMetNoCode(''), 3);
 
 console.log(`verify-weather-mapping: ${checked} legend symbols + regression and fallback cases OK`);
+
+runHomeReactChecks(['platform/widgets/weather-service.test.ts']);

@@ -54,9 +54,9 @@ async function fixture(settings: Record<string, unknown> = {}, extraActions: Par
 	setLanguage('en');
 	vi.useFakeTimers({ toFake: ['Date'] });
 	vi.setSystemTime(new Date(2026, 9, 15, 10));
-	const fake = createFakeApp({ 'huhu/日志/日记/2026/10/2026-10-14.md': '' });
+	const fake = createFakeApp({ 'huhu/journal/daily/2026/10/2026-10-14.md': '' });
 	const vault = new FakeVault(
-		[note('huhu/日志/日记/2026/10/2026-10-14.md', 5), note('Work/a.md', 4), note('Work/b.md', 3)],
+		[note('huhu/journal/daily/2026/10/2026-10-14.md', 5), note('Work/a.md', 4), note('Work/b.md', 3)],
 		['/', '日志', 'Work'],
 	);
 	const periods = normalizePeriodRules({ month: { enabled: false } });
@@ -287,8 +287,8 @@ test('clicking a day selects its agenda; explicit actions create or reuse the jo
 	expect(t.fake.files.size).toBe(1);
 	fireEvent.contextMenu(day('2026-10-16'));
 	choose(await screen.findByRole('menuitem', { name: 'Create note' }));
-	await waitFor(() => expect(t.opened).toEqual(['huhu/日志/日记/2026/10/2026-10-16.md']));
-	expect(t.fake.has('huhu/日志/日记/2026/10/2026-10-16.md')).toBe(true);
+	await waitFor(() => expect(t.opened).toEqual(['huhu/journal/daily/2026/10/2026-10-16.md']));
+	expect(t.fake.has('huhu/journal/daily/2026/10/2026-10-16.md')).toBe(true);
 	await waitFor(() => expect(day('2026-10-16').dataset.hasNote).toBe('true'));
 	fireEvent.click(day('2026-10-14'));
 	expect(t.opened).toHaveLength(1);
@@ -296,7 +296,7 @@ test('clicking a day selects its agenda; explicit actions create or reuse the jo
 	fireEvent.contextMenu(day('2026-10-14'));
 	choose(await screen.findByRole('menuitem', { name: 'Open note' }));
 	await waitFor(() =>
-		expect(t.opened).toEqual(['huhu/日志/日记/2026/10/2026-10-16.md', 'huhu/日志/日记/2026/10/2026-10-14.md']),
+		expect(t.opened).toEqual(['huhu/journal/daily/2026/10/2026-10-16.md', 'huhu/journal/daily/2026/10/2026-10-14.md']),
 	);
 	expect(t.fake.files.size).toBe(2);
 });
@@ -309,7 +309,7 @@ test('calendar exposes only daily notes while existing weekly note services rema
 	expect(screen.queryByRole('button', { name: 'Monthly · Day and note actions' })).toBeNull();
 	expect(screen.queryByRole('button', { name: 'Periodic notes' })).toBeNull();
 	await t.env.periodic!.open('week', new Date(2026, 9, 15), { create: true });
-	expect(t.fake.has('huhu/日志/周记/2026/2026-W42.md')).toBe(true);
+	expect(t.fake.has('huhu/journal/weekly/2026/2026-w42.md')).toBe(true);
 	expect(t.env.periodic!.inspect('month', new Date(2026, 9, 15)).status).toBe('disabled');
 	fireEvent.click(screen.getByRole('button', { name: 'Choose month and year' }));
 	expect(document.querySelectorAll('[data-calendar-year-panel] button')).toHaveLength(12);
@@ -475,7 +475,7 @@ test('Sunday rows keep consistent week numbers and the diary action is keyboard 
 	diary.focus();
 	expect(document.activeElement).toBe(diary);
 	fireEvent.click(diary);
-	await waitFor(() => expect(t.fake.has('huhu/日志/日记/2026/10/2026-10-15.md')).toBe(true));
+	await waitFor(() => expect(t.fake.has('huhu/journal/daily/2026/10/2026-10-15.md')).toBe(true));
 	// Sunday-first weeks are numbered from the week that contains 1 January, so the rows of October are 40 to 44
 	expect(screen.getAllByRole('rowheader', { hidden: true }).map((header) => header.textContent)).toEqual([
 		'40',
@@ -488,7 +488,7 @@ test('Sunday rows keep consistent week numbers and the diary action is keyboard 
 	fireEvent.click(day('2026-10-18'));
 	expect(t.opened).toHaveLength(1);
 	fireEvent.click(await screen.findByRole('button', { name: 'Daily' }));
-	await waitFor(() => expect(t.fake.has('huhu/日志/日记/2026/10/2026-10-18.md')).toBe(true));
+	await waitFor(() => expect(t.fake.has('huhu/journal/daily/2026/10/2026-10-18.md')).toBe(true));
 });
 
 /** Choosing a menu item takes a press inside the menu; the release of the right click that opened it does not count. */

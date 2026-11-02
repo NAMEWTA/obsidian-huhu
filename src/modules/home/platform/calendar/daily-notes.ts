@@ -4,7 +4,7 @@ import { MomentLike, nowMoment } from '../../../../host/obsidian/datetime';
 import type { NavigatorPeriodic } from '../../../navigator/api';
 
 /*
- * Daily notes live in the journal archive shared with the notes navigator: `<root>/日记/YYYY/MM/YYYY-MM-DD.md`
+ * Daily notes live in the journal archive shared with the notes navigator: `<root>/daily/YYYY/MM/YYYY-MM-DD.md`
  * (see `shared/periodic-paths`). The core Daily notes plugin is not consulted. The root folder and the daily template
  * come from the active navigator. Without that capability, creation is unavailable; it never silently writes
  * a blank note into a default location.
@@ -76,7 +76,7 @@ export function substituteTemplateVars(content: string, opts: { title?: string; 
 	return out;
 }
 
-/** Vault path of the daily note for the given `YYYY-MM-DD` iso date: `<journal root>/日记/YYYY/MM/YYYY-MM-DD.md`. */
+/** Vault path of the daily note for the given `YYYY-MM-DD` iso date: `<journal root>/daily/YYYY/MM/YYYY-MM-DD.md`. */
 export function dailyNotePathFor(_app: App, iso: string): string {
 	const journal = journalSource?.();
 	return periodicNotePath(journal?.root() ?? DEFAULT_PERIODIC_ROOT, 'day', isoToDate(iso), journal?.weekStart() ?? 1);

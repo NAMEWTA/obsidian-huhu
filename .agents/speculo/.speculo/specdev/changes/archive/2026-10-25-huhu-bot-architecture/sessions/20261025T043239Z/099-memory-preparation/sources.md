@@ -1,0 +1,60 @@
+# 099 读取来源
+
+以下是报告事实使用的真实路径/读取快照 SHA。C/W 源若属于 T08 冻结输入，逐项与 Root review-input-chat-r1 对照；不是测试或最终审查通过。
+
+| ID | 路径 | SHA256 | 与 T08 冻结相同 |
+| --- | --- | --- | --- |
+| D01 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md` | `3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d` | True |
+| D02 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md` | `d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138` | True |
+| D03 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md` | `534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9` | True |
+| D04 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/14-private-memory.md` | `02714047454cffcb461cf4daa07623818e19ce71cb4e65e4ab894849a6fca6d6` | None |
+| D05 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md` | `891c7541aa1e3a76bf4a67b440f9d74f71e344b7ba57c0da3bc936590f715c25` | None |
+| D06 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/055-memory-preflight/REPORT.md` | `ed0e397d334805c6d668d62166e3581cbb805f789f2cffbeecf8bb23e7b9987c` | None |
+| D07 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/055-memory-preflight/interfaces-and-owners.md` | `0dcfb868506cb566a9be3c6195c059eaaba00935c3e263dd520f2e8fa790f74b` | None |
+| D08 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/memory-preflight.md` | `4aafdc11aa65fd8430825487872b78c0fa0b89deb7a62bfa830ea820bb77232d` | None |
+| D09 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-08-logs/review-input-chat-r1.json` | `251762b72f42d47fe7cabc3515de54d6d774a7d76a869a4203934975b0c22725` | None |
+| C01 | `native/huhubot/internal/application/api/collaboration.go` | `9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e` | True |
+| C02 | `native/huhubot/internal/application/api/conversation.go` | `e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a` | True |
+| C03 | `native/huhubot/internal/application/api/tooling.go` | `7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e` | True |
+| C04 | `native/huhubot/internal/application/api/attempts.go` | `100af5f4f77c709e1cc1b318fe8abe7dfca1d754637a9a1b0690964ac84e67e4` | True |
+| C05 | `native/huhubot/internal/application/api/access.go` | `5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b` | True |
+| C06 | `native/huhubot/internal/application/api/recovery.go` | `06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5` | True |
+| C07 | `native/huhubot/internal/application/api/types.go` | `3a8019d4638b666e8e81506781a8bc0f6795287ed5363811c36d72b9ca4ceaf9` | True |
+| C08 | `native/huhubot/internal/application/access/context/service.go` | `49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de` | True |
+| C09 | `native/huhubot/internal/application/tooling/broker/service.go` | `ef31c9b2428794b0079c0811235df443a8c76d531f45847e1d70b5e72780b4d1` | True |
+| C10 | `native/huhubot/internal/application/execution/executor/executor.go` | `e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef` | True |
+| C11 | `native/huhubot/internal/adapters/outbound/sqlite/execution/store.go` | `4ecbc1dc8f83a9107d5d2c37d1fdeb897b5b2d30d2fcfea728ee0ec5460de623` | True |
+| C12 | `native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go` | `93bfe1b9715e0b160b3155b76e057c825d57d21dc13595bc663cd52b57128a31` | True |
+| C13 | `native/huhubot/internal/adapters/outbound/sqlite/execution/children.go` | `1aeb39448764913dce32ab78f6d0169e0790e4da60041ab9977ba4d39e679d76` | True |
+| C14 | `native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go` | `19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f` | True |
+| C15 | `native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go` | `ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762` | True |
+| C16 | `native/huhubot/internal/adapters/outbound/sqlite/usage/store.go` | `6600cf9abfae1cd463dccb8acbd86cb4e186bf0dacfcc06faf288a43d1e2d3a6` | True |
+| C17 | `native/huhubot/internal/adapters/outbound/sqlite/usage/budget.go` | `eba52849e031e1a0993f3e5a60ef8aa4ac996ce9568c227c2b1101b44dd5cef8` | True |
+| C18 | `native/huhubot/internal/adapters/outbound/sqlite/usage/recover.go` | `c066d133cca7c84eff50316b9531f2fdd1626464e96d4c09bdfecae0cff8add8` | True |
+| C19 | `native/huhubot/internal/adapters/outbound/sqlite/usage/messages.go` | `871ebacadfbcbdad82fbdc15a4cb14d793f5759faadea0564193782bdc95548a` | True |
+| C20 | `native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go` | `65c14df39912133c10437cb49d5a04e7621793f3dc2fb1f002992366565d9536` | True |
+| C21 | `native/huhubot/internal/adapters/outbound/sqlite/usage/recovery_position.go` | `a964222d54faa05e20a24044f0f198380f69859d25d0b14ddf4c4bd91f2bc910` | True |
+| C22 | `native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go` | `8f5e2f60e82f84e76561e7bea57da185f01e083393f114857032530d2a2b8ed2` | True |
+| C23 | `native/huhubot/internal/adapters/outbound/sqlite/grants/access.go` | `ade097d0afe156fc3e2a33fb22798f537d5218aab3ab4c98a736105ae0c873b8` | True |
+| C24 | `native/huhubot/internal/adapters/outbound/sqlite/grants/delivery.go` | `d995051c87ebc1eeedf0b679f9b8f56adea4e9faedcb60da7b76b5202d3c8e87` | True |
+| C25 | `native/huhubot/internal/adapters/outbound/sqlite/grants/lineage.go` | `f89b30e79376068ffe9d9631580db3bb7c062fcbb609813be5822bc996cbb9bf` | True |
+| C26 | `native/huhubot/internal/adapters/outbound/sqlite/grants/groups.go` | `f7eee258f30ac0ab8603e562ccc0fbfe773753a51dba8b891585867593fef6e1` | True |
+| C27 | `native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go` | `99ec6d1c48d2f8422be954f2c7f8ed8f7f70cacc22bda56db2af27e2be0730e1` | True |
+| C28 | `native/huhubot/internal/adapters/outbound/sqlite/recovery/guard.go` | `d54ada3b07c5402e4a11610232c3b5e6d2b14f2fc3e0bc9ee0be333602803dbf` | True |
+| C29 | `native/huhubot/internal/adapters/outbound/sqlite/recovery/store.go` | `4f34b4567da6231a35bf0549f82e297383a8e492c972e883a3bb430008c98080` | True |
+| C30 | `native/huhubot/internal/adapters/outbound/sqlite/recovery/commands.go` | `95af93402451b1150732c89c8c8df655d95c198552d84c63cd1fe148c54a3adb` | True |
+| C31 | `native/huhubot/internal/adapters/outbound/sqlite/recovery/snapshot.go` | `4343bf672ddfa00d26a9910b9ce2ed598be1d370e6560b33314c12503aac58c6` | True |
+| C32 | `native/huhubot/internal/adapters/outbound/eino/common/engine.go` | `40bc23f7c0a719a9d51d2b71a3bd97df9ba62b3bf2e7ec949fc5033e3b398d7f` | True |
+| C33 | `native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go` | `696db729f33be0e69bfc243bbf15e86c1bf9a65c675061f4b8ee71c5c509ab62` | True |
+| C34 | `native/huhubot/internal/adapters/outbound/eino/chat/driver.go` | `6874c6274e344b1802f11aade758ad3b3f5e35f90056778bafe56e5af6b6f320` | True |
+| C35 | `native/huhubot/internal/bootstrap/core.go` | `4c857dfde5aaaba215c50ee73868fc204c4070de3502be98c1b1970baa2950dc` | True |
+| C36 | `native/huhubot/internal/adapters/outbound/sqlite/migrations/011-delegation.sql` | `2f06a87748f79e1405e63655a0b00364bf5391ee95ab1b7a764767ff34b5886d` | True |
+| C37 | `native/huhubot/internal/adapters/inbound/hap/router.go` | `22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730` | True |
+| W01 | `src/modules/huhubot/api.ts` | `ff921139bdd82f2c6e2b83892fc499489ccef93183e7f827fe6709ec4697a401` | True |
+| W02 | `contracts/hap/v0.1/methods.json` | `d110ecaca8f535c69c81d9ec39f2815ae82eb8c6f97dabe57074ba5246f2465b` | True |
+| W03 | `contracts/hap/v0.1/schema.json` | `a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534` | True |
+| E01 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/094-engine-policy/REPORT.md` | `7018f68ef8f9efce3cdb1325cc0f739892f5f4ac28273f1d763dbb35ba93200c` | True |
+| E02 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/094-engine-policy/logs/09-budget-http-result.json` | `f62bba4bb0e3f2c9384e193efbc4dca3c1fe342aa2b2a0eeaff45716d8b15531` | None |
+| C38 | `native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go` | `3897535ff94f2450c166c3e2a34bfc9dad6d0ce9cc494e64462d490c832f2699` | True |
+| E03 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/091-recovery-review-r2/REPORT.md` | `5c78b49ff6b4b83669298f5f193e29b166d6da5f95e1eced617fe15c5e789109` | None |
+| E04 | `.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/091-lead-return.json` | `9a8f0fb4e4a685cd0ad34c0842e6f96ef575ed577bce9f5978f15c5428954b0f` | None |

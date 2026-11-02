@@ -1,4 +1,4 @@
-import { READING_ROOT } from '../../../../shared/storage/vault-layout';
+import { READING_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { requireFields, requireDailyRecords } from '../../../../shared/storage/document-validation';
 import {
 	collectionDocument as doc,
@@ -16,14 +16,16 @@ export const readingDocuments: DocumentCollectionCodec<ReadingData> = {
 	encode: (data) => [
 		...data.activeBooks.map((book) => {
 			if (!book.id) throw new Error('Book requires a stable id');
-			return doc(book.id, `${root}/${documentName(book.title)}-${book.id.slice(-8)}/书籍.md`, 'book', {
+			return doc(book.id,
+				`${root}/${documentName(book.title)}-${book.id.slice(-8)}/${VISIBLE_NAMES.bookFile}`, 'book', {
 				...book,
-			});
+			},
+			);
 		}),
 		...data.sessions.map((day) =>
 			doc(
 				`reading:${day.date}`,
-				`${root}/记录/${day.date.slice(0, 4)}/${day.date}.md`,
+				`${root}/${VISIBLE_NAMES.records}/${day.date.slice(0, 4)}/${day.date}.md`,
 				'reading-records',
 				{ date: day.date },
 				day.records.map((record) => ({ id: record.timestamp, ...record })),

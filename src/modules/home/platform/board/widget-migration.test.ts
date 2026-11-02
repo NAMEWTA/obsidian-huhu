@@ -37,7 +37,7 @@ test('migration keeps metadata and nested content, resolves links, preserves til
 	const data = parse(source),
 		config = settings();
 	const migrated = await consolidateBoardWidgets(vault.app, path, data, config);
-	const notes = [...vault.contents.entries()].filter(([name]) => name.startsWith('huhu/收件箱/'));
+	const notes = [...vault.contents.entries()].filter(([name]) => name.startsWith('huhu/inbox/'));
 	expect(notes).toHaveLength(1);
 	expect(notes[0]![1]).toContain('custom-property: keep');
 	expect(notes[0]![1]).toContain(`- [ ] Parent${meta}\n  - [x] Child`);
@@ -50,7 +50,7 @@ test('migration keeps metadata and nested content, resolves links, preserves til
 	config.shortcutButtons[0]!.label = 'Changed globally';
 	expect(migrated.quickActions[0]!.name).toBe('Open');
 	await consolidateBoardWidgets(vault.app, path, data, settings());
-	expect([...vault.contents.keys()].filter((name) => name.startsWith('huhu/收件箱/'))).toHaveLength(1);
+	expect([...vault.contents.keys()].filter((name) => name.startsWith('huhu/inbox/'))).toHaveLength(1);
 	expect(vault.contents.get(path)).toBe(source);
 	expect(data.columns[0]!.cards).toHaveLength(1);
 	expect(await consolidateBoardWidgets(vault.app, path, migrated, config)).toBe(migrated);
@@ -61,7 +61,7 @@ test('a changed migration destination refuses retirement without overwriting eit
 	await contentFiles(vault.app).refresh();
 	const data = parse(source);
 	await consolidateBoardWidgets(vault.app, path, data, settings());
-	const target = [...vault.contents.keys()].find((name) => name.startsWith('huhu/收件箱/'))!;
+	const target = [...vault.contents.keys()].find((name) => name.startsWith('huhu/inbox/'))!;
 	await vault.adapter.write(target, 'User edited this note');
 	await expect(consolidateBoardWidgets(vault.app, path, data, settings())).rejects.toThrow();
 	expect(vault.contents.get(path)).toBe(source);

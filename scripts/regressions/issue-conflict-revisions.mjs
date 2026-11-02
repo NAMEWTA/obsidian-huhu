@@ -50,9 +50,16 @@ test('recovery failure remains explicit; retry persists the latest snapshot',asy
  f.beforeWrite=async()=>{};await f.engine.retrySave();assert.equal(parse(f.recovery().local).quickActions[0]?.name,'latest failed');assert.equal(f.engine.getSaveState().status,'conflict-saved');await f.engine.close();
 });
 test('normal close drains a quiet change into recovery and separate boards never share copies',async()=>{
- const a=await fixture('A'),b=await fixture('B');await conflict(a);await conflict(b);
- a.engine.toggleCollapseTaskQuiet('demo-todo-1',[0]);await a.engine.close();
- assert.equal(parse(a.recovery().local).columns[1].cards[0].tasks[0].collapsed,true);assert.notEqual(a.recovery().id,b.recovery().id);await b.engine.close();
+ const a=await fixture('A'),b=await fixture('B');
+ // Home's old demo Task card is gone: exercise its still-owned document collapse state instead.
+ await a.engine.addCard(a.engine.getData().columns[1].name,{
+   id:'quiet-doc-card',title:'Reference',type:'project',docs:[{path:'Notes/reference.md'}]
+ });
+ await conflict(a);await conflict(b);
+ a.engine.toggleCollapseDocQuiet('quiet-doc-card',[0]);await a.engine.close();
+ const recovered=parse(a.recovery().local);
+ assert.equal(recovered.columns[1].cards.find(card=>card.id==='quiet-doc-card')?.docs[0]?.collapsed,true);
+ assert.notEqual(a.recovery().id,b.recovery().id);await b.engine.close();
 });
 test('reload refuses to discard a newer revision admitted during recovery IO',async()=>{
  const f=await fixture();await conflict(f);const entered=deferred(),release=deferred();let held=false;

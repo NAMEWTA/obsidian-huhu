@@ -1,0 +1,61 @@
+name: Fixture performance sampling
+
+# Candidate only. No automatic push/PR trigger and no first-registration promise.
+# workflow_dispatch requires this file to exist on the default branch first.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perf-sampling-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sample:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify installed Chromium executable
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force perf-results | Out-Null
+          $candidates = switch ($env:RUNNER_OS) {
+            'Linux' { @('/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser') }
+            'macOS' { @('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Chromium.app/Contents/MacOS/Chromium') }
+            'Windows' { @("$env:ProgramFiles/Google/Chrome/Application/chrome.exe", "${env:ProgramFiles(x86)}/Google/Chrome/Application/chrome.exe") }
+          }
+          $executable = $candidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+          @{ status = 'unavailable'; os = $env:RUNNER_OS; candidates = $candidates } | ConvertTo-Json | Set-Content perf-results/chromium-check.json
+          if (-not $executable) { throw 'No installed Chromium executable; not downloading a browser or substituting happy-dom.' }
+          $version = & $executable --version
+          if ($LASTEXITCODE -ne 0) { throw 'Chromium executable did not report a version.' }
+          @{ status = 'available'; executable = $executable; version = "$version" } | ConvertTo-Json | Set-Content perf-results/chromium-check.json
+          "HUHU_CHROME_EXECUTABLE=$executable" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - run: node --test scripts/perf/sample.test.mjs
+      - name: Small fixed fixture
+        run: node scripts/perf/sample.mjs --fixture small --seed 20261031 --runs 5 --out perf-results/small
+      - name: Large fixed fixture
+        run: node scripts/perf/sample.mjs --fixture large --seed 20261031 --runs 20 --out perf-results/large
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fixture-perf-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: perf-results/
+          if-no-files-found: warn
+          retention-days: 14

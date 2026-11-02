@@ -1,8 +1,8 @@
 /** Editor product */
 export const messages = {
 	en: {
-		"editor.viewTitle": "Editor",
-		"editor.openPanel": "Open editor panel",
+		"editor.viewTitle": "Highlights",
+		"editor.openPanel": "Open highlights panel",
 		"settings.productDashboard": "Dashboard",
 		"settings.productEditor": "Editor",
 		"settings.productTerminal": "Agents",
@@ -14,8 +14,8 @@ export const messages = {
 		"editor.copy.failed": "Copy failed",
 	},
 	zh: {
-		"editor.viewTitle": "编辑器",
-		"editor.openPanel": "打开编辑器面板",
+		"editor.viewTitle": "高亮",
+		"editor.openPanel": "打开高亮面板",
 		"settings.productDashboard": "看板",
 		"settings.productEditor": "编辑器",
 		"settings.productTerminal": "智能体",

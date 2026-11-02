@@ -1,0 +1,27 @@
+# 086 — T-12: exact resume, explicit import, cross-instance native-reference occupancy
+Ticket: CHG/ticket/12-native-resume.md (AC-037, AC-038, AC-039, AC-040, AC-061 PAGE-001/002 part). Read common rules: ../COMMON.md.
+Depends on T-11 (history list/preview, Space ownership of history rows, HistoryCommands control wiring). Read CHG/evidence/T-11.md and the T-11 REPORTs in CHG/sessions/20261027T-claude/083-*/ and 084-*/ to learn the current history DTO, sourceRef and Space-owner mapping. Planned CLI: CHG/implementation-contracts.md line ~34 (`history open --session`, `history resume --source <ref> --space <id>`, `history import --source <ref> --space <id>`).
+
+## Deliver (follow ticket "有序执行路线")
+1. Full source identity: resolve provider + account namespace + device + native session id + transcript/source ref before anything; two accounts with the same native id never merge. Preview never creates a Session (AC-040).
+2. Explicit import into a chosen Space (GUI + `history.import` control op): persist import with source + ownership evidence, exact de-dup by full native reference (re-import = same record), annotations kept.
+3. Continue: if a HUHU runtime for that native ref is live → attach/locate only (AC-037). If ended → exact provider resume argv built as a literal array (reuse resume-command.ts / launcher account env; no shell string concatenation), same Session identity, new runtime generation. Pre-spawn checks: provider resume capability, account/device match, cwd authorization (out-of-vault cwd needs explicit grant per earlier tickets), native ref occupancy. Any failure → explicit localized error; NEVER silently create an empty new session; fork only as an explicit capability op (AC-039).
+4. Cross-instance occupancy (AC-038): at most one writable HUHU runtime per native reference across HUHU instances on this machine. Lock must live OUTSIDE the vault (vault may be synced) — e.g. a per-user app-state dir; use atomic exclusive create with owner instance id + pid + start-time/lease; stale lock is reclaimed only with liveness evidence that the owner instance is gone (reuse the T-01 native owner / instance lease facts if available — see CHG/evidence/T-01.md). Release only after verified runtime exit. Second instance gets a "locate/conflict" result, not a fork.
+5. GUI (SessionHistoryPanel / PAGE-002, PAGE-001 per CHG/DESIGN.md): continue/import/cancel actions with loading, error, conflict, unsupported states; keyboard accessible. CLI and GUI share the same service path. Control ops `history.open` / `history.resume` / `history.import` wired like T-11 did for list/preview (schema + generator), explicit `spaceId` required where the contract says so.
+6. Tests: exact argv for each provider that supports resume (keep existing resume-command.test.ts), same-id-different-account not merged, preview creates zero Sessions, import de-dup, occupancy race (two instances), stale-lock reclaim only with dead-owner evidence, failure paths don't create sessions, control-op chain tests.
+
+## Write set
+src/modules/agent/platform/desktop/history/**, src/modules/agent/platform/desktop/native-reference/** (new), src/modules/agent/core/history/**, src/modules/agent/services/history-store*.ts, src/modules/agent/services/launch/**, src/modules/agent/services/controller.ts, src/modules/agent/ui/history/**, src/modules/agent/services/control/history*.ts, src/modules/agent/services/control/commands.ts (+ its test), src/shared/native/control-schema.json, src/shared/native/control-wire.generated.ts, native/pty-server/src/control/wire_generated.rs (generator output only), src/modules/agent/services/spaces/space-service.ts + records.ts (+ tests) only if import persistence needs it, src/modules/agent/i18n.ts, docs/agent-workbench.md, docs/agent-workbench-cli.md.
+If you need anything else (e.g. native helper code for the lock), STOP that branch and report.
+
+## Checks
+tsc (test config), vitest on touched/new tests + src/modules/agent/platform/desktop/history src/modules/agent/services/history-store.test.ts src/modules/agent/services/control, eslint+prettier on touched files, `pnpm test:architecture`, generator check mode if any.
+
+REPORT: CHG/sessions/20261027T-claude/086-t12-native-resume/REPORT.md
+
+## Lead notes after T-11 closure
+- T-11 final state: CHG/evidence/T-11.md §8. History uses the vault projection (`workspace-index.sqlite`) with `ownedSessions` derived from Space records; Space ownership via `records.historyOwners` + `SpaceService.bindHistorySources`; HistoryCommands/ControlCommands wiring pattern in src/modules/agent/services/control/history.ts + commands.ts (captureHistory), errors via ControlProtocolError codes, response projection + responseBytes shrink.
+- Import = explicitly binding an unassigned history row's sourceRef to a chosen Space (reuse bindHistorySources semantics; OWNER_CONFLICT on different Space) plus whatever Session record is needed for continue. Unbound out-of-vault rows are not visible in the vault projection by design; import applies to rows visible in the drawer (unassigned in-vault rows).
+- The account-scope index and controller.resume transcript lookup are T-14's to migrate; do not depend on account scope for new code — use the vault projection. If resume needs a provider-wide lookup, report it.
+- Native debug binaries: native/pty-server/target/debug/huhu-pty and huhu (current). Run integration with HUHU_TEST_PTY_BINARY / HUHU_TEST_CONTROL_BINARY set.
+- If your report write is blocked, return the full report in your final reply.

@@ -37,3 +37,23 @@ test('cancelled preview, missing module, and page closure never launch', async (
 		});
 	}
 });
+test('a fresh skill delivery asks the agent module to settle the Space; it never invents one from the page or cwd', async () => {
+	const calls: Array<{ request: AgentDispatchRequest; options?: { interactive?: boolean } }> = [];
+	const notes: string[] = [];
+	await dispatchSkillShortcut({ ...skill, directSend: true }, context, {
+		dispatch: async () => ({ dispatch: async (request, options) => { calls.push({ request, options }); return { invocationId: request.invocationId, delivery: 'rejected', errorCode: 'cancelled' }; } }),
+		preview: async () => { throw new Error('direct send'); }, notify: message => notes.push(message),
+	});
+	expect(calls).toHaveLength(1);
+	expect(calls[0]?.options?.interactive).toBe(true);
+	expect(calls[0]?.request.destination).toEqual({ kind: 'fresh', cwd: '' });
+	expect(notes).toHaveLength(1);
+});
+test('a skill saved against a Space sends that exact Space with the delivery', async () => {
+	const calls: AgentDispatchRequest[] = [];
+	await dispatchSkillShortcut({ ...skill, directSend: true, destination: { kind: 'fresh', cwd: '', spaceId: 'space-1' } }, context, {
+		dispatch: async () => ({ dispatch: async request => { calls.push(request); return { invocationId: request.invocationId, delivery: 'started' }; } }),
+		preview: async () => { throw new Error('direct send'); }, notify: () => {},
+	});
+	expect(calls[0]?.destination).toEqual({ kind: 'fresh', cwd: '', spaceId: 'space-1' });
+});

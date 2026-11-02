@@ -16,6 +16,8 @@ export interface SkillOpsDeps {
 	agentPaths: (agent: AgentId) => Promise<AccountPaths>;
 	trash: (dir: string) => Promise<void>;
 	open: (dir: string) => Promise<string>;
+	/** Folder of skills shipped with the plugin (a source the user can enable per agent); absent when unavailable. */
+	packaged?: () => Promise<string | undefined>;
 }
 
 function expandHome(value: string, home: string): string | undefined {
@@ -40,6 +42,9 @@ export function createSkillOps(deps: SkillOpsDeps): SkillOps {
 				if (dir) roles.push({ target: 'extra', scope: 'global', dir });
 				else unavailable.push(value);
 			}
+			// A failure to prepare the packaged folder must not hide the user's own skills.
+			const packaged = await deps.packaged?.().catch(() => undefined);
+			if (packaged) roles.push({ target: 'extra', scope: 'global', dir: packaged });
 			for (const root of roles) {
 				const found = await scanRoot(root, signal, root.target === 'extra' ? 3 : 0);
 				locations.push(...found.locations);

@@ -1,0 +1,250 @@
+{
+  "scope": "actually read sources for 158 read-only contract",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+      "bytes": 5499
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "bytes": 458
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "bytes": 10470
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "bytes": 3235
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "bytes": 7961
+    },
+    {
+      "path": ".agents/skills/dev/references/architecture.md",
+      "sha256": "0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42",
+      "bytes": 20950
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+      "bytes": 11911
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "sha256": "fb9ebae20eba43a236efe15c0e0b14441366faa1b9f663738e06c4703875d324",
+      "bytes": 46942
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/15-global-memory.md",
+      "sha256": "891c7541aa1e3a76bf4a67b440f9d74f71e344b7ba57c0da3bc936590f715c25",
+      "bytes": 11780
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "bytes": 48375
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ADR.md",
+      "sha256": "d05a6885c3e87f263c341d8730f6bad3328b07c0c87e6263370f3a112f780138",
+      "bytes": 24422
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/142-global-memory-preflight/REPORT.md",
+      "sha256": "c801a878976862f2d569c5038f25477f51ce2430232d2e223f4b67b9629c7f04",
+      "bytes": 10128
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/interface-contract.md",
+      "sha256": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+      "bytes": 48715
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/short-term-contract.md",
+      "sha256": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+      "bytes": 30962
+    },
+    {
+      "path": "native/huhubot/internal/application/api/memory.go",
+      "sha256": "167db3a63a7a8abd92e0ced36ea179f68211dee37808883587be9874f4ac125a",
+      "bytes": 24176
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "sha256": "a43cd597be685c916ce0f3a7acce09ee6cb06ec81de9dea454c4f477a5e9752c",
+      "bytes": 4411
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "sha256": "cb7c99f9f9754ecfa326fbf8cd4169164418fb1c7ac0c50f383a0b51368f0621",
+      "bytes": 5562
+    },
+    {
+      "path": "native/huhubot/internal/application/api/collaboration.go",
+      "sha256": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e",
+      "bytes": 7224
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "sha256": "5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b",
+      "bytes": 6665
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "sha256": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74",
+      "bytes": 5736
+    },
+    {
+      "path": "native/huhubot/internal/application/api/task_config_hash.go",
+      "sha256": "fb04ac98412b953703145247fbec30dbf1cd172bb18bba17edbf03d89b3a6c69",
+      "bytes": 1102
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "sha256": "098a8fae191f017e058f1ed04de9bd5c9f8ab61fd28832eff8866e7199dd6aa7",
+      "bytes": 14307
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "sha256": "2ef00c9bab0628dcf72a7b4132ef359d69a69a697317cba64ddbe83ddb05876e",
+      "bytes": 16121
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/collaboration-tools/service.go",
+      "sha256": "03a2fec6c8ddbdcdb9d064a40925e1268091824cd2bfa4fa741f6a5ed2468da7",
+      "bytes": 3711
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/commands/validation.go",
+      "sha256": "63511c86efc541cf7ead25fdb0012ab525ef0bb9e75980640033cfd899bf673c",
+      "bytes": 1007
+    },
+    {
+      "path": "native/huhubot/internal/domain/assistant/validation.go",
+      "sha256": "03b7a74338fac394f11d6928bf43244b67b82110ca259d915f8a5170cdb146dd",
+      "bytes": 2317
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "sha256": "6def67177be4b5bf6ecf41412740658dd3c42e6d99bf00cee8b911ccb4dc5211",
+      "bytes": 9375
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/memory.go",
+      "sha256": "5eebd8924e07a7b37f6c8a0c2b85ae0fc65f4127f120ee18fe99a4ed110d6888",
+      "bytes": 3627
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "sha256": "3404bd3043f9d54af2037937408c9f2e7c08f07a76fa1677142773ff20419076",
+      "bytes": 19613
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/tools.go",
+      "sha256": "961dd7b22a3e0c0331da0dcea396bbe6ecbe6358d7149eab56421ca36fd3815f",
+      "bytes": 10871
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/context.go",
+      "sha256": "988307e04bf82ebd926aaa0453bfd51484cbfcb23862040da370afeb5c6bc0d2",
+      "bytes": 5386
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "sha256": "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762",
+      "bytes": 26945
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/conversation/store.go",
+      "sha256": "d49e8e245dcfa81e7a3548df4c2d141a90d761e0c7801c3d9120e297096d314d",
+      "bytes": 14073
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/events/store.go",
+      "sha256": "feaeefeb8e4a35960288b73774e71eccb686e46555421ef956d5bf4577d0005c",
+      "bytes": 16876
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/memory.go",
+      "sha256": "dafd4ad00c0b482b4ae3defd1883f301c91c6bee7b7eb631661b04549fa7758f",
+      "bytes": 35368
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/store.go",
+      "sha256": "214818c8cd122088a2a8959504ee3589533836bff7ebe834670bf13b0e1b47a6",
+      "bytes": 4203
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/namespace.go",
+      "sha256": "f52be5b812cafa57191ad95c36dd6f9f35e8dbae371c270bde75daec98540aa8",
+      "bytes": 6327
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/private.go",
+      "sha256": "7d9f0c9c0d7d66b993eff18398dded1be0c7d6e6c279900f8138c1a23bf076f9",
+      "bytes": 15169
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/revisions.go",
+      "sha256": "e999621b8d565a05e3b2d91119a5f014fd4459fa35d22efcb409ba946b473399",
+      "bytes": 8275
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/facts.go",
+      "sha256": "e494962c938c5833dc78862fb8ddcd874930805556085470bb85b06f027fa134",
+      "bytes": 20348
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/sources.go",
+      "sha256": "2801e5a2d48a530901bfeb1a7c0477a92ef9cedec30fe4dd87ee41bb16070d34",
+      "bytes": 6360
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/context_plan.go",
+      "sha256": "ed9c80e7882559fa2903e626b659ce3b37602572f1d7d5facd52e5830a320e34",
+      "bytes": 17616
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/context_read.go",
+      "sha256": "f2a85e682a1c2ddd2acbdb171fa34dfe5211b6520eabd0e0bd2036c129f9b0ca",
+      "bytes": 13452
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/014-memory.sql",
+      "sha256": "571e2c2b933a77a48f9c443e10e7483d6f88f02870c56d7dbca31f99b58f775c",
+      "bytes": 8829
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "sha256": "569778ec83a9d4223f8529878d42eac844dda14f1780595fd2a3c4880bc2b4a9",
+      "bytes": 1343
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "add734fc12388fc7e74bf59699eea9c353a4c0ef8c76fcc36d8310ade1d51d7f",
+      "bytes": 15764
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "sha256": "965c5467d0f66312d8387b45a3db0fe761e21994f84a38351bc8cb911f260e8c",
+      "bytes": 4058
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "sha256": "1de08db017684d228fd02002fc2e4a47358f6330825d64da582e3172ceb7816b",
+      "bytes": 18302
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "sha256": "78948204281914149059429b3e0250143e41efa73642d985c2e31e544cfa0a17",
+      "bytes": 29725
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "task": "140-memory-runtime-recovery",
+  "status": "completed-author-candidate",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "sourceFiles": [
+    {
+      "path": "contracts/hap/v0.1/generate.mjs",
+      "sha256": "35a55ac4a4c0c0188b12e4e5a647f2b8f195e612fcbf2f1993c41285620783e3",
+      "mode": "0o600"
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "sha256": "1de08db017684d228fd02002fc2e4a47358f6330825d64da582e3172ceb7816b",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go",
+      "sha256": "f26a5858a02272dbf25a3f703d68a9a56636b2a0c01160ab2690bef74bfaa85f",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/context.go",
+      "sha256": "423c526b41f6212549b6ef40c907b2c67e97068794c3413506da843cd0e1023d",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "sha256": "da53b09b33d7f7d6b6aadc5eb7744ca30d869bbd628eb51ade7b5320625f8ca0",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/maintenance.go",
+      "sha256": "732a8f4a9480d71b342e7ff42e3f14284a99cb0a7f45f4a140ed8a7091efbc21",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "sha256": "6459fbf41a24e2a0a147de7516ca00e0888dec773566b787edb1b14f4b044675",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/store.go",
+      "sha256": "b0731d8ecf37d2823912dd3801ff71e09586fb92f9adc4a4d6a3b0e357358d24",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/embed.go",
+      "sha256": "569778ec83a9d4223f8529878d42eac844dda14f1780595fd2a3c4880bc2b4a9",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/recovery/snapshot.go",
+      "sha256": "8bb3cd76caf833de096cbc1c4eeb6fbbbd3d290d5a33a74b6f62e95839559834",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/recovery/store.go",
+      "sha256": "a75c29c20a8390293d64bb050ed6cfd59276c6dd5d3956ad27d9e1cd9a8f69df",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/conversation/direct/ports.go",
+      "sha256": "d50d3681c8d53ed2b94b9edfb5d90c5f6887f6ed9bce9f95112b0cf33c9888d3",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/conversation/direct/service.go",
+      "sha256": "3a07152b7ffd00493d45ebb1e623a17be84e9ced4bac03a76405d748bb95c263",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "sha256": "a3e1d7411bc2deb0730a094dbe560b24b1d5afba240baacb34fe015cbf951602",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "sha256": "032c4a16f8ce7ba0e3b274f25342415595a8d3408a666ca1a2e59159d60caf66",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/recovery.go",
+      "sha256": "c87d532e2899ffae5f091cc694c25a9fffb4f9cba7639bd53c47f4184187b02d",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "sha256": "add734fc12388fc7e74bf59699eea9c353a4c0ef8c76fcc36d8310ade1d51d7f",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/memory_history_test.go",
+      "sha256": "d76e7c899bfc151cc1edb2bacf0f6bcf3c008e638d62594ea9ef6398fd038308",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/chat/memory_transaction_test.go",
+      "sha256": "f41657874f735a7f456e37bbd4712bf08a58c0d4753495f1ed55c07100ead1b4",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/memory_delivery_test.go",
+      "sha256": "4f9a9d51341f6ae3a676f01a6a006129de742efed8cd26e4756db4bfea150e39",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/memory_router_test.go",
+      "sha256": "653d7242523e42d82dc0fa87c0b8720c360feaf4fbff2950a4cbc49cb2bf0cf7",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/memory_runtime_test.go",
+      "sha256": "4a150b10e87744872c1bde75bf4d3f4ab416fab59fa95960d4384984409270ed",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/recovery/qualification_test.go",
+      "sha256": "e0af83e28e9957e76a6c8386e8d946adf16142eb7f61e2816a3fde93c6ffda9d",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/recovery/recovery_test.go",
+      "sha256": "6ea6b00f07d6becb5f2e1fa2ac1e76950b33f7d1777db4aa8d938153f23325bb",
+      "mode": "0o600"
+    }
+  ],
+  "sourceTreeSHA256": "220bce7d9ed8c6598702a0eac8bbb4f796bb05b41ec9be3e385e88cb2ff3d11f",
+  "fixedGoInputs": [
+    "logs/03-fixed-closure.json",
+    "logs/13-generation-fixed-input.json"
+  ],
+  "fixedGoDrift": [
+    "logs/06-target-drift.json",
+    "logs/16-final-fixed-input-drift.json"
+  ],
+  "generatedOutputCheckpoint": "logs/11-generation-diff.json",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "cb659aaa706fcb5702ded5ff8e02bf1b775b027ce7ce51b1f9e4478d097d7bdf",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-source-checkpoint.json",
+      "sha256": "226661ffa09bbcc21a77cf61cd21ca7071c454ba2f34d9bdd849cd0f5c91f49a",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-go-list-result.json",
+      "sha256": "fa89ce464b1867435a1615b450c521a951291d030423509cce15bde36c3aacef",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-go-list.jsonl",
+      "sha256": "83f64be1a251916fa8fce8540eced58dd239c3fc6ff8624f6fc33e20ea8b91ef",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-go-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-fixed-closure.json",
+      "sha256": "ae13bc3a899688f00616984645bb11827d7c906fa83e6f486c54e1c0d972cf47",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-core-target.json",
+      "sha256": "f81698000fed93f9e8a5225b4a81a48117101636d03a7b5a74c20c87cb6cf6bc",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-core-target.log",
+      "sha256": "37856e1abb150ae777a4f7fc2610d52d3f75f92b1fcb388c740679ed0904a67e",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-prepare-target.json",
+      "sha256": "bc48b94b83b21c3282e48ea5e01e9645a180b177d629a485acd51e8ebf606977",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-prepare-target.log",
+      "sha256": "7b48e465197d19d729ed4eda17950b11ef9d7d27193ac713589b8ac5259cd8a5",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-target-drift.json",
+      "sha256": "ed9319f5c89007ee99c674cc4243d977e4436ae8cdbbdbb7a0d96486f8ca0f9d",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-recovery-source-checkpoint.json",
+      "sha256": "eb9a6ff6f5bf4ee4f6f5f094e483b718b5b6d3aaa9042f820941f60e9e9d9f31",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-generation-preflight.json",
+      "sha256": "479ebc9d561d528d0a9b301c212e6e9fd634d3cdeae9840271b9f232d4ab83b5",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-before-methods.json",
+      "sha256": "d110ecaca8f535c69c81d9ec39f2815ae82eb8c6f97dabe57074ba5246f2465b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-before-methods_generated.go",
+      "sha256": "cbfeab29e5dad9f4eef8d17e7ead5c0abde7b6e41651bc29030681f155487049",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/10-generation.json",
+      "sha256": "7247bc1e14a9fc7763217a3afc2d78026c1c86c0c7875f1ff13d9ebd50ab21e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/10-generation.log",
+      "sha256": "a7ab7222ae836836a333fa213a71e12f8c281cd19ef5bd54e9d43f6c481a568d",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-generated-go.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-generation-diff.json",
+      "sha256": "df233dd59c9b3968aea3a538084ad1f1ed3c2fd777f6e963a291819b6963ccf7",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/12-generation-test-list-result.json",
+      "sha256": "1f765efe31149d370c6b3ae213485695c9453c7f9acebbefd1660ce0c0436af9",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/12-generation-test-list.jsonl",
+      "sha256": "d9848aab7c38cde20ac4eb2bb102fe32ffb138eba19461cf06162522d92e7ad1",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/12-generation-test-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/13-generation-fixed-input.json",
+      "sha256": "05c955af0eeb5384cebcf758cb5dbb8e721c48987b15ad1cd46002b30d1dea62",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/14-recovery-target.json",
+      "sha256": "08ec241aced3ef70fd155bc5a329b9d8b24706cc0f28574006f9bf26d3109155",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/14-recovery-target.log",
+      "sha256": "e40d10be0c588aa4fcbcc156dd7534d42dbbee2d95c964e273f7bb9527eb9620",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/15-default-hap-target.json",
+      "sha256": "5fa3c5b3366ba2e823ac90315b21a90b783da2625c818cbaec907f76afd5e189",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/15-default-hap-target.log",
+      "sha256": "7727312c9ab90d0f00b2ed67aec8a711216ac84d73c64b74e8cb2ab1dbcd4d0c",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/16-final-fixed-input-drift.json",
+      "sha256": "21fdb1b2cc5ee46c33945b322e71f5207ea587f64fd4ce9eee7b22cadae51e12",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/17-final-source-checkpoint.json",
+      "sha256": "b88032c1488f838fef0f21281cceae4a701abbb91e4505fcdffb3a0b8c20aaff",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/18-return-validation-initial.json",
+      "sha256": "9df67956f5e7e8cdb14a4d7600bd8c211da3cfe8166a45087e8214312af528e4",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/18-return-validation.json",
+      "sha256": "b8cb60fc39397718a1956f2c258d976499414557ff31d4b0cb7441581d5d4a16",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/18-return-validation.log",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    }
+  ],
+  "artifactTreeSHA256": "85dd534a9ad1873fea162f1116dbdbe50968d792d70b5f1e586e3c829f9dd112"
+}

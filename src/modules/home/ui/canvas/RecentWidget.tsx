@@ -1,5 +1,4 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/recent-docs.ts
-import { isRecentUserDocument } from '../../core/board/recent-doc-policy';
 import { useStore } from 'zustand';
 import { History } from 'lucide-react';
 import type { BoardStore } from '../../services/board-store';
@@ -12,7 +11,7 @@ export function RecentWidget({ store }: { store: BoardStore }) {
 	const { files, settings, path } = useStore(store.state),
 		t = useT();
 	const rows = files
-		.filter((file) => file.path !== path + '.md' && isRecentUserDocument(file.path, settings))
+		.filter((file) => file.path !== path + '.md' && store.isRecentDocument(file.path))
 		.slice(0, settings.recentDocCount);
 	if (!rows.length) return <EmptyState size="sm" className="h-full" icon={<History />} title={t('recent.empty')} />;
 	return (

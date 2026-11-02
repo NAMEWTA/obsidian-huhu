@@ -25,6 +25,11 @@ export interface QuickCommand {
 	agentId: import('../launch/types').AgentId;
 	cwd: string;
 	scope: 'global' | 'vault';
+	/**
+	 * Stable Space id a vault-scope command is saved against. Global commands never carry one (they cross vaults);
+	 * absent means the Space chooser opens each run. Never inferred from `cwd`.
+	 */
+	spaceId?: string;
 }
 export interface AgentOverride {
 	command?: string;
@@ -130,6 +135,7 @@ function normalizeQuickCommand(value: unknown, index: number): QuickCommand | un
 		agentId: choice(value.agentId, AGENT_IDS, 'claude-code'),
 		cwd: text(value.cwd, ''),
 		scope: value.scope === 'global' ? 'global' : 'vault',
+		...(value.scope !== 'global' && text(value.spaceId, '', 80) ? { spaceId: text(value.spaceId, '', 80) } : {}),
 	};
 }
 

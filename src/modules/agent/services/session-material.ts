@@ -5,7 +5,7 @@ import type { AgentController } from './controller';
 import { t } from '../../../shared/i18n';
 
 type MaterialHost = Pick<AgentController, 'app' | 'sessions' | 'show' | 'open'>;
-type MaterialFailure = 'missing' | 'busy' | 'timeout' | 'cancelled' | 'targetChanged';
+type MaterialFailure = 'missing' | 'busy' | 'timeout' | 'cancelled' | 'targetChanged' | 'unknown';
 
 export class MaterialDeliveryError extends Error {
 	constructor(readonly code: MaterialFailure) { super(t(`agent.delivery.${code}`)); }
@@ -24,11 +24,12 @@ export class SessionMaterialService implements AgentSessionsPort {
 			.map(session => ({ id: session.id, title: session.title, agentId: session.agentId })));
 	}
 
-	attachMaterial(id: string, material: { title: string; text: string; files: string[] }, options?: { agentId?: AgentId; signal?: AbortSignal }): Promise<void> {
+	attachMaterial(id: string, material: { title: string; text: string; files: string[]; source?: string }, options?: { agentId?: AgentId; signal?: AbortSignal; validate?: () => void; reveal?: boolean }): Promise<void> {
 		return this.attach(id, [{ id: crypto.randomUUID(), kind: 'web', ...material }], options);
 	}
 
-	async attach(id: string, materials: readonly ContextMaterial[], options: { agentId?: AgentId; signal?: AbortSignal } = {}): Promise<void> {
+	async attach(id: string, materials: readonly ContextMaterial[], options: { agentId?: AgentId; signal?: AbortSignal; validate?: () => void; reveal?: boolean } = {}): Promise<void> {
+		options.validate?.();
 		if (this.closed || options.signal?.aborted) throw new MaterialDeliveryError('cancelled');
 		const session = this.host.sessions.get(id);
 		if (!session?.agentId || !session.running || session.automated) throw new MaterialDeliveryError('missing');
@@ -45,8 +46,8 @@ export class SessionMaterialService implements AgentSessionsPort {
 				const win = this.host.app.workspace.containerEl.win;
 				const deadline = Date.now() + 10_000;
 				let finished = false;
-				let opened = false;
-				const stop = () => finish(new MaterialDeliveryError(abort.signal.reason === 'timeout' ? 'timeout' : 'cancelled'));
+				let opened = options.reveal === false, pasting = false;
+				const stop = () => { if (!pasting) finish(new MaterialDeliveryError(abort.signal.reason === 'timeout' ? 'timeout' : 'cancelled')); };
 				const timer = win.setInterval(check, 50);
 				function finish(error?: unknown) {
 					if (finished) return;
@@ -62,11 +63,13 @@ export class SessionMaterialService implements AgentSessionsPort {
 					if (session!.activity === 'running') return finish(new MaterialDeliveryError('busy'));
 					if (Date.now() >= deadline) return finish(new MaterialDeliveryError('timeout'));
 					if (!opened || !session!.inputReady()) return;
-					try { session!.paste(text); finish(); } catch (error) { finish(error); }
+					try { options.validate?.(); if (abort.signal.aborted) return stop(); } catch (error) { finish(error); return; }
+					try { pasting = true; session!.paste(text); pasting = false; finish(); }
+					catch { pasting = false; finish(new MaterialDeliveryError('unknown')); }
 				}
 				abort.signal.addEventListener('abort', stop, { once: true });
 				check();
-				if (finished) return;
+				if (finished || options.reveal === false) return;
 				try {
 					this.host.show(id);
 					void this.host.open({ feature: 'terminal', section: 'running', resourceId: id })

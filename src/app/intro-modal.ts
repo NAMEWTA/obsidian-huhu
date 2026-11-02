@@ -1,8 +1,12 @@
 import { Modal, type App } from 'obsidian';
 import { t } from '../shared/i18n/index';
 
-/** One intro after install. It does not mention a version and it has no code to scan. */
+/** The lightweight native owner loads React content only when the intro opens. */
 export class IntroModal extends Modal {
+	private generation = 0;
+	private opened = false;
+	private disposeContent?: () => void;
+
 	constructor(
 		app: App,
 		private readonly onSeen: () => void,
@@ -11,16 +15,41 @@ export class IntroModal extends Modal {
 	}
 
 	onOpen(): void {
-		const { contentEl } = this;
-		contentEl.empty();
-		contentEl.createEl('h2', { text: t('intro.title') });
-		contentEl.createEl('p', { text: t('intro.body') });
-		const button = contentEl.createEl('button', { text: t('intro.ok'), cls: 'mod-cta' });
-		button.addEventListener('click', () => this.close());
+		this.disposeContent?.();
+		this.disposeContent = undefined;
+		this.opened = true;
+		this.contentEl.empty();
+		this.loadContent(++this.generation);
+	}
+
+	private loadContent(generation: number): void {
+		void import('./intro-content').then(
+			({ mountIntroContent }) => {
+				if (!this.opened || this.generation !== generation) return;
+				this.contentEl.empty();
+				this.disposeContent = mountIntroContent(this.contentEl, () => this.close());
+			},
+			() => {
+				if (!this.opened || this.generation !== generation) return;
+				this.contentEl.empty();
+				this.contentEl.createEl('p', { text: t('workbench.failed'), attr: { role: 'alert' } });
+				const retry = this.contentEl.createEl('button', { text: t('workbench.retry') });
+				retry.addEventListener('click', () => {
+					retry.disabled = true;
+					this.loadContent(generation);
+				});
+			},
+		);
 	}
 
 	onClose(): void {
-		this.onSeen();
+		++this.generation;
+		this.disposeContent?.();
+		this.disposeContent = undefined;
 		this.contentEl.empty();
+		if (this.opened) {
+			this.opened = false;
+			this.onSeen();
+		}
 	}
 }

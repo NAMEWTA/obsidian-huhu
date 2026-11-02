@@ -1,0 +1,64 @@
+name: Browser phase 2 development workspace
+
+on:
+  push:
+    branches: ['feat/browser-phase2-issue-1']
+    paths: ['.github/workflows/browser-phase2-workspace.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  workspace:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@1.90.0
+      - run: pnpm install --frozen-lockfile
+      - name: Export locked JavaScript dependencies without credentials
+        run: |
+          mkdir -p "$RUNNER_TEMP/browser-dev-tools"
+          cp "$(command -v node)" "$RUNNER_TEMP/browser-dev-tools/node"
+          npm pack pnpm@11.1.3 --pack-destination "$RUNNER_TEMP/browser-dev-tools"
+          tar -czf "$RUNNER_TEMP/browser-node-modules.tar.gz" node_modules
+          tar -C "$RUNNER_TEMP/browser-dev-tools" -czf "$RUNNER_TEMP/browser-dev-tools.tar.gz" .
+          sha256sum pnpm-lock.yaml > "$RUNNER_TEMP/browser-dependencies.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-dev-dependencies
+          path: |
+            ${{ runner.temp }}/browser-node-modules.tar.gz
+            ${{ runner.temp }}/browser-dev-tools.tar.gz
+            ${{ runner.temp }}/browser-dependencies.sha256
+          retention-days: 1
+      - name: Build and test the current native helper
+        run: |
+          cargo test --locked --manifest-path native/browser-runtime/Cargo.toml
+          cargo build --release --locked --manifest-path native/browser-runtime/Cargo.toml
+          tar -C native/browser-runtime/target/release -czf "$RUNNER_TEMP/browser-native-helper.tar.gz" huhu-browser-runtime
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-dev-native-helper
+          path: ${{ runner.temp }}/browser-native-helper.tar.gz
+          retention-days: 1
+      - uses: actions/checkout@v5
+        with:
+          repository: openkursar/hello-halo
+          ref: 23f468bf6eb3d0feebf9f1b8309d18f949a0de4d
+          path: halo-reference
+          persist-credentials: false
+      - name: Archive the exact design reference without running its code
+        run: git -C halo-reference archive --format=tar.gz --output="$RUNNER_TEMP/browser-halo-reference.tar.gz" HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-halo-reference
+          path: ${{ runner.temp }}/browser-halo-reference.tar.gz
+          retention-days: 1

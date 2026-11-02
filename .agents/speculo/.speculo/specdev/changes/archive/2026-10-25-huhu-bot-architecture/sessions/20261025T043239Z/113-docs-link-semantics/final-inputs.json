@@ -1,0 +1,95 @@
+{
+  "scope": "113 exact four checker/policy files, no classification changes; code span link semantics and absolute source file line links only",
+  "taskSha256": "b19019746ac99aa1741fb111705fffc420cdb5c497749558399bf0f298309385",
+  "fileCount": 4,
+  "treeSha256": "ded64e6bcfe66d7fca85c2489320ced6d9e7f886a1fbbd4aee1481f45a42146d",
+  "files": {
+    "scripts/documentation-policy.mjs": {
+      "beforeSha256": "672f28f21f3b6151eee52e5dc52842d2ecb29325ced8b2702bee0d9c291aa0b8",
+      "afterSha256": "a3e17a356350d79e73c40fd6239def5d66c2dd86e6e22707d8737f005ac49803"
+    },
+    "scripts/verify-docs.mjs": {
+      "beforeSha256": "a521e1ec0e1126671ee4b2d019659aab1b649297602cc87b491c3a3fba8bfc6f",
+      "afterSha256": "9b941c1f13c1ab236e1445b21016beb280d2a2c7121e9571c5e452a44ff8de3c"
+    },
+    "test/release/documentation-checker.test.ts": {
+      "beforeSha256": "1a2b2f8295769e9a33f1f634fdbccc0d806301c2fca74cc7f3a555d39cc293b5",
+      "afterSha256": "817aaf9775e858255bc795ce1945442c242089bd17a961c6be2b97510ec4a648"
+    },
+    "test/release/documentation-policy.test.ts": {
+      "beforeSha256": "e8afd03604d6592f2dd807567034e9964ee9094866c22e39e7f39720f069e41e",
+      "afterSha256": "e750a6a1bf2eb6074fae79c86e294abf3ed5fea922d0ae3edeb258ace657dcf4"
+    }
+  },
+  "protectedReadOnly": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/106-protocol-private-contract/logs/interface-contract.md": {
+      "beforeSha256": "63a9f3bff30f9c2fb14f596a82e27f5216aab4c7951ff5240060686b584eaee2",
+      "afterSha256": "63a9f3bff30f9c2fb14f596a82e27f5216aab4c7951ff5240060686b584eaee2",
+      "unchanged": true
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/110-model-probe-expectation/REPORT.md": {
+      "beforeSha256": "5ea26f3893dbd3f41456e37f930bc45fab04eb8fa29b5ab829e669f40cb80780",
+      "afterSha256": "5ea26f3893dbd3f41456e37f930bc45fab04eb8fa29b5ab829e669f40cb80780",
+      "unchanged": true
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/111-responses-notices/logs/11-docs.log": {
+      "beforeSha256": "444ff141e36e4efe33d4df85aad7123927f565f2a99e2d5d13c7df607cbc2896",
+      "afterSha256": "444ff141e36e4efe33d4df85aad7123927f565f2a99e2d5d13c7df607cbc2896",
+      "unchanged": true
+    },
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/T-06.md": {
+      "beforeSha256": "95fa50d53dc4d756c9b893490d17a624111ebbc0efbdde692c87117feaaf2979",
+      "afterSha256": "95fa50d53dc4d756c9b893490d17a624111ebbc0efbdde692c87117feaaf2979",
+      "unchanged": true
+    },
+    "NOTICE": {
+      "beforeSha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+      "afterSha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee",
+      "unchanged": true
+    },
+    "THIRD-PARTY-NOTICES.md": {
+      "beforeSha256": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+      "afterSha256": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+      "unchanged": true
+    },
+    "main.js": {
+      "beforeSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "afterSha256": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+      "unchanged": true
+    },
+    "styles.css": {
+      "beforeSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "afterSha256": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+      "unchanged": true
+    },
+    "native/huhubot/go.mod": {
+      "beforeSha256": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+      "afterSha256": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+      "unchanged": true
+    },
+    "native/huhubot/go.sum": {
+      "beforeSha256": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad",
+      "afterSha256": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad",
+      "unchanged": true
+    },
+    "package.json": {
+      "beforeSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "afterSha256": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+      "unchanged": true
+    },
+    "pnpm-lock.yaml": {
+      "beforeSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "afterSha256": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+      "unchanged": true
+    },
+    ".agents/skills/dev/SKILL.md": {
+      "beforeSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "afterSha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "unchanged": true
+    }
+  },
+  "patchSha256": "b22fd10312444212e2bb7b7ea4a6b13a5d2f458955aa7d6fb786d4fbf33bca29",
+  "targetedVitest": "7/7 actual outer0/Wait",
+  "completeDocs": "03-docs actual outer0/Wait after Root fixed T06 real anchors; 789 Markdown files at that observation",
+  "goBuildLintNoticesRun": false
+}

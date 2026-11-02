@@ -1,3 +1,4 @@
+import { SettingsStore, type SettingsFile } from '../../../../shared/settings/store';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
 import type DashboardPlugin from '../../../main';
@@ -127,4 +128,130 @@ test('invalid import preserves the active appearance; export uses the new versio
 	expect(JSON.parse(write.mock.calls[0]![0])).toEqual({ kind: 'huhu-appearance', version: 2, settings: original });
 	read.mockRestore();
 	write.mockRestore();
+});
+
+test('appearance owns persistent failure, one pending save, retained draft and explicit retry', async () => {
+	setLanguage('en');
+	const f = fixture({ fontText: 'custom' });
+	const update = f.plugin.theme.update.bind(f.plugin.theme);
+	let reject!: (error: Error) => void;
+	const save = vi
+		.spyOn(f.plugin.theme, 'update')
+		.mockImplementationOnce(
+			() =>
+				new Promise((_resolve, no) => {
+					reject = no;
+				}),
+		)
+		.mockImplementation(update);
+	render_(f.plugin);
+	const input = screen.getByRole('textbox', {
+		name: t('appearance.fontCustomLabel', { font: t('appearance.fontText') }),
+	});
+	fireEvent.change(input, { target: { value: 'Example Font' } });
+	fireEvent.keyDown(input, { key: 'Enter', isComposing: true });
+	expect(save).not.toHaveBeenCalled();
+	fireEvent.keyDown(input, { key: 'Enter' });
+	fireEvent.blur(input);
+	await waitFor(() => expect(save).toHaveBeenCalledTimes(1));
+	expect(input.closest('fieldset')?.disabled).toBe(true);
+	reject(new Error('disk unavailable'));
+	const alert = await screen.findByRole('alert');
+	expect(alert.textContent).toContain(t('settings.writeFailed'));
+	expect((input as HTMLInputElement).value).toBe('Example Font');
+	expect(f.current().fontTextCustom).toBe('');
+	fireEvent.click(within(alert).getByRole('button', { name: t('workbench.retry') }));
+	await waitFor(() => expect(f.current().fontTextCustom).toBe('Example Font'));
+	expect(save).toHaveBeenCalledTimes(2);
+	expect(screen.queryByRole('alert')).toBeNull();
+	expect(input.closest('.huhu-design')).not.toBeNull();
+});
+
+test('real SettingsStore publishes before failed persistence and Retry persists the retained value', async () => {
+	setLanguage('en');
+	const original = { ...themeSettings.defaults(), fontText: 'custom' as const };
+	const files: Record<string, SettingsFile | null> = {
+		vault: { version: 1, namespaces: { theme: original } },
+		device: null,
+	};
+	let reject!: (error: Error) => void;
+	let first = true;
+	const save = vi.fn(async (scope: string, file: SettingsFile) => {
+		if (first) {
+			first = false;
+			await new Promise<void>((_resolve, no) => {
+				reject = no;
+			});
+		}
+		files[scope] = structuredClone(file);
+		return structuredClone(file);
+	});
+	const store = new SettingsStore(
+		{ load: async (scope) => files[scope] ?? null, save },
+		{
+			timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: (timer) => window.clearTimeout(timer as number) },
+			debounceMs: 0,
+		},
+	);
+	await store.load();
+	const theme = store.bind('theme', themeSettings);
+	const update = vi.spyOn(theme, 'update');
+	const view = render_({ theme } as unknown as DashboardPlugin);
+	const input = screen.getByRole('textbox', {
+		name: t('appearance.fontCustomLabel', { font: t('appearance.fontText') }),
+	});
+	try {
+		fireEvent.change(input, { target: { value: 'Committed Memory Font' } });
+		fireEvent.keyDown(input, { key: 'Enter' });
+		fireEvent.blur(input);
+		await waitFor(() => expect(save).toHaveBeenCalledOnce());
+		expect(update).toHaveBeenCalledOnce();
+		expect(theme.get().fontTextCustom).toBe('Committed Memory Font');
+		expect(files.vault!.namespaces.theme!.fontTextCustom).toBe('');
+		reject(new Error('disk full'));
+		const alert = await screen.findByRole('alert');
+		expect(store.status).toBe('error');
+		expect((input as HTMLInputElement).value).toBe('Committed Memory Font');
+		expect(theme.get().fontTextCustom).toBe('Committed Memory Font');
+		expect(files.vault!.namespaces.theme!.fontTextCustom).toBe('');
+		fireEvent.click(within(alert).getByRole('button', { name: t('workbench.retry') }));
+		await waitFor(() => expect(store.status).toBe('idle'));
+		expect(update).toHaveBeenCalledTimes(2);
+		expect(files.vault!.namespaces.theme!.fontTextCustom).toBe('Committed Memory Font');
+		expect(screen.queryByRole('alert')).toBeNull();
+	} finally {
+		view.unmount();
+		await store.dispose();
+	}
+});
+
+test('continuous slider input preserves the last value while real persistence is pending', async () => {
+	setLanguage('en');
+	const files: Record<string, SettingsFile | null> = {
+		vault: { version: 1, namespaces: { theme: { ...themeSettings.defaults(), fontSize: 18 } } }, device: null,
+	};
+	let release: (() => void) | undefined;
+	let first = true;
+	const save = vi.fn(async (scope: string, file: SettingsFile) => {
+		if (first) { first = false; await new Promise<void>((resolve) => { release = resolve; }); }
+		files[scope] = structuredClone(file);
+		return structuredClone(file);
+	});
+	const store = new SettingsStore({ load: async (scope) => files[scope] ?? null, save }, {
+		timers: { set: (fn, ms) => window.setTimeout(fn, ms), clear: (timer) => window.clearTimeout(timer as number) }, debounceMs: 0,
+	});
+	await store.load();
+	const theme = store.bind('theme', themeSettings);
+	const view = render_({ theme } as unknown as DashboardPlugin);
+	try {
+		const slider = screen.getAllByRole('slider')[0]!;
+		fireEvent.keyDown(slider, { key: 'ArrowRight' });
+		await waitFor(() => expect(save).toHaveBeenCalledOnce());
+		expect(theme.get().fontSize).toBe(19);
+		fireEvent.keyDown(slider, { key: 'ArrowRight' });
+		await waitFor(() => expect(theme.get().fontSize).toBe(20));
+		release!();
+		await waitFor(() => expect(files.vault!.namespaces.theme!.fontSize).toBe(20));
+		await waitFor(() => expect(store.status).toBe('idle'));
+	} finally { release?.(); view.unmount(); await store.dispose(); }
 });

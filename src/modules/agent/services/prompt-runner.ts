@@ -1,16 +1,26 @@
-import type { AgentPromptRequest, AgentPromptResult, AgentPromptRunner, AgentRunContextLease, AgentRunContextProvider } from '../api';
+import type {
+	AgentPromptRequest,
+	AgentPromptResult,
+	AgentPromptRunner,
+	AgentRunContextLease,
+	AgentRunContextProvider,
+} from '../api';
 import type { AgentId } from '../core/launch/types';
 import { AutomationError } from '../../../shared/automation/errors';
 import type { AgentDescription, AgentRunHandle, AutomationAction } from '../../../shared/automation/types';
 import type { AgentExecution } from './agent-runtime';
+import type { SessionInputSubmission, SessionPasteOptions } from './terminal/session';
 
 interface InteractivePromptTarget {
 	readonly running: boolean;
 	inputReady(): boolean;
 	prompts(): { lines: readonly unknown[] };
-	paste(text: string): void;
-	input(text: string): void;
+	submitPaste(text: string, options?: SessionPasteOptions): SessionInputSubmission;
 }
+export type InteractivePromptResult =
+	| { readonly status: 'not-ready' }
+	| Readonly<{ status: 'queued'; runtimeId: string; op: number }>
+	| Readonly<{ status: 'none' | 'unknown'; runtimeId: string; op: number; reason: string }>;
 /** Interactive quick commands use the terminal's input-ready protocol, never CLI prompt arguments. */
 export async function submitInteractivePrompt(
 	target: InteractivePromptTarget,
@@ -18,20 +28,26 @@ export async function submitInteractivePrompt(
 	clock: Pick<Window, 'setTimeout'>,
 	requireReady = true,
 	timeoutMs = 5000,
-): Promise<boolean> {
+): Promise<InteractivePromptResult> {
 	const ready = () => target.inputReady() || target.prompts().lines.length > 0;
 	const deadline = Date.now() + timeoutMs;
 	while (target.running && !ready() && Date.now() < deadline)
-		await new Promise<void>(resolve => clock.setTimeout(resolve, 100));
-	if (!target.running || (requireReady && !ready())) return false;
-	target.paste(text);
-	target.input('\r');
-	return true;
+		await new Promise<void>((resolve) => clock.setTimeout(resolve, 100));
+	if (!target.running || (requireReady && !ready())) return { status: 'not-ready' };
+	const submission = target.submitPaste(text, { appendEnter: true });
+	const result = await submission.queued;
+	return result.state === 'queued'
+		? { status: 'queued', runtimeId: submission.runtimeId, op: result.op }
+		: { status: result.state, runtimeId: submission.runtimeId, op: result.op, reason: result.reason };
 }
 
 interface PromptRuntime {
 	listAgents(): AgentDescription[];
-	execute(action: Extract<AutomationAction, { kind: 'agent' }>, execution: AgentExecution, previousTerminal?: string): Promise<AgentRunHandle>;
+	execute(
+		action: Extract<AutomationAction, { kind: 'agent' }>,
+		execution: AgentExecution,
+		previousTerminal?: string,
+	): Promise<AgentRunHandle>;
 	stop(id: string): Promise<void>;
 	open(id: string): Promise<void>;
 }
@@ -45,7 +61,6 @@ export class PromptRunner implements AgentPromptRunner {
 	private readonly contextualTerminals = new Set<string>();
 	constructor(
 		private readonly runtime: PromptRuntime,
-		private readonly vaultCwd: () => string,
 		private readonly providers: () => Promise<readonly AgentRunContextProvider[]>,
 		private readonly clock: Pick<Window, 'setTimeout' | 'clearTimeout'>,
 	) {}
@@ -54,9 +69,19 @@ export class PromptRunner implements AgentPromptRunner {
 		if (this.disposed) return { status: 'interrupted', text: '', errorCode: 'agentUnavailable' };
 		if (request.signal?.aborted) return { status: 'cancelled', text: '' };
 		if (!request.prompt.trim()) return { status: 'failed', text: '', errorCode: 'promptEmpty' };
-		if (request.continueTerminalId && !this.terminals.has(request.continueTerminalId)) return { status: 'failed', text: '', errorCode: 'sessionMissing' };
-		if (request.continueTerminalId && (request.runContext || this.contextualTerminals.has(request.continueTerminalId))) return { status: 'failed', text: '', errorCode: 'runContextInvalid' };
-		const agentId = request.agentId ?? this.runtime.listAgents().find(agent => agent.enabled && agent.installed)?.id as AgentId | undefined;
+		// Business runs belong to one explicit Space; nothing is guessed from cwd, the page or a lone Space.
+		if (typeof request.spaceId !== 'string' || !request.spaceId)
+			return { status: 'failed', text: '', errorCode: 'spaceRequired' };
+		if (request.continueTerminalId && !this.terminals.has(request.continueTerminalId))
+			return { status: 'failed', text: '', errorCode: 'sessionMissing' };
+		if (
+			request.continueTerminalId &&
+			(request.runContext || this.contextualTerminals.has(request.continueTerminalId))
+		)
+			return { status: 'failed', text: '', errorCode: 'runContextInvalid' };
+		const agentId =
+			request.agentId ??
+			(this.runtime.listAgents().find((agent) => agent.enabled && agent.installed)?.id as AgentId | undefined);
 		if (!agentId) return { status: 'failed', text: '', errorCode: 'cliMissing' };
 		const abort = new AbortController();
 		this.active.add(abort);
@@ -70,7 +95,9 @@ export class PromptRunner implements AgentPromptRunner {
 		}
 		const timer = this.clock.setTimeout(() => abort.abort('timeout'), duration);
 		let finish!: () => void;
-		const settled = new Promise<void>(resolve => { finish = resolve; });
+		const settled = new Promise<void>((resolve) => {
+			finish = resolve;
+		});
 		this.finishes.add(settled);
 		let terminalId: string | undefined;
 		let context: AgentRunContextLease | undefined;
@@ -78,51 +105,105 @@ export class PromptRunner implements AgentPromptRunner {
 		let result: AgentPromptResult | undefined;
 		let identity: { agentId: AgentId; accountIdentity: string } | undefined;
 		const runId = crypto.randomUUID();
-		const interrupted = () => ({
-			status: abort.signal.reason === 'timeout' ? 'timeout' : abort.signal.reason === 'interrupted' ? 'interrupted' : 'cancelled',
-			text: '', terminalId, ...identity,
-		} as AgentPromptResult);
+		const interrupted = () =>
+			({
+				status:
+					abort.signal.reason === 'timeout'
+						? 'timeout'
+						: abort.signal.reason === 'interrupted'
+							? 'interrupted'
+							: 'cancelled',
+				text: '',
+				terminalId,
+				...identity,
+			}) as AgentPromptResult;
 		let onAbort!: () => void;
-		const stopped = new Promise<AgentPromptResult>(resolve => {
+		const stopped = new Promise<AgentPromptResult>((resolve) => {
 			onAbort = () => resolve(interrupted());
 			abort.signal.addEventListener('abort', onAbort, { once: true });
 		});
 		const execute = async (): Promise<AgentPromptResult> => {
 			let provider: AgentRunContextProvider | undefined;
 			if (request.runContext) {
-				const matches = (await this.providers()).filter(item => item.id === request.runContext!.provider);
+				const matches = (await this.providers()).filter((item) => item.id === request.runContext!.provider);
 				if (matches.length !== 1) return { status: 'failed', text: '', errorCode: 'runContextUnavailable' };
 				provider = matches[0];
 			}
 			abort.signal.throwIfAborted();
-			const handle = await this.runtime.execute({ kind: 'agent', agentId, cwd: request.cwd ?? this.vaultCwd(), prompt: request.prompt, sessionMode: request.continueTerminalId ? 'reuse' : 'fresh' }, {
-				id: runId, title: request.purpose, kind: 'prompt', reveal: request.reveal, signal: abort.signal,
-				onPrepared: value => { identity = value; },
-				resolveContext: provider ? async cwd => {
-					const lease = await provider.resolve(request.runContext!.handle, { runId, cwd, signal: abort.signal });
-					if (!lease) throw new AutomationError('runContextInvalid');
-					if (finished || abort.signal.aborted) {
-						await lease.dispose();
-						abort.signal.throwIfAborted();
-						throw new AutomationError('runContextInvalid');
-					}
-					context = lease;
-					return lease.env;
-				} : undefined,
-				onTerminal: id => {
-					terminalId = id;
-					this.terminals.add(id);
-					if (request.runContext) this.contextualTerminals.add(id);
-					if (finished || abort.signal.aborted) void this.close(id);
-					else request.onState?.({ status: 'needs-attention', terminalId: id });
+			const handle = await this.runtime.execute(
+				{
+					kind: 'agent',
+					agentId,
+					// Empty means the Space's own directory; a supplied directory must lie inside the Space.
+					cwd: request.cwd ?? '',
+					spaceId: request.spaceId,
+					prompt: request.prompt,
+					sessionMode: request.continueTerminalId ? 'reuse' : 'fresh',
 				},
-				onState: (status, id) => { if (!finished && !abort.signal.aborted) request.onState?.({ status, terminalId: id }); },
-			}, request.continueTerminalId);
+				{
+					id: runId,
+					title: request.purpose,
+					kind: 'prompt',
+					reveal: request.reveal,
+					signal: abort.signal,
+					onPrepared: (value) => {
+						identity = value;
+					},
+					resolveContext: provider
+						? async (cwd) => {
+								const lease = await provider.resolve(request.runContext!.handle, {
+									runId,
+									cwd,
+									signal: abort.signal,
+								});
+								if (!lease) throw new AutomationError('runContextInvalid');
+								if (finished || abort.signal.aborted) {
+									await lease.dispose();
+									abort.signal.throwIfAborted();
+									throw new AutomationError('runContextInvalid');
+								}
+								context = lease;
+								return lease.env;
+							}
+						: undefined,
+					onTerminal: (id) => {
+						terminalId = id;
+						this.terminals.add(id);
+						if (request.runContext) this.contextualTerminals.add(id);
+						if (finished || abort.signal.aborted) void this.close(id);
+						else request.onState?.({ status: 'needs-attention', terminalId: id });
+					},
+					onState: (status, id) => {
+						if (!finished && !abort.signal.aborted) request.onState?.({ status, terminalId: id });
+					},
+				},
+				request.continueTerminalId,
+			);
 			const answer = await handle.completion;
-			return { status: answer.status, text: answer.status === 'succeeded' ? answer.message : '', terminalId: handle.terminalId, usage: answer.usage, errorCode: answer.errorCode, ...identity };
+			return {
+				status: answer.status,
+				text: answer.status === 'succeeded' ? answer.message : '',
+				terminalId: handle.terminalId,
+				usage: answer.usage,
+				errorCode: answer.errorCode,
+				...identity,
+			};
 		};
 		try {
-			result = await Promise.race([execute().catch((error): AgentPromptResult => abort.signal.aborted ? interrupted() : ({ status: 'failed', text: '', terminalId, errorCode: error instanceof AutomationError ? error.code : 'agentUnavailable', ...identity })), stopped]);
+			result = await Promise.race([
+				execute().catch((error): AgentPromptResult =>
+					abort.signal.aborted
+						? interrupted()
+						: {
+								status: 'failed',
+								text: '',
+								terminalId,
+								errorCode: error instanceof AutomationError ? error.code : 'agentUnavailable',
+								...identity,
+							},
+				),
+				stopped,
+			]);
 			return result;
 		} finally {
 			finished = true;
@@ -137,10 +218,10 @@ export class PromptRunner implements AgentPromptRunner {
 				await lease?.dispose();
 			} catch {
 				if (result) Object.assign(result, { status: 'failed', text: '', errorCode: 'runContextReleaseFailed' });
-			}
-			finally {
+			} finally {
 				try {
-					if (terminalId && (!request.keepTerminal || result?.status !== 'succeeded')) await this.close(terminalId);
+					if (terminalId && (!request.keepTerminal || result?.status !== 'succeeded'))
+						await this.close(terminalId);
 				} finally {
 					this.finishes.delete(settled);
 					finish();
@@ -149,7 +230,9 @@ export class PromptRunner implements AgentPromptRunner {
 		}
 	}
 
-	async open(id: string): Promise<void> { if (this.terminals.has(id)) await this.runtime.open(id); }
+	async open(id: string): Promise<void> {
+		if (this.terminals.has(id)) await this.runtime.open(id);
+	}
 	async close(id: string): Promise<void> {
 		if (!this.terminals.delete(id)) return;
 		this.contextualTerminals.delete(id);
@@ -158,7 +241,7 @@ export class PromptRunner implements AgentPromptRunner {
 	async dispose(): Promise<void> {
 		this.disposed = true;
 		for (const abort of this.active) abort.abort('interrupted');
-		await Promise.all([...this.terminals].map(id => this.close(id)));
+		await Promise.all([...this.terminals].map((id) => this.close(id)));
 		await Promise.all([...this.finishes]);
 	}
 }

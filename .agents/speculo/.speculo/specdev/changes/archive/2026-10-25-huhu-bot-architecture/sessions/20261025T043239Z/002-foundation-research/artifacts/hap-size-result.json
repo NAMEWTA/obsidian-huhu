@@ -1,0 +1,16 @@
+{
+  "scope": "size/parse feasibility only; not production codec acceptance",
+  "node": "v26.11.1",
+  "platform": "linux/x64",
+  "maxFrameBytes": 1048576,
+  "frameLengthIncludingPrefix": 1048580,
+  "bodyLengthIncludingKind": 1048576,
+  "jsonPayloadBytes": 1048575,
+  "jsonParseP50Ms": 0.8440539999999999,
+  "jsonParseP95Ms": 2.5778980000000047,
+  "samples": 100,
+  "batch": {
+    "maxItemsCandidate": 8,
+    "totalFrameLimitStillApplies": true
+  }
+}

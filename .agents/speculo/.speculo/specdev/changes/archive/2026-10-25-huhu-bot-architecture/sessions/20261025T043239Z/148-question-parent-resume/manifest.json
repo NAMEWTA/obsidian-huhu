@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-26T16:13:43.593245+00:00",
+  "status": "diagnostic author candidate returned; T12/T14/Goal behavior pending Memory owner and Root",
+  "session": "20261025T043239Z",
+  "task": "148-question-parent-resume",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "finalSourceChanges": [],
+  "restoredReplySourcesSHA256": "a58064f3ac83296d4ad5acdceb32021c45cdd5c64e987c5857668de71df52b19",
+  "restoredReplySourcesMode": 384,
+  "temporaryHelperExists": false,
+  "diagnosticInputSources": {
+    "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go": {
+      "sha256": "da53b09b33d7f7d6b6aadc5eb7744ca30d869bbd628eb51ade7b5320625f8ca0",
+      "mode": 384
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go": {
+      "sha256": "8f5e2f60e82f84e76561e7bea57da185f01e083393f114857032530d2a2b8ed2",
+      "mode": 384
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go": {
+      "sha256": "703de5157c7bbd2d7b1ad8363c107fa0da83a0f9492906d487c67d120109096e",
+      "mode": 384
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/memory/context_read.go": {
+      "sha256": "f2a85e682a1c2ddd2acbdb171fa34dfe5211b6520eabd0e0bd2036c129f9b0ca",
+      "mode": 436
+    },
+    "native/huhubot/internal/adapters/outbound/sqlite/memory/sources.go": {
+      "sha256": "2801e5a2d48a530901bfeb1a7c0477a92ef9cedec30fe4dd87ee41bb16070d34",
+      "mode": 436
+    }
+  },
+  "artifacts": {
+    "REPORT.md": "b74ca33bde9e22fbf192bde59a79a143e92e9f5d740765f1f77faec4135688d4",
+    "TASK.md": "2771dd91355eb981d8aee9b254bb1d1d6f96741bf8dde807040f8f1b045bf0f9",
+    "logs/01-source-only-checkpoint.json": "214d5cab9b030792a4986562506fc9ca2c14b4f51813780f99a5f22907942226",
+    "logs/02-input-before.json": "9eb7e189cb08d3d6379efd55f8ce0cf13579018d4c2595839d9b59ac2fca8161",
+    "logs/03-go-version.json": "c173569a9e600477b05222a9669ae9a2ac84fa054c6ffc6ea40713dd7d43845c",
+    "logs/04-question-diagnostic-go.jsonl": "15eeaf3ccee11cf712d51eb6329b613caf522389c5be8891a6cba90599f34fa3",
+    "logs/05-question-diagnostic-meta.json": "bb21620e49847bed7d2a3c4ba3349cc5385ab351d1eec175a881620c1a9142cf",
+    "logs/06-input-after.json": "1bdffb9680c86bd4415489960a9831646e2c5c19ce84d10e2f65ce4c2cfb7871",
+    "logs/07-input-before-claim.json": "4a8b7e2153ec7fda954b045fbd1535edde20f76c5cc40e87d2083f6a67211631",
+    "logs/08-claim-diagnostic-go.jsonl": "58f90662d6c2c2bc5b39082dfa86b354e1fa086be77f4605a45a01387436ee1c",
+    "logs/09-claim-diagnostic-meta.json": "8300c61ad10ea20fc90818d57a32a3e7f2edb77dd44dce3dee5e1deb2c1dbfde",
+    "logs/10-input-after-claim.json": "43c9cdbdb256d3916bd245f6e9d3eb3dbe6cc05458f021d0c53eebad1e04ea1b",
+    "logs/11-cleanup-checkpoint.json": "50e662cac84237486a6978d45f5ba54a86fffbc3f3c03886f8cd5a379895f038"
+  },
+  "checks": {
+    "goVersionExit": 0,
+    "targetExit": [
+      1,
+      1
+    ],
+    "targetWaitSeconds": [
+      9.460265462003008,
+      9.373277910002798
+    ],
+    "inputCount": 390,
+    "inputDrift": [
+      [],
+      []
+    ],
+    "readyParent": "B resume_children; error nil",
+    "claim": "work nil; *api.Fault CONFLICT: MEMORY_INPUT_STATE_INVALID"
+  },
+  "goWindowReturned": true,
+  "productionChangedIn148": false
+}

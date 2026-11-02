@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../ui/co
 import { useOwnerDocument } from '../../../ui/react/contexts';
 import { t } from '../../../shared/i18n';
 import { startOfPeriod, type Period } from '../../../shared/periodic-paths';
-import type { CalendarSnapshot, CalendarTask } from '../../home/api';
+import type { CalendarSnapshot, CalendarTask } from '../../task/api';
 import type { PeriodicNotePreview } from '../api';
 import { useEnv, useIndexVersion, useNavigatorSettings, usePreviewVersion } from './hooks';
 
@@ -68,11 +68,10 @@ export function CalendarPanel() {
 	const snapshot = useSyncExternalStore(subscribe, read);
 	const calendar = env.calendar?.(),
 		scope = calendar?.defaultScope();
-	const boardPath = scope?.boardPath,
-		filter = scope?.filter;
+	const filter = scope?.filter;
 	useEffect(() => {
-		if (calendar) void calendar.refresh({ boardPath, filter });
-	}, [calendar, boardPath, filter]);
+		if (calendar) void calendar.refresh({ filter });
+	}, [calendar, filter]);
 	useEffect(() => {
 		let live = true;
 		void periodic
@@ -144,13 +143,7 @@ export function CalendarPanel() {
 		}
 		const result =
 			checked === undefined ? await calendar.removeTask(task) : await calendar.toggleTask(task, checked);
-		setMessage(
-			'code' in result
-				? t(`calendarUnified.error.${result.code}`)
-				: result.status === 'written-pending-refresh'
-					? t('calendarUnified.pendingRefresh')
-					: '',
-		);
+		setMessage('code' in result ? t(`calendarUnified.error.${result.code}`) : '');
 	};
 	return (
 		<section
@@ -233,7 +226,7 @@ export function CalendarPanel() {
 								source: task.path,
 								time: task.scheduledTime ?? task.time,
 								reminder: task.reminder,
-								recurring: !!task.recurrence || !!task.seriesId,
+								recurring: !!task.seriesId,
 							}))}
 							tasks={tasks.map((task) => ({
 								id: taskId(task),
@@ -242,12 +235,12 @@ export function CalendarPanel() {
 								source: task.path,
 								time: calendar?.dayTime(task, selected),
 								reminder: task.reminder,
-								recurring: !!task.recurrence || !!task.seriesId,
+								recurring: !!task.seriesId,
 							}))}
 							status={snapshot.status}
 							filtered={
 								snapshot.filter !== 'all' &&
-								!!calendar?.snapshot({ boardPath, filter: 'all' }).byDay.get(selected)?.length
+								!!calendar?.snapshot({ filter: 'all' }).byDay.get(selected)?.length
 							}
 							note={note ?? periodic?.inspect('day', calendarDate(selected))}
 							canSplit={env.canSplit}
@@ -269,7 +262,6 @@ export function CalendarPanel() {
 											const result = await calendar.createTask({
 												text,
 												date: selected,
-												interactive: true,
 											});
 											if ('code' in result)
 												throw new Error(t(`calendarUnified.error.${result.code}`));
@@ -300,15 +292,9 @@ export function CalendarPanel() {
 												date: selected,
 												text,
 												time: time || undefined,
-												boardPath: scope?.boardPath,
-												interactive: true,
 											});
 											setMessage(
-												'code' in result
-													? t(`calendarUnified.error.${result.code}`)
-													: result.status === 'written-pending-refresh'
-														? t('calendarUnified.pendingRefresh')
-														: '',
+												'code' in result ? t(`calendarUnified.error.${result.code}`) : '',
 											);
 											return !('code' in result);
 										}

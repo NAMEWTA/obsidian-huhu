@@ -1,7 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { privatePathHasSymlink } from '../../../../../host/desktop/private-mode';
-import { PI_EXTENSION, OPENCODE_EXTENSION } from './native-extensions';
 import { writeHookSettings } from './settings-write';
 import { stripOwnedHooks } from './hook-entries';
 import type { AgentId } from '../../../core/launch/types';
@@ -26,6 +25,7 @@ export async function removeStatusHooks(id: AgentId, account: Record<string, str
 		if (await privatePathHasSymlink(file)) throw new Error('private-storage.symlink');
 		let raw: string;
 		try { raw = await fs.readFile(file, 'utf8'); } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
+		const { PI_EXTENSION, OPENCODE_EXTENSION } = await import('./native-extensions');
 		if (raw !== (id === 'pi' ? PI_EXTENSION : OPENCODE_EXTENSION)) return;
 		await fs.unlink(file);
 		return;

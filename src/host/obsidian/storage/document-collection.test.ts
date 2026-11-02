@@ -41,7 +41,7 @@ test('the production habit writer creates visible notes under huhu/ and reloads 
 	await habits.load(); habits.addHabit('库内记录'); await habits.flush();
 	const paths = [...vault.contents.keys()].filter(path => path.endsWith('.md'));
 	expect(paths.length).toBeGreaterThan(0);
-	expect(paths.every(path => path.startsWith('huhu/习惯/'))).toBe(true);
+	expect(paths.every(path => path.startsWith('huhu/habits/'))).toBe(true);
 	expect(vault.app.vault.getMarkdownFiles().map(file => file.path).sort()).toEqual(paths.sort());
 	const reopened = new HabitApplication(new MarkdownCollectionStorage(vault.app, habitDocuments, 'data/habits.json'), 'data');
 	await reopened.load(); expect(reopened.getHabits().map(habit => habit.name)).toEqual(['库内记录']);

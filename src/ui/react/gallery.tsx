@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DesignScope, useDesignNotice } from './design-scope';
 import { Bold, Italic, Plus, Inbox } from 'lucide-react';
 import { useT } from './hooks';
 import { Button } from '../components/button';
@@ -62,7 +63,6 @@ import {
 	TableCaption,
 	TableFooter,
 } from '../components/table';
-import { toast } from '../components/sonner';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '../components/resizable';
 import { EmptyState } from '../components/huhu/EmptyState';
 import { SettingsSection } from '../components/huhu/SettingsSection';
@@ -88,6 +88,11 @@ const buttonSizes = ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 
 const buttonVariants = ['default', 'secondary', 'outline', 'ghost', 'link', 'destructive'] as const;
 
 export function ComponentGallery() {
+	return <DesignScope><GalleryContent /></DesignScope>;
+}
+
+function GalleryContent() {
+	const toast = useDesignNotice();
 	const t = useT();
 	const [checked, setChecked] = useState(false);
 	const [segment, setSegment] = useState('first');
@@ -105,11 +110,11 @@ export function ComponentGallery() {
 	const [sampleTime] = useState(() => Date.now() - 60_000);
 	return (
 		<div
-			className="huhu-ui min-w-0 space-y-8 p-4 [&_[data-slot=settings-row]]:flex-wrap [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]_button]:max-w-full [&_[data-slot=settings-row]_.flex]:flex-wrap"
 			data-slot="component-gallery"
+			className="min-w-0 space-y-8 p-4 [&_[data-slot=settings-row]]:flex-wrap [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]_button]:max-w-full [&_[data-slot=settings-row]_.flex]:flex-wrap"
 		>
 			<header className="space-y-1">
-				<h2 className="text-lg font-semibold">{t('ui.gallery')}</h2>
+				<h2 className="text-xl font-semibold">{t('ui.gallery')}</h2>
 				<p className="text-sm text-muted-foreground">{t('ui.galleryDescription')}</p>
 			</header>
 			<SettingsSection title={t('ui.buttons')}>

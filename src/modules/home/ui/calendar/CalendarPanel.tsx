@@ -4,7 +4,7 @@ import type { ContentFile } from '../../../../host/obsidian/storage/content-file
 import { useLayoutEffect, useState } from 'react';
 import { startOfWeek } from '../../../../shared/periodic-paths';
 import { Button } from '../../../../ui/components/button';
-import type { CalendarTaskFilter } from '../../core/calendar/task-filter';
+import type { CalendarTaskFilter } from '../../../task/api';
 import type { DashboardSettings } from '../../core/board/types';
 import { toIsoDate, type VaultTask } from '../../platform/calendar/alltasks-scan';
 import { t } from '../../../../shared/i18n';
@@ -69,7 +69,6 @@ export function CalendarPanel({
 	const { calendar, snapshot, byDay, reload } = useCalendarData(
 		app,
 		{
-			boardPath: settings.dashboardFile,
 			filter: 'all',
 			from: toIsoDate(new Date(date.getFullYear(), date.getMonth(), -6)),
 			to: toIsoDate(new Date(date.getFullYear(), date.getMonth() + 1, 7)),
@@ -78,9 +77,7 @@ export function CalendarPanel({
 	);
 	const { periodic } = usePeriodicNotes();
 	const filter = calendar ? snapshot.filter : persistedFilter;
-	const selectedHasUnfilteredTasks = !!calendar
-		?.snapshot({ boardPath: settings.dashboardFile, filter: 'all' })
-		.byDay.get(selected)?.length;
+	const selectedHasUnfilteredTasks = !!calendar?.snapshot({ filter: 'all' }).byDay.get(selected)?.length;
 	const weekStart = periodic?.weekStart() ?? 1;
 	const week = startOfWeek(date, weekStart);
 	const preview = useDayPreview(app, context, `${date.getTime()}:${view}:${selected}:${snapshot.revision}:${filter}`);
@@ -88,7 +85,7 @@ export function CalendarPanel({
 	useLayoutEffect(() => {
 		calendarReloaders.set(root, async () => {
 			closePreview();
-			if (started) await calendar?.refresh({ boardPath: settings.dashboardFile, filter });
+			if (started) await calendar?.refresh({ filter });
 		});
 		return () => {
 			calendarReloaders.delete(root);
@@ -116,7 +113,6 @@ export function CalendarPanel({
 			);
 			throw new Error('calendar.toggle-failed');
 		}
-		if (result.status === 'written-pending-refresh') new Notice(t('calendarUnified.pendingRefresh'));
 	};
 	const changeFilter = (value: CalendarTaskFilter) => {
 		void calendar?.setFilter(value).then((saved) => {
@@ -197,14 +193,7 @@ export function CalendarPanel({
 					}}
 					onToggle={toggle}
 					onAdd={async (iso, text, time) => {
-						const added = await addCalendarTask(
-							app,
-							iso,
-							text,
-							time ?? '',
-							settingsAccess,
-							settings.dashboardFile,
-						);
+						const added = await addCalendarTask(app, iso, text, time ?? '');
 						if (!added) throw new Error('calendar.create-failed');
 					}}
 					onRemind={onRemind}

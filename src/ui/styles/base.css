@@ -74,3 +74,65 @@
 	left: auto;
 	right: auto;
 }
+/* Product-region styles stop at nested ReactSurface roots. Keep inherited root typography
+ * unchanged: a selector boundary alone cannot prevent inherited values crossing it. */
+.huhu-design [data-slot]:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	transition-property: color, background-color, border-color, opacity, transform;
+	transition-duration: var(--ui-motion-duration);
+}
+.huhu-design :is([data-slot="button"], [data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"]):not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-radius: var(--ui-radius-control);
+	font-size: var(--ui-text-body);
+	line-height: var(--ui-line-height);
+	box-shadow: none;
+}
+.huhu-design [data-slot="button"][data-variant="default"]:not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	background-color: var(--ui-primary);
+	color: var(--ui-primary-foreground);
+}
+.huhu-design [data-slot="button"][data-size$="xs"]:not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	height: var(--ui-control-compact);
+}
+.huhu-design [data-slot="button"][data-size="icon-xs"]:not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	width: var(--ui-control-compact);
+}
+.huhu-design :is([data-slot="button"]:not([data-hit-control]), [data-slot="textarea"].min-h-0):not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) { min-height: var(--nd-hit-size); min-width: var(--nd-hit-size); }
+.huhu-design :is([data-slot="input"], [data-slot="select-trigger"]):not([aria-invalid="true"]):not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-color: var(--ui-input-boundary);
+}
+
+/* The outlet belongs to a content leaf, including at narrow widths. It reserves its own space. */
+.huhu-design-notices [data-sonner-toaster]:not(#\#):not(#\#),
+.huhu-design-notices [data-sonner-toast]:not(#\#):not(#\#) {
+	position: relative;
+	inset: auto;
+	transform: none;
+	width: 100%;
+	box-shadow: none;
+}
+.huhu-design-notices [data-sonner-toast]:not(#\#):not(#\#) { margin-block-end: var(--ui-space-2); }
+.huhu-design-notices [data-sonner-toast][data-visible="false"]:not(#\#):not(#\#) { display: none; }
+.huhu-design [data-slot="textarea"]:not([aria-invalid="true"]):not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-color: var(--ui-input-boundary);
+}
+.huhu-design [data-slot="checkbox"]:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) { border-radius: var(--ui-radius-checkbox); border-color: var(--ui-input-boundary); }
+.huhu-design [data-slot="switch"][data-state="unchecked"]:not(.huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) { background-color: var(--muted-foreground); }
+.huhu-design [data-slot="badge"]:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-radius: var(--ui-radius-badge);
+	font-size: var(--ui-text-meta);
+}
+.huhu-design [data-slot="card"]:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-radius: var(--ui-radius-panel);
+	box-shadow: none;
+}
+.huhu-design :is([data-slot="dialog-content"], [data-slot="alert-dialog-content"]):not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	border-radius: var(--ui-radius-dialog);
+}
+.huhu-design :focus-visible:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) {
+	outline: var(--ui-focus-width) solid var(--interactive-accent);
+	outline-offset: var(--ui-focus-offset);
+	box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.huhu-design [data-slot]:not(.huhu-design .huhu-ui:not(.huhu-design), .huhu-design .huhu-ui:not(.huhu-design) *):not(#\#):not(#\#) { transition-duration: 0s; animation-duration: 0s; }
+}

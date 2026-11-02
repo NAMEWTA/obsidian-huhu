@@ -1,0 +1,85 @@
+{
+  "scope": "111 six legal/script/doc/generated-notice files only; no binaries/JS build, current stable Responses closure, future relevant source changes require revalidation",
+  "taskSha256": "5c1b28579517dd0009aa2b8de673538132d42b2e2e4cdcfb9f6f59fd79be982f",
+  "fileCount": 6,
+  "treeSha256": "4281905928440d5a9d39f6dc2cbfbdbb518df1d9081601ad2e4fbfcf7491c6b8",
+  "files": {
+    "THIRD-PARTY-NOTICES.md": {
+      "beforeSha256": "04dce87bb9fdb48553ca7e93cd6cf98c27bdb2dcaf73d0ff46da03c9291fa9df",
+      "afterSha256": "fdaca047cd0a7b2c718c1a540a8c19271ef16208dcb80662620ffda2162ed500",
+      "change": "modified"
+    },
+    "docs/references.md": {
+      "beforeSha256": "c21b67fc2cf54d152881f47f0f17da8bc6620acfced06614cf00b0581080e981",
+      "afterSha256": "df0cbf3995778b84dadb6233991ca635c12ead3963007c9136c9cc9c313147fa",
+      "change": "modified"
+    },
+    "docs/third-party/huhu-bot.md": {
+      "beforeSha256": "55f165f177cb850950421239febf39e499be49d54ae95a7e21bfba888123920a",
+      "afterSha256": "e25d6e6cdeca67af218ced2731632e7b22361cf691ba538602d6885cd26e759d",
+      "change": "modified"
+    },
+    "docs/third-party/licenses/go/go-1.24rc1-BSD-3-Clause.txt": {
+      "beforeSha256": null,
+      "afterSha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "change": "added"
+    },
+    "scripts/huhu-bot-notices.mjs": {
+      "beforeSha256": "52f3d6c4b0ca020131d247ac80c524b5813c0e0b02659e37057112f754088ba9",
+      "afterSha256": "868e8dcf406c96e49704585c113db8baca4cd3ed766897fb76a097643f7f0685",
+      "change": "modified"
+    },
+    "scripts/huhu-bot-notices.test.mjs": {
+      "beforeSha256": "6317f6d88cc3738bfaacbceffbcea3f9c26c8b4c59879e22e3169e67f067da11",
+      "afterSha256": "b75e0dd098cf75e319d16f1c70d269d642c6adfc8bce275e4590360693db95e8",
+      "change": "modified"
+    }
+  },
+  "oldLegalInputsUnchanged": {
+    "docs/third-party/licenses/go/Apache-2.0-full.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/cldr-32-unicode-license.txt": "6a6976a5da6ac21a6a001c685c057f4a6e619be11f5465371088ecd80c7fbe06",
+    "docs/third-party/licenses/go/eino-ext-openai-v0.1.13-LICENSE-APACHE.txt": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-1-MIT.txt": "27d3a94ff600a1f100136f7743777284c8dccf707606ab07a2e20d032996cb15",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-2-MIT.txt": "bb1458854751422ecfac21563c365bf09d8e3a0838db75ba815c14395cbadb57",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-3-MIT.txt": "7c886985b97808b0ddcda7bcb747fb39b3026dd2d50cd4b3d557c37b629722d2",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-4-MIT.txt": "c00b4b59c25a4054fe88a51dd32fc1e4f223f93cf77855ecdb74ebad574b2215",
+    "docs/third-party/licenses/go/golang-asm-v0.15.1-inferno-5-MIT.txt": "eeecad0dc7d079ac0151c13c7b3cba4f56732c33471f36969f9298ac2e81cbee",
+    "docs/third-party/licenses/go/json-schema-spec-LICENSE.txt": "909b25a80d4945b21d3adb2fb17f90bf592e0274bdf117c069c088a8e44dc7b6",
+    "docs/third-party/licenses/go/logrus-v1.9.3-atexit-MIT.txt": "017f4e6ccc2a628990502e0394691722427f258cd9264246e328c74fb82d7931",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-Drachennest.txt": "8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-eisel_lemire.txt": "cc3a949197f7f066770ae05ced2a2e1dfebb850f5a7587f085dd314bdbbce5c0",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang-asm.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-golang.txt": "4214d8afcc3620b7fb7aa9c7695e8f659a90011a830caf0e0c72a385d7d3b2a5",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-simdjson.txt": "1c351ddfc2b959867290106301ba287d0525071630896709f74b3c3a621b0586",
+    "docs/third-party/licenses/go/sonic-v1.15.0-LICENSE-yyjson.txt": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+    "docs/third-party/licenses/go/sources.json": "46f03a5717956c944bf32e08193b22a6ee24e11f260b79c995348728baf0e5f9",
+    "docs/third-party/licenses/go/wasm2go-v0.4.15-MIT.txt": "13b7919ffbff20b54d133748a783ade8b3ecb1810144194aad70928070f2c0df"
+  },
+  "protectedReadOnlyUnchanged": {
+    "main.js": "ea2f7cb9ca9852baf735b143749830551148dd88301d0262b742f4acc562d5b6",
+    "styles.css": "c5d820899088c2d6b734f1691c837e8dde088ff8bf81f0d199ac1b61446ba43b",
+    "native/huhubot/go.mod": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+    "native/huhubot/go.sum": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad",
+    "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+    "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934",
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    ".agents/skills/dev/references/licensing.md": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+  },
+  "NOTICEByteUnchanged": {
+    "sha256": "8062897bb205f16e5f553360a24583cfe9b85cf60051fa1558233cc37fcd1cee"
+  },
+  "locks": {
+    "go.mod": "f75bb42bc7afa211ef83ccea510043658e9c624c56875b2e974b97da0c0387c7",
+    "go.sum": "414a2e043d0ae6c7635a410f99f637fef061270c92517c0a5c8ca9567da5cbad"
+  },
+  "nonTestProductionInputCount": 167,
+  "windowProductionTreeSha256": "fc3010339f7560367301e4cc7100aa57b20eb5def205607df97e253359b1281e",
+  "selectedCompiledFilesSha256": "3b933b325826aaa2a6a0e7742f9535d9bdd17bfafdefba04c89c26551e244658",
+  "closureManifestSha256": "c4fdd359c60915764abbf4021f2a45c560a644ba9ac29b9204af12472a670322",
+  "finalLicenseSourcesSha256": "a58133449f6538b4b55fdde67402396df6ee0d667ed4036f63d4a8e3bba7fec3",
+  "thirdPartyUnion": 45,
+  "withGoRuntime": 46,
+  "oldGoNoticeSectionsRetainedUnchanged": 41,
+  "nonGoNoticesUnchanged": true,
+  "docsCheck": "inner1 / outer126 / Wait; four external document findings; none in 111 docs"
+}

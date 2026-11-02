@@ -1,6 +1,7 @@
-import { EXPENSE_ROOT } from '../../../../shared/storage/vault-layout';
+import { EXPENSE_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { requireDailyRecords } from '../../../../shared/storage/document-validation';
-import { collectionDocument as doc, recordRows, type DocumentCollectionCodec } from '../../../../shared/storage/document-collection';
+import { collectionDocument as doc, recordRows, type DocumentCollectionCodec,
+} from '../../../../shared/storage/document-collection';
 import { emptyData, normalizeData, type ExpenseData } from './model';
 
 const root = EXPENSE_ROOT;
@@ -16,11 +17,11 @@ export const expenseDocuments: DocumentCollectionCodec<ExpenseData> = {
 			days.set(record.date, rows);
 		}
 		return [
-			doc('expense-settings', `${root}/分类.md`, 'expense-settings', settings),
+			doc('expense-settings', `${root}/${VISIBLE_NAMES.expenseFile}`, 'expense-settings', settings),
 			...[...days].map(([date, rows]) =>
 				doc(
 					`expense:${date}`,
-					`${root}/记录/${date.slice(0, 4)}/${date}.md`,
+					`${root}/${VISIBLE_NAMES.records}/${date.slice(0, 4)}/${date}.md`,
 					'expense-records',
 					{ date },
 					rows,

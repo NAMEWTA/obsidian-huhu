@@ -1,4 +1,4 @@
-/* src/ui/tailwind/index.css */
+/* Adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/assets/main.css; shadcn/ui (MIT). */
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @import "tw-animate-css";

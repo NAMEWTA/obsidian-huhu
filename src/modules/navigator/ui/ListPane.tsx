@@ -149,14 +149,14 @@ export function ListPane() {
 				</div>
 				{/* Narrow panes keep only the menu; everything else is inside it. */}
 				<div className="hidden shrink-0 items-center @min-[16rem]:flex">
-					<ToolbarButton label={t('navigator.search')} active={searchOpen} onClick={() => (searchOpen ? service.closeSearch() : service.openSearch())}><Search /></ToolbarButton>
+					<ToolbarButton label={t('navigator.search')} active={searchOpen} onClick={() => service.openSearch()}><Search /></ToolbarButton>
 					<ToolbarButton label={t('navigator.newNote')} onClick={() => { void service.newNote().catch(env.report); }}><FilePlus /></ToolbarButton>
 					<ToolbarButton label={t('navigator.includeDescendants')} active={appearance.includeDescendants} onClick={() => service.toggleDescendants()}><ListTree /></ToolbarButton>
 					<SortMenu appearance={appearance} settings={settings} env={env} />
 				</div>
 				<div className="shrink-0"><MoreMenu appearance={appearance} settings={settings} env={env} searchOpen={searchOpen} /></div>
 			</header>
-			{searchOpen && <SearchBar />}
+			{single && searchOpen && <SearchBar />}
 			<PaneMenu entries={menu}>
 				<div
 					ref={scrollRef}

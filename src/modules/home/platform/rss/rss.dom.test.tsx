@@ -139,9 +139,9 @@ test('articles default to the RSS folder and the OPML export lands next to them'
 	const vault = memoryVault({}, window),
 		item = { guid: 'a', title: 'Article', link: 'https://example.com/a', pubDate: 1760443200000 };
 	const note = await saveRssArticle(vault.app, { folder: '', feedTitle: 'Feed', item, markdown: '# Body' });
-	expect(note.path).toMatch(/^huhu\/RSS\//);
+	expect(note.path).toMatch(/^huhu\/rss\//);
 	const first = await exportRssOpml(vault.app, '<opml/>'),
 		second = await exportRssOpml(vault.app, '<opml/>');
-	expect(first).toBe('huhu/RSS/subscriptions.opml');
-	expect(second).toBe('huhu/RSS/subscriptions-2.opml');
+	expect(first).toBe('huhu/rss/subscriptions.opml');
+	expect(second).toBe('huhu/rss/subscriptions-2.opml');
 });

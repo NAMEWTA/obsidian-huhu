@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyWorkspace, type TerminalTabData } from './model';
 import {
+	workspaceMoveReason,
 	activateTab,
 	activeTab,
 	closeTab,
@@ -30,6 +31,14 @@ export const terminalTab = (id: string): TerminalTabData => ({
 	updatedAt: 1,
 });
 const three = () => ['a', 'b', 'c'].reduce((s, id) => openTab(s, 'g', terminalTab(id)), emptyWorkspace());
+it('normalization preserves explicit Pane identity including invalid strings for diagnosis', () => {
+	for (const paneId of ['opaque 原身份', '', 'x'.repeat(4097)]) {
+		const tab = terminalTab('a');
+		Reflect.set(tab.panes.a!, 'paneId', paneId);
+		const view = normalizeWorkspace(openTab(emptyWorkspace(), 'g', tab));
+		expect(view.tabs.a?.kind === 'terminal' && Reflect.get(view.tabs.a.panes.a!, 'paneId')).toBe(paneId);
+	}
+});
 describe('workspace operations', () => {
 	it('opens in an empty workspace and activates, without mutating the baseline', () => {
 		const original = emptyWorkspace(),
@@ -233,4 +242,29 @@ describe('page tabs', () => {
 		// Opening the page after it was closed gives one tab again, not two.
 		expect(open(closed, { page: 'board', createdAt: now }).state.groups.flatMap((group) => group.tabIds).filter((id) => id === 'tab-page-board')).toHaveLength(1);
 	});
+});
+
+it('split admission covers missing targets, duplicate groups, pinned tabs, page tabs and the four-group limit', () => {
+	let state = three();
+	expect(workspaceMoveReason(state, 'missing', { split: 'right', ofGroupId: 'g' })).toBe('missing-tab');
+	expect(workspaceMoveReason(state, 'a', { split: 'right', ofGroupId: 'missing' })).toBe('missing-group');
+	expect(workspaceMoveReason(state, 'a', { split: 'right', ofGroupId: 'g' }, 'g')).toBe('duplicate-group');
+	state = { ...state, tabs: { ...state.tabs, a: { ...state.tabs.a!, pinned: true } } };
+	state = splitGroupWithTab(state, 'a', 'g', 'left', 'g2');
+	expect(state.tabs.a?.pinned).toBe(true);
+	const page = openPage(state, 'g', { page: 'board', createdAt: 1 })!;
+	state = splitGroupWithTab(page.state, page.tabId, 'g', 'up', 'g3');
+	expect(state.tabs[page.tabId]?.kind).toBe('page');
+	state = splitGroupWithTab(state, 'b', 'g', 'down', 'g4');
+	expect(state.groups).toHaveLength(4);
+	expect(workspaceMoveReason(state, 'c', { split: 'right', ofGroupId: 'g' })).toBe('group-limit');
+	expect(splitGroupWithTab(state, 'c', 'g', 'right', 'g5')).toBe(state);
+});
+it('moving a last tab beside another group removes its old group without creating an empty group', () => {
+	const state = splitGroupWithTab(three(), 'c', 'g', 'right', 'g2');
+	expect(workspaceMoveReason(state, 'c', { split: 'left', ofGroupId: 'g' })).toBeUndefined();
+	const next = splitGroupWithTab(state, 'c', 'g', 'left', 'g3');
+	expect(next.groups.map((group) => group.id)).toEqual(['g3', 'g']);
+	expect(next.groups.every((group) => group.tabIds.length > 0)).toBe(true);
+	expect(next.tabs).toEqual(state.tabs);
 });

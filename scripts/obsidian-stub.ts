@@ -14,6 +14,8 @@ export function sanitizeHTMLToDom(html: string): DocumentFragment {
 	return template.content;
 }
 export const getIconIds = (): string[] => ['file-text', 'star', 'search'];
+/** The script host has no Obsidian icon registry; consumers retain their fallback. */
+export const getIcon = (_name: string): SVGSVGElement | null => null;
 
 // Modal base for config-modal tests: wire contentEl/containerEl to mini-DOM
 // nodes, with `parentElement` staying null so optional-chained parent calls

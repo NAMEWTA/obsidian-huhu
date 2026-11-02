@@ -1,13 +1,4 @@
-=== huhu/习惯/Walk-30-min-000-walk/习惯.md ===
----
-huhu-type: habit
-huhu-id: habit-0000-0000-walk
-id: habit-0000-0000-walk
-name: "Walk: 30 min"
-createdAt: 2026-09-15
----
-
-=== huhu/习惯/记录/2026/2026-10-01.md ===
+=== huhu/habits/records/2026/2026-10-01.md ===
 ---
 huhu-type: habit-records
 huhu-id: habit:2026-10-01
@@ -20,7 +11,7 @@ date: 2026-10-01
 | "2026-10-01:habit-0000-0000-read" | "habit-0000-0000-read" |
 <!-- /huhu:records -->
 
-=== huhu/习惯/记录/2026/2026-10-02.md ===
+=== huhu/habits/records/2026/2026-10-02.md ===
 ---
 huhu-type: habit-records
 huhu-id: habit:2026-10-02
@@ -34,7 +25,16 @@ date: 2026-10-02
 | "2026-10-02:habit-0000-0000-walk" | "habit-0000-0000-walk" |
 <!-- /huhu:records -->
 
-=== huhu/习惯/阅读-000-read/习惯.md ===
+=== huhu/habits/Walk-30-min-000-walk/habit.md ===
+---
+huhu-type: habit
+huhu-id: habit-0000-0000-walk
+id: habit-0000-0000-walk
+name: "Walk: 30 min"
+createdAt: 2026-09-15
+---
+
+=== huhu/habits/阅读-000-read/habit.md ===
 ---
 huhu-type: habit
 huhu-id: habit-0000-0000-read

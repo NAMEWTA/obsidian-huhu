@@ -1,0 +1,57 @@
+name: Highlights validation
+
+on:
+  # dev is unfiltered. This pull request changes more than 3000 files, and GitHub
+  # only matches a path filter against the first 3000, so the filtered pull_request
+  # event never starts. A dev push still has to run this check.
+  push:
+    branches: ["NAMEWTA/6", "dev"]
+  pull_request:
+    paths:
+      - "src/modules/comments/**"
+      - "docs/highlights-implementation.md"
+      - ".github/workflows/highlights-workspace.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "scripts/bundle-budget.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: highlights-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  highlights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify comments and highlights, including anchor identity and persistence
+        run: pnpm exec vitest run src/modules/comments
+      - run: pnpm run lint
+      - run: pnpm run lint:css
+      - run: pnpm run build:css
+      - run: pnpm run build
+      - run: pnpm run check:bundle
+      - name: Ensure committed production assets match source
+        run: git diff --exit-code -- main.js styles.css
+      - uses: actions/upload-artifact@v4
+        with:
+          name: highlights-built-assets-${{ github.sha }}
+          path: |
+            main.js
+            styles.css
+            manifest.json
+            docs/highlights-implementation.md
+          if-no-files-found: error
+          retention-days: 7

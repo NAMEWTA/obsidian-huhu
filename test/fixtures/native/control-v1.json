@@ -1,0 +1,1946 @@
+{
+	"version": 1,
+	"cases": [
+		{
+			"name": "explicit old target",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "numeric major 1.0",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1.0,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "numeric major 1e0",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1e0,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "unknown operation",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.teleport\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "unknown parameter",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{\"surprise\":true}}",
+			"valid": false
+		},
+		{
+			"name": "unknown top field",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{},\"surprise\":true}",
+			"valid": false
+		},
+		{
+			"name": "array target",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":[],\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "wrong version",
+			"kind": "request",
+			"json": "{\"protocolVersion\":3,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "unsafe integer",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{},\"timeoutMs\":9007199254740992}",
+			"valid": false
+		},
+		{
+			"name": "valid response",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":true,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{}}",
+			"valid": true
+		},
+		{
+			"name": "false without error",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":false,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{}}",
+			"valid": false
+		},
+		{
+			"name": "true with error",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":true,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{},\"error\":{\"code\":\"EFFECT_UNKNOWN\",\"message\":\"lost\"}}",
+			"valid": false
+		},
+		{
+			"name": "unknown effect",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":true,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"maybe\",\"data\":{}}",
+			"valid": false
+		},
+		{
+			"name": "unknown phase",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":true,\"operation\":\"terminal.get\",\"phase\":\"idle-means-success\",\"effect\":\"none\",\"data\":{}}",
+			"valid": false
+		},
+		{
+			"name": "unknown error",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":false,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{},\"error\":{\"code\":\"NEW_RANDOM_ERROR\",\"message\":\"lost\"}}",
+			"valid": false
+		},
+		{
+			"name": "unknown is not none",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":false,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{},\"error\":{\"code\":\"EFFECT_UNKNOWN\",\"message\":\"lost\"}}",
+			"valid": false
+		},
+		{
+			"name": "accurate effect unknown",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":false,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"unknown\",\"data\":{},\"error\":{\"code\":\"EFFECT_UNKNOWN\",\"message\":\"lost\"}}",
+			"valid": true
+		},
+		{
+			"name": "register",
+			"kind": "helper",
+			"json": "{\"type\":\"control-register\",\"controlId\":\"c1\",\"scope\":{\"vaultId\":\"v\",\"deviceId\":\"d\",\"instanceId\":\"i\",\"rootPath\":\"/v\",\"root\":{\"canonicalPath\":\"/v\",\"dev\":\"1\",\"ino\":\"2\"}}}",
+			"valid": true
+		},
+		{
+			"name": "request forward",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"request\":{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}}",
+			"valid": true
+		},
+		{
+			"name": "literal invalid internal id",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",\"controlId\":\"c1\",\"bridgeId\":\"b/1\",\"request\":{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}}",
+			"valid": false
+		},
+		{
+			"name": "extra internal field",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"request\":{\"protocolVersion\":1,\"requestId\":\"r1\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}},\"surprise\":0}",
+			"valid": false
+		},
+		{
+			"name": "legacy large channel shape",
+			"kind": "helper",
+			"json": "{\"type\":\"history-result\",\"id\":\"legacy\",\"data\":{\"nested\":{\"type\":\"control-request\"}}}",
+			"valid": true
+		},
+		{
+			"name": "nested legacy duplicate keys preserved",
+			"kind": "helper",
+			"json": "{\"type\":\"cookies-result\",\"value\":{\"a\":1,\"a\":2}}",
+			"valid": true
+		},
+		{
+			"name": "duplicate new type",
+			"kind": "helper",
+			"json": "{\"type\":\"control-unregister\",\"type\":\"control-unregister\",\"controlId\":\"c1\"}",
+			"valid": false
+		},
+		{
+			"name": "escaped duplicate type",
+			"kind": "helper",
+			"json": "{\"type\":\"control-unregister\",\"\\u0074ype\":\"history-result\",\"controlId\":\"c1\"}",
+			"valid": false
+		},
+		{
+			"name": "legacy first mixed type",
+			"kind": "helper",
+			"json": "{\"type\":\"history-result\",\"type\":\"control-unregister\",\"controlId\":\"c1\"}",
+			"valid": false
+		},
+		{
+			"name": "duplicate nested request key",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"request\":{\"protocolVersion\":1,\"requestId\":\"r1\",\"requestId\":\"r2\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}}",
+			"valid": false
+		},
+		{
+			"name": "unknown reserved message",
+			"kind": "helper",
+			"json": "{\"type\":\"control-surprise\",\"controlId\":\"c1\"}",
+			"valid": false
+		},
+		{
+			"name": "surrogate id",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"\\ud800\",\"operation\":\"terminal.get\",\"target\":{\"sessionId\":\"legacy/id\",\"runtimeId\":\"run\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "trailing JSON",
+			"kind": "request",
+			"json": "{\"protocolVersion\": 1, \"requestId\": \"r1\", \"operation\": \"terminal.get\", \"target\": {\"sessionId\": \"legacy/id\", \"runtimeId\": \"run\"}, \"params\": {}} {}",
+			"valid": false
+		},
+		{
+			"name": "registration auth",
+			"kind": "auth",
+			"json": "{\"protocolVersion\":1,\"controlId\":\"c1\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+			"valid": true
+		},
+		{
+			"name": "short auth",
+			"kind": "auth",
+			"json": "{\"protocolVersion\":1,\"controlId\":\"c1\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+			"valid": false
+		},
+		{
+			"name": "locator",
+			"kind": "locator",
+			"json": "{\"protocolVersion\":1,\"controlId\":\"c1\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"endpoint\":\"/private/socket\",\"scope\":{\"vaultId\":\"v\",\"deviceId\":\"d\",\"instanceId\":\"i\",\"rootPath\":\"/v\",\"root\":{\"canonicalPath\":\"/v\",\"dev\":\"1\",\"ino\":\"2\"}}}",
+			"valid": true
+		},
+		{
+			"name": "locator extra",
+			"kind": "locator",
+			"json": "{\"protocolVersion\":1,\"controlId\":\"c1\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"endpoint\":\"/private/socket\",\"scope\":{\"vaultId\":\"v\",\"deviceId\":\"d\",\"instanceId\":\"i\",\"rootPath\":\"/v\",\"root\":{\"canonicalPath\":\"/v\",\"dev\":\"1\",\"ino\":\"2\"}},\"pid\":4}",
+			"valid": false
+		},
+		{
+			"name": "control-registered",
+			"kind": "helper",
+			"json": "{\"type\":\"control-registered\",\"controlId\":\"c1\",\"endpoint\":\"/private/socket\",\"locator\":\"/private/locator\"}",
+			"valid": true
+		},
+		{
+			"name": "control-unregister",
+			"kind": "helper",
+			"json": "{\"type\":\"control-unregister\",\"controlId\":\"c1\"}",
+			"valid": true
+		},
+		{
+			"name": "control-unregistered",
+			"kind": "helper",
+			"json": "{\"type\":\"control-unregistered\",\"controlId\":\"c1\"}",
+			"valid": true
+		},
+		{
+			"name": "control-admitted",
+			"kind": "helper",
+			"json": "{\"type\":\"control-admitted\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"progress\":{\"phase\":\"admitted\",\"effect\":\"none\"}}",
+			"valid": true
+		},
+		{
+			"name": "control-progress",
+			"kind": "helper",
+			"json": "{\"type\":\"control-progress\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"progress\":{\"phase\":\"admitted\",\"effect\":\"none\"}}",
+			"valid": true
+		},
+		{
+			"name": "control-result",
+			"kind": "helper",
+			"json": "{\"type\":\"control-result\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"response\":{\"protocolVersion\":1,\"requestId\":\"r1\",\"ok\":true,\"operation\":\"terminal.get\",\"phase\":\"completed\",\"effect\":\"none\",\"data\":{}}}",
+			"valid": true
+		},
+		{
+			"name": "control-cancel",
+			"kind": "helper",
+			"json": "{\"type\":\"control-cancel\",\"controlId\":\"c1\",\"bridgeId\":\"b1\",\"reason\":\"disconnected\"}",
+			"valid": true
+		},
+		{
+			"name": "control-settled",
+			"kind": "helper",
+			"json": "{\"type\":\"control-settled\",\"controlId\":\"c1\",\"bridgeId\":\"b1\"}",
+			"valid": true
+		},
+		{
+			"name": "control-error",
+			"kind": "helper",
+			"json": "{\"type\":\"control-error\",\"controlId\":\"c1\",\"error\":{\"code\":\"BUSY\",\"message\":\"registration closing\"}}",
+			"valid": true
+		},
+		{
+			"name": "invalid UTF8 request",
+			"kind": "request",
+			"bytes": [
+				123,
+				34,
+				120,
+				34,
+				58,
+				34,
+				255,
+				34,
+				125
+			],
+			"valid": false
+		},
+		{
+			"name": "wrapped raw request counts inner whitespace",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",\"controlId\":\"c\",\"bridgeId\":\"b\",\"request\":{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                \"protocolVersion\":1,\"requestId\":\"r\",\"operation\":\"terminal.get\"}}",
+			"valid": false
+		},
+		{
+			"name": "wrapper whitespace stays in fixed reserve",
+			"kind": "helper",
+			"json": "{\"type\":\"control-request\",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 \"controlId\":\"c\",\"bridgeId\":\"b\",\"request\":{\"protocolVersion\":1,\"requestId\":\"r\",\"operation\":\"terminal.get\"}}",
+			"valid": false
+		},
+		{
+			"name": "long control discriminator cannot fall through to legacy",
+			"kind": "helper",
+			"json": "{\"type\":\"control-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "discriminator counts UTF8 bytes not code units",
+			"kind": "helper",
+			"json": "{\"type\":\"control-中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中\"}",
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "unknown short legacy tag retains old object semantics",
+			"kind": "helper",
+			"json": "{\"type\":\"legacy-unknown-tag\",\"data\":{\"unknown\":true}}",
+			"valid": true
+		},
+		{
+			"name": "T08 wait valid",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"w\",\"operation\":\"agent.wait\",\"params\":{\"state\":\"blocked\"}}",
+			"valid": true
+		},
+		{
+			"name": "T08 wait invalid",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"w\",\"operation\":\"agent.wait\",\"params\":{\"state\":\"success\"}}",
+			"valid": false
+		},
+		{
+			"name": "T08 editor-ready",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": true
+		},
+		{
+			"name": "T08 editor-begin",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": true
+		},
+		{
+			"name": "T08 editor-result",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"completed\"}}",
+			"valid": true
+		},
+		{
+			"name": "T08 editor-close",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-close\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\"}",
+			"valid": true
+		},
+		{
+			"name": "T08 editor-settled",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-settled\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1}",
+			"valid": true
+		},
+		{
+			"name": "T08 app authentication",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\"}",
+			"valid": true,
+			"direction": "app-to-native"
+		},
+		{
+			"name": "T08 begin correlation",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": true,
+			"direction": "node-to-native"
+		},
+		{
+			"name": "T08 ready correlation",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": true,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 completed result",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"completed\"}}",
+			"valid": true,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 wrong direction",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\"}",
+			"valid": false,
+			"direction": "native-to-app"
+		},
+		{
+			"name": "T08 CLI purpose cannot authenticate app",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-control\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\"}",
+			"valid": false,
+			"direction": "app-to-native"
+		},
+		{
+			"name": "T08 app auth cannot enter stdio",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\",\"bindingId\":\"runtime-7:source:1\",\"programEpoch\":\"runtime-7:program:1\"},\"sourceInstance\":\"source-7\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'sid': 0}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":0,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'sid': [7]}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":[7],\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'version': 0}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":0,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'op': 1.5}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1.5,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'totalBytes': 262145}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":262145,\"remainingMs\":10000}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'remainingMs': 10001}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10001}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'remainingMs': 0}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":0}",
+			"valid": false
+		},
+		{
+			"name": "T08 begin rejects {'text': 'BODY MUST BE BINARY'}",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000,\"text\":\"BODY MUST BE BINARY\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 JSON numeric spellings normalize before actual use",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-begin\",\"version\":1,\"sid\":7e0,\"editorId\":\"editor-7\",\"op\":1.0,\"sourceInstance\":\"source-7\",\"totalBytes\":3,\"remainingMs\":10000}",
+			"valid": true
+		},
+		{
+			"name": "T08 unknown namespace",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-unrecognized\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 escaped duplicate root discriminator",
+			"kind": "helper",
+			"json": "{\"type\":\"editor-close\",\"\\u0074ype\":\"editor-close\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 duplicate nested identity",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\",\"runtimeId\":\"other\"},\"sourceInstance\":\"source-7\"}",
+			"valid": false,
+			"direction": "app-to-native"
+		},
+		{
+			"name": "T08 inconsistent editor result adapter-applied",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"none\"}}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 inconsistent editor result written",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"written\",\"effect\":\"completed\"}}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 inconsistent editor result none",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"none\",\"effect\":\"unknown\"}}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 inconsistent editor result ['adapter-applied']",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":[\"adapter-applied\"],\"effect\":\"completed\"}}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 captured sid",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node",
+			"expected": {
+				"version": 1,
+				"sid": 8,
+				"editorId": "editor-7"
+			}
+		},
+		{
+			"name": "T08 captured editorId",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node",
+			"expected": {
+				"version": 1,
+				"sid": 7,
+				"editorId": "old-editor"
+			}
+		},
+		{
+			"name": "T08 captured sourceInstance",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node",
+			"expected": {
+				"version": 1,
+				"sid": 7,
+				"editorId": "editor-7",
+				"sourceInstance": "old-source"
+			}
+		},
+		{
+			"name": "T08 captured runtime identity",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node",
+			"expected": {
+				"version": 1,
+				"sid": 7,
+				"editorId": "editor-7",
+				"identity": {
+					"runtimeId": "old-runtime"
+				}
+			}
+		},
+		{
+			"name": "T08 captured op",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"completed\"}}",
+			"valid": false,
+			"direction": "native-to-node",
+			"expected": {
+				"version": 1,
+				"sid": 7,
+				"editorId": "editor-7",
+				"op": 2
+			}
+		},
+		{
+			"name": "T08 bounded opaque identity",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": true,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 UTF8 identity not just UTF16 count",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 source UTF8 budget",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 whole editor-ready exact budget",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ",
+			"valid": true,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 whole editor-ready budget plus one",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-ready\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\",\"provider\":\"pi\",\"profileId\":\"pi-1_4_0\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 whole editor-auth exact budget",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ",
+			"valid": true,
+			"direction": "app-to-native"
+		},
+		{
+			"name": "T08 whole editor-auth budget plus one",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-auth\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"sourceInstance\":\"source-7\"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ",
+			"valid": false,
+			"direction": "app-to-native"
+		},
+		{
+			"name": "T08 whole editor-result exact budget",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"completed\"}}                                                                                                                                                                                                                                                                                                                                                                                             ",
+			"valid": true,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 whole editor-result budget plus one",
+			"kind": "editor",
+			"json": "{\"type\":\"editor-result\",\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"op\":1,\"result\":{\"state\":\"adapter-applied\",\"effect\":\"completed\"}}                                                                                                                                                                                                                                                                                                                                                                                              ",
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 capability file",
+			"kind": "editor-capability",
+			"json": "{\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"endpoint\":\"/tmp/owned-app/socket\"}",
+			"valid": true
+		},
+		{
+			"name": "T08 capability wrong purpose",
+			"kind": "editor-capability",
+			"json": "{\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-control\",\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"endpoint\":\"/tmp/owned-app/socket\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 capability rejects uppercase/incomplete secret",
+			"kind": "editor-capability",
+			"json": "{\"version\":1,\"sid\":7,\"editorId\":\"editor-7\",\"purpose\":\"huhu-editor\",\"token\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"identity\":{\"runtimeId\":\"runtime-7\"},\"endpoint\":\"/tmp/owned-app/socket\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 launch enrollment",
+			"kind": "editor-launch",
+			"json": "{\"identity\":{\"runtimeId\":\"runtime-7\"},\"provider\":\"pi\",\"recipe\":{\"version\":1,\"profileId\":\"pi-1_4_0\",\"artifactDigest\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"executable\":{\"path\":\"/verified/pi/entry.js\",\"dev\":\"1\",\"ino\":\"2\"},\"entry\":{\"path\":\"/verified/pi/entry.js\",\"dev\":\"1\",\"ino\":\"2\"}}}",
+			"valid": true
+		},
+		{
+			"name": "T08 launch no guessed provider",
+			"kind": "editor-launch",
+			"json": "{\"identity\":{\"runtimeId\":\"runtime-7\"},\"provider\":\"codex\",\"recipe\":{\"version\":1,\"profileId\":\"pi-1_4_0\",\"artifactDigest\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"executable\":{\"path\":\"/verified/pi/entry.js\",\"dev\":\"1\",\"ino\":\"2\"},\"entry\":{\"path\":\"/verified/pi/entry.js\",\"dev\":\"1\",\"ino\":\"2\"}}}",
+			"valid": false
+		},
+		{
+			"name": "T08 invalid UTF8 editor metadata",
+			"kind": "editor",
+			"bytes": [
+				123,
+				34,
+				120,
+				34,
+				58,
+				34,
+				255,
+				34,
+				125
+			],
+			"valid": false,
+			"direction": "native-to-node"
+		},
+		{
+			"name": "T08 observation cancel valid",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"observe-cancel\",\"protocolVersion\":1}",
+			"valid": true
+		},
+		{
+			"name": "T08 observation cancel duplicate",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"observe-cancel\",\"protocolVersion\":1,\"protocolVersion\":1}",
+			"valid": false
+		},
+		{
+			"name": "T08 observation cancel wrong purpose",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"editor-close\",\"protocolVersion\":1}",
+			"valid": false
+		},
+		{
+			"name": "T08 observation cancel unknown field",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"observe-cancel\",\"protocolVersion\":1,\"requestId\":\"not-a-new-call\"}",
+			"valid": false
+		},
+		{
+			"name": "T08 observation cancel exact raw bytes",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"observe-cancel\",\"protocolVersion\":1}                                                                                   ",
+			"valid": true
+		},
+		{
+			"name": "T08 observation cancel raw overflow",
+			"kind": "observation-cancel",
+			"json": "{\"type\":\"observe-cancel\",\"protocolVersion\":1}                                                                                    ",
+			"valid": false
+		},
+		{
+			"name": "pane list finite page",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"limit\":7,\"cursor\":\"literal/\\u4e2d\\u6587\"}}",
+			"valid": true
+		},
+		{
+			"name": "pane list rejects zero limit",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"limit\":0}}",
+			"valid": false
+		},
+		{
+			"name": "pane list rejects over limit",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"limit\":1001}}",
+			"valid": false
+		},
+		{
+			"name": "pane list rejects fractional limit",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"limit\":1.5}}",
+			"valid": false
+		},
+		{
+			"name": "pane list rejects empty cursor",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"cursor\":\"\"}}",
+			"valid": false
+		},
+		{
+			"name": "pane list rejects over cursor",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"cursor\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}}",
+			"valid": false
+		},
+		{
+			"name": "pane list rejects unknown field",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.list\",\"target\":{\"spaceId\":\"B\"},\"params\":{\"allSpaces\":true}}",
+			"valid": false
+		},
+		{
+			"name": "pane resize accepts 0.15",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":0.15}}",
+			"valid": true
+		},
+		{
+			"name": "pane resize accepts 0.5",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":0.5}}",
+			"valid": true
+		},
+		{
+			"name": "pane resize accepts 0.85",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":0.85}}",
+			"valid": true
+		},
+		{
+			"name": "pane resize rejects 0.149999",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":0.149999}}",
+			"valid": false
+		},
+		{
+			"name": "pane resize rejects 0.850001",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":0.850001}}",
+			"valid": false
+		},
+		{
+			"name": "pane resize rejects None",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":null}}",
+			"valid": false
+		},
+		{
+			"name": "pane resize rejects 0.5",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.resize\",\"target\":{\"paneId\":\"pn1.source\"},\"params\":{\"ratio\":\"0.5\"}}",
+			"valid": false
+		},
+		{
+			"name": "pane opaque UTF8 exact 4096 bytes",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.focus\",\"target\":{\"paneId\":\"\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2dx\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "pane opaque UTF8 over 4096 bytes",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.focus\",\"target\":{\"paneId\":\"\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2dxx\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "pane legacy opaque exact 4096 bytes",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.close\",\"target\":{\"paneId\":\"lp1.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "pane legacy opaque over 4096 bytes",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.close\",\"target\":{\"paneId\":\"lp1.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "pane wire shape retains escaped control as untrusted identity DTO",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.focus\",\"target\":{\"paneId\":\"bad\\nidentity\"},\"params\":{}}",
+			"valid": true
+		},
+		{
+			"name": "pane request rejects unknown target field",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.focus\",\"target\":{\"paneId\":\"p\",\"paneTitle\":\"guess\"},\"params\":{}}",
+			"valid": false
+		},
+		{
+			"name": "pane split request names source and inserted Session separately",
+			"kind": "request",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.split\",\"target\":{\"instanceId\":\"fixture-instance\",\"paneId\":\"pane-B\",\"sessionId\":\"session-C\",\"runtimeId\":\"runtime-C\"},\"params\":{\"direction\":\"row\"}}",
+			"valid": true
+		},
+		{
+			"name": "pane split response source target and inserted data example",
+			"kind": "response",
+			"json": "{\"protocolVersion\":1,\"requestId\":\"pane-fixture\",\"operation\":\"pane.split\",\"ok\":true,\"phase\":\"completed\",\"effect\":\"completed\",\"target\":{\"instanceId\":\"fixture-instance\",\"spaceId\":\"B\",\"sessionId\":\"session-B\",\"runtimeId\":\"runtime-B\",\"paneId\":\"pane-B\"},\"data\":{\"insertedPane\":{\"instanceId\":\"fixture-instance\",\"spaceId\":\"B\",\"sessionId\":\"session-C\",\"runtimeId\":\"runtime-C\",\"paneId\":\"pane-C\"}}}",
+			"valid": true
+		}
+	],
+	"editorParts": [
+		{
+			"name": "UTF8 body part",
+			"bytes": [
+				0,
+				0,
+				0,
+				11,
+				2,
+				0,
+				0,
+				0,
+				1,
+				228,
+				184,
+				173,
+				230,
+				150,
+				135
+			],
+			"valid": true
+		},
+		{
+			"name": "fragment can split UTF8",
+			"bytes": [
+				0,
+				0,
+				0,
+				6,
+				2,
+				0,
+				0,
+				0,
+				1,
+				228
+			],
+			"valid": true
+		},
+		{
+			"name": "zero op",
+			"bytes": [
+				0,
+				0,
+				0,
+				11,
+				2,
+				0,
+				0,
+				0,
+				0,
+				228,
+				184,
+				173,
+				230,
+				150,
+				135
+			],
+			"valid": false
+		},
+		{
+			"name": "wrong kind",
+			"bytes": [
+				0,
+				0,
+				0,
+				11,
+				1,
+				0,
+				0,
+				0,
+				1,
+				228,
+				184,
+				173,
+				230,
+				150,
+				135
+			],
+			"valid": false
+		},
+		{
+			"name": "mismatched length",
+			"bytes": [
+				0,
+				0,
+				0,
+				12,
+				2,
+				0,
+				0,
+				0,
+				1,
+				228,
+				184,
+				173,
+				230,
+				150,
+				135
+			],
+			"valid": false
+		},
+		{
+			"name": "short header",
+			"bytes": [
+				0,
+				0,
+				0,
+				1,
+				2
+			],
+			"valid": false
+		}
+	],
+	"paneSplitExample": {
+		"kind": "illustrative-contract-only-not-a-layout-handler-result",
+		"requestName": "pane split request names source and inserted Session separately",
+		"responseName": "pane split response source target and inserted data example",
+		"source": {
+			"instanceId": "fixture-instance",
+			"spaceId": "B",
+			"sessionId": "session-B",
+			"runtimeId": "runtime-B",
+			"paneId": "pane-B"
+		},
+		"inserted": {
+			"instanceId": "fixture-instance",
+			"spaceId": "B",
+			"sessionId": "session-C",
+			"runtimeId": "runtime-C",
+			"paneId": "pane-C"
+		}
+	},
+	"paneCliCases": [
+		{
+			"name": "pane list only inherits Space",
+			"args": [
+				"pane",
+				"list",
+				"--limit",
+				"7",
+				"--cursor",
+				"literal/中文"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.list",
+				"target": {
+					"instanceId": "fixture-instance",
+					"spaceId": "A"
+				},
+				"params": {
+					"limit": 7,
+					"cursor": "literal/中文"
+				}
+			}
+		},
+		{
+			"name": "same cwd explicit Space B wins hint A",
+			"args": [
+				"pane",
+				"list",
+				"--space",
+				"B"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.list",
+				"target": {
+					"instanceId": "fixture-instance",
+					"spaceId": "B"
+				},
+				"params": {}
+			}
+		},
+		{
+			"name": "attach explicit Session C has no caller Space or runtime",
+			"args": [
+				"pane",
+				"attach",
+				"--session",
+				"session-C"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.attach",
+				"target": {
+					"instanceId": "fixture-instance",
+					"sessionId": "session-C"
+				},
+				"params": {}
+			}
+		},
+		{
+			"name": "focus explicit Pane has no caller Space or runtime",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"pane-B"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.focus",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "pane-B"
+				},
+				"params": {}
+			}
+		},
+		{
+			"name": "split third Session runtime independent of source Pane",
+			"args": [
+				"pane",
+				"split",
+				"--pane",
+				"pane-B",
+				"--session",
+				"session-C",
+				"--runtime",
+				"runtime-C",
+				"--direction",
+				"row"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.split",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "pane-B",
+					"sessionId": "session-C",
+					"runtimeId": "runtime-C"
+				},
+				"params": {
+					"direction": "row"
+				}
+			}
+		},
+		{
+			"name": "source runtime is never inherited for split",
+			"args": [
+				"pane",
+				"split",
+				"--pane",
+				"pane-B",
+				"--session",
+				"session-C",
+				"--direction",
+				"column"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.split",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "pane-B",
+					"sessionId": "session-C"
+				},
+				"params": {
+					"direction": "column"
+				}
+			}
+		},
+		{
+			"name": "opaque inline flag-like Pane ID",
+			"args": [
+				"pane",
+				"focus",
+				"--pane=--help"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.focus",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "--help"
+				},
+				"params": {}
+			}
+		},
+		{
+			"name": "literal Unicode case and spaces preserved",
+			"args": [
+				"pane",
+				"close",
+				"--pane",
+				" Pane/中文 é🙂-ONE "
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.close",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": " Pane/中文 é🙂-ONE "
+				},
+				"params": {}
+			}
+		},
+		{
+			"name": "inclusive resize 0.15",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"pane-B",
+				"--ratio",
+				"0.15"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.resize",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "pane-B"
+				},
+				"params": {
+					"ratio": 0.15
+				}
+			}
+		},
+		{
+			"name": "inclusive resize 0.85",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"pane-B",
+				"--ratio",
+				"0.85"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "pane.resize",
+				"target": {
+					"instanceId": "fixture-instance",
+					"paneId": "pane-B"
+				},
+				"params": {
+					"ratio": 0.85
+				}
+			}
+		},
+		{
+			"name": "attach has no explicit Session",
+			"args": [
+				"pane",
+				"attach"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "split has no explicit inserted Session",
+			"args": [
+				"pane",
+				"split",
+				"--pane",
+				"p",
+				"--direction",
+				"row"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "focus has no explicit Pane",
+			"args": [
+				"pane",
+				"focus"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "close has no explicit Pane",
+			"args": [
+				"pane",
+				"close"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "missing flag value",
+			"args": [
+				"pane",
+				"focus",
+				"--pane"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "duplicate Pane flag",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"p",
+				"--pane=q"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "unknown flag",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"p",
+				"--mystery",
+				"value"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "separator is not a positional Pane",
+			"args": [
+				"pane",
+				"focus",
+				"--",
+				"p"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "session is not a source Pane",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"p",
+				"--session",
+				"s"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "Pane is not an attach Session",
+			"args": [
+				"pane",
+				"attach",
+				"--session",
+				"s",
+				"--pane",
+				"p"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "list does not address a runtime",
+			"args": [
+				"pane",
+				"list",
+				"--space",
+				"B",
+				"--runtime",
+				"r"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "control char in Pane",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"p\nforged"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "DEL in Pane",
+			"args": [
+				"pane",
+				"focus",
+				"--pane",
+				"p"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "unknown direction",
+			"args": [
+				"pane",
+				"split",
+				"--pane",
+				"p",
+				"--session",
+				"s",
+				"--direction",
+				"diagonal"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "zero list limit",
+			"args": [
+				"pane",
+				"list",
+				"--limit",
+				"0"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "over list limit",
+			"args": [
+				"pane",
+				"list",
+				"--limit",
+				"1001"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "duplicate list limit",
+			"args": [
+				"pane",
+				"list",
+				"--limit",
+				"2",
+				"--limit",
+				"3"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "invalid ratio 0.149999",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"p",
+				"--ratio",
+				"0.149999"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "invalid ratio 0.850001",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"p",
+				"--ratio",
+				"0.850001"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "invalid ratio NaN",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"p",
+				"--ratio",
+				"NaN"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "invalid ratio Infinity",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"p",
+				"--ratio",
+				"Infinity"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "invalid ratio -Infinity",
+			"args": [
+				"pane",
+				"resize",
+				"--pane",
+				"p",
+				"--ratio",
+				"-Infinity"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_SPACE_ID": "A",
+				"HUHU_STABLE_SESSION_ID": "session-A",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		}
+	],
+	"inboxCliCases": [
+		{
+			"name": "message send uses explicit to-session and local text",
+			"args": [
+				"message",
+				"send",
+				"--to-session",
+				"session-B",
+				"--text",
+				"hello",
+				"--message",
+				"message-1"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_VAULT_ID": "fixture-vault",
+				"HUHU_STABLE_SESSION_ID": "caller-session",
+				"HUHU_SESSION_ID": "runtime-A",
+				"PWD": "/same/cwd"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "message.send",
+				"target": {
+					"instanceId": "fixture-instance",
+					"vaultId": "fixture-vault",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"text": "hello",
+					"message": "message-1"
+				}
+			}
+		},
+		{
+			"name": "message send accepts CLI-local stdin marker",
+			"args": [
+				"message",
+				"send",
+				"--to-session",
+				"session-B",
+				"--stdin",
+				"--message",
+				"message-stdin"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_VAULT_ID": "fixture-vault"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "message.send",
+				"target": {
+					"instanceId": "fixture-instance",
+					"vaultId": "fixture-vault",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"stdin": true,
+					"message": "message-stdin"
+				}
+			}
+		},
+		{
+			"name": "message send accepts CLI-local file marker",
+			"args": [
+				"message",
+				"send",
+				"--to-session",
+				"session-B",
+				"--file",
+				"/tmp/message.txt",
+				"--message",
+				"message-file"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_VAULT_ID": "fixture-vault"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "message.send",
+				"target": {
+					"instanceId": "fixture-instance",
+					"vaultId": "fixture-vault",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"file": "/tmp/message.txt",
+					"message": "message-file"
+				}
+			}
+		},
+		{
+			"name": "message send rejects session alias conflict",
+			"args": [
+				"message",
+				"send",
+				"--to-session",
+				"session-B",
+				"--session",
+				"session-A",
+				"--text",
+				"hello"
+			],
+			"env": {},
+			"valid": false,
+			"code": "INVALID_ARGUMENT"
+		},
+		{
+			"name": "message send requires explicit recipient",
+			"args": [
+				"message",
+				"send",
+				"--text",
+				"hello"
+			],
+			"env": {
+				"HUHU_STABLE_SESSION_ID": "caller-session",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "inbox list requires explicit recipient",
+			"args": [
+				"inbox",
+				"list",
+				"--limit",
+				"10"
+			],
+			"env": {
+				"HUHU_STABLE_SESSION_ID": "caller-session",
+				"PWD": "/same/cwd"
+			},
+			"valid": false,
+			"code": "TARGET_REQUIRED"
+		},
+		{
+			"name": "inbox list preserves explicit session and bounded cursor",
+			"args": [
+				"inbox",
+				"list",
+				"--session",
+				"session-B",
+				"--limit",
+				"10",
+				"--cursor",
+				"cursor-1"
+			],
+			"env": {
+				"HUHU_INSTANCE_ID": "fixture-instance",
+				"HUHU_VAULT_ID": "fixture-vault",
+				"HUHU_STABLE_SESSION_ID": "caller-session"
+			},
+			"valid": true,
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "huhu",
+				"operation": "inbox.list",
+				"target": {
+					"instanceId": "fixture-instance",
+					"vaultId": "fixture-vault",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"limit": 10,
+					"cursor": "cursor-1"
+				}
+			}
+		}
+	],
+	"inboxCases": [
+		{
+			"name": "message send wire identity and recipient",
+			"operation": "message.send",
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "wire-message",
+				"operation": "message.send",
+				"target": {
+					"spaceId": "space-B",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"message": "message-1",
+					"text": "hello",
+					"source": "cli",
+					"references": []
+				}
+			},
+			"valid": true
+		},
+		{
+			"name": "inbox read carries only message identity",
+			"operation": "inbox.read",
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "wire-read",
+				"operation": "inbox.read",
+				"params": {
+					"message": "message-1"
+				}
+			},
+			"valid": true
+		},
+		{
+			"name": "message send rejects missing identity",
+			"operation": "message.send",
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "wire-message",
+				"operation": "message.send",
+				"target": {
+					"spaceId": "space-B",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"text": "hello",
+					"source": "cli",
+					"references": []
+				}
+			},
+			"valid": false
+		},
+		{
+			"name": "wire rejects CLI-local file field",
+			"operation": "message.send",
+			"request": {
+				"protocolVersion": 1,
+				"requestId": "wire-message",
+				"operation": "message.send",
+				"target": {
+					"spaceId": "space-B",
+					"sessionId": "session-B"
+				},
+				"params": {
+					"message": "message-1",
+					"text": "hello",
+					"file": "/tmp/message.txt"
+				}
+			},
+			"valid": false
+		}
+	]
+}

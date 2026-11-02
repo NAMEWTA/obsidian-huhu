@@ -1,15 +1,15 @@
 import type { App, TFile } from 'obsidian';
 import { nowMoment, type MomentLike } from '../../../../host/obsidian/datetime';
 import { withDefaultProperties } from '../../../../shared/storage/note-defaults';
-import { captureDayOf, inboxFileName } from '../../../../shared/storage/vault-layout';
+import { VISIBLE_NAMES, captureDayOf, inboxFileName } from '../../../../shared/storage/vault-layout';
 import { DEFAULT_MEMO_ROOT } from '../../core/board/default-paths';
 import { createVaultNote, cleanVaultFolder } from './vault-notes';
 
 /*
- * The inbox is a flat folder of Markdown files (root `huhu/收件箱` unless the board settings say otherwise):
+ * The inbox is a flat folder of Markdown files (root `huhu/inbox` unless the board settings say otherwise):
  *   - an item is one note, `<root>/YYYY-MM-DD-HHmm-<title>.md`; the date prefix orders items in the file list and
  *     tells the board when one was made;
- *   - the fleeting thoughts of a day are one file, `<root>/YYYY-MM-DD-闪念.md` (see `captureDayPath`).
+ *   - the fleeting thoughts of a day are one file, `<root>/YYYY-MM-DD-captures.md` (see `captureDayPath`).
  */
 
 /** The inbox folder the board settings name, as a clean vault path; an empty or invalid setting means the default folder. */
@@ -31,14 +31,14 @@ export async function createMemoFile(
 	body = '',
 	now: MomentLike = nowMoment(),
 ): Promise<TFile> {
-	return createVaultNote(app, root, inboxFileName(title, now, 'Untitled'), withDefaultProperties(body));
+	return createVaultNote(app, root, inboxFileName(title, now, VISIBLE_NAMES.untitled), withDefaultProperties(body));
 }
 
 /** The title of an inbox file: its name without the date prefix. */
 export function memoTitle(file: { basename: string }): string {
 	return (
 		file.basename
-			.replace(/^迁移-[a-f0-9]+-/, '')
+			.replace(new RegExp(`^${VISIBLE_NAMES.imported}-[a-f0-9]+-`), '')
 			.replace(STAMP, '')
 			.trim() || file.basename
 	);

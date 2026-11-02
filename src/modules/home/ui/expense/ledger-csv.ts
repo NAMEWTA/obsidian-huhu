@@ -1,5 +1,7 @@
-import { Notice } from 'obsidian';
-import { EXPORTS_ROOT } from '../../../../shared/storage/vault-layout';
+import { ensureFolder } from '../../platform/calendar/daily-notes';
+import { uniqueVaultPath } from '../../platform/vault/vault-notes';
+import { Notice, type App } from 'obsidian';
+import { EXPORTS_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { CSV_HEADER, parseCsv, serializeCsv } from '../../core/expense/expense-csv';
 import { type ExpenseRecord, type ExpenseType, expenseToday, formatExpenseAmount } from '../../core/expense/model';
 import { type ExpenseService } from '../../platform/expense/expense-service';
@@ -105,9 +107,8 @@ export function ledgerCsv(service: ExpenseService) {
 			]),
 		];
 		// BOM so Excel detects UTF-8 (parseCsv strips it on the way back in).
-		const path = `${EXPORTS_ROOT}/expense-export-${expenseToday()}.csv`;
 		try {
-			await service.writeVaultFile(path, '\uFEFF' + serializeCsv(lines));
+			const path = await createLedgerExport(service.getApp(), '\uFEFF' + serializeCsv(lines), expenseToday());
 			new Notice(t('expense.ledger.exported', { n: lastFiltered.length, path }));
 		} catch {
 			new Notice(t('expense.ledger.exportFailed'));
@@ -115,4 +116,19 @@ export function ledgerCsv(service: ExpenseService) {
 	}
 
 	return { importCsvText, exportCsv };
+}
+
+/** Create-only export: a concurrently claimed name is never overwritten. */
+export async function createLedgerExport(app: App, content: string, day: string): Promise<string> {
+	await ensureFolder(app, EXPORTS_ROOT);
+	const name = `${VISIBLE_NAMES.expenseExport}-${day}`;
+	for (let attempt = 0; attempt < 1000; attempt++) {
+		const path = uniqueVaultPath(app, EXPORTS_ROOT, name, 'csv');
+		try {
+			return (await app.vault.create(path, content)).path;
+		} catch (error) {
+			if (!app.vault.getAbstractFileByPath(path)) throw error;
+		}
+	}
+	throw new Error('No available ledger export name');
 }

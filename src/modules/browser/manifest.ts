@@ -1,5 +1,5 @@
 import type { ModuleManifest } from '../../app/contracts/module';
-import { BROWSER_HOST, BROWSER_OPEN, BROWSER_PROFILES } from './api';
+import { BROWSER_WORKSPACE, BROWSER_OPEN } from './api';
 
 export const browserManifest: ModuleManifest = {
 	id: 'browser',
@@ -10,6 +10,6 @@ export const browserManifest: ModuleManifest = {
 	platforms: { desktop: true, mobile: false },
 	defaultEnabled: true,
 	activation: 'startup',
-	provides: [BROWSER_HOST, BROWSER_OPEN, BROWSER_PROFILES],
+	provides: [BROWSER_WORKSPACE, BROWSER_OPEN],
 	load: () => import('./module'),
 };

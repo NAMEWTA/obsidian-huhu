@@ -1,6 +1,7 @@
-import { POMODORO_ROOT } from '../../../../shared/storage/vault-layout';
+import { POMODORO_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { requireDailyRecords, requireFields } from '../../../../shared/storage/document-validation';
-import { collectionDocument as doc, recordRows, type DocumentCollectionCodec } from '../../../../shared/storage/document-collection';
+import { collectionDocument as doc, recordRows, type DocumentCollectionCodec,
+} from '../../../../shared/storage/document-collection';
 import type { PomodoroData, PomodoroRecord } from './application';
 
 const root = POMODORO_ROOT;
@@ -8,14 +9,14 @@ export const pomodoroDocuments: DocumentCollectionCodec<PomodoroData> = {
 	root,
 	empty: () => ({ version: 2, currentActivity: '', tags: [], sessions: [] }),
 	encode: (data) => [
-		doc('pomodoro-settings', `${root}/活动.md`, 'pomodoro-settings', {
+		doc('pomodoro-settings', `${root}/${VISIBLE_NAMES.pomodoroFile}`, 'pomodoro-settings', {
 			currentActivity: data.currentActivity,
 			tags: data.tags,
 		}),
 		...data.sessions.map((day) =>
 			doc(
 				`pomodoro:${day.date}`,
-				`${root}/记录/${day.date.slice(0, 4)}/${day.date}.md`,
+				`${root}/${VISIBLE_NAMES.records}/${day.date.slice(0, 4)}/${day.date}.md`,
 				'pomodoro-records',
 				{ date: day.date, completed: day.completed },
 				(day.records ?? []).map((record) => ({ id: record.timestamp, ...record })),

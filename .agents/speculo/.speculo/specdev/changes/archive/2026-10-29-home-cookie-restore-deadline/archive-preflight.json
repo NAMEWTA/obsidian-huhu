@@ -1,0 +1,5 @@
+{
+  "exit": 126,
+  "stdout": "Summary: 5 error(s), 0 warning(s)\n",
+  "stderr": "ERROR: Error: closure-evidence-missing: /home/wta/projects/obsidian-huhu/.agents/speculo/.speculo/specdev/changes/2026-10-29-home-cookie-restore-deadline/README.md: expected one Ownership section\nERROR: evidence/direct-spec.md: path-unsafe: /home/wta/projects/obsidian-huhu/.agents/speculo/.speculo/specdev/changes/2026-10-29-home-cookie-restore-deadline/evidence/direct-spec.md: required path does not exist\nERROR: independent-review: evidence/direct-spec.md: path-unsafe: /home/wta/projects/obsidian-huhu/.agents/speculo/.speculo/specdev/changes/2026-10-29-home-cookie-restore-deadline/evidence/direct-spec.md: required path does not exist\nERROR: complete stage requires Outcome: completed\nERROR: complete stage without Tickets requires evidence/direct-spec.md\n"
+}

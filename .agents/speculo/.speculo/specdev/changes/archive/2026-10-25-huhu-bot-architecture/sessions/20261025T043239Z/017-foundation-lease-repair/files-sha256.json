@@ -1,0 +1,5 @@
+{
+  "src/modules/huhubot/core/protocol/connection.ts": "ff8ab812089b686756ca63673cf3b7f0b3ca74d42deabf29baaa6b92f3a15c79",
+  "src/modules/huhubot/core/protocol/connection.test.ts": "90d7c6a31508cbfe460e2d1f13d719d9d5908ff0e5f759608cde938a998a98ce",
+  "src/modules/huhubot/platform/desktop/transport/runner.test.ts": "3b3b3eb4faa191b9d3e38d9bd52beb0f7358eb09da7b0a21eb52371987435888"
+}

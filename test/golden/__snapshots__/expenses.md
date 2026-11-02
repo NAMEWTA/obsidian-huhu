@@ -1,4 +1,4 @@
-=== huhu/记账/分类.md ===
+=== huhu/expenses/categories.md ===
 ---
 huhu-type: expense-settings
 huhu-id: expense-settings
@@ -22,7 +22,7 @@ categoryParents:
     food: 日常
 ---
 
-=== huhu/记账/记录/2026/2026-10-01.md ===
+=== huhu/expenses/records/2026/2026-10-01.md ===
 ---
 huhu-type: expense-records
 huhu-id: expense:2026-10-01
@@ -36,7 +36,7 @@ date: 2026-10-01
 | "exp-2" | "income" | 1200 | "salary" | null | "2026-10-01" | 1790000100000 |
 <!-- /huhu:records -->
 
-=== huhu/记账/记录/2026/2026-10-03.md ===
+=== huhu/expenses/records/2026/2026-10-03.md ===
 ---
 huhu-type: expense-records
 huhu-id: expense:2026-10-03

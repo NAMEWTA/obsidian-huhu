@@ -1,5 +1,5 @@
 import { TFile, TFolder, type App } from 'obsidian';
-import { huhuName } from '../../../../shared/storage/vault-layout';
+import { VISIBLE_NAMES, huhuName } from '../../../../shared/storage/vault-layout';
 import { isContentPath } from '../../../../shared/storage/content-paths';
 import { SUPPORTED_FILE_EXTS } from '../../../../shared/file-types';
 import { ensureFolder } from '../calendar/daily-notes';
@@ -39,7 +39,7 @@ export function uniqueVaultPath(app: App, folder: string, name: string, ext = 'm
 export async function createVaultNote(app: App, folder: string, name: string, body = ''): Promise<TFile> {
 	const dir = cleanVaultFolder(folder);
 	if (dir) await ensureFolder(app, dir);
-	const base = safeFileName(name).replace(/\.md$/i, '') || 'Untitled';
+	const base = safeFileName(name).replace(/\.md$/i, '') || VISIBLE_NAMES.untitled;
 	return app.vault.create(uniqueVaultPath(app, dir, base), body);
 }
 

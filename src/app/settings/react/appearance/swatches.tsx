@@ -164,8 +164,8 @@ export function SwatchGrid({ label, wide, children }: { label: string; wide?: bo
 			className={cn(
 				'grid gap-2',
 				wide
-					? 'grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]'
-					: 'grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))]',
+					? 'grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))]'
+					: 'grid-cols-[repeat(auto-fill,minmax(min(100%,9.5rem),1fr))]',
 			)}
 		>
 			{children}

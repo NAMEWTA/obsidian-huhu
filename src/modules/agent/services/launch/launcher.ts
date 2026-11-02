@@ -1,3 +1,5 @@
+import { ManagedLaunchError, managedFailure } from './managed-errors';
+import type { ForegroundIntent } from './foreground-intent';
 import { Modal, Notice, Platform, type App } from 'obsidian';
 import { getAgent } from '../../core/launch/catalog';
 import { launchArgs, needsYoloConfirmation } from '../../core/launch/flags';
@@ -23,6 +25,13 @@ export interface LaunchRequest {
 }
 
 export interface LaunchHost {
+	/** Recovered login-shell PATH, resolved after business admission. */
+	path?: string;
+	interactive?: boolean;
+	managed?: boolean;
+	intent?: ForegroundIntent;
+	/** Supplied only for a committed Space; legacy history keeps the Vault-only check. */
+	validateCwd?: (cwd: string) => Promise<void>;
 	app: App;
 	getVaultPath: () => string | undefined;
 	getAgentSettings: () => AgentSettings;
@@ -39,6 +48,7 @@ export async function launchAgent(
 	const settings = host.getAgentSettings();
 	const entry = settings.agents[agentId];
 	if (!entry?.enabled) {
+		if (host.managed) throw new ManagedLaunchError(managedFailure('CAPABILITY_UNAVAILABLE', 'provider-disabled'));
 		new Notice(t('agent.agentOff', { title: getAgent(agentId).title }));
 		return;
 	}
@@ -46,8 +56,9 @@ export async function launchAgent(
 	if (!await confirmLaunchPermissions(host, agentId)) return;
 
 	const agent = getAgent(agentId);
-	const command = resolveCli(agent.detectCommand, entry.cliPath, '');
+	const command = resolveCli(agent.detectCommand, entry.cliPath, host.path ?? '');
 	if (!command) {
+		if (host.managed) throw new ManagedLaunchError(managedFailure('SOURCE_UNAVAILABLE', 'program-missing'));
 		new Notice(`${t('agent.cliMissing', { title: agent.title })} ${agent.installDocsUrl}`);
 		return;
 	}
@@ -58,7 +69,9 @@ export async function launchAgent(
 		return;
 	}
 
-	const env = await accountEnv(agent, options.accountId ?? entry.accountId, cwd, deviceId(host.app), true);
+	let env: Record<string, string>;
+	try { env = await accountEnv(agent, options.accountId ?? entry.accountId, cwd, deviceId(host.app), true); }
+	catch (cause) { if (host.managed) throw new ManagedLaunchError(managedFailure('SOURCE_UNAVAILABLE', 'account-unavailable')); throw cause; }
 	await host.start({
 		file: command,
 		args: accountArgs(agentId, launchArgs(settings, agentId), env),
@@ -73,7 +86,8 @@ export async function resumeAgent(host: LaunchHost, session: VaultSession): Prom
 	if (!Platform.isDesktop) throw new Error(t('agent.sessionMissing'));
 	const vault = host.getVaultPath();
 	if (!vault) throw new Error(t('agent.vaultMissing'));
-	await canonicalVaultCwd(vault, session.cwd);
+	if (host.validateCwd) await host.validateCwd(session.cwd);
+	else await canonicalVaultCwd(vault, session.cwd);
 	const settings = host.getAgentSettings();
 	const entry = settings.agents[session.agentId];
 	const agent = getAgent(session.agentId);
@@ -86,14 +100,16 @@ export async function resumeAgent(host: LaunchHost, session: VaultSession): Prom
 	);
 	await checkAccountTranscript(vault, env, transcriptPath);
 	if (!entry?.enabled) {
+		if (host.managed) throw new ManagedLaunchError(managedFailure('CAPABILITY_UNAVAILABLE', 'provider-disabled'));
 		new Notice(t('agent.agentOff', { title: agent.title }));
 		return;
 	}
 
 	if (!await confirmLaunchPermissions(host, session.agentId)) return;
 
-	const command = resolveCli(agent.detectCommand, entry.cliPath, '');
+	const command = resolveCli(agent.detectCommand, entry.cliPath, host.path ?? '');
 	if (!command) {
+		if (host.managed) throw new ManagedLaunchError(managedFailure('SOURCE_UNAVAILABLE', 'program-missing'));
 		new Notice(t('agent.cliMissing', { title: agent.title }));
 		return;
 	}
@@ -112,19 +128,45 @@ export async function resumeAgent(host: LaunchHost, session: VaultSession): Prom
 	});
 }
 
+/**
+ * Every resume precondition that needs neither a record nor a process: platform, account/device reference,
+ * transcript, provider enablement and program. Throws; it never shows a notice, prompts or starts anything.
+ */
+export async function verifyResume(host: LaunchHost, session: VaultSession): Promise<void> {
+	if (!Platform.isDesktop) throw new Error(t('agent.sessionMissing'));
+	const vault = host.getVaultPath();
+	if (!vault) throw new Error(t('agent.vaultMissing'));
+	const entry = host.getAgentSettings().agents[session.agentId];
+	const agent = getAgent(session.agentId);
+	const { env, transcriptPath } = await restoredAccountReference(
+		agent,
+		session.env,
+		vault,
+		deviceId(host.app),
+		session.transcriptPath,
+	);
+	await checkAccountTranscript(vault, env, transcriptPath);
+	if (!entry?.enabled) throw new ManagedLaunchError(managedFailure('CAPABILITY_UNAVAILABLE', 'provider-disabled'), 'none');
+	if (!resolveCli(agent.detectCommand, entry.cliPath, host.path ?? ''))
+		throw new ManagedLaunchError(managedFailure('SOURCE_UNAVAILABLE', 'program-missing'), 'none');
+}
+
 export async function confirmLaunchPermissions(host: LaunchHost, agentId: AgentId): Promise<boolean> {
 	const settings = host.getAgentSettings();
 	if (!needsYoloConfirmation(settings, agentId)) return true;
-	if (!await confirmYolo(host.app)) return false;
+	if (host.interactive === false) throw new ManagedLaunchError(managedFailure('AGENT_BLOCKED', 'permission-confirmation-required'));
+	if (!await confirmYolo(host.app, host.intent)) return false;
 	settings.yoloAcknowledgedAgents = [...(settings.yoloAcknowledgedAgents ?? []), agentId];
 	await host.saveAgentSettings(settings);
 	return true;
 }
 
-function confirmYolo(app: App): Promise<boolean> {
+function confirmYolo(app: App, intent?: ForegroundIntent): Promise<boolean> {
 	return new Promise((resolve) => {
-		const modal = new YoloConfirmModal(app, resolve);
-		modal.open();
+		let release: (() => void) | undefined;
+		const modal = new YoloConfirmModal(app, accepted => { release?.(); resolve(accepted); });
+		release = intent?.allowWithin?.(modal.containerEl);
+		try { modal.open(); } catch (error) { release?.(); throw error; }
 	});
 }
 

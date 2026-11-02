@@ -1,0 +1,113 @@
+{
+  "version": "156.0.8078.47",
+  "revision": "1706539",
+  "observed_utc": "2026-10-26T20:42:40.417903+00:00",
+  "official_metadata_url": "https://googlechromelabs.github.io/chrome-for-testing/156.0.8078.47.json",
+  "metadata_sha256": "280a3aaf97babf78351b78176ca4fbf3727bf374752f34ea05aa7753bf423c87",
+  "free_bytes_before": 32329207808,
+  "head_archive_bytes": {
+    "win64": 209154801,
+    "mac-arm64": 194932023,
+    "mac-x64": 205405847
+  },
+  "per_archive_limit": 419430400,
+  "total_archive_limit": 1073741824,
+  "archives": [
+    {
+      "platform": "win64",
+      "official_url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/win64/chrome-win64.zip",
+      "archive": "chrome-win64.zip",
+      "archive_bytes": 209154801,
+      "sha256": "a4e0d57245e167e98a9d465af1e3774d2b4ec9f04e483d19bcd97a6f63cf46dd",
+      "package_root": "chrome-win64",
+      "executable_archive_member": "chrome-win64/chrome.exe",
+      "executable_relative_to_package_root": "chrome.exe",
+      "counts": {
+        "file": 305
+      },
+      "uncompressed_total_bytes": 462211788,
+      "duplicates": [],
+      "normalized_duplicates": [],
+      "anomalies": [],
+      "crc_scope": "Only read symlink/license entries were CRC-checked; program/resource entries were not decompressed or executed.",
+      "inventory": "win64.inventory.json",
+      "symlink_count": 0,
+      "license_members": [
+        "chrome-win64/ABOUT"
+      ],
+      "direct_file_policy_rejects": 0,
+      "inventory_sha256": "17c80487b24c3ffd8ec398bf6a7cf6759d849b5f52efdb22a04b022dca6e4a4d"
+    },
+    {
+      "platform": "mac-arm64",
+      "official_url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/mac-arm64/chrome-mac-arm64.zip",
+      "archive": "chrome-mac-arm64.zip",
+      "archive_bytes": 194932023,
+      "sha256": "ad7f2b49a4dc679af286b1b1b386670d93ca7868079f69012d21ba0ac8293df3",
+      "package_root": "chrome-mac-arm64",
+      "executable_archive_member": "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "executable_relative_to_package_root": "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "counts": {
+        "file": 344,
+        "directory": 324,
+        "symlink": 5
+      },
+      "uncompressed_total_bytes": 383539550,
+      "duplicates": [],
+      "normalized_duplicates": [],
+      "anomalies": [],
+      "crc_scope": "Only read symlink/license entries were CRC-checked; program/resource entries were not decompressed or executed.",
+      "inventory": "mac-arm64.inventory.json",
+      "symlink_count": 5,
+      "license_members": [
+        "chrome-mac-arm64/Google Chrome for Testing.app/Contents/Frameworks/Google Chrome for Testing Framework.framework/Versions/156.0.8078.47/Libraries/WidevineCdm/LICENSE",
+        "chrome-mac-arm64/ABOUT"
+      ],
+      "direct_file_policy_rejects": 5,
+      "inventory_sha256": "399a12ab2451c636697a3e71de449bb24e0a9a3f59ebb59952e9d4bf1d9ea090"
+    },
+    {
+      "platform": "mac-x64",
+      "official_url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/mac-x64/chrome-mac-x64.zip",
+      "archive": "chrome-mac-x64.zip",
+      "archive_bytes": 205405847,
+      "sha256": "5a38b8e3d621514fff0775dcae678a152ce378890188c88eef79fc97aa59fccd",
+      "package_root": "chrome-mac-x64",
+      "executable_archive_member": "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "executable_relative_to_package_root": "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "counts": {
+        "file": 344,
+        "directory": 324,
+        "symlink": 5
+      },
+      "uncompressed_total_bytes": 394474630,
+      "duplicates": [],
+      "normalized_duplicates": [],
+      "anomalies": [],
+      "crc_scope": "Only read symlink/license entries were CRC-checked; program/resource entries were not decompressed or executed.",
+      "inventory": "mac-x64.inventory.json",
+      "symlink_count": 5,
+      "license_members": [
+        "chrome-mac-x64/Google Chrome for Testing.app/Contents/Frameworks/Google Chrome for Testing Framework.framework/Versions/156.0.8078.47/Libraries/WidevineCdm/LICENSE",
+        "chrome-mac-x64/ABOUT"
+      ],
+      "direct_file_policy_rejects": 5,
+      "inventory_sha256": "eb8cd634f137859a349e296b3cc45ba60f1a7b19616f3de8ca092c6420531525"
+    }
+  ],
+  "execution": "none; ZIP central directory, symlink targets and license entries only",
+  "downloaded_total_bytes": 609492671,
+  "scope_limits": [
+    "No program/resource bodies read or extracted; only ZIP central directory, symlink targets, ABOUT and LICENSE entries read.",
+    "Only read entries CRC-checked; whole-archive SHA256 recorded from downloaded bytes.",
+    "No execution, installation, signing/notarization/quarantine/sandbox or real-platform acceptance.",
+    "ZIP mode metadata is not Windows ACL or runtime architecture proof.",
+    "No repository files modified."
+  ],
+  "license_observations": [
+    "All three archives have root ABOUT referring to Chromium, chrome://credits and chrome://terms; full credits/terms were not obtained by executing Chrome.",
+    "Both mac archives have WidevineCdm/LICENSE requiring a separate Google license for use/modification/sale/distribution; preserving this file does not resolve redistribution authorization.",
+    "No other filename-matched LICENSE/NOTICE/COPYING/credits entries observed in these three central directories; this is not proof that all embedded third-party notices have been enumerated."
+  ],
+  "reuse_and_disposal": "Temporary cache only; preserve index/inventories and needed source notes before deleting whole directory. Future author may reuse ZIPs after matching SHA256; do not treat this inventory as an approved production manifest."
+}

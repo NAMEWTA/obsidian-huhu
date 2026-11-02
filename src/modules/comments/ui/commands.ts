@@ -1,5 +1,5 @@
 // Adapted from jonaas-dev/obsidian-margin-comments f727e38 (MIT), Copyright (c) 2026 jonaas-dev: src/editor/comment-navigation.ts
-import { MarkdownView } from 'obsidian';
+import { MarkdownView, Notice } from 'obsidian';
 import type { CommandAccess } from '../../../app/contracts/module';
 import { HUHU_COMMANDS } from '../../../shared/commands';
 import { t } from '../../../shared/i18n';
@@ -11,8 +11,9 @@ export function registerCommentCommands(env: CommentsEnv, commands: CommandAcces
 		const active = env.app.workspace.getActiveViewOfType(MarkdownView);
 		return [...env.editors].find(view => active?.containerEl.contains(view.dom)) ?? [...env.editors].find(view => pathOf(view.state) === env.service.state.getState().path);
 	};
+	commands.add({ id: 'highlights-selection', nameKey: 'editor.highlights.add', name: t('editor.highlights.add'), editorCallback: () => { const view = editor(); if (!view || view.state.selection.main.empty) { new Notice(t('editor.comments.needSelection')); return; } openComposer(view, env, view.state.selection.main.from, view.state.selection.main.to, true); } });
 	commands.add({ id: HUHU_COMMANDS.ADD_COMMENT, nameKey: 'editor.comments.add', name: t('editor.comments.add'), editorCallback: () => { const view = editor(); if (view) openComposer(view, env); } });
-	commands.add({ id: 'comments-open-panel', nameKey: 'editor.comments.openPanel', name: t('editor.comments.openPanel'), callback: () => { void env.app.workspace.ensureSideLeaf('huhu-comments-view', env.service.settings().panelSide, { active: true, reveal: true }); } });
+	commands.add({ id: 'comments-open-panel', nameKey: 'editor.comments.openPanel', name: t('editor.comments.openPanel'), callback: () => { void env.app.workspace.ensureSideLeaf('huhu-comments-view', env.service.settings().panelSide, { active: true, reveal: true, state: { tab: 'comments' } }); } });
 	commands.add({ id: 'comments-at-cursor', nameKey: 'editor.comments.atCursor', name: t('editor.comments.atCursor'), editorCallback: () => {
 		const view = editor(), path = view ? pathOf(view.state) : null;
 		if (!view || !path) return;

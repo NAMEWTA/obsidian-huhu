@@ -2,7 +2,9 @@
 process.env.TZ = 'UTC';
 import { createIconicDialogs } from '../../modules/icons/ui/dialog-factory';
 import assert from 'node:assert/strict';
-import { test } from 'vitest';
+import { test, vi } from 'vitest';
+import TabIconManager from './platform/managers/tab-icon-manager';
+import type { TabItem } from './platform/view-types';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import type { App, Component as ObsidianComponent, Plugin, Command } from 'obsidian';
@@ -420,4 +422,45 @@ test('top-level folders take palette colors in order and every folder below keep
 	controller.settings.colorTopFolders = false;
 	assert.equal(color('Projects/Alpha/Deep'), null);
 	assert.equal(define('Projects/Alpha/Deep').colorDefault, null);
+});
+
+
+test('file tabs including deferred views mirror file-list custom/default icons and colors', () => {
+	const settings = structuredClone(DEFAULT_ICONIC_SETTINGS);
+	const files = new Map(['report.pdf', 'note.md', 'deck.pptx'].map(path => [path, Object.assign(new TFile(), { path })]));
+	const controller = Object.create(IconicController.prototype) as IconicController;
+	Object.assign(controller, { active: true, store: { settings }, host: { app: {
+		vault: { getAbstractFileByPath: (path: string) => files.get(path) ?? null, getRoot: () => ({ children: [...files.values()] }) },
+		workspace: { getActiveViewOfType: () => null },
+	} } });
+	const define = (controller as unknown as { defineTabItem: (leaf: unknown, unloading?: boolean) => TabItem }).defineTabItem.bind(controller);
+	for (const path of files.keys()) {
+		const leaf = { view: { getViewType: () => 'markdown', getState: () => ({ file: path }), getIcon: () => 'native-file' }, getRoot: () => ({}), getDisplayText: () => path };
+		for (const custom of [undefined, { icon: 'lucide-star', color: 'crimson' }, { color: 'blue' }]) {
+			if (custom) settings.fileIcons[path] = custom; else delete settings.fileIcons[path];
+			const tab = define(leaf);
+			const file = controller.getFileItem(path);
+			assert.deepEqual([tab.icon, tab.color, tab.iconDefault, tab.colorDefault], [file.icon, file.color, file.iconDefault, file.colorDefault]);
+			assert.equal(tab.category, 'file');
+		}
+		assert.equal(define(leaf, true).icon, null);
+		assert.equal(define(leaf, true).iconDefault, 'native-file');
+	}
+});
+
+test('file tab rendering removes editing listeners even when clickable icons are enabled; non-file tabs retain them', () => {
+	const file = { id: 'note.md', category: 'file', isRoot: true, tabEl: { find: () => null }, iconEl: {} } as unknown as TabItem;
+	const other = { ...file, id: 'graph', category: 'tab', tabEl: { find: () => null }, iconEl: {} } as unknown as TabItem;
+	const refresh = vi.fn(); const listen = vi.fn(); const stop = vi.fn();
+	const manager = Object.create(TabIconManager.prototype) as TabIconManager;
+	Object.assign(manager, {
+		plugin: { getTabItems: () => [file, other], settings: { showMenuActions: true }, isSettingEnabled: () => true },
+		refreshIcon: refresh, setEventListener: listen, stopEventListener: stop, setMutationObserver: vi.fn(),
+	});
+	manager.refreshIcons();
+	assert.equal(refresh.mock.calls[0]!.length, 2);
+	assert.equal(typeof refresh.mock.calls[1]![2], 'function');
+	assert.ok(stop.mock.calls.some(call => call[0] === file.tabEl && call[1] === 'contextmenu'));
+	assert.ok(!listen.mock.calls.some(call => call[0] === file.tabEl && call[1] === 'contextmenu'));
+	assert.ok(listen.mock.calls.some(call => call[0] === other.tabEl && call[1] === 'contextmenu'));
 });

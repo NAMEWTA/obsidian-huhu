@@ -56,7 +56,7 @@ test('opening an old immersive board converts it once through the real entry: on
 	for (const retired of ['layout:', 'immersive:', 'banner:', 'Preserve old banner'])
 		expect(written).not.toContain(retired);
 	expect(written).toContain('custom: keep');
-	expect([...vault.contents].find(([path]) => path.startsWith('huhu/收件箱/'))?.[1]).toContain(
+	expect([...vault.contents].find(([path]) => path.startsWith('huhu/inbox/'))?.[1]).toContain(
 		'# One\nid: one\ntype: generic\nBody one.',
 	);
 	expect(data.columns[0]?.cards).toEqual([]);
@@ -86,7 +86,7 @@ test('an old stacked board converts with the sidebar widgets the old settings ha
 	const written = parse(vault.contents.get(board)!);
 	expect(written.widgets?.map((member) => member.kind)).toEqual(['calendar', 'quick-actions']);
 	expect(written.grid?.lg.find((tile) => tile.i === 'widget:calendar')).toMatchObject({ w: 6, h: 4 });
-	expect([...vault.contents].find(([path]) => path.startsWith('huhu/收件箱/'))?.[1]).toContain('Body one.');
+	expect([...vault.contents].find(([path]) => path.startsWith('huhu/inbox/'))?.[1]).toContain('Body one.');
 	expect(vault.contents.get(board)).not.toContain('Stacked banner');
 });
 

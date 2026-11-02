@@ -1,0 +1,31 @@
+{
+  "runs": [
+    {
+      "command": "node diagnostics/T-19/chrome-run.mjs (from repository root with full change-relative path)",
+      "exit": 126,
+      "artifact": "chrome-build-failure.json",
+      "classification": "fixture build adapter graph failure"
+    },
+    {
+      "exit": 126,
+      "artifact": "chrome-fixture-failure-1.json",
+      "classification": "fixture continued after injected failed storage without retry"
+    },
+    {
+      "exit": 126,
+      "artifact": "chrome-fixture-failure-2.json",
+      "classification": "same fixture error; observation added"
+    },
+    {
+      "exit": 0,
+      "artifact": "chrome-six-cases.json",
+      "cases": 6
+    },
+    {
+      "exit": 0,
+      "artifact": "chrome-result.json",
+      "cases": 2
+    }
+  ],
+  "screenshots": "Removed own blank post-cleanup screenshots; DOM contract evidence is JSON, not visual approval."
+}

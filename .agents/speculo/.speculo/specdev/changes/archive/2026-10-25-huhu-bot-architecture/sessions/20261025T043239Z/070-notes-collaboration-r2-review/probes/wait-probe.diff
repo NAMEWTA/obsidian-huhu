@@ -1,0 +1,52 @@
+diff --git a/tmp/huhu-notes-r2-review/wait-original.go b/tmp/huhu-notes-r2-review/wait-forced-schedule.go
+index b2ff031..fe73a20 100644
+--- a/tmp/huhu-notes-r2-review/wait-original.go
++++ b/tmp/huhu-notes-r2-review/wait-forced-schedule.go
+@@ -152,6 +152,7 @@ func TestExplicitCheckpointWaitResumesSameExecutorForChildrenAndAnsweredQuestion
+ 
+ func TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots(t *testing.T) {
+ 	var target string
++ leafEntered := make(chan struct{},6)
+ 	release := make(chan struct{})
+ 	var once sync.Once
+ 	defer once.Do(func() { close(release) })
+@@ -164,6 +165,7 @@ func TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots(t *testing.T)
+ 				if e != nil {
+ 					return api.EngineResult{}, e
+ 				}
++                if n==3 { for j:=0;j<4;j++ {select {case <-leafEntered:case <-c.Done():return api.EngineResult{},c.Err()}} }
+ 			}
+ 			return api.EngineResult{Status: "finished", Text: "root"}, nil
+ 		}
+@@ -178,6 +180,7 @@ func TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots(t *testing.T)
+ 			}
+ 			return api.EngineResult{Status: "suspended", Suspension: &api.EngineSuspension{Kind: "children", WaitForIDs: []string{v.Delegation.ChildRunID}, Checkpoint: cp}}, nil
+ 		}
++        leafEntered <- struct{}{}
+ 		select {
+ 		case <-release:
+ 		case <-c.Done():
+@@ -204,7 +207,14 @@ func TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots(t *testing.T)
+ 	deadline := time.Now().Add(5 * time.Second)
+ 	for count(t, db, "SELECT count(*) FROM execution_runs WHERE status='waiting_children'") != 7 || count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot=1") != 4 {
+ 		if time.Now().After(deadline) {
+-			t.Fatal("waiting children retained slots or queued leaves deadlocked")
++			rows, err := db.Query("SELECT intent,status,child_slot,count(*) FROM execution_runs GROUP BY intent,status,child_slot ORDER BY intent,status")
++            if err != nil { t.Fatal(err) }
++            for rows.Next() { var intent,status string;var slot,n int;if err=rows.Scan(&intent,&status,&slot,&n);err!=nil{t.Fatal(err)};t.Logf("AT ORIGINAL 5s: intent=%s status=%s slot=%d count=%d",intent,status,slot,n) };if err=rows.Err();err!=nil{t.Fatal(err)};rows.Close()
++            ordered, err := db.Query("SELECT intent,status,child_slot,created_at,run_id FROM execution_runs ORDER BY created_at,run_id")
++            if err!=nil{t.Fatal(err)};for ordered.Next(){var intent,status,at,id string;var slot int;if err=ordered.Scan(&intent,&status,&slot,&at,&id);err!=nil{t.Fatal(err)};t.Logf("ORDER: %s %s slot=%d created=%s run=%s",intent,status,slot,at,id)};if err=ordered.Err();err!=nil{t.Fatal(err)};ordered.Close()
++            t.Logf("waitEdges=%d dispatchedLiveModelProducers=%d calls=%d resumes=%d",count(t,db,"SELECT count(*) FROM collaboration_wait_edges"),count(t,db,"SELECT count(*) FROM model_attempts WHERE state='dispatched' AND producer_ended=0"),calls.Load(),resumes.Load())
++            t.Errorf("waiting children retained slots or queued leaves deadlocked")
++            break
+ 		}
+ 		time.Sleep(5 * time.Millisecond)
+ 	}
+@@ -213,6 +223,7 @@ func TestChildCheckpointWaitReleasesAndAtomicallyReclaimsRootSlots(t *testing.T)
+ 	}
+ 	once.Do(func() { close(release) })
+ 	wait(t, c, r.RunID, "succeeded")
++	t.Logf("AFTER actual held leaf release: root=succeeded calls=%d resumes=%d slots=%d", calls.Load(),resumes.Load(),count(t,db,"SELECT count(*) FROM execution_runs WHERE child_slot<>0"))
+ 	if calls.Load() != 13 || resumes.Load() != 6 || count(t, db, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 {
+ 		t.Fatalf("resume/reclaim lifecycle calls=%d resume=%d", calls.Load(), resumes.Load())
+ 	}

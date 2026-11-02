@@ -49,7 +49,11 @@ export function JumpPalette({
 		.filter((tab) =>
 			[
 				tabTitle(tab, t),
-				tab.kind === 'terminal' ? tab.panes[tab.focusedSessionId]?.cwd : tab.kind === 'browser' ? tab.url : '',
+				tab.kind === 'terminal'
+					? tab.panes[tab.focusedSessionId]?.cwd
+					: tab.kind === 'browser'
+						? (controller.browserPage(tab)?.url ?? '')
+						: '',
 			]
 				.join(' ')
 				.toLowerCase()
@@ -59,7 +63,9 @@ export function JumpPalette({
 	const choose = (id: string, split = false) => {
 		if (split) {
 			const group = controller.workspace.store.getState().activeGroupId;
-			if (group) controller.workspace.move(id, { split: 'right', ofGroupId: group });
+			if (controller.workspace.store.getState().tabs[id]?.kind !== 'browser') {
+				if (!controller.workspace.moveFromUI(id, { split: 'right', ofGroupId: group ?? '' }).ok) return;
+			} else if (group) controller.workspace.move(id, { split: 'right', ofGroupId: group });
 		}
 		select(id);
 		close();
@@ -172,7 +178,9 @@ export function JumpPalette({
 							<CommandItem
 								onSelect={() => {
 									close();
-									controller.workspace.newBrowser();
+									void controller.workspace
+										.newBrowser()
+										.catch((error) => controller.workspace.report(error));
 								}}
 							>
 								{t('agent.workspace.newBrowser')}

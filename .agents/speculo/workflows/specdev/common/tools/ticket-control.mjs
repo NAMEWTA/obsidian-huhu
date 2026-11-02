@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseFrontmatter, validateChange, pathsOverlap } from './validate-specdev.mjs';
 import { CHANGE_ID, digest, findGraphCycle, resolveProjectSource, validateGoalMap, resolveToolContext, validateExecutionPolicy, canonicalToolPath } from './plan-contract.mjs';
 import { readExecutionContext, ticketPolicy } from './execution-context.mjs';
+import { diagnosticErrors, appendDiagnostics, partitionDiagnostics } from './validation-diagnostics.mjs';
 import * as runtime from '../../../../lib/speculo-runtime.mjs';
 
 const terminal = new Set(['done','cancelled']);
@@ -34,11 +35,18 @@ function stableGoalContract(plan, map) {
 }
 function contractHash(node) {
   const meta = { ...node.artifact.meta };
-  for (const key of ['status','ready','owner']) delete meta[key];
+  for (const key of ['status','ready','owner','skill_scan']) delete meta[key];
+  // Optional knowledge discovery is not a frozen execution contract.
+  const bindings = meta.skill_bindings;
+  const requiredBindings = Array.isArray(bindings) ? bindings.filter(binding => binding?.required === true) : [];
+  // Validation already attributes malformed bindings to this Ticket. Preserve the
+  // invalid value in its digest, but do not let traversing it stop unrelated nodes.
+  delete meta.skill_bindings;
+  meta.skill_bindings = bindings === undefined || Array.isArray(bindings) ? requiredBindings : bindings;
   const sources = [];
   {
-    for (const binding of node.artifact.meta.skill_bindings ?? []) {
-      for (const item of [binding, ...(binding.references ?? [])]) {
+    for (const binding of requiredBindings) {
+      for (const item of [binding, ...(Array.isArray(binding.references) ? binding.references : [])]) {
         try { sources.push([item.path,terminal.has(node.artifact.meta.status) ? item.sha256 : digest(readFileSync(resolveProjectSource(node.repoRoot,item.path)))]); }
         catch { sources.push([item?.path ?? null,'unavailable']); }
       }
@@ -56,7 +64,8 @@ export function analyzeMap({ mapPath, repoRoot, methodRoot, stateRoot, context: 
   mapPath = canonicalToolPath(context, mapPath);
   runtime.readChangeFactsSync(context, basename(root));
   let entry = readArtifact(mapPath);
-  const errors = [], warnings = [], nodes = new Map(), memberRoots = new Map(), serializations = new Set();
+  const errors = diagnosticErrors({code:'dispatch-structure-invalid',scope:'global'});
+  const warnings = [], nodes = new Map(), memberRoots = new Map(), serializations = new Set();
   let parent = false;
   if (entry.meta.artifact === 'goal-tickets-map') {
     errors.push(...validateGoalMap(entry,root));
@@ -123,31 +132,10 @@ export function analyzeMap({ mapPath, repoRoot, methodRoot, stateRoot, context: 
   // Reuse existing stage gates. Local diagnostics block their owner, structural ones block dispatch.
   const validation = validateChange(root,parent ? 'goal-plan' : 'tickets',repoRoot,null,null,{context});
   warnings.push(...validation.warnings);
-  for (const error of validation.errors) {
-    let assigned = false;
-    for (const node of nodes.values()) {
-      const prefix = parent ? `${node.member}: ` : '';
-      const detail = prefix && error.startsWith(prefix) ? error.slice(prefix.length) : !parent ? error : null;
-      if (detail !== null && (detail.startsWith(`${basename(node.artifact.path)}:`) || detail.startsWith(`${node.artifact.meta.id}:`))) {
-        node.validationErrors.push(error);assigned = true;
-      }
-    }
-    if (!assigned && parent) {
-      for (const member of members) if (error.startsWith(`${member}: `)) {
-        for (const node of nodes.values()) if (node.member === member) node.validationErrors.push(error);
-        assigned = true;
-      }
-      if (error.startsWith('member changes already belong to unfinished parent implementation')) {
-        const bracket = error.indexOf('[');
-        try {
-          const overlapping = JSON.parse(error.slice(bracket));
-          for (const node of nodes.values()) if (overlapping.includes(node.member)) node.validationErrors.push(error);
-          assigned = true;
-        } catch { /* keep an unparseable ownership problem global */ }
-      }
-    }
-    if (!assigned) errors.push(error);
-  }
+  const classified = partitionDiagnostics(validation.diagnostics,
+    new Map([...nodes].map(([id, node]) => [id, {member: node.member, ticket: node.artifact.meta.id}])));
+  appendDiagnostics(errors, {diagnostics: classified.global});
+  for (const [id, records] of classified.byTask) nodes.get(id).validationErrors.push(...records.map(item => item.message));
   for (const node of nodes.values()) {
     node.reasons.push(...node.validationErrors);
     if (!terminal.has(node.artifact.meta.status) && (plan && plan.meta.ready_for_execution !== true)) node.reasons.push('Goal planning gate is not ready for execution');
@@ -161,7 +149,7 @@ export function analyzeMap({ mapPath, repoRoot, methodRoot, stateRoot, context: 
   const contractDigests = Object.fromEntries([...nodes].map(([id,node]) => [id,contractHash(node)]));
   const invalidated = new Set();
   if (previous !== null) {
-    if (previous.schema_version !== 2 || !previous.contract_digests || typeof previous.contract_digests !== 'object' || Array.isArray(previous.contract_digests) || previous.scope !== basename(root)) errors.push('previous checkpoint schema/scope does not match this Goal');
+    if (previous.schema_version !== 3 || !previous.contract_digests || typeof previous.contract_digests !== 'object' || Array.isArray(previous.contract_digests) || previous.scope !== basename(root)) errors.push('previous checkpoint schema/scope does not match this Goal');
     else {
       for (const [id,value] of Object.entries(contractDigests)) if (previous.contract_digests[id] !== value) invalidated.add(id);
       for (const id of Object.keys(previous.contract_digests)) if (!nodes.has(id)) warnings.push(`previous node removed; check coverage before accepting replan: ${id}`);
@@ -190,6 +178,9 @@ export function analyzeMap({ mapPath, repoRoot, methodRoot, stateRoot, context: 
       const issue = conflicts(node,other,serializations);
       if (issue) node.reasons.push(`in-flight owner ${other.artifact.meta.owner ?? 'unknown'} (${other.id}): ${issue}`);
     }
+    // A candidate must fit the capacity already occupied by actual in-flight Tickets.
+    // Competition with other eligible candidates belongs to batch selection, not eligibility.
+    if (limit !== null && active.length >= limit || node.policy.max_parallel_tickets !== null && active.filter(other => other.member === node.member).length >= node.policy.max_parallel_tickets) node.reasons.push('Ticket scheduling concurrency limit occupied by in-flight work');
     if (!node.reasons.length) candidates.push(node);
   }
   // Propagate blockers even when a downstream node sorts before its prerequisite.
@@ -206,32 +197,48 @@ export function analyzeMap({ mapPath, repoRoot, methodRoot, stateRoot, context: 
       }
     }
   }
-  const frontier = [];
-  for (const node of candidates.sort((a,b) => a.id.localeCompare(b.id))) {
-    if (node.reasons.length) continue;
-    const conflict = frontier.map(id => conflicts(node,nodes.get(id),serializations)).find(Boolean);
-    const memberActive = active.filter(other=>other.member === node.member).length + frontier.filter(id=>nodes.get(id).member === node.member).length;
-    if (conflict || limit !== null && frontier.length >= Math.max(0,limit-active.length) || node.policy.max_parallel_tickets !== null && memberActive >= node.policy.max_parallel_tickets) { deferred.push({id:node.id, reason:conflict ?? 'Ticket scheduling concurrency limit'});continue; }
-    frontier.push(node.id);
+  const eligible = candidates.filter(node => !node.reasons.length).sort((a,b) => a.id.localeCompare(b.id));
+  const conflictRecords = [];
+  const unfinished = [...nodes.values()].filter(node => !terminal.has(node.artifact.meta.status)).sort((a,b) => a.id.localeCompare(b.id));
+  for (let index=0; index<unfinished.length; index++) for (const right of unfinished.slice(index+1)) {
+    const left = unfinished[index], reason = conflicts(left,right,serializations);
+    if (reason) conflictRecords.push({left:left.id,right:right.id,reason});
+  }
+  // This stable greedy batch is a suggestion only. Any other eligible subset satisfying
+  // conflicts and the parent/member capacities may be chosen by the responsible Agent.
+  const suggestedBatch = [];
+  for (const node of eligible) {
+    const conflict = suggestedBatch.map(id => conflicts(node,nodes.get(id),serializations)).find(Boolean);
+    const memberActive = active.filter(other=>other.member === node.member).length + suggestedBatch.filter(id=>nodes.get(id).member === node.member).length;
+    if (conflict || limit !== null && suggestedBatch.length >= Math.max(0,limit-active.length) || node.policy.max_parallel_tickets !== null && memberActive >= node.policy.max_parallel_tickets) { deferred.push({id:node.id, reason:conflict ?? 'Ticket scheduling concurrency limit',scope:'suggestion-only'});continue; }
+    suggestedBatch.push(node.id);
   }
   const blocked = [...nodes.values()].filter(node => node.reasons.length).map(node => ({id:node.id,reasons:[...new Set(node.reasons)]}));
   const nodeErrors = [...nodes.values()].flatMap(node => node.validationErrors.map(message => ({id:node.id,message})));
   const result = {
-    schema_version:2, scope:basename(root), mode:'read-only-analysis',
+    schema_version:3, scope:basename(root), mode:'read-only-analysis',
     authorization_checked:false, transaction_gateway_checked:false,
     ticket_execution:policy.ticket_execution, max_parallel_tickets:limit,
     input_digest:digest(JSON.stringify({entry:entry.meta,contracts:contractDigests})),
-    goal_contract_digest:goalDigest, contract_digests:contractDigests, frontier:errors.length ? [] : frontier,
+    goal_contract_digest:goalDigest, contract_digests:contractDigests,
+    eligible:errors.length ? [] : eligible.map(node => node.id),
+    dependencies:Object.fromEntries([...nodes].map(([id,node]) => [id,node.dependencies])),
+    conflicts:conflictRecords, suggested_batch:errors.length ? [] : suggestedBatch,
+    batch_is_authoritative:false,
+    capacity:{global:limit,members:Object.fromEntries([...nodes.values()].map(node => [node.member,node.policy.max_parallel_tickets]))},
     deferred, in_flight:active.map(node => ({id:node.id,owner:node.artifact.meta.owner})),
     done, cancelled, blocked, invalidated:[...invalidated].sort(),
     eligible_for_final_verification:errors.length === 0 && blocked.length === 0 && active.length === 0 && done.length + cancelled.length === nodes.size,
+    diagnostics:[...errors.diagnostics, ...new Set([...classified.byTask.values()].flat())],
     validation_errors:nodeErrors, errors:[...new Set(errors)], warnings,
-    next: 'Lead must verify real authorization, existing transaction/ownership gateways, Skill execution and Goal acceptance; this output does not execute anything.'
+    next: 'Lead may select another eligible conflict-free batch within actual capacities, then must verify real authorization, transaction/ownership gateways, required methods and acceptance; this output does not execute anything.'
   };
   return result;
 }
 function failure(errors) {
-  return {schema_version:2,mode:'read-only-analysis',frontier:[],errors,validation_errors:[],eligible_for_final_verification:false};
+  return {schema_version:3,mode:'read-only-analysis',eligible:[],dependencies:{},conflicts:[],suggested_batch:[],batch_is_authoritative:false,errors:[...errors],
+    diagnostics:errors.diagnostics ?? errors.map(message=>({code:'dispatch-structure-invalid',scope:'global',message})),
+    validation_errors:[],eligible_for_final_verification:false};
 }
 function main(args) {
   const options = {};
@@ -248,3 +255,4 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   try { process.exitCode=main(process.argv.slice(2)); }
   catch (error) { console.error(JSON.stringify({error:error.message,mode:'read-only-analysis'}));process.exitCode=1; }
 }
+

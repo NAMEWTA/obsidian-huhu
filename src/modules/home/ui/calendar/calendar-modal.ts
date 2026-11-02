@@ -102,12 +102,21 @@ export class DayAgendaModal {
 		);
 	}
 	private addTask(title: string, time: string): Promise<VaultTask | null> {
-		return addCalendarTask(this.app, this.iso, title, time, this.cb.settingsAccess, this.dashboardFile);
+		return addCalendarTask(this.app, this.iso, title, time);
 	}
 	private async removeTask(task: VaultTask): Promise<boolean> {
 		try {
 			const result = await homeServices.calendar?.removeTask(task);
-			if (!result || 'code' in result) { new Notice(t(result && 'code' in result ? `calendarUnified.error.${result.code}` : 'calendarUnified.unavailable')); return false; }
+			if (!result || 'code' in result) {
+				new Notice(
+					t(
+						result && 'code' in result
+							? `calendarUnified.error.${result.code}`
+							: 'calendarUnified.unavailable',
+					),
+				);
+				return false;
+			}
 			return true;
 		} catch (error) {
 			console.error('[Dashboard] remove task failed', error);

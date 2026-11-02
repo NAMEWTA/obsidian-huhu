@@ -93,6 +93,7 @@ function TargetField({
 export function ShortcutsConfig({ store, close }: { store: BoardStore; close(this: void): void }) {
 	const t = useT(),
 		agents = store.widgets.agents?.() ?? [],
+		spaces = store.widgets.spaces?.() ?? [],
 		[draft, setDraft] = useState<ShortcutButton[]>(() =>
 			structuredClone(store.state.getState().settings.shortcutButtons),
 		),
@@ -162,6 +163,32 @@ export function ShortcutsConfig({ store, close }: { store: BoardStore; close(thi
 										...agents.map((agent) => ({ value: agent.id, label: agent.title })),
 									]}
 								/>
+								{(spaces.length > 0 || button.spaceId) && (
+									<Choice
+										label={t('shortcuts.space')}
+										value={button.spaceId || '_ask'}
+										onChange={(value) => {
+											// Choosing "ask" removes the saved binding; nothing else is ever filled in.
+											const { spaceId: _drop, ...rest } = button;
+											setDraft(
+												draft.map((item) =>
+													item.id === button.id
+														? value === '_ask'
+															? rest
+															: { ...rest, spaceId: value }
+														: item,
+												),
+											);
+										}}
+										options={[
+											{ value: '_ask', label: t('shortcuts.space.ask') },
+											...(button.spaceId && !spaces.some((space) => space.id === button.spaceId)
+												? [{ value: button.spaceId, label: t('shortcuts.space.unavailable') }]
+												: []),
+											...spaces.map((space) => ({ value: space.id, label: space.name })),
+										]}
+									/>
+								)}
 								<Textarea
 									aria-label={t('shortcuts.prompt')}
 									placeholder={t('shortcuts.prompt')}

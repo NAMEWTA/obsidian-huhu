@@ -1,3 +1,4 @@
+import { ARCHIVE_PATHS } from '../../../shared/storage/vault-layout';
 import type { AutomationDefinition } from '../../../shared/automation/types';
 import { validContactsFolder, type ContactsSettings } from '../../../shared/contacts-settings';
 import { WriteQueue } from '../../../shared/storage/write-queue';
@@ -326,7 +327,7 @@ export class ContactsApplication {
 			} catch {
 				this.error = 'readFailed';
 			}
-			const guidePath = root + '/档案格式说明.md';
+			const guidePath = `${root}/${ARCHIVE_PATHS.guide}`;
 			if (!this.files.getAbstractFileByPath(guidePath)) {
 				try {
 					await this.files.create(guidePath, this.files.formatGuide);
@@ -341,7 +342,7 @@ export class ContactsApplication {
 	resources(id: string): ArchiveResource[] {
 		const record = this.current(id);
 		const cached = this.resourceCache.get(record.folderPath);
-		if (cached) return cached.map(entry => ({ ...entry }));
+		if (cached) return cached.map((entry) => ({ ...entry }));
 		const entries = this.files
 			.listFolder(record.folderPath)
 			.filter((entry) => !entry.folder && entry.path !== record.path)
@@ -357,7 +358,7 @@ export class ContactsApplication {
 				};
 			});
 		this.resourceCache.set(record.folderPath, entries);
-		return entries.map(entry => ({ ...entry }));
+		return entries.map((entry) => ({ ...entry }));
 	}
 	private current(id: string): ArchiveRecord {
 		this.guard();

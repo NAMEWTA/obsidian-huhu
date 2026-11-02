@@ -96,10 +96,24 @@ export function ownedProcesses(pid: number, marker: string) {
 		observe: discover,
 		async terminate() {
 			const deadline = Date.now() + 1500;
+			let emptySince = 0;
+			let emptyScans = 0;
 			// Freeze then rescan before killing, so a process cannot fork between enumeration and termination.
 			while (Date.now() < deadline) {
 				const rows = await discover();
-				if (!rows.length) return;
+				if (!rows.length) {
+					// A setsid child can miss one census: /proc/pid/environ stays empty through
+					// exec, and once the parent has exited the parent link is gone too. One
+					// empty scan must not declare the tree gone. Keep the file assertion and
+					// the caller's own time bound; this only confirms an empty census.
+					if (emptySince === 0) emptySince = Date.now();
+					emptyScans++;
+					if (emptyScans >= 4 && Date.now() - emptySince >= 200) return;
+					await pause();
+					continue;
+				}
+				emptySince = 0;
+				emptyScans = 0;
 				signal(rows, 'SIGSTOP');
 				const frozen = await discover();
 				signal(frozen, 'SIGSTOP');

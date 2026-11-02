@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-25T11:36:05.417096+00:00",
+  "task": "047-model-protocol-preflight",
+  "allCommandsWaited": true,
+  "activeExecSessions": [],
+  "backgroundChildrenStarted": false,
+  "productProcessesStarted": false,
+  "delegatedAgents": [],
+  "writeScope": "this task directory only",
+  "finalReturnExit": 0
+}

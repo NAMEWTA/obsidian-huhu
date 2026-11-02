@@ -1,0 +1,114 @@
+[
+  {
+    "path": "artifacts/combined-modules.jsonl",
+    "sha256": "0e262a0295f2729a5a2bdd56ef925022fc98acde2b9b8bc4dd5e8fd1e65846ea"
+  },
+  {
+    "path": "artifacts/combined-probe/go.mod",
+    "sha256": "043859b73148e4c177dcd02905825fc1cf43b0b7f26a61b67acd856a434ce891"
+  },
+  {
+    "path": "artifacts/combined-probe/go.sum",
+    "sha256": "2c24e701fb399c182fcddca5beab56ddfdd2cf0c0ad0277d46d864c230ce685e"
+  },
+  {
+    "path": "artifacts/combined-probe/main.go",
+    "sha256": "ee9f48f78c3ef4eb3a4d677e4d66997784056386c958aa95a8c3114a2b52da53"
+  },
+  {
+    "path": "artifacts/combined-result.json",
+    "sha256": "35ee46179bf41302b21109f3a86eec21d251d31b84c6e4f634b3a4cd64371c6f"
+  },
+  {
+    "path": "artifacts/combined-runtime-license-inventory.json",
+    "sha256": "4a4114ba966bfcc0864a95e9d541026d72b5c3c73ea190071d443580e5de5529"
+  },
+  {
+    "path": "artifacts/direct-licenses.json",
+    "sha256": "fd193283dc05f667ee56d7f65f1182983e355e438af27bb7813e4ae5fc335f9b"
+  },
+  {
+    "path": "artifacts/download-modules.json",
+    "sha256": "0fd3174b32d5a3c5ca444424c93b755838be210c9e01fafceb749f55167e1620"
+  },
+  {
+    "path": "artifacts/eino-ext-openai-LICENSE-APACHE",
+    "sha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b"
+  },
+  {
+    "path": "artifacts/eino-probe-go126-result.json",
+    "sha256": "2ee1e60f5afede73cb0ceca72adfaafbd7ee3f1aaf1e74ca48e36f957471fb6e"
+  },
+  {
+    "path": "artifacts/eino-start.json",
+    "sha256": "4900830f78a5ecef761dad53e1aceac9b7a1144d21a629bd8f6d71f2ae72f6f3"
+  },
+  {
+    "path": "artifacts/go-release-versions.json",
+    "sha256": "b12300a1b75a1e3ff60e2ab3e8aafcd701e0279d8f2143c2577c30885aa6dae8"
+  },
+  {
+    "path": "artifacts/hap-size-probe.mjs",
+    "sha256": "b8d8ece0d83df592c55e49228e6cbdd73ea5e68497fa01b3b98cd802f24e0970"
+  },
+  {
+    "path": "artifacts/hap-size-result.json",
+    "sha256": "3e95ea478e14443816e18c817ca64846b97cca5182128500775842065d6a9f99"
+  },
+  {
+    "path": "artifacts/latest-modules.json",
+    "sha256": "738771d496d15e23b7a6f837cc2ff1e18ee94eaa883691f24fd570b4d3894eb6"
+  },
+  {
+    "path": "artifacts/mattn-resource2.txt",
+    "sha256": "c040e891e530f9d947a7869d33cec8965d565c7d5f8b57feb78b2d2a9b920ce1"
+  },
+  {
+    "path": "artifacts/mattn-result2.json",
+    "sha256": "b556a33967b58ddee781ca0f163968f84f3867a972ebc10873b92314577d3682"
+  },
+  {
+    "path": "artifacts/ncruces-probe-go126-result.json",
+    "sha256": "7986c4371650a9225ee1f3080ea5d8b302f3518e233280f23efbf9f564b3bbbe"
+  },
+  {
+    "path": "artifacts/ncruces-resource.txt",
+    "sha256": "ab16976d3dc4505b2ca2856916be80293c6b78ca3b9374afabecb8d577e6d8f6"
+  },
+  {
+    "path": "artifacts/ncruces-resource2.txt",
+    "sha256": "673d6a7898f7335ebda4509126f588a851d422d13745d469430d319b22272d53"
+  },
+  {
+    "path": "artifacts/ncruces-result.json",
+    "sha256": "33744a6f44a0de6505e372c21a05c7d85a48146802007f5de8d3e93f67e59ef1"
+  },
+  {
+    "path": "artifacts/ncruces-result2.json",
+    "sha256": "b4d699543e5a356125eae9a8d930a42fd95791f645446eb611ce796e55162838"
+  },
+  {
+    "path": "artifacts/sqlite-probe/go.mod",
+    "sha256": "225648040f7f57971ae0c4dd22c58c0e09c66b524d441a41fac9b6043199a43f"
+  },
+  {
+    "path": "artifacts/sqlite-probe/go.sum",
+    "sha256": "cdf458f6814292d27526e04d2ab54807ff5dcfdc57d7767abaea833d7120c364"
+  },
+  {
+    "path": "artifacts/sqlite-probe/mattn.go",
+    "sha256": "89dee8a1887985d0c631705884586c25d81cb51d7dea709940abd6f74ad5cf9b"
+  },
+  {
+    "path": "artifacts/sqlite-probe/ncruces.go",
+    "sha256": "80556eafd5ba040037e5e04a4000a5267c6732967022de9673a5244c0188244b"
+  },
+  {
+    "path": "artifacts/sqlite-probe/probe.go",
+    "sha256": "175795f6e5d2da20428b9468e425119fc772b6d4737f2daaff23b1def401fe7f"
+  },
+  {
+    "path": "artifacts/sqlite-runtime-licenses.json",
+    "sha256": "53118c22e01bdad86f56b11a0546b2b16b9f7677fe56f40f34d02089254e423e"
+  }
+]

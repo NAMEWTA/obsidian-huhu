@@ -15,12 +15,14 @@ import {
 	isVisibleHuhuPath,
 	huhuName,
 	HUHU_VISIBLE_ROOT,
+	HUHUBOT_RUNTIME_ROOT,
 	TASK_ARCHIVE_PATH,
 } from './vault-layout';
 
 const at = (iso: string) => {
 	const date = new Date(iso), pad = (n: number) => String(n).padStart(2, '0');
-	const parts: Record<string, string> = { YYYY: String(date.getFullYear()), MM: pad(date.getMonth() + 1), DD: pad(date.getDate()), HH: pad(date.getHours()), mm: pad(date.getMinutes()) };
+	const parts: Record<string, string> = { YYYY: String(date.getFullYear()), MM: pad(date.getMonth() + 1), DD: pad(date.getDate()), HH: pad(date.getHours()), mm: pad(date.getMinutes()),
+	};
 	return { format: (pattern: string) => pattern.replace(/YYYY|MM|DD|HH|mm/g, (token) => parts[token]!) };
 };
 
@@ -30,7 +32,7 @@ test('every visible default lives under huhu/ and none is hidden', () => {
 		expect(path.split('/').some((part) => part.startsWith('.'))).toBe(false);
 		expect(isVisibleHuhuPath(path)).toBe(true);
 	}
-	expect(TASK_ARCHIVE_PATH).toBe('huhu/待办/已完成.md');
+	expect(TASK_ARCHIVE_PATH).toBe('huhu/todos/completed.md');
 	expect(isVisibleHuhuPath('huhux/a.md')).toBe(false);
 });
 
@@ -47,12 +49,21 @@ test('only boards and automation definitions are hidden HUHU documents', () => {
 	expect(() => dashboardPath('.git/x')).toThrow();
 });
 
+test('Bot host receipts stay in the private runtime root and outside indexed documents', () => {
+	expect(HUHUBOT_RUNTIME_ROOT).toBe('.huhu/huhubot');
+	for (const path of [HUHUBOT_RUNTIME_ROOT, `${HUHUBOT_RUNTIME_ROOT}/device-a/host-receipts/profile-a/effect-a.json`, `${HUHUBOT_RUNTIME_ROOT}/device-b/host-receipts/profile-b/effect-b.md`,
+	]) {
+		expect(isVisibleHuhuPath(path)).toBe(false);
+		expect(isContentPath(path)).toBe(false);
+	}
+});
+
 test('generated names never contain whitespace or characters a filesystem refuses', () => {
 	expect(huhuName('First article')).toBe('First-article');
 	expect(huhuName('  a\tb \n c  ')).toBe('a-b-c');
 	expect(huhuName('a/b:c*?"<>|d')).toBe('a-b-c-d');
 	expect(huhuName('张 三  企业')).toBe('张-三-企业');
-	expect(huhuName('...')).toBe('未命名');
+	expect(huhuName('...')).toBe('untitled');
 	expect(huhuName('', 'Untitled')).toBe('Untitled');
 	expect(huhuName('x'.repeat(300))).toHaveLength(100);
 });
@@ -66,12 +77,20 @@ test('inbox and dated file names join the stamp and the title with dashes', () =
 
 test('a capture goes to the file of its day in the inbox, one list item per capture', () => {
 	const now = at('2026-10-21T16:54:00');
-	expect(captureDayPath(INBOX_ROOT, now)).toBe('huhu/收件箱/2026-10-21-闪念.md');
-	expect(captureDayPath('huhu/收件箱/', now)).toBe('huhu/收件箱/2026-10-21-闪念.md');
-	expect(captureDayPathFor('huhu/收件箱', '2026-10-22')).toBe('huhu/收件箱/2026-10-22-闪念.md');
-	expect(captureDayOf('2026-10-21-闪念')).toBe('2026-10-21');
-	expect(captureDayOf('2026-10-21-1654-闪念')).toBeUndefined();
-	expect(captureDayOf('2026-10-21-闪念-草稿')).toBeUndefined();
+	expect(captureDayPath(INBOX_ROOT, now)).toBe('huhu/inbox/2026-10-21-captures.md');
+	expect(captureDayPath('huhu/收件箱/', now)).toBe('huhu/收件箱/2026-10-21-captures.md');
+	expect(captureDayPathFor('huhu/收件箱', '2026-10-22')).toBe('huhu/收件箱/2026-10-22-captures.md');
+	expect(captureDayOf('2026-10-21-captures')).toBe('2026-10-21');
+	expect(captureDayOf('2026-10-21-1654-captures')).toBeUndefined();
+	expect(captureDayOf('2026-10-21-captures-草稿')).toBeUndefined();
 	expect(captureLine('  想法 ', now)).toBe('- 16:54 想法');
 	expect(captureLine('第一行\n第二行', now)).toBe('- 16:54 第一行\n  第二行');
+});
+
+test('visible defaults use fixed lowercase names independently of user titles', () => {
+	expect(INBOX_ROOT).toBe('huhu/inbox');
+	expect(TASK_ARCHIVE_PATH).toBe('huhu/todos/completed.md');
+	expect(huhuName('...')).toBe('untitled');
+	expect(huhuName('My 自定义')).toBe('My-自定义');
+	expect(captureDayPathFor(INBOX_ROOT, '2026-10-31')).toBe('huhu/inbox/2026-10-31-captures.md');
 });

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HUHU UI-001 final · 设计包评审 / Design package review</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 9h10v10H9z"/><path d="M5 15V5h10"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/></symbol>
+      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+      <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 11h12v9H6zM8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></symbol>
+      <symbol id="i-term" viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 10l3 2-3 2M13 15h4"/></symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.5-1A4.5 4.5 0 0 1 17 18z"/></symbol>
+      <symbol id="i-stop" viewBox="0 0 24 24"><path d="M7 7h10v10H7z"/></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
+      <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 5h16l-6 8v6l-4-2v-4z"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="harness">
+    <div class="harness-in">
+      <h1><span data-zh="HUHU UI-001 评审包（虚构数据，离线）" data-en="HUHU UI-001 review package (fictional data, offline)">HUHU UI-001 评审包（虚构数据，离线）</span></h1>
+      <button id="opts-toggle" class="btn btn-outline sm" type="button" data-act="toggleOpts" aria-expanded="false" aria-controls="opts-panel"><span data-zh="显示选项" data-en="View options">显示选项</span></button>
+      <div id="opts-panel" class="opts-panel open">
+        <div class="opts" role="group" aria-label="View options">
+          <button class="btn btn-outline sm" type="button" data-act="lang" data-v="zh" aria-pressed="true">中文</button>
+          <button class="btn btn-outline sm" type="button" data-act="lang" data-v="en" aria-pressed="false">English</button>
+          <button class="btn btn-outline sm" type="button" data-act="theme" data-v="light" aria-pressed="true" data-zh="亮" data-en="Light">亮</button>
+          <button class="btn btn-outline sm" type="button" data-act="theme" data-v="dark" aria-pressed="false" data-zh="暗" data-en="Dark">暗</button>
+          <button class="btn btn-outline sm" type="button" data-act="w" data-v="wide" aria-pressed="true" data-zh="容器：宽" data-en="Container: wide">容器：宽</button>
+          <button class="btn btn-outline sm" type="button" data-act="w" data-v="600" aria-pressed="false">600px</button>
+          <button class="btn btn-outline sm" type="button" data-act="w" data-v="420" aria-pressed="false">420px</button>
+          <button class="btn btn-outline sm" type="button" data-act="long" aria-pressed="false" data-zh="长文本" data-en="Long text">长文本</button>
+          <button class="btn btn-outline sm" type="button" data-act="touch" aria-pressed="false" data-zh="触控 44px" data-en="Touch 44px">触控 44px</button>
+          <button class="btn btn-outline sm" type="button" data-act="motion" aria-pressed="false" data-zh="减少动效" data-en="Reduce motion">减少动效</button>
+          <button class="btn btn-outline sm" type="button" data-act="zoom" aria-pressed="false" data-zh="200% 缩放" data-en="200% zoom">200% 缩放</button>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Review pages">
+        <button type="button" data-act="route" data-route="gallery" data-zh="组件画廊" data-en="Component gallery">组件画廊</button>
+        <button type="button" data-act="route" data-route="list" data-zh="任务 / 自动化列表" data-en="Tasks / automations">任务 / 自动化列表</button>
+        <button type="button" data-act="route" data-route="safe" data-zh="保险箱长表单" data-en="Safe long form">保险箱长表单</button>
+        <button type="button" data-act="route" data-route="home" data-zh="Home 小组件" data-en="Home widgets">Home 小组件</button>
+        <button type="button" data-act="route" data-route="bot" data-zh="BOT 流式与审批" data-en="BOT stream and approval">BOT 流式与审批</button>
+        <button type="button" data-act="route" data-route="terminal" data-zh="终端状态分层" data-en="Terminal status layers">终端状态分层</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div id="frame" class="frame" data-w="wide">
+      <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+      <main id="main" tabindex="-1">
+        <h2>Loading</h2>
+        <button class="btn btn-outline" type="button" disabled>Loading</button>
+      </main>
+    </div>
+    <p class="preview-note" style="margin-top:12px" data-zh="颜色为仅预览的回退值（生产绑定 Obsidian 语义变量）；字体 Geist 未随包分发，使用系统回退。" data-en="Colors are PREVIEW-ONLY fallbacks (production binds Obsidian semantic variables); Geist is not bundled, system fallback is used.">颜色为仅预览的回退值（生产绑定 Obsidian 语义变量）；字体 Geist 未随包分发，使用系统回退。</p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

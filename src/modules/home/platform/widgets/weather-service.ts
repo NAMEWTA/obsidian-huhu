@@ -1,23 +1,61 @@
+import { storageWriteQueue, type WriteQueue } from '../../../../shared/storage/write-queue';
 import type { TextStorage } from '../../../../shared/storage/ports';
 import { WEATHER_CACHE_ROOT } from '../../../../shared/storage/vault-layout';
 import { requestUrl } from 'obsidian';
 import type { WeatherConfig, WeatherData } from '../../core/board/types/index';
 import { getLanguage } from '../../../../shared/i18n/index';
 
-/** Bound waiting time; a late native response has no path back into a published widget request. */
-async function weatherRequest(options: Parameters<typeof requestUrl>[0]) {
-	const clock = window;
- let timer: number | undefined;
+export type WeatherStage = 'cache-read' | 'primary' | 'fallback';
+export type WeatherCacheWrite = 'pending' | 'saved' | 'failed' | 'skipped';
+export interface WeatherRequestOptions {
+	signal?: AbortSignal;
+	clock?: Pick<Window, 'setTimeout' | 'clearTimeout'>;
+	current?(): boolean;
+	onCache?(data: WeatherData): void;
+	onStage?(stage: WeatherStage): void;
+	onCacheWrite?(state: WeatherCacheWrite): void;
+}
+export class WeatherRequestError extends Error {
+	constructor(
+		readonly code: 'timeout' | 'cancelled' | 'network' | 'invalid-response',
+		readonly stage: WeatherStage,
+	) {
+		super(`weather.${code}`);
+	}
+}
+const currentRequest = (options: WeatherRequestOptions) => !options.signal?.aborted && (options.current?.() ?? true);
+/** Bound each wait and remove our timer/listener; native I/O itself is not cancellable. */
+async function bounded<T>(
+	run: () => Promise<T>,
+	ms: number,
+	stage: WeatherStage,
+	options: WeatherRequestOptions,
+): Promise<T> {
+	if (!currentRequest(options)) throw new WeatherRequestError('cancelled', stage);
+	const clock = options.clock ?? window;
+	let timer: number | undefined;
+	let abort: (() => void) | undefined;
 	try {
 		return await Promise.race([
-			requestUrl(options),
+			run(),
 			new Promise<never>((_resolve, reject) => {
-				timer = clock.setTimeout(() => reject(new Error('Weather request timed out')), 12_000);
+				abort = () => reject(new WeatherRequestError('cancelled', stage));
+				options.signal?.addEventListener('abort', abort, { once: true });
+				timer = clock.setTimeout(() => reject(new WeatherRequestError('timeout', stage)), ms);
+				if (options.signal?.aborted) abort();
 			}),
 		]);
 	} finally {
 		if (timer !== undefined) clock.clearTimeout(timer);
+		if (abort) options.signal?.removeEventListener('abort', abort);
 	}
+}
+async function weatherRequest(
+	request: Parameters<typeof requestUrl>[0],
+	options: WeatherRequestOptions = {},
+	stage: WeatherStage = 'primary',
+) {
+	return bounded(() => requestUrl(request), 12_000, stage, options);
 }
 
 // ---------- API response shapes ----------
@@ -97,7 +135,102 @@ interface CacheEntry {
 	fetchedAt: number;
 }
 
-const weatherCache = new Map<string, CacheEntry>();
+const unownedCache = new Map<string, CacheEntry>();
+const weatherCaches = new WeakMap<object, Map<string, CacheEntry>>();
+function cacheFor(storage?: TextStorage): Map<string, CacheEntry> {
+	if (!storage) return unownedCache;
+	const owner = storageWriteQueue(storage);
+	let cache = weatherCaches.get(owner);
+	if (!cache) weatherCaches.set(owner, (cache = new Map<string, CacheEntry>()));
+	return cache;
+}
+type CacheWork = {
+	data: WeatherData;
+	storage: TextStorage;
+	options: WeatherRequestOptions;
+	admit(): boolean;
+	finish(state: WeatherCacheWrite): void;
+};
+const cacheWrites = new WeakMap<WriteQueue, Map<string, { next?: CacheWork }>>();
+/** One admitted write plus at most one latest successor per owner/path; never release a held I/O lease early. */
+function persistWeather(
+	config: WeatherConfig,
+	data: WeatherData,
+	storage: TextStorage,
+	options: WeatherRequestOptions,
+): void {
+	const queue = storageWriteQueue(storage),
+		path = `${WEATHER_CACHE_ROOT}/${cacheKey(config)}.json`;
+	let pending = cacheWrites.get(queue);
+	if (!pending) cacheWrites.set(queue, (pending = new Map<string, { next?: CacheWork }>()));
+	if (!currentRequest(options)) {
+		options.onCacheWrite?.('skipped');
+		return;
+	}
+	options.onCacheWrite?.('pending');
+	let reported = false;
+	const clock = options.clock ?? window;
+	let timer: number;
+	const abort = () => finish('skipped');
+	const finish = (state: WeatherCacheWrite) => {
+		if (reported) return;
+		reported = true;
+		clock.clearTimeout(timer);
+		options.signal?.removeEventListener('abort', abort);
+		if (currentRequest(options)) options.onCacheWrite?.(state);
+	};
+	timer = clock.setTimeout(() => finish('failed'), 1000);
+	options.signal?.addEventListener('abort', abort, { once: true });
+	if (options.signal?.aborted) abort();
+	const deadline = Date.now() + 1000;
+	const work: CacheWork = {
+		data,
+		storage,
+		options,
+		finish,
+		admit: () => !reported && currentRequest(options) && Date.now() < deadline,
+	};
+	const existing = pending.get(path);
+	if (existing) {
+		existing.next?.finish('skipped');
+		existing.next = work;
+		return;
+	}
+	const slot = { next: work } as { next?: CacheWork };
+	pending.set(path, slot);
+	void queue
+		.run(
+			path,
+			async () => {
+				try {
+					while (slot.next) {
+						const item = slot.next;
+						slot.next = undefined;
+						try {
+							if (!item.admit()) {
+								item.finish('skipped');
+								continue;
+							}
+							await item.storage.mkdir(WEATHER_CACHE_ROOT);
+							if (!item.admit()) {
+								item.finish('skipped');
+								continue;
+							}
+							// Once submitted, private storage can finish later in this captured vault/path. Keep the lease until it does.
+							await item.storage.write(path, JSON.stringify(item.data));
+							item.finish('saved');
+						} catch {
+							item.finish('failed');
+						}
+					}
+				} finally {
+					if (pending?.get(path) === slot) pending.delete(path);
+				}
+			},
+			'weather-cache',
+		)
+		.catch(() => {});
+}
 
 export interface GeocodeResult {
 	name: string;
@@ -109,41 +242,59 @@ export interface GeocodeResult {
 	timezone?: string;
 }
 
-export function getCachedWeather(config: WeatherConfig): WeatherData | null {
+export function getCachedWeather(config: WeatherConfig, storage?: TextStorage): WeatherData | null {
 	const key = cacheKey(config);
-	const entry = weatherCache.get(key);
+	const entry = cacheFor(storage).get(key);
 	if (!entry) return null;
 	if (Date.now() - entry.fetchedAt > CACHE_TTL) {
-		weatherCache.delete(key);
 		return null;
 	}
 	return entry.data;
 }
 
 // Open-Meteo supplies timezone, current conditions and seven-day/hourly forecasts. Met.no is the fallback.
-export async function fetchWeather(config: WeatherConfig, storage?: TextStorage, force = false): Promise<WeatherData> {
-	const cached = getCachedWeather(config) ?? (!force && storage ? await readWeatherCache(config, storage) : null);
- if (cached && !force && Date.now() - cached.fetchedAt < CACHE_TTL) return cached;
+export async function fetchWeather(
+	config: WeatherConfig,
+	storage?: TextStorage,
+	force = false,
+	options: WeatherRequestOptions = {},
+): Promise<WeatherData> {
+	let cached = cacheFor(storage).get(cacheKey(config))?.data ?? null;
+	if (!cached && storage) {
+		options.onStage?.('cache-read');
+		cached = await readWeatherCache(config, storage, options);
+	}
+	if (!currentRequest(options)) throw new WeatherRequestError('cancelled', 'cache-read');
+	if (cached) options.onCache?.(cached);
+	if (cached && !force && Date.now() - cached.fetchedAt < CACHE_TTL) return cached;
 	let data: WeatherData;
 	try {
-		data = await fetchFromOpenMeteoBase('https://api.open-meteo.com', config);
+		options.onStage?.('primary');
+		data = await fetchFromOpenMeteoBase('https://api.open-meteo.com', config, options);
 	} catch {
-		data = await fetchFromMetNo(config);
-	}
-	if (storage) {
+		if (!currentRequest(options)) throw new WeatherRequestError('cancelled', 'primary');
+		options.onStage?.('fallback');
 		try {
-			await storage.mkdir(WEATHER_CACHE_ROOT);
-			await storage.write(`${WEATHER_CACHE_ROOT}/${cacheKey(config)}.json`, JSON.stringify(data));
-		} catch {
-			/* A disposable cache never prevents showing a successful forecast. */
+			data = await fetchFromMetNo(config, options);
+		} catch (fallback) {
+			throw fallback instanceof WeatherRequestError ? fallback : new WeatherRequestError('network', 'fallback');
 		}
 	}
+	if (!currentRequest(options)) throw new WeatherRequestError('cancelled', 'fallback');
+	cacheFor(storage).set(cacheKey(config), { data, fetchedAt: data.fetchedAt });
+	if (storage) persistWeather(config, data, storage, options);
 	return data;
 }
 /** Per-vault cache can be displayed offline, but never published as a newly fetched forecast. */
-export async function readWeatherCache(config: WeatherConfig, storage: TextStorage): Promise<WeatherData | null> {
+export async function readWeatherCache(
+	config: WeatherConfig,
+	storage: TextStorage,
+	options: WeatherRequestOptions = {},
+): Promise<WeatherData | null> {
 	try {
-		const data: unknown = JSON.parse(await storage.read(`${WEATHER_CACHE_ROOT}/${cacheKey(config)}.json`));
+		const data: unknown = JSON.parse(
+			await bounded(() => storage.read(`${WEATHER_CACHE_ROOT}/${cacheKey(config)}.json`), 1000, 'cache-read', options),
+		);
 		if (!data || typeof data !== 'object') return null;
 		const r = data as WeatherData;
 		if (
@@ -160,25 +311,27 @@ export async function readWeatherCache(config: WeatherConfig, storage: TextStora
 				return null;
 			}
 		}
-		if (Date.now() - r.fetchedAt <= CACHE_TTL)
-			weatherCache.set(cacheKey(config), { data: r, fetchedAt: r.fetchedAt });
+		if (!currentRequest(options)) return null;
+		const existing = cacheFor(storage).get(cacheKey(config));
+		if (!existing || existing.fetchedAt <= r.fetchedAt)
+			cacheFor(storage).set(cacheKey(config), { data: r, fetchedAt: r.fetchedAt });
 		return r;
 	} catch {
 		return null;
 	}
 }
 
-async function fetchFromOpenMeteoBase(base: string, config: WeatherConfig): Promise<WeatherData> {
+async function fetchFromOpenMeteoBase(base: string, config: WeatherConfig, options: WeatherRequestOptions): Promise<WeatherData> {
 	const url = `${base}/v1/forecast?latitude=${config.latitude}&longitude=${config.longitude}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability&timezone=auto&forecast_days=7`;
 
-	const resp = await weatherRequest({ url });
+	const resp = await weatherRequest({ url }, options, 'primary');
 	const json = resp.json as OpenMeteoResponse;
 
 	const current = json.current;
 	const daily = json.daily;
 
 	if (!current || !daily || !Number.isFinite(current.temperature_2m) || !Number.isFinite(current.weather_code)) {
-		throw new Error('Invalid weather API response');
+		throw new WeatherRequestError('invalid-response', 'primary');
 	}
 
 	const data: WeatherData = {
@@ -220,25 +373,24 @@ async function fetchFromOpenMeteoBase(base: string, config: WeatherConfig): Prom
 		fetchedAt: Date.now(),
 	};
 
-	weatherCache.set(cacheKey(config), { data, fetchedAt: Date.now() });
 	return data;
 }
 
 // ---------- Met.no (fallback, 5+ day forecast) ----------
 
-async function fetchFromMetNo(config: WeatherConfig): Promise<WeatherData> {
+async function fetchFromMetNo(config: WeatherConfig, options: WeatherRequestOptions): Promise<WeatherData> {
 	const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${config.latitude}&lon=${config.longitude}`;
 
-	const resp = await weatherRequest({ url, headers: { 'User-Agent': 'obsidian-dashboard' } });
+	const resp = await weatherRequest({ url, headers: { 'User-Agent': 'obsidian-dashboard' } }, options, 'fallback');
 	const json = resp.json as MetNoResponse;
 
 	const timeseries = json.properties?.timeseries;
 	if (!Array.isArray(timeseries) || timeseries.length === 0) {
-		throw new Error('Invalid Met.no response');
+		throw new WeatherRequestError('invalid-response', 'fallback');
 	}
 
 	const now = timeseries[0]!;
-	if (!Number.isFinite(now.data.instant.details.air_temperature)) throw new Error('Invalid current temperature');
+	if (!Number.isFinite(now.data.instant.details.air_temperature)) throw new WeatherRequestError('invalid-response', 'fallback');
 	const nowDetails = now.data.instant.details;
 	const nowSymbol =
 		now.data.next_1_hours?.summary?.symbol_code ?? now.data.next_6_hours?.summary?.symbol_code;
@@ -296,7 +448,6 @@ async function fetchFromMetNo(config: WeatherConfig): Promise<WeatherData> {
 		fetchedAt: Date.now(),
 	};
 
-	weatherCache.set(cacheKey(config), { data, fetchedAt: Date.now() });
 	return data;
 }
 

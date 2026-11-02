@@ -1,4 +1,4 @@
-import type { BrowserHost } from '../../../browser/api';
+import type { BrowserOpener } from '../../../browser/api';
 /** File references in terminal output: `path`, `path:line` or `path:line:column`. */
 
 export interface FileReference {
@@ -35,7 +35,13 @@ export function findFileReferences(text: string): FileReference[] {
 	return found;
 }
 
-/** URLs go through the browser routing settings; local file references remain unchanged. */
-export function openTerminalUrl(url: string, event: MouseEvent, browser: BrowserHost | undefined, fallback: () => void): void {
- if (browser) browser.routeLink(url,event); else fallback();
+/** Shift explicitly opens externally; other URLs use the independent Browser Workspace when available. */
+export async function openTerminalUrl(
+	url: string,
+	event: { shiftKey: boolean },
+	browser: BrowserOpener | undefined,
+	fallback: () => void,
+): Promise<void> {
+	if (!browser || event.shiftKey) fallback();
+	else await browser.show({ url });
 }

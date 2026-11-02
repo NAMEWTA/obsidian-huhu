@@ -393,3 +393,29 @@ test('history navigation and revealing also cancel a pending restore', async () 
 		expect(second.service.state.getState().selection.paths).not.toContain('a/1.md');
 	}
 });
+
+test('explicit active-file reveal leaves tag/search context, expands folders and selects without reopening the note', async () => {
+	const { service, calls, settings } = await createTestService(vault(), {
+		settings: { collapsedSections: ['folders'], layout: 'single', singleView: 'nav', hiddenFolders: ['b'] },
+		ops: { activePath: () => 'b/4.md' },
+	});
+	service.selectContext({ kind: 'tag', key: 'x' });
+	service.applySearch('not-a-result');
+	await service.revealActive();
+	expect(service.state.getState().context).toEqual({ kind: 'folder', key: 'b' });
+	expect(service.state.getState().search).toEqual({ open: false, query: '' });
+	expect(service.state.getState().expandedFolders.has('b')).toBe(true);
+	expect(service.state.getState().selection.paths).toEqual(['b/4.md']);
+	expect(settings.get().collapsedSections).not.toContain('folders');
+	expect(settings.get().showHidden).toBe(true);
+	expect(settings.get().singleView).toBe('list');
+	expect(paths(service)).toContain('b/4.md');
+	expect(calls.filter(([operation]) => operation === 'open')).toEqual([]);
+});
+
+test('active-file reveal is a no-op when no indexed file is active', async () => {
+	const { service } = await createTestService(vault(), { ops: { activePath: () => 'missing.md' } });
+	const before = service.state.getState();
+	await service.revealActive();
+	expect(service.state.getState()).toBe(before);
+});

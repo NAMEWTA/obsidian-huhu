@@ -1,0 +1,13 @@
+{
+  "scripts/huhu-bot-notices.mjs": "d0e9aa290d6e842164f287d206dae5e94878b56e104608b8884423bac7ffb154",
+  "scripts/huhu-bot-notices.test.mjs": "df6a693739dc6cb417e4711e0776fb1300b3e0d6003336430c50f6aeb05926e1",
+  "docs/third-party/huhu-bot.md": "032855cb1e14c709a5c9bc58e8fd480e4e46654ea41e4aa5decaa28bfe0b22b8",
+  "docs/development.md": "84680ba7bfa29df2c08fbb05f3c04edb7719c46dbdcacdafc0311c92542dc97d",
+  "scripts/build-huhu-bot.mjs": "7ec2e49cbdef9c1015dfdbdf95e69312e01396f918ce1f2655cb39770a176cdd",
+  "scripts/verify-huhu-bot.mjs": "c251cd0fca6539e812569bae69191e48764b324260dc43973c25616e34366c5c",
+  "native/huhubot/go.mod": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b",
+  "native/huhubot/go.sum": "2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816",
+  ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+  "package.json": "25650222887420d856cba94e415b62b1d52dfdd0d9cf604c46b747ad8ab0e8b1",
+  "pnpm-lock.yaml": "3a6f346a93c1666858d21f16ea87933c4fe07c3ed771fda00a43a949e5a1a934"
+}

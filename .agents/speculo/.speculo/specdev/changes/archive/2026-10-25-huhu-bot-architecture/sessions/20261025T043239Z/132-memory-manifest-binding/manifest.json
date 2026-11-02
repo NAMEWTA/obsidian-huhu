@@ -1,0 +1,132 @@
+{
+  "task": "132-memory-manifest-binding",
+  "status": "completed",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "sourceFiles": [
+    {
+      "path": "native/huhubot/internal/application/api/memory.go",
+      "sha256": "855d2374f3b77d90cee7a884046f3743d588b5399d7b9979fb7104b4ce528346"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/memory_manifest_test.go",
+      "sha256": "32f9f503355f7acbb66201f5cebdd6430e2c39f05682dfb71ed0d55a3b939c42"
+    }
+  ],
+  "sourceTreeSHA256": "375731a4be6305075e7d6a8752c443bc55464586cf7573d897d533bd4d330e20",
+  "finalCheckInputFile": "logs/07-api-vet-input.json",
+  "finalCheckInputCount": 23,
+  "finalCheckInputDrift": [],
+  "artifactCount": 26,
+  "artifacts": [
+    {
+      "path": "REPORT.md",
+      "sha256": "3b5b9a38479d81c4782476cb2f41526415f9418e6bc1af7782b3e27577810781"
+    },
+    {
+      "path": "TASK.md",
+      "sha256": "e6bc98f99dfd55bec6c47d4a88da3da81bcdcd47269cd9ac087b24bd885eb4a7"
+    },
+    {
+      "path": "logs/01-api-closure-input.json",
+      "sha256": "87793a3da61a1f2393207b5fb4fbbd1e3b98d59e9bf08e3e7ad22c69dd46cc5a"
+    },
+    {
+      "path": "logs/01-api-closure-result.json",
+      "sha256": "205c4922891ef46180120686c93d45d9f3de7a344989cb1a26e697ec6f8b9b13"
+    },
+    {
+      "path": "logs/01-api-closure.log",
+      "sha256": "4581f53edf5eca8d63e90d53cde6b83b874521529e1582736411aadc30b39819"
+    },
+    {
+      "path": "logs/02-closure-verification.json",
+      "sha256": "5767c8406928eff2bfaeffe997309b1ccdaa2853865c87f84c19f946252dce8f"
+    },
+    {
+      "path": "logs/03-manifest-old-entry-red-input.json",
+      "sha256": "46bdec6c9e484b83094216b816144b5e738b092bbf766bdd96305db7830abb55"
+    },
+    {
+      "path": "logs/03-manifest-old-entry-red-result.json",
+      "sha256": "10dec7679f01753a20a61c4bb7aa8044a67e5f85e13141f612ab9aa8713ac6b6"
+    },
+    {
+      "path": "logs/03-manifest-old-entry-red.log",
+      "sha256": "82fa4c2dd55f5ad30a177915172f528d0103148a97bf2dd6872388488c3a6f08"
+    },
+    {
+      "path": "logs/03-red-test.txt",
+      "sha256": "6d2630cc74a936233f83b7b9075fc99f71702afee80f1e86df955e0ee359a752"
+    },
+    {
+      "path": "logs/04-independent-maintenance-golden.json",
+      "sha256": "2cdc5ac56b7303d122f9f269c03ca9f5dc3cfd3fab7e8994c1081d41eff4901d"
+    },
+    {
+      "path": "logs/05-manifest-api-green-input.json",
+      "sha256": "8815ca5530a7d899adc7b8598ebd02b75824eba48ffa201af9d1183f469ea1b5"
+    },
+    {
+      "path": "logs/05-manifest-api-green-result.json",
+      "sha256": "b58d9ce2380e08ec2709a49819132d5e2bd31e66a7db633e8b42857a70a7b9e8"
+    },
+    {
+      "path": "logs/05-manifest-api-green.log",
+      "sha256": "ffa8f7bb645960d0467c8d0ad41c3a57353f56f79f086a15992dc9c05cd58637"
+    },
+    {
+      "path": "logs/06-api-test-closure-input.json",
+      "sha256": "8815ca5530a7d899adc7b8598ebd02b75824eba48ffa201af9d1183f469ea1b5"
+    },
+    {
+      "path": "logs/06-api-test-closure-result.json",
+      "sha256": "65b0fa8f5b6b7f4dcde43cce24a247f96ae2976509a0686acf87fc9681e532bf"
+    },
+    {
+      "path": "logs/06-api-test-closure.log",
+      "sha256": "2892d9bbfd295da0f0d8364b104ae08dd0dc658e9a8dc2adead97605bde42f56"
+    },
+    {
+      "path": "logs/07-api-vet-input.json",
+      "sha256": "8815ca5530a7d899adc7b8598ebd02b75824eba48ffa201af9d1183f469ea1b5"
+    },
+    {
+      "path": "logs/07-api-vet-result.json",
+      "sha256": "1a1030d6c80b168a4940829d13ccd1bd9c8ba1e1a3d15c5a5e0bc8d378de351a"
+    },
+    {
+      "path": "logs/07-api-vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/08-final-closure-verification.json",
+      "sha256": "48f1b867d0e514878f1ffbe9596cb59b34c1f7593d7b6b82557830f964f99940"
+    },
+    {
+      "path": "logs/09-final-source-verification.json",
+      "sha256": "7baed67ffe02e58295caa77fa7a2b5059d5f2895093a09efbdf32fd730351e25"
+    },
+    {
+      "path": "logs/10-return-result.json",
+      "sha256": "248f14782b81e1719219d00acb3d810c015950b7d52d86034e00948cd6ec41ce"
+    },
+    {
+      "path": "logs/10-return.log",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463"
+    },
+    {
+      "path": "logs/interface-contract.md",
+      "sha256": "b830987ec5155c234f2bb8b28e1293f9a2ca16042dfad4534a5c18ca004fcbf2"
+    },
+    {
+      "path": "logs/run_api_check.py",
+      "sha256": "3fb9495fa1711fb21d50c8e10b99009bd5d1c7dfeaf13e46993b907a669e68c7"
+    }
+  ],
+  "artifactTreeSHA256": "9731c0d491ac94fa613b26ce21d050f1d8fe9f88148e0f7fe388a27a5e596ed6",
+  "manifestSelfExcluded": true,
+  "allCommandsWaited": true,
+  "activeProductProcesses": [],
+  "unchanged129CheckpointFile": "../129-memory-runtime-integration/logs/03-runtime-source-checkpoint.json",
+  "actualReturnResult": "logs/10-return-result.json"
+}

@@ -1,0 +1,730 @@
+[
+  {
+    "target": "linux-x64",
+    "modules": [
+      {
+        "Path": "golang.org/x/text",
+        "Version": "v0.42.0",
+        "Time": "2026-09-08T16:29:55Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/text/@v/v0.42.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+        "GoModSum": "h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+      },
+      {
+        "Path": "github.com/santhosh-tekuri/jsonschema/v6",
+        "Version": "v6.0.3",
+        "Time": "2026-06-28T17:38:00Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/santhosh-tekuri/jsonschema/v6/@v/v6.0.3.mod",
+        "GoVersion": "1.21",
+        "Sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+        "GoModSum": "h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU="
+      },
+      {
+        "Path": "github.com/godbus/dbus/v5",
+        "Version": "v5.2.2",
+        "Time": "2025-12-29T17:12:48Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+        "GoVersion": "1.20",
+        "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+        "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+      },
+      {
+        "Path": "github.com/zalando/go-keyring",
+        "Version": "v0.2.8",
+        "Time": "2026-03-23T12:00:09Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+        "GoVersion": "1.18",
+        "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+        "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+      },
+      {
+        "Path": "golang.org/x/sys",
+        "Version": "v0.48.0",
+        "Time": "2026-08-31T19:43:43Z",
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/sys/@v/v0.48.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+        "GoModSum": "h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3-wasm/v6",
+        "Version": "v6.3.35304",
+        "Time": "2026-09-23T12:41:14Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3-wasm/v6/@v/v6.3.35304.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:dBSZlcEFdtBMvNRg34y50mConBPO/petSddSwGQVlSI=",
+        "GoModSum": "h1:YvoJzbJpX6phd3BGdtiXu2NuD5RX6G8zsUdzt47GgOY="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3",
+        "Version": "v0.35.6",
+        "Time": "2026-09-23T13:05:19Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+        "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8="
+      },
+      {
+        "Path": "github.com/ncruces/julianday",
+        "Version": "v1.0.0",
+        "Time": "2023-10-18T08:45:30Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/julianday/@v/v1.0.0.mod",
+        "GoVersion": "1.17",
+        "Sum": "h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=",
+        "GoModSum": "h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g="
+      }
+    ],
+    "credentialPackages": [
+      {
+        "ImportPath": "github.com/godbus/dbus/v5",
+        "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+        "GoFiles": [
+          "auth.go",
+          "auth_anonymous.go",
+          "auth_default_other.go",
+          "auth_external.go",
+          "call.go",
+          "conn.go",
+          "conn_other.go",
+          "conn_unix.go",
+          "dbus.go",
+          "decoder.go",
+          "default_handler.go",
+          "doc.go",
+          "encoder.go",
+          "escape.go",
+          "export.go",
+          "match.go",
+          "message.go",
+          "object.go",
+          "sequence.go",
+          "sequential_handler.go",
+          "server_interfaces.go",
+          "sig.go",
+          "transport_generic.go",
+          "transport_nonce_tcp.go",
+          "transport_tcp.go",
+          "transport_unix.go",
+          "transport_unixcred_linux.go",
+          "variant.go",
+          "variant_lexer.go",
+          "variant_parser.go"
+        ],
+        "Module": {
+          "Path": "github.com/godbus/dbus/v5",
+          "Version": "v5.2.2",
+          "Time": "2025-12-29T17:12:48Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+          "GoVersion": "1.20",
+          "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+          "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+        }
+      },
+      {
+        "ImportPath": "github.com/zalando/go-keyring/secret_service",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8/secret_service",
+        "GoFiles": [
+          "secret_service.go"
+        ],
+        "Module": {
+          "Path": "github.com/zalando/go-keyring",
+          "Version": "v0.2.8",
+          "Time": "2026-03-23T12:00:09Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+          "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+        }
+      },
+      {
+        "ImportPath": "github.com/zalando/go-keyring",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoFiles": [
+          "keyring.go",
+          "keyring_fallback.go",
+          "keyring_mock.go",
+          "keyring_unix.go"
+        ],
+        "Module": {
+          "Path": "github.com/zalando/go-keyring",
+          "Version": "v0.2.8",
+          "Time": "2026-03-23T12:00:09Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+          "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+        }
+      },
+      {
+        "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+        "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+        "GoFiles": [
+          "channel.go",
+          "channel_unix.go",
+          "crt.go",
+          "frame.go",
+          "keyring_linux.go",
+          "process_unix.go",
+          "provider.go",
+          "security.go",
+          "worker.go"
+        ],
+        "Module": {
+          "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+          "Main": true,
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+          "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+          "GoVersion": "1.26.0"
+        }
+      }
+    ]
+  },
+  {
+    "target": "linux-arm64",
+    "modules": [
+      {
+        "Path": "golang.org/x/text",
+        "Version": "v0.42.0",
+        "Time": "2026-09-08T16:29:55Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/text/@v/v0.42.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+        "GoModSum": "h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+      },
+      {
+        "Path": "github.com/santhosh-tekuri/jsonschema/v6",
+        "Version": "v6.0.3",
+        "Time": "2026-06-28T17:38:00Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/santhosh-tekuri/jsonschema/v6/@v/v6.0.3.mod",
+        "GoVersion": "1.21",
+        "Sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+        "GoModSum": "h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU="
+      },
+      {
+        "Path": "github.com/godbus/dbus/v5",
+        "Version": "v5.2.2",
+        "Time": "2025-12-29T17:12:48Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+        "GoVersion": "1.20",
+        "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+        "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+      },
+      {
+        "Path": "github.com/zalando/go-keyring",
+        "Version": "v0.2.8",
+        "Time": "2026-03-23T12:00:09Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+        "GoVersion": "1.18",
+        "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+        "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+      },
+      {
+        "Path": "golang.org/x/sys",
+        "Version": "v0.48.0",
+        "Time": "2026-08-31T19:43:43Z",
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/sys/@v/v0.48.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+        "GoModSum": "h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3-wasm/v6",
+        "Version": "v6.3.35304",
+        "Time": "2026-09-23T12:41:14Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3-wasm/v6/@v/v6.3.35304.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:dBSZlcEFdtBMvNRg34y50mConBPO/petSddSwGQVlSI=",
+        "GoModSum": "h1:YvoJzbJpX6phd3BGdtiXu2NuD5RX6G8zsUdzt47GgOY="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3",
+        "Version": "v0.35.6",
+        "Time": "2026-09-23T13:05:19Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+        "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8="
+      },
+      {
+        "Path": "github.com/ncruces/julianday",
+        "Version": "v1.0.0",
+        "Time": "2023-10-18T08:45:30Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/julianday/@v/v1.0.0.mod",
+        "GoVersion": "1.17",
+        "Sum": "h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=",
+        "GoModSum": "h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g="
+      }
+    ],
+    "credentialPackages": [
+      {
+        "ImportPath": "github.com/godbus/dbus/v5",
+        "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+        "GoFiles": [
+          "auth.go",
+          "auth_anonymous.go",
+          "auth_default_other.go",
+          "auth_external.go",
+          "call.go",
+          "conn.go",
+          "conn_other.go",
+          "conn_unix.go",
+          "dbus.go",
+          "decoder.go",
+          "default_handler.go",
+          "doc.go",
+          "encoder.go",
+          "escape.go",
+          "export.go",
+          "match.go",
+          "message.go",
+          "object.go",
+          "sequence.go",
+          "sequential_handler.go",
+          "server_interfaces.go",
+          "sig.go",
+          "transport_generic.go",
+          "transport_nonce_tcp.go",
+          "transport_tcp.go",
+          "transport_unix.go",
+          "transport_unixcred_linux.go",
+          "variant.go",
+          "variant_lexer.go",
+          "variant_parser.go"
+        ],
+        "Module": {
+          "Path": "github.com/godbus/dbus/v5",
+          "Version": "v5.2.2",
+          "Time": "2025-12-29T17:12:48Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/godbus/dbus/v5@v5.2.2",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/godbus/dbus/v5/@v/v5.2.2.mod",
+          "GoVersion": "1.20",
+          "Sum": "h1:TUR3TgtSVDmjiXOgAAyaZbYmIeP3DPkld3jgKGV8mXQ=",
+          "GoModSum": "h1:3AAv2+hPq5rdnr5txxxRwiGjPXamgoIHgz9FPBfOp3c="
+        }
+      },
+      {
+        "ImportPath": "github.com/zalando/go-keyring/secret_service",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8/secret_service",
+        "GoFiles": [
+          "secret_service.go"
+        ],
+        "Module": {
+          "Path": "github.com/zalando/go-keyring",
+          "Version": "v0.2.8",
+          "Time": "2026-03-23T12:00:09Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+          "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+        }
+      },
+      {
+        "ImportPath": "github.com/zalando/go-keyring",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoFiles": [
+          "keyring.go",
+          "keyring_fallback.go",
+          "keyring_mock.go",
+          "keyring_unix.go"
+        ],
+        "Module": {
+          "Path": "github.com/zalando/go-keyring",
+          "Version": "v0.2.8",
+          "Time": "2026-03-23T12:00:09Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+          "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+        }
+      },
+      {
+        "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+        "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+        "GoFiles": [
+          "channel.go",
+          "channel_unix.go",
+          "crt.go",
+          "frame.go",
+          "keyring_linux.go",
+          "process_unix.go",
+          "provider.go",
+          "security.go",
+          "worker.go"
+        ],
+        "Module": {
+          "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+          "Main": true,
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+          "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+          "GoVersion": "1.26.0"
+        }
+      }
+    ]
+  },
+  {
+    "target": "darwin-x64",
+    "modules": [
+      {
+        "Path": "golang.org/x/text",
+        "Version": "v0.42.0",
+        "Time": "2026-09-08T16:29:55Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/text/@v/v0.42.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+        "GoModSum": "h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+      },
+      {
+        "Path": "github.com/santhosh-tekuri/jsonschema/v6",
+        "Version": "v6.0.3",
+        "Time": "2026-06-28T17:38:00Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/santhosh-tekuri/jsonschema/v6/@v/v6.0.3.mod",
+        "GoVersion": "1.21",
+        "Sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+        "GoModSum": "h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU="
+      },
+      {
+        "Path": "golang.org/x/sys",
+        "Version": "v0.48.0",
+        "Time": "2026-08-31T19:43:43Z",
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/sys/@v/v0.48.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+        "GoModSum": "h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3-wasm/v6",
+        "Version": "v6.3.35304",
+        "Time": "2026-09-23T12:41:14Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3-wasm/v6/@v/v6.3.35304.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:dBSZlcEFdtBMvNRg34y50mConBPO/petSddSwGQVlSI=",
+        "GoModSum": "h1:YvoJzbJpX6phd3BGdtiXu2NuD5RX6G8zsUdzt47GgOY="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3",
+        "Version": "v0.35.6",
+        "Time": "2026-09-23T13:05:19Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+        "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8="
+      },
+      {
+        "Path": "github.com/ncruces/julianday",
+        "Version": "v1.0.0",
+        "Time": "2023-10-18T08:45:30Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/julianday/@v/v1.0.0.mod",
+        "GoVersion": "1.17",
+        "Sum": "h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=",
+        "GoModSum": "h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g="
+      }
+    ],
+    "credentialPackages": [
+      {
+        "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+        "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+        "GoFiles": [
+          "channel.go",
+          "channel_unix.go",
+          "crt.go",
+          "frame.go",
+          "keyring_darwin.go",
+          "process_unix.go",
+          "provider.go",
+          "security.go",
+          "worker.go"
+        ],
+        "Module": {
+          "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+          "Main": true,
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+          "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+          "GoVersion": "1.26.0"
+        }
+      }
+    ]
+  },
+  {
+    "target": "darwin-arm64",
+    "modules": [
+      {
+        "Path": "golang.org/x/text",
+        "Version": "v0.42.0",
+        "Time": "2026-09-08T16:29:55Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/text/@v/v0.42.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+        "GoModSum": "h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+      },
+      {
+        "Path": "github.com/santhosh-tekuri/jsonschema/v6",
+        "Version": "v6.0.3",
+        "Time": "2026-06-28T17:38:00Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/santhosh-tekuri/jsonschema/v6/@v/v6.0.3.mod",
+        "GoVersion": "1.21",
+        "Sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+        "GoModSum": "h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU="
+      },
+      {
+        "Path": "golang.org/x/sys",
+        "Version": "v0.48.0",
+        "Time": "2026-08-31T19:43:43Z",
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/sys/@v/v0.48.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+        "GoModSum": "h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3-wasm/v6",
+        "Version": "v6.3.35304",
+        "Time": "2026-09-23T12:41:14Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3-wasm/v6/@v/v6.3.35304.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:dBSZlcEFdtBMvNRg34y50mConBPO/petSddSwGQVlSI=",
+        "GoModSum": "h1:YvoJzbJpX6phd3BGdtiXu2NuD5RX6G8zsUdzt47GgOY="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3",
+        "Version": "v0.35.6",
+        "Time": "2026-09-23T13:05:19Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+        "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8="
+      },
+      {
+        "Path": "github.com/ncruces/julianday",
+        "Version": "v1.0.0",
+        "Time": "2023-10-18T08:45:30Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/julianday/@v/v1.0.0.mod",
+        "GoVersion": "1.17",
+        "Sum": "h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=",
+        "GoModSum": "h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g="
+      }
+    ],
+    "credentialPackages": [
+      {
+        "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+        "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+        "GoFiles": [
+          "channel.go",
+          "channel_unix.go",
+          "crt.go",
+          "frame.go",
+          "keyring_darwin.go",
+          "process_unix.go",
+          "provider.go",
+          "security.go",
+          "worker.go"
+        ],
+        "Module": {
+          "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+          "Main": true,
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+          "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+          "GoVersion": "1.26.0"
+        }
+      }
+    ]
+  },
+  {
+    "target": "win32-x64",
+    "modules": [
+      {
+        "Path": "golang.org/x/text",
+        "Version": "v0.42.0",
+        "Time": "2026-09-08T16:29:55Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/text@v0.42.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/text/@v/v0.42.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:JbOZXgfeCPU9gacVtYliJqOhD+zhrEqK4LfdpmlUZqI=",
+        "GoModSum": "h1:ojzP1Z+2QtioaF8DTtO8K5q7JWVVYwZKenzujK0Zd0E="
+      },
+      {
+        "Path": "github.com/santhosh-tekuri/jsonschema/v6",
+        "Version": "v6.0.3",
+        "Time": "2026-06-28T17:38:00Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/santhosh-tekuri/jsonschema/v6@v6.0.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/santhosh-tekuri/jsonschema/v6/@v/v6.0.3.mod",
+        "GoVersion": "1.21",
+        "Sum": "h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+        "GoModSum": "h1:JXeL+ps8p7/KNMjDQk3TCwPpBy0wYklyWTfbkIzdIFU="
+      },
+      {
+        "Path": "golang.org/x/sys",
+        "Version": "v0.48.0",
+        "Time": "2026-08-31T19:43:43Z",
+        "Dir": "/home/wta/go/pkg/mod/golang.org/x/sys@v0.48.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/golang.org/x/sys/@v/v0.48.0.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
+        "GoModSum": "h1:hNLxWAXmnKAxqDtdwIYC4bM9oQPEecfsnNMuSxOs3og="
+      },
+      {
+        "Path": "github.com/danieljoos/wincred",
+        "Version": "v1.2.3",
+        "Time": "2025-10-02T18:24:04Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/danieljoos/wincred/@v/v1.2.3.mod",
+        "GoVersion": "1.18",
+        "Sum": "h1:v7dZC2x32Ut3nEfRH+vhoZGvN72+dQ/snVXo/vMFLdQ=",
+        "GoModSum": "h1:6qqX0WNrS4RzPZ1tnroDzq9kY3fu1KwE7MRLQK4X0bs="
+      },
+      {
+        "Path": "github.com/zalando/go-keyring",
+        "Version": "v0.2.8",
+        "Time": "2026-03-23T12:00:09Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+        "GoVersion": "1.18",
+        "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+        "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3-wasm/v6",
+        "Version": "v6.3.35304",
+        "Time": "2026-09-23T12:41:14Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3-wasm/v6@v6.3.35304",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3-wasm/v6/@v/v6.3.35304.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:dBSZlcEFdtBMvNRg34y50mConBPO/petSddSwGQVlSI=",
+        "GoModSum": "h1:YvoJzbJpX6phd3BGdtiXu2NuD5RX6G8zsUdzt47GgOY="
+      },
+      {
+        "Path": "github.com/ncruces/go-sqlite3",
+        "Version": "v0.35.6",
+        "Time": "2026-09-23T13:05:19Z",
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/go-sqlite3/@v/v0.35.6.mod",
+        "GoVersion": "1.26.0",
+        "Sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+        "GoModSum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8="
+      },
+      {
+        "Path": "github.com/ncruces/julianday",
+        "Version": "v1.0.0",
+        "Time": "2023-10-18T08:45:30Z",
+        "Indirect": true,
+        "Dir": "/home/wta/go/pkg/mod/github.com/ncruces/julianday@v1.0.0",
+        "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/ncruces/julianday/@v/v1.0.0.mod",
+        "GoVersion": "1.17",
+        "Sum": "h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=",
+        "GoModSum": "h1:Dusn2KvZrrovOMJuOt0TNXL6tB7U2E8kvza5fFc9G7g="
+      }
+    ],
+    "credentialPackages": [
+      {
+        "ImportPath": "github.com/danieljoos/wincred",
+        "Dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3",
+        "GoFiles": [
+          "conversion.go",
+          "sys.go",
+          "types.go",
+          "wincred.go"
+        ],
+        "Module": {
+          "Path": "github.com/danieljoos/wincred",
+          "Version": "v1.2.3",
+          "Time": "2025-10-02T18:24:04Z",
+          "Indirect": true,
+          "Dir": "/home/wta/go/pkg/mod/github.com/danieljoos/wincred@v1.2.3",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/danieljoos/wincred/@v/v1.2.3.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:v7dZC2x32Ut3nEfRH+vhoZGvN72+dQ/snVXo/vMFLdQ=",
+          "GoModSum": "h1:6qqX0WNrS4RzPZ1tnroDzq9kY3fu1KwE7MRLQK4X0bs="
+        }
+      },
+      {
+        "ImportPath": "github.com/zalando/go-keyring",
+        "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+        "GoFiles": [
+          "keyring.go",
+          "keyring_fallback.go",
+          "keyring_mock.go",
+          "keyring_windows.go"
+        ],
+        "Module": {
+          "Path": "github.com/zalando/go-keyring",
+          "Version": "v0.2.8",
+          "Time": "2026-03-23T12:00:09Z",
+          "Dir": "/home/wta/go/pkg/mod/github.com/zalando/go-keyring@v0.2.8",
+          "GoMod": "/home/wta/go/pkg/mod/cache/download/github.com/zalando/go-keyring/@v/v0.2.8.mod",
+          "GoVersion": "1.18",
+          "Sum": "h1:6sD/Ucpl7jNq10rM2pgqTs0sZ9V3qMrqfIIy5YPccHs=",
+          "GoModSum": "h1:tsMo+VpRq5NGyKfxoBVjCuMrG47yj8cmakZDO5QGii0="
+        }
+      },
+      {
+        "ImportPath": "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/credentials",
+        "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/credentials",
+        "GoFiles": [
+          "channel.go",
+          "channel_windows.go",
+          "crt.go",
+          "frame.go",
+          "keyring_windows.go",
+          "process_other.go",
+          "provider.go",
+          "security.go",
+          "worker.go"
+        ],
+        "Module": {
+          "Path": "github.com/NAMEWTA/obsidian-huhu/native/huhubot",
+          "Main": true,
+          "Dir": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot",
+          "GoMod": "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/go.mod",
+          "GoVersion": "1.26.0"
+        }
+      }
+    ]
+  }
+]

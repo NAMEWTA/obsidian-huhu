@@ -81,38 +81,17 @@ progress: 15%
 === default ===
 ---
 dashboard: true
-widgets: [{"memberId":"home:calendar:default","provider":"home","kind":"calendar","instanceId":"default"},{"memberId":"home:clock:default","provider":"home","kind":"clock","instanceId":"default","weather":{"cityName":"Shanghai","latitude":31.23,"longitude":121.47}},{"memberId":"home:pomodoro:default","provider":"home","kind":"pomodoro","instanceId":"default"},{"memberId":"home:usage:default","provider":"home","kind":"usage","instanceId":"default"},{"memberId":"home:quick-actions:default","provider":"home","kind":"quick-actions","instanceId":"default"}]
-grid: {"v":2,"lg":[{"i":"widget:calendar","x":0,"y":0,"w":6,"h":4},{"i":"widget:clock","x":0,"y":4,"w":6,"h":2},{"i":"widget:pomodoro","x":6,"y":4,"w":3,"h":2},{"i":"widget:usage","x":9,"y":4,"w":3,"h":2},{"i":"widget:quickActions","x":6,"y":10,"w":6,"h":2},{"i":"section:收件箱","x":0,"y":10,"w":6,"h":2},{"i":"section:待办","x":6,"y":0,"w":6,"h":4},{"i":"section:项目","x":0,"y":6,"w":12,"h":4}]}
+widgets: [{"memberId":"home:calendar:default","provider":"home","kind":"calendar","instanceId":"default"},{"memberId":"home:clock:default","provider":"home","kind":"clock","instanceId":"default","weather":{"cityName":"Shanghai","latitude":31.23,"longitude":121.47}},{"memberId":"home:pomodoro:default","provider":"home","kind":"pomodoro","instanceId":"default"},{"memberId":"home:usage:default","provider":"home","kind":"usage","instanceId":"default"},{"memberId":"home:quick-actions:default","provider":"home","kind":"quick-actions","instanceId":"default"},{"memberId":"task:tasks:default","provider":"task","kind":"tasks","instanceId":"default"}]
+grid: {"v":2,"lg":[{"i":"widget:calendar","x":0,"y":0,"w":6,"h":4},{"i":"widget:clock","x":0,"y":4,"w":6,"h":2},{"i":"widget:pomodoro","x":6,"y":4,"w":3,"h":2},{"i":"widget:usage","x":9,"y":4,"w":3,"h":2},{"i":"widget:quickActions","x":6,"y":10,"w":6,"h":2},{"i":"widget:task:tasks:default","x":6,"y":0,"w":6,"h":4},{"i":"section:收件箱","x":0,"y":10,"w":6,"h":2},{"i":"section:项目","x":0,"y":6,"w":12,"h":4}]}
 columns:
   - name: "收件箱"
     color: "#f59e0b"
     type: memo
-  - name: "待办"
-    color: "#6366f1"
-    type: todo
   - name: "项目"
     color: "#10b981"
     type: projects
 ---
 
 ## 收件箱
-
-## 待办
-
-### 快速上手
-id: demo-todo-1
-type: task
-- [ ] 尝试添加一张新卡片
-- [ ] 在不同分区之间拖拽卡片
-- [ ] 拖动卡片标题栏即可移动卡片
-- [ ] 添加一个快捷链接
-
-### 界面操作指南
-id: demo-todo-2
-type: task
-- [ ] 拖动小组件标题栏可移动，拖动右下角可缩放
-- [ ] 在首页面板中打开“记录”查看统计
-- [ ] 点击卡片右上角的 ⋯ 可切换尺寸或移除卡片
-- [ ] 点击“添加小组件”放置更多小组件
 
 ## 项目

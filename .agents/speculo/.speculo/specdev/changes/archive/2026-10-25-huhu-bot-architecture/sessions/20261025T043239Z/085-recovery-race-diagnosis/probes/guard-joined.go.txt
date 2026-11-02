@@ -1,0 +1,42 @@
+// Package recovery owns the durable recovery-tree and process admission fences.
+// It shares the Profile transaction with the original executor and ledgers.
+package recovery
+
+import (
+	"context"
+	"database/sql"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+)
+
+// CheckInTx must run in the caller's actual mutation/claim transaction. A ready
+// inspection is deliberately still a closed gate: only the user's successful
+// runs.resume transaction changes it to resuming. An empty run checks only the
+// process fence, as needed before a new root exists.
+func CheckInTx(ctx context.Context, tx *sql.Tx, runID string) error {
+	var runtime string
+	var root,state sql.NullString
+	var err error
+	if runID=="" {
+		err=tx.QueryRowContext(ctx,"SELECT state FROM execution_recovery_runtime WHERE singleton=1").Scan(&runtime)
+	} else {
+		err=tx.QueryRowContext(ctx,`SELECT process.state, COALESCE(NULLIF(run.root_run_id,''),run.run_id), tree.state
+		FROM execution_recovery_runtime process
+		LEFT JOIN execution_runs run ON run.run_id=?
+		LEFT JOIN execution_recovery_trees tree ON tree.root_run_id=COALESCE(NULLIF(run.root_run_id,''),run.run_id)
+		WHERE process.singleton=1`,runID).Scan(&runtime,&root,&state)
+	}
+	if err!=nil {return err}
+	if runtime!="open" {
+		if runtime=="stopping" {return api.Denied("SERVICE_STOPPING")}
+		return &api.Fault{Kind:"CONFLICT",Reason:"RECOVERY_RUNTIME_INVALID"}
+	}
+	if runID=="" {return nil}
+	if !root.Valid {return sql.ErrNoRows}
+	if !state.Valid {return nil}
+	switch state.String {
+	case "resuming":return nil
+	case "checking","ready","blocked":return api.Denied("RECOVERY_REQUIRED")
+	default:return &api.Fault{Kind:"CONFLICT",Reason:"RECOVERY_STATE_INVALID"}
+	}
+}

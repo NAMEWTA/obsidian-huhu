@@ -1,0 +1,25 @@
+{
+  "owner": "host:codex/root",
+  "result": "not-reproduced",
+  "feedback_loop_ready": false,
+  "production_changed": false,
+  "files": {
+    ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/projection.dom.test.tsx": "2f927c6cdd1ad05e9c0c8a6378d9fb76f69f952f756a04b4edd9385d868c6616",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/vitest.config.mjs": "19a9a3551db80b7796c5effc6394ec47a466ec67731fe1bc9a02cb34707079d2",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/open.json": "c82317a0703bd5c19b31bed7dcf50ea74ee2b65ea3b328ea3b4f004f29ff15b5",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/completed.json": "02098ea512be26885f9dbcdea1b2ce728551373642ff84d4cbe9a1ef604ae322",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/independent-roots.json": "d876a6ee6876c4f0cd0a00cf0554eea33ad52f0a6b9cc297386cab55995b340a"
+  },
+  "observations": [
+    "open/completed filter with controlled commit barrier",
+    "complete/reopen/cancel lifecycle",
+    "actual mountTasks + editTask with independent React roots"
+  ],
+  "limits": [
+    "happy-dom, not real browser paint timing",
+    "small deterministic task collection",
+    "original recording volume/filter/order unknown"
+  ],
+  "latest_command": "pnpm exec vitest run --config .agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/vitest.config.mjs",
+  "latest_exit": 0
+}

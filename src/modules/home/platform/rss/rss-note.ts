@@ -1,7 +1,7 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/rss-note.ts
 import type { App } from 'obsidian';
 import { stringify } from 'yaml';
-import { huhuName } from '../../../../shared/storage/vault-layout';
+import { VISIBLE_NAMES, huhuName } from '../../../../shared/storage/vault-layout';
 import { DEFAULT_RSS_FOLDER } from '../../core/board/default-paths';
 import { cleanVaultFolder, uniqueVaultPath } from '../vault/vault-notes';
 import { ensureFolder } from '../calendar/daily-notes';
@@ -19,7 +19,7 @@ const date = (time: number) => {
 	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 export function rssNoteName(item: RssItem, now = Date.now()): string {
-	return `${date(item.pubDate ?? now)}-${huhuName(item.title.slice(0, 80), 'Untitled')}`;
+	return `${date(item.pubDate ?? now)}-${huhuName(item.title.slice(0, 80), VISIBLE_NAMES.untitled)}`;
 }
 export function buildRssNoteContent(opts: SaveRssArticleOptions, now = Date.now()): string {
 	const { item, feedTitle, markdown } = opts,
@@ -49,14 +49,14 @@ export function buildRssNoteContent(opts: SaveRssArticleOptions, now = Date.now(
 export async function saveRssArticle(app: App, opts: SaveRssArticleOptions) {
 	const folder = cleanVaultFolder(opts.folder) || DEFAULT_RSS_FOLDER;
 	await ensureFolder(app, folder);
-	const path = uniqueVaultPath(app, folder, rssNoteName(opts.item) || 'Untitled');
+	const path = uniqueVaultPath(app, folder, rssNoteName(opts.item) || VISIBLE_NAMES.untitled);
 	return app.vault.create(path, buildRssNoteContent(opts));
 }
 /** The exported subscription list sits next to the saved articles: `<RSS folder>/subscriptions.opml`. */
 export async function exportRssOpml(app: App, text: string, folder = ''): Promise<string> {
 	const dir = cleanVaultFolder(folder) || DEFAULT_RSS_FOLDER;
 	await ensureFolder(app, dir);
-	const path = uniqueVaultPath(app, dir, 'subscriptions', 'opml');
+	const path = uniqueVaultPath(app, dir, VISIBLE_NAMES.subscriptions, 'opml');
 	await app.vault.create(path, text);
 	return path;
 }

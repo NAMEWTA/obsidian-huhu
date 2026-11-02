@@ -1,0 +1,106 @@
+{
+  "task": "056-data-maintenance-preflight",
+  "recordedAt": "2026-10-25T12:49:31.090371+00:00",
+  "artifactCount": 11,
+  "reportCharacters": 3939,
+  "hanCharacters": 1554,
+  "manifestSha256": "429c77651cdc5ce5079aaed589778031469d6746eed70bb0c60ac3c78c12fbcc",
+  "artifacts": [
+    {
+      "path": "REPORT.md",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "command-observations.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "fixed-reference-sources.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "inventory.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "observations.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "official-sources.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "read-excerpts.log",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "return.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "source-recheck.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    },
+    {
+      "path": "wire-data-slice.json",
+      "bytesMatch": true,
+      "sha256Match": true
+    }
+  ],
+  "reportLocalLinks": [
+    {
+      "target": "interfaces-and-owners.md",
+      "exists": true
+    },
+    {
+      "target": "observations.json",
+      "exists": true
+    },
+    {
+      "target": "read-excerpts.log",
+      "exists": true
+    },
+    {
+      "target": "fixed-reference-sources.json",
+      "exists": true
+    },
+    {
+      "target": "official-sources.json",
+      "exists": true
+    },
+    {
+      "target": "command-observations.json",
+      "exists": true
+    },
+    {
+      "target": "source-recheck.json",
+      "exists": true
+    },
+    {
+      "target": "return.json",
+      "exists": true
+    },
+    {
+      "target": "artifact-manifest.json",
+      "exists": true
+    }
+  ],
+  "returnExitCode": 0,
+  "passed": true,
+  "scope": "Actual reread of report links, bytes and SHA; no product checks"
+}

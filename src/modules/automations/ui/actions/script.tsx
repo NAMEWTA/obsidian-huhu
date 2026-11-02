@@ -3,6 +3,7 @@ import { useT } from '../../../../ui/react/hooks';
 import { t as translate } from '../../../../shared/i18n';
 import { Choice, Field } from '../parts';
 import { WorkingDirectory } from './working-directory';
+import { SpaceField, assertSpaceAvailable, spaceFact } from './agent';
 import { TextContent } from './text-form';
 import type { ActionFormProps, ActionView } from './types';
 
@@ -26,10 +27,20 @@ function Content({ action, update, showErrors, onTouch }: ActionFormProps<'scrip
 	);
 }
 
-function Options({ action, update, host }: ActionFormProps<'script'>) {
+function Options({ action, update, host, showErrors }: ActionFormProps<'script'>) {
 	const t = useT();
 	return (
 		<>
+			<SpaceField
+				spaceId={action.spaceId}
+				host={host}
+				showErrors={showErrors}
+				onChange={(spaceId) =>
+					update((a) => {
+						a.spaceId = spaceId;
+					})
+				}
+			/>
 			<WorkingDirectory
 				cwd={action.cwd}
 				host={host}
@@ -67,7 +78,12 @@ export const scriptView: ActionView<'script'> = {
 	precheck: true,
 	Content,
 	Options,
+	beforeSave: (action, host) => assertSpaceAvailable(action.spaceId, host),
 	facts: (action) => [
+		{
+			label: translate('automation.space'),
+			value: spaceFact(action.spaceId),
+		},
 		{ label: translate('automation.cwd'), value: action.cwd },
 		{ label: translate('automation.shell'), value: action.shell === 'bash' ? 'Bash' : 'PowerShell' },
 	],

@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-10-25T21:28:56.927594+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "checkedOwnFiles": 9,
+  "checkedReadonlyInputs": 10,
+  "inputDrift": [],
+  "reportSHA256": "39be2985e7a68cb83f06477850a7591c4777428b5717170792ac3128aa4b8e6b",
+  "manifestSHA256": "f2881884e84a8e7c02a96e90dae97878464ae93bef0da273ba2137865daafc81",
+  "commandObservationsSHA256": "3c79af6676d1206e0a2d29c15e05bba35a5095da2bdc2190e5ef15668685e718",
+  "allOwnProcessesWaited": true,
+  "activeOwnProductProcesses": 0,
+  "activeOwnCheckProcesses": 0,
+  "productionAndTestWriterStopped": true,
+  "goBuildOrTestsRunBy082": false,
+  "jointTSGoValidation": "pending owner081 and independentRoot; not counted as passed",
+  "realProviderObsidianOrTargetOSRun": false
+}

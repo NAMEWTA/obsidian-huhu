@@ -1,0 +1,11 @@
+{
+  "reportSha256": "36d35392689fb62520a55ccadc4ef33b7d3a84fab94d4286af282ea316ccf782",
+  "taskSha256": "c812cf77a4d2314e86ea39f2bcb2def37bf0f8dafe4109633e4ef4dc942ac996",
+  "rawBackupSha256": "29d2702ce0ec7074b7a29cd9f20b86c46ba1e87c4cdc75bbc2f9f3c68ed2fa60",
+  "newDraftSha256": "06293fa2a04d0ffd0fc05923ef3900cab626f07bdec9dab80b096de07883b96c",
+  "returnExit": 0,
+  "finalProtectedDrift": [],
+  "allCommandsWaited": true,
+  "productAndTestsNotRun": true,
+  "writersStopped": true
+}

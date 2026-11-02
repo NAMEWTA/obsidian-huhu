@@ -1,0 +1,13 @@
+{
+  "contracts/hap/v0.1/schema.json": "af806e4eadef208b717552a95edb0d62a10db5f4a12a987e3088c4368fb2683b",
+  "contracts/hap/v0.1/methods.json": "150bccfd07f3eb70ec18a57090bfbe307a3f584ca4e1f3d31d55dc1da26d21cc",
+  "contracts/hap/v0.1/fixtures/golden.json": "65a0682aa6cb286376593c27051321d4a06ee230186f6764f96178bf380fdf70",
+  "native/huhubot/go.mod": "3ba43da9ce2f2128c2012d274d2d63392fbeafc25d13bd3258e3365d9103933b",
+  "native/huhubot/go.sum": "1c56a6c76cc5865731da3d5ae0aa6efc9ce69a7c2998fa1e55b7c73c88ec0df6",
+  ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+  ".agents/skills/dev/references/architecture.md": "6f64334012acc1cb213bfa72fdc7bf214e96e07d0c2c9738b26c9ffebc420ce0",
+  ".agents/skills/dev/references/testing.md": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b",
+  ".agents/skills/dev/references/licensing.md": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14",
+  ".agents/skills/dev/references/build-and-release.md": "988f020ccd84625c6da05c455a28ba05c704c6084191156f61c446d582e98871",
+  ".agents/skills/dev/references/module-authoring.md": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b"
+}

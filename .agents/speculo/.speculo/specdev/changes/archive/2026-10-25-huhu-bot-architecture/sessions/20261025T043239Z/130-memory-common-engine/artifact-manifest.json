@@ -1,0 +1,549 @@
+{
+  "task": "130-memory-common-engine",
+  "capturedAt": "2026-10-26T12:03:14.607820+00:00",
+  "excludes": "artifact-manifest.json itself to avoid self-hash cycle",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/REPORT.md",
+      "bytes": 10251,
+      "sha256": "d8c7734f8d1e083e316e472dfbf856f4def251334a296c71ff75d988d021fb5a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/TASK.md",
+      "bytes": 4356,
+      "sha256": "7c90a342a8f665ed793127edb8d46c539b1598e6e063f00a2b2dd6a9ce92ceb0"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/00-readonly-consumer-plan.md",
+      "bytes": 7159,
+      "sha256": "b83cc4e28dc844d368a833cf7446f369a3bd5b2ae1269bd0d4aaac0d3286e217"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/01-readonly-sources.json",
+      "bytes": 6391,
+      "sha256": "f3cf9c6de73ce0551a7410086efc26a83768a5964020c8014c47af2ff81645b4"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/02-before-source.json",
+      "bytes": 6177,
+      "sha256": "48a11dce7cdcb1ced225afa064676696832398aa9198cdf085a1d233c383ba7a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/02-before-source.zip",
+      "bytes": 80838,
+      "sha256": "4287b37ae37584455e327096c718f4a65443c871cb0cc3f2cadee9598524642e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/03-first-red-ready.json",
+      "bytes": 745,
+      "sha256": "d31267f57ca21ff84c58ba2d93a6908bb1017294ec8bcc68bd36f2716f4d74ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/04-direct-first-red-input.zip",
+      "bytes": 67023,
+      "sha256": "ebcc9c45ffc6059b53f4cabd0295f81c61dfda6561caaaed828720f19baa1c10"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/04-direct-first-red-ready.json",
+      "bytes": 6566,
+      "sha256": "3b7a072510b497a481e477f753cc4082282f0732bee59faa3fcf8171c8022876"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/05-common-closure-input.zip",
+      "bytes": 71085,
+      "sha256": "be1667e9050fb09f9427e35c54ea8d3d320ad6db93408864bb3e598cc4cbed51"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/05-common-closure-result.json",
+      "bytes": 6303,
+      "sha256": "dc9a9cbe63a9cfe250eb2d3012f93c57b6e76eac4066f65b664a43a2d5882dd6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/05-common-closure-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/05-common-closure-stdout.log",
+      "bytes": 1082772,
+      "sha256": "18053a40f6e1c1dc2d93a92bc57fce1f7034c48ea4f2b5ecad509b9860253ebb"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/06-first-green-input.zip",
+      "bytes": 71085,
+      "sha256": "be1667e9050fb09f9427e35c54ea8d3d320ad6db93408864bb3e598cc4cbed51"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/06-first-green-result.json",
+      "bytes": 4835,
+      "sha256": "abeffcaeddb1e442afa3f73a296e94e9cc061426bdc9f5278586c7eb2bbe6cf9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/06-first-green-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/06-first-green-stdout.log",
+      "bytes": 222,
+      "sha256": "01791806ea51e82e0242eb2015e5771d94893448528da66cae37e27228409f2a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/07-maintenance-normal-input.zip",
+      "bytes": 74850,
+      "sha256": "3fdb8377b3cde23ae6ab55f1862d4ceaecc28365b893085c5f5ace313a585df2"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/07-maintenance-normal-result.json",
+      "bytes": 4958,
+      "sha256": "249d00954f4d112b4bc9ffa316fd186418927fec26773e3d64cf425ebe694e7d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/07-maintenance-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/07-maintenance-normal-stdout.log",
+      "bytes": 7498,
+      "sha256": "b6e6fe233b49c7a55814e18014b5f29fe351cb3bf7e0edfcc827b29141a7ea1e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/08-closure-input.zip",
+      "bytes": 79011,
+      "sha256": "b1caf3f40ddc73ccc7c19b2c0ec10e349a6849a78b82d596e360a09ce09c14c7"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/08-closure-result.json",
+      "bytes": 6612,
+      "sha256": "63b48d5b6e1ead40f83135f8c9575c29df302f7c6bac64e219ff9d2a29444427"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/08-closure-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/08-closure-stdout.log",
+      "bytes": 1082657,
+      "sha256": "cb7a9e56a7b8889ce88e841459a1ac03abbdaf1aecc8e496fed6aa2c25a909ec"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/09-context-cp-normal-input.zip",
+      "bytes": 79011,
+      "sha256": "b1caf3f40ddc73ccc7c19b2c0ec10e349a6849a78b82d596e360a09ce09c14c7"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/09-context-cp-normal-result.json",
+      "bytes": 5204,
+      "sha256": "5c19a58daf7f2e642f4ff4efb84ab11d301379e9daec73d1a38cdb00972bda98"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/09-context-cp-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/09-context-cp-normal-stdout.log",
+      "bytes": 3949,
+      "sha256": "9835c972a7e5d921798ca883c1b786586a16652523a9710c57a528496ddb0b74"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/10-context-cp-normal-input.zip",
+      "bytes": 79029,
+      "sha256": "535d2a9734528ab3df80ec09eac80ed17a1ceb60507b0c9bc760cab5d54875f1"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/10-context-cp-normal-result.json",
+      "bytes": 5202,
+      "sha256": "1ff4fe32c1644a662c2ae5d7316c93092ad8fdfbebbeb0c78659c08aca6c5eac"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/10-context-cp-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/10-context-cp-normal-stdout.log",
+      "bytes": 6516,
+      "sha256": "792e32e533b3fe526cc2895289f2fc3395a27c588ace1d4cfab00459b4b72553"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/11-closure-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/11-closure-result.json",
+      "bytes": 7529,
+      "sha256": "73ff39046d7d67b99fb4dd349c3894ef3f60a0d2fbfbd662b6fea8ef6f128c4e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/11-closure-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/11-closure-stdout.log",
+      "bytes": 1083096,
+      "sha256": "b2bfef8acfbf0416302d7e381acadf6047f277e9f995f17b6ae9407c16273922"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/12-legacy-edges-normal-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/12-legacy-edges-normal-result.json",
+      "bytes": 6229,
+      "sha256": "507adaff09934841dd1049e9b2b6eaf3809411ad60a52cce8ba7944e6e7fd17b"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/12-legacy-edges-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/12-legacy-edges-normal-stdout.log",
+      "bytes": 662,
+      "sha256": "e8cec0b31bd987a3c2a077986b168967fa5afe30c982b01b95384bfb1b7e54ee"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/13-protocol-static-closure.json",
+      "bytes": 6862,
+      "sha256": "6202fae6f8905b8c6211e24f774d5af354352630b269ff4fbc85c38b543840d4"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/14-toolchain-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/14-toolchain-result.json",
+      "bytes": 5926,
+      "sha256": "2934d14be58a49901089fc8f3e87d0024f31253a72cf433cf18574764983dc49"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/14-toolchain-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/14-toolchain-stdout.log",
+      "bytes": 33,
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/15-common-normal-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/15-common-normal-result.json",
+      "bytes": 6120,
+      "sha256": "861c17b5ecd3504dba07efc9a28a2a439f73665f3c6dc1bcd1c6e532f8a55551"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/15-common-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/15-common-normal-stdout.log",
+      "bytes": 14586,
+      "sha256": "2aa8d077c2933a7d6e3bf2afc651fc72088759fe7f3baa1e7fe4ba0505580ccb"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/16-common-race-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/16-common-race-result.json",
+      "bytes": 6243,
+      "sha256": "97177ec485704f9a92ef37b47c2cf405bc4bccb18dbb420f9134cb6f80b8c356"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/16-common-race-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/16-common-race-stdout.log",
+      "bytes": 3396,
+      "sha256": "8b1cba4e02b8ed8fc0c14f624441864b21dc1f3472cec18cef1795cf31a1215a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/17-common-vet-input.zip",
+      "bytes": 89403,
+      "sha256": "b940a76a8dd4a78e6aa046b67209485041f525e92709a67ee9172cb9e6285632"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/17-common-vet-result.json",
+      "bytes": 5969,
+      "sha256": "4c491fc9caf72eb2f52e4008dd672f5bd519719cb892ed2702f8d7ac6a235eca"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/17-common-vet-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/17-common-vet-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/18-old-common-overlay/checkpoint.go",
+      "bytes": 14489,
+      "sha256": "291168afac790301af8186be202fb13990b41acfe57e207986d2d0411d387c0a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/18-old-common-overlay/engine.go",
+      "bytes": 13416,
+      "sha256": "b906da361ba1e543c1b1abdfc1fec567d1af1116ab01506ef8070a3bc23d4773"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/18-old-common-overlay/overlay.json",
+      "bytes": 678,
+      "sha256": "5dec19e46cab661ff9afb16b8763528730b97364f837d3d01a5f0675ea00e307"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/18-overlay-proof.json",
+      "bytes": 1811,
+      "sha256": "0055f6acd94260474fdd0d1c395bfbfa6caa57f6d474ea33587fbffc04c5e62c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/19-protocol-closure-input.zip",
+      "bytes": 105024,
+      "sha256": "b224409a674320b80f5304df9474a1dc8276576cb33c7d0bb0ad8f9f31ea22a9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/19-protocol-closure-result.json",
+      "bytes": 18030,
+      "sha256": "7acbbec06a942aa92fe959c265c41cb5222de922aecea2f45437d7321dca5fd7"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/19-protocol-closure-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/19-protocol-closure-stdout.log",
+      "bytes": 1373210,
+      "sha256": "0e54c4c5d6a6afaa7cb6628609ff4d35f11d9144d8f7503a9ab2b118ca969485"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-old-nil-captures/anthropic-messages.json",
+      "bytes": 1742,
+      "sha256": "13afe82ac0936a3921422443c630ab8247ba4cd1133f278846c9cb8f3546fa7c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-old-nil-captures/openai-responses.json",
+      "bytes": 1908,
+      "sha256": "3776c26c4e4ac72b104df579a1c54cbd1f0065bb0abcfe375c5a82dc7b175c83"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-protocol-old-nil-input.zip",
+      "bytes": 104397,
+      "sha256": "37a6742da4c7f6b54fa66df3a9a3437572ccdf205a66c2ecba0343c91dd8af97"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-protocol-old-nil-result.json",
+      "bytes": 14430,
+      "sha256": "a74f5e6252a163184b9cb044a9fcb50abac2935de0eccea8f88c113638b86eaf"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-protocol-old-nil-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/20-protocol-old-nil-stdout.log",
+      "bytes": 654,
+      "sha256": "1322f9fac3103a3a4cbad005dee8ee58132c75f460a7643db2b8dee384c33664"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-current-nil-captures/anthropic-messages.json",
+      "bytes": 1742,
+      "sha256": "13afe82ac0936a3921422443c630ab8247ba4cd1133f278846c9cb8f3546fa7c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-current-nil-captures/openai-responses.json",
+      "bytes": 1908,
+      "sha256": "3776c26c4e4ac72b104df579a1c54cbd1f0065bb0abcfe375c5a82dc7b175c83"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-protocol-current-nil-input.zip",
+      "bytes": 105024,
+      "sha256": "b224409a674320b80f5304df9474a1dc8276576cb33c7d0bb0ad8f9f31ea22a9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-protocol-current-nil-result.json",
+      "bytes": 13779,
+      "sha256": "3bd58bcc82723bcc7243b69a20b17eef17ba0842b912be703456c56996d2a71c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-protocol-current-nil-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/21-protocol-current-nil-stdout.log",
+      "bytes": 654,
+      "sha256": "23854d4be3c3db2a17305dd9e3069a20f61ab3035bfca10b6169aa8898921f51"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/22-protocol-normal-input.zip",
+      "bytes": 105024,
+      "sha256": "b224409a674320b80f5304df9474a1dc8276576cb33c7d0bb0ad8f9f31ea22a9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/22-protocol-normal-result.json",
+      "bytes": 13314,
+      "sha256": "bb58299889ab34f5183cefca0324847c39969ebeddcf5ef0d2f9dc5bd3eb4a65"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/22-protocol-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/22-protocol-normal-stdout.log",
+      "bytes": 3449,
+      "sha256": "c60a51d275d61e665f49d727d1061f5ed1170633581b289a9aa9d554f54db98f"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/23-protocol-normal-input.zip",
+      "bytes": 105047,
+      "sha256": "6a930e5cb16d760b6d6ccacc469832c402f2d0fce131cae665ef89e59e39ec4a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/23-protocol-normal-result.json",
+      "bytes": 13547,
+      "sha256": "9ddb9057a04508451ea6089d8d8944f5688653933f9a26e15b2f98049b68bb64"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/23-protocol-normal-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/23-protocol-normal-stdout.log",
+      "bytes": 3132,
+      "sha256": "0b40c99e5bfcdb67a100b89fd334696c1469678a364854cff4953dc5a4129e88"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/24-protocol-closure-input.zip",
+      "bytes": 105047,
+      "sha256": "6a930e5cb16d760b6d6ccacc469832c402f2d0fce131cae665ef89e59e39ec4a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/24-protocol-closure-result.json",
+      "bytes": 18030,
+      "sha256": "970022441c82d6206cc62377529055e00d930dfaab919578a5181db6ed2f4b33"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/24-protocol-closure-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/24-protocol-closure-stdout.log",
+      "bytes": 1372871,
+      "sha256": "7e207eaeee6cb610047cfe41d2957846dae13bb430265d413c6c52ed0ba496bf"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/25-protocol-race-input.zip",
+      "bytes": 105047,
+      "sha256": "6a930e5cb16d760b6d6ccacc469832c402f2d0fce131cae665ef89e59e39ec4a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/25-protocol-race-result.json",
+      "bytes": 13560,
+      "sha256": "0911b51d0098665673e32f36f5f3adbf03185c871eb1d5b06af489286b8b884c"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/25-protocol-race-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/25-protocol-race-stdout.log",
+      "bytes": 3132,
+      "sha256": "03aca111d923e11ae8c41d4a1d9af5190f22483cb29840e87b98637b62141bf7"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/26-protocol-vet-input.zip",
+      "bytes": 105047,
+      "sha256": "6a930e5cb16d760b6d6ccacc469832c402f2d0fce131cae665ef89e59e39ec4a"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/26-protocol-vet-result.json",
+      "bytes": 13158,
+      "sha256": "e6df08a114528adfccbf415b8ba293df9671021a3abd59ac11b4faa728eb04a2"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/26-protocol-vet-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/26-protocol-vet-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/27-compatibility-and-fixture-classification.json",
+      "bytes": 2126,
+      "sha256": "87eb52d4bd02fc7f970a4bdb5681c6910a54ff5ba56fc784c5c5972fd8323e81"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/28-final-own-source.json",
+      "bytes": 2460,
+      "sha256": "e75a122d10c7bd8675e5eee45529e2a1f8b1be0ba5aae7f7b69108ef13afd458"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/29-own-final.patch",
+      "bytes": 97300,
+      "sha256": "ee69058a9f3ca56be16a64f8a8e630b76cba9b0b011916ee7edb91768da7ceaf"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/30-readonly-final-sources.json",
+      "bytes": 12050,
+      "sha256": "39c729deea2073a38749b8186555ed2d3283b7ef618c2d5fbeb675c0e099ac2d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/31-return-result.json",
+      "bytes": 635,
+      "sha256": "4702816231237654b15dd339cd8494c3517cda005ac7c0a25112798a44e780a6"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/31-return-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/31-return-stdout.log",
+      "bytes": 200,
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/run-component.py",
+      "bytes": 3288,
+      "sha256": "a5884ccc337c266ba7fefb6fd7adb680fc3822dddad986c75073a194a768c778"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/logs/run-protocol-component.py",
+      "bytes": 3880,
+      "sha256": "51e4a6520eb4b9141acaad93f7a19155864fcaee580a62313e711d8e03cb0e97"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/130-memory-common-engine/manifest.json",
+      "bytes": 3871,
+      "sha256": "67d60d3e5abce2c45ea1f67f186e778f158f782028ca585be40026ec835d635e"
+    }
+  ],
+  "count": 108,
+  "treeSha256": "1f8cdc4b282b54d8de78ec5fb85e9037c8029ebe3f14f3accf529ca404891d66"
+}

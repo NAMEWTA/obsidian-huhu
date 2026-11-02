@@ -7,7 +7,7 @@
 - Workflow 只写 `<Path>{roots.state}/{workflow}/</Path>` 内声明的 namespace。SpecDev/Learning 使用 Change；OPS v3 使用 hosts/projects/deployments 等资源及其证据，不创建 Change 生命周期。
 - Work 状态和工件先按当前 schema 校验；状态是证据索引，不替代工件。
 - Command 报告位于 `<Path>{roots.state}/commands/{command}/</Path>`，命名 `YYYY-MM-DD-scope-topic[-NN].md`，不覆盖；有跨调用恢复需求时才建立该命令 state.json。
-- docs-sync 拥有 `<Path>{roots.state}/{workflow}/docs-sync.json</Path>` 延迟 sidecar，不进入 workflow `_state`，也不取得领域写入权限。
+- project-maintenance 拥有 `<Path>{roots.state}/{workflow}/project-maintenance-docs.json</Path>` 延迟 sidecar，不进入 workflow `_state`，也不取得领域写入权限。
 - 可选 `<Path>{roots.state}/coordination/project.json</Path>` 仅保存用户要求持久化的编排选择。没有此文件时默认 Lead，不建立编排运行账本。
 - workspace、install、managed、baselines、projections、refresh contract 与 back 由 CLI 拥有。Workflow/Command 不得改写 CLI back。
 - `.config` 只有领域明确声明 owner、创建时机和用途后才使用。
@@ -16,7 +16,7 @@
 
 ## 刷新合同
 
-当前安装元数据版本为 install v4、managed v2、projection v2。仅接受 agents-v2 布局和当前结构化 schema；不读取迁移旧版本。旧安装、未知 schema、损坏内容、链接或所有权冲突必须先阻塞并保留证据。
+当前安装元数据版本为 install v4、managed v2、projection v3。仅接受 agents-v2 布局和当前结构化 schema；不读取迁移旧版本。旧安装、未知 schema、损坏内容、链接或所有权冲突必须先阻塞并保留证据。
 
 刷新先构造完整 staging。受管静态文件按当前模板更新；未选中的已安装领域保留。未知静态文件保留且不因目录位置变成 CLI 所有。普通 runtime 文件按字节复制并复验，只有 runtime-contract 注册的结构化文件进入当前 schema 验证。用户配置按 baseline/local/incoming 三方合并，仍须满足当前合同。
 

@@ -1,3 +1,4 @@
+import { VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { t } from '../../../../shared/i18n/index';
 
 /** Direction of a bookkeeping entry. */
@@ -39,7 +40,7 @@ export interface ExpenseData {
 	categoryParents?: { expense?: Record<string, string>; income?: Record<string, string> };
 }
 
-export const DATA_FILE = 'expense.json';
+export const DATA_FILE = VISIBLE_NAMES.json.expense;
 
 export const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

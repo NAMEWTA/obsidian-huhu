@@ -1,0 +1,12 @@
+{
+  "src/modules/huhubot/api.ts": "73dbd4b785dbd896affc5f22baa7fb3550343ffee26d972befc75daf3010eb13",
+  "src/modules/huhubot/core/protocol/method-validation.ts": "994ff43abcd13cabc4afdae08a0a2c88dd2f68e89f9d23e5d4d9cdda254f9ef6",
+  "contracts/hap/v0.1/schema.json": "af806e4eadef208b717552a95edb0d62a10db5f4a12a987e3088c4368fb2683b",
+  "contracts/hap/v0.1/fixtures/methods.json": "34afff17bdee989f9b57c38eb33c468c718d00bd317e03ad76a6e4d4f69ee111",
+  "contracts/hap/v0.1/fixtures/golden.json": "65a0682aa6cb286376593c27051321d4a06ee230186f6764f96178bf380fdf70",
+  "native/huhubot/internal/adapters/inbound/hap/router.go": "ddf3fa37de66e09ba5ca056aa449e8a6569691e4ec1958957549445f3703038b",
+  "native/huhubot/internal/application/api/service.go": "82f4d494953ce2e8420069b9f3f945decfff38e81788ce4fe5e897aecd879568",
+  "native/huhubot/go.mod": "25a59108c56bfdb488a13d32a7c23d20d5901ce83009cc527d24f58649e92895",
+  "native/huhubot/go.sum": "6069deb819b9c19723efadac8b36e41de846adcd4e6064cd689960d844ecb7ce",
+  ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+}

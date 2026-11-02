@@ -1,0 +1,1518 @@
+> 发布说明：以下为完整架构需求与设计文档。仓库相对链接改为路径标注，以避免尚未推送的工作树文件产生无效网页链接；技术正文、表格、代码和架构图均完整保留。
+
+# HUHU 独立浏览器模块架构需求与详细设计
+
+| 项目 | 说明 |
+|---|---|
+| 设计日期 | 2026-10-25，Asia/Taipei |
+| 适用项目 | obsidian-huhu，Obsidian 插件内的 browser 独立功能模块 |
+| 文档状态 | 目标架构与实施规格；文中“必须”是验收要求，不代表当前已经实现 |
+| 设计前提 | 不保留旧浏览器 API、RPC、数据格式和界面的兼容层；以长期可维护、可验证的最佳实现为目标 |
+| 源码基线 | HEAD `66083cdb9f7f31a4bcbd3e380c6c7f64f2e74e93` 加本次会话已有工作树改动；不能只按 HEAD 判断已有能力 |
+| 交付边界 | 本文定义产品、领域、技术、目录、协议、数据、运行、安全与验证要求；不改变本轮生产代码 |
+
+**架构结论：把 browser 建成有独立工作台入口、独立生命周期和公开能力接口的模块。模块托管 Chromium，由每个 Space 独占浏览器进程组与数据目录；人通过同一页面的画面流观察或接管，Agent 通过受限的结构化协议操作。所有会产生输入或页面副作用的命令，最终经过同一个可撤销控制权门禁。**
+
+本设计沿用 HUHU 的模块化单体结构、React 设计系统与桌面适配边界，不把整个插件改成浏览器应用。浏览器运行进程独立，不意味着产品拆成微服务。
+
+### 与现有文档的关系
+
+- 当前 Agent Browser 架构（`docs/agent-browser-architecture.md`）描述现有 Electron 离屏实现及已知边界，继续作为现状说明。
+- 源码调研与重构方案（`docs/agent-browser-refactor-plan.md`）保存热门项目比较、当前缺陷和渐进式改造依据。其中“先继续以 Electron 离屏为默认”的交付选择，在本次“独立模块、无兼容、长期最优”的目标下，由本文的托管 Chromium 方案替代。
+- HUHU 架构（`docs/architecture.md`）、开发分区规则（`.agents/skills/dev/references/architecture.md`）和设计系统（`docs/design-system.md`）仍是项目级约束。本文有意改变“browser 仅作为 Agent 标签的引擎”这一产品现状；实施时同步更新负责该事实的文档，不增加第四种 Obsidian View。
+- 现有数据不自动删除。无需兼容意味着可以要求重新导入、采用新格式和新入口，不意味着销毁用户资料。
+
+### 阅读导航
+
+| 关注问题 | 对应章节 |
+|---|---|
+| 产品范围、最优选型、需求和技术栈 | 第 1–4 章 |
+| 模块边界、目录、领域模型 | 第 5–7 章 |
+| 运行进程、控制权、自动化、人工查看 | 第 8–11 章 |
+| Cookie、身份、文件和协议 | 第 12–14 章 |
+| 数据、恢复、设计模式与安全 | 第 15–17 章 |
+| 资源预算、失败恢复、实施与验收 | 第 18–21 章 |
+| 源码与官方依据 | 第 22 章 |
+
+## 1. 产品定位与范围
+
+### 1.1 浏览器属于 HUHU，Agent 是调用方
+
+browser 拥有网页运行、身份种子、页面目录、控制租约、查看器、文件中转和恢复。Agent 模块拥有模型、CLI/PTY 会话、任务编排及聊天上下文；它通过 browser 的公开 API 取得某个任务空间的有限能力，不拥有浏览器内部对象。
+
+浏览器必须在 Agent 模块关闭时独立完成打开网页、管理个人空间、登录、导入 Cookie、查看下载和人工操作。外部 Agent CLI 与可选 MCP 适配器也不以 HUHU Agent 模块启用为前提。当前 `browser/module.ts` 通过 `AGENT_BROWSER_TABS` 打开页面、经 `NATIVE_HELPER_SQLITE` 读取 Cookie，这两条依赖需要拆除。当前装配代码（`src/modules/browser/module.ts`）
+
+目标仅有一种页面执行体系：
+
+| 空间类型 | 日常用途 | 初始控制方式 | Agent 权限 |
+|---|---|---|---|
+| personal | 人自己的日常浏览、独立登录、检查网站 | human；没有控制视图时 paused | 不发放 Agent 写能力，不允许自动“借用活动标签” |
+| task | 一个自动化工作环境，可被人观察和接管 | 按创建意图进入 paused 或 agent | 显式授权的 BrowserRun 和 capability |
+
+两类空间共享运行时实现、查看器和文件管理规则，拥有不同的权限策略。个人空间不通过切换一个标志变成 Agent 空间；需要登录态时，显式复制选定身份种子到新任务空间。
+
+### 1.2 必须完成的用户流程
+
+1. 用户打开 HUHU 浏览器工作台，创建 personal Space，浏览和登录网站。
+2. 用户选择空白环境、Cookie 文件、受支持的本机浏览器资料或已保存 IdentityVersion，创建 task Space。
+3. Agent 取得该 Space 的能力，打开明确 Page，观察、定位、输入、等待和下载。
+4. 用户打开查看器，只观察不会改变 Agent 的控制权、页面焦点或执行目标。
+5. 用户点击接管；系统撤销 Agent 租约，处理在途输入，再向该查看器发放 human 租约。
+6. 用户在原 Page 完成登录或其他交互，明确交回；新 Agent 租约和新引用代次生效。
+7. 用户结束、保留或删除 Space；失败清理可见、可重试，重启不会自动重放网站动作。
+
+### 1.3 范围分层
+
+| 范围 | 本目标包含 | 边界 |
+|---|---|---|
+| 浏览器核心 | personal/task Space、多页面、独立进程和存储、导航、历史、查找、缩放、截图 | 不开发 Chromium 内核分支 |
+| Agent 能力 | 结构化观察与动作、严格引用、批次、取消、运行结果、CLI、可选 MCP | 不在 browser 内实现另一套模型推理框架 |
+| 人机协作 | 多观察者、单控制者、接管、交回、输入状态收敛 | 不把实时画面当作控制授权 |
+| 身份 | Cookie、明确支持的 origin 存储、人工登录、不可变加密身份版本 | 不保证任意站点只靠 Cookie 即可迁移登录 |
+| 文件 | 用户授权上传、空间内下载、导出与清理 | 不向网页或 Agent 暴露任意本机文件路径 |
+| 诊断 | 脱敏事件、操作结果、版本和性能证据 | 页面录像、网络正文、完整回放不是默认记录 |
+| 部署 | 本地受管 Chromium 与 helper；离线使用已安装版本 | 远程浏览器、容器和 VM 不进入第一版生产后端 |
+
+## 2. 架构决策与最优判据
+
+### 2.1 最优的含义
+
+选型按以下顺序取舍：控制权正确性和数据归属；故障可收容、可恢复；页面与站点能力；模块独立和可测试；交付及维护成本；性能与包体。不能为了少改代码保留循环依赖，也不能为了“隔离”盲目引入自研内核、微服务集群或三套生产驱动。
+
+### 2.2 已确定的目标决策
+
+| 编号 | 决策 | 原因与代价 |
+|---|---|---|
+| AD-01 | 模块化单体内的独立 browser，内部采用端口与适配器结构 | 领域规则可脱离 Obsidian 测试；公开 API 稳定于内部实现；不引入容器式 DI 框架 |
+| AD-02 | browser 自有工作台功能页；Agent 可嵌入同一查看组件 | 关闭 Agent 不影响浏览器；沿用现有 Workbench View，不新增宿主 View |
+| AD-03 | 默认执行器为受管的统一 Headless Chromium | 浏览器版本、browser-level CDP、进程生命周期与宿主 Electron 解耦；新增下载、发行、平台收容成本 |
+| AD-04 | 每个 live Space 一个 TypeScript Worker、一个小型原生 supervisor、一个 Chromium 进程树 | 最清楚的存储、故障和回收归属；以运行配额约束进程成本 |
+| AD-05 | TypeScript 是唯一 CDP 命令生产者；原生 Gate 是最终 pipe writer | 可逐次核验 epoch 和操作身份；不把不可中断的框架内部重试当作硬撤销 |
+| AD-06 | Rust 只负责受管启动、进程回收、管道分帧和最终 fencing | Windows Job/POSIX 回收放在原生边界；DOM、定位和产品规则仍用 TypeScript |
+| AD-07 | 原生 gate 是 control epoch 的唯一权威；服务与 Worker 持有镜像 | 跨进程切换存在传播时间；以明确 ACK 和 dispatch 序号定义撤销边界 |
+| AD-08 | personal/task 共用 Space 模型，但禁止 Agent 访问 personal 的写入口 | 删除“全局活动页”假设，也避免两套浏览器长期并行维护 |
+| AD-09 | 身份采用显式复制的不可变种子版本，不共享活跃 profile | 创建后各 Space 独立变化，不自动反向合并账号状态 |
+| AD-10 | 画面是有界二进制帧流；控制事件使用独立可靠通道 | 观察者变慢不能拖住接管；不再由多个 React 定时器重复截图 |
+| AD-11 | 一份协议 schema 生成类型、校验和 JSON Schema；RPC/CLI/MCP 共用用例 | 不存在另一套 MCP 业务逻辑，不再使用 `dispatch(string, Record<string, unknown>)` 作为核心契约 |
+| AD-12 | JSON 目录投影加最小持久操作日志；不做完整事件溯源 | 对恢复与重复请求提供证据，避免用 500ms 防抖保存承担提交边界 |
+| AD-13 | 本地身份密文与非敏感目录分离；凭据保护是 host 能力 | 不强依赖 safe 模块，不把 JsonStore 的明文备份用于登录态 |
+| AD-14 | 有意删除旧接口；同一发布只维护一套新生产浏览器核心 | 降低双路径复杂度；保留资料处理入口，不自动破坏旧目录 |
+
+这些是本次目标设计决定，不是向项目永久 ADR 目录写入的已归档决定。
+
+### 2.3 为什么选择独立 Chromium
+
+现有 Electron offscreen 具有已实现、包体小、嵌入方便的优势，适合上一轮的渐进式修复。但 Electron 版本由 Obsidian 决定，guest debugger 的 Browser Target 接入已有实际限制，浏览器和宿主共享关键运行边界。托管 Chromium 让 browser 自己掌握版本、启动顺序、target 发现、完整进程回收与故障范围。现有边界（`docs/agent-browser-architecture.md#剪贴板与离屏边界`）
+
+统一 Headless Chrome 可以运行实际 Chromium 页面且不显示平台窗口；这为画面流提供真实渲染基础，但官方的无可见窗口描述不等于操作系统剪贴板沙箱。[Chrome 官方 Headless 说明](https://developer.chrome.com/docs/automation-and-testing/headless)
+
+以下情况不采用为生产默认：连接用户正在使用的 Chrome；在用户 Profile 内开 Agent 标签；以可见窗口或操作系统鼠标键盘驱动；维护 Chromium fork；使用没有真实网页像素渲染的浏览器替代查看器。
+
+### 2.4 必须先通过的架构门槛
+
+| 门槛 | 要验证的问题 | 未通过时 |
+|---|---|---|
+| G-01 生命周期 | 宿主、Worker、supervisor 分别崩溃后，无存活的失控浏览器进程；可重试清理 | 不发布该平台 |
+| G-02 控制权 | 原生撤销 ACK 之后不再发送旧租约命令；在途输入能收敛或进入明确阻塞状态 | 不开放接管与恢复写能力 |
+| G-03 页面时序 | 主页面、popup、同步 iframe、OOPIF、worker 的登记和策略时序符合支持矩阵 | 缩小已支持能力或继续修正，不能用“已安装脚本”代替证明 |
+| G-04 人的环境 | 原生真实输入不抢人的焦点；系统 clipboard/PRIMARY 行为与声明一致 | 不宣称该平台具备未验证的隔离项 |
+| G-05 包与沙箱 | 浏览器、helper、Worker 资产验证；Chromium sandbox 实际开启；三类平台发行可复现 | 不通过 `--no-sandbox` 等降级绕过 |
+| G-06 工作台 | 画面、坐标、中文输入、所属窗口与关闭租约有效 | 不将截图预览当作完整人工浏览器 |
+
+不静默退回 Electron 并沿用新后端的隔离声明。受管 Chromium 路线若在关键平台无法通过门槛，应重新作架构决定，而不是保留两个行为不一致的默认后端。
+
+## 3. 需求规格
+
+“必须”属于首个完整新浏览器版本的门禁；“扩展”允许后续按实际站点需求交付，但协议不得伪装支持。
+
+### 3.1 功能需求
+
+| ID | 优先级 | 要求 | 可观察的完成条件 |
+|---|---|---|---|
+| FR-01 | 必须 | 独立模块与入口 | Agent 关闭时浏览器工作台、身份导入、个人浏览和外部浏览器 RPC 可用 |
+| FR-02 | 必须 | Space 创建与目录 | 新建、重命名、启动、暂停、关闭、删除和清理状态明确；失败不出现幽灵 ready 空间 |
+| FR-03 | 必须 | personal/task 权限隔离 | Agent 无法枚举未授权 personal 内容、获取其 capability 或关闭其页面 |
+| FR-04 | 必须 | 独立数据与进程归属 | 每个 Space 使用唯一 userDataDir、下载根、进程身份和配额 |
+| FR-05 | 必须 | 显式 Page 寻址 | 每次操作绑定 Space、Page 和 runtime；切换任何 UI 标签不会改写操作目标 |
+| FR-06 | 必须 | 浏览基本功能 | HTTP(S)、前进后退、刷新、停止、查找、缩放、多页面和原生 popup 语义 |
+| FR-07 | 必须 | 只读观察 | 可多窗口观看；不自动抢控制权；无观察者时停止视频编码与发送 |
+| FR-08 | 必须 | 单一人工接管 | 一个控制视图持有 human lease；旧 Agent、旧人和旧窗口输入均被拒绝 |
+| FR-09 | 必须 | 明确交回 | 人明确交回才发新 Agent 租约；关闭控制视图进入 paused，不自动恢复 |
+| FR-10 | 必须 | 感知与引用 | DOM/AX/布局组合观察；引用绑定 frame/document/node；部分失败与截断可见 |
+| FR-11 | 必须 | 结构化动作 | click、fill、type、press、select、scroll、wait、navigate；动作前验证可操作性 |
+| FR-12 | 必须 | 运行与批次 | BrowserRun 独立；一个 Space 同时最多一个 Agent 写 Run；批次逐步校验与返回失败步骤 |
+| FR-13 | 必须 | 可靠结果语义 | 区分拒绝、执行失败、已完成、派发前取消和结果未知；同 operationId 不盲目重放 |
+| FR-14 | 必须 | 人工登录 | 用户在隔离空间登录；不要求输入系统浏览器密码给 Agent |
+| FR-15 | 必须 | Cookie 导入 | 支持明确格式；预检、范围选择、源语义校验、完整目标读回和失败清理 |
+| FR-16 | 必须 | 身份版本 | 用户显式保存加密 IdentityVersion；新空间只读复制，不写回源身份或个人 Profile |
+| FR-17 | 扩展 | 更多登录存储 | localStorage/IndexedDB 分类型提供支持；unsupported 必须显式报告 |
+| FR-18 | 必须 | 文件能力 | 授权文件转 opaque fileId；下载状态可靠；导出由用户选目标；拒绝任意路径输入 |
+| FR-19 | 必须 | 对话框与权限 | alert/confirm/prompt、HTTP auth、文件选择与敏感权限有结构化状态、超时和确定默认行为 |
+| FR-20 | 必须 | 剪贴板边界 | 自动化文本输入不依赖系统剪贴板；用户主动复制通过 HUHU UI；不后台同步 clipboard |
+| FR-21 | 必须 | 重启与恢复 | 只恢复目录和 paused 状态；不自动联网恢复页面、不重放提交 |
+| FR-22 | 必须 | 资源回收 | 删除与进程退出分开；cleanup_pending 可见、持久、可独立重试 |
+| FR-23 | 必须 | 协议与接入 | 单套 v2 schema；进程内 API、CLI 和 loopback RPC 使用相同用例与授权 |
+| FR-24 | 扩展 | MCP | 薄适配器调用同一 v2 协议；不引入第二个 CDP driver |
+| FR-25 | 必须 | 工作台整合 | 独立页面、可嵌入 Agent、分屏与多窗口使用同一 Space；无新增宿主 View |
+| FR-26 | 必须 | 材料与设计观察 | 截图、语义摘录、元素定位材料经公开贡献点送给可选消费者 |
+| FR-27 | 必须 | 可解释诊断 | 操作、控制权、失败与版本可追溯；默认日志不包含账号 secret 与页面正文 |
+| FR-28 | 必须 | 独立停用 | 停用 browser 撤销全部能力、进程、监听器与连接；其他模块继续运行 |
+
+### 3.2 非功能需求
+
+| ID | 要求 | 验收原则 |
+|---|---|---|
+| NFR-01 | 正确性优先 | 不以 UI 状态、Promise 超时或调用者“自觉暂停”充当最终控制门禁 |
+| NFR-02 | 资源有界 | 各队列、帧、refs、日志、页面、并发和文件都有明确数量或字节上限 |
+| NFR-03 | 可恢复 | 每个创建/清理阶段可故障注入；目录损坏不按空数据覆盖 |
+| NFR-04 | 模块独立 | API 类型导入、动态加载和原生资产都受架构检查；browser 不反向依赖 agent |
+| NFR-05 | 可移植声明准确 | 桌面目标为 Windows/macOS/Linux；每个平台及架构分别证明；移动端显示 unsupported |
+| NFR-06 | 隐私 | 种子加密；默认工具不直接暴露原始身份凭据；页面观察按授权范围最小化；内部文件默认不进 HUHU Git 同步 |
+| NFR-07 | 可维护 | 单一写通道、单一 schema、单一 epoch 权威；服务按不变量拆分，不以大类承载所有状态 |
+| NFR-08 | 可访问与本地化 | en/zh、键盘可达、所属窗口 Portal、减少动效；查看器提供状态和语义辅助 |
+| NFR-09 | 可部署 | 固定浏览器 revision、验证下载、离线运行、原子安装、坏版本可停止或回退程序资产 |
+| NFR-10 | 可测试 | 纯领域、服务故障、协议、DOM、原生与真实宿主各证明不同边界 |
+
+## 4. 技术栈
+
+### 4.1 保留与复用的项目栈
+
+以下版本来自本次工作树的 package 和 lockfile，不表示这些依赖的全网最新版。package.json（`package.json`）、pnpm-lock.yaml（`pnpm-lock.yaml`）、tsconfig.json（`tsconfig.json`）
+
+| 层 | 技术 | 目标用法 |
+|---|---|---|
+| 语言 | TypeScript 5.8.3；ES2021；strict、noUncheckedIndexedAccess 等 | 领域、服务、协议、Worker、UI；不为 Node Worker 降低主项目严格性 |
+| UI | React/React DOM 19.2.8 | BrowserWorkspace、SpaceViewer、身份向导、文件与操作抽屉 |
+| 状态 | Zustand 5.0.15 | services 用 vanilla store；UI 用稳定 selector；其他模块仅见只读 API |
+| 组件与样式 | 本地 shadcn、Radix 1.6.7、Tailwind 4.1.13 | 沿用 HUHU tokens、作用域、Portal 和可访问组件 |
+| 插件打包 | esbuild 0.25.5；单 CJS main.js | 保持模块懒初始化；新增独立 Worker/CLI 构建入口和资产校验 |
+| 包管理 | pnpm 11.1.3 | lockfile 固定实际依赖；浏览器二进制版本另有 runtime manifest |
+| JS 测试 | Vitest 5.0.3、happy-dom 20.14.5、Testing Library | 纯逻辑、契约、DOM；真实 Chromium 由专用 fixture 验证 |
+| 原生 | Rust、Cargo | 复用 helper 工程经验，提取共享代码，浏览器不再借 Agent 服务读取 Cookie |
+| 外部 CLI | Node.js 22+ | CLI/脚本运行于调用方进程；开发测试遵守各工具更具体的 Node engine 要求 |
+| 宿主 | Obsidian API；宿主 Electron | 只负责插件和进程启动/密钥/窗口桥接，不承担目标网页渲染 |
+
+当前 Obsidian API 包为 1.13.1，manifest 最低宿主为 1.13.0，整个插件不是 desktop-only；browser 自身仅桌面可用。Electron 不由当前 package.json 固定，已有实机使用的 Electron 43.8.3 不能写成所有用户都有的运行时版本。实施时以实际 utilityProcess、MessagePort 和密钥能力探测确定新的受支持宿主集合；若必须提高最低版本，作为明确产品变更处理。
+
+### 4.2 新增目标技术
+
+| 能力 | 选型 | 引入约束 |
+|---|---|---|
+| 页面内核 | 固定 revision 的受管 Chromium，统一 Headless 模式 | 不自动选择机器上的任意 Chrome；不使用用户默认数据目录；发行源、签名/摘要、许可清单可追踪 |
+| Node Worker | Electron utilityProcess | 内置 Node 与 MessagePort，不要求用户为浏览器模块另装 Node；外部 CLI 的 Node 要求不因此消失 |
+| 驱动 | 自有小范围 CDP 适配器＋明确版本的协议类型 | 复用当前自动化规则，只有一个 FrameBroker 和 writer；不开放 raw CDP |
+| 原生收容 | 小型 huhu-browser-runtime Rust helper | 进程组、Job、parent liveness、管道边界、epoch fence；不放入 DOM/Agent 逻辑 |
+| 传输 | 主控 MessagePort；受管本机原生通道；Chromium CDP pipe | 控制、数据和像素流分队列；不公开浏览器调试 TCP 端口 |
+| 契约 | Zod 4 的 JSON 可表达子集；生成 JSON Schema | 新依赖在 browser 懒加载闭包内；不依赖无法导出 JSON Schema 的 transform/custom；精确版本在实施时锁定 |
+| 目录与日志 | JSON 投影＋有界 append-only 操作日志 | 小规模本地需求下不先引入 SQLite/native addon；持久提交由专用 JournalPort 承担 |
+| 密钥 | HostSecretProtector＋浏览器 CredentialStore | 系统保护封装数据密钥；身份内容使用认证加密；不可用时仅临时使用/人工登录 |
+| 浏览器验收 | 真实受管 Chromium＋真实 Obsidian；Playwright 可作开发测试工具 | Playwright 不成为生产第二 writer，不让其内部重试绕过控制 gate |
+| MCP | 官方 SDK 的薄 stdio 适配器，后续按需 | 仅 schema 与 v2 RPC 映射，不复制状态机或 Session 实现 |
+
+Electron utilityProcess 明确提供 Node 和 MessagePort，但它的 stdin 不支持一般管道配置；不能把 utilityProcess.stdin 当作 CDP pipe。父子通信走 MessagePort，Chromium 管道由受管 native transport 建立。[utilityProcess API](https://www.electronjs.org/docs/latest/api/utility-process)
+
+Zod 4 支持导出 JSON Schema；部分类型无法等价表达。公共协议只使用 string/number/boolean/null/array/object/封闭 union，时间统一为明确单位数值或 ISO 字符串，不输出 Date、Map、BigInt 或任意函数。[Zod JSON Schema](https://zod.dev/json-schema)
+
+### 4.3 不引入的常驻框架
+
+不引入 Redux、通用事件溯源系统、XState 运行时、微服务总线、Python Agent 服务或浏览器扩展后端。现有 TypeScript 判别联合、纯 reducer、端口注入和每空间调度足以表达当前状态机。状态图用于说明契约，不要求引入状态机框架。
+
+## 5. 总体架构与依赖边界
+
+### 5.1 模块关系
+
+```mermaid
+flowchart TD
+    UI["Browser 工作台和嵌入查看器"] --> API["browser 公开 API"]
+    AG["Agent 与自动化消费者"] --> API
+    RPC["CLI 和 MCP 适配器"] --> API
+    API --> APP["Browser 应用服务"]
+    APP --> CORE["纯领域与协议规则"]
+    APP --> PORT["浏览器端口"]
+    PORT --> RUN["桌面运行适配器"]
+    PORT --> DATA["目录 日志 身份 文件"]
+    RUN --> HOST["Host 通用桌面能力"]
+```
+
+图表示允许的责任方向。具体模块代码遵循项目导入矩阵；`api.ts` 仅类型和键，不能静态引入服务、Zod schema 初始化、React 或 Worker。跨模块不能把 Zustand store、Electron 对象、CDP session 或文件路径传出去。
+
+| 层 | 拥有的规则 | 不承担的职责 |
+|---|---|---|
+| core | 领域类型、状态转换、命令与结果、引用/权限/导入规则、端口契约 | Electron、Node、DOM、磁盘、React |
+| services | 用例、状态仓库、调度、日志/存储提交、控制权协调 | 直接 CDP、OS 进程管理、DOM 事件 |
+| platform | 端口实现；库、网络与桌面能力适配 | 产品状态的第二套权威 |
+| desktop/worker | CDP、FrameBroker、动作执行、网页感知、画面生产 | Agent 模型编排、任意主进程脚本 |
+| native helper | 进程与管道收容、最终 epoch fence、受支持来源的 Cookie 读取 | Cookie 导入策略、页面定位、用户界面 |
+| ui | 只读订阅、用户意图、画面解码、坐标转换 | 直接写业务 store、文件、CDP 或 SecretStore |
+| host | 多模块共享的进程启动、资产验证、密钥保护与文件授权原语 | browser 业务、Agent 运行状态、特定站点规则 |
+
+### 5.2 运行进程
+
+```mermaid
+flowchart TD
+    OB["Obsidian 界面和应用服务"] --> MH["固定主进程桥"]
+    MH --> TW["Space TypeScript Worker"]
+    MH -->|独立 revoke 和 kill| NS["Space 原生 Supervisor"]
+    TW -->|受限帧和当前租约| NS
+    NS -->|私有 CDP pipe| BC["Space Chromium 进程树"]
+    BC --> WEB["网站"]
+    BC -->|画面和事件| NS
+    NS --> TW
+    TW -->|有界画面与状态| OB
+```
+
+每个 live Space 的身份包括 `runtimeInstanceId`，不只使用可能复用的 PID。supervisor 维护 epoch 权威并控制最终 pipe 写入。Worker 是唯一自动化策略执行者；host 有独立撤销/终止通路，不能被 Worker 正在等待的页面 Promise 阻塞。
+
+此结构把已失控的浏览器进程与宿主分开，但受信任 Worker/helper 仍是本机用户权限的代码。它们不构成针对任意本机代码的 OS 沙箱。
+
+### 5.3 公开接口与可选整合
+
+| 目标 API | 使用者 | 公开内容 |
+|---|---|---|
+| BROWSER_WORKSPACE | app/workbench 装配层、browser UI | 只读目录、状态订阅、用户用例；app 适配为通用工作台贡献交给 shell |
+| BROWSER_AUTOMATION | Agent、automations、RPC | 受 capability 限制的 BrowserRun/Page 命令与观察 |
+| BROWSER_OPEN | 笔记链接、其他模块 | 在浏览器工作台打开明确的 personal 页面，不隐式打开 Agent 标签 |
+| BROWSER_VIEWER | Agent 嵌入入口 | 懒加载表面工厂、只读查看句柄和释放方法；不传内部 React store |
+| BROWSER_MATERIAL_SINKS | Agent 或其他材料消费者 | 可选贡献点；消费者自己接收截图/摘录/文件引用 |
+
+`BROWSER_VIEWER` 采用新增的通用 `LazyEmbeddedComponent<Props>` 契约，定义放在允许 React 类型的 app/contracts 中；browser/api.ts 只引用该契约，module.ts 注入动态 UI loader，Agent 在现有 React root 内渲染。独立工作台页面另走现有 PageCreate/ReactSurface。shell 不直接导入 browser/api.ts，只消费 app 装配的通用工作台贡献。browser 不调用 `AGENT_BROWSER_TABS`、`AGENT_SESSIONS` 或 `NATIVE_HELPER_SQLITE`；Agent 在自己的贡献中接入 browser，不反向规定浏览器页面去哪里。
+
+## 6. 目标目录结构
+
+以下是目标文件归属，不要求一次提交建出全部空文件。每个文件应有对应责任与验收；只有形成真实实现时才建立目录。
+
+```text
+src/modules/browser/
+  manifest.ts
+  api.ts
+  module.ts
+  settings.ts
+  i18n.ts
+  core/
+    model/
+      identity.ts
+      space.ts
+      page.ts
+      run.ts
+      control.ts
+      operation.ts
+      files.ts
+    state/
+      space-reducer.ts
+      control-reducer.ts
+      hydration.ts
+      cleanup.ts
+    protocol/
+      schema.ts
+      methods.ts
+      outcomes.ts
+      events.ts
+      limits.ts
+    automation/
+      commands.ts
+      references.ts
+      snapshot.ts
+      action-policy.ts
+    identity/
+      seed-format.ts
+      cookie-normalization.ts
+      import-plan.ts
+      verification.ts
+    policy/
+      capabilities.ts
+      url-policy.ts
+      permission-policy.ts
+      resource-budget.ts
+    ports/
+      runtime-port.ts
+      catalog-port.ts
+      journal-port.ts
+      credential-store-port.ts
+      cookie-source-port.ts
+      file-store-port.ts
+      clock-port.ts
+  services/
+    browser-service.ts
+    space-catalog.ts
+    space-lifecycle.ts
+    runtime-pool.ts
+    run-service.ts
+    control-coordinator.ts
+    command-scheduler.ts
+    operation-ledger.ts
+    identity-service.ts
+    import-coordinator.ts
+    viewer-service.ts
+    file-service.ts
+    permission-service.ts
+    browser-store.ts
+  platform/
+    note-links.ts
+    catalog-store.ts
+    desktop/
+      runtime-adapters.ts
+      runtime/
+        runtime-manager.ts
+        worker-host.ts
+        supervisor-client.ts
+        runtime-assets.ts
+        runtime-health.ts
+      worker/
+        entry.ts
+        runtime-session.ts
+        control-mirror.ts
+        protocol-dispatcher.ts
+        cdp/
+          transport.ts
+          command-registry.ts
+          frame-broker.ts
+          target-registry.ts
+        automation/
+          action-executor.ts
+          actionability.ts
+          snapshot-engine.ts
+          ref-registry.ts
+          fixed-page-functions.ts
+          navigation.ts
+        viewer/
+          frame-producer.ts
+          stream-broker.ts
+          input-executor.ts
+          gesture-state.ts
+        policy/
+          bootstrap.ts
+          permissions.ts
+          popups.ts
+          dialogs.ts
+        identity/
+          context-ref.ts
+          seed-writer.ts
+          seed-verifier.ts
+        files/
+          downloads.ts
+          upload-chooser.ts
+      identity/
+        source-discovery.ts
+        source-reader.ts
+        source-snapshot.ts
+        credential-store.ts
+        crypto-envelope.ts
+      storage/
+        durable-journal.ts
+        private-files.ts
+        cleanup-jobs.ts
+      bridge/
+        rpc-server.ts
+        descriptor.ts
+        auth.ts
+        event-channel.ts
+      client/
+        cli-entry.ts
+        rpc-client.ts
+        mcp-entry.ts
+  contrib/
+    browser-materials.ts
+  ui/
+    workbench-page.tsx
+    viewer-surface.tsx
+    BrowserWorkspace.tsx
+    SpaceSidebar.tsx
+    PageTabs.tsx
+    SpaceViewer.tsx
+    ControlBar.tsx
+    LoginRequest.tsx
+    IdentityManager.tsx
+    ImportWizard.tsx
+    FileDrawer.tsx
+    OperationDrawer.tsx
+    RuntimeHealth.tsx
+    hooks/
+      use-viewer.ts
+      use-human-input.ts
+    settings/
+      BrowserSettings.tsx
+  styles/
+    browser.css
+
+src/host/
+  secrets.ts
+  desktop/
+    secret-protector.ts
+    native-assets.ts
+    utility-worker.ts
+    file-grants.ts
+
+native/
+  browser-runtime/
+    Cargo.toml
+    src/
+      main.rs
+      protocol.rs
+      fence.rs
+      transport.rs
+      supervisor/
+        mod.rs
+        windows.rs
+        unix.rs
+      cookies/
+        mod.rs
+  helper-common/
+    Cargo.toml
+    src/
+      lib.rs
+      framing.rs
+      filesystem.rs
+
+scripts/
+  build-browser-assets.mjs
+  verify-browser-assets.mjs
+  obsidian-acceptance/
+    agent-browser.mjs
+
+test/
+  browser/
+    protocol/
+    identity/
+    websites/
+    recovery/
+```
+
+`cdp/frame-broker.ts` 管 target/frame/context/CDP session；`viewer/stream-broker.ts` 管像素帧。后文“FrameBroker”仅指 CDP frame/target 管理器，“StreamBroker”指画面流。`runtime-adapters.ts` 仅构造 desktop ports/adapters，不导入 services；完整 composition root 在 module.ts。
+
+native/helper-common 只提取 browser 与 pty 确实共享的 framing/受管文件原语；不是把整个终端重构成浏览器前置任务。Cookie 来源解析从现有 Rust 实现按职责迁出，保留许可和测试。不得通过 browser 导入 agent 内部文件绕过这一边界。
+
+### 6.1 必须同步调整的集成文件
+
+| 文件或区域 | 目标变化 |
+|---|---|
+| src/app/contracts/workbench.ts | 新增 browser feature，归属 browser 模块 |
+| src/app/workbench/compose-workbench.ts | 注册浏览器工作台页面、图标轨、状态和页面入口 |
+| src/shell/navigation-state.ts | 加入允许的 browser 导航目标 |
+| browser/manifest.ts、module.ts、api.ts | 独立提供服务/页面/设置；所有资源由本模块释放 |
+| agent 中浏览器标签整合 | 改为公开 Viewer/Automation API 的消费者 |
+| src/shared/storage/vault-layout.ts | 集中声明 v2 browser、runtime、identity、journal 和临时路径 |
+| src/modules/sync/core/excludes.ts | 对新运行目录保持明确排除；不改变用户主动导出的可见内容 |
+| 构建、架构、预算与 i18n 校验 | Worker 源码进入检查；新增资产、schema、helper 与文案可追踪 |
+| 负责 browser 入口事实的 dev/ui 文档 | 实施独立入口后同步更新；本设计阶段不把未来状态改写成现状 |
+
+## 7. 领域模型与状态不变量
+
+### 7.1 核心对象
+
+| 对象 | 拥有什么 | 不是什么 |
+|---|---|---|
+| Identity | 用户命名的登录身份索引与版本引用 | 正在被网页写入的 profile |
+| IdentityVersion | 不可变种子、来源/范围/支持信息、密文引用 | 所有账号状态的无损备份 |
+| Space | 空间类型、数据根、权限、desiredPages、保留策略、runtime 归属 | 一个 UI 标签或 Agent 对话 |
+| RuntimeInstance | 本次 Worker/helper/browser 身份、版本、能力、epoch | 可永久保存和复用的 PID |
+| Page | Space 内稳定 pageId、desired 定义、live target 映射 | 当前激活标签的别名 |
+| BrowserRun | 浏览器执行作用域、外部任务引用、授权和结果 | Agent 模块的内部 Run 实例 |
+| ControlLease | owner、controller、epoch、期限和运行实例 | 可以永久复用的“human=true”字段 |
+| Operation | 请求身份、规范化摘要、dispatch 证据和 outcome | 只存在于内存的 Promise |
+| Observation | 有范围和版本的 snapshot 或像素帧 | 永久有效的页面定位坐标 |
+| FileGrant | fileId、用途、范围、期限与本地资源映射 | 可在所有空间使用的绝对路径 |
+| CleanupJob | 尚未完成的关闭/清理步骤与重试信息 | 一个已设 disposed=true 的对象 |
+
+IdentityVersion 可以复制到多个 Space；每个 Space 产生自己的站点状态。Space 可顺序承载多个 BrowserRun，且任意时刻只有一个主动 Agent writer。多个 Page 共享该 Space 的站点存储，不能将“Page 独立”误当作 Cookie 独立。
+
+### 7.2 必须保持的不变量
+
+| ID | 不变量 |
+|---|---|
+| INV-01 | Page 属于且只属于一个 Space；target 属于且只属于一个 runtimeInstance |
+| INV-02 | 同一 Space 的 userDataDir 同时只被一个受管浏览器实例打开 |
+| INV-03 | personal/task 的权限策略在原生写门禁之前已经校验；没有个人空间的 Agent capability |
+| INV-04 | 同一 runtime 同时只有一个有效 writer lease；观察不取得 writer 身份 |
+| INV-05 | epoch 在原生 gate 单调增长；旧 runtime/epoch/controller 不可因 UI 恢复重新有效 |
+| INV-06 | ready 发布前完成存储创建、策略安装和所要求种子的核验 |
+| INV-07 | runtime changed 只更新 live 投影，不能用恢复子集覆盖 desiredPages |
+| INV-08 | 失败创建、关闭和清理都有持久归属；无静默失联的目录或进程 |
+| INV-09 | capability、identity secret、文件路径和 raw CDP 不进入公开页面对象 |
+| INV-10 | Agent mutation 与结构性用户命令派发前有 durable operation 记录；实时人工输入按租约序号去重，均不在崩溃后自动重放 |
+| INV-11 | 来源 Cookie/Profile 不被导入流程修改；保存新身份只建立新版本 |
+| INV-12 | browse/observe/cleanup 的回调都核对 runtime 与 operation 归属，不能由旧 finally 修改新状态 |
+
+### 7.3 生命周期与控制权分离
+
+新 Space 使用 `provisioning → ready`；已有 Space 重新打开使用 `starting → hydrating → ready`。关闭经过 closing，只有证实受管进程已回收才进入 stopped；无法确认时进入 quarantined。持久 Space 的重开失败只回收本次 runtime 并保留原资料，不能走“首次创建失败即清除新目录”的路径。删除另经 cleanup_pending → deleted，仅针对显式删除、首次创建产生的失败资料或明确的 ephemeral 保留策略。
+
+控制权在 live runtime 内使用 `paused | agent | human | quiescing | blocked`。ready 不代表正在运行 Agent；paused 也不代表网页的 JavaScript、网络或 Service Worker 已被冻结。stopped 状态没有浏览器进程、输入租约或可恢复的网页堆。
+
+```mermaid
+stateDiagram-v2
+    [*] --> provisioning
+    provisioning --> ready: 初始化并发布
+    provisioning --> cleanup_pending: 初始化失败
+    ready --> closing: 关闭或删除
+    ready --> faulted: 运行进程故障
+    closing --> stopped: 保留资料
+    closing --> cleanup_pending: 删除资料
+    faulted --> stopped: 收容确认并记录
+    faulted --> quarantined: 无法确认已收容
+    closing --> quarantined: 无法确认已收容
+    quarantined --> stopped: 独立回收成功
+    stopped --> starting: 明确重新打开
+    starting --> hydrating: 运行时已启动
+    starting --> faulted: 启动失败且保留资料
+    hydrating --> ready: 完成逐页恢复
+    hydrating --> faulted: 运行时故障且保留资料
+    stopped --> cleanup_pending: 用户删除
+    cleanup_pending --> deleted: 清理完成
+    cleanup_pending --> cleanup_pending: 独立重试
+    deleted --> [*]
+```
+
+恢复需要逐页维护 `pending/open/failed` 和错误，不追求全页一次原子恢复。三页中第二页失败时，第一和第三页的期望定义仍保留；后续仅重试未成功部分。此要求直接修复本次审计确认的恢复目录丢失问题。审计与故障说明（`docs/agent-browser-refactor-plan.md#32-本轮确认的问题`）
+
+## 8. 运行内核与进程架构
+
+### 8.1 首次创建协议与重开差异
+
+1. SpaceLifecycle 持久登记 provisioning、保留策略和清理归属；分配全新的 spaceId/runtimeInstanceId。
+2. RuntimePool 取得配额，校验目标目录为本设备受管路径，拒绝链接替换和已被占用的 profile。
+3. Host 固定主进程桥加载已验证 Worker 资产，启动 supervisor，建立独立 control/data 通道；不从 Agent 参数拼接可执行源码。
+4. Worker、supervisor 与宿主进行协议版本、构建 hash 和能力握手；一次性 bootstrap 凭据仅经私有通道传递。
+5. supervisor 按受管 RuntimeManifest 启动 Chromium；使用独占数据目录、私有 CDP pipe、sandbox 和确定的启动配置。浏览器可执行路径、参数与环境不接受 Agent 任意覆盖。
+6. Worker 建立 browser-level Target 观察、唯一 FrameBroker、权限与对话框策略、popup 归属和新文档固定脚本。
+7. 新空间只使用全新 profile。若需要种子，在未发布环境中完成第 12 章的完整校验；工作页面此时不能导航到第三方网站。
+8. 创建初始 Page，提交 ready 目录投影；只有所有前置条件成功，才发观察/操作能力并按请求开始导航。
+
+内部校验可以创建固定的 `about:blank` inspection target。它不是用户工作页，不执行 Agent 代码，不触发第三方导航，也不使 provisioning 自动进入 ready。
+
+已有 Space 重开沿用原 spaceId、profile 和完整 desiredPages，只分配新的 runtimeInstanceId；进入 starting/hydrating，不重新 seed、不用新初始 Page 替代旧目录。每个已存在 pageId 保持稳定，live target 映射重新建立。启动失败只回收本次运行资源，保留已有资料。
+
+已存在的 profile 与全新 profile 不同：用户明确重新打开持久空间后，Chromium 的既有 Service Worker 等后台状态可能活动。仅凭空白启动页或 `--no-startup-window` 不能证明启动时完全无网络。插件启动时必须只恢复目录而不启动浏览器；用户主动打开持久空间后的后台行为，需要纳入该平台的 target/权限验收。若产品再增加“恢复全过程零网络”的要求，必须另有经过验证的启动隔离机制。
+
+### 8.2 原生 Supervisor 的最小职责
+
+supervisor 不是第二个浏览器业务框架。它只处理：
+
+- 验证本次进程和受管资产身份，创建浏览器进程树并持续跟踪归属。
+- 为 Space 建立 CDP pipe；按消息边界转发 opaque payload，不解释网页 DOM 或定位器。
+- 保存当前 epoch、允许的写 lane、租约身份和最后派发序号，在实际写 pipe 前检查。
+- 通过独立控制通道处理 revoke、grant、kill 和健康查询。
+- 在父控制通道断开、Worker 死亡、宿主退出或超时失联时撤销写能力并收容进程。
+
+原生帧的元数据形状如下；这是内部协议，不对 Agent 暴露：
+
+```ts
+interface DispatchFrame {
+  runtimeInstanceId: string;
+  epoch: number;
+  leaseId: string;
+  controllerId: string;
+  sequence: number;
+  lane: 'agent' | 'human' | 'observe' | 'maintenance';
+  payloadBytes: Uint8Array;
+}
+
+interface RevocationAck {
+  runtimeInstanceId: string;
+  epoch: number;
+  lastDispatchedSequence: number;
+  transportState: 'open' | 'closed';
+}
+```
+
+单条 DispatchFrame 之外，输入支持 `GestureDispatch`：它包含 gestureId、同一 authority/epoch、**完整且有界的 opaque frame 列表**、总字节数与截止时间。原生必须先原子接纳整份列表，才能写第一帧；revoke 后只允许完成已经开始的这份固定列表，不再接受 Worker 补发的“剩余步骤”。初始限制为最多 4 个固定输入帧、总计 64 KiB、150ms 写入窗口，需经平台测试调整；超限关传输/收容，不能延长为任意批次。此合同不要求 Rust 理解 DOM，但要求它理解队列和事务边界。
+
+lane 由固定 Worker command registry 分类，不能由 Agent 任意指定。observe 仅允许固定观察操作；maintenance 仅供初始化、受限诊断、撤销收敛和清理。Rust 不重新解析 CDP 语义，因此“固定代码把请求分到正确 lane”本身属于可信实现和必须测试的边界。
+
+若某条 JSON 帧已经开始写入 pipe，不得丢掉后半截破坏传输。revoke ACK 只有在当前已开始帧写完，或超时后关闭传输并收容实例后才能返回。ACK 携带 lastDispatchedSequence，使服务区分未派发与已经可能到达浏览器的操作。ACK 不是网站副作用被回滚的证据。
+
+### 8.3 平台进程收容
+
+| 平台 | 必须实现的收容机制 | 需要实际验证 |
+|---|---|---|
+| Windows | 受控创建进程，在运行浏览器代码前加入 Job；使用 kill-on-close 与归属句柄；不允许任意 breakaway | Chromium 自己的 sandbox/job 关系、宿主和 Worker 强制退出、崩溃子进程、句柄继承 |
+| Linux | 受管进程组与独立 parent-liveness 检测；按可用平台能力辅助 pidfd/parent-death；跟踪全部受管后代 | supervisor/Worker/宿主各自死亡、脱离进程组的风险、sandbox、遗留 profile 锁 |
+| macOS | 受管进程组与父通道存活监测；平台受支持的退出通知和清理路径 | 强制退出、签名/quarantine、辅助进程、剪贴板及原生 UI 行为 |
+
+Windows Job 可以把相关进程作为单元管理，子进程归属和 breakaway 有明确规则；不能只调用一次 Node `child.kill()` 就把进程树回收标为完成。[Microsoft Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects)
+
+记录 PID 时同时记录运行实例和进程创建身份；恢复清理不得仅凭旧 PID 杀死可能被复用的无关进程。supervisor 自身崩溃时不能靠它执行自己的退出回调：Windows 依靠已建立的 Job 生命周期；POSIX 必须有 host 持有归属信息的独立 reaper/已验证 OS 机制接替收容。宿主单独死亡由 supervisor 的父通道监控处理。组合故障和系统强杀的实际范围写入平台证据，无法确认回收的空间保持 quarantined。平台监控也不是抵御任意恶意本机进程逃逸的安全沙箱。
+
+Cookie 来源读取使用独立、按需的受限 helper 命令/进程。常驻 supervisor 不持有人的浏览器资料读取授权，也不需要 PTY 能力。
+
+### 8.4 FrameBroker 是唯一 target 管理者
+
+FrameBroker 维护 `Space → runtime → browser Context → target → CDP session → frame → execution context` 映射，并完成：
+
+| 事件 | 处理要求 |
+|---|---|
+| target 创建 | 在 registry 中登记归属与待初始化状态；未满足策略的 target 不对动作层发布 |
+| popup | 继承发起 Space 的存储和权限；保留原生 POST、Referer、opener，不能用另开 GET 模拟 |
+| OOPIF / context 更换 | 更新 session/frame 映射，安装固定策略，失效对应 refs |
+| frame 导航 | 更新 documentEpoch；保留不同 frame 的独立引用范围 |
+| target 崩溃/关闭 | 取消相关等待、停止画面、输出明确事件，禁止切到“任意可用页面” |
+| worker / Service Worker | 明确登记与支持状态；不把页面 frame 策略自动等同于 worker 策略 |
+
+旧 runtimeInstance 的事件可以丢弃；同一 runtime 内，撤销 Agent 后才到达的 targetCreated/frameAttached 仍代表真实资源，必须登记、限制并安装当前策略。资源生命周期归 Space，命令权限归 lease，不能共用一个 generation 判断而漏管 popup。登记该资源不允许旧操作继续导航、回报成功或清理新控制者已使用的页面。
+
+CDP 的 Target/Storage 功能由实际受管 Chromium revision 的协议定义约束，构建时固定类型；不能依据 tip-of-tree 文档假设所有平台资产都有某个实验参数。[官方 CDP 协议](https://github.com/ChromeDevTools/devtools-protocol)
+
+### 8.5 资产发行与升级
+
+RuntimeManifest 至少包含 browser revision、下载来源、平台/架构、摘要、可选签名链、许可、CDP schema revision、Worker/helper hash 和所需宿主能力。资产先下载到临时目录，校验后原子发布；失败不覆盖当前可用资产。
+
+程序资产可保留一个经验证的回退版本，但不能把较新 Chromium 已写入的 userDataDir 交给旧版本而宣称资料可逆。升级前记录 profile 使用版本；需要回退数据时走停机副本或重新创建 Space 的明确流程。
+
+RuntimeManager 管理缓存、磁盘占用和清理；不在插件启动时启动所有浏览器，也不在后台无界下载多个版本。每个 helper 及二进制只取得本功能所需环境，清除无关 CLI 登录变量、代理秘密和调试注入变量。用户确实需要的代理/证书作为显式配置能力处理，不能继承不可解释的整份宿主环境。
+
+Worker 需要独立 tsconfig 与 esbuild 入口，保持 strict 并移除 DOM 默认库。对入口的传递依赖和 metafile 进行更窄的检查：禁止 Obsidian renderer、React/UI、window/document、主进程桥实现和 main-only Electron API，只允许明确的 utilityProcess 运行接口及可用的 Node 基础设施。现有 desktop 目录检查本身不能证明这些条件。发布门禁包含实际 utilityProcess 启动/握手，不能只看主 main.js 构建成功。
+
+## 9. 控制权与并发协议
+
+### 9.1 四类身份不能混用
+
+| 身份 | 用途 | 失效条件 |
+|---|---|---|
+| ModuleLease | HUHU 模块服务是否仍然存在 | 模块停用或卸载 |
+| Capability | 某调用者能操作哪些 Space/Run/方法 | 到期、撤销、重启、作用域变化 |
+| ControlLease | 当前谁有页面写权限 | 接管/暂停/交回、controller 消失、runtime 更换 |
+| Request / Operation | 一次调用及其持久结果 | 请求结束不自动结束 Run；operation 结果另有保留期 |
+
+ControlLease 必须绑定 runtimeInstanceId、Space、owner、controllerId、leaseId 和 epoch；human 还绑定 viewerId/所属窗口。两个窗口不能靠同一个 `mode=human` 同时输入。
+
+执行作用域使用封闭联合：agent scope 绑定 BrowserRun/issuer；human scope 绑定 viewer/controller。个人导航、上传和下载不伪造 Agent Run；用户创建/关闭空间等管理用例使用 Workspace/Space 的用户 authority。
+
+受信任用户查看器与 Agent observation capability 分开。人工接管默认同时撤销 Agent 的实时 DOM/AX、截图、文本和 evaluate 读取，只允许查询已有操作与控制状态，防止人工输入继续进入模型；用户自己的观察窗口仍可观看。接管同步提升 observationGeneration、停止 Agent 订阅并清空其待发送帧/结果；响应、事件、工件访问和帧投递前都复核当前读取权限。接管前启动、接管后完成的截图或延迟 evaluate 不能把人工阶段内容发给 Agent；已经交付的旧内容无法撤回。若以后提供“允许 Agent 旁观”，必须为显式可见策略。交回时重新发放观察能力，且默认页面输出也不能保证识别网站自己展示的所有秘密。
+
+### 9.2 接管的线性化点
+
+```mermaid
+sequenceDiagram
+    participant UI as 人工查看器
+    participant S as 应用服务
+    participant N as 原生 Gate
+    participant W as Worker
+    UI->>S: 请求接管
+    S->>S: 停止接受新 Agent 动作
+    S->>N: revoke 经独立控制通道
+    N->>N: 收束已接纳输入并更新 epoch
+    N-->>S: ACK 与最后派发序号
+    S->>W: 收敛在途命令和输入状态
+    W-->>S: 可交接或 blocked
+    S->>N: grantHuman 新租约
+    N-->>S: 新租约已生效
+    S-->>UI: 开放当前查看器输入
+```
+
+“用户点击接管”到“原生收到 revoke”之间存在跨进程传播时间。应用服务立即关闭自己的 Agent 入队口；真正禁止后续旧命令写入的线性化点在原生 Gate，必须等待 ACK 才对 UI 宣布旧写权限已撤销。
+
+接管完成还要满足在途动作已收敛。已写入 Chromium 的请求、网站事件处理器、网络提交和定时器不能被 promise 取消撤回。对这些操作返回 completed/failed/outcome_unknown 等实际结果，不伪称“全部取消”。
+
+### 9.3 控制状态
+
+| 当前状态 | 请求 | 结果 |
+|---|---|---|
+| agent | 只读观看 | 保持 agent；新增 observer |
+| agent | 暂停 | quiescing → paused |
+| agent | 接管 | quiescing → human，绑定发起查看器 |
+| paused | 人工操作 | 核验目标与页面 → human，不需要先恢复 Agent |
+| human | 交回 Agent | quiescing → agent；新的 Run/lease/epoch，旧 refs 失效 |
+| human | 关闭控制视图/窗口丢失 | quiescing → paused；不自动交回 Agent |
+| 任意可写状态 | 无法收敛 | blocked；拒绝双方输入，提供停止/重开及状态解释 |
+| 任意状态 | 普通 observer 关闭 | 只取消该订阅 |
+
+普通切换查看页只改变本地显示；跨窗口移动控制视图要重新取得与新 viewer 绑定的租约。多个接管请求使用服务侧 transitionId 和原生 epoch 比较，只允许一个胜者；失败方得到当前控制者和可重试原因。
+
+### 9.4 不能遗留半个输入动作
+
+按下鼠标后未抬起、按住修饰键、IME 合成和拖拽都属于状态，不是普通独立消息。
+
+固定 click/press 采用有严格大小与时长上限的短输入事务。原生已接纳的事务可以在 revoke ACK 之前完成其固定的 down/up 或 press/release；进入 quiescing 后不能开启新事务。不能把任意 batch、导航或长脚本包装成“不可取消事务”绕过撤销。
+
+这里“已接纳”指第 8.2 节的完整 GestureDispatch 已进入原生队列，而不是只有 down 在原生、up 仍留在 Worker。没有该事务或其时限已过，旧 Worker 不能借“补 release”继续写入。
+
+长拖拽、选择和组合输入使用 GestureState 显式跟踪。接管时可以等待原控制者完成，或使用已验证的取消路径；盲目补发 mouseReleased 可能触发 click，不是通用取消。无法证明安全收敛时保持 blocked/paused，必要时停止该运行实例。关闭浏览器会丢失当前 DOM，应明确呈现这个恢复选择。
+
+人工离开控制视图时先处理 pointer capture、按键集合和 composition，再释放租约；异步回调不得继续使用旧 lease。旧 Agent 的 finally 仅能结束自己的 operation，不能清掉新操作的 busy 状态。
+
+### 9.5 调度与取消
+
+每个 Space 的写用例串行，不同 Space 并行；只读感知与画面采用有界并发。control 使用独立优先通道，绝不能排在正在等待网站响应的普通 mailbox 后面。
+
+取消分三类：
+
+- 未派发：取消排队项，返回 cancelled_before_dispatch。
+- 已派发但能确定结局：返回真实 completed/failed，并说明调用期间发生了撤销。
+- 已派发且结局无法判断：返回 outcome_unknown，保留 operationId 供查询。
+
+一次 CLI 请求成功结束并关闭 HTTP 连接是正常行为，不触发 Space 暂停。需要区分请求中途异常断连、编排器 heartbeat 到期、显式 Run stop 与 host/Worker 控制通道死亡。无人维护的长期 Agent 租约采用显式期限/heartbeat；普通命令连接不冒充控制租约。
+
+## 10. 页面感知与自动化
+
+### 10.1 统一命令面
+
+| 类别 | 命令例子 | 约束 |
+|---|---|---|
+| Space/Run | create、start、stop、get、list、close | 只返回授权范围；不能操作 personal 写入口 |
+| Page | open、close、navigate、back、forward、reload、stop | 明确 pageId；不使用当前活动标签 |
+| 观察 | snapshot、screenshot、text、pageInfo | 有范围、字节预算和敏感信息策略 |
+| 输入 | click、fill、type、press、select、scroll | 当前租约、引用/坐标校验、actionability |
+| 等待 | waitForElement、waitForNavigation、waitForText、waitForDownload | 确定超时和取消；不默认依赖 networkidle |
+| 组合 | batch | 步数有限，每步返回结构化结果，不把批次变成不可取消事务 |
+| 文件 | stageUpload、chooseFiles、downloadStatus | 只能使用已授权 fileId |
+| 对话框 | dialogInfo、replyDialog | 权限独立；需要人的请求不能由 Agent 自行提权回应 |
+
+外部默认不提供 host eval、raw CDP、任意文件读取、系统剪贴板读取、读取 Identity secret 或恢复自己的写租约。任意网页 JS 是单独的高级 capability，默认关闭；开启后不能声称系统对每个页面副作用都做了语义审批。
+
+### 10.2 Snapshot 合同
+
+Snapshot 组合 Accessibility、DOM、可见性和布局信息。输出应包含 coverage、truncation、frameErrors 和生成所用 document/viewport 版本，避免把“没有读到”伪装成“页面没有”。
+
+```ts
+interface SnapshotScope {
+  spaceId: string;
+  pageId: string;
+  frameId?: string;
+  rootRef?: string;
+  mode: 'interactive' | 'semantic' | 'visible';
+  maxNodes: number;
+  maxBytes: number;
+}
+
+interface ElementRef {
+  refId: string;
+  runtimeInstanceId: string;
+  pageId: string;
+  cdpSessionId: string;
+  frameId: string;
+  documentEpoch: string;
+  controlEpoch: number;
+  backendNodeId: number;
+  snapshotId: string;
+}
+```
+
+CDP session/frame/node 的组合由内部 registry 保管，Agent 只使用不透明 refId 及必要的 snapshot revision。不能把 backendNodeId 单独当成跨进程全局 ID。
+
+遇到 frame 不可访问、closed shadow root 不可见、布局超过预算或 target 已被替换时，输出明确的局部状态。一般 click 不因为 ref 失效而自动改为“找同名按钮再点”；返回 stale_ref，重新观察后由调用方决定。
+
+### 10.3 动作可操作性
+
+写动作在派发前检查：目标仍属于当前 Page/frame/document；元素仍连接且可见；需要时 enabled/editable；几何稳定且命中测试符合预期；viewport 与坐标可换算；control lease 仍有效。
+
+多 frame 坐标经过 FrameBroker 的变换链处理，不能假设 OOPIF 局部坐标就是顶层坐标。操作只改变目标浏览器内的网页焦点，不调用系统鼠标、系统键盘或激活 Obsidian/用户 Chrome 的窗口。
+
+对操作内部的每个 await，继续前都校验 operation/runtime/epoch。重试仅用于确定没有产生写副作用的定位或观察阶段；已发送 click、submit、文件提交等不得因超时自动重发。
+
+### 10.4 导航与批次
+
+预期的 `navigate → wait → snapshot` 可以在同一批次继续，后续步骤使用新的 document 信息；旧引用立即失效。批次若需要新 snapshot 的 ref，应通过明确的结果引用合同实现，不能暗中重新绑定旧 ref。首版可以要求调用方取得 snapshot 后另发动作，保持合同简单。
+
+非预期导航、跨站跳转或页面关闭使依赖旧文档的剩余步骤停止。batch 返回 completedCount、failedIndex、每步 outcome 和 sideEffectState；不能在 RPC 序列化时只留下一个 message。当前批次信息缺口（`docs/agent-browser-refactor-plan.md#32-本轮确认的问题`）
+
+### 10.5 固定网页函数与高级执行
+
+可审计的 DOM 观察、焦点定位、输入辅助函数作为固定源码资产编译，在页面的受限上下文执行。Agent 不向宿主主进程或 Worker 注入 JavaScript。
+
+外部 CLI 的脚本编排仍运行在 CLI 进程，调用受限浏览器 API。若显式提供高级 page.evaluate，只在目标网页上下文执行，单独计时、审计和授权；网页脚本可产生网络与定时器副作用，租约撤销不保证撤回所有由它安排的未来行为。
+
+## 11. 实时查看器与人工交互
+
+### 11.1 工作台布局与信息归属
+
+| 区域 | 内容 |
+|---|---|
+| 左侧空间导航 | personal/task 分组、运行/暂停/需处理状态、Identity 入口；不列明文 Cookie |
+| 顶部控制条 | 当前 Space、控制者、观察/接管/交回、URL、前进后退、停止/刷新 |
+| 页面标签 | 本 Space 的 Page；popup、崩溃、加载与阻塞状态 |
+| 中央查看区 | 原 Page 的真实像素，连接/陈旧/输入被拒绝状态，键盘焦点提示 |
+| 侧边或底部抽屉 | 操作、文件、需要人工处理、运行健康、有限诊断 |
+| 身份管理 | 来源范围、导入结果、版本、保留/删除；解密后按需展示，不持久化进普通 UI state |
+
+独立浏览器页面通过 PageCreate → ReactSurface 挂入现有工作台。Agent 嵌入通过公共懒加载组件契约在自己的 React root 内呈现同一 Viewer，不额外嵌套第二个 React root。公共契约可在 app/contracts 中定义，browser/api.ts 不直接引入 React 实现或违反 type import 规则。
+
+### 11.2 StreamBroker
+
+Chromium 画面来自 CDP screencast；首帧或静止页按需 captureScreenshot。Worker 解码上游 base64 后，向 UI 传递有界二进制数据；不在 React state、普通 JSON RPC 或日志内长期保存巨大的 data URL。
+
+一个 Page 只有一个画面生产者，多个 observer 订阅同一输出。每个订阅者最多有一个 in-flight 完整帧和一个 latest 帧，慢订阅者只丢中间画面，不拖住其他观察者。
+
+CDP screencast ACK 与查看器 ACK 是两条独立反馈：前者释放上游背压，后者控制某订阅者的发送速率。不能等待最慢 UI 才向 Chromium ACK，也不能把像素队列和 control/status 队列混为一个通道。
+
+首版发送完整帧。若以后加入 dirty-region patch，必须提供基帧、顺序和重同步机制；不能在任意丢帧的同时假定差分仍可拼出完整画面。MessagePort 支持的传输方式以实际宿主验证为准，不把“二进制消息”宣传为已证明的端到端零拷贝。[MessagePortMain](https://www.electronjs.org/docs/latest/api/message-port-main)
+
+### 11.3 帧与输入绑定
+
+```ts
+interface ViewerFrame {
+  streamId: string;
+  runtimeInstanceId: string;
+  pageId: string;
+  documentEpoch: string;
+  viewportRevision: number;
+  controlEpoch: number;
+  frameId: number;
+  capturedAtMs: number;
+  cssWidth: number;
+  cssHeight: number;
+  pixelWidth: number;
+  pixelHeight: number;
+  codec: 'jpeg' | 'png';
+  bytes: Uint8Array;
+}
+```
+
+人工输入携带 viewerId、leaseId、frameId、documentEpoch、viewportRevision、递增 inputSequence 和 CSS 坐标。服务与 Worker 校验相同 runtime/Page 和当前 lease，再通过原生 gate。
+
+查看器根据实际 letterbox/object-fit、DPI、缩放和显示尺寸做坐标变换。观察窗口变大只缩放自己的画面，不能偷偷调整 Agent 页面 viewport。只有拥有权限的控制者能请求页面 viewport 改变，变更后发新 revision 并等待新帧。
+
+对静止页面，不能仅因最后一帧的时间较久就永久拒绝输入；可请求一次当前版本校验/新帧。导航、页面切换、尺寸变化或控制权变化后，旧帧输入一律失效。
+
+### 11.4 文字、IME、键盘与剪贴板
+
+优先将明确的文本提交通过 CDP 文本输入发送，不借系统 clipboard 完成粘贴。支持 native composition 的版本要实现 compositionstart/update/end、光标/选区、取消与租约变化，并单独验证 Windows/macOS/Linux 中文输入。
+
+首个可交付版本保留明确的文字输入区作为可靠路径；完整原位 IME 属于 FR-06 的体验验收项，未通过的平台要在能力表中说明限制。不能因为英文键盘可输入就标记中文浏览体验完成。
+
+HUHU 只在当前 human 查看器获得焦点时截取其按键，使用所属窗口的事件与 Scope；观察态不拦截人的日常快捷键。关闭或接管变化清空待提交文本、按键队列和 composition。
+
+系统剪贴板的出入口只有用户主动的 HUHU UI 操作：用户复制选定内容到系统剪贴板，或在用户粘贴事件中接收文本并提交给页面。Agent 不读写系统 clipboard；网页自己的复制按钮可能因策略被拒绝，应提示使用明确的 HUHU 复制入口。不得通过保存旧剪贴板、执行自动化、再恢复旧值来“隔离”，那会覆盖用户期间新复制的内容。
+
+### 11.5 无障碍与生命周期
+
+像素画面不天然等同于可访问 DOM。工作台自身提供可访问名称、控制状态、焦点提示、键盘导航和按需语义摘要；如提供网页语义镜像，只呈现经筛选的文本/角色，不把外站 HTML 作为可信 Obsidian DOM 注入。
+
+页面隐藏时取消不需要的画面订阅；普通观察者关闭不影响浏览器执行。控制视图关闭、所属窗口销毁或其生命周期结束必须撤销 human lease。浏览器页面隐藏与关闭、仅停画面与停止 runtime 应在 UI 上区分。
+
+## 12. 身份与 Cookie 架构
+
+### 12.1 Identity 与运行目录分开
+
+IdentityVersion 是经过用户选择和校验的可复制种子。Space 的 userDataDir 是持续变化的运行资料，两者不共用一个目录，不自动同步和合并。
+
+IdentityVersion 的密文载荷包括来源、采集区间、一致性等级、Cookie 域规则、storage origins、规范化 Cookie、已支持的 origin storage、字段支持情况与保留期限。公开目录只保存随机 ID、版本、secretRef 和必要状态；标签、站点范围、源 Profile 路径按敏感数据处理。
+
+“版本不可变”只表示保存的内容不再被改写，不证明源浏览器多个数据库在同一瞬间原子采集。Cookie 有效期和种子保留期分开，种子版本不能延长站点令牌寿命。
+
+### 12.2 来源与目标权限分离
+
+| 入口 | 处理方式 |
+|---|---|
+| 在隔离 Space 人工登录 | 由用户操作，随后可明确保存新的 IdentityVersion |
+| Cookie 文件 | 用户选定文件，固定本次字节、摘要和格式，再产生 ImportPlan |
+| 本机浏览器资料 | 一次性 SourceGrant 限定来源与选定范围；只读采集，不修改活跃来源 |
+| 已保存 IdentityVersion | 解锁并短时解密指定版本，不重新读取原来源 |
+
+SourceGrant、SecretUsePermit、FileGrant 和 BrowserCapability 是不同对象。Agent 浏览器动作能力不能升级为读取人的 Chrome Profile、系统密钥或身份种子的权限。
+
+### 12.3 ContextRef 必须准确
+
+每个持久 Chromium 使用独占 userDataDir，通常位于这个 owned browser 的默认 Context。默认 Context 不一定有可传入的 browserContextId；不能为了取得 ID 而把持久空间无意变成 incognito Context。
+
+```ts
+type ContextRef =
+  | { kind: 'owned-default'; runtimeInstanceId: string }
+  | {
+      kind: 'isolated';
+      runtimeInstanceId: string;
+      browserContextId: string;
+    };
+```
+
+Cookie 操作首先定位 Space 唯一的 runtime 和 CDP pipe。只有 registry 已确认的 owned-default 才可省略 contextId；非默认必须传正确 ID。禁止回退到宿主 Electron 默认 Session、人的浏览器连接或别的 worker 的默认 Context。
+
+### 12.4 导入流程
+
+```mermaid
+flowchart TD
+    S["来源授权与固定采集内容"] --> P["ImportPlan 与范围确认"]
+    P --> ST["隔离 Staging 验证源语义"]
+    ST --> N["全新目标 Profile"]
+    N --> V["写入并完整读回"]
+    V -->|验证成立| R["发布 ready"]
+    V -->|失败或不确定| Q["隔离并登记清理"]
+    ST -->|不支持或失败| Q
+```
+
+1. reader 与目标 runtime 先交换字段能力，记录版本；旧 reader 不能静默冒充支持分区字段。
+2. 固定来源字节/读取快照与采集区间。Cookie SQLite/WAL、Local State、LevelDB 的来源一致性等级分别记录。
+3. 按用户选定的域规则和 storage origin 生成 ImportPlan，列出有效、过期、无效、重复、不支持、解密失败项；默认不显示值。
+4. staging 使用独立临时 profile 和匹配策略，验证源安全语义。允许的时间精度/浏览器规范化明确列出；不能因为 staging 自己丢字段，就接受同样丢字段的目标。
+5. 创建全新空的目标物理 profile，保持 provisioning，不发工作页、导航、popup 或 Agent 写能力。
+6. 按 ContextRef 写入，完整读取目标集合，比较键、值与全部受支持安全属性；检查额外残留项和错误 Context。
+7. 将验证中自然过期的 Cookie 单独分类。按用户选择的严格策略失败或发布明确 partial，不把 unsupported 悄悄算作成功。
+8. 完成目录发布后才统计 importedCount 和开放使用。导入成功与网站已登录是两个结果。
+9. 无论成功、失败还是取消都清理 staging；清理失败有持久 cleanup job。失败目标不得重新命名为可用 Space。
+
+新 profile 比在已有 paused/blank 页面导入更可验证：paused 不代表没有 Service Worker、已有连接或后来的 Set-Cookie。第一版不支持在已使用空间“热覆盖登录态”；需要更换身份时创建新 Space。
+
+### 12.5 Cookie 与存储支持矩阵
+
+| 数据/属性 | 要求 |
+|---|---|
+| name/value/domain/path | 保留完整值和准确作用域；同名不同 path/domain 不合并 |
+| hostOnly / domain cookie | 明确保留差异；不因 leading dot 规范化扩大范围 |
+| secure / httpOnly / SameSite | 逐项比较；不自动去掉不被接受的限制 |
+| session / expires | 区分会话项与持久项，明确秒/毫秒和上限规范化 |
+| Cookie 前缀 | 检查 __Host-、__Secure- 等约束；失败可解释 |
+| CHIPS / partitionKey | 完整保留分区语义及元数据；目标缺能力时拒绝该项或整体失败，不能降级为普通 Cookie |
+| opaque partition / Firefox container | 单独识别；没有等价目标语义就标 unsupported |
+| localStorage | 初版只支持明确的第一方 origin；扩展须保留完整 storage key/第三方分区语义；在站点脚本读取前完成，不能导航后补写 |
+| sessionStorage | 与 top-level browsing context/页面有关，不默认提升为跨 Page 身份种子 |
+| IndexedDB | 单独的版本化适配和完整 storage-key 范围；保留 origin、top-level site、ancestor/opaque 语义并验证恢复，不能宣传任意 DB 通用迁移 |
+| Cache / Service Worker / history / extensions | 不作为默认身份种子 |
+
+Cookie API 的多次写入不是 ACID 事务。目标采用“验证后发布、失败补偿/销毁”；rollback 失败进入 quarantine/cleanup_pending，不继续发 ready capability。
+
+现代 Chromium 的第三方存储不只按 origin 区分，还可能包含顶层站点与 ancestor bit。不能把嵌入 frame 的分区数据压成普通同 origin 数据再算作成功导入。[Chrome 存储分区说明](https://privacysandbox.google.com/cookies/storage-partitioning)
+
+复制同一登录 token 后，源与目标在网站服务端可能仍属同一登录会话；全局注销、撤销、风控或账号内容变化可能同时影响两者。本地 profile 不互写是可以实现的保证，服务端账号独立需要网站自己提供不同会话或账号。
+
+### 12.6 CredentialStore 与系统密钥
+
+browser 定义 CredentialStorePort；host 提供用途明确的 SecretProtector。当前 `protected-receipt.ts` 已有 safeStorage 包装和 Linux basic_text 拒绝，可抽取通用保护接口，不复用“回执”用途。safe 的加密模式可作为设计参考，但其 SafePayload、锁定与 UI 不成为浏览器依赖。现有系统保护封装（`src/host/desktop/protected-receipt.ts`）、Safe 加密实现（`src/modules/safe/platform/crypto.ts`）
+
+要求包括：
+
+- 使用随机数据密钥与认证加密；AAD 绑定格式、用途、vault、device、identity/version 或对象身份。
+- 数据密钥由支持的系统 provider 保护；锁定 generation 防止迟到的解密结果在锁定后发布。
+- 暂不可用、不支持、弱 provider、错误设备、密钥丢失分别报告；不能以 0600 权限或固定口令假装加密。
+- 身份密文采用 stage、同步、读回校验和原子发布；不经过 JsonStore 明文 backup/merge。
+- 解密字节只经私有 IPC 短时传给匹配 runtime；不写入 URL、命令行参数、环境变量、普通 store 或日志。
+- 不假设最新 Electron 的异步 API 在所有 Obsidian 都存在；端口统一异步，内部按实际 provider 能力实现。
+
+Electron 官方对 Windows/macOS/Linux 的保护边界有所区分，Linux basic_text 不提供预期的系统秘密保护；密钥 provider 与实际宿主能力必须检测。[safeStorage 官方说明](https://www.electronjs.org/docs/latest/api/safe-storage)
+
+系统密钥不可用时，可提供明确的本次易失种子或独立 Space 人工登录，不能自动回退明文保存。需要自动化时使用显式 ephemeral Run：其 HMAC 密钥仅存本次 boot 内存，仍保存不含原始参数的最小派发证据；崩溃后旧 Run 失效，不继续其写请求。要求跨重启校验命令摘要/保存身份的模式返回 key_unavailable，不能退回普通 hash。默认不要求用户另外管理一个浏览器主密码；如果将来需要跨设备身份包，另设计带用户口令的显式加密导出。
+
+Identity 密文加密不等于整个 Chromium profile 加密。运行中的 Cookie DB、localStorage、IndexedDB、缓存与下载属于浏览器运行资料，受本机权限和保留策略约束。锁定或删除 Identity 不会从已创建 Space 中撤销 token；清理 Space 与网站注销另有操作。JavaScript 内存擦除、SSD 物理擦除和外部备份删除也不作无依据保证。
+
+## 13. 文件、站点权限与人工请求
+
+### 13.1 上传
+
+用户选定文件后，FileService 将允许的内容有界复制到私有 staging，固定 size/digest，并生成绑定 Space/Run、用途、次数和期限的 fileId。不能只授权一个未来可能被替换的 pathname。
+
+上面的 Run 绑定适用于 Agent；人工入口改为绑定 Space/human execution scope。两者在类型中是明确分支，不使用空字符串 runId 或默认全局授权。
+
+上传命令仅引用 fileId；真实路径只在 Worker/host 内部解析。拒绝路径穿越、符号链接替换、任意目录递归、超出预算和跨空间复用。文件选择事件产生 PendingHumanRequest 或按已有 grant 响应，不在后台弹出抢焦点的系统对话框。
+
+### 13.2 下载
+
+使用目标 Chromium 的下载事件及确定的下载行为设置，建立 `downloadId → Space/Page/executionScope → fileId`；executionScope 可以是 Agent Run 或人工控制者。记录进度、成功、失败、取消和保留策略。不能继续把 Electron DownloadItem 写成目标实现，也不能通过“第一个不以 .crdownload 结尾的文件”猜测下载完成。
+
+文件名是输入数据，只用于显示和安全归一化后的私有名称；不自动执行或打开下载。用户选择导出后，才通过受管文件/vault API 保存到可见内容或明确选定的库外位置。
+
+### 13.3 PendingHumanRequest
+
+结构化人工请求至少包含 requestId、Space/Page/executionScope、类型、创建/失效时间、当前 epoch、允许的响应和安全的展示数据；有 Agent Run 时记录其关联。类型包括 login、file-selection、http-auth、permission、dialog 和 control-blocked。
+
+请求使用 createdEpoch 记录来源，另外维护 requestRevision 与当前有效 authority。接管升 epoch 后，PendingHumanRequestService 重新核对 runtime、Page/document 和具体 dialog/chooser 是否仍存在；成立才重绑定新 human lease 并提升 requestRevision，否则标失效。回应必须携带当前 requestRevision 和 control epoch；旧查看器、旧 Agent 或旧页面的迟到回应不能作用于新请求。交回时同样重核验，不能自动批准原请求。
+
+请求是否需要人由用户设置的策略及具体能力决定；页面出现一个普通 confirm 不必无条件升级成全局审批。Agent 获准回应的对话框仍经当前写租约；只有人的请求不能由 Agent 伪造“已完成”。
+
+| 类别 | 默认行为 |
+|---|---|
+| alert/confirm/prompt | 记录并按配置回应；无处理者时确定超时，避免永远锁住执行 |
+| HTTP auth | 私有凭据入口或人工请求；不把密码放入 URL 或 Agent 日志 |
+| camera/microphone/geolocation/notifications | 默认拒绝；需要时按 origin、用途和期限单独开启 |
+| clipboard | 默认拒绝网页/Agent 系统读写；用户主动 HUHU 复制/粘贴按第 11 章 |
+| 外部协议与 file URL | 拒绝自动跳转；用户显式在 HUHU 入口决定 |
+| popup | 归属 Space，URL/数量/权限校验，保留原生语义 |
+| TLS 错误 | 不默认忽略；受控开发场景需要明确的局部配置 |
+
+URL 策略限制顶层导航及已知入口，不等于完整网络防火墙。页面脚本、WebSocket、Service Worker、WebRTC 等仍受 Chromium 与运行环境的网络能力约束；如需禁止访问本机/内网的强网络边界，应增加可验证的代理/OS 网络隔离，不能仅凭域名列表宣称已经实现。
+
+## 14. 公开协议与可靠操作
+
+### 14.1 一个合同，三类入口
+
+core/protocol 的 schema 是唯一事实源，由它导出 TypeScript 类型、运行时校验、JSON Schema、CLI 参数映射及 MCP tool schema。业务 API 使用具体命令联合与结果类型，避免从 API 开始就退回 unknown。
+
+这里的 JSON Schema 对应公开控制协议。内部 Worker/native 帧、画面头与二进制 payload 有单独的版本化 framing；不能把 Uint8Array 直接塞入 JSON 后声称合同相同。共同的 ID/epoch/错误枚举由同一构建生成或用跨语言黄金样本校验，Rust 不另写一套含义不同的手工字段。
+
+方法注册表同时声明参数、返回结果、大小/超时、是否有副作用、需要的 capability 和 exposure。exposure 分为 agent、user-ui、internal；CLI/MCP 只能发布 agent 子集。用户接管、授权身份来源、SecretStore、原生 kill 等不能因存在于同一代码库就自动出现在 Agent 工具列表。
+
+authority 按用例分支，不要求尚未存在的对象先提供租约：
+
+| 命令范围 | 权限来源 | 预留票据作用域 |
+|---|---|---|
+| 创建 Space | 用户工作台身份，或有限 WorkspaceCreateGrant；Agent 只能创建获准的 task | vault/device owner＋principal；创建前没有 spaceId/Run |
+| 创建 BrowserRun | Space 级 RunStartGrant；不会隐含恢复一个被人暂停的空间 | 已存在 Space＋principal；创建前没有 runId |
+| Agent 页面动作 | 当前 Run capability＋Agent ControlLease | Space＋Run＋issuer＋原始 epoch |
+| 人工结构性命令 | human viewer lease，不要求伪造 Agent Run | Space＋viewer/controller＋原始 epoch |
+| 人工实时输入 | human viewer lease＋递增 inputSequence | 当前 lease 内去重；采用完整 GestureDispatch，不持久化每个输入值 |
+| 接管、暂停、关闭、身份和文件授权 | 受信任用户 UI 的相应用例权限；内部维护 permit | 对应 Workspace/Space 的用户操作作用域 |
+
+新建时已经授权的启动意图可以发放初始 writer lease；用户暂停/接管会撤销该意图，Agent 不能通过重新 run.start 自行恢复。管理用例的 prepare/execute 使用上述作用域分支；下方 CommandEnvelope 仅示意已存在 Space/Run 的 Agent 页面 mutation。人工实时输入使用单调 inputSequence 和 GestureDispatch 在当前 lease 内去重，不为每个鼠标移动写磁盘；它不承诺崩溃后可重放，结构性用户命令仍使用持久操作票据。
+
+```ts
+interface CommandEnvelope<P> {
+  protocolVersion: 2;
+  requestId: string;
+  operationId: string;
+  bootId: string;
+  spaceId: string;
+  runId: string;
+  pageId?: string;
+  leaseId: string;
+  expectedEpoch: number;
+  method: string; // 生成代码中是封闭的 Method 联合
+  params: P;
+  deadlineAtMs: number;
+}
+
+type OperationOutcome<T> =
+  | { status: 'completed'; operationId: string; result: T }
+  | { status: 'rejected'; operationId: string; error: BrowserError }
+  | {
+      status: 'failed';
+      operationId: string;
+      error: BrowserError;
+      completedCount?: number;
+      failedIndex?: number;
+      sideEffectState: 'none' | 'partial' | 'observed';
+    }
+  | { status: 'cancelled_before_dispatch'; operationId: string }
+  | {
+      status: 'outcome_unknown';
+      operationId: string;
+      lastDispatchedSequence?: number;
+      reason: string;
+    };
+```
+
+实际生成代码将 method 与 params/result 联合关联；示例的泛型不允许实现成“任意字符串方法＋任意参数”。BrowserError 使用稳定 code、可选非敏感 details、retryClass 和可本地化 messageKey；不把网页 exception 或 helper stderr 原样装进错误响应和日志。
+
+rejected 专指尚未执行的契约/授权/状态拒绝；执行后失败使用 failed 或 outcome_unknown。维护 UI 需要的错误细节不会因为经过 RPC 而丢失。
+
+### 14.2 capability 与连接
+
+loopback RPC 继续使用随机本机端口、不可预测连接令牌、严格 Host/Origin/Fetch 检查、请求大小和并发限制。连接描述文件采用本机私有权限，停用/重启轮换并删除；CLI 参数和环境只携带描述文件路径，不携带身份种子和令牌原文。现有 Bridge 保护（`src/modules/browser/platform/desktop/agent-bridge.ts`）
+
+连接令牌只证明能连接这次插件实例，Space/Run capability 再决定可调用范围。不得将浏览器 CDP endpoint 放入 descriptor，也不启用对任意网页开放的 CORS。拒绝“连接被拒就找另一个运行中的浏览器”式回退。
+
+浏览器模块停止后，ModuleLease.revoked 向所有进程内消费者传播；桥接客户端收到明确的 module_stopped。旧 descriptor、capability、lease 和旧 runtime 全部失效。
+
+MCP 适配器运行于独立 stdio 入口，调用同一 RPC/用例，使用同一 schema 生成工具。它不启动自己的 Playwright Session，不读取浏览器身份库，也不拥有另一套控制状态。
+
+### 14.3 operationId 与去重
+
+Agent 页面操作身份绑定 `Space + Run + issuer + 原始 epoch + 规范化命令`；创建/管理命令使用第 14.1 节定义的 Workspace/Space 作用域。同一 operationId 的相同重试查询已有状态；不同 payload、不同作用域或试图换新 epoch 重放时拒绝。原始 lease 已失效后，调用者使用独立的 operation.get 查询权限，不能把旧 operation 包进新租约重新执行。
+
+**目标采用服务端预留的操作票据。** 需要持久去重的 mutation 先调用无网页副作用的 operation.prepare，由服务在单写持久边界中分配操作作用域/issuer 下的递增序号、绑定命令摘要并返回 operationId；CLI/SDK 可以封装这一步，但必须先取得票据才能发 execute。execute 不接受任意客户端 UUID 作为“未见过的新动作”。prepare 回复丢失只遗留未执行票据，不允许客户端因此推断 execute 已发生。
+
+operation.prepare 使用对应 authority、requestId、命令和 deadline，不要求预先存在 operationId；创建/管理命令使用第 14.1 节的 Workspace/Space 作用域替代尚不存在的 Run。未执行票据有数量、有效期和回收预算，prepare 不能成为无界写盘入口。
+
+每个操作作用域/issuer 保存已发行序号、未执行票据、结果与持久回收低水位；Agent 页面命令的作用域是 Run。结果被回收后，低水位以下只能 operation_gone，不能重新创建操作。有效期内尚需精确匹配的去重记录保留到相应 lease/Run/grant 不再可写；回收和低水位更新原子提交。并发相同 ID 的“检查＋占用/进入 dispatching”由同一串行提交完成，后来的请求只能等待/查询原操作，不能各自入队执行。
+
+含密码、短验证码或低熵秘密的命令不能用明文参数或普通可枚举 hash 保存。规范化命令摘要采用设备保护密钥的 HMAC；日志只保存摘要、固定枚举与随机 ID。用于去重的密钥版本与日志保留期一同管理，密钥丢失时报告无法核验，不重新执行。
+
+最小持久步骤：
+
+1. operation.prepare 校验参数和作用域，原子保存预留票据与摘要，返回 operationId。
+2. execute 核对票据、命令、当前租约和已有结果，原子写入并同步 dispatch-intent；失败则在派发前拒绝。
+3. 获得对应内部派发许可，进入 Worker，原生写点再次验证 epoch。
+4. 将最后派发序号与结果保存到 operation ledger，成功提交后返回持久完成结果。
+5. 派发后日志提交失败或连接中断，保留 outcome_unknown；不能将“没保存成功”转换成“可安全再做一次”。
+
+恢复时 dispatch-intent 不能区分“尚未写入 pipe”和“已写入但结果未落盘”，需保守判断。仅有 prepare 票据，且完整可信日志确认没有进入 dispatch-intent，才可判定未派发；日志缺口不具备这个证明。日志缺失、损坏、过期或结果工件已清除时返回 operation_gone/result_unavailable/unknown，不自动把旧 ID 当新请求。
+
+不承诺网站层面的 exactly-once。此设计防止 HUHU 因超时或重复连接盲目重放，并保存判断结果所需的本地证据；网站端提交与本地日志之间没有跨系统事务。
+
+观察与历史结果查询使用独立 query envelope，不要求持有当前 writer lease；实时网页读取仍要求有效 observation capability 和 observationGeneration。operation.prepare/execute 用于需持久去重的 mutation；实时人工输入依第 14.1 节执行，不为每个鼠标移动或 UI 状态查询写操作日志。请求时间在接入层转换为有上限的剩余时长，运行期 deadline 使用单调时钟，不依赖跨进程墙钟恰好一致。
+
+### 14.4 事件协议
+
+状态事件包含 eventId、streamSequence、Space、runtimeInstanceId、实体版本和稳定类型。必要事件包括 spaceChanged、pageChanged、controlChanged、operationChanged、humanRequest、downloadChanged、runtimeFault 和 cleanupChanged。
+
+状态事件可靠且有界；消费者落后到超过保留窗口时返回 resync_required，再取完整只读投影。像素帧允许丢中间项，不能采用同一种恢复语义。UI 订阅先取快照与 cursor，再从该 cursor 接事件，避免订阅窗口丢状态。
+
+持久日志记录事实；UI 事件是投影通知。不是所有事件都写磁盘，不让页面每次标题/加载进度变化都同步写完整 spaces.json。
+
+## 15. 数据布局、提交与恢复
+
+### 15.1 目标数据目录
+
+所有实际名称通过 vault-layout 常量产生。下面的 v2 是新格式命名空间；旧目录保留为未升级资料，不由新代码猜测读取。
+
+```text
+.huhu/browser/<device-id>/v2/
+  catalog.json
+  identities/
+    index.json
+    <identity-id>/
+      <version-id>.enc
+  spaces/
+    <space-id>/
+      manifest.json
+      resume.enc
+      profile/
+      files/
+        staged/
+        downloads/
+      artifacts/
+  journal/
+    operations-<segment-id>.jsonl
+    checkpoints/
+  cleanup/
+    <job-id>.json
+  import-staging/
+    <import-id>/
+  runtime-assets/
+    chromium/<platform-arch>/<revision>/
+    worker/<hash>/
+    cli/<hash>/
+  bridge/
+    descriptor.json
+  tmp/
+
+.huhu/helpers/<device-id>/
+  browser-runtime/<platform-arch>/<version>/
+```
+
+Chromium 原始 profile 不由通用 JSON 存储合并或逐项搬运；只有 browser runtime 能写入。运行期路径不放在可索引的普通笔记中。用户明确导出的文档/图片/下载才进入可见 huhu 内容或选定位置。
+
+### 15.2 数据等级
+
+| 数据 | 存储方式 | 默认持久化 |
+|---|---|---|
+| 生成的 ID、状态、版本、计数、失败码 | 非敏感 JSON 目录投影 | 是 |
+| Identity 载荷、来源路径、站点范围、敏感标签 | 认证密文 | 用户明确保存 |
+| 完整恢复 URL/标题、必要恢复定位 | 独立 resume.enc | 密钥可用且用户选择保留 |
+| 运行中的 Cookie/localStorage/IDB/cache | Chromium 私有 profile | 按 Space 的 persistent/ephemeral 策略 |
+| 控制 lease/capability | 运行期内存 | 否；重启轮换 |
+| Bridge 连接令牌 | 权限受限的短生命周期 descriptor | 只在服务运行期存在，不经过普通配置备份 |
+| 操作日志 | 脱敏、HMAC 摘要、有限结果元数据 | 有界保留 |
+| 页面 screenshot/DOM/网络材料 | 默认易失；必要时受控敏感工件存储 | 否，用户选择保留才持久化 |
+| 上传/下载 | 受管私有文件区 | 由用途、任务与保留期决定 |
+
+普通 JsonStore 有明文备份与合并，不适合完整 URL、Cookie、token 或身份种子；URL 的 query/fragment、标题和文件名都可能带敏感内容，不能仅依赖正则脱敏。现有 JsonStore（`src/shared/json-store.ts`）
+
+需要保存的完整定位信息进入密文；密钥不可用时，保留非敏感目录和运行 profile 的选择要明确，页面定位可只在本次内存使用。不能因此把明文 URL 悄悄落入 backup。
+
+### 15.3 Catalog 与 Journal 的提交边界
+
+UI 排序、展开和进度可走已有 JsonStore 的有界防抖；provisioning 归属、ready 发布、dispatch-intent、关闭和 cleanup job 必须走专用持久提交。
+
+JournalPort 的 desktop 实现使用单写队列、长度/校验边界、文件同步和适用平台的目录同步/原子发布。尾部不完整记录可以按完整边界识别，不能跳过任意中间损坏继续声称日志可信。checkpoint 与 segment 回收顺序必须保证崩溃后仍有一份可读证据。
+
+这不是把整个应用事件溯源化。目录投影保存当前业务期望；操作日志只负责会影响恢复、重复请求和清理的关键事实。页面输入正文和完整响应不会因为“需要可重放”而进入日志。
+
+### 15.4 失败创建与清理
+
+首次创建使用 provisioning plan：登记将创建哪些资源、它们的归属和阶段。每阶段成功写入可恢复进度；ready 是最后的发布点。失败时回收本次新建资源，清理未完成的项目进入持久队列，UI 可以看到原因。
+
+CleanupJob 将 `controlRevoked`、`processesStopped`、`profileReleased`、`downloadsHandled`、`dataRemoved`、`catalogFinalized` 分开记录。native stop 与磁盘删除不是同一个 disposed 标志。
+
+进程未确认退出前不删除仍在使用的 profile；数据删除失败不会要求重新创建 Page 才能重试。幂等重试仅重做未完成步骤；一次 runtime dispose 失败，不得永久释放清理所需的归属信息。
+
+### 15.5 重启规则
+
+插件启动只读取目录、日志和清理队列，所有可用 Space 展示为 stopped/需处理。旧 live 状态不会自动启动 Chromium；旧 Run、capability、control lease 不恢复。
+
+用户明确重新打开持久 Space 后，先验证 runtime/profile 版本与锁，再启动新实例，逐页恢复 desiredPages。runtime 只改变每页 live 投影；部分失败不删期望页面。恢复链接只重建页面，不恢复 JS 堆、未提交表单、网络连接和完整历史。
+
+同一 vault/device 的整个 browser v2 数据根只有一个跨进程持久 owner，锁覆盖 catalog、identity index、journal/checkpoint/低水位、cleanup 和 descriptor。首版第二实例显示 owned_by_other_instance，不另开自己的写队列；同一个插件实例的多个工作台窗口共享 owner。未来若支持多实例代理，全部写入仍路由同一 owner。
+
+根锁绑定实际进程创建身份与 owner nonce；失锁立即禁止持久修改、新 runtime 和能力发放，并收容自己仍持有的运行实例。旧 owner 的迟到回调、退出清理或 descriptor 删除必须比较 owner nonce，不能影响新 owner。profile 独占锁继续存在，防止同一目录被不同浏览器进程打开。过期锁恢复必须验证原实例已结束，不按文件时间或 PID 猜测。目录损坏、密钥缺失和来源设备不符都显示明确状态，不能被当成空列表覆盖。
+
+### 15.6 同步、备份与删除
+
+HUHU Git 同步继续排除 browser/helper 运行目录。第三方同步与完整 vault 备份可能仍复制隐藏目录，device-id 不是“不被同步”的保证，也不是加密。现有同步排除（`src/modules/sync/core/excludes.ts`）
+
+活跃 userDataDir 不作为跨设备同步格式。跨设备身份迁移仅通过单独设计的加密导出/导入，不能同步运行目录再让两个浏览器同时打开。
+
+删除 Identity、删除 Space、本地密文删除和网站全局注销是不同动作。用户删除资料后应清理本模块管理的副本、临时件和相关工件；外部备份、同步历史和物理介质擦除不属于简单文件删除可保证的范围。
+
+## 16. 设计模式与使用边界
+
+| 模式 | 在本模块的具体用法 | 避免的误用 |
+|---|---|---|
+| 端口与适配器 | core 定义 Runtime/Catalog/Journal/Secret/File/Clock 端口；desktop 实现 | 给每个小函数套一层接口，或把 Electron 对象放进 core |
+| Composition Root | module.ts 创建端口、服务、store、公开 API 与 dispose 顺序 | platform 反向 import services；到处调用全局 Service Locator |
+| 应用服务 | SpaceLifecycle、ControlCoordinator、ImportCoordinator 等承载完整用例 | 所有逻辑集中在 BrowserEngine 一个类 |
+| 显式状态机 | 纯 reducer＋判别联合描述 lifecycle/control/cleanup | 多个布尔值组合产生不可能状态 |
+| 每空间串行调度 | 一条写队列；观察有界并发；control 独立优先通路 | 将 revoke 排到长任务后，或用全局锁阻塞不同 Space |
+| Fencing Token / Lease | epoch、runtime、controller 在最终写点复核 | 仅取消前端 Promise 或隐藏按钮 |
+| Command / Query 分离 | 观察与动作分权，mutation 有操作身份与结果日志 | 为读取/写入各造一套数据库或驱动 |
+| Repository | Catalog/Identity/Journal 的持久化合同 | 把“文件存在”直接当作 ready 或导入成功 |
+| Saga / 补偿流程 | 创建、导入、删除按阶段持久化，失败清理独立重试 | 把 Cookie 多次写入宣称为跨系统事务 |
+| Capability | Scope/方法/期限/文件用途的有限授权 | 一个 token 解锁所有个人 Profile、raw CDP、密钥和文件 |
+| Observer / 投影 | Zustand 只读 selector、版本事件、快照＋cursor | 把 UI store 暴露给其他模块修改 |
+| 背压与 Latest Frame | 每订阅者有限帧队列；慢端丢中间画面 | 无界截图队列、将 control 事件一并丢弃 |
+| Anti-corruption Adapter | 统一来源 Cookie 字段与 CDP 类型，保留语义差异 | 静默删除未知字段让导入“成功” |
+| 幂等与去重日志 | 同 ID 同 payload 查询已有结果，未知结果保守处理 | 用重试包装器自动重做 click/submit |
+
+模式只用于稳定职责，不作为目录数量的目标。服务之间通过明确调用组成用例，事件仅用于通知和跨生命周期订阅；不要让核心正确性依赖无序的全局事件总线。
+
+### 16.1 装配示意
+
+```ts
+// 示意：完整装配属于 module.ts，端口实现保持在 desktop 边界。
+const ports = await createDesktopAdapters(context);
+const store = createBrowserStore();
+const ledger = createOperationLedger(ports.journal, ports.clock);
+const control = createControlCoordinator(ports.runtime, ledger, store);
+const lifecycle = createSpaceLifecycle(ports, control, store);
+const importer = createImportCoordinator({
+  sourceReader: ports.cookieSources,
+  runtime: ports.runtime,
+  fileStore: ports.files,
+  clock: ports.clock,
+});
+const identities = createIdentityService({
+  credentials: ports.credentials,
+  catalog: ports.catalog,
+  importer,
+  clock: ports.clock,
+});
+const automation = createAutomationService({
+  runtime: ports.runtime, ledger, control, lifecycle, store,
+});
+const workspace = createWorkspaceService({
+  lifecycle, control, identities, store,
+});
+
+// UI 和外部模块获得窄接口；实现中这些 factory 保持具体类型。
+return createBrowserModuleInstance({
+  workspace, automation, lifecycle, ports, context,
+});
+```
+
+factory 以显式参数接收依赖，不在函数内部获取全局插件对象。平台层只构造 ports；IdentityService 与 ImportCoordinator 的业务组合发生在 module.ts。示例用于表示依赖方向，最终名称及参数通过实际类型和架构检查锁定。
+
+## 17. 安全与隐私实践
+
+### 17.1 明确可信边界
+
+| 区域 | 信任定位 | 关键约束 |
+|---|---|---|
+| HUHU 模块与固定 Worker/helper | 本机受信任代码 | 校验构建资产；无动态主进程代码；最小环境和接口 |
+| Agent 客户端与模型输出 | 持有限制能力的调用方 | schema、scope、lease、预算、文件授权，不相信自报的 owner |
+| 网页/iframe/worker | 不受信任内容 | sandbox、来源策略、权限、独立数据、无 Node/宿主桥 |
+| 用户查看器 | 受信任 UI，但输入可能过期 | viewer lease、帧版本、所属窗口和释放 |
+| 来源浏览器资料 | 用户授权的敏感输入 | 只读、有范围、固定采集内容、逐字段核验 |
+| 本地磁盘与同步副本 | 可能损坏或被复制 | 认证密文、权限、校验、私有路径、不自动信任旧状态 |
+
+网页 prompt injection 属于 Agent 决策面风险。browser 把网页当内容，不执行网页建议的 host/RPC 指令；如果 Agent 自己持有正常写 capability，它仍可能误解内容，因此 browser 的技术能力限制不能宣称解决所有模型误操作。
+
+### 17.2 必须实施的约束
+
+- Chromium sandbox 保持开启；禁止以关闭 web security 或忽略全部 TLS 错误作为兼容修复。
+- 外站网页没有 Node、Electron IPC、host filesystem、原生 supervisor 通道或 loopback token。
+- 未授权的跨 Space/page/fileId/contextId 请求在产生副作用前拒绝；ID 随机不替代授权。
+- 维护通道按 runtime 状态和固定命令类签发短期 permit；不是可由调用方传入的万能 `system=true`。
+- 秘密不进入命令行、通用环境、正常遥测或网页异常。Bridge descriptor 作为短期秘密文件另有本机权限和删除规则。
+- 观察结果、截图与 DOM 可能包含网页主动显示的敏感信息，按授权和最小化策略处理；不保证通用正则能发现所有秘密。
+- 系统剪贴板、原生窗口焦点、popup/初始 realm 和运行进程回收按实际平台验收；不把 JS 包装器当成 OS 隔离。
+
+### 17.3 本方案明确能保证的层次
+
+| 层次 | 实现目标 | 不应扩大的结论 |
+|---|---|---|
+| 路由 | 每次命令绑定明确 Page/Space | 不是按 UI 活动页操作 |
+| 控制权 | ACK 边界后的旧 lease 不再派发；人机 writer 独占 | 不撤回已发生的网站行为 |
+| 本地身份 | 空间资料独立、不写回人的 profile | 不隔离共享服务端 token 或同账号数据 |
+| 交互 | 私有页面输入、受控查看器、不调用系统鼠标键盘 | 不是任意恶意网站或浏览器漏洞的绝对防护 |
+| 进程 | 独立 Chromium 归属和可验证收容 | 不把受信任本机 Worker 当成 OS 沙箱 |
+| 静态秘密 | Identity 与敏感恢复信息认证加密 | 不代表整个运行 profile、截图或下载天然加密 |
+
+若后续需要对抗任意浏览器漏洞、同用户下恶意程序或必须完全禁止某类 OS/网络访问，应单独定义受限 OS/容器/VM 后端合同。此扩展不阻止先完成本模块的明确边界，但不得以相同名称暗示已经提供该等级保证。
+
+## 18. 性能、资源与运行观测
+
+### 18.1 初始资源预算
+
+以下数值是待基准验证的初始配置，不是当前实测成绩。达到安全边界的硬上限不能由客户端放大；性能参数可根据发行平台证据调整。
+
+| 资源 | 初始建议 |
+|---|---|
+| 同时 live Space | 3 个；包含 personal 和 task；超过则排队或由用户停一个空间 |
+| 每 Space 页面 | 8 个；全局 live Page 合计 12 个 |
+| 写并发 | 每 Space 1；跨 Space 按配额并行 |
+| 观察并发 | 每 Page 1 个 snapshot 任务；同类请求可合并 |
+| 观察画面 | 2–5 FPS；人工操作目标 10–15 FPS，按负载降级 |
+| 画面队列 | 每订阅者 1 in-flight＋1 latest；无订阅时停止流 |
+| viewport | 默认 1280×800 CSS px；按像素面积和设备 scale 有界限制 |
+| RPC JSON 请求 | 1 MiB；大工件走 file/artifact 通道 |
+| snapshot | 默认 256 KiB、800 个引用；截断显式报告 |
+| batch | 最多 32 步；每步都受 deadline 与 lease 检查 |
+| 编码帧 / 截图 | 默认上限分别 8 MiB / 16 MiB；超过降尺寸或明确拒绝 |
+| 操作超时 | 默认动作 10s、导航 30s；上限与方法契约固定，不接受无限等待 |
+| 日志保留 | 结果初始 30 天或按容量先到者；回收时保留有效期内去重证据并持久推进低水位，不重新接纳旧票据 |
+| 文件预算 | 上传单件/总量、下载单件/空间总量均配置；初始值由实际用途和平台测定 |
+
+不设未经测试的统一“每空间只耗多少 MB”承诺。基准报告必须包含浏览器/宿主版本、CPU、内存、GPU、页面 fixture、窗口数量、画面尺寸与采样时间。
+
+### 18.2 性能目标
+
+| 指标 | 目标与测量方式 |
+|---|---|
+| 原生撤销确认 | 本机正常负载 p95 ≤300ms；超过 2s 显示正在收容/阻塞，不能继续显示人工可输入 |
+| 人工输入反馈 | 固定本地 fixture，p95 ≤250ms；统计输入发出至对应新画面展示，不将网络等待混入 |
+| 静态观察 | 页面无变化时不持续重复编码；查看器仍能完成版本校验 |
+| 停止画面 | 最后一个 observer 释放后及时停止 producer，不保留隐藏 UI 轮询 |
+| 未使用空间 | 不预启动；stopped 空间不拥有 browser/Worker 进程 |
+| 持久写放大 | 合并标题/加载状态更新；关键提交单独计量，不每帧落盘 |
+
+超时只约束等待，并不证明副作用未发生。达到时间预算后仍按 outcome 与原生收容事实处理，不能为了“快速响应”先报已取消。
+
+### 18.3 运行健康
+
+RuntimeHealth 暴露版本、状态、队列长度、帧丢弃数、最近 ACK、动作耗时、启动/停止结果、内存/CPU 可获取性、待清理数量和能力缺项。默认诊断只用固定字段。
+
+Worker/helper 原始 stderr 可能包含路径与秘密，不能直接写入用户日志。只保留有界结构化事件；确需原始诊断时经专门、短时、可清理的诊断入口处理。
+
+## 19. 失败模式与恢复决定
+
+| 故障 | 系统状态 | 自动行为 | 用户可执行的恢复 |
+|---|---|---|---|
+| Worker/helper/浏览器资产无效 | runtime unavailable | 拒绝启动，保留现有资料 | 安装已验证资产或查看诊断 |
+| 首次 provisioning 中途失败 | failed plan/cleanup_pending | 回收本次新建资源，不发能力 | 重试创建、重试清理 |
+| 已有空间重新启动失败 | stopped 或 quarantined | 保留原 profile；独立收容本次进程 | 检查版本、重开或导出资料 |
+| 恢复部分 Page 失败 | ready/partial hydration | 保留全部 desiredPages | 只重试失败页 |
+| 接管时命令已派发 | quiescing | 阻止新动作，查询收敛与结果 | 等待、查看 unknown、停止运行 |
+| 半输入无法安全收敛 | blocked | 不发新 human/agent lease | 结束原手势或停止/重开 Page/Space |
+| CDP 断开 | faulted | 停动作、回收、保留结果未知 | 查看操作结果后明确恢复 |
+| 目标导航使 ref 失效 | ready | 拒绝旧引用，不自动找同名元素 | 重新 snapshot |
+| Cookie 字段不支持 | import rejected/partial | 不展平属性，不发伪成功统计 | 调整导入范围或人工登录 |
+| SecretStore 暂不可用 | identity locked/unavailable | 不明文回退 | 稍后解锁或仅本次登录 |
+| 删除数据失败 | cleanup_pending | 记录未完成阶段，按有界策略重试 | 手动重试并查看占用原因 |
+| 日志损坏/结果过期 | recovery attention | 不重放旧 operationId | 查询网站状态后决定新动作 |
+| 慢查看器 | viewer degraded | 丢中间帧、降帧率 | 重连或提高资源预算 |
+| 控制视图关闭 | paused | 撤销其 lease，停止实时 Agent 读取 | 重新接管或明确交回 |
+| 浏览器模块停用 | module stopped | 撤销全部能力、回收进程、移除 descriptor | 重新启用后按停止目录打开 |
+
+清理自动重试必须有退避和次数/时间预算，不能无限刷日志、磁盘或系统进程。已发送到网站的动作不能通过重启恢复“重做直到成功”。
+
+## 20. 从当前实现到目标架构
+
+### 20.1 复用、重写与删除
+
+| 当前区域 | 目标处理 |
+|---|---|
+| core/agent-spaces.ts | 演进为 Space/Run/Control/Operation 分离模型，保留明确归属与数量规则 |
+| services/agent-browser.ts | 拆为 lifecycle/control/scheduler/ledger/catalog；删除弱类型总 dispatch |
+| agent-space-runtime.ts 的 String.raw 主进程实现 | 规则迁入可类型检查的 Worker/原生协议；删除巨大字符串作为业务主体的结构 |
+| automation.ts、snapshot-engine.ts、固定网页函数 | 保留已验证行为与夹具，迁为唯一 Worker driver；适配独立 browser-level CDP |
+| agent-human-input.ts、AgentHumanView | 保留坐标/旧事件风险经验，重做流式 Viewer 与绑定视图的 lease |
+| cookies 的来源读取/格式/规范化/验证 | 复用正确逻辑；写入目标改为 owned Chromium Context；不保留两套独立导入策略 |
+| native/pty-server/src/cookies.rs | 按需迁成浏览器来源 reader，提取真正共享部分，移除 Agent 运行依赖 |
+| agent-bridge.ts、agent-browser CLI | 保留边界保护，替换为生成的 v2 契约和可靠 operation 结果 |
+| 当前普通 webview/Profile 浏览器 | 由 personal Space＋统一 Chromium Viewer 替代；不维护长期旧 runtime |
+| BrowserEngine/BrowserPageHandle | 被具体用例、Viewer/API 和 runtime ports 替代；不再公开 native 页面对象 |
+| docs/已有真实宿主 fixtures | 作为行为证据和回归场景；新后端必须产生自己的平台验收结果 |
+
+当前已有的独立 Session、主进程门禁、Cookie 校验、Bridge 保护和真实宿主夹具都具有复用价值。改造不应因为“无需兼容”就丢弃这些经过验证的行为；应删除接口包袱并保留正确性要求。
+
+### 20.2 实施顺序与交付门槛
+
+| 阶段 | 交付内容 | 结束条件 |
+|---|---|---|
+| P0 规格与回归合同 | schema、领域模型、不变量、现有四项故障转成用例 | 恢复子集丢失、失败创建幽灵、清理不可重试、旧 finally 覆盖新 busy 都有可验证结果 |
+| P1 运行时原型 | utility Worker、小 Rust gate/supervisor、受管 Chromium、私有 CDP、Worker 专用构建闭包 | G-01～G-05 有各目标平台证据；真实 utilityProcess 握手；核心失败路径可解释 |
+| P2 独立模块骨架 | browser 工作台 feature、公开 API、去 Agent 依赖、端口装配 | Agent 关闭仍能独立启动浏览器；无架构导入违规 |
+| P3 生命周期与控制 | desired/live、journal、leases、gesture、恢复/清理 | 切换/取消/崩溃矩阵通过；未确认收容不会标 stopped |
+| P4 身份与文件 | CredentialStore、源读取、ImportPlan、target 验证、files | 语义不降级、Context 不串、失败不发布、文件 grant 有界 |
+| P5 感知与接入 | Snapshot/refs/actions/batch、v2 RPC、CLI | 全部默认动作通过同一 writer；重复请求和 unknown 结果正确 |
+| P6 工作台体验 | StreamBroker、人工输入/IME、独立页面、Agent 嵌入 | G-06、所属窗口、视觉与键盘验收；人接管默认撤销 Agent 实时读取 |
+| P7 发布收尾 | 资产发行、版本矩阵、资源预算、文档与旧路径删除 | 单一生产实现，全部关键需求有证据，产物可复现 |
+| 后续扩展 | MCP、更多 origin storage、按需回放、代理/远程后端 | 复用既有核心；按新增边界单独验收 |
+
+P1 是验证架构可行性的必要工作，不等于先维护一套完整 Chromium 产品再决定。P2～P6 可按明确接口并行，但只有一套核心状态机、schema 和 native epoch 规则。
+
+### 20.3 Agent Team 的工作包
+
+| 工作包 | 拥有内容 | 必须共同评审的边界 |
+|---|---|---|
+| 核心与协议 | domain、lifecycle、control、ledger、API | epoch、outcome、persist-before-dispatch |
+| Runtime 与原生 | Worker、CDP、FrameBroker、supervisor、资产 | 撤销 ACK、进程归属、维护 lane、popup/iframe |
+| 身份与文件 | CredentialStore、source reader、导入、grants、清理 | ContextRef、源语义、密文、失败发布 |
+| UI 与整合 | BrowserWorkspace、Viewer、IME、Agent consumer | viewer lease、帧坐标、read capability、模块停止 |
+
+不按“每人随意改几份文件”分工。跨包协议先固定，关键边界由相邻 owner 同时评审；最终由一次集成验证证明行为闭合。
+
+## 21. 验收矩阵与完成定义
+
+### 21.1 必须覆盖的场景
+
+| 测试组 | 需求/不变量 | 场景与预期 |
+|---|---|---|
+| T-01 模块独立 | FR-01/25/28、NFR-04 | 关闭 Agent浏览器仍可用；同库双实例只有一个持久owner，旧owner不破坏新descriptor；关闭browser不影响其他功能 |
+| T-02 存储隔离 | FR-03/04、INV-01/02/11 | personal、task A/B 同源写不同 Cookie/storage；互不覆盖；同 Space 页面可共享 |
+| T-03 控制路由 | FR-05/08/09、INV-04/05 | 人切标签目标不变；两个接管者只有一个有效；人工请求重绑定revision，旧回应拒绝 |
+| T-04 原生撤销 | G-02、NFR-01 | 长等待、脚本执行、pipe 背压和 worker 卡住时独立 revoke；ACK 后无旧序号派发 |
+| T-05 输入状态 | FR-08/20 | down 后接管、修饰键、拖拽、IME、视图关闭；无半输入越权，无法收敛则 blocked |
+| T-06 个人隐私 | FR-03/08、NFR-06 | 接管后新读取拒绝；接管前开始、接管后完成的截图/延迟evaluate及慢队列不泄露人工阶段；用户观察者仍可看 |
+| T-07 页面时序 | G-03、FR-06/10 | popup POST/opener、初始 iframe、OOPIF、同 runtime 迟到 target；资源全部有归属 |
+| T-08 原生交互 | G-04/06 | 用户实际编辑 Obsidian 时 Agent 输入不改变其焦点/选区；clipboard/PRIMARY 记录平台结果 |
+| T-09 引用与批次 | FR-10/11/12 | 导航、重渲染、跨 frame、接管后 refs 失效；批次失败保留步骤和部分结果 |
+| T-10 去重与故障窗口 | FR-13、INV-10 | prepare/dispatch 前后断连/崩溃；并发同ID只执行一次；异payload拒绝；回收后低水位拒绝旧票据；密钥丢失不重新执行 |
+| T-11 身份语义 | FR-15/16、INV-06/11 | hostOnly/domain、前缀、SameSite、CHIPS/第三方storage key、过期；staging 丢字段也必须被源比较发现 |
+| T-12 Context | FR-04/15 | 两个 worker、多 Context 各放不同 fixture；读取/写入无默认连接串用 |
+| T-13 导入失败 | FR-15/22 | 每个 await 取消、目标额外键、清理失败；不发布 ready，不返回未提交成功数量 |
+| T-14 种子加密 | NFR-06 | 弱/缺失provider、错设备、密钥丢失/轮换、锁定后迟到结果；ephemeral Run跨boot失效；无明文backup |
+| T-15 文件 | FR-18 | 内容替换、路径穿越、链接、跨 Space fileId、并行下载、超限和取消 |
+| T-16 首次创建 | FR-02、INV-06/08 | runtime/policy/save 各阶段失败；无幽灵 ready，清理归属不丢 |
+| T-17 恢复与保留 | FR-21、INV-07 | 三页第二页失败；完整desired和Space/Page ID保留，仅runtime变化；重开失败不重新seed、不删除旧profile |
+| T-18 进程与清理 | G-01、FR-22 | 宿主/Worker/supervisor 分别崩溃；native stop 与数据删除分别失败并可重试 |
+| T-19 画面 | FR-07、NFR-02 | 慢 observer、多个窗口、静止页、resize、DPI、旧帧、无观察者、断线重同步 |
+| T-20 本地桥 | FR-23 | Host/Origin/令牌、大小、并发、旧descriptor、创建前authority分支；run.start不能绕过暂停；正常短连接结束不暂停Run |
+| T-21 资源 | NFR-02/09 | 达并发上限、日志容量、上传/下载预算、坏资产、升级回退、版本不兼容 |
+| T-22 项目质量 | NFR-04/08/10 | 架构、类型、Worker无DOM依赖闭包/metafile/真实握手、i18n、包体、文档、真实宿主、键盘/所属窗口 |
+
+合成 Cookie 与本地网站 fixture 用于自动化测试；真实账号读取/系统密钥能力在用户授权的受控环境中单独证明。不能把 Linux 的通过结果写成 Windows/macOS 也通过，也不能把单次 popup 样例当成所有初始 realm 的原子时序证明。
+
+### 21.2 测试层次
+
+| 层 | 方法 | 证明范围 |
+|---|---|---|
+| 纯领域 | reducer/property/invariant tests | 状态转换、scope、Cookie 规范化、引用规则 |
+| 服务与日志 | 故障注入、确定 clock、受控端口 | 每个 await 的取消、持久提交、旧回调、恢复与清理 |
+| 协议 | schema fixtures、真实 loopback/CLI、helper framing | 无隐式降级、方法权限、结果保真、长度/截止/断连 |
+| UI | DOM 测试和界面验收 | viewer 生命周期、坐标、旧帧、输入和本地化 |
+| 原生 | Rust 测试与真实 Chromium | gate、进程回收、Context、CDP、下载和 bootstrap |
+| 真实 Obsidian | 一次性库与实际用户输入 fixture | 宿主焦点、窗口、真实帧流、IME、模块停用 |
+| 平台发行 | Windows/macOS/Linux 对应架构流水线 | 资产、签名、provider、sandbox、崩溃与收容 |
+
+测试选择遵循项目现有风险规则，避免为纯重命名写镜像测试。领域通过不代替原生通过；类型/构建通过不代替不抢人的焦点。测试参考（`.agents/skills/dev/references/testing.md`）
+
+### 21.3 目标完成定义
+
+实现可称为完成，必须同时满足：
+
+1. browser 独立启停、独立页面和公开 API；Agent 内部类不再是浏览器的启动依赖。
+2. 只有一套生产页面执行体系；每 Space 的目录、进程、页面、租约和文件归属可证明。
+3. 所有 mutation 都经过同一最终 gate；接管、输入、观察权限和取消结果准确。
+4. 身份导入的源语义、Context、目标集合、秘密存储与清理闭合；导入和登录验证分别报告。
+5. 重启、部分恢复、失败创建、停止与清理不丢目录、不误删已有资料、不盲目重放。
+6. 目标平台的 G-01～G-06 和关键测试组有构建绑定的证据；不支持项显示明确状态。
+7. Worker/helper/schema/browser 资产和版本可追踪；源码、构建产物、接口、i18n、文档一致。
+
+本次文档交付不将这些未来门禁标为已通过，也不代替后续实现和各平台实机验收。
+
+## 22. 参考依据与设计来源
+
+### 22.1 HUHU 本地依据
+
+| 依据 | 对本文的作用 |
+|---|---|
+| AGENTS.md（`AGENTS.md`）与模块编写规则（`.agents/skills/dev/references/module-authoring.md`） | 插件身份、视图数量、生命周期、按需加载、公开 API |
+| 架构规则（`.agents/skills/dev/references/architecture.md`） | 分区、type import、desktop、状态与数据根 |
+| browser 当前 API（`src/modules/browser/api.ts`）与模块装配（`src/modules/browser/module.ts`） | 识别弱类型契约、页面对象暴露与 Agent 反向依赖 |
+| 当前 Agent Browser 架构（`docs/agent-browser-architecture.md`） | 当前已实现能力、原生限制与已有真实宿主方法 |
+| 源码调研与重构方案（`docs/agent-browser-refactor-plan.md`） | 12 个项目的范围、固定提交、四项复现故障与目标边界 |
+| 数据与恢复（`docs/data.md`）、同步排除（`src/modules/sync/core/excludes.ts`） | 受管资料、设备归属、备份与同步边界 |
+| 系统保护封装（`src/host/desktop/protected-receipt.ts`）、Safe 密文仓库（`src/modules/safe/services/cipher-repository.ts`） | 可抽取的系统密钥与认证密文发布经验 |
+
+### 22.2 外部实践的采用方式
+
+| 参考 | 采用的思想 | 本文保留的判断 |
+|---|---|---|
+| Ego Lite | Space/Page/ref、可脚本编排、控制失效为硬停止 | 公开 harness 不等于闭源浏览器全部实现；不照搬共享 Profile |
+| Vercel agent-browser | 显式 session、严格 tab 寻址、引用版本、流背压、unknown outcome | 直播输入必须加本模块的原生 lease gate |
+| Playwright / Playwright MCP | actionability、ARIA、明确 Context、工具 schema | 用作测试和契约参考；生产保持单 writer，不开放 host eval |
+| Stagehand / Browser Use | 组合 DOM/AX/布局、局部观察、事件驱动 | 模型推理框架不进入浏览器核心 |
+| Steel / Browserless | 运行实例、画面流、资源归属与失败清理 | 原始 CDP/Live View 不自动构成人机独占控制 |
+| Skyvern | 有界帧队列、输入归属、结构化人工处理、文件引用 | 工作流暂停与 native writer 撤销分别实现 |
+| BrowserOS / Nanobrowser | 人工协作、任务可见性、输入门禁、可解释状态 | 个人标签/共享 Profile 的边界不作为本模块的默认选择 |
+
+上述项目的固定提交和具体文件链接保存在调研文档的源码索引（`docs/agent-browser-refactor-plan.md#固定源码索引`）。本文按 HUHU 的契约独立实现，不把许可证不同的浏览器项目直接复制进插件；第三方依赖和代码按具体文件与发行方式核对声明。HUHU 许可证（`LICENSE`）、第三方声明（`THIRD-PARTY-NOTICES.md`）
+
+本设计的核心原则是：**资源归 Space，执行归 BrowserRun，写权限归 ControlLease，状态复制归 IdentityVersion，展示归 Viewer；这些对象通过明确协议协作，任何一个都不以人的当前活动标签作为隐式全局状态。**
+

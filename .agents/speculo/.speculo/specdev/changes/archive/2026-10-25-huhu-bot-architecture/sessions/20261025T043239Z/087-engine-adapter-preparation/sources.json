@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "session": "20261025T043239Z",
+  "task": "087-engine-adapter-preparation",
+  "capturedAt": "2026-10-25T22:28:41.019606+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "interpretation": "SHA and byte counts are whole-file snapshots after the indicated reads; ranges delimit factual reliance. No code execution or module download. Existing 047 web facts are historical accepted research, not freshly verified network claims.",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 5499,
+      "sha256": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef"
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1"
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37"
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87"
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 7961,
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+    },
+    {
+      "path": ".agents/skills/dev/references/testing.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 11911,
+      "sha256": "1f7c35977291cb15b9e4e0841ca2c7f7b1406daa564b6ef0814e6945131ff65b"
+    },
+    {
+      "path": ".agents/skills/dev/references/licensing.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 6884,
+      "sha256": "09d2969a169b9abe7392acc94d0d7be8050bbb56cd22e6560fce75d8d8a60e14"
+    },
+    {
+      "path": ".agents/skills/specdev-i-implement/SKILL.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 792,
+      "sha256": "cb0824735ef93c42b059047183073885fc9d931c31492da18182b1b7d933744c"
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/specdev-i-implement/SKILL.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 4971,
+      "sha256": "2984173f37c210b79c27f7a3d982aca18f12b41179efbff51020ad53101a0fae"
+    },
+    {
+      "path": ".agents/speculo/references/coordination/coordination-contract.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 9116,
+      "sha256": "736563f49903256de7367383dae2cc2f55112f2b592e066e9684253960775ed4"
+    },
+    {
+      "path": ".agents/speculo/references/coordination/result-and-recovery.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 5277,
+      "sha256": "c90797e7d63f0035cc8c9560e793699aeb13f5aeddbaa84e07d51693b0f6520f"
+    },
+    {
+      "path": ".agents/speculo/references/coordination/session-files.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 10818,
+      "sha256": "e72bdb0ebe8f14e9fecf2a24cfb368919248600dbc3cfcfe1a1652a050b8f707"
+    },
+    {
+      "path": ".agents/speculo/references/coordination/report-template.md",
+      "role": "rules/read-only preparation",
+      "readRanges": "full; AGENTS also supplied in user prompt",
+      "bytes": 852,
+      "sha256": "cde0444acefb7de12cda86ca1e2fe3881403276c5e23fdf3cdeef580c56ad6c5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/087-engine-adapter-preparation/TASK.md",
+      "role": "frozen dispatch",
+      "readRanges": "full",
+      "bytes": 3561,
+      "sha256": "7aeba54d93d368b612be6e489f7714b6c35c3f62858bbe1ca93e1776501d7418"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "role": "contract or frozen research",
+      "readRanges": "30-55,65-101,119-142; targeted AC/Engine matches",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ARCHITECTURE.md",
+      "role": "contract or frozen research",
+      "readRanges": "214-248; targeted Engine/assembly matches",
+      "bytes": 51066,
+      "sha256": "534114d3f9325f1ef9f13b33bc684f8835b676b60168227b5476cccf72556fe9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/08-engine-chat-completions.md",
+      "role": "contract or frozen research",
+      "readRanges": "full across segmented reads",
+      "bytes": 12198,
+      "sha256": "325ac54be3563285275f4700283e4252787a20bc1afd4718e8de5151dabd80e9"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/02-bot-model-credentials.md",
+      "role": "contract or frozen research",
+      "readRanges": "1-75",
+      "bytes": 17431,
+      "sha256": "449d6057a01faa01a010453fc5d2471ea62166c400e965d11dd95961cd03d1bc"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/12-messages-limits-budget.md",
+      "role": "contract or frozen research",
+      "readRanges": "1-65",
+      "bytes": 26176,
+      "sha256": "29e9f459f21e8f54e50af8288412268036b74e71989967d79adb810a175a0c3e"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "role": "contract or frozen research",
+      "readRanges": "targeted dependency/ownership matches",
+      "bytes": 37904,
+      "sha256": "89d2f65886bc2d8a47866f50cfab381e4190e833f3c3a08d3e1fd0c410559231"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/engine-port-preflight.md",
+      "role": "contract or frozen research",
+      "readRanges": "full",
+      "bytes": 2349,
+      "sha256": "1f6e46ac6ee6d6ffc44912a91f35ab3a2b7bc8e7023bf6972fdb28212d389aa2"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/evidence/model-protocol-preflight.md",
+      "role": "contract or frozen research",
+      "readRanges": "full",
+      "bytes": 2746,
+      "sha256": "72c9611b5d10809efd173045baaccc7782c6656f4ef6bd39faac169b5ead2723"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/REPORT.md",
+      "role": "contract or frozen research",
+      "readRanges": "full across segmented reads",
+      "bytes": 42922,
+      "sha256": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/sources.json",
+      "role": "contract or frozen research",
+      "readRanges": "full",
+      "bytes": 6438,
+      "sha256": "5df2631cd9f1daddc177da6cc867cbfdc1c4707591295fa26bb3ff9efd7e2c91"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/observations.json",
+      "role": "contract or frozen research",
+      "readRanges": "path discovery; not all entries semantically read",
+      "bytes": 22271,
+      "sha256": "84ad540b3b6c27574cd87d4bc339e27430320b42181510d9f2a061aba856d337"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/return.json",
+      "role": "contract or frozen research",
+      "readRanges": "full",
+      "bytes": 920,
+      "sha256": "30692e8845b4f5b486b242bca0c4c7394b380e6239a5c6c070c3d775a4121d3b"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/combined-probe/go.mod",
+      "role": "contract or frozen research",
+      "readRanges": "full",
+      "bytes": 5105,
+      "sha256": "043859b73148e4c177dcd02905825fc1cf43b0b7f26a61b67acd856a434ce891"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/002-foundation-research/artifacts/combined-probe/go.sum",
+      "role": "contract or frozen research",
+      "readRanges": "69-80,177-178",
+      "bytes": 34996,
+      "sha256": "2c24e701fb399c182fcddca5beab56ddfdd2cf0c0ad0277d46d864c230ce685e"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 6752,
+      "sha256": "e66c6fb6fa5fde5b2fb106d6e8951062735b71931e8f8d6f1f740807820fff4a"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 4202,
+      "sha256": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/attempts.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 2954,
+      "sha256": "100af5f4f77c709e1cc1b318fe8abe7dfca1d754637a9a1b0690964ac84e67e4"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 1392,
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/assistant.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 5736,
+      "sha256": "0d218e36aceef643dfee227351795dc95dd7e8024421aa28ef6dd15a0fc04c74"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/task_config_hash.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 1102,
+      "sha256": "fb04ac98412b953703145247fbec30dbf1cd172bb18bba17edbf03d89b3a6c69"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/recovery.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 2091,
+      "sha256": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/collaboration.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 7224,
+      "sha256": "9db6035349d907363751b1f814b67bb50760c041ba5cd9c5dbc94d4dbc8b060e"
+    },
+    {
+      "path": "native/huhubot/internal/application/api/access.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 6665,
+      "sha256": "5ab3b6e753665db96bc270e45716d6d0f4390cd008832ba1bb780de7a4554f6b"
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 10578,
+      "sha256": "e789ce1614acc88489d200c0c3d332d326ce05221d61b790a31ebb4b5af044ef"
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 826,
+      "sha256": "8cf2e56c9269742fa83c18722a1229c9f55ae3c85a6e78a713cab0bc199beb4d"
+    },
+    {
+      "path": "native/huhubot/internal/application/assistant/service.go",
+      "role": "current production source",
+      "readRanges": "1-105,260-330",
+      "bytes": 12633,
+      "sha256": "b4f5bc6359a90013c3e19bd1cef9d046327e7777e9bf16cd888467db03bd2ab8"
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 14767,
+      "sha256": "ef31c9b2428794b0079c0811235df443a8c76d531f45847e1d70b5e72780b4d1"
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/recovery.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 3717,
+      "sha256": "e26c4401ceaed66bd1c3e86b5f872389fb98e97f840781ba223b8179d5cbaea3"
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/collaboration-tools/service.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 3711,
+      "sha256": "03a2fec6c8ddbdcdb9d064a40925e1268091824cd2bfa4fa741f6a5ed2468da7"
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 11493,
+      "sha256": "a114c9297befbe0c61aee5dd86d6d5a36e8bff481d8aa6acbe6341f907820a67"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "role": "current production source",
+      "readRanges": "1-230",
+      "bytes": 20320,
+      "sha256": "e27d13089880686b86361965a903c952437a561f22aed3b9846fa3d34a347aed"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "role": "current production source",
+      "readRanges": "1-650",
+      "bytes": 25706,
+      "sha256": "6600cf9abfae1cd463dccb8acbd86cb4e186bf0dacfcc06faf288a43d1e2d3a6"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go",
+      "role": "current production source",
+      "readRanges": "1-115 and visible targeted continuation logic",
+      "bytes": 16022,
+      "sha256": "bd75ac37aeaaa5725e4a56f7d8a56062a17ba877fe1f5a95b25c49acd714f656"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/recovery_position.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 5595,
+      "sha256": "a964222d54faa05e20a24044f0f198380f69859d25d0b14ddf4c4bd91f2bc910"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go",
+      "role": "current production source",
+      "readRanges": "1-180",
+      "bytes": 14132,
+      "sha256": "64eeb3d50a564371798e51113e1f4f62baf071e043b60159f6f742b480966951"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "role": "current production source",
+      "readRanges": "50-177",
+      "bytes": 9890,
+      "sha256": "ade097d0afe156fc3e2a33fb22798f537d5218aab3ab4c98a736105ae0c873b8"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/groups/context.go",
+      "role": "current production source",
+      "readRanges": "selected explicit public-message boundary",
+      "bytes": 2205,
+      "sha256": "5ed7630119f48004426910108e001d1bf52e58b8d6fec6d48d9fe850bd1909ba"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "role": "current production source",
+      "readRanges": "175-195",
+      "bytes": 8039,
+      "sha256": "22c50058a7556a013e83cd466f586703b6d9d5cba024061abce777dfb5994e06"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql",
+      "role": "current production source",
+      "readRanges": "1-100",
+      "bytes": 4419,
+      "sha256": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "role": "current production source",
+      "readRanges": "75-257",
+      "bytes": 11233,
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/blob/store/store.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 9063,
+      "sha256": "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53"
+    },
+    {
+      "path": "native/huhubot/internal/domain/assistant/validation.go",
+      "role": "current production source",
+      "readRanges": "1-50",
+      "bytes": 2317,
+      "sha256": "03b7a74338fac394f11d6928bf43244b67b82110ca259d915f8a5170cdb146dd"
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/profile.go",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 6028,
+      "sha256": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f"
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "role": "current production source",
+      "readRanges": "1-85",
+      "bytes": 4058,
+      "sha256": "965c5467d0f66312d8387b45a3db0fe761e21994f84a38351bc8cb911f260e8c"
+    },
+    {
+      "path": "native/huhubot/go.mod",
+      "role": "current production source",
+      "readRanges": "full",
+      "bytes": 499,
+      "sha256": "b0dbcd2d694eccaedc15a7074bd91bcb66db9f07c5ab341a3df721a7ee829c3b"
+    },
+    {
+      "path": "native/huhubot/go.sum",
+      "role": "current production source",
+      "readRanges": "hash only; current production lock identity",
+      "bytes": 2599,
+      "sha256": "2ca8fb2885f97742652fe42d605803322fd64c0779a1f6fff48d819cc43fa816"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/runner.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "71-155,271-365",
+      "bytes": 12584,
+      "sha256": "68667d6e57a496a0374517b30f2b637846a517e7f370e21c56439842a50b24b6"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/adk/chatmodel.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "150-208,250-315,790-835,1574-1673; targeted config matches",
+      "bytes": 60351,
+      "sha256": "674dc19ca9a41406d5fc68848355eb9199c39be8f3b4a2a01527e1dc41ce61a5"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/compose/tool_node.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "209-240,860-955,1070-1125,1140-1255; targeted symbols",
+      "bytes": 51026,
+      "sha256": "9ad538059f4ecc81137dbb045829d95792dfdf3fa3905b322f4152d4b6c131bd"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/components/tool/interrupt.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "148-162 and targeted symbols",
+      "bytes": 6192,
+      "sha256": "5939a961e46f474230dcb4cd06591fcbda450704d938c4cecb2098cb6e2dbba4"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22/schema/stream.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "210-246,400-442",
+      "bytes": 24609,
+      "sha256": "b7b154c587960d9db504dfc83bf95929dfc7aa4bf8ebd2a4ba3203b0c77a15a4"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/openai@v0.1.13/chatmodel.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "1-170",
+      "bytes": 10458,
+      "sha256": "62395a9fd31e2b35c463c78459b55e55df28cd632edb01bb9ccd5d26197ab5b7"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/libs/acl/openai@v0.1.18-0.20260924031408-10df7cac3f6d/chat_model.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "860-990,1230-1285",
+      "bytes": 42810,
+      "sha256": "403786db3b985926b5c9c6dc17c4abd6fda15b928887632e976856dfeffe2f52"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/client.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "172-227",
+      "bytes": 8620,
+      "sha256": "4d6ef78694b6154a0d916ab886d0c91ea4b8ca3eb10ff92e650d68af2578dca9"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/stream_reader.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "full",
+      "bytes": 2387,
+      "sha256": "96f819acac91e0c96d4f1a4a194d7da53ff8ad9eca02a06624696f5a3aa26ba9"
+    },
+    {
+      "path": "/home/wta/go/pkg/mod/github.com/meguminnnnnnnnn/go-openai@v0.1.6/models.go",
+      "role": "fixed upstream primary source; local read only",
+      "readRanges": "full",
+      "bytes": 2728,
+      "sha256": "a96bdaa80c09880c9022fd4f43d960524c4e90a6a24cdd51654b6e91bef495e4"
+    }
+  ]
+}

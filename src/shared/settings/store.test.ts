@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'vitest';
 import { defineSettings, domainSettings, f, type SettingsScope } from './schema';
 import { SettingsStore, type SettingsFile, type SettingsTimers } from './store';
+import { drainSettings, holdSettings, reloadSettingsNamespaces, resumeSettings } from './settings-recovery';
 
 function fakeTimers() {
 	let clock = 0;
@@ -144,4 +145,93 @@ test('domain namespaces keep their whole value in one scope', async () => {
 	await agent.update((draft) => { draft.data = { shell: 'zsh' }; }, { persist: 'immediate' });
 	assert.deepEqual((disk.files.device as SettingsFile).namespaces.agent, { data: { shell: 'zsh' } });
 	assert.equal((disk.files.vault as SettingsFile).namespaces.agent, undefined);
+});
+
+test('recovery hold rejects every write visibly and writes nothing, and resume reopens', async () => {
+	const disk = memory();
+	const store = new SettingsStore(disk.persistence, { timers });
+	await store.load();
+	const app = store.bind('app', schema);
+	holdSettings(store);
+	await assert.rejects(app.update((draft) => { draft.count = 9; }), /held/);
+	await assert.rejects(app.touch(), /held/);
+	assert.equal(disk.writes.length, 0);
+	resumeSettings(store);
+	await app.update((draft) => { draft.count = 9; }, { persist: 'immediate' });
+	assert.equal(app.get().count, 9);
+});
+
+test('reloadNamespaces adopts restored bytes: the next edit merges against them and other namespaces stay byte-identical', async () => {
+	const other = defineSettings({ flag: f.number({ default: 1, min: 0, max: 9, integer: true }) });
+	const disk = memory({
+		vault: { version: 1, namespaces: { app: { language: 'en', count: 4 }, other: { flag: 2 } } },
+		device: { version: 1, namespaces: { app: { panelWidth: 300 } } },
+	});
+	const store = new SettingsStore(disk.persistence, { timers });
+	await store.load();
+	const app = store.bind('app', schema), second = store.bind('other', other);
+	await store.flush();
+	// A recovery operation (after its drain) replaces the files on disk behind the store's back (agent-style namespace only).
+	disk.files.vault = { version: 1, namespaces: { app: { language: 'zh', count: 11 }, other: { flag: 2 } } };
+	disk.files.device = { version: 1, namespaces: { app: { panelWidth: 410 } } };
+	let notified = 0;
+	app.subscribe(() => { notified++; });
+	await reloadSettingsNamespaces(store, ['app']);
+	assert.deepEqual({ ...app.get() }, { language: 'zh', count: 11, panelWidth: 410, tags: [] });
+	assert.equal(notified, 1);
+	assert.equal(second.get().flag, 2);
+	await app.update((draft) => { draft.count = 12; }, { persist: 'immediate' });
+	const vault = disk.files.vault as SettingsFile, device = disk.files.device as SettingsFile;
+	// The restored language and panel width survive the first post-restore write; they are not rolled back by a stale cache.
+	assert.equal(vault.namespaces.app?.language, 'zh');
+	assert.equal(vault.namespaces.app?.count, 12);
+	assert.equal(device.namespaces.app?.panelWidth, 410);
+	assert.deepEqual(vault.namespaces.other, { flag: 2 });
+});
+
+test('a recovery hold rejects updates and touches before recipes, mutation or notifications', async () => {
+	const disk = memory();
+	const store = new SettingsStore(disk.persistence, { timers });
+	await store.load();
+	const app = store.bind('app', schema);
+	let recipes = 0, notices = 0;
+	app.subscribe(() => { notices++; });
+	holdSettings(store);
+	try {
+		await assert.rejects(app.update((draft) => { recipes++; draft.count = 30; }), /held/);
+		await assert.rejects(app.touch(), /held/);
+		assert.equal(app.get().count, 5);
+		assert.equal(recipes, 0);
+		assert.equal(notices, 0);
+		assert.equal(disk.writes.length, 0);
+	} finally { resumeSettings(store); }
+});
+
+
+test('strict draining keeps admission closed across storage awaits and persisted listeners', async () => {
+	const disk = memory();
+	let started!: () => void, finish!: () => void;
+	const ready = new Promise<void>((resolve) => { started = resolve; });
+	const barrier = new Promise<void>((resolve) => { finish = resolve; });
+	const store = new SettingsStore({ ...disk.persistence, save: async (scope, file) => {
+		started(); await barrier; return disk.persistence.save(scope, file);
+	} }, { timers });
+	await store.load();
+	const app = store.bind('app', schema);
+	const pending = app.update((draft) => { draft.count = 6; });
+	holdSettings(store);
+	const callbacks: Promise<void>[] = [];
+	const unsubscribe = store.onPersisted(() => { unsubscribe(); callbacks.push(app.update((draft) => { draft.count = 20; })); });
+	const draining = drainSettings(store);
+	await ready;
+	const late = app.update((draft) => { draft.count = 30; });
+	void late.catch(() => {});
+	try {
+		assert.equal(app.get().count, 6);
+	} finally { finish(); await Promise.allSettled([pending, draining, late]); await Promise.allSettled(callbacks); resumeSettings(store); }
+	await assert.rejects(late, /held/);
+	await Promise.all(callbacks.map((promise) => assert.rejects(promise, /held/)));
+	assert.equal(app.get().count, 6);
+	assert.equal((disk.files.vault as SettingsFile).namespaces.app!.count, 6);
+	resumeSettings(store);
 });

@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-26T11:28:46.630771+00:00",
+  "files": {
+    "REPORT.md": "e6d85a0f2562ca9c609d9a44647efc51724d12e5bb2512a80a84f4ec13743239",
+    "TASK.md": "63220aefb53b47041e6d166017678519a418eccbcaf038954947868de2dba3cf",
+    "logs/01-baseline-inputs.json": "1350359394a2f5b7f2754b965dc0d133c7147e7b823b67fe32592068bb780a46",
+    "logs/02-red-inputs.json": "82ac3d6dcfbc41d976706430aa7fef50ce3ca809f2be924fda2484ead2a0413e",
+    "logs/03-catalog-red.json": "fa385266e6777e29be66b4e90277a989d32ad4e3c3ab0e1f2d7f270d2c0d3369",
+    "logs/03-catalog-red.log": "6e71849e16f0ec7bcc9127961df470e1208009714337e317e0b5be24603c6853",
+    "logs/04-final-check-inputs.json": "a614ec5e72b1aa852832ccbc46705120395a70f53b57eab5a85e35f8f13a5a3f",
+    "logs/05-catalog-green.json": "6ae7cf0ecdd16c5f00e402c46925b0d265ce9afeb59f596f89aebec5cfdafb98",
+    "logs/05-catalog-green.log": "e2dc80bc2ed77c1fc5736488bfa8744090781f88b959c844f9148464af8911e9",
+    "logs/06-test-types.json": "21cf47fef592f2d3b913f99b4418d2f3fa7b53ebc727daef9dd926472ad6975e",
+    "logs/06-test-types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/07-return.json": "84aa39aa750137378abcb3277dcb60a988c71871f49f5259b9fb6d7c4d13012d",
+    "logs/07-return.log": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+    "logs/baseline/memory-validation.test.ts": "2589db68fde2eaf0f957904ffc60d2716bc8f3939f0a8fb88a02afdf8baec787",
+    "logs/baseline/method-validation.ts": "3cde7ada5998348cfe388bd99effa4819b250a2ece632473e2c3e4dcd4226b5e",
+    "logs/memory-validation.test.diff": "a68682eb491791f7eec8d988517fde0c367ffedc22c21f0fedce0295a78a5a62",
+    "logs/method-validation.diff": "d68cbb07fae9a33e522bf518c4aa8395ae64f202b91a940b3e597d4341c2e1d6",
+    "source-manifest.json": "4c34d370dbc5f1d8d2cceca16c51d4c93b0ef96cf0876c9b195b5a7ba6ce614c"
+  },
+  "artifactTreeSHA256": "0f931f8750441255e25eda0224b190e59e78b858ad5a61e418041dcd1f3a95cc",
+  "sourceInputDrift": [],
+  "sourceWritersStopped": true,
+  "allProcessesWaited": true,
+  "activeOwnedProcesses": 0
+}

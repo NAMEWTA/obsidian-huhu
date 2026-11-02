@@ -1,49 +1,103 @@
-/**
- * The two persistence roots of a vault and every default path under them, in one place.
- *
- *   huhu/   visible. The user's content and records (journal, captures, inbox, archives, ledgers, RSS, new notes).
- *           Read and written through the Obsidian vault API, so Obsidian indexes, searches and syncs it.
- *   .huhu/  hidden. HUHU's own configuration and runtime data. Only `.huhu/dashboards/` and
- *           `.huhu/automation/definitions/` hold Markdown documents (board layouts, automation definitions).
- *
- * Folder names are Chinese on purpose: they are the user's vault structure, not interface text.
- * Nothing HUHU generates may contain a space; `huhuName` is the one function that makes a title safe.
- */
+/** Fixed visible defaults. Display translations and user titles never determine these names. */
+export const VISIBLE_NAMES = {
+	root: 'huhu',
+	journal: 'journal',
+	inbox: 'inbox',
+	todos: 'todos',
+	tasks: 'tasks',
+	projects: 'projects',
+	archives: 'archives',
+	expenses: 'expenses',
+	habits: 'habits',
+	pomodoro: 'pomodoro',
+	reading: 'reading',
+	rss: 'rss',
+	weread: 'weread',
+	highlights: 'highlights',
+	notes: 'notes',
+	exports: 'exports',
+	taskFile: 'tasks.md',
+	completedFile: 'completed.md',
+	taskStore: 'tasks.json',
+	periods: { day: 'daily', week: 'weekly', month: 'monthly', quarter: 'quarterly', year: 'yearly' },
+	weekMarker: 'w',
+	quarterMarker: 'q',
+	archive: {
+		people: 'people',
+		companies: 'companies',
+		entry: 'profile.md',
+		guide: 'format-guide.md',
+		collection: 'collection.md',
+		definitions: 'definitions',
+		relations: 'relations',
+		migrations: 'migrations',
+		categories: {
+			type: 'types',
+			form: 'forms',
+			template: 'templates',
+			'relation-type': 'relation-types',
+			view: 'views',
+		},
+		current: 'current.md',
+		revisions: 'revisions',
+		originals: 'originals',
+	},
+	json: { expense: 'expense.json', habit: 'habits.json', pomodoro: 'pomodoro.json', reading: 'reading.json' },
+	records: 'records',
+	bookFile: 'book.md',
+	habitFile: 'habit.md',
+	expenseFile: 'categories.md',
+	pomodoroFile: 'activities.md',
+	agent: 'agent',
+	session: 'session',
+	expenseExport: 'expense-export',
+	subscriptions: 'subscriptions',
+	captures: 'captures',
+	newNote: 'new-note',
+	untitled: 'untitled',
+	imported: 'imported',
+	restored: 'restored',
+} as const;
 
-/** Visible root: user content and records. */
-export const HUHU_VISIBLE_ROOT = 'huhu';
-
-export const JOURNAL_ROOT = `${HUHU_VISIBLE_ROOT}/日志`;
-/**
- * The inbox widget (the former memo widget and the fleeting-capture widget in one), flat:
- *   `<root>/YYYY-MM-DD-HHmm-标题.md`  a new item, one note each
- *   `<root>/YYYY-MM-DD-闪念.md`       the fleeting thoughts of one day, one list line each
- */
-export const INBOX_ROOT = `${HUHU_VISIBLE_ROOT}/收件箱`;
-export const TASK_ARCHIVE_PATH = `${HUHU_VISIBLE_ROOT}/待办/已完成.md`;
-export const TASKS_PATH = `${HUHU_VISIBLE_ROOT}/待办/待办.md`;
-export const PROJECTS_ROOT = `${HUHU_VISIBLE_ROOT}/项目管理`;
-/** `<root>/个人档案/<姓名>/基本信息.md`, `<root>/企业档案/<名称>/基本信息.md`. */
-export const ARCHIVES_ROOT = `${HUHU_VISIBLE_ROOT}/档案`;
-export const EXPENSE_ROOT = `${HUHU_VISIBLE_ROOT}/记账`;
-export const HABIT_ROOT = `${HUHU_VISIBLE_ROOT}/习惯`;
-export const POMODORO_ROOT = `${HUHU_VISIBLE_ROOT}/番茄钟`;
-export const READING_ROOT = `${HUHU_VISIBLE_ROOT}/阅读`;
-export const RSS_ROOT = `${HUHU_VISIBLE_ROOT}/RSS`;
-export const WEREAD_HIGHLIGHTS_ROOT = `${HUHU_VISIBLE_ROOT}/微信读书/划线`;
-/** A new note that names no folder of its own. */
-export const NEW_NOTE_ROOT = `${HUHU_VISIBLE_ROOT}/笔记`;
-/** Exports (ledger CSV, agent conversation exports). */
-export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/导出`;
+export const HUHU_VISIBLE_ROOT = VISIBLE_NAMES.root;
+export const JOURNAL_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.journal}`;
+export const INBOX_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.inbox}`;
+export const TASK_ARCHIVE_PATH = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.todos}/${VISIBLE_NAMES.completedFile}`;
+export const TASKS_PATH = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.todos}/${VISIBLE_NAMES.taskFile}`;
+export const TASK_STORE_PATH = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.tasks}/${VISIBLE_NAMES.taskStore}`;
+export const PROJECTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.projects}`;
+export const ARCHIVES_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.archives}`;
+export const ARCHIVE_PATHS = VISIBLE_NAMES.archive;
+export const ARCHIVES_DRAFT_ROOT = '.huhu/archives/drafts';
+export const EXPENSE_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.expenses}`;
+export const HABIT_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.habits}`;
+export const POMODORO_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.pomodoro}`;
+export const READING_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.reading}`;
+export const RSS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.rss}`;
+export const WEREAD_HIGHLIGHTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.weread}/${VISIBLE_NAMES.highlights}`;
+export const NEW_NOTE_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.notes}`;
+export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.exports}`;
 
 /** Hidden Markdown documents HUHU owns (listed and edited through the managed-file index). */
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
+/** Per-device managed Chromium, encrypted identities and operation records. */
+export const BROWSER_ROOT = '.huhu/browser';
+/** User-selected material copies for Agent inputs; excluded from Git. */
+export const BROWSER_MATERIALS_ROOT = '.huhu/browser-materials';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
+export const VERSIONING_RECOVERY_ROOT = '.huhu/recovery/versioning';
+/** Host-local minimal receipts; the Bot business database remains in its OS Profile root. */
+export const HUHUBOT_RUNTIME_ROOT = '.huhu/huhubot';
 export const AUTOMATION_DEFINITIONS_ROOT = '.huhu/automation/definitions';
 export const HIDDEN_DOCUMENT_ROOTS: readonly string[] = [DASHBOARDS_ROOT, AUTOMATION_DEFINITIONS_ROOT];
 /** The board a fresh vault starts with (no extension: board file settings omit `.md`). */
 export const DEFAULT_DASHBOARD_FILE = '.huhu/dashboards/dashboard';
+
+export function agentWorkbenchPath(deviceId: string): string {
+	if (!/^[a-zA-Z0-9_-]+$/.test(deviceId)) throw new Error('huhu-storage.invalid-device');
+	return `.huhu/terminal-agent/${deviceId}/workbench-v2.json`;
+}
 
 export function isVisibleHuhuPath(path: string): boolean {
 	return path === HUHU_VISIBLE_ROOT || path.startsWith(HUHU_VISIBLE_ROOT + '/');
@@ -53,7 +107,7 @@ export function isVisibleHuhuPath(path: string): boolean {
  * A title as a file or folder name: whitespace runs and characters no filesystem accepts become one `-`, ends are
  * trimmed, and an empty result falls back to `fallback`. `First article` -> `First-article`.
  */
-export function huhuName(raw: string, fallback = '未命名'): string {
+export function huhuName(raw: string, fallback: string = VISIBLE_NAMES.untitled): string {
 	const name = Array.from(raw, (char) => (char.charCodeAt(0) < 32 ? '-' : char))
 		.join('')
 		.replace(/[\\/:*?"<>|\s]+/g, '-')
@@ -70,19 +124,19 @@ export interface Stamp {
 }
 
 /** `2026-10-21-1654-新备忘` (no extension). */
-export function inboxFileName(title: string, now: Stamp, fallback = '未命名'): string {
+export function inboxFileName(title: string, now: Stamp, fallback: string = VISIBLE_NAMES.untitled): string {
 	return `${now.format('YYYY-MM-DD-HHmm')}-${huhuName(title, fallback)}`;
 }
 
 /** `2026-10-20-First-article` (no extension): a dated name for articles, new notes and similar. */
-export function datedName(title: string, now: Stamp, fallback = '未命名'): string {
+export function datedName(title: string, now: Stamp, fallback: string = VISIBLE_NAMES.untitled): string {
 	return `${now.format('YYYY-MM-DD')}-${huhuName(title, fallback)}`;
 }
 
-/** The part of a capture file's name after its date: the Chinese word for a fleeting thought, as in the folder names. */
-export const CAPTURE_DAY_WORD = '闪念';
+/** The part of a capture file's name after its date: the fixed capture identifier. */
+export const CAPTURE_DAY_WORD = VISIBLE_NAMES.captures;
 
-/** `<root>/2026-10-22-闪念.md`: the capture file of the day `now` is in, next to the inbox items. */
+/** `<root>/2026-10-22-captures.md`: the capture file of the day `now` is in, next to the inbox items. */
 export function captureDayPath(root: string, now: Stamp): string {
 	return captureDayPathFor(root, now.format('YYYY-MM-DD'));
 }

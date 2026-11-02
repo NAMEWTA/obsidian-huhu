@@ -1,65 +1,6 @@
-/** Public surface of the home module (types and service keys). */
-import type { TaskDraft, TaskRecurrence } from '../../shared/automation/task';
+/** Public surface of the dashboard: layout, widgets and board operations only. */
 import { contributionPoint, serviceKey } from '../../app/contracts/module';
 import type { HomeWidgetCategory, HomeWidgetTier } from './core/board/widget-tiers';
-import type {
-	CalendarCreateResult,
-	CalendarMutationResult,
-	CalendarScope,
-	CalendarSnapshot,
-	CalendarTask,
-	CalendarTaskInput,
-	CalendarTargetResult,
-} from './core/calendar/types';
-import type { CalendarTaskFilter } from './core/calendar/task-filter';
-export type {
-	CalendarCreateResult,
-	CalendarFailure,
-	CalendarFailureCode,
-	CalendarMutationResult,
-	CalendarScope,
-	CalendarSnapshot,
-	CalendarTask,
-	CalendarTaskInput,
-	CalendarTaskReceipt,
-	CalendarTargetResult,
-	CalendarTargetSnapshot,
-} from './core/calendar/types';
-export type { CalendarTaskFilter } from './core/calendar/task-filter';
-
-/** One calendar source and writer per home activation; usable without mounting any board. */
-export interface CalendarService {
-	/** The persisted active board's exclusion exception and shared filter, without requiring an open board. */
-	defaultScope(): CalendarScope;
-	recurrenceFor?(task: CalendarTask): TaskRecurrence | undefined;
-	dayTime(task: CalendarTask, iso: string): string | undefined;
-	setFilter(filter: CalendarTaskFilter): Promise<boolean>;
-	snapshot(scope?: CalendarScope): CalendarSnapshot;
-	subscribe(listener: () => void): () => void;
-	refresh(scope?: CalendarScope): Promise<CalendarSnapshot>;
-	/** Read-only resolution; no folders, notes, prompts or task effects are created. */
-	resolveTarget(input: CalendarTaskInput): Promise<CalendarTargetResult>;
-	/** Restored targets are untrusted and validated here before any side effect. */
-	createTask(input: CalendarTaskInput & { target?: unknown }): Promise<CalendarCreateResult>;
-	openEditor?(request: {
-		task?: CalendarTask;
-		date?: string;
-		text?: string;
-		owner: HTMLElement;
-		onSaved?(): void;
-	}): Promise<void>;
-	openRemoval?(request: { task: CalendarTask; owner: HTMLElement }): Promise<void>;
-	updateTask(task: CalendarTask, draft: TaskDraft, following?: boolean): Promise<CalendarMutationResult>;
-	toggleTask(task: CalendarTask, checked: boolean): Promise<CalendarMutationResult>;
-	removeTask(task: CalendarTask, following?: boolean): Promise<CalendarMutationResult>;
-	openSource(
-		task: Pick<CalendarTask, 'path' | 'line'> &
-			Partial<Pick<CalendarTask, 'id' | 'effectKey' | 'originalLine' | 'mtime' | 'virtual' | 'seriesId'>>,
-		owner?: Window,
-	): Promise<void>;
-}
-export const HOME_TASKS = serviceKey<CalendarService>('home', 'tasks');
-export const HOME_CALENDAR = serviceKey<CalendarService>('home', 'calendar');
 
 export interface HomeWidgetContext {
 	readonly boardPath: string;

@@ -1,0 +1,103 @@
+{
+  "task": "141-memory-physical-delivery",
+  "status": "completed",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "sourceFiles": [
+    {
+      "path": "native/huhubot/tests/contract/foundation/memory_physical_delivery_test.go",
+      "sha256": "bb237d6262652850284dc977334c7b939cee8b16bf4a43d12fa708dc171a512d",
+      "mode": "0o664"
+    }
+  ],
+  "sourceTreeSHA256": "5aaa916e6e6532e557392606894ad1f9995f079450c4e358fd1d7354f051d61c",
+  "fixedGoInput": "logs/04-fixed-input.json",
+  "inputDrift": "logs/08-final-input-drift.json",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "659329a1ccab2244a944e9eff80187d5fe52f2d719e69b83d5a1d431bd318140",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-go-version.json",
+      "sha256": "4e374fd8bb9d01df4ff601fad807ff67db07a0cd852cb68cdb4ab201418b86fb",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-go-version.log",
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-gofmt.json",
+      "sha256": "7233c8d2dd70d7ee51b05e0aa8a92a36944f9dc586095ca4a9e2f82dcdb30f5a",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-gofmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-go-list-result.json",
+      "sha256": "ed3f63b6384001037437801280c8797bab04f7c0335c2a274d3fa196147d05f0",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-go-list.jsonl",
+      "sha256": "430a8c5c77a9903a4c4af9f7ec10931d565d4a7dfacb81a20862d2ce1540cf52",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-go-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-fixed-input.json",
+      "sha256": "9a1249db9d6057157c49e9b6c20bfed524cd49906f842e4df6f5e400a8a51e70",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-first-target.json",
+      "sha256": "d9a1aa728f2b630d5456d896aefa7cb63dc15227891908a6120bcbeb111b1d6c",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-first-target.log",
+      "sha256": "e0411bd8763c17593924ceaf0f2e9144c07823cc9e3501dc988e26130e35bf37",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-first-failure-classification.json",
+      "sha256": "6a933b6b06cb1c9e45d3a9f489fc16d28dcf3142b9bfa14e7c79ec8f97236064",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-corrected-target.json",
+      "sha256": "1ca4dfa9fbd5aaeb790b66b7d590b6a6a9d336abeaa589c4e2bb4b149f437758",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-corrected-target.log",
+      "sha256": "aefd171db53f25a71882ae52d3da78c26d9e7d0618956a846aafc9be77a98f6d",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-final-input-drift.json",
+      "sha256": "d8a769022a8445ba90c60dc941e0af4371c98854dc60d56c95de524c28b4a126",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-return-validation.json",
+      "sha256": "4aab59951a2d394ff7687c1bdd5bc6d56311c33e77fe01cd7d98e9a5f8aa9415",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-return-validation.log",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    }
+  ],
+  "artifactTreeSHA256": "c73e6564f91b06d7a3be6f12058e36feb751aeb767388521952a4d7dba3c0283"
+}

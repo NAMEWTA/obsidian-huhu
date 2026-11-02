@@ -1,0 +1,334 @@
+package recovery_test
+
+import (
+	"context"
+ recoveryadapter "github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/adapters/outbound/sqlite/recovery"
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/application/api"
+	"github.com/NAMEWTA/obsidian-huhu/native/huhubot/internal/bootstrap"
+)
+
+var ctx = context.Background()
+var owner = api.NewConnectionIdentity("recovery-test", "owner", true)
+
+type engine struct {
+	run     func(context.Context, api.EngineInput) (api.EngineResult, error)
+	resume  func(context.Context, api.EngineResumeInput) (api.EngineResult, error)
+	inspect func(context.Context, api.CheckpointInspection) error
+}
+
+func (e engine) Run(c context.Context, i api.EngineInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	if e.run == nil {
+		return api.EngineResult{}, fmt.Errorf("unexpected Engine.Run")
+	}
+	return e.run(c, i)
+}
+func (e engine) Resume(c context.Context, i api.EngineResumeInput, _ func(api.EngineEvent) error) (api.EngineResult, error) {
+	if e.resume == nil {
+		return api.EngineResult{}, fmt.Errorf("unexpected Engine.Resume")
+	}
+	return e.resume(c, i)
+}
+func (e engine) InspectCheckpoint(c context.Context, i api.CheckpointInspection) error {
+	if e.inspect == nil {
+		return &api.Fault{Kind: "RECOVERY_BLOCKED", Reason: "CONTROLLED_INSPECTOR_UNAVAILABLE"}
+	}
+	return e.inspect(c, i)
+}
+
+func copyTree(t *testing.T, source, destination string) {
+	t.Helper()
+	e := filepath.WalkDir(source, func(p string, d os.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		rel, e := filepath.Rel(source, p)
+		if e != nil {
+			return e
+		}
+		target := filepath.Join(destination, rel)
+		if d.IsDir() {
+			return os.MkdirAll(target, 0700)
+		}
+		if strings.HasSuffix(p, ".sqlite3-wal") || strings.HasSuffix(p, ".sqlite3-shm") {
+			return fmt.Errorf("unexpected writable SQLite auxiliary file in immutable fixture: %s", p)
+		}
+		b, e := os.ReadFile(p)
+		if e != nil {
+			return e
+		}
+		return os.WriteFile(target, b, 0600)
+	})
+	if e != nil {
+		t.Fatal(e)
+	}
+}
+func fixture(t *testing.T, name string) (string, string) {
+	t.Helper()
+	root := filepath.Join(t.TempDir(), "profiles")
+	copyTree(t, filepath.Join("testdata", "schema8", name), root)
+	return root, filepath.Join(root, "one")
+}
+func open(t *testing.T, root, locator string, o bootstrap.Options) *bootstrap.Core {
+	t.Helper()
+	c, e := bootstrap.OpenWithOptions(ctx, root, locator, o)
+	if e != nil {
+		t.Fatal(e)
+	}
+	t.Cleanup(func() {
+		if e := c.Close(); e != nil {
+			t.Error(e)
+		}
+	})
+	return c
+}
+func fresh(t *testing.T, o bootstrap.Options) (*bootstrap.Core, string, string) {
+	t.Helper()
+	root := filepath.Join(t.TempDir(), "profiles")
+	if e := os.Mkdir(root, 0700); e != nil {
+		t.Fatal(e)
+	}
+	loc := filepath.Join(root, "one")
+	return open(t, root, loc, o), root, loc
+}
+func meta(t *testing.T, c *bootstrap.Core, key, revision string) api.CommandMeta {
+	t.Helper()
+	s, e := c.API.Service.Status(ctx, owner)
+	if e != nil {
+		t.Fatal(e)
+	}
+	return api.CommandMeta{CommandID: key, IdempotencyKey: key, ProfileID: s.Profile.ProfileID, CommandEpoch: s.Profile.CommandEpoch, ExpectedRevision: revision}
+}
+func get(t *testing.T, c *bootstrap.Core, run string) api.Run {
+	t.Helper()
+	r, e := c.API.Conversation.GetRun(ctx, owner, api.IDQuery{ProfileID: meta(t, c, "query", "").ProfileID, ID: run})
+	if e != nil {
+		t.Fatal(e)
+	}
+	return r
+}
+func wait(t *testing.T, c *bootstrap.Core, run, status string) api.Run {
+	t.Helper()
+	deadline := time.Now().Add(6 * time.Second)
+	for {
+		r := get(t, c, run)
+		if r.Status == status {
+			return r
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("wait %s: %#v", status, r)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+func db(t *testing.T, loc string) *sql.DB {
+	t.Helper()
+	d, e := sql.Open("sqlite3", filepath.Join(loc, "profile.sqlite3"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	t.Cleanup(func() { d.Close() })
+	return d
+}
+func count(t *testing.T, d *sql.DB, q string, args ...any) int {
+	t.Helper()
+	var n int
+	if e := d.QueryRow(q, args...).Scan(&n); e != nil {
+		t.Fatal(e)
+	}
+	return n
+}
+func reason(e error, want string) bool { var f *api.Fault; return errors.As(e, &f) && f.Reason == want }
+func inspect(t *testing.T, c *bootstrap.Core, run string) api.RecoveryStatus {
+	t.Helper()
+	if c.API.Recovery == nil {
+		t.Fatal("recovery not assembled")
+	}
+	s, e := c.API.Recovery.Get(ctx, owner, api.IDQuery{ProfileID: meta(t, c, "inspect", "").ProfileID, ID: run})
+	if e != nil {
+		t.Fatal(e)
+	}
+	return s
+}
+
+func TestSchema8ActualInFlightResumeKeepsClaimedChildrenAndUsageUntilExplicitWholeTreeResume(t *testing.T) {
+	root, loc := fixture(t, "inflight")
+	var old struct {
+		RootRunID, ModelRunID string
+		ResumeDecision        api.ToolResult
+		Checkpoint            api.CheckpointArtifact
+	}
+	b, e := os.ReadFile("testdata/schema8/inflight-resume-entered.json")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = json.Unmarshal(b, &old); e != nil {
+		t.Fatal(e)
+	}
+	var runs, resumes, inspections atomic.Int32
+	done := make(chan error, 1)
+	eng := engine{run: func(context.Context, api.EngineInput) (api.EngineResult, error) {
+		runs.Add(1)
+		return api.EngineResult{}, fmt.Errorf("must not restart a Run")
+	}, inspect: func(c context.Context, i api.CheckpointInspection) error {
+		inspections.Add(1)
+		body, e := io.ReadAll(i.Reader)
+		if e != nil {
+			return e
+		}
+		if len(body) != 64 || i.Run.ID != old.ModelRunID || i.Checkpoint != old.Checkpoint {
+			return fmt.Errorf("wrong complete checkpoint inspection: %s", body)
+		}
+		return nil
+	}, resume: func(c context.Context, i api.EngineResumeInput) (api.EngineResult, error) {
+		resumes.Add(1)
+		var e error
+		if i.Input.RunID != old.ModelRunID || !reflect.DeepEqual(i.Decision, old.ResumeDecision) {
+			e = fmt.Errorf("original Resume decision/identity changed: %#v", i.Decision)
+		}
+		done <- e
+		return api.EngineResult{Status: "finished", Text: "RECOVERED_ORIGINAL_MEMBER"}, e
+	}}
+	c := open(t, root, loc, bootstrap.Options{Engine: eng})
+	s := inspect(t, c, old.ModelRunID)
+	if s.State != "ready" || s.RootRunID != old.RootRunID || len(s.AffectedRunIDs) != 2 || !strings.HasPrefix(s.TreeRevision, "sha256:") {
+		t.Fatalf("whole-tree qualification: %#v", s)
+	}
+	if runs.Load() != 0 || resumes.Load() != 0 || inspections.Load() == 0 {
+		t.Fatal("inspection executed a model or skipped payload")
+	}
+	d := db(t, loc)
+	if count(t, d, "SELECT count(*) FROM collaboration_parent_results WHERE run_id=? AND state='claimed'", old.ModelRunID) != 1 || count(t, d, "SELECT count(*) FROM collaboration_result_deliveries") != 1 {
+		t.Fatal("startup replayed consumed child results")
+	}
+	if count(t, d, "SELECT count(*) FROM model_attempts WHERE state='settled' AND knowledge='unknown' AND charged_tokens=7 AND producer_ended=1") != 1 {
+		t.Fatal("interrupted real dispatched usage was cleared or refunded")
+	}
+	command := api.RunResume{CommandMeta: meta(t, c, "resume-original", s.Revision), ID: old.ModelRunID, RecoveryGeneration: s.Generation}
+	receipt, e := c.API.Recovery.Resume(ctx, owner, command)
+	if e != nil {
+		t.Fatal(e)
+	}
+	command.CommandID = "transport-retry"
+	replay, e := c.API.Recovery.Resume(ctx, owner, command)
+	if e != nil || !reflect.DeepEqual(receipt, replay) {
+		t.Fatalf("same original command replay: %#v %v", replay, e)
+	}
+	select {
+	case e := <-done:
+		if e != nil {
+			t.Fatal(e)
+		}
+	case <-time.After(6 * time.Second):
+		t.Fatal("original Resume never executed")
+	}
+	wait(t, c, old.RootRunID, "succeeded")
+	if runs.Load() != 0 || resumes.Load() != 1 || count(t, d, "SELECT count(*) FROM execution_runs") != 3 || count(t, d, "SELECT count(*) FROM collaboration_result_deliveries") != 2 || count(t, d, "SELECT count(*) FROM execution_runs WHERE child_slot<>0") != 0 || count(t, d, "SELECT count(*) FROM task_config_pins") != 0 {
+		t.Fatal("recovery duplicated work, result or failed terminal cleanup")
+	}
+	if count(t, d, "SELECT count(*) FROM execution_events WHERE run_id=? AND event_type='delegation.completed'", old.ModelRunID) != 1 {
+		t.Fatal("already consumed child result was redelivered")
+	}
+	t.Logf("same root=%s/member=%s; inspected=%d Run0 Resume1; original claimed result/unknown charge7 preserved", old.RootRunID, old.ModelRunID, inspections.Load())
+}
+
+func debug085OriginalCheckInTx(ctx context.Context, tx *sql.Tx, runID string) error {
+	var runtime string
+	if e := tx.QueryRowContext(ctx, "SELECT state FROM execution_recovery_runtime WHERE singleton=1").Scan(&runtime); e != nil {
+		return e
+	}
+	if runtime != "open" {
+		if runtime == "stopping" {
+			return api.Denied("SERVICE_STOPPING")
+		}
+		return &api.Fault{Kind: "CONFLICT", Reason: "RECOVERY_RUNTIME_INVALID"}
+	}
+	if runID == "" {
+		return nil
+	}
+	var root string
+	if e := tx.QueryRowContext(ctx, "SELECT COALESCE(NULLIF(root_run_id,''),run_id) FROM execution_runs WHERE run_id=?", runID).Scan(&root); e != nil {
+		return e
+	}
+	var state string
+	e := tx.QueryRowContext(ctx, "SELECT state FROM execution_recovery_trees WHERE root_run_id=?", root).Scan(&state)
+	if errors.Is(e, sql.ErrNoRows) {
+		return nil
+	}
+	if e != nil {
+		return e
+	}
+	switch state {
+	case "resuming":
+		return nil
+	case "checking", "ready", "blocked":
+		return api.Denied("RECOVERY_REQUIRED")
+	default:
+		return &api.Fault{Kind: "CONFLICT", Reason: "RECOVERY_STATE_INVALID"}
+	}
+}
+
+
+func TestDebug085GuardReadIsEquivalentAndRechecksEveryCurrentTransaction(t *testing.T) {
+ c,_,loc:=fresh(t,bootstrap.Options{ExecutorPaused:true})
+ agents,err:=c.API.Assistant.List(ctx,owner,api.PageQuery{ProfileID:meta(t,c,"profile","").ProfileID});if err!=nil {t.Fatal(err)}
+ session,err:=c.API.Conversation.CreateSession(ctx,owner,api.SessionCreate{CommandMeta:meta(t,c,"guard-session",""),Kind:"direct",Title:"guard control",MemberIDs:[]string{agents.Items[0].ID}});if err!=nil {t.Fatal(err)}
+ receipt,err:=c.API.Conversation.StartRun(ctx,owner,api.RunStart{CommandMeta:meta(t,c,"guard-run",session.Revision),SessionID:session.ID,Intent:"guard control",SourceRefs:[]api.SourceSnapshot{}});if err!=nil {t.Fatal(err)}
+ database:=db(t,loc)
+ type sample struct{name,runtime,tree,run string;missingRuntime,fallback,canceled,dropTree bool}
+ samples:=[]sample{
+  {name:"fresh",runtime:"open",run:receipt.RunID},
+  {name:"checking",runtime:"open",tree:"checking",run:receipt.RunID},
+  {name:"ready-is-closed",runtime:"open",tree:"ready",run:receipt.RunID},
+  {name:"blocked",runtime:"open",tree:"blocked",run:receipt.RunID},
+  {name:"resuming",runtime:"open",tree:"resuming",run:receipt.RunID},
+  {name:"runtime-priority-missing-run",runtime:"stopping",run:"run:missing"},
+  {name:"runtime-invalid-priority-missing-run",runtime:"invalid",run:"run:missing"},
+  {name:"run-not-found",runtime:"open",run:"run:missing"},
+  {name:"runtime-missing",runtime:"open",run:receipt.RunID,missingRuntime:true},
+  {name:"empty-run-only-runtime",runtime:"open",dropTree:true},
+  {name:"root-fallback",runtime:"open",tree:"checking",run:receipt.RunID,fallback:true},
+  {name:"tree-invalid",runtime:"open",tree:"invalid",run:receipt.RunID},
+  {name:"SQL-fault",runtime:"open",run:receipt.RunID,dropTree:true},
+  {name:"context-canceled",runtime:"open",run:receipt.RunID,canceled:true},
+ }
+ compare:=func(t *testing.T,ctx context.Context,tx *sql.Tx,run string){
+  t.Helper();a:=debug085OriginalCheckInTx(ctx,tx,run);b:=recoveryadapter.CheckInTx(ctx,tx,run)
+  classify:=func(e error)string{if e==nil{return "nil"};var f *api.Fault;if errors.As(e,&f){return f.Kind+"/"+f.Reason};if errors.Is(e,sql.ErrNoRows){return "sql.ErrNoRows"};if errors.Is(e,context.Canceled){return "context.Canceled"};return fmt.Sprintf("%T:%v",e,e)}
+  if classify(a)!=classify(b){t.Fatalf("guard mismatch original=%v joined=%v",a,b)}
+  t.Logf("original=%s joined=%s",classify(a),classify(b))
+ }
+ for _,sample:=range samples {t.Run(sample.name,func(t *testing.T){
+  tx,err:=database.BeginTx(ctx,nil);if err!=nil{t.Fatal(err)};defer tx.Rollback()
+  if _,err=tx.Exec("PRAGMA ignore_check_constraints=ON");err!=nil{t.Fatal(err)}
+  if _,err=tx.Exec("UPDATE execution_recovery_runtime SET state=?",sample.runtime);err!=nil{t.Fatal(err)}
+  if sample.missingRuntime {if _,err=tx.Exec("DELETE FROM execution_recovery_runtime");err!=nil{t.Fatal(err)}}
+  if sample.fallback {if _,err=tx.Exec("UPDATE execution_runs SET root_run_id='' WHERE run_id=?",receipt.RunID);err!=nil{t.Fatal(err)}}
+  if sample.tree!="" {if _,err=tx.Exec("INSERT INTO execution_recovery_trees(root_run_id,generation,state,affected_run_ids_json,interrupted_run_ids_json) VALUES(?,1,?,'[]','[]')",receipt.RunID,sample.tree);err!=nil{t.Fatal(err)}}
+  if sample.dropTree {if _,err=tx.Exec("DROP TABLE execution_recovery_trees");err!=nil{t.Fatal(err)}}
+  called:=ctx;cancel:=func(){};if sample.canceled {called,cancel=context.WithCancel(ctx);cancel()};defer cancel()
+  compare(t,called,tx,sample.run)
+ })}
+ t.Run("same-Tx-current-state-not-cached",func(t *testing.T){
+  tx,err:=database.BeginTx(ctx,nil);if err!=nil{t.Fatal(err)};defer tx.Rollback()
+  compare(t,ctx,tx,receipt.RunID)
+  if _,err=tx.Exec("INSERT INTO execution_recovery_trees(root_run_id,generation,state,affected_run_ids_json,interrupted_run_ids_json) VALUES(?,1,'ready','[]','[]')",receipt.RunID);err!=nil{t.Fatal(err)}
+  compare(t,ctx,tx,receipt.RunID)
+  if err=recoveryadapter.CheckInTx(ctx,tx,receipt.RunID);!reason(err,"RECOVERY_REQUIRED"){t.Fatal(err)}
+  if _,err=tx.Exec("UPDATE execution_recovery_trees SET state='resuming' WHERE root_run_id=?",receipt.RunID);err!=nil{t.Fatal(err)}
+  compare(t,ctx,tx,receipt.RunID)
+  if err=recoveryadapter.CheckInTx(ctx,tx,receipt.RunID);err!=nil{t.Fatal(err)}
+ })
+}

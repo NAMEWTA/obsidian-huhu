@@ -4,13 +4,13 @@
 
 ## 完成门
 
-实现型完成必须按 <Path>{roots.workflows}/specdev/common/skills/code-review/references/review-evidence.md</Path> 有覆盖实际最终交付的独立双轴通过证据。多单元组合使用整体审查；单单元固定输入相同可复用，未提交内容使用工作副本快照。非实现学习、复盘及取消沿各自等价验收，不制造代码审查。
+实现型完成必须按 <Path>{roots.workflows}/specdev/common/skills/code-review/references/review-evidence.md</Path> 有覆盖实际最终交付的风险适配双轴验收证据。普通低风险可由主 Agent 自查，高风险或原用户/项目要求独立时必须有真正独立 reviewer。多单元组合使用整体风险与审查；单单元固定输入相同可复用，未提交内容使用工作副本快照。非实现学习、复盘及取消沿各自等价验收，不制造代码审查。
 
 
 一个 change 只有同时满足以下条件才能 completed：
 
 1. 所有计划内 Ticket 为 done，或因权威事实无需改动而有依据地 cancelled；Direct Spec/非实现流程有等价验收。
-2. 每票的原执行记录 verified，实际改动、AC、checkpoint、独立审查和验证证据完整；Direct Spec 有等价证据。未提交工作副本快照可作为交付，不强制 commit 或合并。
+2. 每票的原执行记录 verified，实际改动、AC、checkpoint、适用审查策略和验证证据完整；Direct Spec 有等价证据。未提交工作副本快照可作为交付，不强制 commit 或合并。
 3. 每个行为有 Lead Evidence，全部 Spec 合同与 Goal Gate 可定位。
 4. 选定 change 工作区中的适用单元/组件、集成/回归和 Lead-owned E2E 已通过；not-required 有真实理由。
 5. 迁移、发布、监控、恢复和不可逆批准已完成或明确不适用。
@@ -36,15 +36,15 @@ Owner 依据来自原 Goal/Implementation Plan、I 的真实会话或非实现�
 
 ## 远程来源与归档
 
-远程动作不参与本地完成判定。Triage `external_action` 为 `pending-close`/`close-failed` 时先 reconcile；`closed`、`waived` 或 `not-applicable` 才允许 Archive。Triage `publish_action` 为 `pending`/`publish-failed` 时先恢复或结束 publish；`not-requested`、`published` 或 `waived` 才允许 Archive。`not-requested` 是默认，未点过 publish 的 change 不被新模式绑架。归档后工件只读。
+远程动作不参与本地完成判定。Delivery `external_action` 为 `pending-close`/`close-failed` 时先 reconcile；`closed`、`waived` 或 `not-applicable` 才允许 Archive。<Path>{roots.state}/specdev/changes/{change}/publish.md</Path> 的 `publish_action` 为 `pending`/`publish-failed` 时先恢复或结束 publish；`not-requested`、`published` 或 `waived` 才允许 Archive。`not-requested` 是默认，未点过 publish 的 change 不被新模式绑架。归档后工件只读。
 
 **完成标准**：完成声明可由原工件、真实工作区与验证重建，只有一个 owner；完成不自动授权提交、合并或工作区清理。
 
-## 非实现复盘终点与 PR 归档门
+## PR 归档门
 
-仅有 R-retro（可先经 T intake）的 review-only change，以 completed 的 RETRO 报告作为等价验收；不能同时存在 Spec、Ticket、Map、Goal Plan、implementation 工件、Evidence 或 worktree。报告 sources 非空、结果诚实、全部验收完成，owner 按原完成转换规则更新状态；存在实现工件时仍走原实现完成门。insufficient-evidence 仅表示报告完整，不表示问题已解决。
+独立 R-retro 使用 RETRO 报告与原升级计划验收，不为复盘新建 change；关联已有 change 不替代其原完成门。
 
-PR requested=true 且 status=planned/failed 时阻塞归档；delivery_target=ready 时 draft 也保持未闭合。draft 目标可由 draft/ready 满足，ready 目标只由 ready 满足；waived 须记录放弃交付的授权与原因。创建成功不等于已授权 merge。独立 TRI 不因关联 change 就参与完成/归档门。
+PR requested=true 且 status=planned/failed 时阻塞归档；delivery_target=ready 时 draft 也保持未闭合。draft 目标可由 draft/ready 满足，ready 目标只由 ready 满足；waived 须记录放弃交付的授权与原因。创建成功不等于已授权 merge。独立 DEL 不因关联 change 就参与完成/归档门。
 
 ## 整体取消
 
@@ -59,6 +59,7 @@ A 只验证取消结果，不代替用户取消。单 Ticket cancelled 不推导
 
 无 Goal 的 owner 在 README `## Ownership` 写 `Owner` 与 `Evidence`；后者指向实际会话/交接原文或同 README 的独立证据锚点，其 `Owner` 或 `Session` 必须匹配。若动作绑定 `Work`，原证据必须同值；不是每 Work 调用登记。
 
-取消在 README `<a id="cancellation"></a>` 下保留 `Source`、`Scope`、`Time`（实际 ISO 时间）、`Confirmed-By`（原 owner）、`Undelivered`、`Landed`、`Writers`、`Dependencies`、`Checkpoints`、`External`、`Next`。Source 指向真实取消决定原件或同 README 的独立原请求锚点，不能以取消结论自证。Writers 为 `none: <依据>` 或 `stopped: <停止/交接证据 locator>`；后者原件须有 `Writers: stopped` 与真实 Observed。Dependencies/Checkpoints/External 使用 `none|resolved|transferred|waived: <处置依据>`，不能把未知写成已解决。Ticket 或 Direct Spec 的 active/review/integrating/blocked 执行记录仍须原 owner 处置，不由取消声明抹掉。
+取消在 README `<a id="cancellation"></a>` 下保留 `Source`、`Scope`、`Time`（实际 ISO 时间）、`Confirmed-By`（原 owner）、`Undelivered`、`Landed`、`Writers`、`Dependencies`、`Checkpoints`、`External`、`Next`。Source 指向真实取消决定原件或同 README 的独立原请求锚点，不能以取消结论自证。Writers 为 `none: <依据>` 或 `stopped: <停止/交接证据 locator>`；后者原件须有 `Writers: stopped` 与真实 Observed。Dependencies/Checkpoints/External 使用 `none|resolved|transferred|waived: <处置依据>`，不能把未知写成已解决。Ticket 或 Direct Spec 的 active/review/blocked 执行记录仍须原 owner 处置，不由取消声明抹掉。
 
 独立 Spec 的无票 Direct Spec 使用原 evidence/direct-spec 的 `## Acceptance Verification` JSON array 逐 AC 回读实际结果：id/result/method/source/observed；command 存在时 exit 为 0，外部 evidence 引用须有匹配 sha256，内联观察无需另建文件。空 Evidence、仅标题或 passed 自评不通过。`--stage complete` 只判本地完成；A 移动前使用 `--stage archive-ready` 同时核对对应 completed/cancelled 门和已承诺远程交付，目标移动后再使用 archived。
+

@@ -1,17 +1,16 @@
 /**
  * Fixed vault layout of periodic notes (the journal archive). One pure module decides where the daily, weekly,
  * monthly, quarterly and yearly notes live and what they are called, so the notes navigator and the dashboard
- * calendar always agree. Folder names are Chinese on purpose: they are the user's vault structure, not interface
- * text, and do not follow the interface language.
+ * calendar always agree. Fixed folder names do not follow the interface language.
  *
- *   <root>/日记/YYYY/MM/YYYY-MM-DD.md
- *   <root>/周记/gggg/gggg-Www.md      (week-year and week number follow the first day of the week)
- *   <root>/月记/YYYY/YYYY-MM.md
- *   <root>/季记/YYYY/YYYY-Qq.md
- *   <root>/年记/YYYY.md
+ *   <root>/daily/YYYY/MM/YYYY-MM-DD.md
+ *   <root>/weekly/gggg/gggg-Www.md      (week-year and week number follow the first day of the week)
+ *   <root>/monthly/YYYY/YYYY-MM.md
+ *   <root>/quarterly/YYYY/YYYY-Qq.md
+ *   <root>/yearly/YYYY.md
  */
 
-import { JOURNAL_ROOT } from './storage/vault-layout';
+import { JOURNAL_ROOT, VISIBLE_NAMES } from './storage/vault-layout';
 
 export type Period = 'day' | 'week' | 'month' | 'quarter' | 'year';
 export const PERIODS: readonly Period[] = ['day', 'week', 'month', 'quarter', 'year'];
@@ -20,7 +19,7 @@ export const PERIODS: readonly Period[] = ['day', 'week', 'month', 'quarter', 'y
 export type WeekStart = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /** Folder of each period under the root. */
-export const PERIOD_FOLDERS: Readonly<Record<Period, string>> = { day: '日记', week: '周记', month: '月记', quarter: '季记', year: '年记' };
+export const PERIOD_FOLDERS: Readonly<Record<Period, string>> = VISIBLE_NAMES.periods;
 
 /** Moment-style name of a period's note (also what `{{date}}` writes in a period template). */
 export const PERIOD_NAME_FORMATS: Readonly<Record<Period, string>> = {
@@ -44,12 +43,14 @@ export function startOfDay(date: Date): Date {
 
 /** `date` moved by whole calendar days; the time of day is kept across daylight-saving changes. */
 export function addDays(date: Date, days: number): Date {
-	return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds(),
+	);
 }
 
 /** `date` moved by whole months; the day is clamped to the length of the target month. */
 export function addMonths(date: Date, months: number): Date {
-	const first = new Date(date.getFullYear(), date.getMonth() + months, 1, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+	const first = new Date(date.getFullYear(), date.getMonth() + months, 1, date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds(),
+	);
 	const length = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
 	first.setDate(Math.min(date.getDate(), length));
 	return first;
@@ -66,7 +67,8 @@ export function startOfWeek(date: Date, weekStart: WeekStart): Date {
 export const minDaysInFirstWeek = (weekStart: WeekStart): number => (weekStart === 1 ? 4 : 1);
 
 /** Week number and week-year of `date`: week 1 is the first week with at least `minDays` days in the year. */
-export function weekOfYear(date: Date, weekStart: WeekStart, minDays = minDaysInFirstWeek(weekStart)): { week: number; year: number } {
+export function weekOfYear(date: Date, weekStart: WeekStart, minDays = minDaysInFirstWeek(weekStart),
+): { week: number; year: number } {
 	const anchor = addDays(startOfWeek(date, weekStart), 7 - minDays);
 	return { week: Math.floor((dayOfYear(anchor) - 1) / 7) + 1, year: anchor.getFullYear() };
 }
@@ -125,15 +127,15 @@ export function periodicNotePath(root: string, period: Period, date: Date, weekS
 		case 'day': return `${base}/${year}/${pad(date.getMonth() + 1)}/${year}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.md`;
 		case 'week': {
 			const { week, year: weekYear } = weekOfYear(date, weekStart);
-			return `${base}/${pad(weekYear, 4)}/${pad(weekYear, 4)}-W${pad(week)}.md`;
+			return `${base}/${pad(weekYear, 4)}/${pad(weekYear, 4)}-${VISIBLE_NAMES.weekMarker}${pad(week)}.md`;
 		}
 		case 'month': return `${base}/${year}/${year}-${pad(date.getMonth() + 1)}.md`;
-		case 'quarter': return `${base}/${year}/${year}-Q${Math.floor(date.getMonth() / 3) + 1}.md`;
+		case 'quarter': return `${base}/${year}/${year}-${VISIBLE_NAMES.quarterMarker}${Math.floor(date.getMonth() / 3) + 1}.md`;
 		default: return `${base}/${year}.md`;
 	}
 }
 
-/** The period folder (`<root>/日记`, ...) a path would live in; used to tell journal notes apart from other notes. */
+/** The period folder (`<root>/daily`, ...) a path would live in; used to tell journal notes apart from other notes. */
 export function periodicFolder(root: string, period: Period): string {
 	return `${normalizePeriodicRoot(root)}/${PERIOD_FOLDERS[period]}`;
 }
@@ -146,9 +148,9 @@ export interface PeriodicRef {
 
 const PATTERNS: Readonly<Record<Period, RegExp>> = {
 	day: /^(\d{4})\/(\d{2})\/\d{4}-\d{2}-(\d{2})\.md$/,
-	week: /^(\d{4})\/\d{4}-W(\d{2})\.md$/,
+	week: new RegExp(`^(\\d{4})/\\d{4}-${VISIBLE_NAMES.weekMarker}(\\d{2})\\.md$`),
 	month: /^(\d{4})\/\d{4}-(\d{2})\.md$/,
-	quarter: /^(\d{4})\/\d{4}-Q([1-4])\.md$/,
+	quarter: new RegExp(`^(\\d{4})/\\d{4}-${VISIBLE_NAMES.quarterMarker}([1-4])\\.md$`),
 	year: /^(\d{4})\.md$/,
 };
 

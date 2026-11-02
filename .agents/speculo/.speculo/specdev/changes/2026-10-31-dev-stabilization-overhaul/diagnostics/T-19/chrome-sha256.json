@@ -1,0 +1,13 @@
+{
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-build-failure.json": "29acb209ae235a60e65adcd85de6f1c9c7187a7269aa1f745204b6738522c731",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-commands.json": "0ca29be4bdbc34a488ee367d4fa01a90dd28223fb6c2204aa6a9357dbd42b4a5",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-fixture-failure-1.json": "74fc3edca0fab840802dab99d4db99a46b047a662021604f6fcd4204f27bb5a5",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-fixture-failure-2.json": "ae0a75be374a0db6de4f7a913928b0f8f952bafd71b767a80735793cf17e0cf1",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-fixture.tsx": "121175c86d83b31c7cbbd8bd25f6044e1099bb9479a7a81bd01788bbab6cda9b",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-result.json": "e3f3f9cc526021cc38a192a8aa4bd84cad0263abf53bb77d9a0ac47cfe32aca1",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-run.mjs": "82750ed13ac41a5a4f8c962c0c2063d1bfa81047145ac263f2c7e276737e48d1",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-six-cases.json": "b71d58b063b0a16459be88a5ce6de91225eb9ebf43e6ef8aff4989a0b2db2360",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-six-fixture.tsx": "1920e518132af7743f207e38f72dab4049ff84243e09d3046aa150d474f430ea",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/chrome-six-run.mjs": "e567fe8f1c91f7e89d5d9184b905b2ccc4770eea08d0a714993fbbbf941e5c07",
+  ".agents/speculo/.speculo/specdev/changes/2026-10-31-dev-stabilization-overhaul/diagnostics/T-19/home-entry-observations.json": "eaaa5518f1a76638e7789582ba03affce304152eef325721539342ff878eea16"
+}

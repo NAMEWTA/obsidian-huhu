@@ -9,7 +9,8 @@ import { createObsidianOps } from './ops';
 const file = (path: string) => Object.assign(Object.create(TFile.prototype) as TFile, { path });
 
 function leaf(shows?: string) {
-	return { view: { file: shows ? { path: shows } : null, getViewType: () => 'markdown' }, getViewState: () => ({ pinned: false }), openFile: vi.fn(() => Promise.resolve()) } as unknown as WorkspaceLeaf & { openFile: ReturnType<typeof vi.fn> };
+	return { view: { file: shows ? { path: shows } : null, getViewType: () => 'markdown' }, getViewState: () => ({ pinned: false }), openFile: vi.fn(() => Promise.resolve()),
+	} as unknown as WorkspaceLeaf & { openFile: ReturnType<typeof vi.fn> };
 }
 
 function fixture(leaves: Array<WorkspaceLeaf & { openFile: ReturnType<typeof vi.fn> }>) {
@@ -30,7 +31,8 @@ function fixture(leaves: Array<WorkspaceLeaf & { openFile: ReturnType<typeof vi.
 			create: (path: string, content: string) => { created.push([path, content]); return Promise.resolve(file(path)); },
 		},
 	} as unknown as App;
-	const ops = createObsidianOps(app, () => undefined, new DialogRegistry(), { defaultProperties: () => DEFAULT_NOTE_PROPERTIES });
+	const ops = createObsidianOps(app, () => undefined, new DialogRegistry(), { defaultProperties: () => DEFAULT_NOTE_PROPERTIES,
+	});
 	return { app, ops, fresh, setActiveLeaf, created };
 }
 
@@ -58,13 +60,13 @@ test('a note made in the navigator is named after today and starts with the defa
 	setLanguage('en');
 	const t = fixture([]);
 	const path = await t.ops.createNote('Projects', undefined);
-	expect(path).toBe(`Projects/${isoDate(new Date())}-Untitled.md`);
+	expect(path).toBe(`Projects/${isoDate(new Date())}-untitled.md`);
 	expect(t.created[0]![1]).toBe('---\n状态: 在用\ntags:\n  - \n  - \n---\n');
 	await t.ops.createNote('Projects', 'work');
 	expect(t.created[1]![1]).toBe('---\n状态: 在用\ntags:\n  - work\n  - \n---\n');
 	setLanguage('zh');
 	await t.ops.createNote('/', undefined);
-	expect(t.created[2]![0]).toBe(`${isoDate(new Date())}-未命名.md`);
+	expect(t.created[2]![0]).toBe(`${isoDate(new Date())}-untitled.md`);
 	setLanguage('en');
 });
 
@@ -76,7 +78,8 @@ test('periodic note opens and reuse stay inside the owner window even when the m
 	Object.assign(ownedLeaf.view, { containerEl: { ownerDocument: { defaultView: owner } } });
 	Object.assign(ownedLeaf, { getContainer: () => popout });
 	const f = fixture([mainLeaf]);
-	Object.assign(f.app.workspace, { rootSplit: root, iterateAllLeaves: (callback: (leaf: WorkspaceLeaf) => void) => [mainLeaf, ownedLeaf].forEach(callback), getMostRecentLeaf: (container: unknown) => container === popout ? ownedLeaf : mainLeaf });
+	Object.assign(f.app.workspace, { rootSplit: root, iterateAllLeaves: (callback: (leaf: WorkspaceLeaf) => void) => [mainLeaf, ownedLeaf].forEach(callback), getMostRecentLeaf: (container: unknown) => (container === popout ? ownedLeaf : mainLeaf),
+	});
 	await f.ops.open('Journal/Entry.md', { focus: true, ownerWindow: owner, reuse: true });
 	expect(ownedLeaf.openFile).toHaveBeenCalledTimes(1);
 	expect(mainLeaf.openFile).not.toHaveBeenCalled();

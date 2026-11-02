@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/NAMEWTA/obsidian-huhu/issues/41",
+  "readCommand": "gh 只读读取原始报告（来源统一为 #41）",
+  "exit": 0,
+  "issueEntry": "打开任务页，新建一个带截止日期的任务并保存",
+  "image": "docs/images/readme/tasks.png",
+  "imageSha256": "a5b6027c035088c14f025c74b74ebd0bc4b9d175817cd83b91fe0636939144ee",
+  "imageObservation": "独立 Tasks 页面；All 7 / Incomplete 6 / Completed 1 / Overdue 2；不显示看板容器。",
+  "homeEntry": "TasksWidget -> homeServices.taskViews.mount(host,{compact:true}) -> mountTasks -> TaskPage",
+  "independentEntry": "mountTasks(...,compact=false) -> TaskPage；editTask -> 独立 React root TaskEditor",
+  "uncertainty": "原 GIF 保存动作精确时序、原记录全部格式和宿主 IO 未知；没有再要求用户真机测试。"
+}

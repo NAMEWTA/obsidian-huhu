@@ -1,4 +1,4 @@
-import { HABIT_ROOT } from '../../../../shared/storage/vault-layout';
+import { HABIT_ROOT, VISIBLE_NAMES } from '../../../../shared/storage/vault-layout';
 import { RecordStorage } from '../record-storage';
 import type { App } from 'obsidian';
 import { HabitApplication } from '../../core/habit/application';
@@ -19,7 +19,7 @@ export class HabitService extends HabitApplication {
 		if (this.focusDoc.visibilityState === 'visible') this.requestSync();
 	};
 	constructor(private plugin: WidgetSettingsHost) {
-		const storage = new RecordStorage(plugin.app, `${HABIT_ROOT}/habits.json`);
+		const storage = new RecordStorage(plugin.app, `${HABIT_ROOT}/${VISIBLE_NAMES.json.habit}`);
 		super(storage, HABIT_ROOT);
 		this.unsubscribe = storage.subscribeInvalidation(() => this.requestSync());
 		this.focusDoc = plugin.app.workspace.containerEl.ownerDocument;

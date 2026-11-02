@@ -1,3 +1,4 @@
+import { t } from '../../../../shared/i18n';
 import { expect, test, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,6 +7,8 @@ import { TestProviders } from '../../../../ui/react/test-providers';
 import { emptyWorkspace, type TerminalTabData } from '../../core/workspace/model';
 import type { HistoryRow } from '../../services/history-store';
 import type { AgentController } from '../../services/controller';
+import { WorkspaceService } from '../../services/workspace-service';
+import type { TerminalSessions } from '../../services/terminal/sessions';
 import { JumpPalette } from './JumpPalette';
 
 function fixture() {
@@ -27,7 +30,8 @@ function fixture() {
 		tabs: { open: tab },
 		groups: [{ id: 'group', tabIds: ['open'], activeTabId: 'open', recentTabIds: [] }],
 		activeGroupId: 'group',
-		closedTabs: [{ ...tab, id: 'closed', title: 'Closed terminal' }],
+		layout: { kind: 'group' as const, groupId: 'group' },
+		closedTabs: [{ ...tab, id: 'closed', title: 'Closed terminal', sessionIds: ['closed-session'], focusedSessionId: 'closed-session', paneLayout: { kind: 'pane' as const, session: 'closed-session' }, panes: { 'closed-session': { cwd: '/vault' } } }],
 	};
 	const row: HistoryRow = {
 		key: 'history',
@@ -47,7 +51,10 @@ function fixture() {
 		turns: [],
 		messageCount: 0,
 	};
-	const workspace = { store: createStore(() => state), move: vi.fn(), reopen: vi.fn(), report: vi.fn() };
+	const report = vi.fn();
+	const workspace = new WorkspaceService({ store: createStore(() => state), ready: Promise.resolve(), flush: async () => {}, dispose: async () => {} },
+		{ subscribe: () => () => {}, get: () => undefined, focus: vi.fn() } as unknown as TerminalSessions,
+		{ shell: vi.fn(), agent: vi.fn(), resume: vi.fn(), account: () => '', report });
 	const resume = vi.fn(async () => {}),
 		resumeAt = vi.fn(async () => {}),
 		close = vi.fn(),
@@ -63,7 +70,7 @@ function fixture() {
 			<JumpPalette controller={controller} close={close} select={select} />
 		</TestProviders>,
 	);
-	return { workspace, resume, resumeAt, close, select, row, user: userEvent.setup() };
+	return { workspace, report, resume, resumeAt, close, select, row, user: userEvent.setup() };
 }
 test.each([false, true])('history Enter restores with split=%s exactly once', async (split) => {
 	const f = fixture();
@@ -93,17 +100,19 @@ test.each([false, true])('closed tab Enter reopens with split=%s exactly once', 
 		),
 	);
 	await f.user.keyboard(split ? '{Shift>}{Enter}{/Shift}' : '{Enter}');
-	expect(f.workspace.reopen).toHaveBeenCalledExactlyOnceWith('closed');
+	expect(f.workspace.store.getState().tabs.closed).toBeDefined();
+	expect(f.workspace.store.getState().closedTabs).toHaveLength(0);
 	expect(f.select).toHaveBeenCalledExactlyOnceWith('closed');
-	if (split)
-		expect(f.workspace.move).toHaveBeenCalledExactlyOnceWith('closed', { split: 'right', ofGroupId: 'group' });
-	else expect(f.workspace.move).not.toHaveBeenCalled();
+	expect(f.workspace.store.getState().groups).toHaveLength(split ? 2 : 1);
+	expect(f.report).not.toHaveBeenCalled();
 	expect(f.close).toHaveBeenCalledOnce();
 });
-test('open tab Shift+Enter still splits right', async () => {
+test('single open tab Shift+Enter explains refusal and keeps the palette open', async () => {
 	const f = fixture();
 	await f.user.click(screen.getByRole('combobox'));
 	await f.user.keyboard('{Shift>}{Enter}{/Shift}');
-	expect(f.workspace.move).toHaveBeenCalledExactlyOnceWith('open', { split: 'right', ofGroupId: 'group' });
-	expect(f.select).toHaveBeenCalledExactlyOnceWith('open');
+	expect(f.workspace.store.getState().groups).toHaveLength(1);
+	expect(f.report).toHaveBeenCalledWith(t('agent.workspace.moveReason.last-tab'));
+	expect(f.select).not.toHaveBeenCalled();
+	expect(f.close).not.toHaveBeenCalled();
 });

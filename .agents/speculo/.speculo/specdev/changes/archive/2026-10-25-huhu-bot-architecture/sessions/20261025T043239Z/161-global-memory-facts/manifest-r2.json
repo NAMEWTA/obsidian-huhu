@@ -1,0 +1,62 @@
+{
+  "task": "161-global-memory-facts",
+  "status": "source-candidate; not completed",
+  "created_at_utc": "2026-10-26T19:29:24.684692+00:00",
+  "artifacts": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/161-global-memory-facts/REPORT.md",
+      "bytes": 2839,
+      "mode": "0o664",
+      "sha256": "7b4d683ebd78397dbb7916269c0c9f3ca31db080a26c765eae71cc2d4f8a4239"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/161-global-memory-facts/logs/interface-checkpoint.md",
+      "bytes": 2314,
+      "mode": "0o664",
+      "sha256": "279733eb181d07d43f4880e37c4ceb26f27109d73faadda7bc92a6648e5b5979"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/161-global-memory-facts/logs/02-source-checkpoint-r2.json",
+      "bytes": 1911,
+      "mode": "0o664",
+      "sha256": "685c0cd2bb46daf14f11f0aa661e9e4881561738b2f8ce2628d507519529635e"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/global_facts.go",
+      "bytes": 26657,
+      "mode": "0o664",
+      "sha256": "0249c9bb558587a81758db4e2612ba7c5b40e5891f34f56806fd696eaf3f7903"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/namespace.go",
+      "bytes": 6995,
+      "mode": "0o664",
+      "sha256": "4d202fdd1c599ca8e84f8ba0706649004a2a0f90987ea42c87d8926aa6b7a573"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/private.go",
+      "bytes": 15789,
+      "mode": "0o664",
+      "sha256": "023aaa36b50f628058b4dc65fcd86ed42e1291a78434ec2ed908337dcf2da5f6"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/context_plan.go",
+      "bytes": 18277,
+      "mode": "0o664",
+      "sha256": "acdb71efcdf87cfa8e634462dc4e5f3998ccc1937f75a5a8884e2ab35a272662"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/context_read.go",
+      "bytes": 13901,
+      "mode": "0o664",
+      "sha256": "cac77ab4a9baf50a9061970b43e29c6b7b93a5fbbbce61c8b836b0d62d6c09f6"
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/memory/store.go",
+      "bytes": 4275,
+      "mode": "0o664",
+      "sha256": "4680cfb906b8b6df6a7ccadac3ed244389899c653dc0489e396a4092a911b679"
+    }
+  ],
+  "updated_at_utc": "2026-10-26T19:36:23.871835+00:00"
+}

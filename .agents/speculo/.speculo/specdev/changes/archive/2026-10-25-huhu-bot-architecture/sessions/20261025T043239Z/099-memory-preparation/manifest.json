@@ -1,0 +1,77 @@
+{
+  "taskSHA256": "6794fa83c918c72f46c37b3120657a7630e5f0faac63e1b2399e3a786f5ded40",
+  "reportSHA256": "6ad279907190c0d63b4681aba3c898008d617034f9100927bba6bd3dbe1d9813",
+  "createdAt": "2026-10-26T02:44:48.198719+00:00",
+  "sourceCount": 54,
+  "finalSourceDrift": [
+    {
+      "id": "C06",
+      "path": "native/huhubot/internal/application/api/recovery.go",
+      "readSHA256": "06b8b018b01b74034f52019e01a41307775cd0934d37552213f2c14ddf246ec5",
+      "currentSHA256": "a20bc1d0eb926b1b4f474a81b794c9668b5833a6cdc4d15f00688f977fd13e7f"
+    },
+    {
+      "id": "C14",
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/recovery.go",
+      "readSHA256": "19c21d88682858ed553081963b5a9c9cb8f4abc2a824ec4a826d5f673dcff88f",
+      "currentSHA256": "1e0bf54b3b2eef209185def12b8e5e56c7c7f84ba23063111beb7c8f8a9131d3"
+    },
+    {
+      "id": "C32",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/engine.go",
+      "readSHA256": "40bc23f7c0a719a9d51d2b71a3bd97df9ba62b3bf2e7ec949fc5033e3b398d7f",
+      "currentSHA256": "84762d74262fa956ff164400609a0deb0c6761ea8ca824ebfda18442d6b7fbea"
+    },
+    {
+      "id": "C33",
+      "path": "native/huhubot/internal/adapters/outbound/eino/common/checkpoint.go",
+      "readSHA256": "696db729f33be0e69bfc243bbf15e86c1bf9a65c675061f4b8ee71c5c509ab62",
+      "currentSHA256": "c4abed58b0a9d9278ef1bbf72a841a6b0470a3d510c6088eaf8ef514d5f2c431"
+    }
+  ],
+  "driftMeaning": "Root-authorized100/101 Map24/Goal23 work after original read snapshots; recorded only hashes, not expanded/reviewed here. The report uses read versions.",
+  "missingLinks": [],
+  "productCommandsRun": [],
+  "productionPermanentTestsLocksSchemaWritten": false,
+  "ownBackgroundOrPendingProcesses": [],
+  "allReadAndReturnCommandsWaited": true,
+  "artifacts": {
+    "REPORT.md": {
+      "sha256": "6ad279907190c0d63b4681aba3c898008d617034f9100927bba6bd3dbe1d9813",
+      "bytes": 10311
+    },
+    "failure-matrix.md": {
+      "sha256": "1908c45fbc72f066577ba124c2fb535d45fc9b07f7420f293676d05fa16acd30",
+      "bytes": 5701
+    },
+    "interfaces-and-owners.md": {
+      "sha256": "b25967d834947752fba88022a3b1a98bb8047edf0a91cbac6c08a5e9172224ca",
+      "bytes": 23655
+    },
+    "observations.json": {
+      "sha256": "1300863d531037f98e2fd54e519c228bd4d8ffc84a78f5e8a8a4a8350468ff76",
+      "bytes": 1594
+    },
+    "return.json": {
+      "sha256": "46c96efc1f63163f4a2d2fdd0cb033d49cb5ec704e38abc668b08b913355b256",
+      "bytes": 794
+    },
+    "source-recheck.json": {
+      "sha256": "8dba05be90363bfa9f4190a976860059d95e4b9be742d1e0df3889b866dda7e7",
+      "bytes": 18597
+    },
+    "sources.json": {
+      "sha256": "ebfb65439bf2cbb095aad0595bcdb56cfe07e7130de4b2dce78711ead4b6e302",
+      "bytes": 21879
+    },
+    "sources.md": {
+      "sha256": "b8e1d23b462145570038879d749271c03a13300101eb51ee4dd47cbba046bb07",
+      "bytes": 9015
+    },
+    "wire-memory-current.json": {
+      "sha256": "3b95faf7e1301bc56194990afa75c90d221ee732e4a8e4af5707203ee92c52c8",
+      "bytes": 18729
+    }
+  },
+  "stoppedAfterHandoff": true
+}

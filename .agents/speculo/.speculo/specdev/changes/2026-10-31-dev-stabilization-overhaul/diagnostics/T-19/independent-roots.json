@@ -1,0 +1,23 @@
+{
+  "stages": [
+    {
+      "event": "storage-commit"
+    },
+    {
+      "event": "publish",
+      "all": 1,
+      "domHasTitle": false
+    },
+    {
+      "event": "save-success",
+      "all": 1,
+      "domHasTitle": true
+    },
+    {
+      "event": "dialog-closed",
+      "all": 1,
+      "domHasTitle": true
+    }
+  ],
+  "result": "consistent in tested runtime seam"
+}

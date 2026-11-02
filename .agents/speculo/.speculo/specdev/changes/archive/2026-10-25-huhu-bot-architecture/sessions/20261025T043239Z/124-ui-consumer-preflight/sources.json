@@ -1,0 +1,122 @@
+{
+  "capturedAt": "2026-10-26T09:07:47.477971+00:00",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "sourceCount": 63,
+  "files": {
+    "AGENTS.md": "50db128fbe7d1807a8147291fb25ae4d8cab3866bc3d772bf4857af5a36311ef",
+    ".agents/speculo/.speculo/workspace.json": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+    ".agents/speculo/catalog.json": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+    ".agents/skills/dev/SKILL.md": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+    ".agents/skills/dev/references/architecture.md": "0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42",
+    ".agents/skills/dev/references/module-authoring.md": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b",
+    ".agents/skills/ui/SKILL.md": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+    ".agents/skills/ui/references/shell.md": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+    ".agents/skills/ui/references/design-system.md": "3aed1cce7dccf6ebf7517158a9b6c509c5196c6301487bbf3533319c3ff33d3e",
+    ".agents/skills/ui/references/motion-a11y.md": "76043cfedd62e7278102a74325668269953d51e2076d9f0711862cb357354de7",
+    "src/app/contracts/module.ts": "fcfb00282bbd7ba22a043a5147729882801c3c2131a5faad67034983e50422d1",
+    "src/app/contracts/workbench.ts": "76f0afef332869e70a54097729a8e0f84163073a2c277c0d41aa13c30e907f9a",
+    "src/app/contracts/workbench-host.ts": "245dbf1bc373a1e9a8f7a79d84581060c22bdc09b1824763efd0bf1dc83d738d",
+    "src/app/manifests.ts": "6e29a6fdae6c958ee15151d5bc12074be47a50ba77d40c5d3035c7ca0be13809",
+    "src/app/modules/registry.ts": "2f1fd47357def35fc7634f70f3acfd72596b59a2bf06727ee60b77efd00ca20e",
+    "src/app/workbench/compose-workbench.ts": "1d6d9c8174096646f5d2dda49f645bbc1f3a66b28018df697997cffb785e452e",
+    "src/shell/host/workbench-pages.ts": "cf1dcd5718ed070d50e9af4162c188df509d2f834ae660a406edf3c78dd6cce7",
+    "src/ui/react/surface.tsx": "19ec0683216f9d3fefc50ea9d8e8eb346f2e484cef9072ec650a8e27ae3041c5",
+    "src/ui/react/providers.tsx": "b33de5d419b86baf7aaacab495fcbba57e83e327995dcd9fdf644a131b94ae34",
+    "src/ui/react/portal.ts": "fccf55c3628a482b886143f5261e5452e9cf7868734e3fcb20bd2bf0d86d549c",
+    "src/ui/react/owner-document.ts": "ceda20983c49889b24f0021c3c2b79b839773d20746018d59f0ed189754c5edb",
+    "src/ui/react/contexts.ts": "65f0c8499613fef801b2a7e39dc98492e21912e3eb5449add01fe9bef91aef26",
+    "src/ui/react/hooks.ts": "e78d84e75f427698dd08bad3e057411d635a90ab92af78df132765e2052930b6",
+    "src/ui/react/ime.ts": "691391c22470320fe694da75db5ec6f2135c83192e2f7f6738a6b889029eb0c7",
+    "src/ui/components/dialog.tsx": "c8d9d480ec64a1dfa2d4d2ceab671cc37b53b2a5d250c43d48775cd2ab664437",
+    "src/ui/components/huhu/EmptyState.tsx": "0a8ed82a36ad3c5388169a36f45cdfad511861e8dbdb6f8f537849a3371a9dab",
+    "src/ui/components/huhu/ConfirmDialog.tsx": "8e0ff38d944093df71fe306be8b328a3db30eca332d73cae7f1981d52198ac56",
+    "src/ui/components/huhu/SegmentedControl.tsx": "7f92cbb3d51bdc235e3cc1dd864cd9ea279d81a6c6542c7edd8424772833d68b",
+    "src/ui/components/huhu/SettingsSection.tsx": "9662f97e87c5d9d2e63f53afecba5afccc45be28c742ddf06c1d0357d51d4a34",
+    "src/modules/huhubot/api.ts": "ff921139bdd82f2c6e2b83892fc499489ccef93183e7f827fe6709ec4697a401",
+    "src/modules/huhubot/services/assistant-client.ts": "8f049a1d95e5a55c3b4474fcb976022d0def221798c13d4b0e4ab4f7f16e3a3b",
+    "src/modules/huhubot/services/groups/group-client.ts": "9a951074020c491e9a96e237589ee613da4df461a7a079dc8ca04115d3f3ca33",
+    "src/modules/huhubot/services/events/event-client.ts": "31ac66ee70cc75b381e3f0289aa52ad57a88b92e318fed78c1caff611684dca8",
+    "src/modules/huhubot/services/recovery/recovery-client.ts": "2db067395ef098ce7171ce80961736455daa265726746f0d9718aaff70f00367",
+    "src/modules/huhubot/core/mentions/mentions.ts": "4d9ff0a72e05da4b9406e336a929e91da0a86820f5363ecc70cff42eb2cc2336",
+    "src/modules/huhubot/services/host-write/obsidian-host.ts": "dc7c3283e57c3c6636690b7fb46e579ed5038618a5049b8715e03ae81039bbad",
+    "src/modules/huhubot/platform/obsidian/sources/sources.ts": "9cae96207519d2c37f7db435586731dcf8bb5a0be5a5a351f5bde998e57551bd",
+    "src/modules/huhubot/platform/desktop/transport/managed.ts": "f74ced41a9bf78c5d191ef2164ba7973018e76e8cefd992142a79be44714e989",
+    "src/modules/huhubot/core/protocol/method-validation.ts": "ee8092c8d7fefdaeb44e2c7a6f0a5632aa37092a4e7dacd62a39c154f04ab389",
+    "contracts/hap/v0.1/methods.json": "d110ecaca8f535c69c81d9ec39f2815ae82eb8c6f97dabe57074ba5246f2465b",
+    "contracts/hap/v0.1/schema.json": "a4daa358204d607614ddd15f62aeede4f0e161fe31498cee55c43dc7540de534",
+    "native/huhubot/internal/application/assistant/service.go": "098a8fae191f017e058f1ed04de9bd5c9f8ab61fd28832eff8866e7199dd6aa7",
+    "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go": "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/DESIGN.md": "22a20917efc7ec5173b275144e6fd1ae6f323fbf8c7a78927e27e97a4d006c00",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md": "0b539d158479aa604eaff0afee5e04faebbd741f1f794865ca59570794ef3c9d",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/bindings.json": "b60651dbdc17d04bd7eb5e4dc49475e86e81ceb156148ed64f089fd8843a3f38",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/confirmation-final.md": "29a16e6190948b8e1444028afa4673c835c944b359a8092cab2809af5a1cb46c",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/final/index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/final/app.js": "d57ce7bf7df7c4053e385621bde9aeba05a4494c96914f1baad5258572cc2216",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/final/styles.css": "19d2a9f85e3b70f5d14f50959051ed930af4320bb269d5497f2ddd5265040649",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/prototypes/UI-001/evidence/repair-2/design-review.md": "56677ac6f27974369d762620a7e4e0886d40a54d822d76eb6b5086681929df51",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/20-module-runtime.md": "b93e93ac715dc71d004e8b86f97276196db6e9009d30e7cacae9132e382468cf",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/21-chat-ui.md": "db82ccc13d3f685119ab9ae971ea20b64f95d12be67903f8be03666eeed67796",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/22-agent-group-ui.md": "df8482ff38e200e4ef613df2d9a189d4d68eb6cb048449fa5629768cad126627",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/23-tasks-access-ui.md": "06b96a87ee7a98f40e93efd73c0f40d4f7acd3f39c99433d45c6abcec9a0fce8",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/24-memory-ui.md": "08744bb109827e51948ed1980e548b11f69bfd4c2adfe5954b9589fb021a7cb3",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/25-data-ui.md": "c10572e0bd7b710f8f275b904e93b66e59839032187b7cf6d91e20c59d4e13ff",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/084-module-runtime-seams/REPORT.md": "e53d8622245a2f4e21d464bf09c748a5bef6f8bc784bc56bc700e03bab673677",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/REPORT.md": "6159120dbdd5659cdf1e5878c0ca0ef8d2676b68a6fd5ed7ca315b803f54532e",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/115-memory-interface-contract/interface-contract.md": "406bdd596fd3bd93702c487ab7e996b8be78d9702be584cc3b3e46f9d3acdfc4",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/TASK.md": "0d5a31b887bee74418acbc682dde1cc5bbc11f8932395a32fce0100f56d53fbb",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/short-term-contract.md": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/121-anthropic-review/TASK.md": "e75f70f4471e6d65bb1e647a60772e9d9fe99984a4e97956c669d91bba1324a2"
+  },
+  "sourceTreeSHA256": "9ddeabdfd2ead825849c4dfb4a00f2c338f247af6de55735e45ce4848a678f03",
+  "readScope": "Current TS contracts/services and Shell/React adapters read by symbol/range; full DESIGN page/state sections, bindings/confirmation, actual final HTML/CSS and app.js rendering/actions; six Ticket scope/owner/dependency sections. No runtime inspection.",
+  "reusedUnchangedRules": {
+    ".agents/skills/dev/SKILL.md": {
+      "before": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "current": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "unchanged": true
+    },
+    ".agents/skills/dev/references/architecture.md": {
+      "before": "0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42",
+      "current": "0c63bf9d63eb8626351b29cbdb980cfed0f9cede5e712c5de6d61eac35ec7b42",
+      "unchanged": true
+    },
+    ".agents/skills/dev/references/module-authoring.md": {
+      "before": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b",
+      "current": "ac00352dbace247a46730da89a7ad43a06202ab951be49613130ea9adfd5728b",
+      "unchanged": true
+    },
+    ".agents/skills/ui/SKILL.md": {
+      "before": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "current": "ee5c7facae34a008a21c5c4b4c3a1b80afe617148c299fe4dcb08d7a6f6840ff",
+      "unchanged": true
+    },
+    ".agents/skills/ui/references/shell.md": {
+      "before": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "current": "f78a998af570d4b9cfc290a257db41023ba21af7a223571016e5c7bae2933d74",
+      "unchanged": true
+    }
+  },
+  "finalActualFiles": {
+    "app.js": "d57ce7bf7df7c4053e385621bde9aeba05a4494c96914f1baad5258572cc2216",
+    "assets/Geist-Variable.woff2": "a369fcf5628ea2aa4e1b9e2ec6a5b3624e365bda588e1f0f2f12b564f728fbb8",
+    "assets/GeistMono-Variable.woff2": "fba8f577f38a2bbcbe818efa6348dd58f36303a10b8737c42fefad275be563ab",
+    "assets/LICENSE.txt": "930853ee1daa68554d9e35c8a9175affb74f699fad9a5da6ee5ebe76379d9137",
+    "index.html": "0f2ec5ff05dd613dc9f435728d0d9166b03e9f3ad4c6909895ac9f14793a7a45",
+    "styles.css": "19d2a9f85e3b70f5d14f50959051ed930af4320bb269d5497f2ddd5265040649"
+  },
+  "finalActualDirectoryDigest": "23b1af4b2b5d38fa1495db5f1a8438891e5a60e560d62752acda88192aa333a3",
+  "finalDirectoryAlgorithm": "SHA256 UTF8 JSON compact sorted [[relativePath,fileSHA256],...] (confirmation algorithm)",
+  "historicalBindingFinalDirectoryDigest": "3e9bd4c227d74c226fbc9ee0ef1f8757685358c6e5ca7e64d9a7beaa806b8e49",
+  "mutableCandidateInputs": [
+    ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/short-term-contract.md"
+  ],
+  "rootDeclaredFrozenInput": "2a649a6cf8959681c6dc87f5dc59151f3895c8c7938eab5e98e9ab36a2c2c1b4",
+  "entireRootFrozenTreeIndependentlyVerified": false,
+  "productWritesOrRuns": false,
+  "candidateReadVersions": {
+    "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/123-short-term-context-contract/short-term-contract.md",
+    "initialReadSHA256": "92d6e6afb43b2db1c9b54ec2d50c5316c84899683a0e381f809917329c2b252b",
+    "finalOwnerCandidateSHA256": "68333f6840ff76a67b5c8fc5ccee67fb2da95d7622e6e9f3fe968fbff07e9d7b",
+    "observation": "Owner finalized candidate text; §6 actually reread. No product implemented."
+  }
+}

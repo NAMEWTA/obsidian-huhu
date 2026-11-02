@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { TextStorage } from '../../../shared/storage/ports';
 import type { NotificationChannelId, NotificationRecord } from '../api';
 import type { NotificationDelivery } from './ports';
-import { NotificationService } from './service';
+import { NotificationService, notificationsRecoveryOwner } from './service';
 
 class MemoryStorage implements TextStorage {
 	readonly files = new Map<string, string>();
@@ -111,5 +111,93 @@ describe('NotificationService', () => {
 		await inbox.open(inbox.records[0]!);
 		expect(opened).toEqual(['open-me']);
 		expect(inbox.unread).toBe(0);
+	});
+});
+
+describe('NotificationService recovery owner', () => {
+	const path = '.huhu/notifications/device/inbox.json';
+	it('owns exactly its file; the hold fails new sends visibly; resume reopens', async () => {
+		const disk = new MemoryStorage();
+		const { adapter, sent } = delivery();
+		const inbox = new NotificationService(disk, path, async () => {}, adapter);
+		await inbox.load();
+		const owner = notificationsRecoveryOwner(inbox, path);
+		expect(owner.owns(path)).toBe(true);
+		expect(owner.owns('.huhu/notifications/other/inbox.json')).toBe(false);
+		await owner.quiesce('t');
+		await expect(inbox.send(request('late'))).rejects.toThrow('notifications-recovery-busy');
+		await expect(inbox.markRead()).rejects.toThrow('notifications-recovery-busy');
+		expect(sent).toEqual([]);
+		await owner.release('t');
+		await inbox.send(request('after'));
+		expect(sent).toEqual([['in-app', 'after']]);
+		await owner.release('t');
+	});
+
+	it('drain is strict and waits for admitted work', async () => {
+		const disk = new MemoryStorage();
+		const inbox = new NotificationService(disk, path, async () => {}, delivery().adapter);
+		await inbox.load();
+		disk.failWrites = true;
+		await expect(inbox.send(request('x'))).rejects.toThrow('write failed');
+		await expect(inbox.drainWrites()).rejects.toThrow('write failed');
+	});
+
+	it('adopting a replaced file sends nothing and keeps receipts that have no record', async () => {
+		const disk = new MemoryStorage();
+		const { adapter, sent } = delivery();
+		const inbox = new NotificationService(disk, path, async () => {}, adapter);
+		await inbox.load();
+		disk.files.set(
+			path,
+			JSON.stringify({
+				records: [{ id: 'kept', title: 't', body: 'b', channels: ['in-app'], createdAt: 1, read: false, deliveries: { 'in-app': 'unknown' } }],
+				receipts: { kept: { 'in-app': 'unknown' }, cleared: { 'in-app': 'sent' } },
+			}),
+		);
+		await inbox.adoptFromDisk();
+		expect(inbox.records.map((r) => r.id)).toEqual(['kept']);
+		await inbox.send(request('cleared'));
+		await inbox.send(request('kept'));
+		expect(sent).toEqual([]);
+		expect(inbox.records).toHaveLength(1);
+	});
+
+	it('a failure the system reports while held is applied after the hold, not dropped', async () => {
+		const disk = new MemoryStorage();
+		let report: (() => void) | undefined;
+		const adapter: NotificationDelivery = {
+			available: () => true,
+			send: (_channel, _record, handlers) => {
+				report = handlers.failed;
+			},
+			dispose: () => {},
+		};
+		const inbox = new NotificationService(disk, path, async () => {}, adapter);
+		await inbox.load();
+		await inbox.send({ ...request('late'), channels: ['in-app'] });
+		expect(inbox.records[0]!.deliveries['in-app']).toBe('sent');
+		inbox.quiesceWrites();
+		report!();
+		expect(inbox.records[0]!.deliveries['in-app']).toBe('sent');
+		inbox.resumeWrites();
+		await vi.waitFor(() => expect(inbox.records[0]!.deliveries['in-app']).toBe('failed'));
+	});
+
+	it('reports a send in flight as busy work', async () => {
+		const disk = new MemoryStorage();
+		let release!: () => void;
+		const adapter: NotificationDelivery = {
+			available: () => true,
+			send: () => new Promise<void>((resolve) => (release = resolve)),
+			dispose: () => {},
+		};
+		const inbox = new NotificationService(disk, path, async () => {}, adapter);
+		await inbox.load();
+		const pending = inbox.send({ ...request('slow'), channels: ['in-app'] });
+		await vi.waitFor(() => expect(inbox.busyWork()).toEqual(['notifications:1']));
+		release();
+		await pending;
+		expect(inbox.busyWork()).toEqual([]);
 	});
 });

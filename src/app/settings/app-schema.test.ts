@@ -3,9 +3,9 @@ import { appSchema } from './app-schema';
 test('new and missing module switches are enabled, while an explicit saved opt-out survives', () => {
  const schema = appSchema('zh');
  expect(Object.values(schema.defaults().modules).every(Boolean)).toBe(true);
- expect(schema.normalize({ modules: { home: true } }).modules.sync).toBe(true);
- const saved = schema.normalize({ modules: { sync: false, icons: false } });
- expect(saved.modules.sync).toBe(false);
+ expect(schema.normalize({ modules: { home: true } }).modules.versioning).toBe(true);
+ const saved = schema.normalize({ modules: { versioning: false, icons: false } });
+ expect(saved.modules.versioning).toBe(false);
  expect(schema.normalize(JSON.parse(JSON.stringify(schema.pick(saved, 'vault')))).modules).toEqual(saved.modules);
 });
 test('status bar preferences survive serialization with arbitrary contribution ids and safe defaults', () => {

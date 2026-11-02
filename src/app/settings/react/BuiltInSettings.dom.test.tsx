@@ -9,7 +9,7 @@ test('About renders as a README with GitHub links, the version and no side proje
 			<AboutSettings version="1.2.3" />
 		</TestProviders>,
 	);
-	expect(screen.getByRole('heading', { level: 1, name: 'HUHU' })).toBeTruthy();
+	expect(screen.getByRole('heading', { level: 1, name: 'HUHU' }).closest('.huhu-design')).not.toBeNull();
 	expect(container.textContent).toContain('1.2.3');
 	expect(container.textContent).not.toContain('WTA-plus');
 	const hrefs = [...container.querySelectorAll('a')].map((a) => a.getAttribute('href'));

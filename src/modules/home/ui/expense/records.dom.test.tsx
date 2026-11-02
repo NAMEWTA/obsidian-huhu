@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { App } from 'obsidian';
 import { afterEach, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { TestProviders } from '../../../../ui/react/test-providers';
@@ -108,7 +109,21 @@ test('analysis keeps metrics, chart data, rows and export on the same month/type
  s.addRecord({ type: 'expense', amount: 0.2, category: 'transport', date: '2026-10-14', note: 'Travel current' });
  s.addRecord({ type: 'income', amount: 1, category: 'salary', date: '2026-10-14', note: 'Income current' });
  s.addRecord({ type: 'expense', amount: 50, category: 'food', date: '2026-09-14', note: 'Previous month' });
- const write = vi.fn(async (_path: string, _body: string) => {}); Object.assign(s, { writeVaultFile: write });
+ const existingPath = 'huhu/exports/expense-export-2026-10-14.csv';
+ const files = new Map([[existingPath, 'Existing export must survive']]);
+ const folders = new Set<string>();
+ const exists = (path: string) => files.has(path) || folders.has(path);
+ const create = vi.fn(async (path: string, body: string) => {
+  if (exists(path)) throw new Error('File already exists');
+  files.set(path, body);
+  return { path };
+ });
+ const app = { vault: {
+  adapter: { exists: async (path: string) => exists(path), mkdir: async (path: string) => { folders.add(path); } },
+  getAbstractFileByPath: (path: string) => exists(path) ? { path } : null,
+  create,
+ } } as unknown as App;
+ Object.assign(s, { getApp: () => app });
  render(<TestProviders><ExpenseStatsPanel service={s} /></TestProviders>);
  const detail = () => screen.getAllByRole('table').at(-1)!;
  expect(within(detail()).getAllByRole('row')).toHaveLength(4);
@@ -118,9 +133,14 @@ test('analysis keeps metrics, chart data, rows and export on the same month/type
  fireEvent.change(screen.getByLabelText(t('analytics.allCategories')), { target: { value: 'food' } });
  expect(within(detail()).getAllByRole('row')).toHaveLength(2);
  fireEvent.click(screen.getByRole('button', { name: t('analytics.export') }));
- await waitFor(() => expect(write).toHaveBeenCalledTimes(1));
- const csv = String(write.mock.calls[0]?.[1]);
- expect(csv).toContain('Food current'); expect(csv).not.toContain('Travel current'); expect(csv).not.toContain('Previous month');
+ await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
+ const exportPath = 'huhu/exports/expense-export-2026-10-14-2.csv';
+ expect(create.mock.calls[0]?.[0]).toBe(exportPath);
+ expect(folders).toEqual(new Set(['huhu', 'huhu/exports']));
+ expect(files.get(existingPath)).toBe('Existing export must survive');
+ expect(files.size).toBe(2);
+ const csv = files.get(exportPath)!;
+ expect(csv).toContain('Food current'); expect(csv).not.toContain('Travel current'); expect(csv).not.toContain('Previous month'); expect(csv).not.toContain('Income current');
  fireEvent.click(screen.getByRole('button', { name: t('analytics.previous') }));
  expect(within(detail()).getByText('Previous month')).toBeTruthy(); expect(within(detail()).queryByText('Food current')).toBeNull();
  await s.flush();

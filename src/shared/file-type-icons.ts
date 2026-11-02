@@ -7,7 +7,7 @@
  * Obsidian theme variables, so they follow the theme and the light/dark mode and are valid in HUHU's own UI and in
  * Obsidian's file explorer.
  */
-import { HUHU_VISIBLE_ROOT } from './storage/vault-layout';
+import { HUHU_VISIBLE_ROOT, VISIBLE_NAMES } from './storage/vault-layout';
 
 export interface FileTypeIcon {
 	/** Lucide icon name without the `lucide-` prefix. */
@@ -52,7 +52,8 @@ assign('png jpg jpeg gif svg webp bmp avif heic ico tif tiff', IMAGE);
 assign('mp3 wav ogg oga opus m4a flac aac 3gp', AUDIO);
 assign('mp4 mov mkv avi webm m4v wmv', VIDEO);
 assign('zip rar 7z tar gz tgz bz2 xz', ARCHIVE);
-assign('js jsx mjs cjs ts tsx py rs go java kt c h cpp cc hpp cs rb php swift sh bash zsh ps1 lua sql html htm css scss vue svelte', CODE);
+assign('js jsx mjs cjs ts tsx py rs go java kt c h cpp cc hpp cs rb php swift sh bash zsh ps1 lua sql html htm css scss vue svelte', CODE,
+);
 assign('json jsonl', JSON_DATA);
 assign('yaml yml toml xml ini conf env', CONFIG_DATA);
 assign('txt log', PLAIN_FILE);
@@ -75,11 +76,11 @@ export function defaultFileIcon(pathOrExtension: string): FileTypeIcon {
 
 const JOURNAL = entry('calendar-days', color('green'));
 const PERIODIC = new Map<string, FileTypeIcon>([
-	['日记', entry('calendar-1', color('green'))],
-	['周记', entry('calendar-range', color('green'))],
-	['月记', entry('calendar', color('green'))],
-	['季记', entry('calendar-fold', color('green'))],
-	['年记', entry('calendar-clock', color('green'))],
+	[VISIBLE_NAMES.periods.day, entry('calendar-1', color('green'))],
+	[VISIBLE_NAMES.periods.week, entry('calendar-range', color('green'))],
+	[VISIBLE_NAMES.periods.month, entry('calendar', color('green'))],
+	[VISIBLE_NAMES.periods.quarter, entry('calendar-fold', color('green'))],
+	[VISIBLE_NAMES.periods.year, entry('calendar-clock', color('green'))],
 ]);
 const ARCHIVES = entry('contact-round', color('blue'));
 const PEOPLE = entry('user', color('blue'));
@@ -99,15 +100,15 @@ export function defaultFolderIcon(path: string, open = false): FileTypeIcon {
 	const name = segments.at(-1);
 	if (name) {
 		const parent = segments.at(-2);
-		if (name === '日志' && segments.length === 1) return JOURNAL;
-		if (parent === '日志' && segments.length === 2) {
+		if (name === VISIBLE_NAMES.journal && segments.length === 1) return JOURNAL;
+		if (parent === VISIBLE_NAMES.journal && segments.length === 2) {
 			const periodic = PERIODIC.get(name);
 			if (periodic) return periodic;
 		}
-		if (name === '档案') return ARCHIVES;
-		if (parent === '档案') {
-			if (name === '个人档案') return PEOPLE;
-			if (name === '企业档案') return COMPANIES;
+		if (name === VISIBLE_NAMES.archives) return ARCHIVES;
+		if (parent === VISIBLE_NAMES.archives) {
+			if (name === VISIBLE_NAMES.archive.people) return PEOPLE;
+			if (name === VISIBLE_NAMES.archive.companies) return COMPANIES;
 		}
 		const lower = name.toLowerCase();
 		if (lower === 'attachments' || lower === '附件') return ATTACHMENTS;
@@ -118,7 +119,8 @@ export function defaultFolderIcon(path: string, open = false): FileTypeIcon {
 
 /** Every icon name the table can return, so callers and tests can check them against an icon set. */
 export function defaultIconNames(): string[] {
-	const names = new Set<string>([PLAIN_FILE.icon, FOLDER_CLOSED.icon, FOLDER_OPEN.icon, JOURNAL.icon, ARCHIVES.icon, PEOPLE.icon, COMPANIES.icon, ATTACHMENTS.icon, TEMPLATES.icon]);
+	const names = new Set<string>([PLAIN_FILE.icon, FOLDER_CLOSED.icon, FOLDER_OPEN.icon, JOURNAL.icon, ARCHIVES.icon, PEOPLE.icon, COMPANIES.icon, ATTACHMENTS.icon, TEMPLATES.icon,
+	]);
 	for (const value of BY_EXTENSION.values()) names.add(value.icon);
 	for (const value of PERIODIC.values()) names.add(value.icon);
 	return [...names].sort();

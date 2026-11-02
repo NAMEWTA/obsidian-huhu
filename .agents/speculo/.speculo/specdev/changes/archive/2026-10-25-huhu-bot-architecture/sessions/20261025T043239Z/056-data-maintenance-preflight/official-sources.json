@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-25T12:30:25.164326+00:00",
+  "method": "web.run actual open; only official SQLite pages; no programs downloaded or executed",
+  "pages": [
+    {
+      "url": "https://sqlite.org/backup.html",
+      "lines": "39-62,127-144",
+      "use": "Online backup and VACUUM INTO are supported DB backup methods; full Profile requires HUHU Blob coordination."
+    },
+    {
+      "url": "https://sqlite.org/c3ref/backup_finish.html",
+      "lines": "37-79",
+      "use": "Step completion vs cleanup; destination handle isolation; source may change between steps; errors and bounded retry."
+    },
+    {
+      "url": "https://sqlite.org/lang_vacuum.html",
+      "lines": "37-55",
+      "use": "VACUUM INTO consistent snapshot, interrupted output may be incomplete; empty/new target and no active transaction; fsync is distinct from manifest publication."
+    }
+  ]
+}

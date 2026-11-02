@@ -12,6 +12,9 @@ import type { SkillShortcut } from '../../core/board/types/model';
 import { IconButton, Choice } from '../board/controls';
 import { DashboardIconPicker } from './DashboardIconPicker';
 import { DraftList } from './DraftList';
+const boundSpace = (skill: SkillShortcut): string | undefined =>
+	skill.destination.kind === 'fresh' ? skill.destination.spaceId : undefined;
+
 export function SkillList({
 	store,
 	skills,
@@ -22,7 +25,8 @@ export function SkillList({
 	onChange(this: void, skills: SkillShortcut[]): void;
 }) {
 	const t = useT(),
-		agents = (store?.widgets ?? homeServices).agents?.() ?? [];
+		agents = (store?.widgets ?? homeServices).agents?.() ?? [],
+		spaces = (store?.widgets ?? homeServices).spaces?.() ?? [];
 	const update = (id: string, value: Partial<SkillShortcut>) =>
 		onChange(skills.map((skill) => (skill.id === id ? { ...skill, ...value } : skill)));
 	return (
@@ -72,8 +76,40 @@ export function SkillList({
 							aria-label={t('home.dashboard.cwd')}
 							placeholder={t('home.dashboard.cwd')}
 							value={skill.destination.kind === 'fresh' ? skill.destination.cwd : ''}
-							onChange={(e) => update(skill.id, { destination: { kind: 'fresh', cwd: e.target.value } })}
+							onChange={(e) =>
+								update(skill.id, {
+									destination: {
+										kind: 'fresh',
+										cwd: e.target.value,
+										...(skill.destination.kind === 'fresh' && skill.destination.spaceId
+											? { spaceId: skill.destination.spaceId }
+											: {}),
+									},
+								})
+							}
 						/>
+						{skill.destination.kind === 'fresh' && (spaces.length > 0 || boundSpace(skill)) && (
+							<Choice
+								label={t('shortcuts.space')}
+								value={boundSpace(skill) || '_ask'}
+								onChange={(value) =>
+									update(skill.id, {
+										destination: {
+											kind: 'fresh',
+											cwd: skill.destination.kind === 'fresh' ? skill.destination.cwd : '',
+											...(value === '_ask' ? {} : { spaceId: value }),
+										},
+									})
+								}
+								options={[
+									{ value: '_ask', label: t('shortcuts.space.ask') },
+									...(boundSpace(skill) && !spaces.some((space) => space.id === boundSpace(skill))
+										? [{ value: boundSpace(skill)!, label: t('shortcuts.space.unavailable') }]
+										: []),
+									...spaces.map((space) => ({ value: space.id, label: space.name })),
+								]}
+							/>
+						)}
 						<Label className="flex gap-2">
 							<Switch
 								checked={skill.directSend}

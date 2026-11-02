@@ -6,12 +6,28 @@ import { hashString } from "./hash";
 /** Characters of surrounding text kept on each side of an anchor. */
 export const CONTEXT_LENGTH = 50;
 
+// One-document cache avoids hashing the same note once per annotation.
+// This is only a lookup optimization, never a second persistence store.
+let fingerprintSource: string | undefined;
+let fingerprintValue = '';
+function documentFingerprint(doc: string): string {
+	if (doc !== fingerprintSource) {
+		fingerprintSource = doc;
+		fingerprintValue = hashString(doc);
+	}
+	return fingerprintValue;
+}
+
+const AMBIGUOUS = 'ambiguous' as const;
+type AnchorResolution = AnchorMatch | typeof AMBIGUOUS | null;
+
+
 type MatchMethod = "hash" | "context" | "fuzzy";
 
 interface AnchorMatch {
 	from: number;
 	to: number;
-	/** The text occurs more than once; the caller may want to warn. */
+	/** Matching stage used to establish the position. */
 	method: MatchMethod;
 }
 
@@ -53,6 +69,7 @@ export function createAnchor(doc: string, from: number, to: number, kind: "line"
 		text,
 		textHash: hashString(text),
 		kind,
+		documentHash: documentFingerprint(doc),
 		before: doc.slice(Math.max(0, range.from - CONTEXT_LENGTH), range.from),
 		after: doc.slice(range.to, range.to + CONTEXT_LENGTH),
 		lineHint: lineNumberAt(doc, range.from),
@@ -75,7 +92,7 @@ function occurrences(doc: string, needle: string): number[] {
  * Stage 1: locate the anchor by exact content.
  *
  * Content rather than position is what makes a comment survive the note being
- * reorganised. The line hint only breaks ties between repeated occurrences.
+ * reorganised. A line hint is advisory, not proof of identity.
  */
 /**
  * How much of the stored surroundings a candidate still has, 0 to 2.
@@ -93,47 +110,31 @@ function contextScore(doc: string, from: number, to: number, anchor: TextAnchorV
 	return before + after;
 }
 
-/**
- * Stage 1: locate the anchor by exact content.
- *
- * Content rather than position is what makes a comment survive the note being
- * reorganised.
- *
- * When the text appears more than once, the surroundings decide, and the line
- * hint only breaks a genuine tie. The hint alone was wrong in an ordinary case:
- * comment a repeated phrase, then insert text *between* the two occurrences,
- * and the hint points at the decoy — it stayed near the old line number while
- * the real one moved away. Measured on a four-line note with 200 lines
- * inserted, the comment silently moved from one paragraph to another.
- *
- * Only paid when there is something to disambiguate: one occurrence is one
- * scan, as before.
- */
-export function matchByHash(doc: string, anchor: TextAnchorV2): AnchorMatch | null {
+/** Exact content plus a unique best context; line proximity cannot resolve a tie. */
+function resolveByHash(doc: string, anchor: TextAnchorV2): AnchorResolution {
 	const { text } = anchor;
-	if (text === "" || hashString(text) !== anchor.textHash) return null;
-
-	const found = occurrences(doc, text).filter(at => anchor.kind !== "line" || (lineRangeAt(doc, at).from === at && lineRangeAt(doc, at).to === at + text.length));
-	if (found.length === 0) return null;
-
-	const best = found.reduce((winner, offset) => {
-		if (offset === winner) return winner;
+	if (text === '' || hashString(text) !== anchor.textHash) return null;
+	const found = occurrences(doc, text).filter(at => anchor.kind !== 'line' || (lineRangeAt(doc, at).from === at && lineRangeAt(doc, at).to === at + text.length));
+	let best: number | null = null;
+	let bestScore = -1;
+	let tied = false;
+	for (const offset of found) {
 		const score = contextScore(doc, offset, offset + text.length, anchor);
-		const winning = contextScore(doc, winner, winner + text.length, anchor);
-		if (score !== winning) return score > winning ? offset : winner;
-		// A genuine tie — the same surroundings twice — falls back to the hint.
-		return Math.abs(lineNumberAt(doc, offset) - anchor.lineHint) <
-			Math.abs(lineNumberAt(doc, winner) - anchor.lineHint)
-			? offset
-			: winner;
-	}, found[0]!);
-
-	return {
-		from: best,
-		to: best + text.length,
-		method: "hash",
-	};
+		if (score > bestScore) {
+			best = offset;
+			bestScore = score;
+			tied = false;
+		} else if (score === bestScore) tied = true;
+	}
+	if (tied) return AMBIGUOUS;
+	return best === null ? null : { from: best, to: best + text.length, method: 'hash' };
 }
+
+export function matchByHash(doc: string, anchor: TextAnchorV2): AnchorMatch | null {
+	const result = resolveByHash(doc, anchor);
+	return result === AMBIGUOUS ? null : result;
+}
+
 
 /**
  * How much of `context`'s tail is still there, reading backwards from `end`.
@@ -204,7 +205,7 @@ function probePositions(doc: string, probe: string): number[] {
  * — context intact, text rewritten — and cost 1.4 seconds per comment on a
  * 10,000 line note, which is felt as the editor freezing while typing.
  */
-export function matchByContext(doc: string, anchor: TextAnchorV2): AnchorMatch | null {
+function resolveByContext(doc: string, anchor: TextAnchorV2): AnchorResolution {
 	const { before, after } = anchor;
 	if (before.length < MIN_CONTEXT_CHARS || after.length < MIN_CONTEXT_CHARS) {
 		return null;
@@ -218,6 +219,7 @@ export function matchByContext(doc: string, anchor: TextAnchorV2): AnchorMatch |
 	const afterPositions = probePositions(doc, afterProbe);
 
 	let best: { from: number; to: number; score: number } | null = null;
+	let tied = false;
 
 	for (const position of probePositions(doc, beforeProbe)) {
 		const start = position + beforeProbe.length;
@@ -234,10 +236,17 @@ export function matchByContext(doc: string, anchor: TextAnchorV2): AnchorMatch |
 		if (afterScore < CONTEXT_MATCH_RATIO) continue;
 
 		const score = beforeScore + afterScore;
-		if (!best || score > best.score) best = { from: start, to: end, score };
+		if (!best || score > best.score) { best = { from: start, to: end, score }; tied = false; }
+		else if (score === best.score) tied = true;
 	}
 
+	if (tied) return AMBIGUOUS;
 	return best ? { from: best.from, to: best.to, method: "context" } : null;
+}
+
+export function matchByContext(doc: string, anchor: TextAnchorV2): AnchorMatch | null {
+	const result = resolveByContext(doc, anchor);
+	return result === AMBIGUOUS ? null : result;
 }
 
 /**
@@ -301,28 +310,20 @@ function vouchesFor(context: string, score: number): boolean {
 
 function matchEmptyLine(doc: string, anchor: TextAnchorV2): AnchorMatch | null {
 	const { before, after } = anchor;
-	let best: { at: number; score: number; distance: number } | null = null;
-
+	if (doc === '' && before === '' && after === '' && anchor.kind === 'line') return { from: 0, to: 0, method: 'context' };
+	let best: { at: number; score: number } | null = null;
+	let tied = false;
 	for (const at of emptyLineStarts(doc)) {
-		const beforeScore =
-			before === "" ? 1 : suffixMatchAt(doc, at, before) / before.length;
-		const afterScore =
-			after === "" ? 1 : prefixMatchAt(doc, at, after) / after.length;
-
-		if (!vouchesFor(before, beforeScore) && !vouchesFor(after, afterScore))
-			continue;
-
+		const beforeScore = before === '' ? 1 : suffixMatchAt(doc, at, before) / before.length;
+		const afterScore = after === '' ? 1 : prefixMatchAt(doc, at, after) / after.length;
+		if (!vouchesFor(before, beforeScore) && !vouchesFor(after, afterScore)) continue;
 		const score = beforeScore + afterScore;
-		const distance = Math.abs(lineNumberAt(doc, at) - anchor.lineHint);
-		// Nearest to where it was only when two places match equally well, which is
-		// what happens in a note with several blank lines between similar paragraphs.
-		if (!best || score > best.score || (score === best.score && distance < best.distance)) {
-			best = { at, score, distance };
-		}
+		if (!best || score > best.score) { best = { at, score }; tied = false; }
+		else if (score === best.score) tied = true;
 	}
-
-	return best ? { from: best.at, to: best.at, method: "context" } : null;
+	return best && !tied ? { from: best.at, to: best.at, method: 'context' } : null;
 }
+
 
 /** Lines either side of the last known position that stage 3 will search. */
 export const FUZZY_WINDOW_LINES = 200;
@@ -391,7 +392,14 @@ export function matchByFuzzy(
 		const score = contextScore(doc, from, to, anchor), lineDistance = Math.abs(lineNumberAt(doc, from) - anchor.lineHint);
 		if (!best || distance < best.distance || (distance === best.distance && (score > best.score || (score === best.score && (lineDistance < best.lineDistance || (lineDistance === best.lineDistance && (from < best.from || (from === best.from && to < best.to)))))))) best = { from, to, distance, score, lineDistance };
 	}
-	return best ? { from: best.from, to: best.to, method: "fuzzy" } : null;
+	if (!best) return null;
+	// Different endpoints of one overlapping fuzzy hit are not different passages.
+	// Equally good disjoint passages are ambiguous, irrespective of the line hint.
+	const winner = best;
+	if (matches.some(candidate => candidate.distance === winner.distance &&
+		(candidate.to <= winner.from || candidate.from >= winner.to) &&
+		contextScore(doc, candidate.from, candidate.to, anchor) === winner.score)) return null;
+	return { from: winner.from, to: winner.to, method: 'fuzzy' };
 }
 
 export interface MatchOptions {
@@ -407,42 +415,34 @@ export interface MatchOptions {
  * every keystroke and stop at stage 2; the panel, which redraws far less often,
  * is where a comment earns a fuzzy search before being called orphaned.
  */
-export function matchAnchor(
-	doc: string,
-	anchor: TextAnchorV2,
-	options: MatchOptions = {},
-): AnchorMatch | null {
-	// An empty line has no text to hash and nothing for the fuzzy stage to sign,
-	// so stage 2 is the only ordinary stage it can use — and it is tried first,
-	// because an empty line that has since been written on should follow the text
-	// now there (#115). Only when that fails does the empty-line rule apply, and
-	// it looks for a line that is still empty (#261).
-	if (anchor.text === "") {
-		return matchByContext(doc, anchor) ?? matchEmptyLine(doc, anchor);
+export function matchAnchor(doc: string, anchor: TextAnchorV2, options: MatchOptions = {}): AnchorMatch | null {
+	// Cached offsets are authoritative only for the document that produced them.
+	// An identical quote at a stale offset may belong to a different paragraph.
+	if (anchor.documentHash === documentFingerprint(doc) && hashString(anchor.text) === anchor.textHash &&
+		Number.isInteger(anchor.start) && Number.isInteger(anchor.end) && anchor.start >= 0 && anchor.end >= anchor.start && anchor.end <= doc.length &&
+		doc.slice(anchor.start, anchor.end) === anchor.text &&
+		(anchor.kind !== 'line' || (lineRangeAt(doc, anchor.start).from === anchor.start && lineRangeAt(doc, anchor.start).to === anchor.end))) {
+		return { from: anchor.start, to: anchor.end, method: 'hash' };
 	}
-
-	// The anchor as written, then the same anchor in each other Unicode normal
-	// form (#320). Every exact stage runs over every form before any fuzzy one
-	// does: an exact match on renormalised text is better evidence than a fuzzy
-	// match on the stored text, and measurably better output. With the fuzzy
-	// stage first, a comment on "Café" in a note that had been normalised came
-	// back pointing at "Cafe" — the right place, the wrong span, accent dropped.
+	if (anchor.text === '') {
+		const context = resolveByContext(doc, anchor);
+		return context === AMBIGUOUS ? null : context ?? matchEmptyLine(doc, anchor);
+	}
 	const forms = [anchor, ...renormalisations(anchor)];
-
+	// An ambiguous exact match must not turn into a guessed context/fuzzy hit.
 	for (const form of forms) {
-		const exact = matchByHash(doc, form) ?? matchByContext(doc, form);
+		const exact = resolveByHash(doc, form);
+		if (exact === AMBIGUOUS) return null;
 		if (exact) return exact;
 	}
-	if (!options.fuzzy) return null;
-
-	// Stage 3 runs once, over the anchor as stored. Repeating it per form is what
-	// the exact stages are for: measured on a 130 KB note, the fuzzy stage is
-	// ~145 ms and the exact ones are noise, so retrying it doubled the worst case
-	// for every accented note to buy a case that needs the text to have been both
-	// renormalised *and* edited past recognition. That case stays orphaned, which
-	// is what it was before this.
-	return matchByFuzzy(doc, anchor, options.threshold ?? 0.3);
+	for (const form of forms) {
+		const context = resolveByContext(doc, form);
+		if (context === AMBIGUOUS) return null;
+		if (context) return context;
+	}
+	return options.fuzzy ? matchByFuzzy(doc, anchor, options.threshold ?? 0.3) : null;
 }
+
 
 /** The two forms a note's text realistically arrives in. */
 const NORMAL_FORMS = ["NFC", "NFD"] as const;
@@ -489,15 +489,12 @@ function renormalisations(anchor: TextAnchorV2): TextAnchorV2[] {
 	return forms;
 }
 
-/** HUHU v2 cached offsets followed by the upstream content/context/fuzzy stages. */
+/** Verified cached offsets, then unambiguous content/context/fuzzy recovery. */
 export function locateAnchor(doc: string, anchor: TextAnchorV2, threshold = 0.3): { start: number; end: number } | null {
-	if (anchor.start >= 0 && anchor.end <= doc.length && doc.slice(anchor.start, anchor.end) === anchor.text &&
-		(anchor.kind !== 'line' || (lineRangeAt(doc, anchor.start).from === anchor.start && lineRangeAt(doc, anchor.start).to === anchor.end))) {
-		return { start: anchor.start, end: anchor.end };
-	}
 	const hit = matchAnchor(doc, anchor, { fuzzy: true, threshold });
 	return hit ? { start: hit.from, end: hit.to } : null;
 }
+
 
 /** Refuse frontmatter and any intersected fenced code (including the fence itself). */
 export function selectionIsCommentable(doc: string, from: number, to: number): boolean {

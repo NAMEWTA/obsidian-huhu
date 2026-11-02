@@ -54,3 +54,20 @@ export function storageWriteQueue(storage: object): WriteQueue {
 	Object.defineProperty(storage, storageQueueKey, { value: queue, configurable: true });
 	return queue;
 }
+
+
+export interface StorageRecoveryState {
+	/** Present until both an interrupted operation and its late adapter/owner cleanup have settled. */
+	lease?: Promise<void>;
+}
+const storageRecoveryKey = Symbol.for('huhu.storage.recovery-state');
+
+/** Recovery isolation follows the adapter's existing queue across wrapper reconstruction and plugin module reload. */
+export function storageRecoveryState(storage: object): StorageRecoveryState {
+	const queue = storageWriteQueue(storage);
+	const existing = Reflect.get(queue, storageRecoveryKey) as StorageRecoveryState | undefined;
+	if (existing) return existing;
+	const state: StorageRecoveryState = {};
+	Object.defineProperty(queue, storageRecoveryKey, { value: state });
+	return state;
+}

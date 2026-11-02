@@ -1,0 +1,25 @@
+{
+  "original": [
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/recovery/guard.go",
+      "sha256": "d54ada3b07c5402e4a11610232c3b5e6d2b14f2fc3e0bc9ee0be333602803dbf"
+    },
+    {
+      "path": "native/huhubot/tests/contract/recovery/recovery_test.go",
+      "sha256": "2677005d5d74b4db667bd57bc6add9514ebc8f7fdeda8f1729f9a0258c1b0289"
+    }
+  ],
+  "replacement": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/guard-joined.go.txt",
+      "sha256": "bb17f28ea6b39b79725be8ad476dd724cd6a740f5e264f480b94d17ce1198eb5"
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/guard-equivalence-test.go.txt",
+      "sha256": "c80d998bb3668184eeb95db0899acaf75f65eed5b3c83a791457701efc82ab3e",
+      "beforeTestHelperTParameterSha256": "d77860dbcd9d9342da175911697988b0d3d79c454107529afbf87b0cfc6c580f",
+      "note": "Before first execution, test compare helper was given the current subtest *testing.T; production candidate unchanged. This receipt corrects prepared-metadata SHA to the exact immutable bytes actually executed."
+    }
+  ],
+  "singleVariable": "Only recovery runtime/root/tree query count changes; no permission cache or production source write; empty run keeps runtime-only query."
+}

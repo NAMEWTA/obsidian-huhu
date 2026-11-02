@@ -58,7 +58,6 @@ export function fixture(definitions = [definition('Alpha'), definition('Beta')],
 		retry: async () => {},
 		refresh: vi.fn(async () => {}),
 		cwd: '/vault',
-		taskTargets: async () => [{ path: 'Board.md', cardId: 'todo', title: 'To-dos' }],
 		paths: () => [
 			{ path: '/', kind: 'folder' },
 			{ path: 'notes', kind: 'folder' },

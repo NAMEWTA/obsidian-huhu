@@ -1,0 +1,66 @@
+{
+  "observer": "native:/root/memory_integration_review",
+  "session": "20261025T043239Z",
+  "task": "156-memory-repair-review",
+  "inputSha256": "e5a2e6e317eb5b37931e34a7e0bbfdb397761f321866d67fd79a18a3a87c175e",
+  "reportStatus": "completed",
+  "standards": "request-changes",
+  "specification": "request-changes",
+  "files": {
+    "REPORT.md": {
+      "sha256": "78cf92a0381492a32e0a99beeb1d20452a98673c482e15cdf1ef7c5deab24169",
+      "mode": 436,
+      "bytes": 16112
+    },
+    "logs/author-go-input-check.json": {
+      "sha256": "b78e2fb9c7efb7af09feb0233c87af88431df81bcd49e43cd2f63e18e5af956d",
+      "mode": 436,
+      "bytes": 325
+    },
+    "logs/check-input.mjs": {
+      "sha256": "05d41f9ff4cbf4c72d3ab6eb8e5004b8005d156c477a4050f4e13751b060bfbd",
+      "mode": 436,
+      "bytes": 1649
+    },
+    "logs/evidence-audit.json": {
+      "sha256": "727fdd5fd3ec43d365ebfcbaf2c6a2f9e6cd28a82d2e98bb53de774e04a03e60",
+      "mode": 436,
+      "bytes": 2819
+    },
+    "logs/evidence-locators.json": {
+      "sha256": "329fdde3c2c83ecd9ddc6617ab3c599a4abb59bbc70e486e4f0d44502a14ca74",
+      "mode": 436,
+      "bytes": 2142
+    },
+    "logs/input-check.json": {
+      "sha256": "ed94b30a339e2c1c8da5f44a03dd734916f93968e095c2c73c48de070c856873",
+      "mode": 436,
+      "bytes": 1582
+    },
+    "logs/maintenance-e2e-audit.json": {
+      "sha256": "44ad3d788e14d1038995d0b639b83a77afcca7de95516ed51bfad5d5c9ca6e2c",
+      "mode": 436,
+      "bytes": 17406
+    },
+    "logs/return-validation.json": {
+      "sha256": "c829ac22f8d714716aeebe56feac389f51a1ff5cd3122d3effc8f33b6b66926d",
+      "mode": 436,
+      "bytes": 548
+    },
+    "logs/return-validation.log": {
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": 436,
+      "bytes": 200
+    },
+    "logs/schema-comparison.json": {
+      "sha256": "60a904c5d33a7776701dcd9f479a82042cc28a41659403809903c4c75e1881ec",
+      "mode": 436,
+      "bytes": 8584
+    },
+    "logs/source-discovery.json": {
+      "sha256": "40e3618ab28b33be15e3b25fe3232822c7765ffdebf8d537b35b2ad7485272f0",
+      "mode": 436,
+      "bytes": 15495
+    }
+  }
+}

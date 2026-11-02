@@ -14,7 +14,8 @@ import { cloneRecord, newRecord, emptyRef, ContactsError, type ArchiveRecord } f
 import { createMarkdown, parseRecord, patchMarkdown, relativeLink } from '../../modules/archives/core/persist/markdown';
 import { ContactsIndex, emptyQuery } from '../../modules/archives/core/index-store';
 import { ContactsController } from '../../modules/archives/platform/controller';
-import { DEFAULT_CONTACTS_SETTINGS, normalizeContactsSettings, validContactsFolder } from '../../shared/contacts-settings';
+import { DEFAULT_CONTACTS_SETTINGS, normalizeContactsSettings, validContactsFolder,
+} from '../../shared/contacts-settings';
 import {
 	applyLayout,
 	contactsTarget,
@@ -30,8 +31,8 @@ import { cleanPageState } from '../../shell/navigation-state';
 function fixture(kind: 'person' | 'company' = 'person', name = '张三'): ArchiveRecord {
 	const record = newRecord(kind);
 	record.fields.name = name;
-	record.folderPath = `档案/${kind === 'person' ? '个人档案' : '企业档案'}/${name}`;
-	record.path = record.folderPath + '/基本信息.md';
+	record.folderPath = `档案/${kind === 'person' ? 'people' : 'companies'}/${name}`;
+	record.path = record.folderPath + '/profile.md';
 	return record;
 }
 function round(record: ArchiveRecord): ArchiveRecord {
@@ -42,14 +43,16 @@ function round(record: ArchiveRecord): ArchiveRecord {
 
 test('5,000 archives stay indexed through repeated search and single-record updates', () => {
 	const index = new ContactsIndex(), started = performance.now();
-	for (let i = 0; i < 5000; i++) { const record = fixture('person', `Person ${i}`); record.fields.tags = ['team-' + i % 10]; index.set(record); }
+	for (let i = 0; i < 5000; i++) { const record = fixture('person', `Person ${i}`); record.fields.tags = ['team-' + (i % 10)]; index.set(record); }
 	const loaded = performance.now();
 	for (let i = 0; i < 20; i++) assert.equal(index.query({ ...emptyQuery(), search: 'Person 4999' }).length, 1);
 	const record = [...index.byPath.values()][4999]!;
 	index.set({ ...record, fields: { ...record.fields, name: 'Updated person' } });
 	assert.equal(index.query({ ...emptyQuery(), search: 'Updated person' }).length, 1);
 	assert.equal(index.byPath.size, 5000);
-	console.info(JSON.stringify({ records: 5000, indexMs: Math.round(loaded - started), search20AndUpdateMs: Math.round(performance.now() - loaded), vaultReadsDuringSearch: 0 }));
+	console.info(JSON.stringify({ records: 5000, indexMs: Math.round(loaded - started), search20AndUpdateMs: Math.round(performance.now() - loaded), vaultReadsDuringSearch: 0,
+		}),
+	);
 	index.clear(); assert.equal(index.byPath.size, 0); assert.equal(index.byId.size, 0);
 });
 function job(company: ArchiveRecord, status: 'current' | 'past' = 'current') {
@@ -58,7 +61,7 @@ function job(company: ArchiveRecord, status: 'current' | 'past' = 'current') {
 		company: {
 			id: company.id,
 			label: company.fields.name,
-			link: relativeLink('档案/个人档案/张三/基本信息.md', company.path),
+			link: relativeLink('档案/people/张三/profile.md', company.path),
 		},
 		department: '业务部',
 		title: '经理',
@@ -249,19 +252,22 @@ test('filters are OR within a dimension and AND across dimensions; 5,000 records
 });
 
 test('folder preferences are vault-relative: normalized when typed, hidden/absolute/traversal paths rejected, default 档案', () => {
-	for (const path of ['../contacts', '.obsidian/contacts', '.huhu/content/档案', '档案/../其他', 'C:\\contacts', '档案//联系人', '', '  ', './', '档案/./x'])
+	for (const path of ['../contacts', '.obsidian/contacts', '.huhu/content/档案', '档案/../其他', 'C:\\contacts', '档案//联系人', '', '  ', './', '档案/./x',
+	])
 		assert.equal(validContactsFolder(path), false, path);
-	for (const [typed, expected] of [['/tmp/contacts', 'tmp/contacts'], ['./档案', '档案'], ['档案/', '档案'], ['  联系人\\个人  ', '联系人/个人'], ['档案/个人档案', '档案/个人档案']])
+	for (const [typed, expected] of [['/tmp/contacts', 'tmp/contacts'], ['./档案', '档案'], ['档案/', '档案'], ['  联系人\\个人  ', '联系人/个人'], ['档案/个人档案', '档案/个人档案'],
+	])
 		assert.equal(normalizeContactsSettings({ rootFolder: typed }).rootFolder, expected, typed);
-	assert.equal(DEFAULT_CONTACTS_SETTINGS.rootFolder, 'huhu/档案');
-	assert.deepEqual(normalizeContactsSettings(undefined), { rootFolder: 'huhu/档案', maxColumns: 6, layouts: {} });
+	assert.equal(DEFAULT_CONTACTS_SETTINGS.rootFolder, 'huhu/archives');
+	assert.deepEqual(normalizeContactsSettings(undefined), { rootFolder: 'huhu/archives', maxColumns: 6, layouts: {} });
 	assert.deepEqual(normalizeContactsSettings({ rootFolder: '../bad', maxColumns: 10 }), {
-		rootFolder: 'huhu/档案',
+		rootFolder: 'huhu/archives',
 		maxColumns: 6,
 		layouts: {},
 	});
-	assert.equal(normalizeContactsSettings({ rootFolder: '.huhu/content/档案' }).rootFolder, 'huhu/档案');
-	assert.deepEqual(normalizeContactsSettings({ layouts: { person: 'card', company: 'grid' } }).layouts, { person: 'card' });
+	assert.equal(normalizeContactsSettings({ rootFolder: '.huhu/content/档案' }).rootFolder, 'huhu/archives');
+	assert.deepEqual(normalizeContactsSettings({ layouts: { person: 'card', company: 'grid' } }).layouts, { person: 'card',
+	});
 });
 
 test('write queue recovers after failures and keeps saves to the same identity ordered', async () => {
@@ -445,7 +451,7 @@ test('vault integration: duplicate names, real files, disk failure, external edi
 		b = await f.controller.create(newNamed('person', '张三'));
 	assert.notEqual(a.path, b.path);
 	assert.notEqual(a.id, b.id);
-	assert.ok(f.text.has('档案/档案格式说明.md'));
+	assert.ok(f.text.has('档案/format-guide.md'));
 	const base = await f.controller.snapshot(a.path),
 		draft = cloneRecord(base);
 	draft.fields.phones = ['00123'];
@@ -519,7 +525,8 @@ test('a late read cannot publish into a newer folder or a disposed archive', asy
 	await first;
 	await second;
 	assert.equal(folder.controller.index.byPath.has(person.path), false);
-	assert.equal([...folder.controller.index.byPath.keys()].some((path) => path.startsWith('档案/')), false);
+	assert.equal([...folder.controller.index.byPath.keys()].some((path) => path.startsWith('档案/')), false,
+	);
 
 	const disposed = memoryVault();
 	await disposed.controller.ensureLoaded();
@@ -661,14 +668,14 @@ test('format guide uses creation-time language and preserves existing documents 
 		await f.controller.ensureLoaded();
 		setLanguage('en'); // The controller was created before this language change.
 		const company = await f.controller.create(newNamed('company', 'Guide Company'));
-		const english = f.text.get('档案/档案格式说明.md')!;
+		const english = f.text.get('档案/format-guide.md')!;
 		assert.match(english, /^# Archive format\r?\n/, 'An English first creation needs the complete English guide');
 		assert.match(english, /Changing the display name does not rename the file/);
 		const original = f.text.get(company.path)!;
 		setLanguage('zh');
 		await f.controller.create(newNamed('person', 'Later Person'));
 		assert.equal(
-			f.text.get('档案/档案格式说明.md'),
+			f.text.get('档案/format-guide.md'),
 			english,
 			'Switching language never replaces an existing guide',
 		);
@@ -683,7 +690,7 @@ test('format guide uses creation-time language and preserves existing documents 
 		f.settings.rootFolder = '中文档案';
 		await f.controller.reload();
 		await f.controller.create(newNamed('person', '中文人物'));
-		const chinese = f.text.get('中文档案/档案格式说明.md')!;
+		const chinese = f.text.get('中文档案/format-guide.md')!;
 		assert.match(chinese, /^# 档案格式\r?\n/);
 		assert.match(chinese, /更改显示名称不会自动重命名文件/);
 		for (const guide of [english, chinese]) {
@@ -709,7 +716,7 @@ test('format guide uses creation-time language and preserves existing documents 
 				assert.ok(guide.includes('`' + field + '`'), field);
 		}
 		const custom = '# My guide\r\nKeep exact bytes: 用户内容\r\n';
-		f.text.set('中文档案/档案格式说明.md', custom);
+		f.text.set('中文档案/format-guide.md', custom);
 		const before = new Map(f.text);
 		setLanguage('en');
 		await f.controller.reload();
@@ -742,12 +749,12 @@ test('both format guides document table headings accepted by the real Markdown p
 test('strict folder entry rules exclude flat archives, ordinary material notes and nested fake entries', async () => {
 	const f = memoryVault();
 	const valid = await f.controller.create(newNamed('person', '王天肖'));
-	assert.equal(valid.path, '档案/个人档案/王天肖/基本信息.md');
-	assert.equal(valid.folderPath, '档案/个人档案/王天肖');
+	assert.equal(valid.path, '档案/people/王天肖/profile.md');
+	assert.equal(valid.folderPath, '档案/people/王天肖');
 	for (const path of [
 		'档案/联系人/旧档案.md',
 		valid.folderPath + '/沟通记录.md',
-		valid.folderPath + '/资料/基本信息.md',
+		valid.folderPath + '/资料/profile.md',
 	]) {
 		await f.vault.create(path, createMarkdown(newNamed('person', '附件中的档案属性')));
 		assert.equal(archiveLocation('档案', path), null);
@@ -764,7 +771,7 @@ test('portable folder names and collisions never merge with an unrelated existin
 	assert.equal(safeArchiveName(' 王/天:肖. '), '王-天-肖');
 	assert.throws(() => safeArchiveName('...'), /invalidName/);
 	const f = memoryVault();
-	await f.vault.createFolder('档案/个人档案/同名');
+	await f.vault.createFolder('档案/people/同名');
 	const record = await f.controller.create(newNamed('person', '同名'));
 	assert.match(record.folderPath, /同名-[\w-]+$/);
 	const edited = cloneRecord(record);
@@ -789,13 +796,13 @@ test('resources recurse, preserve sources, avoid primary names and report partia
 				throw new Error('unreadable');
 			},
 		},
-		{ name: '基本信息.md', read: async () => bytes },
+		{ name: 'profile.md', read: async () => bytes },
 	]);
 	assert.equal(new TextDecoder().decode(bytes), 'source bytes');
 	assert.ok(result[0]!.path?.endsWith('/介绍.pdf'));
 	assert.ok(result[1]!.path?.endsWith('/介绍 (1).pdf'));
 	assert.equal(result[2]!.error, 'importFailed');
-	assert.ok(result[3]!.path?.endsWith('/基本信息 (1).md'));
+	assert.ok(result[3]!.path?.endsWith('/profile (1).md'));
 	assert.equal(f.controller.resources(record.id).length, 4);
 	assert.equal(
 		queryResources(f.controller.resources(record.id), '项目资料/', 'name')[0]!.relativePath,
@@ -827,9 +834,9 @@ test('resource events notify without reparsing Markdown and a folder rename reta
 	);
 	assert.equal(events, 1);
 	assert.equal(reads, 0);
-	await f.vault.rename(f.vault.getAbstractFileByPath(record.folderPath)!, '档案/个人档案/晶晶新目录');
+	await f.vault.rename(f.vault.getAbstractFileByPath(record.folderPath)!, '档案/people/晶晶新目录');
 	await new Promise((resolve) => setTimeout(resolve, 0));
-	assert.equal(f.controller.index.get(record.id)?.folderPath, '档案/个人档案/晶晶新目录');
+	assert.equal(f.controller.index.get(record.id)?.folderPath, '档案/people/晶晶新目录');
 	assert.equal(f.controller.resources(record.id).length, 3);
 	assert.equal(reads, 1);
 	unsubscribe();
@@ -895,8 +902,10 @@ test('new and restored archive leaves pick layouts without throwing on bad value
 	assert.deepEqual(layoutsFor({ layout: { person: 'grid' } }), { person: 'card', company: 'card' });
 	// The last explicit choice beats both defaults; the leaf's own layout beats the choice.
 	assert.deepEqual(layoutsFor({}, { person: 'card', company: 'list' }), { person: 'card', company: 'list' });
-	assert.deepEqual(layoutsFor({ query: { kind: 'person' } }, { person: 'list' }), { person: 'list', company: 'card' });
-	assert.deepEqual(layoutsFor({ layout: { person: 'card' } }, { person: 'list', company: 'list' }), { person: 'card', company: 'list' });
+	assert.deepEqual(layoutsFor({ query: { kind: 'person' } }, { person: 'list' }), { person: 'list', company: 'card',
+	});
+	assert.deepEqual(layoutsFor({ layout: { person: 'card' } }, { person: 'list', company: 'list' }), { person: 'card', company: 'list',
+	});
 	assert.equal(emptyPanelState({ company: 'list' }).layout.company, 'list');
 	assert.equal(restoreContactsState({}).query.scope, 'record');
 	assert.equal(restoreContactsState({ query: { scope: 'nope' } }).query.scope, 'record');
@@ -942,7 +951,8 @@ test('archive group navigation clears the previous detail and a record kind wins
 		},
 		changeKind(kind: 'person' | 'company') { state = showContactKind(state, kind); },
 		select(path: string) {
-			state = { ...state, selectedPath: path, selectedId: [...records.entries()].find(([, item]) => item.path === path)?.[0] ?? '' };
+			state = { ...state, selectedPath: path, selectedId: [...records.entries()].find(([, item]) => item.path === path)?.[0] ?? '',
+			};
 		},
 	};
 	await navigateContacts(surface, { feature: 'contacts', section: 'company' }, new AbortController().signal);
@@ -950,29 +960,34 @@ test('archive group navigation clears the previous detail and a record kind wins
 	assert.equal(state.selectedPath, '');
 	assert.equal(contactsTarget(state).section === 'company', true);
 	assert.equal(contactsTarget(state).section === 'person', false);
-	await navigateContacts(surface, { feature: 'contacts', section: 'person', resourceId: 'company-b' }, new AbortController().signal);
+	await navigateContacts(surface, { feature: 'contacts', section: 'person', resourceId: 'company-b' }, new AbortController().signal,
+	);
 	assert.equal(state.query.kind, 'company');
 	assert.equal(state.selectedPath, 'Companies/B.md');
 	assert.equal(contactsTarget(state).section, 'company');
 	assert.equal(contactsTarget(state).resourceId, 'company-b');
 	state.query.search = 'kept after restart';
 	state.page = 2;
-	await navigateContacts(surface, { feature: 'contacts', section: 'company', resourceId: 'company-b' }, new AbortController().signal);
+	await navigateContacts(surface, { feature: 'contacts', section: 'company', resourceId: 'company-b' }, new AbortController().signal,
+	);
 	assert.equal(state.query.search, 'kept after restart');
 	assert.equal(state.page, 2);
 	await navigateContacts(surface, { feature: 'contacts', section: 'person' }, new AbortController().signal);
 	assert.equal(state.selectedPath, '');
 	assert.equal(state.query.kind, 'person');
 	setLanguage('zh');
-	await assert.rejects(navigateContacts(surface, { feature: 'contacts', resourceId: 'missing' }, new AbortController().signal), { message: t('workbench.missing') });
+	await assert.rejects(navigateContacts(surface, { feature: 'contacts', resourceId: 'missing' }, new AbortController().signal), { message: t('workbench.missing') },
+	);
 });
 
 test('contacts layout and anchors survive the real workbench state whitelist', () => {
 	const raw = {
-		query: { kind: 'company', search: 'ada', sort: 'modified', scope: 'fields', current: ['now'], past: [], regions: [], tags: ['x'], relations: [] },
+		query: { kind: 'company', search: 'ada', sort: 'modified', scope: 'fields', current: ['now'], past: [], regions: [], tags: ['x'], relations: [],
+		},
 		page: 2, selectedPath: 'Companies/B.md', selectedId: 'company-b', scroll: 48, focus: 'runtime', token: 'secret',
 		layout: { person: 'list', company: 'list' },
-		anchors: { person: { list: 'People/A.md', card: '' }, company: { list: 'Companies/B.md', card: 'Companies/C.md' } },
+		anchors: { person: { list: 'People/A.md', card: '' }, company: { list: 'Companies/B.md', card: 'Companies/C.md' },
+		},
 	};
 	const cleaned = cleanPageState(raw, CONTACTS_PAGE_STATE_KEYS);
 	assert.equal(Object.prototype.hasOwnProperty.call(cleaned, 'focus'), false);
@@ -985,7 +1000,8 @@ test('contacts layout and anchors survive the real workbench state whitelist', (
 	assert.equal(restored.query.kind, 'company');
 	assert.equal(restored.selectedId, 'company-b');
 	assert.equal(restored.scroll, 48);
-	const sparse = restoreContactsState(cleanPageState({ query: { kind: 'person' }, page: 1, selectedPath: 'People/A.md' }, CONTACTS_PAGE_STATE_KEYS));
+	const sparse = restoreContactsState(cleanPageState({ query: { kind: 'person' }, page: 1, selectedPath: 'People/A.md' }, CONTACTS_PAGE_STATE_KEYS),
+	);
 	assert.deepEqual(sparse.layout, { person: 'card', company: 'card' });
 	assert.equal(sparse.anchors.person.list, '');
 });
@@ -1013,7 +1029,7 @@ test('entry-note search keeps both records that share an email and reports the h
 	company.raw = createMarkdown(company);
 	const duplicate = fixture('person', '同号的另一个人');
 	duplicate.id = person.id;
-	duplicate.path = '档案/个人档案/同号/基本信息.md';
+	duplicate.path = '档案/people/同号/profile.md';
 	index.set(company);
 	index.set(other);
 	index.set(person);
@@ -1032,27 +1048,33 @@ test('entry-note search keeps both records that share an email and reports the h
 	assert.equal(index.query({ ...emptyQuery(), search: person.id }).length, 0);
 	assert.equal(index.query({ ...emptyQuery(), search: 'huhu:notes' }).length, 0);
 	assert.equal(index.query({ ...emptyQuery(), search: '<!-- huhu:notes -->' }).length, 0);
-	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '旧企业' }).some((record) => record.path === person.path), true);
+	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '旧企业' }).some((record) => record.path === person.path), true,
+	);
 	company.fields.name = '新企业';
 	index.set(company);
-	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '新企业' }).some((record) => record.path === person.path), true);
-	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '旧企业' }).some((record) => record.path === person.path), false);
+	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '新企业' }).some((record) => record.path === person.path), true,
+	);
+	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: '旧企业' }).some((record) => record.path === person.path), false,
+	);
 	// Renaming the related person updates the relation text of the record that names them.
 	const oldName = other.fields.name;
 	assert.equal(index.hit(person, oldName)?.source !== undefined, true);
 	other.fields.name = '改名后的朋友';
 	index.set(other);
 	assert.equal(index.hit(person, '改名后的朋友')?.source, 'relation');
-	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: oldName }).some((record) => record.path === person.path), false);
-	const moved = { ...person, path: '档案/个人档案/搬迁/基本信息.md' };
+	assert.equal(index.query({ ...emptyQuery(), kind: 'person', search: oldName }).some((record) => record.path === person.path), false,
+	);
+	const moved = { ...person, path: '档案/people/搬迁/profile.md' };
 	index.remove(person.path);
 	index.set(moved);
 	assert.equal(index.byPath.has(person.path), false);
-	assert.equal(index.query({ ...emptyQuery(), search: '青龙' }).some((record) => record.path === moved.path), true);
+	assert.equal(index.query({ ...emptyQuery(), search: '青龙' }).some((record) => record.path === moved.path), true,
+	);
 	const broken = fixture('person', '边界');
 	broken.raw = `${createMarkdown(broken).replace('<!-- /huhu:notes -->', '')}\n未闭合之后 玄武\n`;
 	index.set(broken);
-	assert.equal(index.query({ ...emptyQuery(), search: 'huhu:notes' }).some((record) => record.path === broken.path), false);
+	assert.equal(index.query({ ...emptyQuery(), search: 'huhu:notes' }).some((record) => record.path === broken.path), false,
+	);
 	assert.equal(index.hit(broken, '玄武')?.source, 'body');
 	const current = createMarkdown(person) + '\n自由段落保持\n';
 	const parsed = parseRecord(current, person.path)!;
@@ -1091,7 +1113,8 @@ test('record search matches one fragment, keeps foreign UUIDs, and maps body lin
 	person.prose.notes = `甲段末尾 订单 ${business} [显示文字](https://example.com/secret-token) ![风景图](https://cdn.example/token.png)`;
 	person.raw = `${createMarkdown(person)}\n\n见 [正文链接](https://example.com/body-token) <img alt="正文图" src="https://cdn.example/img-token.png">\n<!-- huhu:row ${row} -->\n${person.id}\n自由段落 青龙\n`;
 	index.set(person);
-	assert.equal(index.query({ ...emptyQuery(), search: business }).some((record) => record.path === person.path), true);
+	assert.equal(index.query({ ...emptyQuery(), search: business }).some((record) => record.path === person.path), true,
+	);
 	assert.equal(index.hit(person, business)?.source, 'notes');
 	assert.equal(index.query({ ...emptyQuery(), search: person.id }).length, 0);
 	assert.equal(index.query({ ...emptyQuery(), search: row }).length, 0);
@@ -1118,13 +1141,15 @@ test('record search matches one fragment, keeps foreign UUIDs, and maps body lin
 	const wrapped = fixture('person', '跨行');
 	wrapped.raw = `${createMarkdown(wrapped)}\n跨行甲\n乙尾\n`;
 	index.set(wrapped);
-	assert.equal(index.query({ ...emptyQuery(), search: '跨行甲 乙尾' }).some((record) => record.path === wrapped.path), true);
+	assert.equal(index.query({ ...emptyQuery(), search: '跨行甲 乙尾' }).some((record) => record.path === wrapped.path), true,
+	);
 	assert.equal(index.hit(wrapped, '跨行甲 乙尾')?.line, fileLine(wrapped.raw, '跨行甲'));
 	assert.equal(index.hit(wrapped, '跨行甲')?.line, fileLine(wrapped.raw, '跨行甲'));
 	const expanded = fixture('person', '大小写展开');
 	expanded.raw = `${createMarkdown(expanded)}\n${'İ'.repeat(100)}\nneedle\nother line\n`;
 	index.set(expanded);
-	assert.equal(index.hit(expanded, 'needle')?.line, undefined, 'Expanded case folding cannot reuse original text offsets');
+	assert.equal(index.hit(expanded, 'needle')?.line, undefined, 'Expanded case folding cannot reuse original text offsets',
+	);
 	const emoji = fixture('person', '表情');
 	emoji.prose.notes = `😀${'测'.repeat(23)}界标`;
 	index.set(emoji);
@@ -1217,7 +1242,7 @@ test('hot entry-note queries stay in memory', () => {
 			const body = bytes ? `${'甲'.repeat(40)}\n`.repeat(Math.ceil(bytes / 41)).slice(0, bytes) : '';
 			for (let i = 0; i < count; i++) {
 				const record = fixture('person', `Timed ${i}`);
-				record.path = `档案/个人档案/timed-${i}/基本信息.md`;
+				record.path = `档案/people/timed-${i}/profile.md`;
 				record.raw = body ? `\n\n${body} token-${i}\n` : '';
 				index.set(record);
 			}
@@ -1234,13 +1259,15 @@ test('hot entry-note queries stay in memory', () => {
 				timings.push(performance.now() - started);
 			}
 			timings.sort((a, b) => a - b);
-			samples.push({ count, bytes, p95: Math.round((timings[Math.ceil(timings.length * 0.95) - 1] ?? 0) * 100) / 100 });
+			samples.push({ count, bytes, p95: Math.round((timings[Math.ceil(timings.length * 0.95) - 1] ?? 0) * 100) / 100,
+			});
 			index.clear();
 		}
 	}
 	console.info(JSON.stringify(samples));
 	const target = samples.find((sample) => sample.count === 1000 && sample.bytes === 2000);
-	assert.ok(target && target.p95 <= 100, `1,000 records of about 2KB should stay within 100ms, measured ${target?.p95}`);
+	assert.ok(target && target.p95 <= 100, `1,000 records of about 2KB should stay within 100ms, measured ${target?.p95}`,
+	);
 }, 60_000);
 
 test('records live in the visible vault folder 档案 and follow vault events', async () => {
@@ -1248,14 +1275,14 @@ test('records live in the visible vault folder 档案 and follow vault events', 
 	f.settings.rootFolder = DEFAULT_CONTACTS_SETTINGS.rootFolder;
 	await f.controller.ensureLoaded();
 	const person = await f.controller.create(newNamed('person', '路径检查'));
-	assert.equal(person.path, 'huhu/档案/个人档案/路径检查/基本信息.md');
-	assert.ok(f.vault.getFileByPath('huhu/档案/个人档案/路径检查/基本信息.md'));
-	assert.ok(f.vault.getAbstractFileByPath('huhu/档案/档案格式说明.md'));
+	assert.equal(person.path, 'huhu/archives/people/路径检查/profile.md');
+	assert.ok(f.vault.getFileByPath('huhu/archives/people/路径检查/profile.md'));
+	assert.ok(f.vault.getAbstractFileByPath('huhu/archives/format-guide.md'));
 	assert.equal(f.vault.getAbstractFileByPath('.huhu'), undefined);
 	// A record dropped into the folder by another tool is indexed when the vault announces it, then removed on delete.
 	const company = newNamed('company', '外部企业');
-	company.folderPath = 'huhu/档案/企业档案/外部企业';
-	company.path = company.folderPath + '/基本信息.md';
+	company.folderPath = 'huhu/archives/companies/外部企业';
+	company.path = company.folderPath + '/profile.md';
 	const created = await f.vault.create(company.path, createMarkdown(company));
 	await new Promise((resolve) => setTimeout(resolve, 10));
 	assert.equal(f.controller.index.byPath.has(company.path), true);

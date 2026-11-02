@@ -1,0 +1,56 @@
+[
+  {
+    "commit": "891a5f4138d5b2e08ce88ffa918828f1a2eaa482",
+    "path": "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs",
+    "sha256": "a6dd6e57802548664388f4696d711e3c52bdd3a26cee375e0f86bac6b1eccdd0",
+    "readOnlyCommand": "git show 891a5f4138d5b2e08ce88ffa918828f1a2eaa482:native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs"
+  },
+  {
+    "commit": "891a5f4138d5b2e08ce88ffa918828f1a2eaa482",
+    "path": "native/huhubot/tests/contract/effect-reconcile/child_test.go",
+    "sha256": "d73b02ca066d61d52328f8b03d53deefc6f84f3376d7de457bc8077774086c56",
+    "readOnlyCommand": "git show 891a5f4138d5b2e08ce88ffa918828f1a2eaa482:native/huhubot/tests/contract/effect-reconcile/child_test.go"
+  },
+  {
+    "commit": "891a5f4138d5b2e08ce88ffa918828f1a2eaa482",
+    "path": "native/huhubot/tests/contract/foundation/runner_test.go",
+    "sha256": "c1f8bc0132506f5ccb4eee1b9a41158a19ccaa36eb4a4facf202aab2197af342",
+    "readOnlyCommand": "git show 891a5f4138d5b2e08ce88ffa918828f1a2eaa482:native/huhubot/tests/contract/foundation/runner_test.go"
+  },
+  {
+    "commit": "16eb173f3d578b1c9095636565e50205148fdea7",
+    "path": "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs",
+    "sha256": "a6dd6e57802548664388f4696d711e3c52bdd3a26cee375e0f86bac6b1eccdd0",
+    "readOnlyCommand": "git show 16eb173f3d578b1c9095636565e50205148fdea7:native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs"
+  },
+  {
+    "commit": "16eb173f3d578b1c9095636565e50205148fdea7",
+    "path": "native/huhubot/tests/contract/effect-reconcile/child_test.go",
+    "sha256": "d73b02ca066d61d52328f8b03d53deefc6f84f3376d7de457bc8077774086c56",
+    "readOnlyCommand": "git show 16eb173f3d578b1c9095636565e50205148fdea7:native/huhubot/tests/contract/effect-reconcile/child_test.go"
+  },
+  {
+    "commit": "16eb173f3d578b1c9095636565e50205148fdea7",
+    "path": "native/huhubot/tests/contract/foundation/runner_test.go",
+    "sha256": "c1f8bc0132506f5ccb4eee1b9a41158a19ccaa36eb4a4facf202aab2197af342",
+    "readOnlyCommand": "git show 16eb173f3d578b1c9095636565e50205148fdea7:native/huhubot/tests/contract/foundation/runner_test.go"
+  },
+  {
+    "commit": "fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79",
+    "path": "native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs",
+    "sha256": "64d0557c2b07a5345f378d33cbc6ff378aac4c6a8f9c2c10eb305b45d44a6109",
+    "readOnlyCommand": "git show fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79:native/huhubot/tests/contract/effect-reconcile/host-fixture.mjs"
+  },
+  {
+    "commit": "fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79",
+    "path": "native/huhubot/tests/contract/effect-reconcile/child_test.go",
+    "sha256": "5309cb060264a2277393e8c3d986a757f674bcaa34837759359c1b1c564b2d90",
+    "readOnlyCommand": "git show fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79:native/huhubot/tests/contract/effect-reconcile/child_test.go"
+  },
+  {
+    "commit": "fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79",
+    "path": "native/huhubot/tests/contract/foundation/runner_test.go",
+    "sha256": "c1f8bc0132506f5ccb4eee1b9a41158a19ccaa36eb4a4facf202aab2197af342",
+    "readOnlyCommand": "git show fb430d1ab9b8ec77b03ffe1d8effb4fcc4309d79:native/huhubot/tests/contract/foundation/runner_test.go"
+  }
+]

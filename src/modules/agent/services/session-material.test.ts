@@ -78,7 +78,17 @@ test('page cancellation and module disposal release waiters and prevent a late p
 
 test('a paste exception rejects the delivery and frees its timer and reservation', async () => {
 	const f = fixture(); f.session.ready = true; f.session.paste.mockImplementationOnce(() => { throw Error('fixture'); });
-	await expect(f.attach()).rejects.toThrow('fixture');
+	await expect(f.attach()).rejects.toMatchObject({ code: 'unknown' });
 	expect(vi.getTimerCount()).toBe(0); await f.attach();
 	expect(f.session.paste).toHaveBeenCalledTimes(2);
+});
+test('browser delivery can wait on the existing input without hiding its source viewer or opening another page', async () => {
+	const f = fixture(); const pending = f.delivery.attachMaterial('selected', f.material, { reveal: false });
+	expect(f.open).not.toHaveBeenCalled(); expect(f.show).not.toHaveBeenCalled(); f.session.ready = true; await vi.advanceTimersByTimeAsync(50); await pending; expect(f.session.paste).toHaveBeenCalledOnce();
+});
+test('source validation is rechecked immediately before paste and late cancellation cannot erase a committed receipt', async () => {
+	const f = fixture(); let valid = true; const validate = () => { if (!valid) throw Error('source stale'); };
+	const withheld = f.delivery.attachMaterial('selected', f.material, { reveal: false, validate }), rejected = expect(withheld).rejects.toThrow('source stale'); valid = false; f.session.ready = true; await vi.advanceTimersByTimeAsync(50); await rejected; expect(f.session.paste).not.toHaveBeenCalled();
+	const abort = new AbortController(); f.session.paste.mockImplementationOnce(() => abort.abort());
+	await f.delivery.attachMaterial('selected', f.material, { reveal: false, signal: abort.signal }); expect(f.session.paste).toHaveBeenCalledOnce();
 });

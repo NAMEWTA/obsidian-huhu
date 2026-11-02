@@ -1,0 +1,629 @@
+{
+  "scope": "Read-only point-in-time source recheck, not independent review or product acceptance",
+  "files": [
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/ticket/16-cancel-recovery.md",
+      "readHashes": [
+        "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091730+00:00",
+      "latestReadHash": "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c",
+      "checkedAt": "2026-10-25T16:56:07.693472+00:00",
+      "bytes": 12381,
+      "sha256": "81f48c1c9e61b5ef6b16847490cf5a7c48587eae70f04c70769528fc3884929c",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/tickets-map.md",
+      "readHashes": [
+        "5da257b5ca617c680f821ff4be462e2445ff2bc882a1e53541f0b61aecf1c116"
+      ],
+      "latestReadAt": "2026-10-25T16:45:22.566045+00:00",
+      "latestReadHash": "5da257b5ca617c680f821ff4be462e2445ff2bc882a1e53541f0b61aecf1c116",
+      "checkedAt": "2026-10-25T16:56:07.693553+00:00",
+      "bytes": 34846,
+      "sha256": "5da257b5ca617c680f821ff4be462e2445ff2bc882a1e53541f0b61aecf1c116",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/spec.md",
+      "readHashes": [
+        "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d"
+      ],
+      "latestReadAt": "2026-10-25T16:45:22.566311+00:00",
+      "latestReadHash": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "checkedAt": "2026-10-25T16:56:07.693617+00:00",
+      "bytes": 48375,
+      "sha256": "3c1414c294ca55b2d6c8210d4b93f43169adf0e938f59a7501ff62119e89be2d",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/bootstrap/core.go",
+      "readHashes": [
+        "6bdb535eee5bec0091458a7fbd036b93b99cc40d9380f6a9bb71a1e010ea16c8"
+      ],
+      "latestReadAt": "2026-10-25T16:45:44.867392+00:00",
+      "latestReadHash": "6bdb535eee5bec0091458a7fbd036b93b99cc40d9380f6a9bb71a1e010ea16c8",
+      "checkedAt": "2026-10-25T16:56:07.693648+00:00",
+      "bytes": 7852,
+      "sha256": "6bdb535eee5bec0091458a7fbd036b93b99cc40d9380f6a9bb71a1e010ea16c8",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/executor.go",
+      "readHashes": [
+        "1b98934ecc2b6550cd678271eb9a7006a843f8e7be3cee26f2b454e11ee9d7b7"
+      ],
+      "latestReadAt": "2026-10-25T16:45:44.867568+00:00",
+      "latestReadHash": "1b98934ecc2b6550cd678271eb9a7006a843f8e7be3cee26f2b454e11ee9d7b7",
+      "checkedAt": "2026-10-25T16:56:07.693682+00:00",
+      "bytes": 13572,
+      "sha256": "1b98934ecc2b6550cd678271eb9a7006a843f8e7be3cee26f2b454e11ee9d7b7",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/recover.go",
+      "readHashes": [
+        "a04354d4e37378848d966e296bd2049f20cec5f18db1249ab7de906e3779f144"
+      ],
+      "latestReadAt": "2026-10-25T16:45:44.867662+00:00",
+      "latestReadHash": "a04354d4e37378848d966e296bd2049f20cec5f18db1249ab7de906e3779f144",
+      "checkedAt": "2026-10-25T16:56:07.693703+00:00",
+      "bytes": 2026,
+      "sha256": "a04354d4e37378848d966e296bd2049f20cec5f18db1249ab7de906e3779f144",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/executor.go",
+      "readHashes": [
+        "e6a57e473824df8837d7fe5ad81254ea7671d1fd38183859d7436e79b1238c6e"
+      ],
+      "latestReadAt": "2026-10-25T16:45:59.415837+00:00",
+      "latestReadHash": "e6a57e473824df8837d7fe5ad81254ea7671d1fd38183859d7436e79b1238c6e",
+      "checkedAt": "2026-10-25T16:56:07.693729+00:00",
+      "bytes": 10148,
+      "sha256": "e6a57e473824df8837d7fe5ad81254ea7671d1fd38183859d7436e79b1238c6e",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/execution/executor/ports.go",
+      "readHashes": [
+        "9c488ac1c1f031f78a991b2c7db7172c0749cbe934014f44cbe0db0be05f0f72"
+      ],
+      "latestReadAt": "2026-10-25T16:45:59.415927+00:00",
+      "latestReadHash": "9c488ac1c1f031f78a991b2c7db7172c0749cbe934014f44cbe0db0be05f0f72",
+      "checkedAt": "2026-10-25T16:56:07.693749+00:00",
+      "bytes": 783,
+      "sha256": "9c488ac1c1f031f78a991b2c7db7172c0749cbe934014f44cbe0db0be05f0f72",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/store.go",
+      "readHashes": [
+        "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096"
+      ],
+      "latestReadAt": "2026-10-25T16:50:03.696162+00:00",
+      "latestReadHash": "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096",
+      "checkedAt": "2026-10-25T16:56:07.693784+00:00",
+      "bytes": 24135,
+      "sha256": "89e791c3b2867a236e472ca1347240f183f282a30603839d4c4cd09da5383096",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/continuations.go",
+      "readHashes": [
+        "3d46458adf948b601186240c5737e4303f8e224ab04e309eab8c870d5120eb93"
+      ],
+      "latestReadAt": "2026-10-25T16:46:10.878814+00:00",
+      "latestReadHash": "3d46458adf948b601186240c5737e4303f8e224ab04e309eab8c870d5120eb93",
+      "checkedAt": "2026-10-25T16:56:07.693807+00:00",
+      "bytes": 3334,
+      "sha256": "3d46458adf948b601186240c5737e4303f8e224ab04e309eab8c870d5120eb93",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/canceled.go",
+      "readHashes": [
+        "38a2b8a71e817ad70452ba0fd35e9e86567547f20774b4b174938103f3e386b3"
+      ],
+      "latestReadAt": "2026-10-25T16:46:10.878883+00:00",
+      "latestReadHash": "38a2b8a71e817ad70452ba0fd35e9e86567547f20774b4b174938103f3e386b3",
+      "checkedAt": "2026-10-25T16:56:07.693825+00:00",
+      "bytes": 1823,
+      "sha256": "38a2b8a71e817ad70452ba0fd35e9e86567547f20774b4b174938103f3e386b3",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/finalize.go",
+      "readHashes": [
+        "035532b341a2c5482de03964d14093c7b34055172ffff1dcab0237932f14fa82"
+      ],
+      "latestReadAt": "2026-10-25T16:46:10.878960+00:00",
+      "latestReadHash": "035532b341a2c5482de03964d14093c7b34055172ffff1dcab0237932f14fa82",
+      "checkedAt": "2026-10-25T16:56:07.693853+00:00",
+      "bytes": 14748,
+      "sha256": "035532b341a2c5482de03964d14093c7b34055172ffff1dcab0237932f14fa82",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/usage/waits.go",
+      "readHashes": [
+        "fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f"
+      ],
+      "latestReadAt": "2026-10-25T16:46:10.879048+00:00",
+      "latestReadHash": "fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f",
+      "checkedAt": "2026-10-25T16:56:07.693877+00:00",
+      "bytes": 6382,
+      "sha256": "fc6161d2b6db30ff30402cfe6485bf148ed73b5b649875f43620ccea9b36325f",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/broker/service.go",
+      "readHashes": [
+        "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933929+00:00",
+      "latestReadHash": "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628",
+      "checkedAt": "2026-10-25T16:56:07.693907+00:00",
+      "bytes": 13834,
+      "sha256": "642f9d5fbb8d8f3f3427f999e3fda21b2b1e5058c060e5b7d96fbdd915830628",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/tooling.go",
+      "readHashes": [
+        "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e"
+      ],
+      "latestReadAt": "2026-10-25T16:46:31.129526+00:00",
+      "latestReadHash": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+      "checkedAt": "2026-10-25T16:56:07.693929+00:00",
+      "bytes": 4202,
+      "sha256": "7af2c5abddf71bd171a17f063409eb73364f0c78e08c3080873f0a4dcc2c280e",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/approvals.go",
+      "readHashes": [
+        "87f6406c302e0dba8c7ebe3529e228f013816b99005de462d5509646f00df857"
+      ],
+      "latestReadAt": "2026-10-25T16:46:31.129615+00:00",
+      "latestReadHash": "87f6406c302e0dba8c7ebe3529e228f013816b99005de462d5509646f00df857",
+      "checkedAt": "2026-10-25T16:56:07.693955+00:00",
+      "bytes": 12077,
+      "sha256": "87f6406c302e0dba8c7ebe3529e228f013816b99005de462d5509646f00df857",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/tooling/reconcile/service.go",
+      "readHashes": [
+        "79ba17fbce9bc710a3e02c4dec11115a18415edb914e1b18a6484190216dd19b"
+      ],
+      "latestReadAt": "2026-10-25T16:46:46.893772+00:00",
+      "latestReadHash": "79ba17fbce9bc710a3e02c4dec11115a18415edb914e1b18a6484190216dd19b",
+      "checkedAt": "2026-10-25T16:56:07.693976+00:00",
+      "bytes": 3540,
+      "sha256": "79ba17fbce9bc710a3e02c4dec11115a18415edb914e1b18a6484190216dd19b",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/reconcile.go",
+      "readHashes": [
+        "a86bf8cbdacd821f670249c82ad3c8052e55923163819a1be721f0b17cb564b7"
+      ],
+      "latestReadAt": "2026-10-25T16:46:46.893852+00:00",
+      "latestReadHash": "a86bf8cbdacd821f670249c82ad3c8052e55923163819a1be721f0b17cb564b7",
+      "checkedAt": "2026-10-25T16:56:07.693998+00:00",
+      "bytes": 5113,
+      "sha256": "a86bf8cbdacd821f670249c82ad3c8052e55923163819a1be721f0b17cb564b7",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/blob/store/store.go",
+      "readHashes": [
+        "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53"
+      ],
+      "latestReadAt": "2026-10-25T16:46:46.893924+00:00",
+      "latestReadHash": "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53",
+      "checkedAt": "2026-10-25T16:56:07.694029+00:00",
+      "bytes": 9063,
+      "sha256": "2b41bd1c19af36b4ee1be3ef672885260e42031befaf3c0590eaa842f5404f53",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/effects/store.go",
+      "readHashes": [
+        "09ee18106425b8f34e45649ddcf549e40241967c536e43a5fa80124f783d1013"
+      ],
+      "latestReadAt": "2026-10-25T16:46:46.893989+00:00",
+      "latestReadHash": "09ee18106425b8f34e45649ddcf549e40241967c536e43a5fa80124f783d1013",
+      "checkedAt": "2026-10-25T16:56:07.694057+00:00",
+      "bytes": 13136,
+      "sha256": "09ee18106425b8f34e45649ddcf549e40241967c536e43a5fa80124f783d1013",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/cmd/huhubot/main.go",
+      "readHashes": [
+        "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f"
+      ],
+      "latestReadAt": "2026-10-25T16:46:59.139838+00:00",
+      "latestReadHash": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f",
+      "checkedAt": "2026-10-25T16:56:07.694078+00:00",
+      "bytes": 3890,
+      "sha256": "7e141fcc3662257193f402f1a25af7353cdef3e3692b08266c9731b554f7d28f",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/service.go",
+      "readHashes": [
+        "b6d5cfeee2479d380f8dc6b02c6bb2bd7c99aa4a4fe613d8b1f8f6e9d4ce7521"
+      ],
+      "latestReadAt": "2026-10-25T16:46:59.139918+00:00",
+      "latestReadHash": "b6d5cfeee2479d380f8dc6b02c6bb2bd7c99aa4a4fe613d8b1f8f6e9d4ce7521",
+      "checkedAt": "2026-10-25T16:56:07.694102+00:00",
+      "bytes": 6122,
+      "sha256": "b6d5cfeee2479d380f8dc6b02c6bb2bd7c99aa4a4fe613d8b1f8f6e9d4ce7521",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/stdio/server.go",
+      "readHashes": [
+        "2dc22f04cae58311585667231df592e96013e04710f9259ebcaae4d39bdde406"
+      ],
+      "latestReadAt": "2026-10-25T16:46:59.140026+00:00",
+      "latestReadHash": "2dc22f04cae58311585667231df592e96013e04710f9259ebcaae4d39bdde406",
+      "checkedAt": "2026-10-25T16:56:07.694139+00:00",
+      "bytes": 18120,
+      "sha256": "2dc22f04cae58311585667231df592e96013e04710f9259ebcaae4d39bdde406",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/inbound/hap/router.go",
+      "readHashes": [
+        "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730"
+      ],
+      "latestReadAt": "2026-10-25T16:50:03.695890+00:00",
+      "latestReadHash": "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730",
+      "checkedAt": "2026-10-25T16:56:07.694167+00:00",
+      "bytes": 9294,
+      "sha256": "22813b9f8b7dc0a3e2a80e0273f80ad2682b96c8ce36f095287aed4cc16cd730",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/credentials.go",
+      "readHashes": [
+        "e1f44f82c06847d03c69650c4cb576b8a154497ce8d5548448a49a8ac681b3e8"
+      ],
+      "latestReadAt": "2026-10-25T16:47:37.782381+00:00",
+      "latestReadHash": "e1f44f82c06847d03c69650c4cb576b8a154497ce8d5548448a49a8ac681b3e8",
+      "checkedAt": "2026-10-25T16:56:07.694191+00:00",
+      "bytes": 5118,
+      "sha256": "e1f44f82c06847d03c69650c4cb576b8a154497ce8d5548448a49a8ac681b3e8",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/assistant/store.go",
+      "readHashes": [
+        "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762"
+      ],
+      "latestReadAt": "2026-10-25T16:47:37.782613+00:00",
+      "latestReadHash": "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762",
+      "checkedAt": "2026-10-25T16:56:07.694229+00:00",
+      "bytes": 26945,
+      "sha256": "ec8e245d87922cd4acfc6e38e35caea701cf2302a7c542d8c4c83d3f1f306762",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/execution/children.go",
+      "readHashes": [
+        "3b59709381c2aa72cd3c5294bfeeee5f28dab31a9e1aed9d3dd08d23f4bed352"
+      ],
+      "latestReadAt": "2026-10-25T16:47:37.782740+00:00",
+      "latestReadHash": "3b59709381c2aa72cd3c5294bfeeee5f28dab31a9e1aed9d3dd08d23f4bed352",
+      "checkedAt": "2026-10-25T16:56:07.694275+00:00",
+      "bytes": 10373,
+      "sha256": "3b59709381c2aa72cd3c5294bfeeee5f28dab31a9e1aed9d3dd08d23f4bed352",
+      "matchesLastRead": true
+    },
+    {
+      "path": "src/modules/huhubot/platform/desktop/transport/managed.ts",
+      "readHashes": [
+        "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0"
+      ],
+      "latestReadAt": "2026-10-25T16:48:57.867449+00:00",
+      "latestReadHash": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+      "checkedAt": "2026-10-25T16:56:07.694310+00:00",
+      "bytes": 12068,
+      "sha256": "f15bbbe46e9d2e3b84474467c3b6435015b482a2fa494a7a3d073a1a9c1b78a0",
+      "matchesLastRead": true
+    },
+    {
+      "path": "src/modules/huhubot/core/protocol/connection.ts",
+      "readHashes": [
+        "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655"
+      ],
+      "latestReadAt": "2026-10-25T16:47:37.783480+00:00",
+      "latestReadHash": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+      "checkedAt": "2026-10-25T16:56:07.694353+00:00",
+      "bytes": 23954,
+      "sha256": "c515e32ec0a632fe5259ee65b2d82c930859a7ed13ad15aa93f1240823c6e655",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/045-group-recovery-preflight/REPORT.md",
+      "readHashes": [
+        "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf"
+      ],
+      "latestReadAt": "2026-10-25T16:48:11.374241+00:00",
+      "latestReadHash": "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf",
+      "checkedAt": "2026-10-25T16:56:07.694507+00:00",
+      "bytes": 46223,
+      "sha256": "aad36067a904b2846a227286f60eece97db18183ae3c64b8911b88abbba9ccbf",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/047-model-protocol-preflight/REPORT.md",
+      "readHashes": [
+        "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956"
+      ],
+      "latestReadAt": "2026-10-25T16:48:11.374572+00:00",
+      "latestReadHash": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956",
+      "checkedAt": "2026-10-25T16:56:07.694639+00:00",
+      "bytes": 42922,
+      "sha256": "df2313f9ddcef414a7fbc5e63ed8d2b7d84d2567f571e5fda82f473dcd8f8956",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/060-groups-current-seams/REPORT.md",
+      "readHashes": [
+        "8be43aba0b18b3663d35011aa78d8afccd44679ff4ba7016c304dbe6ccd76d7a"
+      ],
+      "latestReadAt": "2026-10-25T16:48:11.374662+00:00",
+      "latestReadHash": "8be43aba0b18b3663d35011aa78d8afccd44679ff4ba7016c304dbe6ccd76d7a",
+      "checkedAt": "2026-10-25T16:56:07.694769+00:00",
+      "bytes": 8347,
+      "sha256": "8be43aba0b18b3663d35011aa78d8afccd44679ff4ba7016c304dbe6ccd76d7a",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/collaboration/store.go",
+      "readHashes": [
+        "2f6cc2dfc5f99dc59544b621efdf52798fab9a184d667a60dfab9b68b843f4e5"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933635+00:00",
+      "latestReadHash": "2f6cc2dfc5f99dc59544b621efdf52798fab9a184d667a60dfab9b68b843f4e5",
+      "checkedAt": "2026-10-25T16:56:07.694814+00:00",
+      "bytes": 23759,
+      "sha256": "2f6cc2dfc5f99dc59544b621efdf52798fab9a184d667a60dfab9b68b843f4e5",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/credentials/provider.go",
+      "readHashes": [
+        "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236"
+      ],
+      "latestReadAt": "2026-10-25T16:48:57.867353+00:00",
+      "latestReadHash": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+      "checkedAt": "2026-10-25T16:56:07.694845+00:00",
+      "bytes": 11233,
+      "sha256": "0c563fc1e87bc78c3e640317279039b6cc4e34c4502177569776a3b0abb21236",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/credentials.go",
+      "readHashes": [
+        "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5"
+      ],
+      "latestReadAt": "2026-10-25T16:48:57.867399+00:00",
+      "latestReadHash": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+      "checkedAt": "2026-10-25T16:56:07.694866+00:00",
+      "bytes": 1392,
+      "sha256": "251fd73c6d8f5f1f5d3f016e33592b4c5f674641617e237a992220f89f8350e5",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/006-approval-effect.sql",
+      "readHashes": [
+        "899266b772c17b7750039c5d8458a1740f79e9aecfb39b1a77b20acb8c6974af"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933706+00:00",
+      "latestReadHash": "899266b772c17b7750039c5d8458a1740f79e9aecfb39b1a77b20acb8c6974af",
+      "checkedAt": "2026-10-25T16:56:07.694894+00:00",
+      "bytes": 1989,
+      "sha256": "899266b772c17b7750039c5d8458a1740f79e9aecfb39b1a77b20acb8c6974af",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/migrations/012-budget-message.sql",
+      "readHashes": [
+        "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933742+00:00",
+      "latestReadHash": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e",
+      "checkedAt": "2026-10-25T16:56:07.694917+00:00",
+      "bytes": 4419,
+      "sha256": "aa01b63208192bf011e033bcaf02e12198c127815d1cd019c3fff7ba3d639f1e",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/conversation.go",
+      "readHashes": [
+        "c197e34d577864b56f38a2d747eb2a7b0e2c5e12afc1d00c474d4dfb67160cf7"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933780+00:00",
+      "latestReadHash": "c197e34d577864b56f38a2d747eb2a7b0e2c5e12afc1d00c474d4dfb67160cf7",
+      "checkedAt": "2026-10-25T16:56:07.694942+00:00",
+      "bytes": 5839,
+      "sha256": "c197e34d577864b56f38a2d747eb2a7b0e2c5e12afc1d00c474d4dfb67160cf7",
+      "matchesLastRead": true
+    },
+    {
+      "path": "src/modules/huhubot/api.ts",
+      "readHashes": [
+        "40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c"
+      ],
+      "latestReadAt": "2026-10-25T16:49:36.933869+00:00",
+      "latestReadHash": "40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c",
+      "checkedAt": "2026-10-25T16:56:07.694977+00:00",
+      "bytes": 23811,
+      "sha256": "40452f41168ce8d6afc1e8a4b1acf4b786dc05fcb6ec35daa76bd26034aaa80c",
+      "matchesLastRead": true
+    },
+    {
+      "path": "contracts/hap/v0.1/methods.json",
+      "readHashes": [
+        "c22919d4cdcba42f61f43ebc4480aa627d394c3c394979c0d2323ef587734abd"
+      ],
+      "latestReadAt": "2026-10-25T16:49:37.042635+00:00",
+      "latestReadHash": "c22919d4cdcba42f61f43ebc4480aa627d394c3c394979c0d2323ef587734abd",
+      "checkedAt": "2026-10-25T16:56:07.695010+00:00",
+      "bytes": 18068,
+      "sha256": "c22919d4cdcba42f61f43ebc4480aa627d394c3c394979c0d2323ef587734abd",
+      "matchesLastRead": true
+    },
+    {
+      "path": "contracts/hap/v0.1/schema.json",
+      "readHashes": [
+        "4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc"
+      ],
+      "latestReadAt": "2026-10-25T16:49:37.044712+00:00",
+      "latestReadHash": "4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc",
+      "checkedAt": "2026-10-25T16:56:07.695372+00:00",
+      "bytes": 329222,
+      "sha256": "4f373cb78cc7f8345192e5c0d54a77315ccfd064cf73b8fb9b94dc6f305cf8dc",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/access/context/service.go",
+      "readHashes": [
+        "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de"
+      ],
+      "latestReadAt": "2026-10-25T16:50:03.695998+00:00",
+      "latestReadHash": "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de",
+      "checkedAt": "2026-10-25T16:56:07.695447+00:00",
+      "bytes": 13149,
+      "sha256": "49854b78cfedbc531f537eeb2715f47ca6842c2a02de5a78a2eabb272ea425de",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/grants/access.go",
+      "readHashes": [
+        "cc7f2ad6782c1ca57322c7e308b5201b5fc686b70833443a5d425b0d10de19e9"
+      ],
+      "latestReadAt": "2026-10-25T16:50:03.696058+00:00",
+      "latestReadHash": "cc7f2ad6782c1ca57322c7e308b5201b5fc686b70833443a5d425b0d10de19e9",
+      "checkedAt": "2026-10-25T16:56:07.695488+00:00",
+      "bytes": 9508,
+      "sha256": "cc7f2ad6782c1ca57322c7e308b5201b5fc686b70833443a5d425b0d10de19e9",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/adapters/outbound/sqlite/base/store.go",
+      "readHashes": [
+        "2fd8d65b777ec73348b411d0d4b8124a64548d6563e7f225c302754f6aa1fb26"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091523+00:00",
+      "latestReadHash": "2fd8d65b777ec73348b411d0d4b8124a64548d6563e7f225c302754f6aa1fb26",
+      "checkedAt": "2026-10-25T16:56:07.695519+00:00",
+      "bytes": 5949,
+      "sha256": "2fd8d65b777ec73348b411d0d4b8124a64548d6563e7f225c302754f6aa1fb26",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/runtime/profile/profile.go",
+      "readHashes": [
+        "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091604+00:00",
+      "latestReadHash": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f",
+      "checkedAt": "2026-10-25T16:56:07.695544+00:00",
+      "bytes": 6028,
+      "sha256": "a75885b0d81499e8a84c95d3479952cf483cde5782950a903bfaf91724eb0d9f",
+      "matchesLastRead": true
+    },
+    {
+      "path": "native/huhubot/internal/application/api/types.go",
+      "readHashes": [
+        "3d37be5a53549c3fdde687ec24bb397a4c24f4f41519640f8acc75a6708b0374"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091649+00:00",
+      "latestReadHash": "3d37be5a53549c3fdde687ec24bb397a4c24f4f41519640f8acc75a6708b0374",
+      "checkedAt": "2026-10-25T16:56:07.695566+00:00",
+      "bytes": 5454,
+      "sha256": "3d37be5a53549c3fdde687ec24bb397a4c24f4f41519640f8acc75a6708b0374",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/skills/dev/SKILL.md",
+      "readHashes": [
+        "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091808+00:00",
+      "latestReadHash": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "checkedAt": "2026-10-25T16:56:07.695602+00:00",
+      "bytes": 7961,
+      "sha256": "5df9ccddd677ad4cea397a31e7e668d97b125e8ae26b3c72c38d791be9066293",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/workspace.json",
+      "readHashes": [
+        "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091837+00:00",
+      "latestReadHash": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "checkedAt": "2026-10-25T16:56:07.695621+00:00",
+      "bytes": 458,
+      "sha256": "331c75683416ffe2afa5d9a6d2b93a11b4fc8a5332127bcf877f3e0fe76d5ae1",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/catalog.json",
+      "readHashes": [
+        "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091878+00:00",
+      "latestReadHash": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "checkedAt": "2026-10-25T16:56:07.695645+00:00",
+      "bytes": 10470,
+      "sha256": "1e7d53e94d684906320ef5abc259d6b7f96d2b9e34fd449408828ae8d600dd37",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/AGENTS.md",
+      "readHashes": [
+        "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091907+00:00",
+      "latestReadHash": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "checkedAt": "2026-10-25T16:56:07.695667+00:00",
+      "bytes": 3235,
+      "sha256": "42a419fb27b03e33e62d0454e43c38ffa54b1ec0c68eb717640c7f33a74ceb87",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/workflows/specdev/SKILL.md",
+      "readHashes": [
+        "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091933+00:00",
+      "latestReadHash": "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db",
+      "checkedAt": "2026-10-25T16:56:07.695688+00:00",
+      "bytes": 3757,
+      "sha256": "143948212625da381c2b7486cb022d22d51eb977fd092ff4c2de9d5e08dc95db",
+      "matchesLastRead": true
+    },
+    {
+      "path": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/066-recovery-current-seams/TASK.md",
+      "readHashes": [
+        "3d74a978e44dde7c519d7acdd86f7c82d73a6da837dec35b7cb3af86d72a6f96"
+      ],
+      "latestReadAt": "2026-10-25T16:51:25.091963+00:00",
+      "latestReadHash": "3d74a978e44dde7c519d7acdd86f7c82d73a6da837dec35b7cb3af86d72a6f96",
+      "checkedAt": "2026-10-25T16:56:07.695711+00:00",
+      "bytes": 3755,
+      "sha256": "3d74a978e44dde7c519d7acdd86f7c82d73a6da837dec35b7cb3af86d72a6f96",
+      "matchesLastRead": true
+    }
+  ]
+}

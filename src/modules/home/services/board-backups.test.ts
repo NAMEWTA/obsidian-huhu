@@ -7,7 +7,7 @@ function fixture() {
 	const vault = memoryVault(
 			{
 				'.huhu/dashboards/dashboard.md': '# Board',
-				'huhu/习惯/habits.json': '{"version":1,"habits":[]}',
+				'huhu/habits/habits.json': '{"version":1,"habits":[]}',
 			},
 			{},
 		),

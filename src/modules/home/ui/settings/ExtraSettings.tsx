@@ -3,8 +3,6 @@ import { WidgetBackgroundEditor } from './WidgetBackgroundEditor';
 import { SkillList } from '../quickbar/SkillList';
 import { useState } from 'react';
 import { Input } from '../../../../ui/components/input';
-import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
-import { FolderListField } from '../sections/P1Controls';
 import { Button } from '../../../../ui/components/button';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
 import { SettingsRow } from '../../../../ui/components/huhu/SettingsRow';
@@ -166,11 +164,13 @@ export function WidgetExtras({ host, settings, update }: Props) {
 					control={
 						<CitySearch
 							current={legacyWeatherLocation(settings)}
-							onSelect={(location) => update((draft) => {
-								draft.widgetWeatherCity = location.cityName;
-								draft.widgetWeatherLat = location.latitude;
-								draft.widgetWeatherLon = location.longitude;
-							})}
+							onSelect={(location) =>
+								update((draft) => {
+									draft.widgetWeatherCity = location.cityName;
+									draft.widgetWeatherLat = location.latitude;
+									draft.widgetWeatherLon = location.longitude;
+								})
+							}
 						/>
 					}
 				/>
@@ -222,101 +222,6 @@ export function WidgetExtras({ host, settings, update }: Props) {
 							onChange={(value) =>
 								set((s) => {
 									s.pomodoroMode = value as 'countdown' | 'stopwatch';
-								})
-							}
-						/>
-					}
-				/>
-			</SettingsSection>
-			<SettingsSection title={t('home.dashboard.widget.calendar')}>
-				<SettingsRow
-					label={t('exclude.folders')}
-					control={
-						<FolderListField
-							app={host.app}
-							label={t('exclude.folders')}
-							folders={settings.calendarExcludeFolders}
-							onChange={(folders) =>
-								set((s) => {
-									s.calendarExcludeFolders = folders;
-								})
-							}
-						/>
-					}
-				/>
-				<SettingsRow
-					label={t('home.p1.taskTarget')}
-					control={
-						<Choice
-							label={t('home.p1.taskTarget')}
-							value={settings.calendarTaskTarget?.kind ?? 'daily'}
-							options={['daily', 'file', 'folder', 'task'].map((value) => ({
-								value,
-								label: t(`home.p1.target.${value}`),
-							}))}
-							onChange={(value) =>
-								set((s) => {
-									s.calendarTaskTarget =
-										value === 'daily'
-											? undefined
-											: {
-													kind: value as 'file' | 'folder' | 'task',
-													path: s.calendarTaskTarget?.path ?? '',
-												};
-								})
-							}
-						/>
-					}
-				/>
-				{settings.calendarTaskTarget && (
-					<>
-						<SettingsRow
-							label={t('home.dashboard.path')}
-							control={
-								<VaultPathField
-									app={host.app}
-									kind={settings.calendarTaskTarget.kind === 'file' ? 'file' : 'folder'}
-									allowCreate
-									label={t('home.dashboard.path')}
-									value={settings.calendarTaskTarget.path}
-									onChange={(path) =>
-										set((s) => {
-											if (s.calendarTaskTarget) s.calendarTaskTarget.path = path;
-										})
-									}
-								/>
-							}
-						/>
-						{settings.calendarTaskTarget.kind === 'task' && (
-							<SettingsRow
-								label={t('home.dashboard.template')}
-								control={
-									<VaultPathField
-										app={host.app}
-										kind="file"
-										label={t('home.dashboard.template')}
-										value={settings.calendarTaskTarget.template ?? ''}
-										onChange={(path) =>
-											set((s) => {
-												if (s.calendarTaskTarget) s.calendarTaskTarget.template = path;
-											})
-										}
-									/>
-								}
-							/>
-						)}
-					</>
-				)}
-				<SettingsRow
-					label={t('home.p1.taskPosition')}
-					control={
-						<Choice
-							label={t('home.p1.taskPosition')}
-							value={settings.calendarTaskInsertPosition}
-							options={['start', 'end'].map((value) => ({ value, label: t(`home.p1.${value}`) }))}
-							onChange={(value) =>
-								set((s) => {
-									s.calendarTaskInsertPosition = value as 'start' | 'end';
 								})
 							}
 						/>

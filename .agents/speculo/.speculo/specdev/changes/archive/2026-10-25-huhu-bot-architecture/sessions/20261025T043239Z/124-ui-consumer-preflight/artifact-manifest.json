@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-10-26T09:12:54.709185+00:00",
+  "artifacts": {
+    "TASK.md": "7e130743b0330162e0be8e986155887c0eb03c5cd61ac2a9e57fca40ff36a912",
+    "consumer-map.md": "3602bc782fa9cf19ade67ab3201bc0c75839c1081203bc4184d0e020e1ce9a4e",
+    "sources.json": "455c89ed7637784db0c55eb4bd117b1cc3c358dcfd9d3f1936fbbf8b47fec247",
+    "coverage.json": "d9bc720933bc39eaca65760e6bd2cfbbc0c01bd9dedce591ccc7d0dba4d6b591",
+    "observations.json": "65d192e65263e9f818c2e61bfff4b1688162dd285b43bef82f10abed95f2c9b3",
+    "REPORT.md": "679b18bfe7e359f77534363395b2b88db36cb6a68e847bccbe17af79601dba37"
+  },
+  "sourceCount": 63,
+  "sourceTreeSHA256": "9ddeabdfd2ead825849c4dfb4a00f2c338f247af6de55735e45ce4848a678f03",
+  "productWrites": false,
+  "allOwnedCommandsFinished": true
+}

@@ -1,0 +1,145 @@
+[
+  {
+    "path": "github.com/mattn/go-sqlite3",
+    "version": "v1.14.52",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/mattn/go-sqlite3",
+      "Hash": "b0be46fa28d17ee0b65c79774ac0dad84b6db068",
+      "Ref": "refs/tags/v1.14.52"
+    },
+    "sum": "h1:wVbm2Qnf4OXkqhBTSPuCRZDRnxfbVrrmiCEroVdog8U=",
+    "go_mod_sum": "h1:6JTjA44L93a0QCyJef5YvlPoKXntQPjzWv5gtm9sB6w=",
+    "dir": "/home/wta/go/pkg/mod/github.com/mattn/go-sqlite3@v1.14.52",
+    "licenses": [
+      {
+        "file": "LICENSE",
+        "sha256": "afa48e5e64dc610298d80b010ae7a3450f61a79500a9f1d1697ff6dcbbfa1f72",
+        "excerpt": "The MIT License (MIT)\n\nCopyright (c) 2014 Yasuhiro Matsumoto\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documenta"
+      }
+    ]
+  },
+  {
+    "path": "github.com/ncruces/go-sqlite3",
+    "version": "v0.35.6",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/ncruces/go-sqlite3",
+      "Hash": "091633ebb62b0c78988d3e079149333b36337599",
+      "Ref": "refs/tags/v0.35.6"
+    },
+    "sum": "h1:0JGlMne89YzKNP2CJBuiH21EEzSQNuB7pfvCbKBn0Jg=",
+    "go_mod_sum": "h1:6MfWBOFbHJVSJxmTCIUKCJdLl4TKkgO895RHerlDVo8=",
+    "dir": "/home/wta/go/pkg/mod/github.com/ncruces/go-sqlite3@v0.35.6",
+    "licenses": [
+      {
+        "file": "LICENSE",
+        "sha256": "8929c89a593807bf0c042272adc7301376a661050876bd702ebdd36cd7c55d2b",
+        "excerpt": "MIT License\n\nCopyright (c) 2023 Nuno Cruces\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \""
+      }
+    ]
+  },
+  {
+    "path": "github.com/cloudwego/eino",
+    "version": "v0.9.22",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino",
+      "Hash": "0a5ca53b9d3bf7b661dccc863465ec568a421eea",
+      "Ref": "refs/tags/v0.9.22"
+    },
+    "sum": "h1:qBSgj+H5geYTysjta/bgdE9OVXX+9MVXP74vA6QA4GQ=",
+    "go_mod_sum": "h1:OBD1mrkfkt/pJa4rkg1P0VnaMeOVl7l8IAdEqY//3IQ=",
+    "dir": "/home/wta/go/pkg/mod/github.com/cloudwego/eino@v0.9.22",
+    "licenses": [
+      {
+        "file": ".licenserc.yaml",
+        "sha256": "010790e64f67269e462438a443abf96cd4d82daf9ee05de380c6084c24217698",
+        "excerpt": "header:\n  license:\n    spdx-id: Apache-2.0\n    copyright-owner: CloudWeGo Authors\n\n  template: |\n    /*\n     * Copyright {{ .Year }} CloudWeGo Authors\n     *\n     * Licensed under "
+      },
+      {
+        "file": "LICENSE-APACHE",
+        "sha256": "69849221bfb90053de2134ef5e6d540287b4b98062326492f1f96f5da685524b",
+        "excerpt": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITION"
+      }
+    ]
+  },
+  {
+    "path": "github.com/cloudwego/eino-ext/components/model/openai",
+    "version": "v0.1.13",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino-ext",
+      "Subdir": "components/model/openai",
+      "Hash": "0ebab92e14f26088411dbc440a1ebdc904ccd8a1",
+      "Ref": "refs/tags/components/model/openai/v0.1.13"
+    },
+    "sum": "h1:5XHRTiTD5bt9KQrMHcfvuWNklEC3tpm3XHejdozt9vM=",
+    "go_mod_sum": "h1:mgIoqYYOc0eECCqvLbEYpOJrQNTNxkwXzSJzFU+v5sQ=",
+    "dir": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/openai@v0.1.13",
+    "licenses": []
+  },
+  {
+    "path": "github.com/cloudwego/eino-ext/components/model/agenticopenai",
+    "version": "v0.2.4",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino-ext",
+      "Subdir": "components/model/agenticopenai",
+      "Hash": "3603a39473c3e7b2aa3bfc11216487c94b8c7fd9",
+      "Ref": "refs/tags/components/model/agenticopenai/v0.2.4"
+    },
+    "sum": "h1:M5ODiB1UaYV0I/dL2dmgc/HfZ2WUBV0saM9Tkhk2IDg=",
+    "go_mod_sum": "h1:AfLNKxrTFFkJbCWSvOtqKK1ZXEp0hpe26CBQ8GSf5zo=",
+    "dir": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticopenai@v0.2.4",
+    "licenses": [
+      {
+        "file": "LICENSE",
+        "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+        "excerpt": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITION"
+      }
+    ]
+  },
+  {
+    "path": "github.com/cloudwego/eino-ext/components/model/claude",
+    "version": "v0.1.26",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino-ext",
+      "Subdir": "components/model/claude",
+      "Hash": "3603a39473c3e7b2aa3bfc11216487c94b8c7fd9",
+      "Ref": "refs/tags/components/model/claude/v0.1.26"
+    },
+    "sum": "h1:TTf4TtKnEVEj0CD4Dw/vD/UFVfQW89V7MCVN2nH5k7Q=",
+    "go_mod_sum": "h1:uZAs2dFp/lSqk5kK3g3vNdsjUahVOAmcIOjo4VAYkQ4=",
+    "dir": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/claude@v0.1.26",
+    "licenses": [
+      {
+        "file": "LICENSE",
+        "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+        "excerpt": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITION"
+      }
+    ]
+  },
+  {
+    "path": "github.com/cloudwego/eino-ext/components/model/agenticclaude",
+    "version": "v0.1.7",
+    "origin": {
+      "VCS": "git",
+      "URL": "https://github.com/cloudwego/eino-ext",
+      "Subdir": "components/model/agenticclaude",
+      "Hash": "3603a39473c3e7b2aa3bfc11216487c94b8c7fd9",
+      "Ref": "refs/tags/components/model/agenticclaude/v0.1.7"
+    },
+    "sum": "h1:oxvyuAdZLlKSWYrzXwXS63AokgC3TqSljrzCGNRi4JA=",
+    "go_mod_sum": "h1:LsIyLkRviQtfJsGYP6MX9PwqCX4jMtVxR4zR2A7ZB+g=",
+    "dir": "/home/wta/go/pkg/mod/github.com/cloudwego/eino-ext/components/model/agenticclaude@v0.1.7",
+    "licenses": [
+      {
+        "file": "LICENSE",
+        "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+        "excerpt": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITION"
+      }
+    ]
+  }
+]

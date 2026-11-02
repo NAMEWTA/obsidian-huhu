@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "layout_version": "agents-v2",
-  "installation_id": "a3e79b02-c023-44cb-8e70-27e802a31461",
+  "installation_id": "0ee6dee2-058d-439b-b3ea-1b6ef9cd584f",
   "path_base": "project-root",
   "roots": {
     "config": ".agents/speculo/config.json",

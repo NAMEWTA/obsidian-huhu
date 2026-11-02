@@ -1,7 +1,7 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/tab-bar/TabBarCreateEntry.tsx, TabBarCreateEntryRow.tsx, tab-bar-surface.tsx
 import { Command } from 'cmdk';
 import { ArrowLeft, Bot, ChevronRight, Globe, Loader2, Search, Settings, TerminalSquare } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { Platform } from 'obsidian';
 import { useStore } from 'zustand';
 import type { AgentController } from '../../services/controller';
@@ -12,6 +12,11 @@ import { classifyInput, matchingAgents, type InputAction } from './classify-inpu
 import type { ShellChoice } from '../../core/terminal/settings';
 import { tabTitle } from '../tabs/tab-title';
 import { PAGE_ICONS } from '../pages/page-icons';
+import { SpaceError } from '../../core/space/errors';
+import { spaceErrorMessage } from './space-errors';
+import { Input } from '../../../../ui/components/input';
+import { Checkbox } from '../../../../ui/components/checkbox';
+import type { ManagedCreateResult } from '../../core/workspace/managed-runtime';
 
 interface Option {
 	id: string;
@@ -22,6 +27,8 @@ interface Option {
 		| InputAction
 		| { kind: 'tab'; tabId: string }
 		| { kind: 'settings' }
+		| { kind: 'browserWorkspace' }
+		| { kind: 'browserPage'; spaceId: string; pageId: string }
 		| { kind: 'quick'; commandId: string }
 		| { kind: 'shells' | 'back' }
 		| { kind: 'shell'; shell: ShellChoice };
@@ -38,21 +45,29 @@ export function Omnibox({
 }) {
 	const t = useT(),
 		workspace = controller.workspace;
+	const browser = controller.browserWorkspace();
+	const browserState = useSyncExternalStore(
+		useCallback((listener) => browser?.subscribe(listener) ?? (() => undefined), [browser]),
+		useCallback(() => browser?.getState(), [browser]),
+	);
 	const state = useStore(workspace.store),
 		[query, setQuery] = useState(''),
 		[pending, setPending] = useState<string>(),
 		[error, setError] = useState(''),
+		[name, setName] = useState(''),
+		[background, setBackground] = useState(false),
 		[shellMenu, setShellMenu] = useState(false);
+	const nameId = useId(), backgroundId = useId(), busy = useRef(false);
+	const mounted = useRef(false);
+	useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
 	const mod = Platform.isMacOS ? '⌘' : 'Ctrl';
 	const settings = useAgentSettings(controller.settings);
 	const detection = useStore(controller.agents.store);
 	const detected = controller.runtime.listAgents();
-	const agents = controller.agents
-		.list()
-		.map((a) => ({
-			...a,
-			command: settings.overrides[a.id]?.command || detection.detected[a.id] || a.detectCommand,
-		}));
+	const agents = controller.agents.list().map((a) => ({
+		...a,
+		command: settings.overrides[a.id]?.command || detection.detected[a.id] || a.detectCommand,
+	}));
 
 	const actionOption = (action: InputAction): Option => ({
 		id: JSON.stringify(action),
@@ -88,7 +103,7 @@ export function Omnibox({
 				if (
 					`${tabTitle(tab, t)} ${
 						tab.kind === 'browser'
-							? tab.url
+							? (controller.browserPage(tab)?.url ?? '')
 							: tab.kind === 'terminal'
 								? Object.values(tab.panes)
 										.map((p) => p.cwd)
@@ -103,7 +118,12 @@ export function Omnibox({
 						action: { kind: 'tab', tabId: id },
 						label: t('agent.workspace.switchTab'),
 						detail: tabTitle(tab, t),
-						icon: tab.kind === 'page' ? PAGE_ICONS[tab.page] : tab.kind === 'browser' ? Globe : TerminalSquare,
+						icon:
+							tab.kind === 'page'
+								? PAGE_ICONS[tab.page]
+								: tab.kind === 'browser'
+									? Globe
+									: TerminalSquare,
 					});
 			}
 		}
@@ -120,7 +140,6 @@ export function Omnibox({
 					icon: TerminalSquare,
 					action: { kind: 'quick', commandId: command.id },
 				});
-
 	} else {
 		options.push({ ...actionOption({ kind: 'terminal' }), shortcut: `${mod} T` });
 		if (Platform.isWin || shellMenu)
@@ -151,6 +170,30 @@ export function Omnibox({
 			icon: Settings,
 		});
 	}
+	if (browser) {
+		options.push({
+			id: 'browser-workspace',
+			action: { kind: 'browserWorkspace' },
+			label: t('agent.workspace.openBrowser'),
+			icon: Globe,
+		});
+		const filter = query.trim().toLocaleLowerCase();
+		for (const { space, page } of (browserState?.spaces ?? [])
+			.flatMap((space) => space.pages.filter((page) => page.status !== 'closed').map((page) => ({ space, page })))
+			.filter(
+				({ space, page }) =>
+					!filter || `${space.label} ${page.title} ${page.url}`.toLocaleLowerCase().includes(filter),
+			)
+			.slice(0, 50)) {
+			options.push({
+				id: `browser-page:${space.id}:${page.id}`,
+				action: { kind: 'browserPage', spaceId: space.id, pageId: page.id },
+				label: t('agent.workspace.attachBrowser'),
+				detail: `${space.label} · ${page.title || t('browser.newTab')}`,
+				icon: Globe,
+			});
+		}
+	}
 	if (shellMenu && !query.trim()) {
 		const choices = options.filter((o) => o.action.kind === 'shell');
 		options.splice(
@@ -165,29 +208,43 @@ export function Omnibox({
 			setShellMenu(option.action.kind === 'shells');
 			return;
 		}
-		if (pending) return;
+		if (busy.current) return;
+		busy.current = true;
 		setPending(option.id);
 		setError('');
 		try {
 			const action = option.action;
+			const spaceId = controller.spaces?.store.getState().records.selectedSpaceId;
+			const options = { groupId, spaceId, title: name.trim() || undefined, foreground: !background };
+			let result: ManagedCreateResult | undefined;
 			if (action.kind === 'tab') workspace.activate(action.tabId);
+			else if (action.kind === 'browserWorkspace') await controller.openBrowserWorkspace();
+			else if (action.kind === 'browserPage')
+				await workspace.newBrowser(undefined, { groupId, spaceId: action.spaceId, pageId: action.pageId });
 			else if (action.kind === 'terminal' || action.kind === 'shell')
-				await workspace.newTerminal({ groupId, shell: action.kind === 'shell' ? action.shell : undefined });
-			else if (action.kind === 'agent') await workspace.newAgent(action.agentId, { groupId });
+				result = await workspace.createManagedInteractive({ ...options, kind: 'shell', shell: action.kind === 'shell' ? action.shell : undefined });
+			else if (action.kind === 'agent') result = await workspace.createManagedInteractive({ ...options, kind: 'agent', agentId: action.agentId });
 			else if (action.kind === 'quick') {
 				const command = settings.quickCommands.find((c) => c.id === action.commandId);
 				if (command) await controller.runQuickCommand(command, groupId);
 			} else if (action.kind === 'settings') await controller.open({ feature: 'settings', section: 'terminal' });
 			else
-				workspace.newBrowser(
+				await workspace.newBrowser(
 					action.kind === 'url' ? action.url : action.kind === 'search' ? `?${action.query}` : undefined,
 					{ groupId },
 				);
+			// Closing this view does not cancel the service runtime. Its late result belongs to this menu instance only.
+			if (!mounted.current) return;
+			if (result && result.status !== 'created') {
+				if (result.status === 'failed') setError(t(result.error.messageKey));
+				return;
+			}
 			onDone();
 		} catch (error) {
-			setError(error instanceof Error ? error.message : String(error));
+			if (mounted.current) setError(error instanceof SpaceError ? spaceErrorMessage(error) : error instanceof Error ? error.message : String(error));
 		} finally {
-			setPending(undefined);
+			busy.current = false;
+			if (mounted.current) setPending(undefined);
 		}
 	};
 	return (
@@ -212,6 +269,14 @@ export function Omnibox({
 				aria-label={t('agent.workspace.omnibox')}
 				className="h-9 w-full border-0 bg-transparent px-2 text-xs outline-none"
 			/>
+			<div className="space-y-1 border-t border-border px-2 py-2" onKeyDown={event => { if (event.key !== 'Escape' && event.key !== 'Tab') event.stopPropagation(); }}>
+				<label htmlFor={nameId} className="block text-xs text-muted-foreground">{t('agent.managed.name')}</label>
+				<Input id={nameId} value={name} onChange={event => setName(event.target.value)} maxLength={200} disabled={!!pending} className="h-8 text-xs pointer-coarse:h-11" />
+				<label htmlFor={backgroundId} className="flex min-h-8 cursor-pointer items-center gap-2 text-xs pointer-coarse:min-h-11">
+					<Checkbox id={backgroundId} checked={background} disabled={!!pending} onCheckedChange={value => setBackground(value === true)} />
+					{t('agent.managed.backgroundChoice')}
+				</label>
+			</div>
 			{error && (
 				<p role="alert" className="px-2 py-1 text-xs text-destructive">
 					{error}
@@ -253,7 +318,7 @@ export function Omnibox({
 										onSelect={() => {
 											void execute(option);
 										}}
-										className={`flex min-h-6 cursor-pointer items-center rounded-[7px] text-left leading-5 text-muted-foreground outline-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 ${query.trim() ? 'gap-1.5 px-1 py-1 text-[11px]' : 'gap-2 px-2 py-1.5 text-xs font-medium'}`}
+										className={`flex min-h-8 cursor-pointer items-center rounded-[7px] text-left leading-5 text-muted-foreground outline-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 pointer-coarse:min-h-11 ${query.trim() ? 'gap-1.5 px-1 py-1 text-[11px]' : 'gap-2 px-2 py-1.5 text-xs font-medium'}`}
 									>
 										{pending === option.id ? (
 											<Loader2 className="size-3.5 shrink-0 animate-spin" />

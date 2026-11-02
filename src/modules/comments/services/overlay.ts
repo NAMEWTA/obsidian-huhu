@@ -8,6 +8,8 @@ export interface OverlayRequest {
 	visible?(): boolean;
 	focus?(): void;
 	threadIds?: string[];
+	/** Open the newly created highlight's note editor without another click. */
+	autoEditNote?: boolean;
 	anchor?: TextAnchorV2;
 	mode: 'threads' | 'compose' | 'selection' | 'resolve-all';
 	pinned: boolean;

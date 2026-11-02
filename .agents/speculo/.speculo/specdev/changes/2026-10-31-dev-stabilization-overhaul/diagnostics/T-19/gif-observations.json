@@ -1,0 +1,67 @@
+{
+  "source": "https://github.com/NAMEWTA/obsidian-huhu/issues/41",
+  "asset": "docs/images/readme/gif/tasks.gif",
+  "sha256": "a74b99a392552840a96d1e07953cdef91ae9b4970456f278e5b2b0ad9718716f",
+  "assetLastCommit": "beb507a2faeae85f4b87cc68e7963f10d01dd2c5",
+  "captureMethod": "ImageMagick coalesce原GIF并查看按原帧号排序的59-67帧；不启动宿主或修改原图",
+  "frames": 126,
+  "durationSeconds": 16.83,
+  "observations": [
+    "初始独立任务页Incomplete筛选；All7/Incomplete6/Completed1/Overdue2",
+    "Handling date/Earliest first，From/Through为空；新建Write the README，due2026-11-02，timezoneAsia/Singapore",
+    "59-63帧仍有编辑框；第64帧(7.92s)首次关闭，已同时显示All8/Incomplete7与新任务行；65/66帧仍一致",
+    "未发现对话框已关闭但列表/计数仍旧的采样帧；无法从GIF判断物理点击时间、I/O提交时刻或小于采样间隔的迟滞"
+  ],
+  "limitations": [
+    "现有仓库GIF对应原Issue所指路径；不是原始高帧率录屏或事件trace",
+    "不把动画帧之间的停留全部当保存耗时，不否定原报告",
+    "首次Pillow不可用，改用现成ImageMagick；第一次概览按字符串文件名排序导致显示次序错，未用其自动映射结论，细看使用显式原帧号"
+  ],
+  "saveFrames": [
+    {
+      "index": 59,
+      "seconds": 7.42,
+      "durationSeconds": 0.16
+    },
+    {
+      "index": 60,
+      "seconds": 7.58,
+      "durationSeconds": 0.09
+    },
+    {
+      "index": 61,
+      "seconds": 7.67,
+      "durationSeconds": 0.08
+    },
+    {
+      "index": 62,
+      "seconds": 7.75,
+      "durationSeconds": 0.08
+    },
+    {
+      "index": 63,
+      "seconds": 7.83,
+      "durationSeconds": 0.09
+    },
+    {
+      "index": 64,
+      "seconds": 7.92,
+      "durationSeconds": 0.08
+    },
+    {
+      "index": 65,
+      "seconds": 8.0,
+      "durationSeconds": 0.08
+    },
+    {
+      "index": 66,
+      "seconds": 8.08,
+      "durationSeconds": 1.17
+    },
+    {
+      "index": 67,
+      "seconds": 9.25,
+      "durationSeconds": 0.08
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-=== huhu/阅读/Dune-Book-1-000-dune/书籍.md ===
+=== huhu/reading/Dune-Book-1-000-dune/book.md ===
 ---
 huhu-type: book
 huhu-id: book-0000-0000-dune
@@ -13,7 +13,7 @@ totalPages: 612
 finished: false
 ---
 
-=== huhu/阅读/记录/2026/2026-10-04.md ===
+=== huhu/reading/records/2026/2026-10-04.md ===
 ---
 huhu-type: reading-records
 huhu-id: reading:2026-10-04

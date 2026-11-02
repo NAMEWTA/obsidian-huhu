@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-26T15:58:43.499518+00:00",
+  "status": "author candidate returned; T11/T14/Goal pending Root and product repair",
+  "session": "20261025T043239Z",
+  "task": "145-memory-collaboration-consumers",
+  "head": "33c21e098ef3188cbab5a09f3e0a01fadb787715",
+  "branch": "NAMEWTA/bot",
+  "sourceCount": 12,
+  "sourceTreeSHA256": "7daca7558fe3d4d83f79bcd960d8f7ddad31e4799121a66582556d62a0335f5f",
+  "sourceTreeEncoding": "sorted sha256 + two spaces + path + LF, UTF8 SHA256",
+  "sourceFiles": {
+    "native/huhubot/tests/contract/collaboration-policy/chat_http_test.go": "a9c565bcb3ba196190767451e7333d0decf486163927ab6633fc1966851e140b",
+    "native/huhubot/tests/contract/delegation/followup_test.go": "4830ebc4e3dde5fd493ddd275ffb7f57ffa11e3b1d303c7b0e332a80a59ab185",
+    "native/huhubot/tests/contract/delegation/messages_test.go": "fc1acbec438604e5dbab9a6283fc2b9af65ce23ab970111c96666ce7075a1b2c",
+    "native/huhubot/tests/contract/delegation/reply_sources_test.go": "a58064f3ac83296d4ad5acdceb32021c45cdd5c64e987c5857668de71df52b19",
+    "native/huhubot/tests/contract/delegation/review_queue_test.go": "af7dca5e042a5c772414181b40f0ceef5dafa4c6c2eae5080a60d0c32470f940",
+    "native/huhubot/tests/contract/delegation/short_term_assert_test.go": "36f31fe0cfefe90a7d6397b2199d9542dc7d3430f0f032c9dc7e4dfb4dc96420",
+    "native/huhubot/tests/contract/delegation/wait_test.go": "cb101cf78548397e9acf5dc5ba4bc3558681058c90bc1891364782a89e357c97",
+    "native/huhubot/tests/contract/groups/messages_test.go": "7979acbbbfad716e69701d39a6a979cb9da009d7f1988cb81668cdfae39c4f44",
+    "native/huhubot/tests/contract/groups/question_test.go": "4c16c86e710f3c0f1688d2d298c57596f5a002852c8637b2fab53094d2e67c65",
+    "native/huhubot/tests/contract/groups/routing_test.go": "c340b651c6c960877a0978e50e42ad338f28031179f51c90aeddfdc09964039d",
+    "native/huhubot/tests/contract/groups/short_term_assert_test.go": "18b7b40bdf1ba521c9c16337d0de711f91dfec189afac6e2907094fe51c3ce32",
+    "native/huhubot/tests/contract/groups/sources_test.go": "b903a9ba651418c830b15aec3f79b349061abeddd5a2bfceecbb77999c0c39d9"
+  },
+  "artifacts": {
+    "REPORT.md": "411c23f3d204f07cf8ad2b88e7c9605b9b819a598b309322e0c9b71c03e347e9",
+    "TASK.md": "d3b93a44236239f80060fc6df076c266f2643da9a010b60cb623fb002fb93882",
+    "logs/01-targeted-go-meta.json": "c80f164959d56ca697d7f26d08412a31324db9d629539885fc0d6de8aaf09eca",
+    "logs/01-targeted-go.jsonl": "786a1be60df78d377fa6be7c15678401339b435b851b5510f9b067447c260f02",
+    "logs/01-targeted-input-before.json": "72457144754c7e33f1a33003fe55367a5dec433913fa69e83ce808453e88287d",
+    "logs/02-question-waiting-go.jsonl": "0116ce5b19b84a9cd940746e8d1990b20de262d0e3dab90f7ad302d4e9b57c03",
+    "logs/02-question-waiting-meta.json": "b090e12ae7bca3fcbc7204f7da768e1ca9566c3f5751ca60719b4e18c474ef65",
+    "logs/03-question-waiting-go.jsonl": "0061260e889a0542e95e236fa68da1115a488f160495a29c911aa565128b5472",
+    "logs/03-question-waiting-meta.json": "8cc1487a3b57aaac103d8c43747e84a857ddf468926ad1fd3220103ded8acf18",
+    "logs/04-targeted-input-after.json": "d6521cfee95c2c58c3231a8a8d3801543cdc114be6c05ffa86569cd0fedfdc4d",
+    "logs/source-checkpoint.json": "6e9cef8ddc19b0f74e4a999a407b86bb4fca81f00595ddc1688a3f8d833b2d58"
+  },
+  "checks": {
+    "targetedTopLevel": 12,
+    "targetedGreen": 9,
+    "targetedRed": 3,
+    "firstExit": 1,
+    "firstWaitSeconds": 13.02634150400263,
+    "diagnosticExits": [
+      1,
+      1
+    ],
+    "diagnosticWaitSeconds": [
+      9.597697184995923,
+      9.593376525997883
+    ],
+    "inputCount": 389,
+    "productionInputDrift": 0
+  },
+  "goWindowReturned": true,
+  "productionChangedIn145": false
+}

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { ChevronDown, ChevronRight, ExternalLink, KeyRound, UserRound } from 'lucide-react';
 import { Button } from '../../../ui/components/button';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
 import { ConfirmDialog } from '../../../ui/components/huhu/ConfirmDialog';
 import { cn } from '../../../ui/lib/utils';
 import { useT } from '../../../ui/react/hooks';
-import { entryLabel, type SafeCredential, type SafeEntry } from '../core/model';
+import { credentialLabel, entryLabel, type SafeCredential, type SafeEntry } from '../core/model';
 import { EntryIcon } from './EntryIcon';
 import { safeErrorKey } from './SafeDialogs';
 
@@ -26,15 +26,20 @@ const hoverActions = 'opacity-0 transition-opacity group-hover:opacity-100 group
 function CopyButtons({ credential, actions, className }: { credential: SafeCredential; actions: EntryActions; className?: string }) {
 	const t = useT();
 	return <div className={cn('flex shrink-0 items-center', className)}>
-		<ActionButton type="button" size="icon-sm" label={t('safe.copyUsername')} disabled={actions.busy} onClick={() => actions.copy(credential.username, 'username')}><UserRound /></ActionButton>
-		<ActionButton type="button" size="icon-sm" label={t('safe.copyPassword')} disabled={actions.busy} onClick={() => actions.copy(credential.password, 'password')}><KeyRound /></ActionButton>
+		<ActionButton type="button" size="icon-sm" label={t('safe.copyUsername')} disabled={actions.busy || !credential.username} onClick={() => actions.copy(credential.username, 'username')}><UserRound /></ActionButton>
+		<ActionButton type="button" size="icon-sm" label={t('safe.copyPassword')} disabled={actions.busy || !credential.password} onClick={() => actions.copy(credential.password, 'password')}><KeyRound /></ActionButton>
 	</div>;
 }
 
 function AccountRow({ credential, actions }: { credential: SafeCredential; actions: EntryActions }) {
-	return <li className="flex min-w-0 items-center gap-2 rounded-md py-0.5 pl-2">
-		<span className="min-w-0 flex-1 truncate text-[13px]" title={credential.username}>{credential.username}</span>
-		{credential.notes && <span className="hidden max-w-[40%] shrink truncate text-xs text-muted-foreground @md:inline" title={credential.notes}>{credential.notes.split('\n')[0]}</span>}
+	const t = useT();
+	return <li className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 border-t border-border/50 py-1.5">
+		<div className="grid min-w-0 gap-x-3 gap-y-0.5 @lg:grid-cols-2">
+			<span className="min-w-0 break-words text-[13px]">{credentialLabel(credential) || t('safe.unnamedAccount')}</span>
+			<span className="min-w-0 break-words text-xs text-muted-foreground">{[credential.phone, credential.email].filter(Boolean).join(' · ')}</span>
+			{credential.notes && <p className="m-0 whitespace-pre-wrap break-words text-xs text-muted-foreground @lg:col-span-2">{credential.notes}</p>}
+			{credential.relations.length > 0 && <span className="text-xs text-muted-foreground">{t('safe.relationCount', { count: credential.relations.length })}</span>}
+		</div>
 		<CopyButtons credential={credential} actions={actions} />
 	</li>;
 }
@@ -49,31 +54,32 @@ function AccountCount({ count }: { count: number }) {
 	return <>{t('safe.accountCount', { count })}</>;
 }
 
-/** Dense one-line rows: icon, title and website, then the username or the number of accounts. */
+/** Every entry has the same disclosure, including single and planned accounts. Columns share fixed proportions. */
 function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions }) {
 	const t = useT();
 	const [expanded, setExpanded] = useState(false);
-	const multiple = entry.credentials.length > 1;
+	const accountsId = useId();
 	const first = entry.credentials[0]!;
-	const label = entryLabel(entry);
-	return <li className="min-w-0 rounded-md hover:bg-accent/50 focus-within:bg-accent/50">
-		<div className="group flex items-center gap-1 pr-1">
-			<button type="button" className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" onClick={() => actions.open(entry)} disabled={actions.busy}>
+	const label = entryLabel(entry) || t('safe.unnamedEntry');
+	return <li className="min-w-0 rounded-md border-b border-border/50 hover:bg-accent/50 focus-within:bg-accent/50">
+		<div className="group flex min-w-0 items-center gap-1 pr-1">
+			<button type="button" className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-1 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 @lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]" onClick={() => actions.open(entry)} disabled={actions.busy}>
 				<EntryIcon entry={entry} size="sm" />
-				<span className="min-w-0 flex-1">
+				<span className="min-w-0">
 					<span className="block truncate text-[13px] leading-tight font-medium" title={label}>{label}</span>
 					{entry.url && entry.title && <span className="block truncate text-xs leading-tight text-muted-foreground" title={entry.url}>{displayUrl(entry.url)}</span>}
 				</span>
-				{!multiple && <span className="hidden max-w-[40%] shrink truncate text-xs text-muted-foreground @md:block" title={first.username}>{first.username}</span>}
+				<span className="col-start-2 min-w-0 text-xs text-muted-foreground @lg:col-start-auto">
+					<span className="block truncate" title={credentialLabel(first)}>{credentialLabel(first) || t('safe.unnamedAccount')}</span>
+					<span className="block truncate" title={entry.notes || first.notes}>{[...entry.tags, entry.notes || first.notes].filter(Boolean).join(' · ')}</span>
+				</span>
 			</button>
-			{multiple
-				? <Button type="button" variant="ghost" size="xs" className="shrink-0 text-muted-foreground" aria-expanded={expanded} aria-label={t(expanded ? 'safe.collapseAccounts' : 'safe.expandAccounts', { title: label })} onClick={() => setExpanded(value => !value)}>
-					{expanded ? <ChevronDown /> : <ChevronRight />}<AccountCount count={entry.credentials.length} />
-				</Button>
-				: <CopyButtons credential={first} actions={actions} className={hoverActions} />}
-			<span className={cn('flex shrink-0', hoverActions)}><OpenUrlButton entry={entry} actions={actions} /></span>
+			<Button type="button" variant="ghost" size="sm" className="shrink-0 text-muted-foreground" disabled={actions.busy} aria-expanded={expanded} aria-controls={accountsId} aria-label={t(expanded ? 'safe.collapseAccounts' : 'safe.expandAccounts', { title: label })} onClick={() => setExpanded(value => !value)}>
+				{expanded ? <ChevronDown /> : <ChevronRight />}<AccountCount count={entry.credentials.length} />
+			</Button>
+			<span className={cn('flex w-8 shrink-0', hoverActions)}><OpenUrlButton entry={entry} actions={actions} /></span>
 		</div>
-		{multiple && expanded && <ul className="m-0 mb-1 grid list-none gap-0 py-0 pr-1 pl-10">
+		{expanded && <ul id={accountsId} className="m-0 mb-1 grid list-none gap-0 py-0 pr-2 pl-4 @md:pl-11">
 			{entry.credentials.map(credential => <AccountRow key={credential.id} credential={credential} actions={actions} />)}
 		</ul>}
 	</li>;
@@ -82,7 +88,7 @@ function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions 
 /** Tiles in a responsive grid: the first accounts are listed with their copy buttons. */
 function EntryCard({ entry, actions }: { entry: SafeEntry; actions: EntryActions }) {
 	const t = useT();
-	const label = entryLabel(entry);
+	const label = entryLabel(entry) || t('safe.unnamedEntry');
 	const shown = entry.credentials.slice(0, 3);
 	const more = entry.credentials.length - shown.length;
 	return <li className="group/card flex min-w-0 flex-col gap-1.5 rounded-lg border border-border bg-card p-2.5 text-card-foreground hover:border-muted-foreground/40">
@@ -96,9 +102,10 @@ function EntryCard({ entry, actions }: { entry: SafeEntry; actions: EntryActions
 			</button>
 			<span className={cn('flex shrink-0', hoverActions)}><OpenUrlButton entry={entry} actions={actions} /></span>
 		</div>
+		{entry.tags.length > 0 && <p className="m-0 break-words text-xs text-muted-foreground">{entry.tags.join(' · ')}</p>}
 		<ul className="m-0 grid list-none gap-0 p-0">
 			{shown.map(credential => <li key={credential.id} className="flex min-w-0 items-center gap-1">
-				<span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={credential.username}>{credential.username}</span>
+				<span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={credentialLabel(credential)}>{credentialLabel(credential) || t('safe.unnamedAccount')}</span>
 				<CopyButtons credential={credential} actions={actions} />
 			</li>)}
 		</ul>

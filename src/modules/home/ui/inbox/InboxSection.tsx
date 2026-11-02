@@ -28,8 +28,8 @@ import { useTodayCaptures } from './use-today-captures';
  * The inbox section (type id `memo`): the notes of the inbox folder, a strip for fleeting capture at the bottom and,
  * when the card is wide, today's captures beside the list.
  *
- *   - Every item is a Markdown file in the inbox folder (`huhu/收件箱/YYYY-MM-DD-HHmm-标题.md`), the most recently
- *     modified first; the fleeting thoughts of a day are one more file there (`YYYY-MM-DD-闪念.md`). The board keeps
+ *   - Every item is a Markdown file in the inbox folder (`huhu/inbox/YYYY-MM-DD-HHmm-标题.md`), the most recently
+ *     modified first; the fleeting thoughts of a day are one more file there (`YYYY-MM-DD-captures.md`). The board keeps
  *     no text of its own. A click opens a file in a new tab.
  *   - The capture strip sits at the foot of the card at every size, so it never moves when the card is resized.
  *   - From 36rem wide, the list gets a column on the left and today's captures (newest first) one on the right; the
@@ -264,7 +264,7 @@ function NewItem({
 	const create = () => {
 		if (busy.current) return;
 		busy.current = true;
-		void createMemoFile(store.host.app, root, name.trim() || t('home.inbox.defaultTitle'), '', nowMoment())
+		void createMemoFile(store.host.app, root, name.trim(), '', nowMoment())
 			.then((file) => {
 				onDone();
 				return store.openFile(file.path);

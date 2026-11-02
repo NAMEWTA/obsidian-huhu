@@ -112,7 +112,7 @@ test('Enter and Tab leave the field for the list, Shift+Tab for the folders, Esc
 	await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('listbox')));
 	input.focus();
 	fireEvent.keyDown(input, { key: 'Escape' });
-	await waitFor(() => expect(screen.queryByRole('textbox', { name: 'Filter notes' })).toBeNull());
+	await waitFor(() => expect((screen.getByRole('textbox', { name: 'Filter notes' }) as HTMLInputElement).value).toBe(''));
 	expect(notePaths()).toHaveLength(3);
 	expect(t.service.state.getState().search.query).toBe('c');
 	await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('listbox')));
@@ -367,3 +367,18 @@ function choose(item: Element) {
 	fireEvent.pointerDown(item);
 	fireEvent.click(item);
 }
+
+test('navigation search is visible immediately, typing applies it, and locate reveals the active note', async () => {
+	const t = await fixture({ ops: { activePath: () => 'Home/d.md' } });
+	t.view(<><NavPane /><ListPane /></>);
+	const input = screen.getByRole('textbox', { name: 'Filter notes' });
+	expect(t.service.state.getState().search.open).toBe(false);
+	fireEvent.change(input, { target: { value: 'alpha' } });
+	await waitFor(() => expect(notePaths()).toEqual(['Work/a.md']));
+	const nav = document.querySelector('[data-navigator-pane=nav]')! as HTMLElement;
+	expect(within(nav).queryByRole('button', { name: 'Search' })).toBeNull();
+	fireEvent.click(within(nav).getByRole('button', { name: 'Reveal current note in navigator' }));
+	await waitFor(() => expect(t.service.state.getState().selection.paths).toEqual(['Home/d.md']));
+	expect((input as HTMLInputElement).value).toBe('');
+	expect(t.calls.filter(([operation]) => operation === 'open')).toEqual([]);
+});

@@ -240,6 +240,8 @@ export interface NavigatorService {
 	dropOnFolder: (paths: readonly string[], folder: string) => Promise<void>;
 	dropOnTag: (paths: readonly string[], tag: string) => Promise<void>;
 	reveal: (path: string, options?: { select?: boolean }) => void;
+	/** Explicitly locate the active note, clearing filters and opening its ancestor folders without reopening the file. */
+	revealActive: () => Promise<void>;
 	step: (delta: number) => void;
 	back: () => void;
 	forward: () => void;
@@ -818,6 +820,20 @@ export function createNavigatorService(options: NavigatorServiceOptions): Naviga
 		async dropOnTag(paths, tag) {
 			const notes = paths.filter((path) => !ops.isFolder(path));
 			if (notes.length) await ops.addTag(notes, canonicalTag(index.notes(), tag));
+		},
+		async revealActive() {
+			const path = ops.activePath();
+			const entry = path ? index.get(path) : undefined;
+			if (!path || !entry) return;
+			const hidden = ensureVisible().matcher.note(entry);
+			await settings.update(draft => {
+				draft.collapsedSections = draft.collapsedSections.filter(section => section !== 'folders');
+				if (hidden) draft.showHidden = true;
+				if (draft.layout === 'single') draft.singleView = 'list';
+			});
+			patch({ search: { open: false, query: '' } });
+			selectContext({ kind: 'folder', key: entry.folder });
+			service.reveal(path);
 		},
 		reveal(path, revealOptions = {}) {
 			const entry = index.get(path);

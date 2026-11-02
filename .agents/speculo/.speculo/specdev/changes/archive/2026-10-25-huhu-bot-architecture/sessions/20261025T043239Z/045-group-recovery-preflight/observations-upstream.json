@@ -1,0 +1,1128 @@
+[
+  {
+    "reference": "REF-05",
+    "url": "https://raw.githubusercontent.com/Fei2411/DeepSeek-Bot/1bebe826f74e9a72cabafd3b80602b05af867b38/ds-bot/src/host/groups.js",
+    "readAt": "2026-10-25T10:30:00.312288+00:00",
+    "status": 200,
+    "sha256": "750d05867b9c1dcbbacf6a1e8b88f176ef7ea101303e9061454028f8a2310da5",
+    "bytes": 58838,
+    "lineCount": 1000,
+    "matches": [
+      {
+        "line": 1,
+        "text": "// Group chats: the room log, members' group Sessions, rounds and @mentions, round"
+      },
+      {
+        "line": 4,
+        "text": "// Group chat rounds. A group chat is one shared, ordered conversation, so members"
+      },
+      {
+        "line": 6,
+        "text": "// passed, and it shows everything that arrived since that member last looked, plus"
+      },
+      {
+        "line": 7,
+        "text": "// the speaking order and the member's place in it. Nobody answers a room that has"
+      },
+      {
+        "line": 9,
+        "text": "// goes to every member in roster order, admin first, or to the admin alone in admin"
+      },
+      {
+        "line": 10,
+        "text": "// mode; \"@Name\" picks members. A reply that @mentions a member calls that member"
+      },
+      {
+        "line": 15,
+        "text": "// Work does not hold a round up: a member that is still busy with tools a little after"
+      },
+      {
+        "line": 18,
+        "text": "// where the member that asked for it answers."
+      },
+      {
+        "line": 27,
+        "text": "import { mentionSpans, speakerOf } from '../shared/mentions.js'"
+      },
+      {
+        "line": 38,
+        "text": "// user sets it per group; unset, it follows the member count."
+      },
+      {
+        "line": 39,
+        "text": "export const defaultRelayLimit = room => 3 * (room?.members?.length ?? 0)"
+      },
+      {
+        "line": 51,
+        "text": "// A member's own lines are already in its Session, so only the others' are news."
+      },
+      {
+        "line": 52,
+        "text": "const unseenLines = (room, memberId) => {"
+      },
+      {
+        "line": 53,
+        "text": "  const since = room.seen[memberId]"
+      },
+      {
+        "line": 55,
+        "text": "  return room.log.filter(line => line.seq > since && line.botId !== memberId).slice(-ROOM_DELTA_MAX)"
+      },
+      {
+        "line": 58,
+        "text": "// A notice keeps its fields, not a finished sentence: the line members read is written"
+      },
+      {
+        "line": 62,
+        "text": "  if (line.reason === 'missed') return `${(line.names ?? []).join(' and ')} did not answer within ${line.minutes} minutes, so this round moved on without it. If it is still working, it posts its result later as a late reply; if it is urgent, the user can write here or the admin can follow up.`"
+      },
+      {
+        "line": 84,
+        "text": "// Pass every member, the speaker too, so \"@新 Bot 2\" said by 新 Bot 2 is never read as"
+      },
+      {
+        "line": 86,
+        "text": "export const mentionsIn = (text, members, references = []) => {"
+      },
+      {
+        "line": 89,
+        "text": "  for (const span of mentionSpans(text, members, { references: references.flatMap(reference => reference.labels) })) {"
+      },
+      {
+        "line": 96,
+        "text": "// What the user referenced in this round, for a member that has not been shown it yet."
+      },
+      {
+        "line": 102,
+        "text": "const ROOM_CALLS = 'Writing \"@Name\" calls that member next, to answer or to do what you ask; when it finishes work you gave it, you answer its result. To only mention a member, write its name without \"@\".'"
+      },
+      {
+        "line": 116,
+        "text": "const adminNote = room => ["
+      },
+      {
+        "line": 117,
+        "text": "  'You are this group\\'s admin.',"
+      },
+      {
+        "line": 118,
+        "text": "  room.mode === 'admin' ? 'Plain messages come to you first: answer them, or call the members who should answer with @Name.' : '',"
+      },
+      {
+        "line": 119,
+        "text": "  '\"@all\" calls every member. When the user asks, change the group with update_group.',"
+      },
+      {
+        "line": 123,
+        "text": "const roomKickoff = language => `The user just created this group and has not written yet. Greet the user in one short message and ask what they want this group to work on. Do not call members with @ yet, and do not reply [PASS]. No name prefix. Write in ${language ?? 'the user\\'s language if known; otherwise Chinese'}.`"
+      },
+      {
+        "line": 136,
+        "text": "  // and what a member reads of it (GROUP_LINE_READ) in a file of its own: written once,"
+      },
+      {
+        "line": 172,
+        "text": "  // After a restart the whole lines are read back before a member reads them."
+      },
+      {
+        "line": 177,
+        "text": "  // What a member reads of a line: all of it, up to GROUP_LINE_READ."
+      },
+      {
+        "line": 178,
+        "text": "  const memberText = room => (line) => {"
+      },
+      {
+        "line": 194,
+        "text": "  // A member's group Session, created on its first turn there. A new one starts with"
+      },
+      {
+        "line": 195,
+        "text": "  // a fresh look at the log and a brief of the member's own chat; the brief is the"
+      },
+      {
+        "line": 197,
+        "text": "  async function groupSessionFor(room, member) {"
+      },
+      {
+        "line": 199,
+        "text": "    const known = room.sessions[member.id]"
+      },
+      {
+        "line": 204,
+        "text": "    const id = await rt.createSession(`${member.name} · ${room.name}`, { dir: rt.workDirOf({ botId: member.id, roomId: room.id }) })"
+      },
+      {
+        "line": 205,
+        "text": "    // While the Session was made the member may have left or been deleted, the group been"
+      },
+      {
+        "line": 206,
+        "text": "    // deleted, or another turn made the member's Session first: the new one is not kept."
+      },
+      {
+        "line": 207,
+        "text": "    // Undefined means the member is gone from the group."
+      },
+      {
+        "line": 208,
+        "text": "    const gone = rt.roomOf(room.id) !== room || !room.members.includes(member.id) || rt.botOf(member.id) === undefined"
+      },
+      {
+        "line": 209,
+        "text": "    if (gone || room.sessions?.[member.id] !== undefined) {"
+      },
+      {
+        "line": 211,
+        "text": "        .catch(error => rt.warn('ds-bot: unused group Session of %s in %s not archived: %s', member.name, room.name, error))"
+      },
+      {
+        "line": 212,
+        "text": "      return gone ? undefined : groupSessionFor(room, member)"
+      },
+      {
+        "line": 214,
+        "text": "    room.sessions[member.id] = id"
+      },
+      {
+        "line": 215,
+        "text": "    rt.groupOwners.set(id, { botId: member.id, roomId: room.id })"
+      },
+      {
+        "line": 216,
+        "text": "    delete room.seen[member.id]"
+      },
+      {
+        "line": 217,
+        "text": "    const ref = await rt.desiredModel(member)"
+      },
+      {
+        "line": 220,
+        "text": "        .catch(error => rt.warn('ds-bot: model for %s in %s not applied: %s', member.name, room.name, error))"
+      },
+      {
+        "line": 222,
+        "text": "    await rt.applyPermission(member, id, room)"
+      },
+      {
+        "line": 223,
+        "text": "      .catch(error => rt.warn('ds-bot: permission for %s in %s not applied: %s', member.name, room.name, error))"
+      },
+      {
+        "line": 226,
+        "text": "    return { id, brief: await rt.ownChatBrief(member) }"
+      },
+      {
+        "line": 231,
+        "text": "  // `files` are the files of the lines shown, which go to the member with the prompt."
+      },
+      {
+        "line": 232,
+        "text": "  function roomPrompt(room, member, round) {"
+      },
+      {
+        "line": 233,
+        "text": "    const peers = room.members.filter(id => id !== member.id).map(rt.botOf).filter(Boolean)"
+      },
+      {
+        "line": 234,
+        "text": "      .map(bot => `${bot.name}${rt.isAdminOf(room, bot.id) ? ' (admin)' : ''}`)"
+      },
+      {
+        "line": 235,
+        "text": "    const leads = rt.isAdminOf(room, member.id)"
+      },
+      {
+        "line": 236,
+        "text": "    const lines = unseenLines(room, member.id)"
+      },
+      {
+        "line": 239,
+        "text": "    const spokeThisRound = (room.seen[member.id] ?? 0) >= round.startSeq"
+      },
+      {
+        "line": 243,
+        "text": "    const members = `Members: the user${peers.length ? `, ${peers.join(', ')}` : ''} and you${leads ? ' (admin)' : ''}. Members speak one at a time; each message is posted before the next speaker starts. ${ROOM_CALLS}`"
+      },
+      {
+        "line": 244,
+        "text": "    const notice = room.notice ? `Group notice (shared instructions for every member):\\n${room.notice}` : ''"
+      },
+      {
+        "line": 245,
+        "text": "    if (round.kickoff) return { text: [members, notice, leads ? adminNote(room) : '', roomKickoff(rt.uiLanguage?.())].filter(Boolean).join('\\n\\n'), files: [] }"
+      },
+      {
+        "line": 246,
+        "text": "    const working = workingIn(room).filter(item => item.bot.id !== member.id)"
+      },
+      {
+        "line": 249,
+        "text": "      members,"
+      },
+      {
+        "line": 251,
+        "text": "      leads ? adminNote(room) : '',"
+      },
+      {
+        "line": 252,
+        "text": "      earlier.length ? `Earlier in the group, before this round (context only):\\n${transcript(earlier, memberText(room))}` : '',"
+      },
+      {
+        "line": 254,
+        "text": "        ? `This round so far${spokeThisRound ? ', since your last message' : ', starting with the new message'} (oldest first):\\n${transcript(current, memberText(room))}`"
+      },
+      {
+        "line": 256,
+        "text": "      round.shown?.includes(member.id) ? '' : referenceNote(round.references),"
+      },
+      {
+        "line": 265,
+        "text": "  // Members whose turn in this group is running, and since when."
+      },
+      {
+        "line": 266,
+        "text": "  const workingIn = room => room.members.flatMap((id) => {"
+      },
+      {
+        "line": 271,
+        "text": "  // How many group lines a member has not been shown yet, counted the same way a"
+      },
+      {
+        "line": 273,
+        "text": "  // reads is the number the member would get. A turn the reply timeout cut short"
+      },
+      {
+        "line": 274,
+        "text": "  // may leave them unread, and the member is never called again: the next speaker"
+      },
+      {
+        "line": 279,
+        "text": "  // A member's message in the round: in the log, for the members after it, and in the"
+      },
+      {
+        "line": 281,
+        "text": "  const postInRound = (room, round, member, text, duration) => {"
+      },
+      {
+        "line": 282,
+        "text": "    appendRoom(room, { who: member.name, botId: member.id, text })"
+      },
+      {
+        "line": 283,
+        "text": "    round.replies.push({ botId: member.id, name: member.name, color: member.color, text, time: Date.now(), ...(duration === undefined ? {} : { duration }) })"
+      },
+      {
+        "line": 287,
+        "text": "  // One member turn inside the room; resolves to its final text, `{ failure }` when its"
+      },
+      {
+        "line": 291,
+        "text": "  // member's Session, so a member at work is never cut off. `by` is the member that"
+      },
+      {
+        "line": 293,
+        "text": "  // member writes before its last step is posted at once and collected in `said`."
+      },
+      {
+        "line": 294,
+        "text": "  async function roomTurn(room, member, sessionId, { text, files }, note, signal, round, by, said = []) {"
+      },
+      {
+        "line": 295,
+        "text": "    if (signal.aborted) return null"
+      },
+      {
+        "line": 298,
+        "text": "    const turn = { botId: member.id, sessionId, exchangeId }"
+      },
+      {
+        "line": 301,
+        "text": "    room.seen[member.id] = room.seq"
+      },
+      {
+        "line": 319,
+        "text": "        const step = stripOwnName(member.name, raw)"
+      },
+      {
+        "line": 322,
+        "text": "        postInRound(room, round, member, step, Date.now() - startedAt)"
+      },
+      {
+        "line": 325,
+        "text": "      rt.roomWaiters.set(exchangeId, { sessionId, botId: member.id, roomId: room.id, resolve: finish, fail: failure => finish({ failure }), touch, work, say, approval: () => finish({ approval: true }) })"
+      },
+      {
+        "line": 326,
+        "text": "      signal.addEventListener('abort', () => finish(null), { once: true })"
+      },
+      {
+        "line": 329,
+        "text": "      await rt.deliver({ fromId: undefined, toId: member.id, sessionId, role: 'room', roomId: room.id, exchangeId, note, text, files, ...(by ? { askedBy: by } : {}) })"
+      },
+      {
+        "line": 335,
+        "text": "      rt.warn('ds-bot: group delivery to %s failed: %s', member.name, error)"
+      },
+      {
+        "line": 337,
+        "text": "      // repair a lost Session, so the member's next turn in the group starts a new one."
+      },
+      {
+        "line": 339,
+        "text": "      if (lost && room.sessions?.[member.id] === sessionId) {"
+      },
+      {
+        "line": 340,
+        "text": "        rt.retireGroupSession(room, member.id)"
+      },
+      {
+        "line": 346,
+        "text": "    // A turn that ended leaves nothing for a stop to cancel."
+      },
+      {
+        "line": 349,
+        "text": "    return stripOwnName(member.name, String(reply ?? '').trim())"
+      },
+      {
+        "line": 352,
+        "text": "  // A member that reaches its context limit mid-turn goes on in a fresh Session, so a"
+      },
+      {
+        "line": 353,
+        "text": "  // waiter is also found by the member and group that Session now speaks for."
+      },
+      {
+        "line": 373,
+        "text": "  // A called member moves up if it is still waiting, or gets one more turn if it"
+      },
+      {
+        "line": 375,
+        "text": "  // call answers to: 'user' for the user's own messages, 'bot' for a member's calls."
+      },
+      {
+        "line": 376,
+        "text": "  // `by` is the calling member, if a member called."
+      },
+      {
+        "line": 377,
+        "text": "  function callMembers(round, index, callees, note, by, origin) {"
+      },
+      {
+        "line": 394,
+        "text": "  // picked; one still waiting later in the round is not queued twice."
+      },
+      {
+        "line": 410,
+        "text": "  // the composer whether it queued or steered them. Images and chat references are"
+      },
+      {
+        "line": 426,
+        "text": "  // next speaker, so everyone still to speak sees them. The members the message's own"
+      },
+      {
+        "line": 429,
+        "text": "  // restarts the relay count, and calls parked at the limit resume after the members"
+      },
+      {
+        "line": 432,
+        "text": "    // The greeting's prompt tells the admin the user has not written yet."
+      },
+      {
+        "line": 436,
+        "text": "    const members = room.members.map(rt.botOf).filter(Boolean)"
+      },
+      {
+        "line": 440,
+        "text": "      const { all, found } = mentionsIn(line.text, members)"
+      },
+      {
+        "line": 441,
+        "text": "      const note = all || found.length > 0 ? 'the user mentioned you' : 'new message from the user'"
+      },
+      {
+        "line": 442,
+        "text": "      callMembers(round, index - 1, openingSpeakers(room, { text: line.text }), note, undefined, 'user')"
+      },
+      {
+        "line": 454,
+        "text": "      if (signal.aborted) break"
+      },
+      {
+        "line": 458,
+        "text": "      const member = rt.botOf(slot.id)"
+      },
+      {
+        "line": 459,
+        "text": "      // Settings may change mid-round, for example when the admin removes someone."
+      },
+      {
+        "line": 460,
+        "text": "      if (member === undefined || !room.members.includes(slot.id)) {"
+      },
+      {
+        "line": 484,
+        "text": "      round.speaking = member.id"
+      },
+      {
+        "line": 487,
+        "text": "        session = await groupSessionFor(room, member)"
+      },
+      {
+        "line": 489,
+        "text": "        rt.warn('ds-bot: group Session for %s in %s failed: %s', member.name, room.name, error)"
+      },
+      {
+        "line": 492,
+        "text": "        round.failed.push(member.name)"
+      },
+      {
+        "line": 493,
+        "text": "        round.replies.push({ kind: 'failed', botId: member.id, name: member.name, color: member.color, code: 'SESSION', text: String(error?.message ?? error).slice(0, 300), time: Date.now() })"
+      },
+      {
+        "line": 502,
+        "text": "      const prompt = roomPrompt(room, member, round)"
+      },
+      {
+        "line": 503,
+        "text": "      round.shown?.push(member.id)"
+      },
+      {
+        "line": 507,
+        "text": "      const reply = await roomTurn(room, member, session.id, { text, files: prompt.files }, slot.note ?? 'your turn', signal, round, slot.by, said)"
+      },
+      {
+        "line": 511,
+        "text": "        // Not a pass: the user sees why the member is silent, and the round goes on."
+      },
+      {
+        "line": 513,
+        "text": "        round.failed.push(member.name)"
+      },
+      {
+        "line": 515,
+        "text": "        round.replies.push({ kind: 'failed', botId: member.id, name: member.name, color: member.color, code, ...(status ? { status } : {}), text: message, time: Date.now() })"
+      },
+      {
+        "line": 517,
+        "text": "        // The member's turn goes on in the background and posts when it ends."
+      },
+      {
+        "line": 519,
+        "text": "        round.replies.push({ kind: 'approval', botId: member.id, name: member.name, color: member.color, time: Date.now() })"
+      },
+      {
+        "line": 522,
+        "text": "        round.replies.push({ kind: 'working', botId: member.id, name: member.name, color: member.color, time: Date.now() })"
+      },
+      {
+        "line": 525,
+        "text": "        if (final !== undefined) postInRound(room, round, member, final, Date.now() - startedAt)"
+      },
+      {
+        "line": 528,
+        "text": "        round.passed.push(member.name)"
+      },
+      {
+        "line": 530,
+        "text": "          round.replies.push({ kind: 'missed', botId: member.id, name: member.name, color: member.color, time: Date.now() })"
+      },
+      {
+        "line": 531,
+        "text": "          // The round moved on without this member: the log shows the call and then"
+      },
+      {
+        "line": 533,
+        "text": "          // dropped, and what brings the member back."
+      },
+      {
+        "line": 534,
+        "text": "          appendRoom(room, { who: 'DS Bot', kind: 'notice', reason: 'missed', names: [member.name], minutes: Math.round(ROOM_REPLY_TIMEOUT_MS / 60000) })"
+      },
+      {
+        "line": 539,
+        "text": "      // Only the admin's \"@all\" calls everyone, so a member cannot set off a storm."
+      },
+      {
+        "line": 540,
+        "text": "      const leads = rt.isAdminOf(room, member.id)"
+      },
+      {
+        "line": 541,
+        "text": "      const everyone = room.members.map(rt.botOf).filter(Boolean)"
+      },
+      {
+        "line": 542,
+        "text": "      const others = everyone.filter(other => other.id !== member.id)"
+      },
+      {
+        "line": 543,
+        "text": "      const { all, found: named } = mentionsIn(spoken.join('\\n\\n'), everyone)"
+      },
+      {
+        "line": 544,
+        "text": "      const found = named.filter(other => other.id !== member.id)"
+      },
+      {
+        "line": 546,
+        "text": "      callMembers(round, index, callees, `${member.name} mentioned you`, member.id, 'bot')"
+      },
+      {
+        "line": 568,
+        "text": "      // Everything queued since the last relay is posted in order, so messages that the"
+      },
+      {
+        "line": 570,
+        "text": "      const queued = rt.roomInbox.get(room.id) ?? []"
+      },
+      {
+        "line": 572,
+        "text": "      const posts = queued.length > 0 ? queued : [{ text: '' }]"
+      },
+      {
+        "line": 575,
+        "text": "      // The opening greeting is a cue for the admin, not a line of the group; a member's"
+      },
+      {
+        "line": 581,
+        "text": "        // A file stays with its line and reaches each member the line is shown to."
+      },
+      {
+        "line": 596,
+        "text": "      // An event post, and a member post that calls nobody, never pick the speakers"
+      },
+      {
+        "line": 597,
+        "text": "      // over a message queued with them."
+      },
+      {
+        "line": 598,
+        "text": "      const callsNobody = post => post.member === true && openingSpeakers(room, post).length === 0"
+      },
+      {
+        "line": 601,
+        "text": "      // A member a Bot's post calls by name works for that Bot."
+      },
+      {
+        "line": 602,
+        "text": "      const named = opener.botId === undefined ? [] : mentionsIn(opener.text ?? '', room.members.map(rt.botOf).filter(Boolean)).found"
+      },
+      {
+        "line": 605,
+        "text": "        members: room.members,"
+      },
+      {
+        "line": 609,
+        "text": "        slots: openingSpeakers(room, opener).map(member => ({"
+      },
+      {
+        "line": 610,
+        "text": "          id: member.id, name: member.name, status: 'waiting',"
+      },
+      {
+        "line": 613,
+        "text": "          ...(named.includes(member) ? { by: opener.botId } : {}),"
+      },
+      {
+        "line": 614,
+        "text": "          ...(opener.done ? { note: `${opener.name ?? 'a member'} finished the work you asked for` } : {}),"
+      },
+      {
+        "line": 628,
+        "text": "      // The log line tells the admin and the other members on their next turn."
+      },
+      {
+        "line": 646,
+        "text": "      if (exec.signal?.aborted) {"
+      },
+      {
+        "line": 674,
+        "text": "      const member = rt.botOf(botId)"
+      },
+      {
+        "line": 680,
+        "text": "      if (room !== undefined && member !== undefined) {"
+      },
+      {
+        "line": 683,
+        "text": "        appendRoom(room, { who: member.name, botId: member.id, kind: 'lookup', text })"
+      },
+      {
+        "line": 685,
+        "text": "          if (round.roomId === room.id) round.replies.push({ kind: 'lookup', botId: member.id, name: member.name, color: member.color, text, time: Date.now() })"
+      },
+      {
+        "line": 708,
+        "text": "      if (lines.length === 0) return `Nothing in your own chat mentions \"${query}\".${partsNote}`"
+      },
+      {
+        "line": 709,
+        "text": "      const heading = every ? `messages mentioning \"${query}\"` : `no message has all of \"${query}\"; messages with the most of these words`"
+      },
+      {
+        "line": 732,
+        "text": "        return line === undefined ? `\"${room.name}\" no longer keeps message ${args.seq}; it keeps its latest ${ROOM_LOG_MAX}.` : lineText(line, memberText(room)(line))"
+      },
+      {
+        "line": 744,
+        "text": "  // A Bot that posts never answers its own post. @mentions choose the speakers; else"
+      },
+      {
+        "line": 745,
+        "text": "  // the admin answers alone in admin mode, or first of everyone. What a member posts"
+      },
+      {
+        "line": 746,
+        "text": "  // after its round moved on is answered by the member that asked for it; work the"
+      },
+      {
+        "line": 749,
+        "text": "    const everyone = room.members.map(rt.botOf).filter(Boolean)"
+      },
+      {
+        "line": 750,
+        "text": "    const members = everyone.filter(bot => bot.id !== opener.botId)"
+      },
+      {
+        "line": 751,
+        "text": "    const admin = members.find(bot => rt.isAdminOf(room, bot.id))"
+      },
+      {
+        "line": 752,
+        "text": "    if (opener.kickoff) return admin ? [admin] : []"
+      },
+      {
+        "line": 756,
+        "text": "    if (opener.done) return members.filter(bot => bot.id === opener.askedBy)"
+      },
+      {
+        "line": 757,
+        "text": "    const { all, found: named } = mentionsIn(opener.text, everyone, opener.references)"
+      },
+      {
+        "line": 760,
+        "text": "    if (opener.late) return found.length > 0 ? found : members.filter(bot => bot.id === opener.askedBy)"
+      },
+      {
+        "line": 761,
+        "text": "    if (opener.member) return found"
+      },
+      {
+        "line": 763,
+        "text": "    if (!all && room.mode === 'admin' && admin) return [admin]"
+      },
+      {
+        "line": 764,
+        "text": "    return admin ? [admin, ...members.filter(bot => bot !== admin)] : members"
+      },
+      {
+        "line": 804,
+        "text": "  // A member the round moved on from (it went on working, went quiet or waited for an"
+      },
+      {
+        "line": 805,
+        "text": "  // approval) posts what its turn ended with. The member that asked for it and anyone"
+      },
+      {
+        "line": 808,
+        "text": "  // that ends with nothing more to say still tells the member that asked for it,"
+      },
+      {
+        "line": 813,
+        "text": "    const member = rt.botOf(owner?.botId)"
+      },
+      {
+        "line": 814,
+        "text": "    if (room === undefined || member === undefined || !room.members.includes(member.id)) return"
+      },
+      {
+        "line": 815,
+        "text": "    const text = stripOwnName(member.name, reply)"
+      },
+      {
+        "line": 818,
+        "text": "    await postToRoom(room, member, done ? '' : text, { late: true, ...(done ? { done: true } : {}), ...(info.askedBy ? { askedBy: info.askedBy } : {}) })"
+      },
+      {
+        "line": 819,
+        "text": "      .catch(error => rt.warn('ds-bot: late group reply from %s failed: %s', member.name, error))"
+      },
+      {
+        "line": 823,
+        "text": "  const memberIn = (sessionId, info) => {"
+      },
+      {
+        "line": 826,
+        "text": "    const member = rt.botOf(owner?.botId)"
+      },
+      {
+        "line": 827,
+        "text": "    return room !== undefined && member !== undefined && room.members.includes(member.id) ? { room, member } : undefined"
+      },
+      {
+        "line": 829,
+        "text": "  const callsIn = (room, member, text) => mentionsIn(text, room.members.map(rt.botOf).filter(Boolean)).found.some(bot => bot.id !== member.id)"
+      },
+      {
+        "line": 831,
+        "text": "  // What a member says while it works, into the group. While the member holds its place"
+      },
+      {
+        "line": 833,
+        "text": "  // posts on its own. Only the members it calls with @ answer it, each a relay toward"
+      },
+      {
+        "line": 834,
+        "text": "  // the group's pause; the member that asked for the work answers the result."
+      },
+      {
+        "line": 838,
+        "text": "    const { room, member } = memberIn(sessionId, info) ?? {}"
+      },
+      {
+        "line": 841,
+        "text": "    const calls = callsIn(room, member, text)"
+      },
+      {
+        "line": 844,
+        "text": "      postInRound(room, running, member, text)"
+      },
+      {
+        "line": 849,
+        "text": "    await postToRoom(room, member, text, { progress: true, ...(quiet ? { quiet: true } : {}) })"
+      },
+      {
+        "line": 852,
+        "text": "  // Lines a member writes close together reach the group as one message, so a burst of"
+      },
+      {
+        "line": 854,
+        "text": "  // for and a line that calls a member go at once; lines still held when the turn ends"
+      },
+      {
+        "line": 867,
+        "text": "    const { room, member } = memberIn(sessionId, info) ?? {}"
+      },
+      {
+        "line": 869,
+        "text": "    const text = stripOwnName(member.name, raw)"
+      },
+      {
+        "line": 875,
+        "text": "    if ((first && info?.role === 'room') || callsIn(room, member, text) || Date.now() - entry.last >= ROOM_STEP_GAP_MS) return flushSteps(sessionId)"
+      },
+      {
+        "line": 876,
+        "text": "    entry.timer ??= setTimeout(() => void flushSteps(sessionId)?.catch(error => rt.warn('ds-bot: step lines from %s not posted: %s', member.name, error)), entry.last + ROOM_STEP_GAP_MS - Date.now())"
+      },
+      {
+        "line": 888,
+        "text": "  // The user stops a member's work in this group from the group's details. Messages"
+      },
+      {
+        "line": 889,
+        "text": "  // still waiting for that member here go with it."
+      },
+      {
+        "line": 890,
+        "text": "  async function stopMemberWork(roomId, botId) {"
+      },
+      {
+        "line": 893,
+        "text": "    const member = rt.botOf(botId)"
+      },
+      {
+        "line": 895,
+        "text": "    if (room === undefined || member === undefined || sessionId === undefined || rt.live.get(sessionId)?.turn === undefined) return false"
+      },
+      {
+        "line": 897,
+        "text": "    agent.cancel({ kind: 'user' })"
+      },
+      {
+        "line": 898,
+        "text": "    await postToRoom(room, member, '', { quiet: true, stopped: true })"
+      },
+      {
+        "line": 901,
+        "text": "  rt.stopMemberWork = stopMemberWork"
+      },
+      {
+        "line": 903,
+        "text": "  // The round said such a member posts when done; a failed model call is how it ended."
+      },
+      {
+        "line": 908,
+        "text": "    const member = rt.botOf(owner?.botId)"
+      },
+      {
+        "line": 909,
+        "text": "    if (room === undefined || member === undefined || !room.members.includes(member.id)) return"
+      },
+      {
+        "line": 911,
+        "text": "    await postToRoom(room, member, `Could not finish: its model call failed (${failureLine(failure)}).`, {"
+      },
+      {
+        "line": 913,
+        "text": "    }).catch(error => rt.warn('ds-bot: late group failure from %s failed: %s', member.name, error))"
+      },
+      {
+        "line": 917,
+        "text": "  // A group the user just made opens with its admin asking what the group is for."
+      },
+      {
+        "line": 920,
+        "text": "    if (!room?.admin) return"
+      },
+      {
+        "line": 965,
+        "text": "  // group_relay\" (they message one member directly when the user names it), so the"
+      }
+    ]
+  },
+  {
+    "reference": "REF-04",
+    "url": "https://raw.githubusercontent.com/CopilotKit/OpenBot/46642d6c91daa663bccff673595f4e12a419a496/server/src/channels/group.ts",
+    "readAt": "2026-10-25T10:30:00.278093+00:00",
+    "status": 200,
+    "sha256": "5dd81f8c60f0b94742377f8a5c65c6387580d6b17e2b0d20743d53a8422b5033",
+    "bytes": 47089,
+    "lineCount": 1328,
+    "matches": [
+      {
+        "line": 11,
+        "text": " * WHO MAY BE HERE. Channel membership, resolved per request and per Bot turn, never cached. A person"
+      },
+      {
+        "line": 12,
+        "text": " * who is not a member gets the same not-found answer for a channel that exists as for one that does"
+      },
+      {
+        "line": 16,
+        "text": " * that peer, as one more queued turn. It is the handoff desk's authority and caps, not a second set:"
+      },
+      {
+        "line": 18,
+        "text": " * each hop is one deeper), the same fan-out cap per reply, the same durable leased queue, and the same"
+      },
+      {
+        "line": 38,
+        "text": "  channelMemberships,"
+      },
+      {
+        "line": 48,
+        "text": "import type { WorkQueue } from \"../work/queue\";"
+      },
+      {
+        "line": 56,
+        "text": " * One queued turn: who it is for, which Bots answer it, and how deep in a Bot-to-Bot chain it is."
+      },
+      {
+        "line": 80,
+        "text": "/** Not a member, not a group, or gone. One answer for all three, so membership cannot be probed. */"
+      },
+      {
+        "line": 116,
+        "text": "  /** Remember the order the person chose, by minting each Bot's thread in that order. */"
+      },
+      {
+        "line": 143,
+        "text": "  /** Add a person who has signed in here to the group, as the channel's own membership. */"
+      },
+      {
+        "line": 144,
+        "text": "  addMember(channelId: string, email: string): Promise<{ userId: string }>;"
+      },
+      {
+        "line": 146,
+        "text": "  members(channelId: string): Promise<string[]>;"
+      },
+      {
+        "line": 147,
+        "text": "  /** The people in the group, first member (who made it) first. */"
+      },
+      {
+        "line": 151,
+        "text": "  /** Take a person out of the group: their membership and their mapping to it. */"
+      },
+      {
+        "line": 152,
+        "text": "  removeMember(channelId: string, userId: string): Promise<void>;"
+      },
+      {
+        "line": 329,
+        "text": "    async members(channelId) {"
+      },
+      {
+        "line": 331,
+        "text": "        .select({ userId: channelMemberships.userId })"
+      },
+      {
+        "line": 332,
+        "text": "        .from(channelMemberships)"
+      },
+      {
+        "line": 333,
+        "text": "        .where(eq(channelMemberships.channelId, channelId));"
+      },
+      {
+        "line": 339,
+        "text": "          userId: channelMemberships.userId,"
+      },
+      {
+        "line": 343,
+        "text": "        .from(channelMemberships)"
+      },
+      {
+        "line": 344,
+        "text": "        .innerJoin(users, eq(users.id, channelMemberships.userId))"
+      },
+      {
+        "line": 345,
+        "text": "        .where(eq(channelMemberships.channelId, channelId))"
+      },
+      {
+        "line": 346,
+        "text": "        .orderBy(asc(channelMemberships.createdAt), asc(users.email));"
+      },
+      {
+        "line": 348,
+        "text": "    async removeMember(channelId, userId) {"
+      },
+      {
+        "line": 351,
+        "text": "          .delete(channelMemberships)"
+      },
+      {
+        "line": 354,
+        "text": "              eq(channelMemberships.channelId, channelId),"
+      },
+      {
+        "line": 355,
+        "text": "              eq(channelMemberships.userId, userId),"
+      },
+      {
+        "line": 368,
+        "text": "    async addMember(channelId, email) {"
+      },
+      {
+        "line": 380,
+        "text": "          .insert(channelMemberships)"
+      },
+      {
+        "line": 383,
+        "text": "        // The channel store reads a member's channel through their own mapping row."
+      },
+      {
+        "line": 397,
+        "text": " * The coordination callbacks (`message_bot`, `ask_person`) authorise a run by its source thread, and a"
+      },
+      {
+        "line": 399,
+        "text": " * same checks: the run's actor still a member of a live channel, and the thread that Bot's own, unless"
+      },
+      {
+        "line": 415,
+        "text": "      channelMemberships,"
+      },
+      {
+        "line": 417,
+        "text": "        eq(channelMemberships.channelId, groupBotThreads.channelId),"
+      },
+      {
+        "line": 418,
+        "text": "        eq(channelMemberships.userId, run.actorId),"
+      },
+      {
+        "line": 468,
+        "text": "export function mentionedPeers("
+      },
+      {
+        "line": 531,
+        "text": "  queue: WorkQueue;"
+      },
+      {
+        "line": 534,
+        "text": "   * The Bots of this group the owner may still use, or null when they are not a member of it or it"
+      },
+      {
+        "line": 591,
+        "text": "    const recipients = await deps.store.members(input.channelId);"
+      },
+      {
+        "line": 664,
+        "text": "    const peers = mentionedPeers(reply, bots, speaker.id);"
+      },
+      {
+        "line": 702,
+        "text": "      await deps.queue.offer({"
+      },
+      {
+        "line": 960,
+        "text": "    async addMember(owner: string, channel: string, input: unknown) {"
+      },
+      {
+        "line": 965,
+        "text": "      return deps.store.addMember(channel, body.email);"
+      },
+      {
+        "line": 968,
+        "text": "    async removeMember(owner: string, channel: string, userId: string) {"
+      },
+      {
+        "line": 982,
+        "text": "      await deps.store.removeMember(channel, userId);"
+      },
+      {
+        "line": 1157,
+        "text": "          // The first member made the group, and is the one who may take others out of it."
+      },
+      {
+        "line": 1204,
+        "text": "      const named = mentionedPeers(body.text, bots, \"\");"
+      },
+      {
+        "line": 1216,
+        "text": "      return { id: turn.messageId, queued: true };"
+      },
+      {
+        "line": 1218,
+        "text": "    /** Claim and run one queued turn. Returns whether there was one, so a caller can drain. */"
+      },
+      {
+        "line": 1220,
+        "text": "      const [item] = await deps.queue.claim({"
+      },
+      {
+        "line": 1234,
+        "text": "            !(await deps.queue.renew({"
+      },
+      {
+        "line": 1244,
+        "text": "        await deps.queue.finish({"
+      },
+      {
+        "line": 1250,
+        "text": "        await deps.queue.release({"
+      },
+      {
+        "line": 1294,
+        "text": "  routes.post(\"/:channelId/members\", async (context) =>"
+      },
+      {
+        "line": 1296,
+        "text": "      await service.addMember("
+      },
+      {
+        "line": 1304,
+        "text": "  routes.delete(\"/:channelId/members/:userId\", async (context) => {"
+      },
+      {
+        "line": 1305,
+        "text": "    await service.removeMember("
+      }
+    ]
+  }
+]

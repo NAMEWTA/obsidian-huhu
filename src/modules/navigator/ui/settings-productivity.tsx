@@ -1,3 +1,4 @@
+import { VISIBLE_NAMES } from '../../../shared/storage/vault-layout';
 // Behaviour modelled on johansan/notebook-navigator (GPL-3.0); independent implementation, no code copied.
 import { useMemo, useState, useSyncExternalStore } from 'react';
 import type { App } from 'obsidian';
@@ -22,7 +23,7 @@ import type { NavigatorRuntime } from './runtime';
 
 
 /** Where a period's notes are saved, as a pattern for the settings text (the folder names are fixed). */
-const PERIOD_LAYOUT: Record<Period, string> = { day: 'YYYY/MM/YYYY-MM-DD.md', week: 'gggg/gggg-Www.md', month: 'YYYY/YYYY-MM.md', quarter: 'YYYY/YYYY-Qq.md', year: 'YYYY.md' };
+const PERIOD_LAYOUT: Record<Period, string> = { day: 'YYYY/MM/YYYY-MM-DD.md', week: `gggg/gggg-${VISIBLE_NAMES.weekMarker}ww.md`, month: 'YYYY/YYYY-MM.md', quarter: `YYYY/YYYY-${VISIBLE_NAMES.quarterMarker}q.md`, year: 'YYYY.md' };
 const periodLayout = (root: string, period: Period) => `${root}/${PERIOD_FOLDERS[period]}/${PERIOD_LAYOUT[period]}`;
 
 /** A text field that saves when it loses focus, so a half-typed path or pattern never takes effect. */

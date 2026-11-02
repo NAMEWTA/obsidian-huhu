@@ -1,3 +1,4 @@
+import { t } from '../../../shared/i18n';
 import { deviceId as getDeviceId } from '../../../host/obsidian/storage/device-id';
 import { privateVaultStorage } from '../../../host/obsidian/storage/private-storage';
 import { AGENT_CATALOG, getAgent } from '../core/launch/catalog';
@@ -7,7 +8,7 @@ import { AutomationHooks, type NativeHookEvent } from '../platform/desktop/hooks
 import { accountEnv, restoredAccountReference } from '../platform/desktop/agents/accounts';
 import { resolveCli } from '../platform/desktop/agents/resolver';
 import { runtimeProcess } from '../platform/desktop/agents/runtime-process';
-import { canonicalVaultCwd } from '../platform/desktop/history/canonical-cwd';
+import { canonicalVaultCwd, realPathOr } from '../platform/desktop/history/canonical-cwd';
 import { checkAccountTranscript } from '../platform/desktop/agents/transcript';
 import { accountArgs } from '../platform/desktop/agents/account-args';
 import { isCwdInsideVault } from '../platform/desktop/history/scope';
@@ -25,6 +26,8 @@ import { threeWayMerge } from '../../../shared/storage/three-way-merge';
 import { storageWriteQueue, type WriteQueue } from '../../../shared/storage/write-queue';
 import type { App } from 'obsidian';
 import type { NativeHistory } from '../platform/history/service';
+import { SpaceError } from '../core/space/errors';
+import type { ManagedRuntimeRef } from '../core/workspace/managed-runtime';
 import type { ShellCommand } from '../platform/desktop/pty/shells';
 import type { TerminalSession } from './terminal/session';
 import type { CreateSession } from './terminal/sessions';
@@ -42,9 +45,40 @@ export interface AgentExecution {
 	onState?: (status: 'running' | 'needs-attention', terminalId: string) => void;
 }
 
+/**
+ * A business launch admitted into one explicit Space: the Session is already saved, `runtime` is reserved, and
+ * `beforeSpawn` re-checks the Space immediately before the native spawn. Settling it is the caller's duty.
+ */
+export interface BusinessAdmission {
+	/** The Space-authorized directory the run may use. */
+	readonly cwd: string;
+	readonly runtime: ManagedRuntimeRef;
+	readonly beforeSpawn: () => Promise<void>;
+	/** Record the outcome of `create`: a failed or lost connection marks the reserved runtime accordingly. */
+	created(session: TerminalSession): void;
+	/** Nothing (more) started: mark the reserved runtime cancelled or failed. */
+	abandon(cause?: unknown): void;
+}
+export interface BusinessAdmissionRequest {
+	spaceId: string;
+	kind: 'shell' | 'agent';
+	title: string;
+	agentId?: AgentId;
+	accountId?: string;
+}
+
 /** What the automation runtime needs from the agent module. */
 export interface AutomationRuntimeHost {
 	app: App;
+	/**
+	 * Space access for business runs. Every run names one Space; a missing, archived, deleted or unauthorized
+	 * Space is refused before anything starts. Nothing here ever chooses a Space on the caller's behalf.
+	 */
+	spaces: {
+		/** Read-only: the directory the Space currently authorizes. Rejects with a `SpaceError` when unavailable. */
+		cwd(spaceId: string): Promise<string>;
+		admit(request: BusinessAdmissionRequest, signal?: AbortSignal): Promise<BusinessAdmission>;
+	};
 	/** Plugin folder as given in the manifest (vault-relative or absolute). */
 	pluginDir: string;
 	agentSettings(): AgentSettings;
@@ -53,6 +87,24 @@ export interface AutomationRuntimeHost {
 	remove(id: string): void;
 	open(id: string): Promise<void>;
 	shell(kind: 'bash' | 'powershell'): ShellCommand;
+	/**
+	 * Machine-wide claim on one native conversation, taken before a `specific` session resume spawns. Rejects
+	 * when another runtime (here, in another instance or in another Vault) holds it. Release only after the
+	 * process has verifiably exited or never started.
+	 */
+	/** The transcript of a native session from the current Vault projection, when a definition never stored one. */
+	transcriptFor?(request: {
+		agentId: AgentId;
+		nativeSessionId: string;
+		accountKey: string;
+	}): Promise<string | undefined>;
+	nativeLease?(request: {
+		agentId: AgentId;
+		nativeSessionId: string;
+		transcriptPath: string;
+		owner: string;
+		spaceId?: string;
+	}): Promise<{ release(): Promise<void> }>;
 }
 
 // Orca's native resume capability set, pinned to 27b823f (MIT, Lovecast Inc.).
@@ -64,12 +116,7 @@ export const RESUME_FLAGS: Readonly<Record<AgentId, readonly string[]>> = {
 	pi: ['--session'],
 	grok: ['--resume'],
 };
-export function automationArgs(
-	agentId: AgentId,
-	prompt: string,
-	base: string[],
-	session?: AgentSessionRef,
-): string[] {
+export function automationArgs(agentId: AgentId, prompt: string, base: string[], session?: AgentSessionRef): string[] {
 	const agent = getAgent(agentId);
 	const args = [...base];
 	if (session) {
@@ -86,6 +133,42 @@ export function automationArgs(
 	return args;
 }
 type AgentAction = Extract<AutomationAction, { kind: 'agent' }>;
+/**
+ * A `specific` session resume takes the same machine-wide claim as every other native resume before it spawns.
+ * Another holder (this window, another instance or another Vault) makes the run `busy`; it is never forked.
+ */
+export async function claimNativeConversation(
+	host: Pick<AutomationRuntimeHost, 'nativeLease' | 'transcriptFor'>,
+	agentId: AgentId,
+	action: AgentAction,
+	runId: string,
+	restoredTranscript?: string,
+): Promise<{ release(): Promise<void> } | undefined> {
+	if (action.sessionMode !== 'specific' || !host.nativeLease) return undefined;
+	if (!action.session) throw new AutomationError('sessionMissing');
+	let transcript = restoredTranscript ?? action.session.transcriptPath;
+	// Older definitions saved no transcript: find it in the Vault projection, or fail explicitly.
+	if (!transcript && host.transcriptFor)
+		transcript = await host
+			.transcriptFor({
+				agentId,
+				nativeSessionId: action.session.sessionId,
+				accountKey: action.session.accountKey ?? '{}',
+			})
+			.catch(() => undefined);
+	if (!transcript) throw new AutomationError('sessionMissing');
+	try {
+		return await host.nativeLease({
+			agentId,
+			nativeSessionId: action.session.sessionId,
+			transcriptPath: transcript,
+			owner: `automation-${runId}`,
+			spaceId: action.spaceId,
+		});
+	} catch {
+		throw new AutomationError('busy');
+	}
+}
 type RunResult = Awaited<AgentRunHandle['completion']>;
 interface LiveSession {
 	execution?: AgentExecution;
@@ -99,7 +182,7 @@ interface LiveSession {
 	output: string;
 	session?: AgentSessionRef;
 	finish?: (result: RunResult) => void;
-	hookClose?: () => void;
+	hookClose?: () => void | Promise<void>;
 }
 function accountIdentity(key: string): string {
 	const value = JSON.parse(key) as Record<string, string>;
@@ -109,11 +192,82 @@ function accountIdentity(key: string): string {
 			.map((name) => [name, value[name]]),
 	);
 }
+/** A Space the user must (re)select is a configuration problem; anything else is a failed record write. */
+export function spaceFailure(error: unknown): unknown {
+	if (!(error instanceof SpaceError)) return error;
+	return new AutomationError(
+		[
+			'TARGET_REQUIRED',
+			'TARGET_AMBIGUOUS',
+			'TARGET_NOT_FOUND',
+			'DIRECTORY_NOT_AUTHORIZED',
+			'SOURCE_UNAVAILABLE',
+		].includes(error.code)
+			? 'spaceUnavailable'
+			: 'spaceSaveFailed',
+	);
+}
+/**
+ * Where a Space-bound run starts. No directory chosen, or the whole-vault default, means the Space's own
+ * directory; a narrower directory must lie inside the Space. Anything else is refused, never moved.
+ */
+export function spaceBoundCwd(
+	spaceCwd: string,
+	requested: string,
+	vaultRoot: string,
+	platform: NodeJS.Platform,
+): string | undefined {
+	if (!requested) return spaceCwd;
+	if (isCwdInsideVault(spaceCwd, requested, platform)) return requested;
+	const sameRoot =
+		isCwdInsideVault(requested, vaultRoot, platform) && isCwdInsideVault(vaultRoot, requested, platform);
+	return sameRoot ? spaceCwd : undefined;
+}
+/** A Windows vault root: a UNC share (`\\server\share`) or a drive (`C:`). Its separator is always a backslash. */
+const WINDOWS_ROOT = /^(?:[\\/]{2}[^\\/]+[\\/][^\\/]+|[A-Za-z]:)(?=[\\/]|$)/;
+/** A saved directory: absolute as is, otherwise relative to the vault, with `.` and `..` folded (the Space check decides). */
+export function resolveRequestedCwd(vault: string | undefined, cwd: string): string {
+	if (!vault || /^(?:[A-Za-z]:)?[\\/]/.test(cwd)) return cwd;
+	const windows = WINDOWS_ROOT.exec(vault)?.[0];
+	const prefix = windows?.replace(/\//g, '\\') ?? '';
+	const out: string[] = [];
+	for (const part of `${vault.slice(windows?.length ?? 0)}/${cwd}`.split(/[\\/]/)) {
+		if (part === '..') out.pop();
+		else if (part !== '.' && part !== '') out.push(part);
+	}
+	if (windows) return `${prefix}\\${out.join('\\')}`;
+	return (/^[\\/]/.test(vault) ? '/' : '') + out.join('/');
+}
+/** A business run is observed by its automation hooks, never by a managed activity source. */
+function markBusinessActivity(session: Pick<TerminalSession, 'invalidateActivity'>): void {
+	session.invalidateActivity?.('unsupported');
+}
 const vaultPath = (app: App): string => (app.vault.adapter as unknown as { getBasePath(): string }).getBasePath();
 
 export class TerminalAutomationRuntime implements AgentRuntimePort {
 	private readonly reservations = new Set<string>();
 	private disposed = false;
+	private disposing?: Promise<void>;
+	private hookSettlements = new Set<Promise<void>>();
+	private hookPreparing = new Set<Promise<unknown>>();
+	private hookFailures: unknown[] = [];
+	private closeSlotHooks(slot: LiveSession): void {
+		const close = slot.hookClose;
+		slot.hookClose = undefined;
+		if (!close) return;
+		let pending: Promise<void>;
+		try {
+			pending = Promise.resolve(close());
+		} catch (error) {
+			pending = Promise.reject(error instanceof Error ? error : new Error(String(error)));
+		}
+		const settled = pending
+			.catch((error: unknown) => {
+				if (this.hookFailures.length < 32) this.hookFailures.push(error);
+			})
+			.finally(() => this.hookSettlements.delete(settled));
+		this.hookSettlements.add(settled);
+	}
 
 	private live = new Map<string, LiveSession>();
 	private hooks: AutomationHooks;
@@ -122,31 +276,42 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 	private readonly registryQueueKey: string;
 	private readonly pendingRegistry = new Map<string, AgentSessionRef>();
 	private store: JsonStore<AgentSessionRef[]>;
+	private readonly openStore: () => JsonStore<AgentSessionRef[]>;
+	private registryClosed = false;
 	private loaded: Promise<void>;
 	constructor(private host: AutomationRuntimeHost) {
-		this.hooks = new AutomationHooks(host.app.workspace.containerEl.win, () => ({ vault: vaultPath(host.app), device: getDeviceId(host.app) }), { strict: true });
+		this.hooks = new AutomationHooks(
+			host.app.workspace.containerEl.win,
+			() => ({ vault: vaultPath(host.app), device: getDeviceId(host.app) }),
+			{ strict: true },
+		);
 		const device = getDeviceId(host.app);
 		const storage = privateVaultStorage(host.app);
 		const path = `.huhu/terminal-agent/${device}/automation-sessions.json`;
 		this.registryQueue = storageWriteQueue(storage);
 		this.registryQueueKey = 'automation-registry:' + path;
-		this.store = new JsonStore(
-			storage,
-			path,
-			(v): v is AgentSessionRef[] =>
-				Array.isArray(v) &&
-				v.every(
-					(item: unknown) =>
-						!!item && typeof item === 'object' && typeof (item as AgentSessionRef).sessionId === 'string',
-				),
-			(base, local, remote) => {
-				const keyed = (rows: AgentSessionRef[]) => Object.fromEntries(rows.map(row => [this.registryKey(row), row]));
-				return Object.values(threeWayMerge(keyed(base), keyed(local), keyed(remote)));
-			},
+		this.openStore = () =>
+			new JsonStore(
+				storage,
+				path,
+				(v): v is AgentSessionRef[] =>
+					Array.isArray(v) &&
+					v.every(
+						(item: unknown) =>
+							!!item && typeof item === 'object' && typeof (item as AgentSessionRef).sessionId === 'string',
+					),
+				(base, local, remote) => {
+					const keyed = (rows: AgentSessionRef[]) =>
+						Object.fromEntries(rows.map((row) => [this.registryKey(row), row]));
+					return Object.values(threeWayMerge(keyed(base), keyed(local), keyed(remote)));
+				},
+			);
+		this.store = this.openStore();
+		this.loaded = this.registryQueue.run(this.registryQueueKey, () =>
+			this.store.load([]).then((rows) => {
+				this.registry = rows;
+			}),
 		);
-		this.loaded = this.registryQueue.run(this.registryQueueKey, () => this.store.load([]).then((rows) => {
-			this.registry = rows;
-		}));
 	}
 	listAgents() {
 		const settings = this.host.agentSettings();
@@ -176,7 +341,14 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 		if (event.at < slot.since || event.data.agent_id || event.data.subagent_id || event.data.parent_session_id)
 			return;
 		if (event.event === 'HookError') {
-			slot.finish?.({ status: 'failed', message: '', errorCode: typeof event.data.huhu_answer_error === 'string' ? event.data.huhu_answer_error : 'hookInputInvalid' });
+			slot.finish?.({
+				status: 'failed',
+				message: '',
+				errorCode:
+					typeof event.data.huhu_answer_error === 'string'
+						? event.data.huhu_answer_error
+						: 'hookInputInvalid',
+			});
 			slot.finish = undefined;
 			return;
 		}
@@ -194,7 +366,8 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			if (slot.execution?.kind !== 'prompt') {
 				const session = slot.session;
 				this.pendingRegistry.set(this.registryKey(session), session);
-				void this.persistRegistry().catch(console.error);
+				// A closed registry keeps the reference pending; `resumeRegistry` persists it.
+				if (!this.registryClosed) void this.persistRegistry().catch(console.error);
 			}
 		}
 		if (event.event === 'PermissionRequest' || event.event === 'Notification') {
@@ -217,12 +390,15 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			slot.terminal?.setActivity('idle');
 			slot.started = false;
 			const message =
-				typeof event.data.last_assistant_message === 'string'
-					? event.data.last_assistant_message
-					: '';
-			const answerError = typeof event.data.huhu_answer_error === 'string' && event.data.huhu_answer_error
-				? event.data.huhu_answer_error
-				: slot.execution?.kind === 'prompt' && ['Stop', 'AfterAgent'].includes(event.event) && !message.trim() ? 'nativeAnswerMissing' : undefined;
+				typeof event.data.last_assistant_message === 'string' ? event.data.last_assistant_message : '';
+			const answerError =
+				typeof event.data.huhu_answer_error === 'string' && event.data.huhu_answer_error
+					? event.data.huhu_answer_error
+					: slot.execution?.kind === 'prompt' &&
+						  ['Stop', 'AfterAgent'].includes(event.event) &&
+						  !message.trim()
+						? 'nativeAnswerMissing'
+						: undefined;
 			slot.finish?.({
 				status:
 					event.event === 'StopFailure' || answerError
@@ -260,7 +436,11 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 		}
 	}
 	async start(action: AgentAction, run: AutomationRun, previous?: AutomationRun): Promise<AgentRunHandle> {
-		return this.execute(action, { id: run.id, title: run.title, kind: 'automation', reveal: run.trigger === 'manual' }, previous?.terminalId);
+		return this.execute(
+			action,
+			{ id: run.id, title: run.title, kind: 'automation', reveal: run.trigger === 'manual' },
+			previous?.terminalId,
+		);
 	}
 	async execute(action: AgentAction, execution: AgentExecution, previousTerminal?: string): Promise<AgentRunHandle> {
 		await this.loaded;
@@ -273,13 +453,8 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 		const agent = getAgent(id);
 		const command = resolveCli(agent.detectCommand, entry.cliPath, '');
 		if (!command) throw new AutomationError('cliMissing');
-		try {
-			action = { ...action, cwd: await canonicalVaultCwd(vaultPath(this.host.app), action.cwd) };
-		} catch {
-			throw new AutomationError('cwdInvalid');
-		}
-		if (needsYoloConfirmation(settings, id))
-			throw new AutomationError('permissionRequired');
+		action = { ...action, cwd: await this.boundCwd(action.spaceId, action.cwd) };
+		if (needsYoloConfirmation(settings, id)) throw new AutomationError('permissionRequired');
 		if (
 			action.sessionMode === 'specific' &&
 			(!action.session ||
@@ -303,16 +478,39 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			)
 				throw new AutomationError('sessionMissing');
 		}
-		const restored = sessionEnv ? await restoredAccountReference(agent, sessionEnv, vaultPath(this.host.app), getDeviceId(this.host.app), action.session?.transcriptPath) : undefined;
-		const env = restored?.env ?? await accountEnv(agent, entry.accountId, vaultPath(this.host.app), getDeviceId(this.host.app));
+		const restored = sessionEnv
+			? await restoredAccountReference(
+					agent,
+					sessionEnv,
+					vaultPath(this.host.app),
+					getDeviceId(this.host.app),
+					action.session?.transcriptPath,
+				)
+			: undefined;
+		const env =
+			restored?.env ??
+			(await accountEnv(agent, entry.accountId, vaultPath(this.host.app), getDeviceId(this.host.app)));
 		const accountKey = JSON.stringify(env);
 		if (action.sessionMode === 'specific') {
-			await checkAccountTranscript(vaultPath(this.host.app), env, restored?.transcriptPath ?? action.session?.transcriptPath);
-			if (action.session && restored) action = { ...action, session: { ...action.session, accountKey, transcriptPath: restored.transcriptPath } };
+			await checkAccountTranscript(
+				vaultPath(this.host.app),
+				env,
+				restored?.transcriptPath ?? action.session?.transcriptPath,
+			);
+			if (action.session && restored)
+				action = {
+					...action,
+					session: { ...action.session, accountKey, transcriptPath: restored.transcriptPath },
+				};
 		}
 		if (execution.onPrepared) {
 			const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(accountIdentity(accountKey)));
-			execution.onPrepared({ agentId: id, accountIdentity: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') });
+			execution.onPrepared({
+				agentId: id,
+				accountIdentity: Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join(
+					'',
+				),
+			});
 		}
 		if (action.sessionMode === 'specific') {
 			const sessions = await this.listSessions(action.cwd);
@@ -354,6 +552,7 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 				prior.terminal?.running &&
 				prior.action.agentId === id &&
 				prior.action.cwd === action.cwd &&
+				prior.action.spaceId === action.spaceId &&
 				prior.accountKey === accountKey
 					? prior
 					: undefined;
@@ -402,22 +601,49 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			if (reuse && terminal) {
 				execution.signal?.throwIfAborted();
 				execution.onTerminal?.(terminal.id);
-				terminal.paste(action.prompt);
-				terminal.input('\r');
+				const submission = terminal.submitPaste(action.prompt, { appendEnter: true, signal: execution.signal });
+				const queued = await submission.queued;
+				if (queued.state !== 'queued') {
+					slot.busy = false;
+					slot.finish = undefined;
+					slot.execution = undefined;
+					throw new AutomationError('agentUnavailable', {
+						effect: queued.state,
+						reason: queued.reason,
+						runtimeId: terminal.id,
+						op: queued.op,
+					});
+				}
 			} else {
 				const args = automationArgs(
 					id,
 					action.prompt,
-					[...accountArgs(id, launchArgs(settings, id), env), ...(action.sessionMode === 'reuse' ? [] : validatedExtraArgs(action.agentId, action.extraArgs ?? ''))],
+					[
+						...accountArgs(id, launchArgs(settings, id), env),
+						...(action.sessionMode === 'reuse'
+							? []
+							: validatedExtraArgs(action.agentId, action.extraArgs ?? '')),
+					],
 					action.sessionMode === 'specific' ? action.session : undefined,
 				);
 				const argv = [command, ...args];
-				const argvSize = runtimeProcess().platform === 'win32'
-					? argv.reduce((size, arg) => size + arg.length + (arg.match(/[\\"]/g)?.length ?? 0) + 3, 0)
-					: new TextEncoder().encode(argv.join('\0')).length;
-				if (argvSize > (runtimeProcess().platform === 'win32' ? 30_000 : 100_000)) throw new AutomationError('promptTooLarge');
-				const hook = await this.hooks.prepare(id, env, (event) => this.receive(slot, event));
+				const argvSize =
+					runtimeProcess().platform === 'win32'
+						? argv.reduce((size, arg) => size + arg.length + (arg.match(/[\\"]/g)?.length ?? 0) + 3, 0)
+						: new TextEncoder().encode(argv.join('\0')).length;
+				if (argvSize > (runtimeProcess().platform === 'win32' ? 30_000 : 100_000))
+					throw new AutomationError('promptTooLarge');
+				const preparation = this.hooks.prepare(id, env, (event) => this.receive(slot, event));
+				this.hookPreparing.add(preparation);
+				let hook: Awaited<ReturnType<AutomationHooks['prepare']>>;
+				try {
+					hook = await preparation;
+				} finally {
+					this.hookPreparing.delete(preparation);
+				}
 				slot.hookClose = () => hook.close();
+				let lease: { release(): Promise<void> } | undefined;
+				let admission: BusinessAdmission | undefined;
 				try {
 					if (this.disposed) throw new AutomationError('busy');
 					execution.signal?.throwIfAborted();
@@ -425,17 +651,46 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 					// account identity, hook installation and every persisted session.
 					const contextEnv = await execution.resolveContext?.(action.cwd);
 					execution.signal?.throwIfAborted();
+					lease = await claimNativeConversation(
+						this.host,
+						id,
+						action,
+						execution.id,
+						restored?.transcriptPath,
+					);
+					// Commit the Session in its Space first; nothing spawns unless that record is saved.
+					admission = await this.admit(
+						{
+							spaceId: action.spaceId!,
+							kind: 'agent',
+							title: execution.title,
+							agentId: id,
+							accountId: entry.accountId || undefined,
+						},
+						execution.signal,
+					);
 					terminal = await this.host.create({
+						runtime: admission.runtime,
+						beforeSpawn: admission.beforeSpawn,
 						kind: execution.kind === 'automation' ? 'automation' : 'agent',
 						title: execution.title,
 						file: command,
 						args,
 						cwd: action.cwd,
-						env: { ...entry.env, ...contextEnv, ...env, ...hook.env, ...(execution.kind === 'automation' ? { HUHU_AUTOMATION_RUN_ID: execution.id } : {}) },
+						env: {
+							...entry.env,
+							...contextEnv,
+							...env,
+							...hook.env,
+							...(execution.kind === 'automation' ? { HUHU_AUTOMATION_RUN_ID: execution.id } : {}),
+						},
 						signal: execution.signal,
 						agentId: id,
 						automated: true,
 						prepare: (session) => {
+							// Its status comes from the automation hook path, not a managed activity source: say so explicitly,
+							// so the workbench and `wait` report "unavailable" with a reason rather than an open, source-less state.
+							markBusinessActivity(session);
 							slot.terminal = session;
 							this.live.set(session.id, slot);
 							execution.onTerminal?.(session.id);
@@ -444,6 +699,9 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 									slot.output = (slot.output + event.text).slice(-8000);
 									return;
 								}
+								// Only a confirmed exit frees the conversation; a lost transport keeps its claim.
+								if (event.kind === 'exit' && session.exitEvidence?.confirmed)
+									void lease?.release().catch(() => {});
 								slot.busy = false;
 								slot.finish?.({
 									status:
@@ -461,15 +719,24 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 									session: slot.session,
 								});
 								slot.finish = undefined;
-								hook.close();
+								this.closeSlotHooks(slot);
 								this.live.delete(session.id);
 							});
 						},
 					});
+					admission.created(terminal);
 					if (terminal.connection === 'failed') throw new AutomationError('cliMissing');
 				} catch (error) {
-					hook.close();
+					admission?.abandon(error);
+					this.closeSlotHooks(slot);
 					if (slot.terminal) await this.stop(slot.terminal.id);
+					// Nothing was spawned, or the process is verifiably gone: give the conversation back.
+					if (
+						!slot.terminal ||
+						slot.terminal.connection === 'exited' ||
+						slot.terminal.connection === 'failed'
+					)
+						await lease?.release().catch(() => {});
 					throw error;
 				}
 			}
@@ -490,6 +757,42 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			if (reservation) this.reservations.delete(reservation);
 		}
 	}
+	private async spaceCwd(spaceId: string): Promise<string> {
+		try {
+			return await this.host.spaces.cwd(spaceId);
+		} catch (error) {
+			throw spaceFailure(error);
+		}
+	}
+	/** Space gate shared by agent and script runs: explicit binding, available Space, directory inside it. */
+	async boundCwd(spaceId: string | undefined, requested: string): Promise<string> {
+		if (!spaceId) throw new AutomationError('spaceRequired');
+		const spaceCwd = await this.spaceCwd(spaceId);
+		const vault = vaultPath(this.host.app);
+		let canonical = '';
+		let root = vault;
+		if (requested) {
+			try {
+				canonical = await canonicalVaultCwd(vault, requested);
+				root = await canonicalVaultCwd(vault, vault);
+			} catch {
+				throw new AutomationError('cwdInvalid');
+			}
+		}
+		// The requested directory is compared in its real spelling, so the Space directory must be too (a symlinked
+		// or Windows 8.3 short-name temp root would otherwise never contain its own real subdirectories).
+		const spaceRoot = canonical ? await realPathOr(spaceCwd) : spaceCwd;
+		const cwd = spaceBoundCwd(spaceRoot, canonical, root, runtimeProcess().platform);
+		if (!cwd) throw new AutomationError('cwdInvalid');
+		return cwd === spaceRoot ? spaceCwd : cwd;
+	}
+	private async admit(request: BusinessAdmissionRequest, signal?: AbortSignal): Promise<BusinessAdmission> {
+		try {
+			return await this.host.spaces.admit(request, signal);
+		} catch (error) {
+			throw spaceFailure(error);
+		}
+	}
 	async stop(id: string): Promise<void> {
 		const slot = this.live.get(id);
 		slot?.finish?.({ status: 'cancelled', message: '' });
@@ -497,42 +800,82 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 		// A dedicated prompt must terminate its process, even when the CLI ignores SIGHUP.
 		if (slot?.execution?.kind === 'prompt') slot.terminal?.end(true);
 		this.host.remove(id);
-		this.live.get(id)?.hookClose?.();
+		if (slot) this.closeSlotHooks(slot);
 		this.live.delete(id);
 		return Promise.resolve();
 	}
-	async startScript(action: Extract<AutomationAction, { kind: 'script' }>, run: AutomationRun): Promise<AgentRunHandle> {
+	async startScript(
+		action: Extract<AutomationAction, { kind: 'script' }>,
+		run: AutomationRun,
+	): Promise<AgentRunHandle> {
 		if (this.disposed) throw new AutomationError('agentUnavailable');
 		let finish!: (result: RunResult) => void;
-		const completion = new Promise<RunResult>((resolve) => { finish = resolve; });
-		let output = '';
-		const shell = this.host.shell(action.shell);
-		const terminal = await this.host.create({
-			kind: 'script',
-			title: run.title,
-			file: shell.file,
-			args: action.shell === 'powershell' ? ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', action.script] : ['-lc', action.script],
-			cwd: action.cwd,
-			env: { HUHU_AUTOMATION_RUN_ID: run.id },
-			automated: true,
-			prepare: (session) => {
-				const unsubscribe = session.observe((event) => {
-					if (event.kind === 'data') { output = (output + event.text).slice(-8000); return; }
-					unsubscribe();
-					finish({ status: event.kind === 'exit' ? (event.code === 0 ? 'succeeded' : 'failed') : 'interrupted', message: event.kind === 'exit' ? `Exit ${event.code}` : '', output });
-				});
-			},
+		const completion = new Promise<RunResult>((resolve) => {
+			finish = resolve;
 		});
+		let output = '';
+		const cwd = await this.boundCwd(action.spaceId, action.cwd);
+		const shell = this.host.shell(action.shell);
+		const admission = await this.admit({ spaceId: action.spaceId!, kind: 'shell', title: run.title });
+		const terminal = await this.host
+			.create({
+				runtime: admission.runtime,
+				beforeSpawn: admission.beforeSpawn,
+				kind: 'script',
+				title: run.title,
+				file: shell.file,
+				args:
+					action.shell === 'powershell'
+						? ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', action.script]
+						: ['-lc', action.script],
+				cwd,
+				env: { HUHU_AUTOMATION_RUN_ID: run.id },
+				automated: true,
+				prepare: (session) => {
+					markBusinessActivity(session);
+					const unsubscribe = session.observe((event) => {
+						if (event.kind === 'data') {
+							output = (output + event.text).slice(-8000);
+							return;
+						}
+						unsubscribe();
+						finish({
+							status: event.kind === 'exit' ? (event.code === 0 ? 'succeeded' : 'failed') : 'interrupted',
+							message: event.kind === 'exit' ? `Exit ${event.code}` : '',
+							output,
+						});
+					});
+				},
+			})
+			.catch((error: unknown) => {
+				admission.abandon(error);
+				throw error;
+			});
+		admission.created(terminal);
 		if (terminal.connection === 'failed') {
 			this.host.remove(terminal.id);
 			throw new AutomationError('agentUnavailable');
 		}
-		if (this.disposed) { this.host.remove(terminal.id); throw new AutomationError('agentUnavailable'); }
-		if (run.trigger === 'manual') {
-			try { await this.open(terminal.id); }
-			catch (error) { this.host.remove(terminal.id); throw error; }
+		if (this.disposed) {
+			this.host.remove(terminal.id);
+			throw new AutomationError('agentUnavailable');
 		}
-		return { terminalId: terminal.id, completion, onRunning: (listener) => { listener(); return () => undefined; } };
+		if (run.trigger === 'manual') {
+			try {
+				await this.open(terminal.id);
+			} catch (error) {
+				this.host.remove(terminal.id);
+				throw error;
+			}
+		}
+		return {
+			terminalId: terminal.id,
+			completion,
+			onRunning: (listener) => {
+				listener();
+				return () => undefined;
+			},
+		};
 	}
 	async open(id: string): Promise<void> {
 		await this.host.open(id);
@@ -546,18 +889,76 @@ export class TerminalAutomationRuntime implements AgentRuntimePort {
 			await this.loaded;
 			if (!this.pendingRegistry.size) return;
 			const pending = new Map(this.pendingRegistry);
-			const next = [...this.registry.filter(session => !pending.has(this.registryKey(session))), ...pending.values()];
+			const next = [
+				...this.registry.filter((session) => !pending.has(this.registryKey(session))),
+				...pending.values(),
+			];
 			this.registry = await this.store.commit({ base: this.registry, value: next });
-			for (const [key, session] of pending) if (this.pendingRegistry.get(key) === session) this.pendingRegistry.delete(key);
+			for (const [key, session] of pending)
+				if (this.pendingRegistry.get(key) === session) this.pendingRegistry.delete(key);
 		});
 	}
-	dispose(): void {
+	/** Recovery protocol: hold registry writes in memory (pending references are kept, not dropped). */
+	quiesceRegistry(): void {
+		this.registryClosed = true;
+	}
+	resumeRegistry(): void {
+		this.registryClosed = false;
+		if (this.pendingRegistry.size && !this.disposed) void this.persistRegistry().catch(console.error);
+	}
+	/** Strict drain of already admitted registry writes; a failed commit rejects. */
+	async drainRegistry(): Promise<void> {
+		await this.loaded;
+		const wasClosed = this.registryClosed;
+		this.registryClosed = false;
+		try {
+			await this.persistRegistry();
+			await this.registryQueue.run(this.registryQueueKey, () => this.store.flush());
+		} finally {
+			this.registryClosed = wasClosed;
+		}
+	}
+	/** Rebuild the registry and its JsonStore baseline from the restored file. */
+	async reloadRegistry(): Promise<void> {
+		await this.drainRegistry();
+		await this.registryQueue.run(this.registryQueueKey, async () => {
+			const next = this.openStore();
+			this.registry = await next.load([]);
+			this.store = next;
+		});
+	}
+	dispose(): Promise<void> {
+		if (this.disposing) return this.disposing;
 		this.disposed = true;
 		for (const slot of this.live.values()) {
 			slot.finish?.({ status: 'interrupted', message: '', errorCode: 'agentUnavailable' });
 			slot.finish = undefined;
 		}
-		this.hooks.dispose();
-		void this.persistRegistry().catch(console.error);
+		for (const slot of this.live.values()) this.closeSlotHooks(slot);
+		// Start both owners now: registry IO cannot delay scope revocation or cleanup.
+		let cleanup: Promise<void>;
+		try {
+			cleanup = Promise.resolve(this.hooks.dispose());
+		} catch (error) {
+			cleanup = Promise.reject(error instanceof Error ? error : new Error(String(error)));
+		}
+		const registry = this.persistRegistry();
+		this.disposing = (async () => {
+			const results = await Promise.allSettled([cleanup, registry, ...this.hookPreparing]);
+			while (this.hookSettlements.size) await Promise.all([...this.hookSettlements]);
+			const failures = [
+				...this.hookFailures,
+				...results.flatMap((r) => (r.status === 'rejected' ? [r.reason as unknown] : [])),
+			];
+			if (
+				failures.length === 1 &&
+				!this.hookFailures.length &&
+				results[0]?.status === 'fulfilled' &&
+				results[1]?.status === 'rejected'
+			)
+				throw results[1].reason;
+			if (failures.length) throw new AggregateError(failures, t('agent.managed.shutdownIncomplete'));
+		})();
+		return this.disposing;
 	}
 }

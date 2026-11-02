@@ -15,7 +15,7 @@ afterEach(() => {
 });
 async function service(books: unknown[]) {
 	setLanguage('en');
-	const path = 'huhu/阅读/reading.json';
+	const path = 'huhu/reading/reading.json';
 	const vault = memoryVault({ [path]: JSON.stringify({ activeBooks: books, sessions: [] }) }, window);
 	Object.assign(vault.app.workspace, { containerEl: Object.assign(document.createElement('div'), { win: window }) });
 	const s = new ReadingService({ app: vault.app, settings: structuredClone(DEFAULT_DASHBOARD_SETTINGS) } as unknown as WidgetSettingsHost);

@@ -35,7 +35,7 @@ export async function dispatchSkillShortcut(skill: SkillShortcut, context: Skill
 		if (!dispatch) { ports.notify(t('quickActions.skillUnavailable')); return; }
 		const final = snapshot.directSend ? draft : await ports.preview(snapshot, captured, draft);
 		if (!final || ports.signal?.aborted) return;
-		const receipt = await dispatch.dispatch({ invocationId: crypto.randomUUID(), title: snapshot.label, source: captured.source, agentId: snapshot.agentId, ...final }, { signal: ports.signal });
+		const receipt = await dispatch.dispatch({ invocationId: crypto.randomUUID(), title: snapshot.label, source: captured.source, agentId: snapshot.agentId, ...final }, { signal: ports.signal, interactive: true });
 		if (ports.signal?.aborted) return receipt;
 		ports.notify(receipt.delivery === 'pasted' ? t('home.skills.pasted') : receipt.delivery === 'started' ? t('home.skills.started') : skillError(receipt.errorCode ?? receipt.delivery));
 		return receipt;

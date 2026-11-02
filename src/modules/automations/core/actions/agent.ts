@@ -4,13 +4,35 @@ import type { AgentDescription } from '../../../../shared/automation/types';
 import { fillAgentTemplate } from '../../../../shared/agent-prompt';
 import { t } from '../../../../shared/i18n';
 import { insideVault, propertiesCodec } from './document';
-import type { ActionDefinition } from './definition';
+import type { ActionDefinition, ActionDocument } from './definition';
 
 /** The agents an automation may use: enabled in the settings and, where known, installed. */
 export const availableAgents = (agents: readonly AgentDescription[]) =>
 	agents.filter((agent) => agent.enabled && agent.installed !== false);
 
 const pad = (value: number) => String(value).padStart(2, '0');
+
+const agentCodec = propertiesCodec<'agent'>({
+	section: 'prompt',
+	omit: ['prompt'],
+	read: ['sessionMode', 'session', 'extraArgs', 'spaceId'],
+	create: ({ agentId, cwd, text }) => ({ kind: 'agent', agentId, cwd, prompt: text, sessionMode: 'fresh' }),
+	setText: (action, value) => {
+		action.prompt = value;
+	},
+});
+
+/** Only a stored string is a Space id; anything else stays an unbound definition, never a guess. */
+export function withSpaceDecode<K extends 'agent' | 'script'>(codec: ActionDocument<K>): ActionDocument<K> {
+	return {
+		...codec,
+		decode: (properties, text) => {
+			const action = codec.decode(properties, text);
+			if (typeof action.spaceId !== 'string' || !action.spaceId.trim()) delete action.spaceId;
+			return action;
+		},
+	};
+}
 
 /** Start a coding agent in a terminal with a prompt. */
 export const agentAction: ActionDefinition<'agent'> = {
@@ -24,24 +46,19 @@ export const agentAction: ActionDefinition<'agent'> = {
 	setText: (action, value) => {
 		action.prompt = value;
 	},
-	document: propertiesCodec<'agent'>({
-		section: 'prompt',
-		omit: ['prompt'],
-		read: ['sessionMode', 'session', 'extraArgs'],
-		create: ({ agentId, cwd, text }) => ({ kind: 'agent', agentId, cwd, prompt: text, sessionMode: 'fresh' }),
-		setText: (action, value) => {
-			action.prompt = value;
-		},
-	}),
+	document: withSpaceDecode(agentCodec),
 	contentError: (action) => (action.prompt.trim() ? undefined : t('automation.contentRequired')),
 	settingsError: (action, { cwd, agents }) => {
 		// The picker only supplies vault folders; validate again at the execution boundary (including symlinks).
 		if (!insideVault(action.cwd, cwd)) return t('automation.cwdInvalid');
+		if (!action.spaceId) return t('automation.spaceRequired');
 		if (!availableAgents(agents).some((agent) => agent.id === action.agentId))
 			return t('automation.agentSelectionUnavailable');
 		if (
 			action.sessionMode === 'specific' &&
-			(!action.session?.sessionId || action.session.agentId !== action.agentId || action.session.cwd !== action.cwd)
+			(!action.session?.sessionId ||
+				action.session.agentId !== action.agentId ||
+				action.session.cwd !== action.cwd)
 		)
 			return t('automation.sessionMissing');
 		try {

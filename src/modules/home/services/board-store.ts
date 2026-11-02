@@ -15,14 +15,14 @@ import type { DashboardCard } from '../core/board/types/model';
 import { hotkeyKeys } from '../core/board/shortcut-buttons';
 import { nowMoment } from '../../../host/obsidian/datetime';
 import { placeCaptureLine } from '../core/board/capture';
-import { captureDayPath, captureLine, inboxFileName } from '../../../shared/storage/vault-layout';
+import { VISIBLE_NAMES, captureDayPath, captureLine, inboxFileName } from '../../../shared/storage/vault-layout';
 import { withDefaultProperties } from '../../../shared/storage/note-defaults';
 import { t } from '../../../shared/i18n';
 import { getOrCreateDailyNote, substituteTemplateVars } from '../platform/calendar/daily-notes';
 import { SyncEngine } from '../platform/board/sync';
 import type { DashboardData, DashboardSettings, QuickAction, WeatherData } from '../core/board/types/model';
 import { DashboardSaveError, SwitchRefusedError, type DashboardSaveState } from '../core/board/save-state';
-import { fetchWeather, geocodeCity, readWeatherCache } from '../platform/widgets/weather-service';
+import { fetchWeather, geocodeCity, type WeatherStage, type WeatherCacheWrite } from '../platform/widgets/weather-service';
 import type { HomeHost } from './home-host';
 import { queryVaultFiles } from './library-query';
 import { homeServices } from './instances';
@@ -35,7 +35,13 @@ import { weatherInstanceLocation, weatherLocationKey } from '../core/board/weath
 
 export interface BoardWeatherState {
 	locationKey: string;
-	status: 'loading' | 'ready' | 'error';
+	status: 'unconfigured' | 'waiting' | 'loading' | 'refreshing' | 'ready' | 'error';
+	stage?: WeatherStage;
+	errorCode?: 'timeout' | 'network' | 'invalid-response';
+	retryable?: boolean;
+	fetchedAt?: number;
+	stale?: boolean;
+	cacheWrite?: WeatherCacheWrite;
 	data: WeatherData | null;
 	error: string;
 }
@@ -106,10 +112,24 @@ export class BoardStore {
 	private heldData: DashboardData | undefined;
 	private visible = true;
 	setVisible(value: boolean): void {
+		const changed = this.visible !== value;
 		this.visible = value;
+		if (changed && !value) {
+			for (const controller of this.weatherControllers.values()) controller.abort();
+			const weatherByInstance = Object.fromEntries(
+				Object.entries(this.state.getState().weatherByInstance).map(([id, state]) => [
+					id,
+					state.status === 'unconfigured' ? state : { ...state, status: 'waiting' as const, retryable: true },
+				]),
+			);
+			this.state.setState({ weatherByInstance });
+		} else if (changed) {
+			for (const id of Object.keys(this.state.getState().weatherByInstance)) void this.weather(id);
+		}
 		if (value) this.state.setState((s) => ({ widgetRevision: s.widgetRevision + 1 }));
 	}
 	private readonly weatherRequests = new Map<string, number>();
+	private readonly weatherControllers = new Map<string, AbortController>();
 	private switchTail: Promise<void> = Promise.resolve();
 	constructor(
 		readonly host: HomeHost,
@@ -155,6 +175,7 @@ export class BoardStore {
 		const changed = () => {
 			if (this.visible && !this.disposed) this.state.setState((s) => ({ widgetRevision: s.widgetRevision + 1 }));
 		};
+		if (homeServices.watchArchives) this.cleanup.push(homeServices.watchArchives(changed));
 		for (const service of [homeServices.habit, homeServices.expense, homeServices.pomodoro, homeServices.reading])
 			if (service) this.cleanup.push(service.subscribe(changed));
 		if (homeServices.pomodoro) this.cleanup.push(homeServices.pomodoro.subscribeTick(changed));
@@ -190,10 +211,16 @@ export class BoardStore {
 			.sort((a, b) => a.basename.length - b.basename.length)
 			.slice(0, 8);
 	}
+	isRecentDocument(path: string): boolean {
+		return isRecentUserDocument(path, {
+			...this.host.settings,
+			classifyArchive: (value) => homeServices.archives?.()?.classify(value),
+		});
+	}
 	recentFiles(): ContentFile[] {
 		return this.state
 			.getState()
-			.files.filter((file) => isRecentUserDocument(file.path, this.host.settings))
+			.files.filter((file) => this.isRecentDocument(file.path))
 			.slice(0, 10);
 	}
 	/**
@@ -211,6 +238,8 @@ export class BoardStore {
 			// Start of the transaction: the board's page goes read-only and everything opened on it is closed and
 			// voided (dialogs, previews, views of the old generation), not merely hidden.
 			const generation = this.state.getState().generation + 1;
+			for (const controller of this.weatherControllers.values()) controller.abort();
+			this.weatherControllers.clear();
 			this.switching = true;
 			this.heldData = undefined;
 			this.sync.setEpoch?.(generation);
@@ -310,6 +339,8 @@ export class BoardStore {
 	}
 	async dispose(): Promise<void> {
 		this.disposed = true;
+		for (const controller of this.weatherControllers.values()) controller.abort();
+		this.weatherControllers.clear();
 		this.weatherRequests.clear();
 		for (const off of this.cleanup.splice(0)) off();
 		await this.switchTail;
@@ -526,7 +557,7 @@ export class BoardStore {
 			await files.process(path, (raw) => placeCaptureLine(raw ?? '', line, settings.quickCapturePosition));
 			return;
 		}
-		// One file per day next to the inbox items, `<inbox>/YYYY-MM-DD-闪念.md`, each capture a `- HH:mm text` item.
+		// One file per day next to the inbox items, `<inbox>/YYYY-MM-DD-captures.md`, each capture a `- HH:mm text` item.
 		// A day's first capture creates the file with the default properties (or the template, when one is set).
 		const path = captureDayPath(inboxRoot(settings), now);
 		const template = files.resolveLink(settings.quickCaptureTemplate);
@@ -546,7 +577,7 @@ export class BoardStore {
 		}
 		await this.newNote(
 			this.host.settings.memoSavePath || DEFAULT_MEMO_ROOT,
-			inboxFileName(card.title, nowMoment(), 'Untitled'),
+			inboxFileName(card.title, nowMoment(), VISIBLE_NAMES.untitled),
 			this.host.settings.memoTemplatePath,
 			{},
 			memoCardText(card),
@@ -596,43 +627,124 @@ export class BoardStore {
 	async weather(instanceId = 'default', force = false): Promise<void> {
 		const snapshot = this.state.getState();
 		if (this.disposed || !this.isCurrent() || snapshot.switching) return;
-		const location = weatherInstanceLocation(snapshot.data, snapshot.settings, instanceId);
-		if (!location) return;
-		const key = weatherLocationKey(location),
-			generation = snapshot.generation;
+		this.weatherControllers.get(instanceId)?.abort();
 		const request = (this.weatherRequests.get(instanceId) ?? 0) + 1;
 		this.weatherRequests.set(instanceId, request);
-		const publish = (value: BoardWeatherState) => {
-			const current = this.state.getState();
-			const selected = weatherInstanceLocation(current.data, current.settings, instanceId);
-			if (
+		const location = weatherInstanceLocation(snapshot.data, snapshot.settings, instanceId);
+		if (!location) {
+			this.state.setState({
+				weatherByInstance: {
+					...snapshot.weatherByInstance,
+					[instanceId]: { locationKey: '', status: 'unconfigured', data: null, error: '', retryable: false },
+				},
+			});
+			return;
+		}
+		const key = weatherLocationKey(location),
+			generation = snapshot.generation;
+		if (!this.visible) {
+			this.state.setState({
+				weatherByInstance: {
+					...snapshot.weatherByInstance,
+					[instanceId]: { locationKey: key, status: 'waiting', data: null, error: '', retryable: true },
+				},
+			});
+			return;
+		}
+		const controller = new AbortController();
+		this.weatherControllers.set(instanceId, controller);
+		const app = this.host.app,
+			adapter = app.vault.adapter,
+			storage = privateVaultStorage(app);
+		const current = () => {
+			const state = this.state.getState(),
+				selected = weatherInstanceLocation(state.data, state.settings, instanceId);
+			return (
 				!this.disposed &&
-				!current.switching &&
-				current.generation === generation &&
+				this.visible &&
+				!state.switching &&
+				state.generation === generation &&
 				this.weatherRequests.get(instanceId) === request &&
-				selected &&
+				this.host.app === app &&
+				app.vault.adapter === adapter &&
+				!!selected &&
 				weatherLocationKey(selected) === key
-			)
-				this.state.setState({ weatherByInstance: { ...current.weatherByInstance, [instanceId]: value } });
+			);
 		};
-		const retained = snapshot.weatherByInstance[instanceId];
-		const storage = privateVaultStorage(this.host.app);
-		let stale = retained?.locationKey === key ? retained.data : null;
-		publish({ locationKey: key, status: 'loading', data: stale, error: '' });
-		const cache = stale
-			? Promise.resolve()
-			: readWeatherCache(location, storage).then((saved) => {
-					stale = saved;
-					if (saved) publish({ locationKey: key, status: 'loading', data: saved, error: '' });
-				});
+		let data =
+			snapshot.weatherByInstance[instanceId]?.locationKey === key ? snapshot.weatherByInstance[instanceId].data : null;
+		let stage: WeatherStage = 'cache-read',
+			cacheWrite: WeatherCacheWrite | undefined;
+		let status: BoardWeatherState['status'] = data ? 'refreshing' : 'loading';
+		const publish = (error = '', errorCode?: BoardWeatherState['errorCode']) => {
+			if (!current()) return;
+			this.state.setState({
+				weatherByInstance: {
+					...this.state.getState().weatherByInstance,
+					[instanceId]: {
+						locationKey: key,
+						status,
+						data,
+						error,
+						stage,
+						errorCode,
+						retryable: status === 'error',
+						fetchedAt: data?.fetchedAt,
+						stale: !!data && Date.now() - data.fetchedAt >= 30 * 60 * 1000,
+						cacheWrite,
+					},
+				},
+			});
+		};
+		publish();
+		const clock = this.ownerWindow ?? window;
+		let timer: number | undefined, abort: (() => void) | undefined;
 		try {
-			const [data] = await Promise.all([fetchWeather(location, storage, force), cache]);
-			publish({ locationKey: key, status: 'ready', data, error: '' });
-		} catch {
-			await cache;
-			publish({ locationKey: key, status: 'error', data: stale, error: t('weather.loadFailed') });
+			const result = await Promise.race([
+				fetchWeather(location, storage, force, {
+					signal: controller.signal,
+					clock,
+					current,
+					onCache: (saved) => {
+						if (!current() || controller.signal.aborted) return;
+						data = saved;
+						status = 'refreshing';
+						publish();
+					},
+					onStage: (next) => {
+						stage = next;
+						publish();
+					},
+					onCacheWrite: (next) => {
+						cacheWrite = next;
+						publish();
+					},
+				}),
+				new Promise<never>((_resolve, reject) => {
+					abort = () => reject(Object.assign(new Error('weather.cancelled'), { code: 'cancelled' }));
+					controller.signal.addEventListener('abort', abort, { once: true });
+					timer = clock.setTimeout(() => {
+						reject(Object.assign(new Error('weather.timeout'), { code: 'timeout' }));
+						controller.abort();
+					}, 27_000);
+				}),
+			]);
+			if (controller.signal.aborted) return;
+			data = result;
+			status = 'ready';
+			publish();
+		} catch (error) {
+			const code = (error as { code?: string })?.code;
+			if (code === 'cancelled') return;
+			status = 'error';
+			publish(t('weather.loadFailed'), code === 'timeout' || code === 'invalid-response' ? code : 'network');
+		} finally {
+			if (timer !== undefined) clock.clearTimeout(timer);
+			if (abort) controller.signal.removeEventListener('abort', abort);
+			// Keep the controller addressable until its optional write settles or the next lifecycle event invalidates it.
 		}
 	}
+
 	cities(query: string): ReturnType<typeof geocodeCity> {
 		return geocodeCity(query);
 	}

@@ -1,0 +1,194 @@
+{
+  "exitCode": 0,
+  "success": true,
+  "timezone": "UTC",
+  "chromeVersion": "Google Chrome for Testing 156.0.8078.47",
+  "elapsedSeconds": 228.121,
+  "actualFiles": 396,
+  "uniqueFiles": 396,
+  "configuredFiles": 396,
+  "passedFiles": 395,
+  "skippedFiles": [
+    "src/host/desktop/device-identity.test.ts"
+  ],
+  "missingFiles": [],
+  "unexpectedFiles": [],
+  "duplicateFiles": {},
+  "assertionStatuses": {
+    "passed": 3428,
+    "skipped": 2
+  },
+  "assertionCount": 3430,
+  "reportedTotalTests": 3430,
+  "reportedNestedSuiteCount": 486,
+  "projectFiles": {
+    "native-integration": 3,
+    "settings-iconic": 2,
+    "dom": 103,
+    "unit": 288
+  },
+  "projectAssertions": {
+    "native-integration": {
+      "passed": 68
+    },
+    "settings-iconic": {
+      "passed": 10
+    },
+    "dom": {
+      "passed": 613
+    },
+    "unit": {
+      "passed": 2737,
+      "skipped": 2
+    }
+  },
+  "skipped": [
+    {
+      "file": "src/host/desktop/device-identity.test.ts",
+      "test": "Windows identity uses the installed system and user without creating data",
+      "status": "skipped"
+    },
+    {
+      "file": "src/modules/agent/platform/desktop/history/resume-command.test.ts",
+      "test": "copied PowerShell resume commands preserve managed account paths and literal arguments",
+      "status": "skipped"
+    }
+  ],
+  "failed": [],
+  "failedFileStatuses": [],
+  "changedInputs": [
+    "scripts/bundle-budget.json"
+  ],
+  "allConfiguredFilesReportedExactlyOnce": true,
+  "assertionCountMatchesReport": true,
+  "latestRegressionFiles": {
+    "test/release/browser-client.test.ts": [
+      {
+        "test": "release CLI calls page.list in a real Node process without Window and injects its private connection scope",
+        "status": "passed"
+      },
+      {
+        "test": "release MCP initializes, exposes credential-free schemas and privately retains newly granted Run capabilities",
+        "status": "passed"
+      },
+      {
+        "test": "release CLI preserves a stable failure code but never prints echoed bearer tokens, capabilities or raw errors",
+        "status": "passed"
+      },
+      {
+        "test": "release MCP emits bounded tool errors without leaking echoed connection credentials to the model or stderr",
+        "status": "passed"
+      }
+    ],
+    "src/modules/browser/services/run-events.test.ts": [
+      {
+        "test": "Run event recovery cursors keeps independent cursors and returns event copies with their source runtime",
+        "status": "passed"
+      },
+      {
+        "test": "Run event recovery cursors requires resync after eviction but accepts the exact retained boundary",
+        "status": "passed"
+      },
+      {
+        "test": "Run event recovery cursors rejects future and malformed cursors instead of silently waiting past missing events",
+        "status": "passed"
+      },
+      {
+        "test": "Run event recovery cursors replays changes during projection reads from the preceding health cursor without losing the next update",
+        "status": "passed"
+      },
+      {
+        "test": "Run event recovery cursors revokes both polling and cursor reads and never resurrects a closed Run on late append",
+        "status": "passed"
+      }
+    ],
+    "src/modules/browser/services/workspace.test.ts": [
+      {
+        "test": "Browser workspace authority and lifecycle Personal Space cannot receive an Agent Run, and watching a Task never takes control",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a later viewer intent supersedes a delayed native grant without ever publishing the old human owner",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle releaseViewer while takeover is pending invalidates the grant and leaves the runtime paused",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle failure to persist a new Agent grant revokes it natively and returns no usable Run",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a late Agent observation is rejected after takeover; old capability status reveals metadata only",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle an old delayed action never blocks or clears the queue of a replacement Run, and retains uncertainty metadata",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle an approved upload retains its original Run scope after takeover and cannot be consumed by a new Run",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle expired human authority cannot read identity state or accept a page action",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a dialog response bypasses the click waiting for that response while still rejecting an old revision",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a chooser response bypasses the click waiting for that response while still rejecting an old revision",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle human stop bypasses a long page wait without allowing a stale human lease",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle an Agent prepared stop bypasses its long wait and retains capability and operation scope checks",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle health provides a current Run cursor for projection recovery and page events reject another runtime",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle serializes consecutive keyboard inputs from one valid frame without dropping the second input",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle serializes consecutive committed text inputs from one valid frame without dropping the second input",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a keyboard input queued from a valid frame is rejected when its document changes before dispatch",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle native page-closed events during stop preserve desired Page IDs for a new runtime and restart",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle a cancelled start whose native stop fails stays owned and can be retried without deleting desired data",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle failed profile deletion remains a durable cleanup job, and retry completes it",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle stop does not wait for a stale action response before releasing native authority",
+        "status": "passed"
+      },
+      {
+        "test": "Browser workspace authority and lifecycle requires both session consent and explicit ephemeral creation when OS protection is unavailable",
+        "status": "passed"
+      }
+    ]
+  },
+  "maxWorkers": 2,
+  "worktreeMainSha256": "924d1ce5dd8b3b32d147927ac71039b685b1de1c02d713cc730ecfe2b4c42688"
+}

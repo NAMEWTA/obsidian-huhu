@@ -1,0 +1,73 @@
+{
+  "task": "056-data-maintenance-preflight",
+  "recordedAt": "2026-10-25T12:49:31.089630+00:00",
+  "root": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/056-data-maintenance-preflight",
+  "sourceTask": {
+    "path": "TASK.md",
+    "bytes": 3797,
+    "sha256": "ec78e745d7aba4a845b448c0dfef1278c052ab67103a3a78b0814ee53c5eeec6",
+    "readOnly": true
+  },
+  "excluded": [
+    "TASK.md is Root-owned input",
+    "artifact-manifest.json is this manifest",
+    "manifest-verification.json is the independent verification result"
+  ],
+  "artifacts": [
+    {
+      "path": "REPORT.md",
+      "bytes": 7462,
+      "sha256": "f5a02bb40d40169dc858a98138af186efb0ef9d46c796608716620256c89047a"
+    },
+    {
+      "path": "command-observations.json",
+      "bytes": 3157,
+      "sha256": "37ac3019e24afbe7cc4cc42a1d435dec4b24259c9da961ae9a10c9446fad951c"
+    },
+    {
+      "path": "fixed-reference-sources.json",
+      "bytes": 7493,
+      "sha256": "0c5ef1273bfab19c8c2acf5a1c720dd4372a1674a188ef9edffa44ec9bd1f149"
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "bytes": 17648,
+      "sha256": "f3a9f8434a4b32cb94422742d9b90f97e4879c087248b5777042663f04e43bb8"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 8108,
+      "sha256": "f5b53ac8584702808a8c19478982ee29e857de0c50a74990f81d5605c1c812e1"
+    },
+    {
+      "path": "observations.json",
+      "bytes": 16143,
+      "sha256": "05d064d7de799e20d97ba125d6fc3efcd26c2397b2b54cc81c2b2e7980536df6"
+    },
+    {
+      "path": "official-sources.json",
+      "bytes": 880,
+      "sha256": "9a76077a6922df7fbcdebea0285729e0d5b07a4dc2a9a4730421e0b9086dc13b"
+    },
+    {
+      "path": "read-excerpts.log",
+      "bytes": 152200,
+      "sha256": "3691f3d3bc04f2affb2f250fa2679a144456a18b4f817b88169c195bc7b29851"
+    },
+    {
+      "path": "return.json",
+      "bytes": 1053,
+      "sha256": "fc556a5704d52f2130db59e20a18efc08eded10c8146af538699b185a6e6a897"
+    },
+    {
+      "path": "source-recheck.json",
+      "bytes": 13842,
+      "sha256": "9e5c39b0218729863439a1ffe1a4d98542c54180da39b9b371cebae614e5ca34"
+    },
+    {
+      "path": "wire-data-slice.json",
+      "bytes": 7740,
+      "sha256": "1fb16732e3db8b3d94ed709fb33fab7ecc6de659f694b3cbc69961c873d027f4"
+    }
+  ]
+}

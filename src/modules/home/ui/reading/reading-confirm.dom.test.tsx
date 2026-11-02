@@ -13,7 +13,7 @@ const active: ReadingService[] = [];
 afterEach(() => { cleanup(); active.splice(0).forEach(s => s.destroy()); vi.useRealTimers(); });
 async function fixture() {
 	setLanguage('en'); vi.useFakeTimers({ now: new Date('2026-10-14T12:00:00'), toFake: ['Date'] });
-	const path = 'huhu/阅读/reading.json';
+	const path = 'huhu/reading/reading.json';
 	const book = { title: 'Book', author: '', coverUrl: '', isbn: '', source: 'manual' as const, totalPages: 100, currentPage: 10, finished: false };
 	const record = { timestamp: '2026-10-14T10:00:00', bookTitle: 'Book', bookAuthor: '', coverUrl: '', durationSeconds: 600, isbn: '', startPage: 0, endPage: 10, finished: false };
 	const data = { activeBooks: [book], sessions: [{ date: '2026-10-14', records: [record] }, { date: '2025-01-01', records: [{ ...record, timestamp: '2025-01-01T10:00:00' }] }] };

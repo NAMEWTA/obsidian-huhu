@@ -1,0 +1,8 @@
+{
+  "diagnostics/T-19/gif-observations.json": "08d692e6e757ce622dce371927f062c83cb08a0189b3ab77b1322ec9223400cb",
+  "diagnostics/T-19/gif-replay-fixture.tsx": "76205cbbc1f51f985c6205f537d45126bc96a50d52ab169b9ed4baf924cd0c19",
+  "diagnostics/T-19/gif-replay-result.json": "bf680d088a71af352a9a7f853eda939d0c7745df5afa493d63d1b95bc6850b49",
+  "diagnostics/T-19/gif-replay-run.mjs": "05387dc478d9a4c8be7c0bc8fe27e7e8da496bde072c65fbfa26db442804b97b",
+  "diagnostics/T-19/gif-replay.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "diagnostics/T-19/gif-replay.log": "12cb41f54b704af210f8e2289275197f2a7ee48cc689caf8d1248f4def929033"
+}

@@ -26,6 +26,8 @@ const member = (kind: string, instanceId = 'default'): BoardWidgetMember => ({
 
 /** Starting geometry of a built-in widget, from the same table the add-widget panel reads. */
 export function builtinTileDefaults(widget: BoardWidgetMember): TileDefaults | undefined {
+	// Geometry of the default external slot; the provider owns its business and rendering.
+	if (widget.provider === 'task' && widget.kind === 'tasks') return { w: 6, h: 4, minW: 3, minH: 2 };
 	const spec =
 		widget.provider === 'home'
 			? BUILTIN_WIDGETS.find(
@@ -39,7 +41,10 @@ export function builtinTileDefaults(widget: BoardWidgetMember): TileDefaults | u
 
 /** The widgets a new board starts with; its content sections (notes, to-do, projects) come with the board's columns. */
 export function defaultCanvasMembers(): BoardWidgetMember[] {
-	return ['calendar', 'clock', 'pomodoro', 'usage', 'quick-actions'].map((kind) => member(kind));
+	return [
+		...['calendar', 'clock', 'pomodoro', 'usage', 'quick-actions'].map((kind) => member(kind)),
+		{ memberId: 'task:tasks:default', provider: 'task', kind: 'tasks', instanceId: 'default' },
+	];
 }
 
 /** What an old board with no widget list of its own got on the sidebar. */
@@ -135,6 +140,7 @@ type Slot = readonly [x: number, y: number, tier: HomeWidgetTier];
 /** The first board: calendar and to-do side by side, four small widgets, projects across, memo and quick notes. */
 const WIDGET_SLOTS: Readonly<Record<string, Slot>> = {
 	calendar: [0, 0, 'L'],
+	tasks: [6, 0, 'L'],
 	clock: [0, 4, 'M'],
 	pomodoro: [6, 4, 'S'],
 	usage: [9, 4, 'S'],
@@ -164,6 +170,10 @@ export function defaultCanvas(data: DashboardData): DashboardData {
 				: source.type === 'section'
 					? SECTION_WIDGETS.find((item) => item.section === source.column.sectionType)
 					: undefined;
+		if (source.type === 'widget' && source.member.provider === 'task' && source.member.kind === 'tasks' && slot) {
+			items.push({ i: source.id, x: slot[0], y: slot[1], w: 6, h: 4 });
+			continue;
+		}
 		if (!slot || !spec) continue;
 		const size = tierSize(spec, slot[2]);
 		items.push({ i: source.id, x: slot[0], y: slot[1], w: size.w, h: size.h });

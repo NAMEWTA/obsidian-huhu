@@ -1,0 +1,7 @@
+{
+  "Replace": {
+    "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/tests/contract/events/history_test.go": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-history.go.txt",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/tests/contract/events/ts_test.go": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-engine.go.txt",
+    "/home/wta/orca/workspaces/obsidian-huhu/bot/native/huhubot/internal/adapters/outbound/sqlite/base/store.go": "/home/wta/orca/workspaces/obsidian-huhu/bot/.agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/085-recovery-race-diagnosis/probes/events-base.go.txt"
+  }
+}

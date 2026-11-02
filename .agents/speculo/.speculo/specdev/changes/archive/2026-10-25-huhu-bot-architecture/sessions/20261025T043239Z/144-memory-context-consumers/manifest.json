@@ -1,0 +1,188 @@
+{
+  "task": "144-memory-context-consumers",
+  "status": "completed",
+  "treeAlgorithm": "SHA256 of sorted path NUL sha256 LF records",
+  "sourceFiles": [
+    {
+      "path": "native/huhubot/tests/contract/chat/provenance_test.go",
+      "sha256": "a50f8b3dc8b98f211128f688647972a70482df5ded975e8018dacaaeb0ccf4c5",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/anthropic/checkpoint_test.go",
+      "sha256": "07907027ff974ac7d8575b131f8829f88623046dd9b47eac55a2f84a276cd444",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/anthropic/engine_test.go",
+      "sha256": "48473e94dd8190c35ec8890dff1e80bfe910f79ebc0636452d1fb9e4e74078ec",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/anthropic/protocol_edges_test.go",
+      "sha256": "2f7ad926aa5212da56e027f402483091a2a5c8e1b90b157535e5f575e8bc1f3b",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/anthropic/tools_test.go",
+      "sha256": "af4fd883109b4432b3f7351248bee981d1557ba4289531ca50ac0e794bd7a319",
+      "mode": "0o664"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/checkpoint_test.go",
+      "sha256": "358e7655191ff7e8fb8c091e2e90ee9d020f7a63b99c59a20985debf1fc4bd51",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/engine_test.go",
+      "sha256": "b1622f7a6b27873edde25de53b66a431f404c4af06015b44d7e3359b7f3ff70d",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/question_test.go",
+      "sha256": "de58c1d9620ade6005e2353408c6f0e2163768f446126c35f6f68bfdfc0c454e",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/chat/review_intent_test.go",
+      "sha256": "8a040290ace820f34809f3ffb99f7444bd123d40524186ce69c42caf24eb2361",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/responses/checkpoint_test.go",
+      "sha256": "1d6345ccedab42cb2490094b384ce4b150242d0a5f293c50a825d2ad605918bf",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/responses/engine_test.go",
+      "sha256": "4274b9563bb3e9eb67fbabd423968198c9d2eb02ac32098a886c6d858530f17c",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/responses/protocol_edges_test.go",
+      "sha256": "3b2a0f2f3fbd9c5a1f924e796021e8b0a3b9ea04265bede4de805072e37ead61",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/engine/responses/tools_test.go",
+      "sha256": "1b277bd4a61f07a8613d51410da7c8b74607771f146177f08fec679b6afc934f",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/default_protocol_recovery_test.go",
+      "sha256": "9ca7435845332984f2632205d8f00d2fc9ed1192957b5f5a09ada9404f1079e6",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/foundation/groups_migration_test.go",
+      "sha256": "2df2a426ae9ee9c29a8ab2991f675673743ecaba7c5c09bdedf1fd78adeab61e",
+      "mode": "0o600"
+    },
+    {
+      "path": "native/huhubot/tests/contract/recovery/migration_test.go",
+      "sha256": "c2ee03a243f55a13d3baa591f4e3cca969eeacfdd4cc30f410d174e97061badb",
+      "mode": "0o600"
+    }
+  ],
+  "sourceTreeSHA256": "859c381f606f82d4d5e5f5e96b670d336e1840dd4dd842bfd38d397b378c92bf",
+  "fixedGoInput": "logs/05-fixed-input.json",
+  "fixedGoDrift": "logs/09-final-input-drift.json",
+  "artifactFiles": [
+    {
+      "path": "REPORT.md",
+      "sha256": "aa585c9919952722261d814ec916a2500237e64a13415c19e9c15d5a1871f873",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/01-r1-owned-failure-map.json",
+      "sha256": "50618a2cfbc0aeaa006ad94d61741cac4345efd548deb532fd8cbe8a4d4e8b29",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/02-source-only-checkpoint.json",
+      "sha256": "b57caf02c81545de91ef4f461eaf0b0c3a1b427f31e639e7c21829583f02bf4e",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-go-version.json",
+      "sha256": "182f253b2dc513af32044955c7faa816365b7f54f7f80535c71bf2cf7d47a0c7",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/03-go-version.log",
+      "sha256": "4e0b213cba780f63b02f3ab9001ee61e4101d254e0af1a8205574c19dad0f93b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-go-list-result.json",
+      "sha256": "9431bdba1a1a46aec1682246c8905aadc6d31997d6e8fb317da2efc55bfc7e48",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-go-list.jsonl",
+      "sha256": "dc4289a2b1c5a853a8de264ce097bd260724d1807ea1f44e0416ecf34b842734",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/04-go-list.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/05-fixed-input.json",
+      "sha256": "5cb6f6f3fc7e27cc0beb24307f5dd3518bdd2b0be87210152c89073fd8f59d91",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-six-package-target.json",
+      "sha256": "8460361608967b7007b184ace597ee1224581d361a1afd132870389c06a46cca",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/06-six-package-target.log",
+      "sha256": "6bf7f9341c0679d857ab7d7c1d75f8eb4249584f9dda8e3b195b9ead6342e286",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-chat-provenance-question.json",
+      "sha256": "eab247706f9dd2bcdc75dad29ace9995f8e247ce76bbf2e34ecffbea95967c14",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/07-chat-provenance-question.log",
+      "sha256": "53544c89dcd94f0c8d5e809d83eee3832b047b6f21242ff1ac011298f958c52b",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-chat-provenance-question-recheck.json",
+      "sha256": "c8341a36e90baa322eab927225c40c1a44c9f313f45eadffd0d592a09bfbfe83",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/08-chat-provenance-question-recheck.log",
+      "sha256": "b90f0a218265153ddac3f4531701bd188490b200b78ea8c47fda0f1e4b227eb5",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/09-final-input-drift.json",
+      "sha256": "1279be30e4032355571db548c98776583f5cea4c96986d519ab216e5bbe5d4a2",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/10-final-source-checkpoint.json",
+      "sha256": "2f5d6fa4715a05abc0c9fe059a1749a350a94913b8b3018f3385b115726a2cb3",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-return-validation.json",
+      "sha256": "d29327860c034a09a707193967d7f861284e7a2d98052c3e4f49571ff3ff4880",
+      "mode": "0o664"
+    },
+    {
+      "path": "logs/11-return-validation.log",
+      "sha256": "6933667bd398e393b6ac95bb5125889557f42bb78633bd4fb4e5a80dbd981463",
+      "mode": "0o664"
+    }
+  ],
+  "artifactTreeSHA256": "620c30ab533e314789a7f5070ee7793ef92afdf80e4282a64196284a8c1ca30c"
+}

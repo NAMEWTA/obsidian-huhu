@@ -1,0 +1,6 @@
+{
+  "originalPath": "native/huhubot/tests/contract/events/history_test.go",
+  "sha256": "5e61949b538bb78088b2ddb199d2d619ed47027d98b158c359e2600185098cd6",
+  "note": "external overlay adds only timeout SQL diagnostics; original 3s wait and production unchanged",
+  "overlay": ".agents/speculo/.speculo/specdev/changes/2026-10-25-huhu-bot-architecture/sessions/20261025T043239Z/081-recovery-domain/probes/events-diagnostic-overlay.json"
+}

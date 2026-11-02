@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { Input } from '../../../../ui/components/input';
 import { Button } from '../../../../ui/components/button';
 import { SettingsRow } from '../../../../ui/components/huhu/SettingsRow';
@@ -40,7 +39,7 @@ function ColorRow({ label, value, onChange }: { label: string; value: string; on
 		<SettingsRow
 			label={label}
 			control={
-				<div className="flex items-center gap-2">
+				<div className="flex flex-wrap items-center gap-2">
 					<input
 						type="color"
 						aria-label={label}
@@ -50,14 +49,14 @@ function ColorRow({ label, value, onChange }: { label: string; value: string; on
 					/>
 					<Input
 						aria-label={`${label} (hex)`}
-						className="w-28 font-mono text-xs"
+						className="w-28 max-w-full font-mono text-xs"
 						value={draft}
 						spellCheck={false}
 						onChange={(event) => {
 							setDraft(event.target.value);
 							if (isHexColor(event.target.value)) onChange(event.target.value.toLowerCase());
 						}}
-						onBlur={() => setDraft(value)}
+						onBlur={() => { if (!isHexColor(draft)) setDraft(value); }}
 					/>
 				</div>
 			}
@@ -66,23 +65,24 @@ function ColorRow({ label, value, onChange }: { label: string; value: string; on
 }
 
 /** The custom theme's five colours for light or dark mode, with "start from a theme" and reset. */
-export function CustomColorsEditor({ handle, settings, initialMode, ownerDocument }: {
+export function CustomColorsEditor({ handle, settings, initialMode, ownerDocument, onError }: {
 	handle: SettingsHandle<ThemeSettings>;
 	settings: ThemeSettings;
 	initialMode: 'light' | 'dark';
 	ownerDocument: Document;
+	onError: () => void;
 }) {
 	const t = useT();
 	const [mode, setMode] = useState<'light' | 'dark'>(initialMode);
 	const colors = settings.custom[mode];
 	const write = (recipe: (draft: CustomColors) => void) =>
-		void handle.update((draft) => recipe(draft.custom[mode])).catch(() => toast.error(t('settings.writeFailed')));
+		void handle.update((draft) => recipe(draft.custom[mode])).catch(onError);
 	const copyFrom = (id: string) => {
 		// Read the palette back from a probe carrying its classes; the tokens are the single source of the colours.
 		const probe = ownerDocument.createElement('div');
 		probe.classList.add(`huhu-theme--${id}`, `theme-${mode}`);
 		ownerDocument.body.appendChild(probe);
-		const read = (token: string) => toHex(getComputedStyle(probe).getPropertyValue(token));
+		const read = (token: string) => toHex(ownerDocument.defaultView!.getComputedStyle(probe).getPropertyValue(token));
 		const next: Partial<CustomColors> = {
 			background: read('--nt-background') ?? undefined, foreground: read('--nt-foreground') ?? undefined,
 			primary: read('--nt-primary') ?? undefined, border: read('--nt-border') ?? undefined, sidebar: read('--nt-sidebar') ?? undefined,
@@ -116,7 +116,7 @@ export function CustomColorsEditor({ handle, settings, initialMode, ownerDocumen
 					<Choice
 						label={t('appearance.customFrom')}
 						value=""
-						className="w-44"
+						className="w-44 max-w-full"
 						options={[['', t('appearance.customFromPlaceholder')], ...PALETTE_THEMES.map((id) => [id, t(`appearance.preset.${id}`)] as const)]}
 						onChange={(id) => id && copyFrom(id)}
 					/>

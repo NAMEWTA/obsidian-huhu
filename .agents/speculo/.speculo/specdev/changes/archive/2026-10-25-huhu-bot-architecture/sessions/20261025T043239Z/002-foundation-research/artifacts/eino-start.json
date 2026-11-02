@@ -1,0 +1,5 @@
+{
+  "exit_code": 0,
+  "stdout": "eino adapter imports compiled: go1.27.1 user\n",
+  "stderr": "WARNING: sonic/ast only supports (go1.17~1.26 and amd64 CPU) or (go1.20~1.26 and arm64 CPU), but your environment is not suitable and will fallback to encoding/json\n"
+}

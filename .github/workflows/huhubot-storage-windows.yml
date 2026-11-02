@@ -1,0 +1,56 @@
+name: Measure Bot SQLite storage on Windows
+
+on:
+  workflow_dispatch:
+  # First registration: workflow_dispatch needs the file on the default branch.
+  # https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch
+  # Only an explicitly authorized push to this dedicated temporary branch starts it.
+  push:
+    branches: [codex/dev-overhaul-storage-validation]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: huhubot-storage-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  storage:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      GOWORK: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.10'
+          cache-dependency-path: native/huhubot/go.sum
+      - name: Verify real lifecycle and erasure seams
+        shell: pwsh
+        working-directory: native/huhubot
+        run: |
+          New-Item -ItemType Directory -Force ../../storage-results | Out-Null
+          go version | Tee-Object ../../storage-results/environment.txt
+          go env GOOS GOARCH GOWORK GOTOOLCHAIN | Tee-Object -Append ../../storage-results/environment.txt
+          go test ./internal/adapters/outbound/sqlite/base ./internal/adapters/outbound/sqlite/portable ./internal/adapters/outbound/sqlite/assistant ./internal/adapters/outbound/sqlite/purge ./internal/bootstrap -count=1 -timeout=180s -json 2>&1 | Tee-Object ../../storage-results/mechanisms.jsonl
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Measure serial fixed matrix and owned process recovery
+        shell: pwsh
+        working-directory: native/huhubot
+        run: |
+          $env:HUHUBOT_STORAGE_MEASURE = Join-Path $env:GITHUB_WORKSPACE 'storage-results/matrix.json'
+          go test ./internal/adapters/outbound/sqlite/base -run '^TestStorageCandidateMatrix$' -count=1 -timeout=180s -v 2>&1 | Tee-Object ../../storage-results/matrix.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: storage-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          path: storage-results/
+          if-no-files-found: warn
+          retention-days: 14

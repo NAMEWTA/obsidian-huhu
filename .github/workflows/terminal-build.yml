@@ -3,8 +3,13 @@ name: Build terminal helper
 on:
   workflow_call:
   workflow_dispatch:
+  # Push to dev has no path filter. This pull request changes more than 3000 files,
+  # and GitHub only matches a path filter against the first 3000, so the filtered
+  # pull_request event never starts. A dev push still has to build every target.
+  push:
+    branches: [dev]
   pull_request:
-    paths: ['native/pty-server/**', 'scripts/verify-pty-helper.mjs', '.github/workflows/terminal-build.yml']
+    paths: ['native/pty-server/**', 'scripts/verify-pty-helper.mjs', 'scripts/verify-release-artifacts.mjs', 'src/shared/native/control-schema.json', '.github/workflows/terminal-build.yml']
 
 permissions:
   contents: read
@@ -28,28 +33,39 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-      - name: Test and build
-        shell: bash
-        run: |
-          cargo test --locked --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
-          cargo build --locked --release --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
+      # The Linux editor tests run a real Node app. Name the exact interpreter so they
+      # do not depend on discovering `node` on PATH within 2s while cargo is busy.
       - uses: actions/setup-node@v5
         with:
           node-version: 24.x
           package-manager-cache: false
-      - name: Exercise the helper over stdio (sessions, flow control, exit on stdin close)
-        run: node scripts/verify-pty-helper.mjs native/pty-server/target/${{ matrix.target }}/release/huhu-pty${{ matrix.ext }}
-      - name: Package binary and checksum
+      - name: Test and build
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then export HUHU_TEST_NODE="$(command -v node)"; fi
+          cargo test --locked --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
+          cargo build --locked --release --manifest-path native/pty-server/Cargo.toml --target '${{ matrix.target }}'
+      - name: Exercise the helper over stdio and the control CLI (protocol pairing, schema/help, stdin, exit codes)
+        run: node scripts/verify-pty-helper.mjs native/pty-server/target/${{ matrix.target }}/release/huhu-pty${{ matrix.ext }} native/pty-server/target/${{ matrix.target }}/release/huhu${{ matrix.ext }}
+      - name: Package binaries, checksums and CLI compatibility record
         shell: python
         run: |
-          import hashlib, pathlib, shutil
-          name = 'huhu-pty-${{ matrix.asset }}${{ matrix.ext }}'
-          source = pathlib.Path('native/pty-server/target/${{ matrix.target }}/release/huhu-pty${{ matrix.ext }}')
+          import hashlib, json, pathlib, shutil, subprocess
+          release = pathlib.Path('native/pty-server/target/${{ matrix.target }}/release')
           output = pathlib.Path('terminal-artifacts')
           output.mkdir()
-          target = output / name
-          shutil.copy2(source, target)
-          (output / (name + '.sha256')).write_text(hashlib.sha256(target.read_bytes()).hexdigest() + '  ' + name + '\n')
+          def publish(source_name, name):
+              target = output / name
+              shutil.copy2(release / source_name, target)
+              digest = hashlib.sha256(target.read_bytes()).hexdigest()
+              (output / (name + '.sha256')).write_text(digest + '  ' + name + '\n')
+              return target, digest
+          publish('huhu-pty${{ matrix.ext }}', 'huhu-pty-${{ matrix.asset }}${{ matrix.ext }}')
+          cli, digest = publish('huhu${{ matrix.ext }}', 'huhu-${{ matrix.asset }}${{ matrix.ext }}')
+          # The record is read from the binary that was just built, so a release can never claim a protocol it does not speak.
+          version = json.loads(subprocess.run([str(cli), '--json', 'version'], check=True, capture_output=True, text=True).stdout)
+          record = {'schema': 1, 'asset': cli.name, 'cliProtocol': version['protocolVersion'], 'helperProtocol': version['data']['helperProtocol'], 'sha256': digest}
+          (output / (cli.name + '.compat.json')).write_text(json.dumps(record, sort_keys=True) + '\n')
       - uses: actions/upload-artifact@v4
         with:
           name: terminal-${{ matrix.asset }}

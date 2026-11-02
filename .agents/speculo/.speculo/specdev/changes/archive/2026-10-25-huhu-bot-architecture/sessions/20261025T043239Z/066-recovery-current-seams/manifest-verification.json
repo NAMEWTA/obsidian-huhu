@@ -1,0 +1,67 @@
+{
+  "verifiedAt": "2026-10-25T16:58:26.870763+00:00",
+  "manifestSha256": "3e43cd0b75f28c2256f4a9f465e15b5c4fa0d48cc05ebb9065bc47c2902d3a82",
+  "count": 12,
+  "allMatch": true,
+  "checks": [
+    {
+      "path": "REPORT.md",
+      "ok": true
+    },
+    {
+      "path": "command-observations.json",
+      "ok": true
+    },
+    {
+      "path": "command-results.md",
+      "ok": true
+    },
+    {
+      "path": "correction-originals/interfaces-and-owners.md",
+      "ok": true
+    },
+    {
+      "path": "correction-originals/manifest.json",
+      "ok": true
+    },
+    {
+      "path": "interfaces-and-owners.md",
+      "ok": true
+    },
+    {
+      "path": "observations.json",
+      "ok": true
+    },
+    {
+      "path": "read-excerpts.log",
+      "ok": true
+    },
+    {
+      "path": "return-validation.json",
+      "ok": true
+    },
+    {
+      "path": "return-validation.log",
+      "ok": true
+    },
+    {
+      "path": "source-recheck.json",
+      "ok": true
+    },
+    {
+      "path": "wire-recovery-slice.json",
+      "ok": true
+    }
+  ],
+  "unchangedFromPriorManifest": [
+    "REPORT.md",
+    "command-observations.json",
+    "command-results.md",
+    "observations.json",
+    "read-excerpts.log",
+    "source-recheck.json",
+    "wire-recovery-slice.json"
+  ],
+  "attachmentChangedLines": 2,
+  "productSourceChecksRerun": false
+}
