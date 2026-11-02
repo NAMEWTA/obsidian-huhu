@@ -56,15 +56,15 @@ _Avoid_: 暂停、冻结（指这三块时）
 **superbot**：用户对 huhubot“superhuhu 全量重构”方向的称呼，即 huhubot 的重构计划；仓库内没有独立 superbot 代码，删除范围由 huhubot 覆盖。
 _Avoid_: 第三个模块
 
-**遗留数据**：被删除功能曾写下的用户数据（`.huhu/browser*`、`.huhu/huhubot/`、本机 Bot Profile、localStorage 键、userData 目录）。插件不再读写也不自动清理，由用户按 `docs/data.md` 手动处理（D-019）。
+**预发布旧数据**：开发期 Browser/Bot 数据、旧 Bot Profile、Cookie、旧看板/设置及旧 Agent 布局；项目尚未正式发布，这些不属于支持格式，无保留、迁移、回读或兼容义务（ADR-011，覆盖 D-019）。
 _Avoid_: 已清理
 
-**库内会话**：`src/host/desktop/browser-session.ts` 为 Home 网页嵌入分区与网易云音乐账号提供的按库隔离 Electron 会话。2026-11-02 用户决定与这两项功能一起删除（D-018）；磁盘目录 `.huhu/browser/<device>/profiles/home-*` 成为遗留数据。
+**库内会话**：`src/host/desktop/browser-session.ts` 为 Home 网页嵌入分区与网易云音乐账号提供的按库隔离 Electron 会话。2026-11-02 用户决定与这两项功能一起删除（D-018）；原磁盘会话目录不属于现行数据合同（ADR-011）。
 
 **网页嵌入分区**：Home 看板中 `sectionType: web` 的分区，用 iframe/webview 内嵌网页；随 D-018 删除。不同于“网页快捷卡”。
 
 **网页快捷卡**：Home 卡片类型 `web`，点击打开一个网址；不依赖 Browser，保留并改用系统浏览器（D-021）。
 _Avoid_: 浏览器模块
 
-**允许清单**：T-39 残留检索中经逐条说明后允许保留的命中（如历史档案原文、Obsidian 内置 `webviewer`、独立 Chrome 验证工具、遗留数据目录的 Git 排除规则）；清单外命中即删除未完成。
+**允许清单**：T-39 残留检索中经逐条说明后允许保留的命中（如历史档案原文、Obsidian 内置 `webviewer`、独立 Chrome 验证工具）；清单外命中即删除未完成。
 _Avoid_: 忽略列表

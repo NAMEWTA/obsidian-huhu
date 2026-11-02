@@ -200,22 +200,11 @@ superbot：全仓（含 git 历史提交说明）检索 `super[-_ ]?bot` 0 命�
 - 改写：`README.md`、`README.ZH.md`、`AGENTS.md`、`docs/{README,architecture,data,development,privacy,references,workbench,agent-workbench,dashboard,sync,automation,archives-implementation}.md`、`docs/third-party/orca-terminal-workbench.md`、`THIRD-PARTY-NOTICES.md`；项目 Skill `.agents/skills/dev/**`（SKILL.md 与 6 份参考）、`.agents/skills/ui/references/shell.md`。
 - specdev：永久 `adr/` 6 份中 4 份、`context/` 5 份中 3 份涉及 Browser/Bot（只经 A）；`changes/archive/2026-10-25-huhu-bot-architecture`、`2026-10-26-unified-browser-versioning-archives` 等历史档案保留原文。
 
-## 6. 用户数据（只记录，不清理）
+## 6. 发布前旧数据/旧格式范围（ADR-011）
 
-| 位置 | 来源 | 处置 |
-|---|---|---|
-| `.huhu/browser/<device>/v2/**`（records、identities、profiles、import-staging、cleanup） | Browser | 遗留，不读写不删除 |
-| `.huhu/browser/<device>/profiles/<profile>`（`home-web`、`home-music` 等） | Home 库内会话（含网易云 Cookie） | 遗留，不读写不删除（D-018 改为删除功能，D-019） |
-| Electron 分区 `persist:huhu-dashboard-web`、`persist:huhu-dashboard-music-*` | 旧版 Home 会话 | 遗留，不读写不删除 |
-| 看板 `sectionType: web` 与 `web:` 配置、`music*` 设置字段、`widgetMusicEnabled`、小组件布局中的 `music` | Home | 加载忽略，不主动改写 |
-| `.huhu/browser/<device>/legacy-runtime` | 旧 runtime 保留 | 遗留 |
-| `.huhu/browser-materials/` | Agent 资料移交 | 遗留 |
-| userData `huhu/browser-runtime-ownership/`、已安装 runtime 包 | Browser runtime | 遗留 |
-| `.huhu/huhubot/<device>/host-receipts/**` | huhubot 宿主回执 | 遗留；Git 排除是否保留由 T-39 定 |
-| 本机 Bot Profile（Linux `$XDG_STATE_HOME/huhu/huhubot/profiles/` 等）、localStorage `huhu.huhubot.*` | huhubot | 遗留 |
-| `.huhu/config/settings.json` 的 `browser` 命名空间、模块开关 | 设置 | 加载忽略，不改写其他键 |
-| Agent 布局中 `kind: 'browser'` 标签 | Agent 工作区 | 加载时丢弃，其他标签恢复 |
-| 看板 Markdown `openIn: tab` | Home | 不主动改写用户文件；行为同系统浏览器 |
+HUHU 尚未正式发布，开发期旧 Browser/Bot/Profile、旧目录、旧看板设置与工作区布局均非受支持的历史版本。实施仅支持当前规格，**无需任何遗留数据保留、兼容、迁移、回读、旧库夹具或数据不变性验收**（ADR-011）。当前有效数据写入、权限、隐私和外部动作安全要求保持。
+
+旧 `.huhu/browser*`、`.huhu/huhubot/`、Bot Profile、Electron Cookie、localStorage、旧看板 `openIn`/`web`/`music*` 及 Agent `kind: 'browser'` 仅作为待删代码/引用的定位依据。旧目录是否仍位于开发环境不作为工程验收事项；不要求旧配置加载或清理向导。
 
 ## 7. D-018 修订：Home 网页嵌入分区与网易云音乐（2026-11-02）
 

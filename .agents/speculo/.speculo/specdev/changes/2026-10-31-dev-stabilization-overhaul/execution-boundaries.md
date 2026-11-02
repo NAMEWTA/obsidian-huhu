@@ -6,9 +6,9 @@
 
 ADR-010 取代 ADR-009：browser、huhubot、superbot 不再暂停待重构，而是整体删除。由此：
 
-- 删除票 T-39–T-46 是唯一可以写入下方冻结路径以及 `<Path>src/modules/huhubot/**</Path>`、`<Path>native/huhubot/**</Path>`、`<Path>contracts/hap/**</Path>` 的票，写法只限删除与必要的入口改写（外链改系统浏览器、加载时忽略遗留数据），不得优化、修复或重构这三块。
+- 删除票 T-39–T-46 是唯一可以写入下方冻结路径以及 `<Path>src/modules/huhubot/**</Path>`、`<Path>native/huhubot/**</Path>`、`<Path>contracts/hap/**</Path>` 的票，写法只限删除与必要的入口改写（外链改系统浏览器、直接移除旧字段与旧格式），不得优化、修复或重构这三块。
 - 非删除票在 T-44 done 前继续遵守本节下方的冻结规则与“冻结期的构建和检查”序列；不得修 Browser/huhubot，也不得为它们补测试。T-44 done 后冻结面不复存在，构建改用 `pnpm build`，本文件“冻结期”各节只作历史记录。
-- 用户库与本机遗留数据（`.huhu/browser/`、`.huhu/browser-materials/`、`.huhu/huhubot/`、Bot Profile、runtime 包）任何票都不得自动删除或改写（D-019）；Home 网页嵌入分区、网易云音乐与库内会话按 D-018（用户 2026-11-02 决定）删除，`.huhu/browser/<device>/profiles/home-*` 与其中 Cookie 成为遗留数据，同样不得自动删除。
+- **2026-11-03 最新边界（ADR-011）：** 发布前 Browser/Bot/Profile/Cookie、旧看板及旧布局无保留、迁移、兼容或字节不变要求；原 D-019 被撤回。删除票可清理旧格式/消费者，不再以旧数据保护阻止代码删除；当前有效数据与权限隐私安全约束保持。
 - huhubot 原未列入冻结；收缩后它同样不再接受修复，T-05、T-07、T-08、T-10、T-11、T-33 已取消。
 
 ## Browser 冻结边界（LOG-018 历史；T-44 完成前对非删除票继续有效）
