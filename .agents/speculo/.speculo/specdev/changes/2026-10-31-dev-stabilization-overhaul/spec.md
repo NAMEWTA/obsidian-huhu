@@ -12,6 +12,7 @@ sources:
   - USER-DECISION:采纳十项一致性修订（LOG-017）
   - USER-DECISION:round 2 采纳 D-008、D-010、D-011、D-012、D-013 推荐；真机验收由用户自行完成（LOG-009 至 LOG-013）
   - USER-DECISION:2026-11-02 产品线收缩，整体删除 browser、huhubot、superbot，取消其全部优化/修复（LOG-020，ADR-010）
+  - USER-DECISION:2026-11-03 未正式发布，旧数据无保留/兼容义务（ADR-011；AC-406 撤回）
 ---
 
 # Spec: dev 稳定化、性能修复、全界面统一与产品线收缩（#41）
@@ -26,10 +27,12 @@ sources:
 
 ## 解决方案与外部行为
 
+**现行数据与兼容边界（ADR-011）：** HUHU 尚未正式发布。开发期旧中文目录、旧 Bot Profile、Browser/huhubot 数据、旧设置、看板字段、Cookie 会话与旧 Agent 布局均非受支持的历史版本。**不要求保留、迁移、回读或兼容任何发布前旧数据**；无需旧数据字节不变、旧库、旧布局恢复等验证，也不提供旧数据手动清理指引。仅支持现行格式的新库及功能，可删除旧类型、协议、迁移路径与专用测试；当前有效数据的写入正确性、隐私、权限、凭据和外部动作安全仍然有效（ADR-011，2026-11-03 用户最新指令，取代 D-019）。
+
 按 tickets-map 的批次推进，每批直接提交到 dev，提交引用 #41（Refs）但不自动关闭它。
 
 - **B0 基线（W0、W7 初测、W6 清单）：** 固定实施 SHA，为每个 A 编号建立“报告环境 / 当前复现 / 证据等级 / 根因状态 / 任务 / PR / 结果”账本，放在 `<Path>docs/e2e/</Path>` 体系内；建立虚构/脱敏的功能与规模 fixture；运行现有测试与构建并记录基线失败；重建包体报告。
-- **删除主线（R1–R8，ADR-010）：** 逐文件盘点后依次删除 huhubot 插件侧、huhubot 原生运行时与合同及发行链、Browser 产品入口（外链统一改系统浏览器）与 Home 网页嵌入分区、网易云音乐、Agent 浏览器集成、Browser 本体与库内会话，再清理文档并做端到端验收；遗留数据只忽略不改写（D-019）。Bot Runner 停止、检查点与依赖存储相关合同随 huhubot 删除撤回（OOS-008）。
+- **删除主线（R1–R8，ADR-010）：** 逐文件盘点后依次删除 huhubot 插件侧、huhubot 原生运行时与合同及发行链、Browser 产品入口（外链统一改系统浏览器）与 Home 网页嵌入分区、网易云音乐、Agent 浏览器集成、Browser 本体与库内会话，再清理文档并做端到端验收；发布前旧数据无保留/兼容义务（ADR-011）。Bot Runner 停止、检查点与依赖存储相关合同随 huhubot 删除撤回（OOS-008）。
 - **Hook 发布（W3）：** 原规格 32 scope × 3 事件突发时 96/96 完整送达、每 scope 有序、无重复、无遗留槽位/lease；容量不足或超时准确失败并可定位。安全校验（路径、scope token、大小、reader 所有权）全部保留。
 - **启动与天气（W4，ADR-005）：** 任何可选网络或凭据读取不返回时，首页和工作台立即可进入和交互（已完成）。天气有明确可见状态：未配置、等待启动、加载、有缓存且刷新中、成功、离线/失败、已失效；任何阶段挂起都能到达终态或可恢复状态，不跨看板串数据。
 - **功能缺陷（W5）：** 内置名称本地化且与身份、路径分离，新库默认路径为固定英文 kebab-case（ADR-006）；终端默认只显示简洁状态，不确定状态持续可见；大区域无无意义 tooltip；自动化通知以运行时名称快照和结果为主；约 420px 容器保留名称与主操作；分屏命令/快捷键/菜单/拖拽行为一致且无静默无效；任务保存、列表与计数一致，日期完整显示。
@@ -48,7 +51,7 @@ ID 的前两位对应账本 A 编号（AC-16x ↔ A16），9xx 对应 G1–G3，
 | AC-162 | 后台恢复进行中 | 拒绝 / 迟到成功 / 模块销毁 / 登录或登出竞争 | 迟到结果不覆盖用户之后的决定；销毁后无残留回调 | 同上，DOM/模型测试 |
 | AC-163 | 小库与万篇笔记大库 fixture | 运行可复跑采样脚本 | 独立 fixture 脚本在三平台输出冷/热进程、非 Browser 模块 activate、组件可交互与输入/提交到画面趋势，标明 mock 边界、原始值与计时点；不称作真实 Obsidian 启动测量；实际插件启动及原 300ms/250ms 预算属用户真机验收，缺失项标未验收 | 新增采样脚本（待建）+ CI 记录 |
 | AC-191 | 全新英文/中文库 | 初始化、切换语言、重启 | HUHU 生成的默认目录与固定文件名为 `vault-layout.ts` 中唯一一张表定义的英文 kebab-case 名，并与 `docs/data.md` 一致；内置类型/字段显示随语言变化；存储路径与稳定身份不变；用户自定义名称与显式路径不被翻译；代码中无中文默认路径残留 | `pnpm test:i18n` + archives/vault-layout 单测 + `pnpm test:docs` |
-| AC-192 | 已有旧中文默认目录的库 | 升级后首次加载并使用各模块 | HUHU 只读写新路径；旧目录与其中文件字节不变，未被移动、删除、覆盖或合并；代码中无旧中文默认路径引用，也无检测或迁移逻辑（ADR-008） | 旧目录 fixture 测试 + 引用清点 |
+| AC-192 | 当前格式新库 | 初始化并切换语言 | 默认路径只来自英文 kebab-case 单表；无旧中文目录检测、迁移、别名或回退；无需旧目录字节不变夹具 | 当前新库 + 引用清点 |
 | AC-201 | 终端正常运行 | 打开工作台 | 默认只显示简洁状态与必要动作；技术字段在可展开详情 | agent UI DOM 测试 |
 | AC-202 | 停止未确认 / 清理失败 / 异常退出 | 观察终端 | 状态以用户文案持续可见并提供检查入口；折叠展开不重建 xterm、不丢输入/选择/滚动 | agent UI DOM 测试；宿主内表现属用户真机验收 |
 | AC-211 | 真实 Obsidian | 鼠标停在 Home / Note history 空白处 | 无整块区域 tooltip；区域经可见或隐藏标题 `aria-labelledby` 命名；图标按钮仍有名称 | DOM 可访问名称断言；宿主 tooltip 复现与确认属用户真机验收 |
@@ -77,17 +80,17 @@ ID 的前两位对应账本 A 编号（AC-16x ↔ A16），9xx 对应 G1–G3，
 | AC-352 | 同上 | 对比度与命中区检查 | 普通文本 ≥4.5:1，大文本与适用非文本 ≥3:1；桌面命中区 ≥32px、触控 ≥44px；名称/主操作不可达、整页横向溢出、失败丢输入、虚假成功均为阻断 | 设计检查记录 + DOM 几何测试 |
 | AC-353 | UI 迁移完成 | 清点样式与组件 | 无死 CSS、旧组件、`--db-*` 等过期别名、并行主题分支或临时开关 | `pnpm lint:css` + `pnpm check:styles` + 引用清点 |
 | AC-901 | 全部批次合入 | G1 检查 | 无永久兼容层、双实现、双状态真相、失联旧样式；Browser/huhubot 已随删除主线移除，不存在冻结保留引用，T-39 允许清单之外全仓归零 | 引用清点 + 代码审查 |
-| AC-293 | 存在旧格式 Bot Profile | 启动新版本 | 新 Profile 在按 schema 版本隔离的位置创建；旧 Profile 字节不变、未被加锁或写入；首次启动提示旧数据位置与只读状态；无迁移器、无双读 | Go/TS 隔离 fixture 测试 |
-| AC-902 | 涉及数据格式或资料目录变化 | G2 检查 | 新格式切换方式、用户资料保护、敏感字段、权限、外部动作屏障符合 ADR-001、ADR-006、ADR-007；旧库与旧 Profile 未被覆盖或清空 | 迁移/隔离 fixture + 审查 |
+| AC-293 | 撤回（huhubot 删除） | 不执行 | 旧 Bot Profile 保留/隔离合同不再适用（ADR-011、OOS-008） | 无 |
+| AC-902 | 当前有效数据/权限 | G2 检查 | 现行格式数据写入、隐私、权限与外部动作安全；不包含旧库或旧 Profile 保留/兼容 | 当前格式测试 + 审查 |
 | AC-903 | 收口 | G3 检查 | 适用测试、构建、原生检查、文档、来源与生成产物一致；未验项未被填成通过 | 冻结期适用全量检查（原 test:all 目录逐项核对） + 原生/平台检查记录 |
-| AC-401 | 最新 dev，删除前 | 逐文件盘点 browser、huhubot（含 superbot/superhuhu 方向） | 每个命中文件（模块、原生、合同、根产物、脚本、测试、验收脚本、工作流、发行资产、文档、依赖）有删除/改写/保留处置与理由；服务键、动态入口、ViewType、命令、i18n 键、设置命名空间、`vault-layout` 常量与用户数据位置全部列出；残留检索脚本可复跑且与清单一致 | `docs/e2e/dev-overhaul/removal/inventory.{md,json}` + `residual-scan.mjs` |
-| AC-402 | 新库；含旧 `browser`/`huhubot` 设置与模块开关的旧库 | 启动插件，查看导航、设置、命令面板、ribbon、工作台 | 无任何 Browser 或 Bot 入口、命令、页面与设置；旧设置键被忽略，无报错，其他设置不被改写 | vitest（app/settings/workbench）+ 真实 Obsidian 截图（T-46） |
-| AC-403 | 桌面端 | 点击 Home 卡片/P1/RSS 链接、终端 URL，执行自动化“打开网址” | 统一用系统默认浏览器打开；移动端行为不变；含 `openIn: tab` 的已有看板正常加载 | Home/automations/agent 单元与 DOM 测试 + 真实 Obsidian（T-46） |
-| AC-404 | 已保存 Agent 工作区含 `kind: 'browser'` 标签与 `.huhu/browser-materials/` | 打开终端工作台 | 终端/页面标签、分组与会话完整恢复，browser 标签不再出现，无报错；Agent 不再提供 Browser 服务键或贡献点 | agent/agent-migrations/agent-backup 测试 + 真实 Obsidian（T-46） |
+| AC-401 | 当前 dev 删除前 | 盘点代码/脚本/构建/测试/资源 | 每个待删引用分类并说明去留；旧数据位置仅作为废弃代码引用定位，不产生保留验收 | inventory + residual-scan |
+| AC-402 | 当前格式新库 | 启动并检查导航/设置/命令/ribbon/工作台 | 无 Browser/Bot 入口或旧配置字段；不需要旧设置加载兼容 | 单元测试 + Obsidian 截图 |
+| AC-403 | 当前格式新库 | Home 卡片/P1/RSS/终端 URL/自动化外链 | 统一使用系统默认浏览器；不支持旧 `openIn` 字段 | 单元测试 + Obsidian |
+| AC-404 | 当前 Agent 工作区 | 使用终端、页面、分组及会话 | 当前功能正常；Browser 标签、资料移交与 Cookie 服务消失；不要求恢复旧布局 | Agent 测试 + Obsidian |
 | AC-405 | 删除批次全部合入 | 构建、发行、CI 与残留检索 | `src/modules/{browser,huhubot}`、`native/{browser-runtime,huhubot}`、`contracts/hap`、根目录 `browser-*.cjs`、Browser/Bot 专用脚本、测试、工作流与发行资产全部删除；`pnpm build` 不含 Browser 生成段；release 只产出非 Browser/Bot 资产；任何工作流不再依赖 Go；残留检索仅剩允许清单 | `pnpm build` + `test/release` + `check:notices` + 残留检索 |
-| AC-406 | 已有 `.huhu/browser*`、`.huhu/huhubot/`、本机 Bot Profile、localStorage 键 | 升级到删除后的版本 | 插件不删除、移动或改写这些数据，也不删除 `.huhu/browser/<device>/profiles/home-*` 会话目录与其中的网易云 Cookie；含 `web` 分区、音乐小组件或音乐设置字段的看板与设置能正常加载，其余内容完整，仅加载不触发改写；`docs/data.md` 列出遗留数据位置、凭据风险与安全手动清理方法 | 前后 SHA-256 摘要 + 看板/设置加载测试 + 文档回读 |
+| AC-406 | **撤回（ADR-011）** | 不执行 | 原遗留数据保留、旧看板加载、前后 SHA 与手动清理要求全部无效 | 无 |
 | AC-407 | 删除批次全部合入 | 检查现行文档、根说明、项目 Skill 与 specdev | 不再描述已删功能与命令；`pnpm test:docs` 相对 dev 基线无新增失败；历史档案原文保留；永久 ADR/context 修订清单已交 A | `pnpm test:docs` + 残留检索 + specdev 校验器 |
-| AC-408 | 删除主线收口 | 全量检查与真实 Obsidian 端到端 | 构建、lint、`pnpm test`、`test:all`、docs、i18n、包体、通知、`check:native` 通过或与基线相比无新增失败；新库与带遗留数据旧库两条真实 Obsidian 路径有截图与断言；未执行项标为未验收 | `docs/e2e/dev-overhaul/removal/acceptance/` |
+| AC-408 | 删除收口 | 全量检查与当前新库 Obsidian E2E | 构建/lint/测试/docs/i18n/包体/原生等无新增失败，当前格式新库有截图和断言；无需旧库测试 | removal/acceptance 证据 |
 
 ## 范围
 
@@ -124,13 +127,13 @@ ID 的前两位对应账本 A 编号（AC-16x ↔ A16），9xx 对应 G1–G3，
 - **DEC-002（ADR-002/003、永久 ADR-027）：** 超时不等于已停止；检查点不属于业务提交；不默认撤关闭刷盘。
 - **DEC-003（ADR-004）：** 依赖不逐条落库闭包；最终 schema 在 W1.1 决策记录后定稿。
 - **DEC-004（ADR-005）：** 可选初始化不在启动关键路径；对永久 ADR“首页可选恢复时限”的替代经 A 提升。
-- **NFR-001 数据安全：** 任何资料目录或 Profile 格式变化不得默认覆盖旧库、自动移动或清空用户文件；数据格式变化的 PR 单独说明新格式与切换方式。
+- **NFR-001 当前数据安全（ADR-011）：** 当前受支持格式的数据写入、权限、隐私、凭据与外部动作安全不降级；无发布前旧库/旧 Profile/旧目录保留或兼容义务。
 - **NFR-002 诊断与隐私：** 失败诊断有上限且脱敏；不把凭据、完整笔记、环境变量全集写入日志；协议 stdout 只用于协议。
 - **NFR-003 预算：** 不提高 `scripts/bundle-budget.json` 阈值换绿灯；确需增长单独记录差异、价值、替代方案与批准。
 - **NFR-004 可回滚：** 存储大改与 UI 大改不进同一提交；同一合同的生产者/消费者完整提交，不让中间不一致状态进入 dev。
 - **DEC-005（ADR-006）：** `huhu/` 下 HUHU 生成的默认路径为固定英文 kebab-case，单表定义。
-- **DEC-006（ADR-007）：** 新 schema 用隔离的新 Bot Profile，旧 Profile 只读保留、不迁移。
-- **DEC-007（ADR-008）：** 发布前的旧中文默认目录不检测、不迁移、不读写；旧文件原样保留，由用户自行处理。
+- **DEC-006（ADR-007，撤回）：** Bot Profile 方案随 huhubot 删除取消，不再要求旧 Profile 保留。
+- **DEC-007（ADR-008，经 ADR-011 修订）：** 仅支持英文默认路径，无旧中文目录字节不变/兼容验收。
 - **风险：** macOS 断电模型取决于用户真机验收（A34 可能长期未验收）；包体余量极低，W6 的组件统一可能先撞预算；W5 多项尚未在当前基线复现，根因可能与报告不同。
 
 - **决定状态：** D-001 至 D-016 均已形成决定（LOG-001 至 LOG-018，设计树 consensus）。UI 类 AC（AC-351–353）的设计前置已通过（LOG-016），仅表示合同就绪，不表示生产行为验收完成。
@@ -154,10 +157,10 @@ ID 的前两位对应账本 A 编号（AC-16x ↔ A16），9xx 对应 G1–G3，
 ## 产品线收缩修订（ADR-010、LOG-020，2026-11-02）
 
 - **决定：** 用户决定从产品线整体移除 browser（HUHU 浏览器）、huhubot 与 superbot（superbot 即 huhubot 的 superhuhu 重构方向；仓库内没有独立 superbot 代码），不做任何保留，所有代码与功能清理删除干净；这三块不再规划任何优化、重构或升级。ADR-010 取代 ADR-009（Browser 冻结）。
-- **新增主线：** AC-401–AC-408 由 T-39–T-46 交付，按“盘点 → huhubot 插件侧 → huhubot 原生/合同/发行 → Browser 入口与外链 → Agent 浏览器集成 → Browser 本体/runtime/构建发行 → 文档与 specdev → 验收”顺序执行。删除主线的真实 Obsidian 端到端由 agent 执行并保存截图（D-020），替代 OOS-006 对该主线的限制；其余 AC 的真机边界不变。
-- **OOS-008 撤回的 huhubot 合同：** AC-281、AC-282（T-04/T-06 已完成，交付物随 T-40/T-41 删除，历史证据保留）、AC-283、AC-284、AC-291、AC-292、AC-293、AC-301、AC-341、AC-342 不再验收；对应票 T-05、T-07、T-08、T-10、T-11 取消。AC-902 只保留 ADR-001/006/008 的数据切换与用户资料保护部分，ADR-007 部分撤回。账本中这些 A 编号（A28–A30、A34 及 A29 相关）记“用户取消、功能删除”，不计为通过。
+- **新增主线：** AC-401–405、AC-407/408 由 T-39–T-46 交付，AC-406 已撤回，按“盘点 → huhubot 插件侧 → huhubot 原生/合同/发行 → Browser 入口与外链 → Agent 浏览器集成 → Browser 本体/runtime/构建发行 → 文档与 specdev → 验收”顺序执行。删除主线的真实 Obsidian 端到端由 agent 执行并保存截图（D-020），替代 OOS-006 对该主线的限制；其余 AC 的真机边界不变。
+- **OOS-008 撤回的 huhubot 合同：** AC-281、AC-282（T-04/T-06 已完成，交付物随 T-40/T-41 删除，历史证据保留）、AC-283、AC-284、AC-291、AC-292、AC-293、AC-301、AC-341、AC-342 不再验收；对应票 T-05、T-07、T-08、T-10、T-11 取消。AC-902 仅验证当前格式的数据安全，不再保留旧库、旧目录或 Bot Profile 保护条件（ADR-011）。账本中这些 A 编号（A28–A30、A34 及 A29 相关）记“用户取消、功能删除”，不计为通过。
 - **保留的稳定化/修复：** 与这三块无关的 AC 全部保留：AC-001/002、AC-163、AC-191/192、AC-201/202、AC-211、AC-221、AC-231、AC-241、AC-251、AC-261（T-19 已取消）、AC-262、AC-271、AC-311/312、AC-321、AC-331/332、AC-351–353、AC-901–903。AC-351 的范围改为“全局 Shell、11 个保留模块（agent、archives、automations、comments、home、icons、navigator、notifications、safe、task、versioning）与全部已注册 home 子项（网页嵌入分区与网易云音乐除外，D-018）”；T-33（huhubot 界面）取消，UI-BOT 页面合同对本 change 失效。AC-321 中位于 Go 合同测试的诊断条目随功能删除记为“随删除移除”。
-- **数据与兼容：** 删除代码不等于清理数据（NFR-001 继续适用，D-019）：不自动删除、移动或改写 `.huhu/browser*`、`.huhu/huhubot/`、本机 Bot Profile、localStorage 键与 userData 目录；旧设置键、旧 Agent 布局中的 browser 标签、看板 `openIn` 字段只做通用的未知值校验，不新增迁移器或兼容分支（ADR-001）。
+- **数据与兼容（ADR-011）：** 发布前 Browser/Bot 旧目录、旧配置、旧 Agent 浏览器标签及看板 `openIn`/`web`/`music*` 均不受支持，不回读、不迁移、无需文件保留或旧库兼容验收（D-019 撤回）。
 - **构建边界：** Browser 删除完成前，非 Browser 票继续使用 execution-boundaries 的构建序列；T-44 完成后恢复默认 `pnpm build`。
 - **D-018（2026-11-02 用户决定，LOG-022）：** Home 网页嵌入分区、网易云音乐整项功能与库内 Electron 会话一并删除，见下节。
 
@@ -166,4 +169,4 @@ ID 的前两位对应账本 A 编号（AC-16x ↔ A16），9xx 对应 G1–G3，
 - **决定：** 用户：“网页卡片和网易云音乐应用库都删除干净”。删除范围：Home 网页嵌入分区（`src/modules/home/ui/web/**`、`web-precheck`、P1 分区中的 web 分支与配置界面）；网易云音乐整项功能（`src/modules/home/platform/music/**`、`ui/music/**`、`ui/widgets/MusicWidget.tsx`、`platform/desktop/netease-account.ts`、`platform/desktop/session.ts`、设置中的音乐账号与背景、小组件注册与 `music` 小组件类型）；库内 Electron 会话 `src/host/desktop/browser-session*.ts`；专用脚本 `scripts/verify-music-account.ts`、`verify-music-client.ts`、`verify-web-section.ts`、`music-*-stub.ts`、`music-vault-fixture.ts` 与对应 `test:*` 命令、i18n 键、样式。
 - **撤回合同（OOS-008 扩展）：** AC-161、AC-162（网易云账号后台恢复；T-14 已完成，交付物随 T-42 删除，历史证据保留）不再验收，账本 A16 中音乐账号部分记“用户取消、功能删除”；A16 的其余可选初始化（天气等）仍由既有证据说明。AC-351 不再包含网页分区与音乐子项。change DESIGN revision 3 已删除 UI-HOME 的“音乐账号后台恢复”状态与 UI-BOT 页面（用户授权直接修改并视为已批准，LOG-023）。
 - **保留：** “网页快捷卡”（卡片类型 `web`，打开一个网址）不依赖 Browser 或会话，保留并改用系统浏览器，只去掉“打开方式”选项（D-021，用户 2026-11-02 确认，LOG-023）。
-- **遗留数据（D-019）：** 看板中的 `sectionType: web` 与 `web:` 配置、`music*` 设置字段与旧开关 `widgetMusicEnabled`、小组件布局中的 `music` 项，按现有未知值规则忽略，不渲染、不报错；插件加载不改写用户文件。会话目录 `.huhu/browser/<device>/profiles/home-web|home-music`、旧分区 `persist:huhu-dashboard-web`、`persist:huhu-dashboard-music-*` 中可能有网易云登录 Cookie，插件不删除，`docs/data.md` 说明手动清理。若 T-39 发现用户主动保存看板时会丢弃 `web:` 配置，须在 Evidence 与 `docs/data.md` 如实记录；不为此新增兼容分支或“已移除”占位页（ADR-001）。
+- **预发布数据决定（ADR-011）：** 删除 Home 网页嵌入分区、音乐与 Cookie 会话后，不保留旧字段、旧目录、旧看板数据保护或手动清理文档。

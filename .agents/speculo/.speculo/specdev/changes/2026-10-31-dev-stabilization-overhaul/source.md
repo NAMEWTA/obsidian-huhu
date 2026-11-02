@@ -25,6 +25,12 @@ close_capability: supported
 - **Hash scope:** `content_sha256` 为 UTF-8 紧凑 JSON `{"body","comments":[{"author","body","createdAt"}],"title"}`（键排序、无空白）的 SHA-256
 - **Supersedes:** 不适用；本 change 以 #41 为唯一来源（切换记录见 LOG-024）
 
+## 2026-11-03 最新用户指令（覆盖原 Issue 的旧数据保护条款）
+
+HUHU 尚未正式发布。开发期旧中文目录、旧 Bot Profile、Browser/huhubot 数据、旧设置、看板字段、Cookie 会话与旧 Agent 布局均非受支持的历史版本。**不要求保留、迁移、回读或兼容任何发布前旧数据**；无需旧数据字节不变、旧库、旧布局恢复等验证，也不提供旧数据手动清理指引。仅支持现行格式的新库及功能，可删除旧类型、协议、迁移路径与专用测试；当前有效数据的写入正确性、隐私、权限、凭据和外部动作安全仍然有效（ADR-011，2026-11-03 用户最新指令，取代 D-019）。
+
+下文 `Original Content` 是 2026-11-02 #41 的原始快照，`content_sha256` 不因这段说明而更改；与 ADR-011 冲突的旧目录保留、AC-406、旧布局恢复和旧库验收条款不再作为实施合同。
+
 ## Original Content
 
 # HUHU dev 稳定化、性能修复、全界面统一与产品线收缩总计划

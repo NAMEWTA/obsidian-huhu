@@ -1,7 +1,7 @@
 ---
 schema_version: 3
 plan_contract_version: 1
-plan_revision: 25
+plan_revision: 26
 requested_deliverables: []
 deliverable_policy: "用户未指定 Ticket 或产物数量（2026-10-31 请求“请你进行拆票和编排计划”；2026-11-02 产品线收缩请求“新增或者修改还未做的 ticket”）；票数由垂直切片规则决定"
 artifact: tickets-map
@@ -21,13 +21,13 @@ status: ready
 
 **执行入口：** 获得实现授权后，Lead 与实现执行者读取并执行 `<Path>{roots.workflows}/specdev/specdev-i-implement/SKILL.md</Path>`，再按当前输入实际调用适用项目 Skill。I 负责实现、风险适配双轴审查、验证与 Evidence；计划本身不授予实现或 Git 操作权限。
 
-共同交付 Spec 的 AC-001 至 AC-903 与删除主线 AC-401 至 AC-408（对应 #41 §3）。稳定化主线按批次拆为 38 张垂直切片票：B0 基线（T-01–T-03）、存储与生命周期（T-04–T-11）、Hook（T-12、T-13、T-21）、启动与功能缺陷（T-14–T-19）、测量与诊断（T-20、T-22）、UI（T-23–T-36）、收口（T-37、T-38）。
+交付 Spec 的现行 AC；删除主线 AC-401–405、AC-407/408 保留，AC-406 已撤回（ADR-011）。稳定化主线按批次拆为 38 张垂直切片票：B0 基线（T-01–T-03）、存储与生命周期（T-04–T-11）、Hook（T-12、T-13、T-21）、启动与功能缺陷（T-14–T-19）、测量与诊断（T-20、T-22）、UI（T-23–T-36）、收口（T-37、T-38）。
 Prefactor：T-09 先建立依赖规模基准，T-12 先测量 Hook 发布分段，供 T-10、T-13 收紧断言。共享合同先行：T-04 拥有停止阶段合同（含可能的 HAP wire 变更），T-06 再迁移 TS 消费者。不采用 expand-contract 兼容层（ADR-001）：合同变更在同一集成批次更新全部生产者与消费者；T-04/T-06 分票实现，联合验收前不独立合入 dev。收缩：T-36 清理 UI 旧实现，T-37 结构减重。
 
 ### 总体实施背景
 
 - **模块边界：** 模块之间只经 `api.ts`；React store 只是业务事实投影（LOG-005）。Go 侧遵守永久 Bot ADR-001–ADR-027，尤其 ADR-004 单写者、ADR-027 WAL + NORMAL + 外部动作 FULL 屏障。
-- **关键不变量：** 超时不等于已停止；检查点不属于业务提交；条目不逐条落库闭包；可选初始化不在启动关键路径；`huhu/` 下 HUHU 生成的默认路径为固定英文 kebab-case；旧中文默认目录与旧 Profile 不读不写不删（ADR-001–ADR-008）。
+- **关键不变量：** 当前有效数据、权限、持久化安全不降低；默认路径仅为英文 kebab-case；发布前旧目录、旧 Profile、旧配置和旧工作区无保留或兼容合同（ADR-011）。
 - **证据纪律：** 五类证据分开（CONTEXT“证据等级”）；不靠删断言、无条件重试或放宽时限取得绿灯；真机验收（真实 Obsidian、Windows/macOS 实机、虚拟机骤停）由用户完成，agent 不执行不跟踪（LOG-012），agent 验证止于自动化测试与 GitHub Actions runner。
 - **账本：** T-01 建立 `docs/e2e/dev-overhaul/ledger.md` 后由 Lead 独占维护；其他票把结果交给 Lead 写入，不直接改账本。（`docs/e2e` 已于 2026-11-02 删除，账本新位置待用户决定，见 LOG-025。）
 - **基线顺序：** 所有代码票 `blocked_by` T-01，确保基线在任何代码改动之前采集。
@@ -158,14 +158,14 @@ L8: T-38←[T-03,T-08,T-11,T-20,T-22,T-37]
 | AC-352 | T-23, T-24 | 设计检查 + DOM 几何 | covered | 共享设计见 G-DESIGN 回执；生产验收仍由本票负责 |
 | AC-353 | T-36 | `pnpm lint:css` / `check:styles` | covered | 共享设计见 G-DESIGN 回执；生产验收仍由本票负责 |
 | AC-901 | T-38 | 引用清点 | covered | — |
-| AC-902 | T-11, T-16, T-38 | 隔离/旧目录夹具 | covered | — |
+| AC-902 | T-16, T-38 | 当前格式数据安全 + 权限/外部动作屏障 | covered | 无旧库/旧 Profile 验收 |
 | AC-903 | T-38 | 冻结期适用全量检查 | covered | — |
 | AC-401 | T-39 | 盘点清单 + 残留检索脚本 | covered | 删除主线 |
 | AC-402 | T-40, T-42, T-46 | app/settings/workbench vitest + 真实 Obsidian | covered | 删除主线 |
 | AC-403 | T-42, T-46 | Home/automations/agent 测试 + 真实 Obsidian | covered | 删除主线 |
-| AC-404 | T-43, T-46 | agent 布局恢复测试 + 真实 Obsidian | covered | 删除主线 |
+| AC-404 | T-43, T-46 | 当前 Agent 工作区 + Obsidian | covered | 无旧 browser 布局恢复要求 |
 | AC-405 | T-40, T-41, T-44 | `pnpm build` + test/release + 残留检索 | covered | 删除主线 |
-| AC-406 | T-42, T-44, T-45, T-46 | 数据前后摘要 + Home 会话回归 + 文档 | covered | 删除主线 |
+| AC-406 | — | 无（ADR-011 撤回） | withdrawn | 不计入 DoD/门禁 |
 | AC-407 | T-45 | `pnpm test:docs` + 残留检索 + specdev 校验 | covered | 删除主线 |
 | AC-408 | T-46 | 全量检查 + 真实 Obsidian 截图 | covered | 删除主线 |
 
@@ -198,7 +198,7 @@ Wave、Gate、Lead 与派遣边界以 `<Path>{roots.state}/specdev/changes/{chan
 
 ## 7. 横切契约与风险
 
-- **数据：** 路径改名与 Profile 隔离都不读写旧数据（ADR-006/007/008）；任何票不得默认覆盖、移动或清空用户文件（NFR-001）。
+- **数据（ADR-011）：** 仅支持当前格式；无需发布前旧数据/Profile 保护、迁移、回读或兼容；当前业务数据与隐私安全约束仍有效。
 - **共享接口：** 停止阶段合同由 T-04 唯一修改；T-04 更新 Go/wire/生成类型与夹具，T-06 更新 TS 宿主；两票联合验收后同批完整集成。
 - **持久性：** ADR-027 语义不变；W2 结论回写永久 ADR 只在归档时经 A。
 - **诊断与隐私：** 失败输出有上限且脱敏（NFR-002）。
@@ -428,4 +428,10 @@ Lead-owned 共享路径不变：`main.js`、`styles.css`、`build/**`、`fonts.g
 
 ### 13.6 D-018 修订（plan_revision 25，LOG-022）
 
-用户决定 Home 网页嵌入分区、网易云音乐与库内会话一并删除：T-42 承担 Home 侧删除并新增依赖 T-41；T-44 删除 `src/host/desktop/browser-session*.ts`；T-29 只统一媒体子项、依赖 T-26 与 T-42；AC-161、AC-162 撤回，AC-406 增加 T-42。删除主线 T-39–T-46 仍待实施：用户 11:04 指示只改文档，期间推送的 `dc5c1857` 已由 `ff49ea39` 普通 revert。huhubot 相关取消票按 specdev 规则保留为取消记录，不物理删除。
+用户决定 Home 网页嵌入分区、网易云音乐与库内会话一并删除：T-42 承担 Home 侧删除并新增依赖 T-41；T-44 删除 `src/host/desktop/browser-session*.ts`；T-29 只统一媒体子项、依赖 T-26 与 T-42；AC-161、AC-162 撤回，AC-406 曾增加 T-42（历史；现已被 plan_revision 26 撤回）。删除主线 T-39–T-46 仍待实施：用户 11:04 指示只改文档，期间推送的 `dc5c1857` 已由 `ff49ea39` 普通 revert。huhubot 相关取消票按 specdev 规则保留为取消记录，不物理删除。
+
+### 13.7 预发布无历史兼容义务（plan_revision 26，2026-11-03）
+
+HUHU 尚未正式发布。开发期旧中文目录、旧 Bot Profile、Browser/huhubot 数据、旧设置、看板字段、Cookie 会话与旧 Agent 布局均非受支持的历史版本。**不要求保留、迁移、回读或兼容任何发布前旧数据**；无需旧数据字节不变、旧库、旧布局恢复等验证，也不提供旧数据手动清理指引。仅支持现行格式的新库及功能，可删除旧类型、协议、迁移路径与专用测试；当前有效数据的写入正确性、隐私、权限、凭据和外部动作安全仍然有效（ADR-011，2026-11-03 用户最新指令，取代 D-019）。
+
+AC-406 标为 withdrawn；AC-293 已撤回；AC-192、AC-402/403/404/408 以 Spec 当前格式为准。T-39–T-46 不再要求旧库、旧 Cookie/Profile、旧布局或手动清理测试。历史 revision 与 LOG 仅供溯源。
