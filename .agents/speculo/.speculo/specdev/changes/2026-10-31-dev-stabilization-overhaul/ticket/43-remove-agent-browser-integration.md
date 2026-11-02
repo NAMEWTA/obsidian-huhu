@@ -11,7 +11,7 @@ title: "移除 Agent 工作区中的浏览器标签、资料移交与 Cookie 辅
 status: draft
 kind: refactor
 planning_depth: deep
-planning_depth_reason: "Agent 工作区持久化布局含 browser 标签，删除需保证旧布局可恢复且不误伤终端会话"
+planning_depth_reason: "移除 Agent Browser 标签类型及消费者，只验证现行终端/页面会话；无旧布局兼容要求（ADR-011）"
 ready: false
 risk: high
 blocked_by: ["T-42"]
@@ -41,26 +41,26 @@ skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>
 
 IN（规划期核对到 40 个 Agent 文件含 browser 引用，按 T-39 终版收敛）：
 - 删除 `src/modules/agent/ui/browser/**`、`platform/desktop/browser-material*`、`services/browser-material-consumer*`、`shared-browser-close.test.ts`；`module.ts`/`manifest.ts`/`api.ts` 删除 `BROWSER_MATERIAL_CONSUMERS` 贡献、`SharedBrowserPort` 实现、`AGENT_BROWSER_TABS`、`NATIVE_HELPER_SQLITE`；`services/controller.ts` 删除 `BROWSER_WORKSPACE/BROWSER_OPEN` 订阅、`openBrowserWorkspace`、`browserOpener`、`configureBrowser`；`core/terminal/links.ts` 终端 URL 改为系统浏览器；`core/workspace/model.ts`/`ops.ts`/`migrations/legacy-layout.ts` 删除 `browser` 标签类型；`TabStrip`/`WorkspaceLayout`/`Omnibox`/`TerminalSettings`/`TerminalTabView`/sidebar/jump 去掉 Browser 分支；`src/app/contracts/shared-workspace.ts` 删除 Browser 端口（若只剩 Agent 自身用途则就地收敛）。
-- 持久化布局：已保存工作区中的 `kind: 'browser'` 标签在加载时被丢弃，其余终端/页面标签、分组与会话完整恢复；不为旧标签保留类型或转换器，只做通用“未知标签类型丢弃”校验；不改写无关字段。
+- 工作区模型：删除 `kind: 'browser'` 类型及序列化、解析、服务和测试；仅验证当前终端/页面标签、分组与会话正常，不提供旧 browser 布局恢复或未知旧标签兜底（ADR-011）。
 - Cookie 链：`src/shared/native/cookies.ts`、Agent `cookie-client.ts`、`native/pty-server/src/cookies.rs` 与 `main.rs` 的 `Cookies` 消息、相关测试，仅在 T-39 证明无其他消费者时删除。
-- 旧浏览器文件：`files.ts` 不再经 `retained-browser-file.ts` 解析 `.huhu/browser/<device>/legacy-runtime`；`legacy-accounts.ts` 对 `retainLegacyDirectory` 的依赖若属终端旧账号迁移则保留到 `host/desktop` 的中性位置，否则删除（以 T-39 证据为准）。
-- `vault-layout.ts` 删除 `BROWSER_MATERIALS_ROOT`；`BROWSER_ROOT` 若仍被 Home 会话目录使用则保留并改用中性命名（不改磁盘路径）。
+- 旧浏览器文件：删除 `retained-browser-file.ts` 的旧 runtime 解析；`legacy-accounts.ts` 仅在确有现行非 Browser 消费者时保留独立部分，不保留发布前旧账号迁移（ADR-011）。
+- `vault-layout.ts` 删除 `BROWSER_MATERIALS_ROOT`；`BROWSER_ROOT` 在 T-42/T-44 清空消费者后直接删除，无需旧磁盘路径兼容（ADR-011）。
 
 OUT：Hook 与终端核心（T-12/T-13/T-21 负责）；Agent 界面统一（T-25，依赖本票）；`host/desktop/browser-session*.ts` 宿主会话代码（T-44 删除）。
 
 ## 验收标准
 
-- [ ] `AC-404`：含旧 browser 标签、旧资料目录的工作区夹具加载后终端会话/标签/分组完整、无报错，browser 标签不再出现；Agent 中无 Browser 入口与服务；`cargo test --locked --manifest-path native/pty-server/Cargo.toml` 通过；Agent 全部现有非 Browser 测试无新增失败。
+- [ ] `AC-404`：当前终端/页面标签、分组及会话正常，Agent 不再含 Browser 类型、服务与入口；Native 和现有非 Browser 测试无新增失败。无旧标签/旧资料恢复夹具。
 
 ## 验证方法
 
 | 行为或风险 | 验证接缝 | 命令或步骤 | 预期结果 | Evidence |
 |---|---|---|---|---|
-| 布局恢复 | vitest | `pnpm exec vitest run src/modules/agent test/agent-migrations test/agent-backup` | 通过 | `<Path>{roots.state}/specdev/changes/{change}/evidence/T-43.md</Path>` |
+| 当前工作区 | vitest | `pnpm exec vitest run src/modules/agent test/agent-backup` | 通过；不运行旧 browser 迁移用例 | `<Path>{roots.state}/specdev/changes/{change}/evidence/T-43.md</Path>` |
 | 原生 | cargo | `pnpm check:native` | 通过 | 同上 |
 | 编译 | tsc | 两步 tsc | 0 错误 | 同上 |
 
-- **E2E disposition：** required：T-46 真实 Obsidian 中用含旧浏览器标签的工作区恢复并截图。
+- **E2E disposition：** required：T-46 在真实 Obsidian 中验证现行终端/页面工作区会话并截图（无旧 browser 布局夹具）。
 - **运行环境：** change README 选定的 change-workspace（当前 `dev`）；本票检查与 Lead-owned E2E 在固定输入上执行。
 
 ## 执行约束
@@ -70,7 +70,7 @@ OUT：Hook 与终端核心（T-12/T-13/T-21 负责）；Agent 界面统一（T-2
 Agent 写集很宽，必须排在 T-42 之后、T-25/T-22 之前；不触碰 `platform/desktop/hooks/**`（T-12/T-13 在行）。
 
 - 删除即删除：不保留空壳模块、开关、别名、兼容分支、“已移除”占位页或旧协议转接（ADR-001、ADR-010）。
-- 不删除、移动、覆盖任何用户数据目录或本机 Profile（ADR-010 D-019）；代码删除与数据清理是两件事。
+- 本项目未正式发布，不对旧数据、旧 Profile、旧配置、旧布局提供保留、迁移、回读、兼容或字节不变验收（ADR-011）；当前格式的数据写入、隐私与权限安全仍须保证。
 - 不通过删除仍有效的非 Browser/Bot 测试换绿灯；被删测试只能是随被删功能一起消失的测试，Evidence 逐个列出并说明原风险是否随功能消失。
 
 **证据失效：** base/head 变化触及本票写集或盘点清单、ADR-010/Spec AC-4xx 修订、绑定 Skill 摘要变化时，本票已有验证需重跑。

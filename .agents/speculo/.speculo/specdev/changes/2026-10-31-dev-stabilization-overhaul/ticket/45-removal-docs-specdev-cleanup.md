@@ -15,7 +15,7 @@ planning_depth_reason: "跨用户文档、根说明、项目 Skill 与历史档�
 ready: false
 risk: medium
 blocked_by: ["T-44"]
-contract_ids: ["AC-406", "AC-407"]
+contract_ids: ["AC-407"]
 owner: unassigned
 expected_changes: ["<Path>README.md</Path>", "<Path>README.ZH.md</Path>", "<Path>AGENTS.md</Path>", "<Path>docs/architecture.md</Path>", "<Path>docs/data.md</Path>", "<Path>docs/development.md</Path>"]
 writable_paths: ["<Path>README.md</Path>", "<Path>README.ZH.md</Path>", "<Path>AGENTS.md</Path>", "<Path>docs/**</Path>", "<Path>.agents/skills/dev/**</Path>", "<Path>.agents/skills/ui/**</Path>", "<Path>scripts/verify-docs.mjs</Path>", "<Path>docs/e2e/dev-overhaul/removal/T-45/**</Path>"]
@@ -35,13 +35,13 @@ skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>
 
 ## 目标与来源
 
-让现行文档与功能一致：删除 Browser/Bot 专属文档与资产，改写混合文档中的 Browser/Bot 段落，给出遗留用户数据的手动清理说明，并处理 specdev 历史档案和永久知识中的悬挂引用（历史原文保留，永久 ADR/context 只经 A 网关）。来源：#41 R7；ADR-010；Spec AC-406、AC-407。
+让现行文档与功能一致：删除 Browser/Bot 专属文档与悬挂引用，改写混合文档，只描述当前受支持数据格式；不再编写遗留数据手动清理或兼容指南（ADR-011）。历史档案原文留存溯源，永久知识经 A 网关修订。来源：#41 R7、ADR-010/011、AC-407。
 
 ## 行为与范围
 
 IN：
 - 删除 `docs/browser.md`、`browser-protocol.md`、`browser-runtime.md`、`browser-verification.md`、`browser-phase2.md`、`browser-phase2-traceability.md`、`huhu-bot-acceptance.md`、`huhu-bot-performance.md`、`third-party/huhu-bot.md`、`docs/assets/browser/**`、`docs/images/readme/browser.png`，以及只被这些文档引用的 `docs/e2e/*browser*.png`、`huhubot-chat.png`、`recheck-bot.png`、`round2-bot.png` 等截图（逐个核对引用）。
-- 改写 `README.md`/`README.ZH.md`（双语）、`AGENTS.md`（项目与结构段的 `native/huhubot`、Bot Runner、Bot Profile、`contracts/hap` 描述）、`docs/README.md`、`architecture.md`、`data.md`（删除 Browser/Bot 数据表行，新增“已移除功能的遗留数据”小节列出 `.huhu/browser*`、`.huhu/huhubot/`、本机 Bot Profile、localStorage 键、userData 目录及安全手动清理方法；保留 Home 会话目录说明）、`development.md`、`privacy.md`、`workbench.md`、`agent-workbench.md`、`dashboard.md`、`sync.md`、`automation.md`、`archives-implementation.md`、`third-party/orca-terminal-workbench.md`；`docs/references.md` 由 Lead 串行更新。
+- 改写 `README.md`/`README.ZH.md`、`AGENTS.md`、`docs/{README,architecture,data,development,privacy,workbench,agent-workbench,dashboard,sync,automation,archives-implementation}.md` 等现行说明；`docs/data.md` 仅描述当前格式的有效路径与数据，删除旧 Browser/Bot/Home 音乐相关条目，不新建旧数据清理章节。`docs/references.md` 由 Lead 更新。
 - 项目 Skill：`.agents/skills/dev/{SKILL.md,references/{architecture,testing,build-and-release,licensing,settings-and-i18n,module-authoring}.md}`、`.agents/skills/ui/references/shell.md` 删除已移除模块的规则与命令；改动后同步更新所有绑定该 Skill 的 Ticket 摘要（skill_bindings sha256）。
 - specdev：`changes/archive/**` 与本 change 历史 LOG/会话/证据保留原文，不改写历史；如 `pnpm test:docs` 或 specdev 校验因删除出现新的断链，按检查器既有归档规则处理（例如把指向已删文件的链接转为纯文本路径并注明“已随 ADR-010 删除”），不跳过检查。永久 `specdev/adr/**`（4 份涉及）与 `context/**`（3 份涉及）只整理“需要 A 标记为 superseded 的条目清单”交用户授权后由 A 执行。
 
@@ -49,7 +49,7 @@ OUT：生产代码；永久知识直接写入；GitHub Issue/PR/Release 文案�
 
 ## 验收标准
 
-- [ ] `AC-406`：`docs/data.md` 准确列出遗留数据位置与手动清理方法，且明确插件不会自动删除。
+
 - [ ] `AC-407`：现行文档、根说明与项目 Skill 不再描述已删功能或命令；`pnpm test:docs` 相比 dev 基线无新增失败；历史档案原文保留；永久知识修订清单已交付待 A 执行。
 
 ## 验证方法
@@ -70,7 +70,7 @@ OUT：生产代码；永久知识直接写入；GitHub Issue/PR/Release 文案�
 当前维护文档只保留中文，根 README 保持双语（AGENTS.md 文档规则）。删除重复版本前合并仍成立的独有信息。
 
 - 删除即删除：不保留空壳模块、开关、别名、兼容分支、“已移除”占位页或旧协议转接（ADR-001、ADR-010）。
-- 不删除、移动、覆盖任何用户数据目录或本机 Profile（ADR-010 D-019）；代码删除与数据清理是两件事。
+- 本项目未正式发布，不对旧数据、旧 Profile、旧配置、旧布局提供保留、迁移、回读、兼容或字节不变验收（ADR-011）；当前格式的数据写入、隐私与权限安全仍须保证。
 - 不通过删除仍有效的非 Browser/Bot 测试换绿灯；被删测试只能是随被删功能一起消失的测试，Evidence 逐个列出并说明原风险是否随功能消失。
 
 **证据失效：** base/head 变化触及本票写集或盘点清单、ADR-010/Spec AC-4xx 修订、绑定 Skill 摘要变化时，本票已有验证需重跑。
