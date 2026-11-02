@@ -42,15 +42,15 @@ skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>
 IN（规划期已核对的真实位置，开工前按 T-39 终版修订）：
 - 删除 `src/modules/huhubot/**`（api/BotClient、BOT_RUNTIME、transport/credentials/runtime/installation、note-effects、sources、workbench 服务与全部 UI/样式/i18n）。
 - `src/app/manifests.ts` 去掉 `huhubotManifest`；`src/app/workbench/compose-workbench.ts` 去掉 `huhubotPage`、`id: 'huhubot'` 工作台条目与 8 个子导航、`settings` 映射；`src/app/contracts/module.ts`、`workbench.ts` 去掉 `'huhubot'` 模块/feature ID；`src/app/settings/nav.ts`（+`nav.test.ts`）去掉 `huhubot` 产品；`settings-categories.ts` 去掉 `settings.productHuhuBot`；`src/shell/navigation-state.ts` 去掉 huhubot 段；`src/shared/i18n/workbench.ts`/`settings.ts` 去掉 `workbench.huhubot*`、`settings.productHuhuBot` en/zh 键。
-- `src/shared/storage/vault-layout.ts` 删除 `HUHUBOT_RUNTIME_ROOT`（+测试）；`src/modules/versioning/core/excludes.ts` 删除对应 Git 排除（+`excludes.test.ts`）。是否需要为遗留 `.huhu/huhubot/` 保留通用排除由 T-39 给出证据，默认删除并在 T-45 文档中提示用户手动清理。
+- `src/shared/storage/vault-layout.ts` 删除 `HUHUBOT_RUNTIME_ROOT`（+测试）；`src/modules/versioning/core/excludes.ts` 删除对应 Git 排除（+`excludes.test.ts`）。旧 `.huhu/huhubot/` 专属规则可直接删除，不提供手动清理章节（ADR-011）。
 - `scripts/module-strings.ts` 去掉 huhubot 词典；`vitest.config.ts` 删除 `huhu-bot-integration` 项目与 `huhuBotIntegrationTests` 排除；删除 `test/huhu-bot-integration/**`、`scripts/obsidian-acceptance/huhu-bot*.mjs` 与 `fixtures/huhu-bot/**`。
-- 已保存设置中遗留的 `huhubot` 模块开关/导航状态：加载时按现有未知键规则忽略，不报错、不改写其他设置；若现有逻辑会因未知模块 ID 抛错，修正为通用校验（不是 huhubot 专用分支）。
+- 当前设置模型直接移除 `huhubot` 开关与导航状态，不为发布前旧设置做未知键兜底、迁移、回读或加载兼容（ADR-011）。
 
 OUT：`native/huhubot`、`contracts/hap`、构建/发行链（T-41）；Browser（T-42–T-44）；文档（T-45）。Agent 终端模块与 Hook 不属于 huhubot，保持不变。
 
 ## 验收标准
 
-- [ ] `AC-402`：新库与含旧 huhubot 设置的库启动后，导航、设置、命令面板、工作台无 Bot 入口，控制台无相关错误；`activateModule('huhubot')` 等动态入口不再存在。
+- [ ] `AC-402`：当前新库启动后没有 Bot 入口或动态 `activateModule('huhubot')` 等调用；无需旧 huhubot 设置夹具。
 - [ ] `AC-405`：`src/`、`test/`、`scripts/`（T-41 负责部分除外）对 huhubot/BotClient/BOT_RUNTIME 的残留检索为 0（允许清单仅含 T-39 批准项）；`tsc`、lint、`pnpm test` 通过或无新增失败。
 
 ## 验证方法
@@ -72,7 +72,7 @@ OUT：`native/huhubot`、`contracts/hap`、构建/发行链（T-41）；Browser�
 与 T-24 共享 `src/shell/**`、`settings-categories.ts`、`src/shared/i18n/{workbench,settings}.ts`，按 DAG 在 T-24 完成后执行；生成产物只由 Lead 经现有构建链更新。
 
 - 删除即删除：不保留空壳模块、开关、别名、兼容分支、“已移除”占位页或旧协议转接（ADR-001、ADR-010）。
-- 不删除、移动、覆盖任何用户数据目录或本机 Profile（ADR-010 D-019）；代码删除与数据清理是两件事。
+- 当前仅支持开发中的最新格式；无需对发布前旧目录、Profile、设置或工作区承担保留/兼容/迁移/字节不变责任（ADR-011）。当前功能的数据正确性、权限与隐私合同仍然有效。
 - 不通过删除仍有效的非 Browser/Bot 测试换绿灯；被删测试只能是随被删功能一起消失的测试，Evidence 逐个列出并说明原风险是否随功能消失。
 
 **证据失效：** base/head 变化触及本票写集或盘点清单、ADR-010/Spec AC-4xx 修订、绑定 Skill 摘要变化时，本票已有验证需重跑。

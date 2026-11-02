@@ -11,7 +11,7 @@ title: "新 schema 使用隔离的新 Bot Profile"
 status: cancelled
 kind: feature
 planning_depth: deep
-planning_depth_reason: "改变 Profile 位置解析，必须证明旧 Profile 字节不变，数据安全风险"
+planning_depth_reason: "Bot 产品线已取消，旧 Profile 保留和兼容验收不再适用（ADR-011）"
 ready: false
 risk: high
 blocked_by: ["T-10", "T-06", "T-04", "T-16"]
@@ -35,15 +35,15 @@ skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>
 
 ## 目标与来源
 
-新版本在按 schema 版本隔离的新 Profile 位置运行；旧 Profile 原样保留只读，首次启动告知位置。来源：ADR-007；LOG-010；Spec AC-293、AC-902。
+原 Bot Profile 隔离方案已随 huhubot 删除撤回（ADR-010/011），本票不再定义旧 Profile 数据保护义务。
 
 ## 行为与范围
 
-IN：Profile 位置按 schema 版本命名；不对旧 Profile 加锁、写入、清理；首次启动用 `t()` en/zh 文案提示；`docs/data.md` 记录新位置。OUT：迁移器、双读；界面呈现超出提示的部分（W6）。
+IN：无（本票已取消）。OUT：旧 Profile 只读保留、新旧隔离、迁移、首次提示与历史数据保护夹具（ADR-011）。
 
 ## 验收标准
 
-- [ ] `AC-293`：存在旧 Profile 的夹具下：旧 Profile 字节不变、未被加锁；新 Profile 在独立位置创建；提示可见。
+- [ ] `AC-293`：已撤回，不执行旧 Profile 字节不变或隔离测试；保留未勾选以记录取消事实。
 - [ ] `AC-902`：Profile 切换符合 ADR-001/007，无覆盖或清空。
 
 ## 验证方法
@@ -60,7 +60,7 @@ IN：Profile 位置按 schema 版本命名；不对旧 Profile 加锁、写入�
 
 依赖、深度及理由、路径所有权、资源声明和 Skill 调用绑定以 frontmatter 为准；`expected_changes` 仅作导航，实现前核对实际代码。必需项目 Skill 按 `<Path>{roots.workflows}/specdev/common/rules/skill-invocation.md</Path>` 实际调用并保留证据。
 
-profilecleanup 不得把旧 Profile 当作可清理对象。
+无需实现旧 Profile 保护、迁移、兼容或清理机制（ADR-011）。
 
 **证据失效：** base/head 变化触及本票写集、上游 ADR/Spec 对应条目修订、或绑定 Skill 摘要变化时，本票已有验证需重跑。
 
@@ -81,6 +81,6 @@ profilecleanup 不得把旧 Profile 当作可清理对象。
 
 ## 产品线收缩处置（2026-11-02，ADR-010 / LOG-020）
 
-用户 2026-11-02 决定从产品线整体移除 browser、huhubot、superbot，“这部分的功能就不需要任何优化了，都删除清理干净即可”。本票原状态 `ready`，现改为 `cancelled`：新 schema 隔离 Profile 随 Bot 删除不再实施；既有本机 Bot Profile 不被删除，按 ADR-010 D-019 由用户手动清理（T-45 文档）。
+用户 2026-11-02 决定从产品线整体移除 browser、huhubot、superbot，“这部分的功能就不需要任何优化了，都删除清理干净即可”。本票原状态 `ready`，现改为 `cancelled`：新 schema 隔离 Profile 随 Bot 删除不再实施；旧 Bot Profile 不构成保留、迁移、兼容或手动清理要求（ADR-011）。
 
 这是用户批准的范围取消，不是已修复或 AC 通过；原验收复选框保持未勾选。已有诊断、Evidence 与历史记录原样保留。删除工作由 T-40/T-41 承担，本票不再被任何票作为成功前置。证据见 `<Path>{roots.state}/specdev/changes/{change}/evidence/T-11.md</Path>`。

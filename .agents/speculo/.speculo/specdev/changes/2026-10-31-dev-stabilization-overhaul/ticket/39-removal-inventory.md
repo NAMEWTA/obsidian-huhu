@@ -47,14 +47,14 @@ IN：
 - 测试与验收脚本：`test/release/browser-*`、`test/huhu-bot-integration/**`、`test/agent-migrations/legacy-browser.test.ts`、`test/fixtures/browser-protector.ts`、`test/golden/__snapshots__/browser-*.md`（确认生成者）、`scripts/obsidian-acceptance/{agent-browser-v2,huhu-bot,huhu-bot-note-effects,huhu-bot-sources}.mjs` 与 `fixtures/huhu-bot/**`、`scripts/verify-browser-runtime-native.mjs`、`scripts/verify-huhu-bot*.mjs`，以及混合测试中的 Browser/Bot 用例。
 - 发行资产与 CI：`.github/workflows/{browser-phase2-apply,browser-phase2-checks,browser-phase2-workspace,browser-runtime-build,huhu-bot,huhubot-storage-windows}.yml`，`release.yml` 的 browser/bot job 与资产，`lint.yml` 的 Go 步骤，`scripts/verify-release-artifacts.mjs`、`test/release/{release-artifacts,workflow-gates}.test.ts`。
 - 共享宿主能力的归属判定：`src/host/desktop/browser-session.ts`（Home 网页嵌入分区与网易云音乐共用的库内 Electron 会话，D-018 用户决定删除）、`browser-session-migration.ts`、`retained-browser-file.ts`（Agent 旧浏览器文件解析/旧账号保留）、`src/shared/native/cookies.ts` + `native/pty-server/src/cookies.rs` + Agent `cookie-client`（初稿判断只服务 Browser 身份导入）、`src/app/contracts/shared-workspace.ts`。
-- 用户数据影响：`.huhu/browser/<device>/v2/**`、`.huhu/browser/<device>/profiles/**`（含 Home 正在使用的会话目录）、`.huhu/browser-materials/`、`.huhu/huhubot/`、本机 Bot Profile（XDG/平台状态目录）、Obsidian localStorage 键 `huhu.huhubot.*`、userData 下 `huhu/browser-runtime-ownership/`、已保存设置中的 `browser` 命名空间与模块开关、Agent 布局中 `kind: 'browser'` 标签、看板 Markdown 的 `openIn: tab`。
+- 发布前旧数据范围：旧 Browser/Bot/Profile、旧看板字段及 Agent 布局仅用于定位需要删除的消费者；不建立保留、迁移、回读或兼容测试（ADR-011）。
 - 产出可复跑的残留检索脚本 `docs/e2e/dev-overhaul/removal/residual-scan.mjs`（只读，输出命中与允许清单），并给出 T-40–T-45 的最终写集修订建议。
 
 OUT：任何删除或改写（T-40–T-45）；永久 ADR/context 写入（只经 A）；Obsidian 内置 Web viewer（`tab-icon-manager.ts` 的 `webviewer` 是 Obsidian 核心视图，非 HUHU Browser）、`scripts/perf` 与 UI runner 使用的独立 Chrome/Chromium（验证工具，非产品功能）、Agent 的 Pi CLI 档案（`pi-artifact-profiles*`，属终端 Agent 程序识别，与已删除的 huhubot 重构方向无关）。
 
 ## 验收标准
 
-- [ ] `AC-401`：`inventory.md` 与 `inventory.json` 覆盖上述全部类别，每个命中文件有处置与理由；残留检索脚本可在当前 dev 复跑并与清单一致；D-018/D-019 涉及的共享能力有消费者证据和结论；T-40–T-45 写集修订建议已交 Lead 并回写票据。
+- [ ] `AC-401`：逐文件清点代码、构建、脚本、测试、发行与文档命中和处置，残留检索可复跑；D-018 共享消费者有去留结论，D-019 旧数据保留要求已被撤回（ADR-011）。
 
 ## 验证方法
 
@@ -73,7 +73,7 @@ OUT：任何删除或改写（T-40–T-45）；永久 ADR/context 写入（只�
 只读执行；不得为了盘点修改源码或生成物。规划期初稿 `removal-inventory.md` 只是起点，结论以本票实际检索为准，发现初稿错误时在 Evidence 记录并修正清单。
 
 - 删除即删除：不保留空壳模块、开关、别名、兼容分支、“已移除”占位页或旧协议转接（ADR-001、ADR-010）。
-- 不删除、移动、覆盖任何用户数据目录或本机 Profile（ADR-010 D-019）；代码删除与数据清理是两件事。
+- 当前仅支持开发中的最新格式；无需对发布前旧目录、Profile、设置或工作区承担保留/兼容/迁移/字节不变责任（ADR-011）。当前功能的数据正确性、权限与隐私合同仍然有效。
 - 不通过删除仍有效的非 Browser/Bot 测试换绿灯；被删测试只能是随被删功能一起消失的测试，Evidence 逐个列出并说明原风险是否随功能消失。
 
 **证据失效：** base/head 变化触及本票写集或盘点清单、ADR-010/Spec AC-4xx 修订、绑定 Skill 摘要变化时，本票已有验证需重跑。
@@ -84,7 +84,7 @@ OUT：任何删除或改写（T-40–T-45）；永久 ADR/context 写入（只�
 
 ## 退出条件
 
-清单与脚本提交到工作区并经 Lead 回读；后续删除票写集与依赖按清单修订（必要时递增 Map plan_revision）；D-018/D-019 任何与推荐不同的发现已上报用户。
+清单与脚本提交到工作区并经 Lead 回读；后续删除票写集与依赖按清单修订（必要时递增 Map plan_revision）；旧数据位置仅用于定位废弃代码，不恢复 D-019 保护合同（ADR-011）。
 
 ## 未决事项与风险
 

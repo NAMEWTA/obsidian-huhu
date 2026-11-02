@@ -71,7 +71,7 @@ OUT：插件侧（T-40，前置）；Browser 链（T-44）；历史证据 `docs/
 与 T-44 共享 `package.json`、`release.yml`、`lint.yml`、`verify-release-artifacts.mjs`、`third-party-notices.mjs`、`bundle-budget.json`、`eslint.config.mts`、`test/release/*`，T-44 依赖本票串行执行。不预先修改远程 Release 或已发布资产。
 
 - 删除即删除：不保留空壳模块、开关、别名、兼容分支、“已移除”占位页或旧协议转接（ADR-001、ADR-010）。
-- 不删除、移动、覆盖任何用户数据目录或本机 Profile（ADR-010 D-019）；代码删除与数据清理是两件事。
+- 当前仅支持开发中的最新格式；无需对发布前旧目录、Profile、设置或工作区承担保留/兼容/迁移/字节不变责任（ADR-011）。当前功能的数据正确性、权限与隐私合同仍然有效。
 - 不通过删除仍有效的非 Browser/Bot 测试换绿灯；被删测试只能是随被删功能一起消失的测试，Evidence 逐个列出并说明原风险是否随功能消失。
 
 **证据失效：** base/head 变化触及本票写集或盘点清单、ADR-010/Spec AC-4xx 修订、绑定 Skill 摘要变化时，本票已有验证需重跑。
