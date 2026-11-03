@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-39
 title: "Browser / huhubot 删除盘点（逐文件）"
-status: ready
+status: done
 kind: investigation
 planning_depth: deep
 planning_depth_reason: "跨 TS/Go/Rust/构建/发行/文档/用户数据的不可逆删除，需先锁定完整影响面与依赖顺序"
