@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from 'react';
-import { Platform } from 'obsidian';
-import { toast } from 'sonner';
+import { Notice, Platform } from 'obsidian';
 import type IconicController from '../../platform/host/controller';
 import { internalApp } from '../../platform/utils/obsidian-internal';
 import { openReactDialog, dialogOwner } from '../../../../ui/react/dialog';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { t } from '../../../../shared/i18n';
 export function openIconicDialog(
 	plugin: IconicController,
@@ -14,8 +14,8 @@ export function openIconicDialog(
 	function Commands({ close }: { close: () => void }) {
 		const [, render] = useState(0);
 		return (
-			<div
-				className="min-w-0 space-y-4"
+			<DesignScope
+				className="min-w-0 space-y-4 break-words"
 				onKeyDownCapture={(event) => {
 					if (event.nativeEvent.isComposing) return;
 					for (const command of plugin.dialogCommands) {
@@ -44,7 +44,7 @@ export function openIconicDialog(
 				}}
 			>
 				{content(close)}
-			</div>
+			</DesignScope>
 		);
 	}
 	const dialog = openReactDialog(dialogOwner(plugin.app), {
@@ -54,7 +54,7 @@ export function openIconicDialog(
 		onClose: () => {
 			plugin.forgetDialog(dialog);
 			onClose?.();
-			void plugin.saveSettings().catch(() => toast.error(t('settings.writeFailed')));
+			void plugin.saveSettings().catch(() => new Notice(t('settings.writeFailed')));
 		},
 	});
 	plugin.trackDialog(dialog);

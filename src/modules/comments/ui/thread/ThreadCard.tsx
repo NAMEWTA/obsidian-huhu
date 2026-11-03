@@ -1,11 +1,11 @@
 // Card presentation for both standalone highlights and historical discussion threads.
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { ArrowUpRight, Check, Pencil, RotateCcw, Trash2, Pin, Archive, Palette, NotebookPen } from 'lucide-react';
-import { toast } from 'sonner';
 import type { CommentThread } from '../../core/model';
 import { threadHighlightHex } from '../../core/highlight-colors';
 import type { CommentsEnv } from '../env';
 import { Button } from '../../../../ui/components/button';
+import { Checkbox } from '../../../../ui/components/checkbox';
 import { Input } from '../../../../ui/components/input';
 import { Textarea } from '../../../../ui/components/textarea';
 import { Badge } from '../../../../ui/components/badge';
@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/componen
 import { ConfirmDialog } from '../../../../ui/components/huhu/ConfirmDialog';
 import { RelativeTime } from '../../../../ui/components/huhu/RelativeTime';
 import { useT } from '../../../../ui/react/hooks';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { Composer } from '../popover/Composer';
 import { CommentBody } from './CommentBody';
 import { HighlightPalette } from '../highlight-palette';
@@ -21,12 +22,12 @@ import { jumpToComment, reanchorFromSelection } from '../navigation';
 export function Action({ label, children, onClick }: { label: string; children: ReactNode; onClick: () => void }) {
 	return <Tooltip><TooltipTrigger asChild><Button type="button" size="icon-xs" variant="ghost" aria-label={label} onClick={onClick}>{children}</Button></TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>;
 }
-export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, selected, onSelect, autoEditNote = false }: {
-	env: CommentsEnv; path: string; thread: CommentThread; onDraft?: (key: string, active: boolean) => void; alwaysOpen?: boolean;
+export function ThreadCard({ env, path, thread, onDraft, selected, onSelect, autoEditNote = false }: {
+	env: CommentsEnv; path: string; thread: CommentThread; onDraft?: (key: string, active: boolean) => void; 
 	selected?: boolean; onSelect?: (id: string, value: boolean) => void;
 	autoEditNote?: boolean;
 }) {
-	const t = useT(), service = env.service, settings = service.settings();
+	const t = useT(), notice = useDesignNotice(), service = env.service, settings = service.settings();
 	const [editing, setEditing] = useState<string | null>(null);
 	const [replying, setReplying] = useState(false);
 	const [attaching, setAttaching] = useState(false);
@@ -49,7 +50,7 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 	return <article data-thread-id={thread.id} data-status={thread.status} data-color={thread.color ?? 'legacy'}
 		className={`group space-y-2 rounded-md border border-border bg-card p-3 text-card-foreground ${thread.archivedAt ? 'opacity-70' : ''}`}>
 		<div className="flex min-w-0 items-start gap-2">
-			{onSelect && <input type="checkbox" checked={!!selected} onChange={event => onSelect(thread.id, event.target.checked)} aria-label={t('editor.highlights.select')} className="mt-1 size-4" />}
+			{onSelect && <Checkbox checked={!!selected} onCheckedChange={value => onSelect(thread.id, value === true)} aria-label={t('editor.highlights.select')} className="mt-1" />}
 			{thread.kind === 'range' && <span className="mt-1 h-4 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: hex }} aria-hidden="true" />}
 			<button type="button" className="line-clamp-3 min-w-0 flex-1 whitespace-normal break-words text-left text-xs text-foreground focus-visible:ring-2 focus-visible:ring-ring"
 				title={thread.anchor.text} onClick={jump} aria-label={t('editor.comments.jump')}>
@@ -96,7 +97,7 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 			<Button size="xs" variant="outline" onClick={() => setAttaching(true)}>{t('editor.comments.reanchor')}</Button>
 			{attaching && <><p>{t('editor.comments.reattachHint')}</p><Button size="sm" onClick={() => run(async () => { await reanchorFromSelection(env, path, thread); setAttaching(false); })}>{t('editor.comments.confirmAnchor')}</Button></>}
 		</div>}
-		{collapsed ? <div className="flex items-center gap-2"><Button variant="ghost" size="xs" onClick={() => setExpanded(true)}>{t('editor.comments.resolved')}</Button>
+		{collapsed ? <div className="flex flex-wrap items-center gap-2"><Button variant="ghost" size="xs" onClick={() => setExpanded(true)}>{t('editor.comments.resolved')}</Button>
 			<Button variant="ghost" size="xs" onClick={() => run(() => service.status(thread.id, false))}>{t('editor.comments.reopen')}</Button></div> : <>
 			{thread.messages.map((message, index) => {
 				const canEdit = !message.author || message.author === settings.author;
@@ -104,12 +105,12 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 					<div className="flex flex-wrap items-center gap-2 text-2xs text-muted-foreground"><span className="text-xs font-medium text-foreground">{message.author || t('editor.comments.you')}</span><RelativeTime value={message.createdAt} />{message.editedAt && <span>{t('editor.comments.edited')}</span>}</div>
 					{editing === message.id ? <Composer app={env.app} initial={message.text} submitLabel={t('editor.comments.save')} onDraft={draft} onCancel={() => setEditing(null)} onSubmit={async text => { await service.edit(thread.id, message.id, text); setEditing(null); }} />
 						: <CommentBody app={env.app} path={path} text={message.text} onEdit={canEdit ? () => setEditing(message.id) : undefined} />}
-					<div className={`flex justify-end gap-2 ${alwaysOpen ? '' : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100'}`}>
+					<div className="flex flex-wrap justify-end gap-2">
 						{index === 0 && thread.status !== 'orphaned' && <Action label={t(thread.status === 'resolved' ? 'editor.comments.reopen' : 'editor.comments.resolve')} onClick={() => run(() => service.status(thread.id, thread.status !== 'resolved'))}>{thread.status === 'resolved' ? <RotateCcw /> : <Check />}</Action>}
 						{canEdit && !editing && <Action label={t(index ? 'editor.comments.editReply' : 'editor.comments.edit')} onClick={() => setEditing(message.id)}><Pencil /></Action>}
 						{index > 0 && <Action label={t('editor.comments.deleteReply')} onClick={() => run(async () => {
 							const removed = await service.removeReply(thread.id, message.id);
-							if (removed) toast(t('editor.comments.deleted'), { duration: 5000, action: { label: t('editor.comments.undo'), onClick: () => run(() => service.restoreReply(thread.id, removed)) } });
+							if (removed) notice(t('editor.comments.deleted'), { duration: 5000, action: { label: t('editor.comments.undo'), onClick: () => run(() => service.restoreReply(thread.id, removed)) } });
 						})}><Trash2 /></Action>}
 					</div>
 				</div>;
@@ -118,6 +119,6 @@ export function ThreadCard({ env, path, thread, onDraft, alwaysOpen = false, sel
 				onSubmit={async (text, key) => { await service.reply(key, thread.id, text); setReplying(false); }} />
 				: <Button variant="ghost" size="xs" className="w-full justify-start text-muted-foreground" onClick={() => setReplying(true)}>{t('editor.comments.reply')}…</Button>)}
 		</>}
-		{error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
+		{error && <p role="alert" className="break-words text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
 	</article>;
 }

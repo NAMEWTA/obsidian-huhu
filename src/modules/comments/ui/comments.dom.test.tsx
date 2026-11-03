@@ -238,3 +238,27 @@ test('clicking a highlight pins its threads, but a click that ends a drag-select
 	expect(f.channel.state.getState().request).toMatchObject({ mode: 'threads', pinned: true, threadIds: [thread.id] });
 	tracker.destroy(); dom.remove(); await f.dispose();
 });
+
+test('panel separates empty from no-results, offers clearing filters, and runs inside a design scope', async () => {
+	const f = fixture(); const a = await f.store.add('a.md', { anchor: createAnchor('alpha', 0, 5), text: 'alpha-comment' });
+	await f.store.flush(); await f.service.refresh(); f.service.setPath('a.md'); void a;
+	const view = render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env} /></HuhuProviders>);
+	await screen.findByText('alpha-comment');
+	expect(view.container.querySelector('.huhu-design.huhu-comments-panel')).not.toBeNull();
+	fireEvent.change(screen.getByRole('textbox', { name: 'Search highlights and notes' }), { target: { value: 'zzz' } });
+	await screen.findByText('No highlights match the current search or filters.');
+	expect(screen.queryByText(/No highlights yet/)).toBeNull();
+	fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+	await screen.findByText('alpha-comment');
+	view.unmount(); await f.dispose();
+});
+
+test('panel storage failure is persistent and retry reloads the list', async () => {
+	const f = fixture(); f.service.setPath('a.md');
+	const refresh = vi.spyOn(f.service, 'refresh'); f.service.state.setState({ error: true });
+	const view = render(<HuhuProviders ownerDocument={document}><CommentsPanel env={f.env} /></HuhuProviders>);
+	await screen.findByRole('alert');
+	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+	expect(refresh).toHaveBeenCalled();
+	view.unmount(); await f.dispose();
+});

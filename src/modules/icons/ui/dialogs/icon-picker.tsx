@@ -1,6 +1,6 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
 import { useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { Notice } from 'obsidian';
 import type { Item } from '../../core/types';
 import type IconicController from '../../platform/host/controller';
 import { EMOJIS, ICONS, loadResources } from '../../platform/resources';
@@ -278,6 +278,6 @@ export default class IconPicker {
 						(close) => <IconPickerContent plugin={plugin} items={items} accept={accept} close={close} />,
 					);
 			})
-			.catch(() => toast.error(t('settings.writeFailed')));
+			.catch(() => new Notice(t('settings.writeFailed')));
 	}
 }

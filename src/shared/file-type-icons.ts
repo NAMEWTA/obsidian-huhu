@@ -91,7 +91,7 @@ const FOLDER_CLOSED = entry('folder-closed');
 const FOLDER_OPEN = entry('folder-open');
 
 /**
- * The default icon for a folder path (vault-relative; a leading `huhu/` root is ignored, so `huhu/日志` is the journal). Special folders keep their icon open
+ * The default icon for a folder path (vault-relative; a leading `huhu/` root is ignored, so `huhu/journal` is the journal). Special folders keep their icon open
  * or closed; ordinary folders switch between the closed and open folder.
  */
 export function defaultFolderIcon(path: string, open = false): FileTypeIcon {

@@ -1,13 +1,15 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { EditorContextAccess } from '../../../../app/contracts/editor-context';
 import { useStore } from 'zustand';
-import { Notice } from 'obsidian';
 import { MessageSquareText, MoreHorizontal, RefreshCw, Download, CheckSquare } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator } from '../../../../ui/components/dropdown-menu';
 import { ToggleGroup, ToggleGroupItem } from '../../../../ui/components/toggle-group';
 import { SegmentedControl } from '../../../../ui/components/huhu/SegmentedControl';
+import { DesignScope, useDesignNotice } from '../../../../ui/react/design-scope';
+import { Choice } from '../../../../ui/components/huhu/Choice';
+import { Skeleton } from '../../../../ui/components/skeleton';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../../../ui/components/collapsible';
 import { ConfirmDialog } from '../../../../ui/components/huhu/ConfirmDialog';
 import { useT } from '../../../../ui/react/hooks';
@@ -48,7 +50,13 @@ function VaultSection({ env, path, open, total, filter, sort, selectMode, select
 			selected={selected} onSelect={onSelect} showArchived={showArchived} />}</CollapsibleContent>
 	</Collapsible>;
 }
-export function CommentsPanel({ env, documents, container }: { env: CommentsEnv; documents?: EditorContextAccess; container?: HTMLElement }) {
+type PanelProps = { env: CommentsEnv; documents?: EditorContextAccess; container?: HTMLElement };
+export function CommentsPanel(props: PanelProps) {
+	return <DesignScope className="huhu-comments-panel flex h-full min-h-0 flex-col bg-background text-foreground"><PanelBody {...props} /></DesignScope>;
+}
+function PanelBody({ env, documents, container }: PanelProps) {
+	const notice = useDesignNotice();
+	const [exportError, setExportError] = useState(false);
 	const state = useStore(env.service.state);
 	const path = useSyncExternalStore(listener => documents?.subscribe(listener) ?? (() => undefined), () => documents && container?.ownerDocument.defaultView ? documents.current(container.ownerDocument.defaultView)?.path ?? null : state.path);
 	const [scope, setScope] = useState('current');
@@ -61,14 +69,15 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 	const [selectMode, setSelectMode] = useState(false);
 	const [selected, setSelected] = useState<Set<string>>(new Set());
 	const [tags, setTags] = useState('');
-	const [loadResult, setLoadResult] = useState<{ signature: string; error: boolean } | null>(null);
+	const [loadResult, setLoadResult] = useState<{ signature: string; error: boolean; attempt: number } | null>(null);
 	const [bulkError, setBulkError] = useState(false);
 	const [busy, setBusy] = useState(false);
+	const [attempt, setAttempt] = useState(0);
 	const t = useT(), store = env.service.store, settings = env.service.settings();
 	const sourcePaths = state.notes.map(note => note.path).join('\n');
 	const eager = scope === 'vault' && (!!search.trim() || color !== 'all' || groupBy !== 'file' || selectMode || showArchived);
-	const loading = eager && loadResult?.signature !== sourcePaths;
-	const loadError = eager && loadResult?.signature === sourcePaths && loadResult.error;
+	const loading = eager && (loadResult?.signature !== sourcePaths || loadResult?.attempt !== attempt);
+	const loadError = !loading && eager && !!loadResult?.error;
 	useEffect(() => {
 		if (!eager) return;
 		let active = true;
@@ -79,10 +88,10 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 				const results = await Promise.allSettled(paths.slice(offset, offset + 16).map(path => env.service.load(path)));
 				if (results.some(result => result.status === 'rejected')) hasError = true;
 			}
-			if (active) setLoadResult({ signature: sourcePaths, error: hasError });
+			if (active) setLoadResult({ signature: sourcePaths, error: hasError, attempt });
 		})();
 		return () => { active = false; };
-	}, [env, eager, sourcePaths]);
+	}, [env, eager, sourcePaths, attempt]);
 	const selectedChanged = (id: string, checked: boolean) => setSelected(old => {
 		const next = new Set(old); if (checked) next.add(id); else next.delete(id); return next;
 	});
@@ -107,7 +116,7 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 		}
 		setSelected(old => new Set([...old].filter(id => !done.has(id)))); setBusy(false);
 	};
-	const bulkButtons = <div className="space-y-2 border-b border-border p-2 text-xs">
+	const bulkButtons = <div className="space-y-2 border-b border-border p-2 text-xs" aria-busy={busy}>
 		<div className="flex flex-wrap items-center gap-2">
 			<span>{t('editor.highlights.selectedCount', { count: selectedRows.length })}</span>
 			<Button size="xs" variant="outline" onClick={() => setSelected(new Set(visible.map(row => row.thread.id)))}>{t('editor.highlights.selectVisible')}</Button>
@@ -126,12 +135,13 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 				<Button size="xs" variant="destructive" disabled={busy || !selectedRows.length}>{t('editor.comments.delete')}</Button>
 			</ConfirmDialog>
 		</div>
+		{busy && <p role="status" className="text-muted-foreground">{t('editor.highlights.working')}</p>}
 		{bulkError && <p role="alert" className="text-destructive">{t('editor.highlights.partialFailure')}</p>}
 	</div>;
-	return <div className="huhu-comments-panel flex h-full min-h-0 flex-col bg-background text-foreground">
+	return <div className="flex h-full min-h-0 flex-col">
 		<div className="space-y-2 border-b border-border p-3">
-			<div className="flex h-9 items-center justify-between">
-				<h2 className="text-sm font-medium">{t('editor.comments.title')} ({count})</h2>
+			<div className="flex flex-wrap items-center justify-between gap-1">
+				<h2 className="min-w-0 break-words text-sm font-medium">{t('editor.comments.title')} ({count})</h2>
 				<div className="flex gap-1">
 					<Action label={t('editor.comments.refresh')} onClick={() => { void env.service.refresh(); }}><RefreshCw /></Action>
 					<Action label={t('editor.highlights.bulk')} onClick={() => setSelectMode(!selectMode)}><CheckSquare /></Action>
@@ -140,7 +150,7 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 							<DropdownMenuRadioGroup value={sort} onValueChange={v => setSort(v as SortOrder)}>{(['position', 'created', 'activity'] as const).map(value =>
 								<DropdownMenuRadioItem key={value} value={value}>{t(`editor.comments.${value}`)}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onSelect={() => { void env.exportHighlights(selectedRows.length ? selectedRows : visible).then(path => new Notice(t('editor.highlights.exported', { path })), () => new Notice(t('editor.highlights.exportFailed'))); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
+							<DropdownMenuItem onSelect={() => { void env.exportHighlights(selectedRows.length ? selectedRows : visible).then(path => { setExportError(false); notice(t('editor.highlights.exported', { path })); }, () => setExportError(true)); }}><Download />{t('editor.highlights.export')}</DropdownMenuItem>
 							{scope === 'current' && path && <DropdownMenuItem onSelect={event => { const target = event.currentTarget as HTMLElement; env.open({ path, mode: 'resolve-all', pinned: true, ownerDocument: target.ownerDocument, rect: () => target.getBoundingClientRect() }); }}>{t('editor.comments.resolveAll')}</DropdownMenuItem>}
 							<DropdownMenuItem onSelect={() => env.openSettings()}>{t('workbench.settings')}</DropdownMenuItem>
 						</DropdownMenuContent></DropdownMenu>
@@ -149,12 +159,10 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 			<SegmentedControl value={scope} onChange={setScope} size="sm" options={[{ value: 'current', label: t('editor.comments.current') }, { value: 'vault', label: t('editor.comments.vault') }]} />
 			<Input aria-label={t('editor.highlights.search')} placeholder={t('editor.highlights.search')} value={search} onChange={event => setSearch(event.target.value)} className="h-8 text-xs" />
 			<div className="flex flex-wrap items-center gap-2">
-				<select aria-label={t('editor.highlights.filterColor')} value={color} onChange={event => setColor(event.target.value)} className="h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-xs">
-					<option value="all">{t('editor.highlights.allColors')}</option>{colorOptions(settings).map(c => <option value={c.id} key={c.id}>{c.id.startsWith('custom-') ? c.name : t(`editor.highlights.color.${c.id}`)}</option>)}
-				</select>
-				<select aria-label={t('editor.highlights.groupBy')} value={groupBy} onChange={event => setGroupBy(event.target.value as HighlightGroupBy)} className="h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-xs">
-					{(['file', 'color', 'tag'] as const).map(key => <option key={key} value={key}>{t(`editor.highlights.group.${key}`)}</option>)}
-				</select>
+				<Choice label={t('editor.highlights.filterColor')} value={color} onChange={setColor} className="h-8 min-w-0 flex-1 text-xs"
+					options={[['all', t('editor.highlights.allColors')], ...colorOptions(settings).map(c => [c.id, c.id.startsWith('custom-') ? c.name : t(`editor.highlights.color.${c.id}`)] as const)]} />
+				<Choice label={t('editor.highlights.groupBy')} value={groupBy} onChange={value => setGroupBy(value as HighlightGroupBy)} className="h-8 min-w-0 flex-1 text-xs"
+					options={(['file', 'color', 'tag'] as const).map(key => [key, t(`editor.highlights.group.${key}`)] as const)} />
 			</div>
 			<ToggleGroup type="single" value={filter} onValueChange={value => { if (value) setFilter(value as ThreadFilter); }} className="w-full flex-wrap">
 				{(['all', 'open', 'resolved'] as const).map(value => <ToggleGroupItem key={value} value={value} className="flex-auto text-xs">{t(`editor.comments.${value}`)}</ToggleGroupItem>)}
@@ -166,9 +174,12 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 		<div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
 			{store.legacyData && <p role="status" className="text-xs text-status-warning">{t('editor.comments.legacy')}</p>}
 			{store.damagedFiles.length > 0 && <p role="alert" className="text-xs text-destructive">{t('editor.comments.damaged')}</p>}
-			{state.error && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
-			{loading && <p role="status" className="text-xs text-muted-foreground">{t('editor.highlights.loading')}</p>}
-			{loadError && <p role="alert" className="text-xs text-destructive">{t('editor.comments.storageFailed')}</p>}
+			{exportError && <div role="alert" className="text-xs text-destructive">{t('editor.highlights.exportFailed')}</div>}
+			{state.error && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-destructive"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
+				<Button size="xs" variant="outline" onClick={() => { void env.service.refresh(); }}>{t('editor.comments.retry')}</Button></div>}
+			{loading && <div role="status" aria-busy="true" className="space-y-2"><span className="text-xs text-muted-foreground">{t('editor.highlights.loading')}</span><Skeleton className="h-12" /><Skeleton className="h-12" /></div>}
+			{loadError && <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-destructive"><span className="min-w-0 flex-1 break-words">{t('editor.comments.storageFailed')}</span>
+				<Button size="xs" variant="outline" onClick={() => setAttempt(value => value + 1)}>{t('editor.comments.retry')}</Button></div>}
 			{scope === 'current' && !path ? <p className="py-8 text-center text-xs text-muted-foreground">{t('editor.comments.noFile')}</p>
 				: lazyVault ? <>
 					{existing.map(note => <VaultSection key={note.path} env={env} {...note} filter={filter} sort={sort} selectMode={selectMode} selected={selected} onSelect={selectedChanged} showArchived={showArchived} />)}
@@ -179,7 +190,10 @@ export function CommentsPanel({ env, documents, container }: { env: CommentsEnv;
 					{group.items.map(row => <ThreadCard key={row.thread.id} env={env} path={row.path} thread={row.thread}
 						selected={selected.has(row.thread.id)} onSelect={selectMode ? selectedChanged : undefined} />)}
 				</section>)}
-			{scope === 'current' && path && !visible.length && <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>}
+			{!lazyVault && !loading && !(scope === 'current' && !path) && !visible.length && (rows.length > 0
+				? <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><p>{t('editor.highlights.noResults')}</p>
+					<Button size="xs" variant="outline" onClick={() => { setSearch(''); setColor('all'); setFilter('all'); setShowArchived(false); }}>{t('editor.highlights.clearFilters')}</Button></div>
+				: scope === 'current' && !state.error && <div className="space-y-2 py-6 text-center text-xs text-muted-foreground"><MessageSquareText className="mx-auto size-6" /><p>{t('editor.comments.empty')}</p></div>)}
 		</div>
 	</div>;
 }

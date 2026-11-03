@@ -1,8 +1,8 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
 import { useState, useSyncExternalStore } from 'react';
-import { toast } from 'sonner';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { CommentsSettings } from '../settings';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { useT } from '../../../ui/react/hooks';
 import { SettingsRow, SettingsSwitchRow, ColorField } from '../../../ui/components/huhu/SettingsFormControls';
 import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
@@ -12,23 +12,26 @@ import { Button } from '../../../ui/components/button';
 import { Slider } from '../../../ui/components/slider';
 
 export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>) {
-	return function CommentsSettingsPage() {
+	function CommentsSettingsBody() {
 		const t = useT(),
 			value = useSyncExternalStore(
 				(listener) => settings.subscribe(listener),
 				() => settings.get(),
 			);
+		const [writeError, setWriteError] = useState(false);
 		const [newColorName, setNewColorName] = useState('');
 		const [newColorHex, setNewColorHex] = useState('#c0c0c0');
 		const save = <K extends keyof CommentsSettings>(key: K, next: CommentsSettings[K]) => {
+			setWriteError(false);
 			void settings
 				.update((draft) => {
 					draft[key] = next;
 				})
-				.catch(() => toast.error(t('settings.writeFailed')));
+				.catch(() => setWriteError(true));
 		};
 		return (
 			<SettingsSection title={t('editor.comments.title')}>
+				{writeError && <p role="alert" className="text-sm text-destructive">{t('settings.writeFailed')}</p>}
 				<SettingsRow
 					label={t('editor.comments.author')}
 					control={
@@ -77,7 +80,7 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 						key={key}
 						label={t(`editor.comments.${key}`)}
 						control={
-							<div className="flex w-48 items-center gap-3">
+							<div className="flex w-48 min-w-0 max-w-full items-center gap-3">
 								<Slider
 									aria-label={t(`editor.comments.${key}`)}
 									min={min}
@@ -142,5 +145,8 @@ export function commentsSettingsPage(settings: SettingsHandle<CommentsSettings>)
 				</div>
 			</SettingsSection>
 		);
+	}
+	return function CommentsSettingsPage() {
+		return <DesignScope className="huhu-settings-stack min-w-0 px-1 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_button]:max-w-full [&_button]:whitespace-normal [&_button]:break-all [&_button]:h-auto"><CommentsSettingsBody /></DesignScope>;
 	};
 }

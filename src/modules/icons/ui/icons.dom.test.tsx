@@ -265,3 +265,18 @@ test('changing a condition operator and source applies the same finite defaults'
 	expect(accept.mock.calls[0]?.[0].conditions).toEqual([{ source: 'color', operator: 'colorIs', value: 'red' }]);
 	expect(initial.conditions).toEqual([{ source: 'clock', operator: 'weekdayIs', value: '2' }]);
 });
+test('a failed preference write stays visible in the settings leaf and clears on the next write', async () => {
+	setLanguage('en');
+	const plugin = controller(),
+		user = userEvent.setup();
+	vi.mocked(plugin.updatePreference).mockRejectedValueOnce(new Error('EIO'));
+	render(
+		<TestProviders>
+			<IconicSettings plugin={plugin} section="iconic-sidebars" />
+		</TestProviders>,
+	);
+	await user.click(screen.getByRole('switch', { name: t('iconic.settings.showAllFolderIcons.name') }));
+	expect((await screen.findByRole('alert')).textContent).toBe(t('settings.writeFailed'));
+	await user.click(screen.getByRole('switch', { name: t('iconic.settings.showAllFolderIcons.name') }));
+	await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+});

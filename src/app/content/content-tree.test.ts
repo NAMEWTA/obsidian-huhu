@@ -11,25 +11,25 @@ const files = [
 	file(`${root}/dashboard.md`),
 	file(`${root}/HUHU/习惯/2026-01.md`),
 	file(`${root}/HUHU/自动化/周报-1/操作.md`),
-	file(`${root}/档案/个人档案/张三/基本信息.md`),
-	file(`${root}/档案/个人档案/张三/简历.pdf`),
-	file(`${root}/档案/企业档案/示例/基本信息.md`),
+	file(`${root}/archives/people/张三/基本信息.md`),
+	file(`${root}/archives/people/张三/简历.pdf`),
+	file(`${root}/archives/companies/示例/基本信息.md`),
 	file(`${root}/附件/photo.png`),
 	file('outside/ignored.md'),
 ];
-const directories = [root, `${root}/HUHU`, `${root}/HUHU/习惯`, `${root}/HUHU/自动化`, `${root}/HUHU/自动化/周报-1`, `${root}/档案`, `${root}/档案/个人档案`, `${root}/档案/个人档案/张三`, `${root}/档案/企业档案`, `${root}/档案/企业档案/示例`, `${root}/附件`, `${root}/空目录`];
+const directories = [root, `${root}/HUHU`, `${root}/HUHU/习惯`, `${root}/HUHU/自动化`, `${root}/HUHU/自动化/周报-1`, `${root}/archives`, `${root}/archives/people`, `${root}/archives/people/张三`, `${root}/archives/companies`, `${root}/archives/companies/示例`, `${root}/附件`, `${root}/空目录`];
 
 test('builds a folder-first tree under the visible huhu/ root with full-path ids', () => {
 	const tree = buildContentTree(files, directories);
 	// Folder order follows the runtime locale's collation; files come after every folder.
 	const labels = tree.nodes.map((node) => node.label);
-	expect(labels.slice(0, 4).sort()).toEqual(['HUHU', '附件', '档案', '空目录'].sort());
+	expect(labels.slice(0, 4).sort()).toEqual(['HUHU', '附件', 'archives', '空目录'].sort());
 	expect(labels[4]).toBe('dashboard');
 	expect(tree.nodes[0]!.id).toBe(`${root}/${labels[0]}`);
 	expect(tree.defaultExpandedIds).toEqual(tree.nodes.slice(0, 4).map((node) => node.id));
-	const archives = tree.nodes.find((node) => node.label === '档案')!;
-	expect(archives.children!.map((node) => node.label)).toEqual(['个人档案', '企业档案']);
-	const person = archives.children![0]!.children![0]!;
+	const archives = tree.nodes.find((node) => node.label === 'archives')!;
+	expect(archives.children!.map((node) => node.label)).toEqual(['companies', 'people']);
+	const person = archives.children!.find((node) => node.label === 'people')!.children![0]!;
 	expect(person.label).toBe('张三');
 	// Markdown shows without its extension; other files keep it.
 	expect(person.children!.map((node) => node.label)).toEqual(['基本信息', '简历.pdf']);
@@ -44,16 +44,16 @@ test('nodes carry default type icons, open-folder icons and special folder icons
 	const tree = buildContentTree(files, directories);
 	const byLabel = (label: string) => JSON.stringify(tree.nodes).includes(label);
 	expect(byLabel('lucide-contact-round')).toBe(true);
-	const archives = tree.nodes.find((node) => node.label === '档案')!;
+	const archives = tree.nodes.find((node) => node.label === 'archives')!;
 	expect(archives.icon).toBe('lucide-contact-round');
-	expect(archives.children![0]!.icon).toBe('lucide-user');
-	expect(archives.children![1]!.icon).toBe('lucide-building-2');
+	expect(archives.children!.find((node) => node.label === 'people')!.icon).toBe('lucide-user');
+	expect(archives.children!.find((node) => node.label === 'companies')!.icon).toBe('lucide-building-2');
 	const plain = tree.nodes.find((node) => node.label === 'HUHU')!;
 	expect(plain.icon).toBe('lucide-folder-closed');
 	expect(plain.iconOpen).toBe('lucide-folder-open');
 	const dashboard = tree.nodes.find((node) => node.label === 'dashboard')!;
 	expect(dashboard.icon).toBe('lucide-file-text');
-	const pdf = archives.children![0]!.children![0]!.children!.find((node) => node.label === '简历.pdf')!;
+	const pdf = archives.children!.find((node) => node.label === 'people')!.children![0]!.children!.find((node) => node.label === '简历.pdf')!;
 	expect(pdf).toMatchObject({ icon: 'lucide-file-text', iconColor: 'var(--color-red)' });
 });
 
@@ -94,7 +94,7 @@ test('search finds file names, folder names and text inside Markdown, with a sni
 	expect(hits.map((hit) => hit.id)).toEqual([`${root}/dashboard.md`]);
 	expect(hits[0]!.detail).toContain('quarterly needle sits');
 	const byName = await searchContent(files, directories, '简历', bodies);
-	expect(byName.map((hit) => hit.id)).toEqual([`${root}/档案/个人档案/张三/简历.pdf`]);
+	expect(byName.map((hit) => hit.id)).toEqual([`${root}/archives/people/张三/简历.pdf`]);
 	const folder = await searchContent(files, directories, '空目录', bodies);
 	expect(folder.map((hit) => hit.id)).toEqual([`${root}/空目录`]);
 	expect(await searchContent(files, directories, '  ', bodies)).toEqual([]);

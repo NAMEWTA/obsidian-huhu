@@ -43,3 +43,6 @@
 .huhu-comment-hl[data-highlight-count]:not([data-highlight-count="1"]) { border-bottom-style: dashed; }
 .huhu-comments-panel .huhu-highlight-color { width: 20px; height: 20px; flex: 0 0 20px; border-radius: 50%; border: 1px solid var(--background-modifier-border); }
 .huhu-comments-panel .huhu-highlight-card-note { overflow-wrap: anywhere; }
+
+/* A settings label keeps a readable measure; its control wraps below it in a narrow container. */
+.huhu-settings-stack [data-slot="settings-row"] > div:first-child:not(#\#):not(#\#) { flex: 1 1 10rem; }

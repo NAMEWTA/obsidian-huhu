@@ -1,7 +1,6 @@
 // Layout adapted from stablyai/orca 464bd5a54b3364021c5cc0319859616e5ec41bbf (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/settings/SettingsFormControls.tsx
 import { useState } from 'react';
 import { Platform } from 'obsidian';
-import { toast } from 'sonner';
 import type IconicController from '../../platform/host/controller';
 import type { Category } from '../../core/types';
 import { internalApp } from '../../platform/utils/obsidian-internal';
@@ -26,11 +25,13 @@ type BooleanKey = { [K in keyof Settings]: Settings[K] extends boolean ? K : nev
 export function IconicSettings({ plugin, section }: { plugin: IconicController; section: string }) {
 	const t = useT(),
 		[, refresh] = useState(0),
-		[busy, setBusy] = useState(false);
+		[busy, setBusy] = useState(false),
+		[writeError, setWriteError] = useState(false);
 	const settings = plugin.settings;
 	const save = <K extends keyof Settings>(key: K, value: Settings[K], manager?: Category | 'all' | 'body') => {
 		refresh((n) => n + 1);
-		void plugin.updatePreference(key, value).catch(() => toast.error(t('settings.writeFailed')));
+		setWriteError(false);
+		void plugin.updatePreference(key, value).catch(() => setWriteError(true));
 		if (manager === 'body') plugin.refreshBody();
 		else if (manager === 'all') plugin.refreshManagers();
 		else if (manager) plugin.refreshManagers(manager);
@@ -73,6 +74,11 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 	const device = ['on', 'desktop', 'mobile', 'off'];
 	return (
 		<div className="space-y-8">
+			{writeError && (
+				<p role="alert" className="text-sm text-destructive">
+					{t('settings.writeFailed')}
+				</p>
+			)}
 			{section === 'iconic-general' && (
 				<SettingsSection title={t('modules.iconic')}>
 					<SettingsRow
@@ -120,7 +126,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 						label={t('iconic.settings.maxSearchResults.name')}
 						description={t('iconic.settings.maxSearchResults.desc')}
 						control={
-							<div className="flex w-48 items-center gap-3">
+							<div className="flex w-48 min-w-0 max-w-full items-center gap-3">
 								<Slider
 									aria-label={t('iconic.settings.maxSearchResults.name')}
 									min={50}
@@ -159,7 +165,7 @@ export function IconicSettings({ plugin, section }: { plugin: IconicController; 
 												unused.push(plugin.getFileItem(id));
 										if (plugin.isActive()) UsageChecker.open(plugin, unused);
 									})()
-										.catch(() => toast.error(t('settings.writeFailed')))
+										.catch(() => setWriteError(true))
 										.finally(() => setBusy(false));
 								}}
 							>

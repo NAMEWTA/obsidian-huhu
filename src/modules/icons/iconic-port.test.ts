@@ -342,7 +342,7 @@ test('default file-type icons: files and folders resolve a typed icon, custom ic
 		['a/report.PDF', file('a/report.PDF')],
 		['a/note.md', file('a/note.md')],
 		['a/x.pdf', file('a/x.pdf')],
-		['日志', folder('日志')],
+		['journal', folder('journal')],
 		['a', folder('a')],
 	]);
 	const controller = Object.create(IconicController.prototype) as IconicController;
@@ -355,7 +355,7 @@ test('default file-type icons: files and folders resolve a typed icon, custom ic
 
 	assert.deepEqual(controller.resolveIcon({ kind: 'file', key: 'a/report.PDF' }), { icon: 'lucide-file-text', emoji: false, color: 'var(--color-red)', isDefault: true });
 	assert.equal(controller.resolveIcon({ kind: 'file', key: 'a/deck.pptx' }).icon, 'lucide-presentation');
-	assert.equal(controller.resolveIcon({ kind: 'folder', key: '日志' }).icon, 'lucide-calendar-days');
+	assert.equal(controller.resolveIcon({ kind: 'folder', key: 'journal' }).icon, 'lucide-calendar-days');
 	assert.equal(controller.resolveIcon({ kind: 'folder', key: 'a' }).icon, 'lucide-folder-closed');
 	assert.deepEqual(controller.resolveIcon({ kind: 'tag', key: 'x' }), { icon: null, emoji: false, color: null });
 	// A per-item color alone keeps the default icon in that color; a per-item icon replaces the default entirely.
@@ -370,7 +370,7 @@ test('default file-type icons: files and folders resolve a typed icon, custom ic
 	assert.equal(define('a/report.PDF').iconDefault, 'lucide-file-text');
 	assert.equal(define('a/report.PDF').colorDefault, 'var(--color-red)');
 	assert.equal(define('a/note.md').iconDefault, 'lucide-file-text');
-	assert.equal(define('日志').iconDefault, 'lucide-calendar-days');
+	assert.equal(define('journal').iconDefault, 'lucide-calendar-days');
 	assert.equal(define('a').iconDefault, 'lucide-folder-closed');
 
 	// Off: no default icons, and the previous neutral defaults return.

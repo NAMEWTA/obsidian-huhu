@@ -434,3 +434,12 @@ export class Scope {
  constructor(parent?: Scope) { this.parent = parent; }
  register(modifiers: string[] | null, key: string | null, callback: (event: KeyboardEvent) => unknown) { this.handlers.push({ modifiers, key, callback }); }
 }
+
+/** Case-insensitive substring search with the shape of Obsidian's fuzzy matcher (score 0 is a match). */
+export function prepareFuzzySearch(query: string): (text: string) => { score: number; matches: [number, number][] } | null {
+	const needle = query.toLowerCase();
+	return (text) => {
+		const index = text.toLowerCase().indexOf(needle);
+		return index < 0 ? null : { score: 0, matches: [[index, index + needle.length]] };
+	};
+}
