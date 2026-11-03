@@ -1,8 +1,13 @@
 name: Fixture performance sampling
 
-# Candidate only. No automatic push/PR trigger and no first-registration promise.
-# workflow_dispatch requires this file to exist on the default branch first.
+# Runs on dev pushes that touch the sampling tools; workflow_dispatch needs the file on main.
 on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'scripts/perf/**'
+      - '.github/workflows/perf-sampling.yml'
   workflow_dispatch:
 
 permissions:
