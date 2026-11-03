@@ -97,7 +97,7 @@ export interface NativeHookEvent {
 }
 const SCRIPT_NAME = 'huhu-automation-hook.cjs';
 // Generated for this account; it has no effect without this terminal's event token.
-export const HOOK_SCRIPT = `const fs = require('fs'), path = require('path'), crypto = require('crypto');
+export const HOOK_SCRIPT = /* @minify-script */ `const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const dir = process.env.HUHU_HOOK_DIR, token = process.env.HUHU_HOOK_TOKEN;
 if (!dir || !token) process.exit(0);
 ${EVENT_PAYLOAD_SCRIPT}

@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vitest/config';
 
+import { minifyHookScripts } from './scripts/hook-script-minify.mjs';
+
 const repo = (relative: string) => fileURLToPath(new URL(relative, import.meta.url));
 
 /** `.svg` and `.md` imports are bundled as text, matching the esbuild loaders in scripts/esbuild-options.mjs. */
@@ -15,8 +17,19 @@ const textResources: Plugin = {
 	},
 };
 
+/** Hook scripts are minified in the plugin build; tests run the same transform so the shipped bytes are what the real-process tests execute. */
+const hookScriptMinify: Plugin = {
+	name: 'huhu-hook-script-minify',
+	enforce: 'pre',
+	transform(code: string, id: string) {
+		const file = id.split('?')[0] ?? id;
+		if (!/[\\/]src[\\/]modules[\\/]agent[\\/]platform[\\/]desktop[\\/]hooks[\\/][^\\/]+\.ts$/.test(file) || !code.includes('@minify-script')) return null;
+		return { code: minifyHookScripts(code, file), map: null };
+	},
+};
+
 const shared = {
-	plugins: [textResources],
+	plugins: [textResources, hookScriptMinify],
 	oxc: { jsx: { runtime: 'automatic' as const, importSource: 'react' } },
 };
 

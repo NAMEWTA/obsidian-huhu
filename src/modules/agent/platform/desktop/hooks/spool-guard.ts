@@ -5,7 +5,7 @@
  * synchronous filesystem calls per publication while a collector was held, which on Windows made
  * a 32-scope burst outlast the 3 s input deadline (hookCollectorTimeout).
  */
-export const SPOOL_GUARD = `let hookTop=root?path.resolve(root):'', hookTopChecked;
+export const SPOOL_GUARD = /* @minify-script */ `let hookTop=root?path.resolve(root):'', hookTopChecked;
 function hookPath(file) {
  let cursor=path.resolve(file), passed;
  for (;;) { if (cursor===hookTop) { if (hookTopChecked) return;passed=1;} try { if (fs.lstatSync(cursor).isSymbolicLink()) throw Error('hookSpoolSymlink');} catch (error) { if (hookCode(error)!=='ENOENT') throw error;} const parent=path.dirname(cursor);if (parent===cursor) break;cursor=parent;}

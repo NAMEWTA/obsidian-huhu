@@ -6,6 +6,7 @@ import { radixOwnerDocument } from './radix-owner-document.mjs';
 import { draggableOwnerRealm } from './draggable-owner-realm.mjs';
 import { canonicalTextResources, normalizeBuildText } from './build-text-resources.mjs';
 import { versioningWorkerSource } from './versioning-worker.mjs';
+import { hookScriptMinify } from './hook-script-minify.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -75,7 +76,7 @@ ${bundled}*/
 			'@lezer/lr',
 			...nodeBuiltins,
 		],
-		plugins: [canonicalTextResources, sonnerStyles, radixOwnerDocument, draggableOwnerRealm, versioningWorkerSource],
+		plugins: [hookScriptMinify, canonicalTextResources, sonnerStyles, radixOwnerDocument, draggableOwnerRealm, versioningWorkerSource],
 		format: 'cjs',
 		target: 'es2021',
 		logLevel: 'info',

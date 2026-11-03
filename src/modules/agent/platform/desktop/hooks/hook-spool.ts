@@ -724,7 +724,7 @@ export class HookSpool {
 }
 
 /** Shared generated implementation: command hooks and native extensions use the same physical protocol. */
-export const HOOK_PUBLISHER_SCRIPT = `
+export const HOOK_PUBLISHER_SCRIPT = /* @minify-script */ `
 const hookLimits=${JSON.stringify(HOOK_SPOOL_LIMITS)};
 const root=process.env.HUHU_HOOK_ROOT;
 function hookCode(error) { return error&&error.code;}

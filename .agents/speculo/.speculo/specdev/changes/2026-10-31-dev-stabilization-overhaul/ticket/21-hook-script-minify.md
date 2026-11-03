@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-21
 title: "Hook 字符串脚本构建期压缩"
-status: ready
+status: done
 kind: refactor
 planning_depth: standard
 planning_depth_reason: "构建转换改变生成脚本字节，需证明协议行为不变"
