@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { bindSpaceLookup } from './actions/agent';
 import { useStore } from 'zustand';
-import { toast } from 'sonner';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
 import type { AutomationDefinition } from '../../../shared/automation/types';
 import type { AutomationEditRequest } from '../core/api';
@@ -12,6 +11,7 @@ import { canRetryCalendarDelivery } from '../core/calendar-run';
 import { AutomationError } from '../../../shared/automation/errors';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
 import { useVisible } from '../../../ui/react/contexts';
+import { useDesignNotice } from '../../../ui/react/design-scope';
 import { Button } from '../../../ui/components/button';
 import { cn } from '../../../ui/lib/utils';
 import type { AutomationViewHost } from './panel-contract';
@@ -72,6 +72,7 @@ export function AutomationsPage({
 	onEditConsumed: () => void;
 }) {
 	const t = useT(),
+		notice = useDesignNotice(),
 		visible = useVisible();
 	const ownerWindow = useOwnerWindow();
 	// Detail rows name the bound Space; they can only reach the list through this page (see `spaceFact`).
@@ -108,7 +109,7 @@ export function AutomationsPage({
 		void operation().catch((e) => {
 			const message = e instanceof Error ? e.message : String(e);
 			setError(message);
-			toast.error(message);
+			notice(message, { id: 'automation-error' });
 		});
 	};
 	const navigate = (section = 'tasks', resourceId?: string) =>
@@ -218,9 +219,10 @@ export function AutomationsPage({
 	return (
 		<main
 			className={cn(
-				'relative flex h-full min-h-0 flex-col bg-background pt-5 text-foreground md:pt-6',
+				'relative flex min-h-0 flex-1 flex-col bg-background pt-4 text-foreground',
 			)}
 			data-automation-page
+			aria-busy={refreshing}
 		>
 			<TopBar
 				name={
@@ -238,7 +240,7 @@ export function AutomationsPage({
 				onNavigation={onNavigation}
 			/>
 			{(loadError || error || !executionEnabled) && (
-				<div role="alert" className="mx-6 mb-4 rounded-md border border-destructive/40 p-3 text-sm">
+				<div role="alert" className="mx-4 mb-4 flex flex-wrap items-center gap-2 break-words rounded-md border border-destructive/40 p-3 text-sm">
 					{loadError || error || t('automation.moduleOff')}
 					{loadError && (
 						<Button variant="outline" size="sm" disabled={refreshing} onClick={refresh}>
@@ -246,6 +248,11 @@ export function AutomationsPage({
 						</Button>
 					)}
 				</div>
+			)}
+			{refreshing && !loadError && (
+				<p role="status" className="mx-4 mb-2 text-xs text-muted-foreground">
+					{t('automation.refreshing')}
+				</p>
 			)}
 			{edit ? (
 				<EditorView
@@ -280,7 +287,7 @@ export function AutomationsPage({
 					}}
 				/>
 			) : (
-				<div className="flex min-h-0 flex-1 flex-col px-6 pb-6">
+				<div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
 					<Toolbar
 						query={state.search}
 						onQueryChange={(search) => update({ search, selected: '' })}

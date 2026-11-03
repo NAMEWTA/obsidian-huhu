@@ -21,7 +21,7 @@ export function TopBar({
 }) {
 	const t = useT();
 	return (
-		<header className="flex shrink-0 items-center gap-2 px-6 pb-3">
+		<header className="flex shrink-0 items-center gap-2 px-4 pb-3">
 			<IconButton label={t('workbench.navigation')} className="in-data-[layout=wide]:hidden" onClick={onNavigation}>
 				<Menu className="size-4" />
 			</IconButton>
@@ -34,7 +34,7 @@ export function TopBar({
 						{t('automation.title')}
 					</Button>
 					<ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
-					<h1 className="m-0 min-w-0 truncate text-lg font-semibold leading-8">{name}</h1>
+					<h1 className="m-0 min-w-0 line-clamp-2 break-words text-lg font-semibold leading-6">{name}</h1>
 					{detail && (
 						<>
 							<ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />

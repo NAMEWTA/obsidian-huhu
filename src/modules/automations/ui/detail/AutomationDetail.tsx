@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Copy, Pencil, Play, Trash2, ChevronDown } from 'lucide-react';
-import { toast } from 'sonner';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { Button } from '../../../../ui/components/button';
 import { Switch } from '../../../../ui/components/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../ui/components/tabs';
@@ -11,7 +11,7 @@ import { RelativeTime } from '../../../../ui/components/huhu/RelativeTime';
 import { useT, useOwnerWindow } from '../../../../ui/react/hooks';
 import { isActiveRun, type AutomationDefinition, type AutomationRun } from '../../../../shared/automation/types';
 import { actionText } from '../../core/actions/registry';
-import { IconButton } from '../parts';
+import { IconButton, IdField } from '../parts';
 import { actionName, actionView } from '../actions/registry';
 import { nextRun, scheduleLabel, tokenLabel, durationLabel } from '../format';
 import { LastRunCell } from '../list/LastRunCell';
@@ -45,13 +45,14 @@ export function AutomationDetail({
 }) {
 	const t = useT(),
 		win = useOwnerWindow(),
+		notice = useDesignNotice(),
 		[limit, setLimit] = useState(50);
 	const latest = runs[runs.length - 1],
 		next = nextRun(d),
 		view = actionView(d.action.kind),
 		facts = view.facts?.(d.action) ?? [];
 	return (
-		<Tabs defaultValue="overview" className="flex min-h-0 flex-1 flex-col px-6 pb-6">
+		<Tabs defaultValue="overview" className="flex min-h-0 flex-1 flex-col px-4 pb-4">
 			<TabsList className="mb-4 shrink-0">
 				<TabsTrigger value="overview">{t('automation.overview')}</TabsTrigger>
 				<TabsTrigger value="runs">{t('automation.history')}</TabsTrigger>
@@ -60,7 +61,7 @@ export function AutomationDetail({
 				<div className="flex w-full flex-col gap-4">
 					<div className="flex flex-wrap items-start justify-between gap-4 border-b border-border/50 pb-4">
 						<div className="min-w-0">
-							<h2 className="m-0 truncate text-lg font-semibold">{d.name}</h2>
+							<h2 className="m-0 break-words text-lg font-semibold">{d.name}</h2>
 							<div className="mt-2 flex items-center gap-2">
 								<Switch
 									checked={d.enabled}
@@ -73,7 +74,7 @@ export function AutomationDetail({
 								</span>
 							</div>
 						</div>
-						<div className="flex shrink-0 items-center gap-2">
+						<div className="flex shrink-0 flex-wrap items-center gap-2">
 							<Button
 								variant="secondary"
 								size="sm"
@@ -135,6 +136,7 @@ export function AutomationDetail({
 								</Button>
 							</DetailMetric>
 						)}
+						<IdField label={t('automation.automationId')} value={d.id} />
 						<DetailMetric label={t('automation.lastRun')}>
 							<LastRunCell run={latest} />
 							{latest && (
@@ -157,7 +159,7 @@ export function AutomationDetail({
 								onClick={() => {
 									void win.navigator.clipboard
 										.writeText(actionText(d.action))
-										.catch((error) => toast.error(String(error)));
+										.catch((error) => notice(String(error)));
 								}}
 							>
 								<Copy className="size-4" />

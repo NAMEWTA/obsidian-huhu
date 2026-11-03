@@ -27,9 +27,9 @@ export function RunsPage({
 				(range === 'all' || run.startedAt >= now - Number(range) * 86_400_000),
 		);
 	return (
-		<div className="flex min-h-0 flex-1 flex-col gap-4 px-6 pb-6">
+		<div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4">
 			<div className="flex flex-wrap items-end gap-3">
-				<div className="w-56">
+				<div className="w-56 max-w-full">
 					<Field label={t('automation.result')}>
 						{(id) => (
 							<Choice
@@ -56,7 +56,7 @@ export function RunsPage({
 						)}
 					</Field>
 				</div>
-				<div className="w-56">
+				<div className="w-56 max-w-full">
 					<Field label={t('automation.title')}>
 						{(id) => (
 							<SearchChoice
@@ -72,7 +72,7 @@ export function RunsPage({
 						)}
 					</Field>
 				</div>
-				<div className="w-40">
+				<div className="w-40 max-w-full">
 					<Field label={t('automation.dateRange')}>
 						{(id) => (
 							<Choice

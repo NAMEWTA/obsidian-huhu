@@ -22,7 +22,6 @@ export function LastRunCell({ run, showTime = true }: { run?: AutomationRun; sho
 						? 'text-status-success'
 						: 'text-muted-foreground',
 			)}
-			title={automationOutcome(run)}
 		>
 			<Icon className={cn('size-3.5 shrink-0', active && 'animate-spin motion-reduce:animate-none')} />
 			<span className="truncate">

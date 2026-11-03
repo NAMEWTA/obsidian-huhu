@@ -37,10 +37,15 @@ export interface NotificationInbox {
 	subscribe(listener: () => void): () => void;
 }
 
+/** What the sender knows about the automation a record reported on, resolved by its stable id. */
+export type NotificationTargetName = { state: 'current'; name: string } | { state: 'deleted' };
+
 /** Opens what a notification points at. The module that sends a kind of notification contributes its opener. */
 export interface NotificationOpener {
 	canOpen(record: NotificationRecord): boolean;
 	open(record: NotificationRecord): Promise<void>;
+	/** Current name of the record's target, or that it no longer exists. Absent when the sender cannot tell. */
+	describe?(record: NotificationRecord): NotificationTargetName | undefined;
 }
 
 export const NOTIFICATION_INBOX = serviceKey<NotificationInbox>('notifications', 'inbox');

@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from 'react';
 import { VisibleTooltip as Tooltip } from '../parts';
 import { useTransient } from '../use-transient';
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/automations/AutomationListLocalRow.tsx
@@ -15,19 +16,66 @@ import {
 import { TooltipTrigger, TooltipContent } from '../../../../ui/components/tooltip';
 import { RelativeTime } from '../../../../ui/components/huhu/RelativeTime';
 import { cn } from '../../../../ui/lib/utils';
-import { useT } from '../../../../ui/react/hooks';
+import { useOwnerWindow, useT } from '../../../../ui/react/hooks';
 import { isActiveRun, type AutomationDefinition, type AutomationRun } from '../../../../shared/automation/types';
 import { IconButton } from '../parts';
 import { actionName, actionView } from '../actions/registry';
 import { nextRun, scheduleLabel } from '../format';
 import { LastRunCell } from './LastRunCell';
-import { NARROW_HIDDEN, NARROWER_HIDDEN, STICKY_CELL, TABLE_GRID, TABLE_ROW } from './table-layout';
+import { NARROW_HIDDEN, NARROWER_HIDDEN, STACK_FULL, STACK_ORDER, STICKY_CELL, TABLE_GRID, TABLE_ROW } from './table-layout';
 export interface RowActions {
 	onOpen: (definition: AutomationDefinition) => void;
 	onRun: (definition: AutomationDefinition) => void;
 	onEdit: (definition: AutomationDefinition) => void;
 	onToggle: (definition: AutomationDefinition) => void;
 	onDelete: (definition: AutomationDefinition) => void;
+}
+/** The name wraps to two lines; a longer one gets a control that shows all of it. */
+function RowName({ name, onOpen }: { name: string; onOpen: () => void }) {
+	const t = useT(),
+		win = useOwnerWindow() as Window & { ResizeObserver?: typeof ResizeObserver },
+		text = useRef<HTMLSpanElement>(null),
+		[expanded, setExpanded] = useState(false),
+		[clamped, setClamped] = useState(false);
+	useLayoutEffect(() => {
+		const el = text.current;
+		if (!el || expanded) return;
+		const measure = () => setClamped(el.scrollHeight > el.clientHeight + 1);
+		measure();
+		if (typeof win.ResizeObserver !== 'function') return;
+		const observer = new win.ResizeObserver(measure);
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [name, expanded, win]);
+	return (
+		<div className="min-w-24 flex-1">
+			<button
+				type="button"
+				className="w-full min-w-0 justify-start whitespace-normal text-left font-medium focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				onClick={(event) => {
+					event.stopPropagation();
+					onOpen();
+				}}
+			>
+				<span ref={text} className={cn('block w-full min-w-0 text-left break-words', !expanded && 'line-clamp-2')}>
+					{name}
+				</span>
+			</button>
+			{(clamped || expanded) && (
+				<button
+					type="button"
+					aria-expanded={expanded}
+					className="rounded-sm text-xs text-primary focus-visible:ring-[3px] focus-visible:ring-ring/50"
+					onClick={(event) => {
+						event.stopPropagation();
+						setExpanded(!expanded);
+					}}
+				>
+					{t(expanded ? 'automation.collapseName' : 'automation.expandName')}
+				</button>
+			)}
+		</div>
+	);
 }
 export function AutomationRow({
 	definition: d,
@@ -56,28 +104,19 @@ export function AutomationRow({
 				actions.onOpen(d);
 			}}
 		>
-			<span role="cell" className={STICKY_CELL}>
+			<span role="cell" className={cn(STICKY_CELL, STACK_FULL)}>
 				{running && <span className="absolute -left-3 top-0 bottom-0 w-0.5 bg-primary" />}
-				<div className="min-w-0">
-					<div className="flex items-center gap-2">
-						<button
-							type="button"
-							className="min-h-8 min-w-0 truncate text-left font-medium focus-visible:ring-[3px] focus-visible:ring-ring/50"
-							onClick={(e) => {
-								e.stopPropagation();
-								actions.onOpen(d);
-							}}
-						>
-							{d.name}
-						</button>
+				<div className="min-w-0 flex-1">
+					<div className="flex flex-wrap items-start gap-x-2">
+						<RowName name={d.name} onOpen={() => actions.onOpen(d)} />
 						{!d.enabled && (
-							<Badge variant="secondary" className="text-2xs">
+							<Badge variant="secondary" className="mt-1 text-2xs">
 								{t('automation.disabled')}
 							</Badge>
 						)}
 					</div>
 					{d.source && (
-						<div className="truncate text-xs text-muted-foreground">
+						<div className="break-words text-xs text-muted-foreground">
 							{t('automation.sourceLabel', {
 								kind: t(`automation.source.${d.source.kind}`),
 								name: d.source.path,
@@ -86,7 +125,7 @@ export function AutomationRow({
 					)}
 				</div>
 			</span>
-			<span role="cell" className="min-w-0 truncate text-muted-foreground" title={scheduleLabel(d.schedule)}>
+			<span role="cell" className={cn('min-w-0 truncate text-muted-foreground @max-[660px]:whitespace-normal @max-[660px]:break-words', STACK_ORDER[0])}>
 				{scheduleLabel(d.schedule)}
 			</span>
 			<span role="cell" className={cn('min-w-0 text-muted-foreground', NARROWER_HIDDEN)}>
@@ -94,19 +133,15 @@ export function AutomationRow({
 					<ActionIcon className="size-3.5 shrink-0" />
 					{actionName(d.action.kind)}
 				</span>
-				{hint && (
-					<span className="block truncate text-xs" title={hint}>
-						{hint}
-					</span>
-				)}
+				{hint && <span className="block truncate text-xs">{hint}</span>}
 			</span>
 			<span role="cell" className={cn('min-w-0 truncate text-muted-foreground', NARROW_HIDDEN)}>
 				{next ? <RelativeTime value={next} /> : '—'}
 			</span>
-			<span role="cell">
+			<span role="cell" className={cn('min-w-0', STACK_FULL, STACK_ORDER[2])}>
 				<LastRunCell run={lastRun} />
 			</span>
-			<span role="cell" onClick={(event) => event.stopPropagation()}>
+			<span role="cell" className={cn('flex justify-end', STACK_ORDER[1])} onClick={(event) => event.stopPropagation()}>
 				<Switch
 					checked={d.enabled}
 					disabled={disabled}
@@ -126,50 +161,34 @@ export function AutomationRow({
 					'—'
 				)}
 			</span>
-			<span role="cell" className="relative flex justify-end" onClick={(event) => event.stopPropagation()}>
-				<div className="absolute right-8 top-1/2 hidden -translate-y-1/2 items-center gap-1 rounded-md bg-accent px-1 group-hover/list-table-row:flex group-focus-within/list-table-row:flex">
-					<IconButton
-						label={t('automation.run')}
-						size="icon-xs"
-						disabled={disabled}
-						onClick={() => actions.onRun(d)}
-					>
-						<Play className="size-3.5" />
-					</IconButton>
-					<IconButton
-						label={t('automation.edit')}
-						size="icon-xs"
-						disabled={disabled}
-						onClick={() => actions.onEdit(d)}
-					>
-						<Pencil className="size-3.5" />
-					</IconButton>
-					<IconButton
-						label={t(d.enabled ? 'automation.pause' : 'automation.resume')}
-						size="icon-xs"
-						disabled={disabled}
-						onClick={() => actions.onToggle(d)}
-					>
-						{d.enabled ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
-					</IconButton>
-					<IconButton
-						label={t('automation.delete')}
-						size="icon-xs"
-						disabled={disabled || running}
-						onClick={() => actions.onDelete(d)}
-					>
-						<Trash2 className="size-3.5 text-destructive" />
-					</IconButton>
-				</div>
+			<span
+				role="cell"
+				className={cn('flex flex-wrap items-center justify-end gap-1 @max-[660px]:justify-start', STACK_FULL, STACK_ORDER[3])}
+				onClick={(event) => event.stopPropagation()}
+			>
+				<IconButton
+					label={t('automation.runNamed', { name: d.name })}
+					disabled={disabled}
+					onClick={() => actions.onRun(d)}
+				>
+					<Play className="size-4" />
+				</IconButton>
+				<IconButton
+					label={t('automation.editNamed', { name: d.name })}
+					disabled={disabled}
+					onClick={() => actions.onEdit(d)}
+				>
+					<Pencil className="size-4" />
+				</IconButton>
 				<DropdownMenu open={layer.open} onOpenChange={layer.onOpenChange}>
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<DropdownMenuTrigger asChild>
 								<Button
 									variant="ghost"
-									size="icon-xs"
+									size="icon-sm"
 									aria-label={t('automation.actionsFor', { name: d.name })}
-									className="size-7 text-muted-foreground"
+									className="text-muted-foreground"
 								>
 									<MoreHorizontal className="size-4" />
 								</Button>
@@ -181,20 +200,6 @@ export function AutomationRow({
 					</Tooltip>
 					{layer.visible && (
 						<DropdownMenuContent onCloseAutoFocus={layer.onCloseAutoFocus} align="end" className="w-48">
-							<DropdownMenuItem
-								disabled={disabled}
-								onSelect={() => actions.onRun(d)}
-							>
-								<Play className="size-3.5" />
-								{t('automation.run')}
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								disabled={disabled}
-								onSelect={() => actions.onEdit(d)}
-							>
-								<Pencil className="size-3.5" />
-								{t('automation.edit')}
-							</DropdownMenuItem>
 							<DropdownMenuItem
 								disabled={disabled}
 								onSelect={() => actions.onToggle(d)}

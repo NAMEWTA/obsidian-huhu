@@ -148,6 +148,14 @@ export default function createAutomationsModule(context: ModuleContext): ModuleI
 		open: async (record) => {
 			await runtime?.opener.open(record);
 		},
+		// Only a running module with readable definitions can say a target is gone; otherwise the name is unknown.
+		describe: (record) => {
+			const id = record.target?.automationId,
+				service = runtime?.service;
+			if (!id || !service || service.loadError) return undefined;
+			const found = service.definitions.find((definition) => definition.id === id);
+			return found ? { state: 'current', name: found.name } : { state: 'deleted' };
+		},
 	};
 	const invocations: AutomationInvocations = {
 		// Async so a refusal (module off, recovery hold) is always a rejected promise, never a synchronous throw.

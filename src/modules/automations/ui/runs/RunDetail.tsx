@@ -4,8 +4,8 @@ import { Button } from '../../../../ui/components/button';
 import { useT, useOwnerWindow, useLanguage } from '../../../../ui/react/hooks';
 import { isActiveRun, type AutomationRun } from '../../../../shared/automation/types';
 import { automationMessage } from '../../../../shared/automation/errors';
-import { toast } from 'sonner';
-import { IconButton } from '../parts';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
+import { IconButton, IdField } from '../parts';
 import { actionDefinition } from '../../core/actions/registry';
 import { LastRunCell } from '../list/LastRunCell';
 import { durationLabel, tokenLabel } from '../format';
@@ -21,16 +21,17 @@ export function RunDetail({
 }: Omit<RunActions, 'onOpen'> & { run: AutomationRun; disabled: boolean }) {
 	const t = useT(),
 		win = useOwnerWindow(),
+		notice = useDesignNotice(),
 		language = useLanguage();
 	const copy = (text: string) => {
-		void win.navigator.clipboard.writeText(text).catch((error) => toast.error(String(error)));
+		void win.navigator.clipboard.writeText(text).catch((error) => notice(String(error)));
 	};
 	return (
-		<div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">
+		<div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-4">
 					<div className="min-w-0 flex-1 space-y-2">
-						<h2 className="m-0 truncate text-lg font-semibold" title={run.title}>
+						<h2 className="m-0 break-words text-lg font-semibold">
 							{run.title}
 						</h2>
 						<LastRunCell run={run} showTime={false} />
@@ -68,6 +69,10 @@ export function RunDetail({
 							<div className="mt-1 text-sm font-medium">{value}</div>
 						</div>
 					))}
+				</div>
+				<div className="grid grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-4 rounded-md border border-border/50 px-4 py-3">
+					<IdField label={t('automation.runId')} value={run.id} />
+					<IdField label={t('automation.automationId')} value={run.automationId} />
 				</div>
 				{run.taskDelivery && (
 					<section className="space-y-2 rounded-md border border-border/50 p-4">

@@ -1,6 +1,8 @@
 import { ReactSurface } from '../../../ui/react/surface';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { t, onLanguageChanged } from '../../../shared/i18n';
 import type { NotificationService } from '../core/service';
+import type { NotificationTargetName } from '../api';
 import { type NativeSurfaceContext } from '../../../ui/native-surface';
 import { InboxPanel } from './InboxPanel';
 
@@ -8,6 +10,9 @@ import { InboxPanel } from './InboxPanel';
 export class NotificationPresentation extends ReactSurface {
 	private generation = 0;
 	private openable = new Set<string>();
+	private names = new Map<string, NotificationTargetName | undefined>();
+	private error = '';
+	private busy = false;
 	constructor(
 		context: NativeSurfaceContext,
 		private readonly service: NotificationService,
@@ -40,10 +45,17 @@ export class NotificationPresentation extends ReactSurface {
 	private draw(): void {
 		const generation = ++this.generation;
 		const records = this.service.records;
-		void Promise.all(records.map(async (record) => ((await this.service.canOpen(record)) ? record.id : undefined)))
-			.then((ids) => {
+		void Promise.all(
+			records.map(async (record) => ({
+				id: record.id,
+				openable: await this.service.canOpen(record),
+				name: record.target ? await this.service.describe(record) : undefined,
+			})),
+		)
+			.then((rows) => {
 				if (generation !== this.generation) return;
-				this.openable = new Set(ids.filter((id): id is string => id !== undefined));
+				this.openable = new Set(rows.filter((row) => row.openable).map((row) => row.id));
+				this.names = new Map(rows.map((row) => [row.id, row.name]));
 				this.rerender();
 			})
 			.catch(this.report);
@@ -51,21 +63,40 @@ export class NotificationPresentation extends ReactSurface {
 	}
 	protected renderContent() {
 		return (
-			<InboxPanel
-				records={this.service.records}
-				filter={this.filter}
-				markRead={(id) => {
-					void this.service.markRead(id).catch(this.report);
-				}}
-				clearRead={() => {
-					void this.service.clearRead().catch(this.report);
-				}}
-				open={(record) => {
-					void this.service.open(record).catch(this.report);
-				}}
-				openable={this.openable}
-			/>
+			<DesignScope className="flex h-full min-h-0 flex-col overflow-auto">
+				<InboxPanel
+					records={this.service.records}
+					filter={this.filter}
+					markRead={(id) => this.perform(() => this.service.markRead(id))}
+					clearRead={() => this.perform(() => this.service.clearRead())}
+					open={(record) => this.perform(() => this.service.open(record))}
+					openable={this.openable}
+					names={this.names}
+					error={this.error}
+					busy={this.busy}
+					dismissError={() => {
+						this.error = '';
+						this.rerender();
+					}}
+				/>
+			</DesignScope>
 		);
+	}
+	/** Run one action; a failure stays visible in the page until dismissed, and is also reported. */
+	private perform(operation: () => Promise<void>): void {
+		if (this.busy) return;
+		this.busy = true;
+		this.error = '';
+		this.rerender();
+		void operation()
+			.catch((error) => {
+				this.error = error instanceof Error ? error.message : String(error);
+				this.report(error);
+			})
+			.finally(() => {
+				this.busy = false;
+				this.rerender();
+			});
 	}
 	onClose(): Promise<void> {
 		this.generation++;

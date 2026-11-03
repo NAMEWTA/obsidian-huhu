@@ -6,7 +6,7 @@ import { useT } from '../../../../ui/react/hooks';
 import type { AutomationDefinition, AutomationRun } from '../../../../shared/automation/types';
 import { cn } from '../../../../ui/lib/utils';
 import { AutomationRow, type RowActions } from './AutomationRow';
-import { NARROW_HIDDEN, NARROWER_HIDDEN, STICKY_CELL, TABLE_GRID } from './table-layout';
+import { NARROW_HIDDEN, NARROWER_HIDDEN, STACK_HEADER_HIDDEN, STICKY_CELL, TABLE_GRID } from './table-layout';
 export interface ListSort {
 	by: 'name' | 'lastRun';
 	direction: 'asc' | 'desc';
@@ -53,12 +53,12 @@ export function AutomationsTable({
 			role="table"
 			aria-label={t('automation.title')}
 		>
-			<div className="min-w-[26rem]">
+			<div className="min-w-0 @min-[661px]:min-w-[26rem]">
 				<div
 					role="row"
 					className={cn(
 						TABLE_GRID,
-						'sticky top-0 z-10 h-9 items-center gap-3 border-b border-border/50 bg-background px-3 text-xs font-medium text-muted-foreground',
+						'sticky top-0 z-10 min-h-9 items-center gap-3 border-b border-border/50 bg-background px-3 text-xs font-medium text-muted-foreground @max-[660px]:flex @max-[660px]:flex-wrap @max-[660px]:gap-y-0',
 					)}
 				>
 					<span
@@ -71,12 +71,13 @@ export function AutomationsTable({
 						{header('name')}
 					</span>
 					{['schedule', 'actionDirectory', 'nextRun'].map((key) => (
-						<span role="columnheader" key={key} className={key === 'nextRun' ? NARROW_HIDDEN : key === 'actionDirectory' ? NARROWER_HIDDEN : undefined}>
+						<span role="columnheader" key={key} className={cn(STACK_HEADER_HIDDEN, key === 'nextRun' ? NARROW_HIDDEN : key === 'actionDirectory' ? NARROWER_HIDDEN : undefined)}>
 							{t(`automation.${key}`)}
 						</span>
 					))}
 					<span
 						role="columnheader"
+						className="@max-[660px]:ml-auto"
 						aria-sort={
 							sort.by === 'lastRun' ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'
 						}
@@ -84,7 +85,7 @@ export function AutomationsTable({
 						{header('lastRun')}
 					</span>
 					{['status', 'agent', 'actions'].map((key) => (
-						<span role="columnheader" key={key} className={key === 'agent' ? NARROW_HIDDEN : undefined}>
+						<span role="columnheader" key={key} className={cn(STACK_HEADER_HIDDEN, key === 'agent' ? NARROW_HIDDEN : undefined)}>
 							{t(`automation.${key}`)}
 						</span>
 					))}

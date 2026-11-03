@@ -79,8 +79,7 @@ test('row controls and portaled menu actions never open detail; status filter an
 	await user.click(screen.getByRole('switch', { name: 'Pause Alpha' }));
 	expect(f.service.save).toHaveBeenCalledWith(expect.objectContaining({ id: 'Alpha', enabled: false }));
 	expect(f.navigate).not.toHaveBeenCalled();
-	await user.click(screen.getByRole('button', { name: 'Actions for Alpha' }));
-	await user.click(await screen.findByRole('menuitem', { name: 'Edit' }));
+	await user.click(screen.getByRole('button', { name: 'Edit Alpha' }));
 	await waitFor(() => expect(document.querySelector('[data-automation-editor]')).not.toBeNull());
 	expect(f.navigate).not.toHaveBeenCalled();
 	await user.click(screen.getByRole('button', { name: 'Close' }));
@@ -342,8 +341,7 @@ test('hiding the page with an open picker releases the picker layer; the editor 
 	const f = fixture(),
 		user = userEvent.setup();
 	const page = render(<f.Page />);
-	await user.click(screen.getByRole('button', { name: 'Actions for Alpha' }));
-	await user.click(screen.getByRole('menuitem', { name: 'Edit' }));
+	await user.click(screen.getByRole('button', { name: 'Edit Alpha' }));
 	await waitFor(() => expect(document.querySelector('[data-automation-editor]')).not.toBeNull());
 	fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'Renamed' } });
 	await user.click(screen.getAllByRole('combobox')[0]!);

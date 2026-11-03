@@ -1,7 +1,7 @@
 // Adapted from stablyai/orca 464bd5a (MIT), Copyright (c) 2026 Lovecast Inc.: src/renderer/src/components/automations/automation-page-parts.tsx
 import type { ComponentProps, ReactNode } from 'react';
 import { useId } from 'react';
-import { ChevronsUpDown, Check } from 'lucide-react';
+import { ChevronsUpDown, Check, Copy } from 'lucide-react';
 import { Button } from '../../../ui/components/button';
 import { cn } from '../../../ui/lib/utils';
 import { Label } from '../../../ui/components/label';
@@ -10,7 +10,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/components/
 import { Popover, PopoverContent, PopoverTrigger } from '../../../ui/components/popover';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '../../../ui/components/command';
 import { useTransient } from './use-transient';
-import { useT } from '../../../ui/react/hooks';
+import { useOwnerWindow, useT } from '../../../ui/react/hooks';
+import { useDesignNotice } from '../../../ui/react/design-scope';
 
 export function VisibleTooltip(props: ComponentProps<typeof Tooltip>) {
 	const layer = useTransient();
@@ -27,6 +28,31 @@ export function IconButton({ label, children, ...props }: ComponentProps<typeof 
 			</TooltipTrigger>
 			{layer.visible && <TooltipContent>{label}</TooltipContent>}
 		</VisibleTooltip>
+	);
+}
+/** A stable identifier in monospace with a copy control; the value wraps instead of widening the page. */
+export function IdField({ label, value }: { label: string; value: string }) {
+	const t = useT(),
+		win = useOwnerWindow(),
+		notice = useDesignNotice();
+	return (
+		<div className="flex min-w-0 items-center gap-2" data-id-field>
+			<div className="min-w-0 flex-1">
+				<div className="text-[11px] font-medium uppercase text-muted-foreground">{label}</div>
+				<code className="mt-1 block break-all font-mono text-xs">{value}</code>
+			</div>
+			<IconButton
+				label={t('automation.copyLabel', { label })}
+				onClick={() => {
+					void win.navigator.clipboard.writeText(value).then(
+						() => notice(t('automation.copiedLabel', { label })),
+						(error) => notice(error instanceof Error ? error.message : String(error)),
+					);
+				}}
+			>
+				<Copy className="size-4" />
+			</IconButton>
+		</div>
 	);
 }
 export function Field({

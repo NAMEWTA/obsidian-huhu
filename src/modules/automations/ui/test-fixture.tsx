@@ -2,6 +2,7 @@ import { VisibilityContext } from '../../../ui/react/contexts';
 import { useState } from 'react';
 import { vi } from 'vitest';
 import { TestProviders } from '../../../ui/react/test-providers';
+import { DesignScope } from '../../../ui/react/design-scope';
 import type { AutomationDefinition, AutomationRun } from '../../../shared/automation/types';
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
 import type { AutomationsApi } from '../core/api';
@@ -71,6 +72,7 @@ export function fixture(definitions = [definition('Alpha'), definition('Beta')],
 		return (
 			<TestProviders>
 				<VisibilityContext.Provider value={visible}>
+					<DesignScope>
 					<AutomationsPage
 						host={host}
 						target={target}
@@ -84,6 +86,7 @@ export function fixture(definitions = [definition('Alpha'), definition('Beta')],
 						onNavigation={() => {}}
 						onEditConsumed={() => {}}
 					/>
+					</DesignScope>
 				</VisibilityContext.Provider>
 			</TestProviders>
 		);

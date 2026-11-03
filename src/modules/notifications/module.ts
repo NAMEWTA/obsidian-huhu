@@ -25,6 +25,10 @@ export default function createNotificationsModule(context: ModuleContext): Modul
 	const inbox = new NotificationService(privateVaultStorage(context.app), notificationInboxPath(deviceId(context.app)), open, createNotificationDelivery(context.app), async record => {
 		const openers = await context.contributions.collect(NOTIFICATION_OPENERS, { activate: false });
 		return openers.some(item => item.value.canOpen(record));
+	}, async record => {
+		const openers = await context.contributions.collect(NOTIFICATION_OPENERS, { activate: false });
+		for (const item of openers) { const found = item.value.describe?.(record); if (found) return found; }
+		return undefined;
 	});
 	context.lifetime.register(context.contributions.watch(NOTIFICATION_OPENERS, () => inbox.refreshOpeners()));
 	// The inbox file takes part in cross-owner backup and restore; a module that is off has no owner and is handled offline.

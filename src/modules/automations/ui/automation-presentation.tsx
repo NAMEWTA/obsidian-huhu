@@ -1,6 +1,7 @@
 import type { WorkbenchTarget } from '../../../app/contracts/workbench';
 import type { NativeSurfaceContext } from '../../../ui/native-surface';
 import { ReactSurface } from '../../../ui/react/surface';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { t } from '../../../shared/i18n';
 import type { AutomationEditRequest } from '../core/api';
 import type { AutomationViewHost } from './panel-contract';
@@ -55,6 +56,7 @@ export class AutomationPresentation extends ReactSurface {
 	}
 	protected renderContent() {
 		return (
+			<DesignScope className="flex h-full min-h-0 flex-col">
 			<AutomationsPage
 				key={this.restoreKey}
 				host={this.host}
@@ -72,6 +74,7 @@ export class AutomationPresentation extends ReactSurface {
 				onPageMenu={(event) => this.context.openPageMenu?.(event)}
 				onNavigation={() => this.context.togglePanel?.()}
 			/>
+			</DesignScope>
 		);
 	}
 }

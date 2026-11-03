@@ -4,6 +4,7 @@ import {
 	type NotificationInbox,
 	type NotificationRecord,
 	type NotificationRequest,
+	type NotificationTargetName,
 } from '../api';
 import type { RecoveryOwner } from '../../../shared/storage/recovery-contracts';
 import { automationOutcome } from '../../../shared/automation/errors';
@@ -52,6 +53,7 @@ export class NotificationService implements NotificationInbox {
 		private opener: (record: NotificationRecord) => Promise<void>,
 		private deliveryAdapter: NotificationDelivery,
 		private readonly canOpenRecord?: (record: NotificationRecord) => Promise<boolean>,
+		private readonly describeRecord?: (record: NotificationRecord) => Promise<NotificationTargetName | undefined>,
 	) {
 		this.store = new JsonStore(storage, path, (v): v is InboxState => {
 			if (!v || typeof v !== 'object') return false;
@@ -177,6 +179,10 @@ export class NotificationService implements NotificationInbox {
 	}
 	canOpen(record: NotificationRecord): Promise<boolean> {
 		return this.canOpenRecord?.(record) ?? Promise.resolve(!!(record.source || record.target));
+	}
+	/** The target's current name, resolved by its stable id; the record's own title stays the run-time snapshot. */
+	describe(record: NotificationRecord): Promise<NotificationTargetName | undefined> {
+		return this.describeRecord?.(record) ?? Promise.resolve(undefined);
 	}
 	refreshOpeners(): void { this.emit(); }
 	/** Close admission for a recovery operation. Already queued work is finished by `drainWrites`. */
