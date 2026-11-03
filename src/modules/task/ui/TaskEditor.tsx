@@ -187,7 +187,7 @@ export function TaskEditor({ tasks, resources, id, initial, close, onSaved, sign
 					disabled={disabled}
 				/>
 			</Label>
-			<div className="grid grid-cols-2 gap-3">
+			<div className="grid gap-3 sm:grid-cols-2">
 				<Label className="grid gap-2">
 					{t('task.due')}
 					<Input
@@ -229,7 +229,7 @@ export function TaskEditor({ tasks, resources, id, initial, close, onSaved, sign
 					disabled={disabled}
 				/>
 			</Label>
-			<div className="grid grid-cols-2 gap-3">
+			<div className="grid gap-3 sm:grid-cols-2">
 				<Label className="grid gap-2">
 					{t('task.reminder')}
 					<Input

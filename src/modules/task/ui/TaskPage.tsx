@@ -10,6 +10,7 @@ import type {
 	TaskResourceResolution,
 } from '../api';
 import { zonedStamp } from '../core/time';
+import { longDate } from './date-format';
 import { resourceKey } from '../core/resources';
 import { t } from '../../../shared/i18n';
 import { Button } from '../../../ui/components/button';
@@ -94,7 +95,7 @@ export function TaskPage({
 	return (
 		<div
 			ref={root}
-			className={`flex h-full min-h-0 flex-col gap-3 ${compact ? '' : 'p-4 md:p-6'}`}
+			className={`@container flex h-full min-h-0 flex-col gap-3 ${compact ? '' : 'p-4 md:p-6'}`}
 			data-task-domain
 		>
 			<header className="flex flex-wrap items-center justify-between gap-2">
@@ -111,7 +112,7 @@ export function TaskPage({
 				) : (
 					<h2 className="m-0 text-lg font-semibold">{t('task.title')}</h2>
 				)}
-				<div className="flex gap-2">
+				<div className="flex flex-wrap gap-2">
 					{!compact && (
 						<Button
 							variant="outline"
@@ -144,33 +145,40 @@ export function TaskPage({
 				</div>
 			)}
 			{!compact && (
-				<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-					<Input
-						value={text}
-						onChange={(event) => setText(event.currentTarget.value)}
-						placeholder={t('task.search')}
-						aria-label={t('task.search')}
-					/>
-					<Choice
-						label={t('task.sort')}
-						value={dimension ?? 'effectiveDate'}
-						options={['effectiveDate', 'due', 'createdAt', 'reminderAt', 'completedAt'].map(
-							(key) => [key, t(`task.sort.${key}`)] as const,
-						)}
-						onChange={(value) => setDimension(value as TaskQuery['timeField'])}
-					/>
-					<Choice
-						label={t('task.order')}
-						value={order}
-						options={['asc', 'desc'].map((key) => [key, t(`task.${key}`)] as const)}
-						onChange={(value) => setOrder(value as 'asc' | 'desc')}
-					/>
-					<div className="grid grid-cols-2 gap-2">
-						<Label>
+				<div className="grid min-w-0 gap-3">
+					<div className="grid min-w-0 gap-3 @lg:grid-cols-2">
+						<Input
+							value={text}
+							onChange={(event) => setText(event.currentTarget.value)}
+							placeholder={t('task.search')}
+							aria-label={t('task.search')}
+						/>
+						<Choice
+							label={t('task.sort')}
+							value={dimension ?? 'effectiveDate'}
+							options={['effectiveDate', 'due', 'createdAt', 'reminderAt', 'completedAt'].map(
+								(key) => [key, t(`task.sort.${key}`)] as const,
+							)}
+							onChange={(value) => setDimension(value as TaskQuery['timeField'])}
+						/>
+						<Choice
+							label={t('task.order')}
+							value={order}
+							options={['asc', 'desc'].map((key) => [key, t(`task.${key}`)] as const)}
+							onChange={(value) => setOrder(value as 'asc' | 'desc')}
+						/>
+					</div>
+					<div className="grid min-w-0 gap-3 @lg:grid-cols-2" data-task-range>
+						<Label className="grid min-w-0 gap-2">
 							{t('task.from')}
 							<Input type="date" value={from} onChange={(event) => setFrom(event.currentTarget.value)} />
+							{from && (
+								<span className="break-words text-xs font-normal text-muted-foreground" data-task-date="from">
+									{longDate(from)}
+								</span>
+							)}
 						</Label>
-						<Label>
+						<Label className="grid min-w-0 gap-2">
 							{t('task.to')}
 							<Input
 								type="date"
@@ -178,6 +186,11 @@ export function TaskPage({
 								min={from || undefined}
 								onChange={(event) => setTo(event.currentTarget.value)}
 							/>
+							{to && (
+								<span className="break-words text-xs font-normal text-muted-foreground" data-task-date="to">
+									{longDate(to)}
+								</span>
+							)}
 						</Label>
 					</div>
 				</div>
@@ -213,7 +226,7 @@ export function TaskPage({
 				</p>
 			)}
 			<div className="min-h-0 flex-1 overflow-y-auto">
-				<ul className="m-0 grid list-none gap-2 p-0">
+				<ul className="m-0 grid grid-cols-1 list-none gap-2 p-0">
 					{page.items.map((task) => (
 						<li key={task.id} className="rounded-lg border bg-card p-3">
 							<div className="flex items-start gap-2">
@@ -226,7 +239,7 @@ export function TaskPage({
 									}}
 								/>
 								<Button
-									className="h-auto min-w-0 flex-1 justify-start whitespace-normal p-0 text-left font-medium"
+									className="h-auto min-w-0 flex-1 justify-start whitespace-normal p-0 text-left font-medium text-foreground"
 									variant="link"
 									onClick={() => edit(task.id)}
 								>
@@ -234,10 +247,10 @@ export function TaskPage({
 								</Button>
 							</div>
 							<div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-								<span>
+								<span className="min-w-0 break-words">
 									{t('task.due')}:{' '}
 									{task.due
-										? `${task.due.date} ${task.due.time ?? ''} · ${task.timezone}`
+										? `${longDate(task.due.date)} ${task.due.time ?? ''} · ${task.timezone}`
 										: t('task.none')}
 								</span>
 								{task.reminderAt !== undefined && (
@@ -285,7 +298,9 @@ export function TaskPage({
 					))}
 				</ul>
 				{page.total === 0 && snapshot.status === 'ready' && (
-					<p className="py-6 text-center text-sm text-muted-foreground">{t('task.empty')}</p>
+					<p className="py-6 text-center text-sm text-muted-foreground">
+						{t(text || from || to ? 'task.noResults' : 'task.empty')}
+					</p>
 				)}
 			</div>
 			<footer className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
@@ -301,7 +316,7 @@ export function TaskPage({
 						{t('task.showAll')}
 					</Button>
 				) : (
-					<div className="flex gap-2">
+					<div className="flex flex-wrap gap-2">
 						<Button
 							size="sm"
 							variant="outline"

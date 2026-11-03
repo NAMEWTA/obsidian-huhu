@@ -3,7 +3,16 @@ import type { NativeSurfaceContext } from '../../../ui/native-surface';
 import type { TaskService, TaskResources, TaskViews } from '../api';
 import { ReactSurface } from '../../../ui/react/surface';
 import { t } from '../../../shared/i18n';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { TaskPage } from './TaskPage';
+/** The standalone task page: one design-system content region around the shared task list. */
+export function TaskWorkbench(props: { tasks: TaskService; resources: TaskResources; views: TaskViews; selectedId?: string }) {
+	return (
+		<DesignScope className="h-full min-h-0">
+			<TaskPage {...props} />
+		</DesignScope>
+	);
+}
 class TaskPresentation extends ReactSurface {
 	constructor(
 		context: NativeSurfaceContext,
@@ -28,7 +37,7 @@ class TaskPresentation extends ReactSurface {
 		this.rerender();
 	}
 	protected renderContent() {
-		return <TaskPage tasks={this.tasks} resources={this.resources} views={this.views} selectedId={this.selected} />;
+		return <TaskWorkbench tasks={this.tasks} resources={this.resources} views={this.views} selectedId={this.selected} />;
 	}
 }
 export const taskPage =
