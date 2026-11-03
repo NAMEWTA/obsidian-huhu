@@ -20,7 +20,7 @@ test.each([undefined, 'large', 'garbage'])(
 			</TestProviders>,
 		);
 		const expected = stored === 'large' ? 'large' : 'medium';
-		expect(view.container.querySelector(`.dashboard-media-grid--${expected}`)).toBeTruthy();
+		expect(view.container.querySelector(`[data-card-grid][data-thumb-size="${expected}"]`)).toBeTruthy();
 		expect(values[THUMB_SIZE_STORAGE_KEY]).toBe(stored);
 		fireEvent.pointerDown(
 			screen.getByRole('button', { name: t(expected === 'large' ? 'media.sizeLarge' : 'media.sizeMedium') }),
@@ -28,7 +28,7 @@ test.each([undefined, 'large', 'garbage'])(
 		);
 		fireEvent.click(await screen.findByRole('menuitem', { name: t('media.sizeSmall') }));
 		await waitFor(() => expect(values[THUMB_SIZE_STORAGE_KEY]).toBe('small'));
-		expect(view.container.querySelector('.dashboard-media-grid--small')).toBeTruthy();
+		expect(view.container.querySelector('[data-card-grid][data-thumb-size="small"]')).toBeTruthy();
 		view.unmount();
 		render(
 			<TestProviders>

@@ -2,6 +2,7 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 import type { ComponentProps } from 'react';
 import { MediaLightboxPanel } from './MediaLightboxPanel';
+import { t } from '../../../../shared/i18n';
 import { DashboardDialog } from '../dialogs/DashboardDialog';
 export function MediaLightbox({
 	startIndex,
@@ -25,7 +26,7 @@ export function MediaLightbox({
 		return () => owner?.removeEventListener('keydown', handle);
 	}, [props.files.length]);
 	return (
-		<DashboardDialog title={props.files[index]?.basename ?? ''} onClose={props.close} wide>
+		<DashboardDialog title={props.files[index]?.basename ?? ''} onClose={props.close} cancelLabel={t('common.close')} wide>
 			<div ref={root}>
 				<MediaLightboxPanel
 					{...props}

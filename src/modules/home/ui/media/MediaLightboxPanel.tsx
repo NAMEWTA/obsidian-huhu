@@ -1,14 +1,16 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/media-section.ts
-import { p1Classes } from '../theme/p1-classes';
 import type { App } from 'obsidian';
 import { type ContentFile } from '../../../../host/obsidian/storage/content-files';
 import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { t } from '../../../../shared/i18n';
-import { ObsidianIcon as Icon } from '../../../../ui/components/huhu/ObsidianIcon';
+import { Badge } from '../../../../ui/components/badge';
+import { Button } from '../../../../ui/components/button';
 import { resolveVaultImage } from './image-resource';
-import { MediaVideo } from './MediaViews';
+import { MediaUnavailable, MediaVideo } from './MediaViews';
 import type { MediaTagHooks } from './media-lightbox-modal';
 import { MediaTagEditor } from './MediaTagEditor';
+import { useFocusReturn } from './use-focus-return';
 export function MediaLightboxPanel({
 	app,
 	files,
@@ -16,7 +18,6 @@ export function MediaLightboxPanel({
 	kind,
 	tagHooks,
 	show,
-	close,
 }: {
 	app: App;
 	files: ContentFile[];
@@ -27,77 +28,75 @@ export function MediaLightboxPanel({
 	close: () => void;
 }) {
 	const [editing, setEditing] = useState(false);
+	const [failedSrc, setFailedSrc] = useState<string | null>(null);
 	const [, refresh] = useState(0);
+	const focus = useFocusReturn();
 	const file = files[index];
-	if (!file) return <div className={p1Classes('dashboard-media-lightbox-empty')}>—</div>;
-	const src = resolveVaultImage(app, file.path);
-	if (!src) return null;
+	const src = file ? resolveVaultImage(app, file.path) : null;
+	const failed = failedSrc === src;
+	if (!file) return <MediaUnavailable name="" missing />;
 	return (
-		<>
+		<div className="grid gap-3">
 			{editing && tagHooks && (
 				<MediaTagEditor
 					name={file.basename}
 					path={file.path}
 					current={tagHooks.getTags(file)}
 					known={tagHooks.getAllTags()}
-					onClose={() => setEditing(false)}
+					onClose={() => {
+						focus.restore();
+						setEditing(false);
+					}}
 					onSave={(tags) => {
 						tagHooks.onTagsChange(file, tags);
 						refresh((n) => n + 1);
+						focus.restore();
 						setEditing(false);
 					}}
 				/>
 			)}
-			<div
-				className={p1Classes('dashboard-media-lightbox-stage')}
-				onClick={(e) => {
-					if (e.target === e.currentTarget) close();
-				}}
-			>
-				{kind === 'image' ? (
-					<img className={p1Classes('dashboard-media-lightbox-img')} src={src} alt={file.basename} />
+			<div className="flex min-h-40 max-h-[60vh] items-center justify-center overflow-hidden rounded-md bg-muted">
+				{!src || failed ? (
+					<div className="h-40 w-full">
+						<MediaUnavailable name={file.basename} missing={!src} />
+					</div>
+				) : kind === 'image' ? (
+					<img className="block max-h-[60vh] max-w-full object-contain" src={src} alt={file.basename} onError={() => setFailedSrc(src)} />
 				) : (
-					<MediaVideo key={src} src={src} className={p1Classes('dashboard-media-lightbox-video')} play />
+					<MediaVideo key={src} src={src} className="block max-h-[60vh] max-w-full object-contain" play onError={() => setFailedSrc(src)} />
 				)}
 			</div>
-			<div className={p1Classes('dashboard-media-lightbox-caption')}>
-				{file.basename} ({index + 1} / {files.length})
+			<div role="group" aria-label={t('media.lightboxNav')} className="flex items-center justify-between gap-2">
+				<Button variant="outline" size="icon" aria-label={t('home.p1.previous')} disabled={index <= 0} onClick={() => show(index - 1)}>
+					<ChevronLeft />
+				</Button>
+				<div role="status" className="min-w-0 text-center text-sm text-foreground [overflow-wrap:anywhere]">
+					{file.basename} ({index + 1} / {files.length})
+				</div>
+				<Button variant="outline" size="icon" aria-label={t('home.p1.next')} disabled={index >= files.length - 1} onClick={() => show(index + 1)}>
+					<ChevronRight />
+				</Button>
 			</div>
 			{tagHooks && (
-				<div className={p1Classes('dashboard-media-lightbox-tags')}>
+				<div className="flex flex-wrap items-center justify-center gap-1.5">
 					{tagHooks.getTags(file).map((tag) => (
-						<span key={tag} className={p1Classes('dashboard-media-lightbox-tag')}>
-							{tag}
-						</span>
+						<Badge key={tag} variant="secondary" className="max-w-40">
+							<span className="truncate">{tag}</span>
+						</Badge>
 					))}
-					<div
-						className={p1Classes('dashboard-media-lightbox-tag dashboard-media-lightbox-tag--add')}
-						role="button"
-						onClick={() => setEditing(true)}
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => {
+							focus.remember();
+							setEditing(true);
+						}}
 					>
-						<Icon className={p1Classes('dashboard-media-lightbox-tag-icon')} name="plus" />
-						<span>{t('media.editTags')}</span>
-					</div>
+						<Plus />
+						{t('media.editTags')}
+					</Button>
 				</div>
 			)}
-			<div
-				className={p1Classes(
-					`dashboard-media-lightbox-nav dashboard-media-lightbox-nav--prev${index <= 0 ? ' is-disabled' : ''}`,
-				)}
-				role="button"
-				onClick={() => show(index - 1)}
-			>
-				<Icon name="chevron-left" />
-			</div>
-			<div
-				className={p1Classes(
-					`dashboard-media-lightbox-nav dashboard-media-lightbox-nav--next${index >= files.length - 1 ? ' is-disabled' : ''}`,
-				)}
-				role="button"
-				onClick={() => show(index + 1)}
-			>
-				<Icon name="chevron-right" />
-			</div>
-		</>
+		</div>
 	);
 }

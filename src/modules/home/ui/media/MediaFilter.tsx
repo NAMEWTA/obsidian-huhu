@@ -1,9 +1,13 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/media-section.ts
-import { p1Classes } from '../theme/p1-classes';
 import type { App } from 'obsidian';
 import { Popover, PopoverAnchor, PopoverContent } from '../../../../ui/components/popover';
 import { useDashboardAppearance } from '../theme/ThemeBridge';
 import { t } from '../../../../shared/i18n';
+import { Button } from '../../../../ui/components/button';
+import { Badge } from '../../../../ui/components/badge';
+import { Input } from '../../../../ui/components/input';
+import { Choice, IconButton } from '../board/controls';
+import { X } from 'lucide-react';
 import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
 
 export interface MediaFilterValue {
@@ -32,144 +36,127 @@ export function MediaFilter({
 }) {
 	const popup = useDashboardAppearance();
 	const remove = (path: string) => update({ ...value, folders: value.folders.filter((f) => f !== path) });
+	const row = 'grid gap-1.5';
+	const label = 'text-xs text-muted-foreground';
 	return (
-		<>
-			<Popover
-				open
-				onOpenChange={(open) => {
-					if (!open) close();
+		<Popover
+			open
+			onOpenChange={(open) => {
+				if (!open) close();
+			}}
+		>
+			<PopoverAnchor virtualRef={{ current: anchor }} />
+			<PopoverContent
+				ref={popup}
+				className="huhu-dashboard-root grid max-h-[70vh] w-80 max-w-[calc(100vw-1rem)] gap-3 overflow-y-auto p-4"
+				onCloseAutoFocus={(event) => {
+					event.preventDefault();
+					anchor.focus();
 				}}
 			>
-				<PopoverAnchor virtualRef={{ current: anchor }} />
-				<PopoverContent
-					ref={popup}
-					className={`huhu-dashboard-root p-4 ${p1Classes('dashboard-library-filter-popup')}`}
-				>
-					{tags && (
-						<div className={p1Classes('dashboard-library-quickfilter-row')}>
-							<div className={p1Classes('dashboard-library-quickfilter-label')}>
-								{t('media.filterTags')}
-							</div>
-							<div className={p1Classes('dashboard-library-filter-chips')}>
-								{tags.map((tag) => (
-									<div
+				{tags && (
+					<div className={row}>
+						<div className={label}>{t('media.filterTags')}</div>
+						<div className="flex flex-wrap gap-1.5">
+							{tags.map((tag) => {
+								const on = value.tags.includes(tag);
+								return (
+									<Button
 										key={tag}
-										className={p1Classes(
-											`dashboard-library-filter-chip${value.tags.includes(tag) ? ' selected' : ''}`,
-										)}
-										role="button"
-										tabIndex={0}
-										onKeyDown={(e) => {
-											if (e.key === 'Enter' || e.key === ' ') {
-												e.preventDefault();
-												e.currentTarget.click();
-											}
-										}}
+										variant={on ? 'default' : 'outline'}
+										size="sm"
+										className="max-w-full"
+										aria-pressed={on}
 										onClick={() =>
-											update({
-												...value,
-												tags: value.tags.includes(tag)
-													? value.tags.filter((v) => v !== tag)
-													: [...value.tags, tag],
-											})
+											update({ ...value, tags: on ? value.tags.filter((v) => v !== tag) : [...value.tags, tag] })
 										}
 									>
 										#{tag}
-									</div>
-								))}
-							</div>
-						</div>
-					)}
-					<div className={p1Classes('dashboard-library-quickfilter-row')}>
-						<div className={p1Classes('dashboard-library-quickfilter-label')}>
-							{t('library.filterProperty')}
-						</div>
-						<select
-							className={p1Classes('dashboard-library-filter-popup-prop')}
-							value={value.property}
-							onChange={(e) =>
-								update({ ...value, property: e.currentTarget.value as MediaFilterValue['property'] })
-							}
-						>
-							<option value="created">{t('library.created')}</option>
-							<option value="modified">{t('library.modified')}</option>
-						</select>
-					</div>
-					<div className={p1Classes('dashboard-library-quickfilter-row')}>
-						<div className={p1Classes('dashboard-library-quickfilter-label')}>
-							{t('library.filterDateRange')}
-						</div>
-						<div className={p1Classes('dashboard-media-filter-dates')}>
-							<input
-								className={p1Classes('dashboard-media-filter-date')}
-								type="date"
-								value={value.start}
-								onChange={(e) => update({ ...value, start: e.currentTarget.value })}
-							/>
-							<input
-								className={p1Classes('dashboard-media-filter-date')}
-								type="date"
-								value={value.end}
-								onChange={(e) => update({ ...value, end: e.currentTarget.value })}
-							/>
+									</Button>
+								);
+							})}
 						</div>
 					</div>
-					<div className={p1Classes('dashboard-library-quickfilter-row')}>
-						<div className={p1Classes('dashboard-library-quickfilter-label')}>
-							{t('media.filterFolder')}
-						</div>
-						<div className={p1Classes('dashboard-alltasks-exclude-chips')}>
-							{value.folders.length ? (
-								value.folders.map((path) => (
-									<div key={path} className={p1Classes('dashboard-alltasks-exclude-chip')}>
-										<span>{path}</span>
-										<button
-											type="button"
-											data-hit-control
-											aria-label={t('common.delete')}
-											className={p1Classes('dashboard-alltasks-exclude-chip-x')}
-											onClick={() => remove(path)}
-										>
-											×
-										</button>
-									</div>
-								))
-							) : (
-								<div className={p1Classes('dashboard-library-filter-empty')}>
-									{t('folder.noFolders')}
-								</div>
-							)}
-						</div>
-						<div className={p1Classes('dashboard-media-folder-input-row')}>
-							{/* The field stays empty: a folder chosen here becomes a chip. */}
-							<VaultPathField
-								app={app}
-								kind="folder"
-								create={false}
-								allowCreate={false}
-								label={t('media.filterFolder')}
-								placeholder={t('media.filterFolderPlaceholder')}
-								value=""
-								onChange={(path) => {
-									const folder = normalizeMediaFolder(path);
-									if (folder && !value.folders.some((f) => f.toLowerCase() === folder.toLowerCase()))
-										update({ ...value, folders: [...value.folders, folder] });
-								}}
-							/>
-						</div>
-						<div className={p1Classes('dashboard-library-config-hint')}>{t('media.filterFolderHint')}</div>
+				)}
+				<div className={row}>
+					<div className={label}>{t('library.filterProperty')}</div>
+					<Choice
+						label={t('library.filterProperty')}
+						className="w-full data-[size=sm]:h-9"
+						value={value.property}
+						onChange={(property) => update({ ...value, property: property as MediaFilterValue['property'] })}
+						options={[
+							{ value: 'created', label: t('library.created') },
+							{ value: 'modified', label: t('library.modified') },
+						]}
+					/>
+				</div>
+				<div className={row}>
+					<div className={label}>{t('library.filterDateRange')}</div>
+					<div className="flex flex-wrap gap-1.5">
+						<Input
+							className="min-w-0 flex-1 basis-32"
+							type="date"
+							aria-label={t('media.filterFrom')}
+							value={value.start}
+							onChange={(e) => update({ ...value, start: e.currentTarget.value })}
+						/>
+						<Input
+							className="min-w-0 flex-1 basis-32"
+							type="date"
+							aria-label={t('media.filterTo')}
+							value={value.end}
+							onChange={(e) => update({ ...value, end: e.currentTarget.value })}
+						/>
 					</div>
-					<button
-						className={p1Classes('dashboard-library-filter-popup-clear')}
-						onClick={() => {
-							update(emptyMediaFilter);
-							close();
+				</div>
+				<div className={row}>
+					<div className={label}>{t('media.filterFolder')}</div>
+					<div className="flex flex-wrap gap-1.5">
+						{value.folders.length ? (
+							value.folders.map((path) => (
+								<Badge key={path} variant="secondary" className="max-w-full gap-0.5 pr-0.5">
+									<span className="truncate">{path}</span>
+									<IconButton
+										label={t('media.removeFilter', { name: path })}
+										className="size-4"
+										onClick={() => remove(path)}
+									>
+										<X />
+									</IconButton>
+								</Badge>
+							))
+						) : (
+							<span className={label}>{t('folder.noFolders')}</span>
+						)}
+					</div>
+					{/* The field stays empty: a folder chosen here becomes a chip. */}
+					<VaultPathField
+						app={app}
+						kind="folder"
+						create={false}
+						allowCreate={false}
+						label={t('media.filterFolder')}
+						placeholder={t('media.filterFolderPlaceholder')}
+						value=""
+						onChange={(path) => {
+							const folder = normalizeMediaFolder(path);
+							if (folder && !value.folders.some((f) => f.toLowerCase() === folder.toLowerCase()))
+								update({ ...value, folders: [...value.folders, folder] });
 						}}
-					>
-						{t('reminder.clearReminder')}
-					</button>
-				</PopoverContent>
-			</Popover>
-		</>
+					/>
+					<div className={label}>{t('media.filterFolderHint')}</div>
+				</div>
+				<Button
+					variant="outline"
+					onClick={() => {
+						update(emptyMediaFilter);
+						close();
+					}}
+				>
+					{t('media.clearFilters')}
+				</Button>
+			</PopoverContent>
+		</Popover>
 	);
 }
