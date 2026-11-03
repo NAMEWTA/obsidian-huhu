@@ -380,6 +380,7 @@ test('32 scopes accept three ordered short events each through the shared bounde
 	const consumption: Timing = { calls: 0, ms: 0 };
 	const consuming = new Map<string, number>();
 	const observedOrder = Array.from({ length: 32 }, () => [] as string[]);
+	const delivered: string[][] = Array.from({ length: 32 }, () => []);
 	const started = performance.now();
 	let bodyPassed = false, cleanupPassed = false, cleanupMs = 0;
 	const files = measuring ? {
@@ -433,6 +434,7 @@ test('32 scopes accept three ordered short events each through the shared bounde
 						const id = String(row.data.session_id);
 						assert.equal(received.has(id), false);
 						received.add(id);
+						delivered[i]!.push(id);
 						if (measuring) observedOrder[i]!.push(id);
 					},
 					(reason) => errors.push(reason),
@@ -489,6 +491,12 @@ test('32 scopes accept three ordered short events each through the shared bounde
 			);
 		});
 		assert.deepEqual(errors, []);
+		// AC-311: per scope the three events arrive exactly once and in publication order.
+		assert.deepEqual(
+			delivered,
+			Array.from({ length: 32 }, (_, id) => [`${id}:0`, `${id}:1`, `${id}:2`]),
+			'every scope receives its events once, in order',
+		);
 		assert.equal(peakScopes, 32);
 		assert.ok(peakCollectors > 0 && peakCollectors <= 4);
 		const sample = {
@@ -540,6 +548,44 @@ test('32 scopes accept three ordered short events each through the shared bounde
 		}
 	}
 }, 15000);
+
+test('a slot freed by an earlier event is reused without overtaking the still-queued event before it', async () => {
+	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-order-'));
+	// Hold every scope small-directory listing so the test decides exactly when the reader looks.
+	let permits = 0;
+	const files = {
+		...fs,
+		readdir: async (...args: Parameters<typeof fs.readdir>) => {
+			if (/[\\/]scopes[\\/]\d+[\\/]small$/.test(String(args[0]))) {
+				while (permits <= 0) await new Promise((resolve) => setTimeout(resolve, 2));
+				permits--;
+			}
+			return fs.readdir(...args);
+		},
+	} as typeof fs;
+	const pool = await hookSpool(windowFor(files), path.join(directory, 'resource-v1'));
+	const order: string[] = [];
+	const scope = await pool.prepare(
+		(row) => order.push(String(row.data.session_id)),
+		() => {},
+	);
+	try {
+		const script = path.join(directory, 'publisher.cjs');
+		await fs.writeFile(script, HOOK_SCRIPT);
+		await publish(script, scope.env, { session_id: 'e0' });
+		await publish(script, scope.env, { session_id: 'e1' });
+		permits = 1; // the reader sees e0 (slot 0) and e1 (slot 1), consumes e0 and frees slot 0
+		await wait(() => order.length === 1);
+		await publish(script, scope.env, { session_id: 'e2' }); // takes the freed slot 0
+		permits = Infinity;
+		await wait(() => order.length === 3);
+		assert.deepEqual(order, ['e0', 'e1', 'e2']);
+	} finally {
+		permits = Infinity;
+		await scope.close().catch(() => {});
+		await fs.rm(directory, { recursive: true, force: true });
+	}
+});
 
 test('an opened small publication is read only through E plus one even when its size changes', async () => {
 	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-e-plus-one-'));

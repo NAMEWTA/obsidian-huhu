@@ -41,6 +41,8 @@ type NodePath = typeof import('node:path');
 interface Retiring {
 	nonce: string;
 	slot: number;
+	/** Publisher wall-clock (ms, sub-millisecond) taken before any slot is claimed; orders a scope's events. */
+	seq: number;
 	token: string;
 	globalDeleted?: boolean;
 }
@@ -471,6 +473,7 @@ export class HookSpool {
 				const present = new Set(await this.list(this.path.join(state.dir, kind)));
 				const names: string[] = [];
 				for (let n = 0; n < slots; n++) if (present.has(String(n))) names.push(String(n));
+				if (names.length > 1) await this.sortByPublication(state, kind, names);
 				for (const name of names) {
 					if (!/^\d+$/.test(name) || Number(name) >= (kind === 'small' ? 8 : 2))
 						throw new Error('hookReferenceInvalid');
@@ -502,6 +505,30 @@ export class HookSpool {
 			if (state.close && Date.now() >= state.close.deadline)
 				state.close.reject(new Error('hookCleanupIncomplete', { cause: error }));
 		}
+	}
+	/**
+	 * Publishers take the lowest free local slot, so a slot freed by an earlier event is reused by a
+	 * later one: slot number alone does not preserve publication order. Consume by the publisher's
+	 * sequence instead. Slots already being retired go first; an unreadable reference sorts last so
+	 * it can neither be overtaken into a skipped event nor block the others.
+	 */
+	private async sortByPublication(state: ScopeState, kind: 'small' | 'large', names: string[]): Promise<void> {
+		const keys = new Map<string, number>();
+		for (const name of names) {
+			if (state.retiring.has(kind + '/' + name)) {
+				keys.set(name, -Infinity);
+				continue;
+			}
+			try {
+				const ref = JSON.parse(
+					await this.read(this.path.join(state.dir, kind, name, 'ref.json'), 512, this.root),
+				) as Partial<Retiring>;
+				keys.set(name, typeof ref.seq === 'number' && Number.isFinite(ref.seq) ? ref.seq : Infinity);
+			} catch {
+				keys.set(name, Infinity);
+			}
+		}
+		names.sort((a, b) => keys.get(a)! - keys.get(b)! || Number(a) - Number(b));
 	}
 	/** A missing directory lists as empty; any other failure propagates. */
 	private list(dir: string): Promise<string[]> {
@@ -546,6 +573,8 @@ export class HookSpool {
 			if (
 				ref.token !== state.token ||
 				typeof ref.nonce !== 'string' ||
+				typeof ref.seq !== 'number' ||
+				!Number.isFinite(ref.seq) ||
 				!/^[\da-f-]{36}$/.test(ref.nonce) ||
 				!Number.isInteger(ref.slot) ||
 				ref.slot < 0 ||
@@ -734,7 +763,7 @@ function hookJsonBytes(value, max, depth=0) {
  visit(value, depth);return total;
 }
 function hookPublish(event, data, source, provider) {
- hookGuard();const publication=crypto.randomUUID();
+ hookGuard();const publication=crypto.randomUUID(), seq=performance.timeOrigin + performance.now();
  const envelope={ token, event, at: Date.now(), data, delivery: publication };if (source) envelope.source=source;if (provider) envelope.provider=provider;
  const bytes=hookJsonBytes(envelope, hookLimits.largeBytes), kind=bytes<=hookLimits.smallBytes?'small':'large';
  let local, global, committed=false;
@@ -743,7 +772,7 @@ function hookPublish(event, data, source, provider) {
   global=hookClaim(path.join(root, kind), kind==='small'?hookLimits.smallGlobal:hookLimits.largeGlobal);
   const metadata={ token, nonce: publication, scope: path.basename(dir), local: path.basename(local) };
   fs.writeFileSync(path.join(global, 'claim.json'), JSON.stringify(metadata), { flag: 'wx', mode: 0o600 });
-  fs.writeFileSync(path.join(local, 'ref.json'), JSON.stringify({ token, nonce: publication, slot: Number(path.basename(global)) }), { flag: 'wx', mode: 0o600 });
+  fs.writeFileSync(path.join(local, 'ref.json'), JSON.stringify({ token, nonce: publication, seq, slot: Number(path.basename(global)) }), { flag: 'wx', mode: 0o600 });
   hookGuard();const body=JSON.stringify(envelope);
   if (Buffer.byteLength(body)!==bytes) throw Error('hookEncodingChanged');
   fs.writeFileSync(path.join(global, publication + '.pending'), body, { flag: 'wx', mode: 0o600 });
