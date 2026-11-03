@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-20
 title: "启动与规模采样脚本及 CI 趋势"
-status: in_progress
+status: done
 kind: feature
 planning_depth: standard
 planning_depth_reason: "新增可复跑测量基础设施与大库 fixture 生成"
