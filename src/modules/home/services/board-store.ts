@@ -493,9 +493,7 @@ export class BoardStore {
 				throw new Error(t('shortcuts.invalidUrl'));
 			}
 			if (!['http:', 'https:'].includes(url.protocol)) throw new Error(t('shortcuts.invalidUrl'));
-			if (action.openIn === 'system')
-				(this.ownerWindow ?? this.host.app.workspace.containerEl.win).open(url.href, '_blank', 'noopener');
-			else await this.host.openBrowser({ url: url.href });
+			this.host.openExternal(url.href, this.ownerWindow);
 			return;
 		}
 		if (action.type === 'note') {

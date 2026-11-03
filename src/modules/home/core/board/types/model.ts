@@ -70,16 +70,7 @@ export interface DashboardSettings {
 	quickActionsBackground?: WidgetBackground;
 	pomodoroBackground?: WidgetBackground;
 	habitBackground?: WidgetBackground;
-	musicBackground?: WidgetBackground;
 	yearProgressBackground?: WidgetBackground;
-	/** Player volume 0-1. */
-	musicVolume: number;
-	/** Repeat mode of the music player. */
-	musicRepeatMode: MusicRepeatMode;
-	/** Persisted playlist; cover URLs are lazily backfilled and then saved. */
-	musicPlaylist: MusicTrack[];
-	/** Highlighted track index restored on restart; playback never auto-resumes. */
-	musicCurrentIndex: number;
 	/** Optional custom background color for the quick-buttons widget (user
 	 *  picked via the palette button; undefined = theme default). */
 	quickButtonsBgColor?: string;
@@ -235,11 +226,6 @@ export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings = {
 	albums: [],
 	anniversaries: [],
 	// No default picture: a fresh vault must not fetch a remote image on first open.
-	musicBackground: { image: '', opacity: 100, dim: 45, blur: 0 },
-	musicVolume: 0.8,
-	musicRepeatMode: 'list',
-	musicPlaylist: [] as MusicTrack[],
-	musicCurrentIndex: -1,
 	wereadApiKey: '',
 	ticktickRegion: 'dida365',
 	ticktickCookie: '',
@@ -279,7 +265,6 @@ export interface QuickAction {
 	icon: string;
 	type: 'file' | 'command' | 'action' | 'url' | 'quick' | 'agent' | 'note';
 	id?: string;
-	openIn?: 'tab' | 'system';
 	agentId?: string;
 	prompt?: string;
 	preset?: QuickNotePreset;
@@ -356,8 +341,6 @@ export interface TaskTemplate {
 export type CardSize = 'S' | 'M' | 'L';
 
 export interface DashboardCard {
-	/** Only web shortcut cards use this. */
-	openIn?: 'tab' | 'system';
 	/** Original note appearance when a note is moved into a mixed sticky section. */
 	noteStyle?: 'cover' | 'plain';
 	/** Project cards: the vault folder this card is the project of. */
@@ -547,29 +530,6 @@ export interface AnniversaryConfig {
 	background?: WidgetBackground;
 }
 
-/** One playable NetEase track. Shared by search results, playlist imports and
-    the persisted sidebar playlist. `fee` drives playability: 0/8 are free,
-    1/2/4 need an account the widget deliberately does not have. */
-export interface MusicTrack {
-	/** NetEase song id. */
-	id: number;
-	/** Song title. */
-	name: string;
-	/** artists[].name joined with ' / '. */
-	artist: string;
-	/** Album name. */
-	album: string;
-	/** Song duration in milliseconds (API original). */
-	durationMs: number;
-	/** NetEase fee flag: 0|8 free, 1 VIP, 2|4 album purchase. */
-	fee: number;
-	/** Cover URL, lazily backfilled from /api/song/detail then persisted. */
-	picUrl?: string;
-}
-
-/** Repeat mode of the music player widget. */
-export type MusicRepeatMode = 'list' | 'one' | 'shuffle';
-
 // Read/write compatibility for retired sections. These types never enable an integration.
 type WereadReadingState = 'notStarted' | 'reading' | 'finished';
 type WereadContentType = 'book' | 'audio' | 'article';
@@ -642,19 +602,6 @@ export interface DataviewConfig {
 	 *  case-insensitive). Pages under them are dropped before the query runs, so
 	 *  FROM / WHERE / GROUP BY never see them. */
 	excludeFolders?: string[];
-}
-
-/** Web embed section config (sectionType 'web'). The URL is the sole required
- *  field; the section embeds that page as an iframe (or, on desktop, an
- *  Electron webview for sites that refuse framing — see web-precheck). */
-export interface WebEmbedConfig {
-	/** Page to embed. Must be a valid http(s) URL once normalized
-	 *  (normalizeWebUrl in web-precheck adds the https:// scheme when missing). */
-	url: string;
-	/** Display zoom, 0.5–2 (default 1). Shrinks dense web apps (Keep-style)
-	 *  so they fit a half-width section. iframe -> css zoom, webview ->
-	 *  setZoomFactor after dom-ready. */
-	zoom?: number;
 }
 
 export interface PipelineStage {
@@ -823,8 +770,6 @@ export interface DashboardColumn {
 	ticktickConfig?: TickTickConfig;
 	/** Dataview section config (sectionType 'dataview'). */
 	dataviewConfig?: DataviewConfig;
-	/** Web embed section config (sectionType 'web'). */
-	webConfig?: WebEmbedConfig;
 	/** User-set max height in px (drag-resize, desktop only). */
 	height?: number;
 	/** Side-by-side pairing: two adjacent `half` columns render as one row
@@ -906,7 +851,7 @@ export interface TickTickConfig {
 export interface RssFeedSource {
 	/** Optional display label; defaults to the feed's own title once fetched. */
 	name?: string;
-	/** Feed URL (RSS 2.0 / Atom). Normalized + validated via web-precheck. */
+	/** Feed URL (RSS 2.0 / Atom). Normalized and validated before it is stored. */
 	url: string;
 	/** Optional group label — feeds sharing one form a filter bucket in the
 	 *  section toolbar (all / unread / per-group), separate from read state. */

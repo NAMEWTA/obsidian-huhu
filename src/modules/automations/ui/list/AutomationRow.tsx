@@ -53,7 +53,7 @@ export function AutomationRow({
 			className={cn(TABLE_GRID, TABLE_ROW, selected && 'bg-accent text-accent-foreground')}
 			onClick={(event) => {
 				if (!event.currentTarget.contains(event.target as Node)) return;
-				if (!d.removedAction) actions.onOpen(d);
+				actions.onOpen(d);
 			}}
 		>
 			<span role="cell" className={STICKY_CELL}>
@@ -65,7 +65,7 @@ export function AutomationRow({
 							className="min-h-8 min-w-0 truncate text-left font-medium focus-visible:ring-[3px] focus-visible:ring-ring/50"
 							onClick={(e) => {
 								e.stopPropagation();
-								if (!d.removedAction) actions.onOpen(d);
+								actions.onOpen(d);
 							}}
 						>
 							{d.name}
@@ -92,7 +92,7 @@ export function AutomationRow({
 			<span role="cell" className={cn('min-w-0 text-muted-foreground', NARROWER_HIDDEN)}>
 				<span className="flex items-center gap-1.5 truncate">
 					<ActionIcon className="size-3.5 shrink-0" />
-					{d.removedAction ? t('automation.removedAction') : actionName(d.action.kind)}
+					{actionName(d.action.kind)}
 				</span>
 				{hint && (
 					<span className="block truncate text-xs" title={hint}>
@@ -109,7 +109,7 @@ export function AutomationRow({
 			<span role="cell" onClick={(event) => event.stopPropagation()}>
 				<Switch
 					checked={d.enabled}
-					disabled={disabled || !!d.removedAction}
+					disabled={disabled}
 					aria-label={t(d.enabled ? 'automation.pauseNamed' : 'automation.resumeNamed', { name: d.name })}
 					onCheckedChange={() => actions.onToggle(d)}
 				/>
@@ -131,7 +131,7 @@ export function AutomationRow({
 					<IconButton
 						label={t('automation.run')}
 						size="icon-xs"
-						disabled={disabled || !!d.removedAction}
+						disabled={disabled}
 						onClick={() => actions.onRun(d)}
 					>
 						<Play className="size-3.5" />
@@ -139,7 +139,7 @@ export function AutomationRow({
 					<IconButton
 						label={t('automation.edit')}
 						size="icon-xs"
-						disabled={disabled || !!d.removedAction}
+						disabled={disabled}
 						onClick={() => actions.onEdit(d)}
 					>
 						<Pencil className="size-3.5" />
@@ -147,7 +147,7 @@ export function AutomationRow({
 					<IconButton
 						label={t(d.enabled ? 'automation.pause' : 'automation.resume')}
 						size="icon-xs"
-						disabled={disabled || !!d.removedAction}
+						disabled={disabled}
 						onClick={() => actions.onToggle(d)}
 					>
 						{d.enabled ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
@@ -182,21 +182,21 @@ export function AutomationRow({
 					{layer.visible && (
 						<DropdownMenuContent onCloseAutoFocus={layer.onCloseAutoFocus} align="end" className="w-48">
 							<DropdownMenuItem
-								disabled={disabled || !!d.removedAction}
+								disabled={disabled}
 								onSelect={() => actions.onRun(d)}
 							>
 								<Play className="size-3.5" />
 								{t('automation.run')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								disabled={disabled || !!d.removedAction}
+								disabled={disabled}
 								onSelect={() => actions.onEdit(d)}
 							>
 								<Pencil className="size-3.5" />
 								{t('automation.edit')}
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								disabled={disabled || !!d.removedAction}
+								disabled={disabled}
 								onSelect={() => actions.onToggle(d)}
 							>
 								{d.enabled ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}

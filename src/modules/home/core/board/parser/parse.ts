@@ -140,7 +140,7 @@ function serializeManaged(data: DashboardData): string {
 			lines.push(`    icon: "${escapeYamlString(action.icon)}"`);
 			lines.push(`    type: ${action.type}`);
 			lines.push(`    target: "${escapeYamlString(action.target)}"`);
-			for (const key of ['id', 'openIn', 'agentId', 'prompt', 'preset'] as const)
+			for (const key of ['id', 'agentId', 'prompt', 'preset'] as const)
 				if (action[key] !== undefined) lines.push(`    ${key}: ${JSON.stringify(action[key])}`);
 		}
 	}
@@ -337,17 +337,6 @@ function serializeManaged(data: DashboardData): string {
 				}
 			}
 		}
-		if (col.webConfig) {
-			const wc = col.webConfig;
-			lines.push('    web:');
-			// JSON.stringify yields a valid double-quoted YAML scalar and safely
-			// escapes embedded quotes/backslashes (same trick as the dataview
-			// query; a URL's :, #, ? and & need no escaping inside quotes).
-			lines.push(`      url: ${JSON.stringify(wc.url)}`);
-			if (typeof wc.zoom === 'number' && wc.zoom !== 1) {
-				lines.push(`      zoom: ${wc.zoom}`);
-			}
-		}
 	}
 
 	lines.push('---');
@@ -367,8 +356,7 @@ function serializeManaged(data: DashboardData): string {
 			column.sectionType === 'videos' ||
 			column.sectionType === 'alltasks' ||
 			column.sectionType === 'calendar' ||
-			column.sectionType === 'dataview' ||
-			column.sectionType === 'web'
+			column.sectionType === 'dataview'
 		)
 			continue;
 
@@ -382,7 +370,7 @@ function serializeManaged(data: DashboardData): string {
 			if (card.noteStyle) lines.push(`noteStyle: ${card.noteStyle}`);
 
 			if (card.type === 'generic') lines.push('type: generic');
-			if (card.type === 'web') lines.push('type: web', `openIn: ${card.openIn === 'system' ? 'system' : 'tab'}`);
+			if (card.type === 'web') lines.push('type: web');
 
 			if (card.type === 'task') {
 				lines.push(`type: task`);

@@ -26,7 +26,6 @@ import { PANEL_DEFAULT, panelWidth, PANEL_MAX, PANEL_MIN, type WorkbenchState } 
 import { PageHeader } from './page/PageHeader';
 import { PageFrame } from './page/PageFrame';
 import { PageSlot } from './page/PageSlot';
-import { ResourceTabs, type ResourceTabsProps } from './page/ResourceTabs';
 import { Rail, type RailItem } from './rail/Rail';
 import { SidePanel } from './panel/SidePanel';
 import { ShellInteractionContext } from './interaction-lifetime';
@@ -40,7 +39,6 @@ export interface ShellProps {
 	panel?: PanelModel;
 	navigationContext?: boolean;
 	chrome?: PageChrome;
-	tabs?: ResourceTabsProps;
 	statuses: readonly StatusSegment[];
 	busy: boolean;
 	error?: string;
@@ -293,7 +291,6 @@ export function ShellRoot(props: ShellProps) {
 								more={props.more}
 							/>
 						)}
-						{props.tabs && <ResourceTabs {...props.tabs} />}
 						{props.error && (
 							<div
 								role="alert"

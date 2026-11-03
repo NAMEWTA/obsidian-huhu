@@ -42,12 +42,6 @@ export class WorkbenchView extends ItemView implements WorkbenchLeafView {
 	getSavedPages(feature?: WorkbenchFeature): SavedPage[] {
 		return this.surface?.getSavedPages(feature) ?? [];
 	}
-	async activateResource(feature: WorkbenchFeature, id: string): Promise<boolean> {
-		return (await (await this.loading)?.activateResource(feature, id)) ?? false;
-	}
-	async closeResource(feature: WorkbenchFeature, id: string): Promise<void> {
-		await (await this.loading)?.closeResource(feature, id);
-	}
 	getNativeSurfaces(): readonly NativeSurface[] {
 		return this.surface?.getNativeSurfaces() ?? [];
 	}

@@ -61,7 +61,7 @@ for (const [kind, names] of [['person', ['Alexandria Montgomery-Fitzgerald', 'çŽ
 	}
 }
 
-const modules = { home: false, agent: true, automations: true, notifications: true, archives: true, comments: true, browser: true, icons: true, sync: true, navigator: true };
+const modules = { home: false, agent: true, automations: true, notifications: true, archives: true, comments: true, icons: true, sync: true, navigator: true };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_AUDIT_PORT || 19731),
@@ -396,7 +396,7 @@ try {
 		await matrix('content-editor');
 	}
 	if (wants('settings')) {
-		for (const category of ['general', 'appearance', 'browser', 'editor', 'navigator', 'terminal', 'contacts', 'automation', 'sync', 'about']) {
+		for (const category of ['general', 'appearance', 'editor', 'navigator', 'terminal', 'contacts', 'automation', 'sync', 'about']) {
 			await openWorkbench({ feature: 'settings', section: category });
 			await delay(900);
 			await matrix(`settings-${category}`);

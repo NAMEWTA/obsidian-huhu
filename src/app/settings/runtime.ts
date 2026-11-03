@@ -8,7 +8,6 @@ import { privateVaultStorage } from '../../host/obsidian/storage/private-storage
 import { initializeVaultPreferences, setVaultPreference } from '../../host/obsidian/storage/preferences';
 import { homeSettings, seedDashboardSettings } from '../../modules/home/settings';
 import { archivesSettings } from '../../modules/archives/settings';
-import { browserSettings } from '../../modules/browser/settings';
 import { commentsSettings } from '../../modules/comments/settings';
 import { appSchema } from './app-schema';
 import { themeSettings, type ThemeSettings } from '../../theme/settings';
@@ -16,7 +15,6 @@ import type { SettingsHandle } from '../../shared/settings/store';
 import type { AppSettings } from './app-schema';
 import type { DashboardSettings } from '../../modules/home/settings';
 import type { ContactsSettings } from '../../shared/contacts-settings';
-import type { BrowserSettings } from '../../modules/browser/settings';
 import type { CommentsSettings } from '../../modules/comments/settings';
 
 const VAULT_FILE = '.huhu/config/settings.json';
@@ -26,7 +24,6 @@ export interface AppNamespaces {
 	app: SettingsHandle<AppSettings>;
 	home: SettingsHandle<DashboardSettings>;
 	archives: SettingsHandle<ContactsSettings>;
-	browser: SettingsHandle<BrowserSettings>;
 	comments: SettingsHandle<CommentsSettings>;
 }
 
@@ -69,13 +66,12 @@ export async function loadSettingsRuntime(app: App): Promise<SettingsRuntime> {
 		app: store.bind('app', appSchema(defaultLanguage())),
 		home: store.bind('home', homeSettings),
 		archives: store.bind('archives', archivesSettings),
-		browser: store.bind('browser', browserSettings),
 		comments: store.bind('comments', commentsSettings),
 	};
 	if (firstRun) {
 		await ns.home.update((draft) => seedDashboardSettings(draft, { countdown: t('defaults.countdownLabel'), anniversary: t('defaults.anniversaryLabel') }));
 		setVaultPreference(app, 'huhu.dashboard.sidebar-pinned', 'true');
-		await Promise.all([ns.app.touch(), ns.archives.touch(), ns.browser.touch(), ns.comments.touch()]);
+		await Promise.all([ns.app.touch(), ns.archives.touch(), ns.comments.touch()]);
 	}
 	return { store, ns, theme: store.bind('theme', themeSettings), firstRun };
 }

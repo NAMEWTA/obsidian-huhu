@@ -11,7 +11,6 @@ import type {
 	TaskItem,
 	TrackerConfig,
 	WeatherConfig,
-	WebEmbedConfig,
 	WereadConfig,
 } from '../types/model';
 import {
@@ -177,15 +176,6 @@ export function parseDataviewConfig(raw: Record<string, unknown>): DataviewConfi
 			: undefined,
 	};
 }
-export function parseWebConfig(raw: Record<string, unknown>): WebEmbedConfig {
-	const url = str(raw.url ?? '');
-	// The embed engine is chosen automatically; a `mode:` line is ignored.
-	const zoomRaw = typeof raw.zoom === 'number' ? raw.zoom : undefined;
-	// Out-of-range and 1 values drop to undefined: 1 is the default zoom, and
-	// dropping it keeps serialize(parse(serialize(x))) === serialize(x).
-	const zoom = zoomRaw != null && zoomRaw >= 0.5 && zoomRaw <= 2 && zoomRaw !== 1 ? zoomRaw : undefined;
-	return { url, zoom };
-}
 export function splitByH2(body: string): Array<{ heading: string; content: string }> {
 	const lines = body.split('\n');
 	const sections: Array<{ heading: string; content: string }> = [];
@@ -244,7 +234,6 @@ function parseCard(block: { title: string; body: string }, columnName: string): 
 		id: metadata.id ?? generateId(block.title, columnName),
 		title: block.title,
 		type: cardType,
-		...(cardType === 'web' ? { openIn: metadata.openIn === 'system' ? ('system' as const) : ('tab' as const) } : {}),
 		...(metadata.folder?.trim() ? { folder: metadata.folder.trim() } : {}),
 		noteStyle: metadata.noteStyle === 'cover' || metadata.noteStyle === 'plain' ? metadata.noteStyle : undefined,
 		column: columnName,

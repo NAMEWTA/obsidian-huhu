@@ -1,6 +1,5 @@
 import { messages as workbench } from './workbench';
 import { messages as appearance } from './appearance';
-import { messages as browser } from './browser';
 import { messages as automation } from './automation';
 import { messages as contacts } from './contacts';
 import { messages as m11 } from './default-dashboard-content';
@@ -48,7 +47,6 @@ const translations: Record<Language, Record<string, string>> = {
 	en: mergeDicts(
 		appearance.en,
 		workbench.en,
-		browser.en,
 		iconicTranslations.en,
 		m1.en,
 		m2.en,
@@ -62,7 +60,6 @@ const translations: Record<Language, Record<string, string>> = {
 	zh: mergeDicts(
 		appearance.zh,
 		workbench.zh,
-		browser.zh,
 		iconicTranslations.zh,
 		m1.zh,
 		m2.zh,

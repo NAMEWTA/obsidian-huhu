@@ -44,7 +44,7 @@ export interface ActionDocument<K extends ActionKind> {
 export interface ActionHost {
 	/** Open a note in an editor tab; rejects with `sourceMissing` when it no longer exists. */
 	openFile(this: void, path: string): Promise<void>;
-	/** Open an address in the built-in browser (the system browser while that module is off). */
+	/** Open an address in the system default browser. */
 	openUrl(this: void, url: string): Promise<void>;
 	/** Invoke an Obsidian command and say so; rejects when the command does not exist. */
 	runCommand(this: void, id: string): string;

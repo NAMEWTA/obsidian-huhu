@@ -4,7 +4,7 @@ import type { App, Command, Component, MarkdownPostProcessor, PluginManifest } f
 import type { Extension } from '@codemirror/state';
 import type { SettingsStore } from '../../shared/settings/store';
 import type { PageCreate } from './workbench-host';
-import type { SavedPage, WorkbenchFeature, WorkbenchTarget } from './workbench';
+import type { WorkbenchTarget } from './workbench';
 import type { EditorContextAccess } from './editor-context';
 import type { SharedWorkspaceOwner } from './shared-workspace';
 import type { RecoveryAccess } from '../../shared/storage/recovery-contracts';
@@ -14,7 +14,6 @@ export type ModuleId =
 	| 'home'
 	| 'task'
 	| 'agent'
-	| 'browser'
 	| 'archives'
 	| 'automations'
 	| 'notifications'
@@ -27,7 +26,6 @@ export const MODULE_IDS: readonly ModuleId[] = [
 	'home',
 	'task',
 	'agent',
-	'browser',
 	'archives',
 	'automations',
 	'notifications',
@@ -117,12 +115,6 @@ export interface ShellAccess {
 	refresh(): void;
 	/** Open the page by itself in a new tab (a focus-mode workbench leaf) with its state. */
 	openFocus(target: WorkbenchTarget, state: Record<string, unknown>, ownerWindow?: Window): Promise<void>;
-	/** Pages of a feature kept by every workbench leaf (live or saved), e.g. open browser tabs. */
-	savedPages(feature: WorkbenchFeature): SavedPage[];
-	/** Show a kept resource page in whichever workbench holds it; false when none does. */
-	activateResource(feature: WorkbenchFeature, resourceId: string): Promise<boolean>;
-	/** Close kept pages for a resource, including pages that have not mounted yet. */
-	closeResource(feature: WorkbenchFeature, resourceId: string): Promise<void>;
 }
 
 /** Palette commands that exist only while the module is active. */

@@ -22,11 +22,9 @@ export function useWidgetBackground(
 				? s.settings.pomodoroBackground
 				: kind === 'habit'
 					? s.settings.habitBackground
-					: kind === 'music'
-						? s.settings.musicBackground
-						: kind === 'yearProgress'
-							? s.settings.yearProgressBackground
-							: undefined,
+					: kind === 'yearProgress'
+						? s.settings.yearProgressBackground
+						: undefined,
 	);
 	const url = useImage(store, bg?.image.trim() ?? '');
 	if (!bg || !url) return { className: '', style: {}, layer: null };
@@ -97,7 +95,7 @@ export function ImmersiveWidgetFrame({
 	return (
 		<div
 			className={p2Classes(
-				`dashboard-sidebar-widget h-full ${kind === 'album' ? 'p-0' : 'p-3'} ${kind === 'music' ? 'dashboard-sidebar-music' : ''} ${background.className}`,
+				`dashboard-sidebar-widget h-full ${kind === 'album' ? 'p-0' : 'p-3'} ${background.className}`,
 			)}
 			style={background.style}
 		>

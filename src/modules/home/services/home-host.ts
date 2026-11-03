@@ -3,7 +3,6 @@ import type { ModuleContext } from '../../../app/contracts/module';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { AutomationUiPort } from '../../../shared/automation/types';
 import { AUTOMATIONS, AUTOMATION_COMPOSER, type AutomationComposer } from '../../automations/api';
-import { BROWSER_OPEN, type BrowserOpenRequest } from '../../browser/api';
 import { BOARD_SURFACE_TYPE, type BoardOperations, type BoardSurfaceApi } from '../api';
 import type { DashboardSettings } from '../core/board/types/model';
 import { normalizeWorkspacePath } from '../core/workspace/workspace-registry';
@@ -35,7 +34,8 @@ export interface HomeHost {
 	boardSurfaces(): BoardSurfaceApi[];
 	activeDashboard(): BoardSurfaceApi | undefined;
 	openSettings(): void;
-	openBrowser(request: BrowserOpenRequest): Promise<void>;
+	/** Open an http(s) address in the system default browser. */
+	openExternal(url: string, ownerWindow?: Window): void;
 	workbenchRefresh(): void;
 	switchWorkspace(path: string): Promise<void>;
 	createWorkspace(name: string): Promise<void>;
@@ -132,10 +132,8 @@ export function createHomeHost(context: ModuleContext, handle: SettingsHandle<Da
 		openSettings: () => {
 			void context.shell.open({ feature: 'settings', section: 'dashboard' });
 		},
-		openBrowser: async (request) => {
-			const browser = context.services.peek(BROWSER_OPEN);
-			if (browser) await browser.show(request);
-			else if (request.url) window.open(request.url);
+		openExternal: (url, ownerWindow) => {
+			(ownerWindow ?? app.workspace.containerEl.win).open(url, '_blank', 'noopener');
 		},
 		workbenchRefresh: () => context.shell.refresh(),
 		switchWorkspace: (path) => host.boards?.switch(path) ?? Promise.resolve(),

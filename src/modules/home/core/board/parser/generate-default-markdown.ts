@@ -12,14 +12,12 @@ import type {
 	PmConfig,
 	SkillsSectionConfig,
 	QuickAction,
-	WebEmbedConfig,
 	WereadConfig,
 } from '../types/model';
 import {
 	parseCards,
 	parseDataviewConfig,
 	parseLibraryConfig,
-	parseWebConfig,
 	parseWereadConfig,
 	resolveSectionType,
 	splitByH2,
@@ -40,12 +38,6 @@ export function parseQuickActions(fm: Record<string, unknown>): QuickAction[] {
 					? item.type
 					: 'file') as QuickAction['type'],
 				id: item.id || undefined,
-				openIn:
-					item.openIn === 'system'
-						? ('system' as const)
-						: item.openIn === 'tab'
-							? ('tab' as const)
-							: undefined,
 				agentId: item.agentId || undefined,
 				prompt: item.prompt || undefined,
 				preset:
@@ -87,7 +79,6 @@ export function parseColumnDefs(fm: Record<string, unknown>): Array<{
 	rssConfig?: RssConfig;
 	ticktickConfig?: TickTickConfig;
 	dataviewConfig?: DataviewConfig;
-	webConfig?: WebEmbedConfig;
 	height?: number;
 	half?: boolean;
 	width?: number;
@@ -109,7 +100,6 @@ export function parseColumnDefs(fm: Record<string, unknown>): Array<{
 		ticktickConfig: item.ticktick ? parseTickTickConfig(item.ticktick as Record<string, unknown>) : undefined,
 		wereadConfig: item.weread ? parseWereadConfig(item.weread as Record<string, unknown>) : undefined,
 		dataviewConfig: item.dataview ? parseDataviewConfig(item.dataview as Record<string, unknown>) : undefined,
-		webConfig: item.web ? parseWebConfig(item.web as Record<string, unknown>) : undefined,
 		height: typeof item.height === 'number' ? item.height : undefined,
 		half: item.half === true ? true : undefined,
 		width:
@@ -132,8 +122,7 @@ export function parseColumns(
 		rssConfig?: RssConfig;
 		ticktickConfig?: TickTickConfig;
 		dataviewConfig?: DataviewConfig;
-		webConfig?: WebEmbedConfig;
-		height?: number;
+			height?: number;
 		half?: boolean;
 		width?: number;
 	}>,
@@ -169,7 +158,6 @@ export function parseColumns(
 			rssConfig: def?.rssConfig,
 			ticktickConfig: def?.ticktickConfig,
 			dataviewConfig: def?.dataviewConfig,
-			webConfig: def?.webConfig,
 			height: def?.height,
 			half: def?.half,
 			width: def?.half ? def?.width : undefined,

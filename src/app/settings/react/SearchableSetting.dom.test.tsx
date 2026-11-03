@@ -10,7 +10,7 @@ test('search filters keywords and descriptions and highlights matching labels', 
 			<>
 				<input aria-label="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
 				<SettingsSearchContext.Provider value={query}>
-					<SearchableSetting title="搜索引擎" keywords={['browser', 'engine']}>
+					<SearchableSetting title="搜索引擎" keywords={['web', 'engine']}>
 						<SearchHighlight text="默认搜索引擎" />
 					</SearchableSetting>
 					<SearchableSetting title="Font" description="Interface typography">

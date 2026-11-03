@@ -6,7 +6,7 @@ export interface FocusLeafState extends Record<string, unknown> {
 	pages: Array<{ target: WorkbenchTarget; state: Record<string, unknown> }>;
 }
 
-/** Open the selected feature in a focus-mode workbench leaf. Browser tabs belong to the agent workspace. */
+/** Open the selected feature in a focus-mode workbench leaf. */
 export function focusLeafState(target: WorkbenchTarget, state: Record<string, unknown>): FocusLeafState {
  return { target, focus: true, pages: [{ target, state }] };
 }

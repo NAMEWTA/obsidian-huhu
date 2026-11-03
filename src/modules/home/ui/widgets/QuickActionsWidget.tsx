@@ -334,14 +334,6 @@ export function QuickActionsWidget({ store }: { store: BoardStore }) {
 							/>
 						</Label>
 					)}
-					{editing.type === 'url' && (
-						<Choice
-							label={t('home.dashboard.openIn')}
-							value={editing.openIn ?? 'tab'}
-							options={['tab', 'system'].map((key) => [key, t(`quickActions.open.${key}`)] as const)}
-							onChange={(value) => setEditing({ ...editing, openIn: value as 'tab' | 'system' })}
-						/>
-					)}
 					{error && (
 						<p role="alert" className="m-0 text-sm text-destructive">
 							{error}

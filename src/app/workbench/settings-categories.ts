@@ -7,7 +7,6 @@ import type DashboardPlugin from '../main';
 export function settingsCategories(plugin: DashboardPlugin): Array<{ id: string; label: string; icon: string }> {
 	const products: Record<Exclude<SettingsProduct, 'home'>, { labelKey: string; icon: string }> = {
 		dashboard: { labelKey: 'settings.productDashboard', icon: 'layout-dashboard' },
-		browser: { labelKey: 'browser.title', icon: 'globe' },
 		editor: { labelKey: 'settings.productEditor', icon: 'message-square' },
 		navigator: { labelKey: 'modules.navigator', icon: 'notebook-tabs' },
 		terminal: { labelKey: 'settings.productTerminal', icon: 'terminal' },

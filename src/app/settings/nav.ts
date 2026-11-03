@@ -1,12 +1,11 @@
 /** Settings products (one per module plus Home) and their order in the workbench settings list. */
 import type { ModuleId } from '../contracts/module';
 
-export type SettingsProduct = 'home' | 'dashboard' | 'browser' | 'editor' | 'navigator' | 'terminal' | 'iconic' | 'contacts' | 'automation' | 'versioning' | 'safe';
+export type SettingsProduct = 'home' | 'dashboard' | 'editor' | 'navigator' | 'terminal' | 'iconic' | 'contacts' | 'automation' | 'versioning' | 'safe';
 
-const ORDER: readonly SettingsProduct[] = ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe'];
+const ORDER: readonly SettingsProduct[] = ['home', 'dashboard', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe'];
 
 export interface ModuleGates {
-	browser: boolean;
 	dashboard: boolean;
 	editor: boolean;
 	navigator: boolean;
@@ -25,7 +24,6 @@ export function visibleProducts(modules: ModuleGates): SettingsProduct[] {
 
 /** The module behind each product (the product ids are the settings page names). */
 export const PRODUCT_MODULES = {
-	browser: 'browser',
 	dashboard: 'home',
 	editor: 'comments',
 	navigator: 'navigator',

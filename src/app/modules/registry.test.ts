@@ -18,10 +18,9 @@ type Behavior = {
 	retain?: boolean;
 };
 
-test('the shipped browser, versioning and archives factories retain their separate workbench pages', async () => {
+test('the shipped versioning and archives factories retain their separate workbench pages', async () => {
 	const pages: string[] = [];
 	const expected = new Map<ModuleId, string[]>([
-		['browser', ['browser']],
 		['versioning', ['revision-review', 'versioning']],
 		['archives', ['archives']],
 	]);
@@ -40,7 +39,7 @@ test('the shipped browser, versioning and archives factories retain their separa
 			await instance.dispose('unload');
 		}
 	}
-	assert.equal(new Set(pages).size, 4);
+	assert.equal(new Set(pages).size, 3);
 });
 
 function setup(
@@ -105,15 +104,15 @@ test('a module that throws is marked failed while every other module still activ
 		home: {},
 		agent: { fail: 'activate' },
 		icons: {},
-		browser: { fail: 'load' },
+		safe: { fail: 'load' },
 	});
 	await registry.apply();
 	// The half-activated agent instance is disposed so it cannot leak resources.
 	assert.deepEqual(log, ['+home', '-agent:disabled', '+icons']);
 	assert.equal(registry.state('agent'), 'failed');
-	assert.equal(registry.state('browser'), 'failed');
+	assert.equal(registry.state('safe'), 'failed');
 	assert.equal(registry.state('icons'), 'active');
-	assert.deepEqual(reports, ['agent:activate:agent activate', 'browser:activate:browser load']);
+	assert.deepEqual(reports, ['agent:activate:agent activate', 'safe:activate:safe load']);
 });
 
 test('modules enable in order and disable in reverse order; re-enabling creates a new instance', async () => {
@@ -190,43 +189,43 @@ test('layout-ready modules wait for their phase', async () => {
 });
 
 test('retained cleanup failure withdraws capabilities and prevents a second owner until retry succeeds', async () => {
-	const behaviors: Partial<Record<ModuleId, Behavior>> = { browser: { retain: true, service: 'workspace' } };
+	const behaviors: Partial<Record<ModuleId, Behavior>> = { safe: { retain: true, service: 'workspace' } };
 	const { registry, created, released, flags } = setup(behaviors);
 	await registry.apply();
-	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));
-	behaviors.browser!.fail = 'dispose';
-	flags.browser = false;
+	const lease = await registry.services.acquire(serviceKey('safe', 'workspace'));
+	behaviors.safe!.fail = 'dispose';
+	flags.safe = false;
 	await registry.apply();
-	assert.equal(registry.state('browser'), 'failed');
+	assert.equal(registry.state('safe'), 'failed');
 	assert.equal(lease?.revoked.aborted, true);
-	assert.equal(registry.services.peek(serviceKey('browser', 'workspace')), undefined);
+	assert.equal(registry.services.peek(serviceKey('safe', 'workspace')), undefined);
 	assert.deepEqual(released, []);
-	flags.browser = true;
-	assert.equal(await registry.activate('browser'), false);
-	assert.equal(created.browser, 1);
-	delete behaviors.browser!.fail;
-	assert.equal(await registry.activate('browser'), true);
-	assert.equal(created.browser, 2);
-	assert.deepEqual(released, ['browser']);
+	flags.safe = true;
+	assert.equal(await registry.activate('safe'), false);
+	assert.equal(created.safe, 1);
+	delete behaviors.safe!.fail;
+	assert.equal(await registry.activate('safe'), true);
+	assert.equal(created.safe, 2);
+	assert.deepEqual(released, ['safe']);
 	await registry.dispose();
 });
 
 test('unload revokes a retained service immediately and retries the same cleanup owner', async () => {
 	const behaviors: Partial<Record<ModuleId, Behavior>> = {
-		browser: { retain: true, service: 'workspace', fail: 'dispose' },
+		safe: { retain: true, service: 'workspace', fail: 'dispose' },
 	};
 	const { registry, created, released } = setup(behaviors);
 	await registry.apply();
-	const lease = await registry.services.acquire(serviceKey('browser', 'workspace'));
+	const lease = await registry.services.acquire(serviceKey('safe', 'workspace'));
 	registry.disposeNow();
 	assert.equal(lease?.revoked.aborted, true);
-	assert.equal(registry.services.peek(serviceKey('browser', 'workspace')), undefined);
+	assert.equal(registry.services.peek(serviceKey('safe', 'workspace')), undefined);
 	await registry.dispose();
-	assert.equal(registry.state('browser'), 'failed');
+	assert.equal(registry.state('safe'), 'failed');
 	assert.deepEqual(released, []);
-	delete behaviors.browser!.fail;
+	delete behaviors.safe!.fail;
 	await registry.dispose();
-	assert.deepEqual(released, ['browser']);
-	assert.equal(created.browser, 1);
-	assert.equal(await registry.activate('browser'), false);
+	assert.deepEqual(released, ['safe']);
+	assert.equal(created.safe, 1);
+	assert.equal(await registry.activate('safe'), false);
 });

@@ -13,7 +13,7 @@ const deferred = () => {
 };
 const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
 interface TrackedPage { context: NativeSurfaceContext; signal: AbortSignal; opened: number; closed: number; shown: boolean; selected: string[]; state: Record<string, unknown>; }
-function fixture(options: { slow?: Promise<void>; fail?: boolean; resourcePages?: boolean; releaseWhenHidden?: boolean } = {}) {
+function fixture(options: { slow?: Promise<void>; fail?: boolean; releaseWhenHidden?: boolean } = {}) {
  const { document, window } = parseHTML('<html><body></body></html>');
  Object.assign(window.HTMLElement.prototype, {
   createDiv(this: HTMLElement, opts: { cls: string }) { const child = this.ownerDocument.createElement('div'); child.className = opts.cls; this.append(child); return child; },
@@ -25,7 +25,7 @@ function fixture(options: { slow?: Promise<void>; fail?: boolean; resourcePages?
  const contribution = (id: WorkbenchFeature): WorkbenchContribution => ({
   id, navigation: { id, labelKey: 'workbench.' + id, icon: 'home', target: { feature: id } },
   availability: () => ({ enabled, supported: true, ready: true }),
-  stateKeys: ['filter'], resourcePages: options.resourcePages, navigationContext: true, releaseWhenHidden: id === 'notifications' || options.releaseWhenHidden,
+  stateKeys: ['filter'], navigationContext: true, releaseWhenHidden: id === 'notifications' || options.releaseWhenHidden,
   create: async (context, target, _state, signal) => {
    const item: TrackedPage = { context, signal, opened: 0, closed: 0, shown: false, selected: [], state: { filter: { search: 'draft', token: 'never serialize' }, cookie: 'never serialize' } };
    instances.push(item);
@@ -102,12 +102,12 @@ test('a missing target on an existing editor preserves its presentation and draf
  assert.deepEqual(f.pages.getState()[0]!.state, { filter: { search: 'draft' } }); await f.pages.dispose();
 });
 
-test('hidden stateful resource pages are not silently evicted by a visibility-only cache rule', async () => {
- const f = fixture({ resourcePages: true });
- for (let i = 0; i < 6; i++) f.pages.show(await f.prepare({ feature: 'terminal', resourceId: String(i) }));
- assert.equal(f.instances.length, 6); assert.equal(f.instances.reduce((sum, item) => sum + item.closed, 0), 0);
- await f.pages.closeResource('terminal', '0');
- assert.equal(f.instances[0]!.closed, 1); assert.equal(f.pages.getSurfaces().length, 5); await f.pages.dispose();
+test('hidden stateful pages are not silently evicted by a visibility-only cache rule', async () => {
+ const f = fixture();
+ for (const feature of ['dashboard', 'contacts', 'terminal'] as const) f.pages.show(await f.prepare({ feature }));
+ assert.equal(f.instances.length, 3); assert.equal(f.instances.reduce((sum, item) => sum + item.closed, 0), 0);
+ await f.pages.close(JSON.stringify(['contacts', '']));
+ assert.equal(f.instances[1]!.closed, 1); assert.equal(f.pages.getSurfaces().length, 2); await f.pages.dispose();
 });
 
 test('lightweight notification projections release on hide without stopping other pages', async () => {
@@ -118,21 +118,17 @@ test('lightweight notification projections release on hide without stopping othe
 });
 
 test('restoration never coerces an unknown feature into a phantom dashboard page', async () => {
- const f = fixture({ resourcePages: true });
- f.pages.restore([{ target: { feature: 'not-a-feature' }, state: { filter: 'unexpected' } }, { target: { feature: 'terminal' }, state: { filter: 'missing id' } }, { target: { feature: 'contacts', resourceId: 'person' }, state: { filter: { search: 'safe', authorization: 'secret', action() {} } } }]);
- assert.deepEqual(f.pages.getState(), [{ target: { feature: 'contacts', resourceId: 'person' }, state: { filter: { search: 'safe' } } }]); await f.pages.dispose();
+ const f = fixture();
+ f.pages.restore([{ target: { feature: 'not-a-feature' }, state: { filter: 'unexpected' } }, { target: { feature: 'contacts' }, state: { filter: { search: 'safe', authorization: 'secret', action() {} } } }]);
+ assert.deepEqual(f.pages.getState(), [{ target: { feature: 'contacts' }, state: { filter: { search: 'safe' } } }]); await f.pages.dispose();
 });
 
-test('closing the active tab shows its neighbour; closing another page returns to the most recent one', async () => {
- const f = fixture({ resourcePages: true });
- const home = await f.prepare({ feature: 'dashboard', resourceId: 'home' }); f.pages.show(home);
- const one = await f.prepare({ feature: 'terminal', resourceId: 'one' }); f.pages.show(one);
- const two = await f.prepare({ feature: 'terminal', resourceId: 'two' }); f.pages.show(two);
- f.pages.show(home); f.pages.show(two);
- await f.pages.closeResource('terminal', 'two');
- assert.deepEqual(f.navigated.at(-1), { feature: 'terminal', resourceId: 'one' });
- f.pages.show(one); const contacts = await f.prepare({ feature: 'contacts', resourceId: 'c' }); f.pages.show(contacts);
- await f.pages.closeResource('contacts', 'c');
- assert.deepEqual(f.navigated.at(-1), { feature: 'terminal', resourceId: 'one' });
+test('closing the active page shows the most recently visited one', async () => {
+ const f = fixture();
+ const home = await f.prepare({ feature: 'dashboard' }); f.pages.show(home);
+ const one = await f.prepare({ feature: 'terminal' }); f.pages.show(one);
+ const two = await f.prepare({ feature: 'contacts' }); f.pages.show(two);
+ await f.pages.close(JSON.stringify(['contacts', '']));
+ assert.deepEqual(f.navigated.at(-1), { feature: 'terminal' });
  await f.pages.dispose();
 });

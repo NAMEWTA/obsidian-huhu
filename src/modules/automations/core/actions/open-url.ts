@@ -18,7 +18,7 @@ export function urlError(input: string): string | undefined {
 	return undefined;
 }
 
-/** Open a web address (http and https only) in the built-in browser. */
+/** Open a web address (http and https only) in the system default browser. */
 export const openUrlAction: ActionDefinition<'open-url'> = {
 	kind: 'open-url',
 	nameKey: 'automation.open-url',

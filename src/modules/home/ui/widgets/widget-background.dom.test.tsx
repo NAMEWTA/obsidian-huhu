@@ -12,13 +12,13 @@ function store(foreground?: 'light' | 'dark') {
 	const state = createStore(() => ({
 		settings: {
 			...structuredClone(DEFAULT_DASHBOARD_SETTINGS),
-			musicBackground: { image: 'Media/bg.png', opacity: 100, dim: 45, blur: 0, foreground },
+			habitBackground: { image: 'Media/bg.png', opacity: 100, dim: 45, blur: 0, foreground },
 		},
 	}));
 	return { state, image: async () => 'data:image/png;base64,AAAA' } as unknown as BoardStore;
 }
 function Probe({ store, frame }: { store: BoardStore; frame?: boolean }) {
-	const { className, style, layer } = useWidgetBackground(store, 'music', frame === undefined ? undefined : { frame });
+	const { className, style, layer } = useWidgetBackground(store, 'habit', frame === undefined ? undefined : { frame });
 	return (
 		<div data-probe className={className} style={style}>
 			{layer}

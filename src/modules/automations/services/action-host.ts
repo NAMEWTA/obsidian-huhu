@@ -5,7 +5,6 @@ import { AutomationError } from '../../../shared/automation/errors';
 import type { AutomationTaskDelivery } from '../../../shared/automation/types';
 import type { TaskViews } from '../../task/api';
 import { t } from '../../../shared/i18n/index';
-import { BROWSER_OPEN } from '../../browser/api';
 import type { ActionHost } from '../core/actions/definition';
 
 /** Open a note of the vault in a tab of Obsidian's own editor, at a line when one is given (0-based). */
@@ -33,9 +32,7 @@ export function createActionHost(context: ModuleContext): ActionHost {
 	return {
 		openFile: (path) => openNote(app, path),
 		openUrl: async (url) => {
-			const browser = await context.services.acquire(BROWSER_OPEN);
-			if (browser) await browser.value.open({ url });
-			else app.workspace.containerEl.win.open(url, '_blank');
+			app.workspace.containerEl.win.open(url, '_blank');
 		},
 		runCommand: (id) => {
 			const commands = (app as AppWithCommands).commands;

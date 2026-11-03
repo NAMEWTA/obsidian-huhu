@@ -142,9 +142,7 @@ export function AutomationsPage({
 	}, [definitions, runs, state]);
 	const disabled = !executionEnabled || !!loadError;
 	const rowActions: RowActions = {
-		onOpen: (d) => {
-			if (!d.removedAction) navigate('tasks', d.id);
-		},
+		onOpen: (d) => navigate('tasks', d.id),
 		onRun: (d) =>
 			perform(async () => {
 				const run = await host.service.run(d);

@@ -1,17 +1,36 @@
 import { expect, test, vi } from 'vitest';
 import { performance } from 'node:perf_hooks';
-import { readdir, stat, rename, rm } from 'node:fs/promises';
+import { readdir, stat, rename, rm, mkdtemp, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { ModuleContext, ModuleInstance } from '../../../src/app/contracts/module';
-import { musicVaultFixture } from '../../music-vault-fixture';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
+import { FileSystemAdapter, type App } from 'obsidian';
+import { initializeDevice } from '../../../src/host/obsidian/storage/device-id';
+
+const nodeRequire = createRequire(import.meta.url);
+// An empty, real temporary vault with a stable device identity.
+async function vaultFixture(): Promise<{ app: App; dispose(): Promise<void> }> {
+	const root = await mkdtemp(path.join(tmpdir(), 'huhu-startup-vault-'));
+	const adapter = Object.assign(new FileSystemAdapter(), {
+		getBasePath: () => root,
+		exists: async (file: string) => { try { await stat(path.join(root, file)); return true; } catch { return false; } },
+		read: (file: string) => readFile(path.join(root, file), 'utf8'),
+		write: (file: string, text: string) => writeFile(path.join(root, file), text),
+		mkdir: (directory: string) => mkdir(path.join(root, directory), { recursive: true }),
+	});
+	const app = { vault: { adapter, getName: () => 'unit-startup' }, workspace: { containerEl: { win: { require: nodeRequire, setTimeout, clearTimeout } } }, loadLocalStorage: () => null, saveLocalStorage: () => {} } as unknown as App;
+	await initializeDevice(app, { machineIdentity: async () => 'startup-test-machine', label: 'test', chooseDevice: async () => ({ label: 'test' }) });
+	return { app, dispose: () => rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 20 }) };
+}
 
 // Production factories/runtimes remain intact. Only the Obsidian/Electron host is
 // replaced; each sample uses an empty, real temporary vault and its own device.
 test('isolated activation intervals for the other startup modules', async () => {
 	const rows: Array<Record<string, unknown>> = [];
 	for (const id of ['notifications', 'archives', 'automations', 'agent', 'versioning']) {
-		const fixture = await musicVaultFixture(), cleanup: Array<() => void> = [];
+		const fixture = await vaultFixture(), cleanup: Array<() => void> = [];
 		const { app } = fixture, root = app.vault.adapter.getBasePath();
 		const events = new EventTarget();
 		Object.assign(app.workspace.containerEl.win, {

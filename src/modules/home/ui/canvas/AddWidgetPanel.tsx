@@ -46,7 +46,7 @@ const CATEGORY_ICONS: Record<HomeWidgetCategory, string> = {
 	record: 'notebook-pen',
 	agent: 'bot',
 	content: 'file-text',
-	media: 'music',
+	media: 'image',
 	tools: 'wrench',
 };
 

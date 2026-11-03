@@ -28,7 +28,7 @@ test('every kind has one definition, in the order pickers list them', () => {
 		'obsidian-command',
 	]);
 	expect(new Set(actionDefinitions.map((definition) => definition.nameKey)).size).toBe(7);
-	expect(actionDefinition('browser-workflow')).toBeUndefined();
+	expect(actionDefinition('unknown-action')).toBeUndefined();
 });
 test('each definition round-trips through its document form and keeps its text in the section', () => {
 	for (const action of samples) {

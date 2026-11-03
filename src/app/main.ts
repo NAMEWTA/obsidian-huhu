@@ -37,7 +37,6 @@ import { COMMENTS_VIEW_TYPE, CommentsLeaf } from './workbench/comments-leaf';
 import { detachNavigatorLeaves, NAVIGATOR_VIEW_TYPE, NavigatorLeaf } from './workbench/navigator-leaf';
 import { collectReferences } from '../host/obsidian/references';
 import { registerCopyCommands } from './copy-commands';
-import { BROWSER_OPEN, type BrowserOpenRequest } from '../modules/browser/api';
 import { desktopMachineIdentity, initializeDevice, vaultIdentity } from '../host/obsidian/storage/device-id';
 import type { ContentFiles } from '../host/obsidian/storage/content-files';
 import { EditorContextService } from './editor-panel/context';
@@ -144,10 +143,6 @@ export default class DashboardPlugin extends Plugin {
 					openFocus: (target, state, ownerWindow) =>
 						this.workbench?.openFocus(target, state, ownerWindow) ??
 						Promise.reject(new Error(t('workbench.notReady'))),
-					savedPages: (feature) => this.workbench?.savedPages(feature) ?? [],
-					activateResource: (feature, id) =>
-						this.workbench?.activateResource(feature, id) ?? Promise.resolve(false),
-					closeResource: (feature, id) => this.workbench?.closeResource(feature, id) ?? Promise.resolve(),
 				};
 				const commands: CommandAccess = {
 					add: (command) => {
@@ -389,16 +384,6 @@ export default class DashboardPlugin extends Plugin {
 
 	openContacts(): Promise<void> {
 		return this.openWorkbench({ feature: 'contacts' });
-	}
-
-	/** Open a page in HUHU's browser (or the system browser on phones); failures are shown as a notice. */
-	async openBrowser(request: BrowserOpenRequest): Promise<void> {
-		const browser = await this.services.acquire(BROWSER_OPEN);
-		if (!browser) {
-			new Notice(t('modules.disabledNotice'));
-			return;
-		}
-		await browser.value.show(request);
 	}
 
 	async openEditorView(): Promise<void> {

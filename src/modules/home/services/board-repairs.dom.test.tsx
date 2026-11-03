@@ -377,30 +377,27 @@ test('a new note opens in a new tab with the editor of Obsidian, not in a dialog
 	expect((vault.app.workspace as unknown as { getLeaf: ReturnType<typeof vi.fn> }).getLeaf).toHaveBeenCalledWith('tab');
 	expect(openFile).toHaveBeenCalledWith(vault.file('Projects/Alpha/Spec.md'));
 });
-test('a web card opens in the browser tab or the system browser; the preview dialog is gone and an old "modal" value counts as the tab', async () => {
+test('a web card opens in the system default browser and its edit dialog has no open-with option', async () => {
 	const { store } = await fixture();
-	const openBrowser = vi.fn(async () => {});
-	(store.host as unknown as { openBrowser: typeof openBrowser }).openBrowser = openBrowser;
-	const web = (openIn: string) => ({
+	const openExternal = vi.fn();
+	(store.host as unknown as { openExternal: typeof openExternal }).openExternal = openExternal;
+	const web = {
 		...store.state.getState().data!.columns[0]!.cards[0]!,
 		id: 'w',
 		title: 'Site',
 		type: 'web' as const,
 		url: 'https://example.com',
-		openIn: openIn as 'tab',
-	});
+	};
 	const view = render(
 		<TestProviders>
-			<Card store={store} card={web('modal')} index={0} />
+			<Card store={store} card={web} index={0} />
 		</TestProviders>,
 	);
 	fireEvent.click(screen.getByRole('button', { name: /example\.com/ }));
-	expect(openBrowser).toHaveBeenCalledWith({ url: 'https://example.com' });
+	expect(openExternal).toHaveBeenCalledWith('https://example.com', store.ownerWindow);
 	expect(screen.queryByRole('dialog')).toBeNull();
-	// the edit dialog offers exactly the two ways
 	fireEvent.click(screen.getByRole('button', { name: t('common.edit') }));
-	fireEvent.click(await screen.findByRole('combobox', { name: t('home.dashboard.openIn') }));
-	const options = await screen.findAllByRole('option');
-	expect(options.map((option) => option.textContent)).toEqual([t('home.dashboard.browserTab'), t('home.dashboard.systemBrowser')]);
+	await screen.findByRole('dialog');
+	expect(screen.queryByRole('combobox')).toBeNull();
 	view.unmount();
 });

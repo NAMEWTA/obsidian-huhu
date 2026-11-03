@@ -8,7 +8,7 @@ design_ref: {"revision":3,"digest":"78dd227f70b86804078218988b35850af8f2078a02ea
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-42
 title: "删除 Browser 产品入口、外链改系统浏览器，并删除 Home 网页分区与网易云音乐"
-status: draft
+status: done
 kind: refactor
 planning_depth: standard
 planning_depth_reason: "多个模块的入口与外链行为变化，涉及看板文件字段与设置"

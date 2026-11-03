@@ -20,7 +20,6 @@ export const KNOWN_METADATA_KEYS = new Set([
 	'gcol',
 	'grow',
 	'noteStyle',
-	'openIn',
 	'folder',
 ]);
 
@@ -44,7 +43,6 @@ export const SECTION_TYPES = new Set([
 	'rss',
 	'ticktick',
 	'sticky',
-	'web',
 ]);
 
 export function normalizeHexColor(value?: string): string {

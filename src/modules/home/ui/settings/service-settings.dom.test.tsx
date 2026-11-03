@@ -8,27 +8,9 @@ import { DashboardSettings } from './DashboardSettings';
 import type { HomeHost } from '../../services/home-host';
 import { memoryVault } from '../../../../../scripts/fixtures/memory-vault';
 import userEvent from '@testing-library/user-event';
-import { homeServices } from '../../services/instances';
 import { t } from '../../../../shared/i18n';
-vi.mock('obsidian', async (original) => ({
-	...(await original<typeof import('obsidian')>()),
-	Platform: { isDesktopApp: true },
-}));
-afterEach(() => {
-	cleanup();
-	homeServices.music = undefined;
-});
-test('React music settings preserve pause, login, logout and album creation fields', async () => {
-	const pause = vi.fn(),
-		login = vi.fn(async () => {}),
-		logout = vi.fn(async () => {});
-	homeServices.music = {
-		account: { loggedIn: false },
-		subscribe: () => () => {},
-		pause,
-		login,
-		logout,
-	} as unknown as NonNullable<typeof homeServices.music>;
+afterEach(cleanup);
+test('React media settings preserve album creation fields', async () => {
 	let current = structuredClone(DEFAULT_DASHBOARD_SETTINGS);
 	function Harness() {
 		const [settings, set] = useState(current);
@@ -47,15 +29,6 @@ test('React music settings preserve pause, login, logout and album creation fiel
 		);
 	}
 	render(<Harness />);
-	fireEvent.click(screen.getByRole('button', { name: t('music.accountLogin') }));
-	await waitFor(() => expect(login).toHaveBeenCalledOnce());
-	await waitFor(() =>
-		expect((screen.getByRole('button', { name: t('music.accountLogout') }) as HTMLButtonElement).disabled).toBe(
-			false,
-		),
-	);
-	fireEvent.click(screen.getByRole('button', { name: t('music.accountLogout') }));
-	await waitFor(() => expect(logout).toHaveBeenCalledOnce());
 	fireEvent.click(screen.getByRole('button', { name: t('album.add') }));
 	fireEvent.change(screen.getByLabelText(t('settings.widgetAlbumFolder')), { target: { value: 'Assets' } });
 	fireEvent.change(screen.getByLabelText(t('settings.widgetAlbumInterval')), { target: { value: '15' } });

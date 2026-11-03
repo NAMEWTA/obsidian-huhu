@@ -2,7 +2,6 @@ import type { ModuleManifest } from './contracts/module';
 import { agentManifest } from '../modules/agent/manifest';
 import { archivesManifest } from '../modules/archives/manifest';
 import { automationsManifest } from '../modules/automations/manifest';
-import { browserManifest } from '../modules/browser/manifest';
 import { commentsManifest } from '../modules/comments/manifest';
 import { taskManifest } from '../modules/task/manifest';
 import { homeManifest } from '../modules/home/manifest';
@@ -14,7 +13,6 @@ import { safeManifest } from '../modules/safe/manifest';
 
 /** Every module HUHU ships. Manifests are data only; module code loads through `manifest.load()`. */
 export const MANIFESTS: readonly ModuleManifest[] = [
-	browserManifest,
 	homeManifest,
 	taskManifest,
 	commentsManifest,

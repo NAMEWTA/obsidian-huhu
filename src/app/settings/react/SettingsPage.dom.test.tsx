@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event';
 import { TestProviders } from '../../../ui/react/test-providers';
 import { SettingsPage } from './SettingsPage';
 
-vi.mock('../nav', () => ({ PRODUCT_MODULES: { browser: 'browser' } }));
+vi.mock('../nav', () => ({ PRODUCT_MODULES: { safe: 'safe' } }));
 vi.mock('../../workbench/settings-categories', () => ({
-	settingsCategories: () => [{ id: 'browser', label: 'Browser' }],
+	settingsCategories: () => [{ id: 'safe', label: 'Safe' }],
 }));
 vi.mock('./GeneralSettings', () => ({ GeneralSettings: () => null }));
 
@@ -27,13 +27,13 @@ test('React settings keeps component state across updates and releases its own s
 	const plugin = {
 		moduleInstance: () => ({ settingsPage: load }),
 		onModuleChanged: () => () => {},
-		moduleManifests: () => [{ id: 'browser' }],
+		moduleManifests: () => [{ id: 'safe' }],
 		moduleState: () => 'active',
 		appSettings: { subscribe: () => () => {}, get: () => settings },
 	} as unknown as Parameters<typeof SettingsPage>[0]['plugin'];
 	const view = render(
 		<TestProviders>
-			<SettingsPage plugin={plugin} category="browser" navigate={vi.fn()} />
+			<SettingsPage plugin={plugin} category="safe" navigate={vi.fn()} />
 		</TestProviders>,
 	);
 	await userEvent.setup().click(await screen.findByRole('button', { name: 'Refresh settings 0' }));
@@ -55,13 +55,13 @@ test('module loader failure is visible', async () => {
 			settingsPage: load,
 		}),
 		onModuleChanged: () => () => {},
-		moduleManifests: () => [{ id: 'browser' }],
+		moduleManifests: () => [{ id: 'safe' }],
 		moduleState: () => 'active',
 		appSettings: { subscribe: () => () => {}, get: () => settings },
 	} as unknown as Parameters<typeof SettingsPage>[0]['plugin'];
 	const view = render(
 		<TestProviders>
-			<SettingsPage plugin={plugin} category="browser" navigate={vi.fn()} />
+			<SettingsPage plugin={plugin} category="safe" navigate={vi.fn()} />
 		</TestProviders>,
 	);
 	await waitFor(() => expect(screen.getByRole('alert').textContent).toBe('Unavailable'));
@@ -77,13 +77,13 @@ test('replacing a module loader hides the old page and ignores an obsolete async
 	const plugin = {
 		moduleInstance: () => ({ settingsPage: loader }),
 		onModuleChanged: () => () => {},
-		moduleManifests: () => [{ id: 'browser' }],
+		moduleManifests: () => [{ id: 'safe' }],
 		moduleState: () => 'active',
 		appSettings: { subscribe: () => () => {}, get: () => settings },
 	} as unknown as Parameters<typeof SettingsPage>[0]['plugin'];
 	const node = () => (
 		<TestProviders>
-			<SettingsPage plugin={plugin} category="browser" navigate={vi.fn()} />
+			<SettingsPage plugin={plugin} category="safe" navigate={vi.fn()} />
 		</TestProviders>
 	);
 	const view = render(node());

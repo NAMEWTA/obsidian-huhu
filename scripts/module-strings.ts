@@ -16,7 +16,6 @@ import { messages as sync } from '../src/modules/versioning/i18n';
 import { messages as safe } from '../src/modules/safe/i18n';
 import { messages as taskMessages } from '../src/modules/task/i18n';
 import { messages as automationStrings } from '../src/shared/i18n/lazy/automation';
-import { messages as browserStrings } from '../src/shared/i18n/lazy/browser';
 import { messages as commonStrings } from '../src/shared/i18n/lazy/common';
 import { messages as calendarStrings } from '../src/shared/i18n/lazy/calendar';
 import { messages as appearanceStrings } from '../src/shared/i18n/lazy/appearance';
@@ -25,7 +24,6 @@ for (const messages of [
 	uiStrings,
 	calendarStrings,
 	automationStrings,
-	browserStrings,
 	commonStrings,
 	appearanceStrings,
 	agent,

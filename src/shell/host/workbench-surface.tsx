@@ -93,18 +93,8 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 	getSavedPages(feature?: WorkbenchFeature): SavedPage[] {
 		return this.pages?.list(feature) ?? [];
 	}
-	async activateResource(feature: WorkbenchFeature, id: string): Promise<boolean> {
-		const saved = this.getSavedPages(feature).find((page) => page.target.resourceId === id);
-		if (!saved) return false;
-		await this.view.app.workspace.revealLeaf(this.view.leaf);
-		await this.navigate(saved.target);
-		return true;
-	}
 	getNativeSurfaces(): readonly NativeSurface[] {
 		return this.pages?.getSurfaces() ?? [];
-	}
-	async closeResource(feature: WorkbenchFeature, id: string): Promise<void> {
-		await this.pages?.closeResource(feature, id);
 	}
 	getState(): Record<string, unknown> {
 		return { ...this.state, pages: this.pages?.getState() ?? this.savedPages };
@@ -246,16 +236,6 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 					void this.host.openFocus(target, state(), 'split', this.view.contentEl.win).catch(this.host.report);
 				}),
 		);
-		if (binding && this.contribution(target.feature)?.resourcePages) {
-			menu.addItem((item) =>
-				item
-					.setTitle(t('workbench.closePage'))
-					.setIcon('x')
-					.onClick(() => {
-						void Promise.resolve(binding.surface.context.close()).catch(this.host.report);
-					}),
-			);
-		}
 		binding?.surface.onPaneMenu(menu, source);
 	}
 
@@ -305,30 +285,6 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 			});
 		}
 		return undefined;
-	}
-	private browserTabs() {
-		const contribution = this.contribution(this.state.target.feature);
-		if (!contribution?.resourcePages || contribution.resourceTabs?.(this.state.target) === false) return undefined;
-		const feature = contribution.id;
-		const section = this.state.target.section;
-		const pages = this.getSavedPages(feature).filter((page) => page.target.section === section);
-		return {
-			tabs: pages.map((page) => ({
-				id: page.target.resourceId ?? '',
-				title:
-					(typeof page.state.title === 'string' && page.state.title) ||
-					(typeof page.state.url === 'string' && page.state.url) ||
-					(contribution.navigation.label ?? t(contribution.navigation.labelKey)),
-				icon: contribution.navigation.icon,
-			})),
-			active: this.state.target.resourceId,
-			onSelect: (id: string) => this.requestNavigation({ feature, section, resourceId: id }),
-			onClose: (id: string) => {
-				void this.pages?.closeResource(feature, id).catch(this.host.report);
-			},
-			onNew: () => this.requestNavigation({ feature, section, resourceId: crypto.randomUUID() }),
-			newLabel: t('workbench.newPage'),
-		};
 	}
 	private onRail = (feature: WorkbenchFeature): 'toggled' | 'navigated' => {
 		const external = this.contribution(feature)?.rail?.action;
@@ -421,7 +377,6 @@ class WorkbenchShellSurface implements WorkbenchSurface {
 							: t('workbench.title')
 					}
 					panel={this.panelModel()}
-					tabs={this.browserTabs()}
 					statuses={statuses}
 					busy={this.busy}
 					error={this.error}

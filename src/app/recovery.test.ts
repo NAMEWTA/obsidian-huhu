@@ -216,9 +216,9 @@ describe('settings owner over a damaged file (T-15 N-3)', () => {
 	});
 
 	test('the replacement of a damaged file still cannot smuggle in another namespace or be damaged itself', () => {
-		const other = JSON.stringify({ version: 1, namespaces: { agent: {}, browser: { homepage: 'x' } } });
+		const other = JSON.stringify({ version: 1, namespaces: { agent: {}, archives: { homepage: 'x' } } });
 		expect(() => owner(['agent']).validate!([{ path, before: 'garbage', after: other }])).toThrow(
-			'namespace-not-restorable:browser',
+			'namespace-not-restorable:archives',
 		);
 		expect(() => owner(['agent']).validate!([{ path, before: next, after: 'garbage' }])).toThrow(
 			'settings-stage-unparseable',
@@ -226,10 +226,10 @@ describe('settings owner over a damaged file (T-15 N-3)', () => {
 	});
 
 	test('a parseable file keeps the old rule: other namespaces must be identical', () => {
-		const before = JSON.stringify({ version: 1, namespaces: { browser: { a: 1 }, agent: {} } });
-		const changed = JSON.stringify({ version: 1, namespaces: { browser: { a: 2 }, agent: { x: 1 } } });
+		const before = JSON.stringify({ version: 1, namespaces: { archives: { a: 1 }, agent: {} } });
+		const changed = JSON.stringify({ version: 1, namespaces: { archives: { a: 2 }, agent: { x: 1 } } });
 		expect(() => owner(['agent']).validate!([{ path, before, after: changed }])).toThrow(
-			'namespace-not-restorable:browser',
+			'namespace-not-restorable:archives',
 		);
 	});
 

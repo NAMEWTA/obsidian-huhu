@@ -7,7 +7,6 @@ import { settingsCategories } from '../workbench/settings-categories';
 import type DashboardPlugin from '../main';
 
 const ALL_ON = {
-	browser: true,
 	automation: true,
 	dashboard: true,
 	editor: true,
@@ -18,10 +17,10 @@ const ALL_ON = {
 	versioning: true,
 	safe: true,
 };
-const ALL_OFF = { browser: false, automation: false, iconic: false, contacts: false, dashboard: false, editor: false, navigator: false, terminal: false, versioning: false, safe: false };
+const ALL_OFF = { automation: false, iconic: false, contacts: false, dashboard: false, editor: false, navigator: false, terminal: false, versioning: false, safe: false };
 
 test('settings list home first, then every module that is on', () => {
-	assert.deepEqual(visibleProducts(ALL_ON), ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe']);
+	assert.deepEqual(visibleProducts(ALL_ON), ['home', 'dashboard', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, editor: true, terminal: true }), ['home', 'editor', 'terminal']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, dashboard: true, terminal: true }), ['home', 'dashboard', 'terminal']);
 	assert.deepEqual(visibleProducts({ ...ALL_OFF, automation: true }), ['home', 'automation']);
@@ -53,7 +52,3 @@ test('icon preferences are a settings category only while their module is enable
 	assert.equal(settingsCategories(plugin).some((item) => item.id === 'iconic'), false);
 });
 
-
-test('browser settings remain available with dashboard and terminal disabled', () => {
-	assert.deepEqual(visibleProducts({ ...ALL_OFF, browser: true }), ['home', 'browser']);
-});

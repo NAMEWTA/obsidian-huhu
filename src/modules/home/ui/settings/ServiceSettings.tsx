@@ -1,6 +1,6 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/settings.ts, src/album-settings-modal.ts
-import { useEffect, useState } from 'react';
-import { Platform, type App } from 'obsidian';
+import { useState } from 'react';
+import type { App } from 'obsidian';
 import { useT } from '../../../../ui/react/hooks';
 import { SettingsSection } from '../../../../ui/components/huhu/SettingsSection';
 import { SettingsRow } from '../../../../ui/components/huhu/SettingsRow';
@@ -9,11 +9,9 @@ import { Input } from '../../../../ui/components/input';
 import { Button } from '../../../../ui/components/button';
 import { Label } from '../../../../ui/components/label';
 import type { AlbumConfig, DashboardSettings } from '../../core/board/types';
-import { homeServices } from '../../services/instances';
 import { Choice } from '../board/controls';
 import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
 import { DashboardDialog } from '../dialogs/DashboardDialog';
-import { WidgetBackgroundEditor } from './WidgetBackgroundEditor';
 type Props = {
 	app?: App;
 	settings: DashboardSettings;
@@ -22,68 +20,12 @@ type Props = {
 export function MediaServiceSettings({ app, settings, update }: Props) {
 	const t = useT(),
 		[album, setAlbum] = useState<AlbumConfig | null>(null),
-		[error, setError] = useState(''),
-		[busy, setBusy] = useState(false),
-		[, refresh] = useState(0),
-		service = homeServices.music;
-	useEffect(() => service?.subscribe(() => refresh((n) => n + 1)), [service]);
+		[error, setError] = useState('');
 	const run = (task: Promise<unknown>) => {
 		void task.catch((e) => setError(String(e)));
 	};
-	const account = async (login: boolean) => {
-		setBusy(true);
-		try {
-			if (login) await service?.login();
-			else await service?.logout();
-		} catch (e) {
-			if (!(e instanceof Error && e.message === 'CANCELLED'))
-				setError(t(login ? 'music.accountFailed' : 'music.accountLogoutFailed'));
-		} finally {
-			setBusy(false);
-		}
-	};
 	return (
 		<>
-			<SettingsSection title={t('settings.widgetMusic')}>
-				{Platform.isDesktopApp && service && (
-					<SettingsRow
-						label={t('music.accountTitle')}
-						description={t(service.account.loggedIn ? 'music.accountSignedIn' : 'music.accountSignedOut')}
-						control={
-							<div className="flex gap-2">
-								<Button
-									disabled={busy}
-									onClick={() => {
-										void account(true);
-									}}
-								>
-									{t('music.accountLogin')}
-								</Button>
-								<Button
-									disabled={busy}
-									variant="outline"
-									onClick={() => {
-										void account(false);
-									}}
-								>
-									{t('music.accountLogout')}
-								</Button>
-							</div>
-						}
-					/>
-				)}
-				<WidgetBackgroundEditor
-					app={app}
-					value={settings.musicBackground}
-					onChange={(value) =>
-						run(
-							update((s) => {
-								s.musicBackground = value;
-							}),
-						)
-					}
-				/>
-			</SettingsSection>
 			<SettingsSection title={t('settings.widgetAlbum')}>
 				{settings.albums.map((config) => (
 					<SettingsRow

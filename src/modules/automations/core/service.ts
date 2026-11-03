@@ -269,7 +269,6 @@ export class AutomationService {
 		this.requireExecution();
 		this.definitionOperations++;
 		try {
-			if (d.removedAction) throw new AutomationError('removedAction');
 			if (!this.loaded) throw new AutomationError('failedLoad');
 			if (!validDefinition(d)) throw new AutomationError('invalid');
 			this.verifyAction(d);
@@ -344,7 +343,7 @@ export class AutomationService {
 			const launches: Promise<unknown>[] = [];
 			for (const d of this.definitions) {
 				if (!this.executionEnabled) break;
-				if (!d.enabled || d.deviceId !== this.deviceId || d.removedAction) continue;
+				if (!d.enabled || d.deviceId !== this.deviceId) continue;
 				try {
 					const at = latestOccurrence(d.schedule, now);
 					const key = `${d.id}:${d.revision}`;
@@ -488,7 +487,6 @@ export class AutomationService {
 		retry?: AutomationRun,
 	): Promise<AutomationRun | undefined> {
 		this.requireExecution();
-		if (d.removedAction) throw new AutomationError('removedAction');
 		if (!this.loaded || this.stopped || this.launching.has(d.id)) return undefined;
 		if (!validDefinition(d)) throw new AutomationError('invalid');
 		this.verifyAction(d);

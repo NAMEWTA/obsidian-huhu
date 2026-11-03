@@ -12,7 +12,6 @@ export const SECTION_TYPES = [
 	'rss',
 	'images',
 	'videos',
-	'web',
 ] as const;
 
 export const P1_SECTIONS: readonly string[] = [
@@ -23,7 +22,6 @@ export const P1_SECTIONS: readonly string[] = [
 	'calendar',
 	'images',
 	'videos',
-	'web',
 ];
 
 export const P2_SECTIONS: readonly string[] = ['rss'];

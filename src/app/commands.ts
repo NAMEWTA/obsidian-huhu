@@ -25,7 +25,6 @@ export function registerShellCommands(plugin: DashboardPlugin): void {
 			return true;
 		},
 	});
-	plugin.addCommand({ id: 'open-browser', nameKey: 'browser.open', name: t('browser.open'), checkCallback: when('browser', () => { void plugin.openBrowser({}).catch(report); }) });
 	plugin.addCommand({ id: 'open-automations', nameKey: 'automation.openAutomations', name: t('automation.openAutomations'), checkCallback: when('automations', () => { void plugin.automationHost?.open().catch(report); }) });
 	plugin.addCommand({ id: 'open-notifications', nameKey: 'automation.openNotifications', name: t('automation.openNotifications'), checkCallback: when('notifications', () => { void plugin.openWorkbench({ feature: 'notifications' }).catch(report); }) });
 	plugin.addCommand({ id: 'new-automation', nameKey: 'automation.new', name: t('automation.new'), checkCallback: when('automations', () => { void plugin.services.peek(AUTOMATION_COMPOSER)?.open().catch(report); }) });

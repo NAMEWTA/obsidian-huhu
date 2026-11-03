@@ -75,7 +75,6 @@ export async function consolidateBoardWidgets(
 					icon: 'globe',
 					type: 'url',
 					target: card.url,
-					openIn: card.openIn ?? 'tab',
 				});
 				// Preserve the original web card alongside the shortcut, including extra notes.
 			}

@@ -194,16 +194,12 @@ async function main() {
 	);
 	let automationOpens = 0,
 		inboxOpens = 0,
-		browserOpens = 0,
 		safeOpens = 0;
 	let safeEnabled = true;
 	registerShellCommands({
 		addCommand,
 		moduleState: (module: string) => module === 'safe' ? 'idle' : 'active',
 		moduleEnabled: (module: string) => module === 'safe' && safeEnabled,
-		openBrowser: async () => {
-			browserOpens++;
-		},
 		openWorkbench: async (target: { feature: string }) => {
 			if (target.feature === 'notifications') inboxOpens++;
 			if (target.feature === 'safe') safeOpens++;
@@ -219,7 +215,6 @@ async function main() {
 	const expectedShellIds = [
 		'open-workbench',
 		'open-safe',
-		'open-browser',
 		'open-automations',
 		'open-notifications',
 		'new-automation',
@@ -230,20 +225,18 @@ async function main() {
 		.map((id) => `huhu:${id}`)
 		.sort();
 	assert.deepEqual(shellCommands.map((command) => command.id).sort(), expectedShellIds);
-	const openBrowser = shellCommands.find((command) => command.id === 'huhu:open-browser')!;
 	const openAutomation = shellCommands.find((command) => command.id === 'huhu:open-automations')!;
 	const openInbox = shellCommands.find((command) => command.id === 'huhu:open-notifications')!;
 	const openSafe = shellCommands.find((command) => command.id === 'huhu:open-safe')!;
 	const shellCallbacks = shellCommands.map((command) => command.callback ?? command.checkCallback);
 	for (const language of ['zh', 'en', 'zh'] as const) {
 		setLanguage(language);
-		assert.equal(openBrowser.name, `HUHU: ${t('browser.open')}`);
 		assert.equal(openAutomation.name, language === 'zh' ? 'HUHU: 打开自动化看板' : 'HUHU: Open automation board');
 		assert.equal(openInbox.name, language === 'zh' ? 'HUHU: 打开通知中心' : 'HUHU: Open notifications');
 		assert.equal(openSafe.name, language === 'zh' ? 'HUHU: 打开保险箱' : 'HUHU: Open safe');
 		assert.equal(t('automation.title'), language === 'zh' ? '自动化看板' : 'Automation board');
 		assert.equal(t('automation.inbox'), language === 'zh' ? '通知中心' : 'Notifications');
-		for (const command of [openAutomation, openInbox, openBrowser])
+		for (const command of [openAutomation, openInbox])
 			assert.equal(command.checkCallback?.(false), true, 'Module commands run while the module is active');
 		const beforeSafeOpen = safeOpens;
 		assert.equal(openSafe.checkCallback?.(true), true, 'The enabled safe can be opened before its on-demand activation');
@@ -264,7 +257,7 @@ async function main() {
 		shellCommands.forEach((command, i) => assert.equal(commands[i + 10], command));
 		assert.equal(commandCleanups.length, commands.length, 'One subscription per command');
 	}
-	assert.deepEqual([automationOpens, inboxOpens, browserOpens, safeOpens], [3, 3, 3, 3]);
+	assert.deepEqual([automationOpens, inboxOpens, safeOpens], [3, 3, 3]);
 	safeEnabled = false;
 	assert.equal(openSafe.checkCallback?.(true), false, 'Disabling the safe removes its command from the palette');
 	assert.equal(openSafe.checkCallback?.(false), false, 'Disabled safe commands do not execute');

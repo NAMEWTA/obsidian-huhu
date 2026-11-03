@@ -13,7 +13,7 @@ import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
 import { Textarea } from '../../../../ui/components/textarea';
 import { useT } from '../../../../ui/react/hooks';
 import { memoCardText } from '../../platform/board/card-move';
-import { IconButton, Choice } from '../board/controls';
+import { IconButton } from '../board/controls';
 import { useWidgetMenu, WidgetActions } from '../canvas/widget-frame';
 import { RenameTitle } from '../board/RenameTitle';
 import { DashboardDialog } from '../dialogs/DashboardDialog';
@@ -152,10 +152,7 @@ export function Card({
 				<Button
 					variant="ghost"
 					className="h-auto justify-start whitespace-normal"
-					onClick={() => {
-						if (card.openIn === 'system') store.ownerWindow?.open(card.url, '_blank', 'noopener');
-						else void store.host.openBrowser({ url: card.url });
-					}}
+					onClick={() => store.host.openExternal(card.url, store.ownerWindow)}
 				>
 					<ExternalLink />
 					{card.url}
@@ -199,15 +196,6 @@ export function Card({
 									onChange={(e) => setDraft({ ...draft, url: e.target.value })}
 								/>
 							</Label>
-							<Choice
-								label={t('home.dashboard.openIn')}
-								value={draft.openIn ?? 'tab'}
-								onChange={(openIn) => setDraft({ ...draft, openIn: openIn as 'tab' | 'system' })}
-								options={[
-									{ value: 'tab', label: t('home.dashboard.browserTab') },
-									{ value: 'system', label: t('home.dashboard.systemBrowser') },
-								]}
-							/>
 						</>
 					) : project ? (
 						<>

@@ -34,7 +34,6 @@ const RETIRED_KEYS = [
 	'widgetExpenseEnabled',
 	'widgetAlbumEnabled',
 	'anniversaryEnabled',
-	'widgetMusicEnabled',
 	'widgetQuickActionsEnabled',
 	'widgetOrder',
 	'countdownEnabled',

@@ -16,7 +16,7 @@ if (!chrome || !obsidianDir) { console.log('verify-ui-styles: 跳过（未找到
 
 function exists(cmd) { try { execFileSync(process.platform === 'win32' ? 'where' : 'which', [cmd], { stdio: 'ignore' }); return true; } catch { return fs.existsSync(cmd); } }
 
-// 溢出样例由真实组件（Button、ResourceTabs）经 react-dom/server 渲染，容器宽度用内联样式，类名全部来自组件本身。
+// 溢出样例由真实组件（Button）经 react-dom/server 渲染，容器宽度用内联样式，类名全部来自组件本身。
 async function overflowFixtures() {
 	const bundle = await build({
 		stdin: {
@@ -26,20 +26,15 @@ async function overflowFixtures() {
 import { createElement as h } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Button } from './src/ui/components/button';
-import { ResourceTabs } from './src/shell/page/ResourceTabs';
 const zh = '创建一个非常长的中文标签按钮名称用来测试溢出';
 const icon = h('svg', { viewBox: '0 0 16 16', width: 16, height: 16 }, h('circle', { cx: 8, cy: 8, r: 6 }));
-const tabs = (count) => Array.from({ length: count }, (_, i) => ({ id: 't' + i, title: '资源页面标题 ' + (i + 1) + ' A fairly long title' }));
-const strip = (id, width, count) => h('div', { id, style: { width, border: '1px solid transparent' } }, h(ResourceTabs, { tabs: tabs(count), active: 't0', onSelect() {}, onClose() {}, onNew() {}, newLabel: 'New' }));
 export const html = renderToStaticMarkup(h('div', { className: 'huhu-ui' },
 	h('div', { id: 'fx-box-200', style: { width: 200, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 } },
 		h(Button, { id: 'fx-long-zh', variant: 'outline' }, zh),
 		h(Button, { id: 'fx-long-zh-icon', variant: 'default' }, icon, zh),
 		h(Button, { id: 'fx-long-en', variant: 'ghost', size: 'sm' }, 'Create a very long automation with a long name'),
 		h(Button, { id: 'fx-wrapping', variant: 'outline', className: 'h-auto whitespace-normal py-1 text-left' }, 'A button that is allowed to wrap onto several lines when it is long'),
-		h(Button, { id: 'fx-short', variant: 'outline' }, 'OK')),
-	strip('fx-tabs-600', 600, 10),
-	strip('fx-tabs-3', 600, 3)));
+		h(Button, { id: 'fx-short', variant: 'outline' }, 'OK'))));
 `,
 		},
 		bundle: true, platform: 'node', format: 'cjs', write: false, jsx: 'automatic', logLevel: 'error', alias: { obsidian: './scripts/obsidian-stub.ts' },

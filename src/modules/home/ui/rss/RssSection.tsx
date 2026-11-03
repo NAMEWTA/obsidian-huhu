@@ -443,7 +443,7 @@ function ArticleReader({
 						className={c('dashboard-rss-reader-btn')}
 						label={t('rss.openInBrowser')}
 						onClick={() => {
-							void store.host.openBrowser({ url: row.item.link });
+							store.host.openExternal(row.item.link, store.ownerWindow);
 						}}
 					>
 						<ExternalLink />

@@ -115,7 +115,7 @@ export function Section({ store, column }: { store: BoardStore; column: Dashboar
 									void observeBoardAction(
 										store.sync
 											.addCard(column.name, {
-												type: kind as 'generic' | 'task' | 'web' | 'project',
+												type: kind as 'generic' | 'task' | 'project',
 											})
 											.then(() => setAdding(false)),
 									);

@@ -224,7 +224,7 @@ export async function createAutomationRuntime(
 		retry,
 		actions: () =>
 			service.definitions
-				.filter((definition) => definition.schedule.kind === 'manual' && !definition.removedAction)
+				.filter((definition) => definition.schedule.kind === 'manual')
 				.map((definition: AutomationDefinition) => {
 					const run = latestRun(definition.id);
 					const reason = !service.executionEnabled

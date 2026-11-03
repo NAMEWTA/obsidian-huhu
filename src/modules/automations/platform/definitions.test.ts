@@ -44,7 +44,7 @@ test('unreadable saved automation blocks listing and edits until its document is
 	}
 });
 
-test('removed workflow can be listed and explicitly deleted without rewriting other legacy content', async () => {
+test('an explicit delete leaves a persisted tombstone and does not rewrite other definitions', async () => {
 	const vault = memoryVault(),
 		definitions = new MarkdownAutomationDefinitions(vault.app);
 	const action: AutomationDefinition = {
@@ -63,18 +63,16 @@ test('removed workflow can be listed and explicitly deleted without rewriting ot
 	};
 	try {
 		await definitions.save(action);
-		const [file, original] = [...vault.contents.entries()].find(([file]) => file.endsWith('.md'))!;
-		const legacy = original.replace('action: open-file', 'action: browser-workflow');
-		await vault.adapter.write(file, legacy);
-		const removed = (await definitions.list())[0]!;
-		expect(removed.removedAction).toBeTruthy();
-		expect(vault.contents.get(file)).toBe(legacy);
 		await definitions.save({ ...action, id: 'other', name: 'Other' });
-		expect(vault.contents.get(file)).toBe(legacy);
+		const entries = [...vault.contents.entries()];
+		const [file] = entries.find(([, text]) => text.includes('name: Removed'))!;
+		const other = entries.find(([, text]) => text.includes('name: Other'))!;
+		const removed = (await definitions.list()).find((item) => item.id === 'removed')!;
 		await definitions.remove(removed);
 		expect(await definitions.list()).toHaveLength(1);
 		// Collection deletion is an explicit persisted tombstone, preserving recoverable user content.
 		expect(vault.contents.get(file)).toContain('huhu-deleted: true');
+		expect(vault.contents.get(other[0])).toBe(other[1]);
 	} finally {
 		await definitions.shutdown();
 	}

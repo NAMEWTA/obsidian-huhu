@@ -10,11 +10,11 @@ import { launchFreshVault } from './fresh-vault.mjs';
 
 const root = process.argv[2];
 assert.ok(root && path.isAbsolute(root), 'pass a NEW absolute directory');
-const MODULES = ['home', 'agent', 'browser', 'archives', 'automations', 'notifications', 'icons', 'comments', 'navigator', 'sync'];
+const MODULES = ['home', 'agent', 'archives', 'automations', 'notifications', 'icons', 'comments', 'navigator', 'sync'];
 const runtime = await launchFreshVault({
 	root, port: 9301,
 	files: { 'Welcome.md': '# Workbench probe\n', 'huhu/笔记/Probe.md': '# Original content\n' },
-	settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(MODULES.map((id) => [id, true])) }, home: { widgetMusicEnabled: false, widgetWeatherEnabled: false } } },
+	settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(MODULES.map((id) => [id, true])) }, home: { widgetWeatherEnabled: false } } },
 });
 let c = runtime.connection;
 const rows = [];
@@ -91,7 +91,7 @@ try {
 	await size(1500);
 
 	// Settings: every category of the products that are on renders and reports no error.
-	const categories = ['general', 'appearance', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'sync', 'about'];
+	const categories = ['general', 'appearance', 'dashboard', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'sync', 'about'];
 	for (const section of categories) {
 		await c.evaluate(`${huhu}.openWorkbench({feature:'settings',section:'${section}'});true`);
 		await delay(700);

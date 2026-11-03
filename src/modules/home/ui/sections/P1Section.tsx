@@ -1,11 +1,10 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/renderer.ts
-import { ExternalLink, RefreshCw, Settings } from 'lucide-react';
+import { RefreshCw, Settings } from 'lucide-react';
 import { IconButton } from '../board/controls';
-import { useWidgetMenu, WidgetActions } from '../canvas/widget-frame';
+import { WidgetActions } from '../canvas/widget-frame';
 import { toast } from 'sonner';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useOwnerDocument, useVisible } from '../../../../ui/react/contexts';
-import { Input } from '../../../../ui/components/input';
 import { Textarea } from '../../../../ui/components/textarea';
 import { Label } from '../../../../ui/components/label';
 import { Button } from '../../../../ui/components/button';
@@ -16,7 +15,6 @@ import { DataviewPanel } from '../dataview/DataviewPanel';
 import { executeDql } from '../../core/dql';
 import { CalendarWidget } from '../widgets/CalendarWidget';
 import { MediaPanel } from '../media/MediaPanel';
-import { WebPanel } from '../web/WebPanel';
 import { PipelineSection } from '../pipeline/PipelineSection';
 import { homeServices } from '../../services/instances';
 import { DashboardDialog } from '../dialogs/DashboardDialog';
@@ -36,7 +34,6 @@ export function P1Section({
 		doc = useOwnerDocument(),
 		visible = useVisible(),
 		t = useT(),
-		[root, setRoot] = useState<HTMLDivElement | null>(null),
 		[editing, setEditing] = useState(false),
 		[draft, setDraft] = useState(() => structuredClone(column)),
 		[preview, setPreview] = useState<SkillDraft | null>(null);
@@ -101,32 +98,17 @@ export function P1Section({
 				}),
 		});
 	};
-	useWidgetMenu(
-		type === 'web'
-			? [
-					{
-						id: 'open-external',
-						label: t('web.openExternal'),
-						icon: <ExternalLink />,
-						onSelect: () => {
-							void store.host.openBrowser({ url: column.webConfig?.url ?? '' });
-						},
-					},
-				]
-			: [],
-	);
 	const query = executeDql(draft.dataviewConfig?.query ?? '', []);
 	if (!visible) return null;
 	return (
 		<div
-			ref={setRoot}
 			data-p1={type}
 			className="flex h-full min-h-0 min-w-0 flex-col"
 			onClick={(e) => {
 				if ((e.target as Element).closest('[data-config]')) setEditing(true);
 			}}
 		>
-			{['dataview', 'web', 'images', 'videos'].includes(type ?? '') && (
+			{['dataview', 'images', 'videos'].includes(type ?? '') && (
 				<WidgetActions>
 					<IconButton label={t('home.pipeline.refresh')} onClick={() => reload.current()}>
 						<RefreshCw />
@@ -163,9 +145,6 @@ export function P1Section({
 					tagService={homeServices.mediaTags}
 				/>
 			)}
-			{type === 'web' && root && (
-				<WebPanel app={store.host.app} root={root} column={column} reloadRegister={register} />
-			)}
 			{type === 'pipeline' && (
 				<PipelineSection
 					app={store.host.app}
@@ -188,7 +167,6 @@ export function P1Section({
 					onSave={() => {
 						void patch({
 							dataviewConfig: draft.dataviewConfig,
-							webConfig: draft.webConfig,
 							libraryConfig: draft.libraryConfig,
 						}).then(() => setEditing(false));
 					}}
@@ -226,40 +204,6 @@ export function P1Section({
 									</Button>
 								))}
 							</div>
-						</>
-					) : type === 'web' ? (
-						<>
-							<Label className="grid gap-2">
-								{t('web.urlLabel')}
-								<Input
-									value={draft.webConfig?.url ?? ''}
-									onChange={(e) =>
-										setDraft({
-											...draft,
-											webConfig: { url: e.target.value, zoom: draft.webConfig?.zoom ?? 1 },
-										})
-									}
-								/>
-							</Label>
-							<Label className="grid gap-2">
-								{t('home.p1.zoom')}
-								<Input
-									type="number"
-									min={50}
-									max={125}
-									step={5}
-									value={Math.round((draft.webConfig?.zoom ?? 1) * 100)}
-									onChange={(e) =>
-										setDraft({
-											...draft,
-											webConfig: {
-												url: draft.webConfig?.url ?? '',
-												zoom: Math.min(125, Math.max(50, +e.target.value || 100)) / 100,
-											},
-										})
-									}
-								/>
-							</Label>
 						</>
 					) : (
 						<>

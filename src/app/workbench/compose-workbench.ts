@@ -21,7 +21,6 @@ import { dashboardSaveStatuses } from './status-policy';
 import { focusLeafState } from './focus-state';
 import { NOTIFICATION_INBOX } from '../../modules/notifications/api';
 import { AGENT_WORKBENCH, AGENT_USAGE } from '../../modules/agent/api';
-import { BROWSER_WORKSPACE } from '../../modules/browser/api';
 import { HOME_WORKBENCH } from '../../modules/home/api';
 import { AUTOMATIONS } from '../../modules/automations/api';
 import { VERSIONING_WORKBENCH } from '../../modules/versioning/api';
@@ -159,25 +158,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 			}),
 			stateKeys: ['agentControl', 'agentHistory', 'agentHistoryWidth', 'agentTool'],
 			create: modulePage('agent', 'terminal'),
-		},
-		{
-			id: 'browser',
-			chrome: 'standard',
-			rail: { slot: 'top' },
-			navigation: { id: 'browser', labelKey: 'workbench.browser', icon: 'globe', target: { feature: 'browser' } },
-			title: (target) =>
-				plugin.services
-					.peek(BROWSER_WORKSPACE)
-					?.getState()
-					.spaces.find((space) => space.id === target.resourceId)?.label,
-			availability: () => ({
-				...ready(),
-				enabled: plugin.moduleEnabled('browser'),
-				supported: Platform.isDesktopApp,
-				ready: !!plugin.services.peek(BROWSER_WORKSPACE),
-			}),
-			stateKeys: ['spaceId', 'pageId'],
-			create: modulePage('browser', 'browser'),
 		},
 		{
 			id: 'automations',
@@ -520,7 +500,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 				dashboard: 'dashboard',
 				task: 'general',
 				terminal: 'terminal',
-				browser: 'browser',
 				contacts: 'contacts',
 				automations: 'automation',
 				notifications: 'general',
@@ -571,26 +550,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		});
 		await plugin.app.workspace.revealLeaf(leaf);
 	};
-	const savedPages = (feature: WorkbenchFeature) =>
-		plugin.app.workspace
-			.getLeavesOfType(WORKBENCH_VIEW_TYPE)
-			.flatMap((leaf) => (leaf.view instanceof WorkbenchView ? leaf.view.getSavedPages(feature) : []));
-	const activateResource = async (feature: WorkbenchFeature, resourceId: string): Promise<boolean> => {
-		for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) {
-			await leaf.loadIfDeferred();
-			if (leaf.view instanceof WorkbenchView && (await leaf.view.activateResource(feature, resourceId)))
-				return true;
-		}
-		return false;
-	};
-
-	const closeResource = async (feature: WorkbenchFeature, resourceId: string): Promise<void> => {
-		for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE)) {
-			await leaf.loadIfDeferred();
-			if (leaf.view instanceof WorkbenchView) await leaf.view.closeResource(feature, resourceId);
-		}
-	};
-
 	// Status entries live in Obsidian's own status bar and do not depend on an open workbench leaf.
 	const status = registerObsidianStatus(plugin, {
 		segments: () => collectStatusSegments(contributions),
@@ -675,16 +634,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		offSync?.();
 		offSyncWatch();
 	});
-	let offBrowser = plugin.services.peek(BROWSER_WORKSPACE)?.subscribe(() => refresh());
-	const offBrowserWatch = plugin.services.watch(BROWSER_WORKSPACE, (browser) => {
-		offBrowser?.();
-		offBrowser = browser?.subscribe(() => refresh());
-		refresh();
-	});
-	plugin.register(() => {
-		offBrowser?.();
-		offBrowserWatch();
-	});
 	// Agent sessions, history and usage refresh the agent panel and statuses while that module is active.
 	let offAgent = plugin.services.peek(AGENT_WORKBENCH)?.subscribe(() => refresh());
 	const offAgentWatch = plugin.services.watch(AGENT_WORKBENCH, (agent) => {
@@ -719,9 +668,6 @@ export function composeWorkbench(plugin: DashboardPlugin) {
 		open,
 		refresh,
 		openFocus,
-		savedPages,
-		activateResource,
-		closeResource,
 		prepareModuleChanges,
 		dispose: () => {
 			for (const leaf of plugin.app.workspace.getLeavesOfType(WORKBENCH_VIEW_TYPE))

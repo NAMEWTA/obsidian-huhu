@@ -22,7 +22,6 @@ import { ExpenseService } from './platform/expense/expense-service';
 import { bindJournal } from './platform/calendar/daily-notes';
 import { HabitService } from './platform/habit/habit-service';
 import { MediaTagService } from './platform/media/media-tags';
-import { MusicService } from './platform/music/music-service';
 import { PomodoroService } from './platform/pomodoro/pomodoro-service';
 import { ReadingService } from './platform/reading/reading-service';
 import { BoardRegistry } from './services/board-registry';
@@ -35,11 +34,9 @@ import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
 import { messages as calendarStrings } from '../../shared/i18n/lazy/calendar';
 import { messages as automationStrings } from '../../shared/i18n/lazy/automation';
-import { messages as browserStrings } from '../../shared/i18n/lazy/browser';
 import { messages as commonStrings } from '../../shared/i18n/lazy/common';
 
 registerMessages(automationStrings);
-registerMessages(browserStrings);
 registerMessages(commonStrings);
 registerMessages(messages);
 registerMessages(calendarStrings);
@@ -149,15 +146,13 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			const expense = new ExpenseService(host);
 			const pomodoro = new PomodoroService(host);
 			const reading = new ReadingService(host);
-			const music = context.env.phone ? undefined : new MusicService(host);
 			// Disposed with the module even if loading fails; published to widgets once loaded.
-			owned = { mediaTags: media, habit, expense, pomodoro, reading, music };
+			owned = { mediaTags: media, habit, expense, pomodoro, reading };
 			await Promise.all([
 				habit.load(),
 				expense.load(),
 				pomodoro.loadSessions(),
 				reading.loadSessions(),
-				music?.load(),
 			]);
 			Object.assign(homeServices, owned);
 			homeServices.acquireDispatch = () => Promise.resolve(context.services.peek(AGENT_DISPATCH));
@@ -303,10 +298,6 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			);
 			context.lifetime.register(startBoardBackups(host));
 			if (app.workspace.layoutReady) host.refreshAllDashboards();
-			if (music) {
-				context.lifetime.register(() => music.destroy());
-				void music.restoreAccount();
-			}
 		},
 		dispose(reason) {
 			widgetGeneration++;
@@ -316,7 +307,7 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			host.closeOverlays = undefined;
 			workbench = undefined;
 			listeners.clear();
-			const { mediaTags, habit, expense, pomodoro, reading, music } = owned;
+			const { mediaTags, habit, expense, pomodoro, reading } = owned;
 			owned = {};
 			for (const key of Object.keys(homeServices) as Array<keyof typeof homeServices>) delete homeServices[key];
 			if (mediaTags) void mediaTags.flush();
@@ -325,7 +316,6 @@ export default function createHomeModule(context: ModuleContext): ModuleInstance
 			expense?.destroy();
 			pomodoro?.destroy();
 			reading?.destroy();
-			music?.destroy();
 			void closeRssStore(app).catch((error) => console.error('[HUHU RSS save]', error));
 			if (reason === 'disabled' && app.workspace.layoutReady) host.refreshAllDashboards();
 		},

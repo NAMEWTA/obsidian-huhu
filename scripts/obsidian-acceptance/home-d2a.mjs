@@ -139,8 +139,8 @@ columns:
 `;
 /** Widgets with a picture behind them (the user's background settings): the picture fills the whole card. */
 const backgroundsBoard = () => {
-	const keys = ['music', 'pomodoro', 'year-progress', 'quick-actions'];
-	const sizes = { music: [6, 2], pomodoro: [3, 2], 'year-progress': [3, 2], 'quick-actions': [6, 2] };
+	const keys = ['habit', 'pomodoro', 'year-progress', 'quick-actions'];
+	const sizes = { habit: [6, 2], pomodoro: [3, 2], 'year-progress': [3, 2], 'quick-actions': [6, 2] };
 	return `---\ndashboard: true\nwidgets: ${JSON.stringify(keys.map(member))}\ngrid: ${JSON.stringify({ v: 2, lg: pack(keys.map((key) => [`widget:${presentation(key)}`, ...sizes[key]])) })}\ncolumns: []\n---\n`;
 };
 const tasksFile = () =>
@@ -168,7 +168,7 @@ const boards = [
 ];
 const only = process.env.HUHU_D2A_ONLY?.split(',');
 const selected = boards.filter(([name]) => !only || only.includes(name));
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_D2A_PORT || 9361),
@@ -187,7 +187,7 @@ const runtime = await launchFreshVault({
 				calendarTaskTarget: { kind: 'file', path: 'Plan.md' },
 				dashboardFile: board(selected[0][0]),
 				workspaces: { files: selected.map(([name]) => board(name)), names: selected.map(() => ''), active: 0 },
-				musicBackground: { image: 'Media/bg-dark.png', opacity: 100, dim: 45, blur: 0, foreground: 'light' },
+				habitBackground: { image: 'Media/bg-dark.png', opacity: 100, dim: 45, blur: 0, foreground: 'light' },
 				pomodoroBackground: { image: 'Media/bg-dark.png', opacity: 100, dim: 35, blur: 6, foreground: 'light' },
 				yearProgressBackground: { image: 'Media/bg-light.png', opacity: 100, dim: 0, blur: 0, foreground: 'dark' },
 				quickActionsBackground: { image: 'Media/bg-light.png', opacity: 90, dim: 20, blur: 0 },
@@ -443,7 +443,7 @@ try {
 	const byId = Object.fromEntries(bgs.map((b) => [b.id, b]));
 	check('backgrounds-cards-have-a-picture-across-the-whole-card', bgs.length === 4 && bgs.every((b) => b.hasBg && b.layer && b.covers), bgs);
 	check('backgrounds-no-inset-glass-plate', bgs.every((b) => !b.plate), bgs);
-	check('backgrounds-title-follows-the-chosen-foreground', byId['widget:music'].lum > 0.7 && byId['widget:pomodoro'].lum > 0.7 && byId['widget:yearProgress'].lum < 0.3, bgs.map((b) => [b.id, b.lum]));
+	check('backgrounds-title-follows-the-chosen-foreground', byId['widget:habit'].lum > 0.7 && byId['widget:pomodoro'].lum > 0.7 && byId['widget:yearProgress'].lum < 0.3, bgs.map((b) => [b.id, b.lum]));
 
 	const errors = await c.evaluate(`window.huhuAcceptanceErrors ?? []`);
 	check('no-console-errors', errors.length === 0, errors.slice(0, 3));

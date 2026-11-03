@@ -21,7 +21,7 @@ if (minimalDir) {
  await fs.writeFile(path.join(vault,'.obsidian/appearance.json'),JSON.stringify({cssTheme:'Minimal'}));
  await fs.writeFile(path.join(evidence,'minimal-manifest.json'),JSON.stringify(manifest,null,2));
 } 
-await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'zh', introSeen: true, modules: { home: true, archives: true, comments: false, browser: true, agent: false, icons: false, sync: false, automations: false, notifications: false } }, home: { widgetMusicEnabled: false, widgetWeatherEnabled: false } } }));
+await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'zh', introSeen: true, modules: { home: true, archives: true, comments: false, agent: false, icons: false, sync: false, automations: false, notifications: false } }, home: { widgetWeatherEnabled: false } } }));
 await fs.writeFile(path.join(vault, 'Welcome.md'), '# HUHU P3 fixture\n');
 await fs.writeFile(path.join(profile, 'obsidian.json'), JSON.stringify({ updateDisabled: true, vaults: { abcdef1234567890: { path: vault, ts: Date.now(), open: true } } }));
 const port = process.env.HUHU_P3_CDP_PORT || '19553';

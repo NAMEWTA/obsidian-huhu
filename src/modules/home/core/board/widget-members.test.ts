@@ -39,7 +39,7 @@ test('old enable flags rebuild the sidebar the user had, in the order they chose
 	]);
 	expect(JSON.stringify(raw)).toBe(before);
 	expect(readLegacyMembers({})).toBeUndefined();
-	expect(readLegacyMembers({ widgetMusicEnabled: true })?.map((m) => m.kind)).toContain('music');
+	expect(readLegacyMembers({ widgetHabitEnabled: true })?.map((m) => m.kind)).toContain('habit');
 });
 
 test('widget resources release once, including late async registration and throwing cleanup', () => {

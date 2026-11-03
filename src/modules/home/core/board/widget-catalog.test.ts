@@ -55,7 +55,7 @@ test('the starting sizes follow the plan: clock weather medium, calendar large, 
 	expect(start('section-library')).toEqual(TIERS.XL);
 	expect(sectionDefaultSize('memo')).toMatchObject({ w: 6, h: 2, minW: 3, minH: 2 });
 	// sections with a toolbar over their content never offer the one-row size
-	for (const key of ['section-rss', 'section-web', 'section-library', 'section-pm'])
+	for (const key of ['section-rss', 'section-library', 'section-pm'])
 		expect(Object.keys(SECTION_WIDGETS.find((spec) => spec.key === key)!.sizes), key).toEqual(['L', 'XL']);
 	// the inbox is the one section that fits the small tile too: items on top, the capture strip underneath
 	expect(Object.keys(SECTION_WIDGETS.find((spec) => spec.key === 'section-memo')!.sizes)).toEqual([

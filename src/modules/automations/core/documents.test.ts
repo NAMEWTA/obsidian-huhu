@@ -58,33 +58,6 @@ it('round-trips precheck, extra arguments and template provenance without changi
 	delete (old.action as Partial<typeof old.action>).extraArgs;
 	expect(automationDocuments.decode(automationDocuments.encode({ definitions: [old] })).definitions).toEqual([old]);
 });
-it('removed browser workflow is a read-only tombstone and keeps its original document byte model', () => {
-	const document = {
-		id: 'removed',
-		path: '.huhu/automation/definitions/Removed/操作.md',
-		properties: {
-			'huhu-type': 'automation',
-			'huhu-id': 'removed',
-			name: 'Removed',
-			enabled: true,
-			deviceId: 'device',
-			revision: 1,
-			graceMinutes: 720,
-			channels: ['in-app'],
-			notifyOn: 'always',
-			createdAt: 0,
-			updatedAt: 0,
-			action: 'browser-workflow',
-			workflowId: 'legacy',
-			schedule: 'manual',
-		},
-		sections: { prompt: 'Original content' },
-	};
-	const decoded = automationDocuments.decode([document]);
-	expect(decoded.definitions[0]?.removedAction).toEqual(document);
-	expect(automationDocuments.encode(decoded)).toEqual([document]);
-});
-
 it('punctuation-only automation names retain the hidden Chinese fallback', () => {
  const [document] = automationDocuments.encode({definitions:[{
   id:'automation-12345678',name:'...',enabled:false,deviceId:'device',revision:1,

@@ -141,7 +141,6 @@ export function sections() {
 		{ name: 'RSS', type: 'rss', extra: { rss: { feeds: [{ name: 'Example feed', url: 'https://example.invalid/feed.xml', group: 'News' }], downloadFolder: 'Notes', groupBy: 'group' } } },
 		{ name: 'RSS empty', type: 'rss' },
 		{ name: 'Images', type: 'images', extra: { library: { viewMode: 'grid', sortBy: 'modified', sortDesc: true, includeFolders: ['Media'], filters: [] } } },
-		{ name: 'Web', type: 'web', extra: { web: { url: 'https://example.invalid/' } } },
 		{ name: 'Weread', type: 'weread', extra: { weread: { widgets: [{ id: 'w1', view: 'shelf' }, { id: 'w2', view: 'stats' }] } } },
 		{ name: 'TickTick', type: 'ticktick', extra: { ticktick: { view: 'today' } } },
 	];
@@ -172,7 +171,6 @@ export const TIER = { S: [3, 2], M: [6, 2], L: [6, 4], XL: [12, 4] };
 export const WIDGET_TIERS = {
 	expense: ['S', 'M', 'L', 'XL'],
 	reading: ['S', 'M', 'L'],
-	music: ['S', 'M', 'L'],
 	album: ['S', 'M', 'L', 'XL'],
 	skills: ['S', 'M', 'L'],
 	fileSearch: ['S', 'M', 'L'],
@@ -196,7 +194,6 @@ export const SECTION_TIERS = {
 	RSS: ['L', 'XL'],
 	'RSS empty': ['L', 'XL'],
 	Images: ['L', 'XL'],
-	Web: ['L', 'XL'],
 	Weread: ['L', 'XL'],
 	TickTick: ['L', 'XL'],
 };

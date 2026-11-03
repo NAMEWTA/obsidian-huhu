@@ -24,15 +24,10 @@ test('apex paired widths, folder preferences and notes covers survive an explici
  expect(round.columns[0]!.libraryConfig).toEqual(data.columns[0]!.libraryConfig);
  for(const bad of [5,95,-1,101])expect(parse(paired('    width: '+bad)).columns[0]!.width).toBeUndefined();
 });
-test('web shortcut open targets and nested task/doc state are preserved across a card move',()=>{
- const data=parse('---\ncolumns:\n - name: A\n   type: sticky\n - name: B\n   type: sticky\n---\n## A\n### Link\ntype: web\nopenIn: system\nurl: https://example.com\n- [x] Parent\n    - [ ] Child\n- [[Note.md]]\n## B\n');
+test('web shortcut cards and nested task/doc state are preserved across a card move',()=>{
+ const data=parse('---\ncolumns:\n - name: A\n   type: sticky\n - name: B\n   type: sticky\n---\n## A\n### Link\ntype: web\nurl: https://example.com\n- [x] Parent\n    - [ ] Child\n- [[Note.md]]\n## B\n');
  const card=data.columns[0]!.cards.shift()!;card.column='B';data.columns[1]!.cards.push(card);
- const round=parse(serialize(data));expect(round.columns[1]!.cards[0]).toMatchObject({openIn:'system',tasks:[{checked:true,children:[{checked:false,text:'Child'}]}],docs:[{path:'Note.md'}]});
-});
-test('a web card has only two ways to open: the old preview value reads as the browser tab', () => {
- const md = (openIn: string) => `---\ncolumns:\n - name: A\n   type: sticky\n---\n## A\n### Link\ntype: web\nopenIn: ${openIn}\nlink: https://example.com\n`;
- expect(parse(md('modal')).columns[0]!.cards[0]!.openIn).toBe('tab');
- expect(parse(md('system')).columns[0]!.cards[0]!.openIn).toBe('system');
+ const round=parse(serialize(data));expect(round.columns[1]!.cards[0]).toMatchObject({type:'web',tasks:[{checked:true,children:[{checked:false,text:'Child'}]}],docs:[{path:'Note.md'}]});
 });
 test('a project card keeps the vault folder it is the project of', () => {
  const md = '---\ncolumns:\n - name: P\n   type: projects\n---\n## P\n### Alpha\ntype: project\nfolder: Projects/Alpha 项目\n- [[Projects/Alpha 项目/Spec.md]]\n';

@@ -1,7 +1,7 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/rss-service.ts
 /**
  * RSS network orchestration: fetch feeds via requestUrl (CORS-free, injectable
- * fetcher for verification scripts — the web-precheck seam pattern), parse
+ * fetcher for verification scripts), parse
  * them into the store, and resolve an article's readable Markdown with the
  * agreed preference order:
  *

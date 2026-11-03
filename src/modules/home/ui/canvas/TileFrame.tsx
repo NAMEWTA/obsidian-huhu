@@ -20,7 +20,6 @@ const BACKGROUND_KEY: Readonly<Record<string, string>> = {
 	'year-progress': 'yearProgress',
 	pomodoro: 'pomodoro',
 	habit: 'habit',
-	music: 'music',
 };
 
 export interface TileFrameProps {

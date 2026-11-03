@@ -76,8 +76,6 @@ export interface AutomationActionHandle {
 	open(): Promise<void>;
 }
 export interface AutomationDefinition {
-	/** Removed actions are read-only tombstones; retain their original document until explicit deletion. */
-	removedAction?: import('../storage/document-collection').CollectionDocument;
 	id: string;
 	name: string;
 	enabled: boolean;

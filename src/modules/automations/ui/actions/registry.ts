@@ -35,6 +35,5 @@ export function actionView(kind: ActionKind): ActionView {
 
 /** The translated name of a kind of action, as pickers and lists show it. */
 export function actionName(kind: ActionKind): string {
-	const definition = actionDefinition(kind);
-	return translate(definition?.nameKey ?? 'automation.removedAction');
+	return translate(actionDefinition(kind)!.nameKey);
 }

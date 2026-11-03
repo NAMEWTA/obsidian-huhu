@@ -172,15 +172,6 @@ export const BUILTIN_WIDGETS: readonly BuiltinWidgetSpec[] = [
 		minSize: smallest,
 	},
 	{
-		key: 'music',
-		icon: 'music',
-		category: 'media',
-		sizes: tiers('S', 'M', 'L'),
-		defaultTier: 'M',
-		minSize: smallest,
-		multiple: false,
-	},
-	{
 		key: 'album',
 		icon: 'image',
 		category: 'media',
@@ -230,7 +221,6 @@ export const SECTION_WIDGETS: readonly BuiltinWidgetSpec[] = [
 	section('rss', 'rss', 'media', 'XL'),
 	section('images', 'image', 'media', 'XL'),
 	section('videos', 'video', 'media', 'XL'),
-	section('web', 'globe', 'media', 'XL'),
 ];
 
 const SECTION_BY_TYPE = new Map(SECTION_WIDGETS.map((spec) => [spec.section!, spec]));

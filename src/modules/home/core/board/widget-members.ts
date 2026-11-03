@@ -11,7 +11,6 @@ const OLD_FLAGS = [
 	'widgetWeatherEnabled',
 	'widgetHabitEnabled',
 	'widgetExpenseEnabled',
-	'widgetMusicEnabled',
 	'widgetAlbumEnabled',
 	'readingEnabled',
 	'countdownEnabled',
@@ -48,7 +47,6 @@ export function legacyFlagMembers(raw: Record<string, unknown>): BoardWidgetMemb
 	if (flag('anniversaryEnabled', false) && Array.isArray(raw.anniversaries))
 		for (const item of raw.anniversaries)
 			if (record(item) && typeof item.id === 'string') add('anniversary', item.id);
-	if (flag('widgetMusicEnabled', false)) add('music');
 	if (flag('countdownEnabled', false) && Array.isArray(raw.countdowns))
 		for (const item of raw.countdowns) if (record(item) && typeof item.id === 'string') add('countdown', item.id);
 	const order =
@@ -67,7 +65,6 @@ export function legacyFlagMembers(raw: Record<string, unknown>): BoardWidgetMemb
 					'habit',
 					'expense',
 					'album',
-					'music',
 				];
 	const rank = new Map(order.map((key, i) => [key, i]));
 	const rankOf = (member: BoardWidgetMember) => rank.get(widgetFamilyKey(member)) ?? order.length;

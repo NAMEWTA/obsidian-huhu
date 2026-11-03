@@ -9,7 +9,6 @@ import { ExpenseWidget } from '../widgets/ExpenseWidget';
 import { HabitWidget } from '../widgets/HabitWidget';
 import { FileSearchWidget } from '../widgets/InputWidgets';
 import { LunarWidget } from '../widgets/LunarWidget';
-import { MusicWidget } from '../widgets/MusicWidget';
 import { PomodoroWidget } from '../widgets/PomodoroWidget';
 import { QuickActionsWidget } from '../widgets/QuickActionsWidget';
 import { ReadingWidget } from '../widgets/ReadingWidget';
@@ -41,7 +40,6 @@ export const WIDGET_COMPONENTS: Readonly<Record<string, WidgetComponent>> = {
 	skills: SkillWidget,
 	fileSearch: FileSearchWidget,
 	recent: RecentWidget,
-	music: MusicWidget,
 	album: AlbumWidget,
 	usage: UsageWidget,
 	'nav-recent': NavigatorRecentWidget,

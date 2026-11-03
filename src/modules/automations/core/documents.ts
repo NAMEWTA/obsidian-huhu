@@ -54,7 +54,6 @@ export const automationDocuments: DocumentCollectionCodec<DefinitionCollection> 
 	empty: () => ({ definitions: [] }),
 	encode: ({ definitions }) =>
 		definitions.map((definition) => {
-			if (definition.removedAction) return structuredClone(definition.removedAction);
 			const { action, schedule, link, source: _source, ...metadata } = definition;
 			const stored = encodeAction(action);
 			const document = doc(
@@ -87,13 +86,10 @@ export const automationDocuments: DocumentCollectionCodec<DefinitionCollection> 
 			.filter((d) => d.properties['huhu-type'] === 'automation')
 			.map((document) => {
 				const p = document.properties;
-				const removed = p.action === 'browser-workflow';
-				// A removed action keeps its document untouched and shows as a read-only reminder.
-				const kind = removed ? 'notify' : String(p.action);
+				const kind = String(p.action);
 				if (!actionDefinition(kind)) throw new Error(`Invalid action: ${document.path}`);
 				const action = decodeAction(kind as AutomationDefinition['action']['kind'], p, document.sections);
 				const definition = {
-					...(removed ? { removedAction: structuredClone(document) } : {}),
 					name: p.name,
 					enabled: p.enabled,
 					deviceId: p.deviceId,
