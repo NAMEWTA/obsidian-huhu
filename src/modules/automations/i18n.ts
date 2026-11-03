@@ -10,39 +10,11 @@ export const messages = {
 		'automation.taskRunDate': 'Admitted run date',
 		'automation.invalidTimezone': 'Enter a valid IANA time zone.',
 		'automation.taskDestination': 'Task destination',
-		'automation.calendarTarget': 'Calendar task',
-		'automation.calendarSharedStorage':
-			'Uses the current calendar storage and source settings shared by dashboards. No to-do card is required.',
-		'automation.calendarStorage.daily': 'Periodic daily note in the Navigator journal folder',
-		'automation.calendarStorage.file': 'Existing task file',
-		'automation.calendarStorage.folder': 'One daily task file in this folder',
-		'automation.calendarStorage.task': 'One note per task in this folder',
-		'automation.calendarDateHelp':
-			'The task belongs to the planned execution date in {timezone}, even after a short delay. Execution time and catch-up rules remain in Timing; they do not create a reminder.',
 		'automation.calendarTaskTime': 'Task time (optional)',
-		'automation.calendarTaskTimeHelp': 'Leave empty for an all-day task.',
-		'automation.calendarReminderTime': 'Reminder time (optional)',
-		'automation.calendarReminderTimeHelp': 'A separate reminder on the task date; leave empty for no reminder.',
-		'automation.loadingTaskTargets': 'Loading destinations…',
-		'automation.noCalendarTargets':
-			'No registered dashboards are available. Enable Dashboards and create or register a board first.',
 		'automation.calendarInvalidTime': 'Enter a valid 24-hour time (HH:mm).',
 		'automation.calendarInvalidInput': 'Check the task title, due date, time zone and independent reminder time.',
 		'automation.calendarInvalidTarget':
 			'The calendar destination is invalid or changed. Check its storage settings.',
-		'automation.calendarSourceExcluded':
-			'The destination is excluded from calendar sources. Update the source settings before retrying.',
-		'automation.calendarPeriodDisabled':
-			'Daily notes are disabled. Enable them or select another calendar storage destination.',
-		'automation.calendarPeriodicUnavailable':
-			'Periodic notes are unavailable. Enable Navigator or select another calendar storage destination.',
-		'automation.calendarTemplateMissing': 'The configured calendar template was not found.',
-		'automation.calendarTemplateInputRequired':
-			'The template needs user input and cannot run unattended. Configure answers or use a noninteractive template.',
-		'automation.calendarTemplateEngineUnavailable':
-			'The configured template engine cannot create this note unattended.',
-		'automation.calendarTemplateInvalid':
-			'The calendar template could not be prepared. No empty replacement note was created.',
 		'automation.calendarConflict':
 			'The destination changed during delivery. Review the source and retry this delivery.',
 		'automation.calendarSourceChanged':
@@ -52,8 +24,6 @@ export const messages = {
 		'automation.calendarCreated': 'Created a task for {date} in {path}.',
 		'automation.calendarAlreadyExists':
 			'This delivery already created its task for {date} in {path}; no duplicate was added.',
-		'automation.calendarWrittenPendingRefresh':
-			'The task for {date} is saved in {path}, but the calendar needs refreshing. Do not create it again.',
 		'automation.calendarRetry': 'Retry this delivery',
 		'automation.calendarRetryUnavailable': 'This run is not an available calendar delivery retry.',
 		'automation.calendarReceipt': 'Calendar delivery',
@@ -159,7 +129,6 @@ export const messages = {
 		'automation.back': 'Back',
 		'automation.close': 'Close',
 		'automation.savedNotice': 'Saved.',
-		'automation.editorMissing': 'This automation no longer exists.',
 		'automation.pageMenu': 'Page menu',
 		'automation.notifyText': 'Reminder text',
 		'automation.todoText': 'To-do text',
@@ -208,39 +177,17 @@ export const messages = {
 		'automation.taskRunDate': '本次投递计划日期',
 		'automation.invalidTimezone': '请输入有效的 IANA 时区。',
 		'automation.taskDestination': '待办投递目标',
-		'automation.calendarTarget': '日历待办',
-		'automation.calendarSharedStorage': '使用各看板当前共用的日历存放与来源设置，无需选择普通待办卡片。',
-		'automation.calendarStorage.daily': '看笔记日志目录中的周期日记',
-		'automation.calendarStorage.file': '已有待办文件',
-		'automation.calendarStorage.folder': '此文件夹中每天一个待办文件',
-		'automation.calendarStorage.task': '此文件夹中每条待办一篇笔记',
-		'automation.calendarDateHelp':
-			'待办归属于本次计划触发在 {timezone} 对应的日期，短暂延迟不会改变归属日。执行时间与补执行规则在“时间”中设置，不会自动生成提醒。',
 		'automation.calendarTaskTime': '待办时间（可选）',
-		'automation.calendarTaskTimeHelp': '留空表示全天待办。',
-		'automation.calendarReminderTime': '提醒时间（可选）',
-		'automation.calendarReminderTimeHelp': '在待办归属日单独设置提醒；留空则不提醒。',
-		'automation.loadingTaskTargets': '正在读取投递目标…',
-		'automation.noCalendarTargets': '暂无可用的已注册看板，请开启看板模块并创建或登记看板。',
 		'automation.calendarInvalidTime': '请输入有效的 24 小时时间（HH:mm）。',
 		'automation.calendarInvalidInput':
 			'请检查日历待办的内容、日期和时间。内容不能包含 [due:: …] 等日期字段，或附带日期的 📅/🛫/🛬/⏳/✅/⏰ 标记；请通过计划日期、待办时间和提醒设置填写。',
 		'automation.calendarInvalidTarget': '日历投递目标无效或已变化，请检查存放设置。',
-		'automation.calendarSourceExcluded': '存放位置被日历来源排除，请先调整来源设置再重试。',
-		'automation.calendarPeriodDisabled': '周期日记已关闭，请开启日记或选择其他日历存放位置。',
-		'automation.calendarPeriodicUnavailable': '周期笔记不可用，请开启看笔记模块或选择其他日历存放位置。',
-		'automation.calendarTemplateMissing': '找不到已配置的日历模板。',
-		'automation.calendarTemplateInputRequired': '模板需要用户回答，无法后台执行。请配置答案或使用无需交互的模板。',
-		'automation.calendarTemplateEngineUnavailable': '当前模板引擎无法在后台创建这篇笔记。',
-		'automation.calendarTemplateInvalid': '日历模板准备失败，未生成空白替代文件。',
 		'automation.calendarConflict': '投递期间目标内容发生变化，请检查来源后重试本次投递。',
 		'automation.calendarSourceChanged': '无法可靠定位已保存的任务，来源内容或任务标识可能已发生变化。',
 		'automation.calendarWriteFailed': '日历待办写入失败：{detail}',
 		'automation.calendarUnavailable': '日历服务不可用，请开启看板模块后重试。',
 		'automation.calendarCreated': '已在 {path} 创建归属于 {date} 的待办。',
 		'automation.calendarAlreadyExists': '本次投递已在 {path} 创建归属于 {date} 的待办，没有重复新增。',
-		'automation.calendarWrittenPendingRefresh':
-			'归属于 {date} 的待办已保存到 {path}，日历显示尚待刷新，请勿再次新建。',
 		'automation.calendarRetry': '重试本次投递',
 		'automation.calendarRetryUnavailable': '这条运行记录当前不能重试日历投递。',
 		'automation.calendarReceipt': '日历待办投递',
@@ -343,7 +290,6 @@ export const messages = {
 		'automation.back': '返回',
 		'automation.close': '关闭',
 		'automation.savedNotice': '已保存。',
-		'automation.editorMissing': '该自动化已不存在。',
 		'automation.pageMenu': '页面菜单',
 		'automation.notifyText': '提醒内容',
 		'automation.todoText': '待办内容',

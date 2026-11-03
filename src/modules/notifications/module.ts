@@ -6,7 +6,7 @@ import { NotificationService, notificationsRecoveryOwner } from './core/service'
 import { createNotificationDelivery } from './platform/delivery';
 import { registerMessages } from '../../shared/i18n/index';
 import { messages } from './i18n';
-import { messages as automationStrings } from '../../shared/i18n/lazy/automation';
+import { messages as automationStrings } from '../../shared/i18n/lazy/automation-inbox';
 
 registerMessages(automationStrings);
 registerMessages(messages);

@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-37
 title: "包体结构减重与可解释余量"
-status: draft
+status: done
 kind: refactor
 planning_depth: standard
 planning_depth_reason: "跨模块去除重复实现与非必要激活代码，需检查真实产物"
