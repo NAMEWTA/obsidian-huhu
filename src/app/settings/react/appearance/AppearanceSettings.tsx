@@ -52,7 +52,7 @@ function Block({ title, description, children }: { title: string; description: s
 /** Settings -> Appearance: curated styles, retained palettes, real samples, typography and backup. */
 export function AppearanceSettings({ plugin }: { plugin: DashboardPlugin }) {
 	return (
-		<DesignScope className="min-w-0 break-words [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_[data-slot=settings-row]>div]:break-words">
+		<DesignScope className="min-w-0 break-words [&_[data-slot=label]]:break-all [&_[data-slot=settings-row]>div]:max-w-full [&_[data-slot=settings-row]>div]:min-w-0 [&_[data-slot=settings-row]>div]:break-words">
 			<AppearanceContent plugin={plugin} />
 		</DesignScope>
 	);

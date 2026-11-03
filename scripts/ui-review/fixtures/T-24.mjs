@@ -290,12 +290,14 @@ export async function exercise({ cdp, result, waitFor, capture }) {
 	actions.push({
 		action: 'Actual WorkbenchSurface busy/failure preserves prior content, Retry creates and publishes service page',
 	});
+	await cdp.evaluate(`void uiReview.mounts.main.surface.navigate({feature:'settings',section:'appearance'})`);
+	await waitFor(() => cdp.evaluate(`!!document.querySelector('.huhu-design fieldset')`), 'leave service page');
 	await cdp.evaluate(
 		`uiReview.mounts.main.available(false);void uiReview.mounts.main.surface.navigate({feature:'contacts'}).catch(()=>{})`,
 	);
 	await waitFor(
 		() =>
-			cdp.evaluate(`document.querySelector('.huhu-shell [role=status]')?.textContent.includes('Not configured')`),
+			cdp.evaluate(`[...document.querySelectorAll('.huhu-shell [role=status]')].some(e=>e.textContent.includes('Not configured'))`),
 		'unconfigured state',
 	);
 	actions.push({ action: 'Actual availability reason persists without pretending service ready' });

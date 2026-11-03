@@ -225,7 +225,7 @@ async function mount(doc: Document) {
 					await new Promise<void>((resolve, reject) => {
 						navigation = { resolve, reject };
 					});
-					return { surface: new Payload(context) };
+					return { surface: new Payload(context), navigate: async () => {} };
 				},
 			},
 		],
