@@ -17,6 +17,11 @@ export function parseOptions(args){
  if(!values.out||!['small','large'].includes(values.fixture)||!Number.isSafeInteger(values.runs)||values.runs<1||values.runs>100||!Number.isSafeInteger(values.seed)||values.seed<0||values.seed>0xffffffff||!Number.isSafeInteger(values.timeout)||values.timeout<100||values.timeout>120000||!['cold','warm','both'].includes(values.mode)||(values.fault!==undefined&&values.fault!=='input'))throw Error('Invalid sampling options');
  return values;
 }
+// chrome.exe --version prints nothing and can hang on Windows (spawnSync ETIMEDOUT); read the file version resource there.
+export function chromiumVersionProbe(chrome,platform=process.platform){
+ if(platform==='win32')return {command:'powershell.exe',args:['-NoProfile','-NonInteractive','-Command',`(Get-Item -LiteralPath '${chrome.replaceAll("'","''")}').VersionInfo.ProductVersion`]};
+ return {command:chrome,args:['--version']};
+}
 export function summarize(samples){
  const groups=new Map();
  for(const sample of samples)for(const row of [...(sample.node?.rows??[]),...(sample.browser?.rows??[])]){
@@ -39,7 +44,8 @@ export async function main(args){
  let work;
  try{
   const chrome=process.env.HUHU_CHROME_EXECUTABLE||'google-chrome';
-  result.environment.chromium=execFileSync(chrome,['--version'],{encoding:'utf8',timeout:10000}).trim();
+  result.environment.chromium=(({command,args})=>execFileSync(command,args,{encoding:'utf8',timeout:20000,stdio:['ignore','pipe','pipe']}).trim())(chromiumVersionProbe(chrome));
+  if(!result.environment.chromium)throw Error('Chromium executable did not report a version');
   work=await fs.mkdtemp(path.join(os.tmpdir(),'huhu-perf-'));
   const nodeBundle=path.join(work,'node-fixture.mjs'),browserBundle=path.join(work,'browser-fixture.js');
   const common={absWorkingDir:root,bundle:true,metafile:true,jsx:'automatic',jsxImportSource:'react',alias:{obsidian:path.join(root,'scripts/obsidian-stub.ts'),electron:path.join(root,'scripts/fixtures/dev-overhaul-startup/electron.mjs')},loader:{'.svg':'text','.md':'text'},define:{'process.env.NODE_ENV':'"production"'}};

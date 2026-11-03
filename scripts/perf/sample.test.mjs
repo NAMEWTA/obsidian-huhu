@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateFixture } from './fixture.mjs';
-import { parseOptions, summarize } from './sample.mjs';
+import { parseOptions, summarize, chromiumVersionProbe } from './sample.mjs';
 test('fixed seed produces byte-identical complete fiction and different seeds change content',()=>{
  const first=generateFixture('small',42),again=generateFixture('small',42),other=generateFixture('small',43);
  assert.equal(first.bytes,again.bytes);assert.equal(first.digest,again.digest);assert.notEqual(first.digest,other.digest);
@@ -19,4 +19,9 @@ test('failed samples never become percentile values or fabricated zero timings',
  const result=summarize([{mode:'cold',status:'ok',browser:{rows:[row]}},{mode:'cold',status:'failed',browser:{rows:[{...row,value:0}]}}]);
  assert.equal(result[0].count,1);assert.equal(result[0].p95,7);
  assert.equal(summarize([{mode:'cold',status:'failed',browser:{rows:[row]}}])[0].p50,null);
+});
+test('Windows reads the Chrome file version instead of running chrome.exe --version',()=>{
+ const win=chromiumVersionProbe("C:\\Program Files/Google/Chrome/Application/chrome.exe",'win32');
+ assert.equal(win.command,'powershell.exe');assert.match(win.args.at(-1),/Get-Item -LiteralPath 'C:\\Program Files\/Google.*ProductVersion/);
+ assert.deepEqual(chromiumVersionProbe('/usr/bin/google-chrome','linux'),{command:'/usr/bin/google-chrome',args:['--version']});
 });
