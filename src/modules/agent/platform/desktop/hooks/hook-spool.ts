@@ -55,6 +55,8 @@ interface ScopeState {
 	settled: () => void;
 	failures: Map<string, number>;
 	retiring: Map<string, Retiring>;
+	/** Parsed ref.json by kind/slot, so ordering and consuming read each reference file once. */
+	refs: Map<string, Retiring>;
 	removedDirs: Set<string>;
 	nextKind: 'small' | 'large';
 	fault?: string;
@@ -195,6 +197,7 @@ export class HookSpool {
 				active: true,
 				failures: new Map(),
 				retiring: new Map(),
+				refs: new Map(),
 				removedDirs: new Set(),
 				nextKind: 'small',
 			};
@@ -520,15 +523,28 @@ export class HookSpool {
 				continue;
 			}
 			try {
-				const ref = JSON.parse(
-					await this.read(this.path.join(state.dir, kind, name, 'ref.json'), 512, this.root),
-				) as Partial<Retiring>;
+				const ref = await this.loadRef(state, kind, name, this.root);
 				keys.set(name, typeof ref.seq === 'number' && Number.isFinite(ref.seq) ? ref.seq : Infinity);
 			} catch {
 				keys.set(name, Infinity);
 			}
 		}
 		names.sort((a, b) => keys.get(a)! - keys.get(b)! || Number(a) - Number(b));
+	}
+	/**
+	 * The cache entry lives only while the slot's ref.json exists and is unchanged: the publisher
+	 * writes it once, and only the consumer unlinks it (then drops the entry). Unparsable or
+	 * missing files are never cached, so a half-written reference is re-read.
+	 */
+	private async loadRef(state: ScopeState, kind: 'small' | 'large', name: string, trustedRoot?: string) {
+		const key = kind + '/' + name,
+			cached = state.refs.get(key);
+		if (cached) return cached;
+		const ref = JSON.parse(
+			await this.read(this.path.join(state.dir, kind, name, 'ref.json'), 512, trustedRoot),
+		) as Retiring;
+		if (ref && typeof ref === 'object') state.refs.set(key, ref);
+		return ref;
 	}
 	/** A missing directory lists as empty; any other failure propagates. */
 	private list(dir: string): Promise<string[]> {
@@ -563,7 +579,7 @@ export class HookSpool {
 		let ref = state.retiring.get(key);
 		if (!ref) {
 			try {
-				ref = JSON.parse(await this.read(this.path.join(refDir, 'ref.json'), 512, trustedRoot)) as Retiring;
+				ref = await this.loadRef(state, kind, local, trustedRoot);
 			} catch (error) {
 				// The publisher creates ref.json, then writes it: while its scope is live an
 				// unparsable reference is unfinished, not failed. A closing scope still reports it.
@@ -579,8 +595,10 @@ export class HookSpool {
 				!Number.isInteger(ref.slot) ||
 				ref.slot < 0 ||
 				ref.slot >= (kind === 'small' ? 128 : 4)
-			)
+			) {
+				state.refs.delete(key);
 				throw new Error('hookReferenceInvalid');
+			}
 			const global = this.path.join(this.root, kind, String(ref.slot));
 			const owner = JSON.parse(await this.read(this.path.join(global, 'claim.json'), 512, trustedRoot)) as {
 				token: string;
@@ -593,8 +611,10 @@ export class HookSpool {
 				owner.nonce !== ref.nonce ||
 				owner.scope !== this.path.basename(state.dir) ||
 				owner.local !== local
-			)
+			) {
+				state.refs.delete(key);
 				throw new Error('hookClaimInvalid');
+			}
 			const ready = this.path.join(global, ref.nonce + '.ready'),
 				consuming = this.path.join(global, ref.nonce + '.consuming');
 			try {
@@ -654,6 +674,7 @@ export class HookSpool {
 			}
 			await this.fs.rmdir(refDir);
 			state.retiring.delete(key);
+			state.refs.delete(key);
 			state.failures.delete(key);
 		} catch {
 			const count = (state.failures.get(key) ?? 0) + 1;

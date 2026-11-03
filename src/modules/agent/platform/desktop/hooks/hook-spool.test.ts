@@ -587,6 +587,47 @@ test('a slot freed by an earlier event is reused without overtaking the still-qu
 	}
 });
 
+test('with several queued slots each reference file is read once, not again on every ordering round', async () => {
+	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-ref-reads-'));
+	let permits = 0;
+	const opens = new Map<string, number>();
+	const files = {
+		...fs,
+		readdir: async (...args: Parameters<typeof fs.readdir>) => {
+			if (/[\\/]scopes[\\/]\d+[\\/]small$/.test(String(args[0]))) {
+				while (permits <= 0) await new Promise((resolve) => setTimeout(resolve, 2));
+				permits--;
+			}
+			return fs.readdir(...args);
+		},
+		open: async (...args: Parameters<typeof fs.open>) => {
+			const file = String(args[0]);
+			if (/[\\/]ref\.json$/.test(file)) opens.set(file, (opens.get(file) ?? 0) + 1);
+			return fs.open(...args);
+		},
+	} as typeof fs;
+	const pool = await hookSpool(windowFor(files), path.join(directory, 'resource-v1'));
+	const order: string[] = [];
+	const scope = await pool.prepare(
+		(row) => order.push(String(row.data.session_id)),
+		() => {},
+	);
+	try {
+		const script = path.join(directory, 'publisher.cjs');
+		await fs.writeFile(script, HOOK_SCRIPT);
+		for (const id of ['e0', 'e1', 'e2', 'e3']) await publish(script, scope.env, { session_id: id });
+		permits = Infinity;
+		await wait(() => order.length === 4);
+		assert.deepEqual(order, ['e0', 'e1', 'e2', 'e3']);
+		assert.equal(opens.size, 4);
+		assert.ok([...opens.values()].every((count) => count === 1), JSON.stringify([...opens.values()]));
+	} finally {
+		permits = Infinity;
+		await scope.close().catch(() => {});
+		await fs.rm(directory, { recursive: true, force: true });
+	}
+});
+
 test('an opened small publication is read only through E plus one even when its size changes', async () => {
 	const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'huhu-hook-e-plus-one-'));
 	let maximum = 0,
