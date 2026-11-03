@@ -1,7 +1,8 @@
-import type { ViewStateResult } from 'obsidian';
+import type { App, ViewStateResult } from 'obsidian';
 import type { PageCreate } from '../../../../app/contracts/workbench-host';
 import type { WorkbenchTarget } from '../../../../app/contracts/workbench';
 import { ReactSurface } from '../../../../ui/react/surface';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { t } from '../../../../shared/i18n';
 import type { GenericArchivesHost } from '../../services/generic/page-host';
@@ -10,6 +11,46 @@ import { ArchivePage } from './ArchivePage';
 import { DefinitionStudio } from './DefinitionStudio';
 import { RecoveryPanel } from './RecoveryPanel';
 import { restoreArchivePageState, type ArchivePageState } from './page-state';
+
+/** The archives content leaf: list, record editor, designer or recovery, in one design scope. */
+export function ArchivesContent({
+	host,
+	app,
+	owner,
+	state,
+	updateState,
+	open,
+	guard,
+}: {
+	host: GenericArchivesHost;
+	app: App;
+	owner: HTMLElement;
+	state: ArchivePageState;
+	updateState(this: void, value: Partial<ArchivePageState>): void;
+	open(this: void, section?: string, resourceId?: string): Promise<void>;
+	guard(this: void, callback: (() => Promise<boolean>) | undefined): void;
+}) {
+	const props = { application: host.application, app, owner };
+	return (
+		<DesignScope className="mx-auto w-full min-w-0 max-w-6xl space-y-4 p-4 md:p-6 [&_button]:h-auto [&_button]:max-w-full [&_button]:whitespace-normal">
+			{state.section === 'archive-designer' ? (
+				<DefinitionStudio {...props} guard={guard} />
+			) : state.section === 'archive-recovery' ? (
+				<RecoveryPanel {...props} />
+			) : (
+				<ArchivePage
+					host={host}
+					app={app}
+					owner={owner}
+					state={state}
+					updateState={updateState}
+					navigate={open}
+					guard={guard}
+				/>
+			)}
+		</DesignScope>
+	);
+}
 
 export class GenericArchivesSurface extends ReactSurface {
 	private state: ArchivePageState;
@@ -111,25 +152,16 @@ export class GenericArchivesSurface extends ReactSurface {
 		await super.onClose();
 	}
 	protected renderContent() {
-		const props = { application: this.host.application, app: this.app, owner: this.contentEl };
 		return (
-			<div className="mx-auto w-full max-w-6xl space-y-4 p-4 md:p-6">
-				{this.state.section === 'archive-designer' ? (
-					<DefinitionStudio {...props} guard={this.guard} />
-				) : this.state.section === 'archive-recovery' ? (
-					<RecoveryPanel {...props} />
-				) : (
-					<ArchivePage
-						host={this.host}
-						app={this.app}
-						owner={this.contentEl}
-						state={this.state}
-						updateState={this.updateState}
-						navigate={this.open}
-						guard={this.guard}
-					/>
-				)}
-			</div>
+			<ArchivesContent
+				host={this.host}
+				app={this.app}
+				owner={this.contentEl}
+				state={this.state}
+				updateState={this.updateState}
+				open={this.open}
+				guard={this.guard}
+			/>
 		);
 	}
 }

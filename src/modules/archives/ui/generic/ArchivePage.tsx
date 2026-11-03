@@ -768,7 +768,7 @@ export function ArchivePage({
 							))}
 						</ArchiveCardGrid>
 					)}
-					<div className="flex items-center justify-between gap-3">
+					<div className="flex flex-wrap items-center justify-between gap-3">
 						<Button
 							variant="outline"
 							disabled={state.offset === 0}

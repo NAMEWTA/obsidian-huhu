@@ -16,7 +16,9 @@ import { RecordEditor } from './RecordEditor';
 import { FieldDesigner } from './FieldDesigner';
 import { DefinitionStudio } from './DefinitionStudio';
 import { Resources } from './ArchivePage';
+import { ArchivesContent } from './workbench-page';
 import { at, ct } from './common';
+import type { GenericArchivesHost } from '../../services/generic/page-host';
 const runtimes: ArchiveRuntime[] = [];
 afterEach(() => {
 	cleanup();
@@ -277,4 +279,27 @@ test('editing a built-in field label clears translation metadata and preserves t
  setLanguage('en');view.rerender(<TestProviders><Harness /></TestProviders>);
  expect(screen.getByLabelText(at('label'),{selector:'input'})).toHaveProperty('value','客户 称呼');
  expect(latest[0]?.storageKey).toBe('name');
+});
+
+test('the archives leaf, its record list and overlays belong to one design scope', async () => {
+	const { application } = await fixture();
+	await application.commands.create({ operationId: 'scope-person', typeId: PERSON.id, values: { name: 'Scoped' } });
+	const host = { application, settings: { get: () => ({ layouts: {}, maxColumns: 6 }) } } as unknown as GenericArchivesHost;
+	const view = render(
+		<TestProviders>
+			<ArchivesContent
+				host={host}
+				app={{} as App}
+				owner={document.body}
+				state={{ search: '', offset: 0, scroll: 0 }}
+				updateState={() => {}}
+				open={async () => {}}
+				guard={() => {}}
+			/>
+		</TestProviders>,
+	);
+	await waitFor(() => expect(view.container.querySelector('.huhu-ui.huhu-design')?.textContent ?? '').toContain('Scoped'));
+	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
+	view.unmount();
+	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(0);
 });

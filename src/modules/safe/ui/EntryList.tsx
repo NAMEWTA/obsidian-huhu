@@ -62,8 +62,8 @@ function EntryRow({ entry, actions }: { entry: SafeEntry; actions: EntryActions 
 	const first = entry.credentials[0]!;
 	const label = entryLabel(entry) || t('safe.unnamedEntry');
 	return <li className="min-w-0 rounded-md border-b border-border/50 hover:bg-accent/50 focus-within:bg-accent/50">
-		<div className="group flex min-w-0 items-center gap-1 pr-1">
-			<button type="button" className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-1 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 @lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]" onClick={() => actions.open(entry)} disabled={actions.busy}>
+		<div className="group flex min-w-0 flex-wrap items-center gap-1 pr-1">
+			<button type="button" className="grid min-w-[min(100%,10rem)] flex-1 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2.5 gap-y-1 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 @lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)]" onClick={() => actions.open(entry)} disabled={actions.busy}>
 				<EntryIcon entry={entry} size="sm" />
 				<span className="min-w-0">
 					<span className="block truncate text-[13px] leading-tight font-medium" title={label}>{label}</span>

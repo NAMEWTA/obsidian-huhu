@@ -10,6 +10,7 @@ import { SegmentedControl } from '../../../ui/components/huhu/SegmentedControl';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../ui/components/dropdown-menu';
 import { useOwnerWindow, useT } from '../../../ui/react/hooks';
 import { useVisible } from '../../../ui/react/contexts';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { collectTags, searchEntries, validateMasterPassword, type SafeEntry } from '../core/model';
 import type { MergeSummary } from '../core/merge';
 import type { LockPolicy } from '../core/policy';
@@ -51,9 +52,11 @@ export function SafePage({ service, preferences }: { service: SafeService; prefe
 	}, [service, win]);
 	// Discard forms and decrypted DOM on a page switch without treating it as a page close.
 	if (!visible) return null;
-	return state.status === 'unlocked'
-		? <UnlockedSafe key={state.generation} service={service} state={state} preferences={preferences} />
-		: <LockedSafe key={state.generation} service={service} state={state} />;
+	return <DesignScope className="flex h-full min-h-0 flex-col">
+		{state.status === 'unlocked'
+			? <UnlockedSafe key={state.generation} service={service} state={state} preferences={preferences} />
+			: <LockedSafe key={state.generation} service={service} state={state} />}
+	</DesignScope>;
 }
 
 function LockedSafe({ service, state }: { service: SafeService; state: SafeState }) {
@@ -77,7 +80,7 @@ function LockedSafe({ service, state }: { service: SafeService; state: SafeState
 			else await service.unlock(secret);
 		});
 	};
-	return <section className="flex h-full min-h-0 flex-col overflow-y-auto scrollbar-sleek p-4" aria-label={t('safe.title')}>
+	return <section className="flex min-h-0 flex-1 flex-col overflow-y-auto scrollbar-sleek p-4" aria-label={t('safe.title')}>
 		<div className="m-auto flex w-full max-w-xs flex-col gap-3 py-6">
 			<div className="flex flex-col items-center gap-1.5 text-center">
 				<Vault className="size-8 text-muted-foreground" aria-hidden />
@@ -142,7 +145,7 @@ function UnlockedSafe({ service, state, preferences }: { service: SafeService; s
 		openUrl: url => { void action.run(() => service.openUrl(url, win)); },
 	};
 	const showUpgrade = state.upgraded && !upgradeDismissed;
-	return <section className="flex h-full min-h-0 flex-col gap-2 p-3 @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
+	return <section className="flex min-h-0 flex-1 flex-col gap-2 p-3 @container" aria-label={t('safe.title')} onPointerDownCapture={() => service.touch()} onKeyDownCapture={() => service.touch()} onWheelCapture={() => service.touch()}>
 		<div className="flex flex-wrap items-center gap-2">
 			{trash && <>
 				<Button size="sm" variant="outline" onClick={toggleTrash}><ArrowLeft />{t('safe.backToRecords')}</Button>

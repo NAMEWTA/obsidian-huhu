@@ -386,3 +386,10 @@ test('custom tags support multi-select, immediate intersection filtering and glo
 	await userEvent.click(within(field.parentElement!).getByRole('button', { name: 'Save' }));
 	expect(service.renameTag).toHaveBeenCalledWith('AI', 'Models');
 });
+
+test.each(['locked', 'unlocked'] as const)('the %s vault page is one design scope with its own overlay root', status => {
+	setup(status);
+	expect(document.querySelectorAll('.huhu-ui.huhu-design:not(.huhu-portal-root)')).toHaveLength(1);
+	expect(document.querySelectorAll('.huhu-design.huhu-portal-root')).toHaveLength(1);
+	expect(document.querySelector('.huhu-design section[aria-label]')).toBeTruthy();
+});
