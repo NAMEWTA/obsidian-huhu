@@ -8,10 +8,12 @@ import { executeDql } from '../../core/dql';
 import type { QueryResult } from '../../core/dql/types';
 import { buildPages } from '../../platform/dql/page-builder';
 import { isUnderExcludedFolder, normalizeExcludeFolders } from '../../../../shared/exclude-folders';
-import { t } from '../../../../shared/i18n';
+import { useT } from '../../../../ui/react/hooks';
 import { ObsidianIcon as Icon } from '../../../../ui/components/huhu/ObsidianIcon';
 import { Pagination } from '../sections/P1Controls';
+import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { ToggleGroup, ToggleGroupItem } from '../../../../ui/components/toggle-group';
 import { Choice } from '../board/controls';
@@ -37,6 +39,7 @@ export function DataviewPanel({
 	reloadRegister: (reload: () => void) => void;
 	change: ((config: DataviewConfig) => void) | null;
 }) {
+	const t = useT();
 	const [result, setResult] = useState<QueryResult | null>(null),
 		[status, setStatus] = useState(Platform.isMobile ? 'manual' : 'scanning'),
 		[error, setError] = useState('');
@@ -97,21 +100,30 @@ export function DataviewPanel({
 	if (status === 'emptyQuery') return <EmptyResult message="dataview.emptyQuery" hint />;
 	if (status === 'scanning')
 		return (
-			<EmptyState
-				size="sm"
-				className="min-h-40"
-				icon={<Icon className="animate-spin" name="loader-circle" />}
-				title={t('dataview.scanning')}
-			/>
+			<div role="status" aria-busy="true">
+				<EmptyState
+					size="sm"
+					className="min-h-40"
+					icon={<Icon className="animate-spin motion-reduce:animate-none" name="loader-circle" />}
+					title={t('dataview.scanning')}
+				/>
+			</div>
 		);
 	if (status === 'error')
 		return (
-			<EmptyState
-				size="sm"
-				className="min-h-40"
-				icon={<Icon name="alert-triangle" />}
-				title={t('dataview.parseError', { message: error })}
-			/>
+			<div role="alert">
+				<EmptyState
+					size="sm"
+					className="min-h-40"
+					icon={<Icon name="alert-triangle" />}
+					title={t('dataview.parseError', { message: error })}
+					action={
+						<Button variant="outline" size="sm" onClick={() => void load()}>
+							{t('home.content.retry')}
+						</Button>
+					}
+				/>
+			</div>
 		);
 	return result ? (
 		<ResultPanel result={result} context={context} config={config} change={change} reload={() => void load()} />
@@ -130,6 +142,7 @@ function ResultPanel({
 	change: ((config: DataviewConfig) => void) | null;
 	reload: () => void;
 }) {
+	const t = useT();
 	const [view, setView] = useState<ViewState>({ filter: '', sortCol: null, sortDir: 'asc' }),
 		[page, setPage] = useState(1),
 		[size, setSize] = useState(config.pageSize ?? DEFAULT_PAGE_SIZE),
@@ -177,13 +190,15 @@ function ResultPanel({
 				needle ? { shown: rows.length, total: capped.length } : { count: capped.length },
 			)}
 			{!needle && windowed.truncated && (
-				<button
+				<Button
 					type="button"
+					variant="link"
+					size="xs"
 					className={p1Classes('dashboard-dataview-capped')}
 					onClick={() => setShown(windowed.next)}
 				>
 					{t('dataview.capped', { count: windowed.count })}
-				</button>
+				</Button>
 			)}
 		</>
 	);
@@ -237,17 +252,26 @@ function ResultPanel({
 						change?.({ ...config, pageSize: size, viewMode: next });
 					}}
 				>
-					{(['table', 'list', 'auto'] as const).map((value) => (
-						<ToggleGroupItem
-							key={value}
-							value={value}
-							data-view={value}
-							aria-label={t(`dataview.view${value[0]!.toUpperCase()}${value.slice(1)}`)}
-							title={t(`dataview.view${value[0]!.toUpperCase()}${value.slice(1)}`)}
-						>
-							<Icon name={value === 'table' ? 'table' : value === 'list' ? 'list' : 'sparkles'} />
-						</ToggleGroupItem>
-					))}
+					{(['table', 'list', 'auto'] as const).map((value) => {
+						const label = t(`dataview.view${value[0]!.toUpperCase()}${value.slice(1)}`);
+						return (
+							<Tooltip key={value}>
+								<TooltipTrigger asChild>
+									<ToggleGroupItem
+										value={value}
+										data-view={value}
+										aria-label={label}
+										className="min-w-11"
+									>
+										<Icon
+											name={value === 'table' ? 'table' : value === 'list' ? 'list' : 'sparkles'}
+										/>
+									</ToggleGroupItem>
+								</TooltipTrigger>
+								<TooltipContent>{label}</TooltipContent>
+							</Tooltip>
+						);
+					})}
 				</ToggleGroup>
 			</div>
 			<div className={p1Classes('dashboard-dataview-pages')}>

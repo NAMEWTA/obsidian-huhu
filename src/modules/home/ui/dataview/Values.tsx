@@ -45,7 +45,7 @@ function Link({ content, context }: { content: string; context: DataviewContext 
 	};
 	return (
 		<span
-			className={p1Classes('dashboard-wikilink')}
+			className="dashboard-wikilink cursor-pointer text-foreground underline decoration-primary underline-offset-4"
 			role="link"
 			tabIndex={0}
 			onClick={(e) => {
@@ -96,7 +96,7 @@ export function InlineValue({ text, context }: { text: string; context: Dataview
 					const ext = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
 					content = ext ? (
 						<a
-							className={p1Classes('dashboard-dataview-extlink')}
+							className="text-foreground underline decoration-primary underline-offset-4"
 							href={ext[2]}
 							target="_blank"
 							rel="noopener"
@@ -114,7 +114,7 @@ export function InlineValue({ text, context }: { text: string; context: Dataview
 }
 export function Value({ value, context }: { value: DqlValue; context: DataviewContext }) {
 	if (value == null || (Array.isArray(value) && !value.length))
-		return <span className={p1Classes('dashboard-dataview-null')}>—</span>;
+		return <span className="text-muted-foreground" aria-label="—">—</span>;
 	if (kindOf(value) === 'link') {
 		const link = value as DqlLink;
 		return <Link content={`${link.path}${link.display ? `|${link.display}` : ''}`} context={context} />;

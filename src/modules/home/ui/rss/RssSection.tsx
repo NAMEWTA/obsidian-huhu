@@ -1,7 +1,7 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/rss-section.ts, src/rss-article-modal.ts
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
-import { Rss, RefreshCw, Settings, CheckCheck, Download, FileText, ExternalLink, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Rss, RefreshCw, Settings, CheckCheck, Download, FileText, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Component, MarkdownRenderer } from 'obsidian';
 import { toast } from 'sonner';
 import type { BoardStore } from '../../services/board-store';
@@ -16,9 +16,17 @@ import { Button } from '../../../../ui/components/button';
 import { IconButton, Choice } from '../board/controls';
 import { WidgetActions } from '../canvas/widget-frame';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
+import { Skeleton } from '../../../../ui/components/skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '../../../../ui/components/dialog';
 import { cn } from '../../../../ui/lib/utils';
-import { p2Classes as c } from '../theme/p2-classes';
-import { P2Dialog } from '../dialogs/P2Dialog';
 import { RssFilter } from './RssFilter';
 import { RssConfigDialog } from './RssConfigDialog';
 interface Row {
@@ -54,7 +62,7 @@ export function RssSection({
 		[filter, setFilter] = useState('all'),
 		[page, setPage] = useState(1),
 		[busy, setBusy] = useState(false),
-		[error, setError] = useState(''),
+		[error, setError] = useState<{ message: string; retry?: () => void } | null>(null),
 		[reader, setReader] = useState<Row | null>(null),
 		[refresh, setRefresh] = useState(0);
 	const pending = useRef(new Set<string>()),
@@ -71,7 +79,7 @@ export function RssSection({
 		const inFlight = requests.current;
 		lifetime.current = controller;
 		setBusy(true);
-		setError('');
+		setError(null);
 		void rss
 			.load()
 			.then(() =>
@@ -82,7 +90,7 @@ export function RssSection({
 				}),
 			)
 			.catch((e) => {
-				if (active) setError(String(e));
+				if (active) setError({ message: t('rss.refreshFailed', { message: errorText(e) }) });
 			})
 			.finally(() => {
 				if (active) {
@@ -95,7 +103,7 @@ export function RssSection({
 			controller.abort();
 			inFlight.clear();
 		};
-	}, [rss, config, refresh, visible, doc]);
+	}, [rss, config, refresh, visible, doc, t]);
 	const patch = async (value: RssConfig) => {
 		await store.edit((data) => {
 			const col = data.columns.find((x) => (x.id ?? x.name) === (column.id ?? column.name));
@@ -114,6 +122,7 @@ export function RssSection({
 			}));
 		})
 		.sort((a, b) => (b.item.pubDate ?? 0) - (a.item.pubDate ?? 0));
+	const failedFeeds = config.feeds.filter((source) => rss.feedEntry(feedKey(source.url))?.error);
 	const unread = rows.filter((r) => !rss.isRead(r.item.guid)).length;
 	const options = [
 		{ value: 'all', label: `${t('rss.all')} (${rows.length})` },
@@ -143,7 +152,8 @@ export function RssSection({
 		pages = Math.max(1, Math.ceil(filtered.length / size)),
 		current = Math.min(page, pages);
 	const resolve = useCallback(
-		(row: Row) => {
+		(row: Row, fresh = false) => {
+			if (fresh) requests.current.delete(row.item.guid);
 			let promise = requests.current.get(row.item.guid);
 			if (!promise) {
 				promise = resolveArticleMarkdown(
@@ -181,7 +191,7 @@ export function RssSection({
 			await rss.flush();
 			toast(t('rss.savedNotice', { name: file.basename }));
 		} catch (e) {
-			setError(String(e));
+			setError({ message: `${t('rss.saveFailed')}: ${errorText(e)}`, retry: () => void save(row) });
 		} finally {
 			pending.current.delete(row.item.guid);
 			redraw((n) => n + 1);
@@ -189,7 +199,7 @@ export function RssSection({
 	};
 	if (!visible) return null;
 	return (
-		<div data-rss className="flex h-full min-h-0 min-w-0 flex-col gap-3">
+		<div data-rss aria-busy={busy || undefined} className="flex h-full min-h-0 min-w-0 flex-col gap-3">
 			<WidgetActions>
 				<IconButton
 					label={t('rss.refresh')}
@@ -204,15 +214,31 @@ export function RssSection({
 					<Settings />
 				</IconButton>
 			</WidgetActions>
-			{error && (
-				<p role="alert" className="m-0 text-xs text-destructive">
-					{error}
-				</p>
-			)}
-			{rss.saveState.error && (
-				<Button variant="outline" onClick={() => rss.retry()}>
-					{t('common.retry')}: {rss.saveState.error}
-				</Button>
+			{(error || failedFeeds.length > 0 || rss.saveState.error) && (
+				<div role="alert" data-rss-problems className="flex shrink-0 flex-col gap-1.5">
+					{error && (
+						<Problem
+							message={error.message}
+							retry={error.retry}
+							dismiss={() => setError(null)}
+						/>
+					)}
+					{failedFeeds.length > 0 && (
+						<Problem
+							message={t('rss.feedsFailed', {
+								count: failedFeeds.length,
+								names: failedFeeds.map((source) => source.name?.trim() || source.url).join(', '),
+							})}
+							retry={() => {
+								requests.current.clear();
+								setRefresh((n) => n + 1);
+							}}
+						/>
+					)}
+					{rss.saveState.error && (
+						<Problem message={rss.saveState.error} retry={() => rss.retry()} />
+					)}
+				</div>
 			)}
 			{!config.feeds.length ? (
 				<EmptyState
@@ -235,16 +261,25 @@ export function RssSection({
 								setPage(1);
 							}}
 						/>
-						<Button
-							variant="outline"
-							size="icon"
-							aria-label={t('rss.markAllRead')}
-							title={t('rss.markAllRead')}
-							onClick={() => rss.markAllRead(filtered.map((r) => r.item.guid))}
-						>
-							<CheckCheck />
-						</Button>
-						{busy && <span className="text-xs text-muted-foreground">{t('rss.loading')}</span>}
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="outline"
+									size="icon"
+									aria-label={t('rss.markAllRead')}
+									disabled={!unread}
+									onClick={() => rss.markAllRead(filtered.map((r) => r.item.guid))}
+								>
+									<CheckCheck />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>{t('rss.markAllRead')}</TooltipContent>
+						</Tooltip>
+						{busy && (
+							<span role="status" className="text-xs text-muted-foreground">
+								{t('rss.loading')}
+							</span>
+						)}
 						<Choice
 							className="ml-auto w-32 data-[size=sm]:h-9"
 							label={t('rss.pageSize')}
@@ -255,19 +290,55 @@ export function RssSection({
 							}))}
 							onChange={(value) => {
 								setPage(1);
-								void patch({ ...config, pageSize: +value }).catch((e) => setError(String(e)));
+								void patch({ ...config, pageSize: +value }).catch((e) =>
+									setError({ message: `${t('storage.unsaved')}: ${errorText(e)}` }),
+								);
 							}}
 						/>
 					</div>
 					<div className="min-h-0 flex-1 overflow-y-auto">
-						{!filtered.length && (
-							<EmptyState
-								size="sm"
-								className="h-full"
-								icon={<Rss />}
-								title={t(busy ? 'rss.loading' : 'rss.noItems')}
-							/>
-						)}
+						{!filtered.length &&
+							(busy && !rows.length ? (
+								<div data-rss-skeleton aria-hidden className="flex flex-col gap-2 p-2">
+									{[0, 1, 2].map((n) => (
+										<div key={n} className="flex flex-col gap-1.5">
+											<Skeleton className="h-4 w-4/5" />
+											<Skeleton className="h-3 w-2/5" />
+										</div>
+									))}
+								</div>
+							) : rows.length ? (
+								<EmptyState
+									size="sm"
+									className="h-full"
+									icon={<Rss />}
+									title={t('rss.noMatch')}
+									action={
+										<Button variant="outline" size="sm" onClick={() => setFilter('all')}>
+											{t('rss.all')}
+										</Button>
+									}
+								/>
+							) : (
+								<EmptyState
+									size="sm"
+									className="h-full"
+									icon={<Rss />}
+									title={t('rss.noItems')}
+									action={
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => {
+												requests.current.clear();
+												setRefresh((n) => n + 1);
+											}}
+										>
+											{t('rss.refresh')}
+										</Button>
+									}
+								/>
+							))}
 						<ul className="m-0 flex list-none flex-col gap-0.5 p-0">
 							{filtered.slice((current - 1) * size, current * size).map((row) => {
 								const read = rss.isRead(row.item.guid);
@@ -295,7 +366,7 @@ export function RssSection({
 											<span className="flex min-w-0 flex-1 flex-col gap-0.5">
 												<span
 													className={cn(
-														'truncate text-sm leading-5',
+														'line-clamp-2 text-sm leading-5 break-words',
 														read ? 'text-muted-foreground' : 'font-medium',
 													)}
 												>
@@ -384,7 +455,7 @@ function ArticleReader({
 }: {
 	store: BoardStore;
 	row: Row;
-	resolve: (row: Row) => Promise<ResolvedArticle>;
+	resolve: (row: Row, fresh?: boolean) => Promise<ResolvedArticle>;
 	onSave: () => Promise<void>;
 	saved: boolean;
 	busy: boolean;
@@ -392,10 +463,11 @@ function ArticleReader({
 }) {
 	const t = useT(),
 		[markdown, setMarkdown] = useState<string | null | undefined>(),
+		[attempt, setAttempt] = useState(0),
 		ref = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		let active = true;
-		void resolve(row)
+		void resolve(row, attempt > 0)
 			.then((result) => {
 				if (active) setMarkdown(result.markdown);
 			})
@@ -405,7 +477,7 @@ function ArticleReader({
 		return () => {
 			active = false;
 		};
-	}, [resolve, row]);
+	}, [resolve, row, attempt]);
 	useEffect(() => {
 		const el = ref.current;
 		if (!el || !markdown) return;
@@ -418,45 +490,84 @@ function ArticleReader({
 		};
 	}, [store, markdown]);
 	return (
-		<P2Dialog raw title={row.item.title} width={860} classes="dashboard-rss-reader-wrap" onClose={onClose}>
-			<div className={c('dashboard-rss-reader-header')}>
-				<div className={c('dashboard-rss-reader-headmain')}>
-					<div className={c('dashboard-rss-reader-title')}>{row.item.title}</div>
-					<div className={c('dashboard-rss-reader-meta')}>
-						<span className={c('dashboard-rss-reader-feed')}>{row.feedTitle}</span>
+		<Dialog open onOpenChange={(open) => !open && onClose()}>
+			<DialogContent className="flex max-h-[86vh] min-w-0 flex-col gap-3 sm:max-w-3xl">
+				<DialogHeader>
+					<DialogTitle className="break-words">{row.item.title}</DialogTitle>
+					<DialogDescription className="flex flex-wrap gap-x-3 gap-y-0.5 break-words">
+						<span>{row.feedTitle}</span>
 						{row.item.author && <span>{row.item.author}</span>}
-						{row.item.pubDate && (
-							<span>{new Date(row.item.pubDate).toLocaleString('sv').slice(0, 16)}</span>
-						)}
-					</div>
+						{row.item.pubDate && <span>{new Date(row.item.pubDate).toLocaleString('sv').slice(0, 16)}</span>}
+					</DialogDescription>
+				</DialogHeader>
+				<div
+					aria-busy={markdown === undefined || undefined}
+					className="scrollbar-sleek min-h-0 flex-1 overflow-y-auto break-words"
+				>
+					<div ref={ref} className="huhu-native" />
+					{markdown === undefined ? (
+						<p role="status" className="m-0 text-sm text-muted-foreground">
+							{t('rss.fetchingArticle')}
+						</p>
+					) : !markdown ? (
+						<div role="alert" data-rss-article-failed className="flex flex-col items-start gap-2 text-sm">
+							<span>{t('rss.articleFailed')}</span>
+							<Button
+								size="sm"
+								variant="outline"
+								onClick={() => {
+									setMarkdown(undefined);
+									setAttempt((n) => n + 1);
+								}}
+							>
+								{t('home.content.retry')}
+							</Button>
+						</div>
+					) : null}
 				</div>
-				<div className={c('dashboard-rss-reader-actions')}>
+				<DialogFooter>
 					<Button
+						variant={saved ? 'outline' : 'default'}
 						disabled={busy}
-						className={c(`dashboard-rss-reader-save${saved ? ' is-saved' : ''}`)}
+						aria-busy={busy || undefined}
 						onClick={() => void onSave()}
 					>
 						{saved ? <FileText /> : <Download />}
 						{t(saved ? 'rss.openNote' : 'rss.saveToVault')}
 					</Button>
-					<IconButton
-						className={c('dashboard-rss-reader-btn')}
-						label={t('rss.openInBrowser')}
+					<Button
+						variant="outline"
 						onClick={() => {
 							store.host.openExternal(row.item.link, store.ownerWindow);
 						}}
 					>
 						<ExternalLink />
-					</IconButton>
-					<IconButton className={c('dashboard-rss-reader-btn')} label={t('common.close')} onClick={onClose}>
-						<X />
-					</IconButton>
-				</div>
-			</div>
-			<div className={c('dashboard-rss-reader-body')}>
-				<div ref={ref} className="huhu-native" />
-				{markdown === undefined ? t('rss.fetchingArticle') : !markdown ? t('rss.articleFailed') : null}
-			</div>
-		</P2Dialog>
+						{t('rss.openInBrowser')}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}
+function errorText(error: unknown): string {
+	return error instanceof Error ? error.message : String(error);
+}
+/** A failure that stays in the card until it is retried or dismissed; the list under it keeps its articles. */
+function Problem({ message, retry, dismiss }: { message: string; retry?: () => void; dismiss?: () => void }) {
+	const t = useT();
+	return (
+		<div className="flex flex-wrap items-center gap-2 border-l-2 border-destructive bg-muted px-2 py-1.5 text-xs">
+			<span className="min-w-0 flex-1 break-words">{message}</span>
+			{retry && (
+				<Button size="xs" variant="outline" onClick={retry}>
+					{t('home.content.retry')}
+				</Button>
+			)}
+			{dismiss && (
+				<Button size="xs" variant="ghost" onClick={dismiss}>
+					{t('home.content.dismiss')}
+				</Button>
+			)}
+		</div>
 	);
 }

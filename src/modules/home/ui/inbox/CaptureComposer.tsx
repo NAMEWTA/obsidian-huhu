@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { ArrowUp, PencilLine } from 'lucide-react';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { Button } from '../../../../ui/components/button';
 import { Textarea } from '../../../../ui/components/textarea';
 import { cn } from '../../../../ui/lib/utils';
@@ -28,6 +29,7 @@ export function CaptureComposer({
 	const t = useT(),
 		text = useStore(store.state, (state) => state.captureDraft),
 		[busy, setBusy] = useState(false),
+		[failed, setFailed] = useState(false),
 		pending = useRef(false),
 		alive = useRef(true);
 	useEffect(() => {
@@ -40,6 +42,7 @@ export function CaptureComposer({
 		if (!text.trim() || pending.current) return;
 		pending.current = true;
 		setBusy(true);
+		setFailed(false);
 		const sent = text;
 		void store
 			.capture(sent)
@@ -48,59 +51,76 @@ export function CaptureComposer({
 				if (store.state.getState().captureDraft === sent) store.setCaptureDraft('');
 				toast(t('home.inbox.captured'));
 			})
-			.catch(() => toast(t('storage.unsaved')))
+			.catch(() => {
+				// The text stays in the box; the failure stays on screen until the next attempt.
+				if (alive.current) setFailed(true);
+			})
 			.finally(() => {
 				pending.current = false;
 				if (alive.current) setBusy(false);
 			});
 	};
 	return (
-		<div
-			data-capture-composer
-			className="flex shrink-0 items-end gap-1.5 rounded-lg border border-input bg-background p-[3px] pl-3 shadow-xs transition-[transform,opacity] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
-		>
-			<PencilLine aria-hidden className="mt-2 mb-2 size-4 shrink-0 self-start text-muted-foreground" />
-			<Textarea
-				rows={1}
-				spellCheck={false}
-				aria-label={t('home.inbox.composer')}
-				placeholder={t('home.inbox.placeholder')}
-				className="max-h-24 min-h-8 min-w-0 flex-1 resize-none [field-sizing:content] rounded-none border-0 bg-transparent px-0 py-1.5 text-sm leading-5 shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent"
-				value={text}
-				onChange={(event) => store.setCaptureDraft(event.target.value)}
-				onKeyDown={(event) => {
-					if (event.nativeEvent.isComposing) return;
-					if (event.key === 'Enter' && !event.shiftKey) {
-						event.preventDefault();
-						submit();
-					}
-				}}
-			/>
-			{count > 0 && (
-				<Button
-					type="button"
-					variant="ghost"
-					size="xs"
-					title={t('home.inbox.openToday')}
-					className={cn(
-						'mb-1.5 hidden shrink-0 px-1.5 text-muted-foreground tabular-nums [@container(min-width:20rem)]:inline-flex',
-						countClassName,
-					)}
-					onClick={onOpenToday}
-				>
-					{t('home.inbox.todayCount', { count })}
-				</Button>
+		<>
+			{failed && (
+				<p role="alert" data-capture-failed className="m-0 shrink-0 border-l-2 border-destructive px-2 text-xs">
+					{t('home.inbox.captureFailed')}
+				</p>
 			)}
-			<Button
-				type="button"
-				size="icon-sm"
-				disabled={busy || !text.trim()}
-				title={t('home.inbox.send')}
-				aria-label={t('home.inbox.send')}
-				onClick={submit}
+			<div
+				data-capture-composer
+				aria-busy={busy || undefined}
+				className="flex shrink-0 items-end gap-1.5 rounded-lg border border-input bg-background p-[3px] pl-3 shadow-xs transition-[transform,opacity] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
 			>
-				<ArrowUp />
-			</Button>
-		</div>
+				<PencilLine
+					aria-hidden
+					className="mt-2 mb-2 hidden size-4 shrink-0 self-start text-muted-foreground [@container(min-width:20rem)]:inline-flex"
+				/>
+				<Textarea
+					rows={1}
+					spellCheck={false}
+					aria-label={t('home.inbox.composer')}
+					placeholder={t('home.inbox.placeholder')}
+					className="max-h-24 min-h-11 min-w-0 flex-1 resize-none [field-sizing:content] rounded-none border-0 bg-transparent px-0 py-1.5 text-sm leading-5 shadow-none focus-visible:border-0 focus-visible:ring-0 dark:bg-transparent"
+					value={text}
+					onChange={(event) => store.setCaptureDraft(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.nativeEvent.isComposing) return;
+						if (event.key === 'Enter' && !event.shiftKey) {
+							event.preventDefault();
+							submit();
+						}
+					}}
+				/>
+				{count > 0 && (
+					<Button
+						type="button"
+						variant="ghost"
+						size="xs"
+						className={cn(
+							'mb-1.5 hidden shrink-0 px-1.5 text-muted-foreground tabular-nums [@container(min-width:20rem)]:inline-flex',
+							countClassName,
+						)}
+						onClick={onOpenToday}
+					>
+						{t('home.inbox.todayCount', { count })}
+					</Button>
+				)}
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							type="button"
+							size="icon-sm"
+							disabled={busy || !text.trim()}
+							aria-label={failed ? t('home.content.retry') : t('home.inbox.send')}
+							onClick={submit}
+						>
+							<ArrowUp />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>{failed ? t('home.content.retry') : t('home.inbox.send')}</TooltipContent>
+				</Tooltip>
+			</div>
+		</>
 	);
 }

@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { useStore } from 'zustand';
 import { ExternalLink, FileText, Inbox, PencilLine, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { RelativeTime } from '../../../../ui/components/huhu/RelativeTime';
@@ -43,9 +42,16 @@ export function InboxSection({ store }: { store: BoardStore }) {
 		items = useMemo(() => listMemos(files, root), [files, root]),
 		today = useTodayCaptures(store),
 		[adding, setAdding] = useState(false),
-		[removing, setRemoving] = useState<ContentFile | null>(null);
+		[removing, setRemoving] = useState<ContentFile | null>(null),
+		[problem, setProblem] = useState<{ message: string; retry?: () => void } | null>(null);
 	const open = (path: string) => void store.openFile(path);
-	const failed = (error: unknown, fallback: string) => toast(error instanceof Error ? error.message : fallback);
+	/** A failure stays in the card until it is dismissed or retried: a toast alone would be gone before it is read. */
+	const failed = (error: unknown, fallback: string, retry?: () => void) =>
+		setProblem({ message: error instanceof Error && error.message ? error.message : fallback, retry });
+	const trash = (file: ContentFile) => {
+		setProblem(null);
+		void store.trash(file).catch((error: unknown) => failed(error, t('home.inbox.deleteFailed'), () => trash(file)));
+	};
 	return (
 		<div data-inbox className="flex h-full min-h-0 min-w-0 flex-col gap-2">
 			<WidgetActions>
@@ -53,6 +59,23 @@ export function InboxSection({ store }: { store: BoardStore }) {
 					<Plus />
 				</IconButton>
 			</WidgetActions>
+			{problem && (
+				<div
+					role="alert"
+					data-inbox-problem
+					className="flex shrink-0 flex-wrap items-center gap-2 rounded-md border-l-2 border-destructive bg-muted px-2 py-1.5 text-xs"
+				>
+					<span className="min-w-0 flex-1 break-words">{problem.message}</span>
+					{problem.retry && (
+						<Button type="button" size="xs" variant="outline" onClick={problem.retry}>
+							{t('home.content.retry')}
+						</Button>
+					)}
+					<Button type="button" size="xs" variant="ghost" onClick={() => setProblem(null)}>
+						{t('home.content.dismiss')}
+					</Button>
+				</div>
+			)}
 			<div className="grid min-h-0 flex-1 grid-cols-1 gap-3 @xl:grid-cols-2">
 				<section data-inbox-items className="flex min-h-0 min-w-0 flex-col">
 					<Heading icon={<FileText />} label={t('home.inbox.items')} count={items.length} />
@@ -63,6 +86,7 @@ export function InboxSection({ store }: { store: BoardStore }) {
 								store={store}
 								onDone={() => setAdding(false)}
 								onFail={(error) => failed(error, t('home.inbox.createFailed'))}
+								onStart={() => setProblem(null)}
 							/>
 						)}
 						{items.length ? (
@@ -110,7 +134,6 @@ export function InboxSection({ store }: { store: BoardStore }) {
 										<Button
 											type="button"
 											variant="ghost"
-											title={t('home.inbox.openToday')}
 											className="h-auto min-h-9 w-full min-w-0 items-start justify-start gap-2 px-2 py-1.5 text-left font-normal whitespace-normal"
 											onClick={() => open(today.path)}
 										>
@@ -152,7 +175,7 @@ export function InboxSection({ store }: { store: BoardStore }) {
 				onConfirm={() => {
 					const file = removing;
 					setRemoving(null);
-					if (file) void store.trash(file).catch((error: unknown) => failed(error, t('home.inbox.deleteFailed')));
+					if (file) trash(file);
 				}}
 			/>
 		</div>
@@ -210,7 +233,6 @@ function ItemRow({
 				<Button
 					type="button"
 					variant="ghost"
-					title={file.path}
 					className="h-full min-w-0 flex-1 justify-start gap-2 px-0 font-normal hover:bg-transparent dark:hover:bg-transparent"
 					onClick={() => onOpen(file.path)}
 				>
@@ -252,18 +274,23 @@ function NewItem({
 	store,
 	onDone,
 	onFail,
+	onStart,
 }: {
 	root: string;
 	store: BoardStore;
 	onDone(this: void): void;
 	onFail(this: void, error: unknown): void;
+	onStart(this: void): void;
 }) {
 	const t = useT(),
 		[name, setName] = useState(''),
+		[saving, setSaving] = useState(false),
 		busy = useRef(false);
 	const create = () => {
 		if (busy.current) return;
 		busy.current = true;
+		setSaving(true);
+		onStart();
 		void createMemoFile(store.host.app, root, name.trim(), '', nowMoment())
 			.then((file) => {
 				onDone();
@@ -272,12 +299,15 @@ function NewItem({
 			.catch(onFail)
 			.finally(() => {
 				busy.current = false;
+				setSaving(false);
 			});
 	};
 	return (
 		<div data-inbox-new className="pb-1">
 			<Input
 				autoFocus
+				readOnly={saving}
+				aria-busy={saving || undefined}
 				spellCheck={false}
 				className="h-8 text-sm"
 				aria-label={t('home.inbox.newLabel')}
@@ -285,7 +315,7 @@ function NewItem({
 				value={name}
 				onChange={(event) => setName(event.target.value)}
 				onBlur={() => {
-					if (!name.trim()) onDone();
+					if (!name.trim() && !busy.current) onDone();
 				}}
 				onKeyDown={(event) => {
 					if (event.nativeEvent.isComposing) return;

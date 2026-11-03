@@ -17,17 +17,8 @@ export function ReadingMiniPanel({ elapsed, stop }: { elapsed: number; stop: () 
 			<Button
 				variant="ghost"
 				className={widgetClasses('dashboard-reading-mini-btn')}
-				role="button"
-				tabIndex={0}
 				aria-label={t('reading.miniStop')}
-				title={t('reading.miniStop')}
 				onClick={stop}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						stop();
-					}
-				}}
 			>
 				<Icon name="square" />
 			</Button>

@@ -1,5 +1,5 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/visible-properties-editor.ts
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { Label } from '../../../../ui/components/label';
@@ -15,7 +15,8 @@ export function PinnedProperties({
 	onChange: (value: LibraryConfig) => void;
 }) {
 	const t = useT(),
-		[custom, setCustom] = useState('');
+		[custom, setCustom] = useState(''),
+		inputId = useId();
 	const picks = config.visibleProperties ?? [];
 	const toggle = (key: string) => {
 		const next = picks.includes(key) ? picks.filter((value) => value !== key) : [...picks, key];
@@ -23,7 +24,7 @@ export function PinnedProperties({
 	};
 	return (
 		<div className="space-y-2">
-			<Label className="grid gap-2">{t('library.visibleProperties')}</Label>
+			<Label htmlFor={inputId} className="grid gap-2">{t('library.visibleProperties')}</Label>
 			<p className="text-xs text-muted-foreground">{t('library.visiblePropertiesHint')}</p>
 			<div className="flex flex-wrap gap-1">
 				{[...new Set(['title', 'author', 'status', 'type', 'rating', ...keys, ...picks])]
@@ -40,9 +41,10 @@ export function PinnedProperties({
 						</Button>
 					))}
 			</div>
-			<div className="flex gap-2">
+			<div className="flex min-w-0 gap-2">
 				<Input
-					aria-label={t('library.visibleProperties')}
+					id={inputId}
+					className="min-w-0"
 					value={custom}
 					onChange={(e) => setCustom(e.target.value)}
 				/>

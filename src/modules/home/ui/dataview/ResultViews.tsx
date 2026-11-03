@@ -8,8 +8,10 @@ import type { DqlValue, QueryResult, ResultRow } from '../../core/dql/types';
 import { coerceNumber, formatValue, kindOf } from '../../core/dql/values';
 import { toggleTaskInFile } from '../../platform/calendar/alltasks-scan';
 import { invalidatePath } from '../../platform/dql/page-builder';
-import { t } from '../../../../shared/i18n';
+import { useT } from '../../../../ui/react/hooks';
 import { Table2 } from 'lucide-react';
+import { Button } from '../../../../ui/components/button';
+import { Checkbox } from '../../../../ui/components/checkbox';
 import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { ObsidianIcon as Icon } from '../../../../ui/components/huhu/ObsidianIcon';
 import type { DataviewContext } from './context';
@@ -26,6 +28,7 @@ import { displayColumns, nextSortState, sourceInfoOf, tableLayout, type ViewStat
 import { chooseDataviewCellSize, computeDataviewMonthLabels, ymdKey } from './value-model';
 import { InlineValue, Value, rowOpen } from './Values';
 export function EmptyResult({ message, hint }: { message: string; hint?: boolean | string }) {
+	const t = useT();
 	return (
 		<EmptyState
 			size="sm"
@@ -52,51 +55,60 @@ function TaskCheck({
 	context: DataviewContext;
 	reload?: () => void;
 }) {
+	const t = useT();
 	const [busy, setBusy] = useState(false),
 		[checked, setChecked] = useState(task.checked),
+		[failed, setFailed] = useState(false),
 		pending = useRef(false);
 	useLayoutEffect(() => setChecked(task.checked), [task.checked]);
+	const toggle = (next: boolean) => {
+		if (pending.current) return;
+		pending.current = true;
+		setBusy(true);
+		setFailed(false);
+		void (async () => {
+			try {
+				const app = context.app,
+					file = contentFiles(app).getFileByPath(task.path);
+				if (
+					file &&
+					(await toggleTaskInFile(
+						app,
+						{ ...task, file, mtime: file.stat.mtime, ctime: file.stat.ctime },
+						next,
+					))
+				) {
+					setChecked(next);
+					invalidatePath(app, task.path);
+				}
+				reload?.();
+			} catch (error) {
+				// The box keeps its last saved state and says so; a retry is the same click.
+				console.error('[Dashboard] query task update failed', error);
+				setFailed(true);
+			} finally {
+				pending.current = false;
+				setBusy(false);
+			}
+		})();
+	};
 	return (
-		<input
-			className={p1Classes('dashboard-dataview-task-checkbox')}
-			type="checkbox"
-			checked={checked}
-			disabled={busy || task.line < 0}
-			onClick={(e) => e.stopPropagation()}
-			onChange={(e) => {
-				if (pending.current) return;
-				const checkbox = e.currentTarget,
-					next = checkbox.checked;
-				pending.current = true;
-				setBusy(true);
-				void (async () => {
-					let committed = checked;
-					try {
-						const app = context.app,
-							file = contentFiles(app).getFileByPath(task.path);
-						if (
-							file &&
-							(await toggleTaskInFile(
-								app,
-								{ ...task, file, mtime: file.stat.mtime, ctime: file.stat.ctime },
-								next,
-							))
-						) {
-							committed = next;
-							setChecked(next);
-							invalidatePath(app, task.path);
-						}
-						reload?.();
-					} catch (error) {
-						console.error('[Dashboard] query task update failed', error);
-					} finally {
-						checkbox.checked = committed;
-						pending.current = false;
-						setBusy(false);
-					}
-				})();
-			}}
-		/>
+		<>
+			<Checkbox
+				className={p1Classes('dashboard-dataview-task-checkbox')}
+				checked={checked}
+				disabled={busy || task.line < 0}
+				aria-busy={busy || undefined}
+				aria-label={task.text}
+				onClick={(e) => e.stopPropagation()}
+				onCheckedChange={(next) => toggle(next === true)}
+			/>
+			{failed && (
+				<span role="alert" className="text-xs text-destructive-foreground">
+					{t('dataview.taskFailed')}
+				</span>
+			)}
+		</>
 	);
 }
 export function ResultTable({
@@ -109,6 +121,7 @@ export function ResultTable({
 	sort,
 	offset = 0,
 }: Props & { view?: ViewState; sort?: (view: ViewState) => void; offset?: number }) {
+	const t = useT();
 	const layout = tableLayout(result, config, config?.rowNumbers === true),
 		start = displayColumns(result).hasImplicitFileCol ? 1 : 0;
 	const activeIndex = view?.sortCol == null ? -1 : layout.sortableIdx[layout.sortValueIdx.indexOf(view.sortCol)];
@@ -136,33 +149,45 @@ export function ResultTable({
 										? `is-source-col${layout.checkboxCol && !label ? ' dashboard-dataview-check-head' : ''}${layout.showSource && i === layout.labels.length - 1 ? ' is-datetime' : ''}`
 										: `is-sortable${active ? (view?.sortDir === 'desc' ? ' is-sorted-desc' : ' is-sorted-asc') : ''}`,
 								)}
-								title={
-									slot < 0
+								aria-sort={
+									slot < 0 || !active
 										? undefined
-										: t(
-												active
-													? view?.sortDir === 'asc'
-														? 'dataview.sortDesc'
-														: 'dataview.sortClear'
-													: 'dataview.sortAsc',
-											)
+										: view?.sortDir === 'desc'
+											? 'descending'
+											: 'ascending'
 								}
-								onClick={() => {
-									if (slot >= 0 && view) sort?.(nextSortState(view, layout.sortValueIdx[slot]!));
-								}}
 							>
-								{label}
-								{slot >= 0 && (
-									<Icon
-										className={p1Classes('dashboard-dataview-sort-ind')}
-										name={
+								{slot < 0 ? (
+									label
+								) : (
+									<Button
+										type="button"
+										variant="ghost"
+										size="xs"
+										className="h-auto gap-0 px-0 font-[inherit] text-[inherit] hover:bg-transparent"
+										aria-label={`${label}: ${t(
 											active
-												? view?.sortDir === 'desc'
-													? 'chevron-down'
-													: 'chevron-up'
-												: 'chevrons-up-down'
-										}
-									/>
+												? view?.sortDir === 'asc'
+													? 'dataview.sortDesc'
+													: 'dataview.sortClear'
+												: 'dataview.sortAsc',
+										)}`}
+										onClick={() => {
+											if (view) sort?.(nextSortState(view, layout.sortValueIdx[slot]!));
+										}}
+									>
+										{label}
+										<Icon
+											className={p1Classes('dashboard-dataview-sort-ind')}
+											name={
+												active
+													? view?.sortDir === 'desc'
+														? 'chevron-down'
+														: 'chevron-up'
+													: 'chevrons-up-down'
+											}
+										/>
+									</Button>
 								)}
 							</th>
 						);
@@ -178,7 +203,7 @@ export function ResultTable({
 							{...rowOpen(context, row)}
 						>
 							{config?.rowNumbers && (
-								<td className={p1Classes('dashboard-dataview-rownum')}>{offset + i + 1}</td>
+								<td className="w-8 min-w-8 cursor-default pr-2 pl-1 text-right text-muted-foreground tabular-nums">{offset + i + 1}</td>
 							)}
 							{result.grouped ? (
 								<>
@@ -245,10 +270,7 @@ export function ResultTable({
 									)}
 									{layout.showSource && (
 										<>
-											<td
-												className={p1Classes('dashboard-dataview-src-path')}
-												title={src?.path ?? ''}
-											>
+											<td className={p1Classes('dashboard-dataview-src-path')}>
 												{src?.path ?? '—'}
 											</td>
 											<td className={p1Classes('dashboard-dataview-src-created')}>
@@ -328,7 +350,7 @@ export function ResultList({ result, rows, context, config, reload }: Props) {
 											{(result.queryType === 'TABLE' || start > 0) &&
 												row.values.slice(start + 1).map((value, j) => (
 													<Fragment key={j}>
-														<span className={p1Classes('dashboard-dataview-list-sep')}>
+														<span className="mx-0.5 text-muted-foreground">
 															·
 														</span>
 														<Value value={value} context={context} />
@@ -338,7 +360,7 @@ export function ResultList({ result, rows, context, config, reload }: Props) {
 									)}
 								</div>
 								{config?.showSource !== false && src && (
-									<div className={p1Classes('dashboard-dataview-list-source')}>
+									<div className="min-w-0 truncate pl-1 text-xs text-muted-foreground">
 										{src.path} · {src.created}
 									</div>
 								)}
@@ -382,7 +404,7 @@ export function FreeList({ result, rows, context, reload }: Props) {
 					) : (
 						values.map((value, j) => (
 							<Fragment key={j}>
-								{j > 0 && <span className={p1Classes('dashboard-dataview-free-sep')}>–</span>}
+								{j > 0 && <span className="text-muted-foreground">–</span>}
 								<Value value={value} context={context} />
 							</Fragment>
 						))
@@ -411,6 +433,7 @@ export function FreeList({ result, rows, context, reload }: Props) {
 	);
 }
 export function ResultCalendar({ result, rows, context }: Props) {
+	const t = useT();
 	const dated = rows
 		.map((row) => ({ row, ts: rowDateTs(row, result) }))
 		.filter((entry): entry is { row: ResultRow; ts: number } => entry.ts !== null);
@@ -422,23 +445,36 @@ export function ResultCalendar({ result, rows, context }: Props) {
 	for (const d of dated) byDay.set(dayKey(d.ts), [...(byDay.get(dayKey(d.ts)) ?? []), d.row]);
 	const start = new Date(cursor),
 		days = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+	const openDay = (items: ResultRow[]) => {
+		const path = items[0]?.page?.file.path;
+		const file = path ? contentFiles(context.app).getFileByPath(path) : null;
+		if (file) context.opener?.(file);
+	};
 	return (
 		<div className={p1Classes('dashboard-dataview-calendar')}>
 			<div className={p1Classes('dashboard-dataview-calendar-grid')}>
 				<div className={p1Classes('dashboard-dataview-calendar-header')}>
-					<button
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-xs"
 						className={p1Classes('dashboard-dataview-calendar-nav')}
+						aria-label={t('home.p2.prev')}
 						onClick={() => setCursor(shiftMonth(cursor, -1))}
 					>
 						<Icon name="chevron-left" />
-					</button>
+					</Button>
 					<div className={p1Classes('dashboard-dataview-calendar-title')}>{monthLabel(cursor)}</div>
-					<button
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-xs"
 						className={p1Classes('dashboard-dataview-calendar-nav')}
+						aria-label={t('home.p2.next')}
 						onClick={() => setCursor(shiftMonth(cursor, 1))}
 					>
 						<Icon name="chevron-right" />
-					</button>
+					</Button>
 				</div>
 				<div className={p1Classes('dashboard-dataview-calendar-weekdays')}>
 					{['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
@@ -461,11 +497,20 @@ export function ResultCalendar({ result, rows, context }: Props) {
 								className={p1Classes(
 									`dashboard-dataview-calendar-cell${items.length ? ' has-dots' : ''}`,
 								)}
-								onClick={() => {
-									const path = items[0]?.page?.file.path;
-									const file = path ? contentFiles(context.app).getFileByPath(path) : null;
-									if (file) context.opener?.(file);
-								}}
+								{...(items.length
+									? {
+											role: 'button',
+											tabIndex: 0,
+											'aria-label': t('dataview.calendarDay', { day, count: items.length }),
+											onKeyDown: (event: import('react').KeyboardEvent) => {
+												if (event.key === 'Enter' || event.key === ' ') {
+													event.preventDefault();
+													openDay(items);
+												}
+											},
+										}
+									: {})}
+								onClick={() => openDay(items)}
 							>
 								<div className={p1Classes('dashboard-dataview-calendar-day')}>{day}</div>
 								{items.length > 0 && (
@@ -489,6 +534,7 @@ export function ResultCalendar({ result, rows, context }: Props) {
 	);
 }
 export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
+	const t = useT();
 	const totals = new Map<string, number>();
 	for (const row of rows) {
 		const value = coerceNumber(row.values[0] ?? null),
@@ -507,7 +553,8 @@ export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 		min = Math.min(...values),
 		range = Math.max(...values) - min || 1;
 	const ref = useRef<HTMLDivElement>(null),
-		[cell, setCell] = useState(10);
+		[cell, setCell] = useState(10),
+		[reading, setReading] = useState('');
 	useLayoutEffect(() => {
 		const el = ref.current,
 			win = el?.ownerDocument.defaultView;
@@ -524,6 +571,9 @@ export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 	if (!totals.size) return <EmptyResult message="dataview.heatmapNoData" />;
 	return (
 		<div className={p1Classes('dashboard-heatmap-section-body dashboard-dataview-heatmap-body')}>
+			<p role="status" className="m-0 min-h-5 text-xs text-muted-foreground tabular-nums">
+				{reading || t('dataview.heatmapHint', { count: totals.size, min, max: Math.max(...values) })}
+			</p>
 			<div
 				ref={ref}
 				className={p1Classes('dashboard-heatmap-year')}
@@ -551,7 +601,14 @@ export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 									className={p1Classes(
 										`dashboard-sidebar-heatmap-cell${value == null ? ' dashboard-sidebar-heatmap-cell--empty' : ''}`,
 									)}
-									title={value == null ? undefined : `${point!.date}: ${value}`}
+									{...(value == null
+										? {}
+										: {
+												role: 'img',
+												'aria-label': `${point!.date}: ${value}`,
+												onMouseEnter: () => setReading(`${point!.date}: ${value}`),
+												onMouseLeave: () => setReading(''),
+											})}
 									style={
 										value == null
 											? undefined

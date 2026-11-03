@@ -49,6 +49,7 @@ function BookCover({ book, service }: { book: BookInfo; service: ReadingService 
 	}, [book.coverUrl, service]);
 	return (
 		<div
+			aria-hidden
 			className="flex w-14 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-muted bg-cover bg-center p-1 text-center text-3xs leading-tight text-muted-foreground"
 			style={book.coverUrl && url ? { backgroundImage: `url(${url})` } : undefined}
 		>
@@ -141,11 +142,11 @@ export function ReadingPanel({
 								<div className="flex min-w-0 flex-1 flex-col gap-1">
 									<div className="flex items-start gap-1">
 										<div className="min-w-0 flex-1">
-											<div className="truncate text-sm leading-5 font-medium" title={book.title}>
+											<div className="line-clamp-2 text-sm leading-5 font-medium break-words">
 												{book.title}
 											</div>
 											{book.author && (
-												<div className="truncate text-xs text-muted-foreground">
+												<div className="line-clamp-1 text-xs break-words text-muted-foreground">
 													{book.author}
 												</div>
 											)}

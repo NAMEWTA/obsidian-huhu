@@ -160,8 +160,27 @@ test('the draft survives a remount and a failed capture keeps it', async () => {
 	);
 	expect(box().value).toBe('没发出去');
 	fireEvent.keyDown(box(), { key: 'Enter' });
-	await waitFor(() => expect(toast).toHaveBeenCalledWith(t('storage.unsaved')));
+	expect((await screen.findByRole('alert')).textContent).toBe(t('home.inbox.captureFailed'));
 	expect(box().value).toBe('没发出去');
+	// The failure stays on screen (not a toast) until a retry succeeds, and the send button offers the retry.
+	expect(toast).not.toHaveBeenCalled();
+	vi.spyOn(store, 'capture').mockResolvedValue(undefined as never);
+	fireEvent.click(screen.getByRole('button', { name: t('home.content.retry') }));
+	await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+	expect(box().value).toBe('');
+});
+
+test('a failed delete stays in the card with a retry, and the Inbox has no title attributes', async () => {
+	const { store, view } = await scene({ 'huhu/收件箱/2026-10-19-1405-买牛奶.md': '' });
+	const trash = vi.spyOn(store, 'trash').mockRejectedValueOnce(new Error('locked')).mockResolvedValue();
+	fireEvent.click(within(rows()[0]!).getByRole('button', { name: t('home.inbox.delete') }));
+	fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: t('common.confirm') }));
+	const alert = await screen.findByRole('alert');
+	expect(alert.textContent).toContain('locked');
+	expect(view.container.querySelectorAll('[title]:not(time)')).toHaveLength(0);
+	fireEvent.click(within(alert).getByRole('button', { name: t('home.content.retry') }));
+	await waitFor(() => expect(trash).toHaveBeenCalledTimes(2));
+	await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
 });
 
 test('delete asks first, then moves the file to the trash', async () => {

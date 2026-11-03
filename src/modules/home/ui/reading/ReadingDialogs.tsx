@@ -175,6 +175,8 @@ export function BookSearchPanel({
 		[manual, setManual] = useState(''),
 		[results, setResults] = useState<BookSearchResult[]>([]),
 		[busy, setBusy] = useState(false),
+		[failed, setFailed] = useState(false),
+		[attempt, setAttempt] = useState(0),
 		input = useRef<HTMLInputElement>(null);
 	useLayoutEffect(() => {
 		input.current?.focus();
@@ -187,7 +189,9 @@ export function BookSearchPanel({
 				.then((items) => {
 					if (active) setResults(items);
 				})
-				.catch(() => {})
+				.catch(() => {
+					if (active) setFailed(true);
+				})
 				.finally(() => {
 					if (active) setBusy(false);
 				});
@@ -196,7 +200,7 @@ export function BookSearchPanel({
 			active = false;
 			win.clearTimeout(timer);
 		};
-	}, [query, win]);
+	}, [query, win, attempt]);
 	const pick = (book: Pick<BookInfo, 'title' | 'author' | 'coverUrl' | 'isbn' | 'source'>) => {
 		select({ ...book, currentPage: 0, totalPages: 0, finished: false });
 		close();
@@ -214,6 +218,7 @@ export function BookSearchPanel({
 					onInput={(e) => {
 						setQuery(e.currentTarget.value);
 						setResults([]);
+						setFailed(false);
 						setBusy(!!e.currentTarget.value.trim());
 					}}
 				/>
@@ -221,6 +226,21 @@ export function BookSearchPanel({
 			<div className={widgetClasses('dashboard-reading-book-results')}>
 				{busy ? (
 					<div className={widgetClasses('dashboard-reading-book-searching')}>{t('reading.searching')}</div>
+				) : failed ? (
+					<div role="alert" className={widgetClasses('dashboard-reading-book-no-results')}>
+						<span>{t('reading.searchFailed')}</span>{' '}
+						<Button
+							variant="outline"
+							size="xs"
+							onClick={() => {
+								setFailed(false);
+								setBusy(true);
+								setAttempt((n) => n + 1);
+							}}
+						>
+							{t('home.content.retry')}
+						</Button>
+					</div>
 				) : query.trim() && !results.length ? (
 					<div className={widgetClasses('dashboard-reading-book-no-results')}>{t('reading.noResults')}</div>
 				) : (
