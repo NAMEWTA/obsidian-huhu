@@ -85,9 +85,6 @@ test('documentation checks use ownership and links, not directory names, and res
 			rmSync(escapedRoot, { recursive: true, force: true });
 		}
 		write(archivedFile, files[archivedFile]!);
-		write('contracts/hap/v0.1/shutdown.md', '# Contract\n[Broken](missing.md)\n');
-		expect(run().stderr).toContain('contracts/hap/v0.1/shutdown.md: missing local link missing.md');
-		write('contracts/hap/v0.1/shutdown.md', '# Contract\n[Valid](#contract)\n');
 		expect(run().status).toBe(0);
 		write(`${state}/changes/2026-10-21-docs/spec.md`, '# 文档规格\n[证据](missing.md)\n');
 		const missingEvidence = run();
@@ -129,7 +126,6 @@ test('documentation checks use ownership and links, not directory names, and res
 			'## 工具、审批', '## 工具审批', '[重复](#工具审批-1)',
 		].join('\n');
 		write(capturedInput, punctuation);
-		write('native/huhubot/tests/contract/chat/testdata/claim-fairness/README.md', '# Immutable test fixture\n');
 		const punctuationAndFixture = run();
 		expect(punctuationAndFixture.status, punctuationAndFixture.stderr).toBe(0);
 
@@ -138,11 +134,11 @@ test('documentation checks use ownership and links, not directory names, and res
 		expect(badAnchor.status).not.toBe(0);
 		expect(badAnchor.stderr).toContain(`${capturedInput}: missing heading anchor #missing-anchor`);
 		write(capturedInput, punctuation);
-		write('native/huhubot/README.md', '# Unclassified production guide\n');
+		write('native/other/README.md', '# Unclassified production guide\n');
 		const unknownNative = run();
 		expect(unknownNative.status).not.toBe(0);
-		expect(unknownNative.stderr).toContain('unclassified markdown native/huhubot/README.md');
-		rmSync(path.join(root, 'native/huhubot/README.md'));
+		expect(unknownNative.stderr).toContain('unclassified markdown native/other/README.md');
+		rmSync(path.join(root, 'native/other/README.md'));
 
 		const inlineCode = `${punctuation}\nGo type \`[][2]string\`; \`[code](missing-code.md)\` [有效][kept]\n[kept]: #9-工具审批与效果日志\n`;
 		write(capturedInput, inlineCode);

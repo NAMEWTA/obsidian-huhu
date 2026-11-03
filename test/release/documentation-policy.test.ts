@@ -74,15 +74,8 @@ test('only captured GitHub issue title labels are literal; body references and o
 	expect(referenceLinkBody(file, body.replace(title, '# Requirements [News][Feature]'))).toContain('# Requirements [News][Feature]');
 });
 
-test('native Bot contract testdata follows fixture ownership while other native documents require classification', () => {
-	expect(documentationKind('native/huhubot/tests/contract/chat/testdata/claim-fairness/README.md')).toBe('test-fixture');
-	expect(documentationKind('native/huhubot/tests/contract/engine/testdata/example/README.md')).toBe('test-fixture');
-	for (const file of [
-		'native/huhubot/README.md',
-		'native/huhubot/internal/docs/README.md',
-		'native/huhubot/tests/contract/chat/README.md',
-		'native/other/tests/contract/chat/testdata/README.md',
-	]) expect(documentationKind(file), file).toBe('');
+test('native documents other than the maintained helper READMEs require classification', () => {
+	for (const file of ['native/other/README.md', 'native/other/internal/docs/README.md', 'native/other/tests/contract/chat/testdata/README.md']) expect(documentationKind(file), file).toBe('');
 });
 
 test('code spans hide link lookalikes while retaining adjacent links and reference definitions', () => {
@@ -107,11 +100,6 @@ test('unclosed, escaped and mismatched code delimiters do not hide real links', 
 	expect(withoutCodeSpans('\\\\`[hidden](missing.md)`')).not.toContain('[hidden]');
 });
 
-
-test('only versioned top-level HAP Markdown is classified as a strict contract document', () => {
- expect(documentationKind('contracts/hap/v0.1/shutdown.md')).toBe('contract-doc');
- for (const file of ['contracts/other/v0.1/readme.md', 'contracts/hap/latest/readme.md', 'contracts/hap/v0.1/nested/readme.md']) expect(documentationKind(file)).toBe('');
-});
 
 test('a matching moved receipt establishes exactly one archive origin', () => {
  const file = '.agents/speculo/.speculo/specdev/changes/archive/example/sessions/one/REPORT.md';

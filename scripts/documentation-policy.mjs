@@ -3,7 +3,6 @@ export function documentationKind(rel) {
 	if (rel === 'NOTICE' || rel === 'THIRD-PARTY-NOTICES.md' || rel.endsWith('/NOTICE.txt')) return 'license';
 	// Vendored crates keep their upstream license text verbatim beside the patched source.
 	if (/^native\/[^/]+\/third_party\/[^/]+\/LICENSE(?:-[A-Z0-9]+)?\.md$/.test(rel)) return 'license';
-	if (/^contracts\/hap\/v\d+(?:\.\d+)*\/[^/]+\.md$/.test(rel)) return 'contract-doc';
 	if (rel.startsWith('docs/')) return 'user-doc';
 	if (/^native\/(?:pty-server|browser-runtime)\/README\.md$/.test(rel)) return 'native-doc';
 	if (/^(README|CHANGELOG|SECURITY)(\.ZH)?\.md$/.test(rel)) return 'root-entry';
@@ -20,8 +19,6 @@ export function documentationKind(rel) {
 	if (rel.startsWith('scripts/fixtures/')) return 'test-fixture';
 	if (rel.startsWith('scripts/')) return 'script-doc';
 	if (rel.startsWith('test/')) return 'test-fixture';
-	// Go contract testdata follows fixture ownership; native product guides still require classification.
-	if (/^native\/huhubot\/tests\/contract\/[^/]+\/testdata\//.test(rel)) return 'test-fixture';
 	if (rel.startsWith('processes/')) return 'process-doc';
 	if (rel.startsWith('.github/')) return 'workflow-doc';
 	return '';

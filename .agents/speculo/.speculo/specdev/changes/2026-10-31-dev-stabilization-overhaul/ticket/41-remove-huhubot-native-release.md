@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-41
 title: "删除 huhubot Go 运行时、HAP 合同与构建发行链"
-status: ready
+status: done
 kind: refactor
 planning_depth: deep
 planning_depth_reason: "删除独立 Go module、版本化 wire 合同、CI 工作流与发行资产，影响 release 门禁"
