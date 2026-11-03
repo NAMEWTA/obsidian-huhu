@@ -41,7 +41,8 @@ type NodePath = typeof import('node:path');
 interface Retiring {
 	nonce: string;
 	slot: number;
-	/** Publisher wall-clock (ms, sub-millisecond) taken before any slot is claimed; orders a scope's events. */
+	/** Publisher system-wide monotonic clock (µs, process.hrtime) taken before any slot is claimed; orders a scope's events.
+	 * Per-process clocks such as performance.timeOrigin drift by milliseconds between processes on Windows. */
 	seq: number;
 	token: string;
 	globalDeleted?: boolean;
@@ -784,7 +785,7 @@ function hookJsonBytes(value, max, depth=0) {
  visit(value, depth);return total;
 }
 function hookPublish(event, data, source, provider) {
- hookGuard();const publication=crypto.randomUUID(), seq=performance.timeOrigin + performance.now();
+ hookGuard();const publication=crypto.randomUUID(), seq=Number(process.hrtime.bigint()/1000n);
  const envelope={ token, event, at: Date.now(), data, delivery: publication };if (source) envelope.source=source;if (provider) envelope.provider=provider;
  const bytes=hookJsonBytes(envelope, hookLimits.largeBytes), kind=bytes<=hookLimits.smallBytes?'small':'large';
  let local, global, committed=false;
