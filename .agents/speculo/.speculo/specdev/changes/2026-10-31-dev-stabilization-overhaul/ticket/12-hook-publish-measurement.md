@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-12
 title: "Hook 发布链分段测量与 Windows CI 到达性"
-status: in_progress
+status: done
 kind: investigation
 planning_depth: standard
 planning_depth_reason: "需在 Windows 上独立运行 32×3 用例并分解发布路径耗时，为 T-13 提供证据"
