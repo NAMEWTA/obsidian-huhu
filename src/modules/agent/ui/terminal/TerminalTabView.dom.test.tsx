@@ -194,6 +194,8 @@ test.each([
 function managedFixture(
 	phase: 'connected' | 'launch-pending' | 'failed' | 'disconnected' | 'restored',
 	unconfirmed = false,
+	runtimeExtra: Partial<NonNullable<ManagedSnapshot['sessions'][number]['runtime']>> = {},
+	exitCode?: number,
 ) {
 	const session =
 		phase === 'restored'
@@ -205,6 +207,7 @@ function managedFixture(
 					running: phase === 'connected' || phase === 'launch-pending',
 					connection: phase === 'launch-pending' ? 'starting' : phase,
 					activity: 'idle',
+					exitCode,
 				};
 	const snapshot: ManagedSnapshot = {
 		revision: 1,
@@ -218,7 +221,7 @@ function managedFixture(
 				restore: unconfirmed ? { state: 'unconfirmed', canRequestContinue: false } : undefined,
 				viewState: phase === 'restored' ? 'restored' : 'attached',
 				runtime:
-					phase === 'restored' ? undefined : { runtimeId: 'r', phase, activity: 'idle', inputReady: false },
+					phase === 'restored' ? undefined : { runtimeId: 'r', phase, activity: 'idle', inputReady: false, ...runtimeExtra },
 			},
 		],
 	};
@@ -228,6 +231,8 @@ function managedFixture(
 		closePane: vi.fn(async () => {}),
 		restore: vi.fn(async () => {}),
 		report: vi.fn(),
+		stopManaged: vi.fn(),
+		waitManagedStop: vi.fn(),
 		getManagedSnapshot: () => snapshot,
 		subscribeManaged: () => () => {},
 	};
@@ -296,6 +301,78 @@ test.each(['launch-pending', 'failed', 'disconnected', 'restored'] as const)(
 		if (phase === 'launch-pending' || phase === 'restored') expect(created).toHaveLength(count);
 	},
 );
+
+const unknownCleanup = {
+	root: { state: 'exited' as const, code: 0, signal: null },
+	cleanup: { state: 'unknown' as const, scope: 'unix-session' as const, remainingKnown: null, reason: 'transport-lost' as const },
+	output: 'unknown' as const,
+};
+
+test('an abnormal exit stays visible as an alert; a clean exit is a status', () => {
+	managedFixture('disconnected', false, {}, 2);
+	expect(screen.getAllByRole('alert').some((element) => element.hasAttribute('data-terminal-exit'))).toBe(true);
+});
+
+test('a healthy terminal shows no technical fields until the details are expanded', async () => {
+	managedFixture('connected', false, {
+		termination: { ...unknownCleanup, cleanup: { ...unknownCleanup.cleanup, state: 'confirmed' as const, remainingKnown: 0 } } as never,
+	});
+	expect(screen.queryByText(new RegExp(t('agent.managed.rootExited')))).toBeNull();
+	expect(screen.queryByRole('alert')).toBeNull();
+	await userEvent.setup().click(screen.getByRole('button', { name: t('agent.managed.details') }));
+	expect(screen.getByText(new RegExp(t('agent.managed.cleanupConfirmed')))).toBeTruthy();
+	expect(screen.getByText(/a · s · r/)).toBeTruthy();
+});
+
+test('unconfirmed cleanup stays visible as an alert with check and retry actions, and retry force-stops after confirmation', async () => {
+	const f = managedFixture('disconnected', false, {
+		stop: { phase: 'settled', outcome: 'unknown', requestedAt: 1, requestId: 'x', force: false } as never,
+		termination: unknownCleanup,
+	});
+	const alert = screen.getAllByRole('alert').find((element) => element.getAttribute('data-lifecycle-state') === 'stopUnknown')!;
+	expect(alert.textContent).toContain(t('agent.managed.stopUnknown'));
+	expect(alert.textContent).toContain(t('agent.managed.stopUncertainHint'));
+	expect(screen.getByRole('button', { name: t('agent.managed.checkStop') })).toBeTruthy();
+	f.workspace.stopManaged.mockResolvedValue({
+		target: { spaceId: 'a', sessionId: 's', runtimeId: 'r' },
+		status: 'pending',
+		effect: 'unknown',
+		termination: unknownCleanup,
+		persisted: false,
+	});
+	await userEvent.setup().click(screen.getByRole('button', { name: t('agent.managed.retryCleanup') }));
+	await waitFor(() =>
+		expect(f.workspace.stopManaged).toHaveBeenCalledWith(
+			{ spaceId: 'a', sessionId: 's', runtimeId: 'r' },
+			expect.objectContaining({ force: true }),
+		),
+	);
+});
+
+test('expanding and copying technical details keeps the same terminal view, input and selection', async () => {
+	const count = created.length;
+	managedFixture('connected', false, { termination: unknownCleanup });
+	expect(created).toHaveLength(count + 1);
+	const host = document.querySelector('[data-terminal-host="r"]')!;
+	const input = host.querySelector('textarea')!;
+	input.value = 'echo draft';
+	input.focus();
+	input.setSelectionRange(2, 6);
+	const user = userEvent.setup();
+	const writeText = vi.fn(async () => {});
+	Object.defineProperty(window.navigator, 'clipboard', { configurable: true, value: { writeText } });
+	await user.click(screen.getByRole('button', { name: t('agent.managed.details') }));
+	await user.click(screen.getByRole('button', { name: t('agent.managed.detailsCopy') }));
+	await waitFor(() => expect(writeText).toHaveBeenCalledOnce());
+	expect(String((writeText.mock.calls as unknown as string[][])[0]?.[0])).toContain(t('agent.managed.rootExited'));
+	await user.click(screen.getByRole('button', { name: t('agent.managed.detailsHide') }));
+	expect(created).toHaveLength(count + 1);
+	expect(created[count]?.dispose).not.toHaveBeenCalled();
+	expect(document.querySelector('[data-terminal-host="r"]')).toBe(host);
+	expect(host.querySelector('textarea')).toBe(input);
+	expect(input.value).toBe('echo draft');
+	expect([input.selectionStart, input.selectionEnd]).toEqual([2, 6]);
+});
 
 test('connected inputReady=false is not treated as a generic terminal keyboard readiness gate', () => {
 	const count = created.length;

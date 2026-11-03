@@ -336,6 +336,8 @@ test('session archive submits the original preview and preserves incomplete rows
 	expect(preview).toHaveBeenCalledWith(plan.scope);
 	expect(f.confirm.mock.calls[0]?.[0]).toContain('r-target');
 	expect(screen.getByText(t('agent.managed.archiveIncomplete'))).toBeTruthy();
+	expect(screen.queryByText(new RegExp(t('agent.managed.rootExited')))).toBeNull();
+	await user.click(screen.getByRole('button', { name: t('agent.managed.details') }));
 	expect(screen.getByText(new RegExp(t('agent.managed.rootExited')))).toBeTruthy();
 	expect(screen.getByText(new RegExp(t('agent.managed.outputTruncated')))).toBeTruthy();
 	expect(document.querySelector('[data-managed-session="s-target"]')).toBeTruthy();
@@ -380,6 +382,8 @@ test('stop progress, root exit, unverified cleanup and read-only recheck stay di
 	render(f.wrap(<AgentSidebar />));
 	expect(screen.getByText(t('agent.managed.stopRequested'))).toBeTruthy();
 	expect(screen.queryByText(t('agent.managed.stopConfirmed'))).toBeNull();
+	expect(screen.queryByText(new RegExp(t('agent.managed.rootExited')))).toBeNull();
+	await user.click(screen.getByRole('button', { name: t('agent.managed.details') }));
 	expect(screen.getByText(new RegExp(t('agent.managed.rootExited')))).toBeTruthy();
 	await user.click(screen.getByRole('button', { name: t('agent.managed.checkStop') }));
 	expect(await screen.findByText(t('agent.managed.waitTimeout'))).toBeTruthy();

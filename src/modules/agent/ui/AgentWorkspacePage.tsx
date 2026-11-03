@@ -8,6 +8,7 @@ import { ReactSurface } from '../../../ui/react/surface';
 import type { NativeSurfaceContext } from '../../../ui/native-surface';
 import { useOwnerDocument, useVisible } from '../../../ui/react/contexts';
 import { useT } from '../../../ui/react/hooks';
+import { DesignScope } from '../../../ui/react/design-scope';
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -212,6 +213,7 @@ export function AgentWorkspace({
 				data-agent-workspace=""
 				ref={root}
 			>
+				<DesignScope className="flex min-h-0 min-w-0 flex-1 flex-col">
 				<WorkspaceToolbar inboxUnread={inboxUnread} />
 				<div className="@container relative flex min-h-0 flex-1">
 					<div
@@ -396,6 +398,7 @@ export function AgentWorkspace({
 						select={select}
 					/>
 				)}
+				</DesignScope>
 			</div>
 			{visible &&
 				context.navigationEl &&

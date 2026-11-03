@@ -32,7 +32,7 @@ import { useWorkspaceUI } from '../workspace/workspace-context';
 import { openPath } from '../../platform/desktop/files';
 import { useAgentSettings } from '../settings/settings-context';
 import { pickMaterial } from './material-picker';
-import { LifecycleFeedback, ManagedLifecycleStatus, useLifecycleAction } from '../sidebar/managed-lifecycle';
+import { ManagedLifecyclePanel, ManagedStatusRegion, useLifecycleAction } from '../sidebar/managed-lifecycle';
 import { SpaceError } from '../../core/space/errors';
 import { spaceErrorMessage } from '../create/space-errors';
 
@@ -568,7 +568,7 @@ export function TerminalHost({
 				</p>
 			)}
 			{managed && (
-				<div className="shrink-0 space-y-1 px-2 py-1">
+				<ManagedStatusRegion>
 					{runtime?.activityDetail?.unreadCompletion && (
 						<p className="m-0 text-xs" data-activity-completion={runtime.runtimeId}>
 							{t('agent.activityEvidence.unreadCompletion')}
@@ -597,31 +597,8 @@ export function TerminalHost({
 								</Button>
 							</div>
 						)}
-					<ManagedLifecycleStatus session={managed} />
-					{runtime?.error && (
-						<p role="alert" className="m-0 break-words text-xs text-destructive">
-							{t(runtime.error.messageKey)}
-						</p>
-					)}
-					{runtime && (runtime.stop || runtime.phase === 'disconnected' || runtime.termination) && (
-						<Button
-							variant="ghost"
-							size="sm"
-							className="pointer-coarse:min-h-11"
-							aria-disabled={lifecycle.busy || undefined}
-							onClick={() => {
-								void lifecycle.check({
-									spaceId: managed.spaceId,
-									sessionId: managed.sessionId,
-									runtimeId: runtime.runtimeId,
-								});
-							}}
-						>
-							{t('agent.managed.checkStop')}
-						</Button>
-					)}
-					<LifecycleFeedback action={lifecycle} />
-				</div>
+					<ManagedLifecyclePanel session={managed} lifecycle={lifecycle} />
+				</ManagedStatusRegion>
 			)}
 			{pending && session && (
 				<p role="status" className="m-0 shrink-0 px-2 py-1 text-xs text-muted-foreground">
@@ -867,7 +844,8 @@ export function TerminalHost({
 			{session && !session.running && !pending && (
 				<div className="pointer-events-none absolute inset-0 z-[var(--layer-popover)] flex items-end justify-center p-4">
 					<div
-						role="status"
+						role={session.exitCode ? 'alert' : 'status'}
+						data-terminal-exit={session.exitCode ?? ''}
 						className="pointer-events-auto flex w-full max-w-md flex-col gap-3 rounded-lg border border-border bg-card p-4 text-card-foreground shadow-xs"
 					>
 						<div className="space-y-1">
