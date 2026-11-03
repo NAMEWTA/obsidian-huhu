@@ -14,7 +14,6 @@ import { messages as navigator } from '../src/modules/navigator/i18n';
 import { messages as notifications } from '../src/modules/notifications/i18n';
 import { messages as sync } from '../src/modules/versioning/i18n';
 import { messages as safe } from '../src/modules/safe/i18n';
-import { messages as huhubot } from '../src/modules/huhubot/i18n';
 import { messages as taskMessages } from '../src/modules/task/i18n';
 import { messages as automationStrings } from '../src/shared/i18n/lazy/automation';
 import { messages as browserStrings } from '../src/shared/i18n/lazy/browser';
@@ -40,7 +39,6 @@ for (const messages of [
 	notifications,
 	sync,
 	safe,
-	huhubot,
 	taskMessages,
 ])
 	registerMessages(messages);

@@ -1,8 +1,0 @@
-{
-  "notes": [
-    { "path": "Bot acceptance.md", "contents": "# Bot acceptance\n\nDisposable fixture only.\n" },
-    { "path": "Notes/Source.md", "contents": "source sentinel\n" }
-  ],
-  "profile": "disposable",
-  "providerAcceptance": "user-owned"
-}

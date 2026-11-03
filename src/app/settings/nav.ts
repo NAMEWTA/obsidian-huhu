@@ -1,9 +1,9 @@
 /** Settings products (one per module plus Home) and their order in the workbench settings list. */
 import type { ModuleId } from '../contracts/module';
 
-export type SettingsProduct = 'home' | 'dashboard' | 'browser' | 'editor' | 'navigator' | 'terminal' | 'iconic' | 'contacts' | 'automation' | 'versioning' | 'safe' | 'huhubot';
+export type SettingsProduct = 'home' | 'dashboard' | 'browser' | 'editor' | 'navigator' | 'terminal' | 'iconic' | 'contacts' | 'automation' | 'versioning' | 'safe';
 
-const ORDER: readonly SettingsProduct[] = ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'huhubot', 'iconic', 'contacts', 'automation', 'versioning', 'safe'];
+const ORDER: readonly SettingsProduct[] = ['home', 'dashboard', 'browser', 'editor', 'navigator', 'terminal', 'iconic', 'contacts', 'automation', 'versioning', 'safe'];
 
 export interface ModuleGates {
 	browser: boolean;
@@ -16,7 +16,6 @@ export interface ModuleGates {
 	automation: boolean;
 	versioning: boolean;
 	safe: boolean;
-	huhubot: boolean;
 }
 
 /** Products shown in settings: Home always, the others while their module is on. */
@@ -36,7 +35,6 @@ export const PRODUCT_MODULES = {
 	automation: 'automations',
 	versioning: 'versioning',
 	safe: 'safe',
-	huhubot: 'huhubot',
 } as const satisfies Record<keyof ModuleGates, ModuleId>;
 
 /** Product gates from the module switches. */

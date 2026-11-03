@@ -38,7 +38,6 @@ const runtime = await launchFreshVault({
 					navigator: false,
 					versioning: true,
 					safe: true,
-					huhubot: true,
 				},
 			},
 		},

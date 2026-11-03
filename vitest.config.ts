@@ -31,15 +31,6 @@ const iconicStubTests = ['src/app/settings/setting-definitions.test.ts', 'src/mo
 // of ~0.4 s) and were starved in turn; its bounds are unchanged, only the placement is serial.
 const nativeIntegrationTests = ['test/release/documentation-checker.test.ts', 'src/modules/agent/platform/desktop/hooks/hook-spool.test.ts', 'test/sync/git-flow.test.ts', 'test/sync/git-boundary.test.ts', 'test/sync/git-history.test.ts', 'test/sync/git-restore-ack.test.ts', 'test/host/computed-surface.test.ts'];
 
-// These HUHU tests build and launch the real Go runner. Keeping them in a
-// single-worker project avoids three cold Go toolchain builds competing for
-// the same temporary filesystem when the normal unit project is parallel.
-const huhuBotIntegrationTests = [
-	'src/modules/huhubot/services/events/runner.test.ts',
-	'src/modules/huhubot/platform/desktop/transport/credentials-runner.test.ts',
-	'src/modules/huhubot/platform/desktop/transport/runner.test.ts',
-];
-
 export default defineConfig({
 	test: {
 		projects: [
@@ -55,7 +46,7 @@ export default defineConfig({
 			{
 				...shared,
 				resolve: { alias: { obsidian: repo('./scripts/obsidian-stub.ts') } },
-				test: { name: 'unit', include: ['src/**/*.test.{ts,tsx}', 'test/**/*.test.ts'], exclude: [...iconicStubTests, ...nativeIntegrationTests, ...huhuBotIntegrationTests, 'src/**/*.dom.test.tsx'], environment: 'node', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts'] },
+				test: { name: 'unit', include: ['src/**/*.test.{ts,tsx}', 'test/**/*.test.ts'], exclude: [...iconicStubTests, ...nativeIntegrationTests, 'src/**/*.dom.test.tsx'], environment: 'node', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts'] },
 			},
 			{
 				...shared,
@@ -66,11 +57,6 @@ export default defineConfig({
 				...shared,
 				resolve: { alias: { obsidian: repo('./scripts/obsidian-stub.ts') } },
 				test: { name: 'native-integration', include: nativeIntegrationTests, environment: 'node', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts'], fileParallelism: false, maxWorkers: 1, sequence: { groupOrder: 1 } },
-			},
-			{
-				...shared,
-				resolve: { alias: { obsidian: repo('./scripts/obsidian-stub.ts') } },
-				test: { name: 'huhu-bot-integration', include: huhuBotIntegrationTests, environment: 'node', setupFiles: ['./scripts/isolate-home.ts', './scripts/module-strings.ts'], fileParallelism: false, maxWorkers: 1, sequence: { groupOrder: 2 } },
 			},
 		],
 	},

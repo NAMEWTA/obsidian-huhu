@@ -8,7 +8,7 @@ design_ref: {"revision":3,"digest":"78dd227f70b86804078218988b35850af8f2078a02ea
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-40
 title: "删除 huhubot 插件侧模块与全部产品入口"
-status: ready
+status: done
 kind: refactor
 planning_depth: deep
 planning_depth_reason: "删除整模块及其在 app/shell/i18n/设置/版本排除中的注册，需同批更新全部消费者"

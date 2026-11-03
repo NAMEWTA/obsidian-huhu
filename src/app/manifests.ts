@@ -11,7 +11,6 @@ import { navigatorManifest } from '../modules/navigator/manifest';
 import { notificationsManifest } from '../modules/notifications/manifest';
 import { versioningManifest } from '../modules/versioning/manifest';
 import { safeManifest } from '../modules/safe/manifest';
-import { huhubotManifest } from '../modules/huhubot/manifest';
 
 /** Every module HUHU ships. Manifests are data only; module code loads through `manifest.load()`. */
 export const MANIFESTS: readonly ModuleManifest[] = [
@@ -27,5 +26,4 @@ export const MANIFESTS: readonly ModuleManifest[] = [
 	automationsManifest,
 	versioningManifest,
 	safeManifest,
-	huhubotManifest,
 ];
