@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronRight, FileText, Folder, List, ListTree } from 'lucide-react';
 import { t } from '../../../shared/i18n';
 import { ActionButton } from '../../../ui/components/huhu/ActionButton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/components/tooltip';
 import { cn } from '../../../ui/lib/utils';
 import { useOwnerDocument } from '../../../ui/react/contexts';
 
@@ -107,39 +108,43 @@ export function ChoiceList<T>({
 							className={cn('group flex min-w-0 items-center', virtual && 'absolute left-0 w-full')}
 							style={{ height: dimensions.row, ...(virtual ? { top: index * dimensions.row } : {}) }}
 						>
-							<button
-								type="button"
-								data-choice-index={index}
-								data-choice-key={key}
-								aria-label={itemLabel(item)}
-								aria-pressed={expanded?.(item) === undefined ? key === selected : undefined}
-								aria-expanded={expanded?.(item)}
-								title={itemLabel(item)}
-								className={cn(
-									'flex h-full min-h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 px-3 text-left text-[13px] outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-coarse:min-h-11',
-									key === selected && 'bg-accent text-accent-foreground',
-								)}
-								onClick={() => onSelect(item)}
-								onKeyDown={(event) => {
-									if (event.nativeEvent.isComposing) return;
-									const next =
-										event.key === 'ArrowDown'
-											? Math.min(items.length - 1, index + 1)
-											: event.key === 'ArrowUp'
-												? Math.max(0, index - 1)
-												: event.key === 'Home'
-													? 0
-													: event.key === 'End'
-														? items.length - 1
-														: null;
-									if (next !== null) {
-										event.preventDefault();
-										focusIndex(next);
-									}
-								}}
-							>
-								{renderItem(item)}
-							</button>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<button
+										type="button"
+										data-choice-index={index}
+										data-choice-key={key}
+										aria-label={itemLabel(item)}
+										aria-pressed={expanded?.(item) === undefined ? key === selected : undefined}
+										aria-expanded={expanded?.(item)}
+										className={cn(
+											'flex h-full min-h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 px-3 text-left text-[13px] outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-coarse:min-h-11',
+											key === selected && 'bg-accent text-accent-foreground',
+										)}
+										onClick={() => onSelect(item)}
+										onKeyDown={(event) => {
+											if (event.nativeEvent.isComposing) return;
+											const next =
+												event.key === 'ArrowDown'
+													? Math.min(items.length - 1, index + 1)
+													: event.key === 'ArrowUp'
+														? Math.max(0, index - 1)
+														: event.key === 'Home'
+															? 0
+															: event.key === 'End'
+																? items.length - 1
+																: null;
+											if (next !== null) {
+												event.preventDefault();
+												focusIndex(next);
+											}
+										}}
+									>
+										{renderItem(item)}
+									</button>
+								</TooltipTrigger>
+								<TooltipContent className="break-all">{itemLabel(item)}</TooltipContent>
+							</Tooltip>
 							{actions && <span className="flex shrink-0 items-center">{actions(item)}</span>}
 						</li>
 					);
@@ -190,9 +195,14 @@ export function FileNavigator({
 	return (
 		<section className="flex min-h-0 min-w-0 flex-1 flex-col" aria-label={label}>
 			<div className="flex min-h-10 shrink-0 items-center gap-2 border-b border-border px-3">
-				<h3 className="min-w-0 flex-1 truncate text-xs font-medium" title={label}>
-					{label} <span className="tabular-nums text-muted-foreground">{files.length}</span>
-				</h3>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<h3 className="min-w-0 flex-1 truncate text-xs font-medium">
+							{label} <span className="tabular-nums text-muted-foreground">{files.length}</span>
+						</h3>
+					</TooltipTrigger>
+					<TooltipContent>{label}</TooltipContent>
+				</Tooltip>
 				<ActionButton
 					size="icon-sm"
 					label={tree ? t('versioning.files.flat') : t('versioning.files.tree')}
@@ -275,8 +285,17 @@ export function StatusLetter({ status }: { status: string }) {
 						? 'text-destructive'
 						: 'text-status-warning';
 	return (
-		<span className={cn('w-4 shrink-0 text-center font-mono text-xs', tone)} title={t(`sync.status.${letter}`)}>
-			{letter}
-		</span>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<span
+					role="img"
+					aria-label={t(`sync.status.${letter}`)}
+					className={cn('w-4 shrink-0 text-center font-mono text-xs', tone)}
+				>
+					{letter}
+				</span>
+			</TooltipTrigger>
+			<TooltipContent>{t(`sync.status.${letter}`)}</TooltipContent>
+		</Tooltip>
 	);
 }

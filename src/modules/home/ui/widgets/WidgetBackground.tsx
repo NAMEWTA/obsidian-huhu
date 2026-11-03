@@ -42,10 +42,8 @@ export function useWidgetBackground(
 		style: fg
 			? ({
 					'--wbg-fg': fg,
-					'--db-text': fg,
-					'--db-text-muted': `color-mix(in srgb, ${fg} 72%, transparent)`,
-					'--db-text-faint': `color-mix(in srgb, ${fg} 50%, transparent)`,
-					'--db-accent': fg,
+					'--board-text-faint': `color-mix(in srgb, ${fg} 50%, transparent)`,
+					'--board-accent': fg,
 					// Tailwind text colors read these, so the card's icons, secondary text and bars follow the chosen foreground too.
 					'--foreground': fg,
 					'--card-foreground': fg,
@@ -75,7 +73,7 @@ export function useWidgetBackground(
 				{frame && kind !== 'quickActions' && (
 					<div
 						aria-hidden
-						className="dashboard-widget-frame pointer-events-none absolute inset-[6px] -z-10 rounded-[calc(var(--db-radius-md,10px)-4px)] border border-[color-mix(in_srgb,var(--db-accent)_28%,transparent)] bg-[color-mix(in_srgb,var(--db-bg-card)_65%,transparent)] shadow-[inset_0_1px_0_color-mix(in_srgb,var(--on-image)_16%,transparent),0_2px_10px_color-mix(in_srgb,var(--scrim)_14%,transparent)] backdrop-blur-[7px] backdrop-saturate-[1.15]"
+						className="dashboard-widget-frame pointer-events-none absolute inset-[6px] -z-10 rounded-[calc(var(--board-radius-md,10px)-4px)] border border-[color-mix(in_srgb,var(--board-accent)_28%,transparent)] bg-[color-mix(in_srgb,var(--board-bg-card)_65%,transparent)] shadow-[inset_0_1px_0_color-mix(in_srgb,var(--on-image)_16%,transparent),0_2px_10px_color-mix(in_srgb,var(--scrim)_14%,transparent)] backdrop-blur-[7px] backdrop-saturate-[1.15]"
 					/>
 				)}
 			</>

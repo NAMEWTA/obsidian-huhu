@@ -273,7 +273,7 @@ export function PipelineSection({
 								key={stage.id}
 								className={p1Classes('dashboard-pipeline-col')}
 								data-pipeline-stage={stage.id}
-								style={{ '--db-pipe-accent': stage.color ?? 'var(--db-accent)' } as CSSProperties}
+								style={{ '--board-pipe-accent': stage.color ?? 'var(--board-accent)' } as CSSProperties}
 								onDragOver={(event) => {
 									if (event.dataTransfer.types.includes('application/x-huhu-pipeline-path')) {
 										event.preventDefault();
@@ -293,7 +293,7 @@ export function PipelineSection({
 								<header className={p1Classes('dashboard-pipeline-col-head')}>
 									<span
 										className={p1Classes('dashboard-pipeline-col-dot')}
-										style={{ background: stage.color ?? 'var(--db-accent)' }}
+										style={{ background: stage.color ?? 'var(--board-accent)' }}
 									/>
 									<strong className={p1Classes('dashboard-pipeline-col-title')}>{stage.label}</strong>
 									<span className={p1Classes('dashboard-pipeline-col-count')}>{total}</span>

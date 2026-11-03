@@ -11,7 +11,6 @@ import type { HistoryRow } from '../../services/history-store';
 import { UsageHeatmap } from './UsageHeatmap';
 import { UsageStatsPage } from './UsageStatsPage';
 import { setLanguage } from '../../../../shared/i18n';
-vi.mock('./DailyChart', () => ({ DailyChart: () => null }));
 
 test('recent session cells and overview use the same native input-inclusive cache total', () => {
 	const rows: HistoryRow[] = Array.from({ length: 3 }, (_, i) => ({

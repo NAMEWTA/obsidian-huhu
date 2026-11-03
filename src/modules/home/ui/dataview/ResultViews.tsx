@@ -613,7 +613,7 @@ export function ResultHeatmap({ rows }: { rows: readonly ResultRow[] }) {
 										value == null
 											? undefined
 											: {
-													backgroundColor: 'var(--db-accent, var(--interactive-accent))',
+													backgroundColor: 'var(--board-accent, var(--interactive-accent))',
 													opacity: 0.35 + intensity * 0.65,
 													filter: `brightness(${1 + intensity * 0.5}) saturate(1.4)`,
 												}

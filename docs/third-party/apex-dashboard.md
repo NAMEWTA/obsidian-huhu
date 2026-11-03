@@ -36,7 +36,7 @@
 
 ## 核心布局、交互和主题（v3.8.4）
 
-首页组件的布局与交互改编参考 `ac4d2c7`；当前网格引擎和几何规则见上文。`home/ui/theme/tokens.css` 把看板的 `--db-*` 变量全部接到 HUHU 全局令牌（上游的 13 套主题和 `bridge.css` 已删除，侧栏、左右与上下布局也已删除，只保留沉浸网格画布）。现行 `DashboardPage`、`canvas/`、`quickbar/`、`sections/`、`cards/` 与六个 P0 `*Widget.tsx` 对照上游 `view.ts`、`renderer.ts`、`quick-note-section.ts`、`library-section.ts` 与各小组件入口，文件头保留 MIT 来源。此前参考 `banner.ts` 的 `banner/` 入口已随横幅功能退役，不再作为现行实现入口。
+首页组件的布局与交互改编参考 `ac4d2c7`；当前网格引擎和几何规则见上文。`home/ui/theme/tokens.css` 把看板的 `--board-*` 变量全部接到 HUHU 全局令牌（上游的 13 套主题和 `bridge.css` 已删除，侧栏、左右与上下布局也已删除，只保留沉浸网格画布）。现行 `DashboardPage`、`canvas/`、`quickbar/`、`sections/`、`cards/` 与六个 P0 `*Widget.tsx` 对照上游 `view.ts`、`renderer.ts`、`quick-note-section.ts`、`library-section.ts` 与各小组件入口，文件头保留 MIT 来源。此前参考 `banner.ts` 的 `banner/` 入口已随横幅功能退役，不再作为现行实现入口。
 
 `core/board/parser/__fixtures__/apex-dashboard-template.md` 是固定版本原始样本；解析与回写测试保留未知字段、缩进、子任务和文档树。`services/board-store.ts` 复用 HUHU 的串行文档写入及受管内容层，不引入上游全局插件实例。工作台注册表存储为 `home.workspaces`，仅保留内存适配字段供现有服务使用。
 
@@ -44,7 +44,7 @@
 
 ## 小组件与统计（v3.8.4）
 
-番茄、习惯、记账、账本和阅读统计，以及农历/抽签、年度进度、日历、纪念日改为 React。布局配方在 `home/ui/theme/widget-classes.ts`，由上游对应选择器的声明转为静态 Tailwind 类；固定图表与签纸色通过同目录 `tokens.css` 的 `--db-record-*` 变量提供。对话框使用 HUHU 的 shadcn/Radix 门户。旧 records 页面、侧栏和样式已删除，领域数据按 Apex JSON 写入 `huhu/` 下的 `记账/`、`习惯/`、`番茄钟/`、`阅读/`。
+番茄、习惯、记账、账本和阅读统计，以及农历/抽签、年度进度、日历、纪念日改为 React。布局配方在 `home/ui/theme/widget-classes.ts`，由上游对应选择器的声明转为静态 Tailwind 类；固定图表与签纸色通过同目录 `tokens.css` 的 `--board-record-*` 变量提供。对话框使用 HUHU 的 shadcn/Radix 门户。旧 records 页面、侧栏和样式已删除，领域数据按 Apex JSON 写入 `huhu/` 下的 `记账/`、`习惯/`、`番茄钟/`、`阅读/`。
 
 阶段 8b 同时移植 `src/capture-search-widgets.ts`、`src/skill-widget.ts` 的独立输入条与实体技能键布局；配置复用 HUHU 的 React 技能编辑器，发送只通过 `AGENT_DISPATCH`。对应静态样式配方为 `input-widget-classes.ts`。
 

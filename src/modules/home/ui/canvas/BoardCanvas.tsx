@@ -433,7 +433,7 @@ function BoardCanvasView({
 			{switching && (
 				<div
 					role={switchError ? 'alert' : 'status'}
-					className="absolute inset-0 z-[var(--layer-content)] flex items-center justify-center bg-[color-mix(in_srgb,var(--db-bg)_70%,transparent)] p-6 text-center text-sm"
+					className="absolute inset-0 z-[var(--layer-content)] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_70%,transparent)] p-6 text-center text-sm"
 				>
 					{switchError ? t('canvas.switchBroken', { detail: switchError }) : t('canvas.switching')}
 				</div>
@@ -441,7 +441,7 @@ function BoardCanvasView({
 			{!switching && switchError && (
 				<p
 					role="alert"
-					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--db-border-card)] bg-[var(--db-bg-modal)] px-3 py-2 text-xs text-[var(--db-danger)]"
+					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--border)] bg-[var(--popover)] px-3 py-2 text-xs text-[var(--destructive)]"
 				>
 					{t('canvas.switchFailed', { detail: switchError })}
 				</p>
@@ -449,7 +449,7 @@ function BoardCanvasView({
 			{failure && (
 				<p
 					role="alert"
-					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--db-border-card)] bg-[var(--db-bg-modal)] px-3 py-2 text-xs text-[var(--db-danger)]"
+					className="absolute bottom-3 left-1/2 m-0 -translate-x-1/2 rounded-md border border-[var(--border)] bg-[var(--popover)] px-3 py-2 text-xs text-[var(--destructive)]"
 				>
 					{t('home.widget.failed', { detail: failure })}
 				</p>

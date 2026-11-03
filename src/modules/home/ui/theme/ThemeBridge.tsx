@@ -26,7 +26,7 @@ export function useDashboardAppearance(mirrorBoard = false) {
 			applyAppearance(el, value.host.app, value.settings);
 			const computed = root && el.ownerDocument.defaultView?.getComputedStyle(root);
 			if (computed) {
-				for (const name of ['--db-radius-sm', '--db-radius-md', '--db-radius-lg', '--db-backdrop-blur'])
+				for (const name of ['--board-radius-sm', '--board-radius-md', '--board-radius-lg', '--board-backdrop-blur'])
 					if (root.style.getPropertyValue(name)) el.style.setProperty(name, computed.getPropertyValue(name));
 			}
 		};

@@ -287,5 +287,6 @@ test('the Note history region is named by its heading and offers no whole-area t
 	}
 	expect(region.querySelectorAll('header [title], header[title]')).toHaveLength(0);
 	expect(screen.getByRole('button', { name: 'Pin this note' }).hasAttribute('title')).toBe(false);
+	expect(region.querySelectorAll('[title]')).toHaveLength(0);
 	expect(region.closest('.huhu-design')).not.toBeNull();
 });

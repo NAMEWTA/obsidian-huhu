@@ -5,13 +5,48 @@ import { toast } from 'sonner';
 import { normalizeVaultFolder, type ContactsSettings } from '../../../shared/contacts-settings';
 import type { SettingsHandle } from '../../../shared/settings/store';
 import type { WriteQueue } from '../../../shared/storage/write-queue';
-import { confirm, ct, errorText } from './forms';
+import { ContactsError } from '../core/model';
+import { ct } from './labels';
+import { openReactDialog, dialogOwner } from '../../../ui/react/dialog';
 import { useT } from '../../../ui/react/hooks';
 import { SettingsRow } from '../../../ui/components/huhu/SettingsRow';
 import { SettingsSection } from '../../../ui/components/huhu/SettingsSection';
 import { Choice } from '../../../ui/components/huhu/Choice';
 import { VaultPathField } from '../../../ui/components/huhu/VaultPathField';
 import { Button } from '../../../ui/components/button';
+
+function errorText(error: unknown): string {
+	return error instanceof ContactsError
+		? ct(error.code)
+		: ct('failed', { detail: error instanceof Error ? error.message : '' });
+}
+function confirm(app: App, message: string, accept = ct('delete')): Promise<boolean> {
+	return new Promise((resolve) => {
+		let accepted = false;
+		openReactDialog(dialogOwner(app), {
+			title: accept,
+			description: message,
+			content: (close) => (
+				<div className="flex justify-end gap-2">
+					<Button type="button" variant="outline" onClick={close}>
+						{ct('cancel')}
+					</Button>
+					<Button
+						type="button"
+						onClick={() => {
+							accepted = true;
+							close();
+						}}
+					>
+						{accept}
+					</Button>
+				</div>
+			),
+			onClose: () => resolve(accepted),
+		});
+	});
+}
+
 export function archivesSettingsPage(
 	app: App,
 	controller: { countFolder(root: string): Promise<number>; queue: WriteQueue; reload(): Promise<void> },

@@ -19,9 +19,9 @@ function Entry({ store, config, onEdit }: { store: BoardStore; config: Anniversa
 	const foreground = config.background?.foreground;
 	const color =
 		foreground === 'light'
-			? 'var(--db-widget-light)'
+			? 'var(--card)'
 			: foreground === 'dark'
-				? 'var(--db-widget-dark)'
+				? 'var(--foreground)'
 				: foreground && /^#[0-9a-fA-F]{3,8}$/.test(foreground)
 					? foreground
 					: undefined;
@@ -31,7 +31,7 @@ function Entry({ store, config, onEdit }: { store: BoardStore; config: Anniversa
 			data-anniversary-entry
 			style={
 				color
-					? ({ '--db-text': color, '--db-text-muted': color, '--db-text-faint': color } as CSSProperties)
+					? ({ '--foreground': color, '--muted-foreground': color, '--board-text-faint': color } as CSSProperties)
 					: undefined
 			}
 		>
@@ -50,7 +50,7 @@ function Entry({ store, config, onEdit }: { store: BoardStore; config: Anniversa
 			{image && (
 				<div
 					aria-hidden
-					className="pointer-events-none absolute inset-0 -z-[var(--layer-content)] bg-[var(--db-widget-shadow)]"
+					className="pointer-events-none absolute inset-0 -z-[var(--layer-content)] bg-[var(--scrim)]"
 					style={{ opacity: (config.background?.dim ?? 30) / 100 }}
 				/>
 			)}

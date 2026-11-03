@@ -9,7 +9,7 @@ import {
 	DialogDescription,
 } from '../../../../ui/components/dialog';
 import { Button } from '../../../../ui/components/button';
-import { useVisible } from '../../../../ui/react/contexts';
+import { useOwnerDocument, useVisible } from '../../../../ui/react/contexts';
 import { useT } from '../../../../ui/react/hooks';
 import { useDashboardAppearance, useDashboardLayout } from '../theme/ThemeBridge';
 export function DashboardDialog({
@@ -36,6 +36,8 @@ export function DashboardDialog({
 	const appearanceRef = useDashboardAppearance();
 	const visible = useVisible();
 	const cancel = useRef<HTMLButtonElement>(null);
+	const doc = useOwnerDocument(),
+		opener = useRef(doc.activeElement as HTMLElement | null);
 	const layout = useDashboardLayout(),
 		t = useT();
 	return (
@@ -50,6 +52,10 @@ export function DashboardDialog({
 				overlayClassName={layout === 'mobile' ? 'md:backdrop-blur-none' : undefined}
 				className={`huhu-dashboard-root ${layout === 'mobile' ? 'md:backdrop-blur-none' : ''} ${wide ? 'sm:max-w-4xl' : 'sm:max-w-xl'} max-h-[85vh] overflow-y-auto bg-popover text-popover-foreground`}
 				data-dashboard-layout={layout}
+				onCloseAutoFocus={(e) => {
+					e.preventDefault();
+					if (opener.current?.isConnected) opener.current.focus();
+				}}
 				onOpenAutoFocus={(e) => {
 					if (!onSave || danger) {
 						e.preventDefault();

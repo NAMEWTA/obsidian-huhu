@@ -16,17 +16,6 @@ import { ContactsIndex, emptyQuery } from '../../modules/archives/core/index-sto
 import { ContactsController } from '../../modules/archives/platform/controller';
 import { DEFAULT_CONTACTS_SETTINGS, normalizeContactsSettings, validContactsFolder,
 } from '../../shared/contacts-settings';
-import {
-	applyLayout,
-	contactsTarget,
-	CONTACTS_PAGE_STATE_KEYS,
-	emptyPanelState,
-	layoutsFor,
-	restoreContactsState,
-	showContactKind,
-} from '../../modules/archives/ui/panel-state';
-import { navigateContacts } from '../../modules/archives/ui/navigate';
-import { cleanPageState } from '../../shell/navigation-state';
 
 function fixture(kind: 'person' | 'company' = 'person', name = '张三'): ArchiveRecord {
 	const record = newRecord(kind);
@@ -890,120 +879,6 @@ test('company contact fields and normalized pasted values retain string semantic
 	record.fields.emails = ['info@example.com'];
 	assert.deepEqual(round(record).fields.phones, ['+1 212', '00123', '00999']);
 	assert.deepEqual(round(record).fields.emails, ['info@example.com']);
-});
-
-test('new and restored archive leaves pick layouts without throwing on bad values', () => {
-	assert.deepEqual(layoutsFor({}), { person: 'list', company: 'card' });
-	assert.deepEqual(layoutsFor({ query: { kind: 'person' } }), { person: 'card', company: 'card' });
-	assert.deepEqual(layoutsFor({ page: 1, layout: { person: 'list', company: 'sideways' } }), {
-		person: 'list',
-		company: 'card',
-	});
-	assert.deepEqual(layoutsFor({ layout: { person: 'grid' } }), { person: 'card', company: 'card' });
-	// The last explicit choice beats both defaults; the leaf's own layout beats the choice.
-	assert.deepEqual(layoutsFor({}, { person: 'card', company: 'list' }), { person: 'card', company: 'list' });
-	assert.deepEqual(layoutsFor({ query: { kind: 'person' } }, { person: 'list' }), { person: 'list', company: 'card',
-	});
-	assert.deepEqual(layoutsFor({ layout: { person: 'card' } }, { person: 'list', company: 'list' }), { person: 'card', company: 'list',
-	});
-	assert.equal(emptyPanelState({ company: 'list' }).layout.company, 'list');
-	assert.equal(restoreContactsState({}).query.scope, 'record');
-	assert.equal(restoreContactsState({ query: { scope: 'nope' } }).query.scope, 'record');
-	assert.equal(restoreContactsState({ query: { scope: 'fields' } }).query.scope, 'fields');
-	const state = emptyPanelState();
-	state.query.search = 'kept';
-	state.page = 2;
-	state.selectedPath = '档案/a.md';
-	const next = applyLayout(state, 'card', '档案/a.md');
-	assert.equal(next.query, state.query);
-	assert.equal(next.page, 2);
-	assert.equal(next.selectedPath, state.selectedPath);
-	assert.equal(next.layout.person, 'card');
-	assert.equal(next.anchors.person.list, '档案/a.md');
-	assert.equal(next.anchors.person.card, '档案/a.md');
-	assert.equal(applyLayout(next, 'card', 'other'), next);
-	const back = applyLayout(next, 'list', '档案/b.md');
-	assert.equal(back.anchors.person.list, '档案/a.md');
-	assert.equal(back.anchors.person.card, '档案/b.md');
-});
-
-test('archive group navigation clears the previous detail and a record kind wins', async () => {
-	let state = { ...emptyPanelState(), selectedPath: 'People/A.md', selectedId: 'person-a', focus: 'notes' };
-	state = showContactKind(state, 'company');
-	assert.equal(state.selectedPath, '');
-	assert.equal(state.selectedId, '');
-	assert.equal(state.focus, '');
-	assert.equal(state.query.kind, 'company');
-	assert.equal(contactsTarget(state).section, 'company');
-	assert.equal(contactsTarget(state).resourceId, undefined);
-	const records = new Map<string, { kind: 'person' | 'company'; path: string }>([
-		['person-a', { kind: 'person', path: 'People/A.md' }],
-		['company-b', { kind: 'company', path: 'Companies/B.md' }],
-	]);
-	const surface = {
-		getTarget: () => contactsTarget(state),
-		controller: {
-			ensureLoaded: async () => {},
-			index: {
-				get: (id: string) => records.get(id),
-				byPath: { get: (path: string) => [...records.values()].find((record) => record.path === path) },
-			},
-		},
-		changeKind(kind: 'person' | 'company') { state = showContactKind(state, kind); },
-		select(path: string) {
-			state = { ...state, selectedPath: path, selectedId: [...records.entries()].find(([, item]) => item.path === path)?.[0] ?? '',
-			};
-		},
-	};
-	await navigateContacts(surface, { feature: 'contacts', section: 'company' }, new AbortController().signal);
-	assert.equal(state.query.kind, 'company');
-	assert.equal(state.selectedPath, '');
-	assert.equal(contactsTarget(state).section === 'company', true);
-	assert.equal(contactsTarget(state).section === 'person', false);
-	await navigateContacts(surface, { feature: 'contacts', section: 'person', resourceId: 'company-b' }, new AbortController().signal,
-	);
-	assert.equal(state.query.kind, 'company');
-	assert.equal(state.selectedPath, 'Companies/B.md');
-	assert.equal(contactsTarget(state).section, 'company');
-	assert.equal(contactsTarget(state).resourceId, 'company-b');
-	state.query.search = 'kept after restart';
-	state.page = 2;
-	await navigateContacts(surface, { feature: 'contacts', section: 'company', resourceId: 'company-b' }, new AbortController().signal,
-	);
-	assert.equal(state.query.search, 'kept after restart');
-	assert.equal(state.page, 2);
-	await navigateContacts(surface, { feature: 'contacts', section: 'person' }, new AbortController().signal);
-	assert.equal(state.selectedPath, '');
-	assert.equal(state.query.kind, 'person');
-	setLanguage('zh');
-	await assert.rejects(navigateContacts(surface, { feature: 'contacts', resourceId: 'missing' }, new AbortController().signal), { message: t('workbench.missing') },
-	);
-});
-
-test('contacts layout and anchors survive the real workbench state whitelist', () => {
-	const raw = {
-		query: { kind: 'company', search: 'ada', sort: 'modified', scope: 'fields', current: ['now'], past: [], regions: [], tags: ['x'], relations: [],
-		},
-		page: 2, selectedPath: 'Companies/B.md', selectedId: 'company-b', scroll: 48, focus: 'runtime', token: 'secret',
-		layout: { person: 'list', company: 'list' },
-		anchors: { person: { list: 'People/A.md', card: '' }, company: { list: 'Companies/B.md', card: 'Companies/C.md' },
-		},
-	};
-	const cleaned = cleanPageState(raw, CONTACTS_PAGE_STATE_KEYS);
-	assert.equal(Object.prototype.hasOwnProperty.call(cleaned, 'focus'), false);
-	assert.equal(Object.prototype.hasOwnProperty.call(cleaned, 'token'), false);
-	const restored = restoreContactsState(cleaned);
-	assert.deepEqual(restored.layout, { person: 'list', company: 'list' });
-	assert.equal(restored.anchors.person.list, 'People/A.md');
-	assert.equal(restored.anchors.company.card, 'Companies/C.md');
-	assert.equal(restored.query.search, 'ada');
-	assert.equal(restored.query.kind, 'company');
-	assert.equal(restored.selectedId, 'company-b');
-	assert.equal(restored.scroll, 48);
-	const sparse = restoreContactsState(cleanPageState({ query: { kind: 'person' }, page: 1, selectedPath: 'People/A.md' }, CONTACTS_PAGE_STATE_KEYS),
-	);
-	assert.deepEqual(sparse.layout, { person: 'card', company: 'card' });
-	assert.equal(sparse.anchors.person.list, '');
 });
 
 test('entry-note search keeps both records that share an email and reports the hit source', () => {

@@ -17,12 +17,12 @@ const FONT_SCALE_SIZES: Readonly<Record<DashboardSettings['fontScale'], string>>
 };
 
 /** Surface tokens whose alpha surfaceOpacity scales (read computed, re-emit rgba). */
-const SURFACE_TOKENS = ['--db-bg-card'] as const;
+const SURFACE_TOKENS = ['--board-bg-card'] as const;
 /** Radius tokens driven by radiusScale (md = base, sm = base-4, lg = base+4). */
 const RADIUS_TOKENS = {
-	sm: '--db-radius-sm',
-	md: '--db-radius-md',
-	lg: '--db-radius-lg',
+	sm: '--board-radius-sm',
+	md: '--board-radius-md',
+	lg: '--board-radius-lg',
 } as const;
 
 /**
@@ -76,10 +76,10 @@ function applyBackground(container: HTMLElement, app: App, settings: DashboardSe
  */
 function applyAdvanced(root: HTMLElement, settings: DashboardSettings): void {
 	if (Platform.isMobile) {
-		root.setCssProps({ '--db-backdrop-blur': 'none' });
+		root.setCssProps({ '--board-backdrop-blur': 'none' });
 	} else if (settings.glassBlur != null) {
 		const px = clampNumber(settings.glassBlur, 0, 20, 0);
-		root.style.setProperty('--db-backdrop-blur', px <= 0 ? 'none' : `blur(${px}px)`);
+		root.style.setProperty('--board-backdrop-blur', px <= 0 ? 'none' : `blur(${px}px)`);
 	}
 	if (settings.radiusScale != null) {
 		const md = clampNumber(settings.radiusScale, 0, 22, 14);
@@ -102,7 +102,7 @@ function applyFontScale(root: HTMLElement, scale: DashboardSettings['fontScale']
 
 /** Surface tokens whose alpha surfaceOpacity scales, re-expressed over the global token they derive from. */
 const SURFACE_SOURCES: Readonly<Record<(typeof SURFACE_TOKENS)[number], string>> = {
-	'--db-bg-card': 'var(--card)',
+	'--board-bg-card': 'var(--card)',
 };
 function applySurfaceOpacity(root: HTMLElement, opacity: number): void {
 	const percent = clampNumber(opacity, 0, 100, 100);
@@ -110,9 +110,9 @@ function applySurfaceOpacity(root: HTMLElement, opacity: number): void {
 		root.style.setProperty(token, `color-mix(in srgb, ${SURFACE_SOURCES[token]} ${percent}%, transparent)`);
 }
 
-/** Remove the `--db-*` overrides applyAdvanced may have set (surface tokens + blur + radii). */
+/** Remove the `--board-*` overrides applyAdvanced may have set (surface tokens + blur + radii). */
 export function clearAdvanced(root: HTMLElement): void {
-	root.style.removeProperty('--db-backdrop-blur');
+	root.style.removeProperty('--board-backdrop-blur');
 	root.style.removeProperty('font-size');
 	root.style.removeProperty(RADIUS_TOKENS.sm);
 	root.style.removeProperty(RADIUS_TOKENS.md);

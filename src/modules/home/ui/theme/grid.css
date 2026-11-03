@@ -30,7 +30,7 @@
 .huhu-dashboard-root .react-grid-item.react-draggable-dragging > [data-slot='card'] {
 	box-shadow:
 		0 0 0 2px var(--ring),
-		var(--db-shadow-card-hover);
+		var(--board-shadow-card-hover);
 }
 .huhu-dashboard-root .react-grid-item.dropping {
 	visibility: hidden;
@@ -38,7 +38,7 @@
 /* The cell the dragged or resized tile will land in. */
 .huhu-dashboard-root .react-grid-item.react-grid-placeholder {
 	border: 1px dashed color-mix(in srgb, var(--primary) 70%, transparent);
-	border-radius: var(--db-radius-lg);
+	border-radius: var(--board-radius-lg);
 	background: color-mix(in srgb, var(--primary) 14%, transparent);
 	transition: transform 100ms ease;
 	user-select: none;
@@ -81,8 +81,8 @@
 	bottom: 5px;
 	width: 7px;
 	height: 7px;
-	border-right: 2px solid color-mix(in srgb, var(--db-text-muted) 80%, transparent);
-	border-bottom: 2px solid color-mix(in srgb, var(--db-text-muted) 80%, transparent);
+	border-right: 2px solid color-mix(in srgb, var(--muted-foreground) 80%, transparent);
+	border-bottom: 2px solid color-mix(in srgb, var(--muted-foreground) 80%, transparent);
 	border-bottom-right-radius: 2px;
 }
 .huhu-dashboard-root .react-grid-item > .react-resizable-handle:hover::after {
@@ -100,5 +100,5 @@
 /* A tile's body is the one thing that scrolls when its content is taller than the cell. */
 .huhu-dashboard-root .huhu-widget-body {
 	scrollbar-width: thin;
-	scrollbar-color: color-mix(in srgb, var(--db-text-muted) 35%, transparent) transparent;
+	scrollbar-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent) transparent;
 }

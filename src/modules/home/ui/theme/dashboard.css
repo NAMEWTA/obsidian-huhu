@@ -1,12 +1,12 @@
 /* Adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: styles.css (layout effects). */
 .huhu-dashboard-root {
-	font-family: var(--db-font);
+	font-family: var(--nd-font-sans);
 	position: relative;
 	isolation: isolate;
 	contain: paint;
 }
 .huhu-dashboard-root .huhu-widget-card {
-	backdrop-filter: var(--db-backdrop-blur);
+	backdrop-filter: var(--board-backdrop-blur);
 }
 .huhu-dashboard-root[data-dashboard-layout='mobile'],
 .huhu-dashboard-root[data-dashboard-layout='mobile'] * {

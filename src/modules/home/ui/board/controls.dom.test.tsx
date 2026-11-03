@@ -13,7 +13,7 @@ test('an open portal follows changed board appearance tokens and disconnects whe
 	const source = document.createElement('div');
 	source.className = 'huhu-dashboard-root';
 	source.dataset.layout = 'canvas';
-	source.style.setProperty('--db-radius-md', '14px');
+	source.style.setProperty('--board-radius-md', '14px');
 	vi.spyOn(source, 'getBoundingClientRect').mockReturnValue({ width: 400 } as DOMRect);
 	document.body.append(source);
 	const disconnect = vi.spyOn(MutationObserver.prototype, 'disconnect');
@@ -29,10 +29,10 @@ test('an open portal follows changed board appearance tokens and disconnects whe
 		</DashboardAppearanceProvider>,
 	);
 	try {
-		expect(screen.getByTestId('theme-portal').style.getPropertyValue('--db-radius-md')).toBe('14px');
-		source.style.setProperty('--db-radius-md', '9px');
+		expect(screen.getByTestId('theme-portal').style.getPropertyValue('--board-radius-md')).toBe('14px');
+		source.style.setProperty('--board-radius-md', '9px');
 		await waitFor(() =>
-			expect(screen.getByTestId('theme-portal').style.getPropertyValue('--db-radius-md')).toBe('9px'),
+			expect(screen.getByTestId('theme-portal').style.getPropertyValue('--board-radius-md')).toBe('9px'),
 		);
 		view.unmount();
 		expect(disconnect).toHaveBeenCalled();

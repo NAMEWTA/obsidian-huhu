@@ -12,7 +12,7 @@ import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
 import { useT } from '../../../../ui/react/hooks';
 import { IconButton, Choice } from '../board/controls';
-import { P2Dialog } from '../dialogs/P2Dialog';
+import { DashboardDialog } from '../dialogs/DashboardDialog';
 import { VaultPathField } from '../../../../ui/components/huhu/VaultPathField';
 import { p2Classes as c } from '../theme/p2-classes';
 export function RssConfigDialog({
@@ -32,6 +32,7 @@ export function RssConfigDialog({
 		[draft, setDraft] = useState(() => structuredClone(config)),
 		[newGroup, setNewGroup] = useState(''),
 		[error, setError] = useState(''),
+		[busy, setBusy] = useState(false),
 		[feedGroup, setFeedGroup] = useState<number | null>(null),
 		[groupDraft, setGroupDraft] = useState(''),
 		file = useRef<HTMLInputElement>(null);
@@ -48,13 +49,16 @@ export function RssConfigDialog({
 			setNewGroup('');
 		}
 	};
+	const save = () => {
+		setBusy(true);
+		setError('');
+		void onSave({ ...draft, feeds: draft.feeds.map((f) => ({ ...f, url: normalizeWebUrl(f.url) })) })
+			.then(onClose)
+			.catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)))
+			.finally(() => setBusy(false));
+	};
 	return (
-		<P2Dialog
-			title={t('rss.configTitle')}
-			onClose={onClose}
-			disabled={invalid || duplicate}
-			onSave={() => onSave({ ...draft, feeds: draft.feeds.map((f) => ({ ...f, url: normalizeWebUrl(f.url) })) })}
-		>
+		<DashboardDialog title={t('rss.configTitle')} onClose={onClose} busy={busy || invalid || duplicate} onSave={save}>
 			<div className={c('dashboard-library-config-section')}>
 				<div className={c('dashboard-library-config-section-title')}>{t('rss.configFeeds')}</div>
 				<div className={c('dashboard-rss-cfg-list')}>
@@ -256,17 +260,18 @@ export function RssConfigDialog({
 			</div>
 			{error && <p role="alert">{error}</p>}
 			{feedGroup !== null && (
-				<P2Dialog
+				<DashboardDialog
 					title={t('rss.configNewGroupTitle')}
 					onClose={() => setFeedGroup(null)}
-					disabled={!groupDraft.trim()}
-					onSave={async () => {
+					busy={!groupDraft.trim()}
+					onSave={() => {
 						const group = groupDraft.trim();
 						setDraft((current) => ({
 							...current,
 							groups: [...new Set([...(current.groups ?? []), group])],
 							feeds: current.feeds.map((feed, i) => (i === feedGroup ? { ...feed, group } : feed)),
 						}));
+						setFeedGroup(null);
 					}}
 				>
 					<Input
@@ -276,8 +281,8 @@ export function RssConfigDialog({
 						value={groupDraft}
 						onChange={(e) => setGroupDraft(e.target.value)}
 					/>
-				</P2Dialog>
+				</DashboardDialog>
 			)}
-		</P2Dialog>
+		</DashboardDialog>
 	);
 }

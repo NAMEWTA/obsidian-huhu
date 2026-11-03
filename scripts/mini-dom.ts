@@ -28,7 +28,7 @@ export class El {
 	selected = false;
 	/** Inline style bag for positioning code (no layout engine behind it).
 	 *  setProperty/getPropertyValue cover the CSS-var writes renderer code
-	 *  uses (e.g. --db-pair-basis); plain record assignment keeps working. */
+	 *  uses (e.g. --board-pair-basis); plain record assignment keeps working. */
 	style: Record<string, string> & {
 		setProperty(name: string, value: string): void;
 		getPropertyValue(name: string): string;

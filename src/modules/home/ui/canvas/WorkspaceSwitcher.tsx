@@ -36,7 +36,7 @@ export function WorkspaceSwitcher({ store }: { store: BoardStore }) {
 			<div
 				role="group"
 				aria-labelledby={labelId}
-				className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--db-bg-hover)] p-1"
+				className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--accent)] p-1"
 			>
 				<span id={labelId} className="sr-only">
 					{t('home.frame.boards')}

@@ -5,5 +5,5 @@ export function projectStageColor(config: PmConfig | undefined, label: string): 
 	if (explicit) return explicit;
 	let hash = 0;
 	for (const char of label || '?') hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-	return `var(--db-project-chip-${hash % 8})`;
+	return `var(--board-project-chip-${hash % 8})`;
 }

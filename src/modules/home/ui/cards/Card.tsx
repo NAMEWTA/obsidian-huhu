@@ -237,7 +237,7 @@ export function Card({
 											variant="ghost"
 											size="icon-xs"
 											aria-label={t(`home.dashboard.color.${color}`)}
-											style={{ backgroundColor: `var(--db-memo-${color})` }}
+											style={{ backgroundColor: `var(--board-memo-${color})` }}
 											onClick={() =>
 												setDraft({
 													...draft,

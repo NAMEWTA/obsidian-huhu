@@ -53,6 +53,6 @@ test('a chosen foreground recolors text, icons and muted surfaces of the card, n
 	);
 	await waitFor(() => expect(document.querySelector('.dashboard-widget-bg')).not.toBeNull());
 	const style = document.querySelector<HTMLElement>('[data-probe]')!.style;
-	for (const name of ['--foreground', '--card-foreground', '--muted-foreground', '--muted', '--db-text']) expect(style.getPropertyValue(name), name).not.toBe('');
+	for (const name of ['--foreground', '--card-foreground', '--muted-foreground', '--muted', '--board-text-faint', '--board-accent']) expect(style.getPropertyValue(name), name).not.toBe('');
 	expect(style.getPropertyValue('--muted-foreground')).toContain('--on-image');
 });

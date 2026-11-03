@@ -136,7 +136,7 @@ function SkillWidgetBody({ store }: { store: BoardStore }) {
 						>
 							<span
 								className="inline-flex shrink-0"
-								style={{ color: `var(--db-skill-key-${(index % 6) + 1})` }}
+								style={{ color: `var(--board-skill-key-${(index % 6) + 1})` }}
 							>
 								<ObsidianIcon name={skill.icon || 'sparkles'} />
 							</span>
