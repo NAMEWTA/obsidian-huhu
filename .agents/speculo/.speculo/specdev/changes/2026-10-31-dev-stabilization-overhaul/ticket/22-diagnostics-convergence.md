@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-22
 title: "失败诊断收口与偶发失败验证"
-status: ready
+status: done
 kind: refactor
 planning_depth: standard
 planning_depth_reason: "跨 Go 合同测试与 TS 测试的诊断收敛，需保持测试语义"

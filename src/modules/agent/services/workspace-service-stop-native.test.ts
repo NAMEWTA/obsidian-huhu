@@ -20,6 +20,10 @@ const requestedBinary = process.env.HUHU_TEST_PTY_BINARY;
 if (requestedBinary !== undefined && !existsSync(requestedBinary))
 	throw new Error(`HUHU_TEST_PTY_BINARY does not exist: ${requestedBinary}`);
 const binary = resolve(requestedBinary ?? 'native/pty-server/target/debug/huhu-pty');
+// Success paths stay silent; set HUHU_TEST_DIAG=1 to print the process/cleanup observations.
+function observe(label: string, data: unknown): void {
+	if (process.env.HUHU_TEST_DIAG === '1') console.info(label, JSON.stringify(data));
+}
 async function bounded<T>(operation: Promise<T>, label: string): Promise<T> {
 	let timer: ReturnType<typeof setTimeout> | undefined;
 	try {
@@ -122,20 +126,18 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				.catch((error: unknown) => (error instanceof Error ? error.message : String(error)));
 			expect(historyReceipt).toEqual(expect.any(String));
 			expect(secondary.value.alive).toBe(true);
-			console.log(
-				JSON.stringify({
-					binary,
-					sha256: createHash('sha256')
-						.update(await readFile(binary))
-						.digest('hex'),
-					rootPid: session.pid,
-					childPid,
-					requests: requested.mock.calls,
-					termination: sessions.managedSummary(ref)?.termination,
-					secondLeaseAlive: secondary.value.alive,
-					historyReceipt,
-				}),
-			);
+			observe('[stop-native natural]', {
+				binary,
+				sha256: createHash('sha256')
+					.update(await readFile(binary))
+					.digest('hex'),
+				rootPid: session.pid,
+				childPid,
+				requests: requested.mock.calls,
+				termination: sessions.managedSummary(ref)?.termination,
+				secondLeaseAlive: secondary.value.alive,
+				historyReceipt,
+			});
 		} finally {
 			const failures: unknown[] = [];
 			const clean = async (task: () => Promise<unknown> | void) => {
@@ -166,19 +168,17 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 				if (session?.pid) expect(gone(session.pid)).toBe(true);
 				if (helper) expect(gone(helper.pid)).toBe(true);
 			});
-			console.log(
-				JSON.stringify({
-					rootPid: session?.pid,
-					childPid,
-					helperPid: helper?.pid,
-					cleanup: {
-						rootExited: session?.pid ? gone(session.pid) : true,
-						childExited: childPid ? gone(childPid) : true,
-						helperExited: helper ? gone(helper.pid) : true,
-					},
-					cleanupFailures: failures.length,
-				}),
-			);
+			observe('[stop-native natural cleanup]', {
+				rootPid: session?.pid,
+				childPid,
+				helperPid: helper?.pid,
+				cleanup: {
+					rootExited: session?.pid ? gone(session.pid) : true,
+					childExited: childPid ? gone(childPid) : true,
+					helperExited: helper ? gone(helper.pid) : true,
+				},
+				cleanupFailures: failures.length,
+			});
 			if (failures.length) throw new AggregateError(failures, `Retained failed fixture: ${root}`);
 			await rm(root, { recursive: true, force: true });
 		}
@@ -358,21 +358,18 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			expect(acquired).toHaveBeenCalledOnce();
 			expect(spawns).toHaveBeenCalledTimes(2);
 			const bytes = await readFile(binary);
-			console.info(
-				'[T04 managed native]',
-				JSON.stringify({
-					binary,
-					binarySha256: createHash('sha256').update(bytes).digest('hex'),
-					shellPid,
-					otherPid: otherSession.pid,
-					helperPid: helper!.pid,
-					ref,
-					termination: stop.termination,
-					realSpawns: spawns.mock.calls.length,
-					reloadZeroSpawn: true,
-					secondLeaseSurvivedPtyRelease: true,
-				}),
-			);
+			observe('[stop-native managed]', {
+				binary,
+				binarySha256: createHash('sha256').update(bytes).digest('hex'),
+				shellPid,
+				otherPid: otherSession.pid,
+				helperPid: helper!.pid,
+				ref,
+				termination: stop.termination,
+				realSpawns: spawns.mock.calls.length,
+				reloadZeroSpawn: true,
+				secondLeaseSurvivedPtyRelease: true,
+			});
 			expect(errors).toEqual([]);
 		} finally {
 			const failures: unknown[] = [];
@@ -400,18 +397,15 @@ test.skipIf(process.platform !== 'linux' || !existsSync(binary))(
 			if (failures.length) throw new AggregateError(failures, `Retained failed fixture: ${root}`);
 			const writer = await ports.owners.acquire(await ports.directories.inspectVault(), 'after-stop-fixture');
 			await writer.close();
-			console.info(
-				'[T04 managed native cleanup]',
-				JSON.stringify({
-					shellPid,
-					helperPid: helper?.pid,
-					nativeClosed,
-					pids: [...pids],
-					shellsExited: [...pids].every(gone),
-					helperExited: helper ? gone(helper.pid) : true,
-					writerReleased: true,
-				}),
-			);
+			observe('[stop-native managed cleanup]', {
+				shellPid,
+				helperPid: helper?.pid,
+				nativeClosed,
+				pids: [...pids],
+				shellsExited: [...pids].every(gone),
+				helperExited: helper ? gone(helper.pid) : true,
+				writerReleased: true,
+			});
 			await rm(root, { recursive: true, force: true });
 		}
 	},

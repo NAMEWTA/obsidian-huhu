@@ -487,7 +487,7 @@ test('32 scopes accept three ordered short events each through the shared bounde
 				left.push(String(cause));
 			}
 			throw new Error(
-				`${error.message}: received ${received.size}/96 ${Date.now() - drained} ms after the last publisher; missing ${missing.join(',')}; errors ${JSON.stringify(errors)}; left ${JSON.stringify(left.slice(0, 40))}`,
+				`${error.message}: received ${received.size}/96 ${Date.now() - drained} ms after the last publisher; missing ${missing.slice(0, 20).join(',')}${missing.length > 20 ? `(+${missing.length - 20})` : ''}; errors ${JSON.stringify(errors).slice(0, 2000)}; left ${JSON.stringify(left.slice(0, 40))}`,
 			);
 		});
 		assert.deepEqual(errors, []);
@@ -513,7 +513,6 @@ test('32 scopes accept three ordered short events each through the shared bounde
 				path.join(process.env.HUHU_TEST_HOOK_EVIDENCE, 'resource-sample.json'),
 				JSON.stringify(sample, null, 2) + '\n',
 			);
-		console.info('hook-resource-sample', JSON.stringify(sample));
 		bodyPassed = true;
 	} finally {
 		clearInterval(timer);
