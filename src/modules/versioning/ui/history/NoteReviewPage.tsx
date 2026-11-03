@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { ArrowLeft, Copy, History, MoreHorizontal, RefreshCw, RotateCcw } from 'lucide-react';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import type { RestorePlan, RestoreReceipt } from '../../core/restore';
 import type { HunkDiff } from '../../core/hunk-restore';
 import type { NoteHistoryHost } from './NoteHistoryPanel';
 import { Button } from '../../../../ui/components/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -30,6 +31,7 @@ export interface NoteReviewPageProps {
 
 export function NoteReviewPage({ id, host, context, layout, onLayoutChange, createWorker }: NoteReviewPageProps) {
 	const t = useT();
+	const titleId = useId();
 	const session = useSyncExternalStore(
 		useCallback((listener) => host.reviews.subscribe(listener), [host]),
 		() => host.reviews.get(id),
@@ -198,15 +200,23 @@ export function NoteReviewPage({ id, host, context, layout, onLayoutChange, crea
 			</div>
 		);
 	return (
-		<section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden" aria-label={t('review.title')}>
+		<section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden" aria-labelledby={titleId}>
+			<h2 id={titleId} className="sr-only">
+				{t('review.title')}
+			</h2>
 			<header className="flex shrink-0 flex-wrap items-center gap-2 border-b px-3 py-2">
 				<Button variant="ghost" size="sm" onClick={() => run(() => host.documents.returnTo(session.source.id))}>
 					<ArrowLeft className="size-4" />
 					{t('review.return')}
 				</Button>
-				<span className="min-w-0 flex-1 truncate text-sm font-medium" title={session.source.path}>
-					{session.source.path.split('/').at(-1)}
-				</span>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className="min-w-0 flex-1 truncate text-sm font-medium">
+							{session.source.path.split('/').at(-1)}
+						</span>
+					</TooltipTrigger>
+					<TooltipContent className="break-all">{session.source.path}</TooltipContent>
+				</Tooltip>
 				<Button
 					variant="outline"
 					size="sm"

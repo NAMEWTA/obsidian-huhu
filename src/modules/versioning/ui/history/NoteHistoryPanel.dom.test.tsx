@@ -275,3 +275,17 @@ test('a retained receipt whose body was released is not offered as a readable ch
 	expect(f.readSnapshot).not.toHaveBeenCalled();
 	f.view.unmount();
 });
+
+test('the Note history region is named by its heading and offers no whole-area tooltip', async () => {
+	await fixture();
+	const region = screen.getByRole('region', { name: 'Note history' });
+	const heading = document.getElementById(region.getAttribute('aria-labelledby')!);
+	expect(heading?.textContent).toBe('Note history');
+	expect(region.hasAttribute('aria-label')).toBe(false);
+	for (let element: Element | null = region; element && element !== document.body; element = element.parentElement) {
+		expect(element.hasAttribute('title')).toBe(false);
+	}
+	expect(region.querySelectorAll('header [title], header[title]')).toHaveLength(0);
+	expect(screen.getByRole('button', { name: 'Pin this note' }).hasAttribute('title')).toBe(false);
+	expect(region.closest('.huhu-design')).not.toBeNull();
+});

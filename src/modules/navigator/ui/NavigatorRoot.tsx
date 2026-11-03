@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../../ui/components/resizable';
 import { cn } from '../../../ui/lib/utils';
 import { useOwnerWindow } from '../../../ui/react/hooks';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { ListPane } from './ListPane';
 import { NavPane } from './NavPane';
 import { useEnv, useNavigatorSettings } from './hooks';
@@ -12,9 +13,11 @@ export function NavigatorRoot() {
 	const env = useEnv();
 	const settings = useNavigatorSettings(env.service);
 	return (
-		<div className="h-full min-h-0 bg-sidebar text-sidebar-foreground" data-navigator-root>
-			{settings.layout === 'single' ? <SinglePane view={settings.singleView} /> : <DualPane />}
-		</div>
+		<DesignScope className="flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground" data-navigator-root>
+			<div className="min-h-0 flex-1">
+				{settings.layout === 'single' ? <SinglePane view={settings.singleView} /> : <DualPane />}
+			</div>
+		</DesignScope>
 	);
 }
 

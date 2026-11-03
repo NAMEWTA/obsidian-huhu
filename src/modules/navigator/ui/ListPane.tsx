@@ -33,7 +33,7 @@ import { InlineEditor } from './InlineEditor';
 import { PaneMenu } from './PaneMenu';
 import { SearchBar } from './SearchBar';
 import { startDrag } from './dnd';
-import { useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings, usePreviewVersion } from './hooks';
+import { TOUCH_ROW_HEIGHT, useCoarsePointer, useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings, usePreviewVersion } from './hooks';
 import { bucketLabel, contextLabel, folderLabel, uiLocale } from './labels';
 import { focusWhenVisible, handlePaneKey, usePaneKeyScope } from './keys';
 import { noteMenu, type MenuEntry } from './menus';
@@ -77,7 +77,8 @@ export function ListPane() {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [menu, setMenu] = useState<MenuEntry[]>([]);
 	const metrics = metricsOf(settings, appearance);
-	const rowHeight = noteRowHeight(metrics);
+	const touch = useCoarsePointer();
+	const rowHeight = Math.max(noteRowHeight(metrics), touch ? TOUCH_ROW_HEIGHT : 0);
 	const byPath = useMemo(() => new Map(notes.map((note): [string, NoteEntry] => [note.path, note])), [notes]);
 	const indexOfPath = useMemo(() => {
 		const map = new Map<string, number>();

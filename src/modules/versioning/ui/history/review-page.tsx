@@ -1,6 +1,7 @@
 import type { PageCreate } from '../../../../app/contracts/workbench-host';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { ReactSurface } from '../../../../ui/react/surface';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { t } from '../../../../shared/i18n';
 import type { NoteHistoryHost } from './NoteHistoryPanel';
 import { NoteReviewPage } from './NoteReviewPage';
@@ -30,6 +31,7 @@ class ReviewSurface extends ReactSurface {
 	}
 	protected renderContent() {
 		return (
+			<DesignScope className="flex h-full min-h-0 flex-col">
 			<NoteReviewPage
 				key={this.id}
 				id={this.id}
@@ -42,6 +44,7 @@ class ReviewSurface extends ReactSurface {
 				}}
 				createWorker={() => createDiffWorker(this.contentEl.win)}
 			/>
+			</DesignScope>
 		);
 	}
 	getState(): Record<string, unknown> {

@@ -32,7 +32,7 @@ import {
 	TARGET_DND,
 	upperHalf,
 } from './dnd';
-import { useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings } from './hooks';
+import { TOUCH_ROW_HEIGHT, useCoarsePointer, useEnv, useIconsVersion, useIndexVersion, useNav, useNavigatorSettings } from './hooks';
 import { focusWhenVisible, handlePaneKey, usePaneKeyScope } from './keys';
 import { navMenu, type MenuEntry } from './menus';
 
@@ -111,13 +111,15 @@ export function NavPane() {
 	const sections = normalizeSections(settings.sections);
 	const guides = activeGuide(tree.rows, tree.indexByKey.get(selectedKey));
 
+	const rowSize = useCoarsePointer() ? TOUCH_ROW_HEIGHT : NAV_ROW_HEIGHT;
 	const virtualizer = useVirtualizer({
 		count: tree.rows.length,
 		getScrollElement: () => scrollRef.current,
-		estimateSize: () => NAV_ROW_HEIGHT,
+		estimateSize: () => rowSize,
 		overscan: 10,
 		getItemKey: (index) => tree.rows[index]?.key ?? index,
 	});
+	useEffect(() => { virtualizer.measure(); }, [rowSize, virtualizer]);
 
 	useEffect(() => {
 		if (!scroll) return;
@@ -143,7 +145,7 @@ export function NavPane() {
 
 	useEffect(() => () => { if (spring.current) win.clearTimeout(spring.current.timer); }, [win]);
 
-	const pageSize = () => Math.max(1, Math.floor((scrollRef.current?.clientHeight ?? 320) / NAV_ROW_HEIGHT) - 1);
+	const pageSize = () => Math.max(1, Math.floor((scrollRef.current?.clientHeight ?? 320) / rowSize) - 1);
 	const handleKey = (event: KeyboardEvent) => !service.state.getState().renaming && handlePaneKey(env, 'nav', event, pageSize());
 	usePaneKeyScope(env, scrollRef, handleKey);
 	const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
@@ -225,7 +227,7 @@ export function NavPane() {
 			<header className="flex shrink-0 flex-wrap items-center justify-between gap-1 border-b border-sidebar-border px-2 py-1">
 				<span id={titleId} className="sr-only">{profiles.length > 1 && activeProfile ? activeProfile.name : t('navigator.navigation')}</span>
 				<SearchBar compact />
-				<div className="flex shrink-0 items-center">
+				<div className="flex min-w-0 max-w-full flex-wrap items-center">
 					<ToolbarButton label={t('navigator.cmd.revealFile')} onClick={() => { void service.revealActive().catch(env.report); }}><LocateFixed /></ToolbarButton>
 					<ToolbarButton label={t('navigator.newFolder')} onClick={() => { void service.newFolder().catch(env.report); }}><FolderPlus /></ToolbarButton>
 					<ToolbarButton label={t(allExpanded ? 'navigator.collapseAll' : 'navigator.expandAll')} onClick={() => (allExpanded ? service.collapseAll() : service.expandAll())}>

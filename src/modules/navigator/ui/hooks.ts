@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState, useSyncExternalStore } 
 import { useStore } from 'zustand';
 import type { NavigatorSettings } from '../settings';
 import type { NavigatorService, NavigatorState } from '../services/navigator';
+import { useOwnerWindow } from '../../../ui/react/hooks';
 import type { NavigatorEnv } from './env';
 
 export const NavigatorContext = createContext<NavigatorEnv | null>(null);
@@ -36,3 +37,19 @@ export function useIconsVersion(env: NavigatorEnv): number {
 	useEffect(() => env.subscribeIcons(() => setVersion((value) => value + 1)), [env]);
 	return version;
 }
+
+/** Touch targets are 44px; virtualised rows need the height up front because they are never measured. */
+export function useCoarsePointer(): boolean {
+	const win = useOwnerWindow();
+	return useSyncExternalStore(
+		(listener) => {
+			const media = win.matchMedia('(pointer: coarse)');
+			media.addEventListener('change', listener);
+			return () => media.removeEventListener('change', listener);
+		},
+		() => win.matchMedia('(pointer: coarse)').matches,
+		() => false,
+	);
+}
+
+export const TOUCH_ROW_HEIGHT = 44;

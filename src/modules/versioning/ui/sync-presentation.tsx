@@ -4,6 +4,7 @@
 import { moment, Notice, type App } from 'obsidian';
 import { ReactSurface } from '../../../ui/react/surface';
 import { useOwnerWindow } from '../../../ui/react/hooks';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { onLanguageChanged, t } from '../../../shared/i18n/index';
 import { Button } from '../../../ui/components/button';
 import { EmptyState } from '../../../ui/components/huhu/EmptyState';
@@ -80,7 +81,9 @@ export class SyncPresentation extends ReactSurface {
 	}
 	protected renderContent() {
 		const service = this.host.service();
-		return service ? (
+		return (
+			<DesignScope className="flex h-full min-h-0 flex-col">
+				{service ? (
 			<SyncPage
 				app={this.app}
 				service={service}
@@ -98,8 +101,10 @@ export class SyncPresentation extends ReactSurface {
 				}}
 				host={this.host}
 			/>
-		) : (
-			<EmptyState icon={<GitBranch />} title={t('workbench.sync')} description={t('sync.starting')} />
+				) : (
+					<EmptyState icon={<GitBranch />} title={t('workbench.sync')} description={t('sync.starting')} />
+				)}
+			</DesignScope>
 		);
 	}
 	onClose(): Promise<void> {

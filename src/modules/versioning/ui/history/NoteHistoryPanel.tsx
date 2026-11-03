@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { GitCommitHorizontal, History, MoreHorizontal, Pin, PinOff, RefreshCw } from 'lucide-react';
 import type { EditorDocumentContext } from '../../../../app/contracts/editor-context';
 import type { FileHistoryEntry, HistoryCursor } from '../../core/history';
 import type { NoteHistoryHost } from '../../services/history-host';
 export type { NoteHistoryHost } from '../../services/history-host';
 import { Button } from '../../../../ui/components/button';
+import { ActionButton } from '../../../../ui/components/huhu/ActionButton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import { Input } from '../../../../ui/components/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../ui/components/select';
 import {
@@ -24,7 +27,17 @@ interface HistoryListState {
 	error?: string;
 }
 
+/** One content region: every state, overlay and notice below belongs to this scope. */
 export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
+	return (
+		<DesignScope className="flex h-full min-h-0 flex-col" data-note-history>
+			<NoteHistoryContent host={host} />
+		</DesignScope>
+	);
+}
+
+function NoteHistoryContent({ host }: { host: NoteHistoryHost }) {
+	const titleId = useId();
 	const t = useT(),
 		locale = useLanguage(),
 		win = useOwnerWindow();
@@ -216,31 +229,32 @@ export function NoteHistoryPanel({ host }: { host: NoteHistoryHost }) {
 		);
 	if (path == null) return <p className="p-4 text-sm text-muted-foreground">{t('versioning.outside-repository')}</p>;
 	return (
-		<section className="flex h-full min-h-0 flex-col text-sm" aria-label={t('history.title')}>
+		<section
+			className="flex min-h-0 flex-1 flex-col text-sm"
+			aria-labelledby={titleId}
+			aria-busy={list.identity !== identity || list.phase === 'loading' || undefined}
+		>
+			<h2 id={titleId} className="sr-only">
+				{t('history.title')}
+			</h2>
 			<header className="flex shrink-0 items-center gap-1 px-3 py-2">
-				<History className="size-4 shrink-0 text-muted-foreground" />
-				<span className="min-w-0 flex-1 truncate font-medium" title={document.path}>
-					{document.path.split('/').at(-1)}
-				</span>
-				<Button
-					variant="ghost"
-					size="icon"
+				<History className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className="min-w-0 flex-1 truncate font-medium">{document.path.split('/').at(-1)}</span>
+					</TooltipTrigger>
+					<TooltipContent className="break-all">{document.path}</TooltipContent>
+				</Tooltip>
+				<ActionButton
 					className="size-8"
-					aria-label={t(pinned ? 'history.unpin' : 'history.pin')}
-					title={t(pinned ? 'history.unpin' : 'history.pin')}
+					label={t(pinned ? 'history.unpin' : 'history.pin')}
 					onClick={() => setPinned(pinned ? undefined : document)}
 				>
 					{pinned ? <PinOff className="size-4" /> : <Pin className="size-4" />}
-				</Button>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="size-8"
-					aria-label={t('history.refresh')}
-					onClick={() => setRefresh((value) => value + 1)}
-				>
+				</ActionButton>
+				<ActionButton className="size-8" label={t('history.refresh')} onClick={() => setRefresh((value) => value + 1)}>
 					<RefreshCw className="size-4" />
-				</Button>
+				</ActionButton>
 			</header>
 			<div className="flex shrink-0 flex-col gap-2 border-b px-3 pb-3">
 				<Select value={source} onValueChange={setSource}>
