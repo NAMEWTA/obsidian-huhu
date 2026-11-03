@@ -4,7 +4,7 @@ export function documentationKind(rel) {
 	// Vendored crates keep their upstream license text verbatim beside the patched source.
 	if (/^native\/[^/]+\/third_party\/[^/]+\/LICENSE(?:-[A-Z0-9]+)?\.md$/.test(rel)) return 'license';
 	if (rel.startsWith('docs/')) return 'user-doc';
-	if (/^native\/(?:pty-server|browser-runtime)\/README\.md$/.test(rel)) return 'native-doc';
+	if (/^native\/pty-server\/README\.md$/.test(rel)) return 'native-doc';
 	if (/^(README|CHANGELOG|SECURITY)(\.ZH)?\.md$/.test(rel)) return 'root-entry';
 	if (rel === 'AGENTS.md') return 'agent-handbook';
 	if (/^\.agents\/speculo\/\.speculo\/specdev\/(?:changes|archive)\//.test(rel)) return 'specdev-change';

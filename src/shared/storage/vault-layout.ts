@@ -80,8 +80,6 @@ export const EXPORTS_ROOT = `${HUHU_VISIBLE_ROOT}/${VISIBLE_NAMES.exports}`;
 
 /** Hidden Markdown documents HUHU owns (listed and edited through the managed-file index). */
 export const DASHBOARDS_ROOT = '.huhu/dashboards';
-/** Per-device managed Chromium, encrypted identities and operation records. */
-export const BROWSER_ROOT = '.huhu/browser';
 export const WEATHER_CACHE_ROOT = '.huhu/cache/weather';
 export const GIT_UNTRACK_RECOVERY_ROOT = '.huhu/recovery/git-untrack';
 export const VERSIONING_RECOVERY_ROOT = '.huhu/recovery/versioning';

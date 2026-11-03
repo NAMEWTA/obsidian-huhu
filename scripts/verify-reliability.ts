@@ -138,10 +138,6 @@ test('dashboard preserves unknown YAML, comments, free prose and unchanged cards
 	);
 });
 
-// Browser revocation now crosses the native authority boundary. Its replacement
-// regression lives in services/workspace.test.ts (delayed old/new Run queues),
-// with the production transport exercised by verify-browser-runtime-native.mjs.
-
 test('managed tables and sections preserve author prose, reject malformed markers and merge independent edits', async () => {
 	let text = '---\nowner: Ada # keep\n---\nPersonal prose.\n';
 	const repository = new DocumentRepository({

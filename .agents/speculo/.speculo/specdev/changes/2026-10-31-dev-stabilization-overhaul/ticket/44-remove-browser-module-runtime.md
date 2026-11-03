@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-44
 title: "删除 Browser 模块、原生运行时、构建产物与发行链"
-status: draft
+status: done
 kind: refactor
 planning_depth: deep
 planning_depth_reason: "删除整模块、Rust 运行时、根目录提交产物和 4 个工作流，改变默认构建命令"

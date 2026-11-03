@@ -10,7 +10,7 @@ test('the host reads unsaved buffers across windows, captures the outgoing note 
 		Object.assign(view, { leaf });
 		return leaf;
 	};
-	const a = leaf('note.md', 'unsaved A'), b = leaf('other.md', 'unsaved B'), hidden = leaf('.huhu/browser/secret.md', 'secret'), config = leaf('host-config/secret.md', 'config');
+	const a = leaf('note.md', 'unsaved A'), b = leaf('other.md', 'unsaved B'), hidden = leaf('.huhu/helpers/secret.md', 'secret'), config = leaf('host-config/secret.md', 'config');
 	let active = a;
 	const listeners = new Map<string, (...args: unknown[]) => void>();
 	const app = { vault: { configDir: 'host-config', on: (event: string, listener: (...args: unknown[]) => void) => { listeners.set(event, listener); } }, workspace: {

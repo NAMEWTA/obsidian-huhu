@@ -84,14 +84,6 @@ describe('release assets', () => {
 		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/complete NOTICE/);
 	});
 
-	it('requires the dedicated browser entry points and verifies their checksums', () => {
-		const release = fakeRoot(),
-			dir = scratch();
-		for (const name of pluginAssets) copyFileSync(path.join(root, name), path.join(dir, name));
-		writeFileSync(path.join(dir, 'browser-worker.cjs'), 'tampered worker');
-		expect(() => verifyPluginAssets(release, version, dir)).toThrow(/browser-worker.cjs checksum mismatch/);
-	});
-
 	/** The ten native assets of a release (helpers and CLIs), written the way terminal-build packages them. */
 	function terminalDir(mutate?: (dir: string, cli: string[]) => void) {
 		const dir = scratch();

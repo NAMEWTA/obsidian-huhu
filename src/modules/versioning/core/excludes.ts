@@ -14,8 +14,6 @@ export const HUHU_EXCLUDE_PATTERNS: readonly string[] = [
 	'**/.huhu/config/identity.json',
 	'**/.huhu/sync/',
 	'**/.huhu/notifications/',
-	'**/.huhu/browser/',
-	'**/.huhu/browser-materials/',
 	'**/.huhu/terminal-agent/',
 	'**/.huhu/agents/',
 	'**/.huhu/helpers/',

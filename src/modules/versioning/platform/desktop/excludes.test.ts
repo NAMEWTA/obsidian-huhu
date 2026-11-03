@@ -15,7 +15,7 @@ const roots: string[] = [];
 afterEach(() => {
 	for (const root of roots.splice(0)) {
 		try {
-			chmodSync(path.join(root, '.huhu/browser/dev/profiles/home-music/session/Network/Cookies'), 0o600);
+			chmodSync(path.join(root, '.huhu/helpers/dev/profiles/session/Network/Cookies'), 0o600);
 		} catch {
 			// not created
 		}
@@ -27,7 +27,7 @@ function repository() {
 	const root = mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'huhu-sync-'));
 	roots.push(root);
 	execFileSync('git', ['init', '-q'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
-	const cookies = path.join(root, '.huhu/browser/dev/profiles/home-music/session/Network/Cookies');
+	const cookies = path.join(root, '.huhu/helpers/dev/profiles/session/Network/Cookies');
 	mkdirSync(path.dirname(cookies), { recursive: true });
 	writeFileSync(cookies, 'secret');
 	chmodSync(cookies, 0o000);
@@ -70,7 +70,7 @@ test('managed excludes keep private runtime data out of `git add`, and an unread
 		const file = host.resolve(root, (await repo.git(['rev-parse', '--git-path', 'info/exclude'])).stdout.trim());
 		assert.equal(await host.editText(file, (text) => withManagedExcludes(text)), true);
 		assert.equal(await host.editText(file, (text) => withManagedExcludes(text)), false, 'second pass changes nothing');
-		assert.ok(readFileSync(file, 'utf8').includes('**/.huhu/browser/'));
+		assert.ok(readFileSync(file, 'utf8').includes('**/.huhu/helpers/'));
 		await repo.stageAll();
 		const staged = await repo.stagedPaths();
 		assert.deepEqual(staged.sort(), ['.huhu/automation/definitions/weekly-1/操作.md', '.huhu/dashboards/dashboard.md', 'huhu/闪念/2026/10/2026-10-21.md', 'note.md']);

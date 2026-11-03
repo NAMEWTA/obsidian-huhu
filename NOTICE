@@ -89,19 +89,11 @@ Adapted parts, with the upstream commits they are taken from:
   retention and structural replay: Orca v1.4.217, commit
   11d97896628d90c4990365127812667b00e28c82
   (mapping: docs/third-party/orca-terminal-workbench.md).
-- Browser snapshot traversal, interactive element discovery, screenshot
-  markup, element grab context, debugger lease, popup and URL classification:
-  commit d74388f8a2dad2bd4bbfe3b937aba66e6648258b.
 - Workbench shell, status bar and usage panels, settings search and controls,
   agent workspace/tab groups, new-tab menu, history, board, quick commands,
   usage statistics, React UI components, shortcut key caps and agent icons: commit 464bd5a54b3364021c5cc0319859616e5ec41bbf.
 - Automation page, list, editor, detail and run-history layouts, plus the
   automation CLI argument allowlist: commit 464bd5a54b3364021c5cc0319859616e5ec41bbf
-  (mapping: docs/third-party/orca-terminal-workbench.md).
-- Browser retained-element positioning, address classification, Cookie browser
-  detection/key retrieval/decryption/import policy, browser chrome, profile
-  settings, download shelf and Design Mode layouts:
-  commit 464bd5a54b3364021c5cc0319859616e5ec41bbf
   (mapping: docs/third-party/orca-terminal-workbench.md).
 Full license text: docs/third-party/orca-LICENSE.txt
 

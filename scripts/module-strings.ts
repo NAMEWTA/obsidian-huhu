@@ -5,7 +5,6 @@ import { messages as uiStrings } from '../src/shared/i18n/lazy/ui';
 import { registerMessages } from '../src/shared/i18n/runtime';
 import { messages as agent } from '../src/modules/agent/i18n';
 import { messages as archives } from '../src/modules/archives/i18n';
-import { messages as browser } from '../src/modules/browser/i18n';
 import { messages as automations } from '../src/modules/automations/i18n';
 import { messages as comments } from '../src/modules/comments/i18n';
 import { messages as home } from '../src/modules/home/i18n';
@@ -29,7 +28,6 @@ for (const messages of [
 	agent,
 	archives,
 	automations,
-	browser,
 	comments,
 	home,
 	icons,

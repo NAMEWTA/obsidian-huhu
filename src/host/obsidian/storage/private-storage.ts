@@ -3,7 +3,7 @@ import type { TextStorage } from '../../../shared/storage/ports';
 import { privateStorageIfDesktop } from '../../private-storage';
 
 export function desktopVaultRoot(app: App): string {
-	if (!(app.vault.adapter instanceof FileSystemAdapter)) throw new Error('browser_session_unavailable');
+	if (!(app.vault.adapter instanceof FileSystemAdapter)) throw new Error('vault_root_unavailable');
 	return app.vault.adapter.getBasePath();
 }
 

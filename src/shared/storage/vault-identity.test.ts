@@ -23,8 +23,8 @@ test('same host resumes its vault identity; a synced copy cannot claim another d
 });
 test('migration reuses an unclaimed legacy identity and requires explicit selection without host identity', async () => {
 	const f = fixture(), legacy = '11111111-1111-4111-8111-111111111111';
-	const first = await initializeVaultIdentity(f.storage, { ...options('first'), legacyDeviceId: legacy, legacyBrowserVaultId: legacy });
-	expect(first.deviceId).toBe(legacy); expect(first.legacyBrowserVaultId).toBe(legacy);
+	const first = await initializeVaultIdentity(f.storage, { ...options('first'), legacyDeviceId: legacy });
+	expect(first.deviceId).toBe(legacy);
 	const second = await initializeVaultIdentity(f.storage, { ...options('second'), legacyDeviceId: legacy });
 	expect(second.deviceId).not.toBe(legacy);
 	const chosen = await initializeVaultIdentity(f.storage, { ...options(), chooseDevice: async devices => { expect(devices.length).toBe(2); return first.deviceId; } });

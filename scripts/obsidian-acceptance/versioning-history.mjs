@@ -109,7 +109,7 @@ try {
  await until(`document.querySelector('section[aria-label="Note history"] header')?.textContent.includes('Long.md')&&[...document.querySelectorAll('section[aria-label="Note history"] [data-choice-index]')].some(el=>el.textContent.includes('Historical version'))`);
  await click(`[...document.querySelectorAll('section[aria-label="Note history"] [data-choice-index]')].find(el=>el.textContent.includes('Historical version'))`);
  await until(`window.probeWorkerCount>0&&app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).some(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Long.md'&&surface.contentEl.querySelector('[data-layout] .cm-content'))`);
- check('large-diff-runs-real-browser-worker',await c.evaluate(`probeWorkerCount>0`),{characters:longBefore.length,workers:await c.evaluate('probeWorkerCount')});
+ check('large-diff-runs-real-worker',await c.evaluate(`probeWorkerCount>0`),{characters:longBefore.length,workers:await c.evaluate('probeWorkerCount')});
  await runtime.shot('history-large-worker'); await c.evaluate(`window.Worker=probeNativeWorker;true`);
  const held=await c.evaluate(`({hold:probeHost.sync.snapshot.device.restoreHold,receipts:probeHost.restores.receipts().length,panelTab:app.workspace.getLeavesOfType('huhu-comments-view')[0].view.getState().tab,reviewId:app.workspace.getLeavesOfType('huhu-workbench-view').flatMap(leaf=>leaf.view.getNativeSurfaces?.()??[]).find(surface=>surface.getViewType()==='huhu-version-review'&&surface.host.reviews.get(surface.id)?.source.path==='Long.md').id})`);
  errorSessions.push({session:'before-restart',errors:await c.evaluate('huhuAcceptanceErrors')});

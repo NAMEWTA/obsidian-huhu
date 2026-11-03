@@ -4,15 +4,14 @@ import type { TextStorage } from './ports';
 import { storageWriteQueue } from './write-queue';
 import { threeWayMerge } from './three-way-merge';
 
-export interface VaultDevice { id: string; label: string; fingerprint?: string; legacyBrowserVaultId?: string }
+export interface VaultDevice { id: string; label: string; fingerprint?: string }
 interface IdentityFile { version: 1; vaultId: string; salt: string; devices: Record<string, VaultDevice> }
-export interface VaultIdentity { vaultId: string; deviceId: string; legacyBrowserVaultId?: string }
+export interface VaultIdentity { vaultId: string; deviceId: string }
 export interface IdentityOptions {
 	/** Read-only host identity; only a vault-salted digest is persisted. */
 	machineIdentity?: string;
 	label: string;
 	legacyDeviceId?: unknown;
-	legacyBrowserVaultId?: unknown;
 	chooseDevice(devices: readonly VaultDevice[]): Promise<string | { label: string }>;
 }
 export const validIdentityId = (value: unknown): value is string => typeof value === 'string' && /^[a-f\d]{8}(?:-[a-f\d]{4}){3}-[a-f\d]{12}$/i.test(value);
@@ -20,8 +19,7 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 function validFile(value: unknown): value is IdentityFile | null {
 	return value === null || record(value) && value.version === 1 && validIdentityId(value.vaultId) && validIdentityId(value.salt) && record(value.devices)
 		&& Object.entries(value.devices).every(([id, device]) => record(device) && validIdentityId(id) && device.id === id && typeof device.label === 'string'
-			&& (device.fingerprint === undefined || typeof device.fingerprint === 'string' && /^[a-f\d]{64}$/.test(device.fingerprint))
-			&& (device.legacyBrowserVaultId === undefined || validIdentityId(device.legacyBrowserVaultId)));
+			&& (device.fingerprint === undefined || typeof device.fingerprint === 'string' && /^[a-f\d]{64}$/.test(device.fingerprint)));
 }
 
 /** Copied vaults share the mapping, but a different host gets a different device identity. */
@@ -56,7 +54,6 @@ export function initializeVaultIdentity(storage: TextStorage, options: IdentityO
 				next.devices[id] = device;
 			}
 		}
-		if (!device.legacyBrowserVaultId && validIdentityId(options.legacyBrowserVaultId)) device.legacyBrowserVaultId = options.legacyBrowserVaultId;
 		let commitBase = base;
 		if (base === null) {
 			// Seed a missing store with the complete mapping so its first backup is recoverable.
@@ -68,6 +65,6 @@ export function initializeVaultIdentity(storage: TextStorage, options: IdentityO
 		persisted = await store.commit({ base: persisted, value: persisted });
 		const selected = persisted?.devices[device.id];
 		if (!persisted || !selected) throw new Error('huhu-storage.device-removed');
-		return { vaultId: persisted.vaultId, deviceId: selected.id, ...(selected.legacyBrowserVaultId ? { legacyBrowserVaultId: selected.legacyBrowserVaultId } : {}) };
+		return { vaultId: persisted.vaultId, deviceId: selected.id };
 	});
 }

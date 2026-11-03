@@ -229,8 +229,8 @@ test('automatic sync clocks continue from the last run and are off at zero minut
 });
 
 const ADD_FAILURE = [
-	'error: open(".huhu/browser/6f1c2d4e-0000-4000-8000-000000000001/profiles/home-music/session/Network/Cookies"): Permission denied',
-	"error: unable to index file '.huhu/browser/6f1c2d4e-0000-4000-8000-000000000001/profiles/home-music/session/Local Storage/leveldb/LOG'",
+	'error: open(".huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/profiles/session/Network/Cookies"): Permission denied',
+	"error: unable to index file '.huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/profiles/session/Local Storage/leveldb/LOG'",
 	'fatal: adding files failed',
 ].join('\n');
 
@@ -267,12 +267,12 @@ test('a failed `git add` is a local index failure, never a remote refusal', () =
 	);
 	assert.equal(needsAttention('index-failed'), true);
 	// The raw output keeps the first failing path, which the short detail's last-lines window would drop for long lists.
-	assert.ok(rawOf('', ADD_FAILURE).startsWith('error: open(".huhu/browser/'));
+	assert.ok(rawOf('', ADD_FAILURE).startsWith('error: open(".huhu/helpers/'));
 	assert.ok(detailOf('', ADD_FAILURE).includes('adding files failed'));
 });
 
 test('HUHU private data is excluded through a managed, idempotent block that leaves user rules alone', () => {
-	for (const private_ of ['browser', 'terminal-agent', 'agents', 'helpers', 'cache', 'exports'])
+	for (const private_ of ['terminal-agent', 'agents', 'helpers', 'cache', 'exports'])
 		assert.ok(HUHU_EXCLUDE_PATTERNS.includes(`**/.huhu/${private_}/`), private_);
 	// Per-device automation runs are private; the definitions folder is re-included so it syncs.
 	assert.ok(

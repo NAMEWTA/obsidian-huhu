@@ -32,10 +32,8 @@ test('change artifacts retain source language while permanent knowledge and thir
 });
 
 test('native package READMEs have project documentation ownership without classifying arbitrary native Markdown', () => {
-	expect(documentationKind('native/browser-runtime/README.md')).toBe('native-doc');
 	expect(documentationKind('native/pty-server/README.md')).toBe('native-doc');
-	expect(documentationKind('docs/browser-runtime.md')).toBe('user-doc');
-	expect(documentationKind('native/browser-runtime/src/README.md')).toBe('');
+	expect(documentationKind('native/pty-server/src/README.md')).toBe('');
 	expect(documentationKind('native/pty-server/third_party/portable-pty/LICENSE.md')).toBe('license');
 	expect(documentationKind('native/pty-server/third_party/portable-pty/README.md')).toBe('');
 });

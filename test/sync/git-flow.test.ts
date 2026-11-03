@@ -650,14 +650,14 @@ describe('the sync service', () => {
 	});
 	test('automatic commits upgrade old exclusions, retain visible archive facts and stay private after restart', async () => {
 		const w = await published();
-		const previous = '# user rules\nkeep-local.txt\n# >>> HUHU managed (do not edit between these lines) >>>\n**/.huhu/browser/\n# <<< HUHU managed <<<\n# user footer\n';
+		const previous = '# user rules\nkeep-local.txt\n# >>> HUHU managed (do not edit between these lines) >>>\n**/.huhu/cache/\n# <<< HUHU managed <<<\n# user footer\n';
 		write(w.a, '.gitignore', previous);
 		write(w.a, '.git/info/exclude', previous);
 		const privateFiles = [
-			'.huhu/browser/dev/profiles/personal/Network/Cookies',
-			'.huhu/browser-materials/dev/material-1/content.md',
+			'.huhu/terminal-agent/dev/session/token',
+			'.huhu/cache/dev/material-1/content.md',
 			'.huhu/recovery/versioning/dev/checkpoint.json',
-			'nested/.huhu/browser-materials/dev/material-2/content.md',
+			'nested/.huhu/cache/dev/material-2/content.md',
 		];
 		const archiveFiles = [
 			'huhu/档案/个人档案/测试/基本信息.md',
@@ -703,8 +703,8 @@ describe('the sync service', () => {
 	test('connecting backs up private staged blobs before untracking them and leaves archive files tracked', async () => {
 		const w = await published();
 		const privateFiles = [
-			'.huhu/browser/dev/profiles/personal/Network/Cookies',
-			'.huhu/browser-materials/dev/material-1/content.md',
+			'.huhu/terminal-agent/dev/session/token',
+			'.huhu/cache/dev/material-1/content.md',
 			'.huhu/recovery/versioning/dev/checkpoint.json',
 		];
 		const archive = 'huhu/档案/迁移/迁移-1/提交.md';

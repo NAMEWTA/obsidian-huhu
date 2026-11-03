@@ -16,12 +16,11 @@ export function initializeDevice(app: App, options: DeviceInitialization): Promi
 	const operation = (async () => {
 		const identity = await initializeVaultIdentity(privateVaultStorage(app), {
 			machineIdentity: await options.machineIdentity(), label: options.label, chooseDevice: devices => options.chooseDevice(devices),
-			legacyDeviceId: app.loadLocalStorage('huhu.device-id'), legacyBrowserVaultId: app.loadLocalStorage('huhu.browser.vault-id'),
+			legacyDeviceId: app.loadLocalStorage('huhu.device-id'),
 		});
 		identities.set(app, identity);
 		// Remove legacy keys only after the vault copy has been verified.
 		app.saveLocalStorage('huhu.device-id', null);
-		app.saveLocalStorage('huhu.browser.vault-id', null);
 		return identity;
 	})();
 	initializing.set(app, operation);

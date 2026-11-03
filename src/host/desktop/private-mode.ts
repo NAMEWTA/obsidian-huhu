@@ -8,7 +8,7 @@ import { validateHuhuPath } from '../../shared/storage/huhu-paths';
 
 export const PRIVATE_DIR_MODE = 0o700;
 export const PRIVATE_FILE_MODE = 0o600;
-const MANAGED_DIRECTORIES = ['config', 'browser', 'terminal-agent', 'automation', 'notifications', 'editor', 'icons', 'recovery', 'cache'];
+const MANAGED_DIRECTORIES = ['config', 'terminal-agent', 'automation', 'notifications', 'editor', 'icons', 'recovery', 'cache'];
 
 export function chmodAllowed(platform: string): boolean {
 	return ['linux', 'darwin', 'freebsd', 'openbsd', 'aix', 'sunos'].includes(platform);
