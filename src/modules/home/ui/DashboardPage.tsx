@@ -1,8 +1,10 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/view.ts
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import { Platform } from 'obsidian';
 import { useStore } from 'zustand';
 import type { NativeSurfaceContext } from '../../../ui/native-surface';
+import { Skeleton } from '../../../ui/components/skeleton';
+import { DesignScope } from '../../../ui/react/design-scope';
 import { useVisible } from '../../../ui/react/contexts';
 import { useT } from '../../../ui/react/hooks';
 import type { GridBreakpoint } from '../core/board/grid';
@@ -18,6 +20,7 @@ export function DashboardPage({ store, context }: { store: BoardStore; context: 
 		generation = useStore(store.state, (s) => s.generation),
 		visible = useVisible(),
 		[narrow, setNarrow] = useState(false),
+		titleId = useId(),
 		t = useT();
 	const follow = useCallback((breakpoint: GridBreakpoint) => setNarrow(breakpoint === 'sm'), []);
 	useEffect(() => {
@@ -26,19 +29,28 @@ export function DashboardPage({ store, context }: { store: BoardStore; context: 
 	}, [visible, store]);
 	const mobile = Platform.isPhone || narrow;
 	return (
-		<div className="h-full min-h-0" aria-label={t('workbench.home')}>
-			{data ? (
-				// One generation per board shown: switching replaces the whole tree and hands it a store view of that generation.
-				<ThemeBridge key={generation} store={store.view(generation)} layout={mobile ? 'mobile' : 'canvas'}>
-					<BoardDnd store={store.view(generation)}>
-						<BoardCanvas store={store} context={context} onBreakpoint={follow} />
-					</BoardDnd>
-					<PomodoroMini store={store.view(generation)} />
-					<ReadingMini store={store.view(generation)} />
-				</ThemeBridge>
-			) : (
-				<div role="status">{t('home.dashboard.loading')}</div>
-			)}
-		</div>
+		<DesignScope className="h-full min-h-0">
+			<section className="h-full min-h-0" aria-labelledby={titleId}>
+				<h1 id={titleId} className="sr-only">
+					{t('workbench.home')}
+				</h1>
+				{data ? (
+					// One generation per board shown: switching replaces the whole tree and hands it a store view of that generation.
+					<ThemeBridge key={generation} store={store.view(generation)} layout={mobile ? 'mobile' : 'canvas'}>
+						<BoardDnd store={store.view(generation)}>
+							<BoardCanvas store={store} context={context} onBreakpoint={follow} />
+						</BoardDnd>
+						<PomodoroMini store={store.view(generation)} />
+						<ReadingMini store={store.view(generation)} />
+					</ThemeBridge>
+				) : (
+					<div role="status" aria-busy="true" className="grid gap-3 p-6">
+						<span className="sr-only">{t('home.dashboard.loading')}</span>
+						<Skeleton className="h-8 w-1/3" />
+						<Skeleton className="h-40 w-full" />
+					</div>
+				)}
+			</section>
+		</DesignScope>
 	);
 }

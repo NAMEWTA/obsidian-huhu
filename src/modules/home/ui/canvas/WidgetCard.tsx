@@ -23,6 +23,7 @@ import {
 	DropdownMenuTrigger,
 } from '../../../../ui/components/dropdown-menu';
 import { Input } from '../../../../ui/components/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { ObsidianIcon } from '../../../../ui/components/huhu/ObsidianIcon';
 import { cn } from '../../../../ui/lib/utils';
 import { useT } from '../../../../ui/react/hooks';
@@ -58,6 +59,8 @@ export interface WidgetMenuProps {
 
 export interface WidgetCardProps extends WidgetMenuProps {
 	title: string;
+	/** Id of the title element: the tile's region is named by it (aria-labelledby), so the title needs no tooltip. */
+	titleId?: string;
 	icon?: string;
 	chrome?: WidgetChrome;
 	/** The body reaches the card's edges (charts, pictures); the view lays out its own padding. */
@@ -82,7 +85,7 @@ const ARROWS: Record<string, readonly [number, number]> = {
  * container, so views adapt to the room they were given with container queries instead of measuring themselves.
  */
 export function WidgetCard(props: WidgetCardProps) {
-	const { title, icon, chrome = 'default', bleed = false, background, onRename, className, children, ...menu } = props;
+	const { title, titleId, icon, chrome = 'default', bleed = false, background, onRename, className, children, ...menu } = props;
 	const [actionsHost, setActionsHost] = useState<HTMLElement | null>(null),
 		[menus, setMenus] = useState<ReadonlyMap<object, RegisteredMenu>>(new Map()),
 		minimal = chrome === 'minimal';
@@ -121,6 +124,7 @@ export function WidgetCard(props: WidgetCardProps) {
 				{background?.layer}
 				<TitleBar
 					title={title}
+					titleId={titleId}
 					icon={icon}
 					minimal={minimal}
 					menus={menus}
@@ -145,6 +149,7 @@ export function WidgetCard(props: WidgetCardProps) {
 
 function TitleBar({
 	title,
+	titleId,
 	icon,
 	minimal,
 	menus,
@@ -153,6 +158,7 @@ function TitleBar({
 	...menu
 }: WidgetMenuProps & {
 	title: string;
+	titleId?: string;
 	icon?: string;
 	minimal: boolean;
 	menus: ReadonlyMap<object, RegisteredMenu>;
@@ -195,9 +201,9 @@ function TitleBar({
 				<TitleField value={title} onRename={onRename} onDone={() => setRenaming(false)} />
 			) : (
 				<h3
+					id={titleId}
 					data-slot="widget-title"
 					className="m-0 min-w-0 flex-1 truncate text-sm font-medium"
-					title={title}
 					onDoubleClick={onRename ? () => setRenaming(true) : undefined}
 				>
 					{title}
@@ -294,16 +300,21 @@ function TileMenu({
 	const own = [...menus.values()].flatMap((menu) => menu.read());
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button
-					variant="ghost"
-					size="icon-xs"
-					aria-label={t('canvas.moreActions', { name: title })}
-					className="text-muted-foreground opacity-70 group-hover/handle:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100"
-				>
-					<Ellipsis />
-				</Button>
-			</DropdownMenuTrigger>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon-xs"
+							aria-label={t('canvas.moreActions', { name: title })}
+							className="text-muted-foreground opacity-70 group-hover/handle:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100"
+						>
+							<Ellipsis />
+						</Button>
+					</DropdownMenuTrigger>
+				</TooltipTrigger>
+				<TooltipContent>{t('canvas.moreActions', { name: title })}</TooltipContent>
+			</Tooltip>
 			<DropdownMenuContent
 				align="end"
 				// The menu would hand focus back to its button and blur the title field the entry just opened.

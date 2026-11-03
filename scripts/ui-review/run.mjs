@@ -25,6 +25,8 @@ if (!/^T-\d+$/.test(ticket ?? '') || options['--matrix'] !== 'standard' || !opti
 const output = path.resolve(options['--out']);
 await fs.mkdir(output, { recursive: true });
 const result = { ticket, matrix: 'standard', status: 'unverified', startedAt: new Date().toISOString(), inputs: [], cases: [], errors: [], boundaries: ['Real React/Radix/HUHU components and generated styles.css', 'Host app.css read from ASAR without launching Obsidian', 'Obsidian createDiv DOM extension supplied by fixture; no vault or external service', 'Second document is a same-origin iframe, not an Obsidian popout'] };
+/** Desktop-only modules reachable from a page's import graph (never called in the fixture) resolve node: builtins to an empty module. */
+const nodeBuiltinStubs = { name: 'node-builtin-stubs', setup(b) { b.onResolve({ filter: /^node:/ }, a => ({ path: a.path, namespace: 'node-stub' })); b.onLoad({ filter: /.*/, namespace: 'node-stub' }, () => ({ contents: 'module.exports = {};', loader: 'js' })); } };
 let work, chrome, cdp;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 export async function waitFor(check, label) {
@@ -42,7 +44,7 @@ try {
 	const offset = 8 + asar.readUInt32LE(4) + Number(entry.offset);
 	const hostCSS = asar.subarray(offset, offset + entry.size);
 	await fs.writeFile(path.join(work, 'app.css'), hostCSS);
-	const compiled = await build({ absWorkingDir: root, entryPoints: [`scripts/ui-review/fixtures/${ticket}.tsx`], outfile: path.join(work, 'fixture.js'), bundle: true, metafile: true, jsx: 'automatic', jsxImportSource: 'react', platform: 'browser', format: 'iife', alias: { obsidian: path.join(root, 'scripts/obsidian-stub.ts') }, plugins: [sonnerStyles, radixOwnerDocument], define: { 'process.env.NODE_ENV': '"production"' } });
+	const compiled = await build({ absWorkingDir: root, entryPoints: [`scripts/ui-review/fixtures/${ticket}.tsx`], outfile: path.join(work, 'fixture.js'), bundle: true, metafile: true, jsx: 'automatic', jsxImportSource: 'react', platform: 'browser', format: 'iife', alias: { obsidian: path.join(root, 'scripts/obsidian-stub.ts') }, plugins: [sonnerStyles, radixOwnerDocument, nodeBuiltinStubs], define: { 'process.env.NODE_ENV': '"production"' } });
 	const files = [...new Set([...Object.keys(compiled.metafile.inputs).filter(file => !file.includes(':')), 'styles.css', 'scripts/ui-review/run.mjs', `scripts/ui-review/fixtures/${ticket}.mjs`])].sort();
 	for (const file of files) result.inputs.push({ path: file, sha256: createHash('sha256').update(await fs.readFile(path.resolve(root, file))).digest('hex') });
 	result.inputs.push({ path: `${asarPath}:app.css`, sha256: createHash('sha256').update(hostCSS).digest('hex') });

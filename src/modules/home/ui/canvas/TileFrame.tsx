@@ -28,6 +28,8 @@ export interface TileFrameProps {
 	kind: TileKind | undefined;
 	/** The name the card shows: the user's own title first, then the kind's, a section's or a card's name. */
 	label: string;
+	/** Instance-unique id for the title element; the tile's region is named by it. */
+	titleId?: string;
 	current: HomeWidgetTier | undefined;
 	mobile: boolean;
 	narrow: boolean;
@@ -43,7 +45,7 @@ export interface TileFrameProps {
 
 /** One tile of the board: the card around the view that source names. Every tile kind uses the same frame. */
 export function TileFrame(props: TileFrameProps) {
-	const { store, source, kind, label, current, mobile, narrow, catalog, canConfigure, ...actions } = props;
+	const { store, source, kind, label, titleId, current, mobile, narrow, catalog, canConfigure, ...actions } = props;
 	const frame = source.type === 'widget' && source.member.provider === 'home' ? WIDGET_FRAME[source.member.kind] : undefined;
 	const data = useStore(store.state, (state) => state.data)!;
 	const rename =
@@ -67,6 +69,7 @@ export function TileFrame(props: TileFrameProps) {
 	return (
 		<WidgetCard
 			title={label}
+			titleId={titleId}
 			icon={kind?.icon}
 			chrome={frame?.chrome}
 			bleed={frame?.bleed}

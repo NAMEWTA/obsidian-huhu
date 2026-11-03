@@ -184,11 +184,12 @@ test("weather: the city, the large temperature, the state and today's range; the
 	act(() =>
 		state.setState({
 			weatherByInstance: {
-				default: { locationKey: '31.23,121.47', status: 'error', data: null, error: 'offline' },
+				default: { locationKey: '31.23,121.47', status: 'error', errorCode: 'network', retryable: true, data: null, error: '' },
 			},
 		}),
 	);
-	expect(body.textContent).toContain('offline');
+	expect(body.textContent).toContain(t('weather.error.network'));
+	expect(body.querySelector('[data-weather-state=error][role=alert]')).not.toBeNull();
 });
 
 test('quick actions are equal-width grid buttons with an icon and a truncating label, and add is in the title bar slot', () => {

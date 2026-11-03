@@ -5,6 +5,9 @@ import { getLanguage, registerMessages, t } from '../../../../shared/i18n';
 import { messages } from '../../../../shared/i18n/lazy/analytics';
 import { useOwnerDocument, useVisible } from '../../../../ui/react/contexts';
 import { Button } from '../../../../ui/components/button';
+import { IconButton } from '../board/controls';
+import { WeatherStatus } from '../board/WeatherStatus';
+import { weatherView } from '../board/weather-state';
 import type { BoardStore } from '../../services/board-store';
 import { useClock } from '../board/hooks';
 import { weatherInstanceLocation, weatherLocationKey, weatherLocationLabel } from '../../core/board/weather-locations';
@@ -28,6 +31,16 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 		weather = current?.locationKey === key ? current.data : null;
 	const timezone = location?.timezone || weather?.timezone;
 	const locale = getLanguage() === 'zh' ? 'zh-CN' : 'en-GB';
+	const view = weatherView(key, current);
+	const status = (
+		<WeatherStatus
+			view={view}
+			time={weather ? new Date(weather.fetchedAt).toLocaleTimeString(locale) : ''}
+			onRetry={() => void store.weather(entryId, true)}
+			onConfigure={() => setConfigure(true)}
+			onCancel={() => store.cancelWeather(entryId)}
+		/>
+	);
 	const search = useCallback((query: string) => store.cities(query), [store]);
 	useEffect(() => {
 		const win = doc.defaultView;
@@ -46,25 +59,18 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 	return (
 		<>
 			<WidgetActions>
-				<Button
-					variant="ghost"
-					size="icon-sm"
-					aria-label={t('weather.configure')}
-					onClick={() => setConfigure(true)}
-				>
+				<IconButton label={t('weather.configure')} onClick={() => setConfigure(true)}>
 					<Settings />
-				</Button>
+				</IconButton>
 				{location && (
-					<Button
-						variant="ghost"
-						size="icon-sm"
-						aria-label={t('weather.retry')}
+					<IconButton
+						label={t('weather.retry')}
 						onClick={() => {
 							void store.weather(entryId, true);
 						}}
 					>
 						<RefreshCw />
-					</Button>
+					</IconButton>
 				)}
 			</WidgetActions>
 			<div className="flex h-full min-h-0 flex-col justify-center gap-3" data-clock-weather>
@@ -91,7 +97,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 					</div>
 					<Button
 						variant="ghost"
-						className="h-auto max-w-full gap-3 px-2 py-1 text-left"
+						className="h-auto min-w-0 max-w-full shrink gap-3 px-2 py-1 text-left"
 						onClick={() => (location ? setDetails(true) : setConfigure(true))}
 					>
 						{weather ? (
@@ -100,8 +106,8 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 									{getWeatherEmoji(weather.weatherCode)}
 								</span>
 								<span className="grid min-w-0 gap-1">
-									<span className="flex items-baseline gap-2">
-										<strong className="text-2xl font-medium tabular-nums">
+									<span className="flex min-w-0 items-baseline gap-2">
+										<strong className="shrink-0 text-2xl font-medium tabular-nums">
 											{degrees(weather.temperature)}
 										</strong>
 										<span className="truncate text-xs">{location?.cityName}</span>
@@ -116,7 +122,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 							<>
 								<CloudSun />
 								<span className="truncate text-xs">
-									{location ? current?.error || t('home.dashboard.loading') : t('weather.configure')}
+									{location ? location.cityName : t('weather.configure')}
 								</span>
 							</>
 						)}
@@ -129,7 +135,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 								key={day}
 								type="button"
 								onClick={() => setDetails(true)}
-								className="min-h-16 rounded-md p-1 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+								className="min-h-16 min-w-0 overflow-hidden rounded-md p-1 outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								<span className="block text-muted-foreground">
 									{new Date(`${day}T12:00:00`).toLocaleDateString(locale, { weekday: 'short' })}
@@ -142,12 +148,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 						))}
 					</div>
 				)}
-				{current?.error && weather && (
-					<p role="status" className="m-0 truncate text-xs text-muted-foreground">
-						{current.error} ·{' '}
-						{t('weather.stale', { time: new Date(weather.fetchedAt).toLocaleTimeString(locale) })}
-					</p>
-				)}
+				{status}
 			</div>
 			{configure && (
 				<DashboardDialog title={t('weather.configure')} onClose={() => setConfigure(false)}>
@@ -201,10 +202,8 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 												{h.weatherCode === null ? '—' : getWeatherEmoji(h.weatherCode)}
 											</span>
 											<strong className="block">{degrees(h.temperature)}</strong>
-											<span
-												title={t('weather.rain')}
-												className="mt-2 block text-muted-foreground"
-											>
+											<span className="mt-2 block text-muted-foreground">
+												<span className="sr-only">{t('weather.rain')} </span>
 												{h.precipitation === null ? '—' : `${h.precipitation}%`}
 											</span>
 										</div>
@@ -225,7 +224,8 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 										<span className="tabular-nums">
 											{degrees(weather.dailyMin[i])} / {degrees(weather.dailyMax[i])}
 										</span>
-										<span className="text-muted-foreground" title={t('weather.rain')}>
+										<span className="text-muted-foreground">
+											<span className="sr-only">{t('weather.rain')} </span>
 											{weather.dailyPrecipitation?.[i] === undefined
 												? '—'
 												: `${weather.dailyPrecipitation[i]}%`}
@@ -239,7 +239,7 @@ export function ClockWidget({ store, entryId = 'default' }: { store: BoardStore;
 							</p>
 						</>
 					) : (
-						<p>{current?.error || t('home.dashboard.loading')}</p>
+						status
 					)}
 				</DashboardDialog>
 			)}

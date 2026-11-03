@@ -1,13 +1,14 @@
 // Layout engine: react-grid-layout 2.2.4 (MIT). Tile content and widget frames adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/immersive.ts
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Platform } from 'obsidian';
 import { Responsive } from 'react-grid-layout';
-import { toast } from 'sonner';
 import { useStore } from 'zustand';
 import { Ellipsis, PanelLeft, Plus } from 'lucide-react';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { Button } from '../../../../ui/components/button';
+import { EmptyState } from '../../../../ui/components/huhu/EmptyState';
 import { useOwnerDocument } from '../../../../ui/react/contexts';
+import { useDesignNotice } from '../../../../ui/react/design-scope';
 import { useT } from '../../../../ui/react/hooks';
 import type { BoardStore } from '../../services/board-store';
 import { homeServices } from '../../services/instances';
@@ -91,6 +92,8 @@ function BoardCanvasView({
 		path = useStore(store.state, (s) => s.path),
 		catalog = useCatalogRevision(),
 		t = useT(),
+		notice = useDesignNotice(),
+		frameId = useId(),
 		doc = useOwnerDocument(),
 		{ ref: gridRef, width } = useGridWidth(),
 		[adding, setAdding] = useState(false),
@@ -235,7 +238,7 @@ function BoardCanvasView({
 				...(before.grid?.md ? { md: layouts.md.filter((item) => item.i !== source.id) } : {}),
 			});
 		void observeBoardAction(done);
-		toast(t('canvas.removed', { name }), {
+		notice(t('canvas.removed', { name }), {
 			action: {
 				label: t('canvas.undo'),
 				onClick: () => {
@@ -323,9 +326,14 @@ function BoardCanvasView({
 				className="dashboard-scroll-region flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pb-6 max-[960px]:px-3"
 			>
 				<div
+					role="group"
+					aria-labelledby={`${frameId}-controls`}
 					data-narrow={narrow || undefined}
 					className="dashboard-canvas-bar grid w-full shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 py-3 data-[narrow]:grid-cols-[minmax(0,1fr)_auto]"
 				>
+					<span id={`${frameId}-controls`} className="sr-only">
+						{t('home.frame.boardControls')}
+					</span>
 					<WorkspaceSwitcher store={store} />
 					<div className="flex min-w-0 justify-center data-[narrow]:order-last data-[narrow]:col-span-2" data-narrow={narrow || undefined}>
 						<BoardTitle store={store} />
@@ -369,14 +377,16 @@ function BoardCanvasView({
 								onDragStop={(layout) => commit(breakpoint, layout)}
 								onResizeStop={(layout) => commit(breakpoint, layout)}
 							>
-								{sources.map((source) => {
+								{sources.map((source, index) => {
 									const kind = kindOfSource(source),
 										tile = layouts.lg.find((item) => item.i === source.id),
-										label = labelOf(source, kind);
+										label = labelOf(source, kind),
+										titleId = `${frameId}-tile-${index}`;
 									const current = kind && tile ? exactTier(kind, { w: tile.w, h: tile.h }) : undefined;
 									return (
 										<article
 											key={source.id}
+											aria-labelledby={titleId}
 											data-widget-key={sourceWidgetKey(source)}
 											data-tile={source.id}
 											className="huhu-widget-tile dashboard-widget-card flex min-h-0 min-w-0 flex-col"
@@ -386,6 +396,7 @@ function BoardCanvasView({
 												source={source}
 												kind={kind}
 												label={label}
+												titleId={titleId}
 												current={current}
 												mobile={mobile}
 												narrow={narrow}
@@ -411,7 +422,11 @@ function BoardCanvasView({
 						)}
 					</div>
 					{sources.length === 0 && (
-						<p className="p-6 text-center text-sm text-[var(--db-text-muted)]">{t('canvas.noWidgets')}</p>
+						<EmptyState
+							size="sm"
+							className="p-6"
+							title={t('canvas.noWidgets')}
+						/>
 					)}
 				</div>
 			</div>

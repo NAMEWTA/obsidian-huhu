@@ -1,8 +1,9 @@
 // Layout and interaction adapted from PandoraReads/apex-dashboard ac4d2c7 (MIT), Copyright (c) 2025 PandoraReads: src/workspace-switcher.ts
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useStore } from 'zustand';
 import { Plus } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { Input } from '../../../../ui/components/input';
 import { Label } from '../../../../ui/components/label';
 import { useT } from '../../../../ui/react/hooks';
@@ -12,7 +13,8 @@ import { IconButton } from '../board/controls';
 import { boardEntries, boardLabel } from './board-names';
 export function WorkspaceSwitcher({ store }: { store: BoardStore }) {
 	const { settings, path } = useStore(store.state),
-		t = useT();
+		t = useT(),
+		labelId = useId();
 	const [open, setOpen] = useState(false),
 		[name, setName] = useState(''),
 		[busy, setBusy] = useState(false);
@@ -31,24 +33,34 @@ export function WorkspaceSwitcher({ store }: { store: BoardStore }) {
 	};
 	return (
 		<>
-			<div className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--db-bg-hover)] p-1">
+			<div
+				role="group"
+				aria-labelledby={labelId}
+				className="dashboard-workspace-switcher flex w-fit max-w-full min-w-0 flex-wrap items-center gap-1 rounded-full bg-[var(--db-bg-hover)] p-1"
+			>
+				<span id={labelId} className="sr-only">
+					{t('home.frame.boards')}
+				</span>
 				{boardEntries(settings).map((entry) => {
 					const label = boardLabel(entry, t);
 					return (
-						<Button
-							key={entry.file}
-							size="xs"
-							variant={entry.file === path ? 'secondary' : 'ghost'}
-							className="h-5 max-w-32 min-w-5 rounded-full px-2 text-[11px]"
-							title={label}
-							aria-label={label}
-							aria-current={entry.file === path ? 'page' : undefined}
-							onClick={() => {
-								void store.host.switchWorkspace(entry.file).then(() => store.switch(entry.file));
-							}}
-						>
-							<span className="min-w-0 truncate">{label}</span>
-						</Button>
+						<Tooltip key={entry.file}>
+							<TooltipTrigger asChild>
+								<Button
+									size="xs"
+									variant={entry.file === path ? 'secondary' : 'ghost'}
+									className="h-5 max-w-32 min-w-5 rounded-full px-2 text-[11px]"
+									aria-label={label}
+									aria-current={entry.file === path ? 'page' : undefined}
+									onClick={() => {
+										void store.host.switchWorkspace(entry.file).then(() => store.switch(entry.file));
+									}}
+								>
+									<span className="min-w-0 truncate">{label}</span>
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>{label}</TooltipContent>
+						</Tooltip>
 					);
 				})}
 				<IconButton

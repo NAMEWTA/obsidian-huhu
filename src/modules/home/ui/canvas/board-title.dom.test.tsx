@@ -39,11 +39,11 @@ test('the switcher and the header show the names of the boards, not their number
 	expect(within(switcher).getAllByRole('button').map((b) => b.textContent)).toEqual(['Work', 'Board 2', '']);
 	expect(within(switcher).getByRole('button', { name: 'Work' }).getAttribute('aria-current')).toBe('page');
 	expect(document.querySelector('[data-board-title]')!.textContent).toBe('Work');
-	// a long name is cut in the pill and kept whole in its title
+	// a long name is cut in the pill and kept whole in the button's name; the tooltip is the shared one, never a title attribute
 	cleanup();
 	const long = 'A board named with far too many words to fit in the pill';
 	scene([long, '']);
-	expect(within(document.querySelector<HTMLElement>('.dashboard-workspace-switcher')!).getByRole('button', { name: long }).getAttribute('title')).toBe(long);
+	expect(within(document.querySelector<HTMLElement>('.dashboard-workspace-switcher')!).getByRole('button', { name: long }).hasAttribute('title')).toBe(false);
 });
 
 test('a new board is made with the name that was typed, and the dialog closes after it', async () => {

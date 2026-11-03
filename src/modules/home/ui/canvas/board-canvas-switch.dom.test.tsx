@@ -4,6 +4,7 @@ import { createStore } from 'zustand/vanilla';
 import { memoryVault } from '../../../../../scripts/fixtures/memory-vault';
 import { contentFiles } from '../../../../host/obsidian/storage/content-files';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { setLanguage, t } from '../../../../shared/i18n';
 import type { HomeWidgetKind } from '../../api';
@@ -83,7 +84,9 @@ async function twoBoards(kinds: HomeWidgetKind[], bText: string) {
 	await store.init();
 	render(
 		<TestProviders>
+			<DesignScope>
 			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	let release: () => void = () => {};
@@ -254,7 +257,9 @@ test('while switching, the old page cannot write: its controls do nothing and th
 	const { vault, store } = await boards([probe], withProbe, unconverted);
 	render(
 		<TestProviders>
+			<DesignScope>
 			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	let release: () => void = () => {};
@@ -331,7 +336,9 @@ test('when the way back fails too the page stays read-only with the reason, and 
 	const { vault, store } = await boards([probe], withProbe, unconverted);
 	render(
 		<TestProviders>
+			<DesignScope>
 			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	const write = vault.adapter.write.bind(vault.adapter);
@@ -368,7 +375,9 @@ test('a delete confirmation opened on A is closed, not hidden, when a switch sta
 	(store.host as unknown as { closeOverlays: () => void }).closeOverlays = closeOverlays;
 	render(
 		<TestProviders>
+			<DesignScope>
 			<BoardCanvas store={store} context={{} as NativeSurfaceContext} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.pointerDown(screen.getByRole('button', { name: t('canvas.moreActions', { name: 'Notes' }) }), {
@@ -466,7 +475,9 @@ test('a capture finishing on A cannot clear the draft typed on B afterwards', as
 	const { vault, store, release, held } = await captureFixture();
 	render(
 		<TestProviders>
+			<DesignScope>
 			<CaptureComposer store={store.view(0)} count={0} onOpenToday={() => {}} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.keyDown(type('A submitted'), { key: 'Enter' });
@@ -489,7 +500,9 @@ test('on the same board only the submitted draft is cleared: text typed during t
 	const { store, release, held } = await captureFixture();
 	render(
 		<TestProviders>
+			<DesignScope>
 			<CaptureComposer store={store.view()} count={0} onOpenToday={() => {}} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	fireEvent.keyDown(type('first'), { key: 'Enter' });

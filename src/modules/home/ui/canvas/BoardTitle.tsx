@@ -3,6 +3,7 @@ import { useStore } from 'zustand';
 import { Pencil } from 'lucide-react';
 import { Button } from '../../../../ui/components/button';
 import { Input } from '../../../../ui/components/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../../ui/components/tooltip';
 import { useT } from '../../../../ui/react/hooks';
 import type { BoardStore } from '../../services/board-store';
 import { boardEntries, boardLabel } from './board-names';
@@ -56,21 +57,25 @@ export function BoardTitle({ store }: { store: BoardStore }) {
 			/>
 		);
 	return (
-		<Button
-			variant="ghost"
-			size="sm"
-			data-board-title
-			className="group/title max-w-full min-w-0 gap-1.5 px-2 text-sm font-medium"
-			title={t('home.dashboard.renameBoard')}
-			aria-label={`${label} - ${t('home.dashboard.renameBoard')}`}
-			onClick={() => {
-				cancelled.current = false;
-				setDraft(entry?.name ?? '');
-				setEditing(true);
-			}}
-		>
-			<span className="min-w-0 truncate">{label}</span>
-			<Pencil className="size-3 shrink-0 opacity-0 group-hover/title:opacity-60 group-focus-visible/title:opacity-60" />
-		</Button>
+		<Tooltip>
+			<TooltipTrigger asChild>
+				<Button
+					variant="ghost"
+					size="sm"
+					data-board-title
+					className="group/title max-w-full min-w-0 gap-1.5 px-2 text-sm font-medium"
+					aria-label={`${label} - ${t('home.dashboard.renameBoard')}`}
+					onClick={() => {
+						cancelled.current = false;
+						setDraft(entry?.name ?? '');
+						setEditing(true);
+					}}
+				>
+					<span className="min-w-0 truncate">{label}</span>
+					<Pencil className="size-3 shrink-0 opacity-0 group-hover/title:opacity-60 group-focus-visible/title:opacity-60" />
+				</Button>
+			</TooltipTrigger>
+			<TooltipContent>{t('home.dashboard.renameBoard')}</TooltipContent>
+		</Tooltip>
 	);
 }

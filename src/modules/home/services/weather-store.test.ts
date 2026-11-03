@@ -259,3 +259,19 @@ test('two live boards retain independent instance requests and disposal ignores 
 	expect(other.state.getState().weatherByInstance.a?.data).toBeNull();
 	expect(vi.getTimerCount()).toBe(0);
 });
+
+test('cancelling a held request keeps the old forecast, ends in a retryable cancelled state and drops the late reply', async () => {
+	const held = deferred();
+	mocks.fetch.mockReturnValueOnce(held.promise).mockResolvedValueOnce(weather(30));
+	const pending = store.weather('a');
+	store.cancelWeather('a');
+	await pending;
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'cancelled', retryable: true, data: null });
+	held.resolve(weather(-9));
+	await Promise.resolve();
+	expect(store.state.getState().weatherByInstance.a?.status).toBe('cancelled');
+	await store.weather('a', true);
+	expect(store.state.getState().weatherByInstance.a).toMatchObject({ status: 'ready', data: { temperature: 30 } });
+	store.cancelWeather('a');
+	expect(store.state.getState().weatherByInstance.a?.status).toBe('ready');
+});

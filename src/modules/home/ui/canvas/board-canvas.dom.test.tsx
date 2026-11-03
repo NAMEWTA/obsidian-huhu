@@ -2,6 +2,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createStore } from 'zustand/vanilla';
 import { TestProviders } from '../../../../ui/react/test-providers';
+import { DesignScope } from '../../../../ui/react/design-scope';
 import type { NativeSurfaceContext } from '../../../../ui/native-surface';
 import { setLanguage, t } from '../../../../shared/i18n';
 import type { HomeWidgetKind } from '../../api';
@@ -79,7 +80,9 @@ function fixture(
 	} as unknown as BoardStore;
 	render(
 		<TestProviders>
+			<DesignScope>
 			<BoardCanvas store={store} context={context as NativeSurfaceContext} onBreakpoint={onBreakpoint} />
+		</DesignScope>
 		</TestProviders>,
 	);
 	return { store, sync, state, data };
@@ -463,4 +466,30 @@ test('the navigation toggle in the header does something or is not there: a boar
 	fixture(undefined, undefined, undefined, undefined, { togglePanel });
 	fireEvent.click(screen.getByRole('button', { name: t('home.dashboard.togglePanel') }));
 	expect(togglePanel).toHaveBeenCalledTimes(1);
+});
+
+test('each tile is a region named by its visible title and nothing in the frame is a whole-region tooltip', async () => {
+	fixture([member, { ...member, memberId: 'probe:probe:two', instanceId: 'two' }], [
+		{ ...probe, instances: () => [{ id: 'default' }, { id: 'two' }] },
+	], {
+		v: 2,
+		lg: [
+			{ i: 'widget:probe:probe:default', x: 0, y: 0, w: 6, h: 2 },
+			{ i: 'widget:probe:probe:two', x: 6, y: 0, w: 6, h: 2 },
+		],
+	});
+	await waitFor(() => expect(document.querySelectorAll('[data-tile]').length).toBe(2));
+	const ids = new Set<string>();
+	for (const el of document.querySelectorAll<HTMLElement>('[data-tile]')) {
+		const id = el.getAttribute('aria-labelledby')!;
+		expect(ids.has(id)).toBe(false);
+		ids.add(id);
+		const heading = document.getElementById(id)!;
+		expect(heading.tagName).toBe('H3');
+		expect(heading.textContent!.length).toBeGreaterThan(0);
+		expect(el.hasAttribute('aria-label')).toBe(false);
+		expect(el.querySelectorAll('[title]').length).toBe(0);
+	}
+	expect(document.querySelector('[role=group][aria-labelledby]')).not.toBeNull();
+	expect(document.querySelector('.dashboard-canvas')!.closest('[aria-label],[title]')).toBeNull();
 });

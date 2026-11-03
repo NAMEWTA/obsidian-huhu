@@ -35,7 +35,7 @@ import { weatherInstanceLocation, weatherLocationKey } from '../core/board/weath
 
 export interface BoardWeatherState {
 	locationKey: string;
-	status: 'unconfigured' | 'waiting' | 'loading' | 'refreshing' | 'ready' | 'error';
+	status: 'unconfigured' | 'waiting' | 'loading' | 'refreshing' | 'ready' | 'error' | 'cancelled';
 	stage?: WeatherStage;
 	errorCode?: 'timeout' | 'network' | 'invalid-response';
 	retryable?: boolean;
@@ -741,6 +741,21 @@ export class BoardStore {
 			if (abort) controller.signal.removeEventListener('abort', abort);
 			// Keep the controller addressable until its optional write settles or the next lifecycle event invalidates it.
 		}
+	}
+
+	/** Stops a request the user no longer wants: the last forecast stays, the state says so and a retry is offered. */
+	cancelWeather(instanceId = 'default'): void {
+		const snapshot = this.state.getState(),
+			current = snapshot.weatherByInstance[instanceId];
+		if (this.disposed || (current?.status !== 'loading' && current?.status !== 'refreshing')) return;
+		this.weatherRequests.set(instanceId, (this.weatherRequests.get(instanceId) ?? 0) + 1);
+		this.weatherControllers.get(instanceId)?.abort();
+		this.state.setState({
+			weatherByInstance: {
+				...snapshot.weatherByInstance,
+				[instanceId]: { ...current, status: 'cancelled', retryable: true, error: '' },
+			},
+		});
 	}
 
 	cities(query: string): ReturnType<typeof geocodeCity> {
