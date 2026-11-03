@@ -1,5 +1,5 @@
 // Acceptance: the standalone automation board, inline editor (every action kind, including open-url) and run history have even padding,
-// no overflow and no overlap; an open-url automation is saved, reopened and run in HUHU's browser.
+// no overflow and no overlap; an open-url automation is saved, reopened and run through the system default browser (window.open is recorded, nothing is launched).
 // Fresh disposable vault; HOME, CLI homes and XDG dirs are pointed into the fixture root.
 //   HUHU_OBSIDIAN_EXECUTABLE=/opt/Obsidian/obsidian HUHU_AU_ROOT=/dev/shm/au/run1 [HUHU_AU_MINIMAL=~/refs/obsidian-minimal-9.0.2] \
 //   [HUHU_AU_MODE=dark] [HUHU_AU_WIDTH=1440] [HUHU_AU_SHOTS=<dir>] [HUHU_AU_PORT=19701] \
@@ -43,16 +43,15 @@ if (minimalDir) {
 	appearance.cssTheme = 'Minimal';
 }
 files['.obsidian/appearance.json'] = JSON.stringify(appearance);
-// A local page for the open-url run; nothing leaves the machine.
+// A local page address for the open-url run; nothing leaves the machine.
 const hits = [];
 const server = http.createServer((request, response) => {
-	hits.push(request.url);
 	response.setHeader('content-type', 'text/html');
 	response.end('<title>AU page</title><h1>AU page</h1>');
 });
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const pageUrl = `http://127.0.0.1:${server.address().port}/au`;
-const modules = { home: true, agent: true, automations: true, notifications: true, archives: false, comments: false, browser: true, icons: false, sync: false, navigator: false };
+const modules = { home: true, agent: true, automations: true, notifications: true, archives: false, comments: false, icons: false, sync: false, navigator: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_AU_PORT || 19701),
@@ -60,6 +59,9 @@ const runtime = await launchFreshVault({
 	settings: { version: 1, namespaces: { app: { language: 'zh', introSeen: true, modules }, home: { calendarTaskTarget: { kind: 'file', path: 'CalendarTasks.md' } } } },
 });
 const c = runtime.connection;
+// openUrl hands the address to the system default browser through window.open; record it instead of launching anything.
+await c.evaluate(`window.__huhuOpened = []; window.open = (url) => { window.__huhuOpened.push(String(url)); return null; }; true`);
+const syncHits = async () => { hits.splice(0, hits.length, ...(await c.evaluate('window.__huhuOpened'))); return hits.length; };
 const until = async (expression, name, timeout = 20000) => {
 	const deadline = Date.now() + timeout;
 	while (Date.now() < deadline) {
@@ -174,25 +176,23 @@ try {
 	await until(`!!document.querySelector('[data-automation-row-id]')`, 'saved row');
 	await shot('05-list-with-row');
 	check('list-audit', await audit('[data-automation-page]'));
-	await click('button[aria-label$="的操作"]');
-	await click('[role=menuitem]', '编辑');
+	await click('button[aria-label^="编辑 "]');
 	await until(`!!document.querySelector('${editor} input[aria-label="网址"]')`, 'editor reopened');
 	assert.equal(await c.evaluate(`document.querySelector('${editor} input[aria-label="网址"]').value`), pageUrl);
 	check('open-url-roundtrip', pageUrl);
-	// Manual run from the editor opens the page in HUHU's browser.
+	// Manual run from the editor hands the address to the system default browser.
 	await click(`${editor} button`, '保存并运行');
-	for (let i = 0; i < 100 && !hits.length; i++) await delay(100);
-	assert.ok(hits.length, 'the browser requested the page');
+	for (let i = 0; i < 100 && !(await syncHits()); i++) await delay(100);
+	assert.ok(hits.includes(pageUrl), 'the system browser was asked to open the address');
 	check('open-url-ran', { hits, tabs: await tabs() });
 	await shot('06-after-run');
 
-	// Running from the list row (menu) opens the page again.
+	// Running from the list row opens the page again.
 	await openList();
 	await until(`!!document.querySelector('[data-automation-row-id]')`, 'row for the menu run');
 	const before = hits.length;
-	await click('button[aria-label$="的操作"]');
-	await click('[role=menuitem]', '运行');
-	for (let i = 0; i < 100 && hits.length === before; i++) await delay(100);
+	await click('button[aria-label^="运行 "]');
+	for (let i = 0; i < 100 && (await syncHits()) === before; i++) await delay(100);
 	assert.ok(hits.length > before, 'running from the list opens the page');
 	check('open-url-ran-from-list', hits);
 

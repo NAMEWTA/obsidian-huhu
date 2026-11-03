@@ -22,7 +22,7 @@ try {
 	const identityFile = path.join(runtime.vault, '.huhu/config/identity.json');
 	const identities = JSON.parse(await fs.readFile(identityFile, 'utf8'));
 	check('identity-is-vault-owned', identities.vaultId === first.vaultId && identities.devices[first.deviceId]?.fingerprint?.length === 64);
-	check('legacy-identities-are-not-written', await c.evaluate(`app.loadLocalStorage('huhu.device-id')==null && app.loadLocalStorage('huhu.browser.vault-id')==null`));
+	check('legacy-identities-are-not-written', await c.evaluate(`app.loadLocalStorage('huhu.device-id')==null`));
 	await c.evaluate(`${plugin}.settingsNamespace('local-ui').update(d=>{d.migrated=false;d.values={}}, {persist:'immediate'})`);
 	await c.evaluate(`app.saveLocalStorage('huhu.dashboard.sidebar-pinned','false'); app.saveLocalStorage('huhu.dashboard.media-thumb-size','large'); true`);
 	errors.push(...await c.evaluate('huhuAcceptanceErrors'));

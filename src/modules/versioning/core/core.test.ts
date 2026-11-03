@@ -229,8 +229,8 @@ test('automatic sync clocks continue from the last run and are off at zero minut
 });
 
 const ADD_FAILURE = [
-	'error: open(".huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/profiles/session/Network/Cookies"): Permission denied',
-	"error: unable to index file '.huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/profiles/session/Local Storage/leveldb/LOG'",
+	'error: open(".huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/state/private.db"): Permission denied',
+	"error: unable to index file '.huhu/helpers/6f1c2d4e-0000-4000-8000-000000000001/state/journal.log'",
 	'fatal: adding files failed',
 ].join('\n');
 

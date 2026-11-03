@@ -33,7 +33,7 @@ const click = async expression => { await c.evaluate(`(()=>{const element=${expr
 const sidecars = async () => { const dir=path.join(runtime.vault,'.huhu/editor/comments/files'); return Promise.all((await fs.readdir(dir)).map(async file=>JSON.parse(await fs.readFile(path.join(dir,file),'utf8')))); };
 
 try {
- runtime = await launchFreshVault({ root, port: 9363, files: { 'Note.md': historical, 'Long.md':longBefore, 'Other.md': 'Other window note\n', 'Staged.md': 'base staged\n', '.gitignore': '.obsidian/\n.huhu/\n.trash/\n' }, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','browser','archives','automations','notifications','icons','navigator','versioning','safe'].map(id=>[id,false]).concat([['comments',true]])) } } } });
+ runtime = await launchFreshVault({ root, port: 9363, files: { 'Note.md': historical, 'Long.md':longBefore, 'Other.md': 'Other window note\n', 'Staged.md': 'base staged\n', '.gitignore': '.obsidian/\n.huhu/\n.trash/\n' }, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: Object.fromEntries(['home','agent','archives','automations','notifications','icons','navigator','versioning','safe'].map(id=>[id,false]).concat([['comments',true]])) } } } });
  c = runtime.connection;
  environment = await c.evaluate(`({obsidian:require('@electron/remote').app.getVersion(),platform:require('os').platform(),versions:require('process').versions})`);
  await c.evaluate(`require('@electron/remote').getCurrentWindow().setBounds({x:0,y:0,width:1500,height:1000});true`);

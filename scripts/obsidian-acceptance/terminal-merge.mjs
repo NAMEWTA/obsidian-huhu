@@ -29,7 +29,6 @@ const runtime = await launchFreshVault({
 					home: true,
 					task: true,
 					agent: true,
-					browser: true,
 					archives: true,
 					automations: true,
 					notifications: true,

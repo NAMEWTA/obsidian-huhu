@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-46
 title: "删除主线验收：构建、测试与真实 Obsidian 端到端（截图）"
-status: draft
+status: done
 kind: review
 planning_depth: deep
 planning_depth_reason: "删除主线需真实宿主证据，旧数据/旧库夹具不再要求（ADR-011）"

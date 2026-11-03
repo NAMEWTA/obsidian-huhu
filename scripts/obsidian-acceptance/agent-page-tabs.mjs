@@ -29,7 +29,7 @@ if (minimalDir) {
 		files[`.obsidian/themes/Minimal/${file}`] = await fs.readFile(path.join(minimalDir, file), 'utf8');
 	files['.obsidian/appearance.json'] = JSON.stringify({ cssTheme: 'Minimal' });
 }
-const modules = { home: false, agent: true, automations: true, notifications: true, archives: false, comments: false, browser: false, icons: false, sync: false, navigator: false };
+const modules = { home: false, agent: true, automations: true, notifications: true, archives: false, comments: false, icons: false, sync: false, navigator: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_TABS_PORT || 19601),

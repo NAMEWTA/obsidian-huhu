@@ -23,7 +23,7 @@ function NoticeOutlet({ id }: { id: string }) {
 
 /** A product content region and its overlays, never a shell containing unrelated surfaces.
  * Nested HuhuProviders retain their own portal ownership. CSS stops at nested .huhu-ui roots.
- * Apply at a module's content leaf; do not wrap Browser or its integration entry points.
+ * Apply at a module's content leaf.
  */
 export function DesignScope({ children, className, ...props }: ComponentProps<'div'>) {
 	const doc = useOwnerDocument();

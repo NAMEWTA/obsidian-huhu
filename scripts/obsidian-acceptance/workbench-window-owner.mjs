@@ -5,7 +5,7 @@ import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { launchFreshVault } from './fresh-vault.mjs';
 import { connect } from './cdp.mjs';
-const runtime=await launchFreshVault({root:process.argv[2],port:9276,files:{'.huhu/dashboards/Board.md':'---\nwidgets: []\n---\n## Notes\n'},settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:true,agent:false,browser:false,archives:false,automations:false,sync:false,icons:false,comments:false,notifications:false}},home:{workspaces:{files:['.huhu/dashboards/Board'],names:['Board'],active:0}}}}});
+const runtime=await launchFreshVault({root:process.argv[2],port:9276,files:{'.huhu/dashboards/Board.md':'---\nwidgets: []\n---\n## Notes\n'},settings:{version:1,namespaces:{app:{language:'en',introSeen:true,modules:{home:true,agent:false,archives:false,automations:false,sync:false,icons:false,comments:false,notifications:false}},home:{workspaces:{files:['.huhu/dashboards/Board'],names:['Board'],active:0}}}}});
 let c=runtime.connection;const rows=[];
 const check=(name,passed,detail)=>{rows.push({name,passed,detail});};
 const until=async expression=>{const end=Date.now()+25000;while(Date.now()<end){if(await c.evaluate(expression))return;await delay(70);}throw Error(expression);};

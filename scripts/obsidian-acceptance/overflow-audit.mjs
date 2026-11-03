@@ -340,7 +340,7 @@ try {
 		await until(`!!document.querySelector('[data-page-entry="board"]')`, 'agent sidebar');
 		await matrix('agent-empty');
 		for (const page of ['board', 'automations', 'usage']) await click(`[data-page-entry="${page}"]`);
-		// Two terminal tabs and a browser tab through the controller (the local helper binary, never a download).
+		// Two terminal tabs through the controller (the local helper binary, never a download).
 		await c.evaluate(`(() => {
 			const surface = app.workspace.getLeavesOfType('huhu-workbench-view')[0].view.getNativeSurfaces().find(s => s.getViewType() === 'huhu-agent-page');
 			window.__ac = surface.controller;

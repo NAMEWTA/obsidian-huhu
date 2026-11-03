@@ -346,7 +346,6 @@ async function main() {
 		'huhu-contacts-view',
 		'huhu-automation-view',
 		'terminal-view',
-		'huhu-browser-view',
 	]) {
 		for (const language of ['en', 'zh'] as const) {
 			const placeholder = { type, title: language === 'en' ? 'Product' : '产品' };

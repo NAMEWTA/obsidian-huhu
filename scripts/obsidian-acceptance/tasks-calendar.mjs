@@ -30,7 +30,7 @@ const runtime = await launchFreshVault({
   '参考笔记.md': '# 参考笔记\n- [ ] 普通手写任务不聚合\n',
  },
  settings: { version: 1, namespaces: {
-  app: { language: 'zh', introSeen: true, modules: { home: true, navigator: true, automations: true, notifications: true, agent: false, browser: false, icons: false, archives: false, comments: false, sync: false } },
+  app: { language: 'zh', introSeen: true, modules: { home: true, navigator: true, automations: true, notifications: true, agent: false, icons: false, archives: false, comments: false, sync: false } },
   theme: { preset: 'suliworld', suliworldVariant: 'cream' },
   home: { dashboardFile: '.huhu/dashboards/Tasks', workspaces: { files: ['.huhu/dashboards/Tasks'], names: ['任务'], active: 0 }, shortcutButtons: [{ id: 'reference', label: '参考笔记', icon: 'file-text', type: 'file', target: '参考笔记.md' }] },
   navigator: { calendarOpen: true },

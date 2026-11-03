@@ -32,7 +32,7 @@ if (minimal) {
 }
 // The board the calendar test uses: one calendar widget at the L size (its day cells open the agenda).
 files['.huhu/dashboards/dashboard.md'] = '---\ndashboard: true\nwidgets: [{"memberId":"calendar","provider":"home","kind":"calendar","instanceId":"default"}]\ngrid: {"v":2,"lg":[{"i":"widget:calendar","x":0,"y":0,"w":6,"h":4}]}\ncolumns: []\n---\n';
-const modules = { home: true, agent: false, browser: false, archives: true, automations: true, notifications: true, icons: true, comments: false, navigator: true, sync: false };
+const modules = { home: true, agent: false, archives: true, automations: true, notifications: true, icons: true, comments: false, navigator: true, sync: false };
 const runtime = await launchFreshVault({
 	root,
 	files,

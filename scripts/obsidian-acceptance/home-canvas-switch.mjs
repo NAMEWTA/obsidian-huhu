@@ -11,7 +11,7 @@ import { launchFreshVault } from './fresh-vault.mjs';
 
 const A = '.huhu/dashboards/A', B = '.huhu/dashboards/B';
 const member = { memberId: 'home:calendar:default', provider: 'home', kind: 'calendar', instanceId: 'default' };
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_CANVAS_PORT || 9279),

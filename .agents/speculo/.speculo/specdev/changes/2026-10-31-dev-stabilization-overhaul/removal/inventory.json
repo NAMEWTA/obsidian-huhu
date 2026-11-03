@@ -10,133 +10,107 @@
    "path": ".agents/skills/dev/references/architecture.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/references/build-and-release.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/references/licensing.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/references/module-authoring.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/references/settings-and-i18n.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/references/testing.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/dev/SKILL.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".agents/skills/ui/references/shell.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明"
+   "reason": "开发/界面规则中去掉 Browser/Bot 分区、构建与测试说明",
+   "status": "rewritten"
   },
   {
    "path": ".gitattributes",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "去掉 browser 产物与 generated.json 的 eol 规则"
+   "reason": "去掉 browser 产物与 generated.json 的 eol 规则",
+   "status": "rewritten"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/01-bug.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/02-feature.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/03-improvement.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/04-compatibility.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/05-documentation.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/ISSUE_TEMPLATE/06-question.yml",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能"
-  },
-  {
-   "path": ".github/workflows/browser-phase2-apply.yml",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser CI 工作流"
-  },
-  {
-   "path": ".github/workflows/browser-phase2-checks.yml",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser CI 工作流"
-  },
-  {
-   "path": ".github/workflows/browser-phase2-workspace.yml",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser CI 工作流"
-  },
-  {
-   "path": ".github/workflows/browser-runtime-build.yml",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser CI 工作流"
-  },
-  {
-   "path": ".github/workflows/huhu-bot.yml",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot CI 工作流"
-  },
-  {
-   "path": ".github/workflows/huhubot-storage-windows.yml",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot CI 工作流"
+   "reason": "提示不要上传 Cookie 的隐私声明，非 Browser 功能；“内置浏览器”模块选项已由 T-46 删除"
   },
   {
    "path": ".github/workflows/lint.yml",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "release 去掉 browser/bot job 与资产；lint 去掉 Go 步骤、huhu-bot 构建校验与 browser 产物 diff"
+   "reason": "release 去掉 browser/bot job 与资产；lint 去掉 Go 步骤、huhu-bot 构建校验与 browser 产物 diff",
+   "status": "rewritten"
   },
   {
    "path": ".github/workflows/perf-sampling.yml",
@@ -148,68 +122,41 @@
    "path": ".github/workflows/release.yml",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "release 去掉 browser/bot job 与资产；lint 去掉 Go 步骤、huhu-bot 构建校验与 browser 产物 diff"
+   "reason": "release 去掉 browser/bot job 与资产；lint 去掉 Go 步骤、huhu-bot 构建校验与 browser 产物 diff",
+   "status": "rewritten"
   },
   {
    "path": ".gitignore",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "去掉 native/browser-runtime/target/"
+   "reason": "去掉 native/browser-runtime/target/",
+   "status": "rewritten"
   },
   {
    "path": "AGENTS.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "项目事实中去掉 Browser/Bot Runner 描述"
-  },
-  {
-   "path": "browser-cli.cjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 根产物"
-  },
-  {
-   "path": "browser-cli.cjs.sha256",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 根产物"
-  },
-  {
-   "path": "browser-worker.cjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 根产物"
-  },
-  {
-   "path": "browser-worker.cjs.sha256",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 根产物"
-  },
-  {
-   "glob": "contracts/hap/**",
-   "count": 10,
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "HAP wire 合同，仅 huhubot 使用"
+   "reason": "项目事实中去掉 Browser/Bot Runner 描述",
+   "status": "rewritten"
   },
   {
    "path": "docs/agent-workbench-acceptance.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/agent-workbench.md",
-   "disposition": "rewrite",
-   "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "disposition": "keep",
+   "reason": "SharedWorkspaceOwner 是 Agent Space 记录/布局恢复 owner 的现行名称"
   },
   {
    "path": "docs/architecture.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/archives-implementation.md",
@@ -218,132 +165,67 @@
    "reason": "通用用语"
   },
   {
-   "glob": "docs/assets/browser/**",
-   "count": 5,
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser 验收证据资产"
-  },
-  {
    "path": "docs/automation.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
-  },
-  {
-   "path": "docs/browser-phase2-traceability.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/browser-phase2.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/browser-protocol.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/browser-runtime.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/browser-verification.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/browser.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/dashboard.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/data.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/development.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
-  },
-  {
-   "path": "docs/huhu-bot-acceptance.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/huhu-bot-performance.md",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "Browser/Bot 专属文档"
-  },
-  {
-   "path": "docs/images/readme/browser.png",
-   "disposition": "delete",
-   "ticket": "T-45",
-   "reason": "README 浏览器截图"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/privacy.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/README.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/references.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/sync.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/third-party/apex-dashboard.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉已删除功能（music 小组件、Browser 归属）的叙述"
-  },
-  {
-   "path": "docs/third-party/huhu-bot.md",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot Go 依赖说明"
-  },
-  {
-   "glob": "docs/third-party/licenses/go/**",
-   "count": 19,
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Go 依赖许可原文，随 native/huhubot 删除；third-party-notices 不再引用"
+   "reason": "去掉已删除功能（music 小组件、Browser 归属）的叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/third-party/orca-LICENSE.txt",
@@ -355,165 +237,119 @@
    "path": "docs/third-party/orca-terminal-workbench.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉已删除功能（music 小组件、Browser 归属）的叙述"
+   "reason": "去掉已删除功能（music 小组件、Browser 归属）的叙述",
+   "status": "rewritten"
   },
   {
    "path": "docs/workbench.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser/Bot/网页分区/网易云叙述"
+   "reason": "去掉 Browser/Bot/网页分区/网易云叙述",
+   "status": "rewritten"
   },
   {
    "path": "eslint.config.mts",
-   "disposition": "rewrite",
-   "ticket": "T-41/T-44",
-   "reason": "去掉 browser/huhubot 规则与 ignores；globals.browser 保留"
+   "disposition": "keep",
+   "reason": "globals.browser 是 ESLint 全局变量集合名（第三方 API）"
   },
   {
    "path": "main.css",
-   "disposition": "rewrite",
-   "ticket": "Lead",
-   "reason": "生成产物，由 Lead 统一重建；不手改"
+   "disposition": "keep",
+   "reason": "生成产物，命中为第三方库样式/通用词"
   },
   {
    "path": "main.js",
-   "disposition": "rewrite",
-   "ticket": "Lead",
-   "reason": "生成产物，由 Lead 统一重建；不手改"
-  },
-  {
-   "glob": "native/browser-runtime/**",
-   "count": 9,
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 原生运行时整体删除"
-  },
-  {
-   "glob": "native/huhubot/**",
-   "count": 501,
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Go Bot Runner 整体删除（含 go.mod/go.sum/测试/fixtures）"
-  },
-  {
-   "path": "native/pty-server/src/cookies.rs",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "cookie 数据库只读快照；Browser 身份导入已删除后无调用方"
+   "disposition": "keep",
+   "reason": "生成产物，命中均为第三方内容：xterm 的 this.browser、lucide 图标名 music、通用敏感词过滤正则"
   },
   {
    "path": "native/pty-server/src/main.rs",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "去掉 mod cookies 与 Message::Cookies 分发（rusqlite 仍被 agent_data.rs 使用，保留依赖）"
+   "reason": "去掉 mod cookies 与 Message::Cookies 分发（rusqlite 仍被 agent_data.rs 使用，保留依赖）",
+   "status": "rewritten"
   },
   {
    "path": "native/pty-server/tests/control_outbox.rs",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力"
+   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力",
+   "status": "rewritten"
   },
   {
    "path": "native/pty-server/tests/control.rs",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力"
+   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力",
+   "status": "rewritten"
   },
   {
    "path": "native/pty-server/tests/editor.rs",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力"
+   "reason": "去掉 cookies 消息/结果用例，保留其余控制/出站/编辑协议断言；需改用 history 作为同类第二能力",
+   "status": "rewritten"
   },
   {
    "path": "NOTICE",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "删除 Browser 衍生/参考项目的归属段（Browser 代码删除后无对应使用）"
+   "reason": "删除 Browser 衍生/参考项目的归属段（Browser 代码删除后无对应使用）",
+   "status": "rewritten"
   },
   {
    "path": "package.json",
    "disposition": "rewrite",
    "ticket": "T-41/T-42/T-44",
-   "reason": "删除 build 链 browser 片段与 build:browser/check:browser-native/accept:browser-native/build:huhu-bot/check:huhu-bot/test:huhu-bot-*/bench:huhu-bot/test:web-section/test:music-*；移除 ajv、ajv-formats、zod 依赖"
+   "reason": "删除 build 链 browser 片段与 build:browser/check:browser-native/accept:browser-native/build:huhu-bot/check:huhu-bot/test:huhu-bot-*/bench:huhu-bot/test:web-section/test:music-*；移除 ajv、ajv-formats、zod 依赖",
+   "status": "rewritten"
   },
   {
    "path": "pnpm-lock.yaml",
-   "disposition": "rewrite",
-   "ticket": "T-41/T-44",
-   "reason": "随 package.json 重新生成，移除 ajv/ajv-formats/zod 及仅其使用的传递依赖"
+   "disposition": "keep",
+   "reason": "第三方包名（baseline-browser-mapping、@vitest/browser-*），非 HUHU Browser"
   },
   {
    "path": "README.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser 功能与截图叙述（双语）"
+   "reason": "去掉 Browser 功能与截图叙述（双语）",
+   "status": "rewritten"
   },
   {
    "path": "README.ZH.md",
    "disposition": "rewrite",
    "ticket": "T-45",
-   "reason": "去掉 Browser 功能与截图叙述（双语）"
-  },
-  {
-   "path": "scripts/assemble-browser-runtime.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
-   "path": "scripts/bench-huhu-bot.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
-   "path": "scripts/browser-cli-options.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
-   "path": "scripts/build-browser-client.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
-   "path": "scripts/build-browser-runtime.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
-   "path": "scripts/build-huhu-bot.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
+   "reason": "去掉 Browser 功能与截图叙述（双语）",
+   "status": "rewritten"
   },
   {
    "path": "scripts/bundle-budget.json",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "删除 moduleActivationBytes.browser/huhubot 阈值（只删不增）"
+   "reason": "删除 moduleActivationBytes.browser/huhubot 阈值（只删不增）",
+   "status": "rewritten"
   },
   {
    "path": "scripts/dev.mjs",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "去掉 browser runtime/client 重建与 browser 目录监视"
+   "reason": "去掉 browser runtime/client 重建与 browser 目录监视",
+   "status": "rewritten"
   },
   {
    "path": "scripts/documentation-policy.mjs",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "去掉 native/browser-runtime 与 native/huhubot 文档分类"
+   "reason": "去掉 native/browser-runtime 与 native/huhubot 文档分类",
+   "status": "rewritten"
   },
   {
    "path": "scripts/fixtures/dev-overhaul-startup/activation.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "依赖 musicVaultFixture，删除音乐夹具后改用无音乐的 Home 夹具"
+   "reason": "依赖 musicVaultFixture，删除音乐夹具后改用无音乐的 Home 夹具",
+   "status": "rewritten"
   },
   {
    "path": "scripts/fixtures/iconic/upstream-1.1.10.json",
@@ -528,82 +364,39 @@
    "reason": "scripts/perf、UI runner 的独立 Chrome/Chromium 或 esbuild platform:browser，非产品 Browser（OUT）"
   },
   {
-   "path": "scripts/huhu-bot-build.test.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
-   "path": "scripts/huhu-bot-notices.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
-   "path": "scripts/huhu-bot-notices.test.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
-   "path": "scripts/install-browser-runtime.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
    "path": "scripts/module-strings.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-44",
-   "reason": "移除 browser/huhubot/lazy-browser 词典导入"
-  },
-  {
-   "path": "scripts/music-electron-stub.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
-  },
-  {
-   "path": "scripts/music-network-stub.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
-  },
-  {
-   "path": "scripts/music-vault-fixture.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
-  },
-  {
-   "path": "scripts/obsidian-acceptance/agent-browser-v2.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser v2 真实 Obsidian 验收脚本"
+   "reason": "移除 browser/huhubot/lazy-browser 词典导入",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/agent-page-tabs.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/agent-skills-settings.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/agent-system-account.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/agent-tools.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/agent-workbench-activity.mjs",
@@ -633,7 +426,7 @@
    "path": "scripts/obsidian-acceptance/automation-layout.mjs",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "reason": "open-url 验收改为记录 window.open（系统默认浏览器）；命中均为“系统默认浏览器”通用用语"
   },
   {
    "path": "scripts/obsidian-acceptance/cdp.mjs",
@@ -643,225 +436,231 @@
   },
   {
    "path": "scripts/obsidian-acceptance/comments-edges.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/comments-fuzzy-performance.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/comments-v2.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/content-move-boundaries.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/content-renames.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
-  },
-  {
-   "path": "scripts/obsidian-acceptance/fixtures/huhu-bot/seed.json",
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "Bot 真实 Obsidian 验收脚本与 fixture"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-canvas-switch-dialog.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-canvas-switch.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-d2a.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "Home 夹具含 music 小组件"
+   "reason": "Home 夹具含 music 小组件",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-d2b-fixture.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "Home 夹具含 music 小组件"
+   "reason": "Home 夹具含 music 小组件",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-d2b.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-fd.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-grid.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/home-widgets-c2.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
-  },
-  {
-   "path": "scripts/obsidian-acceptance/huhu-bot-note-effects.mjs",
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "Bot 真实 Obsidian 验收脚本与 fixture"
-  },
-  {
-   "path": "scripts/obsidian-acceptance/huhu-bot-sources.mjs",
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "Bot 真实 Obsidian 验收脚本与 fixture"
-  },
-  {
-   "path": "scripts/obsidian-acceptance/huhu-bot.mjs",
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "Bot 真实 Obsidian 验收脚本与 fixture"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/inbox-card.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/navigator-journal.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/navigator-notes.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/navigator-restored-leaf.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/overflow-audit.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/p3-shell.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/release-vault-install.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/status-bar.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/storage-layout.mjs",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "reason": "注释中 “browser/config runtime data” 指 Chromium 配置运行数据，通用用语"
   },
   {
    "path": "scripts/obsidian-acceptance/sync-autostash.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/sync-clone.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/tasks-calendar.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/terminal-merge.mjs",
    "disposition": "rewrite",
    "ticket": "T-40",
-   "reason": "设置夹具含 huhubot/browser 模块开关"
+   "reason": "设置夹具含 huhubot/browser 模块开关",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/terminal-reliability.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/theme-matrix.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/vault-storage.mjs",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/versioning-history.mjs",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "含 .huhu/browser 忽略路径夹具；\"real-browser-worker\" 为 versioning 通用 worker 文案（保持）"
+   "reason": "含 .huhu/browser 忽略路径夹具；\"real-browser-worker\" 为 versioning 通用 worker 文案（保持）",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/workbench-probe.mjs",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "验收夹具的模块列表/设置分类含 browser，随入口删除同步移除"
+   "disposition": "keep",
+   "reason": "等待条件描述 “secondary HUHU content browser” 指次栏的内容浏览树（通用词），非 Browser 产品"
   },
   {
    "path": "scripts/obsidian-acceptance/workbench-window-owner.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-acceptance/workspace-refinement.mjs",
-   "disposition": "keep",
-   "ticket": "-",
-   "reason": "\"browser\" 为 puppeteer/页面通用用语（OUT）"
+   "disposition": "rewrite",
+   "ticket": "T-46",
+   "reason": "T-46 删除 modules 配置中的 browser 键后不再命中",
+   "status": "rewritten"
   },
   {
    "path": "scripts/obsidian-stub.ts",
@@ -897,7 +696,8 @@
    "path": "scripts/third-party-notices.mjs",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "去掉 browser 入口、Rust browser crate、Go 包段"
+   "reason": "去掉 browser 入口、Rust browser crate、Go 包段",
+   "status": "rewritten"
   },
   {
    "path": "scripts/ui-review/fixtures/T-23.tsx",
@@ -918,64 +718,31 @@
    "reason": "scripts/perf、UI runner 的独立 Chrome/Chromium 或 esbuild platform:browser，非产品 Browser（OUT）"
   },
   {
-   "path": "scripts/verify-browser-runtime-native.mjs",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 构建/安装/验收脚本"
-  },
-  {
-   "path": "scripts/verify-huhu-bot-architecture.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
-   "path": "scripts/verify-huhu-bot.mjs",
-   "disposition": "delete",
-   "ticket": "T-41",
-   "reason": "Bot 构建/校验/基准/notices 脚本"
-  },
-  {
    "path": "scripts/verify-issue-regressions.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "回归脚本含 open-browser 命令与 browserOpens 断言"
-  },
-  {
-   "path": "scripts/verify-music-account.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
-  },
-  {
-   "path": "scripts/verify-music-client.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
+   "reason": "回归脚本含 open-browser 命令与 browserOpens 断言",
+   "status": "rewritten"
   },
   {
    "path": "scripts/verify-release-artifacts.mjs",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "pluginAssets 去掉 4 个 browser 文件；移除 verifyBotAssets 与 --bot"
+   "reason": "pluginAssets 去掉 4 个 browser 文件；移除 verifyBotAssets 与 --bot",
+   "status": "rewritten"
   },
   {
    "path": "scripts/verify-reliability.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "注释引用已删除的 verify-browser-runtime-native.mjs"
+   "reason": "注释引用已删除的 verify-browser-runtime-native.mjs",
+   "status": "rewritten"
   },
   {
    "path": "scripts/verify-ui-runtime.mjs",
    "disposition": "keep",
    "ticket": "-",
    "reason": "scripts/perf、UI runner 的独立 Chrome/Chromium 或 esbuild platform:browser，非产品 Browser（OUT）"
-  },
-  {
-   "path": "scripts/verify-web-section.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云/网页分区验证脚本与桩"
   },
   {
    "path": "scripts/verify-workbench-lifecycle.ts",
@@ -999,7 +766,8 @@
    "path": "src/app/commands.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释",
+   "status": "rewritten"
   },
   {
    "path": "src/app/content/new-note.ts",
@@ -1009,315 +777,287 @@
   },
   {
    "path": "src/app/contracts/module.ts",
-   "disposition": "rewrite",
-   "ticket": "T-40/T-42",
-   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项"
+   "disposition": "keep",
+   "reason": "SharedWorkspaceOwner 现为 Agent Space 记录与布局 owner；Browser 部分已由 T-43 删除，名称保留"
   },
   {
    "path": "src/app/contracts/shared-workspace.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "D-018：删除 SharedBrowserTab/SharedBrowserPort 与 owner.browser；SharedWorkspaceOwner 其余（spaces/workspaceStore/recoveryOwner）为 Agent 应用级 owner，保留"
+   "disposition": "keep",
+   "reason": "同上：仅保留 Agent owner，T-43 已删除 SharedBrowserTab/owner.browser"
   },
   {
    "path": "src/app/contracts/workbench.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项"
+   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项",
+   "status": "rewritten"
   },
   {
    "path": "src/app/main.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "disposition": "keep",
+   "reason": "同上：惰性创建 Agent SharedWorkspaceOwner，无 Browser 内容"
   },
   {
    "path": "src/app/manifests.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项"
+   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项",
+   "status": "rewritten"
   },
   {
    "path": "src/app/modules/registry.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释",
+   "status": "rewritten"
   },
   {
    "path": "src/app/recovery.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释",
+   "status": "rewritten"
   },
   {
    "path": "src/app/ribbon.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/nav.test.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "设置产品 browser/huhubot（SettingsProduct、ORDER、开关）"
+   "reason": "设置产品 browser/huhubot（SettingsProduct、ORDER、开关）",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/nav.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "设置产品 browser/huhubot（SettingsProduct、ORDER、开关）"
+   "reason": "设置产品 browser/huhubot（SettingsProduct、ORDER、开关）",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/react/BuiltInSettings.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "设置页内置分类 browser（Globe）与相关夹具"
+   "reason": "设置页内置分类 browser（Globe）与相关夹具",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/react/SearchableSetting.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "设置页内置分类 browser（Globe）与相关夹具"
+   "reason": "设置页内置分类 browser（Globe）与相关夹具",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/react/SettingsPage.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "设置页内置分类 browser（Globe）与相关夹具"
+   "reason": "设置页内置分类 browser（Globe）与相关夹具",
+   "status": "rewritten"
   },
   {
    "path": "src/app/settings/runtime.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "browser 设置命名空间（BrowserSettings、ns.browser）"
-  },
-  {
-   "path": "src/app/workbench/browser-contribution.test.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "仅测 BROWSER_WORKSPACE 贡献，随 Browser 删除"
+   "reason": "browser 设置命名空间（BrowserSettings、ns.browser）",
+   "status": "rewritten"
   },
   {
    "path": "src/app/workbench/compose-workbench.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项"
+   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项",
+   "status": "rewritten"
   },
   {
    "path": "src/app/workbench/focus-state.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释"
+   "reason": "open-browser 命令、globe ribbon、BROWSER_OPEN 注入、browser 模块开关与相关夹具/注释",
+   "status": "rewritten"
   },
   {
    "path": "src/app/workbench/settings-categories.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项"
-  },
-  {
-   "path": "src/host/desktop/browser-session-concurrency.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
-  },
-  {
-   "path": "src/host/desktop/browser-session-main.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
-  },
-  {
-   "path": "src/host/desktop/browser-session-migration.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
-  },
-  {
-   "path": "src/host/desktop/browser-session-migration.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
-  },
-  {
-   "path": "src/host/desktop/browser-session-recovery.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
-  },
-  {
-   "path": "src/host/desktop/browser-session.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "D-018：Home 网页嵌入分区/网易云共用的库内 Electron 会话；消费者在 T-42 删除后无调用方"
+   "reason": "FeatureId/ModuleId、manifest 注册、分区路由、设置分类中的 browser 与 huhubot 项",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/helper-control.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/helper-stream.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/helper.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host-control.integration.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host-control.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host-editor.integration.test.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "disposition": "keep",
+   "reason": "replyCookieAckStopLive 是原生控制协议的回执 cookie（pty-server 协议概念），非浏览器 Cookie"
   },
   {
    "path": "src/host/desktop/native/host-stream.integration.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host.integration.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/host.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/native/runtime.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history"
+   "reason": "helper/host 的 cookies 能力与以 acquire(cookies) 作第二租约的测试需改为 history",
+   "status": "rewritten"
   },
   {
    "path": "src/host/desktop/private-mode.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "MANAGED_DIRECTORIES 去掉 browser"
-  },
-  {
-   "path": "src/host/desktop/retained-browser-file.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Agent 终端路径解析的旧 Browser 文件保留，随 T-43 移除调用方后删除"
-  },
-  {
-   "path": "src/host/desktop/retained-browser-file.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Agent 终端路径解析的旧 Browser 文件保留，随 T-43 移除调用方后删除"
+   "reason": "MANAGED_DIRECTORIES 去掉 browser",
+   "status": "rewritten"
   },
   {
    "path": "src/host/obsidian/storage/device-id.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "去掉 huhu.browser.vault-id 旧本地存储键与 browser_session_unavailable 文案"
+   "reason": "去掉 huhu.browser.vault-id 旧本地存储键与 browser_session_unavailable 文案",
+   "status": "rewritten"
   },
   {
    "path": "src/host/obsidian/storage/device-id.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "去掉 huhu.browser.vault-id 旧本地存储键与 browser_session_unavailable 文案"
+   "reason": "去掉 huhu.browser.vault-id 旧本地存储键与 browser_session_unavailable 文案",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/api.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册"
+   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/backup/format.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/launch/session-api.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/migrations/legacy-layout.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/terminal/links.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/workspace/model.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/workspace/ops.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/core/workspace/sidebar.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/i18n.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册"
+   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/manifest.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册"
+   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/module.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "AGENT_BROWSER_TABS、NATIVE_HELPER_SQLITE、BROWSER_MATERIAL_CONSUMERS、cookieClient、browser 词典键与注册"
-  },
-  {
-   "path": "src/modules/agent/platform/desktop/agents/legacy-accounts.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "依赖 retainLegacyDirectory（browser-session-migration）；按 ADR-011 删除旧 plugin accounts/binaries 保留段及对应测试断言"
+   "disposition": "keep",
+   "reason": "同上：createSharedWorkspaceOwner 仅装配 Agent owner"
   },
   {
    "path": "src/modules/agent/platform/desktop/agents/pi-artifact-profiles.json",
@@ -1326,305 +1066,272 @@
    "reason": "Pi CLI 档案内含 pi 包文件名 open-browser.js（OUT）"
   },
   {
-   "path": "src/modules/agent/platform/desktop/browser-material.test.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Browser 资料移交"
-  },
-  {
-   "path": "src/modules/agent/platform/desktop/browser-material.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Browser 资料移交"
-  },
-  {
    "path": "src/modules/agent/platform/desktop/files.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "夹具含 .huhu/browser/other/legacy-runtime"
+   "reason": "夹具含 .huhu/browser/other/legacy-runtime",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/platform/desktop/files.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "去掉 retainedBrowserFile 回退"
+   "reason": "去掉 retainedBrowserFile 回退",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/platform/desktop/hooks/reader-lease.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "注释中的 browser owner 端口段（端口段 49152–65535 一并停用）"
-  },
-  {
-   "path": "src/modules/agent/platform/desktop/server/cookie-client.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "仅转发 nativeCookieReader"
+   "reason": "注释中的 browser owner 端口段（端口段 49152–65535 一并停用）",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/platform/desktop/spaces/writer-owner.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "注释中的 browser owner 端口段（端口段 49152–65535 一并停用）"
-  },
-  {
-   "path": "src/modules/agent/services/browser-material-consumer.test.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "BROWSER_MATERIAL_CONSUMERS 消费者"
-  },
-  {
-   "path": "src/modules/agent/services/browser-material-consumer.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "BROWSER_MATERIAL_CONSUMERS 消费者"
+   "reason": "注释中的 browser owner 端口段（端口段 49152–65535 一并停用）",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/control/control-native.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/controller-managed-runtimes.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/controller.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "disposition": "keep",
+   "reason": "同上：仅类型引用 Agent owner"
   },
   {
    "path": "src/modules/agent/services/migrations/agent-owners.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/migrations/entry.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "disposition": "keep",
+   "reason": "同上：仅类型引用 Agent owner 的 recoveryOwner"
   },
   {
    "path": "src/modules/agent/services/session-material.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/spaces/space-service-recovery-owner.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
-  },
-  {
-   "path": "src/modules/agent/services/terminal/cookie-survives-cleanup.test.ts",
-   "disposition": "rewrite",
-   "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/terminal/sessions-cancellation.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/workspace-service-spaces.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/workspace-service-stop-native.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/workspace-service.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/services/workspace-service.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
-  },
-  {
-   "path": "src/modules/agent/shared-browser-close.test.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "共享浏览器标签关闭测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/AgentWorkspacePage.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
-  },
-  {
-   "path": "src/modules/agent/ui/browser/BrowserTabView.dom.test.tsx",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Agent 工作区浏览器标签 UI"
-  },
-  {
-   "path": "src/modules/agent/ui/browser/BrowserTabView.tsx",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Agent 工作区浏览器标签 UI"
-  },
-  {
-   "path": "src/modules/agent/ui/browser/BrowserWorkspaceTab.tsx",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Agent 工作区浏览器标签 UI"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/create/classify-input.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/create/Omnibox.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/create/Omnibox.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/create/SpaceForm.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/jump/JumpPalette.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/settings/LegacyImportSection.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/settings/LegacyImportSection.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/settings/TerminalSettings.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/sidebar/AgentSidebar.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/tabs/TabLeadingIcon.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/tabs/TabStrip.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/tabs/WorkspaceTab.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/workspace/WorkspaceLayout.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/agent/ui/workspace/WorkspaceLayout.tsx",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试"
+   "reason": "Agent 工作区 kind:'browser' 标签、Browser 端口、Omnibox/侧栏/标签条/布局中的 browser 分支及相关测试",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/automations/core/actions/definition.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "disposition": "keep",
+   "reason": "注释：打开网址动作交给系统默认浏览器，通用用语"
   },
   {
    "path": "src/modules/automations/core/actions/open-url.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "disposition": "keep",
+   "reason": "注释：打开网址动作交给系统默认浏览器，通用用语"
   },
   {
    "path": "src/modules/automations/core/actions/registry.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/automations/core/documents.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/automations/core/documents.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/automations/i18n.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "disposition": "keep",
+   "reason": "文案“在系统浏览器中打开”，通用用语"
   },
   {
    "path": "src/modules/automations/platform/definitions.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
+   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除",
+   "status": "rewritten"
+  },
+  {
+   "path": "src/modules/automations/services/action-host.test.ts",
+   "disposition": "keep",
+   "reason": "测试名描述 openUrl 交给系统默认浏览器，通用用语，不涉及 Browser 产品"
   },
   {
    "path": "src/modules/automations/services/action-host.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除"
-  },
-  {
-   "glob": "src/modules/browser/**",
-   "count": 117,
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 模块整体删除"
+   "reason": "open-url 改用系统浏览器；browser-workflow 墓碑按 ADR-011 直接删除",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/icon-catalog.ts",
@@ -1648,43 +1355,48 @@
    "path": "src/modules/home/core/board/parser/extract-card-parts.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/parser/generate-default-markdown.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/parser/parse.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/types/model.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "disposition": "keep",
+   "reason": "ticktickCookie 是已退役的滴答清单历史设置字段（早于本次删除、与 Browser/Bot 无关），不在 #41 删除范围"
   },
   {
    "path": "src/modules/home/core/board/widget-members.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/widget-members.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/board/widget-table.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/core/rss/rss-readability.ts",
@@ -1700,21 +1412,22 @@
   },
   {
    "path": "src/modules/home/i18n.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "disposition": "keep",
+   "reason": "rss.openInBrowser 为系统浏览器打开 RSS 链接的文案；滴答清单 Cookie 词条属独立历史集成，不在删除范围"
   },
   {
    "path": "src/modules/home/module.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/module.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/platform/audio/chime.ts",
@@ -1726,67 +1439,30 @@
    "path": "src/modules/home/platform/board/sync.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
-  },
-  {
-   "path": "src/modules/home/platform/desktop/netease-account.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云账号与库内会话租约"
-  },
-  {
-   "path": "src/modules/home/platform/desktop/session-lifetime.test.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云账号与库内会话租约"
-  },
-  {
-   "path": "src/modules/home/platform/desktop/session.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云账号与库内会话租约"
-  },
-  {
-   "path": "src/modules/home/platform/music/media-bytes.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
-  },
-  {
-   "path": "src/modules/home/platform/music/music-service.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
-  },
-  {
-   "path": "src/modules/home/platform/music/netease-client.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/platform/rss/rss-service.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "注释引用将删除的 web-precheck seam"
+   "disposition": "keep",
+   "reason": "注释“open-in-browser 按钮”指系统浏览器打开，通用用语"
   },
   {
    "path": "src/modules/home/services/board-repairs.dom.test.tsx",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "disposition": "keep",
+   "reason": "断言网页快捷卡用系统默认浏览器打开（现行功能），通用用语"
   },
   {
    "path": "src/modules/home/services/home-host.ts",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "disposition": "keep",
+   "reason": "注释说明 openExternal 走系统默认浏览器，通用用语"
   },
   {
    "path": "src/modules/home/services/instances.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）"
+   "reason": "去掉 MusicService/NeteaseAccount、registerMessages(lazy/browser)、openBrowser(BROWSER_OPEN)、music*/web.*/browser_session 词典键（i18n.ts 属 Lead 独占路径，执行者可直接改并报告键）",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/settings.ts",
@@ -1798,31 +1474,29 @@
    "path": "src/modules/home/ui/canvas/AddWidgetPanel.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/canvas/TileFrame.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/canvas/widget-components.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
-  },
-  {
-   "path": "src/modules/home/ui/music/MusicPanel.tsx",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/sections/P1Section.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/sections/section-bodies.dom.test.tsx",
@@ -1832,15 +1506,15 @@
   },
   {
    "path": "src/modules/home/ui/settings/service-settings.dom.test.tsx",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "disposition": "keep",
+   "reason": "断言已退役的 TickTick/WeRead 历史设置字段不被触碰，与 Browser/Bot 无关"
   },
   {
    "path": "src/modules/home/ui/settings/ServiceSettings.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/ui/floating-panel-utils.ts",
@@ -1849,53 +1523,18 @@
    "reason": "注释中的 WebView/open-in-browser 通用用语"
   },
   {
-   "path": "src/modules/home/ui/web/web-precheck.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网页嵌入分区"
-  },
-  {
-   "path": "src/modules/home/ui/web/WebPanel.dom.test.tsx",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网页嵌入分区"
-  },
-  {
-   "path": "src/modules/home/ui/web/WebPanel.tsx",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网页嵌入分区"
-  },
-  {
-   "path": "src/modules/home/ui/widgets/media.dom.test.tsx",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
-  },
-  {
-   "path": "src/modules/home/ui/widgets/MusicWidget.tsx",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "D-018 网易云音乐"
-  },
-  {
    "path": "src/modules/home/ui/widgets/widget-background.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/home/ui/widgets/WidgetBackground.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项"
-  },
-  {
-   "glob": "src/modules/huhubot/**",
-   "count": 126,
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "huhubot 插件侧模块整体删除"
+   "reason": "web 分区解析/生成、WebEmbedConfig、music* 字段与 widget 注册、openIn 选项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/icons/core/res/emojis.json",
@@ -1985,31 +1624,36 @@
    "path": "src/modules/versioning/core/core.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "测试夹具路径 .huhu/browser/... 改为中性路径"
+   "reason": "测试夹具路径 .huhu/browser/... 改为中性路径",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/versioning/core/excludes.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-44",
-   "reason": "默认排除去掉 .huhu/huhubot(T-40) 与 .huhu/browser(T-44)；见 md 风险项"
+   "reason": "默认排除去掉 .huhu/huhubot(T-40) 与 .huhu/browser(T-44)；见 md 风险项",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/versioning/core/local-history.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "测试夹具路径 .huhu/browser/... 改为中性路径"
+   "reason": "测试夹具路径 .huhu/browser/... 改为中性路径",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/versioning/platform/desktop/excludes.test.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-44",
-   "reason": "同上"
+   "reason": "同上",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/versioning/platform/obsidian/history-capture.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "夹具含 .huhu/browser 路径"
+   "reason": "夹具含 .huhu/browser 路径",
+   "status": "rewritten"
   },
   {
    "path": "src/modules/versioning/ui/diff.dom.test.tsx",
@@ -2042,148 +1686,135 @@
    "reason": "通用敏感字段脱敏（cookie 作为敏感键名），与 Browser 无关"
   },
   {
-   "path": "src/shared/i18n/browser.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "browser.* 词典（只有被删文件使用）"
-  },
-  {
    "path": "src/shared/i18n/huhu.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "registerMessages(browser)、about.f.browser*"
+   "reason": "registerMessages(browser)、about.f.browser*",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/lazy/backup.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释"
-  },
-  {
-   "path": "src/shared/i18n/lazy/browser.ts",
-   "disposition": "delete",
-   "ticket": "T-42",
-   "reason": "browser.* 词典（只有被删文件使用）"
+   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/lazy/migration.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释"
+   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/lazy/native.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释"
+   "reason": "agent.migration.browserNote、agent.backup.exclusion.browser-data、native 注释",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/runtime.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "registerMessages(browser)、about.f.browser*"
+   "reason": "registerMessages(browser)、about.f.browser*",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/settings.ts",
    "disposition": "rewrite",
    "ticket": "T-40",
-   "reason": "settings.productHuhuBot 等"
+   "reason": "settings.productHuhuBot 等",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/i18n/workbench.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-42",
-   "reason": "workbench.huhubot* 与 workbench.browser"
+   "reason": "workbench.huhubot* 与 workbench.browser",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/native/control-wire.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力"
-  },
-  {
-   "path": "src/shared/native/cookies.test.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Cookie 读取客户端；唯一生产出口是无消费者的 NATIVE_HELPER_SQLITE"
-  },
-  {
-   "path": "src/shared/native/cookies.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "Cookie 读取客户端；唯一生产出口是无消费者的 NATIVE_HELPER_SQLITE"
+   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/native/host.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力"
+   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/native/lazy-host.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力"
+   "reason": "NativeCapability 去掉 cookies、NativeCookieReader；测试改用 history 能力",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/storage/huhu-paths.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "路径夹具 .huhu/browser；legacyBrowserVaultId 旧身份字段与用例（ADR-011 直接删）"
+   "reason": "路径夹具 .huhu/browser；legacyBrowserVaultId 旧身份字段与用例（ADR-011 直接删）",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/storage/vault-layout.test.ts",
    "disposition": "rewrite",
    "ticket": "T-40",
-   "reason": "HUHUBOT_RUNTIME_ROOT 断言"
+   "reason": "HUHUBOT_RUNTIME_ROOT 断言",
+   "status": "rewritten"
   },
   {
    "path": "src/shared/storage/vault-layout.ts",
    "disposition": "rewrite",
    "ticket": "T-40/T-43/T-44",
-   "reason": "删除 HUHUBOT_RUNTIME_ROOT(T-40)、BROWSER_MATERIALS_ROOT(T-43)、BROWSER_ROOT(T-44)"
+   "reason": "删除 HUHUBOT_RUNTIME_ROOT(T-40)、BROWSER_MATERIALS_ROOT(T-43)、BROWSER_ROOT(T-44)",
+   "status": "rewritten"
   },
   {
    "path": "src/shell/host/workbench-pages.dom.test.tsx",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）"
+   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）",
+   "status": "rewritten"
   },
   {
    "path": "src/shell/host/workbench-pages.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）"
+   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）",
+   "status": "rewritten"
   },
   {
    "path": "src/shell/layout.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）"
+   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）",
+   "status": "rewritten"
   },
   {
    "path": "src/shell/navigation-state.test.ts",
    "disposition": "rewrite",
    "ticket": "T-42",
-   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）"
+   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）",
+   "status": "rewritten"
   },
   {
    "path": "src/shell/navigation-state.ts",
-   "disposition": "rewrite",
-   "ticket": "T-40/T-42",
-   "reason": "导航段 browser: [spaces,identities,files]、huhubot: [chat,…]"
-  },
-  {
-   "path": "src/shell/page/ResourceTabs.dom.test.tsx",
-   "disposition": "rewrite",
-   "ticket": "T-42",
-   "reason": "FeatureId browser、浏览器页夹具与注释（Shell 的资源页机制本身保留）"
+   "disposition": "keep",
+   "reason": "敏感键名过滤正则中的 cookie/token 等通用安全词，非 Browser 功能"
   },
   {
    "path": "src/styles.json",
    "disposition": "rewrite",
    "ticket": "T-40/T-44",
-   "reason": "去掉 huhubot/styles/*.css 与 browser/styles/browser.css 条目"
+   "reason": "去掉 huhubot/styles/*.css 与 browser/styles/browser.css 条目",
+   "status": "rewritten"
   },
   {
    "path": "src/ui/components/command.tsx",
@@ -2201,7 +1832,7 @@
    "path": "src/ui/react/design-scope.tsx",
    "disposition": "keep",
    "ticket": "-",
-   "reason": "浏览器 DOM 通用用语（IME/滚动条等）"
+   "reason": "浏览器环境通用用语"
   },
   {
    "path": "src/ui/react/ime.ts",
@@ -2211,69 +1842,50 @@
   },
   {
    "path": "styles.css",
-   "disposition": "rewrite",
-   "ticket": "Lead",
-   "reason": "生成产物，由 Lead 统一重建；不手改"
+   "disposition": "keep",
+   "reason": "生成产物，命中为第三方库样式/通用词"
   },
   {
    "path": "test/agent-backup/failure.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别"
+   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别",
+   "status": "rewritten"
   },
   {
    "path": "test/agent-backup/fixtures.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别"
+   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别",
+   "status": "rewritten"
   },
   {
    "path": "test/agent-backup/roundtrip.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别"
+   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别",
+   "status": "rewritten"
   },
   {
    "path": "test/agent-migrations/fixtures.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别"
-  },
-  {
-   "path": "test/agent-migrations/legacy-browser.test.ts",
-   "disposition": "delete",
-   "ticket": "T-43",
-   "reason": "仅验证旧 Browser 标签迁移，ADR-011 下随功能删除"
+   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别",
+   "status": "rewritten"
   },
   {
    "path": "test/agent-migrations/legacy-migration.test.ts",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别"
-  },
-  {
-   "path": "test/fixtures/browser-protector.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "仅 browser 测试使用"
+   "reason": "Agent kind:browser 标签夹具、browser-data 备份排除类别",
+   "status": "rewritten"
   },
   {
    "path": "test/fixtures/native/control-v1.json",
    "disposition": "rewrite",
    "ticket": "T-43",
-   "reason": "控制线路夹具中的 cookies-result 条目"
-  },
-  {
-   "path": "test/golden/__snapshots__/browser-assistant.md",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "无任何读取方的 Browser 文档快照（rg 未发现引用）"
-  },
-  {
-   "path": "test/golden/__snapshots__/browser-synthesis.md",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "无任何读取方的 Browser 文档快照（rg 未发现引用）"
+   "reason": "控制线路夹具中的 cookies-result 条目",
+   "status": "rewritten"
   },
   {
    "path": "test/host/computed-surface.test.ts",
@@ -2282,70 +1894,52 @@
    "reason": "使用本机 headless Chrome 的样式计算验证（OUT）"
   },
   {
-   "path": "test/huhu-bot-integration/architecture.test.ts",
-   "disposition": "delete",
-   "ticket": "T-40",
-   "reason": "Bot 架构测试"
-  },
-  {
-   "path": "test/release/browser-client.test.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 客户端/账本测试"
-  },
-  {
-   "path": "test/release/browser-operation-ledger-process.fixture.ts",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser 客户端/账本测试"
-  },
-  {
    "path": "test/release/documentation-checker.test.ts",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望"
+   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望",
+   "status": "rewritten"
   },
   {
    "path": "test/release/documentation-policy.test.ts",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望"
+   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望",
+   "status": "rewritten"
   },
   {
    "path": "test/release/release-artifacts.test.ts",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望"
+   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望",
+   "status": "rewritten"
   },
   {
    "path": "test/release/workflow-gates.test.ts",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望"
+   "reason": "发行资产/工作流门/文档分类测试中去掉 browser、bot 期望",
+   "status": "rewritten"
   },
   {
    "path": "test/sync/git-flow.test.ts",
    "disposition": "rewrite",
    "ticket": "T-44",
-   "reason": "托管忽略规则夹具含 **/.huhu/browser/"
+   "reason": "托管忽略规则夹具含 **/.huhu/browser/",
+   "status": "rewritten"
   },
   {
    "path": "THIRD-PARTY-NOTICES.md",
    "disposition": "rewrite",
    "ticket": "T-41/T-44",
-   "reason": "由 third-party-notices.mjs --write 重新生成"
-  },
-  {
-   "path": "tsconfig.browser-worker.json",
-   "disposition": "delete",
-   "ticket": "T-44",
-   "reason": "Browser worker 编译配置"
+   "reason": "由 third-party-notices.mjs --write 重新生成",
+   "status": "rewritten"
   },
   {
    "path": "vitest.config.ts",
-   "disposition": "rewrite",
-   "ticket": "T-40",
-   "reason": "去掉 huhuBotIntegrationTests 与 huhubot runner 测试项；react-resizable-panels.browser 别名保留"
+   "disposition": "keep",
+   "reason": "注释与别名指 react-resizable-panels 的 browser 构建（第三方包文件名）"
   }
- ]
+ ],
+ "finalizedBy": "T-46"
 }

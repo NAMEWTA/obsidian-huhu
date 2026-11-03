@@ -27,7 +27,7 @@ const store = new CommentStore(memory, { timers: { set: () => 0, clear: () => {}
 for (const name of ['Note.md','Moved.md','Synced.md']) await store.add(name, { anchor: createAnchor(base, 18, 24), text: 'Thread ' + name });
 for (const item of rich) { const quote = item.quote ?? item.source.trimEnd(), start = item.from ?? item.source.indexOf(quote); await store.add(item.path, { anchor: createAnchor(item.source, start, start + quote.length), text: 'Thread ' + item.path }); }
 await store.close();
-const runtime = await launchFreshVault({ root: process.argv[2], port: 9498, files, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home:false,comments:true,agent:false,browser:false,archives:false,automations:false,notifications:false,icons:false,sync:false } } } } });
+const runtime = await launchFreshVault({ root: process.argv[2], port: 9498, files, settings: { version: 1, namespaces: { app: { language: 'en', introSeen: true, modules: { home:false,comments:true,agent:false,archives:false,automations:false,notifications:false,icons:false,sync:false } } } } });
 const c = runtime.connection, rows = []; let pop;
 const until = async (expression, connection = c) => { for (let i=0; i<200; i++) { if (await connection.evaluate(expression)) return; await delay(50); } throw Error('Timeout: ' + expression); };
 const record = async (name, details) => { rows.push({ name, passed: true, ...details }); await fs.writeFile(path.join(runtime.evidence, 'result.json'), JSON.stringify({ passed: true, rows }, null, 2)); };

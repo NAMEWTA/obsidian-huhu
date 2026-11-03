@@ -28,7 +28,7 @@ if (minimal) {
 	files['.obsidian/appearance.json'] = JSON.stringify({ cssTheme: 'Minimal', theme: dark ? 'obsidian' : 'moonstone' });
 } else files['.obsidian/appearance.json'] = JSON.stringify({ theme: dark ? 'obsidian' : 'moonstone' });
 files['普通笔记.md'] = '# 普通笔记\n';
-const modules = { home: true, agent: false, browser: false, archives: true, automations: true, notifications: true, icons: false, comments: false, navigator: true, sync: false };
+const modules = { home: true, agent: false, archives: true, automations: true, notifications: true, icons: false, comments: false, navigator: true, sync: false };
 const runtime = await launchFreshVault({
 	root,
 	files,

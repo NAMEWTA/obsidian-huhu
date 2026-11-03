@@ -20,7 +20,7 @@ const workspace = {
 	active: 'l1',
 	lastOpenFiles: [],
 };
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: on, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: on, sync: false };
 const runtime = await launchFreshVault({
 	root,
 	port: Number(process.env.HUHU_NAV_PORT || 9296),

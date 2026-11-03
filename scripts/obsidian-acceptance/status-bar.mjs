@@ -25,7 +25,7 @@ if (minimalDir) {
 	for (const file of ['theme.css', 'manifest.json', 'LICENSE']) await fs.copyFile(path.join(minimalDir, file), path.join(themeDir, file));
 	await fs.writeFile(path.join(vault, '.obsidian/appearance.json'), JSON.stringify({ cssTheme: 'Minimal' }));
 }
-const modules = { home: true, archives: false, comments: false, browser: false, agent: false, icons: false, sync: false, automations: false, notifications: true };
+const modules = { home: true, archives: false, comments: false, agent: false, icons: false, sync: false, automations: false, notifications: true };
 await fs.writeFile(path.join(vault, '.huhu/config/settings.json'), JSON.stringify({ version: 1, namespaces: { app: { language: 'en', introSeen: true, modules } } }));
 await fs.writeFile(path.join(vault, 'Welcome.md'), '# HUHU status bar fixture\n');
 await fs.writeFile(path.join(profile, 'obsidian.json'), JSON.stringify({ updateDisabled: true, vaults: { abcdef1234567890: { path: vault, ts: Date.now(), open: true } } }));

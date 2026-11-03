@@ -66,7 +66,7 @@ function greet(name: string): string {
 
 中文内容、**加粗**与*斜体*，用来检查中文字体。
 `;
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
 const files = { 'Sample.md': sample, 'Notes/Embedded.md': '# Embedded note\n\n中文内容、**加粗**、*斜体*与 [[Sample|返回样例]]。\n', 'Notes/Project plan.md': '# Plan\n', 'Notes/Reading list.md': '# Reading\n', 'Daily/2026-10-21.md': '# Today\n', 'Ideas.md': '# Ideas\n' };
 if (minimalDir) for (const name of ['theme.css', 'manifest.json']) files[`.obsidian/themes/Minimal/${name}`] = await fs.readFile(path.join(minimalDir, name), 'utf8');
 const { connection: c, stop, shot, evidence } = await launchFreshVault({

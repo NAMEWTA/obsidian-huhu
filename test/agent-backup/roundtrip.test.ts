@@ -30,7 +30,7 @@ const targetSettings = () =>
 	JSON.stringify({
 		version: 1,
 		namespaces: {
-			browser: { homepage: 'keep-me' },
+			other: { homepage: 'keep-me' },
 			agent: { customShellPath: '/mine/shell', permissionMode: 'manual' },
 		},
 	});
@@ -200,7 +200,7 @@ describe('export to an empty vault, with live owners on both sides', () => {
 			dst,
 			settingsDeviceFile(DST.deviceId),
 		);
-		expect(settings.namespaces.browser).toEqual({ homepage: 'keep-me' });
+		expect(settings.namespaces.other).toEqual({ homepage: 'keep-me' });
 		expect(settings.namespaces.agent).toMatchObject({
 			fontSize: 17,
 			fontFamily: 'Fira Code',

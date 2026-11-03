@@ -265,8 +265,7 @@ export const messages = {
 		'agent.spaces.chooseHint':
 			'Select the explicit owner of this terminal. Names and directories do not identify a Space.',
 		'agent.spaces.noSpaces': 'No Space selected',
-		'agent.spaces.noSpacesHint':
-			'Create or select a Space to start terminals and Agents. You can open a webpage now.',
+		'agent.spaces.noSpacesHint': 'Create or select a Space to start terminals and Agents.',
 		'agent.spaces.loading': 'Loading Spaces…',
 		'agent.spaces.unavailable': 'Space data unavailable',
 		'agent.spaces.empty': 'This Space is empty',
@@ -1121,7 +1120,7 @@ export const messages = {
 		'agent.spaces.choose': '选择空间',
 		'agent.spaces.chooseHint': '明确选择此终端的归属。名称与目录不能代替空间身份。',
 		'agent.spaces.noSpaces': '尚未选择空间',
-		'agent.spaces.noSpacesHint': '先新建或选择空间，再启动终端与智能体。现在也可以打开网页。',
+		'agent.spaces.noSpacesHint': '先新建或选择空间，再启动终端与智能体。',
 		'agent.spaces.loading': '正在加载空间…',
 		'agent.spaces.unavailable': '空间数据不可用',
 		'agent.spaces.empty': '此空间为空',

@@ -20,7 +20,7 @@ const boards = TIERS.flatMap((tier) => ['sections', 'widgets'].map((kind) => [ki
 );
 const only = process.env.HUHU_D2B_ONLY?.split(',');
 const selected = boards.filter(([kind, tier]) => !only || only.includes(`${kind}-${tier}`));
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, navigator: false, sync: false };
 const files = { ...vaultFiles() };
 for (const [kind, tier] of boards) files[board(kind, tier) + '.md'] = boardFile(tier, kind);
 const png = files;

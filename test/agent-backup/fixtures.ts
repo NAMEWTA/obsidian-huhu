@@ -296,7 +296,7 @@ export function agentSettingsFile(extra: Record<string, unknown> = {}, others: R
 /** Everything a source device owns, as the products wrote it. */
 export function seedSource(storage: ListStorage, options: { documents?: number; otherDevice?: boolean } = {}): void {
 	const d = SRC.deviceId;
-	storage.files.set(settingsDeviceFile(d), agentSettingsFile({}, { browser: { homepage: 'x' } }));
+	storage.files.set(settingsDeviceFile(d), agentSettingsFile({}, { other: { homepage: 'x' } }));
 	storage.files.set(SETTINGS_VAULT_FILE, JSON.stringify({ version: 1, namespaces: { app: { language: 'en' } } }));
 	storage.files.set(agentWorkbenchPath(d), JSON.stringify(sourceRecords()));
 	storage.files.set(`.huhu/terminal-agent/${d}/history.json`, HISTORY);

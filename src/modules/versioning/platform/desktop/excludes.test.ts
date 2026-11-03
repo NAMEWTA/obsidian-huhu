@@ -15,7 +15,7 @@ const roots: string[] = [];
 afterEach(() => {
 	for (const root of roots.splice(0)) {
 		try {
-			chmodSync(path.join(root, '.huhu/helpers/dev/profiles/session/Network/Cookies'), 0o600);
+			chmodSync(path.join(root, '.huhu/helpers/dev/state/private.db'), 0o600);
 		} catch {
 			// not created
 		}
@@ -27,10 +27,10 @@ function repository() {
 	const root = mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'huhu-sync-'));
 	roots.push(root);
 	execFileSync('git', ['init', '-q'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
-	const cookies = path.join(root, '.huhu/helpers/dev/profiles/session/Network/Cookies');
-	mkdirSync(path.dirname(cookies), { recursive: true });
-	writeFileSync(cookies, 'secret');
-	chmodSync(cookies, 0o000);
+	const privateFile = path.join(root, '.huhu/helpers/dev/state/private.db');
+	mkdirSync(path.dirname(privateFile), { recursive: true });
+	writeFileSync(privateFile, 'secret');
+	chmodSync(privateFile, 0o000);
 	mkdirSync(path.join(root, '.huhu/dashboards'), { recursive: true });
 	writeFileSync(path.join(root, '.huhu/dashboards/dashboard.md'), '# board');
 	mkdirSync(path.join(root, '.huhu/automation/definitions/weekly-1'), { recursive: true });
@@ -64,7 +64,7 @@ test('managed excludes keep private runtime data out of `git add`, and an unread
 			const error = await repo.stageAll().then(() => null, (failure: unknown) => failure);
 			expect(error).toBeInstanceOf(GitError);
 			expect((error as GitError).kind).toBe('index-failed');
-			expect((error as GitError).raw).toContain('Cookies');
+			expect((error as GitError).raw).toContain('private.db');
 		}
 		const host = desktopGitHost(root, 'dev', inertStorage);
 		const file = host.resolve(root, (await repo.git(['rev-parse', '--git-path', 'info/exclude'])).stdout.trim());

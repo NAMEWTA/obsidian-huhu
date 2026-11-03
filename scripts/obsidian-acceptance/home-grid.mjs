@@ -51,7 +51,7 @@ id: tasks
 type: task
 - [ ] Keep this task
 `;
-const modules = { home: true, agent: false, browser: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
+const modules = { home: true, agent: false, archives: false, automations: false, notifications: false, icons: false, comments: false, sync: false, navigator: false };
 const runtime = await launchFreshVault({
 	root: process.argv[2],
 	port: Number(process.env.HUHU_GRID_PORT || 9281),

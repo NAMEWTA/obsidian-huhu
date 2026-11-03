@@ -14,7 +14,7 @@ const TIERS = ['S', 'M', 'L', 'XL'];
 const board = (tier) => `.huhu/dashboards/Board-${tier}`;
 const matrixBoard = (tier) => `.huhu/dashboards/Matrix-${tier}`;
 const empty = '---\nwidgets: []\ngrid: {"v":2,"lg":[]}\n---\n';
-const modules = { home: true, agent: true, browser: false, archives: false, automations: true, notifications: false, icons: false, comments: false, navigator: true, sync: false };
+const modules = { home: true, agent: true, archives: false, automations: true, notifications: false, icons: false, comments: false, navigator: true, sync: false };
 const shortcutButtons = [
 	{ id: 's1', label: 'Inbox', icon: 'inbox', type: 'file', target: 'Notes/Inbox.md' },
 	{ id: 's2', label: 'Toggle pin', icon: 'pin', type: 'command', target: 'editor:toggle-pin' },
