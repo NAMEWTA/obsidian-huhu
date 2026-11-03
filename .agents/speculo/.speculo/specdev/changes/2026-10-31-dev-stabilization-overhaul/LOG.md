@@ -316,3 +316,11 @@ round 1 收录来源中维护者已作出的决定（来源作者即仓库 OWNER
 - **.gitignore：** `changes/**/evidence/**` 默认忽略，只放行进行中 change 的 `evidence/T-xx.md`、`evidence/report*.md` 和 `prototypes/*/evidence/approval-*.md`。归档 change 的 evidence 仍全部不入库：其中的报告混有大段评审输入，未逐份精简。
 - **入库报告：** 本 change 共 25 份：23 份票级报告和 2 份 UI-001 批准记录。其中 13 份（T-01、T-02、T-03、T-04、T-05、T-06、T-09、T-14、T-15、T-16、T-17、T-18、T-23）删去了 `Review Input` 各节里的冻结评审输入 JSON（含历史轮次），每节改为范围、base/head、路径计数、input_sha256 和排除说明的摘要。原有锚点保留，其余结论、偏差、验收记录不变。原文件保留在本地被忽略的 `evidence/_local-full/`。其余 12 份本来就是结论报告，未改动；`approval-scope-revision-3.md` 的字节由 DESIGN confirmation.record 绑定，也未改动。
 - **校验影响（未改校验器）：** 12 张已完成票的 Review 记录 `Input: evidence/T-xx.md#review-input…` 按现有合同要求锚点内恰好有一份冻结 JSON，且 `JSON.stringify` 摘要要与 Standards/Specification Output 的 Input-SHA256 一致。删去 JSON 后，这 12 张票各报 `Input must reference one frozen review JSON object`，本地和全新克隆都一样。执行记录 checkpoint 也绑定这个 Input，所以不能只改指向。待用户在两条路里选：由框架让校验器只校验报告结论与 input_sha256（Speculo#102），或者对这 12 份临时放行各自唯一一份冻结 JSON（其中 7 份会超过 100 KB）。
+
+## LOG-027 — 2026-11-04 — 全部票据实施与整体验收
+
+- **来源：** 用户 2026-11-03 /goal 指令：按本 change 全部文件完成所有 ticket，每票完成后提交并推送 dev，使用 subagent（限 sonnet），无需考虑任何兼容性；该指令同时授权删除主线 T-39–T-46 实施，取代 LOG-022 的撤回。2026-11-04 用户补充：CI/CD 问题之后统一解决，先完成代码开发与本地确认。
+- **执行：** Lead host:claude-code/root，执行者为 sonnet subagent；current 工作区（dev），每票单独提交推送，提交引用 #41（Refs）。`docs/e2e` 不重建，账本改为 `evidence/report-ledger.md`。
+- **结果：** T-12、T-13、T-20–T-32、T-34–T-46 完成；全量 build/lint/test/docs/i18n/bundle/notices/native 通过；残留检索 0。未验收项：AC-311 Windows 多轮复核、release 工作流实跑（CI 待统一处理），以及用户真机项。
+- **待 A 网关：** T-45 列出的永久 ADR/context 修订清单（huhu-bot-architecture ADR-027 等失去对象）。
+

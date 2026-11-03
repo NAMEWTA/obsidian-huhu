@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-38
 title: "总体验收收口（G1–G3）"
-status: draft
+status: done
 kind: review
 planning_depth: standard
 planning_depth_reason: "汇总全部批次证据并执行全量门禁"

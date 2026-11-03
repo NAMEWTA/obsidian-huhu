@@ -1939,6 +1939,12 @@
    "path": "vitest.config.ts",
    "disposition": "keep",
    "reason": "注释与别名指 react-resizable-panels 的 browser 构建（第三方包文件名）"
+  },
+  {
+   "path": "scripts/obsidian-acceptance/removal-contraction.mjs",
+   "disposition": "keep",
+   "ticket": "T-46",
+   "reason": "删除收口验收脚本：以正则断言真实 Obsidian 内不存在 Browser/Bot/网易云入口，关键词是被断言为缺席的对象"
   }
  ],
  "finalizedBy": "T-46"

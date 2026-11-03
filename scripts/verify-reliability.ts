@@ -210,7 +210,7 @@ test('open editor contents block disk writes and preserve the pending draft', as
 	await app.load();
 	const habit = app.addHabit('one')!;
 	await app.flush();
-	const path = [...vault.contents.keys()].find((path) => path.endsWith('习惯.md'))!;
+	const path = [...vault.contents.keys()].find((path) => path.endsWith('habit.md'))!;
 	const previous = vault.contents.get(path);
 	const view = Object.assign(new MarkdownView({} as never), {
 		file: vault.file(path),
@@ -341,7 +341,7 @@ test('10,000 ledger records update one daily document without rereading the full
 
 test('habit cold startup rescans when layout settles and file events refresh without reopening a view', async () => {
 	const { HabitService } = await import('../src/modules/home/platform/habit/habit-service');
-	const file = 'huhu/习惯/habits.json';
+	const file = 'huhu/habits/habits.json';
 	const habit = { id: 'existing', name: 'Read', createdAt: '2026-10-01' };
 	const fixture = memoryVault();
 	const write = (habits: (typeof habit)[]) =>

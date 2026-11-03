@@ -16,11 +16,11 @@ for (const [section, type, expected] of [['todo','task',true],['sticky','task',t
 }
 test('rendering semantics preserve memo precedence', () => { assert.equal(cardKind('memo','task'),'memo'); assert.equal(cardKind('sticky','task'),'task'); });
 const scope = { dashboardFile:'Boards/Current', workspaceFiles:['Boards/Other.md'], contacts:{rootFolder:'People'} };
-for (const p of ['huhu/习惯/a/习惯.md','huhu/番茄钟/活动.md','huhu/记账/records.md','huhu/阅读/a.md','.huhu/automation/definitions/a/操作.md','Boards/Current.md','Boards/Other.md','People/档案格式说明.md','People/个人档案/A/基本信息.md','People/企业档案/B/基本信息.md','.huhu/test.md','Notes/.hidden/note.md']) test('exclude exact managed scope ' + p,()=>assert.equal(isRecentUserDocument(p,scope),false));
-for (const p of ['HUHU/技术笔记/note.md','HUHU-笔记/习惯.md','Notes/活动.md','Notes/dashboard.md','Notes/2026-10-04.md','People/个人档案/A/资料.md','People/个人档案/A/sub/基本信息.md']) test('keep user material ' + p,()=>assert.equal(isRecentUserDocument(p,scope),true));
-test('custom roots and workspace preferences are evaluated, not cached globally',()=>{assert.equal(isRecentUserDocument('People/个人档案/A/基本信息.md',{contacts:{rootFolder:'Elsewhere'}}),true); assert.equal(isRecentUserDocument('Boards/Current.md',{}),true);});
+for (const p of ['huhu/habits/a/habit.md','huhu/pomodoro/activities.md','huhu/expenses/records.md','huhu/reading/a.md','.huhu/automation/definitions/a/操作.md','Boards/Current.md','Boards/Other.md','People/format-guide.md','People/people/A/profile.md','People/companies/B/profile.md','.huhu/test.md','Notes/.hidden/note.md']) test('exclude exact managed scope ' + p,()=>assert.equal(isRecentUserDocument(p,scope),false));
+for (const p of ['HUHU/技术笔记/note.md','HUHU-笔记/习惯.md','Notes/活动.md','Notes/dashboard.md','Notes/2026-10-04.md','People/people/A/notes.md','People/people/A/sub/profile.md']) test('keep user material ' + p,()=>assert.equal(isRecentUserDocument(p,scope),true));
+test('custom roots and workspace preferences are evaluated, not cached globally',()=>{assert.equal(isRecentUserDocument('People/people/A/profile.md',{contacts:{rootFolder:'Elsewhere'}}),true); assert.equal(isRecentUserDocument('Boards/Current.md',{}),true);});
 test('new defaults are language neutral and React recent documents use their host scope',()=>{
-  assert.equal(DEFAULT_TASK_ARCHIVE_PATH,'huhu/待办/已完成.md');assert.equal(DEFAULT_HIGHLIGHT_IMPORT_PATH,'huhu/微信读书/划线');
+  assert.equal(DEFAULT_TASK_ARCHIVE_PATH,'huhu/todos/completed.md');assert.equal(DEFAULT_HIGHLIGHT_IMPORT_PATH,'huhu/weread/highlights');
   assert.ok(fs.readFileSync('src/modules/home/ui/canvas/RecentWidget.tsx','utf8').includes('store.isRecentDocument(file.path)'));
   assert.ok(fs.readFileSync('src/modules/home/services/board-store.ts','utf8').includes('isRecentUserDocument(path,'));
 });
@@ -44,7 +44,7 @@ test('Task domain does not ingest old board and Markdown checkboxes',async()=>{
   const vault=memoryVault({
     '.huhu/dashboards/Board.md':board,
     'Notes/old.md':legacy,
-    'huhu/待办/待办.md':legacyTask,
+    'huhu/todos/tasks.md':legacyTask,
   });
   const domain=await taskDomainFixture(vault.app);
   try {
@@ -55,7 +55,7 @@ test('Task domain does not ingest old board and Markdown checkboxes',async()=>{
     assert.ok(vault.contents.has(TASK_STORE_PATH),'New tasks persist only in the Task domain store');
     assert.equal(vault.contents.get('.huhu/dashboards/Board.md'),board,'Task commands never rewrite boards');
     assert.equal(vault.contents.get('Notes/old.md'),legacy,'Note checkboxes remain untouched');
-    assert.equal(vault.contents.get('huhu/待办/待办.md'),legacyTask,'Old Task Markdown is not imported or destroyed');
+    assert.equal(vault.contents.get('huhu/todos/tasks.md'),legacyTask,'Old Task Markdown is not imported or destroyed');
   } finally {
     await domain.dispose();
   }
