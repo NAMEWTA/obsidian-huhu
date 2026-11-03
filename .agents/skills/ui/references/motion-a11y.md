@@ -6,7 +6,7 @@
 
 - 只对 `transform` 和 `opacity` 做动画，不对宽度、高度、网格轨道或内边距做动画。
 - 时长用 Obsidian 的 `--anim-duration-fast` 和 `--anim-duration-moderate`，实际数值跟随宿主变量，可通过 Tailwind 与 `tw-animate-css` 应用；映射见 `src/ui/styles/base.css` 与 `src/ui/tailwind/index.css`。
-- 布局先提交最终尺寸，再用位移表现过渡；终端等需要测量的内容在动效结束后适配一次，不逐帧重排。终端和浏览器标签切换不做动画，输入与终端输出的热路径不加动画。
+- 布局先提交最终尺寸，再用位移表现过渡；终端等需要测量的内容在动效结束后适配一次，不逐帧重排。终端标签切换不做动画，输入与终端输出的热路径不加动画。
 - `prefers-reduced-motion: reduce` 下，`src/ui/styles/base.css` 在 HUHU 作用域关闭 CSS animation、transition 和平滑滚动，包括淡入淡出；转圈显示静止的工作中图形。脚本滚动用所属窗口的 `matchMedia` 决定 `auto` 或 `smooth`。
 - 按钮异步操作预留宽度，避免文字变化导致跳动；按实际操作状态提供禁用态、阶段文字或可确定的进度，错误保留重试入口。
 

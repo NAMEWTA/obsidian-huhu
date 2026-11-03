@@ -73,7 +73,7 @@ P1 分区、沉浸样式声明（网格本身已改用 react-grid-layout，横�
 | `rss-section.ts`、`rss-service.ts`、`rss-store.ts`、`rss-note.ts` 及配置/阅读弹窗 | `core/rss/`、`platform/rss/`、`ui/rss/` | RSS/Atom、正文提取、OPML、分组、阅读与文章保存 |
 | `weread-section.ts`、`weread-config-modal.ts` | `ui/weread/` | 书架、筛选与统计；复用 HUHU 服务与设备凭据 |
 | `ticktick-section.ts`、`ticktick-service.ts`、`ticktick-login-modal.ts`、`ticktick-task-edit-modal.ts`、`ticktick-tz.ts` | `core/ticktick/`、`platform/ticktick/`、`ui/ticktick/` | 清单/卡片、任务编辑、时区与账号授权；设备数据隔离 |
-| `music-widget.ts`、`album-widget.ts`、`album-settings-modal.ts` | `ui/widgets/` 及对应面板 | 音乐搜索/播放与相册多实例；所属窗口弹层与可见性清理 |
+| `album-widget.ts`、`album-settings-modal.ts` | `ui/widgets/` 及对应面板 | 相册多实例；所属窗口弹层与可见性清理 |
 | `backup-service.ts` | `services/board-backups.ts` | 分组备份看板和记录，来源/完整性清单、同工作台恢复与覆盖前副本 |
 
 所有看板对话框在所属窗口居中。对照几何以组件原点归一化，保留 Apex 内部布局，不声称与受 contain 约束的上游弹窗整屏坐标一致。服务、受管内容、模块生命周期与设备归属继续使用 HUHU 架构。

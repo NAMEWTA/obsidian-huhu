@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-HUHU%20Source%20Available%201.0-lightgrey)](LICENSE)
 [![Issues](https://img.shields.io/github/issues/NAMEWTA/obsidian-huhu)](https://github.com/NAMEWTA/obsidian-huhu/issues)
 
-Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智能体、浏览器、档案、自动化、通知和 Git 版本管理集中在同一界面，内容保存在你自己的库中。
+Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智能体、档案、自动化、通知和 Git 版本管理集中在同一界面，内容保存在你自己的库中。
 
 ![HUHU 工作台：看板、任务与自动化看板](docs/images/readme/gif/hero.gif)
 
@@ -30,7 +30,7 @@ Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智�
 
 ## 为什么用 HUHU
 
-- **一个插件代替一堆插件。** 看板、任务、笔记导航、高亮、终端、浏览器、档案、自动化、保险箱和 Git 历史共用一条图标栏、一个设置页和一套外观。
+- **一个插件代替一堆插件。** 看板、任务、笔记导航、高亮、终端、档案、自动化、保险箱和 Git 历史共用一条图标栏、一个设置页和一套外观。
 - **库仍是唯一的数据来源。** 用户内容以普通文件保存在 `huhu/`，配置和运行数据在 `.huhu/`。不需要 HUHU 账号或服务器。
 - **智能体就在笔记旁边。** 在限定到库内文件夹的真实终端里运行 Claude Code、Codex、Gemini CLI、OpenCode、Pi 或 Grok，并把笔记、选区和路径交给它们。
 - **每个模块都可关闭。** 在 **设置 → 常规 → 功能模块** 中开关；关闭的模块不加载，数据保留。
@@ -44,8 +44,6 @@ Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智�
 | 笔记导航器 | 文件夹与标签树、带预览的笔记列表、筛选、日历与日记、模板、快捷方式和键盘操作 | [笔记导航器](docs/navigator.md) |
 | 高亮与批注 | 不改写 Markdown 的四色高亮、可搜索的摘录卡片、笔记、标签、批注和导出 | [高亮与批注](docs/comments.md) |
 | AI Agent 与终端 | 绑定目录的空间、真实终端、分屏、六种 CLI 智能体、快捷命令、技能与用量 | [智能体工作台](docs/agent-workbench.md) |
-| 浏览器 | 相互隔离的个人/任务空间、观察与接管视图、身份导入、授权文件、供智能体使用的 CLI/MCP | [浏览器](docs/browser.md) |
-| Bot | 桌面端个人智能体：持久 Bot 与群聊、审批、记忆和任务树 | [工作台](docs/workbench.md) |
 | 自动化看板 | 手动与定时操作（提醒、待办、智能体、终端脚本、Obsidian 命令、打开笔记/网页）、预检和运行记录 | [自动化](docs/automation.md) |
 | 通知 | 汇集自动化结果和提醒的收件箱，支持应用内与系统渠道 | [自动化](docs/automation.md) |
 | 档案 | 自定义档案类型（人物、企业……）、表单、关系和可移植的 Markdown | [档案](docs/contacts.md) |
@@ -120,18 +118,6 @@ Obsidian 里的个人工作台：笔记、可组合看板、任务、编程智�
 
 ![左右并排的两个终端](docs/images/readme/agent-terminal.png)
 
-### 浏览器
-
-每个浏览器空间都有独立的浏览器进程、网站数据和下载目录。页面默认以暂停的观察模式打开；点击“接管”后自己浏览，或把任务空间交给智能体。受管运行时目前只支持 Linux x64，通过“安装运行包”从完整且已校验的运行时目录安装。
-
-![观察模式下的浏览器空间](docs/images/readme/browser.png)
-
-### Bot
-
-Bot 是桌面端个人智能体，与 CLI 智能体相互独立。第一次打开 Bot 页面时启动本机 Runner；在 **设置 → Bot** 中登记模型凭证和调用额度，再在 Bot 页面选择协议、endpoint 与模型。
-
-![Bot 页面](docs/images/readme/bot.png)
-
 ### 自动化看板与通知
 
 自动化可手动运行，也可按计划运行（指定时间、每小时、每天、工作日、每周或自定义）。打开笔记、打开网页和运行 Obsidian 命令只能手动执行。每条自动化单独选择通知渠道：应用内或系统。定时运行只在 Obsidian 打开时进行。
@@ -184,12 +170,10 @@ Bot 是桌面端个人智能体，与 CLI 智能体相互独立。第一次打�
 | 通知 | 支持 | 支持 |
 | 自动化看板 | 支持 | 支持；智能体和终端脚本操作需要桌面端 |
 | AI Agent 与终端 | 支持 | 终端和 AI Agent 页面仅桌面端；保留库内技能发现 |
-| 浏览器 | 受管运行时目前仅 Linux x64；其他平台显示为不可用 | 不支持 |
-| Bot | 支持 | 不支持 |
 | 保险箱 | 支持 | 不支持 |
 | Git 版本管理 | 支持，需要系统 Git | 不支持 |
 
-终端组件 `huhu-pty` 面向 Windows x64、macOS x64/arm64、Linux x64/arm64 发布；Bot Runner 二进制面向同样五个平台。详见[设置 → 安装与平台](docs/settings.md#安装与平台)。
+终端组件 `huhu-pty` 面向 Windows x64、macOS x64/arm64、Linux x64/arm64 发布。详见[设置 → 安装与平台](docs/settings.md#安装与平台)。
 
 ## 命令
 
@@ -205,7 +189,6 @@ Bot 是桌面端个人智能体，与 CLI 智能体相互独立。第一次打�
 | 新建终端 | `huhu:terminal-new` |
 | 新建 Claude Code / Codex / Gemini CLI / OpenCode / Pi / Grok 会话 | `huhu:terminal-new-claude-code`、`-codex`、`-gemini`、`-opencode`、`-pi`、`-grok` |
 | 把选区 / 当前笔记 / 当前文件路径发送到终端 | `huhu:terminal-send-selection`、`huhu:terminal-send-note`、`huhu:terminal-send-path` |
-| 打开网页 | `huhu:open-browser` |
 | 打开档案 | `huhu:open-contacts` |
 | 打开自动化看板 / 新建自动化 | `huhu:open-automations` / `huhu:new-automation` |
 | 打开通知中心 | `huhu:open-notifications` |
@@ -220,7 +203,7 @@ Bot 是桌面端个人智能体，与 CLI 智能体相互独立。第一次打�
 ## 数据、隐私与备份
 
 - `huhu/` 保存用户内容：日记、收集箱、任务、档案和记录。普通笔记保持原位置。
-- `.huhu/` 保存配置、看板、自动化、批注、设备状态、浏览器/智能体运行数据、辅助程序和加密保险箱。
+- `.huhu/` 保存配置、看板、自动化、批注、设备状态、智能体运行数据、辅助程序和加密保险箱。
 - 库内逻辑路径统一使用 `/`。无效路径会被拒绝，不会被当作空看板或另一篇笔记。
 - 系统 CLI 登录保持原位置；托管的智能体账号隔离在库内。导航缓存、系统状态 hook 和显式导出各有边界。
 - 隐藏文件夹需要同步工具一并包含。Git 默认排除凭据、设备运行数据和缓存，请以实际规则为准。备份时同时备份内容和需要恢复的隐藏数据。
@@ -234,15 +217,13 @@ Bot 是桌面端个人智能体，与 CLI 智能体相互独立。第一次打�
 | 页面或图标不见了 | 模块可能已关闭：**设置 → 常规 → 功能模块**。启动失败的模块在图标上显示警告点，其他模块照常可用。 |
 | 第一个终端无法启动 | `huhu-pty` 从同版本插件的 Release 下载并校验 SHA-256，首次需要联网。摘要缺失或不匹配时 HUHU 会停止，不会运行它。见[终端组件](docs/agent-workbench.md#终端组件)。 |
 | 新标签菜单里没有某个智能体 | 先安装对应 CLI。从桌面图标启动 Obsidian 时，HUHU 会从登录 shell 恢复 `PATH`（Windows 除外）；特殊位置可在 **设置 → 智能体** 中填写程序路径。 |
-| 提示受管浏览器运行时不可用 | 浏览器运行时仅支持 Linux x64，须用“安装运行包”从完整运行时目录安装。见[浏览器](docs/browser.md#开始使用)。 |
-| 提示系统凭据保护不可用 | 没有系统凭据存储时，新建浏览器空间需要你明确选择临时存储，且不能保存身份。 |
 | 自动化没有运行 | 定时运行只在 Obsidian 打开时进行；系统通知需要操作系统授权。 |
 | 版本管理提示待配置 | 需要系统 Git、仓库和认证。开启模块不会创建仓库、保存认证，也不会启用自动提交、拉取或推送计划。见 [Git 同步](docs/sync.md)。 |
 | 保险箱自动锁上了 | 达到设定的无操作时长（默认 20 分钟）或 Obsidian 关闭时会锁定；可在 **设置 → 保险箱** 中调整。 |
 
 ## 开发
 
-TypeScript、React 19、Tailwind CSS 4、shadcn/Radix 和 esbuild；原生终端组件与浏览器监督程序使用 Rust。pnpm 版本固定在 `package.json` 中。
+TypeScript、React 19、Tailwind CSS 4、shadcn/Radix 和 esbuild；原生终端组件使用 Rust。pnpm 版本固定在 `package.json` 中。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -275,7 +256,7 @@ pnpm check:bundle
 
 | 项目 | 上游许可 | 使用方式 |
 |---|---|---|
-| [Orca](https://github.com/stablyai/orca) | MIT | 工作台、智能体、浏览器、自动化和组件；已声明的改编 |
+| [Orca](https://github.com/stablyai/orca) | MIT | 工作台、智能体、自动化和组件；已声明的改编 |
 | [apex-dashboard](https://github.com/PandoraReads/apex-dashboard) | MIT | 看板布局、交互、格式与算法；已声明的改编 |
 | [obsidian-dashboard](https://github.com/Leolewis2011/obsidian-dashboard) | MIT | 看板设计来源；原仓库已不可访问，保留声明 |
 | [Margin Comments](https://github.com/jonaas-dev/obsidian-margin-comments) | MIT | 批注模型、锚点与交互；已声明的改编 |

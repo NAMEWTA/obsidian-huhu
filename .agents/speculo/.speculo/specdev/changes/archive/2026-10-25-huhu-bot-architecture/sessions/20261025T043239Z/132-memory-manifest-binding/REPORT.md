@@ -8,7 +8,7 @@ Status: completed
 
 新增 `api.CanonicalMemoryInputManifestBinding(ExecutionMemoryInput)(string,error)`，供真实维护job在读取正文前核固定清单。它要求所有entry.Text为空，与完整入口共用一个私有canonical校验/投影/编码；仍校验版本、模式、namespace、job代/settings、Ref/role、重复与数量、完整Targets及排序。原完整入口继续校验实际UTF8、正文hash和128KiB总正文，不经metadata模式绕过。
 
-只改授权的[生产文件](../../../../../../../../../native/huhubot/internal/application/api/memory.go)和新增[同包测试](../../../../../../../../../native/huhubot/internal/application/api/memory_manifest_test.go)。生产SHA为`855d2374f3b77d90cee7a884046f3743d588b5399d7b9979fb7104b4ce528346`；测试SHA为`32f9f503355f7acbb66201f5cebdd6430e2c39f05682dfb71ed0d55a3b939c42`。精确消费合同（历史日志已清理：`logs/interface-contract.md`）已原生发126与128：返回digest与持久expected及input.BindingDigest均须相等，再核真实job/namespace/principal/profile/pin/source scope/Targets/current事实；授权后hydrate仍调用完整入口。本helper不是读取许可，也不验证不可得原文长度或内容。
+只改授权的生产文件（`native/huhubot/internal/application/api/memory.go`，已随 ADR-010 删除）和新增同包测试（`native/huhubot/internal/application/api/memory_manifest_test.go`，已随 ADR-010 删除）。生产SHA为`855d2374f3b77d90cee7a884046f3743d588b5399d7b9979fb7104b4ce528346`；测试SHA为`32f9f503355f7acbb66201f5cebdd6430e2c39f05682dfb71ed0d55a3b939c42`。精确消费合同（历史日志已清理：`logs/interface-contract.md`）已原生发126与128：返回digest与持久expected及input.BindingDigest均须相等，再核真实job/namespace/principal/profile/pin/source scope/Targets/current事实；授权后hydrate仍调用完整入口。本helper不是读取许可，也不验证不可得原文长度或内容。
 
 129完整运行TASK仍未完成，本次未恢复其写集。其18个checkpoint文件逐SHA复核无漂移（历史日志已清理：`logs/09-final-source-verification.json`）。T14实际业务、运行集成及正式代码门仍由各原owner和Root后续验收。
 

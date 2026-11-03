@@ -7,7 +7,7 @@ English | [简体中文](README.ZH.md)
 [![License](https://img.shields.io/badge/license-HUHU%20Source%20Available%201.0-lightgrey)](LICENSE)
 [![Issues](https://img.shields.io/github/issues/NAMEWTA/obsidian-huhu)](https://github.com/NAMEWTA/obsidian-huhu/issues)
 
-A personal workbench inside Obsidian: notes, composable dashboards, tasks, coding agents, a browser, archives, automations, notifications and Git versioning in one interface, with your content kept in your own vault.
+A personal workbench inside Obsidian: notes, composable dashboards, tasks, coding agents, archives, automations, notifications and Git versioning in one interface, with your content kept in your own vault.
 
 ![HUHU workbench: dashboard, tasks and automation board](docs/images/readme/gif/hero.gif)
 
@@ -30,7 +30,7 @@ A personal workbench inside Obsidian: notes, composable dashboards, tasks, codin
 
 ## Why HUHU
 
-- **One place instead of ten plugins.** Dashboard, tasks, navigator, highlights, terminals, browser, archives, automations, safe and Git history share one icon bar, one settings page and one look.
+- **One place instead of ten plugins.** Dashboard, tasks, navigator, highlights, terminals, archives, automations, safe and Git history share one icon bar, one settings page and one look.
 - **Your vault stays the source of truth.** User content lives in `huhu/` as ordinary files; configuration and runtime data live in `.huhu/`. Nothing requires a HUHU account or server.
 - **Agents work next to your notes.** Run Claude Code, Codex, Gemini CLI, OpenCode, Pi or Grok in real terminals scoped to a vault folder, and hand them notes, selections and paths.
 - **Every module is optional.** Turn modules on or off under **Settings → General → Feature modules**; a disabled module does not load, and its data is kept.
@@ -44,8 +44,6 @@ A personal workbench inside Obsidian: notes, composable dashboards, tasks, codin
 | Notes navigator | Folder and tag tree, note list with previews, filter, calendar with daily notes, templates, shortcuts and keyboard operations | [navigator](docs/navigator.md) |
 | Highlights and comments | Four-color highlights that do not rewrite Markdown, searchable excerpt cards, notes, tags, comments and export | [comments](docs/comments.md) |
 | AI Agent and terminals | Spaces bound to a folder, real terminals, split panes, six CLI agents, quick commands, skills and usage | [agent workbench](docs/agent-workbench.md) |
-| Browser | Isolated personal/task spaces, observe and take-over views, identity import, scoped files, CLI/MCP for agents | [browser](docs/browser.md) |
-| Bot | A desktop personal agent with persistent bots and group chats, approvals, memory and task trees | [workbench](docs/workbench.md) |
 | Automation board | Manual and scheduled actions (reminder, to-do, agent, terminal script, Obsidian command, open note/webpage), prechecks and run history | [automation](docs/automation.md) |
 | Notifications | Inbox for automation results and reminders, with in-app and system channels | [automation](docs/automation.md) |
 | Archives | Custom archive types (contacts, companies, …), forms, relationships and portable Markdown | [archives](docs/contacts.md) |
@@ -120,18 +118,6 @@ A Space binds terminals and agents to a directory inside the vault (or an extern
 
 ![Two terminals side by side](docs/images/readme/agent-terminal.png)
 
-### Browser
-
-Each browser space has its own browser process, website data and downloads. Pages open paused in observe mode; click **Take over** to browse yourself, or hand a task space to an agent. The managed runtime is currently available on Linux x64 and is installed with **Install runtime bundle** from a complete, verified runtime directory.
-
-![Browser space in observe mode](docs/images/readme/browser.png)
-
-### Bot
-
-Bot is a desktop personal agent, separate from the CLI agents. It starts a local Runner the first time you open its pages; register model credentials and quotas under **Settings → Bot**, then pick protocol, endpoint and model on the Bot page.
-
-![Bot page](docs/images/readme/bot.png)
-
 ### Automation board and notifications
 
 Automations run actions manually or on a schedule (once, hourly, daily, weekdays, weekly or custom). Opening a note, opening a webpage and running an Obsidian command are manual-only actions. Each automation chooses its own notification channels: in-app or system. Scheduled runs happen while Obsidian is open.
@@ -184,12 +170,10 @@ Pages adapt to narrow panes and small windows.
 | Notifications | Yes | Yes |
 | Automation board | Yes | Yes; agent and terminal-script actions need the desktop |
 | AI Agent and terminals | Yes | Terminals and the AI Agent page are desktop-only; in-vault skill discovery remains |
-| Browser | Managed runtime on Linux x64 only; other platforms show it as unavailable | No |
-| Bot | Yes | No |
 | Safe | Yes | No |
 | Git versioning | Yes, with system Git | No |
 
-The terminal helper `huhu-pty` is published for Windows x64, macOS x64/arm64 and Linux x64/arm64. The Bot Runner binary targets the same five platforms. Details: [settings → platforms](docs/settings.md#安装与平台).
+The terminal helper `huhu-pty` is published for Windows x64, macOS x64/arm64 and Linux x64/arm64. Details: [settings → platforms](docs/settings.md#安装与平台).
 
 ## Commands
 
@@ -205,7 +189,6 @@ All commands are prefixed with `HUHU:` in the command palette; bind any of them 
 | New terminal | `huhu:terminal-new` |
 | New Claude Code / Codex / Gemini CLI / OpenCode / Pi / Grok session | `huhu:terminal-new-claude-code`, `-codex`, `-gemini`, `-opencode`, `-pi`, `-grok` |
 | Send selection / current note / current file path to terminal | `huhu:terminal-send-selection`, `huhu:terminal-send-note`, `huhu:terminal-send-path` |
-| Open web page | `huhu:open-browser` |
 | Open archives | `huhu:open-contacts` |
 | Open automation board / New automation | `huhu:open-automations` / `huhu:new-automation` |
 | Open notifications | `huhu:open-notifications` |
@@ -220,7 +203,7 @@ The navigator, icons, tabs and Git modules add more commands; see each guide.
 ## Data, privacy and backup
 
 - `huhu/` holds user content: journals, inbox, tasks, archives and records. Ordinary notes stay where they are.
-- `.huhu/` holds configuration, boards, automations, comments, device state, browser/agent runtime data, helpers and the encrypted safe.
+- `.huhu/` holds configuration, boards, automations, comments, device state, agent runtime data, helpers and the encrypted safe.
 - Logical vault paths use `/`. Invalid paths are rejected rather than treated as an empty board or another note.
 - System CLI logins stay where they are; managed agent accounts are isolated inside the vault. Navigator caches, system status hooks and explicit exports have separate boundaries.
 - Hidden folders need a sync tool that includes them. Git excludes credentials, device runtime data and caches by default; check the actual rules. Back up both your content and the hidden data you need to restore.
@@ -234,15 +217,13 @@ See [data and recovery](docs/data.md) and [privacy / external access](docs/priva
 | A page or icon is missing | The module may be off: **Settings → General → Feature modules**. A module that failed to start shows a warning dot on its icon; other modules keep working. |
 | The first terminal does not start | The `huhu-pty` helper is downloaded from the release of the same plugin version and its SHA-256 is verified; it needs network access once. If the digest is missing or does not match, HUHU stops instead of running it. See [terminal helper](docs/agent-workbench.md#终端组件). |
 | An agent is not offered in the new-tab menu | Install the CLI first. When Obsidian is started from a desktop icon, HUHU restores `PATH` from your login shell (not on Windows); for unusual locations set the program path under **Settings → Agents**. |
-| "The managed browser runtime is unavailable" | The browser runtime is Linux x64 only and must be installed from a complete runtime directory with **Install runtime bundle**. See [browser](docs/browser.md#开始使用). |
-| "System credential protection is unavailable" | Without OS credential storage, new browser spaces need your explicit choice of temporary storage, and identities cannot be saved. |
 | Automations did not run | Scheduled runs happen only while Obsidian is open. System notifications need OS permission. |
 | Git versioning says it needs configuration | It needs system Git, a repository and authentication. Enabling the module does not create a repository, save credentials or turn on automatic commit, pull or push schedules. See [sync](docs/sync.md). |
 | The safe locked itself | It locks after the configured idle time (20 minutes by default) and whenever Obsidian closes; change it under **Settings → Safe**. |
 
 ## Development
 
-TypeScript, React 19, Tailwind CSS 4, shadcn/Radix and esbuild; Rust for the native terminal helper and browser supervisor. The pnpm version is pinned in `package.json`.
+TypeScript, React 19, Tailwind CSS 4, shadcn/Radix and esbuild; Rust for the native terminal helper. The pnpm version is pinned in `package.json`.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -275,7 +256,7 @@ We thank these projects. **Code, style and asset adaptations are declared below 
 
 | Project | Upstream license | Use |
 |---|---|---|
-| [Orca](https://github.com/stablyai/orca) | MIT | Workbench, agents, browser, automations and components; declared adaptations |
+| [Orca](https://github.com/stablyai/orca) | MIT | Workbench, agents, automations and components; declared adaptations |
 | [apex-dashboard](https://github.com/PandoraReads/apex-dashboard) | MIT | Dashboard layouts, interactions, formats and algorithms; declared adaptations |
 | [obsidian-dashboard](https://github.com/Leolewis2011/obsidian-dashboard) | MIT | Dashboard design origin; original repository unavailable, notice retained |
 | [Margin Comments](https://github.com/jonaas-dev/obsidian-margin-comments) | MIT | Comment models, anchors and interactions; declared adaptations |

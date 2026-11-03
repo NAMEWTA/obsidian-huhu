@@ -218,7 +218,6 @@ HUHU 在仓库的 `.gitignore` 与 `.git/info/exclude` 中维护带起止标记�
 
 | 排除 | 内容 |
 |---|---|
-| `.huhu/browser/` | 浏览器个人资料、Cookie、站点数据、缓存、下载和抓取附件 |
 | `.huhu/terminal-agent/`、`.huhu/agents/` | 智能体标签布局和统计、历史与缓存、托管账号的登录环境与 Hook |
 | `.huhu/config/devices/`、`.huhu/config/identity.json`、`.huhu/sync/`、`.huhu/notifications/` | 设备配置、设备身份映射、同步计时与通知运行状态 |
 | `.huhu/helpers/` | 终端辅助程序 |
@@ -246,7 +245,7 @@ HUHU 在仓库的 `.gitignore` 与 `.git/info/exclude` 中维护带起止标记�
 
 ## 哪些内容会进入仓库
 
-Git 可以提交库中纳入跟踪的文件，包括笔记、附件和 `.huhu/` 数据；实际范围由暂存内容与忽略规则决定。HUHU 默认排除的私有运行路径见[上方清单](#默认不提交的-huhu-私有数据)，配置文件并不在该清单中。共享配置在 `.huhu/config/settings.json`，退役前的微信读书 API 密钥、滴答清单 Cookie 等历史设备配置可能仍留在 `.huhu/config/devices/<device-id>.json`。浏览器登录数据、智能体托管账号、历史、评论和恢复副本也可能位于库内；完整范围见[隐私与数据边界](privacy.md#git-同步)。
+Git 可以提交库中纳入跟踪的文件，包括笔记、附件和 `.huhu/` 数据；实际范围由暂存内容与忽略规则决定。HUHU 默认排除的私有运行路径见[上方清单](#默认不提交的-huhu-私有数据)，配置文件并不在该清单中。共享配置在 `.huhu/config/settings.json`，退役前的微信读书 API 密钥、滴答清单 Cookie 等历史设备配置可能仍留在 `.huhu/config/devices/<device-id>.json`。智能体托管账号、历史、评论和恢复副本也可能位于库内；完整范围见[隐私与数据边界](privacy.md#git-同步)。
 
 推送前请检查变更列表、远端访问范围与内容的敏感程度，并把不想纳入版本管理的路径加入 `.gitignore`。忽略规则不会自动移除已经跟踪的文件，已经推送的内容也会留在历史里。[保险箱](safe.md)文件虽为密文，仍需遵循其备份和恢复边界；Git 不理解其中的记录，不能自动合并记录冲突。
 

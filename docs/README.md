@@ -9,7 +9,7 @@
 | 独立任务、提醒、关联与 AI 工具 | [任务待办](tasks.md)、[任务领域设计](task-domain.md) |
 | 笔记与批注 | [笔记导航器](navigator.md)、[批注](comments.md) |
 | 智能体、终端、技能与用量 | [智能体工作台](agent-workbench.md) |
-| 网页与资料 | [浏览器](browser.md)、[档案](contacts.md) |
+| 资料 | [档案](contacts.md) |
 | 定时操作 | [自动化与通知](automation.md) |
 | 图标与配色 | [图标](icons.md)、[外观](appearance.md) |
 | 版本与凭据 | [版本管理与笔记历史](sync.md)、[保险箱](safe.md) |
@@ -22,9 +22,3 @@ BUG、需求、优化、兼容、文档、咨询及商业授权通过[分类 Iss
 ## 验证边界
 
 构建、自动化测试、原生 helper 和真实 Obsidian 验收分别证明不同层面的行为。每次交付应报告实际验证的平台和场景；Windows CI 不等于 Windows 图形宿主实测，原生 Hook 测试不等于真实服务商登录或模型执行。最低 Obsidian 版本、移动端、不同主题、真实账号和长期运行不因一次检查而获得完整保证。
-
-## 独立浏览器开发
-
-- [运行时、安装与平台门槛](browser-runtime.md)
-- [v2 协议、模块契约与恢复语义](browser-protocol.md)
-- [本轮实施、验收结果与剩余门槛](browser-verification.md)

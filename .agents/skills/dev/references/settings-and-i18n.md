@@ -7,9 +7,9 @@
 | 范围 | 文件 | 用途 |
 |---|---|---|
 | `vault` | `.huhu/config/settings.json` | 所有设备共用的偏好 |
-| `device` | `.huhu/config/devices/<device-id>.json` | 每台机器自己的值：智能体 Shell 与路径、音乐音量、面板尺寸 |
+| `device` | `.huhu/config/devices/<device-id>.json` | 每台机器自己的值：智能体 Shell 与路径、面板尺寸 |
 
-两个文件都是 `{ version: 1, namespaces: { <name>: {…} } }`。形状不同的文件会被忽略，使用默认值。还没有代码绑定的命名空间保留它存储的值，并原样写回。`app` 命名空间（`src/app/settings/app-schema.ts`：语言、介绍、状态栏、模块开关）、`theme` 以及应用在启动时需要的命名空间（`home`、`archives`、`browser`、`comments`）在 `runtime.ts` 里绑定；其他模块绑定自己的。未知键在规范化时被丢弃。库里第一次加载时写入默认值（`firstRun`）。
+两个文件都是 `{ version: 1, namespaces: { <name>: {…} } }`。形状不同的文件会被忽略，使用默认值。还没有代码绑定的命名空间保留它存储的值，并原样写回。`app` 命名空间（`src/app/settings/app-schema.ts`：语言、介绍、状态栏、模块开关）、`theme` 以及应用在启动时需要的命名空间（`home`、`archives`、`comments`）在 `runtime.ts` 里绑定；其他模块绑定自己的。未知键在规范化时被丢弃。库里第一次加载时写入默认值（`firstRun`）。
 
 `app.modules` 里的每个模块开关都从该模块清单的 `defaultEnabled` 开始。
 
@@ -28,7 +28,7 @@ export const fooSettings = defineSettings({
 });
 ```
 
-每个字段都有默认值、从不抛错的规范化函数和范围（不写则为 `vault`）。已经有自己的模型和规范化函数的领域用 `domainSettings({ defaults, normalize, scope })`（见 `src/modules/browser/settings.ts`、`src/modules/agent/settings.ts`），单个字段用 `f.custom`。
+每个字段都有默认值、从不抛错的规范化函数和范围（不写则为 `vault`）。已经有自己的模型和规范化函数的领域用 `domainSettings({ defaults, normalize, scope })`（见 `src/modules/agent/settings.ts`、`src/modules/archives/settings.ts`），单个字段用 `f.custom`。
 
 ## 使用句柄
 
@@ -61,7 +61,7 @@ context.lifetime.register(settings.subscribe(refresh));
 
 添加文案：
 
-1. 把键放进读取它的代码所在的词典，`en` 和 `zh` 一起写。键用点分隔，按领域加命名空间（`agent.`、`browser.`、`workbench.`……）。
+1. 把键放进读取它的代码所在的词典，`en` 和 `zh` 一起写。键用点分隔，按领域加命名空间（`agent.`、`workbench.`……）。
 2. 如果启动代码读取的键放在模块词典里，把它移到启动词典（否则模块加载前启动代码会显示键本身）。
 3. 运行 `pnpm test:i18n`：它检查每个词典都有两种语言、`{占位符}` 一致，并且每个字面量 `t('…')` 的键在某处存在。
 4. 测试和验证脚本通过 `scripts/module-strings.ts` 注册模块词典和懒加载词典；新词典要加到那里。

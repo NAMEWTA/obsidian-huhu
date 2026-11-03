@@ -8,10 +8,9 @@ HUHU 改编了 [Orca](https://github.com/stablyai/orca)（stablyai/orca）的部
 
 | 上游 | 提交 |
 |---|---|
-| 当前工作台、智能体、浏览器、自动化和设计系统 | [464bd5a54b3364021c5cc0319859616e5ec41bbf](https://github.com/stablyai/orca/tree/464bd5a54b3364021c5cc0319859616e5ec41bbf) |
+| 当前工作台、智能体、自动化和设计系统 | [464bd5a54b3364021c5cc0319859616e5ec41bbf](https://github.com/stablyai/orca/tree/464bd5a54b3364021c5cc0319859616e5ec41bbf) |
 | Agent 运行时、自动化调度 | [27b823f934f739bc85914dd717b776835f60bcf7](https://github.com/stablyai/orca/tree/27b823f934f739bc85914dd717b776835f60bcf7) |
 | 终端工作台（Orca v1.4.217） | [11d97896628d90c4990365127812667b00e28c82](https://github.com/stablyai/orca/tree/11d97896628d90c4990365127812667b00e28c82) |
-| 浏览器 | [d74388f8a2dad2bd4bbfe3b937aba66e6648258b](https://github.com/stablyai/orca/tree/d74388f8a2dad2bd4bbfe3b937aba66e6648258b) |
 
 ## 终端工作台（11d97896）
 
@@ -33,17 +32,6 @@ HUHU 改编了 [Orca](https://github.com/stablyai/orca)（stablyai/orca）的部
 | 默认继承真实环境（464bd5a `local-pty-spawn-environment.ts`）；系统默认账号不注入 CLI home、Claude 系统默认不设 `CLAUDE_CONFIG_DIR`（`claude-profile-router.ts`、`runtime-home-service-home-routing.ts`） | `src/modules/agent/platform/desktop/agents/system-homes.ts`（真实目录解析）、`accounts.ts`（系统/托管账号环境）、`credentials.ts`（旧默认账号数据识别）、`pty/runtime-environment.ts` |
 | 登录 shell 环境探测（464bd5a `startup/login-shell-environment.ts`） | `src/modules/agent/platform/desktop/detection/shell-path.ts`；仅保留 PATH、CLI 目录变量、密钥与代理变量，有超时，Windows 跳过 |
 | 调度与 cron 解析、下一次触发时间计算 | `src/modules/automations/core/schedule/`（`automation-cron-field-parsing.ts`、`automation-cron-occurrence.ts`、`automation-schedule-occurrences.ts`、`automation-schedule-parsing.ts`） |
-
-## 浏览器（d74388f）
-
-| Orca 的部分 | HUHU 中的位置 |
-|---|---|
-| 无障碍树快照遍历 | `src/modules/browser/core/snapshot-ax-tree-walk.ts`、`src/modules/browser/platform/desktop/snapshot-engine.ts` |
-| 可交互元素发现 | `src/modules/browser/platform/desktop/snapshot-cursor-interactive-elements.ts` |
-| 截图标注模型 | `src/modules/browser/core/markup-model.ts` |
-| 元素抓取上下文 | `src/modules/browser/platform/desktop/grab-script.ts` |
-| 调试器租约归属 | `src/modules/browser/platform/desktop/debugger-lease.ts` |
-| 弹窗分类 | `src/modules/browser/platform/desktop/guest-policy.ts` |
 
 ## React 设计系统（464bd5a）
 
@@ -97,7 +85,7 @@ HUHU 使用自己的 Obsidian 叶子、主题令牌和 stdio 辅助进程（协�
 |---|---|
 | `sidebar/SidebarNav.tsx`、`sidebar/worktree-card-surface.tsx`、`sidebar/StatusIndicator.tsx` | `src/modules/agent/ui/sidebar/AgentSidebar.tsx`：保留导航、状态分组与两行卡片的尺寸、布局和类名；数据来自工作区仓库，通过所属叶子的导航槽位 Portal 渲染。 |
 | `tab-bar/tab-bar-surface.tsx`、`SortableTab.tsx`、`TerminalTabLeadingIcon.tsx` | `ui/tabs/`、`ui/create/NewTabMenu.tsx`：单层标签带、激活线、关闭/颜色/置顶、拖放与新建菜单；导航开关放在首组，页面与历史入口放在末组。 |
-| `tab-bar/TabBarCreateEntry.tsx`、`TabBarCreateEntryRow.tsx`、`tab-bar-surface.tsx` | `ui/create/Omnibox.tsx`：保留输入框、条目与终端动作/智能体/设置的分组和分隔线，接入 cmdk、HUHU 的智能体目录、输入分类与创建服务。浏览器引擎缺失时保留输入并显示禁用原因。 |
+| `tab-bar/TabBarCreateEntry.tsx`、`TabBarCreateEntryRow.tsx`、`tab-bar-surface.tsx` | `ui/create/Omnibox.tsx`：保留输入框、条目与终端动作/智能体/设置的分组和分隔线，接入 cmdk、HUHU 的智能体目录、输入分类与创建服务。 |
 | `tab-group/TabGroupSplitNodeTree.tsx`、`TabGroupPanel.tsx`、`TabGroupDropOverlay.tsx` | `ui/workspace/`：最多四组，保持分隔条、四边放置区；布局存入每设备的工作区文件。 |
 | `terminal-pane/TerminalContextMenu.tsx`、`TerminalProcessExitOverlay.tsx` | `ui/terminal/TerminalTabView.tsx`：菜单与退出条带、窗格状态/标题和平分操作；重置经 HUHU 权威终端模型同步，复制上下文使用最近 200 行。`TerminalSearch.tsx` 恢复 HUHU 原有大小写/正则/前后项与未匹配反馈，保留 xterm/PTY、Hook、附件与原生会话恢复接口。 |
 | `AgentStateDot.tsx`、`AgentWorkingSpinner.tsx`、`AgentQuestionIcon.tsx` | `src/ui/components/huhu/StatusDot.tsx`、`AgentWorkingSpinner.tsx`、`AgentQuestionIcon.tsx`：状态图标和动效，改用 HUHU 语义令牌、i18n、所属窗口 Tooltip；保留已有 `StatusDot.status` 调用兼容。 |
@@ -118,23 +106,8 @@ HUHU 使用自己的 Obsidian 叶子、主题令牌和 stdio 辅助进程（协�
 | `settings/AgentsPane.tsx`、`AgentDetectionCatalog.tsx`、`AgentCatalogRow.tsx`、`AgentLaunchDefaultsEditor.tsx`、`TerminalPane.tsx`、`QuickCommandsPane.tsx`、`SettingsFormControls.tsx` | `agent/ui/settings/`；保留检测目录、覆盖编辑、终端设置和快捷命令布局，服务与持久化由 HUHU 管理。 |
 | `stats/StatsPane.tsx`、`StatCard.tsx`、`ClaudeUsageDailyChart.tsx`、`UsageRecentSessionsTable.tsx`、`usage-overview-sections.tsx` | `agent/ui/usage/`；计数来自本设备 workspace-stats.json，token 来自当前工作空间归属的只读原生日志；chart.js 按需加载，未知模型或费用不推测。 |
 
-账号菜单由 `AGENT_USAGE` 的模块仓库供数；设置页子区通过通用 `SettingsPageHost.resourceId` 接收导航。历史面板的“本库/全部”是显示筛选；扫描包含系统账号和已登记的托管账号，恢复入口另行验证工作目录。历史读取与库内索引的边界见[隐私说明](../privacy.md#交给智能体的材料)。
+账号菜单由 `AGENT_USAGE` 的模块仓库供数；设置页子区通过通用 `SettingsPageHost.resourceId` 接收导航。历史面板的“本库/全部”是显示筛选；扫描包含系统账号和已登记的托管账号，恢复入口另行验证工作目录。历史读取与库内索引的边界见[隐私说明](../privacy.md#智能体历史索引)。
 
-
-## 浏览器标签（464bd5a，阶段 5）
-
-| 上游文件 | HUHU 中的位置与适配 |
-|---|---|
-| `src/renderer/src/components/browser-pane/browser-client-page-retained-elements.ts`、`browser-client-page-position-driver.ts` | `src/modules/browser/platform/desktop/retained-page.ts`：按 Document 保留宿主，使用共享帧循环、ResizeObserver、滚动与尺寸同步；`<webview>` 不换父节点。接入 HUHU 的库内 Session 和页面释放。 |
-| `src/shared/browser-url.ts` | `browser/core/url.ts`：地址分类，扩展百度和 HTTPS 自定义模板，保留凭据与协议拒绝规则。 |
-| `src/main/browser/browser-cookie-detection-types.ts`、`browser-cookie-key.ts`、`browser-cookie-decryption.ts`、`browser-cookie-import-policy.ts` | `browser/platform/desktop/cookies/{detect,keys,decrypt,policy}.ts`：本机目录、密钥、CBC/GCM、域名及 Google 排除；SQLite 通过 HUHU 的协议 3 控制消息读取库内临时副本，文件导入与写入回滚为 HUHU 接点。 |
-| `src/main/browser/browser-process-user-agent.ts`、`browser-session-ua.ts`、`browser-google-auth-ua.ts` | `browser/platform/desktop/user-agent.ts`：每个资料 Session 的清理 UA、Google 登录兼容与引用计数清理，不改宿主全局 UA。 |
-| `browser-pane/assemble-chrome/browser-navigation-control-row.tsx`、`browser-chrome-toolbar.tsx`、`BrowserAddressBar.tsx`、`BrowserAddressBarSuggestionList.tsx`、`BrowserFind.tsx`、`browser-toolbar-menu-dropdown.tsx`；`browser-pane/navigate/browser-page-download-list.tsx`、`browser-load-failure-overlay.tsx` | `browser/ui/BrowserChrome.tsx`、`ui/cookies/CookieImport.tsx`：保留工具栏／菜单／查找／下载布局与 Tailwind 类，改用 HUHU 的 zustand 页面状态、词典、所属窗口 Portal 与设置服务。 |
-| `settings/BrowserPane.tsx`、`BrowserSearchEngineSetting.tsx`、`BrowserProfileRow.tsx`、`BrowserLinkRoutingSetting.tsx`、`BrowserNewProfileDialog.tsx` | `browser/ui/settings/BrowserSettings.tsx`、`NewProfileDialog.tsx`：设置行、资料列表与新建对话框；数据写入 HUHU 的每设备文件。 |
-| `browser-pane/annotate/MarkupOverlay.tsx`、`MarkupToolbar.tsx`、`MarkupDrawButton.tsx`；`assemble-chrome/browser-chrome-element-tool-buttons.tsx` | `browser/ui/design/`：截图绘制层与独立 `MarkupToolbar.tsx` 保留上游图标、Tooltip、色块／线宽／字号 Popover 结构与类名。复用 HUHU 的既有六种绘制工具及 markup-model 算法；不新增橡皮工具，文字输入与完成／取消为宿主截图流程接点。预览按阶段 5 设计采用锚定 Popover，材料只经 `AGENT_SESSIONS.attachMaterial` 发送至输入区，不提交。 |
-| `tab-bar/SortableTab.tsx` | `agent/ui/browser/BrowserWorkspaceTab.tsx`：与终端一致的标签尺寸、焦点／激活类，增加网页图标、资料切换及网页上下文菜单；`BrowserTabView.tsx` 只经 `browser/api.ts` 挂载与渲染。 |
-
-表中组件路径未写前缀时，相对上游 `src/renderer/src/components/`。原始许可保留在 [orca-LICENSE.txt](orca-LICENSE.txt)。不引入 Orca IPC、数据目录或自动发送行为；原生 SQLite 读取使用 HUHU 已有 rusqlite，无新增依赖。
 
 ## 档案、通知、同步、图标及设置（464bd5a，阶段 9a）
 

@@ -24,7 +24,7 @@ Status: completed
 
 016新增唯一 `execution_position_json`、恢复树资格表和runtime停止门，没有新完成账本。原T11/T12维护限当前恢复/停止门、旧位置纯读重建和排空计数。旧delegation要求用例仅增加重开后的明确用户恢复操作，原材料化task/constraints/expected、CP、正文及调用次数断言均保留，精确diff见 11（历史日志已清理：`logs/11-requirements-test-diff.patch`）。
 
-真实迁移夹具来源是Root旧schema8代码实际建立并关闭/kill+Wait的完整Profile，分别含legacy CP、公开群和在途children Resume。来源manifest SHA256为 `2e1d9094ae073fa7c9b0d41186d1fdab5aaabcd13de3b117e80f2065cedd3cd4` 与 `0731d0d996c123c73f462a56c540e103aa5e08a1facaa55abe3161c0b8767564`；永久 [manifest](../../../../../../../../../native/huhubot/tests/contract/recovery/testdata/schema8/manifest.json) 保存9份DB/CP逐项SHA。迁移逐表比较所有旧列/行（36或37表）、CP字节及完整备份，未靠空库/改版本号或SQL改status伪造旧状态。
+真实迁移夹具来源是Root旧schema8代码实际建立并关闭/kill+Wait的完整Profile，分别含legacy CP、公开群和在途children Resume。来源manifest SHA256为 `2e1d9094ae073fa7c9b0d41186d1fdab5aaabcd13de3b117e80f2065cedd3cd4` 与 `0731d0d996c123c73f462a56c540e103aa5e08a1facaa55abe3161c0b8767564`；永久 manifest（`native/huhubot/tests/contract/recovery/testdata/schema8/manifest.json`，已随 ADR-010 删除） 保存9份DB/CP逐项SHA。迁移逐表比较所有旧列/行（36或37表）、CP字节及完整备份，未靠空库/改版本号或SQL改status伪造旧状态。
 
 全部作者命令使用Go1.26.10，实际命令与退出值保存在下列原始日志中；`subprocess.run` 返回/PTY最终退出才记Wait，未把工具包装器退出当Go退出。
 

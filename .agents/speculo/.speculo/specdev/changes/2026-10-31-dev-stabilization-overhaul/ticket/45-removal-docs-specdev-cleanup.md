@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-45
 title: "清理文档、开发规则与 specdev 历史中的悬挂引用"
-status: draft
+status: done
 kind: documentation
 planning_depth: standard
 planning_depth_reason: "跨用户文档、根说明、项目 Skill 与历史档案，需区分现行说明与历史原文"
@@ -22,7 +22,7 @@ writable_paths: ["<Path>README.md</Path>", "<Path>README.ZH.md</Path>", "<Path>A
 read_only_paths: ["<Path>.agents/speculo/.speculo/specdev/adr/**</Path>", "<Path>.agents/speculo/.speculo/specdev/context/**</Path>", "<Path>.agents/speculo/.speculo/specdev/design/**</Path>", "<Path>.agents/speculo/.speculo/specdev/changes/archive/**</Path>"]
 shared_paths: ["<Path>docs/references.md</Path>"]
 shared_path_owners: ["<Path>docs/references.md</Path> => Lead"]
-skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "9f2bd86d620ed274f75eecfeab254efce5a40fa2ad5c5d255c7f877a93848cc7", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
+skill_bindings: [{"id": "dev", "path": "<Path>.agents/skills/dev/SKILL.md</Path>", "sha256": "5c60d84fe28cfc8b8653e8813127a870f0483b40cae8e823d8e8e48bc83c1d0f", "phase": "implement", "operation": "apply-plugin-engineering-rules", "inputs": ["当前 Ticket", "tickets-map 总体实施背景"], "outputs": ["本票 Evidence 的 Skill Execution Records"], "required": true, "on_failure": "block-ticket"}]
 ---
 # Ticket T-45: 清理文档、开发规则与 specdev 历史中的悬挂引用
 
