@@ -8,7 +8,7 @@ design_ref: null
 change: 2026-10-31-dev-stabilization-overhaul
 id: T-13
 title: "Hook 发布池可靠性修复"
-status: ready
+status: done
 kind: bug
 planning_depth: deep
 planning_depth_reason: "改共享发布/消费池，涉及路径安全校验与资源所有权"
