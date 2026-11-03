@@ -36,7 +36,9 @@ for (let round = 1; round <= rounds; round++) {
     if (timing.platform !== expectedPlatform || timing.plannedEvents !== 96 || timing.startedPublishers !== 96 || timing.receivedEvents !== 96 || !timing.bodyPassed || !timing.cleanupPassed || timing.unreclaimedObservations !== 0 || timing.consumeReclaim.calls !== 96 || Object.values(timing.failures).some(count => count !== 0)) throw new Error('Target timing/count/order/cleanup verification failed');
     for (const key of ['collectorWait', 'collectorHeld', 'publish']) if (timing.segments[key].calls !== 96) throw new Error(`Incomplete ${key} observations`);
   } catch (error) { verificationError = error instanceof SyntaxError ? 'Invalid result JSON' : error?.code === 'ENOENT' ? 'Missing target result artifact' : String(error.message); }
-  const row = { round, exitCode: result.status, signal: result.signal, wallMs: performance.now() - started, reached, received: timing?.receivedEvents ?? 0, passed: result.status === 0 && reached && !verificationError, verificationError };
+  const row = { round, exitCode: result.status, signal: result.signal, wallMs: performance.now() - started, reached, received: timing?.receivedEvents ?? 0, passed: result.status === 0 && reached && !verificationError, verificationError,
+    // Diagnostic split only: which failure counters fired and which scopes broke 0,1,2 delivery order. Pass/fail rules above are unchanged.
+    failureCounts: timing ? Object.fromEntries(Object.entries(timing.failures).filter(([, count]) => count !== 0)) : undefined, orderViolations: timing?.orderFailures?.map(item => `${item.scope}:${item.events.map(event => event.split(':')[1]).join('')}`) };
   summary.rounds.push(row);
   summary.failedRounds = summary.rounds.filter(row => !row.passed).length;
   summary.completedRounds = summary.rounds.length;

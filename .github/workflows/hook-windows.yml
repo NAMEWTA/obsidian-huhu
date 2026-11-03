@@ -3,7 +3,11 @@ name: Hook Windows measurement
 on:
   push:
     branches:
-      - codex/dev-overhaul-hook-validation
+      - dev
+    paths:
+      - 'src/modules/agent/platform/desktop/hooks/**'
+      - 'scripts/fixtures/dev-overhaul-hook/**'
+      - '.github/workflows/hook-windows.yml'
   workflow_dispatch:
     inputs:
       rounds:
